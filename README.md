@@ -1,0 +1,2 @@
+# daedalus
+Daedalus - cryptocurrency wallet
