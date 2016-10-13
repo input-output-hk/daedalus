@@ -1,0 +1,53 @@
+@import './_walletNavConfig';
+
+%base {
+  text-align: center;
+  color: $walletNavThemeColor;
+  background-color: rgba($walletNavThemeColor, 0.1);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ========= STATES =========
+
+.normal {
+  @extend %base;
+  &:hover {
+    cursor: pointer;
+    background-color: rgba($walletNavThemeColor, 0.15);
+  }
+}
+
+.active {
+  @extend %base;
+  &:hover {
+    cursor: normal;
+  }
+}
+
+// ======== CHILDREN ========
+
+.walletName {
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-size: 14px;
+  margin-bottom: $walletNavSeparatorMargin;
+  position: relative;
+  font-weight: bold;
+
+  &:after {
+    content: '';
+    width: $walletNavSeparatorWidth;
+    display: block;
+    position: absolute;
+    left: calc(50% - #{$walletNavSeparatorWidth / 2});
+    bottom: -$walletNavSeparatorMargin / 3;
+    border-bottom: 1px solid $walletNavThemeColor;
+  }
+}
+
+.walletAmount {
+  font-size: 24px;
+}
