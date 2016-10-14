@@ -2,9 +2,8 @@
 
 %base {
   text-align: center;
-  background-repeat: no-repeat;
+  background: no-repeat center 70%;
   background-size: 45px;
-  background-position: center 70%;
   position: relative;
   display: flex;
   align-items: center;
@@ -33,7 +32,7 @@
     }
   }
   &:hover {
-    cursor: normal;
+    cursor: default;
   }
 }
 
