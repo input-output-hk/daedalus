@@ -7,7 +7,8 @@ import WalletNavigation from '../../components/wallet/navigation/WalletNavigatio
 import wallet from '../../stores/walletStore';
 import styles from './WalletSendPage.scss';
 
-export default observer(class WalletSendPage extends Component {
+@observer
+export default class WalletSendPage extends Component {
   render() {
     return (
       <div className={styles.component}>
@@ -25,4 +26,4 @@ export default observer(class WalletSendPage extends Component {
       </div>
     );
   }
-});
+}
