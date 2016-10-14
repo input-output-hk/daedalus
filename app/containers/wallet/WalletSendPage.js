@@ -15,6 +15,7 @@ export default observer(class WalletSendPage extends Component {
         <AppBar
           title="Daedalus"
           className={styles.appBar}
+          showMenuIconButton={false}
         />
 
         <WalletNavigation wallet={wallet} />
