@@ -4,13 +4,6 @@ import classNames from 'classnames';
 import styles from './WalletHomeButton.scss';
 
 export default class WalletHomeButton extends Component {
-  static propTypes = {
-    walletName: PropTypes.string.isRequired,
-    amount: PropTypes.number.isRequired,
-    currency: PropTypes.string.isRequired,
-    isActive: PropTypes.bool.isRequired,
-    className: PropTypes.string
-  };
   render() {
     const classes = classNames([
       this.props.className, // allow to apply base classes from outside
@@ -30,3 +23,11 @@ export default class WalletHomeButton extends Component {
     );
   }
 }
+
+WalletHomeButton.propTypes = {
+  walletName: PropTypes.string.isRequired,
+  amount: PropTypes.number.isRequired,
+  currency: PropTypes.string.isRequired,
+  isActive: PropTypes.bool.isRequired,
+  className: PropTypes.string
+};

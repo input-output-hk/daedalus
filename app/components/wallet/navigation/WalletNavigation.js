@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import styles from './WalletNavigation.scss';
 import WalletNavHomeButton from './WalletHomeButton';
 import WalletNavButton from './WalletNavButton';
@@ -11,9 +11,9 @@ export default class WalletNavigation extends Component {
 
         <WalletNavHomeButton
           className={styles.walletButton}
-          walletName="Test Wallet"
-          amount={99.90}
-          currency="$"
+          walletName={this.props.wallet.name}
+          amount={this.props.wallet.amount}
+          currency={this.props.wallet.currency}
           isActive={false}
         />
 
@@ -37,3 +37,11 @@ export default class WalletNavigation extends Component {
     );
   }
 }
+
+WalletNavigation.propTypes = {
+  wallet: React.PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    amount: PropTypes.number.isRequired,
+    currency: PropTypes.string.isRequired,
+  }),
+};

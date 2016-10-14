@@ -1,11 +1,13 @@
 // @flow
 import React, { Component } from 'react';
 import AppBar from 'material-ui/AppBar';
+import { observer } from 'mobx-react';
 import WalletSendForm from '../../components/wallet/WalletSendForm';
 import WalletNavigation from '../../components/wallet/navigation/WalletNavigation';
+import wallet from '../../stores/walletStore';
 import styles from './WalletSendPage.scss';
 
-export default class WalletSendPage extends Component {
+export default observer(class WalletSendPage extends Component {
   render() {
     return (
       <div className={styles.component}>
@@ -15,11 +17,11 @@ export default class WalletSendPage extends Component {
           className={styles.appBar}
         />
 
-        <WalletNavigation />
+        <WalletNavigation wallet={wallet} />
 
         <WalletSendForm />
 
       </div>
     );
   }
-}
+});

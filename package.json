@@ -82,6 +82,8 @@
     "electron-debug": "^1.0.1",
     "flexboxgrid": "^6.3.1",
     "material-ui": "^0.16.0",
+    "mobx": "^2.6.0",
+    "mobx-react": "^3.5.8",
     "postcss": "^5.2.4",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
