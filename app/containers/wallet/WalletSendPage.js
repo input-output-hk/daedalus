@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-import { Row } from 'react-flexbox-grid/lib/index';
 import AppBar from 'material-ui/AppBar';
 import WalletSendForm from '../../components/wallet/WalletSendForm';
 import WalletNavigation from '../../components/wallet/navigation/WalletNavigation';
@@ -18,9 +17,7 @@ export default class WalletSendPage extends Component {
 
         <WalletNavigation />
 
-        <Row center="xs">
-          <WalletSendForm />
-        </Row>
+        <WalletSendForm />
 
       </div>
     );
