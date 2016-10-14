@@ -29,13 +29,18 @@
 
 // ======== CHILDREN ========
 
+.container {
+  text-align: center;
+  height: $walletNavButtonContentHeight;
+  display: flex;
+  flex-direction: column;
+}
+
 .walletName {
+  @include walletNavLabelFont;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 14px;
-  margin-bottom: $walletNavSeparatorMargin;
   position: relative;
-  font-weight: bold;
+  margin-bottom: auto;
 
   &:after {
     content: '';

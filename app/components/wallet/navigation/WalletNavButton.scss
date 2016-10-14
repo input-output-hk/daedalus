@@ -39,17 +39,17 @@
 
 .container {
   text-align: center;
-  height: 50%;
-  position: relative;
+  height: $walletNavButtonContentHeight;
+  display: flex;
+  flex-direction: column;
 }
 
 .label {
+  @include walletNavLabelFont;
   display: block;
   text-transform: uppercase;
-  letter-spacing: 2px;
-  font-size: 14px;
   position: relative;
-  font-weight: bold;
+  margin-bottom: auto;
 
   &:after {
     content: '';
@@ -65,8 +65,5 @@
 .icon {
   max-height: 45px;
   max-width: 45px;
-  position: absolute;
-  bottom: 0;
-  left: calc(50% - 22px);
-  display: block;
+  align-self: center;
 }

@@ -18,7 +18,7 @@ export default class WalletHomeButton extends Component {
     ]);
     return (
       <div className={classes}>
-        <div>
+        <div className={styles.container}>
           <div className={styles.walletName}>
             {this.props.walletName}
           </div>
