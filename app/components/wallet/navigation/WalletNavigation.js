@@ -5,6 +5,13 @@ import WalletNavHomeButton from './WalletHomeButton';
 import WalletNavButton from './WalletNavButton';
 
 export default class WalletNavigation extends Component {
+  static propTypes = {
+    wallet: React.PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      amount: PropTypes.number.isRequired,
+      currency: PropTypes.string.isRequired,
+    }),
+  };
   render() {
     return (
       <div className={styles.component}>
@@ -37,11 +44,3 @@ export default class WalletNavigation extends Component {
     );
   }
 }
-
-WalletNavigation.propTypes = {
-  wallet: React.PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    amount: PropTypes.number.isRequired,
-    currency: PropTypes.string.isRequired,
-  }),
-};
