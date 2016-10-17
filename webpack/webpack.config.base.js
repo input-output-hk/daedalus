@@ -15,7 +15,7 @@ export default validate({
       test: /\.json$/,
       loader: 'json-loader'
     }, {
-      test: /\.(?:png|jpg|svg|ttf)$/,
+      test: /\.(?:png|jpg|svg|otf|ttf)$/,
       loader: 'url-loader'
     }]
   },

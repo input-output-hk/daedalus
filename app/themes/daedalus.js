@@ -9,7 +9,7 @@ import spacing from 'material-ui/styles/spacing';
 
 export default {
   spacing,
-  fontFamily: 'NotoSans',
+  fontFamily: 'SFUIDisplay',
   palette: {
     primary1Color: '#345078',
     primary2Color: '#345078',

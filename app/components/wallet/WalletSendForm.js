@@ -31,7 +31,7 @@ export default class WalletSendForm extends Component {
 
           <TextField
             className={styles.textField}
-            hintText="You can add message if you want"
+            hintText="You can add a message if you want"
             floatingLabelText="Description"
             floatingLabelFixed
             multiLine

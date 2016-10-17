@@ -48,36 +48,64 @@ table {
 // ============ FONTS ===========
 
 @font-face {
-  font-family: NotoSans;
-  src: url("../assets/fonts/NotoSans-Regular.ttf");
-  font-weight: normal;
+  font-family: SFUIDisplay;
+  src: url("../assets/fonts/SFUIDisplay-Ultralight.otf") format("opentype");
+  font-weight: 100;
   font-style: normal;
 }
 
 @font-face {
-  font-family: NotoSans;
-  src: url("../assets/fonts/NotoSans-Italic.ttf");
-  font-weight: normal;
-  font-style: italic;
-}
-
-@font-face {
-  font-family: NotoSans;
-  src: url("../assets/fonts/NotoSans-Bold.ttf");
-  font-weight: bold;
+  font-family: SFUIDisplay;
+  src: url("../assets/fonts/SFUIDisplay-Thin.otf") format("opentype");
+  font-weight: 200;
   font-style: normal;
 }
 
 @font-face {
-  font-family: NotoSans;
-  src: url("../assets/fonts/NotoSans-BoldItalic.ttf");
-  font-weight: bold;
-  font-style: italic;
+  font-family: SFUIDisplay;
+  src: url("../assets/fonts/SFUIDisplay-Regular.otf") format("opentype");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: SFUIDisplay;
+  src: url("../assets/fonts/SFUIDisplay-Semibold.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: SFUIDisplay;
+  src: url("../assets/fonts/SFUIDisplay-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: SFUIDisplay;
+  src: url("../assets/fonts/SFUIDisplay-Bold.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: SFUIDisplay;
+  src: url("../assets/fonts/SFUIDisplay-Heavy.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: SFUIDisplay;
+  src: url("../assets/fonts/SFUIDisplay-Black.otf") format("opentype");
+  font-weight: 800;
+  font-style: normal;
 }
 
 @font-face {
   font-family: Electrolize;
-  src: url("../assets/fonts/Electrolize-Regular.ttf");
+  src: url("../assets/fonts/Electrolize-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
@@ -87,7 +115,8 @@ table {
 html, body, #root, [data-reactroot] {
   width: 100%;
   height: 100%;
-  font-family: NotoSans;
+  font-family: SFUIDisplay, sans-serif;
+  letter-spacing: 1px;
 }
 
 * {
