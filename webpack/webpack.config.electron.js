@@ -5,6 +5,7 @@
 import webpack from 'webpack';
 import validate from 'webpack-validator';
 import merge from 'webpack-merge';
+import path from 'path';
 import baseConfig from './webpack.config.base';
 
 export default validate(merge(baseConfig, {
@@ -14,8 +15,8 @@ export default validate(merge(baseConfig, {
 
   // 'main.js' in root
   output: {
-    path: __dirname,
-    filename: './main.js'
+    path: path.join(__dirname, '../'),
+    filename: 'main.js'
   },
 
   plugins: [
@@ -58,7 +59,6 @@ export default validate(merge(baseConfig, {
   },
 
   externals: [
-    'font-awesome',
     'source-map-support'
   ]
 }));

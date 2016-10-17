@@ -1,0 +1,29 @@
+.component {
+  width: calc(100% - 40px);
+  margin: 0 auto;
+  margin-top: 50px;
+}
+
+.fields {
+  padding: 0 20px;
+}
+
+.textField {
+  margin-bottom: 20px;
+
+  label {
+    color: #345078 !important;
+    text-transform: uppercase;
+    top: 30px !important;
+    left: 0px !important;
+    font-weight: bold;
+  }
+}
+
+.sendButton {
+  margin-top: 30px;
+  button, div {
+    height: 50px !important;
+    line-height: 50px !important;
+  }
+}

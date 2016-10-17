@@ -1,0 +1,23 @@
+%button {
+  display: block;
+  height: 200px;
+}
+
+.component {
+  display: flex;
+}
+
+.walletButton {
+  @extend %button;
+  width: 50%;
+}
+
+.sendButton {
+  @extend %button;
+  width: 25%;
+}
+
+.receiveButton {
+  @extend %button;
+  width: 25%;
+}
