@@ -5,10 +5,6 @@ import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import daedalusTheme from './themes/daedalus';
 
 export default class App extends Component {
-  static propTypes = {
-    children: PropTypes.element.isRequired
-  };
-
   render() {
     return (
       <MuiThemeProvider muiTheme={getMuiTheme(daedalusTheme)}>
@@ -17,3 +13,7 @@ export default class App extends Component {
     );
   }
 }
+
+App.propTypes = {
+  children: PropTypes.element.isRequired
+};
