@@ -1,9 +1,11 @@
 // @flow
 import React, { Component } from 'react';
+import { observer } from 'mobx-react';
 import TextField from 'material-ui/TextField';
 import RaisedButton from 'material-ui/RaisedButton';
 import styles from './WalletSendForm.scss';
 
+@observer
 export default class WalletSendForm extends Component {
   render() {
     return (

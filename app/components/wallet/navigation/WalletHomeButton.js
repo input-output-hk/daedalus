@@ -1,8 +1,10 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
+import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './WalletHomeButton.scss';
 
+@observer
 export default class WalletHomeButton extends Component {
   render() {
     const classes = classNames([

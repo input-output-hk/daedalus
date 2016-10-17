@@ -1,9 +1,11 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
+import { observer } from 'mobx-react';
 import styles from './WalletNavigation.scss';
 import WalletNavHomeButton from './WalletHomeButton';
 import WalletNavButton from './WalletNavButton';
 
+@observer
 export default class WalletNavigation extends Component {
   render() {
     return (
