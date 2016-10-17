@@ -1,7 +1,7 @@
 import { observable } from 'mobx';
 
 export default observable({
-  name: 'Test Wallet',
+  name: 'Shopping Wallet',
   currency: '$',
-  amount: 99.9
+  amount: 19903750165.23
 });
