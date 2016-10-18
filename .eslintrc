@@ -22,6 +22,7 @@
     "react/jsx-no-bind": "off",
     "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx"] }],
     "react/prefer-stateless-function": "off",
+    "react/no-unused-prop-types": [1, { "skipShapeProps": true }],
     "flowtype-errors/show-errors": 2
   },
   "plugins": [
