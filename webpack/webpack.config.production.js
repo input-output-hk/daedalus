@@ -54,12 +54,13 @@ const config = validate(merge(baseConfig, {
     }),
 
     // Minify without warning messages and IE8 support
-    new webpack.optimize.UglifyJsPlugin({
+    /*new webpack.optimize.UglifyJsPlugin({
       compressor: {
         screw_ie8: true,
         warnings: false
       }
     }),
+    */
 
     // Set the ExtractTextPlugin output filename
     new ExtractTextPlugin('style.css', { allChunks: true })
