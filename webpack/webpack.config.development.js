@@ -37,17 +37,17 @@ export default validate(merge(baseConfig, {
     ],
     loaders: [
       {
-        test: /\.global\.s?css$/,
+        test: /\.global\.scss$/,
         loaders: [
-          'style-loader',
-          'css-loader?sourceMap',
+          'style?sourceMap',
+          'css?sourceMap',
           'sass?sourceMap'
         ]
       },
       {
-        test: /^((?!\.global).)*\.s?css$/,
+        test: /^((?!\.global).)*\.scss$/,
         loaders: [
-          'style',
+          'style?sourceMap',
           'css?sourceMap&modules&localIdentName=[name]__[local]___[hash:base64:5]&importLoaders=1',
           'sass?sourceMap'
         ]

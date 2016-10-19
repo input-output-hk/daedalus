@@ -15,7 +15,7 @@ export default validate(merge(baseConfig, {
 
   // 'main.js' in root
   output: {
-    path: path.join(__dirname, '../'),
+    path: path.join(__dirname, '../dist'),
     filename: 'main.js'
   },
 
