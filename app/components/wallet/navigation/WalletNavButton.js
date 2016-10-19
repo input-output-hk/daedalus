@@ -6,6 +6,15 @@ import styles from './WalletNavButton.scss';
 
 @observer
 export default class WalletNavButton extends Component {
+
+  static propTypes = {
+    label: PropTypes.string.isRequired,
+    normalIcon: PropTypes.string.isRequired,
+    activeIcon: PropTypes.string.isRequired,
+    isActive: PropTypes.bool.isRequired,
+    className: PropTypes.string
+  };
+
   render() {
     const { isActive, normalIcon, activeIcon } = this.props;
     const componentClasses = classNames([
@@ -23,11 +32,3 @@ export default class WalletNavButton extends Component {
     );
   }
 }
-
-WalletNavButton.propTypes = {
-  label: PropTypes.string.isRequired,
-  normalIcon: PropTypes.string.isRequired,
-  activeIcon: PropTypes.string.isRequired,
-  isActive: PropTypes.bool.isRequired,
-  className: PropTypes.string
-};
