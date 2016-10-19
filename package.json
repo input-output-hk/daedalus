@@ -3,7 +3,7 @@
   "productName": "Daedalus",
   "version": "0.1.0",
   "description": "Cryptocurrency Wallet",
-  "main": "main.js",
+  "main": "./dist/main.js",
   "scripts": {
     "lint": "eslint --format=node_modules/eslint-formatter-pretty app test *.js",
     "hot-server": "cross-env NODE_ENV=development node -r babel-register webpack/server.js",
