@@ -24,19 +24,20 @@ const config = validate(merge(baseConfig, {
     loaders: [
       // Extract all .global.css to style.css as is
       {
-        test: /\.global\.css$/,
+        test: /\.global\.s?css$/,
         loader: ExtractTextPlugin.extract(
           'style-loader',
-          'css-loader'
+          'css-loader',
+          'sass-loader'
         )
       },
-
-      // Pipe other styles through css modules and apend to style.css
+      // Pipe other styles through css modules and append to style.css
       {
-        test: /^((?!\.global).)*\.css$/,
+        test: /^((?!\.global).)*\.s?css$/,
         loader: ExtractTextPlugin.extract(
           'style-loader',
-          'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'
+          'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
+          'sass-loader'
         )
       }
     ]
