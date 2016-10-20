@@ -4,7 +4,7 @@ import { Provider, observer } from 'mobx-react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import { IntlProvider } from 'react-intl';
-import messages from './i18n/messages';
+import translations from './i18n/translations';
 import daedalusTheme from './themes/daedalus';
 import store from './store';
 
@@ -18,7 +18,7 @@ export default class App extends Component {
   render() {
     const { locale } = store.i18n;
     return (
-      <IntlProvider locale={locale} messages={messages[locale]}>
+      <IntlProvider locale={locale} messages={translations[locale]}>
         <MuiThemeProvider muiTheme={getMuiTheme(daedalusTheme)}>
           <Provider store={store}>
             {this.props.children}
