@@ -7,7 +7,7 @@
   "wallet.send.form.amount.hint": "Amount in $",
   "wallet.send.form.description.label": "Description",
   "wallet.send.form.description.hint": "You can add a message if you want.",
-  "wallet.send.form.submit": "senden",
+  "wallet.send.form.submit": "send",
   "wallet.send.form.errors.invalidBitcoinAddress": "Please enter a valid Bitcoin address.",
   "wallet.send.form.errors.invalidAmount": "Please enter a valid amount."
 }
