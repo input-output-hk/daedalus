@@ -12,6 +12,7 @@ import './styles/index.global.scss';
 // Needed for onTouchTap (http://stackoverflow.com/a/34015469/988941)
 injectTapEventPlugin();
 
+// https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([en, de]);
 
 render(<Router history={hashHistory} routes={routes} />, document.getElementById('root'));
