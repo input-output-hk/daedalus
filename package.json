@@ -87,6 +87,7 @@
     "mobx-react": "^3.5.8",
     "mobx-react-form": "^1.13.2",
     "postcss": "^5.2.4",
+    "qrcode.react": "^0.6.1",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-intl": "^2.1.5",

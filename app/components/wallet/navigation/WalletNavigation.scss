@@ -3,6 +3,11 @@
   height: 200px;
 }
 
+%link {
+  display: block;
+  text-decoration: none;
+}
+
 .component {
   display: flex;
 }
@@ -12,12 +17,20 @@
   width: 50%;
 }
 
+.sendLink {
+  @extend %link;
+  width: 25%;
+}
+
 .sendButton {
   @extend %button;
+}
+
+.receiveLink {
+  @extend %link;
   width: 25%;
 }
 
 .receiveButton {
   @extend %button;
-  width: 25%;
 }
