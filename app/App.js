@@ -18,7 +18,7 @@ export default class App extends Component {
   render() {
     const { locale } = store.i18n;
     return (
-      <IntlProvider locale={locale} messages={translations[locale]}>
+      <IntlProvider locale={locale} key={locale} messages={translations[locale]}>
         <MuiThemeProvider muiTheme={getMuiTheme(daedalusTheme)}>
           <Provider store={store}>
             {this.props.children}
