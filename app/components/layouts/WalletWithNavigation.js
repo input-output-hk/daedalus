@@ -3,17 +3,22 @@ import React, { Component, PropTypes } from 'react';
 import AppBar from 'material-ui/AppBar';
 import { observer } from 'mobx-react';
 import WalletNavigation from '../../components/wallet/navigation/WalletNavigation';
-import styles from './WalletLayout.scss';
+import styles from './WalletWithNavigation.scss';
 
-@observer(['store'])
-export default class WalletLayout extends Component {
+@observer
+export default class WalletLayoutWithNavigation extends Component {
+
   static propTypes = {
     children: PropTypes.element.isRequired,
-    store: PropTypes.shape({
-      wallet: PropTypes.object.isRequired
-    })
+    wallet: React.PropTypes.shape({
+      name: PropTypes.string.isRequired,
+      amount: PropTypes.number.isRequired,
+      currency: PropTypes.string.isRequired,
+    }),
   };
+
   render() {
+    const { wallet, children } = this.props;
     return (
       <div className={styles.component}>
 
@@ -23,9 +28,9 @@ export default class WalletLayout extends Component {
           showMenuIconButton={false}
         />
 
-        <WalletNavigation wallet={this.props.store.wallet} />
+        <WalletNavigation wallet={wallet} />
 
-        {this.props.children}
+        {children}
 
       </div>
     );
