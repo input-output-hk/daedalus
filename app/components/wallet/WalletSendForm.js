@@ -50,6 +50,10 @@ export default class WalletSendForm extends Component {
   render() {
     const { validator } = this.props;
     const { intl } = this.context;
+    const errors = {
+      receiver: validator.$('receiver').error,
+      amount: validator.$('amount').error,
+    };
     return (
       <div className={styles.component}>
 
@@ -60,7 +64,7 @@ export default class WalletSendForm extends Component {
             floatingLabelText={intl.formatMessage(messages.receiverLabel)}
             hintText={intl.formatMessage(messages.receiverHint)}
             value={validator.$('receiver').value}
-            errorText={validator.$('receiver').error}
+            errorText={errors.receiver ? intl.formatMessage(errors.receiver) : null}
             onChange={validator.$('receiver').onChange}
             onFocus={validator.$('receiver').onFocus}
             onBlur={validator.$('receiver').onBlur}
@@ -73,7 +77,7 @@ export default class WalletSendForm extends Component {
             floatingLabelText={intl.formatMessage(messages.amountLabel)}
             hintText={intl.formatMessage(messages.amountHint)}
             value={validator.$('amount').value}
-            errorText={validator.$('amount').error}
+            errorText={errors.amount ? intl.formatMessage(errors.amount) : null}
             onChange={validator.$('amount').onChange}
             onFocus={validator.$('amount').onFocus}
             onBlur={validator.$('amount').onBlur}
@@ -86,7 +90,6 @@ export default class WalletSendForm extends Component {
             floatingLabelText={intl.formatMessage(messages.descriptionLabel)}
             hintText={intl.formatMessage(messages.descriptionHint)}
             value={validator.$('description').value}
-            errorText={validator.$('description').error}
             onChange={validator.$('description').onChange}
             onFocus={validator.$('description').onFocus}
             onBlur={validator.$('description').onBlur}
