@@ -1,0 +1,13 @@
+{
+  "wallet.navigation.send": "senden",
+  "wallet.navigation.receive": "anfordern",
+  "wallet.send.form.receiver.label": "Empfänger",
+  "wallet.send.form.receiver.hint": "Bitcoin Adresse",
+  "wallet.send.form.amount.label": "Betrag",
+  "wallet.send.form.amount.hint": "Betrag in $",
+  "wallet.send.form.description.label": "Beschreibung",
+  "wallet.send.form.description.hint": "Hier können sie optional eine Beschreibung hinzufügen.",
+  "wallet.send.form.submit": "senden",
+  "wallet.send.form.errors.invalidBitcoinAddress": "Bitte geben Sie eine gültige Bitcoin Adresse ein.",
+  "wallet.send.form.errors.invalidAmount": "Bitte geben sie einen korrekten Betrag ein."
+}

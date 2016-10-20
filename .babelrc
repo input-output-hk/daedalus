@@ -1,6 +1,13 @@
 {
   "presets": ["es2015", "stage-0", "react"],
-  "plugins": ["add-module-exports", "transform-decorators-legacy"],
+  "plugins": [
+    "add-module-exports",
+    "transform-decorators-legacy",
+    ["react-intl", {
+      "messagesDir": "./locales/",
+      "enforceDescriptions": true
+    }]
+  ],
   "env": {
     "production": {
       "presets": ["react-optimize"],
