@@ -7,16 +7,20 @@ import walletSendFormValidator from '../../validators/walletSendFormValidator';
 
 @observer(['store'])
 export default class WalletSendPage extends Component {
+
   static propTypes = {
     store: PropTypes.shape({
       wallet: PropTypes.object.isRequired
     })
   };
+
   render() {
+    const { wallet } = this.props.store;
     return (
-      <WalletWithNavigation wallet={this.props.store.wallet}>
+      <WalletWithNavigation wallet={wallet}>
         <WalletSendForm validator={walletSendFormValidator} />
       </WalletWithNavigation>
     );
   }
+
 }
