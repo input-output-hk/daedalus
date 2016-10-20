@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import QRCode from 'qrcode.react';
 import RaisedButton from 'material-ui/RaisedButton';
@@ -7,7 +7,15 @@ import styles from './WalletReceive.scss';
 
 @observer
 export default class WalletReceive extends Component {
+
+  static propTypes = {
+    walletReceive: React.PropTypes.shape({
+      walletAddress: PropTypes.string.isRequired
+    }),
+  };
+
   render() {
+    const { walletReceive } = this.props;
     return (
       <div className={styles.component}>
 
@@ -17,14 +25,14 @@ export default class WalletReceive extends Component {
 
         <div className={styles.qrCode}>
           <QRCode
-            value="3ERitrYNwfxs4R6GfdULjtnTXQGCDE4iR7"
+            value={walletReceive.walletAddress}
             bgColor="transparent"
             size={240}
           />
         </div>
 
         <div className={styles.hash}>
-          3ERitrYNwfxs4R6GfdULjtnTXQGCDE4iR7
+          {walletReceive.walletAddress}
         </div>
 
         <div className={styles.instructions}>
