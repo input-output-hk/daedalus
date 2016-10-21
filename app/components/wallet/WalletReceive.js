@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import QRCode from 'qrcode.react';
-import RaisedButton from 'material-ui/RaisedButton';
+import FullWidthButton from '../widgets/FullWidthButton';
 import styles from './WalletReceive.scss';
 
 const messages = defineMessages({
@@ -71,11 +71,9 @@ export default class WalletReceive extends Component {
           <a>{intl.formatMessage(messages.generateNewAddressLabel)}</a>.
         </div>
 
-        <RaisedButton
-          className={styles.requestButton}
+        <FullWidthButton
           label={intl.formatMessage(messages.requestSpecificAmountButtonLabel)}
-          primary
-          fullWidth
+          onClick={null}
         />
 
       </div>
