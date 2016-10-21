@@ -1,5 +1,6 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './WalletNavigation.scss';
@@ -48,21 +49,25 @@ export default class WalletNavigation extends Component {
           isActive={false}
         />
 
-        <WalletNavButton
-          label={intl.formatMessage(messages.send)}
-          normalIcon="./assets/images/send-ic.svg"
-          activeIcon="./assets/images/send-white-ic.svg"
-          className={styles.sendButton}
-          isActive
-        />
+        <Link to={'/wallet/send'} className={styles.sendLink}>
+          <WalletNavButton
+            label={intl.formatMessage(messages.send)}
+            normalIcon="./assets/images/send-ic.svg"
+            activeIcon="./assets/images/send-white-ic.svg"
+            className={styles.button}
+            isActive
+          />
+        </Link>
 
-        <WalletNavButton
-          label={intl.formatMessage(messages.receive)}
-          normalIcon="./assets/images/receive-ic.svg"
-          activeIcon="./assets/images/receive-white-ic.svg"
-          className={styles.receiveButton}
-          isActive={false}
-        />
+        <Link to={'/wallet/receive'} className={styles.receiveLink}>
+          <WalletNavButton
+            label={intl.formatMessage(messages.receive)}
+            normalIcon="./assets/images/receive-ic.svg"
+            activeIcon="./assets/images/receive-white-ic.svg"
+            className={styles.button}
+            isActive={false}
+          />
+        </Link>
 
       </div>
     );

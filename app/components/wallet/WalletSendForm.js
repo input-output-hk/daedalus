@@ -2,9 +2,9 @@
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import TextField from 'material-ui/TextField';
-import RaisedButton from 'material-ui/RaisedButton';
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
+import FullWidthButton from '../widgets/FullWidthButton';
 import styles from './WalletSendForm.scss';
 
 const messages = defineMessages({
@@ -100,12 +100,9 @@ export default class WalletSendForm extends Component {
 
         </div>
 
-        <RaisedButton
-          className={styles.sendButton}
+        <FullWidthButton
           label={intl.formatMessage(messages.sendButtonLabel)}
           onClick={validator.onSubmit}
-          primary
-          fullWidth
         />
 
       </div>

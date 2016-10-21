@@ -9,5 +9,9 @@
   "wallet.send.form.description.hint": "You can add a message if you want.",
   "wallet.send.form.submit": "send",
   "wallet.send.form.errors.invalidBitcoinAddress": "Please enter a valid Bitcoin address.",
-  "wallet.send.form.errors.invalidAmount": "Please enter a valid amount."
+  "wallet.send.form.errors.invalidAmount": "Please enter a valid amount.",
+  "wallet.receive.page.title": "Your <strong>{walletName}</strong> address",
+  "wallet.receive.page.instructions": "Share this wallet address to receive payments. To protect your privacy, new addresses are generated automatically once you use them.",
+  "wallet.receive.page.generate.new.address.label": "Generate new address",
+  "wallet.receive.page.request.specific.amount.button.label": "Request a specific amount"
 }
