@@ -15,12 +15,12 @@ const messages = defineMessages({
   walletReceiveInstructions: {
     id: 'wallet.receive.page.instructions',
     defaultMessage: '!!!Wallet receive instructions',
-    description: 'Title of the receive page'
+    description: 'Instructions for sharing wallet address to receive payments'
   },
   generateNewAddressLabel: {
     id: 'wallet.receive.page.generate.new.address.label',
-    defaultMessage: '!!!Wallet receive instructions',
-    description: 'Title of the receive page'
+    defaultMessage: '!!!Generate new address',
+    description: 'Label for "Generate new address" link'
   },
   requestSpecificAmountButtonLabel: {
     id: 'wallet.receive.page.request.specific.amount.button.label',
