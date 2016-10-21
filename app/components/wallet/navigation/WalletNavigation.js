@@ -54,7 +54,7 @@ export default class WalletNavigation extends Component {
             label={intl.formatMessage(messages.send)}
             normalIcon="./assets/images/send-ic.svg"
             activeIcon="./assets/images/send-white-ic.svg"
-            className={styles.sendButton}
+            className={styles.button}
             isActive
           />
         </Link>
@@ -64,7 +64,7 @@ export default class WalletNavigation extends Component {
             label={intl.formatMessage(messages.receive)}
             normalIcon="./assets/images/receive-ic.svg"
             activeIcon="./assets/images/receive-white-ic.svg"
-            className={styles.receiveButton}
+            className={styles.button}
             isActive={false}
           />
         </Link>
