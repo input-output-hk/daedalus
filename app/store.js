@@ -10,6 +10,7 @@ export default observable({
     amount: 19903750165.23
   },
   walletReceive: {
+    name: 'Shopping Wallet',
     walletAddress: '3ERitrYNwfxs4R6GfdULjtnTXQGCDE4iR7'
   }
 });

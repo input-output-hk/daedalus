@@ -34,6 +34,7 @@ export default class WalletReceive extends Component {
 
   static propTypes = {
     walletReceive: React.PropTypes.shape({
+      name: PropTypes.string.isRequired,
       walletAddress: PropTypes.string.isRequired
     }),
   };
@@ -47,6 +48,9 @@ export default class WalletReceive extends Component {
         <div className={styles.heading}>
           <FormattedHTMLMessage
             {...messages.walletReceivePageTitle}
+            values={{
+              walletName: walletReceive.name
+            }}
           />
         </div>
 
