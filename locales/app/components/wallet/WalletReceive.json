@@ -1,12 +1,12 @@
 [
   {
     "id": "wallet.receive.page.title",
-    "description": "Title for the wallet receive page",
+    "description": "Title for the wallet \"Receive page\"",
     "defaultMessage": "!!!Title - Your shopping wallet address"
   },
   {
     "id": "wallet.receive.page.instructions",
-    "description": "Instructions for sharing wallet address to receive payments",
+    "description": "Instructions for sharing wallet address to receive payments on the wallet \"Receive Page\"",
     "defaultMessage": "!!!Wallet receive instructions"
   },
   {
@@ -16,7 +16,7 @@
   },
   {
     "id": "wallet.receive.page.request.specific.amount.button.label",
-    "description": "Label for the request a specific amount button",
+    "description": "Label for the \"Request a specific amount\" button",
     "defaultMessage": "!!!Request a specific amount"
   }
 ]

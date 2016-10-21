@@ -10,12 +10,12 @@ const messages = defineMessages({
   walletReceivePageTitle: {
     id: 'wallet.receive.page.title',
     defaultMessage: '!!!Title - Your shopping wallet address',
-    description: 'Title for the wallet receive page'
+    description: 'Title for the wallet "Receive page"'
   },
   walletReceiveInstructions: {
     id: 'wallet.receive.page.instructions',
     defaultMessage: '!!!Wallet receive instructions',
-    description: 'Instructions for sharing wallet address to receive payments'
+    description: 'Instructions for sharing wallet address to receive payments on the wallet "Receive Page"'
   },
   generateNewAddressLabel: {
     id: 'wallet.receive.page.generate.new.address.label',
@@ -25,7 +25,7 @@ const messages = defineMessages({
   requestSpecificAmountButtonLabel: {
     id: 'wallet.receive.page.request.specific.amount.button.label',
     defaultMessage: '!!!Request a specific amount',
-    description: 'Label for the request a specific amount button'
+    description: 'Label for the "Request a specific amount" button'
   }
 });
 
