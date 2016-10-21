@@ -2,7 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import AppBar from 'material-ui/AppBar';
 import { observer } from 'mobx-react';
-import WalletNavigation from '../../components/wallet/navigation/WalletNavigation';
+import WalletNavigation from '../navigation/WalletNavigation';
 import styles from './WalletWithNavigation.scss';
 
 @observer

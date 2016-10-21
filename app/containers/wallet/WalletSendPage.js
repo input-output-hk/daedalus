@@ -1,7 +1,7 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
-import WalletWithNavigation from '../../components/layouts/WalletWithNavigation';
+import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import WalletSendForm from '../../components/wallet/WalletSendForm';
 import walletSendFormValidator from '../../validators/walletSendFormValidator';
 
