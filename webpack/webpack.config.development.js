@@ -48,7 +48,7 @@ export default validate(merge(baseConfig, {
         test: /^((?!\.global).)*\.scss$/,
         loaders: [
           'style?sourceMap',
-          'css?sourceMap&modules&localIdentName=[name]__[local]___[hash:base64:5]&importLoaders=1',
+          'css?sourceMap&modules&localIdentName=[name]_[local]&importLoaders=1',
           'sass?sourceMap'
         ]
       },

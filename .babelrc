@@ -1,5 +1,5 @@
 {
-  "presets": ["es2015", "stage-0"],
+  "presets": ["es2015", "stage-0", "react"],
   "plugins": [
     "add-module-exports",
     "transform-decorators-legacy",
@@ -22,5 +22,10 @@
         }]
       ]
     },
+    "test": {
+      "plugins": [
+        ["webpack-loaders", { "config": "./webpack/webpack.config.production.js", "verbose": false }]
+      ]
+    }
   }
 }

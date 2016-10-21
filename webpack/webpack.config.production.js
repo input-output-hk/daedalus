@@ -8,7 +8,7 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import merge from 'webpack-merge';
 import baseConfig from './webpack.config.base';
 
-const config = validate(merge(baseConfig, {
+export default validate(merge(baseConfig, {
   devtool: 'cheap-module-source-map',
 
   entry: [
@@ -34,7 +34,7 @@ const config = validate(merge(baseConfig, {
         test: /^((?!\.global).)*\.scss$/,
         loader: ExtractTextPlugin.extract(
           'style-loader',
-          'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!sass'
+          'css-loader?modules&importLoaders=1&localIdentName=[name]_[local]!sass'
         )
       },
     ]
@@ -65,5 +65,3 @@ const config = validate(merge(baseConfig, {
   // https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works
   target: 'electron-renderer'
 }));
-
-export default config;

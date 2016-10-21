@@ -17,7 +17,8 @@
     "postinstall": "node node_modules/fbjs-scripts/node/check-dev-engines.js package.json",
     "dev": "concurrently --kill-others \"npm run hot-server\" \"npm run start-hot\"",
     "cleanup": "mop -v",
-    "test": "BABEL_DISABLE_CACHE=1 cucumber-js --compiler js:babel-register --snippet-interface synchronous"
+    "test": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 cucumber-js --compiler js:babel-register --snippet-interface synchronous",
+    "test-watch": "nodemon --exec npm test"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -73,6 +74,7 @@
     "minimist": "^1.2.0",
     "node-libs-browser": "^1.0.0",
     "node-sass": "^3.10.1",
+    "nodemon": "^1.11.0",
     "postcss-modules": "^0.5.2",
     "postcss-modules-values": "^1.2.2",
     "resolve-url": "^0.2.1",
