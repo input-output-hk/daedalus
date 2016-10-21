@@ -5,20 +5,19 @@ import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavi
 import WalletReceive from '../../components/wallet/WalletReceive';
 
 @observer(['store'])
-export default class WalletSendPage extends Component {
+export default class WalletReceivePage extends Component {
 
   static propTypes = {
     store: PropTypes.shape({
       wallet: PropTypes.object.isRequired,
-      walletReceive: PropTypes.object.isRequired
     })
   };
 
   render() {
-    const { wallet, walletReceive } = this.props.store;
+    const { wallet } = this.props.store;
     return (
       <WalletWithNavigation wallet={wallet}>
-        <WalletReceive walletReceive={walletReceive} />
+        <WalletReceive walletName={wallet.name} walletAddress={wallet.address} />
       </WalletWithNavigation>
     );
   }

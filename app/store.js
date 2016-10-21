@@ -6,11 +6,8 @@ export default observable({
   },
   wallet: {
     name: 'Shopping Wallet',
+    address: '3ERitrYNwfxs4R6GfdULjtnTXQGCDE4iR7',
     currency: '$',
     amount: 19903750165.23
-  },
-  walletReceive: {
-    name: 'Shopping Wallet',
-    walletAddress: '3ERitrYNwfxs4R6GfdULjtnTXQGCDE4iR7'
   }
 });

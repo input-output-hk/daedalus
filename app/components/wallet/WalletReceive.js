@@ -33,14 +33,12 @@ const messages = defineMessages({
 export default class WalletReceive extends Component {
 
   static propTypes = {
-    walletReceive: React.PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      walletAddress: PropTypes.string.isRequired
-    }),
+    walletName: PropTypes.string.isRequired,
+    walletAddress: PropTypes.string.isRequired
   };
 
   render() {
-    const { walletReceive } = this.props;
+    const { walletName, walletAddress } = this.props;
     const { intl } = this.context;
     return (
       <div className={styles.component}>
@@ -48,22 +46,20 @@ export default class WalletReceive extends Component {
         <div className={styles.heading}>
           <FormattedHTMLMessage
             {...messages.walletReceivePageTitle}
-            values={{
-              walletName: walletReceive.name
-            }}
+            values={{ walletName }}
           />
         </div>
 
         <div className={styles.qrCode}>
           <QRCode
-            value={walletReceive.walletAddress}
+            value={walletAddress}
             bgColor="transparent"
             size={240}
           />
         </div>
 
         <div className={styles.hash}>
-          {walletReceive.walletAddress}
+          {walletAddress}
         </div>
 
         <div className={styles.instructions}>
