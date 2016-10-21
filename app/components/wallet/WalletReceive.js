@@ -1,9 +1,33 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import QRCode from 'qrcode.react';
 import RaisedButton from 'material-ui/RaisedButton';
 import styles from './WalletReceive.scss';
+
+const messages = defineMessages({
+  walletReceivePageTitle: {
+    id: 'wallet.receive.page.title',
+    defaultMessage: '!!!Title - Your shopping wallet address',
+    description: 'Title for the wallet receive page'
+  },
+  walletReceiveInstructions: {
+    id: 'wallet.receive.page.instructions',
+    defaultMessage: '!!!Wallet receive instructions',
+    description: 'Title of the receive page'
+  },
+  generateNewAddressLabel: {
+    id: 'wallet.receive.page.generate.new.address.label',
+    defaultMessage: '!!!Wallet receive instructions',
+    description: 'Title of the receive page'
+  },
+  requestSpecificAmountButtonLabel: {
+    id: 'wallet.receive.page.request.specific.amount.button.label',
+    defaultMessage: '!!!Request a specific amount',
+    description: 'Label for the request a specific amount button'
+  }
+});
 
 @observer
 export default class WalletReceive extends Component {
@@ -16,11 +40,14 @@ export default class WalletReceive extends Component {
 
   render() {
     const { walletReceive } = this.props;
+    const { intl } = this.context;
     return (
       <div className={styles.component}>
 
         <div className={styles.heading}>
-          Your <strong>Shopping wallet</strong> address
+          <FormattedHTMLMessage
+            {...messages.walletReceivePageTitle}
+          />
         </div>
 
         <div className={styles.qrCode}>
@@ -36,14 +63,13 @@ export default class WalletReceive extends Component {
         </div>
 
         <div className={styles.instructions}>
-          Share this wallet address to receive payments. To protect your
-          privacy, new addresses are generated automatically once
-          you use them. <a>Generate new address</a>.
+          {intl.formatMessage(messages.walletReceiveInstructions)}
+          <a>{intl.formatMessage(messages.generateNewAddressLabel)}</a>.
         </div>
 
         <RaisedButton
           className={styles.requestButton}
-          label="Request a specific amount"
+          label={intl.formatMessage(messages.requestSpecificAmountButtonLabel)}
           primary
           fullWidth
         />
@@ -51,4 +77,9 @@ export default class WalletReceive extends Component {
       </div>
     );
   }
+
 }
+
+WalletReceive.contextTypes = {
+  intl: intlShape.isRequired,
+};
