@@ -19,7 +19,6 @@ export default class Wallet extends Component {
   render() {
     const { wallet } = this.props.store;
     const { pathname } = this.props;
-    console.log(pathname); // eslint-disable-line
     return (
       <WalletWithNavigation wallet={wallet}>
         <div>
