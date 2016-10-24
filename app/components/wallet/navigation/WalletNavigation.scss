@@ -14,6 +14,10 @@
 
 .walletButton {
   @extend .button;
+}
+
+.walletDetailsLink {
+  @extend %link;
   width: 50%;
 }
 

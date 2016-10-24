@@ -6,6 +6,10 @@ import { defineMessages, intlShape } from 'react-intl';
 import styles from './WalletNavigation.scss';
 import WalletNavHomeButton from './WalletHomeButton';
 import WalletNavButton from './WalletNavButton';
+import sendIcon from '../../../assets/images/send-ic.svg';
+import sendIconActive from '../../../assets/images/send-white-ic.svg';
+import receiveIcon from '../../../assets/images/receive-ic.svg';
+import receiveIconActive from '../../../assets/images/receive-white-ic.svg';
 
 const messages = defineMessages({
   send: {
@@ -41,19 +45,21 @@ export default class WalletNavigation extends Component {
     return (
       <div className={styles.component}>
 
-        <WalletNavHomeButton
-          className={styles.walletButton}
-          walletName={wallet.name}
-          amount={wallet.amount}
-          currency={wallet.currency}
-          isActive={false}
-        />
+        <Link to="/wallet" className={styles.walletDetailsLink}>
+          <WalletNavHomeButton
+            className={styles.walletButton}
+            walletName={wallet.name}
+            amount={wallet.amount}
+            currency={wallet.currency}
+            isActive={false}
+          />
+        </Link>
 
         <Link to={'/wallet/send'} className={styles.sendLink}>
           <WalletNavButton
             label={intl.formatMessage(messages.send)}
-            normalIcon="./assets/images/send-ic.svg"
-            activeIcon="./assets/images/send-white-ic.svg"
+            normalIcon={sendIcon}
+            activeIcon={sendIconActive}
             className={styles.button}
             isActive
           />
@@ -62,8 +68,8 @@ export default class WalletNavigation extends Component {
         <Link to={'/wallet/receive'} className={styles.receiveLink}>
           <WalletNavButton
             label={intl.formatMessage(messages.receive)}
-            normalIcon="./assets/images/receive-ic.svg"
-            activeIcon="./assets/images/receive-white-ic.svg"
+            normalIcon={receiveIcon}
+            activeIcon={receiveIconActive}
             className={styles.button}
             isActive={false}
           />
