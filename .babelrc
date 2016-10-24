@@ -24,7 +24,7 @@
     },
     "test": {
       "plugins": [
-        ["webpack-loaders", { "config": "./webpack/webpack.config.production.js", "verbose": false }]
+        ["webpack-loaders", { "config": "./webpack/webpack.config.development.js", "verbose": false }]
       ]
     }
   }
