@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { MemoryRouter as Router, Match } from 'react-router';
+import { MemoryRouter as Router, Match, Redirect } from 'react-router';
 import { Provider, observer } from 'mobx-react';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
@@ -21,7 +21,14 @@ export default class App extends Component {
           <Provider store={store}>
             <Router>
               <div>
-                <Match exactly pattern="/" component={Wallet} />
+                <Match
+                  pattern="/"
+                  exactly
+                  render={() => (
+                    <Redirect to="/wallet" />
+                  )}
+                />
+                {/* TODO: Remove redirect after main navigation is implemented */}
                 <Match pattern="/wallet" component={Wallet} />
               </div>
             </Router>

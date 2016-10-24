@@ -2,8 +2,6 @@
 
 %base {
   text-align: center;
-  color: $walletNavThemeColor;
-  background-color: rgba($walletNavThemeColor, 0.1);
   position: relative;
   display: flex;
   align-items: center;
@@ -14,16 +12,25 @@
 
 .normal {
   @extend %base;
+  ackground-color: rgba($walletNavThemeColor, 0.2);
+  color: $walletNavThemeColor;
   &:hover {
     cursor: pointer;
-    background-color: rgba($walletNavThemeColor, 0.15);
+    background-color: rgba($walletNavThemeColor, 0.25);
   }
 }
 
 .active {
   @extend %base;
+  background-color: $walletNavThemeColor;
+  color: white;
+  .walletName {
+    &:after {
+      border-bottom-color: white;
+    }
+  }
   &:hover {
-    cursor: normal;
+    cursor: default;
   }
 }
 

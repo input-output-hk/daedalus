@@ -45,35 +45,44 @@ export default class WalletNavigation extends Component {
     return (
       <div className={styles.component}>
 
-        <Link to="/wallet" className={styles.walletDetailsLink}>
-          <WalletNavHomeButton
-            className={styles.walletButton}
-            walletName={wallet.name}
-            amount={wallet.amount}
-            currency={wallet.currency}
-            isActive={false}
-          />
-        </Link>
+        <Link to="/wallet/details">{
+          ({ isActive, href, onClick }) =>
+            <a href={href} onClick={onClick} className={styles.walletDetailsLink}>
+              <WalletNavHomeButton
+                className={styles.walletButton}
+                walletName={wallet.name}
+                amount={wallet.amount}
+                currency={wallet.currency}
+                isActive={isActive}
+              />
+            </a>
+        }</Link>
 
-        <Link to={'/wallet/send'} className={styles.sendLink}>
-          <WalletNavButton
-            label={intl.formatMessage(messages.send)}
-            normalIcon={sendIcon}
-            activeIcon={sendIconActive}
-            className={styles.button}
-            isActive
-          />
-        </Link>
+        <Link to="/wallet/send">{
+          ({ isActive, href, onClick }) =>
+            <a href={href} onClick={onClick} className={styles.sendLink}>
+              <WalletNavButton
+                label={intl.formatMessage(messages.send)}
+                normalIcon={sendIcon}
+                activeIcon={sendIconActive}
+                className={styles.button}
+                isActive={isActive}
+              />
+            </a>
+        }</Link>
 
-        <Link to={'/wallet/receive'} className={styles.receiveLink}>
-          <WalletNavButton
-            label={intl.formatMessage(messages.receive)}
-            normalIcon={receiveIcon}
-            activeIcon={receiveIconActive}
-            className={styles.button}
-            isActive={false}
-          />
-        </Link>
+        <Link to="/wallet/receive">{
+          ({ isActive, href, onClick }) =>
+            <a href={href} onClick={onClick} className={styles.receiveLink}>
+              <WalletNavButton
+                label={intl.formatMessage(messages.receive)}
+                normalIcon={receiveIcon}
+                activeIcon={receiveIconActive}
+                className={styles.button}
+                isActive={isActive}
+              />
+            </a>
+        }</Link>
 
       </div>
     );

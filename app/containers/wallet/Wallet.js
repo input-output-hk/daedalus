@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Match } from 'react-router';
+import { Match, Redirect } from 'react-router';
 import { observer } from 'mobx-react';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import WalletDetailsPage from './WalletDetailsPage';
@@ -19,10 +19,18 @@ export default class Wallet extends Component {
   render() {
     const { wallet } = this.props.store;
     const { pathname } = this.props;
+    console.log(pathname); // eslint-disable-line
     return (
       <WalletWithNavigation wallet={wallet}>
         <div>
-          <Match exactly pattern={pathname} component={WalletDetailsPage} />
+          <Match
+            pattern={pathname}
+            exactly
+            render={() => (
+              <Redirect to={`${pathname}/details`} />
+            )}
+          />
+          <Match pattern={`${pathname}/details`} component={WalletDetailsPage} />
           <Match pattern={`${pathname}/send`} component={WalletSendPage} />
           <Match pattern={`${pathname}/receive`} component={WalletReceivePage} />
         </div>
