@@ -37,6 +37,10 @@ export default class WalletReceive extends Component {
     walletAddress: PropTypes.string.isRequired
   };
 
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+
   render() {
     const { walletName, walletAddress } = this.props;
     const { intl } = this.context;
@@ -77,7 +81,3 @@ export default class WalletReceive extends Component {
   }
 
 }
-
-WalletReceive.contextTypes = {
-  intl: intlShape.isRequired,
-};

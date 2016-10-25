@@ -1,6 +1,9 @@
 {
   "wallet.navigation.send": "send",
   "wallet.navigation.receive": "receive",
+  "wallet.transaction.type.card": "Card payment",
+  "wallet.transaction.type.ada": "ADA transaction",
+  "wallet.transaction.type.exchange": "Exchange transaction",
   "wallet.send.form.receiver.label": "Receiver",
   "wallet.send.form.receiver.hint": "Bitcoin Address",
   "wallet.send.form.amount.label": "Amount",
