@@ -6,7 +6,7 @@ export default class NavigationLink extends Component {
   static propTypes = {
     children: PropTypes.element.isRequired,
     to: PropTypes.string.isRequired,
-    linkStyles: PropTypes.shape
+    linkStyles: PropTypes.string
   };
 
   render() {
