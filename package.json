@@ -102,7 +102,7 @@
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-intl": "^2.1.5",
-    "react-router": "^2.8.1",
+    "react-router": "^4.0.0-alpha.5",
     "react-tap-event-plugin": "^1.0.0",
     "source-map-support": "^0.4.3",
     "validator": "^6.1.0",

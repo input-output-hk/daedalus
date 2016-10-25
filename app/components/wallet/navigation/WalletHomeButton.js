@@ -11,7 +11,7 @@ export default class WalletHomeButton extends Component {
     walletName: PropTypes.string.isRequired,
     amount: PropTypes.number.isRequired,
     currency: PropTypes.string.isRequired,
-    isActive: PropTypes.bool.isRequired,
+    isActive: PropTypes.bool,
     className: PropTypes.string
   };
 

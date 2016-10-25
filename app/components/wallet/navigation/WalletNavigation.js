@@ -1,11 +1,15 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { Link } from 'react-router';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './WalletNavigation.scss';
+import NavigationLink from '../../widgets/NavigationLink';
 import WalletNavHomeButton from './WalletHomeButton';
 import WalletNavButton from './WalletNavButton';
+import sendIcon from '../../../assets/images/send-ic.svg';
+import sendIconActive from '../../../assets/images/send-white-ic.svg';
+import receiveIcon from '../../../assets/images/receive-ic.svg';
+import receiveIconActive from '../../../assets/images/receive-white-ic.svg';
 
 const messages = defineMessages({
   send: {
@@ -41,35 +45,41 @@ export default class WalletNavigation extends Component {
     return (
       <div className={styles.component}>
 
-        <Link to={'/wallet/home'} className={styles.homeLink}>
+        <NavigationLink
+          to="/wallet/home"
+          linkStyles={styles.walletHomeLink}
+        >
           <WalletNavHomeButton
-            className={styles.button}
+            className={styles.walletButton}
             walletName={wallet.name}
             amount={wallet.amount}
             currency={wallet.currency}
-            isActive={false}
           />
-        </Link>
+        </NavigationLink>
 
-        <Link to={'/wallet/send'} className={styles.sendLink}>
+        <NavigationLink
+          to="/wallet/send"
+          linkStyles={styles.sendLink}
+        >
           <WalletNavButton
             label={intl.formatMessage(messages.send)}
-            normalIcon="./assets/images/send-ic.svg"
-            activeIcon="./assets/images/send-white-ic.svg"
+            normalIcon={sendIcon}
+            activeIcon={sendIconActive}
             className={styles.button}
-            isActive
           />
-        </Link>
+        </NavigationLink>
 
-        <Link to={'/wallet/receive'} className={styles.receiveLink}>
+        <NavigationLink
+          to="/wallet/receive"
+          linkStyles={styles.receiveLink}
+        >
           <WalletNavButton
             label={intl.formatMessage(messages.receive)}
-            normalIcon="./assets/images/receive-ic.svg"
-            activeIcon="./assets/images/receive-white-ic.svg"
+            normalIcon={receiveIcon}
+            activeIcon={receiveIconActive}
             className={styles.button}
-            isActive={false}
           />
-        </Link>
+        </NavigationLink>
 
       </div>
     );

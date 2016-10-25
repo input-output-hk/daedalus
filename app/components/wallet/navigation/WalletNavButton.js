@@ -11,7 +11,7 @@ export default class WalletNavButton extends Component {
     label: PropTypes.string.isRequired,
     normalIcon: PropTypes.string.isRequired,
     activeIcon: PropTypes.string.isRequired,
-    isActive: PropTypes.bool.isRequired,
+    isActive: PropTypes.bool,
     className: PropTypes.string
   };
 
