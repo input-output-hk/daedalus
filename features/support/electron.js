@@ -9,7 +9,8 @@ export default function () {
       env: {
         HOT: 1,
         NODE_ENV: 'test'
-      }
+      },
+      waitTimeout: 10000
     });
     await this.app.start();
     this.client = this.app.client;
