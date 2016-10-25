@@ -1,0 +1,17 @@
+[
+  {
+    "id": "wallet.transaction.type.card",
+    "description": "Transaction type shown for credit card payments.",
+    "defaultMessage": "!!!Card payment"
+  },
+  {
+    "id": "wallet.transaction.type.ada",
+    "description": "Transaction type shown for ada payments.",
+    "defaultMessage": "!!!ADA transaction"
+  },
+  {
+    "id": "wallet.transaction.type.exchange",
+    "description": "Transaction type shown for money exchanges between currencies.",
+    "defaultMessage": "!!!Exchange transaction"
+  }
+]

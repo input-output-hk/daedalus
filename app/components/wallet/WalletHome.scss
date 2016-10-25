@@ -1,0 +1,16 @@
+.list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.transaction {
+  width: 50%;
+  height: 150px;
+  margin-top: 20px;
+  box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.11);
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+}
+
