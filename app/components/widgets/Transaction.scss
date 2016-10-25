@@ -1,0 +1,71 @@
+@import '../../themes/daedalus';
+
+.component {
+  width: 100%;
+  height: 100%;
+  background-color: #fafafa;
+  display: flex;
+  color: $themePrimaryColor;
+}
+
+// ========= TYPE INDICATORS FOR TRANSACTIONS =========
+
+%type-box {
+  width: 30%;
+  min-width: 100px;
+  max-width: 300px;
+  height: 100%;
+  background: no-repeat center;
+  background-size: 45px;
+}
+
+.card {
+  @extend %type-box;
+  background-color: #e6ebf2;
+  background-image: url("../../assets/images/card-payment-ic.svg");
+}
+
+.adaIncome {
+  @extend %type-box;
+  background-color: #e6f2e6;
+  background-image: url("../../assets/images/receive-ic.svg");
+}
+
+.adaExpend {
+  @extend %type-box;
+  background-color: #f2e6e6;
+  background-image: url("../../assets/images/send-ic.svg");
+}
+
+.exchange {
+  @extend %type-box;
+  background-color: #f2f0e6;
+  background-image: url("../../assets/images/exchange-ic.svg");
+}
+
+// ========= DETAILS =========
+
+.details {
+  width: 100%;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.title {
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.type {
+  font-weight: 300;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.amount {
+  margin-top: 20px;
+  align-self: flex-end;
+  font-size: 20px;
+}

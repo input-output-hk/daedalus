@@ -12,8 +12,8 @@
   height: 200px;
 }
 
-.walletButton {
-  @extend .button;
+.homeLink {
+  @extend %link;
   width: 50%;
 }
 
