@@ -5,13 +5,14 @@ import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavi
 import WalletHomePage from './WalletHomePage';
 import WalletReceivePage from './WalletReceivePage';
 import WalletSendPage from './WalletSendPage';
+import WalletCreatePage from './WalletCreatePage';
 
 @observer(['store'])
 export default class Wallet extends Component {
 
   static propTypes = {
     store: PropTypes.shape({
-      wallet: PropTypes.object.isRequired
+      wallet: PropTypes.object
     }),
     pathname: PropTypes.string.isRequired
   };
@@ -19,22 +20,36 @@ export default class Wallet extends Component {
   render() {
     const { wallet } = this.props.store;
     const { pathname } = this.props;
-    return (
-      <WalletWithNavigation wallet={wallet}>
-        <div>
-          <Match
-            pattern={pathname}
-            exactly
-            render={() => (
-              <Redirect to={`${pathname}/home`} />
-            )}
-          />
+    let walletPages = null;
+
+    if (wallet) {
+      walletPages = (
+        <WalletWithNavigation wallet={wallet}>
           <Match pattern={`${pathname}/home`} component={WalletHomePage} />
           <Match pattern={`${pathname}/send`} component={WalletSendPage} />
           <Match pattern={`${pathname}/receive`} component={WalletReceivePage} />
-        </div>
-      </WalletWithNavigation>
+        </WalletWithNavigation>
+      );
+    } else {
+      walletPages = (
+        <Match pattern={`${pathname}/create`} component={WalletCreatePage} />
+      );
+    }
+
+    return (
+      <div style={{ height: '100%' }}>
+        <Match
+          pattern={pathname}
+          exactly
+          render={() => {
+            if (wallet) {
+              return <Redirect to={`${pathname}/home`} />;
+            }
+            return <Redirect to={`${pathname}/create`} />;
+          }}
+        />
+        {walletPages}
+      </div>
     );
   }
-
 }

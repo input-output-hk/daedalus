@@ -16,5 +16,6 @@
   "wallet.receive.page.title": "Your <strong>{walletName}</strong> address",
   "wallet.receive.page.instructions": "Share this wallet address to receive payments. To protect your privacy, new addresses are generated automatically once you use them.",
   "wallet.receive.page.generate.new.address.label": "Generate new address",
-  "wallet.receive.page.request.specific.amount.button.label": "Request a specific amount"
+  "wallet.receive.page.request.specific.amount.button.label": "Request a specific amount",
+  "wallet.create.form.name.label": "Wallet Name"
 }

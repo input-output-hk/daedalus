@@ -1,0 +1,7 @@
+[
+  {
+    "id": "wallet.create.form.errors.invalidWalletName",
+    "description": "Error message shown when invalid wallet name was entered.",
+    "defaultMessage": "!!!The wallet name must have at least 3 letters."
+  }
+]
