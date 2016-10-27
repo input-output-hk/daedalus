@@ -119,7 +119,7 @@ table {
 
 // ============ BASE ===========
 
-html, body, #root, [data-reactroot] {
+html, body, #root, #root > [data-reactroot] {
   width: 100%;
   height: 100%;
   font-family: SFUIDisplay, sans-serif;
