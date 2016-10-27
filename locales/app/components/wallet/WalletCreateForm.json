@@ -3,5 +3,10 @@
     "id": "wallet.create.form.name.label",
     "description": "Label for the \"Wallet Name\" text input in the wallet create form.",
     "defaultMessage": "!!!Wallet Name"
+  },
+  {
+    "id": "wallet.create.form.currency.label",
+    "description": "Label for the \"Currency\" dropdown in the wallet create form.",
+    "defaultMessage": "!!!Currency"
   }
 ]

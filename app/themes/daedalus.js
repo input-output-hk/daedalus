@@ -6,8 +6,14 @@ import {
 } from 'material-ui/styles/colors';
 import { fade } from 'material-ui/utils/colorManipulator';
 import spacing from 'material-ui/styles/spacing';
+import overlay from 'react-toolbox/lib/overlay/theme.scss';
+import navigation from 'react-toolbox/lib/navigation/theme.scss';
+import dropdown from './daedalus/dropdown.scss';
+import input from './daedalus/input.scss';
+import dialog from './daedalus/dialog.scss';
+import button from './daedalus/button.scss';
 
-export default {
+export const materialUiTheme = {
   spacing,
   fontFamily: 'SFUIDisplay',
   palette: {
@@ -30,4 +36,13 @@ export default {
   appBar: {
     color: '#243e62'
   }
+};
+
+export const daedalusTheme = {
+  RTInput: input,
+  RTDropdown: dropdown,
+  RTOverlay: overlay,
+  RTNavigation: navigation,
+  RTDialog: dialog,
+  RTButton: button,
 };

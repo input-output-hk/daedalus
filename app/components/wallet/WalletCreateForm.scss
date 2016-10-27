@@ -5,34 +5,10 @@
   align-items: center;
 }
 
-.dialog {
-  width: 80%;
-  max-width: 640px;
-}
-
 .header {
   font-weight: 600;
-  font-size: 18px;
+  font-size: 1.125rem;
   color: #5e6066;
   text-align: center;
   margin: 1em 0;
-}
-
-.form {
-  width: calc(100% - 40px);
-  margin: 0 auto;
-}
-
-.textField {
-  margin-bottom: 40px;
-  font-weight: 300;
-
-  label {
-    color: #5e6066 !important;
-    text-transform: uppercase;
-    top: 30px !important;
-    left: 0 !important;
-    font-weight: 400;
-    font-size: 18px !important;
-  }
 }

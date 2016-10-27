@@ -1,0 +1,16 @@
+@import "~react-toolbox/lib/button/config";
+$button-border-radius: 0.3rem;
+@import "~react-toolbox/lib/button/theme";
+
+.flat {
+  font-size: 14px;
+  font-weight: $font-weight-light;
+  letter-spacing: 1px;
+  text-transform: none;
+  color: white !important;
+  background: $button-up-bg;
+
+  &:hover {
+    background: $button-hover-bg !important;
+  }
+}

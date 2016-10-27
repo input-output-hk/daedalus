@@ -1,10 +1,9 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
-import TextField from 'material-ui/TextField';
-import Paper from 'material-ui/Paper';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
+import Dialog from 'react-toolbox/lib/dialog/Dialog';
+import Input from 'react-toolbox/lib/input/Input';
+import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './WalletCreateForm.scss';
@@ -15,10 +14,21 @@ const messages = defineMessages({
     defaultMessage: '!!!Wallet Name',
     description: 'Label for the "Wallet Name" text input in the wallet create form.'
   },
+  currency: {
+    id: 'wallet.create.form.currency.label',
+    defaultMessage: '!!!Currency',
+    description: 'Label for the "Currency" dropdown in the wallet create form.'
+  },
 });
 
+const currencies = [
+  { value: 'ada', label: 'ADA' },
+  { value: 'btc', label: 'BTC' },
+  { value: 'eth', label: 'ETH' },
+];
+
 @observer
-export default class WalletCreate extends Component {
+export default class WalletCreateForm extends Component {
 
   static propTypes = {
     validator: PropTypes.instanceOf(MobxReactForm),
@@ -36,42 +46,32 @@ export default class WalletCreate extends Component {
     };
     return (
       <div className={styles.component}>
-        <Paper className={styles.dialog} zDepth={3} rounded>
 
-          <div className={styles.header}>
-            Create Wallet
-          </div>
+        <Dialog
+          title="Create Wallet"
+          actions={[{ label: 'Create personal wallet', onClick: () => {} }]}
+          active
+        >
 
-          <div className={styles.form}>
+          <Input
+            type="text"
+            label={intl.formatMessage(messages.walletName)}
+            hint="e.g: Shopping Wallet"
+            value={validator.$('walletName').value}
+            error={errors.walletName ? intl.formatMessage(errors.walletName) : null}
+            onChange={validator.$('walletName').onChange}
+            onFocus={validator.$('walletName').onFocus}
+            onBlur={validator.$('walletName').onBlur}
+          />
 
-            <TextField
-              className={styles.textField}
-              floatingLabelText={intl.formatMessage(messages.walletName)}
-              value={validator.$('walletName').value}
-              errorText={errors.walletName ? intl.formatMessage(errors.walletName) : null}
-              onChange={validator.$('walletName').onChange}
-              onFocus={validator.$('walletName').onFocus}
-              onBlur={validator.$('walletName').onBlur}
-              floatingLabelFixed
-              fullWidth
-            />
+          <Dropdown
+            label={intl.formatMessage(messages.currency)}
+            value={validator.$('currency').value || 'ada'}
+            onChange={validator.$('currency').onChange}
+            source={currencies}
+          />
 
-            <div>
-              <SelectField
-                floatingLabelText="Currency"
-                value={validator.$('currency').value || 'ada'}
-                onChange={validator.$('currency').onChange}
-                floatingLabelFixed
-              >
-                <MenuItem value="ada" primaryText="ADA" />
-                <MenuItem value="btc" primaryText="BTC" />
-                <MenuItem value="eth" primaryText="ETH" />
-                <MenuItem value="etc" primaryText="ETC" />
-              </SelectField>
-            </div>
-
-          </div>
-        </Paper>
+        </Dialog>
       </div>
     );
   }
