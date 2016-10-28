@@ -23,8 +23,6 @@ const messages = defineMessages({
 
 const currencies = [
   { value: 'ada', label: 'ADA' },
-  { value: 'btc', label: 'BTC' },
-  { value: 'eth', label: 'ETH' },
 ];
 
 @observer
