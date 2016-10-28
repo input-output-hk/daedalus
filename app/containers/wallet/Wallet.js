@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Match, Redirect } from 'react-router';
+import { Match, Redirect } from 'react-router/';
 import { observer } from 'mobx-react';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import WalletHomePage from './WalletHomePage';
@@ -19,37 +19,26 @@ export default class Wallet extends Component {
 
   render() {
     const { wallet } = this.props.store;
-    const { pathname } = this.props;
-    let walletPages = null;
-
+    const walletPath = this.props.pathname;
+    let walletPage = null;
+    // Redirect from/to wallet create screen if there is none yet
     if (wallet) {
-      walletPages = (
+      walletPage = (
         <WalletWithNavigation wallet={wallet}>
-          <Match pattern={`${pathname}/home`} component={WalletHomePage} />
-          <Match pattern={`${pathname}/send`} component={WalletSendPage} />
-          <Match pattern={`${pathname}/receive`} component={WalletReceivePage} />
+          <Match pattern={`${walletPath}/create`} render={() => <Redirect to={`${walletPath}/home`} />} />
+          <Match pattern={`${walletPath}/home`} component={WalletHomePage} />
+          <Match pattern={`${walletPath}/send`} component={WalletSendPage} />
+          <Match pattern={`${walletPath}/receive`} component={WalletReceivePage} />
         </WalletWithNavigation>
       );
     } else {
-      walletPages = (
-        <Match pattern={`${pathname}/create`} component={WalletCreatePage} />
+      walletPage = (
+        <div style={{ height: '100%' }}>
+          <Match pattern={walletPath} render={() => <Redirect to={`${walletPath}/create`} />} />
+          <Match pattern={`${walletPath}/create`} component={WalletCreatePage} />
+        </div>
       );
     }
-
-    return (
-      <div style={{ height: '100%' }}>
-        <Match
-          pattern={pathname}
-          exactly
-          render={() => {
-            if (wallet) {
-              return <Redirect to={`${pathname}/home`} />;
-            }
-            return <Redirect to={`${pathname}/create`} />;
-          }}
-        />
-        {walletPages}
-      </div>
-    );
+    return walletPage;
   }
 }

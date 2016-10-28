@@ -36,18 +36,21 @@ export default class WalletCreateForm extends Component {
     intl: intlShape.isRequired,
   };
 
+  actions = [
+    { label: 'Create personal wallet', onClick: this.props.validator.onSubmit }
+  ]
+
   render() {
     const { intl } = this.context;
     const { validator } = this.props;
-    const errors = {
-      walletName: validator.$('walletName').error,
-    };
+    const walletName = validator.$('walletName');
+    const currency = validator.$('currency');
     return (
       <div className={styles.component}>
 
         <Dialog
           title="Create Wallet"
-          actions={[{ label: 'Create personal wallet', onClick: () => {} }]}
+          actions={this.actions}
           active
         >
 
@@ -55,17 +58,20 @@ export default class WalletCreateForm extends Component {
             type="text"
             label={intl.formatMessage(messages.walletName)}
             hint="e.g: Shopping Wallet"
-            value={validator.$('walletName').value}
-            error={errors.walletName ? intl.formatMessage(errors.walletName) : null}
-            onChange={validator.$('walletName').onChange}
-            onFocus={validator.$('walletName').onFocus}
-            onBlur={validator.$('walletName').onBlur}
+            value={walletName.value}
+            error={walletName.error ? intl.formatMessage(walletName.error) : null}
+            onChange={walletName.onChange}
+            onFocus={walletName.onFocus}
+            onBlur={walletName.onBlur}
           />
 
           <Dropdown
             label={intl.formatMessage(messages.currency)}
-            value={validator.$('currency').value || 'ada'}
-            onChange={validator.$('currency').onChange}
+            value={currency.value}
+            onChange={currency.onChange}
+            onFocus={currency.onFocus}
+            onBlur={currency.onBlur}
+            error={currency.error ? intl.formatMessage(currency.error) : null}
             source={currencies}
           />
 

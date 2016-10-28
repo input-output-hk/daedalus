@@ -1,11 +1,17 @@
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages } from 'react-intl';
+import { createWallet } from '../actions/wallet-actions';
 
 const messages = defineMessages({
   invalidWalletName: {
     id: 'wallet.create.form.errors.invalidWalletName',
     defaultMessage: '!!!The wallet name must have at least 3 letters.',
-    description: 'Error message shown when invalid wallet name was entered.'
+    description: 'Error message shown when invalid wallet name was entered in create wallet dialog.'
+  },
+  invalidCurrency: {
+    id: 'wallet.create.form.errors.invalidCurrency',
+    defaultMessage: '!!!This currency is not yet supported.',
+    description: 'Error message shown when invalid currency was selected in create wallet dialog.'
   },
 });
 
@@ -14,11 +20,19 @@ const isValidWalletName = ({ field }) => {
   return [isValid, messages.invalidWalletName];
 };
 
+const isValidCurrency = ({ field }) => {
+  const isValid = field.value === 'ada';
+  return [isValid, messages.invalidCurrency];
+};
+
 const fields = {
   walletName: {
+    value: '',
     validate: [isValidWalletName]
   },
   currency: {
+    value: 'ada',
+    validate: [isValidCurrency]
   },
 };
 
@@ -29,9 +43,7 @@ const options = {
 class WalletCreateForm extends MobxReactForm {
 
   onSuccess(form) {
-    console.log('Form is valid! Send the request here.', this); // eslint-disable-line
-    // get field values
-    console.log('Form Values!', form.values()); // eslint-disable-line
+    createWallet(form.values());
   }
 
   onError(form) {

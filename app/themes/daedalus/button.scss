@@ -13,4 +13,8 @@ $button-border-radius: 0.3rem;
   &:hover {
     background: $button-hover-bg !important;
   }
+
+  &:active {
+    background: $button-pressed-bg !important;
+  }
 }

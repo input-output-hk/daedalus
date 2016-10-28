@@ -23,13 +23,7 @@ export default class App extends Component {
             <Provider store={store}>
               <Router>
                 <div>
-                  <Match
-                    pattern="/"
-                    exactly
-                    render={() => (
-                      <Redirect to="/wallet" />
-                    )}
-                  />
+                  <Match pattern="/" exactly render={() => <Redirect to="/wallet" />} />
                   {/* TODO: Remove redirect after main navigation is implemented */}
                   <Match pattern="/wallet" component={Wallet} />
                 </div>
