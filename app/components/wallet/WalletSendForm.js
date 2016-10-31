@@ -1,7 +1,7 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
-import TextField from 'material-ui/TextField';
+import Input from 'react-toolbox/lib/input/Input';
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
 import FullWidthButton from '../widgets/FullWidthButton';
@@ -47,62 +47,61 @@ const messages = defineMessages({
 
 @observer
 export default class WalletSendForm extends Component {
+
+  static propTypes = {
+    validator: PropTypes.instanceOf(MobxReactForm),
+  };
+
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+
   render() {
     const { validator } = this.props;
     const { intl } = this.context;
-    const errors = {
-      receiver: validator.$('receiver').error,
-      amount: validator.$('amount').error,
-    };
+    const receiver = validator.$('receiver');
+    const amount = validator.$('amount');
+    const description = validator.$('description');
     return (
       <div className={styles.component}>
 
         <div className={styles.fields}>
 
-          <TextField
-            className={styles.textField}
-            floatingLabelText={intl.formatMessage(messages.receiverLabel)}
-            hintText={intl.formatMessage(messages.receiverHint)}
-            value={validator.$('receiver').value}
-            errorText={errors.receiver ? intl.formatMessage(errors.receiver) : null}
-            onChange={validator.$('receiver').onChange}
-            onFocus={validator.$('receiver').onFocus}
-            onBlur={validator.$('receiver').onBlur}
-            floatingLabelFixed
-            fullWidth
+          <Input
+            label={intl.formatMessage(messages.receiverLabel)}
+            hint={intl.formatMessage(messages.receiverHint)}
+            value={receiver.value}
+            error={receiver.error ? intl.formatMessage(receiver.error) : null}
+            onChange={receiver.onChange}
+            onFocus={receiver.onFocus}
+            onBlur={receiver.onBlur}
           />
 
-          <TextField
-            className={styles.textField}
-            floatingLabelText={intl.formatMessage(messages.amountLabel)}
-            hintText={intl.formatMessage(messages.amountHint)}
+          <Input
+            label={intl.formatMessage(messages.amountLabel)}
+            hint={intl.formatMessage(messages.amountHint)}
             value={validator.$('amount').value}
-            errorText={errors.amount ? intl.formatMessage(errors.amount) : null}
-            onChange={validator.$('amount').onChange}
-            onFocus={validator.$('amount').onFocus}
-            onBlur={validator.$('amount').onBlur}
-            floatingLabelFixed
-            fullWidth
+            error={amount.error ? intl.formatMessage(amount.error) : null}
+            onChange={amount.onChange}
+            onFocus={amount.onFocus}
+            onBlur={amount.onBlur}
           />
 
-          <TextField
-            className={styles.textField}
-            floatingLabelText={intl.formatMessage(messages.descriptionLabel)}
-            hintText={intl.formatMessage(messages.descriptionHint)}
-            value={validator.$('description').value}
-            onChange={validator.$('description').onChange}
-            onFocus={validator.$('description').onFocus}
-            onBlur={validator.$('description').onBlur}
-            floatingLabelFixed
-            multiLine
-            fullWidth
+          <Input
+            label={intl.formatMessage(messages.descriptionLabel)}
+            hint={intl.formatMessage(messages.descriptionHint)}
+            value={description.value}
+            onChange={description.onChange}
+            onFocus={description.onFocus}
+            onBlur={description.onBlur}
+            multiline
           />
 
         </div>
 
         <FullWidthButton
           label={intl.formatMessage(messages.sendButtonLabel)}
-          onClick={validator.onSubmit}
+          onMouseUp={validator.onSubmit}
         />
 
       </div>
@@ -110,10 +109,3 @@ export default class WalletSendForm extends Component {
   }
 }
 
-WalletSendForm.propTypes = {
-  validator: PropTypes.instanceOf(MobxReactForm),
-};
-
-WalletSendForm.contextTypes = {
-  intl: intlShape.isRequired,
-};

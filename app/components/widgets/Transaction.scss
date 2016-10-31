@@ -1,11 +1,11 @@
-@import '../../themes/daedalus';
+@import '../../themes/daedalus/theme';
 
 .component {
   width: 100%;
   height: 100%;
   background-color: #fafafa;
   display: flex;
-  color: $themePrimaryColor;
+  color: $color-primary;
 }
 
 // ========= TYPE INDICATORS FOR TRANSACTIONS =========

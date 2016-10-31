@@ -73,7 +73,7 @@ export default class WalletReceive extends Component {
 
         <FullWidthButton
           label={intl.formatMessage(messages.requestSpecificAmountButtonLabel)}
-          onClick={() => {}}
+          onMouseUp={() => {}}
         />
 
       </div>
