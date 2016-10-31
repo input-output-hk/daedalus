@@ -38,7 +38,7 @@ export default class WalletCreateForm extends Component {
 
   actions = [
     { label: 'Create personal wallet', onClick: this.props.validator.onSubmit }
-  ]
+  ];
 
   render() {
     const { intl } = this.context;
