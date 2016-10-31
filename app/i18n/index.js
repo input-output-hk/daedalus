@@ -1,6 +1,6 @@
 import { IntlProvider } from 'react-intl';
-import store from './store';
-import translations from './i18n/translations';
+import store from '../store';
+import translations from './translations';
 
 const { locale } = store.i18n;
 
@@ -11,5 +11,3 @@ export const intlOptions = {
 };
 
 export const { intl } = new IntlProvider(intlOptions, {}).getChildContext();
-
-console.log(intl); // eslint-disable-line

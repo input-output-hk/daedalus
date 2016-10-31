@@ -4,7 +4,7 @@ import { MemoryRouter as Router, Match, Redirect } from 'react-router';
 import { Provider, observer } from 'mobx-react';
 import { IntlProvider } from 'react-intl';
 import { ThemeProvider } from 'react-css-themr';
-import { intlOptions } from './i18n-setup';
+import { intlOptions } from './i18n';
 import { daedalusTheme } from './themes/daedalus';
 import store from './store';
 import Wallet from './containers/wallet/Wallet';
