@@ -1,7 +1,7 @@
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages } from 'react-intl';
 import { createWallet } from '../actions/wallet-actions';
-import { intl } from '../App';
+import { intl } from '../i18n-setup';
 
 const messages = defineMessages({
   invalidWalletName: {

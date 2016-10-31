@@ -2,7 +2,7 @@ import MobxReactForm from 'mobx-react-form';
 import WalletAddressValidator from 'wallet-address-validator';
 import isCurrency from 'validator/lib/isCurrency';
 import { defineMessages } from 'react-intl';
-import { intl } from '../App';
+import { intl } from '../i18n-setup';
 
 const messages = defineMessages({
   invalidBitcoinAddress: {
