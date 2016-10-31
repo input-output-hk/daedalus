@@ -1,6 +1,6 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import AppBar from 'material-ui/AppBar';
+import AppBar from 'react-toolbox/lib/app_bar/AppBar';
 import { observer } from 'mobx-react';
 import WalletNavigation from '../navigation/WalletNavigation';
 import styles from './WalletWithNavigation.scss';
@@ -25,7 +25,6 @@ export default class WalletLayoutWithNavigation extends Component {
         <AppBar
           title="Daedalus"
           className={styles.appBar}
-          showMenuIconButton={false}
         />
 
         <WalletNavigation wallet={wallet} />

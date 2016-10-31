@@ -17,6 +17,11 @@ $input-hint-opacity: 0.5;
   font-family: SFUIDisplay, sans-serif;
   border: 1px solid #c6cdd6;
   font-weight: $font-weight-light;
+
+  &:focus:not([disabled]):not([readonly]) {
+    border-color: #5e6066;
+    @include material-animation-default();
+  }
 }
 
 .hint {

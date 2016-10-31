@@ -1,7 +1,7 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
-import TextField from 'material-ui/TextField';
+import Input from 'react-toolbox/lib/input/Input';
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
 import FullWidthButton from '../widgets/FullWidthButton';
@@ -59,43 +59,34 @@ export default class WalletSendForm extends Component {
 
         <div className={styles.fields}>
 
-          <TextField
-            className={styles.textField}
-            floatingLabelText={intl.formatMessage(messages.receiverLabel)}
-            hintText={intl.formatMessage(messages.receiverHint)}
+          <Input
+            label={intl.formatMessage(messages.receiverLabel)}
+            hint={intl.formatMessage(messages.receiverHint)}
             value={validator.$('receiver').value}
-            errorText={errors.receiver ? intl.formatMessage(errors.receiver) : null}
+            error={errors.receiver ? intl.formatMessage(errors.receiver) : null}
             onChange={validator.$('receiver').onChange}
             onFocus={validator.$('receiver').onFocus}
             onBlur={validator.$('receiver').onBlur}
-            floatingLabelFixed
-            fullWidth
           />
 
-          <TextField
-            className={styles.textField}
-            floatingLabelText={intl.formatMessage(messages.amountLabel)}
-            hintText={intl.formatMessage(messages.amountHint)}
+          <Input
+            label={intl.formatMessage(messages.amountLabel)}
+            hint={intl.formatMessage(messages.amountHint)}
             value={validator.$('amount').value}
-            errorText={errors.amount ? intl.formatMessage(errors.amount) : null}
+            error={errors.amount ? intl.formatMessage(errors.amount) : null}
             onChange={validator.$('amount').onChange}
             onFocus={validator.$('amount').onFocus}
             onBlur={validator.$('amount').onBlur}
-            floatingLabelFixed
-            fullWidth
           />
 
-          <TextField
-            className={styles.textField}
-            floatingLabelText={intl.formatMessage(messages.descriptionLabel)}
-            hintText={intl.formatMessage(messages.descriptionHint)}
+          <Input
+            label={intl.formatMessage(messages.descriptionLabel)}
+            hint={intl.formatMessage(messages.descriptionHint)}
             value={validator.$('description').value}
             onChange={validator.$('description').onChange}
             onFocus={validator.$('description').onFocus}
             onBlur={validator.$('description').onBlur}
-            floatingLabelFixed
             multiLine
-            fullWidth
           />
 
         </div>

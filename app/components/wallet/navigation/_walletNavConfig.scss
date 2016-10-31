@@ -1,6 +1,6 @@
-@import '../../../themes/daedalus';
+@import '../../../themes/daedalus/theme';
 
-$walletNavThemeColor: $themePrimaryColor;
+$walletNavThemeColor: $color-primary;
 $walletNavSeparatorWidth: 20px;
 $walletNavSeparatorMargin: 50px;
 $walletNavButtonContentHeight: 50%;

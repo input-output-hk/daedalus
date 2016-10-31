@@ -1,20 +1,20 @@
 import React, { Component, PropTypes } from 'react';
-import RaisedButton from 'material-ui/RaisedButton';
+import Button from 'react-toolbox/lib/button/Button';
 import styles from './FullWidthButton.scss';
 
 export default class FullWidthButton extends Component {
 
   static propTypes = {
     label: PropTypes.string.isRequired,
-    onClick: PropTypes.func.isRequired
+    onMouseUp: PropTypes.func.isRequired
   };
 
   render() {
     return (
-      <RaisedButton
+      <Button
         className={styles.button}
         label={this.props.label}
-        onClick={this.props.onClick}
+        onMouseUp={this.props.onMouseUp}
         primary
         fullWidth
       />

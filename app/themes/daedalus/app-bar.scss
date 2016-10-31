@@ -1,0 +1,13 @@
+@import "~react-toolbox/lib/app_bar/config";
+$appbar-height: 84px;
+@import "~react-toolbox/lib/app_bar/theme";
+
+.appBar {
+  background-image: url("../../assets/images/header-logo.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 262px;
+  h1 {
+    text-indent: -9999px;
+  }
+}
