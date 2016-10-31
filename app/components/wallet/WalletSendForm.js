@@ -92,7 +92,7 @@ export default class WalletSendForm extends Component {
 
         <FullWidthButton
           label={intl.formatMessage(messages.sendButtonLabel)}
-          onClick={validator.onSubmit}
+          onMouseUp={validator.onSubmit}
         />
 
       </div>
