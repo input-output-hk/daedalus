@@ -50,10 +50,9 @@ export default class WalletSendForm extends Component {
   render() {
     const { validator } = this.props;
     const { intl } = this.context;
-    const errors = {
-      receiver: validator.$('receiver').error,
-      amount: validator.$('amount').error,
-    };
+    const receiver = validator.$('receiver');
+    const amount = validator.$('amount');
+    const description = validator.$('description');
     return (
       <div className={styles.component}>
 
@@ -62,30 +61,30 @@ export default class WalletSendForm extends Component {
           <Input
             label={intl.formatMessage(messages.receiverLabel)}
             hint={intl.formatMessage(messages.receiverHint)}
-            value={validator.$('receiver').value}
-            error={errors.receiver ? intl.formatMessage(errors.receiver) : null}
-            onChange={validator.$('receiver').onChange}
-            onFocus={validator.$('receiver').onFocus}
-            onBlur={validator.$('receiver').onBlur}
+            value={receiver.value}
+            error={receiver.error ? intl.formatMessage(receiver.error) : null}
+            onChange={receiver.onChange}
+            onFocus={receiver.onFocus}
+            onBlur={receiver.onBlur}
           />
 
           <Input
             label={intl.formatMessage(messages.amountLabel)}
             hint={intl.formatMessage(messages.amountHint)}
             value={validator.$('amount').value}
-            error={errors.amount ? intl.formatMessage(errors.amount) : null}
-            onChange={validator.$('amount').onChange}
-            onFocus={validator.$('amount').onFocus}
-            onBlur={validator.$('amount').onBlur}
+            error={amount.error ? intl.formatMessage(amount.error) : null}
+            onChange={amount.onChange}
+            onFocus={amount.onFocus}
+            onBlur={amount.onBlur}
           />
 
           <Input
             label={intl.formatMessage(messages.descriptionLabel)}
             hint={intl.formatMessage(messages.descriptionHint)}
-            value={validator.$('description').value}
-            onChange={validator.$('description').onChange}
-            onFocus={validator.$('description').onFocus}
-            onBlur={validator.$('description').onBlur}
+            value={description.value}
+            onChange={description.onChange}
+            onFocus={description.onFocus}
+            onBlur={description.onBlur}
             multiLine
           />
 
