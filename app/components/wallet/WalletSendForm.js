@@ -71,7 +71,7 @@ export default class WalletSendForm extends Component {
             label={intl.formatMessage(messages.receiverLabel)}
             hint={intl.formatMessage(messages.receiverHint)}
             value={receiver.value}
-            error={receiver.error ? intl.formatMessage(receiver.error) : null}
+            error={receiver.error}
             onChange={receiver.onChange}
             onFocus={receiver.onFocus}
             onBlur={receiver.onBlur}
@@ -81,7 +81,7 @@ export default class WalletSendForm extends Component {
             label={intl.formatMessage(messages.amountLabel)}
             hint={intl.formatMessage(messages.amountHint)}
             value={validator.$('amount').value}
-            error={amount.error ? intl.formatMessage(amount.error) : null}
+            error={amount.error}
             onChange={amount.onChange}
             onFocus={amount.onFocus}
             onBlur={amount.onBlur}
