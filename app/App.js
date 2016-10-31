@@ -9,13 +9,21 @@ import { daedalusTheme } from './themes/daedalus';
 import store from './store';
 import Wallet from './containers/wallet/Wallet';
 
+const { locale } = store.i18n;
+
+const intlOptions = {
+  locale,
+  key: locale,
+  messages: translations[locale]
+};
+
+export const { intl } = new IntlProvider(intlOptions, {}).getChildContext();
+
 @observer
 export default class App extends Component {
-
   render() {
-    const { locale } = store.i18n;
     return (
-      <IntlProvider locale={locale} key={locale} messages={translations[locale]}>
+      <IntlProvider {...intlOptions}>
         <ThemeProvider theme={daedalusTheme}>
           <Provider store={store}>
             <Router>
