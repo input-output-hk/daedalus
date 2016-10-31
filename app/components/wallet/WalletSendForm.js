@@ -47,6 +47,15 @@ const messages = defineMessages({
 
 @observer
 export default class WalletSendForm extends Component {
+
+  static propTypes = {
+    validator: PropTypes.instanceOf(MobxReactForm),
+  };
+
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+
   render() {
     const { validator } = this.props;
     const { intl } = this.context;
@@ -100,10 +109,3 @@ export default class WalletSendForm extends Component {
   }
 }
 
-WalletSendForm.propTypes = {
-  validator: PropTypes.instanceOf(MobxReactForm),
-};
-
-WalletSendForm.contextTypes = {
-  intl: intlShape.isRequired,
-};
