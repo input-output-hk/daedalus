@@ -85,7 +85,7 @@ export default class WalletSendForm extends Component {
             onChange={description.onChange}
             onFocus={description.onFocus}
             onBlur={description.onBlur}
-            multiLine
+            multiline
           />
 
         </div>
