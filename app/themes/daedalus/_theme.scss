@@ -1,0 +1,30 @@
+@import "~react-toolbox/lib/colors";
+@import "~react-toolbox/lib/globals";
+@import "~react-toolbox/lib/mixins";
+
+// ========== FONTS & TEXT ========= //
+
+$preferred-font: SFUIDisplay, sans-serif;
+$text-color-placeholder: #5e6066;
+
+$font-weight-ultralight: 100;
+$font-weight-thin: 200;
+$font-weight-light: 300;
+$font-weight-regular: 400;
+$font-weight-medium: 500;
+$font-weight-semibold: 600;
+$font-weight-bold: 700;
+$font-weight-heavy: 800;
+$font-weight-black: 900;
+
+// ========= COLORS =========== //
+
+$color-primary: #345078;
+$color-primary-bg: #ebeff2;
+$color-dark-grey-blue: #2f496e;
+
+// Buttons
+$button-up-bg: #243e62;
+$button-hover-bg: $color-dark-grey-blue;
+$button-pressed-bg: #1e304a;
+$button-disabled-bg: #b9c2cc;

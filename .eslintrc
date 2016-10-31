@@ -13,6 +13,7 @@
     "generator-star-spacing": "off",
     "import/no-unresolved": ["error", { "ignore": ["electron"] }],
     "import/no-extraneous-dependencies": "off",
+    "import/prefer-default-export": "off",
     "no-use-before-define": "off",
     "promise/param-names": 2,
     "promise/always-return": 2,
@@ -23,7 +24,8 @@
     "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx"] }],
     "react/prefer-stateless-function": "off",
     "react/no-unused-prop-types": [1, { "skipShapeProps": true }],
-    "flowtype-errors/show-errors": 2
+    "flowtype-errors/show-errors": 2,
+    "class-methods-use-this": "off"
   },
   "plugins": [
     "flowtype-errors",

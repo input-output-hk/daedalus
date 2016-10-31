@@ -4,10 +4,12 @@
  * https://webpack.github.io/docs/hot-module-replacement-with-webpack.html
  */
 
+import path from 'path';
 import webpack from 'webpack';
 import validate from 'webpack-validator';
 import merge from 'webpack-merge';
 import formatter from 'eslint-formatter-pretty';
+import { Joi } from 'webpack-validator';
 import baseConfig from './webpack.config.base';
 
 const port = process.env.PORT || 3000;
@@ -55,6 +57,10 @@ export default validate(merge(baseConfig, {
     ]
   },
 
+  sassLoader: {
+    data: '@import "' + path.resolve(__dirname, '../app/themes/daedalus/_theme.scss') + '";'
+  },
+
   eslint: {
     formatter
   },
@@ -75,4 +81,10 @@ export default validate(merge(baseConfig, {
 
   // https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works
   target: 'electron-renderer'
-}));
+}),
+  {
+    schemaExtension: Joi.object({
+      sassLoader: Joi.any()
+    })
+  }
+);
