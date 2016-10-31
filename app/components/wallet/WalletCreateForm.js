@@ -59,7 +59,7 @@ export default class WalletCreateForm extends Component {
             label={intl.formatMessage(messages.walletName)}
             hint="e.g: Shopping Wallet"
             value={walletName.value}
-            error={walletName.error ? intl.formatMessage(walletName.error) : null}
+            error={walletName.error}
             onChange={walletName.onChange}
             onFocus={walletName.onFocus}
             onBlur={walletName.onBlur}
@@ -71,7 +71,7 @@ export default class WalletCreateForm extends Component {
             onChange={currency.onChange}
             onFocus={currency.onFocus}
             onBlur={currency.onBlur}
-            error={currency.error ? intl.formatMessage(currency.error) : null}
+            error={currency.error}
             source={currencies}
           />
 

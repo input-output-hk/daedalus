@@ -2,6 +2,7 @@ import MobxReactForm from 'mobx-react-form';
 import WalletAddressValidator from 'wallet-address-validator';
 import isCurrency from 'validator/lib/isCurrency';
 import { defineMessages } from 'react-intl';
+import { intl } from '../i18n';
 
 const messages = defineMessages({
   invalidBitcoinAddress: {
@@ -18,14 +19,14 @@ const messages = defineMessages({
 
 const isBitcoinAddress = ({ field }) => {
   const isValid = WalletAddressValidator.validate(field.value, 'BTC');
-  return [isValid, messages.invalidBitcoinAddress];
+  return [isValid, intl.formatMessage(messages.invalidBitcoinAddress)];
 };
 
 const isValidAmount = ({ field }) => {
   const isValid = isCurrency(field.value, {
     allow_negatives: false
   });
-  return [isValid, messages.invalidAmount];
+  return [isValid, intl.formatMessage(messages.invalidAmount)];
 };
 
 const fields = {

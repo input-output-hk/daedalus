@@ -1,6 +1,7 @@
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages } from 'react-intl';
 import { createWallet } from '../actions/wallet-actions';
+import { intl } from '../i18n';
 
 const messages = defineMessages({
   invalidWalletName: {
@@ -17,12 +18,12 @@ const messages = defineMessages({
 
 const isValidWalletName = ({ field }) => {
   const isValid = field.value.length >= 3;
-  return [isValid, messages.invalidWalletName];
+  return [isValid, intl.formatMessage(messages.invalidWalletName)];
 };
 
 const isValidCurrency = ({ field }) => {
   const isValid = field.value === 'ada';
-  return [isValid, messages.invalidCurrency];
+  return [isValid, intl.formatMessage(messages.invalidCurrency)];
 };
 
 const fields = {
