@@ -6,17 +6,28 @@ Changelog
 ### Features
 
 - Added wallet creation screen that appears when there is no wallet yet
-[PR](https://github.com/input-output-hk/daedalus/pull/14)
 
-- Refactor to [react-toolbox](http://react-toolbox.com/) instead of
+- Updated to the latest design specs and refactor to 
+[react-toolbox](http://react-toolbox.com/) instead of
 material-ui for the UI components. This gives us much better style 
 customization and theming options.
-[PR](https://github.com/input-output-hk/daedalus/pull/15)
+
+- Cleaned up the boilerplate app menus
+
+- Added basic form validations using [mobx-react-form](https://github.com/foxhound87/mobx-react-form)
+
+- Added i18n support with [react-intl](https://github.com/yahoo/react-intl)
+
+- Added wallet send / receive / transactions screens
 
 ### Fixes
 
-- Fixes problems with the form validations [PR](https://github.com/input-output-hk/daedalus/pull/16)
+- Fixed problems with the form validations
+
+- Fixed the electron build process & ensured that it worked
 
 ### Chore
 
-- Updated to react-router v4 [PR](https://github.com/input-output-hk/daedalus/pull/11)
+- Updated to react-router v4
+
+- Testing setup with cucumber & spectron
