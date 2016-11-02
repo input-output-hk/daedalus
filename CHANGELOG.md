@@ -20,6 +20,11 @@ customization and theming options.
 
 - Added wallet send / receive / transactions screens
 
+- Form submitting UX updated to the design specifications with introduction of button loading spinners
+and support for submitting the form with enter key
+
+- Added cut, copy & paste application menu items and keyboard shortcuts 
+
 ### Fixes
 
 - Fixed problems with the form validations
