@@ -4,7 +4,7 @@ import store from '../store';
 
 export const createWallet = (props) => {
   // TODO: make real api request here instead of this stub
-  setTimeout(action('createWallet', () => {
+  setTimeout(action(() => {
     store.wallet = {
       name: props.walletName,
       address: '3ERitrYNwfxs4R6GfdULjtnTXQGCDE4iR7',
@@ -21,7 +21,7 @@ export const createWallet = (props) => {
         },
         {
           id: 't-id-2',
-          title: 'Money from Darko',
+          title: 'Money to Darko',
           type: 'adaExpend',
           amount: 500,
           currency: 'ADA',
@@ -29,7 +29,7 @@ export const createWallet = (props) => {
         },
         {
           id: 't-id-3',
-          title: 'Money to Dominik',
+          title: 'Money from Dominik',
           type: 'adaIncome',
           amount: -400.58,
           currency: 'ADA',
@@ -45,5 +45,21 @@ export const createWallet = (props) => {
         },
       ]
     };
+  }), 500);
+};
+
+export const send = (props) => {
+  // TODO: make real api request here instead of this stub
+  setTimeout(action(() => {
+    store.wallet.transactions.push({
+      id: `t-id-${store.wallet.transactions.length + 1}`,
+      title: `Money to ${props.receiver}`,
+      type: 'adaExpend',
+      amount: parseFloat(props.amount),
+      currency: 'ADA',
+      date: new Date()
+    });
+
+    store.router.transitionTo('/wallet/home');
   }), 500);
 };

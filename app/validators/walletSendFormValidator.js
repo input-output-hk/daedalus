@@ -3,6 +3,7 @@ import WalletAddressValidator from 'wallet-address-validator';
 import isCurrency from 'validator/lib/isCurrency';
 import { defineMessages } from 'react-intl';
 import { intl } from '../i18n';
+import { send } from '../actions/wallet-actions';
 
 const messages = defineMessages({
   invalidBitcoinAddress: {
@@ -47,9 +48,8 @@ const options = {
 class WalletSendForm extends MobxReactForm {
 
   onSuccess(form) {
-    console.log('Form is valid! Send the request here.', this); // eslint-disable-line
-    // get field values
-    console.log('Form Values!', form.values()); // eslint-disable-line
+    send(form.values());
+    form.reset();
   }
 
   onError(form) {

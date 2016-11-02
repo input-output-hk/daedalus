@@ -2,9 +2,9 @@
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import Input from 'react-toolbox/lib/input/Input';
+import Button from 'react-toolbox/lib/button/Button';
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
-import FullWidthButton from '../widgets/FullWidthButton';
 import styles from './WalletSendForm.scss';
 
 const messages = defineMessages({
@@ -56,6 +56,27 @@ export default class WalletSendForm extends Component {
     intl: intlShape.isRequired,
   };
 
+  state: {
+    isSubmitting: boolean
+  };
+
+  state = {
+    isSubmitting: false
+  };
+
+  submit() {
+    this.props.validator.submit({
+      onSuccess: (form) => {
+        this.setState({ isSubmitting: true });
+        form.onSuccess(form);
+      },
+      onError: (form) => {
+        this.setState({ isSubmitting: false });
+        form.onError(form);
+      }
+    });
+  }
+
   render() {
     const { validator } = this.props;
     const { intl } = this.context;
@@ -99,9 +120,10 @@ export default class WalletSendForm extends Component {
 
         </div>
 
-        <FullWidthButton
+        <Button
+          className={this.state.isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
           label={intl.formatMessage(messages.sendButtonLabel)}
-          onMouseUp={validator.onSubmit}
+          onMouseUp={this.submit.bind(this)}
         />
 
       </div>

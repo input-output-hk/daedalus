@@ -4,5 +4,6 @@ export default observable({
   i18n: {
     locale: 'en-US',
   },
-  wallet: null
+  wallet: null,
+  router: null
 });
