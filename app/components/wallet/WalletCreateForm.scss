@@ -17,7 +17,6 @@
 
 .isSubmitting {
   button {
-    text-indent: -9999px;
     @include loading-spinner;
   }
 }

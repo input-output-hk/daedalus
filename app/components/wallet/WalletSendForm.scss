@@ -12,7 +12,6 @@
 
 .submitButtonSpinning {
   width: 100%;
-  text-indent: -9999px;
   @include loading-spinner;
 }
 

@@ -1,4 +1,5 @@
 @mixin loading-spinner {
+  text-indent: -9999px;
   &:after {
     content: '';
     width: 30px;
