@@ -19,6 +19,6 @@
   "wallet.receive.page.request.specific.amount.button.label": "Einen bestimmten Betrag anfordern",
   "wallet.create.form.name.label": "Kontoname",
   "wallet.create.form.currency.label": "Währung",
-  "wallet.create.form.errors.invalidWalletName": "Der Kontoname muss mindestens 3 Zeichen lang sein.",
+  "wallet.create.form.errors.invalidWalletName": "Muss mindestens 3 Zeichen lang sein.",
   "wallet.create.form.errors.invalidCurrency": "Diese Währung wird derzeit noch nicht unterstützt."
 }
