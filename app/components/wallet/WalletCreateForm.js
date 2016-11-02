@@ -47,7 +47,7 @@ export default class WalletCreateForm extends Component {
   actions = [
     {
       label: 'Create personal wallet',
-      onClick: this.submit
+      onClick: this.submit.bind(this)
     }
   ];
 
