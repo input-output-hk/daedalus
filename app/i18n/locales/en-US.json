@@ -7,7 +7,7 @@
   "wallet.send.form.receiver.label": "Receiver",
   "wallet.send.form.receiver.hint": "Bitcoin Address",
   "wallet.send.form.amount.label": "Amount",
-  "wallet.send.form.amount.hint": "Amount in $",
+  "wallet.send.form.amount.hint": "Amount in ADA",
   "wallet.send.form.description.label": "Description",
   "wallet.send.form.description.hint": "You can add a message if you want.",
   "wallet.send.form.submit": "send",
