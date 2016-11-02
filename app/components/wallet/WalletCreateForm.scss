@@ -1,3 +1,5 @@
+@import '../../styles/mixins/loading-spinner';
+
 .component {
   display: flex;
   height: 100%;
@@ -11,4 +13,10 @@
   color: #5e6066;
   text-align: center;
   margin: 1em 0;
+}
+
+.isSubmitting {
+  button {
+    @include loading-spinner;
+  }
 }

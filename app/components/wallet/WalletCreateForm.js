@@ -36,9 +36,39 @@ export default class WalletCreateForm extends Component {
     intl: intlShape.isRequired,
   };
 
+  state: {
+    isSubmitting: boolean
+  };
+
+  state = {
+    isSubmitting: false
+  };
+
   actions = [
-    { label: 'Create personal wallet', onClick: this.props.validator.onSubmit }
+    {
+      label: 'Create personal wallet',
+      onClick: this.submit.bind(this)
+    }
   ];
+
+  submit() {
+    this.props.validator.submit({
+      onSuccess: (form) => {
+        this.setState({ isSubmitting: true });
+        form.onSuccess(form);
+      },
+      onError: (form) => {
+        this.setState({ isSubmitting: false });
+        form.onError(form);
+      }
+    });
+  }
+
+  checkForEnterKey(event: KeyboardEvent) {
+    if (event.key === 'Enter') {
+      this.submit();
+    }
+  }
 
   render() {
     const { intl } = this.context;
@@ -49,6 +79,7 @@ export default class WalletCreateForm extends Component {
       <div className={styles.component}>
 
         <Dialog
+          className={this.state.isSubmitting ? styles.isSubmitting : null}
           title="Create Wallet"
           actions={this.actions}
           active
@@ -63,6 +94,7 @@ export default class WalletCreateForm extends Component {
             onChange={walletName.onChange}
             onFocus={walletName.onFocus}
             onBlur={walletName.onBlur}
+            onKeyPress={this.checkForEnterKey.bind(this)}
           />
 
           <Dropdown
