@@ -33,3 +33,26 @@ $input-hint-opacity: 0.5;
   opacity: 0.5;
   display: block;
 }
+
+.error {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 14px;
+  font-weight: $font-weight-regular;
+  line-height: 14px;
+  opacity: 0.5;
+}
+
+.errored {
+  padding-bottom: $input-padding;
+  > .inputElement {
+    border-color: $input-text-error-color;
+  }
+  > .counter, > .label {
+    color: $input-text-label-color;
+  }
+  > .label > .required {
+    color: $input-text-label-color;
+  }
+}
