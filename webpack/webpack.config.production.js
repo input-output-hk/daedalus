@@ -2,10 +2,12 @@
  * Build config for electron 'Renderer Process' file
  */
 
+import path from 'path';
 import webpack from 'webpack';
 import validate from 'webpack-validator';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import merge from 'webpack-merge';
+import { Joi } from 'webpack-validator';
 import baseConfig from './webpack.config.base';
 
 export default validate(merge(baseConfig, {
@@ -40,6 +42,10 @@ export default validate(merge(baseConfig, {
     ]
   },
 
+  sassLoader: {
+    data: '@import "' + path.resolve(__dirname, '../app/themes/daedalus/_theme.scss') + '";'
+  },
+
   plugins: [
     // https://webpack.github.io/docs/list-of-plugins.html#occurrenceorderplugin
     // https://github.com/webpack/webpack/issues/864
@@ -64,4 +70,10 @@ export default validate(merge(baseConfig, {
 
   // https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works
   target: 'electron-renderer'
-}));
+}),
+  {
+    schemaExtension: Joi.object({
+      sassLoader: Joi.any()
+    })
+  }
+);
