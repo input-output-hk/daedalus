@@ -12,3 +12,24 @@
   text-align: center;
   margin: 1em 0;
 }
+
+.isSubmitting {
+  button {
+    text-indent: -9999px;
+
+    &:after {
+      content: '';
+      width: 30px;
+      height: 30px;
+      position: absolute;
+      top: calc(50% - 15px);
+      left: calc(50% - 15px);
+      background: url("../../assets/images/spinner-light.svg") no-repeat center;
+      background-size: 30px;
+      :global {
+        animation: loading-spin 1.5s linear;
+        animation-iteration-count: infinite;
+      }
+    }
+  }
+}
