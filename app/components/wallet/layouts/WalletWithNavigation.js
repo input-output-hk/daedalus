@@ -1,6 +1,5 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import AppBar from 'react-toolbox/lib/app_bar/AppBar';
 import { observer } from 'mobx-react';
 import WalletNavigation from '../navigation/WalletNavigation';
 import styles from './WalletWithNavigation.scss';
@@ -21,16 +20,8 @@ export default class WalletLayoutWithNavigation extends Component {
     const { wallet, children } = this.props;
     return (
       <div className={styles.component}>
-
-        <AppBar
-          title="Daedalus"
-          className={styles.appBar}
-        />
-
         <WalletNavigation wallet={wallet} />
-
         {children}
-
       </div>
     );
   }

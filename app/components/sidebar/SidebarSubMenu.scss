@@ -1,0 +1,10 @@
+.component {
+  display: none;
+  background-color: $sidebar-main-item-active;
+  width: 100%;
+  height: 100%;
+}
+
+.visible {
+  display: block;
+}

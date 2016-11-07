@@ -1,0 +1,23 @@
+.component {
+  background-color: $sidebar-bg;
+  display: flex;
+  height: 100%;
+}
+
+.visible {
+  width: 30%;
+  max-width: 360px;
+  min-width: 180px;
+}
+
+.hidden {
+  width: 0;
+}
+
+.minimized {
+  min-width: 84px;
+}
+
+.maximized {
+  width: 100%;
+}

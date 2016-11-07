@@ -4,17 +4,17 @@
  * https://webpack.github.io/docs/hot-module-replacement-with-webpack.html
  */
 
-import path from 'path';
-import webpack from 'webpack';
-import validate from 'webpack-validator';
-import merge from 'webpack-merge';
-import formatter from 'eslint-formatter-pretty';
-import { Joi } from 'webpack-validator';
-import baseConfig from './webpack.config.base';
+const path = require('path');
+const webpack = require('webpack');
+const validate = require('webpack-validator');
+const merge = require('webpack-merge');
+const formatter = ('eslint-formatter-pretty');
+const Joi = require('webpack-validator').Joi;
+const baseConfig = require('./webpack.config.base');
 
 const port = process.env.PORT || 3000;
 
-export default validate(merge(baseConfig, {
+module.exports = validate(merge(baseConfig, {
   debug: true,
 
   devtool: 'cheap-module-eval-source-map',
@@ -61,9 +61,9 @@ export default validate(merge(baseConfig, {
     data: '@import "' + path.resolve(__dirname, '../app/themes/daedalus/_theme.scss') + '";'
   },
 
-  eslint: {
-    formatter
-  },
+  // eslint: {
+  //   formatter: formatter
+  // },
 
   plugins: [
     // https://webpack.github.io/docs/hot-module-replacement-with-webpack.html

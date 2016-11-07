@@ -5,5 +5,8 @@ export default observable({
     locale: 'en-US',
   },
   wallet: null,
-  router: null
+  router: null,
+  sidebar: {
+    hidden: false
+  }
 });

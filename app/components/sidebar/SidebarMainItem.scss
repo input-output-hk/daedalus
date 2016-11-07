@@ -1,0 +1,28 @@
+.component {
+  height: 84px;
+  color: white;
+  font-weight: $font-weight-thin;
+  display: flex;
+  align-items: center;
+  background-color: $sidebar-bg;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.active {
+  background-color: $sidebar-main-item-active;
+  &:hover {
+    cursor: default;
+  }
+}
+
+.icon {
+  width: 23px;
+  margin: 0 30px;
+}
+
+.noLabel {
+  display: none;
+}
