@@ -9,14 +9,14 @@ $input-hint-opacity: 0.5;
 
 .label {
   top: $input-focus-label-top;
-  font-weight: $font-weight-regular;
+  font-weight: $font-regular;
 }
 
 .inputElement {
   padding: $input-field-padding 1rem;
   font-family: SFUIDisplay, sans-serif;
   border: 1px solid #c6cdd6;
-  font-weight: $font-weight-light;
+  font-weight: $font-light;
 
   &:focus:not([disabled]):not([readonly]) {
     border-color: #5e6066;
@@ -29,7 +29,7 @@ $input-hint-opacity: 0.5;
   left: 1.25rem;
   font-size: $input-field-font-size;
   color: #5e6066;
-  font-weight: $font-weight-light;
+  font-weight: $font-light;
   opacity: 0.5;
   display: block;
 }
@@ -39,7 +39,7 @@ $input-hint-opacity: 0.5;
   top: 0;
   right: 0;
   font-size: 14px;
-  font-weight: $font-weight-regular;
+  font-weight: $font-regular;
   line-height: 14px;
   opacity: 0.5;
 }
