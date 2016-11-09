@@ -17,7 +17,9 @@ export default class SidebarLayout extends Component {
     const { children, sidebar, appbar } = this.props;
     return (
       <div className={styles.component}>
-        {sidebar}
+        <div className={styles.sidebar}>
+          {sidebar}
+        </div>
         <div className={styles.main}>
           {appbar}
           {children}

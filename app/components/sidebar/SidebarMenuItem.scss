@@ -3,7 +3,7 @@
 
 .component {
   @include button;
-  width: 100%;
+  width: $sidebar-width - $sidebar-minimized-category-width;
   height: $sidebar-button-height;
   color: white;
   font-family: $font-thin;
@@ -15,6 +15,7 @@
   &:hover {
     background-color:$sidebar-menu-item-hover;
   }
+  overflow: hidden;
 }
 
 .active {

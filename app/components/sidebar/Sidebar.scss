@@ -1,20 +1,19 @@
+@import './sidebarConfig';
+
 .component {
   background-color: $sidebar-bg;
   display: flex;
   height: 100%;
-  transition: width 200ms ease, min-width 200ms ease, max-width 200ms ease;
+  transition: width 200ms ease;
+  overflow: hidden;
 }
 
 .visible {
-  width: 30%;
-  max-width: 360px;
-  min-width: 260px;
+  width: $sidebar-width;
 }
 
 .hidden {
   width: 0;
-  max-width: 0;
-  min-width: 0;
 }
 
 .minimized {
