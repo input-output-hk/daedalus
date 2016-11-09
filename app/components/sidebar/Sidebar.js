@@ -3,8 +3,8 @@ import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './Sidebar.scss';
-import SidebarMainItem from './SidebarMainItem';
-import SidebarSubMenu from './SidebarSubMenu';
+import SidebarMainItem from './SidebarCategory';
+import SidebarWalletsMenu from './menus/SidebarWalletsMenu';
 import walletsIcon from '../../assets/images/sidebar/wallet-ic.svg';
 import settingsIcon from '../../assets/images/sidebar/settings-ic.svg';
 
@@ -13,8 +13,16 @@ export default class Sidebar extends Component {
 
   static propTypes = {
     routePath: PropTypes.string.isRequired,
+    menus: PropTypes.shape({
+      wallets: PropTypes.shape({
+        items: PropTypes.arrayOf(PropTypes.object).isRequired,
+        actions: PropTypes.shape({
+          onAddWallet: PropTypes.func.isRequired,
+        })
+      })
+    }).isRequired,
     hidden: PropTypes.bool,
-    showSubMenus: PropTypes.bool
+    showMenus: PropTypes.bool
   };
 
   matches(path: string) {
@@ -22,30 +30,33 @@ export default class Sidebar extends Component {
   }
 
   render() {
-    const { hidden, showSubMenus } = this.props;
+    const { hidden, showMenus, menus } = this.props;
     const sidebarStyles = classNames([
       styles.component,
       hidden ? styles.hidden : styles.visible,
     ]);
-    const subMenus = showSubMenus ? (
-      <SidebarSubMenu visible={this.matches('/wallets')}>
-        <div>Add wallet</div>
-      </SidebarSubMenu>
+    const subMenus = showMenus ? (
+      <SidebarWalletsMenu
+        visible={this.matches('/wallets')}
+        wallets={menus.wallets.items}
+        onAddWallet={menus.wallets.actions.onAddWallet}
+        isActiveWallet={(id) => this.matches(`/wallets/${id}`)}
+      />
     ) : null;
     return (
       <div className={sidebarStyles}>
-        <div className={showSubMenus ? styles.minimized : styles.maximized}>
+        <div className={showMenus ? styles.minimized : styles.maximized}>
           <SidebarMainItem
             label="Wallets"
             icon={walletsIcon}
             active={this.matches('/wallets')}
-            minimized={showSubMenus}
+            minimized={showMenus}
           />
           <SidebarMainItem
             label="Settings"
             icon={settingsIcon}
             active={this.matches('/settings')}
-            minimized={showSubMenus}
+            minimized={showMenus}
           />
         </div>
         {subMenus}

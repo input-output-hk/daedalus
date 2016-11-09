@@ -1,35 +1,27 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import AppBar from 'react-toolbox/lib/app_bar/AppBar';
 import { observer } from 'mobx-react';
-import Sidebar from '../sidebar/Sidebar';
 import styles from './SidebarLayout.scss';
-import menuIcon from '../../assets/images/menu-ic.svg';
+import { oneOrManyChildElements } from '../../propTypes';
 
 @observer
 export default class SidebarLayout extends Component {
 
   static propTypes = {
-    children: PropTypes.arrayOf(PropTypes.element).isRequired,
-    sidebarHidden: PropTypes.bool.isRequired
+    children: oneOrManyChildElements,
+    sidebar: PropTypes.element.isRequired,
+    appbar: PropTypes.element.isRequired,
   };
 
   render() {
-    const { sidebarHidden, children } = this.props;
-    const sidebarToggleIcon = <img className={styles.sidebarIcon} src={menuIcon} role="presentation" />;
+    const { children, sidebar, appbar } = this.props;
     return (
       <div className={styles.component}>
-
-        <Sidebar hidden={sidebarHidden} routePath="/wallets" />
-
+        {sidebar}
         <div className={styles.main}>
-          <AppBar
-            title="Daedalus"
-            leftIcon={sidebarToggleIcon}
-          />
+          {appbar}
           {children}
         </div>
-
       </div>
     );
   }

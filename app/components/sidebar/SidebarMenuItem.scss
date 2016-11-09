@@ -1,0 +1,38 @@
+@import '../../styles/mixins/buttons';
+@import './sidebarConfig';
+
+.component {
+  @include button;
+  width: 100%;
+  height: $sidebar-button-height;
+  color: white;
+  font-weight: $font-weight-thin;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: $sidebar-menu-bg;
+  padding-left: 20px;
+  &:hover {
+    background-color:$sidebar-menu-item-hover;
+  }
+}
+
+.active {
+  background-color: $sidebar-menu-item-active;
+  &:hover {
+    cursor: default;
+    background-color: $sidebar-menu-item-active;
+  }
+}
+
+.title {
+  font-size: 18px;
+  line-height: 1.5em;
+  font-family: $font-thin;
+}
+
+.info {
+  font-size: 14px;
+  font-family: $font-ultralight;
+  color: #fafbfc;
+}

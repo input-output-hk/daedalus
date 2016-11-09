@@ -17,6 +17,16 @@ $font-weight-bold: 700;
 $font-weight-heavy: 800;
 $font-weight-black: 900;
 
+$font-ultralight: 'SFUIDisplay-Ultralight';
+$font-thin: 'SFUIDisplay-Thin';
+$font-light: 'SFUIDisplay-Light';
+$font-regular: 'SFUIDisplay-Regular';
+$font-medium: 'SFUIDisplay-Medium';
+$font-semibold: 'SFUIDisplay-Semibold';
+$font-bold: 'SFUIDisplay-Bold';
+$font-heavy: 'SFUIDisplay-Heavy';
+$font-black: 'SFUIDisplay-Black';
+
 // ========= COLORS =========== //
 
 $color-primary: #345078;
@@ -26,7 +36,11 @@ $color-dark-grey-blue: #2f496e;
 
 // Sidebar
 $sidebar-bg: $color-primary;
-$sidebar-main-item-active: #233856;
+$sidebar-category-hover: #2e4669;
+$sidebar-category-active: #233856;
+$sidebar-menu-bg: $sidebar-category-active;
+$sidebar-menu-item-hover: #1e304a;
+$sidebar-menu-item-active: #1e304a;
 
 // Buttons
 $button-up-bg: #243e62;

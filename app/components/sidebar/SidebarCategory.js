@@ -2,10 +2,10 @@
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
-import styles from './SidebarMainItem.scss';
+import styles from './SidebarCategory.scss';
 
 @observer
-export default class SidebarMainItem extends Component {
+export default class SidebarCategory extends Component {
 
   static propTypes = {
     icon: PropTypes.string.isRequired,
@@ -21,10 +21,10 @@ export default class SidebarMainItem extends Component {
       active ? styles.active : null
     ]);
     return (
-      <div className={componentStyles}>
+      <button className={componentStyles}>
         <img className={styles.icon} src={icon} role="presentation" />
         <span className={minimized ? styles.noLabel : styles.label}>{label}</span>
-      </div>
+      </button>
     );
   }
 
