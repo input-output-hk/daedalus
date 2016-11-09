@@ -4,9 +4,6 @@
 
 // ========== FONTS & TEXT ========= //
 
-$preferred-font: SFUIDisplay, sans-serif;
-$text-color-placeholder: #5e6066;
-
 $font-ultralight: 'SFUIDisplay-Ultralight';
 $font-thin: 'SFUIDisplay-Thin';
 $font-light: 'SFUIDisplay-Light';
@@ -16,6 +13,9 @@ $font-semibold: 'SFUIDisplay-Semibold';
 $font-bold: 'SFUIDisplay-Bold';
 $font-heavy: 'SFUIDisplay-Heavy';
 $font-black: 'SFUIDisplay-Black';
+
+$preferred-font: $font-regular;
+$text-color-placeholder: #5e6066;
 
 // ========= COLORS =========== //
 

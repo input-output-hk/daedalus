@@ -19,7 +19,7 @@ storiesOf('Sidebar', module)
   .add('wallets / sub', () => (
     <Sidebar
       route="/wallets/2"
-      showMenus
+      showMenu
       menus={{
         wallets: {
           items: [

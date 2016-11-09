@@ -13,7 +13,7 @@
   font-family: $font-medium;
   text-transform: uppercase;
   strong {
-    font-weight: bold;
+    font-family: $font-bold;
   }
 }
 
@@ -30,6 +30,7 @@
 
 .instructions {
   height: 19px;
+  font-family: $font-regular;
   font-size: 14px;
   line-height: 1.4;
   text-align: center;
