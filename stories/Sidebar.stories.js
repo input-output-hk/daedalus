@@ -9,16 +9,16 @@ storiesOf('Sidebar', module)
   // ====== Stories ======
 
   .add('default', () => (
-    <Sidebar routePath="/" />
+    <Sidebar route="/" />
   ))
 
   .add('wallets', () => (
-    <Sidebar routePath="/wallets" />
+    <Sidebar route="/wallets" />
   ))
 
   .add('wallets / sub', () => (
     <Sidebar
-      routePath="/wallets/2"
+      route="/wallets/2"
       showMenus
       menus={{
         wallets: {
@@ -33,7 +33,8 @@ storiesOf('Sidebar', module)
           }
         }
       }}
+      onCategoryClicked={action('onCategoryClicked')}
     />
   ))
 
-  .add('hidden', () => (<Sidebar routePath="" hidden />));
+  .add('hidden', () => (<Sidebar route="" hidden />));

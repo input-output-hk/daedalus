@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './Sidebar.scss';
-import SidebarMainItem from './SidebarCategory';
+import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './menus/SidebarWalletsMenu';
 import walletsIcon from '../../assets/images/sidebar/wallet-ic.svg';
 import settingsIcon from '../../assets/images/sidebar/settings-ic.svg';
@@ -12,7 +12,7 @@ import settingsIcon from '../../assets/images/sidebar/settings-ic.svg';
 export default class Sidebar extends Component {
 
   static propTypes = {
-    routePath: PropTypes.string.isRequired,
+    route: PropTypes.string.isRequired,
     menus: PropTypes.shape({
       wallets: PropTypes.shape({
         items: PropTypes.arrayOf(PropTypes.object).isRequired,
@@ -21,21 +21,22 @@ export default class Sidebar extends Component {
         })
       })
     }).isRequired,
+    onCategoryClicked: PropTypes.func,
     hidden: PropTypes.bool,
-    showMenus: PropTypes.bool
+    showMenu: PropTypes.bool
   };
 
   matches(path: string) {
-    return this.props.routePath.indexOf(path) !== -1;
+    return this.props.route.indexOf(path) !== -1;
   }
 
   render() {
-    const { hidden, showMenus, menus } = this.props;
+    const { hidden, showMenu, menus, onCategoryClicked } = this.props;
     const sidebarStyles = classNames([
       styles.component,
       hidden ? styles.hidden : styles.visible,
     ]);
-    const subMenus = showMenus ? (
+    const subMenus = showMenu ? (
       <SidebarWalletsMenu
         visible={this.matches('/wallets')}
         wallets={menus.wallets.items}
@@ -45,18 +46,20 @@ export default class Sidebar extends Component {
     ) : null;
     return (
       <div className={sidebarStyles}>
-        <div className={showMenus ? styles.minimized : styles.maximized}>
-          <SidebarMainItem
+        <div className={showMenu ? styles.minimized : styles.maximized}>
+          <SidebarCategory
             label="Wallets"
             icon={walletsIcon}
             active={this.matches('/wallets')}
-            minimized={showMenus}
+            minimized={showMenu}
+            onClick={() => onCategoryClicked('/wallets')}
           />
-          <SidebarMainItem
+          <SidebarCategory
             label="Settings"
             icon={settingsIcon}
             active={this.matches('/settings')}
-            minimized={showMenus}
+            minimized={showMenu}
+            onClick={() => onCategoryClicked('/settings')}
           />
         </div>
         {subMenus}

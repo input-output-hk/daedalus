@@ -1,33 +1,36 @@
 import React from 'react';
-import { storiesOf } from '@kadira/storybook';
-import SidebarMainItem from '../app/components/sidebar/SidebarCategory';
+import { storiesOf, action } from '@kadira/storybook';
+import SidebarCategory from '../app/components/sidebar/SidebarCategory';
 import walletsIcon from '../app/assets/images/sidebar/wallet-ic.svg';
 
-storiesOf('SidebarMainItem', module)
+storiesOf('SidebarCategory', module)
 
   .addDecorator((story) => (<div>{story()}</div>))
 
   // ====== Stories ======
 
   .add('inactive', () => (
-    <SidebarMainItem
+    <SidebarCategory
       label="Wallets"
       icon={walletsIcon}
+      onClick={action('categoryClicked')}
     />
   ))
 
   .add('active', () => (
-    <SidebarMainItem
+    <SidebarCategory
       label="Wallets"
       icon={walletsIcon}
       active
+      onClick={action('categoryClicked')}
     />
   ))
 
   .add('minimized', () => (
-    <SidebarMainItem
+    <SidebarCategory
       label="Wallets"
       icon={walletsIcon}
       minimized
+      onClick={action('categoryClicked')}
     />
   ));

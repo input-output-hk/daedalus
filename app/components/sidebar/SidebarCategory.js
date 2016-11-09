@@ -12,16 +12,17 @@ export default class SidebarCategory extends Component {
     label: PropTypes.string.isRequired,
     active: PropTypes.bool,
     minimized: PropTypes.bool,
+    onClick: PropTypes.func,
   };
 
   render() {
-    const { icon, label, active, minimized } = this.props;
+    const { icon, label, active, minimized, onClick } = this.props;
     const componentStyles = classNames([
       styles.component,
       active ? styles.active : null
     ]);
     return (
-      <button className={componentStyles}>
+      <button className={componentStyles} onClick={onClick}>
         <img className={styles.icon} src={icon} role="presentation" />
         <span className={minimized ? styles.noLabel : styles.label}>{label}</span>
       </button>

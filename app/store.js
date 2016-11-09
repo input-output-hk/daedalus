@@ -7,7 +7,8 @@ export default observable({
   wallet: null,
   router: null,
   sidebar: {
+    route: '/wallets',
     hidden: false,
-    showMenus: true
+    showMenu: true
   }
 });
