@@ -7,14 +7,6 @@
   align-items: center;
 }
 
-.header {
-  font-family: $font-semibold;
-  font-size: 1.125rem;
-  color: #5e6066;
-  text-align: center;
-  margin: 1em 0;
-}
-
 .isSubmitting {
   button {
     @include loading-spinner;

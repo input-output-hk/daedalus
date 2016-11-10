@@ -9,14 +9,13 @@ $input-hint-opacity: 0.5;
 
 .label {
   top: $input-focus-label-top;
-  font-family: $font-regular;
+  font-family: $font-medium;
+  font-size: 16px;
 }
 
 .inputElement {
   padding: $input-field-padding 1rem;
   border: 1px solid #c6cdd6;
-  font-family: $font-light;
-
   &:focus:not([disabled]):not([readonly]) {
     border-color: #5e6066;
     @include material-animation-default();
@@ -26,11 +25,14 @@ $input-hint-opacity: 0.5;
 .hint {
   top: 3rem;
   left: 1.25rem;
-  font-size: $input-field-font-size;
   color: #5e6066;
-  font-family: $font-light;
   opacity: 0.5;
   display: block;
+}
+
+.inputElement, .hint {
+  font-family: $font-light;
+  font-size: $input-field-font-size;
 }
 
 .error {

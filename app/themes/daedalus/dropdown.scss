@@ -34,6 +34,8 @@
 }
 
 .values {
+  font-family: $font-regular;
+  font-size: 16px;
   // Add the CSS arrow box generated at http://www.cssarrowplease.com/
   &:after, &:before {
     bottom: 100%;

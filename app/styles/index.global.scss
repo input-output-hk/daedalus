@@ -105,6 +105,7 @@ html, body, #root, #root > [data-reactroot] {
   // Make the default font ugly so we immediately see when something
   // is not yet defined correctly in our UI
   font-family: "Times New Roman", serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 * {
