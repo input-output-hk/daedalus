@@ -22,12 +22,14 @@ export default class WalletHome extends Component {
 
   render() {
     return (
-      <div className={styles.list}>
-        {this.props.transactions.map((transaction) => (
-          <div className={styles.transaction} key={transaction.id}>
-            <Transaction data={transaction} />
-          </div>
-        ))}
+      <div className={styles.component}>
+        <div className={styles.list}>
+          {this.props.transactions.map((transaction) => (
+            <div className={styles.transaction} key={transaction.id}>
+              <Transaction data={transaction} />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }

@@ -21,8 +21,12 @@ export default class SidebarLayout extends Component {
           {sidebar}
         </div>
         <div className={styles.main}>
-          {appbar}
-          {children}
+          <div className={styles.appbar}>
+            {appbar}
+          </div>
+          <div className={styles.content}>
+            {children}
+          </div>
         </div>
       </div>
     );
