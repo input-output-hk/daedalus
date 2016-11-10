@@ -21,12 +21,16 @@ export default class WalletHome extends Component {
   };
 
   render() {
+    const { transactions } = this.props;
     return (
       <div className={styles.component}>
         <div className={styles.list}>
-          {this.props.transactions.map((transaction) => (
+          {transactions.map((transaction, index) => (
             <div className={styles.transaction} key={transaction.id}>
-              <Transaction data={transaction} />
+              <Transaction
+                data={transaction}
+                isLastInList={index === transactions.length - 1}
+              />
             </div>
           ))}
         </div>

@@ -3,19 +3,18 @@
 .component {
   padding: 20px;
   height: calc(100% - #{$walletNavHeight});
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 
 .list {
   border-radius: 4px;
   background-color: #fafbfc;
   border: solid 1px #c6cdd6;
-  height: 100%;
 }
 
 .transaction {
-  height: 150px;
-  margin-top: 20px;
-  box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.11);
+  height: 84px;
+  margin-bottom: 10px;
+  padding: 20px;
 }
 
