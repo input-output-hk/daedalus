@@ -6,7 +6,6 @@
   width: 100%;
   height: $sidebar-button-height;
   color: white;
-  font-family: $font-thin;
   display: flex;
   align-items: center;
   background-color: $sidebar-bg;
@@ -30,7 +29,7 @@
 
 .label {
   font-size: 18px;
-  font-family: $font-thin;
+  font-family: $font-regular;
 }
 
 .noLabel {

@@ -12,6 +12,7 @@
   font-size: 18px;
   font-family: $font-medium;
   text-transform: uppercase;
+  letter-spacing: 1px;
   strong {
     font-family: $font-bold;
   }
@@ -26,10 +27,10 @@
   font-size: 19px;
   font-family: $font-medium;
   padding-bottom: 10px;
+  letter-spacing: 1px;
 }
 
 .instructions {
-  height: 19px;
   font-family: $font-regular;
   font-size: 14px;
   line-height: 1.4;
@@ -46,5 +47,5 @@
 
 .submitButton {
   width: 100%;
-  margin-top: 30px;
+  text-transform: uppercase;
 }

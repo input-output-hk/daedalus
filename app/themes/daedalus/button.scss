@@ -3,9 +3,9 @@ $button-border-radius: 0.3rem;
 @import "~react-toolbox/lib/button/theme";
 
 .flat {
-  font-size: 14px;
-  font-family: $font-light;
-  letter-spacing: 1px;
+  font-size: 18px;
+  font-family: $font-semibold;
+  letter-spacing: 2px;
   text-transform: none;
   color: white !important;
   background: $button-up-bg;
