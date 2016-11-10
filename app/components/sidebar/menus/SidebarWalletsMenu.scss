@@ -8,7 +8,7 @@
 
 .addWalletButton {
   @include button;
-  background-color: $sidebar-menu-bg;
+  background-color: $sidebar-menu-item-active;
   color: white;
   display: flex;
   align-items: center;
@@ -18,7 +18,7 @@
   bottom: 0;
 
   &:hover {
-    background-color: $sidebar-menu-item-active;
+    background-color: darken($sidebar-menu-item-active, 2%);
   }
 
   img {
