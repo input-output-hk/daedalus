@@ -55,11 +55,11 @@
 
 .title {
   font-size: 16px;
-  font-weight: 600;
+  font-family: $font-semibold;
 }
 
 .type {
-  font-weight: 300;
+  font-family: $font-light;
   font-size: 14px;
   margin-top: 8px;
 }
@@ -67,5 +67,6 @@
 .amount {
   margin-top: 20px;
   align-self: flex-end;
+  font-family: $font-regular;
   font-size: 20px;
 }

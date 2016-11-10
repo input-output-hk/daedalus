@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Match, Redirect } from 'react-router/';
 import { observer } from 'mobx-react';
+import Layout from '../Layout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import WalletHomePage from './WalletHomePage';
 import WalletReceivePage from './WalletReceivePage';
@@ -12,7 +13,7 @@ export default class Wallet extends Component {
 
   static propTypes = {
     store: PropTypes.shape({
-      wallet: PropTypes.object
+      wallet: PropTypes.object,
     }),
     pathname: PropTypes.string.isRequired
   };
@@ -24,12 +25,14 @@ export default class Wallet extends Component {
     // Redirect from/to wallet create screen if there is none yet
     if (wallet) {
       walletPage = (
-        <WalletWithNavigation wallet={wallet}>
-          <Match pattern={`${walletPath}/create`} render={() => <Redirect to={`${walletPath}/home`} />} />
-          <Match pattern={`${walletPath}/home`} component={WalletHomePage} />
-          <Match pattern={`${walletPath}/send`} component={WalletSendPage} />
-          <Match pattern={`${walletPath}/receive`} component={WalletReceivePage} />
-        </WalletWithNavigation>
+        <Layout>
+          <WalletWithNavigation wallet={wallet}>
+            <Match pattern={`${walletPath}/create`} render={() => <Redirect to={`${walletPath}/home`} />} />
+            <Match pattern={`${walletPath}/home`} component={WalletHomePage} />
+            <Match pattern={`${walletPath}/send`} component={WalletSendPage} />
+            <Match pattern={`${walletPath}/receive`} component={WalletReceivePage} />
+          </WalletWithNavigation>
+        </Layout>
       );
     } else {
       walletPage = (

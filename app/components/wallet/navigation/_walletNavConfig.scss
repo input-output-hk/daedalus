@@ -1,5 +1,3 @@
-@import '../../../themes/daedalus/theme';
-
 $walletNavThemeColor: $color-primary;
 $walletNavSeparatorWidth: 20px;
 $walletNavSeparatorMargin: 50px;
@@ -8,5 +6,5 @@ $walletNavButtonContentHeight: 50%;
 @mixin walletNavLabelFont {
   letter-spacing: 2px;
   font-size: 14px;
-  font-weight: 500;
+  font-family: $font-medium;
 }

@@ -48,73 +48,52 @@ table {
 // ============ FONTS ===========
 
 @font-face {
-  font-family: SFUIDisplay;
+  font-family: 'SFUIDisplay-Ultralight';
   src: url("../assets/fonts/SFUIDisplay-Ultralight.otf") format("opentype");
-  font-weight: 100;
-  font-style: normal;
 }
 
 @font-face {
-  font-family: SFUIDisplay;
+  font-family: 'SFUIDisplay-Thin';
   src: url("../assets/fonts/SFUIDisplay-Thin.otf") format("opentype");
-  font-weight: 200;
-  font-style: normal;
 }
 
 @font-face {
-  font-family: SFUIDisplay;
+  font-family: 'SFUIDisplay-Light';
   src: url("../assets/fonts/SFUIDisplay-Light.otf") format("opentype");
-  font-weight: 300;
-  font-style: normal;
 }
 
 @font-face {
-  font-family: SFUIDisplay;
+  font-family: 'SFUIDisplay-Regular';
   src: url("../assets/fonts/SFUIDisplay-Regular.otf") format("opentype");
-  font-weight: 400;
-  font-style: normal;
 }
 
 @font-face {
-  font-family: SFUIDisplay;
+  font-family: 'SFUIDisplay-Medium';
   src: url("../assets/fonts/SFUIDisplay-Medium.otf") format("opentype");
-  font-weight: 500;
-  font-style: normal;
 }
 
 @font-face {
-  font-family: SFUIDisplay;
+  font-family: 'SFUIDisplay-Semibold';
   src: url("../assets/fonts/SFUIDisplay-Semibold.otf") format("opentype");
-  font-weight: 600;
-  font-style: normal;
 }
-
 @font-face {
-  font-family: SFUIDisplay;
+  font-family: 'SFUIDisplay-Bold';
   src: url("../assets/fonts/SFUIDisplay-Bold.otf") format("opentype");
-  font-weight: 700;
-  font-style: normal;
 }
 
 @font-face {
-  font-family: SFUIDisplay;
+  font-family: 'SFUIDisplay-Heavy';
   src: url("../assets/fonts/SFUIDisplay-Heavy.otf") format("opentype");
-  font-weight: 800;
-  font-style: normal;
 }
 
 @font-face {
-  font-family: SFUIDisplay;
+  font-family: 'SFUIDisplay-Black';
   src: url("../assets/fonts/SFUIDisplay-Black.otf") format("opentype");
-  font-weight: 900;
-  font-style: normal;
 }
 
 @font-face {
-  font-family: Electrolize;
+  font-family: Electrolize, 'Electrolize-Regular';
   src: url("../assets/fonts/Electrolize-Regular.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
 }
 
 // ============ BASE ===========
@@ -122,8 +101,10 @@ table {
 html, body, #root, #root > [data-reactroot] {
   width: 100%;
   height: 100%;
-  font-family: SFUIDisplay, sans-serif;
   letter-spacing: 1px;
+  // Make the default font ugly so we immediately see when something
+  // is not yet defined correctly in our UI
+  font-family: "Times New Roman", serif;
 }
 
 * {

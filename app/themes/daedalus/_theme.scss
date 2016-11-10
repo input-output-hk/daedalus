@@ -4,18 +4,21 @@
 
 // ========== FONTS & TEXT ========= //
 
-$preferred-font: SFUIDisplay, sans-serif;
-$text-color-placeholder: #5e6066;
+// Make the default font ugly so we immediately see when something
+// is not yet defined correctly in our UI
+$preferred-font: "Times New Roman", serif;
 
-$font-weight-ultralight: 100;
-$font-weight-thin: 200;
-$font-weight-light: 300;
-$font-weight-regular: 400;
-$font-weight-medium: 500;
-$font-weight-semibold: 600;
-$font-weight-bold: 700;
-$font-weight-heavy: 800;
-$font-weight-black: 900;
+$font-ultralight: 'SFUIDisplay-Ultralight';
+$font-thin: 'SFUIDisplay-Thin';
+$font-light: 'SFUIDisplay-Light';
+$font-regular: 'SFUIDisplay-Regular';
+$font-medium: 'SFUIDisplay-Medium';
+$font-semibold: 'SFUIDisplay-Semibold';
+$font-bold: 'SFUIDisplay-Bold';
+$font-heavy: 'SFUIDisplay-Heavy';
+$font-black: 'SFUIDisplay-Black';
+
+$text-color-placeholder: #5e6066;
 
 // ========= COLORS =========== //
 

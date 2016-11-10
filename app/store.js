@@ -5,5 +5,10 @@ export default observable({
     locale: 'en-US',
   },
   wallet: null,
-  router: null
+  router: null,
+  sidebar: {
+    route: '/wallets',
+    hidden: false,
+    showMenu: true
+  }
 });

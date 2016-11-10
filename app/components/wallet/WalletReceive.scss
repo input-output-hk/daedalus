@@ -10,10 +10,10 @@
 
 .heading {
   font-size: 18px;
-  font-weight: 500;
+  font-family: $font-medium;
   text-transform: uppercase;
   strong {
-    font-weight: bold;
+    font-family: $font-bold;
   }
 }
 
@@ -24,12 +24,13 @@
 
 .hash {
   font-size: 19px;
-  font-weight: 500;
+  font-family: $font-medium;
   padding-bottom: 10px;
 }
 
 .instructions {
   height: 19px;
+  font-family: $font-regular;
   font-size: 14px;
   line-height: 1.4;
   text-align: center;
@@ -38,7 +39,7 @@
   margin: 0 auto 20px auto;
   a {
     font-size: 14px;
-    font-weight: 600;
+    font-family: $font-semibold;
     color: #345078;
   }
 }
