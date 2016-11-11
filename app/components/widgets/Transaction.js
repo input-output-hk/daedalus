@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
+import classNames from 'classnames';
 import styles from './Transaction.scss';
 
 export const transactionShape = PropTypes.shape({
@@ -32,7 +33,8 @@ const messages = defineMessages({
 export default class Transaction extends Component {
 
   static propTypes = {
-    data: transactionShape
+    data: transactionShape,
+    isLastInList: PropTypes.bool
   };
 
   static contextTypes = {
@@ -43,14 +45,21 @@ export default class Transaction extends Component {
     const { title, type, amount, currency } = this.props.data;
     const { intl } = this.context;
     let typeMessage = type;
+    const detailsStyles = classNames([
+      styles.details,
+      this.props.isLastInList ? styles.lastDetails : null
+    ]);
     if (type === 'adaExpend' || type === 'adaIncome') typeMessage = 'ada';
     return (
       <div className={styles.component}>
         <div className={styles[type]} />
-        <div className={styles.details}>
-          <div className={styles.title}>{title}</div>
+        <div className={detailsStyles}>
+          <div className={styles.header}>
+            <div className={styles.title}>{title}</div>
+            <div className={styles.amount}>{amount} {currency}</div>
+          </div>
           <div className={styles.type}>{intl.formatMessage(messages[typeMessage])}</div>
-          <div className={styles.amount}>{amount} {currency}</div>
+
         </div>
       </div>
     );
