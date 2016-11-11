@@ -41,25 +41,68 @@ export default class Transaction extends Component {
     intl: intlShape.isRequired,
   };
 
+  state = {
+    isExpanded: false
+  };
+
+  toggleDetails() {
+    this.setState({ isExpanded: !this.state.isExpanded });
+  }
+
   render() {
-    const { title, type, amount, currency } = this.props.data;
+    const data = this.props.data;
+    const { isExpanded } = this.state;
     const { intl } = this.context;
-    let typeMessage = type;
+    let typeMessage = data.type;
+    const contentStyles = classNames([
+      styles.content,
+      this.props.isLastInList ? styles.last : null
+    ]);
     const detailsStyles = classNames([
       styles.details,
-      this.props.isLastInList ? styles.lastDetails : null
+      isExpanded ? styles.expanded : styles.closed
     ]);
-    if (type === 'adaExpend' || type === 'adaIncome') typeMessage = 'ada';
+    if (data.type === 'adaExpend' || data.type === 'adaIncome') typeMessage = 'ada';
     return (
       <div className={styles.component}>
-        <div className={styles[type]} />
-        <div className={detailsStyles}>
-          <div className={styles.header}>
-            <div className={styles.title}>{title}</div>
-            <div className={styles.amount}>{amount} {currency}</div>
-          </div>
+        <div className={styles[data.type]} />
+        <div className={contentStyles}>
+
+          {/* ==== Clickable Header -> toggles details ==== */}
+
+          <button className={styles.header} onClick={this.toggleDetails.bind(this)}>
+            <div className={styles.title}>{data.title}</div>
+            <div className={styles.amount}>{data.amount} {data.currency}</div>
+          </button>
+
           <div className={styles.type}>{intl.formatMessage(messages[typeMessage])}</div>
 
+          {/* ==== Toggleable Transaction Details ==== */}
+
+          <div className={detailsStyles}>
+            {data.exchange && data.conversionRate && (
+              <div className={styles.conversion}>
+                <div>
+                  <h2>Exchange</h2>
+                  <span>{data.exchange}</span>
+                </div>
+                <div className={styles.conversionRate}>
+                  <h2>Conversion Rate</h2>
+                  <span>{data.conversionRate}</span>
+                </div>
+              </div>
+            )}
+            {data.transactionId && (
+              <div>
+                <h2>TransactionId</h2>
+                <span>{data.transactionId}</span>
+              </div>
+            )}
+            <div>
+              <h2>Description</h2>
+              <span>{data.description !== '' ? data.description : 'No description yet'}</span>
+            </div>
+          </div>
         </div>
       </div>
     );

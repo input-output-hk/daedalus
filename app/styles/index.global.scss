@@ -45,6 +45,17 @@ table {
   border-spacing: 0;
 }
 
+// Buttons should not have any special style applied by default
+button {
+  background: none;
+  border: none;
+  padding: 0;
+
+  &:focus {
+    outline: 0;
+  }
+}
+
 // ============ FONTS ===========
 
 @font-face {
