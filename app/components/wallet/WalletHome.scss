@@ -10,6 +10,10 @@
   border-radius: 4px;
   background-color: #fafbfc;
   border: solid 1px #c6cdd6;
+  margin-bottom: 20px;
+  &:last-child {
+    margin: 0;
+  }
 }
 
 .transaction {
@@ -17,3 +21,18 @@
   margin: 20px 0;
 }
 
+.group {
+  margin-top: 20px;
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.groupDate {
+  font-family: $font-regular;
+  font-size: 16px;
+  color: #5e6066;
+  opacity: 0.5;
+  margin-bottom: 10px;
+  margin-left: 20px;
+}

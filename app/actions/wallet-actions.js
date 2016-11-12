@@ -50,7 +50,7 @@ export const createWallet = (props) => {
           type: 'exchange',
           amount: -100000,
           currency: 'ADA',
-          date: moment().subtract(1, 'days').toDate(),
+          date: moment().subtract(2, 'days').toDate(),
           exchange: '502.40 ADA for 1.25 ETH',
           conversionRate: '1 ETH = 401.92 ADA',
           transactionId: '4f43b64ec9009ded75cc353f301d9f23a3c936d9b306af8fbb59f43e95244fe8',
