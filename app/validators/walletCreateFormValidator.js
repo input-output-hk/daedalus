@@ -1,6 +1,6 @@
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages } from 'react-intl';
-import { createWallet } from '../actions/wallet-actions';
+import state from '../state';
 import { intl } from '../i18n';
 
 const messages = defineMessages({
@@ -44,7 +44,7 @@ const options = {
 class WalletCreateForm extends MobxReactForm {
 
   onSuccess(form) {
-    createWallet(form.values());
+    state.walletsStore.createPersonalWallet(form.values());
   }
 
   onError(form) {

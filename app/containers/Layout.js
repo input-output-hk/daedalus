@@ -12,13 +12,15 @@ export default class Layout extends Component {
 
   static propTypes = {
     store: PropTypes.shape({
-      sidebar: PropTypes.object,
+      uiStore: PropTypes.shape({
+        sidebar: PropTypes.object
+      }),
     }),
     children: oneOrManyChildElements,
   };
 
   render() {
-    const { sidebar } = this.props.store;
+    const { sidebar } = this.props.store.uiStore;
     const sidebarMenus = {
       wallets: {
         items: [

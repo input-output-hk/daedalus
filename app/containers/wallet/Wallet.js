@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Match, Redirect } from 'react-router/';
+import { Match, Redirect } from 'react-router';
 import { observer } from 'mobx-react';
 import Layout from '../Layout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
@@ -13,20 +13,22 @@ export default class Wallet extends Component {
 
   static propTypes = {
     store: PropTypes.shape({
-      wallet: PropTypes.object,
+      uiStore: PropTypes.shape({
+        selectedWallet: PropTypes.object,
+      }),
     }),
     pathname: PropTypes.string.isRequired
   };
 
   render() {
-    const { wallet } = this.props.store;
+    const { selectedWallet } = this.props.store.uiStore;
     const walletPath = this.props.pathname;
     let walletPage = null;
     // Redirect from/to wallet create screen if there is none yet
-    if (wallet) {
+    if (selectedWallet) {
       walletPage = (
         <Layout>
-          <WalletWithNavigation wallet={wallet}>
+          <WalletWithNavigation wallet={selectedWallet}>
             <Match pattern={`${walletPath}/create`} render={() => <Redirect to={`${walletPath}/home`} />} />
             <Match pattern={`${walletPath}/home`} component={WalletHomePage} />
             <Match pattern={`${walletPath}/send`} component={WalletSendPage} />

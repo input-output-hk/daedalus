@@ -2,12 +2,11 @@
 import React, { Component } from 'react';
 import { Match, Redirect } from 'react-router';
 import { Provider, observer } from 'mobx-react';
-import { action } from 'mobx';
 import { IntlProvider } from 'react-intl';
 import { ThemeProvider } from 'react-css-themr';
 import { intlOptions } from './i18n';
 import { daedalusTheme } from './themes/daedalus';
-import store from './store';
+import state from './state';
 import Wallet from './containers/wallet/Wallet';
 
 @observer
@@ -18,11 +17,11 @@ export default class App extends Component {
   };
 
   render() {
-    action(() => { store.router = this.context.router; })();
+    state.uiStore.setRouter(this.context.router);
     return (
       <IntlProvider {...intlOptions}>
         <ThemeProvider theme={daedalusTheme}>
-          <Provider store={store}>
+          <Provider store={state}>
             <div>
               <Match pattern="/" exactly render={() => <Redirect to="/wallet" />} />
               {/* TODO: Remove redirect after main navigation is implemented */}

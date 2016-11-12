@@ -1,8 +1,9 @@
+// @flow
 import { IntlProvider } from 'react-intl';
-import store from '../store';
+import state from '../state';
 import translations from './translations';
 
-const { locale } = store.i18n;
+const { locale } = state.uiStore.i18n;
 
 export const intlOptions = {
   locale,
