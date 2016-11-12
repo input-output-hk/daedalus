@@ -45,15 +45,15 @@ export default class WalletHome extends Component {
     const transactionsGroups = this.groupTransactionsByDay(this.props.transactions);
     return (
       <div className={styles.component}>
-        {transactionsGroups.map((group) => (
-          <div className={styles.group}>
+        {transactionsGroups.map((group, groupIndex) => (
+          <div className={styles.group} key={groupIndex}>
             <div className={styles.groupDate}>{group.date}</div>
             <div className={styles.list}>
-              {group.transactions.map((transaction, index) => (
+              {group.transactions.map((transaction, transactionIndex) => (
                 <div className={styles.transaction} key={transaction.id}>
                   <Transaction
                     data={transaction}
-                    isLastInList={index === group.transactions.length - 1}
+                    isLastInList={transactionIndex === group.transactions.length - 1}
                   />
                 </div>
               ))}
