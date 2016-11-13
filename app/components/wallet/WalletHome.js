@@ -50,7 +50,7 @@ export default class WalletHome extends Component {
             <div className={styles.groupDate}>{group.date}</div>
             <div className={styles.list}>
               {group.transactions.map((transaction, transactionIndex) => (
-                <div className={styles.transaction} key={transaction.id}>
+                <div className={styles.transaction} key={transactionIndex}>
                   <Transaction
                     data={transaction}
                     isLastInList={transactionIndex === group.transactions.length - 1}

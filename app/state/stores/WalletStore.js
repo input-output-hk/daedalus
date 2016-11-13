@@ -3,7 +3,12 @@ import { observable, action } from 'mobx';
 import { UiStore } from './UiStore';
 import { Wallet } from '../domain/Wallet';
 import { WalletTransaction } from '../domain/WalletTransaction';
-import { loadWallets, createPersonalWallet, loadWalletTransactions } from '../../api-stub';
+import {
+  loadWallets,
+  createPersonalWallet,
+  loadWalletTransactions,
+  sendMoney
+} from '../../api-stub';
 
 export class WalletStore {
 
@@ -13,6 +18,7 @@ export class WalletStore {
   @observable errorLoadingWallets: ?string;
   @observable errorCreatingAWallet: ?string;
   @observable errorLoadingWalletTransactions: ?string;
+  @observable errorSendingMoney: ?string;
 
   constructor(uiStore: UiStore) {
     this.uiStore = uiStore;
@@ -61,6 +67,26 @@ export class WalletStore {
         this.uiStore.selectWallet(newWallet);
         this.loadWalletTransactions(newWallet);
         // TODO: Navigate to newly created wallet
+      }
+    });
+  }
+
+  @action sendMoney(fromWallet: Wallet, transactionDetails: {
+    receiver: string,
+    amount: string,
+    currency: string,
+    description: ?string
+  }) {
+    sendMoney({
+      ...transactionDetails,
+      amount: parseFloat(transactionDetails.amount),
+      sender: fromWallet.address
+    }, (error, transaction) => {
+      if (error) {
+        this.errorSendingMoney = error;
+      } else {
+        fromWallet.addTransaction(new WalletTransaction(transaction));
+        this.uiStore.router.transitionTo('/wallet/home');
       }
     });
   }

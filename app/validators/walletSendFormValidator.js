@@ -3,7 +3,7 @@ import WalletAddressValidator from 'wallet-address-validator';
 import isCurrency from 'validator/lib/isCurrency';
 import { defineMessages } from 'react-intl';
 import { intl } from '../i18n';
-import { send } from '../actions/wallet-actions';
+import state from '../state';
 
 const messages = defineMessages({
   invalidBitcoinAddress: {
@@ -37,6 +37,9 @@ const fields = {
   amount: {
     validate: [isValidAmount]
   },
+  currency: {
+    value: 'ada' // TODO: Remove hardcoded currency after new version of send screen is implemented
+  },
   description: {
   },
 };
@@ -48,7 +51,7 @@ const options = {
 class WalletSendForm extends MobxReactForm {
 
   onSuccess(form) {
-    send(form.values());
+    state.walletsStore.sendMoney(state.uiStore.selectedWallet, form.values());
     form.reset();
   }
 
