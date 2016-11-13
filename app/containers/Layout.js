@@ -5,7 +5,7 @@ import Sidebar from '../components/sidebar/Sidebar';
 import AppBar from '../components/layout/AppBar';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import { oneOrManyChildElements } from '../propTypes';
-import { toggleSidebar, changeSidebarRoute } from '../actions/sidebar-actions';
+import { changeSidebarRoute } from '../actions/sidebar-actions';
 
 @observer(['store'])
 export default class Layout extends Component {
@@ -20,7 +20,8 @@ export default class Layout extends Component {
   };
 
   render() {
-    const { sidebar } = this.props.store.uiStore;
+    const { uiStore } = this.props.store;
+    const { sidebar } = uiStore;
     const sidebarMenus = {
       wallets: {
         items: [
@@ -43,7 +44,7 @@ export default class Layout extends Component {
         onCategoryClicked={changeSidebarRoute}
       />
     );
-    const appbar = <AppBar onToggleSidebar={toggleSidebar} />;
+    const appbar = <AppBar onToggleSidebar={() => uiStore.toggleSidebar()} />;
     return (
       <SidebarLayout sidebar={sidebarComponent} appbar={appbar}>
         {this.props.children}

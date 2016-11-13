@@ -20,6 +20,10 @@ export class UiStore {
     this.router = router;
   }
 
+  @action toggleSidebar() {
+    this.sidebar.hidden = !this.sidebar.hidden;
+  }
+
   @action selectWallet(wallet: Wallet) {
     this.selectedWallet = wallet;
   }

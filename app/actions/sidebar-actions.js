@@ -1,11 +1,7 @@
 import { action } from 'mobx';
-import store from '../store';
+import store from '../state';
 
-const sidebar = store.sidebar;
-
-export const toggleSidebar = action(() => {
-  sidebar.hidden = !store.sidebar.hidden;
-});
+const sidebar = store.uiStore.sidebar;
 
 export const changeSidebarRoute = action((route) => {
   if (sidebar.route === route) {
