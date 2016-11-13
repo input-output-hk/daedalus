@@ -24,12 +24,7 @@ export default class Layout extends Component {
     const { sidebar } = uiStore;
     const sidebarMenus = {
       wallets: {
-        items: [
-          { id: '1', title: 'Main wallet', info: 'ADA' },
-          { id: '2', title: 'House rent', info: '274912874,35 ADA' },
-          { id: '3', title: 'Mining', info: '0,0004924712 BTC' },
-          { id: '4', title: 'Shopping wallet', info: 'ADA' },
-        ],
+        items: uiStore.walletsForSidebar,
         actions: {
           onAddWallet: () => {}
         }

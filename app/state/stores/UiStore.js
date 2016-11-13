@@ -1,13 +1,17 @@
-import { observable, action } from 'mobx';
+// @flow
+import { observable, action, computed } from 'mobx';
+import { ApplicationState } from '../ApplicationState';
 import { Wallet } from '../domain/Wallet';
 
 export class UiStore {
-  @observable i18n;
+  applicationState: ApplicationState;
+  @observable i18n: Object;
   @observable selectedWallet: Wallet;
-  @observable router;
-  @observable sidebar;
+  @observable router: Object;
+  @observable sidebar: Object;
 
-  constructor() {
+  constructor(applicationState: ApplicationState) {
+    this.applicationState = applicationState;
     this.i18n = { locale: 'en-US' };
     this.sidebar = {
       route: '/wallets',
@@ -16,7 +20,7 @@ export class UiStore {
     };
   }
 
-  @action setRouter(router) {
+  @action setRouter(router: Object) {
     this.router = router;
   }
 
@@ -26,6 +30,14 @@ export class UiStore {
 
   @action selectWallet(wallet: Wallet) {
     this.selectedWallet = wallet;
+  }
+
+  @computed get walletsForSidebar(): Array<Object> {
+    return this.applicationState.walletStore.wallets.map(wallet => ({
+      id: wallet.address,
+      title: wallet.name,
+      info: `${wallet.amount} ${wallet.currency}`
+    }));
   }
 
 }

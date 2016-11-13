@@ -1,6 +1,6 @@
 // @flow
 import { observable, action } from 'mobx';
-import { UiStore } from './UiStore';
+import { ApplicationState } from '../ApplicationState';
 import { Wallet } from '../domain/Wallet';
 import { WalletTransaction } from '../domain/WalletTransaction';
 import {
@@ -12,7 +12,7 @@ import {
 
 export class WalletStore {
 
-  uiStore: UiStore;
+  applicationState: ApplicationState;
   @observable isLoading: boolean = true;
   @observable wallets: Array<Wallet> = [];
   @observable errorLoadingWallets: ?string;
@@ -20,8 +20,8 @@ export class WalletStore {
   @observable errorLoadingWalletTransactions: ?string;
   @observable errorSendingMoney: ?string;
 
-  constructor(uiStore: UiStore) {
-    this.uiStore = uiStore;
+  constructor(applicationState: ApplicationState) {
+    this.applicationState = applicationState;
     this.loadWallets();
   }
 
@@ -35,7 +35,7 @@ export class WalletStore {
           const newWallet = new Wallet(wallet);
           this.wallets.push(newWallet);
           if (newWallet.lastUsed) {
-            this.uiStore.selectWallet(newWallet);
+            this.applicationState.uiStore.selectWallet(newWallet);
             this.loadWalletTransactions(newWallet);
           }
         }
@@ -64,7 +64,7 @@ export class WalletStore {
       } else {
         const newWallet = new Wallet(createdWallet);
         this.wallets.push(newWallet);
-        this.uiStore.selectWallet(newWallet);
+        this.applicationState.uiStore.selectWallet(newWallet);
         this.loadWalletTransactions(newWallet);
         // TODO: Navigate to newly created wallet
       }
@@ -86,7 +86,7 @@ export class WalletStore {
         this.errorSendingMoney = error;
       } else {
         fromWallet.addTransaction(new WalletTransaction(transaction));
-        this.uiStore.router.transitionTo('/wallet/home');
+        this.applicationState.uiStore.router.transitionTo('/wallet/home');
       }
     });
   }
