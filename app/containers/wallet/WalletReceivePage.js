@@ -8,14 +8,16 @@ export default class WalletReceivePage extends Component {
 
   static propTypes = {
     store: PropTypes.shape({
-      wallet: PropTypes.object.isRequired,
+      uiStore: PropTypes.shape({
+        selectedWallet: PropTypes.object.isRequired,
+      })
     })
   };
 
   render() {
-    const { wallet } = this.props.store;
+    const { selectedWallet } = this.props.store.uiStore;
     return (
-      <WalletReceive walletName={wallet.name} walletAddress={wallet.address} />
+      <WalletReceive walletName={selectedWallet.name} walletAddress={selectedWallet.address} />
     );
   }
 
