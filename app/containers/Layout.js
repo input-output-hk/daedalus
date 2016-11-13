@@ -5,7 +5,7 @@ import Sidebar from '../components/sidebar/Sidebar';
 import AppBar from '../components/layout/AppBar';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import { oneOrManyChildElements } from '../propTypes';
-import { changeSidebarRoute } from '../actions/sidebar-actions';
+import { changeSidebarRoute, toggleSidebar } from '../actions/sidebar-actions';
 
 @observer(['store'])
 export default class Layout extends Component {
@@ -39,7 +39,7 @@ export default class Layout extends Component {
         onCategoryClicked={changeSidebarRoute}
       />
     );
-    const appbar = <AppBar onToggleSidebar={() => uiStore.toggleSidebar()} />;
+    const appbar = <AppBar onToggleSidebar={() => toggleSidebar()} />;
     return (
       <SidebarLayout sidebar={sidebarComponent} appbar={appbar}>
         {this.props.children}

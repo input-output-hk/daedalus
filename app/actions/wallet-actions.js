@@ -17,7 +17,7 @@ export const loadWallets = action('LOAD_WALLETS', () => {
         const newWallet = new Wallet(wallet);
         walletStore.wallets.push(newWallet);
         if (newWallet.lastUsed) {
-          uiStore.selectWallet(newWallet);
+          uiStore.selectedWallet = newWallet;
           loadWalletTransactions(newWallet);
         }
       }
@@ -50,7 +50,7 @@ export const createPersonalWallet = action('CREATE_PERSONAL_WALLET', (newWalletD
     } else {
       const newWallet = new Wallet(createdWallet);
       walletStore.wallets.push(newWallet);
-      uiStore.selectWallet(newWallet);
+      uiStore.selectedWallet = newWallet;
       loadWalletTransactions(newWallet);
       // TODO: Navigate to newly created wallet
     }

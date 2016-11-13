@@ -25,14 +25,6 @@ export class UiStore {
     this.router = router;
   }
 
-  @action toggleSidebar() {
-    this.sidebar.hidden = !this.sidebar.hidden;
-  }
-
-  @action selectWallet(wallet: Wallet) {
-    this.selectedWallet = wallet;
-  }
-
   @computed get walletsForSidebar(): Array<Object> {
     return this.walletStore.wallets.map(wallet => ({
       id: wallet.address,
