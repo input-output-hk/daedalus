@@ -1,3 +1,4 @@
+// @flow
 import { UiStore } from './stores/UiStore';
 import { WalletStore } from './stores/WalletStore';
 
@@ -7,8 +8,8 @@ export class ApplicationState {
   walletStore: WalletStore;
 
   constructor() {
-    this.uiStore = new UiStore(this);
-    this.walletStore = new WalletStore(this);
+    this.walletStore = new WalletStore();
+    this.uiStore = new UiStore(this.walletStore);
   }
 
 }

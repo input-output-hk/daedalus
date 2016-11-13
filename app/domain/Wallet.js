@@ -2,7 +2,7 @@
 import { observable, action } from 'mobx';
 import { WalletTransaction } from './WalletTransaction';
 
-export type WalletType = | 'personal' | 'shared';
+export type WalletType = 'personal' | 'shared';
 
 export class Wallet {
 
@@ -12,6 +12,7 @@ export class Wallet {
   @observable name: string = '';
   @observable amount: number;
   @observable transactions: Array<WalletTransaction> = [];
+  @observable lastUsed: boolean;
 
   constructor(data: {
     type: WalletType,
@@ -19,6 +20,7 @@ export class Wallet {
     address: string,
     currency: string,
     amount: number,
+    lastUsed: boolean
   }) {
     Object.assign(this, data);
   }

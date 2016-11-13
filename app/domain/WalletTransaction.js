@@ -1,5 +1,5 @@
 // @flow
-export type TransactionType = | 'card' | 'adaExpend' | 'adaIncome' | 'exchange';
+export type TransactionType = 'card' | 'adaExpend' | 'adaIncome' | 'exchange';
 
 export class WalletTransaction {
 
