@@ -7,11 +7,11 @@ import SidebarLayout from '../components/layout/SidebarLayout';
 import { oneOrManyChildElements } from '../propTypes';
 import { changeSidebarRoute, toggleSidebar } from '../actions/sidebar-actions';
 
-@observer(['store'])
+@observer(['state'])
 export default class Layout extends Component {
 
   static propTypes = {
-    store: PropTypes.shape({
+    state: PropTypes.shape({
       uiStore: PropTypes.shape({
         sidebar: PropTypes.object
       }),
@@ -20,7 +20,7 @@ export default class Layout extends Component {
   };
 
   render() {
-    const { uiStore } = this.props.store;
+    const { uiStore } = this.props.state;
     const { sidebar } = uiStore;
     const sidebarMenus = {
       wallets: {

@@ -3,11 +3,11 @@ import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import WalletReceive from '../../components/wallet/WalletReceive';
 
-@observer(['store'])
+@observer(['state'])
 export default class WalletReceivePage extends Component {
 
   static propTypes = {
-    store: PropTypes.shape({
+    state: PropTypes.shape({
       uiStore: PropTypes.shape({
         selectedWallet: PropTypes.object.isRequired,
       })
@@ -15,7 +15,7 @@ export default class WalletReceivePage extends Component {
   };
 
   render() {
-    const { selectedWallet } = this.props.store.uiStore;
+    const { selectedWallet } = this.props.state.uiStore;
     return (
       <WalletReceive walletName={selectedWallet.name} walletAddress={selectedWallet.address} />
     );

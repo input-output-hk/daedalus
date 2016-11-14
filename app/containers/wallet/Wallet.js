@@ -8,11 +8,11 @@ import WalletReceivePage from './WalletReceivePage';
 import WalletSendPage from './WalletSendPage';
 import WalletCreatePage from './WalletCreatePage';
 
-@observer(['store'])
+@observer(['state'])
 export default class Wallet extends Component {
 
   static propTypes = {
-    store: PropTypes.shape({
+    state: PropTypes.shape({
       uiStore: PropTypes.shape({
         selectedWallet: PropTypes.object,
       }),
@@ -21,7 +21,7 @@ export default class Wallet extends Component {
   };
 
   render() {
-    const { selectedWallet } = this.props.store.uiStore;
+    const { selectedWallet } = this.props.state.uiStore;
     const walletPath = this.props.pathname;
     let walletPage = null;
     // Redirect from/to wallet create screen if there is none yet
