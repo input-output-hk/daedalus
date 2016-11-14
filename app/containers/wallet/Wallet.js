@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Match, Redirect } from 'react-router';
-import { observer } from 'mobx-react';
+import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import Layout from '../Layout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import WalletHomePage from './WalletHomePage';
@@ -8,20 +8,16 @@ import WalletReceivePage from './WalletReceivePage';
 import WalletSendPage from './WalletSendPage';
 import WalletCreatePage from './WalletCreatePage';
 
-@observer(['state'])
+@observer(['selectedWallet'])
 export default class Wallet extends Component {
 
   static propTypes = {
-    state: PropTypes.shape({
-      uiStore: PropTypes.shape({
-        selectedWallet: PropTypes.object,
-      }),
-    }),
+    selectedWallet: MobxPropTypes.observableObject,
     pathname: PropTypes.string.isRequired
   };
 
   render() {
-    const { selectedWallet } = this.props.state.uiStore;
+    const { selectedWallet } = this.props;
     const walletPath = this.props.pathname;
     let walletPage = null;
     // Redirect from/to wallet create screen if there is none yet

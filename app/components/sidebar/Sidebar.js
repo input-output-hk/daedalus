@@ -1,6 +1,6 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { observer } from 'mobx-react';
+import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
@@ -15,7 +15,7 @@ export default class Sidebar extends Component {
     route: PropTypes.string.isRequired,
     menus: PropTypes.shape({
       wallets: PropTypes.shape({
-        items: PropTypes.arrayOf(PropTypes.object).isRequired,
+        items: MobxPropTypes.observableArrayOf(PropTypes.object).isRequired,
         actions: PropTypes.shape({
           onAddWallet: PropTypes.func.isRequired,
         })

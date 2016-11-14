@@ -1,6 +1,6 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { observer } from 'mobx-react';
+import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import SidebarSubMenu from '../SidebarMenu';
 import styles from './SidebarWalletsMenu.scss';
 import addWalletIcon from '../../../assets/images/sidebar/add-wallet-ic.svg';
@@ -10,7 +10,7 @@ import SidebarMenuItem from '../SidebarMenuItem';
 export default class SidebarWalletsMenu extends Component {
 
   static propTypes = {
-    wallets: PropTypes.arrayOf(PropTypes.shape({
+    wallets: MobxPropTypes.observableArrayOf(PropTypes.shape({
       id: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
       info: PropTypes.string.isRequired

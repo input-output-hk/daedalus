@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import WalletSendForm from '../../components/wallet/WalletSendForm';
 import walletSendFormValidator from '../../validators/walletSendFormValidator';
 
-@observer(['state'])
+@observer
 export default class WalletSendPage extends Component {
 
   render() {
