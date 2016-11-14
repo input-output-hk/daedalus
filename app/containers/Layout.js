@@ -1,23 +1,25 @@
 // @flow
-import React, { Component } from 'react';
-import { observer, PropTypes } from 'mobx-react';
+import React, { Component, PropTypes } from 'react';
+import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import Sidebar from '../components/sidebar/Sidebar';
 import AppBar from '../components/layout/AppBar';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import { oneOrManyChildElements } from '../propTypes';
 import { changeSidebarRoute, toggleSidebar } from '../actions/sidebar-actions';
 
-@observer(['sidebar', 'walletsForSidebar'])
+@observer(['store'])
 export default class Layout extends Component {
 
   static propTypes = {
-    sidebar: PropTypes.observableObject,
-    walletsForSidebar: PropTypes.arrayOrObservableArray,
-    children: oneOrManyChildElements,
+    store: PropTypes.shape({
+      sidebar: MobxPropTypes.observableObject.isRequired,
+      walletsForSidebar: MobxPropTypes.arrayOrObservableArray.isRequired
+    }),
+    children: oneOrManyChildElements
   };
 
   render() {
-    const { sidebar, walletsForSidebar } = this.props;
+    const { sidebar, walletsForSidebar } = this.props.store;
     const sidebarMenus = {
       wallets: {
         items: walletsForSidebar,

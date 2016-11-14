@@ -8,16 +8,18 @@ import WalletReceivePage from './WalletReceivePage';
 import WalletSendPage from './WalletSendPage';
 import WalletCreatePage from './WalletCreatePage';
 
-@observer(['selectedWallet'])
+@observer(['store'])
 export default class Wallet extends Component {
 
   static propTypes = {
-    selectedWallet: MobxPropTypes.observableObject,
+    store: PropTypes.shape({
+      selectedWallet: MobxPropTypes.observableObject,
+    }),
     pathname: PropTypes.string.isRequired
   };
 
   render() {
-    const { selectedWallet } = this.props;
+    const { selectedWallet } = this.props.store;
     const walletPath = this.props.pathname;
     let walletPage = null;
     // Redirect from/to wallet create screen if there is none yet
