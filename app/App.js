@@ -21,7 +21,7 @@ export default class App extends Component {
     return (
       <IntlProvider {...intlOptions}>
         <ThemeProvider theme={daedalusTheme}>
-          <Provider {...state.uiStore}>
+          <Provider {...state.uiStore} walletsForSidebar={state.uiStore.walletsForSidebar}>
             <div>
               <Match pattern="/" exactly render={() => <Redirect to="/wallet" />} />
               {/* TODO: Remove redirect after main navigation is implemented */}

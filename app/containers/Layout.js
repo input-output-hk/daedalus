@@ -12,7 +12,7 @@ export default class Layout extends Component {
 
   static propTypes = {
     sidebar: PropTypes.observableObject,
-    walletsForSidebar: PropTypes.observableArray,
+    walletsForSidebar: PropTypes.arrayOrObservableArray,
     children: oneOrManyChildElements,
   };
 

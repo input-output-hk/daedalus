@@ -15,7 +15,7 @@ export default class Sidebar extends Component {
     route: PropTypes.string.isRequired,
     menus: PropTypes.shape({
       wallets: PropTypes.shape({
-        items: MobxPropTypes.observableArrayOf(PropTypes.object).isRequired,
+        items: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.object).isRequired,
         actions: PropTypes.shape({
           onAddWallet: PropTypes.func.isRequired,
         })

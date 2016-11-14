@@ -10,7 +10,7 @@ import SidebarMenuItem from '../SidebarMenuItem';
 export default class SidebarWalletsMenu extends Component {
 
   static propTypes = {
-    wallets: MobxPropTypes.observableArrayOf(PropTypes.shape({
+    wallets: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.shape({
       id: PropTypes.string.isRequired,
       title: PropTypes.string.isRequired,
       info: PropTypes.string.isRequired
