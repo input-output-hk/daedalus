@@ -13,20 +13,22 @@ export default class Wallet extends Component {
 
   static propTypes = {
     store: PropTypes.shape({
-      selectedWallet: MobxPropTypes.observableObject,
+      wallets: PropTypes.shape({
+        activeWallet: MobxPropTypes.observableObject,
+      })
     }),
     pathname: PropTypes.string.isRequired
   };
 
   render() {
-    const { selectedWallet } = this.props.store;
+    const { wallets } = this.props.store;
     const walletPath = this.props.pathname;
     let walletPage = null;
     // Redirect from/to wallet create screen if there is none yet
-    if (selectedWallet) {
+    if (wallets.activeWallet) {
       walletPage = (
         <Layout>
-          <WalletWithNavigation wallet={selectedWallet}>
+          <WalletWithNavigation wallet={wallets.activeWallet}>
             <Match pattern={`${walletPath}/create`} render={() => <Redirect to={`${walletPath}/home`} />} />
             <Match pattern={`${walletPath}/home`} component={WalletHomePage} />
             <Match pattern={`${walletPath}/send`} component={WalletSendPage} />

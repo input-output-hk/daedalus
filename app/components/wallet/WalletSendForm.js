@@ -5,6 +5,8 @@ import Input from 'react-toolbox/lib/input/Input';
 import Button from 'react-toolbox/lib/button/Button';
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
+import WalletAddressValidator from 'wallet-address-validator';
+import isCurrency from 'validator/lib/isCurrency';
 import styles from './WalletSendForm.scss';
 
 const messages = defineMessages({
@@ -42,43 +44,81 @@ const messages = defineMessages({
     id: 'wallet.send.form.submit',
     defaultMessage: '!!!Send',
     description: 'Label for the send button on the wallet send form.'
+  },
+  invalidBitcoinAddress: {
+    id: 'wallet.send.form.errors.invalidBitcoinAddress',
+    defaultMessage: '!!!Please enter a valid Bitcoin address.',
+    description: 'Error message shown when invalid bitcoin address was entered.'
+  },
+  invalidAmount: {
+    id: 'wallet.send.form.errors.invalidAmount',
+    defaultMessage: '!!!Please enter a valid amount.',
+    description: 'Error message shown when invalid amount was entered.'
   }
 });
 
-@observer
+const isBitcoinAddress = ({ field }) => {
+  const isValid = WalletAddressValidator.validate(field.value, 'BTC');
+  return [isValid, 'invalidBitcoinAddress'];
+};
+
+const isValidAmount = ({ field }) => {
+  const isValid = isCurrency(field.value, {
+    allow_negatives: false
+  });
+  return [isValid, 'invalidAmount'];
+};
+
+const fields = {
+  receiver: {
+    validate: [isBitcoinAddress]
+  },
+  amount: {
+    validate: [isValidAmount]
+  },
+  currency: {
+    value: 'ada' // TODO: Remove hardcoded currency after new version of send screen is implemented
+  },
+  description: {
+  },
+};
+
+const options = {
+  validateOnChange: false
+};
+
+@observer(['controller'])
 export default class WalletSendForm extends Component {
 
   static propTypes = {
-    validator: PropTypes.instanceOf(MobxReactForm),
+    onSubmit: PropTypes.func.isRequired
   };
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
-  state: {
-    isSubmitting: boolean
-  };
-
   state = {
     isSubmitting: false
   };
 
+  validator = new MobxReactForm({ options, fields });
+
   submit() {
-    this.props.validator.submit({
+    this.validator.submit({
       onSuccess: (form) => {
         this.setState({ isSubmitting: true });
-        form.onSuccess(form);
+        this.props.onSubmit(form.values());
+        form.reset();
       },
-      onError: (form) => {
+      onError: () => {
         this.setState({ isSubmitting: false });
-        form.onError(form);
       }
     });
   }
 
   render() {
-    const { validator } = this.props;
+    const { validator } = this;
     const { intl } = this.context;
     const receiver = validator.$('receiver');
     const amount = validator.$('amount');

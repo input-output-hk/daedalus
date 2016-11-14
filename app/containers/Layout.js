@@ -5,24 +5,29 @@ import Sidebar from '../components/sidebar/Sidebar';
 import AppBar from '../components/layout/AppBar';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import { oneOrManyChildElements } from '../propTypes';
-import { changeSidebarRoute, toggleSidebar } from '../actions/sidebar-actions';
 
-@observer(['store'])
+@observer(['store', 'controller'])
 export default class Layout extends Component {
 
   static propTypes = {
     store: PropTypes.shape({
       sidebar: MobxPropTypes.observableObject.isRequired,
-      walletsForSidebar: MobxPropTypes.arrayOrObservableArray.isRequired
+    }),
+    controller: PropTypes.shape({
+      sidebar: PropTypes.shape({
+        changeSidebarRoute: PropTypes.func.isRequired,
+        toggleSidebar: PropTypes.func.isRequired,
+      })
     }),
     children: oneOrManyChildElements
   };
 
   render() {
-    const { sidebar, walletsForSidebar } = this.props.store;
+    const { sidebar } = this.props.store;
+    const { controller } = this.props;
     const sidebarMenus = {
       wallets: {
-        items: walletsForSidebar,
+        items: sidebar.wallets,
         actions: {
           onAddWallet: () => {}
         }
@@ -34,10 +39,10 @@ export default class Layout extends Component {
         menus={sidebarMenus}
         hidden={sidebar.hidden}
         showMenu={sidebar.showMenu}
-        onCategoryClicked={changeSidebarRoute}
+        onCategoryClicked={controller.sidebar.changeSidebarRoute}
       />
     );
-    const appbar = <AppBar onToggleSidebar={() => toggleSidebar()} />;
+    const appbar = <AppBar onToggleSidebar={() => controller.sidebar.toggleSidebar()} />;
     return (
       <SidebarLayout sidebar={sidebarComponent} appbar={appbar}>
         {this.props.children}

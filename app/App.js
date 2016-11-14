@@ -1,27 +1,36 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Match, Redirect } from 'react-router';
 import { Provider, observer } from 'mobx-react';
 import { IntlProvider } from 'react-intl';
 import { ThemeProvider } from 'react-css-themr';
-import { intlOptions } from './i18n';
 import { daedalusTheme } from './themes/daedalus';
-import state from './state';
+import AppStore from './stores/AppStore';
+import AppController from './controllers/AppController';
 import Wallet from './containers/wallet/Wallet';
+import translations from './i18n/translations';
 
 @observer
 export default class App extends Component {
 
+  static propTypes = {
+    store: PropTypes.instanceOf(AppStore),
+    controller: PropTypes.instanceOf(AppController),
+  };
+
   static contextTypes = {
-    router: React.PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
   };
 
   render() {
-    state.uiStore.setRouter(this.context.router);
+    const { store, controller } = this.props;
+    const { router } = this.context;
+    store.setRouter(router);
+    const locale = store.i18n.locale;
     return (
-      <IntlProvider {...intlOptions}>
+      <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
         <ThemeProvider theme={daedalusTheme}>
-          <Provider store={state.uiStore}>
+          <Provider store={store} controller={controller}>
             <div>
               <Match pattern="/" exactly render={() => <Redirect to="/wallet" />} />
               {/* TODO: Remove redirect after main navigation is implemented */}

@@ -3,7 +3,9 @@ import { createPersonalWallet } from './wallet/create-wallet';
 import { loadWalletTransactions } from './wallet/load-wallet-transactions';
 import { sendMoney } from './wallet/send-money';
 
-export { loadWallets };
-export { createPersonalWallet };
-export { loadWalletTransactions };
-export { sendMoney };
+export {
+  loadWallets,
+  createPersonalWallet,
+  loadWalletTransactions,
+  sendMoney
+};

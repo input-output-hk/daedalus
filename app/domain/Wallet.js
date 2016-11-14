@@ -1,10 +1,10 @@
 // @flow
 import { observable, action } from 'mobx';
-import { WalletTransaction } from './WalletTransaction';
+import WalletTransaction from './WalletTransaction';
 
 export type WalletType = 'personal' | 'shared';
 
-export class Wallet {
+export default class Wallet {
 
   type: WalletType;
   address: string = '';
