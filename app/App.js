@@ -5,7 +5,7 @@ import { Provider, observer } from 'mobx-react';
 import { IntlProvider } from 'react-intl';
 import { ThemeProvider } from 'react-css-themr';
 import { daedalusTheme } from './themes/daedalus';
-import AppStore from './stores/AppStore';
+import { appStatePropType } from './state/index';
 import AppController from './controllers/AppController';
 import Wallet from './containers/wallet/Wallet';
 import translations from './i18n/translations';
@@ -14,7 +14,7 @@ import translations from './i18n/translations';
 export default class App extends Component {
 
   static propTypes = {
-    store: PropTypes.instanceOf(AppStore),
+    state: appStatePropType,
     controller: PropTypes.instanceOf(AppController),
   };
 
@@ -23,14 +23,13 @@ export default class App extends Component {
   };
 
   render() {
-    const { store, controller } = this.props;
-    const { router } = this.context;
-    store.setRouter(router);
-    const locale = store.i18n.locale;
+    const { state, controller } = this.props;
+    controller.setAppRouter(this.context.router);
+    const locale = state.i18n.locale;
     return (
       <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
         <ThemeProvider theme={daedalusTheme}>
-          <Provider store={store} controller={controller}>
+          <Provider store={state} controller={controller}>
             <div>
               <Match pattern="/" exactly render={() => <Redirect to="/wallet" />} />
               {/* TODO: Remove redirect after main navigation is implemented */}
