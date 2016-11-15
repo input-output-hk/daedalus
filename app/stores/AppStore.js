@@ -1,4 +1,3 @@
-// @flow
 import { observable, action } from 'mobx';
 import SidebarState from './state/SidebarState';
 import WalletsState from './state/WalletsState';

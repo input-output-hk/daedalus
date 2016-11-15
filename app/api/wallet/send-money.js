@@ -1,27 +1,19 @@
 // @flow
-import sinon from 'sinon';
 
-const sendMoneyFromMainWalletArguments = {
-  sender: '13GvjwDkz8s8ZmGQjwVLNUXrNXdSmQa72x',
-  receiver: '1s6GmpFXBmSE2Q15HPbKXdjgeJNGFhuwX',
-  amount: 100,
-  currency: 'ada',
-  description: ''
-};
+let idCount = 4;
 
-const sendMoneyFromMainWalletTransactionData = {
-  id: 't-id-5',
-  type: 'adaExpend',
-  title: 'Money to John',
-  date: new Date(),
-  transactionId: '6c310aac2fbdaa4890ce5c4e4f907aa62a51ab4ad102d9818aaf264add85f97a'
-};
-
-export const sendMoney = sinon.stub();
-
-sendMoney.withArgs(sendMoneyFromMainWalletArguments).yieldsAsync(null, {
-  ...sendMoneyFromMainWalletArguments,
-  ...sendMoneyFromMainWalletTransactionData
+export const sendMoney = (transaction: {
+  sender: string,
+  receiver: string,
+  amount: number,
+  currency: string,
+  description: ?string,
+}) => new Promise((resolve) => {
+  idCount += 1;
+  resolve(Object.assign({}, transaction, {
+    id: `t-id-${idCount}`,
+    type: 'adaExpend',
+    title: `Money to ${transaction.receiver}`,
+    transactionId: 'ede9be2973a2558e2384cd09b135a1de7cc67ffd2cbb81be403f5e0b00400e1a',
+  }));
 });
-
-sendMoney.yieldsAsync('Error sending money', null);

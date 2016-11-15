@@ -15,7 +15,10 @@ export default class WalletCreatePage extends Component {
   };
 
   handleFormSubmit(values: Object) {
-    this.props.controller.wallets.createPersonalWallet(values);
+    this.props.controller.wallets.createPersonalWallet({
+      name: values.walletName,
+      currency: values.currency,
+    });
   }
 
   render() {

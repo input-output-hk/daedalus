@@ -111,7 +111,6 @@
     "react-intl": "^2.1.5",
     "react-router": "^4.0.0-alpha.5",
     "react-toolbox": "git://github.com/react-toolbox/react-toolbox.git#dev",
-    "sinon": "^2.0.0-pre.4",
     "source-map-support": "^0.4.3",
     "validator": "^6.1.0",
     "wallet-address-validator": "^0.1.0"

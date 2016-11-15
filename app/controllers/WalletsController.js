@@ -56,7 +56,7 @@ export default class WalletsController {
   }) {
     const wallets = this.store.wallets;
     try {
-      const transaction = api.sendMoney({
+      const transaction = await api.sendMoney({
         ...transactionDetails,
         amount: parseFloat(transactionDetails.amount),
         sender: wallets.activeWallet.address,
@@ -71,7 +71,7 @@ export default class WalletsController {
 
   @action async createPersonalWallet(newWalletData: { name: string, currency: string}) {
     try {
-      const createdWallet = api.createPersonalWallet(newWalletData);
+      const createdWallet = await api.createPersonalWallet(newWalletData);
       const newWallet = new Wallet(createdWallet);
       this.store.account.addWallet(newWallet);
       this.setActiveWallet(newWallet);

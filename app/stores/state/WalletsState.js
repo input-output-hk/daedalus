@@ -3,7 +3,7 @@ import { observable, computed } from 'mobx';
 import Wallet from '../../domain/Wallet';
 import AppStore from '../AppStore';
 
-export default class SidebarState {
+export default class WalletsState {
 
   @observable activeWallet: ?Wallet;
   @observable isLoading: boolean;
@@ -18,7 +18,6 @@ export default class SidebarState {
     Object.assign(this, {
       activeWallet: null,
       isLoading: false,
-      wallets: []
     });
   }
 
