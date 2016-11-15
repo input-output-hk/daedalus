@@ -39,7 +39,7 @@ export default class Layout extends Component {
         menus={sidebarMenus}
         hidden={sidebar.hidden}
         showMenu={sidebar.showMenu}
-        onCategoryClicked={controller.sidebar.changeSidebarRoute}
+        onCategoryClicked={(cat) => controller.sidebar.changeSidebarRoute(cat)}
       />
     );
     const appbar = <AppBar onToggleSidebar={() => controller.sidebar.toggleSidebar()} />;
