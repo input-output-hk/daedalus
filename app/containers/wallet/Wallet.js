@@ -26,7 +26,7 @@ export default class Wallet extends Component {
     return (
       <Layout>
         <WalletWithNavigation wallet={wallet}>
-          <Match pattern={`${walletPath}/:id`} render={() => <Redirect to={`${walletPath}/home`} />} />
+          <Match pattern={`${walletPath}/:id`} render={() => <Redirect to={`${this.props.pathname}/home`} />} />
           <Match pattern={`${walletPath}/:id/home`} component={WalletHomePage} />
           <Match pattern={`${walletPath}/:id/send`} component={WalletSendPage} />
           <Match pattern={`${walletPath}/:id/receive`} component={WalletReceivePage} />
