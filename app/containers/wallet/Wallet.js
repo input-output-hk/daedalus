@@ -38,10 +38,10 @@ export default class Wallet extends Component {
     return (
       <Layout>
         <WalletWithNavigation wallet={wallet}>
-          <Match pattern={`${walletPath}/${wallet.address}/create`} render={() => <Redirect to={`${walletPath}/${wallet.address}/home`} />} />
-          <Match pattern={`${walletPath}/${wallet.address}/home`} component={WalletHomePage} />
-          <Match pattern={`${walletPath}/${wallet.address}/send`} component={WalletSendPage} />
-          <Match pattern={`${walletPath}/${wallet.address}/receive`} component={WalletReceivePage} />
+          <Match pattern={`${walletPath}/:id`} render={() => <Redirect to={`${walletPath}/${wallet.address}/home`} />} />
+          <Match pattern={`${walletPath}/:id/home`} component={WalletHomePage} />
+          <Match pattern={`${walletPath}/:id/send`} component={WalletSendPage} />
+          <Match pattern={`${walletPath}/:id/receive`} component={WalletReceivePage} />
         </WalletWithNavigation>
       </Layout>
     );
