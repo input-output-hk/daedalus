@@ -25,6 +25,9 @@ export default class App extends Component {
 
   render() {
     const { state, controller } = this.props;
+    if (state.activeWallet.isLoading) {
+      return <div>Loading...</div>;
+    }
     const { activeWallet } = this.props.state;
     const { wallet } = activeWallet;
     controller.setAppRouter(this.context.router);
