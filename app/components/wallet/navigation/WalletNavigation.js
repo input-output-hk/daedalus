@@ -45,7 +45,7 @@ export default class WalletNavigation extends Component {
     return (
       <div className={styles.component}>
 
-        <NavigationLink to="/wallet/home" linkStyles={styles.walletHomeLink}>
+        <NavigationLink to={`/wallet/${wallet.address}/home`} linkStyles={styles.walletHomeLink}>
           <WalletNavHomeButton
             className={styles.walletButton}
             walletName={wallet.name}
@@ -54,7 +54,7 @@ export default class WalletNavigation extends Component {
           />
         </NavigationLink>
 
-        <NavigationLink to="/wallet/send" linkStyles={styles.sendLink}>
+        <NavigationLink to={`/wallet/${wallet.address}/send`} linkStyles={styles.sendLink}>
           <WalletNavButton
             label={intl.formatMessage(messages.send)}
             normalIcon={sendIcon}
@@ -63,7 +63,7 @@ export default class WalletNavigation extends Component {
           />
         </NavigationLink>
 
-        <NavigationLink to="/wallet/receive" linkStyles={styles.receiveLink}>
+        <NavigationLink to={`/wallet/${wallet.address}/receive`} linkStyles={styles.receiveLink}>
           <WalletNavButton
             label={intl.formatMessage(messages.receive)}
             normalIcon={receiveIcon}

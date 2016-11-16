@@ -11,16 +11,17 @@ export default class SidebarMenuItem extends Component {
     title: PropTypes.string.isRequired,
     info: PropTypes.string.isRequired,
     active: PropTypes.bool,
+    onClick: PropTypes.func
   };
 
   render() {
-    const { title, info, active } = this.props;
+    const { title, info, active, onClick } = this.props;
     const componentStyles = classNames([
       styles.component,
       active ? styles.active : null
     ]);
     return (
-      <button className={componentStyles}>
+      <button className={componentStyles} onClick={onClick}>
         <span className={styles.title}>{title}</span>
         <span className={styles.info}>{info}</span>
       </button>

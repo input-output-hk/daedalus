@@ -17,13 +17,15 @@ export default class Sidebar extends Component {
       wallets: PropTypes.shape({
         items: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.object).isRequired,
         actions: PropTypes.shape({
-          onAddWallet: PropTypes.func.isRequired,
+          onAddWallet: PropTypes.func,
+          onWalletItemClick: PropTypes.func
         })
       })
     }).isRequired,
     onCategoryClicked: PropTypes.func,
     hidden: PropTypes.bool,
-    showMenu: PropTypes.bool
+    showMenu: PropTypes.bool,
+    activeWalletId: PropTypes.string
   };
 
   matches(path: string) {
@@ -31,7 +33,7 @@ export default class Sidebar extends Component {
   }
 
   render() {
-    const { hidden, showMenu, menus, onCategoryClicked } = this.props;
+    const { hidden, showMenu, menus, onCategoryClicked, activeWalletId } = this.props;
     const sidebarStyles = classNames([
       styles.component,
       hidden ? styles.hidden : styles.visible,
@@ -41,7 +43,8 @@ export default class Sidebar extends Component {
         visible={this.matches('/wallets')}
         wallets={menus.wallets.items}
         onAddWallet={menus.wallets.actions.onAddWallet}
-        isActiveWallet={(id) => this.matches(`/wallets/${id}`)}
+        onWalletItemClick={menus.wallets.actions.onWalletItemClick}
+        isActiveWallet={id => id === activeWalletId}
       />
     ) : null;
     return (

@@ -98,6 +98,7 @@
     "css-modules-require-hook": "^4.0.5",
     "electron-debug": "^1.0.1",
     "immutability-helper": "^2.0.0",
+    "lodash": "^4.17.2",
     "mobx": "^2.6.0",
     "mobx-react": "^3.5.8",
     "mobx-react-form": "^1.13.2",
