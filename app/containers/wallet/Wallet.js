@@ -22,11 +22,11 @@ export default class Wallet extends Component {
   render() {
     const { activeWallet } = this.props.state;
     const { wallet } = activeWallet;
-    const walletPath = this.props.pathname;
+    const walletPath = '/wallet';
     return (
       <Layout>
         <WalletWithNavigation wallet={wallet}>
-          <Match pattern={`${walletPath}/:id`} render={() => <Redirect to={`${walletPath}/${wallet.address}/home`} />} />
+          <Match pattern={`${walletPath}/:id`} render={() => <Redirect to={`${walletPath}/home`} />} />
           <Match pattern={`${walletPath}/:id/home`} component={WalletHomePage} />
           <Match pattern={`${walletPath}/:id/send`} component={WalletSendPage} />
           <Match pattern={`${walletPath}/:id/receive`} component={WalletReceivePage} />
