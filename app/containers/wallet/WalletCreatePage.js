@@ -1,15 +1,29 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import WalletCreateForm from '../../components/wallet/WalletCreateForm';
-import walletCreateFormValidator from '../../validators/walletCreateFormValidator';
 
-@observer
+@observer(['controller'])
 export default class WalletCreatePage extends Component {
+
+  static propTypes = {
+    controller: PropTypes.shape({
+      wallets: PropTypes.shape({
+        createPersonalWallet: PropTypes.func.isRequired,
+      })
+    }),
+  };
+
+  handleFormSubmit(values: Object) {
+    this.props.controller.wallets.createPersonalWallet({
+      name: values.walletName,
+      currency: values.currency,
+    });
+  }
 
   render() {
     return (
-      <WalletCreateForm validator={walletCreateFormValidator} />
+      <WalletCreateForm onSubmit={this.handleFormSubmit.bind(this)} />
     );
   }
 

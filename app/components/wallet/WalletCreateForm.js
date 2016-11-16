@@ -19,25 +19,56 @@ const messages = defineMessages({
     defaultMessage: '!!!Currency',
     description: 'Label for the "Currency" dropdown in the wallet create form.'
   },
+  invalidWalletName: {
+    id: 'wallet.create.form.errors.invalidWalletName',
+    defaultMessage: '!!!The wallet name must have at least 3 letters.',
+    description: 'Error message shown when invalid wallet name was entered in create wallet dialog.'
+  },
+  invalidCurrency: {
+    id: 'wallet.create.form.errors.invalidCurrency',
+    defaultMessage: '!!!This currency is not yet supported.',
+    description: 'Error message shown when invalid currency was selected in create wallet dialog.'
+  },
 });
 
 const currencies = [
   { value: 'ada', label: 'ADA' },
 ];
 
+const isValidWalletName = ({ field }) => {
+  const isValid = field.value.length >= 3;
+  return [isValid, 'invalidWalletName'];
+};
+
+const isValidCurrency = ({ field }) => {
+  const isValid = field.value === 'ada';
+  return [isValid, 'invalidCurrency'];
+};
+
+const fields = {
+  walletName: {
+    value: '',
+    validate: [isValidWalletName]
+  },
+  currency: {
+    value: 'ada',
+    validate: [isValidCurrency]
+  },
+};
+
+const options = {
+  validateOnChange: false
+};
+
 @observer
 export default class WalletCreateForm extends Component {
 
   static propTypes = {
-    validator: PropTypes.instanceOf(MobxReactForm),
+    onSubmit: PropTypes.func.isRequired
   };
 
   static contextTypes = {
     intl: intlShape.isRequired,
-  };
-
-  state: {
-    isSubmitting: boolean
   };
 
   state = {
@@ -51,15 +82,16 @@ export default class WalletCreateForm extends Component {
     }
   ];
 
+  validator = new MobxReactForm({ options, fields });
+
   submit() {
-    this.props.validator.submit({
+    this.validator.submit({
       onSuccess: (form) => {
         this.setState({ isSubmitting: true });
-        form.onSuccess(form);
+        this.props.onSubmit(form.values());
       },
-      onError: (form) => {
+      onError: () => {
         this.setState({ isSubmitting: false });
-        form.onError(form);
       }
     });
   }
@@ -72,9 +104,13 @@ export default class WalletCreateForm extends Component {
 
   render() {
     const { intl } = this.context;
-    const { validator } = this.props;
+    const { validator } = this;
     const walletName = validator.$('walletName');
     const currency = validator.$('currency');
+    const errors = {
+      walletName: walletName.error ? intl.formatMessage(messages[walletName.error]) : null,
+      currency: currency.error ? intl.formatMessage(messages[currency.error]) : null,
+    };
     return (
       <div className={styles.component}>
 
@@ -90,7 +126,7 @@ export default class WalletCreateForm extends Component {
             label={intl.formatMessage(messages.walletName)}
             hint="e.g: Shopping Wallet"
             value={walletName.value}
-            error={walletName.error}
+            error={errors.walletName}
             onChange={walletName.onChange}
             onFocus={walletName.onFocus}
             onBlur={walletName.onBlur}
@@ -103,7 +139,7 @@ export default class WalletCreateForm extends Component {
             onChange={currency.onChange}
             onFocus={currency.onFocus}
             onBlur={currency.onBlur}
-            error={currency.error}
+            error={errors.currency}
             source={currencies}
           />
 

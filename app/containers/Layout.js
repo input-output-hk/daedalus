@@ -1,32 +1,33 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { observer } from 'mobx-react';
+import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import Sidebar from '../components/sidebar/Sidebar';
 import AppBar from '../components/layout/AppBar';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import { oneOrManyChildElements } from '../propTypes';
-import { toggleSidebar, changeSidebarRoute } from '../actions/sidebar-actions';
 
-@observer(['store'])
+@observer(['state', 'controller'])
 export default class Layout extends Component {
 
   static propTypes = {
-    store: PropTypes.shape({
-      sidebar: PropTypes.object,
+    state: PropTypes.shape({
+      sidebar: MobxPropTypes.observableObject.isRequired,
     }),
-    children: oneOrManyChildElements,
+    controller: PropTypes.shape({
+      sidebar: PropTypes.shape({
+        changeSidebarRoute: PropTypes.func.isRequired,
+        toggleSidebar: PropTypes.func.isRequired,
+      })
+    }),
+    children: oneOrManyChildElements
   };
 
   render() {
-    const { sidebar } = this.props.store;
+    const { sidebar } = this.props.state;
+    const { controller } = this.props;
     const sidebarMenus = {
       wallets: {
-        items: [
-          { id: '1', title: 'Main wallet', info: 'ADA' },
-          { id: '2', title: 'House rent', info: '274912874,35 ADA' },
-          { id: '3', title: 'Mining', info: '0,0004924712 BTC' },
-          { id: '4', title: 'Shopping wallet', info: 'ADA' },
-        ],
+        items: sidebar.wallets,
         actions: {
           onAddWallet: () => {}
         }
@@ -38,10 +39,10 @@ export default class Layout extends Component {
         menus={sidebarMenus}
         hidden={sidebar.hidden}
         showMenu={sidebar.showMenu}
-        onCategoryClicked={changeSidebarRoute}
+        onCategoryClicked={(cat) => controller.sidebar.changeSidebarRoute(cat)}
       />
     );
-    const appbar = <AppBar onToggleSidebar={toggleSidebar} />;
+    const appbar = <AppBar onToggleSidebar={() => controller.sidebar.toggleSidebar()} />;
     return (
       <SidebarLayout sidebar={sidebarComponent} appbar={appbar}>
         {this.props.children}
