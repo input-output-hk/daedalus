@@ -8,11 +8,11 @@ import WalletReceivePage from './WalletReceivePage';
 import WalletSendPage from './WalletSendPage';
 import WalletCreatePage from './WalletCreatePage';
 
-@observer(['store'])
+@observer(['state'])
 export default class Wallet extends Component {
 
   static propTypes = {
-    store: PropTypes.shape({
+    state: PropTypes.shape({
       activeWallet: PropTypes.shape({
         wallet: MobxPropTypes.observableObject,
       })
@@ -21,7 +21,7 @@ export default class Wallet extends Component {
   };
 
   render() {
-    const { activeWallet } = this.props.store;
+    const { activeWallet } = this.props.state;
     const { wallet } = activeWallet;
     const walletPath = this.props.pathname;
     let walletPage = null;

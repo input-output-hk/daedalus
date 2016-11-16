@@ -6,11 +6,11 @@ import AppBar from '../components/layout/AppBar';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import { oneOrManyChildElements } from '../propTypes';
 
-@observer(['store', 'controller'])
+@observer(['state', 'controller'])
 export default class Layout extends Component {
 
   static propTypes = {
-    store: PropTypes.shape({
+    state: PropTypes.shape({
       sidebar: MobxPropTypes.observableObject.isRequired,
     }),
     controller: PropTypes.shape({
@@ -23,7 +23,7 @@ export default class Layout extends Component {
   };
 
   render() {
-    const { sidebar } = this.props.store;
+    const { sidebar } = this.props.state;
     const { controller } = this.props;
     const sidebarMenus = {
       wallets: {

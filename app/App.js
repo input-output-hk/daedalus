@@ -29,7 +29,7 @@ export default class App extends Component {
     return (
       <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
         <ThemeProvider theme={daedalusTheme}>
-          <Provider store={state} controller={controller}>
+          <Provider state={state} controller={controller}>
             <div>
               <Match pattern="/" exactly render={() => <Redirect to="/wallet" />} />
               {/* TODO: Remove redirect after main navigation is implemented */}
