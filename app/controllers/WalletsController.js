@@ -35,7 +35,8 @@ export default class WalletsController {
     if (!wallet === null) throw new Error('No active wallet');
     try {
       const transactions = await api.loadWalletTransactions({
-        address: wallet.address
+        address: wallet.address,
+        searchTerm: this.state.activeWallet.transactionsSearchTerm
       });
       wallet.transactions.clear();
       for (const transaction of transactions) {
@@ -90,6 +91,11 @@ export default class WalletsController {
     } catch (error) {
       this.state.activeWallet.errorCreating = error; // TODO: handling errors from backend and i18n
     }
+  }
+
+  @action filterTransactions(searchTerm) {
+    this.state.activeWallet.transactionsSearchTerm = searchTerm;
+    this.loadActiveWalletTransactions();
   }
 
 }

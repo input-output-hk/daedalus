@@ -3,6 +3,7 @@ import Wallet from '../domain/Wallet';
 
 export type activeWalletState = {
   wallet: ?Wallet,
+  transactionsSearchTerm: string,
   isLoading: bool,
   errorLoading: ?string,
   errorCreating: ?string,
@@ -12,6 +13,7 @@ export type activeWalletState = {
 
 export default (): activeWalletState => ({
   wallet: null,
+  transactionsSearchTerm: '',
   isLoading: false,
   errorLoading: null,
   errorCreating: null,

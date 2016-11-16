@@ -20,5 +20,6 @@
   "wallet.create.form.name.label": "Kontoname",
   "wallet.create.form.currency.label": "Währung",
   "wallet.create.form.errors.invalidWalletName": "Muss mindestens 3 Zeichen lang sein.",
-  "wallet.create.form.errors.invalidCurrency": "Diese Währung wird derzeit noch nicht unterstützt."
+  "wallet.create.form.errors.invalidCurrency": "Diese Währung wird derzeit noch nicht unterstützt.",
+  "wallet.transactions.search.hint": "Suche nach Transaktion"
 }
