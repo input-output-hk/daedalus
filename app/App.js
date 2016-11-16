@@ -9,6 +9,7 @@ import { appStatePropType } from './state/index';
 import AppController from './controllers/AppController';
 import Wallet from './containers/wallet/Wallet';
 import translations from './i18n/translations';
+import WalletCreatePage from './containers/wallet/WalletCreatePage';
 
 @observer
 export default class App extends Component {
@@ -24,17 +25,31 @@ export default class App extends Component {
 
   render() {
     const { state, controller } = this.props;
+    const { activeWallet } = this.props.state;
+    const { wallet } = activeWallet;
     controller.setAppRouter(this.context.router);
     const locale = state.i18n.locale;
+    let initialPage;
+    if (wallet) {
+      initialPage = (
+        <div>
+          <Match pattern="/" exactly render={() => <Redirect to={`/wallet/${wallet.address}`} />} />
+          <Match pattern="/wallet/:id" component={Wallet} />
+        </div>
+      );
+    } else {
+      initialPage = (
+        <div style={{ height: '100%' }}>
+          <Match pattern="/" render={() => <Redirect to="/create-first-wallet" />} />
+          <Match pattern="/create-first-wallet" component={WalletCreatePage} />
+        </div>
+      );
+    }
     return (
       <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
         <ThemeProvider theme={daedalusTheme}>
           <Provider state={state} controller={controller}>
-            <div>
-              <Match pattern="/" exactly render={() => <Redirect to="/wallet" />} />
-              {/* TODO: Remove redirect after main navigation is implemented */}
-              <Match pattern="/wallet" component={Wallet} />
-            </div>
+            { initialPage }
           </Provider>
         </ThemeProvider>
       </IntlProvider>

@@ -1,4 +1,5 @@
 import { action } from 'mobx';
+import _ from 'lodash';
 import type { appState } from '../state/index';
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
@@ -46,6 +47,12 @@ export default class WalletsController {
   }
 
   @action setActiveWallet(wallet: Wallet) {
+    this.state.activeWallet.wallet = wallet;
+    this.loadActiveWalletTransactions();
+  }
+
+  @action switchWallet(walletAddress: string) {
+    const wallet = _.find(this.state.account.wallets, { address: walletAddress });
     this.state.activeWallet.wallet = wallet;
     this.loadActiveWalletTransactions();
   }

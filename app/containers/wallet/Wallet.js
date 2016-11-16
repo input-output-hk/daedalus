@@ -6,9 +6,8 @@ import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavi
 import WalletHomePage from './WalletHomePage';
 import WalletReceivePage from './WalletReceivePage';
 import WalletSendPage from './WalletSendPage';
-import WalletCreatePage from './WalletCreatePage';
 
-@observer(['state'])
+@observer(['state', 'controller'])
 export default class Wallet extends Component {
 
   static propTypes = {
@@ -17,34 +16,34 @@ export default class Wallet extends Component {
         wallet: MobxPropTypes.observableObject,
       })
     }),
-    pathname: PropTypes.string.isRequired
+    controller: PropTypes.shape({
+      wallets: PropTypes.shape({
+        switchWallet: PropTypes.func.isRequired,
+      })
+    }),
+    pathname: PropTypes.string.isRequired,
+    params: PropTypes.shape({
+      id: PropTypes.string.isRequired
+    })
   };
 
   render() {
     const { activeWallet } = this.props.state;
     const { wallet } = activeWallet;
     const walletPath = this.props.pathname;
-    let walletPage = null;
-    // Redirect from/to wallet create screen if there is none yet
-    if (wallet) {
-      walletPage = (
-        <Layout>
-          <WalletWithNavigation wallet={wallet}>
-            <Match pattern={`${walletPath}/create`} render={() => <Redirect to={`${walletPath}/home`} />} />
-            <Match pattern={`${walletPath}/home`} component={WalletHomePage} />
-            <Match pattern={`${walletPath}/send`} component={WalletSendPage} />
-            <Match pattern={`${walletPath}/receive`} component={WalletReceivePage} />
-          </WalletWithNavigation>
-        </Layout>
-      );
-    } else {
-      walletPage = (
-        <div style={{ height: '100%' }}>
-          <Match pattern={walletPath} render={() => <Redirect to={`${walletPath}/create`} />} />
-          <Match pattern={`${walletPath}/create`} component={WalletCreatePage} />
-        </div>
-      );
+    const { params } = this.props;
+    if (params.id !== wallet.address) {
+      this.props.controller.wallets.switchWallet(params.id);
     }
-    return walletPage;
+    return (
+      <Layout>
+        <WalletWithNavigation wallet={wallet}>
+          <Match pattern={`${walletPath}/${wallet.address}/create`} render={() => <Redirect to={`${walletPath}/${wallet.address}/home`} />} />
+          <Match pattern={`${walletPath}/${wallet.address}/home`} component={WalletHomePage} />
+          <Match pattern={`${walletPath}/${wallet.address}/send`} component={WalletSendPage} />
+          <Match pattern={`${walletPath}/${wallet.address}/receive`} component={WalletReceivePage} />
+        </WalletWithNavigation>
+      </Layout>
+    );
   }
 }
