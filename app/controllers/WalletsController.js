@@ -13,39 +13,40 @@ export default class WalletsController {
   }
 
   @action async loadWallets() {
-    const state = this.state.wallets;
-    state.isLoading = true;
+    const { activeWallet, account } = this.state;
+    activeWallet.isLoading = true;
     try {
       const wallets = await api.loadWallets();
       for (const wallet of wallets) {
         const newWallet = new Wallet(wallet);
-        this.state.account.addWallet(newWallet);
+        account.addWallet(newWallet);
         if (newWallet.lastUsed) this.setActiveWallet(newWallet);
       }
-      wallets.isLoading = false;
+      activeWallet.isLoading = false;
     } catch (error) {
-      state.errorLoading = 'Error loading wallets'; // TODO: i18n
+      activeWallet.errorLoading = 'Error loading wallets'; // TODO: i18n
     }
   }
 
   @action async loadActiveWalletTransactions() {
-    const state = this.state.wallets;
-    if (!state.activeWallet === null) throw new Error('No active wallet');
+    const { activeWallet } = this.state;
+    const { wallet } = activeWallet;
+    if (!wallet === null) throw new Error('No active wallet');
     try {
       const transactions = await api.loadWalletTransactions({
-        address: state.activeWallet.address
+        address: wallet.address
       });
       for (const transaction of transactions) {
-        state.activeWallet.addTransaction(new WalletTransaction(transaction));
+        wallet.addTransaction(new WalletTransaction(transaction));
       }
     } catch (error) {
-      state.errorLoadingTransactions = error;
+      activeWallet.errorLoadingTransactions = error;
       // TODO: handling errors from backend and i18n
     }
   }
 
   @action setActiveWallet(wallet: Wallet) {
-    this.state.wallets.activeWallet = wallet;
+    this.state.activeWallet.wallet = wallet;
     this.loadActiveWalletTransactions();
   }
 
@@ -54,18 +55,19 @@ export default class WalletsController {
     amount: string,
     description: ?string
   }) {
-    const wallets = this.state.wallets;
+    const { activeWallet } = this.state;
+    const { wallet } = activeWallet;
     try {
       const transaction = await api.sendMoney({
         ...transactionDetails,
         amount: parseFloat(transactionDetails.amount),
-        sender: wallets.activeWallet.address,
-        currency: wallets.activeWallet.currency
+        sender: wallet.address,
+        currency: wallet.currency
       });
-      wallets.activeWallet.addTransaction(new WalletTransaction(transaction));
+      wallet.addTransaction(new WalletTransaction(transaction));
       if (this.state.router) this.state.router.transitionTo('/wallet/home');
     } catch (error) {
-      wallets.errorSendingMoney = error;
+      activeWallet.errorSendingMoney = error;
     }
   }
 
@@ -77,7 +79,7 @@ export default class WalletsController {
       this.setActiveWallet(newWallet);
       // TODO: Navigate to newly created wallet
     } catch (error) {
-      this.state.wallets.errorCreating = error; // TODO: handling errors from backend and i18n
+      this.state.activeWallet.errorCreating = error; // TODO: handling errors from backend and i18n
     }
   }
 

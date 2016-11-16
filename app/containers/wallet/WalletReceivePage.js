@@ -8,16 +8,16 @@ export default class WalletReceivePage extends Component {
 
   static propTypes = {
     store: PropTypes.shape({
-      wallets: PropTypes.shape({
-        activeWallet: MobxPropTypes.observableObject.isRequired
+      activeWallet: PropTypes.shape({
+        wallet: MobxPropTypes.observableObject.isRequired
       })
     })
   };
 
   render() {
-    const { activeWallet } = this.props.store.wallets;
+    const { wallet } = this.props.store.activeWallet;
     return (
-      <WalletReceive walletName={activeWallet.name} walletAddress={activeWallet.address} />
+      <WalletReceive walletName={wallet.name} walletAddress={wallet.address} />
     );
   }
 

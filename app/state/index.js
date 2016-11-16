@@ -3,8 +3,8 @@ import { PropTypes } from 'react';
 import { observable, extendObservable } from 'mobx';
 import sidebar from './sidebar';
 import type { sidebarState } from './sidebar';
-import wallets from './wallets';
-import type { walletsState } from './wallets';
+import activeWallet from './active-wallet';
+import type { activeWalletState } from './active-wallet';
 import Account from '../domain/Account';
 
 export type appState = {
@@ -12,7 +12,7 @@ export type appState = {
   router: ?Object,
   i18n: Object,
   sidebar: sidebarState,
-  wallets: walletsState
+  activeWallet: activeWalletState
 };
 
 export default (): appState => {
@@ -26,7 +26,7 @@ export default (): appState => {
     state,
     {
       sidebar: sidebar(state),
-      wallets: wallets(state)
+      activeWallet: activeWallet(state)
     }
   );
 

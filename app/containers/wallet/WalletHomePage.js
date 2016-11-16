@@ -8,16 +8,16 @@ export default class WalletHomePage extends Component {
 
   static propTypes = {
     store: PropTypes.shape({
-      wallets: PropTypes.shape({
-        activeWallet: MobxPropTypes.observableObject.isRequired
+      activeWallet: PropTypes.shape({
+        wallet: MobxPropTypes.observableObject.isRequired
       })
     })
   };
 
   render() {
-    const { activeWallet } = this.props.store.wallets;
+    const { wallet } = this.props.store.activeWallet;
     return (
-      <WalletHome transactions={activeWallet.transactions} />
+      <WalletHome transactions={wallet.transactions} />
     );
   }
 
