@@ -12,21 +12,23 @@ export default class Layout extends Component {
   static propTypes = {
     state: PropTypes.shape({
       sidebar: MobxPropTypes.observableObject.isRequired,
+      activeWallet: PropTypes.shape({
+        wallet: PropTypes.shape({
+          address: PropTypes.string.isRequired
+        })
+      })
     }),
     controller: PropTypes.shape({
       sidebar: PropTypes.shape({
         changeSidebarRoute: PropTypes.func.isRequired,
         toggleSidebar: PropTypes.func.isRequired,
       }),
-      wallets: PropTypes.shape({
-        setActiveWallet: PropTypes.func.isRequired
-      })
     }),
     children: oneOrManyChildElements
   };
 
   render() {
-    const { sidebar } = this.props.state;
+    const { sidebar, activeWallet } = this.props.state;
     const { controller } = this.props;
     const sidebarMenus = {
       wallets: {
@@ -44,6 +46,7 @@ export default class Layout extends Component {
         hidden={sidebar.hidden}
         showMenu={sidebar.showMenu}
         onCategoryClicked={(cat) => controller.sidebar.changeSidebarRoute(cat)}
+        activeWalletId={activeWallet.wallet.address}
       />
     );
     const appbar = <AppBar onToggleSidebar={() => controller.sidebar.toggleSidebar()} />;
