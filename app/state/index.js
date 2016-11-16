@@ -17,15 +17,17 @@ export type appState = {
 
 export default (): appState => {
   const state = observable({
-    account: Account,
+    account: new Account(),
     router: null,
     i18n: { locale: 'en-US' },
   });
 
   extendObservable(
     state,
-    sidebar(state),
-    wallets(state)
+    {
+      sidebar: sidebar(state),
+      wallets: wallets(state)
+    }
   );
 
   return state;
