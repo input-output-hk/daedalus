@@ -2,13 +2,15 @@
  * Build config for electron 'Renderer Process' file
  */
 
+import path from 'path';
 import webpack from 'webpack';
 import validate from 'webpack-validator';
 import ExtractTextPlugin from 'extract-text-webpack-plugin';
 import merge from 'webpack-merge';
+import { Joi } from 'webpack-validator';
 import baseConfig from './webpack.config.base';
 
-const config = validate(merge(baseConfig, {
+export default validate(merge(baseConfig, {
   devtool: 'cheap-module-source-map',
 
   entry: [
@@ -24,22 +26,24 @@ const config = validate(merge(baseConfig, {
     loaders: [
       // Extract all .global.css to style.css as is
       {
-        test: /\.global\.css$/,
+        test: /\.global\.scss$/,
         loader: ExtractTextPlugin.extract(
           'style-loader',
-          'css-loader'
+          'css-loader?importLoaders=1!sass'
         )
       },
-
-      // Pipe other styles through css modules and apend to style.css
       {
-        test: /^((?!\.global).)*\.css$/,
+        test: /^((?!\.global).)*\.scss$/,
         loader: ExtractTextPlugin.extract(
           'style-loader',
-          'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'
+          'css-loader?modules&importLoaders=1&localIdentName=[name]_[local]!sass'
         )
-      }
+      },
     ]
+  },
+
+  sassLoader: {
+    data: '@import "' + path.resolve(__dirname, '../app/themes/daedalus/_theme.scss') + '";'
   },
 
   plugins: [
@@ -66,6 +70,10 @@ const config = validate(merge(baseConfig, {
 
   // https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works
   target: 'electron-renderer'
-}));
-
-export default config;
+}),
+  {
+    schemaExtension: Joi.object({
+      sassLoader: Joi.any()
+    })
+  }
+);

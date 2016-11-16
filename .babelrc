@@ -1,12 +1,31 @@
 {
   "presets": ["es2015", "stage-0", "react"],
-  "plugins": ["add-module-exports"],
+  "plugins": [
+    "add-module-exports",
+    "transform-decorators-legacy",
+    ["transform-runtime", {
+      "polyfill": true,
+      "regenerator": true
+    }]
+  ],
   "env": {
     "production": {
       "presets": ["react-optimize"],
       "plugins": ["babel-plugin-dev-expression"]
     },
     "development": {
-      "presets": ["react-hmre"]
-    }}
+      "presets": ["react-hmre"],
+      "plugins": [
+        ["react-intl", {
+          "messagesDir": "./locales/",
+          "enforceDescriptions": true
+        }]
+      ]
+    },
+    "test": {
+      "plugins": [
+        ["webpack-loaders", { "config": "./webpack/webpack.config.development.js", "verbose": false }]
+      ]
+    }
+  }
 }

@@ -1,0 +1,34 @@
+@import "~react-toolbox/lib/colors";
+@import "~react-toolbox/lib/globals";
+@import "~react-toolbox/lib/mixins";
+
+// ========== FONTS & TEXT ========= //
+
+// Make the default font ugly so we immediately see when something
+// is not yet defined correctly in our UI
+$preferred-font: "Times New Roman", serif;
+
+$font-ultralight: 'SFUIDisplay-Ultralight';
+$font-thin: 'SFUIDisplay-Thin';
+$font-light: 'SFUIDisplay-Light';
+$font-regular: 'SFUIDisplay-Regular';
+$font-medium: 'SFUIDisplay-Medium';
+$font-semibold: 'SFUIDisplay-Semibold';
+$font-bold: 'SFUIDisplay-Bold';
+$font-heavy: 'SFUIDisplay-Heavy';
+$font-black: 'SFUIDisplay-Black';
+
+$text-color-placeholder: #5e6066;
+
+// ========= COLORS =========== //
+
+$color-primary: #345078;
+$color-primary-dark: #243e62;
+$color-primary-bg: #ebeff2;
+$color-dark-grey-blue: #2f496e;
+
+// Buttons
+$button-up-bg: #243e62;
+$button-hover-bg: $color-dark-grey-blue;
+$button-pressed-bg: #1e304a;
+$button-disabled-bg: #b9c2cc;

@@ -1,0 +1,40 @@
+@import '../../styles/mixins/buttons';
+@import './sidebarConfig';
+
+.component {
+  @include button;
+  width: $sidebar-width - $sidebar-minimized-category-width;
+  height: $sidebar-button-height;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: $sidebar-menu-bg;
+  padding-left: 20px;
+  &:hover {
+    background-color:$sidebar-menu-item-hover;
+  }
+  overflow: hidden;
+}
+
+.active {
+  background-color: $sidebar-menu-item-active;
+  &:hover {
+    cursor: default;
+    background-color: $sidebar-menu-item-active;
+  }
+}
+
+.title {
+  font-size: 18px;
+  line-height: 1.5em;
+  font-family: $font-regular;
+}
+
+.info {
+  font-size: 14px;
+  font-family: $font-light;
+  letter-spacing: 1px;
+  opacity: 0.7;
+  color: #fafbfc;
+}

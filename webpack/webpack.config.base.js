@@ -2,10 +2,10 @@
  * Base webpack config used across other specific configs
  */
 
-import path from 'path';
-import validate from 'webpack-validator';
+const path = require('path');
+const validate = require('webpack-validator');
 
-export default validate({
+module.exports = validate({
   module: {
     loaders: [{
       test: /\.jsx?$/,
@@ -14,6 +14,9 @@ export default validate({
     }, {
       test: /\.json$/,
       loader: 'json-loader'
+    }, {
+      test: /\.(?:png|jpg|svg|otf|ttf)$/,
+      loader: 'url-loader'
     }]
   },
 

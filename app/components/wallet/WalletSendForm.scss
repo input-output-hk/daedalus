@@ -1,0 +1,21 @@
+@import '../../styles/mixins/loading-spinner';
+
+.component {
+  width: calc(100% - 40px);
+  margin: 0 auto;
+  margin-top: 50px;
+}
+
+.fields {
+  padding: 0 20px;
+}
+
+.submitButtonSpinning {
+  width: 100%;
+  @include loading-spinner;
+}
+
+.submitButton {
+  width: 100%;
+  text-transform: uppercase;
+}

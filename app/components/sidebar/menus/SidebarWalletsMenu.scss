@@ -1,0 +1,38 @@
+@import '../../../styles/mixins/buttons';
+@import '../sidebarConfig';
+
+.wallets {
+  overflow-y: auto;
+  height: calc(100% - #{$sidebar-button-height});
+}
+
+.addWalletButton {
+  @include button;
+  background-color: $sidebar-menu-item-active;
+  color: white;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: $sidebar-button-height;
+  position: absolute;
+  bottom: 0;
+
+  &:hover {
+    background-color: darken($sidebar-menu-item-active, 2%);
+  }
+
+  img {
+    width: 25px;
+    margin: 0
+    20px;
+  }
+
+  span {
+    font-size: 18px;
+    font-family: $font-regular;
+  }
+}
+
+.link {
+  text-decoration: none;
+}

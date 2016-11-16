@@ -1,0 +1,47 @@
+[
+  {
+    "id": "wallet.send.form.receiver.label",
+    "description": "Label for the \"Receiver\" text input in the wallet send form.",
+    "defaultMessage": "!!!Receiver"
+  },
+  {
+    "id": "wallet.send.form.receiver.hint",
+    "description": "Hint inside the \"Receiver\" text input in the wallet send form.",
+    "defaultMessage": "!!!Bitcoin address"
+  },
+  {
+    "id": "wallet.send.form.amount.label",
+    "description": "Label for the \"Amount\" number input in the wallet send form.",
+    "defaultMessage": "!!!Amount"
+  },
+  {
+    "id": "wallet.send.form.amount.hint",
+    "description": "Hint inside the \"Amount\" number input in the wallet send form.",
+    "defaultMessage": "!!!Amount in $"
+  },
+  {
+    "id": "wallet.send.form.description.label",
+    "description": "Label for the \"description\" text area in the wallet send form.",
+    "defaultMessage": "!!!Description"
+  },
+  {
+    "id": "wallet.send.form.description.hint",
+    "description": "Hint in the \"description\" text area in the wallet send form.",
+    "defaultMessage": "!!!You can add a message if you want"
+  },
+  {
+    "id": "wallet.send.form.submit",
+    "description": "Label for the send button on the wallet send form.",
+    "defaultMessage": "!!!Send"
+  },
+  {
+    "id": "wallet.send.form.errors.invalidBitcoinAddress",
+    "description": "Error message shown when invalid bitcoin address was entered.",
+    "defaultMessage": "!!!Please enter a valid Bitcoin address."
+  },
+  {
+    "id": "wallet.send.form.errors.invalidAmount",
+    "description": "Error message shown when invalid amount was entered.",
+    "defaultMessage": "!!!Please enter a valid amount."
+  }
+]

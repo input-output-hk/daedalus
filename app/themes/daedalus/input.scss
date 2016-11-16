@@ -1,0 +1,59 @@
+@import "~react-toolbox/lib/input/config";
+$input-field-font-size: 1rem;
+$input-label-font-size: 1rem;
+$input-focus-label-top: 0;
+$input-field-padding: 0.75rem;
+$input-text-label-color: #5e6066;
+$input-hint-opacity: 0.5;
+@import "~react-toolbox/lib/input/theme";
+
+.label {
+  top: $input-focus-label-top;
+  font-family: $font-medium;
+  font-size: 16px;
+}
+
+.inputElement {
+  padding: $input-field-padding 1rem;
+  border: 1px solid #c6cdd6;
+  &:focus:not([disabled]):not([readonly]) {
+    border-color: #5e6066;
+    @include material-animation-default();
+  }
+}
+
+.hint {
+  top: 3rem;
+  left: 1.25rem;
+  color: #5e6066;
+  opacity: 0.5;
+  display: block;
+}
+
+.inputElement, .hint {
+  font-family: $font-light;
+  font-size: $input-field-font-size;
+}
+
+.error {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 14px;
+  font-family: $font-regular;
+  line-height: 14px;
+  opacity: 0.5;
+}
+
+.errored {
+  padding-bottom: $input-padding;
+  > .inputElement {
+    border-color: $input-text-error-color;
+  }
+  > .counter, > .label {
+    color: $input-text-label-color;
+  }
+  > .label > .required {
+    color: $input-text-label-color;
+  }
+}

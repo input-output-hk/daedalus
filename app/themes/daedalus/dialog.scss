@@ -1,0 +1,28 @@
+@import "~react-toolbox/lib/button/config";
+@import "~react-toolbox/lib/dialog/config";
+$dialog-content-padding: 30px;
+@import "~react-toolbox/lib/dialog/theme";
+
+.title {
+  text-transform: uppercase;
+  font-size: 1.125rem;
+  color: #5e6066;
+  text-align: center;
+  font-family: $font-medium;
+  letter-spacing: 2px;
+}
+
+.body {
+  overflow-y: visible;
+}
+
+.navigation {
+  text-align: center;
+}
+
+.button {
+  width: 60%;
+  font-family: $font-medium;
+  font-size: 14px;
+  letter-spacing: 0px;
+}

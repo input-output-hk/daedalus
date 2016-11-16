@@ -1,0 +1,38 @@
+[
+  {
+    "address": "13GvjwDkz8s8ZmGQjwVLNUXrNXdSmQa72x",
+    "type": "personal",
+    "currency": "ada",
+    "amount": 19903750165.23,
+    "name": "Main wallet",
+    "lastUsed": true
+  },
+  {
+    "address": "1GrT8upXQCR4mzPpAeMfxqwZh2LF7PXsyn",
+    "type": "personal",
+    "currency": "ada",
+    "amount": 274912874.35,
+    "name": "House rent"
+  },
+  {
+    "address": "1LYYdFD4RGLsYJT5tVQoLQEvfr7hJXHRuv",
+    "type": "personal",
+    "currency": "btc",
+    "amount": 0.0004924712,
+    "name": "Mining"
+  },
+  {
+    "address": "1MKY9oAriyXvUKRBRsbrrT2JDHA8S9T2sf",
+    "type": "personal",
+    "currency": "ada",
+    "amount": 2500.00,
+    "name": "Transporting"
+  },
+  {
+    "address": "fd17fda6410ac905447840e33c1851a5",
+    "type": "personal",
+    "currency": "btc",
+    "amount": 0.02048244,
+    "name": "Pocket money"
+  }
+]

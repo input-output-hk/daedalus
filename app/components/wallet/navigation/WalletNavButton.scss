@@ -1,0 +1,68 @@
+@import './_walletNavConfig';
+
+%base {
+  text-align: center;
+  background: no-repeat center 70%;
+  background-size: 45px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ========= STATES =========
+
+.normal {
+  @extend %base;
+  background-color: rgba($walletNavThemeColor, 0.2);
+  color: $walletNavThemeColor;
+  &:hover {
+    cursor: pointer;
+    background-color: rgba($walletNavThemeColor, 0.25);
+  }
+}
+
+.active {
+  @extend %base;
+  background-color: $walletNavThemeColor;
+  color: white;
+  span {
+    &:after {
+      border-bottom-color: white;
+    }
+  }
+  &:hover {
+    cursor: default;
+  }
+}
+
+.container {
+  text-align: center;
+  height: $walletNavButtonContentHeight;
+  display: flex;
+  flex-direction: column;
+}
+
+.label {
+  @include walletNavLabelFont;
+  display: block;
+  text-transform: uppercase;
+  position: relative;
+  margin-bottom: auto;
+
+  &:after {
+    content: '';
+    width: $walletNavSeparatorWidth;
+    display: block;
+    position: absolute;
+    left: calc(50% - #{$walletNavSeparatorWidth / 2});
+    bottom: -$walletNavSeparatorMargin / 3;
+    border-bottom: 1px solid $walletNavThemeColor;
+  }
+}
+
+.icon {
+  max-height: 45px;
+  max-width: 45px;
+  align-self: center;
+}

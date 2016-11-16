@@ -4,15 +4,17 @@
  * https://webpack.github.io/docs/hot-module-replacement-with-webpack.html
  */
 
-import webpack from 'webpack';
-import validate from 'webpack-validator';
-import merge from 'webpack-merge';
-import formatter from 'eslint-formatter-pretty';
-import baseConfig from './webpack.config.base';
+const path = require('path');
+const webpack = require('webpack');
+const validate = require('webpack-validator');
+const merge = require('webpack-merge');
+const formatter = ('eslint-formatter-pretty');
+const Joi = require('webpack-validator').Joi;
+const baseConfig = require('./webpack.config.base');
 
 const port = process.env.PORT || 3000;
 
-export default validate(merge(baseConfig, {
+module.exports = validate(merge(baseConfig, {
   debug: true,
 
   devtool: 'cheap-module-eval-source-map',
@@ -37,26 +39,31 @@ export default validate(merge(baseConfig, {
     ],
     loaders: [
       {
-        test: /\.global\.css$/,
+        test: /\.global\.scss$/,
         loaders: [
-          'style-loader',
-          'css-loader?sourceMap'
+          'style?sourceMap',
+          'css?sourceMap',
+          'sass?sourceMap'
         ]
       },
-
       {
-        test: /^((?!\.global).)*\.css$/,
+        test: /^((?!\.global).)*\.scss$/,
         loaders: [
-          'style-loader',
-          'css-loader?modules&sourceMap&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]'
+          'style?sourceMap',
+          'css?sourceMap&modules&localIdentName=[name]_[local]&importLoaders=1',
+          'sass?sourceMap'
         ]
-      }
+      },
     ]
   },
 
-  eslint: {
-    formatter
+  sassLoader: {
+    data: '@import "' + path.resolve(__dirname, '../app/themes/daedalus/_theme.scss') + '";'
   },
+
+  // eslint: {
+  //   formatter: formatter
+  // },
 
   plugins: [
     // https://webpack.github.io/docs/hot-module-replacement-with-webpack.html
@@ -74,4 +81,10 @@ export default validate(merge(baseConfig, {
 
   // https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works
   target: 'electron-renderer'
-}));
+}),
+  {
+    schemaExtension: Joi.object({
+      sassLoader: Joi.any()
+    })
+  }
+);

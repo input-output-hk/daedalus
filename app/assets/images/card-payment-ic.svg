@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="92px" height="64px" viewBox="0 0 92 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 40.3 (33839) - http://www.bohemiancoding.com/sketch -->
+    <title>6F6F01B1-AE66-4CCF-AF05-C1FFCF6C852D</title>
+    <desc>Created with sketchtool.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="wallet_screen" transform="translate(-788.000000, -835.000000)" fill="#2F496E">
+            <g id="content" transform="translate(720.000000, 168.000000)">
+                <g id="list-item-1" transform="translate(0.000000, 552.000000)">
+                    <g id="card-payment-ic" transform="translate(68.000000, 115.000000)">
+                        <path d="M14,42 L32,42 C33.106,42 34,41.104 34,40 C34,38.896 33.106,38 32,38 L14,38 C12.894,38 12,38.896 12,40 C12,41.104 12.894,42 14,42 L14,42 Z M14,52 L26,52 C27.106,52 28,51.104 28,50 C28,48.896 27.106,48 26,48 L14,48 C12.894,48 12,48.896 12,50 C12,51.104 12.894,52 14,52 L14,52 Z M42,42 L50,42 C51.106,42 52,41.104 52,40 C52,38.896 51.106,38 50,38 L42,38 C40.894,38 40,38.896 40,40 C40,41.104 40.894,42 42,42 L42,42 Z M84,0 L8,0 C3.582,0 0,3.582 0,8 L0,56 C0,60.418 3.582,64 8,64 L84,64 C88.418,64 92,60.418 92,56 L92,8 C92,3.582 88.418,0 84,0 L84,0 Z M5,31.5 L5,55 C5,57.208 6.74933333,59 8.9047619,59 L83.0952381,59 C85.252619,59 87,57.21 87,55 L87,31.5 L87,26 L5,26 L5,31.5 Z M87,15 L5,15 L5,9 C5,6.792 6.74933333,5 8.9047619,5 L83.0952381,5 C85.252619,5 87,6.792 87,9 L87,15 L87,15 Z" id="card-ic"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

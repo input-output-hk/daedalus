@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="44px" height="44px" viewBox="0 0 44 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 40.3 (33839) - http://www.bohemiancoding.com/sketch -->
+    <title>6EBC478C-D021-48B6-B539-2E335BBB3F0A</title>
+    <desc>Created with sketchtool.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="wallets-menu" transform="translate(-230.000000, -1614.000000)">
+            <g id="menu">
+                <g id="add-wallet-ic" transform="translate(208.000000, 1592.000000)">
+                    <circle id="Oval" cx="44" cy="44" r="44"></circle>
+                    <path d="M45,43 L45,23.0016723 C45,22.4498156 44.5522847,22 44,22 C43.4438648,22 43,22.448464 43,23.0016723 L43,43 L23.0016723,43 C22.4498156,43 22,43.4477153 22,44 C22,44.5561352 22.448464,45 23.0016723,45 L43,45 L43,64.9983277 C43,65.5501844 43.4477153,66 44,66 C44.5561352,66 45,65.551536 45,64.9983277 L45,45 L64.9983277,45 C65.5501844,45 66,44.5522847 66,44 C66,43.4438648 65.551536,43 64.9983277,43 L45,43 Z" id="add-ic" fill="#FAFBFC"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

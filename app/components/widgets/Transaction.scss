@@ -1,0 +1,111 @@
+@import '../../themes/daedalus/theme';
+
+.component {
+  width: 100%;
+  display: flex;
+  color: #5e6066;
+}
+
+// ========= TYPE INDICATORS FOR TRANSACTIONS =========
+
+%type-box {
+  width: 54px;
+  height: 54px;
+  background: no-repeat center;
+  background-size: 30px;
+  border-radius: 10px;
+}
+
+.card {
+  @extend %type-box;
+  background-color: #e6ebf2;
+  background-image: url("../../assets/images/card-payment-ic.svg");
+}
+
+.adaIncome {
+  @extend %type-box;
+  background-color: #e6f2e6;
+  background-image: url("../../assets/images/receive-ic.svg");
+}
+
+.adaExpend {
+  @extend %type-box;
+  background-color: #f2e6e6;
+  background-image: url("../../assets/images/send-ic.svg");
+}
+
+.exchange {
+  @extend %type-box;
+  background-color: #f2f0e6;
+  background-image: url("../../assets/images/exchange-ic.svg");
+}
+
+// ========= DETAILS =========
+
+.content {
+  width: 100%;
+  margin-left: 20px;
+  border-bottom: 1px solid #dfe4e8;
+  padding-bottom: 30px;
+  padding-top: 6px;
+}
+
+.last {
+  border: none;
+  padding-bottom: 0;
+}
+
+.details {
+  height: auto;
+  h2 {
+    font-family: $font-medium;
+    font-size: 16px;
+    margin-bottom: 8px;
+    margin-top: 20px;
+  }
+  span {
+    font-family: $font-light;
+    font-size: 14px;
+  }
+}
+
+.closed {
+  max-height: 0;
+  overflow: hidden;
+}
+
+.expanded {
+  max-height: 100%;
+}
+
+.header {
+  display: flex;
+  width: 100%;
+  cursor: pointer;
+}
+
+.title, .amount {
+  font-size: 16px;
+  font-family: $font-semibold;
+}
+
+.amount {
+  margin-left: auto;
+  font-family: $font-medium;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.type {
+  font-family: $font-light;
+  font-size: 14px;
+  margin-top: 8px;
+}
+
+.conversion {
+  display: flex;
+}
+
+.conversionRate {
+  margin-left: 76px;
+}

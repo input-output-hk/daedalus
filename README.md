@@ -26,6 +26,21 @@ $ npm run start-hot
 *Note: requires a node version >= 4 and an npm version >= 3. This project
 defaults to 6.x*
 
+## Testing
+
+You can run the test suite in two different modes during development
+(Currently you always need to run `npm run dev` before that) 
+
+**One-time run:**
+```bash
+$ npm run test
+```
+
+**Watch & Rerun on file changes:**
+```bash
+$ npm run test-watch
+```
+
 ## CSS Modules
 
 This boilerplate out of the box is configured to use [css-modules](https://github.com/css-modules/css-modules).

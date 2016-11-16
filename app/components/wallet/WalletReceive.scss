@@ -1,0 +1,51 @@
+.component {
+  width: calc(100% - 40px);
+  margin: 0 auto;
+  margin-top: 50px;
+  line-height: 1.4;
+  letter-spacing: 0.5px;
+  text-align: center;
+  color: #5e6066;
+}
+
+.heading {
+  font-size: 18px;
+  font-family: $font-medium;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  strong {
+    font-family: $font-bold;
+  }
+}
+
+.qrCode {
+  text-align: center;
+  padding: 20px 0 ;
+}
+
+.hash {
+  font-size: 19px;
+  font-family: $font-medium;
+  padding-bottom: 10px;
+  letter-spacing: 1px;
+}
+
+.instructions {
+  font-family: $font-regular;
+  font-size: 14px;
+  line-height: 1.4;
+  text-align: center;
+  color: #5e6066;
+  max-width: 640px;
+  margin: 0 auto 20px auto;
+  a {
+    font-size: 14px;
+    font-family: $font-semibold;
+    color: #345078;
+  }
+}
+
+.submitButton {
+  width: 100%;
+  text-transform: uppercase;
+}
