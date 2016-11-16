@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { observer, PropTypes } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
-import styles from './WalletHome.scss';
-import Transaction, { transactionShape } from '../widgets/Transaction';
+import styles from './WalletTransactionsList.scss';
+import Transaction, { transactionShape } from '../../widgets/Transaction';
 
 defineMessages({
 
@@ -13,7 +13,7 @@ defineMessages({
 const dateFormat = 'YYYY-MM-DD';
 
 @observer
-export default class WalletHome extends Component {
+export default class WalletTransactionsList extends Component {
 
   static propTypes = {
     transactions: PropTypes.arrayOrObservableArrayOf(transactionShape).isRequired,
