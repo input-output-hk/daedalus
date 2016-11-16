@@ -36,7 +36,7 @@ export default class App extends Component {
     if (wallet) {
       initialPage = (
         <div>
-          <Match pattern="/" exactly render={() => <Redirect to={`/wallet/${wallet.address}`} />} />
+          <Match pattern="/" exactly render={() => <Redirect to={`/wallet/${wallet.address}/home`} />} />
           <Match pattern="/wallet/:id" component={Wallet} />
         </div>
       );

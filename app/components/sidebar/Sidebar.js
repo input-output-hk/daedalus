@@ -17,7 +17,8 @@ export default class Sidebar extends Component {
       wallets: PropTypes.shape({
         items: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.object).isRequired,
         actions: PropTypes.shape({
-          onAddWallet: PropTypes.func.isRequired,
+          onAddWallet: PropTypes.func,
+          onWalletItemClick: PropTypes.func
         })
       })
     }).isRequired,
@@ -41,6 +42,7 @@ export default class Sidebar extends Component {
         visible={this.matches('/wallets')}
         wallets={menus.wallets.items}
         onAddWallet={menus.wallets.actions.onAddWallet}
+        onWalletItemClick={menus.wallets.actions.onWalletItemClick}
         isActiveWallet={(id) => this.matches(`/wallets/${id}`)}
       />
     ) : null;

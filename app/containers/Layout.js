@@ -17,6 +17,9 @@ export default class Layout extends Component {
       sidebar: PropTypes.shape({
         changeSidebarRoute: PropTypes.func.isRequired,
         toggleSidebar: PropTypes.func.isRequired,
+      }),
+      wallets: PropTypes.shape({
+        setActiveWallet: PropTypes.func.isRequired
       })
     }),
     children: oneOrManyChildElements
@@ -29,7 +32,8 @@ export default class Layout extends Component {
       wallets: {
         items: sidebar.wallets,
         actions: {
-          onAddWallet: () => {}
+          onAddWallet: () => {},
+          onWalletItemClick: (wallet) => controller.wallets.setActiveWallet(wallet)
         }
       }
     };

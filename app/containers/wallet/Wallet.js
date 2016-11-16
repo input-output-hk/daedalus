@@ -16,25 +16,13 @@ export default class Wallet extends Component {
         wallet: MobxPropTypes.observableObject,
       })
     }),
-    controller: PropTypes.shape({
-      wallets: PropTypes.shape({
-        switchWallet: PropTypes.func.isRequired,
-      })
-    }),
     pathname: PropTypes.string.isRequired,
-    params: PropTypes.shape({
-      id: PropTypes.string.isRequired
-    })
   };
 
   render() {
     const { activeWallet } = this.props.state;
     const { wallet } = activeWallet;
     const walletPath = this.props.pathname;
-    const { params } = this.props;
-    if (params.id !== wallet.address) {
-      this.props.controller.wallets.switchWallet(params.id);
-    }
     return (
       <Layout>
         <WalletWithNavigation wallet={wallet}>

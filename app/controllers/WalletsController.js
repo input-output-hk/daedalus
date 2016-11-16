@@ -46,15 +46,16 @@ export default class WalletsController {
     }
   }
 
-  @action setActiveWallet(wallet: Wallet) {
-    this.state.activeWallet.wallet = wallet;
+  @action setActiveWallet(walletId: string|Wallet) {
+    let wallet = walletId;
+    if (_.isString(walletId)) {
+      wallet = _.find(this.state.account.wallets, { address: wallet });
+    }
+    const activeWallet = this.state.activeWallet;
+    if (wallet === activeWallet.wallet) return;
+    activeWallet.wallet = wallet;
     this.loadActiveWalletTransactions();
-  }
-
-  @action switchWallet(walletAddress: string) {
-    const wallet = _.find(this.state.account.wallets, { address: walletAddress });
-    this.state.activeWallet.wallet = wallet;
-    this.loadActiveWalletTransactions();
+    if (this.state.router) this.state.router.transitionTo(`/wallet/${wallet.address}/home`);
   }
 
   @action async sendMoney(transactionDetails: {
@@ -72,7 +73,7 @@ export default class WalletsController {
         currency: wallet.currency
       });
       wallet.addTransaction(new WalletTransaction(transaction));
-      if (this.state.router) this.state.router.transitionTo('/wallet/home');
+      if (this.state.router) this.state.router.transitionTo(`/wallet/${wallet.address}/home`);
     } catch (error) {
       activeWallet.errorSendingMoney = error;
     }

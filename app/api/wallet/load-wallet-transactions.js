@@ -1,12 +1,7 @@
 // @flow
 import moment from 'moment';
 
-export const loadWalletTransactions = (data: {
-  address: string
-}) => new Promise((resolve) => {
-  // Only main wallet gets default transactions
-  if (data.address !== '13GvjwDkz8s8ZmGQjwVLNUXrNXdSmQa72x') resolve([]);
-
+export const loadWalletTransactions = () => new Promise((resolve) => {
   resolve([
     {
       id: 't-id-1',
