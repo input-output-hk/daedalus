@@ -15,15 +15,18 @@ export default class Layout extends Component {
       activeWallet: PropTypes.shape({
         wallet: PropTypes.shape({
           address: PropTypes.string.isRequired
-        })
-      })
-    }),
+        }).isRequired
+      }).isRequired
+    }).isRequired,
     controller: PropTypes.shape({
       sidebar: PropTypes.shape({
         changeSidebarRoute: PropTypes.func.isRequired,
         toggleSidebar: PropTypes.func.isRequired,
-      }),
-    }),
+      }).isRequired,
+      wallets: PropTypes.shape({
+        setActiveWallet: PropTypes.func.isRequired
+      }).isRequired
+    }).isRequired,
     children: oneOrManyChildElements
   };
 
