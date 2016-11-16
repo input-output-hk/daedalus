@@ -37,6 +37,7 @@ export default class WalletsController {
       const transactions = await api.loadWalletTransactions({
         address: wallet.address
       });
+      wallet.transactions.clear();
       for (const transaction of transactions) {
         wallet.addTransaction(new WalletTransaction(transaction));
       }
