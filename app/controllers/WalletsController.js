@@ -33,19 +33,23 @@ export default class WalletsController {
     const { activeWallet } = this.state;
     const { wallet } = activeWallet;
     if (!wallet === null) throw new Error('No active wallet');
+    activeWallet.isLoadingTransactions = true;
     try {
-      const transactions = await api.loadWalletTransactions({
+      const result = await api.loadWalletTransactions({
         address: wallet.address,
-        searchTerm: this.state.activeWallet.transactionsSearchTerm
+        searchTerm: activeWallet.transactionsSearchTerm,
+        limit: activeWallet.transactionsSearchLimit
       });
       wallet.transactions.clear();
-      for (const transaction of transactions) {
+      for (const transaction of result.transactions) {
         wallet.addTransaction(new WalletTransaction(transaction));
       }
+      activeWallet.totalAvailableTransactions = result.total;
     } catch (error) {
       activeWallet.errorLoadingTransactions = error;
       // TODO: handling errors from backend and i18n
     }
+    activeWallet.isLoadingTransactions = false;
   }
 
   @action setActiveWallet(walletId: string|Wallet) {
@@ -98,4 +102,8 @@ export default class WalletsController {
     this.loadActiveWalletTransactions();
   }
 
+  @action loadMoreTransactions() {
+    this.state.activeWallet.transactionsSearchLimit += 10;
+    this.loadActiveWalletTransactions();
+  }
 }

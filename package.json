@@ -97,6 +97,7 @@
     "classnames": "^2.2.5",
     "css-modules-require-hook": "^4.0.5",
     "electron-debug": "^1.0.1",
+    "faker": "^3.1.0",
     "immutability-helper": "^2.0.0",
     "lodash": "^4.17.2",
     "mobx": "^2.6.0",
