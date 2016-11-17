@@ -35,7 +35,6 @@ export default class WalletsController {
     if (!wallet === null) throw new Error('No active wallet');
     activeWallet.isLoadingTransactions = true;
     try {
-      console.log(activeWallet.transactionsSearchLimit);
       const result = await api.loadWalletTransactions({
         address: wallet.address,
         searchTerm: activeWallet.transactionsSearchTerm,
