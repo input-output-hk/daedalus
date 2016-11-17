@@ -36,7 +36,8 @@ export default class WalletsController {
     try {
       const transactions = await api.loadWalletTransactions({
         address: wallet.address,
-        searchTerm: this.state.activeWallet.transactionsSearchTerm
+        searchTerm: activeWallet.transactionsSearchTerm,
+        limit: activeWallet.transactionsSearchLimit
       });
       wallet.transactions.clear();
       for (const transaction of transactions) {

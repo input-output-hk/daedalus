@@ -28,7 +28,7 @@ export default class WalletHomePage extends Component {
   render() {
     const { wallet, transactionsSearchTerm } = this.props.state.activeWallet;
     return (
-      <div>
+      <div style={{ height: '100%', padding: '20px' }}>
         <WalletTransactionsSearch
           searchTerm={transactionsSearchTerm}
           onChange={this.handleSearchInputChange.bind(this)}
