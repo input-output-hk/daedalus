@@ -1,6 +1,6 @@
 // @flow
-import React, { Component } from 'react';
-import { observer, PropTypes } from 'mobx-react';
+import React, { Component, PropTypes } from 'react';
+import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import classnames from 'classnames';
@@ -17,7 +17,10 @@ const dateFormat = 'YYYY-MM-DD';
 export default class WalletTransactionsList extends Component {
 
   static propTypes = {
-    transactions: PropTypes.arrayOrObservableArrayOf(transactionShape).isRequired,
+    transactions: MobxPropTypes.arrayOrObservableArrayOf(transactionShape).isRequired,
+    isLoadingTransactions: PropTypes.bool.isRequired,
+    hasMoreToLoad: PropTypes.bool.isRequired,
+    onLoadMore: PropTypes.func.isRequired
   };
 
   static contextTypes = {
@@ -26,7 +29,7 @@ export default class WalletTransactionsList extends Component {
 
   state = {
     topShadow: false,
-    bottomShadow: false
+    bottomShadow: false,
   };
 
   componentDidMount() {
@@ -34,6 +37,7 @@ export default class WalletTransactionsList extends Component {
   }
 
   list: HTMLElement;
+  loadingSpinner: HTMLElement;
 
   groupTransactionsByDay(transactions:[Object]) {
     const groups = [];
@@ -64,10 +68,27 @@ export default class WalletTransactionsList extends Component {
     this.setState({ topShadow, bottomShadow });
   }
 
+  isSpinnerVisible() {
+    if (this.loadingSpinner == null) return false;
+    const spinnerRect = this.loadingSpinner.getBoundingClientRect();
+    const viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+    return !(spinnerRect.bottom < 0 || spinnerRect.top - viewHeight >= 0);
+  }
+
+  handleListScroll() {
+    this.calcShadows();
+    const { hasMoreToLoad, isLoadingTransactions, onLoadMore } = this.props;
+    if (this.isSpinnerVisible() && hasMoreToLoad && !isLoadingTransactions) {
+      onLoadMore();
+    }
+  }
+
   render() {
     const { topShadow, bottomShadow } = this.state;
+    const { transactions, isLoadingTransactions, hasMoreToLoad } = this.props;
+    const transactionsGroups = this.groupTransactionsByDay(transactions);
+
     let shadowStyle = null;
-    const transactionsGroups = this.groupTransactionsByDay(this.props.transactions);
     if (topShadow && bottomShadow) {
       shadowStyle = styles.bothShadows;
     } else {
@@ -75,10 +96,13 @@ export default class WalletTransactionsList extends Component {
       if (bottomShadow) shadowStyle = styles.onlyBottomShadow;
     }
     const componentStyles = classnames([styles.component, shadowStyle]);
+    const loadingSpinner = isLoadingTransactions || hasMoreToLoad ? (
+      <div className={styles.spinner} ref={(div) => { this.loadingSpinner = div; }} />
+    ) : null;
     return (
       <div
         className={componentStyles}
-        onScroll={this.calcShadows.bind(this)}
+        onScroll={this.handleListScroll.bind(this)}
         ref={(div) => { this.list = div; }}
       >
         {transactionsGroups.map((group, groupIndex) => (
@@ -96,6 +120,7 @@ export default class WalletTransactionsList extends Component {
             </div>
           </div>
         ))}
+        {loadingSpinner}
       </div>
     );
   }

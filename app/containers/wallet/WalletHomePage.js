@@ -11,7 +11,10 @@ export default class WalletHomePage extends Component {
     state: PropTypes.shape({
       activeWallet: PropTypes.shape({
         wallet: MobxPropTypes.observableObject.isRequired,
-        transactionsSearchTerm: PropTypes.string.isRequired
+        isLoadingTransactions: PropTypes.bool.isRequired,
+        transactionsSearchTerm: PropTypes.string.isRequired,
+        transactionsSearchLimit: PropTypes.number.isRequired,
+        totalAvailableTransactions: PropTypes.number.isRequired,
       }).isRequired
     }).isRequired,
     controller: PropTypes.shape({
@@ -26,14 +29,26 @@ export default class WalletHomePage extends Component {
   }
 
   render() {
-    const { wallet, transactionsSearchTerm } = this.props.state.activeWallet;
+    const { controller } = this.props;
+    const {
+      wallet,
+      transactionsSearchTerm,
+      isLoadingTransactions,
+      transactionsSearchLimit,
+      totalAvailableTransactions
+    } = this.props.state.activeWallet;
     return (
       <div style={{ height: '100%', padding: '20px' }}>
         <WalletTransactionsSearch
           searchTerm={transactionsSearchTerm}
           onChange={this.handleSearchInputChange.bind(this)}
         />
-        <WalletTransactionsList transactions={wallet.transactions} />
+        <WalletTransactionsList
+          transactions={wallet.transactions}
+          isLoadingTransactions={isLoadingTransactions}
+          hasMoreToLoad={totalAvailableTransactions > transactionsSearchLimit}
+          onLoadMore={() => controller.wallets.loadMoreTransactions()}
+        />
       </div>
     );
   }

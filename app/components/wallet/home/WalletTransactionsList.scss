@@ -1,4 +1,5 @@
 @import "../navigation/walletNavConfig";
+@import "../../../styles/mixins/loading-spinner";
 
 .component {
   margin-top: 20px;
@@ -83,4 +84,16 @@
   opacity: 0.5;
   margin-bottom: 10px;
   margin-left: 20px;
+}
+
+.spinner {
+  margin: 20px auto;
+  width: 30px;
+  height: 30px;
+  background: url("../../../assets/images/spinner-dark.svg") no-repeat center;
+  background-size: 30px;
+  :global {
+    animation: loading-spin 1.5s linear;
+    animation-iteration-count: infinite;
+  }
 }
