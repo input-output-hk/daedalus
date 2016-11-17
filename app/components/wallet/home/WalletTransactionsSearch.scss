@@ -1,0 +1,23 @@
+
+.component {
+  margin: 20px;
+
+  :global {
+
+    .input_input {
+      padding: 0;
+    }
+
+    .input_inputElement {
+      border-radius: 4px;
+      background: url("../../../assets/images/search-ic.svg") no-repeat 20px center;
+      background-size: 15px;
+      padding-left: 54px;
+    }
+
+    .input_hint {
+      top: 1rem;
+      left: 54px;
+    }
+  }
+}

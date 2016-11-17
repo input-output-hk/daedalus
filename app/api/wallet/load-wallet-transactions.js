@@ -121,7 +121,11 @@ const transactions = {
 };
 
 export const loadWalletTransactions = (data: {
-  address: string
+  address: string,
+  searchTerm: string
 }) => new Promise((resolve) => {
-  resolve(transactions[data.address] ? transactions[data.address] : []);
+  const { address, searchTerm } = data;
+  const regexp = new RegExp(searchTerm, 'i');
+  const walletTransactions = transactions[address] ? transactions[address] : [];
+  resolve(walletTransactions.filter((transaction) => regexp.test(transaction.title)));
 });
