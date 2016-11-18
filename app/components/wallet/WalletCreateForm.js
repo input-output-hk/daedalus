@@ -64,7 +64,8 @@ const options = {
 export default class WalletCreateForm extends Component {
 
   static propTypes = {
-    onSubmit: PropTypes.func.isRequired
+    onSubmit: PropTypes.func.isRequired,
+    onCancel: PropTypes.func
   };
 
   static contextTypes = {
@@ -118,6 +119,7 @@ export default class WalletCreateForm extends Component {
           className={this.state.isSubmitting ? styles.isSubmitting : null}
           title="Create Wallet"
           actions={this.actions}
+          onOverlayClick={this.props.onCancel}
           active
         >
 
