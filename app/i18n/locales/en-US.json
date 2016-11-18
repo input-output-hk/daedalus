@@ -17,9 +17,9 @@
   "wallet.receive.page.instructions": "Share this wallet address to receive payments. To protect your privacy, new addresses are generated automatically once you use them.",
   "wallet.receive.page.generate.new.address.label": "Generate new address",
   "wallet.receive.page.request.specific.amount.button.label": "Request a specific amount",
-  "wallet.create.form.name.label": "Wallet Name",
-  "wallet.create.form.currency.label": "Currency",
-  "wallet.create.form.errors.invalidWalletName": "Requires at least 3 letters.",
-  "wallet.create.form.errors.invalidCurrency": "This currency is not yet supported.",
+  "wallet.create.dialog.name.label": "Wallet Name",
+  "wallet.create.dialog.currency.label": "Currency",
+  "wallet.create.dialog.errors.invalidWalletName": "Requires at least 3 letters.",
+  "wallet.create.dialog.errors.invalidCurrency": "This currency is not yet supported.",
   "wallet.transactions.search.hint": "Search transaction"
 }

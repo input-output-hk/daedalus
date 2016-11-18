@@ -6,26 +6,26 @@ import Input from 'react-toolbox/lib/input/Input';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
-import styles from './WalletCreateForm.scss';
+import styles from './WalletCreateDialog.scss';
 
 const messages = defineMessages({
   walletName: {
-    id: 'wallet.create.form.name.label',
+    id: 'wallet.create.dialog.name.label',
     defaultMessage: '!!!Wallet Name',
     description: 'Label for the "Wallet Name" text input in the wallet create form.'
   },
   currency: {
-    id: 'wallet.create.form.currency.label',
+    id: 'wallet.create.dialog.currency.label',
     defaultMessage: '!!!Currency',
     description: 'Label for the "Currency" dropdown in the wallet create form.'
   },
   invalidWalletName: {
-    id: 'wallet.create.form.errors.invalidWalletName',
+    id: 'wallet.create.dialog.errors.invalidWalletName',
     defaultMessage: '!!!The wallet name must have at least 3 letters.',
     description: 'Error message shown when invalid wallet name was entered in create wallet dialog.'
   },
   invalidCurrency: {
-    id: 'wallet.create.form.errors.invalidCurrency',
+    id: 'wallet.create.dialog.errors.invalidCurrency',
     defaultMessage: '!!!This currency is not yet supported.',
     description: 'Error message shown when invalid currency was selected in create wallet dialog.'
   },
@@ -61,7 +61,7 @@ const options = {
 };
 
 @observer
-export default class WalletCreateForm extends Component {
+export default class WalletCreateDialog extends Component {
 
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,

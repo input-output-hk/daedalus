@@ -5,7 +5,7 @@ import Sidebar from '../components/sidebar/Sidebar';
 import AppBar from '../components/layout/AppBar';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import { oneOrManyChildElements } from '../propTypes';
-import WalletCreateForm from '../components/wallet/WalletCreateForm';
+import WalletCreateDialog from '../components/wallet/WalletCreateDialog';
 
 @observer(['state', 'controller'])
 export default class Layout extends Component {
@@ -72,7 +72,7 @@ export default class Layout extends Component {
     );
     const appbar = <AppBar onToggleSidebar={() => controller.sidebar.toggleSidebar()} />;
     const addWalletDialog = this.state.isAddingWallet ? (
-      <WalletCreateForm
+      <WalletCreateDialog
         onSubmit={this.handleAddWalletSubmit.bind(this)}
         onCancel={this.cancelAddWalletDialog.bind(this)}
       />
