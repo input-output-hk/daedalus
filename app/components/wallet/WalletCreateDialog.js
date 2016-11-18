@@ -76,14 +76,18 @@ export default class WalletCreateDialog extends Component {
     isSubmitting: false
   };
 
+  componentDidMount() {
+    this.walletNameInput.getWrappedInstance().focus();
+  }
+
+  walletNameInput: Input;
+  validator = new MobxReactForm({ options, fields });
   actions = [
     {
       label: 'Create personal wallet',
       onClick: this.submit.bind(this)
     }
   ];
-
-  validator = new MobxReactForm({ options, fields });
 
   submit() {
     this.validator.submit({
@@ -133,6 +137,7 @@ export default class WalletCreateDialog extends Component {
             onFocus={walletName.onFocus}
             onBlur={walletName.onBlur}
             onKeyPress={this.checkForEnterKey.bind(this)}
+            ref={(input) => { this.walletNameInput = input; }}
           />
 
           <Dropdown
