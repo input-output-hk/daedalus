@@ -6,26 +6,26 @@ import Input from 'react-toolbox/lib/input/Input';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
-import styles from './WalletCreateForm.scss';
+import styles from './WalletCreateDialog.scss';
 
 const messages = defineMessages({
   walletName: {
-    id: 'wallet.create.form.name.label',
+    id: 'wallet.create.dialog.name.label',
     defaultMessage: '!!!Wallet Name',
     description: 'Label for the "Wallet Name" text input in the wallet create form.'
   },
   currency: {
-    id: 'wallet.create.form.currency.label',
+    id: 'wallet.create.dialog.currency.label',
     defaultMessage: '!!!Currency',
     description: 'Label for the "Currency" dropdown in the wallet create form.'
   },
   invalidWalletName: {
-    id: 'wallet.create.form.errors.invalidWalletName',
+    id: 'wallet.create.dialog.errors.invalidWalletName',
     defaultMessage: '!!!The wallet name must have at least 3 letters.',
     description: 'Error message shown when invalid wallet name was entered in create wallet dialog.'
   },
   invalidCurrency: {
-    id: 'wallet.create.form.errors.invalidCurrency',
+    id: 'wallet.create.dialog.errors.invalidCurrency',
     defaultMessage: '!!!This currency is not yet supported.',
     description: 'Error message shown when invalid currency was selected in create wallet dialog.'
   },
@@ -61,10 +61,11 @@ const options = {
 };
 
 @observer
-export default class WalletCreateForm extends Component {
+export default class WalletCreateDialog extends Component {
 
   static propTypes = {
-    onSubmit: PropTypes.func.isRequired
+    onSubmit: PropTypes.func.isRequired,
+    onCancel: PropTypes.func
   };
 
   static contextTypes = {
@@ -75,14 +76,18 @@ export default class WalletCreateForm extends Component {
     isSubmitting: false
   };
 
+  componentDidMount() {
+    this.walletNameInput.getWrappedInstance().focus();
+  }
+
+  walletNameInput: Input;
+  validator = new MobxReactForm({ options, fields });
   actions = [
     {
       label: 'Create personal wallet',
       onClick: this.submit.bind(this)
     }
   ];
-
-  validator = new MobxReactForm({ options, fields });
 
   submit() {
     this.validator.submit({
@@ -118,6 +123,7 @@ export default class WalletCreateForm extends Component {
           className={this.state.isSubmitting ? styles.isSubmitting : null}
           title="Create Wallet"
           actions={this.actions}
+          onOverlayClick={this.props.onCancel}
           active
         >
 
@@ -131,6 +137,7 @@ export default class WalletCreateForm extends Component {
             onFocus={walletName.onFocus}
             onBlur={walletName.onBlur}
             onKeyPress={this.checkForEnterKey.bind(this)}
+            ref={(input) => { this.walletNameInput = input; }}
           />
 
           <Dropdown

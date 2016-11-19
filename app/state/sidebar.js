@@ -11,7 +11,7 @@ export type sidebarState = {
 export default (state: appState): sidebarState => ({
   route: '/wallets',
   hidden: false,
-  showMenu: false,
+  showMenu: true,
   wallets: () => (
     state.account.wallets.map(wallet => ({
       id: wallet.address,

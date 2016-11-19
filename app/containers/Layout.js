@@ -5,6 +5,7 @@ import Sidebar from '../components/sidebar/Sidebar';
 import AppBar from '../components/layout/AppBar';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import { oneOrManyChildElements } from '../propTypes';
+import WalletCreateDialog from '../components/wallet/WalletCreateDialog';
 
 @observer(['state', 'controller'])
 export default class Layout extends Component {
@@ -24,11 +25,28 @@ export default class Layout extends Component {
         toggleSidebar: PropTypes.func.isRequired,
       }).isRequired,
       wallets: PropTypes.shape({
-        setActiveWallet: PropTypes.func.isRequired
+        setActiveWallet: PropTypes.func.isRequired,
+        createPersonalWallet: PropTypes.func.isRequired
       }).isRequired
     }).isRequired,
     children: oneOrManyChildElements
   };
+
+  state = {
+    isAddingWallet: false
+  };
+
+  handleAddWalletSubmit(values: Object) {
+    this.props.controller.wallets.createPersonalWallet({
+      name: values.walletName,
+      currency: values.currency,
+    });
+    this.cancelAddWalletDialog();
+  }
+
+  cancelAddWalletDialog() {
+    this.setState({ isAddingWallet: false });
+  }
 
   render() {
     const { sidebar, activeWallet } = this.props.state;
@@ -37,7 +55,7 @@ export default class Layout extends Component {
       wallets: {
         items: sidebar.wallets,
         actions: {
-          onAddWallet: () => {},
+          onAddWallet: () => this.setState({ isAddingWallet: true }),
           onWalletItemClick: (wallet) => controller.wallets.setActiveWallet(wallet)
         }
       }
@@ -53,9 +71,16 @@ export default class Layout extends Component {
       />
     );
     const appbar = <AppBar onToggleSidebar={() => controller.sidebar.toggleSidebar()} />;
+    const addWalletDialog = this.state.isAddingWallet ? (
+      <WalletCreateDialog
+        onSubmit={this.handleAddWalletSubmit.bind(this)}
+        onCancel={this.cancelAddWalletDialog.bind(this)}
+      />
+    ) : null;
     return (
       <SidebarLayout sidebar={sidebarComponent} appbar={appbar}>
         {this.props.children}
+        {addWalletDialog}
       </SidebarLayout>
     );
   }
