@@ -54,19 +54,19 @@ export default class Sidebar extends Component {
     }
     return (
       <div className={sidebarStyles}>
-        <div className={subMenu ? styles.minimized : styles.maximized}>
+        <div className={subMenu != null ? styles.minimized : styles.maximized}>
           <SidebarCategory
             label="Wallets"
             icon={walletsIcon}
             active={this.matches('/wallets')}
-            minimized={subMenu}
+            minimized={subMenu != null}
             onClick={() => onCategoryClicked('/wallets')}
           />
           <SidebarCategory
             label="Settings"
             icon={settingsIcon}
             active={this.matches('/settings')}
-            minimized={subMenu}
+            minimized={subMenu != null}
             onClick={() => onCategoryClicked('/settings')}
           />
         </div>

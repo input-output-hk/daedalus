@@ -1,0 +1,22 @@
+[
+  {
+    "id": "wallet.create.dialog.name.label",
+    "description": "Label for the \"Wallet Name\" text input in the wallet create form.",
+    "defaultMessage": "!!!Wallet Name"
+  },
+  {
+    "id": "wallet.create.dialog.currency.label",
+    "description": "Label for the \"Currency\" dropdown in the wallet create form.",
+    "defaultMessage": "!!!Currency"
+  },
+  {
+    "id": "wallet.create.dialog.errors.invalidWalletName",
+    "description": "Error message shown when invalid wallet name was entered in create wallet dialog.",
+    "defaultMessage": "!!!The wallet name must have at least 3 letters."
+  },
+  {
+    "id": "wallet.create.dialog.errors.invalidCurrency",
+    "description": "Error message shown when invalid currency was selected in create wallet dialog.",
+    "defaultMessage": "!!!This currency is not yet supported."
+  }
+]

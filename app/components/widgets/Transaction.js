@@ -72,7 +72,7 @@ export default class Transaction extends Component {
 
           <button className={styles.header} onClick={this.toggleDetails.bind(this)}>
             <div className={styles.title}>{data.title}</div>
-            <div className={styles.amount}>{data.amount} {data.currency}</div>
+            <div className={styles.amount}>{data.amount.toFixed(2)} {data.currency}</div>
           </button>
 
           <div className={styles.type}>{intl.formatMessage(messages[typeMessage])}</div>

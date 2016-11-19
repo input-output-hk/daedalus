@@ -1,4 +1,5 @@
 // @flow
+import faker from 'faker';
 
 export const createPersonalWallet = (data: {
   name: string,
@@ -6,7 +7,7 @@ export const createPersonalWallet = (data: {
 }) => new Promise((resolve) => {
   resolve(Object.assign({}, data, {
     type: 'personal',
-    address: '16CCkRJ8sdok7FicNuuNdNv1bG9QVegkA7',
+    address: faker.finance.bitcoinAddress(),
     amount: 0,
   }));
 });

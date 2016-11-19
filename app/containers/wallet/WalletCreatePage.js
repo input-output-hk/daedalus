@@ -1,7 +1,7 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
-import WalletCreateForm from '../../components/wallet/WalletCreateForm';
+import WalletCreateDialog from '../../components/wallet/WalletCreateDialog';
 
 @observer(['controller'])
 export default class WalletCreatePage extends Component {
@@ -23,7 +23,7 @@ export default class WalletCreatePage extends Component {
 
   render() {
     return (
-      <WalletCreateForm onSubmit={this.handleFormSubmit.bind(this)} />
+      <WalletCreateDialog onSubmit={this.handleFormSubmit.bind(this)} />
     );
   }
 

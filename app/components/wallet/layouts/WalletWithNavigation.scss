@@ -1,4 +1,10 @@
+@import "../navigation/walletNavConfig";
+
 .component {
   background-color: $color-primary-bg;
   height: 100%;
+}
+
+.page {
+  height: calc(100% - #{$walletNavHeight});
 }
