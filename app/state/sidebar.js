@@ -2,6 +2,7 @@
 import type { appState } from './index';
 
 export type sidebarState = {
+  state: appState,
   route: string,
   hidden: bool,
   showMenu: bool,
@@ -9,11 +10,12 @@ export type sidebarState = {
 };
 
 export default (state: appState): sidebarState => ({
+  state,
   route: '/wallets',
   hidden: false,
   showMenu: true,
   wallets: () => (
-    state.account.wallets.map(wallet => ({
+    state.account.userAccount.wallets.map(wallet => ({
       id: wallet.address,
       title: wallet.name,
       info: `${wallet.amount} ${wallet.currency}`

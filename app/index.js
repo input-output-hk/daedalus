@@ -15,6 +15,7 @@ addLocaleData([en, de]);
 
 const appState = state();
 const controller = new AppController(appState);
+controller.account.loadAccount();
 controller.wallets.loadWallets();
 
 const routedApp = (
