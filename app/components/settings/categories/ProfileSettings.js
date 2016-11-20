@@ -6,7 +6,7 @@ import moment from 'moment';
 import Input from 'react-toolbox/lib/input/Input';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import FileUploadWidget from '../../widgets/FileUploadWidget';
-import Profile from '../../../domain/Profile';
+import UserProfile from '../../../domain/UserProfile';
 import styles from './ProfileSettings.scss';
 
 const messages = defineMessages({
@@ -56,7 +56,7 @@ const languages = [
 export default class ProfileSettings extends Component {
 
   static propTypes = {
-    profile: PropTypes.instanceOf(Profile).isRequired
+    profile: PropTypes.instanceOf(UserProfile).isRequired
   };
 
   static contextTypes = {

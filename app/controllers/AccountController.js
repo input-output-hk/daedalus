@@ -1,7 +1,7 @@
 // @flow
 import { action } from 'mobx';
 import type { appState } from '../state/index';
-import Profile from '../domain/Profile';
+import UserProfile from '../domain/UserProfile';
 import api from '../api';
 
 export default class WalletsController {
@@ -18,7 +18,7 @@ export default class WalletsController {
     try {
       const accountData = await api.loadAccount();
       const { profile } = accountData;
-      account.userAccount.profile = new Profile(profile);
+      account.userAccount.profile = new UserProfile(profile);
       account.isLoading = false;
     } catch (error) {
       account.errorLoading = 'Error loading account data'; // TODO: i18n
@@ -28,10 +28,15 @@ export default class WalletsController {
 
   @action async updateName(newNameData: { name: string }) {
     const { account } = this.state;
+    if (!account.userAccount.profile) {
+      account.errorUpdatingName = 'Can not update name since profile data is not loaded'; // TODO: i18n
+      return;
+      // TODO: Find a solution to remove this if statement
+    }
     account.isUpdatingName = true;
     try {
       await api.updateName(newNameData);
-      // account.userAccount.profile.name = newNameData.name;
+      account.userAccount.profile.name = newNameData.name;
       account.isUpdatingName = false;
     } catch (error) {
       account.errorUpdatingName = 'Error updating name'; // TODO: i18n
