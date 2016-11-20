@@ -1,10 +1,11 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
+import { MemoryRouter as Router } from 'react-router';
 import SidebarWalletsMenu from '../app/components/sidebar/menus/SidebarWalletsMenu';
 
 storiesOf('SidebarWalletsMenu', module)
 
-  .addDecorator((story) => (<div style={{ width: '360px' }}>{story()}</div>))
+  .addDecorator((story) => (<Router><div style={{ width: '360px' }}>{story()}</div></Router>))
 
   // ====== Stories ======
 
