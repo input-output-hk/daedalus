@@ -2,5 +2,7 @@
 import wallets from '../data/wallets.json';
 
 export const loadWallets = () => new Promise((resolve) => {
-  resolve(wallets);
+  setTimeout(() => {
+    resolve(wallets);
+  }, 1000);
 });

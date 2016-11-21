@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { Match, Redirect } from 'react-router';
 import { observer } from 'mobx-react';
 import Layout from '../Layout';
@@ -6,19 +6,8 @@ import ProfileSettingsPage from './ProfileSettingsPage';
 
 @observer(['state', 'controller'])
 export default class Settings extends Component {
-
-  static propTypes = {
-    state: PropTypes.shape({
-      login: PropTypes.shape({
-        isLoading: PropTypes.bool.isRequired
-      }).isRequired
-    }).isRequired
-  };
-
   render() {
     const settingsPath = '/settings';
-    const { isLoading } = this.props.state.login;
-    if (isLoading) return <div>Loading</div>;
     return (
       <Layout>
         <div style={{ height: '100%' }}>

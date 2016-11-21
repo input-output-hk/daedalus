@@ -16,6 +16,7 @@ export type appState = {
   router: ?Object,
   i18n: Object,
   login: loginState,
+  isApplicationLoading: () => boolean,
   settings: settingsState,
   sidebar: sidebarState,
   activeWallet: activeWalletState
@@ -26,11 +27,13 @@ export default (): appState => {
     user: new User(),
     router: null,
     i18n: { locale: 'en-US' },
+    isApplicationLoading: false
   });
 
   extendObservable(
     state,
     {
+      isApplicationLoading: () => state.activeWallet.isLoading || state.login.isLoading,
       login: login(state),
       settings: settings(state),
       sidebar: sidebar(state),
