@@ -48,8 +48,9 @@ const messages = defineMessages({
 });
 
 const languages = [
-  { value: 'en_US', label: 'English' },
-  { value: 'de_DE', label: 'German' },
+  { value: 'en-US', label: 'English' },
+  { value: 'de-DE', label: 'German' },
+  { value: 'hr-HR', label: 'Croatian' },
 ];
 
 @observer
