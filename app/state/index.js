@@ -26,14 +26,15 @@ export default (): appState => {
   const state = observable({
     user: new User(),
     router: null,
-    i18n: { locale: 'en-US' },
-    isApplicationLoading: false
+    i18n: { locale: 'en-US' }
   });
 
   extendObservable(
     state,
     {
-      isApplicationLoading: () => state.activeWallet.isLoading || state.login.isLoading,
+      get isApplicationLoading() {
+        return state.activeWallet.isLoading || state.login.isLoading;
+      },
       login: login(state),
       settings: settings(state),
       sidebar: sidebar(state),

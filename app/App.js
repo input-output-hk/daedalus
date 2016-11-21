@@ -26,7 +26,7 @@ export default class App extends Component {
 
   render() {
     const { state, controller } = this.props;
-    if (state.isApplicationLoading()) {
+    if (state.isApplicationLoading) {
       return <div>Loading...</div>;
     }
     const { activeWallet } = this.props.state;
