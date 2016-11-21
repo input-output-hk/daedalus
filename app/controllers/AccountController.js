@@ -4,7 +4,7 @@ import type { appState } from '../state/index';
 import UserProfile from '../domain/UserProfile';
 import api from '../api';
 
-export default class WalletsController {
+export default class AccountController {
 
   state: appState;
 
@@ -25,20 +25,16 @@ export default class WalletsController {
     }
   }
 
-  @action async updateName(newNameData: { name: string }) {
+  @action async updateField(field: string, value: string) {
     const { account } = this.state;
-    if (!account.userAccount.profile) {
-      account.errorUpdatingName = 'Can not update name since profile data is not loaded'; // TODO: i18n
-      return;
-      // TODO: Find a solution to remove this if statement
-    }
-    account.isUpdatingName = true;
-    try {
-      await api.updateName(newNameData);
-      account.userAccount.profile.name = newNameData.name;
-      account.isUpdatingName = false;
-    } catch (error) {
-      account.errorUpdatingName = 'Error updating name'; // TODO: i18n
+    const { profile } = account.userAccount;
+    if (!profile) return;
+    await api.updateProfileField({ field, value });
+    switch (field) {
+      case 'name': profile.name = value; break;
+      case 'email': profile.email = value; break;
+      case 'phoneNumber': profile.phoneNumber = value; break;
+      default:
     }
   }
 

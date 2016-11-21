@@ -32,7 +32,7 @@ export default class ProfileSettingsPage extends Component {
       <Settings>
         <ProfileSettings
           profile={profile}
-          onFieldValueChange={(name) => controller.account.updateName({ name })}
+          onFieldValueChange={(field, name) => controller.account.updateField(field, name)}
         />
       </Settings>
     );
