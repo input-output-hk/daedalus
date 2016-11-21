@@ -23,6 +23,9 @@ export default class SidebarController {
     } else {
       sidebar.route = route;
       sidebar.showMenu = true;
+      if (route === '/settings') {
+        if (this.state.router) this.state.router.transitionTo(route);
+      }
     }
   }
 

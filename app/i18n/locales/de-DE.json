@@ -21,5 +21,21 @@
   "wallet.create.dialog.currency.label": "Währung",
   "wallet.create.dialog.errors.invalidWalletName": "Muss mindestens 3 Zeichen lang sein.",
   "wallet.create.dialog.errors.invalidCurrency": "Diese Währung wird derzeit noch nicht unterstützt.",
-  "wallet.transactions.search.hint": "Suche nach Transaktion"
+  "wallet.transactions.search.hint": "Suche nach Transaktion",
+  "settings.menu.profile.link.label": "Profil",
+  "settings.menu.security.link.label": "Sicherheit",
+  "settings.menu.identity.and.verification.link.label": "Identität und Verifikation",
+  "settings.menu.display.link.label": "Ansicht",
+  "settings.menu.privacy.link.label": "Privatsphäre",
+  "settings.menu.terms.of.use.link.label": "Nutzungsbedingungen",
+  "settings.menu.support.link.label": "Support",
+  "profile.settings.update.name.label": "Name",
+  "profile.settings.update.email.label": "Email",
+  "profile.settings.update.phone.number.label": "Telefonnummer",
+  "profile.settings.update.password.label": "Passwort",
+  "profile.settings.update.language.label": "Sprache",
+  "profile.settings.update.picture.label": "Profilbild",
+  "profile.settings.password.last.updated.label": "Zuletzt aktualisiert",
+  "file.upload.widget.drop.file.here.label": "Bilddatei hier ablegen",
+  "file.upload.widget.click.to.upload.label": "oder auswählen"
 }

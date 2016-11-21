@@ -1,0 +1,7 @@
+[
+  {
+    "id": "wallet.create.dialog.name.label",
+    "description": "Label for the \"Wallet Name\" text input in the wallet create form.",
+    "defaultMessage": "!!!Wallet Name"
+  }
+]

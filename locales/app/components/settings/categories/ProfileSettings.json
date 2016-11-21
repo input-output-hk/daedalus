@@ -1,0 +1,37 @@
+[
+  {
+    "id": "profile.settings.update.name.label",
+    "description": "Label for the \"Name\" text input on the profile settings page.",
+    "defaultMessage": "!!!Name"
+  },
+  {
+    "id": "profile.settings.update.email.label",
+    "description": "Label for the \"Email\" text input on the profile settings page.",
+    "defaultMessage": "!!!Email"
+  },
+  {
+    "id": "profile.settings.update.phone.number.label",
+    "description": "Label for the \"Phone number\" text input on the profile settings page.",
+    "defaultMessage": "!!!Phone number"
+  },
+  {
+    "id": "profile.settings.update.password.label",
+    "description": "Label for the \"Password\" text input on the profile settings page.",
+    "defaultMessage": "!!!Password"
+  },
+  {
+    "id": "profile.settings.update.language.label",
+    "description": "Label for the \"Language\" text input on the profile settings page.",
+    "defaultMessage": "!!!Language"
+  },
+  {
+    "id": "profile.settings.update.picture.label",
+    "description": "Label for the \"Picture\" upload control on the profile settings page.",
+    "defaultMessage": "!!!Picture"
+  },
+  {
+    "id": "profile.settings.password.last.updated.label",
+    "description": "\"Last updated\" part of the message \"Last updated X time ago\" for password.",
+    "defaultMessage": "!!!Last updated"
+  }
+]

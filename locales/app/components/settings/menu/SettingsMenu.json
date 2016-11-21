@@ -1,0 +1,37 @@
+[
+  {
+    "id": "settings.menu.profile.link.label",
+    "description": "Label for the \"Profile\" link in the settings menu.",
+    "defaultMessage": "!!!Profile"
+  },
+  {
+    "id": "settings.menu.security.link.label",
+    "description": "Label for the \"Security\" link in the settings menu.",
+    "defaultMessage": "!!!Security"
+  },
+  {
+    "id": "settings.menu.identity.and.verification.link.label",
+    "description": "Label for the \"Identity and verification\" link in the settings menu.",
+    "defaultMessage": "!!!Identity and verification"
+  },
+  {
+    "id": "settings.menu.display.link.label",
+    "description": "Label for the \"Display\" link in the settings menu.",
+    "defaultMessage": "!!!Display"
+  },
+  {
+    "id": "settings.menu.privacy.link.label",
+    "description": "Label for the \"Privacy\" link in the settings menu.",
+    "defaultMessage": "!!!Privacy"
+  },
+  {
+    "id": "settings.menu.terms.of.use.link.label",
+    "description": "Label for the \"Terms of use\" link in the settings menu.",
+    "defaultMessage": "!!!Terms of use"
+  },
+  {
+    "id": "settings.menu.support.link.label",
+    "description": "Label for the \"Support\" link in the settings menu.",
+    "defaultMessage": "!!!Support"
+  }
+]

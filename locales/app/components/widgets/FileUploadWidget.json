@@ -1,0 +1,12 @@
+[
+  {
+    "id": "file.upload.widget.drop.file.here.label",
+    "description": "Label \"Drop file here\" on the file upload widget.",
+    "defaultMessage": "!!!Drop file here"
+  },
+  {
+    "id": "file.upload.widget.click.to.upload.label",
+    "description": "Label \"or click to upload\" on the file upload widget.",
+    "defaultMessage": "!!!or click to upload"
+  }
+]

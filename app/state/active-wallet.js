@@ -1,7 +1,9 @@
 // @flow
+import type { appState } from './index';
 import Wallet from '../domain/Wallet';
 
 export type activeWalletState = {
+  state: appState,
   wallet: ?Wallet,
   isLoadingTransactions: boolean,
   transactionsSearchTerm: string,
@@ -14,7 +16,8 @@ export type activeWalletState = {
   errorSendingMoney: ?string
 };
 
-export default (): activeWalletState => ({
+export default (state: appState): activeWalletState => ({
+  state,
   wallet: null,
   isLoadingTransactions: false,
   transactionsSearchTerm: '',
