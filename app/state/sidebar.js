@@ -15,7 +15,7 @@ export default (state: appState): sidebarState => ({
   hidden: false,
   showMenu: true,
   wallets: () => (
-    state.account.userAccount.wallets.map(wallet => ({
+    state.user.wallets.map(wallet => ({
       id: wallet.address,
       title: wallet.name,
       info: `${wallet.amount} ${wallet.currency}`

@@ -9,10 +9,10 @@ export default class ProfileSettingsPage extends Component {
 
   static propTypes = {
     state: PropTypes.shape({
-      account: PropTypes.shape({
-        userAccount: PropTypes.shape({
-          profile: MobxPropTypes.observableObject.isRequired
-        }).isRequired,
+      settings: PropTypes.shape({
+        profile: MobxPropTypes.observableObject.isRequired
+      }).isRequired,
+      login: PropTypes.shape({
         isLoading: PropTypes.bool.isRequired
       }).isRequired
     }).isRequired,
@@ -24,8 +24,8 @@ export default class ProfileSettingsPage extends Component {
   };
 
   render() {
-    const { profile } = this.props.state.account.userAccount;
-    const { isLoading } = this.props.state.account;
+    const { profile } = this.props.state.settings;
+    const { isLoading } = this.props.state.login;
     const { controller } = this.props;
     if (isLoading) return <div>Loading</div>;
     return (

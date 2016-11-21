@@ -14,13 +14,13 @@ export default class WalletsController {
   }
 
   @action async loadWallets() {
-    const { activeWallet, account } = this.state;
+    const { activeWallet, user } = this.state;
     activeWallet.isLoading = true;
     try {
       const wallets = await api.loadWallets();
       for (const wallet of wallets) {
         const newWallet = new Wallet(wallet);
-        account.userAccount.addWallet(newWallet);
+        user.addWallet(newWallet);
         if (newWallet.lastUsed) this.setActiveWallet(newWallet);
       }
       activeWallet.isLoading = false;
@@ -55,7 +55,7 @@ export default class WalletsController {
   @action setActiveWallet(walletId: string|Wallet) {
     let wallet = walletId;
     if (_.isString(walletId)) {
-      wallet = _.find(this.state.account.userAccount.wallets, { address: wallet });
+      wallet = _.find(this.state.user.wallets, { address: wallet });
     }
     const activeWallet = this.state.activeWallet;
     if (wallet === activeWallet.wallet) return;
@@ -89,7 +89,7 @@ export default class WalletsController {
     try {
       const createdWallet = await api.createPersonalWallet(newWalletData);
       const newWallet = new Wallet(createdWallet);
-      this.state.account.userAccount.addWallet(newWallet);
+      this.state.user.addWallet(newWallet);
       this.setActiveWallet(newWallet);
       // TODO: Navigate to newly created wallet
     } catch (error) {

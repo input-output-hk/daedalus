@@ -9,7 +9,7 @@ export default class Settings extends Component {
 
   static propTypes = {
     state: PropTypes.shape({
-      account: PropTypes.shape({
+      login: PropTypes.shape({
         isLoading: PropTypes.bool.isRequired
       }).isRequired
     }).isRequired
@@ -17,7 +17,7 @@ export default class Settings extends Component {
 
   render() {
     const settingsPath = '/settings';
-    const { isLoading } = this.props.state.account;
+    const { isLoading } = this.props.state.login;
     if (isLoading) return <div>Loading</div>;
     return (
       <Layout>

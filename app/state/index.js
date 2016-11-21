@@ -1,23 +1,29 @@
 // @flow
 import { PropTypes } from 'react';
 import { observable, extendObservable } from 'mobx';
-import account from './account';
-import type { accountState } from './account';
+import User from '../domain/User';
+import login from './login';
+import type { loginState } from './login';
+import settings from './settings';
+import type { settingsState } from './settings';
 import sidebar from './sidebar';
 import type { sidebarState } from './sidebar';
 import activeWallet from './active-wallet';
 import type { activeWalletState } from './active-wallet';
 
 export type appState = {
+  user: User,
   router: ?Object,
   i18n: Object,
-  account: accountState,
+  login: loginState,
+  settings: settingsState,
   sidebar: sidebarState,
   activeWallet: activeWalletState
 };
 
 export default (): appState => {
   const state = observable({
+    user: new User(),
     router: null,
     i18n: { locale: 'en-US' },
   });
@@ -25,7 +31,8 @@ export default (): appState => {
   extendObservable(
     state,
     {
-      account: account(state),
+      login: login(state),
+      settings: settings(state),
       sidebar: sidebar(state),
       activeWallet: activeWallet(state)
     }

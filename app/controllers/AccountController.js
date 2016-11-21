@@ -1,7 +1,7 @@
 // @flow
 import { action } from 'mobx';
 import type { appState } from '../state/index';
-import UserProfile from '../domain/UserProfile';
+import Profile from '../domain/Profile';
 import api from '../api';
 
 export default class AccountController {
@@ -13,21 +13,21 @@ export default class AccountController {
   }
 
   @action async loadAccount() {
-    const { account } = this.state;
-    account.isLoading = true;
+    const { login, user } = this.state;
+    login.isLoading = true;
     try {
       const accountData = await api.loadAccount();
       const { profile } = accountData;
-      account.userAccount.profile = new UserProfile(profile);
-      account.isLoading = false;
+      user.profile = new Profile(profile);
+      login.isLoading = false;
     } catch (error) {
-      account.errorLoading = 'Error loading account data'; // TODO: i18n
+      login.errorLoading = 'Error loading account data'; // TODO: i18n
     }
   }
 
   @action async updateField(field: string, value: string) {
-    const { account } = this.state;
-    const { profile } = account.userAccount;
+    const { user } = this.state;
+    const { profile } = user;
     if (!profile) return;
     await api.updateProfileField({ field, value });
     switch (field) {

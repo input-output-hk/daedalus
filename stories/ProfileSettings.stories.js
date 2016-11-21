@@ -6,10 +6,10 @@ import { daedalusTheme } from '../app/themes/daedalus';
 import Settings from '../app/components/settings/Settings';
 import ProfileSettings from '../app/components/settings/categories/ProfileSettings';
 import profile from '../app/api/data/account.json';
-import UserProfile from '../app/domain/UserProfile';
+import Profile from '../app/domain/Profile';
 import translations from '../app/i18n/translations';
 
-const userProfile = new UserProfile(profile);
+const userProfile = new Profile(profile);
 
 storiesOf('Settings', module)
 

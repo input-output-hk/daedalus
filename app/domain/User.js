@@ -1,11 +1,11 @@
 // @flow
 import { observable, action } from 'mobx';
-import UserProfile from './UserProfile';
+import Profile from './Profile';
 import Wallet from './Wallet';
 
-export default class UserAccount {
+export default class User {
 
-  @observable profile: UserProfile;
+  @observable profile: Profile;
   @observable wallets: Array<Wallet> = [];
 
   @action addWallet(wallet: Wallet) {
