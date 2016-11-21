@@ -149,12 +149,11 @@ export const loadWalletTransactions = (data: {
           const aIsSmallerOrEqual = a.date < b.date ? 1 : 0;
           return a.date > b.date ? -1 : aIsSmallerOrEqual;
         })
-        .slice(0, data.limit) // Limit number of results
       );
     }
     resolve({
-      transactions,
-      total: transactions.length
+      total: transactions.length,
+      transactions: transactions.slice(0, data.limit) // Limit number of results,
     });
   }, 1000);
 });
