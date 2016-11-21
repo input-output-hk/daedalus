@@ -1,13 +1,10 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
-import { MemoryRouter as Router } from 'react-router';
 import Sidebar from '../app/components/sidebar/Sidebar';
 
 storiesOf('Sidebar', module)
 
-  .addDecorator((story) => (
-    <Router><div>{story()}</div></Router>
-  ))
+  .addDecorator((story) => (<div>{story()}</div>))
 
   // ====== Stories ======
 
