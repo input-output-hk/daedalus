@@ -3,7 +3,6 @@ import React, { Component, PropTypes } from 'react';
 import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './Sidebar.scss';
-import NavigationLink from '../../components/widgets/NavigationLink';
 import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './menus/SidebarWalletsMenu';
 import walletsIcon from '../../assets/images/sidebar/wallet-ic.svg';
@@ -63,15 +62,13 @@ export default class Sidebar extends Component {
             minimized={subMenu != null}
             onClick={() => onCategoryClicked('/wallets')}
           />
-          <NavigationLink to="/settings" linkStyles={styles.link}>
-            <SidebarCategory
-              label="Settings"
-              icon={settingsIcon}
-              active={this.matches('/settings')}
-              minimized={subMenu != null}
-              onClick={() => onCategoryClicked('/settings')}
-            />
-          </NavigationLink>
+          <SidebarCategory
+            label="Settings"
+            icon={settingsIcon}
+            active={this.matches('/settings')}
+            minimized={subMenu != null}
+            onClick={() => onCategoryClicked('/settings')}
+          />
         </div>
         {subMenu}
       </div>
