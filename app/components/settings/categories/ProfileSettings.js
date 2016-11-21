@@ -76,12 +76,13 @@ export default class ProfileSettings extends Component {
               type="text"
               label={intl.formatMessage(messages.name)}
               value={profile.name}
-              onChange={(value) => onFieldValueChange(value)}
+              onChange={(value) => onFieldValueChange('name', value)}
             />
             <Input
               type="text"
               label={intl.formatMessage(messages.email)}
               value={profile.email}
+              onChange={(value) => onFieldValueChange('email', value)}
             />
           </div>
           <div className={styles.picture}>
@@ -95,6 +96,7 @@ export default class ProfileSettings extends Component {
             type="text"
             label={intl.formatMessage(messages.phoneNumber)}
             value={profile.phoneNumber}
+            onChange={(value) => onFieldValueChange('phoneNumber', value)}
           />
           <Input
             type="text"
