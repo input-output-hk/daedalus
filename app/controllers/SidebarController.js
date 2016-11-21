@@ -23,19 +23,10 @@ export default class SidebarController {
     } else {
       sidebar.route = route;
       sidebar.showMenu = true;
-      switch (route) {
-        case '/settings':
-          this.changeApplicationRoute('/settings');
-          break;
-        default:
-          break;
+      if (route === '/settings') {
+        if (this.state.router) this.state.router.transitionTo(route);
       }
     }
-  }
-
-  changeApplicationRoute(route: string) {
-    const { router } = this.state;
-    if (router) router.transitionTo(route);
   }
 
 }
