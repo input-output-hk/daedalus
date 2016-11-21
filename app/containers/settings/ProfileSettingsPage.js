@@ -18,7 +18,7 @@ export default class ProfileSettingsPage extends Component {
     }).isRequired,
     controller: PropTypes.shape({
       account: PropTypes.shape({
-        updateName: PropTypes.func.isRequired
+        updateField: PropTypes.func.isRequired
       }).isRequired
     }).isRequired
   };
