@@ -63,8 +63,8 @@ export default class WalletTransactionsList extends Component {
     const maxScrollPosition = target.scrollHeight - target.offsetHeight;
     let topShadow = false;
     let bottomShadow = false;
-    if (scrollPosition > 0) topShadow = true;
-    if (scrollPosition < maxScrollPosition) bottomShadow = true;
+    if (scrollPosition > 20) topShadow = true;
+    if (scrollPosition < maxScrollPosition - 20) bottomShadow = true;
     this.setState({ topShadow, bottomShadow });
   }
 
