@@ -57,7 +57,8 @@ const languages = [
 export default class ProfileSettings extends Component {
 
   static propTypes = {
-    profile: PropTypes.instanceOf(UserProfile).isRequired
+    profile: PropTypes.instanceOf(UserProfile).isRequired,
+    onFieldValueChange: PropTypes.func
   };
 
   static contextTypes = {
@@ -66,7 +67,7 @@ export default class ProfileSettings extends Component {
 
   render() {
     const { intl } = this.context;
-    const { profile } = this.props;
+    const { profile, onFieldValueChange } = this.props;
     return (
       <div>
         <div className={styles.nameEmailAndPicture}>
@@ -75,6 +76,7 @@ export default class ProfileSettings extends Component {
               type="text"
               label={intl.formatMessage(messages.name)}
               value={profile.name}
+              onChange={(value) => onFieldValueChange(value)}
             />
             <Input
               type="text"

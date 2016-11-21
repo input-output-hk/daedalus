@@ -15,17 +15,24 @@ export default class ProfileSettingsPage extends Component {
         }).isRequired,
         isLoading: PropTypes.bool.isRequired
       }).isRequired
+    }).isRequired,
+    controller: PropTypes.shape({
+      account: PropTypes.shape({
+        updateName: PropTypes.func.isRequired
+      }).isRequired
     }).isRequired
   };
 
   render() {
     const { profile } = this.props.state.account.userAccount;
     const { isLoading } = this.props.state.account;
+    const { controller } = this.props;
     if (isLoading) return <div>Loading</div>;
     return (
       <Settings>
         <ProfileSettings
           profile={profile}
+          onFieldValueChange={(name) => controller.account.updateName({ name })}
         />
       </Settings>
     );

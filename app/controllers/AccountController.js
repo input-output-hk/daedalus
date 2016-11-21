@@ -25,7 +25,6 @@ export default class WalletsController {
     }
   }
 
-
   @action async updateName(newNameData: { name: string }) {
     const { account } = this.state;
     if (!account.userAccount.profile) {
