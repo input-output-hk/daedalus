@@ -140,16 +140,21 @@ export const loadWalletTransactions = (data: {
   setTimeout(() => {
     const { address, searchTerm } = data;
     const regexp = new RegExp(searchTerm, 'i');
-    const transactions = walletTransactions[address] ? walletTransactions[address] : [];
-    resolve({
-      total: transactions.length,
-      transactions: transactions
+    let transactions = [];
+    if (walletTransactions[address]) {
+      transactions = (
+        walletTransactions[address]
         .filter((t) => regexp.test(t.title)) // Filter by title search
         .sort((a, b) => { // Sort by date
           const aIsSmallerOrEqual = a.date < b.date ? 1 : 0;
           return a.date > b.date ? -1 : aIsSmallerOrEqual;
         })
-        .slice(0, data.limit), // Limit number of results
+        .slice(0, data.limit) // Limit number of results
+      );
+    }
+    resolve({
+      transactions,
+      total: transactions.length
     });
   }, 1000);
 });
