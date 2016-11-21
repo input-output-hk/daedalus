@@ -4,6 +4,7 @@ import type { appState } from '../state/index';
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
 import api from '../api';
+import { INITIAL_WALLET_SEARCH_LIMIT } from '../state/active-wallet';
 
 export default class WalletsController {
 
@@ -29,11 +30,12 @@ export default class WalletsController {
     }
   }
 
-  @action async loadActiveWalletTransactions() {
+  @action async loadActiveWalletTransactions(initialLoading: boolean) {
     const { activeWallet } = this.state;
     const { wallet } = activeWallet;
     if (!wallet === null) throw new Error('No active wallet');
     activeWallet.isLoadingTransactions = true;
+    if (initialLoading) activeWallet.isInitiallyLoadingTransactions = true;
     try {
       const result = await api.loadWalletTransactions({
         address: wallet.address,
@@ -45,6 +47,10 @@ export default class WalletsController {
         wallet.addTransaction(new WalletTransaction(transaction));
       }
       activeWallet.totalAvailableTransactions = result.total;
+      if (initialLoading) {
+        activeWallet.hasAnyTransactions = result.total > 0;
+        activeWallet.isInitiallyLoadingTransactions = false;
+      }
     } catch (error) {
       activeWallet.errorLoadingTransactions = error;
       // TODO: handling errors from backend and i18n
@@ -60,7 +66,9 @@ export default class WalletsController {
     const activeWallet = this.state.activeWallet;
     if (wallet === activeWallet.wallet) return;
     activeWallet.wallet = wallet;
-    this.loadActiveWalletTransactions();
+    activeWallet.transactionsSearchLimit = INITIAL_WALLET_SEARCH_LIMIT;
+    activeWallet.transactionsSearchTerm = '';
+    this.loadActiveWalletTransactions(true);
     if (this.state.router) this.state.router.transitionTo(`/wallet/${wallet.address}/home`);
   }
 

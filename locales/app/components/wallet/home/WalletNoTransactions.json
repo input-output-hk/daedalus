@@ -1,0 +1,7 @@
+[
+  {
+    "id": "wallet.transactions.no.transactions",
+    "description": "Message \"No transactions\" when wallet has no transactions or transaction search returns zero results.",
+    "defaultMessage": "!!!No transactions"
+  }
+]

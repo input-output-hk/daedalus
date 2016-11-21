@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import WalletTransactionsList from '../../components/wallet/home/WalletTransactionsList';
 import WalletTransactionsSearch from '../../components/wallet/home/WalletTransactionsSearch';
+import WalletNoTransactions from '../../components/wallet/home/WalletNoTransactions';
 
 @observer(['state', 'controller'])
 export default class WalletHomePage extends Component {
@@ -15,6 +16,8 @@ export default class WalletHomePage extends Component {
         transactionsSearchTerm: PropTypes.string.isRequired,
         transactionsSearchLimit: PropTypes.number.isRequired,
         totalAvailableTransactions: PropTypes.number.isRequired,
+        hasAnyTransactions: PropTypes.bool.isRequired,
+        isInitiallyLoadingTransactions: PropTypes.bool.isRequired,
       }).isRequired
     }).isRequired,
     controller: PropTypes.shape({
@@ -35,20 +38,30 @@ export default class WalletHomePage extends Component {
       transactionsSearchTerm,
       isLoadingTransactions,
       transactionsSearchLimit,
-      totalAvailableTransactions
+      totalAvailableTransactions,
+      hasAnyTransactions,
+      isInitiallyLoadingTransactions
     } = this.props.state.activeWallet;
+
+    const walletTransactions = (
+      isLoadingTransactions || totalAvailableTransactions
+    ) ? (
+      <WalletTransactionsList
+        transactions={wallet.transactions}
+        isLoadingTransactions={isLoadingTransactions}
+        hasMoreToLoad={totalAvailableTransactions > transactionsSearchLimit}
+        onLoadMore={() => controller.wallets.loadMoreTransactions()}
+      />) : <WalletNoTransactions />;
+
     return (
       <div style={{ height: '100%', padding: '20px' }}>
-        <WalletTransactionsSearch
-          searchTerm={transactionsSearchTerm}
-          onChange={this.handleSearchInputChange.bind(this)}
-        />
-        <WalletTransactionsList
-          transactions={wallet.transactions}
-          isLoadingTransactions={isLoadingTransactions}
-          hasMoreToLoad={totalAvailableTransactions > transactionsSearchLimit}
-          onLoadMore={() => controller.wallets.loadMoreTransactions()}
-        />
+        {!isInitiallyLoadingTransactions && hasAnyTransactions && (
+          <WalletTransactionsSearch
+            searchTerm={transactionsSearchTerm}
+            onChange={this.handleSearchInputChange.bind(this)}
+          />
+        )}
+        {walletTransactions}
       </div>
     );
   }
