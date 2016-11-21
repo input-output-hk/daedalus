@@ -21,7 +21,7 @@ export default class Settings extends Component {
     if (isLoading) return <div>Loading</div>;
     return (
       <Layout>
-        <div>
+        <div style={{ height: '100%' }}>
           <Match pattern={settingsPath} exactly render={() => <Redirect to={`${settingsPath}/profile`} />} />
           <Match pattern={`${settingsPath}/profile`} component={ProfileSettingsPage} />
         </div>
