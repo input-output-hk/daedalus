@@ -11,6 +11,7 @@ import Wallet from './containers/wallet/Wallet';
 import Settings from './containers/settings/Settings';
 import translations from './i18n/translations';
 import WalletCreatePage from './containers/wallet/WalletCreatePage';
+import LoadingSpinner from './components/widgets/LoadingSpinner';
 
 @observer
 export default class App extends Component {
@@ -27,7 +28,7 @@ export default class App extends Component {
   render() {
     const { state, controller } = this.props;
     if (state.isApplicationLoading) {
-      return <div>Loading...</div>;
+      return <LoadingSpinner style={{ height: '100%' }} />;
     }
     const { activeWallet } = this.props.state;
     const { wallet } = activeWallet;

@@ -6,6 +6,7 @@ import moment from 'moment';
 import classnames from 'classnames';
 import styles from './WalletTransactionsList.scss';
 import Transaction, { transactionShape } from '../../widgets/Transaction';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 defineMessages({
 
@@ -37,7 +38,7 @@ export default class WalletTransactionsList extends Component {
   }
 
   list: HTMLElement;
-  loadingSpinner: HTMLElement;
+  loadingSpinner: LoadingSpinner;
 
   groupTransactionsByDay(transactions:[Object]) {
     const groups = [];
@@ -69,8 +70,9 @@ export default class WalletTransactionsList extends Component {
   }
 
   isSpinnerVisible() {
-    if (this.loadingSpinner == null) return false;
-    const spinnerRect = this.loadingSpinner.getBoundingClientRect();
+    const spinner = this.loadingSpinner;
+    if (spinner == null || spinner.root == null) return false;
+    const spinnerRect = spinner.root.getBoundingClientRect();
     const viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
     return !(spinnerRect.bottom < 0 || spinnerRect.top - viewHeight >= 0);
   }
@@ -97,7 +99,7 @@ export default class WalletTransactionsList extends Component {
     }
     const componentStyles = classnames([styles.component, shadowStyle]);
     const loadingSpinner = isLoadingTransactions || hasMoreToLoad ? (
-      <div className={styles.spinner} ref={(div) => { this.loadingSpinner = div; }} />
+      <LoadingSpinner ref={(component) => { this.loadingSpinner = component; }} />
     ) : null;
     return (
       <div
