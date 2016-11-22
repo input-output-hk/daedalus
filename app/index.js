@@ -23,4 +23,4 @@ const routedApp = (
   <Router><App state={appState} controller={controller} /></Router>
 );
 
-render(routedApp, document.getElementById('root'));
+window.addEventListener('load', () => render(routedApp, document.getElementById('root')));

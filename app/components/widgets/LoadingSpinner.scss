@@ -1,0 +1,11 @@
+.component {
+  margin: 20px auto;
+  width: 30px;
+  height: 30px;
+  background: url("../../assets/images/spinner-dark.svg") no-repeat center;
+  background-size: 30px;
+  :global {
+    animation: loading-spin 1.5s linear;
+    animation-iteration-count: infinite;
+  }
+}
