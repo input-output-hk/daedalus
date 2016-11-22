@@ -98,8 +98,9 @@ export default class WalletsController {
   }
 
   @action filterTransactions(searchTerm) {
-    this.state.activeWallet.transactionsSearchTerm = searchTerm;
-    this.state.activeWallet.wallet.transactions.clear();
+    const { activeWallet } = this.state;
+    activeWallet.transactionsSearchTerm = searchTerm;
+    activeWallet.wallet.transactions.clear();
     this.loadActiveWalletTransactions();
   }
 
