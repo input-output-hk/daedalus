@@ -31,7 +31,6 @@ export default class WalletHomePage extends Component {
         transactionsSearchLimit: PropTypes.number.isRequired,
         totalAvailableTransactions: PropTypes.number.isRequired,
         hasAnyTransactions: PropTypes.bool.isRequired,
-        isInitiallyLoadingTransactions: PropTypes.bool.isRequired,
       }).isRequired
     }).isRequired,
     controller: PropTypes.shape({
@@ -59,16 +58,13 @@ export default class WalletHomePage extends Component {
       transactionsSearchLimit,
       totalAvailableTransactions,
       hasAnyTransactions,
-      isInitiallyLoadingTransactions
     } = this.props.state.activeWallet;
 
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const noTransactionsFoundLabel = intl.formatMessage(messages.noTransactionsFound);
 
-    if (!hasAnyTransactions) {
-      walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
-    } else if (isLoadingTransactions || totalAvailableTransactions) {
+    if (isLoadingTransactions || totalAvailableTransactions) {
       walletTransactions = (
         <WalletTransactionsList
           transactions={wallet.transactions}
@@ -77,13 +73,15 @@ export default class WalletHomePage extends Component {
           onLoadMore={() => controller.wallets.loadMoreTransactions()}
         />
       );
+    } else if (!hasAnyTransactions) {
+      walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
     } else {
       walletTransactions = <WalletNoTransactions label={noTransactionsFoundLabel} />;
     }
 
     return (
       <div style={{ height: '100%', padding: '20px' }}>
-        {!isInitiallyLoadingTransactions && hasAnyTransactions && (
+        {(wallet.transactions.length || hasAnyTransactions) && (
           <WalletTransactionsSearch
             searchTerm={transactionsSearchTerm}
             onChange={this.handleSearchInputChange.bind(this)}
