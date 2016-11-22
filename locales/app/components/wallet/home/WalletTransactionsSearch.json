@@ -1,7 +1,0 @@
-[
-  {
-    "id": "wallet.transactions.search.hint",
-    "description": "Hint in the transactions search box.",
-    "defaultMessage": "!!!Search transaction"
-  }
-]
