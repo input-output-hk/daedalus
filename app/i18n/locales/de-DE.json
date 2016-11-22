@@ -37,5 +37,7 @@
   "profile.settings.update.picture.label": "Profilbild",
   "profile.settings.password.last.updated.label": "Zuletzt aktualisiert",
   "file.upload.widget.drop.file.here.label": "Bilddatei hier ablegen",
-  "file.upload.widget.click.to.upload.label": "oder auswählen"
+  "file.upload.widget.click.to.upload.label": "oder auswählen",
+  "wallet.transactions.no.transactions": "Keine Transaktionen vorhanden",
+  "wallet.transactions.no.transactions.found": "Keine Transaktionen gefunden"
 }
