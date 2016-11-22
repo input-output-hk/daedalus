@@ -1,0 +1,12 @@
+[
+  {
+    "id": "wallet.transactions.no.transactions",
+    "description": "Message shown when wallet has no transactions yet.",
+    "defaultMessage": "!!!No transactions"
+  },
+  {
+    "id": "wallet.transactions.no.transactions.found",
+    "description": "Message shown when wallet transaction search returns zero results.",
+    "defaultMessage": "!!!No transactions found"
+  }
+]

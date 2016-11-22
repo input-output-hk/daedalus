@@ -4,6 +4,7 @@ import type { appState } from '../state/index';
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
 import api from '../api';
+import { INITIAL_WALLET_SEARCH_LIMIT } from '../state/active-wallet';
 
 export default class WalletsController {
 
@@ -29,27 +30,24 @@ export default class WalletsController {
     }
   }
 
-  @action async loadActiveWalletTransactions() {
+  @action async loadActiveWalletTransactions(initialLoading: boolean) {
     const { activeWallet } = this.state;
     const { wallet } = activeWallet;
     if (!wallet === null) throw new Error('No active wallet');
     activeWallet.isLoadingTransactions = true;
-    try {
-      const result = await api.loadWalletTransactions({
-        address: wallet.address,
-        searchTerm: activeWallet.transactionsSearchTerm,
-        limit: activeWallet.transactionsSearchLimit
-      });
-      wallet.transactions.clear();
-      for (const transaction of result.transactions) {
-        wallet.addTransaction(new WalletTransaction(transaction));
-      }
-      activeWallet.totalAvailableTransactions = result.total;
-    } catch (error) {
-      activeWallet.errorLoadingTransactions = error;
-      // TODO: handling errors from backend and i18n
+    if (initialLoading) activeWallet.hasAnyTransactions = false;
+    const result = await api.loadWalletTransactions({
+      address: wallet.address,
+      searchTerm: activeWallet.transactionsSearchTerm,
+      limit: activeWallet.transactionsSearchLimit
+    });
+    wallet.transactions.clear();
+    for (const transaction of result.transactions) {
+      wallet.addTransaction(new WalletTransaction(transaction));
     }
+    activeWallet.totalAvailableTransactions = result.total;
     activeWallet.isLoadingTransactions = false;
+    if (initialLoading) activeWallet.hasAnyTransactions = result.total > 0;
   }
 
   @action setActiveWallet(walletId: string|Wallet) {
@@ -60,7 +58,9 @@ export default class WalletsController {
     const activeWallet = this.state.activeWallet;
     if (wallet === activeWallet.wallet) return;
     activeWallet.wallet = wallet;
-    this.loadActiveWalletTransactions();
+    activeWallet.transactionsSearchLimit = INITIAL_WALLET_SEARCH_LIMIT;
+    activeWallet.transactionsSearchTerm = '';
+    this.loadActiveWalletTransactions(true);
     if (this.state.router) this.state.router.transitionTo(`/wallet/${wallet.address}/home`);
   }
 
@@ -98,7 +98,9 @@ export default class WalletsController {
   }
 
   @action filterTransactions(searchTerm) {
-    this.state.activeWallet.transactionsSearchTerm = searchTerm;
+    const { activeWallet } = this.state;
+    activeWallet.transactionsSearchTerm = searchTerm;
+    activeWallet.wallet.transactions.clear();
     this.loadActiveWalletTransactions();
   }
 

@@ -2,6 +2,8 @@
 import type { appState } from './index';
 import Wallet from '../domain/Wallet';
 
+export const INITIAL_WALLET_SEARCH_LIMIT = 10;
+
 export type activeWalletState = {
   state: appState,
   wallet: ?Wallet,
@@ -9,7 +11,8 @@ export type activeWalletState = {
   transactionsSearchTerm: string,
   transactionsSearchLimit: number,
   totalAvailableTransactions: number,
-  isLoading: bool,
+  isLoading: boolean,
+  hasAnyTransactions: boolean,
   errorLoading: ?string,
   errorCreating: ?string,
   errorLoadingTransactions: ?string,
@@ -21,9 +24,10 @@ export default (state: appState): activeWalletState => ({
   wallet: null,
   isLoadingTransactions: false,
   transactionsSearchTerm: '',
-  transactionsSearchLimit: 10,
+  transactionsSearchLimit: INITIAL_WALLET_SEARCH_LIMIT,
   totalAvailableTransactions: 0,
   isLoading: false,
+  hasAnyTransactions: false,
   errorLoading: null,
   errorCreating: null,
   errorLoadingTransactions: null,

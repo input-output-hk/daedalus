@@ -37,5 +37,6 @@
   "profile.settings.update.picture.label": "Fotografija",
   "profile.settings.password.last.updated.label": "Zadnji puta promijenjena",
   "file.upload.widget.drop.file.here.label": "Dovucite datoteku ovdje",
-  "file.upload.widget.click.to.upload.label": "ili kliknite za njen odabir"
+  "file.upload.widget.click.to.upload.label": "ili kliknite za njen odabir",
+  "wallet.transactions.no.transactions": "Nema transakcija"
 }
