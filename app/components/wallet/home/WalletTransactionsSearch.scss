@@ -13,6 +13,11 @@
       background-size: 15px;
       padding-left: 54px;
       background-color: $color-lighter-grey;
+      font-family: $font-regular;
+      &:focus {
+        background: url("../../../assets/images/search-ic-dark.svg") no-repeat 20px center;
+        background-size: 15px;
+      }
     }
 
     .input_hint {
