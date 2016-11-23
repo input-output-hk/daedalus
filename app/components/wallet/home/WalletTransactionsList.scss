@@ -5,40 +5,26 @@
   margin-top: 20px;
   height: calc(100% - 80px);
   overflow-y: auto;
-  // Source: http://lea.verou.me/2012/04/background-attachment-local/
-  background: (
-    linear-gradient(transparent 30%, rgba(255,255,255,0)),
-    linear-gradient(rgba(255,255,255,0), transparent 70%) 0 100%,
-    radial-gradient(50% 0, farthest-side, rgba(0,0,0,.2), rgba(0,0,0,0)),
-    radial-gradient(50% 100%, farthest-side, rgba(0,0,0,.2), rgba(0,0,0,0)) 0 100%
-  );
-
-  background: (
-    linear-gradient(transparent 30%, rgba(255,255,255,0)),
-    linear-gradient(rgba(255,255,255,0), transparent 70%) 0 100%,
-    radial-gradient(farthest-side at 50% 0, rgba(0,0,0,.2), rgba(0,0,0,0)),
-    radial-gradient(farthest-side at 50% 100%, rgba(0,0,0,.2), rgba(0,0,0,0)) 0 100%
-  );
-
-  background-repeat: no-repeat;
-  background-attachment: local, local, scroll, scroll;
-  background-size: 0, 0, 0, 0;
+  margin-right: -20px;
 
   &::-webkit-scrollbar {
     width: 20px;
-    margin-left: 5px;
+  }
+
+  &::-webkit-scrollbar-button {
+    height: 10px;
+    display: block;
   }
 
   &::-webkit-scrollbar-track {
-    box-shadow: none;
+    background-color: transparent;
   }
 
   &::-webkit-scrollbar-thumb {
-    border-left: 12px solid rgba(0, 0, 0, 0);
-    border-top: 26px solid rgba(0, 0, 0, 0);
-    background-clip: padding-box;
-    background-color: rgba(0, 0, 0, 0.15);
-    box-shadow: inset -1px -1px 0px rgba(0, 0, 0, 0.05), inset 1px 1px 0px rgba(0, 0, 0, 0.05);
+    background-color: #c8ccce;
+    border: 7px solid transparent;
+    border-radius: 12px;
+    background-clip: content-box;
   }
 }
 
