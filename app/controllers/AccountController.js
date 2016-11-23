@@ -16,7 +16,7 @@ export default class AccountController {
     const { login, user } = this.state;
     login.isLoading = true;
     try {
-      const accountData = await api.loadAccount();
+      const accountData = await api.accounts.loadAccount();
       const { profile } = accountData;
       user.profile = new Profile(profile);
       login.isLoading = false;
@@ -29,7 +29,7 @@ export default class AccountController {
     const { user } = this.state;
     const { profile } = user;
     if (!profile) return;
-    await api.updateProfileField({ field, value });
+    await api.accounts.updateProfileField({ field, value });
     switch (field) {
       case 'name': profile.name = value; break;
       case 'email': profile.email = value; break;

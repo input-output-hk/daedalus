@@ -15,6 +15,12 @@ export default function () {
     await this.app.start();
     this.client = this.app.client;
     this.browserWindow = this.app.browserWindow;
+    await this.client.waitUntilWindowLoaded();
+    await this.client.executeAsync(function(done) {
+      daedalus.environment.current = 'test';
+      daedalus.api.data.reset();
+      daedalus.controller.onInitialized(() => done());
+    });
   });
   this.After(function() {
     return this.app.stop();

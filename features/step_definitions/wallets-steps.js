@@ -2,9 +2,16 @@ import { expect } from 'chai';
 
 export default function () {
 
+  this.Given(/^I have the following wallets:$/, async function (table) {
+    const result = await this.client.execute(function() {
+      const browserRequire = require;
+      return browserRequire('./api/data/wallets.json')
+    });
+    console.log(result);
+  });
+
   this.Given(/^I am on the wallet send screen$/, async function() {
-    return this.client.waitUntilWindowLoaded();
-    // TODO: route to send screen when we have multiple
+    this.client.url('/wallet/')
   });
 
   this.When(/^I submit the wallet send form$/, async function () {

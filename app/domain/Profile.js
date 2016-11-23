@@ -6,7 +6,6 @@ export default class UserProfile {
   @observable name: string;
   @observable email: string;
   @observable phoneNumber: string;
-  @observable passwordHash: string;
   @observable passwordUpdateDate: Date;
   @observable languageLocale: string;
 
@@ -14,7 +13,6 @@ export default class UserProfile {
     name: string,
     email: string,
     phoneNumber: string,
-    passwordHash: string,
     passwordUpdateDate: Date,
     languageLocale: string
   }) {
