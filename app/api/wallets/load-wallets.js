@@ -1,8 +1,8 @@
 // @flow
-import wallets from '../data/wallets.json';
+import data from '../data';
 
 export const loadWallets = () => new Promise((resolve) => {
   setTimeout(() => {
-    resolve(wallets);
+    resolve(data.wallets);
   }, 1000);
 });

@@ -18,7 +18,7 @@ export default class WalletsController {
     const { activeWallet, user } = this.state;
     activeWallet.isLoading = true;
     try {
-      const wallets = await api.loadWallets();
+      const wallets = await api.wallets.loadWallets();
       for (const wallet of wallets) {
         const newWallet = new Wallet(wallet);
         user.addWallet(newWallet);
@@ -36,7 +36,7 @@ export default class WalletsController {
     if (!wallet === null) throw new Error('No active wallet');
     activeWallet.isLoadingTransactions = true;
     if (initialLoading) activeWallet.hasAnyTransactions = false;
-    const result = await api.loadWalletTransactions({
+    const result = await api.wallets.loadWalletTransactions({
       address: wallet.address,
       searchTerm: activeWallet.transactionsSearchTerm,
       limit: activeWallet.transactionsSearchLimit
@@ -72,7 +72,7 @@ export default class WalletsController {
     const { activeWallet } = this.state;
     const { wallet } = activeWallet;
     try {
-      const transaction = await api.sendMoney({
+      const transaction = await api.wallets.sendMoney({
         ...transactionDetails,
         amount: parseFloat(transactionDetails.amount),
         sender: wallet.address,
@@ -87,7 +87,7 @@ export default class WalletsController {
 
   @action async createPersonalWallet(newWalletData: { name: string, currency: string}) {
     try {
-      const createdWallet = await api.createPersonalWallet(newWalletData);
+      const createdWallet = await api.wallets.createPersonalWallet(newWalletData);
       const newWallet = new Wallet(createdWallet);
       this.state.user.addWallet(newWallet);
       this.setActiveWallet(newWallet);

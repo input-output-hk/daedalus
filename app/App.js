@@ -28,11 +28,11 @@ export default class App extends Component {
   render() {
     const { state, controller } = this.props;
     if (state.isApplicationLoading) {
-      return <LoadingSpinner style={{ height: '100%' }} />;
+      return <div style={{ display: 'flex', alignItems: 'center' }}><LoadingSpinner /></div>;
     }
     const { activeWallet } = this.props.state;
     const { wallet } = activeWallet;
-    controller.setAppRouter(this.context.router);
+    controller.initialize(this.context.router);
     const locale = state.i18n.locale;
     let initialPage;
     if (wallet) {

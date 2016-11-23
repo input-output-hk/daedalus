@@ -7,7 +7,9 @@ import en from 'react-intl/locale-data/en';
 import de from 'react-intl/locale-data/de';
 import hr from 'react-intl/locale-data/hr';
 import App from './App';
-import state from './state/index';
+import api from './api';
+import environment from './environment';
+import state from './state';
 import AppController from './controllers/AppController';
 import './styles/index.global.scss';
 
@@ -16,11 +18,18 @@ addLocaleData([en, de, hr]);
 
 const appState = state();
 const controller = new AppController(appState);
-controller.account.loadAccount();
-controller.wallets.loadWallets();
-
 const routedApp = (
   <Router><App state={appState} controller={controller} /></Router>
 );
 
-window.addEventListener('load', () => render(routedApp, document.getElementById('root')));
+window.daedalus = {
+  controller,
+  api,
+  environment,
+  state: appState,
+  render() {
+    render(routedApp, document.getElementById('root'));
+  }
+};
+
+window.addEventListener('load', window.daedalus.render);

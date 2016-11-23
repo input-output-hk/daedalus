@@ -3,20 +3,20 @@ import { app, BrowserWindow, Menu, shell } from 'electron';
 let menu;
 let template;
 let mainWindow = null;
+const isDev = process.env.NODE_ENV === 'development';
+const isTest = process.env.NODE_ENV === 'test';
+const isDebug = isDev || isTest;
 
-
-if (process.env.NODE_ENV === 'development') {
+if (isDebug) {
   require('electron-debug')(); // eslint-disable-line global-require
 }
-
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
 
-
 const installExtensions = async () => {
-  if (process.env.NODE_ENV === 'development') {
+  if (isDebug) {
     const installer = require('electron-devtools-installer'); // eslint-disable-line global-require
 
     const extensions = [
@@ -51,8 +51,8 @@ app.on('ready', async () => {
     mainWindow = null;
   });
 
-  if (process.env.NODE_ENV === 'development') {
-    mainWindow.openDevTools();
+  if (isDev) mainWindow.openDevTools();
+  if (isDebug) {
     mainWindow.webContents.on('context-menu', (e, props) => {
       const { x, y } = props;
 
@@ -106,7 +106,7 @@ app.on('ready', async () => {
       }]
     }, {
       label: 'View',
-      submenu: (process.env.NODE_ENV === 'development') ? [{
+      submenu: (isDebug) ? [{
         label: 'Reload',
         accelerator: 'Command+R',
         click() {
