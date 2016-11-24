@@ -3,9 +3,9 @@
 
 .component {
   margin-top: 20px;
-  height: calc(100% - 80px);
+  padding-left: 20px;
+  height: calc(100% - 93px);
   overflow-y: scroll;
-  margin-right: -20px;
 
   &::-webkit-scrollbar {
     width: 20px;
@@ -28,16 +28,8 @@
   }
 }
 
-.bothShadows {
-  background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
-}
-
-.onlyTopShadow {
-  background-size: 100% 40px, 100% 0, 100% 14px, 100% 0;
-}
-
-.onlyBottomShadow {
-  background-size: 100% 0, 100% 40px, 100% 0, 100% 14px;
+.topShadow {
+  box-shadow: inset 0 2px 8px 0 rgba(0, 0, 0, 0.24);
 }
 
 .list {
@@ -53,13 +45,16 @@
 
 .transaction {
   padding: 0 20px;
-  margin: 20px 0;
+  margin: 15px 0;
 }
 
 .group {
   margin-top: 20px;
   &:first-child {
     margin-top: 0;
+  }
+  &:last-child {
+    margin-bottom: 20px;
   }
 }
 

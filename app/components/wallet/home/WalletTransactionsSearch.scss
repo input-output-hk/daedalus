@@ -1,6 +1,8 @@
 
 .component {
 
+  margin: 20px;
+
   :global {
 
     .input_input {
@@ -11,7 +13,7 @@
       border-radius: 4px;
       background: url("../../../assets/images/search-ic.svg") no-repeat 20px center;
       background-size: 15px;
-      padding-left: 54px;
+      padding: 16px 1rem 16px 52px;
       background-color: $color-lighter-grey;
       font-family: $font-regular;
       &:focus {
@@ -21,7 +23,7 @@
     }
 
     .input_hint {
-      top: 1rem;
+      top: 19px;
       left: 54px;
     }
   }
