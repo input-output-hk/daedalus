@@ -85,12 +85,15 @@ export default class WalletTransactionsList extends Component {
     const { transactions, isLoadingTransactions, hasMoreToLoad } = this.props;
     const transactionsGroups = this.groupTransactionsByDay(transactions);
 
-    let shadowStyle = null;
-    if (topShadow) shadowStyle = styles.topShadow;
-    const componentStyles = classnames([styles.component, shadowStyle]);
     const loadingSpinner = isLoadingTransactions || hasMoreToLoad ? (
       <LoadingSpinner ref={(component) => { this.loadingSpinner = component; }} />
     ) : null;
+
+    const componentStyles = classnames([
+      styles.component,
+      topShadow ? styles.topShadow : null,
+    ]);
+
     return (
       <div
         className={componentStyles}

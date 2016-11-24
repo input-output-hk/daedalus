@@ -3,8 +3,8 @@
 
 .component {
   margin-top: 20px;
-  padding: 0 0 35px 20px;
-  height: calc(100% - 60px);
+  padding-left: 20px;
+  height: calc(100% - 93px);
   overflow-y: scroll;
 
   &::-webkit-scrollbar {
@@ -12,7 +12,7 @@
   }
 
   &::-webkit-scrollbar-button {
-    height: 20px;
+    height: 10px;
     display: block;
   }
 
@@ -54,7 +54,7 @@
     margin-top: 0;
   }
   &:last-child {
-    margin-bottom: 25px;
+    margin-bottom: 20px;
   }
 }
 
