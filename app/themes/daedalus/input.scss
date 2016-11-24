@@ -19,6 +19,7 @@ $input-hint-opacity: 0.5;
   background-color: $input-background-color;
   border: 1px solid #c6cdd6;
   &:focus:not([disabled]):not([readonly]) {
+    background-color: $input-background-color;
     border-color: #5e6066;
     @include material-animation-default();
     ~ .label:not(.fixed) {
