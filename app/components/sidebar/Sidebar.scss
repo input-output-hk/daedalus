@@ -1,6 +1,7 @@
 @import './sidebarConfig';
 
 .component {
+  width: $sidebar-width;
   background-color: $sidebar-bg;
   display: flex;
   height: 100%;
@@ -8,16 +9,12 @@
   overflow: hidden;
 }
 
-.visible {
-  width: $sidebar-width;
-}
-
 .hidden {
   width: 0;
 }
 
 .minimized {
-  min-width: 84px;
+  width: 84px;
 }
 
 .maximized {

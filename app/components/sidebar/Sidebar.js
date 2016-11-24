@@ -24,7 +24,7 @@ export default class Sidebar extends Component {
     }).isRequired,
     onCategoryClicked: PropTypes.func,
     hidden: PropTypes.bool,
-    showMenu: PropTypes.bool,
+    isMaximized: PropTypes.bool,
     activeWalletId: PropTypes.string
   };
 
@@ -33,15 +33,19 @@ export default class Sidebar extends Component {
   }
 
   render() {
-    const { hidden, showMenu, menus, onCategoryClicked, activeWalletId } = this.props;
-    const sidebarStyles = classNames([
-      styles.component,
-      hidden ? styles.hidden : styles.visible,
-    ]);
+    const { hidden, isMaximized, menus, onCategoryClicked, activeWalletId } = this.props;
 
+    let sidebarStyle = null;
+    let categoriesStyle = null;
     let subMenu = null;
+    let hasMinimizedCategories = true;
 
-    if (showMenu && this.matches('/wallets')) {
+    if (hidden) {
+      sidebarStyle = styles.hidden;
+    } else if (isMaximized) {
+      categoriesStyle = styles.maximized;
+      hasMinimizedCategories = false;
+    } else if (this.matches('/wallets')) {
       subMenu = (
         <SidebarWalletsMenu
           visible={this.matches('/wallets')}
@@ -51,22 +55,28 @@ export default class Sidebar extends Component {
           isActiveWallet={id => id === activeWalletId}
         />
       );
+      categoriesStyle = styles.minimized;
+    } else {
+      sidebarStyle = styles.minimized;
     }
+
+    const sidebarStyles = classNames([styles.component, sidebarStyle]);
+
     return (
       <div className={sidebarStyles}>
-        <div className={subMenu != null ? styles.minimized : styles.maximized}>
+        <div className={categoriesStyle}>
           <SidebarCategory
             label="Wallets"
             icon={walletsIcon}
             active={this.matches('/wallets')}
-            minimized={subMenu != null}
+            minimized={hasMinimizedCategories}
             onClick={() => onCategoryClicked('/wallets')}
           />
           <SidebarCategory
             label="Settings"
             icon={settingsIcon}
             active={this.matches('/settings')}
-            minimized={subMenu != null}
+            minimized={hasMinimizedCategories}
             onClick={() => onCategoryClicked('/settings')}
           />
         </div>

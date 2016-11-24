@@ -65,7 +65,7 @@ export default class Layout extends Component {
         route={sidebar.route}
         menus={sidebarMenus}
         hidden={sidebar.hidden}
-        showMenu={sidebar.showMenu}
+        isMaximized={sidebar.isMaximized}
         onCategoryClicked={(cat) => controller.sidebar.changeSidebarRoute(cat)}
         activeWalletId={activeWallet.wallet.address}
       />
