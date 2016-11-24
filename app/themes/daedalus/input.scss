@@ -4,6 +4,7 @@ $input-label-font-size: 1rem;
 $input-focus-label-top: 0;
 $input-field-padding: 0.75rem;
 $input-text-label-color: #5e6066;
+$input-background-color: #fafbfc;
 $input-hint-opacity: 0.5;
 @import "~react-toolbox/lib/input/theme";
 
@@ -15,6 +16,7 @@ $input-hint-opacity: 0.5;
 
 .inputElement {
   padding: $input-field-padding 1rem;
+  background-color: $input-background-color;
   border: 1px solid #c6cdd6;
   &:focus:not([disabled]):not([readonly]) {
     border-color: #5e6066;
