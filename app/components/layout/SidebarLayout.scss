@@ -8,16 +8,20 @@
   height: 100%;
   box-shadow: 0 0 70px 0 rgba(0,0,0,0.75);
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar {
   flex: 0 0;
+  overflow: visible;
 }
 
 .appbar {
   height: 84px;
+  flex-shrink: 0;
 }
 
 .content {
-  height: calc(100% - 84px);
+  height: 100%;
 }

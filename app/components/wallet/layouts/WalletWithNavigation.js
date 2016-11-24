@@ -20,7 +20,9 @@ export default class WalletLayoutWithNavigation extends Component {
     const { wallet, children } = this.props;
     return (
       <div className={styles.component}>
-        <WalletNavigation wallet={wallet} />
+        <div className={styles.navigation}>
+          <WalletNavigation wallet={wallet} />
+        </div>
         <div className={styles.page}>
           {children}
         </div>

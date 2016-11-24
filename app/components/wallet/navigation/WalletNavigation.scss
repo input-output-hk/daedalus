@@ -5,11 +5,13 @@
 
 .component {
   display: flex;
+  height: 100%;
 }
 
 .button {
-  display: block;
-  height: 200px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .walletButton {
