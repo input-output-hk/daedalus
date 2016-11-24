@@ -3,16 +3,16 @@
 
 .component {
   margin-top: 20px;
+  padding: 0 0 35px 20px;
   height: calc(100% - 60px);
   overflow-y: scroll;
-  margin-right: -20px;
 
   &::-webkit-scrollbar {
     width: 20px;
   }
 
   &::-webkit-scrollbar-button {
-    height: 10px;
+    height: 20px;
     display: block;
   }
 
