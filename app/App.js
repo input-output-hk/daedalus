@@ -8,8 +8,10 @@ import { daedalusTheme } from './themes/daedalus';
 import { appStatePropType } from './state/index';
 import AppController from './controllers/AppController';
 import Wallet from './containers/wallet/Wallet';
+import Settings from './containers/settings/Settings';
 import translations from './i18n/translations';
 import WalletCreatePage from './containers/wallet/WalletCreatePage';
+import LoadingSpinner from './components/widgets/LoadingSpinner';
 
 @observer
 export default class App extends Component {
@@ -25,12 +27,12 @@ export default class App extends Component {
 
   render() {
     const { state, controller } = this.props;
-    if (state.activeWallet.isLoading) {
-      return <div>Loading...</div>;
+    if (state.isApplicationLoading) {
+      return <div style={{ display: 'flex', alignItems: 'center' }}><LoadingSpinner /></div>;
     }
     const { activeWallet } = this.props.state;
     const { wallet } = activeWallet;
-    controller.setAppRouter(this.context.router);
+    controller.initialize(this.context.router);
     const locale = state.i18n.locale;
     let initialPage;
     if (wallet) {
@@ -38,6 +40,7 @@ export default class App extends Component {
         <div>
           <Match pattern="/" exactly render={() => <Redirect to={`/wallet/${wallet.address}/home`} />} />
           <Match pattern="/wallet/:id" component={Wallet} />
+          <Match pattern="/settings" component={Settings} />
         </div>
       );
     } else {

@@ -1,0 +1,14 @@
+.nameEmailAndPicture {
+  width: 100%;
+  display: flex;
+}
+
+.nameAndEmail {
+  flex: 1;
+}
+
+.picture {
+  margin-left: 30px;
+  flex-basis: 154px;
+  flex-grow: 0;
+}

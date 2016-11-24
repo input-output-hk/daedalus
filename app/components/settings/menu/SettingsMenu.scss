@@ -1,0 +1,8 @@
+@import "../settingsConfig";
+
+.component {
+  @include borderAndBackground;
+  width: 240px;
+  padding: 16px 0;
+  margin-left: 20px;
+}

@@ -1,0 +1,14 @@
+.component {
+  height: calc(100% - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.label {
+  opacity: 0.5;
+  font-size: 16px;
+  line-height: 1.38;
+  font-family: $font-regular;
+  color: $text-color-placeholder;
+}

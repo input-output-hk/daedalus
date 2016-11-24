@@ -15,6 +15,16 @@
   &:not(.active) > .values {
     max-height: $dropdown-overflow-max-height;
   }
+  &.active {
+    > .label, > .value {
+      opacity: 1;
+    }
+    .value {
+      > input {
+        border-color: #5e6066;
+      }
+    }
+  }
 }
 
 .value {

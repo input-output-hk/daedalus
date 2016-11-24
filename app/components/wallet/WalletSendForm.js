@@ -123,6 +123,10 @@ export default class WalletSendForm extends Component {
     const receiver = validator.$('receiver');
     const amount = validator.$('amount');
     const description = validator.$('description');
+    const errors = {
+      receiver: receiver.error ? intl.formatMessage(messages[receiver.error]) : null,
+      amount: amount.error ? intl.formatMessage(messages[amount.error]) : null,
+    };
     return (
       <div className={styles.component}>
 
@@ -132,7 +136,7 @@ export default class WalletSendForm extends Component {
             label={intl.formatMessage(messages.receiverLabel)}
             hint={intl.formatMessage(messages.receiverHint)}
             value={receiver.value}
-            error={receiver.error}
+            error={errors.receiver}
             onChange={receiver.onChange}
             onFocus={receiver.onFocus}
             onBlur={receiver.onBlur}
@@ -141,8 +145,8 @@ export default class WalletSendForm extends Component {
           <Input
             label={intl.formatMessage(messages.amountLabel)}
             hint={intl.formatMessage(messages.amountHint)}
-            value={validator.$('amount').value}
-            error={amount.error}
+            value={amount.value}
+            error={errors.amount}
             onChange={amount.onChange}
             onFocus={amount.onFocus}
             onBlur={amount.onBlur}

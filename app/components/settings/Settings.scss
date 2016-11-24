@@ -1,0 +1,18 @@
+@import "./settingsConfig";
+
+.component {
+  padding: 20px;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  background-color: $settings-background-color;
+}
+
+.settingsPaneWrapper {
+  flex: 1;
+}
+
+.settingsPane {
+  @include borderAndBackground;
+  padding: 30px 30px 10px 30px;
+}

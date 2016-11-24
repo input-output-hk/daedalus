@@ -21,7 +21,9 @@ export default class WalletLayoutWithNavigation extends Component {
     return (
       <div className={styles.component}>
         <WalletNavigation wallet={wallet} />
-        {children}
+        <div className={styles.page}>
+          {children}
+        </div>
       </div>
     );
   }

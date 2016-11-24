@@ -38,34 +38,39 @@ export default class Sidebar extends Component {
       styles.component,
       hidden ? styles.hidden : styles.visible,
     ]);
-    const subMenus = showMenu ? (
-      <SidebarWalletsMenu
-        visible={this.matches('/wallets')}
-        wallets={menus.wallets.items}
-        onAddWallet={menus.wallets.actions.onAddWallet}
-        onWalletItemClick={menus.wallets.actions.onWalletItemClick}
-        isActiveWallet={id => id === activeWalletId}
-      />
-    ) : null;
+
+    let subMenu = null;
+
+    if (showMenu && this.matches('/wallets')) {
+      subMenu = (
+        <SidebarWalletsMenu
+          visible={this.matches('/wallets')}
+          wallets={menus.wallets.items}
+          onAddWallet={menus.wallets.actions.onAddWallet}
+          onWalletItemClick={menus.wallets.actions.onWalletItemClick}
+          isActiveWallet={id => id === activeWalletId}
+        />
+      );
+    }
     return (
       <div className={sidebarStyles}>
-        <div className={showMenu ? styles.minimized : styles.maximized}>
+        <div className={subMenu != null ? styles.minimized : styles.maximized}>
           <SidebarCategory
             label="Wallets"
             icon={walletsIcon}
             active={this.matches('/wallets')}
-            minimized={showMenu}
+            minimized={subMenu != null}
             onClick={() => onCategoryClicked('/wallets')}
           />
           <SidebarCategory
             label="Settings"
             icon={settingsIcon}
             active={this.matches('/settings')}
-            minimized={showMenu}
+            minimized={subMenu != null}
             onClick={() => onCategoryClicked('/settings')}
           />
         </div>
-        {subMenus}
+        {subMenu}
       </div>
     );
   }

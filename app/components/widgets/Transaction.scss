@@ -14,6 +14,7 @@
   background: no-repeat center;
   background-size: 30px;
   border-radius: 10px;
+  flex-shrink: 0;
 }
 
 .card {
@@ -32,6 +33,7 @@
   @extend %type-box;
   background-color: #f2e6e6;
   background-image: url("../../assets/images/send-ic.svg");
+  background-position-y: 7px;
 }
 
 .exchange {
@@ -46,7 +48,7 @@
   width: 100%;
   margin-left: 20px;
   border-bottom: 1px solid #dfe4e8;
-  padding-bottom: 30px;
+  padding-bottom: 22px;
   padding-top: 6px;
 }
 

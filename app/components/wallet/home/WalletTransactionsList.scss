@@ -1,0 +1,68 @@
+@import "../navigation/walletNavConfig";
+@import "../../../styles/mixins/loading-spinner";
+
+.component {
+  margin-top: 20px;
+  padding-left: 20px;
+  height: calc(100% - 93px);
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    width: 20px;
+  }
+
+  &::-webkit-scrollbar-button {
+    height: 10px;
+    display: block;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #c8ccce;
+    border: 7px solid transparent;
+    border-radius: 12px;
+    background-clip: content-box;
+  }
+}
+
+.topShadow {
+  box-shadow: inset 0 2px 8px 0 rgba(0, 0, 0, 0.24);
+}
+
+.list {
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.5);
+  background-blend-mode: lighten;
+  border: solid 1px #c6cdd6;
+  margin-bottom: 20px;
+  &:last-child {
+    margin: 0;
+  }
+}
+
+.transaction {
+  padding: 0 20px;
+  margin: 15px 0;
+}
+
+.group {
+  margin-top: 20px;
+  &:first-child {
+    margin-top: 0;
+  }
+  &:last-child {
+    margin-bottom: 20px;
+  }
+}
+
+.groupDate {
+  font-family: $font-regular;
+  font-size: 16px;
+  color: #5e6066;
+  opacity: 0.5;
+  margin-bottom: 10px;
+  margin-left: 20px;
+}
