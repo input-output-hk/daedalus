@@ -112,7 +112,7 @@
     "react-dom": "^15.3.2",
     "react-intl": "^2.1.5",
     "react-router": "^4.0.0-alpha.5",
-    "react-toolbox": "git://github.com/react-toolbox/react-toolbox.git#dev",
+    "react-toolbox": "git://github.com/react-toolbox/react-toolbox.git#084e367bb79dd341beb332a45ac95e8181cfe50f",
     "source-map-support": "^0.4.3",
     "validator": "^6.1.0",
     "wallet-address-validator": "^0.1.0"
