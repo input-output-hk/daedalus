@@ -30,11 +30,10 @@ export default class WalletTransactionsList extends Component {
 
   state = {
     topShadow: false,
-    bottomShadow: false,
   };
 
   componentDidMount() {
-    this.calcShadows();
+    this.calcShadow();
   }
 
   list: HTMLElement;
@@ -58,15 +57,11 @@ export default class WalletTransactionsList extends Component {
     return groups;
   }
 
-  calcShadows() {
+  calcShadow() {
     const target = this.list;
     const scrollPosition = target.scrollTop;
-    const maxScrollPosition = target.scrollHeight - target.offsetHeight;
-    let topShadow = false;
-    let bottomShadow = false;
-    if (scrollPosition > 20) topShadow = true;
-    if (scrollPosition < maxScrollPosition - 20) bottomShadow = true;
-    this.setState({ topShadow, bottomShadow });
+    const topShadow = scrollPosition > 20;
+    this.setState({ topShadow });
   }
 
   isSpinnerVisible() {
@@ -78,7 +73,7 @@ export default class WalletTransactionsList extends Component {
   }
 
   handleListScroll() {
-    this.calcShadows();
+    this.calcShadow();
     const { hasMoreToLoad, isLoadingTransactions, onLoadMore } = this.props;
     if (this.isSpinnerVisible() && hasMoreToLoad && !isLoadingTransactions) {
       onLoadMore();
@@ -86,17 +81,12 @@ export default class WalletTransactionsList extends Component {
   }
 
   render() {
-    const { topShadow, bottomShadow } = this.state;
+    const { topShadow } = this.state;
     const { transactions, isLoadingTransactions, hasMoreToLoad } = this.props;
     const transactionsGroups = this.groupTransactionsByDay(transactions);
 
     let shadowStyle = null;
-    if (topShadow && bottomShadow) {
-      shadowStyle = styles.bothShadows;
-    } else {
-      if (topShadow) shadowStyle = styles.onlyTopShadow;
-      if (bottomShadow) shadowStyle = styles.onlyBottomShadow;
-    }
+    if (topShadow) shadowStyle = styles.topShadow;
     const componentStyles = classnames([styles.component, shadowStyle]);
     const loadingSpinner = isLoadingTransactions || hasMoreToLoad ? (
       <LoadingSpinner ref={(component) => { this.loadingSpinner = component; }} />

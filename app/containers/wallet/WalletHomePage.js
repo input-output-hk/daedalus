@@ -80,7 +80,7 @@ export default class WalletHomePage extends Component {
     }
 
     return (
-      <div style={{ height: '100%', padding: '20px 20px 0 20px' }}>
+      <div style={{ height: '100%' }}>
         {(wallet.transactions.length || hasAnyTransactions) && (
           <WalletTransactionsSearch
             searchTerm={transactionsSearchTerm}

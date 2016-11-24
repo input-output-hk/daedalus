@@ -28,16 +28,8 @@
   }
 }
 
-.bothShadows {
-  background-size: 100% 40px, 100% 40px, 100% 14px, 100% 14px;
-}
-
-.onlyTopShadow {
-  background-size: 100% 40px, 100% 0, 100% 14px, 100% 0;
-}
-
-.onlyBottomShadow {
-  background-size: 100% 0, 100% 40px, 100% 0, 100% 14px;
+.topShadow {
+  box-shadow: inset 0 2px 8px 0 rgba(0, 0, 0, 0.24);
 }
 
 .list {
