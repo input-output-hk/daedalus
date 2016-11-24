@@ -3,7 +3,7 @@
 
 .component {
   margin-top: 20px;
-  height: calc(100% - 80px);
+  height: calc(100% - 60px);
   overflow-y: scroll;
   margin-right: -20px;
 
@@ -60,6 +60,9 @@
   margin-top: 20px;
   &:first-child {
     margin-top: 0;
+  }
+  &:last-child {
+    margin-bottom: 25px;
   }
 }
 
