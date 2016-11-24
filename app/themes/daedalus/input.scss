@@ -19,6 +19,12 @@ $input-hint-opacity: 0.5;
   &:focus:not([disabled]):not([readonly]) {
     border-color: #5e6066;
     @include material-animation-default();
+    ~ .label:not(.fixed) {
+      color: $input-text-label-color;
+    }
+    ~ .label > .required {
+      color: $input-text-label-color;
+    }
   }
 }
 
