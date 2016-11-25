@@ -24,7 +24,7 @@ export default class SidebarCategory extends Component {
     return (
       <button className={componentStyles} onClick={onClick}>
         <img className={styles.icon} src={icon} role="presentation" />
-        <span className={minimized ? styles.noLabel : styles.label}>{label}</span>
+        {!minimized && <span className={styles.label}>{label}</span>}
       </button>
     );
   }

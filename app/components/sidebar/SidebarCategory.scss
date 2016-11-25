@@ -25,13 +25,10 @@
 .icon {
   width: 24px;
   margin: 0 30px;
+  flex-shrink: 0;
 }
 
 .label {
   font-size: 18px;
   font-family: $font-regular;
-}
-
-.noLabel {
-  display: none;
 }
