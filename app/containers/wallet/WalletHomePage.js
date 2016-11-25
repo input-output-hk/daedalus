@@ -80,12 +80,14 @@ export default class WalletHomePage extends Component {
     }
 
     return (
-      <div style={{ height: '100%' }}>
+      <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
         {(wallet.transactions.length || hasAnyTransactions) && (
-          <WalletTransactionsSearch
-            searchTerm={transactionsSearchTerm}
-            onChange={this.handleSearchInputChange.bind(this)}
-          />
+          <div style={{ flexShrink: 0 }}>
+            <WalletTransactionsSearch
+              searchTerm={transactionsSearchTerm}
+              onChange={this.handleSearchInputChange.bind(this)}
+            />
+          </div>
         )}
         {walletTransactions}
       </div>

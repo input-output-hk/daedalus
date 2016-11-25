@@ -121,6 +121,26 @@ html, body, #root, #root > [data-reactroot] {
 
 * {
   box-sizing: border-box;
+  overflow:hidden;
+}
+
+// ====== GLOBAL SCROLLBAR STYLE ======
+
+* {
+  &::-webkit-scrollbar {
+    width: 20px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: #c8ccce;
+    border: 7px solid transparent;
+    border-radius: 12px;
+    background-clip: content-box;
+  }
 }
 
 // ======= RE-USABLE ANIMATIONS =======
