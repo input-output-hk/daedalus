@@ -5,7 +5,7 @@ export type sidebarState = {
   state: appState,
   route: string,
   hidden: bool,
-  showMenu: bool,
+  isMaximized: bool,
   wallets: () => Array<Object>,
 };
 
@@ -13,7 +13,7 @@ export default (state: appState): sidebarState => ({
   state,
   route: '/wallets',
   hidden: false,
-  showMenu: true,
+  isMaximized: false,
   wallets: () => (
     state.user.wallets.map(wallet => ({
       id: wallet.address,

@@ -19,10 +19,10 @@ export default class SidebarController {
     const { sidebar } = this.state;
     if (sidebar.route === route) {
       // Toggle menu if it's the current route
-      sidebar.showMenu = !sidebar.showMenu;
+      sidebar.isMaximized = !sidebar.isMaximized;
     } else {
       sidebar.route = route;
-      sidebar.showMenu = true;
+      sidebar.isMaximized = false;
       if (route === '/settings') {
         if (this.state.router) this.state.router.transitionTo(route);
       }
