@@ -28,7 +28,8 @@ export default function () {
     const errorsOnScreen = await this.client.getText('.WalletSendForm_fields .input_error');
     const errors = data.hashes();
     for (let i=0; i < errors.length; i++) {
-      expect(errorsOnScreen[i]).to.equal(errors[i].message);
+      const expectedError = await this.intl(errors[i].message);
+      expect(errorsOnScreen[i]).to.equal(expectedError);
     }
   });
 

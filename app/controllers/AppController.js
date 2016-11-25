@@ -27,8 +27,9 @@ export default class AppController {
     this.initializedCallback = callback;
   }
 
-  @action initialize(router: Object) {
+  @action initialize(router: Object, intl: Object) {
     this.state.router = router;
+    this.state.i18n.intl = intl;
     this.initializedCallback();
   }
 
