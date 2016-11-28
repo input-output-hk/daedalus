@@ -47,7 +47,6 @@ export default class WalletsController {
     }
     activeWallet.totalAvailableTransactions = result.total;
     activeWallet.isLoadingTransactions = false;
-    if (initialLoading) activeWallet.hasAnyTransactions = result.total > 0;
   }
 
   @action setActiveWallet(walletId: string|Wallet) {
@@ -80,6 +79,7 @@ export default class WalletsController {
       });
       wallet.addTransaction(new WalletTransaction(transaction));
       if (this.state.router) this.state.router.transitionTo(`/wallet/${wallet.address}/home`);
+      this.loadActiveWalletTransactions();
     } catch (error) {
       activeWallet.errorSendingMoney = error;
     }

@@ -40,7 +40,6 @@ class Daedalus extends Component {
 }
 
 const initializeDaedalus = () => {
-  api.data.reset();
   const appState = appStateFactory();
   const controller = new AppController(appState);
   window.daedalus = {
@@ -49,6 +48,7 @@ const initializeDaedalus = () => {
     environment,
     state: appState,
     reset() {
+      api.data.reset();
       initializeDaedalus();
     }
   };
