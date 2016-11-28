@@ -33,6 +33,7 @@ export default {
       lastUsed: true
     };
     this.wallets.push(wallet);
+    this.transactions[wallet.address] = [];
     return wallet;
   }
 };

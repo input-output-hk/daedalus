@@ -18,6 +18,15 @@ export default function () {
     }, `/wallet/${this.wallet.address}/send`);
   });
 
+  this.When(/^I fill out the wallet send form with:$/, async function (table) {
+    const values = table.hashes()[0];
+    const formSelector = '.WalletSendForm_fields';
+    await this.client.setValue(`${formSelector} .receiver .input_inputElement`, values.receiver);
+    await this.client.setValue(`${formSelector} .amount .input_inputElement`, values.amount);
+    await this.client.setValue(`${formSelector} .description .input_inputElement`, values.description);
+    this.walletSendFormValues = values;
+  });
+
   this.When(/^I submit the wallet send form$/, async function () {
     const submitButton = '.WalletSendForm_submitButton';
     await this.client.waitForVisible(submitButton);
@@ -34,12 +43,17 @@ export default function () {
     }
   });
 
-  this.When(/^I fill out the wallet send form with:$/, async function (table) {
-    const values = table.hashes()[0];
-    const formSelector = '.WalletSendForm_fields';
-    await this.client.setValue(`${formSelector} .receiver .input_inputElement`, values.receiver);
-    await this.client.setValue(`${formSelector} .amount .input_inputElement`, values.amount);
-    await this.client.setValue(`${formSelector} .description .input_inputElement`, values.description);
+  this.Then(/^I should see the wallet home screen with the transaction$/, async function () {
+    await this.client.waitForVisible('.WalletHomeButton_active');
+    const visibleWalletName = await this.client.getText('.WalletHomeButton_walletName');
+    expect(visibleWalletName.toLowerCase()).to.equal(this.wallet.name.toLowerCase());
+    const transactionTitle = await this.client.getText('.Transaction_title');
+    expect(transactionTitle).to.equal(`Money to ${this.walletSendFormValues['receiver']}`);
+    const transactionType = await this.client.getText('.Transaction_type');
+    expect(transactionType).to.equal('ADA transaction');
+    const transactionAmount = await this.client.getText('.Transaction_amount');
+    expect(transactionAmount).to.equal(`-${this.walletSendFormValues['amount']} ada`);
   });
+
 
 };

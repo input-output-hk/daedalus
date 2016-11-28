@@ -14,6 +14,7 @@ export const sendMoney = (request: {
     type: 'adaExpend',
     title: `Money to ${request.receiver}`,
     transactionId: 'ede9be2973a2558e2384cd09b135a1de7cc67ffd2cbb81be403f5e0b00400e1a',
+    amount: -1 * request.amount
   });
   walletTransactions.push(transaction);
   resolve(transaction);
