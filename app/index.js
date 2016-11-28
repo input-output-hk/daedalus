@@ -30,20 +30,29 @@ class Daedalus extends Component {
     const { state, controller } = this.props;
     const locale = state.i18n.locale;
     return (
-      <Router>
-        <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
-          <Provider state={state} controller={controller}>
-            <App />
-          </Provider>
-        </IntlProvider>
-      </Router>
+      <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
+        <Provider state={state} controller={controller}>
+          <App />
+        </Provider>
+      </IntlProvider>
     );
   }
 }
 
-window.addEventListener('load', () => {
+const initializeDaedalus = () => {
+  api.data.reset();
   const appState = appStateFactory();
   const controller = new AppController(appState);
-  window.daedalus = { controller, api, environment, state: appState };
-  render(<Daedalus state={appState} controller={controller} />, document.getElementById('root'));
-});
+  window.daedalus = {
+    controller,
+    api,
+    environment,
+    state: appState,
+    reset() {
+      initializeDaedalus();
+    }
+  };
+  render(<Router><Daedalus state={appState} controller={controller} /></Router>, document.getElementById('root'));
+};
+
+window.addEventListener('load', initializeDaedalus);

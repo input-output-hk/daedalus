@@ -133,6 +133,7 @@ export default class WalletSendForm extends Component {
         <div className={styles.fields}>
 
           <Input
+            className="receiver"
             label={intl.formatMessage(messages.receiverLabel)}
             hint={intl.formatMessage(messages.receiverHint)}
             value={receiver.value}
@@ -143,6 +144,7 @@ export default class WalletSendForm extends Component {
           />
 
           <Input
+            className="amount"
             label={intl.formatMessage(messages.amountLabel)}
             hint={intl.formatMessage(messages.amountHint)}
             value={amount.value}
@@ -153,6 +155,7 @@ export default class WalletSendForm extends Component {
           />
 
           <Input
+            className="description"
             label={intl.formatMessage(messages.descriptionLabel)}
             hint={intl.formatMessage(messages.descriptionHint)}
             value={description.value}
