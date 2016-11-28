@@ -4,7 +4,7 @@ Feature: Send Money to Receiver
     Given I have an account
     And I have a wallet
 
-  @reset @happy
+  @reset
   Scenario: User Sends Money to Receiver
     Given I am on the wallet send screen
     When I fill out the wallet send form with:
@@ -13,7 +13,6 @@ Feature: Send Money to Receiver
     And I submit the wallet send form
     Then I should see the wallet home screen with the transaction
 
-  @error
   Scenario: User Submits Empty Form
     Given I am on the wallet send screen
     When I submit the wallet send form
@@ -22,7 +21,6 @@ Feature: Send Money to Receiver
       | wallet.send.form.errors.invalidBitcoinAddress |
       | wallet.send.form.errors.invalidAmount         |
 
-  @error
   Scenario: User Enters Wrong Receiver Address
     Given I am on the wallet send screen
     When I fill out the wallet send form with:
@@ -33,7 +31,6 @@ Feature: Send Money to Receiver
       | message                                       |
       | wallet.send.form.errors.invalidBitcoinAddress |
 
-  @error
   Scenario Outline: User Enters Wrong Amount
     Given I am on the wallet send screen
     When I fill out the wallet send form with:
