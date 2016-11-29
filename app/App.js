@@ -1,19 +1,18 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { Match, Redirect } from 'react-router';
-import { Provider, observer } from 'mobx-react';
-import { IntlProvider } from 'react-intl';
+import { observer } from 'mobx-react';
 import { ThemeProvider } from 'react-css-themr';
+import { intlShape } from 'react-intl';
 import { daedalusTheme } from './themes/daedalus';
 import { appStatePropType } from './state/index';
 import AppController from './controllers/AppController';
 import Wallet from './containers/wallet/Wallet';
 import Settings from './containers/settings/Settings';
-import translations from './i18n/translations';
 import WalletCreatePage from './containers/wallet/WalletCreatePage';
 import LoadingSpinner from './components/widgets/LoadingSpinner';
 
-@observer
+@observer(['state', 'controller'])
 export default class App extends Component {
 
   static propTypes = {
@@ -23,6 +22,7 @@ export default class App extends Component {
 
   static contextTypes = {
     router: PropTypes.object.isRequired,
+    intl: intlShape.isRequired,
   };
 
   render() {
@@ -32,8 +32,7 @@ export default class App extends Component {
     }
     const { activeWallet } = this.props.state;
     const { wallet } = activeWallet;
-    controller.initialize(this.context.router);
-    const locale = state.i18n.locale;
+    controller.initialize(this.context.router, this.context.intl);
     let initialPage;
     if (wallet) {
       initialPage = (
@@ -52,13 +51,9 @@ export default class App extends Component {
       );
     }
     return (
-      <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
-        <ThemeProvider theme={daedalusTheme}>
-          <Provider state={state} controller={controller}>
-            { initialPage }
-          </Provider>
-        </ThemeProvider>
-      </IntlProvider>
+      <ThemeProvider theme={daedalusTheme}>
+        { initialPage }
+      </ThemeProvider>
     );
   }
 }

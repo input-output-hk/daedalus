@@ -30,7 +30,6 @@ export default class WalletHomePage extends Component {
         transactionsSearchTerm: PropTypes.string.isRequired,
         transactionsSearchLimit: PropTypes.number.isRequired,
         totalAvailableTransactions: PropTypes.number.isRequired,
-        hasAnyTransactions: PropTypes.bool.isRequired,
       }).isRequired
     }).isRequired,
     controller: PropTypes.shape({
@@ -57,10 +56,10 @@ export default class WalletHomePage extends Component {
       isLoadingTransactions,
       transactionsSearchLimit,
       totalAvailableTransactions,
-      hasAnyTransactions,
     } = this.props.state.activeWallet;
 
     let walletTransactions = null;
+    const hasAnyTransactions = totalAvailableTransactions > 0;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const noTransactionsFoundLabel = intl.formatMessage(messages.noTransactionsFound);
 

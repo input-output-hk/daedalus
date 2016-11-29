@@ -1,9 +1,12 @@
 import { Application } from 'spectron';
 import electronPath from 'electron';
 
+const context = {};
+
 export default function () {
-  this.Before({ timeout: 20 * 1000 }, async function() {
-    this.app = new Application({
+  // Boot up the electron app before all features
+  this.registerHandler('BeforeFeatures', { timeout: 20 * 1000 }, async function() {
+    const app = new Application({
       path: electronPath,
       args: ['./electron/main.testing'],
       env: {
@@ -12,17 +15,28 @@ export default function () {
       },
       waitTimeout: 10000
     });
-    await this.app.start();
-    this.client = this.app.client;
-    this.browserWindow = this.app.browserWindow;
-    await this.client.waitUntilWindowLoaded();
+    await app.start();
+    await app.client.waitUntilWindowLoaded();
+    context.app = app;
+  });
+  // And tear it down after all features
+  this.registerHandler('AfterFeatures', function() {
+    return context.app.stop();
+  });
+
+  // Make the electron app accessible in each scenario context
+  this.Before(function() {
+    this.client = context.app.client;
+    this.browserWindow = context.app.browserWindow;
+  });
+
+  // Reset and rerender the Daedalus app only when necessary
+  this.Before("@reset", async function() {
     await this.client.executeAsync(function(done) {
+      daedalus.reset();
       daedalus.environment.current = 'test';
-      daedalus.api.data.reset();
       daedalus.controller.onInitialized(() => done());
     });
   });
-  this.After(function() {
-    return this.app.stop();
-  });
+
 }

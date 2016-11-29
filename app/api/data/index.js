@@ -1,12 +1,12 @@
 // @flow
 
 import faker from 'faker';
-import wallets from '../data/wallets.json';
-import account from '../data/account.json';
+import { account, wallets, transactions } from './stubs';
 
 export default {
   wallets,
   account,
+  transactions,
   reset() {
     this.wallets = [];
     this.account = {};
@@ -33,6 +33,7 @@ export default {
       lastUsed: true
     };
     this.wallets.push(wallet);
+    this.transactions[wallet.address] = [];
     return wallet;
   }
 };
