@@ -2,7 +2,6 @@
 import type { appState } from './index';
 
 export type sidebarState = {
-  state: appState,
   route: string,
   hidden: bool,
   isMaximized: bool,
@@ -10,7 +9,6 @@ export type sidebarState = {
 };
 
 export default (state: appState): sidebarState => ({
-  state,
   route: '/wallets',
   hidden: false,
   isMaximized: false,

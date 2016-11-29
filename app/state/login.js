@@ -1,13 +1,10 @@
 // @flow
-import type { appState } from './index';
-
 export type loginState = {
   isLoading: boolean,
   errorLoading: ?string
 };
 
-export default (state: appState): loginState => ({
-  state,
+export default (): loginState => ({
   isLoading: false,
   errorLoading: null
 });
