@@ -25,17 +25,19 @@ export default function () {
   });
 
   // Make the electron app accessible in each scenario context
-  this.Before(function() {
+  this.Before(async function() {
     this.client = context.app.client;
     this.browserWindow = context.app.browserWindow;
+    await this.client.executeAsync(function(done) {
+      daedalus.environment.current = daedalus.environment.TEST;
+      daedalus.controller.onInitialized(() => done());
+    });
   });
 
   // Reset and rerender the Daedalus app only when necessary
   this.Before("@reset", async function() {
-    await this.client.executeAsync(function(done) {
+    await this.client.execute(function() {
       daedalus.reset();
-      daedalus.environment.current = 'test';
-      daedalus.controller.onInitialized(() => done());
     });
   });
 

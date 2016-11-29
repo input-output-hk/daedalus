@@ -1,11 +1,15 @@
 // @flow
 import data from '../data';
+import environment from '../../environment';
 
 export const loadWalletTransactions = (request: {
   address: string,
   searchTerm: string,
   limit: number
 }) => new Promise((resolve) => {
+  let fakeRequestTime = 1000;
+  if (environment.isTest()) fakeRequestTime = 0;
+
   setTimeout(() => {
     const { address, searchTerm } = request;
     const regexp = new RegExp(searchTerm, 'i');
@@ -24,5 +28,5 @@ export const loadWalletTransactions = (request: {
       total: transactions.length,
       transactions: transactions.slice(0, request.limit) // Limit number of results,
     });
-  }, 1000);
+  }, fakeRequestTime);
 });
