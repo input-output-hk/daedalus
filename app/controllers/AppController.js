@@ -12,6 +12,7 @@ export default class AppController {
   wallets: WalletsController;
   sidebar: SidebarController;
   initializedCallback = () => {};
+  isInitialized = false;
 
   constructor(state: appState) {
     this.state = state;
@@ -25,12 +26,16 @@ export default class AppController {
 
   onInitialized(callback: () => {}) {
     this.initializedCallback = callback;
+    if (this.isInitialized) {
+      callback();
+    }
   }
 
   @action initialize(router: Object, intl: Object) {
     this.state.router = router;
     this.state.i18n.intl = intl;
     this.initializedCallback();
+    this.isInitialized = true;
   }
 
   navigateTo(route: string) {

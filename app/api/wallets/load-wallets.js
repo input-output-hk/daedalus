@@ -1,8 +1,9 @@
 // @flow
 import data from '../data';
+import environment from '../../environment';
 
 export const loadWallets = () => new Promise((resolve) => {
-  setTimeout(() => {
-    resolve(data.wallets);
-  }, 1000);
+  let fakeRequestTime = 1000;
+  if (environment.isTest()) fakeRequestTime = 0;
+  setTimeout(() => { resolve(data.wallets); }, fakeRequestTime);
 });

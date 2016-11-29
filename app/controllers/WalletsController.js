@@ -26,7 +26,7 @@ export default class WalletsController {
       }
       activeWallet.isLoading = false;
     } catch (error) {
-      activeWallet.errorLoading = 'Error loading wallets'; // TODO: i18n
+      throw error;
     }
   }
 
@@ -81,7 +81,7 @@ export default class WalletsController {
       if (this.state.router) this.state.router.transitionTo(`/wallet/${wallet.address}/home`);
       this.loadActiveWalletTransactions();
     } catch (error) {
-      activeWallet.errorSendingMoney = error;
+      throw error;
     }
   }
 
@@ -93,7 +93,7 @@ export default class WalletsController {
       this.setActiveWallet(newWallet);
       // TODO: Navigate to newly created wallet
     } catch (error) {
-      this.state.activeWallet.errorCreating = error; // TODO: handling errors from backend and i18n
+      throw error;
     }
   }
 
