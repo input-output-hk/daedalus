@@ -11,11 +11,15 @@ export default function () {
     this.wallet = result.value;
   });
 
-  this.Given(/^I am on the wallet send screen$/, async function() {
-    await this.client.waitForVisible('.WalletNavigation_sendLink');
-    return this.client.execute(function(route) {
-      daedalus.state.router.transitionTo(route);
-    }, `/wallet/${this.wallet.address}/send`);
+  this.Given(/^I am on the wallet (.*) screen$/, async function(screen) {
+    await this.client.waitForVisible('.WalletWithNavigation_component');
+    await this.navigateTo(`/wallet/${this.wallet.address}/${screen}`);
+  });
+
+  this.When(/^I click the wallet (.*) button$/, async function (buttonName) {
+    const buttonSelector = `.WalletNavigation_${buttonName}Link`;
+    await this.client.waitForVisible(buttonSelector);
+    await this.client.click(buttonSelector);
   });
 
   this.When(/^I fill out the wallet send form with:$/, async function (table) {
@@ -31,6 +35,15 @@ export default function () {
     const submitButton = '.WalletSendForm_submitButton';
     await this.client.waitForVisible(submitButton);
     return this.client.click(submitButton);
+  });
+
+  this.Then(/^I should be on the wallet (.*) screen$/, async function (screen) {
+    if (screen != 'home') {
+      const buttonSelector = `.WalletNavigation_${screen}Link`;
+      await this.client.waitForVisible(`${buttonSelector} .WalletNavButton_active`);
+    } else {
+      await this.client.waitForVisible('.WalletHomeButton_active');
+    }
   });
 
   this.Then(/^I should see the following error messages on the wallet send form:$/, async function (data) {
@@ -54,6 +67,5 @@ export default function () {
     const transactionAmount = await this.client.getText('.Transaction_amount');
     expect(transactionAmount).to.equal(`-${this.walletSendFormValues['amount']} ada`);
   });
-
 
 };

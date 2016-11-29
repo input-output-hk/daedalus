@@ -45,7 +45,7 @@ export default class WalletNavigation extends Component {
     return (
       <div className={styles.component}>
 
-        <NavigationLink to={`/wallet/${wallet.address}/home`} linkStyles={styles.walletHomeLink}>
+        <NavigationLink to={`/wallet/${wallet.address}/home`} linkStyles={styles.homeLink}>
           <WalletNavHomeButton
             className={styles.walletButton}
             walletName={wallet.name}
