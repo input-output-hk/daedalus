@@ -4,7 +4,6 @@ Feature: Send Money to Receiver
     Given I have an account
     And I have a wallet
 
-  @reset
   Scenario: User Sends Money to Receiver
     Given I am on the wallet send screen
     When I fill out the wallet send form with:
