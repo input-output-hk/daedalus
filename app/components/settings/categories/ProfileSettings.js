@@ -69,7 +69,7 @@ export default class ProfileSettings extends Component {
     const { intl } = this.context;
     const { profile, onFieldValueChange } = this.props;
     return (
-      <div>
+      <div className="profile">
         <div className={styles.nameEmailAndPicture}>
           <div className={styles.nameAndEmail}>
             <Input
