@@ -19,7 +19,7 @@
     "cleanup": "mop -v",
     "cucumber": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 cucumber-js --compiler js:babel-register --snippet-interface synchronous",
     "cucumber-watch": "npm run cucumber -- --tags @watch",
-    "test": "nodemon --exec npm run cucumber",
+    "test": "npm run cucumber",
     "test-watch": "nodemon --exec npm run cucumber-watch",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook"
