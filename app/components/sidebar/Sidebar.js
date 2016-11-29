@@ -66,6 +66,7 @@ export default class Sidebar extends Component {
       <div className={sidebarStyles}>
         <div className={categoriesStyle}>
           <SidebarCategory
+            className="wallets"
             label="Wallets"
             icon={walletsIcon}
             active={this.matches('/wallets')}
@@ -73,6 +74,7 @@ export default class Sidebar extends Component {
             onClick={() => onCategoryClicked('/wallets')}
           />
           <SidebarCategory
+            className="settings"
             label="Settings"
             icon={settingsIcon}
             active={this.matches('/settings')}

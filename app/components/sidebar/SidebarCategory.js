@@ -13,13 +13,15 @@ export default class SidebarCategory extends Component {
     active: PropTypes.bool,
     minimized: PropTypes.bool,
     onClick: PropTypes.func,
+    className: PropTypes.string
   };
 
   render() {
-    const { icon, label, active, minimized, onClick } = this.props;
+    const { icon, label, active, minimized, onClick, className } = this.props;
     const componentStyles = classNames([
       styles.component,
-      active ? styles.active : null
+      active ? styles.active : null,
+      className
     ]);
     return (
       <button className={componentStyles} onClick={onClick}>
