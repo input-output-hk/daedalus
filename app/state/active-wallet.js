@@ -1,11 +1,9 @@
 // @flow
-import type { appState } from './index';
 import Wallet from '../domain/Wallet';
 
 export const INITIAL_WALLET_SEARCH_LIMIT = 10;
 
 export type activeWalletState = {
-  state: appState,
   wallet: ?Wallet,
   isLoadingTransactions: boolean,
   transactionsSearchTerm: string,
@@ -18,8 +16,7 @@ export type activeWalletState = {
   errorSendingMoney: ?string
 };
 
-export default (state: appState): activeWalletState => ({
-  state,
+export default (): activeWalletState => ({
   wallet: null,
   isLoadingTransactions: false,
   transactionsSearchTerm: '',

@@ -12,8 +12,8 @@ export default function () {
   });
 
   this.Given(/^I am on the wallet (.*) screen$/, async function(screen) {
-    await this.client.waitForVisible('.WalletWithNavigation_component');
     await this.navigateTo(`/wallet/${this.wallet.address}/${screen}`);
+    await this.client.waitForVisible('.WalletWithNavigation_component');
   });
 
   this.When(/^I click the wallet (.*) button$/, async function (buttonName) {
