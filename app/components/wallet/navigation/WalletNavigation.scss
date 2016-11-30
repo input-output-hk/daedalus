@@ -1,34 +1,23 @@
-%link {
-  display: block;
-  text-decoration: none;
-}
-
 .component {
   display: flex;
   height: 100%;
 }
 
-.button {
+%button {
   height: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.walletButton {
-  @extend .button;
 }
 
 .homeLink {
-  @extend %link;
+  @extend %button;
   width: 50%;
 }
 
 .sendLink {
-  @extend %link;
+  @extend %button;
   width: 25%;
 }
 
 .receiveLink {
-  @extend %link;
+  @extend %button;
   width: 25%;
 }

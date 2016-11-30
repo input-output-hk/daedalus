@@ -1,6 +1,7 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { Provider, observer } from 'mobx-react';
+import { action } from 'mobx';
 import { render } from 'react-dom';
 import { addLocaleData, IntlProvider } from 'react-intl';
 import { MemoryRouter as Router } from 'react-router';
@@ -47,12 +48,16 @@ const initializeDaedalus = () => {
     api,
     environment,
     state: appState,
-    reset() {
+    reset: action(() => {
       api.data.reset();
-      initializeDaedalus();
+      controller.reset();
+      window.daedalus.render();
+    }),
+    render() {
+      render(<Router><Daedalus state={appState} controller={controller} /></Router>, document.getElementById('root'));
     }
   };
-  render(<Router><Daedalus state={appState} controller={controller} /></Router>, document.getElementById('root'));
+  window.daedalus.render();
 };
 
 window.addEventListener('load', initializeDaedalus);

@@ -30,8 +30,8 @@ export default function () {
     this.browserWindow = context.app.browserWindow;
     await this.client.executeAsync(function(done) {
       daedalus.environment.current = daedalus.environment.TEST;
+      daedalus.controller.onInitialized(done);
       daedalus.reset();
-      daedalus.controller.onInitialized(() => done());
     });
   });
 }

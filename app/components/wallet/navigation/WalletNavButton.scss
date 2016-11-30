@@ -1,13 +1,12 @@
 @import './_walletNavConfig';
 
 %base {
+  width: 100%;
+  height: 100%;
   text-align: center;
   background: no-repeat center 70%;
   background-size: 45px;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
 }
 
 // ========= STATES =========
@@ -41,6 +40,7 @@
   height: $walletNavButtonContentHeight;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .label {
@@ -49,6 +49,7 @@
   text-transform: uppercase;
   position: relative;
   margin-bottom: auto;
+  overflow: visible;
 
   &:after {
     content: '';

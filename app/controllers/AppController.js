@@ -8,39 +8,66 @@ import SidebarController from './SidebarController';
 export default class AppController {
 
   state: appState;
+  router: { transitionTo: () => void };
+  intl: { formatMessage: () => string };
   account: AccountController;
   wallets: WalletsController;
   sidebar: SidebarController;
   initializedCallback = () => {};
-  isInitialized = false;
 
   constructor(state: appState) {
     this.state = state;
-    this.account = new AccountController(state);
-    this.wallets = new WalletsController(state);
-    this.sidebar = new SidebarController(state);
+    this.account = new AccountController(this, state);
+    this.wallets = new WalletsController(this, state);
+    this.sidebar = new SidebarController(this, state);
+    this.load();
+  }
 
+  load() {
     this.account.loadAccount();
     this.wallets.loadWallets();
   }
 
-  onInitialized(callback: () => {}) {
+  onInitialized(callback: () => null) {
     this.initializedCallback = callback;
-    if (this.isInitialized) {
+    if (this.state.isInitialized) {
       callback();
     }
   }
 
-  @action initialize(router: Object, intl: Object) {
-    this.state.router = router;
-    this.state.i18n.intl = intl;
+  @action initialize(router: Object, location: Object, intl: Object) {
+    this.router = router;
+    this.intl = intl;
+    this.state.router = { location };
+    this.state.isInitialized = true;
     this.initializedCallback();
-    this.isInitialized = true;
+  }
+
+  setRouter(router: Object) {
+    this.router = router;
+  }
+
+  setTranslationService(intl: Object) {
+    this.intl = intl;
+  }
+
+  updateLocation(location: Object) {
+    this.state.router.location = location;
   }
 
   navigateTo(route: string) {
-    if (!this.state.router) throw new Error('Cannot to navigate because router is not yet set.');
-    this.state.router.transitionTo(route);
+    this.router.transitionTo(route);
+  }
+
+  translate(descriptor: Object, values: Object) {
+    return this.intl.formatMessage(descriptor, values);
+  }
+
+  @action reset() {
+    this.state.reset();
+    this.load();
+    this.state.isInitialized = true;
+    this.initializedCallback();
   }
 
 }

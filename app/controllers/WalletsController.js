@@ -1,18 +1,12 @@
 import { action } from 'mobx';
 import _ from 'lodash';
-import type { appState } from '../state/index';
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
 import api from '../api';
 import { INITIAL_WALLET_SEARCH_LIMIT } from '../state/active-wallet';
+import BaseController from './BaseController';
 
-export default class WalletsController {
-
-  state: appState;
-
-  constructor(state: appState) {
-    this.state = state;
-  }
+export default class WalletsController extends BaseController {
 
   @action async loadWallets() {
     const { activeWallet, user } = this.state;
@@ -60,7 +54,7 @@ export default class WalletsController {
     activeWallet.transactionsSearchLimit = INITIAL_WALLET_SEARCH_LIMIT;
     activeWallet.transactionsSearchTerm = '';
     this.loadActiveWalletTransactions(true);
-    if (this.state.router) this.state.router.transitionTo(`/wallet/${wallet.address}/home`);
+    this.appController.navigateTo(`/wallet/${wallet.address}/home`);
   }
 
   @action async sendMoney(transactionDetails: {
@@ -78,7 +72,7 @@ export default class WalletsController {
         currency: wallet.currency
       });
       wallet.addTransaction(new WalletTransaction(transaction));
-      if (this.state.router) this.state.router.transitionTo(`/wallet/${wallet.address}/home`);
+      this.appController.navigateTo(`/wallet/${wallet.address}/home`);
       this.loadActiveWalletTransactions();
     } catch (error) {
       throw error;

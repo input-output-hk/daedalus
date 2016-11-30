@@ -4,6 +4,7 @@ import { Match, Redirect } from 'react-router';
 import { observer } from 'mobx-react';
 import { ThemeProvider } from 'react-css-themr';
 import { intlShape } from 'react-intl';
+import DevTools from 'mobx-react-devtools';
 import { daedalusTheme } from './themes/daedalus';
 import { appStatePropType } from './state/index';
 import AppController from './controllers/AppController';
@@ -11,6 +12,7 @@ import Wallet from './containers/wallet/Wallet';
 import Settings from './containers/settings/Settings';
 import WalletCreatePage from './containers/wallet/WalletCreatePage';
 import LoadingSpinner from './components/widgets/LoadingSpinner';
+import environment from './environment';
 
 @observer(['state', 'controller'])
 export default class App extends Component {
@@ -23,20 +25,45 @@ export default class App extends Component {
   static contextTypes = {
     router: PropTypes.object.isRequired,
     intl: intlShape.isRequired,
+    broadcasts: React.PropTypes.object
   };
+
+  componentDidMount() {
+    if (this.context.broadcasts) {
+      const subscribe = this.context.broadcasts.location;
+      const { state, controller } = this.props;
+      const { router, intl } = this.context;
+      this.unsubscribeFromLocationBroadcast = subscribe((location) => {
+        if (!state.isInitialized) {
+          controller.initialize(router, location, intl);
+        } else {
+          controller.updateLocation(location);
+        }
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    if (this.unsubscribeFromLocationBroadcast) this.unsubscribeFromLocationBroadcast();
+  }
+
+  unsubscribeFromLocationBroadcast: () => {};
 
   render() {
     const { state, controller } = this.props;
+    const { router, intl } = this.context;
+    controller.setRouter(router);
+    controller.setTranslationService(intl);
+
     if (state.isApplicationLoading) {
       return <div style={{ display: 'flex', alignItems: 'center' }}><LoadingSpinner /></div>;
     }
     const { activeWallet } = this.props.state;
     const { wallet } = activeWallet;
-    controller.initialize(this.context.router, this.context.intl);
     let initialPage;
     if (wallet) {
       initialPage = (
-        <div>
+        <div style={{ height: '100%' }}>
           <Match pattern="/" exactly render={() => <Redirect to={`/wallet/${wallet.address}/home`} />} />
           <Match pattern="/wallet/:id" component={Wallet} />
           <Match pattern="/settings" component={Settings} />
@@ -50,9 +77,13 @@ export default class App extends Component {
         </div>
       );
     }
+    const mobxDevTools = environment.isDev() ? <DevTools /> : null;
     return (
       <ThemeProvider theme={daedalusTheme}>
-        { initialPage }
+        <div style={{ height: '100%' }}>
+          {initialPage}
+          {mobxDevTools}
+        </div>
       </ThemeProvider>
     );
   }
