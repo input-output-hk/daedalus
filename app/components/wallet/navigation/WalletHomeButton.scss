@@ -11,11 +11,9 @@
 
 .normal {
   @extend %base;
-  background-color: rgba($walletNavThemeColor, 0.2);
   color: $walletNavThemeColor;
   &:hover {
     cursor: pointer;
-    background-color: rgba($walletNavThemeColor, 0.25);
   }
 }
 
