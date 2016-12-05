@@ -1,5 +1,6 @@
 // @flow
 import { action } from 'mobx';
+import Route from 'route-parser';
 import type { appState } from '../state/index';
 import AccountController from './AccountController';
 import WalletsController from './WalletsController';
@@ -53,6 +54,7 @@ export default class AppController {
 
   updateLocation(location: Object) {
     this.state.router.location = location;
+    this.handleRouteChange(location.pathname);
   }
 
   navigateTo(route: string) {
@@ -70,4 +72,12 @@ export default class AppController {
     this.initializedCallback();
   }
 
+  // TODO: Refactor this into dedicated handlers later on! (event-bus arch)
+  handleRouteChange(path:string) {
+    const walletRoute = new Route('/wallet/:id/:screen').match(path);
+
+    if (walletRoute) {
+      this.wallets.setActiveWallet(walletRoute.id);
+    }
+  }
 }
