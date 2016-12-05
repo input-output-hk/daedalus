@@ -1,16 +1,10 @@
 // @flow
 import { action } from 'mobx';
-import type { appState } from '../state/index';
 import Profile from '../domain/Profile';
 import api from '../api';
+import BaseController from './BaseController';
 
-export default class AccountController {
-
-  state: appState;
-
-  constructor(state: appState) {
-    this.state = state;
-  }
+export default class AccountController extends BaseController {
 
   @action async loadAccount() {
     const { login, user } = this.state;

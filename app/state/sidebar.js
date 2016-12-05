@@ -1,4 +1,5 @@
 // @flow
+import { action } from 'mobx';
 import type { appState } from './index';
 
 export type sidebarState = {
@@ -8,15 +9,21 @@ export type sidebarState = {
   wallets: () => Array<Object>,
 };
 
-export default (state: appState): sidebarState => ({
+const defaultValues = {
   route: '/wallets',
   hidden: false,
   isMaximized: false,
+};
+
+const state = {};
+
+export default (root: appState): sidebarState => (Object.assign(state, defaultValues, {
   wallets: () => (
-    state.user.wallets.map(wallet => ({
+    root.user.wallets.map(wallet => ({
       id: wallet.address,
       title: wallet.name,
       info: `${wallet.amount} ${wallet.currency}`
     }))
-  )
-});
+  ),
+  reset: action(() => Object.assign(state, defaultValues))
+}));

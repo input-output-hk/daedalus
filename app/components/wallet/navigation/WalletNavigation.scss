@@ -1,34 +1,32 @@
-%link {
-  display: block;
-  text-decoration: none;
-}
+@import './_walletNavConfig';
 
 .component {
   display: flex;
   height: 100%;
 }
 
-.button {
+%button {
   height: 100%;
-  display: flex;
-  justify-content: center;
-}
-
-.walletButton {
-  @extend .button;
+  width: 25%;
+  background-color: rgba($walletNavThemeColor, 0.1);
+  &:hover {
+    background-color: rgba($walletNavThemeColor, 0.3);
+  }
 }
 
 .homeLink {
-  @extend %link;
+  @extend %button;
   width: 50%;
 }
 
 .sendLink {
-  @extend %link;
-  width: 25%;
+  @extend %button;
+  background-color: rgba($walletNavThemeColor, 0.20);
+  &:hover {
+    background-color: rgba($walletNavThemeColor, 0.3);
+  }
 }
 
 .receiveLink {
-  @extend %link;
-  width: 25%;
+  @extend %button;
 }

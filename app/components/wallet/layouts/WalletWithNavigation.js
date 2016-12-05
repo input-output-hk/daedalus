@@ -5,7 +5,7 @@ import WalletNavigation from '../navigation/WalletNavigation';
 import styles from './WalletWithNavigation.scss';
 
 @observer
-export default class WalletLayoutWithNavigation extends Component {
+export default class WalletWithNavigation extends Component {
 
   static propTypes = {
     children: PropTypes.arrayOf(PropTypes.element).isRequired,
@@ -14,14 +14,20 @@ export default class WalletLayoutWithNavigation extends Component {
       amount: PropTypes.number.isRequired,
       currency: PropTypes.string.isRequired,
     }),
+    isActiveScreen: PropTypes.func.isRequired,
+    onWalletNavItemClick: PropTypes.func
   };
 
   render() {
-    const { wallet, children } = this.props;
+    const { wallet, children, isActiveScreen, onWalletNavItemClick } = this.props;
     return (
       <div className={styles.component}>
         <div className={styles.navigation}>
-          <WalletNavigation wallet={wallet} />
+          <WalletNavigation
+            wallet={wallet}
+            isActiveNavItem={isActiveScreen}
+            onNavItemClick={onWalletNavItemClick}
+          />
         </div>
         <div className={styles.page}>
           {children}

@@ -1,22 +1,19 @@
 @import './_walletNavConfig';
 
 %base {
+  width: 100%;
+  height: 100%;
   text-align: center;
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
 }
 
 // ========= STATES =========
 
 .normal {
   @extend %base;
-  background-color: rgba($walletNavThemeColor, 0.2);
   color: $walletNavThemeColor;
   &:hover {
     cursor: pointer;
-    background-color: rgba($walletNavThemeColor, 0.25);
   }
 }
 
@@ -39,8 +36,10 @@
 .container {
   text-align: center;
   height: $walletNavButtonContentHeight;
+  margin: auto 0;
   display: flex;
   flex-direction: column;
+  position: relative;
 }
 
 .walletName {
@@ -48,6 +47,7 @@
   text-transform: uppercase;
   position: relative;
   margin-bottom: auto;
+  overflow: visible;
 
   &:after {
     content: '';

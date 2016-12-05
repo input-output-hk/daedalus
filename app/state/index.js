@@ -1,6 +1,6 @@
 // @flow
 import { PropTypes } from 'react';
-import { observable, extendObservable } from 'mobx';
+import { observable, extendObservable, action } from 'mobx';
 import User from '../domain/User';
 import login from './login';
 import type { loginState } from './login';
@@ -13,32 +13,55 @@ import type { activeWalletState } from './active-wallet';
 
 export type appState = {
   user: User,
-  router: ?Object,
-  i18n: Object,
+  router: {
+    location: {
+      hash: string,
+      key: string,
+      pathname: string,
+      query: string,
+      search: string,
+      state: string
+    }
+  },
+  i18n: {
+    locale: string,
+  },
   login: loginState,
+  isInitialized: bool,
   isApplicationLoading: () => boolean,
   settings: settingsState,
   sidebar: sidebarState,
-  activeWallet: activeWalletState
+  activeWallet: activeWalletState,
+  reset: () => null
 };
 
 export default (): appState => {
   const state = observable({
     user: new User(),
-    router: null,
-    i18n: { locale: 'en-US' }
+    router: { location: null },
+    i18n: { locale: 'en-US' },
+    isInitialized: false,
   });
 
   extendObservable(
     state,
     {
-      get isApplicationLoading() {
-        return state.activeWallet.isLoading || state.login.isLoading;
-      },
       login: login(state),
       settings: settings(state),
       sidebar: sidebar(state),
-      activeWallet: activeWallet(state)
+      activeWallet: activeWallet(state),
+      get isApplicationLoading() {
+        return !state.isInitialized || state.activeWallet.isLoading || state.login.isLoading;
+      },
+      reset: action(() => {
+        state.user = new User();
+        state.i18n.locale = 'en-US';
+        state.isInitialized = false;
+        for (const key of Object.keys(state)) {
+          const subState = state[key];
+          if (subState && subState.reset) subState.reset();
+        }
+      })
     }
   );
 
@@ -46,7 +69,7 @@ export default (): appState => {
 };
 
 export const appStatePropType = PropTypes.shape({
-  account: PropTypes.object,
+  user: PropTypes.object,
   router: PropTypes.object,
   i18n: PropTypes.object,
   sidebar: PropTypes.object,

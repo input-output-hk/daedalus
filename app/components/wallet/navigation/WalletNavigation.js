@@ -3,7 +3,6 @@ import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './WalletNavigation.scss';
-import NavigationLink from '../../widgets/NavigationLink';
 import WalletNavHomeButton from './WalletHomeButton';
 import WalletNavButton from './WalletNavButton';
 import sendIcon from '../../../assets/images/send-ic.svg';
@@ -33,6 +32,8 @@ export default class WalletNavigation extends Component {
       amount: PropTypes.number.isRequired,
       currency: PropTypes.string.isRequired,
     }),
+    isActiveNavItem: PropTypes.func.isRequired,
+    onNavItemClick: PropTypes.func
   };
 
   static contextTypes = {
@@ -40,37 +41,40 @@ export default class WalletNavigation extends Component {
   };
 
   render() {
-    const { wallet } = this.props;
+    const { wallet, isActiveNavItem, onNavItemClick } = this.props;
     const { intl } = this.context;
     return (
       <div className={styles.component}>
 
-        <NavigationLink to={`/wallet/${wallet.address}/home`} linkStyles={styles.homeLink}>
+        <div className={styles.homeLink}>
           <WalletNavHomeButton
-            className={styles.walletButton}
             walletName={wallet.name}
             amount={wallet.amount}
             currency={wallet.currency}
+            isActive={isActiveNavItem('home')}
+            onClick={() => onNavItemClick('home')}
           />
-        </NavigationLink>
+        </div>
 
-        <NavigationLink to={`/wallet/${wallet.address}/send`} linkStyles={styles.sendLink}>
+        <div className={styles.sendLink}>
           <WalletNavButton
             label={intl.formatMessage(messages.send)}
             normalIcon={sendIcon}
             activeIcon={sendIconActive}
-            className={styles.button}
+            isActive={isActiveNavItem('send')}
+            onClick={() => onNavItemClick('send')}
           />
-        </NavigationLink>
+        </div>
 
-        <NavigationLink to={`/wallet/${wallet.address}/receive`} linkStyles={styles.receiveLink}>
+        <div className={styles.receiveLink}>
           <WalletNavButton
             label={intl.formatMessage(messages.receive)}
             normalIcon={receiveIcon}
             activeIcon={receiveIconActive}
-            className={styles.button}
+            isActive={isActiveNavItem('receive')}
+            onClick={() => onNavItemClick('receive')}
           />
-        </NavigationLink>
+        </div>
 
       </div>
     );

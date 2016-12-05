@@ -1,7 +1,6 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
-import classNames from 'classnames';
 import styles from './WalletHomeButton.scss';
 
 @observer
@@ -12,25 +11,22 @@ export default class WalletHomeButton extends Component {
     amount: PropTypes.number.isRequired,
     currency: PropTypes.string.isRequired,
     isActive: PropTypes.bool,
-    className: PropTypes.string
+    onClick: PropTypes.func
   };
 
   render() {
-    const classes = classNames([
-      this.props.className, // allow to apply base classes from outside
-      this.props.isActive ? styles.active : styles.normal
-    ]);
+    const { isActive, onClick, walletName, amount, currency } = this.props;
     return (
-      <div className={classes}>
+      <button className={isActive ? styles.active : styles.normal} onClick={onClick} >
         <div className={styles.container}>
           <div className={styles.walletName}>
-            {this.props.walletName}
+            {walletName}
           </div>
           <div className={styles.walletAmount}>
-            {this.props.amount} {this.props.currency}
+            {amount} {currency}
           </div>
         </div>
-      </div>
+      </button>
     );
   }
 }

@@ -1,14 +1,8 @@
 // @flow
 import { action } from 'mobx';
-import type { appState } from '../state/index';
+import BaseController from './BaseController';
 
-export default class SidebarController {
-
-  state: appState;
-
-  constructor(state: appState) {
-    this.state = state;
-  }
+export default class SidebarController extends BaseController {
 
   @action toggleSidebar() {
     const { sidebar } = this.state;
@@ -24,7 +18,7 @@ export default class SidebarController {
       sidebar.route = route;
       sidebar.isMaximized = false;
       if (route === '/settings') {
-        if (this.state.router) this.state.router.transitionTo(route);
+        if (this.state.router) this.appController.navigateTo(route);
       }
     }
   }
