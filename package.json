@@ -78,6 +78,7 @@
     "flow-bin": "^0.36.0",
     "json-loader": "^0.5.4",
     "minimist": "^1.2.0",
+    "mobx-react-devtools": "^4.2.10",
     "node-libs-browser": "^1.0.0",
     "node-sass": "^3.10.1",
     "nodemon": "^1.11.0",
