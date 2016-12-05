@@ -28,7 +28,7 @@ export default {
       address: faker.finance.bitcoinAddress(),
       type: 'personal',
       currency: 'ada',
-      amount: faker.finance.amount(),
+      amount: parseFloat(faker.finance.amount(), 10),
       name: faker.finance.accountName(),
       lastUsed: true
     };
