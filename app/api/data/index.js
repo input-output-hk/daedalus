@@ -23,15 +23,15 @@ export default {
     };
     return this.account;
   },
-  createWallet() {
-    const wallet = {
+  createWallet(customData: Object) {
+    const wallet = Object.assign({}, {
       address: faker.finance.bitcoinAddress(),
       type: 'personal',
       currency: 'ada',
       amount: parseFloat(faker.finance.amount(), 10),
       name: faker.finance.accountName(),
       lastUsed: true
-    };
+    }, customData);
     this.wallets.push(wallet);
     this.transactions[wallet.address] = [];
     return wallet;
