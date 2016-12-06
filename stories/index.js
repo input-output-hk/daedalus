@@ -4,3 +4,4 @@ import './SidebarCategory.stories';
 import './SidebarWalletsMenu.stories';
 import './ProfileSettings.stories';
 import './StakingChart.stories';
+import './Staking.stories';

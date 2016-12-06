@@ -1,6 +1,7 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-toolbox/lib/input/Input';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
@@ -116,42 +117,45 @@ export default class WalletCreateDialog extends Component {
       walletName: walletName.error ? intl.formatMessage(messages[walletName.error]) : null,
       currency: currency.error ? intl.formatMessage(messages[currency.error]) : null,
     };
+    const dialogClasses = classnames([
+      'WalletCreateDialog',
+      this.state.isSubmitting ? styles.isSubmitting : null
+    ]);
     return (
-      <div className={styles.component}>
+      <Dialog
+        className={dialogClasses}
+        title="Create Wallet"
+        actions={this.actions}
+        onOverlayClick={this.props.onCancel}
+        active
+      >
 
-        <Dialog
-          className={this.state.isSubmitting ? styles.isSubmitting : null}
-          title="Create Wallet"
-          actions={this.actions}
-          onOverlayClick={this.props.onCancel}
-          active
-        >
+        <Input
+          type="text"
+          className="walletName"
+          label={intl.formatMessage(messages.walletName)}
+          hint="e.g: Shopping Wallet"
+          value={walletName.value}
+          error={errors.walletName}
+          onChange={walletName.onChange}
+          onFocus={walletName.onFocus}
+          onBlur={walletName.onBlur}
+          onKeyPress={this.checkForEnterKey.bind(this)}
+          ref={(input) => { this.walletNameInput = input; }}
+        />
 
-          <Input
-            type="text"
-            label={intl.formatMessage(messages.walletName)}
-            hint="e.g: Shopping Wallet"
-            value={walletName.value}
-            error={errors.walletName}
-            onChange={walletName.onChange}
-            onFocus={walletName.onFocus}
-            onBlur={walletName.onBlur}
-            onKeyPress={this.checkForEnterKey.bind(this)}
-            ref={(input) => { this.walletNameInput = input; }}
-          />
+        <Dropdown
+          className="currency"
+          label={intl.formatMessage(messages.currency)}
+          value={currency.value}
+          onChange={currency.onChange}
+          onFocus={currency.onFocus}
+          onBlur={currency.onBlur}
+          error={errors.currency}
+          source={currencies}
+        />
 
-          <Dropdown
-            label={intl.formatMessage(messages.currency)}
-            value={currency.value}
-            onChange={currency.onChange}
-            onFocus={currency.onFocus}
-            onBlur={currency.onBlur}
-            error={errors.currency}
-            source={currencies}
-          />
-
-        </Dialog>
-      </div>
+      </Dialog>
     );
   }
 

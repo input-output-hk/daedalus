@@ -1,0 +1,10 @@
+@import "./stakingConfig";
+
+.component {
+  padding: 14px 0 0 0;
+  @extend %regularText;
+}
+
+.value {
+  @extend %accentText;
+}

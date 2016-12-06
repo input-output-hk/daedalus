@@ -102,4 +102,8 @@ export default class WalletsController extends BaseController {
     this.state.activeWallet.transactionsSearchLimit += 10;
     this.loadActiveWalletTransactions();
   }
+
+  @action toggleCreateWalletDialog() {
+    this.state.isCreateWalletDialogOpen = !this.state.isCreateWalletDialogOpen;
+  }
 }
