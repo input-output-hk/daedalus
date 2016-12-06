@@ -1,0 +1,12 @@
+@import "./stakingConfig";
+
+.component {
+  @extend %contentBorderAndBackground;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 20px;
+}
+
+.heading {
+  @extend %accentText;
+}

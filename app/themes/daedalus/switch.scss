@@ -1,0 +1,55 @@
+@import "~react-toolbox/lib/input/config";
+@import "~react-toolbox/lib/input/theme";
+
+$switchOnAccentColor: #2f496e;
+$switchOffAccentColor: #b4bdca;
+$thumbAccentColor: #ffffff;
+
+@mixin thumbBoxShadow ($color) {
+  box-shadow: -1.5px -1.5px 0 $color inset,
+    1.5px 1.5px 0 $color inset,
+    1.5px -1.5px 0 $color inset,
+    -1.5px 1.5px 0 $color inset !important;
+}
+
+%switch {
+  width: 50px !important;
+  height: 23px !important;
+  margin-top: 0 !important;
+  border-radius: 3px !important;
+}
+
+.thumb {
+  top: 0 !important;
+  width: 23px !important;
+  height: 23px !important;
+  border-radius: 3px !important;
+  box-shadow: none !important;
+  .ripple {
+    display: none !important;
+  }
+}
+
+.on {
+  @extend %switch;
+  background: $switchOnAccentColor !important;
+  .thumb {
+    left: 27px !important;
+    @include thumbBoxShadow($switchOnAccentColor);
+    background: $thumbAccentColor !important;
+  }
+}
+
+.off {
+  @extend %switch;
+  background: $switchOffAccentColor !important;
+  .thumb {
+    left: 0 !important;
+    @include thumbBoxShadow($switchOffAccentColor);
+    background: $thumbAccentColor !important;
+  }
+}
+
+.field {
+  margin-bottom: 0 !important;
+}

@@ -11,6 +11,7 @@ import AppController from './controllers/AppController';
 import Wallet from './containers/wallet/Wallet';
 import Settings from './containers/settings/Settings';
 import WalletCreatePage from './containers/wallet/WalletCreatePage';
+import StakingPage from './containers/staking/StakingPage';
 import LoadingSpinner from './components/widgets/LoadingSpinner';
 import environment from './environment';
 
@@ -67,6 +68,7 @@ export default class App extends Component {
           <Match pattern="/" exactly render={() => <Redirect to={`/wallet/${wallet.address}/home`} />} />
           <Match pattern="/wallet/:id" component={Wallet} />
           <Match pattern="/settings" component={Settings} />
+          <Match pattern="/staking" component={StakingPage} />
         </div>
       );
     } else {

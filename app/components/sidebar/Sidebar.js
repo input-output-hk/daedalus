@@ -7,6 +7,7 @@ import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './menus/SidebarWalletsMenu';
 import walletsIcon from '../../assets/images/sidebar/wallet-ic.svg';
 import settingsIcon from '../../assets/images/sidebar/settings-ic.svg';
+import stakingIcon from '../../assets/images/sidebar/staking-ic.svg';
 
 @observer
 export default class Sidebar extends Component {
@@ -80,6 +81,14 @@ export default class Sidebar extends Component {
             active={this.matches('/settings')}
             minimized={hasMinimizedCategories}
             onClick={() => onCategoryClicked('/settings')}
+          />
+          <SidebarCategory
+            className="staking"
+            label="Staking"
+            icon={stakingIcon}
+            active={this.matches('/staking')}
+            minimized={hasMinimizedCategories}
+            onClick={() => onCategoryClicked('/staking')}
           />
         </div>
         {subMenu}

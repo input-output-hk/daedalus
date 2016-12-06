@@ -17,7 +17,7 @@ export default class SidebarController extends BaseController {
     } else {
       sidebar.route = route;
       sidebar.isMaximized = false;
-      if (route === '/settings') {
+      if (route === '/settings' || route === '/staking') {
         if (this.state.router) this.appController.navigateTo(route);
       }
     }

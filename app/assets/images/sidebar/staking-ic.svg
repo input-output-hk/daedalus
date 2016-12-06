@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="44px" height="36px" viewBox="0 0 44 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 41.2 (35397) - http://www.bohemiancoding.com/sketch -->
+    <title>A111D335-3708-4F91-AFAF-B993C725AA37</title>
+    <desc>Created with sketchtool.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="small-menu-staking-selected" transform="translate(-62.000000, -906.000000)">
+            <g id="menu">
+                <g id="main-menu" transform="translate(40.000000, 208.000000)">
+                    <g id="staking-ic" transform="translate(0.000000, 672.000000)">
+                        <circle id="Oval" cx="44" cy="44" r="44"></circle>
+                        <polygon id="Fill-164" fill="#FAFBFC" points="34 60 34 40 28 40 28 60 26 60 26 38 36 38 36 60"></polygon>
+                        <polygon id="Fill-165" fill="#FAFBFC" points="47 60 47 34 41 34 41 60 39 60 39 32 49 32 49 60"></polygon>
+                        <polygon id="Fill-166" fill="#FAFBFC" points="60 60 60 28 54 28 54 60 52 60 52 26 62 26 62 60"></polygon>
+                        <polygon id="Fill-167" fill="#FAFBFC" points="22 60 66 60 66 62 22 62"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
