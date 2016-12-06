@@ -19,19 +19,21 @@ class CustomReferenceLine extends ReferenceLine {
 export default class StakingChart extends Component {
 
   static propTypes = {
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
     options: MobxTypes.observableObject.isRequired,
     onBarClick: PropTypes.func
   };
 
   render() {
-    const { onBarClick } = this.props;
+    const { onBarClick, width, height } = this.props;
     const { activeIndex, data, ticks } = this.props.options;
     const refLineSlot = Math.floor(data.length / 2) + 1;
     return (
       <div className={styles.component}>
         <BarChart
-          width={600}
-          height={300}
+          width={width}
+          height={height}
           data={data.slice()}
           barSize={10}
           barCategoryGap={2}

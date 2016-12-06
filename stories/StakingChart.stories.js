@@ -36,6 +36,8 @@ storiesOf('StakingChart', module)
     });
     return (
       <StakingChart
+        width={500}
+        height={150}
         options={options}
         onBarClick={(data, index) => {
           action('onBarClick')(data, index);
