@@ -4,28 +4,23 @@
   margin: 30px;
   padding-bottom: 15px;
   border-bottom: 1px solid #dfe4e8;
-}
-
-%base {
   text-align: center;
-  margin-bottom: 7px;
 }
 
 .heading {
-  @extend %base;
   @extend %accentText;
+  margin-bottom: 7px;
 }
 
 .timeLeft {
-  @extend %base;
   @extend %accentText;
+  margin-bottom: 7px;
   font-size: 36px;
 }
 
 .info {
-  @extend %base;
   @extend %regularText;
-
+  margin-bottom: 7px;
   span.link {
     text-decoration: underline;
     color: $staking-font-color-link;
