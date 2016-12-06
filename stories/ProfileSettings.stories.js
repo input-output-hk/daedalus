@@ -5,11 +5,11 @@ import { IntlProvider } from 'react-intl';
 import { daedalusTheme } from '../app/themes/daedalus';
 import Settings from '../app/components/settings/Settings';
 import ProfileSettings from '../app/components/settings/categories/ProfileSettings';
-import profile from '../app/api/data/account.json';
+import { account } from '../app/api/data/stubs';
 import Profile from '../app/domain/Profile';
 import translations from '../app/i18n/translations';
 
-const userProfile = new Profile(profile);
+const userProfile = new Profile(account);
 
 storiesOf('Settings', module)
 
