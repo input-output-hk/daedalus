@@ -63,11 +63,15 @@ export default class StakingChart extends Component {
             {
               data.slice().map((entry, index) => {
                 let fillColor = '#c2cad4';
+                let cursor = 'pointer';
                 if (index === activeIndex) fillColor = '#445b7c';
-                if (entry.transactions === 0) fillColor = '#e7eaee';
+                if (entry.transactions === 0) {
+                  fillColor = '#e7eaee';
+                  cursor = 'default';
+                }
                 return (
                   <Cell
-                    cursor="pointer"
+                    cursor={cursor}
                     fill={fillColor}
                     key={`cell-${index}`}
                   />
