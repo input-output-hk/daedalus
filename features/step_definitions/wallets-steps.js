@@ -1,5 +1,15 @@
 import { expect } from 'chai';
 
+const getDisplayedWalletName = async function() {
+  await this.client.waitForVisible('.WalletHomeButton_walletName');
+  return await this.client.getText('.WalletHomeButton_walletName');
+};
+
+const expectActiveWallet = async function(walletName) {
+  const displayedWalletName = await getDisplayedWalletName.call(this);
+  expect(displayedWalletName.toLowerCase()).to.equal(walletName.toLowerCase());
+};
+
 export default function () {
 
   this.Given(/^I have a wallet$/, async function () {
@@ -11,9 +21,38 @@ export default function () {
     this.wallet = result.value;
   });
 
+  this.Given(/^I have the following wallets:$/, async function (table) {
+    const result = await this.client.execute(function(wallets) {
+      const createdWallets = wallets.map(function(wallet) {
+        return daedalus.api.data.createWallet(wallet);
+      });
+      daedalus.controller.wallets.loadWallets();
+      return createdWallets;
+    }, table.hashes());
+    this.wallets = result.value;
+  });
+
+  this.Given(/^I am on the (.*) wallet$/, async function (walletName) {
+    const wallet = this.wallets.filter((wallet) => wallet.name === walletName)[0];
+    await this.navigateTo(`/wallet/${wallet.address}/home`);
+    return expectActiveWallet.call(this, walletName);
+  });
+
   this.Given(/^I am on the wallet (.*) screen$/, async function(screen) {
     await this.navigateTo(`/wallet/${this.wallet.address}/${screen}`);
-    await this.client.waitForVisible('.WalletWithNavigation_component');
+    expectActiveWallet.call(this, this.wallet.name);
+  });
+
+  this.Given(/^I see the create wallet dialog$/, function () {
+    return this.client.waitForVisible('.WalletCreateDialog');
+  });
+
+  this.Given(/^I dont see the create wallet dialog(?: anymore)?$/, function () {
+    return this.client.waitForVisible('.WalletCreateDialog', null, true);
+  });
+
+  this.When(/^I click on the (.*) wallet in the sidebar$/, function (walletName) {
+    return this.client.click(`//*[contains(text(), "${walletName}") and @class="SidebarMenuItem_title"]`);
   });
 
   this.When(/^I click the wallet (.*) button$/, async function (buttonName) {
@@ -37,12 +76,26 @@ export default function () {
     return this.client.click(submitButton);
   });
 
-  this.Then(/^I should be on the wallet (.*) screen$/, async function (screen) {
+  this.When(/^I submit the create wallet dialog with the following inputs:$/, async function (table) {
+    const fields = table.hashes()[0];
+    await this.client.setValue('.WalletCreateDialog .walletName input', fields.walletName);
+    return this.client.click('.WalletCreateDialog .dialog_button');
+  });
+
+  this.Then(/^I should be on the(?:.*)? wallet (.*) screen$/, async function (...args) {
+    let screen;
+    if (args.length == 3) {
+      const walletName = args[0];
+      screen = args[1];
+      expectActiveWallet.call(this, walletName);
+    } else if (args.length == 2) {
+      screen = args[0];
+    }
     if (screen != 'home') {
       const buttonSelector = `.WalletNavigation_${screen}Link`;
-      await this.client.waitForVisible(`${buttonSelector} .WalletNavButton_active`);
+      return this.client.waitForVisible(`${buttonSelector} .WalletNavButton_active`);
     } else {
-      await this.client.waitForVisible('.WalletHomeButton_active');
+      return this.client.waitForVisible('.WalletHomeButton_active');
     }
   });
 
@@ -57,9 +110,8 @@ export default function () {
   });
 
   this.Then(/^I should see the wallet home screen with the transaction$/, async function () {
-    await this.client.waitForVisible('.WalletHomeButton_active');
-    const visibleWalletName = await this.client.getText('.WalletHomeButton_walletName');
-    expect(visibleWalletName.toLowerCase()).to.equal(this.wallet.name.toLowerCase());
+    const displayedWalletName = await getDisplayedWalletName.call(this);
+    expect(displayedWalletName.toLowerCase()).to.equal(this.wallet.name.toLowerCase());
     const transactionTitle = await this.client.getText('.Transaction_title');
     expect(transactionTitle).to.equal(`Money to ${this.walletSendFormValues['receiver']}`);
     const transactionType = await this.client.getText('.Transaction_type');
