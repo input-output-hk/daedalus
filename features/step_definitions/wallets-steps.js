@@ -43,6 +43,14 @@ export default function () {
     expectActiveWallet.call(this, this.wallet.name);
   });
 
+  this.Given(/^I see the create wallet dialog$/, function () {
+    return this.client.waitForVisible('.WalletCreateDialog');
+  });
+
+  this.Given(/^I dont see the create wallet dialog(?: anymore)?$/, function () {
+    return this.client.waitForVisible('.WalletCreateDialog', null, true);
+  });
+
   this.When(/^I click on the (.*) wallet in the sidebar$/, function (walletName) {
     return this.client.click(`//*[contains(text(), "${walletName}") and @class="SidebarMenuItem_title"]`);
   });
@@ -66,6 +74,12 @@ export default function () {
     const submitButton = '.WalletSendForm_submitButton';
     await this.client.waitForVisible(submitButton);
     return this.client.click(submitButton);
+  });
+
+  this.When(/^I submit the create wallet dialog with the following inputs:$/, async function (table) {
+    const fields = table.hashes()[0];
+    await this.client.setValue('.WalletCreateDialog .walletName input', fields.walletName);
+    return this.client.click('.WalletCreateDialog .dialog_button');
   });
 
   this.Then(/^I should be on the(?:.*)? wallet (.*) screen$/, async function (...args) {

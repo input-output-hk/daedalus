@@ -35,6 +35,10 @@ export default function () {
     return this.client.click(`.SidebarCategory_component.${category}`);
   });
 
+  this.When(/^I click on the add wallet button in the sidebar$/, function () {
+    return this.client.click('.SidebarWalletsMenu_addWalletButton');
+  });
+
   this.Then(/^the sidebar should be (hidden|visible)/, function (state) {
     const isHidden = state === 'hidden';
     return this.client.waitForVisible(`.Sidebar_hidden`, null, !isHidden);

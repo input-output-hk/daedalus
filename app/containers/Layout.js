@@ -17,7 +17,8 @@ export default class Layout extends Component {
         wallet: PropTypes.shape({
           address: PropTypes.string.isRequired
         }).isRequired
-      }).isRequired
+      }).isRequired,
+      isCreateWalletDialogOpen: PropTypes.bool.isRequired
     }).isRequired,
     controller: PropTypes.shape({
       sidebar: PropTypes.shape({
@@ -26,14 +27,11 @@ export default class Layout extends Component {
       }).isRequired,
       wallets: PropTypes.shape({
         setActiveWallet: PropTypes.func.isRequired,
-        createPersonalWallet: PropTypes.func.isRequired
+        createPersonalWallet: PropTypes.func.isRequired,
+        toggleCreateWalletDialog: PropTypes.func.isRequired
       }).isRequired
     }).isRequired,
     children: oneOrManyChildElements
-  };
-
-  state = {
-    isAddingWallet: false
   };
 
   handleAddWalletSubmit(values: Object) {
@@ -41,11 +39,11 @@ export default class Layout extends Component {
       name: values.walletName,
       currency: values.currency,
     });
-    this.cancelAddWalletDialog();
+    this.toggleCreateWalletDialog();
   }
 
-  cancelAddWalletDialog() {
-    this.setState({ isAddingWallet: false });
+  toggleCreateWalletDialog() {
+    this.props.controller.wallets.toggleCreateWalletDialog();
   }
 
   render() {
@@ -55,8 +53,8 @@ export default class Layout extends Component {
       wallets: {
         items: sidebar.wallets,
         actions: {
-          onAddWallet: () => this.setState({ isAddingWallet: true }),
-          onWalletItemClick: (wallet) => controller.wallets.setActiveWallet(wallet)
+          onAddWallet: this.toggleCreateWalletDialog.bind(this),
+          onWalletItemClick: wallet => controller.wallets.setActiveWallet(wallet)
         }
       }
     };
@@ -71,10 +69,10 @@ export default class Layout extends Component {
       />
     );
     const appbar = <AppBar onToggleSidebar={() => controller.sidebar.toggleSidebar()} />;
-    const addWalletDialog = this.state.isAddingWallet ? (
+    const addWalletDialog = this.props.state.isCreateWalletDialogOpen ? (
       <WalletCreateDialog
         onSubmit={this.handleAddWalletSubmit.bind(this)}
-        onCancel={this.cancelAddWalletDialog.bind(this)}
+        onCancel={this.toggleCreateWalletDialog.bind(this)}
       />
     ) : null;
     return (

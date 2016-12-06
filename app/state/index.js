@@ -32,6 +32,7 @@ export type appState = {
   settings: settingsState,
   sidebar: sidebarState,
   activeWallet: activeWalletState,
+  isCreateWalletDialogOpen: bool,
   reset: () => null
 };
 
@@ -41,6 +42,7 @@ export default (): appState => {
     router: { location: null },
     i18n: { locale: 'en-US' },
     isInitialized: false,
+    isCreateWalletDialogOpen: false
   });
 
   extendObservable(
