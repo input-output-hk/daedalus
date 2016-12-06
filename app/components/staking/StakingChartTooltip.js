@@ -12,7 +12,7 @@ const messages = defineMessages({
   slot: {
     id: 'staking.chart.tooltip.slot.label',
     defaultMessage: '!!!slot',
-    description: '"slit" label on staking chart tooltip.'
+    description: '"slot" label on staking chart tooltip.'
   },
   transactions: {
     id: 'staking.chart.tooltip.transactions.label',
