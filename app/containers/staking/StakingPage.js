@@ -5,7 +5,7 @@ import Staking from '../../components/staking/Staking';
 import Layout from '../Layout';
 
 @observer(['state', 'controller'])
-export default class ProfileSettingsPage extends Component {
+export default class StakingPage extends Component {
 
   static propTypes = {
     state: PropTypes.shape({
