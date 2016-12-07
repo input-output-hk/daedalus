@@ -48,7 +48,7 @@ export default class StakingChartTooltip extends Component {
     slot: PropTypes.number.isRequired,
     time: PropTypes.instanceOf(Date),
     hash: PropTypes.string.isRequired,
-    numberOfTransactions: PropTypes.instanceOf(Date),
+    numberOfTransactions: PropTypes.number.isRequired,
     mpcPhase: PropTypes.string.isRequired,
     commitments: PropTypes.string.isRequired,
     openings: PropTypes.string.isRequired,
@@ -79,7 +79,7 @@ export default class StakingChartTooltip extends Component {
         <StakingChartTooltipItem
           key="transactions"
           label={intl.formatMessage(messages.transactions)}
-          value={numberOfTransactions}
+          value={numberOfTransactions.toString()}
         />
         <StakingChartTooltipItem
           key="mpcPhase"

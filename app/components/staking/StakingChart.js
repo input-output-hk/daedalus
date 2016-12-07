@@ -2,6 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import { observer, PropTypes as MobxTypes } from 'mobx-react';
 import { BarChart, Bar, YAxis, XAxis, Cell, ReferenceLine } from 'recharts';
+import StakingChartTooltip from './StakingChartTooltip';
 import styles from './StakingChart.scss';
 
 class CustomReferenceLine extends ReferenceLine {
@@ -22,15 +23,43 @@ export default class StakingChart extends Component {
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
     options: MobxTypes.observableObject.isRequired,
-    onBarClick: PropTypes.func
   };
 
+  state = {
+    isHovered: false,
+    hoveredBarData: undefined,
+    tooltipPos: undefined
+  };
+
+  onMouseMove(event:MouseEvent) {
+    if (this.state.isHovered) {
+      this.setState({
+        tooltipPos: {
+          left: event.pageX + 10,
+          top: event.pageY
+        }
+      });
+    }
+  }
+
   render() {
-    const { onBarClick, width, height } = this.props;
+    const { width, height } = this.props;
     const { activeIndex, data, ticks } = this.props.options;
+    const { isHovered, hoveredBarData, tooltipPos } = this.state;
     const refLineSlot = Math.floor(data.length / 2) + 1;
+    let tooltip = null;
+    // TODO: find better way to represent the data records that are behind the reference line
+    // for now this is the easiest way to ignore zero-bars in the chart
+    if (isHovered && hoveredBarData && hoveredBarData.numberOfTransactions > 0) {
+      tooltip = (
+        <div className={styles.toolTip} style={tooltipPos}>
+          <StakingChartTooltip {...hoveredBarData} />
+        </div>
+      );
+    }
+
     return (
-      <div className={styles.component}>
+      <div className={styles.component} onMouseMove={this.onMouseMove.bind(this)}>
         <BarChart
           width={width}
           height={height}
@@ -55,8 +84,9 @@ export default class StakingChart extends Component {
             stroke="#5e6066"
           />
           <Bar
-            dataKey="transactions"
-            onClick={onBarClick}
+            dataKey="numberOfTransactions"
+            onMouseEnter={(barData) => this.setState({ isHovered: true, hoveredBarData: barData })}
+            onMouseLeave={() => this.setState({ isHovered: false, hoveredBarData: undefined })}
             minPointSize={2}
             isAnimationActive={false}
           >
@@ -65,7 +95,7 @@ export default class StakingChart extends Component {
                 let fillColor = '#c2cad4';
                 let cursor = 'pointer';
                 if (index === activeIndex) fillColor = '#445b7c';
-                if (entry.transactions === 0) {
+                if (entry.numberOfTransactions === 0) {
                   fillColor = '#e7eaee';
                   cursor = 'default';
                 }
@@ -80,6 +110,7 @@ export default class StakingChart extends Component {
             }
           </Bar>
         </BarChart>
+        {tooltip}
       </div>
     );
   }
