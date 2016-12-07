@@ -39,6 +39,10 @@ export default class WalletsController extends BaseController {
     for (const transaction of result.transactions) {
       wallet.addTransaction(new WalletTransaction(transaction));
     }
+    if (initialLoading) {
+      activeWallet.hasAnyTransactions = result.total > 0;
+      activeWallet.initialLoading = false;
+    }
     activeWallet.totalAvailableTransactions = result.total;
     activeWallet.isLoadingTransactions = false;
   }
