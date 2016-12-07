@@ -1,0 +1,15 @@
+@import "./stakingConfig";
+
+.component {
+  @extend %regularText;
+  font-size: 14px;
+  margin-bottom: 6px;
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.value {
+  @extend %accentText;
+  font-size: 14px;
+}
