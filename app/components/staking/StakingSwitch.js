@@ -11,15 +11,21 @@ export default class StakingSwitch extends Component {
     active: PropTypes.bool.isRequired,
   };
 
-  handleChange = () => {};
+  state = {
+    stakingOn: true
+  };
+
+  handleChange = () => {
+    this.setState({ stakingOn: !this.state.stakingOn });
+  };
 
   render() {
-    const { active } = this.props;
+    const { stakingOn } = this.state;
     return (
       <div className={styles.component}>
         <div className={styles.label}>Staking</div>
         <Switch
-          checked={active}
+          checked={stakingOn}
           onChange={() => this.handleChange()}
         />
       </div>

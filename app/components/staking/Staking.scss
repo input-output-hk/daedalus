@@ -13,9 +13,15 @@
 
   .mainContent {
     @extend %contentBorderAndBackground;
+    margin-bottom: 20px;
   }
 }
 
 .rightSide {
   width: 240px;
+}
+
+.slots {
+  text-align: center;
+  @extend %accentText;
 }
