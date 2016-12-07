@@ -39,5 +39,11 @@
   "file.upload.widget.drop.file.here.label": "Drop file here",
   "file.upload.widget.click.to.upload.label": "or click to upload",
   "wallet.transactions.no.transactions": "No transactions",
-  "wallet.transactions.no.transactions.found": "No transactions found"
+  "wallet.transactions.no.transactions.found": "No transactions found",
+  "staking.chart.tooltip.slot.label": "slot",
+  "staking.chart.tooltip.transactions.label": "transactions",
+  "staking.chart.tooltip.mpc.phase.label": "phase",
+  "staking.chart.tooltip.commitments.label": "commitments",
+  "staking.chart.tooltip.openings.label": "openings",
+  "staking.chart.tooltip.shares.label": "shares"
 }

@@ -1,11 +1,9 @@
 import React from 'react';
-import { ThemeProvider } from 'react-css-themr';
 import { storiesOf, action } from '@kadira/storybook';
-import { IntlProvider } from 'react-intl';
 import { observable } from 'mobx';
-import { daedalusTheme } from '../app/themes/daedalus';
-import translations from '../app/i18n/translations';
+import StoryDecorator from './support/StoryDecorator';
 import StakingChart from '../app/components/staking/StakingChart';
+import StakingChartTooltip from '../app/components/staking/StakingChartTooltip';
 
 const generateRandomSlots = (count:number) => {
   const slots = [];
@@ -19,11 +17,9 @@ const generateRandomSlots = (count:number) => {
 storiesOf('StakingChart', module)
 
   .addDecorator((story) => (
-    <IntlProvider {...{ locale: 'en-US', key: 'en-US', messages: translations['en-US'] }}>
-      <ThemeProvider theme={daedalusTheme}>
-        {story()}
-      </ThemeProvider>
-    </IntlProvider>
+    <StoryDecorator>
+      {story()}
+    </StoryDecorator>
   ))
 
   // ====== Stories ======
@@ -45,4 +41,19 @@ storiesOf('StakingChart', module)
         }}
       />
     );
-  });
+  })
+
+  .add('Tooltip', () => (
+    <div style={{ padding: '50px' }}>
+      <StakingChartTooltip
+        slot={2848104}
+        shares="CC"
+        openings="BB"
+        commitments="AA"
+        mpcPhase="Shares"
+        hash="ad9f37d14e189f5d792aaf524a6e0a13cdc5ba13b540f231638444687526231e"
+        numberOfTransactions={50}
+        time={new Date()}
+      />
+    </div>
+  ));
