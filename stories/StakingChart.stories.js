@@ -1,5 +1,5 @@
 import React from 'react';
-import { storiesOf, action } from '@kadira/storybook';
+import { storiesOf } from '@kadira/storybook';
 import { observable } from 'mobx';
 import StoryDecorator from './support/StoryDecorator';
 import StakingChart from '../app/components/staking/StakingChart';
@@ -8,8 +8,17 @@ import StakingChartTooltip from '../app/components/staking/StakingChartTooltip';
 const generateRandomSlots = (count:number) => {
   const slots = [];
   for (let i = 0; i < count; i += 1) {
-    const transactions = i < (count / 2) ? Math.floor(Math.random() * 50) : 0;
-    slots.push({ transactions, slot: slots.length + 1 });
+    const numberOfTransactions = i < (count / 2) ? Math.floor(Math.random() * 50) : 0;
+    slots.push({
+      numberOfTransactions,
+      slot: slots.length + 1,
+      shares: 'CC',
+      openings: 'BB',
+      commitments: 'AA',
+      mpcPhase: 'Shares',
+      hash: 'ad9f37d14e189f5d792aaf524a6e0a13cdc5ba13b540f231638444687526231e',
+      time: new Date()
+    });
   }
   return slots;
 };
@@ -24,26 +33,7 @@ storiesOf('StakingChart', module)
 
   // ====== Stories ======
 
-  .add('Default', () => {
-    const options = observable({
-      data: generateRandomSlots(30),
-      ticks: [0, 10, 20, 30, 40, 50],
-      activeIndex: null
-    });
-    return (
-      <StakingChart
-        width={500}
-        height={150}
-        options={options}
-        onBarClick={(data, index) => {
-          action('onBarClick')(data, index);
-          options.activeIndex = index;
-        }}
-      />
-    );
-  })
-
-  .add('Tooltip', () => (
+  .add('Tooltip only', () => (
     <div style={{ padding: '50px' }}>
       <StakingChartTooltip
         slot={2848104}
@@ -56,4 +46,19 @@ storiesOf('StakingChart', module)
         time={new Date()}
       />
     </div>
-  ));
+  ))
+
+  .add('Chart with Tooltips', () => {
+    const options = observable({
+      data: generateRandomSlots(30),
+      ticks: [0, 10, 20, 30, 40, 50],
+      activeIndex: null
+    });
+    return (
+      <StakingChart
+        width={500}
+        height={150}
+        options={options}
+      />
+    );
+  });
