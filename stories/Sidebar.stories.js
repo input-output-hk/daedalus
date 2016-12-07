@@ -13,13 +13,12 @@ storiesOf('Sidebar', module)
   ))
 
   .add('wallets', () => (
-    <Sidebar route="/wallets" />
+    <Sidebar route="/wallets" isMaximized />
   ))
 
   .add('wallets / sub', () => (
     <Sidebar
       route="/wallets/2"
-      showMenu
       menus={{
         wallets: {
           items: [
