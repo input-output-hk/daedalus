@@ -39,7 +39,7 @@ export default class StubApi {
   }
 
   createUser(request: createUserRequest) {
-    return fakeRequest((this.repository.generateUser(request));
+    return fakeRequest(this.repository.generateUser(request));
   }
 
   createWallet(request: createWalletRequest) {
