@@ -2,7 +2,6 @@ import { action } from 'mobx';
 import _ from 'lodash';
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
-import api from '../api';
 import { INITIAL_WALLET_SEARCH_LIMIT } from '../state/active-wallet';
 import BaseController from './BaseController';
 
@@ -12,7 +11,7 @@ export default class WalletsController extends BaseController {
     const { activeWallet, user } = this.state;
     activeWallet.isLoading = true;
     try {
-      const wallets = await api.wallets.loadWallets();
+      const wallets = await this.api.getWallets(user.id);
       for (const wallet of wallets) {
         const newWallet = new Wallet(wallet);
         user.addWallet(newWallet);
@@ -30,8 +29,8 @@ export default class WalletsController extends BaseController {
     if (!wallet === null) throw new Error('No active wallet');
     activeWallet.isLoadingTransactions = true;
     if (initialLoading) activeWallet.hasAnyTransactions = false;
-    const result = await api.wallets.loadWalletTransactions({
-      address: wallet.address,
+    const result = await this.api.getTransactions({
+      walletId: wallet.id,
       searchTerm: activeWallet.transactionsSearchTerm,
       limit: activeWallet.transactionsSearchLimit
     });
@@ -69,8 +68,9 @@ export default class WalletsController extends BaseController {
     const { activeWallet } = this.state;
     const { wallet } = activeWallet;
     try {
-      const transaction = await api.wallets.sendMoney({
+      const transaction = await this.api.createTransaction({
         ...transactionDetails,
+        walletId: wallet.id,
         amount: parseFloat(transactionDetails.amount),
         sender: wallet.address,
         currency: wallet.currency
@@ -85,7 +85,7 @@ export default class WalletsController extends BaseController {
 
   @action async createPersonalWallet(newWalletData: { name: string, currency: string}) {
     try {
-      const createdWallet = await api.wallets.createPersonalWallet(newWalletData);
+      const createdWallet = await this.api.createWallet(newWalletData);
       const newWallet = new Wallet(createdWallet);
       this.state.user.addWallet(newWallet);
       this.setActiveWallet(newWallet);

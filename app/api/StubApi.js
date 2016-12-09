@@ -1,0 +1,56 @@
+// @flow
+import type {
+  getTransactionsRequest,
+  createUserRequest,
+  createWalletRequest,
+  createTransactionRequest,
+  updateUserProfileFieldRequest
+} from './index';
+import StubRepository from './StubRepository';
+import { user, wallets, transactions } from './fixtures';
+import environment from '../environment';
+
+const fakeRequest = (callback: Function, requestTime = 1000) => {
+  let fakeRequestTime = requestTime;
+  if (environment.isTest()) fakeRequestTime = 0;
+  return new Promise((resolve) => {
+    setTimeout(() => { resolve(callback()); }, fakeRequestTime);
+  });
+};
+
+export default class StubApi {
+
+  repository: StubRepository;
+
+  constructor() {
+    this.repository = new StubRepository(user, wallets, transactions);
+  }
+
+  getUser() {
+    return fakeRequest(() => this.repository.findUser());
+  }
+
+  getWallets(accountId: string) {
+    return fakeRequest(() => this.repository.findWallets(accountId));
+  }
+
+  getTransactions(request: getTransactionsRequest) {
+    return fakeRequest(() => this.repository.findTransactions(request));
+  }
+
+  createUser(request: createUserRequest) {
+    return fakeRequest(() => this.repository.generateUser(request));
+  }
+
+  createWallet(request: createWalletRequest) {
+    return fakeRequest(() => this.repository.generateWallet(request));
+  }
+
+  createTransaction(request: createTransactionRequest) {
+    return fakeRequest(() => this.repository.generateTransaction(request));
+  }
+
+  updateProfileField(request: updateUserProfileFieldRequest) {
+    return fakeRequest(() => this.repository.updateProfileField(request), 0);
+  }
+}

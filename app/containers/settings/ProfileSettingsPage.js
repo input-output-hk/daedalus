@@ -17,7 +17,7 @@ export default class ProfileSettingsPage extends Component {
       }).isRequired
     }).isRequired,
     controller: PropTypes.shape({
-      account: PropTypes.shape({
+      user: PropTypes.shape({
         updateField: PropTypes.func.isRequired
       }).isRequired
     }).isRequired
@@ -32,7 +32,7 @@ export default class ProfileSettingsPage extends Component {
       <Settings>
         <ProfileSettings
           profile={profile}
-          onFieldValueChange={(field, name) => controller.account.updateField(field, name)}
+          onFieldValueChange={(field, name) => controller.user.updateField(field, name)}
         />
       </Settings>
     );
