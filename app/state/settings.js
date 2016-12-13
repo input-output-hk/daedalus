@@ -7,5 +7,7 @@ export type settingsState = {
 };
 
 export default (state: appState): settingsState => ({
-  profile: () => state.user.profile
+  get profile() {
+    return state.user.profile;
+  }
 });

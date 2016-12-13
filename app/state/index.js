@@ -53,7 +53,7 @@ export default (): appState => {
       sidebar: sidebar(state),
       activeWallet: activeWallet(state),
       get isApplicationLoading() {
-        return !state.isInitialized || state.activeWallet.isLoading || state.login.isLoading;
+        return !state.isInitialized;
       },
       reset: action(() => {
         state.user = new User();

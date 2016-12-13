@@ -2,7 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import { Match, Redirect } from 'react-router';
 import { observer } from 'mobx-react';
-import Layout from '../Layout';
+import Layout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import WalletHomePage from './WalletHomePage';
 import WalletReceivePage from './WalletReceivePage';

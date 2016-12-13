@@ -2,11 +2,13 @@
 import { action } from 'mobx';
 
 export type loginState = {
+  isLoggedIn: boolean,
   isLoading: boolean,
   errorLoading: ?string
 };
 
 const defaultValues = {
+  isLoggedIn: false,
   isLoading: false,
   errorLoading: null
 };

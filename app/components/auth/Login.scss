@@ -1,0 +1,55 @@
+@import '../../styles/mixins/loading-spinner';
+
+.component {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+
+.logo {
+  width: 187px;
+}
+
+.form {
+  width: 438px;
+  height: 275px;
+  margin-top: 47px;
+  border: 1px solid #c6cdd6;
+  background-color: #fafbfc;
+  border-radius: 4px;
+  padding: 30px 30px 21px 30px;
+
+  :global .input_input {
+    padding: 0;
+
+    &:not(:first-child) {
+      margin-top: 20px;
+    }
+
+    .input_hint {
+      top: 0.90rem;
+      left: 1.1rem;
+    }
+  }
+}
+
+%submitButton {
+  width: 100%;
+  margin-top: 20px;
+  height: 50px;
+  line-height: 3rem;
+}
+
+.submitButtonSpinning {
+  @extend %submitButton;
+  @include loading-spinner;
+}
+
+.submitButton {
+  @extend %submitButton;
+  font-size: 14px;
+  font-family: $font-medium;
+  text-transform: uppercase;
+}

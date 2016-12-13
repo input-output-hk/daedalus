@@ -24,12 +24,6 @@ export default class AppController {
     this.user = new UserController(this, state, api);
     this.wallets = new WalletsController(this, state, api);
     this.sidebar = new SidebarController(this, state, api);
-    this.load();
-  }
-
-  load() {
-    this.user.loadUser();
-    this.wallets.loadWallets();
   }
 
   onInitialized(callback: () => null) {

@@ -18,12 +18,12 @@ const defaultValues = {
 const state = {};
 
 export default (root: appState): sidebarState => (Object.assign(state, defaultValues, {
-  wallets: () => (
-    root.user.wallets.map(wallet => ({
+  get wallets() {
+    return root.user.wallets.map(wallet => ({
       id: wallet.address,
       title: wallet.name,
       info: `${wallet.amount} ${wallet.currency}`
-    }))
-  ),
+    }));
+  },
   reset: action(() => Object.assign(state, defaultValues))
 }));

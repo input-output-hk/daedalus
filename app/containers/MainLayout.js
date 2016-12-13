@@ -8,7 +8,7 @@ import { oneOrManyChildElements } from '../propTypes';
 import WalletCreateDialog from '../components/wallet/WalletCreateDialog';
 
 @observer(['state', 'controller'])
-export default class Layout extends Component {
+export default class MainLayout extends Component {
 
   static propTypes = {
     state: PropTypes.shape({

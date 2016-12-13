@@ -2,7 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import Staking from '../../components/staking/Staking';
-import Layout from '../Layout';
+import Layout from '../MainLayout';
 
 @observer(['state', 'controller'])
 export default class StakingPage extends Component {

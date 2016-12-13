@@ -5,6 +5,7 @@ import { action } from 'mobx';
 import { render } from 'react-dom';
 import { addLocaleData, IntlProvider } from 'react-intl';
 import { MemoryRouter as Router } from 'react-router';
+import { ipcRenderer } from 'electron';
 import en from 'react-intl/locale-data/en';
 import de from 'react-intl/locale-data/de';
 import hr from 'react-intl/locale-data/hr';
@@ -48,6 +49,7 @@ const initializeDaedalus = () => {
     controller,
     api,
     environment,
+    ipc: ipcRenderer,
     state: appState,
     reset: action(() => {
       api.repository.reset();

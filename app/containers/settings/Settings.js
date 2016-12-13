@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Match, Redirect } from 'react-router';
 import { observer } from 'mobx-react';
-import Layout from '../Layout';
+import Layout from '../MainLayout';
 import ProfileSettingsPage from './ProfileSettingsPage';
 
 @observer(['state', 'controller'])
