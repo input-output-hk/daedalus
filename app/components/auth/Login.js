@@ -36,10 +36,10 @@ const messages = defineMessages({
 export default class Login extends Component {
 
   static propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+    onCreateAccount: PropTypes.func.isRequired,
     isSubmitting: PropTypes.bool,
     isInvalid: PropTypes.bool,
-    onSubmit: PropTypes.func,
-    onCreateAccount: PropTypes.func
   };
 
   static contextTypes = {

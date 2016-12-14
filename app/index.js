@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { Provider, observer } from 'mobx-react';
 import { action } from 'mobx';
 import { render } from 'react-dom';
@@ -20,44 +20,48 @@ import './styles/index.global.scss';
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([en, de, hr]);
 
-@observer
+@observer(['state'])
 class Daedalus extends Component {
 
   static propTypes = {
-    state: appStatePropType,
-    controller: PropTypes.instanceOf(AppController),
+    state: appStatePropType.isRequired,
   };
 
   render() {
-    const { state, controller } = this.props;
+    const { state } = this.props;
     const locale = state.i18n.locale;
     return (
       <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
-        <Provider state={state} controller={controller}>
-          <App />
-        </Provider>
+        <App />
       </IntlProvider>
     );
   }
 }
 
 const initializeDaedalus = () => {
-  const appState = appStateFactory();
+  const state = appStateFactory();
   const api = new StubApi();
-  const controller = new AppController(appState, api);
+  const controller = new AppController(state, api);
   window.daedalus = {
     controller,
     api,
     environment,
     ipc: ipcRenderer,
-    state: appState,
+    state,
     reset: action(() => {
       api.repository.reset();
       controller.reset();
       window.daedalus.render();
     }),
     render() {
-      render(<Router><Daedalus state={appState} controller={controller} /></Router>, document.getElementById('root'));
+      const app = (
+        <Router>
+          <Provider state={state} controller={controller}>
+            <Daedalus />
+          </Provider>
+        </Router>
+      );
+      render(app, document.getElementById('root'));
     }
   };
   window.daedalus.render();
