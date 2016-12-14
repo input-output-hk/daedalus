@@ -5,7 +5,7 @@ import MobxReactForm from 'mobx-react-form';
 import Input from 'react-toolbox/lib/input/Input';
 import Button from 'react-toolbox/lib/button/Button';
 import { defineMessages, intlShape } from 'react-intl';
-import isEmail from 'validator/lib/isEmail';
+import classnames from 'classnames';
 import logo from '../../assets/images/login-logo.svg';
 import styles from './Login.scss';
 
@@ -14,11 +14,6 @@ const messages = defineMessages({
     id: 'login.form.email.hint',
     defaultMessage: '!!!E-mail',
     description: 'Hint for the login form email input.'
-  },
-  emailInvalid: {
-    id: 'login.form.email.invalid',
-    defaultMessage: '!!!Please provide a valid E-mail address.',
-    description: 'Error for invalid email addresses on the login form.'
   },
   passwordHint: {
     id: 'login.form.password.hint',
@@ -29,7 +24,12 @@ const messages = defineMessages({
     id: 'login.form.submit.label',
     defaultMessage: '!!!Login',
     description: 'Label for the login form submit button.'
-  }
+  },
+  invalidCredentials: {
+    id: 'login.form.invalidCredentials',
+    defaultMessage: '!!!E-mail or password is wrong.',
+    description: 'Error shown when invalid login credentials are submitted.'
+  },
 });
 
 @observer
@@ -37,7 +37,9 @@ export default class Login extends Component {
 
   static propTypes = {
     isSubmitting: PropTypes.bool,
-    onSubmit: PropTypes.func
+    isInvalid: PropTypes.bool,
+    onSubmit: PropTypes.func,
+    onCreateAccount: PropTypes.func
   };
 
   static contextTypes = {
@@ -49,9 +51,7 @@ export default class Login extends Component {
       validateOnChange: false
     },
     fields: {
-      email: {
-        validate: [({ field }) => [isEmail(field.value), 'emailInvalid']]
-      },
+      email: {},
       password: {}
     }
   });
@@ -60,23 +60,22 @@ export default class Login extends Component {
     this.validator.submit({
       onSuccess: (form) => {
         this.props.onSubmit(form.values());
-      },
-      onError: () => {
       }
     });
   }
 
   render() {
     const { validator } = this;
-    const { isSubmitting } = this.props;
+    const { isSubmitting, isInvalid, onCreateAccount } = this.props;
     const { intl } = this.context;
     const email = validator.$('email');
     const password = validator.$('password');
-    const errors = {
-      email: email.error ? intl.formatMessage(email.error) : null,
-    };
+    const componentClassNames = classnames([
+      styles.component,
+      isInvalid ? styles.invalidCredentials : null
+    ]);
     return (
-      <div className={styles.component}>
+      <div className={componentClassNames}>
         <img className={styles.logo} src={logo} role="presentation" />
         <div className={styles.form}>
           <Input
@@ -84,7 +83,6 @@ export default class Login extends Component {
             className="email"
             hint={intl.formatMessage(messages.emailHint)}
             value={email.value}
-            error={errors.email}
             onChange={email.onChange}
             onFocus={email.onFocus}
             onBlur={email.onBlur}
@@ -98,11 +96,23 @@ export default class Login extends Component {
             onFocus={password.onFocus}
             onBlur={password.onBlur}
           />
+          {isInvalid && (
+            <div className={styles.formError}>
+              {intl.formatMessage(messages.invalidCredentials)}
+            </div>
+          )}
           <Button
             className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
             label={intl.formatMessage(messages.submitButtonLabel)}
-            onMouseUp={this.submit.bind(this)}
+            onClick={this.submit.bind(this)}
           />
+          <div className={styles.noAccountText}>
+            Don’t have an account?&nbsp;
+            <button className={styles.createAccountLink} onClick={onCreateAccount}>
+              Create one
+            </button>
+            .
+          </div>
         </div>
       </div>
     );

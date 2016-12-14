@@ -1,5 +1,5 @@
 import React from 'react';
-import { storiesOf } from '@kadira/storybook';
+import { storiesOf, action } from '@kadira/storybook';
 import StoryDecorator from './support/StoryDecorator';
 import Login from '../app/components/auth/Login';
 
@@ -15,12 +15,29 @@ storiesOf('Login', module)
 
   .add('Login', () => (
     <div>
-      <Login />
+      <Login
+        onSubmit={action('submit')}
+        onCreateAccount={action('createAccount')}
+      />
     </div>
   ))
 
   .add('Login submitting', () => (
     <div>
-      <Login isSubmitting />
+      <Login
+        isSubmitting
+        onSubmit={action('submit')}
+        onCreateAccount={action('createAccount')}
+      />
+    </div>
+  ))
+
+  .add('Login invalid', () => (
+    <div>
+      <Login
+        isInvalid
+        onSubmit={action('submit')}
+        onCreateAccount={action('createAccount')}
+      />
     </div>
   ));

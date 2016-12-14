@@ -8,13 +8,21 @@
   flex-direction: column;
 }
 
+.invalidCredentials {
+  :global {
+    .input_input > .input_inputElement {
+      margin-top: 1px;
+      border-color: $theme-error-color;
+    }
+  }
+}
+
 .logo {
   width: 187px;
 }
 
 .form {
   width: 438px;
-  height: 275px;
   margin-top: 47px;
   border: 1px solid #c6cdd6;
   background-color: #fafbfc;
@@ -23,6 +31,7 @@
 
   :global .input_input {
     padding: 0;
+    overflow: visible;
 
     &:not(:first-child) {
       margin-top: 20px;
@@ -52,4 +61,34 @@
   font-size: 14px;
   font-family: $font-medium;
   text-transform: uppercase;
+}
+
+%createAccountParagraph {
+  color: #5e6066;
+  font-size: 14px;
+}
+
+.noAccountText {
+  @extend %createAccountParagraph;
+  margin-top: 15px;
+  font-family: $font-light;
+  text-align: center;
+}
+
+.createAccountLink {
+  @extend %createAccountParagraph;
+  font-family: $font-medium;
+  text-decoration: underline;
+  &:hover {
+    cursor: pointer;
+    color: black;
+  }
+}
+
+.formError {
+  font-family: $font-medium;
+  color: $theme-error-color;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 1rem;
 }
