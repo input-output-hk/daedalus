@@ -9,7 +9,6 @@
 [include]
 
 [libs]
-flow/declarations
 
 [options]
 esproposal.class_static_fields=enable
