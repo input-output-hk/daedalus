@@ -1,3 +1,5 @@
+// @flow
+
 const environment = {
   DEVELOPMENT: 'development',
   TEST: 'test',

@@ -1,18 +1,17 @@
 // @flow
 import { action } from 'mobx';
 import Profile from '../domain/Profile';
-import api from '../api';
 import BaseController from './BaseController';
 
-export default class AccountController extends BaseController {
+export default class UserController extends BaseController {
 
-  @action async loadAccount() {
+  @action async loadUser() {
     const { login, user } = this.state;
     login.isLoading = true;
     try {
-      const accountData = await api.accounts.loadAccount();
-      const { profile } = accountData;
-      user.profile = new Profile(profile);
+      const userData = await this.api.getUser();
+      user.id = userData.id;
+      user.profile = new Profile(userData.profile);
       login.isLoading = false;
     } catch (error) {
       login.errorLoading = 'Error loading account data'; // TODO: i18n
@@ -23,7 +22,7 @@ export default class AccountController extends BaseController {
     const { user } = this.state;
     const { profile } = user;
     if (!profile) return;
-    await api.accounts.updateProfileField({ field, value });
+    await this.api.updateProfileField({ field, value });
     switch (field) {
       case 'name': profile.name = value; break;
       case 'email': profile.email = value; break;

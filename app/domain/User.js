@@ -5,6 +5,7 @@ import Wallet from './Wallet';
 
 export default class User {
 
+  @observable id: string;
   @observable profile: Profile;
   @observable wallets: Array<Wallet> = [];
 

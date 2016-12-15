@@ -10,7 +10,7 @@ import de from 'react-intl/locale-data/de';
 import hr from 'react-intl/locale-data/hr';
 import translations from './i18n/translations';
 import App from './App';
-import api from './api';
+import StubApi from './api/StubApi';
 import environment from './environment';
 import AppController from './controllers/AppController';
 import appStateFactory, { appStatePropType } from './state';
@@ -42,14 +42,15 @@ class Daedalus extends Component {
 
 const initializeDaedalus = () => {
   const appState = appStateFactory();
-  const controller = new AppController(appState);
+  const api = new StubApi();
+  const controller = new AppController(appState, api);
   window.daedalus = {
     controller,
     api,
     environment,
     state: appState,
     reset: action(() => {
-      api.data.reset();
+      api.repository.reset();
       controller.reset();
       window.daedalus.render();
     }),

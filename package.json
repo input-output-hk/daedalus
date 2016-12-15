@@ -22,7 +22,8 @@
     "test": "npm run cucumber",
     "test-watch": "nodemon --exec npm run cucumber-watch",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "flow-test": "flow; test $? -eq 0 -o $? -eq 2"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -75,7 +76,7 @@
     "extract-text-webpack-plugin": "^1.0.1",
     "fbjs-scripts": "^0.7.1",
     "file-loader": "^0.9.0",
-    "flow-bin": "^0.36.0",
+    "flow-bin": "^0.37.0",
     "json-loader": "^0.5.4",
     "minimist": "^1.2.0",
     "mobx-react-devtools": "^4.2.10",

@@ -2,30 +2,33 @@
 import { action } from 'mobx';
 import Route from 'route-parser';
 import type { appState } from '../state/index';
-import AccountController from './AccountController';
+import type { Api } from '../api';
+import UserController from './UserController';
 import WalletsController from './WalletsController';
 import SidebarController from './SidebarController';
 
 export default class AppController {
 
   state: appState;
+  api: Api;
   router: { transitionTo: () => void };
   intl: { formatMessage: () => string };
-  account: AccountController;
+  user: UserController;
   wallets: WalletsController;
   sidebar: SidebarController;
   initializedCallback = () => {};
 
-  constructor(state: appState) {
+  constructor(state: appState, api: Api) {
     this.state = state;
-    this.account = new AccountController(this, state);
-    this.wallets = new WalletsController(this, state);
-    this.sidebar = new SidebarController(this, state);
+    this.api = api;
+    this.user = new UserController(this, state, api);
+    this.wallets = new WalletsController(this, state, api);
+    this.sidebar = new SidebarController(this, state, api);
     this.load();
   }
 
   load() {
-    this.account.loadAccount();
+    this.user.loadUser();
     this.wallets.loadWallets();
   }
 

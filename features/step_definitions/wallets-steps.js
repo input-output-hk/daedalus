@@ -14,7 +14,7 @@ export default function () {
 
   this.Given(/^I have a wallet$/, async function () {
     const result = await this.client.execute(function() {
-      const wallet = daedalus.api.data.createWallet();
+      const wallet = daedalus.api.repository.generateWallet();
       daedalus.controller.wallets.loadWallets();
       return wallet;
     });
@@ -24,7 +24,7 @@ export default function () {
   this.Given(/^I have the following wallets:$/, async function (table) {
     const result = await this.client.execute(function(wallets) {
       const createdWallets = wallets.map(function(wallet) {
-        return daedalus.api.data.createWallet(wallet);
+        return daedalus.api.repository.generateWallet(wallet);
       });
       daedalus.controller.wallets.loadWallets();
       return createdWallets;

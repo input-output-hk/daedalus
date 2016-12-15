@@ -1,11 +1,12 @@
 // @flow
 import moment from 'moment';
 import faker from 'faker';
-import type { walletType, accountType, transactionType } from './types';
+import type { walletStruct, userStruct, transactionStruct } from './index';
 
 // ==== Initial stub data for easier development =====
 
-export const account: accountType = {
+export const user: userStruct = {
+  id: faker.random.uuid(),
   profile: {
     name: 'Satoshi Nakamoto',
     email: 'satoshi@gmail.com',
@@ -16,9 +17,11 @@ export const account: accountType = {
   }
 };
 
-export const wallets: Array<walletType> = [
+export const wallets: Array<walletStruct> = [
   {
-    address: '13GvjwDkz8s8ZmGQjwVLNUXrNXdSmQa72x',
+    id: faker.random.uuid(),
+    userId: user.id,
+    address: faker.finance.bitcoinAddress(),
     type: 'personal',
     currency: 'ada',
     amount: 19903750165.23,
@@ -26,7 +29,9 @@ export const wallets: Array<walletType> = [
     lastUsed: true,
   },
   {
-    address: '1GrT8upXQCR4mzPpAeMfxqwZh2LF7PXsyn',
+    id: faker.random.uuid(),
+    userId: user.id,
+    address: faker.finance.bitcoinAddress(),
     type: 'personal',
     currency: 'ada',
     amount: 274912874.35,
@@ -34,7 +39,9 @@ export const wallets: Array<walletType> = [
     lastUsed: null,
   },
   {
-    address: '1LYYdFD4RGLsYJT5tVQoLQEvfr7hJXHRuv',
+    id: faker.random.uuid(),
+    userId: user.id,
+    address: faker.finance.bitcoinAddress(),
     type: 'personal',
     currency: 'btc',
     amount: 0.0004924712,
@@ -42,7 +49,9 @@ export const wallets: Array<walletType> = [
     lastUsed: null,
   },
   {
-    address: '1MKY9oAriyXvUKRBRsbrrT2JDHA8S9T2sf',
+    id: faker.random.uuid(),
+    userId: user.id,
+    address: faker.finance.bitcoinAddress(),
     type: 'personal',
     currency: 'ada',
     amount: 2500.00,
@@ -50,7 +59,9 @@ export const wallets: Array<walletType> = [
     lastUsed: null,
   },
   {
-    address: 'fd17fda6410ac905447840e33c1851a5',
+    id: faker.random.uuid(),
+    userId: user.id,
+    address: faker.finance.bitcoinAddress(),
     type: 'personal',
     currency: 'btc',
     amount: 0.02048244,
@@ -61,7 +72,7 @@ export const wallets: Array<walletType> = [
 
 let transactionsCount = 0;
 
-const generateTransaction = (data: Object): transactionType => {
+const generateTransaction = (data: Object): transactionStruct => {
   transactionsCount += 1;
   let date = data.date;
   if (data.date == null) {
@@ -73,9 +84,10 @@ const generateTransaction = (data: Object): transactionType => {
   }, data, { date });
 };
 
-const cardTransaction = (date: ?Date) => {
+const cardTransaction = (walletId: string, date: ?Date) => {
   const amount = -1 * ((Math.random() * 1000) + 1);
   return generateTransaction({
+    walletId,
     amount,
     date,
     type: 'card',
@@ -88,14 +100,16 @@ const cardTransaction = (date: ?Date) => {
 };
 
 const adaTransaction = (data: {
+  walletId: string,
   amount: number,
   type: string,
   title: string,
   date: ?Date
 }) => {
   const exchangeRate = (Math.random() * 1000) + 10;
-  const { amount, type, title, date } = data;
+  const { amount, type, title, date, walletId } = data;
   return generateTransaction({
+    walletId,
     type,
     amount,
     title,
@@ -107,9 +121,10 @@ const adaTransaction = (data: {
   });
 };
 
-const adaExpend = (date: ?Date) => {
+const adaExpend = (walletId: string, date: ?Date) => {
   const amount = -1 * ((Math.random() * 1000) + 1);
   return adaTransaction({
+    walletId,
     amount,
     date,
     type: 'adaExpend',
@@ -117,9 +132,10 @@ const adaExpend = (date: ?Date) => {
   });
 };
 
-const adaIncome = (date: ?Date) => {
+const adaIncome = (walletId: string, date: ?Date) => {
   const amount = (Math.random() * 1000) + 1;
   return adaTransaction({
+    walletId,
     amount,
     date,
     type: 'adaIncome',
@@ -127,10 +143,11 @@ const adaIncome = (date: ?Date) => {
   });
 };
 
-const exchange = (date: ?Date) => {
+const exchange = (walletId: string, date: ?Date) => {
   const amount = (Math.random() * 1000) + 1;
   const exchangeRate = (Math.random() * 1000) + 10;
   return generateTransaction({
+    walletId,
     amount,
     date,
     title: 'ADA to ETH',
@@ -144,34 +161,28 @@ const exchange = (date: ?Date) => {
 
 const transactionTypes = [cardTransaction, adaExpend, adaIncome, exchange];
 
-const generateRandomTransactions = (count: number) => {
+const generateRandomTransactions = (walletId: string, count: number) => {
   const transactions = [];
   for (let i = 0; i < count; i += 1) {
     const typeFactory = Math.floor(Math.random() * (transactionTypes.length - 1));
-    transactions.push(transactionTypes[typeFactory]());
+    transactions.push(transactionTypes[typeFactory](walletId));
   }
   return transactions;
 };
 
-export const transactions = {
-  '13GvjwDkz8s8ZmGQjwVLNUXrNXdSmQa72x': [
-    cardTransaction(new Date()),
-    adaExpend(new Date()),
-    adaIncome(moment().subtract(1, 'days').toDate())
-  ].concat(generateRandomTransactions(30)),
-  '1GrT8upXQCR4mzPpAeMfxqwZh2LF7PXsyn': [
-    cardTransaction(moment().subtract(1, 'days').toDate()),
-    adaExpend(new Date()),
-    adaIncome()
-  ],
-  '1LYYdFD4RGLsYJT5tVQoLQEvfr7hJXHRuv': [
-    cardTransaction(moment().subtract(1, 'days').toDate()),
-    exchange()
-  ],
-  '1MKY9oAriyXvUKRBRsbrrT2JDHA8S9T2sf': [
-    cardTransaction(new Date()),
-  ],
-  fd17fda6410ac905447840e33c1851a5: [
-    exchange(new Date())
-  ]
-};
+const firstWallet = wallets[0].id;
+const secondWallet = wallets[1].id;
+const thirdWallet = wallets[2].id;
+
+export const transactions = generateRandomTransactions(firstWallet, 30).concat([
+  cardTransaction(firstWallet, new Date()),
+  adaExpend(firstWallet, new Date()),
+  adaIncome(firstWallet, moment().subtract(1, 'days').toDate()),
+  cardTransaction(secondWallet, moment().subtract(1, 'days').toDate()),
+  adaExpend(secondWallet, new Date()),
+  adaIncome(secondWallet),
+  cardTransaction(thirdWallet, moment().subtract(1, 'days').toDate()),
+  exchange(thirdWallet),
+  cardTransaction(wallets[3].id, new Date()),
+  exchange(wallets[4].id, new Date())
+]);
