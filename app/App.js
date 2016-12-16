@@ -53,7 +53,7 @@ export default class App extends Component {
   render() {
     const { state, controller } = this.props;
     const { router, intl } = this.context;
-    const { isLoggedIn } = state.user;
+    const { isLoggedIn } = state.login;
     controller.setRouter(router);
     controller.setTranslationService(intl);
 

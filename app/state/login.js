@@ -5,14 +5,16 @@ export type loginState = {
   isLoggingIn: boolean,
   isLoggedIn: boolean,
   isLoading: boolean,
-  errorLoading: ?string
+  errorLoading: ?string,
+  errorLoggingIn: ?string
 };
 
 const defaultValues = {
   isLoggingIn: false,
   isLoggedIn: false,
   isLoading: false,
-  errorLoading: null
+  errorLoading: null,
+  errorLoggingIn: null
 };
 
 const state = {};

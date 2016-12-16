@@ -6,7 +6,8 @@ import type {
   transactionStruct,
   getTransactionsRequest,
   createTransactionRequest,
-  updateUserProfileFieldRequest
+  updateUserProfileFieldRequest,
+  loginRequest
 } from './index';
 
 export default class StubRepository {
@@ -21,6 +22,13 @@ export default class StubRepository {
     this.user = user;
     this.wallets = wallets;
     this.transactions = transactions;
+  }
+
+  login(request: loginRequest) {
+    return (
+      request.email === this.user.profile.email &&
+      request.passwordHash === this.user.profile.passwordHash
+    );
   }
 
   findUser() {

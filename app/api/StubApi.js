@@ -4,7 +4,8 @@ import type {
   createUserRequest,
   createWalletRequest,
   createTransactionRequest,
-  updateUserProfileFieldRequest
+  updateUserProfileFieldRequest,
+  loginRequest
 } from './index';
 import StubRepository from './StubRepository';
 import { user, wallets, transactions } from './fixtures';
@@ -24,6 +25,10 @@ export default class StubApi {
 
   constructor() {
     this.repository = new StubRepository(user, wallets, transactions);
+  }
+
+  login(request: loginRequest) {
+    return fakeRequest(this.repository.login(request));
   }
 
   getUser() {
