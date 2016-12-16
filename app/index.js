@@ -57,7 +57,7 @@ const initializeDaedalus = () => {
       const app = (
         <Router>
           <Provider state={state} controller={controller}>
-            <Daedalus />
+            <Daedalus state={state} />
           </Provider>
         </Router>
       );

@@ -3,7 +3,7 @@ import type { appState } from './index';
 import Profile from '../domain/Profile';
 
 export type settingsState = {
-  profile: () => Profile
+  profile: Profile
 };
 
 export default (state: appState): settingsState => ({

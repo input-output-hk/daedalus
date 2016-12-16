@@ -6,7 +6,7 @@ export type sidebarState = {
   route: string,
   hidden: bool,
   isMaximized: bool,
-  wallets: () => Array<Object>,
+  wallets: Array<Object>,
 };
 
 const defaultValues = {

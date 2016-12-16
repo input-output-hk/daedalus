@@ -64,7 +64,7 @@ export default class AppController {
 
   @action reset() {
     this.state.reset();
-    this.load();
+    this.initialize(this.router, this.state.router, this.intl);
     this.state.isInitialized = true;
     this.initializedCallback();
   }
