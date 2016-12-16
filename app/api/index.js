@@ -87,5 +87,5 @@ export type Api = {
   createUser(request: createUserRequest): Promise<userStruct>,
   createWallet(request: createWalletRequest): Promise<walletStruct>,
   createTransaction(request: createTransactionRequest): Promise<transactionStruct>,
-  updateProfileField(request: updateUserProfileFieldRequest): Promise,
+  updateProfileField(request: updateUserProfileFieldRequest): Promise<any>,
 }
