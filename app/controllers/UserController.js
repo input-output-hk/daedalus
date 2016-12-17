@@ -16,9 +16,6 @@ export default class UserController extends BaseController {
       const isLoginSuccessful = await this.api.login(loginCredentials);
       if (isLoginSuccessful) {
         login.isLoggedIn = true;
-        // TODO: refactor - remove loading user and wallets from this controller
-        this.loadUser();
-        this.appController.wallets.loadWallets();
       }
       login.isLoggingIn = false;
     } catch (error) {

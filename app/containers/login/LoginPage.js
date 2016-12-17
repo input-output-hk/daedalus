@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import CenteredLayout from '../../components/layout/CenteredLayout';
 import Login from '../../components/auth/Login';
-import hashData from '../../util/hash-data';
+import hashData from '../../lib/hash-data';
 
 @observer(['state', 'controller'])
 export default class LoginPage extends Component {
