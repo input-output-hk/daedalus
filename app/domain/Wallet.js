@@ -6,6 +6,7 @@ export type WalletType = 'personal' | 'shared';
 
 export default class Wallet {
 
+  id: string = '';
   type: WalletType;
   address: string = '';
   currency: string = '';
@@ -15,6 +16,7 @@ export default class Wallet {
   @observable lastUsed: boolean;
 
   constructor(data: {
+    id: string,
     type: WalletType,
     name: string,
     address: string,

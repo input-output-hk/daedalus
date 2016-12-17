@@ -1,5 +1,5 @@
 // @flow
-import { action } from 'mobx';
+import { action, extendObservable } from 'mobx';
 import type { appState } from './index';
 
 export type sidebarState = {
@@ -17,10 +17,10 @@ const defaultValues = {
 
 const state = {};
 
-export default (root: appState): sidebarState => (Object.assign(state, defaultValues, {
+export default (root: appState): sidebarState => (extendObservable(state, defaultValues, {
   get wallets() {
     return root.user.wallets.map(wallet => ({
-      id: wallet.address,
+      id: wallet.id,
       title: wallet.name,
       info: `${wallet.amount} ${wallet.currency}`
     }));

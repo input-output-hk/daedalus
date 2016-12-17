@@ -1,5 +1,5 @@
 // @flow
-import { action } from 'mobx';
+import { action, extendObservable } from 'mobx';
 import Wallet from '../domain/Wallet';
 
 export const INITIAL_WALLET_SEARCH_LIMIT = 10;
@@ -35,6 +35,6 @@ const defaultValues = {
 
 const state = {};
 
-export default (): activeWalletState => (Object.assign(state, defaultValues, {
+export default (): activeWalletState => (extendObservable(state, defaultValues, {
   reset: action(() => Object.assign(state, defaultValues))
 }));

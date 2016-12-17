@@ -35,7 +35,7 @@ export default class LoginPage extends Component {
         <Login
           isSubmitting={isLoggingIn}
           onSubmit={this.handleLoginFormSubmit.bind(this)}
-          onCreateAccount={() => console.log('create account')}
+          onCreateAccount={() => console.log('create account')} // eslint-disable-line
         />
       </CenteredLayout>
     );

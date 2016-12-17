@@ -49,7 +49,7 @@ export default class WalletsController extends BaseController {
   @action setActiveWallet(walletId: string|Wallet) {
     let wallet = walletId;
     if (_.isString(walletId)) {
-      wallet = _.find(this.state.user.wallets, { address: wallet });
+      wallet = _.find(this.state.user.wallets, { id: wallet });
     }
     const activeWallet = this.state.activeWallet;
     if (wallet === activeWallet.wallet) return;
@@ -57,7 +57,7 @@ export default class WalletsController extends BaseController {
     activeWallet.transactionsSearchLimit = INITIAL_WALLET_SEARCH_LIMIT;
     activeWallet.transactionsSearchTerm = '';
     this.loadActiveWalletTransactions(true);
-    this.appController.navigateTo(`/wallet/${wallet.address}/home`);
+    this.appController.navigateTo(`/wallet/${wallet.id}/home`);
   }
 
   @action async sendMoney(transactionDetails: {

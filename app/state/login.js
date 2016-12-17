@@ -1,5 +1,5 @@
 // @flow
-import { action } from 'mobx';
+import { action, extendObservable } from 'mobx';
 
 export type loginState = {
   isLoggingIn: boolean,
@@ -19,6 +19,6 @@ const defaultValues = {
 
 const state = {};
 
-export default (): loginState => (Object.assign(state, defaultValues, {
+export default (): loginState => (extendObservable(state, defaultValues, {
   reset: action(() => Object.assign(state, defaultValues))
 }));

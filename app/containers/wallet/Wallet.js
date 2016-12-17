@@ -24,14 +24,14 @@ export default class Wallet extends Component {
   isActiveScreen(screen: string) {
     const { router, activeWallet } = this.props.state;
     if (router.location) {
-      return router.location.pathname === `${Wallet.walletPath}/${activeWallet.wallet.address}/${screen}`;
+      return router.location.pathname === `${Wallet.walletPath}/${activeWallet.wallet.id}/${screen}`;
     }
     return false;
   }
 
   handleWalletNavItemClick(item: string) {
     const { activeWallet } = this.props.state;
-    this.props.controller.navigateTo(`${Wallet.walletPath}/${activeWallet.wallet.address}/${item}`);
+    this.props.controller.navigateTo(`${Wallet.walletPath}/${activeWallet.wallet.id}/${item}`);
   }
 
   render() {

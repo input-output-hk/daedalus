@@ -65,7 +65,7 @@ export default class MainLayout extends Component {
         hidden={sidebar.hidden}
         isMaximized={sidebar.isMaximized}
         onCategoryClicked={(cat) => controller.sidebar.changeSidebarRoute(cat)}
-        activeWalletId={activeWallet.wallet.address}
+        activeWalletId={activeWallet.wallet.id}
       />
     );
     const appbar = <AppBar onToggleSidebar={() => controller.sidebar.toggleSidebar()} />;
