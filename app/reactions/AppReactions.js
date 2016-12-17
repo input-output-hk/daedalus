@@ -12,7 +12,9 @@ export default class AppReactions {
   constructor(state: appState, appController: AppController) {
     this.state = state;
     this.appController = appController;
-    this.loginReaction = new LoginReaction(state, appController).start();
+    this.loginReaction = new LoginReaction(state, appController);
+    // Start reactions that need to be started upon application launch
+    this.loginReaction.start();
   }
 
 }
