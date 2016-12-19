@@ -88,7 +88,7 @@ export default class Login extends Component {
             onBlur={email.onBlur}
           />
           <Input
-            type="text"
+            type="password"
             className="password"
             hint={intl.formatMessage(messages.passwordHint)}
             value={password.value}
