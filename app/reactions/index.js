@@ -3,7 +3,7 @@ import type { appState } from '../state';
 import AppController from '../controllers/AppController';
 import LoginReaction from './LoginReaction';
 
-export default class AppReactions {
+export default class Reactions {
 
   state: appState;
   appController: AppController;

@@ -3,7 +3,7 @@ import { autorun } from 'mobx';
 import type { appState } from '../state';
 import AppController from '../controllers/AppController';
 
-export default class BaseReaction {
+export default class Reaction {
   state: appState;
   appController: AppController;
   hasBeenStarted: boolean;

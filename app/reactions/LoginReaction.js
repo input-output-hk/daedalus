@@ -1,8 +1,8 @@
 // @flow
 import { ipcRenderer } from 'electron';
-import BaseReaction from './BaseReaction';
+import Reaction from './Reaction';
 
-export default class LoginReaction extends BaseReaction {
+export default class LoginReaction extends Reaction {
   reaction() {
     const { isLoggedIn, isLoggingIn } = this.state.login;
     if (isLoggedIn && !isLoggingIn) {

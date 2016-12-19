@@ -15,7 +15,7 @@ import StubApi from './api/StubApi';
 import environment from './environment';
 import AppController from './controllers/AppController';
 import appStateFactory, { appStatePropType } from './state';
-import AppReactions from './reactions/AppReactions';
+import Reactions from './reactions/index';
 import './styles/index.global.scss';
 
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
@@ -43,7 +43,7 @@ const initializeDaedalus = () => {
   const state = appStateFactory();
   const api = new StubApi();
   const controller = new AppController(state, api);
-  const reactions = new AppReactions(state, controller);
+  const reactions = new Reactions(state, controller);
   window.daedalus = {
     controller,
     api,
