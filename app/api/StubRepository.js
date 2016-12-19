@@ -67,6 +67,7 @@ export default class StubRepository {
         name: `${faker.name.firstName()} ${faker.name.lastName()}`,
         email: faker.internet.email(),
         phoneNumber: faker.phone.phoneNumber(),
+        passwordHash: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8',
         passwordUpdateDate: faker.date.past(),
         languageLocale: 'en-US'
       }
