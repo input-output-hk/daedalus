@@ -7,7 +7,7 @@ export default class BaseReaction {
   state: appState;
   appController: AppController;
   hasBeenStarted: boolean;
-  disposer: () => void;
+  dispose: () => void;
 
   constructor(state: appState, appController: AppController) {
     this.state = state;
@@ -20,7 +20,7 @@ export default class BaseReaction {
   }
 
   start() {
-    this.disposer = autorun(() => {
+    this.dispose = autorun(() => {
       this.reaction();
     });
     this.hasBeenStarted = true;
@@ -28,7 +28,7 @@ export default class BaseReaction {
 
   stop() {
     if (this.hasBeenStarted) {
-      this.disposer();
+      this.dispose();
     }
   }
 }
