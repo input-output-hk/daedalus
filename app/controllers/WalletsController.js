@@ -46,18 +46,20 @@ export default class WalletsController extends BaseController {
     activeWallet.isLoadingTransactions = false;
   }
 
-  @action setActiveWallet(walletId: string|Wallet) {
-    let wallet = walletId;
-    if (_.isString(walletId)) {
-      wallet = _.find(this.state.user.wallets, { id: wallet });
+  @action setActiveWallet(wallet: string|Wallet) {
+    let newActiveWallet = wallet;
+    if (_.isString(newActiveWallet)) {
+      newActiveWallet = _.find(this.state.user.wallets, { id: newActiveWallet });
     }
+    console.log('new active wallet', newActiveWallet);
+    // TODO: bugfix sometimes new active wallet is undefined
     const activeWallet = this.state.activeWallet;
-    if (wallet === activeWallet.wallet) return;
-    activeWallet.wallet = wallet;
+    if (newActiveWallet === activeWallet.wallet) return;
+    activeWallet.wallet = newActiveWallet;
     activeWallet.transactionsSearchLimit = INITIAL_WALLET_SEARCH_LIMIT;
     activeWallet.transactionsSearchTerm = '';
     this.loadActiveWalletTransactions(true);
-    this.appController.navigateTo(`/wallet/${wallet.id}/home`);
+    this.appController.navigateTo(`/wallet/${newActiveWallet.id}/home`);
   }
 
   @action async sendMoney(transactionDetails: {
