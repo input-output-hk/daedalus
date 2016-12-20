@@ -56,6 +56,7 @@ export default class StubRepository {
   }
 
   reset() {
+    this.user = [];
     this.wallets = [];
     this.transactions = [];
   }
