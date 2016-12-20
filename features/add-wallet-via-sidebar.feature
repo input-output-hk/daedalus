@@ -1,4 +1,3 @@
-@watch
 Feature: Add Wallet via Sidebar
 
   Background:

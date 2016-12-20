@@ -4,7 +4,7 @@ Feature: Login
     Given I have an account
     And I have a wallet
 
-  Scenario: Successfully Adding a Wallet
+  Scenario: Successful Login
     Given I am on the login screen
     When I submit login form with the following inputs:
     | email              | password |

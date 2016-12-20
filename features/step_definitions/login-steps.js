@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 
 export default function () {
-  this.Given(/^I am on the login screen$/, async function () {
-    await this.client.waitForVisible('.Login_form');
+  this.Given(/^I am on the login screen$/, function () {
+    return this.client.waitForVisible('.Login_form');
   });
 
   this.When(/^I submit login form with the following inputs:$/, async function (table) {
@@ -18,10 +18,10 @@ export default function () {
       const { email, passwordHash } = user.profile;
       daedalus.controller.user.login({ email, passwordHash });
     });
-    return await this.client.waitForVisible(`.WalletTransactionsSearch_component`, null, true);
+    return this.client.waitForVisible(`.WalletTransactionsSearch_component`, null, true);
   });
 
   this.Given(/^I dont see the login window(?: anymore)?$/, function () {
-    return this.client.waitForVisible('.Login_form');
+    return this.client.waitForVisible('.Login_form', null, true);
   });
 }
