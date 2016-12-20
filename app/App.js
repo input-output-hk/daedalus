@@ -10,8 +10,8 @@ import { appStatePropType } from './state/index';
 import AppController from './controllers/AppController';
 import Wallet from './containers/wallet/Wallet';
 import Settings from './containers/settings/Settings';
-import WalletCreatePage from './containers/wallet/WalletCreatePage';
 import StakingPage from './containers/staking/StakingPage';
+import LoginPage from './containers/login/LoginPage';
 import LoadingSpinner from './components/widgets/LoadingSpinner';
 import environment from './environment';
 
@@ -53,32 +53,35 @@ export default class App extends Component {
   render() {
     const { state, controller } = this.props;
     const { router, intl } = this.context;
+    const { isLoggedIn } = state.login;
     controller.setRouter(router);
     controller.setTranslationService(intl);
 
     if (state.isApplicationLoading) {
       return <div style={{ display: 'flex', alignItems: 'center' }}><LoadingSpinner /></div>;
     }
-    const { activeWallet } = this.props.state;
-    const { wallet } = activeWallet;
+
     let initialPage;
-    if (wallet) {
+
+    if (!isLoggedIn) {
       initialPage = (
         <div style={{ height: '100%' }}>
-          <Match pattern="/" exactly render={() => <Redirect to={`/wallet/${wallet.address}/home`} />} />
+          <Redirect to={'/login'} />
+          <Match pattern="/login" component={LoginPage} />
+        </div>
+      );
+    } else {
+      const { wallet } = state.activeWallet;
+      initialPage = (
+        <div style={{ height: '100%' }}>
+          <Match pattern="/" exactly render={() => <Redirect to={`/wallet/${wallet.id}/home`} />} />
           <Match pattern="/wallet/:id" component={Wallet} />
           <Match pattern="/settings" component={Settings} />
           <Match pattern="/staking" component={StakingPage} />
         </div>
       );
-    } else {
-      initialPage = (
-        <div style={{ height: '100%' }}>
-          <Match pattern="/" render={() => <Redirect to="/create-first-wallet" />} />
-          <Match pattern="/create-first-wallet" component={WalletCreatePage} />
-        </div>
-      );
     }
+
     const mobxDevTools = environment.isDev() ? <DevTools /> : null;
     return (
       <ThemeProvider theme={daedalusTheme}>

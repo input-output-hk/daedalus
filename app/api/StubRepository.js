@@ -6,7 +6,8 @@ import type {
   transactionStruct,
   getTransactionsRequest,
   createTransactionRequest,
-  updateUserProfileFieldRequest
+  updateUserProfileFieldRequest,
+  loginRequest
 } from './index';
 
 export default class StubRepository {
@@ -21,6 +22,13 @@ export default class StubRepository {
     this.user = user;
     this.wallets = wallets;
     this.transactions = transactions;
+  }
+
+  login(request: loginRequest) {
+    return (
+      request.email === this.user.profile.email &&
+      request.passwordHash === this.user.profile.passwordHash
+    );
   }
 
   findUser() {
@@ -48,6 +56,7 @@ export default class StubRepository {
   }
 
   reset() {
+    this.user = [];
     this.wallets = [];
     this.transactions = [];
   }
@@ -57,8 +66,9 @@ export default class StubRepository {
       id: faker.random.uuid(),
       profile: {
         name: `${faker.name.firstName()} ${faker.name.lastName()}`,
-        email: faker.internet.email(),
+        email: 'satoshi@gmail.com',
         phoneNumber: faker.phone.phoneNumber(),
+        passwordHash: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8',
         passwordUpdateDate: faker.date.past(),
         languageLocale: 'en-US'
       }
@@ -68,6 +78,7 @@ export default class StubRepository {
 
   generateWallet(customData: Object) {
     const wallet: walletStruct = Object.assign({}, {
+      id: faker.random.uuid(),
       userId: this.user.id,
       address: faker.finance.bitcoinAddress(),
       type: 'personal',

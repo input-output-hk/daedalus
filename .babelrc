@@ -3,6 +3,7 @@
   "plugins": [
     "add-module-exports",
     "transform-decorators-legacy",
+    "lodash",
     ["transform-runtime", {
       "polyfill": true,
       "regenerator": true

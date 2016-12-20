@@ -1,10 +1,11 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { Provider, observer } from 'mobx-react';
 import { action } from 'mobx';
 import { render } from 'react-dom';
 import { addLocaleData, IntlProvider } from 'react-intl';
 import { MemoryRouter as Router } from 'react-router';
+import { ipcRenderer } from 'electron';
 import en from 'react-intl/locale-data/en';
 import de from 'react-intl/locale-data/de';
 import hr from 'react-intl/locale-data/hr';
@@ -14,48 +15,56 @@ import StubApi from './api/StubApi';
 import environment from './environment';
 import AppController from './controllers/AppController';
 import appStateFactory, { appStatePropType } from './state';
+import Reactions from './reactions/index';
 import './styles/index.global.scss';
 
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([en, de, hr]);
 
-@observer
+@observer(['state'])
 class Daedalus extends Component {
 
   static propTypes = {
-    state: appStatePropType,
-    controller: PropTypes.instanceOf(AppController),
+    state: appStatePropType.isRequired,
   };
 
   render() {
-    const { state, controller } = this.props;
+    const { state } = this.props;
     const locale = state.i18n.locale;
     return (
       <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
-        <Provider state={state} controller={controller}>
-          <App />
-        </Provider>
+        <App />
       </IntlProvider>
     );
   }
 }
 
 const initializeDaedalus = () => {
-  const appState = appStateFactory();
+  const state = appStateFactory();
   const api = new StubApi();
-  const controller = new AppController(appState, api);
+  const controller = new AppController(state, api);
+  const reactions = new Reactions(state, controller);
   window.daedalus = {
     controller,
     api,
     environment,
-    state: appState,
+    ipc: ipcRenderer,
+    state,
+    reactions,
     reset: action(() => {
       api.repository.reset();
       controller.reset();
       window.daedalus.render();
     }),
     render() {
-      render(<Router><Daedalus state={appState} controller={controller} /></Router>, document.getElementById('root'));
+      const app = (
+        <Router>
+          <Provider state={state} controller={controller}>
+            <Daedalus state={state} />
+          </Provider>
+        </Router>
+      );
+      render(app, document.getElementById('root'));
     }
   };
   window.daedalus.render();

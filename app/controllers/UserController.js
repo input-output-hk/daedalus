@@ -5,6 +5,24 @@ import BaseController from './BaseController';
 
 export default class UserController extends BaseController {
 
+  @action async login(loginCredentials: {
+    email: string,
+    passwordHash: string
+  }) {
+    const { login } = this.state;
+    login.isLoggingIn = true;
+    login.isLoggedIn = false;
+    try {
+      const isLoginSuccessful = await this.api.login(loginCredentials);
+      if (isLoginSuccessful) {
+        login.isLoggedIn = true;
+      }
+      login.isLoggingIn = false;
+    } catch (error) {
+      login.errorLoggingIn = 'Error logging in'; // TODO: i18n
+    }
+  }
+
   @action async loadUser() {
     const { login, user } = this.state;
     login.isLoading = true;

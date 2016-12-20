@@ -1,12 +1,12 @@
 // @flow
-import { action } from 'mobx';
+import { action, extendObservable } from 'mobx';
 import type { appState } from './index';
 
 export type sidebarState = {
   route: string,
   hidden: bool,
   isMaximized: bool,
-  wallets: () => Array<Object>,
+  wallets: Array<Object>,
 };
 
 const defaultValues = {
@@ -17,13 +17,13 @@ const defaultValues = {
 
 const state = {};
 
-export default (root: appState): sidebarState => (Object.assign(state, defaultValues, {
-  wallets: () => (
-    root.user.wallets.map(wallet => ({
-      id: wallet.address,
+export default (root: appState): sidebarState => (extendObservable(state, defaultValues, {
+  get wallets() {
+    return root.user.wallets.map(wallet => ({
+      id: wallet.id,
       title: wallet.name,
       info: `${wallet.amount} ${wallet.currency}`
-    }))
-  ),
+    }));
+  },
   reset: action(() => Object.assign(state, defaultValues))
 }));

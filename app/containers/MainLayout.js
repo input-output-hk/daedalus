@@ -8,14 +8,14 @@ import { oneOrManyChildElements } from '../propTypes';
 import WalletCreateDialog from '../components/wallet/WalletCreateDialog';
 
 @observer(['state', 'controller'])
-export default class Layout extends Component {
+export default class MainLayout extends Component {
 
   static propTypes = {
     state: PropTypes.shape({
       sidebar: MobxPropTypes.observableObject.isRequired,
       activeWallet: PropTypes.shape({
         wallet: PropTypes.shape({
-          address: PropTypes.string.isRequired
+          id: PropTypes.string.isRequired
         }).isRequired
       }).isRequired,
       isCreateWalletDialogOpen: PropTypes.bool.isRequired
@@ -65,7 +65,7 @@ export default class Layout extends Component {
         hidden={sidebar.hidden}
         isMaximized={sidebar.isMaximized}
         onCategoryClicked={(cat) => controller.sidebar.changeSidebarRoute(cat)}
-        activeWalletId={activeWallet.wallet.address}
+        activeWalletId={activeWallet.wallet.id}
       />
     );
     const appbar = <AppBar onToggleSidebar={() => controller.sidebar.toggleSidebar()} />;

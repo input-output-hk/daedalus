@@ -1,6 +1,7 @@
 // @flow
 import { PropTypes } from 'react';
 import { observable, extendObservable, action } from 'mobx';
+import { isfunction } from 'lodash/fp';
 import User from '../domain/User';
 import login from './login';
 import type { loginState } from './login';
@@ -36,14 +37,16 @@ export type appState = {
   reset: () => null
 };
 
+const initialState = {
+  user: new User(),
+  router: { location: null },
+  i18n: { locale: 'en-US' },
+  isInitialized: false,
+  isCreateWalletDialogOpen: false
+};
+
 export default (): appState => {
-  const state = observable({
-    user: new User(),
-    router: { location: null },
-    i18n: { locale: 'en-US' },
-    isInitialized: false,
-    isCreateWalletDialogOpen: false
-  });
+  const state = observable(initialState);
 
   extendObservable(
     state,
@@ -53,15 +56,16 @@ export default (): appState => {
       sidebar: sidebar(state),
       activeWallet: activeWallet(state),
       get isApplicationLoading() {
-        return !state.isInitialized || state.activeWallet.isLoading || state.login.isLoading;
+        return !state.isInitialized;
       },
       reset: action(() => {
-        state.user = new User();
-        state.i18n.locale = 'en-US';
-        state.isInitialized = false;
+        // Reset sub states
         for (const key of Object.keys(state)) {
-          const subState = state[key];
-          if (subState && subState.reset) subState.reset();
+          if (isfunction(state[key].reset)) state[key].reset();
+        }
+        // Reset root state
+        for (const key of Object.keys(initialState)) {
+          state[key] = initialState[key];
         }
       })
     }

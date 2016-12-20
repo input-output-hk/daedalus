@@ -3,6 +3,7 @@ Feature: Navigate Wallet Tabs
   Background:
     Given I have an account
     And I have a wallet
+    And I am logged in
 
   Scenario Outline: Switching Between Wallet Tabs
     Given I am on the wallet <FROM> screen

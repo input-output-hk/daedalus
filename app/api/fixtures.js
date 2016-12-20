@@ -11,7 +11,7 @@ export const user: userStruct = {
     name: 'Satoshi Nakamoto',
     email: 'satoshi@gmail.com',
     phoneNumber: '‎+810112714444',
-    passwordHash: '961b6dd3ede3cb8ecbaacbd68de040cd78eb2ed5889130cceb4c49268ea4d506',
+    passwordHash: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8',
     passwordUpdateDate: '2015-11-20T10:18:06.286Z',
     languageLocale: 'en-US'
   }

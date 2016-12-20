@@ -24,12 +24,6 @@ export default class AppController {
     this.user = new UserController(this, state, api);
     this.wallets = new WalletsController(this, state, api);
     this.sidebar = new SidebarController(this, state, api);
-    this.load();
-  }
-
-  load() {
-    this.user.loadUser();
-    this.wallets.loadWallets();
   }
 
   onInitialized(callback: () => null) {
@@ -70,7 +64,7 @@ export default class AppController {
 
   @action reset() {
     this.state.reset();
-    this.load();
+    this.initialize(this.router, this.state.router, this.intl);
     this.state.isInitialized = true;
     this.initializedCallback();
   }

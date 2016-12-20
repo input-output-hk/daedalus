@@ -39,5 +39,14 @@
   "file.upload.widget.drop.file.here.label": "Bilddatei hier ablegen",
   "file.upload.widget.click.to.upload.label": "oder auswählen",
   "wallet.transactions.no.transactions": "Keine Transaktionen vorhanden",
-  "wallet.transactions.no.transactions.found": "Keine Transaktionen gefunden"
+  "wallet.transactions.no.transactions.found": "Keine Transaktionen gefunden",
+  "staking.chart.tooltip.slot.label": "Slot",
+  "staking.chart.tooltip.transactions.label": "Transaktionen",
+  "staking.chart.tooltip.mpc.phase.label": "Phase",
+  "staking.chart.tooltip.commitments.label": "Commitments",
+  "staking.chart.tooltip.openings.label": "Openings",
+  "staking.chart.tooltip.shares.label": "Shares",
+  "login.form.email.hint": "E-Mail",
+  "login.form.email.invalid": "Bitte geben sie eine korrekte E-Mail Adresse an.",
+  "login.form.password.hint": "Passwort"
 }

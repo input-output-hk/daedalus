@@ -1,7 +1,7 @@
 // @flow
 import { observable } from 'mobx';
 
-export default class UserProfile {
+export default class Profile {
 
   @observable name: string;
   @observable email: string;
