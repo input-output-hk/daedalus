@@ -6,7 +6,8 @@ const environment = {
   PRODUCTION: 'production',
   current: process.env.NODE_ENV,
   isDev: () => environment.current === environment.DEVELOPMENT,
-  isTest: () => environment.current === environment.TEST
+  isTest: () => environment.current === environment.TEST,
+  isProduction: () => environment.current === environment.PRODUCTION
 };
 
 export default environment;

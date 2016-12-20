@@ -1,6 +1,7 @@
 // @flow
 import { ipcRenderer } from 'electron';
 import Reaction from './Reaction';
+import environment from '../environment';
 
 export default class LoginReaction extends Reaction {
   reaction() {
@@ -9,7 +10,7 @@ export default class LoginReaction extends Reaction {
       this.appController.user.loadUser();
       this.appController.wallets.loadWallets();
       // TODO: move window resizing to more appropriate place
-      ipcRenderer.send('resize-window', { width: 1024, height: 768, animate: true });
+      ipcRenderer.send('resize-window', { width: 1024, height: 768, animate: !environment.isTest() });
     }
   }
 }
