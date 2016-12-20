@@ -66,7 +66,7 @@ export default class App extends Component {
     if (!isLoggedIn) {
       initialPage = (
         <div style={{ height: '100%' }}>
-          <Match pattern="/" exactly render={() => <Redirect to={'/login'} />} />
+          <Redirect to={'/login'} />
           <Match pattern="/login" component={LoginPage} />
         </div>
       );
