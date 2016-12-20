@@ -51,7 +51,6 @@ export default class WalletsController extends BaseController {
     if (_.isString(newActiveWallet)) {
       newActiveWallet = _.find(this.state.user.wallets, { id: newActiveWallet });
     }
-    // TODO: bugfix sometimes new active wallet is undefined
     const activeWallet = this.state.activeWallet;
     if (newActiveWallet === activeWallet.wallet) return;
     activeWallet.wallet = newActiveWallet;
