@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@kadira/storybook';
 import StoryDecorator from './support/StoryDecorator';
-import Settings from '../app/components/settings/Settings';
+import Settings from '../app/components/settings/SettingsLayout';
 import ProfileSettings from '../app/components/settings/categories/ProfileSettings';
 import Profile from '../app/domain/Profile';
 

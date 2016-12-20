@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import SettingsMenuItem from './SettingsMenuItem';
@@ -46,42 +46,50 @@ const messages = defineMessages({
 @observer
 export default class SettingsMenu extends Component {
 
+  static propTypes = {
+    isActiveItem: PropTypes.func.isRequired,
+    onItemClick: PropTypes.func.isRequired
+  };
+
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   render() {
     const { intl } = this.context;
+    const { onItemClick, isActiveItem } = this.props;
     return (
       <div>
         <div className={styles.component}>
           <SettingsMenuItem
             label={intl.formatMessage(messages.profile)}
-            active
+            onClick={() => onItemClick('profile')}
+            active={isActiveItem('profile')}
           />
           <SettingsMenuItem
             label={intl.formatMessage(messages.security)}
-            active={false}
+            disabled
           />
           <SettingsMenuItem
             label={intl.formatMessage(messages.identityAndVerification)}
-            active={false}
+            disabled
           />
           <SettingsMenuItem
             label={intl.formatMessage(messages.display)}
-            active={false}
+            disabled
           />
           <SettingsMenuItem
             label={intl.formatMessage(messages.privacy)}
-            active={false}
+            disabled
           />
           <SettingsMenuItem
             label={intl.formatMessage(messages.termsOfUse)}
-            active={false}
+            onClick={() => onItemClick('termsOfUse')}
+            active={isActiveItem('termsOfUse')}
           />
           <SettingsMenuItem
             label={intl.formatMessage(messages.support)}
-            active={false}
+            disabled
           />
         </div>
       </div>

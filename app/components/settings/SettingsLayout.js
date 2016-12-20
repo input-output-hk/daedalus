@@ -1,18 +1,19 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
-import SettingsMenu from './menu/SettingsMenu';
-import styles from './Settings.scss';
+import { oneOrManyChildElements } from '../../propTypes';
+import styles from './SettingsLayout.scss';
 
 @observer
-export default class Settings extends Component {
+export default class SettingsLayout extends Component {
 
   static propTypes = {
-    children: PropTypes.element.isRequired,
+    children: oneOrManyChildElements,
+    menu: PropTypes.element.isRequired
   };
 
   render() {
-    const { children } = this.props;
+    const { menu, children } = this.props;
     return (
       <div className={styles.component}>
         <div className={styles.settingsPaneWrapper}>
@@ -20,7 +21,7 @@ export default class Settings extends Component {
             {children}
           </div>
         </div>
-        <SettingsMenu />
+        {menu}
       </div>
     );
   }

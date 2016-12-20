@@ -6,6 +6,7 @@ import type { Api } from '../api';
 import UserController from './UserController';
 import WalletsController from './WalletsController';
 import SidebarController from './SidebarController';
+import SettingsController from './SettingsController';
 
 export default class AppController {
 
@@ -16,6 +17,7 @@ export default class AppController {
   user: UserController;
   wallets: WalletsController;
   sidebar: SidebarController;
+  settings: SettingsController;
   initializedCallback = () => {};
 
   constructor(state: appState, api: Api) {
@@ -24,6 +26,7 @@ export default class AppController {
     this.user = new UserController(this, state, api);
     this.wallets = new WalletsController(this, state, api);
     this.sidebar = new SidebarController(this, state, api);
+    this.settings = new SettingsController(this, state, api);
   }
 
   onInitialized(callback: () => null) {

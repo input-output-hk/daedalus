@@ -1,8 +1,7 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer, inject, PropTypes as MobxPropTypes } from 'mobx-react';
-import Settings from '../../components/settings/Settings';
-import ProfileSettings from '../../components/settings/categories/ProfileSettings';
+import ProfileSettings from '../../../components/settings/categories/ProfileSettings';
 
 @inject('state', 'controller') @observer
 export default class ProfileSettingsPage extends Component {
@@ -29,12 +28,10 @@ export default class ProfileSettingsPage extends Component {
     const { controller } = this.props;
     if (isLoading) return <div>Loading</div>;
     return (
-      <Settings>
-        <ProfileSettings
-          profile={profile}
-          onFieldValueChange={(field, name) => controller.user.updateField(field, name)}
-        />
-      </Settings>
+      <ProfileSettings
+        profile={profile}
+        onFieldValueChange={(field, name) => controller.user.updateField(field, name)}
+      />
     );
   }
 
