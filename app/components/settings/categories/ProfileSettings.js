@@ -5,6 +5,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import Input from 'react-toolbox/lib/input/Input';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
+import classnames from 'classnames';
 import FileUploadWidget from '../../widgets/FileUploadWidget';
 import Profile from '../../../domain/Profile';
 import styles from './ProfileSettings.scss';
@@ -68,8 +69,9 @@ export default class ProfileSettings extends Component {
   render() {
     const { intl } = this.context;
     const { profile, onFieldValueChange } = this.props;
+    const componentClassNames = classnames([styles.component, 'profile']);
     return (
-      <div className={styles.component}>
+      <div className={componentClassNames}>
         <div className={styles.nameEmailAndPicture}>
           <div className={styles.nameAndEmail}>
             <Input
