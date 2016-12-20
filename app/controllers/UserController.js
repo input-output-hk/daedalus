@@ -37,7 +37,7 @@ export default class UserController extends BaseController {
   }
 
   @action async updateField(field: string, value: string) {
-    const { user } = this.state;
+    const { user, i18n } = this.state;
     const { profile } = user;
     if (!profile) return;
     await this.api.updateProfileField({ field, value });
@@ -45,6 +45,10 @@ export default class UserController extends BaseController {
       case 'name': profile.name = value; break;
       case 'email': profile.email = value; break;
       case 'phoneNumber': profile.phoneNumber = value; break;
+      case 'languageLocale':
+        profile.languageLocale = value;
+        i18n.locale = value;
+        break;
       default:
     }
   }

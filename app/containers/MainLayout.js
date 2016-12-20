@@ -1,13 +1,13 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
+import { observer, inject, PropTypes as MobxPropTypes } from 'mobx-react';
 import Sidebar from '../components/sidebar/Sidebar';
 import AppBar from '../components/layout/AppBar';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import { oneOrManyChildElements } from '../propTypes';
 import WalletCreateDialog from '../components/wallet/WalletCreateDialog';
 
-@observer(['state', 'controller'])
+@inject('state', 'controller') @observer
 export default class MainLayout extends Component {
 
   static propTypes = {

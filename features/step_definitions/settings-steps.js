@@ -5,6 +5,25 @@ export default function () {
     await this.navigateTo('/settings');
     await this.client.waitForVisible('.Settings_component');
   });
+  this.Given(/^My current language is "([^"]*)"$/, function (locale) {
+    return this.client.execute(function (loc) {
+      daedalus.state.settings.profile.languageLocale = loc;
+      daedalus.state.i18n.locale = loc;
+    }, locale);
+  });
+  this.When(/^I select "([^"]*)" from the language dropdown on the settings page$/, async function (language) {
+    await this.client.click('.dropdown_dropdown.language .input_inputElement');
+    return this.client.click(`//*[text()="${language}"]/ancestor::*[@class='dropdown_values']`)
+  });
+  this.Then(/^My current language should be "([^"]*)"$/, async function (locale) {
+    const result = await this.client.executeAsync(function (loc, done) {
+      setTimeout(function() { // Allow mobx to flush changes
+        const state = daedalus.state;
+        done((state.settings.profile.languageLocale === loc) && (state.i18n.locale === loc));
+      }, 0);
+    }, locale);
+    expect(result.value).to.be.true;
+  });
   this.Then(/^I should(?: still)? be on the (.*) settings screen$/, async function (settingsScreen) {
     await this.client.waitForVisible(`.Settings_component .${settingsScreen}`);
   });

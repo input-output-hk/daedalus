@@ -1,10 +1,10 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
+import { observer, inject, PropTypes as MobxPropTypes } from 'mobx-react';
 import Settings from '../../components/settings/Settings';
 import ProfileSettings from '../../components/settings/categories/ProfileSettings';
 
-@observer(['state', 'controller'])
+@inject('state', 'controller') @observer
 export default class ProfileSettingsPage extends Component {
 
   static propTypes = {

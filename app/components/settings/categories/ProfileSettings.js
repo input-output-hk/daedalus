@@ -5,6 +5,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import Input from 'react-toolbox/lib/input/Input';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
+import classnames from 'classnames';
 import FileUploadWidget from '../../widgets/FileUploadWidget';
 import Profile from '../../../domain/Profile';
 import styles from './ProfileSettings.scss';
@@ -58,7 +59,7 @@ export default class ProfileSettings extends Component {
 
   static propTypes = {
     profile: PropTypes.instanceOf(Profile).isRequired,
-    onFieldValueChange: PropTypes.func
+    onFieldValueChange: PropTypes.func,
   };
 
   static contextTypes = {
@@ -68,8 +69,9 @@ export default class ProfileSettings extends Component {
   render() {
     const { intl } = this.context;
     const { profile, onFieldValueChange } = this.props;
+    const componentClassNames = classnames([styles.component, 'profile']);
     return (
-      <div className="profile">
+      <div className={componentClassNames}>
         <div className={styles.nameEmailAndPicture}>
           <div className={styles.nameAndEmail}>
             <Input
@@ -91,24 +93,24 @@ export default class ProfileSettings extends Component {
             />
           </div>
         </div>
-        <div>
-          <Input
-            type="text"
-            label={intl.formatMessage(messages.phoneNumber)}
-            value={profile.phoneNumber}
-            onChange={(value) => onFieldValueChange('phoneNumber', value)}
-          />
-          <Input
-            type="text"
-            label={intl.formatMessage(messages.password)}
-            value={`${intl.formatMessage(messages.lastUpdated)} ${moment(profile.passwordUpdateDate).fromNow()}`}
-          />
-          <Dropdown
-            label={intl.formatMessage(messages.language)}
-            source={languages}
-            value={profile.languageLocale}
-          />
-        </div>
+        <Input
+          type="text"
+          label={intl.formatMessage(messages.phoneNumber)}
+          value={profile.phoneNumber}
+          onChange={(value) => onFieldValueChange('phoneNumber', value)}
+        />
+        <Input
+          type="text"
+          label={intl.formatMessage(messages.password)}
+          value={`${intl.formatMessage(messages.lastUpdated)} ${moment(profile.passwordUpdateDate).fromNow()}`}
+        />
+        <Dropdown
+          className="language"
+          label={intl.formatMessage(messages.language)}
+          source={languages}
+          value={profile.languageLocale}
+          onChange={(value) => onFieldValueChange('languageLocale', value)}
+        />
       </div>
     );
   }

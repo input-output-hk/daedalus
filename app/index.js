@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { Provider, observer } from 'mobx-react';
+import { Provider, inject, observer } from 'mobx-react';
 import { action } from 'mobx';
 import { render } from 'react-dom';
 import { addLocaleData, IntlProvider } from 'react-intl';
@@ -21,7 +21,7 @@ import './styles/index.global.scss';
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([en, de, hr]);
 
-@observer(['state'])
+@inject('state') @observer
 class Daedalus extends Component {
 
   static propTypes = {

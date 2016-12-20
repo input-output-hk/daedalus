@@ -47,6 +47,7 @@
   "staking.chart.tooltip.openings.label": "Openings",
   "staking.chart.tooltip.shares.label": "Shares",
   "login.form.email.hint": "E-Mail",
-  "login.form.email.invalid": "Bitte geben sie eine korrekte E-Mail Adresse an.",
-  "login.form.password.hint": "Passwort"
+  "login.form.password.hint": "Passwort",
+  "login.form.submit.label": "Einloggen",
+  "login.form.invalidCredentials": "E-Mail oder Password sind falsch."
 }
