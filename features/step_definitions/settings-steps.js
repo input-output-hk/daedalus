@@ -15,7 +15,7 @@ export default function () {
   });
   this.When(/^I select "([^"]*)" from the language dropdown on the settings page$/, async function (language) {
     await this.client.click('.dropdown_dropdown.language .input_inputElement');
-    return this.client.click(`//*[text()="${language}"]/ancestor::*[@class='dropdown_values']`);
+    return this.client.click(`//*[text()="${language}"]/ancestor::*[@class="dropdown_values"]`);
   });
   this.When(/^I click on the (.*) settings menu item$/, function (menuItem) {
     return this.client.click(`.SettingsMenuItem_component.${menuItem}`);

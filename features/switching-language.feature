@@ -9,7 +9,7 @@ Feature: Switching Language
     And I am logged in
 
   Scenario: Switching from English to German
-    Given I am on the settings screen
+    Given I am on the profile settings screen
     And My current language is "en-EN"
     When I select "German" from the language dropdown on the settings page
     Then My current language should be "de-DE"
