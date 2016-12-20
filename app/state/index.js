@@ -36,14 +36,16 @@ export type appState = {
   reset: () => null
 };
 
+const initialState = {
+  user: new User(),
+  router: { location: null },
+  i18n: { locale: 'en-US' },
+  isInitialized: false,
+  isCreateWalletDialogOpen: false
+};
+
 export default (): appState => {
-  const state = observable({
-    user: new User(),
-    router: { location: null },
-    i18n: { locale: 'en-US' },
-    isInitialized: false,
-    isCreateWalletDialogOpen: false
-  });
+  const state = observable(initialState);
 
   extendObservable(
     state,
@@ -56,12 +58,8 @@ export default (): appState => {
         return !state.isInitialized;
       },
       reset: action(() => {
-        state.user = new User();
-        state.i18n.locale = 'en-US';
-        state.isInitialized = false;
         for (const key of Object.keys(state)) {
-          const subState = state[key];
-          if (subState && subState.reset) subState.reset();
+          state[key] = initialState[key];
         }
       })
     }
