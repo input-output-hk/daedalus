@@ -3,6 +3,7 @@ Feature: Send Money to Receiver
   Background:
     Given I have an account
     And I have a wallet
+    And I am logged in
 
   Scenario: User Sends Money to Receiver
     Given I am on the wallet send screen

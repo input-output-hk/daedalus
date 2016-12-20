@@ -3,6 +3,7 @@ Feature: Toggle Sidebar
   Background:
     Given I have an account
     And I have a wallet
+    And I am logged in
 
   Scenario: Hide Sidebar
     Given the sidebar is visible

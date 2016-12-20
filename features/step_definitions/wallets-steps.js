@@ -15,7 +15,6 @@ export default function () {
   this.Given(/^I have a wallet$/, async function () {
     const result = await this.client.execute(function() {
       const wallet = daedalus.api.repository.generateWallet();
-      daedalus.controller.wallets.loadWallets();
       return wallet;
     });
     this.wallet = result.value;
@@ -26,7 +25,6 @@ export default function () {
       const createdWallets = wallets.map(function(wallet) {
         return daedalus.api.repository.generateWallet(wallet);
       });
-      daedalus.controller.wallets.loadWallets();
       return createdWallets;
     }, table.hashes());
     this.wallets = result.value;
@@ -34,12 +32,12 @@ export default function () {
 
   this.Given(/^I am on the (.*) wallet$/, async function (walletName) {
     const wallet = this.wallets.filter((wallet) => wallet.name === walletName)[0];
-    await this.navigateTo(`/wallet/${wallet.address}/home`);
+    await this.navigateTo(`/wallet/${wallet.id}/home`);
     return expectActiveWallet.call(this, walletName);
   });
 
   this.Given(/^I am on the wallet (.*) screen$/, async function(screen) {
-    await this.navigateTo(`/wallet/${this.wallet.address}/${screen}`);
+    await this.navigateTo(`/wallet/${this.wallet.id}/${screen}`);
     expectActiveWallet.call(this, this.wallet.name);
   });
 
@@ -82,7 +80,12 @@ export default function () {
     return this.client.click('.WalletCreateDialog .dialog_button');
   });
 
-  this.Then(/^I should be on the(?:.*)? wallet (.*) screen$/, async function (...args) {
+  this.Then(/^I should be on some wallet page$/, async function () {
+    return this.client.waitForVisible('.WalletNavigation_component');
+  });
+
+  // TODO: Refactor this to include previous step definition
+  this.Then(/^I should be on the (?:.*)? wallet (.*) screen$/, async function (...args) {
     let screen;
     if (args.length == 3) {
       const walletName = args[0];

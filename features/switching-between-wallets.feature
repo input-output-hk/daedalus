@@ -7,6 +7,7 @@ Feature: Switching Between Wallets
     | first  |
     | second |
     | third  |
+    And I am logged in
     And I am on the <START> wallet
     And The sidebar shows the wallets category
     When I click on the <TARGET> wallet in the sidebar
