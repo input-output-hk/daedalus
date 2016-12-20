@@ -58,7 +58,7 @@ export default class ProfileSettings extends Component {
 
   static propTypes = {
     profile: PropTypes.instanceOf(Profile).isRequired,
-    onFieldValueChange: PropTypes.func
+    onFieldValueChange: PropTypes.func,
   };
 
   static contextTypes = {
@@ -69,7 +69,7 @@ export default class ProfileSettings extends Component {
     const { intl } = this.context;
     const { profile, onFieldValueChange } = this.props;
     return (
-      <div className="profile">
+      <div className={styles.component}>
         <div className={styles.nameEmailAndPicture}>
           <div className={styles.nameAndEmail}>
             <Input
@@ -91,24 +91,23 @@ export default class ProfileSettings extends Component {
             />
           </div>
         </div>
-        <div>
-          <Input
-            type="text"
-            label={intl.formatMessage(messages.phoneNumber)}
-            value={profile.phoneNumber}
-            onChange={(value) => onFieldValueChange('phoneNumber', value)}
-          />
-          <Input
-            type="text"
-            label={intl.formatMessage(messages.password)}
-            value={`${intl.formatMessage(messages.lastUpdated)} ${moment(profile.passwordUpdateDate).fromNow()}`}
-          />
-          <Dropdown
-            label={intl.formatMessage(messages.language)}
-            source={languages}
-            value={profile.languageLocale}
-          />
-        </div>
+        <Input
+          type="text"
+          label={intl.formatMessage(messages.phoneNumber)}
+          value={profile.phoneNumber}
+          onChange={(value) => onFieldValueChange('phoneNumber', value)}
+        />
+        <Input
+          type="text"
+          label={intl.formatMessage(messages.password)}
+          value={`${intl.formatMessage(messages.lastUpdated)} ${moment(profile.passwordUpdateDate).fromNow()}`}
+        />
+        <Dropdown
+          label={intl.formatMessage(messages.language)}
+          source={languages}
+          value={profile.languageLocale}
+          onChange={(value) => onFieldValueChange('languageLocale', value)}
+        />
       </div>
     );
   }

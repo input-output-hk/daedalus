@@ -1,6 +1,7 @@
 @import "~react-toolbox/lib/dropdown/theme";
 
 .dropdown {
+  overflow: visible;
   &:not(.up) > .values {
     top: 90%;
     bottom: auto;
@@ -25,6 +26,9 @@
       }
     }
   }
+  &:focus {
+    outline: none;
+  }
 }
 
 .value {
@@ -46,6 +50,7 @@
 .values {
   font-family: $font-regular;
   font-size: 16px;
+  overflow: visible;
   // Add the CSS arrow box generated at http://www.cssarrowplease.com/
   &:after, &:before {
     bottom: 100%;
