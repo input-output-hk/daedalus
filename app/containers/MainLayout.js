@@ -15,7 +15,7 @@ export default class MainLayout extends Component {
       sidebar: MobxPropTypes.observableObject.isRequired,
       activeWallet: PropTypes.shape({
         wallet: PropTypes.shape({
-          address: PropTypes.string.isRequired
+          id: PropTypes.string.isRequired
         }).isRequired
       }).isRequired,
       isCreateWalletDialogOpen: PropTypes.bool.isRequired
