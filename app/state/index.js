@@ -1,6 +1,7 @@
 // @flow
 import { PropTypes } from 'react';
 import { observable, extendObservable, action } from 'mobx';
+import { isfunction } from 'lodash/fp';
 import User from '../domain/User';
 import login from './login';
 import type { loginState } from './login';
@@ -58,7 +59,12 @@ export default (): appState => {
         return !state.isInitialized;
       },
       reset: action(() => {
+        // Reset sub states
         for (const key of Object.keys(state)) {
+          if (isfunction(state[key].reset)) state[key].reset();
+        }
+        // Reset root state
+        for (const key of Object.keys(initialState)) {
           state[key] = initialState[key];
         }
       })
