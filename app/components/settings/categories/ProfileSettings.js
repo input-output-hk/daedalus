@@ -103,6 +103,7 @@ export default class ProfileSettings extends Component {
           value={`${intl.formatMessage(messages.lastUpdated)} ${moment(profile.passwordUpdateDate).fromNow()}`}
         />
         <Dropdown
+          className="language"
           label={intl.formatMessage(messages.language)}
           source={languages}
           value={profile.languageLocale}
