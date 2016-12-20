@@ -7,7 +7,7 @@ const getDisplayedWalletName = async function() {
 
 const expectActiveWallet = async function(walletName) {
   const displayedWalletName = await getDisplayedWalletName.call(this);
-  expect(displayedWalletName.toLowerCase()).to.equal(walletName.toLowerCase());
+  expect(displayedWalletName.toLowerCase().trim()).to.equal(walletName.toLowerCase().trim());
 };
 
 export default function () {
