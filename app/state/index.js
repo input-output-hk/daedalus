@@ -67,6 +67,8 @@ export default (): appState => {
         for (const key of Object.keys(initialState)) {
           state[key] = initialState[key];
         }
+        // TODO: refactor this (the separation of login/user feels akward)
+        state.user = new User();
       })
     }
   );
