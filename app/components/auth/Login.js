@@ -46,6 +46,12 @@ export default class Login extends Component {
     intl: intlShape.isRequired,
   };
 
+  handleInputKeyPress(event:KeyboardEvent) {
+    if (event.which === 13) { // ENTER key
+      this.submit();
+    }
+  }
+
   validator = new MobxReactForm({
     options: {
       validateOnChange: false
@@ -86,6 +92,7 @@ export default class Login extends Component {
             onChange={email.onChange}
             onFocus={email.onFocus}
             onBlur={email.onBlur}
+            onKeyPress={this.handleInputKeyPress.bind(this)}
           />
           <Input
             type="password"
@@ -95,6 +102,7 @@ export default class Login extends Component {
             onChange={password.onChange}
             onFocus={password.onFocus}
             onBlur={password.onBlur}
+            onKeyPress={this.handleInputKeyPress.bind(this)}
           />
           {isInvalid && (
             <div className={styles.formError}>
