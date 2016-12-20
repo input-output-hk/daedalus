@@ -51,7 +51,6 @@ export default class WalletsController extends BaseController {
     if (_.isString(newActiveWallet)) {
       newActiveWallet = _.find(this.state.user.wallets, { id: newActiveWallet });
     }
-    console.log('new active wallet', newActiveWallet);
     // TODO: bugfix sometimes new active wallet is undefined
     const activeWallet = this.state.activeWallet;
     if (newActiveWallet === activeWallet.wallet) return;
@@ -78,7 +77,7 @@ export default class WalletsController extends BaseController {
         currency: wallet.currency
       });
       wallet.addTransaction(new WalletTransaction(transaction));
-      this.appController.navigateTo(`/wallet/${wallet.address}/home`);
+      this.appController.navigateTo(`/wallet/${wallet.id}/home`);
       this.loadActiveWalletTransactions();
     } catch (error) {
       throw error;
