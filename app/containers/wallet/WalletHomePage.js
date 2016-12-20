@@ -1,6 +1,6 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
+import { observer, inject, PropTypes as MobxPropTypes } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import WalletTransactionsList from '../../components/wallet/home/WalletTransactionsList';
 import WalletTransactionsSearch from '../../components/wallet/home/WalletTransactionsSearch';
@@ -19,7 +19,7 @@ const messages = defineMessages({
   }
 });
 
-@observer(['state', 'controller'])
+@inject('state', 'controller') @observer
 export default class WalletHomePage extends Component {
 
   static propTypes = {

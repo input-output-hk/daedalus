@@ -1,7 +1,7 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { Match, Redirect } from 'react-router';
-import { observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import { ThemeProvider } from 'react-css-themr';
 import { intlShape } from 'react-intl';
 import DevTools from 'mobx-react-devtools';
@@ -15,7 +15,7 @@ import LoginPage from './containers/login/LoginPage';
 import LoadingSpinner from './components/widgets/LoadingSpinner';
 import environment from './environment';
 
-@observer(['state', 'controller'])
+@inject('state', 'controller') @observer
 export default class App extends Component {
 
   static propTypes = {

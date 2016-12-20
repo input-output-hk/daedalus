@@ -1,6 +1,6 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import Input from 'react-toolbox/lib/input/Input';
 import Button from 'react-toolbox/lib/button/Button';
 import MobxReactForm from 'mobx-react-form';
@@ -87,7 +87,7 @@ const options = {
   validateOnChange: false
 };
 
-@observer(['controller'])
+@inject('controller') @observer
 export default class WalletSendForm extends Component {
 
   static propTypes = {

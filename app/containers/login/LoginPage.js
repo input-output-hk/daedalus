@@ -1,11 +1,11 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { observer } from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import CenteredLayout from '../../components/layout/CenteredLayout';
 import Login from '../../components/auth/Login';
 import hashData from '../../lib/hash-data';
 
-@observer(['state', 'controller'])
+@inject('state', 'controller') @observer
 export default class LoginPage extends Component {
 
   static propTypes = {
