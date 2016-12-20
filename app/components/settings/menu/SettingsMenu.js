@@ -65,6 +65,7 @@ export default class SettingsMenu extends Component {
             label={intl.formatMessage(messages.profile)}
             onClick={() => onItemClick('profile')}
             active={isActiveItem('profile')}
+            className="profile"
           />
           <SettingsMenuItem
             label={intl.formatMessage(messages.security)}
@@ -86,6 +87,7 @@ export default class SettingsMenu extends Component {
             label={intl.formatMessage(messages.termsOfUse)}
             onClick={() => onItemClick('termsOfUse')}
             active={isActiveItem('termsOfUse')}
+            className="termsOfUse"
           />
           <SettingsMenuItem
             label={intl.formatMessage(messages.support)}

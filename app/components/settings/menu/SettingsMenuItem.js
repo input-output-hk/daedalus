@@ -11,18 +11,19 @@ export default class SettingsMenuItem extends Component {
     label: PropTypes.string.isRequired,
     active: PropTypes.bool,
     disabled: PropTypes.bool,
-    onClick: PropTypes.func
+    onClick: PropTypes.func,
+    className: PropTypes.string
   };
 
   render() {
-    const { label, active, disabled, onClick } = this.props;
+    const { label, active, disabled, onClick, className } = this.props;
     let state = styles.enabled;
     if (disabled) {
       state = styles.disabled;
     } else if (active) {
       state = styles.active;
     }
-    const componentClasses = classNames([styles.component, state]);
+    const componentClasses = classNames([styles.component, state, className]);
     return (
       <button className={componentClasses} onClick={onClick}>{label}</button>
     );
