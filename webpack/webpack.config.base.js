@@ -4,6 +4,7 @@
 
 const path = require('path');
 const validate = require('webpack-validator');
+const webpack = require('webpack');
 
 module.exports = validate({
   module: {
@@ -34,7 +35,13 @@ module.exports = validate({
     packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main']
   },
 
-  plugins: [],
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env': {
+        WITH_CARDANO_API: JSON.stringify(process.env.WITH_CARDANO_API)
+      }
+    }),
+  ],
 
   externals: [
     // put your node 3rd party libraries which can't be built with webpack here

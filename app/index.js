@@ -12,6 +12,7 @@ import hr from 'react-intl/locale-data/hr';
 import translations from './i18n/translations';
 import App from './App';
 import StubApi from './api/StubApi';
+import CardanoClientApi from './api/CardanoClientApi';
 import environment from './environment';
 import AppController from './controllers/AppController';
 import appStateFactory, { appStatePropType } from './state';
@@ -41,7 +42,7 @@ class Daedalus extends Component {
 
 const initializeDaedalus = () => {
   const state = appStateFactory();
-  const api = new StubApi();
+  const api = environment.WITH_CARDANO_API ? new CardanoClientApi() : new StubApi();
   const controller = new AppController(state, api);
   const reactions = new Reactions(state, controller);
   window.daedalus = {
