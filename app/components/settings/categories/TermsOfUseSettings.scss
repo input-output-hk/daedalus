@@ -1,0 +1,18 @@
+.component {
+  margin-bottom: 20px;
+  :global {
+    h1 {
+      font-family: $font-medium;
+      font-size: 19px;
+      line-height: 1.21;
+      color: #5e6066;
+    }
+    p {
+      font-family: $font-regular;
+      font-size: 16px;
+      line-height: 22px;
+      color: #5e6066;
+      margin-top: 1em;
+    }
+  }
+}

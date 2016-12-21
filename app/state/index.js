@@ -81,5 +81,6 @@ export const appStatePropType = PropTypes.shape({
   router: PropTypes.object,
   i18n: PropTypes.object,
   sidebar: PropTypes.object,
+  settings: PropTypes.object,
   wallets: PropTypes.object
 });
