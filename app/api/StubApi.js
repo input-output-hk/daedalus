@@ -11,7 +11,7 @@ import StubRepository from './StubRepository';
 import { user, wallets, transactions } from './fixtures';
 import environment from '../environment';
 
-const fakeRequest = (result: any, requestTime: number = 1000) => {
+const fakeRequest = (result: any, requestTime: number = environment.FAKE_RESPONSE_TIME) => {
   let fakeRequestTime = requestTime;
   if (environment.isTest()) fakeRequestTime = 0;
   return new Promise((resolve) => {
