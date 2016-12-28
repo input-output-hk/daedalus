@@ -14,13 +14,15 @@ import StakingPage from './containers/staking/StakingPage';
 import LoginPage from './containers/login/LoginPage';
 import LoadingSpinner from './components/widgets/LoadingSpinner';
 import environment from './environment';
+import { storesPropType } from './propTypes';
 
-@inject('state', 'controller') @observer
+@inject('state', 'controller', 'stores') @observer
 export default class App extends Component {
 
   static propTypes = {
     state: appStatePropType,
     controller: PropTypes.instanceOf(AppController),
+    stores: storesPropType,
   };
 
   static contextTypes = {
@@ -32,10 +34,10 @@ export default class App extends Component {
   componentDidMount() {
     if (this.context.broadcasts) {
       const subscribe = this.context.broadcasts.location;
-      const { state, controller } = this.props;
+      const { controller, stores } = this.props;
       const { router, intl } = this.context;
       this.unsubscribeFromLocationBroadcast = subscribe((location) => {
-        if (!state.isInitialized) {
+        if (!stores.app.isInitialized) {
           controller.initialize(router, location, intl);
         } else {
           controller.updateLocation(location);
@@ -51,13 +53,13 @@ export default class App extends Component {
   unsubscribeFromLocationBroadcast: () => {};
 
   render() {
-    const { state, controller } = this.props;
+    const { state, controller, stores } = this.props;
     const { router, intl } = this.context;
     const { isLoggedIn } = state.login;
     controller.setRouter(router);
     controller.setTranslationService(intl);
 
-    if (state.isApplicationLoading) {
+    if (!stores.app.isInitialized) {
       return <div style={{ display: 'flex', alignItems: 'center' }}><LoadingSpinner /></div>;
     }
 

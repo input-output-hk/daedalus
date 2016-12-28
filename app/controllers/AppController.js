@@ -7,11 +7,13 @@ import UserController from './UserController';
 import WalletsController from './WalletsController';
 import SidebarController from './SidebarController';
 import SettingsController from './SettingsController';
+import { storesType } from '../stores';
 
 export default class AppController {
 
   state: appState;
   api: Api;
+  stores: storesType;
   router: { transitionTo: () => void };
   intl: { formatMessage: () => string };
   user: UserController;
@@ -20,9 +22,10 @@ export default class AppController {
   settings: SettingsController;
   initializedCallback = () => {};
 
-  constructor(state: appState, api: Api) {
+  constructor(state: appState, api: Api, stores: storesType) {
     this.state = state;
     this.api = api;
+    this.stores = stores;
     this.user = new UserController(this, state, api);
     this.wallets = new WalletsController(this, state, api);
     this.sidebar = new SidebarController(this, state, api);
@@ -31,7 +34,7 @@ export default class AppController {
 
   onInitialized(callback: () => null) {
     this.initializedCallback = callback;
-    if (this.state.isInitialized) {
+    if (this.stores.app.isInitialized) {
       callback();
     }
   }
@@ -40,7 +43,7 @@ export default class AppController {
     this.router = router;
     this.intl = intl;
     this.state.router = { location };
-    this.state.isInitialized = true;
+    this.stores.app.initialize();
     this.initializedCallback();
   }
 
@@ -68,7 +71,6 @@ export default class AppController {
   @action reset() {
     this.state.reset();
     this.initialize(this.router, this.state.router, this.intl);
-    this.state.isInitialized = true;
     this.initializedCallback();
   }
 
