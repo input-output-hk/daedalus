@@ -26,7 +26,6 @@ export const wallets: Array<walletStruct> = [
     currency: 'ada',
     amount: 19903750165.23,
     name: 'Main wallet',
-    lastUsed: true,
   },
   {
     id: faker.random.uuid(),
@@ -36,7 +35,6 @@ export const wallets: Array<walletStruct> = [
     currency: 'ada',
     amount: 274912874.35,
     name: 'House rent',
-    lastUsed: null,
   },
   {
     id: faker.random.uuid(),
@@ -46,7 +44,6 @@ export const wallets: Array<walletStruct> = [
     currency: 'btc',
     amount: 0.0004924712,
     name: 'Mining',
-    lastUsed: null,
   },
   {
     id: faker.random.uuid(),
@@ -56,7 +53,6 @@ export const wallets: Array<walletStruct> = [
     currency: 'ada',
     amount: 2500.00,
     name: 'Transporting',
-    lastUsed: null,
   },
   {
     id: faker.random.uuid(),
@@ -66,7 +62,6 @@ export const wallets: Array<walletStruct> = [
     currency: 'btc',
     amount: 0.02048244,
     name: 'Pocket money',
-    lastUsed: null,
   }
 ];
 

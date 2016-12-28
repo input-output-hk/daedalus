@@ -83,7 +83,7 @@ export type updateUserProfileFieldRequest = {
 // INTERFACE
 
 export type Api = {
-  login(request: loginRequest): Promise<boolean>
+  login(request: loginRequest): Promise<boolean>,
   getUser(): Promise<userStruct>,
   getWallets(accountId: string): Promise<[walletStruct]>,
   getTransactions(request: getTransactionsRequest): Promise<{
