@@ -17,6 +17,7 @@ import AppController from './controllers/AppController';
 import appStateFactory, { appStatePropType } from './state';
 import Reactions from './reactions/index';
 import './styles/index.global.scss';
+import setupStores from './stores';
 
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([en, de, hr]);
@@ -42,7 +43,8 @@ class Daedalus extends Component {
 const initializeDaedalus = () => {
   const state = appStateFactory();
   const api = new StubApi();
-  const controller = new AppController(state, api);
+  const stores = setupStores(api);
+  const controller = new AppController(state, api, stores);
   const reactions = new Reactions(state, controller);
   window.daedalus = {
     controller,
@@ -50,16 +52,18 @@ const initializeDaedalus = () => {
     environment,
     ipc: ipcRenderer,
     state,
+    stores,
     reactions,
     reset: action(() => {
       api.repository.reset();
+      setupStores(api);
       controller.reset();
       window.daedalus.render();
     }),
     render() {
       const app = (
         <Router>
-          <Provider state={state} controller={controller}>
+          <Provider state={state} controller={controller} stores={stores}>
             <Daedalus state={state} />
           </Provider>
         </Router>
