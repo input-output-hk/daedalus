@@ -86,9 +86,8 @@ export default class WalletsController extends BaseController {
   @action async createPersonalWallet(newWalletData: { name: string, currency: string}) {
     try {
       const createdWallet = await this.api.createWallet(newWalletData);
-      const newWallet = new Wallet(createdWallet);
-      this.state.user.addWallet(newWallet);
-      this.setActiveWallet(newWallet);
+      this.state.user.addWallet(createdWallet);
+      this.setActiveWallet(createdWallet);
       // TODO: Navigate to newly created wallet
     } catch (error) {
       throw error;

@@ -5,7 +5,6 @@ import Input from 'react-toolbox/lib/input/Input';
 import Button from 'react-toolbox/lib/button/Button';
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
-import WalletAddressValidator from 'wallet-address-validator';
 import isCurrency from 'validator/lib/isCurrency';
 import styles from './WalletSendForm.scss';
 
@@ -57,11 +56,6 @@ const messages = defineMessages({
   }
 });
 
-const isBitcoinAddress = ({ field }) => {
-  const isValid = WalletAddressValidator.validate(field.value, 'BTC');
-  return [isValid, 'invalidBitcoinAddress'];
-};
-
 const isValidAmount = ({ field }) => {
   const isValid = isCurrency(field.value, {
     allow_negatives: false
@@ -70,9 +64,7 @@ const isValidAmount = ({ field }) => {
 };
 
 const fields = {
-  receiver: {
-    validate: [isBitcoinAddress]
-  },
+  receiver: {}, // TODO: re-add validation of cardano addresses when endpoint is ready
   amount: {
     validate: [isValidAmount]
   },

@@ -23,31 +23,14 @@ export default class CardanoClientApi {
 
   async getWallets() {
     const response = JSON.parse(await ClientApi.getWallets());
-    return response.map(wallet => (
-      new Wallet({
-        id: wallet.cwAddress,
-        address: wallet.cwAddress,
-        amount: wallet.cwAmount.getCoin,
-        type: wallet.cwMeta.cwType,
-        currency: wallet.cwMeta.cwCurrency,
-        name: wallet.cwMeta.cwName,
-      })
-    ));
+    return response.map(data => this._createWalletFromData(data));
   }
 
   async getTransactions(request: getTransactionsRequest) {
     const history = JSON.parse(await ClientApi.getHistory(request.walletId)());
+    console.log(history);
     return new Promise((resolve) => resolve({
-      transactions: history.map(t => (
-        new WalletTransaction({
-          id: t.ctId,
-          type: t.ctType,
-          title: 'TODO',
-          currency: 'ada',
-          amount: t.ctAmount.getCoin,
-          date: new Date()
-        })
-      )),
+      transactions: history.map(data => this._createTransactionFromData(data)),
       total: history.length
     }));
   }
@@ -56,17 +39,40 @@ export default class CardanoClientApi {
     return notYetImplemented();
   }
 
-  createWallet(request: createWalletRequest) {
-    return ClientApi.newWallet('personal')(request.currency)(request.name)()
-      .then((wallet) => console.log(wallet));
+  async createWallet(request: createWalletRequest) {
+    const response = JSON.parse(await ClientApi.newWallet('personal')(request.currency)(request.name)());
+    return this._createWalletFromData(response);
   }
 
   async createTransaction(request: createTransactionRequest) {
-    const response = await JSON.parse(await ClientApi.send(request.receiver)(request.sender)(request.amount)());
-    console.log(response);
+    const response = await ClientApi.send(request.sender)(request.receiver)(request.amount)();
+    return this._createTransactionFromData(response);
   }
 
   updateProfileField() {
     return notYetImplemented();
   }
+
+  _createWalletFromData(data) {
+    return new Wallet({
+      id: data.cwAddress,
+      address: data.cwAddress,
+      amount: data.cwAmount.getCoin,
+      type: data.cwMeta.cwType,
+      currency: data.cwMeta.cwCurrency,
+      name: data.cwMeta.cwName,
+    });
+  }
+
+  _createTransactionFromData(data) {
+    return new WalletTransaction({
+      id: data.ctId,
+      type: data.ctType,
+      title: 'TODO',
+      currency: 'ada',
+      amount: data.ctAmount.getCoin,
+      date: new Date(),
+    });
+  }
 }
+
