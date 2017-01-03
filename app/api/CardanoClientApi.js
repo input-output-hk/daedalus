@@ -22,12 +22,12 @@ export default class CardanoClientApi {
   }
 
   async getWallets() {
-    const response = JSON.parse(await ClientApi.getWallets());
+    const response = await ClientApi.getWallets();
     return response.map(data => this._createWalletFromData(data));
   }
 
   async getTransactions(request: getTransactionsRequest) {
-    const history = JSON.parse(await ClientApi.getHistory(request.walletId)());
+    const history = await ClientApi.getHistory(request.walletId)();
     console.log(history);
     return new Promise((resolve) => resolve({
       transactions: history.map(data => this._createTransactionFromData(data)),
@@ -40,12 +40,13 @@ export default class CardanoClientApi {
   }
 
   async createWallet(request: createWalletRequest) {
-    const response = JSON.parse(await ClientApi.newWallet('personal')(request.currency)(request.name)());
+    const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name)();
     return this._createWalletFromData(response);
   }
 
   async createTransaction(request: createTransactionRequest) {
-    const response = await ClientApi.send(request.sender)(request.receiver)(request.amount)();
+    const response = await ClientApi.send(request.sender, request.receiver, request.amount)();
+    console.log(response);
     return this._createTransactionFromData(response);
   }
 
@@ -67,11 +68,11 @@ export default class CardanoClientApi {
   _createTransactionFromData(data) {
     return new WalletTransaction({
       id: data.ctId,
-      type: data.ctType,
+      type: data.ctType.contents.ctmCurrency.toLowerCase(),
       title: 'TODO',
       currency: 'ada',
       amount: data.ctAmount.getCoin,
-      date: new Date(),
+      date: new Date(data.ctType.contents.ctmDate),
     });
   }
 }
