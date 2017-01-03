@@ -52,7 +52,9 @@ export default class StubApi {
   }
 
   createTransaction(request: createTransactionRequest) {
-    return fakeRequest(this.repository.generateTransaction(request, {}));
+    return fakeRequest(this.repository.generateTransaction(Object.assign(request, {
+      amount: -1 * request.amount,
+    })));
   }
 
   updateProfileField(request: updateUserProfileFieldRequest) {
