@@ -1,5 +1,6 @@
 // @flow
 import faker from 'faker';
+import { isString, isDate } from 'lodash';
 import type {
   walletStruct,
   userStruct,
@@ -91,6 +92,8 @@ export default class StubRepository {
   }
 
   generateTransaction(data: Object) {
+    if (isString(data.date)) data.date = new Date(data.date);
+    if (!isDate(data.date)) data.date = new Date();
     const transaction: transactionStruct = Object.assign({}, {
       id: `t-id-${this.transactions.length}`,
       type: 'adaExpend',
