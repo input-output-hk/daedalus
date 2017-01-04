@@ -7,7 +7,6 @@ Feature: Transactions Grouping
     Given I have an account
     And I have a wallet
 
-  @watch
   Scenario: Transactions are Grouped by Date
     Given I made the following transactions with my wallet:
       | title  | date       |
