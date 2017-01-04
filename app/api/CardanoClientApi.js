@@ -72,7 +72,7 @@ export default class CardanoClientApi {
       title: 'TODO',
       currency: 'ada',
       amount: data.ctAmount.getCoin,
-      date: new Date(data.ctType.contents.ctmDate),
+      date: new Date(data.ctType.contents.ctmDate * 1000),
     });
   }
 }
