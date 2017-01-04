@@ -25,8 +25,9 @@
     "react/prefer-stateless-function": "off",
     "react/no-unused-prop-types": [1, { "skipShapeProps": true }],
     "flowtype-errors/show-errors": 2,
-    "class-methods-use-this": "off",
-    "no-duplicate-imports": "off"
+    "class-methods-use-this": 0,
+    "no-duplicate-imports": 0,
+    "no-param-reassign": 0
   },
   "plugins": [
     "flowtype-errors",
