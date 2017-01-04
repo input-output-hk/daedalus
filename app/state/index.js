@@ -28,8 +28,6 @@ export type appState = {
     locale: string,
   },
   login: loginState,
-  isInitialized: bool,
-  isApplicationLoading: () => boolean,
   settings: settingsState,
   sidebar: sidebarState,
   activeWallet: activeWalletState,
@@ -41,7 +39,6 @@ const initialState = {
   user: new User(),
   router: { location: null },
   i18n: { locale: 'en-US' },
-  isInitialized: false,
   isCreateWalletDialogOpen: false
 };
 
@@ -55,9 +52,6 @@ export default (): appState => {
       settings: settings(state),
       sidebar: sidebar(state),
       activeWallet: activeWallet(state),
-      get isApplicationLoading() {
-        return !state.isInitialized;
-      },
       reset: action(() => {
         // Reset sub states
         for (const key of Object.keys(state)) {

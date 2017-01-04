@@ -18,7 +18,7 @@ export default function () {
       const { email, passwordHash } = user.profile;
       daedalus.controller.user.login({ email, passwordHash });
     });
-    return this.client.waitForVisible(`.WalletTransactionsSearch_component`, null, true);
+    return this.client.waitForVisible(`.app-bar_title`);
   });
 
   this.Given(/^I dont see the login window(?: anymore)?$/, function () {

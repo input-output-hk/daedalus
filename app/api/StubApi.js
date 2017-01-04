@@ -11,7 +11,7 @@ import StubRepository from './StubRepository';
 import { user, wallets, transactions } from './fixtures';
 import environment from '../environment';
 
-const fakeRequest = (result: any, requestTime: number = 1000) => {
+const fakeRequest = (result: any, requestTime: number = environment.FAKE_RESPONSE_TIME) => {
   let fakeRequestTime = requestTime;
   if (environment.isTest()) fakeRequestTime = 0;
   return new Promise((resolve) => {
@@ -52,7 +52,9 @@ export default class StubApi {
   }
 
   createTransaction(request: createTransactionRequest) {
-    return fakeRequest(this.repository.generateTransaction(request, {}));
+    return fakeRequest(this.repository.generateTransaction(Object.assign(request, {
+      amount: -1 * request.amount,
+    })));
   }
 
   updateProfileField(request: updateUserProfileFieldRequest) {

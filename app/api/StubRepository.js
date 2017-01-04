@@ -1,11 +1,11 @@
 // @flow
 import faker from 'faker';
+import { isString, isDate } from 'lodash';
 import type {
   walletStruct,
   userStruct,
   transactionStruct,
   getTransactionsRequest,
-  createTransactionRequest,
   updateUserProfileFieldRequest,
   loginRequest
 } from './index';
@@ -91,15 +91,15 @@ export default class StubRepository {
     return wallet;
   }
 
-  generateTransaction(request: createTransactionRequest, customData: Object) {
-    const transaction: transactionStruct = Object.assign({}, request, {
+  generateTransaction(data: Object) {
+    if (isString(data.date)) data.date = new Date(data.date);
+    if (!isDate(data.date)) data.date = new Date();
+    const transaction: transactionStruct = Object.assign({}, {
       id: `t-id-${this.transactions.length}`,
-      walletId: request.walletId,
       type: 'adaExpend',
-      title: `Money to ${request.receiver}`,
+      title: `Money to ${data.receiver}`,
       transactionId: faker.finance.bitcoinAddress(),
-      amount: -1 * request.amount
-    }, customData);
+    }, data);
     this.transactions.push(transaction);
     return transaction;
   }
