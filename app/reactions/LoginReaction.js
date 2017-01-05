@@ -17,8 +17,12 @@ export default class LoginReaction extends Reaction {
     if (environment.isDev() && !isLoggedIn && !isLoggingIn) {
       setTimeout(() => {
         if (environment.isDev()) {
-          const { email, passwordHash } = this.appController.api.repository.user.profile;
-          this.appController.user.login({ email, passwordHash });
+          if (environment.WITH_CARDANO_API) {
+            this.appController.user.login({ email: '', passwordHash: '' });
+          } else {
+            const { email, passwordHash } = this.appController.api.repository.user.profile;
+            this.appController.user.login({ email, passwordHash });
+          }
         }
       }, 1000);
     }

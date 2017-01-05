@@ -1,4 +1,5 @@
 {
+  "global.errors.fieldIsRequired": "Ovo polje je obavezno.",
   "wallet.navigation.send": "pošalji",
   "wallet.navigation.receive": "primi",
   "wallet.transaction.type.card": "Plaćanje karticom",
@@ -11,7 +12,7 @@
   "wallet.send.form.description.label": "Opis",
   "wallet.send.form.description.hint": "Unesite poruku primatelju ukoliko to želite.",
   "wallet.send.form.submit": "pošalji",
-  "wallet.send.form.errors.invalidBitcoinAddress": "Molimo unesite valjanu Bitcoin adresu.",
+  "wallet.send.form.errors.invalidAddress": "Molimo unesite valjanu adresu.",
   "wallet.send.form.errors.invalidAmount": "Molimo unesite valjani iznos.",
   "wallet.receive.page.title": "Vaša <strong>{walletName}</strong> adresa",
   "wallet.receive.page.instructions": "Podijelite ovu adresu novčanika kako biste primili uplatu. Zbog zaštite vaše privatnosti nova adresa biti će automatski generirana nakon što ovu upotrijebite.",
@@ -38,5 +39,16 @@
   "profile.settings.password.last.updated.label": "Zadnji puta promijenjena",
   "file.upload.widget.drop.file.here.label": "Dovucite datoteku ovdje",
   "file.upload.widget.click.to.upload.label": "ili kliknite za njen odabir",
-  "wallet.transactions.no.transactions": "Nema transakcija"
+  "wallet.transactions.no.transactions": "Nema transakcija",
+  "wallet.transactions.no.transactions.found": "Ne postoje transakcije koje zadovoljavaju uvjete pretraživanja",
+  "staking.chart.tooltip.slot.label": "slot",
+  "staking.chart.tooltip.transactions.label": "transakcije",
+  "staking.chart.tooltip.mpc.phase.label": "faza",
+  "staking.chart.tooltip.commitments.label": "obveze",
+  "staking.chart.tooltip.openings.label": "otvorenja",
+  "staking.chart.tooltip.shares.label": "udjeli",
+  "login.form.email.hint": "E-mail",
+  "login.form.password.hint": "Lozinka",
+  "login.form.submit.label": "Prijava",
+  "login.form.invalidCredentials": "Neispravan e-mail ili lozinka."
 }

@@ -12,6 +12,7 @@ import Wallet from './containers/wallet/Wallet';
 import Settings from './containers/settings/Settings';
 import StakingPage from './containers/staking/StakingPage';
 import LoginPage from './containers/login/LoginPage';
+import WalletCreatePage from './containers/wallet/WalletCreatePage';
 import LoadingSpinner from './components/widgets/LoadingSpinner';
 import environment from './environment';
 import { storesPropType } from './propTypes';
@@ -72,7 +73,7 @@ export default class App extends Component {
           <Match pattern="/login" component={LoginPage} />
         </div>
       );
-    } else {
+    } else if (state.user.wallets.length > 0) {
       const { wallet } = state.activeWallet;
       initialPage = (
         <div style={{ height: '100%' }}>
@@ -82,6 +83,8 @@ export default class App extends Component {
           <Match pattern="/staking" component={StakingPage} />
         </div>
       );
+    } else {
+      initialPage = <WalletCreatePage />;
     }
 
     const mobxDevTools = environment.isDev() ? <DevTools /> : null;

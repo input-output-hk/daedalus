@@ -13,10 +13,10 @@ export default class WalletsController extends BaseController {
     try {
       const wallets = await this.api.getWallets(user.id);
       for (const wallet of wallets) {
-        const newWallet = new Wallet(wallet);
-        user.addWallet(newWallet);
-        if (newWallet.lastUsed) this.setActiveWallet(newWallet);
+        user.addWallet(wallet);
       }
+      // TODO: think about better way to determine active wallet on app start
+      if (wallets.length > 0) this.setActiveWallet(wallets[0]);
       activeWallet.isLoading = false;
     } catch (error) {
       throw error;
@@ -86,9 +86,8 @@ export default class WalletsController extends BaseController {
   @action async createPersonalWallet(newWalletData: { name: string, currency: string}) {
     try {
       const createdWallet = await this.api.createWallet(newWalletData);
-      const newWallet = new Wallet(createdWallet);
-      this.state.user.addWallet(newWallet);
-      this.setActiveWallet(newWallet);
+      this.state.user.addWallet(createdWallet);
+      this.setActiveWallet(createdWallet);
       // TODO: Navigate to newly created wallet
     } catch (error) {
       throw error;
@@ -109,5 +108,9 @@ export default class WalletsController extends BaseController {
 
   @action toggleCreateWalletDialog() {
     this.state.isCreateWalletDialogOpen = !this.state.isCreateWalletDialogOpen;
+  }
+
+  isValidAddress(address: string) {
+    return this.api.isValidAddress('ADA', address);
   }
 }

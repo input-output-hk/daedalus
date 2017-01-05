@@ -26,6 +26,16 @@ $ npm run start-hot
 *Note: requires a node version >= 4 and an npm version >= 3. This project
 defaults to 6.x*
 
+## Development - with Cardano Wallet (daedalus-bridge)
+
+Build and run daedalus-bridge [using instructions in the repo](https://github.com/input-output-hk/pos-haskell-prototype/tree/master/daedalus)
+
+Symlink the npm package in the subfolder `pos-haskell-prototype/daedalus`:
+* `npm link` (inside the daedalus sub folder of the Cardano client)
+* `npm link daedalus-client-api` (inside this daedalus frontend app)
+
+Run with `WITH_CARDANO_API=true npm run dev`
+
 ## Testing
 
 You can run the test suite in two different modes during development
