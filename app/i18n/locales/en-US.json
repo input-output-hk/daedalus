@@ -1,4 +1,5 @@
 {
+  "global.errors.fieldIsRequired": "This field is required.",
   "wallet.navigation.send": "send",
   "wallet.navigation.receive": "receive",
   "wallet.transaction.type.card": "Card payment",
@@ -11,7 +12,7 @@
   "wallet.send.form.description.label": "Description",
   "wallet.send.form.description.hint": "You can add a message if you want.",
   "wallet.send.form.submit": "send",
-  "wallet.send.form.errors.invalidBitcoinAddress": "Please enter a valid Bitcoin address.",
+  "wallet.send.form.errors.invalidAddress": "Please enter a valid address.",
   "wallet.send.form.errors.invalidAmount": "Please enter a valid amount.",
   "wallet.receive.page.title": "Your <strong>{walletName}</strong> address",
   "wallet.receive.page.instructions": "Share this wallet address to receive payments. To protect your privacy, new addresses are generated automatically once you use them.",

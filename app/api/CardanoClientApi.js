@@ -46,8 +46,11 @@ export default class CardanoClientApi {
 
   async createTransaction(request: createTransactionRequest) {
     const response = await ClientApi.send(request.sender, request.receiver, request.amount)();
-    console.log(response);
     return this._createTransactionFromData(response);
+  }
+
+  isValidAddress(currency: string, address: string) {
+    return ClientApi.isValidAddress(currency, address)();
   }
 
   updateProfileField() {

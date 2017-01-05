@@ -10,6 +10,9 @@ import type {
 import StubRepository from './StubRepository';
 import { user, wallets, transactions } from './fixtures';
 import environment from '../environment';
+import WalletAddressValidator from 'wallet-address-validator';
+import Wallet from '../domain/Wallet';
+import WalletTransaction from '../domain/WalletTransaction';
 
 const fakeRequest = (result: any, requestTime: number = environment.FAKE_RESPONSE_TIME) => {
   let fakeRequestTime = requestTime;
@@ -36,11 +39,13 @@ export default class StubApi {
   }
 
   getWallets(accountId: string) {
-    return fakeRequest(this.repository.findWallets(accountId));
+    return fakeRequest(this.repository.findWallets(accountId).map(w => new Wallet(w)));
   }
 
   getTransactions(request: getTransactionsRequest) {
-    return fakeRequest(this.repository.findTransactions(request));
+    const result = this.repository.findTransactions(request);
+    result.transactions = result.transactions.map(w => new WalletTransaction(w));
+    return fakeRequest(result);
   }
 
   createUser(request: createUserRequest) {
@@ -48,16 +53,20 @@ export default class StubApi {
   }
 
   createWallet(request: createWalletRequest) {
-    return fakeRequest(this.repository.generateWallet(request));
+    return fakeRequest(new Wallet(this.repository.generateWallet(request)));
   }
 
   createTransaction(request: createTransactionRequest) {
-    return fakeRequest(this.repository.generateTransaction(Object.assign(request, {
-      amount: -1 * request.amount,
-    })));
+    return fakeRequest(new WalletTransaction(
+      this.repository.generateTransaction(Object.assign(request, { amount: -1 * request.amount }))
+    ));
   }
 
   updateProfileField(request: updateUserProfileFieldRequest) {
     return fakeRequest(this.repository.updateProfileField(request), 0);
+  }
+
+  isValidAddress(currency: string, address: string) {
+    return new Promise(resolve => resolve(WalletAddressValidator.validate(address, 'BTC')));
   }
 }

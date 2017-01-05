@@ -18,7 +18,7 @@ Feature: Send Money to Receiver
     When I submit the wallet send form
     Then I should see the following error messages on the wallet send form:
       | message                                       |
-      | wallet.send.form.errors.invalidBitcoinAddress |
+      | global.errors.fieldIsRequired                 |
       | wallet.send.form.errors.invalidAmount         |
 
   Scenario: User Enters Wrong Receiver Address
@@ -29,7 +29,7 @@ Feature: Send Money to Receiver
     And I submit the wallet send form
     Then I should see the following error messages on the wallet send form:
       | message                                       |
-      | wallet.send.form.errors.invalidBitcoinAddress |
+      | wallet.send.form.errors.invalidAddress |
 
   Scenario Outline: User Enters Wrong Amount
     Given I am on the wallet send screen

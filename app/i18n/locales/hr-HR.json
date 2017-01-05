@@ -11,7 +11,7 @@
   "wallet.send.form.description.label": "Opis",
   "wallet.send.form.description.hint": "Unesite poruku primatelju ukoliko to želite.",
   "wallet.send.form.submit": "pošalji",
-  "wallet.send.form.errors.invalidBitcoinAddress": "Molimo unesite valjanu Bitcoin adresu.",
+  "wallet.send.form.errors.invalidAddress": "Molimo unesite valjanu adresu.",
   "wallet.send.form.errors.invalidAmount": "Molimo unesite valjani iznos.",
   "wallet.receive.page.title": "Vaša <strong>{walletName}</strong> adresa",
   "wallet.receive.page.instructions": "Podijelite ovu adresu novčanika kako biste primili uplatu. Zbog zaštite vaše privatnosti nova adresa biti će automatski generirana nakon što ovu upotrijebite.",

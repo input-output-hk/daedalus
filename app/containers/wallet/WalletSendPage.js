@@ -9,6 +9,7 @@ export default class WalletSendPage extends Component {
   static propTypes = {
     controller: PropTypes.shape({
       wallets: PropTypes.shape({
+        isValidAddress: PropTypes.func.isRequired,
         sendMoney: PropTypes.func.isRequired,
       })
     }),
@@ -20,7 +21,10 @@ export default class WalletSendPage extends Component {
 
   render() {
     return (
-      <WalletSendForm onSubmit={this.handleWalletSendFormSubmit.bind(this)} />
+      <WalletSendForm
+        onSubmit={this.handleWalletSendFormSubmit.bind(this)}
+        addressValidator={address => this.props.controller.wallets.isValidAddress(address)}
+      />
     );
   }
 

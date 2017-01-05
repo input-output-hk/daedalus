@@ -109,4 +109,8 @@ export default class WalletsController extends BaseController {
   @action toggleCreateWalletDialog() {
     this.state.isCreateWalletDialogOpen = !this.state.isCreateWalletDialogOpen;
   }
+
+  isValidAddress(address: string) {
+    return this.api.isValidAddress('ADA', address);
+  }
 }

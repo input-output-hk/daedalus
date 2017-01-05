@@ -1,4 +1,6 @@
 // @flow
+import Wallet from '../domain/Wallet';
+import WalletTransaction from '../domain/WalletTransaction';
 
 // STRUCTS
 
@@ -85,13 +87,14 @@ export type updateUserProfileFieldRequest = {
 export type Api = {
   login(request: loginRequest): Promise<boolean>,
   getUser(): Promise<userStruct>,
-  getWallets(accountId: string): Promise<[walletStruct]>,
+  getWallets(accountId: string): Promise<[Wallet]>,
   getTransactions(request: getTransactionsRequest): Promise<{
-    transactions: [transactionStruct],
+    transactions: [WalletTransaction],
     total: number
   }>,
   createUser(request: createUserRequest): Promise<userStruct>,
-  createWallet(request: createWalletRequest): Promise<walletStruct>,
-  createTransaction(request: createTransactionRequest): Promise<transactionStruct>,
+  createWallet(request: createWalletRequest): Promise<Wallet>,
+  createTransaction(request: createTransactionRequest): Promise<WalletTransaction>,
   updateProfileField(request: updateUserProfileFieldRequest): Promise<any>,
+  isValidAddress(currency: string, address: string): Promise<boolean>
 }
