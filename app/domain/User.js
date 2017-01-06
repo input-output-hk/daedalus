@@ -9,6 +9,11 @@ export default class User {
   @observable profile: Profile;
   @observable wallets: Array<Wallet> = [];
 
+  constructor(id:string, profile: Profile) {
+    this.id = id;
+    this.profile = profile;
+  }
+
   @action addWallet(wallet: Wallet) {
     this.wallets.push(wallet);
   }

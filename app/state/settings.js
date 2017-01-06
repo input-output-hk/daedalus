@@ -23,8 +23,9 @@ const defaultValues = {
   `
 };
 
-export default (state: appState): settingsState => (extendObservable(defaultValues, {
+export default (stores): settingsState => (extendObservable(defaultValues, {
   get profile() {
-    return state.user.profile;
+    const user = stores.user.active;
+    return user ? user.profile : null;
   }
 }));

@@ -9,7 +9,7 @@ export default function () {
   });
   this.Given(/^My current language is "([^"]*)"$/, function (locale) {
     return this.client.execute(function (loc) {
-      daedalus.state.settings.profile.languageLocale = loc;
+      daedalus.stores.user.active.profile.languageLocale = loc;
       daedalus.state.i18n.locale = loc;
     }, locale);
   });
@@ -23,8 +23,8 @@ export default function () {
   this.Then(/^My current language should be "([^"]*)"$/, async function (locale) {
     const result = await this.client.executeAsync(function (loc, done) {
       setTimeout(function() { // Allow mobx to flush changes
-        const state = daedalus.state;
-        done((state.settings.profile.languageLocale === loc) && (state.i18n.locale === loc));
+        const user = daedalus.stores.user.active;
+        done((user.profile.languageLocale === loc) && (daedalus.state.i18n.locale === loc));
       }, 0);
     }, locale);
     expect(result.value).to.be.true;

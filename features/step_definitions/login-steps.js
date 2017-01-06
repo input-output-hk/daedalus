@@ -16,7 +16,7 @@ export default function () {
     await this.client.execute(function () {
       const user = daedalus.api.repository.user;
       const { email, passwordHash } = user.profile;
-      daedalus.controller.user.login({ email, passwordHash });
+      daedalus.actions.login({ email, passwordHash });
     });
     return this.client.waitForVisible(`.app-bar_title`);
   });

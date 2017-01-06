@@ -1,6 +1,7 @@
 // @flow
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
+import User from '../domain/User';
 
 // STRUCTS
 
@@ -86,7 +87,7 @@ export type updateUserProfileFieldRequest = {
 
 export type Api = {
   login(request: loginRequest): Promise<boolean>,
-  getUser(): Promise<userStruct>,
+  getUser(): Promise<User>,
   getWallets(accountId: string): Promise<[Wallet]>,
   getTransactions(request: getTransactionsRequest): Promise<{
     transactions: [WalletTransaction],

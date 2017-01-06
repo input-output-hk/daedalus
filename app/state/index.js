@@ -3,7 +3,6 @@ import { PropTypes } from 'react';
 import { observable, extendObservable, action } from 'mobx';
 import { isfunction } from 'lodash/fp';
 import User from '../domain/User';
-import login from './login';
 import type { loginState } from './login';
 import settings from './settings';
 import type { settingsState } from './settings';
@@ -13,7 +12,6 @@ import activeWallet from './active-wallet';
 import type { activeWalletState } from './active-wallet';
 
 export type appState = {
-  user: User,
   router: {
     location: {
       hash: string,
@@ -27,7 +25,6 @@ export type appState = {
   i18n: {
     locale: string,
   },
-  login: loginState,
   settings: settingsState,
   sidebar: sidebarState,
   activeWallet: activeWalletState,
@@ -36,21 +33,19 @@ export type appState = {
 };
 
 const initialState = {
-  user: new User(),
   router: { location: null },
   i18n: { locale: 'en-US' },
   isCreateWalletDialogOpen: false
 };
 
-export default (): appState => {
+export default (stores): appState => {
   const state = observable(initialState);
 
   extendObservable(
     state,
     {
-      login: login(state),
-      settings: settings(state),
-      sidebar: sidebar(state),
+      settings: settings(stores),
+      sidebar: sidebar(stores),
       activeWallet: activeWallet(state),
       reset: action(() => {
         // Reset sub states
@@ -61,8 +56,6 @@ export default (): appState => {
         for (const key of Object.keys(initialState)) {
           state[key] = initialState[key];
         }
-        // TODO: refactor this (the separation of login/user feels akward)
-        state.user = new User();
       })
     }
   );
@@ -71,7 +64,6 @@ export default (): appState => {
 };
 
 export const appStatePropType = PropTypes.shape({
-  user: PropTypes.object,
   router: PropTypes.object,
   i18n: PropTypes.object,
   sidebar: PropTypes.object,

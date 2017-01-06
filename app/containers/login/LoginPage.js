@@ -4,37 +4,36 @@ import { inject, observer } from 'mobx-react';
 import CenteredLayout from '../../components/layout/CenteredLayout';
 import Login from '../../components/auth/Login';
 import hashData from '../../lib/hash-data';
+import Request from '../../stores/lib/Request';
 
-@inject('state', 'controller') @observer
+@inject('stores', 'actions') @observer
 export default class LoginPage extends Component {
 
   static propTypes = {
-    state: PropTypes.shape({
-      login: PropTypes.shape({
-        isLoggingIn: PropTypes.bool.isRequired,
-        errorLoading: PropTypes.string
+    stores: PropTypes.shape({
+      user: PropTypes.shape({
+        loginRequest: PropTypes.instanceOf(Request),
       }).isRequired
     }).isRequired,
-    controller: PropTypes.shape({
-      user: PropTypes.shape({
-        login: PropTypes.func.isRequired,
-      })
-    }),
+    actions: PropTypes.shape({
+      login: PropTypes.func.isRequired,
+    }).isRequired,
   };
 
   handleLoginFormSubmit(values: Object) {
     const { email, password } = values;
     const passwordHash = hashData(password);
-    this.props.controller.user.login({ email, passwordHash });
+    this.props.actions.login({ email, passwordHash });
   }
 
   render() {
-    const { isLoggingIn } = this.props.state.login;
+    const { loginRequest } = this.props.stores.user;
     return (
       <CenteredLayout>
         <Login
-          isSubmitting={isLoggingIn}
+          isSubmitting={loginRequest.isExecuting}
           onSubmit={this.handleLoginFormSubmit.bind(this)}
+          isInvalid={loginRequest.wasExecuted && loginRequest.result === false}
           onCreateAccount={() => console.log('create account')} // eslint-disable-line
         />
       </CenteredLayout>

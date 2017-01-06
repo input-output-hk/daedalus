@@ -26,10 +26,10 @@ export default class AppController {
     this.state = state;
     this.api = api;
     this.stores = stores;
-    this.user = new UserController(this, state, api);
-    this.wallets = new WalletsController(this, state, api);
-    this.sidebar = new SidebarController(this, state, api);
-    this.settings = new SettingsController(this, state, api);
+    this.user = new UserController(this, state, api, stores);
+    this.wallets = new WalletsController(this, state, api, stores);
+    this.sidebar = new SidebarController(this, state, api, stores);
+    this.settings = new SettingsController(this, state, api, stores);
   }
 
   onInitialized(callback: () => null) {

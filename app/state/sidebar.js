@@ -17,9 +17,9 @@ const defaultValues = {
 
 const state = {};
 
-export default (root: appState): sidebarState => (extendObservable(state, defaultValues, {
+export default (stores): sidebarState => (extendObservable(state, defaultValues, {
   get wallets() {
-    return root.user.wallets.map(wallet => ({
+    return stores.user.active.wallets.map(wallet => ({
       id: wallet.id,
       title: wallet.name,
       info: `${wallet.amount} ${wallet.currency}`
