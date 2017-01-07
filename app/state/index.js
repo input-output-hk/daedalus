@@ -2,9 +2,7 @@
 import { PropTypes } from 'react';
 import { observable, extendObservable, action } from 'mobx';
 import { isfunction } from 'lodash/fp';
-import User from '../domain/User';
 import type { loginState } from './login';
-import settings from './settings';
 import type { settingsState } from './settings';
 import sidebar from './sidebar';
 import type { sidebarState } from './sidebar';
@@ -25,7 +23,6 @@ export type appState = {
   i18n: {
     locale: string,
   },
-  settings: settingsState,
   sidebar: sidebarState,
   activeWallet: activeWalletState,
   isCreateWalletDialogOpen: bool,
@@ -44,7 +41,6 @@ export default (stores): appState => {
   extendObservable(
     state,
     {
-      settings: settings(stores),
       sidebar: sidebar(stores),
       activeWallet: activeWallet(state),
       reset: action(() => {
@@ -67,6 +63,5 @@ export const appStatePropType = PropTypes.shape({
   router: PropTypes.object,
   i18n: PropTypes.object,
   sidebar: PropTypes.object,
-  settings: PropTypes.object,
   wallets: PropTypes.object
 });

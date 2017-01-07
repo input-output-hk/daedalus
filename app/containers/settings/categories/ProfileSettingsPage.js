@@ -2,14 +2,15 @@
 import React, { Component, PropTypes } from 'react';
 import { observer, inject, PropTypes as MobxPropTypes } from 'mobx-react';
 import ProfileSettings from '../../../components/settings/categories/ProfileSettings';
+import User from '../../../domain/User';
 
-@inject('state', 'controller') @observer
+@inject('stores', 'controller') @observer
 export default class ProfileSettingsPage extends Component {
 
   static propTypes = {
-    state: PropTypes.shape({
-      settings: PropTypes.shape({
-        profile: MobxPropTypes.observableObject.isRequired
+    stores: PropTypes.shape({
+      user: PropTypes.shape({
+        active: PropTypes.instanceOf(User)
       }).isRequired,
     }).isRequired,
     controller: PropTypes.shape({
@@ -20,7 +21,7 @@ export default class ProfileSettingsPage extends Component {
   };
 
   render() {
-    const { profile } = this.props.state.settings;
+    const { profile } = this.props.stores.user.active;
     const { controller } = this.props;
     return (
       <ProfileSettings
