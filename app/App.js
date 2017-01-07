@@ -17,7 +17,7 @@ import LoadingSpinner from './components/widgets/LoadingSpinner';
 import environment from './environment';
 import { storesPropType } from './propTypes';
 
-@inject('state', 'controller', 'stores') @observer
+@inject('controller', 'stores') @observer
 export default class App extends Component {
 
   static propTypes = {
@@ -43,6 +43,7 @@ export default class App extends Component {
         } else {
           controller.updateLocation(location);
         }
+        this.props.stores.routing.location = location;
       });
     }
   }
@@ -54,15 +55,20 @@ export default class App extends Component {
   unsubscribeFromLocationBroadcast: () => {};
 
   render() {
-    const { state, controller, stores } = this.props;
+    const { controller, stores } = this.props;
     const { router, intl } = this.context;
-    const { user } = stores;
+    const { user, wallets } = stores;
     controller.setRouter(router);
     controller.setTranslationService(intl);
 
-    if (!stores.app.isInitialized) {
-      return <div style={{ display: 'flex', alignItems: 'center' }}><LoadingSpinner /></div>;
-    }
+    const loadingSpinner = (
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Redirect to={'/'} />
+        <LoadingSpinner />
+      </div>
+    );
+
+    if (!stores.app.isInitialized) return loadingSpinner;
 
     let initialPage;
 
@@ -73,8 +79,10 @@ export default class App extends Component {
           <Match pattern="/login" component={LoginPage} />
         </div>
       );
-    } else if (user.active.wallets.length > 0) {
-      const { wallet } = state.activeWallet;
+    } else if (wallets.walletsRequest.isExecuting) {
+      return loadingSpinner;
+    } else if (wallets.all.length > 0) {
+      const wallet = wallets.active;
       initialPage = (
         <div style={{ height: '100%' }}>
           <Match pattern="/" exactly render={() => <Redirect to={`/wallet/${wallet.id}/home`} />} />

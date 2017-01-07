@@ -6,55 +6,50 @@ import AppBar from '../components/layout/AppBar';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import { oneOrManyChildElements } from '../propTypes';
 import WalletCreateDialog from '../components/wallet/WalletCreateDialog';
+import Wallet from '../domain/Wallet';
 
-@inject('state', 'controller') @observer
+@inject('stores', 'actions') @observer
 export default class MainLayout extends Component {
 
   static propTypes = {
-    state: PropTypes.shape({
-      sidebar: MobxPropTypes.observableObject.isRequired,
-      activeWallet: PropTypes.shape({
-        wallet: PropTypes.shape({
-          id: PropTypes.string.isRequired
-        }).isRequired
-      }).isRequired,
-      isCreateWalletDialogOpen: PropTypes.bool.isRequired
-    }).isRequired,
-    controller: PropTypes.shape({
+    stores: PropTypes.shape({
       sidebar: PropTypes.shape({
-        changeSidebarRoute: PropTypes.func.isRequired,
-        toggleSidebar: PropTypes.func.isRequired,
+        isCreateWalletDialogOpen: PropTypes.bool.isRequired,
       }).isRequired,
       wallets: PropTypes.shape({
-        setActiveWallet: PropTypes.func.isRequired,
-        createPersonalWallet: PropTypes.func.isRequired,
-        toggleCreateWalletDialog: PropTypes.func.isRequired
-      }).isRequired
+        active: PropTypes.instanceOf(Wallet).isRequired,
+      }).isRequired,
+    }).isRequired,
+    actions: PropTypes.shape({
+      showWallet: PropTypes.func.isRequired,
+      createPersonalWallet: PropTypes.func.isRequired,
+      toggleCreateWalletDialog: PropTypes.func.isRequired
     }).isRequired,
     children: oneOrManyChildElements
   };
 
-  handleAddWalletSubmit(values: Object) {
-    this.props.controller.wallets.createPersonalWallet({
+  handleAddWalletSubmit = (values: Object) => {
+    this.props.actions.createPersonalWallet({
       name: values.walletName,
       currency: values.currency,
     });
     this.toggleCreateWalletDialog();
-  }
+  };
 
-  toggleCreateWalletDialog() {
-    this.props.controller.wallets.toggleCreateWalletDialog();
-  }
+  toggleCreateWalletDialog = () => {
+    this.props.actions.toggleCreateWalletDialog();
+  };
 
   render() {
-    const { sidebar, activeWallet } = this.props.state;
-    const { controller } = this.props;
+    const { actions, stores } = this.props;
+    const { sidebar } = stores;
+    const activeWallet = stores.wallets.active;
     const sidebarMenus = {
       wallets: {
         items: sidebar.wallets,
         actions: {
           onAddWallet: this.toggleCreateWalletDialog.bind(this),
-          onWalletItemClick: wallet => controller.wallets.setActiveWallet(wallet)
+          onWalletItemClick: walletId => actions.showWallet({ walletId }),
         }
       }
     };
@@ -64,15 +59,15 @@ export default class MainLayout extends Component {
         menus={sidebarMenus}
         hidden={sidebar.hidden}
         isMaximized={sidebar.isMaximized}
-        onCategoryClicked={(cat) => controller.sidebar.changeSidebarRoute(cat)}
-        activeWalletId={activeWallet.wallet.id}
+        onCategoryClicked={route => actions.changeSidebarRoute({ route })}
+        activeWalletId={activeWallet.id}
       />
     );
-    const appbar = <AppBar onToggleSidebar={() => controller.sidebar.toggleSidebar()} />;
-    const addWalletDialog = this.props.state.isCreateWalletDialogOpen ? (
+    const appbar = <AppBar onToggleSidebar={actions.toggleSidebar} />;
+    const addWalletDialog = sidebar.isCreateWalletDialogOpen ? (
       <WalletCreateDialog
-        onSubmit={this.handleAddWalletSubmit.bind(this)}
-        onCancel={this.toggleCreateWalletDialog.bind(this)}
+        onSubmit={this.handleAddWalletSubmit}
+        onCancel={this.toggleCreateWalletDialog}
       />
     ) : null;
     return (

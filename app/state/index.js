@@ -6,8 +6,6 @@ import type { loginState } from './login';
 import type { settingsState } from './settings';
 import sidebar from './sidebar';
 import type { sidebarState } from './sidebar';
-import activeWallet from './active-wallet';
-import type { activeWalletState } from './active-wallet';
 
 export type appState = {
   router: {
@@ -24,7 +22,6 @@ export type appState = {
     locale: string,
   },
   sidebar: sidebarState,
-  activeWallet: activeWalletState,
   isCreateWalletDialogOpen: bool,
   reset: () => null
 };
@@ -42,7 +39,6 @@ export default (stores): appState => {
     state,
     {
       sidebar: sidebar(stores),
-      activeWallet: activeWallet(state),
       reset: action(() => {
         // Reset sub states
         for (const key of Object.keys(state)) {
@@ -63,5 +59,4 @@ export const appStatePropType = PropTypes.shape({
   router: PropTypes.object,
   i18n: PropTypes.object,
   sidebar: PropTypes.object,
-  wallets: PropTypes.object
 });

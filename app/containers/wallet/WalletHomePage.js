@@ -5,6 +5,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import WalletTransactionsList from '../../components/wallet/home/WalletTransactionsList';
 import WalletTransactionsSearch from '../../components/wallet/home/WalletTransactionsSearch';
 import WalletNoTransactions from '../../components/wallet/home/WalletNoTransactions';
+import CachedRequest from '../../stores/lib/CachedRequest';
 
 const messages = defineMessages({
   noTransactions: {
@@ -19,24 +20,22 @@ const messages = defineMessages({
   }
 });
 
-@inject('state', 'controller') @observer
+@inject('stores', 'actions') @observer
 export default class WalletHomePage extends Component {
 
   static propTypes = {
-    state: PropTypes.shape({
-      activeWallet: PropTypes.shape({
-        wallet: MobxPropTypes.observableObject.isRequired,
-        isLoadingTransactions: PropTypes.bool.isRequired,
-        transactionsSearchTerm: PropTypes.string.isRequired,
-        transactionsSearchLimit: PropTypes.number.isRequired,
-        totalAvailableTransactions: PropTypes.number.isRequired,
-        hasAnyTransactions: PropTypes.bool.isRequired,
-      }).isRequired
+    stores: PropTypes.shape({
+      transactions: PropTypes.shape({
+        searchTerm: PropTypes.string.isRequired,
+        searchLimit: PropTypes.number.isRequired,
+        searchRequest: PropTypes.instanceOf(CachedRequest),
+        filtered: MobxPropTypes.arrayOrObservableArray.isRequired,
+        hasAny: PropTypes.bool.isRequired,
+        totalAvailable: PropTypes.number.isRequired,
+      }),
     }).isRequired,
-    controller: PropTypes.shape({
-      wallets: PropTypes.shape({
-        filterTransactions: PropTypes.func.isRequired
-      }).isRequired
+    actions: PropTypes.shape({
+      filterTransactions: PropTypes.func.isRequired
     }).isRequired
   };
 
@@ -44,36 +43,36 @@ export default class WalletHomePage extends Component {
     intl: intlShape.isRequired,
   };
 
-  handleSearchInputChange(value: string, event: Object) {
-    this.props.controller.wallets.filterTransactions(event.target.value);
-  }
+  _handleSearchInputChange = (value: string, event: Object) => {
+    this.props.actions.filterTransactions({ searchTerm: event.target.value });
+  };
 
   render() {
-    const { controller } = this.props;
     const { intl } = this.context;
+    const actions = this.props.actions;
     const {
-      wallet,
-      transactionsSearchTerm,
-      isLoadingTransactions,
-      transactionsSearchLimit,
-      totalAvailableTransactions,
-      hasAnyTransactions,
-    } = this.props.state.activeWallet;
+      searchTerm,
+      searchLimit,
+      searchRequest,
+      hasAny,
+      totalAvailable,
+      filtered,
+    } = this.props.stores.transactions;
 
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const noTransactionsFoundLabel = intl.formatMessage(messages.noTransactionsFound);
 
-    if (isLoadingTransactions || totalAvailableTransactions) {
+    if (searchRequest.isExecuting || hasAny) {
       walletTransactions = (
         <WalletTransactionsList
-          transactions={wallet.transactions}
-          isLoadingTransactions={isLoadingTransactions}
-          hasMoreToLoad={totalAvailableTransactions > transactionsSearchLimit}
-          onLoadMore={() => controller.wallets.loadMoreTransactions()}
+          transactions={filtered}
+          isLoadingTransactions={searchRequest.isExecuting}
+          hasMoreToLoad={totalAvailable > searchLimit}
+          onLoadMore={actions.loadMoreTransactions}
         />
       );
-    } else if (!hasAnyTransactions) {
+    } else if (!hasAny) {
       walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
     } else {
       walletTransactions = <WalletNoTransactions label={noTransactionsFoundLabel} />;
@@ -81,11 +80,11 @@ export default class WalletHomePage extends Component {
 
     return (
       <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        {(wallet.transactions.length || hasAnyTransactions) && (
+        {hasAny && (
           <div style={{ flexShrink: 0 }}>
             <WalletTransactionsSearch
-              searchTerm={transactionsSearchTerm}
-              onChange={this.handleSearchInputChange.bind(this)}
+              searchTerm={searchTerm}
+              onChange={this._handleSearchInputChange}
             />
           </div>
         )}

@@ -7,7 +7,6 @@ export default class LoginReaction extends Reaction {
   reaction() {
     const { user } = this.stores;
     if (user.isLoggedIn && user.active) {
-      this.appController.wallets.loadWallets();
       // TODO: move window resizing to more appropriate place
       ipcRenderer.send('resize-window', { width: 1024, height: 768, animate: !environment.isTest() });
     }

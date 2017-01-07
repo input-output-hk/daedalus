@@ -7,23 +7,6 @@ import BaseController from './BaseController';
 
 export default class WalletsController extends BaseController {
 
-  @action async loadWallets() {
-    const { activeWallet } = this.state;
-    const user = this.stores.user.active;
-    activeWallet.isLoading = true;
-    try {
-      const wallets = await this.api.getWallets(user.id);
-      for (const wallet of wallets) {
-        user.addWallet(wallet);
-      }
-      // TODO: think about better way to determine active wallet on app start
-      if (wallets.length > 0) this.setActiveWallet(wallets[0]);
-      activeWallet.isLoading = false;
-    } catch (error) {
-      throw error;
-    }
-  }
-
   @action async loadActiveWalletTransactions(initialLoading: boolean) {
     const { activeWallet } = this.state;
     const { wallet } = activeWallet;

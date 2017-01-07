@@ -12,9 +12,18 @@ export default class UserStore extends Store {
 
   constructor(...args) {
     super(...args);
-    this.actions.login.listen(this._login.bind(this));
+    this.actions.login.listen(this._login);
     this.actions.updateProfileField.listen(this._updateProfileField.bind(this));
   }
+
+  _login = (params) => this.loginRequest.execute(params);
+
+  _updateProfileField = async ({ field, value }) => {
+    const { profile } = this.active;
+    if (!profile) return;
+    await this.updateProfileRequest.execute({ field, value });
+    profile[field] = value;
+  };
 
   @computed get isLoggedIn() {
     return this.loginRequest.result === true && this.active !== null;
@@ -24,14 +33,5 @@ export default class UserStore extends Store {
     return this.userRequest.execute().result;
   }
 
-  _login(params) {
-    this.loginRequest.execute(params);
-  }
 
-  async _updateProfileField({ field, value }) {
-    const { profile } = this.active;
-    if (!profile) return;
-    await this.updateProfileRequest.execute({ field, value });
-    profile[field] = value;
-  }
 }
