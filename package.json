@@ -114,6 +114,7 @@
     "mobx-react-form": "^1.13.2",
     "moment": "^2.15.2",
     "postcss": "^5.2.4",
+    "prop-types": "^0.2.0",
     "qrcode.react": "^0.6.1",
     "react": "^15.3.2",
     "react-addons-css-transition-group": "^15.3.2",

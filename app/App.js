@@ -56,7 +56,7 @@ export default class App extends Component {
   render() {
     const { state, controller, stores } = this.props;
     const { router, intl } = this.context;
-    const { isLoggedIn } = state.login;
+    const { user } = stores;
     controller.setRouter(router);
     controller.setTranslationService(intl);
 
@@ -66,14 +66,14 @@ export default class App extends Component {
 
     let initialPage;
 
-    if (!isLoggedIn) {
+    if (!user.isLoggedIn) {
       initialPage = (
         <div style={{ height: '100%' }}>
           <Redirect to={'/login'} />
           <Match pattern="/login" component={LoginPage} />
         </div>
       );
-    } else if (state.user.wallets.length > 0) {
+    } else if (user.active.wallets.length > 0) {
       const { wallet } = state.activeWallet;
       initialPage = (
         <div style={{ height: '100%' }}>

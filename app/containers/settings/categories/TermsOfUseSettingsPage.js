@@ -11,15 +11,11 @@ export default class TermsOfUseSettingsPage extends Component {
       settings: PropTypes.shape({
         termsOfUse: PropTypes.string.isRequired
       }).isRequired,
-      login: PropTypes.shape({
-        isLoading: PropTypes.bool.isRequired
-      }).isRequired
     }).isRequired
   };
 
   render() {
-    const { login, settings } = this.props.state;
-    if (login.isLoading) return <div>Loading</div>;
+    const { settings } = this.props.state;
     return (
       <TermsOfUseSettings text={settings.termsOfUse} />
     );

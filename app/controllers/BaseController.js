@@ -7,9 +7,10 @@ export default class BaseController {
   api: Api;
   appController: AppController;
 
-  constructor(appController: AppController, state: appState, api: Api) {
+  constructor(appController: AppController, state: appState, api: Api, stores) {
     this.state = state;
     this.api = api;
     this.appController = appController;
+    this.stores = stores;
   }
 }

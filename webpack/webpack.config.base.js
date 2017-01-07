@@ -38,8 +38,9 @@ module.exports = validate({
   plugins: [
     new webpack.DefinePlugin({
       'process.env': {
-        WITH_CARDANO_API: JSON.stringify(process.env.WITH_CARDANO_API),
-        FAKE_RESPONSE_TIME: JSON.stringify(process.env.FAKE_RESPONSE_TIME)
+        WITH_CARDANO_API: process.env.WITH_CARDANO_API || 0,
+        FAKE_RESPONSE_TIME: process.env.FAKE_RESPONSE_TIME || 1000,
+        AUTO_LOGIN: process.env.AUTO_LOGIN || 1,
       }
     }),
   ],

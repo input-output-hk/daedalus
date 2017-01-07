@@ -11,9 +11,6 @@ export default class ProfileSettingsPage extends Component {
       settings: PropTypes.shape({
         profile: MobxPropTypes.observableObject.isRequired
       }).isRequired,
-      login: PropTypes.shape({
-        isLoading: PropTypes.bool.isRequired
-      }).isRequired
     }).isRequired,
     controller: PropTypes.shape({
       user: PropTypes.shape({
@@ -24,9 +21,7 @@ export default class ProfileSettingsPage extends Component {
 
   render() {
     const { profile } = this.props.state.settings;
-    const { isLoading } = this.props.state.login;
     const { controller } = this.props;
-    if (isLoading) return <div>Loading</div>;
     return (
       <ProfileSettings
         profile={profile}

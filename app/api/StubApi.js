@@ -13,12 +13,18 @@ import environment from '../environment';
 import WalletAddressValidator from 'wallet-address-validator';
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
+import User from '../domain/User';
+import Profile from '../domain/Profile';
+import { isFunction } from 'lodash';
 
 const fakeRequest = (result: any, requestTime: number = environment.FAKE_RESPONSE_TIME) => {
   let fakeRequestTime = requestTime;
   if (environment.isTest()) fakeRequestTime = 0;
   return new Promise((resolve) => {
-    setTimeout(() => { resolve(result); }, fakeRequestTime);
+    setTimeout(() => {
+      if (isFunction(result)) result = result();
+      resolve(result);
+    }, fakeRequestTime);
   });
 };
 
@@ -35,7 +41,8 @@ export default class StubApi {
   }
 
   getUser() {
-    return fakeRequest(this.repository.findUser());
+    const userData = this.repository.findUser();
+    return fakeRequest(() => new User(userData.id, new Profile(userData.profile)));
   }
 
   getWallets(accountId: string) {

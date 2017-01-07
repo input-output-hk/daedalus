@@ -8,7 +8,8 @@ import BaseController from './BaseController';
 export default class WalletsController extends BaseController {
 
   @action async loadWallets() {
-    const { activeWallet, user } = this.state;
+    const { activeWallet } = this.state;
+    const user = this.stores.user.active;
     activeWallet.isLoading = true;
     try {
       const wallets = await this.api.getWallets(user.id);
@@ -49,7 +50,7 @@ export default class WalletsController extends BaseController {
   @action setActiveWallet(wallet: string|Wallet) {
     let newActiveWallet = wallet;
     if (_.isString(newActiveWallet)) {
-      newActiveWallet = _.find(this.state.user.wallets, { id: newActiveWallet });
+      newActiveWallet = _.find(this.stores.user.active.wallets, { id: newActiveWallet });
     }
     const activeWallet = this.state.activeWallet;
     if (newActiveWallet === activeWallet.wallet) return;
@@ -86,7 +87,7 @@ export default class WalletsController extends BaseController {
   @action async createPersonalWallet(newWalletData: { name: string, currency: string}) {
     try {
       const createdWallet = await this.api.createWallet(newWalletData);
-      this.state.user.addWallet(createdWallet);
+      this.stores.user.active.addWallet(createdWallet);
       this.setActiveWallet(createdWallet);
       // TODO: Navigate to newly created wallet
     } catch (error) {
