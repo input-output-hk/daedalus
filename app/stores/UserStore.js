@@ -8,10 +8,12 @@ export default class UserStore extends Store {
 
   @observable loginRequest = new Request(this.api, 'login');
   @observable userRequest = new CachedRequest(this.api, 'getUser');
+  @observable updateProfileRequest = new Request(this.api, 'updateProfileField');
 
   constructor(...args) {
     super(...args);
     this.actions.login.listen(this._login.bind(this));
+    this.actions.updateProfileField.listen(this._updateProfileField.bind(this));
   }
 
   @computed get isLoggedIn() {
@@ -22,7 +24,14 @@ export default class UserStore extends Store {
     return this.userRequest.execute().result;
   }
 
-  @action _login(params) {
+  _login(params) {
     this.loginRequest.execute(params);
+  }
+
+  async _updateProfileField({ field, value }) {
+    const { profile } = this.active;
+    if (!profile) return;
+    await this.updateProfileRequest.execute({ field, value });
+    profile[field] = value;
   }
 }

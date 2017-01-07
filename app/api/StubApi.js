@@ -17,12 +17,13 @@ import User from '../domain/User';
 import Profile from '../domain/Profile';
 import { isFunction } from 'lodash';
 
-const fakeRequest = (result: any, requestTime: number = environment.FAKE_RESPONSE_TIME) => {
+const fakeRequest = (name: string, result: any, requestTime: number = environment.FAKE_RESPONSE_TIME) => {
   let fakeRequestTime = requestTime;
   if (environment.isTest()) fakeRequestTime = 0;
   return new Promise((resolve) => {
     setTimeout(() => {
       if (isFunction(result)) result = result();
+      console.debug(`StubApi::${name} resolving` , result);
       resolve(result);
     }, fakeRequestTime);
   });
@@ -37,48 +38,60 @@ export default class StubApi {
   }
 
   login(request: loginRequest) {
-    return fakeRequest(this.repository.login(request));
+    console.debug('StubApi::login called with' , request);
+    return fakeRequest('login', this.repository.login(request));
   }
 
   getUser() {
+    console.debug('StubApi::getUser called');
     const userData = this.repository.findUser();
-    return fakeRequest(() => new User(userData.id, new Profile(userData.profile)));
+    return fakeRequest('getUser', () => new User(userData.id, new Profile(userData.profile)));
   }
 
   getWallets(accountId: string) {
-    return fakeRequest(this.repository.findWallets(accountId).map(w => new Wallet(w)));
+    console.debug('StubApi::getWallets called with', accountId);
+    return fakeRequest('getWallets', this.repository.findWallets(accountId).map(w => new Wallet(w)));
   }
 
   getTransactions(request: getTransactionsRequest) {
+    console.debug('StubApi::getTransactions called with', request);
     const result = this.repository.findTransactions(request);
     result.transactions = result.transactions.map(w => new WalletTransaction(w));
-    return fakeRequest(result);
+    return fakeRequest('getTransactions', result);
   }
 
   createUser(request: createUserRequest) {
-    return fakeRequest(this.repository.generateUser(request));
+    console.debug('StubApi::createUser called with', request);
+    return fakeRequest('createUser', this.repository.generateUser(request));
   }
 
   createWallet(request: createWalletRequest) {
-    return fakeRequest(new Wallet(this.repository.generateWallet(request)));
+    console.debug('StubApi::createWallet called with', request);
+    return fakeRequest('createWallet', new Wallet(this.repository.generateWallet(request)));
   }
 
   createTransaction(request: createTransactionRequest) {
-    return fakeRequest(new WalletTransaction(
+    console.debug('StubApi::createTransaction called with', request);
+    return fakeRequest('createTransaction', new WalletTransaction(
       this.repository.generateTransaction(Object.assign(request, { amount: -1 * request.amount }))
     ));
   }
 
   updateProfileField(request: updateUserProfileFieldRequest) {
-    return fakeRequest(this.repository.updateProfileField(request), 0);
+    console.debug('StubApi::updateProfileField called with', request);
+    return fakeRequest('updateProfileField', this.repository.updateProfileField(request), 0);
   }
 
   isValidAddress(currency: string, address: string) {
-    return new Promise(resolve => resolve(WalletAddressValidator.validate(address, 'BTC')));
+    return new Promise(resolve => {
+      const result = WalletAddressValidator.validate(address, 'BTC');
+      console.debug('StubApi::isValidAddress resolving' , result);
+      resolve(result);
+    });
   }
 
   getTermsOfUse() {
-    return fakeRequest(`
+    return fakeRequest('getTermsOfUse', `
       <h1>Terms of use</h1>
       <p>
       First paragraph quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non
