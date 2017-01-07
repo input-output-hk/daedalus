@@ -2,23 +2,26 @@
 import React, { Component, PropTypes } from 'react';
 import { observer, inject } from 'mobx-react';
 import TermsOfUseSettings from '../../../components/settings/categories/TermsOfUseSettings';
+import LoadingSpinner from '../../../components/widgets/LoadingSpinner';
+import CachedRequest from '../../../stores/lib/CachedRequest';
 
-@inject('state') @observer
+@inject('stores') @observer
 export default class TermsOfUseSettingsPage extends Component {
 
   static propTypes = {
-    state: PropTypes.shape({
+    stores: PropTypes.shape({
       settings: PropTypes.shape({
-        termsOfUse: PropTypes.string.isRequired
+        termsOfUseRequest: PropTypes.instanceOf(CachedRequest),
+        termsOfUse: PropTypes.string
       }).isRequired,
     }).isRequired
   };
 
   render() {
-    const { settings } = this.props.state;
-    return (
-      <TermsOfUseSettings text={settings.termsOfUse} />
-    );
+    const { settings } = this.props.stores;
+    const { termsOfUseRequest } = settings;
+    if (!termsOfUseRequest.result || termsOfUseRequest.isExecuting) return <LoadingSpinner />;
+    return <TermsOfUseSettings text={settings.termsOfUse} />;
   }
 
 }

@@ -97,5 +97,6 @@ export type Api = {
   createWallet(request: createWalletRequest): Promise<Wallet>,
   createTransaction(request: createTransactionRequest): Promise<WalletTransaction>,
   updateProfileField(request: updateUserProfileFieldRequest): Promise<any>,
-  isValidAddress(currency: string, address: string): Promise<boolean>
+  isValidAddress(currency: string, address: string): Promise<boolean>,
+  getTermsOfUse(): Promise<string>
 }

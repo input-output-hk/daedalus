@@ -6,4 +6,8 @@ export default defineActions({
     email: PropTypes.string.isRequired,
     passwordHash: PropTypes.string.isRequired,
   },
+  updateProfileField: {
+    field: PropTypes.string.isRequired,
+    value: PropTypes.string.isRequired,
+  }
 }, PropTypes.validateWithErrors);

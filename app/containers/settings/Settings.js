@@ -19,9 +19,7 @@ export default class Settings extends Component {
       }).isRequired
     }).isRequired,
     controller: PropTypes.shape({
-      settings: PropTypes.shape({
-        showPage: PropTypes.func.isRequired
-      }).isRequired
+      navigateTo: PropTypes.func.isRequired
     }).isRequired
   };
 
@@ -38,7 +36,7 @@ export default class Settings extends Component {
     const { controller } = this.props;
     const menu = (
       <SettingsMenu
-        onItemClick={(page) => controller.settings.showPage(page)}
+        onItemClick={(page) => controller.navigateTo(`${settingsPath}/${page}`)}
         isActiveItem={this.isActivePage.bind(this)}
       />
     );

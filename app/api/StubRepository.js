@@ -106,5 +106,6 @@ export default class StubRepository {
 
   updateProfileField(request: updateUserProfileFieldRequest) {
     this.user.profile[request.field] = request.value;
+    return true;
   }
 }
