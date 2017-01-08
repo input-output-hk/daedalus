@@ -92,7 +92,7 @@ export default class App extends Component {
       initialPage = <WalletCreatePage />;
     }
 
-    const mobxDevTools = environment.isDev() ? <DevTools /> : null;
+    const mobxDevTools = environment.MOBX_DEV_TOOLS ? <DevTools /> : null;
     return (
       <ThemeProvider theme={daedalusTheme}>
         <div style={{ height: '100%' }}>
