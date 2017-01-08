@@ -7,6 +7,9 @@ import type {
   getTransactionsRequest,
   createTransactionRequest,
 } from './index';
+import { user } from './fixtures';
+import User from '../domain/User';
+import Profile from '../domain/Profile';
 
 const notYetImplemented = () => new Promise((resolve, reject) => reject(new Error('Api method not yet implemented')));
 
@@ -18,7 +21,11 @@ export default class CardanoClientApi {
   }
 
   getUser() {
-    return notYetImplemented();
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(new User(user.id, new Profile(user.profile)));
+      }, 0);
+    });
   }
 
   async getWallets() {

@@ -12,14 +12,16 @@ export default class LoginReaction extends Reaction {
     }
     // TODO: environment is 'development' when tests start and than it changes to test
     // so this reaction fires in test mode without this timeout
-    if (environment.isDev() && !user.isLoggedIn && this.appController.api.repository.user.profile) {
+    if (environment.isDev() && !user.isLoggedIn) {
       setTimeout(() => {
         if (environment.isDev() && environment.AUTO_LOGIN) {
           if (environment.WITH_CARDANO_API) {
             user._login({ email: '', passwordHash: '' });
           } else {
-            const { email, passwordHash } = this.appController.api.repository.user.profile;
-            user._login({ email, passwordHash });
+            if (this.appController.api.repository.user.profile) {
+              const {email, passwordHash} = this.appController.api.repository.user.profile;
+              user._login({email, passwordHash});
+            }
           }
         }
       }, 1000);
