@@ -21,7 +21,7 @@ export default class MainLayout extends Component {
       }).isRequired,
     }).isRequired,
     actions: PropTypes.shape({
-      showWallet: PropTypes.func.isRequired,
+      goToRoute: PropTypes.func.isRequired,
       createPersonalWallet: PropTypes.func.isRequired,
       toggleCreateWalletDialog: PropTypes.func.isRequired
     }).isRequired,
@@ -40,6 +40,11 @@ export default class MainLayout extends Component {
     this.props.actions.toggleCreateWalletDialog();
   };
 
+  routeToWallet = (walletId) => {
+    const { actions, stores } = this.props;
+    actions.goToRoute({ route: stores.wallets.getWalletRoute(walletId) });
+  };
+
   render() {
     const { actions, stores } = this.props;
     const { sidebar } = stores;
@@ -48,8 +53,8 @@ export default class MainLayout extends Component {
       wallets: {
         items: sidebar.wallets,
         actions: {
-          onAddWallet: this.toggleCreateWalletDialog.bind(this),
-          onWalletItemClick: walletId => actions.showWallet({ walletId }),
+          onAddWallet: this.toggleCreateWalletDialog,
+          onWalletItemClick: this.routeToWallet,
         }
       }
     };

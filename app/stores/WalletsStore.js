@@ -1,12 +1,12 @@
 // @flow
-import { observable, action, computed } from 'mobx';
+import { observable, computed } from 'mobx';
 import Store from './lib/Store';
 import { matchRoute } from '../lib/routing-helpers';
 import CachedRequest from './lib/CachedRequest';
 
-const WALLETS_BASE_ROUTE = '/wallets';
-
 export default class WalletsStore extends Store {
+
+  BASE_ROUTE = '/wallets';
 
   @observable walletsRequest = new CachedRequest(this.api, 'getWallets');
 
@@ -20,9 +20,13 @@ export default class WalletsStore extends Store {
 
   @computed get active() {
     const currentRoute = this.stores.routing.location.pathname;
-    const match = matchRoute(`${WALLETS_BASE_ROUTE}/:id(*page)`, currentRoute);
+    const match = matchRoute(`${this.BASE_ROUTE}/:id(*page)`, currentRoute);
     if (match) return this.all.find(w => w.id === match.id);
     return this.all[0];
+  }
+
+  getWalletRoute(walletId: string, screen = 'home') {
+    return `${this.BASE_ROUTE}/${walletId}/${screen}`;
   }
 
 }

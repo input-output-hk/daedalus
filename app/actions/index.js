@@ -10,8 +10,8 @@ export default defineActions({
     field: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
   },
-  showWallet: {
-    walletId: PropTypes.string.isRequired,
+  goToRoute: {
+    route: PropTypes.string.isRequired,
   },
   createPersonalWallet: {
     name: PropTypes.string.isRequired,

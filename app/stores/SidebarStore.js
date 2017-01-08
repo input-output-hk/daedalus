@@ -13,6 +13,8 @@ export default class SidebarStore extends Store {
 
   constructor(...args) {
     super(...args);
+    this.actions.toggleSidebar.listen(this._toggleSidebar);
+    this.actions.changeSidebarRoute.listen(this._changeSidebarRoute);
   }
 
   @computed get wallets() {
@@ -21,6 +23,23 @@ export default class SidebarStore extends Store {
       title: w.name,
       info: `${w.amount} ${w.currency}`
     }));
+  }
+
+  @action _toggleSidebar = () => {
+    this.hidden = !this.hidden;
+  };
+
+  @action _changeSidebarRoute = ({ route }) => {
+    if (this.route === route) {
+      // Toggle menu if it's the current route
+      this.isMaximized = !this.isMaximized;
+    } else {
+      this.route = route;
+      this.isMaximized = false;
+      if (route === '/settings' || route === '/staking') {
+        this.stores.routing.router.transitionTo(route);
+      }
+    }
   }
 
 }

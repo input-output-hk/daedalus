@@ -85,8 +85,8 @@ export default class App extends Component {
       const wallet = wallets.active;
       initialPage = (
         <div style={{ height: '100%' }}>
-          <Match pattern="/" exactly render={() => <Redirect to={`/wallet/${wallet.id}/home`} />} />
-          <Match pattern="/wallet/:id" component={Wallet} />
+          <Match pattern="/" exactly render={() => <Redirect to={`${wallets.BASE_ROUTE}/${wallet.id}/home`} />} />
+          <Match pattern={`${wallets.BASE_ROUTE}/:id`} component={Wallet} />
           <Match pattern="/settings" component={Settings} />
           <Match pattern="/staking" component={StakingPage} />
         </div>

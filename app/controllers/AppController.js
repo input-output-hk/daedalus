@@ -30,6 +30,7 @@ export default class AppController {
     this.router = router;
     this.intl = intl;
     this.state.router = { location };
+    this.stores.routing.router = router;
     this.stores.app.initialize();
     this.initializedCallback();
   }

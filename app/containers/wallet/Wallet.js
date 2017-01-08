@@ -23,23 +23,21 @@ export default class Wallet extends Component {
     pathname: PropTypes.string.isRequired,
   };
 
-  static WALLET_BASE_PATH = '/wallet';
-
   isActiveScreen(screen: string) {
     const { routing, wallets} = this.props.stores;
-    const screenRoute = `${Wallet.WALLET_BASE_PATH}/${wallets.active.id}/${screen}`;
+    const screenRoute = `${wallets.BASE_ROUTE}/${wallets.active.id}/${screen}`;
     return routing.location ? routing.location.pathname === screenRoute : false;
   }
 
   handleWalletNavItemClick(item: string) {
     const { wallets } = this.props.stores;
-    this.props.controller.navigateTo(`${Wallet.WALLET_BASE_PATH}/${wallets.active.id}/${item}`);
+    this.props.controller.navigateTo(`${wallets.BASE_ROUTE}/${wallets.active.id}/${item}`);
   }
 
   render() {
     const { pathname } = this.props;
     const { wallets } = this.props.stores;
-    const WALLET_BASE_PATH = Wallet.WALLET_BASE_PATH;
+    const { BASE_ROUTE } = wallets;
     return (
       <Layout>
         <WalletWithNavigation
@@ -47,10 +45,10 @@ export default class Wallet extends Component {
           isActiveScreen={this.isActiveScreen.bind(this)}
           onWalletNavItemClick={this.handleWalletNavItemClick.bind(this)}
         >
-          <Match pattern={`${WALLET_BASE_PATH}/:id`} render={() => <Redirect to={`${pathname}/home`} />} />
-          <Match pattern={`${WALLET_BASE_PATH}/:id/home`} component={WalletHomePage} />
-          <Match pattern={`${WALLET_BASE_PATH}/:id/send`} component={WalletSendPage} />
-          <Match pattern={`${WALLET_BASE_PATH}/:id/receive`} component={WalletReceivePage} />
+          <Match pattern={`${BASE_ROUTE}/:id`} render={() => <Redirect to={`${pathname}/home`} />} />
+          <Match pattern={`${BASE_ROUTE}/:id/home`} component={WalletHomePage} />
+          <Match pattern={`${BASE_ROUTE}/:id/send`} component={WalletSendPage} />
+          <Match pattern={`${BASE_ROUTE}/:id/receive`} component={WalletReceivePage} />
         </WalletWithNavigation>
       </Layout>
     );
