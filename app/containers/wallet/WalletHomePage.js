@@ -26,8 +26,10 @@ export default class WalletHomePage extends Component {
   static propTypes = {
     stores: PropTypes.shape({
       transactions: PropTypes.shape({
-        searchTerm: PropTypes.string.isRequired,
-        searchLimit: PropTypes.number.isRequired,
+        searchOptions: PropTypes.shape({
+          searchTerm: PropTypes.string.isRequired,
+          searchLimit: PropTypes.number.isRequired,
+        }),
         searchRequest: PropTypes.instanceOf(CachedRequest),
         filtered: MobxPropTypes.arrayOrObservableArray.isRequired,
         hasAny: PropTypes.bool.isRequired,
@@ -51,13 +53,13 @@ export default class WalletHomePage extends Component {
     const { intl } = this.context;
     const actions = this.props.actions;
     const {
-      searchTerm,
-      searchLimit,
+      searchOptions,
       searchRequest,
       hasAny,
       totalAvailable,
       filtered,
     } = this.props.stores.transactions;
+    const { searchLimit, searchTerm } = searchOptions;
 
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
@@ -80,7 +82,7 @@ export default class WalletHomePage extends Component {
 
     return (
       <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        {hasAny && (
+        {(searchRequest.isExecuting || hasAny) && (
           <div style={{ flexShrink: 0 }}>
             <WalletTransactionsSearch
               searchTerm={searchTerm}

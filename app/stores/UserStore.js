@@ -18,11 +18,11 @@ export default class UserStore extends Store {
 
   _login = (params) => this.loginRequest.execute(params);
 
-  _updateProfileField = async ({ field, value }) => {
-    const { profile } = this.active;
-    if (!profile) return;
+  @action _updateProfileField = async ({ field, value }) => {
+    if (!this.active) return;
     await this.updateProfileRequest.execute({ field, value });
-    profile[field] = value;
+    this.active.profile[field] = value;
+    if (field === 'languageLocale') this.stores.app.currentLocale = value;
   };
 
   @computed get isLoggedIn() {

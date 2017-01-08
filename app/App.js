@@ -6,7 +6,6 @@ import { ThemeProvider } from 'react-css-themr';
 import { intlShape } from 'react-intl';
 import DevTools from 'mobx-react-devtools';
 import { daedalusTheme } from './themes/daedalus';
-import { appStatePropType } from './state/index';
 import AppController from './controllers/AppController';
 import Wallet from './containers/wallet/Wallet';
 import Settings from './containers/settings/Settings';
@@ -21,7 +20,6 @@ import { storesPropType } from './propTypes';
 export default class App extends Component {
 
   static propTypes = {
-    state: appStatePropType,
     controller: PropTypes.instanceOf(AppController),
     stores: storesPropType,
   };
@@ -43,7 +41,6 @@ export default class App extends Component {
         } else {
           controller.updateLocation(location);
         }
-        this.props.stores.routing.location = location;
       });
     }
   }

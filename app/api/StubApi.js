@@ -89,7 +89,7 @@ export default class StubApi {
   isValidAddress(currency: string, address: string) {
     return new Promise(resolve => {
       const result = WalletAddressValidator.validate(address, 'BTC');
-      console.debug('StubApi::isValidAddress resolving' , result);
+      console.debug(`StubApi::isValidAddress resolving currency BTC, address ${address}:`, result);
       resolve(result);
     });
   }

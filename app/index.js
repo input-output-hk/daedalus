@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Provider, inject, observer } from 'mobx-react';
 import { action } from 'mobx';
 import { render } from 'react-dom';
@@ -15,7 +15,6 @@ import StubApi from './api/StubApi';
 import CardanoClientApi from './api/CardanoClientApi';
 import environment from './environment';
 import AppController from './controllers/AppController';
-import appStateFactory, { appStatePropType } from './state';
 import Reactions from './reactions/index';
 import './styles/index.global.scss';
 import setupStores from './stores';
@@ -24,16 +23,19 @@ import actions from './actions';
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([en, de, hr]);
 
-@inject('state') @observer
+@inject('stores') @observer
 class Daedalus extends Component {
 
   static propTypes = {
-    state: appStatePropType.isRequired,
+    stores: PropTypes.shape({
+      app: PropTypes.shape({
+        currentLocale: PropTypes.string.isRequired,
+      }).isRequired
+    }).isRequired,
   };
 
   render() {
-    const { state } = this.props;
-    const locale = state.i18n.locale;
+    const locale = this.props.stores.app.currentLocale;
     return (
       <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
         <App />
@@ -45,15 +47,13 @@ class Daedalus extends Component {
 const initializeDaedalus = () => {
   const api = environment.WITH_CARDANO_API ? new CardanoClientApi() : new StubApi();
   const stores = setupStores(api, actions);
-  const state = appStateFactory(stores);
-  const controller = new AppController(state, api, stores);
-  const reactions = new Reactions(state, controller, stores);
+  const controller = new AppController(api, stores);
+  const reactions = new Reactions(controller, stores);
   window.daedalus = {
     controller,
     api,
     environment,
     ipc: ipcRenderer,
-    state,
     actions,
     stores,
     reactions,
@@ -66,8 +66,8 @@ const initializeDaedalus = () => {
     render() {
       const app = (
         <Router>
-          <Provider state={state} controller={controller} stores={stores} actions={actions}>
-            <Daedalus state={state} />
+          <Provider controller={controller} stores={stores} actions={actions}>
+            <Daedalus stores={stores} />
           </Provider>
         </Router>
       );

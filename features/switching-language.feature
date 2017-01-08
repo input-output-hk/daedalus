@@ -1,3 +1,4 @@
+@watch
 Feature: Switching Language
   In order to use Daedalus in my native language
   As a User

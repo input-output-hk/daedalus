@@ -7,10 +7,8 @@ import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavi
 import WalletHomePage from './WalletHomePage';
 import WalletReceivePage from './WalletReceivePage';
 import WalletSendPage from './WalletSendPage';
-import AppController from '../../controllers/AppController';
-import { appStatePropType } from '../../state/index';
 
-@inject('stores', 'controller') @observer
+@inject('stores', 'actions') @observer
 export default class Wallet extends Component {
 
   static propTypes = {
@@ -19,20 +17,22 @@ export default class Wallet extends Component {
         location: PropTypes.shape({ pathname: PropTypes.string.isRequired })
       }).isRequired
     }).isRequired,
-    controller: PropTypes.instanceOf(AppController).isRequired,
+    actions: PropTypes.shape({
+      goToRoute: PropTypes.func.isRequired,
+    }).isRequired,
     pathname: PropTypes.string.isRequired,
   };
 
-  isActiveScreen(screen: string) {
+  isActiveScreen = (screen: string) => {
     const { routing, wallets} = this.props.stores;
     const screenRoute = `${wallets.BASE_ROUTE}/${wallets.active.id}/${screen}`;
     return routing.location ? routing.location.pathname === screenRoute : false;
-  }
+  };
 
-  handleWalletNavItemClick(item: string) {
+  handleWalletNavItemClick = (item: string) => {
     const { wallets } = this.props.stores;
-    this.props.controller.navigateTo(`${wallets.BASE_ROUTE}/${wallets.active.id}/${item}`);
-  }
+    this.props.actions.goToRoute({ route: `${wallets.BASE_ROUTE}/${wallets.active.id}/${item}` });
+  };
 
   render() {
     const { pathname } = this.props;
@@ -42,8 +42,8 @@ export default class Wallet extends Component {
       <Layout>
         <WalletWithNavigation
           wallet={wallets.active}
-          isActiveScreen={this.isActiveScreen.bind(this)}
-          onWalletNavItemClick={this.handleWalletNavItemClick.bind(this)}
+          isActiveScreen={this.isActiveScreen}
+          onWalletNavItemClick={this.handleWalletNavItemClick}
         >
           <Match pattern={`${BASE_ROUTE}/:id`} render={() => <Redirect to={`${pathname}/home`} />} />
           <Match pattern={`${BASE_ROUTE}/:id/home`} component={WalletHomePage} />

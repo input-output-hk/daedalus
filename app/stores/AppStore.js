@@ -5,6 +5,7 @@ import Store from './lib/Store';
 export default class AppStore extends Store {
 
   @observable isInitialized = false;
+  @observable currentLocale = 'en-US';
 
   constructor(...args) {
     super(...args);

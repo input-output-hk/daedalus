@@ -33,7 +33,6 @@ export default class MainLayout extends Component {
       name: values.walletName,
       currency: values.currency,
     });
-    this.toggleCreateWalletDialog();
   };
 
   toggleCreateWalletDialog = () => {

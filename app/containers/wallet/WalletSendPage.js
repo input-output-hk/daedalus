@@ -3,27 +3,29 @@ import React, { Component, PropTypes } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletSendForm from '../../components/wallet/WalletSendForm';
 
-@inject('controller') @observer
+@inject('stores', 'actions') @observer
 export default class WalletSendPage extends Component {
 
   static propTypes = {
-    controller: PropTypes.shape({
+    stores: PropTypes.shape({
       wallets: PropTypes.shape({
         isValidAddress: PropTypes.func.isRequired,
-        sendMoney: PropTypes.func.isRequired,
       })
+    }),
+    actions: PropTypes.shape({
+      sendMoney: PropTypes.func.isRequired,
     }),
   };
 
   handleWalletSendFormSubmit(values: Object) {
-    this.props.controller.wallets.sendMoney(values);
+    this.props.actions.sendMoney(values);
   }
 
   render() {
     return (
       <WalletSendForm
         onSubmit={this.handleWalletSendFormSubmit.bind(this)}
-        addressValidator={address => this.props.controller.wallets.isValidAddress(address)}
+        addressValidator={address => this.props.stores.wallets.isValidAddress(address)}
       />
     );
   }

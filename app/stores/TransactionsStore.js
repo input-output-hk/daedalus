@@ -1,17 +1,15 @@
 // @flow
-import { observable, computed, action } from 'mobx';
+import { observable, computed, action, extendObservable } from 'mobx';
 import Store from './lib/Store';
 import CachedRequest from './lib/CachedRequest';
 
 export default class TransactionsStore extends Store {
 
-  static INITIAL_SEARCH_LIMIT = 10;
-  static SEARCH_LIMIT_INCREASE = 10;
-
-  @observable searchTerm: string = '';
-  @observable searchLimit: number = TransactionsStore.INITIAL_SEARCH_LIMIT;
+  INITIAL_SEARCH_LIMIT = 10;
+  SEARCH_LIMIT_INCREASE = 10;
 
   @observable searchRequest = new CachedRequest(this.api, 'getTransactions');
+  @observable _searchOptionsForWallets = {};
 
   constructor(...args) {
     super(...args);
@@ -19,14 +17,33 @@ export default class TransactionsStore extends Store {
     this.actions.loadMoreTransactions.listen(this._increaseSearchLimit);
   }
 
-  @action _updateSearchTerm = ({ searchTerm }) => this.searchTerm = searchTerm;
-  @action _increaseSearchLimit = () => this.searchLimit += TransactionsStore.SEARCH_LIMIT_INCREASE;
+  @action _updateSearchTerm = ({ searchTerm }) => this.searchOptions.searchTerm = searchTerm;
+  @action _increaseSearchLimit = () => this.searchOptions.searchLimit += this.SEARCH_LIMIT_INCREASE;
+
+  @computed get searchOptions() {
+    const wallet = this.stores.wallets.active;
+    let options = this._searchOptionsForWallets[wallet.id];
+    if (!options) {
+      // Setup options for each requested wallet
+      extendObservable(this._searchOptionsForWallets, {
+        [wallet.id]: {
+          searchTerm: '',
+          searchLimit: this.INITIAL_SEARCH_LIMIT,
+        }
+      });
+      options = this._searchOptionsForWallets[wallet.id];
+    }
+    return options;
+  }
 
   @computed get filtered() {
+    const wallet = this.stores.wallets.active;
+    if (!wallet) return [];
+    const { searchTerm, searchLimit } = this.searchOptions;
     const { result } = this.searchRequest.execute({
-      walletId: this.stores.wallets.active.id,
-      searchTerm: this.searchTerm,
-      limit: this.searchLimit
+      walletId: wallet.id,
+      limit: searchLimit,
+      searchTerm,
     });
     return result ? result.transactions : [];
   }

@@ -7,37 +7,37 @@ import TermsOfUseSettingsPage from './categories/TermsOfUseSettingsPage';
 import SettingsLayout from '../../components/settings/SettingsLayout';
 import SettingsMenu from '../../components/settings/menu/SettingsMenu';
 
-@inject('state', 'controller') @observer
+@inject('stores', 'actions') @observer
 export default class Settings extends Component {
 
   static propTypes = {
-    state: PropTypes.shape({
-      router: PropTypes.shape({
+    stores: PropTypes.shape({
+      routing: PropTypes.shape({
         location: PropTypes.shape({
           pathname: PropTypes.string.isRequired
         }).isRequired
       }).isRequired
     }).isRequired,
-    controller: PropTypes.shape({
-      navigateTo: PropTypes.func.isRequired
+    actions: PropTypes.shape({
+      goToRoute: PropTypes.func.isRequired
     }).isRequired
   };
 
-  isActivePage(page: string) {
-    const { router } = this.props.state;
-    if (router.location) {
-      return router.location.pathname === `/settings/${page}`;
+  isActivePage = (page: string) => {
+    const { location } = this.props.stores.routing;
+    if (location) {
+      return location.pathname === `/settings/${page}`;
     }
     return false;
-  }
+  };
 
   render() {
     const settingsPath = '/settings';
-    const { controller } = this.props;
+    const { actions } = this.props;
     const menu = (
       <SettingsMenu
-        onItemClick={(page) => controller.navigateTo(`${settingsPath}/${page}`)}
-        isActiveItem={this.isActivePage.bind(this)}
+        onItemClick={(page) => actions.goToRoute({ route: `${settingsPath}/${page}` })}
+        isActiveItem={this.isActivePage}
       />
     );
     return (

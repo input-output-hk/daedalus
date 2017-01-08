@@ -1,20 +1,17 @@
 // @flow
 import { action } from 'mobx';
-import type { appState } from '../state/index';
 import type { Api } from '../api';
 import { storesType } from '../stores';
 
 export default class AppController {
 
-  state: appState;
   api: Api;
   stores: storesType;
   router: { transitionTo: () => void };
   intl: { formatMessage: () => string };
   initializedCallback = () => {};
 
-  constructor(state: appState, api: Api, stores: storesType) {
-    this.state = state;
+  constructor(api: Api, stores: storesType) {
     this.api = api;
     this.stores = stores;
   }
@@ -29,8 +26,7 @@ export default class AppController {
   @action initialize(router: Object, location: Object, intl: Object) {
     this.router = router;
     this.intl = intl;
-    this.state.router = { location };
-    this.stores.routing.router = router;
+    Object.assign(this.stores.routing, { router, location });
     this.stores.app.initialize();
     this.initializedCallback();
   }
@@ -44,7 +40,7 @@ export default class AppController {
   }
 
   updateLocation(location: Object) {
-    this.state.router.location = location;
+    this.stores.routing.location = location;
   }
 
   navigateTo(route: string) {
@@ -56,8 +52,7 @@ export default class AppController {
   }
 
   @action reset() {
-    this.state.reset();
-    this.initialize(this.router, this.state.router, this.intl);
+    this.initialize(this.router, this.stores.routing.location, this.intl);
     this.initializedCallback();
   }
 }

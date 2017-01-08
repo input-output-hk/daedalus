@@ -10,7 +10,7 @@ export default function () {
   this.Given(/^My current language is "([^"]*)"$/, function (locale) {
     return this.client.execute(function (loc) {
       daedalus.stores.user.active.profile.languageLocale = loc;
-      daedalus.state.i18n.locale = loc;
+      daedalus.stores.app.currentLocale = loc;
     }, locale);
   });
   this.When(/^I select "([^"]*)" from the language dropdown on the settings page$/, async function (language) {
@@ -24,7 +24,7 @@ export default function () {
     const result = await this.client.executeAsync(function (loc, done) {
       setTimeout(function() { // Allow mobx to flush changes
         const user = daedalus.stores.user.active;
-        done((user.profile.languageLocale === loc) && (daedalus.state.i18n.locale === loc));
+        done((user.profile.languageLocale === loc) && (daedalus.stores.app.currentLocale === loc));
       }, 0);
     }, locale);
     expect(result.value).to.be.true;

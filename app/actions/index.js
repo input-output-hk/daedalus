@@ -26,4 +26,9 @@ export default defineActions({
   },
   toggleSidebar: {},
   toggleCreateWalletDialog: {},
+  sendMoney: {
+    receiver: PropTypes.string.isRequired,
+    amount: PropTypes.string.isRequired,
+    description: PropTypes.string,
+  }
 }, PropTypes.validateWithErrors);

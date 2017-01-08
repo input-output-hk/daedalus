@@ -15,6 +15,7 @@ export default class SidebarStore extends Store {
     super(...args);
     this.actions.toggleSidebar.listen(this._toggleSidebar);
     this.actions.changeSidebarRoute.listen(this._changeSidebarRoute);
+    this.actions.toggleCreateWalletDialog.listen(this._toggleCreateWalletDialog);
   }
 
   @computed get wallets() {
@@ -27,6 +28,10 @@ export default class SidebarStore extends Store {
 
   @action _toggleSidebar = () => {
     this.hidden = !this.hidden;
+  };
+
+  @action _toggleCreateWalletDialog = () => {
+    this.isCreateWalletDialogOpen = !this.isCreateWalletDialogOpen;
   };
 
   @action _changeSidebarRoute = ({ route }) => {

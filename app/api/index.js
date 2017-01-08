@@ -64,7 +64,6 @@ export type createUserRequest = {
 }
 
 export type createWalletRequest = {
-  accountId: string,
   name: string,
   currency: string
 }
