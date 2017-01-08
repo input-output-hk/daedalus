@@ -18,10 +18,10 @@ export default class LoginReaction extends Reaction {
           if (environment.WITH_CARDANO_API) {
             user._login({ email: '', passwordHash: '' });
           } else {
-            if (this.appController.api.repository.user.profile) {
-              const {email, passwordHash} = this.appController.api.repository.user.profile;
-              user._login({email, passwordHash});
-            }
+            user._login({
+              email: 'satoshi@gmail.com',
+              passwordHash: '5e884898da28047151d0e56f8dc6292773603d0d6aabbdd62a11ef721d1542d8'
+            });
           }
         }
       }, 1000);

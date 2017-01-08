@@ -14,11 +14,10 @@ import App from './App';
 import StubApi from './api/StubApi';
 import CardanoClientApi from './api/CardanoClientApi';
 import environment from './environment';
-import AppController from './controllers/AppController';
 import Reactions from './reactions/index';
-import './styles/index.global.scss';
 import setupStores from './stores';
 import actions from './actions';
+import './styles/index.global.scss';
 
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([en, de, hr]);
@@ -47,26 +46,23 @@ class Daedalus extends Component {
 const initializeDaedalus = () => {
   const api = environment.WITH_CARDANO_API ? new CardanoClientApi() : new StubApi();
   const stores = setupStores(api, actions);
-  const controller = new AppController(api, stores);
-  const reactions = new Reactions(controller, stores);
+  const reactions = new Reactions(stores);
   window.daedalus = {
-    controller,
     api,
     environment,
     ipc: ipcRenderer,
     actions,
     stores,
     reactions,
-    reset: action(() => {
+    reset: action((onInitialized) => {
       api.repository.reset();
-      setupStores(api, actions);
-      controller.reset();
+      setupStores(api, actions, onInitialized);
       window.daedalus.render();
     }),
     render() {
       const app = (
         <Router>
-          <Provider controller={controller} stores={stores} actions={actions}>
+          <Provider stores={stores} actions={actions}>
             <Daedalus stores={stores} />
           </Provider>
         </Router>

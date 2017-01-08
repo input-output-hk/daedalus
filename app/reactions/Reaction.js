@@ -1,6 +1,5 @@
 // @flow
 import { autorun } from 'mobx';
-import AppController from '../controllers/AppController';
 import storesType from '../stores';
 
 export default class Reaction {
@@ -9,8 +8,7 @@ export default class Reaction {
   hasBeenStarted: boolean;
   dispose: () => void;
 
-  constructor(appController: AppController, stores: storesType) {
-    this.appController = appController;
+  constructor(stores: storesType) {
     this.stores = stores;
     this.hasBeenStarted = false;
   }

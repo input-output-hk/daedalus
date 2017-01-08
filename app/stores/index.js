@@ -20,9 +20,9 @@ const stores = observable({
 
 // Set up and return the stores for this app
 // can also be used to reset all stores to defaults
-export default (api, actions): storesType => (
+export default (api, actions, initializedCallback): storesType => (
   Object.assign(stores, {
-    app: new AppStore(stores, api, actions),
+    app: new AppStore(stores, api, actions, initializedCallback),
     user: new UserStore(stores, api, actions),
     settings: new SettingsStore(stores, api, actions),
     wallets: new WalletsStore(stores, api, actions),

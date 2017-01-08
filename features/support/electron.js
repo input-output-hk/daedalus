@@ -21,7 +21,7 @@ export default function () {
   });
   // And tear it down after all features
   this.registerHandler('AfterFeatures', function() {
-    // return context.app.stop();
+    return context.app.stop();
   });
 
   // Make the electron app accessible in each scenario context
@@ -30,8 +30,7 @@ export default function () {
     this.browserWindow = context.app.browserWindow;
     await this.client.executeAsync(function(done) {
       daedalus.environment.current = daedalus.environment.TEST;
-      daedalus.controller.onInitialized(done);
-      daedalus.reset();
+      daedalus.reset(done);
     });
   });
 }
