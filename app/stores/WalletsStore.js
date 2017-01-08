@@ -35,6 +35,7 @@ export default class WalletsStore extends Store {
       sender: wallet.address,
       currency: wallet.currency
     });
+    this.walletsRequest.invalidate({ immediately: true });
     this.stores.transactions.searchRequest.invalidate({ immediately: true });
     this.actions.goToRoute({ route: this.getWalletRoute(wallet.id) });
   };

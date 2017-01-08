@@ -32,6 +32,8 @@ export default class TransactionsStore extends Store {
         }
       });
       options = this._searchOptionsForWallets[wallet.id];
+      // Reset the search results when a wallet is queried for the first time
+      this.searchRequest.patch(result => null);
     }
     return options;
   }

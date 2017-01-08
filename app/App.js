@@ -24,7 +24,7 @@ export default class App extends Component {
 
   static contextTypes = {
     router: PropTypes.object.isRequired,
-    intl: intlShape,
+    intl: intlShape.isRequired,
     broadcasts: React.PropTypes.object
   };
 
@@ -69,7 +69,7 @@ export default class App extends Component {
           <Match pattern="/login" component={LoginPage} />
         </div>
       );
-    } else if (wallets.walletsRequest.isExecuting) {
+    } else if (wallets.walletsRequest.isExecutingFirstTime) {
       return loadingSpinner;
     } else if (wallets.all.length > 0) {
       const wallet = wallets.active;

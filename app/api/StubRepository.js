@@ -101,6 +101,7 @@ export default class StubRepository {
       transactionId: faker.finance.bitcoinAddress(),
     }, data);
     this.transactions.push(transaction);
+    this.wallets.find(w => w.id === transaction.walletId).amount += transaction.amount;
     return transaction;
   }
 

@@ -5,8 +5,6 @@ import Request from './Request';
 
 export default class CachedRequest extends Request {
 
-  @observable isInitialExecution = true;
-
   _apiCalls = [];
   _isInvalidated = true;
 
@@ -44,7 +42,7 @@ export default class CachedRequest extends Request {
     this._promise = this._api[this._method](...callArgs).then(action((result) => {
       this.result = this._currentApiCall.result = result;
       this.isExecuting = false;
-      this.isInitialExecution = false;
+      this.wasExecuted = true;
       this._isInvalidated = false;
       this._isWaitingForResponse = false;
       return result;
