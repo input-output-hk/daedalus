@@ -1,8 +1,6 @@
 // @flow
 import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
-import { matchRoute } from '../lib/routing-helpers';
-import CachedRequest from './lib/CachedRequest';
 
 export default class SidebarStore extends Store {
 
