@@ -1,5 +1,5 @@
 // @flow
-import { observable, action } from 'mobx';
+import { observable, action, computed } from 'mobx';
 import { isEqual } from 'lodash/fp';
 
 export default class Request {
@@ -46,6 +46,10 @@ export default class Request {
 
   isExecutingWithArgs(...args) {
     return this.isExecuting && this._currentApiCall && isEqual(this._currentApiCall.args, args);
+  }
+
+  @computed get isExecutingFirstTime() {
+    return !this.wasExecuted && this.isExecuting;
   }
 
   then(...args) {

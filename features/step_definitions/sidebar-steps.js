@@ -5,7 +5,7 @@ export default function () {
     const isHidden = state === 'hidden';
     await this.client.waitForVisible('.Sidebar_component');
     await this.client.executeAsync(function(hidden, done) {
-      const sidebarState = daedalus.state.sidebar;
+      const sidebarState = daedalus.stores.sidebar;
       const sidebarWillAnimate = sidebarState.hidden !== hidden;
       let isDone = false;
       sidebarState.hidden = hidden;
@@ -22,7 +22,7 @@ export default function () {
 
   this.Given(/^The sidebar shows the (.*) category$/, async function (category) {
     await this.client.execute(function(route) {
-      daedalus.state.sidebar.route = `/${route}`;
+      daedalus.stores.sidebar.route = `/${route}`;
     }, category);
     return this.client.waitForVisible(`.SidebarCategory_active.${category}`);
   });

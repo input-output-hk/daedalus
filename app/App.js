@@ -6,8 +6,6 @@ import { ThemeProvider } from 'react-css-themr';
 import { intlShape } from 'react-intl';
 import DevTools from 'mobx-react-devtools';
 import { daedalusTheme } from './themes/daedalus';
-import { appStatePropType } from './state/index';
-import AppController from './controllers/AppController';
 import Wallet from './containers/wallet/Wallet';
 import Settings from './containers/settings/Settings';
 import StakingPage from './containers/staking/StakingPage';
@@ -17,12 +15,10 @@ import LoadingSpinner from './components/widgets/LoadingSpinner';
 import environment from './environment';
 import { storesPropType } from './propTypes';
 
-@inject('state', 'controller', 'stores') @observer
+@inject('stores') @observer
 export default class App extends Component {
 
   static propTypes = {
-    state: appStatePropType,
-    controller: PropTypes.instanceOf(AppController),
     stores: storesPropType,
   };
 
@@ -35,14 +31,9 @@ export default class App extends Component {
   componentDidMount() {
     if (this.context.broadcasts) {
       const subscribe = this.context.broadcasts.location;
-      const { controller, stores } = this.props;
-      const { router, intl } = this.context;
+      const { app } = this.props.stores;
       this.unsubscribeFromLocationBroadcast = subscribe((location) => {
-        if (!stores.app.isInitialized) {
-          controller.initialize(router, location, intl);
-        } else {
-          controller.updateLocation(location);
-        }
+        app.updateLocation(location);
       });
     }
   }
@@ -54,15 +45,20 @@ export default class App extends Component {
   unsubscribeFromLocationBroadcast: () => {};
 
   render() {
-    const { state, controller, stores } = this.props;
+    const { stores } = this.props;
     const { router, intl } = this.context;
-    const { user } = stores;
-    controller.setRouter(router);
-    controller.setTranslationService(intl);
+    const { user, wallets } = stores;
 
-    if (!stores.app.isInitialized) {
-      return <div style={{ display: 'flex', alignItems: 'center' }}><LoadingSpinner /></div>;
-    }
+    stores.app.initialize(router, intl);
+
+    const loadingSpinner = (
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+        <Redirect to={'/'} />
+        <LoadingSpinner />
+      </div>
+    );
+
+    if (!stores.app.isInitialized) return loadingSpinner;
 
     let initialPage;
 
@@ -73,12 +69,14 @@ export default class App extends Component {
           <Match pattern="/login" component={LoginPage} />
         </div>
       );
-    } else if (user.active.wallets.length > 0) {
-      const { wallet } = state.activeWallet;
+    } else if (wallets.walletsRequest.isExecutingFirstTime) {
+      return loadingSpinner;
+    } else if (wallets.all.length > 0) {
+      const wallet = wallets.active;
       initialPage = (
         <div style={{ height: '100%' }}>
-          <Match pattern="/" exactly render={() => <Redirect to={`/wallet/${wallet.id}/home`} />} />
-          <Match pattern="/wallet/:id" component={Wallet} />
+          <Match pattern="/" exactly render={() => <Redirect to={`${wallets.BASE_ROUTE}/${wallet.id}/home`} />} />
+          <Match pattern={`${wallets.BASE_ROUTE}/:id`} component={Wallet} />
           <Match pattern="/settings" component={Settings} />
           <Match pattern="/staking" component={StakingPage} />
         </div>
@@ -87,7 +85,7 @@ export default class App extends Component {
       initialPage = <WalletCreatePage />;
     }
 
-    const mobxDevTools = environment.isDev() ? <DevTools /> : null;
+    const mobxDevTools = environment.MOBX_DEV_TOOLS ? <DevTools /> : null;
     return (
       <ThemeProvider theme={daedalusTheme}>
         <div style={{ height: '100%' }}>

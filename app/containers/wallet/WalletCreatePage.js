@@ -3,26 +3,27 @@ import React, { Component, PropTypes } from 'react';
 import { observer, inject } from 'mobx-react';
 import CenteredLayout from '../../components/layout/CenteredLayout';
 import WalletCreateDialog from '../../components/wallet/WalletCreateDialog';
-import AppController from '../../controllers/AppController';
 
-@inject('controller') @observer
+@inject('actions') @observer
 export default class WalletCreatePage extends Component {
 
   static propTypes = {
-    controller: PropTypes.instanceOf(AppController).isRequired,
+    actions: PropTypes.shape({
+      createPersonalWallet: PropTypes.func.isRequired,
+    }),
   };
 
-  createPersonalWallet(values) {
-    this.props.controller.wallets.createPersonalWallet({
+  createPersonalWallet = (values) => {
+    this.props.actions.createPersonalWallet({
       name: values.walletName,
       currency: values.currency,
     });
-  }
+  };
 
   render() {
     return (
       <CenteredLayout>
-        <WalletCreateDialog onSubmit={this.createPersonalWallet.bind(this)} />
+        <WalletCreateDialog onSubmit={this.createPersonalWallet} />
       </CenteredLayout>
     );
   }

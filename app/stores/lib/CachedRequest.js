@@ -5,8 +5,6 @@ import Request from './Request';
 
 export default class CachedRequest extends Request {
 
-  @observable isInitialExecution = true;
-
   _apiCalls = [];
   _isInvalidated = true;
 
@@ -37,16 +35,14 @@ export default class CachedRequest extends Request {
       // Apply the previous result from this call immediately (cached)
       if (existingApiCall) {
         this.result = existingApiCall.result;
-      } else {
-        this.result = null;
       }
     }), 0);
 
     // Issue api call & save it as promise that is handled to update the results of the operation
-    this.promise = this._api[this._method](...callArgs).then(action((result) => {
+    this._promise = this._api[this._method](...callArgs).then(action((result) => {
       this.result = this._currentApiCall.result = result;
       this.isExecuting = false;
-      this.isInitialExecution = false;
+      this.wasExecuted = true;
       this._isInvalidated = false;
       this._isWaitingForResponse = false;
       return result;
@@ -63,12 +59,14 @@ export default class CachedRequest extends Request {
   }
 
   patch(modify) {
-    setTimeout(action(() => {
-      const override = modify(this.result);
-      if (override !== undefined) this.result = override;
-      if (this._currentApiCall) this._currentApiCall.result = this.result;
-    }), 0);
-    return this;
+    return new Promise((resolve) => {
+      setTimeout(action(() => {
+        const override = modify(this.result);
+        if (override !== undefined) this.result = override;
+        if (this._currentApiCall) this._currentApiCall.result = this.result;
+        resolve(this);
+      }), 0);
+    });
   }
 
   removeCacheForCallWith(...args) {

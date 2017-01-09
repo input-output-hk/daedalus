@@ -48,16 +48,20 @@ export default class StubApi {
     return fakeRequest('getUser', () => new User(userData.id, new Profile(userData.profile)));
   }
 
-  getWallets(accountId: string) {
-    console.debug('StubApi::getWallets called with', accountId);
-    return fakeRequest('getWallets', this.repository.findWallets(accountId).map(w => new Wallet(w)));
+  getWallets(userId: string) {
+    console.debug('StubApi::getWallets called with', userId);
+    return fakeRequest('getWallets', () => {
+      return this.repository.findWallets(userId).map(w => new Wallet(w));
+    });
   }
 
   getTransactions(request: getTransactionsRequest) {
     console.debug('StubApi::getTransactions called with', request);
-    const result = this.repository.findTransactions(request);
-    result.transactions = result.transactions.map(w => new WalletTransaction(w));
-    return fakeRequest('getTransactions', result);
+    return fakeRequest('getTransactions', () => {
+      const result = this.repository.findTransactions(request);
+      result.transactions = result.transactions.map(w => new WalletTransaction(w));
+      return result;
+    });
   }
 
   createUser(request: createUserRequest) {
@@ -85,7 +89,7 @@ export default class StubApi {
   isValidAddress(currency: string, address: string) {
     return new Promise(resolve => {
       const result = WalletAddressValidator.validate(address, 'BTC');
-      console.debug('StubApi::isValidAddress resolving' , result);
+      console.debug(`StubApi::isValidAddress resolving currency BTC, address ${address}:`, result);
       resolve(result);
     });
   }

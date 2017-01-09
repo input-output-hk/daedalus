@@ -1,21 +1,22 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { observer, inject, PropTypes as MobxPropTypes } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import WalletReceive from '../../components/wallet/WalletReceive';
+import Wallet from '../../domain/Wallet';
 
-@inject('state') @observer
+@inject('stores') @observer
 export default class WalletReceivePage extends Component {
 
   static propTypes = {
-    state: PropTypes.shape({
-      activeWallet: PropTypes.shape({
-        wallet: MobxPropTypes.observableObject.isRequired
-      })
-    })
+    stores: PropTypes.shape({
+      wallets: PropTypes.shape({
+        active: PropTypes.instanceOf(Wallet).isRequired
+      }).isRequired
+    }).isRequired
   };
 
   render() {
-    const { wallet } = this.props.state.activeWallet;
+    const wallet = this.props.stores.wallets.active;
     return (
       <WalletReceive walletName={wallet.name} walletAddress={wallet.address} />
     );

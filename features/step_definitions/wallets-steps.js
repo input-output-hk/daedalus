@@ -32,12 +32,12 @@ export default function () {
 
   this.Given(/^I am on the (.*) wallet$/, async function (walletName) {
     const wallet = this.wallets.filter((wallet) => wallet.name === walletName)[0];
-    await this.navigateTo(`/wallet/${wallet.id}/home`);
+    await this.navigateTo(`/wallets/${wallet.id}/home`);
     return expectActiveWallet.call(this, walletName);
   });
 
   this.Given(/^I am on the wallet (.*) screen$/, async function(screen) {
-    await this.navigateTo(`/wallet/${this.wallet.id}/${screen}`);
+    await this.navigateTo(`/wallets/${this.wallet.id}/${screen}`);
     expectActiveWallet.call(this, this.wallet.name);
   });
 

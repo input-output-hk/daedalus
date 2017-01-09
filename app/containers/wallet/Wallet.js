@@ -7,49 +7,48 @@ import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavi
 import WalletHomePage from './WalletHomePage';
 import WalletReceivePage from './WalletReceivePage';
 import WalletSendPage from './WalletSendPage';
-import AppController from '../../controllers/AppController';
-import { appStatePropType } from '../../state/index';
 
-@inject('state', 'controller') @observer
+@inject('stores', 'actions') @observer
 export default class Wallet extends Component {
 
   static propTypes = {
-    state: appStatePropType.isRequired,
-    controller: PropTypes.instanceOf(AppController).isRequired,
-    pathname: PropTypes.string.isRequired
+    stores: PropTypes.shape({
+      routing: PropTypes.shape({
+        location: PropTypes.shape({ pathname: PropTypes.string.isRequired })
+      }).isRequired
+    }).isRequired,
+    actions: PropTypes.shape({
+      goToRoute: PropTypes.func.isRequired,
+    }).isRequired,
+    pathname: PropTypes.string.isRequired,
   };
 
-  static walletPath = '/wallet';
+  isActiveScreen = (screen: string) => {
+    const { routing, wallets} = this.props.stores;
+    const screenRoute = `${wallets.BASE_ROUTE}/${wallets.active.id}/${screen}`;
+    return routing.location ? routing.location.pathname === screenRoute : false;
+  };
 
-  isActiveScreen(screen: string) {
-    const { router, activeWallet } = this.props.state;
-    if (router.location) {
-      return router.location.pathname === `${Wallet.walletPath}/${activeWallet.wallet.id}/${screen}`;
-    }
-    return false;
-  }
-
-  handleWalletNavItemClick(item: string) {
-    const { activeWallet } = this.props.state;
-    this.props.controller.navigateTo(`${Wallet.walletPath}/${activeWallet.wallet.id}/${item}`);
-  }
+  handleWalletNavItemClick = (item: string) => {
+    const { wallets } = this.props.stores;
+    this.props.actions.goToRoute({ route: `${wallets.BASE_ROUTE}/${wallets.active.id}/${item}` });
+  };
 
   render() {
     const { pathname } = this.props;
-    const { activeWallet } = this.props.state;
-    const { wallet } = activeWallet;
-    const walletPath = Wallet.walletPath;
+    const { wallets } = this.props.stores;
+    const { BASE_ROUTE } = wallets;
     return (
       <Layout>
         <WalletWithNavigation
-          wallet={wallet}
-          isActiveScreen={this.isActiveScreen.bind(this)}
-          onWalletNavItemClick={this.handleWalletNavItemClick.bind(this)}
+          wallet={wallets.active}
+          isActiveScreen={this.isActiveScreen}
+          onWalletNavItemClick={this.handleWalletNavItemClick}
         >
-          <Match pattern={`${walletPath}/:id`} render={() => <Redirect to={`${pathname}/home`} />} />
-          <Match pattern={`${walletPath}/:id/home`} component={WalletHomePage} />
-          <Match pattern={`${walletPath}/:id/send`} component={WalletSendPage} />
-          <Match pattern={`${walletPath}/:id/receive`} component={WalletReceivePage} />
+          <Match pattern={`${BASE_ROUTE}/:id`} render={() => <Redirect to={`${pathname}/home`} />} />
+          <Match pattern={`${BASE_ROUTE}/:id/home`} component={WalletHomePage} />
+          <Match pattern={`${BASE_ROUTE}/:id/send`} component={WalletSendPage} />
+          <Match pattern={`${BASE_ROUTE}/:id/receive`} component={WalletReceivePage} />
         </WalletWithNavigation>
       </Layout>
     );

@@ -59,7 +59,7 @@ const messages = defineMessages({
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
-@inject('controller') @observer
+@observer
 export default class WalletSendForm extends Component {
 
   static propTypes = {

@@ -9,5 +9,26 @@ export default defineActions({
   updateProfileField: {
     field: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
+  },
+  goToRoute: {
+    route: PropTypes.string.isRequired,
+  },
+  createPersonalWallet: {
+    name: PropTypes.string.isRequired,
+    currency: PropTypes.string.isRequired,
+  },
+  filterTransactions: {
+    searchTerm: PropTypes.string.isRequired,
+  },
+  loadMoreTransactions: {},
+  changeSidebarRoute: {
+    route: PropTypes.string.isRequired,
+  },
+  toggleSidebar: {},
+  toggleCreateWalletDialog: {},
+  sendMoney: {
+    receiver: PropTypes.string.isRequired,
+    amount: PropTypes.string.isRequired,
+    description: PropTypes.string,
   }
 }, PropTypes.validateWithErrors);
