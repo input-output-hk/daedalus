@@ -13,6 +13,7 @@ Feature: Send Money to Receiver
     And I submit the wallet send form
     Then I should see the wallet home screen with the transaction
 
+  @watch
   Scenario: User Submits Empty Form
     Given I am on the wallet send screen
     When I submit the wallet send form

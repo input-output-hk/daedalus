@@ -20,11 +20,11 @@ export default class LoginPage extends Component {
     }).isRequired,
   };
 
-  handleLoginFormSubmit(values: Object) {
+  handleLoginFormSubmit = (values: Object) => {
     const { email, password } = values;
     const passwordHash = hashData(password);
     this.props.actions.login({ email, passwordHash });
-  }
+  };
 
   render() {
     const { loginRequest } = this.props.stores.user;
@@ -32,7 +32,7 @@ export default class LoginPage extends Component {
       <CenteredLayout>
         <Login
           isSubmitting={loginRequest.isExecuting}
-          onSubmit={this.handleLoginFormSubmit.bind(this)}
+          onSubmit={this.handleLoginFormSubmit}
           isInvalid={loginRequest.wasExecuted && loginRequest.result === false}
           onCreateAccount={() => console.log('create account')} // eslint-disable-line
         />

@@ -28,9 +28,9 @@ export default function () {
   this.Before(async function() {
     this.client = context.app.client;
     this.browserWindow = context.app.browserWindow;
-    await this.client.executeAsync(function(done) {
+    await this.client.execute(function() {
       daedalus.environment.current = daedalus.environment.TEST;
-      daedalus.reset(done);
+      daedalus.reset();
     });
   });
 }

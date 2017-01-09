@@ -40,7 +40,7 @@ export default class SidebarStore extends Store {
       this.route = route;
       this.isMaximized = false;
       if (route === '/settings' || route === '/staking') {
-        this.stores.routing.router.transitionTo(route);
+        this.stores.router.push(route);
       }
     }
   }

@@ -9,8 +9,10 @@ export default function () {
   });
   this.Given(/^My current language is "([^"]*)"$/, function (locale) {
     return this.client.execute(function (loc) {
-      daedalus.stores.user.active.profile.languageLocale = loc;
-      daedalus.stores.app.currentLocale = loc;
+      require('mobx').runInAction(() => {
+        daedalus.stores.user.active.profile.languageLocale = loc;
+        daedalus.stores.app.currentLocale = loc;
+      });
     }, locale);
   });
   this.When(/^I select "([^"]*)" from the language dropdown on the settings page$/, async function (language) {

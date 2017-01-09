@@ -60,7 +60,7 @@ export default class Login extends Component {
       email: {},
       password: {}
     }
-  });
+  }, {});
 
   submit() {
     this.validator.submit({

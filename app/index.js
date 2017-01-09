@@ -1,76 +1,46 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { Provider, inject, observer } from 'mobx-react';
 import { action } from 'mobx';
 import { render } from 'react-dom';
-import { addLocaleData, IntlProvider } from 'react-intl';
-import { MemoryRouter as Router } from 'react-router';
-import { ipcRenderer } from 'electron';
+import { addLocaleData } from 'react-intl';
 import en from 'react-intl/locale-data/en';
 import de from 'react-intl/locale-data/de';
 import hr from 'react-intl/locale-data/hr';
-import translations from './i18n/translations';
+import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
+import { hashHistory } from 'react-router';
 import App from './App';
 import StubApi from './api/StubApi';
 import CardanoClientApi from './api/CardanoClientApi';
 import environment from './environment';
-import Reactions from './reactions/index';
 import setupStores from './stores';
 import actions from './actions';
+import { resetAllActions } from './actions/lib/actions';
+import translations from './i18n/translations';
 import './styles/index.global.scss';
 
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([en, de, hr]);
 
-@inject('stores') @observer
-class Daedalus extends Component {
-
-  static propTypes = {
-    stores: PropTypes.shape({
-      app: PropTypes.shape({
-        currentLocale: PropTypes.string.isRequired,
-      }).isRequired
-    }).isRequired,
-  };
-
-  render() {
-    const locale = this.props.stores.app.currentLocale;
-    return (
-      <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
-        <App />
-      </IntlProvider>
-    );
-  }
-}
-
 const initializeDaedalus = () => {
   const api = environment.WITH_CARDANO_API ? new CardanoClientApi() : new StubApi();
-  const stores = setupStores(api, actions);
-  const reactions = new Reactions(stores);
+  const router = new RouterStore();
+  const history = syncHistoryWithStore(hashHistory, router);
+  const stores = setupStores(api, actions, router);
   window.daedalus = {
     api,
     environment,
-    ipc: ipcRenderer,
     actions,
     stores,
-    reactions,
-    reset: action((onInitialized) => {
+    translations,
+    reset: action(() => {
       api.repository.reset();
-      setupStores(api, actions, onInitialized);
-      window.daedalus.render();
+      resetAllActions();
+      setupStores(api, actions, router);
     }),
-    render() {
-      const app = (
-        <Router>
-          <Provider stores={stores} actions={actions}>
-            <Daedalus stores={stores} />
-          </Provider>
-        </Router>
-      );
-      render(app, document.getElementById('root'));
-    }
   };
-  window.daedalus.render();
+  render((
+    <App stores={stores} actions={actions} history={history} />
+  ), document.getElementById('root'));
 };
 
 window.addEventListener('load', initializeDaedalus);

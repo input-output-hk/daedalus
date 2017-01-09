@@ -82,31 +82,34 @@ export default class WalletSendForm extends Component {
     },
     fields: {
       receiver: {
-        validate: [({ field }) => {
+        value: '',
+        validate: ({ field }) => {
           const value = field.value;
           if (value === '') return [false, 'fieldIsRequired'];
           return this.props.addressValidator(field.value).then(isValid => [isValid, 'invalidAddress']);
-        }]
+        }
       },
       amount: {
-        validate: [({ field }) => {
+        value: '',
+        validate: ({ field }) => {
           const isValid = isCurrency(field.value, {
             allow_negatives: false
           });
           return [isValid, 'invalidAmount'];
-        }]
+        }
       },
       currency: {
         value: 'ada' // TODO: Remove hardcoded currency
       },
       description: {},
     }
-  });
+  }, {});
 
   submit() {
     this.validator.submit({
       onSuccess: (form) => {
         this.setState({ isSubmitting: true });
+        console.log(form.values());
         this.props.onSubmit(form.values());
         form.reset();
       },

@@ -1,12 +1,13 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { observer, inject, PropTypes as MobxPropTypes } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import Sidebar from '../components/sidebar/Sidebar';
 import AppBar from '../components/layout/AppBar';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import { oneOrManyChildElements } from '../propTypes';
 import WalletCreateDialog from '../components/wallet/WalletCreateDialog';
 import Wallet from '../domain/Wallet';
+import LoadingSpinner from '../components/widgets/LoadingSpinner';
 
 @inject('stores', 'actions') @observer
 export default class MainLayout extends Component {
@@ -17,7 +18,7 @@ export default class MainLayout extends Component {
         isCreateWalletDialogOpen: PropTypes.bool.isRequired,
       }).isRequired,
       wallets: PropTypes.shape({
-        active: PropTypes.instanceOf(Wallet).isRequired,
+        active: PropTypes.instanceOf(Wallet),
       }).isRequired,
     }).isRequired,
     actions: PropTypes.shape({
@@ -48,6 +49,15 @@ export default class MainLayout extends Component {
     const { actions, stores } = this.props;
     const { sidebar } = stores;
     const activeWallet = stores.wallets.active;
+
+    if (!activeWallet) {
+      return (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <LoadingSpinner />
+        </div>
+      );
+    }
+
     const sidebarMenus = {
       wallets: {
         items: sidebar.wallets,
