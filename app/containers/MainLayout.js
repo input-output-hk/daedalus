@@ -49,14 +49,7 @@ export default class MainLayout extends Component {
     const { actions, stores } = this.props;
     const { sidebar } = stores;
     const activeWallet = stores.wallets.active;
-
-    if (!activeWallet) {
-      return (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <LoadingSpinner />
-        </div>
-      );
-    }
+    const activeWalletId = activeWallet ? activeWallet.id : null;
 
     const sidebarMenus = {
       wallets: {
@@ -74,7 +67,7 @@ export default class MainLayout extends Component {
         hidden={sidebar.hidden}
         isMaximized={sidebar.isMaximized}
         onCategoryClicked={route => actions.changeSidebarRoute({ route })}
-        activeWalletId={activeWallet.id}
+        activeWalletId={activeWalletId}
       />
     );
     const appbar = <AppBar onToggleSidebar={actions.toggleSidebar} />;

@@ -22,6 +22,7 @@ export default class TransactionsStore extends Store {
 
   @computed get searchOptions() {
     const wallet = this.stores.wallets.active;
+    if (!wallet) return null;
     let options = this._searchOptionsForWallets[wallet.id];
     if (!options) {
       // Setup options for each requested wallet
