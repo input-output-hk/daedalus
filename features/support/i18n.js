@@ -5,10 +5,9 @@ export default function () {
         const IntlProvider  = require('react-intl').IntlProvider;
         const locale = daedalus.stores.app.currentLocale;
         const messages = daedalus.translations;
-        const intlProvider = new IntlProvider({ locale, messages }, {});
+        const intlProvider = new IntlProvider({ locale, messages: messages[locale] }, {});
         return intlProvider.getChildContext().intl.formatMessage({ id }, values);
       }, translationId, translationValues);
-      console.log(translation.value);
       return translation.value;
     };
   });
