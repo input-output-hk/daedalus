@@ -1,14 +1,17 @@
 @import "~react-toolbox/lib/dropdown/theme";
+@import "../mixins/arrow";
 
 .dropdown {
   overflow: visible;
   &:not(.up) > .values {
     top: 90%;
     bottom: auto;
+    @include arrow(up, white, #5e6066, 11px);
   }
   &.up > .values {
-    top: 90%;
-    bottom: auto;
+    bottom: 90%;
+    top: auto;
+    @include arrow(down, white, #5e6066, 11px);
   }
   &.active > .values {
     overflow-y: visible;
@@ -51,28 +54,4 @@
   font-family: $font-regular;
   font-size: 16px;
   overflow: visible;
-  // Add the CSS arrow box generated at http://www.cssarrowplease.com/
-  &:after, &:before {
-    bottom: 100%;
-    left: 50%;
-    border: solid transparent;
-    content: " ";
-    height: 0;
-    width: 0;
-    position: absolute;
-    pointer-events: none;
-  }
-
-  &:after {
-    border-color: rgba(255, 255, 255, 0);
-    border-bottom-color: #ffffff;
-    border-width: 10px;
-    margin-left: -10px;
-  }
-  &:before {
-    border-color: rgba(198, 205, 214, 0);
-    border-bottom-color: #c6cdd6;
-    border-width: 11px;
-    margin-left: -11px;
-  }
 }
