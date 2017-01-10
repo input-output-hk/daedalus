@@ -5,24 +5,26 @@ export default function () {
     const isHidden = state === 'hidden';
     await this.client.waitForVisible('.Sidebar_component');
     await this.client.executeAsync(function(hidden, done) {
-      const sidebarState = daedalus.stores.sidebar;
-      const sidebarWillAnimate = sidebarState.hidden !== hidden;
-      let isDone = false;
-      sidebarState.hidden = hidden;
-      if (sidebarWillAnimate) {
-        // Wait until the sidebar transition is finished -> otherwise webdriver click error!
-        const sidebarElement = document.querySelectorAll('.Sidebar_component')[0];
-        sidebarElement.addEventListener('transitionend', () => !isDone && done() && (isDone = true));
-      } else {
-        done();
-      }
+      require('mobx').runInAction(() => {
+        const sidebarState = daedalus.stores.sidebar;
+        const sidebarWillAnimate = sidebarState.hidden !== hidden;
+        let isDone = false;
+        sidebarState.hidden = hidden;
+        if (sidebarWillAnimate) {
+          // Wait until the sidebar transition is finished -> otherwise webdriver click error!
+          const sidebarElement = document.querySelectorAll('.Sidebar_component')[0];
+          sidebarElement.addEventListener('transitionend', () => !isDone && done() && (isDone = true));
+        } else {
+          done();
+        }
+      });
     }, isHidden);
     return this.client.waitForExist(`.Sidebar_hidden`, null, !isHidden);
   });
 
   this.Given(/^The sidebar shows the (.*) category$/, async function (category) {
     await this.client.execute(function(route) {
-      daedalus.stores.sidebar.route = `/${route}`;
+      require('mobx').runInAction(() => daedalus.stores.sidebar.route = `/${route}`);
     }, category);
     return this.client.waitForVisible(`.SidebarCategory_active.${category}`);
   });

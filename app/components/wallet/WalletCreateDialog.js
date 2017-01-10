@@ -82,7 +82,7 @@ export default class WalletCreateDialog extends Component {
   }
 
   walletNameInput: Input;
-  validator = new MobxReactForm({ options, fields });
+  validator = new MobxReactForm({ options, fields }, {});
   actions = [
     {
       label: 'Create personal wallet',

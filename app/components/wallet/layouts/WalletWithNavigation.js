@@ -8,7 +8,7 @@ import styles from './WalletWithNavigation.scss';
 export default class WalletWithNavigation extends Component {
 
   static propTypes = {
-    children: PropTypes.arrayOf(PropTypes.element).isRequired,
+    children: PropTypes.element.isRequired,
     wallet: React.PropTypes.shape({
       name: PropTypes.string.isRequired,
       amount: PropTypes.number.isRequired,

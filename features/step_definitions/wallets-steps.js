@@ -14,8 +14,7 @@ export default function () {
 
   this.Given(/^I have a wallet$/, async function () {
     const result = await this.client.execute(function() {
-      const wallet = daedalus.api.repository.generateWallet();
-      return wallet;
+      return daedalus.api.repository.generateWallet();
     });
     this.wallet = result.value;
   });

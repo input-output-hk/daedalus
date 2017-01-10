@@ -30,5 +30,9 @@ export default defineActions({
     receiver: PropTypes.string.isRequired,
     amount: PropTypes.string.isRequired,
     description: PropTypes.string,
-  }
+  },
+  resizeWindow: {
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+  },
 }, PropTypes.validateWithErrors);

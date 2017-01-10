@@ -1,4 +1,5 @@
 // @flow
+import { action } from 'mobx';
 import type {
   getTransactionsRequest,
   createUserRequest,
@@ -45,23 +46,23 @@ export default class StubApi {
   getUser() {
     console.debug('StubApi::getUser called');
     const userData = this.repository.findUser();
-    return fakeRequest('getUser', () => new User(userData.id, new Profile(userData.profile)));
+    return fakeRequest('getUser', action(() => new User(userData.id, new Profile(userData.profile))));
   }
 
   getWallets(userId: string) {
     console.debug('StubApi::getWallets called with', userId);
-    return fakeRequest('getWallets', () => {
+    return fakeRequest('getWallets', action(() => {
       return this.repository.findWallets(userId).map(w => new Wallet(w));
-    });
+    }));
   }
 
   getTransactions(request: getTransactionsRequest) {
     console.debug('StubApi::getTransactions called with', request);
-    return fakeRequest('getTransactions', () => {
+    return fakeRequest('getTransactions', action(() => {
       const result = this.repository.findTransactions(request);
       result.transactions = result.transactions.map(w => new WalletTransaction(w));
       return result;
-    });
+    }));
   }
 
   createUser(request: createUserRequest) {
@@ -71,14 +72,19 @@ export default class StubApi {
 
   createWallet(request: createWalletRequest) {
     console.debug('StubApi::createWallet called with', request);
-    return fakeRequest('createWallet', new Wallet(this.repository.generateWallet(request)));
+    return fakeRequest('createWallet',  action(() => {
+      return new Wallet(this.repository.generateWallet(request))
+    }));
   }
 
   createTransaction(request: createTransactionRequest) {
     console.debug('StubApi::createTransaction called with', request);
-    return fakeRequest('createTransaction', new WalletTransaction(
-      this.repository.generateTransaction(Object.assign(request, { amount: -1 * request.amount }))
-    ));
+    return fakeRequest('createTransaction',  action(() => {
+      const data = this.repository.generateTransaction(
+        Object.assign(request, { amount: -1 * request.amount })
+      );
+      return new WalletTransaction(data);
+    }));
   }
 
   updateProfileField(request: updateUserProfileFieldRequest) {

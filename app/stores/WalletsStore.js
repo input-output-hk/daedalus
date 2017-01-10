@@ -45,13 +45,13 @@ export default class WalletsStore extends Store {
   }
 
   @computed get active() {
-    const currentRoute = this.stores.routing.location.pathname;
+    const currentRoute = this.stores.router.location.pathname;
     const match = matchRoute(`${this.BASE_ROUTE}/:id(*page)`, currentRoute);
     if (match) return this.all.find(w => w.id === match.id);
     return this.all[0];
   }
 
-  getWalletRoute(walletId: string, screen = 'home') {
+  getWalletRoute(walletId: ?string, screen = 'home') {
     return `${this.BASE_ROUTE}/${walletId}/${screen}`;
   }
 

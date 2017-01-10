@@ -13,20 +13,19 @@ export default class Wallet extends Component {
 
   static propTypes = {
     stores: PropTypes.shape({
-      routing: PropTypes.shape({
+      router: PropTypes.shape({
         location: PropTypes.shape({ pathname: PropTypes.string.isRequired })
       }).isRequired
     }).isRequired,
     actions: PropTypes.shape({
       goToRoute: PropTypes.func.isRequired,
     }).isRequired,
-    pathname: PropTypes.string.isRequired,
   };
 
   isActiveScreen = (screen: string) => {
-    const { routing, wallets} = this.props.stores;
+    const { router, wallets} = this.props.stores;
     const screenRoute = `${wallets.BASE_ROUTE}/${wallets.active.id}/${screen}`;
-    return routing.location ? routing.location.pathname === screenRoute : false;
+    return router.location ? router.location.pathname === screenRoute : false;
   };
 
   handleWalletNavItemClick = (item: string) => {
@@ -45,10 +44,7 @@ export default class Wallet extends Component {
           isActiveScreen={this.isActiveScreen}
           onWalletNavItemClick={this.handleWalletNavItemClick}
         >
-          <Match pattern={`${BASE_ROUTE}/:id`} render={() => <Redirect to={`${pathname}/home`} />} />
-          <Match pattern={`${BASE_ROUTE}/:id/home`} component={WalletHomePage} />
-          <Match pattern={`${BASE_ROUTE}/:id/send`} component={WalletSendPage} />
-          <Match pattern={`${BASE_ROUTE}/:id/receive`} component={WalletReceivePage} />
+          {this.props.children}
         </WalletWithNavigation>
       </Layout>
     );
