@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import Input from 'react-toolbox/lib/input/Input';
-import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
+import DropUp from '../../widgets/forms/Dropup';
 import classnames from 'classnames';
 import FileUploadWidget from '../../widgets/FileUploadWidget';
 import Profile from '../../../domain/Profile';
@@ -104,7 +104,7 @@ export default class ProfileSettings extends Component {
           label={intl.formatMessage(messages.password)}
           value={`${intl.formatMessage(messages.lastUpdated)} ${moment(profile.passwordUpdateDate).fromNow()}`}
         />
-        <Dropdown
+        <DropUp
           className="language"
           label={intl.formatMessage(messages.language)}
           source={languages}
