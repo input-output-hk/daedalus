@@ -16,7 +16,7 @@ import setupStores from './stores';
 import actions from './actions';
 import { resetAllActions } from './actions/lib/actions';
 import translations from './i18n/translations';
-import './styles/index.global.scss';
+import './themes/index.global.scss';
 
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([en, de, hr]);

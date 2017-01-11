@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-toolbox/lib/input/Input';
-import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
+import Dropup from '../widgets/forms/Dropup';
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './WalletCreateDialog.scss';
@@ -144,7 +144,7 @@ export default class WalletCreateDialog extends Component {
           ref={(input) => { this.walletNameInput = input; }}
         />
 
-        <Dropdown
+        <Dropup
           className="currency"
           label={intl.formatMessage(messages.currency)}
           value={currency.value}
