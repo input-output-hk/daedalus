@@ -72,10 +72,14 @@ export default class InlineEditingInput extends Component {
         } else {
           this.props.onCancelEditing();
         }
-      },
-      onError: (data) => {
       }
     });
+  }
+
+  componentDidUpdate() {
+    if (this.props.isActive) {
+      this.refs.inputField.refs.wrappedInstance.focus();
+    }
   }
 
   render() {
@@ -112,6 +116,7 @@ export default class InlineEditingInput extends Component {
           onKeyDown={event => this.handleInputKeyDown(event)}
           error={isActive ? inputField.error : null}
           disabled={!isActive}
+          ref="inputField"
         />
         {!isActive && (
           <button
