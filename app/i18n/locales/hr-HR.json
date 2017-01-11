@@ -54,5 +54,6 @@
   "inline.editing.input.change.label": "promijeni",
   "inline.editing.input.cancel.label": "odustani",
   "profile.settings.errors.invalidName": "Molimo unesite valjano ime.",
-  "profile.settings.errors.invalidEmail": "Molimo unesite valjanu e-mail adresu"
+  "profile.settings.errors.invalidEmail": "Molimo unesite valjanu e-mail adresu",
+  "inline.editing.input.changesSaved": "Promjene su uspješno spremljene"
 }

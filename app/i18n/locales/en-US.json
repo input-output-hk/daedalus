@@ -54,5 +54,6 @@
   "inline.editing.input.change.label": "change",
   "inline.editing.input.cancel.label": "cancel",
   "profile.settings.errors.invalidName": "Please enter a valid name.",
-  "profile.settings.errors.invalidEmail": "Please enter a valid email"
+  "profile.settings.errors.invalidEmail": "Please enter a valid email",
+  "inline.editing.input.changesSaved": "Your changes have been saved"
 }
