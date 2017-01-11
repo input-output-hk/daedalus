@@ -73,9 +73,13 @@ export default class ProfileSettings extends Component {
     onFieldValueChange: PropTypes.func.isRequired,
     onStartEditing: PropTypes.func.isRequired,
     onStopEditing: PropTypes.func.isRequired,
+    onCancelEditing: PropTypes.func.isRequired,
     nameValidator: PropTypes.func.isRequired,
     emailValidator: PropTypes.func.isRequired,
-    activeField: PropTypes.string
+    activeField: PropTypes.string,
+    isSubmitting: PropTypes.bool,
+    isInvalid: PropTypes.bool,
+    lastUpdatedFiled: PropTypes.string
   };
 
   static contextTypes = {
@@ -91,7 +95,11 @@ export default class ProfileSettings extends Component {
       onStopEditing,
       activeField,
       nameValidator,
-      emailValidator
+      emailValidator,
+      isSubmitting,
+      isInvalid,
+      lastUpdatedFiled,
+      onCancelEditing
     } = this.props;
     const componentClassNames = classnames([styles.component, 'profile']);
     return (
@@ -104,9 +112,11 @@ export default class ProfileSettings extends Component {
               isActive={activeField === 'name'}
               onStartEditing={() => onStartEditing('name')}
               onStopEditing={onStopEditing}
+              onCancelEditing={onCancelEditing}
               onSubmit={(value) => onFieldValueChange('name', value)}
               isValid={nameValidator}
               validationErrorMessage={intl.formatMessage(messages.invalidName)}
+              successfullyUpdated={!isSubmitting && lastUpdatedFiled === 'name' && !isInvalid}
             />
             <InlineEditingInput
               inputFieldLabel={intl.formatMessage(messages.email)}
@@ -114,9 +124,11 @@ export default class ProfileSettings extends Component {
               isActive={activeField === 'email'}
               onStartEditing={() => onStartEditing('email')}
               onStopEditing={onStopEditing}
+              onCancelEditing={onCancelEditing}
               onSubmit={(value) => onFieldValueChange('email', value)}
               isValid={emailValidator}
               validationErrorMessage={intl.formatMessage(messages.invalidEmail)}
+              successfullyUpdated={!isSubmitting && lastUpdatedFiled === 'email' && !isInvalid}
             />
           </div>
           <div className={styles.picture}>

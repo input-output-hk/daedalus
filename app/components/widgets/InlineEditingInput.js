@@ -27,9 +27,11 @@ export default class InlineEditingInput extends Component {
     inputFieldValue: PropTypes.string.isRequired,
     onStartEditing: PropTypes.func.isRequired,
     onStopEditing: PropTypes.func.isRequired,
+    onCancelEditing: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     isValid: PropTypes.func.isRequired,
-    validationErrorMessage: PropTypes.string.isRequired
+    validationErrorMessage: PropTypes.string.isRequired,
+    successfullyUpdated: PropTypes.bool.isRequired
   };
 
   static contextTypes = {
@@ -54,15 +56,18 @@ export default class InlineEditingInput extends Component {
     if (event.which === 13) { // ENTER key
       this.submit();
     }
-    if (event.which === 27) {// ESCAPE key
-      this.props.onStopEditing();
+    if (event.which === 27) { // ESCAPE key
+      this.props.onCancelEditing();
     }
   };
 
   submit() {
     this.validator.submit({
       onSuccess: (form) => {
-        this.props.onSubmit(form.values().inputField);
+        const { inputField } = form.values();
+        if (inputField !== this.props.inputFieldValue) {
+          this.props.onSubmit(inputField);
+        }
         this.props.onStopEditing();
       },
       onError: (data) => {
@@ -76,8 +81,9 @@ export default class InlineEditingInput extends Component {
       inputFieldLabel,
       isActive,
       onStartEditing,
-      onStopEditing,
-      inputFieldValue
+      onCancelEditing,
+      inputFieldValue,
+      successfullyUpdated
     } = this.props;
     const { intl } = this.context;
     const inputField = validator.$('inputField');
@@ -87,6 +93,7 @@ export default class InlineEditingInput extends Component {
         onBlur={this.submit.bind(this)}
       >
         <Input
+          className={successfullyUpdated ? 'input_animateSuccess' : ''}
           type="text"
           label={inputFieldLabel}
           value={isActive ? inputField.value : inputFieldValue}
@@ -108,7 +115,7 @@ export default class InlineEditingInput extends Component {
         {isActive && (
           <button
             className={styles.button}
-            onClick={onStopEditing}
+            onClick={onCancelEditing}
           >
             {intl.formatMessage(messages.cancel)}
           </button>

@@ -9,11 +9,13 @@ export default class SettingsStore extends Store {
 
   @observable termsOfUseRequest = new CachedRequest(this.api, 'getTermsOfUse');
   @observable settingsFieldBeingEdited = null;
+  @observable lastUpdatedSettingsField = null;
 
   constructor(...args) {
     super(...args);
     this.actions.startEditingSettingsField.listen(this._startEditingSettingsField.bind(this));
     this.actions.stopEditingSettingsField.listen(this._stopEditingSettingsField.bind(this));
+    this.actions.cancelEditingSettingsField.listen(this._cancelEditingSettingsField.bind(this));
   }
 
   @computed get termsOfUse() {
@@ -25,6 +27,15 @@ export default class SettingsStore extends Store {
   }
 
   @action _stopEditingSettingsField() {
+    if (this.settingsFieldBeingEdited) {
+      this.lastUpdatedSettingsField = this.settingsFieldBeingEdited;
+    }
+    this.settingsFieldBeingEdited = null;
+  }
+
+  @action _cancelEditingSettingsField() {
+    console.log('cancel editing');
+    this.lastUpdatedSettingsField = null;
     this.settingsFieldBeingEdited = null;
   }
 

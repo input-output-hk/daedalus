@@ -75,5 +75,24 @@ $input-hint-opacity: 0.5;
 .disabled > .inputElement {
   color: #5e6066;
   opacity: 0.5;
-  border-bottom-style: solid;
+  border: solid 1px #c6cdd6;
+}
+
+@keyframes animateSuccess {
+  0% {
+    border: solid 1px #2dc06c;
+    opacity: 1;
+  }
+  50% {
+    border: solid 1px #2dc06c;
+    opacity: 1;
+  }
+  100% {
+    border: solid 1px #c6cdd6;
+    opacity: 0.5;
+  }
+}
+
+.animateSuccess.disabled > .inputElement {
+  animation: animateSuccess 5s;
 }

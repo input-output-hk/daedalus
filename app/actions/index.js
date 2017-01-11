@@ -38,5 +38,6 @@ export default defineActions({
   startEditingSettingsField: {
     field: PropTypes.string.isRequired,
   },
-  stopEditingSettingsField: {}
+  stopEditingSettingsField: {},
+  cancelEditingSettingsField: {}
 }, PropTypes.validateWithErrors);
