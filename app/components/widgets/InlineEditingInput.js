@@ -68,8 +68,10 @@ export default class InlineEditingInput extends Component {
         const { inputField } = form.values();
         if (inputField !== this.props.inputFieldValue) {
           this.props.onSubmit(inputField);
+          this.props.onStopEditing();
+        } else {
+          this.props.onCancelEditing();
         }
-        this.props.onStopEditing();
       },
       onError: (data) => {
       }
