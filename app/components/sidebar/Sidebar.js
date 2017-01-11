@@ -82,14 +82,15 @@ export default class Sidebar extends Component {
             minimized={hasMinimizedCategories}
             onClick={() => onCategoryClicked('/settings')}
           />
-          <SidebarCategory
-            className="staking"
-            label="Staking"
-            icon={stakingIcon}
-            active={this.matches('/staking')}
-            minimized={hasMinimizedCategories}
-            onClick={() => onCategoryClicked('/staking')}
-          />
+          {/* HIDDEN UNTIL WE HAVE BETTER STAKING DESIGN */}
+          {/*<SidebarCategory*/}
+            {/*className="staking"*/}
+            {/*label="Staking"*/}
+            {/*icon={stakingIcon}*/}
+            {/*active={this.matches('/staking')}*/}
+            {/*minimized={hasMinimizedCategories}*/}
+            {/*onClick={() => onCategoryClicked('/staking')}*/}
+          {/*/>*/}
         </div>
         {subMenu}
       </div>
