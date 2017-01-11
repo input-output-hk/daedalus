@@ -2,6 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import classnames from 'classnames';
 import Input from 'react-toolbox/lib/input/Input';
 import MobxReactForm from 'mobx-react-form';
 import styles from './InlineEditingInput.scss';
@@ -87,13 +88,19 @@ export default class InlineEditingInput extends Component {
     } = this.props;
     const { intl } = this.context;
     const inputField = validator.$('inputField');
+    const inputStyles = classnames([
+      successfullyUpdated ? 'input_animateSuccess' : null,
+    ]);
+    const savingResultLabel = classnames([
+      successfullyUpdated ? styles.savingResultLabelVisible : styles.savingResultLabelInvisible,
+    ]);
     return (
       <div
         className={styles.component}
         onBlur={this.submit.bind(this)}
       >
         <Input
-          className={successfullyUpdated ? 'input_animateSuccess' : ''}
+          className={inputStyles}
           type="text"
           label={inputFieldLabel}
           value={isActive ? inputField.value : inputFieldValue}
@@ -120,6 +127,7 @@ export default class InlineEditingInput extends Component {
             {intl.formatMessage(messages.cancel)}
           </button>
         )}
+        <div className={savingResultLabel}>Your changes have been saved</div>
       </div>
     );
   }

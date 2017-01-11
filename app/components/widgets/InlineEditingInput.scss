@@ -18,6 +18,34 @@
     text-align: right;
     color: $text-color-accent;
   }
+
+  @keyframes animateSavingResultLabel {
+    0% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .savingResultLabelInvisible {
+    display: none;
+  }
+
+  .savingResultLabelVisible {
+    position: absolute;
+    right: 0;
+    top: 0;
+    opacity: 0;
+    font-family: $font-light;
+    font-size: 14px;
+    text-align: right;
+    color: $text-color-accent;
+    animation: animateSavingResultLabel 3s;
+  }
 }
 
 
