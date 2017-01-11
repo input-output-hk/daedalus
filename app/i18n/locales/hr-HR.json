@@ -50,5 +50,9 @@
   "login.form.email.hint": "E-mail",
   "login.form.password.hint": "Lozinka",
   "login.form.submit.label": "Prijava",
-  "login.form.invalidCredentials": "Neispravan e-mail ili lozinka."
+  "login.form.invalidCredentials": "Neispravan e-mail ili lozinka.",
+  "inline.editing.input.change.label": "promijeni",
+  "inline.editing.input.cancel.label": "odustani",
+  "profile.settings.errors.invalidName": "Molimo unesite valjano ime.",
+  "profile.settings.errors.invalidEmail": "Molimo unesite valjanu e-mail adresu"
 }

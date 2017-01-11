@@ -50,5 +50,9 @@
   "login.form.email.hint": "E-mail",
   "login.form.password.hint": "Password",
   "login.form.submit.label": "Login",
-  "login.form.invalidCredentials": "E-mail or password is wrong."
+  "login.form.invalidCredentials": "E-mail or password is wrong.",
+  "inline.editing.input.change.label": "change",
+  "inline.editing.input.cancel.label": "cancel",
+  "profile.settings.errors.invalidName": "Please enter a valid name.",
+  "profile.settings.errors.invalidEmail": "Please enter a valid email"
 }

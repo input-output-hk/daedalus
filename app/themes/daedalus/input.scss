@@ -71,3 +71,9 @@ $input-hint-opacity: 0.5;
 .bar {
   display: none;
 }
+
+.disabled > .inputElement {
+  color: #5e6066;
+  opacity: 0.5;
+  border-bottom-style: solid;
+}

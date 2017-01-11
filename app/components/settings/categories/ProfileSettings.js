@@ -7,6 +7,7 @@ import Input from 'react-toolbox/lib/input/Input';
 import DropUp from '../../widgets/forms/Dropup';
 import classnames from 'classnames';
 import FileUploadWidget from '../../widgets/FileUploadWidget';
+import InlineEditingInput from '../../widgets/InlineEditingInput';
 import Profile from '../../../domain/Profile';
 import styles from './ProfileSettings.scss';
 
@@ -46,6 +47,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Last updated',
     description: '"Last updated" part of the message "Last updated X time ago" for password.'
   },
+  invalidName: {
+    id: 'profile.settings.errors.invalidName',
+    defaultMessage: '!!!Please enter a valid name',
+    description: 'Error message shown when invalid name was entered on profile settings.'
+  },
+  invalidEmail: {
+    id: 'profile.settings.errors.invalidEmail',
+    defaultMessage: '!!!Please enter a valid email',
+    description: 'Error message shown when invalid email was entered on profile settings.'
+  },
 });
 
 const languages = [
@@ -59,7 +70,12 @@ export default class ProfileSettings extends Component {
 
   static propTypes = {
     profile: PropTypes.instanceOf(Profile).isRequired,
-    onFieldValueChange: PropTypes.func,
+    onFieldValueChange: PropTypes.func.isRequired,
+    onStartEditing: PropTypes.func.isRequired,
+    onStopEditing: PropTypes.func.isRequired,
+    nameValidator: PropTypes.func.isRequired,
+    emailValidator: PropTypes.func.isRequired,
+    activeField: PropTypes.string
   };
 
   static contextTypes = {
@@ -68,23 +84,39 @@ export default class ProfileSettings extends Component {
 
   render() {
     const { intl } = this.context;
-    const { profile, onFieldValueChange } = this.props;
+    const {
+      profile,
+      onFieldValueChange,
+      onStartEditing,
+      onStopEditing,
+      activeField,
+      nameValidator,
+      emailValidator
+    } = this.props;
     const componentClassNames = classnames([styles.component, 'profile']);
     return (
       <div className={componentClassNames}>
         <div className={styles.nameEmailAndPicture}>
           <div className={styles.nameAndEmail}>
-            <Input
-              type="text"
-              label={intl.formatMessage(messages.name)}
-              value={profile.name}
-              onChange={(value) => onFieldValueChange('name', value)}
+            <InlineEditingInput
+              inputFieldLabel={intl.formatMessage(messages.name)}
+              inputFieldValue={profile.name}
+              isActive={activeField === 'name'}
+              onStartEditing={() => onStartEditing('name')}
+              onStopEditing={onStopEditing}
+              onSubmit={(value) => onFieldValueChange('name', value)}
+              isValid={nameValidator}
+              validationErrorMessage={intl.formatMessage(messages.invalidName)}
             />
-            <Input
-              type="text"
-              label={intl.formatMessage(messages.email)}
-              value={profile.email}
-              onChange={(value) => onFieldValueChange('email', value)}
+            <InlineEditingInput
+              inputFieldLabel={intl.formatMessage(messages.email)}
+              inputFieldValue={profile.email}
+              isActive={activeField === 'email'}
+              onStartEditing={() => onStartEditing('email')}
+              onStopEditing={onStopEditing}
+              onSubmit={(value) => onFieldValueChange('email', value)}
+              isValid={emailValidator}
+              validationErrorMessage={intl.formatMessage(messages.invalidEmail)}
             />
           </div>
           <div className={styles.picture}>

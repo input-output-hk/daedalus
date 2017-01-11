@@ -35,4 +35,8 @@ export default defineActions({
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
   },
+  startEditingSettingsField: {
+    field: PropTypes.string.isRequired,
+  },
+  stopEditingSettingsField: {}
 }, PropTypes.validateWithErrors);
