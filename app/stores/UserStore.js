@@ -47,9 +47,10 @@ export default class UserStore extends Store {
 
   _resizeWindowOnAuthChange = () => {
     const { router, wallets } = this.stores;
-    if (this.isLoggedIn && this.active && wallets.active) {
+    if (this.isLoggedIn && this.active && wallets.all.length) {
+      const walletToShowAfterLogin = wallets.all[0]; // just pick the first for now
       if (router.location.pathname === '/login') {
-        router.push(wallets.getWalletRoute(wallets.active.id));
+        router.push(wallets.getWalletRoute(walletToShowAfterLogin.id));
       }
       this.actions.resizeWindow({ width: 1024, height: 768 });
     } else {
