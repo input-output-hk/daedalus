@@ -22,7 +22,7 @@ import './themes/index.global.scss';
 addLocaleData([en, de, hr]);
 
 const initializeDaedalus = () => {
-  const api = environment.WITH_CARDANO_API ? new CardanoClientApi() : new StubApi();
+  const api = environment.CARDANO_API ? new CardanoClientApi() : new StubApi();
   const router = new RouterStore();
   const history = syncHistoryWithStore(hashHistory, router);
   const stores = setupStores(api, actions, router);

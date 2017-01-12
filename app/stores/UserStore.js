@@ -61,7 +61,7 @@ export default class UserStore extends Store {
 
   _autoLogin = () => {
     if (environment.AUTO_LOGIN && !this.isLoggedIn) {
-      if (environment.WITH_CARDANO_API) {
+      if (environment.CARDANO_API) {
         this._login({ email: '', passwordHash: '' });
       } else {
         const user = this.api.repository.findUser();
