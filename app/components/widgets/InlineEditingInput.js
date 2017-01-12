@@ -99,16 +99,19 @@ export default class InlineEditingInput extends Component {
     } = this.props;
     const { intl } = this.context;
     const inputField = validator.$('inputField');
+    const componentStyles = classnames([
+      styles.component,
+      isActive ? null : styles.inactive,
+    ]);
     const inputStyles = classnames([
       successfullyUpdated ? 'input_animateSuccess' : null,
-    ]);
-    const savingResultLabel = classnames([
-      successfullyUpdated ? styles.savingResultLabelVisible : styles.savingResultLabelInvisible,
+      isActive ? null : 'input_cursorPointer'
     ]);
     return (
       <div
-        className={styles.component}
+        className={componentStyles}
         onBlur={this.submit.bind(this)}
+        onClick={onStartEditing}
       >
         <Input
           className={inputStyles}
@@ -123,14 +126,6 @@ export default class InlineEditingInput extends Component {
           disabled={!isActive}
           ref="inputField"
         />
-        {!isActive && (
-          <button
-            className={styles.button}
-            onClick={onStartEditing}
-          >
-            {intl.formatMessage(messages.change)}
-          </button>
-        )}
         {isActive && (
           <button
             className={styles.button}
@@ -139,7 +134,10 @@ export default class InlineEditingInput extends Component {
             {intl.formatMessage(messages.cancel)}
           </button>
         )}
-        <div className={savingResultLabel}>Your changes have been saved</div>
+        {successfullyUpdated && (
+          <div className={styles.savingResultLabel}>Your changes have been saved</div>
+        )}
+
       </div>
     );
   }

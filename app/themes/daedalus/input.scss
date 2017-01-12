@@ -93,6 +93,10 @@ $input-hint-opacity: 0.5;
   }
 }
 
+.cursorPointer.disabled > .inputElement {
+  cursor: pointer;
+}
+
 .animateSuccess.disabled > .inputElement {
   animation: animateSuccess 3s;
 }

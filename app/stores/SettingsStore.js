@@ -34,7 +34,6 @@ export default class SettingsStore extends Store {
   }
 
   @action _cancelEditingSettingsField() {
-    console.log('cancel editing');
     this.lastUpdatedSettingsField = null;
     this.settingsFieldBeingEdited = null;
   }

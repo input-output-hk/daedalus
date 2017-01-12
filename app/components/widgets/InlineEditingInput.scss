@@ -1,7 +1,12 @@
 .component {
   position: relative;
-  &:hover {
-    .button {
+
+  &.inactive {
+    &:hover {
+      cursor: pointer;
+      opacity: 1;
+    }
+    .input_inputElement {
       cursor: pointer;
       opacity: 1;
     }
@@ -31,11 +36,7 @@
     }
   }
 
-  .savingResultLabelInvisible {
-    display: none;
-  }
-
-  .savingResultLabelVisible {
+  .savingResultLabel {
     position: absolute;
     right: 0;
     top: 0;
