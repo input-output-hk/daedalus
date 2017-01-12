@@ -118,17 +118,11 @@ export default class ProfileSettings extends Component {
               validationErrorMessage={intl.formatMessage(messages.invalidName)}
               successfullyUpdated={!isSubmitting && lastUpdatedFiled === 'name' && !isInvalid}
             />
-            <InlineEditingInput
-              inputFieldLabel={intl.formatMessage(messages.email)}
-              inputFieldValue={profile.email}
-              isActive={activeField === 'email'}
-              onStartEditing={() => onStartEditing('email')}
-              onStopEditing={onStopEditing}
-              onCancelEditing={onCancelEditing}
-              onSubmit={(value) => onFieldValueChange('email', value)}
-              isValid={emailValidator}
-              validationErrorMessage={intl.formatMessage(messages.invalidEmail)}
-              successfullyUpdated={!isSubmitting && lastUpdatedFiled === 'email' && !isInvalid}
+            <Input
+              type="text"
+              label={intl.formatMessage(messages.email)}
+              value={profile.email}
+              onChange={(value) => onFieldValueChange('email', value)}
             />
           </div>
           <div className={styles.picture}>
