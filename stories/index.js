@@ -6,3 +6,4 @@ import './ProfileSettings.stories';
 import './StakingChart.stories';
 import './Staking.stories';
 import './Login.stories';
+import './WalletRecovery.stories';
