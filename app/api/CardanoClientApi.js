@@ -36,10 +36,9 @@ export default class CardanoClientApi {
 
   async getTransactions({ walletId, searchTerm, limit }: getTransactionsRequest) {
     const history = await ClientApi.searchHistory(walletId, searchTerm, limit)();
-    console.log(history);
     return new Promise((resolve) => resolve({
-      transactions: history.map(data => this._createTransactionFromData(data, walletId)),
-      total: history.length
+      transactions: history[0].map(data => this._createTransactionFromData(data, walletId)),
+      total: history[1]
     }));
   }
 
