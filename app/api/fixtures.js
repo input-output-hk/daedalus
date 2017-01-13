@@ -24,7 +24,7 @@ export const wallets: Array<walletStruct> = [
     address: faker.finance.bitcoinAddress(),
     type: 'personal',
     currency: 'ada',
-    amount: 19903750165.23,
+    amount: 19903750165,
     name: 'Main wallet',
   },
   {
@@ -33,7 +33,7 @@ export const wallets: Array<walletStruct> = [
     address: faker.finance.bitcoinAddress(),
     type: 'personal',
     currency: 'ada',
-    amount: 274912874.35,
+    amount: 274912874,
     name: 'House rent',
   },
   {
@@ -42,7 +42,7 @@ export const wallets: Array<walletStruct> = [
     address: faker.finance.bitcoinAddress(),
     type: 'personal',
     currency: 'btc',
-    amount: 0.0004924712,
+    amount: 4924712,
     name: 'Mining',
   },
   {
@@ -51,7 +51,7 @@ export const wallets: Array<walletStruct> = [
     address: faker.finance.bitcoinAddress(),
     type: 'personal',
     currency: 'ada',
-    amount: 2500.00,
+    amount: 2500,
     name: 'Transporting',
   },
   {
@@ -60,7 +60,7 @@ export const wallets: Array<walletStruct> = [
     address: faker.finance.bitcoinAddress(),
     type: 'personal',
     currency: 'btc',
-    amount: 0.02048244,
+    amount: 1000,
     name: 'Pocket money',
   }
 ];
@@ -80,7 +80,7 @@ const generateTransaction = (data: Object): transactionStruct => {
 };
 
 const cardTransaction = (walletId: string, date: ?Date) => {
-  const amount = -1 * ((Math.random() * 1000) + 1);
+  const amount = -1 * (Math.floor((Math.random() * 1000)) + 1);
   return generateTransaction({
     walletId,
     amount,
@@ -115,7 +115,7 @@ const adaTransaction = (data: {
 };
 
 const adaExpend = (walletId: string, date: ?Date) => {
-  const amount = -1 * ((Math.random() * 1000) + 1);
+  const amount = -1 * (Math.floor((Math.random() * 1000)) + 1);
   return adaTransaction({
     walletId,
     amount,
@@ -126,7 +126,7 @@ const adaExpend = (walletId: string, date: ?Date) => {
 };
 
 const adaIncome = (walletId: string, date: ?Date) => {
-  const amount = (Math.random() * 1000) + 1;
+  const amount = (Math.floor(Math.random() * 1000)) + 1;
   return adaTransaction({
     walletId,
     amount,
@@ -137,7 +137,7 @@ const adaIncome = (walletId: string, date: ?Date) => {
 };
 
 const exchange = (walletId: string, date: ?Date) => {
-  const amount = (Math.random() * 1000) + 1;
+  const amount = (Math.floor(Math.random() * 1000)) + 1;
   const exchangeRate = (Math.random() * 1000) + 10;
   return generateTransaction({
     walletId,
