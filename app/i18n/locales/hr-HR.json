@@ -22,6 +22,7 @@
   "wallet.create.dialog.currency.label": "Valuta",
   "wallet.create.dialog.errors.invalidWalletName": "Potrebno je unijeti barem 3 znaka.",
   "wallet.create.dialog.errors.invalidCurrency": "Ova valuta trenutno nije podržana.",
+  "wallet.create.dialog.create.personal.wallet.button.label": "Kreiraj osobni novčanik",
   "wallet.transactions.search.hint": "Pretraži transakcije",
   "settings.menu.profile.link.label": "Profil",
   "settings.menu.security.link.label": "Sigurnost",

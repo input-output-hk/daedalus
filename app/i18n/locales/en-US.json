@@ -25,6 +25,7 @@
   "wallet.create.dialog.currency.label": "Currency",
   "wallet.create.dialog.errors.invalidWalletName": "Requires at least 3 letters.",
   "wallet.create.dialog.errors.invalidCurrency": "This currency is not yet supported.",
+  "wallet.create.dialog.create.personal.wallet.button.label": "Create personal wallet",
   "wallet.transactions.search.hint": "Search transaction",
   "settings.menu.profile.link.label": "Profile",
   "settings.menu.security.link.label": "Security",

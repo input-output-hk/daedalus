@@ -30,6 +30,11 @@ const messages = defineMessages({
     defaultMessage: '!!!This currency is not yet supported.',
     description: 'Error message shown when invalid currency was selected in create wallet dialog.'
   },
+  createPersonalWallet: {
+    id: 'wallet.create.dialog.create.personal.wallet.button.label',
+    defaultMessage: '!!!Create personal wallet',
+    description: 'Label for the "Create personal wallet" button on create wallet dialog.'
+  }
 });
 
 const currencies = [
@@ -85,12 +90,12 @@ export default class WalletCreateDialog extends Component {
   validator = new MobxReactForm({ options, fields }, {});
   actions = [
     {
-      label: 'Create personal wallet',
-      onClick: this.submit.bind(this)
+      label: this.context.intl.formatMessage(messages.createPersonalWallet),
+      onClick: this.submit
     }
   ];
 
-  submit() {
+  submit = () => {
     this.validator.submit({
       onSuccess: (form) => {
         this.setState({ isSubmitting: true });
@@ -100,7 +105,7 @@ export default class WalletCreateDialog extends Component {
         this.setState({ isSubmitting: false });
       }
     });
-  }
+  };
 
   checkForEnterKey(event: KeyboardEvent) {
     if (event.key === 'Enter') {
