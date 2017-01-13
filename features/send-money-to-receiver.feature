@@ -18,6 +18,7 @@ Feature: Send Money to Receiver
     When I submit the wallet send form
     Then I should see the following error messages on the wallet send form:
       | message                                       |
+      | wallet.send.form.errors.invalidTitle          |
       | global.errors.fieldIsRequired                 |
       | wallet.send.form.errors.invalidAmount         |
 
