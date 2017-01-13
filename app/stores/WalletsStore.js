@@ -33,7 +33,7 @@ export default class WalletsStore extends Store {
       walletId: wallet.id,
       amount: parseFloat(transactionDetails.amount),
       sender: wallet.address,
-      currency: wallet.currency
+      currency: wallet.currency,
     });
     this.walletsRequest.invalidate({ immediately: true });
     this.stores.transactions.searchRequest.invalidate({ immediately: true });

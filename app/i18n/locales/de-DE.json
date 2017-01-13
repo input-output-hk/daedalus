@@ -6,7 +6,7 @@
   "wallet.transaction.type.ada": "ADA Transaktion",
   "wallet.transaction.type.exchange": "Währungsumtausch",
   "wallet.send.form.receiver.label": "Empfänger",
-  "wallet.send.form.receiver.hint": "Bitcoin Adresse",
+  "wallet.send.form.receiver.hint": "Wallet Adresse",
   "wallet.send.form.amount.label": "Betrag",
   "wallet.send.form.amount.hint": "Betrag in ADA",
   "wallet.send.form.description.label": "Beschreibung",

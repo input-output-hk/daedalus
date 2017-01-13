@@ -72,7 +72,7 @@ export default class Transaction extends Component {
 
           <button className={styles.header} onClick={this.toggleDetails.bind(this)}>
             <div className={styles.title}>{data.title}</div>
-            <div className={styles.amount}>{data.amount.toFixed(2)} {data.currency}</div>
+            <div className={styles.amount}>{data.amount} {data.currency}</div>
           </button>
 
           <div className={styles.type}>{intl.formatMessage(messages[typeMessage])}</div>
@@ -92,12 +92,10 @@ export default class Transaction extends Component {
                 </div>
               </div>
             )}
-            {data.transactionId && (
-              <div>
-                <h2>TransactionId</h2>
-                <span>{data.transactionId}</span>
-              </div>
-            )}
+            <div>
+              <h2>TransactionId</h2>
+              <span>{data.id}</span>
+            </div>
             <div>
               <h2>Description</h2>
               <span>{data.description !== '' ? data.description : 'No description yet'}</span>

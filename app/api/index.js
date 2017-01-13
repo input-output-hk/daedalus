@@ -39,7 +39,6 @@ export type transactionStruct = {
   description: string,
   exchange: ?string,
   conversionRate: ?string,
-  transactionId: ?string,
 };
 
 // REQUESTS
@@ -74,6 +73,7 @@ export type createTransactionRequest = {
   receiver: string,
   amount: number,
   currency: string,
+  title: string,
   description: ?string,
 }
 

@@ -51,7 +51,7 @@ export default class UserStore extends Store {
       const walletToShowAfterLogin = wallets.all[0]; // just pick the first for now
       if (router.location.pathname === '/login') {
         router.push(wallets.getWalletRoute(walletToShowAfterLogin.id));
-        this.actions.resizeWindow({ width: 1024, height: 768 });
+        this.actions.resizeWindow({ width: 1150, height: 870 });
       }
     } else {
       if (router.location.pathname !== '/login') router.push('/login');
@@ -61,7 +61,7 @@ export default class UserStore extends Store {
 
   _autoLogin = () => {
     if (environment.AUTO_LOGIN && !this.isLoggedIn) {
-      if (environment.WITH_CARDANO_API) {
+      if (environment.CARDANO_API) {
         this._login({ email: '', passwordHash: '' });
       } else {
         const user = this.api.repository.findUser();

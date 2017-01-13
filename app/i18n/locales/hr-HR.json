@@ -6,7 +6,7 @@
   "wallet.transaction.type.ada": "ADA transakcija",
   "wallet.transaction.type.exchange": "Konverzija",
   "wallet.send.form.receiver.label": "Primatelj",
-  "wallet.send.form.receiver.hint": "Bitcoin adresa",
+  "wallet.send.form.receiver.hint": "Wallet adresa",
   "wallet.send.form.amount.label": "Iznos",
   "wallet.send.form.amount.hint": "Iznos u ADA",
   "wallet.send.form.description.label": "Opis",

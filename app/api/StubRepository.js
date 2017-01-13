@@ -95,10 +95,8 @@ export default class StubRepository {
     if (isString(data.date)) data.date = new Date(data.date);
     if (!isDate(data.date)) data.date = new Date();
     const transaction: transactionStruct = Object.assign({}, {
-      id: `t-id-${this.transactions.length}`,
+      id: faker.finance.bitcoinAddress(),
       type: 'adaExpend',
-      title: `Money to ${data.receiver}`,
-      transactionId: faker.finance.bitcoinAddress(),
     }, data);
     this.transactions.push(transaction);
     this.wallets.find(w => w.id === transaction.walletId).amount += transaction.amount;
