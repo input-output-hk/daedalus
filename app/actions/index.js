@@ -27,6 +27,7 @@ export default defineActions({
   toggleSidebar: {},
   toggleCreateWalletDialog: {},
   sendMoney: {
+    title: PropTypes.string.isRequired,
     receiver: PropTypes.string.isRequired,
     amount: PropTypes.string.isRequired,
     description: PropTypes.string,

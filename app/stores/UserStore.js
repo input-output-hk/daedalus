@@ -52,7 +52,7 @@ export default class UserStore extends Store {
       if (router.location.pathname === '/login') {
         router.push(wallets.getWalletRoute(walletToShowAfterLogin.id));
       }
-      this.actions.resizeWindow({ width: 1024, height: 768 });
+      this.actions.resizeWindow({ width: 1150, height: 870 });
     } else {
       if (router.location.pathname !== '/login') router.push('/login');
       this.actions.resizeWindow({ width: 480, height: 575 });

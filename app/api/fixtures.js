@@ -74,7 +74,7 @@ const generateTransaction = (data: Object): transactionStruct => {
     date = moment().subtract(Math.floor(Math.random() * 10), 'days').toDate();
   }
   return Object.assign({}, {
-    id: `t-id-${transactionsCount}`,
+    id: faker.finance.bitcoinAddress(),
     description: faker.lorem.sentence(),
   }, data, { date });
 };
@@ -90,7 +90,6 @@ const cardTransaction = (walletId: string, date: ?Date) => {
     title: `Invoice to ${faker.company.companyName()}`,
     exchange: null,
     conversionRate: null,
-    transactionId: null,
   });
 };
 
@@ -112,7 +111,6 @@ const adaTransaction = (data: {
     currency: 'ada',
     exchange: `${amount.toFixed(2)} ADA for ${(amount / exchangeRate).toFixed(2)} USD`,
     conversionRate: `1 USD = ${exchangeRate.toFixed(2)} ADA`,
-    transactionId: faker.finance.bitcoinAddress(),
   });
 };
 
@@ -150,7 +148,6 @@ const exchange = (walletId: string, date: ?Date) => {
     currency: 'ada',
     exchange: `${amount.toFixed(2)} ADA for ${(amount / exchangeRate).toFixed(2)} ETH`,
     conversionRate: `1 ETH = ${exchangeRate.toFixed(2)} ADA`,
-    transactionId: faker.finance.bitcoinAddress(),
   });
 };
 

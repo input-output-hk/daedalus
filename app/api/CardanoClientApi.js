@@ -1,5 +1,6 @@
 // @flow
 import ClientApi from 'daedalus-client-api';
+import { action } from 'mobx';
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
 import type {
@@ -22,9 +23,9 @@ export default class CardanoClientApi {
 
   getUser() {
     return new Promise((resolve) => {
-      setTimeout(() => {
+      setTimeout(action(() => {
         resolve(new User(user.id, new Profile(user.profile)));
-      }, 0);
+      }), 0);
     });
   }
 
@@ -33,10 +34,11 @@ export default class CardanoClientApi {
     return response.map(data => this._createWalletFromData(data));
   }
 
-  async getTransactions(request: getTransactionsRequest) {
-    const history = await ClientApi.getHistory(request.walletId)();
+  async getTransactions({ walletId, searchTerm, limit }: getTransactionsRequest) {
+    const history = await ClientApi.searchHistory(walletId, searchTerm, limit)();
+    console.log(history);
     return new Promise((resolve) => resolve({
-      transactions: history.map(data => this._createTransactionFromData(data)),
+      transactions: history.map(data => this._createTransactionFromData(data, walletId)),
       total: history.length
     }));
   }
@@ -51,7 +53,8 @@ export default class CardanoClientApi {
   }
 
   async createTransaction(request: createTransactionRequest) {
-    const response = await ClientApi.send(request.sender, request.receiver, request.amount)();
+    const { sender, receiver, amount, currency, description, title } = request;
+    const response = await ClientApi.sendExtended(sender, receiver, amount, currency, title, description)();
     return this._createTransactionFromData(response);
   }
 
@@ -63,7 +66,7 @@ export default class CardanoClientApi {
     return notYetImplemented();
   }
 
-  _createWalletFromData(data) {
+  @action _createWalletFromData(data) {
     return new Wallet({
       id: data.cwAddress,
       address: data.cwAddress,
@@ -74,14 +77,18 @@ export default class CardanoClientApi {
     });
   }
 
-  _createTransactionFromData(data) {
+  @action _createTransactionFromData(data) {
+    const isOutgoing = data.ctType.tag === 'CTOut';
+    const coins = data.ctAmount.getCoin;
+    const { ctmTitle, ctmDescription, ctmDate } = data.ctType.contents;
     return new WalletTransaction({
       id: data.ctId,
-      type: data.ctType.contents.ctmCurrency.toLowerCase(),
-      title: 'TODO',
+      title: ctmTitle,
+      type: isOutgoing ? 'adaExpend' : 'adaIncome',
       currency: 'ada',
-      amount: data.ctAmount.getCoin,
-      date: new Date(data.ctType.contents.ctmDate * 1000),
+      amount: isOutgoing ? -1 * coins : coins,
+      date: new Date(ctmDate * 1000),
+      description: ctmDescription,
     });
   }
 }

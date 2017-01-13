@@ -30,16 +30,19 @@ export default class Request {
     }), 0);
 
     // Issue api call & save it as promise that is handled to update the results of the operation
-    this._promise = this._api[this._method](...callArgs).then(action((result) => {
-      this.result = result;
-      this.isExecuting = false;
-      this.wasExecuted = true;
-      this._isWaitingForResponse = false;
-      return result;
-    }));
+    this._promise = this._api[this._method](...callArgs).then((result) => {
+      return new Promise((resolve) => {
+        setTimeout(action(() => {
+          this.result = result;
+          this.isExecuting = false;
+          this.wasExecuted = true;
+          this._isWaitingForResponse = false;
+          resolve(result);
+        }), 0);
+      });
+    });
 
     this._isWaitingForResponse = true;
-
     this._currentApiCall = { args: callArgs };
     return this;
   }
