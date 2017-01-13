@@ -26,6 +26,7 @@ const initializeDaedalus = () => {
   const router = new RouterStore();
   const history = syncHistoryWithStore(hashHistory, router);
   const stores = setupStores(api, actions, router);
+  console.log(stores);
   window.daedalus = {
     api,
     environment,
