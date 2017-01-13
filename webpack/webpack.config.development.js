@@ -58,7 +58,7 @@ module.exports = validate(merge(baseConfig, {
   },
 
   sassLoader: {
-    data: '@import "' + path.resolve(__dirname, '../app/themes/daedalus/_theme.scss') + '";'
+    data: '@import "' + './app/themes/daedalus/_theme.scss' + '";'
   },
 
   // eslint: {
