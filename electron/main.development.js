@@ -5,30 +5,22 @@ import winLinuxMenu from './menus/win-linux';
 let menu;
 let mainWindow = null;
 const isDev = process.env.NODE_ENV === 'development';
-const isTest = process.env.NODE_ENV === 'test';
-const isDebug = isDev || isTest;
+const isProduction = process.env.NODE_ENV === 'production';
 
-if (isDebug) {
-  require('electron-debug')(); // eslint-disable-line global-require
-}
+require('electron-debug')(); // eslint-disable-line global-require
 
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') app.quit();
 });
 
 const installExtensions = async () => {
-  if (isDebug) {
-    const installer = require('electron-devtools-installer'); // eslint-disable-line global-require
-
-    const extensions = [
-      'REACT_DEVELOPER_TOOLS',
-    ];
-    const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
-    for (const name of extensions) {
-      try {
-        await installer.default(installer[name], forceDownload);
-      } catch (e) {} // eslint-disable-line
-    }
+  const installer = require('electron-devtools-installer'); // eslint-disable-line global-require
+  const extensions = ['REACT_DEVELOPER_TOOLS'];
+  const forceDownload = !!process.env.UPGRADE_EXTENSIONS;
+  for (const name of extensions) {
+    try {
+      await installer.default(installer[name], forceDownload);
+    } catch (e) {} // eslint-disable-line
   }
 };
 
@@ -58,7 +50,7 @@ app.on('ready', async () => {
   });
 
   if (isDev) mainWindow.openDevTools();
-  if (isDebug) {
+  if (!isProduction) {
     mainWindow.webContents.on('context-menu', (e, props) => {
       const { x, y } = props;
 
@@ -72,10 +64,10 @@ app.on('ready', async () => {
   }
 
   if (process.platform === 'darwin') {
-    menu = Menu.buildFromTemplate(osxMenu(app, mainWindow, isDebug));
+    menu = Menu.buildFromTemplate(osxMenu(app, mainWindow, isProduction));
     Menu.setApplicationMenu(menu);
   } else {
-    menu = Menu.buildFromTemplate(winLinuxMenu(mainWindow, isDebug));
+    menu = Menu.buildFromTemplate(winLinuxMenu(mainWindow, isProduction));
     mainWindow.setMenu(menu);
   }
 });

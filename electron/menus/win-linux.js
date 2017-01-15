@@ -1,4 +1,4 @@
-export default (window, isDebug) => {
+export default (window) => {
   return [{
     label: '&Daedalus',
     submenu: [{
@@ -10,7 +10,7 @@ export default (window, isDebug) => {
     }]
   }, {
     label: '&View',
-    submenu: (isDebug) ? [{
+    submenu: [{
       label: '&Reload',
       accelerator: 'Ctrl+R',
       click() {
@@ -27,12 +27,6 @@ export default (window, isDebug) => {
       accelerator: 'Alt+Ctrl+I',
       click() {
         window.toggleDevTools();
-      }
-    }] : [{
-      label: 'Toggle &Full Screen',
-      accelerator: 'F11',
-      click() {
-        window.setFullScreen(!window.isFullScreen());
       }
     }]
   }];
