@@ -8,6 +8,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
 import logo from '../../assets/images/login-logo.svg';
 import styles from './Login.scss';
+import LoadingSpinner from '../widgets/LoadingSpinner';
 
 const messages = defineMessages({
   emailHint: {
@@ -80,6 +81,14 @@ export default class Login extends Component {
       styles.component,
       isInvalid ? styles.invalidCredentials : null
     ]);
+
+    // TODO: remove after demo!!
+    return (
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <LoadingSpinner />
+      </div>
+    );
+
     return (
       <div className={componentClassNames}>
         <img className={styles.logo} src={logo} role="presentation" />

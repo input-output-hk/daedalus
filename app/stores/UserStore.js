@@ -51,11 +51,11 @@ export default class UserStore extends Store {
       const walletToShowAfterLogin = wallets.all[0]; // just pick the first for now
       if (router.location.pathname === '/login') {
         router.push(wallets.getWalletRoute(walletToShowAfterLogin.id));
-        this.actions.resizeWindow({ width: 1150, height: 870 });
+        // this.actions.resizeWindow({ width: 1150, height: 870 });
       }
     } else {
       if (router.location.pathname !== '/login') router.push('/login');
-      this.actions.resizeWindow({ width: 480, height: 575 });
+      // this.actions.resizeWindow({ width: 480, height: 575 });
     }
   };
 
