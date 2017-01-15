@@ -6,7 +6,7 @@ import Input from 'react-toolbox/lib/input/Input';
 import Button from 'react-toolbox/lib/button/Button';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
-import logo from '../../assets/images/login-logo.svg';
+import logo from '../../assets/images/daedalus-logo-big.svg';
 import styles from './Login.scss';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 
