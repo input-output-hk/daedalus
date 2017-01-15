@@ -59,7 +59,9 @@ export default class CardanoClientApi {
   }
 
   async createTransaction(request: createTransactionRequest) {
-    const { sender, receiver, amount, currency, description, title } = request;
+    const { sender, receiver, amount, currency, title } = request;
+    let { description } = request;
+    if (!description) description = 'no description provided';
     const response = await ClientApi.sendExtended(sender, receiver, amount, currency, title, description)();
     return this._createTransactionFromData(response);
   }
