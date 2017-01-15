@@ -1,4 +1,4 @@
-export default (window) => {
+export default (window, isDebug) => {
   return [{
     label: '&Daedalus',
     submenu: [{
@@ -10,24 +10,30 @@ export default (window) => {
     }]
   }, {
     label: '&View',
-    submenu: [{
-      label: '&Reload',
-      accelerator: 'Ctrl+R',
-      click() {
-        window.webContents.reload();
-      }
-    }, {
-      label: 'Toggle &Full Screen',
-      accelerator: 'F11',
-      click() {
-        window.setFullScreen(!window.isFullScreen());
-      }
-    }, {
-      label: 'Toggle &Developer Tools',
-      accelerator: 'Alt+Ctrl+I',
-      click() {
-        window.toggleDevTools();
-      }
-    }]
+    submenu: (isDebug) ? [{
+        label: '&Reload',
+        accelerator: 'Ctrl+R',
+        click() {
+          window.webContents.reload();
+        }
+      }, {
+        label: 'Toggle &Full Screen',
+        accelerator: 'F11',
+        click() {
+          window.setFullScreen(!window.isFullScreen());
+        }
+      }, {
+        label: 'Toggle &Developer Tools',
+        accelerator: 'Alt+Ctrl+I',
+        click() {
+          window.toggleDevTools();
+        }
+      }] : [{
+        label: 'Toggle &Full Screen',
+        accelerator: 'F11',
+        click() {
+          window.setFullScreen(!window.isFullScreen());
+        }
+      }]
   }];
 };
