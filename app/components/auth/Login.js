@@ -84,8 +84,10 @@ export default class Login extends Component {
 
     // TODO: remove after demo!!
     return (
-      <div style={{ display: "flex", alignItems: "center" }}>
-        <LoadingSpinner />
+      <div style={{ display: "flex", alignItems: "center", flexDirection: "column" }}>
+        <div style={{ flex: 1 }}></div>
+        <div style={{ fontFamily: 'SFUIDisplay-Regular', color: '#2f496e' }}>Joining network...</div>
+        <div style={{ flex: 1 }} ><LoadingSpinner /></div>
       </div>
     );
 
