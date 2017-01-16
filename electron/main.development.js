@@ -39,6 +39,7 @@ app.on('ready', async () => {
     show: false,
     width: 1150,
     height: 870
+    // TODO: revert to 480 x 757 when reintroducing login
   });
 
   mainWindow.loadURL(`file://${__dirname}/../app/index.html`);
