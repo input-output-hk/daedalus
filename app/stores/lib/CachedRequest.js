@@ -48,7 +48,7 @@ export default class CachedRequest extends Request {
           this._isInvalidated = false;
           this._isWaitingForResponse = false;
           resolve(result);
-        }), 0);
+        }), 1);
       });
     });
 

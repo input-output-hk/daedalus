@@ -88,7 +88,8 @@ export default class CardanoClientApi {
   @action _createTransactionFromData(data) {
     const isOutgoing = data.ctType.tag === 'CTOut';
     const coins = data.ctAmount.getCoin;
-    const { ctmTitle, ctmDescription, ctmDate } = data.ctType.contents;
+    let { ctmTitle, ctmDescription, ctmDate } = data.ctType.contents;
+    if (!ctmTitle) ctmTitle = 'Incoming Money';
     return new WalletTransaction({
       id: data.ctId,
       title: ctmTitle,
