@@ -30,8 +30,15 @@ export default class CardanoClientApi {
   }
 
   async getWallets() {
-    const response = await ClientApi.getWallets();
-    return response.map(data => this._createWalletFromData(data));
+    try {
+      const response = await ClientApi.getWallets();
+      return response.map(data => this._createWalletFromData(data));
+    } catch(error) {
+      console.debug('Backend not available yet, retrying in 1 second');
+      return new Promise((resolve) => {
+        setTimeout(() => (resolve(this.getWallets())), 1000);
+      });
+    }
   }
 
   async getTransactions({ walletId, searchTerm, limit }: getTransactionsRequest) {
@@ -52,7 +59,9 @@ export default class CardanoClientApi {
   }
 
   async createTransaction(request: createTransactionRequest) {
-    const { sender, receiver, amount, currency, description, title } = request;
+    const { sender, receiver, amount, currency, title } = request;
+    let { description } = request;
+    if (!description) description = 'no description provided';
     const response = await ClientApi.sendExtended(sender, receiver, amount, currency, title, description)();
     return this._createTransactionFromData(response);
   }
@@ -79,7 +88,8 @@ export default class CardanoClientApi {
   @action _createTransactionFromData(data) {
     const isOutgoing = data.ctType.tag === 'CTOut';
     const coins = data.ctAmount.getCoin;
-    const { ctmTitle, ctmDescription, ctmDate } = data.ctType.contents;
+    let { ctmTitle, ctmDescription, ctmDate } = data.ctType.contents;
+    if (!ctmTitle) ctmTitle = 'Incoming Money';
     return new WalletTransaction({
       id: data.ctId,
       title: ctmTitle,
