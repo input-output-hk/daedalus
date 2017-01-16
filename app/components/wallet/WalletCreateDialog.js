@@ -7,6 +7,7 @@ import Input from 'react-toolbox/lib/input/Input';
 import Dropup from '../widgets/forms/Dropup';
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
+import DialogCloseButton from '../widgets/DialogCloseButton';
 import styles from './WalletCreateDialog.scss';
 
 const messages = defineMessages({
@@ -71,7 +72,7 @@ export default class WalletCreateDialog extends Component {
 
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
-    onCancel: PropTypes.func
+    onCancel: PropTypes.func.isRequired
   };
 
   static contextTypes = {
@@ -159,6 +160,8 @@ export default class WalletCreateDialog extends Component {
           error={errors.currency}
           source={currencies}
         />
+
+        <DialogCloseButton onClose={this.props.onCancel} />
 
       </Dialog>
     );
