@@ -60,7 +60,6 @@ export default class WalletsStore extends Store {
   }
 
   _refreshWalletsData = () => {
-    console.debug('Refreshing wallet data');
     this.walletsRequest.invalidate({ immediately: true });
     this.stores.transactions.searchRequest.invalidate({ immediately: true });
   };
