@@ -69,7 +69,7 @@ export default class WalletHomePage extends Component {
       walletTransactions = (
         <WalletTransactionsList
           transactions={filtered}
-          isLoadingTransactions={searchRequest.isExecuting}
+          isLoadingTransactions={searchRequest.isExecutingFirstTime}
           hasMoreToLoad={totalAvailable > searchLimit}
           onLoadMore={actions.loadMoreTransactions}
         />

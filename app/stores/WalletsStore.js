@@ -17,6 +17,7 @@ export default class WalletsStore extends Store {
     super(...args);
     this.actions.createPersonalWallet.listen(this._createPersonalWallet);
     this.actions.sendMoney.listen(this._sendMoney);
+    setInterval(this._refreshWalletsData, 5000);
   }
 
   _createPersonalWallet = async (params) => {
@@ -35,8 +36,7 @@ export default class WalletsStore extends Store {
       sender: wallet.address,
       currency: wallet.currency,
     });
-    this.walletsRequest.invalidate({ immediately: true });
-    this.stores.transactions.searchRequest.invalidate({ immediately: true });
+    this._refreshWalletsData();
     this.actions.goToRoute({ route: this.getWalletRoute(wallet.id) });
   };
 
@@ -58,5 +58,11 @@ export default class WalletsStore extends Store {
   isValidAddress(address: string) {
     return this.api.isValidAddress('ADA', address);
   }
+
+  _refreshWalletsData = () => {
+    console.debug('Refreshing wallet data');
+    this.walletsRequest.invalidate({ immediately: true });
+    this.stores.transactions.searchRequest.invalidate({ immediately: true });
+  };
 
 }
