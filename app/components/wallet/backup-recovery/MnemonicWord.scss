@@ -1,0 +1,21 @@
+.component {
+  opacity: 0.9;
+  border-radius: 5px;
+  background-color: #e4e7ec;
+  display: flex;
+  width: 130px;
+  padding: 14px;
+  color: #5e6066;
+  justify-content: center;
+  margin: 10px;
+  font-size: 16px;
+  font-family: $font-medium;
+}
+
+.inactive {
+  opacity: 0.1;
+}
+
+.active {
+  cursor: pointer;
+}

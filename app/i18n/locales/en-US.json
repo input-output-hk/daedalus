@@ -54,5 +54,6 @@
   "login.form.email.hint": "E-mail",
   "login.form.password.hint": "Password",
   "login.form.submit.label": "Login",
-  "login.form.invalidCredentials": "E-mail or password is wrong."
+  "login.form.invalidCredentials": "E-mail or password is wrong.",
+  "wallet.recovery.phrase.dialog.title": "Recovery phrase"
 }

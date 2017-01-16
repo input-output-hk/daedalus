@@ -1,0 +1,10 @@
+.component {
+}
+
+.words {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: space-around;
+  margin: 30px 0;
+}

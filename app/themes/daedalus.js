@@ -6,6 +6,7 @@ import dialog from './daedalus/dialog.scss';
 import button from './daedalus/button.scss';
 import appBar from './daedalus/app-bar.scss';
 import switchStyle from './daedalus/switch.scss';
+import checkbox from './daedalus/checkbox.scss';
 
 export const daedalusTheme = {
   RTInput: input,
@@ -16,4 +17,5 @@ export const daedalusTheme = {
   RTButton: button,
   RTAppBar: appBar,
   RTSwitch: switchStyle,
+  RTCheckbox: checkbox
 };
