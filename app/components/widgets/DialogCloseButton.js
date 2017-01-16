@@ -5,7 +5,7 @@ import styles from './DialogCloseButton.scss';
 export default class DialogCloseButton extends Component {
 
   static propTypes = {
-    onClose: PropTypes.func.isRequred
+    onClose: PropTypes.func.isRequired
   };
 
   render() {

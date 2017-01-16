@@ -2,10 +2,10 @@ import React, { Component, PropTypes } from 'react';
 import backArrow from '../../assets/images/back-arrow-ic.svg';
 import styles from './DialogBackButton.scss';
 
-export default class DialogCloseButton extends Component {
+export default class DialogBackButton extends Component {
 
   static propTypes = {
-    onBack: PropTypes.func.isRequred
+    onBack: PropTypes.func.isRequired
   };
 
   render() {

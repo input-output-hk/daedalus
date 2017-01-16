@@ -75,6 +75,14 @@ export default class WalletRecoveryPhraseShowDialog extends Component {
 
   };
 
+  onBack = () => {
+
+  };
+
+  onClose = () => {
+
+  };
+
   render() {
     const { intl } = this.context;
     const { recoveryPhrase, enteredPhrase, isEntering, isValid } = this.props;
@@ -102,8 +110,8 @@ export default class WalletRecoveryPhraseShowDialog extends Component {
             ))}
           </div>
         )}
-        <DialogCloseButton />
-        {isEntering && (<DialogBackButton />)}
+        <DialogCloseButton onClose={this.onClose} />
+        {isEntering && (<DialogBackButton onBack={this.onBack} />)}
         {isValid && (
           <div>
             <Checkbox

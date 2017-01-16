@@ -35,5 +35,5 @@ export default defineActions({
   resizeWindow: {
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
-  },
+  }
 }, PropTypes.validateWithErrors);
