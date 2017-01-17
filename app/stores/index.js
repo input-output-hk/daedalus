@@ -7,6 +7,7 @@ import WalletsStore from './WalletsStore';
 import TransactionsStore from './TransactionsStore';
 import SidebarStore from './SidebarStore';
 import WindowStore from './WindowStore';
+import WalletBackupStore from './WalletBackupStore';
 
 // Constant that does never change during lifetime
 const stores = observable({
@@ -18,6 +19,7 @@ const stores = observable({
   transactions: null,
   sidebar: null,
   window: null,
+  walletBackup: null
 });
 
 // Set up and return the stores for this app -> also used to reset all stores to defaults
@@ -37,6 +39,7 @@ export default action((api, actions, router): storesType => {
     transactions: new TransactionsStore(stores, api, actions),
     sidebar: new SidebarStore(stores, api, actions),
     window: new WindowStore(stores, api, actions),
+    walletBackup: new WalletBackupStore(stores, api, actions)
   });
   // Initialize the new stores
   storeNames.forEach(name => {
@@ -53,4 +56,5 @@ export type storesType = {
   transactions: TransactionsStore,
   sidebar: SidebarStore,
   window: WindowStore,
+  walletBackup: WalletBackupStore
 };

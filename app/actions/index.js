@@ -41,5 +41,6 @@ export default defineActions({
     walletId: PropTypes.string.isRequired,
     recoveryPhrase: MobxPropTypes.arrayOrObservableArray.isRequired
   },
-  acceptWalletBackupStart: {}
+  acceptWalletBackupStart: {},
+  startWalletBackup: {}
 }, PropTypes.validateWithErrors);

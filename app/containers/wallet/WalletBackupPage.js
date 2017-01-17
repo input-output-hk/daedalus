@@ -8,17 +8,15 @@ export default class WalletBackupPage extends Component {
 
   static propTypes = {
     stores: PropTypes.shape({
-      wallets: PropTypes.shape({
-        walletBackup: PropTypes.shape({
-          walletId: PropTypes.string.isRequired,
-          recoveryPhrase: MobxPropTypes.arrayOrObservableArray.isRequired,
-          completed: PropTypes.bool.isRequired,
-          enteredPhrase: MobxPropTypes.arrayOrObservableArray.isRequired,
-          isEntering: PropTypes.bool.isRequired,
-          isValid: PropTypes.bool.isRequired,
-          isWalletBackupStartAccepted: PropTypes.bool.isRequired,
-          countdownRemaining: PropTypes.number.isRequired
-        }),
+      walletBackup: PropTypes.shape({
+        walletId: PropTypes.string.isRequired,
+        recoveryPhrase: MobxPropTypes.arrayOrObservableArray.isRequired,
+        completed: PropTypes.bool.isRequired,
+        enteredPhrase: MobxPropTypes.arrayOrObservableArray.isRequired,
+        isEntering: PropTypes.bool.isRequired,
+        isValid: PropTypes.bool.isRequired,
+        isWalletBackupStartAccepted: PropTypes.bool.isRequired,
+        countdownRemaining: PropTypes.number.isRequired
       }),
     }).isRequired,
     actions: PropTypes.shape({
@@ -34,7 +32,7 @@ export default class WalletBackupPage extends Component {
       isValid,
       isWalletBackupStartAccepted,
       countdownRemaining
-    } = this.props.stores.wallets.walletBackup;
+    } = this.props.stores.walletBackup;
     const { acceptWalletBackupStart } = this.props.actions;
     return (
       <WalletRecoveryPhraseDialog

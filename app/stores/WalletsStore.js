@@ -1,5 +1,5 @@
 // @flow
-import { observable, computed, action } from 'mobx';
+import { observable, computed } from 'mobx';
 import Store from './lib/Store';
 import { matchRoute } from '../lib/routing-helpers';
 import CachedRequest from './lib/CachedRequest';
@@ -14,14 +14,11 @@ export default class WalletsStore extends Store {
   @observable createWalletRequest = new Request(this.api, 'createWallet');
   @observable sendMoneyRequest = new Request(this.api, 'createTransaction');
   @observable getWalletRecoveryPhraseRequest = new Request(this.api, 'getWalletRecoveryPhrase');
-  @observable walletBackup = { inProgress: false };
 
   constructor(...args) {
     super(...args);
     this.actions.createPersonalWallet.listen(this._createPersonalWallet);
     this.actions.sendMoney.listen(this._sendMoney);
-    this.actions.initiateWalletBackup.listen(this._initiateWalletBackup);
-    this.actions.acceptWalletBackupStart.listen(this._acceptWalletBackupStart);
     if (environment.CARDANO_API) setInterval(this._refreshWalletsData, 5000);
   }
 
@@ -69,34 +66,6 @@ export default class WalletsStore extends Store {
   _refreshWalletsData = () => {
     this.walletsRequest.invalidate({ immediately: true });
     this.stores.transactions.searchRequest.invalidate({ immediately: true });
-  };
-
-  @action _initiateWalletBackup = (params) => {
-    this.actions.toggleCreateWalletDialog();
-    const { walletId, recoveryPhrase } = params;
-    this.walletBackup = {
-      inProgress: true,
-      walletId,
-      recoveryPhrase,
-      completed: false,
-      enteredPhrase:[],
-      isEntering: false,
-      isValid: false,
-      isWalletBackupStartAccepted: false,
-      countdownRemaining: 10,
-      countdownTimer: null
-    };
-    this.walletBackup.countdownTimer = setInterval(() => {
-      if (this.walletBackup.countdownRemaining > 0) {
-        action(() => this.walletBackup.countdownRemaining--)();
-      } else {
-        clearInterval(this.walletBackup.countdownTimer);
-      }
-    }, 1000);
-  };
-
-  @action _acceptWalletBackupStart = () => {
-    this.walletBackup.isWalletBackupStartAccepted = true;
   };
 
 }

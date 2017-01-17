@@ -53,7 +53,7 @@ export default class MainLayout extends Component {
     const { sidebar } = stores;
     const activeWallet = stores.wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
-    const isWalletBackupInProgress = this.props.stores.wallets.walletBackup.inProgress;
+    const isWalletBackupInProgress = this.props.stores.walletBackup.inProgress;
 
     const sidebarMenus = {
       wallets: {
