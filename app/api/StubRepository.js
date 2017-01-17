@@ -120,4 +120,9 @@ export default class StubRepository {
     const walletRecoveryPhrase: walletRecoveryPhraseStruct = { walletId, recoveryPhrase };
     return walletRecoveryPhrase;
   }
+
+  setWalletBackupCompleted(walletId: string) {
+    const wallet = this.wallets.find(w => w.id === walletId);
+    wallet.isBackupCompleted = true;
+  }
 }

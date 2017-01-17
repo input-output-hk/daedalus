@@ -108,5 +108,6 @@ export type Api = {
   updateProfileField(request: updateUserProfileFieldRequest): Promise<any>,
   isValidAddress(currency: string, address: string): Promise<boolean>,
   getTermsOfUse(): Promise<string>,
-  getWalletRecoveryPhrase(request: getWalletRecoveryPhraseRequest): Promise<string>
+  getWalletRecoveryPhrase(request: getWalletRecoveryPhraseRequest): Promise<string>,
+  setWalletBackupCompleted(walletId: string): void
 }

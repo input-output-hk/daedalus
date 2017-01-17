@@ -1,9 +1,11 @@
 // @flow
 import { observable, action, computed } from 'mobx';
+import Request from './lib/Request';
 import Store from './lib/Store';
 
 export default class WalletsStore extends Store {
 
+  @observable setWalletBackupCompleted = new Request(this.api, 'setWalletBackupCompleted');
   @observable inProgress = false;
   @observable walletId = '';
   @observable recoveryPhrase = [];
@@ -46,7 +48,7 @@ export default class WalletsStore extends Store {
     this.isWalletBackupStartAccepted = false;
     this.isTermDeviceAccepted = false;
     this.isTermRecoveryAccepted = false;
-    this.countdownRemaining = 1;
+    this.countdownRemaining = 10;
     this.countdownTimer = null;
     this.countdownTimer = setInterval(() => {
       if (this.countdownRemaining > 0) {
@@ -80,7 +82,6 @@ export default class WalletsStore extends Store {
   };
 
   @computed get isRecoveryPhraseValid() {
-    return true;
     return this.recoveryPhrase.reduce((words, word) => words + word, '') ===
     this.enteredPhrase.reduce((words, { word }) => words + word, '');
   }
@@ -100,11 +101,11 @@ export default class WalletsStore extends Store {
 
   @action _cancelWalletBackup = () => {
     this.inProgress = false;
-  }
+  };
 
-  @action _finishWalletBackup = () => {
+  @action _finishWalletBackup = async () => {
     this.inProgress = false;
-    // TODO: Store in backend that wallet backup is complete
+    this.setWalletBackupCompleted.execute(this.walletId);
   }
 
 }

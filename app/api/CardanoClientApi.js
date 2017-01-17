@@ -6,7 +6,7 @@ import WalletTransaction from '../domain/WalletTransaction';
 import type {
   createWalletRequest,
   getTransactionsRequest,
-  createTransactionRequest,
+  createTransactionRequest
 } from './index';
 import { user } from './fixtures';
 import User from '../domain/User';
@@ -99,6 +99,14 @@ export default class CardanoClientApi {
       date: new Date(ctmDate * 1000),
       description: ctmDescription,
     });
+  }
+
+  getWalletRecoveryPhrase() {
+    return notYetImplemented();
+  }
+
+  setWalletBackupCompleted() {
+    return notYetImplemented();
   }
 }
 

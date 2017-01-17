@@ -1,22 +1,8 @@
 @import "~react-toolbox/lib/checkbox/theme";
 
-//.text {
-//  font-family: $font-light;
-//  font-size: 16px;
-//  color: #5e6066;
-//  white-space: normal;
-//}
-
 .input {
   width: 0 !important;
   > label {
     display: none;
   }
 }
-
-//$checkbox-size: 23px;
-//
-//.check {
-//  width: $checkbox-size;
-//  height: $checkbox-size;
-//}
