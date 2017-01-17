@@ -11,16 +11,27 @@ export default class WalletBackupPage extends Component {
       walletBackup: PropTypes.shape({
         walletId: PropTypes.string.isRequired,
         recoveryPhrase: MobxPropTypes.arrayOrObservableArray.isRequired,
+        recoveryPhraseShuffled: MobxPropTypes.arrayOrObservableArray.isRequired,
         completed: PropTypes.bool.isRequired,
         enteredPhrase: MobxPropTypes.arrayOrObservableArray.isRequired,
         isEntering: PropTypes.bool.isRequired,
-        isValid: PropTypes.bool.isRequired,
+        isRecoveryPhraseValid: PropTypes.bool.isRequired,
         isWalletBackupStartAccepted: PropTypes.bool.isRequired,
-        countdownRemaining: PropTypes.number.isRequired
+        countdownRemaining: PropTypes.number.isRequired,
+        isTermDeviceAccepted: PropTypes.bool.isRequired,
+        isTermRecoveryAccepted: PropTypes.bool.isRequired
       }),
     }).isRequired,
     actions: PropTypes.shape({
-      acceptWalletBackupStart: PropTypes.func.isRequired
+      acceptWalletBackupStart: PropTypes.func.isRequired,
+      startWalletBackup: PropTypes.func.isRequired,
+      addWordToWalletBackupVerification: PropTypes.func.isRequired,
+      clearEnteredRecoveryPhrase: PropTypes.func.isRequired,
+      acceptWalletBackupTermDevice: PropTypes.func.isRequired,
+      acceptWalletBackupTermRecovery: PropTypes.func.isRequired,
+      restartWalletBackup: PropTypes.func.isRequired,
+      cancelWalletBackup: PropTypes.func.isRequired,
+      finishWalletBackup: PropTypes.func.isRequired
     }).isRequired
   };
 
@@ -29,21 +40,46 @@ export default class WalletBackupPage extends Component {
       recoveryPhrase,
       enteredPhrase,
       isEntering,
-      isValid,
+      isRecoveryPhraseValid,
       isWalletBackupStartAccepted,
-      countdownRemaining
+      countdownRemaining,
+      recoveryPhraseShuffled,
+      isTermDeviceAccepted,
+      isTermRecoveryAccepted
     } = this.props.stores.walletBackup;
-    const { acceptWalletBackupStart } = this.props.actions;
+    const {
+      acceptWalletBackupStart,
+      startWalletBackup,
+      addWordToWalletBackupVerification,
+      clearEnteredRecoveryPhrase,
+      acceptWalletBackupTermDevice,
+      acceptWalletBackupTermRecovery,
+      restartWalletBackup,
+      cancelWalletBackup,
+      finishWalletBackup
+    } = this.props.actions;
     return (
       <WalletRecoveryPhraseDialog
         enteredPhrase={enteredPhrase}
         isEntering={isEntering}
-        isValid={isValid}
+        isValid={isRecoveryPhraseValid}
         recoveryPhrase={recoveryPhrase.map(word => ({ word }))}
+        recoveryPhraseShuffled={recoveryPhraseShuffled}
         isWalletBackupStartAccepted={isWalletBackupStartAccepted}
         onAcceptStartBackup={acceptWalletBackupStart}
         countdownRemaining={countdownRemaining}
         canBackupStart={countdownRemaining === 0 && isWalletBackupStartAccepted}
+        onStartWalletBackup={startWalletBackup}
+        onAddWord={addWordToWalletBackupVerification}
+        onClear={clearEnteredRecoveryPhrase}
+        onAcceptTermDevice={acceptWalletBackupTermDevice}
+        onAcceptTermRecovery={acceptWalletBackupTermRecovery}
+        isTermDeviceAccepted={isTermDeviceAccepted}
+        isTermRecoveryAccepted={isTermRecoveryAccepted}
+        canFinishBackup={isTermDeviceAccepted && isTermRecoveryAccepted && isRecoveryPhraseValid}
+        onRestartBackup={restartWalletBackup}
+        onCancelBackup={cancelWalletBackup}
+        onFinishBackup={finishWalletBackup}
       />
     );
   }

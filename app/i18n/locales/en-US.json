@@ -55,11 +55,13 @@
   "login.form.password.hint": "Password",
   "login.form.submit.label": "Login",
   "login.form.invalidCredentials": "E-mail or password is wrong.",
-  "wallet.recovery.phrase.dialog.title": "Recovery phrase",
-  "wallet.recovery.phrase.dialog.backup.instructions": "Please, make sure you have carefully written down your recovery phrase somewhere safe. You will need this phrase later for next use and recover. Phrase is case sensitive.",
-  "wallet.recovery.phrase.dialog.verification.instructions": "Tap each word in the correct order to verify your recovery phrase",
-  "wallet.recovery.phrase.show.dialog.button.label": "Yes, I’ve written it down",
-  "wallet.recovery.phrase.dialog.terms.and.condition.device": "Term and condition on wallet backup dialog describing that wallet is on a users device, not on company servers",
-  "wallet.recovery.phrase.dialog.terms.and.condition.recovery": "I understand that if this application is moved to another device or deleted, my money can be only recovered with the backup phrase which were written down in a secure place",
-  "wallet.recovery.phrase.dialog.terms.and.condition.nobodyWatching": "Make sure nobody looks into your screen unless you want them to have access to your funds."
+  "wallet.backup.recovery.phrase.dialog.title": "Recovery phrase",
+  "wallet.backup.recovery.phrase.dialog.instructions": "Please, make sure you have carefully written down your recovery phrase somewhere safe. You will need this phrase later for next use and recover. Phrase is case sensitive.",
+  "wallet.backup.recovery.phrase.dialog.verification.instructions": "Tap each word in the correct order to verify your recovery phrase",
+  "wallet.backup.recovery.phrase.dialog.button.label.iHaveWrittenItDown": "Yes, I’ve written it down",
+  "wallet.recovery.phrase.show.dialog.button.labelConfirm": "Confirm",
+  "wallet.recovery.phrase.show.dialog.button.labelClear": "Clear",
+  "wallet.backup.recovery.phrase.dialog.terms.and.condition.device": "I understand that my money are held securely on this device only, not on the company servers",
+  "wallet.backup.recovery.phrase.dialog.terms.and.condition.recovery": "I understand that if this application is moved to another device or deleted, my money can be only recovered with the backup phrase which were written down in a secure place",
+  "wallet.backup.recovery.phrase.dialog.terms.and.condition.nobodyWatching": "Make sure nobody looks into your screen unless you want them to have access to your funds."
 }

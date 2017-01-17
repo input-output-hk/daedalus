@@ -9,17 +9,23 @@ export default class MnemonicWord extends Component {
 
   static propTypes = {
     word: PropTypes.string.isRequired,
-    isActive: PropTypes.bool.isRequired
+    isActive: PropTypes.bool.isRequired,
+    onClick: PropTypes.func.isRequired
   };
 
   render() {
-    const { word, isActive } = this.props;
+    const { word, isActive, onClick } = this.props;
     const componentClassNames = classnames([
       styles.component,
       isActive ? styles.active : styles.inactive
     ]);
     return (
-      <div className={componentClassNames}>{word}</div>
+      <button
+        className={componentClassNames}
+        onClick={() => onClick({ word })}
+      >
+        {word}
+      </button>
     );
   }
 

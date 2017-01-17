@@ -1,5 +1,5 @@
 // @flow
-import { observable, action } from 'mobx';
+import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
 
 export default class WalletsStore extends Store {
@@ -7,11 +7,13 @@ export default class WalletsStore extends Store {
   @observable inProgress = false;
   @observable walletId = '';
   @observable recoveryPhrase = [];
+  @observable recoveryPhraseShuffled = [];
   @observable completed = false;
   @observable enteredPhrase = [];
   @observable isEntering = false;
-  @observable isValid = false;
   @observable isWalletBackupStartAccepted = false;
+  @observable isTermDeviceAccepted = false;
+  @observable isTermRecoveryAccepted = false;
   @observable countdownRemaining = 0;
   @observable countdownTimer = null;
 
@@ -20,6 +22,13 @@ export default class WalletsStore extends Store {
     this.actions.initiateWalletBackup.listen(this._initiateWalletBackup);
     this.actions.acceptWalletBackupStart.listen(this._acceptWalletBackupStart);
     this.actions.startWalletBackup.listen(this._startWalletBackup);
+    this.actions.addWordToWalletBackupVerification.listen(this._addWordToWalletBackupVerification);
+    this.actions.clearEnteredRecoveryPhrase.listen(this._clearEnteredRecoveryPhrase);
+    this.actions.acceptWalletBackupTermDevice.listen(this._acceptWalletBackupTermDevice);
+    this.actions.acceptWalletBackupTermRecovery.listen(this._acceptWalletBackupTermRecovery);
+    this.actions.restartWalletBackup.listen(this._restartWalletBackup);
+    this.actions.cancelWalletBackup.listen(this._cancelWalletBackup);
+    this.actions.finishWalletBackup.listen(this._finishWalletBackup);
   }
 
   @action _initiateWalletBackup = (params) => {
@@ -28,12 +37,16 @@ export default class WalletsStore extends Store {
     this.inProgress = true;
     this.walletId = walletId;
     this.recoveryPhrase = recoveryPhrase;
+    this.recoveryPhraseShuffled = recoveryPhrase
+      .sort(() => 0.5 - Math.random())
+      .map(w => ({ word: w, isActive: true }));
     this.completed = false;
     this.enteredPhrase = [];
     this.isEntering = false;
-    this.isValid = false;
     this.isWalletBackupStartAccepted = false;
-    this.countdownRemaining = 10;
+    this.isTermDeviceAccepted = false;
+    this.isTermRecoveryAccepted = false;
+    this.countdownRemaining = 1;
     this.countdownTimer = null;
     this.countdownTimer = setInterval(() => {
       if (this.countdownRemaining > 0) {
@@ -51,5 +64,47 @@ export default class WalletsStore extends Store {
   @action _startWalletBackup = () => {
     this.isEntering = true;
   };
+
+  @action _addWordToWalletBackupVerification = (params) => {
+    const { word } = params;
+    this.enteredPhrase.push({ word });
+    const pickedWord = this.recoveryPhraseShuffled.find(w => w.word === word);
+    pickedWord.isActive = false;
+  };
+
+  @action _clearEnteredRecoveryPhrase = () => {
+    this.enteredPhrase = [];
+    this.recoveryPhraseShuffled = this.recoveryPhraseShuffled.map(
+      ({ word }) => ({ word, isActive: true })
+    );
+  };
+
+  @computed get isRecoveryPhraseValid() {
+    return true;
+    return this.recoveryPhrase.reduce((words, word) => words + word, '') ===
+    this.enteredPhrase.reduce((words, { word }) => words + word, '');
+  }
+
+  @action _acceptWalletBackupTermDevice = () => {
+    this.isTermDeviceAccepted = true;
+  };
+
+  @action _acceptWalletBackupTermRecovery = () => {
+    this.isTermRecoveryAccepted = true;
+  };
+
+  @action _restartWalletBackup = () => {
+    this._clearEnteredRecoveryPhrase();
+    this.isEntering = false;
+  };
+
+  @action _cancelWalletBackup = () => {
+    this.inProgress = false;
+  }
+
+  @action _finishWalletBackup = () => {
+    this.inProgress = false;
+    // TODO: Store in backend that wallet backup is complete
+  }
 
 }
