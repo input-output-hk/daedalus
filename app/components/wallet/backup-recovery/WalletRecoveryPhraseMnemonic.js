@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import styles from './WalletRecoveryPhraseMnemonic.scss';
 
 @observer
-export default class WalletRecoveryPhraseShowDialog extends Component {
+export default class WalletRecoveryPhraseMnemonic extends Component {
 
   static propTypes = {
     phrase: PropTypes.string.isRequired

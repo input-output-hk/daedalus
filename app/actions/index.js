@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { PropTypes as MobxPropTypes } from 'mobx-react';
 import defineActions from './lib/actions';
 
 export default defineActions({
@@ -35,5 +36,10 @@ export default defineActions({
   resizeWindow: {
     width: PropTypes.number.isRequired,
     height: PropTypes.number.isRequired,
-  }
+  },
+  initiateWalletBackup: {
+    walletId: PropTypes.string.isRequired,
+    recoveryPhrase: MobxPropTypes.arrayOrObservableArray.isRequired
+  },
+  acceptWalletBackupStart: {}
 }, PropTypes.validateWithErrors);

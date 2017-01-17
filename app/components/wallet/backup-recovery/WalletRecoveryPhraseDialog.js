@@ -7,6 +7,7 @@ import { Checkbox } from 'react-toolbox';
 import WalletRecoveryPhraseMnemonic from './WalletRecoveryPhraseMnemonic';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
+import CheckboxWithLongLabel from '../../widgets/CheckboxWithLongLabel';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import MnemonicWord from './MnemonicWord';
 import styles from './WalletRecoveryPhraseDialog.scss';
@@ -33,6 +34,11 @@ const messages = defineMessages({
     defaultMessage: 'Yes, I’ve written it down',
     description: 'Label for button "Yes, I’ve written it down" on the dialog that shows wallet recovery phrase.'
   },
+  termNobodyWatching: {
+    id: 'wallet.recovery.phrase.dialog.terms.and.condition.nobodyWatching',
+    defaultMessage: `Make sure nobody looks into your screen unless you want them to have access to your funds.`,
+    description: 'Term and condition on wallet backup dialog describing that nobody should be watching when recovery phrase is shown'
+  },
   termDevice: {
     id: 'wallet.recovery.phrase.dialog.terms.and.condition.device',
     defaultMessage: `I understand that my money are held securely on this device only, not on the company servers`,
@@ -54,22 +60,20 @@ export default class WalletRecoveryPhraseShowDialog extends Component {
       word: PropTypes.string.isRequired
     })).isRequired,
     enteredPhrase: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.shape({
-      word: PropTypes.string.isRequired
+      word: PropTypes.string.isRequired,
+      isChosen: PropTypes.bool.isRequired
     })).isRequired,
     isEntering: PropTypes.bool.isRequired,
-    isValid: PropTypes.bool.isRequired
+    isValid: PropTypes.bool.isRequired,
+    isWalletBackupStartAccepted: PropTypes.bool.isRequired,
+    onAcceptStartBackup: PropTypes.func.isRequired,
+    countdownRemaining: PropTypes.number.isRequired,
+    canBackupStart: PropTypes.bool.isRequired
   };
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  actions = [
-    {
-      label: this.context.intl.formatMessage(messages.buttonLabel),
-      onClick: this.submit
-    }
-  ];
 
   submit = () => {
 
@@ -85,20 +89,44 @@ export default class WalletRecoveryPhraseShowDialog extends Component {
 
   render() {
     const { intl } = this.context;
-    const { recoveryPhrase, enteredPhrase, isEntering, isValid } = this.props;
+    const {
+      recoveryPhrase,
+      enteredPhrase,
+      isEntering,
+      isValid,
+      isWalletBackupStartAccepted,
+      onAcceptStartBackup,
+      countdownRemaining,
+      canBackupStart
+    } = this.props;
     const instructions = isEntering ? messages.verificationInstructions : messages.backupInstructions;
     const recoveryPhraseString = recoveryPhrase.reduce((phrase, { word }) => `${phrase} ${word}`, '');
     const enteredPhraseString = enteredPhrase.reduce((phrase, { word }) => `${phrase} ${word}`, '');
     const phrase = isEntering ? enteredPhraseString : recoveryPhraseString;
+    const countdownDisplay = countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
+    const actions = [
+      {
+        label: this.context.intl.formatMessage(messages.buttonLabel) + countdownDisplay,
+        onClick: this.submit,
+        disabled: !canBackupStart
+      }
+    ];
     return (
       <Dialog
         title={intl.formatMessage(messages.recoveryPhrase)}
-        actions={this.actions}
+        actions={actions}
         active
         style={styles.component}
       >
         <WalletRecoveryInstructions instructionsText={intl.formatMessage(instructions)} />
         <WalletRecoveryPhraseMnemonic phrase={phrase} />
+        {!isEntering && (
+          <CheckboxWithLongLabel
+            label={intl.formatMessage(messages.termDevice)}
+            onChange={onAcceptStartBackup}
+            checked={isWalletBackupStartAccepted}
+          />
+        )}
         {isEntering && (
           <div className={styles.words}>
             {recoveryPhrase.map(({ word }, index) => (
@@ -114,15 +142,15 @@ export default class WalletRecoveryPhraseShowDialog extends Component {
         {isEntering && (<DialogBackButton onBack={this.onBack} />)}
         {isValid && (
           <div>
-            <Checkbox
-              checked
+            <CheckboxWithLongLabel
               label={intl.formatMessage(messages.termDevice)}
               onChange={() => {}}
-            />
-            <Checkbox
               checked
+            />
+            <CheckboxWithLongLabel
               label={intl.formatMessage(messages.termRecovery)}
               onChange={() => {}}
+              checked={false}
             />
           </div>
         )}

@@ -6,7 +6,8 @@ import type {
   createWalletRequest,
   createTransactionRequest,
   updateUserProfileFieldRequest,
-  loginRequest
+  loginRequest,
+  getWalletRecoveryPhraseRequest
 } from './index';
 import StubRepository from './StubRepository';
 import { user, wallets, transactions } from './fixtures';
@@ -62,6 +63,13 @@ export default class StubApi {
       const result = this.repository.findTransactions(request);
       result.transactions = result.transactions.map(w => new WalletTransaction(w));
       return result;
+    }));
+  }
+
+  getWalletRecoveryPhrase(request: getWalletRecoveryPhraseRequest) {
+    console.debug('StubApi::getWalletRecoveryPhrase called with', request);
+    return fakeRequest('getWalletRecoveryPhraseRequest', action(() => {
+      return this.repository.getWalletRecoveryPhrase(request);
     }));
   }
 

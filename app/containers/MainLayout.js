@@ -6,8 +6,8 @@ import AppBar from '../components/layout/AppBar';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import { oneOrManyChildElements } from '../propTypes';
 import WalletCreateDialog from '../components/wallet/WalletCreateDialog';
+import WalletBackupPage from './wallet/WalletBackupPage';
 import Wallet from '../domain/Wallet';
-import LoadingSpinner from '../components/widgets/LoadingSpinner';
 
 @inject('stores', 'actions') @observer
 export default class MainLayout extends Component {
@@ -19,6 +19,9 @@ export default class MainLayout extends Component {
       }).isRequired,
       wallets: PropTypes.shape({
         active: PropTypes.instanceOf(Wallet),
+        walletBackup: PropTypes.shape({
+          inProgress: PropTypes.bool.isRequired
+        })
       }).isRequired,
     }).isRequired,
     actions: PropTypes.shape({
@@ -50,6 +53,7 @@ export default class MainLayout extends Component {
     const { sidebar } = stores;
     const activeWallet = stores.wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
+    const isWalletBackupInProgress = this.props.stores.wallets.walletBackup.inProgress;
 
     const sidebarMenus = {
       wallets: {
@@ -77,10 +81,12 @@ export default class MainLayout extends Component {
         onCancel={this.toggleCreateWalletDialog}
       />
     ) : null;
+    const addWalletBackupDialog = isWalletBackupInProgress ? (<WalletBackupPage />) : null;
     return (
       <SidebarLayout sidebar={sidebarComponent} appbar={appbar}>
         {this.props.children}
         {addWalletDialog}
+        {addWalletBackupDialog}
       </SidebarLayout>
     );
   }
