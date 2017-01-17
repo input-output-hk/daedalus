@@ -92,7 +92,7 @@ export default class WalletCreateDialog extends Component {
   actions = [
     {
       label: this.context.intl.formatMessage(messages.createPersonalWallet),
-      onClick: this.submit
+      onClick: () => this.submit()
     }
   ];
 
