@@ -132,12 +132,14 @@ export default class WalletRecoveryPhraseShowDialog extends Component {
     const actions =  isEntering ? [
         {
           label: this.context.intl.formatMessage(messages.buttonLabelClear),
-          onClick: onClear
+          onClick: onClear,
+          className: 'dialog_buttonSecondary'
         },
         {
           label: this.context.intl.formatMessage(messages.buttonLabelConfirm),
           onClick: onFinishBackup,
-          disabled: !canFinishBackup
+          disabled: !canFinishBackup,
+          className: 'dialog_buttonPrimary'
 
         }
       ] : [
