@@ -24,3 +24,17 @@ $button-border-radius: 0.3rem;
     background: $button-pressed-bg !important;
   }
 }
+
+.primary {
+  @extend %button;
+}
+
+.neutral {
+  @extend %button;
+  color: #5e6066 !important;
+  background-color: #eef1f3 !important;
+  &:hover {
+    color: #5e6066 !important;
+    background-color: darken(#eef1f3, 7%) !important;
+  }
+}
