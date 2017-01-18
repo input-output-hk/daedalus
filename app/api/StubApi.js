@@ -6,7 +6,8 @@ import type {
   createWalletRequest,
   createTransactionRequest,
   updateUserProfileFieldRequest,
-  loginRequest
+  loginRequest,
+  getWalletRecoveryPhraseRequest
 } from './index';
 import StubRepository from './StubRepository';
 import { user, wallets, transactions } from './fixtures';
@@ -65,6 +66,20 @@ export default class StubApi {
     }));
   }
 
+  getWalletRecoveryPhrase(request: getWalletRecoveryPhraseRequest) {
+    console.debug('StubApi::getWalletRecoveryPhrase called with', request);
+    return fakeRequest('getWalletRecoveryPhraseRequest', action(() => {
+      return this.repository.getWalletRecoveryPhrase(request);
+    }));
+  }
+
+  setWalletBackupCompleted(walletId: string) {
+    console.debug('StubApi::setWalletBackupCompleted called with', walletId);
+    return fakeRequest('setWalletBackupCompleted', action(() => {
+      return this.repository.setWalletBackupCompleted(walletId);
+    }));
+  }
+
   createUser(request: createUserRequest) {
     console.debug('StubApi::createUser called with', request);
     return fakeRequest('createUser', this.repository.generateUser(request));
@@ -73,7 +88,7 @@ export default class StubApi {
   createWallet(request: createWalletRequest) {
     console.debug('StubApi::createWallet called with', request);
     return fakeRequest('createWallet',  action(() => {
-      return new Wallet(this.repository.generateWallet(request))
+      return new Wallet(this.repository.generateWallet(Object.assign({}, request, { amount: 0 })));
     }));
   }
 

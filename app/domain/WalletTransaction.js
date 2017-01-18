@@ -11,7 +11,7 @@ export default class WalletTransaction {
   @observable currency: string = '';
   @observable amount: number;
   @observable date: Date;
-  // TODO: Add other attributes for transaction details
+  @observable description: string = '';
 
   constructor(data: {
     id: string,
@@ -19,7 +19,8 @@ export default class WalletTransaction {
     title: string,
     currency: string,
     amount: number,
-    date: Date
+    date: Date,
+    description: string,
   }) {
     Object.assign(this, data);
   }

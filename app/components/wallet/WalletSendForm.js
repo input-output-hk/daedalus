@@ -1,15 +1,25 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { observer, inject } from 'mobx-react';
+import { observer } from 'mobx-react';
 import Input from 'react-toolbox/lib/input/Input';
 import Button from 'react-toolbox/lib/button/Button';
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
-import isCurrency from 'validator/lib/isCurrency';
+import isInt from 'validator/lib/isInt';
 import styles from './WalletSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
 
 const messages = defineMessages({
+  titleLabel: {
+    id: 'wallet.send.form.title.label',
+    defaultMessage: '!!!Title',
+    description: 'Label for the "Title" text input in the wallet send form.'
+  },
+  titleHint: {
+    id: 'wallet.send.form.title.hint',
+    defaultMessage: '!!!E.g: Money for Frank',
+    description: 'Hint inside the "Receiver" text input in the wallet send form.'
+  },
   receiverLabel: {
     id: 'wallet.send.form.receiver.label',
     defaultMessage: '!!!Receiver',
@@ -17,7 +27,7 @@ const messages = defineMessages({
   },
   receiverHint: {
     id: 'wallet.send.form.receiver.hint',
-    defaultMessage: '!!!Bitcoin address',
+    defaultMessage: '!!!Wallet Address',
     description: 'Hint inside the "Receiver" text input in the wallet send form.'
   },
   amountLabel: {
@@ -55,6 +65,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Please enter a valid amount.',
     description: 'Error message shown when invalid amount was entered.',
   },
+  invalidTitle: {
+    id: 'wallet.send.form.errors.invalidTitle',
+    defaultMessage: '!!!Please enter a title with at least 3 characters.',
+    description: 'Error message shown when invalid transaction title was entered.',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -81,6 +96,13 @@ export default class WalletSendForm extends Component {
       validateOnChange: false,
     },
     fields: {
+      title: {
+        value: '',
+        validate: ({ field }) => {
+          const isValid = field.value.length >= 3;
+          return [isValid, 'invalidTitle'];
+        }
+      },
       receiver: {
         value: '',
         validate: ({ field }) => {
@@ -92,8 +114,9 @@ export default class WalletSendForm extends Component {
       amount: {
         value: '',
         validate: ({ field }) => {
-          const isValid = isCurrency(field.value, {
-            allow_negatives: false
+          const isValid = isInt(field.value, {
+            allow_leading_zeroes: false,
+            min: 1,
           });
           return [isValid, 'invalidAmount'];
         }
@@ -109,7 +132,6 @@ export default class WalletSendForm extends Component {
     this.validator.submit({
       onSuccess: (form) => {
         this.setState({ isSubmitting: true });
-        console.log(form.values());
         this.props.onSubmit(form.values());
         form.reset();
       },
@@ -122,10 +144,12 @@ export default class WalletSendForm extends Component {
   render() {
     const { validator } = this;
     const { intl } = this.context;
+    const title = validator.$('title');
     const receiver = validator.$('receiver');
     const amount = validator.$('amount');
     const description = validator.$('description');
     const errors = {
+      title: title.error && messages[title.error] ? intl.formatMessage(messages[title.error]) : null,
       receiver: receiver.error && messages[receiver.error] ? intl.formatMessage(messages[receiver.error]) : null,
       amount: amount.error ? intl.formatMessage(messages[amount.error]) : null,
     };
@@ -133,6 +157,17 @@ export default class WalletSendForm extends Component {
       <div className={styles.component}>
 
         <div className={styles.fields}>
+
+          <Input
+            className="title"
+            label={intl.formatMessage(messages.titleLabel)}
+            hint={intl.formatMessage(messages.titleHint)}
+            value={title.value}
+            error={errors.title}
+            onChange={title.onChange}
+            onFocus={title.onFocus}
+            onBlur={title.onBlur}
+          />
 
           <Input
             className="receiver"
@@ -173,6 +208,7 @@ export default class WalletSendForm extends Component {
           className={this.state.isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
           label={intl.formatMessage(messages.sendButtonLabel)}
           onMouseUp={this.submit.bind(this)}
+          primary
         />
 
       </div>

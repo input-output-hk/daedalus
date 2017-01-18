@@ -4,6 +4,7 @@ import Store from './lib/Store';
 import { matchRoute } from '../lib/routing-helpers';
 import CachedRequest from './lib/CachedRequest';
 import Request from './lib/Request';
+import environment from '../environment';
 
 export default class WalletsStore extends Store {
 
@@ -12,18 +13,20 @@ export default class WalletsStore extends Store {
   @observable walletsRequest = new CachedRequest(this.api, 'getWallets');
   @observable createWalletRequest = new Request(this.api, 'createWallet');
   @observable sendMoneyRequest = new Request(this.api, 'createTransaction');
+  @observable getWalletRecoveryPhraseRequest = new Request(this.api, 'getWalletRecoveryPhrase');
 
   constructor(...args) {
     super(...args);
     this.actions.createPersonalWallet.listen(this._createPersonalWallet);
     this.actions.sendMoney.listen(this._sendMoney);
+    if (environment.CARDANO_API) setInterval(this._refreshWalletsData, 5000);
   }
 
   _createPersonalWallet = async (params) => {
     const wallet = await this.createWalletRequest.execute(params);
     await this.walletsRequest.patch(result => { result.push(wallet); });
-    this.actions.toggleCreateWalletDialog();
-    this.actions.goToRoute({ route: this.getWalletRoute(wallet.id) });
+    const walletRecovery = await this.getWalletRecoveryPhraseRequest.execute({ walletId: wallet.id });
+    this.actions.initiateWalletBackup(walletRecovery);
   };
 
   _sendMoney = async (transactionDetails) => {
@@ -33,10 +36,9 @@ export default class WalletsStore extends Store {
       walletId: wallet.id,
       amount: parseFloat(transactionDetails.amount),
       sender: wallet.address,
-      currency: wallet.currency
+      currency: wallet.currency,
     });
-    this.walletsRequest.invalidate({ immediately: true });
-    this.stores.transactions.searchRequest.invalidate({ immediately: true });
+    this._refreshWalletsData();
     this.actions.goToRoute({ route: this.getWalletRoute(wallet.id) });
   };
 
@@ -58,5 +60,10 @@ export default class WalletsStore extends Store {
   isValidAddress(address: string) {
     return this.api.isValidAddress('ADA', address);
   }
+
+  _refreshWalletsData = () => {
+    this.walletsRequest.invalidate({ immediately: true });
+    this.stores.transactions.searchRequest.invalidate({ immediately: true });
+  };
 
 }

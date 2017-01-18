@@ -1,13 +1,17 @@
 // @flow
 import faker from 'faker';
 import { isString, isDate } from 'lodash';
+import randomWords from 'random-words';
+import _ from 'lodash';
 import type {
   walletStruct,
   userStruct,
   transactionStruct,
+  walletRecoveryPhraseStruct,
   getTransactionsRequest,
   updateUserProfileFieldRequest,
-  loginRequest
+  loginRequest,
+  getWalletRecoveryPhraseRequest
 } from './index';
 
 export default class StubRepository {
@@ -36,7 +40,7 @@ export default class StubRepository {
   }
 
   findWallets() {
-    return this.wallets;
+    return this.wallets.map(wallet => _.omit(wallet, ['recoveryPhrase']));
   }
 
   findTransactions(request: getTransactionsRequest) {
@@ -85,9 +89,10 @@ export default class StubRepository {
       currency: 'ada',
       amount: parseFloat(faker.finance.amount(), 10),
       name: faker.finance.accountName(),
-      lastUsed: true
+      lastUsed: true,
+      isBackupCompleted: false
     }, customData);
-    this.wallets.push(wallet);
+    this.wallets.push(Object.assign({}, wallet, { recoveryPhrase: randomWords(12) }));
     return wallet;
   }
 
@@ -95,10 +100,8 @@ export default class StubRepository {
     if (isString(data.date)) data.date = new Date(data.date);
     if (!isDate(data.date)) data.date = new Date();
     const transaction: transactionStruct = Object.assign({}, {
-      id: `t-id-${this.transactions.length}`,
+      id: faker.finance.bitcoinAddress(),
       type: 'adaExpend',
-      title: `Money to ${data.receiver}`,
-      transactionId: faker.finance.bitcoinAddress(),
     }, data);
     this.transactions.push(transaction);
     this.wallets.find(w => w.id === transaction.walletId).amount += transaction.amount;
@@ -108,5 +111,18 @@ export default class StubRepository {
   updateProfileField(request: updateUserProfileFieldRequest) {
     this.user.profile[request.field] = request.value;
     return true;
+  }
+
+  getWalletRecoveryPhrase(request: getWalletRecoveryPhraseRequest) {
+    const { walletId } = request;
+    const wallet = this.wallets.find(w => w.id === walletId);
+    const { recoveryPhrase } = wallet;
+    const walletRecoveryPhrase: walletRecoveryPhraseStruct = { walletId, recoveryPhrase };
+    return walletRecoveryPhrase;
+  }
+
+  setWalletBackupCompleted(walletId: string) {
+    const wallet = this.wallets.find(w => w.id === walletId);
+    wallet.isBackupCompleted = true;
   }
 }

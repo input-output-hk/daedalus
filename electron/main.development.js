@@ -5,10 +5,8 @@ import winLinuxMenu from './menus/win-linux';
 let menu;
 let mainWindow = null;
 const isDev = process.env.NODE_ENV === 'development';
-const isTest = process.env.NODE_ENV === 'test';
-const isDebug = isDev || isTest;
 
-if (isDebug) {
+if (isDev) {
   require('electron-debug')(); // eslint-disable-line global-require
 }
 
@@ -17,7 +15,7 @@ app.on('window-all-closed', () => {
 });
 
 const installExtensions = async () => {
-  if (isDebug) {
+  if (isDev) {
     const installer = require('electron-devtools-installer'); // eslint-disable-line global-require
 
     const extensions = [
@@ -27,7 +25,8 @@ const installExtensions = async () => {
     for (const name of extensions) {
       try {
         await installer.default(installer[name], forceDownload);
-      } catch (e) {} // eslint-disable-line
+      } catch (e) {
+      } // eslint-disable-line
     }
   }
 };
@@ -37,8 +36,9 @@ app.on('ready', async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 480,
-    height: 575
+    width: 1150,
+    height: 870
+    // TODO: revert to 480 x 757 when reintroducing login
   });
 
   mainWindow.loadURL(`file://${__dirname}/../app/index.html`);
@@ -58,24 +58,23 @@ app.on('ready', async () => {
   });
 
   if (isDev) mainWindow.openDevTools();
-  if (isDebug) {
-    mainWindow.webContents.on('context-menu', (e, props) => {
-      const { x, y } = props;
 
-      Menu.buildFromTemplate([{
-        label: 'Inspect element',
-        click() {
-          mainWindow.inspectElement(x, y);
-        }
-      }]).popup(mainWindow);
-    });
-  }
+  mainWindow.webContents.on('context-menu', (e, props) => {
+    const { x, y } = props;
+
+    Menu.buildFromTemplate([{
+      label: 'Inspect element',
+      click() {
+        mainWindow.inspectElement(x, y);
+      }
+    }]).popup(mainWindow);
+  });
 
   if (process.platform === 'darwin') {
-    menu = Menu.buildFromTemplate(osxMenu(app, mainWindow, isDebug));
+    menu = Menu.buildFromTemplate(osxMenu(app, mainWindow));
     Menu.setApplicationMenu(menu);
   } else {
-    menu = Menu.buildFromTemplate(winLinuxMenu(mainWindow, isDebug));
+    menu = Menu.buildFromTemplate(winLinuxMenu(mainWindow));
     mainWindow.setMenu(menu);
   }
 });

@@ -1,4 +1,5 @@
 import PropTypes from 'prop-types';
+import { PropTypes as MobxPropTypes } from 'mobx-react';
 import defineActions from './lib/actions';
 
 export default defineActions({
@@ -27,6 +28,7 @@ export default defineActions({
   toggleSidebar: {},
   toggleCreateWalletDialog: {},
   sendMoney: {
+    title: PropTypes.string.isRequired,
     receiver: PropTypes.string.isRequired,
     amount: PropTypes.string.isRequired,
     description: PropTypes.string,
@@ -40,4 +42,20 @@ export default defineActions({
   },
   stopEditingSettingsField: {},
   cancelEditingSettingsField: {}
+  initiateWalletBackup: {
+    walletId: PropTypes.string.isRequired,
+    recoveryPhrase: MobxPropTypes.arrayOrObservableArray.isRequired
+  },
+  acceptPrivacyNoticeForWalletBackup: {},
+  continueToRecoveryPhraseForWalletBackup: {},
+  startWalletBackup: {},
+  addWordToWalletBackupVerification: {
+    word: PropTypes.string.isRequired
+  },
+  clearEnteredRecoveryPhrase: {},
+  acceptWalletBackupTermDevice: {},
+  acceptWalletBackupTermRecovery: {},
+  restartWalletBackup: {},
+  cancelWalletBackup: {},
+  finishWalletBackup: {}
 }, PropTypes.validateWithErrors);

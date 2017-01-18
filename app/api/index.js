@@ -26,6 +26,7 @@ export type walletStruct = {
   amount: number,
   name: string,
   lastUsed: ?bool,
+  isBackupCompleted: boolean
 };
 
 export type transactionStruct = {
@@ -39,7 +40,11 @@ export type transactionStruct = {
   description: string,
   exchange: ?string,
   conversionRate: ?string,
-  transactionId: ?string,
+};
+
+export type walletRecoveryPhraseStruct = {
+  walletId: string,
+  recoveryPhrase: [string]
 };
 
 // REQUESTS
@@ -74,12 +79,17 @@ export type createTransactionRequest = {
   receiver: string,
   amount: number,
   currency: string,
+  title: string,
   description: ?string,
 }
 
 export type updateUserProfileFieldRequest = {
   field: string,
   value: string
+}
+
+export type getWalletRecoveryPhraseRequest = {
+  walletId: string
 }
 
 // INTERFACE
@@ -97,5 +107,7 @@ export type Api = {
   createTransaction(request: createTransactionRequest): Promise<WalletTransaction>,
   updateProfileField(request: updateUserProfileFieldRequest): Promise<any>,
   isValidAddress(currency: string, address: string): Promise<boolean>,
-  getTermsOfUse(): Promise<string>
+  getTermsOfUse(): Promise<string>,
+  getWalletRecoveryPhrase(request: getWalletRecoveryPhraseRequest): Promise<string>,
+  setWalletBackupCompleted(walletId: string): void
 }

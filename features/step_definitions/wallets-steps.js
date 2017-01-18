@@ -61,6 +61,7 @@ export default function () {
   this.When(/^I fill out the wallet send form with:$/, async function (table) {
     const values = table.hashes()[0];
     const formSelector = '.WalletSendForm_fields';
+    await this.client.setValue(`${formSelector} .title .input_inputElement`, values.title);
     await this.client.setValue(`${formSelector} .receiver .input_inputElement`, values.receiver);
     await this.client.setValue(`${formSelector} .amount .input_inputElement`, values.amount);
     await this.client.setValue(`${formSelector} .description .input_inputElement`, values.description);
@@ -104,11 +105,11 @@ export default function () {
     }
   });
 
-  this.Then(/^I should see the wallet home screen with the transaction$/, async function () {
+  this.Then(/^I should see the wallet home screen with the transaction titled (.*)$/, async function (title) {
     const displayedWalletName = await getDisplayedWalletName.call(this);
     expect(displayedWalletName.toLowerCase()).to.equal(this.wallet.name.toLowerCase());
     const transactionTitle = await this.client.getText('.Transaction_title');
-    expect(transactionTitle).to.equal(`Money to ${this.walletSendFormValues['receiver']}`);
+    expect(transactionTitle).to.equal(title);
     const transactionType = await this.client.getText('.Transaction_type');
     expect(transactionType).to.equal('ADA transaction');
     const transactionAmount = await this.client.getText('.Transaction_amount');

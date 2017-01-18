@@ -20,9 +20,17 @@ $dialog-content-padding: 30px;
   text-align: center;
 }
 
-.button {
-  width: 60%;
+%button {
   font-family: $font-medium;
   font-size: 14px !important;
   letter-spacing: 0;
+}
+
+.button {
+  @extend %button;
+  min-width: calc(50% - 0.8rem);
+}
+
+.navigation {
+  padding: 20px 30px;
 }

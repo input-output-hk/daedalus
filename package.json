@@ -117,6 +117,7 @@
     "postcss": "^5.2.4",
     "prop-types": "^0.2.0",
     "qrcode.react": "^0.6.1",
+    "random-words": "0.0.1",
     "react": "^15.3.2",
     "react-addons-css-transition-group": "^15.3.2",
     "react-css-themr": "^1.4.1",

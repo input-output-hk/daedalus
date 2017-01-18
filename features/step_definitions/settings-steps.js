@@ -36,9 +36,11 @@ export default function () {
   this.Then(/^My current language should be "([^"]*)"$/, async function (locale) {
     const result = await this.client.executeAsync(function (loc, done) {
       setTimeout(function() { // Allow mobx to flush changes
-        const user = daedalus.stores.user.active;
-        done((user.profile.languageLocale === loc) && (daedalus.stores.app.currentLocale === loc));
-      }, 0);
+        setTimeout(function () {
+          const user = daedalus.stores.user.active;
+          done((user.profile.languageLocale === loc) && (daedalus.stores.app.currentLocale === loc));
+        });
+      });
     }, locale);
     expect(result.value).to.be.true;
   });

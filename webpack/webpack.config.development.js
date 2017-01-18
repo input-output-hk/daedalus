@@ -12,7 +12,7 @@ const formatter = ('eslint-formatter-pretty');
 const Joi = require('webpack-validator').Joi;
 const baseConfig = require('./webpack.config.base');
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 
 module.exports = validate(merge(baseConfig, {
   debug: true,

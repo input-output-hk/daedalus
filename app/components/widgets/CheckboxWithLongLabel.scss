@@ -1,0 +1,17 @@
+.component {
+  display: flex;
+}
+
+.checkbox {
+  flex-basis: 40px;
+  flex-shrink: 0;
+}
+
+.checkboxLabel {
+  margin-top: 30px;
+  font-family: $font-light;
+  font-size: 16px;
+  color: #5e6066;
+  white-space: normal;
+  line-height: 1.38;
+}

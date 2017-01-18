@@ -7,14 +7,36 @@ $button-border-radius: 0.3rem;
   font-family: $font-semibold;
   letter-spacing: 2px;
   text-transform: none;
-  color: white !important;
   background: $button-up-bg;
 
-  &:hover {
-    background: $button-hover-bg !important;
+  &.primary {
+    &[disabled] {
+      opacity: 0.3;
+      color: white;
+    }
+    &:not([disabled]) {
+      color: white;
+      &:hover {
+        background: $button-hover-bg;
+      }
+      &:active {
+        background: $button-pressed-bg;
+      }
+    }
   }
 
-  &:active {
-    background: $button-pressed-bg !important;
+  &.neutral {
+    &:not([disabled]) {
+      color: #5e6066;
+      background-color: #eef1f3;
+      &:hover {
+        color: #5e6066;
+        background-color: darken(#eef1f3, 7%);
+      }
+    }
+    &[disabled] {
+      opacity: 0.3;
+      color: darken(#eef1f3, 7%);
+    }
   }
 }

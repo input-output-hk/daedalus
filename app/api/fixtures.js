@@ -1,7 +1,13 @@
 // @flow
 import moment from 'moment';
 import faker from 'faker';
-import type { walletStruct, userStruct, transactionStruct } from './index';
+import randomWords from 'random-words';
+import type {
+  walletStruct,
+  userStruct,
+  transactionStruct,
+  waletRecoveryPhraseStruct
+} from './index';
 
 // ==== Initial stub data for easier development =====
 
@@ -24,8 +30,10 @@ export const wallets: Array<walletStruct> = [
     address: faker.finance.bitcoinAddress(),
     type: 'personal',
     currency: 'ada',
-    amount: 19903750165.23,
+    amount: 19903750165,
     name: 'Main wallet',
+    isBackupCompleted: true,
+    recoveryPhrase: randomWords(12)
   },
   {
     id: faker.random.uuid(),
@@ -33,8 +41,10 @@ export const wallets: Array<walletStruct> = [
     address: faker.finance.bitcoinAddress(),
     type: 'personal',
     currency: 'ada',
-    amount: 274912874.35,
+    amount: 274912874,
     name: 'House rent',
+    isBackupCompleted: false,
+    recoveryPhrase: randomWords(12)
   },
   {
     id: faker.random.uuid(),
@@ -42,8 +52,10 @@ export const wallets: Array<walletStruct> = [
     address: faker.finance.bitcoinAddress(),
     type: 'personal',
     currency: 'btc',
-    amount: 0.0004924712,
+    amount: 4924712,
     name: 'Mining',
+    isBackupCompleted: false,
+    recoveryPhrase: randomWords(12)
   },
   {
     id: faker.random.uuid(),
@@ -51,8 +63,10 @@ export const wallets: Array<walletStruct> = [
     address: faker.finance.bitcoinAddress(),
     type: 'personal',
     currency: 'ada',
-    amount: 2500.00,
+    amount: 2500,
     name: 'Transporting',
+    isBackupCompleted: true,
+    recoveryPhrase: randomWords(12)
   },
   {
     id: faker.random.uuid(),
@@ -60,8 +74,10 @@ export const wallets: Array<walletStruct> = [
     address: faker.finance.bitcoinAddress(),
     type: 'personal',
     currency: 'btc',
-    amount: 0.02048244,
+    amount: 1000,
     name: 'Pocket money',
+    isBackupCompleted: true,
+    recoveryPhrase: randomWords(12)
   }
 ];
 
@@ -74,13 +90,13 @@ const generateTransaction = (data: Object): transactionStruct => {
     date = moment().subtract(Math.floor(Math.random() * 10), 'days').toDate();
   }
   return Object.assign({}, {
-    id: `t-id-${transactionsCount}`,
+    id: faker.finance.bitcoinAddress(),
     description: faker.lorem.sentence(),
   }, data, { date });
 };
 
 const cardTransaction = (walletId: string, date: ?Date) => {
-  const amount = -1 * ((Math.random() * 1000) + 1);
+  const amount = -1 * (Math.floor((Math.random() * 1000)) + 1);
   return generateTransaction({
     walletId,
     amount,
@@ -90,7 +106,6 @@ const cardTransaction = (walletId: string, date: ?Date) => {
     title: `Invoice to ${faker.company.companyName()}`,
     exchange: null,
     conversionRate: null,
-    transactionId: null,
   });
 };
 
@@ -112,12 +127,11 @@ const adaTransaction = (data: {
     currency: 'ada',
     exchange: `${amount.toFixed(2)} ADA for ${(amount / exchangeRate).toFixed(2)} USD`,
     conversionRate: `1 USD = ${exchangeRate.toFixed(2)} ADA`,
-    transactionId: faker.finance.bitcoinAddress(),
   });
 };
 
 const adaExpend = (walletId: string, date: ?Date) => {
-  const amount = -1 * ((Math.random() * 1000) + 1);
+  const amount = -1 * (Math.floor((Math.random() * 1000)) + 1);
   return adaTransaction({
     walletId,
     amount,
@@ -128,7 +142,7 @@ const adaExpend = (walletId: string, date: ?Date) => {
 };
 
 const adaIncome = (walletId: string, date: ?Date) => {
-  const amount = (Math.random() * 1000) + 1;
+  const amount = (Math.floor(Math.random() * 1000)) + 1;
   return adaTransaction({
     walletId,
     amount,
@@ -139,7 +153,7 @@ const adaIncome = (walletId: string, date: ?Date) => {
 };
 
 const exchange = (walletId: string, date: ?Date) => {
-  const amount = (Math.random() * 1000) + 1;
+  const amount = (Math.floor(Math.random() * 1000)) + 1;
   const exchangeRate = (Math.random() * 1000) + 10;
   return generateTransaction({
     walletId,
@@ -150,7 +164,6 @@ const exchange = (walletId: string, date: ?Date) => {
     currency: 'ada',
     exchange: `${amount.toFixed(2)} ADA for ${(amount / exchangeRate).toFixed(2)} ETH`,
     conversionRate: `1 ETH = ${exchangeRate.toFixed(2)} ADA`,
-    transactionId: faker.finance.bitcoinAddress(),
   });
 };
 
