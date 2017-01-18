@@ -75,6 +75,7 @@ export default class WalletReceive extends Component {
           className={styles.submitButton}
           label={intl.formatMessage(messages.requestSpecificAmountButtonLabel)}
           onMouseUp={() => {}}
+          primary
         />
 
       </div>

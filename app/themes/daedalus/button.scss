@@ -2,39 +2,41 @@
 $button-border-radius: 0.3rem;
 @import "~react-toolbox/lib/button/theme";
 
-%button {
-  &[disabled] {
-    opacity: 0.3;
-  }
-}
-
 .flat {
   font-size: 18px;
   font-family: $font-semibold;
   letter-spacing: 2px;
   text-transform: none;
-  color: white !important;
   background: $button-up-bg;
 
-  &:hover {
-    background: $button-hover-bg !important;
+  &.primary {
+    &[disabled] {
+      opacity: 0.3;
+      color: white;
+    }
+    &:not([disabled]) {
+      color: white;
+      &:hover {
+        background: $button-hover-bg;
+      }
+      &:active {
+        background: $button-pressed-bg;
+      }
+    }
   }
 
-  &:active {
-    background: $button-pressed-bg !important;
-  }
-}
-
-.primary {
-  @extend %button;
-}
-
-.neutral {
-  @extend %button;
-  color: #5e6066 !important;
-  background-color: #eef1f3 !important;
-  &:hover {
-    color: #5e6066 !important;
-    background-color: darken(#eef1f3, 7%) !important;
+  &.neutral {
+    &:not([disabled]) {
+      color: #5e6066;
+      background-color: #eef1f3;
+      &:hover {
+        color: #5e6066;
+        background-color: darken(#eef1f3, 7%);
+      }
+    }
+    &[disabled] {
+      opacity: 0.3;
+      color: darken(#eef1f3, 7%);
+    }
   }
 }
