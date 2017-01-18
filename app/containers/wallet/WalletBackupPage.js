@@ -1,7 +1,9 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer, inject, PropTypes as MobxPropTypes } from 'mobx-react';
-import WalletRecoveryPhraseDialog from '../../components/wallet/backup-recovery/WalletRecoveryPhraseDialog';
+import WalletBackupPrivacyWarningDialog from '../../components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog';
+import WalletRecoveryPhraseDisplayDialog from '../../components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog';
+import WalletRecoveryPhraseEntryDialog from '../../components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog';
 
 @inject('stores', 'actions') @observer
 export default class WalletBackupPage extends Component {
@@ -9,6 +11,7 @@ export default class WalletBackupPage extends Component {
   static propTypes = {
     stores: PropTypes.shape({
       walletBackup: PropTypes.shape({
+        currentStep: PropTypes.string.isRequired,
         walletId: PropTypes.string.isRequired,
         recoveryPhrase: MobxPropTypes.arrayOrObservableArray.isRequired,
         recoveryPhraseShuffled: MobxPropTypes.arrayOrObservableArray.isRequired,
@@ -17,15 +20,14 @@ export default class WalletBackupPage extends Component {
         isPrivacyNoticeAccepted: PropTypes.bool.isRequired,
         isEntering: PropTypes.bool.isRequired,
         isRecoveryPhraseValid: PropTypes.bool.isRequired,
-        isWalletBackupStartAccepted: PropTypes.bool.isRequired,
         countdownRemaining: PropTypes.number.isRequired,
         isTermDeviceAccepted: PropTypes.bool.isRequired,
         isTermRecoveryAccepted: PropTypes.bool.isRequired
       }),
     }).isRequired,
     actions: PropTypes.shape({
-      acceptWalletBackupStart: PropTypes.func.isRequired,
       startWalletBackup: PropTypes.func.isRequired,
+      continueToRecoveryPhraseForWalletBackup: PropTypes.func.isRequired,
       addWordToWalletBackupVerification: PropTypes.func.isRequired,
       clearEnteredRecoveryPhrase: PropTypes.func.isRequired,
       acceptWalletBackupTermDevice: PropTypes.func.isRequired,
@@ -41,17 +43,15 @@ export default class WalletBackupPage extends Component {
     const {
       recoveryPhrase,
       enteredPhrase,
-      isEntering,
       isRecoveryPhraseValid,
-      isWalletBackupStartAccepted,
       countdownRemaining,
       recoveryPhraseShuffled,
       isTermDeviceAccepted,
       isTermRecoveryAccepted,
-      isPrivacyNoticeAccepted
+      isPrivacyNoticeAccepted,
+      currentStep
     } = this.props.stores.walletBackup;
     const {
-      acceptWalletBackupStart,
       startWalletBackup,
       addWordToWalletBackupVerification,
       clearEnteredRecoveryPhrase,
@@ -60,34 +60,44 @@ export default class WalletBackupPage extends Component {
       restartWalletBackup,
       cancelWalletBackup,
       finishWalletBackup,
-      acceptPrivacyNoticeForWalletBackup
+      acceptPrivacyNoticeForWalletBackup,
+      continueToRecoveryPhraseForWalletBackup
     } = this.props.actions;
-    return (
-      <WalletRecoveryPhraseDialog
-        enteredPhrase={enteredPhrase}
-        isEntering={isEntering}
-        isValid={isRecoveryPhraseValid}
-        recoveryPhrase={recoveryPhrase}
-        recoveryPhraseShuffled={recoveryPhraseShuffled}
-        isWalletBackupStartAccepted={isWalletBackupStartAccepted}
-        onAcceptStartBackup={acceptWalletBackupStart}
-        countdownRemaining={countdownRemaining}
-        canPhraseBeShown={countdownRemaining === 0 && isPrivacyNoticeAccepted}
-        onStartWalletBackup={startWalletBackup}
-        onAddWord={addWordToWalletBackupVerification}
-        onClear={clearEnteredRecoveryPhrase}
-        onAcceptTermDevice={acceptWalletBackupTermDevice}
-        onAcceptTermRecovery={acceptWalletBackupTermRecovery}
-        isTermDeviceAccepted={isTermDeviceAccepted}
-        isTermRecoveryAccepted={isTermRecoveryAccepted}
-        canFinishBackup={isTermDeviceAccepted && isTermRecoveryAccepted && isRecoveryPhraseValid}
-        onRestartBackup={restartWalletBackup}
-        onCancelBackup={cancelWalletBackup}
-        onFinishBackup={finishWalletBackup}
-        onAcceptPrivacyNotice={acceptPrivacyNoticeForWalletBackup}
+    if (currentStep === 'privacyWarning') return (
+      <WalletBackupPrivacyWarningDialog
+        canPhraseBeShown={isPrivacyNoticeAccepted && countdownRemaining === 0}
         isPrivacyNoticeAccepted={isPrivacyNoticeAccepted}
+        countdownRemaining={countdownRemaining}
+        onAcceptPrivacyNotice={acceptPrivacyNoticeForWalletBackup}
+        onCancelBackup={cancelWalletBackup}
+        onContinue={continueToRecoveryPhraseForWalletBackup}
       />
     );
+    if (currentStep === 'recoveryPhraseDisplay') return (
+      <WalletRecoveryPhraseDisplayDialog
+        recoveryPhrase={recoveryPhrase.reduce((phrase, { word }) => `${phrase} ${word}`, '')}
+        onStartWalletBackup={startWalletBackup}
+        onCancelBackup={cancelWalletBackup}
+      />
+    );
+    if (currentStep === 'recoveryPhraseEntry') return (
+      <WalletRecoveryPhraseEntryDialog
+        isTermDeviceAccepted={isTermDeviceAccepted}
+        enteredPhrase={enteredPhrase}
+        canFinishBackup={isRecoveryPhraseValid && isTermDeviceAccepted && isTermRecoveryAccepted}
+        isTermRecoveryAccepted={isTermRecoveryAccepted}
+        isValid={isRecoveryPhraseValid}
+        onAcceptTermDevice={acceptWalletBackupTermDevice}
+        onAcceptTermRecovery={acceptWalletBackupTermRecovery}
+        onAddWord={addWordToWalletBackupVerification}
+        onCancelBackup={cancelWalletBackup}
+        onClear={clearEnteredRecoveryPhrase}
+        onFinishBackup={finishWalletBackup}
+        onRestartBackup={restartWalletBackup}
+        recoveryPhraseShuffled={recoveryPhraseShuffled}
+      />
+    );
+
   }
 
 }

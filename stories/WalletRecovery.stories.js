@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
 import StoryDecorator from './support/StoryDecorator';
-import WalletRecoveryPhraseShowDialog from '../app/components/wallet/backup-recovery/WalletRecoveryPhraseDialog';
+import WalletRecoveryPhraseShowDialog from '../app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog';
 
 const recoveryPhrase = [
   { word: 'cat' },
