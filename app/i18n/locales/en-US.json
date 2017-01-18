@@ -59,7 +59,7 @@
   "inline.editing.input.cancel.label": "cancel",
   "profile.settings.errors.invalidName": "Please enter a valid name.",
   "profile.settings.errors.invalidEmail": "Please enter a valid email",
-  "inline.editing.input.changesSaved": "Your changes have been saved"
+  "inline.editing.input.changesSaved": "Your changes have been saved",
   "wallet.backup.recovery.phrase.dialog.title": "Recovery phrase",
   "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions": "On the following screen, you will see a set of X random words. This is your wallet backup phrase. It can be entered in any version of Daedalus application in order to back up or restore your wallet’s funds and private key.",
   "wallet.backup.privacy.warning.dialog..button.labelContinue": "Continue",

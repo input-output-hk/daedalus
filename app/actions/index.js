@@ -41,7 +41,7 @@ export default defineActions({
     field: PropTypes.string.isRequired,
   },
   stopEditingSettingsField: {},
-  cancelEditingSettingsField: {}
+  cancelEditingSettingsField: {},
   initiateWalletBackup: {
     walletId: PropTypes.string.isRequired,
     recoveryPhrase: MobxPropTypes.arrayOrObservableArray.isRequired
@@ -57,5 +57,5 @@ export default defineActions({
   acceptWalletBackupTermRecovery: {},
   restartWalletBackup: {},
   cancelWalletBackup: {},
-  finishWalletBackup: {}
+  finishWalletBackup: {},
 }, PropTypes.validateWithErrors);
