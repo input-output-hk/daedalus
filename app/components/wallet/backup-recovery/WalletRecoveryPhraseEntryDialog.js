@@ -54,8 +54,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
       isActive: PropTypes.bool.isRequired
     })).isRequired,
     enteredPhrase: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.shape({
-      word: PropTypes.string.isRequired,
-      isChosen: PropTypes.bool.isRequired
+      word: PropTypes.string.isRequired
     })).isRequired,
     isValid: PropTypes.bool.isRequired,
     isTermDeviceAccepted: PropTypes.bool.isRequired,
