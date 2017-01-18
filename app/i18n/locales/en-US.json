@@ -60,7 +60,7 @@
   "wallet.backup.privacy.warning.dialog..button.labelContinue": "Continue",
   "wallet.backup.privacy.warning.dialog.checkbox.label.nobodyWatching": "Make sure nobody looks into your screen unless you want them to have access to your funds.",
   "wallet.backup.recovery.phrase.display.dialog.backup.instructions": "Please, make sure you have carefully written down your recovery phrase somewhere safe. You will need this phrase later for next use and recover. Phrase is case sensitive.",
-  "wallet.backup.recovery.phrase.display.dialog.terms.and.condition.device": "I understand that my money are held securely on this device only, not on the company servers",
+  "wallet.backup.recovery.phrase.display.dialog.terms.and.condition.device": "I understand that my money is held securely on this device only, not on the company servers",
   "wallet.backup.recovery.phrase.display.dialog.button.label.iHaveWrittenItDown": "Yes, I’ve written it down",
   "wallet.backup.recovery.phrase.entry.dialog.verification.instructions": "Tap each word in the correct order to verify your recovery phrase",
   "wallet.recovery.phrase.show.entry.dialog.button.labelConfirm": "Confirm",
