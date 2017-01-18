@@ -5,7 +5,7 @@ import Store from './lib/Store';
 
 export type walletBackupSteps = 'privacyWarning' | 'recoveryPhraseDisplay' | 'recoveryPhraseEntry' | void;
 
-export default class WalletsStore extends Store {
+export default class WalletBackupStore extends Store {
 
   @observable setWalletBackupCompleted = new Request(this.api, 'setWalletBackupCompleted');
   @observable inProgress = false;
