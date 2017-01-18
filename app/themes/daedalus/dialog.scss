@@ -28,26 +28,9 @@ $dialog-content-padding: 30px;
 
 .button {
   @extend %button;
-  width: 60%;
+  min-width: calc(50% - 0.8rem);
 }
 
 .navigation {
   padding: 20px 30px;
-}
-
-.buttonPrimary {
-  @extend %button;
-  width: calc(50% - 7px);
-}
-
-.buttonSecondary {
-  @extend %button;
-  margin-left: 0;
-  width: calc(50% - 6px);
-  color: #5e6066 !important;
-  background-color: #eef1f3 !important;
-  &:hover {
-    color: #5e6066 !important;
-    background-color: darken(#eef1f3, 7%) !important;
-  }
 }

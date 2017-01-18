@@ -159,7 +159,8 @@ export default class WalletRecoveryPhraseShowDialog extends Component {
         {
           label: this.context.intl.formatMessage(messages.buttonLabelContinue) + countdownDisplay,
           onClick: onAcceptPrivacyNotice,
-          disabled: !canPhraseBeShown
+          disabled: !canPhraseBeShown,
+          primary: true,
         }
       ];
     } else if (isPrivacyNoticeAccepted && !isEntering) {
@@ -167,7 +168,8 @@ export default class WalletRecoveryPhraseShowDialog extends Component {
         {
           label: this.context.intl.formatMessage(messages.buttonLabelIHaveWrittenItDown),
           onClick: onStartWalletBackup,
-          disabled: !isPrivacyNoticeAccepted
+          disabled: !isPrivacyNoticeAccepted,
+          primary: true,
         }
       ];
     } else {
@@ -181,8 +183,8 @@ export default class WalletRecoveryPhraseShowDialog extends Component {
           label: this.context.intl.formatMessage(messages.buttonLabelConfirm),
           onClick: onFinishBackup,
           disabled: !canFinishBackup,
-          className: 'dialog_buttonPrimary'
-
+          primary: true,
+          className: 'dialog_buttonPrimary',
         }
       ];
     }
