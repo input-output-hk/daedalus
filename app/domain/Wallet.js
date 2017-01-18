@@ -13,6 +13,7 @@ export default class Wallet {
   @observable name: string = '';
   @observable amount: number;
   @observable transactions: Array<WalletTransaction> = [];
+  @observable isBackupCompleted: boolean = false;
 
   constructor(data: {
     id: string,
@@ -21,6 +22,7 @@ export default class Wallet {
     address: string,
     currency: string,
     amount: number,
+    isBackupCompleted: boolean
   }) {
     Object.assign(this, data);
   }

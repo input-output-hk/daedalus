@@ -208,6 +208,7 @@ export default class WalletSendForm extends Component {
           className={this.state.isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
           label={intl.formatMessage(messages.sendButtonLabel)}
           onMouseUp={this.submit.bind(this)}
+          primary
         />
 
       </div>

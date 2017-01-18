@@ -3,7 +3,7 @@ $appbar-height: 84px;
 @import "~react-toolbox/lib/app_bar/theme";
 
 .appBar {
-  background: $color-primary-dark url("../../assets/images/daedalus-logo-header.svg") no-repeat center;
+  background: $color-primary-dark url("../../assets/images/daedalus-logo-header-nologo.svg") no-repeat center;
   background-size: 220px;
   box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25) !important;
   h1 {

@@ -1,7 +1,13 @@
 // @flow
 import moment from 'moment';
 import faker from 'faker';
-import type { walletStruct, userStruct, transactionStruct } from './index';
+import randomWords from 'random-words';
+import type {
+  walletStruct,
+  userStruct,
+  transactionStruct,
+  waletRecoveryPhraseStruct
+} from './index';
 
 // ==== Initial stub data for easier development =====
 
@@ -26,6 +32,8 @@ export const wallets: Array<walletStruct> = [
     currency: 'ada',
     amount: 19903750165,
     name: 'Main wallet',
+    isBackupCompleted: true,
+    recoveryPhrase: randomWords(12)
   },
   {
     id: faker.random.uuid(),
@@ -35,6 +43,8 @@ export const wallets: Array<walletStruct> = [
     currency: 'ada',
     amount: 274912874,
     name: 'House rent',
+    isBackupCompleted: false,
+    recoveryPhrase: randomWords(12)
   },
   {
     id: faker.random.uuid(),
@@ -44,6 +54,8 @@ export const wallets: Array<walletStruct> = [
     currency: 'btc',
     amount: 4924712,
     name: 'Mining',
+    isBackupCompleted: false,
+    recoveryPhrase: randomWords(12)
   },
   {
     id: faker.random.uuid(),
@@ -53,6 +65,8 @@ export const wallets: Array<walletStruct> = [
     currency: 'ada',
     amount: 2500,
     name: 'Transporting',
+    isBackupCompleted: true,
+    recoveryPhrase: randomWords(12)
   },
   {
     id: faker.random.uuid(),
@@ -62,6 +76,8 @@ export const wallets: Array<walletStruct> = [
     currency: 'btc',
     amount: 1000,
     name: 'Pocket money',
+    isBackupCompleted: true,
+    recoveryPhrase: randomWords(12)
   }
 ];
 

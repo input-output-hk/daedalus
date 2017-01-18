@@ -4,6 +4,7 @@ import Store from './lib/Store';
 import { matchRoute } from '../lib/routing-helpers';
 import CachedRequest from './lib/CachedRequest';
 import Request from './lib/Request';
+import environment from '../environment';
 
 export default class WalletsStore extends Store {
 
@@ -12,19 +13,20 @@ export default class WalletsStore extends Store {
   @observable walletsRequest = new CachedRequest(this.api, 'getWallets');
   @observable createWalletRequest = new Request(this.api, 'createWallet');
   @observable sendMoneyRequest = new Request(this.api, 'createTransaction');
+  @observable getWalletRecoveryPhraseRequest = new Request(this.api, 'getWalletRecoveryPhrase');
 
   constructor(...args) {
     super(...args);
     this.actions.createPersonalWallet.listen(this._createPersonalWallet);
     this.actions.sendMoney.listen(this._sendMoney);
-    setInterval(this._refreshWalletsData, 5000);
+    if (environment.CARDANO_API) setInterval(this._refreshWalletsData, 5000);
   }
 
   _createPersonalWallet = async (params) => {
     const wallet = await this.createWalletRequest.execute(params);
     await this.walletsRequest.patch(result => { result.push(wallet); });
-    this.actions.toggleCreateWalletDialog();
-    this.actions.goToRoute({ route: this.getWalletRoute(wallet.id) });
+    const walletRecovery = await this.getWalletRecoveryPhraseRequest.execute({ walletId: wallet.id });
+    this.actions.initiateWalletBackup(walletRecovery);
   };
 
   _sendMoney = async (transactionDetails) => {

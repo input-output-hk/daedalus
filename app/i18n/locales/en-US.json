@@ -25,6 +25,7 @@
   "wallet.create.dialog.currency.label": "Currency",
   "wallet.create.dialog.errors.invalidWalletName": "Requires at least 3 letters.",
   "wallet.create.dialog.errors.invalidCurrency": "This currency is not yet supported.",
+  "wallet.create.dialog.create.personal.wallet.button.label": "Create personal wallet",
   "wallet.transactions.search.hint": "Search transaction",
   "settings.menu.profile.link.label": "Profile",
   "settings.menu.security.link.label": "Security",
@@ -53,5 +54,17 @@
   "login.form.email.hint": "E-mail",
   "login.form.password.hint": "Password",
   "login.form.submit.label": "Login",
-  "login.form.invalidCredentials": "E-mail or password is wrong."
+  "login.form.invalidCredentials": "E-mail or password is wrong.",
+  "wallet.backup.recovery.phrase.dialog.title": "Recovery phrase",
+  "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions": "On the following screen, you will see a set of X random words. This is your wallet backup phrase. It can be entered in any version of Daedalus application in order to back up or restore your wallet’s funds and private key.",
+  "wallet.backup.privacy.warning.dialog..button.labelContinue": "Continue",
+  "wallet.backup.privacy.warning.dialog.checkbox.label.nobodyWatching": "Make sure nobody looks into your screen unless you want them to have access to your funds.",
+  "wallet.backup.recovery.phrase.display.dialog.backup.instructions": "Please, make sure you have carefully written down your recovery phrase somewhere safe. You will need this phrase later for next use and recover. Phrase is case sensitive.",
+  "wallet.backup.recovery.phrase.display.dialog.terms.and.condition.device": "I understand that my money is held securely on this device only, not on the company servers",
+  "wallet.backup.recovery.phrase.display.dialog.button.label.iHaveWrittenItDown": "Yes, I’ve written it down",
+  "wallet.backup.recovery.phrase.entry.dialog.verification.instructions": "Tap each word in the correct order to verify your recovery phrase",
+  "wallet.recovery.phrase.show.entry.dialog.button.labelConfirm": "Confirm",
+  "wallet.recovery.phrase.show.entry.dialog.button.labelClear": "Clear",
+  "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.device": "I understand that my money is held securely on this device only, not on the company servers",
+  "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery": "I understand that if this application is moved to another device or deleted, my money can be only recovered with the backup phrase which were written down in a secure place"
 }
