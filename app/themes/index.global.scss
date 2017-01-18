@@ -149,3 +149,19 @@ html, body, #root, #root > [data-reactroot] {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+@keyframes daedalus-checkmark-expand {
+  0% {
+    top: .9 * $unit;
+    left: .6 * $unit;
+    width: 0;
+    height: 0;
+  }
+
+  100% {
+    top: 0;
+    left: 6px;
+    width: 6px;
+    height: 13px;
+  }
+}

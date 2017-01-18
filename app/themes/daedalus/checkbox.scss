@@ -1,3 +1,6 @@
+@import "~react-toolbox/lib/checkbox/config";
+$checkbox-size: 23px;
+$checkbox-total-height: 23px;
 @import "~react-toolbox/lib/checkbox/theme";
 
 .input {
@@ -7,9 +10,14 @@
   }
 }
 
-$checkbox-size: 23px;
-
 .check {
-  width: $checkbox-size;
-  height: $checkbox-size;
+  &.checked {
+    &:after {
+      top: 0;
+      left: 6px;
+      width: 6px;
+      height: 13px;
+      animation: daedalus-checkmark-expand 140ms ease-out forwards;
+    }
+  }
 }
