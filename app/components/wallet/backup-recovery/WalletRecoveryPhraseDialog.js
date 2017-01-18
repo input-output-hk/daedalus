@@ -18,8 +18,15 @@ const messages = defineMessages({
     defaultMessage: '!!!Recovery phrase',
     description: 'Title for the "Recovery Phrase" dialog.'
   },
+  mnemonicInstructions: {
+    id: 'wallet.backup.recovery.phrase.dialog.mnemonic.instructions',
+    defaultMessage: `!!!On the following screen, you will see a set of X random words. This is 
+    your wallet backup phrase. It can be entered in any version of Daedalus application in order 
+    to back up or restore your wallet’s funds and private key.`,
+    description: 'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.'
+  },
   backupInstructions: {
-    id: 'wallet.backup.recovery.phrase.dialog.instructions',
+    id: 'wallet.backup.recovery.phrase.dialog.backup.instructions',
     defaultMessage: `!!!Please, make sure you have carefully written down your recovery phrase somewhere safe. 
     You will need this phrase later for next use and recover. Phrase is case sensitive.`,
     description: 'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.'
@@ -33,6 +40,11 @@ const messages = defineMessages({
     id: 'wallet.backup.recovery.phrase.dialog.button.label.iHaveWrittenItDown',
     defaultMessage: '!!!Yes, I’ve written it down',
     description: 'Label for button "Yes, I’ve written it down" on wallet backup dialog'
+  },
+  buttonLabelContinue: {
+    id: 'wallet.recovery.phrase.show.dialog.button.labelContinue',
+    defaultMessage: '!!!Continue',
+    description: 'Label for button "Continue" on wallet backup dialog'
   },
   buttonLabelConfirm: {
     id: 'wallet.recovery.phrase.show.dialog.button.labelConfirm',
@@ -80,15 +92,17 @@ export default class WalletRecoveryPhraseShowDialog extends Component {
     isEntering: PropTypes.bool.isRequired,
     isValid: PropTypes.bool.isRequired,
     isWalletBackupStartAccepted: PropTypes.bool.isRequired,
+    isPrivacyNoticeAccepted: PropTypes.bool.isRequired,
     isTermDeviceAccepted: PropTypes.bool.isRequired,
     isTermRecoveryAccepted: PropTypes.bool.isRequired,
     onAcceptStartBackup: PropTypes.func.isRequired,
     onAddWord: PropTypes.func.isRequired,
     countdownRemaining: PropTypes.number.isRequired,
-    canBackupStart: PropTypes.bool.isRequired,
+    canPhraseBeShown: PropTypes.bool.isRequired,
     canFinishBackup: PropTypes.bool.isRequired,
     onStartWalletBackup: PropTypes.func.isRequired,
     onClear: PropTypes.func.isRequired,
+    onAcceptPrivacyNotice: PropTypes.func.isRequired,
     onAcceptTermDevice: PropTypes.func.isRequired,
     onAcceptTermRecovery: PropTypes.func.isRequired,
     onRestartBackup: PropTypes.func.isRequired,
@@ -113,23 +127,51 @@ export default class WalletRecoveryPhraseShowDialog extends Component {
       isTermRecoveryAccepted,
       onAcceptStartBackup,
       countdownRemaining,
-      canBackupStart,
+      canPhraseBeShown,
       onStartWalletBackup,
       onAddWord,
       onClear,
+      onAcceptPrivacyNotice,
       onAcceptTermDevice,
       onAcceptTermRecovery,
       canFinishBackup,
       onRestartBackup,
       onCancelBackup,
-      onFinishBackup
+      onFinishBackup,
+      isPrivacyNoticeAccepted
     } = this.props;
-    const instructions = isEntering ? messages.verificationInstructions : messages.backupInstructions;
+    let instructions;
+    if (!isPrivacyNoticeAccepted) {
+      instructions = messages.mnemonicInstructions
+    } else if (isEntering) {
+      instructions = messages.verificationInstructions;
+    } else {
+      instructions = messages.backupInstructions
+    }
     const recoveryPhraseString = recoveryPhrase.reduce((phrase, { word }) => `${phrase} ${word}`, '');
     const enteredPhraseString = enteredPhrase.reduce((phrase, { word }) => `${phrase} ${word}`, '');
     const phrase = isEntering ? enteredPhraseString : recoveryPhraseString;
     const countdownDisplay = countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
-    const actions =  isEntering ? [
+
+    let actions;
+    if (!canPhraseBeShown) {
+      actions = [
+        {
+          label: this.context.intl.formatMessage(messages.buttonLabelContinue) + countdownDisplay,
+          onClick: onAcceptPrivacyNotice,
+          disabled: !canPhraseBeShown
+        }
+      ];
+    } else if (isPrivacyNoticeAccepted && !isEntering) {
+      actions = [
+        {
+          label: this.context.intl.formatMessage(messages.buttonLabelIHaveWrittenItDown),
+          onClick: onStartWalletBackup,
+          disabled: !isPrivacyNoticeAccepted
+        }
+      ];
+    } else {
+      actions = [
         {
           label: this.context.intl.formatMessage(messages.buttonLabelClear),
           onClick: onClear,
@@ -142,13 +184,8 @@ export default class WalletRecoveryPhraseShowDialog extends Component {
           className: 'dialog_buttonPrimary'
 
         }
-      ] : [
-      {
-        label: this.context.intl.formatMessage(messages.buttonLabelIHaveWrittenItDown) + countdownDisplay,
-        onClick: onStartWalletBackup,
-        disabled: !canBackupStart
-      }
-    ];
+      ];
+    }
     return (
       <Dialog
         title={intl.formatMessage(messages.recoveryPhrase)}
@@ -157,8 +194,15 @@ export default class WalletRecoveryPhraseShowDialog extends Component {
         style={styles.component}
       >
         <WalletRecoveryInstructions instructionsText={intl.formatMessage(instructions)} />
-        <WalletRecoveryPhraseMnemonic phrase={phrase} />
-        {!isEntering && (
+        {canPhraseBeShown && (<WalletRecoveryPhraseMnemonic phrase={phrase} />)}
+        {!isPrivacyNoticeAccepted && (
+          <CheckboxWithLongLabel
+            label={intl.formatMessage(messages.termNobodyWatching)}
+            onChange={onAcceptPrivacyNotice}
+            checked={isPrivacyNoticeAccepted}
+          />
+        )}
+        {isPrivacyNoticeAccepted && !isEntering && (
           <CheckboxWithLongLabel
             label={intl.formatMessage(messages.termDevice)}
             onChange={onAcceptStartBackup}

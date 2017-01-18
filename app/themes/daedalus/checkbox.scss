@@ -6,3 +6,10 @@
     display: none;
   }
 }
+
+$checkbox-size: 23px;
+
+.check {
+  width: $checkbox-size;
+  height: $checkbox-size;
+}

@@ -42,6 +42,7 @@ export default defineActions({
     recoveryPhrase: MobxPropTypes.arrayOrObservableArray.isRequired
   },
   acceptWalletBackupStart: {},
+  acceptPrivacyNoticeForWalletBackup: {},
   startWalletBackup: {},
   addWordToWalletBackupVerification: {
     word: PropTypes.string.isRequired

@@ -14,6 +14,7 @@ export default class WalletBackupPage extends Component {
         recoveryPhraseShuffled: MobxPropTypes.arrayOrObservableArray.isRequired,
         completed: PropTypes.bool.isRequired,
         enteredPhrase: MobxPropTypes.arrayOrObservableArray.isRequired,
+        isPrivacyNoticeAccepted: PropTypes.bool.isRequired,
         isEntering: PropTypes.bool.isRequired,
         isRecoveryPhraseValid: PropTypes.bool.isRequired,
         isWalletBackupStartAccepted: PropTypes.bool.isRequired,
@@ -31,7 +32,8 @@ export default class WalletBackupPage extends Component {
       acceptWalletBackupTermRecovery: PropTypes.func.isRequired,
       restartWalletBackup: PropTypes.func.isRequired,
       cancelWalletBackup: PropTypes.func.isRequired,
-      finishWalletBackup: PropTypes.func.isRequired
+      finishWalletBackup: PropTypes.func.isRequired,
+      acceptPrivacyNoticeForWalletBackup: PropTypes.func.isRequired
     }).isRequired
   };
 
@@ -45,7 +47,8 @@ export default class WalletBackupPage extends Component {
       countdownRemaining,
       recoveryPhraseShuffled,
       isTermDeviceAccepted,
-      isTermRecoveryAccepted
+      isTermRecoveryAccepted,
+      isPrivacyNoticeAccepted
     } = this.props.stores.walletBackup;
     const {
       acceptWalletBackupStart,
@@ -56,19 +59,20 @@ export default class WalletBackupPage extends Component {
       acceptWalletBackupTermRecovery,
       restartWalletBackup,
       cancelWalletBackup,
-      finishWalletBackup
+      finishWalletBackup,
+      acceptPrivacyNoticeForWalletBackup
     } = this.props.actions;
     return (
       <WalletRecoveryPhraseDialog
         enteredPhrase={enteredPhrase}
         isEntering={isEntering}
         isValid={isRecoveryPhraseValid}
-        recoveryPhrase={recoveryPhrase.map(word => ({ word }))}
+        recoveryPhrase={recoveryPhrase}
         recoveryPhraseShuffled={recoveryPhraseShuffled}
         isWalletBackupStartAccepted={isWalletBackupStartAccepted}
         onAcceptStartBackup={acceptWalletBackupStart}
         countdownRemaining={countdownRemaining}
-        canBackupStart={countdownRemaining === 0 && isWalletBackupStartAccepted}
+        canPhraseBeShown={countdownRemaining === 0 && isPrivacyNoticeAccepted}
         onStartWalletBackup={startWalletBackup}
         onAddWord={addWordToWalletBackupVerification}
         onClear={clearEnteredRecoveryPhrase}
@@ -80,6 +84,8 @@ export default class WalletBackupPage extends Component {
         onRestartBackup={restartWalletBackup}
         onCancelBackup={cancelWalletBackup}
         onFinishBackup={finishWalletBackup}
+        onAcceptPrivacyNotice={acceptPrivacyNoticeForWalletBackup}
+        isPrivacyNoticeAccepted={isPrivacyNoticeAccepted}
       />
     );
   }

@@ -12,6 +12,7 @@ export default class WalletsStore extends Store {
   @observable recoveryPhraseShuffled = [];
   @observable completed = false;
   @observable enteredPhrase = [];
+  @observable isPrivacyNoticeAccepted = false;
   @observable isEntering = false;
   @observable isWalletBackupStartAccepted = false;
   @observable isTermDeviceAccepted = false;
@@ -23,6 +24,7 @@ export default class WalletsStore extends Store {
     super(...args);
     this.actions.initiateWalletBackup.listen(this._initiateWalletBackup);
     this.actions.acceptWalletBackupStart.listen(this._acceptWalletBackupStart);
+    this.actions.acceptPrivacyNoticeForWalletBackup.listen(this._acceptPrivacyNoticeForWalletBackup);
     this.actions.startWalletBackup.listen(this._startWalletBackup);
     this.actions.addWordToWalletBackupVerification.listen(this._addWordToWalletBackupVerification);
     this.actions.clearEnteredRecoveryPhrase.listen(this._clearEnteredRecoveryPhrase);
@@ -38,17 +40,18 @@ export default class WalletsStore extends Store {
     const { walletId, recoveryPhrase } = params;
     this.inProgress = true;
     this.walletId = walletId;
-    this.recoveryPhrase = recoveryPhrase;
+    this.recoveryPhrase = recoveryPhrase.map(word => ({ word }));
     this.recoveryPhraseShuffled = recoveryPhrase
       .sort(() => 0.5 - Math.random())
       .map(w => ({ word: w, isActive: true }));
     this.completed = false;
     this.enteredPhrase = [];
+    this.isPrivacyNoticeAccepted = false;
     this.isEntering = false;
     this.isWalletBackupStartAccepted = false;
     this.isTermDeviceAccepted = false;
     this.isTermRecoveryAccepted = false;
-    this.countdownRemaining = 10;
+    this.countdownRemaining = 1; //TODO make 10
     this.countdownTimer = null;
     this.countdownTimer = setInterval(() => {
       if (this.countdownRemaining > 0) {
@@ -61,6 +64,10 @@ export default class WalletsStore extends Store {
 
   @action _acceptWalletBackupStart = () => {
     this.isWalletBackupStartAccepted = true;
+  };
+
+  @action _acceptPrivacyNoticeForWalletBackup = () => {
+    this.isPrivacyNoticeAccepted = true;
   };
 
   @action _startWalletBackup = () => {
@@ -82,7 +89,8 @@ export default class WalletsStore extends Store {
   };
 
   @computed get isRecoveryPhraseValid() {
-    return this.recoveryPhrase.reduce((words, word) => words + word, '') ===
+    return true; // TODO Remove
+    return this.recoveryPhrase.reduce((words, { word }) => words + word, '') ===
     this.enteredPhrase.reduce((words, { word }) => words + word, '');
   }
 
