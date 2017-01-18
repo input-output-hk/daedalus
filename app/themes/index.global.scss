@@ -150,6 +150,7 @@ html, body, #root, #root > [data-reactroot] {
   to { transform: rotate(360deg); }
 }
 
+// Why we need this: https://github.com/react-toolbox/react-toolbox/issues/782
 @keyframes daedalus-checkmark-expand {
   0% {
     top: .9 * $unit;
