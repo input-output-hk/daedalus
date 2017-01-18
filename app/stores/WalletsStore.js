@@ -27,8 +27,6 @@ export default class WalletsStore extends Store {
     await this.walletsRequest.patch(result => { result.push(wallet); });
     const walletRecovery = await this.getWalletRecoveryPhraseRequest.execute({ walletId: wallet.id });
     this.actions.initiateWalletBackup(walletRecovery);
-    // TODO: When wallet backup is complete
-    // this.actions.goToRoute({ route: this.getWalletRoute(wallet.id) });
   };
 
   _sendMoney = async (transactionDetails) => {

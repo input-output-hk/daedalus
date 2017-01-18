@@ -110,11 +110,13 @@ export default class WalletsStore extends Store {
 
   @action _cancelWalletBackup = () => {
     this.inProgress = false;
+    this.actions.goToRoute({ route: this.stores.wallets.getWalletRoute(this.walletId) });
   };
 
   @action _finishWalletBackup = async () => {
     this.inProgress = false;
     this.setWalletBackupCompleted.execute(this.walletId);
+    this.actions.goToRoute({ route: this.stores.wallets.getWalletRoute(this.walletId) });
   }
 
 }
