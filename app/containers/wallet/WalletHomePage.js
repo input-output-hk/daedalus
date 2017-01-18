@@ -60,13 +60,13 @@ export default class WalletHomePage extends Component {
       filtered,
     } = this.props.stores.transactions;
     const { searchLimit, searchTerm } = searchOptions;
-
+    const wasSearched = searchTerm !== '';
     let walletTransactions = null;
     let transactionSearch = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const noTransactionsFoundLabel = intl.formatMessage(messages.noTransactionsFound);
 
-    if (hasAny) {
+    if (wasSearched || hasAny) {
       transactionSearch = (
         <div style={{ flexShrink: 0 }}>
           <WalletTransactionsSearch
@@ -86,10 +86,10 @@ export default class WalletHomePage extends Component {
           onLoadMore={actions.loadMoreTransactions}
         />
       );
+    } else if (wasSearched && !hasAny) {
+      walletTransactions = <WalletNoTransactions label={noTransactionsFoundLabel} />;
     } else if (!hasAny) {
       walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
-    } else {
-      walletTransactions = <WalletNoTransactions label={noTransactionsFoundLabel} />;
     }
 
     return (
