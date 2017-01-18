@@ -88,7 +88,7 @@ export default class StubApi {
   createWallet(request: createWalletRequest) {
     console.debug('StubApi::createWallet called with', request);
     return fakeRequest('createWallet',  action(() => {
-      return new Wallet(this.repository.generateWallet(request))
+      return new Wallet(this.repository.generateWallet(Object.assign({}, request, { amount: 0 })));
     }));
   }
 
