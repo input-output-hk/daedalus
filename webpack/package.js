@@ -34,11 +34,9 @@ const depsExternal = Object
   .filter(name => !electronCfg.externals.includes(name))
   .map(toNodePath);
 
-
 const appName = argv.name || argv.n || pkg.productName;
 const shouldUseAsar = argv.asar || argv.a || false;
 const shouldBuildAll = argv.all || false;
-
 
 const DEFAULT_OPTS = {
   dir: './',
@@ -68,7 +66,6 @@ if (version) {
     } else {
       DEFAULT_OPTS.version = stdout.split('electron@')[1].replace(/\s/g, '');
     }
-
     startPack();
   });
 }

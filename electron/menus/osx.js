@@ -1,4 +1,4 @@
-export default (app, window, isDebug) => {
+export default (app, window) => {
   return [{
     label: 'Daedalus',
     submenu: [{
@@ -37,22 +37,22 @@ export default (app, window, isDebug) => {
     }]
   }, {
     label: 'View',
-    submenu: (isDebug) ? [{
+    submenu: [
+      {
         label: 'Reload',
         accelerator: 'Command+R',
         click: () => window.webContents.reload()
-      }, {
+      },
+      {
         label: 'Toggle Full Screen',
         accelerator: 'Ctrl+Command+F',
         click: () => window.setFullScreen(!window.isFullScreen())
-      }, {
+      },
+      {
         label: 'Toggle Developer Tools',
         accelerator: 'Alt+Command+I',
         click: () => window.toggleDevTools()
-      }] : [{
-        label: 'Toggle Full Screen',
-        accelerator: 'Ctrl+Command+F',
-        click: () => window.setFullScreen(!window.isFullScreen())
-      }]
+      }
+    ]
   }];
 };
