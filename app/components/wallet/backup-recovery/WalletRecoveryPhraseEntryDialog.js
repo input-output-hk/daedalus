@@ -104,8 +104,8 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
         label: intl.formatMessage(messages.buttonLabelConfirm),
         onClick: onFinishBackup,
         disabled: !canFinishBackup,
-        className: 'dialog_buttonPrimary'
-
+        className: 'dialog_buttonPrimary',
+        primary: true
       }
     ];
     return (

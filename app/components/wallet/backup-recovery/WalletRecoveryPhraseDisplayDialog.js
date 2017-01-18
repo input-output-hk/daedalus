@@ -56,7 +56,8 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component {
     const actions = [
       {
         label: intl.formatMessage(messages.buttonLabelIHaveWrittenItDown),
-        onClick: onStartWalletBackup
+        onClick: onStartWalletBackup,
+        primary: true
       }
     ];
 

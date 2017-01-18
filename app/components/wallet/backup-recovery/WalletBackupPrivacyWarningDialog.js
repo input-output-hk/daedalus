@@ -65,7 +65,8 @@ export default class WalletBackupPrivacyWarningDialog extends Component {
       {
         label: intl.formatMessage(messages.buttonLabelContinue) + countdownDisplay,
         onClick: onContinue,
-        disabled: !canPhraseBeShown
+        disabled: !canPhraseBeShown,
+        primary: true
       }
     ];
     return (
