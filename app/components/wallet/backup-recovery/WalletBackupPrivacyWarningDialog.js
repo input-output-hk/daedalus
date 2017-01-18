@@ -37,7 +37,7 @@ const messages = defineMessages({
 export default class WalletBackupPrivacyWarningDialog extends Component {
 
   static propTypes = {
-    countdownRemaining: PropTypes.bool.isRequired,
+    countdownRemaining: PropTypes.number.isRequired,
     canPhraseBeShown: PropTypes.bool.isRequired,
     isPrivacyNoticeAccepted: PropTypes.bool.isRequired,
     onAcceptPrivacyNotice: PropTypes.func.isRequired,

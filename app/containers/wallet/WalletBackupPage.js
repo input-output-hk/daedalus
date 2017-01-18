@@ -20,14 +20,12 @@ export default class WalletBackupPage extends Component {
         isPrivacyNoticeAccepted: PropTypes.bool.isRequired,
         isEntering: PropTypes.bool.isRequired,
         isRecoveryPhraseValid: PropTypes.bool.isRequired,
-        isWalletBackupStartAccepted: PropTypes.bool.isRequired,
         countdownRemaining: PropTypes.number.isRequired,
         isTermDeviceAccepted: PropTypes.bool.isRequired,
         isTermRecoveryAccepted: PropTypes.bool.isRequired
       }),
     }).isRequired,
     actions: PropTypes.shape({
-      acceptWalletBackupStart: PropTypes.func.isRequired,
       startWalletBackup: PropTypes.func.isRequired,
       continueToRecoveryPhraseForWalletBackup: PropTypes.func.isRequired,
       addWordToWalletBackupVerification: PropTypes.func.isRequired,
