@@ -27,8 +27,8 @@ writeNSIS = writeFile "daedalus.nsi" $ nsis $ do
           , IconIndex 0
           ]
         file [] "cardano-node.exe"
+        file [] "log-config-prod.yaml"
         file [Recursive] "dlls\\"
-        file [] "..\\log-config-prod.yaml"
         file [Recursive] "C:\\daedalus\\release\\win32-x64\\Daedalus-win32-x64\\"
 
         -- Uninstaller
