@@ -63,7 +63,7 @@ export const wallets: Array<walletStruct> = [
     address: faker.finance.bitcoinAddress(),
     type: 'personal',
     currency: 'ada',
-    amount: 2500,
+    amount: 100,
     name: 'Transporting',
     isBackupCompleted: true,
     recoveryPhrase: randomWords(12)
@@ -74,7 +74,7 @@ export const wallets: Array<walletStruct> = [
     address: faker.finance.bitcoinAddress(),
     type: 'personal',
     currency: 'btc',
-    amount: 1000,
+    amount: 0,
     name: 'Pocket money',
     isBackupCompleted: true,
     recoveryPhrase: randomWords(12)
@@ -192,5 +192,4 @@ export const transactions = generateRandomTransactions(firstWallet, 30).concat([
   cardTransaction(thirdWallet, moment().subtract(1, 'days').toDate()),
   exchange(thirdWallet),
   cardTransaction(wallets[3].id, new Date()),
-  exchange(wallets[4].id, new Date())
 ]);

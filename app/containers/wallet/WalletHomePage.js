@@ -60,36 +60,41 @@ export default class WalletHomePage extends Component {
       filtered,
     } = this.props.stores.transactions;
     const { searchLimit, searchTerm } = searchOptions;
-
+    const wasSearched = searchTerm !== '';
     let walletTransactions = null;
+    let transactionSearch = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const noTransactionsFoundLabel = intl.formatMessage(messages.noTransactionsFound);
+
+    if (wasSearched || hasAny) {
+      transactionSearch = (
+        <div style={{ flexShrink: 0 }}>
+          <WalletTransactionsSearch
+            searchTerm={searchTerm}
+            onChange={this._handleSearchInputChange}
+          />
+        </div>
+      );
+    }
 
     if (searchRequest.isExecuting || hasAny) {
       walletTransactions = (
         <WalletTransactionsList
           transactions={filtered}
-          isLoadingTransactions={searchRequest.isExecutingFirstTime}
+          isLoadingTransactions={searchRequest.isExecuting}
           hasMoreToLoad={totalAvailable > searchLimit}
           onLoadMore={actions.loadMoreTransactions}
         />
       );
+    } else if (wasSearched && !hasAny) {
+      walletTransactions = <WalletNoTransactions label={noTransactionsFoundLabel} />;
     } else if (!hasAny) {
       walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
-    } else {
-      walletTransactions = <WalletNoTransactions label={noTransactionsFoundLabel} />;
     }
 
     return (
       <div style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-        {(searchRequest.isExecuting || hasAny) && (
-          <div style={{ flexShrink: 0 }}>
-            <WalletTransactionsSearch
-              searchTerm={searchTerm}
-              onChange={this._handleSearchInputChange}
-            />
-          </div>
-        )}
+        {transactionSearch}
         {walletTransactions}
       </div>
     );
