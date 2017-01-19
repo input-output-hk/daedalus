@@ -1,0 +1,13 @@
+language: nix
+sudo: false
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode8.2
+env:
+- NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/addcb0dddf2b7db505dae5c38fceb691c7ed85f9.tar.gz
+
+install:
+  - nix-env -iA nixpkgs.electron nixpkgs.nodejs nixpkgs.nodePackages.bower nixpkgs.nodePackages.node-gyp nixpkgs.nodePackages.node-pre-gyp
+  - npm install    
+  - npm run package
