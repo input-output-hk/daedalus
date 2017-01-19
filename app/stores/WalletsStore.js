@@ -62,8 +62,10 @@ export default class WalletsStore extends Store {
   }
 
   _refreshWalletsData = () => {
-    this.walletsRequest.invalidate({ immediately: true });
-    this.stores.transactions.searchRequest.invalidate({ immediately: true });
+    if (this.stores.networkConnections.isCardanoConnected) {
+      this.walletsRequest.invalidate({immediately: true});
+      this.stores.transactions.searchRequest.invalidate({immediately: true});
+    }
   };
 
 }

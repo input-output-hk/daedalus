@@ -6,6 +6,7 @@ export default class Request {
 
   @observable result = null;
   @observable isExecuting = false;
+  @observable isError = false;
   @observable wasExecuted = false;
 
   _promise = null;
@@ -30,17 +31,31 @@ export default class Request {
     }), 0);
 
     // Issue api call & save it as promise that is handled to update the results of the operation
-    this._promise = this._api[this._method](...callArgs).then((result) => {
-      return new Promise((resolve) => {
-        setTimeout(action(() => {
-          this.result = result;
-          this.isExecuting = false;
-          this.wasExecuted = true;
-          this._isWaitingForResponse = false;
-          resolve(result);
-        }), 0);
-      });
-    });
+    this._promise = this._api[this._method](...callArgs);
+    this._promise
+      .then((result) => {
+        return new Promise((resolve) => {
+          setTimeout(action(() => {
+            this.result = result;
+            this.isExecuting = false;
+            this.wasExecuted = true;
+            this._isWaitingForResponse = false;
+            resolve(result);
+          }), 0);
+        });
+      })
+      .catch(action((error) => {
+        return new Promise((_, reject) => {
+          setTimeout(action(() => {
+            this.result = error;
+            this.isExecuting = false;
+            this.isError = true;
+            this.wasExecuted = true;
+            this._isWaitingForResponse = false;
+            reject(error);
+          }));
+        });
+      }));
 
     this._isWaitingForResponse = true;
     this._currentApiCall = { args: callArgs };

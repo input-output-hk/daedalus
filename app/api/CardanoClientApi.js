@@ -30,15 +30,8 @@ export default class CardanoClientApi {
   }
 
   async getWallets() {
-    try {
-      const response = await ClientApi.getWallets();
-      return response.map(data => this._createWalletFromData(data));
-    } catch(error) {
-      console.debug('Backend not available yet, retrying in 1 second');
-      return new Promise((resolve) => {
-        setTimeout(() => (resolve(this.getWallets())), 1000);
-      });
-    }
+    const response = await ClientApi.getWallets();
+    return response.map(data => this._createWalletFromData(data));
   }
 
   async getTransactions({ walletId, searchTerm, limit }: getTransactionsRequest) {
