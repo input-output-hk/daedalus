@@ -73,5 +73,11 @@
   "wallet.add.dialog.join.label": "Join",
   "wallet.add.dialog.join.description": "Join a shared wallet with up to 5 people",
   "wallet.add.dialog.import.label": "Import",
-  "wallet.add.dialog.import.description": "Import existing wallet"
+  "wallet.add.dialog.import.description": "Import existing wallet",
+  "wallet.import.dialog.title.label": "Import wallet",
+  "wallet.import.dialog.wallet.name.input.label": "Wallet name",
+  "wallet.import.dialog.wallet.name.input.hint": "Enter wallet name",
+  "wallet.import.dialog.recovery.phrase.input.label": "Recovery phrase",
+  "wallet.import.dialog.recovery.phrase.input.hint": "Enter recovery phrase",
+  "wallet.import.dialog.import.wallet.button.label": "Import wallet"
 }

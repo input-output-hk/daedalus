@@ -131,7 +131,7 @@ export default class WalletCreateDialog extends Component {
     return (
       <Dialog
         className={dialogClasses}
-        title="Create Wallet"
+        title="Create Wallet" // TODO: Missing translation
         actions={this.actions}
         onOverlayClick={this.props.onCancel}
         active
@@ -141,7 +141,7 @@ export default class WalletCreateDialog extends Component {
           type="text"
           className="walletName"
           label={intl.formatMessage(messages.walletName)}
-          hint="e.g: Shopping Wallet"
+          hint="e.g: Shopping Wallet" // TODO: Missing translation
           value={walletName.value}
           error={errors.walletName}
           onChange={walletName.onChange}
