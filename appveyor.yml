@@ -1,4 +1,4 @@
-version: 1.0.{build}
+version: 0.1.{build}
 
 environment:
   nodejs_version: "6"
@@ -43,5 +43,5 @@ artifacts:
   - path: release\win32-x64\Daedalus-win32-x64
     name: Daedalus Electron application
     type: zip
-  - path: installers\daedalus-win64-installer.exe
+  - path: installers\daedalus-win64-*-installer.exe
     name: Daedalus Win64 Installer

@@ -1,12 +1,18 @@
 module WindowsInstaller where
 
+import           Data.Maybe (fromMaybe)
 import           Development.NSIS
+import           System.Environment (lookupEnv)
 import           Turtle (echo, procs)
 
 writeNSIS :: IO ()
-writeNSIS = writeFile "daedalus.nsi" $ nsis $ do
-    name "Daedalus"                  -- The name of the installer
-    outFile "daedalus-win64-installer.exe"           -- Where to produce the installer
+writeNSIS = do
+  version <- fmap (fromMaybe "dev") $ lookupEnv "APPVEYOR_BUILD_VERSION"
+  writeFile "version.txt" version
+  writeFile "daedalus.nsi" $ nsis $ do
+    _ <- constantStr "Version" (str version)
+    name "Daedalus $Version"                  -- The name of the installer
+    outFile "daedalus-win64-$Version-installer.exe"           -- Where to produce the installer
     installDir "$PROGRAMFILES\\Daedalus"   -- The default installation directory
     installDirRegKey HKLM "Software/Daedalus" "Install_Dir"
     requestExecutionLevel Highest     
@@ -28,6 +34,7 @@ writeNSIS = writeFile "daedalus.nsi" $ nsis $ do
           ]
         file [] "cardano-node.exe"
         file [] "log-config-prod.yaml"
+        file [] "version.txt"
         file [Recursive] "dlls\\"
         file [Recursive] "C:\\daedalus\\release\\win32-x64\\Daedalus-win32-x64\\"
 
@@ -40,7 +47,7 @@ writeNSIS = writeFile "daedalus.nsi" $ nsis $ do
 
     section "Start Menu Shortcuts" [] $ do
         createDirectory "$SMPROGRAMS/Daedalus"
-        createShortcut "$SMPROGRAMS/Daedalus/Uninstall.lnk" 
+        createShortcut "$SMPROGRAMS/Daedalus/Uninstall Daedalus.lnk" 
           [Target "$INSTDIR/uninstall.exe", IconFile "$INSTDIR/uninstall.exe", IconIndex 0]
         createShortcut "$SMPROGRAMS/Daedalus/Daedalus.lnk"
           [Target "$INSTDIR/Daedalus.exe", IconFile "$INSTDIR/Daedalus.exe", IconIndex 0]
