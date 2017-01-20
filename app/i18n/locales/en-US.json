@@ -66,5 +66,12 @@
   "wallet.recovery.phrase.show.entry.dialog.button.labelConfirm": "Confirm",
   "wallet.recovery.phrase.show.entry.dialog.button.labelClear": "Clear",
   "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.device": "I understand that my money is held securely on this device only, not on the company servers",
-  "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery": "I understand that if this application is moved to another device or deleted, my money can be only recovered with the backup phrase which were written down in a secure place"
+  "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery": "I understand that if this application is moved to another device or deleted, my money can be only recovered with the backup phrase which were written down in a secure place",
+  "wallet.add.dialog.title.label": "Add wallet",
+  "wallet.add.dialog.create.label": "Create",
+  "wallet.add.dialog.create.description": "Create a new wallet",
+  "wallet.add.dialog.join.label": "Join",
+  "wallet.add.dialog.join.description": "Join a shared wallet with up to 5 people",
+  "wallet.add.dialog.import.label": "Import",
+  "wallet.add.dialog.import.description": "Import existing wallet"
 }
