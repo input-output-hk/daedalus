@@ -14,6 +14,9 @@ install:
   - npm install
   - mkdir node_modules\daedalus-client-api 
   - cd node_modules\daedalus-client-api
+  - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/jagajaga/pos-haskell-prototype/artifacts/build-id?branch=packaging' -FileName build-id
+  - Echo "Build id of cardano-sl on appveyor:"
+  - type build-id
   - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/jagajaga/pos-haskell-prototype/artifacts/DaedalusBridge.zip?branch=packaging' -FileName DaedalusBridge.zip
   - 7z x DaedalusBridge.zip -y
   - cd ..\..\
