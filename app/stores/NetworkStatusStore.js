@@ -20,8 +20,7 @@ export default class NetworkStatusStore extends Store {
 
   @computed get cardanoStatus() {
     if (this.isCardanoConnected) return 'connected';
-    if (this.isCardanoConnecting) return 'connecting';
-    return 'disconnected';
+    return 'connecting';
   }
 
   @action _updateCardanoStatus = () => {
