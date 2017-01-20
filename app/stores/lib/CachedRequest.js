@@ -58,7 +58,9 @@ export default class CachedRequest extends Request {
 
   invalidate(options = { immediately: false }) {
     this._isInvalidated = true;
-    if (options.immediately) return this.execute(...this._currentApiCall.args);
+    if (options.immediately && this._currentApiCall) {
+      return this.execute(...this._currentApiCall.args);
+    }
     return this;
   }
 
