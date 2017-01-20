@@ -17,10 +17,12 @@ export default class SidebarStore extends Store {
   }
 
   @computed get wallets() {
-    return this.stores.wallets.all.map(w => ({
+    const { wallets, networkStatus } = this.stores;
+    return wallets.all.map(w => ({
       id: w.id,
       title: w.name,
-      info: `${w.amount} ${w.currency}`
+      info: `${w.amount} ${w.currency}`,
+      isConnected: networkStatus.isCardanoConnected,
     }));
   }
 

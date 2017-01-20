@@ -4,7 +4,7 @@ import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
-import SidebarWalletsMenu from './menus/SidebarWalletsMenu';
+import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import walletsIcon from '../../assets/images/sidebar/wallet-ic.svg';
 import settingsIcon from '../../assets/images/sidebar/settings-ic.svg';
 import stakingIcon from '../../assets/images/sidebar/staking-ic.svg';
