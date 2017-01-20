@@ -9,6 +9,7 @@ import environment from '../environment';
 export default class WalletsStore extends Store {
 
   BASE_ROUTE = '/wallets';
+  WALLET_REFRESH_INTERVAL = 5000;
 
   @observable walletsRequest = new CachedRequest(this.api, 'getWallets');
   @observable createWalletRequest = new Request(this.api, 'createWallet');
@@ -19,7 +20,9 @@ export default class WalletsStore extends Store {
     super(...args);
     this.actions.createPersonalWallet.listen(this._createPersonalWallet);
     this.actions.sendMoney.listen(this._sendMoney);
-    if (environment.CARDANO_API) setInterval(this._refreshWalletsData, 5000);
+    if (environment.CARDANO_API) {
+      setInterval(this._refreshWalletsData, this.WALLET_REFRESH_INTERVAL);
+    }
   }
 
   _createPersonalWallet = async (params) => {
@@ -62,9 +65,9 @@ export default class WalletsStore extends Store {
   }
 
   _refreshWalletsData = () => {
-    if (this.stores.networkConnections.isCardanoConnected) {
-      this.walletsRequest.invalidate({immediately: true});
-      this.stores.transactions.searchRequest.invalidate({immediately: true});
+    if (this.stores.networkStatus.isCardanoConnected) {
+      this.walletsRequest.invalidate({ immediately: true });
+      this.stores.transactions.searchRequest.invalidate({ immediately: true });
     }
   };
 

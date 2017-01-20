@@ -4,7 +4,7 @@ import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import SidebarSubMenu from '../SidebarMenu';
 import styles from './SidebarWalletsMenu.scss';
 import addWalletIcon from '../../../assets/images/sidebar/add-wallet-ic.svg';
-import SidebarMenuItem from '../SidebarMenuItem';
+import SidebarWalletMenuItem from './SidebarWalletMenuItem';
 
 @observer
 export default class SidebarWalletsMenu extends Component {
@@ -27,12 +27,13 @@ export default class SidebarWalletsMenu extends Component {
       <SidebarSubMenu visible={this.props.visible}>
         <div className={styles.wallets}>
           {wallets.map((wallet) => (
-            <SidebarMenuItem
+            <SidebarWalletMenuItem
               title={wallet.title}
               info={wallet.info}
               active={isActiveWallet(wallet.id)}
               onClick={() => onWalletItemClick(wallet.id)}
               key={wallet.id}
+              networkStatus={wallet.networkStatus}
             />
           ))}
         </div>

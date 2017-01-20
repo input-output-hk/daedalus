@@ -1,5 +1,5 @@
-@import '../../themes/mixins/buttons';
-@import './sidebarConfig';
+@import '../../../themes/mixins/buttons';
+@import '../sidebarConfig';
 
 .component {
   @include button;
@@ -7,10 +7,10 @@
   height: $sidebar-button-height;
   color: white;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
   background-color: $sidebar-menu-bg;
-  padding-left: 20px;
+  padding: 0 20px;
   &:hover {
     background-color:$sidebar-menu-item-hover;
   }
@@ -25,6 +25,12 @@
   }
 }
 
+.meta {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+}
+
 .title {
   font-size: 18px;
   line-height: 1.5em;
@@ -37,4 +43,16 @@
   letter-spacing: 1px;
   opacity: 0.7;
   color: #fafbfc;
+}
+
+.status {
+  width: 22px;
+  margin-top: 10px;
+}
+
+.connecting {
+  :global {
+    animation: loading-spin 1.5s linear;
+    animation-iteration-count: infinite;
+  }
 }

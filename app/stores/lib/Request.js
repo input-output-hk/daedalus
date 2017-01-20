@@ -5,6 +5,7 @@ import { isEqual } from 'lodash/fp';
 export default class Request {
 
   @observable result = null;
+  @observable error = null;
   @observable isExecuting = false;
   @observable isError = false;
   @observable wasExecuted = false;
@@ -41,19 +42,19 @@ export default class Request {
             this.wasExecuted = true;
             this._isWaitingForResponse = false;
             resolve(result);
-          }), 0);
+          }), 1);
         });
       })
       .catch(action((error) => {
         return new Promise((_, reject) => {
           setTimeout(action(() => {
-            this.result = error;
+            this.error = error;
             this.isExecuting = false;
             this.isError = true;
             this.wasExecuted = true;
             this._isWaitingForResponse = false;
             reject(error);
-          }));
+          }), 1);
         });
       }));
 
