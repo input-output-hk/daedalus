@@ -28,7 +28,7 @@ writeNSIS = do
         createDirectory "$APPDATA\\Daedalus\\Logs"
         createDirectory "$APPDATA\\Daedalus\\Secrets"
         createShortcut "$DESKTOP\\Daedalus.lnk"
-          [Target "$INSTDIR\\Daedalus.exe"
+          [ Target "$INSTDIR\\Daedalus.exe"
           , IconFile "$INSTDIR\\Daedalus.exe"
           , IconIndex 0
           ]

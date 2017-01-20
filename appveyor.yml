@@ -19,6 +19,7 @@ install:
   - cd ..\..\
 
 test_script:
+  - SET DAEDALUS_VERSION=%APPVEYOR_BUILD_VERSION%
   # Package frontend
   - npm run package -- --icon icons/64x64
   - cd installers

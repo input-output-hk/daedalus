@@ -68,6 +68,10 @@ app.on('ready', async () => {
   });
 
   mainWindow.loadURL(`file://${__dirname}/../app/index.html`);
+  mainWindow.on('page-title-updated', (event, title) => {
+   event.preventDefault()
+  });
+  mainWindow.setTitle("Daedalus (" + (DAEDALUS_VERSION || "dev") + ")");
 
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.show();
