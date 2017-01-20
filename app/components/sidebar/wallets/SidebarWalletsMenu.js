@@ -33,7 +33,7 @@ export default class SidebarWalletsMenu extends Component {
               active={isActiveWallet(wallet.id)}
               onClick={() => onWalletItemClick(wallet.id)}
               key={wallet.id}
-              networkStatus={wallet.networkStatus}
+              isConnected={wallet.isConnected}
             />
           ))}
         </div>

@@ -22,7 +22,7 @@ export default class SidebarStore extends Store {
       id: w.id,
       title: w.name,
       info: `${w.amount} ${w.currency}`,
-      networkStatus: networkStatus.cardanoStatus,
+      isConnected: networkStatus.isCardanoConnected,
     }));
   }
 

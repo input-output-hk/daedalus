@@ -1,5 +1,5 @@
 // @flow
-import { observable, computed, action } from 'mobx';
+import { observable, action } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/Request';
 
@@ -14,11 +14,6 @@ export default class NetworkStatusStore extends Store {
     super(...args);
     setInterval(this._updateCardanoStatus, this.POLLING_INTERVAL);
     this._updateCardanoStatus();
-  }
-
-  @computed get cardanoStatus() {
-    if (this.isCardanoConnected) return 'connected';
-    return 'connecting';
   }
 
   @action _updateCardanoStatus = () => {

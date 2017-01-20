@@ -12,23 +12,26 @@ export default class SidebarWalletMenuItem extends Component {
   static propTypes = {
     title: PropTypes.string.isRequired,
     info: PropTypes.string.isRequired,
-    networkStatus: PropTypes.oneOf(['connected', 'connecting']).isRequired,
+    isConnected: PropTypes.bool.isRequired,
     active: PropTypes.bool,
     onClick: PropTypes.func,
   };
 
   render() {
-    const { title, info, active, onClick, networkStatus } = this.props;
+    const { title, info, active, onClick, isConnected } = this.props;
     const componentStyles = classNames([ styles.component, active ? styles.active : null ]);
-    const statusStyles = classNames([ styles.status, styles[networkStatus] ]);
-    const statusIcons = { connected, connecting };
+    const statusStyles = classNames([
+      styles.status,
+      isConnected ? null : styles.connecting,
+    ]);
+    const statusIcon = isConnected ? connected : connecting;
     return (
       <button className={componentStyles} onClick={onClick}>
         <span className={styles.meta}>
           <span className={styles.title}>{title}</span>
           <span className={styles.info}>{info}</span>
         </span>
-        <img className={statusStyles} src={statusIcons[networkStatus]} />
+        <img className={statusStyles} src={statusIcon} />
       </button>
     );
   }
