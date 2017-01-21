@@ -39,18 +39,32 @@ export default class CachedRequest extends Request {
     }), 0);
 
     // Issue api call & save it as promise that is handled to update the results of the operation
-    this._promise = this._api[this._method](...callArgs).then((result) => {
-      return new Promise((resolve) => {
-        setTimeout(action(() => {
-          this.result = this._currentApiCall.result = result;
-          this.isExecuting = false;
-          this.wasExecuted = true;
-          this._isInvalidated = false;
-          this._isWaitingForResponse = false;
-          resolve(result);
-        }), 1);
-      });
-    });
+    this._promise = this._api[this._method](...callArgs);
+    this._promise
+      .then((result) => {
+        return new Promise((resolve) => {
+          setTimeout(action(() => {
+            this.result = this._currentApiCall.result = result;
+            this.isExecuting = false;
+            this.wasExecuted = true;
+            this._isInvalidated = false;
+            this._isWaitingForResponse = false;
+            resolve(result);
+          }), 1);
+        })
+      })
+      .catch(action((error) => {
+        return new Promise((_, reject) => {
+          setTimeout(action(() => {
+            this.error = error;
+            this.isExecuting = false;
+            this.isError = true;
+            this.wasExecuted = true;
+            this._isWaitingForResponse = false;
+            reject(error);
+          }), 1);
+        });
+      }));
 
     this._isWaitingForResponse = true;
     return this;
@@ -58,7 +72,9 @@ export default class CachedRequest extends Request {
 
   invalidate(options = { immediately: false }) {
     this._isInvalidated = true;
-    if (options.immediately) return this.execute(...this._currentApiCall.args);
+    if (options.immediately && this._currentApiCall) {
+      return this.execute(...this._currentApiCall.args);
+    }
     return this;
   }
 

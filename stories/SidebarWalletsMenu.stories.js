@@ -1,6 +1,6 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
-import SidebarWalletsMenu from '../app/components/sidebar/menus/SidebarWalletsMenu';
+import SidebarWalletsMenu from '../app/components/sidebar/wallets/SidebarWalletsMenu';
 
 storiesOf('SidebarWalletsMenu', module)
 

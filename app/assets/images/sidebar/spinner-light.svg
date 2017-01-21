@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="44px" height="44px" viewBox="0 0 44 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 41.2 (35397) - http://www.bohemiancoding.com/sketch -->
+    <title>35953DBC-AB60-400C-80C8-6616B7A08FA5</title>
+    <desc>Created with sketchtool.</desc>
+    <defs></defs>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.5">
+        <g id="wallets-menu-with-status" transform="translate(-636.000000, -902.000000)" fill="#FAFBFC">
+            <g id="menu">
+                <g id="wallets-list" transform="translate(168.000000, 40.000000)">
+                    <g id="wallet-6" transform="translate(40.000000, 841.000000)">
+                        <g id="spinner-light" opacity="0.600000024" transform="translate(428.000000, 21.000000)">
+                            <path d="M6.69867293,6.69867293 C-1.75201666,15.1493625 -1.75201666,28.8506375 6.69867293,37.3013271 C15.1493625,45.7520167 28.8506375,45.7520167 37.3013271,37.3013271 L35.2611501,35.2611501 C27.9372191,42.5850811 16.0627809,42.5850811 8.73884987,35.2611501 C1.41491889,27.9372191 1.41491889,16.0627809 8.73884987,8.73884987 L6.69867293,6.69867293 L6.69867293,6.69867293 L6.69867293,6.69867293 Z" id="spinner"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -35,6 +35,9 @@ export default class WalletHomePage extends Component {
         hasAny: PropTypes.bool.isRequired,
         totalAvailable: PropTypes.number.isRequired,
       }),
+      networkStatus: PropTypes.shape({
+        isCardanoConnected: PropTypes.bool.isRequired,
+      }),
     }).isRequired,
     actions: PropTypes.shape({
       filterTransactions: PropTypes.func.isRequired
@@ -52,13 +55,14 @@ export default class WalletHomePage extends Component {
   render() {
     const { intl } = this.context;
     const actions = this.props.actions;
+    const { networkStatus, transactions } = this.props.stores;
     const {
       searchOptions,
       searchRequest,
       hasAny,
       totalAvailable,
       filtered,
-    } = this.props.stores.transactions;
+    } = transactions;
     const { searchLimit, searchTerm } = searchOptions;
     const wasSearched = searchTerm !== '';
     let walletTransactions = null;
@@ -76,8 +80,7 @@ export default class WalletHomePage extends Component {
         </div>
       );
     }
-
-    if (searchRequest.isExecuting || hasAny) {
+    if (searchRequest.isExecutingFirstTime || hasAny) {
       walletTransactions = (
         <WalletTransactionsList
           transactions={filtered}
