@@ -7,13 +7,17 @@ export default class SidebarStore extends Store {
   @observable route: string = '/wallets';
   @observable hidden: bool = false;
   @observable isMaximized: bool = false;
+  @observable isAddWalletDialogOpen = false;
   @observable isCreateWalletDialogOpen = false;
+  @observable isWalletImportDialogOpen = false;
 
   constructor(...args) {
     super(...args);
     this.actions.toggleSidebar.listen(this._toggleSidebar);
     this.actions.changeSidebarRoute.listen(this._changeSidebarRoute);
+    this.actions.toggleAddWallet.listen(this._toggleAddWallet);
     this.actions.toggleCreateWalletDialog.listen(this._toggleCreateWalletDialog);
+    this.actions.toggleWalletImport.listen(this._toggleWalletImport);
   }
 
   @computed get wallets() {
@@ -31,7 +35,12 @@ export default class SidebarStore extends Store {
   };
 
   @action _toggleCreateWalletDialog = () => {
-    this.isCreateWalletDialogOpen = !this.isCreateWalletDialogOpen;
+    if (!this.isCreateWalletDialogOpen) {
+      this.isAddWalletDialogOpen = false;
+      this.isCreateWalletDialogOpen = true;
+    } else {
+      this.isCreateWalletDialogOpen = false;
+    }
   };
 
   @action _changeSidebarRoute = ({ route }) => {
@@ -45,6 +54,19 @@ export default class SidebarStore extends Store {
         this.stores.router.push(route);
       }
     }
-  }
+  };
+
+  @action _toggleAddWallet = () => {
+    this.isAddWalletDialogOpen = !this.isAddWalletDialogOpen;
+  };
+
+  @action _toggleWalletImport = () => {
+    if (!this.isWalletImportDialogOpen) {
+      this.isAddWalletDialogOpen = false;
+      this.isWalletImportDialogOpen = true;
+    } else {
+      this.isWalletImportDialogOpen = false;
+    }
+  };
 
 }

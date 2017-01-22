@@ -58,12 +58,13 @@ export default class WalletAddDialog extends Component {
   static propTypes = {
     onCreate: PropTypes.func.isRequired,
     onImport: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
   };
 
 
   render() {
     const { intl } = this.context;
-    const { onCreate, onImport } = this.props;
+    const { onCreate, onImport, onCancel } = this.props;
     return (
       <Dialog
         className={styles.component}
@@ -94,7 +95,7 @@ export default class WalletAddDialog extends Component {
             />
           </div>
         </div>
-        <DialogCloseButton onClose={this.props.onCancel} />
+        <DialogCloseButton onClose={onCancel} />
 
       </Dialog>
     );
