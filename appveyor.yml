@@ -6,20 +6,17 @@ environment:
 build: off
 
 install:
-  # TODO: if appveyor build updates between this script, we'll get artifacts from two different builds
-  - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/jagajaga/pos-haskell-prototype/artifacts/build-id?branch=packaging' -FileName build-id
-  - Echo "Build id of cardano-sl on appveyor:"
-  - type build-id
   - ps: Install-Product node $env:nodejs_version x64
   - npm install
   - mkdir node_modules\daedalus-client-api 
   - cd node_modules\daedalus-client-api
-  - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/jagajaga/pos-haskell-prototype/artifacts/build-id?branch=packaging' -FileName build-id
+  - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/jagajaga/pos-haskell-prototype/artifacts/DaedalusBridge.zip?branch=packaging' -FileName CardanoSL.zip
+  - 7z x CardanoSL.zip -y
   - Echo "Build id of cardano-sl on appveyor:"
   - type build-id
-  - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/jagajaga/pos-haskell-prototype/artifacts/DaedalusBridge.zip?branch=packaging' -FileName DaedalusBridge.zip
-  - 7z x DaedalusBridge.zip -y
   - cd ..\..\
+  - move node_modules\daedalus-client-api\log-config-prod.yaml installers\log-config-prod.yaml
+  - move node_modules\daedalus-client-api\*.exe installers\
 
 test_script:
   - SET DAEDALUS_VERSION=%APPVEYOR_BUILD_VERSION%
@@ -29,8 +26,6 @@ test_script:
   # Install stack
   - curl -sSL -o stack.zip --insecure http://www.stackage.org/stack/windows-x86_64
   - 7z x stack.zip stack.exe
-  # Get cardano-node.exe
-  - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/jagajaga/pos-haskell-prototype/artifacts/installers%2Fcardano-node.exe?branch=packaging' -FileName cardano-node.exe
   # Copy DLLs
   # TODO: get rocksdb from rocksdb-haskell
   - mkdir DLLs
