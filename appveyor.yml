@@ -20,7 +20,7 @@ install:
 
 test_script:
   # Package frontend
-  - npm run package
+  - npm run package -- --icon icons/64x64
   - cd installers
   # Install stack
   - curl -sSL -o stack.zip --insecure http://www.stackage.org/stack/windows-x86_64
