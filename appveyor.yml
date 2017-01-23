@@ -1,0 +1,47 @@
+version: 1.0.{build}
+
+environment:
+  nodejs_version: "6"
+
+build: off
+
+install:
+  # TODO: if appveyor build updates between this script, we'll get artifacts from two different builds
+  - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/jagajaga/pos-haskell-prototype/artifacts/build-id?branch=packaging' -FileName build-id
+  - Echo "Build id of cardano-sl on appveyor:"
+  - type build-id
+  - ps: Install-Product node $env:nodejs_version x64
+  - npm install
+  - mkdir node_modules\daedalus-client-api 
+  - cd node_modules\daedalus-client-api
+  - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/jagajaga/pos-haskell-prototype/artifacts/DaedalusBridge.zip?branch=packaging' -FileName DaedalusBridge.zip
+  - 7z x DaedalusBridge.zip -y
+  - cd ..\..\
+
+test_script:
+  # Package frontend
+  - npm run package
+  - cd installers
+  # Install stack
+  - curl -sSL -o stack.zip --insecure http://www.stackage.org/stack/windows-x86_64
+  - 7z x stack.zip stack.exe
+  # Get cardano-node.exe
+  - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/jagajaga/pos-haskell-prototype/artifacts/installers%2Fcardano-node.exe?branch=packaging' -FileName cardano-node.exe
+  # Copy DLLs
+  # TODO: get rocksdb from rocksdb-haskell
+  - mkdir DLLs
+  - cd DLLs
+  - ps: Start-FileDownload 'https://s3.eu-central-1.amazonaws.com/cardano-sl-testing/DLLs.zip' -FileName DLLs.zip
+  - 7z x DLLs.zip
+  - del DLLs.zip
+  - cd ..
+  - stack setup --no-reinstall
+  - stack --no-terminal build -j 1 --exec make-installer
+  - cd ..
+
+artifacts:
+  - path: release\win32-x64\Daedalus-win32-x64
+    name: Daedalus Electron application
+    type: zip
+  - path: installers\daedalus-win64-installer.exe
+    name: Daedalus Win64 Installer
