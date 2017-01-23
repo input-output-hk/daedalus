@@ -2,8 +2,15 @@ version: 0.1.{build}
 
 environment:
   nodejs_version: "6"
+  global:
+    # Avoid long paths on Windows
+    STACK_ROOT: "c:\\sr"
 
 build: off
+
+cache:
+  - C:\sr -> installers/cardano-installer.cabal
+  - C:\sr -> installers/stack.yaml
 
 install:
   - ps: Install-Product node $env:nodejs_version x64
@@ -35,7 +42,7 @@ test_script:
   - del DLLs.zip
   - cd ..
   - stack setup --no-reinstall
-  - stack --no-terminal build -j 1 --exec make-installer
+  - appveyor-retry call stack --no-terminal build -j 2 --exec make-installer
   - cd ..
 
 artifacts:
