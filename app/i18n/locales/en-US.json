@@ -1,5 +1,6 @@
 {
   "global.errors.fieldIsRequired": "This field is required.",
+  "global.errors.invalidWalletName": "Requires at least 3 letters.",
   "wallet.navigation.send": "send",
   "wallet.navigation.receive": "receive",
   "wallet.transaction.type.card": "Card payment",
@@ -23,7 +24,6 @@
   "wallet.receive.page.request.specific.amount.button.label": "Request a specific amount",
   "wallet.create.dialog.name.label": "Wallet Name",
   "wallet.create.dialog.currency.label": "Currency",
-  "wallet.create.dialog.errors.invalidWalletName": "Requires at least 3 letters.",
   "wallet.create.dialog.errors.invalidCurrency": "This currency is not yet supported.",
   "wallet.create.dialog.create.personal.wallet.button.label": "Create personal wallet",
   "wallet.transactions.search.hint": "Search transaction",

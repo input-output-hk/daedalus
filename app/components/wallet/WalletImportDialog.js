@@ -6,6 +6,8 @@ import Input from 'react-toolbox/lib/input/Input';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../widgets/DialogCloseButton';
+import { isValidWalletName, isNotEmptyString } from '../../lib/validations';
+import globalMessages from '../../i18n/global-messages';
 import styles from './WalletAddDialog.scss';
 
 const messages = defineMessages({
@@ -41,19 +43,6 @@ const messages = defineMessages({
   },
 });
 
-const fields = {
-  walletName: {
-    value: '',
-  },
-  recoveryPhrase: {
-    value: '',
-  },
-};
-
-const options = {
-  validateOnChange: false
-};
-
 @observer
 export default class WalletImportDialog extends Component {
 
@@ -66,23 +55,55 @@ export default class WalletImportDialog extends Component {
     onCancel: PropTypes.func.isRequired,
   };
 
-  validator = new MobxReactForm({ options, fields }, {});
+  state = {
+    isSubmitting: false
+  };
+
+  validator = new MobxReactForm({
+    options: {
+      validateOnChange: false
+    },
+    fields: {
+      walletName: {
+        value: '',
+        validate: [({ field }) => (
+          [isValidWalletName(field.value), this.context.intl.formatMessage(globalMessages.invalidWalletName)]
+        )]
+      },
+      recoveryPhrase: {
+        value: '',
+        validate: [({ field }) => (
+          [isNotEmptyString(field.value), this.context.intl.formatMessage(globalMessages.fieldIsRequired)]
+        )]
+      },
+    }
+  });
 
   actions = [
     {
       label: this.context.intl.formatMessage(messages.importButtonLabel),
       primary: true,
-      onClick: () => {}
+      onClick: () => this.submit()
     }
   ];
+
+  submit = () => {
+    this.validator.submit({
+      onSuccess: (form) => {
+        this.setState({ isSubmitting: true });
+        this.props.onSubmit(form.values());
+      },
+      onError: () => {
+        this.setState({ isSubmitting: false });
+      }
+    });
+  };
 
   render() {
     const { intl } = this.context;
     const { validator } = this;
     const walletName = validator.$('walletName');
     const recoveryPhrase = validator.$('recoveryPhrase');
-    const errors = {
-    };
     return (
       <Dialog
         className={styles.component}
@@ -96,7 +117,7 @@ export default class WalletImportDialog extends Component {
           label={intl.formatMessage(messages.walletNameInputLabel)}
           hint={intl.formatMessage(messages.walletNameInputHint)}
           value={walletName.value}
-          error={errors.walletName}
+          error={walletName.error}
           onChange={walletName.onChange}
           onFocus={walletName.onFocus}
           onBlur={walletName.onBlur}
@@ -108,7 +129,7 @@ export default class WalletImportDialog extends Component {
           label={intl.formatMessage(messages.recoveryPhraseInputLabel)}
           hint={intl.formatMessage(messages.recoveryPhraseInputHint)}
           value={recoveryPhrase.value}
-          error={errors.recoveryPhrase}
+          error={recoveryPhrase.error}
           onChange={recoveryPhrase.onChange}
           onFocus={recoveryPhrase.onFocus}
           onBlur={recoveryPhrase.onBlur}
