@@ -6,9 +6,9 @@ import AppBar from '../components/layout/AppBar';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import { oneOrManyChildElements } from '../propTypes';
 import WalletCreateDialog from '../components/wallet/WalletCreateDialog';
+import WalletImportDialog from '../components/wallet/WalletImportDialog';
 import WalletBackupPage from './wallet/WalletBackupPage';
 import WalletAddPage from './wallet/WalletAddPage';
-import WalletImportPage from './wallet/WalletImportPage';
 import Wallet from '../domain/Wallet';
 
 @inject('stores', 'actions') @observer
@@ -16,23 +16,21 @@ export default class MainLayout extends Component {
 
   static propTypes = {
     stores: PropTypes.shape({
-      sidebar: PropTypes.shape({
+      wallets: PropTypes.shape({
+        active: PropTypes.instanceOf(Wallet),
         isAddWalletDialogOpen: PropTypes.bool.isRequired,
         isCreateWalletDialogOpen: PropTypes.bool.isRequired,
         isWalletImportDialogOpen: PropTypes.bool.isRequired,
-      }).isRequired,
-      wallets: PropTypes.shape({
-        active: PropTypes.instanceOf(Wallet),
         walletBackup: PropTypes.shape({
           inProgress: PropTypes.bool.isRequired
-        })
+        }),
       }).isRequired,
     }).isRequired,
     actions: PropTypes.shape({
       goToRoute: PropTypes.func.isRequired,
       createPersonalWallet: PropTypes.func.isRequired,
       toggleAddWallet: PropTypes.func.isRequired,
-      toggleCreateWalletDialog: PropTypes.func.isRequired
+      toggleWalletImport: PropTypes.func.isRequired,
     }).isRequired,
     children: oneOrManyChildElements
   };
@@ -44,6 +42,10 @@ export default class MainLayout extends Component {
     });
   };
 
+  handleAddWalletImport = (values: Object) => {
+    console.log(values);
+  };
+
   routeToWallet = (walletId) => {
     const { actions, stores } = this.props;
     actions.goToRoute({ route: stores.wallets.getWalletRoute(walletId) });
@@ -51,8 +53,8 @@ export default class MainLayout extends Component {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar } = stores;
-    const { toggleAddWallet, toggleCreateWalletDialog } = actions;
+    const { sidebar, wallets } = stores;
+    const { toggleAddWallet, toggleCreateWalletDialog, toggleWalletImport } = actions;
     const activeWallet = stores.wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const isWalletBackupInProgress = this.props.stores.walletBackup.inProgress;
@@ -77,9 +79,14 @@ export default class MainLayout extends Component {
       />
     );
     const appbar = <AppBar onToggleSidebar={actions.toggleSidebar} />;
-    const addWalletImportDialog = sidebar.isWalletImportDialogOpen ? (<WalletImportPage />) : null;
-    const addWalletDialog = sidebar.isAddWalletDialogOpen ? (<WalletAddPage />) : null;
-    const createWalletDialog = sidebar.isCreateWalletDialogOpen ? (
+    const addWalletImportDialog = wallets.isWalletImportDialogOpen ? (
+      <WalletImportDialog
+        onSubmit={this.handleAddWalletImport}
+        onCancel={toggleWalletImport}
+      />
+    ) : null;
+    const addWalletDialog = wallets.isAddWalletDialogOpen ? (<WalletAddPage />) : null;
+    const createWalletDialog = wallets.isCreateWalletDialogOpen ? (
       <WalletCreateDialog
         onSubmit={this.handleAddWalletSubmit}
         onCancel={toggleCreateWalletDialog}

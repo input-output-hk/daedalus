@@ -62,6 +62,8 @@ export default class WalletImportDialog extends Component {
   };
 
   static propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+    onCancel: PropTypes.func.isRequired,
   };
 
   validator = new MobxReactForm({ options, fields }, {});

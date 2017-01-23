@@ -54,5 +54,5 @@ export default defineActions({
   cancelWalletBackup: {},
   finishWalletBackup: {},
   toggleAddWallet: {},
-  toggleWalletImport: {}
+  toggleWalletImport: {},
 }, PropTypes.validateWithErrors);

@@ -1,5 +1,5 @@
 // @flow
-import { observable, computed } from 'mobx';
+import { observable, computed, action } from 'mobx';
 import Store from './lib/Store';
 import { matchRoute } from '../lib/routing-helpers';
 import CachedRequest from './lib/CachedRequest';
@@ -15,11 +15,18 @@ export default class WalletsStore extends Store {
   @observable createWalletRequest = new Request(this.api, 'createWallet');
   @observable sendMoneyRequest = new Request(this.api, 'createTransaction');
   @observable getWalletRecoveryPhraseRequest = new Request(this.api, 'getWalletRecoveryPhrase');
+  // DIALOGUES
+  @observable isAddWalletDialogOpen = false;
+  @observable isCreateWalletDialogOpen = false;
+  @observable isWalletImportDialogOpen = false;
 
   constructor(...args) {
     super(...args);
     this.actions.createPersonalWallet.listen(this._createPersonalWallet);
     this.actions.sendMoney.listen(this._sendMoney);
+    this.actions.toggleAddWallet.listen(this._toggleAddWallet);
+    this.actions.toggleCreateWalletDialog.listen(this._toggleCreateWalletDialog);
+    this.actions.toggleWalletImport.listen(this._toggleWalletImport);
     if (environment.CARDANO_API) {
       setInterval(this._refreshWalletsData, this.WALLET_REFRESH_INTERVAL);
     }
@@ -68,6 +75,28 @@ export default class WalletsStore extends Store {
     if (this.stores.networkStatus.isCardanoConnected) {
       this.walletsRequest.invalidate({ immediately: true });
       this.stores.transactions.searchRequest.invalidate({ immediately: true });
+    }
+  };
+
+  @action _toggleAddWallet = () => {
+    this.isAddWalletDialogOpen = !this.isAddWalletDialogOpen;
+  };
+
+  @action _toggleCreateWalletDialog = () => {
+    if (!this.isCreateWalletDialogOpen) {
+      this.isAddWalletDialogOpen = false;
+      this.isCreateWalletDialogOpen = true;
+    } else {
+      this.isCreateWalletDialogOpen = false;
+    }
+  };
+
+  @action _toggleWalletImport = () => {
+    if (!this.isWalletImportDialogOpen) {
+      this.isAddWalletDialogOpen = false;
+      this.isWalletImportDialogOpen = true;
+    } else {
+      this.isWalletImportDialogOpen = false;
     }
   };
 
