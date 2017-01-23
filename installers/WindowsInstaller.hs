@@ -36,7 +36,7 @@ writeNSIS = do
         file [] "log-config-prod.yaml"
         file [] "version.txt"
         file [Recursive] "dlls\\"
-        file [Recursive] "C:\\daedalus\\release\\win32-x64\\Daedalus-win32-x64\\"
+        file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
 
         -- Uninstaller
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "DisplayName" "Daedalus"
