@@ -1,0 +1,13 @@
+flags: {}
+
+extra-package-dbs: []
+
+packages:
+- '.'
+
+resolver: lts-7.16
+
+compiler: ghc-8.0.2
+
+nix:
+    packages: [gmp]
