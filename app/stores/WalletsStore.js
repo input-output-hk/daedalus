@@ -20,6 +20,8 @@ export default class WalletsStore extends Store {
   @observable isCreateWalletDialogOpen = false;
   @observable isWalletImportDialogOpen = false;
 
+  _newWalletDetails = null;
+
   constructor(...args) {
     super(...args);
     this.actions.createPersonalWallet.listen(this._createPersonalWallet);
@@ -27,16 +29,26 @@ export default class WalletsStore extends Store {
     this.actions.toggleAddWallet.listen(this._toggleAddWallet);
     this.actions.toggleCreateWalletDialog.listen(this._toggleCreateWalletDialog);
     this.actions.toggleWalletImport.listen(this._toggleWalletImport);
+    this.actions.finishWalletBackup.listen(this._finishWalletCreation);
     if (environment.CARDANO_API) {
       setInterval(this._refreshWalletsData, this.WALLET_REFRESH_INTERVAL);
     }
   }
 
   _createPersonalWallet = async (params) => {
-    const wallet = await this.createWalletRequest.execute(params);
+    this._newWalletDetails = params;
+    try {
+      const recoveryPhrase = await this.getWalletRecoveryPhraseRequest.execute();
+      this.actions.initiateWalletBackup({ recoveryPhrase });
+    } catch(error) {
+      throw error;
+    }
+  };
+
+  _finishWalletCreation = async () => {
+    this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
+    const wallet = await this.createWalletRequest.execute(this._newWalletDetails);
     await this.walletsRequest.patch(result => { result.push(wallet); });
-    const walletRecovery = await this.getWalletRecoveryPhraseRequest.execute({ walletId: wallet.id });
-    this.actions.initiateWalletBackup(walletRecovery);
   };
 
   _sendMoney = async (transactionDetails) => {

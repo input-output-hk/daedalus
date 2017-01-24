@@ -47,7 +47,7 @@ export default class CardanoClientApi {
   }
 
   async createWallet(request: createWalletRequest) {
-    const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name)();
+    const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name, request.mnemonic)();
     return this._createWalletFromData(response);
   }
 
@@ -95,7 +95,7 @@ export default class CardanoClientApi {
   }
 
   getWalletRecoveryPhrase() {
-    return notYetImplemented();
+    return new Promise((resolve) => resolve(ClientApi.generateMnemonic().split(' ')));
   }
 
   setWalletBackupCompleted() {

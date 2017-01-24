@@ -38,8 +38,7 @@ export default defineActions({
     height: PropTypes.number.isRequired,
   },
   initiateWalletBackup: {
-    walletId: PropTypes.string.isRequired,
-    recoveryPhrase: MobxPropTypes.arrayOrObservableArray.isRequired
+    recoveryPhrase: MobxPropTypes.arrayOrObservableArray.isRequired,
   },
   acceptPrivacyNoticeForWalletBackup: {},
   continueToRecoveryPhraseForWalletBackup: {},

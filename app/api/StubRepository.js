@@ -116,9 +116,7 @@ export default class StubRepository {
   getWalletRecoveryPhrase(request: getWalletRecoveryPhraseRequest) {
     const { walletId } = request;
     const wallet = this.wallets.find(w => w.id === walletId);
-    const { recoveryPhrase } = wallet;
-    const walletRecoveryPhrase: walletRecoveryPhraseStruct = { walletId, recoveryPhrase };
-    return walletRecoveryPhrase;
+    return wallet.recoveryPhrase;
   }
 
   setWalletBackupCompleted(walletId: string) {

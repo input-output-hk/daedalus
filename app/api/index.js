@@ -70,7 +70,8 @@ export type createUserRequest = {
 
 export type createWalletRequest = {
   name: string,
-  currency: string
+  currency: string,
+  mnemonic: string,
 }
 
 export type createTransactionRequest = {
