@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
 import StoryDecorator from './support/StoryDecorator';
-import AdaRedemptionDialog from '../app/components/wallet/ada-redemption/AdaRedemptionDialog';
+import AdaRedemptionDialog from '../app/components/wallet/ada-redemption/AdaRedemptionForm';
 
 storiesOf('AdaRedemptionDialog', module)
 

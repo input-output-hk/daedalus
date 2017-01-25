@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="48px" viewBox="0 0 48 48" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>attach-ic</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="wallet_add_wallet_join" transform="translate(-2132.000000, -923.000000)" fill="#5E6066">
+            <g id="dialog" transform="translate(1000.000000, 683.000000)">
+                <g id="invitation-code" transform="translate(60.000000, 150.000000)">
+                    <g id="input" transform="translate(0.000000, 64.000000)">
+                        <g id="attach-ic" transform="translate(1072.000000, 26.000000)">
+                            <path d="M26,22 L36,22 L36,26 L26,26 L26,36 L22,36 L22,26 L12,26 L12,22 L22,22 L22,12 L26,12 L26,22 Z M38,4 L38,0 L10,0 L10,4 L5.99729162,4 C4.89153983,4 4,4.89421792 4,5.99729162 L4,10 L0,10 L0,38 L4,38 L4,42.0027084 C4,43.1084602 4.89421792,44 5.99729162,44 L10,44 L10,48 L38,48 L38,44 L42.0027084,44 C43.1084602,44 44,43.1057821 44,42.0027084 L44,38 L48,38 L48,10 L44,10 L44,5.99729162 C44,4.89153983 43.1057821,4 42.0027084,4 L38,4 Z M0,4.00989318 C0,1.79529033 1.79405245,0 4.00989318,0 L43.9901068,0 C46.2047097,0 48,1.79405245 48,4.00989318 L48,43.9901068 C48,46.2047097 46.2059475,48 43.9901068,48 L4.00989318,48 C1.79529033,48 0,46.2059475 0,43.9901068 L0,4.00989318 Z"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

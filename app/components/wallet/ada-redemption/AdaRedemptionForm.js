@@ -2,13 +2,11 @@
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-toolbox/lib/input/Input';
-import Dropup from '../../widgets/forms/Dropup';
+import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
-import DialogCloseButton from '../../widgets/DialogCloseButton';
 import styles from './AdaRedemptionDialog.scss';
 
 const messages = defineMessages({
@@ -58,7 +56,6 @@ export default class AdaRedemptionDialog extends Component {
 
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired,
     onCertificateSelected: PropTypes.func.isRequired,
   };
 
@@ -110,22 +107,18 @@ export default class AdaRedemptionDialog extends Component {
   render() {
     const { intl } = this.context;
     const { validator } = this;
-    const { onCancel, onCertificateSelected } = this.props;
+    const { onCertificateSelected } = this.props;
     const certificate = validator.$('certificate');
     const token = validator.$('token');
     const wallet = validator.$('wallet');
-    const dialogClasses = classnames([
+    const componentClasses = classnames([
       styles.component,
       this.state.isSubmitting ? styles.isSubmitting : null
     ]);
     return (
-      <Dialog
-        className={dialogClasses}
-        title={intl.formatMessage(messages.headline)}
-        actions={this.actions}
-        onOverlayClick={onCancel}
-        active
-      >
+      <div className={componentClasses}>
+
+        <h1 className={styles.headline}>{intl.formatMessage(messages.headline)}</h1>
 
         <div className={styles.certificate}>
           <FileUploadWidget
@@ -147,7 +140,7 @@ export default class AdaRedemptionDialog extends Component {
           multiline
         />
 
-        <Dropup
+        <Dropdown
           className="wallet"
           label={intl.formatMessage(messages.walletSelectLabel)}
           value={wallet.value}
@@ -157,10 +150,7 @@ export default class AdaRedemptionDialog extends Component {
           error={wallet.error}
           source={wallets}
         />
-
-        <DialogCloseButton onClose={onCancel} />
-
-      </Dialog>
+      </div>
     );
   }
 

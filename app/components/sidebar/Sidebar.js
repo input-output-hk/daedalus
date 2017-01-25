@@ -2,12 +2,32 @@
 import React, { Component, PropTypes } from 'react';
 import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import classNames from 'classnames';
+import { defineMessages, intlShape } from 'react-intl';
 import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import walletsIcon from '../../assets/images/sidebar/wallet-ic.svg';
 import settingsIcon from '../../assets/images/sidebar/settings-ic.svg';
 import stakingIcon from '../../assets/images/sidebar/staking-ic.svg';
+import adaRedemptionIcon from '../../assets/images/sidebar/ada.svg';
+
+const messages = defineMessages({
+  walletsCategoryLabel: {
+    id: 'Sidebar.categories.wallets',
+    defaultMessage: '!!!Wallets',
+    description: 'Category label for wallets'
+  },
+  settingsCategoryLabel: {
+    id: 'Sidebar.categories.settings',
+    defaultMessage: '!!!Settings',
+    description: 'Category label for settings'
+  },
+  adaRedemptionCategoryLabel: {
+    id: 'Sidebar.categories.adaRedemption',
+    defaultMessage: '!!!ADA Redemption',
+    description: 'Category label for ada redemption'
+  },
+});
 
 @observer
 export default class Sidebar extends Component {
@@ -29,12 +49,17 @@ export default class Sidebar extends Component {
     activeWalletId: PropTypes.string
   };
 
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+
   matches(path: string) {
     return this.props.route.indexOf(path) !== -1;
   }
 
   render() {
     const { hidden, isMaximized, menus, onCategoryClicked, activeWalletId } = this.props;
+    const { intl } = this.context;
 
     let sidebarStyle = null;
     let categoriesStyle = null;
@@ -68,7 +93,7 @@ export default class Sidebar extends Component {
         <div className={categoriesStyle}>
           <SidebarCategory
             className="wallets"
-            label="Wallets"
+            label={intl.formatMessage(messages.walletsCategoryLabel)}
             icon={walletsIcon}
             active={this.matches('/wallets')}
             minimized={hasMinimizedCategories}
@@ -76,11 +101,19 @@ export default class Sidebar extends Component {
           />
           <SidebarCategory
             className="settings"
-            label="Settings"
+            label={intl.formatMessage(messages.settingsCategoryLabel)}
             icon={settingsIcon}
             active={this.matches('/settings')}
             minimized={hasMinimizedCategories}
             onClick={() => onCategoryClicked('/settings')}
+          />
+          <SidebarCategory
+            className="redeem-ada"
+            label={intl.formatMessage(messages.adaRedemptionCategoryLabel)}
+            icon={adaRedemptionIcon}
+            active={this.matches('/ada-redemption')}
+            minimized={hasMinimizedCategories}
+            onClick={() => onCategoryClicked('/ada-redemption')}
           />
           {/* HIDDEN UNTIL WE HAVE BETTER STAKING DESIGN */}
           {/*<SidebarCategory*/}

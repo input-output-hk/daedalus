@@ -73,5 +73,8 @@
   "wallet.redeem.dialog.tokenLabel": "Redeem token",
   "wallet.redeem.dialog.tokenHint": "Type the phrase here",
   "wallet.redeem.dialog.walletSelectLabel": "Choose Wallet",
-  "wallet.redeem.dialog.submitLabel": "Redeem your money"
+  "wallet.redeem.dialog.submitLabel": "Redeem your money",
+  "Sidebar.categories.wallets": "Wallets",
+  "Sidebar.categories.settings": "Settings",
+  "Sidebar.categories.adaRedemption": "ADA Redemption"
 }
