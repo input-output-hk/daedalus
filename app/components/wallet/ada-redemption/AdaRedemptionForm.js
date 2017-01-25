@@ -1,13 +1,14 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { observer } from 'mobx-react';
+import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import classnames from 'classnames';
 import Input from 'react-toolbox/lib/input/Input';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
+import Button from 'react-toolbox/lib/button/Button';
 import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
-import styles from './AdaRedemptionDialog.scss';
+import styles from './AdaRedemptionForm.scss';
 
 const messages = defineMessages({
   headline: {
@@ -47,14 +48,14 @@ const messages = defineMessages({
   },
 });
 
-const wallets = [
-  { value: 'wallet-1', label: 'First Wallet' },
-];
-
 @observer
-export default class AdaRedemptionDialog extends Component {
+export default class AdaRedemptionForm extends Component {
 
   static propTypes = {
+    wallets: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.shape({
+      value: PropTypes.string.isRequired,
+      label: PropTypes.string.isRequired,
+    })).isRequired,
     onSubmit: PropTypes.func.isRequired,
     onCertificateSelected: PropTypes.func.isRequired,
   };
@@ -79,7 +80,7 @@ export default class AdaRedemptionDialog extends Component {
         value: '',
       },
       wallet: {
-        value: wallets[0].value,
+        value: this.props.wallets[0].value,
       }
     }
   });
@@ -107,7 +108,7 @@ export default class AdaRedemptionDialog extends Component {
   render() {
     const { intl } = this.context;
     const { validator } = this;
-    const { onCertificateSelected } = this.props;
+    const { wallets, onCertificateSelected } = this.props;
     const certificate = validator.$('certificate');
     const token = validator.$('token');
     const wallet = validator.$('wallet');
@@ -150,6 +151,14 @@ export default class AdaRedemptionDialog extends Component {
           error={wallet.error}
           source={wallets}
         />
+
+        <Button
+          className={this.state.isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
+          label={intl.formatMessage(messages.submitLabel)}
+          onMouseUp={this.submit}
+          primary
+        />
+
       </div>
     );
   }

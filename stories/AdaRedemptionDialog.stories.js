@@ -1,9 +1,9 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
 import StoryDecorator from './support/StoryDecorator';
-import AdaRedemptionDialog from '../app/components/wallet/ada-redemption/AdaRedemptionForm';
+import AdaRedemptionForm from '../app/components/wallet/ada-redemption/AdaRedemptionForm';
 
-storiesOf('AdaRedemptionDialog', module)
+storiesOf('AdaRedemptionForm', module)
 
   .addDecorator((story) => (
     <StoryDecorator>
@@ -15,10 +15,14 @@ storiesOf('AdaRedemptionDialog', module)
 
   .add('default', () => (
     <div>
-      <AdaRedemptionDialog
+      <AdaRedemptionForm
         onSubmit={action('submit')}
-        onCancel={action('cancel')}
         onCertificateSelected={action('certificateSelected')}
+        wallets={[
+          { value: 'wallet-1', label: 'First Wallet' },
+          { value: 'wallet-2', label: 'Second Wallet' },
+          { value: 'wallet-3', label: 'Third Wallet' },
+        ]}
       />
     </div>
   ))

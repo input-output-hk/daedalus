@@ -53,7 +53,7 @@
 
 .submitButtonSpinning {
   @extend %submitButton;
-  @include loading-spinner;
+  @include loading-spinner("../../assets/images/spinner-light.svg");
 }
 
 .submitButton {

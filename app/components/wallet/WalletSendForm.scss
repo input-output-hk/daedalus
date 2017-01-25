@@ -12,7 +12,7 @@
 
 .submitButtonSpinning {
   width: 100%;
-  @include loading-spinner;
+  @include loading-spinner("../../assets/images/spinner-light.svg");
 }
 
 .submitButton {

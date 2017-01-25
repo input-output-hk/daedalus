@@ -1,5 +1,9 @@
+@import '../../../themes/mixins/loading-spinner';
+
 .component {
-  margin: 2rem;
+  padding: 2rem;
+  height: 100%;
+  overflow: visible;
 }
 
 .headline {
@@ -10,4 +14,14 @@
 
 .certificate {
   margin-bottom: 2rem;
+}
+
+.submitButtonSpinning {
+  width: 100%;
+  @include loading-spinner("../../../assets/images/spinner-light.svg");
+}
+
+.submitButton {
+  width: 100%;
+  text-transform: uppercase;
 }
