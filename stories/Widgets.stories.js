@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@kadira/storybook';
 import StoryDecorator from './support/StoryDecorator';
-import CheckboxWithLongLabel from '../app/components/widgets/CheckboxWithLongLabel';
+import CheckboxWithLongLabel from '../app/components/widgets/forms/CheckboxWithLongLabel';
 
 storiesOf('Widgets', module)
 

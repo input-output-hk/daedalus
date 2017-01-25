@@ -6,7 +6,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import WalletRecoveryPhraseMnemonic from './WalletRecoveryPhraseMnemonic';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
-import CheckboxWithLongLabel from '../../widgets/CheckboxWithLongLabel';
+import CheckboxWithLongLabel from '../../widgets/forms/CheckboxWithLongLabel';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import MnemonicWord from './MnemonicWord';
 import styles from './WalletRecoveryPhraseEntryDialog.scss';

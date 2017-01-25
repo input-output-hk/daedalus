@@ -1,0 +1,26 @@
+.component {
+  font-size: 16px;
+  line-height: 1.38;
+  font-family: $theme-input-hint-font;
+  color: $theme-input-hint-color;
+}
+
+.dropZone {
+  height: 50px;
+  border-radius: 2px;
+  border: solid 1px $color-light-grey;
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: $theme-input-background-color;
+  cursor: pointer;
+}
+
+.label {
+  font-family: $font-semibold;
+  margin-bottom: 10px;
+}
+
+.hint {
+  opacity: 0.5;
+}

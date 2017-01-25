@@ -7,3 +7,4 @@ import './StakingChart.stories';
 import './Staking.stories';
 import './Login.stories';
 import './Widgets.stories';
+import './AdaRedemptionDialog.stories';

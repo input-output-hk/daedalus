@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
-import CheckboxWithLongLabel from '../../widgets/CheckboxWithLongLabel';
+import CheckboxWithLongLabel from '../../widgets/forms/CheckboxWithLongLabel';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import styles from './WalletBackupPrivacyWarningDialog.scss';
 

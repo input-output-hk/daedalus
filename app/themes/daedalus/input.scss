@@ -4,7 +4,7 @@ $input-label-font-size: 1rem;
 $input-focus-label-top: 0;
 $input-field-padding: 0.75rem;
 $input-text-label-color: #5e6066;
-$input-background-color: #fafbfc;
+$input-background-color: $theme-input-background-color;
 $input-text-error-color: $theme-error-color;
 $input-hint-opacity: 0.5;
 @import "~react-toolbox/lib/input/theme";
