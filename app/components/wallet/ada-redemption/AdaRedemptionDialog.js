@@ -132,6 +132,7 @@ export default class AdaRedemptionDialog extends Component {
             label={intl.formatMessage(messages.certificateLabel)}
             hint={intl.formatMessage(messages.certificateHint)}
             onFileSelected={onCertificateSelected}
+            acceptedFileTypes="application/pdf"
           />
         </div>
 
