@@ -7,6 +7,7 @@ let menu;
 let mainWindow = null;
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = process.env.NODE_ENV === 'production';
+const daedalusVersion = process.env.DAEDALUS_VERSION || 'dev';  //TODO: Domen - take a look at this temporary fix
 
 if (isDev) {
   require('electron-debug')(); // eslint-disable-line global-require
@@ -41,7 +42,7 @@ app.on('ready', async () => {
 
     const logfile = fs.openSync(DATA + '\\Daedalus\\Logs\\cardano-node.log', 'a');
 
-    var cardanoFlags = [
+    const cardanoFlags = [
       '--listen', '0.0.0.0:12100',
       '--peer', '35.156.182.24:3000/MHdrsP-oPf7UWl0007QuXnLK5RD=',
       '--peer', '54.183.103.204:3000/MHdrsP-oPf7UWl0077QuXnLK5RD=',
@@ -56,7 +57,7 @@ app.on('ready', async () => {
     ];
 
     // TODO: based on platform, different command
-    var cardanoNode = require('child_process').spawn('cardano-node.exe', cardanoFlags, {stdio: ['ignore', logfile, logfile]});
+    const cardanoNode = require('child_process').spawn('cardano-node.exe', cardanoFlags, {stdio: ['ignore', logfile, logfile]});
     cardanoNode.on('error', error => {
       dialog.showErrorBox('cardano-node exited', error.name + ": " + error.message);
       app.quit()
@@ -74,7 +75,9 @@ app.on('ready', async () => {
   mainWindow.on('page-title-updated', (event, title) => {
    event.preventDefault()
   });
-  mainWindow.setTitle("Daedalus (" + (DAEDALUS_VERSION || "dev") + ")");
+  // mainWindow.setTitle("Daedalus");
+  mainWindow.setTitle(`Daedalus (${daedalusVersion})`);
+  // TODO: Fix
 
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.show();
