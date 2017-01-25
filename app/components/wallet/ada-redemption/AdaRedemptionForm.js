@@ -29,7 +29,7 @@ const messages = defineMessages({
   walletSelectLabel: {
     id: 'wallet.redeem.dialog.walletSelectLabel',
     defaultMessage: '!!!Choose Wallet',
-    description: 'Label for the wallet select'
+    description: 'Label for the walletId select'
   },
   tokenLabel: {
     id: 'wallet.redeem.dialog.tokenLabel',
@@ -78,7 +78,7 @@ export default class AdaRedemptionForm extends Component {
       token: {
         value: '',
       },
-      wallet: {
+      walletId: {
         value: this.props.wallets[0].value,
       }
     }
@@ -110,7 +110,7 @@ export default class AdaRedemptionForm extends Component {
     const { wallets } = this.props;
     const certificate = validator.$('certificate');
     const token = validator.$('token');
-    const wallet = validator.$('wallet');
+    const walletId = validator.$('walletId');
     const componentClasses = classnames([
       styles.component,
       this.state.isSubmitting ? styles.isSubmitting : null
@@ -145,11 +145,11 @@ export default class AdaRedemptionForm extends Component {
         <Dropdown
           className="wallet"
           label={intl.formatMessage(messages.walletSelectLabel)}
-          value={wallet.value}
-          onChange={wallet.onChange}
-          onFocus={wallet.onFocus}
-          onBlur={wallet.onBlur}
-          error={wallet.error}
+          value={walletId.value}
+          onChange={walletId.onChange}
+          onFocus={walletId.onFocus}
+          onBlur={walletId.onBlur}
+          error={walletId.error}
           source={wallets}
         />
 

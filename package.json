@@ -114,6 +114,7 @@
     "mobx-react-form": "1.13.2",
     "mobx-react-router": "^3.0.0",
     "moment": "^2.15.2",
+    "pdf.js-extract": "^0.0.5",
     "postcss": "^5.2.4",
     "prop-types": "^0.2.0",
     "qrcode.react": "^0.6.1",

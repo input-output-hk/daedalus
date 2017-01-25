@@ -10,7 +10,7 @@ export default class AdaRedemptionPage extends Component {
 
   static propTypes = {
     actions: PropTypes.shape({
-      createPersonalWallet: PropTypes.func.isRequired,
+      redeemAda: PropTypes.func.isRequired,
     }),
     stores: PropTypes.shape({
       wallets: PropTypes.shape({
@@ -20,7 +20,7 @@ export default class AdaRedemptionPage extends Component {
   };
 
   onSubmit = (values) => {
-    console.log(values);
+    this.props.actions.redeemAda(values);
   };
 
   render() {

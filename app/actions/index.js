@@ -52,5 +52,10 @@ export default defineActions({
   acceptWalletBackupTermRecovery: {},
   restartWalletBackup: {},
   cancelWalletBackup: {},
-  finishWalletBackup: {}
+  finishWalletBackup: {},
+  redeemAda: {
+    certificate: PropTypes.instanceOf(File).isRequired,
+    token: PropTypes.string.isRequired,
+    walletId: PropTypes.string.isRequired,
+  },
 }, PropTypes.validateWithErrors);
