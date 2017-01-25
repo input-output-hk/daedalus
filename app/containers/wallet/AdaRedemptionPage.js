@@ -2,7 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import { observer, inject, PropTypes as MobxPropTypes } from 'mobx-react';
 import Layout from '../MainLayout';
-import AdaRedemptionDialog from '../../components/wallet/ada-redemption/AdaRedemptionForm';
+import AdaRedemptionForm from '../../components/wallet/ada-redemption/AdaRedemptionForm';
 import Wallet from '../../domain/Wallet';
 
 @inject('stores', 'actions') @observer
@@ -23,10 +23,6 @@ export default class AdaRedemptionPage extends Component {
     console.log(values);
   };
 
-  onCertificateSelected = (values) => {
-    console.log(values);
-  };
-
   render() {
     const wallets = this.props.stores.wallets.all.map((w) => ({
       value: w.id, label: w.name
@@ -34,9 +30,8 @@ export default class AdaRedemptionPage extends Component {
 
     return (
       <Layout>
-        <AdaRedemptionDialog
+        <AdaRedemptionForm
           onSubmit={this.onSubmit}
-          onCertificateSelected={this.onCertificateSelected}
           wallets={wallets}
         />
       </Layout>

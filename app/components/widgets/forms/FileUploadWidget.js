@@ -2,6 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import Dropzone from 'react-dropzone';
+import attachIcon from '../../../assets/images/attach-ic.svg';
 import styles from './FileUploadWidget.scss';
 
 @observer
@@ -12,6 +13,8 @@ export default class FileUploadWidget extends Component {
     hint: PropTypes.string.isRequired,
     onFileSelected: PropTypes.func.isRequired,
     acceptedFileTypes: PropTypes.string.isRequired,
+    value: PropTypes.instanceOf(File),
+    error: PropTypes.string,
   };
 
   state = {
@@ -41,6 +44,7 @@ export default class FileUploadWidget extends Component {
           ) : (
             <div className={styles.hint}>{hint}</div>
           )}
+          <img src={attachIcon} className={styles.attachIcon} />
         </Dropzone>
       </div>
     );

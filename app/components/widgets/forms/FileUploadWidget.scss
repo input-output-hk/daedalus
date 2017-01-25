@@ -14,6 +14,10 @@
   padding: 10px;
   background-color: $theme-input-background-color;
   cursor: pointer;
+
+  &:hover .attachIcon {
+    opacity: 1;
+  }
 }
 
 .label {
@@ -23,4 +27,11 @@
 
 .hint {
   opacity: 0.5;
+}
+
+.attachIcon {
+  width: 24px;
+  position: absolute;
+  right: 54px;
+  opacity: 0.3;
 }

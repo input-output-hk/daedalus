@@ -57,7 +57,6 @@ export default class AdaRedemptionForm extends Component {
       label: PropTypes.string.isRequired,
     })).isRequired,
     onSubmit: PropTypes.func.isRequired,
-    onCertificateSelected: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -74,7 +73,7 @@ export default class AdaRedemptionForm extends Component {
     },
     fields: {
       certificate: {
-        value: '',
+        value: null,
       },
       token: {
         value: '',
@@ -108,7 +107,7 @@ export default class AdaRedemptionForm extends Component {
   render() {
     const { intl } = this.context;
     const { validator } = this;
-    const { wallets, onCertificateSelected } = this.props;
+    const { wallets } = this.props;
     const certificate = validator.$('certificate');
     const token = validator.$('token');
     const wallet = validator.$('wallet');
@@ -125,7 +124,9 @@ export default class AdaRedemptionForm extends Component {
           <FileUploadWidget
             label={intl.formatMessage(messages.certificateLabel)}
             hint={intl.formatMessage(messages.certificateHint)}
-            onFileSelected={onCertificateSelected}
+            value={certificate.value}
+            error={certificate.error}
+            onFileSelected={certificate.onChange}
             acceptedFileTypes="application/pdf"
           />
         </div>
