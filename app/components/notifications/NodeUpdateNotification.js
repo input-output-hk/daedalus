@@ -12,9 +12,9 @@ const messages = defineMessages({
     description: 'Label "Accept" on the Cardano node update notification.'
   },
   denyLabel: {
-    id: 'cardano.node.update.notification.deny.button.label',
-    defaultMessage: '!!!Deny',
-    description: 'Label "Deny" on the Cardano node update notification.'
+    id: 'cardano.node.update.notification.postpone.button.label',
+    defaultMessage: '!!!Ask me later',
+    description: 'Label "Ask me later" on the Cardano node update notification.'
   }
 });
 
@@ -25,7 +25,7 @@ export default class NodeUpdateNotification extends Component {
     title: PropTypes.string.isRequired,
     message: PropTypes.string.isRequired,
     onAccept: PropTypes.func.isRequired,
-    onDeny: PropTypes.func.isRequired,
+    onPostpone: PropTypes.func.isRequired,
     onToggleExpanded: PropTypes.func.isRequired,
     isExpanded: PropTypes.bool.isRequired
   };
@@ -36,7 +36,7 @@ export default class NodeUpdateNotification extends Component {
 
   render() {
     const { intl } = this.context;
-    const { title, message, onAccept, onDeny, onToggleExpanded, isExpanded } = this.props;
+    const { title, message, onAccept, onPostpone, onToggleExpanded, isExpanded } = this.props;
     const arrowClasses = classnames([
       isExpanded ? styles.arrow : styles.arrowCollapsed
     ]);
@@ -52,7 +52,7 @@ export default class NodeUpdateNotification extends Component {
           </button>
         </div>
         {isExpanded && (
-          <div className={styles.message}>{message}</div>
+          <div className={styles.message} dangerouslySetInnerHTML={{ __html: message }} />
         )}
         {isExpanded && (
           <div className={styles.actions}>
@@ -64,7 +64,7 @@ export default class NodeUpdateNotification extends Component {
             </button>
             <button
               className={styles.denyButton}
-              onClick={onDeny}
+              onClick={onPostpone}
             >
               {intl.formatMessage(messages.denyLabel)}
             </button>

@@ -6,6 +6,7 @@ import AppBar from '../components/layout/AppBar';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import { oneOrManyChildElements } from '../propTypes';
 import WalletCreateDialog from '../components/wallet/WalletCreateDialog';
+import NodeUpdatePage from './notifications/NodeUpdatePage';
 import WalletBackupPage from './wallet/WalletBackupPage';
 import Wallet from '../domain/Wallet';
 
@@ -22,6 +23,9 @@ export default class MainLayout extends Component {
         walletBackup: PropTypes.shape({
           inProgress: PropTypes.bool.isRequired
         })
+      }).isRequired,
+      nodeUpdate: PropTypes.shape({
+        isUpdateAvailable: PropTypes.bool.isRequired,
       }).isRequired,
     }).isRequired,
     actions: PropTypes.shape({
@@ -54,6 +58,7 @@ export default class MainLayout extends Component {
     const activeWallet = stores.wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const isWalletBackupInProgress = this.props.stores.walletBackup.inProgress;
+    const isNodeUpdateAvailable = this.props.stores.nodeUpdate.isUpdateAvailable;
 
     const sidebarMenus = {
       wallets: {
@@ -82,9 +87,11 @@ export default class MainLayout extends Component {
       />
     ) : null;
     const addWalletBackupDialog = isWalletBackupInProgress ? (<WalletBackupPage />) : null;
+    const addNodeUpdateNotification = isNodeUpdateAvailable ? (<NodeUpdatePage />) : null;
     return (
       <SidebarLayout sidebar={sidebarComponent} appbar={appbar}>
         {this.props.children}
+        {addNodeUpdateNotification}
         {addWalletDialog}
         {addWalletBackupDialog}
       </SidebarLayout>

@@ -52,5 +52,8 @@ export default defineActions({
   acceptWalletBackupTermRecovery: {},
   restartWalletBackup: {},
   cancelWalletBackup: {},
-  finishWalletBackup: {}
+  finishWalletBackup: {},
+  acceptNodeUpdate: {},
+  postponeNodeUpdate: {},
+  toggleNodeUpdateNotificationExpanded: {}
 }, PropTypes.validateWithErrors);

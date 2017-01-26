@@ -68,5 +68,5 @@
   "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.device": "I understand that my money is held securely on this device only, not on the company servers",
   "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery": "I understand that if this application is moved to another device or deleted, my money can be only recovered with the backup phrase which were written down in a secure place",
   "cardano.node.update.notification.accept.button.label": "Accept",
-  "cardano.node.update.notification.deny.button.label": "Deny"
+  "cardano.node.update.notification.postpone.button.label": "Ask me later"
 }
