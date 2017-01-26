@@ -58,4 +58,5 @@ export default defineActions({
     token: PropTypes.string.isRequired,
     walletId: PropTypes.string.isRequired,
   },
+  adaSuccessfullyRedeemed: {},
 }, PropTypes.validateWithErrors);

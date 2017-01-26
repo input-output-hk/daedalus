@@ -101,5 +101,9 @@ export default class CardanoClientApi {
   setWalletBackupCompleted() {
     return notYetImplemented();
   }
+
+  redeemAda(redemptionCode, token, walletId) {
+    return notYetImplemented();
+  }
 }
 
