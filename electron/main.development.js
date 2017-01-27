@@ -72,7 +72,7 @@ app.on('ready', async () => {
   });
 
   mainWindow.loadURL(`file://${__dirname}/../app/index.html`);
-  mainWindow.on('page-title-updated', (event, title) => {
+  mainWindow.on('page-title-updated', event => {
    event.preventDefault()
   });
   mainWindow.setTitle(`Daedalus (${daedalusVersion})`);
