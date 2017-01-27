@@ -15,15 +15,13 @@ install:
 - sudo mount -o remount,exec,size=4G,mode=755 /run/user || true
 - travis_retry curl -L https://www.stackage.org/stack/$TRAVIS_OS_NAME-x86_64 | tar
   xz --strip-components=1 -C ~/.local/bin
-# Install frontend system deps
-- nix-env -iA nixpkgs.electron nixpkgs.nodejs nixpkgs.nodePackages.bower nixpkgs.nodePackages.node-gyp nixpkgs.nodePackages.node-pre-gyp
 # TODO: install bridge
 # TODO: print build of cardano-sl
-- npm install    
+- nix-shell --run "npm install"
 
 script:   
 - DAEDALUS_VERSION=$TRAVIS_BUILD_NUMBER
-- npm run package -- --icon icons/64x64
+- nix-shell --run "npm run package -- --icon icons/64x64"
 - cd installers
 # TODO: copy cardano-node
 # TODO:- stack --no-terminal build --exec make-installer

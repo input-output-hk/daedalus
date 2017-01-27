@@ -1,5 +1,5 @@
 // @flow
-import ClientApi from 'daedalus-client-api';
+import ClientApi from './CardanoBridge';
 import { action } from 'mobx';
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';

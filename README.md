@@ -28,13 +28,15 @@ defaults to 6.x*
 
 ## Development - with Cardano Wallet (daedalus-bridge)
 
-Build and run daedalus-bridge [using instructions in the repo](https://github.com/input-output-hk/pos-haskell-prototype/tree/master/daedalus)
+First we need to install Nix package manager, which ensures correct dependencies are used:
 
-Symlink the npm package in the subfolder `pos-haskell-prototype/daedalus`:
-* `npm link` (inside the daedalus sub folder of the Cardano client)
-* `npm link daedalus-client-api` (inside this daedalus frontend app)
+   $ curl https://nixos.org/nix/install | sh
 
-Run with `CARDANO_API=true npm run dev`
+Then compile the bridge and start development:
+
+   $ git submodule update --init
+   $ nix-shell --run "npm run build-bridge"
+   $ nix-shell --run "CARDANO_API=1 npm run dev:backend"
 
 ## Testing
 
