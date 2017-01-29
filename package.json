@@ -103,6 +103,7 @@
     "webpack-validator": "^2.2.9"
   },
   "dependencies": {
+    "bip39": "^2.2.0",
     "classnames": "^2.2.5",
     "css-modules-require-hook": "^4.0.5",
     "electron-debug": "^1.0.1",
