@@ -99,7 +99,7 @@ export default class CardanoClientApi {
     return new Promise((resolve) => resolve(ClientApi.generateMnemonic().split(' ')));
   }
 
-  async restoreWallet({ recoveryPhrase }: walletRestoreRequest) {
-    return await ClientApi.restoreWallet(recoveryPhrase);
+  async restoreWallet({ recoveryPhrase, walletName }: walletRestoreRequest) {
+    return await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase);
   }
 }
