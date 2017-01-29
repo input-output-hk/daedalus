@@ -2,7 +2,7 @@ import React from 'react';
 import { storiesOf } from '@kadira/storybook';
 import StoryDecorator from './support/StoryDecorator';
 import WalletAddDialog from '../app/components/wallet/WalletAddDialog';
-import WalletImportDialog from '../app/components/wallet/WalletRestoreDialog';
+import WalletRestoreDialog from '../app/components/wallet/WalletRestoreDialog';
 
 storiesOf('AddWallet', module)
 
@@ -25,7 +25,7 @@ storiesOf('AddWallet', module)
 
   .add('WalletImportDialog', () => (
     <div>
-      <WalletImportDialog
+      <WalletRestoreDialog
       />
     </div>
   ));
