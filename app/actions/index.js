@@ -53,5 +53,9 @@ export default defineActions({
   cancelWalletBackup: {},
   finishWalletBackup: {},
   toggleAddWallet: {},
-  toggleWalletImport: {},
+  toggleWalletRestore: {},
+  restoreWallet: {
+    recoveryPhrase: PropTypes.string.isRequired,
+    walletName: PropTypes.string.isRequired
+  }
 }, PropTypes.validateWithErrors);

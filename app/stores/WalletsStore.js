@@ -15,10 +15,11 @@ export default class WalletsStore extends Store {
   @observable createWalletRequest = new Request(this.api, 'createWallet');
   @observable sendMoneyRequest = new Request(this.api, 'createTransaction');
   @observable getWalletRecoveryPhraseRequest = new Request(this.api, 'getWalletRecoveryPhrase');
+  @observable restoreRequest = new Request(this.api, 'restoreWallet');
   // DIALOGUES
   @observable isAddWalletDialogOpen = false;
   @observable isCreateWalletDialogOpen = false;
-  @observable isWalletImportDialogOpen = false;
+  @observable isWalletRestoreDialogOpen = false;
 
   _newWalletDetails = null;
 
@@ -28,8 +29,9 @@ export default class WalletsStore extends Store {
     this.actions.sendMoney.listen(this._sendMoney);
     this.actions.toggleAddWallet.listen(this._toggleAddWallet);
     this.actions.toggleCreateWalletDialog.listen(this._toggleCreateWalletDialog);
-    this.actions.toggleWalletImport.listen(this._toggleWalletImport);
+    this.actions.toggleWalletRestore.listen(this._toggleWalletRestore);
     this.actions.finishWalletBackup.listen(this._finishWalletCreation);
+    this.actions.restoreWallet.listen(this._restoreWallet);
     if (environment.CARDANO_API) {
       setInterval(this._refreshWalletsData, this.WALLET_REFRESH_INTERVAL);
     }
@@ -103,12 +105,22 @@ export default class WalletsStore extends Store {
     }
   };
 
-  @action _toggleWalletImport = () => {
-    if (!this.isWalletImportDialogOpen) {
+  @action _toggleWalletRestore = () => {
+    if (!this.isWalletRestoreDialogOpen) {
       this.isAddWalletDialogOpen = false;
-      this.isWalletImportDialogOpen = true;
+      this.isWalletRestoreDialogOpen = true;
     } else {
-      this.isWalletImportDialogOpen = false;
+      this.isWalletRestoreDialogOpen = false;
+    }
+  };
+
+  @action _restoreWallet = async (params) => {
+    try {
+      const walletRestoreResponse = await this.restoreRequest.execute(params);
+      walletRestoreResponse && this._toggleWalletRestore();
+      this._refreshWalletsData();
+    } catch(error) {
+      throw error;
     }
   };
 
