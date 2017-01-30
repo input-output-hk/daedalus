@@ -79,7 +79,7 @@ export default class WalletRestoreDialog extends Component {
       recoveryPhrase: {
         value: '',
         validate: [({ field }) => (
-          [validateMnemonic(field.value), this.context.intl.formatMessage(globalMessages.fieldIsRequired)]
+          [validateMnemonic(field.value), this.context.intl.formatMessage(globalMessages.invalidMnemonic)]
         )]
       },
     }

@@ -11,4 +11,9 @@ export default defineMessages({
     defaultMessage: '!!!The wallet name must have at least 3 letters.',
     description: 'Error message shown when invalid wallet name was entered in create wallet dialog.'
   },
+  invalidMnemonic: {
+    id: 'global.errors.invalidMnemonic',
+    defaultMessage: '!!!Invalid phrase entered, please check.',
+    description: 'Error message shown when invalid bip39 mnemonic was entered.'
+  }
 });

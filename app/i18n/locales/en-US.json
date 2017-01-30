@@ -1,6 +1,7 @@
 {
   "global.errors.fieldIsRequired": "This field is required.",
   "global.errors.invalidWalletName": "Requires at least 3 letters.",
+  "global.errors.invalidMnemonic": "Invalid phrase entered, please check.",
   "wallet.navigation.send": "send",
   "wallet.navigation.receive": "receive",
   "wallet.transaction.type.card": "Card payment",
