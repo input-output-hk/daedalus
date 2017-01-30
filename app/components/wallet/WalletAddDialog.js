@@ -9,6 +9,7 @@ import styles from './WalletAddDialog.scss';
 import createIcon from '../../assets/images/create-ic.svg';
 import importIcon from '../../assets/images/import-ic.svg';
 import joinSharedIcon from '../../assets/images/join-shared-ic.svg';
+import restoreIcon from '../../assets/images/restore-ic.svg';
 
 const messages = defineMessages({
   title: {
@@ -36,6 +37,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Join a shared wallet with up to 5 people',
     description: 'Description for the "Join" button on the wallet add dialog.'
   },
+  restoreLabel: {
+    id: 'wallet.add.dialog.restore.label',
+    defaultMessage: '!!!Restore',
+    description: 'Label for the "Restore" button on the wallet add dialog.'
+  },
+  restoreDescription: {
+    id: 'wallet.add.dialog.restore.description',
+    defaultMessage: '!!!Restore wallet from backup',
+    description: 'Description for the "Restore" button on the wallet add dialog.'
+  },
   importLabel: {
     id: 'wallet.add.dialog.import.label',
     defaultMessage: '!!!Import',
@@ -57,14 +68,14 @@ export default class WalletAddDialog extends Component {
 
   static propTypes = {
     onCreate: PropTypes.func.isRequired,
-    onImport: PropTypes.func.isRequired,
+    onRestore: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
   };
 
 
   render() {
     const { intl } = this.context;
-    const { onCreate, onImport, onCancel } = this.props;
+    const { onCreate, onRestore, onCancel } = this.props;
     return (
       <Dialog
         className={styles.component}
@@ -79,19 +90,25 @@ export default class WalletAddDialog extends Component {
               label={intl.formatMessage(messages.createLabel)}
               description={intl.formatMessage(messages.createDescription)}
             />
-          </div>
-          <div className={styles.secondRow}>
             <BigButtonForDialogs
               icon={joinSharedIcon}
               label={intl.formatMessage(messages.joinLabel)}
               description={intl.formatMessage(messages.joinDescription)}
               isDisabled
             />
+          </div>
+          <div className={styles.secondRow}>
             <BigButtonForDialogs
-              onClick={onImport}
+              onClick={onRestore}
+              icon={restoreIcon}
+              label={intl.formatMessage(messages.restoreLabel)}
+              description={intl.formatMessage(messages.restoreDescription)}
+            />
+            <BigButtonForDialogs
               icon={importIcon}
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}
+              isDisabled
             />
           </div>
         </div>

@@ -6,7 +6,8 @@ import WalletTransaction from '../domain/WalletTransaction';
 import type {
   createWalletRequest,
   getTransactionsRequest,
-  createTransactionRequest
+  createTransactionRequest,
+  walletRestoreRequest
 } from './index';
 import { user } from './fixtures';
 import User from '../domain/User';
@@ -34,8 +35,8 @@ export default class CardanoClientApi {
     return response.map(data => this._createWalletFromData(data));
   }
 
-  async getTransactions({ walletId, searchTerm, limit }: getTransactionsRequest) {
-    const history = await ClientApi.searchHistory(walletId, searchTerm, limit)();
+  async getTransactions({ walletId, searchTerm, skip, limit }: getTransactionsRequest) {
+    const history = await ClientApi.searchHistory(walletId, searchTerm, skip, limit);
     return new Promise((resolve) => resolve({
       transactions: history[0].map(data => this._createTransactionFromData(data, walletId)),
       total: history[1]
@@ -47,7 +48,7 @@ export default class CardanoClientApi {
   }
 
   async createWallet(request: createWalletRequest) {
-    const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name, request.mnemonic)();
+    const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name, request.mnemonic);
     return this._createWalletFromData(response);
   }
 
@@ -55,12 +56,12 @@ export default class CardanoClientApi {
     const { sender, receiver, amount, currency, title } = request;
     let { description } = request;
     if (!description) description = 'no description provided';
-    const response = await ClientApi.sendExtended(sender, receiver, amount, currency, title, description)();
+    const response = await ClientApi.sendExtended(sender, receiver, amount, currency, title, description);
     return this._createTransactionFromData(response);
   }
 
   isValidAddress(currency: string, address: string) {
-    return ClientApi.isValidAddress(currency, address)();
+    return ClientApi.isValidAddress(currency, address);
   }
 
   updateProfileField() {
@@ -98,8 +99,7 @@ export default class CardanoClientApi {
     return new Promise((resolve) => resolve(ClientApi.generateMnemonic().split(' ')));
   }
 
-  setWalletBackupCompleted() {
-    return notYetImplemented();
+  async restoreWallet({ recoveryPhrase, walletName }: walletRestoreRequest) {
+    return await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase);
   }
 }
-

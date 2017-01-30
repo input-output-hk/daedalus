@@ -24,9 +24,6 @@ export type walletStruct = {
   type: string,
   currency: string,
   amount: number,
-  name: string,
-  lastUsed: ?bool,
-  isBackupCompleted: boolean
 };
 
 export type transactionStruct = {
@@ -57,6 +54,7 @@ export type loginRequest = {
 export type getTransactionsRequest = {
   walletId: string,
   searchTerm: string,
+  skip: number,
   limit: number
 }
 
@@ -93,6 +91,10 @@ export type getWalletRecoveryPhraseRequest = {
   walletId: string
 }
 
+export type walletRestoreRequest = {
+  recoveryPhrase: string
+}
+
 // INTERFACE
 
 export type Api = {
@@ -110,5 +112,5 @@ export type Api = {
   isValidAddress(currency: string, address: string): Promise<boolean>,
   getTermsOfUse(): Promise<string>,
   getWalletRecoveryPhrase(request: getWalletRecoveryPhraseRequest): Promise<string>,
-  setWalletBackupCompleted(walletId: string): void
+  restoreWallet(request: walletRestoreRequest) : Promise<any>
 }

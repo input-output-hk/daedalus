@@ -7,7 +7,6 @@ import type {
   walletStruct,
   userStruct,
   transactionStruct,
-  walletRecoveryPhraseStruct,
   getTransactionsRequest,
   updateUserProfileFieldRequest,
   loginRequest,
@@ -88,9 +87,7 @@ export default class StubRepository {
       type: 'personal',
       currency: 'ada',
       amount: parseFloat(faker.finance.amount(), 10),
-      name: faker.finance.accountName(),
-      lastUsed: true,
-      isBackupCompleted: false
+      name: faker.finance.accountName()
     }, customData);
     this.wallets.push(Object.assign({}, wallet, { recoveryPhrase: randomWords(12) }));
     return wallet;
@@ -119,8 +116,4 @@ export default class StubRepository {
     return wallet.recoveryPhrase;
   }
 
-  setWalletBackupCompleted(walletId: string) {
-    const wallet = this.wallets.find(w => w.id === walletId);
-    wallet.isBackupCompleted = true;
-  }
 }

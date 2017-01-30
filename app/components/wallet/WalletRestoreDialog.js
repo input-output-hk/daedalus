@@ -6,45 +6,51 @@ import Input from 'react-toolbox/lib/input/Input';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../widgets/DialogCloseButton';
-import { isValidWalletName, isNotEmptyString } from '../../lib/validations';
+import { isValidWalletName } from '../../lib/validations';
+import { validateMnemonic } from 'bip39';
 import globalMessages from '../../i18n/global-messages';
-import styles from './WalletAddDialog.scss';
+import styles from './WalletRestoreDialog.scss';
 
 const messages = defineMessages({
   title: {
-    id: 'wallet.import.dialog.title.label',
-    defaultMessage: '!!!Import wallet',
-    description: 'Label "Import wallet" on the wallet import dialog.'
+    id: 'wallet.restore.dialog.title.label',
+    defaultMessage: '!!!Restore wallet',
+    description: 'Label "Restore wallet" on the wallet restore dialog.'
   },
   walletNameInputLabel: {
-    id: 'wallet.import.dialog.wallet.name.input.label',
+    id: 'wallet.restore.dialog.wallet.name.input.label',
     defaultMessage: '!!!Wallet name',
-    description: 'Label for the wallet name input on the wallet import dialog.'
+    description: 'Label for the wallet name input on the wallet restore dialog.'
   },
   walletNameInputHint: {
-    id: 'wallet.import.dialog.wallet.name.input.hint',
+    id: 'wallet.restore.dialog.wallet.name.input.hint',
     defaultMessage: '!!!Enter wallet name',
-    description: 'Hint "Enter wallet name" for the wallet name input on the wallet import dialog.'
+    description: 'Hint "Enter wallet name" for the wallet name input on the wallet restore dialog.'
   },
   recoveryPhraseInputLabel: {
-    id: 'wallet.import.dialog.recovery.phrase.input.label',
+    id: 'wallet.restore.dialog.recovery.phrase.input.label',
     defaultMessage: '!!!Recovery phrase',
-    description: 'Label for the recovery phrase input on the wallet import dialog.'
+    description: 'Label for the recovery phrase input on the wallet restore dialog.'
   },
   recoveryPhraseInputHint: {
-    id: 'wallet.import.dialog.recovery.phrase.input.hint',
+    id: 'wallet.restore.dialog.recovery.phrase.input.hint',
     defaultMessage: '!!!Enter recovery phrase',
-    description: 'Hint "Enter recovery phrase" for the recovery phrase input on the wallet import dialog.'
+    description: 'Hint "Enter recovery phrase" for the recovery phrase input on the wallet restore dialog.'
   },
   importButtonLabel: {
-    id: 'wallet.import.dialog.import.wallet.button.label',
-    defaultMessage: '!!!Import wallet',
-    description: 'Label for the "Import wallet" button on the wallet import dialog.'
+    id: 'wallet.restore.dialog.restore.wallet.button.label',
+    defaultMessage: '!!!Restore wallet',
+    description: 'Label for the "Restore wallet" button on the wallet restore dialog.'
   },
+  invalidRecoveryPhrase: {
+    id: 'wallet.restore.dialog.form.errors.invalidRecoveryPhrase',
+    defaultMessage: '!!!Invalid recovery phrase',
+    description: 'Error message shown when invalid recovery phrase was entered.'
+  }
 });
 
 @observer
-export default class WalletImportDialog extends Component {
+export default class WalletRestoreDialog extends Component {
 
   static contextTypes = {
     intl: intlShape.isRequired
@@ -73,7 +79,7 @@ export default class WalletImportDialog extends Component {
       recoveryPhrase: {
         value: '',
         validate: [({ field }) => (
-          [isNotEmptyString(field.value), this.context.intl.formatMessage(globalMessages.fieldIsRequired)]
+          [validateMnemonic(field.value), this.context.intl.formatMessage(globalMessages.fieldIsRequired)]
         )]
       },
     }
