@@ -83,5 +83,6 @@
   "wallet.restore.dialog.recovery.phrase.input.label": "Recovery phrase",
   "wallet.restore.dialog.recovery.phrase.input.hint": "Enter recovery phrase",
   "wallet.restore.dialog.restore.wallet.button.label": "Restore wallet",
-  "wallet.restore.dialog.form.errors.invalidRecoveryPhrase": "Invalid recovery phrase"
+  "wallet.restore.dialog.form.errors.invalidRecoveryPhrase": "Invalid recovery phrase",
+  "wallet.restore.dialog.form.errors.walletAlreadyRestored": "You already restored a wallet with this phrase."
 }

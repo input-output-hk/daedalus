@@ -12,6 +12,7 @@ import type {
 import { user } from './fixtures';
 import User from '../domain/User';
 import Profile from '../domain/Profile';
+import { WalletAlreadyRestoredError } from './errors';
 
 const notYetImplemented = () => new Promise((resolve, reject) => reject(new Error('Api method not yet implemented')));
 
@@ -100,6 +101,13 @@ export default class CardanoClientApi {
   }
 
   async restoreWallet({ recoveryPhrase, walletName }: walletRestoreRequest) {
-    return await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase);
+    try {
+      return await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase);
+    } catch (error) {
+      if (error.message.includes('Wallet with that mnemonics already exists')) {
+        throw new WalletAlreadyRestoredError(error.message);
+      }
+      throw error;
+    }
   }
 }

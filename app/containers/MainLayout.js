@@ -10,6 +10,7 @@ import WalletRestoreDialog from '../components/wallet/WalletRestoreDialog';
 import WalletBackupPage from './wallet/WalletBackupPage';
 import WalletAddPage from './wallet/WalletAddPage';
 import Wallet from '../domain/Wallet';
+import Request from '../stores/lib/Request';
 
 @inject('stores', 'actions') @observer
 export default class MainLayout extends Component {
@@ -24,6 +25,7 @@ export default class MainLayout extends Component {
         walletBackup: PropTypes.shape({
           inProgress: PropTypes.bool.isRequired
         }),
+        restoreRequest: PropTypes.instanceOf(Request).isRequired,
       }).isRequired,
     }).isRequired,
     actions: PropTypes.shape({
@@ -55,6 +57,7 @@ export default class MainLayout extends Component {
   render() {
     const { actions, stores } = this.props;
     const { sidebar, wallets } = stores;
+    const { restoreRequest } = wallets;
     const { toggleAddWallet, toggleCreateWalletDialog, toggleWalletRestore } = actions;
     const activeWallet = stores.wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
@@ -84,6 +87,7 @@ export default class MainLayout extends Component {
       <WalletRestoreDialog
         onSubmit={this.handleRestoreWalletSubmit}
         onCancel={toggleWalletRestore}
+        error={restoreRequest.error}
       />
     ) : null;
     const addWalletDialog = wallets.isAddWalletDialogOpen ? (<WalletAddPage />) : null;

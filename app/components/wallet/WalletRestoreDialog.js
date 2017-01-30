@@ -9,6 +9,7 @@ import DialogCloseButton from '../widgets/DialogCloseButton';
 import { isValidWalletName } from '../../lib/validations';
 import { validateMnemonic } from 'bip39';
 import globalMessages from '../../i18n/global-messages';
+import { WalletAlreadyRestoredError } from '../../api/errors';
 import styles from './WalletRestoreDialog.scss';
 
 const messages = defineMessages({
@@ -46,6 +47,11 @@ const messages = defineMessages({
     id: 'wallet.restore.dialog.form.errors.invalidRecoveryPhrase',
     defaultMessage: '!!!Invalid recovery phrase',
     description: 'Error message shown when invalid recovery phrase was entered.'
+  },
+  walletAlreadyRestored: {
+    id: 'wallet.restore.dialog.form.errors.walletAlreadyRestored',
+    defaultMessage: '!!!You already restored a wallet with this phrase.',
+    description: 'Error message shown when restore recovery phrase was entered again.'
   }
 });
 
@@ -59,6 +65,7 @@ export default class WalletRestoreDialog extends Component {
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
+    error: PropTypes.instanceOf(Error),
   };
 
   state = {
@@ -108,8 +115,18 @@ export default class WalletRestoreDialog extends Component {
   render() {
     const { intl } = this.context;
     const { validator } = this;
+    const { error, onCancel } = this.props;
     const walletName = validator.$('walletName');
     const recoveryPhrase = validator.$('recoveryPhrase');
+    let serverError = null;
+    if (error) {
+      if (error instanceof WalletAlreadyRestoredError) {
+        serverError = intl.formatMessage(messages.walletAlreadyRestored);
+      } else {
+        // Display raw error message if not known
+        serverError = error.message;
+      }
+    }
     return (
       <Dialog
         className={styles.component}
@@ -143,7 +160,9 @@ export default class WalletRestoreDialog extends Component {
           rows={3}
         />
 
-        <DialogCloseButton onClose={this.props.onCancel} />
+        {serverError && <p className={styles.serverError}>{serverError}</p>}
+
+        <DialogCloseButton onClose={onCancel} />
 
       </Dialog>
     );

@@ -1,5 +1,5 @@
 // @flow
-import { observable, computed, action } from 'mobx';
+import { observable, computed, action, runInAction } from 'mobx';
 import Store from './lib/Store';
 import { matchRoute } from '../lib/routing-helpers';
 import CachedRequest from './lib/CachedRequest';
@@ -63,7 +63,7 @@ export default class WalletsStore extends Store {
       currency: wallet.currency,
     });
     this._refreshWalletsData();
-    this.actions.goToRoute({ route: this.getWalletRoute(wallet.id) });
+    this._showWallet(wallet.id);
   };
 
   @computed get all() {
@@ -115,13 +115,14 @@ export default class WalletsStore extends Store {
   };
 
   @action _restoreWallet = async (params) => {
-    try {
-      const walletRestoreResponse = await this.restoreRequest.execute(params);
-      walletRestoreResponse && this._toggleWalletRestore();
-      this._refreshWalletsData();
-    } catch(error) {
-      throw error;
-    }
+    const restoredWallet = await this.restoreRequest.execute(params);
+    this._toggleWalletRestore();
+    this._refreshWalletsData();
+    this._showWallet(restoredWallet.id);
   };
+
+  _showWallet(walletId) {
+    this.actions.goToRoute({ route: this.getWalletRoute(walletId) });
+  }
 
 }
