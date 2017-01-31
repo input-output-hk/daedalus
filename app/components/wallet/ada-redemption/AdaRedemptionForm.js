@@ -2,9 +2,9 @@
 import React, { Component, PropTypes } from 'react';
 import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import classnames from 'classnames';
-import Input from 'react-toolbox/lib/input/Input';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import Button from 'react-toolbox/lib/button/Button';
+import MnemonicInputWidget from '../../widgets/forms/MnemonicInputWidget';
 import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
@@ -38,7 +38,7 @@ const messages = defineMessages({
   },
   passphraseHint: {
     id: 'wallet.redeem.dialog.passphraseHint',
-    defaultMessage: '!!!Enter your 9 word mnemonic passphrase here',
+    defaultMessage: '!!!Enter your 9 word mnemonic passPhraseTokens here',
     description: 'Hint for the token input'
   },
   submitLabel: {
@@ -56,17 +56,15 @@ export default class AdaRedemptionForm extends Component {
       value: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
     })).isRequired,
+    onCertificateSelected: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
-    isCertificateUploaded: PropTypes.bool.isRequired,
+    isSubmitting: PropTypes.bool.isRequired,
+    isCertificateSelected: PropTypes.bool.isRequired,
     isCertificateEncrypted: PropTypes.bool.isRequired,
   };
 
   static contextTypes = {
     intl: intlShape.isRequired,
-  };
-
-  state = {
-    isSubmitting: false
   };
 
   validator = new MobxReactForm({
@@ -77,8 +75,8 @@ export default class AdaRedemptionForm extends Component {
       certificate: {
         value: null,
       },
-      passphrase: {
-        value: '',
+      passPhraseTokens: {
+        value: ['', '', '', '', '', '', '', '', ''] // 9 tokens
       },
       walletId: {
         value: this.props.wallets[0].value,
@@ -89,29 +87,35 @@ export default class AdaRedemptionForm extends Component {
   submit = () => {
     this.validator.submit({
       onSuccess: (form) => {
-        this.setState({ isSubmitting: true });
         this.props.onSubmit(form.values());
       },
-      onError: () => {
-        this.setState({ isSubmitting: false });
-      }
+      onError: () => {}
     });
+  };
+
+  onPassphraseTokenChanged = (index, value) => {
+    const passPhraseTokens = this.validator.$('passPhraseTokens');
+    const newValues = passPhraseTokens.value.slice();
+    newValues[index] = value;
+    passPhraseTokens.onChange(newValues);
   };
 
   render() {
     const { intl } = this.context;
     const { validator } = this;
-    const { wallets, isCertificateUploaded, isCertificateEncrypted } = this.props;
+    const {
+      wallets, isCertificateSelected, isCertificateEncrypted, isSubmitting, onCertificateSelected
+    } = this.props;
     const certificate = validator.$('certificate');
-    const passphrase = validator.$('passphrase');
+    const passPhraseTokens = validator.$('passPhraseTokens');
     const walletId = validator.$('walletId');
     const componentClasses = classnames([
       styles.component,
-      this.state.isSubmitting ? styles.isSubmitting : null
+      isSubmitting ? styles.isSubmitting : null
     ]);
-    const showTokenInput = isCertificateUploaded && isCertificateEncrypted;
-    const canSubmit = isCertificateUploaded && walletId.value &&
-      (isCertificateEncrypted && passphrase.value || !isCertificateEncrypted);
+    const showPassPhraseWidget = isCertificateSelected && isCertificateEncrypted;
+    const canSubmit = isCertificateSelected && walletId.value &&
+      (isCertificateEncrypted && passPhraseTokens.value || !isCertificateEncrypted);
 
     return (
       <div className={componentClasses}>
@@ -124,21 +128,18 @@ export default class AdaRedemptionForm extends Component {
             hint={intl.formatMessage(messages.certificateHint)}
             value={certificate.value}
             error={certificate.error}
-            onFileSelected={certificate.onChange}
+            onFileSelected={(file) => {
+              onCertificateSelected(file);
+              certificate.onChange(file);
+            }}
           />
         </div>
 
-        {showTokenInput && (
-          <Input
-            className="passphrase"
+        {showPassPhraseWidget && (
+          <MnemonicInputWidget
             label={intl.formatMessage(messages.passphraseLabel)}
-            hint={intl.formatMessage(messages.passphraseHint)}
-            value={passphrase.value}
-            onChange={passphrase.onChange}
-            onFocus={passphrase.onFocus}
-            onBlur={passphrase.onBlur}
-            multiline
-            rows={3}
+            tokens={passPhraseTokens.value}
+            onTokenChanged={this.onPassphraseTokenChanged}
           />
         )}
 
@@ -154,7 +155,7 @@ export default class AdaRedemptionForm extends Component {
         />
 
         <Button
-          className={this.state.isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
+          className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
           label={intl.formatMessage(messages.submitLabel)}
           onMouseUp={this.submit}
           primary

@@ -1,8 +1,10 @@
 import React from 'react';
 import { storiesOf } from '@kadira/storybook';
+import { observable } from 'mobx';
 import StoryDecorator from './support/StoryDecorator';
 import CheckboxWithLongLabel from '../app/components/widgets/forms/CheckboxWithLongLabel';
 import BigButtonForDialogs from '../app/components/widgets/BigButtonForDialogs';
+import MnemonicInputWidget from '../app/components/widgets/forms/MnemonicInputWidget';
 import createIcon from '../app/assets/images/create-ic.svg';
 import importIcon from '../app/assets/images/import-ic.svg';
 import joinSharedIcon from '../app/assets/images/join-shared-ic.svg';
@@ -67,4 +69,13 @@ storiesOf('Widgets', module)
         />
       </div>
     </div>
-  ));
+  ))
+
+  .add('MnemonicInputWidget - 9 words', () => {
+    const tokens = observable(['', '', '', '', '', '', '', '', '']);
+    return <MnemonicInputWidget
+      label="Your Passphrase"
+      tokens={tokens}
+      onTokenChanged={(index, token) => tokens[index] = token}
+    />
+  });

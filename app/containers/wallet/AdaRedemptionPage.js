@@ -11,11 +11,18 @@ export default class AdaRedemptionPage extends Component {
   static propTypes = {
     actions: PropTypes.shape({
       redeemAda: PropTypes.func.isRequired,
+      updateRedemptionCertificate: PropTypes.func.isRequired,
     }),
     stores: PropTypes.shape({
       wallets: PropTypes.shape({
         all: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.instanceOf(Wallet)).isRequired,
-      }).isRequired
+      }).isRequired,
+      adaRedemption: PropTypes.shape({
+        isProcessing: PropTypes.bool.isRequired,
+        certificate: PropTypes.instanceOf(File),
+        isCertificateEncrypted: PropTypes.bool.isRequired,
+        error: PropTypes.instanceOf(Error),
+      }).isRequired,
     }).isRequired
   };
 
@@ -24,17 +31,22 @@ export default class AdaRedemptionPage extends Component {
   };
 
   render() {
-    const wallets = this.props.stores.wallets.all.map((w) => ({
+    const { wallets, adaRedemption } = this.props.stores;
+    const { isProcessing, certificate, isCertificateEncrypted} = adaRedemption;
+    const { updateRedemptionCertificate } = this.props.actions;
+    const selectableWallets = wallets.all.map((w) => ({
       value: w.id, label: w.name
     }));
 
     return (
       <Layout>
         <AdaRedemptionForm
+          onCertificateSelected={(certificate) => updateRedemptionCertificate({ certificate })}
           onSubmit={this.onSubmit}
-          wallets={wallets}
-          isCertificateUploaded
-          isCertificateEncrypted
+          wallets={selectableWallets}
+          isCertificateSelected={certificate !== null}
+          isCertificateEncrypted={isCertificateEncrypted}
+          isSubmitting={isProcessing}
         />
       </Layout>
     );

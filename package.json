@@ -104,7 +104,9 @@
     "webpack-validator": "^2.2.9"
   },
   "dependencies": {
+    "aes-js": "^2.1.0",
     "bip39": "^2.2.0",
+    "blakejs": "^1.0.1",
     "classnames": "^2.2.5",
     "css-modules-require-hook": "^4.0.5",
     "electron-debug": "^1.0.1",

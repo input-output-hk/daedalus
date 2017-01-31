@@ -17,6 +17,7 @@ storiesOf('AdaRedemptionForm', module)
     <div>
       <AdaRedemptionForm
         onSubmit={action('submit')}
+        isSubmitting={false}
         isCertificateUploaded={false}
         isCertificateEncrypted={false}
         onCertificateSelected={action('certificateSelected')}
@@ -34,6 +35,7 @@ storiesOf('AdaRedemptionForm', module)
     <div>
       <AdaRedemptionForm
         onSubmit={action('submit')}
+        isSubmitting={false}
         isCertificateUploaded
         isCertificateEncrypted={false}
         onCertificateSelected={action('certificateSelected')}
@@ -51,6 +53,7 @@ storiesOf('AdaRedemptionForm', module)
     <div>
       <AdaRedemptionForm
         onSubmit={action('submit')}
+        isSubmitting={false}
         isCertificateUploaded
         isCertificateEncrypted
         onCertificateSelected={action('certificateSelected')}

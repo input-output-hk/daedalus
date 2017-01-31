@@ -8,32 +8,38 @@ import { PARSE_REDEMPTION_CODE } from '../../electron/ipc-api/parse-redemption-c
 export default class AdaRedemptionStore extends Store {
 
   @observable isProcessing = false;
-  @observable certificateFilePath: string = null;
-  @observable token: string = null;
+  @observable certificate = null;
+  @observable isCertificateEncrypted = false;
   @observable walletId: string = null;
   @observable error = null;
   @observable redeemAdaRequest = new Request(this.api, 'redeemAda');
 
   constructor(...args) {
     super(...args);
+    this.actions.updateRedemptionCertificate.listen(this._setCertificate);
     this.actions.redeemAda.listen(this._redeemAda);
     this.actions.adaSuccessfullyRedeemed.listen(this._redirectToRedeemWallet);
-  }
-
-  _redeemAda = action(({ certificate, token, walletId }) => {
-    this.certificateFilePath = certificate.path;
-    this.token = token;
-    this.walletId = walletId;
-    this.isProcessing = true;
-    console.debug('Parsing ADA Redemption code from certificate', this.certificateFilePath);
     ipcRenderer.on(PARSE_REDEMPTION_CODE.SUCCESS, this._onCodeParsed);
     ipcRenderer.on(PARSE_REDEMPTION_CODE.ERROR, this._onParseError);
-    ipcRenderer.send(PARSE_REDEMPTION_CODE.REQUEST, this.certificateFilePath);
+  }
+
+  _setCertificate = action(({ certificate }) => {
+    this.certificate = certificate;
+    this.isCertificateEncrypted = certificate.type !== 'application/pdf';
+  });
+
+  _redeemAda = action(({ certificate, walletId, passPhraseTokens }) => {
+    this._setCertificate({ certificate });
+    this.walletId = walletId;
+    this.isProcessing = true;
+    const passPhrase = this.isCertificateEncrypted ? passPhraseTokens.join(' ') : null;
+    console.debug('Parsing ADA Redemption code from certificate', this.certificate.path);
+    ipcRenderer.send(PARSE_REDEMPTION_CODE.REQUEST, this.certificate.path, passPhrase);
   });
 
   _onCodeParsed = (event, code) => {
-    console.log('Redemption code parsed from certificate', code);
-    this.redeemAdaRequest.execute(code, this.token, this.walletId)
+    console.log('Redemption code parsed from certificate:', code);
+    this.redeemAdaRequest.execute(code, this.walletId)
       .then(action(() => {
         this.isProcessing = false;
         this.error = null;
@@ -45,11 +51,11 @@ export default class AdaRedemptionStore extends Store {
       }));
   };
 
-  _onParseError = (event, error) => {
+  _onParseError = action((event, error) => {
     this.isProcessing = false;
     this.error = error;
-    console.log('Error while parsing certificate', error);
-  };
+    console.log('Error while parsing certificate:', error);
+  });
 
   _redirectToRedeemWallet = () => {
     console.log('ADA redeemed for wallet', this.walletId);
