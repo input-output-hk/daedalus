@@ -32,7 +32,6 @@ export const wallets: Array<walletStruct> = [
     currency: 'ada',
     amount: 19903750165,
     name: 'Main wallet',
-    isBackupCompleted: true,
     recoveryPhrase: randomWords(12)
   },
   {
@@ -43,7 +42,6 @@ export const wallets: Array<walletStruct> = [
     currency: 'ada',
     amount: 274912874,
     name: 'House rent',
-    isBackupCompleted: false,
     recoveryPhrase: randomWords(12)
   },
   {
@@ -54,7 +52,6 @@ export const wallets: Array<walletStruct> = [
     currency: 'btc',
     amount: 4924712,
     name: 'Mining',
-    isBackupCompleted: false,
     recoveryPhrase: randomWords(12)
   },
   {
@@ -65,7 +62,6 @@ export const wallets: Array<walletStruct> = [
     currency: 'ada',
     amount: 100,
     name: 'Transporting',
-    isBackupCompleted: true,
     recoveryPhrase: randomWords(12)
   },
   {
@@ -76,7 +72,6 @@ export const wallets: Array<walletStruct> = [
     currency: 'btc',
     amount: 0,
     name: 'Pocket money',
-    isBackupCompleted: true,
     recoveryPhrase: randomWords(12)
   }
 ];

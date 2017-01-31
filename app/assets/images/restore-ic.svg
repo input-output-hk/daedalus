@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="88px" height="88px" viewBox="0 0 88 88" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>1ECB5BCE-873C-4A81-A1F1-9BAEC46A63D0</title>
+    <desc>Created with sketchtool.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="wallet_add_wallet" transform="translate(-1286.000000, -1036.000000)">
+            <g id="dialog" transform="translate(1000.000000, 355.000000)">
+                <g id="restore" transform="translate(40.000000, 570.000000)">
+                    <g id="restore-ic" transform="translate(196.000000, 61.000000)">
+                        <circle id="Oval" cx="94" cy="94" r="94"></circle>
+                        <path d="M127.474773,76 C121.058467,64.0925805 108.474295,56 94,56 C73.0131795,56 56,73.0131795 56,94 L50,94 C50,69.699471 69.699471,50 94,50 C110.205509,50 124.364801,58.7608945 132,71.8048067 L132,64 L138,64 L138,82 L134.17187,82 L132.119122,82 L120,82 L120,76 L127.474773,76 Z M54.3808777,106 L50.8281299,106 L50,106 L50,124 L56,124 L56,116.195193 C63.635199,129.239106 77.7944912,138 94,138 C118.300529,138 138,118.300529 138,94 L132,94 C132,114.98682 114.98682,132 94,132 C79.525705,132 66.9415334,123.907419 60.5252268,112 L68,112 L68,106 L54.3808777,106 Z" id="restore" fill="#8A98AB"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

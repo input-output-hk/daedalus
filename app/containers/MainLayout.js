@@ -6,28 +6,34 @@ import AppBar from '../components/layout/AppBar';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import { oneOrManyChildElements } from '../propTypes';
 import WalletCreateDialog from '../components/wallet/WalletCreateDialog';
+import WalletRestoreDialog from '../components/wallet/WalletRestoreDialog';
 import WalletBackupPage from './wallet/WalletBackupPage';
+import WalletAddPage from './wallet/WalletAddPage';
 import Wallet from '../domain/Wallet';
+import Request from '../stores/lib/Request';
 
 @inject('stores', 'actions') @observer
 export default class MainLayout extends Component {
 
   static propTypes = {
     stores: PropTypes.shape({
-      sidebar: PropTypes.shape({
-        isCreateWalletDialogOpen: PropTypes.bool.isRequired,
-      }).isRequired,
       wallets: PropTypes.shape({
         active: PropTypes.instanceOf(Wallet),
+        isAddWalletDialogOpen: PropTypes.bool.isRequired,
+        isCreateWalletDialogOpen: PropTypes.bool.isRequired,
+        isWalletRestoreDialogOpen: PropTypes.bool.isRequired,
         walletBackup: PropTypes.shape({
           inProgress: PropTypes.bool.isRequired
-        })
+        }),
+        restoreRequest: PropTypes.instanceOf(Request).isRequired,
       }).isRequired,
     }).isRequired,
     actions: PropTypes.shape({
       goToRoute: PropTypes.func.isRequired,
       createPersonalWallet: PropTypes.func.isRequired,
-      toggleCreateWalletDialog: PropTypes.func.isRequired
+      toggleAddWallet: PropTypes.func.isRequired,
+      toggleWalletRestore: PropTypes.func.isRequired,
+      restoreWallet: PropTypes.func.isRequired,
     }).isRequired,
     children: oneOrManyChildElements
   };
@@ -39,8 +45,8 @@ export default class MainLayout extends Component {
     });
   };
 
-  toggleCreateWalletDialog = () => {
-    this.props.actions.toggleCreateWalletDialog();
+  handleRestoreWalletSubmit = (values: Object) => {
+    this.props.actions.restoreWallet(values);
   };
 
   routeToWallet = (walletId) => {
@@ -50,7 +56,9 @@ export default class MainLayout extends Component {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar } = stores;
+    const { sidebar, wallets } = stores;
+    const { restoreRequest } = wallets;
+    const { toggleAddWallet, toggleCreateWalletDialog, toggleWalletRestore } = actions;
     const activeWallet = stores.wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const isWalletBackupInProgress = this.props.stores.walletBackup.inProgress;
@@ -59,7 +67,7 @@ export default class MainLayout extends Component {
       wallets: {
         items: sidebar.wallets,
         actions: {
-          onAddWallet: this.toggleCreateWalletDialog,
+          onAddWallet: toggleAddWallet,
           onWalletItemClick: this.routeToWallet,
         }
       }
@@ -75,10 +83,18 @@ export default class MainLayout extends Component {
       />
     );
     const appbar = <AppBar onToggleSidebar={actions.toggleSidebar} />;
-    const addWalletDialog = sidebar.isCreateWalletDialogOpen ? (
+    const addWalletRestoreDialog = wallets.isWalletRestoreDialogOpen ? (
+      <WalletRestoreDialog
+        onSubmit={this.handleRestoreWalletSubmit}
+        onCancel={toggleWalletRestore}
+        error={restoreRequest.error}
+      />
+    ) : null;
+    const addWalletDialog = wallets.isAddWalletDialogOpen ? (<WalletAddPage />) : null;
+    const createWalletDialog = wallets.isCreateWalletDialogOpen ? (
       <WalletCreateDialog
         onSubmit={this.handleAddWalletSubmit}
-        onCancel={this.toggleCreateWalletDialog}
+        onCancel={toggleCreateWalletDialog}
       />
     ) : null;
     const addWalletBackupDialog = isWalletBackupInProgress ? (<WalletBackupPage />) : null;
@@ -86,6 +102,8 @@ export default class MainLayout extends Component {
       <SidebarLayout sidebar={sidebarComponent} appbar={appbar}>
         {this.props.children}
         {addWalletDialog}
+        {createWalletDialog}
+        {addWalletRestoreDialog}
         {addWalletBackupDialog}
       </SidebarLayout>
     );

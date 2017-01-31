@@ -7,13 +7,11 @@ export default class SidebarStore extends Store {
   @observable route: string = '/wallets';
   @observable hidden: bool = false;
   @observable isMaximized: bool = false;
-  @observable isCreateWalletDialogOpen = false;
 
   constructor(...args) {
     super(...args);
     this.actions.toggleSidebar.listen(this._toggleSidebar);
     this.actions.changeSidebarRoute.listen(this._changeSidebarRoute);
-    this.actions.toggleCreateWalletDialog.listen(this._toggleCreateWalletDialog);
   }
 
   @computed get wallets() {
@@ -30,10 +28,6 @@ export default class SidebarStore extends Store {
     this.hidden = !this.hidden;
   };
 
-  @action _toggleCreateWalletDialog = () => {
-    this.isCreateWalletDialogOpen = !this.isCreateWalletDialogOpen;
-  };
-
   @action _changeSidebarRoute = ({ route }) => {
     if (this.route === route) {
       // Toggle menu if it's the current route
@@ -45,6 +39,6 @@ export default class SidebarStore extends Store {
         this.stores.router.push(route);
       }
     }
-  }
+  };
 
 }

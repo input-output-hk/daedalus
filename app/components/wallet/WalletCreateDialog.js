@@ -8,6 +8,8 @@ import Dropup from '../widgets/forms/Dropup';
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../widgets/DialogCloseButton';
+import { isValidWalletName, isValidCurrency } from '../../lib/validations';
+import globalMessages from '../../i18n/global-messages';
 import styles from './WalletCreateDialog.scss';
 
 const messages = defineMessages({
@@ -20,11 +22,6 @@ const messages = defineMessages({
     id: 'wallet.create.dialog.currency.label',
     defaultMessage: '!!!Currency',
     description: 'Label for the "Currency" dropdown in the wallet create form.'
-  },
-  invalidWalletName: {
-    id: 'wallet.create.dialog.errors.invalidWalletName',
-    defaultMessage: '!!!The wallet name must have at least 3 letters.',
-    description: 'Error message shown when invalid wallet name was entered in create wallet dialog.'
   },
   invalidCurrency: {
     id: 'wallet.create.dialog.errors.invalidCurrency',
@@ -41,31 +38,6 @@ const messages = defineMessages({
 const currencies = [
   { value: 'ada', label: 'ADA' },
 ];
-
-const isValidWalletName = ({ field }) => {
-  const isValid = field.value.length >= 3;
-  return [isValid, 'invalidWalletName'];
-};
-
-const isValidCurrency = ({ field }) => {
-  const isValid = field.value === 'ada';
-  return [isValid, 'invalidCurrency'];
-};
-
-const fields = {
-  walletName: {
-    value: '',
-    validate: [isValidWalletName]
-  },
-  currency: {
-    value: 'ada',
-    validate: [isValidCurrency]
-  },
-};
-
-const options = {
-  validateOnChange: false
-};
 
 @observer
 export default class WalletCreateDialog extends Component {
@@ -88,7 +60,27 @@ export default class WalletCreateDialog extends Component {
   }
 
   walletNameInput: Input;
-  validator = new MobxReactForm({ options, fields }, {});
+
+  validator = new MobxReactForm({
+    options: {
+      validateOnChange: false
+    },
+    fields: {
+      walletName: {
+        value: '',
+        validate: [({ field }) => (
+          [isValidWalletName(field.value), this.context.intl.formatMessage(globalMessages.invalidWalletName)]
+        )]
+      },
+      currency: {
+        value: 'ada',
+        validate: [({ field }) => (
+          [isValidCurrency(field.value), this.context.intl.formatMessage(messages.invalidCurrency)]
+        )]
+      },
+    }
+  });
+
   actions = [
     {
       label: this.context.intl.formatMessage(messages.createPersonalWallet),
@@ -120,10 +112,6 @@ export default class WalletCreateDialog extends Component {
     const { validator } = this;
     const walletName = validator.$('walletName');
     const currency = validator.$('currency');
-    const errors = {
-      walletName: walletName.error ? intl.formatMessage(messages[walletName.error]) : null,
-      currency: currency.error ? intl.formatMessage(messages[currency.error]) : null,
-    };
     const dialogClasses = classnames([
       'WalletCreateDialog',
       this.state.isSubmitting ? styles.isSubmitting : null
@@ -131,7 +119,7 @@ export default class WalletCreateDialog extends Component {
     return (
       <Dialog
         className={dialogClasses}
-        title="Create Wallet"
+        title="Create Wallet" // TODO: Missing translation
         actions={this.actions}
         onOverlayClick={this.props.onCancel}
         active
@@ -141,9 +129,9 @@ export default class WalletCreateDialog extends Component {
           type="text"
           className="walletName"
           label={intl.formatMessage(messages.walletName)}
-          hint="e.g: Shopping Wallet"
+          hint="e.g: Shopping Wallet" // TODO: Missing translation
           value={walletName.value}
-          error={errors.walletName}
+          error={walletName.error}
           onChange={walletName.onChange}
           onFocus={walletName.onFocus}
           onBlur={walletName.onBlur}
@@ -158,7 +146,7 @@ export default class WalletCreateDialog extends Component {
           onChange={currency.onChange}
           onFocus={currency.onFocus}
           onBlur={currency.onBlur}
-          error={errors.currency}
+          error={currency.error}
           source={currencies}
         />
 

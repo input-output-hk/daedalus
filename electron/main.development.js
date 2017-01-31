@@ -8,7 +8,7 @@ let menu;
 let mainWindow = null;
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = process.env.NODE_ENV === 'production';
-const daedalusVersion = process.env.DAEDALUS_VERSION || 'dev';  //TODO: Domen - take a look at this temporary fix
+const daedalusVersion = process.env.DAEDALUS_VERSION || 'dev';
 
 if (isDev) {
   require('electron-debug')(); // eslint-disable-line global-require
@@ -76,12 +76,10 @@ app.on('ready', async () => {
   ipcApi({ mainWindow });
 
   mainWindow.loadURL(`file://${__dirname}/../app/index.html`);
-  mainWindow.on('page-title-updated', (event, title) => {
+  mainWindow.on('page-title-updated', event => {
    event.preventDefault()
   });
-  // mainWindow.setTitle("Daedalus");
   mainWindow.setTitle(`Daedalus (${daedalusVersion})`);
-  // TODO: Fix
 
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.show();
