@@ -12,8 +12,7 @@ export default class WalletBackupPage extends Component {
     stores: PropTypes.shape({
       walletBackup: PropTypes.shape({
         currentStep: PropTypes.string.isRequired,
-        walletId: PropTypes.string.isRequired,
-        recoveryPhrase: MobxPropTypes.arrayOrObservableArray.isRequired,
+        recoveryPhraseWords: MobxPropTypes.arrayOrObservableArray.isRequired,
         recoveryPhraseShuffled: MobxPropTypes.arrayOrObservableArray.isRequired,
         completed: PropTypes.bool.isRequired,
         enteredPhrase: MobxPropTypes.arrayOrObservableArray.isRequired,
@@ -41,7 +40,7 @@ export default class WalletBackupPage extends Component {
 
   render() {
     const {
-      recoveryPhrase,
+      recoveryPhraseWords,
       enteredPhrase,
       isRecoveryPhraseValid,
       countdownRemaining,
@@ -75,7 +74,7 @@ export default class WalletBackupPage extends Component {
     );
     if (currentStep === 'recoveryPhraseDisplay') return (
       <WalletRecoveryPhraseDisplayDialog
-        recoveryPhrase={recoveryPhrase.reduce((phrase, { word }) => `${phrase} ${word}`, '')}
+        recoveryPhrase={recoveryPhraseWords.reduce((phrase, { word }) => `${phrase} ${word}`, '')}
         onStartWalletBackup={startWalletBackup}
         onCancelBackup={cancelWalletBackup}
       />

@@ -7,6 +7,9 @@
     ["transform-runtime", {
       "polyfill": true,
       "regenerator": true
+    }],
+    ["babel-plugin-transform-builtin-extend", {
+      "globals": ["Error"]
     }]
   ],
   "env": {

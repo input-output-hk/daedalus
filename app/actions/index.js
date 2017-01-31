@@ -38,8 +38,7 @@ export default defineActions({
     height: PropTypes.number.isRequired,
   },
   initiateWalletBackup: {
-    walletId: PropTypes.string.isRequired,
-    recoveryPhrase: MobxPropTypes.arrayOrObservableArray.isRequired
+    recoveryPhrase: MobxPropTypes.arrayOrObservableArray.isRequired,
   },
   acceptPrivacyNoticeForWalletBackup: {},
   continueToRecoveryPhraseForWalletBackup: {},
@@ -52,5 +51,11 @@ export default defineActions({
   acceptWalletBackupTermRecovery: {},
   restartWalletBackup: {},
   cancelWalletBackup: {},
-  finishWalletBackup: {}
+  finishWalletBackup: {},
+  toggleAddWallet: {},
+  toggleWalletRestore: {},
+  restoreWallet: {
+    recoveryPhrase: PropTypes.string.isRequired,
+    walletName: PropTypes.string.isRequired
+  }
 }, PropTypes.validateWithErrors);

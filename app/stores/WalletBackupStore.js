@@ -7,11 +7,10 @@ export type walletBackupSteps = 'privacyWarning' | 'recoveryPhraseDisplay' | 're
 
 export default class WalletBackupStore extends Store {
 
-  @observable setWalletBackupCompleted = new Request(this.api, 'setWalletBackupCompleted');
   @observable inProgress = false;
   @observable currentStep: walletBackupSteps = null;
-  @observable walletId = '';
   @observable recoveryPhrase = [];
+  @observable recoveryPhraseWords = [];
   @observable recoveryPhraseShuffled = [];
   @observable completed = false;
   @observable enteredPhrase = [];
@@ -38,13 +37,12 @@ export default class WalletBackupStore extends Store {
   }
 
   @action _initiateWalletBackup = (params) => {
+    this.recoveryPhrase = params.recoveryPhrase;
     this.actions.toggleCreateWalletDialog();
-    const { walletId, recoveryPhrase } = params;
     this.inProgress = true;
     this.currentStep = 'privacyWarning';
-    this.walletId = walletId;
-    this.recoveryPhrase = recoveryPhrase.map(word => ({ word }));
-    this.recoveryPhraseShuffled = recoveryPhrase
+    this.recoveryPhraseWords = this.recoveryPhrase.map(word => ({ word }));
+    this.recoveryPhraseShuffled = this.recoveryPhrase
       .sort(() => 0.5 - Math.random())
       .map(w => ({ word: w, isActive: true }));
     this.completed = false;
@@ -91,8 +89,10 @@ export default class WalletBackupStore extends Store {
   };
 
   @computed get isRecoveryPhraseValid() {
-    return this.recoveryPhrase.reduce((words, { word }) => words + word, '') ===
-    this.enteredPhrase.reduce((words, { word }) => words + word, '');
+    return (
+      this.recoveryPhraseWords.reduce((words, { word }) => words + word, '') ===
+      this.enteredPhrase.reduce((words, { word }) => words + word, '')
+    );
   }
 
   @action _acceptWalletBackupTermDevice = () => {
@@ -110,13 +110,11 @@ export default class WalletBackupStore extends Store {
 
   @action _cancelWalletBackup = () => {
     this.inProgress = false;
-    this.actions.goToRoute({ route: this.stores.wallets.getWalletRoute(this.walletId) });
+    this._clearEnteredRecoveryPhrase();
   };
 
   @action _finishWalletBackup = async () => {
     this.inProgress = false;
-    this.setWalletBackupCompleted.execute(this.walletId);
-    this.actions.goToRoute({ route: this.stores.wallets.getWalletRoute(this.walletId) });
   }
 
 }

@@ -7,6 +7,7 @@ export default class TransactionsStore extends Store {
 
   INITIAL_SEARCH_LIMIT = 10;
   SEARCH_LIMIT_INCREASE = 10;
+  SEARCH_SKIP = 0;
 
   @observable searchRequest = new CachedRequest(this.api, 'getTransactions');
   @observable _searchOptionsForWallets = {};
@@ -30,6 +31,7 @@ export default class TransactionsStore extends Store {
         [wallet.id]: {
           searchTerm: '',
           searchLimit: this.INITIAL_SEARCH_LIMIT,
+          searchSkip: this.SEARCH_SKIP
         }
       });
       options = this._searchOptionsForWallets[wallet.id];
@@ -42,10 +44,11 @@ export default class TransactionsStore extends Store {
   @computed get filtered() {
     const wallet = this.stores.wallets.active;
     if (!wallet) return [];
-    const { searchTerm, searchLimit } = this.searchOptions;
+    const { searchTerm, searchLimit, searchSkip } = this.searchOptions;
     const { result } = this.searchRequest.execute({
       walletId: wallet.id,
       limit: searchLimit,
+      skip: searchSkip,
       searchTerm,
     });
     return result ? result.transactions : [];

@@ -1,5 +1,5 @@
 // @flow
-import { observable, computed } from 'mobx';
+import { observable, computed, action, runInAction } from 'mobx';
 import Store from './lib/Store';
 import { matchRoute } from '../lib/routing-helpers';
 import CachedRequest from './lib/CachedRequest';
@@ -15,21 +15,42 @@ export default class WalletsStore extends Store {
   @observable createWalletRequest = new Request(this.api, 'createWallet');
   @observable sendMoneyRequest = new Request(this.api, 'createTransaction');
   @observable getWalletRecoveryPhraseRequest = new Request(this.api, 'getWalletRecoveryPhrase');
+  @observable restoreRequest = new Request(this.api, 'restoreWallet');
+  // DIALOGUES
+  @observable isAddWalletDialogOpen = false;
+  @observable isCreateWalletDialogOpen = false;
+  @observable isWalletRestoreDialogOpen = false;
+
+  _newWalletDetails = null;
 
   constructor(...args) {
     super(...args);
     this.actions.createPersonalWallet.listen(this._createPersonalWallet);
     this.actions.sendMoney.listen(this._sendMoney);
+    this.actions.toggleAddWallet.listen(this._toggleAddWallet);
+    this.actions.toggleCreateWalletDialog.listen(this._toggleCreateWalletDialog);
+    this.actions.toggleWalletRestore.listen(this._toggleWalletRestore);
+    this.actions.finishWalletBackup.listen(this._finishWalletCreation);
+    this.actions.restoreWallet.listen(this._restoreWallet);
     if (environment.CARDANO_API) {
       setInterval(this._refreshWalletsData, this.WALLET_REFRESH_INTERVAL);
     }
   }
 
   _createPersonalWallet = async (params) => {
-    const wallet = await this.createWalletRequest.execute(params);
+    this._newWalletDetails = params;
+    try {
+      const recoveryPhrase = await this.getWalletRecoveryPhraseRequest.execute();
+      this.actions.initiateWalletBackup({ recoveryPhrase });
+    } catch(error) {
+      throw error;
+    }
+  };
+
+  _finishWalletCreation = async () => {
+    this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
+    const wallet = await this.createWalletRequest.execute(this._newWalletDetails);
     await this.walletsRequest.patch(result => { result.push(wallet); });
-    const walletRecovery = await this.getWalletRecoveryPhraseRequest.execute({ walletId: wallet.id });
-    this.actions.initiateWalletBackup(walletRecovery);
   };
 
   _sendMoney = async (transactionDetails) => {
@@ -42,7 +63,7 @@ export default class WalletsStore extends Store {
       currency: wallet.currency,
     });
     this._refreshWalletsData();
-    this.actions.goToRoute({ route: this.getWalletRoute(wallet.id) });
+    this._showWallet(wallet.id);
   };
 
   @computed get all() {
@@ -70,5 +91,38 @@ export default class WalletsStore extends Store {
       this.stores.transactions.searchRequest.invalidate({ immediately: true });
     }
   };
+
+  @action _toggleAddWallet = () => {
+    this.isAddWalletDialogOpen = !this.isAddWalletDialogOpen;
+  };
+
+  @action _toggleCreateWalletDialog = () => {
+    if (!this.isCreateWalletDialogOpen) {
+      this.isAddWalletDialogOpen = false;
+      this.isCreateWalletDialogOpen = true;
+    } else {
+      this.isCreateWalletDialogOpen = false;
+    }
+  };
+
+  @action _toggleWalletRestore = () => {
+    if (!this.isWalletRestoreDialogOpen) {
+      this.isAddWalletDialogOpen = false;
+      this.isWalletRestoreDialogOpen = true;
+    } else {
+      this.isWalletRestoreDialogOpen = false;
+    }
+  };
+
+  @action _restoreWallet = async (params) => {
+    const restoredWallet = await this.restoreRequest.execute(params);
+    this._toggleWalletRestore();
+    this._refreshWalletsData();
+    this._showWallet(restoredWallet.id);
+  };
+
+  _showWallet(walletId) {
+    this.actions.goToRoute({ route: this.getWalletRoute(walletId) });
+  }
 
 }

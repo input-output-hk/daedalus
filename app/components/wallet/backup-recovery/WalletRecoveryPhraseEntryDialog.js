@@ -112,21 +112,27 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
         active
         style={styles.component}
       >
-        <WalletRecoveryInstructions
-          instructionsText={intl.formatMessage(messages.verificationInstructions)}
-        />
+        {!isValid && (
+          <WalletRecoveryInstructions
+            instructionsText={intl.formatMessage(messages.verificationInstructions)}
+          />
+        )}
+
         <WalletRecoveryPhraseMnemonic phrase={enteredPhraseString} />
 
-        <div className={styles.words}>
-          {recoveryPhraseShuffled.map(({ word, isActive }, index) => (
-            <MnemonicWord
-              word={word}
-              key={index}
-              isActive={isActive}
-              onClick={onAddWord}
-            />
-          ))}
-        </div>
+        {!isValid && (
+          <div className={styles.words}>
+            {recoveryPhraseShuffled.map(({ word, isActive }, index) => (
+              <MnemonicWord
+                word={word}
+                key={index}
+                isActive={isActive}
+                onClick={onAddWord}
+              />
+            ))}
+          </div>
+        )}
+
         <DialogCloseButton onClose={onCancelBackup} />
         <DialogBackButton onBack={onRestartBackup} />
         {isValid && (

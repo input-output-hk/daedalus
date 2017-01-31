@@ -73,13 +73,6 @@ export default class StubApi {
     }));
   }
 
-  setWalletBackupCompleted(walletId: string) {
-    console.debug('StubApi::setWalletBackupCompleted called with', walletId);
-    return fakeRequest('setWalletBackupCompleted', action(() => {
-      return this.repository.setWalletBackupCompleted(walletId);
-    }));
-  }
-
   createUser(request: createUserRequest) {
     console.debug('StubApi::createUser called with', request);
     return fakeRequest('createUser', this.repository.generateUser(request));

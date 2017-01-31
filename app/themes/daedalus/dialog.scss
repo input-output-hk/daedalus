@@ -28,7 +28,7 @@ $dialog-content-padding: 30px;
 
 .button {
   @extend %button;
-  min-width: calc(50% - 0.8rem);
+  min-width: calc(50% - 0.8rem) !important; // TODO: This was not working without important statement
 }
 
 .navigation {
