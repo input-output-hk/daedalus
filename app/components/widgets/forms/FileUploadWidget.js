@@ -12,7 +12,7 @@ export default class FileUploadWidget extends Component {
     label: PropTypes.string.isRequired,
     hint: PropTypes.string.isRequired,
     onFileSelected: PropTypes.func.isRequired,
-    acceptedFileTypes: PropTypes.string.isRequired,
+    acceptedFileTypes: PropTypes.string,
     value: PropTypes.instanceOf(File),
     error: PropTypes.string,
   };
