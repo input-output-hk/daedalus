@@ -7,7 +7,6 @@ Daedalus - cryptocurrency wallet
 $ npm install
 ```
 
-
 ## Development
 
 run with one command:
@@ -28,9 +27,9 @@ defaults to 6.x*
 
 ## Development - with Cardano Wallet (daedalus-bridge)
 
-Build and run daedalus-bridge [using instructions in the repo](https://github.com/input-output-hk/pos-haskell-prototype/tree/master/daedalus)
+Build and run daedalus-bridge [using instructions in the repo](https://github.com/input-output-hk/cardano-docs.iohk.io/blob/master/_docs/for-contributors/building-from-source.md#generating-types-for-daedalus-bridge)
 
-Symlink the npm package in the subfolder `pos-haskell-prototype/daedalus`:
+Symlink the npm package in the subfolder `cardano-sl/daedalus`:
 * `npm link` (inside the daedalus sub folder of the Cardano client)
 * `npm link daedalus-client-api` (inside this daedalus frontend app)
 
