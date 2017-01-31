@@ -111,3 +111,52 @@ Make sure to list bootstrap in externals in `webpack.config.base.js` or the app 
 ```js
 externals: ['bootstrap']
 ```
+
+## An instruction for non-Javascript people
+
+*written by a non-Javascript person*
+
+I'm going to assume that you use Arch, though any other Linux distro will do. First install and set up `nvm`, Node.js version 6, and dependencies of Daedalus (the commands below should be done in cloned `daedalus` repository). `nvm` is a tool for managing versions of Node (similar to Stack, which can manage versions of GHC).
+
+```bash
+$ yaourt -S nvm
+$ echo 'source /usr/share/nvm/init-nvm.sh' >> ~/.bashrc # or .zshrc
+$ source ~/.bashrc
+$ nvm install 6.7.0
+```
+
+Now switch to the `cardano-sl` repository and build the Daedalus bridge:
+
+```bash
+$ cd daedalus    # i.e. cardano-sl has a daedalus/ directory in it
+$ stack exec -- cardano-wallet-hs2purs
+$ npm install
+$ npm run build:prod
+$ npm link
+```
+
+Great, now go back to the `daedalus` repository and make sure that it knows about the Daedalus bridge (this operation has to be done only once):
+
+```bash
+$ npm link daedalus-client-api
+```
+
+After that you should be able to build and run Daedalus:
+
+```bash
+$ npm install
+$ CARDANO_API=true npm run dev
+```
+
+If `npm install` prints an error message about Electron, do `rm -rf node_modules` and then `npm install` again.
+
+### Sample error messages
+
+This error means that you have forgotten to build the bridge (specifically, you probably forgot about `npm run build:prod`):
+
+```
+[0] ERROR in ./app/api/CardanoClientApi.js
+[0] Module not found: Error: Cannot resolve module 'daedalus-client-api'
+    in ~/daedalus/app/api
+[0]  @ ./app/api/CardanoClientApi.js 34:25-55
+```
