@@ -33,6 +33,8 @@ export default class AdaRedemptionPage extends Component {
         <AdaRedemptionForm
           onSubmit={this.onSubmit}
           wallets={wallets}
+          isCertificateUploaded
+          isCertificateEncrypted
         />
       </Layout>
     );

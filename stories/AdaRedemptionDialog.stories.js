@@ -13,12 +13,15 @@ storiesOf('AdaRedemptionForm', module)
 
   // ====== Stories ======
 
-  .add('default', () => (
+  .add('Certificate not uploaded', () => (
     <div>
       <AdaRedemptionForm
         onSubmit={action('submit')}
+        isCertificateUploaded={false}
+        isCertificateEncrypted={false}
         onCertificateSelected={action('certificateSelected')}
         wallets={[
+          { value: '', label: '...' },
           { value: 'wallet-1', label: 'First Wallet' },
           { value: 'wallet-2', label: 'Second Wallet' },
           { value: 'wallet-3', label: 'Third Wallet' },
@@ -26,3 +29,37 @@ storiesOf('AdaRedemptionForm', module)
       />
     </div>
   ))
+
+  .add('Certificate uploaded - not encrypted', () => (
+    <div>
+      <AdaRedemptionForm
+        onSubmit={action('submit')}
+        isCertificateUploaded
+        isCertificateEncrypted={false}
+        onCertificateSelected={action('certificateSelected')}
+        wallets={[
+          { value: '', label: '...' },
+          { value: 'wallet-1', label: 'First Wallet' },
+          { value: 'wallet-2', label: 'Second Wallet' },
+          { value: 'wallet-3', label: 'Third Wallet' },
+        ]}
+      />
+    </div>
+  ))
+
+  .add('Certificate uploaded - encrypted', () => (
+    <div>
+      <AdaRedemptionForm
+        onSubmit={action('submit')}
+        isCertificateUploaded
+        isCertificateEncrypted
+        onCertificateSelected={action('certificateSelected')}
+        wallets={[
+          { value: '', label: '...' },
+          { value: 'wallet-1', label: 'First Wallet' },
+          { value: 'wallet-2', label: 'Second Wallet' },
+          { value: 'wallet-3', label: 'Third Wallet' },
+        ]}
+      />
+    </div>
+  ));

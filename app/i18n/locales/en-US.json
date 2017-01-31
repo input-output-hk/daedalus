@@ -70,10 +70,10 @@
   "wallet.redeem.dialog.headline": "Ada Redemption",
   "wallet.redeem.dialog.certificateLabel": "Upload your certificate",
   "wallet.redeem.dialog.certificateHint": "Drop file here or click to choose",
-  "wallet.redeem.dialog.tokenLabel": "Redeem token",
-  "wallet.redeem.dialog.tokenHint": "Type the phrase here",
+  "wallet.redeem.dialog.passphraseLabel": "Passphrase to decrypt the certificate",
+  "wallet.redeem.dialog.passphraseHint": "Enter your 9 word mnemonic passphrase here",
   "wallet.redeem.dialog.walletSelectLabel": "Choose Wallet",
-  "wallet.redeem.dialog.submitLabel": "Redeem your money",
+  "wallet.redeem.dialog.submitLabel": "Redeem your Ada",
   "Sidebar.categories.wallets": "Wallets",
   "Sidebar.categories.settings": "Settings",
   "Sidebar.categories.adaRedemption": "ADA Redemption"

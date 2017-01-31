@@ -31,14 +31,14 @@ const messages = defineMessages({
     defaultMessage: '!!!Choose Wallet',
     description: 'Label for the walletId select'
   },
-  tokenLabel: {
-    id: 'wallet.redeem.dialog.tokenLabel',
+  passphraseLabel: {
+    id: 'wallet.redeem.dialog.passphraseLabel',
     defaultMessage: '!!!Redeem token',
     description: 'Label for the token input'
   },
-  tokenHint: {
-    id: 'wallet.redeem.dialog.tokenHint',
-    defaultMessage: '!!!Type the phrase here',
+  passphraseHint: {
+    id: 'wallet.redeem.dialog.passphraseHint',
+    defaultMessage: '!!!Enter your 9 word mnemonic passphrase here',
     description: 'Hint for the token input'
   },
   submitLabel: {
@@ -57,6 +57,8 @@ export default class AdaRedemptionForm extends Component {
       label: PropTypes.string.isRequired,
     })).isRequired,
     onSubmit: PropTypes.func.isRequired,
+    isCertificateUploaded: PropTypes.bool.isRequired,
+    isCertificateEncrypted: PropTypes.bool.isRequired,
   };
 
   static contextTypes = {
@@ -75,7 +77,7 @@ export default class AdaRedemptionForm extends Component {
       certificate: {
         value: null,
       },
-      token: {
+      passphrase: {
         value: '',
       },
       walletId: {
@@ -83,14 +85,6 @@ export default class AdaRedemptionForm extends Component {
       }
     }
   });
-
-  actions = [
-    {
-      label: this.context.intl.formatMessage(messages.submitLabel),
-      primary: true,
-      onClick: () => this.submit()
-    }
-  ];
 
   submit = () => {
     this.validator.submit({
@@ -107,14 +101,18 @@ export default class AdaRedemptionForm extends Component {
   render() {
     const { intl } = this.context;
     const { validator } = this;
-    const { wallets } = this.props;
+    const { wallets, isCertificateUploaded, isCertificateEncrypted } = this.props;
     const certificate = validator.$('certificate');
-    const token = validator.$('token');
+    const passphrase = validator.$('passphrase');
     const walletId = validator.$('walletId');
     const componentClasses = classnames([
       styles.component,
       this.state.isSubmitting ? styles.isSubmitting : null
     ]);
+    const showTokenInput = isCertificateUploaded && isCertificateEncrypted;
+    const canSubmit = isCertificateUploaded && walletId.value &&
+      (isCertificateEncrypted && passphrase.value || !isCertificateEncrypted);
+
     return (
       <div className={componentClasses}>
 
@@ -127,20 +125,22 @@ export default class AdaRedemptionForm extends Component {
             value={certificate.value}
             error={certificate.error}
             onFileSelected={certificate.onChange}
-            acceptedFileTypes="application/pdf"
           />
         </div>
 
-        <Input
-          className="token"
-          label={intl.formatMessage(messages.tokenLabel)}
-          hint={intl.formatMessage(messages.tokenHint)}
-          value={token.value}
-          onChange={token.onChange}
-          onFocus={token.onFocus}
-          onBlur={token.onBlur}
-          multiline
-        />
+        {showTokenInput && (
+          <Input
+            className="passphrase"
+            label={intl.formatMessage(messages.passphraseLabel)}
+            hint={intl.formatMessage(messages.passphraseHint)}
+            value={passphrase.value}
+            onChange={passphrase.onChange}
+            onFocus={passphrase.onFocus}
+            onBlur={passphrase.onBlur}
+            multiline
+            rows={3}
+          />
+        )}
 
         <Dropdown
           className="wallet"
@@ -158,6 +158,7 @@ export default class AdaRedemptionForm extends Component {
           label={intl.formatMessage(messages.submitLabel)}
           onMouseUp={this.submit}
           primary
+          disabled={!canSubmit}
         />
 
       </div>
