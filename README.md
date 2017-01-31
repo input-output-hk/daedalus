@@ -116,6 +116,8 @@ externals: ['bootstrap']
 
 *written by a non-Javascript person*
 
+**Note:** if you use Nix, you might prefer [this instruction](https://github.com/input-output-hk/cardano-docs.iohk.io/blob/master/_docs/for-contributors/building-from-source.md#generating-types-for-daedalus-bridge).
+
 I'm going to assume that you use Arch, though any other Linux distro will do. First install and set up `nvm`, Node.js version 6, and dependencies of Daedalus (the commands below should be done in cloned `daedalus` repository). `nvm` is a tool for managing versions of Node (similar to Stack, which can manage versions of GHC).
 
 ```bash
