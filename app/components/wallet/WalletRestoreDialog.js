@@ -5,9 +5,9 @@ import MobxReactForm from 'mobx-react-form';
 import Input from 'react-toolbox/lib/input/Input';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
+import { validateMnemonic } from 'bip39';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import { isValidWalletName } from '../../lib/validations';
-import { validateMnemonic } from 'bip39';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletRestoreDialog.scss';
@@ -75,13 +75,19 @@ export default class WalletRestoreDialog extends Component {
       walletName: {
         value: '',
         validate: [({ field }) => (
-          [isValidWalletName(field.value), this.context.intl.formatMessage(globalMessages.invalidWalletName)]
+          [
+            isValidWalletName(field.value),
+            this.context.intl.formatMessage(globalMessages.invalidWalletName)
+          ]
         )]
       },
       recoveryPhrase: {
         value: '',
         validate: [({ field }) => (
-          [validateMnemonic(field.value), this.context.intl.formatMessage(globalMessages.invalidMnemonic)]
+          [
+            validateMnemonic(field.value),
+            this.context.intl.formatMessage(globalMessages.invalidMnemonic)
+          ]
         )]
       },
     }

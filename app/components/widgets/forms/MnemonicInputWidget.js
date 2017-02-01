@@ -1,7 +1,5 @@
-import React, { Component, PropTypes } from 'react';
-import { observer } from 'mobx-react';
-import { PropTypes as MobxPropTypes } from 'mobx-react';
-import { Checkbox } from 'react-toolbox';
+import React, { Component, PropTypes } from 'react';
+import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import Input from 'react-toolbox/lib/input/Input';
 import styles from './MnemonicInputWidget.scss';
 
@@ -16,10 +14,11 @@ export default class MnemonicInputWidget extends Component {
   };
 
   render() {
-    const { label, tokens, onTokenChanged } = this.props;
+    const { label, tokens, onTokenChanged, error } = this.props;
     return (
       <div className={styles.component}>
         <div className={styles.label}>{label}</div>
+        {error && <div className={styles.error}>{error}</div>}
         <div className={styles.tokens}>
           {tokens.map((token, index) => (
             <Input
@@ -28,7 +27,7 @@ export default class MnemonicInputWidget extends Component {
               key={index}
               className={styles.input}
               value={token}
-              onChange={(token) => onTokenChanged(index, token)}
+              onChange={(value) => onTokenChanged(index, value)}
             />
           ))}
         </div>

@@ -5,7 +5,8 @@ import { Route, IndexRedirect } from 'react-router';
 // PAGES
 import Wallet from './containers/wallet/Wallet';
 import StakingPage from './containers/staking/StakingPage';
-import LoginPage from './containers/login/LoginPage';
+// import LoginPage from './containers/login/LoginPage';
+import LoadingPage from './containers/LoadingPage';
 import WalletHomePage from './containers/wallet/WalletHomePage';
 import WalletSendPage from './containers/wallet/WalletSendPage';
 import WalletReceivePage from './containers/wallet/WalletReceivePage';
@@ -16,7 +17,8 @@ import TermsOfUseSettingsPage from './containers/settings/categories/TermsOfUseS
 
 export default (
   <div>
-    <Route path="/login" component={LoginPage} />
+    {/*<Route path="/login" component={LoginPage} />*/}
+    <Route path="/loading" component={LoadingPage} />
     <Route path="/staking" component={StakingPage} />
     <Route path="/ada-redemption" component={AdaRedemptionPage} />
     <Route path="/wallets" component={Wallet}>

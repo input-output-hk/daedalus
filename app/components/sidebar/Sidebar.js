@@ -8,7 +8,6 @@ import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import walletsIcon from '../../assets/images/sidebar/wallet-ic.svg';
 import settingsIcon from '../../assets/images/sidebar/settings-ic.svg';
-import stakingIcon from '../../assets/images/sidebar/staking-ic.svg';
 import adaRedemptionIcon from '../../assets/images/sidebar/ada.svg';
 
 const messages = defineMessages({
@@ -88,6 +87,17 @@ export default class Sidebar extends Component {
 
     const sidebarStyles = classNames([styles.component, sidebarStyle]);
 
+    /* HIDDEN UNTIL WE HAVE BETTER STAKING DESIGN
+    <SidebarCategory
+      className="staking"
+      label="Staking"
+      icon={stakingIcon}
+      active={this.matches('/staking')
+      minimized={hasMinimizedCategories}
+      onClick={() => onCategoryClicked('/staking')}
+    />
+    */
+
     return (
       <div className={sidebarStyles}>
         <div className={categoriesStyle}>
@@ -115,15 +125,6 @@ export default class Sidebar extends Component {
             minimized={hasMinimizedCategories}
             onClick={() => onCategoryClicked('/ada-redemption')}
           />
-          {/* HIDDEN UNTIL WE HAVE BETTER STAKING DESIGN */}
-          {/*<SidebarCategory*/}
-            {/*className="staking"*/}
-            {/*label="Staking"*/}
-            {/*icon={stakingIcon}*/}
-            {/*active={this.matches('/staking')}*/}
-            {/*minimized={hasMinimizedCategories}*/}
-            {/*onClick={() => onCategoryClicked('/staking')}*/}
-          {/*/>*/}
         </div>
         {subMenu}
       </div>
