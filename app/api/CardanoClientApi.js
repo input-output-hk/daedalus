@@ -105,7 +105,7 @@ export default class CardanoClientApi {
       return await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase);
     } catch (error) {
       if (error.message.includes('Wallet with that mnemonics already exists')) {
-        throw new WalletAlreadyRestoredError(error.message);
+        throw new WalletAlreadyRestoredError();
       }
       throw error;
     }

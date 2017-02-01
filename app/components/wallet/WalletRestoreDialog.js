@@ -48,11 +48,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Invalid recovery phrase',
     description: 'Error message shown when invalid recovery phrase was entered.'
   },
-  walletAlreadyRestored: {
-    id: 'wallet.restore.dialog.form.errors.walletAlreadyRestored',
-    defaultMessage: '!!!You already restored a wallet with this phrase.',
-    description: 'Error message shown when restore recovery phrase was entered again.'
-  }
 });
 
 @observer
@@ -118,15 +113,6 @@ export default class WalletRestoreDialog extends Component {
     const { error, onCancel } = this.props;
     const walletName = validator.$('walletName');
     const recoveryPhrase = validator.$('recoveryPhrase');
-    let serverError = null;
-    if (error) {
-      if (error instanceof WalletAlreadyRestoredError) {
-        serverError = intl.formatMessage(messages.walletAlreadyRestored);
-      } else {
-        // Display raw error message if not known
-        serverError = error.message;
-      }
-    }
     return (
       <Dialog
         className={styles.component}
@@ -160,7 +146,7 @@ export default class WalletRestoreDialog extends Component {
           rows={3}
         />
 
-        {serverError && <p className={styles.serverError}>{serverError}</p>}
+        {error && <p className={styles.serverError}>{intl.formatMessage(error)}</p>}
 
         <DialogCloseButton onClose={onCancel} />
 
