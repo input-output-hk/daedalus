@@ -38,7 +38,7 @@ export default class AdaRedemptionStore extends Store {
   });
 
   _onCodeParsed = (event, code) => {
-    console.log('Redemption code parsed from certificate:', code);
+    console.debug('Redemption code parsed from certificate:', code);
     this.redeemAdaRequest.execute(code, this.walletId)
       .then(action(() => {
         this.isProcessing = false;
@@ -54,11 +54,11 @@ export default class AdaRedemptionStore extends Store {
   _onParseError = action((event, error) => {
     this.isProcessing = false;
     this.error = error;
-    console.log('Error while parsing certificate:', error);
+    console.error('Error while parsing certificate:', error);
   });
 
   _redirectToRedeemWallet = () => {
-    console.log('ADA redeemed for wallet', this.walletId);
+    console.debug('ADA redeemed for wallet', this.walletId);
   }
 
 }
