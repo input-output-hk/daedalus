@@ -3,6 +3,7 @@
   "global.errors.invalidWalletName": "Requires at least 3 letters.",
   "global.errors.invalidMnemonic": "Invalid phrase entered, please check.",
   "api.errors.WalletAlreadyRestoredError": "You already restored a wallet with this phrase.",
+  "api.errors.ApiMethodNotYetImplementedError": "This API method is not yet implemented.",
   "wallet.navigation.send": "send",
   "wallet.navigation.receive": "receive",
   "wallet.transaction.type.card": "Card payment",

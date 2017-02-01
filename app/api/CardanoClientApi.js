@@ -12,9 +12,14 @@ import type {
 import { user } from './fixtures';
 import User from '../domain/User';
 import Profile from '../domain/Profile';
-import { WalletAlreadyRestoredError } from './errors';
+import {
+  ApiMethodNotYetImplementedError,
+  WalletAlreadyRestoredError,
+} from './errors';
 
-const notYetImplemented = () => new Promise((resolve, reject) => reject(new Error('Api method not yet implemented')));
+const notYetImplemented = () => new Promise((_, reject) => {
+  reject(new ApiMethodNotYetImplementedError());
+});
 
 export default class CardanoClientApi {
 

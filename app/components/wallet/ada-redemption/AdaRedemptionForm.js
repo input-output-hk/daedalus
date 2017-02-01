@@ -8,6 +8,7 @@ import MnemonicInputWidget from '../../widgets/forms/MnemonicInputWidget';
 import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
+import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './AdaRedemptionForm.scss';
 
 const messages = defineMessages({
@@ -61,6 +62,7 @@ export default class AdaRedemptionForm extends Component {
     isSubmitting: PropTypes.bool.isRequired,
     isCertificateSelected: PropTypes.bool.isRequired,
     isCertificateEncrypted: PropTypes.bool.isRequired,
+    error: PropTypes.instanceOf(LocalizableError),
   };
 
   static contextTypes = {
@@ -104,7 +106,7 @@ export default class AdaRedemptionForm extends Component {
     const { intl } = this.context;
     const { validator } = this;
     const {
-      wallets, isCertificateSelected, isCertificateEncrypted, isSubmitting, onCertificateSelected
+      wallets, isCertificateSelected, isCertificateEncrypted, isSubmitting, onCertificateSelected, error
     } = this.props;
     const certificate = validator.$('certificate');
     const passPhraseTokens = validator.$('passPhraseTokens');
@@ -153,6 +155,8 @@ export default class AdaRedemptionForm extends Component {
           error={walletId.error}
           source={wallets}
         />
+
+        {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
         <Button
           className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}

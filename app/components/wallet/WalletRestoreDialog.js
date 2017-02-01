@@ -9,7 +9,7 @@ import DialogCloseButton from '../widgets/DialogCloseButton';
 import { isValidWalletName } from '../../lib/validations';
 import { validateMnemonic } from 'bip39';
 import globalMessages from '../../i18n/global-messages';
-import { WalletAlreadyRestoredError } from '../../api/errors';
+import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletRestoreDialog.scss';
 
 const messages = defineMessages({
@@ -60,7 +60,7 @@ export default class WalletRestoreDialog extends Component {
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
-    error: PropTypes.instanceOf(Error),
+    error: PropTypes.instanceOf(LocalizableError),
   };
 
   state = {
@@ -146,7 +146,7 @@ export default class WalletRestoreDialog extends Component {
           rows={3}
         />
 
-        {error && <p className={styles.serverError}>{intl.formatMessage(error)}</p>}
+        {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
         <DialogCloseButton onClose={onCancel} />
 

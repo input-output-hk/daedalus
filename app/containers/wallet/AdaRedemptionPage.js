@@ -32,7 +32,7 @@ export default class AdaRedemptionPage extends Component {
 
   render() {
     const { wallets, adaRedemption } = this.props.stores;
-    const { isProcessing, certificate, isCertificateEncrypted} = adaRedemption;
+    const { isProcessing, certificate, isCertificateEncrypted, error } = adaRedemption;
     const { updateRedemptionCertificate } = this.props.actions;
     const selectableWallets = wallets.all.map((w) => ({
       value: w.id, label: w.name
@@ -47,6 +47,7 @@ export default class AdaRedemptionPage extends Component {
           isCertificateSelected={certificate !== null}
           isCertificateEncrypted={isCertificateEncrypted}
           isSubmitting={isProcessing}
+          error={error}
         />
       </Layout>
     );

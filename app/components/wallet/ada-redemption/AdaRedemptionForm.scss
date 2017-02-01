@@ -1,4 +1,5 @@
 @import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
 
 .component {
   padding: 2rem;
@@ -14,6 +15,12 @@
 }
 
 .certificate {
+  margin-bottom: 2rem;
+}
+
+.error {
+  @include error-message;
+  text-align: center;
   margin-bottom: 2rem;
 }
 
