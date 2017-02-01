@@ -128,8 +128,7 @@ export default class AdaRedemptionForm extends Component {
           <FileUploadWidget
             label={intl.formatMessage(messages.certificateLabel)}
             hint={intl.formatMessage(messages.certificateHint)}
-            value={certificate.value}
-            error={certificate.error}
+            selectedFile={certificate.value}
             onFileSelected={(file) => {
               onCertificateSelected(file);
               certificate.onChange(file);

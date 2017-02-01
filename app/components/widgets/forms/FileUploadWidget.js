@@ -12,24 +12,16 @@ export default class FileUploadWidget extends Component {
     label: PropTypes.string.isRequired,
     hint: PropTypes.string.isRequired,
     onFileSelected: PropTypes.func.isRequired,
+    selectedFile: PropTypes.instanceOf(File),
     acceptedFileTypes: PropTypes.string,
-    value: PropTypes.instanceOf(File),
-    error: PropTypes.string,
   };
 
-  state = {
-    selectedFile: null,
-  };
-
-  onDrop = (files) => {
-    const selectedFile = files[0];
-    this.setState({ selectedFile });
-    this.props.onFileSelected(selectedFile);
+  onDrop = (files: [File]) => {
+    this.props.onFileSelected(files[0]);
   };
 
   render() {
-    const { label, hint, acceptedFileTypes } = this.props;
-    const { selectedFile } = this.state;
+    const { label, hint, acceptedFileTypes, selectedFile } = this.props;
     return (
       <div className={styles.component}>
         <div className={styles.label}>{label}</div>
@@ -44,7 +36,7 @@ export default class FileUploadWidget extends Component {
           ) : (
             <div className={styles.hint}>{hint}</div>
           )}
-          <img src={attachIcon} className={styles.attachIcon} />
+          <img src={attachIcon} className={styles.attachIcon} role="presentation" />
         </Dropzone>
       </div>
     );

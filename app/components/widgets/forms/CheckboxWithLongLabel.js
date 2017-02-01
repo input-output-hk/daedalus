@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { Checkbox } from 'react-toolbox';
 import styles from './CheckboxWithLongLabel.scss';
 

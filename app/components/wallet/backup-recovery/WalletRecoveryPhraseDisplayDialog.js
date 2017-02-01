@@ -22,7 +22,7 @@ const messages = defineMessages({
   },
   termDevice: {
     id: 'wallet.backup.recovery.phrase.display.dialog.terms.and.condition.device',
-    defaultMessage: `!!!I understand that my money are held securely on this device only, not on the company servers`,
+    defaultMessage: '!!!I understand that my money are held securely on this device only, not on the company servers',
     description: 'Term and condition on wallet backup dialog describing that wallet is on a users device, not on company servers'
   },
   buttonLabelIHaveWrittenItDown: {
