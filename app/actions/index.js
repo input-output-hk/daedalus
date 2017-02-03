@@ -52,13 +52,18 @@ export default defineActions({
   restartWalletBackup: {},
   cancelWalletBackup: {},
   finishWalletBackup: {},
-  updateRedemptionCertificate: {
+  setRedemptionCertificate: {
     certificate: PropTypes.instanceOf(File).isRequired,
   },
+  setRedemptionPassPhrase: {
+    passPhrase: PropTypes.string.isRequired,
+  },
+  setRedemptionCode: {
+    redemptionCode: PropTypes.string.isRequired,
+  },
   redeemAda: {
-    certificate: PropTypes.instanceOf(File).isRequired,
+    redemptionCode: PropTypes.string.isRequired,
     walletId: PropTypes.string.isRequired,
-    passPhraseTokens: PropTypes.arrayOf(PropTypes.string).isRequired,
   },
   adaSuccessfullyRedeemed: {},
   toggleAddWallet: {},

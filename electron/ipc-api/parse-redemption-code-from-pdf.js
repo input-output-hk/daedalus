@@ -1,7 +1,7 @@
 import { PDFExtract } from 'pdf.js-extract';
 import { ipcMain } from 'electron';
 import fs from 'fs';
-import decrypt from './lib/decrypt';
+import decrypt from '../../lib/decrypt';
 
 const CHANNEL_NAME = 'parse-redemption-code-from-pdf';
 
@@ -9,6 +9,7 @@ export const PARSE_REDEMPTION_CODE = {
   REQUEST: CHANNEL_NAME,
   SUCCESS: `${CHANNEL_NAME}-success`,
   ERROR: `${CHANNEL_NAME}-error`,
+  INVALID_CERTIFICATE_ERROR: 'invalid certificate',
 };
 
 export default () => {
@@ -36,9 +37,12 @@ export default () => {
     try {
       const pdfExtract = new PDFExtract();
       pdfExtract.extract(pdfPath, {}, function (error, data) {
-        if (error) sender.send(PARSE_REDEMPTION_CODE.ERROR, error);
-        sender.send(PARSE_REDEMPTION_CODE.SUCCESS, data.pages[0].content[8].str);
+        if (error) return sender.send(PARSE_REDEMPTION_CODE.ERROR, error);
         try {
+          if (data.pages[0].content[9].str !== 'REDEMPTION KEY') {
+            return sender.send(PARSE_REDEMPTION_CODE.ERROR, PARSE_REDEMPTION_CODE.INVALID_CERTIFICATE_ERROR);
+          }
+          sender.send(PARSE_REDEMPTION_CODE.SUCCESS, data.pages[0].content[8].str);
           // Remove the temporary, decrypted PDF from disk
           if (isTemporaryDecryptedPdf) fs.unlinkSync(pdfPath);
         } catch (error) {

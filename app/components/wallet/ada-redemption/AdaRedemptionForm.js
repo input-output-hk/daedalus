@@ -4,11 +4,14 @@ import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import classnames from 'classnames';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import Button from 'react-toolbox/lib/button/Button';
+import Input from 'react-toolbox/lib/input/Input';
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
-import MnemonicInputWidget from '../../widgets/forms/MnemonicInputWidget';
+// import MnemonicInputWidget from '../../widgets/forms/MnemonicInputWidget';
 import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
 import LocalizableError from '../../../i18n/LocalizableError';
+import { InvalidMnemonicError } from '../../../i18n/global-errors';
+import { isValidMnemonic } from '../../../../lib/decrypt';
 import styles from './AdaRedemptionForm.scss';
 
 const messages = defineMessages({
@@ -42,6 +45,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Enter your 9 word mnemonic passPhraseTokens here',
     description: 'Hint for the token input'
   },
+  redemptionCodeLabel: {
+    id: 'wallet.redeem.dialog.redemptionCodeLabel',
+    defaultMessage: '!!!Your Redemption Code',
+    description: 'Label for ada redemption code input',
+  },
+  redemptionCodeHint: {
+    id: 'wallet.redeem.dialog.redemptionCodeHint',
+    defaultMessage: '!!!Enter your code manually here or upload a certificate above',
+    description: 'Hint for ada redemption code input',
+  },
   submitLabel: {
     id: 'wallet.redeem.dialog.submitLabel',
     defaultMessage: '!!!Redeem your money',
@@ -58,10 +71,13 @@ export default class AdaRedemptionForm extends Component {
       label: PropTypes.string.isRequired,
     })).isRequired,
     onCertificateSelected: PropTypes.func.isRequired,
+    onPassPhraseChanged: PropTypes.func.isRequired,
+    onRedemptionCodeChanged: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     isSubmitting: PropTypes.bool.isRequired,
     isCertificateSelected: PropTypes.bool.isRequired,
     isCertificateEncrypted: PropTypes.bool.isRequired,
+    redemptionCode: PropTypes.string,
     error: PropTypes.instanceOf(LocalizableError),
   };
 
@@ -69,32 +85,41 @@ export default class AdaRedemptionForm extends Component {
     intl: intlShape.isRequired,
   };
 
-  onPassphraseTokenChanged = (index: number, value: string) => {
-    const passPhraseTokens = this.validator.$('passPhraseTokens');
-    const newValues = passPhraseTokens.value.slice();
-    newValues[index] = value;
-    passPhraseTokens.onChange(newValues);
+  state = {
+    passPhrase: ''
+  };
+
+  onPassPhraseChanged = (passPhrase: string) => {
+    this.setState({ passPhrase });
+    if (isValidMnemonic(passPhrase)) this.props.onPassPhraseChanged(passPhrase);
   };
 
   submit = () => {
     this.validator.submit({
       onSuccess: (form) => {
-        this.props.onSubmit(form.values());
+        const { redemptionCode, walletId } = form.values();
+        this.props.onSubmit({ redemptionCode, walletId });
       },
       onError: () => {}
     });
   };
 
   validator = new MobxReactForm({
-    options: {
-      validateOnChange: false
-    },
     fields: {
       certificate: {
         value: null,
       },
-      passPhraseTokens: {
-        value: ['', '', '', '', '', '', '', '', ''] // 9 tokens
+      passPhrase: {
+        value: '',
+        validate: [({ field }) => {
+          // Don't validate No pass phrase needed when certificate is not encrypted
+          if (!this.props.isCertificateEncrypted) return [true];
+          // Otherwise check mnemonic
+          return [isValidMnemonic(field.value), this.context.intl.formatMessage(new InvalidMnemonicError())]
+        }]
+      },
+      redemptionCode: {
+        value: '',
       },
       walletId: {
         value: this.props.wallets[0].value,
@@ -107,19 +132,19 @@ export default class AdaRedemptionForm extends Component {
     const { validator } = this;
     const {
       wallets, isCertificateSelected, isCertificateEncrypted,
-      isSubmitting, onCertificateSelected, error
+      isSubmitting, onCertificateSelected, redemptionCode,
+      onRedemptionCodeChanged, error
     } = this.props;
     const certificate = validator.$('certificate');
-    const passPhraseTokens = validator.$('passPhraseTokens');
+    const passPhrase = validator.$('passPhrase');
+    const redemptionCodeField = validator.$('redemptionCode');
     const walletId = validator.$('walletId');
     const componentClasses = classnames([
       styles.component,
       isSubmitting ? styles.isSubmitting : null
     ]);
     const showPassPhraseWidget = isCertificateSelected && isCertificateEncrypted;
-    const canSubmit = (
-      isCertificateSelected && walletId.value && isCertificateEncrypted && passPhraseTokens.value
-    ) || !isCertificateEncrypted;
+    const canSubmit = redemptionCode != '';
 
     return (
       <div className={componentClasses}>
@@ -139,12 +164,34 @@ export default class AdaRedemptionForm extends Component {
         </div>
 
         {showPassPhraseWidget && (
-          <MnemonicInputWidget
+          <Input
+            className="pass-phrase"
             label={intl.formatMessage(messages.passphraseLabel)}
-            tokens={passPhraseTokens.value}
-            onTokenChanged={this.onPassphraseTokenChanged}
+            hint={intl.formatMessage(messages.passphraseHint)}
+            value={this.state.passPhrase}
+            error={passPhrase.error}
+            onChange={this.onPassPhraseChanged}
+            onFocus={passPhrase.onFocus}
+            onBlur={() => {
+              passPhrase.onChange(this.state.passPhrase);
+              passPhrase.onBlur();
+            }}
           />
         )}
+
+        <Input
+          className="redemption-code"
+          label={intl.formatMessage(messages.redemptionCodeLabel)}
+          hint={intl.formatMessage(messages.redemptionCodeHint)}
+          value={redemptionCode}
+          error={redemptionCodeField.error}
+          onChange={(value) => {
+            onRedemptionCodeChanged(value);
+            redemptionCodeField.onChange(value);
+          }}
+          onFocus={redemptionCodeField.onFocus}
+          onBlur={redemptionCodeField.onBlur}
+        />
 
         <Dropdown
           className="wallet"
