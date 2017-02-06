@@ -81,6 +81,7 @@
   "wallet.redeem.dialog.redemptionCodeHint": "Enter your code manually here or upload a certificate above",
   "wallet.redeem.dialog.walletSelectLabel": "Choose Wallet",
   "wallet.redeem.dialog.submitLabel": "Redeem your Ada",
+  "wallet.redeem.success.overlay.headline": "You successfully redeemed",
   "Sidebar.categories.wallets": "Wallets",
   "Sidebar.categories.settings": "Settings",
   "Sidebar.categories.adaRedemption": "ADA Redemption",

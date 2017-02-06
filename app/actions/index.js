@@ -65,6 +65,7 @@ export default defineActions({
     walletId: PropTypes.string.isRequired,
   },
   adaSuccessfullyRedeemed: {},
+  closeAdaRedemptionSuccessOverlay: {},
   toggleAddWallet: {},
   toggleWalletRestore: {},
   restoreWallet: {

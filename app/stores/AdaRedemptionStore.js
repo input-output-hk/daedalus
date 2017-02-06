@@ -25,6 +25,8 @@ export default class AdaRedemptionStore extends Store {
   @observable redemptionCode: string = '';
   @observable walletId: string = null;
   @observable error: LocalizableError = null;
+  @observable amountRedeemed: number = 0;
+  @observable showAdaRedemptionSuccessMessage: bool = false;
   @observable redeemAdaRequest = new Request(this.api, 'redeemAda');
 
   constructor(...args) {
@@ -33,7 +35,8 @@ export default class AdaRedemptionStore extends Store {
     this.actions.setRedemptionPassPhrase.listen(this._setPassPhrase);
     this.actions.setRedemptionCode.listen(this._setRedemptionCode);
     this.actions.redeemAda.listen(this._redeemAda);
-    this.actions.adaSuccessfullyRedeemed.listen(this._redirectToRedeemWallet);
+    this.actions.adaSuccessfullyRedeemed.listen(this._onAdaSuccessfullyRedeemed);
+    this.actions.closeAdaRedemptionSuccessOverlay.listen(this._onCloseAdaRedemptionSuccessOverlay);
     ipcRenderer.on(PARSE_REDEMPTION_CODE.SUCCESS, this._onCodeParsed);
     ipcRenderer.on(PARSE_REDEMPTION_CODE.ERROR, this._onParseError);
   }
@@ -79,16 +82,23 @@ export default class AdaRedemptionStore extends Store {
     this.redeemAdaRequest.execute({ redemptionCode: this.redemptionCode, walletId })
       .then(action(() => {
         this.error = null;
-        this.actions.adaSuccessfullyRedeemed({ walletId });
+        // TODO: Use amount returned by backend (when implemented!)
+        this.actions.adaSuccessfullyRedeemed({ walletId, amount: 1000000 });
       }))
       .catch(action((error) => {
         this.error = error;
       }));
   });
 
-  _redirectToRedeemWallet = ({ walletId }) => {
-    console.debug('ADA redeemed for wallet', walletId);
+  _onAdaSuccessfullyRedeemed = action(({ walletId, amount }) => {
+    console.debug('ADA successfully redeemed for wallet', walletId);
     this.stores.wallets.goToWalletRoute(walletId);
-  }
+    this.amountRedeemed = amount;
+    this.showAdaRedemptionSuccessMessage = true;
+  });
+
+  _onCloseAdaRedemptionSuccessOverlay = action(() => {
+    this.showAdaRedemptionSuccessMessage = false;
+  });
 
 }
