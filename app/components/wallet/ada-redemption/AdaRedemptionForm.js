@@ -97,8 +97,8 @@ export default class AdaRedemptionForm extends Component {
   submit = () => {
     this.validator.submit({
       onSuccess: (form) => {
-        const { redemptionCode, walletId } = form.values();
-        this.props.onSubmit({ redemptionCode, walletId });
+        const { walletId } = form.values();
+        this.props.onSubmit({ walletId });
       },
       onError: () => {}
     });

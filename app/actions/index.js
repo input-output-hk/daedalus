@@ -62,7 +62,6 @@ export default defineActions({
     redemptionCode: PropTypes.string.isRequired,
   },
   redeemAda: {
-    redemptionCode: PropTypes.string.isRequired,
     walletId: PropTypes.string.isRequired,
   },
   adaSuccessfullyRedeemed: {},

@@ -5,6 +5,7 @@
   "errors.AdaRedemptionCertificateParseError": "Your redemption code could not be parsed from the given document.",
   "api.errors.WalletAlreadyRestoredError": "You already restored a wallet with this phrase.",
   "api.errors.ApiMethodNotYetImplementedError": "This API method is not yet implemented.",
+  "api.errors.RedeemAdaError": "Your ADA could not be redeemed correctly",
   "wallet.navigation.send": "send",
   "wallet.navigation.receive": "receive",
   "wallet.transaction.type.card": "Card payment",

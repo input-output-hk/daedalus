@@ -17,3 +17,12 @@ export class WalletAlreadyRestoredError extends LocalizableError {
     });
   }
 }
+
+export class RedeemAdaError extends LocalizableError {
+  constructor() {
+    super({
+      id: 'api.errors.RedeemAdaError',
+      defaultMessage: '!!!Your ADA could not be redeemed correctly.',
+    });
+  }
+}

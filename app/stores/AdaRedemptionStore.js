@@ -74,21 +74,21 @@ export default class AdaRedemptionStore extends Store {
     }
   });
 
-  _redeemAda = action(({ redemptionCode, walletId }) => {
+  _redeemAda = action(({ walletId }) => {
     this.walletId = walletId;
-    this.redemptionCode = redemptionCode;
-    this.redeemAdaRequest.execute(this.redemptionCode, this.walletId)
+    this.redeemAdaRequest.execute({ redemptionCode: this.redemptionCode, walletId })
       .then(action(() => {
         this.error = null;
-        this.actions.adaSuccessfullyRedeemed();
+        this.actions.adaSuccessfullyRedeemed({ walletId });
       }))
       .catch(action((error) => {
         this.error = error;
       }));
   });
 
-  _redirectToRedeemWallet = () => {
-    console.debug('ADA redeemed for wallet', this.walletId);
+  _redirectToRedeemWallet = ({ walletId }) => {
+    console.debug('ADA redeemed for wallet', walletId);
+    this.stores.wallets.goToWalletRoute(walletId);
   }
 
 }
