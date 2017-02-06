@@ -13,14 +13,17 @@ storiesOf('AdaRedemptionForm', module)
 
   // ====== Stories ======
 
-  .add('Certificate not uploaded', () => (
+  .add('Certificate not selected', () => (
     <div>
       <AdaRedemptionForm
         onSubmit={action('submit')}
         isSubmitting={false}
-        isCertificateUploaded={false}
+        isCertificateSelected={false}
         isCertificateEncrypted={false}
-        onCertificateSelected={action('certificateSelected')}
+        onCertificateSelected={action('onCertificateSelected')}
+        onPassPhraseChanged={action('onPassPhraseChanged')}
+        onRedemptionCodeChanged={action('onRedemptionCodeChanged')}
+        redemptionCode=""
         wallets={[
           { value: '', label: '...' },
           { value: 'wallet-1', label: 'First Wallet' },
@@ -31,14 +34,16 @@ storiesOf('AdaRedemptionForm', module)
     </div>
   ))
 
-  .add('Certificate uploaded - not encrypted', () => (
+  .add('Certificate selected - not encrypted', () => (
     <div>
       <AdaRedemptionForm
         onSubmit={action('submit')}
         isSubmitting={false}
-        isCertificateUploaded
+        isCertificateSelected={true}
         isCertificateEncrypted={false}
-        onCertificateSelected={action('certificateSelected')}
+        onCertificateSelected={action('onCertificateSelected')}
+        onPassPhraseChanged={action('onPassPhraseChanged')}
+        onRedemptionCodeChanged={action('onRedemptionCodeChanged')}
         wallets={[
           { value: '', label: '...' },
           { value: 'wallet-1', label: 'First Wallet' },
@@ -49,14 +54,16 @@ storiesOf('AdaRedemptionForm', module)
     </div>
   ))
 
-  .add('Certificate uploaded - encrypted', () => (
+  .add('Certificate selected - encrypted', () => (
     <div>
       <AdaRedemptionForm
         onSubmit={action('submit')}
         isSubmitting={false}
-        isCertificateUploaded
-        isCertificateEncrypted
-        onCertificateSelected={action('certificateSelected')}
+        isCertificateSelected={true}
+        isCertificateEncrypted={true}
+        onCertificateSelected={action('onCertificateSelected')}
+        onPassPhraseChanged={action('onPassPhraseChanged')}
+        onRedemptionCodeChanged={action('onRedemptionCodeChanged')}
         wallets={[
           { value: '', label: '...' },
           { value: 'wallet-1', label: 'First Wallet' },
