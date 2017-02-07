@@ -1,67 +1,61 @@
 @import './_walletNavConfig';
 
-%base {
+// ========= LAYOUT =========
+
+.component {
   width: 100%;
   height: 100%;
   text-align: center;
-  background: no-repeat center 70%;
-  background-size: 45px;
-  display: block;
-}
-
-// ========= STATES =========
-
-.normal {
-  @extend %base;
-  color: $walletNavThemeColor;
-  &:hover {
-    cursor: pointer;
-  }
-}
-
-.active {
-  @extend %base;
-  background-color: $walletNavThemeColor;
-  color: white;
-  span {
-    &:after {
-      border-bottom-color: white;
-    }
-  }
-  &:hover {
-    cursor: default;
-  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .container {
   text-align: center;
-  height: $walletNavButtonContentHeight;
   display: flex;
   flex-direction: column;
-  position: relative;
+  justify-content: center;
+  width: 80%;
+  height: 85px;
+  border-radius: 4px;
 }
 
 .label {
   @include walletNavLabelFont;
   display: block;
-  text-transform: uppercase;
-  position: relative;
-  margin-bottom: auto;
   overflow: visible;
-
-  &:after {
-    content: '';
-    width: $walletNavSeparatorWidth;
-    display: block;
-    position: absolute;
-    left: calc(50% - #{$walletNavSeparatorWidth / 2});
-    bottom: -$walletNavSeparatorMargin / 3;
-    border-bottom: 1px solid $walletNavThemeColor;
-  }
 }
 
 .icon {
-  max-height: 45px;
-  max-width: 45px;
+  max-height: 19px;
+  max-width: 19px;
   align-self: center;
+  margin-bottom: 13px;
+}
+
+// ========= STATES =========
+
+.normal {
+  .container {
+    color: $wallet-nav-color;
+  }
+
+  &:hover {
+    .label {
+      color: $wallet-nav-color-hover;
+    }
+    cursor: pointer;
+  }
+}
+
+.active {
+  .container {
+    background-color: $wallet-nav-bg-color-active;
+    color: $wallet-nav-color-active;
+  }
+
+  &:hover {
+    cursor: default;
+  }
 }
