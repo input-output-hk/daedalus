@@ -42,8 +42,8 @@
   }
 
   &:hover {
-    .label {
-      color: $wallet-nav-color-hover;
+    .container {
+      background-color: $wallet-nav-bg-color-hover;
     }
     cursor: pointer;
   }
