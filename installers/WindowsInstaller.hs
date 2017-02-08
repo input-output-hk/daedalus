@@ -13,7 +13,7 @@ writeNSIS = do
     _ <- constantStr "Version" (str version)
     name "Daedalus $Version"                  -- The name of the installer
     outFile "daedalus-win64-$Version-installer.exe"           -- Where to produce the installer
-    installDir "$PROGRAMFILES\\Daedalus"   -- The default installation directory
+    installDir "$PROGRAMFILES64\\Daedalus"   -- The default installation directory
     installDirRegKey HKLM "Software/Daedalus" "Install_Dir"
     requestExecutionLevel Highest     
 

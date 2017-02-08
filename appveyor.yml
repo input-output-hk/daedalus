@@ -28,7 +28,7 @@ install:
 test_script:
   - SET DAEDALUS_VERSION=%APPVEYOR_BUILD_VERSION%
   # Package frontend
-  - npm run package -- --icon icons/64x64
+  - npm run package -- --icon installers/icons/64x64
   - cd installers
   # Install stack
   - curl -sSL -o stack.zip --insecure http://www.stackage.org/stack/windows-x86_64
