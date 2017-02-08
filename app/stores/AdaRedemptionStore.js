@@ -95,6 +95,8 @@ export default class AdaRedemptionStore extends Store {
     this.stores.wallets.goToWalletRoute(walletId);
     this.amountRedeemed = amount;
     this.showAdaRedemptionSuccessMessage = true;
+    this.redemptionCode = '';
+    this.passPhrase = '';
   });
 
   _onCloseAdaRedemptionSuccessOverlay = action(() => {
