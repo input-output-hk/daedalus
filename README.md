@@ -30,13 +30,16 @@ defaults to 6.x*
 
 First we need to install Nix package manager, which ensures correct dependencies are used:
 
-   $ curl https://nixos.org/nix/install | sh
-
+```bash
+$ curl https://nixos.org/nix/install | sh
+```
 Then compile the bridge and start development:
 
-   $ git submodule update --init
-   $ nix-shell --run "npm run build-bridge"
-   $ nix-shell --run "CARDANO_API=1 npm run dev:backend"
+```bash
+$ git submodule update --init
+$ nix-shell --run "npm run build-bridge"
+$ nix-shell --run "CARDANO_API=1 npm run dev:backend"
+```
 
 ## Testing
 
