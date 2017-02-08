@@ -30,13 +30,13 @@ module.exports = validate(merge(baseConfig, {
   },
 
   module: {
-    preLoaders: [
-      {
-        test: /\.js$/,
-        loader: 'eslint-loader',
-        exclude: /[node_modules|pos\-haskell\-prototype]/
-      }
-    ],
+    // preLoaders: [
+    //   {
+    //     test: /\.js$/,
+    //     loader: 'eslint-loader',
+    //     exclude: /node_modules/
+    //   }
+    // ],
     loaders: [
       {
         test: /\.global\.scss$/,

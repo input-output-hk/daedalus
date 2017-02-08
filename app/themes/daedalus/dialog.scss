@@ -14,6 +14,11 @@ $dialog-content-padding: 30px;
 
 .dialog {
   border-radius: 10px;
+  min-width: 500px;
+}
+
+.body {
+  overflow-y: scroll;
 }
 
 .navigation {

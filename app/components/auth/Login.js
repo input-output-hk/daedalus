@@ -4,34 +4,34 @@ import { observer } from 'mobx-react';
 import MobxReactForm from 'mobx-react-form';
 // import Input from 'react-toolbox/lib/input/Input';
 // import Button from 'react-toolbox/lib/button/Button';
-import { defineMessages, intlShape } from 'react-intl';
-import classnames from 'classnames';
+// import { defineMessages, intlShape } from 'react-intl';
+// import classnames from 'classnames';
 // import logo from '../../assets/images/daedalus-logo-big.svg';
-import styles from './Login.scss';
+// import styles from './Login.scss';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 
-const messages = defineMessages({
-  emailHint: {
-    id: 'login.form.email.hint',
-    defaultMessage: '!!!E-mail',
-    description: 'Hint for the login form email input.'
-  },
-  passwordHint: {
-    id: 'login.form.password.hint',
-    defaultMessage: '!!!Password',
-    description: 'Hint for the login form password input.'
-  },
-  submitButtonLabel: {
-    id: 'login.form.submit.label',
-    defaultMessage: '!!!Login',
-    description: 'Label for the login form submit button.'
-  },
-  invalidCredentials: {
-    id: 'login.form.invalidCredentials',
-    defaultMessage: '!!!E-mail or password is wrong.',
-    description: 'Error shown when invalid login credentials are submitted.'
-  },
-});
+// const messages = defineMessages({
+//   emailHint: {
+//     id: 'login.form.email.hint',
+//     defaultMessage: '!!!E-mail',
+//     description: 'Hint for the login form email input.'
+//   },
+//   passwordHint: {
+//     id: 'login.form.password.hint',
+//     defaultMessage: '!!!Password',
+//     description: 'Hint for the login form password input.'
+//   },
+//   submitButtonLabel: {
+//     id: 'login.form.submit.label',
+//     defaultMessage: '!!!Login',
+//     description: 'Label for the login form submit button.'
+//   },
+//   invalidCredentials: {
+//     id: 'login.form.invalidCredentials',
+//     defaultMessage: '!!!E-mail or password is wrong.',
+//     description: 'Error shown when invalid login credentials are submitted.'
+//   },
+// });
 
 @observer
 export default class Login extends Component {
@@ -43,15 +43,15 @@ export default class Login extends Component {
     isInvalid: PropTypes.bool,
   };
 
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
+  // static contextTypes = {
+  //   intl: intlShape.isRequired,
+  // };
 
-  handleInputKeyPress(event:KeyboardEvent) {
-    if (event.which === 13) { // ENTER key
-      this.submit();
-    }
-  }
+  // handleInputKeyPress(event:KeyboardEvent) {
+  //   if (event.which === 13) { // ENTER key
+  //     this.submit();
+  //   }
+  // }
 
   validator = new MobxReactForm({
     options: {
@@ -72,15 +72,15 @@ export default class Login extends Component {
   }
 
   render() {
-    const { validator } = this;
-    const { isSubmitting, isInvalid, onCreateAccount } = this.props;
-    const { intl } = this.context;
-    const email = validator.$('email');
-    const password = validator.$('password');
-    const componentClassNames = classnames([
-      styles.component,
-      isInvalid ? styles.invalidCredentials : null
-    ]);
+    // const { validator } = this;
+    // const { isSubmitting, isInvalid, onCreateAccount } = this.props;
+    // const { intl } = this.context;
+    // const email = validator.$('email');
+    // const password = validator.$('password');
+    // const componentClassNames = classnames([
+    //   styles.component,
+    //   isInvalid ? styles.invalidCredentials : null
+    // ]);
 
     // TODO: remove after demo!!
     return (

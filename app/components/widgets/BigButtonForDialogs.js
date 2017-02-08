@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import classnames from 'classnames';
 import styles from './BigButtonForDialogs.scss';
 
@@ -16,7 +16,7 @@ export default class BigButtonForDialogs extends Component {
     const { label, description, icon, onClick, isDisabled = false } = this.props;
     const componentClasses = classnames([
       styles.component,
-      isDisabled ? styles.disabled: null
+      isDisabled ? styles.disabled : null
     ]);
     return (
       <button

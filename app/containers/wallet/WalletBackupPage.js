@@ -62,41 +62,48 @@ export default class WalletBackupPage extends Component {
       acceptPrivacyNoticeForWalletBackup,
       continueToRecoveryPhraseForWalletBackup
     } = this.props.actions;
-    if (currentStep === 'privacyWarning') return (
-      <WalletBackupPrivacyWarningDialog
-        canPhraseBeShown={isPrivacyNoticeAccepted && countdownRemaining === 0}
-        isPrivacyNoticeAccepted={isPrivacyNoticeAccepted}
-        countdownRemaining={countdownRemaining}
-        onAcceptPrivacyNotice={acceptPrivacyNoticeForWalletBackup}
-        onCancelBackup={cancelWalletBackup}
-        onContinue={continueToRecoveryPhraseForWalletBackup}
-      />
-    );
-    if (currentStep === 'recoveryPhraseDisplay') return (
-      <WalletRecoveryPhraseDisplayDialog
-        recoveryPhrase={recoveryPhraseWords.reduce((phrase, { word }) => `${phrase} ${word}`, '')}
-        onStartWalletBackup={startWalletBackup}
-        onCancelBackup={cancelWalletBackup}
-      />
-    );
-    if (currentStep === 'recoveryPhraseEntry') return (
-      <WalletRecoveryPhraseEntryDialog
-        isTermDeviceAccepted={isTermDeviceAccepted}
-        enteredPhrase={enteredPhrase}
-        canFinishBackup={isRecoveryPhraseValid && isTermDeviceAccepted && isTermRecoveryAccepted}
-        isTermRecoveryAccepted={isTermRecoveryAccepted}
-        isValid={isRecoveryPhraseValid}
-        onAcceptTermDevice={acceptWalletBackupTermDevice}
-        onAcceptTermRecovery={acceptWalletBackupTermRecovery}
-        onAddWord={addWordToWalletBackupVerification}
-        onCancelBackup={cancelWalletBackup}
-        onClear={clearEnteredRecoveryPhrase}
-        onFinishBackup={finishWalletBackup}
-        onRestartBackup={restartWalletBackup}
-        recoveryPhraseShuffled={recoveryPhraseShuffled}
-      />
-    );
 
+    if (currentStep === 'privacyWarning') {
+      return (
+        <WalletBackupPrivacyWarningDialog
+          canPhraseBeShown={isPrivacyNoticeAccepted && countdownRemaining === 0}
+          isPrivacyNoticeAccepted={isPrivacyNoticeAccepted}
+          countdownRemaining={countdownRemaining}
+          onAcceptPrivacyNotice={acceptPrivacyNoticeForWalletBackup}
+          onCancelBackup={cancelWalletBackup}
+          onContinue={continueToRecoveryPhraseForWalletBackup}
+        />
+      );
+    }
+
+    if (currentStep === 'recoveryPhraseDisplay') {
+      return (
+        <WalletRecoveryPhraseDisplayDialog
+          recoveryPhrase={recoveryPhraseWords.reduce((phrase, { word }) => `${phrase} ${word}`, '')}
+          onStartWalletBackup={startWalletBackup}
+          onCancelBackup={cancelWalletBackup}
+        />
+      );
+    }
+
+    if (currentStep === 'recoveryPhraseEntry') {
+      return (
+        <WalletRecoveryPhraseEntryDialog
+          isTermDeviceAccepted={isTermDeviceAccepted}
+          enteredPhrase={enteredPhrase}
+          canFinishBackup={isRecoveryPhraseValid && isTermDeviceAccepted && isTermRecoveryAccepted}
+          isTermRecoveryAccepted={isTermRecoveryAccepted}
+          isValid={isRecoveryPhraseValid}
+          onAcceptTermDevice={acceptWalletBackupTermDevice}
+          onAcceptTermRecovery={acceptWalletBackupTermRecovery}
+          onAddWord={addWordToWalletBackupVerification}
+          onCancelBackup={cancelWalletBackup}
+          onClear={clearEnteredRecoveryPhrase}
+          onFinishBackup={finishWalletBackup}
+          onRestartBackup={restartWalletBackup}
+          recoveryPhraseShuffled={recoveryPhraseShuffled}
+        />
+      );
+    }
   }
-
 }

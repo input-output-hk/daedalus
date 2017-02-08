@@ -19,7 +19,7 @@ export default class SidebarWalletMenuItem extends Component {
 
   render() {
     const { title, info, active, onClick, isConnected } = this.props;
-    const componentStyles = classNames([ styles.component, active ? styles.active : null ]);
+    const componentStyles = classNames([styles.component, active ? styles.active : null]);
     const statusStyles = classNames([
       styles.status,
       isConnected ? null : styles.connecting,
@@ -31,7 +31,7 @@ export default class SidebarWalletMenuItem extends Component {
           <span className={styles.title}>{title}</span>
           <span className={styles.info}>{info}</span>
         </span>
-        <img className={statusStyles} src={statusIcon} />
+        <img className={statusStyles} src={statusIcon} role="presentation" />
       </button>
     );
   }

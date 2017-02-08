@@ -5,11 +5,11 @@ import MobxReactForm from 'mobx-react-form';
 import Input from 'react-toolbox/lib/input/Input';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
+import { validateMnemonic } from 'bip39';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import { isValidWalletName } from '../../lib/validations';
-import { validateMnemonic } from 'bip39';
 import globalMessages from '../../i18n/global-messages';
-import { WalletAlreadyRestoredError } from '../../api/errors';
+import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletRestoreDialog.scss';
 
 const messages = defineMessages({
@@ -48,11 +48,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Invalid recovery phrase',
     description: 'Error message shown when invalid recovery phrase was entered.'
   },
-  walletAlreadyRestored: {
-    id: 'wallet.restore.dialog.form.errors.walletAlreadyRestored',
-    defaultMessage: '!!!You already restored a wallet with this phrase.',
-    description: 'Error message shown when restore recovery phrase was entered again.'
-  }
 });
 
 @observer
@@ -65,7 +60,7 @@ export default class WalletRestoreDialog extends Component {
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
-    error: PropTypes.instanceOf(Error),
+    error: PropTypes.instanceOf(LocalizableError),
   };
 
   state = {
@@ -80,13 +75,19 @@ export default class WalletRestoreDialog extends Component {
       walletName: {
         value: '',
         validate: [({ field }) => (
-          [isValidWalletName(field.value), this.context.intl.formatMessage(globalMessages.invalidWalletName)]
+          [
+            isValidWalletName(field.value),
+            this.context.intl.formatMessage(globalMessages.invalidWalletName)
+          ]
         )]
       },
       recoveryPhrase: {
         value: '',
         validate: [({ field }) => (
-          [validateMnemonic(field.value), this.context.intl.formatMessage(globalMessages.invalidMnemonic)]
+          [
+            validateMnemonic(field.value),
+            this.context.intl.formatMessage(globalMessages.invalidMnemonic)
+          ]
         )]
       },
     }
@@ -118,15 +119,6 @@ export default class WalletRestoreDialog extends Component {
     const { error, onCancel } = this.props;
     const walletName = validator.$('walletName');
     const recoveryPhrase = validator.$('recoveryPhrase');
-    let serverError = null;
-    if (error) {
-      if (error instanceof WalletAlreadyRestoredError) {
-        serverError = intl.formatMessage(messages.walletAlreadyRestored);
-      } else {
-        // Display raw error message if not known
-        serverError = error.message;
-      }
-    }
     return (
       <Dialog
         className={styles.component}
@@ -160,7 +152,7 @@ export default class WalletRestoreDialog extends Component {
           rows={3}
         />
 
-        {serverError && <p className={styles.serverError}>{serverError}</p>}
+        {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
         <DialogCloseButton onClose={onCancel} />
 

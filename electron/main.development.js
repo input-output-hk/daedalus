@@ -2,6 +2,7 @@ import { app, BrowserWindow, Menu, shell, ipcMain, dialog } from 'electron';
 import osxMenu from './menus/osx';
 import fs from 'fs';
 import winLinuxMenu from './menus/win-linux';
+import ipcApi from './ipc-api';
 
 let menu;
 let mainWindow = null;
@@ -71,6 +72,9 @@ app.on('ready', async () => {
     // TODO: revert to 480 x 757 when reintroducing login
   });
 
+  // Initialize our ipc api methods that can be called by the render processes
+  ipcApi({ mainWindow });
+
   mainWindow.loadURL(`file://${__dirname}/../app/index.html`);
   mainWindow.on('page-title-updated', event => {
    event.preventDefault()
@@ -80,11 +84,6 @@ app.on('ready', async () => {
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.show();
     mainWindow.focus();
-  });
-
-  ipcMain.on('resize-window', (event, { width, height, animate }) => {
-    if (event.sender !== mainWindow.webContents) return;
-    mainWindow.setSize(width, height, animate);
   });
 
   mainWindow.on('closed', () => {

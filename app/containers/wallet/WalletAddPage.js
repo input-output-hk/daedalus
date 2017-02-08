@@ -1,6 +1,6 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { observer, inject, PropTypes as MobxPropTypes } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
 
 @inject('stores', 'actions') @observer
@@ -21,11 +21,11 @@ export default class WalletAddPage extends Component {
       toggleAddWallet
     } = this.props.actions;
     return (
-    <WalletAddDialog
-      onCreate={toggleCreateWalletDialog}
-      onRestore={toggleWalletRestore}
-      onCancel={toggleAddWallet}
-    />
+      <WalletAddDialog
+        onCreate={toggleCreateWalletDialog}
+        onRestore={toggleWalletRestore}
+        onCancel={toggleAddWallet}
+      />
     );
   }
 

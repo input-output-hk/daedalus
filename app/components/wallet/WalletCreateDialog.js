@@ -4,9 +4,9 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-toolbox/lib/input/Input';
-import Dropup from '../widgets/forms/Dropup';
 import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
+import Dropup from '../widgets/forms/Dropup';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import { isValidWalletName, isValidCurrency } from '../../lib/validations';
 import globalMessages from '../../i18n/global-messages';
@@ -69,13 +69,19 @@ export default class WalletCreateDialog extends Component {
       walletName: {
         value: '',
         validate: [({ field }) => (
-          [isValidWalletName(field.value), this.context.intl.formatMessage(globalMessages.invalidWalletName)]
+          [
+            isValidWalletName(field.value),
+            this.context.intl.formatMessage(globalMessages.invalidWalletName)
+          ]
         )]
       },
       currency: {
         value: 'ada',
         validate: [({ field }) => (
-          [isValidCurrency(field.value), this.context.intl.formatMessage(messages.invalidCurrency)]
+          [
+            isValidCurrency(field.value),
+            this.context.intl.formatMessage(messages.invalidCurrency)
+          ]
         )]
       },
     }

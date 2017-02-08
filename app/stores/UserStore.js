@@ -50,12 +50,13 @@ export default class UserStore extends Store {
     const { router, wallets } = this.stores;
     if (this.isLoggedIn && this.active && wallets.all.length) {
       const walletToShowAfterLogin = wallets.all[0]; // just pick the first for now
-      if (router.location.pathname === '/login') {
+      if (router.location.pathname === '/loading') {
         router.push(wallets.getWalletRoute(walletToShowAfterLogin.id));
         // this.actions.resizeWindow({ width: 1150, height: 870 });
       }
     } else {
-      if (router.location.pathname !== '/login') router.push('/login');
+      // TODO: move the loading page redirect somewhere more appropriate!
+      if (router.location.pathname !== '/loading') router.push('/loading');
       // this.actions.resizeWindow({ width: 480, height: 575 });
     }
   };

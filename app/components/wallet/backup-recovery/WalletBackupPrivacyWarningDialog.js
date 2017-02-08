@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
-import CheckboxWithLongLabel from '../../widgets/CheckboxWithLongLabel';
+import CheckboxWithLongLabel from '../../widgets/forms/CheckboxWithLongLabel';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import styles from './WalletBackupPrivacyWarningDialog.scss';
 
@@ -28,7 +28,7 @@ const messages = defineMessages({
   },
   termNobodyWatching: {
     id: 'wallet.backup.privacy.warning.dialog.checkbox.label.nobodyWatching',
-    defaultMessage: `!!!Make sure nobody looks into your screen unless you want them to have access to your funds.`,
+    defaultMessage: '!!!Make sure nobody looks into your screen unless you want them to have access to your funds.',
     description: 'Label for the checkbox on wallet backup dialog describing that nobody should be watching when recovery phrase is shown'
   }
 });

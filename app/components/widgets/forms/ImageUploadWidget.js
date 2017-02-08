@@ -2,23 +2,23 @@
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import styles from './FileUploadWidget.scss';
+import styles from './ImageUploadWidget.scss';
 
 const messages = defineMessages({
   dropFileHere: {
-    id: 'file.upload.widget.drop.file.here.label',
+    id: 'ImageUploadWidget.dropFileHint',
     defaultMessage: '!!!Drop file here',
     description: 'Label "Drop file here" on the file upload widget.'
   },
   orClickToUpload: {
-    id: 'file.upload.widget.click.to.upload.label',
+    id: 'ImageUploadWidget.clickToUploadLabel',
     defaultMessage: '!!!or click to upload',
     description: 'Label "or click to upload" on the file upload widget.'
   },
 });
 
 @observer
-export default class FileUploadWidget extends Component {
+export default class ImageUploadWidget extends Component {
 
   static propTypes = {
     label: PropTypes.string.isRequired

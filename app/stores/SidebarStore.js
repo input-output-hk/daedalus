@@ -35,7 +35,7 @@ export default class SidebarStore extends Store {
     } else {
       this.route = route;
       this.isMaximized = false;
-      if (route === '/settings' || route === '/staking') {
+      if (route === '/settings' || route === '/ada-redemption') {
         this.stores.router.push(route);
       }
     }

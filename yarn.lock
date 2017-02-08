@@ -431,6 +431,10 @@ atob@~1.1.0:
   version "1.1.3"
   resolved "https://registry.yarnpkg.com/atob/-/atob-1.1.3.tgz#95f13629b12c3a51a5d215abdce2aa9f32f80773"
 
+attr-accept@^1.0.3:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/attr-accept/-/attr-accept-1.1.0.tgz#b5cd35227f163935a8f1de10ed3eba16941f6be6"
+
 autoprefixer@^6.3.1, autoprefixer@^6.3.7:
   version "6.6.1"
   resolved "https://registry.yarnpkg.com/autoprefixer/-/autoprefixer-6.6.1.tgz#11a4077abb4b313253ec2f6e1adb91ad84253519"
@@ -5790,6 +5794,16 @@ pbkdf2@^3.0.3:
   dependencies:
     create-hmac "^1.1.2"
 
+pdf.js-extract@^0.0.5:
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/pdf.js-extract/-/pdf.js-extract-0.0.5.tgz#d141942ee2e291e8fd851159ec15cf6930aa95ce"
+  dependencies:
+    pdfjs-dist-for-node "^1.0.892-rc.1"
+
+pdfjs-dist-for-node@^1.0.892-rc.1:
+  version "1.0.893"
+  resolved "https://registry.yarnpkg.com/pdfjs-dist-for-node/-/pdfjs-dist-for-node-1.0.893.tgz#10be171dc212f4aa862528b43258d745399bc3ad"
+
 pend@~1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/pend/-/pend-1.2.0.tgz#7a57eb550a6783f9115331fcf4663d5c8e007a50"
@@ -6391,6 +6405,12 @@ react-dom@^15.3.2:
     fbjs "^0.8.1"
     loose-envify "^1.1.0"
     object-assign "^4.1.0"
+
+react-dropzone@^3.9.2:
+  version "3.9.2"
+  resolved "https://registry.yarnpkg.com/react-dropzone/-/react-dropzone-3.9.2.tgz#84703d1ee20ea4118f64fa38c14218415fecb1e9"
+  dependencies:
+    attr-accept "^1.0.3"
 
 react-fuzzy@^0.3.3:
   version "0.3.3"

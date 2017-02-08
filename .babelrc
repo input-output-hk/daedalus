@@ -7,9 +7,6 @@
     ["transform-runtime", {
       "polyfill": true,
       "regenerator": true
-    }],
-    ["babel-plugin-transform-builtin-extend", {
-      "globals": ["Error"]
     }]
   ],
   "env": {
@@ -18,13 +15,7 @@
       "plugins": ["babel-plugin-dev-expression"]
     },
     "development": {
-      "presets": ["react-hmre"],
-      "plugins": [
-        ["react-intl", {
-          "messagesDir": "./locales/",
-          "enforceDescriptions": true
-        }]
-      ]
+      "presets": ["react-hmre"]
     },
     "test": {
       "plugins": [
