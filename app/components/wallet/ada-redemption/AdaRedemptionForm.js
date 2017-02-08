@@ -115,7 +115,10 @@ export default class AdaRedemptionForm extends Component {
           // Don't validate No pass phrase needed when certificate is not encrypted
           if (!this.props.isCertificateEncrypted) return [true];
           // Otherwise check mnemonic
-          return [isValidMnemonic(field.value), this.context.intl.formatMessage(new InvalidMnemonicError())]
+          return [
+            isValidMnemonic(field.value),
+            this.context.intl.formatMessage(new InvalidMnemonicError())
+          ];
         }]
       },
       redemptionCode: {
@@ -144,7 +147,7 @@ export default class AdaRedemptionForm extends Component {
       isSubmitting ? styles.isSubmitting : null
     ]);
     const showPassPhraseWidget = isCertificateSelected && isCertificateEncrypted;
-    const canSubmit = redemptionCode != '';
+    const canSubmit = redemptionCode !== '';
 
     return (
       <div className={componentClasses}>

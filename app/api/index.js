@@ -5,18 +5,6 @@ import User from '../domain/User';
 
 // STRUCTS
 
-export type userStruct = {
-  id: string,
-  profile: {
-    name: string,
-    email: string,
-    phoneNumber: string,
-    passwordHash: string,
-    passwordUpdateDate: string,
-    languageLocale: string
-  }
-};
-
 export type walletStruct = {
   id: string,
   userId: string,
@@ -46,31 +34,18 @@ export type walletRecoveryPhraseStruct = {
 
 // REQUESTS
 
-export type loginRequest = {
-  email: string,
-  passwordHash: string
-}
-
 export type getTransactionsRequest = {
   walletId: string,
   searchTerm: string,
   skip: number,
   limit: number
-}
-
-export type createUserRequest = {
-  name: string,
-  email: string,
-  phoneNumber: string,
-  password: string,
-  languageLocale: string
-}
+};
 
 export type createWalletRequest = {
   name: string,
   currency: string,
   mnemonic: string,
-}
+};
 
 export type createTransactionRequest = {
   walletId: string,
@@ -80,42 +55,33 @@ export type createTransactionRequest = {
   currency: string,
   title: string,
   description: ?string,
-}
-
-export type updateUserProfileFieldRequest = {
-  field: string,
-  value: string
-}
+};
 
 export type getWalletRecoveryPhraseRequest = {
   walletId: string
-}
+};
 
 export type walletRestoreRequest = {
   recoveryPhrase: string
-}
+};
 
 export type redeemAdaRequest = {
   redemptionCode: string,
   walletId: string,
-}
+};
 
 // INTERFACE
 
 export type Api = {
-  login(request: loginRequest): Promise<boolean>,
-  getUser(): Promise<User>,
   getWallets(userId: string): Promise<[Wallet]>,
   getTransactions(request: getTransactionsRequest): Promise<{
     transactions: [WalletTransaction],
     total: number
   }>,
-  createUser(request: createUserRequest): Promise<userStruct>,
   createWallet(request: createWalletRequest): Promise<Wallet>,
   createTransaction(request: createTransactionRequest): Promise<WalletTransaction>,
-  updateProfileField(request: updateUserProfileFieldRequest): Promise<any>,
   isValidAddress(currency: string, address: string): Promise<boolean>,
   getTermsOfUse(): Promise<string>,
   getWalletRecoveryPhrase(request: getWalletRecoveryPhraseRequest): Promise<string>,
   restoreWallet(request: walletRestoreRequest) : Promise<any>
-}
+};

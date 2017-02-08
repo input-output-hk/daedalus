@@ -51,6 +51,7 @@ export default class WalletsStore extends Store {
     this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
     const wallet = await this.createWalletRequest.execute(this._newWalletDetails);
     await this.walletsRequest.patch(result => { result.push(wallet); });
+    this.goToWalletRoute(wallet.id);
   };
 
   _sendMoney = async (transactionDetails) => {
@@ -67,7 +68,7 @@ export default class WalletsStore extends Store {
   };
 
   @computed get all() {
-    return this.walletsRequest.execute(this.stores.user.active.id).result || [];
+    return this.walletsRequest.execute().result || [];
   }
 
   @computed get active() {

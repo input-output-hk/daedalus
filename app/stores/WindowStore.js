@@ -8,9 +8,7 @@ export default class WindowStore extends Store {
   constructor(...args) {
     super(...args);
     const { resizeWindow } = this.actions;
-    this.mapActions([
-      { action: resizeWindow, listener: this._resizeWindow },
-    ]);
+    resizeWindow.listen(this._resizeWindow);
   }
 
   // PRIVATE
