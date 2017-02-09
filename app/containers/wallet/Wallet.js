@@ -34,9 +34,7 @@ export default class Wallet extends Component {
   };
 
   render() {
-    const { pathname } = this.props;
     const { wallets } = this.props.stores;
-    const { BASE_ROUTE } = wallets;
     return (
       <Layout>
         <WalletWithNavigation

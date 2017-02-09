@@ -1,6 +1,6 @@
 @import '../../themes/mixins/error-message';
 
-.serverError {
+.error {
   @include error-message;
   text-align: center;
 }

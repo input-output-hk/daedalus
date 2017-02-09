@@ -100,15 +100,16 @@ export default class WalletSendForm extends Component {
         value: '',
         validate: ({ field }) => {
           const isValid = field.value.length >= 3;
-          return [isValid, 'invalidTitle'];
+          return [isValid, this.context.intl.formatMessage(messages.invalidTitle)];
         }
       },
       receiver: {
         value: '',
         validate: ({ field }) => {
           const value = field.value;
-          if (value === '') return [false, 'fieldIsRequired'];
-          return this.props.addressValidator(field.value).then(isValid => [isValid, 'invalidAddress']);
+          if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
+          return this.props.addressValidator(field.value)
+            .then(isValid => [isValid, this.context.intl.formatMessage(messages.invalidAddress)]);
         }
       },
       amount: {
@@ -118,7 +119,7 @@ export default class WalletSendForm extends Component {
             allow_leading_zeroes: false,
             min: 1,
           });
-          return [isValid, 'invalidAmount'];
+          return [isValid, this.context.intl.formatMessage(messages.invalidAmount)];
         }
       },
       currency: {
@@ -149,9 +150,9 @@ export default class WalletSendForm extends Component {
     const amount = validator.$('amount');
     const description = validator.$('description');
     const errors = {
-      title: title.error && messages[title.error] ? intl.formatMessage(messages[title.error]) : null,
-      receiver: receiver.error && messages[receiver.error] ? intl.formatMessage(messages[receiver.error]) : null,
-      amount: amount.error ? intl.formatMessage(messages[amount.error]) : null,
+      title: title.error || null,
+      receiver: receiver.error || null,
+      amount: amount.error || null,
     };
     return (
       <div className={styles.component}>

@@ -7,7 +7,7 @@ export default class Reaction {
   hasBeenStarted: boolean;
   dispose: () => void;
 
-  constructor(reaction) {
+  constructor(reaction: () => void) {
     this.reaction = reaction;
     this.hasBeenStarted = false;
   }

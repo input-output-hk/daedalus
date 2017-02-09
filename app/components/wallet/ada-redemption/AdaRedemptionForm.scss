@@ -1,0 +1,35 @@
+@import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
+
+.component {
+  padding: 2rem;
+  height: 100%;
+  overflow: visible;
+}
+
+.headline {
+  font-family: $font-medium;
+  font-size: 24px;
+  margin-bottom: 2rem;
+  color: $text-color-accent;
+}
+
+.certificate {
+  margin-bottom: 2rem;
+}
+
+.error {
+  @include error-message;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.submitButtonSpinning {
+  width: 100%;
+  @include loading-spinner("../../../assets/images/spinner-light.svg");
+}
+
+.submitButton {
+  width: 100%;
+  text-transform: uppercase;
+}

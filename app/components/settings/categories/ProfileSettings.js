@@ -4,9 +4,9 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import Input from 'react-toolbox/lib/input/Input';
-import DropUp from '../../widgets/forms/Dropup';
 import classnames from 'classnames';
-import FileUploadWidget from '../../widgets/FileUploadWidget';
+import DropUp from '../../widgets/forms/Dropup';
+import FileUploadWidget from '../../widgets/forms/ImageUploadWidget';
 import Profile from '../../../domain/Profile';
 import styles from './ProfileSettings.scss';
 

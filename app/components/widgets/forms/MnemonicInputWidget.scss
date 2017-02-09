@@ -1,0 +1,23 @@
+@import '../../../themes/mixins/forms';
+
+.component {
+  margin-bottom: 1.5rem;
+}
+
+.tokens {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -5px;
+  margin-right: -5px;
+}
+
+.label {
+  @include form-label;
+  margin-bottom: 0.75rem;
+}
+
+.input {
+  width: 8rem;
+  margin: 5px;
+  padding: 0 !important;
+}

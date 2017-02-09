@@ -63,7 +63,7 @@ export default class WalletsStore extends Store {
       currency: wallet.currency,
     });
     this._refreshWalletsData();
-    this._showWallet(wallet.id);
+    this.goToWalletRoute(wallet.id);
   };
 
   @computed get all() {
@@ -118,11 +118,14 @@ export default class WalletsStore extends Store {
     const restoredWallet = await this.restoreRequest.execute(params);
     this._toggleWalletRestore();
     this._refreshWalletsData();
-    this._showWallet(restoredWallet.id);
+    this.goToWalletRoute(restoredWallet.id);
   };
 
-  _showWallet(walletId) {
-    this.actions.goToRoute({ route: this.getWalletRoute(walletId) });
+  goToWalletRoute(walletId) {
+    const route = this.getWalletRoute(walletId);
+    this.actions.goToRoute({ route });
+    // TODO: Make sidebar route dependent on the real route instead!! (this is just a hack)
+    this.actions.changeSidebarRoute({ route });
   }
 
 }

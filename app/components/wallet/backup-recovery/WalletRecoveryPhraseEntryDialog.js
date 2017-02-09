@@ -6,7 +6,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import WalletRecoveryPhraseMnemonic from './WalletRecoveryPhraseMnemonic';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
-import CheckboxWithLongLabel from '../../widgets/CheckboxWithLongLabel';
+import CheckboxWithLongLabel from '../../widgets/forms/CheckboxWithLongLabel';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import MnemonicWord from './MnemonicWord';
 import styles from './WalletRecoveryPhraseEntryDialog.scss';
@@ -34,7 +34,7 @@ const messages = defineMessages({
   },
   termDevice: {
     id: 'wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.device',
-    defaultMessage: `!!!I understand that my money are held securely on this device only, not on the company servers`,
+    defaultMessage: '!!!I understand that my money are held securely on this device only, not on the company servers',
     description: 'Term and condition on wallet backup dialog describing that wallet is on a users device, not on company servers'
   },
   termRecovery: {

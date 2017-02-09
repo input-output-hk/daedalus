@@ -95,6 +95,11 @@ export type walletRestoreRequest = {
   recoveryPhrase: string
 }
 
+export type redeemAdaRequest = {
+  redemptionCode: string,
+  walletId: string,
+}
+
 // INTERFACE
 
 export type Api = {
