@@ -5,9 +5,8 @@ import classnames from 'classnames';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import Button from 'react-toolbox/lib/button/Button';
 import Input from 'react-toolbox/lib/input/Input';
-import MobxReactForm from 'mobx-react-form';
+import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import { defineMessages, intlShape } from 'react-intl';
-// import MnemonicInputWidget from '../../widgets/forms/MnemonicInputWidget';
 import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { InvalidMnemonicError } from '../../../i18n/global-errors';
@@ -85,17 +84,8 @@ export default class AdaRedemptionForm extends Component {
     intl: intlShape.isRequired,
   };
 
-  state = {
-    passPhrase: ''
-  };
-
-  onPassPhraseChanged = (passPhrase: string) => {
-    this.setState({ passPhrase });
-    if (isValidMnemonic(passPhrase)) this.props.onPassPhraseChanged(passPhrase);
-  };
-
   submit = () => {
-    this.validator.submit({
+    this.form.submit({
       onSuccess: (form) => {
         const { walletId } = form.values();
         this.props.onSubmit({ walletId });
@@ -104,44 +94,61 @@ export default class AdaRedemptionForm extends Component {
     });
   };
 
-  validator = new MobxReactForm({
+  form = new ReactToolboxMobxForm({
     fields: {
       certificate: {
-        value: null,
+        label: this.context.intl.formatMessage(messages.certificateLabel),
+        placeholder: this.context.intl.formatMessage(messages.certificateHint),
+        type: 'file',
+        bindings: 'ReactToolbox',
       },
       passPhrase: {
+        label: this.context.intl.formatMessage(messages.passphraseLabel),
+        placeholder: this.context.intl.formatMessage(messages.passphraseHint),
         value: '',
+        bindings: 'ReactToolbox',
         validate: [({ field }) => {
           // Don't validate No pass phrase needed when certificate is not encrypted
           if (!this.props.isCertificateEncrypted) return [true];
           // Otherwise check mnemonic
+          const passPhrase = field.value;
+          if (isValidMnemonic(passPhrase)) this.props.onPassPhraseChanged(passPhrase);
           return [
-            isValidMnemonic(field.value),
+            isValidMnemonic(passPhrase),
             this.context.intl.formatMessage(new InvalidMnemonicError())
           ];
         }]
       },
       redemptionCode: {
+        label: this.context.intl.formatMessage(messages.redemptionCodeLabel),
+        placeholder: this.context.intl.formatMessage(messages.redemptionCodeHint),
         value: '',
+        bindings: 'ReactToolbox',
       },
       walletId: {
+        label: this.context.intl.formatMessage(messages.walletSelectLabel),
         value: this.props.wallets[0].value,
+        bindings: 'ReactToolbox',
       }
+    }
+  }, {
+    options: {
+      validateOnChange: false,
     }
   });
 
   render() {
     const { intl } = this.context;
-    const { validator } = this;
+    const { form } = this;
     const {
       wallets, isCertificateSelected, isCertificateEncrypted,
       isSubmitting, onCertificateSelected, redemptionCode,
       onRedemptionCodeChanged, error
     } = this.props;
-    const certificate = validator.$('certificate');
-    const passPhrase = validator.$('passPhrase');
-    const redemptionCodeField = validator.$('redemptionCode');
-    const walletId = validator.$('walletId');
+    const certificate = form.$('certificate');
+    const passPhrase = form.$('passPhrase');
+    const redemptionCodeField = form.$('redemptionCode');
+    const walletId = form.$('walletId');
     const componentClasses = classnames([
       styles.component,
       isSubmitting ? styles.isSubmitting : null
@@ -156,8 +163,7 @@ export default class AdaRedemptionForm extends Component {
 
         <div className={styles.certificate}>
           <FileUploadWidget
-            label={intl.formatMessage(messages.certificateLabel)}
-            hint={intl.formatMessage(messages.certificateHint)}
+            {...certificate.bind()}
             selectedFile={certificate.value}
             onFileSelected={(file) => {
               onCertificateSelected(file);
@@ -167,44 +173,29 @@ export default class AdaRedemptionForm extends Component {
         </div>
 
         {showPassPhraseWidget && (
-          <Input
-            className="pass-phrase"
-            label={intl.formatMessage(messages.passphraseLabel)}
-            hint={intl.formatMessage(messages.passphraseHint)}
-            value={this.state.passPhrase}
-            error={passPhrase.error}
-            onChange={this.onPassPhraseChanged}
-            onFocus={passPhrase.onFocus}
-            onBlur={() => {
-              passPhrase.onChange(this.state.passPhrase);
+          <Input className="pass-phrase" {...passPhrase.bind({
+            onBlur: event => {
+              event.preventDefault();
               passPhrase.onBlur();
-            }}
-          />
+              passPhrase.validate();
+            }
+          })} />
         )}
 
         <Input
           className="redemption-code"
-          label={intl.formatMessage(messages.redemptionCodeLabel)}
-          hint={intl.formatMessage(messages.redemptionCodeHint)}
+          {...redemptionCodeField.bind()}
           value={redemptionCode}
-          error={redemptionCodeField.error}
           onChange={(value) => {
             onRedemptionCodeChanged(value);
             redemptionCodeField.onChange(value);
           }}
-          onFocus={redemptionCodeField.onFocus}
-          onBlur={redemptionCodeField.onBlur}
         />
 
         <Dropdown
           className="wallet"
-          label={intl.formatMessage(messages.walletSelectLabel)}
-          value={walletId.value}
-          onChange={walletId.onChange}
-          onFocus={walletId.onFocus}
-          onBlur={walletId.onBlur}
-          error={walletId.error}
           source={wallets}
+          {...walletId.bind()}
         />
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
