@@ -5,28 +5,8 @@
   height: 100%;
 }
 
-%button {
+.navItem {
   height: 100%;
-  width: 25%;
-  background-color: rgba($walletNavThemeColor, 0.1);
-  &:hover {
-    background-color: rgba($walletNavThemeColor, 0.3);
-  }
-}
-
-.homeLink {
-  @extend %button;
-  width: 50%;
-}
-
-.sendLink {
-  @extend %button;
-  background-color: rgba($walletNavThemeColor, 0.20);
-  &:hover {
-    background-color: rgba($walletNavThemeColor, 0.3);
-  }
-}
-
-.receiveLink {
-  @extend %button;
+  flex-grow: 1;
+  background-color: $wallet-nav-bg-color;
 }

@@ -1,14 +1,13 @@
 @import "../navigation/walletNavConfig";
 
 .component {
-  background-color: $color-primary-bg;
   height: 100%;
   display: flex;
   flex-direction: column;
 }
 
 .navigation {
-  height: 200px;
+  height: $walletNavHeight;
   flex-shrink: 0;
 }
 

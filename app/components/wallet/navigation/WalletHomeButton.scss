@@ -11,7 +11,7 @@
 
 .normal {
   @extend %base;
-  color: $walletNavThemeColor;
+  color: $wallet-nav-color;
   &:hover {
     cursor: pointer;
   }
@@ -19,7 +19,7 @@
 
 .active {
   @extend %base;
-  background-color: $walletNavThemeColor;
+  background-color: $wallet-nav-color;
   color: white;
   .walletName {
     &:after {
@@ -56,7 +56,7 @@
     position: absolute;
     left: calc(50% - #{$walletNavSeparatorWidth / 2});
     bottom: -$walletNavSeparatorMargin / 3;
-    border-bottom: 1px solid $walletNavThemeColor;
+    border-bottom: 1px solid $wallet-nav-color;
   }
 }
 
