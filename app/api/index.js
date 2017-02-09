@@ -1,7 +1,6 @@
 // @flow
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
-import User from '../domain/User';
 
 // STRUCTS
 

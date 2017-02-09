@@ -1,6 +1,5 @@
 // @flow
 import { observable, action, computed } from 'mobx';
-import Request from './lib/Request';
 import Store from './lib/Store';
 
 export type walletBackupSteps = 'privacyWarning' | 'recoveryPhraseDisplay' | 'recoveryPhraseEntry' | void;

@@ -1,5 +1,5 @@
 // @flow
-import { observable, computed, action, runInAction } from 'mobx';
+import { observable, computed, action } from 'mobx';
 import Store from './lib/Store';
 import { matchRoute } from '../lib/routing-helpers';
 import CachedRequest from './lib/CachedRequest';
@@ -42,7 +42,7 @@ export default class WalletsStore extends Store {
     try {
       const recoveryPhrase = await this.getWalletRecoveryPhraseRequest.execute();
       this.actions.initiateWalletBackup({ recoveryPhrase });
-    } catch(error) {
+    } catch (error) {
       throw error;
     }
   };

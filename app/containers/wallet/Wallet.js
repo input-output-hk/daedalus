@@ -1,12 +1,8 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { Match, Redirect } from 'react-router';
 import { observer, inject } from 'mobx-react';
 import Layout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
-import WalletHomePage from './WalletHomePage';
-import WalletReceivePage from './WalletReceivePage';
-import WalletSendPage from './WalletSendPage';
 
 @inject('stores', 'actions') @observer
 export default class Wallet extends Component {
