@@ -1,11 +1,11 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
-import MobxReactForm from 'mobx-react-form';
 import Input from 'react-toolbox/lib/input/Input';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
 import { validateMnemonic } from 'bip39';
+import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import { isValidWalletName } from '../../lib/validations';
 import globalMessages from '../../i18n/global-messages';
@@ -67,30 +67,37 @@ export default class WalletRestoreDialog extends Component {
     isSubmitting: false
   };
 
-  validator = new MobxReactForm({
-    options: {
-      validateOnChange: false
-    },
+  form = new ReactToolboxMobxForm({
     fields: {
       walletName: {
+        label: this.context.intl.formatMessage(messages.walletNameInputLabel),
+        placeholder: this.context.intl.formatMessage(messages.walletNameInputHint),
         value: '',
         validate: [({ field }) => (
           [
             isValidWalletName(field.value),
             this.context.intl.formatMessage(globalMessages.invalidWalletName)
           ]
-        )]
+        )],
+        bindings: 'ReactToolbox',
       },
       recoveryPhrase: {
+        label: this.context.intl.formatMessage(messages.recoveryPhraseInputLabel),
+        placeholder: this.context.intl.formatMessage(messages.recoveryPhraseInputHint),
         value: '',
         validate: [({ field }) => (
           [
             validateMnemonic(field.value),
             this.context.intl.formatMessage(globalMessages.invalidMnemonic)
           ]
-        )]
+        )],
+        bindings: 'ReactToolbox',
       },
-    }
+    },
+  }, {
+    options: {
+      validateOnChange: false
+    },
   });
 
   actions = [
@@ -102,7 +109,7 @@ export default class WalletRestoreDialog extends Component {
   ];
 
   submit = () => {
-    this.validator.submit({
+    this.form.submit({
       onSuccess: (form) => {
         this.setState({ isSubmitting: true });
         this.props.onSubmit(form.values());
@@ -115,10 +122,8 @@ export default class WalletRestoreDialog extends Component {
 
   render() {
     const { intl } = this.context;
-    const { validator } = this;
+    const { form } = this;
     const { error, onCancel } = this.props;
-    const walletName = validator.$('walletName');
-    const recoveryPhrase = validator.$('recoveryPhrase');
     return (
       <Dialog
         className={styles.component}
@@ -126,30 +131,13 @@ export default class WalletRestoreDialog extends Component {
         actions={this.actions}
         active
       >
-        <Input
-          type="text"
-          className="walletName"
-          label={intl.formatMessage(messages.walletNameInputLabel)}
-          hint={intl.formatMessage(messages.walletNameInputHint)}
-          value={walletName.value}
-          error={walletName.error}
-          onChange={walletName.onChange}
-          onFocus={walletName.onFocus}
-          onBlur={walletName.onBlur}
-        />
+        <Input className="walletName" {...form.$('walletName').bind()} />
 
         <Input
-          type="text"
           className="recoveryPhrase"
-          label={intl.formatMessage(messages.recoveryPhraseInputLabel)}
-          hint={intl.formatMessage(messages.recoveryPhraseInputHint)}
-          value={recoveryPhrase.value}
-          error={recoveryPhrase.error}
-          onChange={recoveryPhrase.onChange}
-          onFocus={recoveryPhrase.onFocus}
-          onBlur={recoveryPhrase.onBlur}
           multiline
           rows={3}
+          {...form.$('recoveryPhrase').bind()}
         />
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}

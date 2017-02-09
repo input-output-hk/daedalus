@@ -21,6 +21,7 @@ export default class Wallet extends Component {
 
   isActiveScreen = (screen: string) => {
     const { router, wallets} = this.props.stores;
+    if (!wallets.active) return false;
     const screenRoute = `${wallets.BASE_ROUTE}/${wallets.active.id}/${screen}`;
     return router.location ? router.location.pathname === screenRoute : false;
   };
@@ -32,7 +33,7 @@ export default class Wallet extends Component {
 
   render() {
     const { wallets } = this.props.stores;
-    if (!wallets.active) return <LoadingSpinner />;
+    if (!wallets.active) return <Layout><LoadingSpinner /></Layout>;
     return (
       <Layout>
         <WalletWithNavigation

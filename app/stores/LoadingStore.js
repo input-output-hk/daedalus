@@ -13,11 +13,8 @@ export default class LoadingStore extends Store {
   _redirectToWalletAfterLoading = () => {
     // TODO: uncomment commented lines when reintroducing login
     const { router, wallets } = this.stores;
-    if (wallets.all.length) {
-      const walletToShowAfterLogin = wallets.all[0]; // just pick the first for now
-      if (router.location.pathname === '/') {
-        router.push(wallets.getWalletRoute(walletToShowAfterLogin.id));
-      }
+    if (wallets.all.length && router.location.pathname === '/') {
+      router.push(wallets.getWalletRoute(wallets.all[0].id)); // just pick the first for now
     }
   };
 
