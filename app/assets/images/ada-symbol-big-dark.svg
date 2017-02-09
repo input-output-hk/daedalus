@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="52px" height="57px" viewBox="0 0 52 57" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>696A6278-807F-494A-9EA6-81F015340A36</title>
+    <desc>Created with sketchtool.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round">
+        <g id="new_wallet_screen_summary" transform="translate(-1408.000000, -577.000000)" stroke="#5E6066" stroke-width="2">
+            <g id="amount-copy" transform="translate(760.000000, 460.000000)">
+                <g id="balance" transform="translate(60.000000, 106.000000)">
+                    <g id="ada-symbol-big-dark-copy" transform="translate(589.000000, 12.000000)">
+                        <polyline id="Path-2" stroke-linejoin="round" points="1.57978723 55 24.75 0 47.9202128 55"></polyline>
+                        <path d="M5.26595745,23 L44.2340426,23" id="Line"></path>
+                        <path d="M0,34 L49.5,34" id="Line-Copy"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

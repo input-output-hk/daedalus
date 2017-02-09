@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import { observer, inject } from 'mobx-react';
 import Layout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
+import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 
 @inject('stores', 'actions') @observer
 export default class Wallet extends Component {
@@ -31,6 +32,7 @@ export default class Wallet extends Component {
 
   render() {
     const { wallets } = this.props.stores;
+    if (!wallets.active) return <LoadingSpinner />;
     return (
       <Layout>
         <WalletWithNavigation

@@ -1,6 +1,7 @@
 // @flow
 import { observable, computed, action, extendObservable } from 'mobx';
 import Store from './lib/Store';
+import Request from './lib/Request';
 import CachedRequest from './lib/CachedRequest';
 
 export default class TransactionsStore extends Store {
@@ -8,8 +9,10 @@ export default class TransactionsStore extends Store {
   INITIAL_SEARCH_LIMIT = 10;
   SEARCH_LIMIT_INCREASE = 10;
   SEARCH_SKIP = 0;
+  RECENT_TRANSACTIONS_LIMIT = 10;
 
   @observable searchRequest = new CachedRequest(this.api, 'getTransactions');
+  @observable recentRequest = new Request(this.api, 'getTransactions');
   @observable _searchOptionsForWallets = {};
 
   constructor(...args) {
@@ -54,12 +57,35 @@ export default class TransactionsStore extends Store {
     return result ? result.transactions : [];
   }
 
-  @computed get hasAny() {
+  @computed get recent() {
+    const wallet = this.stores.wallets.active;
+    if (!wallet) return [];
+    const { result } = this.recentRequest.execute({
+      walletId: wallet.id,
+      limit: this.RECENT_TRANSACTIONS_LIMIT,
+      skip: 0,
+      searchTerm: '',
+    });
+    console.log('recent', result ? result.transactions : []);
+    return result ? result.transactions : [];
+  }
+
+  @computed get hasAnyFiltered() {
     const { result } = this.searchRequest;
     return result ? result.total > 0 : false;
   }
 
+  @computed get hasAny() {
+    const { result } = this.recentRequest;
+    return result ? result.total > 0 : false;
+  }
+
   @computed get totalAvailable() {
+    const { result } = this.recentRequest;
+    return result ? result.total : 0;
+  }
+
+  @computed get totalFilteredAvailable() {
     const { result } = this.searchRequest;
     return result ? result.total : 0;
   }

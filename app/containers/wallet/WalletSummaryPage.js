@@ -2,10 +2,11 @@
 import React, { Component, PropTypes } from 'react';
 import { observer, inject, PropTypes as MobxPropTypes } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import Wallet from '../../domain/Wallet';
 import WalletTransactionsList from '../../components/wallet/home/WalletTransactionsList';
-import WalletTransactionsSearch from '../../components/wallet/home/WalletTransactionsSearch';
+import WalletSummary from '../../components/wallet/summary/WalletSummary';
 import WalletNoTransactions from '../../components/wallet/home/WalletNoTransactions';
-import CachedRequest from '../../stores/lib/CachedRequest';
+import Request from '../../stores/lib/Request';
 import AdaRedemptionSuccessOverlay from '../../components/wallet/ada-redemption/AdaRedemptionSuccessOverlay';
 
 const messages = defineMessages({
@@ -22,86 +23,67 @@ const messages = defineMessages({
 });
 
 @inject('stores', 'actions') @observer
-export default class WalletHomePage extends Component {
+export default class WalletSummaryPage extends Component {
 
   static propTypes = {
     stores: PropTypes.shape({
-      transactions: PropTypes.shape({
-        searchOptions: PropTypes.shape({
-          searchTerm: PropTypes.string.isRequired,
-          searchLimit: PropTypes.number.isRequired,
+      wallets: PropTypes.shape({
+        active: PropTypes.instanceOf(Wallet),
         }),
-        searchRequest: PropTypes.instanceOf(CachedRequest),
-        filtered: MobxPropTypes.arrayOrObservableArray.isRequired,
+      transactions: PropTypes.shape({
+        recent: MobxPropTypes.arrayOrObservableArray.isRequired,
         hasAny: PropTypes.bool.isRequired,
         totalAvailable: PropTypes.number.isRequired,
+        recentRequest: PropTypes.instanceOf(Request),
       }),
       adaRedemption: PropTypes.shape({
         showAdaRedemptionSuccessMessage: PropTypes.bool.isRequired,
         amountRedeemed: PropTypes.number.isRequired,
       }),
     }).isRequired,
-    actions: PropTypes.shape({
-      filterTransactions: PropTypes.func.isRequired
-    }).isRequired
   };
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
-  _handleSearchInputChange = (value: string, event: Object) => {
-    this.props.actions.filterTransactions({ searchTerm: event.target.value });
-  };
-
   render() {
     const { intl } = this.context;
     const actions = this.props.actions;
-    const { transactions, adaRedemption } = this.props.stores;
+    const { wallets, transactions, adaRedemption } = this.props.stores;
     const {
-      searchOptions,
-      searchRequest,
       hasAny,
       totalAvailable,
-      filtered,
+      recent,
+      recentRequest
     } = transactions;
-    const { searchLimit, searchTerm } = searchOptions;
+    const wallet = wallets.active;
     const { showAdaRedemptionSuccessMessage, amountRedeemed } = adaRedemption;
-    const wasSearched = searchTerm !== '';
     let walletTransactions = null;
-    let transactionSearch = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
-    const noTransactionsFoundLabel = intl.formatMessage(messages.noTransactionsFound);
 
-    if (wasSearched || hasAny) {
-      transactionSearch = (
-        <div style={{ flexShrink: 0 }}>
-          <WalletTransactionsSearch
-            searchTerm={searchTerm}
-            onChange={this._handleSearchInputChange}
-          />
-        </div>
-      );
-    }
-
-    if (searchRequest.isExecutingFirstTime || hasAny) {
+    if (recentRequest.isExecutingFirstTime || hasAny) {
       walletTransactions = (
         <WalletTransactionsList
-          transactions={filtered}
-          isLoadingTransactions={searchRequest.isExecuting}
-          hasMoreToLoad={totalAvailable > searchLimit}
-          onLoadMore={actions.loadMoreTransactions}
+          transactions={recent}
+          isLoadingTransactions={recentRequest.isExecuting}
+          hasMoreToLoad={false}
+          onLoadMore={() => {}}
         />
       );
-    } else if (wasSearched && !hasAny) {
-      walletTransactions = <WalletNoTransactions label={noTransactionsFoundLabel} />;
     } else if (!hasAny) {
       walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
     }
 
     return (
       <div style={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
-        {transactionSearch}
+        <WalletSummary
+          walletName={wallet.name}
+          amount={wallet.amount}
+          numberOfTransactions={totalAvailable}
+          pendingAmount={0}
+          isLoadingTransactions={recentRequest.isExecuting}
+        />
         {walletTransactions}
         {showAdaRedemptionSuccessMessage && (
           <AdaRedemptionSuccessOverlay

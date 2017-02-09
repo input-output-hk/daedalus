@@ -7,3 +7,4 @@ import './Staking.stories';
 import './Widgets.stories';
 import './AdaRedemptionDialog.stories';
 import './AddWallet.stories';
+import './WalletSummary.stories';
