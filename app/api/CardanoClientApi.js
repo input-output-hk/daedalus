@@ -10,35 +10,17 @@ import type {
   walletRestoreRequest,
   redeemAdaRequest
 } from './index';
-import { user } from './fixtures';
-import User from '../domain/User';
-import Profile from '../domain/Profile';
 import {
-  ApiMethodNotYetImplementedError,
+  // ApiMethodNotYetImplementedError,
   WalletAlreadyRestoredError,
   RedeemAdaError
 } from './errors';
 
-const notYetImplemented = () => new Promise((_, reject) => {
-  reject(new ApiMethodNotYetImplementedError());
-});
+// const notYetImplemented = () => new Promise((_, reject) => {
+//   reject(new ApiMethodNotYetImplementedError());
+// });
 
 export default class CardanoClientApi {
-
-  login(request) {
-    console.debug('CardanoClientApi::login called with', request);
-    // TODO: Implement when backend is ready for it
-    return new Promise((resolve) => resolve(true));
-  }
-
-  getUser() {
-    console.debug('CardanoClientApi::getUser called');
-    return new Promise((resolve) => {
-      setTimeout(action(() => {
-        resolve(new User(user.id, new Profile(user.profile)));
-      }), 0);
-    });
-  }
 
   async getWallets() {
     console.debug('CardanoClientApi::getWallets called');
@@ -54,10 +36,6 @@ export default class CardanoClientApi {
       transactions: history[0].map(data => this._createTransactionFromData(data, walletId)),
       total: history[1]
     }));
-  }
-
-  createUser() {
-    return notYetImplemented();
   }
 
   async createWallet(request: createWalletRequest) {
@@ -77,10 +55,6 @@ export default class CardanoClientApi {
 
   isValidAddress(currency: string, address: string) {
     return ClientApi.isValidAddress(currency, address);
-  }
-
-  updateProfileField() {
-    return notYetImplemented();
   }
 
   @action _createWalletFromData(data) {

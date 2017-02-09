@@ -13,6 +13,8 @@ export default class AdaRedemptionPage extends Component {
     actions: PropTypes.shape({
       redeemAda: PropTypes.func.isRequired,
       setRedemptionCertificate: PropTypes.func.isRequired,
+      setRedemptionPassPhrase: PropTypes.func.isRequired,
+      setRedemptionCode: PropTypes.func.isRequired,
     }),
     stores: PropTypes.shape({
       wallets: PropTypes.shape({

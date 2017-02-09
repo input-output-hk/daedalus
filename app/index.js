@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React from 'react';
 import { action } from 'mobx';
 import { render } from 'react-dom';
 import { addLocaleData } from 'react-intl';

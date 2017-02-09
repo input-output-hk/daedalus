@@ -18,8 +18,8 @@ export default class TransactionsStore extends Store {
     this.actions.loadMoreTransactions.listen(this._increaseSearchLimit);
   }
 
-  @action _updateSearchTerm = ({ searchTerm }) => this.searchOptions.searchTerm = searchTerm;
-  @action _increaseSearchLimit = () => this.searchOptions.searchLimit += this.SEARCH_LIMIT_INCREASE;
+  @action _updateSearchTerm = ({ searchTerm }) => { this.searchOptions.searchTerm = searchTerm; };
+  @action _increaseSearchLimit = () => { this.searchOptions.searchLimit += this.SEARCH_LIMIT_INCREASE; };
 
   @computed get searchOptions() {
     const wallet = this.stores.wallets.active;

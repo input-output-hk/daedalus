@@ -1,7 +1,7 @@
 // @flow
 import { observable, action } from 'mobx';
 import AppStore from './AppStore';
-import UserStore from './UserStore';
+import LoadingStore from './LoadingStore';
 import SettingsStore from './SettingsStore';
 import WalletsStore from './WalletsStore';
 import TransactionsStore from './TransactionsStore';
@@ -37,7 +37,7 @@ export default action((api, actions, router): storesType => {
   // Assign new store instances
   Object.assign(stores, {
     app: new AppStore(stores, api, actions),
-    user: new UserStore(stores, api, actions),
+    user: new LoadingStore(stores, api, actions),
     settings: new SettingsStore(stores, api, actions),
     wallets: new WalletsStore(stores, api, actions),
     transactions: new TransactionsStore(stores, api, actions),
@@ -56,7 +56,7 @@ export default action((api, actions, router): storesType => {
 
 export type storesType = {
   app: AppStore,
-  user: UserStore,
+  user: LoadingStore,
   settings: SettingsStore,
   wallets: WalletsStore,
   transactions: TransactionsStore,

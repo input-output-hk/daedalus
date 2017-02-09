@@ -39,7 +39,7 @@ export default class WalletTransactionsList extends Component {
   list: HTMLElement;
   loadingSpinner: LoadingSpinner;
 
-  groupTransactionsByDay(transactions:[Object]) {
+  groupTransactionsByDay(transactions:[{ date: Date }]) {
     const groups = [];
     for (const transaction of transactions) {
       let date = moment(transaction.date).format(dateFormat);

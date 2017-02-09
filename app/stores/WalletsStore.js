@@ -1,5 +1,5 @@
 // @flow
-import { observable, computed, action, runInAction } from 'mobx';
+import { observable, computed, action } from 'mobx';
 import Store from './lib/Store';
 import { matchRoute } from '../lib/routing-helpers';
 import CachedRequest from './lib/CachedRequest';
@@ -42,7 +42,7 @@ export default class WalletsStore extends Store {
     try {
       const recoveryPhrase = await this.getWalletRecoveryPhraseRequest.execute();
       this.actions.initiateWalletBackup({ recoveryPhrase });
-    } catch(error) {
+    } catch (error) {
       throw error;
     }
   };
@@ -51,6 +51,7 @@ export default class WalletsStore extends Store {
     this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
     const wallet = await this.createWalletRequest.execute(this._newWalletDetails);
     await this.walletsRequest.patch(result => { result.push(wallet); });
+    this.goToWalletRoute(wallet.id);
   };
 
   _sendMoney = async (transactionDetails) => {
@@ -67,7 +68,7 @@ export default class WalletsStore extends Store {
   };
 
   @computed get all() {
-    return this.walletsRequest.execute(this.stores.user.active.id).result || [];
+    return this.walletsRequest.execute().result || [];
   }
 
   @computed get active() {

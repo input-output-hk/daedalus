@@ -36,20 +36,23 @@ export default () => {
     // Extract redemption code from certificate PDF
     try {
       const pdfExtract = new PDFExtract();
-      pdfExtract.extract(pdfPath, {}, function (error, data) {
+      pdfExtract.extract(pdfPath, {}, (error, data) => {
         if (error) return sender.send(PARSE_REDEMPTION_CODE.ERROR, error);
         try {
           if (data.pages[0].content[9].str !== 'REDEMPTION KEY') {
-            return sender.send(PARSE_REDEMPTION_CODE.ERROR, PARSE_REDEMPTION_CODE.INVALID_CERTIFICATE_ERROR);
+            return sender.send(
+              PARSE_REDEMPTION_CODE.ERROR,
+              PARSE_REDEMPTION_CODE.INVALID_CERTIFICATE_ERROR
+            );
           }
           sender.send(PARSE_REDEMPTION_CODE.SUCCESS, data.pages[0].content[8].str);
           // Remove the temporary, decrypted PDF from disk
           if (isTemporaryDecryptedPdf) fs.unlinkSync(pdfPath);
-        } catch (error) {
-          sender.send(PARSE_REDEMPTION_CODE.ERROR, error.message);
+        } catch (exception) {
+          sender.send(PARSE_REDEMPTION_CODE.ERROR, exception.message);
         }
       });
-    } catch(error) {
+    } catch (error) {
       sender.send(PARSE_REDEMPTION_CODE.ERROR, error.message);
       // Remove the temporary, decrypted PDF from disk
       if (isTemporaryDecryptedPdf) fs.unlinkSync(pdfPath);

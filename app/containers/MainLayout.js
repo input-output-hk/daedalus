@@ -27,6 +27,9 @@ export default class MainLayout extends Component {
         }),
         restoreRequest: PropTypes.instanceOf(Request).isRequired,
       }).isRequired,
+      walletBackup: PropTypes.shape({
+        inProgress: PropTypes.bool.isRequired,
+      }).isRequired,
     }).isRequired,
     actions: PropTypes.shape({
       goToRoute: PropTypes.func.isRequired,
@@ -49,7 +52,7 @@ export default class MainLayout extends Component {
     this.props.actions.restoreWallet(values);
   };
 
-  routeToWallet = (walletId) => {
+  routeToWallet = (walletId: string) => {
     const { actions, stores } = this.props;
     actions.goToRoute({ route: stores.wallets.getWalletRoute(walletId) });
   };
