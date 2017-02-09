@@ -5,6 +5,7 @@ import Layout from '../MainLayout';
 import AdaRedemptionForm from '../../components/wallet/ada-redemption/AdaRedemptionForm';
 import Wallet from '../../domain/Wallet';
 import Request from '../../stores/lib/Request';
+import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 
 @inject('stores', 'actions') @observer
 export default class AdaRedemptionPage extends Component {
@@ -40,6 +41,8 @@ export default class AdaRedemptionPage extends Component {
     const selectableWallets = wallets.all.map((w) => ({
       value: w.id, label: w.name
     }));
+
+    if (selectableWallets.length === 0) return <Layout><LoadingSpinner /></Layout>;
 
     return (
       <Layout>
