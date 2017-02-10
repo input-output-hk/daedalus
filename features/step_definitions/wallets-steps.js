@@ -21,11 +21,15 @@ export default function () {
   });
 
   this.Given(/^I have the following wallets:$/, async function (table) {
-    const result = await this.client.execute(function(wallets) {
-      const createdWallets = wallets.map(function(wallet) {
-        return daedalus.api.repository.generateWallet(wallet);
-      });
-      return createdWallets;
+    const result = await this.client.executeAsync(function(wallets, done) {
+      window.Promise.all(wallets.map((wallet) => {
+        return daedalus.api.createWallet({
+          name: wallet.name,
+          mnemonic: daedalus.api.generateMnemonic().join(' ')
+        });
+      }))
+      .then(done)
+      .catch((error) => done(error.stack));
     }, table.hashes());
     this.wallets = result.value;
   });
@@ -50,7 +54,7 @@ export default function () {
   });
 
   this.When(/^I click on the (.*) wallet in the sidebar$/, function (walletName) {
-    return this.client.click(`//*[contains(text(), "${walletName}") and @class="SidebarMenuItem_title"]`);
+    return this.client.click(`//*[contains(text(), "${walletName}") and @class="SidebarWalletMenuItem_title"]`);
   });
 
   this.When(/^I click the wallet (.*) button$/, async function (buttonName) {

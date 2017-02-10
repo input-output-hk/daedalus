@@ -9,10 +9,9 @@ Feature: Switching Between Wallets
     And I am on the <START> wallet
     And The sidebar shows the wallets category
     When I click on the <TARGET> wallet in the sidebar
-    Then I should be on the <TARGET> wallet home screen
+    Then I should be on the <TARGET> wallet summary screen
 
     Examples:
     | START  | TARGET |
     | first  | second |
     | second | third  |
-
