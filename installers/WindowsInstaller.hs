@@ -8,25 +8,24 @@ import           Turtle (echo, procs)
 
 shortcutParameters :: String
 shortcutParameters = L.intercalate " " $
-  [ "--node %PROGRAMFILES%\\cardano-node.exe"
-  , "--wallet %PROGRAMFILES%\\Daedalus.exe"
+  [ "--node \"%PROGRAMFILES%\\Daedalus\\cardano-node.exe\""
+  , "--wallet \"%PROGRAMFILES%\\Daedalus\\Daedalus.exe\""
   , "--updater C:/TODO" -- TODO
   , "--node-timeout 5"
   , (" -n " ++ (L.intercalate " -n " nodeArgs))
   ] 
     where
-      appdata = "%APPDATA%"
       nodeArgs = [
         "--listen", "0.0.0.0:12100",
+        "--log-config", "log-config-prod.yaml",
         "--peer", "35.156.182.24:3000/MHdrsP-oPf7UWl0007QuXnLK5RD=",
         "--peer", "54.183.103.204:3000/MHdrsP-oPf7UWl0077QuXnLK5RD=",
         "--peer", "52.53.231.169:3000/MHdrsP-oPf7UWl0127QuXnLK5RD=",
         "--peer", "35.157.41.94:3000/MHdrsP-oPf7UWl0057QuXnLK5RD=",
-        "--log-config", "log-config-prod.yaml",
-        "--keyfile", appdata ++ "\\Daedalus\\Secrets\\secret.key",
-        "--logs-prefix", appdata ++ "\\Daedalus\\Logs",
-        "--db-path", appdata ++ "\\Daedalus\\DB",
-        "--wallet-db-path", appdata ++ "\\Daedalus\\Wallet",
+        "--keyfile", "\"%APPDATA%\\Daedalus\\Secrets\\secret.key\"",
+        "--logs-prefix", "\"%APPDATA%\\Daedalus\\Logs\"",
+        "--db-path", "\"%APPDATA%\\Daedalus\\DB\"",
+        "--wallet-db-path", "\"%APPDATA%\\Daedalus\\Wallet\"",
         "--wallet"
         ]
 
