@@ -1,3 +1,4 @@
+@watch
 Feature: Navigate Wallet Tabs
 
   Background:
@@ -10,9 +11,9 @@ Feature: Navigate Wallet Tabs
 
     Examples:
     | FROM    | TO      |
-    | home    | send    |
-    | home    | receive |
-    | send    | home    |
+    | summary | send    |
+    | summary | receive |
+    | send    | summary |
     | send    | receive |
-    | receive | home    |
+    | receive | summary |
     | receive | send    |

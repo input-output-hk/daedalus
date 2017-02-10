@@ -1,20 +1,21 @@
 import { expect } from 'chai';
 
-const getDisplayedWalletName = async function() {
-  await this.client.waitForVisible('.WalletHomeButton_walletName');
-  return await this.client.getText('.WalletHomeButton_walletName');
+const getNameOfActiveWalletInSidebar = async function() {
+  await this.client.waitForVisible('.SidebarWalletMenuItem_active');
+  return await this.client.getText('.SidebarWalletMenuItem_active .SidebarWalletMenuItem_title');
 };
 
 const expectActiveWallet = async function(walletName) {
-  const displayedWalletName = await getDisplayedWalletName.call(this);
+  const displayedWalletName = await getNameOfActiveWalletInSidebar.call(this);
   expect(displayedWalletName.toLowerCase().trim()).to.equal(walletName.toLowerCase().trim());
 };
 
 export default function () {
 
   this.Given(/^I have a wallet$/, async function () {
-    const result = await this.client.execute(function() {
-      return daedalus.api.repository.generateWallet();
+    const result = await this.client.executeAsync(function(done) {
+      // This assumes that we always have a default wallet on the backend!
+      daedalus.api.getWallets().then((wallets) => done(wallets[0]));
     });
     this.wallet = result.value;
   });
@@ -53,7 +54,7 @@ export default function () {
   });
 
   this.When(/^I click the wallet (.*) button$/, async function (buttonName) {
-    const buttonSelector = `.WalletNavigation_${buttonName}Link`;
+    const buttonSelector = `.WalletNavButton_component.${buttonName}`;
     await this.client.waitForVisible(buttonSelector);
     await this.client.click(buttonSelector);
   });
@@ -87,12 +88,7 @@ export default function () {
   // TODO: Refactor this to include previous step definition
   this.Then(/^I should be on the(.*)? wallet (.*) screen$/, async function (walletName, screenName) {
     if (walletName) await expectActiveWallet.call(this, walletName);
-    if (screenName != 'home') {
-      const navButtonSelector = `.WalletNavigation_${screenName}Link`;
-      return this.client.waitForVisible(`${navButtonSelector} .WalletNavButton_active`);
-    } else {
-      return this.client.waitForVisible('.WalletHomeButton_active');
-    }
+    return this.client.waitForVisible(`.WalletNavButton_active.${screenName}`);
   });
 
   this.Then(/^I should see the following error messages on the wallet send form:$/, async function (data) {
