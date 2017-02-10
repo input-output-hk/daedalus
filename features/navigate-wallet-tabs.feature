@@ -1,4 +1,3 @@
-@watch
 Feature: Navigate Wallet Tabs
 
   Background:

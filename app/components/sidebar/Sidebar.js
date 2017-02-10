@@ -98,7 +98,7 @@ export default class Sidebar extends Component {
             onClick={() => onCategoryClicked('/wallets')}
           />
           <SidebarCategory
-            className="redeem-ada"
+            className="ada-redemption"
             label={intl.formatMessage(messages.adaRedemptionCategoryLabel)}
             icon={adaRedemptionIcon}
             active={this.matches('/ada-redemption')}
