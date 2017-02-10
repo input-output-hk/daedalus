@@ -8,14 +8,14 @@ import           Turtle (echo, procs)
 
 shortcutParameters :: String
 shortcutParameters = L.intercalate " " $
-  [ "--node $INSTDIR\\cardano-node.exe"
-  , "--wallet $INSTDIR\\Daedalus.exe"
+  [ "--node %PROGRAMFILES%\\cardano-node.exe"
+  , "--wallet %PROGRAMFILES%\\Daedalus.exe"
   , "--updater C:/TODO" -- TODO
   , "--node-timeout 5"
   , (" -n " ++ (L.intercalate " -n " nodeArgs))
   ] 
     where
-      appdata = "$APPDATA"
+      appdata = "%APPDATA%"
       nodeArgs = [
         "--listen", "0.0.0.0:12100",
         "--peer", "35.156.182.24:3000/MHdrsP-oPf7UWl0007QuXnLK5RD=",
