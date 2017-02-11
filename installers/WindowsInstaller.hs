@@ -34,6 +34,7 @@ daedalusShortcut =
     [ Target "$INSTDIR\\cardano-launcher.exe"
     , Parameters (str shortcutParameters)
     , IconFile "$INSTDIR\\Daedalus.exe"
+    , StartOptions "SW_SHOWMINIMIZED"
     , IconIndex 0
     ]
 
