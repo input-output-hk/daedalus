@@ -1,13 +1,14 @@
 module WindowsInstaller where
 
 import           Data.Maybe (fromMaybe)
+import           Data.Monoid ((<>))
 import qualified Data.List as L
 import           Development.NSIS
 import           System.Environment (lookupEnv)
 import           Turtle (echo, procs)
 
-shortcutParameters :: String
-shortcutParameters = L.intercalate " " $
+shortcutParameters :: [String] -> String
+shortcutParameters ipdht = L.intercalate " " $
   [ "--node \"%PROGRAMFILES%\\Daedalus\\cardano-node.exe\""
   , "--node-log-path", "\"%APPDATA%\\Daedalus\\Logs\\cardano-node.log\""
   , "--wallet \"%PROGRAMFILES%\\Daedalus\\Daedalus.exe\""
@@ -19,21 +20,17 @@ shortcutParameters = L.intercalate " " $
       nodeArgs = [
         "--listen", "0.0.0.0:12100",
         "--log-config", "log-config-prod.yaml",
-        "--peer", "35.156.182.24:3000/zzQk9aJKJ9CGD3ATxO_RGUX_s7TTVS-_hw8mRkX6u9g=",
-        "--peer", "54.183.103.204:3000/zzQk9aJKJ9CGD3ATxO_RGUX_s7TTVS-_hw8mRkX6u9g=",
-        "--peer", "52.53.231.169:3000/zzQk9aJKJ9CGD3ATxO_RGUX_s7TTVS-_hw8mRkX6u9g=",
-        "--peer", "35.157.41.94:3000/zzQk9aJKJ9CGD3ATxO_RGUX_s7TTVS-_hw8mRkX6u9g=",
         "--keyfile", "\"%APPDATA%\\Daedalus\\Secrets\\secret.key\"",
         "--logs-prefix", "\"%APPDATA%\\Daedalus\\Logs\"",
         "--db-path", "\"%APPDATA%\\Daedalus\\DB-0.2\"",
         "--wallet-db-path", "\"%APPDATA%\\Daedalus\\Wallet-0.2\"",
         "--wallet"
-        ]
+        ] <> ("--peer" : (L.intersperse "--peer" ipdht))
 
-daedalusShortcut :: [Attrib]
-daedalusShortcut =
+daedalusShortcut :: [String] -> [Attrib]
+daedalusShortcut ipdht =
     [ Target "$INSTDIR\\cardano-launcher.exe"
-    , Parameters (str shortcutParameters)
+    , Parameters (str $ shortcutParameters ipdht)
     , IconFile "$INSTDIR\\Daedalus.exe"
     , StartOptions "SW_SHOWMINIMIZED"
     , IconIndex 0
@@ -42,6 +39,8 @@ daedalusShortcut =
 writeNSIS :: IO ()
 writeNSIS = do
   version <- fmap (fromMaybe "dev") $ lookupEnv "APPVEYOR_BUILD_VERSION"
+  ipdhtRaw <- readFile "data\\ip-dht-mappings"
+  let ds = daedalusShortcut $ lines ipdhtRaw
   writeFile "version.txt" version
   writeFile "daedalus.nsi" $ nsis $ do
     _ <- constantStr "Version" (str version)
@@ -61,7 +60,7 @@ writeNSIS = do
         createDirectory "$APPDATA\\Daedalus\\Wallet-0.2" 
         createDirectory "$APPDATA\\Daedalus\\Logs"
         createDirectory "$APPDATA\\Daedalus\\Secrets"
-        createShortcut "$DESKTOP\\Daedalus.lnk" daedalusShortcut
+        createShortcut "$DESKTOP\\Daedalus.lnk" ds
         file [] "cardano-node.exe"
         file [] "cardano-launcher.exe"
         file [] "log-config-prod.yaml"
@@ -80,7 +79,7 @@ writeNSIS = do
         createDirectory "$SMPROGRAMS/Daedalus"
         createShortcut "$SMPROGRAMS/Daedalus/Uninstall Daedalus.lnk" 
           [Target "$INSTDIR/uninstall.exe", IconFile "$INSTDIR/uninstall.exe", IconIndex 0]
-        createShortcut "$SMPROGRAMS/Daedalus/Daedalus.lnk" daedalusShortcut
+        createShortcut "$SMPROGRAMS/Daedalus/Daedalus.lnk" ds
 
     uninstall $ do
       -- Remove registry keys
