@@ -9,6 +9,7 @@ import           Turtle (echo, procs)
 shortcutParameters :: String
 shortcutParameters = L.intercalate " " $
   [ "--node \"%PROGRAMFILES%\\Daedalus\\cardano-node.exe\""
+  , "--node-log-path", "\"%APPDATA%\\Daedalus\\Logs\\cardano-node.log\""
   , "--wallet \"%PROGRAMFILES%\\Daedalus\\Daedalus.exe\""
   , "--updater C:/TODO" -- TODO
   , "--node-timeout 5"
