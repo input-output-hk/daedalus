@@ -25,8 +25,8 @@ shortcutParameters = L.intercalate " " $
         "--peer", "35.157.41.94:3000/zzQk9aJKJ9CGD3ATxO_RGUX_s7TTVS-_hw8mRkX6u9g=",
         "--keyfile", "\"%APPDATA%\\Daedalus\\Secrets\\secret.key\"",
         "--logs-prefix", "\"%APPDATA%\\Daedalus\\Logs\"",
-        "--db-path", "\"%APPDATA%\\Daedalus\\DB\"",
-        "--wallet-db-path", "\"%APPDATA%\\Daedalus\\Wallet\"",
+        "--db-path", "\"%APPDATA%\\Daedalus\\DB-0.2\"",
+        "--wallet-db-path", "\"%APPDATA%\\Daedalus\\Wallet-0.2\"",
         "--wallet"
         ]
 
@@ -57,8 +57,8 @@ writeNSIS = do
     section "" [Required] $ do
         setOutPath "$INSTDIR"        -- Where to install files in this section
         writeRegStr HKLM "Software/Daedalus" "Install_Dir" "$INSTDIR"
-        createDirectory "$APPDATA\\Daedalus\\DB"
-        createDirectory "$APPDATA\\Daedalus\\Wallet" 
+        createDirectory "$APPDATA\\Daedalus\\DB-0.2"
+        createDirectory "$APPDATA\\Daedalus\\Wallet-0.2" 
         createDirectory "$APPDATA\\Daedalus\\Logs"
         createDirectory "$APPDATA\\Daedalus\\Secrets"
         createShortcut "$DESKTOP\\Daedalus.lnk" daedalusShortcut
