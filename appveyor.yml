@@ -43,6 +43,7 @@ test_script:
   - cd ..
   - stack setup --no-reinstall
   - appveyor-retry call stack --no-terminal build -j 2 --exec make-installer
+  - type daedalus.nsi
   - cd ..
 
 artifacts:
