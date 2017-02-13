@@ -31,7 +31,6 @@ const messages = defineMessages({
 export default class Sidebar extends Component {
 
   static propTypes = {
-    route: PropTypes.string.isRequired,
     menus: PropTypes.shape({
       wallets: PropTypes.shape({
         items: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.object).isRequired,
@@ -41,23 +40,26 @@ export default class Sidebar extends Component {
         })
       })
     }).isRequired,
+    categories: PropTypes.shape({
+      WALLETS: PropTypes.string.isRequired,
+      ADA_REDEMPTION: PropTypes.string.isRequired,
+    }).isRequired,
+    currentCategory: PropTypes.string.isRequired,
     onCategoryClicked: PropTypes.func,
     hidden: PropTypes.bool,
     isMaximized: PropTypes.bool,
-    activeWalletId: PropTypes.string
+    activeWalletId: PropTypes.string,
   };
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
-  matches(path: string) {
-    return this.props.route.indexOf(path) !== -1;
-  }
-
   render() {
-    const { hidden, isMaximized, menus, onCategoryClicked, activeWalletId } = this.props;
     const { intl } = this.context;
+    const {
+      hidden, isMaximized, menus, onCategoryClicked, activeWalletId, categories, currentCategory
+    } = this.props;
 
     let sidebarStyle = null;
     let categoriesStyle = null;
@@ -69,14 +71,14 @@ export default class Sidebar extends Component {
     } else if (isMaximized) {
       categoriesStyle = styles.maximized;
       hasMinimizedCategories = false;
-    } else if (this.matches('/wallets')) {
+    } else if (currentCategory === categories.WALLETS) {
       subMenu = (
         <SidebarWalletsMenu
-          visible={this.matches('/wallets')}
           wallets={menus.wallets.items}
           onAddWallet={menus.wallets.actions.onAddWallet}
           onWalletItemClick={menus.wallets.actions.onWalletItemClick}
           isActiveWallet={id => id === activeWalletId}
+          visible
         />
       );
       categoriesStyle = styles.minimized;
@@ -93,17 +95,17 @@ export default class Sidebar extends Component {
             className="wallets"
             label={intl.formatMessage(messages.walletsCategoryLabel)}
             icon={walletsIcon}
-            active={this.matches('/wallets')}
+            active={currentCategory === categories.WALLETS}
             minimized={hasMinimizedCategories}
-            onClick={() => onCategoryClicked('/wallets')}
+            onClick={() => onCategoryClicked(categories.WALLETS)}
           />
           <SidebarCategory
             className="ada-redemption"
             label={intl.formatMessage(messages.adaRedemptionCategoryLabel)}
             icon={adaRedemptionIcon}
-            active={this.matches('/ada-redemption')}
+            active={currentCategory === categories.ADA_REDEMPTION}
             minimized={hasMinimizedCategories}
-            onClick={() => onCategoryClicked('/ada-redemption')}
+            onClick={() => onCategoryClicked(categories.ADA_REDEMPTION)}
           />
         </div>
         {subMenu}

@@ -11,6 +11,7 @@ export default class WalletsStore extends Store {
   BASE_ROUTE = '/wallets';
   WALLET_REFRESH_INTERVAL = 5000;
 
+  @observable active = null;
   @observable walletsRequest = new CachedRequest(this.api, 'getWallets');
   @observable createWalletRequest = new Request(this.api, 'createWallet');
   @observable sendMoneyRequest = new Request(this.api, 'createTransaction');
@@ -35,6 +36,7 @@ export default class WalletsStore extends Store {
     if (environment.CARDANO_API) {
       setInterval(this._refreshWalletsData, this.WALLET_REFRESH_INTERVAL);
     }
+    this.registerReactions([this._updateActiveWalletOnRouteChanges]);
   }
 
   _createPersonalWallet = async (params) => {
@@ -71,11 +73,13 @@ export default class WalletsStore extends Store {
     return this.walletsRequest.execute().result || [];
   }
 
-  @computed get active() {
-    const currentRoute = this.stores.router.location.pathname;
-    const match = matchRoute(`${this.BASE_ROUTE}/:id(*page)`, currentRoute);
-    if (match) return this.all.find(w => w.id === match.id) || null;
-    return null;
+  @computed get activeWalletRoute() {
+    if (!this.active) return null;
+    return this.getWalletRoute(this.active);
+  }
+
+  @computed get hasAnyLoaded() {
+    return this.all.length > 0;
   }
 
   getWalletRoute(walletId: ?string, screen = 'home') {
@@ -125,8 +129,19 @@ export default class WalletsStore extends Store {
   goToWalletRoute(walletId) {
     const route = this.getWalletRoute(walletId);
     this.actions.goToRoute({ route });
-    // TODO: Make sidebar route dependent on the real route instead!! (this is just a hack)
-    this.actions.changeSidebarRoute({ route });
+  }
+
+  _updateActiveWalletOnRouteChanges = () => {
+    const currentRoute = this.stores.router.location.pathname;
+    const hasActiveWallet = !!this.active;
+    const hasAnyWalletsLoaded = this.hasAnyLoaded;
+    const match = matchRoute(`${this.BASE_ROUTE}/:id(*page)`, currentRoute);
+    if (match) {
+      this.active = this.all.find(w => w.id === match.id);
+    } else if (matchRoute(this.BASE_ROUTE, currentRoute)) {
+      if (!hasActiveWallet && hasAnyWalletsLoaded) this.active = this.all[0];
+      if (this.active) this.goToWalletRoute(this.active.id);
+    }
   }
 
 }
