@@ -105,5 +105,6 @@
   "wallet.restore.dialog.restore.wallet.button.label": "Restore wallet",
   "wallet.restore.dialog.form.errors.invalidRecoveryPhrase": "Invalid recovery phrase",
   "wallet.summary.page.pendingConfirmationLabel": "Pending confirmation",
-  "wallet.summary.page.transactionsLabel": "Number of transactions"
+  "wallet.summary.page.transactionsLabel": "Number of transactions",
+  "wallet.summary.no.transactions": "No recent transactions"
 }

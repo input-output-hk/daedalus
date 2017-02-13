@@ -1,6 +1,7 @@
 // @flow
 import { observable, computed, action } from 'mobx';
 import Store from './lib/Store';
+import Wallet from '../domain/Wallet';
 import { matchRoute } from '../lib/routing-helpers';
 import CachedRequest from './lib/CachedRequest';
 import Request from './lib/Request';
@@ -10,6 +11,8 @@ export default class WalletsStore extends Store {
 
   BASE_ROUTE = '/wallets';
   WALLET_REFRESH_INTERVAL = 5000;
+
+  @observable walletsCache : Array<Wallet> = [];
 
   @observable walletsRequest = new CachedRequest(this.api, 'getWallets');
   @observable createWalletRequest = new Request(this.api, 'createWallet');
@@ -68,13 +71,13 @@ export default class WalletsStore extends Store {
   };
 
   @computed get all() {
-    return this.walletsRequest.execute().result || [];
+    return this.walletsCache;
   }
 
   @computed get active() {
     const currentRoute = this.stores.router.location.pathname;
     const match = matchRoute(`${this.BASE_ROUTE}/:id(*page)`, currentRoute);
-    if (match) return this.all.find(w => w.id === match.id) || null;
+    if (match) return this.walletsCache.find(w => w.id === match.id) || null;
     return null;
   }
 
@@ -86,10 +89,16 @@ export default class WalletsStore extends Store {
     return this.api.isValidAddress('ADA', address);
   }
 
-  _refreshWalletsData = () => {
+  @action _refreshWalletsData = () => {
     if (this.stores.networkStatus.isCardanoConnected) {
       this.walletsRequest.invalidate({ immediately: true });
-      this.stores.transactions.searchRequest.invalidate({ immediately: true });
+      this.walletsCache.replace(this.walletsRequest.execute().result || []);
+      const walletIds = this.walletsCache.map((wallet: Wallet) => wallet.id);
+      this.stores.transactions.transactionCache = walletIds.map(walletId => ({
+        walletId,
+        transactions: this.stores.transactions._getTransactionsForWallet(walletId)
+      }));
+      this.stores.transactions._refreshTransactionData();
     }
   };
 

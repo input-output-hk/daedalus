@@ -11,15 +11,10 @@ import AdaRedemptionSuccessOverlay from '../../components/wallet/ada-redemption/
 
 const messages = defineMessages({
   noTransactions: {
-    id: 'wallet.transactions.no.transactions',
-    defaultMessage: '!!!No transactions',
-    description: 'Message shown when wallet has no transactions yet.'
+    id: 'wallet.summary.no.transactions',
+    defaultMessage: '!!!No recent transactions',
+    description: 'Message shown when wallet has no transactions on wallet summary page.'
   },
-  noTransactionsFound: {
-    id: 'wallet.transactions.no.transactions.found',
-    defaultMessage: '!!!No transactions found',
-    description: 'Message shown when wallet transaction search returns zero results.'
-  }
 });
 
 @inject('stores', 'actions') @observer
@@ -34,7 +29,8 @@ export default class WalletSummaryPage extends Component {
         recent: MobxPropTypes.arrayOrObservableArray.isRequired,
         hasAny: PropTypes.bool.isRequired,
         totalAvailable: PropTypes.number.isRequired,
-        recentRequest: PropTypes.instanceOf(Request),
+        totalUnconfirmedAmount: PropTypes.number.isRequired,
+        transactionsRequest: PropTypes.instanceOf(Request),
       }),
       adaRedemption: PropTypes.shape({
         showAdaRedemptionSuccessMessage: PropTypes.bool.isRequired,
@@ -55,18 +51,19 @@ export default class WalletSummaryPage extends Component {
       hasAny,
       totalAvailable,
       recent,
-      recentRequest
+      transactionsRequest,
+      totalUnconfirmedAmount
     } = transactions;
     const wallet = wallets.active;
     const { showAdaRedemptionSuccessMessage, amountRedeemed } = adaRedemption;
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
-    if (recentRequest.isExecutingFirstTime || hasAny) {
+    if (transactionsRequest.isExecutingFirstTime || hasAny) {
       walletTransactions = (
         <WalletTransactionsList
           transactions={recent}
-          isLoadingTransactions={recentRequest.isExecuting}
+          isLoadingTransactions={transactionsRequest.isExecuting}
           hasMoreToLoad={false}
           onLoadMore={() => {}}
         />
@@ -81,8 +78,8 @@ export default class WalletSummaryPage extends Component {
           walletName={wallet.name}
           amount={wallet.amount}
           numberOfTransactions={totalAvailable}
-          pendingAmount={0}
-          isLoadingTransactions={recentRequest.isExecuting}
+          pendingAmount={totalUnconfirmedAmount}
+          isLoadingTransactions={transactionsRequest.isExecuting}
         />
         {walletTransactions}
         {showAdaRedemptionSuccessMessage && (
