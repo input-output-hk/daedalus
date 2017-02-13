@@ -2,7 +2,7 @@ import { expect } from 'chai';
 
 const getNameOfActiveWalletInSidebar = async function() {
   await this.client.waitForVisible('.SidebarWalletMenuItem_active');
-  return await this.client.getText('.SidebarWalletMenuItem_active .SidebarWalletMenuItem_title');
+  return this.client.getText('.SidebarWalletMenuItem_active .SidebarWalletMenuItem_title');
 };
 
 const expectActiveWallet = async function(walletName) {
@@ -28,7 +28,9 @@ export default function () {
           mnemonic: daedalus.api.generateMnemonic().join(' ')
         });
       }))
-      .then(done)
+      .then((result) => {
+        daedalus.stores.wallets.walletsRequest.invalidate({ immediately: true }).then(done);
+      })
       .catch((error) => done(error.stack));
     }, table.hashes());
     this.wallets = result.value;

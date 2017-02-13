@@ -33,10 +33,10 @@ export default class WalletsStore extends Store {
     this.actions.toggleWalletRestore.listen(this._toggleWalletRestore);
     this.actions.finishWalletBackup.listen(this._finishWalletCreation);
     this.actions.restoreWallet.listen(this._restoreWallet);
-    if (environment.CARDANO_API) {
-      setInterval(this._refreshWalletsData, this.WALLET_REFRESH_INTERVAL);
-    }
     this.registerReactions([this._updateActiveWalletOnRouteChanges]);
+    if (environment.CARDANO_API) {
+      setInterval(this.refreshWalletsData, this.WALLET_REFRESH_INTERVAL);
+    }
   }
 
   _createPersonalWallet = async (params) => {
@@ -65,7 +65,7 @@ export default class WalletsStore extends Store {
       sender: wallet.address,
       currency: wallet.currency,
     });
-    this._refreshWalletsData();
+    this.refreshWalletsData();
     this.goToWalletRoute(wallet.id);
   };
 
@@ -90,7 +90,7 @@ export default class WalletsStore extends Store {
     return this.api.isValidAddress('ADA', address);
   }
 
-  _refreshWalletsData = () => {
+  refreshWalletsData = () => {
     if (this.stores.networkStatus.isCardanoConnected) {
       this.walletsRequest.invalidate({ immediately: true });
       this.stores.transactions.searchRequest.invalidate({ immediately: true });
@@ -122,7 +122,7 @@ export default class WalletsStore extends Store {
   @action _restoreWallet = async (params) => {
     const restoredWallet = await this.restoreRequest.execute(params);
     this._toggleWalletRestore();
-    this._refreshWalletsData();
+    this.refreshWalletsData();
     this.goToWalletRoute(restoredWallet.id);
   };
 
@@ -137,8 +137,18 @@ export default class WalletsStore extends Store {
     const hasAnyWalletsLoaded = this.hasAnyLoaded;
     const match = matchRoute(`${this.BASE_ROUTE}/:id(*page)`, currentRoute);
     if (match) {
-      this.active = this.all.find(w => w.id === match.id);
+      // We have a route for a specific wallet -> lets try to find it
+      const walletForCurrentRoute = this.all.find(w => w.id === match.id);
+      if (walletForCurrentRoute) {
+        // The wallet exists, we are done
+        this.active = walletForCurrentRoute;
+      } else if (hasAnyWalletsLoaded) {
+        // There is no wallet with given id -> pick first wallet
+        this.active = this.all[0];
+        this.goToWalletRoute(this.active.id);
+      }
     } else if (matchRoute(this.BASE_ROUTE, currentRoute)) {
+      // The route does not specify any wallet -> pick first wallet
       if (!hasActiveWallet && hasAnyWalletsLoaded) this.active = this.all[0];
       if (this.active) this.goToWalletRoute(this.active.id);
     }
