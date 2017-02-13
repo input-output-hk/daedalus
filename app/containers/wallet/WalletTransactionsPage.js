@@ -30,7 +30,7 @@ export default class WalletTransactionsPage extends Component {
           searchTerm: PropTypes.string.isRequired,
           searchLimit: PropTypes.number.isRequired,
         }),
-        searchRequest: PropTypes.instanceOf(CachedRequest),
+        allTransactionsRequest: PropTypes.instanceOf(CachedRequest),
         filtered: MobxPropTypes.arrayOrObservableArray.isRequired,
         hasAnyFiltered: PropTypes.bool.isRequired,
         totalFilteredAvailable: PropTypes.number.isRequired,
@@ -82,7 +82,7 @@ export default class WalletTransactionsPage extends Component {
       walletTransactions = (
         <WalletTransactionsList
           transactions={filtered}
-          isLoadingTransactions={searchRequest.isExecuting}
+          isLoadingTransactions={searchRequest.isExecutingFirstTime}
           hasMoreToLoad={totalAvailable > searchLimit}
           onLoadMore={actions.loadMoreTransactions}
         />

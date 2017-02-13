@@ -2,25 +2,23 @@
 import { observable, computed, action, extendObservable } from 'mobx';
 import _ from 'lodash';
 import Store from './lib/Store';
-import Request from './lib/Request';
-import CachedRequest from './lib/CachedRequest';
-import WalletTransaction from '../domain/WalletTransaction';
+import Request from './lib/CachedRequest';
 import environment from '../environment';
 
 export default class TransactionsStore extends Store {
 
-  INITIAL_SEARCH_LIMIT = 10;
-  SEARCH_LIMIT_INCREASE = 10;
+  INITIAL_SEARCH_LIMIT = 1000;
+  SEARCH_LIMIT_INCREASE = 500;
   SEARCH_SKIP = 0;
   RECENT_TRANSACTIONS_LIMIT = 5;
-  TRANSACTION_REFRESH_INTERVAL = 5000;
+  TRANSACTION_REFRESH_INTERVAL = 15000;
 
-  @observable transactionCache: [{ walletId: string, transactions: [WalletTransaction] }] = [];
-  @observable recentTransactionRequests: [{ walletId: string, recentRequest: [Request] }] = [];
+  @observable transactionsRequests: [{
+    walletId: string,
+    recentRequest: [Request],
+    allRequest: [Request]
+  }] = [];
 
-  @observable searchRequest = new CachedRequest(this.api, 'getTransactions');
-  @observable recentRequest = new Request(this.api, 'getTransactions');
-  @observable transactionsRequest = new Request(this.api, 'getTransactions');
   @observable _searchOptionsForWallets = {};
 
   constructor(...args) {
@@ -29,7 +27,6 @@ export default class TransactionsStore extends Store {
     this.actions.loadMoreTransactions.listen(this._increaseSearchLimit);
     if (environment.CARDANO_API) {
       setInterval(this._refreshTransactionData, this.TRANSACTION_REFRESH_INTERVAL);
-      setInterval(this._refreshRecentTransactionsData, this.TRANSACTION_REFRESH_INTERVAL);
     }
   }
 
@@ -39,8 +36,13 @@ export default class TransactionsStore extends Store {
   @computed get recentTransactionsRequest() {
     const wallet = this.stores.wallets.active;
     if (!wallet) return new Request(this.api, 'getTransactions'); // TODO: Do not return new request here
-    console.log('this._getTransactionsRecentRequest(wallet.id)', this._getTransactionsRecentRequest(wallet.id));
     return this._getTransactionsRecentRequest(wallet.id);
+  }
+
+  @computed get searchRequest() {
+    const wallet = this.stores.wallets.active;
+    if (!wallet) return new Request(this.api, 'getTransactions'); // TODO: Do not return new request here
+    return this._getTransactionsAllRequest(wallet.id);
   }
 
   @computed get searchOptions() {
@@ -57,8 +59,6 @@ export default class TransactionsStore extends Store {
         }
       });
       options = this._searchOptionsForWallets[wallet.id];
-      // Reset the search results when a wallet is queried for the first time
-      this.searchRequest.patch(result => null);
     }
     return options;
   }
@@ -67,7 +67,8 @@ export default class TransactionsStore extends Store {
     const wallet = this.stores.wallets.active;
     if (!wallet) return [];
     const { searchTerm, searchLimit, searchSkip } = this.searchOptions;
-    const { result } = this.searchRequest.execute({
+    const request = this._getTransactionsAllRequest(wallet.id);
+    const { result } = request.execute({
       walletId: wallet.id,
       limit: searchLimit,
       skip: searchSkip,
@@ -84,8 +85,10 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get hasAnyFiltered() {
-    const { result } = this.searchRequest;
-    return result ? result.total > 0 : false;
+    const wallet = this.stores.wallets.active;
+    if (!wallet) return [];
+    const result = this._getTransactionsAllRequest(wallet.id).result;
+    return result ? result.transactions.length > 0 : false;
   }
 
   @computed get hasAny() {
@@ -98,14 +101,17 @@ export default class TransactionsStore extends Store {
   @computed get totalAvailable() {
     const wallet = this.stores.wallets.active;
     if (!wallet) return [];
-    return this._getTransactionsForWallet(wallet.id).length;
+    const result = this._getTransactionsAllRequest(wallet.id).result;
+    return result ? result.transactions.length : 0;
   }
 
   @computed get totalUnconfirmedAmount() {
     const wallet = this.stores.wallets.active;
     if (!wallet) return 0;
+    const result = this._getTransactionsAllRequest(wallet.id).result;
+    if (!result || !result.transactions) return 0;
     let unconfirmedAmount = 0;
-    for (let transaction of this._getTransactionsForWallet(wallet.id)) {
+    for (let transaction of result.transactions) {
       if (transaction.numberOfConfirmations <= 6) {
         unconfirmedAmount += transaction.amount < 0 ? (-1 * transaction.amount) : transaction.amount;
       }
@@ -114,18 +120,29 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get totalFilteredAvailable() {
-    const { result } = this.searchRequest;
-    return result ? result.total : 0;
+    const wallet = this.stores.wallets.active;
+    if (!wallet) return [];
+    const result = this._getTransactionsAllRequest(wallet.id).result;
+    return result ? result.transactions.length : 0;
   }
 
-  @action _refreshRecentTransactionsData = () => {
+  @action _refreshTransactionData = () => {
     if (this.stores.networkStatus.isCardanoConnected) {
       const allWallets = this.stores.wallets.all;
       for (let wallet of allWallets) {
-        const request = this._getTransactionsRecentRequest(wallet.id);
-        request.execute({
+        const recentRequest = this._getTransactionsRecentRequest(wallet.id);
+        recentRequest.invalidate({ immediately: false });
+        recentRequest.execute({
           walletId: wallet.id,
           limit: this.RECENT_TRANSACTIONS_LIMIT,
+          skip: 0,
+          searchTerm: '',
+        });
+        const allRequest = this._getTransactionsAllRequest(wallet.id);
+        allRequest.invalidate({ immediately: false });
+        allRequest.execute({
+          walletId: wallet.id,
+          limit: this.INITIAL_SEARCH_LIMIT,
           skip: 0,
           searchTerm: '',
         });
@@ -133,43 +150,14 @@ export default class TransactionsStore extends Store {
     }
   };
 
-  @action _refreshTransactionData = () => {
-    if (this.stores.networkStatus.isCardanoConnected) {
-      const allWallets = this.stores.wallets.all;
-      for (let wallet of allWallets) {
-        this.transactionsRequest.execute({
-          walletId: wallet.id,
-          limit: 1000,
-          skip: this._getTransactionsForWallet(wallet.id).length,
-          searchTerm: '',
-        });
-        const result = this.transactionsRequest.result;
-        this._setTransactionsForWallet(wallet.id, result ? result.transactions : []);
-      }
-    }
-  };
-
   _getTransactionsRecentRequest = (walletId: string) => {
-    const foundRequest = _.find(this.recentTransactionRequests, { walletId });
-    console.log('foundRequest', foundRequest);
+    const foundRequest = _.find(this.transactionsRequests, { walletId });
     return foundRequest && foundRequest.recentRequest ? foundRequest.recentRequest : new Request(this.api, 'getTransactions');
   };
 
-  _getTransactionsForWallet = (walletId: string) => {
-    const walletTransactions = _.find(this.transactionCache, { walletId });
-    return walletTransactions && walletTransactions.transactions ? walletTransactions.transactions : [];
-  };
-
-  @action _setTransactionsForWallet = (walletId: string, transactions: Array<WalletTransaction>) => {
-    // const currentTransactions = _.find(this.transactionCache, { walletId }).transactions;
-    // for (let newTransaction of transactions) {
-    //   let currentTransaction = _.find(currentTransactions, { id: newTransaction.id});
-    //   if (currentTransaction) {
-    //     currentTransaction = newTransaction;
-    //   } else {
-    //     currentTransactions.push(newTransaction);
-    //   }
-    // }
+  _getTransactionsAllRequest = (walletId: string) => {
+    const foundRequest = _.find(this.transactionsRequests, { walletId });
+    return foundRequest && foundRequest.allRequest ? foundRequest.allRequest : new Request(this.api, 'getTransactions');
   };
 
 }
