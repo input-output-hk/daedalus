@@ -1,3 +1,4 @@
+@skip
 Feature: Transaction Search
   In order to find transaction with specific words in the title
   As a User

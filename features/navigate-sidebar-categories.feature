@@ -14,7 +14,7 @@ Feature: Navigate Sidebar Categories
     | ada-redemption | wallets        |
 
   Scenario: Navigate from a Wallet to Ada Redemption screen
-    Given I am on the wallet home screen
+    Given I am on the "Personal Wallet" wallet "home" screen
     And The sidebar shows the wallets category
     When I click on the ada-redemption category in the sidebar
     Then I should be on the ada redemption screen

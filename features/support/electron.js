@@ -42,7 +42,13 @@ export default function () {
         'rm -rf run/* wallet-db/ *key',
         "export WALLET_TEST='1'; ./scripts/launch.sh",
       ];
-      commands.forEach(cmd => child_process.execSync(cmd, { cwd: bridgePath }));
+      commands.forEach((cmd) => {
+        try {
+          child_process.execSync(cmd, { cwd: bridgePath })
+        } catch (error) {
+          console.error(error);
+        }
+      });
 
       this.client.execute(function() {
         daedalus.environment.current = daedalus.environment.TEST;
