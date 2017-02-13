@@ -26,10 +26,13 @@ export default function () {
   });
 
   // Make the electron app accessible in each scenario context
-  this.Before({ timeout: 30 * 1000 }, async function() {
+  this.Before(function() {
     this.client = context.app.client;
     this.browserWindow = context.app.browserWindow;
-    this.client.timeoutsAsyncScript(30000);
+  });
+
+  this.Before({ tags: ["@reset"], timeout: 30 * 1000 }, async function() {
+    this.client.timeoutsAsyncScript(20000);
     await new Promise(async (resolve) => {
       const bridgePath = '/Users/dominik/work/projects/input-output/daedalus/cardano-sl';
 

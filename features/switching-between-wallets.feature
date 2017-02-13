@@ -1,3 +1,4 @@
+@reset
 Feature: Switching Between Wallets
 
   Scenario Outline: Using the Sidebar to Switch Wallets
