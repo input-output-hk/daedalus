@@ -94,11 +94,12 @@ export default class WalletsStore extends Store {
       this.walletsRequest.invalidate({ immediately: true });
       this.walletsCache.replace(this.walletsRequest.execute().result || []);
       const walletIds = this.walletsCache.map((wallet: Wallet) => wallet.id);
-      this.stores.transactions.transactionCache = walletIds.map(walletId => ({
+      this.stores.transactions.recentTransactionRequests = walletIds.map(walletId => ({
         walletId,
-        transactions: this.stores.transactions._getTransactionsForWallet(walletId)
+        recentRequest: this.stores.transactions._getTransactionsRecentRequest(walletId)
       }));
-      this.stores.transactions._refreshTransactionData();
+      // this.stores.transactions._refreshTransactionData();
+      this.stores.transactions._refreshRecentTransactionsData();
     }
   };
 

@@ -30,7 +30,7 @@ export default class WalletSummaryPage extends Component {
         hasAny: PropTypes.bool.isRequired,
         totalAvailable: PropTypes.number.isRequired,
         totalUnconfirmedAmount: PropTypes.number.isRequired,
-        transactionsRequest: PropTypes.instanceOf(Request),
+        recentTransactionsRequest: PropTypes.instanceOf(Request),
       }),
       adaRedemption: PropTypes.shape({
         showAdaRedemptionSuccessMessage: PropTypes.bool.isRequired,
@@ -51,7 +51,7 @@ export default class WalletSummaryPage extends Component {
       hasAny,
       totalAvailable,
       recent,
-      transactionsRequest,
+      recentTransactionsRequest,
       totalUnconfirmedAmount
     } = transactions;
     const wallet = wallets.active;
@@ -59,11 +59,11 @@ export default class WalletSummaryPage extends Component {
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
-    if (transactionsRequest.isExecutingFirstTime || hasAny) {
+    if (recentTransactionsRequest.isExecutingFirstTime || hasAny) {
       walletTransactions = (
         <WalletTransactionsList
           transactions={recent}
-          isLoadingTransactions={transactionsRequest.isExecuting}
+          isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           hasMoreToLoad={false}
           onLoadMore={() => {}}
         />
@@ -79,7 +79,7 @@ export default class WalletSummaryPage extends Component {
           amount={wallet.amount}
           numberOfTransactions={totalAvailable}
           pendingAmount={totalUnconfirmedAmount}
-          isLoadingTransactions={transactionsRequest.isExecuting}
+          isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
         />
         {walletTransactions}
         {showAdaRedemptionSuccessMessage && (
