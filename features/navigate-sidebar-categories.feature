@@ -19,9 +19,9 @@ Feature: Navigate Sidebar Categories
     When I click on the ada-redemption category in the sidebar
     Then I should be on the ada redemption screen
 
-  Scenario: Open Wallets Menu from Settings Screen
+  Scenario: Open Wallets Menu from Ada Redemption Screen
     Given I am on the ada redemption screen
     And The sidebar shows the ada-redemption category
     When I click on the wallets category in the sidebar
     Then The wallets category should be active
-    But I should still be on the ada redemption screen
+    But I should be on the wallet summary screen
