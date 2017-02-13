@@ -53,7 +53,7 @@ writeNSIS = do
     page Directory                   -- Pick where to install
     page InstFiles                   -- Give a progress bar while installing
 
-    section "" [Required] $ do
+    _ <- section "" [Required] $ do
         setOutPath "$INSTDIR"        -- Where to install files in this section
         writeRegStr HKLM "Software/Daedalus" "Install_Dir" "$INSTDIR"
         createDirectory "$APPDATA\\Daedalus\\DB-0.2"
@@ -75,7 +75,7 @@ writeNSIS = do
         writeRegDWORD HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "NoRepair" 1
         writeUninstaller "uninstall.exe"
 
-    section "Start Menu Shortcuts" [] $ do
+    _ <- section "Start Menu Shortcuts" [] $ do
         createDirectory "$SMPROGRAMS/Daedalus"
         createShortcut "$SMPROGRAMS/Daedalus/Uninstall Daedalus.lnk" 
           [Target "$INSTDIR/uninstall.exe", IconFile "$INSTDIR/uninstall.exe", IconIndex 0]
