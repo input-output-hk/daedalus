@@ -91,6 +91,7 @@ writeNSIS = do
       delete [] "$DESKTOP\\Daedalus.lnk"
       -- Note: we leave user data alone
 
+-- TODO: add unicode support to https://github.com/ndmitchell/nsis
 patchNSIS :: IO ()
 patchNSIS = do
   nsiScript <- readFile "daedalus.nsi"
