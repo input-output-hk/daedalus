@@ -19,6 +19,7 @@ shortcutParameters ipdht = L.intercalate " " $
     where
       nodeArgs = [
         "--listen", "0.0.0.0:12100",
+        "--report-server", "http://35.156.164.19:5666",
         "--log-config", "log-config-prod.yaml",
         "--keyfile", "\"%APPDATA%\\Daedalus\\Secrets\\secret.key\"",
         "--logs-prefix", "\"%APPDATA%\\Daedalus\\Logs\"",
@@ -69,6 +70,8 @@ writeNSIS = do
         file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
 
         -- Uninstaller
+        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "Publisher" "Eureka Solutions LLC"
+        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "ProductVersion" (str version)
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "DisplayName" "Daedalus"
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "UninstallString" "\"$INSTDIR/uninstall.exe\""
         writeRegDWORD HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "NoModify" 1
