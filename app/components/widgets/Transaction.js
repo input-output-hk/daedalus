@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import styles from './Transaction.scss';
+import adaSymbol from '../../assets/images/ada-symbol.svg';
 
 export const transactionShape = PropTypes.shape({
   id: PropTypes.string.isRequired,
@@ -85,7 +86,9 @@ export default class Transaction extends Component {
 
           <button className={styles.header} onClick={this.toggleDetails.bind(this)}>
             <div className={styles.title}>{data.title}</div>
-            <div className={styles.amount}>{data.amount} {data.currency}</div>
+            <div className={styles.amount}>{data.amount}
+              <img className={styles.currencySymbol} src={adaSymbol} role="presentation" />
+            </div>
           </button>
 
           <div className={styles.details}>
