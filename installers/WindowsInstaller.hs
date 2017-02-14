@@ -12,10 +12,9 @@ shortcutParameters :: [String] -> String
 shortcutParameters ipdht = L.intercalate " " $
     [ "--node \"%PROGRAMFILES%\\Daedalus\\cardano-node.exe\""
     , "--node-log-path", "\"%APPDATA%\\Daedalus\\Logs\\cardano-node.log\""
+    , "--node-log-config", "log-config-prod.yaml" 
     , "--wallet \"%PROGRAMFILES%\\Daedalus\\Daedalus.exe\""
     , "--updater \"" <> installerPath <> "\""
-    , "--node-log-config", "log-config-prod.yaml" -- should it be just here, not in programfiles/appdata?
-    , "--node-log-path", "\"%APPDATA%\\Daedalus\\Logs\\nodeLogStdout.log\""
     , "--node-timeout 5"
     , (" -n " ++ (L.intercalate " -n " nodeArgs))
     ]
