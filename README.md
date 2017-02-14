@@ -1,7 +1,7 @@
 # daedalus
 Daedalus - cryptocurrency wallet
 
-## Install Dependencies.
+## Install Dependencies
 
 ```bash
 $ npm install
