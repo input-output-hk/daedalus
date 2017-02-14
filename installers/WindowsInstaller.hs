@@ -1,32 +1,34 @@
 module WindowsInstaller where
 
-import           Data.Maybe (fromMaybe)
-import           Data.Monoid ((<>))
-import qualified Data.List as L
+import qualified Data.List          as L
+import           Data.Maybe         (fromMaybe)
+import           Data.Monoid        ((<>))
 import           Development.NSIS
-import           System.Directory (renameFile)
+import           System.Directory   (renameFile)
 import           System.Environment (lookupEnv)
-import           Turtle (echo, procs)
+import           Turtle             (echo, procs)
 
 shortcutParameters :: [String] -> String
 shortcutParameters ipdht = L.intercalate " " $
-  [ "--node \"%PROGRAMFILES%\\Daedalus\\cardano-node.exe\""
-  , "--node-log-path", "\"%APPDATA%\\Daedalus\\Logs\\cardano-node.log\""
-  , "--wallet \"%PROGRAMFILES%\\Daedalus\\Daedalus.exe\""
-  , "--updater C:/TODO" -- TODO
-  , "--node-timeout 5"
-  , (" -n " ++ (L.intercalate " -n " nodeArgs))
-  ] 
-    where
-      nodeArgs = [
-        "--listen", "0.0.0.0:12100",
-        "--log-config", "log-config-prod.yaml",
-        "--keyfile", "\"%APPDATA%\\Daedalus\\Secrets\\secret.key\"",
-        "--logs-prefix", "\"%APPDATA%\\Daedalus\\Logs\"",
-        "--db-path", "\"%APPDATA%\\Daedalus\\DB-0.2\"",
-        "--wallet-db-path", "\"%APPDATA%\\Daedalus\\Wallet-0.2\"",
-        "--wallet"
-        ] <> ("--peer" : (L.intersperse "--peer" ipdht))
+    [ "--node \"%PROGRAMFILES%\\Daedalus\\cardano-node.exe\""
+    , "--node-log-path", "\"%APPDATA%\\Daedalus\\Logs\\cardano-node.log\""
+    , "--wallet \"%PROGRAMFILES%\\Daedalus\\Daedalus.exe\""
+    , "--updater \"" <> updaterPath <> "\""
+    , "--node-log-config", "log-config-prod.yaml" -- should it be just here, not in programfiles/appdata?
+    , "--node-timeout 5"
+    , (" -n " ++ (L.intercalate " -n " nodeArgs))
+    ]
+  where
+    installerPath = "%APPDATA%\\Daedalus\\Installer.msi"
+    nodeArgs = [
+      "--listen", "0.0.0.0:12100",
+      "--keyfile", "\"%APPDATA%\\Daedalus\\Secrets\\secret.key\"",
+      "--update-latest-path", "\"" <> installerPath <> "\"",
+      "--logs-prefix", "\"%APPDATA%\\Daedalus\\Logs\"",
+      "--db-path", "\"%APPDATA%\\Daedalus\\DB-0.2\"",
+      "--wallet-db-path", "\"%APPDATA%\\Daedalus\\Wallet-0.2\"",
+      "--wallet"
+      ] <> ("--peer" : (L.intersperse "--peer" ipdht))
 
 daedalusShortcut :: [String] -> [Attrib]
 daedalusShortcut ipdht =
@@ -51,7 +53,7 @@ writeNSIS = do
     {- unicode True -}
     installDir "$PROGRAMFILES64\\Daedalus"   -- The default installation directory
     installDirRegKey HKLM "Software/Daedalus" "Install_Dir"
-    requestExecutionLevel Highest     
+    requestExecutionLevel Highest
 
     page Directory                   -- Pick where to install
     page InstFiles                   -- Give a progress bar while installing
@@ -60,7 +62,7 @@ writeNSIS = do
         setOutPath "$INSTDIR"        -- Where to install files in this section
         writeRegStr HKLM "Software/Daedalus" "Install_Dir" "$INSTDIR"
         createDirectory "$APPDATA\\Daedalus\\DB-0.2"
-        createDirectory "$APPDATA\\Daedalus\\Wallet-0.2" 
+        createDirectory "$APPDATA\\Daedalus\\Wallet-0.2"
         createDirectory "$APPDATA\\Daedalus\\Logs"
         createDirectory "$APPDATA\\Daedalus\\Secrets"
         createShortcut "$DESKTOP\\Daedalus.lnk" ds
@@ -82,7 +84,7 @@ writeNSIS = do
 
     _ <- section "Start Menu Shortcuts" [] $ do
         createDirectory "$SMPROGRAMS/Daedalus"
-        createShortcut "$SMPROGRAMS/Daedalus/Uninstall Daedalus.lnk" 
+        createShortcut "$SMPROGRAMS/Daedalus/Uninstall Daedalus.lnk"
           [Target "$INSTDIR/uninstall.exe", IconFile "$INSTDIR/uninstall.exe", IconIndex 0]
         createShortcut "$SMPROGRAMS/Daedalus/Daedalus.lnk" ds
 
