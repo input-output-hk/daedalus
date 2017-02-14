@@ -61,6 +61,7 @@ export default class WalletNavigation extends Component {
 
         <div className={styles.navItem}>
           <WalletNavButton
+            className="summary"
             label={intl.formatMessage(messages.summary)}
             normalIcon={summaryIcon}
             activeIcon={summaryIconActive}
@@ -71,6 +72,7 @@ export default class WalletNavigation extends Component {
 
         <div className={styles.navItem}>
           <WalletNavButton
+            className="send"
             label={intl.formatMessage(messages.send)}
             normalIcon={sendIcon}
             activeIcon={sendIconActive}
@@ -81,6 +83,7 @@ export default class WalletNavigation extends Component {
 
         <div className={styles.navItem}>
           <WalletNavButton
+            className="receive"
             label={intl.formatMessage(messages.receive)}
             normalIcon={receiveIcon}
             activeIcon={receiveIconActive}

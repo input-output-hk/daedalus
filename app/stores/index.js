@@ -15,7 +15,7 @@ import AdaRedemptionStore from './AdaRedemptionStore';
 const stores = observable({
   router: null,
   app: null,
-  user: null,
+  loading: null,
   settings: null,
   wallets: null,
   transactions: null,
@@ -37,7 +37,7 @@ export default action((api, actions, router): storesType => {
   // Assign new store instances
   Object.assign(stores, {
     app: new AppStore(stores, api, actions),
-    user: new LoadingStore(stores, api, actions),
+    loading: new LoadingStore(stores, api, actions),
     settings: new SettingsStore(stores, api, actions),
     wallets: new WalletsStore(stores, api, actions),
     transactions: new TransactionsStore(stores, api, actions),
@@ -56,7 +56,7 @@ export default action((api, actions, router): storesType => {
 
 export type storesType = {
   app: AppStore,
-  user: LoadingStore,
+  loading: LoadingStore,
   settings: SettingsStore,
   wallets: WalletsStore,
   transactions: TransactionsStore,

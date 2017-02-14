@@ -14,6 +14,7 @@ export default class WalletsStore extends Store {
 
   @observable walletsCache : Array<Wallet> = [];
 
+  @observable active = null;
   @observable walletsRequest = new CachedRequest(this.api, 'getWallets');
   @observable createWalletRequest = new Request(this.api, 'createWallet');
   @observable sendMoneyRequest = new Request(this.api, 'createTransaction');
@@ -35,8 +36,9 @@ export default class WalletsStore extends Store {
     this.actions.toggleWalletRestore.listen(this._toggleWalletRestore);
     this.actions.finishWalletBackup.listen(this._finishWalletCreation);
     this.actions.restoreWallet.listen(this._restoreWallet);
+    this.registerReactions([this._updateActiveWalletOnRouteChanges]);
     if (environment.CARDANO_API) {
-      setInterval(this._refreshWalletsData, this.WALLET_REFRESH_INTERVAL);
+      setInterval(this.refreshWalletsData, this.WALLET_REFRESH_INTERVAL);
     }
   }
 
@@ -66,7 +68,7 @@ export default class WalletsStore extends Store {
       sender: wallet.address,
       currency: wallet.currency,
     });
-    this._refreshWalletsData();
+    this.refreshWalletsData();
     this.goToWalletRoute(wallet.id);
   };
 
@@ -74,11 +76,13 @@ export default class WalletsStore extends Store {
     return this.walletsCache;
   }
 
-  @computed get active() {
-    const currentRoute = this.stores.router.location.pathname;
-    const match = matchRoute(`${this.BASE_ROUTE}/:id(*page)`, currentRoute);
-    if (match) return this.walletsCache.find(w => w.id === match.id) || null;
-    return null;
+  @computed get activeWalletRoute() {
+    if (!this.active) return null;
+    return this.getWalletRoute(this.active);
+  }
+
+  @computed get hasAnyLoaded() {
+    return this.all.length > 0;
   }
 
   getWalletRoute(walletId: ?string, screen = 'home') {
@@ -89,7 +93,11 @@ export default class WalletsStore extends Store {
     return this.api.isValidAddress('ADA', address);
   }
 
-  @action _refreshWalletsData = () => {
+  isValidMnemonic(mnemonic: string) {
+    return this.api.isValidMnemonic(mnemonic);
+  }
+
+  @action refreshWalletsData = () => {
     if (this.stores.networkStatus.isCardanoConnected) {
       this.walletsRequest.invalidate({ immediately: true });
       this.walletsCache.replace(this.walletsRequest.execute().result || []);
@@ -128,15 +136,36 @@ export default class WalletsStore extends Store {
   @action _restoreWallet = async (params) => {
     const restoredWallet = await this.restoreRequest.execute(params);
     this._toggleWalletRestore();
-    this._refreshWalletsData();
+    this.refreshWalletsData();
     this.goToWalletRoute(restoredWallet.id);
   };
 
   goToWalletRoute(walletId) {
     const route = this.getWalletRoute(walletId);
     this.actions.goToRoute({ route });
-    // TODO: Make sidebar route dependent on the real route instead!! (this is just a hack)
-    this.actions.changeSidebarRoute({ route });
+  }
+
+  _updateActiveWalletOnRouteChanges = () => {
+    const currentRoute = this.stores.router.location.pathname;
+    const hasActiveWallet = !!this.active;
+    const hasAnyWalletsLoaded = this.hasAnyLoaded;
+    const match = matchRoute(`${this.BASE_ROUTE}/:id(*page)`, currentRoute);
+    if (match) {
+      // We have a route for a specific wallet -> lets try to find it
+      const walletForCurrentRoute = this.all.find(w => w.id === match.id);
+      if (walletForCurrentRoute) {
+        // The wallet exists, we are done
+        this.active = walletForCurrentRoute;
+      } else if (hasAnyWalletsLoaded) {
+        // There is no wallet with given id -> pick first wallet
+        this.active = this.all[0];
+        this.goToWalletRoute(this.active.id);
+      }
+    } else if (matchRoute(this.BASE_ROUTE, currentRoute)) {
+      // The route does not specify any wallet -> pick first wallet
+      if (!hasActiveWallet && hasAnyWalletsLoaded) this.active = this.all[0];
+      if (this.active) this.goToWalletRoute(this.active.id);
+    }
   }
 
 }

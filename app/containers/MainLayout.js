@@ -26,6 +26,7 @@ export default class MainLayout extends Component {
           inProgress: PropTypes.bool.isRequired
         }),
         restoreRequest: PropTypes.instanceOf(Request).isRequired,
+        isValidMnemonic: PropTypes.func.isRequired
       }).isRequired,
       walletBackup: PropTypes.shape({
         inProgress: PropTypes.bool.isRequired,
@@ -77,11 +78,12 @@ export default class MainLayout extends Component {
     };
     const sidebarComponent = (
       <Sidebar
-        route={sidebar.route}
         menus={sidebarMenus}
         hidden={sidebar.hidden}
         isMaximized={sidebar.isMaximized}
-        onCategoryClicked={route => actions.changeSidebarRoute({ route })}
+        categories={sidebar.CATEGORIES}
+        currentCategory={sidebar.currentCategory}
+        onCategoryClicked={category => actions.sidebarCategorySelected({ category })}
         activeWalletId={activeWalletId}
       />
     );
@@ -91,6 +93,7 @@ export default class MainLayout extends Component {
         onSubmit={this.handleRestoreWalletSubmit}
         onCancel={toggleWalletRestore}
         error={restoreRequest.error}
+        mnemonicValidator={mnemonic => this.props.stores.wallets.isValidMnemonic(mnemonic)}
       />
     ) : null;
     const addWalletDialog = wallets.isAddWalletDialogOpen ? (<WalletAddPage />) : null;

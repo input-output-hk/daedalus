@@ -1,3 +1,4 @@
+@skip
 Feature: Transactions Grouping
   In order to see clearly when transactions have been executed
   As a User

@@ -72,7 +72,7 @@ export type redeemAdaRequest = {
 // INTERFACE
 
 export type Api = {
-  getWallets(userId: string): Promise<[Wallet]>,
+  getWallets(): Promise<[Wallet]>,
   getTransactions(request: getTransactionsRequest): Promise<{
     transactions: [WalletTransaction],
     total: number

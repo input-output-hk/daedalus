@@ -20,7 +20,7 @@
     "dev": "concurrently --kill-others \"npm run hot-server\" \"npm run start-hot\"",
     "debug": "concurrently --kill-others \"npm run hot-server\" \"npm run start-debug-hot\" \"electron-inspector\"",
     "cleanup": "mop -v",
-    "cucumber": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 cucumber-js --compiler js:babel-register --snippet-interface synchronous",
+    "cucumber": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 cucumber-js --compiler js:babel-register --snippet-interface synchronous --tags ~@skip",
     "cucumber-watch": "npm run cucumber -- --tags @watch",
     "test": "npm run cucumber",
     "test-watch": "nodemon --exec npm run cucumber-watch",
