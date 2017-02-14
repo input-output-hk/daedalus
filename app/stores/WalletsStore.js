@@ -73,6 +73,10 @@ export default class WalletsStore extends Store {
     return this.walletsRequest.execute().result || [];
   }
 
+  @computed get first() {
+    return this.all[0];
+  }
+
   @computed get activeWalletRoute() {
     if (!this.active) return null;
     return this.getWalletRoute(this.active);
@@ -91,7 +95,7 @@ export default class WalletsStore extends Store {
   }
 
   refreshWalletsData = () => {
-    if (this.stores.networkStatus.isCardanoConnected) {
+    if (this.stores.networkStatus.isConnected) {
       this.walletsRequest.invalidate({ immediately: true });
       this.stores.transactions.searchRequest.invalidate({ immediately: true });
     }

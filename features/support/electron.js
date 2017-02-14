@@ -59,7 +59,7 @@ export default function () {
       await this.client.executeAsync(function(done) {
         const connectToBackend = () => {
           // Wait until we are reconnected & wallets are loaded
-          if (daedalus.stores.networkStatus.isCardanoConnected){
+          if (daedalus.stores.networkStatus.isConnected){
             done();
           } else {
             setTimeout(connectToBackend, 1000);

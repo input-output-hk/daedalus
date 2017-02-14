@@ -22,6 +22,20 @@ import {
 
 export default class CardanoClientApi {
 
+  notifyCallbacks = [];
+
+  constructor() {
+    ClientApi.notify(this._onNotify, this._onNotifyError);
+  }
+
+  notify(onSuccess, onError = () => {}) {
+    this.notifyCallbacks.push({ message: onSuccess, error: onError });
+  }
+
+  reset() {
+    this.notifyCallbacks = [];
+  }
+
   async getWallets() {
     console.debug('CardanoClientApi::getWallets called');
     const response = await ClientApi.getWallets();
@@ -116,4 +130,22 @@ export default class CardanoClientApi {
   generateMnemonic() {
     return ClientApi.generateMnemonic().split(' ');
   }
+
+  // PRIVATE
+
+  _onNotify = (rawMessage) => {
+    console.debug('CardanoClientApi::notify message: ', rawMessage);
+    // TODO: "ConnectionClosed" messages are not JSON parsable … so we need to catch that case here!
+    let message = rawMessage;
+    if (message !== "ConnectionClosed") {
+      message = JSON.parse(rawMessage);
+    }
+    this.notifyCallbacks.forEach(cb => cb.message(message));
+  };
+
+  _onNotifyError = (error) => {
+    console.debug('CardanoClientApi::notify error: ', error);
+    this.notifyCallbacks.forEach(cb => cb.error(error));
+  };
+
 }
