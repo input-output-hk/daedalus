@@ -22,10 +22,11 @@ export default defineActions({
     searchTerm: PropTypes.string.isRequired,
   },
   loadMoreTransactions: {},
-  changeSidebarRoute: {
-    route: PropTypes.string.isRequired,
-  },
   toggleSidebar: {},
+  toggleMaximized: {},
+  sidebarCategorySelected: {
+    category: PropTypes.string.isRequired,
+  },
   toggleCreateWalletDialog: {},
   sendMoney: {
     title: PropTypes.string.isRequired,

@@ -9,7 +9,6 @@ import hr from 'react-intl/locale-data/hr';
 import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
 import { hashHistory } from 'react-router';
 import App from './App';
-import StubApi from './api/StubApi';
 import CardanoClientApi from './api/CardanoClientApi';
 import environment from './environment';
 import setupStores from './stores';
@@ -22,7 +21,7 @@ import './themes/index.global.scss';
 addLocaleData([en, de, hr]);
 
 const initializeDaedalus = () => {
-  const api = environment.CARDANO_API ? new CardanoClientApi() : new StubApi();
+  const api = new CardanoClientApi();
   const router = new RouterStore();
   const history = syncHistoryWithStore(hashHistory, router);
   const stores = setupStores(api, actions, router);
@@ -33,7 +32,6 @@ const initializeDaedalus = () => {
     stores,
     translations,
     reset: action(() => {
-      api.repository.reset();
       resetAllActions();
       setupStores(api, actions, router);
     }),

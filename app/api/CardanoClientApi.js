@@ -112,4 +112,8 @@ export default class CardanoClientApi {
       throw new RedeemAdaError();
     }
   }
+
+  generateMnemonic() {
+    return ClientApi.generateMnemonic().split(' ');
+  }
 }

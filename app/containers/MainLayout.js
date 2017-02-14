@@ -77,11 +77,12 @@ export default class MainLayout extends Component {
     };
     const sidebarComponent = (
       <Sidebar
-        route={sidebar.route}
         menus={sidebarMenus}
         hidden={sidebar.hidden}
         isMaximized={sidebar.isMaximized}
-        onCategoryClicked={route => actions.changeSidebarRoute({ route })}
+        categories={sidebar.CATEGORIES}
+        currentCategory={sidebar.currentCategory}
+        onCategoryClicked={category => actions.sidebarCategorySelected({ category })}
         activeWalletId={activeWalletId}
       />
     );

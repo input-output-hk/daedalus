@@ -1,40 +1,43 @@
+@reset
 Feature: Send Money to Receiver
 
   Background:
-    Given I have a wallet
+    Given I have the following wallets:
+      | name   |
+      | first  |
 
   Scenario: User Sends Money to Receiver
-    Given I am on the wallet send screen
-    When I fill out the wallet send form with:
-      | title          |  receiver                           | amount | description |
-      | my transaction |  13GvjwDkz8s8ZmGQjwVLNUXrNXdSmQa72x | 10     | some text   |
+    Given I am on the "Personal Wallet" wallet "send" screen
+    When I fill out the send form with a transaction to "first" wallet:
+      | title          | amount | description |
+      | my transaction | 10     | some text   |
     And I submit the wallet send form
-    Then I should see the wallet home screen with the transaction titled my transaction
+    Then I should see the "Personal Wallet" wallet home screen with the transaction titled "my transaction"
 
   Scenario: User Submits Empty Form
-    Given I am on the wallet send screen
+    Given I am on the "Personal Wallet" wallet "send" screen
     When I submit the wallet send form
     Then I should see the following error messages on the wallet send form:
-      | message                                       |
-      | wallet.send.form.errors.invalidTitle          |
-      | global.errors.fieldIsRequired                 |
-      | wallet.send.form.errors.invalidAmount         |
+      | message                               |
+      | wallet.send.form.errors.invalidTitle  |
+      | global.errors.fieldIsRequired         |
+      | wallet.send.form.errors.invalidAmount |
 
   Scenario: User Enters Wrong Receiver Address
-    Given I am on the wallet send screen
+    Given I am on the "Personal Wallet" wallet "send" screen
     When I fill out the wallet send form with:
-      | title          | receiver      | amount | description |
-      | my transaction | wrong-address | 10  | some text   |
+      | title          | address | amount | description |
+      | my transaction | invalid | 10     | some text   |
     And I submit the wallet send form
     Then I should see the following error messages on the wallet send form:
-      | message                                       |
+      | message                                |
       | wallet.send.form.errors.invalidAddress |
 
   Scenario Outline: User Enters Wrong Amount
-    Given I am on the wallet send screen
-    When I fill out the wallet send form with:
-      | title          | receiver                           | amount         | description |
-      | my transaction | 13GvjwDkz8s8ZmGQjwVLNUXrNXdSmQa72x | <WRONG_AMOUNT> | some text   |
+    Given I am on the "Personal Wallet" wallet "send" screen
+    When I fill out the send form with a transaction to "first" wallet:
+      | title          | amount         | description |
+      | my transaction | <WRONG_AMOUNT> | some text   |
     And I submit the wallet send form
     Then I should see the following error messages on the wallet send form:
       | message                               |
