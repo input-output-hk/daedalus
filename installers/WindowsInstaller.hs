@@ -15,6 +15,7 @@ shortcutParameters ipdht = L.intercalate " " $
     , "--wallet \"%PROGRAMFILES%\\Daedalus\\Daedalus.exe\""
     , "--updater \"" <> updaterPath <> "\""
     , "--node-log-config", "log-config-prod.yaml" -- should it be just here, not in programfiles/appdata?
+    , "--node-log-path", "\"%APPDATA%\\Daedalus\\Logs\\nodeLogStdout.log\""
     , "--node-timeout 5"
     , (" -n " ++ (L.intercalate " -n " nodeArgs))
     ]
