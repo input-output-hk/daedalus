@@ -26,13 +26,13 @@ export default class SidebarWalletsMenu extends Component {
     return (
       <SidebarSubMenu visible={this.props.visible}>
         <div className={styles.wallets}>
-          {wallets.map((wallet) => (
+          {wallets.map((wallet, index) => (
             <SidebarWalletMenuItem
               title={wallet.title}
               info={wallet.info}
               active={isActiveWallet(wallet.id)}
               onClick={() => onWalletItemClick(wallet.id)}
-              key={wallet.id}
+              key={index} // TODO: remove temporary fix
               isConnected={wallet.isConnected}
             />
           ))}

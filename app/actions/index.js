@@ -22,10 +22,11 @@ export default defineActions({
     searchTerm: PropTypes.string.isRequired,
   },
   loadMoreTransactions: {},
-  changeSidebarRoute: {
-    route: PropTypes.string.isRequired,
-  },
   toggleSidebar: {},
+  toggleMaximized: {},
+  sidebarCategorySelected: {
+    category: PropTypes.string.isRequired,
+  },
   toggleCreateWalletDialog: {},
   sendMoney: {
     title: PropTypes.string.isRequired,
@@ -38,8 +39,7 @@ export default defineActions({
     height: PropTypes.number.isRequired,
   },
   initiateWalletBackup: {
-    walletId: PropTypes.string.isRequired,
-    recoveryPhrase: MobxPropTypes.arrayOrObservableArray.isRequired
+    recoveryPhrase: MobxPropTypes.arrayOrObservableArray.isRequired,
   },
   acceptPrivacyNoticeForWalletBackup: {},
   continueToRecoveryPhraseForWalletBackup: {},
@@ -53,7 +53,24 @@ export default defineActions({
   restartWalletBackup: {},
   cancelWalletBackup: {},
   finishWalletBackup: {},
-  acceptNodeUpdate: {},
-  postponeNodeUpdate: {},
-  toggleNodeUpdateNotificationExpanded: {}
+  setRedemptionCertificate: {
+    certificate: PropTypes.instanceOf(File).isRequired,
+  },
+  setRedemptionPassPhrase: {
+    passPhrase: PropTypes.string.isRequired,
+  },
+  setRedemptionCode: {
+    redemptionCode: PropTypes.string.isRequired,
+  },
+  redeemAda: {
+    walletId: PropTypes.string.isRequired,
+  },
+  adaSuccessfullyRedeemed: {},
+  closeAdaRedemptionSuccessOverlay: {},
+  toggleAddWallet: {},
+  toggleWalletRestore: {},
+  restoreWallet: {
+    recoveryPhrase: PropTypes.string.isRequired,
+    walletName: PropTypes.string.isRequired
+  }
 }, PropTypes.validateWithErrors);

@@ -12,8 +12,7 @@ export default class WalletBackupPage extends Component {
     stores: PropTypes.shape({
       walletBackup: PropTypes.shape({
         currentStep: PropTypes.string.isRequired,
-        walletId: PropTypes.string.isRequired,
-        recoveryPhrase: MobxPropTypes.arrayOrObservableArray.isRequired,
+        recoveryPhraseWords: MobxPropTypes.arrayOrObservableArray.isRequired,
         recoveryPhraseShuffled: MobxPropTypes.arrayOrObservableArray.isRequired,
         completed: PropTypes.bool.isRequired,
         enteredPhrase: MobxPropTypes.arrayOrObservableArray.isRequired,
@@ -41,7 +40,7 @@ export default class WalletBackupPage extends Component {
 
   render() {
     const {
-      recoveryPhrase,
+      recoveryPhraseWords,
       enteredPhrase,
       isRecoveryPhraseValid,
       countdownRemaining,
@@ -63,41 +62,48 @@ export default class WalletBackupPage extends Component {
       acceptPrivacyNoticeForWalletBackup,
       continueToRecoveryPhraseForWalletBackup
     } = this.props.actions;
-    if (currentStep === 'privacyWarning') return (
-      <WalletBackupPrivacyWarningDialog
-        canPhraseBeShown={isPrivacyNoticeAccepted && countdownRemaining === 0}
-        isPrivacyNoticeAccepted={isPrivacyNoticeAccepted}
-        countdownRemaining={countdownRemaining}
-        onAcceptPrivacyNotice={acceptPrivacyNoticeForWalletBackup}
-        onCancelBackup={cancelWalletBackup}
-        onContinue={continueToRecoveryPhraseForWalletBackup}
-      />
-    );
-    if (currentStep === 'recoveryPhraseDisplay') return (
-      <WalletRecoveryPhraseDisplayDialog
-        recoveryPhrase={recoveryPhrase.reduce((phrase, { word }) => `${phrase} ${word}`, '')}
-        onStartWalletBackup={startWalletBackup}
-        onCancelBackup={cancelWalletBackup}
-      />
-    );
-    if (currentStep === 'recoveryPhraseEntry') return (
-      <WalletRecoveryPhraseEntryDialog
-        isTermDeviceAccepted={isTermDeviceAccepted}
-        enteredPhrase={enteredPhrase}
-        canFinishBackup={isRecoveryPhraseValid && isTermDeviceAccepted && isTermRecoveryAccepted}
-        isTermRecoveryAccepted={isTermRecoveryAccepted}
-        isValid={isRecoveryPhraseValid}
-        onAcceptTermDevice={acceptWalletBackupTermDevice}
-        onAcceptTermRecovery={acceptWalletBackupTermRecovery}
-        onAddWord={addWordToWalletBackupVerification}
-        onCancelBackup={cancelWalletBackup}
-        onClear={clearEnteredRecoveryPhrase}
-        onFinishBackup={finishWalletBackup}
-        onRestartBackup={restartWalletBackup}
-        recoveryPhraseShuffled={recoveryPhraseShuffled}
-      />
-    );
 
+    if (currentStep === 'privacyWarning') {
+      return (
+        <WalletBackupPrivacyWarningDialog
+          canPhraseBeShown={isPrivacyNoticeAccepted && countdownRemaining === 0}
+          isPrivacyNoticeAccepted={isPrivacyNoticeAccepted}
+          countdownRemaining={countdownRemaining}
+          onAcceptPrivacyNotice={acceptPrivacyNoticeForWalletBackup}
+          onCancelBackup={cancelWalletBackup}
+          onContinue={continueToRecoveryPhraseForWalletBackup}
+        />
+      );
+    }
+
+    if (currentStep === 'recoveryPhraseDisplay') {
+      return (
+        <WalletRecoveryPhraseDisplayDialog
+          recoveryPhrase={recoveryPhraseWords.reduce((phrase, { word }) => `${phrase} ${word}`, '')}
+          onStartWalletBackup={startWalletBackup}
+          onCancelBackup={cancelWalletBackup}
+        />
+      );
+    }
+
+    if (currentStep === 'recoveryPhraseEntry') {
+      return (
+        <WalletRecoveryPhraseEntryDialog
+          isTermDeviceAccepted={isTermDeviceAccepted}
+          enteredPhrase={enteredPhrase}
+          canFinishBackup={isRecoveryPhraseValid && isTermDeviceAccepted && isTermRecoveryAccepted}
+          isTermRecoveryAccepted={isTermRecoveryAccepted}
+          isValid={isRecoveryPhraseValid}
+          onAcceptTermDevice={acceptWalletBackupTermDevice}
+          onAcceptTermRecovery={acceptWalletBackupTermRecovery}
+          onAddWord={addWordToWalletBackupVerification}
+          onCancelBackup={cancelWalletBackup}
+          onClear={clearEnteredRecoveryPhrase}
+          onFinishBackup={finishWalletBackup}
+          onRestartBackup={restartWalletBackup}
+          recoveryPhraseShuffled={recoveryPhraseShuffled}
+        />
+      );
+    }
   }
-
 }

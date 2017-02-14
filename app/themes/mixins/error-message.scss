@@ -1,0 +1,4 @@
+@mixin error-message {
+  color: $theme-error-color;
+  font-family: $font-regular;
+}

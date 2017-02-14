@@ -1,12 +1,9 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { Match, Redirect } from 'react-router';
 import { observer, inject } from 'mobx-react';
 import Layout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
-import WalletHomePage from './WalletHomePage';
-import WalletReceivePage from './WalletReceivePage';
-import WalletSendPage from './WalletSendPage';
+import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 
 @inject('stores', 'actions') @observer
 export default class Wallet extends Component {
@@ -24,6 +21,7 @@ export default class Wallet extends Component {
 
   isActiveScreen = (screen: string) => {
     const { router, wallets} = this.props.stores;
+    if (!wallets.active) return false;
     const screenRoute = `${wallets.BASE_ROUTE}/${wallets.active.id}/${screen}`;
     return router.location ? router.location.pathname === screenRoute : false;
   };
@@ -34,9 +32,8 @@ export default class Wallet extends Component {
   };
 
   render() {
-    const { pathname } = this.props;
     const { wallets } = this.props.stores;
-    const { BASE_ROUTE } = wallets;
+    if (!wallets.active) return <Layout><LoadingSpinner /></Layout>;
     return (
       <Layout>
         <WalletWithNavigation

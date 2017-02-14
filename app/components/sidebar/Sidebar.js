@@ -2,18 +2,35 @@
 import React, { Component, PropTypes } from 'react';
 import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import classNames from 'classnames';
+import { defineMessages, intlShape } from 'react-intl';
 import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import walletsIcon from '../../assets/images/sidebar/wallet-ic.svg';
-import settingsIcon from '../../assets/images/sidebar/settings-ic.svg';
-import stakingIcon from '../../assets/images/sidebar/staking-ic.svg';
+import adaRedemptionIcon from '../../assets/images/sidebar/ada.svg';
+
+const messages = defineMessages({
+  walletsCategoryLabel: {
+    id: 'Sidebar.categories.wallets',
+    defaultMessage: '!!!Wallets',
+    description: 'Category label for wallets'
+  },
+  settingsCategoryLabel: {
+    id: 'Sidebar.categories.settings',
+    defaultMessage: '!!!Settings',
+    description: 'Category label for settings'
+  },
+  adaRedemptionCategoryLabel: {
+    id: 'Sidebar.categories.adaRedemption',
+    defaultMessage: '!!!ADA Redemption',
+    description: 'Category label for ada redemption'
+  },
+});
 
 @observer
 export default class Sidebar extends Component {
 
   static propTypes = {
-    route: PropTypes.string.isRequired,
     menus: PropTypes.shape({
       wallets: PropTypes.shape({
         items: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.object).isRequired,
@@ -23,18 +40,26 @@ export default class Sidebar extends Component {
         })
       })
     }).isRequired,
+    categories: PropTypes.shape({
+      WALLETS: PropTypes.string.isRequired,
+      ADA_REDEMPTION: PropTypes.string.isRequired,
+    }).isRequired,
+    currentCategory: PropTypes.string.isRequired,
     onCategoryClicked: PropTypes.func,
     hidden: PropTypes.bool,
     isMaximized: PropTypes.bool,
-    activeWalletId: PropTypes.string
+    activeWalletId: PropTypes.string,
   };
 
-  matches(path: string) {
-    return this.props.route.indexOf(path) !== -1;
-  }
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
 
   render() {
-    const { hidden, isMaximized, menus, onCategoryClicked, activeWalletId } = this.props;
+    const { intl } = this.context;
+    const {
+      hidden, isMaximized, menus, onCategoryClicked, activeWalletId, categories, currentCategory
+    } = this.props;
 
     let sidebarStyle = null;
     let categoriesStyle = null;
@@ -46,14 +71,14 @@ export default class Sidebar extends Component {
     } else if (isMaximized) {
       categoriesStyle = styles.maximized;
       hasMinimizedCategories = false;
-    } else if (this.matches('/wallets')) {
+    } else if (currentCategory === categories.WALLETS) {
       subMenu = (
         <SidebarWalletsMenu
-          visible={this.matches('/wallets')}
           wallets={menus.wallets.items}
           onAddWallet={menus.wallets.actions.onAddWallet}
           onWalletItemClick={menus.wallets.actions.onWalletItemClick}
           isActiveWallet={id => id === activeWalletId}
+          visible
         />
       );
       categoriesStyle = styles.minimized;
@@ -68,29 +93,20 @@ export default class Sidebar extends Component {
         <div className={categoriesStyle}>
           <SidebarCategory
             className="wallets"
-            label="Wallets"
+            label={intl.formatMessage(messages.walletsCategoryLabel)}
             icon={walletsIcon}
-            active={this.matches('/wallets')}
+            active={currentCategory === categories.WALLETS}
             minimized={hasMinimizedCategories}
-            onClick={() => onCategoryClicked('/wallets')}
+            onClick={() => onCategoryClicked(categories.WALLETS)}
           />
           <SidebarCategory
-            className="settings"
-            label="Settings"
-            icon={settingsIcon}
-            active={this.matches('/settings')}
+            className="ada-redemption"
+            label={intl.formatMessage(messages.adaRedemptionCategoryLabel)}
+            icon={adaRedemptionIcon}
+            active={currentCategory === categories.ADA_REDEMPTION}
             minimized={hasMinimizedCategories}
-            onClick={() => onCategoryClicked('/settings')}
+            onClick={() => onCategoryClicked(categories.ADA_REDEMPTION)}
           />
-          {/* HIDDEN UNTIL WE HAVE BETTER STAKING DESIGN */}
-          {/*<SidebarCategory*/}
-            {/*className="staking"*/}
-            {/*label="Staking"*/}
-            {/*icon={stakingIcon}*/}
-            {/*active={this.matches('/staking')}*/}
-            {/*minimized={hasMinimizedCategories}*/}
-            {/*onClick={() => onCategoryClicked('/staking')}*/}
-          {/*/>*/}
         </div>
         {subMenu}
       </div>

@@ -39,7 +39,7 @@ export default class WalletTransactionsList extends Component {
   list: HTMLElement;
   loadingSpinner: LoadingSpinner;
 
-  groupTransactionsByDay(transactions:[Object]) {
+  groupTransactionsByDay(transactions:[{ date: Date }]) {
     const groups = [];
     for (const transaction of transactions) {
       let date = moment(transaction.date).format(dateFormat);
@@ -55,7 +55,7 @@ export default class WalletTransactionsList extends Component {
       group.transactions.push(transaction);
     }
     for (const group of groups) {
-      group.transactions.sort((a, b) => a.date < b.date);
+      group.transactions.sort((a, b) => a.date.getTime() < b.date.getTime());
     }
     return groups;
   }

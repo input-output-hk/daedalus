@@ -6,65 +6,59 @@ import WalletTransaction from '../domain/WalletTransaction';
 import type {
   createWalletRequest,
   getTransactionsRequest,
-  createTransactionRequest
+  createTransactionRequest,
+  walletRestoreRequest,
+  redeemAdaRequest
 } from './index';
-import { user } from './fixtures';
-import User from '../domain/User';
-import Profile from '../domain/Profile';
+import {
+  // ApiMethodNotYetImplementedError,
+  WalletAlreadyRestoredError,
+  RedeemAdaError
+} from './errors';
 
-const notYetImplemented = () => new Promise((resolve, reject) => reject(new Error('Api method not yet implemented')));
+// const notYetImplemented = () => new Promise((_, reject) => {
+//   reject(new ApiMethodNotYetImplementedError());
+// });
 
 export default class CardanoClientApi {
 
-  login() {
-    // TODO: Implement when backend is ready for it
-    return new Promise((resolve) => resolve(true));
-  }
-
-  getUser() {
-    return new Promise((resolve) => {
-      setTimeout(action(() => {
-        resolve(new User(user.id, new Profile(user.profile)));
-      }), 0);
-    });
-  }
-
   async getWallets() {
+    console.debug('CardanoClientApi::getWallets called');
     const response = await ClientApi.getWallets();
     return response.map(data => this._createWalletFromData(data));
   }
 
-  async getTransactions({ walletId, searchTerm, limit }: getTransactionsRequest) {
-    const history = await ClientApi.searchHistory(walletId, searchTerm, limit)();
+  async getTransactions(request: getTransactionsRequest) {
+    const { walletId, searchTerm, skip, limit } = request;
+    console.debug('CardanoClientApi::getTransactions called with', request);
+    const history = await ClientApi.searchHistory(walletId, searchTerm, skip, limit);
     return new Promise((resolve) => resolve({
       transactions: history[0].map(data => this._createTransactionFromData(data, walletId)),
       total: history[1]
     }));
   }
 
-  createUser() {
-    return notYetImplemented();
-  }
-
   async createWallet(request: createWalletRequest) {
-    const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name)();
+    console.debug('CardanoClientApi::createWallet called with', request);
+    const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name, request.mnemonic);
     return this._createWalletFromData(response);
   }
 
   async createTransaction(request: createTransactionRequest) {
+    console.debug('CardanoClientApi::createTransaction called with', request);
     const { sender, receiver, amount, currency, title } = request;
     let { description } = request;
     if (!description) description = 'no description provided';
-    const response = await ClientApi.sendExtended(sender, receiver, amount, currency, title, description)();
+    const response = await ClientApi.sendExtended(sender, receiver, amount, currency, title, description);
     return this._createTransactionFromData(response);
   }
 
   isValidAddress(currency: string, address: string) {
-    return ClientApi.isValidAddress(currency, address)();
+    return ClientApi.isValidAddress(currency, address);
   }
 
-  updateProfileField() {
-    return notYetImplemented();
+  isValidMnemonic(mnemonic: string) {
+    return ClientApi.isValidMnemonic(mnemonic);
   }
 
   @action _createWalletFromData(data) {
@@ -95,11 +89,35 @@ export default class CardanoClientApi {
   }
 
   getWalletRecoveryPhrase() {
-    return notYetImplemented();
+    return new Promise((resolve) => resolve(ClientApi.generateMnemonic().split(' ')));
   }
 
-  setWalletBackupCompleted() {
-    return notYetImplemented();
+  async restoreWallet(request: walletRestoreRequest) {
+    const { recoveryPhrase, walletName } = request;
+    console.debug('CardanoClientApi::restoreWallet called with', request);
+    try {
+      return await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase);
+    } catch (error) {
+      console.error(error);
+      if (error.message.includes('Wallet with that mnemonics already exists')) {
+        throw new WalletAlreadyRestoredError();
+      }
+      throw error;
+    }
+  }
+
+  async redeemAda(request: redeemAdaRequest) {
+    const { redemptionCode, walletId } = request;
+    console.debug('CardanoClientApi::redeemAda called with', request);
+    try {
+      return await ClientApi.redeemADA(redemptionCode, walletId);
+    } catch (error) {
+      console.error(error);
+      throw new RedeemAdaError();
+    }
+  }
+
+  generateMnemonic() {
+    return ClientApi.generateMnemonic().split(' ');
   }
 }
-

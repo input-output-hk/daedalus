@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="220px" height="220px" viewBox="0 0 220 220" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>756D8099-AF67-4399-97AE-C51D791C2120</title>
+    <desc>Created with sketchtool.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.800000012">
+        <g id="wallet_add_wallet_notification_big" transform="translate(-1526.000000, -734.000000)">
+            <g id="notification" transform="translate(720.000000, 168.000000)">
+                <g id="description" transform="translate(660.000000, 566.000000)">
+                    <g id="checked-light" transform="translate(146.000000, 0.000000)">
+                        <path d="M110,220 C49.2486775,220 0,170.751322 0,110 C0,49.2486775 49.2486775,0 110,0 C170.751322,0 220,49.2486775 220,110 C220,170.751322 170.751322,220 110,220 Z M110,205 C162.467051,205 205,162.467051 205,110 C205,57.5329488 162.467051,15 110,15 C57.5329488,15 15,57.5329488 15,110 C15,162.467051 57.5329488,205 110,205 Z" id="Combined-Shape" fill="#FAFBFC" opacity="0.200000003"></path>
+                        <path d="M90,110 L145,110 L145,125 L75,125 L75,117.5 L75,85 L90,85 L90,110 Z" id="Combined-Shape" fill="#FFFFFF" opacity="0.600000024" transform="translate(110.000000, 105.000000) rotate(-45.000000) translate(-110.000000, -105.000000) "></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

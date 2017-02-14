@@ -1,9 +1,8 @@
+@skip
 Feature: Add Wallet via Sidebar
 
   Background:
-    Given I have an account
-    And I have a wallet
-    And I am logged in
+    Given I have a wallet
 
   Scenario: Successfully Adding a Wallet
     Given The sidebar shows the wallets category

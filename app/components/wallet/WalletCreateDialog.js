@@ -4,10 +4,12 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-toolbox/lib/input/Input';
-import Dropup from '../widgets/forms/Dropup';
-import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
+import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
+import Dropup from '../widgets/forms/Dropup';
 import DialogCloseButton from '../widgets/DialogCloseButton';
+import { isValidWalletName, isValidCurrency } from '../../lib/validations';
+import globalMessages from '../../i18n/global-messages';
 import styles from './WalletCreateDialog.scss';
 
 const messages = defineMessages({
@@ -16,15 +18,15 @@ const messages = defineMessages({
     defaultMessage: '!!!Wallet Name',
     description: 'Label for the "Wallet Name" text input in the wallet create form.'
   },
-  currency: {
+  walletNameHint: {
+    id: 'wallet.create.dialog.walletNameHint',
+    defaultMessage: '!!!e.g: Shopping Wallet',
+    description: 'Hint for the "Wallet Name" text input in the wallet create form.'
+  },
+  currencyLabel: {
     id: 'wallet.create.dialog.currency.label',
     defaultMessage: '!!!Currency',
     description: 'Label for the "Currency" dropdown in the wallet create form.'
-  },
-  invalidWalletName: {
-    id: 'wallet.create.dialog.errors.invalidWalletName',
-    defaultMessage: '!!!The wallet name must have at least 3 letters.',
-    description: 'Error message shown when invalid wallet name was entered in create wallet dialog.'
   },
   invalidCurrency: {
     id: 'wallet.create.dialog.errors.invalidCurrency',
@@ -41,31 +43,6 @@ const messages = defineMessages({
 const currencies = [
   { value: 'ada', label: 'ADA' },
 ];
-
-const isValidWalletName = ({ field }) => {
-  const isValid = field.value.length >= 3;
-  return [isValid, 'invalidWalletName'];
-};
-
-const isValidCurrency = ({ field }) => {
-  const isValid = field.value === 'ada';
-  return [isValid, 'invalidCurrency'];
-};
-
-const fields = {
-  walletName: {
-    value: '',
-    validate: [isValidWalletName]
-  },
-  currency: {
-    value: 'ada',
-    validate: [isValidCurrency]
-  },
-};
-
-const options = {
-  validateOnChange: false
-};
 
 @observer
 export default class WalletCreateDialog extends Component {
@@ -88,7 +65,39 @@ export default class WalletCreateDialog extends Component {
   }
 
   walletNameInput: Input;
-  validator = new MobxReactForm({ options, fields }, {});
+
+  form = new ReactToolboxMobxForm({
+    fields: {
+      walletName: {
+        label: this.context.intl.formatMessage(messages.walletName),
+        placeholder: this.context.intl.formatMessage(messages.walletNameHint),
+        value: '',
+        validate: [({ field }) => (
+          [
+            isValidWalletName(field.value),
+            this.context.intl.formatMessage(globalMessages.invalidWalletName)
+          ]
+        )],
+        bindings: 'ReactToolbox',
+      },
+      currency: {
+        label: this.context.intl.formatMessage(messages.currencyLabel),
+        value: 'ada',
+        validate: [({ field }) => (
+          [
+            isValidCurrency(field.value),
+            this.context.intl.formatMessage(messages.invalidCurrency)
+          ]
+        )],
+        bindings: 'ReactToolbox',
+      },
+    }
+  }, {
+    options: {
+      validateOnChange: false
+    },
+  });
+
   actions = [
     {
       label: this.context.intl.formatMessage(messages.createPersonalWallet),
@@ -98,7 +107,7 @@ export default class WalletCreateDialog extends Component {
   ];
 
   submit = () => {
-    this.validator.submit({
+    this.form.submit({
       onSuccess: (form) => {
         this.setState({ isSubmitting: true });
         this.props.onSubmit(form.values());
@@ -116,14 +125,7 @@ export default class WalletCreateDialog extends Component {
   }
 
   render() {
-    const { intl } = this.context;
-    const { validator } = this;
-    const walletName = validator.$('walletName');
-    const currency = validator.$('currency');
-    const errors = {
-      walletName: walletName.error ? intl.formatMessage(messages[walletName.error]) : null,
-      currency: currency.error ? intl.formatMessage(messages[currency.error]) : null,
-    };
+    const { form } = this;
     const dialogClasses = classnames([
       'WalletCreateDialog',
       this.state.isSubmitting ? styles.isSubmitting : null
@@ -131,34 +133,22 @@ export default class WalletCreateDialog extends Component {
     return (
       <Dialog
         className={dialogClasses}
-        title="Create Wallet"
+        title="Create Wallet" // TODO: Missing translation
         actions={this.actions}
         onOverlayClick={this.props.onCancel}
         active
       >
 
         <Input
-          type="text"
           className="walletName"
-          label={intl.formatMessage(messages.walletName)}
-          hint="e.g: Shopping Wallet"
-          value={walletName.value}
-          error={errors.walletName}
-          onChange={walletName.onChange}
-          onFocus={walletName.onFocus}
-          onBlur={walletName.onBlur}
           onKeyPress={this.checkForEnterKey.bind(this)}
           ref={(input) => { this.walletNameInput = input; }}
+          {...form.$('walletName').bind()}
         />
 
         <Dropup
           className="currency"
-          label={intl.formatMessage(messages.currency)}
-          value={currency.value}
-          onChange={currency.onChange}
-          onFocus={currency.onFocus}
-          onBlur={currency.onBlur}
-          error={errors.currency}
+          {...form.$('currency').bind()}
           source={currencies}
         />
 

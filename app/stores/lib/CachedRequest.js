@@ -1,5 +1,5 @@
 // @flow
-import { observable, action } from 'mobx';
+import { action } from 'mobx';
 import { isEqual, remove } from 'lodash';
 import Request from './Request';
 
@@ -8,7 +8,7 @@ export default class CachedRequest extends Request {
   _apiCalls = [];
   _isInvalidated = true;
 
-  execute(...callArgs) {
+  execute(...callArgs: Array<any>) {
     // Do not continue if this request is already loading
     if (this._isWaitingForResponse) return this;
 
@@ -39,22 +39,21 @@ export default class CachedRequest extends Request {
     }), 0);
 
     // Issue api call & save it as promise that is handled to update the results of the operation
-    this._promise = this._api[this._method](...callArgs);
-    this._promise
-      .then((result) => {
-        return new Promise((resolve) => {
+    this._promise = new Promise((resolve, reject) => {
+      this._api[this._method](...callArgs)
+        .then((result) => {
           setTimeout(action(() => {
-            this.result = this._currentApiCall.result = result;
+            this.result = result;
+            if (this._currentApiCall) this._currentApiCall.result = result;
             this.isExecuting = false;
             this.wasExecuted = true;
             this._isInvalidated = false;
             this._isWaitingForResponse = false;
             resolve(result);
           }), 1);
+          return result;
         })
-      })
-      .catch(action((error) => {
-        return new Promise((_, reject) => {
+        .catch(action((error) => {
           setTimeout(action(() => {
             this.error = error;
             this.isExecuting = false;
@@ -63,14 +62,14 @@ export default class CachedRequest extends Request {
             this._isWaitingForResponse = false;
             reject(error);
           }), 1);
-        });
-      }));
+        }));
+    });
 
     this._isWaitingForResponse = true;
     return this;
   }
 
-  invalidate(options = { immediately: false }) {
+  invalidate(options: { immediately: bool } = { immediately: false }) {
     this._isInvalidated = true;
     if (options.immediately && this._currentApiCall) {
       return this.execute(...this._currentApiCall.args);
@@ -78,7 +77,7 @@ export default class CachedRequest extends Request {
     return this;
   }
 
-  patch(modify) {
+  patch(modify: Function) {
     return new Promise((resolve) => {
       setTimeout(action(() => {
         const override = modify(this.result);
@@ -89,17 +88,17 @@ export default class CachedRequest extends Request {
     });
   }
 
-  removeCacheForCallWith(...args) {
+  removeCacheForCallWith(...args: Array<any>) {
     remove(this._apiCalls, c => isEqual(c.args, args));
   }
 
-  _addApiCall(args) {
+  _addApiCall(args: Array<any>) {
     const newCall = { args, result: null };
     this._apiCalls.push(newCall);
     return newCall;
   }
 
-  _findApiCall(args) {
+  _findApiCall(args: Array<any>) {
     return this._apiCalls.find(c => isEqual(c.args, args));
   }
 

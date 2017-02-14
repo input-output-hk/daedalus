@@ -3,9 +3,9 @@ import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import Input from 'react-toolbox/lib/input/Input';
 import Button from 'react-toolbox/lib/button/Button';
-import MobxReactForm from 'mobx-react-form';
 import { defineMessages, intlShape } from 'react-intl';
 import isInt from 'validator/lib/isInt';
+import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import styles from './WalletSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
 
@@ -91,45 +91,61 @@ export default class WalletSendForm extends Component {
   };
 
   // FORM VALIDATION
-  validator = new MobxReactForm({
-    options: {
-      validateOnChange: false,
-    },
+  form = new ReactToolboxMobxForm({
     fields: {
       title: {
+        label: this.context.intl.formatMessage(messages.titleLabel),
+        placeholder: this.context.intl.formatMessage(messages.titleHint),
         value: '',
         validate: ({ field }) => {
           const isValid = field.value.length >= 3;
-          return [isValid, 'invalidTitle'];
-        }
+          return [isValid, this.context.intl.formatMessage(messages.invalidTitle)];
+        },
+        bindings: 'ReactToolbox',
       },
       receiver: {
+        label: this.context.intl.formatMessage(messages.receiverLabel),
+        placeholder: this.context.intl.formatMessage(messages.receiverHint),
         value: '',
         validate: ({ field }) => {
           const value = field.value;
-          if (value === '') return [false, 'fieldIsRequired'];
-          return this.props.addressValidator(field.value).then(isValid => [isValid, 'invalidAddress']);
-        }
+          if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
+          return this.props.addressValidator(field.value)
+            .then(isValid => [isValid, this.context.intl.formatMessage(messages.invalidAddress)]);
+        },
+        bindings: 'ReactToolbox',
       },
       amount: {
+        label: this.context.intl.formatMessage(messages.amountLabel),
+        placeholder: this.context.intl.formatMessage(messages.amountHint),
         value: '',
         validate: ({ field }) => {
           const isValid = isInt(field.value, {
             allow_leading_zeroes: false,
             min: 1,
           });
-          return [isValid, 'invalidAmount'];
-        }
+          return [isValid, this.context.intl.formatMessage(messages.invalidAmount)];
+        },
+        bindings: 'ReactToolbox',
       },
       currency: {
         value: 'ada' // TODO: Remove hardcoded currency
       },
-      description: {},
-    }
-  }, {});
+      description: {
+        label: this.context.intl.formatMessage(messages.descriptionLabel),
+        placeholder: this.context.intl.formatMessage(messages.descriptionHint),
+        value: '',
+        bindings: 'ReactToolbox',
+      },
+    },
+  }, {
+    options: {
+      validateOnChange: false,
+    },
+  });
 
   submit() {
-    this.validator.submit({
+    this.form.submit({
       onSuccess: (form) => {
         this.setState({ isSubmitting: true });
         this.props.onSubmit(form.values());
@@ -142,66 +158,16 @@ export default class WalletSendForm extends Component {
   }
 
   render() {
-    const { validator } = this;
+    const { form } = this;
     const { intl } = this.context;
-    const title = validator.$('title');
-    const receiver = validator.$('receiver');
-    const amount = validator.$('amount');
-    const description = validator.$('description');
-    const errors = {
-      title: title.error && messages[title.error] ? intl.formatMessage(messages[title.error]) : null,
-      receiver: receiver.error && messages[receiver.error] ? intl.formatMessage(messages[receiver.error]) : null,
-      amount: amount.error ? intl.formatMessage(messages[amount.error]) : null,
-    };
     return (
       <div className={styles.component}>
 
         <div className={styles.fields}>
-
-          <Input
-            className="title"
-            label={intl.formatMessage(messages.titleLabel)}
-            hint={intl.formatMessage(messages.titleHint)}
-            value={title.value}
-            error={errors.title}
-            onChange={title.onChange}
-            onFocus={title.onFocus}
-            onBlur={title.onBlur}
-          />
-
-          <Input
-            className="receiver"
-            label={intl.formatMessage(messages.receiverLabel)}
-            hint={intl.formatMessage(messages.receiverHint)}
-            value={receiver.value}
-            error={errors.receiver}
-            onChange={receiver.onChange}
-            onFocus={receiver.onFocus}
-            onBlur={receiver.onBlur}
-          />
-
-          <Input
-            className="amount"
-            label={intl.formatMessage(messages.amountLabel)}
-            hint={intl.formatMessage(messages.amountHint)}
-            value={amount.value}
-            error={errors.amount}
-            onChange={amount.onChange}
-            onFocus={amount.onFocus}
-            onBlur={amount.onBlur}
-          />
-
-          <Input
-            className="description"
-            label={intl.formatMessage(messages.descriptionLabel)}
-            hint={intl.formatMessage(messages.descriptionHint)}
-            value={description.value}
-            onChange={description.onChange}
-            onFocus={description.onFocus}
-            onBlur={description.onBlur}
-            multiline
-          />
-
+          <Input className="title" {...form.$('title').bind()} />
+          <Input className="receiver" {...form.$('receiver').bind()} />
+          <Input className="amount" {...form.$('amount').bind()} />
+          <Input className="description" multiline {...form.$('description').bind()} />
         </div>
 
         <Button

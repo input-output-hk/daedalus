@@ -4,16 +4,23 @@ import Store from './lib/Store';
 
 export default class SidebarStore extends Store {
 
-  @observable route: string = '/wallets';
+  CATEGORIES = {
+    WALLETS: '/wallets',
+    ADA_REDEMPTION: '/ada-redemption',
+  };
+
+  @observable currentCategory: ?string = null;
   @observable hidden: bool = false;
   @observable isMaximized: bool = false;
-  @observable isCreateWalletDialogOpen = false;
 
   constructor(...args) {
     super(...args);
     this.actions.toggleSidebar.listen(this._toggleSidebar);
-    this.actions.changeSidebarRoute.listen(this._changeSidebarRoute);
-    this.actions.toggleCreateWalletDialog.listen(this._toggleCreateWalletDialog);
+    this.actions.toggleMaximized.listen(this._toggleMaximized);
+    this.actions.sidebarCategorySelected.listen(this._onSidebarCategorySelected);
+    this.registerReactions([
+      this._syncSidebarRouteWithRouter,
+    ]);
   }
 
   @computed get wallets() {
@@ -30,21 +37,25 @@ export default class SidebarStore extends Store {
     this.hidden = !this.hidden;
   };
 
-  @action _toggleCreateWalletDialog = () => {
-    this.isCreateWalletDialogOpen = !this.isCreateWalletDialogOpen;
+  @action _toggleMaximized = () => {
+    this.isMaximized = !this.isMaximized;
   };
 
-  @action _changeSidebarRoute = ({ route }) => {
-    if (this.route === route) {
-      // Toggle menu if it's the current route
-      this.isMaximized = !this.isMaximized;
+  @action _onSidebarCategorySelected = ({ category }) => {
+    if (category === this.currentCategory) {
+      this._toggleMaximized();
     } else {
-      this.route = route;
-      this.isMaximized = false;
-      if (route === '/settings' || route === '/staking') {
-        this.stores.router.push(route);
-      }
+      this.stores.router.push(category);
     }
+    this.currentCategory = category;
+  };
+
+  _syncSidebarRouteWithRouter = () => {
+    const route = this.stores.router.location.pathname;
+    Object.keys(this.CATEGORIES).forEach((key) => {
+      const category = this.CATEGORIES[key];
+      if (route.indexOf(category) !== -1) this.currentCategory = category;
+    })
   }
 
 }

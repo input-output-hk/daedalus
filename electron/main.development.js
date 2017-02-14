@@ -2,12 +2,13 @@ import { app, BrowserWindow, Menu, shell, ipcMain, dialog } from 'electron';
 import osxMenu from './menus/osx';
 import fs from 'fs';
 import winLinuxMenu from './menus/win-linux';
+import ipcApi from './ipc-api';
 
 let menu;
 let mainWindow = null;
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = process.env.NODE_ENV === 'production';
-const daedalusVersion = process.env.DAEDALUS_VERSION || 'dev';  //TODO: Domen - take a look at this temporary fix
+const daedalusVersion = process.env.DAEDALUS_VERSION || 'dev';
 
 if (isDev) {
   require('electron-debug')(); // eslint-disable-line global-require
@@ -68,25 +69,20 @@ app.on('ready', async () => {
     show: false,
     width: 1150,
     height: 870
-    // TODO: revert to 480 x 757 when reintroducing login
   });
 
+  // Initialize our ipc api methods that can be called by the render processes
+  ipcApi({ mainWindow });
+
   mainWindow.loadURL(`file://${__dirname}/../app/index.html`);
-  mainWindow.on('page-title-updated', (event, title) => {
+  mainWindow.on('page-title-updated', event => {
    event.preventDefault()
   });
-  // mainWindow.setTitle("Daedalus");
   mainWindow.setTitle(`Daedalus (${daedalusVersion})`);
-  // TODO: Fix
 
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.show();
     mainWindow.focus();
-  });
-
-  ipcMain.on('resize-window', (event, { width, height, animate }) => {
-    if (event.sender !== mainWindow.webContents) return;
-    mainWindow.setSize(width, height, animate);
   });
 
   mainWindow.on('closed', () => {

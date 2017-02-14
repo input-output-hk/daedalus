@@ -27,7 +27,10 @@
     "flowtype-errors/show-errors": 2,
     "class-methods-use-this": 0,
     "no-duplicate-imports": 0,
-    "no-param-reassign": 0
+    "no-param-reassign": 0,
+    "no-plusplus": 0,
+    "no-bitwise": 0,
+    "no-underscore-dangle": 0
   },
   "plugins": [
     "flowtype-errors",

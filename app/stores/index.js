@@ -1,7 +1,7 @@
 // @flow
 import { observable, action } from 'mobx';
 import AppStore from './AppStore';
-import UserStore from './UserStore';
+import LoadingStore from './LoadingStore';
 import SettingsStore from './SettingsStore';
 import WalletsStore from './WalletsStore';
 import TransactionsStore from './TransactionsStore';
@@ -9,13 +9,13 @@ import SidebarStore from './SidebarStore';
 import WindowStore from './WindowStore';
 import WalletBackupStore from './WalletBackupStore';
 import NetworkStatusStore from './NetworkStatusStore';
-import NodeUpdateStore from './NodeUpdateStore';
+import AdaRedemptionStore from './AdaRedemptionStore';
 
 // Constant that does never change during lifetime
 const stores = observable({
   router: null,
   app: null,
-  user: null,
+  loading: null,
   settings: null,
   wallets: null,
   transactions: null,
@@ -23,7 +23,7 @@ const stores = observable({
   window: null,
   walletBackup: null,
   networkStatus: null,
-  nodeUpdate: null
+  adaRedemption: null,
 });
 
 // Set up and return the stores for this app -> also used to reset all stores to defaults
@@ -37,7 +37,7 @@ export default action((api, actions, router): storesType => {
   // Assign new store instances
   Object.assign(stores, {
     app: new AppStore(stores, api, actions),
-    user: new UserStore(stores, api, actions),
+    loading: new LoadingStore(stores, api, actions),
     settings: new SettingsStore(stores, api, actions),
     wallets: new WalletsStore(stores, api, actions),
     transactions: new TransactionsStore(stores, api, actions),
@@ -45,7 +45,7 @@ export default action((api, actions, router): storesType => {
     window: new WindowStore(stores, api, actions),
     walletBackup: new WalletBackupStore(stores, api, actions),
     networkStatus: new NetworkStatusStore(stores, api, actions),
-    nodeUpdate: new NodeUpdateStore(stores, api, actions)
+    adaRedemption: new AdaRedemptionStore(stores, api, actions),
   });
   // Initialize the new stores
   storeNames.forEach(name => {
@@ -56,7 +56,7 @@ export default action((api, actions, router): storesType => {
 
 export type storesType = {
   app: AppStore,
-  user: UserStore,
+  loading: LoadingStore,
   settings: SettingsStore,
   wallets: WalletsStore,
   transactions: TransactionsStore,
@@ -64,5 +64,5 @@ export type storesType = {
   window: WindowStore,
   walletBackup: WalletBackupStore,
   networkStatus: NetworkStatusStore,
-  nodeUpdate: NodeUpdateStore
+  adaRedemption: AdaRedemptionStore,
 };

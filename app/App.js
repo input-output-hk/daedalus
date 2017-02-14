@@ -4,9 +4,9 @@ import { Provider, observer } from 'mobx-react';
 import { ThemeProvider } from 'react-css-themr';
 import DevTools from 'mobx-react-devtools';
 import { Router } from 'react-router';
+import { IntlProvider } from 'react-intl';
 import Routes from './Routes';
 import { daedalusTheme } from './themes/daedalus';
-import { IntlProvider } from 'react-intl';
 import environment from './environment';
 import { storesPropType } from './propTypes';
 import translations from './i18n/translations';
@@ -29,7 +29,7 @@ export default class App extends Component {
       <Provider stores={stores} actions={actions}>
         <ThemeProvider theme={daedalusTheme}>
           <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
-            <div style={{ height: "100%" }}>
+            <div style={{ height: '100%' }}>
               <Router history={history} routes={Routes} />
               {mobxDevTools}
             </div>

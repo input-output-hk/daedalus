@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import backArrow from '../../assets/images/back-arrow-ic.svg';
 import styles from './DialogBackButton.scss';
 
