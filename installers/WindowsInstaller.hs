@@ -4,6 +4,7 @@ import           Data.Maybe (fromMaybe)
 import           Data.Monoid ((<>))
 import qualified Data.List as L
 import           Development.NSIS
+import           System.Directory (renameFile)
 import           System.Environment (lookupEnv)
 import           Turtle (echo, procs)
 
@@ -46,6 +47,8 @@ writeNSIS = do
     _ <- constantStr "Version" (str version)
     name "Daedalus $Version"                  -- The name of the installer
     outFile "daedalus-win64-$Version-installer.exe"           -- Where to produce the installer
+    -- See enableUnicodeNSIS hack; should eventually be replaced by line below.
+    {- unicode True -}
     installDir "$PROGRAMFILES64\\Daedalus"   -- The default installation directory
     installDirRegKey HKLM "Software/Daedalus" "Install_Dir"
     requestExecutionLevel Highest     
@@ -91,10 +94,20 @@ writeNSIS = do
       delete [] "$SMPROGRAMS/Daedalus/*.*"
       delete [] "$DESKTOP\\Daedalus.lnk"
       -- Note: we leave user data alone
-   
+
+-- TODO (jmitchell): Monitor https://github.com/ndmitchell/nsis/pull/10 and
+-- clean this up once it's merged and deployed. See commented out line above in
+-- writeNSIS.
+enableUnicodeNSIS :: IO ()
+enableUnicodeNSIS = do
+  nsiScript <- readFile "daedalus.nsi"
+  appendFile "new-daedalus.nsi" $ "Unicode true\n" ++ nsiScript
+  renameFile "new-daedalus.nsi" "daedalus.nsi"
+
 main :: IO ()
 main = do
   echo "Writing daedalus.nsi"
   writeNSIS
+  enableUnicodeNSIS
   echo "Generating NSIS installer daedalus-win64-installer.exe"
   procs "C:\\Program Files (x86)\\NSIS\\makensis" ["daedalus.nsi"] mempty
