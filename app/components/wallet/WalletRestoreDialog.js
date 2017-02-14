@@ -50,6 +50,8 @@ const messages = defineMessages({
   },
 });
 
+messages.fieldIsRequired = globalMessages.fieldIsRequired;
+
 @observer
 export default class WalletRestoreDialog extends Component {
 
@@ -60,6 +62,7 @@ export default class WalletRestoreDialog extends Component {
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
+    mnemonicValidator: PropTypes.func.isRequired,
     error: PropTypes.instanceOf(LocalizableError),
   };
 
@@ -85,12 +88,14 @@ export default class WalletRestoreDialog extends Component {
         label: this.context.intl.formatMessage(messages.recoveryPhraseInputLabel),
         placeholder: this.context.intl.formatMessage(messages.recoveryPhraseInputHint),
         value: '',
-        validate: [({ field }) => (
-          [
-            validateMnemonic(field.value),
-            this.context.intl.formatMessage(globalMessages.invalidMnemonic)
-          ]
-        )],
+        validate: ({ field }) => {
+          const value = field.value;
+          if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
+          return [
+            this.props.mnemonicValidator(field.value),
+            this.context.intl.formatMessage(messages.invalidRecoveryPhrase)
+          ];
+        },
         bindings: 'ReactToolbox',
       },
     },

@@ -90,6 +90,10 @@ export default class WalletsStore extends Store {
     return this.api.isValidAddress('ADA', address);
   }
 
+  isValidMnemonic(mnemonic: string) {
+    return this.api.isValidMnemonic(mnemonic);
+  }
+
   refreshWalletsData = () => {
     if (this.stores.networkStatus.isCardanoConnected) {
       this.walletsRequest.invalidate({ immediately: true });
