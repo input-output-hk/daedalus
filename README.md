@@ -1,7 +1,7 @@
 # daedalus
 Daedalus - cryptocurrency wallet
 
-## Install Dependencies.
+## Install Dependencies
 
 ```bash
 $ npm install
@@ -39,7 +39,7 @@ Run with `CARDANO_API=true npm run dev`
 ## Testing
 
 You can run the test suite in two different modes during development
-(Currently you always need to run `npm run dev` before that) 
+(Currently you always need to run `npm run dev` before that)
 
 **One-time run:**
 ```bash
