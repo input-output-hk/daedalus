@@ -20,7 +20,7 @@ shortcutParameters ipdht = L.intercalate " " $
     , (" -n " ++ (L.intercalate " -n " nodeArgs))
     ]
   where
-    installerPath = "%APPDATA%\\Daedalus\\Installer.msi"
+    installerPath = "%APPDATA%\\Daedalus\\Installer.exe"
     nodeArgs = [
       "--listen", "0.0.0.0:12100",
       "--keyfile", "\"%APPDATA%\\Daedalus\\Secrets\\secret.key\"",
