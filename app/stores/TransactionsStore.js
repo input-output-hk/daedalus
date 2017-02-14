@@ -2,8 +2,7 @@
 import { observable, computed, action, extendObservable } from 'mobx';
 import _ from 'lodash';
 import Store from './lib/Store';
-import Request from './lib/CachedRequest';
-import environment from '../environment';
+import CachedRequest from './lib/CachedRequest';
 
 export default class TransactionsStore extends Store {
 
@@ -11,12 +10,11 @@ export default class TransactionsStore extends Store {
   SEARCH_LIMIT_INCREASE = 500;
   SEARCH_SKIP = 0;
   RECENT_TRANSACTIONS_LIMIT = 5;
-  TRANSACTION_REFRESH_INTERVAL = 15000;
 
   @observable transactionsRequests: [{
     walletId: string,
-    recentRequest: [Request],
-    allRequest: [Request]
+    recentRequest: [CachedRequest],
+    allRequest: [CachedRequest]
   }] = [];
 
   @observable _searchOptionsForWallets = {};
@@ -25,9 +23,6 @@ export default class TransactionsStore extends Store {
     super(...args);
     this.actions.filterTransactions.listen(this._updateSearchTerm);
     this.actions.loadMoreTransactions.listen(this._increaseSearchLimit);
-    if (environment.CARDANO_API) {
-      setInterval(this._refreshTransactionData, this.TRANSACTION_REFRESH_INTERVAL);
-    }
   }
 
   @action _updateSearchTerm = ({ searchTerm }) => { this.searchOptions.searchTerm = searchTerm; };
@@ -35,13 +30,13 @@ export default class TransactionsStore extends Store {
 
   @computed get recentTransactionsRequest() {
     const wallet = this.stores.wallets.active;
-    if (!wallet) return new Request(this.api, 'getTransactions'); // TODO: Do not return new request here
+    if (!wallet) return new CachedRequest(this.api, 'getTransactions'); // TODO: Do not return new request here
     return this._getTransactionsRecentRequest(wallet.id);
   }
 
   @computed get searchRequest() {
     const wallet = this.stores.wallets.active;
-    if (!wallet) return new Request(this.api, 'getTransactions'); // TODO: Do not return new request here
+    if (!wallet) return new CachedRequest(this.api, 'getTransactions'); // TODO: Do not return new request here
     return this._getTransactionsAllRequest(wallet.id);
   }
 
@@ -66,15 +61,15 @@ export default class TransactionsStore extends Store {
   @computed get filtered() {
     const wallet = this.stores.wallets.active;
     if (!wallet) return [];
-    const { searchTerm, searchLimit, searchSkip } = this.searchOptions;
+    const { searchTerm } = this.searchOptions;
     const request = this._getTransactionsAllRequest(wallet.id);
-    const { result } = request.execute({
-      walletId: wallet.id,
-      limit: searchLimit,
-      skip: searchSkip,
-      searchTerm,
-    });
-    return result ? result.transactions : [];
+    if (searchTerm && request.result && request.result.transactions) {
+      return request.result.transactions.filter(
+        transaction => transaction.title.search(new RegExp(searchTerm, "i")) !== -1
+      );
+    } else {
+      return request.result ? request.result.transactions : [];
+    }
   }
 
   @computed get recent() {
@@ -152,12 +147,12 @@ export default class TransactionsStore extends Store {
 
   _getTransactionsRecentRequest = (walletId: string) => {
     const foundRequest = _.find(this.transactionsRequests, { walletId });
-    return foundRequest && foundRequest.recentRequest ? foundRequest.recentRequest : new Request(this.api, 'getTransactions');
+    return foundRequest && foundRequest.recentRequest ? foundRequest.recentRequest : new CachedRequest(this.api, 'getTransactions');
   };
 
   _getTransactionsAllRequest = (walletId: string) => {
     const foundRequest = _.find(this.transactionsRequests, { walletId });
-    return foundRequest && foundRequest.allRequest ? foundRequest.allRequest : new Request(this.api, 'getTransactions');
+    return foundRequest && foundRequest.allRequest ? foundRequest.allRequest : new CachedRequest(this.api, 'getTransactions');
   };
 
 }

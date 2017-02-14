@@ -10,7 +10,7 @@ import environment from '../environment';
 export default class WalletsStore extends Store {
 
   BASE_ROUTE = '/wallets';
-  WALLET_REFRESH_INTERVAL = 5000;
+  WALLET_REFRESH_INTERVAL = 1000;
 
   @observable walletsCache : Array<Wallet> = [];
 

@@ -8,6 +8,7 @@ export const transactionShape = PropTypes.shape({
   title: PropTypes.string.isRequired,
   type: PropTypes.string.isRequired,
   amount: PropTypes.number.isRequired,
+  numberOfConfirmations: PropTypes.number.isRequired,
   currency: PropTypes.string.isRequired,
   date: PropTypes.instanceOf(Date),
 });
