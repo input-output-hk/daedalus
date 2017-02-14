@@ -29,6 +29,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Exchange transaction',
     description: 'Transaction type shown for money exchanges between currencies.'
   },
+  pending: {
+    id: 'wallet.transaction.pendingLabel',
+    defaultMessage: '!!!Pending',
+    description: '"Pending" label on transaction list.'
+  },
+  verifications: {
+    id: 'wallet.transaction.verificationsLabel',
+    defaultMessage: '!!!verifications',
+    description: '"verifications" label on transaction list.'
+  },
 });
 
 export default class Transaction extends Component {
@@ -64,6 +74,8 @@ export default class Transaction extends Component {
       isExpanded ? styles.expanded : styles.closed
     ]);
     if (data.type === 'adaExpend' || data.type === 'adaIncome') typeMessage = 'ada';
+    const status = data.numberOfConfirmations === 0 ?
+      intl.formatMessage(messages.pending) : `${data.numberOfConfirmations} ${intl.formatMessage(messages.verifications)}`;
     return (
       <div className={styles.component}>
         <div className={styles[data.type]} />
@@ -76,7 +88,11 @@ export default class Transaction extends Component {
             <div className={styles.amount}>{data.amount} {data.currency}</div>
           </button>
 
-          <div className={styles.type}>{intl.formatMessage(messages[typeMessage])}</div>
+          <div className={styles.details}>
+            <div className={styles.type}>{intl.formatMessage(messages[typeMessage])}</div>
+            <div className={styles.status}>{status}</div>
+          </div>
+
 
           {/* ==== Toggleable Transaction Details ==== */}
 

@@ -13,6 +13,8 @@
   "wallet.transaction.type.card": "Card payment",
   "wallet.transaction.type.ada": "ADA transaction",
   "wallet.transaction.type.exchange": "Exchange transaction",
+  "wallet.transaction.pendingLabel": "Pending",
+  "wallet.transaction.verificationsLabel": "verifications",
   "wallet.send.form.title.label": "Title",
   "wallet.send.form.title.hint": "E.g: Money for Frank",
   "wallet.send.form.receiver.label": "Receiver",

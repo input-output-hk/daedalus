@@ -86,6 +86,11 @@
   cursor: pointer;
 }
 
+.details {
+  display: flex;
+  width: 100%;
+}
+
 .title, .amount {
   font-size: 16px;
   font-family: $font-semibold;
@@ -97,6 +102,14 @@
   font-family: $font-medium;
   font-size: 16px;
   letter-spacing: 1px;
+}
+
+.status {
+  margin-left: auto;
+  letter-spacing: 1px;
+  font-family: $font-light;
+  font-size: 14px;
+  margin-top: 8px;
 }
 
 .type {
