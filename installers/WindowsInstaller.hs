@@ -84,7 +84,7 @@ writeInstallerNSIS = do
     {- unicode True -}
     injectGlobalLiteral "Unicode true"
     installDir "$PROGRAMFILES64\\Daedalus"   -- The default installation directory
-    installDirRegKey HKLM "Software/Daedalus" "Install_Dir"
+    -- installDirRegKey HKLM "Software/Daedalus" "Install_Dir"
     requestExecutionLevel Highest
 
     page Directory                   -- Pick where to install
@@ -106,6 +106,7 @@ writeInstallerNSIS = do
         file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
 
         -- Uninstaller
+        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "InstallLocation" "$PROGRAMFILES64\\Daedalus"
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "Publisher" "Eureka Solutions LLC"
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "ProductVersion" (str version)
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "DisplayName" "Daedalus"
