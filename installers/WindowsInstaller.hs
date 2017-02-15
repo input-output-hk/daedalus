@@ -70,7 +70,7 @@ signUninstaller = do
 
 writeInstallerNSIS :: IO ()
 writeInstallerNSIS = do
-  version <- fmap (fromMaybe "dev") $ lookupEnv "APPVEYOR_BUILD_VERSION"
+  version <- (fmap (fromMaybe "dev") $ lookupEnv "APPVEYOR_BUILD_VERSION") <> ".0"
   ipdhtRaw <- readFile "data\\ip-dht-mappings"
   let ds = daedalusShortcut $ lines ipdhtRaw
   writeFile "version.txt" version
