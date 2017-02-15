@@ -105,10 +105,9 @@
   "wallet.restore.dialog.recovery.phrase.input.label": "Recovery phrase",
   "wallet.restore.dialog.recovery.phrase.input.hint": "Enter recovery phrase",
   "wallet.restore.dialog.restore.wallet.button.label": "Restore wallet",
-  "wallet.restore.dialog.form.errors.invalidRecoveryPhrase": "Invalid recovery phrase",
   "wallet.summary.page.pendingConfirmationLabel": "Pending confirmation",
   "wallet.summary.page.transactionsLabel": "Number of transactions",
-  "wallet.summary.no.transactions": "No recent transactions"
+  "wallet.summary.no.transactions": "No recent transactions",
   "wallet.restore.dialog.form.errors.invalidRecoveryPhrase": "Invalid recovery phrase",
   "cardano.node.update.notification.accept.button.label": "Update and restart",
   "cardano.node.update.notification.postpone.button.label": "Ask me later"
