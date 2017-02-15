@@ -101,14 +101,14 @@ export default class Sidebar extends Component {
             minimized={hasMinimizedCategories}
             onClick={() => onCategoryClicked(categories.WALLETS)}
           />
-          <SidebarCategory
-            className="ada-redemption"
-            label={intl.formatMessage(messages.adaRedemptionCategoryLabel)}
-            icon={adaRedemptionIcon}
-            active={currentCategory === categories.ADA_REDEMPTION}
-            minimized={hasMinimizedCategories}
-            onClick={() => onCategoryClicked(categories.ADA_REDEMPTION)}
-          />
+          {/*<SidebarCategory*/}
+            {/*className="ada-redemption"*/}
+            {/*label={intl.formatMessage(messages.adaRedemptionCategoryLabel)}*/}
+            {/*icon={adaRedemptionIcon}*/}
+            {/*active={currentCategory === categories.ADA_REDEMPTION}*/}
+            {/*minimized={hasMinimizedCategories}*/}
+            {/*onClick={() => onCategoryClicked(categories.ADA_REDEMPTION)}*/}
+          {/*/>*/}
         </div>
         {subMenu}
       </div>
