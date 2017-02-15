@@ -113,6 +113,7 @@
     "faker": "^3.1.0",
     "immutability-helper": "^2.0.0",
     "lodash": "^4.17.2",
+    "mkdirp": "^0.5.1",
     "mobx": "^3.1.0",
     "mobx-react": "^4.1.0",
     "mobx-react-form": "^1.18.16",

@@ -1,6 +1,8 @@
 import { app, BrowserWindow, Menu, shell, ipcMain, dialog } from 'electron';
-import osxMenu from './menus/osx';
+import mkdirp from 'mkdirp';
 import fs from 'fs';
+import path from 'path';
+import osxMenu from './menus/osx';
 import winLinuxMenu from './menus/win-linux';
 import ipcApi from './ipc-api';
 
@@ -39,9 +41,17 @@ app.on('ready', async () => {
   await installExtensions();
 
   if (isProd) {
-    const DATA = process.env.APPDATA || (process.platform == 'darwin' ? process.env.HOME + 'Library/Preferences' : '~/.config');
+    const DATA = process.env.APPDATA || (process.platform == 'darwin' ? path.join(process.env.HOME, 'Library/Preferences') : '~/.config');
 
-    const logfile = fs.openSync(DATA + '\\Daedalus\\Logs\\cardano-node.log', 'a');
+    let logfile;
+    try {
+      const logFileDirectoryPath = path.join(DATA, '/Daedalus/Logs/');
+      mkdirp.sync(logFileDirectoryPath);
+      logfile = fs.openSync(path.join(logFileDirectoryPath, '/cardano-node.log'), 'a');
+    } catch(error) {
+      dialog.showErrorBox('Error opening log file', error.name + ": " + error.message);
+      process.exit(1);
+    }
 
     const cardanoFlags = [
       '--listen', '0.0.0.0:12100',
@@ -58,11 +68,13 @@ app.on('ready', async () => {
     ];
 
     // TODO: based on platform, different command
-    const cardanoNode = require('child_process').spawn('cardano-node.exe', cardanoFlags, {stdio: ['ignore', logfile, logfile]});
-    cardanoNode.on('error', error => {
-      dialog.showErrorBox('cardano-node exited', error.name + ": " + error.message);
-      app.quit()
-    });
+    if (process.platform === 'win32') {
+      const cardanoNode = require('child_process').spawn('cardano-node.exe', cardanoFlags, {stdio: ['ignore', logfile, logfile]});
+      cardanoNode.on('error', error => {
+        dialog.showErrorBox('cardano-node exited', error.name + ": " + error.message);
+        app.quit()
+      });
+    }
   }
 
   mainWindow = new BrowserWindow({
