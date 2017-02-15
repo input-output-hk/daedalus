@@ -1,7 +1,6 @@
 // @flow
 import { observable, action } from 'mobx';
 import AppStore from './AppStore';
-import LoadingStore from './LoadingStore';
 import SettingsStore from './SettingsStore';
 import WalletsStore from './WalletsStore';
 import TransactionsStore from './TransactionsStore';
@@ -15,7 +14,6 @@ import AdaRedemptionStore from './AdaRedemptionStore';
 const stores = observable({
   router: null,
   app: null,
-  loading: null,
   settings: null,
   wallets: null,
   transactions: null,
@@ -37,7 +35,6 @@ export default action((api, actions, router): storesType => {
   // Assign new store instances
   Object.assign(stores, {
     app: new AppStore(stores, api, actions),
-    loading: new LoadingStore(stores, api, actions),
     settings: new SettingsStore(stores, api, actions),
     wallets: new WalletsStore(stores, api, actions),
     transactions: new TransactionsStore(stores, api, actions),
@@ -56,7 +53,6 @@ export default action((api, actions, router): storesType => {
 
 export type storesType = {
   app: AppStore,
-  loading: LoadingStore,
   settings: SettingsStore,
   wallets: WalletsStore,
   transactions: TransactionsStore,

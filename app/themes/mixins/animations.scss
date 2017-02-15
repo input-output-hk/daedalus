@@ -1,0 +1,19 @@
+@mixin animated-ellipsis($duration: 900, $width: 20px) {
+  &:after {
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+    animation: ellipsis steps(4,end) #{$duration}ms infinite;
+    content: "\2026"; /* ascii code for the ellipsis character */
+    width: 0;
+    margin-right: 0;
+    text-align: left;
+  }
+
+  @keyframes ellipsis {
+    to {
+      width: $width;
+      margin-right: -$width;
+    }
+  }
+}
