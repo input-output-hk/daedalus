@@ -80,6 +80,7 @@ writeInstallerNSIS = do
     name "Daedalus $Version"                  -- The name of the installer
     outFile "daedalus-win64-$Version-installer.exe"           -- Where to produce the installer
     injectGlobalLiteral $ "VIProductVersion " <> version
+    injectGlobalLiteral $ "VIAddVersionKey \"ProductVersion\" " <> version
     -- see ndmitchell/nsis#10 and https://github.com/jmitchell/nsis/tree/feature/escape-hatch
     {- unicode True -}
     injectGlobalLiteral "Unicode true"
