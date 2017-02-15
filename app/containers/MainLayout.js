@@ -9,6 +9,7 @@ import WalletCreateDialog from '../components/wallet/WalletCreateDialog';
 import WalletRestoreDialog from '../components/wallet/WalletRestoreDialog';
 import WalletBackupPage from './wallet/WalletBackupPage';
 import WalletAddPage from './wallet/WalletAddPage';
+import NodeUpdatePage from './notifications/NodeUpdatePage';
 import Wallet from '../domain/Wallet';
 import Request from '../stores/lib/Request';
 
@@ -30,6 +31,10 @@ export default class MainLayout extends Component {
       }).isRequired,
       walletBackup: PropTypes.shape({
         inProgress: PropTypes.bool.isRequired,
+      }).isRequired,
+      nodeUpdate: PropTypes.shape({
+        isUpdateAvailable: PropTypes.bool.isRequired,
+        isUpdatePostponed: PropTypes.bool.isRequired,
       }).isRequired,
     }).isRequired,
     actions: PropTypes.shape({
@@ -66,6 +71,8 @@ export default class MainLayout extends Component {
     const activeWallet = stores.wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const isWalletBackupInProgress = this.props.stores.walletBackup.inProgress;
+    const isNodeUpdateAvailable = this.props.stores.nodeUpdate.isUpdateAvailable;
+    const isUpdatePostponed = this.props.stores.nodeUpdate.isUpdatePostponed;
 
     const sidebarMenus = {
       wallets: {
@@ -104,8 +111,9 @@ export default class MainLayout extends Component {
       />
     ) : null;
     const addWalletBackupDialog = isWalletBackupInProgress ? (<WalletBackupPage />) : null;
+    const addNodeUpdateNotification = isNodeUpdateAvailable && !isUpdatePostponed ? (<NodeUpdatePage />) : null;
     return (
-      <SidebarLayout sidebar={sidebarComponent} appbar={appbar}>
+      <SidebarLayout sidebar={sidebarComponent} appbar={appbar} notification={addNodeUpdateNotification}>
         {this.props.children}
         {addWalletDialog}
         {createWalletDialog}

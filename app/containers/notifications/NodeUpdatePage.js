@@ -11,7 +11,6 @@ export default class NodeUpdatePage extends Component {
       nodeUpdate: PropTypes.shape({
         isNotificationExpanded: PropTypes.bool.isRequired,
         updateTitle: PropTypes.string.isRequired,
-        updateDescription: PropTypes.string.isRequired,
       }),
     }).isRequired,
     actions: PropTypes.shape({
@@ -25,7 +24,6 @@ export default class NodeUpdatePage extends Component {
     const {
       isNotificationExpanded,
       updateTitle,
-      updateDescription
     } = this.props.stores.nodeUpdate;
     const {
       acceptNodeUpdate,
@@ -36,7 +34,6 @@ export default class NodeUpdatePage extends Component {
     return(
       <NodeUpdateNotification
         title={updateTitle}
-        message={updateDescription}
         onAccept={acceptNodeUpdate}
         onPostpone={postponeNodeUpdate}
         onToggleExpanded={toggleNodeUpdateNotificationExpanded}

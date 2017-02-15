@@ -102,5 +102,7 @@
   "wallet.restore.dialog.recovery.phrase.input.label": "Recovery phrase",
   "wallet.restore.dialog.recovery.phrase.input.hint": "Enter recovery phrase",
   "wallet.restore.dialog.restore.wallet.button.label": "Restore wallet",
-  "wallet.restore.dialog.form.errors.invalidRecoveryPhrase": "Invalid recovery phrase"
+  "wallet.restore.dialog.form.errors.invalidRecoveryPhrase": "Invalid recovery phrase",
+  "cardano.node.update.notification.accept.button.label": "Accept",
+  "cardano.node.update.notification.postpone.button.label": "Ask me later"
 }

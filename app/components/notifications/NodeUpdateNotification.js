@@ -23,7 +23,7 @@ export default class NodeUpdateNotification extends Component {
 
   static propTypes = {
     title: PropTypes.string.isRequired,
-    message: PropTypes.string.isRequired,
+    message: PropTypes.string, // TODO: make this required after it is implemented on the backend
     onAccept: PropTypes.func.isRequired,
     onPostpone: PropTypes.func.isRequired,
     onToggleExpanded: PropTypes.func.isRequired,
@@ -51,7 +51,7 @@ export default class NodeUpdateNotification extends Component {
             <img className={arrowClasses} src={arrow} role="presentation" />
           </button>
         </div>
-        {isExpanded && (
+        {isExpanded && message && (
           <div className={styles.message} dangerouslySetInnerHTML={{ __html: message }} />
         )}
         {isExpanded && (
