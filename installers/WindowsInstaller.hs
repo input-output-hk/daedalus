@@ -11,25 +11,24 @@ import           Turtle             (echo, proc, procs)
 
 shortcutParameters :: [String] -> String
 shortcutParameters ipdht = L.intercalate " " $
-    [ "--node \"%PROGRAMFILES%\\Daedalus\\cardano-node.exe\""
-    , "--node-log-path", "\"%APPDATA%\\Daedalus\\Logs\\cardano-node.log\""
-    , "--node-log-config", "log-config-prod.yaml" 
-    , "--wallet \"%PROGRAMFILES%\\Daedalus\\Daedalus.exe\""
-    , "--updater \"" <> installerPath <> "\""
-    , "--node-timeout 5"
-    , (" -n " ++ (L.intercalate " -n " nodeArgs))
-    ]
-  where
-    installerPath = "%APPDATA%\\Daedalus\\Installer.exe"
-    nodeArgs = [
-      "--listen", "0.0.0.0:12100",
-      "--keyfile", "\"%APPDATA%\\Daedalus\\Secrets\\secret.key\"",
-      "--update-latest-path", "\"" <> installerPath <> "\"",
-      "--logs-prefix", "\"%APPDATA%\\Daedalus\\Logs\"",
-      "--db-path", "\"%APPDATA%\\Daedalus\\DB-0.2\"",
-      "--wallet-db-path", "\"%APPDATA%\\Daedalus\\Wallet-0.2\"",
-      "--wallet"
-      ] <> ("--peer" : (L.intersperse "--peer" ipdht))
+  [ "--node \"%PROGRAMFILES%\\Daedalus\\cardano-node.exe\""
+  , "--node-log-path", "\"%APPDATA%\\Daedalus\\Logs\\cardano-node.log\""
+  , "--wallet \"%PROGRAMFILES%\\Daedalus\\Daedalus.exe\""
+  , "--updater C:/TODO" -- TODO
+  , "--node-timeout 5"
+  , (" -n " ++ (L.intercalate " -n " nodeArgs))
+  ] 
+    where
+      nodeArgs = [
+        "--listen", "0.0.0.0:12100",
+        "--report-server", "http://35.156.164.19:5666",
+        "--log-config", "log-config-prod.yaml",
+        "--keyfile", "\"%APPDATA%\\Daedalus\\Secrets\\secret.key\"",
+        "--logs-prefix", "\"%APPDATA%\\Daedalus\\Logs\"",
+        "--db-path", "\"%APPDATA%\\Daedalus\\DB-0.2\"",
+        "--wallet-db-path", "\"%APPDATA%\\Daedalus\\Wallet-0.2\"",
+        "--wallet"
+        ] <> ("--peer" : (L.intersperse "--peer" ipdht))
 
 daedalusShortcut :: [String] -> [Attrib]
 daedalusShortcut ipdht =
