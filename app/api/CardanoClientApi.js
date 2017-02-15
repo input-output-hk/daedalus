@@ -71,6 +71,10 @@ export default class CardanoClientApi {
     return ClientApi.isValidAddress(currency, address);
   }
 
+  isValidMnemonic(mnemonic: string) {
+    return ClientApi.isValidMnemonic(mnemonic);
+  }
+
   @action _createWalletFromData(data) {
     return new Wallet({
       id: data.cwAddress,
@@ -95,6 +99,7 @@ export default class CardanoClientApi {
       amount: isOutgoing ? -1 * coins : coins,
       date: new Date(ctmDate * 1000),
       description: ctmDescription,
+      numberOfConfirmations: data.ctConfirmations
     });
   }
 

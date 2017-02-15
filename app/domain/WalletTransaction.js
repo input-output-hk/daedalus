@@ -12,6 +12,7 @@ export default class WalletTransaction {
   @observable amount: number;
   @observable date: Date;
   @observable description: string = '';
+  @observable numberOfConfirmations: number = 0;
 
   constructor(data: {
     id: string,
@@ -21,6 +22,7 @@ export default class WalletTransaction {
     amount: number,
     date: Date,
     description: string,
+    numberOfConfirmations: number
   }) {
     Object.assign(this, data);
   }

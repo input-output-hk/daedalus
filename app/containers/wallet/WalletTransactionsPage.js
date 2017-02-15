@@ -6,7 +6,6 @@ import WalletTransactionsList from '../../components/wallet/home/WalletTransacti
 import WalletTransactionsSearch from '../../components/wallet/home/WalletTransactionsSearch';
 import WalletNoTransactions from '../../components/wallet/home/WalletNoTransactions';
 import CachedRequest from '../../stores/lib/CachedRequest';
-import AdaRedemptionSuccessOverlay from '../../components/wallet/ada-redemption/AdaRedemptionSuccessOverlay';
 
 const messages = defineMessages({
   noTransactions: {
@@ -22,7 +21,7 @@ const messages = defineMessages({
 });
 
 @inject('stores', 'actions') @observer
-export default class WalletHomePage extends Component {
+export default class WalletTransactionsPage extends Component {
 
   static propTypes = {
     stores: PropTypes.shape({
@@ -31,15 +30,11 @@ export default class WalletHomePage extends Component {
           searchTerm: PropTypes.string.isRequired,
           searchLimit: PropTypes.number.isRequired,
         }),
-        searchRequest: PropTypes.instanceOf(CachedRequest),
+        allTransactionsRequest: PropTypes.instanceOf(CachedRequest),
         filtered: MobxPropTypes.arrayOrObservableArray.isRequired,
-        hasAny: PropTypes.bool.isRequired,
-        totalAvailable: PropTypes.number.isRequired,
-      }),
-      adaRedemption: PropTypes.shape({
-        showAdaRedemptionSuccessMessage: PropTypes.bool.isRequired,
-        amountRedeemed: PropTypes.number.isRequired,
-      }),
+        hasAnyFiltered: PropTypes.bool.isRequired,
+        totalFilteredAvailable: PropTypes.number.isRequired,
+      })
     }).isRequired,
     actions: PropTypes.shape({
       filterTransactions: PropTypes.func.isRequired
@@ -57,7 +52,7 @@ export default class WalletHomePage extends Component {
   render() {
     const { intl } = this.context;
     const actions = this.props.actions;
-    const { transactions, adaRedemption } = this.props.stores;
+    const { transactions } = this.props.stores;
     const {
       searchOptions,
       searchRequest,
@@ -66,7 +61,6 @@ export default class WalletHomePage extends Component {
       filtered,
     } = transactions;
     const { searchLimit, searchTerm } = searchOptions;
-    const { showAdaRedemptionSuccessMessage, amountRedeemed } = adaRedemption;
     const wasSearched = searchTerm !== '';
     let walletTransactions = null;
     let transactionSearch = null;
@@ -88,7 +82,7 @@ export default class WalletHomePage extends Component {
       walletTransactions = (
         <WalletTransactionsList
           transactions={filtered}
-          isLoadingTransactions={searchRequest.isExecuting}
+          isLoadingTransactions={searchRequest.isExecutingFirstTime}
           hasMoreToLoad={totalAvailable > searchLimit}
           onLoadMore={actions.loadMoreTransactions}
         />
@@ -103,12 +97,6 @@ export default class WalletHomePage extends Component {
       <div style={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
         {transactionSearch}
         {walletTransactions}
-        {showAdaRedemptionSuccessMessage && (
-          <AdaRedemptionSuccessOverlay
-            amount={amountRedeemed}
-            onClose={actions.closeAdaRedemptionSuccessOverlay}
-          />
-        )}
       </div>
     );
   }

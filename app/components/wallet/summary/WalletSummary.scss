@@ -1,0 +1,50 @@
+%smallText {
+  height: 19px;
+  font-family: $font-regular;
+  font-size: 14px;
+  line-height: 1.36;
+  letter-spacing: 0.5px;
+  color: $text-color-accent;
+}
+
+.component {
+  margin: 20px;
+  padding: 20px 30px;
+  border-radius: 4px;
+  background-color: $color-lighter-grey;
+  border: solid 1px $color-light-grey;
+}
+
+.walletName {
+  font-family: $font-bold;
+  font-size: 16px;
+  line-height: 1.38;
+  letter-spacing: 0.5px;
+  color: $text-color-accent;
+  margin-bottom: 11px;
+}
+
+.walletAmount {
+  font-family: $font-thin;
+  font-size: 40px;
+  line-height: 1.0;
+  color: $text-color-accent;
+  margin-bottom: 11px;
+  img {
+    margin-left: 10px;
+    width: 25px;
+    height: 27.5px;
+  }
+}
+
+.pendingConfirmation {
+  @extend %smallText;
+  img {
+    margin-left: 1px;
+    height: 10px;
+  }
+}
+
+.numberOfTransactions {
+  @extend %smallText;
+}
