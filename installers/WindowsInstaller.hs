@@ -69,17 +69,18 @@ signUninstaller = do
 
 writeInstallerNSIS :: IO ()
 writeInstallerNSIS = do
-  version <- (fmap (fromMaybe "dev") $ lookupEnv "APPVEYOR_BUILD_VERSION") <> ".0"
+  version <- fmap (fromMaybe "dev") $ lookupEnv "APPVEYOR_BUILD_VERSION"
+  let fullVersion = version <> ".0"
   ipdhtRaw <- readFile "data\\ip-dht-mappings"
   let ds = daedalusShortcut $ lines ipdhtRaw
-  writeFile "version.txt" version
+  writeFile "version.txt" fullVersion
   tempDir <- fmap fromJust $ lookupEnv "TEMP"
   writeFile "daedalus.nsi" $ nsis $ do
-    _ <- constantStr "Version" (str version)
+    _ <- constantStr "Version" (str fullVersion)
     name "Daedalus $Version"                  -- The name of the installer
     outFile "daedalus-win64-$Version-installer.exe"           -- Where to produce the installer
-    injectGlobalLiteral $ "VIProductVersion " <> version
-    injectGlobalLiteral $ "VIAddVersionKey \"ProductVersion\" " <> version
+    injectGlobalLiteral $ "VIProductVersion " <> fullVersion
+    injectGlobalLiteral $ "VIAddVersionKey \"ProductVersion\" " <> fullVersion
     -- see ndmitchell/nsis#10 and https://github.com/jmitchell/nsis/tree/feature/escape-hatch
     {- unicode True -}
     injectGlobalLiteral "Unicode true"
@@ -108,7 +109,7 @@ writeInstallerNSIS = do
         -- Uninstaller
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "InstallLocation" "$PROGRAMFILES64\\Daedalus"
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "Publisher" "Eureka Solutions LLC"
-        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "ProductVersion" (str version)
+        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "ProductVersion" (str fullVersion)
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "DisplayName" "Daedalus"
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "UninstallString" "\"$INSTDIR/uninstall.exe\""
         writeRegDWORD HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "NoModify" 1
