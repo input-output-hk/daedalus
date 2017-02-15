@@ -1,11 +1,13 @@
 module WindowsInstaller where
 
-import           Data.Maybe (fromMaybe)
-import           Data.Monoid ((<>))
-import qualified Data.List as L
+import qualified Data.List          as L
+import           Data.Maybe         (fromJust, fromMaybe)
+import           Data.Monoid        ((<>))
+import           Data.Text          (pack)
 import           Development.NSIS
+import           System.Directory   (renameFile)
 import           System.Environment (lookupEnv)
-import           Turtle (echo, procs)
+import           Turtle             (echo, proc, procs)
 
 shortcutParameters :: [String] -> String
 shortcutParameters ipdht = L.intercalate " " $
@@ -37,19 +39,54 @@ daedalusShortcut ipdht =
     , IconIndex 0
     ]
 
-writeNSIS :: IO ()
-writeNSIS = do
+-- See INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
+writeUninstallerNSIS :: IO ()
+writeUninstallerNSIS = do
+  tempDir <- fmap fromJust $ lookupEnv "TEMP"
+  writeFile "uninstaller.nsi" $ nsis $ do
+    injectGlobalLiteral $ "OutFile \"" <> tempDir <> "\\tempinstaller.exe\""
+    injectGlobalLiteral "SetCompress off"
+    _ <- section "" [Required] $ do
+      injectLiteral $ "WriteUninstaller \"" <> tempDir <> "\\uninstall.exe\""
+
+    uninstall $ do
+      -- Remove registry keys
+      deleteRegKey HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus"
+      deleteRegKey HKLM "Software/Daedalus"
+      rmdir [Recursive,RebootOK] "$INSTDIR"
+      delete [] "$SMPROGRAMS/Daedalus/*.*"
+      delete [] "$DESKTOP\\Daedalus.lnk"
+      -- Note: we leave user data alone
+
+-- See non-INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
+signUninstaller :: IO ()
+signUninstaller = do
+  procs "C:\\Program Files (x86)\\NSIS\\makensis" ["uninstaller.nsi"] mempty
+  tempDir <- fmap fromJust $ lookupEnv "TEMP"
+  writeFile "runtempinstaller.bat" $ tempDir <> "\\tempinstaller.exe /S"
+  _ <- proc "runtempinstaller.bat" [] mempty
+  echo . pack $ "TODO: Sign " <> tempDir <> "\\uninstall.exe"
+
+writeInstallerNSIS :: IO ()
+writeInstallerNSIS = do
   version <- fmap (fromMaybe "dev") $ lookupEnv "APPVEYOR_BUILD_VERSION"
+  let fullVersion = version <> ".0"
   ipdhtRaw <- readFile "data\\ip-dht-mappings"
   let ds = daedalusShortcut $ lines ipdhtRaw
-  writeFile "version.txt" version
+  writeFile "version.txt" fullVersion
+  tempDir <- fmap fromJust $ lookupEnv "TEMP"
   writeFile "daedalus.nsi" $ nsis $ do
-    _ <- constantStr "Version" (str version)
+    _ <- constantStr "Version" (str fullVersion)
     name "Daedalus $Version"                  -- The name of the installer
     outFile "daedalus-win64-$Version-installer.exe"           -- Where to produce the installer
+    injectGlobalLiteral $ "VIProductVersion " <> fullVersion
+    injectGlobalLiteral $ "VIAddVersionKey \"ProductVersion\" " <> fullVersion
+    -- see ndmitchell/nsis#10 and https://github.com/jmitchell/nsis/tree/feature/escape-hatch
+    {- unicode True -}
+    injectGlobalLiteral "Unicode true"
     installDir "$PROGRAMFILES64\\Daedalus"   -- The default installation directory
-    installDirRegKey HKLM "Software/Daedalus" "Install_Dir"
-    requestExecutionLevel Highest     
+    -- installDirRegKey HKLM "Software/Daedalus" "Install_Dir"
+    requestExecutionLevel Highest
 
     page Directory                   -- Pick where to install
     page InstFiles                   -- Give a progress bar while installing
@@ -58,7 +95,7 @@ writeNSIS = do
         setOutPath "$INSTDIR"        -- Where to install files in this section
         writeRegStr HKLM "Software/Daedalus" "Install_Dir" "$INSTDIR"
         createDirectory "$APPDATA\\Daedalus\\DB-0.2"
-        createDirectory "$APPDATA\\Daedalus\\Wallet-0.2" 
+        createDirectory "$APPDATA\\Daedalus\\Wallet-0.2"
         createDirectory "$APPDATA\\Daedalus\\Logs"
         createDirectory "$APPDATA\\Daedalus\\Secrets"
         createShortcut "$DESKTOP\\Daedalus.lnk" ds
@@ -70,32 +107,31 @@ writeNSIS = do
         file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
 
         -- Uninstaller
+        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "InstallLocation" "$PROGRAMFILES64\\Daedalus"
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "Publisher" "Eureka Solutions LLC"
-        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "ProductVersion" (str version)
+        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "ProductVersion" (str fullVersion)
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "DisplayName" "Daedalus"
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "UninstallString" "\"$INSTDIR/uninstall.exe\""
         writeRegDWORD HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "NoModify" 1
         writeRegDWORD HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "NoRepair" 1
-        writeUninstaller "uninstall.exe"
+        file [] $ (str $ tempDir <> "\\uninstall.exe")
 
     _ <- section "Start Menu Shortcuts" [] $ do
         createDirectory "$SMPROGRAMS/Daedalus"
-        createShortcut "$SMPROGRAMS/Daedalus/Uninstall Daedalus.lnk" 
+        createShortcut "$SMPROGRAMS/Daedalus/Uninstall Daedalus.lnk"
           [Target "$INSTDIR/uninstall.exe", IconFile "$INSTDIR/uninstall.exe", IconIndex 0]
         createShortcut "$SMPROGRAMS/Daedalus/Daedalus.lnk" ds
 
-    uninstall $ do
-      -- Remove registry keys
-      deleteRegKey HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus"
-      deleteRegKey HKLM "Software/Daedalus"
-      rmdir [Recursive,RebootOK] "$INSTDIR"
-      delete [] "$SMPROGRAMS/Daedalus/*.*"
-      delete [] "$DESKTOP\\Daedalus.lnk"
-      -- Note: we leave user data alone
-   
+    return ()
+
 main :: IO ()
 main = do
+  echo "Writing uninstaller.nsi"
+  writeUninstallerNSIS
+  signUninstaller
+
   echo "Writing daedalus.nsi"
-  writeNSIS
+  writeInstallerNSIS
+
   echo "Generating NSIS installer daedalus-win64-installer.exe"
   procs "C:\\Program Files (x86)\\NSIS\\makensis" ["daedalus.nsi"] mempty
