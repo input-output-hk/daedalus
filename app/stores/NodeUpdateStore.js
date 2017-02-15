@@ -11,6 +11,7 @@ export default class NodeUpdateStore extends Store {
   @observable isUpdateAvailable = false;
   @observable isUpdatePostponed = false;
   @observable isNotificationExpanded = false;
+  @observable isUpdateInstalled = false;
   @observable updateTitle = '';
   @observable updateVersion = null;
   @observable nextUpdateRequest = new Request(this.api, 'nextUpdate');
@@ -28,7 +29,7 @@ export default class NodeUpdateStore extends Store {
 
   @action refreshNextUpdate = () => {
     this.nextUpdateRequest.execute();
-    if (this.nextUpdateRequest.result && !this.isUpdatePostponed) {
+    if (this.nextUpdateRequest.result && !this.isUpdatePostponed && !this.isUpdateInstalled) {
       this.isUpdateAvailable = true;
       this.isNotificationExpanded = true;
       this.updateVersion = this.nextUpdateRequest.result.version;
@@ -43,6 +44,7 @@ export default class NodeUpdateStore extends Store {
   @action _acceptNodeUpdate = () => {
     this.applyUpdateRequest.execute();
     this.isUpdateAvailable = false;
+    this.isUpdateInstalled = true;
   };
 
   @action _toggleNodeUpdateNotificationExpanded = () => {
