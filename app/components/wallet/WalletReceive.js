@@ -68,7 +68,7 @@ export default class WalletReceive extends Component {
 
         <div className={styles.instructions}>
           {intl.formatMessage(messages.walletReceiveInstructions)}
-          &nbsp;<a>{intl.formatMessage(messages.generateNewAddressLabel)}</a>.
+          {/*&nbsp;<a>{intl.formatMessage(messages.generateNewAddressLabel)}</a>.*/}
         </div>
 
         <Button
