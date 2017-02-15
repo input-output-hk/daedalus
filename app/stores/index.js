@@ -9,6 +9,7 @@ import WindowStore from './WindowStore';
 import WalletBackupStore from './WalletBackupStore';
 import NetworkStatusStore from './NetworkStatusStore';
 import AdaRedemptionStore from './AdaRedemptionStore';
+import NodeUpdateStore from './NodeUpdateStore';
 
 // Constant that does never change during lifetime
 const stores = observable({
@@ -22,6 +23,7 @@ const stores = observable({
   walletBackup: null,
   networkStatus: null,
   adaRedemption: null,
+  nodeUpdate: null,
 });
 
 // Set up and return the stores for this app -> also used to reset all stores to defaults
@@ -43,6 +45,7 @@ export default action((api, actions, router): storesType => {
     walletBackup: new WalletBackupStore(stores, api, actions),
     networkStatus: new NetworkStatusStore(stores, api, actions),
     adaRedemption: new AdaRedemptionStore(stores, api, actions),
+    nodeUpdate: new NodeUpdateStore(stores, api, actions),
   });
   // Initialize the new stores
   storeNames.forEach(name => {
@@ -61,4 +64,5 @@ export type storesType = {
   walletBackup: WalletBackupStore,
   networkStatus: NetworkStatusStore,
   adaRedemption: AdaRedemptionStore,
+  nodeUpdate: NodeUpdateStore,
 };
