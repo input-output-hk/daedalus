@@ -1,12 +1,13 @@
 module WindowsInstaller where
 
 import qualified Data.List          as L
-import           Data.Maybe         (fromMaybe)
+import           Data.Maybe         (fromJust, fromMaybe)
 import           Data.Monoid        ((<>))
+import           Data.Text          (pack)
 import           Development.NSIS
 import           System.Directory   (renameFile)
 import           System.Environment (lookupEnv)
-import           Turtle             (echo, procs)
+import           Turtle             (echo, proc, procs)
 
 shortcutParameters :: [String] -> String
 shortcutParameters ipdht = L.intercalate " " $
@@ -39,12 +40,41 @@ daedalusShortcut ipdht =
     , IconIndex 0
     ]
 
-writeNSIS :: IO ()
-writeNSIS = do
+-- See INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
+writeUninstallerNSIS :: IO ()
+writeUninstallerNSIS = do
+  tempDir <- fmap fromJust $ lookupEnv "TEMP"
+  writeFile "uninstaller.nsi" $ nsis $ do
+    injectGlobalLiteral $ "OutFile \"" <> tempDir <> "\\tempinstaller.exe\""
+    injectGlobalLiteral "SetCompress off"
+    _ <- section "" [Required] $ do
+      injectLiteral $ "WriteUninstaller \"" <> tempDir <> "\\uninstall.exe\""
+
+    uninstall $ do
+      -- Remove registry keys
+      deleteRegKey HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus"
+      deleteRegKey HKLM "Software/Daedalus"
+      rmdir [Recursive,RebootOK] "$INSTDIR"
+      delete [] "$SMPROGRAMS/Daedalus/*.*"
+      delete [] "$DESKTOP\\Daedalus.lnk"
+      -- Note: we leave user data alone
+
+-- See non-INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
+signUninstaller :: IO ()
+signUninstaller = do
+  procs "C:\\Program Files (x86)\\NSIS\\makensis" ["uninstaller.nsi"] mempty
+  tempDir <- fmap fromJust $ lookupEnv "TEMP"
+  writeFile "runtempinstaller.bat" $ tempDir <> "\\tempinstaller.exe /S"
+  _ <- proc "runtempinstaller.bat" [] mempty
+  echo . pack $ "TODO: Sign " <> tempDir <> "\\uninstall.exe"
+
+writeInstallerNSIS :: IO ()
+writeInstallerNSIS = do
   version <- fmap (fromMaybe "dev") $ lookupEnv "APPVEYOR_BUILD_VERSION"
   ipdhtRaw <- readFile "data\\ip-dht-mappings"
   let ds = daedalusShortcut $ lines ipdhtRaw
   writeFile "version.txt" version
+  tempDir <- fmap fromJust $ lookupEnv "TEMP"
   writeFile "daedalus.nsi" $ nsis $ do
     _ <- constantStr "Version" (str version)
     name "Daedalus $Version"                  -- The name of the installer
@@ -82,7 +112,7 @@ writeNSIS = do
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "UninstallString" "\"$INSTDIR/uninstall.exe\""
         writeRegDWORD HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "NoModify" 1
         writeRegDWORD HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "NoRepair" 1
-        writeUninstaller "uninstall.exe"
+        file [] $ (str $ tempDir <> "\\uninstall.exe")
 
     _ <- section "Start Menu Shortcuts" [] $ do
         createDirectory "$SMPROGRAMS/Daedalus"
@@ -90,18 +120,16 @@ writeNSIS = do
           [Target "$INSTDIR/uninstall.exe", IconFile "$INSTDIR/uninstall.exe", IconIndex 0]
         createShortcut "$SMPROGRAMS/Daedalus/Daedalus.lnk" ds
 
-    uninstall $ do
-      -- Remove registry keys
-      deleteRegKey HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus"
-      deleteRegKey HKLM "Software/Daedalus"
-      rmdir [Recursive,RebootOK] "$INSTDIR"
-      delete [] "$SMPROGRAMS/Daedalus/*.*"
-      delete [] "$DESKTOP\\Daedalus.lnk"
-      -- Note: we leave user data alone
+    return ()
 
 main :: IO ()
 main = do
+  echo "Writing uninstaller.nsi"
+  writeUninstallerNSIS
+  signUninstaller
+
   echo "Writing daedalus.nsi"
-  writeNSIS
+  writeInstallerNSIS
+
   echo "Generating NSIS installer daedalus-win64-installer.exe"
   procs "C:\\Program Files (x86)\\NSIS\\makensis" ["daedalus.nsi"] mempty
