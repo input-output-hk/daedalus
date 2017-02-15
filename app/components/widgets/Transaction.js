@@ -85,7 +85,7 @@ export default class Transaction extends Component {
           {/* ==== Clickable Header -> toggles details ==== */}
 
           <button className={styles.header} onClick={this.toggleDetails.bind(this)}>
-            <div className={styles.title}>{data.title}</div>
+            <div className={styles.title}>{data.type === 'adaExpend' ? 'Ada Sent' : 'Ada Received'}</div>
             <div className={styles.amount}>{data.amount}
               <img className={styles.currencySymbol} src={adaSymbol} role="presentation" />
             </div>
@@ -116,10 +116,10 @@ export default class Transaction extends Component {
               <h2>TransactionId</h2>
               <span>{data.id}</span>
             </div>
-            <div>
-              <h2>Description</h2>
-              <span>{data.description !== '' ? data.description : 'No description yet'}</span>
-            </div>
+            {/*<div>*/}
+              {/*<h2>Description</h2>*/}
+              {/*<span>{data.description !== '' ? data.description : 'No description yet'}</span>*/}
+            {/*</div>*/}
           </div>
         </div>
       </div>

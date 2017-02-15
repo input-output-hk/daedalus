@@ -93,16 +93,16 @@ export default class WalletSendForm extends Component {
   // FORM VALIDATION
   form = new ReactToolboxMobxForm({
     fields: {
-      title: {
-        label: this.context.intl.formatMessage(messages.titleLabel),
-        placeholder: this.context.intl.formatMessage(messages.titleHint),
-        value: '',
-        validate: ({ field }) => {
-          const isValid = field.value.length >= 3;
-          return [isValid, this.context.intl.formatMessage(messages.invalidTitle)];
-        },
-        bindings: 'ReactToolbox',
-      },
+      // title: {
+      //   label: this.context.intl.formatMessage(messages.titleLabel),
+      //   placeholder: this.context.intl.formatMessage(messages.titleHint),
+      //   value: '',
+      //   validate: ({ field }) => {
+      //     const isValid = field.value.length >= 3;
+      //     return [isValid, this.context.intl.formatMessage(messages.invalidTitle)];
+      //   },
+      //   bindings: 'ReactToolbox',
+      // },
       receiver: {
         label: this.context.intl.formatMessage(messages.receiverLabel),
         placeholder: this.context.intl.formatMessage(messages.receiverHint),
@@ -131,12 +131,12 @@ export default class WalletSendForm extends Component {
       currency: {
         value: 'ada' // TODO: Remove hardcoded currency
       },
-      description: {
-        label: this.context.intl.formatMessage(messages.descriptionLabel),
-        placeholder: this.context.intl.formatMessage(messages.descriptionHint),
-        value: '',
-        bindings: 'ReactToolbox',
-      },
+      // description: {
+      //   label: this.context.intl.formatMessage(messages.descriptionLabel),
+      //   placeholder: this.context.intl.formatMessage(messages.descriptionHint),
+      //   value: '',
+      //   bindings: 'ReactToolbox',
+      // },
     },
   }, {
     options: {
@@ -164,10 +164,10 @@ export default class WalletSendForm extends Component {
       <div className={styles.component}>
 
         <div className={styles.fields}>
-          <Input className="title" {...form.$('title').bind()} />
+          {/*<Input className="title" {...form.$('title').bind()} />*/}
           <Input className="receiver" {...form.$('receiver').bind()} />
           <Input className="amount" {...form.$('amount').bind()} />
-          <Input className="description" multiline {...form.$('description').bind()} />
+          {/*<Input className="description" multiline {...form.$('description').bind()} />*/}
         </div>
 
         <Button
