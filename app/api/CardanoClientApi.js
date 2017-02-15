@@ -126,7 +126,7 @@ export default class CardanoClientApi {
     console.debug('CardanoClientApi::nextUpdate called');
     let nextUpdate = null;
     try {
-      nextUpdate = await ClientApi.nextUpdate();
+      nextUpdate = JSON.parse(await ClientApi.nextUpdate());
       console.debug('CardanoClientApi::nextUpdate returned', nextUpdate);
     } catch (error) {
       console.log(error);
