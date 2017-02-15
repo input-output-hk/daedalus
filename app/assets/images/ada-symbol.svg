@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="26px" viewBox="0 0 24 26" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: sketchtool 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>10943AFF-9D5E-4510-B49E-6BBB477AEDAA</title>
+    <desc>Created with sketchtool.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
+        <g id="new_wallet_screen_transactions" transform="translate(-2458.000000, -713.000000)" stroke="#5E6066" stroke-width="2.6">
+            <g id="content" transform="translate(760.000000, 460.000000)">
+                <g id="transactions" transform="translate(0.000000, 140.000000)">
+                    <g id="today-list" transform="translate(0.000000, 64.000000)">
+                        <g id="list-item-1">
+                            <g id="money-right" transform="translate(1557.000000, 40.000000)">
+                                <g id="ada-symbol" transform="translate(143.000000, 11.000000)">
+                                    <polyline id="Path-2" points="0.631914894 22 9.9 0 19.1680851 22"></polyline>
+                                    <path d="M2.10638298,9.3 L17.693617,9.3" id="Line"></path>
+                                    <path d="M0,14.3 L19.8,14.3" id="Line-Copy"></path>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
