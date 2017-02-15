@@ -85,6 +85,10 @@ export default class WalletsStore extends Store {
     return this.all.length > 0;
   }
 
+  @computed get first() {
+    return this.walletsCache.length > 0 ? this.walletsCache[0] : null;
+  }
+
   getWalletRoute(walletId: ?string, screen = 'home') {
     return `${this.BASE_ROUTE}/${walletId}/${screen}`;
   }
@@ -98,7 +102,7 @@ export default class WalletsStore extends Store {
   }
 
   @action refreshWalletsData = () => {
-    if (this.stores.networkStatus.isCardanoConnected) {
+    if (this.stores.networkStatus.isConnected) {
       this.walletsRequest.invalidate({ immediately: true });
       this.walletsCache.replace(this.walletsRequest.execute().result || []);
       const walletIds = this.walletsCache.map((wallet: Wallet) => wallet.id);

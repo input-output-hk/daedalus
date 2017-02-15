@@ -2,6 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
+import LoadingSpinner from '../widgets/LoadingSpinner';
 import cardanoLogo from '../../assets/images/cardano-logo.svg';
 import cardanoLogoWhite from '../../assets/images/cardano-logo-white.svg';
 import styles from './Loading.scss';
@@ -12,11 +13,12 @@ export default class Loading extends Component {
   static propTypes = {
     isConnecting: PropTypes.bool.isRequired,
     isSyncing: PropTypes.bool.isRequired,
+    isLoadingWallets: PropTypes.bool.isRequired,
     syncPercentage: PropTypes.number.isRequired,
   };
 
   render() {
-    const { isConnecting, isSyncing, syncPercentage } = this.props;
+    const { isConnecting, isSyncing, syncPercentage, isLoadingWallets } = this.props;
     const componentStyles = classNames([
       styles.component,
       isConnecting ? styles['is-connecting'] : null,
@@ -34,6 +36,11 @@ export default class Loading extends Component {
         {isSyncing && (
           <div className={styles.syncing}>
             <h1 className={styles.headline}>Syncing blocks {syncPercentage.toFixed(0)}%</h1>
+          </div>
+        )}{!isSyncing && !isConnecting && isLoadingWallets && (
+          <div className={styles.syncing}>
+            <h1 className={styles.headline}>Loading wallet data</h1>
+            <LoadingSpinner />
           </div>
         )}
       </div>

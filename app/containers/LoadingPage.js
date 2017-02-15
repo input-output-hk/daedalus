@@ -12,16 +12,22 @@ export default class LoadingPage extends Component {
       networkStatus: PropTypes.shape({
         isConnecting: PropTypes.bool.isRequired,
         isSyncing: PropTypes.bool.isRequired,
+        isLoadingWallets: PropTypes.bool.isRequired,
         syncPercentage: PropTypes.number.isRequired,
       }).isRequired,
     }).isRequired,
   };
 
   render() {
-    const { isConnecting, isSyncing, syncPercentage } = this.props.stores.networkStatus;
+    const { isConnecting, isSyncing, syncPercentage, isLoadingWallets } = this.props.stores.networkStatus;
     return (
       <CenteredLayout>
-        <Loading isSyncing={isSyncing} isConnecting={isConnecting} syncPercentage={syncPercentage} />
+        <Loading
+          isSyncing={isSyncing}
+          isConnecting={isConnecting}
+          syncPercentage={syncPercentage}
+          isLoadingWallets={isLoadingWallets}
+        />
       </CenteredLayout>
     );
   }
