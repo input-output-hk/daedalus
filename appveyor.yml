@@ -23,7 +23,9 @@ install:
   - type build-id
   - cd ..\..\
   - move node_modules\daedalus-client-api\log-config-prod.yaml installers\log-config-prod.yaml
-  - move node_modules\daedalus-client-api\*.exe installers\
+  - move node_modules\daedalus-client-api\cardano-node.exe installers\
+  - move node_modules\daedalus-client-api\cardano-launcher.exe installers\
+  - del /f node_modules\daedalus-client-api\*.exe
 
 test_script:
   - SET DAEDALUS_VERSION=%APPVEYOR_BUILD_VERSION%
