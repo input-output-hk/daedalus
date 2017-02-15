@@ -48,6 +48,7 @@ export default class Sidebar extends Component {
     onCategoryClicked: PropTypes.func,
     hidden: PropTypes.bool,
     isMaximized: PropTypes.bool,
+    isSynced: PropTypes.bool,
     activeWalletId: PropTypes.string,
   };
 
@@ -58,7 +59,7 @@ export default class Sidebar extends Component {
   render() {
     const { intl } = this.context;
     const {
-      hidden, isMaximized, menus, onCategoryClicked, activeWalletId, categories, currentCategory
+      hidden, isMaximized, menus, onCategoryClicked, activeWalletId, categories, currentCategory, isSynced
     } = this.props;
 
     let sidebarStyle = null;
@@ -79,6 +80,7 @@ export default class Sidebar extends Component {
           onWalletItemClick={menus.wallets.actions.onWalletItemClick}
           isActiveWallet={id => id === activeWalletId}
           visible
+          isSynced={isSynced}
         />
       );
       categoriesStyle = styles.minimized;
@@ -99,14 +101,14 @@ export default class Sidebar extends Component {
             minimized={hasMinimizedCategories}
             onClick={() => onCategoryClicked(categories.WALLETS)}
           />
-          <SidebarCategory
-            className="ada-redemption"
-            label={intl.formatMessage(messages.adaRedemptionCategoryLabel)}
-            icon={adaRedemptionIcon}
-            active={currentCategory === categories.ADA_REDEMPTION}
-            minimized={hasMinimizedCategories}
-            onClick={() => onCategoryClicked(categories.ADA_REDEMPTION)}
-          />
+          {/*<SidebarCategory*/}
+            {/*className="ada-redemption"*/}
+            {/*label={intl.formatMessage(messages.adaRedemptionCategoryLabel)}*/}
+            {/*icon={adaRedemptionIcon}*/}
+            {/*active={currentCategory === categories.ADA_REDEMPTION}*/}
+            {/*minimized={hasMinimizedCategories}*/}
+            {/*onClick={() => onCategoryClicked(categories.ADA_REDEMPTION)}*/}
+          {/*/>*/}
         </div>
         {subMenu}
       </div>

@@ -29,10 +29,10 @@ export default defineActions({
   },
   toggleCreateWalletDialog: {},
   sendMoney: {
-    title: PropTypes.string.isRequired,
+    // title: PropTypes.string.isRequired,
     receiver: PropTypes.string.isRequired,
     amount: PropTypes.string.isRequired,
-    description: PropTypes.string,
+    // description: PropTypes.string,
   },
   resizeWindow: {
     width: PropTypes.number.isRequired,

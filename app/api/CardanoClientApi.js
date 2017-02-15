@@ -23,6 +23,20 @@ import {
 
 export default class CardanoClientApi {
 
+  notifyCallbacks = [];
+
+  constructor() {
+    ClientApi.notify(this._onNotify, this._onNotifyError);
+  }
+
+  notify(onSuccess, onError = () => {}) {
+    this.notifyCallbacks.push({ message: onSuccess, error: onError });
+  }
+
+  reset() {
+    this.notifyCallbacks = [];
+  }
+
   async getWallets() {
     console.debug('CardanoClientApi::getWallets called');
     const response = await ClientApi.getWallets();
@@ -47,9 +61,9 @@ export default class CardanoClientApi {
 
   async createTransaction(request: createTransactionRequest) {
     console.debug('CardanoClientApi::createTransaction called with', request);
-    const { sender, receiver, amount, currency, title } = request;
-    let { description } = request;
-    if (!description) description = 'no description provided';
+    const { sender, receiver, amount, currency } = request;
+    const description = 'no description provided';
+    const title = 'no title provided';
     const response = await ClientApi.sendExtended(sender, receiver, amount, currency, title, description);
     return this._createTransactionFromData(response);
   }
@@ -86,6 +100,7 @@ export default class CardanoClientApi {
       amount: isOutgoing ? -1 * coins : coins,
       date: new Date(ctmDate * 1000),
       description: ctmDescription,
+      numberOfConfirmations: data.ctConfirmations
     });
   }
 
@@ -121,6 +136,24 @@ export default class CardanoClientApi {
   generateMnemonic() {
     return ClientApi.generateMnemonic().split(' ');
   }
+
+  // PRIVATE
+
+  _onNotify = (rawMessage) => {
+    console.debug('CardanoClientApi::notify message: ', rawMessage);
+    // TODO: "ConnectionClosed" messages are not JSON parsable … so we need to catch that case here!
+    let message = rawMessage;
+    if (message !== "ConnectionClosed") {
+      message = JSON.parse(rawMessage);
+    }
+    this.notifyCallbacks.forEach(cb => cb.message(message));
+  };
+
+  _onNotifyError = (error) => {
+    console.debug('CardanoClientApi::notify error: ', error);
+    this.notifyCallbacks.forEach(cb => cb.error(error));
+  };
+
 
   async nextUpdate() {
     console.debug('CardanoClientApi::nextUpdate called');

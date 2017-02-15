@@ -1,25 +1,74 @@
 // @flow
-import { observable, action } from 'mobx';
+import { observable, action, computed} from 'mobx';
 import Store from './lib/Store';
-import Request from './lib/Request';
 
 export default class NetworkStatusStore extends Store {
 
-  POLLING_INTERVAL = 5000; // How often we poll for network status
-
-  @observable isCardanoConnected = false;
-  @observable cardanoStatusRequest = new Request(this.api, 'getWallets');
+  @observable isConnected = false;
+  @observable localDifficulty = 0;
+  @observable networkDifficulty = 0;
+  @observable isSyncedAfterLaunch = false;
+  @observable isLoadingWallets = true;
 
   constructor(...args) {
     super(...args);
-    setInterval(this._updateCardanoStatus, this.POLLING_INTERVAL);
-    this._updateCardanoStatus();
+    this.registerReactions([
+      this._redirectToWalletAfterSync,
+      this._computeSyncStatus,
+    ]);
+    this._listenToServerStatusNotifications();
   }
 
-  @action _updateCardanoStatus = () => {
-    this.cardanoStatusRequest.execute()
-      .then(action(() => { this.isCardanoConnected = true; }))
-      .catch(action(() => { this.isCardanoConnected = false; }));
+  @computed get isConnecting() {
+    return !this.isConnected;
+  }
+
+  @computed get syncPercentage() {
+    if (this.networkDifficulty > 0) {
+      return (this.localDifficulty / this.networkDifficulty * 100);
+    }
+    return 0;
+  }
+
+  @computed get isSyncing() {
+    return !this.isConnecting && this.networkDifficulty > 0 && !this.isSynced;
+  }
+
+  @computed get isSynced() {
+    return !this.isConnecting && this.syncPercentage >= 100;
+  }
+
+  @action _listenToServerStatusNotifications() {
+    this.api.notify((message) => {
+      if (message === "ConnectionClosed") {
+        return this.isConnected = false;
+      }
+      switch (message.tag) {
+        // case "ConnectionOpened":
+        //   this.isConnected = true; break;
+        case "NetworkDifficultyChanged":
+          this.networkDifficulty = message.contents.getChainDifficulty;
+          this.isConnected = true;
+          break;
+        case "LocalDifficultyChanged":
+          this.localDifficulty = message.contents.getChainDifficulty;
+          break;
+        default:
+          console.log("Unknown server notification received:", message);
+      }
+    });
+  };
+
+  _computeSyncStatus = () => {
+    if (this.syncPercentage === 100) this.isSyncedAfterLaunch = true;
+  };
+
+  _redirectToWalletAfterSync = () => {
+    const { router, wallets } = this.stores;
+    if (this.isSyncedAfterLaunch && router.location.pathname === '/' && wallets.first) {
+      this.isLoadingWallets = false;
+      router.push(wallets.getWalletRoute(wallets.first.id)); // just pick the first for now
+    }
   };
 
 }

@@ -10,22 +10,29 @@ import sendIcon from '../../../assets/images/wallet-nav/send-ic-light.svg';
 import sendIconActive from '../../../assets/images/wallet-nav/send-ic-dark.svg';
 import receiveIcon from '../../../assets/images/wallet-nav/receive-ic-light.svg';
 import receiveIconActive from '../../../assets/images/wallet-nav/receive-ic-dark.svg';
+import transactionsIcon from '../../../assets/images/wallet-nav/transactions-ic-light.svg';
+import transactionsIconActive from '../../../assets/images/wallet-nav/transactions-ic-dark.svg';
 
 const messages = defineMessages({
   summary: {
     id: 'wallet.navigation.summary',
     defaultMessage: '!!!Summary',
-    description: 'Label for the "summary" nav button in the wallet navigation.'
+    description: 'Label for the "Summary" nav button in the wallet navigation.'
   },
   send: {
     id: 'wallet.navigation.send',
-    defaultMessage: '!!!send',
-    description: 'Label for the "send" nav button in the wallet navigation.'
+    defaultMessage: '!!!Send',
+    description: 'Label for the "Send" nav button in the wallet navigation.'
   },
   receive: {
     id: 'wallet.navigation.receive',
-    defaultMessage: '!!!receive',
-    description: 'Label for the "receive" nav button in the wallet navigation.'
+    defaultMessage: '!!!Receive',
+    description: 'Label for the "Receive" nav button in the wallet navigation.'
+  },
+  transactions: {
+    id: 'wallet.navigation.transactions',
+    defaultMessage: '!!!Transactions',
+    description: 'Label for the "Transactions" nav button in the wallet navigation.'
   }
 });
 
@@ -82,6 +89,16 @@ export default class WalletNavigation extends Component {
             activeIcon={receiveIconActive}
             isActive={isActiveNavItem('receive')}
             onClick={() => onNavItemClick('receive')}
+          />
+        </div>
+
+        <div className={styles.navItem}>
+          <WalletNavButton
+            label={intl.formatMessage(messages.transactions)}
+            normalIcon={transactionsIcon}
+            activeIcon={transactionsIconActive}
+            isActive={isActiveNavItem('transactions')}
+            onClick={() => onNavItemClick('transactions')}
           />
         </div>
 

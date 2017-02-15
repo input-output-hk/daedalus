@@ -1,6 +1,7 @@
 // @flow
 import { observable, computed, action } from 'mobx';
 import Store from './lib/Store';
+import Wallet from '../domain/Wallet';
 import { matchRoute } from '../lib/routing-helpers';
 import CachedRequest from './lib/CachedRequest';
 import Request from './lib/Request';
@@ -10,6 +11,8 @@ export default class WalletsStore extends Store {
 
   BASE_ROUTE = '/wallets';
   WALLET_REFRESH_INTERVAL = 5000;
+
+  @observable walletsCache : Array<Wallet> = [];
 
   @observable active = null;
   @observable walletsRequest = new CachedRequest(this.api, 'getWallets');
@@ -70,7 +73,7 @@ export default class WalletsStore extends Store {
   };
 
   @computed get all() {
-    return this.walletsRequest.execute().result || [];
+    return this.walletsCache;
   }
 
   @computed get activeWalletRoute() {
@@ -80,6 +83,10 @@ export default class WalletsStore extends Store {
 
   @computed get hasAnyLoaded() {
     return this.all.length > 0;
+  }
+
+  @computed get first() {
+    return this.walletsCache.length > 0 ? this.walletsCache[0] : null;
   }
 
   getWalletRoute(walletId: ?string, screen = 'home') {
@@ -94,10 +101,17 @@ export default class WalletsStore extends Store {
     return this.api.isValidMnemonic(mnemonic);
   }
 
-  refreshWalletsData = () => {
-    if (this.stores.networkStatus.isCardanoConnected) {
+  @action refreshWalletsData = () => {
+    if (this.stores.networkStatus.isConnected) {
       this.walletsRequest.invalidate({ immediately: true });
-      this.stores.transactions.searchRequest.invalidate({ immediately: true });
+      this.walletsCache.replace(this.walletsRequest.execute().result || []);
+      const walletIds = this.walletsCache.map((wallet: Wallet) => wallet.id);
+      this.stores.transactions.transactionsRequests = walletIds.map(walletId => ({
+        walletId,
+        recentRequest: this.stores.transactions._getTransactionsRecentRequest(walletId),
+        allRequest: this.stores.transactions._getTransactionsAllRequest(walletId)
+      }));
+      this.stores.transactions._refreshTransactionData();
     }
   };
 

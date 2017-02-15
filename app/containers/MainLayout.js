@@ -32,6 +32,9 @@ export default class MainLayout extends Component {
       walletBackup: PropTypes.shape({
         inProgress: PropTypes.bool.isRequired,
       }).isRequired,
+      networkStatus: PropTypes.shape({
+        isSynced: PropTypes.bool.isRequired,
+      }).isRequired,
       nodeUpdate: PropTypes.shape({
         isUpdateAvailable: PropTypes.bool.isRequired,
         isUpdatePostponed: PropTypes.bool.isRequired,
@@ -65,9 +68,10 @@ export default class MainLayout extends Component {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, wallets } = stores;
+    const { sidebar, wallets, networkStatus } = stores;
     const { restoreRequest } = wallets;
     const { toggleAddWallet, toggleCreateWalletDialog, toggleWalletRestore } = actions;
+    const { isSynced } = networkStatus;
     const activeWallet = stores.wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const isWalletBackupInProgress = this.props.stores.walletBackup.inProgress;
@@ -92,6 +96,7 @@ export default class MainLayout extends Component {
         currentCategory={sidebar.currentCategory}
         onCategoryClicked={category => actions.sidebarCategorySelected({ category })}
         activeWalletId={activeWalletId}
+        isSynced={isSynced}
       />
     );
     const appbar = <AppBar onToggleSidebar={actions.toggleSidebar} />;
