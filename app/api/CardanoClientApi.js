@@ -159,6 +159,8 @@ export default class CardanoClientApi {
     // };
     if (nextUpdate && nextUpdate.cuiSoftwareVersion && nextUpdate.cuiSoftwareVersion.svNumber) {
       return { version: nextUpdate.cuiSoftwareVersion.svNumber};
+    } else if (nextUpdate) {
+      return { version: 'Unknown'};;
     } else {
       return null;
     }
