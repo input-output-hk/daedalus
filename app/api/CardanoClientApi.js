@@ -1,6 +1,7 @@
 // @flow
 import ClientApi from 'daedalus-client-api';
 import { action } from 'mobx';
+import { ipcRenderer } from 'electron';
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
 import type {
@@ -164,6 +165,7 @@ export default class CardanoClientApi {
   }
 
   async applyUpdate() {
-    return await ClientApi.applyUpdate();
+    await ClientApi.applyUpdate();
+    ipcRenderer.send('kill-process');
   }
 }
