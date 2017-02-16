@@ -103,6 +103,7 @@ export default class WalletsStore extends Store {
     if (this.stores.networkStatus.isConnected) {
       this.walletsRequest.invalidate({ immediately: true });
       this.walletsRequest.execute();
+      if (!this.walletsRequest.result) return;
       const walletIds = this.walletsRequest.result.map((wallet: Wallet) => wallet.id);
       this.stores.transactions.transactionsRequests = walletIds.map(walletId => ({
         walletId,
