@@ -44,15 +44,3 @@
   opacity: 0.7;
   color: #fafbfc;
 }
-
-.status {
-  width: 22px;
-  margin-top: 10px;
-}
-
-.connecting {
-  :global {
-    animation: loading-spin 1.5s linear;
-    animation-iteration-count: infinite;
-  }
-}

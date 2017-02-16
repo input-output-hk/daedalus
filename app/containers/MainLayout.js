@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import { observer, inject } from 'mobx-react';
 import Sidebar from '../components/sidebar/Sidebar';
 import AppBar from '../components/layout/AppBar';
+import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import { oneOrManyChildElements } from '../propTypes';
 import WalletCreateDialog from '../components/wallet/WalletCreateDialog';
@@ -34,6 +35,7 @@ export default class MainLayout extends Component {
       }).isRequired,
       networkStatus: PropTypes.shape({
         isSynced: PropTypes.bool.isRequired,
+        isSyncing: PropTypes.bool.isRequired,
       }).isRequired,
       nodeUpdate: PropTypes.shape({
         isUpdateAvailable: PropTypes.bool.isRequired,
@@ -71,7 +73,7 @@ export default class MainLayout extends Component {
     const { sidebar, wallets, networkStatus } = stores;
     const { restoreRequest } = wallets;
     const { toggleAddWallet, toggleCreateWalletDialog, toggleWalletRestore } = actions;
-    const { isSynced } = networkStatus;
+    const { isSynced, isSyncing } = networkStatus;
     const activeWallet = stores.wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const isWalletBackupInProgress = this.props.stores.walletBackup.inProgress;
@@ -99,7 +101,9 @@ export default class MainLayout extends Component {
         isSynced={isSynced}
       />
     );
-    const appbar = <AppBar onToggleSidebar={actions.toggleSidebar} />;
+    const appbar = <AppBar onToggleSidebar={actions.toggleSidebar}>
+      <NodeSyncStatusIcon isSynced={isSynced} isSyncing={isSyncing} />
+    </AppBar>;
     const addWalletRestoreDialog = wallets.isWalletRestoreDialogOpen ? (
       <WalletRestoreDialog
         onSubmit={this.handleRestoreWalletSubmit}
