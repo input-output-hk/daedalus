@@ -127,6 +127,7 @@ export default class WalletCreateDialog extends Component {
   render() {
     const { form } = this;
     const dialogClasses = classnames([
+      styles.component,
       'WalletCreateDialog',
       this.state.isSubmitting ? styles.isSubmitting : null
     ]);
