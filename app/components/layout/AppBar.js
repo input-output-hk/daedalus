@@ -9,7 +9,8 @@ import styles from './AppBar.scss';
 export default class AppBar extends Component {
 
   static propTypes = {
-    onToggleSidebar: PropTypes.func.isRequired
+    onToggleSidebar: PropTypes.func.isRequired,
+    children: PropTypes.element.isRequired,
   };
 
   render() {
@@ -19,7 +20,9 @@ export default class AppBar extends Component {
         title="Daedalus"
         leftIcon={sidebarToggleIcon}
         onLeftIconClick={this.props.onToggleSidebar}
-      />
+      >
+        {this.props.children}
+      </RTAppBar>
     );
   }
 }
