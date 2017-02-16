@@ -133,6 +133,7 @@ export default class WalletsStore extends Store {
       this.isWalletRestoreDialogOpen = true;
     } else {
       this.isWalletRestoreDialogOpen = false;
+      this.restoreRequest.reset();
     }
   };
 
