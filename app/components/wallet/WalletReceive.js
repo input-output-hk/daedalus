@@ -3,7 +3,6 @@ import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import QRCode from 'qrcode.react';
-import Button from 'react-toolbox/lib/button/Button';
 import styles from './WalletReceive.scss';
 
 const messages = defineMessages({
@@ -16,16 +15,6 @@ const messages = defineMessages({
     id: 'wallet.receive.page.instructions',
     defaultMessage: '!!!Wallet receive instructions',
     description: 'Instructions for sharing wallet address to receive payments on the wallet "Receive Page"'
-  },
-  generateNewAddressLabel: {
-    id: 'wallet.receive.page.generate.new.address.label',
-    defaultMessage: '!!!Generate new address',
-    description: 'Label for "Generate new address" link'
-  },
-  requestSpecificAmountButtonLabel: {
-    id: 'wallet.receive.page.request.specific.amount.button.label',
-    defaultMessage: '!!!Request a specific amount',
-    description: 'Label for the "Request a specific amount" button'
   }
 });
 
@@ -68,15 +57,7 @@ export default class WalletReceive extends Component {
 
         <div className={styles.instructions}>
           {intl.formatMessage(messages.walletReceiveInstructions)}
-          {/*&nbsp;<a>{intl.formatMessage(messages.generateNewAddressLabel)}</a>.*/}
         </div>
-
-        <Button
-          className={styles.submitButton}
-          label={intl.formatMessage(messages.requestSpecificAmountButtonLabel)}
-          onMouseUp={() => {}}
-          primary
-        />
 
       </div>
     );
