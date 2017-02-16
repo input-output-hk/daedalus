@@ -1,6 +1,7 @@
 // @flow
 import ClientApi from 'daedalus-client-api';
 import { action } from 'mobx';
+import { ipcRenderer } from 'electron';
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
 import type {
@@ -111,7 +112,8 @@ export default class CardanoClientApi {
     const { recoveryPhrase, walletName } = request;
     console.debug('CardanoClientApi::restoreWallet called with', request);
     try {
-      return await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase);
+      const restoredWallet = await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase);
+      return this._createWalletFromData(restoredWallet);
     } catch (error) {
       console.error(error);
       if (error.message.includes('Wallet with that mnemonics already exists')) {
@@ -153,4 +155,53 @@ export default class CardanoClientApi {
     this.notifyCallbacks.forEach(cb => cb.error(error));
   };
 
+
+  async nextUpdate() {
+    console.debug('CardanoClientApi::nextUpdate called');
+    let nextUpdate = null;
+    try {
+      nextUpdate = JSON.parse(await ClientApi.nextUpdate());
+      console.debug('CardanoClientApi::nextUpdate returned', nextUpdate);
+    } catch (error) {
+      console.log(error);
+      // TODO: Api is trowing an error when update is not available, handle other errors
+    }
+    return nextUpdate;
+    // TODO: remove hardcoded response after node update is tested
+    // nextUpdate = {
+    //   cuiSoftwareVersion: {
+    //     svAppName: {
+    //       getApplicationName: "cardano"
+    //     },
+    //     svNumber: 1
+    //   },
+    //   cuiBlockVesion: {
+    //     bvMajor: 0,
+    //     bvMinor: 1,
+    //     bvAlt: 0
+    //   },
+    //   cuiScriptVersion: 1,
+    //   cuiImplicit: false,
+    //   cuiVotesFor: 2,
+    //   cuiVotesAgainst: 0,
+    //   cuiPositiveStake: {
+    //     getCoin: 66666
+    //   },
+    //   cuiNegativeStake: {
+    //     getCoin: 0
+    //   }
+    // };
+    if (nextUpdate && nextUpdate.cuiSoftwareVersion && nextUpdate.cuiSoftwareVersion.svNumber) {
+      return { version: nextUpdate.cuiSoftwareVersion.svNumber};
+    } else if (nextUpdate) {
+      return { version: 'Unknown'};;
+    } else {
+      return null;
+    }
+  }
+
+  async applyUpdate() {
+    await ClientApi.applyUpdate();
+    ipcRenderer.send('kill-process');
+  }
 }

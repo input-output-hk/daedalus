@@ -44,7 +44,7 @@ export default class Sidebar extends Component {
       WALLETS: PropTypes.string.isRequired,
       ADA_REDEMPTION: PropTypes.string.isRequired,
     }).isRequired,
-    currentCategory: PropTypes.string.isRequired,
+    // currentCategory: PropTypes.string.isRequired, // TODO: temporary disabled
     onCategoryClicked: PropTypes.func,
     hidden: PropTypes.bool,
     isMaximized: PropTypes.bool,
@@ -58,7 +58,7 @@ export default class Sidebar extends Component {
   render() {
     const { intl } = this.context;
     const {
-      hidden, isMaximized, menus, onCategoryClicked, activeWalletId, categories, currentCategory
+      hidden, isMaximized, menus, activeWalletId, categories, currentCategory
     } = this.props;
 
     let sidebarStyle = null;
@@ -97,7 +97,7 @@ export default class Sidebar extends Component {
             icon={walletsIcon}
             active={currentCategory === categories.WALLETS}
             minimized={hasMinimizedCategories}
-            onClick={() => onCategoryClicked(categories.WALLETS)}
+            onClick={() => {}}
           />
           {/*<SidebarCategory*/}
             {/*className="ada-redemption"*/}

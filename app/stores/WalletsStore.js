@@ -12,8 +12,6 @@ export default class WalletsStore extends Store {
   BASE_ROUTE = '/wallets';
   WALLET_REFRESH_INTERVAL = 5000;
 
-  @observable walletsCache : Array<Wallet> = [];
-
   @observable active = null;
   @observable walletsRequest = new CachedRequest(this.api, 'getWallets');
   @observable createWalletRequest = new Request(this.api, 'createWallet');
@@ -73,7 +71,7 @@ export default class WalletsStore extends Store {
   };
 
   @computed get all() {
-    return this.walletsCache;
+    return this.walletsRequest.result ? this.walletsRequest.result : [];
   }
 
   @computed get activeWalletRoute() {
@@ -86,7 +84,7 @@ export default class WalletsStore extends Store {
   }
 
   @computed get first() {
-    return this.walletsCache.length > 0 ? this.walletsCache[0] : null;
+    return this.all.length > 0 ? this.all[0] : null;
   }
 
   getWalletRoute(walletId: ?string, screen = 'home') {
@@ -104,8 +102,9 @@ export default class WalletsStore extends Store {
   @action refreshWalletsData = () => {
     if (this.stores.networkStatus.isConnected) {
       this.walletsRequest.invalidate({ immediately: true });
-      this.walletsCache.replace(this.walletsRequest.execute().result || []);
-      const walletIds = this.walletsCache.map((wallet: Wallet) => wallet.id);
+      this.walletsRequest.execute();
+      if (!this.walletsRequest.result) return;
+      const walletIds = this.walletsRequest.result.map((wallet: Wallet) => wallet.id);
       this.stores.transactions.transactionsRequests = walletIds.map(walletId => ({
         walletId,
         recentRequest: this.stores.transactions._getTransactionsRecentRequest(walletId),
@@ -134,11 +133,13 @@ export default class WalletsStore extends Store {
       this.isWalletRestoreDialogOpen = true;
     } else {
       this.isWalletRestoreDialogOpen = false;
+      this.restoreRequest.reset();
     }
   };
 
   @action _restoreWallet = async (params) => {
     const restoredWallet = await this.restoreRequest.execute(params);
+    await this.walletsRequest.patch(result => { result.push(restoredWallet); });
     this._toggleWalletRestore();
     this.refreshWalletsData();
     this.goToWalletRoute(restoredWallet.id);

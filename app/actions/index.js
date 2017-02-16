@@ -72,5 +72,8 @@ export default defineActions({
   restoreWallet: {
     recoveryPhrase: PropTypes.string.isRequired,
     walletName: PropTypes.string.isRequired
-  }
+  },
+  acceptNodeUpdate: {},
+  postponeNodeUpdate: {},
+  toggleNodeUpdateNotificationExpanded: {}
 }, PropTypes.validateWithErrors);
