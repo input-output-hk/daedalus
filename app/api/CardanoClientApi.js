@@ -111,7 +111,8 @@ export default class CardanoClientApi {
     const { recoveryPhrase, walletName } = request;
     console.debug('CardanoClientApi::restoreWallet called with', request);
     try {
-      return await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase);
+      const restoredWallet = await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase);
+      return this._createWalletFromData(restoredWallet);
     } catch (error) {
       console.error(error);
       if (error.message.includes('Wallet with that mnemonics already exists')) {
