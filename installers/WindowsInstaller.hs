@@ -3,7 +3,7 @@ module WindowsInstaller where
 import qualified Data.List          as L
 import           Data.Maybe         (fromJust, fromMaybe)
 import           Data.Monoid        ((<>))
-import           Data.Text          (pack)
+import           Data.Text          (pack, split, unpack)
 import           Development.NSIS
 import           System.Directory   (renameFile)
 import           System.Environment (lookupEnv)
@@ -14,16 +14,18 @@ shortcutParameters ipdht = L.intercalate " " $
   [ "--node \"%PROGRAMFILES%\\Daedalus\\cardano-node.exe\""
   , "--node-log-path", "\"%APPDATA%\\Daedalus\\Logs\\cardano-node.log\""
   , "--wallet \"%PROGRAMFILES%\\Daedalus\\Daedalus.exe\""
-  , "--updater C:/TODO" -- TODO
+  , "--updater \"" <> installerPath <> "\""
   , "--node-timeout 5"
   , (" -n " ++ (L.intercalate " -n " nodeArgs))
   ] 
     where
+      installerPath = "%APPDATA%\\Daedalus\\Installer.exe"
       nodeArgs = [
         "--listen", "0.0.0.0:12100",
         "--report-server", "http://35.156.164.19:5666",
         "--log-config", "log-config-prod.yaml",
         "--keyfile", "\"%APPDATA%\\Daedalus\\Secrets\\secret.key\"",
+        "--update-latest-path", "\"" <> installerPath <> "\"",
         "--logs-prefix", "\"%APPDATA%\\Daedalus\\Logs\"",
         "--db-path", "\"%APPDATA%\\Daedalus\\DB-0.2\"",
         "--wallet-db-path", "\"%APPDATA%\\Daedalus\\Wallet-0.2\"",
@@ -42,9 +44,13 @@ daedalusShortcut ipdht =
 -- See INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
 writeUninstallerNSIS :: IO ()
 writeUninstallerNSIS = do
+  version <- fmap (fromMaybe "dev") $ lookupEnv "APPVEYOR_BUILD_VERSION"
+  let fullVersion = version <> ".0"
   tempDir <- fmap fromJust $ lookupEnv "TEMP"
   writeFile "uninstaller.nsi" $ nsis $ do
-    injectGlobalLiteral $ "OutFile \"" <> tempDir <> "\\tempinstaller.exe\""
+    _ <- constantStr "Version" (str fullVersion)
+    name "Daedalus Uninstaller $Version"
+    outFile . str $ tempDir <> "\\tempinstaller.exe"
     injectGlobalLiteral "SetCompress off"
     _ <- section "" [Required] $ do
       injectLiteral $ "WriteUninstaller \"" <> tempDir <> "\\uninstall.exe\""
@@ -67,6 +73,12 @@ signUninstaller = do
   _ <- proc "runtempinstaller.bat" [] mempty
   echo . pack $ "TODO: Sign " <> tempDir <> "\\uninstall.exe"
 
+parseVersion :: String -> [String]
+parseVersion ver =
+  case split (== '.') (pack ver) of
+    v@[_, _, _, _] -> map unpack v
+    _ -> ["0", "0", "0", "0"]
+
 writeInstallerNSIS :: IO ()
 writeInstallerNSIS = do
   version <- fmap (fromMaybe "dev") $ lookupEnv "APPVEYOR_BUILD_VERSION"
@@ -79,13 +91,12 @@ writeInstallerNSIS = do
     _ <- constantStr "Version" (str fullVersion)
     name "Daedalus $Version"                  -- The name of the installer
     outFile "daedalus-win64-$Version-installer.exe"           -- Where to produce the installer
-    injectGlobalLiteral $ "VIProductVersion " <> fullVersion
+    injectGlobalLiteral $ "VIProductVersion " <> (L.intercalate "." $ parseVersion fullVersion)
     injectGlobalLiteral $ "VIAddVersionKey \"ProductVersion\" " <> fullVersion
     -- see ndmitchell/nsis#10 and https://github.com/jmitchell/nsis/tree/feature/escape-hatch
     {- unicode True -}
     injectGlobalLiteral "Unicode true"
     installDir "$PROGRAMFILES64\\Daedalus"   -- The default installation directory
-    -- installDirRegKey HKLM "Software/Daedalus" "Install_Dir"
     requestExecutionLevel Highest
 
     page Directory                   -- Pick where to install
@@ -110,8 +121,12 @@ writeInstallerNSIS = do
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "InstallLocation" "$PROGRAMFILES64\\Daedalus"
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "Publisher" "Eureka Solutions LLC"
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "ProductVersion" (str fullVersion)
+        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "VersionMajor" (str . (!! 0). parseVersion $ fullVersion)
+        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "VersionMinor" (str . (!! 1). parseVersion $ fullVersion)
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "DisplayName" "Daedalus"
+        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "DisplayVersion" (str fullVersion)
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "UninstallString" "\"$INSTDIR/uninstall.exe\""
+        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "QuietUninstallString" "\"$INSTDIR/uninstall.exe\" /S"
         writeRegDWORD HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "NoModify" 1
         writeRegDWORD HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "NoRepair" 1
         file [] $ (str $ tempDir <> "\\uninstall.exe")
