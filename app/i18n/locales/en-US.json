@@ -29,8 +29,6 @@
   "wallet.send.form.errors.invalidAmount": "Please enter a valid amount.",
   "wallet.receive.page.title": "Your <strong>{walletName}</strong> address",
   "wallet.receive.page.instructions": "Share this address in order to receive payments.",
-  "wallet.receive.page.generate.new.address.label": "Generate new address",
-  "wallet.receive.page.request.specific.amount.button.label": "Request a specific amount",
   "wallet.create.dialog.name.label": "Wallet Name",
   "wallet.create.dialog.walletNameHint": "e.g: Shopping Wallet",
   "wallet.create.dialog.currency.label": "Currency",
