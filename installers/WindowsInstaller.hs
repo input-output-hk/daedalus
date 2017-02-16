@@ -4,6 +4,7 @@ import           Data.Maybe (fromMaybe)
 import           Data.Monoid ((<>))
 import qualified Data.List as L
 import           Development.NSIS
+import           System.Directory (renameFile)
 import           System.Environment (lookupEnv)
 import           Turtle (echo, procs)
 
@@ -92,10 +93,18 @@ writeNSIS = do
       delete [] "$SMPROGRAMS/Daedalus/*.*"
       delete [] "$DESKTOP\\Daedalus.lnk"
       -- Note: we leave user data alone
-   
+
+-- TODO: add unicode support to https://github.com/ndmitchell/nsis
+patchNSIS :: IO ()
+patchNSIS = do
+  nsiScript <- readFile "daedalus.nsi"
+  appendFile "new-daedalus.nsi" $ "Unicode true\n" ++ nsiScript
+  renameFile "new-daedalus.nsi" "daedalus.nsi"
+
 main :: IO ()
 main = do
   echo "Writing daedalus.nsi"
   writeNSIS
+  patchNSIS
   echo "Generating NSIS installer daedalus-win64-installer.exe"
   procs "C:\\Program Files (x86)\\NSIS\\makensis" ["daedalus.nsi"] mempty
