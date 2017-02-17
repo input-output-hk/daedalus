@@ -22,7 +22,7 @@ shortcutParameters ipdht = L.intercalate " " $
       installerPath = "%APPDATA%\\Daedalus\\Installer.exe"
       nodeArgs = [
         "--listen", "0.0.0.0:12100",
-        "--report-server", "http://35.156.164.19:5666",
+        "--report-server", "http://35.156.164.19:5555",
         "--log-config", "log-config-prod.yaml",
         "--keyfile", "\"%APPDATA%\\Daedalus\\Secrets\\secret.key\"",
         "--update-latest-path", "\"" <> installerPath <> "\"",
@@ -42,10 +42,8 @@ daedalusShortcut ipdht =
     ]
 
 -- See INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
-writeUninstallerNSIS :: IO ()
-writeUninstallerNSIS = do
-  version <- fmap (fromMaybe "dev") $ lookupEnv "APPVEYOR_BUILD_VERSION"
-  let fullVersion = version <> ".0"
+writeUninstallerNSIS :: String -> IO ()
+writeUninstallerNSIS fullVersion = do
   tempDir <- fmap fromJust $ lookupEnv "TEMP"
   writeFile "uninstaller.nsi" $ nsis $ do
     _ <- constantStr "Version" (str fullVersion)
@@ -71,7 +69,18 @@ signUninstaller = do
   tempDir <- fmap fromJust $ lookupEnv "TEMP"
   writeFile "runtempinstaller.bat" $ tempDir <> "\\tempinstaller.exe /S"
   _ <- proc "runtempinstaller.bat" [] mempty
-  echo . pack $ "TODO: Sign " <> tempDir <> "\\uninstall.exe"
+  signFile (tempDir <> "\\uninstall.exe")
+
+signFile :: FilePath -> IO ()
+signFile filename = do
+  maybePass <- lookupEnv "CERT_PASS"
+  case maybePass of
+    Nothing -> echo . pack $ "Skipping signing " <> filename <> " due to lack of password"
+    Just pass -> do
+      echo . pack $ "Signing " <> filename
+      -- TODO: Double sign a file, SHA1 for vista/xp and SHA2 for windows 8 and on
+      --procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\eureka.p12", "/p", pack pass, "/t", "http://timestamp.comodoca.com", "/v", pack filename] mempty
+      procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\eureka.p12", "/p", pack pass, "/fd", "sha256", "/tr", "http://timestamp.comodoca.com/?td=sha256", "/td", "sha256", "/v", pack filename] mempty
 
 parseVersion :: String -> [String]
 parseVersion ver =
@@ -79,17 +88,14 @@ parseVersion ver =
     v@[_, _, _, _] -> map unpack v
     _ -> ["0", "0", "0", "0"]
 
-writeInstallerNSIS :: IO ()
-writeInstallerNSIS = do
-  version <- fmap (fromMaybe "dev") $ lookupEnv "APPVEYOR_BUILD_VERSION"
-  let fullVersion = version <> ".0"
+writeInstallerNSIS :: String -> IO ()
+writeInstallerNSIS fullVersion = do
   ipdhtRaw <- readFile "data\\ip-dht-mappings"
   let ds = daedalusShortcut $ lines ipdhtRaw
-  writeFile "version.txt" fullVersion
   tempDir <- fmap fromJust $ lookupEnv "TEMP"
   writeFile "daedalus.nsi" $ nsis $ do
     _ <- constantStr "Version" (str fullVersion)
-    name "Daedalus $Version"                  -- The name of the installer
+    name "Daedalus ($Version)"                  -- The name of the installer
     outFile "daedalus-win64-$Version-installer.exe"           -- Where to produce the installer
     injectGlobalLiteral $ "VIProductVersion " <> (L.intercalate "." $ parseVersion fullVersion)
     injectGlobalLiteral $ "VIAddVersionKey \"ProductVersion\" " <> fullVersion
@@ -141,12 +147,18 @@ writeInstallerNSIS = do
 
 main :: IO ()
 main = do
+  echo "Writing version.txt"
+  version <- fmap (fromMaybe "dev") $ lookupEnv "APPVEYOR_BUILD_VERSION"
+  let fullVersion = version <> ".0"
+  writeFile "version.txt" fullVersion
+
   echo "Writing uninstaller.nsi"
-  writeUninstallerNSIS
+  writeUninstallerNSIS fullVersion
   signUninstaller
 
   echo "Writing daedalus.nsi"
-  writeInstallerNSIS
+  writeInstallerNSIS fullVersion
 
   echo "Generating NSIS installer daedalus-win64-installer.exe"
   procs "C:\\Program Files (x86)\\NSIS\\makensis" ["daedalus.nsi"] mempty
+  signFile ("daedalus-win64-" <> fullVersion <> "-installer.exe")
