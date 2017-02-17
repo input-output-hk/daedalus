@@ -78,9 +78,9 @@ signFile filename = do
     Nothing -> echo . pack $ "Skipping signing " <> filename <> " due to lack of password"
     Just pass -> do
       echo . pack $ "Signing " <> filename
-      -- Double sign a file, SHA1 for vista/xp and SHA2 for windows 8 and on
-      procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\eureka.p12", "/p", pack pass, "/t", "http://timestamp.comodoca.com", "/v", pack filename] mempty
-      procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\eureka.p12", "/p", pack pass, "/fd", "sha256", "/tr", "http://timestamp.comodoca.com/?td=sha256", "/td", "sha256", "/as", "/v", pack filename] mempty
+      -- TODO: Double sign a file, SHA1 for vista/xp and SHA2 for windows 8 and on
+      --procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\eureka.p12", "/p", pack pass, "/t", "http://timestamp.comodoca.com", "/v", pack filename] mempty
+      procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\eureka.p12", "/p", pack pass, "/fd", "sha256", "/tr", "http://timestamp.comodoca.com/?td=sha256", "/td", "sha256", "/v", pack filename] mempty
 
 parseVersion :: String -> [String]
 parseVersion ver =
