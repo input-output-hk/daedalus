@@ -22,7 +22,7 @@ shortcutParameters ipdht = L.intercalate " " $
       installerPath = "%APPDATA%\\Daedalus\\Installer.exe"
       nodeArgs = [
         "--listen", "0.0.0.0:12100",
-        "--report-server", "http://35.156.164.19:5666",
+        "--report-server", "http://35.156.164.19:5555",
         "--log-config", "log-config-prod.yaml",
         "--keyfile", "\"%APPDATA%\\Daedalus\\Secrets\\secret.key\"",
         "--update-latest-path", "\"" <> installerPath <> "\"",
