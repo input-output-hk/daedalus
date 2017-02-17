@@ -3,7 +3,10 @@ flags: {}
 extra-package-dbs: []
 
 packages:
-- '.'
+  - location: .
+  - location:
+      git: https://github.com/jmitchell/nsis.git
+      commit: 0658f28beb62d023655dd285a07fb9e3fdab416b
 
 resolver: lts-7.16
 
