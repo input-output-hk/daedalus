@@ -2,7 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import WalletRecoveryPhraseMnemonic from './WalletRecoveryPhraseMnemonic';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
@@ -69,7 +69,7 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component {
         style={styles.component}
       >
         <WalletRecoveryInstructions
-          instructionsText={intl.formatMessage(messages.backupInstructions)}
+          instructionsText={<FormattedHTMLMessage {...messages.backupInstructions} />}
         />
         <WalletRecoveryPhraseMnemonic phrase={recoveryPhrase} />
         <DialogCloseButton onClose={onCancelBackup} />
