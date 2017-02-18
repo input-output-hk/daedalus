@@ -10,8 +10,8 @@ export default class Wallet extends Component {
 
   static propTypes = {
     stores: PropTypes.shape({
-      router: PropTypes.shape({
-        location: PropTypes.shape({ pathname: PropTypes.string.isRequired })
+      app: PropTypes.shape({
+        currentRoute: PropTypes.string.isRequired
       }).isRequired,
       wallets: PropTypes.shape({
         hasLoadedWallets: PropTypes.bool.isRequired
@@ -23,10 +23,10 @@ export default class Wallet extends Component {
   };
 
   isActiveScreen = (screen: string) => {
-    const { router, wallets} = this.props.stores;
+    const { app, wallets} = this.props.stores;
     if (!wallets.active) return false;
     const screenRoute = `${wallets.BASE_ROUTE}/${wallets.active.id}/${screen}`;
-    return router.location ? router.location.pathname === screenRoute : false;
+    return app.currentRoute === screenRoute;
   };
 
   handleWalletNavItemClick = (item: string) => {
