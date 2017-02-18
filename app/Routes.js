@@ -11,12 +11,14 @@ import WalletTransactionsPage from './containers/wallet/WalletTransactionsPage';
 import WalletSendPage from './containers/wallet/WalletSendPage';
 import WalletReceivePage from './containers/wallet/WalletReceivePage';
 import AdaRedemptionPage from './containers/wallet/AdaRedemptionPage';
+import NoWalletsPage from './containers/wallet/NoWalletsPage';
 
 export default (
   <div>
     <Route path="/" component={LoadingPage} />
     <Route path="/staking" component={StakingPage} />
     <Route path="/ada-redemption" component={AdaRedemptionPage} />
+    <Route path="/no-wallets" component={NoWalletsPage} />
     <Route path="/wallets" component={Wallet}>
       <Route path=":id/home" component={WalletSummaryPage} />
       <Route path=":id/transactions" component={WalletTransactionsPage} />
