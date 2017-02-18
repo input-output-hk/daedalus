@@ -108,5 +108,6 @@
   "wallet.summary.no.transactions": "No recent transactions",
   "wallet.restore.dialog.form.errors.invalidRecoveryPhrase": "Invalid recovery phrase",
   "cardano.node.update.notification.accept.button.label": "Update and restart",
-  "cardano.node.update.notification.postpone.button.label": "Ask me later"
+  "cardano.node.update.notification.postpone.button.label": "Ask me later",
+  "cardano.node.sync.status.blocksSynced": "Blocks synced {percentage}%"
 }

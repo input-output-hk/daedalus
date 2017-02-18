@@ -12,6 +12,6 @@
 }
 
 .page {
-  height: 100%;
+  height: calc(100% - #{$walletNavHeight});
   overflow: auto;
 }
