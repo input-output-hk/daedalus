@@ -174,7 +174,7 @@ export default class WalletsStore extends Store {
   };
 
   _updateActiveWalletOnRouteChanges = () => {
-    const currentRoute = this.stores.router.location.pathname;
+    const currentRoute = this.stores.app.currentRoute;
     const hasActiveWallet = !!this.active;
     const hasAnyWalletsLoaded = this.hasAnyLoaded;
     const match = matchRoute(`${this.BASE_ROUTE}/:id(*page)`, currentRoute);

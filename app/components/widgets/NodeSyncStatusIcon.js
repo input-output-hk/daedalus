@@ -1,26 +1,43 @@
 import React, { Component, PropTypes } from 'react';
-import nodeSyncSpinner from '../../assets/images/app-bar/node-sync-spinner.png';
-import nodeSyncSynced from '../../assets/images/app-bar/node-sync-synced.png';
+import { defineMessages, intlShape } from 'react-intl';
+import classNames from 'classnames';
+import spinnerIcon from '../../assets/images/app-bar/node-sync-spinner.png';
+import syncedIcon from '../../assets/images/app-bar/node-sync-synced.png';
 import styles from './NodeSyncStatusIcon.scss';
+
+const messages = defineMessages({
+  blocksSynced: {
+    id: 'cardano.node.sync.status.blocksSynced',
+    defaultMessage: '!!!Blocks synced {percentage}%',
+    description: 'Label for the blocks synced info overlay on node sync status icon.'
+  },
+});
 
 export default class NodeSyncStatusIcon extends Component {
 
   static propTypes = {
-    isSyncing: PropTypes.bool.isRequired,
-    isSynced: PropTypes.bool.isRequired
+    isSynced: PropTypes.bool.isRequired,
+    syncPercentage: PropTypes.number.isRequired,
+  };
+
+  static contextTypes = {
+    intl: intlShape.isRequired
   };
 
   render() {
-    const { isSyncing, isSynced } = this.props;
+    const { isSynced, syncPercentage } = this.props;
+    const { intl } = this.context;
+    const statusIcon = isSynced ? syncedIcon : spinnerIcon;
+    const componentClasses = classNames([
+      styles.component,
+      isSynced ? styles.synced : styles.syncing
+    ]);
     return (
-      <div
-      >
-        {isSynced && (
-          <img className={styles.synced} src={nodeSyncSynced} role="presentation" />
-        )}
-        {isSyncing && (
-          <img className={styles.syncing} src={nodeSyncSpinner} role="presentation" />
-        )}
+      <div className={componentClasses}>
+        <img className={styles.icon} src={statusIcon} role="presentation" />
+        <div className={styles.info}>
+          {intl.formatMessage(messages.blocksSynced, { percentage: syncPercentage.toFixed(0) })}
+        </div>
       </div>
     );
   }

@@ -36,6 +36,7 @@ export default class MainLayout extends Component {
       networkStatus: PropTypes.shape({
         isSynced: PropTypes.bool.isRequired,
         isSyncing: PropTypes.bool.isRequired,
+        syncPercentage: PropTypes.number.isRequired,
       }).isRequired,
       nodeUpdate: PropTypes.shape({
         isUpdateAvailable: PropTypes.bool.isRequired,
@@ -73,7 +74,7 @@ export default class MainLayout extends Component {
     const { sidebar, wallets, networkStatus } = stores;
     const { restoreRequest } = wallets;
     const { toggleAddWallet, toggleCreateWalletDialog, toggleWalletRestore } = actions;
-    const { isSynced, isSyncing } = networkStatus;
+    const { isSynced, syncPercentage } = networkStatus;
     const activeWallet = stores.wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const isWalletBackupInProgress = this.props.stores.walletBackup.inProgress;
@@ -102,7 +103,7 @@ export default class MainLayout extends Component {
       />
     );
     const appbar = <AppBar onToggleSidebar={actions.toggleSidebar}>
-      <NodeSyncStatusIcon isSynced={isSynced} isSyncing={isSyncing} />
+      <NodeSyncStatusIcon isSynced={isSynced} syncPercentage={syncPercentage} />
     </AppBar>;
     const addWalletRestoreDialog = wallets.isWalletRestoreDialogOpen ? (
       <WalletRestoreDialog
@@ -112,7 +113,7 @@ export default class MainLayout extends Component {
         mnemonicValidator={mnemonic => this.props.stores.wallets.isValidMnemonic(mnemonic)}
       />
     ) : null;
-    const addWalletDialog = wallets.isAddWalletDialogOpen ? (<WalletAddPage />) : null;
+    const addWalletDialog = wallets.isAddWalletDialogOpen && !isWalletBackupInProgress ? (<WalletAddPage />) : null;
     const createWalletDialog = wallets.isCreateWalletDialogOpen ? (
       <WalletCreateDialog
         onSubmit={this.handleAddWalletSubmit}

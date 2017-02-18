@@ -45,13 +45,13 @@ export default class SidebarStore extends Store {
     if (category === this.currentCategory) {
       this._toggleMaximized();
     } else {
-      this.stores.router.push(category);
+      this.actions.goToRoute({ route: category });
     }
     this.currentCategory = category;
   };
 
   _syncSidebarRouteWithRouter = () => {
-    const route = this.stores.router.location.pathname;
+    const route = this.stores.app.currentRoute;
     Object.keys(this.CATEGORIES).forEach((key) => {
       const category = this.CATEGORIES[key];
       if (route.indexOf(category) !== -1) this.currentCategory = category;

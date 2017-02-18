@@ -1,20 +1,41 @@
 .component {
-
+  position: relative;
+  overflow: visible;
+  &:hover {
+    .info {
+      opacity: 1;
+    }
+  }
 }
 
-%icon {
+.icon {
   width: 31px;
   height: 31px;
 }
 
 .syncing {
-  @extend %icon;
-  :global {
+  .icon :global {
     animation: loading-spin 1.5s linear;
     animation-iteration-count: infinite;
   }
 }
 
 .synced {
-  @extend %icon;
+}
+
+.info {
+  opacity: 0;
+  transition: opacity, 200ms;
+  white-space: nowrap;
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  text-align: right;
+  font-family: $font-light;
+  font-size: 14px;
+  background-color: #fafbfc;
+  padding: 10px;
+  border-radius: 4px;
+  color: #5e6066;
+  box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25);
 }
