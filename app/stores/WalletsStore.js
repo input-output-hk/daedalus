@@ -169,7 +169,7 @@ export default class WalletsStore extends Store {
   }
 
   _openAddWalletIfNoWallets = () => {
-    if (!this.hasAnyWallets) this.isAddWalletDialogOpen = true;
+    if (this.hasLoadedWallets && !this.hasAnyWallets) this.isAddWalletDialogOpen = true;
   };
 
   _updateActiveWalletOnRouteChanges = () => {
