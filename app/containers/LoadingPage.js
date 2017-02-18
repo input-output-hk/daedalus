@@ -13,13 +13,20 @@ export default class LoadingPage extends Component {
         isConnecting: PropTypes.bool.isRequired,
         isSyncing: PropTypes.bool.isRequired,
         isLoadingWallets: PropTypes.bool.isRequired,
+        hasBeenConnected: PropTypes.bool.isRequired,
         syncPercentage: PropTypes.number.isRequired,
       }).isRequired,
     }).isRequired,
   };
 
   render() {
-    const { isConnecting, isSyncing, syncPercentage, isLoadingWallets } = this.props.stores.networkStatus;
+    const {
+      isConnecting,
+      isSyncing,
+      syncPercentage,
+      isLoadingWallets,
+      hasBeenConnected
+    } = this.props.stores.networkStatus;
     return (
       <CenteredLayout>
         <Loading
@@ -27,6 +34,7 @@ export default class LoadingPage extends Component {
           isConnecting={isConnecting}
           syncPercentage={syncPercentage}
           isLoadingWallets={isLoadingWallets}
+          hasBeenConnected={hasBeenConnected}
         />
       </CenteredLayout>
     );

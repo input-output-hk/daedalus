@@ -113,7 +113,7 @@ export default class MainLayout extends Component {
         mnemonicValidator={mnemonic => this.props.stores.wallets.isValidMnemonic(mnemonic)}
       />
     ) : null;
-    const addWalletDialog = wallets.isAddWalletDialogOpen ? (<WalletAddPage />) : null;
+    const addWalletDialog = wallets.isAddWalletDialogOpen && !isWalletBackupInProgress ? (<WalletAddPage />) : null;
     const createWalletDialog = wallets.isCreateWalletDialogOpen ? (
       <WalletCreateDialog
         onSubmit={this.handleAddWalletSubmit}

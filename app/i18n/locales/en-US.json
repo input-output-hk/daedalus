@@ -110,4 +110,8 @@
   "cardano.node.update.notification.accept.button.label": "Update and restart",
   "cardano.node.update.notification.postpone.button.label": "Ask me later",
   "cardano.node.sync.status.blocksSynced": "Blocks synced {percentage}%"
+  "cardano.node.update.notification.postpone.button.label": "Ask me later",
+  "loading.screen.connectingToNetworkMessage": "Connecting to network",
+  "loading.screen.reconnectingToNetworkMessage": "Network connection lost - reconnecting",
+  "loading.screen.syncingBlocksMessage": "Syncing blocks"
 }
