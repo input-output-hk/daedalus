@@ -58,6 +58,7 @@ export default class WalletsStore extends Store {
     const wallet = await this.createWalletRequest.execute(this._newWalletDetails);
     await this.walletsRequest.patch(result => { result.push(wallet); });
     this.goToWalletRoute(wallet.id);
+    this.isAddWalletDialogOpen = false;
   };
 
   _sendMoney = async (transactionDetails) => {
