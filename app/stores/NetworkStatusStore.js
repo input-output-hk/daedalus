@@ -5,6 +5,7 @@ import Store from './lib/Store';
 export default class NetworkStatusStore extends Store {
 
   @observable isConnected = false;
+  @observable hasBeenConnected = false;
   @observable localDifficulty = 0;
   @observable networkDifficulty = 0;
   @observable isSyncedAfterLaunch = false;
@@ -15,6 +16,7 @@ export default class NetworkStatusStore extends Store {
     this.registerReactions([
       this._redirectToWalletAfterSync,
       this._computeSyncStatus,
+      this._redirectToLoadingWhenDisconnected,
     ]);
     this._listenToServerStatusNotifications();
   }
@@ -49,9 +51,13 @@ export default class NetworkStatusStore extends Store {
         case "NetworkDifficultyChanged":
           this.networkDifficulty = message.contents.getChainDifficulty;
           this.isConnected = true;
+          this.hasBeenConnected = true;
           break;
         case "LocalDifficultyChanged":
           this.localDifficulty = message.contents.getChainDifficulty;
+          break;
+        case "ConnectionClosedReconnecting":
+          this.isConnected = false;
           break;
         default:
           console.log("Unknown server notification received:", message);
@@ -64,14 +70,20 @@ export default class NetworkStatusStore extends Store {
   };
 
   _redirectToWalletAfterSync = () => {
-    const { router, wallets } = this.stores;
-    if (this.isSyncedAfterLaunch && wallets.hasLoadedWallets && router.location.pathname === '/') {
+    const { app, wallets } = this.stores;
+    if (this.isConnected && this.isSyncedAfterLaunch && wallets.hasLoadedWallets && app.currentRoute === '/') {
       this.isLoadingWallets = false;
       if (wallets.first) {
-        router.push(wallets.getWalletRoute(wallets.first.id)); // just pick the first for now
+        this.actions.goToRoute({ route: wallets.getWalletRoute(wallets.first.id) });
       } else {
-        router.push('/no-wallets');
+        this.actions.goToRoute({ route: '/no-wallets'});
       }
+    }
+  };
+
+  _redirectToLoadingWhenDisconnected = () => {
+    if (!this.isConnected) {
+      this.actions.goToRoute({ route: '/' });
     }
   };
 
