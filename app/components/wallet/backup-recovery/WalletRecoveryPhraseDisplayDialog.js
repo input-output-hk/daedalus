@@ -20,11 +20,6 @@ const messages = defineMessages({
     You will need this phrase later for next use and recover. Phrase is case sensitive.`,
     description: 'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.'
   },
-  termDevice: {
-    id: 'wallet.backup.recovery.phrase.display.dialog.terms.and.condition.device',
-    defaultMessage: '!!!I understand that my money are held securely on this device only, not on the company servers',
-    description: 'Term and condition on wallet backup dialog describing that wallet is on a users device, not on company servers'
-  },
   buttonLabelIHaveWrittenItDown: {
     id: 'wallet.backup.recovery.phrase.display.dialog.button.label.iHaveWrittenItDown',
     defaultMessage: '!!!Yes, I’ve written it down',
