@@ -135,6 +135,9 @@ export default class WalletsStore extends Store {
       this.isCreateWalletDialogOpen = true;
     } else {
       this.isCreateWalletDialogOpen = false;
+      if (!this.hasAnyWallets) {
+        this.isAddWalletDialogOpen = true;
+      }
     }
   };
 
@@ -144,6 +147,9 @@ export default class WalletsStore extends Store {
       this.isWalletRestoreDialogOpen = true;
     } else {
       this.isWalletRestoreDialogOpen = false;
+      if (!this.hasAnyWallets) {
+        this.isAddWalletDialogOpen = true;
+      }
       this.restoreRequest.reset();
     }
   };
