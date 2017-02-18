@@ -84,4 +84,10 @@ export default class Request {
     return this._promise.catch(...args);
   }
 
+  reset() {
+    this.result = null;
+    this.error = null;
+    this.isError = false;
+  }
+
 }

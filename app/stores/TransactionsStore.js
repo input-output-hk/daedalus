@@ -76,7 +76,7 @@ export default class TransactionsStore extends Store {
     const wallet = this.stores.wallets.active;
     if (!wallet) return [];
     const result = this._getTransactionsRecentRequest(wallet.id).result;
-    return result ? result.transactions : [];
+    return result ? result.transactions.slice(0, this.RECENT_TRANSACTIONS_LIMIT) : [];
   }
 
   @computed get hasAnyFiltered() {
@@ -88,14 +88,14 @@ export default class TransactionsStore extends Store {
 
   @computed get hasAny() {
     const wallet = this.stores.wallets.active;
-    if (!wallet) return [];
+    if (!wallet) return false;
     const result = this._getTransactionsRecentRequest(wallet.id).result;
     return result ? result.transactions.length > 0 : false;
   }
 
   @computed get totalAvailable() {
     const wallet = this.stores.wallets.active;
-    if (!wallet) return [];
+    if (!wallet) return 0;
     const result = this._getTransactionsAllRequest(wallet.id).result;
     return result ? result.transactions.length : 0;
   }

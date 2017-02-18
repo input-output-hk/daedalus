@@ -19,11 +19,10 @@ export default class SidebarWalletsMenu extends Component {
     onAddWallet: PropTypes.func,
     onWalletItemClick: PropTypes.func,
     visible: PropTypes.bool,
-    isSynced: PropTypes.bool
   };
 
   render() {
-    const { wallets, onAddWallet, isActiveWallet, onWalletItemClick, isSynced} = this.props;
+    const { wallets, onAddWallet, isActiveWallet, onWalletItemClick} = this.props;
     return (
       <SidebarSubMenu visible={this.props.visible}>
         <div className={styles.wallets}>
@@ -33,8 +32,7 @@ export default class SidebarWalletsMenu extends Component {
               info={wallet.info}
               active={isActiveWallet(wallet.id)}
               onClick={() => onWalletItemClick(wallet.id)}
-              key={index} // TODO: remove temporary fix
-              isConnected={isSynced}
+              key={wallet.id}
             />
           ))}
         </div>

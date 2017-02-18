@@ -12,8 +12,6 @@ export default class WalletsStore extends Store {
   BASE_ROUTE = '/wallets';
   WALLET_REFRESH_INTERVAL = 5000;
 
-  @observable walletsCache : Array<Wallet> = [];
-
   @observable active = null;
   @observable walletsRequest = new CachedRequest(this.api, 'getWallets');
   @observable createWalletRequest = new Request(this.api, 'createWallet');
@@ -36,7 +34,10 @@ export default class WalletsStore extends Store {
     this.actions.toggleWalletRestore.listen(this._toggleWalletRestore);
     this.actions.finishWalletBackup.listen(this._finishWalletCreation);
     this.actions.restoreWallet.listen(this._restoreWallet);
-    this.registerReactions([this._updateActiveWalletOnRouteChanges]);
+    this.registerReactions([
+      this._updateActiveWalletOnRouteChanges,
+      this._openAddWalletIfNoWallets,
+    ]);
     if (environment.CARDANO_API) {
       setInterval(this.refreshWalletsData, this.WALLET_REFRESH_INTERVAL);
     }
@@ -57,6 +58,7 @@ export default class WalletsStore extends Store {
     const wallet = await this.createWalletRequest.execute(this._newWalletDetails);
     await this.walletsRequest.patch(result => { result.push(wallet); });
     this.goToWalletRoute(wallet.id);
+    this.isAddWalletDialogOpen = false;
   };
 
   _sendMoney = async (transactionDetails) => {
@@ -72,8 +74,16 @@ export default class WalletsStore extends Store {
     this.goToWalletRoute(wallet.id);
   };
 
+  @computed get hasLoadedWallets() {
+    return this.walletsRequest.wasExecuted;
+  }
+
+  @computed get hasAnyWallets() {
+    return this.walletsRequest.wasExecuted && this.walletsRequest.result.length > 0;
+  }
+
   @computed get all() {
-    return this.walletsCache;
+    return this.walletsRequest.result ? this.walletsRequest.result : [];
   }
 
   @computed get activeWalletRoute() {
@@ -86,7 +96,7 @@ export default class WalletsStore extends Store {
   }
 
   @computed get first() {
-    return this.walletsCache.length > 0 ? this.walletsCache[0] : null;
+    return this.all.length > 0 ? this.all[0] : null;
   }
 
   getWalletRoute(walletId: ?string, screen = 'home') {
@@ -104,8 +114,9 @@ export default class WalletsStore extends Store {
   @action refreshWalletsData = () => {
     if (this.stores.networkStatus.isConnected) {
       this.walletsRequest.invalidate({ immediately: true });
-      this.walletsCache.replace(this.walletsRequest.execute().result || []);
-      const walletIds = this.walletsCache.map((wallet: Wallet) => wallet.id);
+      this.walletsRequest.execute();
+      if (!this.walletsRequest.result) return;
+      const walletIds = this.walletsRequest.result.map((wallet: Wallet) => wallet.id);
       this.stores.transactions.transactionsRequests = walletIds.map(walletId => ({
         walletId,
         recentRequest: this.stores.transactions._getTransactionsRecentRequest(walletId),
@@ -116,7 +127,7 @@ export default class WalletsStore extends Store {
   };
 
   @action _toggleAddWallet = () => {
-    this.isAddWalletDialogOpen = !this.isAddWalletDialogOpen;
+    if (this.hasAnyWallets) this.isAddWalletDialogOpen = !this.isAddWalletDialogOpen;
   };
 
   @action _toggleCreateWalletDialog = () => {
@@ -125,6 +136,9 @@ export default class WalletsStore extends Store {
       this.isCreateWalletDialogOpen = true;
     } else {
       this.isCreateWalletDialogOpen = false;
+      if (!this.hasAnyWallets) {
+        this.isAddWalletDialogOpen = true;
+      }
     }
   };
 
@@ -134,20 +148,30 @@ export default class WalletsStore extends Store {
       this.isWalletRestoreDialogOpen = true;
     } else {
       this.isWalletRestoreDialogOpen = false;
+      if (!this.hasAnyWallets) {
+        this.isAddWalletDialogOpen = true;
+      }
+      this.restoreRequest.reset();
     }
   };
 
   @action _restoreWallet = async (params) => {
     const restoredWallet = await this.restoreRequest.execute(params);
+    await this.walletsRequest.patch(result => { result.push(restoredWallet); });
     this._toggleWalletRestore();
-    this.refreshWalletsData();
     this.goToWalletRoute(restoredWallet.id);
+    this.refreshWalletsData();
   };
 
   goToWalletRoute(walletId) {
     const route = this.getWalletRoute(walletId);
     this.actions.goToRoute({ route });
   }
+
+  _openAddWalletIfNoWallets = () => {
+    if (this.hasLoadedWallets && !this.hasAnyWallets) this.isAddWalletDialogOpen = true;
+    // TODO: investigate why hasLoadedWallets is needed here, it is in hasAnyWallets
+  };
 
   _updateActiveWalletOnRouteChanges = () => {
     const currentRoute = this.stores.router.location.pathname;

@@ -67,16 +67,16 @@ export default class WalletTransactionsPage extends Component {
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const noTransactionsFoundLabel = intl.formatMessage(messages.noTransactionsFound);
 
-    if (wasSearched || hasAny) {
-      transactionSearch = (
-        <div style={{ flexShrink: 0 }}>
-          <WalletTransactionsSearch
-            searchTerm={searchTerm}
-            onChange={this._handleSearchInputChange}
-          />
-        </div>
-      );
-    }
+    // if (wasSearched || hasAny) {
+    //   transactionSearch = (
+    //     <div style={{ flexShrink: 0 }}>
+    //       <WalletTransactionsSearch
+    //         searchTerm={searchTerm}
+    //         onChange={this._handleSearchInputChange}
+    //       />
+    //     </div>
+    //   );
+    // }
 
     if (searchRequest.isExecutingFirstTime || hasAny) {
       walletTransactions = (
@@ -94,7 +94,7 @@ export default class WalletTransactionsPage extends Component {
     }
 
     return (
-      <div style={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+      <div style={{ height: "100%" }}>
         {transactionSearch}
         {walletTransactions}
       </div>

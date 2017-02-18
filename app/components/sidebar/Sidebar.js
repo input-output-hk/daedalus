@@ -7,7 +7,7 @@ import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import walletsIcon from '../../assets/images/sidebar/wallet-ic.svg';
-import adaRedemptionIcon from '../../assets/images/sidebar/ada.svg';
+// import adaRedemptionIcon from '../../assets/images/sidebar/ada.svg';
 
 const messages = defineMessages({
   walletsCategoryLabel: {
@@ -44,11 +44,10 @@ export default class Sidebar extends Component {
       WALLETS: PropTypes.string.isRequired,
       ADA_REDEMPTION: PropTypes.string.isRequired,
     }).isRequired,
-    currentCategory: PropTypes.string.isRequired,
+    // currentCategory: PropTypes.string.isRequired, // TODO: temporary disabled
     onCategoryClicked: PropTypes.func,
     hidden: PropTypes.bool,
     isMaximized: PropTypes.bool,
-    isSynced: PropTypes.bool,
     activeWalletId: PropTypes.string,
   };
 
@@ -59,7 +58,7 @@ export default class Sidebar extends Component {
   render() {
     const { intl } = this.context;
     const {
-      hidden, isMaximized, menus, onCategoryClicked, activeWalletId, categories, currentCategory, isSynced
+      hidden, isMaximized, menus, activeWalletId, categories, currentCategory
     } = this.props;
 
     let sidebarStyle = null;
@@ -80,7 +79,6 @@ export default class Sidebar extends Component {
           onWalletItemClick={menus.wallets.actions.onWalletItemClick}
           isActiveWallet={id => id === activeWalletId}
           visible
-          isSynced={isSynced}
         />
       );
       categoriesStyle = styles.minimized;
@@ -99,7 +97,7 @@ export default class Sidebar extends Component {
             icon={walletsIcon}
             active={currentCategory === categories.WALLETS}
             minimized={hasMinimizedCategories}
-            onClick={() => onCategoryClicked(categories.WALLETS)}
+            onClick={() => {}}
           />
           {/*<SidebarCategory*/}
             {/*className="ada-redemption"*/}

@@ -2,7 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import WalletRecoveryPhraseMnemonic from './WalletRecoveryPhraseMnemonic';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
@@ -138,7 +138,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
         {isValid && (
           <div>
             <CheckboxWithLongLabel
-              label={intl.formatMessage(messages.termDevice)}
+              label={<FormattedHTMLMessage {...messages.termDevice} />}
               onChange={onAcceptTermDevice}
               checked={isTermDeviceAccepted}
             />

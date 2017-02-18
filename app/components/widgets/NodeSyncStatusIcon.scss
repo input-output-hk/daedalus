@@ -1,0 +1,20 @@
+.component {
+
+}
+
+%icon {
+  width: 31px;
+  height: 31px;
+}
+
+.syncing {
+  @extend %icon;
+  :global {
+    animation: loading-spin 1.5s linear;
+    animation-iteration-count: infinite;
+  }
+}
+
+.synced {
+  @extend %icon;
+}

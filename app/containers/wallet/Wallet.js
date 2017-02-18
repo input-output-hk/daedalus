@@ -12,7 +12,10 @@ export default class Wallet extends Component {
     stores: PropTypes.shape({
       router: PropTypes.shape({
         location: PropTypes.shape({ pathname: PropTypes.string.isRequired })
-      }).isRequired
+      }).isRequired,
+      wallets: PropTypes.shape({
+        hasLoadedWallets: PropTypes.bool.isRequired
+      }).isRequired,
     }).isRequired,
     actions: PropTypes.shape({
       goToRoute: PropTypes.func.isRequired,
