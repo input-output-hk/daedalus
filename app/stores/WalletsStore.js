@@ -34,7 +34,10 @@ export default class WalletsStore extends Store {
     this.actions.toggleWalletRestore.listen(this._toggleWalletRestore);
     this.actions.finishWalletBackup.listen(this._finishWalletCreation);
     this.actions.restoreWallet.listen(this._restoreWallet);
-    this.registerReactions([this._updateActiveWalletOnRouteChanges]);
+    this.registerReactions([
+      this._updateActiveWalletOnRouteChanges,
+      this._openAddWalletIfNoWallets,
+    ]);
     if (environment.CARDANO_API) {
       setInterval(this.refreshWalletsData, this.WALLET_REFRESH_INTERVAL);
     }
@@ -69,6 +72,14 @@ export default class WalletsStore extends Store {
     this.refreshWalletsData();
     this.goToWalletRoute(wallet.id);
   };
+
+  @computed get hasLoadedWallets() {
+    return this.walletsRequest.wasExecuted;
+  }
+
+  @computed get hasAnyWallets() {
+    return this.walletsRequest.wasExecuted && this.walletsRequest.result.length > 0;
+  }
 
   @computed get all() {
     return this.walletsRequest.result ? this.walletsRequest.result : [];
@@ -115,7 +126,7 @@ export default class WalletsStore extends Store {
   };
 
   @action _toggleAddWallet = () => {
-    this.isAddWalletDialogOpen = !this.isAddWalletDialogOpen;
+    if (this.hasAnyWallets) this.isAddWalletDialogOpen = !this.isAddWalletDialogOpen;
   };
 
   @action _toggleCreateWalletDialog = () => {
@@ -149,6 +160,10 @@ export default class WalletsStore extends Store {
     const route = this.getWalletRoute(walletId);
     this.actions.goToRoute({ route });
   }
+
+  _openAddWalletIfNoWallets = () => {
+    if (!this.hasAnyWallets) this.isAddWalletDialogOpen = true;
+  };
 
   _updateActiveWalletOnRouteChanges = () => {
     const currentRoute = this.stores.router.location.pathname;

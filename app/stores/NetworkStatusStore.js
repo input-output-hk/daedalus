@@ -65,9 +65,13 @@ export default class NetworkStatusStore extends Store {
 
   _redirectToWalletAfterSync = () => {
     const { router, wallets } = this.stores;
-    if (this.isSyncedAfterLaunch && router.location.pathname === '/' && wallets.first) {
+    if (this.isSyncedAfterLaunch && wallets.hasLoadedWallets && router.location.pathname === '/') {
       this.isLoadingWallets = false;
-      router.push(wallets.getWalletRoute(wallets.first.id)); // just pick the first for now
+      if (wallets.first) {
+        router.push(wallets.getWalletRoute(wallets.first.id)); // just pick the first for now
+      } else {
+        router.push('/no-wallets');
+      }
     }
   };
 

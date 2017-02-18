@@ -40,6 +40,7 @@ export default class CardanoClientApi {
   async getWallets() {
     console.debug('CardanoClientApi::getWallets called');
     const response = await ClientApi.getWallets();
+    response.shift(); // TODO: Remove this before merging
     return response.map(data => this._createWalletFromData(data));
   }
 
