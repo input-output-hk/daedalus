@@ -5,6 +5,7 @@ import Store from './lib/Store';
 export default class NetworkStatusStore extends Store {
 
   @observable isConnected = false;
+  @observable hasBeenConnected = false;
   @observable localDifficulty = 0;
   @observable networkDifficulty = 0;
   @observable isSyncedAfterLaunch = false;
@@ -50,6 +51,7 @@ export default class NetworkStatusStore extends Store {
         case "NetworkDifficultyChanged":
           this.networkDifficulty = message.contents.getChainDifficulty;
           this.isConnected = true;
+          this.hasBeenConnected = true;
           break;
         case "LocalDifficultyChanged":
           this.localDifficulty = message.contents.getChainDifficulty;
