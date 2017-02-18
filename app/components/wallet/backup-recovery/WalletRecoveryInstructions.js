@@ -7,7 +7,7 @@ import styles from './WalletRecoveryInstructions.scss';
 export default class WalletRecoveryInstructions extends Component {
 
   static propTypes = {
-    instructionsText: PropTypes.element.isRequired
+    instructionsText: PropTypes.string.isRequired
   };
 
   render() {
