@@ -158,8 +158,8 @@ export default class WalletsStore extends Store {
     const restoredWallet = await this.restoreRequest.execute(params);
     await this.walletsRequest.patch(result => { result.push(restoredWallet); });
     this._toggleWalletRestore();
-    this.refreshWalletsData();
     this.goToWalletRoute(restoredWallet.id);
+    this.refreshWalletsData();
   };
 
   goToWalletRoute(walletId) {

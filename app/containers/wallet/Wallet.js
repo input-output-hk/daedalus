@@ -36,7 +36,7 @@ export default class Wallet extends Component {
 
   render() {
     const { wallets } = this.props.stores;
-    if (!wallets.hasLoadedWallets) return <Layout><LoadingSpinner /></Layout>;
+    if (!wallets.active) return <Layout><LoadingSpinner /></Layout>;
     return (
       <Layout>
         <WalletWithNavigation
