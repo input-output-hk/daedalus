@@ -95,7 +95,7 @@
   "wallet.add.dialog.join.label": "Join",
   "wallet.add.dialog.join.description": "Join a shared wallet with up to 5 people",
   "wallet.add.dialog.import.label": "Import",
-  "wallet.add.dialog.import.description": "Import existing wallet",
+  "wallet.add.dialog.import.description": "Import wallet from a key",
   "wallet.add.dialog.restore.label": "Restore",
   "wallet.add.dialog.restore.description": "Restore wallet from backup",
   "wallet.restore.dialog.title.label": "Restore wallet",
@@ -114,8 +114,8 @@
   "loading.screen.connectingToNetworkMessage": "Connecting to network",
   "loading.screen.reconnectingToNetworkMessage": "Network connection lost - reconnecting",
   "loading.screen.syncingBlocksMessage": "Syncing blocks",
-  "wallet.key.import.dialog.headline": "Key import",
-  "wallet.key.import.dialog.keyFileLabel": "Upload you key",
+  "wallet.key.import.dialog.headline": "Import wallet from file with the key",
+  "wallet.key.import.dialog.keyFileLabel": "Upload your key",
   "wallet.key.import.dialog.keyFileHint": "Drop file here or click to choose",
-  "wallet.key.import.dialog.submitLabel": "Import your key"
+  "wallet.key.import.dialog.submitLabel": "Import wallet"
 }

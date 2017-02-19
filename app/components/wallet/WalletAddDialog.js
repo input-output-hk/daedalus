@@ -54,7 +54,7 @@ const messages = defineMessages({
   },
   importDescription: {
     id: 'wallet.add.dialog.import.description',
-    defaultMessage: '!!!Import existing wallet',
+    defaultMessage: '!!!Import wallet from a key',
     description: 'Description for the "Import" button on the wallet add dialog.'
   }
 });

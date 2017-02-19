@@ -15,7 +15,6 @@ export default class WalletKeyImportPage extends Component {
     stores: PropTypes.shape({
       wallets: PropTypes.shape({
         importFromKeyRequest: PropTypes.instanceOf(Request).isRequired,
-        error: PropTypes.instanceOf(Error),
       }).isRequired,
     }).isRequired
   };
@@ -26,14 +25,14 @@ export default class WalletKeyImportPage extends Component {
 
   render() {
     const { wallets } = this.props.stores;
-    const { importFromKeyRequest, error } = wallets;
+    const { importFromKeyRequest } = wallets;
     const { toggleWalletKeyImportDialog } = this.props.actions;
 
     return (
       <WalletKeyImportDialog
         isSubmitting={importFromKeyRequest.isExecuting}
         onSubmit={this.onSubmit}
-        error={error}
+        error={importFromKeyRequest.error}
         onClose={toggleWalletKeyImportDialog}
       />
     );

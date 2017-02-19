@@ -13,7 +13,7 @@ import styles from './WalletKeyImportDialog.scss';
 const messages = defineMessages({
   headline: {
     id: 'wallet.key.import.dialog.headline',
-    defaultMessage: '!!!Key import',
+    defaultMessage: '!!!Import wallet from file with the key',
     description: 'headline for "Key import" dialog.'
   },
   keyFileLabel: {
@@ -28,7 +28,7 @@ const messages = defineMessages({
   },
   submitLabel: {
     id: 'wallet.key.import.dialog.submitLabel',
-    defaultMessage: '!!!Import you key',
+    defaultMessage: '!!!Import wallet',
     description: 'Label "Import you key" for the "Import key" dialog submit button.'
   },
 });
@@ -76,6 +76,7 @@ export default class WalletKeyImportDialog extends Component {
     const { intl } = this.context;
     const { form } = this;
     const { isSubmitting, error, onClose } = this.props;
+    console.log('error', error);
     const keyFile = form.$('keyFile');
     const dialogClasses = classnames([
       styles.component,
@@ -101,7 +102,7 @@ export default class WalletKeyImportDialog extends Component {
         active
       >
 
-        <div className={styles.certificate}>
+        <div className={styles.keyUpload}>
           <FileUploadWidget
             {...keyFile.bind()}
             selectedFile={keyFile.value}

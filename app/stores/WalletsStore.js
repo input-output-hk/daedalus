@@ -36,6 +36,7 @@ export default class WalletsStore extends Store {
     this.actions.toggleWalletRestore.listen(this._toggleWalletRestore);
     this.actions.finishWalletBackup.listen(this._finishWalletCreation);
     this.actions.restoreWallet.listen(this._restoreWallet);
+    this.actions.importWalletFromKey.listen(this._importWalletFromKey);
     this.actions.toggleWalletKeyImportDialog.listen(this._toggleWalletKeyImportDialog);
     this.registerReactions([
       this._updateActiveWalletOnRouteChanges,
@@ -153,6 +154,7 @@ export default class WalletsStore extends Store {
       if (!this.hasAnyWallets) {
         this.isAddWalletDialogOpen = true;
       }
+      this.importFromKeyRequest.reset();
     }
   };
 
