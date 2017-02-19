@@ -46,6 +46,7 @@ app.on('ready', async () => {
 
   mainWindow.setMinimumSize(900, 600);
   mainWindow.setMaximumSize(2000, 2500);
+  // TODO: Revert this
 
   // Initialize our ipc api methods that can be called by the render processes
   ipcApi({ mainWindow });
