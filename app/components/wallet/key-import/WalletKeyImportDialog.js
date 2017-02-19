@@ -50,8 +50,8 @@ export default class WalletKeyImportDialog extends Component {
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        const { walletId } = form.values();
-        this.props.onSubmit({ walletId });
+        const { keyFile } = form.values();
+        this.props.onSubmit({ filePath: keyFile.path });
       },
       onError: () => {}
     });
@@ -87,7 +87,7 @@ export default class WalletKeyImportDialog extends Component {
       {
         label: intl.formatMessage(messages.submitLabel),
         primary: true,
-        disabled: keyFile.value === null,
+        disabled: keyFile.value === null || !keyFile.value.path,
         onClick: () => this.submit()
       }
     ];
