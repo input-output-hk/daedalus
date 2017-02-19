@@ -145,6 +145,7 @@ export default class WalletsStore extends Store {
       }
     }
   };
+
   @action _toggleWalletKeyImportDialog = () => {
     if (!this.isWalletKeyImportDialogOpen) {
       this.isAddWalletDialogOpen = false;
