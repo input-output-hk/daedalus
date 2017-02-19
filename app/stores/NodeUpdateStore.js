@@ -28,12 +28,14 @@ export default class NodeUpdateStore extends Store {
   }
 
   @action refreshNextUpdate = () => {
-    this.nextUpdateRequest.execute();
-    if (this.nextUpdateRequest.result && !this.isUpdatePostponed && !this.isUpdateInstalled) {
-      this.isUpdateAvailable = true;
-      this.isNotificationExpanded = true;
-      this.updateVersion = this.nextUpdateRequest.result.version;
-      this.updateTitle = `Cardano-Core update v${this.updateVersion} is available`;
+    if (this.stores.networkStatus.isConnected) {
+      this.nextUpdateRequest.execute();
+      if (this.nextUpdateRequest.result && !this.isUpdatePostponed && !this.isUpdateInstalled) {
+        this.isUpdateAvailable = true;
+        this.isNotificationExpanded = true;
+        this.updateVersion = this.nextUpdateRequest.result.version;
+        this.updateTitle = `Cardano-Core update v${this.updateVersion} is available`;
+      }
     }
   };
 
