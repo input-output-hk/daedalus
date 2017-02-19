@@ -6,6 +6,7 @@
   "api.errors.WalletAlreadyRestoredError": "You have already restored a wallet with this phrase.",
   "api.errors.ApiMethodNotYetImplementedError": "This API method is not yet implemented.",
   "api.errors.RedeemAdaError": "Your Ada was not redeemed. Please try again.",
+  "api.errors.WalletKeyImportError": "Key could not be imported, please make sure you are providing a correct key file.",
   "wallet.navigation.send": "Send",
   "wallet.navigation.receive": "Receive",
   "wallet.navigation.summary": "Summary",

@@ -37,11 +37,9 @@ const messages = defineMessages({
 export default class WalletKeyImportDialog extends Component {
 
   static propTypes = {
-    onKeyFileSelected: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     onClose: PropTypes.func.isRequired,
     isSubmitting: PropTypes.bool.isRequired,
-    isKeyFileSelected: PropTypes.bool.isRequired,
     error: PropTypes.instanceOf(LocalizableError),
   };
 

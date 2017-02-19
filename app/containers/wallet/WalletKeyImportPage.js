@@ -9,32 +9,29 @@ export default class WalletKeyImportPage extends Component {
 
   static propTypes = {
     actions: PropTypes.shape({
-      importWalletKey: PropTypes.func.isRequired,
+      importWalletFromKey: PropTypes.func.isRequired,
       toggleWalletKeyImportDialog: PropTypes.func.isRequired,
     }),
     stores: PropTypes.shape({
       wallets: PropTypes.shape({
-        importKeyRequest: PropTypes.instanceOf(Request).isRequired,
-        keyFile: PropTypes.instanceOf(File),
+        importFromKeyRequest: PropTypes.instanceOf(Request).isRequired,
         error: PropTypes.instanceOf(Error),
       }).isRequired,
     }).isRequired
   };
 
   onSubmit = (values) => {
-    this.props.actions.importWalletKey(values);
+    this.props.actions.importWalletFromKey(values);
   };
 
   render() {
     const { wallets } = this.props.stores;
-    const { importKeyRequest, keyFile, error } = wallets;
-    const { toggleWalletKeyImportDialog, setKeyFile } = this.props.actions;
+    const { importFromKeyRequest, error } = wallets;
+    const { toggleWalletKeyImportDialog } = this.props.actions;
 
     return (
       <WalletKeyImportDialog
-        onKeyFileSelected={(keyFile) => setKeyFile({ keyFile })}
-        isKeyFileSelected={keyFile !== null}
-        isSubmitting={importKeyRequest.isExecuting}
+        isSubmitting={importFromKeyRequest.isExecuting}
         onSubmit={this.onSubmit}
         error={error}
         onClose={toggleWalletKeyImportDialog}

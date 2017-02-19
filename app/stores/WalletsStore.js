@@ -14,7 +14,7 @@ export default class WalletsStore extends Store {
 
   @observable active = null;
   @observable walletsRequest = new CachedRequest(this.api, 'getWallets');
-  @observable importKeyRequest = new Request(this.api, 'importKey');
+  @observable importFromKeyRequest = new Request(this.api, 'importWalletFromKey');
   @observable createWalletRequest = new Request(this.api, 'createWallet');
   @observable sendMoneyRequest = new Request(this.api, 'createTransaction');
   @observable getWalletRecoveryPhraseRequest = new Request(this.api, 'getWalletRecoveryPhrase');
@@ -174,6 +174,14 @@ export default class WalletsStore extends Store {
     await this.walletsRequest.patch(result => { result.push(restoredWallet); });
     this._toggleWalletRestore();
     this.goToWalletRoute(restoredWallet.id);
+    this.refreshWalletsData();
+  };
+
+  @action _importWalletFromKey = async (params) => {
+    const importedWallet = await this.importFromKeyRequest.execute(params);
+    await this.importFromKeyRequest.patch(result => { result.push(importedWallet); });
+    this._toggleWalletKeyImportDialog();
+    this.goToWalletRoute(importedWallet.id);
     this.refreshWalletsData();
   };
 

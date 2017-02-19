@@ -14,7 +14,8 @@ import type {
 import {
   // ApiMethodNotYetImplementedError,
   WalletAlreadyRestoredError,
-  RedeemAdaError
+  RedeemAdaError,
+  WalletKeyImportError
 } from './errors';
 
 // const notYetImplemented = () => new Promise((_, reject) => {
@@ -120,6 +121,20 @@ export default class CardanoClientApi {
         throw new WalletAlreadyRestoredError();
       }
       throw error;
+    }
+  }
+
+  async importWalletFromKey(filePath: string) {
+    console.debug('CardanoClientApi::importWalletFromKey called with', filePath);
+    try {
+      const importedWallet = await ClientApi.importKey(filePath);
+      return this._createWalletFromData(importedWallet);
+    } catch (error) {
+      console.error(error);
+      if (error.message.includes('Wallet with that mnemonics already exists')) {
+        throw new WalletAlreadyRestoredError();
+      }
+      throw new WalletKeyImportError();
     }
   }
 
