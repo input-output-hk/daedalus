@@ -70,13 +70,14 @@ export default class WalletAddDialog extends Component {
     onCreate: PropTypes.func.isRequired,
     onRestore: PropTypes.func.isRequired,
     onCancel: PropTypes.func.isRequired,
+    onImportKey: PropTypes.func.isRequired,
     canClose: PropTypes.bool.isRequired,
   };
 
 
   render() {
     const { intl } = this.context;
-    const { onCreate, onRestore, onCancel, canClose } = this.props;
+    const { onCreate, onRestore, onCancel, canClose, onImportKey } = this.props;
     return (
       <Dialog
         className={styles.component}
@@ -109,7 +110,7 @@ export default class WalletAddDialog extends Component {
               icon={importIcon}
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}
-              isDisabled
+              onClick={onImportKey}
             />
           </div>
         </div>

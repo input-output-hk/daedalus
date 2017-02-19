@@ -10,6 +10,7 @@ import WalletCreateDialog from '../components/wallet/WalletCreateDialog';
 import WalletRestoreDialog from '../components/wallet/WalletRestoreDialog';
 import WalletBackupPage from './wallet/WalletBackupPage';
 import WalletAddPage from './wallet/WalletAddPage';
+import WalletKeyImportPage from './wallet/WalletKeyImportPage';
 import NodeUpdatePage from './notifications/NodeUpdatePage';
 import Wallet from '../domain/Wallet';
 import Request from '../stores/lib/Request';
@@ -24,6 +25,7 @@ export default class MainLayout extends Component {
         isAddWalletDialogOpen: PropTypes.bool.isRequired,
         isCreateWalletDialogOpen: PropTypes.bool.isRequired,
         isWalletRestoreDialogOpen: PropTypes.bool.isRequired,
+        isWalletKeyImportDialogOpen: PropTypes.bool.isRequired,
         walletBackup: PropTypes.shape({
           inProgress: PropTypes.bool.isRequired
         }),
@@ -72,7 +74,7 @@ export default class MainLayout extends Component {
   render() {
     const { actions, stores } = this.props;
     const { sidebar, wallets, networkStatus } = stores;
-    const { restoreRequest } = wallets;
+    const { restoreRequest, isWalletKeyImportDialogOpen } = wallets;
     const { toggleAddWallet, toggleCreateWalletDialog, toggleWalletRestore } = actions;
     const { isSynced, syncPercentage } = networkStatus;
     const activeWallet = stores.wallets.active;
@@ -122,6 +124,7 @@ export default class MainLayout extends Component {
     ) : null;
     const addWalletBackupDialog = isWalletBackupInProgress ? (<WalletBackupPage />) : null;
     const addNodeUpdateNotification = isNodeUpdateAvailable && !isUpdatePostponed ? (<NodeUpdatePage />) : null;
+    const addWalletKeyImportDialog = isWalletKeyImportDialogOpen ? (<WalletKeyImportPage />) : null;
     return (
       <SidebarLayout sidebar={sidebarComponent} appbar={appbar} notification={addNodeUpdateNotification}>
         {this.props.children}
@@ -129,6 +132,7 @@ export default class MainLayout extends Component {
         {createWalletDialog}
         {addWalletRestoreDialog}
         {addWalletBackupDialog}
+        {addWalletKeyImportDialog}
       </SidebarLayout>
     );
   }

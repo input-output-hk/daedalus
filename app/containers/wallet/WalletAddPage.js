@@ -11,6 +11,7 @@ export default class WalletAddPage extends Component {
       toggleCreateWalletDialog: PropTypes.func.isRequired,
       toggleWalletRestore: PropTypes.func.isRequired,
       toggleAddWallet: PropTypes.func.isRequired,
+      toggleWalletKeyImportDialog: PropTypes.func.isRequired,
     }).isRequired,
     stores: PropTypes.shape({
       wallets: PropTypes.shape({
@@ -23,13 +24,15 @@ export default class WalletAddPage extends Component {
     const {
       toggleCreateWalletDialog,
       toggleWalletRestore,
-      toggleAddWallet
+      toggleAddWallet,
+      toggleWalletKeyImportDialog
     } = this.props.actions;
     const { hasAnyWallets } = this.props.stores.wallets;
     return (
       <WalletAddDialog
         onCreate={toggleCreateWalletDialog}
         onRestore={toggleWalletRestore}
+        onImportKey={toggleWalletKeyImportDialog}
         onCancel={toggleAddWallet}
         canClose={hasAnyWallets}
       />

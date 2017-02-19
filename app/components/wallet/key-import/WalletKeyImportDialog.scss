@@ -1,0 +1,13 @@
+@import '../../../themes/mixins/loading-spinner';
+
+.component {
+  :global .dialog_body {
+    overflow-y: hidden;
+  }
+}
+
+.isSubmitting {
+  button {
+    @include loading-spinner("../../../assets/images/spinner-light.svg");
+  }
+}

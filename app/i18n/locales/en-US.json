@@ -112,5 +112,9 @@
   "cardano.node.update.notification.postpone.button.label": "Ask me later",
   "loading.screen.connectingToNetworkMessage": "Connecting to network",
   "loading.screen.reconnectingToNetworkMessage": "Network connection lost - reconnecting",
-  "loading.screen.syncingBlocksMessage": "Syncing blocks"
+  "loading.screen.syncingBlocksMessage": "Syncing blocks",
+  "wallet.key.import.dialog.headline": "Key import",
+  "wallet.key.import.dialog.keyFileLabel": "Upload you key",
+  "wallet.key.import.dialog.keyFileHint": "Drop file here or click to choose",
+  "wallet.key.import.dialog.submitLabel": "Import your key"
 }

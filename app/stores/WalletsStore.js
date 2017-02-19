@@ -14,6 +14,7 @@ export default class WalletsStore extends Store {
 
   @observable active = null;
   @observable walletsRequest = new CachedRequest(this.api, 'getWallets');
+  @observable importKeyRequest = new Request(this.api, 'importKey');
   @observable createWalletRequest = new Request(this.api, 'createWallet');
   @observable sendMoneyRequest = new Request(this.api, 'createTransaction');
   @observable getWalletRecoveryPhraseRequest = new Request(this.api, 'getWalletRecoveryPhrase');
@@ -22,6 +23,7 @@ export default class WalletsStore extends Store {
   @observable isAddWalletDialogOpen = false;
   @observable isCreateWalletDialogOpen = false;
   @observable isWalletRestoreDialogOpen = false;
+  @observable isWalletKeyImportDialogOpen = false;
 
   _newWalletDetails = null;
 
@@ -34,6 +36,7 @@ export default class WalletsStore extends Store {
     this.actions.toggleWalletRestore.listen(this._toggleWalletRestore);
     this.actions.finishWalletBackup.listen(this._finishWalletCreation);
     this.actions.restoreWallet.listen(this._restoreWallet);
+    this.actions.toggleWalletKeyImportDialog.listen(this._toggleWalletKeyImportDialog);
     this.registerReactions([
       this._updateActiveWalletOnRouteChanges,
       this._openAddWalletIfNoWallets,
@@ -136,6 +139,17 @@ export default class WalletsStore extends Store {
       this.isCreateWalletDialogOpen = true;
     } else {
       this.isCreateWalletDialogOpen = false;
+      if (!this.hasAnyWallets) {
+        this.isAddWalletDialogOpen = true;
+      }
+    }
+  };
+  @action _toggleWalletKeyImportDialog = () => {
+    if (!this.isWalletKeyImportDialogOpen) {
+      this.isAddWalletDialogOpen = false;
+      this.isWalletKeyImportDialogOpen = true;
+    } else {
+      this.isWalletKeyImportDialogOpen = false;
       if (!this.hasAnyWallets) {
         this.isAddWalletDialogOpen = true;
       }
