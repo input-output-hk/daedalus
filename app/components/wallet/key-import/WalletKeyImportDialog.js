@@ -14,22 +14,22 @@ const messages = defineMessages({
   headline: {
     id: 'wallet.key.import.dialog.headline',
     defaultMessage: '!!!Import wallet from file with the key',
-    description: 'headline for "Key import" dialog.'
+    description: 'headline for "Import wallet from file with the key" dialog.'
   },
   keyFileLabel: {
     id: 'wallet.key.import.dialog.keyFileLabel',
     defaultMessage: '!!!Upload your key',
-    description: 'Label for the certificate file upload'
+    description: 'Label "Upload your key" on the dialog for importing a wallet from the key.'
   },
   keyFileHint: {
     id: 'wallet.key.import.dialog.keyFileHint',
     defaultMessage: '!!!Drop file here or click to choose',
-    description: 'Hint for the key file upload'
+    description: 'Hint for the key file upload on the dialog for importing a wallet from the key.'
   },
   submitLabel: {
     id: 'wallet.key.import.dialog.submitLabel',
     defaultMessage: '!!!Import wallet',
-    description: 'Label "Import you key" for the "Import key" dialog submit button.'
+    description: 'Label "Import you key" submit button on the dialog for importing a wallet from the key.'
   },
 });
 
@@ -76,7 +76,6 @@ export default class WalletKeyImportDialog extends Component {
     const { intl } = this.context;
     const { form } = this;
     const { isSubmitting, error, onClose } = this.props;
-    console.log('error', error);
     const keyFile = form.$('keyFile');
     const dialogClasses = classnames([
       styles.component,
