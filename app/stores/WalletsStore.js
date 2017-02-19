@@ -182,7 +182,7 @@ export default class WalletsStore extends Store {
 
   @action _importWalletFromKey = async (params) => {
     const importedWallet = await this.importFromKeyRequest.execute(params);
-    await this.importFromKeyRequest.patch(result => { result.push(importedWallet); });
+    await this.walletsRequest.patch(result => { result.push(importedWallet); });
     this._toggleWalletKeyImportDialog();
     this.goToWalletRoute(importedWallet.id);
     this.refreshWalletsData();

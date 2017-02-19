@@ -9,7 +9,8 @@ import type {
   getTransactionsRequest,
   createTransactionRequest,
   walletRestoreRequest,
-  redeemAdaRequest
+  redeemAdaRequest,
+  importKeyRequest
 } from './index';
 import {
   // ApiMethodNotYetImplementedError,
@@ -124,10 +125,10 @@ export default class CardanoClientApi {
     }
   }
 
-  async importWalletFromKey(filePath: string) {
-    console.debug('CardanoClientApi::importWalletFromKey called with', filePath);
+  async importWalletFromKey(request: importKeyRequest) {
+    console.debug('CardanoClientApi::importWalletFromKey called with', request);
     try {
-      const importedWallet = await ClientApi.importKey(filePath);
+      const importedWallet = await ClientApi.importKey(request.filePath);
       return this._createWalletFromData(importedWallet);
     } catch (error) {
       console.error(error);
@@ -209,7 +210,7 @@ export default class CardanoClientApi {
     if (nextUpdate && nextUpdate.cuiSoftwareVersion && nextUpdate.cuiSoftwareVersion.svNumber) {
       return { version: nextUpdate.cuiSoftwareVersion.svNumber};
     } else if (nextUpdate) {
-      return { version: 'Unknown'};;
+      return { version: 'Unknown'};
     } else {
       return null;
     }
