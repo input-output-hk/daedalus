@@ -9,12 +9,14 @@ import type {
   getTransactionsRequest,
   createTransactionRequest,
   walletRestoreRequest,
-  redeemAdaRequest
+  redeemAdaRequest,
+  importKeyRequest
 } from './index';
 import {
   // ApiMethodNotYetImplementedError,
   WalletAlreadyRestoredError,
-  RedeemAdaError
+  RedeemAdaError,
+  WalletKeyImportError
 } from './errors';
 
 // const notYetImplemented = () => new Promise((_, reject) => {
@@ -116,10 +118,29 @@ export default class CardanoClientApi {
       return this._createWalletFromData(restoredWallet);
     } catch (error) {
       console.error(error);
+      // TODO: backend will return something different here, if multiple wallets
+      // are restored from the key and if there are duplicate wallets we will get
+      // some kind of error and present the user with message that some wallets
+      // where not imported/restored if some where. if no wallets are imported
+      // we will error out completely with throw block below
       if (error.message.includes('Wallet with that mnemonics already exists')) {
         throw new WalletAlreadyRestoredError();
       }
       throw error;
+    }
+  }
+
+  async importWalletFromKey(request: importKeyRequest) {
+    console.debug('CardanoClientApi::importWalletFromKey called with', request);
+    try {
+      const importedWallet = await ClientApi.importKey(request.filePath);
+      return this._createWalletFromData(importedWallet);
+    } catch (error) {
+      console.error(error);
+      if (error.message.includes('Wallet with that mnemonics already exists')) {
+        throw new WalletAlreadyRestoredError();
+      }
+      throw new WalletKeyImportError();
     }
   }
 
@@ -194,7 +215,7 @@ export default class CardanoClientApi {
     if (nextUpdate && nextUpdate.cuiSoftwareVersion && nextUpdate.cuiSoftwareVersion.svNumber) {
       return { version: nextUpdate.cuiSoftwareVersion.svNumber};
     } else if (nextUpdate) {
-      return { version: 'Unknown'};;
+      return { version: 'Unknown'};
     } else {
       return null;
     }

@@ -46,8 +46,8 @@ export default class NetworkStatusStore extends Store {
         return this.isConnected = false;
       }
       switch (message.tag) {
-        // case "ConnectionOpened":
-        //   this.isConnected = true; break;
+        case "ConnectionOpened":
+          this.isConnected = true; break;
         case "NetworkDifficultyChanged":
           this.networkDifficulty = message.contents.getChainDifficulty;
           this.isConnected = true;

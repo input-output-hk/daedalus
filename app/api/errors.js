@@ -26,3 +26,12 @@ export class RedeemAdaError extends LocalizableError {
     });
   }
 }
+
+export class WalletKeyImportError extends LocalizableError {
+  constructor() {
+    super({
+      id: 'api.errors.WalletKeyImportError',
+      defaultMessage: '!!!Key could not be imported, please make sure you are providing a correct key file.',
+    });
+  }
+}
