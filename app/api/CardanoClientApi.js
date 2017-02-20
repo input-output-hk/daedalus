@@ -65,11 +65,9 @@ export default class CardanoClientApi {
 
   async createTransaction(request: createTransactionRequest) {
     console.debug('CardanoClientApi::createTransaction called with', request);
-    const { sender, receiver, amount, currency } = request;
-    const description = 'no description provided';
-    const title = 'no title provided';
+    const { sender, receiver, amount } = request;
     try {
-      const response = await ClientApi.sendExtended(sender, receiver, amount, currency, title, description);
+      const response = await ClientApi.send(sender, receiver, amount);
       return this._createTransactionFromData(response);
     } catch (error) {
       console.error(error);
