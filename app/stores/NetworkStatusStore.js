@@ -11,6 +11,8 @@ export default class NetworkStatusStore extends Store {
   @observable isSyncedAfterLaunch = false;
   @observable isLoadingWallets = true;
 
+  _localDifficultyStartedWith = null;
+
   constructor(...args) {
     super(...args);
     this.registerReactions([
@@ -26,8 +28,10 @@ export default class NetworkStatusStore extends Store {
   }
 
   @computed get syncPercentage() {
-    if (this.networkDifficulty > 0) {
-      return (this.localDifficulty / this.networkDifficulty * 100);
+    if (this.networkDifficulty > 0 && this._localDifficultyStartedWith != null) {
+      const relativeLocal = this.localDifficulty - this._localDifficultyStartedWith;
+      const relativeNetwork = this.networkDifficulty - this._localDifficultyStartedWith;
+      return relativeLocal / relativeNetwork * 100;
     }
     return 0;
   }
@@ -54,7 +58,11 @@ export default class NetworkStatusStore extends Store {
           this.hasBeenConnected = true;
           break;
         case "LocalDifficultyChanged":
-          this.localDifficulty = message.contents.getChainDifficulty;
+          const difficulty = message.contents.getChainDifficulty;
+          if (this._localDifficultyStartedWith == null) {
+            this._localDifficultyStartedWith = difficulty;
+          }
+          this.localDifficulty = difficulty;
           break;
         case "ConnectionClosedReconnecting":
           this.isConnected = false;
