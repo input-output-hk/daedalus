@@ -104,17 +104,13 @@ export default class WalletsStore extends Store {
     return this.all.length > 0 ? this.all[0] : null;
   }
 
-  getWalletRoute(walletId: ?string, screen = 'home') {
+  getWalletRoute = (walletId: ?string, screen = 'home') => {
     return `${this.BASE_ROUTE}/${walletId}/${screen}`;
-  }
+  };
 
-  isValidAddress(address: string) {
-    return this.api.isValidAddress('ADA', address);
-  }
+  isValidAddress = (address: string) => this.api.isValidAddress('ADA', address);
 
-  isValidMnemonic(mnemonic: string) {
-    return this.api.isValidMnemonic(mnemonic);
-  }
+  isValidMnemonic = (mnemonic: string) => this.api.isValidMnemonic(mnemonic);
 
   @action refreshWalletsData = () => {
     if (this.stores.networkStatus.isConnected) {

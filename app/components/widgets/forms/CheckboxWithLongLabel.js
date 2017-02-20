@@ -5,7 +5,10 @@ import styles from './CheckboxWithLongLabel.scss';
 export default class CheckboxWithLongLabel extends Component {
 
   static propTypes = {
-    label: PropTypes.string.isRequired,
+    label: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.element
+    ]).isRequired,
     checked: PropTypes.bool.isRequired,
     onChange: PropTypes.func.isRequired
   };

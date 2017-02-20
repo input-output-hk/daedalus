@@ -14,9 +14,11 @@ import type {
 } from './index';
 import {
   // ApiMethodNotYetImplementedError,
+  GenericApiError,
   WalletAlreadyRestoredError,
   RedeemAdaError,
-  WalletKeyImportError
+  WalletKeyImportError,
+  NotEnoughMoneyToSendError
 } from './errors';
 
 // const notYetImplemented = () => new Promise((_, reject) => {
@@ -66,8 +68,16 @@ export default class CardanoClientApi {
     const { sender, receiver, amount, currency } = request;
     const description = 'no description provided';
     const title = 'no title provided';
-    const response = await ClientApi.sendExtended(sender, receiver, amount, currency, title, description);
-    return this._createTransactionFromData(response);
+    try {
+      const response = await ClientApi.sendExtended(sender, receiver, amount, currency, title, description);
+      return this._createTransactionFromData(response);
+    } catch (error) {
+      console.error(error);
+      if (error.message.includes('Not enough money to send')) {
+        throw new NotEnoughMoneyToSendError();
+      }
+      throw new GenericApiError();
+    }
   }
 
   isValidAddress(currency: string, address: string) {

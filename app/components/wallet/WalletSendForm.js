@@ -8,6 +8,7 @@ import isInt from 'validator/lib/isInt';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import styles from './WalletSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
+import LocalizableError from '../../i18n/LocalizableError';
 
 const messages = defineMessages({
   titleLabel: {
@@ -79,15 +80,13 @@ export default class WalletSendForm extends Component {
 
   static propTypes = {
     onSubmit: PropTypes.func.isRequired,
+    isSubmitting: PropTypes.bool.isRequired,
     addressValidator: PropTypes.func.isRequired,
+    error: PropTypes.instanceOf(LocalizableError),
   };
 
   static contextTypes = {
     intl: intlShape.isRequired,
-  };
-
-  state = {
-    isSubmitting: false
   };
 
   // FORM VALIDATION
@@ -147,19 +146,17 @@ export default class WalletSendForm extends Component {
   submit() {
     this.form.submit({
       onSuccess: (form) => {
-        this.setState({ isSubmitting: true });
         this.props.onSubmit(form.values());
         form.reset();
       },
-      onError: () => {
-        this.setState({ isSubmitting: false });
-      }
+      onError: () => {}
     });
   }
 
   render() {
     const { form } = this;
     const { intl } = this.context;
+    const { isSubmitting, error } = this.props;
     return (
       <div className={styles.component}>
 
@@ -170,8 +167,10 @@ export default class WalletSendForm extends Component {
           {/*<Input className="description" multiline {...form.$('description').bind()} />*/}
         </div>
 
+        {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
+
         <Button
-          className={this.state.isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
+          className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
           label={intl.formatMessage(messages.sendButtonLabel)}
           onMouseUp={this.submit.bind(this)}
           primary
