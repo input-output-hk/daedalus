@@ -175,7 +175,7 @@ export default class WalletsStore extends Store {
 
   @action _restoreWallet = async (params) => {
     const restoredWallet = await this.restoreRequest.execute(params);
-    await this._patchWalletRequestWithWallet(restoredWallet);
+    await this._patchWalletRequestWithNewWallet(restoredWallet);
     this._toggleWalletRestore();
     this.goToWalletRoute(restoredWallet.id);
     this.refreshWalletsData();
@@ -183,7 +183,7 @@ export default class WalletsStore extends Store {
 
   @action _importWalletFromKey = async (params) => {
     const importedWallet = await this.importFromKeyRequest.execute(params);
-    await this._patchWalletRequestWithWallet(importedWallet);
+    await this._patchWalletRequestWithNewWallet(importedWallet);
     this._toggleWalletKeyImportDialog();
     this.goToWalletRoute(importedWallet.id);
     this.refreshWalletsData();
@@ -222,11 +222,10 @@ export default class WalletsStore extends Store {
     }
   };
 
-  _patchWalletRequestWithWallet = async (wallet) => {
+  _patchWalletRequestWithNewWallet = async (wallet) => {
+    // Only add the new wallet if it does not exist yet in the result!
     await this.walletsRequest.patch(result => {
-      const foundWallet = _.find(result, { id: wallet.id });
-      if (foundWallet) result.pop(foundWallet);
-      result.push(wallet);
+      if(!_.find(result, { id: wallet.id })) result.push(wallet);
     });
   };
 
