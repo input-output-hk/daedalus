@@ -1,5 +1,6 @@
 // @flow
 import { observable, computed, action } from 'mobx';
+import _ from 'lodash';
 import Store from './lib/Store';
 import Wallet from '../domain/Wallet';
 import { matchRoute } from '../lib/routing-helpers';
@@ -14,6 +15,7 @@ export default class WalletsStore extends Store {
 
   @observable active = null;
   @observable walletsRequest = new CachedRequest(this.api, 'getWallets');
+  @observable importFromKeyRequest = new Request(this.api, 'importWalletFromKey');
   @observable createWalletRequest = new Request(this.api, 'createWallet');
   @observable sendMoneyRequest = new Request(this.api, 'createTransaction');
   @observable getWalletRecoveryPhraseRequest = new Request(this.api, 'getWalletRecoveryPhrase');
@@ -22,6 +24,7 @@ export default class WalletsStore extends Store {
   @observable isAddWalletDialogOpen = false;
   @observable isCreateWalletDialogOpen = false;
   @observable isWalletRestoreDialogOpen = false;
+  @observable isWalletKeyImportDialogOpen = false;
 
   _newWalletDetails = null;
 
@@ -34,6 +37,8 @@ export default class WalletsStore extends Store {
     this.actions.toggleWalletRestore.listen(this._toggleWalletRestore);
     this.actions.finishWalletBackup.listen(this._finishWalletCreation);
     this.actions.restoreWallet.listen(this._restoreWallet);
+    this.actions.importWalletFromKey.listen(this._importWalletFromKey);
+    this.actions.toggleWalletKeyImportDialog.listen(this._toggleWalletKeyImportDialog);
     this.registerReactions([
       this._updateActiveWalletOnRouteChanges,
       this._openAddWalletIfNoWallets,
@@ -142,6 +147,19 @@ export default class WalletsStore extends Store {
     }
   };
 
+  @action _toggleWalletKeyImportDialog = () => {
+    if (!this.isWalletKeyImportDialogOpen) {
+      this.isAddWalletDialogOpen = false;
+      this.isWalletKeyImportDialogOpen = true;
+    } else {
+      this.isWalletKeyImportDialogOpen = false;
+      if (!this.hasAnyWallets) {
+        this.isAddWalletDialogOpen = true;
+      }
+      this.importFromKeyRequest.reset();
+    }
+  };
+
   @action _toggleWalletRestore = () => {
     if (!this.isWalletRestoreDialogOpen) {
       this.isAddWalletDialogOpen = false;
@@ -157,9 +175,17 @@ export default class WalletsStore extends Store {
 
   @action _restoreWallet = async (params) => {
     const restoredWallet = await this.restoreRequest.execute(params);
-    await this.walletsRequest.patch(result => { result.push(restoredWallet); });
+    await this._patchWalletRequestWithNewWallet(restoredWallet);
     this._toggleWalletRestore();
     this.goToWalletRoute(restoredWallet.id);
+    this.refreshWalletsData();
+  };
+
+  @action _importWalletFromKey = async (params) => {
+    const importedWallet = await this.importFromKeyRequest.execute(params);
+    await this._patchWalletRequestWithNewWallet(importedWallet);
+    this._toggleWalletKeyImportDialog();
+    this.goToWalletRoute(importedWallet.id);
     this.refreshWalletsData();
   };
 
@@ -194,6 +220,13 @@ export default class WalletsStore extends Store {
       if (!hasActiveWallet && hasAnyWalletsLoaded) this.active = this.all[0];
       if (this.active) this.goToWalletRoute(this.active.id);
     }
-  }
+  };
+
+  _patchWalletRequestWithNewWallet = async (wallet) => {
+    // Only add the new wallet if it does not exist yet in the result!
+    await this.walletsRequest.patch(result => {
+      if(!_.find(result, { id: wallet.id })) result.push(wallet);
+    });
+  };
 
 }

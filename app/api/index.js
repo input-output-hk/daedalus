@@ -69,6 +69,10 @@ export type redeemAdaRequest = {
   walletId: string,
 };
 
+export type importKeyRequest = {
+  filePath: string,
+};
+
 // INTERFACE
 
 export type Api = {
