@@ -5,6 +5,7 @@ import           Data.Maybe         (fromJust, fromMaybe)
 import           Data.Monoid        ((<>))
 import           Data.Text          (pack, split, unpack)
 import           Development.NSIS
+import           System.Directory   (doesFileExist)
 import           System.Environment (lookupEnv)
 import           Turtle             (echo, proc, procs)
 
@@ -16,7 +17,7 @@ shortcutParameters = L.intercalate " " $
   , "--updater \"" <> installerPath <> "\""
   , "--node-timeout 5"
   , (" -n " ++ (L.intercalate " -n " nodeArgs))
-  ] 
+  ]
     where
       installerPath = "%APPDATA%\\Daedalus\\Installer.exe"
       nodeArgs = [
@@ -73,14 +74,18 @@ signUninstaller = do
 
 signFile :: FilePath -> IO ()
 signFile filename = do
-  maybePass <- lookupEnv "CERT_PASS"
-  case maybePass of
-    Nothing -> echo . pack $ "Skipping signing " <> filename <> " due to lack of password"
-    Just pass -> do
-      echo . pack $ "Signing " <> filename
-      -- TODO: Double sign a file, SHA1 for vista/xp and SHA2 for windows 8 and on
-      --procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\eureka.p12", "/p", pack pass, "/t", "http://timestamp.comodoca.com", "/v", pack filename] mempty
-      procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\eureka.p12", "/p", pack pass, "/fd", "sha256", "/tr", "http://timestamp.comodoca.com/?td=sha256", "/td", "sha256", "/v", pack filename] mempty
+  exists <- doesFileExist filename
+  if exists then do
+    maybePass <- lookupEnv "CERT_PASS"
+    case maybePass of
+      Nothing -> echo . pack $ "Skipping signing " <> filename <> " due to lack of password"
+      Just pass -> do
+        echo . pack $ "Signing " <> filename
+        -- TODO: Double sign a file, SHA1 for vista/xp and SHA2 for windows 8 and on
+        --procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\eureka.p12", "/p", pack pass, "/t", "http://timestamp.comodoca.com", "/v", pack filename] mempty
+        procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\eureka.p12", "/p", pack pass, "/fd", "sha256", "/tr", "http://timestamp.comodoca.com/?td=sha256", "/td", "sha256", "/v", pack filename] mempty
+  else
+    error $ "Unable to sign missing file '" <> filename <> "''"
 
 parseVersion :: String -> [String]
 parseVersion ver =
@@ -150,6 +155,9 @@ main = do
   version <- fmap (fromMaybe "dev") $ lookupEnv "APPVEYOR_BUILD_VERSION"
   let fullVersion = version <> ".0"
   writeFile "version.txt" fullVersion
+
+  signFile "cardano-launcher.exe"
+  signFile "cardano-node.exe"
 
   echo "Writing uninstaller.nsi"
   writeUninstallerNSIS fullVersion
