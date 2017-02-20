@@ -104,9 +104,11 @@ export default class MainLayout extends Component {
         isSynced={isSynced}
       />
     );
-    const appbar = <AppBar onToggleSidebar={actions.toggleSidebar}>
-      <NodeSyncStatusIcon isSynced={isSynced} syncPercentage={syncPercentage} />
-    </AppBar>;
+    const appbar = (
+      <AppBar onToggleSidebar={actions.toggleSidebar}>
+        <NodeSyncStatusIcon isSynced={isSynced} syncPercentage={syncPercentage} />
+      </AppBar>
+    );
     const addWalletRestoreDialog = wallets.isWalletRestoreDialogOpen ? (
       <WalletRestoreDialog
         onSubmit={this.handleRestoreWalletSubmit}
@@ -115,18 +117,30 @@ export default class MainLayout extends Component {
         mnemonicValidator={mnemonic => this.props.stores.wallets.isValidMnemonic(mnemonic)}
       />
     ) : null;
-    const addWalletDialog = wallets.isAddWalletDialogOpen && !isWalletBackupInProgress ? (<WalletAddPage />) : null;
+    const addWalletDialog = (
+      wallets.isAddWalletDialogOpen && !isWalletBackupInProgress ? <WalletAddPage /> : null
+    );
     const createWalletDialog = wallets.isCreateWalletDialogOpen ? (
       <WalletCreateDialog
         onSubmit={this.handleAddWalletSubmit}
         onCancel={toggleCreateWalletDialog}
       />
     ) : null;
-    const addWalletBackupDialog = isWalletBackupInProgress ? (<WalletBackupPage />) : null;
-    const addNodeUpdateNotification = isNodeUpdateAvailable && !isUpdatePostponed ? (<NodeUpdatePage />) : null;
-    const addWalletKeyImportDialog = isWalletKeyImportDialogOpen ? (<WalletKeyImportPage />) : null;
+    const addWalletBackupDialog = (
+      isWalletBackupInProgress ? <WalletBackupPage /> : null
+    );
+    const addNodeUpdateNotification = (
+      isNodeUpdateAvailable && !isUpdatePostponed ? <NodeUpdatePage /> : null
+    );
+    const addWalletKeyImportDialog = (
+      isWalletKeyImportDialogOpen ? <WalletKeyImportPage /> : null
+    );
     return (
-      <SidebarLayout sidebar={sidebarComponent} appbar={appbar} notification={addNodeUpdateNotification}>
+      <SidebarLayout
+        sidebar={sidebarComponent}
+        appbar={appbar}
+        notification={addNodeUpdateNotification}
+      >
         {this.props.children}
         {addWalletDialog}
         {createWalletDialog}

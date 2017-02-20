@@ -2,7 +2,6 @@
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import styles from './SidebarLayout.scss';
-import NodeUpdatePage from '../../containers/notifications/NodeUpdatePage'
 import { oneOrManyChildElements } from '../../propTypes';
 
 @observer
