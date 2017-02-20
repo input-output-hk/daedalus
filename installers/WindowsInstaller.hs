@@ -5,12 +5,11 @@ import           Data.Maybe         (fromJust, fromMaybe)
 import           Data.Monoid        ((<>))
 import           Data.Text          (pack, split, unpack)
 import           Development.NSIS
-import           System.Directory   (renameFile)
 import           System.Environment (lookupEnv)
 import           Turtle             (echo, proc, procs)
 
-shortcutParameters :: [String] -> String
-shortcutParameters ipdht = L.intercalate " " $
+shortcutParameters :: String
+shortcutParameters = L.intercalate " " $
   [ "--node \"%PROGRAMFILES%\\Daedalus\\cardano-node.exe\""
   , "--node-log-path", "\"%APPDATA%\\Daedalus\\Logs\\cardano-node.log\""
   , "--wallet \"%PROGRAMFILES%\\Daedalus\\Daedalus.exe\""
@@ -29,13 +28,14 @@ shortcutParameters ipdht = L.intercalate " " $
         "--logs-prefix", "\"%APPDATA%\\Daedalus\\Logs\"",
         "--db-path", "\"%APPDATA%\\Daedalus\\DB-0.2\"",
         "--wallet-db-path", "\"%APPDATA%\\Daedalus\\Wallet-0.2\"",
+        "--peers-file", "ip-dht-mappings",
         "--wallet"
-        ] <> ("--peer" : (L.intersperse "--peer" ipdht))
+        ]
 
-daedalusShortcut :: [String] -> [Attrib]
-daedalusShortcut ipdht =
+daedalusShortcut :: [Attrib]
+daedalusShortcut =
     [ Target "$INSTDIR\\cardano-launcher.exe"
-    , Parameters (str $ shortcutParameters ipdht)
+    , Parameters (str $ shortcutParameters)
     , IconFile "$INSTDIR\\Daedalus.exe"
     , StartOptions "SW_SHOWMINIMIZED"
     , IconIndex 0
@@ -90,8 +90,6 @@ parseVersion ver =
 
 writeInstallerNSIS :: String -> IO ()
 writeInstallerNSIS fullVersion = do
-  ipdhtRaw <- readFile "data\\ip-dht-mappings"
-  let ds = daedalusShortcut $ lines ipdhtRaw
   tempDir <- fmap fromJust $ lookupEnv "TEMP"
   writeFile "daedalus.nsi" $ nsis $ do
     _ <- constantStr "Version" (str fullVersion)
@@ -115,10 +113,11 @@ writeInstallerNSIS fullVersion = do
         createDirectory "$APPDATA\\Daedalus\\Wallet-0.2"
         createDirectory "$APPDATA\\Daedalus\\Logs"
         createDirectory "$APPDATA\\Daedalus\\Secrets"
-        createShortcut "$DESKTOP\\Daedalus.lnk" ds
+        createShortcut "$DESKTOP\\Daedalus.lnk" daedalusShortcut
         file [] "cardano-node.exe"
         file [] "cardano-launcher.exe"
         file [] "log-config-prod.yaml"
+        file [] "data\\ip-dht-mappings"
         file [] "version.txt"
         file [Recursive] "dlls\\"
         file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
@@ -141,7 +140,7 @@ writeInstallerNSIS fullVersion = do
         createDirectory "$SMPROGRAMS/Daedalus"
         createShortcut "$SMPROGRAMS/Daedalus/Uninstall Daedalus.lnk"
           [Target "$INSTDIR/uninstall.exe", IconFile "$INSTDIR/uninstall.exe", IconIndex 0]
-        createShortcut "$SMPROGRAMS/Daedalus/Daedalus.lnk" ds
+        createShortcut "$SMPROGRAMS/Daedalus/Daedalus.lnk" daedalusShortcut
 
     return ()
 
