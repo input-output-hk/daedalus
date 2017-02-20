@@ -1,5 +1,6 @@
 // @flow
 import { observable, computed, action } from 'mobx';
+import _ from 'lodash';
 import Store from './lib/Store';
 import Wallet from '../domain/Wallet';
 import { matchRoute } from '../lib/routing-helpers';
@@ -174,7 +175,7 @@ export default class WalletsStore extends Store {
 
   @action _restoreWallet = async (params) => {
     const restoredWallet = await this.restoreRequest.execute(params);
-    await this.walletsRequest.patch(result => { result.push(restoredWallet); });
+    await this._patchWalletRequestWithNewWallet(restoredWallet);
     this._toggleWalletRestore();
     this.goToWalletRoute(restoredWallet.id);
     this.refreshWalletsData();
@@ -182,7 +183,7 @@ export default class WalletsStore extends Store {
 
   @action _importWalletFromKey = async (params) => {
     const importedWallet = await this.importFromKeyRequest.execute(params);
-    await this.walletsRequest.patch(result => { result.push(importedWallet); });
+    await this._patchWalletRequestWithNewWallet(importedWallet);
     this._toggleWalletKeyImportDialog();
     this.goToWalletRoute(importedWallet.id);
     this.refreshWalletsData();
@@ -219,6 +220,13 @@ export default class WalletsStore extends Store {
       if (!hasActiveWallet && hasAnyWalletsLoaded) this.active = this.all[0];
       if (this.active) this.goToWalletRoute(this.active.id);
     }
-  }
+  };
+
+  _patchWalletRequestWithNewWallet = async (wallet) => {
+    // Only add the new wallet if it does not exist yet in the result!
+    await this.walletsRequest.patch(result => {
+      if(!_.find(result, { id: wallet.id })) result.push(wallet);
+    });
+  };
 
 }

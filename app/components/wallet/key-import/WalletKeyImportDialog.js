@@ -87,7 +87,7 @@ export default class WalletKeyImportDialog extends Component {
       {
         label: intl.formatMessage(messages.submitLabel),
         primary: true,
-        disabled: keyFile.value === null || !keyFile.value.path,
+        disabled: !(keyFile.value instanceof File),
         onClick: () => this.submit()
       }
     ];
@@ -105,9 +105,7 @@ export default class WalletKeyImportDialog extends Component {
           <FileUploadWidget
             {...keyFile.bind()}
             selectedFile={keyFile.value}
-            onFileSelected={(file) => {
-              keyFile.onChange(file);
-            }}
+            onFileSelected={keyFile.onChange}
           />
         </div>
 
