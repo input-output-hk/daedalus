@@ -95,6 +95,10 @@ writeInstallerNSIS fullVersion = do
     _ <- constantStr "Version" (str fullVersion)
     name "Daedalus ($Version)"                  -- The name of the installer
     outFile "daedalus-win64-$Version-installer.exe"           -- Where to produce the installer
+    injectGlobalLiteral $ "!define MUI_ICON \"icons\\64x64.ico\""
+    injectGlobalLiteral $ "!define MUI_HEADERIMAGE"
+    injectGlobalLiteral $ "!define MUI_HEADERIMAGE_BITMAP \"icons\\installBanner.bmp\""
+    injectGlobalLiteral $ "!define MUI_HEADERIMAGE_RIGHT"
     injectGlobalLiteral $ "VIProductVersion " <> (L.intercalate "." $ parseVersion fullVersion)
     injectGlobalLiteral $ "VIAddVersionKey \"ProductVersion\" " <> fullVersion
     -- see ndmitchell/nsis#10 and https://github.com/jmitchell/nsis/tree/feature/escape-hatch
