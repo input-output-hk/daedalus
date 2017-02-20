@@ -17,7 +17,7 @@ shortcutParameters = L.intercalate " " $
   , "--updater \"" <> installerPath <> "\""
   , "--node-timeout 5"
   , (" -n " ++ (L.intercalate " -n " nodeArgs))
-  ] 
+  ]
     where
       installerPath = "%APPDATA%\\Daedalus\\Installer.exe"
       nodeArgs = [
