@@ -1,5 +1,6 @@
 // @flow
 import { observable, computed, action } from 'mobx';
+import _ from 'lodash';
 import Store from './lib/Store';
 import Wallet from '../domain/Wallet';
 import { matchRoute } from '../lib/routing-helpers';
@@ -174,7 +175,7 @@ export default class WalletsStore extends Store {
 
   @action _restoreWallet = async (params) => {
     const restoredWallet = await this.restoreRequest.execute(params);
-    await this.walletsRequest.patch(result => { result.push(restoredWallet); });
+    await this._patchWalletRequestWithWallet(restoredWallet);
     this._toggleWalletRestore();
     this.goToWalletRoute(restoredWallet.id);
     this.refreshWalletsData();
@@ -182,7 +183,7 @@ export default class WalletsStore extends Store {
 
   @action _importWalletFromKey = async (params) => {
     const importedWallet = await this.importFromKeyRequest.execute(params);
-    await this.walletsRequest.patch(result => { result.push(importedWallet); });
+    await this._patchWalletRequestWithWallet(importedWallet);
     this._toggleWalletKeyImportDialog();
     this.goToWalletRoute(importedWallet.id);
     this.refreshWalletsData();
@@ -219,6 +220,14 @@ export default class WalletsStore extends Store {
       if (!hasActiveWallet && hasAnyWalletsLoaded) this.active = this.all[0];
       if (this.active) this.goToWalletRoute(this.active.id);
     }
-  }
+  };
+
+  _patchWalletRequestWithWallet = async (wallet) => {
+    await this.walletsRequest.patch(result => {
+      const foundWallet = _.find(result, { id: wallet.id });
+      if (foundWallet) result.pop(foundWallet);
+      result.push(wallet);
+    });
+  };
 
 }
