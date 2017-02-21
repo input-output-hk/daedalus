@@ -62,7 +62,11 @@ writeUninstallerNSIS fullVersion = do
       rmdir [Recursive,RebootOK] "$INSTDIR"
       delete [] "$SMPROGRAMS/Daedalus/*.*"
       delete [] "$DESKTOP\\Daedalus.lnk"
-      injectLiteral "SimpleFC::RemoveApplication \"$INSTDIR\\cardano-node.exe\""
+      mapM_ injectLiteral
+        [ "SimpleFC::RemoveApplication \"$INSTDIR\\cardano-node.exe\""
+        , "Pop $0"
+        , "DetailPrint \"SimpleFC::RemoveApplication: $0\""
+        ]
       -- Note: we leave user data alone
 
 -- See non-INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
@@ -130,7 +134,11 @@ writeInstallerNSIS fullVersion = do
         file [Recursive] "dlls\\"
         file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
 
-        injectLiteral $ "SimpleFC::AddApplication \"Cardano Node\" \"$INSTDIR\\cardano-node.exe\" 0 2 \"\" 1"
+        mapM_ injectLiteral
+          [ "SimpleFC::AddApplication \"Cardano Node\" \"$INSTDIR\\cardano-node.exe\" 0 2 \"\" 1"
+          , "Pop $0"
+          , "DetailPrint \"SimpleFC:AddApplication: $0\""
+          ]
 
         -- Uninstaller
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "InstallLocation" "$PROGRAMFILES64\\Daedalus"
