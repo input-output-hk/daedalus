@@ -67,12 +67,6 @@ writeUninstallerNSIS fullVersion = do
         , "Pop $0"
         , "DetailPrint \"liteFirewall::RemoveRule: $0\""
         ]
-
-      -- mapM_ injectLiteral
-      --   [ "SimpleFC::RemoveApplication \"$INSTDIR\\cardano-node.exe\""
-      --   , "Pop $0"
-      --   , "DetailPrint \"SimpleFC::RemoveApplication: $0\""
-      --   ]
       -- Note: we leave user data alone
 
 -- See non-INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
