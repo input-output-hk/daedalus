@@ -4,7 +4,6 @@ const environment = Object.assign({
   TEST: 'test',
   PRODUCTION: 'production',
   CARDANO_API,
-  FAKE_RESPONSE_TIME,
   AUTO_LOGIN,
   MOBX_DEV_TOOLS,
   current: process.env.NODE_ENV,

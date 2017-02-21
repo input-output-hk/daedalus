@@ -31,7 +31,7 @@ export default class CardanoClientApi {
     ClientApi.notify(this._onNotify, this._onNotifyError);
   }
 
-  notify(onSuccess, onError = () => {}) {
+  notify(onSuccess: Function, onError: Function = () => {}) {
     this.notifyCallbacks.push({ message: onSuccess, error: onError });
   }
 
@@ -42,7 +42,7 @@ export default class CardanoClientApi {
   async getWallets() {
     console.debug('CardanoClientApi::getWallets called');
     const response = await ClientApi.getWallets();
-    return response.map(data => this._createWalletFromData(data));
+    return response.map(data => this._createWalletFromServerData(data));
   }
 
   async getTransactions(request: getTransactionsRequest) {
@@ -50,7 +50,7 @@ export default class CardanoClientApi {
     console.debug('CardanoClientApi::getTransactions called with', request);
     const history = await ClientApi.searchHistory(walletId, searchTerm, skip, limit);
     return new Promise((resolve) => resolve({
-      transactions: history[0].map(data => this._createTransactionFromData(data, walletId)),
+      transactions: history[0].map(data => this.__createTransactionFromServerData(data, walletId)),
       total: history[1]
     }));
   }
@@ -58,7 +58,7 @@ export default class CardanoClientApi {
   async createWallet(request: createWalletRequest) {
     console.debug('CardanoClientApi::createWallet called with', request);
     const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name, request.mnemonic);
-    return this._createWalletFromData(response);
+    return this._createWalletFromServerData(response);
   }
 
   async createTransaction(request: createTransactionRequest) {
@@ -66,19 +66,21 @@ export default class CardanoClientApi {
     const { sender, receiver, amount, currency } = request;
     const description = 'no description provided';
     const title = 'no title provided';
-    const response = await ClientApi.sendExtended(sender, receiver, amount, currency, title, description);
-    return this._createTransactionFromData(response);
+    const response = await ClientApi.sendExtended(
+      sender, receiver, amount, currency, title, description
+    );
+    return this.__createTransactionFromServerData(response);
   }
 
-  isValidAddress(currency: string, address: string) {
+  isValidAddress(currency: string, address: string): Promise<bool> {
     return ClientApi.isValidAddress(currency, address);
   }
 
-  isValidMnemonic(mnemonic: string) {
+  isValidMnemonic(mnemonic: string): Promise<bool> {
     return ClientApi.isValidMnemonic(mnemonic);
   }
 
-  @action _createWalletFromData(data) {
+  @action _createWalletFromServerData(data: ServerWalletStruct) {
     return new Wallet({
       id: data.cwAddress,
       address: data.cwAddress,
@@ -89,14 +91,13 @@ export default class CardanoClientApi {
     });
   }
 
-  @action _createTransactionFromData(data) {
+  @action __createTransactionFromServerData(data: ServerTransactionStruct) {
     const isOutgoing = data.ctType.tag === 'CTOut';
     const coins = data.ctAmount.getCoin;
-    let { ctmTitle, ctmDescription, ctmDate } = data.ctType.contents;
-    if (!ctmTitle) ctmTitle = 'Incoming Money';
+    const { ctmTitle, ctmDescription, ctmDate } = data.ctType.contents;
     return new WalletTransaction({
       id: data.ctId,
-      title: ctmTitle,
+      title: ctmTitle || 'Incoming Money',
       type: isOutgoing ? 'adaExpend' : 'adaIncome',
       currency: 'ada',
       amount: isOutgoing ? -1 * coins : coins,
@@ -115,7 +116,7 @@ export default class CardanoClientApi {
     console.debug('CardanoClientApi::restoreWallet called with', request);
     try {
       const restoredWallet = await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase);
-      return this._createWalletFromData(restoredWallet);
+      return this._createWalletFromServerData(restoredWallet);
     } catch (error) {
       console.error(error);
       // TODO: backend will return something different here, if multiple wallets
@@ -134,7 +135,7 @@ export default class CardanoClientApi {
     console.debug('CardanoClientApi::importWalletFromKey called with', request);
     try {
       const importedWallet = await ClientApi.importKey(request.filePath);
-      return this._createWalletFromData(importedWallet);
+      return this._createWalletFromServerData(importedWallet);
     } catch (error) {
       console.error(error);
       if (error.message.includes('Wallet with that mnemonics already exists')) {
@@ -165,7 +166,7 @@ export default class CardanoClientApi {
     console.debug('CardanoClientApi::notify message: ', rawMessage);
     // TODO: "ConnectionClosed" messages are not JSON parsable … so we need to catch that case here!
     let message = rawMessage;
-    if (message !== "ConnectionClosed") {
+    if (message !== 'ConnectionClosed') {
       message = JSON.parse(rawMessage);
     }
     this.notifyCallbacks.forEach(cb => cb.message(message));
@@ -212,17 +213,44 @@ export default class CardanoClientApi {
     //     getCoin: 0
     //   }
     // };
-    if (nextUpdate && nextUpdate.cuiSoftwareVersion && nextUpdate.cuiSoftwareVersion.svNumber) {
-      return { version: nextUpdate.cuiSoftwareVersion.svNumber};
-    } else if (nextUpdate) {
-      return { version: 'Unknown'};
-    } else {
-      return null;
-    }
+    // if (nextUpdate && nextUpdate.cuiSoftwareVersion && nextUpdate.cuiSoftwareVersion.svNumber) {
+    //   return { version: nextUpdate.cuiSoftwareVersion.svNumber };
+    // } else if (nextUpdate) {
+    //   return { version: 'Unknown' };
+    // }
+    // return null;
   }
 
   async applyUpdate() {
     await ClientApi.applyUpdate();
     ipcRenderer.send('kill-process');
   }
+}
+
+type ServerCoinAmountStruct = {
+  getCoin: number,
+};
+
+type ServerWalletStruct = {
+  cwAddress: string,
+  cwAmount: ServerCoinAmountStruct,
+  cwMeta: {
+    cwName: string,
+    cwType: string,
+    cwCurrency: string,
+  },
+}
+
+type ServerTransactionStruct = {
+  ctId: string,
+  ctType: {
+    tag: string,
+    contents: {
+      ctmDate: Date,
+      ctmTitle: ?string,
+      ctmDescription: ?string,
+    }
+  },
+  ctAmount: ServerCoinAmountStruct,
+  ctConfirmations: number,
 }

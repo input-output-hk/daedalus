@@ -52,6 +52,7 @@ export default class NodeUpdateNotification extends Component {
           </button>
         </div>
         {isExpanded && message && (
+          // eslint-disable-next-line react/no-danger
           <div className={styles.message} dangerouslySetInnerHTML={{ __html: message }} />
         )}
         {isExpanded && (

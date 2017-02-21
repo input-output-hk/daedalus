@@ -9,22 +9,16 @@ export default class WalletWithNavigation extends Component {
 
   static propTypes = {
     children: PropTypes.element.isRequired,
-    wallet: React.PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      amount: PropTypes.number.isRequired,
-      currency: PropTypes.string.isRequired,
-    }),
     isActiveScreen: PropTypes.func.isRequired,
     onWalletNavItemClick: PropTypes.func
   };
 
   render() {
-    const { wallet, children, isActiveScreen, onWalletNavItemClick } = this.props;
+    const { children, isActiveScreen, onWalletNavItemClick } = this.props;
     return (
       <div className={styles.component}>
         <div className={styles.navigation}>
           <WalletNavigation
-            wallet={wallet}
             isActiveNavItem={isActiveScreen}
             onNavItemClick={onWalletNavItemClick}
           />
