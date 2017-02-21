@@ -50,7 +50,7 @@ writeUninstallerNSIS fullVersion = do
     _ <- constantStr "Version" (str fullVersion)
     name "Daedalus Uninstaller $Version"
     outFile . str $ tempDir <> "\\tempinstaller.exe"
-    injectGlobalLiteral "!addplugindir \"nsis_plugins\\simple_firewall\""
+    injectGlobalLiteral "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
     injectGlobalLiteral "SetCompress off"
     _ <- section "" [Required] $ do
       injectLiteral $ "WriteUninstaller \"" <> tempDir <> "\\uninstall.exe\""
@@ -63,10 +63,16 @@ writeUninstallerNSIS fullVersion = do
       delete [] "$SMPROGRAMS/Daedalus/*.*"
       delete [] "$DESKTOP\\Daedalus.lnk"
       mapM_ injectLiteral
-        [ "SimpleFC::RemoveApplication \"$INSTDIR\\cardano-node.exe\""
+        [ "liteFirewall::RemoveRule \"$INSTDIR\\cardano-node.exe\" \"Cardano Node\""
         , "Pop $0"
-        , "DetailPrint \"SimpleFC::RemoveApplication: $0\""
+        , "DetailPrint \"liteFirewall::RemoveRule: $0\""
         ]
+
+      -- mapM_ injectLiteral
+      --   [ "SimpleFC::RemoveApplication \"$INSTDIR\\cardano-node.exe\""
+      --   , "Pop $0"
+      --   , "DetailPrint \"SimpleFC::RemoveApplication: $0\""
+      --   ]
       -- Note: we leave user data alone
 
 -- See non-INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
@@ -113,7 +119,7 @@ writeInstallerNSIS fullVersion = do
     injectGlobalLiteral "Unicode true"
     installDir "$PROGRAMFILES64\\Daedalus"   -- The default installation directory
     requestExecutionLevel Highest
-    injectGlobalLiteral "!addplugindir \"nsis_plugins\\simple_firewall\""
+    injectGlobalLiteral "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
 
     page Directory                   -- Pick where to install
     page InstFiles                   -- Give a progress bar while installing
@@ -135,9 +141,9 @@ writeInstallerNSIS fullVersion = do
         file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
 
         mapM_ injectLiteral
-          [ "SimpleFC::AddApplication \"Cardano Node\" \"$INSTDIR\\cardano-node.exe\" 0 2 \"\" 1"
+          [ "liteFirewall::AddRule \"$INSTDIR\\cardano-node.exe\" \"Cardano Node\""
           , "Pop $0"
-          , "DetailPrint \"SimpleFC:AddApplication: $0\""
+          , "DetailPrint \"liteFirewall::AddRule: $0\""
           ]
 
         -- Uninstaller
