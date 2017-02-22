@@ -97,7 +97,7 @@ export default class CardanoClientApi {
     const { ctmTitle, ctmDescription, ctmDate } = data.ctType.contents;
     return new WalletTransaction({
       id: data.ctId,
-      title: ctmTitle || 'Incoming Money',
+      title: ctmTitle || isOutgoing ? 'Ada sent' : 'Ada received',
       type: isOutgoing ? 'adaExpend' : 'adaIncome',
       currency: 'ada',
       amount: isOutgoing ? -1 * coins : coins,
@@ -162,7 +162,7 @@ export default class CardanoClientApi {
 
   // PRIVATE
 
-  _onNotify = (rawMessage) => {
+  _onNotify = (rawMessage: {}) => {
     console.debug('CardanoClientApi::notify message: ', rawMessage);
     // TODO: "ConnectionClosed" messages are not JSON parsable … so we need to catch that case here!
     let message = rawMessage;
@@ -172,7 +172,7 @@ export default class CardanoClientApi {
     this.notifyCallbacks.forEach(cb => cb.message(message));
   };
 
-  _onNotifyError = (error) => {
+  _onNotifyError = (error: Error) => {
     console.debug('CardanoClientApi::notify error: ', error);
     this.notifyCallbacks.forEach(cb => cb.error(error));
   };
