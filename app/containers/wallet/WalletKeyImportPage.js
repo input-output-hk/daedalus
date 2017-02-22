@@ -19,7 +19,7 @@ export default class WalletKeyImportPage extends Component {
     }).isRequired
   };
 
-  onSubmit = (values: { keyFile: File }) => {
+  onSubmit = (values: { filePath: string }) => {
     this.props.actions.importWalletFromKey(values);
   };
 

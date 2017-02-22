@@ -13,7 +13,6 @@ export default class Store {
     this.stores = stores;
     this.api = api;
     this.actions = actions;
-    setTimeout(() => this.setup(), 0);
   }
 
   registerReactions(reactions: Array<Function>) {
@@ -23,6 +22,7 @@ export default class Store {
   setup() {}
 
   initialize() {
+    this.setup();
     this._reactions.forEach(reaction => reaction.start());
   }
 

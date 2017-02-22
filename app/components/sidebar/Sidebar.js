@@ -44,7 +44,7 @@ export default class Sidebar extends Component {
       WALLETS: PropTypes.string.isRequired,
       ADA_REDEMPTION: PropTypes.string.isRequired,
     }).isRequired,
-    currentCategory: PropTypes.string.isRequired,
+    // currentCategory: PropTypes.string.isRequired,
     // onCategoryClicked: PropTypes.func, // TODO: temporary disabled
     hidden: PropTypes.bool,
     isMaximized: PropTypes.bool,

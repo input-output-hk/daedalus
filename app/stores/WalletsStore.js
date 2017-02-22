@@ -136,7 +136,6 @@ export default class WalletsStore extends Store {
       const result = await this.walletsRequest.execute();
       if (!result) return;
       const walletIds = result.map((wallet: Wallet) => wallet.id);
-      console.log(walletIds);
       this.stores.transactions.transactionsRequests = walletIds.map(walletId => ({
         walletId,
         recentRequest: this.stores.transactions._getTransactionsRecentRequest(walletId),
@@ -201,7 +200,7 @@ export default class WalletsStore extends Store {
   };
 
   @action _importWalletFromKey = async (params: {
-    keyFile: File,
+    filePath: string,
   }) => {
     const importedWallet = await this.importFromKeyRequest.execute(params).promise;
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');
