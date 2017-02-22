@@ -1,8 +1,8 @@
 // @flow
-import { observable, action, computed } from 'mobx';
+import { observable, action } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/Request';
-import environment from '../environment'
+import environment from '../environment';
 
 export default class NodeUpdateStore extends Store {
 
@@ -17,11 +17,10 @@ export default class NodeUpdateStore extends Store {
   @observable nextUpdateRequest = new Request(this.api, 'nextUpdate');
   @observable applyUpdateRequest = new Request(this.api, 'applyUpdate');
 
-  constructor(...args) {
-    super(...args);
+  setup() {
     this.actions.acceptNodeUpdate.listen(this._acceptNodeUpdate);
     this.actions.postponeNodeUpdate.listen(this._postponeNodeUpdate);
-    this.actions.toggleNodeUpdateNotificationExpanded.listen(this._toggleNodeUpdateNotificationExpanded);
+    this.actions.toggleNodeUpdateNotificationExpanded.listen(this._toggleNotificationExpanded);
     if (environment.CARDANO_API) {
       setInterval(this.refreshNextUpdate, this.NODE_UPDATE_POLL_INTERVAL);
     }
@@ -49,7 +48,7 @@ export default class NodeUpdateStore extends Store {
     this.isUpdateInstalled = true;
   };
 
-  @action _toggleNodeUpdateNotificationExpanded = () => {
+  @action _toggleNotificationExpanded = () => {
     this.isNotificationExpanded = !this.isNotificationExpanded;
   };
 

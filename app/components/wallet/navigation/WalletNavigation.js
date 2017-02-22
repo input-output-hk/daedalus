@@ -40,11 +40,6 @@ const messages = defineMessages({
 export default class WalletNavigation extends Component {
 
   static propTypes = {
-    wallet: React.PropTypes.shape({
-      name: PropTypes.string.isRequired,
-      amount: PropTypes.number.isRequired,
-      currency: PropTypes.string.isRequired,
-    }),
     isActiveNavItem: PropTypes.func.isRequired,
     onNavItemClick: PropTypes.func
   };

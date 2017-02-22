@@ -13,7 +13,7 @@ export default class WalletCreatePage extends Component {
     }),
   };
 
-  createPersonalWallet = (values) => {
+  createPersonalWallet = (values: { walletName: string, currency: string }) => {
     this.props.actions.createPersonalWallet({
       name: values.walletName,
       currency: values.currency,
