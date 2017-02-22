@@ -24,7 +24,7 @@ export default class NetworkStatusStore extends Store {
     return !this.isConnected;
   }
 
-  @computed get syncPercentage() {
+  @computed get syncPercentage(): number {
     if (this.networkDifficulty > 0 && this._localDifficultyStartedWith != null) {
       const relativeLocal = this.localDifficulty - this._localDifficultyStartedWith;
       const relativeNetwork = this.networkDifficulty - this._localDifficultyStartedWith;
