@@ -43,7 +43,9 @@ export default class Loading extends Component {
 
   render() {
     const { intl } = this.context;
-    const { isConnecting, isSyncing, syncPercentage, isLoadingWallets, hasBeenConnected } = this.props;
+    const {
+      isConnecting, isSyncing, syncPercentage, isLoadingWallets, hasBeenConnected
+    } = this.props;
     const componentStyles = classNames([
       styles.component,
       isConnecting ? styles['is-connecting'] : null,

@@ -2,7 +2,7 @@
 import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
 
-export type walletBackupSteps = 'privacyWarning' | 'recoveryPhraseDisplay' | 'recoveryPhraseEntry' | void;
+export type walletBackupSteps = 'privacyWarning' | 'recoveryPhraseDisplay' | 'recoveryPhraseEntry' | null;
 
 export default class WalletBackupStore extends Store {
 
@@ -18,24 +18,25 @@ export default class WalletBackupStore extends Store {
   @observable isTermDeviceAccepted = false;
   @observable isTermRecoveryAccepted = false;
   @observable countdownRemaining = 0;
-  @observable countdownTimer = null;
 
-  constructor(...args) {
-    super(...args);
-    this.actions.initiateWalletBackup.listen(this._initiateWalletBackup);
-    this.actions.acceptPrivacyNoticeForWalletBackup.listen(this._acceptPrivacyNoticeForWalletBackup);
-    this.actions.continueToRecoveryPhraseForWalletBackup.listen(this._continueToRecoveryPhraseForWalletBackup);
-    this.actions.startWalletBackup.listen(this._startWalletBackup);
-    this.actions.addWordToWalletBackupVerification.listen(this._addWordToWalletBackupVerification);
-    this.actions.clearEnteredRecoveryPhrase.listen(this._clearEnteredRecoveryPhrase);
-    this.actions.acceptWalletBackupTermDevice.listen(this._acceptWalletBackupTermDevice);
-    this.actions.acceptWalletBackupTermRecovery.listen(this._acceptWalletBackupTermRecovery);
-    this.actions.restartWalletBackup.listen(this._restartWalletBackup);
-    this.actions.cancelWalletBackup.listen(this._cancelWalletBackup);
-    this.actions.finishWalletBackup.listen(this._finishWalletBackup);
+  countdownTimer: ?number = null;
+
+  setup() {
+    const a = this.actions;
+    a.initiateWalletBackup.listen(this._initiateWalletBackup);
+    a.acceptPrivacyNoticeForWalletBackup.listen(this._acceptPrivacyNoticeForWalletBackup);
+    a.continueToRecoveryPhraseForWalletBackup.listen(this._continueToRecoveryPhraseForWalletBackup);
+    a.startWalletBackup.listen(this._startWalletBackup);
+    a.addWordToWalletBackupVerification.listen(this._addWordToWalletBackupVerification);
+    a.clearEnteredRecoveryPhrase.listen(this._clearEnteredRecoveryPhrase);
+    a.acceptWalletBackupTermDevice.listen(this._acceptWalletBackupTermDevice);
+    a.acceptWalletBackupTermRecovery.listen(this._acceptWalletBackupTermRecovery);
+    a.restartWalletBackup.listen(this._restartWalletBackup);
+    a.cancelWalletBackup.listen(this._cancelWalletBackup);
+    a.finishWalletBackup.listen(this._finishWalletBackup);
   }
 
-  @action _initiateWalletBackup = (params) => {
+  @action _initiateWalletBackup = (params: { recoveryPhrase: Array<string> }) => {
     this.recoveryPhrase = params.recoveryPhrase;
     this.actions.toggleCreateWalletDialog();
     this.inProgress = true;
@@ -55,7 +56,7 @@ export default class WalletBackupStore extends Store {
     this.countdownTimer = setInterval(() => {
       if (this.countdownRemaining > 0) {
         action(() => this.countdownRemaining--)();
-      } else {
+      } else if (this.countdownTimer != null) {
         clearInterval(this.countdownTimer);
       }
     }, 1000);
@@ -73,11 +74,11 @@ export default class WalletBackupStore extends Store {
     this.currentStep = 'recoveryPhraseEntry';
   };
 
-  @action _addWordToWalletBackupVerification = (params) => {
+  @action _addWordToWalletBackupVerification = (params: { word: string }) => {
     const { word } = params;
     this.enteredPhrase.push({ word });
     const pickedWord = this.recoveryPhraseShuffled.find(w => w.word === word);
-    pickedWord.isActive = false;
+    if (pickedWord) pickedWord.isActive = false;
   };
 
   @action _clearEnteredRecoveryPhrase = () => {
@@ -87,10 +88,10 @@ export default class WalletBackupStore extends Store {
     );
   };
 
-  @computed get isRecoveryPhraseValid() {
+  @computed get isRecoveryPhraseValid(): bool {
     return (
       this.recoveryPhraseWords.reduce((words, { word }) => words + word, '') ===
-      this.enteredPhrase.reduce((words, { word }) => words + word, '')
+      this.enteredPhrase.reduce((words, { word }) => words + word, '')
     );
   }
 

@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import { observer, inject, PropTypes as MobxPropTypes } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import WalletTransactionsList from '../../components/wallet/home/WalletTransactionsList';
-import WalletTransactionsSearch from '../../components/wallet/home/WalletTransactionsSearch';
+// import WalletTransactionsSearch from '../../components/wallet/home/WalletTransactionsSearch';
 import WalletNoTransactions from '../../components/wallet/home/WalletNoTransactions';
 import CachedRequest from '../../stores/lib/CachedRequest';
 
@@ -45,9 +45,9 @@ export default class WalletTransactionsPage extends Component {
     intl: intlShape.isRequired,
   };
 
-  _handleSearchInputChange = (value: string, event: Object) => {
-    this.props.actions.filterTransactions({ searchTerm: event.target.value });
-  };
+  // _handleSearchInputChange = (value: string, event: Object) => {
+  //   this.props.actions.filterTransactions({ searchTerm: event.target.value });
+  // };
 
   render() {
     const { intl } = this.context;
@@ -63,7 +63,7 @@ export default class WalletTransactionsPage extends Component {
     const { searchLimit, searchTerm } = searchOptions;
     const wasSearched = searchTerm !== '';
     let walletTransactions = null;
-    let transactionSearch = null;
+    // let transactionSearch = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const noTransactionsFoundLabel = intl.formatMessage(messages.noTransactionsFound);
 
@@ -94,8 +94,8 @@ export default class WalletTransactionsPage extends Component {
     }
 
     return (
-      <div style={{ height: "100%" }}>
-        {transactionSearch}
+      <div style={{ height: '100%' }}>
+        {/* transactionSearch */}
         {walletTransactions}
       </div>
     );

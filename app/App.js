@@ -16,8 +16,8 @@ export default class App extends Component {
 
   static propTypes = {
     stores: storesPropType,
-    actions: PropTypes.object.isRequired,
-    history: PropTypes.object.isRequired,
+    actions: PropTypes.shape({}).isRequired,
+    history: PropTypes.shape({}).isRequired,
   };
 
   render() {

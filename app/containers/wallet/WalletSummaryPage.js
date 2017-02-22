@@ -24,7 +24,7 @@ export default class WalletSummaryPage extends Component {
     stores: PropTypes.shape({
       wallets: PropTypes.shape({
         active: PropTypes.instanceOf(Wallet),
-        }),
+      }),
       transactions: PropTypes.shape({
         recent: MobxPropTypes.arrayOrObservableArray.isRequired,
         hasAny: PropTypes.bool.isRequired,
@@ -36,6 +36,9 @@ export default class WalletSummaryPage extends Component {
         showAdaRedemptionSuccessMessage: PropTypes.bool.isRequired,
         amountRedeemed: PropTypes.number.isRequired,
       }),
+    }).isRequired,
+    actions: PropTypes.shape({
+      closeAdaRedemptionSuccessOverlay: PropTypes.func.isRequired,
     }).isRequired,
   };
 

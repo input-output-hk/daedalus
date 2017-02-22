@@ -3,9 +3,9 @@ import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
+import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
-import { defineMessages, intlShape } from 'react-intl';
 import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './WalletKeyImportDialog.scss';
@@ -97,7 +97,7 @@ export default class WalletKeyImportDialog extends Component {
         className={dialogClasses}
         title={intl.formatMessage(messages.headline)}
         actions={actions}
-        onOverlayClick={this.props.onCancel}
+        onOverlayClick={onClose}
         active
       >
 

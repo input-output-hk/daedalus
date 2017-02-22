@@ -77,5 +77,7 @@ export default defineActions({
   postponeNodeUpdate: {},
   toggleNodeUpdateNotificationExpanded: {},
   toggleWalletKeyImportDialog: {},
-  importWalletFromKey: {},
+  importWalletFromKey: {
+    filePath: PropTypes.string.isRequired,
+  },
 }, PropTypes.validateWithErrors);

@@ -30,14 +30,17 @@ export default class AdaRedemptionPage extends Component {
     }).isRequired
   };
 
-  onSubmit = (values) => {
+  onSubmit = (values: { walletId: string }) => {
     this.props.actions.redeemAda(values);
   };
 
   render() {
     const { wallets, adaRedemption } = this.props.stores;
-    const { redeemAdaRequest, certificate, isCertificateEncrypted, error, redemptionCode } = adaRedemption;
-    const { setRedemptionCertificate, setRedemptionPassPhrase, setRedemptionCode } = this.props.actions;
+    const { redeemAdaRequest, isCertificateEncrypted } = adaRedemption;
+    const {
+      setRedemptionCertificate, setRedemptionPassPhrase, setRedemptionCode
+    } = this.props.actions;
+
     const selectableWallets = wallets.all.map((w) => ({
       value: w.id, label: w.name
     }));
@@ -50,12 +53,12 @@ export default class AdaRedemptionPage extends Component {
           onCertificateSelected={(certificate) => setRedemptionCertificate({ certificate })}
           onPassPhraseChanged={(passPhrase) => setRedemptionPassPhrase({ passPhrase })}
           onRedemptionCodeChanged={(redemptionCode) => setRedemptionCode({ redemptionCode })}
-          redemptionCode={redemptionCode}
+          redemptionCode={adaRedemption.redemptionCode}
           wallets={selectableWallets}
-          isCertificateSelected={certificate !== null}
+          isCertificateSelected={adaRedemption.certificate !== null}
           isCertificateEncrypted={isCertificateEncrypted}
           isSubmitting={redeemAdaRequest.isExecuting}
-          error={error}
+          error={adaRedemption.error}
           onSubmit={this.onSubmit}
         />
       </Layout>

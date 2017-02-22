@@ -2,13 +2,14 @@
 import { action } from 'mobx';
 import { isEqual, remove } from 'lodash';
 import Request from './Request';
+import type { ApiCallType } from './Request';
 
 export default class CachedRequest extends Request {
 
-  _apiCalls = [];
-  _isInvalidated = true;
+  _apiCalls: Array<ApiCallType> = [];
+  _isInvalidated: bool = true;
 
-  execute(...callArgs: Array<any>) {
+  execute(...callArgs: Array<any>): CachedRequest {
     // Do not continue if this request is already loading
     if (this._isWaitingForResponse) return this;
 
@@ -39,7 +40,7 @@ export default class CachedRequest extends Request {
     }), 0);
 
     // Issue api call & save it as promise that is handled to update the results of the operation
-    this._promise = new Promise((resolve, reject) => {
+    this.promise = new Promise((resolve, reject) => {
       this._api[this._method](...callArgs)
         .then((result) => {
           setTimeout(action(() => {
@@ -69,7 +70,7 @@ export default class CachedRequest extends Request {
     return this;
   }
 
-  invalidate(options: { immediately: bool } = { immediately: false }) {
+  invalidate(options: { immediately: bool } = { immediately: false }): CachedRequest {
     this._isInvalidated = true;
     if (options.immediately && this._currentApiCall) {
       return this.execute(...this._currentApiCall.args);
@@ -77,7 +78,7 @@ export default class CachedRequest extends Request {
     return this;
   }
 
-  patch(modify: Function) {
+  patch(modify: Function): Promise<any> {
     return new Promise((resolve) => {
       setTimeout(action(() => {
         const override = modify(this.result);
@@ -88,17 +89,17 @@ export default class CachedRequest extends Request {
     });
   }
 
-  removeCacheForCallWith(...args: Array<any>) {
-    remove(this._apiCalls, c => isEqual(c.args, args));
+  removeCacheForCallWith(...args: Array<any>): Array<ApiCallType> {
+    return remove(this._apiCalls, c => isEqual(c.args, args));
   }
 
-  _addApiCall(args: Array<any>) {
+  _addApiCall(args: Array<any>): ApiCallType {
     const newCall = { args, result: null };
     this._apiCalls.push(newCall);
     return newCall;
   }
 
-  _findApiCall(args: Array<any>) {
+  _findApiCall(args: Array<any>): ?ApiCallType {
     return this._apiCalls.find(c => isEqual(c.args, args));
   }
 

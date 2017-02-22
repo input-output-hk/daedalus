@@ -13,8 +13,7 @@ export default class SidebarStore extends Store {
   @observable hidden: bool = false;
   @observable isMaximized: bool = false;
 
-  constructor(...args) {
-    super(...args);
+  setup() {
     this.actions.toggleSidebar.listen(this._toggleSidebar);
     this.actions.toggleMaximized.listen(this._toggleMaximized);
     this.actions.sidebarCategorySelected.listen(this._onSidebarCategorySelected);
@@ -23,7 +22,7 @@ export default class SidebarStore extends Store {
     ]);
   }
 
-  @computed get wallets() {
+  @computed get wallets(): Array<SidebarWalletType> {
     const { wallets, networkStatus } = this.stores;
     return wallets.all.map(w => ({
       id: w.id,
@@ -41,7 +40,7 @@ export default class SidebarStore extends Store {
     this.isMaximized = !this.isMaximized;
   };
 
-  @action _onSidebarCategorySelected = ({ category }) => {
+  @action _onSidebarCategorySelected = ({ category }: { category: string }) => {
     if (category === this.currentCategory) {
       this._toggleMaximized();
     } else {
@@ -55,7 +54,14 @@ export default class SidebarStore extends Store {
     Object.keys(this.CATEGORIES).forEach((key) => {
       const category = this.CATEGORIES[key];
       if (route.indexOf(category) !== -1) this.currentCategory = category;
-    })
+    });
   }
 
 }
+
+export type SidebarWalletType = {
+  id: string,
+  title: string,
+  info: string,
+  isConnected: bool,
+};
