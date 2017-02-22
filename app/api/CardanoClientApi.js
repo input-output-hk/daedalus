@@ -14,9 +14,11 @@ import type {
 } from './index';
 import {
   // ApiMethodNotYetImplementedError,
+  GenericApiError,
   WalletAlreadyRestoredError,
   RedeemAdaError,
-  WalletKeyImportError
+  WalletKeyImportError,
+  NotEnoughMoneyToSendError
 } from './errors';
 
 // const notYetImplemented = () => new Promise((_, reject) => {
@@ -50,7 +52,7 @@ export default class CardanoClientApi {
     console.debug('CardanoClientApi::getTransactions called with', request);
     const history = await ClientApi.searchHistory(walletId, searchTerm, skip, limit);
     return new Promise((resolve) => resolve({
-      transactions: history[0].map(data => this.__createTransactionFromServerData(data, walletId)),
+      transactions: history[0].map(data => this._createTransactionFromServerData(data, walletId)),
       total: history[1]
     }));
   }
@@ -66,10 +68,19 @@ export default class CardanoClientApi {
     const { sender, receiver, amount, currency } = request;
     const description = 'no description provided';
     const title = 'no title provided';
-    const response = await ClientApi.sendExtended(
-      sender, receiver, amount, currency, title, description
-    );
-    return this.__createTransactionFromServerData(response);
+    try {
+      const response = await ClientApi.sendExtended(
+        sender, receiver, amount, currency, title, description
+      );
+      return this._createTransactionFromServerData(response);
+    } catch (error) {
+      console.error(error);
+      if (error.message.includes('Not enough money to send')) {
+        throw new NotEnoughMoneyToSendError();
+      }
+      throw new GenericApiError();
+    }
+
   }
 
   isValidAddress(currency: string, address: string): Promise<bool> {
@@ -91,7 +102,7 @@ export default class CardanoClientApi {
     });
   }
 
-  @action __createTransactionFromServerData(data: ServerTransactionStruct) {
+  @action _createTransactionFromServerData(data: ServerTransactionStruct) {
     const isOutgoing = data.ctType.tag === 'CTOut';
     const coins = data.ctAmount.getCoin;
     const { ctmTitle, ctmDescription, ctmDate } = data.ctType.contents;
