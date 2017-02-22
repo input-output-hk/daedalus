@@ -1,27 +1,33 @@
 // @flow
 import { observable, action, computed } from 'mobx';
 import { isEqual } from 'lodash/fp';
+import ExtendableError from 'es6-error';
+
+class NotExecutedYetError extends ExtendableError {
+  message = 'You have to call Request::execute before you can access it as promise';
+}
 
 export default class Request {
 
-  @observable result = null;
-  @observable error = null;
-  @observable isExecuting = false;
-  @observable isError = false;
-  @observable wasExecuted = false;
+  @observable result: any = null;
+  @observable error: any = null;
+  @observable isExecuting: bool = false;
+  @observable isError: bool = false;
+  @observable wasExecuted: bool = false;
 
-  _promise: ?Promise<any> = null;
+  promise: ?Promise<any> = null;
+
   _api: Object = {};
   _method: string = '';
   _isWaitingForResponse: bool = false;
-  _currentApiCall: ?{ args: Array<any>, result: any } = null;
+  _currentApiCall: ?ApiCallType = null;
 
   constructor(api: Object, method: string) {
     this._api = api;
     this._method = method;
   }
 
-  execute(...callArgs: Array<any>) {
+  execute(...callArgs: Array<any>): Request {
     // Do not continue if this request is already loading
     if (this._isWaitingForResponse) return this;
 
@@ -36,7 +42,7 @@ export default class Request {
     }), 0);
 
     // Issue api call & save it as promise that is handled to update the results of the operation
-    this._promise = new Promise((resolve, reject) => {
+    this.promise = new Promise((resolve, reject) => {
       this._api[this._method](...callArgs)
         .then((result) => {
           setTimeout(action(() => {
@@ -66,22 +72,26 @@ export default class Request {
     return this;
   }
 
-  isExecutingWithArgs(...args: Array<any>) {
-    return this.isExecuting && this._currentApiCall && isEqual(this._currentApiCall.args, args);
+  isExecutingWithArgs(...args: Array<any>): bool {
+    return (
+      this.isExecuting &&
+      (this._currentApiCall != null)
+      && isEqual(this._currentApiCall.args, args)
+    );
   }
 
   @computed get isExecutingFirstTime(): bool {
     return !this.wasExecuted && this.isExecuting;
   }
 
-  then(...args: Array<any>) {
-    if (!this._promise) throw new Error('You have to call Request::execute before you can access it as promise');
-    return this._promise.then(...args);
+  then(...args: Array<any>): Promise<any> {
+    if (!this.promise) throw new NotExecutedYetError();
+    return this.promise.then(...args);
   }
 
-  catch(...args: Array<any>) {
-    if (!this._promise) throw new Error('You have to call Request::execute before you can access it as promise');
-    return this._promise.catch(...args);
+  catch(...args: Array<any>): Promise<any> {
+    if (!this.promise) throw new NotExecutedYetError();
+    return this.promise.catch(...args);
   }
 
   reset() {
@@ -91,3 +101,8 @@ export default class Request {
   }
 
 }
+
+export type ApiCallType = {
+  args: Array<any>,
+  result: any,
+};

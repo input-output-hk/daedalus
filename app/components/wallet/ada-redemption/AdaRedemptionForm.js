@@ -5,8 +5,8 @@ import classnames from 'classnames';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import Button from 'react-toolbox/lib/button/Button';
 import Input from 'react-toolbox/lib/input/Input';
-import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import { defineMessages, intlShape } from 'react-intl';
+import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { InvalidMnemonicError } from '../../../i18n/global-errors';
@@ -173,13 +173,16 @@ export default class AdaRedemptionForm extends Component {
         </div>
 
         {showPassPhraseWidget && (
-          <Input className="pass-phrase" {...passPhrase.bind({
-            onBlur: event => {
-              event.preventDefault();
-              passPhrase.onBlur();
-              passPhrase.validate();
-            }
-          })} />
+          <Input
+            className="pass-phrase"
+            {...passPhrase.bind({
+              onBlur: event => {
+                event.preventDefault();
+                passPhrase.onBlur();
+                passPhrase.validate();
+              }
+            })}
+          />
         )}
 
         <Input

@@ -44,8 +44,8 @@ export default class Sidebar extends Component {
       WALLETS: PropTypes.string.isRequired,
       ADA_REDEMPTION: PropTypes.string.isRequired,
     }).isRequired,
-    // currentCategory: PropTypes.string.isRequired, // TODO: temporary disabled
-    onCategoryClicked: PropTypes.func,
+    // currentCategory: PropTypes.string.isRequired,
+    // onCategoryClicked: PropTypes.func, // TODO: temporary disabled
     hidden: PropTypes.bool,
     isMaximized: PropTypes.bool,
     activeWalletId: PropTypes.string,
@@ -99,14 +99,16 @@ export default class Sidebar extends Component {
             minimized={hasMinimizedCategories}
             onClick={() => {}}
           />
-          {/*<SidebarCategory*/}
-            {/*className="ada-redemption"*/}
-            {/*label={intl.formatMessage(messages.adaRedemptionCategoryLabel)}*/}
-            {/*icon={adaRedemptionIcon}*/}
-            {/*active={currentCategory === categories.ADA_REDEMPTION}*/}
-            {/*minimized={hasMinimizedCategories}*/}
-            {/*onClick={() => onCategoryClicked(categories.ADA_REDEMPTION)}*/}
-          {/*/>*/}
+          {/*
+          <SidebarCategory
+            className="ada-redemption"
+            label={intl.formatMessage(messages.adaRedemptionCategoryLabel)}
+            icon={adaRedemptionIcon}
+            active={currentCategory === categories.ADA_REDEMPTION}
+            minimized={hasMinimizedCategories}
+            onClick={() => onCategoryClicked(categories.ADA_REDEMPTION)}
+          />
+          */}
         </div>
         {subMenu}
       </div>

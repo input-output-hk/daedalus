@@ -1,5 +1,5 @@
 // @flow
-import { observable, action, computed} from 'mobx';
+import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
 
 export default class NetworkStatusStore extends Store {
@@ -8,26 +8,23 @@ export default class NetworkStatusStore extends Store {
   @observable hasBeenConnected = false;
   @observable localDifficulty = 0;
   @observable networkDifficulty = 0;
-  @observable isSyncedAfterLaunch = false;
   @observable isLoadingWallets = true;
 
   _localDifficultyStartedWith = null;
 
-  constructor(...args) {
-    super(...args);
+  setup() {
     this.registerReactions([
       this._redirectToWalletAfterSync,
-      this._computeSyncStatus,
       this._redirectToLoadingWhenDisconnected,
     ]);
     this._listenToServerStatusNotifications();
   }
 
-  @computed get isConnecting() {
+  @computed get isConnecting(): bool {
     return !this.isConnected;
   }
 
-  @computed get syncPercentage() {
+  @computed get syncPercentage(): number {
     if (this.networkDifficulty > 0 && this._localDifficultyStartedWith != null) {
       const relativeLocal = this.localDifficulty - this._localDifficultyStartedWith;
       const relativeNetwork = this.networkDifficulty - this._localDifficultyStartedWith;
@@ -36,23 +33,24 @@ export default class NetworkStatusStore extends Store {
     return 0;
   }
 
-  @computed get isSyncing() {
+  @computed get isSyncing(): bool {
     return !this.isConnecting && this.networkDifficulty > 0 && !this.isSynced;
   }
 
-  @computed get isSynced() {
+  @computed get isSynced(): bool {
     return !this.isConnecting && this.syncPercentage >= 100;
   }
 
   @action _listenToServerStatusNotifications() {
     this.api.notify((message) => {
-      if (message === "ConnectionClosed") {
-        return this.isConnected = false;
+      if (message === 'ConnectionClosed') {
+        this.isConnected = false;
+        return;
       }
       switch (message.tag) {
-        case "ConnectionOpened":
+        case 'ConnectionOpened':
           this.isConnected = true; break;
-        case "NetworkDifficultyChanged":
+        case 'NetworkDifficultyChanged':
           this.networkDifficulty = message.contents.getChainDifficulty;
           this.isConnected = true;
           this.hasBeenConnected = true;
@@ -64,27 +62,23 @@ export default class NetworkStatusStore extends Store {
           }
           this.localDifficulty = difficulty;
           break;
-        case "ConnectionClosedReconnecting":
+        case 'ConnectionClosedReconnecting':
           this.isConnected = false;
           break;
         default:
-          console.log("Unknown server notification received:", message);
+          console.log('Unknown server notification received:', message);
       }
     });
-  };
-
-  _computeSyncStatus = () => {
-    if (this.syncPercentage === 100) this.isSyncedAfterLaunch = true;
-  };
+  }
 
   _redirectToWalletAfterSync = () => {
     const { app, wallets } = this.stores;
-    if (this.isConnected && this.isSyncedAfterLaunch && wallets.hasLoadedWallets && app.currentRoute === '/') {
+    if (this.isConnected && this.isSynced && wallets.hasLoadedWallets && app.currentRoute === '/') {
       this.isLoadingWallets = false;
       if (wallets.first) {
         this.actions.goToRoute({ route: wallets.getWalletRoute(wallets.first.id) });
       } else {
-        this.actions.goToRoute({ route: '/no-wallets'});
+        this.actions.goToRoute({ route: '/no-wallets' });
       }
     }
   };

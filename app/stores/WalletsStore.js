@@ -26,10 +26,13 @@ export default class WalletsStore extends Store {
   @observable isWalletRestoreDialogOpen = false;
   @observable isWalletKeyImportDialogOpen = false;
 
-  _newWalletDetails = null;
+  _newWalletDetails: { name: string, currency: string, mnemonic: string, } = {
+    name: '',
+    currency: '',
+    mnemonic: ''
+  };
 
-  constructor(...args) {
-    super(...args);
+  setup() {
     this.actions.createPersonalWallet.listen(this._createPersonalWallet);
     this.actions.sendMoney.listen(this._sendMoney);
     this.actions.toggleAddWallet.listen(this._toggleAddWallet);
@@ -48,8 +51,11 @@ export default class WalletsStore extends Store {
     }
   }
 
-  _createPersonalWallet = async (params) => {
-    this._newWalletDetails = params;
+  _createPersonalWallet = async (params: {
+    name: string,
+    currency: string,
+  }) => {
+    Object.assign(this._newWalletDetails, params);
     try {
       const recoveryPhrase = await this.getWalletRecoveryPhraseRequest.execute();
       this.actions.initiateWalletBackup({ recoveryPhrase });
@@ -60,14 +66,22 @@ export default class WalletsStore extends Store {
 
   _finishWalletCreation = async () => {
     this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
-    const wallet = await this.createWalletRequest.execute(this._newWalletDetails);
-    await this.walletsRequest.patch(result => { result.push(wallet); });
-    this.goToWalletRoute(wallet.id);
-    this.isAddWalletDialogOpen = false;
+    const wallet = await this.createWalletRequest.execute(this._newWalletDetails).promise;
+    if (wallet) {
+      await this.walletsRequest.patch(result => {
+        result.push(wallet);
+      });
+      this.goToWalletRoute(wallet.id);
+      this.isAddWalletDialogOpen = false;
+    }
   };
 
-  _sendMoney = async (transactionDetails) => {
+  _sendMoney = async (transactionDetails: {
+    receiver: string,
+    amount: string,
+  }) => {
     const wallet = this.active;
+    if (!wallet) throw new Error('Active wallet required before sending.');
     await this.sendMoneyRequest.execute({
       ...transactionDetails,
       walletId: wallet.id,
@@ -79,49 +93,49 @@ export default class WalletsStore extends Store {
     this.goToWalletRoute(wallet.id);
   };
 
-  @computed get hasLoadedWallets() {
+  @computed get hasLoadedWallets(): bool {
     return this.walletsRequest.wasExecuted;
   }
 
-  @computed get hasAnyWallets() {
+  @computed get hasAnyWallets(): bool {
     return this.walletsRequest.wasExecuted && this.walletsRequest.result.length > 0;
   }
 
-  @computed get all() {
+  @computed get all(): Array<Wallet> {
     return this.walletsRequest.result ? this.walletsRequest.result : [];
   }
 
-  @computed get activeWalletRoute() {
+  @computed get activeWalletRoute(): ?string {
     if (!this.active) return null;
-    return this.getWalletRoute(this.active);
+    return this.getWalletRoute(this.active.id);
   }
 
-  @computed get hasAnyLoaded() {
+  @computed get hasAnyLoaded(): bool {
     return this.all.length > 0;
   }
 
-  @computed get first() {
+  @computed get first(): ?Wallet {
     return this.all.length > 0 ? this.all[0] : null;
   }
 
-  getWalletRoute(walletId: ?string, screen = 'home') {
+  getWalletRoute(walletId: string, screen: string = 'home'): string {
     return `${this.BASE_ROUTE}/${walletId}/${screen}`;
   }
 
-  isValidAddress(address: string) {
+  isValidAddress(address: string): bool {
     return this.api.isValidAddress('ADA', address);
   }
 
-  isValidMnemonic(mnemonic: string) {
+  isValidMnemonic(mnemonic: string): bool {
     return this.api.isValidMnemonic(mnemonic);
   }
 
-  @action refreshWalletsData = () => {
+  @action refreshWalletsData = async () => {
     if (this.stores.networkStatus.isConnected) {
-      this.walletsRequest.invalidate({ immediately: true });
-      this.walletsRequest.execute();
-      if (!this.walletsRequest.result) return;
-      const walletIds = this.walletsRequest.result.map((wallet: Wallet) => wallet.id);
+      this.walletsRequest.invalidate();
+      const result = await this.walletsRequest.execute();
+      if (!result) return;
+      const walletIds = result.map((wallet: Wallet) => wallet.id);
       this.stores.transactions.transactionsRequests = walletIds.map(walletId => ({
         walletId,
         recentRequest: this.stores.transactions._getTransactionsRecentRequest(walletId),
@@ -173,23 +187,30 @@ export default class WalletsStore extends Store {
     }
   };
 
-  @action _restoreWallet = async (params) => {
-    const restoredWallet = await this.restoreRequest.execute(params);
+  @action _restoreWallet = async (params: {
+    recoveryPhrase: string,
+    walletName: string,
+  }) => {
+    const restoredWallet = await this.restoreRequest.execute(params).promise;
+    if (!restoredWallet) throw new Error('Restored wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(restoredWallet);
     this._toggleWalletRestore();
     this.goToWalletRoute(restoredWallet.id);
     this.refreshWalletsData();
   };
 
-  @action _importWalletFromKey = async (params) => {
-    const importedWallet = await this.importFromKeyRequest.execute(params);
+  @action _importWalletFromKey = async (params: {
+    filePath: string,
+  }) => {
+    const importedWallet = await this.importFromKeyRequest.execute(params).promise;
+    if (!importedWallet) throw new Error('Imported wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(importedWallet);
     this._toggleWalletKeyImportDialog();
     this.goToWalletRoute(importedWallet.id);
     this.refreshWalletsData();
   };
 
-  goToWalletRoute(walletId) {
+  goToWalletRoute(walletId: string) {
     const route = this.getWalletRoute(walletId);
     this.actions.goToRoute({ route });
   }
@@ -222,10 +243,10 @@ export default class WalletsStore extends Store {
     }
   };
 
-  _patchWalletRequestWithNewWallet = async (wallet) => {
+  _patchWalletRequestWithNewWallet = async (wallet: Wallet) => {
     // Only add the new wallet if it does not exist yet in the result!
     await this.walletsRequest.patch(result => {
-      if(!_.find(result, { id: wallet.id })) result.push(wallet);
+      if (!_.find(result, { id: wallet.id })) result.push(wallet);
     });
   };
 

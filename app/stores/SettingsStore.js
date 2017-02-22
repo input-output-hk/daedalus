@@ -7,7 +7,7 @@ export default class SettingsStore extends Store {
 
   @observable termsOfUseRequest = new CachedRequest(this.api, 'getTermsOfUse');
 
-  @computed get termsOfUse() {
+  @computed get termsOfUse(): string {
     return this.termsOfUseRequest.execute().result;
   }
 }

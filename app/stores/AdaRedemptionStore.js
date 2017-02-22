@@ -19,18 +19,17 @@ export class AdaRedemptionCertificateParseError extends LocalizableError {
 
 export default class AdaRedemptionStore extends Store {
 
-  @observable certificate: File = null;
+  @observable certificate: ?File = null;
   @observable isCertificateEncrypted = false;
-  @observable passPhrase: string = null;
+  @observable passPhrase: ?string = null;
   @observable redemptionCode: string = '';
-  @observable walletId: string = null;
-  @observable error: LocalizableError = null;
+  @observable walletId: ?string = null;
+  @observable error: ?LocalizableError = null;
   @observable amountRedeemed: number = 0;
   @observable showAdaRedemptionSuccessMessage: bool = false;
   @observable redeemAdaRequest = new Request(this.api, 'redeemAda');
 
-  constructor(...args) {
-    super(...args);
+  setup() {
     this.actions.setRedemptionCertificate.listen(this._setCertificate);
     this.actions.setRedemptionPassPhrase.listen(this._setPassPhrase);
     this.actions.setRedemptionCode.listen(this._setRedemptionCode);
@@ -58,8 +57,10 @@ export default class AdaRedemptionStore extends Store {
   });
 
   _parseCodeFromCertificate() {
-    console.debug('Parsing ADA Redemption code from certificate', this.certificate.path);
-    ipcRenderer.send(PARSE_REDEMPTION_CODE.REQUEST, this.certificate.path, this.passPhrase);
+    if (this.certificate == null) throw new Error('Certificate File is required for parsing.');
+    const path = this.certificate.path;
+    console.debug('Parsing ADA Redemption code from certificate', path);
+    ipcRenderer.send(PARSE_REDEMPTION_CODE.REQUEST, path, this.passPhrase);
   }
 
   _onCodeParsed = action((event, code) => {

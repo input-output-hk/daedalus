@@ -164,10 +164,10 @@ export default class WalletSendForm extends Component {
       <div className={styles.component}>
 
         <div className={styles.fields}>
-          {/*<Input className="title" {...form.$('title').bind()} />*/}
+          {/* <Input className="title" {...form.$('title').bind()} /> */}
           <Input className="receiver" {...form.$('receiver').bind()} />
           <Input className="amount" {...form.$('amount').bind()} />
-          {/*<Input className="description" multiline {...form.$('description').bind()} />*/}
+          {/* <Input className="description" multiline {...form.$('description').bind()} /> */}
         </div>
 
         <Button
