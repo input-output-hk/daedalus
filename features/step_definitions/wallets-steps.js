@@ -4,14 +4,17 @@ import {
   expectActiveWallet,
   getNameOfActiveWalletInSidebar
 } from './lib/wallets-helpers';
+import path from 'path';
+
+const defaultWalletKeyFilePath = path.resolve(__dirname, '../support/default-wallet.key');
 
 export default function () {
 
   this.Given(/^I have a wallet$/, async function () {
-    const result = await this.client.executeAsync(function(done) {
+    const result = await this.client.executeAsync(function(filePath, done) {
       // This assumes that we always have a default wallet on the backend!
-      daedalus.api.getWallets().then((wallets) => done(wallets[0]));
-    });
+      daedalus.api.importWalletFromKey({ filePath }).then((wallet) => done(wallet));
+    }, defaultWalletKeyFilePath);
     this.wallet = result.value;
     this.wallets = [this.wallet];
   });
@@ -24,11 +27,12 @@ export default function () {
           mnemonic: daedalus.api.generateMnemonic().join(' ')
         });
       }))
-      .then((result) => {
+      .then(() => {
         daedalus.stores.wallets.walletsRequest.invalidate({ immediately: true }).then(done);
       })
       .catch((error) => done(error.stack));
     }, table.hashes());
+    console.log(result.value);
     this.wallets = result.value;
   });
 

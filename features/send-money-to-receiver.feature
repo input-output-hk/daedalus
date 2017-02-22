@@ -1,4 +1,4 @@
-@reset
+@reset @skip
 Feature: Send Money to Receiver
 
   Background:

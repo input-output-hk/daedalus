@@ -1,3 +1,4 @@
+@skip
 Feature: Toggle Sidebar
 
   Background:

@@ -26,9 +26,22 @@ export default function () {
   });
 
   // Make the electron app accessible in each scenario context
-  this.Before(function() {
+  this.Before({ timeout: 30 * 1000 }, async function() {
     this.client = context.app.client;
     this.browserWindow = context.app.browserWindow;
+    this.client.url('/');
+    this.client.timeoutsAsyncScript(30000);
+    // Waiting until we are synced with backend
+    await this.client.executeAsync(function(done) {
+      const checkSyncStatus = () => {
+        if (daedalus.stores.networkStatus.isSynced) {
+          done();
+        } else {
+          setTimeout(checkSyncStatus, 100);
+        }
+      };
+      checkSyncStatus();
+    });
   });
 
   this.Before({ tags: ["@reset"], timeout: 30 * 1000 }, async function() {

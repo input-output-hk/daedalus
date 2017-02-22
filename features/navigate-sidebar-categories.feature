@@ -1,3 +1,4 @@
+@skip
 Feature: Navigate Sidebar Categories
 
   Background:
