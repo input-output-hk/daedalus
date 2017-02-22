@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import Layout from '../MainLayout';
 
@@ -9,7 +9,7 @@ export default class NoWalletsPage extends Component {
   render() {
     return (
       <Layout>
-        <div></div>
+        <div />
       </Layout>
     );
   }

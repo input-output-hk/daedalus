@@ -31,7 +31,7 @@ export default class NodeUpdatePage extends Component {
       toggleNodeUpdateNotificationExpanded
     } = this.props.actions;
 
-    return(
+    return (
       <NodeUpdateNotification
         title={updateTitle}
         onAccept={acceptNodeUpdate}
@@ -40,7 +40,5 @@ export default class NodeUpdatePage extends Component {
         isExpanded={isNotificationExpanded}
       />
     );
-
   }
-
 }

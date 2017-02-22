@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import Layout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
+import { oneOrManyChildElements } from '../../propTypes';
 
 @inject('stores', 'actions') @observer
 export default class Wallet extends Component {
@@ -20,10 +21,11 @@ export default class Wallet extends Component {
     actions: PropTypes.shape({
       goToRoute: PropTypes.func.isRequired,
     }).isRequired,
+    children: oneOrManyChildElements,
   };
 
   isActiveScreen = (screen: string) => {
-    const { app, wallets} = this.props.stores;
+    const { app, wallets } = this.props.stores;
     if (!wallets.active) return false;
     const screenRoute = `${wallets.BASE_ROUTE}/${wallets.active.id}/${screen}`;
     return app.currentRoute === screenRoute;
@@ -40,7 +42,6 @@ export default class Wallet extends Component {
     return (
       <Layout>
         <WalletWithNavigation
-          wallet={wallets.active}
           isActiveScreen={this.isActiveScreen}
           onWalletNavItemClick={this.handleWalletNavItemClick}
         >

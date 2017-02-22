@@ -2,12 +2,10 @@
 import { observable, action } from 'mobx';
 import WalletTransaction from './WalletTransaction';
 
-export type WalletType = 'personal' | 'shared';
-
 export default class Wallet {
 
   id: string = '';
-  type: WalletType;
+  type: string;
   address: string = '';
   currency: string = '';
   @observable name: string = '';
@@ -16,7 +14,7 @@ export default class Wallet {
 
   constructor(data: {
     id: string,
-    type: WalletType,
+    type: string,
     name: string,
     address: string,
     currency: string,

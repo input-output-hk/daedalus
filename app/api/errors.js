@@ -1,5 +1,14 @@
 import LocalizableError from '../i18n/LocalizableError';
 
+export class GenericApiError extends LocalizableError {
+  constructor() {
+    super({
+      id: 'api.errors.GenericApiError',
+      defaultMessage: '!!!An error occured, please try again later.',
+    });
+  }
+}
+
 export class ApiMethodNotYetImplementedError extends LocalizableError {
   constructor() {
     super({
@@ -32,6 +41,15 @@ export class WalletKeyImportError extends LocalizableError {
     super({
       id: 'api.errors.WalletKeyImportError',
       defaultMessage: '!!!Key could not be imported, please make sure you are providing a correct key file.',
+    });
+  }
+}
+
+export class NotEnoughMoneyToSendError extends LocalizableError {
+  constructor() {
+    super({
+      id: 'api.errors.NotEnoughMoneyToSendError',
+      defaultMessage: '!!!Not enough money to make this transaction.',
     });
   }
 }

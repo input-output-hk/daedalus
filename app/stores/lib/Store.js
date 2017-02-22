@@ -7,7 +7,7 @@ export default class Store {
   api: Object = {};
   actions: Object = {};
 
-  _reactions = [];
+  _reactions: Array<Reaction> = [];
 
   constructor(stores: Object, api: Object, actions: Object) {
     this.stores = stores;
@@ -19,7 +19,10 @@ export default class Store {
     reactions.forEach(reaction => this._reactions.push(new Reaction(reaction)));
   }
 
+  setup() {}
+
   initialize() {
+    this.setup();
     this._reactions.forEach(reaction => reaction.start());
   }
 

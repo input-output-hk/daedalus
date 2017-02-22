@@ -5,15 +5,14 @@ import environment from '../environment';
 
 export default class WindowStore extends Store {
 
-  constructor(...args) {
-    super(...args);
+  setup() {
     const { resizeWindow } = this.actions;
     resizeWindow.listen(this._resizeWindow);
   }
 
   // PRIVATE
 
-  _resizeWindow = ({ width, height }) => {
+  _resizeWindow = ({ width, height }: { width: number, height: number }) => {
     ipcRenderer.send('resize-window', { width, height, animate: !environment.isTest() });
   };
 

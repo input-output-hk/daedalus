@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
@@ -52,6 +52,7 @@ export default class NodeUpdateNotification extends Component {
           </button>
         </div>
         {isExpanded && message && (
+          // eslint-disable-next-line react/no-danger
           <div className={styles.message} dangerouslySetInnerHTML={{ __html: message }} />
         )}
         {isExpanded && (
