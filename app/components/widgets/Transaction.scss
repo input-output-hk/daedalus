@@ -1,5 +1,7 @@
 @import '../../themes/daedalus/theme';
 
+$type-box-size: 54px;
+
 .component {
   width: 100%;
   display: flex;
@@ -9,8 +11,8 @@
 // ========= TYPE INDICATORS FOR TRANSACTIONS =========
 
 %type-box {
-  width: 54px;
-  height: 54px;
+  width: $type-box-size;
+  height: $type-box-size;
   background: no-repeat center;
   background-size: 30px;
   border-radius: 10px;
@@ -45,8 +47,8 @@
 // ========= DETAILS =========
 
 .content {
-  width: 100%;
-  margin-left: 20px;
+  width: calc(100% - #{$type-box-size});
+  padding-left: 20px;
   border-bottom: 1px solid #dfe4e8;
   padding-bottom: 22px;
   padding-top: 6px;
@@ -68,6 +70,7 @@
   span {
     font-family: $font-light;
     font-size: 14px;
+    word-break: break-all;
   }
 }
 
