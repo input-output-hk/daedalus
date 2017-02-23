@@ -50,6 +50,7 @@ writeUninstallerNSIS fullVersion = do
     _ <- constantStr "Version" (str fullVersion)
     name "Daedalus Uninstaller $Version"
     outFile . str $ tempDir <> "\\tempinstaller.exe"
+    injectGlobalLiteral "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
     injectGlobalLiteral "SetCompress off"
     _ <- section "" [Required] $ do
       injectLiteral $ "WriteUninstaller \"" <> tempDir <> "\\uninstall.exe\""
@@ -61,6 +62,11 @@ writeUninstallerNSIS fullVersion = do
       rmdir [Recursive,RebootOK] "$INSTDIR"
       delete [] "$SMPROGRAMS/Daedalus/*.*"
       delete [] "$DESKTOP\\Daedalus.lnk"
+      mapM_ injectLiteral
+        [ "liteFirewall::RemoveRule \"$INSTDIR\\cardano-node.exe\" \"Cardano Node\""
+        , "Pop $0"
+        , "DetailPrint \"liteFirewall::RemoveRule: $0\""
+        ]
       -- Note: we leave user data alone
 
 -- See non-INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
@@ -111,6 +117,7 @@ writeInstallerNSIS fullVersion = do
     injectGlobalLiteral "Unicode true"
     installDir "$PROGRAMFILES64\\Daedalus"   -- The default installation directory
     requestExecutionLevel Highest
+    injectGlobalLiteral "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
 
     page Directory                   -- Pick where to install
     page InstFiles                   -- Give a progress bar while installing
@@ -130,6 +137,12 @@ writeInstallerNSIS fullVersion = do
         file [] "version.txt"
         file [Recursive] "dlls\\"
         file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
+
+        mapM_ injectLiteral
+          [ "liteFirewall::AddRule \"$INSTDIR\\cardano-node.exe\" \"Cardano Node\""
+          , "Pop $0"
+          , "DetailPrint \"liteFirewall::AddRule: $0\""
+          ]
 
         -- Uninstaller
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "InstallLocation" "$PROGRAMFILES64\\Daedalus"
