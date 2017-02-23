@@ -14,9 +14,11 @@ export default class NodeUpdatePage extends Component {
       }),
     }).isRequired,
     actions: PropTypes.shape({
-      acceptNodeUpdate: PropTypes.func.isRequired,
-      postponeNodeUpdate: PropTypes.func.isRequired,
-      toggleNodeUpdateNotificationExpanded: PropTypes.func.isRequired,
+      nodeUpdate: PropTypes.shape({
+        acceptNodeUpdate: PropTypes.func.isRequired,
+        postponeNodeUpdate: PropTypes.func.isRequired,
+        toggleNodeUpdateNotificationExpanded: PropTypes.func.isRequired,
+      }),
     }).isRequired
   };
 
@@ -29,7 +31,7 @@ export default class NodeUpdatePage extends Component {
       acceptNodeUpdate,
       postponeNodeUpdate,
       toggleNodeUpdateNotificationExpanded
-    } = this.props.actions;
+    } = this.props.actions.nodeUpdate;
 
     return (
       <NodeUpdateNotification

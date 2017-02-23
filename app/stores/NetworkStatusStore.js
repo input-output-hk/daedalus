@@ -76,16 +76,16 @@ export default class NetworkStatusStore extends Store {
     if (this.isConnected && this.isSynced && wallets.hasLoadedWallets && app.currentRoute === '/') {
       this.isLoadingWallets = false;
       if (wallets.first) {
-        this.actions.goToRoute({ route: wallets.getWalletRoute(wallets.first.id) });
+        this.actions.router.goToRoute({ route: wallets.getWalletRoute(wallets.first.id) });
       } else {
-        this.actions.goToRoute({ route: '/no-wallets' });
+        this.actions.router.goToRoute({ route: '/no-wallets' });
       }
     }
   };
 
   _redirectToLoadingWhenDisconnected = () => {
     if (!this.isConnected) {
-      this.actions.goToRoute({ route: '/' });
+      this.actions.router.goToRoute({ route: '/' });
     }
   };
 

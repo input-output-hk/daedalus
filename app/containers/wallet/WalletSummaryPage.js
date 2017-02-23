@@ -38,7 +38,9 @@ export default class WalletSummaryPage extends Component {
       }),
     }).isRequired,
     actions: PropTypes.shape({
-      closeAdaRedemptionSuccessOverlay: PropTypes.func.isRequired,
+      adaRedemption: PropTypes.shape({
+        closeAdaRedemptionSuccessOverlay: PropTypes.func.isRequired,
+      }),
     }).isRequired,
   };
 

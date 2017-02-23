@@ -7,7 +7,7 @@ export default class AppStore extends Store {
   @observable currentLocale = 'en-US';
 
   setup() {
-    this.actions.goToRoute.listen(this._updateRouteLocation);
+    this.actions.router.goToRoute.listen(this._updateRouteLocation);
   }
 
   @computed get currentRoute(): string {
