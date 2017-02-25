@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import Input from 'react-toolbox/lib/input/Input';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
-import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
+import CustomMobxReactForm from '../../lib/CustomMobxReactForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import { isValidWalletName } from '../../lib/validations';
 import globalMessages from '../../i18n/global-messages';
@@ -69,7 +69,7 @@ export default class WalletRestoreDialog extends Component {
     isSubmitting: false
   };
 
-  form = new ReactToolboxMobxForm({
+  form = new CustomMobxReactForm({
     fields: {
       walletName: {
         label: this.context.intl.formatMessage(messages.walletNameInputLabel),

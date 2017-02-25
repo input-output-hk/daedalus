@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
-import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
+import CustomMobxReactForm from '../../../lib/CustomMobxReactForm';
 import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './WalletKeyImportDialog.scss';
@@ -57,7 +57,7 @@ export default class WalletKeyImportDialog extends Component {
     });
   };
 
-  form = new ReactToolboxMobxForm({
+  form = new CustomMobxReactForm({
     fields: {
       keyFile: {
         label: this.context.intl.formatMessage(messages.keyFileLabel),
