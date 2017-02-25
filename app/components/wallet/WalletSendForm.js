@@ -8,6 +8,7 @@ import classnames from 'classnames';
 import CustomMobxReactForm from '../../lib/CustomMobxReactForm';
 import TextInput from '../forms/TextInput';
 import TextInputSkin from '../forms/TextInputSkin';
+import CurrencyTextInputSkin from '../forms/CurrencyTextInputSkin';
 import styles from './WalletSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -157,14 +158,22 @@ export default class WalletSendForm extends Component {
     const { form } = this;
     const { intl } = this.context;
     const { isSubmitting, error } = this.props;
-    console.log(form.$('receiver').bind());
     return (
       <div className={styles.component}>
 
         <div className={styles.fields}>
           {/* <Input className="title" {...form.$('title').bind()} /> */}
-          <TextInput className="receiver" skin={<TextInputSkin />} {...form.$('receiver').bind()} />
-          <TextInput className="amount" skin={<TextInputSkin />} {...form.$('amount').bind()} />
+          <TextInput
+            className="receiver"
+            skin={<TextInputSkin />}
+            {...form.$('receiver').bind()}
+          />
+          <TextInput
+            className="amount"
+            skin={<CurrencyTextInputSkin />}
+            currency="ADA"
+            {...form.$('amount').bind()}
+          />
           {/* <Input className="description" multiline {...form.$('description').bind()} /> */}
         </div>
 

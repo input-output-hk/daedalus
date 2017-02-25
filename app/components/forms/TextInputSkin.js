@@ -1,6 +1,6 @@
 import React from 'react';
-import styles from './TextInputSkin.scss';
 import classnames from 'classnames';
+import styles from './TextInputSkin.scss';
 
 export default (props) => (
   <div

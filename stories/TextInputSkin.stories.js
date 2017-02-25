@@ -5,6 +5,7 @@ import StoryDecorator from './support/StoryDecorator';
 import PropsObserver from './support/PropsObserver';
 import TextInput from '../app/components/forms/TextInput';
 import TextInputSkin from '../app/components/forms/TextInputSkin';
+import CurrencyTextInputSkin from '../app/components/forms/CurrencyTextInputSkin';
 
 storiesOf('TextInput', module)
 
@@ -18,34 +19,31 @@ storiesOf('TextInput', module)
 
   .add('plain', () => <TextInput skin={<TextInputSkin />} />)
 
-  .add('label', () => <TextInput skin={<TextInputSkin label="Some label" />} />)
+  .add('label', () => <TextInput label="Some label" skin={<TextInputSkin />} />)
 
-  .add('placeholder', () => <TextInput skin={<TextInputSkin placeholder="Username" />} />)
+  .add('placeholder', () => <TextInput placeholder="Username" skin={<TextInputSkin />} />)
 
   .add('disabled', () => (
     <TextInput
+      label="Disabled Input"
+      placeholder="disabled"
       disabled
-      skin={<TextInputSkin placeholder="disabled" label="Disabled Input" />}
+      skin={<TextInputSkin />}
     />
   ))
 
   .add('error', () => (
     <TextInput
       value="Franz"
-      error="Usernames must be at least 8 characters long"
-      skin={<TextInputSkin label="Username" />}
+      error="Requires at least 8 characters"
+      label="Username"
+      skin={<TextInputSkin />}
     />
   ))
 
   .add('type=password', () => {
-    const state = observable({value: ''});
     return (
-      <PropsObserver propsForChildren={state}>
-        <TextInput
-          skin={<TextInputSkin type="password" />}
-          onChange={mobxAction((value) => { state.value = value; })}
-        />
-      </PropsObserver>
+      <TextInput value="secret" type="password" skin={<TextInputSkin />} />
     );
   })
 
@@ -69,9 +67,10 @@ storiesOf('TextInput', module)
     return (
       <PropsObserver propsForChildren={state}>
         <TextInput
+          label="Input with max. 5 Characters"
           onChange={mobxAction((value) => { state.value = value; })}
           maxLength={5}
-          skin={<TextInputSkin label="Input with max. 5 Characters" />}
+          skin={<TextInputSkin />}
         />
       </PropsObserver>
     );
@@ -83,14 +82,24 @@ storiesOf('TextInput', module)
     return (
       <PropsObserver propsForChildren={state}>
         <TextInput
+          label="Type to see events logged"
           onChange={mobxAction((value, event) => {
             onChangeAction(value, event);
             state.value = value;
           })}
           onKeyPress={action('onKeyPress')}
           maxLength={5}
-          skin={<TextInputSkin label="Type to see events logged" />}
+          skin={<TextInputSkin />}
         />
       </PropsObserver>
     );
+  })
+
+  .add('CurrencyTextInputSkin', () => {
+    return <TextInput
+      label="Amount"
+      placeholder="Amount in"
+      currency="ADA"
+      skin={<CurrencyTextInputSkin />}
+    />
   });
