@@ -10,7 +10,7 @@ export default class NetworkStatusStore extends Store {
   @observable networkDifficulty = 0;
   @observable isLoadingWallets = true;
 
-  _localDifficultyStartedWith = null;
+  @observable _localDifficultyStartedWith = null;
 
   setup() {
     this.registerReactions([
@@ -25,9 +25,12 @@ export default class NetworkStatusStore extends Store {
   }
 
   @computed get syncPercentage(): number {
-    if (this.networkDifficulty > 0 && this._localDifficultyStartedWith != null) {
+    if (this.networkDifficulty > 0 && this._localDifficultyStartedWith !== null) {
       const relativeLocal = this.localDifficulty - this._localDifficultyStartedWith;
       const relativeNetwork = this.networkDifficulty - this._localDifficultyStartedWith;
+      // In case node when node is in sync after first local difficulty messages
+      // local and network difficulty will be the same
+      if (relativeLocal === relativeNetwork) return 100;
       return relativeLocal / relativeNetwork * 100;
     }
     return 0;
@@ -55,12 +58,12 @@ export default class NetworkStatusStore extends Store {
           this.isConnected = true;
           this.hasBeenConnected = true;
           break;
-        case "LocalDifficultyChanged":
+        case 'LocalDifficultyChanged':
           const difficulty = message.contents.getChainDifficulty;
-          if (this._localDifficultyStartedWith == null) {
+          this.localDifficulty = difficulty;
+          if (this._localDifficultyStartedWith === null) {
             this._localDifficultyStartedWith = difficulty;
           }
-          this.localDifficulty = difficulty;
           break;
         case 'ConnectionClosedReconnecting':
           this.isConnected = false;
@@ -75,6 +78,7 @@ export default class NetworkStatusStore extends Store {
     const { app, wallets } = this.stores;
     if (this.isConnected && this.isSynced && wallets.hasLoadedWallets && app.currentRoute === '/') {
       this.isLoadingWallets = false;
+      this._localDifficultyStartedWith = null;
       if (wallets.first) {
         this.actions.goToRoute({ route: wallets.getWalletRoute(wallets.first.id) });
       } else {
@@ -85,6 +89,7 @@ export default class NetworkStatusStore extends Store {
 
   _redirectToLoadingWhenDisconnected = () => {
     if (!this.isConnected) {
+      this._localDifficultyStartedWith = null;
       this.actions.goToRoute({ route: '/' });
     }
   };
