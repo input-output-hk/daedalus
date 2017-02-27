@@ -78,7 +78,6 @@ export default class NetworkStatusStore extends Store {
     const { app, wallets } = this.stores;
     if (this.isConnected && this.isSynced && wallets.hasLoadedWallets && app.currentRoute === '/') {
       this.isLoadingWallets = false;
-      this._localDifficultyStartedWith = null;
       if (wallets.first) {
         this.actions.goToRoute({ route: wallets.getWalletRoute(wallets.first.id) });
       } else {
