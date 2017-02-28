@@ -12,7 +12,9 @@ export default class PropsObserver extends Component {
     const { propsForChildren } = this.props;
     return (
       <div>
-        {React.Children.map(this.props.children, (child) => React.cloneElement(child, propsForChildren))}
+        {React.Children.map(this.props.children, (child) => (
+          React.cloneElement(child, propsForChildren)
+        ))}
       </div>
     );
   }

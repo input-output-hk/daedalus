@@ -8,4 +8,4 @@ import './Widgets.stories';
 import './AdaRedemptionDialog.stories';
 import './AddWallet.stories';
 import './WalletSummary.stories';
-import './TextInputSkin.stories';
+// import './CurrencyInput.stories';

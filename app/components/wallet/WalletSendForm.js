@@ -6,9 +6,9 @@ import { defineMessages, intlShape } from 'react-intl';
 import isInt from 'validator/lib/isInt';
 import classnames from 'classnames';
 import CustomMobxReactForm from '../../lib/CustomMobxReactForm';
-import TextInput from '../forms/TextInput';
-import TextInputSkin from '../forms/TextInputSkin';
-import CurrencyTextInputSkin from '../forms/CurrencyTextInputSkin';
+import Input from 'react-polymorph/lib/components/Input';
+import InputSkin from 'react-polymorph/lib/skins/InputSkin';
+import CurrencyInputSkin from '../forms/CurrencyInputSkin';
 import styles from './WalletSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -163,15 +163,15 @@ export default class WalletSendForm extends Component {
 
         <div className={styles.fields}>
           {/* <Input className="title" {...form.$('title').bind()} /> */}
-          <TextInput
+          <Input
             className="receiver"
-            skin={<TextInputSkin />}
+            skin={<InputSkin />}
             {...form.$('receiver').bind()}
           />
-          <TextInput
+          <Input
             className="amount"
-            skin={<CurrencyTextInputSkin />}
             currency="ADA"
+            skin={<CurrencyInputSkin />}
             {...form.$('amount').bind()}
           />
           {/* <Input className="description" multiline {...form.$('description').bind()} /> */}
