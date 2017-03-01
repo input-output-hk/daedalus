@@ -104,6 +104,7 @@ export default class NetworkStatusStore extends Store {
       } else {
         this.actions.router.goToRoute({ route: '/no-wallets' });
       }
+      this.actions.networkStatus.isSyncedAndReady();
     }
   };
 

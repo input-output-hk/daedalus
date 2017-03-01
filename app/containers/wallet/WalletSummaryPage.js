@@ -3,9 +3,9 @@ import React, { Component, PropTypes } from 'react';
 import { observer, inject, PropTypes as MobxPropTypes } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import Wallet from '../../domain/Wallet';
-import WalletTransactionsList from '../../components/wallet/home/WalletTransactionsList';
+import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
 import WalletSummary from '../../components/wallet/summary/WalletSummary';
-import WalletNoTransactions from '../../components/wallet/home/WalletNoTransactions';
+import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import Request from '../../stores/lib/Request';
 import AdaRedemptionSuccessOverlay from '../../components/wallet/ada-redemption/AdaRedemptionSuccessOverlay';
 
