@@ -44,6 +44,15 @@ export default class MainLayout extends Component {
         isUpdateAvailable: PropTypes.bool.isRequired,
         isUpdatePostponed: PropTypes.bool.isRequired,
       }).isRequired,
+      sidebar: PropTypes.shape({
+        isHidden: PropTypes.bool.isRequired,
+        isShowingSubMenus: PropTypes.bool.isRequired,
+        CATEGORIES: PropTypes.shape({
+          WALLETS: PropTypes.string.isRequired,
+          ADA_REDEMPTION: PropTypes.string.isRequired,
+        }).isRequired,
+        currentCategory: PropTypes.string.isRequired,
+      }).isRequired,
     }).isRequired,
     actions: PropTypes.shape({
       router: PropTypes.shape({
@@ -70,16 +79,13 @@ export default class MainLayout extends Component {
     this.props.actions.wallets.restoreWallet(values);
   };
 
-  routeToWallet = (walletId: string) => {
-    const { actions, stores } = this.props;
-    actions.router.goToRoute({ route: stores.wallets.getWalletRoute(walletId) });
-  };
-
   render() {
     const { actions, stores } = this.props;
     const { sidebar, wallets, networkStatus } = stores;
     const { restoreRequest, isWalletKeyImportDialogOpen } = wallets;
-    const { toggleAddWallet, toggleCreateWalletDialog, toggleWalletRestore } = actions.wallets;
+    const {
+      toggleAddWallet, toggleCreateWalletDialog, toggleWalletRestore
+    } = actions.wallets;
     const { isSynced, syncPercentage } = networkStatus;
     const activeWallet = stores.wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
@@ -92,15 +98,17 @@ export default class MainLayout extends Component {
         items: sidebar.wallets,
         actions: {
           onAddWallet: toggleAddWallet,
-          onWalletItemClick: this.routeToWallet,
+          onWalletItemClick: (walletId: string) => {
+            actions.sidebar.walletSelected({ walletId });
+          }
         }
       }
     };
     const sidebarComponent = (
       <Sidebar
         menus={sidebarMenus}
-        hidden={sidebar.hidden}
-        isMaximized={sidebar.isMaximized}
+        isHidden={sidebar.isHidden}
+        isShowingSubMenus={sidebar.isShowingSubMenus}
         categories={sidebar.CATEGORIES}
         currentCategory={sidebar.currentCategory}
         onCategoryClicked={category => actions.sidebar.sidebarCategorySelected({ category })}

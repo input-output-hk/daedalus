@@ -96,7 +96,7 @@ export default class WalletTransactionsPage extends Component {
     }
 
     return (
-      <div style={{ height: '100%' }}>
+      <div>
         {/* transactionSearch */}
         {walletTransactions}
       </div>
