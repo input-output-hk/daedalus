@@ -44,6 +44,8 @@ export default class SidebarStore extends Store {
 
   @action _toggleSidebar = () => {
     this.isHidden = !this.isHidden;
+    // Also show sub menus when un-hiding the sidebar
+    if (!this.isHidden) this.isShowingSubMenus = true;
   };
 
   @action _toggleSubMenus = () => {
