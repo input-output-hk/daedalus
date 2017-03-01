@@ -34,7 +34,7 @@ export default class Sidebar extends Component {
 
   render() {
     const {
-      hidden, menus, activeWalletId, categories, currentCategory,
+      isHidden, menus, activeWalletId, categories, currentCategory,
       isShowingSubMenus, onCategoryClicked
     } = this.props;
 
@@ -56,7 +56,7 @@ export default class Sidebar extends Component {
       default:
     }
 
-    if (hidden) {
+    if (isHidden) {
       sidebarStyle = styles.hidden;
     } else if (!isShowingSubMenus || subMenu == null) {
       sidebarStyle = styles.minimized
