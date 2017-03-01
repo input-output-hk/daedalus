@@ -6,8 +6,7 @@ import environment from '../environment';
 export default class WindowStore extends Store {
 
   setup() {
-    const { resizeWindow } = this.actions;
-    resizeWindow.listen(this._resizeWindow);
+    this.actions.window.resizeWindow.listen(this._resizeWindow);
   }
 
   // PRIVATE

@@ -15,12 +15,14 @@ export default class WalletSendPage extends Component {
       })
     }),
     actions: PropTypes.shape({
-      sendMoney: PropTypes.func.isRequired,
+      wallets: PropTypes.shape({
+        sendMoney: PropTypes.func.isRequired,
+      }),
     }),
   };
 
   handleWalletSendFormSubmit(values: Object) {
-    this.props.actions.sendMoney(values);
+    this.props.actions.wallets.sendMoney(values);
   }
 
   render() {

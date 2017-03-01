@@ -14,9 +14,10 @@ export default class SidebarStore extends Store {
   @observable isMaximized: bool = false;
 
   setup() {
-    this.actions.toggleSidebar.listen(this._toggleSidebar);
-    this.actions.toggleMaximized.listen(this._toggleMaximized);
-    this.actions.sidebarCategorySelected.listen(this._onSidebarCategorySelected);
+    const actions = this.actions.sidebar;
+    actions.toggleSidebar.listen(this._toggleSidebar);
+    actions.toggleMaximized.listen(this._toggleMaximized);
+    actions.sidebarCategorySelected.listen(this._onSidebarCategorySelected);
     this.registerReactions([
       this._syncSidebarRouteWithRouter,
     ]);
@@ -44,7 +45,7 @@ export default class SidebarStore extends Store {
     if (category === this.currentCategory) {
       this._toggleMaximized();
     } else {
-      this.actions.goToRoute({ route: category });
+      this.actions.router.goToRoute({ route: category });
     }
     this.currentCategory = category;
   };

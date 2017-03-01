@@ -9,8 +9,10 @@ export default class WalletKeyImportPage extends Component {
 
   static propTypes = {
     actions: PropTypes.shape({
-      importWalletFromKey: PropTypes.func.isRequired,
-      toggleWalletKeyImportDialog: PropTypes.func.isRequired,
+      wallets: PropTypes.shape({
+        importWalletFromKey: PropTypes.func.isRequired,
+        toggleWalletKeyImportDialog: PropTypes.func.isRequired,
+      }),
     }),
     stores: PropTypes.shape({
       wallets: PropTypes.shape({
@@ -20,13 +22,13 @@ export default class WalletKeyImportPage extends Component {
   };
 
   onSubmit = (values: { filePath: string }) => {
-    this.props.actions.importWalletFromKey(values);
+    this.props.actions.wallets.importWalletFromKey(values);
   };
 
   render() {
     const { wallets } = this.props.stores;
     const { importFromKeyRequest } = wallets;
-    const { toggleWalletKeyImportDialog } = this.props.actions;
+    const { toggleWalletKeyImportDialog } = this.props.actions.wallets;
 
     return (
       <WalletKeyImportDialog

@@ -19,7 +19,9 @@ export default class Wallet extends Component {
       }).isRequired,
     }).isRequired,
     actions: PropTypes.shape({
-      goToRoute: PropTypes.func.isRequired,
+      router: PropTypes.shape({
+        goToRoute: PropTypes.func.isRequired,
+      }),
     }).isRequired,
     children: oneOrManyChildElements,
   };
@@ -33,7 +35,7 @@ export default class Wallet extends Component {
 
   handleWalletNavItemClick = (item: string) => {
     const { wallets } = this.props.stores;
-    this.props.actions.goToRoute({ route: `${wallets.BASE_ROUTE}/${wallets.active.id}/${item}` });
+    this.props.actions.router.goToRoute({ route: `${wallets.BASE_ROUTE}/${wallets.active.id}/${item}` });
   };
 
   render() {
