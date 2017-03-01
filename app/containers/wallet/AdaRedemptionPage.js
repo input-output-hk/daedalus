@@ -12,10 +12,12 @@ export default class AdaRedemptionPage extends Component {
 
   static propTypes = {
     actions: PropTypes.shape({
-      redeemAda: PropTypes.func.isRequired,
-      setRedemptionCertificate: PropTypes.func.isRequired,
-      setRedemptionPassPhrase: PropTypes.func.isRequired,
-      setRedemptionCode: PropTypes.func.isRequired,
+      adaRedemption: PropTypes.shape({
+        redeemAda: PropTypes.func.isRequired,
+        setCertificate: PropTypes.func.isRequired,
+        setPassPhrase: PropTypes.func.isRequired,
+        setRedemptionCode: PropTypes.func.isRequired,
+      }),
     }),
     stores: PropTypes.shape({
       wallets: PropTypes.shape({
@@ -38,8 +40,8 @@ export default class AdaRedemptionPage extends Component {
     const { wallets, adaRedemption } = this.props.stores;
     const { redeemAdaRequest, isCertificateEncrypted } = adaRedemption;
     const {
-      setRedemptionCertificate, setRedemptionPassPhrase, setRedemptionCode
-    } = this.props.actions;
+      setCertificate, setPassPhrase, setRedemptionCode
+    } = this.props.actions.adaRedemption;
 
     const selectableWallets = wallets.all.map((w) => ({
       value: w.id, label: w.name
@@ -50,8 +52,8 @@ export default class AdaRedemptionPage extends Component {
     return (
       <Layout>
         <AdaRedemptionForm
-          onCertificateSelected={(certificate) => setRedemptionCertificate({ certificate })}
-          onPassPhraseChanged={(passPhrase) => setRedemptionPassPhrase({ passPhrase })}
+          onCertificateSelected={(certificate) => setCertificate({ certificate })}
+          onPassPhraseChanged={(passPhrase) => setPassPhrase({ passPhrase })}
           onRedemptionCodeChanged={(redemptionCode) => setRedemptionCode({ redemptionCode })}
           redemptionCode={adaRedemption.redemptionCode}
           wallets={selectableWallets}

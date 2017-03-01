@@ -30,12 +30,13 @@ export default class AdaRedemptionStore extends Store {
   @observable redeemAdaRequest = new Request(this.api, 'redeemAda');
 
   setup() {
-    this.actions.setRedemptionCertificate.listen(this._setCertificate);
-    this.actions.setRedemptionPassPhrase.listen(this._setPassPhrase);
-    this.actions.setRedemptionCode.listen(this._setRedemptionCode);
-    this.actions.redeemAda.listen(this._redeemAda);
-    this.actions.adaSuccessfullyRedeemed.listen(this._onAdaSuccessfullyRedeemed);
-    this.actions.closeAdaRedemptionSuccessOverlay.listen(this._onCloseAdaRedemptionSuccessOverlay);
+    const actions = this.actions.adaRedemption;
+    actions.setCertificate.listen(this._setCertificate);
+    actions.setPassPhrase.listen(this._setPassPhrase);
+    actions.setRedemptionCode.listen(this._setRedemptionCode);
+    actions.redeemAda.listen(this._redeemAda);
+    actions.adaSuccessfullyRedeemed.listen(this._onAdaSuccessfullyRedeemed);
+    actions.closeAdaRedemptionSuccessOverlay.listen(this._onCloseAdaRedemptionSuccessOverlay);
     ipcRenderer.on(PARSE_REDEMPTION_CODE.SUCCESS, this._onCodeParsed);
     ipcRenderer.on(PARSE_REDEMPTION_CODE.ERROR, this._onParseError);
   }

@@ -127,7 +127,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
                 word={word}
                 key={index}
                 isActive={isActive}
-                onClick={onAddWord}
+                onClick={(value) => isActive && onAddWord(value)}
               />
             ))}
           </div>

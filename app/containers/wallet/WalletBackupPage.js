@@ -25,16 +25,18 @@ export default class WalletBackupPage extends Component {
       }),
     }).isRequired,
     actions: PropTypes.shape({
-      startWalletBackup: PropTypes.func.isRequired,
-      continueToRecoveryPhraseForWalletBackup: PropTypes.func.isRequired,
-      addWordToWalletBackupVerification: PropTypes.func.isRequired,
-      clearEnteredRecoveryPhrase: PropTypes.func.isRequired,
-      acceptWalletBackupTermDevice: PropTypes.func.isRequired,
-      acceptWalletBackupTermRecovery: PropTypes.func.isRequired,
-      restartWalletBackup: PropTypes.func.isRequired,
-      cancelWalletBackup: PropTypes.func.isRequired,
-      finishWalletBackup: PropTypes.func.isRequired,
-      acceptPrivacyNoticeForWalletBackup: PropTypes.func.isRequired
+      walletBackup: PropTypes.shape({
+        startWalletBackup: PropTypes.func.isRequired,
+        continueToRecoveryPhraseForWalletBackup: PropTypes.func.isRequired,
+        addWordToWalletBackupVerification: PropTypes.func.isRequired,
+        clearEnteredRecoveryPhrase: PropTypes.func.isRequired,
+        acceptWalletBackupTermDevice: PropTypes.func.isRequired,
+        acceptWalletBackupTermRecovery: PropTypes.func.isRequired,
+        restartWalletBackup: PropTypes.func.isRequired,
+        cancelWalletBackup: PropTypes.func.isRequired,
+        finishWalletBackup: PropTypes.func.isRequired,
+        acceptPrivacyNoticeForWalletBackup: PropTypes.func.isRequired
+      }),
     }).isRequired
   };
 
@@ -61,7 +63,7 @@ export default class WalletBackupPage extends Component {
       finishWalletBackup,
       acceptPrivacyNoticeForWalletBackup,
       continueToRecoveryPhraseForWalletBackup
-    } = this.props.actions;
+    } = this.props.actions.walletBackup;
 
     if (currentStep === 'privacyWarning') {
       return (
