@@ -51,7 +51,7 @@ export default class MainLayout extends Component {
           WALLETS: PropTypes.string.isRequired,
           ADA_REDEMPTION: PropTypes.string.isRequired,
         }).isRequired,
-        currentCategory: PropTypes.string.isRequired,
+        currentCategory: PropTypes.string,
       }).isRequired,
     }).isRequired,
     actions: PropTypes.shape({
