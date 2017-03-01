@@ -28,7 +28,7 @@ export default class WalletKeyImportPage extends Component {
   render() {
     const { wallets } = this.props.stores;
     const { importFromKeyRequest } = wallets;
-    const { toggleWalletKeyImportDialog } = this.props.actions;
+    const { toggleWalletKeyImportDialog } = this.props.actions.wallets;
 
     return (
       <WalletKeyImportDialog
