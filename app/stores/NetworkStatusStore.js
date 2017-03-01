@@ -36,7 +36,7 @@ export default class NetworkStatusStore extends Store {
       console.log('relativeLocal', relativeLocal);
       console.log('relativeNetwork', relativeNetwork);
 
-      if (relativeLocal === relativeNetwork) return 100;
+      if (relativeLocal >= relativeNetwork) return 100;
       return relativeLocal / relativeNetwork * 100;
     }
     return 0;
@@ -77,9 +77,6 @@ export default class NetworkStatusStore extends Store {
         case 'LocalDifficultyChanged':
           const difficulty = message.contents.getChainDifficulty;
           this.localDifficulty = difficulty;
-          // if (this._localDifficultyStartedWith === null) {
-          //   this._localDifficultyStartedWith = difficulty;
-          // }
           break;
         case 'ConnectionClosedReconnecting':
           this.isConnected = false;
