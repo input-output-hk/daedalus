@@ -64,7 +64,7 @@ export default class Loading extends Component {
         {isSyncing && (
           <div className={styles.syncing}>
             <h1 className={styles.headline}>
-              {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(0)}%
+              {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
             </h1>
           </div>
         )}{!isSyncing && !isConnecting && isLoadingWallets && (
