@@ -6,6 +6,7 @@ import transactionsActions from './transactions-actions';
 import nodeUpdateActions from './node-update-actions';
 import sidebarActions from './sidebar-actions';
 import windowActions from './window-actions';
+import networkStatusActions from './network-status-actions';
 
 export default {
   router: routerActions,
@@ -16,4 +17,5 @@ export default {
   nodeUpdate: nodeUpdateActions,
   sidebar: sidebarActions,
   window: windowActions,
+  networkStatus: networkStatusActions,
 };
