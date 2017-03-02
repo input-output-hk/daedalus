@@ -9,15 +9,7 @@
   overflow: hidden;
 }
 
-.hidden {
-  width: 0;
-}
-
 .minimized {
   width: 84px;
   flex-shrink: 0;
-}
-
-.maximized {
-  width: 100%;
 }
