@@ -25,16 +25,15 @@ export default class Sidebar extends Component {
       WALLETS: PropTypes.string.isRequired,
       ADA_REDEMPTION: PropTypes.string.isRequired,
     }).isRequired,
-    currentCategory: PropTypes.string.isRequired,
+    currentCategory: PropTypes.string,
     onCategoryClicked: PropTypes.func, // TODO: temporary disabled
-    isHidden: PropTypes.bool,
-    isShowingSubMenus: PropTypes.bool,
+    isShowingSubMenus: PropTypes.bool.isRequired,
     activeWalletId: PropTypes.string,
   };
 
   render() {
     const {
-      isHidden, menus, activeWalletId, categories, currentCategory,
+      menus, activeWalletId, categories, currentCategory,
       isShowingSubMenus, onCategoryClicked
     } = this.props;
 
@@ -56,13 +55,10 @@ export default class Sidebar extends Component {
       default:
     }
 
-    if (isHidden) {
-      sidebarStyle = styles.hidden;
-    } else if (!isShowingSubMenus || subMenu == null) {
-      sidebarStyle = styles.minimized
-    }
-
-    const sidebarStyles = classNames([styles.component, sidebarStyle]);
+    const sidebarStyles = classNames([
+      styles.component,
+      !isShowingSubMenus || subMenu == null ? styles.minimized : null
+    ]);
 
     return (
       <div className={sidebarStyles}>

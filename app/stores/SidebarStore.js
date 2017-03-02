@@ -13,14 +13,12 @@ export default class SidebarStore extends Store {
   ACTION_HIDE_SUB_MENU_DELAY = 1000;
 
   @observable currentCategory: ?string = null;
-  @observable isHidden: bool = false;
   @observable isShowingSubMenus: bool = true;
 
   _hideSubMenuTimeout = null;
 
   setup() {
     const actions = this.actions.sidebar;
-    actions.toggleSidebar.listen(this._toggleSidebar);
     actions.toggleSubMenus.listen(this._toggleSubMenus);
     actions.sidebarCategorySelected.listen(this._onSidebarCategorySelected);
     actions.walletSelected.listen(this._onWalletSelected);
@@ -41,12 +39,6 @@ export default class SidebarStore extends Store {
       isConnected: networkStatus.isConnected,
     }));
   }
-
-  @action _toggleSidebar = () => {
-    this.isHidden = !this.isHidden;
-    // Also show sub menus when un-hiding the sidebar
-    if (!this.isHidden) this.isShowingSubMenus = true;
-  };
 
   @action _toggleSubMenus = () => {
     this.isShowingSubMenus = !this.isShowingSubMenus;
