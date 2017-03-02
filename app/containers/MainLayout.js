@@ -45,7 +45,6 @@ export default class MainLayout extends Component {
         isUpdatePostponed: PropTypes.bool.isRequired,
       }).isRequired,
       sidebar: PropTypes.shape({
-        isHidden: PropTypes.bool.isRequired,
         isShowingSubMenus: PropTypes.bool.isRequired,
         CATEGORIES: PropTypes.shape({
           WALLETS: PropTypes.string.isRequired,
@@ -117,7 +116,7 @@ export default class MainLayout extends Component {
       />
     );
     const appbar = (
-      <AppBar onToggleSidebar={actions.sidebar.toggleSidebar}>
+      <AppBar onToggleSidebar={actions.sidebar.toggleSubMenus}>
         <NodeSyncStatusIcon isSynced={isSynced} syncPercentage={syncPercentage} />
       </AppBar>
     );
