@@ -44,38 +44,48 @@ export default class MainLayout extends Component {
         isUpdateAvailable: PropTypes.bool.isRequired,
         isUpdatePostponed: PropTypes.bool.isRequired,
       }).isRequired,
+      sidebar: PropTypes.shape({
+        isHidden: PropTypes.bool.isRequired,
+        isShowingSubMenus: PropTypes.bool.isRequired,
+        CATEGORIES: PropTypes.shape({
+          WALLETS: PropTypes.string.isRequired,
+          ADA_REDEMPTION: PropTypes.string.isRequired,
+        }).isRequired,
+        currentCategory: PropTypes.string,
+      }).isRequired,
     }).isRequired,
     actions: PropTypes.shape({
-      goToRoute: PropTypes.func.isRequired,
-      createPersonalWallet: PropTypes.func.isRequired,
-      toggleAddWallet: PropTypes.func.isRequired,
-      toggleWalletRestore: PropTypes.func.isRequired,
-      restoreWallet: PropTypes.func.isRequired,
+      router: PropTypes.shape({
+        goToRoute: PropTypes.func.isRequired,
+      }),
+      wallets: PropTypes.shape({
+        create: PropTypes.func.isRequired,
+        toggleAddWallet: PropTypes.func.isRequired,
+        toggleWalletRestore: PropTypes.func.isRequired,
+        restoreWallet: PropTypes.func.isRequired,
+      }),
     }).isRequired,
     children: oneOrManyChildElements
   };
 
   handleAddWalletSubmit = (values: Object) => {
-    this.props.actions.createPersonalWallet({
+    this.props.actions.wallets.create({
       name: values.walletName,
       currency: values.currency,
     });
   };
 
   handleRestoreWalletSubmit = (values: Object) => {
-    this.props.actions.restoreWallet(values);
-  };
-
-  routeToWallet = (walletId: string) => {
-    const { actions, stores } = this.props;
-    actions.goToRoute({ route: stores.wallets.getWalletRoute(walletId) });
+    this.props.actions.wallets.restoreWallet(values);
   };
 
   render() {
     const { actions, stores } = this.props;
     const { sidebar, wallets, networkStatus } = stores;
     const { restoreRequest, isWalletKeyImportDialogOpen } = wallets;
-    const { toggleAddWallet, toggleCreateWalletDialog, toggleWalletRestore } = actions;
+    const {
+      toggleAddWallet, toggleCreateWalletDialog, toggleWalletRestore
+    } = actions.wallets;
     const { isSynced, syncPercentage } = networkStatus;
     const activeWallet = stores.wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
@@ -88,24 +98,26 @@ export default class MainLayout extends Component {
         items: sidebar.wallets,
         actions: {
           onAddWallet: toggleAddWallet,
-          onWalletItemClick: this.routeToWallet,
+          onWalletItemClick: (walletId: string) => {
+            actions.sidebar.walletSelected({ walletId });
+          }
         }
       }
     };
     const sidebarComponent = (
       <Sidebar
         menus={sidebarMenus}
-        hidden={sidebar.hidden}
-        isMaximized={sidebar.isMaximized}
+        isHidden={sidebar.isHidden}
+        isShowingSubMenus={sidebar.isShowingSubMenus}
         categories={sidebar.CATEGORIES}
         currentCategory={sidebar.currentCategory}
-        onCategoryClicked={category => actions.sidebarCategorySelected({ category })}
+        onCategoryClicked={category => actions.sidebar.sidebarCategorySelected({ category })}
         activeWalletId={activeWalletId}
         isSynced={isSynced}
       />
     );
     const appbar = (
-      <AppBar onToggleSidebar={actions.toggleSidebar}>
+      <AppBar onToggleSidebar={actions.sidebar.toggleSidebar}>
         <NodeSyncStatusIcon isSynced={isSynced} syncPercentage={syncPercentage} />
       </AppBar>
     );

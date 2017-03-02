@@ -18,9 +18,10 @@ export default class NodeUpdateStore extends Store {
   @observable applyUpdateRequest = new Request(this.api, 'applyUpdate');
 
   setup() {
-    this.actions.acceptNodeUpdate.listen(this._acceptNodeUpdate);
-    this.actions.postponeNodeUpdate.listen(this._postponeNodeUpdate);
-    this.actions.toggleNodeUpdateNotificationExpanded.listen(this._toggleNotificationExpanded);
+    const actions = this.actions.nodeUpdate;
+    actions.acceptNodeUpdate.listen(this._acceptNodeUpdate);
+    actions.postponeNodeUpdate.listen(this._postponeNodeUpdate);
+    actions.toggleNodeUpdateNotificationExpanded.listen(this._toggleNotificationExpanded);
     if (environment.CARDANO_API) {
       setInterval(this.refreshNextUpdate, this.NODE_UPDATE_POLL_INTERVAL);
     }
