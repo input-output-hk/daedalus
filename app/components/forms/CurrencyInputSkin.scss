@@ -1,0 +1,14 @@
+.component {
+  position: relative;
+}
+
+.currency {
+  font-family: $font-light;
+  font-size: 16px;
+  color: #5e6066;
+  opacity: 0.5;
+  position: absolute;
+  bottom: 16px;
+  right: 30px;
+  z-index: 10;
+}

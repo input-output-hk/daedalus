@@ -17,11 +17,13 @@ export default class StoryDecorator extends Component {
   render() {
     const { children } = this.props;
     return (
-      <IntlProvider {...{ locale: 'en-US', key: 'en-US', messages: translations['en-US'] }}>
-        <ThemeProvider theme={daedalusTheme}>
-          {children}
-        </ThemeProvider>
-      </IntlProvider>
+      <div>
+        <IntlProvider {...{ locale: 'en-US', key: 'en-US', messages: translations['en-US'] }}>
+          <ThemeProvider theme={daedalusTheme}>
+            {children}
+          </ThemeProvider>
+        </IntlProvider>
+      </div>
     );
   }
 

@@ -1,11 +1,14 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
-import Input from 'react-toolbox/lib/input/Input';
 import Button from 'react-toolbox/lib/button/Button';
 import { defineMessages, intlShape } from 'react-intl';
 import isInt from 'validator/lib/isInt';
-import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
+import classnames from 'classnames';
+import CustomMobxReactForm from '../../lib/CustomMobxReactForm';
+import Input from 'react-polymorph/lib/components/Input';
+import InputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
+import CurrencyInputSkin from '../forms/CurrencyInputSkin';
 import styles from './WalletSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -90,7 +93,7 @@ export default class WalletSendForm extends Component {
   };
 
   // FORM VALIDATION
-  form = new ReactToolboxMobxForm({
+  form = new CustomMobxReactForm({
     fields: {
       // title: {
       //   label: this.context.intl.formatMessage(messages.titleLabel),
@@ -109,10 +112,9 @@ export default class WalletSendForm extends Component {
         validate: ({ field }) => {
           const value = field.value;
           if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
-          return this.props.addressValidator(field.value)
+          return this.props.addressValidator(value)
             .then(isValid => [isValid, this.context.intl.formatMessage(messages.invalidAddress)]);
         },
-        bindings: 'ReactToolbox',
       },
       amount: {
         label: this.context.intl.formatMessage(messages.amountLabel),
@@ -125,7 +127,6 @@ export default class WalletSendForm extends Component {
           });
           return [isValid, this.context.intl.formatMessage(messages.invalidAmount)];
         },
-        bindings: 'ReactToolbox',
       },
       currency: {
         value: 'ada' // TODO: Remove hardcoded currency
@@ -143,7 +144,7 @@ export default class WalletSendForm extends Component {
     },
   });
 
-  submit() {
+  submit = () => {
     this.form.submit({
       onSuccess: (form) => {
         this.props.onSubmit(form.values());
@@ -162,17 +163,27 @@ export default class WalletSendForm extends Component {
 
         <div className={styles.fields}>
           {/* <Input className="title" {...form.$('title').bind()} /> */}
-          <Input className="receiver" {...form.$('receiver').bind()} />
-          <Input className="amount" {...form.$('amount').bind()} />
+
+          <Input
+            className="receiver"
+            skin={<InputSkin />}
+            {...form.$('receiver').bind()}
+          />
+          <Input
+            className="amount"
+            currency="ADA"
+            skin={<CurrencyInputSkin />}
+            {...form.$('amount').bind()}
+          />
           {/* <Input className="description" multiline {...form.$('description').bind()} /> */}
         </div>
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
         <Button
-          className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
+          className={classnames([styles.submit, isSubmitting ? styles.submitting : null])}
           label={intl.formatMessage(messages.sendButtonLabel)}
-          onMouseUp={this.submit.bind(this)}
+          onMouseUp={this.submit}
           primary
         />
 

@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-toolbox/lib/input/Input';
 import { defineMessages, intlShape } from 'react-intl';
-import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
+import CustomMobxReactForm from '../../lib/CustomMobxReactForm';
 import Dropup from '../widgets/forms/Dropup';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import { isValidWalletName, isValidCurrency } from '../../lib/validations';
@@ -66,7 +66,7 @@ export default class WalletCreateDialog extends Component {
 
   walletNameInput: Input;
 
-  form = new ReactToolboxMobxForm({
+  form = new CustomMobxReactForm({
     fields: {
       walletName: {
         label: this.context.intl.formatMessage(messages.walletName),

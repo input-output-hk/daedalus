@@ -7,6 +7,9 @@ import button from './daedalus/button.scss';
 import appBar from './daedalus/app-bar.scss';
 import switchStyle from './daedalus/switch.scss';
 import checkbox from './daedalus/checkbox.scss';
+import { INPUT, FORM_FIELD } from 'react-polymorph/lib/skins/simple/identifiers';
+import SimpleFormField from 'react-polymorph/lib/themes/simple/SimpleFormField.scss';
+import SimpleInput from 'react-polymorph/lib/themes/simple/SimpleInput.scss';
 
 export const daedalusTheme = {
   RTInput: input,
@@ -17,5 +20,7 @@ export const daedalusTheme = {
   RTButton: button,
   RTAppBar: appBar,
   RTSwitch: switchStyle,
-  RTCheckbox: checkbox
+  RTCheckbox: checkbox,
+  [FORM_FIELD]: SimpleFormField,
+  [INPUT]: SimpleInput,
 };

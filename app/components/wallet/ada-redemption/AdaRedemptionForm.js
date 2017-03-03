@@ -6,7 +6,7 @@ import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import Button from 'react-toolbox/lib/button/Button';
 import Input from 'react-toolbox/lib/input/Input';
 import { defineMessages, intlShape } from 'react-intl';
-import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
+import CustomMobxReactForm from '../../../lib/CustomMobxReactForm';
 import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { InvalidMnemonicError } from '../../../i18n/global-errors';
@@ -94,7 +94,7 @@ export default class AdaRedemptionForm extends Component {
     });
   };
 
-  form = new ReactToolboxMobxForm({
+  form = new CustomMobxReactForm({
     fields: {
       certificate: {
         label: this.context.intl.formatMessage(messages.certificateLabel),
