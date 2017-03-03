@@ -1,6 +1,6 @@
 import React from 'react';
 import { omit } from 'lodash';
-import InputSkin from 'react-polymorph/lib/skins/InputSkin';
+import InputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import styles from './CurrencyInputSkin.scss';
 
 export default (props) => (

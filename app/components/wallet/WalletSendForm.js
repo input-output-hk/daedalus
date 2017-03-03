@@ -7,7 +7,7 @@ import isInt from 'validator/lib/isInt';
 import classnames from 'classnames';
 import CustomMobxReactForm from '../../lib/CustomMobxReactForm';
 import Input from 'react-polymorph/lib/components/Input';
-import InputSkin from 'react-polymorph/lib/skins/InputSkin';
+import InputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import CurrencyInputSkin from '../forms/CurrencyInputSkin';
 import styles from './WalletSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
@@ -163,6 +163,7 @@ export default class WalletSendForm extends Component {
 
         <div className={styles.fields}>
           {/* <Input className="title" {...form.$('title').bind()} /> */}
+
           <Input
             className="receiver"
             skin={<InputSkin />}

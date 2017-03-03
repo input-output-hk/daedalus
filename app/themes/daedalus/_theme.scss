@@ -1,6 +1,7 @@
 @import "~react-toolbox/lib/colors";
 @import "~react-toolbox/lib/globals";
 @import "~react-toolbox/lib/mixins";
+@import "~react-polymorph/lib/themes/simple/config";
 
 // ========== FONTS & TEXT ========= //
 
@@ -17,6 +18,13 @@ $font-semibold: 'SFUIDisplay-Semibold';
 $font-bold: 'SFUIDisplay-Bold';
 $font-heavy: 'SFUIDisplay-Heavy';
 $font-black: 'SFUIDisplay-Black';
+
+// react-polymorph fonts
+$theme-font-thin: 'SFUIDisplay-Thin';
+$theme-font-light: 'SFUIDisplay-Light';
+$theme-font-regular: 'SFUIDisplay-Regular';
+$theme-font-medium: 'SFUIDisplay-Medium';
+$theme-font-bold: 'SFUIDisplay-Bold';
 
 $text-color-placeholder: #5e6066;
 $text-color-regular: #a5a7ac;
