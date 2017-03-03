@@ -30,57 +30,19 @@ export default function () {
     this.client = context.app.client;
     this.browserWindow = context.app.browserWindow;
     this.client.url('/');
-    this.client.timeoutsAsyncScript(30000);
-    // Waiting until we are synced with backend
+
     await this.client.executeAsync(function(done) {
-      const checkSyncStatus = () => {
-        if (daedalus.stores.networkStatus.isSynced) {
-          done();
-        } else {
-          setTimeout(checkSyncStatus, 100);
+      daedalus.environment.current = daedalus.environment.TEST;
+      const connectToBackend = () => {
+        if (daedalus.stores.networkStatus.isSynced){
+          daedalus.api.testReset();
+          daedalus.actions.networkStatus.isSyncedAndReady.once(done);
+        }
+        else {
+          setTimeout(connectToBackend, 100);
         }
       };
-      checkSyncStatus();
-    });
-  });
-
-  this.Before({ tags: ["@reset"], timeout: 30 * 1000 }, async function() {
-    this.client.timeoutsAsyncScript(20000);
-    await new Promise(async (resolve) => {
-      const bridgePath = '/Users/dominik/work/projects/input-output/daedalus/cardano-sl';
-
-      // Killing and restarting backend
-      const commands = [
-        'pkill cardano-node',
-        'rm -rf run/* wallet-db/ *key',
-        "export WALLET_TEST='1'; ./scripts/launch.sh",
-      ];
-      commands.forEach((cmd) => {
-        try {
-          child_process.execSync(cmd, { cwd: bridgePath })
-        } catch (error) {
-          console.error(error);
-        }
-      });
-
-      this.client.execute(function() {
-        daedalus.environment.current = daedalus.environment.TEST;
-        daedalus.reset();
-      });
-
-      // Waiting until we are connected to backend
-      await this.client.executeAsync(function(done) {
-        const connectToBackend = () => {
-          // Wait until we are reconnected & wallets are loaded
-          if (daedalus.stores.networkStatus.isConnected){
-            done();
-          } else {
-            setTimeout(connectToBackend, 1000);
-          }
-        };
-        connectToBackend();
-      });
-      resolve()
+      connectToBackend();
     });
   });
 }

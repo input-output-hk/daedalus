@@ -247,6 +247,10 @@ export default class CardanoClientApi {
     console.log({ localDifficulty, networkDifficulty });
     return { localDifficulty, networkDifficulty };
   }
+
+  testReset() {
+    return ClientApi.testReset();
+  }
 }
 
 type ServerCoinAmountStruct = {

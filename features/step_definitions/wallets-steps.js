@@ -13,7 +13,9 @@ export default function () {
   this.Given(/^I have a wallet$/, async function () {
     const result = await this.client.executeAsync(function(filePath, done) {
       // This assumes that we always have a default wallet on the backend!
-      daedalus.api.importWalletFromKey({ filePath }).then((wallet) => done(wallet));
+      daedalus.api.importWalletFromKey({ filePath }).then((wallet) => {
+        daedalus.stores.wallets.refreshWalletsData().then(() => done(wallet))
+      });
     }, defaultWalletKeyFilePath);
     this.wallet = result.value;
     this.wallets = [this.wallet];
