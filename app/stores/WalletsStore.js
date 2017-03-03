@@ -33,15 +33,16 @@ export default class WalletsStore extends Store {
   };
 
   setup() {
-    this.actions.createPersonalWallet.listen(this._createPersonalWallet);
-    this.actions.sendMoney.listen(this._sendMoney);
-    this.actions.toggleAddWallet.listen(this._toggleAddWallet);
-    this.actions.toggleCreateWalletDialog.listen(this._toggleCreateWalletDialog);
-    this.actions.toggleWalletRestore.listen(this._toggleWalletRestore);
-    this.actions.finishWalletBackup.listen(this._finishWalletCreation);
-    this.actions.restoreWallet.listen(this._restoreWallet);
-    this.actions.importWalletFromKey.listen(this._importWalletFromKey);
-    this.actions.toggleWalletKeyImportDialog.listen(this._toggleWalletKeyImportDialog);
+    const { wallets, walletBackup } = this.actions;
+    wallets.create.listen(this._create);
+    wallets.sendMoney.listen(this._sendMoney);
+    wallets.toggleAddWallet.listen(this._toggleAddWallet);
+    wallets.toggleCreateWalletDialog.listen(this._toggleCreateWalletDialog);
+    wallets.toggleWalletRestore.listen(this._toggleWalletRestore);
+    wallets.restoreWallet.listen(this._restoreWallet);
+    wallets.importWalletFromKey.listen(this._importWalletFromKey);
+    wallets.toggleWalletKeyImportDialog.listen(this._toggleWalletKeyImportDialog);
+    walletBackup.finishWalletBackup.listen(this._finishWalletCreation);
     this.registerReactions([
       this._updateActiveWalletOnRouteChanges,
       this._openAddWalletIfNoWallets,
@@ -51,14 +52,14 @@ export default class WalletsStore extends Store {
     }
   }
 
-  _createPersonalWallet = async (params: {
+  _create = async (params: {
     name: string,
     currency: string,
   }) => {
     Object.assign(this._newWalletDetails, params);
     try {
       const recoveryPhrase = await this.getWalletRecoveryPhraseRequest.execute();
-      this.actions.initiateWalletBackup({ recoveryPhrase });
+      this.actions.walletBackup.initiateWalletBackup({ recoveryPhrase });
     } catch (error) {
       throw error;
     }
@@ -209,7 +210,7 @@ export default class WalletsStore extends Store {
 
   goToWalletRoute(walletId: string) {
     const route = this.getWalletRoute(walletId);
-    this.actions.goToRoute({ route });
+    this.actions.router.goToRoute({ route });
   }
 
   _openAddWalletIfNoWallets = () => {

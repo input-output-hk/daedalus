@@ -22,7 +22,7 @@ export default class WalletBackupStore extends Store {
   countdownTimer: ?number = null;
 
   setup() {
-    const a = this.actions;
+    const a = this.actions.walletBackup;
     a.initiateWalletBackup.listen(this._initiateWalletBackup);
     a.acceptPrivacyNoticeForWalletBackup.listen(this._acceptPrivacyNoticeForWalletBackup);
     a.continueToRecoveryPhraseForWalletBackup.listen(this._continueToRecoveryPhraseForWalletBackup);
@@ -38,7 +38,7 @@ export default class WalletBackupStore extends Store {
 
   @action _initiateWalletBackup = (params: { recoveryPhrase: Array<string> }) => {
     this.recoveryPhrase = params.recoveryPhrase;
-    this.actions.toggleCreateWalletDialog();
+    this.actions.wallets.toggleCreateWalletDialog();
     this.inProgress = true;
     this.currentStep = 'privacyWarning';
     this.recoveryPhraseWords = this.recoveryPhrase.map(word => ({ word }));

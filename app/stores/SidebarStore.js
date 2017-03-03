@@ -9,14 +9,22 @@ export default class SidebarStore extends Store {
     ADA_REDEMPTION: '/ada-redemption',
   };
 
+  INITIAL_HIDE_SUB_MENU_DELAY = 4000;
+  ACTION_HIDE_SUB_MENU_DELAY = 1000;
+
   @observable currentCategory: ?string = null;
-  @observable hidden: bool = false;
-  @observable isMaximized: bool = false;
+  @observable isShowingSubMenus: bool = true;
+
+  _hideSubMenuTimeout = null;
 
   setup() {
-    this.actions.toggleSidebar.listen(this._toggleSidebar);
-    this.actions.toggleMaximized.listen(this._toggleMaximized);
-    this.actions.sidebarCategorySelected.listen(this._onSidebarCategorySelected);
+    const actions = this.actions.sidebar;
+    actions.toggleSubMenus.listen(this._toggleSubMenus);
+    actions.sidebarCategorySelected.listen(this._onSidebarCategorySelected);
+    actions.walletSelected.listen(this._onWalletSelected);
+    this.actions.networkStatus.isSyncedAndReady.listen(() => {
+      this._hideSubMenusAfterDelay(this.INITIAL_HIDE_SUB_MENU_DELAY);
+    });
     this.registerReactions([
       this._syncSidebarRouteWithRouter,
     ]);
@@ -32,30 +40,37 @@ export default class SidebarStore extends Store {
     }));
   }
 
-  @action _toggleSidebar = () => {
-    this.hidden = !this.hidden;
-  };
-
-  @action _toggleMaximized = () => {
-    this.isMaximized = !this.isMaximized;
+  @action _toggleSubMenus = () => {
+    this.isShowingSubMenus = !this.isShowingSubMenus;
   };
 
   @action _onSidebarCategorySelected = ({ category }: { category: string }) => {
-    if (category === this.currentCategory) {
-      this._toggleMaximized();
+    if (category !== this.currentCategory) {
+      this.actions.router.goToRoute({route: category});
+      this.currentCategory = category;
+      this.isShowingSubMenus = true;
     } else {
-      this.actions.goToRoute({ route: category });
+      this._toggleSubMenus();
     }
-    this.currentCategory = category;
   };
 
-  _syncSidebarRouteWithRouter = () => {
+  @action _syncSidebarRouteWithRouter = () => {
     const route = this.stores.app.currentRoute;
     Object.keys(this.CATEGORIES).forEach((key) => {
       const category = this.CATEGORIES[key];
       if (route.indexOf(category) !== -1) this.currentCategory = category;
     });
-  }
+  };
+
+  @action _hideSubMenusAfterDelay = (delay: number) => {
+    if (this._hideSubMenuTimeout) clearTimeout(this._hideSubMenuTimeout);
+    this._hideSubMenuTimeout = setTimeout(this._toggleSubMenus, delay);
+  };
+
+  @action _onWalletSelected = ({ walletId }) => {
+    this.stores.wallets.goToWalletRoute(walletId);
+    this._hideSubMenusAfterDelay(this.ACTION_HIDE_SUB_MENU_DELAY);
+  };
 
 }
 

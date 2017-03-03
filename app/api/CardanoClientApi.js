@@ -236,6 +236,17 @@ export default class CardanoClientApi {
     await ClientApi.applyUpdate();
     ipcRenderer.send('kill-process');
   }
+
+  async getSyncProgress() {
+    console.debug('CardanoClientApi::syncProgress called');
+    const response = await ClientApi.syncProgress();
+    console.log('CardanoClientApi::syncProgress response', response);
+    const localDifficulty = response._spLocalCD.getChainDifficulty;
+    // In some cases we can not get network difficulty and we need to wait for it from the notify API
+    const networkDifficulty = response._spNetworkCD ? response._spNetworkCD.getChainDifficulty : null;
+    console.log({ localDifficulty, networkDifficulty });
+    return { localDifficulty, networkDifficulty };
+  }
 }
 
 type ServerCoinAmountStruct = {

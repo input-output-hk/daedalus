@@ -18,7 +18,7 @@ storiesOf('Sidebar', module)
   ))
 
   .add('wallets', () => (
-    <Sidebar route="/wallets" isMaximized />
+    <Sidebar route="/wallets" />
   ))
 
   .add('wallets / sub', () => (

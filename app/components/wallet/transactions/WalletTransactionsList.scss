@@ -1,7 +1,8 @@
 @import "../navigation/walletNavConfig";
 
 .component {
-  margin: 20px 0 0 20px;
+  margin-top: 20px;
+  padding-left: 20px;
   overflow-y: scroll;
 
   &::-webkit-scrollbar-button {
