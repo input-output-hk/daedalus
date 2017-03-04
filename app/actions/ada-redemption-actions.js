@@ -5,6 +5,7 @@ export default defineActions({
   setCertificate: {
     certificate: PropTypes.instanceOf(File).isRequired,
   },
+  removeCertificate: {},
   setPassPhrase: {
     passPhrase: PropTypes.string.isRequired,
   },

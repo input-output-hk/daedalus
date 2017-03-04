@@ -17,6 +17,7 @@ export default class AdaRedemptionPage extends Component {
         setCertificate: PropTypes.func.isRequired,
         setPassPhrase: PropTypes.func.isRequired,
         setRedemptionCode: PropTypes.func.isRequired,
+        removeCertificate: PropTypes.func.isRequired,
       }),
     }),
     stores: PropTypes.shape({
@@ -33,14 +34,14 @@ export default class AdaRedemptionPage extends Component {
   };
 
   onSubmit = (values: { walletId: string }) => {
-    this.props.actions.redeemAda(values);
+    this.props.actions.adaRedemption.redeemAda(values);
   };
 
   render() {
     const { wallets, adaRedemption } = this.props.stores;
     const { redeemAdaRequest, isCertificateEncrypted } = adaRedemption;
     const {
-      setCertificate, setPassPhrase, setRedemptionCode
+      setCertificate, setPassPhrase, setRedemptionCode, removeCertificate
     } = this.props.actions.adaRedemption;
 
     const selectableWallets = wallets.all.map((w) => ({
@@ -62,6 +63,7 @@ export default class AdaRedemptionPage extends Component {
           isSubmitting={redeemAdaRequest.isExecuting}
           error={adaRedemption.error}
           onSubmit={this.onSubmit}
+          onRemoveCertificate={removeCertificate}
         />
       </Layout>
     );

@@ -14,6 +14,35 @@
   color: $text-color-accent;
 }
 
+.instructions {
+  margin-bottom: 25px;
+  font-family: $font-regular;
+  font-size: 16px;
+  line-height: 1.38;
+  color: $text-color-accent;
+  strong {
+    font-family: $font-bold;
+  }
+  p {
+    margin-bottom: 10px;
+  }
+}
+
+.redemption {
+  display: flex;
+  width: 100%;
+
+  .certificate {
+    flex-grow: 0;
+    flex-basis: 154px;
+    margin-left: 30px;
+  }
+
+  .inputs {
+    flex: 1;
+  }
+}
+
 .certificate {
   margin-bottom: 2rem;
 }
@@ -32,4 +61,8 @@
 .submitButton {
   width: 100%;
   text-transform: uppercase;
+}
+
+.passPhrase {
+  margin-top: -20px;
 }

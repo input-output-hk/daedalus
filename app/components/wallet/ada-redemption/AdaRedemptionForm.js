@@ -5,9 +5,9 @@ import classnames from 'classnames';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import Button from 'react-toolbox/lib/button/Button';
 import Input from 'react-toolbox/lib/input/Input';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
-import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
+import AdaCertificateUploadWidget from '../../widgets/forms/AdaCertificateUploadWidget';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { InvalidMnemonicError } from '../../../i18n/global-errors';
 import { isValidMnemonic } from '../../../../lib/decrypt';
@@ -19,9 +19,14 @@ const messages = defineMessages({
     defaultMessage: '!!!Ada Redemption',
     description: 'headline "Ada redemption" dialog.'
   },
+  instructions: {
+    id: 'wallet.redeem.dialog.instructions',
+    defaultMessage: '!!!Detailed instructions',
+    description: 'headline "Ada redemption" dialog.'
+  },
   certificateLabel: {
     id: 'wallet.redeem.dialog.certificateLabel',
-    defaultMessage: '!!!Upload your certificate',
+    defaultMessage: '!!!Certificate',
     description: 'Label for the certificate file upload'
   },
   certificateHint: {
@@ -46,12 +51,12 @@ const messages = defineMessages({
   },
   redemptionCodeLabel: {
     id: 'wallet.redeem.dialog.redemptionCodeLabel',
-    defaultMessage: '!!!Your Redemption Code',
+    defaultMessage: '!!!Redemption Code',
     description: 'Label for ada redemption code input',
   },
   redemptionCodeHint: {
     id: 'wallet.redeem.dialog.redemptionCodeHint',
-    defaultMessage: '!!!Enter your code manually here or upload a certificate above',
+    defaultMessage: '!!!Enter your code or upload a certificate',
     description: 'Hint for ada redemption code input',
   },
   submitLabel: {
@@ -70,6 +75,7 @@ export default class AdaRedemptionForm extends Component {
       label: PropTypes.string.isRequired,
     })).isRequired,
     onCertificateSelected: PropTypes.func.isRequired,
+    onRemoveCertificate: PropTypes.func.isRequired,
     onPassPhraseChanged: PropTypes.func.isRequired,
     onRedemptionCodeChanged: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
@@ -143,7 +149,7 @@ export default class AdaRedemptionForm extends Component {
     const {
       wallets, isCertificateSelected, isCertificateEncrypted,
       isSubmitting, onCertificateSelected, redemptionCode,
-      onRedemptionCodeChanged, error
+      onRedemptionCodeChanged, onRemoveCertificate, error
     } = this.props;
     const certificate = form.$('certificate');
     const passPhrase = form.$('passPhrase');
@@ -161,45 +167,62 @@ export default class AdaRedemptionForm extends Component {
 
         <h1 className={styles.headline}>{intl.formatMessage(messages.headline)}</h1>
 
-        <div className={styles.certificate}>
-          <FileUploadWidget
-            {...certificate.bind()}
-            selectedFile={certificate.value}
-            onFileSelected={(file) => {
-              onCertificateSelected(file);
-              certificate.onChange(file);
-            }}
-          />
+        <div className={styles.instructions}>
+          <FormattedHTMLMessage {...messages.instructions} />
+        </div>
+
+        <div className={styles.redemption}>
+          <div className={styles.inputs}>
+
+            <Input
+              className="redemption-code"
+              {...redemptionCodeField.bind()}
+              value={redemptionCode}
+              onChange={(value) => {
+                onRedemptionCodeChanged(value);
+                redemptionCodeField.onChange(value);
+              }}
+              disabled={isCertificateSelected}
+            />
+
+            <Dropdown
+              className="wallet"
+              source={wallets}
+              {...walletId.bind()}
+            />
+
+          </div>
+          <div className={styles.certificate}>
+            <div className={styles.certificate}>
+              <AdaCertificateUploadWidget
+                {...certificate.bind()}
+                selectedFile={certificate.value}
+                onFileSelected={(file) => {
+                  onCertificateSelected(file);
+                  certificate.onChange(file);
+                }}
+                isCertificateEncrypted={isCertificateEncrypted}
+                isCertificateSelected={isCertificateSelected}
+                onRemoveCertificate={onRemoveCertificate}
+              />
+            </div>
+          </div>
         </div>
 
         {showPassPhraseWidget && (
-          <Input
-            className="pass-phrase"
-            {...passPhrase.bind({
-              onBlur: event => {
-                event.preventDefault();
-                passPhrase.onBlur();
-                passPhrase.validate();
-              }
-            })}
-          />
+          <div className={styles.passPhrase}>
+            <Input
+              className="pass-phrase"
+              {...passPhrase.bind({
+                onBlur: event => {
+                  event.preventDefault();
+                  passPhrase.onBlur();
+                  passPhrase.validate();
+                }
+              })}
+            />
+          </div>
         )}
-
-        <Input
-          className="redemption-code"
-          {...redemptionCodeField.bind()}
-          value={redemptionCode}
-          onChange={(value) => {
-            onRedemptionCodeChanged(value);
-            redemptionCodeField.onChange(value);
-          }}
-        />
-
-        <Dropdown
-          className="wallet"
-          source={wallets}
-          {...walletId.bind()}
-        />
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
