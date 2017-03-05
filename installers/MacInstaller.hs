@@ -10,6 +10,7 @@ import           System.FilePath      (replaceExtension)
 import           System.FilePath.Glob (globDir1, compile)
 import           System.Directory
 import           Turtle               (procs, echo)
+import           Turtle.Line          (unsafeTextToLine)
 
 import RewriteLibs                    (chain)
 import Launcher
@@ -72,7 +73,7 @@ main = do
   -- TODO: sign
   run "productbuild" productargs
 
-  echo $ "Generated " <> T.pack pkg
+  echo $ "Generated " <> unsafeTextToLine (T.pack pkg)
 
 doLauncher :: String
 doLauncher = "./cardano-launcher " <> (launcherArgs $ Launcher
@@ -87,5 +88,5 @@ doLauncher = "./cardano-launcher " <> (launcherArgs $ Launcher
 
 run :: T.Text -> [T.Text] -> IO ()
 run cmd args = do
-    echo $ T.intercalate " " (cmd : args)
-    procs cmd args mempty
+  echo $ unsafeTextToLine $ T.intercalate " " (cmd : args)
+  procs cmd args mempty

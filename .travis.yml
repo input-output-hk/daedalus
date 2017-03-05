@@ -6,7 +6,7 @@ matrix:
       osx_image: xcode8.2
 
 env:
-- NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/addcb0dddf2b7db505dae5c38fceb691c7ed85f9.tar.gz
+- NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/09c7601c204016c8ecdefd474f721fb841e834df.tar.gz
 
 install:
 # Install Stack
@@ -15,28 +15,30 @@ install:
 - sudo mount -o remount,exec,size=4G,mode=755 /run/user || true
 - travis_retry curl -L https://www.stackage.org/stack/$TRAVIS_OS_NAME-x86_64 | tar
   xz --strip-components=1 -C ~/.local/bin
-# Install frontend system deps
-- nix-env -iA nixpkgs.electron nixpkgs.nodejs nixpkgs.nodePackages.bower nixpkgs.nodePackages.node-gyp nixpkgs.nodePackages.node-pre-gyp
 # TODO: install bridge
 # TODO: print build of cardano-sl
-- npm install    
+- nix-shell --run "npm install"
 
 script:   
-- DAEDALUS_VERSION=$TRAVIS_BUILD_NUMBER
-- npm run package -- --icon icons/64x64
-- cd installers
+- export DAEDALUS_VERSION=$TRAVIS_BUILD_NUMBER
+# Fix https://github.com/NixOS/nixpkgs/issues/23605
+- export SSL_CERT_FILE=$NIX_SSL_CERT_FILE 
+- nix-shell --run "npm run package -- --icon installers/icons/256x256"
+- du -sh release
+- pushd installers
 # TODO: copy cardano-node
-# TODO:- stack --no-terminal build --exec make-installer
-- cd ..
-- mkdir s3
-- tar cJf s3/daedalus.tar.xz release/
-# TODO: upload installer to S3
+- stack --no-terminal --nix build --exec make-installer --jobs 4
+- mkdir -p dist
 
 
 deploy:
   provider: s3
-  access_key_id: AKIAJETSFTAMXGNCGC6Q
+  access_key_id: AKIAJKSJR3FUN3CWKC5Q
   secret_access_key:
-    secure: L3T5J71xUkozQ935MJIavcgM3Latp+Zy0Ga1wZovXDLp34kgWyJ7/zRSd/TaVM54Kv8Alm1YxbmYKpQAOzGEzAIG+2VUjXbH7aW8KsCnN2RRZahj8pJlq0qmqYrUC4yDFWvrAuO+bE8GRTHFkrX7eT1hoejAw5bPSPu4lkRbh74ys2d5/eOCmxyLSrle1une0i1AM6WRjBKqYyGWFZ0/zhTdISziw+8excfPuutUUIw13vG2ywhMI4M0oP8csYYPdwg3PMzRpmcucebNXWr3QjJSTNuX/nwIQHyoS1BiIciDHIosdUOPsxVkdQWDUCvk9YXMPgB+XpPFB3O7d5V36EiyrSnQMuYdN6YKZzXmLaLlz8tEMaclRIr+yWVXUL27veYD+IYhjFUWcKzuBnnBa+v+Edl/ewQBMTxznstrBtGAjHhsmPaocXdFjz7fvoSDsr5fafhMnr0O2mKo9+6MKIbGdK/OsBc/Lp1fQK1PuWAjY4+eJ9HSUpD1s120uuV5NkbHnvdB+/PGH0GMHkuf8D7NGhNtTUDjBz+Pvo9SqKGwKyBuCDIeUNLMaCMa3aDY7uRpCVxsZPyjUBUlx/hICy5Ig7d3nKxmZhDot8zooY9a5ANSzDBQsLDWugx1ukKDzJ65wxqjmzaTvALqyk8GIY7ShREuNjFJOrdM8WwZbwU=
-  bucket: cardano-sl-testing
-  local_dir: s3
+    secure: PtDmmCXYtnIvoR2j17TJNqdEtAWyeN1JN7x8Ecs47C/77lUxuHIJn/9iqyWYHRqkc0pJvanUHmYQY1dxQTHmIdcZwPaI7i9Hib5xEpi+1AKleZ4fTxiJ9Vt1V7cmCnx9HJ8KEmzbmrD9fPj5N2sl/ROYGWa+gNN89UsX462ms577jSBhdvJcaIeACbyEmnFDct0l5Hv23SF3Ciljiva+OLtSahuuhWjTmjb8kS/KjhU5Sl2uF5ZPsi9Xt7y9w3hvowQn/YCxz+161ekKDQkdWPaIYD0xawo6U5Z/GX3HGUYmZBZvlwEaCDa88dXrEfaxH9eYrRyRSuf93DIDMCdiWAWDf1vZBxYuTH8B88ptgjh9xGYMFdUtLq7sWtoMumYWsW8ldnImI1Y1zNdBXV0LrSmKV5Gy0E1cHYyv+rNCcR5tXBlkVOLRKnVLxA8XGfQjFCTQwaljarx7NKqToHzkOb9uiOvPyBvD6WQTYEeebzop/Uj6rFxOLjJ1Fb7xM6zeLkFktEThReDFefX34a8qzD6YnJuBbVTOvROoBC06I4FaBo5rwrpHe7tLohwxLASdhrCy/e6SMsehEOS+luwHNDEV95TnzcNDITqzKQHPdI1J0OYXEal3MkhYwYEtGuwnNDOEfd1nm+2BSw8L0F+pAyP/GBlnLUO9QVg+LWvKOfw=
+  bucket: daedalus-travis
+  region: eu-central-1
+  local_dir: dist
+  skip_cleanup: true
+  on:
+    all_branches: true
