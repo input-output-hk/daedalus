@@ -9,29 +9,16 @@ import           System.Directory   (doesFileExist)
 import           System.Environment (lookupEnv)
 import           Turtle             (echo, proc, procs)
 
+import Launcher
+
 shortcutParameters :: String
-shortcutParameters = L.intercalate " " $
-  [ "--node \"%PROGRAMFILES%\\Daedalus\\cardano-node.exe\""
-  , "--node-log-path", "\"%APPDATA%\\Daedalus\\Logs\\cardano-node.log\""
-  , "--wallet \"%PROGRAMFILES%\\Daedalus\\Daedalus.exe\""
-  , "--updater \"" <> installerPath <> "\""
-  , "--node-timeout 5"
-  , (" -n " ++ (L.intercalate " -n " nodeArgs))
-  ]
-    where
-      installerPath = "%APPDATA%\\Daedalus\\Installer.exe"
-      nodeArgs = [
-        "--listen", "0.0.0.0:12100",
-        "--report-server", "http://35.156.164.19:5555",
-        "--log-config", "log-config-prod.yaml",
-        "--keyfile", "\"%APPDATA%\\Daedalus\\Secrets\\secret.key\"",
-        "--update-latest-path", "\"" <> installerPath <> "\"",
-        "--logs-prefix", "\"%APPDATA%\\Daedalus\\Logs\"",
-        "--db-path", "\"%APPDATA%\\Daedalus\\DB-0.2\"",
-        "--wallet-db-path", "\"%APPDATA%\\Daedalus\\Wallet-0.2\"",
-        "--peers-file", "ip-dht-mappings",
-        "--wallet"
-        ]
+shortcutParameters = launcherArgs $ Launcher
+  { nodePath = "%PROGRAMFILES%\\Daedalus\\cardano-node.exe"
+  , nodeLogPath = "%APPDATA%\\Daedalus\\Logs\\cardano-node.log"
+  , walletPath = "%PROGRAMFILES%\\Daedalus\\Daedalus.exe"
+  , installerPath = "%APPDATA%\\Daedalus\\Installer.exe"
+  , runtimePath = "%APPDATA%\\Daedalus\\"
+  }
 
 daedalusShortcut :: [Attrib]
 daedalusShortcut =
