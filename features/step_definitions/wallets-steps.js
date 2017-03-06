@@ -41,7 +41,6 @@ export default function () {
   this.Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function (walletName, screen) {
     const wallet = this.wallets.find((w) => w.name === walletName);
     await this.navigateTo(`/wallets/${wallet.id}/${screen}`);
-    return expectActiveWallet.call(this, walletName);
   });
 
   this.Given(/^I see the create wallet dialog$/, function () {
