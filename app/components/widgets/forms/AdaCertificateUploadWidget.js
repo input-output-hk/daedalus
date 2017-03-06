@@ -5,6 +5,7 @@ import Dropzone from 'react-dropzone';
 import { defineMessages, intlShape } from 'react-intl';
 import certificateNormalIcon from '../../../assets/images/cert-ic.svg';
 import certificateLockedIcon from '../../../assets/images/cert-locked-ic.svg';
+import certificateInvalidIcon from '../../../assets/images/cert-bad-ic.svg';
 import closeCrossIcon from '../../../assets/images/close-cross-redemption.svg';
 import styles from './AdaCertificateUploadWidget.scss';
 
@@ -31,6 +32,7 @@ export default class AdaCertificateUploadWidget extends Component {
     acceptedFileTypes: PropTypes.string,
     isCertificateEncrypted: PropTypes.bool,
     isCertificateSelected: PropTypes.bool,
+    isCertificateInvalid: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -43,9 +45,11 @@ export default class AdaCertificateUploadWidget extends Component {
 
   render() {
     const { intl } = this.context;
-    const { label, acceptedFileTypes, isCertificateEncrypted, isCertificateSelected, onRemoveCertificate
+    const { label, acceptedFileTypes, isCertificateEncrypted,
+      isCertificateSelected, onRemoveCertificate, isCertificateInvalid
     } = this.props;
-    const certificateIcon = isCertificateEncrypted ? certificateLockedIcon : certificateNormalIcon;
+    const certificateIcon = isCertificateEncrypted ? certificateLockedIcon :
+      isCertificateInvalid ? certificateInvalidIcon : certificateNormalIcon;
     return (
       <div>
         <div className={styles.label}>{label}</div>

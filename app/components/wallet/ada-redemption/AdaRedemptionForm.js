@@ -82,6 +82,7 @@ export default class AdaRedemptionForm extends Component {
     isSubmitting: PropTypes.bool.isRequired,
     isCertificateSelected: PropTypes.bool.isRequired,
     isCertificateEncrypted: PropTypes.bool.isRequired,
+    isCertificateInvalid: PropTypes.bool,
     redemptionCode: PropTypes.string,
     error: PropTypes.instanceOf(LocalizableError),
   };
@@ -149,7 +150,8 @@ export default class AdaRedemptionForm extends Component {
     const {
       wallets, isCertificateSelected, isCertificateEncrypted,
       isSubmitting, onCertificateSelected, redemptionCode,
-      onRedemptionCodeChanged, onRemoveCertificate, error
+      onRedemptionCodeChanged, onRemoveCertificate,
+      isCertificateInvalid, error
     } = this.props;
     const certificate = form.$('certificate');
     const passPhrase = form.$('passPhrase');
@@ -203,6 +205,7 @@ export default class AdaRedemptionForm extends Component {
                 }}
                 isCertificateEncrypted={isCertificateEncrypted}
                 isCertificateSelected={isCertificateSelected}
+                isCertificateInvalid={isCertificateInvalid}
                 onRemoveCertificate={onRemoveCertificate}
               />
             </div>

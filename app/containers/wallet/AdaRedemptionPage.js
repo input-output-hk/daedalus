@@ -6,6 +6,7 @@ import AdaRedemptionForm from '../../components/wallet/ada-redemption/AdaRedempt
 import Wallet from '../../domain/Wallet';
 import Request from '../../stores/lib/Request';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
+import { AdaRedemptionCertificateParseError } from '../../stores/AdaRedemptionStore';
 
 @inject('stores', 'actions') @observer
 export default class AdaRedemptionPage extends Component {
@@ -39,7 +40,7 @@ export default class AdaRedemptionPage extends Component {
 
   render() {
     const { wallets, adaRedemption } = this.props.stores;
-    const { redeemAdaRequest, isCertificateEncrypted } = adaRedemption;
+    const { redeemAdaRequest, isCertificateEncrypted, error } = adaRedemption;
     const {
       setCertificate, setPassPhrase, setRedemptionCode, removeCertificate
     } = this.props.actions.adaRedemption;
@@ -60,6 +61,7 @@ export default class AdaRedemptionPage extends Component {
           wallets={selectableWallets}
           isCertificateSelected={adaRedemption.certificate !== null}
           isCertificateEncrypted={isCertificateEncrypted}
+          isCertificateInvalid={error && error instanceof AdaRedemptionCertificateParseError}
           isSubmitting={redeemAdaRequest.isExecuting}
           error={adaRedemption.error}
           onSubmit={this.onSubmit}
