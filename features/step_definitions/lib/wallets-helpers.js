@@ -12,9 +12,13 @@ export const expectActiveWallet = async function(walletName) {
 
 export const fillOutWalletSendForm = async function(values) {
   const formSelector = '.WalletSendForm_fields';
-  await this.client.setValue(`${formSelector} .title .input_inputElement`, values.title);
+  // await this.client.setValue(`${formSelector} .title .input_inputElement`, values.title);
   await this.client.setValue(`${formSelector} .receiver .input_inputElement`, values.address);
   await this.client.setValue(`${formSelector} .amount .input_inputElement`, values.amount);
-  await this.client.setValue(`${formSelector} .description .input_inputElement`, values.description);
+  // await this.client.setValue(`${formSelector} .description .input_inputElement`, values.description);
   this.walletSendFormValues = values;
+};
+
+export const getWalletByName = function(walletName) {
+  return this.wallets.find((w) => w.name === walletName);
 };
