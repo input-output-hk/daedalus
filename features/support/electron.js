@@ -1,8 +1,8 @@
 import { Application } from 'spectron';
 import electronPath from 'electron';
-import child_process from 'child_process';
 
 const context = {};
+let isFirstScenario = true;
 
 export default function () {
   // Boot up the electron app before all features
@@ -30,19 +30,25 @@ export default function () {
     this.client = context.app.client;
     this.browserWindow = context.app.browserWindow;
     this.client.url('/');
+    this.client.timeoutsAsyncScript(30 * 1000);
 
-    await this.client.executeAsync(function(done) {
+    await this.client.executeAsync(function(isFirst, done) {
       daedalus.environment.current = daedalus.environment.TEST;
       const connectToBackend = () => {
         if (daedalus.stores.networkStatus.isSynced){
           daedalus.api.testReset();
-          daedalus.actions.networkStatus.isSyncedAndReady.once(done);
+          if (isFirst) {
+            daedalus.actions.networkStatus.isSyncedAndReady.once(done);
+          } else {
+            done();
+          }
         }
         else {
           setTimeout(connectToBackend, 100);
         }
       };
       connectToBackend();
-    });
+    }, isFirstScenario);
+    isFirstScenario = false;
   });
 }
