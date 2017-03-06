@@ -60,8 +60,8 @@ export default class WalletNavigation extends Component {
             label={intl.formatMessage(messages.summary)}
             normalIcon={summaryIcon}
             activeIcon={summaryIconActive}
-            isActive={isActiveNavItem('home')}
-            onClick={() => onNavItemClick('home')}
+            isActive={isActiveNavItem('summary')}
+            onClick={() => onNavItemClick('summary')}
           />
         </div>
 

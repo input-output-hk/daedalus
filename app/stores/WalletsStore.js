@@ -120,7 +120,7 @@ export default class WalletsStore extends Store {
   }
 
 
-  getWalletRoute = (walletId: string, screen: string = 'home'): string => {
+  getWalletRoute = (walletId: string, screen: string = 'summary'): string => {
     return `${this.BASE_ROUTE}/${walletId}/${screen}`;
   };
 

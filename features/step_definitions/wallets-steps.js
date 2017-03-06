@@ -104,7 +104,7 @@ export default function () {
     }
   });
 
-  this.Then(/^I should see the "([^"]*)" wallet home screen with the transaction titled "([^"]*)"$/, async function (walletName, title) {
+  this.Then(/^I should see the "([^"]*)" wallet summary screen with the transaction titled "([^"]*)"$/, async function (walletName, title) {
     const wallet = this.wallets.find((w) => w.name === walletName);
     const displayedWalletName = await getNameOfActiveWalletInSidebar.call(this);
     expect(displayedWalletName.toLowerCase()).to.equal(wallet.name.toLowerCase());

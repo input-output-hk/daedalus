@@ -12,7 +12,7 @@ Feature: Send Money to Receiver
       | title          | amount | description |
       | my transaction | 10     | some text   |
     And I submit the wallet send form
-    Then I should see the "Personal Wallet" wallet home screen with the transaction titled "my transaction"
+    Then I should see the "Personal Wallet" wallet summary screen with the transaction titled "my transaction"
 
   Scenario: User Submits Empty Form
     Given I am on the "Personal Wallet" wallet "send" screen

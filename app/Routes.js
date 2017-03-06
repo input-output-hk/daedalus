@@ -20,7 +20,7 @@ export default (
     <Route path="/ada-redemption" component={AdaRedemptionPage} />
     <Route path="/no-wallets" component={NoWalletsPage} />
     <Route path="/wallets" component={Wallet}>
-      <Route path=":id/home" component={WalletSummaryPage} />
+      <Route path=":id/summary" component={WalletSummaryPage} />
       <Route path=":id/transactions" component={WalletTransactionsPage} />
       <Route path=":id/send" component={WalletSendPage} />
       <Route path=":id/receive" component={WalletReceivePage} />
