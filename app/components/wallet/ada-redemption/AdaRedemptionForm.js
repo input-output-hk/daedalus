@@ -54,6 +54,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Redemption Code',
     description: 'Label for ada redemption code input',
   },
+  redemptionCodeError: {
+    id: 'wallet.redeem.dialog.redemptionCodeError',
+    defaultMessage: '!!!Invalid Redemption Code',
+    description: 'Error "Invalid Redemption Code" for ada redemption code input',
+  },
   redemptionCodeHint: {
     id: 'wallet.redeem.dialog.redemptionCodeHint',
     defaultMessage: '!!!Enter your code or upload a certificate',
@@ -131,6 +136,10 @@ export default class AdaRedemptionForm extends Component {
         placeholder: this.context.intl.formatMessage(messages.redemptionCodeHint),
         value: '',
         bindings: 'ReactToolbox',
+        validate: ({ field }) => {
+          const isValid = field.value.length === 44;
+          return [isValid, this.context.intl.formatMessage(messages.redemptionCodeError)];
+        },
       },
       walletId: {
         label: this.context.intl.formatMessage(messages.walletSelectLabel),

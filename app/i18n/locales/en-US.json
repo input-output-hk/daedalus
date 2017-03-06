@@ -86,6 +86,7 @@
   "wallet.redeem.dialog.passphraseHint": "Enter your 9-Word Passphrase here",
   "wallet.redeem.dialog.redemptionCodeLabel": "Redemption Code",
   "wallet.redeem.dialog.redemptionCodeHint": "Enter your code or upload a certificate",
+  "wallet.redeem.dialog.redemptionCodeError": "Invalid redemption code",
   "wallet.redeem.dialog.walletSelectLabel": "Choose Wallet",
   "wallet.redeem.dialog.submitLabel": "Redeem your Ada",
   "wallet.redeem.success.overlay.headline": "You successfully redeemed your Ada!",
