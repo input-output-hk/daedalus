@@ -89,10 +89,10 @@ export default class AdaRedemptionStore extends Store {
   _redeemAda = action(({ walletId }) => {
     this.walletId = walletId;
     this.redeemAdaRequest.execute({ redemptionCode: this.redemptionCode, walletId })
-      .then(action(() => {
+      .then(action((wallet) => {
         this.error = null;
         // TODO: Use amount returned by backend (when implemented!)
-        this.actions.adaSuccessfullyRedeemed({ walletId, amount: 1000000 });
+        this.actions.adaRedemption.adaSuccessfullyRedeemed({ walletId: wallet.id, amount: 1000000 });
       }))
       .catch(action((error) => {
         this.error = error;
