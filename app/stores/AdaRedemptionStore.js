@@ -37,6 +37,7 @@ export default class AdaRedemptionStore extends Store {
     actions.redeemAda.listen(this._redeemAda);
     actions.adaSuccessfullyRedeemed.listen(this._onAdaSuccessfullyRedeemed);
     actions.closeAdaRedemptionSuccessOverlay.listen(this._onCloseAdaRedemptionSuccessOverlay);
+    actions.removeCertificate.listen(this._onRemoveCertificate);
     ipcRenderer.on(PARSE_REDEMPTION_CODE.SUCCESS, this._onCodeParsed);
     ipcRenderer.on(PARSE_REDEMPTION_CODE.ERROR, this._onParseError);
   }
@@ -44,7 +45,11 @@ export default class AdaRedemptionStore extends Store {
   _setCertificate = action(({ certificate }) => {
     this.certificate = certificate;
     this.isCertificateEncrypted = certificate.type !== 'application/pdf';
-    if (this.isCertificateEncrypted && !this.passPhrase) return; // We cannot decrypt it yet!
+    if (this.isCertificateEncrypted && !this.passPhrase) {
+      this.redemptionCode = '';
+      this.passPhrase = null;
+      return; // We cannot decrypt it yet!
+    }
     this._parseCodeFromCertificate();
   });
 
@@ -77,15 +82,17 @@ export default class AdaRedemptionStore extends Store {
     } else {
       this.error = new AdaRedemptionCertificateParseError();
     }
+    this.redemptionCode = '';
+    this.passPhrase = '';
   });
 
   _redeemAda = action(({ walletId }) => {
     this.walletId = walletId;
     this.redeemAdaRequest.execute({ redemptionCode: this.redemptionCode, walletId })
-      .then(action(() => {
+      .then(action((wallet) => {
         this.error = null;
         // TODO: Use amount returned by backend (when implemented!)
-        this.actions.adaSuccessfullyRedeemed({ walletId, amount: 1000000 });
+        this.actions.adaRedemption.adaSuccessfullyRedeemed({ walletId: wallet.id, amount: 1000000 });
       }))
       .catch(action((error) => {
         this.error = error;
@@ -103,6 +110,13 @@ export default class AdaRedemptionStore extends Store {
 
   _onCloseAdaRedemptionSuccessOverlay = action(() => {
     this.showAdaRedemptionSuccessMessage = false;
+  });
+
+  _onRemoveCertificate = action(() => {
+    this.certificate = null;
+    this.redemptionCode = '';
+    this.passPhrase = '';
+    this.error = null;
   });
 
 }
