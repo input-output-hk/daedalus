@@ -37,7 +37,6 @@ export default class Sidebar extends Component {
       isShowingSubMenus, onCategoryClicked
     } = this.props;
 
-    let sidebarStyle = null;
     let subMenu = null;
 
     switch (currentCategory) {
@@ -69,14 +68,12 @@ export default class Sidebar extends Component {
             active={currentCategory === categories.WALLETS}
             onClick={() => onCategoryClicked(categories.WALLETS)}
           />
-          {/*
-          <SidebarCategory
-            className="ada-redemption"
-            icon={adaRedemptionIcon}
-            active={currentCategory === categories.ADA_REDEMPTION}
-            onClick={() => onCategoryClicked(categories.ADA_REDEMPTION)}
-          />
-          */}
+          {/*<SidebarCategory*/}
+            {/*className="ada-redemption"*/}
+            {/*icon={adaRedemptionIcon}*/}
+            {/*active={currentCategory === categories.ADA_REDEMPTION}*/}
+            {/*onClick={() => onCategoryClicked(categories.ADA_REDEMPTION)}*/}
+          {/*/>*/}
         </div>
         {subMenu}
       </div>

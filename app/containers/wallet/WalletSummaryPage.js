@@ -90,7 +90,7 @@ export default class WalletSummaryPage extends Component {
         {showAdaRedemptionSuccessMessage && (
           <AdaRedemptionSuccessOverlay
             amount={amountRedeemed}
-            onClose={actions.closeAdaRedemptionSuccessOverlay}
+            onClose={actions.adaRedemption.closeAdaRedemptionSuccessOverlay}
           />
         )}
       </div>

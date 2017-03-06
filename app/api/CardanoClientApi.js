@@ -160,7 +160,9 @@ export default class CardanoClientApi {
     const { redemptionCode, walletId } = request;
     console.debug('CardanoClientApi::redeemAda called with', request);
     try {
-      return await ClientApi.redeemADA(redemptionCode, walletId);
+      const redemptionResponse: ServerWalletStruct = await ClientApi.redeemADA(redemptionCode, walletId);
+      // TODO: Update response when it is implemented on the backend, currently only wallet is returned
+      return this._createWalletFromServerData(redemptionResponse);
     } catch (error) {
       console.error(error);
       throw new RedeemAdaError();

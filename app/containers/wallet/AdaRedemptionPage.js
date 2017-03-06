@@ -6,6 +6,7 @@ import AdaRedemptionForm from '../../components/wallet/ada-redemption/AdaRedempt
 import Wallet from '../../domain/Wallet';
 import Request from '../../stores/lib/Request';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
+import { AdaRedemptionCertificateParseError } from '../../stores/AdaRedemptionStore';
 
 @inject('stores', 'actions') @observer
 export default class AdaRedemptionPage extends Component {
@@ -17,6 +18,7 @@ export default class AdaRedemptionPage extends Component {
         setCertificate: PropTypes.func.isRequired,
         setPassPhrase: PropTypes.func.isRequired,
         setRedemptionCode: PropTypes.func.isRequired,
+        removeCertificate: PropTypes.func.isRequired,
       }),
     }),
     stores: PropTypes.shape({
@@ -33,14 +35,14 @@ export default class AdaRedemptionPage extends Component {
   };
 
   onSubmit = (values: { walletId: string }) => {
-    this.props.actions.redeemAda(values);
+    this.props.actions.adaRedemption.redeemAda(values);
   };
 
   render() {
     const { wallets, adaRedemption } = this.props.stores;
-    const { redeemAdaRequest, isCertificateEncrypted } = adaRedemption;
+    const { redeemAdaRequest, isCertificateEncrypted, error } = adaRedemption;
     const {
-      setCertificate, setPassPhrase, setRedemptionCode
+      setCertificate, setPassPhrase, setRedemptionCode, removeCertificate
     } = this.props.actions.adaRedemption;
 
     const selectableWallets = wallets.all.map((w) => ({
@@ -59,9 +61,11 @@ export default class AdaRedemptionPage extends Component {
           wallets={selectableWallets}
           isCertificateSelected={adaRedemption.certificate !== null}
           isCertificateEncrypted={isCertificateEncrypted}
+          isCertificateInvalid={error && error instanceof AdaRedemptionCertificateParseError}
           isSubmitting={redeemAdaRequest.isExecuting}
           error={adaRedemption.error}
           onSubmit={this.onSubmit}
+          onRemoveCertificate={removeCertificate}
         />
       </Layout>
     );
