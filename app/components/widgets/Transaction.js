@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
+import moment from 'moment';
 import classNames from 'classnames';
 import styles from './Transaction.scss';
 import adaSymbol from '../../assets/images/ada-symbol.svg';
@@ -85,14 +86,20 @@ export default class Transaction extends Component {
           {/* ==== Clickable Header -> toggles details ==== */}
 
           <button className={styles.header} onClick={this.toggleDetails.bind(this)}>
-            <div className={styles.title}>{data.type === 'adaExpend' ? 'Ada Sent' : 'Ada Received'}</div>
+            <div className={styles.title}>
+              {data.type === 'adaExpend' ? 'Ada Sent' : 'Ada Received'}
+            </div>
             <div className={styles.amount}>{data.amount}
               <img className={styles.currencySymbol} src={adaSymbol} role="presentation" />
             </div>
           </button>
 
           <div className={styles.details}>
-            <div className={styles.type}>{intl.formatMessage(messages[typeMessage])}</div>
+            <div className={styles.type}>
+              {intl.formatMessage(messages[typeMessage])}
+              , {moment(data.date).format('hh:mm:ss A')}
+              {/* TODO: Use locale to format the date*/}
+            </div>
             <div className={styles.status}>{status}</div>
           </div>
 
