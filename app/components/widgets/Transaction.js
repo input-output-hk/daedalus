@@ -97,7 +97,7 @@ export default class Transaction extends Component {
           <div className={styles.details}>
             <div className={styles.type}>
               {intl.formatMessage(messages[typeMessage])}
-              , {moment(data.date).format('MMMM Do YYYY, h:mm:ss A')}
+              , {moment(data.date).format('hh:mm:ss A')}
               {/* TODO: Use locale to format the date*/}
             </div>
             <div className={styles.status}>{status}</div>
