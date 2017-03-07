@@ -18,7 +18,7 @@ executable make-installer
   build-depends:       base
                      , filepath
                      , text
-                     , nsis
+                     , nsis >= 0.3.1
                      , turtle
                      , directory
                      , temporary
