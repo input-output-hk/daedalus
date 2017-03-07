@@ -15,6 +15,10 @@ export default (definitions) => {
     action.notify = params => action.listeners.forEach(listener => listener(params));
     action.remove = (listener) => action.listeners.splice(action.listeners.indexOf(listener), 1);
     action.removeAll = () => { action.listeners = []; };
+    action.once = listener => action.listeners.push((...args) => {
+      action.remove(listener);
+      listener(...args);
+    });
     actions.push(action);
   });
   return newActions;

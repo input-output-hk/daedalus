@@ -1,17 +1,24 @@
 import { expect } from 'chai';
 import {
   fillOutWalletSendForm,
-  expectActiveWallet,
-  getNameOfActiveWalletInSidebar
+  getWalletByName,
 } from './lib/wallets-helpers';
+import {
+  waitUntilUrlEquals,
+} from './lib/route-helpers'
+import path from 'path';
+
+const defaultWalletKeyFilePath = path.resolve(__dirname, '../support/default-wallet.key');
 
 export default function () {
 
-  this.Given(/^I have a wallet$/, async function () {
-    const result = await this.client.executeAsync(function(done) {
+  this.Given(/^I have a wallet with funds$/, async function () {
+    const result = await this.client.executeAsync(function(filePath, done) {
       // This assumes that we always have a default wallet on the backend!
-      daedalus.api.getWallets().then((wallets) => done(wallets[0]));
-    });
+      daedalus.api.importWalletFromKey({ filePath }).then((wallet) => {
+        daedalus.stores.wallets.refreshWalletsData().then(() => done(wallet))
+      });
+    }, defaultWalletKeyFilePath);
     this.wallet = result.value;
     this.wallets = [this.wallet];
   });
@@ -24,18 +31,22 @@ export default function () {
           mnemonic: daedalus.api.generateMnemonic().join(' ')
         });
       }))
-      .then((result) => {
+      .then(() => {
         daedalus.stores.wallets.walletsRequest.invalidate({ immediately: true }).then(done);
       })
       .catch((error) => done(error.stack));
     }, table.hashes());
-    this.wallets = result.value;
+    // Add or set the wallets for this scenario
+    if (this.wallets != null) {
+      this.wallets.push(...result.value);
+    } else {
+      this.wallets = result.value;
+    }
   });
 
   this.Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function (walletName, screen) {
-    const wallet = this.wallets.find((w) => w.name === walletName);
+    const wallet = getWalletByName.call(this, walletName);
     await this.navigateTo(`/wallets/${wallet.id}/${screen}`);
-    return expectActiveWallet.call(this, walletName);
   });
 
   this.Given(/^I see the create wallet dialog$/, function () {
@@ -82,10 +93,9 @@ export default function () {
     return this.client.waitForVisible('.WalletNavigation_component');
   });
 
-  // TODO: Refactor this to include previous step definition
-  this.Then(/^I should be on the(.*)? wallet (.*) screen$/, async function (walletName, screenName) {
-    if (walletName) await expectActiveWallet.call(this, walletName);
-    return this.client.waitForVisible(`.WalletNavButton_active.${screenName}`);
+  this.Then(/^I should be on the "([^"]*)" wallet "([^"]*)" screen$/, async function (walletName, screenName) {
+    const wallet = getWalletByName.call(this, walletName);
+    return waitUntilUrlEquals.call(this, `/wallets/${wallet.id}/${screenName}`);
   });
 
   this.Then(/^I should see the following error messages on the wallet send form:$/, async function (data) {
@@ -98,16 +108,15 @@ export default function () {
     }
   });
 
-  this.Then(/^I should see the "([^"]*)" wallet home screen with the transaction titled "([^"]*)"$/, async function (walletName, title) {
-    const wallet = this.wallets.find((w) => w.name === walletName);
-    const displayedWalletName = await getNameOfActiveWalletInSidebar.call(this);
-    expect(displayedWalletName.toLowerCase()).to.equal(wallet.name.toLowerCase());
+  this.Then(/^the latest transaction should show:$/, async function (table) {
+    const expectedData = table.hashes()[0];
+    await this.client.waitForVisible('.Transaction_title');
     const transactionTitle = await this.client.getText('.Transaction_title');
-    expect(transactionTitle).to.equal(title);
+    expect(transactionTitle[0]).to.equal(expectedData.title);
     const transactionType = await this.client.getText('.Transaction_type');
-    expect(transactionType).to.equal('ADA transaction');
+    expect(transactionType[0]).to.equal(expectedData.type);
     const transactionAmount = await this.client.getText('.Transaction_amount');
-    expect(transactionAmount).to.equal(`-${this.walletSendFormValues['amount']} ada`);
+    expect(transactionAmount[0]).to.include(expectedData.amount);
   });
 
 };

@@ -11,7 +11,7 @@ Feature: Transaction Search
       | First  |
       | Second |
       | Third  |
-    And I am on the wallet home screen
+    And I am on the wallet summary screen
 
   Scenario: Filtering Down to a Single Transaction
     Given I see all expected transactions on screen

@@ -13,5 +13,5 @@ Feature: Transactions Grouping
       | First  | 2016-01-01 |
       | Second | 2016-01-02 |
       | Third  | 2016-01-03 |
-    When I am on the wallet home screen
+    When I am on the wallet summary screen
     Then I should see the transactions grouped by their date

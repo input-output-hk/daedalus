@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import { observer, inject, PropTypes as MobxPropTypes } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
-// import WalletTransactionsSearch from '../../components/wallet/home/WalletTransactionsSearch';
+// import WalletTransactionsSearch from '../../components/wallet/summary/WalletTransactionsSearch';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import CachedRequest from '../../stores/lib/CachedRequest';
 
