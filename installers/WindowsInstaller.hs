@@ -13,9 +13,9 @@ import Launcher
 
 shortcutParameters :: String
 shortcutParameters = launcherArgs $ Launcher
-  { nodePath = "%PROGRAMFILES%\\Daedalus\\cardano-node.exe"
+  { nodePath = "$INSTDIR\\cardano-node.exe"
   , nodeLogPath = "%APPDATA%\\Daedalus\\Logs\\cardano-node.log"
-  , walletPath = "%PROGRAMFILES%\\Daedalus\\Daedalus.exe"
+  , walletPath = "$INSTDIR\\Daedalus.exe"
   , installerPath = "%APPDATA%\\Daedalus\\Installer.exe"
   , runtimePath = "%APPDATA%\\Daedalus\\"
   }
@@ -132,7 +132,7 @@ writeInstallerNSIS fullVersion = do
           ]
 
         -- Uninstaller
-        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "InstallLocation" "$PROGRAMFILES64\\Daedalus"
+        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "InstallLocation" "$INSTDIR"
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "Publisher" "Eureka Solutions LLC"
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "ProductVersion" (str fullVersion)
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "VersionMajor" (str . (!! 0). parseVersion $ fullVersion)
