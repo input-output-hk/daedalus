@@ -14,8 +14,8 @@ Feature: Send Money to Receiver
     And I submit the wallet send form
     Then I should be on the "Personal Wallet" wallet "summary" screen
     And the latest transaction should show:
-      | title    | amount | type            |
-      | Ada Sent | -10    | Ada transaction |
+      | title    | amount |
+      | Ada Sent | -10    |
 
   Scenario: User Submits Empty Form
     Given I am on the "Personal Wallet" wallet "send" screen
@@ -38,8 +38,8 @@ Feature: Send Money to Receiver
   Scenario Outline: User Enters Wrong Amount
     Given I am on the "Personal Wallet" wallet "send" screen
     When I fill out the send form with a transaction to "first" wallet:
-      | title          | amount         | description |
-      | my transaction | <WRONG_AMOUNT> | some text   |
+      | title          | amount         |
+      | my transaction | <WRONG_AMOUNT> |
     And I submit the wallet send form
     Then I should see the following error messages on the wallet send form:
       | message                               |

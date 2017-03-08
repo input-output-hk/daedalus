@@ -113,8 +113,6 @@ export default function () {
     await this.client.waitForVisible('.Transaction_title');
     const transactionTitle = await this.client.getText('.Transaction_title');
     expect(transactionTitle[0]).to.equal(expectedData.title);
-    const transactionType = await this.client.getText('.Transaction_type');
-    expect(transactionType[0]).to.equal(expectedData.type);
     const transactionAmount = await this.client.getText('.Transaction_amount');
     expect(transactionAmount[0]).to.include(expectedData.amount);
   });
