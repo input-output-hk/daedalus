@@ -120,7 +120,7 @@ export default class WalletsStore extends Store {
   }
 
 
-  getWalletRoute = (walletId: string, screen: string = 'home'): string => {
+  getWalletRoute = (walletId: string, screen: string = 'summary'): string => {
     return `${this.BASE_ROUTE}/${walletId}/${screen}`;
   };
 
@@ -214,8 +214,14 @@ export default class WalletsStore extends Store {
   }
 
   _openAddWalletIfNoWallets = () => {
-    if (this.hasLoadedWallets && !this.hasAnyWallets) this.isAddWalletDialogOpen = true;
     // TODO: investigate why hasLoadedWallets is needed here, it is in hasAnyWallets
+    if (this.hasLoadedWallets) {
+      if (!this.hasAnyWallets) {
+        this.isAddWalletDialogOpen = true;
+      } else {
+        this.isAddWalletDialogOpen = false;
+      }
+    }
   };
 
   _updateActiveWalletOnRouteChanges = () => {

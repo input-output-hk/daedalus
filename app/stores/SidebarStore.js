@@ -54,7 +54,7 @@ export default class SidebarStore extends Store {
     }
   };
 
-  @action _syncSidebarRouteWithRouter = () => {
+  _syncSidebarRouteWithRouter = () => {
     const route = this.stores.app.currentRoute;
     Object.keys(this.CATEGORIES).forEach((key) => {
       const category = this.CATEGORIES[key];

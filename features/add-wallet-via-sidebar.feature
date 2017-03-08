@@ -11,5 +11,5 @@ Feature: Add Wallet via Sidebar
     And I submit the create wallet dialog with the following inputs:
     | walletName |
     | Test       |
-    Then I should be on the Test wallet home screen
+    Then I should be on the Test wallet summary screen
     And I dont see the create wallet dialog anymore
