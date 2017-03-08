@@ -7,27 +7,32 @@ import           Data.Text          (pack, split, unpack)
 import           Development.NSIS
 import           System.Directory   (doesFileExist)
 import           System.Environment (lookupEnv)
-import           Turtle             (echo, proc, procs)
+import           Turtle             (echo, proc, procs, unsafeTextToLine)
 
 import Launcher
 
 shortcutParameters :: String
 shortcutParameters = launcherArgs $ Launcher
-  { nodePath = "%PROGRAMFILES%\\Daedalus\\cardano-node.exe"
+  { nodePath = "$INSTDIR\\cardano-node.exe"
   , nodeLogPath = "%APPDATA%\\Daedalus\\Logs\\cardano-node.log"
-  , walletPath = "%PROGRAMFILES%\\Daedalus\\Daedalus.exe"
+  , walletPath = "$INSTDIR\\Daedalus.exe"
   , installerPath = "%APPDATA%\\Daedalus\\Installer.exe"
   , runtimePath = "%APPDATA%\\Daedalus\\"
   }
 
-daedalusShortcut :: [Attrib]
-daedalusShortcut =
-    [ Target "$INSTDIR\\cardano-launcher.exe"
-    , Parameters (str $ shortcutParameters)
-    , IconFile "$INSTDIR\\Daedalus.exe"
-    , StartOptions "SW_SHOWMINIMIZED"
-    , IconIndex 0
-    ]
+shortcut :: String -> String
+shortcut linkPath = unwords
+  [ "CreateShortcut"
+  , escQuote linkPath                -- link file path
+  , "$INSTDIR\\cardano-launcher.exe" -- target
+  , escQuote shortcutParameters      -- parameters
+  , "$INSTDIR\\Daedalus.exe"         -- icon file
+  , "0"                              -- icon index
+  , "SW_SHOWMINIMIZED"               -- start options
+  ]
+
+escQuote :: String -> String
+escQuote s = quote $ concatMap (\c -> if c == '"' then "$\\\"" else [c]) s
 
 -- See INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
 writeUninstallerNSIS :: String -> IO ()
@@ -37,10 +42,10 @@ writeUninstallerNSIS fullVersion = do
     _ <- constantStr "Version" (str fullVersion)
     name "Daedalus Uninstaller $Version"
     outFile . str $ tempDir <> "\\tempinstaller.exe"
-    injectGlobalLiteral "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
-    injectGlobalLiteral "SetCompress off"
+    unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
+    unsafeInjectGlobal "SetCompress off"
     _ <- section "" [Required] $ do
-      injectLiteral $ "WriteUninstaller \"" <> tempDir <> "\\uninstall.exe\""
+      unsafeInject $ "WriteUninstaller \"" <> tempDir <> "\\uninstall.exe\""
 
     uninstall $ do
       -- Remove registry keys
@@ -49,7 +54,7 @@ writeUninstallerNSIS fullVersion = do
       rmdir [Recursive,RebootOK] "$INSTDIR"
       delete [] "$SMPROGRAMS/Daedalus/*.*"
       delete [] "$DESKTOP\\Daedalus.lnk"
-      mapM_ injectLiteral
+      mapM_ unsafeInject
         [ "liteFirewall::RemoveRule \"$INSTDIR\\cardano-node.exe\" \"Cardano Node\""
         , "Pop $0"
         , "DetailPrint \"liteFirewall::RemoveRule: $0\""
@@ -71,9 +76,9 @@ signFile filename = do
   if exists then do
     maybePass <- lookupEnv "CERT_PASS"
     case maybePass of
-      Nothing -> echo . pack $ "Skipping signing " <> filename <> " due to lack of password"
+      Nothing -> echo . unsafeTextToLine . pack $ "Skipping signing " <> filename <> " due to lack of password"
       Just pass -> do
-        echo . pack $ "Signing " <> filename
+        echo . unsafeTextToLine . pack $ "Signing " <> filename
         -- TODO: Double sign a file, SHA1 for vista/xp and SHA2 for windows 8 and on
         --procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\eureka.p12", "/p", pack pass, "/t", "http://timestamp.comodoca.com", "/v", pack filename] mempty
         procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\eureka.p12", "/p", pack pass, "/fd", "sha256", "/tr", "http://timestamp.comodoca.com/?td=sha256", "/td", "sha256", "/v", pack filename] mempty
@@ -93,18 +98,18 @@ writeInstallerNSIS fullVersion = do
     _ <- constantStr "Version" (str fullVersion)
     name "Daedalus ($Version)"                  -- The name of the installer
     outFile "daedalus-win64-$Version-installer.exe"           -- Where to produce the installer
-    injectGlobalLiteral $ "!define MUI_ICON \"icons\\64x64.ico\""
-    injectGlobalLiteral $ "!define MUI_HEADERIMAGE"
-    injectGlobalLiteral $ "!define MUI_HEADERIMAGE_BITMAP \"icons\\installBanner.bmp\""
-    injectGlobalLiteral $ "!define MUI_HEADERIMAGE_RIGHT"
-    injectGlobalLiteral $ "VIProductVersion " <> (L.intercalate "." $ parseVersion fullVersion)
-    injectGlobalLiteral $ "VIAddVersionKey \"ProductVersion\" " <> fullVersion
+    unsafeInjectGlobal $ "!define MUI_ICON \"icons\\64x64.ico\""
+    unsafeInjectGlobal $ "!define MUI_HEADERIMAGE"
+    unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_BITMAP \"icons\\installBanner.bmp\""
+    unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_RIGHT"
+    unsafeInjectGlobal $ "VIProductVersion " <> (L.intercalate "." $ parseVersion fullVersion)
+    unsafeInjectGlobal $ "VIAddVersionKey \"ProductVersion\" " <> fullVersion
     -- see ndmitchell/nsis#10 and https://github.com/jmitchell/nsis/tree/feature/escape-hatch
     {- unicode True -}
-    injectGlobalLiteral "Unicode true"
+    unsafeInjectGlobal "Unicode true"
     installDir "$PROGRAMFILES64\\Daedalus"   -- The default installation directory
     requestExecutionLevel Highest
-    injectGlobalLiteral "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
+    unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
 
     page Directory                   -- Pick where to install
     page InstFiles                   -- Give a progress bar while installing
@@ -116,7 +121,7 @@ writeInstallerNSIS fullVersion = do
         createDirectory "$APPDATA\\Daedalus\\Wallet-0.2"
         createDirectory "$APPDATA\\Daedalus\\Logs"
         createDirectory "$APPDATA\\Daedalus\\Secrets"
-        createShortcut "$DESKTOP\\Daedalus.lnk" daedalusShortcut
+        unsafeInject $ shortcut "$DESKTOP\\Daedalus.lnk"
         file [] "cardano-node.exe"
         file [] "cardano-launcher.exe"
         file [] "log-config-prod.yaml"
@@ -125,14 +130,14 @@ writeInstallerNSIS fullVersion = do
         file [Recursive] "dlls\\"
         file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
 
-        mapM_ injectLiteral
+        mapM_ unsafeInject
           [ "liteFirewall::AddRule \"$INSTDIR\\cardano-node.exe\" \"Cardano Node\""
           , "Pop $0"
           , "DetailPrint \"liteFirewall::AddRule: $0\""
           ]
 
         -- Uninstaller
-        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "InstallLocation" "$PROGRAMFILES64\\Daedalus"
+        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "InstallLocation" "$INSTDIR"
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "Publisher" "Eureka Solutions LLC"
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "ProductVersion" (str fullVersion)
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "VersionMajor" (str . (!! 0). parseVersion $ fullVersion)
@@ -149,7 +154,7 @@ writeInstallerNSIS fullVersion = do
         createDirectory "$SMPROGRAMS/Daedalus"
         createShortcut "$SMPROGRAMS/Daedalus/Uninstall Daedalus.lnk"
           [Target "$INSTDIR/uninstall.exe", IconFile "$INSTDIR/uninstall.exe", IconIndex 0]
-        createShortcut "$SMPROGRAMS/Daedalus/Daedalus.lnk" daedalusShortcut
+        unsafeInject $ shortcut "$SMPROGRAMS/Daedalus/Daedalus.lnk"
 
     return ()
 

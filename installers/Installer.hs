@@ -9,7 +9,7 @@ import qualified MacInstaller
 
 main :: IO ()
 main = do
-  echo $ "Generating installer for " <> T.pack os <> "-" <> T.pack arch
+  echo . unsafeTextToLine . pack $ "Generating installer for " <> os <> "-" <> arch
   case os of
     "linux" -> fail "No installer yet"
     "darwin" -> MacInstaller.main
