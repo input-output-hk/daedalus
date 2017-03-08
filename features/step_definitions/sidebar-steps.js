@@ -22,9 +22,9 @@ export default function () {
     return this.client.waitForExist(`.Sidebar_hidden`, null, !isHidden);
   });
 
-  this.Given(/^The sidebar shows the (.*) category$/, async function (category) {
-    await this.client.execute(function(route) {
-      require('mobx').runInAction(() => daedalus.stores.sidebar.route = `/${route}`);
+  this.Given(/^The sidebar shows the "([^"]*)" category$/, async function (category) {
+    await this.client.execute(function(cat) {
+      daedalus.stores.sidebar.showCategoryWithSubMenus(`/${cat}`);
     }, category);
     return this.client.waitForVisible(`.SidebarCategory_active.${category}`);
   });

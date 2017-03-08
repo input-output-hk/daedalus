@@ -106,7 +106,6 @@ export default class MainLayout extends Component {
     const sidebarComponent = (
       <Sidebar
         menus={sidebarMenus}
-        isHidden={sidebar.isHidden}
         isShowingSubMenus={sidebar.isShowingSubMenus}
         categories={sidebar.CATEGORIES}
         currentCategory={sidebar.currentCategory}

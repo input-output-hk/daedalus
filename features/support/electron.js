@@ -20,6 +20,7 @@ export default function () {
     await app.client.waitUntilWindowLoaded();
     context.app = app;
   });
+
   // And tear it down after all features
   this.registerHandler('AfterFeatures', function() {
     return context.app.stop();
