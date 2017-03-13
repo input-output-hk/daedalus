@@ -33,7 +33,7 @@ export default function () {
     return this.client.click('.SidebarLayout_appbar .app-bar_leftIcon');
   });
 
-  this.When(/^I click on the (.*) category in the sidebar$/, function (category) {
+  this.When(/^I click on the "([^"]*)" category in the sidebar$/, function (category) {
     return this.client.click(`.SidebarCategory_component.${category}`);
   });
 
@@ -46,7 +46,7 @@ export default function () {
     return this.client.waitForVisible(`.Sidebar_hidden`, null, !isHidden);
   });
 
-  this.Then(/^The (.*) category should be active$/, function (category) {
+  this.Then(/^The "([^"]*)" category should be active$/, function (category) {
     return this.client.waitForVisible(`.SidebarCategory_active.${category}`);
   });
 }
