@@ -99,6 +99,7 @@ export default class WalletsStore extends Store {
   }
 
   @computed get hasAnyWallets(): bool {
+    if (this.walletsRequest.result == null) return false;
     return this.walletsRequest.wasExecuted && this.walletsRequest.result.length > 0;
   }
 
