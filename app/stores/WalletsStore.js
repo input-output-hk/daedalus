@@ -42,6 +42,7 @@ export default class WalletsStore extends Store {
     wallets.restoreWallet.listen(this._restoreWallet);
     wallets.importWalletFromKey.listen(this._importWalletFromKey);
     wallets.toggleWalletKeyImportDialog.listen(this._toggleWalletKeyImportDialog);
+    wallets.setActiveWallet.listen(this._setActiveWallet);
     walletBackup.finishWalletBackup.listen(this._finishWalletCreation);
     this.registerReactions([
       this._updateActiveWalletOnRouteChanges,
@@ -207,6 +208,12 @@ export default class WalletsStore extends Store {
     this._toggleWalletKeyImportDialog();
     this.goToWalletRoute(importedWallet.id);
     this.refreshWalletsData();
+  };
+
+  @action _setActiveWallet = ({ walletId }: { walletId: string }) => {
+    if (this.hasAnyWallets) {
+      this.active = this.all.find(wallet => wallet.id === walletId);
+    }
   };
 
   goToWalletRoute(walletId: string) {
