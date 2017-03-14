@@ -57,6 +57,13 @@ export default function () {
     return this.client.waitForVisible('.WalletCreateDialog', null, true);
   });
 
+  this.Given(/^the active wallet is "([^"]*)"$/, function (walletName) {
+    const wallet = getWalletByName.call(this, walletName);
+    this.client.execute(walletId => {
+      daedalus.actions.setActiveWallet({ walletId });
+    }, wallet.id);
+  });
+
   this.When(/^I click on the (.*) wallet in the sidebar$/, function (walletName) {
     return this.client.click(`//*[contains(text(), "${walletName}") and @class="SidebarWalletMenuItem_title"]`);
   });
@@ -99,6 +106,7 @@ export default function () {
   });
 
   this.Then(/^I should see the following error messages on the wallet send form:$/, async function (data) {
+    await this.client.waitForText('.WalletSendForm_fields .input_error');
     let errorsOnScreen = await this.client.getText('.WalletSendForm_fields .input_error');
     if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
     const errors = data.hashes();
