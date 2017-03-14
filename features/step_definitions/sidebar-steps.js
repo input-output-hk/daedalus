@@ -1,23 +1,15 @@
 import { expect } from 'chai';
 
 export default function () {
-  this.Given(/^the sidebar is (hidden|visible)/, async function (state) {
+  this.Given(/^the sidebar submenu is (hidden|visible)/, async function (state) {
     const isHidden = state === 'hidden';
     await this.client.waitForVisible('.Sidebar_component');
     await this.client.executeAsync(function(hidden, done) {
-      require('mobx').runInAction(() => {
-        const sidebarState = daedalus.stores.sidebar;
-        const sidebarWillAnimate = sidebarState.hidden !== hidden;
-        let isDone = false;
-        sidebarState.hidden = hidden;
-        if (sidebarWillAnimate) {
-          // Wait until the sidebar transition is finished -> otherwise webdriver click error!
-          const sidebarElement = document.querySelectorAll('.Sidebar_component')[0];
-          sidebarElement.addEventListener('transitionend', () => !isDone && done() && (isDone = true));
-        } else {
-          done();
-        }
-      });
+      const sidebarState = daedalus.stores.sidebar;
+      if (sidebarState.hidden !== hidden) {
+        daedalus.actions.sidebar.toggleSubMenus();
+      }
+      done();
     }, isHidden);
     return this.client.waitForExist(`.Sidebar_hidden`, null, !isHidden);
   });
@@ -41,9 +33,9 @@ export default function () {
     return this.client.click('.SidebarWalletsMenu_addWalletButton');
   });
 
-  this.Then(/^the sidebar should be (hidden|visible)/, function (state) {
-    const isHidden = state === 'hidden';
-    return this.client.waitForVisible(`.Sidebar_hidden`, null, !isHidden);
+  this.Then(/^the sidebar submenu should be (hidden|visible)/, function (state) {
+    const waitForHidden = state === 'hidden';
+    return this.client.waitForVisible(`.SidebarMenu_component`, null, waitForHidden);
   });
 
   this.Then(/^The (.*) category should be active$/, function (category) {
