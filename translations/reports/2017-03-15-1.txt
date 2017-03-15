@@ -1,0 +1,253 @@
+Duplicate ids:
+
+   Duplicate message id: wallet.backup.recovery.phrase.dialog.title
+   Duplicate message id: wallet.backup.recovery.phrase.dialog.title
+
+Maintaining en-US.json:
+
+Deleted keys:
+  Sidebar.categories.adaRedemption: ADA Redemption
+  Sidebar.categories.settings: Settings
+  Sidebar.categories.wallets: Wallets
+  api.errors.ApiMethodNotYetImplementedError: This API method is not yet implemented.
+  api.errors.GenericApiError: An error occured, please try again later.
+  api.errors.NotEnoughMoneyToSendError: Not enough money to make this transaction.
+  api.errors.RedeemAdaError: Your Ada was not redeemed. Please try again.
+  api.errors.WalletAlreadyRestoredError: You have already restored a wallet with this phrase.
+  api.errors.WalletKeyImportError: Key could not be imported, please make sure you are providing a correct key file.
+  errors.AdaRedemptionCertificateParseError: Your redemption code could not be parsed from the given document.
+  login.form.email.hint: E-mail
+  login.form.invalidCredentials: E-mail or password is wrong.
+  login.form.password.hint: Password
+  login.form.submit.label: Login
+  profile.settings.password.last.updated.label: Last updated
+  profile.settings.update.email.label: Email
+  profile.settings.update.language.label: Language
+  profile.settings.update.name.label: Name
+  profile.settings.update.password.label: Password
+  profile.settings.update.phone.number.label: Phone number
+  profile.settings.update.picture.label: Picture
+  settings.menu.display.link.label: Display
+  settings.menu.identity.and.verification.link.label: Identity and verification
+  settings.menu.privacy.link.label: Privacy
+  settings.menu.profile.link.label: Profile
+  settings.menu.security.link.label: Security
+  settings.menu.support.link.label: Support
+  settings.menu.terms.of.use.link.label: Terms of use
+  staking.chart.tooltip.commitments.label: commitments
+  staking.chart.tooltip.mpc.phase.label: phase
+  staking.chart.tooltip.openings.label: openings
+  staking.chart.tooltip.shares.label: shares
+  staking.chart.tooltip.slot.label: slot
+  staking.chart.tooltip.transactions.label: transactions
+  wallet.backup.recovery.phrase.display.dialog.terms.and.condition.device: I understand that my <strong>wallet and tokens are held securely only on this device only and not on any servers.</strong>
+  wallet.transactions.search.hint: Search transaction
+
+Maintaining hr-HR.json:
+
+Deleted keys:
+  file.upload.widget.click.to.upload.label: ili kliknite za njen odabir
+  file.upload.widget.drop.file.here.label: Dovucite datoteku ovdje
+  login.form.email.hint: E-mail
+  login.form.invalidCredentials: Neispravan e-mail ili lozinka.
+  login.form.password.hint: Lozinka
+  login.form.submit.label: Prijava
+  profile.settings.password.last.updated.label: Zadnji puta promijenjena
+  profile.settings.update.email.label: E-mail
+  profile.settings.update.language.label: Jezik
+  profile.settings.update.name.label: Ime
+  profile.settings.update.password.label: Lozinka
+  profile.settings.update.phone.number.label: Broj telefona
+  profile.settings.update.picture.label: Fotografija
+  settings.menu.display.link.label: Prikaz
+  settings.menu.identity.and.verification.link.label: Identitet i verifikacija
+  settings.menu.privacy.link.label: Privatnost
+  settings.menu.profile.link.label: Profil
+  settings.menu.security.link.label: Sigurnost
+  settings.menu.support.link.label: Podrška
+  settings.menu.terms.of.use.link.label: Uvjeti korištenja
+  staking.chart.tooltip.commitments.label: obveze
+  staking.chart.tooltip.mpc.phase.label: faza
+  staking.chart.tooltip.openings.label: otvorenja
+  staking.chart.tooltip.shares.label: udjeli
+  staking.chart.tooltip.slot.label: slot
+  staking.chart.tooltip.transactions.label: transakcije
+  wallet.create.dialog.errors.invalidWalletName: Potrebno je unijeti barem 3 znaka.
+  wallet.receive.page.generate.new.address.label: Generiraj novu adresu
+  wallet.receive.page.request.specific.amount.button.label: Zatraži konkretan iznos
+  wallet.transactions.search.hint: Pretraži transakcije
+
+Added keys:
+  ImageUploadWidget.clickToUploadLabel: !!!or click to upload
+  ImageUploadWidget.dropFileHint: !!!Drop file here
+  cardano.node.sync.status.blocksSynced: !!!Blocks synced {percentage}%
+  cardano.node.update.notification.accept.button.label: !!!Accept
+  cardano.node.update.notification.postpone.button.label: !!!Ask me later
+  global.errors.invalidMnemonic: !!!Invalid phrase entered, please check.
+  global.errors.invalidWalletName: !!!The wallet name must have at least 3 letters.
+  loading.screen.connectingToNetworkMessage: !!!Connecting to network
+  loading.screen.reconnectingToNetworkMessage: !!!Network connection lost - reconnecting
+  loading.screen.syncingBlocksMessage: !!!Syncing blocks
+  wallet.add.dialog.create.description: !!!Create a new wallet
+  wallet.add.dialog.create.label: !!!Create
+  wallet.add.dialog.import.description: !!!Import wallet from a key
+  wallet.add.dialog.import.label: !!!Import
+  wallet.add.dialog.join.description: !!!Join a shared wallet with up to 5 people
+  wallet.add.dialog.join.label: !!!Join
+  wallet.add.dialog.restore.description: !!!Restore wallet from backup
+  wallet.add.dialog.restore.label: !!!Restore
+  wallet.add.dialog.title.label: !!!Add wallet
+  wallet.backup.privacy.warning.dialog..button.labelContinue: !!!Continue
+  wallet.backup.privacy.warning.dialog.checkbox.label.nobodyWatching: !!!Make sure nobody looks into your screen unless you want them to have access to your funds.
+  wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions: !!!On the following screen, you will see a set of X random words. This is
+    your wallet backup phrase. It can be entered in any version of Daedalus application in order
+    to back up or restore your wallet’s funds and private key.
+  wallet.backup.recovery.phrase.dialog.title: !!!Recovery phrase
+  wallet.backup.recovery.phrase.display.dialog.backup.instructions: !!!Please, make sure you have carefully written down your recovery phrase somewhere safe.
+    You will need this phrase later for next use and recover. Phrase is case sensitive.
+  wallet.backup.recovery.phrase.display.dialog.button.label.iHaveWrittenItDown: !!!Yes, I’ve written it down
+  wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.device: !!!I understand that my money are held securely on this device only, not on the company servers
+  wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery: !!!I understand that if this application is moved to another device or deleted, my money can
+    be only recovered with the backup phrase which were written down in a secure place
+  wallet.backup.recovery.phrase.entry.dialog.verification.instructions: !!!Tap each word in the correct order to verify your recovery phrase
+  wallet.create.dialog.walletNameHint: !!!e.g: Shopping Wallet
+  wallet.key.import.dialog.headline: !!!Import wallet from file with the key
+  wallet.key.import.dialog.keyFileHint: !!!Drop file here or click to choose
+  wallet.key.import.dialog.keyFileLabel: !!!Upload your key
+  wallet.key.import.dialog.submitLabel: !!!Import wallet
+  wallet.navigation.summary: !!!Summary
+  wallet.navigation.transactions: !!!Transactions
+  wallet.recovery.phrase.show.entry.dialog.button.labelClear: !!!Clear
+  wallet.recovery.phrase.show.entry.dialog.button.labelConfirm: !!!Confirm
+  wallet.redeem.dialog.certificateHint: !!!Drop file here or click to choose
+  wallet.redeem.dialog.certificateLabel: !!!Certificate
+  wallet.redeem.dialog.headline: !!!Ada Redemption
+  wallet.redeem.dialog.instructions: !!!Detailed instructions
+  wallet.redeem.dialog.passphraseHint: !!!Enter your 9 word mnemonic passPhraseTokens here
+  wallet.redeem.dialog.passphraseLabel: !!!Redeem token
+  wallet.redeem.dialog.redemptionCodeError: !!!Invalid Redemption Code
+  wallet.redeem.dialog.redemptionCodeHint: !!!Enter your code or upload a certificate
+  wallet.redeem.dialog.redemptionCodeLabel: !!!Redemption Code
+  wallet.redeem.dialog.submitLabel: !!!Redeem your money
+  wallet.redeem.dialog.walletSelectLabel: !!!Choose Wallet
+  wallet.redeem.success.overlay.headline: !!!You successfully redeemed
+  wallet.restore.dialog.form.errors.invalidRecoveryPhrase: !!!Invalid recovery phrase
+  wallet.restore.dialog.recovery.phrase.input.hint: !!!Enter recovery phrase
+  wallet.restore.dialog.recovery.phrase.input.label: !!!Recovery phrase
+  wallet.restore.dialog.restore.wallet.button.label: !!!Restore wallet
+  wallet.restore.dialog.title.label: !!!Restore wallet
+  wallet.restore.dialog.wallet.name.input.hint: !!!Enter wallet name
+  wallet.restore.dialog.wallet.name.input.label: !!!Wallet name
+  wallet.send.form.errors.invalidTitle: !!!Please enter a title with at least 3 characters.
+  wallet.send.form.title.hint: !!!E.g: Money for Frank
+  wallet.send.form.title.label: !!!Title
+  wallet.summary.no.transactions: !!!No recent transactions
+  wallet.summary.page.pendingConfirmationLabel: !!!Pending confirmation
+  wallet.summary.page.transactionsLabel: !!!Number of transactions
+  wallet.transaction.pendingLabel: !!!Pending
+  wallet.transaction.verificationsLabel: !!!verifications
+
+Maintaining de-DE.json:
+
+Deleted keys:
+  file.upload.widget.click.to.upload.label: oder auswählen
+  file.upload.widget.drop.file.here.label: Bilddatei hier ablegen
+  login.form.email.hint: E-Mail
+  login.form.invalidCredentials: E-Mail oder Password sind falsch.
+  login.form.password.hint: Passwort
+  login.form.submit.label: Einloggen
+  profile.settings.password.last.updated.label: Zuletzt aktualisiert
+  profile.settings.update.email.label: Email
+  profile.settings.update.language.label: Sprache
+  profile.settings.update.name.label: Name
+  profile.settings.update.password.label: Passwort
+  profile.settings.update.phone.number.label: Telefonnummer
+  profile.settings.update.picture.label: Profilbild
+  settings.menu.display.link.label: Ansicht
+  settings.menu.identity.and.verification.link.label: Identität und Verifikation
+  settings.menu.privacy.link.label: Privatsphäre
+  settings.menu.profile.link.label: Profil
+  settings.menu.security.link.label: Sicherheit
+  settings.menu.support.link.label: Support
+  settings.menu.terms.of.use.link.label: Nutzungsbedingungen
+  staking.chart.tooltip.commitments.label: Commitments
+  staking.chart.tooltip.mpc.phase.label: Phase
+  staking.chart.tooltip.openings.label: Openings
+  staking.chart.tooltip.shares.label: Shares
+  staking.chart.tooltip.slot.label: Slot
+  staking.chart.tooltip.transactions.label: Transaktionen
+  wallet.create.dialog.errors.invalidWalletName: Muss mindestens 3 Zeichen lang sein.
+  wallet.receive.page.generate.new.address.label: Neue Adresse generieren
+  wallet.receive.page.request.specific.amount.button.label: Einen bestimmten Betrag anfordern
+  wallet.transactions.search.hint: Suche nach Transaktion
+
+Added keys:
+  ImageUploadWidget.clickToUploadLabel: !!!or click to upload
+  ImageUploadWidget.dropFileHint: !!!Drop file here
+  cardano.node.sync.status.blocksSynced: !!!Blocks synced {percentage}%
+  cardano.node.update.notification.accept.button.label: !!!Accept
+  cardano.node.update.notification.postpone.button.label: !!!Ask me later
+  global.errors.invalidMnemonic: !!!Invalid phrase entered, please check.
+  global.errors.invalidWalletName: !!!The wallet name must have at least 3 letters.
+  loading.screen.connectingToNetworkMessage: !!!Connecting to network
+  loading.screen.reconnectingToNetworkMessage: !!!Network connection lost - reconnecting
+  loading.screen.syncingBlocksMessage: !!!Syncing blocks
+  wallet.add.dialog.create.description: !!!Create a new wallet
+  wallet.add.dialog.create.label: !!!Create
+  wallet.add.dialog.import.description: !!!Import wallet from a key
+  wallet.add.dialog.import.label: !!!Import
+  wallet.add.dialog.join.description: !!!Join a shared wallet with up to 5 people
+  wallet.add.dialog.join.label: !!!Join
+  wallet.add.dialog.restore.description: !!!Restore wallet from backup
+  wallet.add.dialog.restore.label: !!!Restore
+  wallet.add.dialog.title.label: !!!Add wallet
+  wallet.backup.privacy.warning.dialog..button.labelContinue: !!!Continue
+  wallet.backup.privacy.warning.dialog.checkbox.label.nobodyWatching: !!!Make sure nobody looks into your screen unless you want them to have access to your funds.
+  wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions: !!!On the following screen, you will see a set of X random words. This is
+    your wallet backup phrase. It can be entered in any version of Daedalus application in order
+    to back up or restore your wallet’s funds and private key.
+  wallet.backup.recovery.phrase.dialog.title: !!!Recovery phrase
+  wallet.backup.recovery.phrase.display.dialog.backup.instructions: !!!Please, make sure you have carefully written down your recovery phrase somewhere safe.
+    You will need this phrase later for next use and recover. Phrase is case sensitive.
+  wallet.backup.recovery.phrase.display.dialog.button.label.iHaveWrittenItDown: !!!Yes, I’ve written it down
+  wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.device: !!!I understand that my money are held securely on this device only, not on the company servers
+  wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery: !!!I understand that if this application is moved to another device or deleted, my money can
+    be only recovered with the backup phrase which were written down in a secure place
+  wallet.backup.recovery.phrase.entry.dialog.verification.instructions: !!!Tap each word in the correct order to verify your recovery phrase
+  wallet.create.dialog.create.personal.wallet.button.label: !!!Create personal wallet
+  wallet.create.dialog.walletNameHint: !!!e.g: Shopping Wallet
+  wallet.key.import.dialog.headline: !!!Import wallet from file with the key
+  wallet.key.import.dialog.keyFileHint: !!!Drop file here or click to choose
+  wallet.key.import.dialog.keyFileLabel: !!!Upload your key
+  wallet.key.import.dialog.submitLabel: !!!Import wallet
+  wallet.navigation.summary: !!!Summary
+  wallet.navigation.transactions: !!!Transactions
+  wallet.recovery.phrase.show.entry.dialog.button.labelClear: !!!Clear
+  wallet.recovery.phrase.show.entry.dialog.button.labelConfirm: !!!Confirm
+  wallet.redeem.dialog.certificateHint: !!!Drop file here or click to choose
+  wallet.redeem.dialog.certificateLabel: !!!Certificate
+  wallet.redeem.dialog.headline: !!!Ada Redemption
+  wallet.redeem.dialog.instructions: !!!Detailed instructions
+  wallet.redeem.dialog.passphraseHint: !!!Enter your 9 word mnemonic passPhraseTokens here
+  wallet.redeem.dialog.passphraseLabel: !!!Redeem token
+  wallet.redeem.dialog.redemptionCodeError: !!!Invalid Redemption Code
+  wallet.redeem.dialog.redemptionCodeHint: !!!Enter your code or upload a certificate
+  wallet.redeem.dialog.redemptionCodeLabel: !!!Redemption Code
+  wallet.redeem.dialog.submitLabel: !!!Redeem your money
+  wallet.redeem.dialog.walletSelectLabel: !!!Choose Wallet
+  wallet.redeem.success.overlay.headline: !!!You successfully redeemed
+  wallet.restore.dialog.form.errors.invalidRecoveryPhrase: !!!Invalid recovery phrase
+  wallet.restore.dialog.recovery.phrase.input.hint: !!!Enter recovery phrase
+  wallet.restore.dialog.recovery.phrase.input.label: !!!Recovery phrase
+  wallet.restore.dialog.restore.wallet.button.label: !!!Restore wallet
+  wallet.restore.dialog.title.label: !!!Restore wallet
+  wallet.restore.dialog.wallet.name.input.hint: !!!Enter wallet name
+  wallet.restore.dialog.wallet.name.input.label: !!!Wallet name
+  wallet.send.form.errors.invalidTitle: !!!Please enter a title with at least 3 characters.
+  wallet.send.form.title.hint: !!!E.g: Money for Frank
+  wallet.send.form.title.label: !!!Title
+  wallet.summary.no.transactions: !!!No recent transactions
+  wallet.summary.page.pendingConfirmationLabel: !!!Pending confirmation
+  wallet.summary.page.transactionsLabel: !!!Number of transactions
+  wallet.transaction.pendingLabel: !!!Pending
+  wallet.transaction.verificationsLabel: !!!verifications
