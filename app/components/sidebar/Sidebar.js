@@ -6,7 +6,7 @@ import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import walletsIcon from '../../assets/images/sidebar/wallet-ic.svg';
-// import adaRedemptionIcon from '../../assets/images/sidebar/ada.svg';
+import adaRedemptionIcon from '../../assets/images/sidebar/ada.svg';
 
 @observer
 export default class Sidebar extends Component {
@@ -68,12 +68,12 @@ export default class Sidebar extends Component {
             active={currentCategory === categories.WALLETS}
             onClick={() => onCategoryClicked(categories.WALLETS)}
           />
-          {/*<SidebarCategory*/}
-            {/*className="ada-redemption"*/}
-            {/*icon={adaRedemptionIcon}*/}
-            {/*active={currentCategory === categories.ADA_REDEMPTION}*/}
-            {/*onClick={() => onCategoryClicked(categories.ADA_REDEMPTION)}*/}
-          {/*/>*/}
+          <SidebarCategory
+            className="ada-redemption"
+            icon={adaRedemptionIcon}
+            active={currentCategory === categories.ADA_REDEMPTION}
+            onClick={() => onCategoryClicked(categories.ADA_REDEMPTION)}
+          />
         </div>
         {subMenu}
       </div>

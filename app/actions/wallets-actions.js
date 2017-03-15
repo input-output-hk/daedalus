@@ -21,4 +21,7 @@ export default defineActions({
     receiver: PropTypes.string.isRequired,
     amount: PropTypes.string.isRequired,
   },
+  setActiveWallet: {
+    walletId: PropTypes.string.isRequired,
+  }
 });
