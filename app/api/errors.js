@@ -4,7 +4,7 @@ export class GenericApiError extends LocalizableError {
   constructor() {
     super({
       id: 'api.errors.GenericApiError',
-      defaultMessage: '!!!An error occured, please try again later.',
+      defaultMessage: '!!!An error occurred, please try again later.',
     });
   }
 }
