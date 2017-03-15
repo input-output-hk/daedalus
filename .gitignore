@@ -39,4 +39,4 @@ main.js.map
 .idea
 
 # Generated translation files
-locales
+translations/messages
