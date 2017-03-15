@@ -63,7 +63,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Ask me later",
+        "defaultMessage": "!!!Postpone until restart",
         "description": "Label \"Ask me later\" on the Cardano node update notification.",
         "end": {
           "column": 3,
@@ -166,7 +166,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Enter your 9 word mnemonic passPhraseTokens here",
+        "defaultMessage": "!!!Enter your 9 word mnemonic here",
         "description": "Hint for the token input",
         "end": {
           "column": 3,
@@ -241,7 +241,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!You successfully redeemed",
+        "defaultMessage": "!!!You have successfully redeemed",
         "description": "Headline for the ada redemption success overlay.",
         "end": {
           "column": 3,
