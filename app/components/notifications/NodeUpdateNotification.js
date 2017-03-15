@@ -13,7 +13,7 @@ const messages = defineMessages({
   },
   denyLabel: {
     id: 'cardano.node.update.notification.postpone.button.label',
-    defaultMessage: '!!!Ask me later',
+    defaultMessage: '!!!Postpone until restart',
     description: 'Label "Ask me later" on the Cardano node update notification.'
   }
 });
