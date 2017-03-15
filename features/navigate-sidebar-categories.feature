@@ -4,7 +4,7 @@ Feature: Navigate Sidebar Categories
     Given I have a wallet with funds
     And the active wallet is "Personal Wallet"
 
-  Scenario Outline: Switching Sidebar Categories
+  Scenario Outline: Navigate Between Sidebar Categories
     Given The sidebar shows the "<FROM>" category
     When I click on the "<TO>" category in the sidebar
     Then The "<TO>" category should be active

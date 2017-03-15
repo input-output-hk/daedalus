@@ -25,7 +25,7 @@ export default class Sidebar extends Component {
       WALLETS: PropTypes.string.isRequired,
       ADA_REDEMPTION: PropTypes.string.isRequired,
     }).isRequired,
-    currentCategory: PropTypes.string,
+    activeSidebarCategory: PropTypes.string,
     onCategoryClicked: PropTypes.func, // TODO: temporary disabled
     isShowingSubMenus: PropTypes.bool.isRequired,
     activeWalletId: PropTypes.string,
@@ -33,25 +33,22 @@ export default class Sidebar extends Component {
 
   render() {
     const {
-      menus, activeWalletId, categories, currentCategory,
+      menus, activeWalletId, categories, activeSidebarCategory,
       isShowingSubMenus, onCategoryClicked
     } = this.props;
 
     let subMenu = null;
 
-    switch (currentCategory) {
-      case categories.WALLETS:
-        subMenu = (
-          <SidebarWalletsMenu
-            wallets={menus.wallets.items}
-            onAddWallet={menus.wallets.actions.onAddWallet}
-            onWalletItemClick={menus.wallets.actions.onWalletItemClick}
-            isActiveWallet={id => id === activeWalletId}
-            visible
-          />
-        );
-        break;
-      default:
+    if (activeSidebarCategory === categories.WALLETS) {
+      subMenu = (
+        <SidebarWalletsMenu
+          wallets={menus.wallets.items}
+          onAddWallet={menus.wallets.actions.onAddWallet}
+          onWalletItemClick={menus.wallets.actions.onWalletItemClick}
+          isActiveWallet={id => id === activeWalletId}
+          visible={isShowingSubMenus}
+        />
+      );
     }
 
     const sidebarStyles = classNames([
@@ -65,13 +62,13 @@ export default class Sidebar extends Component {
           <SidebarCategory
             className="wallets"
             icon={walletsIcon}
-            active={currentCategory === categories.WALLETS}
+            active={activeSidebarCategory === categories.WALLETS}
             onClick={() => onCategoryClicked(categories.WALLETS)}
           />
           <SidebarCategory
             className="ada-redemption"
             icon={adaRedemptionIcon}
-            active={currentCategory === categories.ADA_REDEMPTION}
+            active={activeSidebarCategory === categories.ADA_REDEMPTION}
             onClick={() => onCategoryClicked(categories.ADA_REDEMPTION)}
           />
         </div>
