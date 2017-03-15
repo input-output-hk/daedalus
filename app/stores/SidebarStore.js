@@ -62,6 +62,8 @@ export default class SidebarStore extends Store {
       // If no explicit preferred state is given -> toggle sub menus
       if (showSubMenus == null || this.isShowingSubMenus != showSubMenus) {
         this._toggleSubMenus();
+      } else if (showSubMenus != null) {
+        this.isShowingSubMenus = showSubMenus;
       }
     }
   };
