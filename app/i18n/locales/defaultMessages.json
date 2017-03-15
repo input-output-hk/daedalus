@@ -2,6 +2,95 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!An error occurred, please try again later.",
+        "description": "Generic error message.",
+        "end": {
+          "column": 3,
+          "line": 9
+        },
+        "file": "app/api/errors.js",
+        "id": "api.errors.GenericApiError",
+        "start": {
+          "column": 19,
+          "line": 5
+        }
+      },
+      {
+        "defaultMessage": "!!!This API method is not yet implemented.",
+        "description": "\"This API method is not yet implemented.\" error message.",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "app/api/errors.js",
+        "id": "api.errors.ApiMethodNotYetImplementedError",
+        "start": {
+          "column": 35,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!You already restored a wallet with this phrase.",
+        "description": "\"You already restored a wallet with this phrase.\" error message.",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "app/api/errors.js",
+        "id": "api.errors.WalletAlreadyRestoredError",
+        "start": {
+          "column": 30,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Your ADA could not be redeemed correctly.",
+        "description": "\"Your ADA could not be redeemed correctly.\" error message.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "app/api/errors.js",
+        "id": "api.errors.RedeemAdaError",
+        "start": {
+          "column": 18,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Key could not be imported, please make sure you are providing a correct key file.",
+        "description": "\"Key could not be imported, please make sure you are providing a correct key file.\" error message.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "app/api/errors.js",
+        "id": "api.errors.WalletKeyImportError",
+        "start": {
+          "column": 24,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Not enough money to make this transaction.",
+        "description": "\"Not enough money to make this transaction.\" error message.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "app/api/errors.js",
+        "id": "api.errors.NotEnoughMoneyToSendError",
+        "start": {
+          "column": 29,
+          "line": 30
+        }
+      }
+    ],
+    "path": "app/api/errors.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Connecting to network",
         "description": "Message \"Connecting to network\" on the loading screen.",
         "end": {

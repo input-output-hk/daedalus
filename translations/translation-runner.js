@@ -4,5 +4,5 @@ manageTranslations({
   messagesDirectory: 'translations/messages',
   translationsDirectory: 'app/i18n/locales',
   singleMessagesFile: true,
-  languages: ['en-US', 'hr-HR', 'de-DE', 'zh-CN', 'ko_KR']
+  languages: ['en-US', 'hr-HR', 'de-DE', 'zh-CN', 'ko_KR', 'ja_JP']
 });
