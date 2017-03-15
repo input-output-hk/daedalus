@@ -9,7 +9,7 @@ import successIcon from '../../../assets/images/success-big.svg';
 const messages = defineMessages({
   headline: {
     id: 'wallet.redeem.success.overlay.headline',
-    defaultMessage: '!!!You successfully redeemed',
+    defaultMessage: '!!!You have successfully redeemed',
     description: 'Headline for the ada redemption success overlay.'
   },
 });
