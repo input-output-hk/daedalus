@@ -1,10 +1,44 @@
+import { defineMessages } from 'react-intl';
 import LocalizableError from '../i18n/LocalizableError';
+
+const messages = defineMessages({
+  genericApiError: {
+    id: 'api.errors.GenericApiError',
+    defaultMessage: '!!!An error occurred, please try again later.',
+    description: 'Generic error message.'
+  },
+  apiMethodNotYetImplementedError: {
+    id: 'api.errors.ApiMethodNotYetImplementedError',
+    defaultMessage: '!!!This API method is not yet implemented.',
+    description: '"This API method is not yet implemented." error message.'
+  },
+  walletAlreadyRestoredError: {
+    id: 'api.errors.WalletAlreadyRestoredError',
+    defaultMessage: '!!!You already restored a wallet with this phrase.',
+    description: '"You already restored a wallet with this phrase." error message.'
+  },
+  redeemAdaError: {
+    id: 'api.errors.RedeemAdaError',
+    defaultMessage: '!!!Your ADA could not be redeemed correctly.',
+    description: '"Your ADA could not be redeemed correctly." error message.'
+  },
+  walletKeyImportError: {
+    id: 'api.errors.WalletKeyImportError',
+    defaultMessage: '!!!Key could not be imported, please make sure you are providing a correct key file.',
+    description: '"Key could not be imported, please make sure you are providing a correct key file." error message.'
+  },
+  notEnoughMoneyToSendError: {
+    id: 'api.errors.NotEnoughMoneyToSendError',
+    defaultMessage: '!!!Not enough money to make this transaction.',
+    description: '"Not enough money to make this transaction." error message.'
+  },
+});
 
 export class GenericApiError extends LocalizableError {
   constructor() {
     super({
-      id: 'api.errors.GenericApiError',
-      defaultMessage: '!!!An error occured, please try again later.',
+      id: messages.genericApiError.id,
+      defaultMessage: messages.genericApiError.defaultMessage,
     });
   }
 }
@@ -12,8 +46,8 @@ export class GenericApiError extends LocalizableError {
 export class ApiMethodNotYetImplementedError extends LocalizableError {
   constructor() {
     super({
-      id: 'api.errors.ApiMethodNotYetImplementedError',
-      defaultMessage: '!!!This API method is not yet implemented.',
+      id: messages.apiMethodNotYetImplementedError.id,
+      defaultMessage: messages.apiMethodNotYetImplementedError.defaultMessage,
     });
   }
 }
@@ -21,8 +55,8 @@ export class ApiMethodNotYetImplementedError extends LocalizableError {
 export class WalletAlreadyRestoredError extends LocalizableError {
   constructor() {
     super({
-      id: 'api.errors.WalletAlreadyRestoredError',
-      defaultMessage: '!!!You already restored a wallet with this phrase.',
+      id: messages.walletAlreadyRestoredError.id,
+      defaultMessage: messages.walletAlreadyRestoredError.defaultMessage,
     });
   }
 }
@@ -30,8 +64,8 @@ export class WalletAlreadyRestoredError extends LocalizableError {
 export class RedeemAdaError extends LocalizableError {
   constructor() {
     super({
-      id: 'api.errors.RedeemAdaError',
-      defaultMessage: '!!!Your ADA could not be redeemed correctly.',
+      id: messages.redeemAdaError.id,
+      defaultMessage: messages.redeemAdaError.defaultMessage,
     });
   }
 }
@@ -39,8 +73,8 @@ export class RedeemAdaError extends LocalizableError {
 export class WalletKeyImportError extends LocalizableError {
   constructor() {
     super({
-      id: 'api.errors.WalletKeyImportError',
-      defaultMessage: '!!!Key could not be imported, please make sure you are providing a correct key file.',
+      id: messages.walletKeyImportError.id,
+      defaultMessage: messages.walletKeyImportError.defaultMessage,
     });
   }
 }
@@ -48,8 +82,8 @@ export class WalletKeyImportError extends LocalizableError {
 export class NotEnoughMoneyToSendError extends LocalizableError {
   constructor() {
     super({
-      id: 'api.errors.NotEnoughMoneyToSendError',
-      defaultMessage: '!!!Not enough money to make this transaction.',
+      id: messages.notEnoughMoneyToSendError.id,
+      defaultMessage: messages.notEnoughMoneyToSendError.defaultMessage,
     });
   }
 }

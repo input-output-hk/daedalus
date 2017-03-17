@@ -46,7 +46,7 @@ const messages = defineMessages({
   },
   passphraseHint: {
     id: 'wallet.redeem.dialog.passphraseHint',
-    defaultMessage: '!!!Enter your 9 word mnemonic passPhraseTokens here',
+    defaultMessage: '!!!Enter your 9 word mnemonic here',
     description: 'Hint for the token input'
   },
   redemptionCodeLabel: {
