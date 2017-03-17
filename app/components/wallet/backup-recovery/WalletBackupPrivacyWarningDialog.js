@@ -16,13 +16,13 @@ const messages = defineMessages({
   },
   recoveryPhraseInstructions: {
     id: 'wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions',
-    defaultMessage: `!!!On the following screen, you will see a set of X random words. This is 
-    your wallet backup phrase. It can be entered in any version of Daedalus application in order 
+    defaultMessage: `!!!On the following screen, you will see a set of X random words. This is
+    your wallet backup phrase. It can be entered in any version of Daedalus application in order
     to back up or restore your wallet’s funds and private key.`,
     description: 'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.'
   },
   buttonLabelContinue: {
-    id: 'wallet.backup.privacy.warning.dialog..button.labelContinue',
+    id: 'wallet.backup.privacy.warning.dialog..button.labelContinue', // TODO: fix translation key path 'dialog..button'
     defaultMessage: '!!!Continue',
     description: 'Label for button "Continue" on wallet backup dialog'
   },
