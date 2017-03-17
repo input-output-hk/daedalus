@@ -31,10 +31,10 @@ export default class NetworkStatusStore extends Store {
       const relativeNetwork = this.networkDifficulty - this._localDifficultyStartedWith;
       // In case node is in sync after first local difficulty messages
       // local and network difficulty will be the same (0)
-      console.log('networkDifficulty', this.networkDifficulty);
-      console.log('localDifficulty', this.localDifficulty);
-      console.log('relativeLocal', relativeLocal);
-      console.log('relativeNetwork', relativeNetwork);
+      console.debug('Network difficulty: ', this.networkDifficulty);
+      console.debug('Local difficulty: ', this.localDifficulty);
+      console.debug('Relative local difficulty: ', relativeLocal);
+      console.debug('Relative network difficulty: ', relativeNetwork);
 
       if (relativeLocal >= relativeNetwork) return 100;
       return relativeLocal / relativeNetwork * 100;
@@ -59,12 +59,13 @@ export default class NetworkStatusStore extends Store {
   }
 
   @action _setInitialDifficulty = async () => {
+    this._localDifficultyStartedWith = null;
     const initialDifficulty = await this.networkDifficultyRequest.execute();
     runInAction('set initial difficulty', () => {
       this._localDifficultyStartedWith = initialDifficulty.localDifficulty;
       this.localDifficulty = initialDifficulty.localDifficulty;
       this.networkDifficulty = initialDifficulty.networkDifficulty;
-      console.log('INITIAL', initialDifficulty);
+      console.debug('Initial difficulty: ', initialDifficulty);
     });
   };
 
@@ -114,11 +115,8 @@ export default class NetworkStatusStore extends Store {
 
   _redirectToLoadingWhenDisconnected = () => {
     if (!this.isConnected) {
-      (action(() => {
-        this._localDifficultyStartedWith = null;
-        this._setInitialDifficulty();
-        this.actions.router.goToRoute({ route: '/' });
-      }))();
+      this._setInitialDifficulty();
+      this.actions.router.goToRoute({ route: '/' });
     }
   };
 
