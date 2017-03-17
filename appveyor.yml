@@ -1,4 +1,4 @@
-version: 0.2.{build}
+version: 0.3.{build}
 
 environment:
   nodejs_version: "6"
@@ -17,7 +17,7 @@ install:
   - npm install
   - mkdir node_modules\daedalus-client-api 
   - cd node_modules\daedalus-client-api
-  - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/jagajaga/pos-haskell-prototype/artifacts/CardanoSL.zip?branch=master' -FileName CardanoSL.zip
+  - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/jagajaga/pos-haskell-prototype/artifacts/CardanoSL.zip?branch=cardano-sl-0.3' -FileName CardanoSL.zip
   - 7z x CardanoSL.zip -y
   - Echo "Build id of cardano-sl on appveyor:"
   - type build-id
