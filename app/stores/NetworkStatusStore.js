@@ -1,5 +1,5 @@
 // @flow
-import { observable, action, computed } from 'mobx';
+import { observable, action, computed, runInAction, reaction } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/Request';
 
@@ -60,14 +60,16 @@ export default class NetworkStatusStore extends Store {
 
   @action _setInitialDifficulty = async () => {
     const initialDifficulty = await this.networkDifficultyRequest.execute();
-    this._localDifficultyStartedWith = initialDifficulty.localDifficulty;
-    this.localDifficulty = initialDifficulty.localDifficulty;
-    this.networkDifficulty = initialDifficulty.networkDifficulty;
-    console.log('INITIAL', initialDifficulty);
+    runInAction('set initial difficulty', () => {
+      this._localDifficultyStartedWith = initialDifficulty.localDifficulty;
+      this.localDifficulty = initialDifficulty.localDifficulty;
+      this.networkDifficulty = initialDifficulty.networkDifficulty;
+      console.log('INITIAL', initialDifficulty);
+    });
   };
 
-  @action _listenToServerStatusNotifications() {
-    this.api.notify((message) => {
+  _listenToServerStatusNotifications() {
+    this.api.notify(action((message) => {
       if (message === 'ConnectionClosed') {
         this.isConnected = false;
         return;
@@ -92,13 +94,15 @@ export default class NetworkStatusStore extends Store {
         default:
           console.log('Unknown server notification received:', message);
       }
-    });
+    }));
   }
 
   _redirectToWalletAfterSync = () => {
     const { app, wallets } = this.stores;
     if (this.isConnected && this.isSynced && wallets.hasLoadedWallets && app.currentRoute === '/') {
-      this.isLoadingWallets = false;
+      (action(() => {
+        this.isLoadingWallets = false;
+      }))();
       if (wallets.first) {
         this.actions.router.goToRoute({ route: wallets.getWalletRoute(wallets.first.id) });
       } else {
@@ -110,9 +114,11 @@ export default class NetworkStatusStore extends Store {
 
   _redirectToLoadingWhenDisconnected = () => {
     if (!this.isConnected) {
-      this._localDifficultyStartedWith = null;
-      this._setInitialDifficulty();
-      this.actions.router.goToRoute({ route: '/' });
+      (action(() => {
+        this._localDifficultyStartedWith = null;
+        this._setInitialDifficulty();
+        this.actions.router.goToRoute({ route: '/' });
+      }))();
     }
   };
 
