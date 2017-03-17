@@ -16,6 +16,8 @@
   "loading.screen.connectingToNetworkMessage": "!!!Connecting to network",
   "loading.screen.reconnectingToNetworkMessage": "!!!Network connection lost - reconnecting",
   "loading.screen.syncingBlocksMessage": "!!!Syncing blocks",
+  "profile.languageSelect.form.languageSelectLabel": "Odaberi jezik",
+  "profile.languageSelect.form.submitLabel": "Nastavi",
   "wallet.add.dialog.create.description": "!!!Create a new wallet",
   "wallet.add.dialog.create.label": "!!!Create",
   "wallet.add.dialog.import.description": "!!!Import wallet from a key",

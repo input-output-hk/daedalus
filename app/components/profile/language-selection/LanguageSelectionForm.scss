@@ -1,0 +1,29 @@
+@import '../../../themes/mixins/loading-spinner';
+
+.component {
+  background-color: $color-lighter-grey;
+  border: solid 1px $color-light-grey;
+  border-radius: 4px;
+  padding: 30px 30px 20px;
+  overflow: visible;
+  width: 620px;
+}
+
+.submitButton,
+.submitButtonSpinning {
+  display: block;
+  height: 50px;
+  margin: 0 auto;
+  width: 360px;
+}
+
+.submitButton {
+  font-size: 14px;
+  line-height: 50px;
+}
+
+.submitButtonSpinning {
+  @include loading-spinner("../../../assets/images/spinner-light.svg");
+}
+
+
