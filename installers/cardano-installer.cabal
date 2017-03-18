@@ -14,7 +14,9 @@ executable make-installer
   main-is:             Installer.hs
   other-modules:       MacInstaller
                      , WindowsInstaller
+                     , Launcher
   build-depends:       base
+                     , filepath
                      , text
                      , nsis
                      , turtle
