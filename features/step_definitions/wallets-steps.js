@@ -32,7 +32,7 @@ export default function () {
         });
       }))
       .then(() => {
-        daedalus.stores.wallets.walletsRequest.invalidate({ immediately: true }).then(done);
+        daedalus.stores.wallets.walletsRequest.invalidate().execute().then(done);
       })
       .catch((error) => done(error.stack));
     }, table.hashes());
@@ -62,10 +62,6 @@ export default function () {
     this.client.execute(walletId => {
       daedalus.actions.setActiveWallet({ walletId });
     }, wallet.id);
-  });
-
-  this.When(/^I click on the (.*) wallet in the sidebar$/, function (walletName) {
-    return this.client.click(`//*[contains(text(), "${walletName}") and @class="SidebarWalletMenuItem_title"]`);
   });
 
   this.When(/^I click the wallet (.*) button$/, async function (buttonName) {
