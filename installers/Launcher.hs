@@ -11,6 +11,8 @@ data Launcher = Launcher
     , walletPath :: String
     , installerPath :: String
     , runtimePath :: String
+    , reportServerUrl :: String
+    , systemStart :: Maybe Int
     }
 
 launcherArgs :: Launcher -> String
@@ -25,7 +27,7 @@ launcherArgs launcher = unwords $
     where
       nodeArgs = [
         "--listen", "0.0.0.0:12100",
-        "--report-server", "http://35.156.164.19:8080",
+        "--report-server", reportServerUrl launcher,
         "--log-config", "log-config-prod.yaml",
         "--update-latest-path", quote (installerPath launcher),
         "--keyfile", quote (runtimePath launcher <> "Secrets" <> (pathSeparator : "secret.key")),
@@ -34,7 +36,10 @@ launcherArgs launcher = unwords $
         "--wallet-db-path", quote (runtimePath launcher <> "Wallet-0.2"),
         "--peers-file", "ip-dht-mappings",
         "--wallet"
-        ]
+        ] ++ sysStartArgs
+      sysStartArgs = maybe [] impl $ systemStart launcher
+        where
+          impl time = ["--system-start", show time]
 
 
 quote :: String -> String
