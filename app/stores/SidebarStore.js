@@ -12,7 +12,7 @@ export default class SidebarStore extends Store {
   INITIAL_HIDE_SUB_MENU_DELAY = 4000;
   ACTION_HIDE_SUB_MENU_DELAY = 1000;
 
-  @observable currentCategory: ?string = null;
+  @observable activeSidebarCategory: string = this.CATEGORIES.WALLETS;
   @observable isShowingSubMenus: bool = true;
 
   _hideSubMenuTimeout = null;
@@ -20,7 +20,7 @@ export default class SidebarStore extends Store {
   setup() {
     const actions = this.actions.sidebar;
     actions.toggleSubMenus.listen(this._toggleSubMenus);
-    actions.sidebarCategorySelected.listen(this._onSidebarCategorySelected);
+    actions.activateSidebarCategory.listen(this._onActivateSidebarCategory);
     actions.walletSelected.listen(this._onWalletSelected);
     this.actions.networkStatus.isSyncedAndReady.listen(() => {
       this._hideSubMenusAfterDelay(this.INITIAL_HIDE_SUB_MENU_DELAY);
@@ -40,12 +40,6 @@ export default class SidebarStore extends Store {
     }));
   }
 
-  @action showCategoryWithSubMenus = (category: string) => {
-    this.currentCategory = category;
-    this.isShowingSubMenus = true;
-    this._clearExistingHideSubMenuTimeout();
-  };
-
   @action _toggleSubMenus = () => {
     this.isShowingSubMenus = !this.isShowingSubMenus;
     this._clearExistingHideSubMenuTimeout();
@@ -56,13 +50,21 @@ export default class SidebarStore extends Store {
     this._clearExistingHideSubMenuTimeout();
   };
 
-  @action _onSidebarCategorySelected = ({ category }: { category: string }) => {
-    if (category !== this.currentCategory) {
-      this.actions.router.goToRoute({route: category});
-      this.currentCategory = category;
-      this.isShowingSubMenus = true;
+  @action _onActivateSidebarCategory = (
+      { category, showSubMenus }: { category: string, showSubMenus: boolean }
+    ) => {
+    this._clearExistingHideSubMenuTimeout();
+    if (category !== this.activeSidebarCategory) {
+      this.activeSidebarCategory = category;
+      if (showSubMenus != null) this.isShowingSubMenus = showSubMenus;
+      this.actions.router.goToRoute({ route: category });
     } else {
-      this._toggleSubMenus();
+      // If no explicit preferred state is given -> toggle sub menus
+      if (showSubMenus == null || this.isShowingSubMenus != showSubMenus) {
+        this._toggleSubMenus();
+      } else if (showSubMenus != null) {
+        this.isShowingSubMenus = showSubMenus;
+      }
     }
   };
 

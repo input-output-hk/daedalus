@@ -42,6 +42,12 @@ export default class AdaRedemptionStore extends Store {
     ipcRenderer.on(PARSE_REDEMPTION_CODE.ERROR, this._onParseError);
   }
 
+  teardown() {
+    super.teardown();
+    ipcRenderer.removeAllListeners(PARSE_REDEMPTION_CODE.SUCCESS);
+    ipcRenderer.removeAllListeners(PARSE_REDEMPTION_CODE.ERROR);
+  }
+
   _setCertificate = action(({ certificate }) => {
     this.certificate = certificate;
     this.isCertificateEncrypted = certificate.type !== 'application/pdf';

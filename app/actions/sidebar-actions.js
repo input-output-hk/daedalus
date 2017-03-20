@@ -3,8 +3,9 @@ import defineActions from './lib/actions';
 
 export default defineActions({
   toggleSubMenus: {},
-  sidebarCategorySelected: {
+  activateSidebarCategory: {
     category: PropTypes.string.isRequired,
+    showSubMenus: PropTypes.bool,
   },
   walletSelected: {
     walletId: PropTypes.string.isRequired,

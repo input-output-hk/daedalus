@@ -3,6 +3,9 @@ import { observable, action, computed, runInAction, reaction } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/Request';
 
+// To avoid slow reconnecting on store reset, we cache the most important props
+let cachedDifficulties = null;
+
 export default class NetworkStatusStore extends Store {
 
   @observable isConnected = false;
@@ -13,12 +16,28 @@ export default class NetworkStatusStore extends Store {
   @observable networkDifficultyRequest = new Request(this.api, 'getSyncProgress');
   @observable _localDifficultyStartedWith = null;
 
+  @action initialize() {
+    super.initialize();
+    if (cachedDifficulties !== null) Object.assign(this, cachedDifficulties);
+  }
+
   setup() {
     this.registerReactions([
       this._redirectToWalletAfterSync,
       this._redirectToLoadingWhenDisconnected,
     ]);
     this._listenToServerStatusNotifications();
+  }
+
+  teardown() {
+    super.teardown();
+    cachedDifficulties = {
+      isConnected: this.isConnected,
+      hasBeenConnected: this.hasBeenConnected,
+      localDifficulty: this.localDifficulty,
+      networkDifficulty: this.networkDifficulty,
+      isLoadingWallets: true,
+    };
   }
 
   @computed get isConnecting(): bool {
