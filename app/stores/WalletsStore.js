@@ -70,11 +70,9 @@ export default class WalletsStore extends Store {
     this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
     const wallet = await this.createWalletRequest.execute(this._newWalletDetails).promise;
     if (wallet) {
-      await this.walletsRequest.patch(result => {
-        result.push(wallet);
-      });
+      await this.walletsRequest.patch(result => result.push(wallet));
       this.goToWalletRoute(wallet.id);
-      this.isAddWalletDialogOpen = false;
+      runInAction(() => { this.isAddWalletDialogOpen = false; });
     }
   };
 

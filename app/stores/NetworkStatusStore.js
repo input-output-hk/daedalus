@@ -120,9 +120,7 @@ export default class NetworkStatusStore extends Store {
   _redirectToWalletAfterSync = () => {
     const { app, wallets } = this.stores;
     if (this.isConnected && this.isSynced && wallets.hasLoadedWallets && app.currentRoute === '/') {
-      (action(() => {
-        this.isLoadingWallets = false;
-      }))();
+      runInAction(() => { this.isLoadingWallets = false; });
       if (wallets.first) {
         this.actions.router.goToRoute({ route: wallets.getWalletRoute(wallets.first.id) });
       } else {
