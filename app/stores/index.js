@@ -1,6 +1,5 @@
 // @flow
 import { observable, action } from 'mobx';
-import { omit } from 'lodash';
 import AppStore from './AppStore';
 import SettingsStore from './SettingsStore';
 import WalletsStore from './WalletsStore';

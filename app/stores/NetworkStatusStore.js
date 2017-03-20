@@ -102,8 +102,7 @@ export default class NetworkStatusStore extends Store {
           this.hasBeenConnected = true;
           break;
         case 'LocalDifficultyChanged':
-          const difficulty = message.contents.getChainDifficulty;
-          this.localDifficulty = difficulty;
+          this.localDifficulty = message.contents.getChainDifficulty;
           break;
         case 'ConnectionClosedReconnecting':
           this.isConnected = false;

@@ -48,32 +48,39 @@ export default class AdaCertificateUploadWidget extends Component {
     const { label, acceptedFileTypes, isCertificateEncrypted,
       isCertificateSelected, onRemoveCertificate, isCertificateInvalid
     } = this.props;
-    const certificateIcon = isCertificateEncrypted ? certificateLockedIcon :
-      isCertificateInvalid ? certificateInvalidIcon : certificateNormalIcon;
+
+    let certificateIcon;
+    if (isCertificateEncrypted) {
+      certificateIcon = certificateLockedIcon;
+    } else {
+      certificateIcon = isCertificateInvalid ? certificateInvalidIcon : certificateNormalIcon;
+    }
     return (
       <div>
         <div className={styles.label}>{label}</div>
         <div className={styles.uploadBox}>
           {isCertificateSelected ? (
-              <div className={styles.certificateUploaded}>
-                <button className={styles.removeFileButton} onClick={onRemoveCertificate}>
-                  <img src={closeCrossIcon} className={styles.closeCrossIcon} role="presentation" />
-                </button>
-                <img src={certificateIcon} className={styles.certificateIcon} role="presentation" />
-              </div>
-            ) : (
-              <Dropzone
-                className={styles.dropZone}
-                onDrop={this.onDrop}
-                multiple={false}
-                accept={acceptedFileTypes}
-              >
-                <div className={styles.instructions}>
-                  <div className={styles.title}>{intl.formatMessage(messages.dropFileHere)}</div>
-                  <div className={styles.subtitle}>{intl.formatMessage(messages.orClickToUpload)}</div>
+            <div className={styles.certificateUploaded}>
+              <button className={styles.removeFileButton} onClick={onRemoveCertificate}>
+                <img src={closeCrossIcon} className={styles.closeCrossIcon} role="presentation" />
+              </button>
+              <img src={certificateIcon} className={styles.certificateIcon} role="presentation" />
+            </div>
+          ) : (
+            <Dropzone
+              className={styles.dropZone}
+              onDrop={this.onDrop}
+              multiple={false}
+              accept={acceptedFileTypes}
+            >
+              <div className={styles.instructions}>
+                <div className={styles.title}>{intl.formatMessage(messages.dropFileHere)}</div>
+                <div className={styles.subtitle}>
+                  {intl.formatMessage(messages.orClickToUpload)}
                 </div>
-              </Dropzone>
-            )}
+              </div>
+            </Dropzone>
+          )}
         </div>
       </div>
     );

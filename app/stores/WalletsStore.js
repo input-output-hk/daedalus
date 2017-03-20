@@ -122,9 +122,9 @@ export default class WalletsStore extends Store {
   }
 
 
-  getWalletRoute = (walletId: string, screen: string = 'summary'): string => {
-    return `${this.BASE_ROUTE}/${walletId}/${screen}`;
-  };
+  getWalletRoute = (walletId: string, screen: string = 'summary'): string => (
+    `${this.BASE_ROUTE}/${walletId}/${screen}`
+  );
 
   isValidAddress = (address: string) => this.api.isValidAddress('ADA', address);
 

@@ -58,13 +58,11 @@ export default class SidebarStore extends Store {
       this.activeSidebarCategory = category;
       if (showSubMenus != null) this.isShowingSubMenus = showSubMenus;
       this.actions.router.goToRoute({ route: category });
-    } else {
+    } else if (showSubMenus == null || this.isShowingSubMenus !== showSubMenus) {
       // If no explicit preferred state is given -> toggle sub menus
-      if (showSubMenus == null || this.isShowingSubMenus != showSubMenus) {
-        this._toggleSubMenus();
-      } else if (showSubMenus != null) {
-        this.isShowingSubMenus = showSubMenus;
-      }
+      this._toggleSubMenus();
+    } else {
+      this.isShowingSubMenus = showSubMenus;
     }
   };
 
