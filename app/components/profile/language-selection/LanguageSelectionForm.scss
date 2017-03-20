@@ -11,15 +11,15 @@
 
 .submitButton,
 .submitButtonSpinning {
-  display: block;
-  height: 50px;
+  display: block !important;
+  height: 50px !important;
   margin: 0 auto;
   width: 360px;
 }
 
 .submitButton {
-  font-size: 14px;
-  line-height: 50px;
+  font-size: 14px !important;
+  line-height: 50px !important;
 }
 
 .submitButtonSpinning {

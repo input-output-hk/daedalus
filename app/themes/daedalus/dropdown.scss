@@ -14,11 +14,12 @@
     @include arrow(down, white, #5e6066, 11px);
   }
   &.active > .values {
-    overflow-y: visible;
+    max-height: $dropdown-overflow-max-height;
+    overflow-y: auto;
   }
   &:not(.active) > .values {
-
-    max-height: $dropdown-overflow-max-height;
+    height: 0;
+    overflow-y: hidden;
   }
   &.active {
     > .label, > .value {

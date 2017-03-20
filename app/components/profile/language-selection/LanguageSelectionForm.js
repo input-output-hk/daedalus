@@ -40,7 +40,7 @@ export default class LanguageSelectionForm extends Component {
     this.form.submit({
       onSuccess: (form) => {
         const { languageId } = form.values();
-        this.props.onSubmit({ languageId });
+        this.props.onSubmit({ locale: languageId });
       },
       onError: () => {}
     });
