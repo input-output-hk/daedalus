@@ -6,10 +6,22 @@ export default function () {
     await this.client.waitForVisible('.Sidebar_component');
     await this.client.executeAsync(function(visible, done) {
       const { isShowingSubMenus } = daedalus.stores.sidebar;
+      let sidebarWillAnimate = false;
       if (isShowingSubMenus !== visible) {
+        sidebarWillAnimate = true;
         daedalus.actions.sidebar.toggleSubMenus();
       }
-      done();
+      if (sidebarWillAnimate) {
+        // Wait until the sidebar transition is finished -> otherwise webdriver click error!
+        const sidebarElement = document.querySelectorAll('.Sidebar_component')[0];
+        const onTransitionFinished = () => {
+          sidebarElement.removeEventListener('transitioned', onTransitionFinished);
+          done();
+        };
+        sidebarElement.addEventListener('transitionend', onTransitionFinished);
+      } else {
+        done();
+      }
     }, isVisible);
     return this.client.waitForExist(`.SidebarMenu_visible`, null, !isVisible);
   });
