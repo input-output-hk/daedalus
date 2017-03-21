@@ -133,7 +133,7 @@ export default class WalletsStore extends Store {
   @action refreshWalletsData = async () => {
     if (this.stores.networkStatus.isConnected) {
       this.walletsRequest.invalidate();
-      const result = await this.walletsRequest.execute();
+      const result = await this.walletsRequest.execute().promise;
       if (!result) return;
       const walletIds = result.map((wallet: Wallet) => wallet.id);
       this.stores.transactions.transactionsRequests = walletIds.map(walletId => ({

@@ -61,7 +61,8 @@ export type getWalletRecoveryPhraseRequest = {
 };
 
 export type walletRestoreRequest = {
-  recoveryPhrase: string
+  recoveryPhrase: string,
+  walletName: string,
 };
 
 export type redeemAdaRequest = {

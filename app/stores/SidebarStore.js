@@ -71,7 +71,7 @@ export default class SidebarStore extends Store {
     this._hideSubMenuTimeout = setTimeout(this._hideSubMenus, delay);
   };
 
-  @action _onWalletSelected = ({ walletId }) => {
+  @action _onWalletSelected = ({ walletId }: { walletId: string }) => {
     this.stores.wallets.goToWalletRoute(walletId);
     this._hideSubMenusAfterDelay(this.ACTION_HIDE_SUB_MENU_DELAY);
   };

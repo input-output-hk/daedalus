@@ -112,8 +112,8 @@ export default class CardanoClientApi {
       currency: 'ada',
       amount: isOutgoing ? -1 * coins : coins,
       date: new Date(ctmDate * 1000),
-      description: ctmDescription,
-      numberOfConfirmations: data.ctConfirmations
+      description: ctmDescription || '',
+      numberOfConfirmations: data.ctConfirmations,
     });
   }
 
@@ -175,7 +175,7 @@ export default class CardanoClientApi {
 
   // PRIVATE
 
-  _onNotify = (rawMessage: {}) => {
+  _onNotify = (rawMessage: string) => {
     console.debug('CardanoClientApi::notify message: ', rawMessage);
     // TODO: "ConnectionClosed" messages are not JSON parsable … so we need to catch that case here!
     let message = rawMessage;

@@ -51,4 +51,15 @@ export default action((api, actions, router): storesType => {
   return stores;
 });
 
-export type storesType = storeClasses;
+export type storesType = {
+  app: Object,
+  settings: Object,
+  wallets: Object,
+  transactions: Object,
+  sidebar: Object,
+  window: Object,
+  walletBackup: Object,
+  networkStatus: Object,
+  adaRedemption: Object,
+  nodeUpdate: Object,
+};
