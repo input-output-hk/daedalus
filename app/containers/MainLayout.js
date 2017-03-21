@@ -50,7 +50,7 @@ export default class MainLayout extends Component {
           WALLETS: PropTypes.string.isRequired,
           ADA_REDEMPTION: PropTypes.string.isRequired,
         }).isRequired,
-        currentCategory: PropTypes.string,
+        activeSidebarCategory: PropTypes.string,
       }).isRequired,
     }).isRequired,
     actions: PropTypes.shape({
@@ -108,8 +108,8 @@ export default class MainLayout extends Component {
         menus={sidebarMenus}
         isShowingSubMenus={sidebar.isShowingSubMenus}
         categories={sidebar.CATEGORIES}
-        currentCategory={sidebar.currentCategory}
-        onCategoryClicked={category => actions.sidebar.sidebarCategorySelected({ category })}
+        activeSidebarCategory={sidebar.activeSidebarCategory}
+        onCategoryClicked={category => actions.sidebar.activateSidebarCategory({ category })}
         activeWalletId={activeWalletId}
         isSynced={isSynced}
       />

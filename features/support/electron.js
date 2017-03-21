@@ -35,6 +35,7 @@ export default function () {
 
     await this.client.executeAsync(function(isFirst, done) {
       daedalus.environment.current = daedalus.environment.TEST;
+      if (!isFirst) daedalus.reset();
       const connectToBackend = () => {
         if (daedalus.stores.networkStatus.isSynced) {
           daedalus.api.testReset();

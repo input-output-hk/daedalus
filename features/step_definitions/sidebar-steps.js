@@ -1,49 +1,45 @@
 import { expect } from 'chai';
 
 export default function () {
-  this.Given(/^the sidebar is (hidden|visible)/, async function (state) {
-    const isHidden = state === 'hidden';
+  this.Given(/^the sidebar submenu is (hidden|visible)/, async function (state) {
+    const isVisible = state === 'visible';
     await this.client.waitForVisible('.Sidebar_component');
-    await this.client.executeAsync(function(hidden, done) {
-      require('mobx').runInAction(() => {
-        const sidebarState = daedalus.stores.sidebar;
-        const sidebarWillAnimate = sidebarState.hidden !== hidden;
-        let isDone = false;
-        sidebarState.hidden = hidden;
-        if (sidebarWillAnimate) {
-          // Wait until the sidebar transition is finished -> otherwise webdriver click error!
-          const sidebarElement = document.querySelectorAll('.Sidebar_component')[0];
-          sidebarElement.addEventListener('transitionend', () => !isDone && done() && (isDone = true));
-        } else {
-          done();
-        }
-      });
-    }, isHidden);
-    return this.client.waitForExist(`.Sidebar_hidden`, null, !isHidden);
+    await this.client.executeAsync(function(visible, done) {
+      const { isShowingSubMenus } = daedalus.stores.sidebar;
+      if (isShowingSubMenus !== visible) {
+        daedalus.actions.sidebar.toggleSubMenus();
+      }
+      done();
+    }, isVisible);
+    return this.client.waitForExist(`.SidebarMenu_visible`, null, !isVisible);
   });
 
-  this.Given(/^The sidebar shows the "([^"]*)" category$/, async function (category) {
-    await this.client.execute(function(cat) {
-      daedalus.stores.sidebar.showCategoryWithSubMenus(`/${cat}`);
-    }, category);
-    return this.client.waitForVisible(`.SidebarCategory_active.${category}`);
+  this.Given(/^The sidebar shows the "([^"]*)" category$/, async function (cat) {
+    await this.client.execute(function(category) {
+      daedalus.actions.sidebar.activateSidebarCategory({ category, showSubMenus: true });
+    }, `/${cat}`);
+    return this.client.waitForVisible(`.SidebarCategory_active.${cat}`);
   });
 
   this.When(/^I click on the sidebar toggle button$/, function () {
-    return this.client.click('.SidebarLayout_topbar .app-bar_leftIcon');
+    return this.waitAndClick('.SidebarLayout_appbar .app-bar_leftIcon');
   });
 
   this.When(/^I click on the "([^"]*)" category in the sidebar$/, function (category) {
-    return this.client.click(`.SidebarCategory_component.${category}`);
+    return this.waitAndClick(`.SidebarCategory_component.${category}`);
   });
 
   this.When(/^I click on the add wallet button in the sidebar$/, function () {
-    return this.client.click('.SidebarWalletsMenu_addWalletButton');
+    return this.waitAndClick('.SidebarWalletsMenu_addWalletButton');
   });
 
-  this.Then(/^the sidebar should be (hidden|visible)/, function (state) {
-    const isHidden = state === 'hidden';
-    return this.client.waitForVisible(`.Sidebar_hidden`, null, !isHidden);
+  this.When(/^I click on the "([^"]*)" wallet in the sidebar$/, function (walletName) {
+    return this.waitAndClick(`//*[contains(text(), "${walletName}") and @class="SidebarWalletMenuItem_title"]`);
+  });
+
+  this.Then(/^the sidebar submenu should be (hidden|visible)/, function (state) {
+    const waitForHidden = state === 'hidden';
+    return this.client.waitForVisible(`.SidebarMenu_component`, null, waitForHidden);
   });
 
   this.Then(/^The "([^"]*)" category should be active$/, function (category) {
