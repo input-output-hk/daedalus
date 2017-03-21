@@ -36,15 +36,15 @@ export default function () {
     await this.client.executeAsync(function(isFirst, done) {
       daedalus.environment.current = daedalus.environment.TEST;
       const connectToBackend = () => {
-        if (daedalus.stores.networkStatus.isSynced){
+        if (daedalus.stores.networkStatus.isSynced) {
           daedalus.api.testReset();
           if (isFirst) {
+            daedalus.actions.profile.updateLocale({ locale: 'en-US' });
             daedalus.actions.networkStatus.isSyncedAndReady.once(done);
           } else {
             done();
           }
-        }
-        else {
+        } else {
           setTimeout(connectToBackend, 100);
         }
       };
