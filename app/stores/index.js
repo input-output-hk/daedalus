@@ -1,6 +1,5 @@
 // @flow
 import { observable, action } from 'mobx';
-import { omit } from 'lodash';
 import AppStore from './AppStore';
 import SettingsStore from './SettingsStore';
 import WalletsStore from './WalletsStore';
@@ -52,4 +51,15 @@ export default action((api, actions, router): storesType => {
   return stores;
 });
 
-export type storesType = storeClasses;
+export type storesType = {
+  app: AppStore,
+  settings: SettingsStore,
+  wallets: WalletsStore,
+  transactions: TransactionsStore,
+  sidebar: SidebarStore,
+  window: WindowStore,
+  walletBackup: WalletBackupStore,
+  networkStatus: NetworkStatusStore,
+  adaRedemption: AdaRedemptionStore,
+  nodeUpdate: NodeUpdateStore,
+};

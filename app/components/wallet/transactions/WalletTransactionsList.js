@@ -71,7 +71,9 @@ export default class WalletTransactionsList extends Component {
     const spinner = this.loadingSpinner;
     if (spinner == null || spinner.root == null) return false;
     const spinnerRect = spinner.root.getBoundingClientRect();
-    const viewHeight = Math.max(document.documentElement.clientHeight, window.innerHeight);
+    const clientHeight = document.documentElement ? document.documentElement.clientHeight : 0;
+    const windowHeight = window.innerHeight;
+    const viewHeight = Math.max(clientHeight, windowHeight);
     return !(spinnerRect.bottom < 0 || spinnerRect.top - viewHeight >= 0);
   }
 

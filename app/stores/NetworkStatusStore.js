@@ -78,11 +78,13 @@ export default class NetworkStatusStore extends Store {
   }
 
   @action _setInitialDifficulty = async () => {
-    const initialDifficulty = await this.networkDifficultyRequest.execute();
-    this._localDifficultyStartedWith = initialDifficulty.localDifficulty;
-    this.localDifficulty = initialDifficulty.localDifficulty;
-    this.networkDifficulty = initialDifficulty.networkDifficulty;
-    console.log('INITIAL', initialDifficulty);
+    const initialDifficulty = await this.networkDifficultyRequest.execute().promise;
+    if (initialDifficulty) {
+      this._localDifficultyStartedWith = initialDifficulty.localDifficulty;
+      this.localDifficulty = initialDifficulty.localDifficulty;
+      this.networkDifficulty = initialDifficulty.networkDifficulty;
+      console.log('INITIAL', initialDifficulty);
+    }
   };
 
   @action _listenToServerStatusNotifications() {
@@ -102,8 +104,7 @@ export default class NetworkStatusStore extends Store {
           this.hasBeenConnected = true;
           break;
         case 'LocalDifficultyChanged':
-          const difficulty = message.contents.getChainDifficulty;
-          this.localDifficulty = difficulty;
+          this.localDifficulty = message.contents.getChainDifficulty;
           break;
         case 'ConnectionClosedReconnecting':
           this.isConnected = false;
