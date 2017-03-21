@@ -33,7 +33,7 @@ test_script:
   - npm run package -- --icon installers/icons/64x64
   - cd installers
   # Install stack
-  - curl -sSL -o stack.zip --insecure http://www.stackage.org/stack/windows-x86_64
+  - ps: Start-FileDownload http://www.stackage.org/stack/windows-x86_64 -FileName stack.zip
   - 7z x stack.zip stack.exe
   # Copy DLLs
   # TODO: get rocksdb from rocksdb-haskell
