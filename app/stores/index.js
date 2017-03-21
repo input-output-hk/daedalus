@@ -52,14 +52,14 @@ export default action((api, actions, router): storesType => {
 });
 
 export type storesType = {
-  app: Object,
-  settings: Object,
-  wallets: Object,
-  transactions: Object,
-  sidebar: Object,
-  window: Object,
-  walletBackup: Object,
-  networkStatus: Object,
-  adaRedemption: Object,
-  nodeUpdate: Object,
+  app: AppStore,
+  settings: SettingsStore,
+  wallets: WalletsStore,
+  transactions: TransactionsStore,
+  sidebar: SidebarStore,
+  window: WindowStore,
+  walletBackup: WalletBackupStore,
+  networkStatus: NetworkStatusStore,
+  adaRedemption: AdaRedemptionStore,
+  nodeUpdate: NodeUpdateStore,
 };
