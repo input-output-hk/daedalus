@@ -71,20 +71,22 @@ export default class LanguageSelectionForm extends Component {
 
     return (
       <div className={styles.component}>
+        <div className={styles.centeredBox}>
 
-        <Dropdown
-          className="language"
-          source={languages}
-          {...languageId.bind()}
-        />
+          <Dropdown
+            className="language"
+            source={languages}
+            {...languageId.bind()}
+          />
 
-        <Button
-          className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
-          label={intl.formatMessage(messages.submitLabel)}
-          onMouseUp={this.submit}
-          primary
-        />
+          <Button
+            className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
+            label={intl.formatMessage(messages.submitLabel)}
+            onMouseUp={this.submit}
+            primary
+          />
 
+        </div>
       </div>
     );
   }

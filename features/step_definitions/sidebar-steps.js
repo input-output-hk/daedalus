@@ -30,7 +30,7 @@ export default function () {
   });
 
   this.When(/^I click on the sidebar toggle button$/, function () {
-    return this.client.click('.SidebarLayout_appbar .app-bar_leftIcon');
+    return this.client.click('.SidebarLayout_topbar .app-bar_leftIcon');
   });
 
   this.When(/^I click on the "([^"]*)" category in the sidebar$/, function (category) {

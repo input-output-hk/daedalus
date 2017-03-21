@@ -27,7 +27,7 @@ export default class AppStore extends Store {
   }
 
   @computed get currentLocale(): string {
-    if (!this.profileLocaleRequest.wasExecuted) {
+    if (!this.isCurrentLocaleSet) {
       return 'en-US';
     }
     return this.profileLocaleRequest.result;
@@ -38,7 +38,7 @@ export default class AppStore extends Store {
   }
 
   @action _redirectToLanguageSelectionIfNoLocaleSet = () => {
-    if (!this.profileLocaleRequest.wasExecuted)  {
+    if (!this.isCurrentLocaleSet)  {
       this._updateRouteLocation({ route: '/profile/language-selection' });
     }
   };

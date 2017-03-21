@@ -2,7 +2,8 @@
 import React, { PropTypes, Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import CachedRequest from '../../stores/lib/CachedRequest';
-import CenteredLayout from '../../components/layout/CenteredLayout';
+import TopBar from '../../components/layout/TopBar';
+import TopBarLayout from '../../components/layout/TopBarLayout';
 import LanguageSelectionForm from '../../components/profile/language-selection/LanguageSelectionForm';
 
 @inject('stores', 'actions') @observer
@@ -29,14 +30,17 @@ export default class LanguageSelectionPage extends Component {
   render() {
     const { profileLocaleRequest, LANGUAGE_OPTIONS } = this.props.stores.app;
     const isSubmitting = profileLocaleRequest.isExecuting;
+    const topbar = <TopBar />;
     return (
-      <CenteredLayout>
+      <TopBarLayout
+        topbar={topbar}
+      >
         <LanguageSelectionForm
           onSubmit={this.onSubmit}
           isSubmitting={isSubmitting}
           languages={LANGUAGE_OPTIONS}
         />
-      </CenteredLayout>
+      </TopBarLayout>
     );
   }
 }

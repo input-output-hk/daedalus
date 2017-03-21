@@ -16,8 +16,6 @@
 	"loading.screen.connectingToNetworkMessage": "ネットワークに接続中",
 	"loading.screen.reconnectingToNetworkMessage": "接続失敗 - 再接続中",
 	"loading.screen.syncingBlocksMessage": "ブロック同期中",
-  "profile.languageSelect.form.languageSelectLabel": "!!!Select your language",
-  "profile.languageSelect.form.submitLabel": "!!!Continue",
   "wallet.add.dialog.create.description": "新しいウォレットを作成",
   "wallet.add.dialog.create.label": "作成",
   "wallet.add.dialog.import.description": "キーからウォレットをインポート",

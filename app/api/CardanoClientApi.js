@@ -250,7 +250,7 @@ export default class CardanoClientApi {
     return { localDifficulty, networkDifficulty };
   }
 
-  setUserLocale(locale) {
+  setUserLocale(locale: string) {
     return new Promise(resolve => resolve(locale));
   }
 
