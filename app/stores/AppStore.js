@@ -7,9 +7,9 @@ export default class AppStore extends Store {
 
   LANGUAGE_OPTIONS = [
     { value: 'en-US', label: 'English' },
-    { value: 'ja_JP', label: 'Japanese' },
+    { value: 'ja-JP', label: 'Japanese' },
     { value: 'zh-CN', label: 'Chinese' },
-    { value: 'ko_KR', label: 'Korean' },
+    { value: 'ko-KR', label: 'Korean' },
     { value: 'de-DE', label: 'German' },
     { value: 'hr-HR', label: 'Croatian' },
   ];
