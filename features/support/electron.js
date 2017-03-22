@@ -40,9 +40,10 @@ export default function () {
         if (daedalus.stores.networkStatus.isSynced) {
           daedalus.api.testReset();
           if (isFirst) {
-            daedalus.actions.profile.updateLocale({ locale: 'en-US' });
+            daedalus.actions.profile.updateLocale({ locale: 'en-US' }); // TODO: Remove this
             daedalus.actions.networkStatus.isSyncedAndReady.once(done);
           } else {
+            daedalus.actions.profile.updateLocale({ locale: 'en-US' }); // TODO: Remove this
             done();
           }
         } else {

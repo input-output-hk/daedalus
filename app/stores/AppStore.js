@@ -2,7 +2,6 @@
 import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
 import CachedRequest from './lib/CachedRequest';
-import environment from '../environment';
 
 export default class AppStore extends Store {
 
@@ -42,7 +41,6 @@ export default class AppStore extends Store {
   }
 
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
-    if (environment.isTest()) return; // TODO: REMOVE THIS! Temporary fix to make tests run
     if (!this.isCurrentLocaleSet) {
       this.actions.router.goToRoute({ route: '/profile/language-selection' });
     }
