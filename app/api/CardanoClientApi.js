@@ -254,7 +254,7 @@ export default class CardanoClientApi {
   setUserLocale(locale: string) {
     return new Promise((resolve) => {
       // Fake async request here to make it more realistic
-      setTimeout(() => resolve(locale), 100);
+      setTimeout(() => resolve(locale), 1000);
     });
   }
 

@@ -19,7 +19,10 @@ export default class AppStore extends Store {
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
     this.actions.profile.updateLocale.listen(this._updateLocale);
-    this._redirectToLanguageSelectionIfNoLocaleSet();
+    this.registerReactions([
+      this._redirectToMainUiAfterLocaleIsSet,
+      this._redirectToLanguageSelectionIfNoLocaleSet
+    ]);
   }
 
   @computed get currentRoute(): string {
@@ -37,20 +40,23 @@ export default class AppStore extends Store {
     return this.profileLocaleRequest.wasExecuted;
   }
 
-  @action _redirectToLanguageSelectionIfNoLocaleSet = () => {
+  _redirectToLanguageSelectionIfNoLocaleSet = () => {
     if (!this.isCurrentLocaleSet) {
-      this._updateRouteLocation({ route: '/profile/language-selection' });
+      this.actions.router.goToRoute({ route: '/profile/language-selection' });
     }
   };
 
   @action _updateLocale = ({ locale }: { locale: string }) => {
     this.profileLocaleRequest.execute(locale);
-    this._updateRouteLocation({ route: '/' });
   };
 
   _updateRouteLocation = ({ route }: { route: string }) => {
     const currentRoute = this.stores.router.location.pathname;
     if (currentRoute !== route) this.stores.router.push(route);
+  };
+
+  _redirectToMainUiAfterLocaleIsSet = () => {
+    if (this.isCurrentLocaleSet) this.actions.router.goToRoute({ route: '/' });
   };
 
 }
