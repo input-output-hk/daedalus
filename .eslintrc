@@ -32,7 +32,8 @@
     "no-bitwise": 0,
     "no-underscore-dangle": 0,
     "no-console": 0,
-    "no-mixed-operators": 0
+    "no-mixed-operators": 0,
+    "prefer-template": 0
   },
   "plugins": [
     "flowtype-errors",

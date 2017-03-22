@@ -35,7 +35,8 @@ module.exports = validate(merge(baseConfig, {
         test: /\.js$/,
         loader: 'eslint-loader',
         include: [
-          path.resolve(__dirname, 'app'),
+          path.resolve(__dirname, '../app'),
+          path.resolve(__dirname, '../features'),
         ]
       }
     ],

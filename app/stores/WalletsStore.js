@@ -120,9 +120,9 @@ export default class WalletsStore extends Store {
   }
 
 
-  getWalletRoute = (walletId: string, screen: string = 'summary'): string => {
-    return `${this.BASE_ROUTE}/${walletId}/${screen}`;
-  };
+  getWalletRoute = (walletId: string, screen: string = 'summary'): string => (
+    `${this.BASE_ROUTE}/${walletId}/${screen}`
+  );
 
   isValidAddress = (address: string) => this.api.isValidAddress('ADA', address);
 
@@ -131,7 +131,7 @@ export default class WalletsStore extends Store {
   @action refreshWalletsData = async () => {
     if (this.stores.networkStatus.isConnected) {
       this.walletsRequest.invalidate();
-      const result = await this.walletsRequest.execute();
+      const result = await this.walletsRequest.execute().promise;
       if (!result) return;
       runInAction('refresh wallet data', () => {
         const walletIds = result.map((wallet: Wallet) => wallet.id);
@@ -244,7 +244,7 @@ export default class WalletsStore extends Store {
       } else if (hasAnyWalletsLoaded) {
         // There is no wallet with given id -> pick first wallet
         this._setActiveWallet({ walletId: this.all[0].id });
-        this.goToWalletRoute(this.active.id);
+        if (this.active) this.goToWalletRoute(this.active.id);
       }
     } else if (matchRoute(this.BASE_ROUTE, currentRoute)) {
       // The route does not specify any wallet -> pick first wallet

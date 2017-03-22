@@ -1,5 +1,5 @@
 // @flow
-import { observable, action, computed, runInAction, reaction } from 'mobx';
+import { observable, action, computed, runInAction } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/Request';
 
@@ -79,13 +79,15 @@ export default class NetworkStatusStore extends Store {
 
   @action _setInitialDifficulty = async () => {
     this._localDifficultyStartedWith = null;
-    const initialDifficulty = await this.networkDifficultyRequest.execute();
-    runInAction('set initial difficulty', () => {
-      this._localDifficultyStartedWith = initialDifficulty.localDifficulty;
-      this.localDifficulty = initialDifficulty.localDifficulty;
-      this.networkDifficulty = initialDifficulty.networkDifficulty;
-      console.debug('Initial difficulty: ', initialDifficulty);
-    });
+    const initialDifficulty = await this.networkDifficultyRequest.execute().promise;
+    if (initialDifficulty) {
+      runInAction('set initial difficulty', () => {
+        this._localDifficultyStartedWith = initialDifficulty.localDifficulty;
+        this.localDifficulty = initialDifficulty.localDifficulty;
+        this.networkDifficulty = initialDifficulty.networkDifficulty;
+        console.debug('Initial difficulty: ', initialDifficulty);
+      });
+    }
   };
 
   _listenToServerStatusNotifications() {
@@ -105,8 +107,7 @@ export default class NetworkStatusStore extends Store {
           this.hasBeenConnected = true;
           break;
         case 'LocalDifficultyChanged':
-          const difficulty = message.contents.getChainDifficulty;
-          this.localDifficulty = difficulty;
+          this.localDifficulty = message.contents.getChainDifficulty;
           break;
         case 'ConnectionClosedReconnecting':
           this.isConnected = false;

@@ -58,13 +58,11 @@ export default class SidebarStore extends Store {
       this.activeSidebarCategory = category;
       if (showSubMenus != null) this.isShowingSubMenus = showSubMenus;
       this.actions.router.goToRoute({ route: category });
-    } else {
+    } else if (showSubMenus == null || this.isShowingSubMenus !== showSubMenus) {
       // If no explicit preferred state is given -> toggle sub menus
-      if (showSubMenus == null || this.isShowingSubMenus != showSubMenus) {
-        this._toggleSubMenus();
-      } else if (showSubMenus != null) {
-        this.isShowingSubMenus = showSubMenus;
-      }
+      this._toggleSubMenus();
+    } else {
+      this.isShowingSubMenus = showSubMenus;
     }
   };
 
@@ -73,20 +71,20 @@ export default class SidebarStore extends Store {
     this._hideSubMenuTimeout = setTimeout(this._hideSubMenus, delay);
   };
 
-  @action _onWalletSelected = ({ walletId }) => {
+  @action _onWalletSelected = ({ walletId }: { walletId: string }) => {
     this.stores.wallets.goToWalletRoute(walletId);
     this._hideSubMenusAfterDelay(this.ACTION_HIDE_SUB_MENU_DELAY);
   };
 
-  @action _setCurrentCategory = (category: string) => {
-    this.currentCategory = category;
+  @action _setActivateSidebarCategory = (category: string) => {
+    this.activeSidebarCategory = category;
   };
 
   _syncSidebarRouteWithRouter = () => {
     const route = this.stores.app.currentRoute;
     Object.keys(this.CATEGORIES).forEach((key) => {
       const category = this.CATEGORIES[key];
-      if (route.indexOf(category) !== -1) this._setCurrentCategory(category);
+      if (route.indexOf(category) !== -1) this._setActivateSidebarCategory(category);
     });
   };
 
