@@ -2,6 +2,7 @@ Feature: Toggle Sidebar Submenus
 
   Background:
     Given I have a wallet with funds
+    And I am on the "Personal Wallet" wallet "summary" screen
 
   Scenario: Hide Sidebar Submenus
     Given the sidebar submenu is visible
