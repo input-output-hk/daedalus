@@ -1,3 +1,4 @@
+@skip
 Feature: Select Language
 
   Background:
