@@ -80,7 +80,6 @@ export default class CardanoClientApi {
       }
       throw new GenericApiError();
     }
-
   }
 
   isValidAddress(currency: string, address: string): Promise<bool> {
@@ -113,8 +112,8 @@ export default class CardanoClientApi {
       currency: 'ada',
       amount: isOutgoing ? -1 * coins : coins,
       date: new Date(ctmDate * 1000),
-      description: ctmDescription,
-      numberOfConfirmations: data.ctConfirmations
+      description: ctmDescription || '',
+      numberOfConfirmations: data.ctConfirmations,
     });
   }
 
@@ -160,9 +159,10 @@ export default class CardanoClientApi {
     const { redemptionCode, walletId } = request;
     console.debug('CardanoClientApi::redeemAda called with', request);
     try {
-      const redemptionResponse: ServerWalletStruct = await ClientApi.redeemADA(redemptionCode, walletId);
-      // TODO: Update response when it is implemented on the backend, currently only wallet is returned
-      return this._createWalletFromServerData(redemptionResponse);
+      const response: ServerWalletStruct = await ClientApi.redeemADA(redemptionCode, walletId);
+      // TODO: Update response when it is implemented on the backend,
+      // currently only wallet is returned
+      return this._createWalletFromServerData(response);
     } catch (error) {
       console.error(error);
       throw new RedeemAdaError();
@@ -175,7 +175,7 @@ export default class CardanoClientApi {
 
   // PRIVATE
 
-  _onNotify = (rawMessage: {}) => {
+  _onNotify = (rawMessage: string) => {
     console.debug('CardanoClientApi::notify message: ', rawMessage);
     // TODO: "ConnectionClosed" messages are not JSON parsable … so we need to catch that case here!
     let message = rawMessage;
@@ -244,8 +244,9 @@ export default class CardanoClientApi {
     const response = await ClientApi.syncProgress();
     console.log('CardanoClientApi::syncProgress response', response);
     const localDifficulty = response._spLocalCD.getChainDifficulty;
-    // In some cases we can not get network difficulty and we need to wait for it from the notify API
-    const networkDifficulty = response._spNetworkCD ? response._spNetworkCD.getChainDifficulty : null;
+    // In some cases we dont get network difficulty & we need to wait for it from the notify API
+    let networkDifficulty = null;
+    if (response._spNetworkCD) networkDifficulty = response._spNetworkCD.getChainDifficulty;
     console.log({ localDifficulty, networkDifficulty });
     return { localDifficulty, networkDifficulty };
   }

@@ -33,12 +33,12 @@ export default class AppStore extends Store {
     return this.profileLocaleRequest.result;
   }
 
-  @computed get isCurrentLocaleSet(): string {
+  @computed get isCurrentLocaleSet(): bool {
     return this.profileLocaleRequest.wasExecuted;
   }
 
   @action _redirectToLanguageSelectionIfNoLocaleSet = () => {
-    if (!this.isCurrentLocaleSet)  {
+    if (!this.isCurrentLocaleSet) {
       this._updateRouteLocation({ route: '/profile/language-selection' });
     }
   };
