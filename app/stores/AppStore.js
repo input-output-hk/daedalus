@@ -56,7 +56,9 @@ export default class AppStore extends Store {
   };
 
   _redirectToMainUiAfterLocaleIsSet = () => {
-    if (this.isCurrentLocaleSet) this.actions.router.goToRoute({ route: '/' });
+    if (this.isCurrentLocaleSet && this.stores.app.currentRoute === '/profile/language-selection') {
+      this.actions.router.goToRoute({ route: '/' });
+    }
   };
 
 }
