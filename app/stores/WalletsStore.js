@@ -1,5 +1,5 @@
 // @flow
-import { observable, computed, action } from 'mobx';
+import { observable, computed, action, runInAction } from 'mobx';
 import _ from 'lodash';
 import Store from './lib/Store';
 import Wallet from '../domain/Wallet';
@@ -46,7 +46,7 @@ export default class WalletsStore extends Store {
     walletBackup.finishWalletBackup.listen(this._finishWalletCreation);
     this.registerReactions([
       this._updateActiveWalletOnRouteChanges,
-      this._openAddWalletIfNoWallets,
+      this._openAddWalletDialogWhenThereAreNoWallets,
     ]);
     if (environment.CARDANO_API) {
       setInterval(this.refreshWalletsData, this.WALLET_REFRESH_INTERVAL);
@@ -70,11 +70,9 @@ export default class WalletsStore extends Store {
     this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
     const wallet = await this.createWalletRequest.execute(this._newWalletDetails).promise;
     if (wallet) {
-      await this.walletsRequest.patch(result => {
-        result.push(wallet);
-      });
+      await this.walletsRequest.patch(result => result.push(wallet));
       this.goToWalletRoute(wallet.id);
-      this.isAddWalletDialogOpen = false;
+      runInAction(() => { this.isAddWalletDialogOpen = false; });
     }
   };
 
@@ -135,13 +133,15 @@ export default class WalletsStore extends Store {
       this.walletsRequest.invalidate();
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
-      const walletIds = result.map((wallet: Wallet) => wallet.id);
-      this.stores.transactions.transactionsRequests = walletIds.map(walletId => ({
-        walletId,
-        recentRequest: this.stores.transactions._getTransactionsRecentRequest(walletId),
-        allRequest: this.stores.transactions._getTransactionsAllRequest(walletId)
-      }));
-      this.stores.transactions._refreshTransactionData();
+      runInAction('refresh wallet data', () => {
+        const walletIds = result.map((wallet: Wallet) => wallet.id);
+        this.stores.transactions.transactionsRequests = walletIds.map(walletId => ({
+          walletId,
+          recentRequest: this.stores.transactions._getTransactionsRecentRequest(walletId),
+          allRequest: this.stores.transactions._getTransactionsAllRequest(walletId)
+        }));
+        this.stores.transactions._refreshTransactionData();
+      });
     }
   };
 
@@ -216,20 +216,18 @@ export default class WalletsStore extends Store {
     }
   };
 
+  @action _setIsWalletDialogOpen = (isOpen: boolean) => {
+    this.isAddWalletDialogOpen = isOpen;
+  };
+
   goToWalletRoute(walletId: string) {
     const route = this.getWalletRoute(walletId);
     this.actions.router.goToRoute({ route });
   }
 
-  _openAddWalletIfNoWallets = () => {
-    // TODO: investigate why hasLoadedWallets is needed here, it is in hasAnyWallets
-    if (this.hasLoadedWallets) {
-      if (!this.hasAnyWallets) {
-        this.isAddWalletDialogOpen = true;
-      } else {
-        this.isAddWalletDialogOpen = false;
-      }
-    }
+  _openAddWalletDialogWhenThereAreNoWallets = () => {
+    const isOpenWhenThereAreNoWallets = !this.hasAnyWallets;
+    this._setIsWalletDialogOpen(isOpenWhenThereAreNoWallets);
   };
 
   _updateActiveWalletOnRouteChanges = () => {
@@ -242,15 +240,17 @@ export default class WalletsStore extends Store {
       const walletForCurrentRoute = this.all.find(w => w.id === match.id);
       if (walletForCurrentRoute) {
         // The wallet exists, we are done
-        this.active = walletForCurrentRoute;
+        this._setActiveWallet({ walletId: walletForCurrentRoute.id });
       } else if (hasAnyWalletsLoaded) {
         // There is no wallet with given id -> pick first wallet
-        this.active = this.all[0];
-        this.goToWalletRoute(this.active.id);
+        this._setActiveWallet({ walletId: this.all[0].id });
+        if (this.active) this.goToWalletRoute(this.active.id);
       }
     } else if (matchRoute(this.BASE_ROUTE, currentRoute)) {
       // The route does not specify any wallet -> pick first wallet
-      if (!hasActiveWallet && hasAnyWalletsLoaded) this.active = this.all[0];
+      if (!hasActiveWallet && hasAnyWalletsLoaded) {
+        this._setActiveWallet({ walletId: this.all[0].id });
+      }
       if (this.active) this.goToWalletRoute(this.active.id);
     }
   };

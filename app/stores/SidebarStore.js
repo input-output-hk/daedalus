@@ -76,11 +76,15 @@ export default class SidebarStore extends Store {
     this._hideSubMenusAfterDelay(this.ACTION_HIDE_SUB_MENU_DELAY);
   };
 
+  @action _setActivateSidebarCategory = (category: string) => {
+    this.activeSidebarCategory = category;
+  };
+
   _syncSidebarRouteWithRouter = () => {
     const route = this.stores.app.currentRoute;
     Object.keys(this.CATEGORIES).forEach((key) => {
       const category = this.CATEGORIES[key];
-      if (route.indexOf(category) !== -1) this.activeSidebarCategory = category;
+      if (route.indexOf(category) !== -1) this._setActivateSidebarCategory(category);
     });
   };
 
