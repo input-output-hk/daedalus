@@ -48,6 +48,8 @@ export default class AdaRedemptionStore extends Store {
     ipcRenderer.removeAllListeners(PARSE_REDEMPTION_CODE.ERROR);
   }
 
+  isValidRedemptionKey = (redemptionKey: string) => this.api.isValidRedemptionKey(redemptionKey);
+
   _setCertificate = action(({ certificate }) => {
     this.certificate = certificate;
     this.isCertificateEncrypted = certificate.type !== 'application/pdf';

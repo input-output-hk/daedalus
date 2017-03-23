@@ -25,6 +25,18 @@ import {
 //   reject(new ApiMethodNotYetImplementedError());
 // });
 
+// Commented out helper code for testing async APIs
+// (async () => {
+//   const result = await ClientApi.nextUpdate();
+//   console.log('nextUpdate', result);
+// })();
+
+// Commented out helper code for testing sync APIs
+// (() => {
+//   const result = ClientApi.isValidRedeemCode('HSoXEnt9X541uHvtzBpy8vKfTo1C9TkAX3wat2c6ikg=');
+//   console.log('isValidRedeemCode', result);
+// })();
+
 export default class CardanoClientApi {
 
   notifyCallbacks = [];
@@ -88,6 +100,10 @@ export default class CardanoClientApi {
 
   isValidMnemonic(mnemonic: string): Promise<bool> {
     return ClientApi.isValidMnemonic(mnemonic);
+  }
+
+  isValidRedemptionKey(mnemonic: string): Promise<bool> {
+    return ClientApi.isValidRedeemCode(mnemonic);
   }
 
   @action _createWalletFromServerData(data: ServerWalletStruct) {
