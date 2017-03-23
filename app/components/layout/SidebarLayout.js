@@ -11,19 +11,19 @@ export default class SidebarLayout extends Component {
     children: oneOrManyChildElements,
     sidebar: PropTypes.element.isRequired,
     notification: PropTypes.element,
-    appbar: PropTypes.element.isRequired,
+    topbar: PropTypes.element.isRequired,
   };
 
   render() {
-    const { children, sidebar, appbar, notification } = this.props;
+    const { children, sidebar, topbar, notification } = this.props;
     return (
       <div className={styles.component}>
         <div className={styles.sidebar}>
           {sidebar}
         </div>
         <div className={styles.main}>
-          <div className={styles.appbar}>
-            {appbar}
+          <div className={styles.topbar}>
+            {topbar}
           </div>
           {notification}
           <div className={styles.content}>

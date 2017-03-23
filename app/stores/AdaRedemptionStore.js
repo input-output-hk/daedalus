@@ -42,6 +42,12 @@ export default class AdaRedemptionStore extends Store {
     ipcRenderer.on(PARSE_REDEMPTION_CODE.ERROR, this._onParseError);
   }
 
+  teardown() {
+    super.teardown();
+    ipcRenderer.removeAllListeners(PARSE_REDEMPTION_CODE.SUCCESS);
+    ipcRenderer.removeAllListeners(PARSE_REDEMPTION_CODE.ERROR);
+  }
+
   _setCertificate = action(({ certificate }) => {
     this.certificate = certificate;
     this.isCertificateEncrypted = certificate.type !== 'application/pdf';
@@ -92,7 +98,10 @@ export default class AdaRedemptionStore extends Store {
       .then(action((wallet) => {
         this.error = null;
         // TODO: Use amount returned by backend (when implemented!)
-        this.actions.adaRedemption.adaSuccessfullyRedeemed({ walletId: wallet.id, amount: 1000000 });
+        this.actions.adaRedemption.adaSuccessfullyRedeemed({
+          walletId: wallet.id,
+          amount: 1000000,
+        });
       }))
       .catch(action((error) => {
         this.error = error;

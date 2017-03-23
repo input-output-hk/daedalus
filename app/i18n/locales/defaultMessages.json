@@ -131,6 +131,20 @@
           "column": 11,
           "line": 22
         }
+      },
+      {
+        "defaultMessage": "!!!Loading wallet data",
+        "description": "Message \"Loading wallet data\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "app/components/loading/Loading.js",
+        "id": "loading.screen.loadingWalletData",
+        "start": {
+          "column": 21,
+          "line": 27
+        }
       }
     ],
     "path": "app/components/loading/Loading.json"
@@ -167,6 +181,39 @@
       }
     ],
     "path": "app/components/notifications/NodeUpdateNotification.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Select your language",
+        "description": "Label for the language select.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "app/components/profile/language-selection/LanguageSelectionForm.js",
+        "id": "profile.languageSelect.form.languageSelectLabel",
+        "start": {
+          "column": 23,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!Continue",
+        "description": "Label for the \"Language select\" form submit button.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "app/components/profile/language-selection/LanguageSelectionForm.js",
+        "id": "profile.languageSelect.form.submitLabel",
+        "start": {
+          "column": 15,
+          "line": 16
+        }
+      }
+    ],
+    "path": "app/components/profile/language-selection/LanguageSelectionForm.json"
   },
   {
     "descriptors": [
@@ -363,7 +410,7 @@
         }
       },
       {
-        "defaultMessage": "!!!On the following screen, you will see a set of X random words. This is \n    your wallet backup phrase. It can be entered in any version of Daedalus application in order \n    to back up or restore your wallet’s funds and private key.",
+        "defaultMessage": "!!!On the following screen, you will see a set of X random words. This is\n    your wallet backup phrase. It can be entered in any version of Daedalus application in order\n    to back up or restore your wallet’s funds and private key.",
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
           "column": 3,

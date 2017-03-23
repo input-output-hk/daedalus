@@ -7,6 +7,7 @@ import nodeUpdateActions from './node-update-actions';
 import sidebarActions from './sidebar-actions';
 import windowActions from './window-actions';
 import networkStatusActions from './network-status-actions';
+import profileActions from './profile-actions';
 
 export default {
   router: routerActions,
@@ -18,4 +19,5 @@ export default {
   sidebar: sidebarActions,
   window: windowActions,
   networkStatus: networkStatusActions,
+  profile: profileActions,
 };

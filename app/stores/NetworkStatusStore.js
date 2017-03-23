@@ -1,7 +1,10 @@
 // @flow
-import { observable, action, computed } from 'mobx';
+import { observable, action, computed, runInAction } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/Request';
+
+// To avoid slow reconnecting on store reset, we cache the most important props
+let cachedDifficulties = null;
 
 export default class NetworkStatusStore extends Store {
 
@@ -13,12 +16,28 @@ export default class NetworkStatusStore extends Store {
   @observable networkDifficultyRequest = new Request(this.api, 'getSyncProgress');
   @observable _localDifficultyStartedWith = null;
 
+  @action initialize() {
+    super.initialize();
+    if (cachedDifficulties !== null) Object.assign(this, cachedDifficulties);
+  }
+
   setup() {
     this.registerReactions([
       this._redirectToWalletAfterSync,
       this._redirectToLoadingWhenDisconnected,
     ]);
     this._listenToServerStatusNotifications();
+  }
+
+  teardown() {
+    super.teardown();
+    cachedDifficulties = {
+      isConnected: this.isConnected,
+      hasBeenConnected: this.hasBeenConnected,
+      localDifficulty: this.localDifficulty,
+      networkDifficulty: this.networkDifficulty,
+      isLoadingWallets: true,
+    };
   }
 
   @computed get isConnecting(): bool {
@@ -31,10 +50,10 @@ export default class NetworkStatusStore extends Store {
       const relativeNetwork = this.networkDifficulty - this._localDifficultyStartedWith;
       // In case node is in sync after first local difficulty messages
       // local and network difficulty will be the same (0)
-      console.log('networkDifficulty', this.networkDifficulty);
-      console.log('localDifficulty', this.localDifficulty);
-      console.log('relativeLocal', relativeLocal);
-      console.log('relativeNetwork', relativeNetwork);
+      console.debug('Network difficulty: ', this.networkDifficulty);
+      console.debug('Local difficulty: ', this.localDifficulty);
+      console.debug('Relative local difficulty: ', relativeLocal);
+      console.debug('Relative network difficulty: ', relativeNetwork);
 
       if (relativeLocal >= relativeNetwork) return 100;
       return relativeLocal / relativeNetwork * 100;
@@ -59,15 +78,20 @@ export default class NetworkStatusStore extends Store {
   }
 
   @action _setInitialDifficulty = async () => {
-    const initialDifficulty = await this.networkDifficultyRequest.execute();
-    this._localDifficultyStartedWith = initialDifficulty.localDifficulty;
-    this.localDifficulty = initialDifficulty.localDifficulty;
-    this.networkDifficulty = initialDifficulty.networkDifficulty;
-    console.log('INITIAL', initialDifficulty);
+    this._localDifficultyStartedWith = null;
+    const initialDifficulty = await this.networkDifficultyRequest.execute().promise;
+    if (initialDifficulty) {
+      runInAction('set initial difficulty', () => {
+        this._localDifficultyStartedWith = initialDifficulty.localDifficulty;
+        this.localDifficulty = initialDifficulty.localDifficulty;
+        this.networkDifficulty = initialDifficulty.networkDifficulty;
+        console.debug('Initial difficulty: ', initialDifficulty);
+      });
+    }
   };
 
-  @action _listenToServerStatusNotifications() {
-    this.api.notify((message) => {
+  _listenToServerStatusNotifications() {
+    this.api.notify(action((message) => {
       if (message === 'ConnectionClosed') {
         this.isConnected = false;
         return;
@@ -83,8 +107,7 @@ export default class NetworkStatusStore extends Store {
           this.hasBeenConnected = true;
           break;
         case 'LocalDifficultyChanged':
-          const difficulty = message.contents.getChainDifficulty;
-          this.localDifficulty = difficulty;
+          this.localDifficulty = message.contents.getChainDifficulty;
           break;
         case 'ConnectionClosedReconnecting':
           this.isConnected = false;
@@ -92,13 +115,15 @@ export default class NetworkStatusStore extends Store {
         default:
           console.log('Unknown server notification received:', message);
       }
-    });
+    }));
   }
 
   _redirectToWalletAfterSync = () => {
     const { app, wallets } = this.stores;
+    if (!app.isCurrentLocaleSet) return;
+    // TODO: introduce smarter way to bootsrap initial screens
     if (this.isConnected && this.isSynced && wallets.hasLoadedWallets && app.currentRoute === '/') {
-      this.isLoadingWallets = false;
+      runInAction(() => { this.isLoadingWallets = false; });
       if (wallets.first) {
         this.actions.router.goToRoute({ route: wallets.getWalletRoute(wallets.first.id) });
       } else {
@@ -109,8 +134,8 @@ export default class NetworkStatusStore extends Store {
   };
 
   _redirectToLoadingWhenDisconnected = () => {
+    if (!this.stores.app.isCurrentLocaleSet) return;
     if (!this.isConnected) {
-      this._localDifficultyStartedWith = null;
       this._setInitialDifficulty();
       this.actions.router.goToRoute({ route: '/' });
     }

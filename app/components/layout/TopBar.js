@@ -3,23 +3,24 @@ import React, { Component, PropTypes } from 'react';
 import RTAppBar from 'react-toolbox/lib/app_bar/AppBar';
 import { observer } from 'mobx-react';
 import menuIcon from '../../assets/images/menu-ic.svg';
-import styles from './AppBar.scss';
+import styles from './TopBar.scss';
 
 @observer
-export default class AppBar extends Component {
+export default class TopBar extends Component {
 
   static propTypes = {
-    onToggleSidebar: PropTypes.func.isRequired,
-    children: PropTypes.element.isRequired,
+    onToggleSidebar: PropTypes.func,
+    children: PropTypes.element,
   };
 
   render() {
-    const sidebarToggleIcon = <img className={styles.sidebarIcon} src={menuIcon} role="presentation" />;
+    const { onToggleSidebar } = this.props;
+    const sidebarToggleIcon = onToggleSidebar && <img className={styles.sidebarIcon} src={menuIcon} role="presentation" />;
     return (
       <RTAppBar
         title="Daedalus"
         leftIcon={sidebarToggleIcon}
-        onLeftIconClick={this.props.onToggleSidebar}
+        onLeftIconClick={onToggleSidebar}
       >
         {this.props.children}
       </RTAppBar>
