@@ -39,7 +39,8 @@ export default () => {
       pdfExtract.extract(pdfPath, {}, (error, data) => {
         if (error) return sender.send(PARSE_REDEMPTION_CODE.ERROR, error);
         try {
-          if (data.pages[0].content[9].str !== 'REDEMPTION KEY') {
+          const redemptionKeyLabel = data.pages[0].content[9].str;
+          if (redemptionKeyLabel !== 'REDEMPTION KEY' && redemptionKeyLabel !== '—————— REDEMPTION KEY ——————') {
             return sender.send(
               PARSE_REDEMPTION_CODE.ERROR,
               PARSE_REDEMPTION_CODE.INVALID_CERTIFICATE_ERROR

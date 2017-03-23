@@ -29,6 +29,7 @@ export default class AdaRedemptionPage extends Component {
         redeemAdaRequest: PropTypes.instanceOf(Request).isRequired,
         certificate: PropTypes.instanceOf(File),
         isCertificateEncrypted: PropTypes.bool.isRequired,
+        isValidRedemptionKey: PropTypes.func.isRequired,
         error: PropTypes.instanceOf(Error),
       }).isRequired,
     }).isRequired
@@ -40,7 +41,7 @@ export default class AdaRedemptionPage extends Component {
 
   render() {
     const { wallets, adaRedemption } = this.props.stores;
-    const { redeemAdaRequest, isCertificateEncrypted, error } = adaRedemption;
+    const { redeemAdaRequest, isCertificateEncrypted, isValidRedemptionKey, error } = adaRedemption;
     const {
       setCertificate, setPassPhrase, setRedemptionCode, removeCertificate
     } = this.props.actions.adaRedemption;
@@ -66,6 +67,7 @@ export default class AdaRedemptionPage extends Component {
           error={adaRedemption.error}
           onSubmit={this.onSubmit}
           onRemoveCertificate={removeCertificate}
+          redemptionCodeValidator={isValidRedemptionKey}
         />
       </Layout>
     );

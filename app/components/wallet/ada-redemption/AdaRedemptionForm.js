@@ -11,6 +11,7 @@ import AdaCertificateUploadWidget from '../../widgets/forms/AdaCertificateUpload
 import LocalizableError from '../../../i18n/LocalizableError';
 import { InvalidMnemonicError } from '../../../i18n/global-errors';
 import { isValidMnemonic } from '../../../../lib/decrypt';
+import globalMessages from '../../../i18n/global-messages';
 import styles from './AdaRedemptionForm.scss';
 
 const messages = defineMessages({
@@ -71,6 +72,8 @@ const messages = defineMessages({
   },
 });
 
+messages.fieldIsRequired = globalMessages.fieldIsRequired;
+
 @observer
 export default class AdaRedemptionForm extends Component {
 
@@ -84,6 +87,7 @@ export default class AdaRedemptionForm extends Component {
     onPassPhraseChanged: PropTypes.func.isRequired,
     onRedemptionCodeChanged: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
+    redemptionCodeValidator: PropTypes.func.isRequired,
     isSubmitting: PropTypes.bool.isRequired,
     isCertificateSelected: PropTypes.bool.isRequired,
     isCertificateEncrypted: PropTypes.bool.isRequired,
@@ -137,8 +141,12 @@ export default class AdaRedemptionForm extends Component {
         value: '',
         bindings: 'ReactToolbox',
         validate: ({ field }) => {
-          const isValid = field.value.length === 44;
-          return [isValid, this.context.intl.formatMessage(messages.redemptionCodeError)];
+          const value = this.props.redemptionCode ? this.props.redemptionCode : field.value;
+          if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
+          return [
+            this.props.redemptionCodeValidator(value),
+            this.context.intl.formatMessage(messages.redemptionCodeError)
+          ];
         },
       },
       walletId: {
