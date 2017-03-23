@@ -7,8 +7,8 @@ import           Development.NSIS
 import           System.Environment (lookupEnv)
 import           Turtle (echo, procs)
 
-shortcutParameters :: [String] -> String
-shortcutParameters ipdht = L.intercalate " " $
+shortcutParameters :: String
+shortcutParameters = L.intercalate " " $
   [ "--node \"%PROGRAMFILES%\\Daedalus\\cardano-node.exe\""
   , "--node-log-path", "\"%APPDATA%\\Daedalus\\Logs\\cardano-node.log\""
   , "--wallet \"%PROGRAMFILES%\\Daedalus\\Daedalus.exe\""
@@ -25,13 +25,14 @@ shortcutParameters ipdht = L.intercalate " " $
         "--logs-prefix", "\"%APPDATA%\\Daedalus\\Logs\"",
         "--db-path", "\"%APPDATA%\\Daedalus\\DB-0.2\"",
         "--wallet-db-path", "\"%APPDATA%\\Daedalus\\Wallet-0.2\"",
+        "--peer-file", "ip-dht-mappings",
         "--wallet"
-        ] <> ("--peer" : (L.intersperse "--peer" ipdht))
+        ]
 
-daedalusShortcut :: [String] -> [Attrib]
-daedalusShortcut ipdht =
+daedalusShortcut :: [Attrib]
+daedalusShortcut =
     [ Target "$INSTDIR\\cardano-launcher.exe"
-    , Parameters (str $ shortcutParameters ipdht)
+    , Parameters (str $ shortcutParameters)
     , IconFile "$INSTDIR\\Daedalus.exe"
     , StartOptions "SW_SHOWMINIMIZED"
     , IconIndex 0
@@ -40,8 +41,6 @@ daedalusShortcut ipdht =
 writeNSIS :: IO ()
 writeNSIS = do
   version <- fmap (fromMaybe "dev") $ lookupEnv "APPVEYOR_BUILD_VERSION"
-  ipdhtRaw <- readFile "data\\ip-dht-mappings"
-  let ds = daedalusShortcut $ lines ipdhtRaw
   writeFile "version.txt" version
   writeFile "daedalus.nsi" $ nsis $ do
     _ <- constantStr "Version" (str version)
@@ -61,10 +60,11 @@ writeNSIS = do
         createDirectory "$APPDATA\\Daedalus\\Wallet-0.2" 
         createDirectory "$APPDATA\\Daedalus\\Logs"
         createDirectory "$APPDATA\\Daedalus\\Secrets"
-        createShortcut "$DESKTOP\\Daedalus.lnk" ds
+        createShortcut "$DESKTOP\\Daedalus.lnk" daedalusShortcut
         file [] "cardano-node.exe"
         file [] "cardano-launcher.exe"
         file [] "log-config-prod.yaml"
+        file [] "data\\ip-dht-mappings"
         file [] "version.txt"
         file [Recursive] "dlls\\"
         file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
@@ -82,7 +82,7 @@ writeNSIS = do
         createDirectory "$SMPROGRAMS/Daedalus"
         createShortcut "$SMPROGRAMS/Daedalus/Uninstall Daedalus.lnk" 
           [Target "$INSTDIR/uninstall.exe", IconFile "$INSTDIR/uninstall.exe", IconIndex 0]
-        createShortcut "$SMPROGRAMS/Daedalus/Daedalus.lnk" ds
+        createShortcut "$SMPROGRAMS/Daedalus/Daedalus.lnk" daedalusShortcut
 
     uninstall $ do
       -- Remove registry keys

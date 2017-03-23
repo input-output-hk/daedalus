@@ -6,6 +6,7 @@ import Wallet from '../../domain/Wallet';
 import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
 import WalletSummary from '../../components/wallet/summary/WalletSummary';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
+import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import Request from '../../stores/lib/Request';
 import AdaRedemptionSuccessOverlay from '../../components/wallet/ada-redemption/AdaRedemptionSuccessOverlay';
 
@@ -61,6 +62,7 @@ export default class WalletSummaryPage extends Component {
     } = transactions;
     const wallet = wallets.active;
     const { showAdaRedemptionSuccessMessage, amountRedeemed } = adaRedemption;
+    let adaRedemptionSuccessMessage = null;
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
@@ -77,8 +79,17 @@ export default class WalletSummaryPage extends Component {
       walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
     }
 
+    if (showAdaRedemptionSuccessMessage) {
+      adaRedemptionSuccessMessage = (
+        <AdaRedemptionSuccessOverlay
+          amount={amountRedeemed}
+          onClose={actions.adaRedemption.closeAdaRedemptionSuccessOverlay}
+        />
+      );
+    }
+
     return (
-      <div style={{ height: '100%', display: 'flex', flexDirection: 'column', position: 'relative' }}>
+      <VerticalFlexContainer>
         <WalletSummary
           walletName={wallet.name}
           amount={wallet.amount}
@@ -87,13 +98,8 @@ export default class WalletSummaryPage extends Component {
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
         />
         {walletTransactions}
-        {showAdaRedemptionSuccessMessage && (
-          <AdaRedemptionSuccessOverlay
-            amount={amountRedeemed}
-            onClose={actions.adaRedemption.closeAdaRedemptionSuccessOverlay}
-          />
-        )}
-      </div>
+        {adaRedemptionSuccessMessage}
+      </VerticalFlexContainer>
     );
   }
 
