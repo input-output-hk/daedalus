@@ -7,6 +7,7 @@ import Request from './lib/Request';
 import { PARSE_REDEMPTION_CODE } from '../../electron/ipc-api/parse-redemption-code-from-pdf';
 import LocalizableError from '../i18n/LocalizableError';
 import { InvalidMnemonicError } from '../i18n/global-errors';
+import constants from '../constants';
 
 export class AdaRedemptionCertificateParseError extends LocalizableError {
   constructor() {
@@ -23,6 +24,7 @@ export default class AdaRedemptionStore extends Store {
   @observable isCertificateEncrypted = false;
   @observable passPhrase: ?string = null;
   @observable redemptionCode: string = '';
+  @observable isPaperVendingKey: boolean = false;
   @observable walletId: ?string = null;
   @observable error: ?LocalizableError = null;
   @observable amountRedeemed: number = 0;
@@ -63,12 +65,20 @@ export default class AdaRedemptionStore extends Store {
 
   _setPassPhrase = action(({ passPhrase }) => {
     this.passPhrase = passPhrase;
-    this._parseCodeFromCertificate();
+    if (!this.isPaperVendingKey) {
+      // Normal key, so the pass phrase is for decrypting the cert
+      this._parseCodeFromCertificate();
+    }
   });
 
-  _setRedemptionCode = action(({ redemptionCode }) => {
+  @action _setRedemptionCode = ({ redemptionCode } : { redemptionCode: string }) => {
     this.redemptionCode = redemptionCode;
-  });
+    if (redemptionCode.length === constants.ADA_REDEMPTION_PAPER_KEY_LENGTH) {
+      this.isPaperVendingKey = true;
+    } else {
+      this.isPaperVendingKey = false;
+    }
+  };
 
   _parseCodeFromCertificate() {
     if (this.certificate == null) throw new Error('Certificate File is required for parsing.');
@@ -96,9 +106,15 @@ export default class AdaRedemptionStore extends Store {
 
   _redeemAda = action(({ walletId }) => {
     this.walletId = walletId;
-    this.redeemAdaRequest.execute({ redemptionCode: this.redemptionCode, walletId })
+    const requestData = {
+      isPaperVendingKey: this.isPaperVendingKey,
+      redemptionCode: this.redemptionCode,
+      mnemonic: this.passPhrase,
+      walletId,
+    };
+    this.redeemAdaRequest.execute(requestData)
       .then(action((wallet) => {
-        this.error = null;
+        this._reset();
         // TODO: Use amount returned by backend (when implemented!)
         this.actions.adaRedemption.adaSuccessfullyRedeemed({
           walletId: wallet.id,
@@ -129,5 +145,15 @@ export default class AdaRedemptionStore extends Store {
     this.passPhrase = '';
     this.error = null;
   });
+  
+  @action _reset = () => {
+    this.error = null;
+    this.isPaperVendingKey = false;
+    this.certificate = null;
+    this.isCertificateEncrypted = false;
+    this.passPhrase = null;
+    this.redemptionCode = '';
+    this.walletId = null;
+  };
 
 }

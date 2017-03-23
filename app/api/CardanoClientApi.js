@@ -20,6 +20,7 @@ import {
   WalletKeyImportError,
   NotEnoughMoneyToSendError
 } from './errors';
+import constants from '../constants';
 
 // const notYetImplemented = () => new Promise((_, reject) => {
 //   reject(new ApiMethodNotYetImplementedError());
@@ -103,7 +104,17 @@ export default class CardanoClientApi {
   }
 
   isValidRedemptionKey(key: string): Promise<bool> {
-    return ClientApi.isValidRedeemCode(key);
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        if ((key.length === constants.ADA_REDEMPTION_KEY_LENGTH) ||
+            (key.length === constants.ADA_REDEMPTION_PAPER_KEY_LENGTH)) {
+          resolve(true);
+        } else {
+          resolve(false);
+        }
+      }, 100);
+    });
+    // return ClientApi.isValidRedeemCode(key);
   }
 
   @action _createWalletFromServerData(data: ServerWalletStruct) {
@@ -172,13 +183,16 @@ export default class CardanoClientApi {
   }
 
   async redeemAda(request: redeemAdaRequest) {
-    const { redemptionCode, walletId } = request;
+    const {/* isPaperVendingKey, redemptionCode, mnemonic,*/ walletId } = request;
     console.debug('CardanoClientApi::redeemAda called with', request);
     try {
-      const response: ServerWalletStruct = await ClientApi.redeemADA(redemptionCode, walletId);
+      // TODO: temporary client-side solution! Waiting for redeem backend
+      return ClientApi.getWallet(walletId);
+      // TODO: add back real backend api when we have it
+      // const response = await ClientApi.redeemADA(redemptionCode, walletId);
       // TODO: Update response when it is implemented on the backend,
       // currently only wallet is returned
-      return this._createWalletFromServerData(response);
+      // return this._createWalletFromServerData(response);
     } catch (error) {
       console.error(error);
       throw new RedeemAdaError();
