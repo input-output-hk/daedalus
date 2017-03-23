@@ -102,8 +102,8 @@ export default class CardanoClientApi {
     return ClientApi.isValidMnemonic(mnemonic);
   }
 
-  isValidRedemptionKey(mnemonic: string): Promise<bool> {
-    return ClientApi.isValidRedeemCode(mnemonic);
+  isValidRedemptionKey(key: string): Promise<bool> {
+    return ClientApi.isValidRedeemCode(key);
   }
 
   @action _createWalletFromServerData(data: ServerWalletStruct) {
