@@ -1,17 +1,51 @@
 // @flow
 import { observable, action, computed } from 'mobx';
+import { defineMessages } from 'react-intl';
 import Store from './lib/Store';
 import CachedRequest from './lib/CachedRequest';
+
+const messages = defineMessages({
+  languageOptionEnglish: {
+    id: 'profile.languageSelect.form.options.english',
+    defaultMessage: '!!!English',
+    description: 'Label for the language select option "English".',
+  },
+  languageOptionJapanese: {
+    id: 'profile.languageSelect.form.options.japanese',
+    defaultMessage: '!!!Japanese',
+    description: 'Label for the language select option "Japanese".',
+  },
+  languageOptionChinese: {
+    id: 'profile.languageSelect.form.options.chinese',
+    defaultMessage: '!!!Chinese',
+    description: 'Label for the language select option "Chinese".',
+  },
+  languageOptionKorean: {
+    id: 'profile.languageSelect.form.options.korean',
+    defaultMessage: '!!!Korean',
+    description: 'Label for the language select option "Korean".',
+  },
+  languageOptionGerman: {
+    id: 'profile.languageSelect.form.options.german',
+    defaultMessage: '!!!German',
+    description: 'Label for the language select option "German".',
+  },
+  languageOptionCroatian: {
+    id: 'profile.languageSelect.form.options.croatian',
+    defaultMessage: '!!!Croatian',
+    description: 'Label for the language select option "Croatian".',
+  },
+});
 
 export default class AppStore extends Store {
 
   LANGUAGE_OPTIONS = [
-    { value: 'en-US', label: 'English' },
-    { value: 'ja-JP', label: 'Japanese' },
-    { value: 'zh-CN', label: 'Chinese' },
-    { value: 'ko-KR', label: 'Korean' },
-    { value: 'de-DE', label: 'German' },
-    { value: 'hr-HR', label: 'Croatian' },
+    { value: 'en-US', label: messages.languageOptionEnglish },
+    { value: 'ja-JP', label: messages.languageOptionJapanese },
+    { value: 'zh-CN', label: messages.languageOptionChinese },
+    { value: 'ko-KR', label: messages.languageOptionKorean },
+    { value: 'de-DE', label: messages.languageOptionGerman },
+    { value: 'hr-HR', label: messages.languageOptionCroatian },
   ];
 
   @observable profileLocaleRequest = new CachedRequest(this.api, 'setUserLocale');

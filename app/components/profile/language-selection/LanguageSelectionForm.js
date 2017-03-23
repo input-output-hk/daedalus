@@ -26,7 +26,7 @@ export default class LanguageSelectionForm extends Component {
   static propTypes = {
     languages: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.shape({
       value: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
+      label: PropTypes.object.isRequired,
     })).isRequired,
     onSubmit: PropTypes.func.isRequired,
     isSubmitting: PropTypes.bool.isRequired,
@@ -68,6 +68,10 @@ export default class LanguageSelectionForm extends Component {
       isSubmitting
     } = this.props;
     const languageId = form.$('languageId');
+    const languageOptions = languages.map(language => ({
+      value: language.value,
+      label: intl.formatMessage(language.label)
+    }));
 
     return (
       <div className={styles.component}>
@@ -75,7 +79,7 @@ export default class LanguageSelectionForm extends Component {
 
           <Dropdown
             className="language"
-            source={languages}
+            source={languageOptions}
             {...languageId.bind()}
           />
 
