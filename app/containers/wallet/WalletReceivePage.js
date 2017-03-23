@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import WalletReceive from '../../components/wallet/WalletReceive';
 import Wallet from '../../domain/Wallet';
 import WalletAddressCopyNotification from '../../components/wallet/WalletAddressCopyNotification';
+import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 
 @inject('stores', 'actions') @observer
 export default class WalletReceivePage extends Component {
@@ -26,17 +27,23 @@ export default class WalletReceivePage extends Component {
     const actions = this.props.actions;
     const stores = this.props.stores;
     const wallet = stores.wallets.active;
+
+    let notificationMessage = null;
+    if (stores.wallets.isWalletAddressCopyNotificationVisible) {
+      notificationMessage = (
+        <WalletAddressCopyNotification walletAddress={wallet.address} />
+      );
+    }
+
     return (
-      <div style={{ position: 'relative' }}>
+      <VerticalFlexContainer>
         <WalletReceive
           walletName={wallet.name}
           walletAddress={wallet.address}
           onCopyAddress={actions.wallets.showWalletAddressCopyNotification}
         />
-        {stores.wallets.isWalletAddressCopyNotificationVisible && (
-          <WalletAddressCopyNotification walletAddress={wallet.address} />
-        )}
-      </div>
+        {notificationMessage}
+      </VerticalFlexContainer>
     );
   }
 

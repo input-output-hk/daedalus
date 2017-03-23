@@ -39,31 +39,36 @@ export default class WalletReceive extends Component {
     return (
       <div className={styles.component}>
 
-        <div className={styles.heading}>
-          <FormattedHTMLMessage
-            {...messages.walletReceivePageTitle}
-            values={{ walletName }}
-          />
+        <div className={styles.centeredBox}>
+
+          <div className={styles.heading}>
+            <FormattedHTMLMessage
+              {...messages.walletReceivePageTitle}
+              values={{ walletName }}
+            />
+          </div>
+
+          <div className={styles.qrCode}>
+            <QRCode
+              value={walletAddress}
+              bgColor="transparent"
+              size={240}
+            />
+          </div>
+
+          <div className={styles.hash}>
+            {walletAddress}
+            <CopyToClipboard text={walletAddress} onCopy={onCopyAddress.bind(this, walletAddress)}>
+              <img className={styles.icon} src={iconUrl} role="presentation" />
+            </CopyToClipboard>
+          </div>
+
+          <div className={styles.instructions}>
+            {intl.formatMessage(messages.walletReceiveInstructions)}
+          </div>
+
         </div>
 
-        <div className={styles.qrCode}>
-          <QRCode
-            value={walletAddress}
-            bgColor="transparent"
-            size={240}
-          />
-        </div>
-
-        <div className={styles.hash}>
-          {walletAddress}
-          <CopyToClipboard text={walletAddress} onCopy={onCopyAddress.bind(this, walletAddress)}>
-            <img className={styles.icon} src={iconUrl} role="presentation" />
-          </CopyToClipboard>
-        </div>
-
-        <div className={styles.instructions}>
-          {intl.formatMessage(messages.walletReceiveInstructions)}
-        </div>
       </div>
     );
   }
