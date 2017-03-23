@@ -1,7 +1,7 @@
 .component {
   width: calc(100% - 40px);
   margin: 0 auto;
-  margin-top: 50px;
+  padding-top: 100px;
   line-height: 1.4;
   letter-spacing: 0.5px;
   text-align: center;
@@ -48,4 +48,12 @@
 .submitButton {
   width: 100%;
   text-transform: uppercase;
+}
+
+.icon {
+  cursor: pointer;
+  height: 14.5px;
+  margin-left: 6px;
+  object-fit: contain;
+  width: 11.5px;
 }

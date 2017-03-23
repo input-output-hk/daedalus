@@ -1,0 +1,29 @@
+.component {
+  background-color: rgba(36, 61, 98, 0.8);
+  box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25);
+  height: 62px;
+  left: 0;
+  padding: 9px 0;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 0;
+  width: 100%;
+}
+
+.icon {
+  display: inline-block;
+  height: 44px;
+  margin-right: 10px;
+  vertical-align: top;
+  width: 44px;
+}
+
+.message {
+  color: #fafbfc;
+  font-family: $font-regular;
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: normal;
+  line-height: 45px;
+}

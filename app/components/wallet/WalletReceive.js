@@ -2,8 +2,10 @@
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
 import styles from './WalletReceive.scss';
+import iconUrl from '../../assets/images/clipboard-ic.svg';
 
 const messages = defineMessages({
   walletReceivePageTitle: {
@@ -23,7 +25,8 @@ export default class WalletReceive extends Component {
 
   static propTypes = {
     walletName: PropTypes.string.isRequired,
-    walletAddress: PropTypes.string.isRequired
+    walletAddress: PropTypes.string.isRequired,
+    onCopyAddress: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -31,7 +34,7 @@ export default class WalletReceive extends Component {
   };
 
   render() {
-    const { walletName, walletAddress } = this.props;
+    const { walletName, walletAddress, onCopyAddress } = this.props;
     const { intl } = this.context;
     return (
       <div className={styles.component}>
@@ -53,12 +56,14 @@ export default class WalletReceive extends Component {
 
         <div className={styles.hash}>
           {walletAddress}
+          <CopyToClipboard text={walletAddress} onCopy={onCopyAddress.bind(this, walletAddress)}>
+            <img className={styles.icon} src={iconUrl} role="presentation" />
+          </CopyToClipboard>
         </div>
 
         <div className={styles.instructions}>
           {intl.formatMessage(messages.walletReceiveInstructions)}
         </div>
-
       </div>
     );
   }

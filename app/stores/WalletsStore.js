@@ -25,6 +25,9 @@ export default class WalletsStore extends Store {
   @observable isCreateWalletDialogOpen = false;
   @observable isWalletRestoreDialogOpen = false;
   @observable isWalletKeyImportDialogOpen = false;
+  @observable isWalletAddressCopyNotificationVisible = false;
+
+  _hideWalletAddressCopyNotificationTimeout = false;
 
   _newWalletDetails: { name: string, currency: string, mnemonic: string, } = {
     name: '',
@@ -43,6 +46,7 @@ export default class WalletsStore extends Store {
     wallets.importWalletFromKey.listen(this._importWalletFromKey);
     wallets.toggleWalletKeyImportDialog.listen(this._toggleWalletKeyImportDialog);
     wallets.setActiveWallet.listen(this._setActiveWallet);
+    wallets.showWalletAddressCopyNotification.listen(this._onShowWalletAddressCopyNotification);
     walletBackup.finishWalletBackup.listen(this._finishWalletCreation);
     this.registerReactions([
       this._updateActiveWalletOnRouteChanges,
@@ -261,5 +265,20 @@ export default class WalletsStore extends Store {
       if (!_.find(result, { id: wallet.id })) result.push(wallet);
     });
   };
+
+  @action _hideWalletAddressCopyNotification = () => {
+    this.isWalletAddressCopyNotificationVisible = false;
+  }
+
+  _onShowWalletAddressCopyNotification = action(() => {
+    if (this._hideWalletAddressCopyNotificationTimeout) {
+      clearTimeout(this._hideWalletAddressCopyNotificationTimeout);
+    }
+    this._hideWalletAddressCopyNotificationTimeout = setTimeout(
+      this._hideWalletAddressCopyNotification,
+      10000
+    );
+    this.isWalletAddressCopyNotificationVisible = true;
+  });
 
 }

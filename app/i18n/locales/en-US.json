@@ -52,6 +52,7 @@
   "wallet.navigation.transactions": "Transactions",
   "wallet.receive.page.instructions": "Share this address in order to receive payments.",
   "wallet.receive.page.title": "Your <strong>{walletName}</strong> address",
+  "wallet.receive.page.addressCopyNotificationMessage": "Address: <strong>{walletAddress}</strong> copied to clipboard",
   "wallet.recovery.phrase.show.entry.dialog.button.labelClear": "Clear",
   "wallet.recovery.phrase.show.entry.dialog.button.labelConfirm": "Confirm",
   "wallet.redeem.dialog.certificateHint": "Drop the file with your certificate here or click to find on your computer",
