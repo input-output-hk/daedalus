@@ -5,6 +5,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
 // import WalletTransactionsSearch from '../../components/wallet/summary/WalletTransactionsSearch';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
+import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import CachedRequest from '../../stores/lib/CachedRequest';
 
 const messages = defineMessages({
@@ -96,10 +97,10 @@ export default class WalletTransactionsPage extends Component {
     }
 
     return (
-      <div>
+      <VerticalFlexContainer>
         {/* transactionSearch */}
         {walletTransactions}
-      </div>
+      </VerticalFlexContainer>
     );
   }
 
