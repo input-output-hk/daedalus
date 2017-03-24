@@ -5,9 +5,11 @@ import StoryDecorator from './support/StoryDecorator';
 import CheckboxWithLongLabel from '../app/components/widgets/forms/CheckboxWithLongLabel';
 import BigButtonForDialogs from '../app/components/widgets/BigButtonForDialogs';
 import MnemonicInputWidget from '../app/components/widgets/forms/MnemonicInputWidget';
+import NotificationMessage from '../app/components/widgets/NotificationMessage';
 import createIcon from '../app/assets/images/create-ic.svg';
 import importIcon from '../app/assets/images/import-ic.svg';
 import joinSharedIcon from '../app/assets/images/join-shared-ic.svg';
+import NotificationIcon from '../app/assets/images/success-small.svg';
 
 storiesOf('Widgets', module)
 
@@ -78,4 +80,14 @@ storiesOf('Widgets', module)
       tokens={tokens}
       onTokenChanged={(index, token) => tokens[index] = token}
     />
-  });
+  })
+
+  .add('NotificationMessage', () => (
+    <div>
+      <NotificationMessage
+        icon={NotificationIcon}
+        message='Address: <strong>1gGHFU9VsXV89kcJNzibNo8wJugxNtWsaqbjWaZEKzLtMGD</strong> copied to clipboard'
+        show
+      />
+    </div>
+  ));

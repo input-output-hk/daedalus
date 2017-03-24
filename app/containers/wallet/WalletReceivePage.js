@@ -1,10 +1,20 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
+import { defineMessages, intlShape } from 'react-intl';
 import { observer, inject } from 'mobx-react';
 import WalletReceive from '../../components/wallet/WalletReceive';
 import Wallet from '../../domain/Wallet';
-import WalletAddressCopyNotification from '../../components/wallet/WalletAddressCopyNotification';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
+import NotificationMessage from '../../components/widgets/NotificationMessage';
+import successIcon from '../../assets/images/success-small.svg';
+
+const messages = defineMessages({
+  message: {
+    id: 'wallet.receive.page.addressCopyNotificationMessage',
+    defaultMessage: '!!!You have successfully copied wallet address',
+    description: 'Message for the wallet address copy success notification.',
+  },
+});
 
 @inject('stores', 'actions') @observer
 export default class WalletReceivePage extends Component {
@@ -23,17 +33,18 @@ export default class WalletReceivePage extends Component {
     }).isRequired,
   };
 
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+
   render() {
+    const { intl } = this.context;
     const actions = this.props.actions;
     const stores = this.props.stores;
     const wallet = stores.wallets.active;
-
-    let notificationMessage = null;
-    if (stores.wallets.isWalletAddressCopyNotificationVisible) {
-      notificationMessage = (
-        <WalletAddressCopyNotification walletAddress={wallet.address} />
-      );
-    }
+    const notificationMessage = intl.formatHTMLMessage(
+      messages.message, { walletAddress: wallet.address }
+    );
 
     return (
       <VerticalFlexContainer>
@@ -42,7 +53,11 @@ export default class WalletReceivePage extends Component {
           walletAddress={wallet.address}
           onCopyAddress={actions.wallets.showWalletAddressCopyNotification}
         />
-        {notificationMessage}
+        <NotificationMessage
+          message={notificationMessage}
+          icon={successIcon}
+          show={stores.wallets.isWalletAddressCopyNotificationVisible}
+        />
       </VerticalFlexContainer>
     );
   }
