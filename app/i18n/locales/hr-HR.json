@@ -70,7 +70,7 @@
   "wallet.navigation.send": "pošalji",
   "wallet.navigation.summary": "!!!Summary",
   "wallet.navigation.transactions": "!!!Transactions",
-  "wallet.receive.page.addressCopyNotificationMessage": "!!!You have successfully copied wallet address",
+  "wallet.receive.page.addressCopyNotificationMessage": "Adresa: <strong>{walletAddress}</strong> je pohranjena u međuspremnik",
   "wallet.receive.page.instructions": "Podijelite ovu adresu novčanika kako biste primili uplatu. Zbog zaštite vaše privatnosti nova adresa biti će automatski generirana nakon što ovu upotrijebite.",
   "wallet.receive.page.title": "Vaša <strong>{walletName}</strong> adresa",
   "wallet.recovery.phrase.show.entry.dialog.button.labelClear": "!!!Clear",

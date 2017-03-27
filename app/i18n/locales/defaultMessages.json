@@ -1001,6 +1001,63 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!You have successfully copied wallet address",
+        "description": "Message for the wallet address copy success notification.",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "app/components/wallet/WalletAddressCopyNotification.js",
+        "id": "wallet.receive.page.addressCopyNotificationMessage",
+        "start": {
+          "column": 11,
+          "line": 9
+        }
+      }
+    ],
+    "path": "app/components/wallet/WalletAddressCopyNotification.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!You have successfully copied wallet address",
+        "description": "Message for the wallet address copy success notification.",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "app/components/wallet/WalletAddressCopySuccessNotification.js",
+        "id": "wallet.receive.page.addressCopyNotificationMessage",
+        "start": {
+          "column": 11,
+          "line": 9
+        }
+      }
+    ],
+    "path": "app/components/wallet/WalletAddressCopySuccessNotification.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!You have successfully copied wallet address",
+        "description": "Message for the wallet address copy success notification.",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "app/components/wallet/WalletAddressCopySuccessOverlay.js",
+        "id": "wallet.receive.page.addressCopySuccessMessage",
+        "start": {
+          "column": 11,
+          "line": 9
+        }
+      }
+    ],
+    "path": "app/components/wallet/WalletAddressCopySuccessOverlay.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Wallet Name",
         "description": "Label for the \"Wallet Name\" text input in the wallet create form.",
         "end": {
@@ -1080,13 +1137,13 @@
         "description": "Title for the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 13
+          "line": 15
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.title",
         "start": {
           "column": 26,
-          "line": 9
+          "line": 11
         }
       },
       {
@@ -1094,13 +1151,13 @@
         "description": "Instructions for sharing wallet address to receive payments on the wallet \"Receive Page\"",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 20
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.instructions",
         "start": {
           "column": 29,
-          "line": 14
+          "line": 16
         }
       }
     ],
