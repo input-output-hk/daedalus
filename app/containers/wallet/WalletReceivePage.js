@@ -1,6 +1,6 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { observer, inject } from 'mobx-react';
 import WalletReceive from '../../components/wallet/WalletReceive';
 import Wallet from '../../domain/Wallet';
@@ -33,31 +33,35 @@ export default class WalletReceivePage extends Component {
     }).isRequired,
   };
 
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
-
   render() {
-    const { intl } = this.context;
     const actions = this.props.actions;
     const stores = this.props.stores;
     const wallet = stores.wallets.active;
-    const notificationMessage = intl.formatHTMLMessage(
-      messages.message, { walletAddress: wallet.address }
+    const walletAddress = wallet.address;
+
+    const notificationMessage = (
+      <FormattedHTMLMessage
+        {...messages.message}
+        values={{ walletAddress }}
+      />
     );
 
     return (
       <VerticalFlexContainer>
+
         <WalletReceive
           walletName={wallet.name}
           walletAddress={wallet.address}
           onCopyAddress={actions.wallets.showWalletAddressCopyNotification}
         />
+
         <NotificationMessage
-          message={notificationMessage}
           icon={successIcon}
           show={stores.wallets.isWalletAddressCopyNotificationVisible}
-        />
+        >
+          {notificationMessage}
+        </NotificationMessage>
+
       </VerticalFlexContainer>
     );
   }

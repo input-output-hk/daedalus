@@ -1,17 +1,18 @@
 import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
+import { oneOrManyChildElements } from '../../propTypes';
 import styles from './NotificationMessage.scss';
 
 export default class NotificationMessage extends Component {
 
   static propTypes = {
     icon: PropTypes.string,
-    message: PropTypes.string.isRequired,
     show: PropTypes.bool.isRequired,
+    children: oneOrManyChildElements.isRequired,
   };
 
   render() {
-    const { icon, message, show } = this.props;
+    const { icon, show, children } = this.props;
 
     const notificationMessageStyles = classNames([
       styles.component,
@@ -23,10 +24,9 @@ export default class NotificationMessage extends Component {
 
         {icon && <img className={styles.icon} src={icon} role="presentation" />}
 
-        {(
-          // eslint-disable-next-line react/no-danger
-          <span className={styles.message} dangerouslySetInnerHTML={{ __html: message }} />
-        )}
+        <div className={styles.message}>
+          {children}
+        </div>
 
       </div>
     );

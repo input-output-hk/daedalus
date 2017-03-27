@@ -7,6 +7,7 @@ import { matchRoute } from '../lib/routing-helpers';
 import CachedRequest from './lib/CachedRequest';
 import Request from './lib/Request';
 import environment from '../environment';
+import config from '../config';
 
 export default class WalletsStore extends Store {
 
@@ -276,7 +277,7 @@ export default class WalletsStore extends Store {
     }
     this._hideWalletAddressCopyNotificationTimeout = setTimeout(
       this._hideWalletAddressCopyNotification,
-      10000
+      config.wallets.ADDRESS_COPY_NOTIFICATION_DURATION
     );
     this.isWalletAddressCopyNotificationVisible = true;
   });
