@@ -2,7 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import { observer, inject } from 'mobx-react';
 import Sidebar from '../components/sidebar/Sidebar';
-import AppBar from '../components/layout/AppBar';
+import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import { oneOrManyChildElements } from '../propTypes';
@@ -50,7 +50,7 @@ export default class MainLayout extends Component {
           WALLETS: PropTypes.string.isRequired,
           ADA_REDEMPTION: PropTypes.string.isRequired,
         }).isRequired,
-        currentCategory: PropTypes.string,
+        activeSidebarCategory: PropTypes.string,
       }).isRequired,
     }).isRequired,
     actions: PropTypes.shape({
@@ -108,16 +108,16 @@ export default class MainLayout extends Component {
         menus={sidebarMenus}
         isShowingSubMenus={sidebar.isShowingSubMenus}
         categories={sidebar.CATEGORIES}
-        currentCategory={sidebar.currentCategory}
-        onCategoryClicked={category => actions.sidebar.sidebarCategorySelected({ category })}
+        activeSidebarCategory={sidebar.activeSidebarCategory}
+        onCategoryClicked={category => actions.sidebar.activateSidebarCategory({ category })}
         activeWalletId={activeWalletId}
         isSynced={isSynced}
       />
     );
-    const appbar = (
-      <AppBar onToggleSidebar={actions.sidebar.toggleSubMenus}>
+    const topbar = (
+      <TopBar onToggleSidebar={actions.sidebar.toggleSubMenus}>
         <NodeSyncStatusIcon isSynced={isSynced} syncPercentage={syncPercentage} />
-      </AppBar>
+      </TopBar>
     );
     const addWalletRestoreDialog = wallets.isWalletRestoreDialogOpen ? (
       <WalletRestoreDialog
@@ -148,7 +148,7 @@ export default class MainLayout extends Component {
     return (
       <SidebarLayout
         sidebar={sidebarComponent}
-        appbar={appbar}
+        topbar={topbar}
         notification={addNodeUpdateNotification}
       >
         {this.props.children}

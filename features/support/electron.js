@@ -27,7 +27,7 @@ export default function () {
   });
 
   // Make the electron app accessible in each scenario context
-  this.Before({ timeout: 30 * 1000 }, async function() {
+  this.Before({ timeout: 50 * 1000 }, async function() {
     this.client = context.app.client;
     this.browserWindow = context.app.browserWindow;
     this.client.url('/');
@@ -35,16 +35,17 @@ export default function () {
 
     await this.client.executeAsync(function(isFirst, done) {
       daedalus.environment.current = daedalus.environment.TEST;
+      if (!isFirst) daedalus.reset();
       const connectToBackend = () => {
-        if (daedalus.stores.networkStatus.isSynced){
+        if (daedalus.stores.networkStatus.isSynced) {
           daedalus.api.testReset();
+          daedalus.actions.profile.updateLocale({ locale: 'en-US' }); // TODO: Remove this
           if (isFirst) {
             daedalus.actions.networkStatus.isSyncedAndReady.once(done);
           } else {
             done();
           }
-        }
-        else {
+        } else {
           setTimeout(connectToBackend, 100);
         }
       };

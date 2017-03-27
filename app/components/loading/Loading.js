@@ -23,6 +23,11 @@ const messages = defineMessages({
     id: 'loading.screen.syncingBlocksMessage',
     defaultMessage: '!!!Syncing blocks',
     description: 'Message "Syncing blocks" on the loading screen.'
+  },
+  loadingWalletData: {
+    id: 'loading.screen.loadingWalletData',
+    defaultMessage: '!!!Loading wallet data',
+    description: 'Message "Loading wallet data" on the loading screen.'
   }
 });
 

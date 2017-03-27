@@ -1,27 +1,18 @@
 $topBarHeight: 84px;
 
 .component {
-  height: 100%;
-  display: flex;
-}
-
-.main {
-  width: 100%;
-  height: 100%;
+  background-color: $color-primary-bg;
   box-shadow: 0 0 70px 0 rgba(0,0,0,0.75);
-  overflow: hidden;
   display: flex;
   flex-direction: column;
-}
-
-.sidebar {
-  flex: 0 0;
-  overflow: visible;
+  height: 100%;
+  overflow: hidden;
+  width: 100%;
 }
 
 .topbar {
-  height: $topBarHeight;
   flex-shrink: 0;
+  height: $topBarHeight;
 }
 
 .content {

@@ -12,10 +12,12 @@ import WalletSendPage from './containers/wallet/WalletSendPage';
 import WalletReceivePage from './containers/wallet/WalletReceivePage';
 import AdaRedemptionPage from './containers/wallet/AdaRedemptionPage';
 import NoWalletsPage from './containers/wallet/NoWalletsPage';
+import LanguageSelectionPage from './containers/profile/LanguageSelectionPage';
 
 export default (
   <div>
     <Route path="/" component={LoadingPage} />
+    <Route path="/profile/language-selection" component={LanguageSelectionPage} />
     <Route path="/staking" component={StakingPage} />
     <Route path="/ada-redemption" component={AdaRedemptionPage} />
     <Route path="/no-wallets" component={NoWalletsPage} />

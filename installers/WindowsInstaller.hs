@@ -11,19 +11,28 @@ import           Turtle             (echo, proc, procs)
 
 import Launcher
 
-shortcutParameters :: String
-shortcutParameters = launcherArgs $ Launcher
-  { nodePath = "%PROGRAMFILES%\\Daedalus\\cardano-node.exe"
-  , nodeLogPath = "%APPDATA%\\Daedalus\\Logs\\cardano-node.log"
-  , walletPath = "%PROGRAMFILES%\\Daedalus\\Daedalus.exe"
-  , installerPath = "%APPDATA%\\Daedalus\\Installer.exe"
-  , runtimePath = "%APPDATA%\\Daedalus\\"
-  }
+launcherScript :: String
+launcherScript = unlines
+  [ "@echo off"
+  , ""
+  , "powershell.exe -Command \"(Get-ItemProperty HKLM:\\SOFTWARE\\Wow6432Node\\Daedalus).Install_Dir\" > install_dir.txt"
+  , "SET /P DAEDALUS_DIR=<install_dir.txt"
+  , "DEL install_dir.txt"
+  , ""
+  , "\"%DAEDALUS_DIR%\\cardano-launcher.exe\" " <> args
+  ]
+  where
+    args = launcherArgs $ Launcher
+      { nodePath = "%PROGRAMFILES%\\Daedalus\\cardano-node.exe"
+      , nodeLogPath = "%APPDATA%\\Daedalus\\Logs\\cardano-node.log"
+      , walletPath = "%PROGRAMFILES%\\Daedalus\\Daedalus.exe"
+      , installerPath = "%APPDATA%\\Daedalus\\Installer.exe"
+      , runtimePath = "%APPDATA%\\Daedalus\\"
+      }
 
 daedalusShortcut :: [Attrib]
 daedalusShortcut =
-    [ Target "$INSTDIR\\cardano-launcher.exe"
-    , Parameters (str $ shortcutParameters)
+    [ Target "%APPDATA%\\Daedalus\\daedalus.bat"
     , IconFile "$INSTDIR\\Daedalus.exe"
     , StartOptions "SW_SHOWMINIMIZED"
     , IconIndex 0
@@ -49,6 +58,7 @@ writeUninstallerNSIS fullVersion = do
       rmdir [Recursive,RebootOK] "$INSTDIR"
       delete [] "$SMPROGRAMS/Daedalus/*.*"
       delete [] "$DESKTOP\\Daedalus.lnk"
+      delete [] "$APPDATA\\Daedalus\\daedalus.bat"
       mapM_ injectLiteral
         [ "liteFirewall::RemoveRule \"$INSTDIR\\cardano-node.exe\" \"Cardano Node\""
         , "Pop $0"
@@ -99,8 +109,6 @@ writeInstallerNSIS fullVersion = do
     injectGlobalLiteral $ "!define MUI_HEADERIMAGE_RIGHT"
     injectGlobalLiteral $ "VIProductVersion " <> (L.intercalate "." $ parseVersion fullVersion)
     injectGlobalLiteral $ "VIAddVersionKey \"ProductVersion\" " <> fullVersion
-    -- see ndmitchell/nsis#10 and https://github.com/jmitchell/nsis/tree/feature/escape-hatch
-    {- unicode True -}
     injectGlobalLiteral "Unicode true"
     installDir "$PROGRAMFILES64\\Daedalus"   -- The default installation directory
     requestExecutionLevel Highest
@@ -111,11 +119,12 @@ writeInstallerNSIS fullVersion = do
 
     _ <- section "" [Required] $ do
         setOutPath "$INSTDIR"        -- Where to install files in this section
-        writeRegStr HKLM "Software/Daedalus" "Install_Dir" "$INSTDIR"
+        writeRegStr HKLM "Software/Daedalus" "Install_Dir" "$INSTDIR" -- Used by launcher batch script
         createDirectory "$APPDATA\\Daedalus\\DB-0.2"
         createDirectory "$APPDATA\\Daedalus\\Wallet-0.2"
         createDirectory "$APPDATA\\Daedalus\\Logs"
         createDirectory "$APPDATA\\Daedalus\\Secrets"
+        writeFile' "$APPDATA\\Daedalus\\daedalus.bat" (str launcherScript)
         createShortcut "$DESKTOP\\Daedalus.lnk" daedalusShortcut
         file [] "cardano-node.exe"
         file [] "cardano-launcher.exe"
