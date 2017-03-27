@@ -60,12 +60,12 @@ export default class Wallet extends Component {
         >
           {this.props.children}
         </WalletWithNavigation>
-        {showAdaRedemptionSuccessMessage && (
+        {showAdaRedemptionSuccessMessage ? (
           <AdaRedemptionSuccessOverlay
             amount={amountRedeemed}
             onClose={actions.adaRedemption.closeAdaRedemptionSuccessOverlay}
           />
-        )}
+        ) : null}
       </MainLayout>
     );
   }
