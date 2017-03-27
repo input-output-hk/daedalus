@@ -1,10 +1,12 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer, inject } from 'mobx-react';
-import Layout from '../MainLayout';
+import MainLayout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import { oneOrManyChildElements } from '../../propTypes';
+import AdaRedemptionSuccessOverlay from '../../components/wallet/ada-redemption/AdaRedemptionSuccessOverlay';
+
 
 @inject('stores', 'actions') @observer
 export default class Wallet extends Component {
@@ -17,10 +19,17 @@ export default class Wallet extends Component {
       wallets: PropTypes.shape({
         hasLoadedWallets: PropTypes.bool.isRequired
       }).isRequired,
+      adaRedemption: PropTypes.shape({
+        showAdaRedemptionSuccessMessage: PropTypes.bool.isRequired,
+        amountRedeemed: PropTypes.number.isRequired,
+      }),
     }).isRequired,
     actions: PropTypes.shape({
       router: PropTypes.shape({
         goToRoute: PropTypes.func.isRequired,
+      }),
+      adaRedemption: PropTypes.shape({
+        closeAdaRedemptionSuccessOverlay: PropTypes.func.isRequired,
       }),
     }).isRequired,
     children: oneOrManyChildElements,
@@ -39,17 +48,25 @@ export default class Wallet extends Component {
   };
 
   render() {
-    const { wallets } = this.props.stores;
-    if (!wallets.active) return <Layout><LoadingSpinner /></Layout>;
+    const { wallets, adaRedemption } = this.props.stores;
+    const { actions } = this.props;
+    const { showAdaRedemptionSuccessMessage, amountRedeemed } = adaRedemption;
+    if (!wallets.active) return <MainLayout><LoadingSpinner /></MainLayout>;
     return (
-      <Layout>
+      <MainLayout>
         <WalletWithNavigation
           isActiveScreen={this.isActiveScreen}
           onWalletNavItemClick={this.handleWalletNavItemClick}
         >
           {this.props.children}
         </WalletWithNavigation>
-      </Layout>
+        {showAdaRedemptionSuccessMessage ? (
+          <AdaRedemptionSuccessOverlay
+            amount={amountRedeemed}
+            onClose={actions.adaRedemption.closeAdaRedemptionSuccessOverlay}
+          />
+        ) : null}
+      </MainLayout>
     );
   }
 }
