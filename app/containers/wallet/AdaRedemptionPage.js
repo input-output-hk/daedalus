@@ -59,6 +59,7 @@ export default class AdaRedemptionPage extends Component {
           onPassPhraseChanged={(passPhrase) => setPassPhrase({ passPhrase })}
           onRedemptionCodeChanged={(redemptionCode) => setRedemptionCode({ redemptionCode })}
           redemptionCode={adaRedemption.redemptionCode}
+          isPaperVendingKey={adaRedemption.isPaperVendingKey}
           wallets={selectableWallets}
           isCertificateSelected={adaRedemption.certificate !== null}
           isCertificateEncrypted={isCertificateEncrypted}

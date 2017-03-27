@@ -66,7 +66,9 @@ export type walletRestoreRequest = {
 };
 
 export type redeemAdaRequest = {
+  isPaperVendingKey: boolean,
   redemptionCode: string,
+  mnemonic: ?string,
   walletId: string,
 };
 

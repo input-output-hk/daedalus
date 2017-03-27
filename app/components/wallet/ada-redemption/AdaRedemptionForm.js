@@ -2,10 +2,10 @@
 import React, { Component, PropTypes } from 'react';
 import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import classnames from 'classnames';
-import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import Button from 'react-toolbox/lib/button/Button';
 import Input from 'react-toolbox/lib/input/Input';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import DropUp from '../../widgets/forms/Dropup';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import AdaCertificateUploadWidget from '../../widgets/forms/AdaCertificateUploadWidget';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -93,6 +93,7 @@ export default class AdaRedemptionForm extends Component {
     isCertificateEncrypted: PropTypes.bool.isRequired,
     isCertificateInvalid: PropTypes.bool,
     redemptionCode: PropTypes.string,
+    isPaperVendingKey: PropTypes.bool,
     error: PropTypes.instanceOf(LocalizableError),
   };
 
@@ -168,7 +169,7 @@ export default class AdaRedemptionForm extends Component {
       wallets, isCertificateSelected, isCertificateEncrypted,
       isSubmitting, onCertificateSelected, redemptionCode,
       onRedemptionCodeChanged, onRemoveCertificate,
-      isCertificateInvalid, error
+      isCertificateInvalid, error, isPaperVendingKey
     } = this.props;
     const certificate = form.$('certificate');
     const passPhrase = form.$('passPhrase');
@@ -178,8 +179,10 @@ export default class AdaRedemptionForm extends Component {
       styles.component,
       isSubmitting ? styles.isSubmitting : null
     ]);
-    const showPassPhraseWidget = isCertificateSelected && isCertificateEncrypted;
-    const canSubmit = redemptionCode !== '';
+    const isEcryptedCertificate = isCertificateSelected && isCertificateEncrypted;
+    const showPassPhraseWidget = isEcryptedCertificate || isPaperVendingKey;
+    const hasNotProvidedPaperKeyMnemonicYet = isPaperVendingKey && passPhrase.value === '';
+    const cannotSubmitYet = redemptionCode === '' || hasNotProvidedPaperKeyMnemonicYet;
 
     return (
       <div className={componentClasses}>
@@ -204,7 +207,7 @@ export default class AdaRedemptionForm extends Component {
               disabled={isCertificateSelected}
             />
 
-            <Dropdown
+            <DropUp
               className="wallet"
               source={wallets}
               {...walletId.bind()}
@@ -251,7 +254,7 @@ export default class AdaRedemptionForm extends Component {
           label={intl.formatMessage(messages.submitLabel)}
           onMouseUp={this.submit}
           primary
-          disabled={!canSubmit}
+          disabled={cannotSubmitYet}
         />
 
       </div>
