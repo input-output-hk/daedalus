@@ -130,6 +130,7 @@ export default class CardanoClientApi {
       date: new Date(ctmDate * 1000),
       description: ctmDescription || '',
       numberOfConfirmations: data.ctConfirmations,
+      assuranceLevel: this._calculateAssuranceLevel(data.ctConfirmations),
     });
   }
 
@@ -190,6 +191,18 @@ export default class CardanoClientApi {
   }
 
   // PRIVATE
+
+  _calculateAssuranceLevel(numberOfConfirmations: number) {
+    let assuranceLevel;
+    if (numberOfConfirmations >= 33) {
+      assuranceLevel = 'high';
+    } else if (numberOfConfirmations >= 9) {
+      assuranceLevel = 'medium';
+    } else {
+      assuranceLevel = 'low';
+    }
+    return assuranceLevel;
+  }
 
   _onNotify = (rawMessage: string) => {
     console.debug('CardanoClientApi::notify message: ', rawMessage);

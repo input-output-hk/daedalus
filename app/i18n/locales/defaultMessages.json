@@ -743,6 +743,39 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Select your language",
+        "description": "Label for the language select.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "app/components/wallet/language-selection/LanguageSelectionForm.js",
+        "id": "wallet.languageSelect.form.languageSelectLabel",
+        "start": {
+          "column": 23,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!Continue",
+        "description": "Label for the \"Language select\" form submit button.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "app/components/wallet/language-selection/LanguageSelectionForm.js",
+        "id": "wallet.languageSelect.form.submitLabel",
+        "start": {
+          "column": 15,
+          "line": 16
+        }
+      }
+    ],
+    "path": "app/components/wallet/language-selection/LanguageSelectionForm.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Summary",
         "description": "Label for the \"Summary\" nav button in the wallet navigation.",
         "end": {
@@ -1503,31 +1536,45 @@
         }
       },
       {
-        "defaultMessage": "!!!Pending",
-        "description": "\"Pending\" label on transaction list.",
+        "defaultMessage": "!!!low",
+        "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
           "line": 38
         },
         "file": "app/components/widgets/Transaction.js",
-        "id": "wallet.transaction.pendingLabel",
+        "id": "wallet.transaction.assuranceLevel.low",
         "start": {
-          "column": 11,
+          "column": 7,
           "line": 34
         }
       },
       {
-        "defaultMessage": "!!!verifications",
-        "description": "\"verifications\" label on transaction list.",
+        "defaultMessage": "!!!medium",
+        "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
           "line": 43
         },
         "file": "app/components/widgets/Transaction.js",
-        "id": "wallet.transaction.verificationsLabel",
+        "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
-          "column": 17,
+          "column": 10,
           "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!high",
+        "description": "Transaction assurance level \"high\".",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "app/components/widgets/Transaction.js",
+        "id": "wallet.transaction.assuranceLevel.high",
+        "start": {
+          "column": 8,
+          "line": 44
         }
       }
     ],
@@ -1631,5 +1678,94 @@
       }
     ],
     "path": "app/i18n/global-messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!English",
+        "description": "Label for the language select option \"English\".",
+        "end": {
+          "column": 3,
+          "line": 12
+        },
+        "file": "app/stores/AppStore.js",
+        "id": "profile.languageSelect.form.options.english",
+        "start": {
+          "column": 25,
+          "line": 8
+        }
+      },
+      {
+        "defaultMessage": "!!!Japanese",
+        "description": "Label for the language select option \"Japanese\".",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "app/stores/AppStore.js",
+        "id": "profile.languageSelect.form.options.japanese",
+        "start": {
+          "column": 26,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Chinese",
+        "description": "Label for the language select option \"Chinese\".",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "app/stores/AppStore.js",
+        "id": "profile.languageSelect.form.options.chinese",
+        "start": {
+          "column": 25,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Korean",
+        "description": "Label for the language select option \"Korean\".",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "app/stores/AppStore.js",
+        "id": "profile.languageSelect.form.options.korean",
+        "start": {
+          "column": 24,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!German",
+        "description": "Label for the language select option \"German\".",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "app/stores/AppStore.js",
+        "id": "profile.languageSelect.form.options.german",
+        "start": {
+          "column": 24,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Croatian",
+        "description": "Label for the language select option \"Croatian\".",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "app/stores/AppStore.js",
+        "id": "profile.languageSelect.form.options.croatian",
+        "start": {
+          "column": 26,
+          "line": 33
+        }
+      }
+    ],
+    "path": "app/stores/AppStore.json"
   }
 ]
