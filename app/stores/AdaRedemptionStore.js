@@ -7,7 +7,7 @@ import Request from './lib/Request';
 import { PARSE_REDEMPTION_CODE } from '../../electron/ipc-api/parse-redemption-code-from-pdf';
 import LocalizableError from '../i18n/LocalizableError';
 import { InvalidMnemonicError } from '../i18n/global-errors';
-import constants from '../constants';
+import config from '../config';
 
 export class AdaRedemptionCertificateParseError extends LocalizableError {
   constructor() {
@@ -73,7 +73,7 @@ export default class AdaRedemptionStore extends Store {
 
   @action _setRedemptionCode = ({ redemptionCode } : { redemptionCode: string }) => {
     this.redemptionCode = redemptionCode;
-    if (redemptionCode.length === constants.ADA_REDEMPTION_PAPER_KEY_LENGTH) {
+    if (redemptionCode.length === config.adaRedemption.ADA_REDEMPTION_PAPER_KEY_LENGTH) {
       this.isPaperVendingKey = true;
     } else {
       this.isPaperVendingKey = false;
@@ -145,7 +145,7 @@ export default class AdaRedemptionStore extends Store {
     this.passPhrase = '';
     this.error = null;
   });
-  
+
   @action _reset = () => {
     this.error = null;
     this.isPaperVendingKey = false;

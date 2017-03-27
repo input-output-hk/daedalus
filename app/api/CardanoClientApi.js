@@ -20,7 +20,7 @@ import {
   WalletKeyImportError,
   NotEnoughMoneyToSendError
 } from './errors';
-import constants from '../constants';
+import config from '../config';
 
 // const notYetImplemented = () => new Promise((_, reject) => {
 //   reject(new ApiMethodNotYetImplementedError());
@@ -106,8 +106,8 @@ export default class CardanoClientApi {
   isValidRedemptionKey(key: string): Promise<bool> {
     return new Promise((resolve) => {
       setTimeout(() => {
-        if ((key.length === constants.ADA_REDEMPTION_KEY_LENGTH) ||
-            (key.length === constants.ADA_REDEMPTION_PAPER_KEY_LENGTH)) {
+        if ((key.length === config.adaRedemption.ADA_REDEMPTION_KEY_LENGTH) ||
+            (key.length === config.adaRedemption.ADA_REDEMPTION_PAPER_KEY_LENGTH)) {
           resolve(true);
         } else {
           resolve(false);
