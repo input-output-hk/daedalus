@@ -1479,31 +1479,45 @@
         }
       },
       {
-        "defaultMessage": "!!!Pending",
-        "description": "\"Pending\" label on transaction list.",
+        "defaultMessage": "!!!low",
+        "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
           "line": 38
         },
         "file": "app/components/widgets/Transaction.js",
-        "id": "wallet.transaction.pendingLabel",
+        "id": "wallet.transaction.assuranceLevel.low",
         "start": {
-          "column": 11,
+          "column": 7,
           "line": 34
         }
       },
       {
-        "defaultMessage": "!!!verifications",
-        "description": "\"verifications\" label on transaction list.",
+        "defaultMessage": "!!!medium",
+        "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
           "line": 43
         },
         "file": "app/components/widgets/Transaction.js",
-        "id": "wallet.transaction.verificationsLabel",
+        "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
-          "column": 17,
+          "column": 10,
           "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!high",
+        "description": "Transaction assurance level \"high\".",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "app/components/widgets/Transaction.js",
+        "id": "wallet.transaction.assuranceLevel.high",
+        "start": {
+          "column": 8,
+          "line": 44
         }
       }
     ],

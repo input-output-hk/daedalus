@@ -19,27 +19,32 @@ const messages = defineMessages({
   card: {
     id: 'wallet.transaction.type.card',
     defaultMessage: '!!!Card payment',
-    description: 'Transaction type shown for credit card payments.'
+    description: 'Transaction type shown for credit card payments.',
   },
   ada: {
     id: 'wallet.transaction.type.ada',
     defaultMessage: '!!!ADA transaction',
-    description: 'Transaction type shown for ada payments.'
+    description: 'Transaction type shown for ada payments.',
   },
   exchange: {
     id: 'wallet.transaction.type.exchange',
     defaultMessage: '!!!Exchange transaction',
-    description: 'Transaction type shown for money exchanges between currencies.'
+    description: 'Transaction type shown for money exchanges between currencies.',
   },
-  pending: {
-    id: 'wallet.transaction.pendingLabel',
-    defaultMessage: '!!!Pending',
-    description: '"Pending" label on transaction list.'
+  low: {
+    id: 'wallet.transaction.assuranceLevel.low',
+    defaultMessage: '!!!low',
+    description: 'Transaction assurance level "low".',
   },
-  verifications: {
-    id: 'wallet.transaction.verificationsLabel',
-    defaultMessage: '!!!verifications',
-    description: '"verifications" label on transaction list.'
+  medium: {
+    id: 'wallet.transaction.assuranceLevel.medium',
+    defaultMessage: '!!!medium',
+    description: 'Transaction assurance level "medium".',
+  },
+  high: {
+    id: 'wallet.transaction.assuranceLevel.high',
+    defaultMessage: '!!!high',
+    description: 'Transaction assurance level "high".',
   },
 });
 
@@ -76,8 +81,7 @@ export default class Transaction extends Component {
       isExpanded ? styles.expanded : styles.closed
     ]);
     if (data.type === 'adaExpend' || data.type === 'adaIncome') typeMessage = 'ada';
-    const status = data.numberOfConfirmations === 0 ?
-      intl.formatMessage(messages.pending) : `${data.numberOfConfirmations} ${intl.formatMessage(messages.verifications)}`;
+    const status = intl.formatMessage(messages[data.assuranceLevel]);
     return (
       <div className={styles.component}>
         <div className={styles[data.type]} />
@@ -98,9 +102,9 @@ export default class Transaction extends Component {
             <div className={styles.type}>
               {intl.formatMessage(messages[typeMessage])}
               , {moment(data.date).format('hh:mm:ss A')}
-              {/* TODO: Use locale to format the date*/}
+              {/* TODO: Use locale to format the date */}
             </div>
-            <div className={styles.status}>{status}</div>
+            <div className={styles[data.assuranceLevel]}>{status}</div>
           </div>
 
 

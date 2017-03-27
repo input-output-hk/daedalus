@@ -102,11 +102,12 @@
   "wallet.summary.no.transactions": "!!!No recent transactions",
   "wallet.summary.page.pendingConfirmationLabel": "!!!Pending confirmation",
   "wallet.summary.page.transactionsLabel": "!!!Number of transactions",
-  "wallet.transaction.pendingLabel": "!!!Pending",
+  "wallet.transaction.assuranceLevel.high": "visok",
+  "wallet.transaction.assuranceLevel.low": "nizak",
+  "wallet.transaction.assuranceLevel.medium": "srednji",
   "wallet.transaction.type.ada": "ADA transakcija",
   "wallet.transaction.type.card": "Plaćanje karticom",
   "wallet.transaction.type.exchange": "Konverzija",
-  "wallet.transaction.verificationsLabel": "!!!verifications",
   "wallet.transactions.no.transactions": "Nema transakcija",
   "wallet.transactions.no.transactions.found": "Ne postoje transakcije koje zadovoljavaju uvjete pretraživanja"
 }

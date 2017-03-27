@@ -102,11 +102,12 @@
   "wallet.summary.no.transactions": "!!!No recent transactions",
   "wallet.summary.page.pendingConfirmationLabel": "!!!Pending confirmation",
   "wallet.summary.page.transactionsLabel": "!!!Number of transactions",
-  "wallet.transaction.pendingLabel": "!!!Pending",
+  "wallet.transaction.assuranceLevel.high": "!!!high",
+  "wallet.transaction.assuranceLevel.low": "!!!low",
+  "wallet.transaction.assuranceLevel.medium": "!!!medium",
   "wallet.transaction.type.ada": "!!!ADA transaction",
   "wallet.transaction.type.card": "!!!Card payment",
   "wallet.transaction.type.exchange": "!!!Exchange transaction",
-  "wallet.transaction.verificationsLabel": "!!!verifications",
   "wallet.transactions.no.transactions": "!!!No transactions",
   "wallet.transactions.no.transactions.found": "!!!No transactions found"
 }

@@ -102,11 +102,12 @@
   "wallet.summary.no.transactions": "最近のトランズアクションはありません",
   "wallet.summary.page.pendingConfirmationLabel": "承認保留中",
   "wallet.summary.page.transactionsLabel": "トランズアクション数",
-  "wallet.transaction.pendingLabel": "保留中",
+  "wallet.transaction.assuranceLevel.high": "!!!high",
+  "wallet.transaction.assuranceLevel.low": "!!!low",
+  "wallet.transaction.assuranceLevel.medium": "!!!medium",
   "wallet.transaction.type.ada": "ADAトランズアクション",
   "wallet.transaction.type.card": "カード支払い",
   "wallet.transaction.type.exchange": "交換トランズアクション",
-  "wallet.transaction.verificationsLabel": "確認",
   "wallet.transactions.no.transactions": "トランズアクションはありません",
   "wallet.transactions.no.transactions.found": "トランズアクションが見つかりません"
 }
