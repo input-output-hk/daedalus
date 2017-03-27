@@ -68,6 +68,7 @@
   "wallet.languageSelect.form.submitLabel": "!!!Continue",
   "wallet.navigation.receive": "Receive",
   "wallet.navigation.send": "Send",
+  "wallet.navigation.settings": "Settings",
   "wallet.navigation.summary": "Summary",
   "wallet.navigation.transactions": "Transactions",
   "wallet.receive.page.addressCopyNotificationMessage": "Address: <strong>{walletAddress}</strong> copied to clipboard",

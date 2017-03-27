@@ -11,6 +11,7 @@ import WalletTransactionsPage from './containers/wallet/WalletTransactionsPage';
 import WalletSendPage from './containers/wallet/WalletSendPage';
 import WalletReceivePage from './containers/wallet/WalletReceivePage';
 import AdaRedemptionPage from './containers/wallet/AdaRedemptionPage';
+import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
 import NoWalletsPage from './containers/wallet/NoWalletsPage';
 import LanguageSelectionPage from './containers/profile/LanguageSelectionPage';
 
@@ -26,6 +27,7 @@ export default (
       <Route path=":id/transactions" component={WalletTransactionsPage} />
       <Route path=":id/send" component={WalletSendPage} />
       <Route path=":id/receive" component={WalletReceivePage} />
+      <Route path=":id/settings" component={WalletSettingsPage} />
     </Route>
   </div>
 );

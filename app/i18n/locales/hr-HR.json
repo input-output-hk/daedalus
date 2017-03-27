@@ -68,6 +68,7 @@
   "wallet.languageSelect.form.submitLabel": "!!!Continue",
   "wallet.navigation.receive": "primi",
   "wallet.navigation.send": "pošalji",
+  "wallet.navigation.settings": "postavke",
   "wallet.navigation.summary": "!!!Summary",
   "wallet.navigation.transactions": "!!!Transactions",
   "wallet.receive.page.addressCopyNotificationMessage": "Adresa: <strong>{walletAddress}</strong> je pohranjena u međuspremnik",
