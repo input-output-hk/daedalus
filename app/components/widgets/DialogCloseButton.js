@@ -5,14 +5,15 @@ import styles from './DialogCloseButton.scss';
 export default class DialogCloseButton extends Component {
 
   static propTypes = {
-    onClose: PropTypes.func.isRequired
+    onClose: PropTypes.func.isRequired,
+    icon: PropTypes.string,
   };
 
   render() {
-    const { onClose } = this.props;
+    const { onClose, icon } = this.props;
     return (
       <button onClick={onClose} className={styles.component}>
-        <img src={closeCross} role="presentation" />
+        <img src={icon || closeCross} role="presentation" />
       </button>
     );
   }
