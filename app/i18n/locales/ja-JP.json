@@ -64,6 +64,8 @@
   "wallet.navigation.send": "送金",
   "wallet.navigation.summary": "概要",
   "wallet.navigation.transactions": "トランズアクション",
+  "wallet.receive.page.addressCopyNotificationMessage": "!!!You have successfully copied wallet address",
+  "wallet.receive.page.addressCopySuccessMessage": "!!!You have successfully copied wallet address",
   "wallet.receive.page.instructions": "ウォレット受け取り手順",
   "wallet.receive.page.title": "ショッピングウォレットアドレス",
   "wallet.recovery.phrase.show.entry.dialog.button.labelClear": "取り消し",

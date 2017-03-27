@@ -1,11 +1,17 @@
 .component {
-  width: calc(100% - 40px);
-  margin: 0 auto;
-  margin-top: 50px;
-  line-height: 1.4;
-  letter-spacing: 0.5px;
-  text-align: center;
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+}
+
+.centeredBox {
   color: #5e6066;
+  letter-spacing: 0.5px;
+  line-height: 1.4;
+  margin: 0 auto;
+  text-align: center;
+  width: calc(100% - 40px);
 }
 
 .heading {
@@ -48,4 +54,12 @@
 .submitButton {
   width: 100%;
   text-transform: uppercase;
+}
+
+.icon {
+  cursor: pointer;
+  height: 14.5px;
+  margin-left: 6px;
+  object-fit: contain;
+  width: 11.5px;
 }
