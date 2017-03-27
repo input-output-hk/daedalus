@@ -1,13 +1,14 @@
 .component {
   background-color: rgba(36, 61, 98, 0.8);
   box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25);
-  height: 0px;
+  height: 0;
   left: 0;
+  overflow: hidden;
   position: absolute;
   right: 0;
   text-align: center;
   top: 0;
-  transition: height 200ms ease;
+  transition: all 200ms ease;
   width: 100%;
 }
 

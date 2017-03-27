@@ -7,7 +7,7 @@ export default class NotificationMessage extends Component {
   static propTypes = {
     icon: PropTypes.string,
     message: PropTypes.string.isRequired,
-    show: PropTypes.bool,
+    show: PropTypes.bool.isRequired,
   };
 
   render() {
@@ -23,7 +23,10 @@ export default class NotificationMessage extends Component {
 
         {icon && <img className={styles.icon} src={icon} role="presentation" />}
 
-        <span className={styles.message} dangerouslySetInnerHTML={{ __html: message }} />
+        {(
+          // eslint-disable-next-line react/no-danger
+          <span className={styles.message} dangerouslySetInnerHTML={{ __html: message }} />
+        )}
 
       </div>
     );
