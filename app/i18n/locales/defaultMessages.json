@@ -218,17 +218,106 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!slot",
+        "description": "\"slot\" label on staking chart tooltip.",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "app/components/staking/StakingChartTooltip.js",
+        "id": "staking.chart.tooltip.slot.label",
+        "start": {
+          "column": 8,
+          "line": 12
+        }
+      },
+      {
+        "defaultMessage": "!!!transactions",
+        "description": "\"transactions\" label on staking chart tooltip.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "app/components/staking/StakingChartTooltip.js",
+        "id": "staking.chart.tooltip.transactions.label",
+        "start": {
+          "column": 16,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!MPC phase",
+        "description": "\"MPC phase\" label on staking chart tooltip.",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "app/components/staking/StakingChartTooltip.js",
+        "id": "staking.chart.tooltip.mpc.phase.label",
+        "start": {
+          "column": 12,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!commitments",
+        "description": "\"commitments\" label on staking chart tooltip.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "app/components/staking/StakingChartTooltip.js",
+        "id": "staking.chart.tooltip.commitments.label",
+        "start": {
+          "column": 15,
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!openings",
+        "description": "\"openings\" label on staking chart tooltip.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "app/components/staking/StakingChartTooltip.js",
+        "id": "staking.chart.tooltip.openings.label",
+        "start": {
+          "column": 12,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!shares",
+        "description": "\"shares\" label on staking chart tooltip.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "app/components/staking/StakingChartTooltip.js",
+        "id": "staking.chart.tooltip.shares.label",
+        "start": {
+          "column": 10,
+          "line": 37
+        }
+      }
+    ],
+    "path": "app/components/staking/StakingChartTooltip.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Ada Redemption",
         "description": "headline \"Ada redemption\" dialog.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.headline",
         "start": {
           "column": 12,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -236,13 +325,13 @@
         "description": "headline \"Ada redemption\" dialog.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.instructions",
         "start": {
           "column": 16,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -250,13 +339,13 @@
         "description": "Label for the certificate file upload",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.certificateLabel",
         "start": {
           "column": 20,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -264,13 +353,13 @@
         "description": "Hint for the certificate file upload",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.certificateHint",
         "start": {
           "column": 19,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -278,13 +367,13 @@
         "description": "Label for the walletId select",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 42
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.walletSelectLabel",
         "start": {
           "column": 21,
-          "line": 37
+          "line": 38
         }
       },
       {
@@ -292,13 +381,13 @@
         "description": "Label for the token input",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 47
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.passphraseLabel",
         "start": {
           "column": 19,
-          "line": 42
+          "line": 43
         }
       },
       {
@@ -306,13 +395,13 @@
         "description": "Hint for the token input",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 52
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.passphraseHint",
         "start": {
           "column": 18,
-          "line": 47
+          "line": 48
         }
       },
       {
@@ -320,13 +409,13 @@
         "description": "Label for ada redemption code input",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 57
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.redemptionCodeLabel",
         "start": {
           "column": 23,
-          "line": 52
+          "line": 53
         }
       },
       {
@@ -334,13 +423,13 @@
         "description": "Error \"Invalid Redemption Code\" for ada redemption code input",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 62
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.redemptionCodeError",
         "start": {
           "column": 23,
-          "line": 57
+          "line": 58
         }
       },
       {
@@ -348,13 +437,13 @@
         "description": "Hint for ada redemption code input",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 67
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.redemptionCodeHint",
         "start": {
           "column": 22,
-          "line": 62
+          "line": 63
         }
       },
       {
@@ -362,13 +451,13 @@
         "description": "Label for the \"Ada redemption\" dialog submit button.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 72
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.submitLabel",
         "start": {
           "column": 15,
-          "line": 67
+          "line": 68
         }
       }
     ],
@@ -654,6 +743,39 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Select your language",
+        "description": "Label for the language select.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "app/components/wallet/language-selection/LanguageSelectionForm.js",
+        "id": "wallet.languageSelect.form.languageSelectLabel",
+        "start": {
+          "column": 23,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!Continue",
+        "description": "Label for the \"Language select\" form submit button.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "app/components/wallet/language-selection/LanguageSelectionForm.js",
+        "id": "wallet.languageSelect.form.submitLabel",
+        "start": {
+          "column": 15,
+          "line": 16
+        }
+      }
+    ],
+    "path": "app/components/wallet/language-selection/LanguageSelectionForm.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Summary",
         "description": "Label for the \"Summary\" nav button in the wallet navigation.",
         "end": {
@@ -879,6 +1001,63 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!You have successfully copied wallet address",
+        "description": "Message for the wallet address copy success notification.",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "app/components/wallet/WalletAddressCopyNotification.js",
+        "id": "wallet.receive.page.addressCopyNotificationMessage",
+        "start": {
+          "column": 11,
+          "line": 9
+        }
+      }
+    ],
+    "path": "app/components/wallet/WalletAddressCopyNotification.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!You have successfully copied wallet address",
+        "description": "Message for the wallet address copy success notification.",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "app/components/wallet/WalletAddressCopySuccessNotification.js",
+        "id": "wallet.receive.page.addressCopyNotificationMessage",
+        "start": {
+          "column": 11,
+          "line": 9
+        }
+      }
+    ],
+    "path": "app/components/wallet/WalletAddressCopySuccessNotification.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!You have successfully copied wallet address",
+        "description": "Message for the wallet address copy success notification.",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "app/components/wallet/WalletAddressCopySuccessOverlay.js",
+        "id": "wallet.receive.page.addressCopySuccessMessage",
+        "start": {
+          "column": 11,
+          "line": 9
+        }
+      }
+    ],
+    "path": "app/components/wallet/WalletAddressCopySuccessOverlay.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Wallet Name",
         "description": "Label for the \"Wallet Name\" text input in the wallet create form.",
         "end": {
@@ -958,13 +1137,13 @@
         "description": "Title for the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 13
+          "line": 15
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.title",
         "start": {
           "column": 26,
-          "line": 9
+          "line": 11
         }
       },
       {
@@ -972,13 +1151,13 @@
         "description": "Instructions for sharing wallet address to receive payments on the wallet \"Receive Page\"",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 20
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.instructions",
         "start": {
           "column": 29,
-          "line": 14
+          "line": 16
         }
       }
     ],
@@ -1357,31 +1536,45 @@
         }
       },
       {
-        "defaultMessage": "!!!Pending",
-        "description": "\"Pending\" label on transaction list.",
+        "defaultMessage": "!!!low",
+        "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
           "line": 38
         },
         "file": "app/components/widgets/Transaction.js",
-        "id": "wallet.transaction.pendingLabel",
+        "id": "wallet.transaction.assuranceLevel.low",
         "start": {
-          "column": 11,
+          "column": 7,
           "line": 34
         }
       },
       {
-        "defaultMessage": "!!!verifications",
-        "description": "\"verifications\" label on transaction list.",
+        "defaultMessage": "!!!medium",
+        "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
           "line": 43
         },
         "file": "app/components/widgets/Transaction.js",
-        "id": "wallet.transaction.verificationsLabel",
+        "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
-          "column": 17,
+          "column": 10,
           "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!high",
+        "description": "Transaction assurance level \"high\".",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "app/components/widgets/Transaction.js",
+        "id": "wallet.transaction.assuranceLevel.high",
+        "start": {
+          "column": 8,
+          "line": 44
         }
       }
     ],
@@ -1394,13 +1587,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "app/containers/wallet/WalletSummaryPage.js",
         "id": "wallet.summary.no.transactions",
         "start": {
           "column": 18,
-          "line": 13
+          "line": 14
         }
       }
     ],
@@ -1413,13 +1606,13 @@
         "description": "Message shown when wallet has no transactions yet.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 16
         },
         "file": "app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions",
         "start": {
           "column": 18,
-          "line": 11
+          "line": 12
         }
       },
       {
@@ -1427,13 +1620,13 @@
         "description": "Message shown when wallet transaction search returns zero results.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions.found",
         "start": {
           "column": 23,
-          "line": 16
+          "line": 17
         }
       }
     ],
@@ -1485,5 +1678,94 @@
       }
     ],
     "path": "app/i18n/global-messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!English",
+        "description": "Label for the language select option \"English\".",
+        "end": {
+          "column": 3,
+          "line": 12
+        },
+        "file": "app/stores/AppStore.js",
+        "id": "profile.languageSelect.form.options.english",
+        "start": {
+          "column": 25,
+          "line": 8
+        }
+      },
+      {
+        "defaultMessage": "!!!Japanese",
+        "description": "Label for the language select option \"Japanese\".",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "app/stores/AppStore.js",
+        "id": "profile.languageSelect.form.options.japanese",
+        "start": {
+          "column": 26,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Chinese",
+        "description": "Label for the language select option \"Chinese\".",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "app/stores/AppStore.js",
+        "id": "profile.languageSelect.form.options.chinese",
+        "start": {
+          "column": 25,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Korean",
+        "description": "Label for the language select option \"Korean\".",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "app/stores/AppStore.js",
+        "id": "profile.languageSelect.form.options.korean",
+        "start": {
+          "column": 24,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!German",
+        "description": "Label for the language select option \"German\".",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "app/stores/AppStore.js",
+        "id": "profile.languageSelect.form.options.german",
+        "start": {
+          "column": 24,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Croatian",
+        "description": "Label for the language select option \"Croatian\".",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "app/stores/AppStore.js",
+        "id": "profile.languageSelect.form.options.croatian",
+        "start": {
+          "column": 26,
+          "line": 33
+        }
+      }
+    ],
+    "path": "app/stores/AppStore.json"
   }
 ]

@@ -128,6 +128,7 @@
     "random-words": "0.0.1",
     "react": "^15.3.2",
     "react-addons-css-transition-group": "^15.3.2",
+    "react-copy-to-clipboard": "^4.2.3",
     "react-css-themr": "^1.4.1",
     "react-dom": "^15.3.2",
     "react-dropzone": "^3.9.2",
