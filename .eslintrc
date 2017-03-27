@@ -33,7 +33,9 @@
     "no-underscore-dangle": 0,
     "no-console": 0,
     "no-mixed-operators": 0,
-    "prefer-template": 0
+    "prefer-template": 0,
+    "no-unused-vars": 1,
+    "no-trailing-spaces": 1
   },
   "plugins": [
     "flowtype-errors",

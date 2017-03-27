@@ -10,12 +10,13 @@ export default class SidebarLayout extends Component {
   static propTypes = {
     children: oneOrManyChildElements,
     sidebar: PropTypes.element.isRequired,
-    notification: PropTypes.element,
     topbar: PropTypes.element.isRequired,
+    notification: PropTypes.element,
+    contentDialog: PropTypes.element,
   };
 
   render() {
-    const { children, sidebar, topbar, notification } = this.props;
+    const { children, sidebar, topbar, notification, contentDialog } = this.props;
     return (
       <div className={styles.component}>
         <div className={styles.sidebar}>
@@ -26,8 +27,11 @@ export default class SidebarLayout extends Component {
             {topbar}
           </div>
           {notification}
-          <div className={styles.content}>
-            {children}
+          <div className={styles.contentWrapper}>
+            <div className={styles.content}>
+              {children}
+            </div>
+            {contentDialog}
           </div>
         </div>
       </div>

@@ -8,7 +8,6 @@ import WalletSummary from '../../components/wallet/summary/WalletSummary';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import Request from '../../stores/lib/Request';
-import AdaRedemptionSuccessOverlay from '../../components/wallet/ada-redemption/AdaRedemptionSuccessOverlay';
 
 const messages = defineMessages({
   noTransactions: {
@@ -33,15 +32,6 @@ export default class WalletSummaryPage extends Component {
         totalUnconfirmedAmount: PropTypes.number.isRequired,
         recentTransactionsRequest: PropTypes.instanceOf(Request),
       }),
-      adaRedemption: PropTypes.shape({
-        showAdaRedemptionSuccessMessage: PropTypes.bool.isRequired,
-        amountRedeemed: PropTypes.number.isRequired,
-      }),
-    }).isRequired,
-    actions: PropTypes.shape({
-      adaRedemption: PropTypes.shape({
-        closeAdaRedemptionSuccessOverlay: PropTypes.func.isRequired,
-      }),
     }).isRequired,
   };
 
@@ -51,8 +41,7 @@ export default class WalletSummaryPage extends Component {
 
   render() {
     const { intl } = this.context;
-    const actions = this.props.actions;
-    const { wallets, transactions, adaRedemption } = this.props.stores;
+    const { wallets, transactions } = this.props.stores;
     const {
       hasAny,
       totalAvailable,
@@ -61,8 +50,6 @@ export default class WalletSummaryPage extends Component {
       totalUnconfirmedAmount
     } = transactions;
     const wallet = wallets.active;
-    const { showAdaRedemptionSuccessMessage, amountRedeemed } = adaRedemption;
-    let adaRedemptionSuccessMessage = null;
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
@@ -79,15 +66,6 @@ export default class WalletSummaryPage extends Component {
       walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
     }
 
-    if (showAdaRedemptionSuccessMessage) {
-      adaRedemptionSuccessMessage = (
-        <AdaRedemptionSuccessOverlay
-          amount={amountRedeemed}
-          onClose={actions.adaRedemption.closeAdaRedemptionSuccessOverlay}
-        />
-      );
-    }
-
     return (
       <VerticalFlexContainer>
         <WalletSummary
@@ -98,7 +76,6 @@ export default class WalletSummaryPage extends Component {
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
         />
         {walletTransactions}
-        {adaRedemptionSuccessMessage}
       </VerticalFlexContainer>
     );
   }

@@ -26,7 +26,7 @@ export default class AdaRedemptionStore extends Store {
   @observable walletId: ?string = null;
   @observable error: ?LocalizableError = null;
   @observable amountRedeemed: number = 0;
-  @observable showAdaRedemptionSuccessMessage: bool = false;
+  @observable showAdaRedemptionSuccessMessage: boolean = false;
   @observable redeemAdaRequest = new Request(this.api, 'redeemAda');
 
   setup() {

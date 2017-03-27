@@ -3,12 +3,13 @@ import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import WalletNavigation from '../navigation/WalletNavigation';
 import styles from './WalletWithNavigation.scss';
+import { oneOrManyChildElements } from '../../../propTypes';
 
 @observer
 export default class WalletWithNavigation extends Component {
 
   static propTypes = {
-    children: PropTypes.element.isRequired,
+    children: oneOrManyChildElements,
     isActiveScreen: PropTypes.func.isRequired,
     onWalletNavItemClick: PropTypes.func
   };
