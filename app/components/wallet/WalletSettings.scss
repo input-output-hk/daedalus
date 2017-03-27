@@ -1,0 +1,14 @@
+.component {
+  background-color: $color-primary-bg;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.borderedBox {
+  background: $color-lighter-grey;
+  border: solid 1px $color-light-grey;
+  border-radius: 4px;
+  margin: 20px;
+  padding: 20px 30px;
+}
