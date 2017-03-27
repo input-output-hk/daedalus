@@ -2,16 +2,17 @@
 import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
 import CachedRequest from './lib/CachedRequest';
+import globalMessages from '../i18n/global-messages';
 
 export default class AppStore extends Store {
 
   LANGUAGE_OPTIONS = [
-    { value: 'en-US', label: 'English' },
-    { value: 'ja-JP', label: 'Japanese' },
-    { value: 'zh-CN', label: 'Chinese' },
-    { value: 'ko-KR', label: 'Korean' },
-    { value: 'de-DE', label: 'German' },
-    { value: 'hr-HR', label: 'Croatian' },
+    { value: 'en-US', label: globalMessages.languageEnglish },
+    { value: 'ja-JP', label: globalMessages.languageJapanese },
+    { value: 'zh-CN', label: globalMessages.languageChinese },
+    { value: 'ko-KR', label: globalMessages.languageKorean },
+    { value: 'de-DE', label: globalMessages.languageGerman },
+    { value: 'hr-HR', label: globalMessages.languageCroatian },
   ];
 
   @observable profileLocaleRequest = new CachedRequest(this.api, 'setUserLocale');

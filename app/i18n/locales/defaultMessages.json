@@ -1583,6 +1583,25 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!You have successfully copied wallet address",
+        "description": "Message for the wallet address copy success notification.",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "app/containers/wallet/WalletReceivePage.js",
+        "id": "wallet.receive.page.addressCopyNotificationMessage",
+        "start": {
+          "column": 11,
+          "line": 12
+        }
+      }
+    ],
+    "path": "app/containers/wallet/WalletReceivePage.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!No recent transactions",
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
@@ -1674,6 +1693,90 @@
         "start": {
           "column": 19,
           "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!English",
+        "description": "Language name for \"English\" language.",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.language.english",
+        "start": {
+          "column": 19,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!Japanese",
+        "description": "Language name for \"Japanese\" language.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.language.japanese",
+        "start": {
+          "column": 20,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Chinese",
+        "description": "Language name for \"Chinese\" language.",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.language.chinese",
+        "start": {
+          "column": 19,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!Korean",
+        "description": "Language name for \"Korean\" language.",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.language.korean",
+        "start": {
+          "column": 18,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!German",
+        "description": "Language name for \"German\" language.",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.language.german",
+        "start": {
+          "column": 18,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!Croatian",
+        "description": "Language name for \"Croatian\" language.",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.language.croatian",
+        "start": {
+          "column": 20,
+          "line": 44
         }
       }
     ],
