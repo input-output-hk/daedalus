@@ -13,7 +13,7 @@ import styles from './WalletKeyImportDialog.scss';
 const messages = defineMessages({
   headline: {
     id: 'wallet.key.import.dialog.headline',
-    defaultMessage: '!!!Import wallet from file with the key',
+    defaultMessage: '!!!Import Wallet',
     description: 'headline for "Import wallet from file with the key" dialog.'
   },
   keyFileLabel: {
