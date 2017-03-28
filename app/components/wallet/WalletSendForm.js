@@ -6,6 +6,7 @@ import Button from 'react-toolbox/lib/button/Button';
 import { defineMessages, intlShape } from 'react-intl';
 import isInt from 'validator/lib/isInt';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
+import BorderedBox from '../widgets/BorderedBox';
 import styles from './WalletSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -160,21 +161,23 @@ export default class WalletSendForm extends Component {
     return (
       <div className={styles.component}>
 
-        <div className={styles.fields}>
+        <BorderedBox>
+
           {/* <Input className="title" {...form.$('title').bind()} /> */}
           <Input className="receiver" {...form.$('receiver').bind()} />
           <Input className="amount" {...form.$('amount').bind()} />
           {/* <Input className="description" multiline {...form.$('description').bind()} /> */}
-        </div>
 
-        {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
+          {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
 
-        <Button
-          className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
-          label={intl.formatMessage(messages.sendButtonLabel)}
-          onMouseUp={this.submit.bind(this)}
-          primary
-        />
+          <Button
+            className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
+            label={intl.formatMessage(messages.sendButtonLabel)}
+            onMouseUp={this.submit.bind(this)}
+            primary
+          />
+
+        </BorderedBox>
 
       </div>
     );

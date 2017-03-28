@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import BorderedBox from '../widgets/BorderedBox';
 import styles from './WalletSettings.scss';
 
 @observer
@@ -10,11 +11,11 @@ export default class WalletSettings extends Component {
     return (
       <div className={styles.component}>
 
-        <div className={styles.borderedBox}>
+        <BorderedBox>
 
           <p>Settings page</p>
 
-        </div>
+        </BorderedBox>
 
       </div>
     );
