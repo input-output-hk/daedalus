@@ -39,6 +39,7 @@ export default class LanguageSelectionPage extends Component {
           onSubmit={this.onSubmit}
           isSubmitting={isSubmitting}
           languages={LANGUAGE_OPTIONS}
+          error={setProfileLocaleRequest.error}
         />
       </TopBarLayout>
     );

@@ -281,8 +281,12 @@ export default class CardanoClientApi {
   }
 
   async setUserLocale(locale: string) {
-    const response = await ClientApi.updateLocale(locale);
-    return response.cpLocale;
+    try {
+      const response = await ClientApi.updateLocale(locale);
+      return response.cpLocale;
+    } catch (error) {
+      throw new GenericApiError();
+    }
   }
 
   async getUserLocale() {

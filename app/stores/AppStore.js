@@ -26,7 +26,8 @@ export default class AppStore extends Store {
     this.actions.profile.updateLocale.listen(this._updateLocale);
     this.registerReactions([
       this._redirectToMainUiAfterLocaleIsSet,
-      this._redirectToLanguageSelectionIfNoLocaleSet
+      this._redirectToLanguageSelectionIfNoLocaleSet,
+      this._redirectToLoadingScreenWhenDisconnected
     ]);
   }
 
@@ -51,18 +52,21 @@ export default class AppStore extends Store {
   }
 
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
-    if (this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
+    const { isConnected } = this.stores.networkStatus;
+    if (isConnected && this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
       this.actions.router.goToRoute({ route: '/profile/language-selection' });
     }
   };
 
-  @action _updateLocale = ({ locale }: { locale: string }) => {
-    this.setProfileLocaleRequest.execute(locale).then(() => (
-      this.getProfileLocaleRequest.invalidate().patch(() => locale)
-    ))
-    .catch(action((error) => {
-      this.error = error;
-    }));
+  _redirectToLoadingScreenWhenDisconnected = () => {
+    if (!this.stores.networkStatus.isConnected) {
+      this.actions.router.goToRoute({ route: '/' });
+    }
+  };
+
+  @action _updateLocale = async ({ locale }: { locale: string }) => {
+    await this.setProfileLocaleRequest.execute(locale);
+    this.getProfileLocaleRequest.invalidate().patch(() => locale);
   };
 
   _updateRouteLocation = ({ route }: { route: string }) => {
