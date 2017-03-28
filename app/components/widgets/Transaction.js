@@ -28,7 +28,7 @@ const messages = defineMessages({
   },
   exchange: {
     id: 'wallet.transaction.type.exchange',
-    defaultMessage: '!!!Exchange transaction',
+    defaultMessage: '!!!Exchange',
     description: 'Transaction type shown for money exchanges between currencies.',
   },
   low: {
@@ -45,6 +45,26 @@ const messages = defineMessages({
     id: 'wallet.transaction.assuranceLevel.high',
     defaultMessage: '!!!high',
     description: 'Transaction assurance level "high".',
+  },
+  assuranceLevel: {
+    id: 'wallet.transaction.assuranceLevel',
+    defaultMessage: '!!!Transaction assurance level',
+    description: 'Transaction assurance level.',
+  },
+  confirmations: {
+    id: 'wallet.transaction.confirmations',
+    defaultMessage: '!!!confirmations',
+    description: 'Transaction confirmations.',
+  },
+  transactionId: {
+    id: 'wallet.transaction.transactionId',
+    defaultMessage: '!!!Transaction ID',
+    description: 'Transaction ID.',
+  },
+  conversionRate: {
+    id: 'wallet.transaction.conversion.rate',
+    defaultMessage: '!!!Conversion rate',
+    description: 'Conversion rate.',
   },
 });
 
@@ -114,17 +134,22 @@ export default class Transaction extends Component {
             {data.exchange && data.conversionRate && (
               <div className={styles.conversion}>
                 <div>
-                  <h2>Exchange</h2>
+                  <h2>{intl.formatMessage(messages.exchange)}</h2>
                   <span>{data.exchange}</span>
                 </div>
                 <div className={styles.conversionRate}>
-                  <h2>Conversion Rate</h2>
+                  <h2>{intl.formatMessage(messages.conversionRate)}</h2>
                   <span>{data.conversionRate}</span>
                 </div>
               </div>
             )}
             <div>
-              <h2>TransactionId</h2>
+              <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
+              <span>
+                <span className={styles.assuranceLevel}>{status}</span>
+                . {data.numberOfConfirmations} {intl.formatMessage(messages.confirmations)}.
+              </span>
+              <h2>{intl.formatMessage(messages.transactionId)}</h2>
               <span>{data.id}</span>
             </div>
             {/*
