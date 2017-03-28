@@ -9,7 +9,7 @@ import           System.Directory   (doesFileExist)
 import           System.Environment (lookupEnv)
 import           Turtle             (echo, proc, procs)
 
-import Launcher
+import           Launcher
 
 launcherScript :: String
 launcherScript = unlines
@@ -29,7 +29,7 @@ launcherScript = unlines
       , installerPath = "%APPDATA%\\Daedalus\\Installer.exe"
       , runtimePath = "%APPDATA%\\Daedalus\\"
       , reportServerUrl = "http://35.156.164.19:8080"
-      , systemStart = Nothing
+      , systemStart = Just 1490651980
       }
 
 daedalusShortcut :: [Attrib]
@@ -96,7 +96,7 @@ parseVersion :: String -> [String]
 parseVersion ver =
   case split (== '.') (pack ver) of
     v@[_, _, _, _] -> map unpack v
-    _ -> ["0", "0", "0", "0"]
+    _              -> ["0", "0", "0", "0"]
 
 writeInstallerNSIS :: String -> IO ()
 writeInstallerNSIS fullVersion = do
