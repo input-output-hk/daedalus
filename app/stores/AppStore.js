@@ -4,6 +4,7 @@ import Store from './lib/Store';
 import Request from './lib/Request';
 import CachedRequest from './lib/CachedRequest';
 import globalMessages from '../i18n/global-messages';
+import LocalizableError from '../i18n/LocalizableError';
 
 export default class AppStore extends Store {
 
@@ -18,6 +19,7 @@ export default class AppStore extends Store {
 
   @observable getProfileLocaleRequest = new CachedRequest(this.api, 'getUserLocale');
   @observable setProfileLocaleRequest = new Request(this.api, 'setUserLocale');
+  @observable error: ?LocalizableError = null;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -37,7 +39,7 @@ export default class AppStore extends Store {
       this.getProfileLocaleRequest.execute();
       return 'en-US';
     }
-    return this.getProfileLocaleRequest.result || this.setProfileLocaleRequest.result;
+    return this.getProfileLocaleRequest.result;
   }
 
   @computed get hasLoadedCurrentLocale(): bool {
@@ -45,9 +47,7 @@ export default class AppStore extends Store {
   }
 
   @computed get isCurrentLocaleSet(): bool {
-    if (this.getProfileLocaleRequest.result == null) return false;
-    return (this.getProfileLocaleRequest.wasExecuted && this.getProfileLocaleRequest.result) ||
-           (this.setProfileLocaleRequest.wasExecuted && this.setProfileLocaleRequest.result);
+    return this.getProfileLocaleRequest.result;
   }
 
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
@@ -57,7 +57,12 @@ export default class AppStore extends Store {
   };
 
   @action _updateLocale = ({ locale }: { locale: string }) => {
-    this.setProfileLocaleRequest.execute(locale);
+    this.setProfileLocaleRequest.execute(locale).then(() => (
+      this.getProfileLocaleRequest.invalidate().patch(() => locale)
+    ))
+    .catch(action((error) => {
+      this.error = error;
+    }));
   };
 
   _updateRouteLocation = ({ route }: { route: string }) => {
