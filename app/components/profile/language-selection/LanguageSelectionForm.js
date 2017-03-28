@@ -5,6 +5,7 @@ import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import Button from 'react-toolbox/lib/button/Button';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
+import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './LanguageSelectionForm.scss';
 
 const messages = defineMessages({
@@ -30,6 +31,7 @@ export default class LanguageSelectionForm extends Component {
     })).isRequired,
     onSubmit: PropTypes.func.isRequired,
     isSubmitting: PropTypes.bool.isRequired,
+    error: PropTypes.instanceOf(LocalizableError),
   };
 
   static contextTypes = {
@@ -63,10 +65,7 @@ export default class LanguageSelectionForm extends Component {
   render() {
     const { intl } = this.context;
     const { form } = this;
-    const {
-      languages,
-      isSubmitting
-    } = this.props;
+    const { languages, isSubmitting, error } = this.props;
     const languageId = form.$('languageId');
     const languageOptions = languages.map(language => ({
       value: language.value,
@@ -82,6 +81,8 @@ export default class LanguageSelectionForm extends Component {
             source={languageOptions}
             {...languageId.bind()}
           />
+
+          {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
           <Button
             className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}

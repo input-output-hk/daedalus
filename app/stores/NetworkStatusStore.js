@@ -120,7 +120,7 @@ export default class NetworkStatusStore extends Store {
 
   _redirectToWalletAfterSync = () => {
     const { app, wallets } = this.stores;
-    if (!app.isCurrentLocaleSet) return;
+    if (app.currentRoute === '/profile/language-selection') return;
     // TODO: introduce smarter way to bootsrap initial screens
     if (this.isConnected && this.isSynced && wallets.hasLoadedWallets && app.currentRoute === '/') {
       runInAction(() => { this.isLoadingWallets = false; });
@@ -134,7 +134,7 @@ export default class NetworkStatusStore extends Store {
   };
 
   _redirectToLoadingWhenDisconnected = () => {
-    if (!this.stores.app.isCurrentLocaleSet) return;
+    if (this.stores.app.currentRoute === '/profile/language-selection') return;
     if (!this.isConnected) {
       this._setInitialDifficulty();
       this.actions.router.goToRoute({ route: '/' });
