@@ -114,6 +114,7 @@ export default class CardanoClientApi {
       type: data.cwMeta.cwType,
       currency: data.cwMeta.cwCurrency,
       name: data.cwMeta.cwName,
+      unit: data.cwMeta.cwUnit,
     });
   }
 
@@ -287,6 +288,13 @@ export default class CardanoClientApi {
     });
   }
 
+  setWalletUnit(walletId: string, unit: number) {
+    return new Promise((resolve) => {
+      // Fake async request here to make it more realistic
+      setTimeout(() => resolve(unit), 100);
+    });
+  }
+
   testReset() {
     return ClientApi.testReset();
   }
@@ -303,6 +311,7 @@ type ServerWalletStruct = {
     cwName: string,
     cwType: string,
     cwCurrency: string,
+    cwUnit: number,
   },
 }
 
