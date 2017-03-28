@@ -47,7 +47,7 @@ export default class AppStore extends Store {
   }
 
   @computed get isCurrentLocaleSet(): bool {
-    return this.getProfileLocaleRequest.result;
+    return this.getProfileLocaleRequest.result != null;
   }
 
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
@@ -59,10 +59,7 @@ export default class AppStore extends Store {
   @action _updateLocale = ({ locale }: { locale: string }) => {
     this.setProfileLocaleRequest.execute(locale).then(() => (
       this.getProfileLocaleRequest.invalidate().patch(() => locale)
-    ))
-    .catch(action((error) => {
-      this.error = error;
-    }));
+    ));
   };
 
   _updateRouteLocation = ({ route }: { route: string }) => {
