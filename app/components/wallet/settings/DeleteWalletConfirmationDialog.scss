@@ -1,20 +1,31 @@
 .dialog {
   font-family: $font-light;
 
-  :global .button_flat.button_primary {
+  :global {
 
-    background: #ea4c5b;
-
-    &[disabled] {
-      opacity: 0.3;
+    .checkbox_check {
+      border-color: #ea4c5b;
+      &.checkbox_checked {
+        background: #ea4c5b;
+      }
     }
 
-    &:not([disabled]) {
-      &:hover {
-        background: #ec5d6b;
+
+
+    .button_flat.button_primary {
+      background: #ea4c5b;
+
+      &[disabled] {
+        opacity: 0.3;
       }
-      &:active {
-        background: #d34452;
+
+      &:not([disabled]) {
+        &:hover {
+          background: #ec5d6b;
+        }
+        &:active {
+          background: #d34452;
+        }
       }
     }
   }
