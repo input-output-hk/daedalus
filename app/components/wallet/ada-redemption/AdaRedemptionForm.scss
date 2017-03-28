@@ -2,15 +2,14 @@
 @import '../../../themes/mixins/error-message';
 
 .component {
-  padding: 2rem;
-  height: 100%;
-  overflow: visible;
+  padding: 20px;
 }
 
 .headline {
   font-family: $font-medium;
   font-size: 24px;
   margin-bottom: 2rem;
+  margin-top: 10px;
   color: $text-color-accent;
 }
 
