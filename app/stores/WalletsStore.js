@@ -18,6 +18,7 @@ export default class WalletsStore extends Store {
   @observable walletsRequest = new CachedRequest(this.api, 'getWallets');
   @observable importFromKeyRequest = new Request(this.api, 'importWalletFromKey');
   @observable createWalletRequest = new Request(this.api, 'createWallet');
+  @observable deleteWalletRequest = new Request(this.api, 'deleteWallet');
   @observable sendMoneyRequest = new Request(this.api, 'createTransaction');
   @observable getWalletRecoveryPhraseRequest = new Request(this.api, 'getWalletRecoveryPhrase');
   @observable restoreRequest = new Request(this.api, 'restoreWallet');
@@ -39,6 +40,7 @@ export default class WalletsStore extends Store {
   setup() {
     const { wallets, walletBackup } = this.actions;
     wallets.create.listen(this._create);
+    wallets.delete.listen(this._delete);
     wallets.sendMoney.listen(this._sendMoney);
     wallets.toggleAddWallet.listen(this._toggleAddWallet);
     wallets.toggleCreateWalletDialog.listen(this._toggleCreateWalletDialog);
@@ -69,6 +71,14 @@ export default class WalletsStore extends Store {
     } catch (error) {
       throw error;
     }
+  };
+
+  _delete = async (params: { walletId: string }) => {
+    await this.deleteWalletRequest.execute({ walletId: params.walletId });
+    this.refreshWalletsData();
+    runInAction(() => {
+      this.active = null;
+    });
   };
 
   _finishWalletCreation = async () => {
@@ -269,9 +279,9 @@ export default class WalletsStore extends Store {
 
   @action _hideWalletAddressCopyNotification = () => {
     this.isWalletAddressCopyNotificationVisible = false;
-  }
+  };
 
-  _onShowWalletAddressCopyNotification = action(() => {
+  @action _onShowWalletAddressCopyNotification = () => {
     if (this._hideWalletAddressCopyNotificationTimeout) {
       clearTimeout(this._hideWalletAddressCopyNotificationTimeout);
     }
@@ -280,6 +290,6 @@ export default class WalletsStore extends Store {
       config.wallets.ADDRESS_COPY_NOTIFICATION_DURATION
     );
     this.isWalletAddressCopyNotificationVisible = true;
-  });
+  };
 
 }

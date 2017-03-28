@@ -1,0 +1,26 @@
+.dialog {
+  font-family: $font-light;
+
+  :global .button_flat.button_primary {
+
+    background: #ea4c5b;
+
+    &[disabled] {
+      opacity: 0.3;
+    }
+
+    &:not([disabled]) {
+      &:hover {
+        background: #ec5d6b;
+      }
+      &:active {
+        background: #d34452;
+      }
+    }
+  }
+}
+
+.confirmationInput {
+  margin-top: 30px;
+  padding-bottom: 0 !important;
+}

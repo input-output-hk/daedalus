@@ -13,6 +13,7 @@
   "global.errors.fieldIsRequired": "This field is required.",
   "global.errors.invalidMnemonic": "Invalid phrase entered, please check.",
   "global.errors.invalidWalletName": "Requires at least 3 letters.",
+  "global.labels.cancel": "Cancel",
   "global.language.chinese": "Chinese",
   "global.language.croatian": "Croatian",
   "global.language.english": "English",
@@ -117,5 +118,11 @@
   "wallet.transaction.type.card": "Card Payment",
   "wallet.transaction.type.exchange": "Exchange Transaction",
   "wallet.transactions.no.transactions": "No transactions",
-  "wallet.transactions.no.transactions.found": "No transactions found"
+  "wallet.transactions.no.transactions.found": "No transactions found",
+  "wallet.settings.deleteWalletButtonLabel": "Delete wallet",
+  "wallet.settings.delete.dialog.title": "Delete wallet",
+  "wallet.settings.delete.dialog.confirmButtonLabel": "Delete",
+  "wallet.settings.delete.dialog.wantToDeleteWalletQuestion": "Do you really want to delete <strong>{walletName}</strong> wallet?",
+  "wallet.settings.delete.dialog.confirmBackupNotice": "Make sure you have access to backup before continue. Otherwise you will lose all your funds connected to this wallet.",
+  "wallet.settings.delete.dialog.enterRecoveryWordLabel": "Enter the name of the wallet to confirm deletion:"
 }

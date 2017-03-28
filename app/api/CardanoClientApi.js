@@ -10,7 +10,8 @@ import type {
   createTransactionRequest,
   walletRestoreRequest,
   redeemAdaRequest,
-  importKeyRequest
+  importKeyRequest,
+  deleteWalletRequest
 } from './index';
 import {
   // ApiMethodNotYetImplementedError,
@@ -73,6 +74,15 @@ export default class CardanoClientApi {
     console.debug('CardanoClientApi::createWallet called with', request);
     const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name, request.mnemonic);
     return this._createWalletFromServerData(response);
+  }
+
+  async deleteWallet(request: deleteWalletRequest) {
+    try {
+      await ClientApi.deleteWallet(request.walletId);
+      return true;
+    } catch (error) {
+      throw new GenericApiError();
+    }
   }
 
   async createTransaction(request: createTransactionRequest) {
