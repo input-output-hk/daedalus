@@ -168,7 +168,7 @@ export default class WalletSendForm extends Component {
           <Input className="amount" {...form.$('amount').bind()} />
           {/* <Input className="description" multiline {...form.$('description').bind()} /> */}
 
-          {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
+          {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
 
           <Button
             className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}

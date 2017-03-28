@@ -53,17 +53,17 @@ export default class WalletSummary extends Component {
             {numeral(amount).format('0,0')}
             <img src={adaSymbolBig} role="presentation" />
           </div>
-          {pendingAmount > 0 && (
+          {pendingAmount > 0 ? (
             <div className={styles.pendingConfirmation}>
               {`${intl.formatMessage(messages.pendingConfirmationLabel)}`}: {pendingAmount}
               <img src={adaSymbolSmallest} role="presentation" />
             </div>
-          )}
-          {!isLoadingTransactions && (
+          ) : null}
+          {!isLoadingTransactions ? (
             <div className={styles.numberOfTransactions}>
               {intl.formatMessage(messages.transactionsLabel)}: {numberOfTransactions}
             </div>
-          )}
+          ) : null}
         </BorderedBox>
       </div>
     );

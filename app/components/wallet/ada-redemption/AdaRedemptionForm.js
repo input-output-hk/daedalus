@@ -232,7 +232,7 @@ export default class AdaRedemptionForm extends Component {
             </div>
           </div>
 
-          {showPassPhraseWidget && (
+          {showPassPhraseWidget ? (
             <div className={styles.passPhrase}>
               <Input
                 className="pass-phrase"
@@ -245,9 +245,9 @@ export default class AdaRedemptionForm extends Component {
                 })}
               />
             </div>
-          )}
+          ) : null}
 
-          {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
+          {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
 
           <Button
             className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
