@@ -5,8 +5,9 @@ export default defineActions({
   open: {
     dialog: PropTypes.func.isRequired,
   },
-  close: {},
+  closeActiveDialog: {},
   updateDataForActiveDialog: {
     data: PropTypes.object.isRequired,
-  }
+  },
+  resetActiveDialog: {}
 });

@@ -12,7 +12,8 @@ export default class UIDialogsStore extends Store {
 
   setup() {
     this.actions.dialogs.open.listen(this._onOpen);
-    this.actions.dialogs.close.listen(this._onClose);
+    this.actions.dialogs.closeActiveDialog.listen(this._onClose);
+    this.actions.dialogs.resetActiveDialog.listen(this._reset);
     this.actions.dialogs.updateDataForActiveDialog.listen(this._onUpdateDataForActiveDialog);
   }
 

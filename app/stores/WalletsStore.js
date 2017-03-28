@@ -74,11 +74,20 @@ export default class WalletsStore extends Store {
   };
 
   _delete = async (params: { walletId: string }) => {
+    const walletToDelete = this.getWalletById(params.walletId);
+    if (!walletToDelete) return;
+    const indexOfWalletToDelete = this.all.indexOf(walletToDelete);
     await this.deleteWalletRequest.execute({ walletId: params.walletId });
-    this.refreshWalletsData();
     runInAction(() => {
-      this.active = null;
+      if (this.hasAnyWallets) {
+        const nextIndexInList = Math.max(indexOfWalletToDelete - 1, 0);
+        const nextWalletInList = this.all[nextIndexInList];
+        this.goToWalletRoute(nextWalletInList.id);
+      } else {
+        this.active = null;
+      }
     });
+    this.refreshWalletsData();
   };
 
   _finishWalletCreation = async () => {
@@ -134,10 +143,11 @@ export default class WalletsStore extends Store {
     return this.all.length > 0 ? this.all[0] : null;
   }
 
-
   getWalletRoute = (walletId: string, screen: string = 'summary'): string => (
     `${this.BASE_ROUTE}/${walletId}/${screen}`
   );
+
+  getWalletById = (id: string): ?Wallet => this.all.find(w => w.id === id);
 
   isValidAddress = (address: string) => this.api.isValidAddress('ADA', address);
 

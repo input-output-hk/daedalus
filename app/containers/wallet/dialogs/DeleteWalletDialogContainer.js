@@ -16,7 +16,8 @@ export default class DeleteWalletDialogContainer extends Component {
     actions: PropTypes.shape({
       dialogs: PropTypes.shape({
         open: PropTypes.func.isRequired,
-        close: PropTypes.func.isRequired,
+        closeActiveDialog: PropTypes.func.isRequired,
+        resetActiveDialog: PropTypes.func.isRequired,
         updateDataForActiveDialog: PropTypes.func.isRequired,
       }).isRequired,
       wallets: PropTypes.shape({
@@ -39,8 +40,11 @@ export default class DeleteWalletDialogContainer extends Component {
         onAcceptBackupNotice={() => updateDataForActiveDialog({
           data: { isBackupNoticeAccepted: true }
         })}
-        onContinue={() => actions.wallets.delete({ walletId: wallets.active.id })}
-        onCancel={actions.dialogs.close}
+        onContinue={() => {
+          actions.wallets.delete({ walletId: wallets.active.id });
+          actions.dialogs.resetActiveDialog();
+        }}
+        onCancel={actions.dialogs.closeActiveDialog}
         confirmationValue={dialogData.confirmationValue}
         onConfirmationValueChange={confirmationValue => updateDataForActiveDialog({
           data: { confirmationValue }
