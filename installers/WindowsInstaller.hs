@@ -12,14 +12,12 @@ import           Turtle.Line          (unsafeTextToLine)
 
 import           Launcher
 
-launcherScript :: String
-launcherScript = unlines
+launcherScript :: [String]
+launcherScript =
   [ "@echo off"
-  , ""
-  , "powershell.exe -Command \"(Get-ItemProperty HKLM:\\SOFTWARE\\Wow6432Node\\Daedalus).Install_Dir\" > install_dir.txt"
-  , "SET /P DAEDALUS_DIR=<install_dir.txt"
-  , "DEL install_dir.txt"
-  , ""
+  , "FOR /F \"usebackq tokens=2,* skip=2\" %%L IN ("
+  , "    `reg query \"HKLM\\SOFTWARE\\Wow6432Node\\Daedalus\" /v Install_Dir`"
+  , ") DO SET DAEDALUS_DIR=%%M"
   , "\"%DAEDALUS_DIR%\\cardano-launcher.exe\" " <> args
   ]
   where
@@ -125,7 +123,7 @@ writeInstallerNSIS fullVersion = do
         createDirectory "$APPDATA\\Daedalus\\Wallet-0.2"
         createDirectory "$APPDATA\\Daedalus\\Logs"
         createDirectory "$APPDATA\\Daedalus\\Secrets"
-        writeFile' "$APPDATA\\Daedalus\\daedalus.bat" (str launcherScript)
+        writeFileLines "$APPDATA\\Daedalus\\daedalus.bat" (map str launcherScript)
         createShortcut "$DESKTOP\\Daedalus.lnk" daedalusShortcut
         file [] "cardano-node.exe"
         file [] "cardano-launcher.exe"
