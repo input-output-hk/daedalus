@@ -1,7 +1,7 @@
 // @flow
 import React, { PropTypes, Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import CachedRequest from '../../stores/lib/CachedRequest';
+import Request from '../../stores/lib/Request';
 import TopBar from '../../components/layout/TopBar';
 import TopBarLayout from '../../components/layout/TopBarLayout';
 import LanguageSelectionForm from '../../components/profile/language-selection/LanguageSelectionForm';
@@ -17,7 +17,7 @@ export default class LanguageSelectionPage extends Component {
     }),
     stores: PropTypes.shape({
       app: PropTypes.shape({
-        profileLocaleRequest: PropTypes.instanceOf(CachedRequest).isRequired,
+        setProfileLocaleRequest: PropTypes.instanceOf(Request).isRequired,
         LANGUAGE_OPTIONS: PropTypes.array.isRequired,
       }).isRequired,
     }).isRequired,
@@ -28,8 +28,8 @@ export default class LanguageSelectionPage extends Component {
   };
 
   render() {
-    const { profileLocaleRequest, LANGUAGE_OPTIONS } = this.props.stores.app;
-    const isSubmitting = profileLocaleRequest.isExecuting;
+    const { setProfileLocaleRequest, LANGUAGE_OPTIONS } = this.props.stores.app;
+    const isSubmitting = setProfileLocaleRequest.isExecuting;
     const topbar = <TopBar />;
     return (
       <TopBarLayout

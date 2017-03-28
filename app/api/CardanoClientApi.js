@@ -280,11 +280,13 @@ export default class CardanoClientApi {
     return { localDifficulty, networkDifficulty };
   }
 
-  setUserLocale(locale: string) {
-    return new Promise((resolve) => {
-      // Fake async request here to make it more realistic
-      setTimeout(() => resolve(locale), 100);
-    });
+  async setUserLocale(locale: string) {
+    const response = await ClientApi.updateLocale(locale);
+    return response.cpLocale;
+  }
+
+  async getUserLocale() {
+    return await ClientApi.getLocale();
   }
 
   testReset() {
