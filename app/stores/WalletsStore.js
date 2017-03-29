@@ -87,7 +87,6 @@ export default class WalletsStore extends Store {
         const nextWalletInList = this.all[nextIndexInList];
         this.goToWalletRoute(nextWalletInList.id);
       } else {
-        console.log('NO WALLETS');
         this.active = null;
         this.actions.router.goToRoute({ route: '/no-wallets' });
       }
