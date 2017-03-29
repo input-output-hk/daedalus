@@ -37,6 +37,9 @@ export default class WalletSettingsPage extends Component {
       <WalletSettings
         walletUnit={wallet.unit}
         onWalletUnitUpdate={this.handleWalletUnitUpdate}
+        isWalletUnitUpdated={
+          updateWalletUnitRequest.wasExecuted && updateWalletUnitRequest.result != null
+        }
         units={WALLET_UNIT_OPTIONS}
         error={updateWalletUnitRequest.error}
       />

@@ -21,6 +21,7 @@
   "global.language.korean": "Korean",
   "global.unit.ada": "Ada",
   "global.unit.lovelace": "Lovelace",
+  "inline.editing.dropdown.changesSaved": "Your changes have been saved",
   "loading.screen.connectingToNetworkMessage": "Connecting to network",
   "loading.screen.loadingWalletData": "!!!Loading wallet data",
   "loading.screen.reconnectingToNetworkMessage": "Network connection lost - reconnecting",

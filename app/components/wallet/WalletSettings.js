@@ -2,8 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
-import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
+import InlineEditingDropdown from '../widgets/forms/InlineEditingDropdown';
 import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletSettings.scss';
 
@@ -25,6 +24,7 @@ export default class WalletSettings extends Component {
     })).isRequired,
     walletUnit: PropTypes.number.isRequired,
     onWalletUnitUpdate: PropTypes.func.isRequired,
+    isWalletUnitUpdated: PropTypes.bool.isRequired,
     error: PropTypes.instanceOf(LocalizableError),
   };
 
@@ -32,24 +32,15 @@ export default class WalletSettings extends Component {
     intl: intlShape.isRequired,
   };
 
-  form = new ReactToolboxMobxForm({
-    fields: {
-      walletUnit: {
-        label: this.context.intl.formatMessage(messages.unitsLabel),
-        bindings: 'ReactToolbox',
-      },
-    },
-  }, {
-    options: {
-      validateOnChange: false,
-    },
-  });
-
   render() {
     const { intl } = this.context;
-    const { form } = this;
-    const { units, onWalletUnitUpdate, error } = this.props;
-    const walletUnit = form.$('walletUnit');
+    const {
+      units,
+      walletUnit,
+      onWalletUnitUpdate,
+      isWalletUnitUpdated,
+      error,
+    } = this.props;
     const unitOptions = units.map(unit => ({
       value: unit.value,
       label: intl.formatMessage(unit.label),
@@ -59,11 +50,13 @@ export default class WalletSettings extends Component {
 
         <div className={styles.borderedBox}>
 
-          <Dropdown
-            source={unitOptions}
-            {...walletUnit.bind()}
-            value={this.props.walletUnit}
+          <InlineEditingDropdown
+            isActive
+            label={intl.formatMessage(messages.unitsLabel)}
+            options={unitOptions}
+            value={walletUnit}
             onChange={(value) => onWalletUnitUpdate({ unit: value })}
+            successfullyUpdated={isWalletUnitUpdated}
           />
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
