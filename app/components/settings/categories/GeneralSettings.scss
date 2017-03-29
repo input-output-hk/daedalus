@@ -1,0 +1,25 @@
+@import '../../../themes/mixins/error-message';
+
+.component {
+  margin-bottom: 20px;
+  :global {
+    h1 {
+      color: #5e6066;
+      font-family: $font-medium;
+      font-size: 19px;
+      line-height: 1.21;
+    }
+    p {
+      color: #5e6066;
+      font-family: $font-regular;
+      font-size: 16px;
+      line-height: 22px;
+      margin-top: 1em;
+    }
+  }
+}
+
+.error {
+  @include error-message;
+  text-align: center;
+}
