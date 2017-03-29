@@ -24,6 +24,10 @@ $dialog-content-padding: 30px;
 
 .body {
   overflow-y: visible;
+  :global .input_input:last-of-type {
+    margin-bottom: -32px !important;
+    // TODO: move this to config
+  }
 }
 
 .navigation {
