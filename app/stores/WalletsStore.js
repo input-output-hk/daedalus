@@ -78,13 +78,18 @@ export default class WalletsStore extends Store {
     if (!walletToDelete) return;
     const indexOfWalletToDelete = this.all.indexOf(walletToDelete);
     await this.deleteWalletRequest.execute({ walletId: params.walletId });
+    await this.walletsRequest.patch(result => {
+      result.splice(indexOfWalletToDelete, 1);
+    });
     runInAction(() => {
       if (this.hasAnyWallets) {
         const nextIndexInList = Math.max(indexOfWalletToDelete - 1, 0);
         const nextWalletInList = this.all[nextIndexInList];
         this.goToWalletRoute(nextWalletInList.id);
       } else {
+        console.log('NO WALLETS');
         this.active = null;
+        this.actions.router.goToRoute({ route: '/no-wallets' });
       }
     });
     this.refreshWalletsData();
