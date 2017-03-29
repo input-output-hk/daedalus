@@ -246,6 +246,10 @@ export default class WalletsStore extends Store {
     }
   };
 
+  @action _unsetActiveWallet = () => {
+    this.active = null;
+  };
+
   @action _setIsWalletDialogOpen = (isOpen: boolean) => {
     this.isAddWalletDialogOpen = isOpen;
   };
@@ -264,6 +268,9 @@ export default class WalletsStore extends Store {
     const currentRoute = this.stores.app.currentRoute;
     const hasActiveWallet = !!this.active;
     const hasAnyWalletsLoaded = this.hasAnyLoaded;
+
+    // There are not wallets loaded (yet) -> unset active and return
+    if (!hasAnyWalletsLoaded) return this._unsetActiveWallet();
     const match = matchRoute(`${this.BASE_ROUTE}/:id(*page)`, currentRoute);
     if (match) {
       // We have a route for a specific wallet -> lets try to find it
