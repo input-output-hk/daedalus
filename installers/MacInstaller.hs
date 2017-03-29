@@ -1,5 +1,5 @@
 module MacInstaller where
-  
+
 import           Control.Monad        (unless)
 import qualified Data.Text            as T
 import           Data.Foldable        (for_)
@@ -54,10 +54,10 @@ main = do
   let pkgargs =
        [ "--identifier"
        , "org.daedalus.pkg"
-       , "--scripts", "data/scripts" 
+       , "--scripts", "data/scripts"
        , "--component"
        , "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
-       , "--install-location" 
+       , "--install-location"
        , "/Applications"
        , "dist/temp.pkg"
        ]
@@ -83,7 +83,7 @@ doLauncher = "./cardano-launcher " <> (launcherArgs $ Launcher
   , installerPath = appdata <> "installer.pkg"
   , runtimePath = appdata
   })
-    where 
+    where
       appdata = "$HOME/Library/Application Support/Daedalus/"
 
 run :: T.Text -> [T.Text] -> IO ()
