@@ -1,6 +1,7 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer, inject } from 'mobx-react';
+import Request from '../../stores/lib/Request';
 import Wallet from '../../domain/Wallet';
 import WalletSettings from '../../components/wallet/WalletSettings';
 
@@ -13,6 +14,7 @@ export default class WalletSettingsPage extends Component {
         active: PropTypes.instanceOf(Wallet),
       }),
       walletSettings: PropTypes.shape({
+        updateWalletUnitRequest: PropTypes.instanceOf(Request).isRequired,
         WALLET_UNIT_OPTIONS: PropTypes.array.isRequired,
       }),
     }),
@@ -30,12 +32,13 @@ export default class WalletSettingsPage extends Component {
   render() {
     const { wallets, walletSettings } = this.props.stores;
     const wallet = wallets.active;
-    const WALLET_UNIT_OPTIONS = walletSettings.WALLET_UNIT_OPTIONS;
+    const { updateWalletUnitRequest, WALLET_UNIT_OPTIONS } = walletSettings;
     return (
       <WalletSettings
         walletUnit={wallet.unit}
         onWalletUnitUpdate={this.handleWalletUnitUpdate}
         units={WALLET_UNIT_OPTIONS}
+        error={updateWalletUnitRequest.error}
       />
     );
   }

@@ -4,6 +4,7 @@ import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
+import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletSettings.scss';
 
 const messages = defineMessages({
@@ -24,6 +25,7 @@ export default class WalletSettings extends Component {
     })).isRequired,
     walletUnit: PropTypes.number.isRequired,
     onWalletUnitUpdate: PropTypes.func.isRequired,
+    error: PropTypes.instanceOf(LocalizableError),
   };
 
   static contextTypes = {
@@ -34,7 +36,6 @@ export default class WalletSettings extends Component {
     fields: {
       walletUnit: {
         label: this.context.intl.formatMessage(messages.unitsLabel),
-        value: this.props.walletUnit,
         bindings: 'ReactToolbox',
       },
     },
@@ -47,7 +48,7 @@ export default class WalletSettings extends Component {
   render() {
     const { intl } = this.context;
     const { form } = this;
-    const { units, onWalletUnitUpdate } = this.props;
+    const { units, onWalletUnitUpdate, error } = this.props;
     const walletUnit = form.$('walletUnit');
     const unitOptions = units.map(unit => ({
       value: unit.value,
@@ -61,8 +62,11 @@ export default class WalletSettings extends Component {
           <Dropdown
             source={unitOptions}
             {...walletUnit.bind()}
+            value={this.props.walletUnit}
             onChange={(value) => onWalletUnitUpdate({ unit: value })}
           />
+
+          {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
         </div>
 

@@ -65,6 +65,15 @@ export type walletRestoreRequest = {
   walletName: string,
 };
 
+export type walletUpdateRequest = {
+  walletId: string,
+  type: string,
+  currency: string,
+  name: string,
+  assurance: string,
+  unit: number,
+};
+
 export type redeemAdaRequest = {
   redemptionCode: string,
   walletId: string,

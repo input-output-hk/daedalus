@@ -9,6 +9,7 @@ import type {
   getTransactionsRequest,
   createTransactionRequest,
   walletRestoreRequest,
+  walletUpdateRequest,
   redeemAdaRequest,
   importKeyRequest
 } from './index';
@@ -115,6 +116,7 @@ export default class CardanoClientApi {
       currency: data.cwMeta.cwCurrency,
       name: data.cwMeta.cwName,
       unit: data.cwMeta.cwUnit,
+      assurance: data.cwMeta.cwAssurance,
     });
   }
 
@@ -288,11 +290,13 @@ export default class CardanoClientApi {
     });
   }
 
-  setWalletUnit(walletId: string, unit: number) {
-    return new Promise((resolve) => {
-      // Fake async request here to make it more realistic
-      setTimeout(() => resolve(unit), 100);
-    });
+  async setWalletUnit(request: walletUpdateRequest) {
+    const { walletId, type, currency, name, assurance, unit } = request;
+    try {
+      return await ClientApi.updateWallet(walletId, type, currency, name, assurance, unit);
+    } catch (error) {
+      throw new GenericApiError();
+    }
   }
 
   testReset() {
@@ -312,6 +316,7 @@ type ServerWalletStruct = {
     cwType: string,
     cwCurrency: string,
     cwUnit: number,
+    cwAssurance: string,
   },
 }
 
