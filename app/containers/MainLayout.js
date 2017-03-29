@@ -96,6 +96,7 @@ export default class MainLayout extends Component {
     const sidebarMenus = {
       wallets: {
         items: sidebar.wallets,
+        activeWalletId: activeWalletId,
         actions: {
           onAddWallet: toggleAddWallet,
           onWalletItemClick: (walletId: string) => {
@@ -111,7 +112,6 @@ export default class MainLayout extends Component {
         categories={sidebar.CATEGORIES}
         activeSidebarCategory={sidebar.activeSidebarCategory}
         onCategoryClicked={category => actions.sidebar.activateSidebarCategory({ category })}
-        activeWalletId={activeWalletId}
         isSynced={isSynced}
       />
     );

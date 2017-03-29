@@ -1,7 +1,30 @@
 import React from 'react';
+import { observable, runInAction } from 'mobx';
 import { storiesOf, action } from '@kadira/storybook';
 import StoryDecorator from './support/StoryDecorator';
 import Sidebar from '../app/components/sidebar/Sidebar';
+
+const SIDEBAR_CATEGORIES = {
+  WALLETS: '/wallets',
+  ADA_REDEMPTION: '/ada-redemption',
+};
+
+const sidebarMenus = observable({
+  wallets: {
+    items: [
+      { id: '1', title: 'First', info: '100 ADA', isConnected: true },
+      { id: '2', title: 'Second', info: '200 ADA', isConnected: true },
+      { id: '3', title: 'Third', info: '300 ADA', isConnected: true },
+    ],
+    activeWalletId: '1',
+    actions: {
+      onAddWallet: action('toggleAddWallet'),
+      onWalletItemClick: (walletId: string) => {
+        runInAction(() => sidebarMenus.wallets.activeWalletId = walletId);
+      }
+    }
+  }
+});
 
 storiesOf('Sidebar', module)
 
@@ -13,31 +36,28 @@ storiesOf('Sidebar', module)
 
   // ====== Stories ======
 
-  .add('default', () => (
-    <Sidebar route="/" />
+  .add('no category', () => (
+    <Sidebar
+      categories={SIDEBAR_CATEGORIES}
+      onCategoryClicked={action('onCategoryClicked')}
+    />
   ))
 
-  .add('wallets', () => (
-    <Sidebar route="/wallets" />
+  .add('wallets category', () => (
+    <Sidebar
+      categories={SIDEBAR_CATEGORIES}
+      activeSidebarCategory={SIDEBAR_CATEGORIES.WALLETS}
+      onCategoryClicked={action('onCategoryClicked')}
+    />
   ))
 
   .add('wallets / sub', () => (
     <Sidebar
-      route="/wallets/2"
-      menus={{
-        wallets: {
-          items: [
-            { id: '1', title: 'Main wallet', info: 'ADA' },
-            { id: '2', title: 'House rent', info: '274912874,35 ADA' },
-            { id: '3', title: 'Mining', info: '0,0004924712 BTC' },
-            { id: '4', title: 'Shopping wallet', info: 'ADA' },
-          ],
-          actions: {
-            onAddWallet: action('onAddWallet')
-          }
-        }
-      }}
+      categories={SIDEBAR_CATEGORIES}
+      activeSidebarCategory={SIDEBAR_CATEGORIES.WALLETS}
+      menus={sidebarMenus}
       onCategoryClicked={action('onCategoryClicked')}
+      isShowingSubMenus
     />
   ))
 
