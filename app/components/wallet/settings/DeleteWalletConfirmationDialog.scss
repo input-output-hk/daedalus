@@ -2,19 +2,16 @@
   font-family: $font-light;
 
   :global {
-
     .checkbox_check {
-      border-color: #ea4c5b;
+      border-color: $color-light-red;
       &.checkbox_checked {
-        border-color: #ea4c5b;
-        background: #ea4c5b;
+        background: $color-light-red;
+        border-color: $color-light-red;
       }
     }
 
-
-
     .button_flat.button_primary {
-      background: #ea4c5b;
+      background: $color-light-red;
 
       &[disabled] {
         opacity: 0.3;
@@ -22,10 +19,10 @@
 
       &:not([disabled]) {
         &:hover {
-          background: #ec5d6b;
+          background: $color-lighter-red;
         }
         &:active {
-          background: #d34452;
+          background: $color-dark-red;
         }
       }
     }

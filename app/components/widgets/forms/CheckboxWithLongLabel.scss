@@ -17,7 +17,7 @@
 .checkboxLabel {
   font-family: $font-light;
   font-size: 16px;
-  color: #5e6066;
+  color: $theme-label-color;
   white-space: normal;
   line-height: 1.38;
   strong {

@@ -6,7 +6,7 @@ $dialog-content-padding: 30px;
 .title {
   text-transform: uppercase;
   font-size: 1.125rem;
-  color: #5e6066;
+  color: $text-color-accent;
   text-align: center;
   font-family: $font-medium;
   letter-spacing: 2px;
@@ -28,7 +28,7 @@ $dialog-content-padding: 30px;
 
 .navigation {
   text-align: center;
-  padding: 0 30px 20px 30px;
+  padding: 0 30px 20px;
   display: flex;
   justify-content: space-between;
 }
