@@ -7,6 +7,7 @@ matrix:
 
 env:
 - NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/09c7601c204016c8ecdefd474f721fb841e834df.tar.gz
+- CARDANO_SL_BRANCH=csla-50-macos
 
 install:
 # Install Stack
@@ -15,20 +16,24 @@ install:
 - sudo mount -o remount,exec,size=4G,mode=755 /run/user || true
 - travis_retry curl -L https://www.stackage.org/stack/$TRAVIS_OS_NAME-x86_64 | tar
   xz --strip-components=1 -C ~/.local/bin
-# TODO: install bridge
-# https://s3.eu-central-1.amazonaws.com/cardano-sl-testing/daedalus-bridge-osx-csla-50-macos.tar.xz
-# TODO: make it public
-# TODO: print build of cardano-sl
+# Install Daedalus bridge
+- curl --retry 3 https://s3.eu-central-1.amazonaws.com/cardano-sl-testing/daedalus-bridge-$TRAVIS_OS_NAME-$CARDANO_SL_BRANCH.tar.xz > daedalus-bridge.tar.xz
+- mkdir -p node_modules/daedalus-client-api/
+- tar xz daedalus-bridge.tar.xz --strip-components=1 -C node_modules/daedalus-client-api/
+- echo "cardano-sl build id is $(cat node_modules/daedalus-client-api/build-id)"
+# Install Daedalus
 - nix-shell --run "npm install"
 
 script:
 - export DAEDALUS_VERSION=$TRAVIS_BUILD_NUMBER
 # Fix https://github.com/NixOS/nixpkgs/issues/23605
 - export SSL_CERT_FILE=$NIX_SSL_CERT_FILE
+- mv node_modules/daedalus-client-api/{log-config-prod.yaml,cardano-node,cardano-launcher} installers/
+# safe some hdd space
+- rm node_modules/daedalus-client-api/cardano-*
+- echo "Size of Electron app is $(du -sh release)"
 - nix-shell --run "npm run package -- --icon installers/icons/256x256"
-- du -sh release
 - pushd installers
-# TODO: copy cardano-node
 - stack --no-terminal --nix build --exec make-installer --jobs 4
 - mkdir -p dist
 

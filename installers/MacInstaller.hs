@@ -31,9 +31,9 @@ main = do
     procs "sips" ["-s", "format", "icns", T.pack icon, "--out", T.pack file] mempty
 
   echo "Preparing files ..."
-  copyFile "../cardano-sl/bin/cardano-launcher" (dir <> "/cardano-launcher")
-  copyFile "../cardano-sl/bin/cardano-node" (dir <> "/cardano-node")
-  copyFile "../cardano-sl/log-config-prod.yaml" (dir <> "/log-config-prod.yaml")
+  copyFile "cardano-launcher" (dir <> "/cardano-launcher")
+  copyFile "cardano-node" (dir <> "/cardano-node")
+  copyFile "log-config-prod.yaml" (dir <> "/log-config-prod.yaml")
   copyFile "data/ip-dht-mappings" (dir <> "/ip-dht-mappings")
 
   -- Rewrite libs paths and bundle them
