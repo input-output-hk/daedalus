@@ -39,6 +39,7 @@ const stores = observable({
   networkStatus: null,
   adaRedemption: null,
   nodeUpdate: null,
+  uiDialogs: null,
 });
 
 // Set up and return the stores for this app -> also used to reset all stores to defaults

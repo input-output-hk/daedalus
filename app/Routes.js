@@ -41,7 +41,7 @@ export default (
     <Route path={ROUTES.STAKING} component={StakingPage} />
     <Route path={ROUTES.ADA_REDEMPTION} component={AdaRedemptionPage} />
     <Route path={ROUTES.NO_WALLETS} component={NoWalletsPage} />
-    <Route component={Wallet}>
+    <Route path={ROUTES.WALLETS.ROOT} component={Wallet}>
       <Route path={ROUTES.WALLETS.SUMMARY} component={WalletSummaryPage} />
       <Route path={ROUTES.WALLETS.TRANSACTIONS} component={WalletTransactionsPage} />
       <Route path={ROUTES.WALLETS.SEND} component={WalletSendPage} />

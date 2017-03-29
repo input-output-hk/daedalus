@@ -148,7 +148,7 @@ export default class WalletsStore extends Store {
   }
 
   getWalletRoute = (walletId: string, page: string = 'summary'): string => (
-    buildRoute({ route: ROUTES.WALLETS.PAGE, params: { id: walletId, page } })
+    buildRoute(ROUTES.WALLETS.PAGE, { id: walletId, page })
   );
 
   getWalletById = (id: string): ?Wallet => this.all.find(w => w.id === id);
