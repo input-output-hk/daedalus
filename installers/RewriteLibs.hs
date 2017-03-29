@@ -9,8 +9,8 @@ import Data.Maybe (catMaybes)
 import Data.Monoid ((<>))
 import Data.Text
 import System.Directory (copyFile, setPermissions, getPermissions, setOwnerWritable)
-import Text.Megaparsec  
-import Text.Megaparsec.Text  
+import Text.Megaparsec
+import Text.Megaparsec.Text
 import Turtle (procStrict, procs)
 
 
@@ -63,6 +63,8 @@ patchLib source dir lib
     | otherwise = do
         -- otherwise, copy it to dist and change where it points
         print $ "Bundling " <> lib <> " in " <> source
+        -- substitute store path if they are missing
+        procs "nix-store" ["-r", lib] mempty
         procs "install_name_tool" ["-change", lib, "@executable_path/" <> (filename lib), (pack dir) <> "/" <> (filename source)] mempty
         let dest = dir <> "/" <> (unpack $ filename lib)
         copyFile (unpack lib) dest
@@ -87,4 +89,3 @@ parseOTool :: Parser [Text]
 parseOTool = do
   _ <- manyTill anyChar eol
   manyTill parseLibLine eof
-
