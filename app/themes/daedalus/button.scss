@@ -1,11 +1,11 @@
 @import "~react-toolbox/lib/button/config";
 $button-border-radius: 0.3rem;
+$button-height: 50px;
 @import "~react-toolbox/lib/button/theme";
 
 .flat {
   font-size: 18px;
   font-family: $font-semibold;
-  letter-spacing: 2px;
   text-transform: none;
   background: $button-up-bg;
 

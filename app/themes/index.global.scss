@@ -165,3 +165,10 @@ html, body, #root, #root > [data-reactroot] {
     height: 13px;
   }
 }
+
+
+// General text formatting
+
+strong {
+  font-family: $font-medium;
+}

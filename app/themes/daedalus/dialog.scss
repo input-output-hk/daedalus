@@ -6,7 +6,7 @@ $dialog-content-padding: 30px;
 .title {
   text-transform: uppercase;
   font-size: 1.125rem;
-  color: #5e6066;
+  color: $text-color-accent;
   text-align: center;
   font-family: $font-medium;
   letter-spacing: 2px;
@@ -15,14 +15,26 @@ $dialog-content-padding: 30px;
 .dialog {
   border-radius: 10px;
   min-width: 500px;
+  max-width: 640px;
+}
+
+.normal {
+  width: 70vw;
 }
 
 .body {
-  overflow-y: scroll;
+  overflow-y: visible;
+  :global .input_input:last-of-type {
+    margin-bottom: -32px !important;
+    // TODO: move this to config
+  }
 }
 
 .navigation {
   text-align: center;
+  padding: 0 30px 20px;
+  display: flex;
+  justify-content: space-between;
 }
 
 %button {
@@ -33,9 +45,12 @@ $dialog-content-padding: 30px;
 
 .button {
   @extend %button;
-  min-width: calc(50% - 0.8rem) !important; // TODO: This was not working without important statement
-}
-
-.navigation {
-  padding: 20px 30px;
+  box-sizing: border-box;
+  min-width: calc(50% - #{$dialog-navigation-padding}) !important;
+  padding: 0;
+  margin: 0;
+  &:only-child {
+    margin: auto;
+    width: 65%;
+  }
 }
