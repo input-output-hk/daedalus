@@ -61,4 +61,10 @@ storiesOf('Sidebar', module)
     />
   ))
 
-  .add('hidden', () => (<Sidebar route="" hidden />));
+  .add('hidden', () => (
+    <Sidebar
+      categories={SIDEBAR_CATEGORIES}
+      route=""
+      hidden
+    />
+  ));

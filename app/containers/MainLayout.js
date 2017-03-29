@@ -96,7 +96,7 @@ export default class MainLayout extends Component {
     const sidebarMenus = {
       wallets: {
         items: sidebar.wallets,
-        activeWalletId: activeWalletId,
+        activeWalletId,
         actions: {
           onAddWallet: toggleAddWallet,
           onWalletItemClick: (walletId: string) => {
