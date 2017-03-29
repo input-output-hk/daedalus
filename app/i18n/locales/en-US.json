@@ -123,6 +123,6 @@
   "wallet.settings.delete.dialog.title": "Delete wallet",
   "wallet.settings.delete.dialog.confirmButtonLabel": "Delete",
   "wallet.settings.delete.dialog.wantToDeleteWalletQuestion": "Do you really want to delete <strong>{walletName}</strong> wallet?",
-  "wallet.settings.delete.dialog.confirmBackupNotice": "Make sure you have access to backup before continue. Otherwise you will lose all your funds connected to this wallet.",
+  "wallet.settings.delete.dialog.confirmBackupNotice": "Make sure you have access to backup before continuing. Otherwise, you will lose all your funds connected to this wallet.",
   "wallet.settings.delete.dialog.enterRecoveryWordLabel": "Enter the name of the wallet to confirm deletion:"
 }

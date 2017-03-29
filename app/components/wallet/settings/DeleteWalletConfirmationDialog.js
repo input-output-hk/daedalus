@@ -27,7 +27,7 @@ const messages = defineMessages({
   },
   confirmBackupNotice: {
     id: 'wallet.settings.delete.dialog.confirmBackupNotice',
-    defaultMessage: '!!!Make sure you have access to backup before continue. Otherwise you will lose all your funds connected to this wallet.',
+    defaultMessage: '!!!Make sure you have access to backup before continuing. Otherwise, you will lose all your funds connected to this wallet.',
     description: 'Notice to confirm if the user has made a backup of his wallet',
   },
   enterRecoveryWordLabel: {
