@@ -1,12 +1,15 @@
 import { app, BrowserWindow, Menu, shell, ipcMain, dialog } from 'electron';
 import Log from 'electron-log';
+import getAppName from 'electron-log/lib/transports/file/get-app-name';
 import osxMenu from './menus/osx';
 import winLinuxMenu from './menus/win-linux';
 import ipcApi from './ipc-api';
+import getLogFilePath from './lib/getLogFilePath';
 
 // Configure default logger levels for console and file outputs
 Log.transports.console.level = 'warn';
 Log.transports.file.level = 'debug';
+Log.transports.file.file = getLogFilePath(process.platform, process.env, getAppName());
 
 let menu;
 let mainWindow = null;
