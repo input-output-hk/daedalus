@@ -78,6 +78,17 @@ export default class CachedRequest extends Request {
     return this;
   }
 
+  /**
+   * Asynchronously patch the result of the request.
+   * This can be used for optimistic UI updates before the server has confirmed the change.
+   *
+   * @param modify {Function} - Custom function to path the result (which gets passed in as
+   * only param) You can either change the result directly (e.g: `result.push(something)` or
+   * if you need to replace the whole result of the request you need to return it from this
+   * function.
+   *
+   * @returns {Promise}
+   */
   patch(modify: Function): Promise<any> {
     return new Promise((resolve) => {
       setTimeout(action(() => {
