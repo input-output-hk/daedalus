@@ -16,38 +16,42 @@ export default class Sidebar extends Component {
     menus: PropTypes.shape({
       wallets: PropTypes.shape({
         items: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.object).isRequired,
+        activeWalletId: PropTypes.string,
         actions: PropTypes.shape({
           onAddWallet: PropTypes.func,
           onWalletItemClick: PropTypes.func
         })
       })
-    }).isRequired,
+    }),
     categories: PropTypes.shape({
       WALLETS: PropTypes.string.isRequired,
       ADA_REDEMPTION: PropTypes.string.isRequired,
       SETTINGS: PropTypes.string.isRequired,
-    }).isRequired,
+    }),
     activeSidebarCategory: PropTypes.string,
-    onCategoryClicked: PropTypes.func, // TODO: temporary disabled
-    isShowingSubMenus: PropTypes.bool.isRequired,
-    activeWalletId: PropTypes.string,
+    onCategoryClicked: PropTypes.func,
+    isShowingSubMenus: PropTypes.bool,
+  };
+
+  static defaultProps = {
+    isShowingSubMenus: false,
   };
 
   render() {
     const {
-      menus, activeWalletId, categories, activeSidebarCategory,
+      menus, categories, activeSidebarCategory,
       isShowingSubMenus, onCategoryClicked
     } = this.props;
 
     let subMenu = null;
 
-    if (activeSidebarCategory === categories.WALLETS) {
+    if (menus && activeSidebarCategory === categories.WALLETS) {
       subMenu = (
         <SidebarWalletsMenu
           wallets={menus.wallets.items}
           onAddWallet={menus.wallets.actions.onAddWallet}
           onWalletItemClick={menus.wallets.actions.onWalletItemClick}
-          isActiveWallet={id => id === activeWalletId}
+          isActiveWallet={id => id === menus.wallets.activeWalletId}
           visible={isShowingSubMenus}
         />
       );
