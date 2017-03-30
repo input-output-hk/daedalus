@@ -127,7 +127,6 @@ export default class CardanoClientApi {
       type: data.cwMeta.cwType,
       currency: data.cwMeta.cwCurrency,
       name: data.cwMeta.cwName,
-      unit: data.cwMeta.cwUnit,
       assurance: data.cwMeta.cwAssurance,
     });
   }
