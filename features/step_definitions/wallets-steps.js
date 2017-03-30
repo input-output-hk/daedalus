@@ -102,8 +102,8 @@ export default function () {
   });
 
   this.Then(/^I should see the following error messages on the wallet send form:$/, async function (data) {
-    await this.client.waitForText('.WalletSendForm_fields .input_error');
-    let errorsOnScreen = await this.client.getText('.WalletSendForm_fields .input_error');
+    await this.client.waitForText('.WalletSendForm_component .input_error');
+    let errorsOnScreen = await this.client.getText('.WalletSendForm_component .input_error');
     if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
     const errors = data.hashes();
     for (let i=0; i < errors.length; i++) {
