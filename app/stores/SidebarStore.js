@@ -7,6 +7,7 @@ export default class SidebarStore extends Store {
   CATEGORIES = {
     WALLETS: '/wallets',
     ADA_REDEMPTION: '/ada-redemption',
+    SETTINGS: '/settings',
   };
 
   INITIAL_HIDE_SUB_MENU_DELAY = 4000;

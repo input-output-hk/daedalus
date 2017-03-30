@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { Route } from 'react-router';
+import { Route, IndexRedirect } from 'react-router';
 
 // PAGES
 import Wallet from './containers/wallet/Wallet';
@@ -14,6 +14,8 @@ import AdaRedemptionPage from './containers/wallet/AdaRedemptionPage';
 import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
 import NoWalletsPage from './containers/wallet/NoWalletsPage';
 import LanguageSelectionPage from './containers/profile/LanguageSelectionPage';
+import Settings from './containers/settings/Settings';
+import GeneralSettingsPage from './containers/settings/categories/GeneralSettingsPage';
 
 export const ROUTES = {
   ROOT: '/',
@@ -47,6 +49,10 @@ export default (
       <Route path={ROUTES.WALLETS.SEND} component={WalletSendPage} />
       <Route path={ROUTES.WALLETS.RECEIVE} component={WalletReceivePage} />
       <Route path={ROUTES.WALLETS.SETTINGS} component={WalletSettingsPage} />
+    </Route>
+    <Route path="/settings" component={Settings}>
+      <IndexRedirect to="general" />
+      <Route path="general" component={GeneralSettingsPage} />
     </Route>
   </div>
 );
