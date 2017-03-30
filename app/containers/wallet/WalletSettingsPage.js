@@ -46,7 +46,6 @@ export default class WalletSettingsPage extends Component {
       <WalletSettings
         assuranceLevels={WALLET_ASSURANCE_LEVEL_OPTIONS}
         walletAssurance={wallet.assurance}
-        walletUnit={wallet.unit}
         onWalletAssuranceLevelUpdate={this.handleWalletAssuranceLevelUpdate}
         error={updateWalletRequest.error}
         openDialogAction={actions.dialogs.open}

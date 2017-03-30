@@ -10,7 +10,6 @@ export default class Wallet {
   currency: string = '';
   @observable name: string = '';
   @observable amount: number;
-  @observable unit: number;
   @observable assurance: string;
   @observable transactions: Array<WalletTransaction> = [];
 
@@ -21,7 +20,6 @@ export default class Wallet {
     address: string,
     currency: string,
     amount: number,
-    unit: number,
     assurance: string,
   }) {
     Object.assign(this, data);

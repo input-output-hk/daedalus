@@ -307,9 +307,9 @@ export default class CardanoClientApi {
   }
 
   async updateWallet(request: walletUpdateRequest) {
-    const { walletId, type, currency, name, assurance, unit } = request;
+    const { walletId, type, currency, name, assurance } = request;
     try {
-      return await ClientApi.updateWallet(walletId, type, currency, name, assurance, unit);
+      return await ClientApi.updateWallet(walletId, type, currency, name, assurance, 'ADA');
     } catch (error) {
       throw new GenericApiError();
     }

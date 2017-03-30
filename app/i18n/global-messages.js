@@ -66,9 +66,4 @@ export default defineMessages({
     defaultMessage: '!!!Ada',
     description: 'Name for "Ada" unit.'
   },
-  unitLovelace: {
-    id: 'global.unit.lovelace',
-    defaultMessage: '!!!Lovelace',
-    description: 'Name for "Lovelace" unit.'
-  },
 });

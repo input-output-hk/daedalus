@@ -75,7 +75,6 @@ export type walletUpdateRequest = {
   currency: string,
   name: string,
   assurance: string,
-  unit: number,
 };
 
 export type redeemAdaRequest = {

@@ -116,7 +116,6 @@
   "wallet.send.form.title.hint": "E.g: Money for Frank",
   "wallet.send.form.title.label": "Title",
   "wallet.settings.assurance": "Transaction assurance security level",
-  "wallet.settings.units": "Units",
   "wallet.summary.no.transactions": "No recent transactions",
   "wallet.summary.page.pendingConfirmationLabel": "Pending confirmation",
   "wallet.summary.page.transactionsLabel": "Number of transactions",
