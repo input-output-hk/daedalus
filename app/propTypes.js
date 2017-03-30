@@ -9,3 +9,9 @@ export const oneOrManyChildElements = PropTypes.oneOfType([
 export const storesPropType = PropTypes.shape({
   app: PropTypes.instanceOf(AppStore),
 });
+
+export const translationMessageParams = PropTypes.shape({
+  id: PropTypes.string.isRequired,
+  defaultMessage: PropTypes.string.isRequired,
+  description: PropTypes.string,
+});
