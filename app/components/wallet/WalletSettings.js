@@ -16,11 +16,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Transaction assurance security level',
     description: 'Label for the "Transaction assurance security level" dropdown.',
   },
-  unitsLabel: {
-    id: 'wallet.settings.units',
-    defaultMessage: '!!!Units',
-    description: 'Label for the "Units" dropdown.',
-  },
 });
 
 @observer
@@ -31,12 +26,7 @@ export default class WalletSettings extends Component {
       value: PropTypes.string.isRequired,
       label: PropTypes.object.isRequired,
     })).isRequired,
-    units: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.shape({
-      value: PropTypes.number.isRequired,
-      label: PropTypes.object.isRequired,
-    })).isRequired,
     walletAssurance: PropTypes.string.isRequired,
-    walletUnit: PropTypes.number.isRequired,
     onWalletAssuranceLevelUpdate: PropTypes.func.isRequired,
     onWalletUnitUpdate: PropTypes.func.isRequired,
     error: PropTypes.instanceOf(LocalizableError),
@@ -51,31 +41,18 @@ export default class WalletSettings extends Component {
   render() {
     const { intl } = this.context;
     const {
-      assuranceLevels, units,
-      walletAssurance, walletUnit,
+      assuranceLevels, walletAssurance,
       onWalletAssuranceLevelUpdate,
-      onWalletUnitUpdate, error,
-      openDialogAction, isDialogOpen,
+      error, openDialogAction, isDialogOpen,
     } = this.props;
     const assuranceLevelOptions = assuranceLevels.map(assurance => ({
       value: assurance.value,
       label: intl.formatMessage(assurance.label),
     }));
-    const unitOptions = units.map(unit => ({
-      value: unit.value,
-      label: intl.formatMessage(unit.label),
-    }));
     return (
       <div className={styles.component}>
 
         <BorderedBox>
-
-          <Dropdown
-            label={intl.formatMessage(messages.unitsLabel)}
-            source={unitOptions}
-            value={walletUnit}
-            onChange={(value) => onWalletUnitUpdate({ unit: value })}
-          />
 
           <Dropdown
             label={intl.formatMessage(messages.assuranceLevelLabel)}
