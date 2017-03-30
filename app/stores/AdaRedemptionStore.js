@@ -5,17 +5,7 @@ import { isString } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/Request';
 import { PARSE_REDEMPTION_CODE } from '../../electron/ipc-api/parse-redemption-code-from-pdf';
-import LocalizableError from '../i18n/LocalizableError';
-import { InvalidMnemonicError } from '../i18n/global-errors';
-
-export class AdaRedemptionCertificateParseError extends LocalizableError {
-  constructor() {
-    super({
-      id: 'errors.AdaRedemptionCertificateParseError',
-      defaultMessage: '!!!The ADA redemption code could not be parsed from the given document.',
-    });
-  }
-}
+import { InvalidMnemonicError, AdaRedemptionCertificateParseError } from '../i18n/errors';
 
 export default class AdaRedemptionStore extends Store {
 

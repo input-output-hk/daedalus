@@ -7,6 +7,7 @@ import Sidebar from '../app/components/sidebar/Sidebar';
 const SIDEBAR_CATEGORIES = {
   WALLETS: '/wallets',
   ADA_REDEMPTION: '/ada-redemption',
+  SETTINGS: '/settings',
 };
 
 const sidebarMenus = observable({
