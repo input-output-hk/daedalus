@@ -8,3 +8,12 @@ export class InvalidMnemonicError extends LocalizableError {
     });
   }
 }
+
+export class AdaRedemptionCertificateParseError extends LocalizableError {
+  constructor() {
+    super({
+      id: 'errors.AdaRedemptionCertificateParseError',
+      defaultMessage: '!!!The ADA redemption code could not be parsed from the given document.',
+    });
+  }
+}
