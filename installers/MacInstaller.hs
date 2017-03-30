@@ -18,7 +18,7 @@ import Launcher
 
 main :: IO ()
 main = do
-  version <- fmap (fromMaybe "dev") $ lookupEnv "DAEDALUS_VERSION"
+  version <- fromMaybe "dev" <$> lookupEnv "DAEDALUS_VERSION"
 
   let dir = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app/Contents/MacOS"
       pkg = "dist/Daedalus-installer-" <> version <> ".pkg"
@@ -72,6 +72,7 @@ main = do
        ]
   -- TODO: sign
   run "productbuild" productargs
+  run "rm" ["dist/temp.pkg"]
 
   echo $ "Generated " <> unsafeTextToLine (T.pack pkg)
 
@@ -88,5 +89,5 @@ doLauncher = "./cardano-launcher " <> (launcherArgs $ Launcher
 
 run :: T.Text -> [T.Text] -> IO ()
 run cmd args = do
-  echo $ unsafeTextToLine $ T.intercalate " " (cmd : args)
+  echo . unsafeTextToLine $ T.intercalate " " (cmd : args)
   procs cmd args mempty
