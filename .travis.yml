@@ -16,6 +16,7 @@ install:
 - mkdir -p node_modules/daedalus-client-api/
 - du -sh daedalus-bridge.tar.xz
 - tar xJf daedalus-bridge.tar.xz --strip-components=1 -C node_modules/daedalus-client-api/
+- rm daedalus-bridge.tar.xz
 - echo "cardano-sl build id is $(cat node_modules/daedalus-client-api/build-id)"
 - nix-shell --run "npm install"
 script:
@@ -23,6 +24,8 @@ script:
 - export SSL_CERT_FILE=$NIX_SSL_CERT_FILE
 - mv node_modules/daedalus-client-api/{log-config-prod.yaml,cardano-node,cardano-launcher}
   installers/
+- strip installers/cardano-node
+- strip installers/cardano-launcher
 - rm node_modules/daedalus-client-api/cardano-*
 - nix-shell --run "npm run package -- --icon installers/icons/256x256"
 - echo "Size of Electron app is $(du -sh release)"
@@ -30,6 +33,7 @@ script:
 - stack --no-terminal --nix build --exec make-installer --jobs 2
 - mkdir -p dist
 - popd
+- echo "Size of Electron app after bundling $(du -sh release)"
 notifications:
   slack:
     secure: hfzreJ033RxFI2UYtcGJ+MFgQX08UyUnQwhb8X8CuVuIZXDWhxz9JLMEUuL6QqogtffbiqfqIhyDwZ0PsE3aEJaHQAQ7lxJkMjZFU/o+CYvHBQy+WYCa/sFM0C8cEXn3Wb/LmhjvtKAgF302tnD5PAPglZTGtCJHpihKG/Wc+YwF2aFSon0DqoMtVmwVPvhD/WlAHyszARsE9C7jH7jN43gwupAmwj7QLH+kd96HKrrc2ItgMS0f5ucFnpM900c9LwhE5StxVdgTXLnogWQKcd1f4DwTNoXfS3Dy6VJkKj049VScvavcFcVPBL9xU62SMMy/eS/yRcHZkxJehUi16aoir2GXNZOKjQVQ85zEQofQgkR+b4roJJmtWJuCoyE0nptoHgDi4BlLwFuC1g7pkngtLvo3BrG3IjhV+s7QuhxFA9aA8MBQDTRBQNeZdU2I/iwJaYsggGQ2JYA/B2AE4C0sentbegGumsY4fah6HVQGOOZoCl3k9fmMDS42/D55kdteRAQBZBlixLHMXTsMf90jcJJGi/vkzVEnhby63RdTRNDW6MBA6RgvUIpI0VQgAIEM8LFHMNeHMYLoj++NnSI3gCrX8zi8nrnCUJmpCQ89WLDRbVy3rFltgcd7ds8SlRxMtSXCO9lulq/Q6Gk65mRhuq/My0FqBbT+DQUBg04=
