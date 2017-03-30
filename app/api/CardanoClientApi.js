@@ -144,7 +144,7 @@ export default class CardanoClientApi {
       amount: isOutgoing ? -1 * coins : coins,
       date: new Date(ctmDate * 1000),
       description: ctmDescription || '',
-      numberOfConfirmations: 3, //data.ctConfirmations,
+      numberOfConfirmations: data.ctConfirmations,
     });
   }
 
