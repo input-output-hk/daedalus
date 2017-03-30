@@ -6,7 +6,7 @@ import type {
 export const assuranceModeOptions: {
   NORMAL: AssuranceModeOption, STRICT: AssuranceModeOption,
 } = {
-  NORMAL: 'normal', STRICT: 'strict',
+  NORMAL: 'CWANormal', STRICT: 'CWAStrict',
 };
 
 export const assuranceModes: { NORMAL: AssuranceMode, STRICT: AssuranceMode } = {

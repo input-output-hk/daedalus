@@ -120,10 +120,6 @@ export default class CardanoClientApi {
   }
 
   @action _createWalletFromServerData(data: ServerWalletStruct) {
-    let assuranceMode = assuranceModes.NORMAL;
-    if (data.cwMeta.cwAssurance === assuranceModeOptions.STRICT) {
-      assuranceMode = assuranceModes.STRICT;
-    }
     return new Wallet({
       id: data.cwAddress,
       address: data.cwAddress,
@@ -132,7 +128,7 @@ export default class CardanoClientApi {
       currency: data.cwMeta.cwCurrency,
       name: data.cwMeta.cwName,
       unit: data.cwMeta.cwUnit,
-      assuranceMode,
+      assurance: data.cwMeta.cwAssurance,
     });
   }
 
@@ -148,7 +144,7 @@ export default class CardanoClientApi {
       amount: isOutgoing ? -1 * coins : coins,
       date: new Date(ctmDate * 1000),
       description: ctmDescription || '',
-      numberOfConfirmations: data.ctConfirmations,
+      numberOfConfirmations: 3, //data.ctConfirmations,
     });
   }
 
@@ -302,7 +298,7 @@ export default class CardanoClientApi {
   async updateWallet(request: walletUpdateRequest) {
     const { walletId, type, currency, name, assurance } = request;
     try {
-      return await ClientApi.updateWallet(walletId, type, currency, name, assurance, 'ADA');
+      return await ClientApi.updateWallet(walletId, type, currency, name, assurance, 0);
     } catch (error) {
       throw new GenericApiError();
     }
