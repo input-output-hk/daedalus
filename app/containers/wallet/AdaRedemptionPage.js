@@ -14,6 +14,7 @@ export default class AdaRedemptionPage extends Component {
   static propTypes = {
     actions: PropTypes.shape({
       adaRedemption: PropTypes.shape({
+        chooseRedemptionType: PropTypes.func.isRequired,
         redeemAda: PropTypes.func.isRequired,
         setCertificate: PropTypes.func.isRequired,
         setPassPhrase: PropTypes.func.isRequired,
@@ -30,6 +31,7 @@ export default class AdaRedemptionPage extends Component {
         certificate: PropTypes.instanceOf(File),
         isCertificateEncrypted: PropTypes.bool.isRequired,
         isValidRedemptionKey: PropTypes.func.isRequired,
+        redemptionType: PropTypes.string.isRequired,
         error: PropTypes.instanceOf(Error),
       }).isRequired,
     }).isRequired
@@ -41,9 +43,11 @@ export default class AdaRedemptionPage extends Component {
 
   render() {
     const { wallets, adaRedemption } = this.props.stores;
-    const { redeemAdaRequest, isCertificateEncrypted, isValidRedemptionKey, error } = adaRedemption;
     const {
-      setCertificate, setPassPhrase, setRedemptionCode, removeCertificate
+      redeemAdaRequest, isCertificateEncrypted, isValidRedemptionKey, redemptionType, error
+    } = adaRedemption;
+    const {
+      chooseRedemptionType, setCertificate, setPassPhrase, setRedemptionCode, removeCertificate
     } = this.props.actions.adaRedemption;
 
     const selectableWallets = wallets.all.map((w) => ({
@@ -58,6 +62,7 @@ export default class AdaRedemptionPage extends Component {
           onCertificateSelected={(certificate) => setCertificate({ certificate })}
           onPassPhraseChanged={(passPhrase) => setPassPhrase({ passPhrase })}
           onRedemptionCodeChanged={(redemptionCode) => setRedemptionCode({ redemptionCode })}
+          onChooseRedemptionType={(choice) => chooseRedemptionType({ redemptionType: choice })}
           redemptionCode={adaRedemption.redemptionCode}
           wallets={selectableWallets}
           isCertificateSelected={adaRedemption.certificate !== null}
@@ -68,6 +73,7 @@ export default class AdaRedemptionPage extends Component {
           onSubmit={this.onSubmit}
           onRemoveCertificate={removeCertificate}
           redemptionCodeValidator={isValidRedemptionKey}
+          redemptionType={redemptionType}
         />
       </Layout>
     );

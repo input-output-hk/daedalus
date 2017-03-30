@@ -8,6 +8,8 @@ import { PARSE_REDEMPTION_CODE } from '../../electron/ipc-api/parse-redemption-c
 import LocalizableError from '../i18n/LocalizableError';
 import { InvalidMnemonicError } from '../i18n/global-errors';
 
+type redemptionTypeChoices = 'regular' | 'forceVended' | 'paperVended';
+
 export class AdaRedemptionCertificateParseError extends LocalizableError {
   constructor() {
     super({
@@ -19,6 +21,7 @@ export class AdaRedemptionCertificateParseError extends LocalizableError {
 
 export default class AdaRedemptionStore extends Store {
 
+  @observable redemptionType: redemptionTypeChoices = 'regular';
   @observable certificate: ?File = null;
   @observable isCertificateEncrypted = false;
   @observable passPhrase: ?string = null;
@@ -31,6 +34,7 @@ export default class AdaRedemptionStore extends Store {
 
   setup() {
     const actions = this.actions.adaRedemption;
+    actions.chooseRedemptionType.listen(this._chooseRedemptionType);
     actions.setCertificate.listen(this._setCertificate);
     actions.setPassPhrase.listen(this._setPassPhrase);
     actions.setRedemptionCode.listen(this._setRedemptionCode);
@@ -49,6 +53,12 @@ export default class AdaRedemptionStore extends Store {
   }
 
   isValidRedemptionKey = (redemptionKey: string) => this.api.isValidRedemptionKey(redemptionKey);
+
+  @action _chooseRedemptionType = (params: {
+    redemptionType: redemptionTypeChoices,
+  }) => {
+    this.redemptionType = params.redemptionType;
+  };
 
   _setCertificate = action(({ certificate }) => {
     this.certificate = certificate;

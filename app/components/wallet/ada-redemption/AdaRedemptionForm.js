@@ -8,6 +8,7 @@ import Input from 'react-toolbox/lib/input/Input';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import AdaCertificateUploadWidget from '../../widgets/forms/AdaCertificateUploadWidget';
+import AdaRedemptionChoices from './AdaRedemptionChoices';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { InvalidMnemonicError } from '../../../i18n/global-errors';
 import { isValidMnemonic } from '../../../../lib/decrypt';
@@ -20,10 +21,30 @@ const messages = defineMessages({
     defaultMessage: '!!!Ada Redemption',
     description: 'headline "Ada redemption" dialog.'
   },
-  instructions: {
-    id: 'wallet.redeem.dialog.instructions',
-    defaultMessage: '!!!Detailed instructions',
-    description: 'headline "Ada redemption" dialog.'
+  instructionsRegular: {
+    id: 'wallet.redeem.dialog.instructions.regular',
+    defaultMessage: `<p>To redeem your Ada upload your certificate or copy and paste your redemption
+code from the certificate. Here is an example redemption key, yours will look similar:</p>
+<p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p>
+<p>If you upload a PDF file with your certificate redemption code will be automatically extracted.</p>
+<p>If you upload <strong>encrypted certificate</strong> you will need to provide a <strong>9 word mnemonic 
+passphrase</strong> to decrypt your certificate and your redemption code will be automatically extracted.</p>`,
+    description: '!!!Detailed instructions for redeeming Ada from the regular vending',
+  },
+  instructionsForceVended: {
+    id: 'wallet.redeem.dialog.instructions.forceVended',
+    defaultMessage: `<p>To redeem your Ada upload your certificate or copy and paste your redemption code from the certificate. 
+Here is an example redemption key, yours will look similar:</p><p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p>
+<p>If you upload a PDF file with your certificate redemption code will be automatically extracted.</p>
+<p>If you upload <strong>encrypted certificate</strong> you will need to provide a <strong>your email address, Ada passcode and Ada amount</strong>  
+to decrypt your certificate and your redemption code will be automatically extracted.</p>`,
+    description: '!!!Detailed instructions.regular',
+  },
+  instructionsPaperVended: {
+    id: 'wallet.redeem.dialog.instructions.paperVended',
+    defaultMessage: `<p>To redeem your Ada enter your Shielded vending key from the certificate, choose a wallet 
+where Ada should be redeemed and enter 9 word mnemonic passphrase.</p>`,
+    description: '!!!Detailed instructions.regular',
   },
   certificateLabel: {
     id: 'wallet.redeem.dialog.certificateLabel',
@@ -32,38 +53,53 @@ const messages = defineMessages({
   },
   certificateHint: {
     id: 'wallet.redeem.dialog.certificateHint',
-    defaultMessage: '!!!Drop file here or click to choose',
+    defaultMessage: '!!!Drop the file with your certificate here or click to find on your computer',
     description: 'Hint for the certificate file upload'
   },
   walletSelectLabel: {
     id: 'wallet.redeem.dialog.walletSelectLabel',
     defaultMessage: '!!!Choose Wallet',
-    description: 'Label for the walletId select'
+    description: 'Label for the wallet select field on Ada redemption form'
   },
   passphraseLabel: {
     id: 'wallet.redeem.dialog.passphraseLabel',
-    defaultMessage: '!!!Redeem token',
-    description: 'Label for the token input'
+    defaultMessage: '!!!Passphrase to Decrypt the Ada Voucher Certificate',
+    description: 'Label for the passphrase to decrypt Ada voucher certificate input'
   },
   passphraseHint: {
     id: 'wallet.redeem.dialog.passphraseHint',
     defaultMessage: '!!!Enter your 9 word mnemonic here',
-    description: 'Hint for the token input'
+    description: 'Hint for the mnemonic passphrase input'
   },
-  redemptionCodeLabel: {
-    id: 'wallet.redeem.dialog.redemptionCodeLabel',
-    defaultMessage: '!!!Redemption Code',
-    description: 'Label for ada redemption code input',
+  redemptionKeyLabel: {
+    id: 'wallet.redeem.dialog.redemptionKeyLabel',
+    defaultMessage: '!!!Redemption key',
+    description: 'Label for ada redemption key input',
   },
-  redemptionCodeError: {
+  shieldedRedemptionKeyLabel: {
+    id: 'wallet.redeem.dialog.shieldedRedemptionKeyLabel',
+    defaultMessage: '!!!Shielded redemption key',
+    description: 'Label for shielded redemption key input',
+  },
+  redemptionKeyError: {
     id: 'wallet.redeem.dialog.redemptionCodeError',
-    defaultMessage: '!!!Invalid Redemption Code',
+    defaultMessage: '!!!Invalid redemption key',
+    description: 'Error "Invalid redemption key" for ada redemption code input',
+  },
+  shieldedRedemptionKeyError: {
+    id: 'wallet.redeem.dialog.shieldedRedemptionCodeError',
+    defaultMessage: '!!!Invalid Shielded Redemption Key',
     description: 'Error "Invalid Redemption Code" for ada redemption code input',
   },
-  redemptionCodeHint: {
+  redemptionKeyHint: {
     id: 'wallet.redeem.dialog.redemptionCodeHint',
-    defaultMessage: '!!!Enter your code or upload a certificate',
-    description: 'Hint for ada redemption code input',
+    defaultMessage: '!!!Enter your redemption key or upload a certificate',
+    description: 'Hint for ada redemption key input',
+  },
+  shieldedRedemptionKeyHint: {
+    id: 'wallet.redeem.dialog.shieldedRedemptionKeyHint',
+    defaultMessage: '!!!Enter your shielded redemption key',
+    description: 'Hint for shielded redemption key input',
   },
   submitLabel: {
     id: 'wallet.redeem.dialog.submitLabel',
@@ -82,11 +118,13 @@ export default class AdaRedemptionForm extends Component {
       value: PropTypes.string.isRequired,
       label: PropTypes.string.isRequired,
     })).isRequired,
+    onChooseRedemptionType: PropTypes.func.isRequired,
     onCertificateSelected: PropTypes.func.isRequired,
     onRemoveCertificate: PropTypes.func.isRequired,
     onPassPhraseChanged: PropTypes.func.isRequired,
     onRedemptionCodeChanged: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
+    redemptionType: PropTypes.string.isRequired,
     redemptionCodeValidator: PropTypes.func.isRequired,
     isSubmitting: PropTypes.bool.isRequired,
     isCertificateSelected: PropTypes.bool.isRequired,
@@ -135,9 +173,9 @@ export default class AdaRedemptionForm extends Component {
           ];
         }]
       },
-      redemptionCode: {
-        label: this.context.intl.formatMessage(messages.redemptionCodeLabel),
-        placeholder: this.context.intl.formatMessage(messages.redemptionCodeHint),
+      redemptionKey: {
+        label: this.context.intl.formatMessage(messages.redemptionKeyLabel),
+        placeholder: this.context.intl.formatMessage(messages.redemptionKeyHint),
         value: '',
         bindings: 'ReactToolbox',
         validate: ({ field }) => {
@@ -145,7 +183,21 @@ export default class AdaRedemptionForm extends Component {
           if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           return [
             this.props.redemptionCodeValidator(value),
-            this.context.intl.formatMessage(messages.redemptionCodeError)
+            this.context.intl.formatMessage(messages.redemptionKeyError)
+          ];
+        },
+      },
+      shieldedRedemptionKey: {
+        label: this.context.intl.formatMessage(messages.shieldedRedemptionKeyLabel),
+        placeholder: this.context.intl.formatMessage(messages.shieldedRedemptionKeyHint),
+        value: '',
+        bindings: 'ReactToolbox',
+        validate: ({ field }) => {
+          const value = this.props.redemptionCode ? this.props.redemptionCode : field.value;
+          if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
+          return [
+            this.props.redemptionCodeValidator(value),
+            this.context.intl.formatMessage(messages.shie)
           ];
         },
       },
@@ -167,42 +219,76 @@ export default class AdaRedemptionForm extends Component {
     const {
       wallets, isCertificateSelected, isCertificateEncrypted,
       isSubmitting, onCertificateSelected, redemptionCode,
-      onRedemptionCodeChanged, onRemoveCertificate,
-      isCertificateInvalid, error
+      onRedemptionCodeChanged, onRemoveCertificate, onChooseRedemptionType,
+      isCertificateInvalid, redemptionType, error
     } = this.props;
     const certificate = form.$('certificate');
     const passPhrase = form.$('passPhrase');
-    const redemptionCodeField = form.$('redemptionCode');
+    const redemptionKeyField = form.$('redemptionKey');
+    const shieldedRedemptionKeyField = form.$('shieldedRedemptionKey');
     const walletId = form.$('walletId');
     const componentClasses = classnames([
       styles.component,
       isSubmitting ? styles.isSubmitting : null
     ]);
-    const showPassPhraseWidget = isCertificateSelected && isCertificateEncrypted;
+    const showPassPhraseWidget = isCertificateSelected && isCertificateEncrypted || redemptionType === 'paperVended';
+    const showUploadWidget = redemptionType !== 'paperVended';
     const canSubmit = redemptionCode !== '';
+    let instructionMessage = '';
+    switch (redemptionType) {
+      case 'regular':
+        instructionMessage = messages.instructionsRegular;
+        break;
+      case 'forceVended':
+        instructionMessage = messages.instructionsForceVended;
+        break;
+      case 'paperVended':
+        instructionMessage = messages.instructionsPaperVended;
+        break;
+      default:
+        instructionMessage = messages.instructionsRegular;
+    }
 
     return (
       <div className={componentClasses}>
 
         <h1 className={styles.headline}>{intl.formatMessage(messages.headline)}</h1>
 
+        <AdaRedemptionChoices
+          activeChoice={redemptionType}
+          onSelectChoice={onChooseRedemptionType}
+        />
+
         <div className={styles.instructions}>
-          <FormattedHTMLMessage {...messages.instructions} />
+          <FormattedHTMLMessage {...instructionMessage} />
         </div>
 
         <div className={styles.redemption}>
           <div className={styles.inputs}>
 
-            <Input
-              className="redemption-code"
-              {...redemptionCodeField.bind()}
-              value={redemptionCode}
-              onChange={(value) => {
-                onRedemptionCodeChanged(value);
-                redemptionCodeField.onChange(value);
-              }}
-              disabled={isCertificateSelected}
-            />
+            {redemptionType !== 'paperVended' ? (
+              <Input
+                className="redemption-key"
+                {...redemptionKeyField.bind()}
+                value={redemptionCode}
+                onChange={(value) => {
+                  onRedemptionCodeChanged(value);
+                  redemptionKeyField.onChange(value);
+                }}
+                disabled={isCertificateSelected}
+              />
+            ) : (
+              <Input
+                className="shielded-redemption-key"
+                {...shieldedRedemptionKeyField.bind()}
+                value={redemptionCode}
+                onChange={(value) => {
+                  onRedemptionCodeChanged(value);
+                  redemptionKeyField.onChange(value);
+                }}
+                disabled={isCertificateSelected}
+              />
+            )}
 
             <Dropdown
               className="wallet"
@@ -211,22 +297,24 @@ export default class AdaRedemptionForm extends Component {
             />
 
           </div>
-          <div className={styles.certificate}>
+          {showUploadWidget && (
             <div className={styles.certificate}>
-              <AdaCertificateUploadWidget
-                {...certificate.bind()}
-                selectedFile={certificate.value}
-                onFileSelected={(file) => {
-                  onCertificateSelected(file);
-                  certificate.onChange(file);
-                }}
-                isCertificateEncrypted={isCertificateEncrypted}
-                isCertificateSelected={isCertificateSelected}
-                isCertificateInvalid={isCertificateInvalid}
-                onRemoveCertificate={onRemoveCertificate}
-              />
+              <div className={styles.certificate}>
+                <AdaCertificateUploadWidget
+                  {...certificate.bind()}
+                  selectedFile={certificate.value}
+                  onFileSelected={(file) => {
+                    onCertificateSelected(file);
+                    certificate.onChange(file);
+                  }}
+                  isCertificateEncrypted={isCertificateEncrypted}
+                  isCertificateSelected={isCertificateSelected}
+                  isCertificateInvalid={isCertificateInvalid}
+                  onRemoveCertificate={onRemoveCertificate}
+                />
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {showPassPhraseWidget && (
