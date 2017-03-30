@@ -9,8 +9,9 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import AdaCertificateUploadWidget from '../../widgets/forms/AdaCertificateUploadWidget';
 import AdaRedemptionChoices from './AdaRedemptionChoices';
+import BorderedBox from '../../widgets/BorderedBox';
 import LocalizableError from '../../../i18n/LocalizableError';
-import { InvalidMnemonicError } from '../../../i18n/global-errors';
+import { InvalidMnemonicError } from '../../../i18n/errors';
 import { isValidMnemonic } from '../../../../lib/decrypt';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './AdaRedemptionForm.scss';
@@ -252,95 +253,99 @@ export default class AdaRedemptionForm extends Component {
     return (
       <div className={componentClasses}>
 
-        <h1 className={styles.headline}>{intl.formatMessage(messages.headline)}</h1>
+        <BorderedBox>
 
-        <AdaRedemptionChoices
-          activeChoice={redemptionType}
-          onSelectChoice={onChooseRedemptionType}
-        />
+          <h1 className={styles.headline}>{intl.formatMessage(messages.headline)}</h1>
 
-        <div className={styles.instructions}>
-          <FormattedHTMLMessage {...instructionMessage} />
-        </div>
+          <AdaRedemptionChoices
+            activeChoice={redemptionType}
+            onSelectChoice={onChooseRedemptionType}
+          />
 
-        <div className={styles.redemption}>
-          <div className={styles.inputs}>
-
-            {redemptionType !== 'paperVended' ? (
-              <Input
-                className="redemption-key"
-                {...redemptionKeyField.bind()}
-                value={redemptionCode}
-                onChange={(value) => {
-                  onRedemptionCodeChanged(value);
-                  redemptionKeyField.onChange(value);
-                }}
-                disabled={isCertificateSelected}
-              />
-            ) : (
-              <Input
-                className="shielded-redemption-key"
-                {...shieldedRedemptionKeyField.bind()}
-                value={redemptionCode}
-                onChange={(value) => {
-                  onRedemptionCodeChanged(value);
-                  redemptionKeyField.onChange(value);
-                }}
-                disabled={isCertificateSelected}
-              />
-            )}
-
-            <Dropdown
-              className="wallet"
-              source={wallets}
-              {...walletId.bind()}
-            />
-
+          <div className={styles.instructions}>
+            <FormattedHTMLMessage {...instructionMessage} />
           </div>
-          {showUploadWidget && (
-            <div className={styles.certificate}>
-              <div className={styles.certificate}>
-                <AdaCertificateUploadWidget
-                  {...certificate.bind()}
-                  selectedFile={certificate.value}
-                  onFileSelected={(file) => {
-                    onCertificateSelected(file);
-                    certificate.onChange(file);
+
+          <div className={styles.redemption}>
+            <div className={styles.inputs}>
+
+              {redemptionType !== 'paperVended' ? (
+                <Input
+                  className="redemption-key"
+                  {...redemptionKeyField.bind()}
+                  value={redemptionCode}
+                  onChange={(value) => {
+                    onRedemptionCodeChanged(value);
+                    redemptionKeyField.onChange(value);
                   }}
-                  isCertificateEncrypted={isCertificateEncrypted}
-                  isCertificateSelected={isCertificateSelected}
-                  isCertificateInvalid={isCertificateInvalid}
-                  onRemoveCertificate={onRemoveCertificate}
+                  disabled={isCertificateSelected}
                 />
+              ) : (
+                <Input
+                  className="shielded-redemption-key"
+                  {...shieldedRedemptionKeyField.bind()}
+                  value={redemptionCode}
+                  onChange={(value) => {
+                    onRedemptionCodeChanged(value);
+                    redemptionKeyField.onChange(value);
+                  }}
+                  disabled={isCertificateSelected}
+                />
+              )}
+
+              <Dropdown
+                className="wallet"
+                source={wallets}
+                {...walletId.bind()}
+              />
+
+            </div>
+            {showUploadWidget && (
+              <div className={styles.certificate}>
+                <div className={styles.certificate}>
+                  <AdaCertificateUploadWidget
+                    {...certificate.bind()}
+                    selectedFile={certificate.value}
+                    onFileSelected={(file) => {
+                      onCertificateSelected(file);
+                      certificate.onChange(file);
+                    }}
+                    isCertificateEncrypted={isCertificateEncrypted}
+                    isCertificateSelected={isCertificateSelected}
+                    isCertificateInvalid={isCertificateInvalid}
+                    onRemoveCertificate={onRemoveCertificate}
+                  />
+                </div>
               </div>
+            )}
+          </div>
+
+          {showPassPhraseWidget && (
+            <div className={styles.passPhrase}>
+              <Input
+                className="pass-phrase"
+                {...passPhrase.bind({
+                  onBlur: event => {
+                    event.preventDefault();
+                    passPhrase.onBlur();
+                    passPhrase.validate();
+                  }
+                })}
+              />
             </div>
           )}
-        </div>
 
-        {showPassPhraseWidget && (
-          <div className={styles.passPhrase}>
-            <Input
-              className="pass-phrase"
-              {...passPhrase.bind({
-                onBlur: event => {
-                  event.preventDefault();
-                  passPhrase.onBlur();
-                  passPhrase.validate();
-                }
-              })}
-            />
-          </div>
-        )}
+          {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
-        {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
+          <Button
+            className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
+            label={intl.formatMessage(messages.submitLabel)}
+            onMouseUp={this.submit}
+            primary
+            disabled={!canSubmit}
+          />
 
-        <Button
-          className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
-          label={intl.formatMessage(messages.submitLabel)}
-          onMouseUp={this.submit}
-          primary
-          disabled={!canSubmit}
-        />
+        </BorderedBox>
 
       </div>
     );
