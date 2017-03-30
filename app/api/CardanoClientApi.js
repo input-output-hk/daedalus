@@ -22,6 +22,8 @@ import {
   WalletKeyImportError,
   NotEnoughMoneyToSendError
 } from './errors';
+import type { AssuranceModeOption } from '../types/transactionAssuranceTypes';
+import { assuranceModes, assuranceModeOptions } from '../config/transactionAssuranceConfig';
 
 // const notYetImplemented = () => new Promise((_, reject) => {
 //   reject(new ApiMethodNotYetImplementedError());
@@ -118,6 +120,10 @@ export default class CardanoClientApi {
   }
 
   @action _createWalletFromServerData(data: ServerWalletStruct) {
+    let assuranceMode = assuranceModes.NORMAL;
+    if (data.cwMeta.cwAssurance === assuranceModeOptions.STRICT) {
+      assuranceMode = assuranceModes.STRICT;
+    }
     return new Wallet({
       id: data.cwAddress,
       address: data.cwAddress,
@@ -126,7 +132,7 @@ export default class CardanoClientApi {
       currency: data.cwMeta.cwCurrency,
       name: data.cwMeta.cwName,
       unit: data.cwMeta.cwUnit,
-      assurance: data.cwMeta.cwAssurance,
+      assuranceMode,
     });
   }
 
@@ -143,7 +149,6 @@ export default class CardanoClientApi {
       date: new Date(ctmDate * 1000),
       description: ctmDescription || '',
       numberOfConfirmations: data.ctConfirmations,
-      assuranceLevel: this._calculateAssuranceLevel(data.ctConfirmations),
     });
   }
 
@@ -204,18 +209,6 @@ export default class CardanoClientApi {
   }
 
   // PRIVATE
-
-  _calculateAssuranceLevel(numberOfConfirmations: number) {
-    let assuranceLevel;
-    if (numberOfConfirmations >= 33) {
-      assuranceLevel = 'high';
-    } else if (numberOfConfirmations >= 9) {
-      assuranceLevel = 'medium';
-    } else {
-      assuranceLevel = 'low';
-    }
-    return assuranceLevel;
-  }
 
   _onNotify = (rawMessage: string) => {
     console.debug('CardanoClientApi::notify message: ', rawMessage);
@@ -332,7 +325,7 @@ type ServerWalletStruct = {
     cwType: string,
     cwCurrency: string,
     cwUnit: number,
-    cwAssurance: string,
+    cwAssurance: AssuranceModeOption,
   },
 }
 

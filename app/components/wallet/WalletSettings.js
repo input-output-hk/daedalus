@@ -28,7 +28,6 @@ export default class WalletSettings extends Component {
     })).isRequired,
     walletAssurance: PropTypes.string.isRequired,
     onWalletAssuranceLevelUpdate: PropTypes.func.isRequired,
-    onWalletUnitUpdate: PropTypes.func.isRequired,
     error: PropTypes.instanceOf(LocalizableError),
     openDialogAction: PropTypes.func.isRequired,
     isDialogOpen: PropTypes.func.isRequired,

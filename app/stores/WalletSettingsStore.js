@@ -4,6 +4,7 @@ import _ from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/Request';
 import globalMessages from '../i18n/global-messages';
+import type { AssuranceMode } from '../types/transactionAssuranceTypes';
 
 export default class WalletSettingsStore extends Store {
 
@@ -19,7 +20,7 @@ export default class WalletSettingsStore extends Store {
     a.updateWalletAssuranceLevel.listen(this._updateWalletAssuranceLevel);
   }
 
-  @action _updateWalletAssuranceLevel = async ({ assurance }: { assurance: string }) => {
+  @action _updateWalletAssuranceLevel = async ({ assurance }: { assurance: AssuranceMode }) => {
     const { id: walletId, type, currency, name } = this.stores.wallets.active;
     await this.updateWalletRequest.execute({ walletId, type, currency, name, assurance });
     await this.stores.wallets.walletsRequest.patch(result => {

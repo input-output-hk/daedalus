@@ -66,4 +66,19 @@ export default defineMessages({
     defaultMessage: '!!!Ada',
     description: 'Name for "Ada" unit.'
   },
+  transactionAssuranceLevelLow: {
+    id: 'wallet.transaction.assuranceLevel.low',
+    defaultMessage: '!!!low',
+    description: 'Transaction assurance level "low".',
+  },
+  transactionAssuranceLevelMedium: {
+    id: 'wallet.transaction.assuranceLevel.medium',
+    defaultMessage: '!!!medium',
+    description: 'Transaction assurance level "medium".',
+  },
+  transactionAssuranceLevelHigh: {
+    id: 'wallet.transaction.assuranceLevel.high',
+    defaultMessage: '!!!high',
+    description: 'Transaction assurance level "high".',
+  },
 });
