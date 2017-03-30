@@ -2,7 +2,7 @@
 import React, { Component, PropTypes } from 'react';
 import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import InlineEditingDropdown from '../widgets/forms/InlineEditingDropdown';
+import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletSettings.scss';
 
@@ -24,7 +24,6 @@ export default class WalletSettings extends Component {
     })).isRequired,
     walletUnit: PropTypes.number.isRequired,
     onWalletUnitUpdate: PropTypes.func.isRequired,
-    isWalletUnitUpdated: PropTypes.bool.isRequired,
     error: PropTypes.instanceOf(LocalizableError),
   };
 
@@ -35,11 +34,8 @@ export default class WalletSettings extends Component {
   render() {
     const { intl } = this.context;
     const {
-      units,
-      walletUnit,
-      onWalletUnitUpdate,
-      isWalletUnitUpdated,
-      error,
+      units, walletUnit,
+      onWalletUnitUpdate, error,
     } = this.props;
     const unitOptions = units.map(unit => ({
       value: unit.value,
@@ -50,13 +46,11 @@ export default class WalletSettings extends Component {
 
         <div className={styles.borderedBox}>
 
-          <InlineEditingDropdown
-            isActive
+          <Dropdown
             label={intl.formatMessage(messages.unitsLabel)}
-            options={unitOptions}
+            source={unitOptions}
             value={walletUnit}
             onChange={(value) => onWalletUnitUpdate({ unit: value })}
-            successfullyUpdated={isWalletUnitUpdated}
           />
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
