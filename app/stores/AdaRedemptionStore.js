@@ -6,6 +6,7 @@ import Store from './lib/Store';
 import Request from './lib/Request';
 import { PARSE_REDEMPTION_CODE } from '../../electron/ipc-api/parse-redemption-code-from-pdf';
 import { InvalidMnemonicError, AdaRedemptionCertificateParseError } from '../i18n/errors';
+import LocalizableError from '../i18n/LocalizableError';
 
 export default class AdaRedemptionStore extends Store {
 

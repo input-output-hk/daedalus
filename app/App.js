@@ -14,7 +14,7 @@ import translations from './i18n/translations';
 export default class App extends Component {
 
   static propTypes = {
-    stores: PropTypes.object.isRequired,
+    stores: PropTypes.shape({}).isRequired,
     actions: PropTypes.shape({}).isRequired,
     history: PropTypes.shape({}).isRequired,
   };
