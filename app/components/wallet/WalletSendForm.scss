@@ -2,13 +2,7 @@
 @import '../../themes/mixins/error-message';
 
 .component {
-  width: calc(100% - 40px);
-  margin: 0 auto;
-  margin-top: 50px;
-}
-
-.fields {
-  padding: 0 20px;
+  padding: 20px;
 }
 
 .submitButtonSpinning {

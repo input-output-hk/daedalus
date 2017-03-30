@@ -4,7 +4,11 @@ import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import LocalizableError from '../../i18n/LocalizableError';
+import BorderedBox from '../widgets/BorderedBox';
 import styles from './WalletSettings.scss';
+import DeleteWalletButton from './settings/DeleteWalletButton';
+import DeleteWalletConfirmationDialog from './settings/DeleteWalletConfirmationDialog';
+import DeleteWalletDialogContainer from '../../containers/wallet/dialogs/DeleteWalletDialogContainer';
 
 const messages = defineMessages({
   assuranceLevelLabel: {
@@ -36,6 +40,8 @@ export default class WalletSettings extends Component {
     onWalletAssuranceLevelUpdate: PropTypes.func.isRequired,
     onWalletUnitUpdate: PropTypes.func.isRequired,
     error: PropTypes.instanceOf(LocalizableError),
+    openDialogAction: PropTypes.func.isRequired,
+    isDialogOpen: PropTypes.func.isRequired,
   };
 
   static contextTypes = {
@@ -49,6 +55,7 @@ export default class WalletSettings extends Component {
       walletAssurance, walletUnit,
       onWalletAssuranceLevelUpdate,
       onWalletUnitUpdate, error,
+      openDialogAction, isDialogOpen,
     } = this.props;
     const assuranceLevelOptions = assuranceLevels.map(assurance => ({
       value: assurance.value,
@@ -61,7 +68,7 @@ export default class WalletSettings extends Component {
     return (
       <div className={styles.component}>
 
-        <div className={styles.borderedBox}>
+        <BorderedBox>
 
           <Dropdown
             label={intl.formatMessage(messages.unitsLabel)}
@@ -79,7 +86,19 @@ export default class WalletSettings extends Component {
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
-        </div>
+          <div className={styles.deleteWalletButton}>
+            <DeleteWalletButton
+              onClick={() => openDialogAction({
+                dialog: DeleteWalletConfirmationDialog,
+              })}
+            />
+          </div>
+
+        </BorderedBox>
+
+        {isDialogOpen(DeleteWalletConfirmationDialog) ? (
+          <DeleteWalletDialogContainer />
+        ) : null}
 
       </div>
     );

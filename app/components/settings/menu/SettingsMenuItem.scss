@@ -1,0 +1,27 @@
+.component {
+  color: #5e6066;
+  display: block;
+  font-family: $font-regular;
+  font-size: 16px;
+  line-height: 1.38;
+  padding: 14px 20px;
+  text-align: left;
+  width: 100%;
+}
+
+.active {
+  background-color: #edf0f3;
+  border-left: 4px solid #445b7c;
+  font-family: $font-bold;
+}
+
+.enabled {
+  &:hover {
+    color: black;
+    cursor: pointer;
+  }
+}
+
+.disabled {
+  color: #b3b3b3;
+}

@@ -11,6 +11,7 @@ import NetworkStatusStore from './NetworkStatusStore';
 import AdaRedemptionStore from './AdaRedemptionStore';
 import NodeUpdateStore from './NodeUpdateStore';
 import WalletSettingsStore from './WalletSettingsStore';
+import UiDialogsStore from './UiDialogsStore';
 
 const storeClasses = {
   app: AppStore,
@@ -24,6 +25,7 @@ const storeClasses = {
   adaRedemption: AdaRedemptionStore,
   nodeUpdate: NodeUpdateStore,
   walletSettings: WalletSettingsStore,
+  uiDialogs: UiDialogsStore,
 };
 
 // Constant that does never change during lifetime
@@ -40,6 +42,7 @@ const stores = observable({
   adaRedemption: null,
   nodeUpdate: null,
   walletSettings: null,
+  uiDialogs: null,
 });
 
 // Set up and return the stores for this app -> also used to reset all stores to defaults
@@ -66,4 +69,5 @@ export type storesType = {
   adaRedemption: AdaRedemptionStore,
   nodeUpdate: NodeUpdateStore,
   walletSettings: WalletSettingsStore,
+  uiDialogs: UiDialogsStore,
 };

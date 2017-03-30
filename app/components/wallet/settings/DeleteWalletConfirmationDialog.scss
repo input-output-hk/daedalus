@@ -1,0 +1,34 @@
+.dialog {
+  font-family: $font-light;
+
+  :global {
+    .checkbox_check {
+      border-color: $color-light-red;
+      &.checkbox_checked {
+        background: $color-light-red;
+        border-color: $color-light-red;
+      }
+    }
+
+    .button_flat.button_primary {
+      background: $color-light-red;
+
+      &[disabled] {
+        opacity: 0.3;
+      }
+
+      &:not([disabled]) {
+        &:hover {
+          background: $color-lighter-red;
+        }
+        &:active {
+          background: $color-dark-red;
+        }
+      }
+    }
+  }
+}
+
+.confirmationInput {
+  margin-top: 30px;
+}

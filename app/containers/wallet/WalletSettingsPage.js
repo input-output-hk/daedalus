@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import Request from '../../stores/lib/Request';
 import Wallet from '../../domain/Wallet';
 import WalletSettings from '../../components/wallet/WalletSettings';
+import UiDialogsStore from '../../stores/UiDialogsStore';
 
 @inject('stores', 'actions') @observer
 export default class WalletSettingsPage extends Component {
@@ -18,13 +19,17 @@ export default class WalletSettingsPage extends Component {
         WALLET_ASSURANCE_LEVEL_OPTIONS: PropTypes.array.isRequired,
         WALLET_UNIT_OPTIONS: PropTypes.array.isRequired,
       }),
+      uiDialogs: PropTypes.instanceOf(UiDialogsStore).isRequired,
     }),
     actions: PropTypes.shape({
       walletSettings: PropTypes.shape({
         updateWalletAssuranceLevel: PropTypes.func.isRequired,
         updateWalletUnit: PropTypes.func.isRequired,
-      }),
-    }),
+      }).isRequired,
+      dialogs: PropTypes.shape({
+        open: PropTypes.func.isRequired,
+      }).isRequired,
+    }).isRequired,
   };
 
   handleWalletAssuranceLevelUpdate = (values: { assurance: string }) => {
@@ -36,7 +41,8 @@ export default class WalletSettingsPage extends Component {
   };
 
   render() {
-    const { wallets, walletSettings } = this.props.stores;
+    const { wallets, walletSettings, uiDialogs } = this.props.stores;
+    const { actions } = this.props;
     const wallet = wallets.active;
     const {
       updateWalletRequest,
@@ -52,6 +58,8 @@ export default class WalletSettingsPage extends Component {
         onWalletUnitUpdate={this.handleWalletUnitUpdate}
         units={WALLET_UNIT_OPTIONS}
         error={updateWalletRequest.error}
+        openDialogAction={actions.dialogs.open}
+        isDialogOpen={uiDialogs.isOpen}
       />
     );
   }

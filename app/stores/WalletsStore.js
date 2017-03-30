@@ -3,21 +3,22 @@ import { observable, computed, action, runInAction } from 'mobx';
 import _ from 'lodash';
 import Store from './lib/Store';
 import Wallet from '../domain/Wallet';
-import { matchRoute } from '../lib/routing-helpers';
+import { matchRoute, buildRoute } from '../lib/routing-helpers';
 import CachedRequest from './lib/CachedRequest';
 import Request from './lib/Request';
 import environment from '../environment';
 import config from '../config';
+import { ROUTES } from '../Routes';
 
 export default class WalletsStore extends Store {
 
-  BASE_ROUTE = '/wallets';
   WALLET_REFRESH_INTERVAL = 5000;
 
   @observable active = null;
   @observable walletsRequest = new CachedRequest(this.api, 'getWallets');
   @observable importFromKeyRequest = new Request(this.api, 'importWalletFromKey');
   @observable createWalletRequest = new Request(this.api, 'createWallet');
+  @observable deleteWalletRequest = new Request(this.api, 'deleteWallet');
   @observable sendMoneyRequest = new Request(this.api, 'createTransaction');
   @observable getWalletRecoveryPhraseRequest = new Request(this.api, 'getWalletRecoveryPhrase');
   @observable restoreRequest = new Request(this.api, 'restoreWallet');
@@ -39,6 +40,7 @@ export default class WalletsStore extends Store {
   setup() {
     const { wallets, walletBackup } = this.actions;
     wallets.create.listen(this._create);
+    wallets.delete.listen(this._delete);
     wallets.sendMoney.listen(this._sendMoney);
     wallets.toggleAddWallet.listen(this._toggleAddWallet);
     wallets.toggleCreateWalletDialog.listen(this._toggleCreateWalletDialog);
@@ -71,11 +73,32 @@ export default class WalletsStore extends Store {
     }
   };
 
+  _delete = async (params: { walletId: string }) => {
+    const walletToDelete = this.getWalletById(params.walletId);
+    if (!walletToDelete) return;
+    const indexOfWalletToDelete = this.all.indexOf(walletToDelete);
+    await this.deleteWalletRequest.execute({ walletId: params.walletId });
+    await this.walletsRequest.patch(result => {
+      result.splice(indexOfWalletToDelete, 1);
+    });
+    runInAction(() => {
+      if (this.hasAnyWallets) {
+        const nextIndexInList = Math.max(indexOfWalletToDelete - 1, 0);
+        const nextWalletInList = this.all[nextIndexInList];
+        this.goToWalletRoute(nextWalletInList.id);
+      } else {
+        this.active = null;
+        this.actions.router.goToRoute({ route: ROUTES.NO_WALLETS });
+      }
+    });
+    this.refreshWalletsData();
+  };
+
   _finishWalletCreation = async () => {
     this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
     const wallet = await this.createWalletRequest.execute(this._newWalletDetails).promise;
     if (wallet) {
-      await this.walletsRequest.patch(result => result.push(wallet));
+      await this.walletsRequest.patch(result => { result.push(wallet); });
       this.goToWalletRoute(wallet.id);
       runInAction(() => { this.isAddWalletDialogOpen = false; });
     }
@@ -124,10 +147,11 @@ export default class WalletsStore extends Store {
     return this.all.length > 0 ? this.all[0] : null;
   }
 
-
-  getWalletRoute = (walletId: string, screen: string = 'summary'): string => (
-    `${this.BASE_ROUTE}/${walletId}/${screen}`
+  getWalletRoute = (walletId: string, page: string = 'summary'): string => (
+    buildRoute(ROUTES.WALLETS.PAGE, { id: walletId, page })
   );
+
+  getWalletById = (id: string): ?Wallet => this.all.find(w => w.id === id);
 
   isValidAddress = (address: string) => this.api.isValidAddress('ADA', address);
 
@@ -221,6 +245,10 @@ export default class WalletsStore extends Store {
     }
   };
 
+  @action _unsetActiveWallet = () => {
+    this.active = null;
+  };
+
   @action _setIsWalletDialogOpen = (isOpen: boolean) => {
     this.isAddWalletDialogOpen = isOpen;
   };
@@ -239,7 +267,10 @@ export default class WalletsStore extends Store {
     const currentRoute = this.stores.app.currentRoute;
     const hasActiveWallet = !!this.active;
     const hasAnyWalletsLoaded = this.hasAnyLoaded;
-    const match = matchRoute(`${this.BASE_ROUTE}/:id(*page)`, currentRoute);
+
+    // There are not wallets loaded (yet) -> unset active and return
+    if (!hasAnyWalletsLoaded) return this._unsetActiveWallet();
+    const match = matchRoute(`${ROUTES.WALLETS.ROOT}/:id(*page)`, currentRoute);
     if (match) {
       // We have a route for a specific wallet -> lets try to find it
       const walletForCurrentRoute = this.all.find(w => w.id === match.id);
@@ -251,7 +282,7 @@ export default class WalletsStore extends Store {
         this._setActiveWallet({ walletId: this.all[0].id });
         if (this.active) this.goToWalletRoute(this.active.id);
       }
-    } else if (matchRoute(this.BASE_ROUTE, currentRoute)) {
+    } else if (matchRoute(ROUTES.WALLETS.ROOT, currentRoute)) {
       // The route does not specify any wallet -> pick first wallet
       if (!hasActiveWallet && hasAnyWalletsLoaded) {
         this._setActiveWallet({ walletId: this.all[0].id });
@@ -269,9 +300,9 @@ export default class WalletsStore extends Store {
 
   @action _hideWalletAddressCopyNotification = () => {
     this.isWalletAddressCopyNotificationVisible = false;
-  }
+  };
 
-  _onShowWalletAddressCopyNotification = action(() => {
+  @action _onShowWalletAddressCopyNotification = () => {
     if (this._hideWalletAddressCopyNotificationTimeout) {
       clearTimeout(this._hideWalletAddressCopyNotificationTimeout);
     }
@@ -280,6 +311,6 @@ export default class WalletsStore extends Store {
       config.wallets.ADDRESS_COPY_NOTIFICATION_DURATION
     );
     this.isWalletAddressCopyNotificationVisible = true;
-  });
+  };
 
 }

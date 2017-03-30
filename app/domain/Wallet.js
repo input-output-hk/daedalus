@@ -1,5 +1,5 @@
 // @flow
-import { observable, action } from 'mobx';
+import { observable, action, computed } from 'mobx';
 import WalletTransaction from './WalletTransaction';
 
 export default class Wallet {
@@ -29,6 +29,10 @@ export default class Wallet {
 
   @action addTransaction(transaction: WalletTransaction) {
     this.transactions.push(transaction);
+  }
+
+  @computed get hasFunds(): boolean {
+    return this.amount > 0;
   }
 
 }
