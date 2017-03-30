@@ -38,7 +38,7 @@ export default class WalletsStore extends Store {
   };
 
   setup() {
-    const { wallets, walletBackup } = this.actions;
+    const { wallets, walletBackup, router } = this.actions;
     wallets.create.listen(this._create);
     wallets.delete.listen(this._delete);
     wallets.sendMoney.listen(this._sendMoney);
@@ -50,6 +50,7 @@ export default class WalletsStore extends Store {
     wallets.toggleWalletKeyImportDialog.listen(this._toggleWalletKeyImportDialog);
     wallets.setActiveWallet.listen(this._setActiveWallet);
     wallets.showWalletAddressCopyNotification.listen(this._onShowWalletAddressCopyNotification);
+    router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishWalletCreation);
     this.registerReactions([
       this._updateActiveWalletOnRouteChanges,
@@ -311,6 +312,13 @@ export default class WalletsStore extends Store {
       config.wallets.ADDRESS_COPY_NOTIFICATION_DURATION
     );
     this.isWalletAddressCopyNotificationVisible = true;
+  };
+
+  @action _onRouteChange = (options: { route: string, params: ?Object }) => {
+    // Reset the send request anytime we visit the send page (e.g: to remove any previous errors)
+    if (matchRoute(ROUTES.WALLETS.SEND, buildRoute(options.route, options.params))) {
+      this.sendMoneyRequest.reset();
+    }
   };
 
 }
