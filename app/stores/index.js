@@ -10,7 +10,7 @@ import WalletBackupStore from './WalletBackupStore';
 import NetworkStatusStore from './NetworkStatusStore';
 import AdaRedemptionStore from './AdaRedemptionStore';
 import NodeUpdateStore from './NodeUpdateStore';
-import UIDialogsStore from './UIDialogsStore';
+import UiDialogsStore from './UiDialogsStore';
 
 const storeClasses = {
   app: AppStore,
@@ -23,7 +23,7 @@ const storeClasses = {
   networkStatus: NetworkStatusStore,
   adaRedemption: AdaRedemptionStore,
   nodeUpdate: NodeUpdateStore,
-  uiDialogs: UIDialogsStore,
+  uiDialogs: UiDialogsStore,
 };
 
 // Constant that does never change during lifetime
@@ -65,5 +65,5 @@ export type storesType = {
   networkStatus: NetworkStatusStore,
   adaRedemption: AdaRedemptionStore,
   nodeUpdate: NodeUpdateStore,
-  uiDialogs: UIDialogsStore,
+  uiDialogs: UiDialogsStore,
 };

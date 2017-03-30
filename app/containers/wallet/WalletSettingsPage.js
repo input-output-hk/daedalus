@@ -2,14 +2,14 @@
 import React, { Component, PropTypes } from 'react';
 import { inject, observer } from 'mobx-react';
 import WalletSettings from '../../components/wallet/WalletSettings';
-import UIDialogsStore from '../../stores/UIDialogsStore';
+import UiDialogsStore from '../../stores/UiDialogsStore';
 
 @inject('actions', 'stores') @observer
 export default class WalletSettingsPage extends Component {
 
   static propTypes = {
     stores: PropTypes.shape({
-      uiDialogs: PropTypes.instanceOf(UIDialogsStore).isRequired,
+      uiDialogs: PropTypes.instanceOf(UiDialogsStore).isRequired,
     }).isRequired,
     actions: PropTypes.shape({
       dialogs: PropTypes.shape({
