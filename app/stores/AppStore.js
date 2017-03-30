@@ -5,6 +5,8 @@ import Request from './lib/Request';
 import CachedRequest from './lib/CachedRequest';
 import globalMessages from '../i18n/global-messages';
 import LocalizableError from '../i18n/LocalizableError';
+import { ROUTES } from '../Routes';
+import { buildRoute } from '../lib/routing-helpers';
 
 export default class AppStore extends Store {
 
@@ -54,13 +56,13 @@ export default class AppStore extends Store {
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
     const { isConnected } = this.stores.networkStatus;
     if (isConnected && this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
-      this.actions.router.goToRoute({ route: '/profile/language-selection' });
+      this.actions.router.goToRoute({ route: ROUTES.PROFILE.LANGUAGE_SELECTION });
     }
   };
 
   _redirectToLoadingScreenWhenDisconnected = () => {
     if (!this.stores.networkStatus.isConnected) {
-      this.actions.router.goToRoute({ route: '/' });
+      this.actions.router.goToRoute({ route: ROUTES.ROOT });
     }
   };
 
@@ -69,14 +71,16 @@ export default class AppStore extends Store {
     this.getProfileLocaleRequest.invalidate().patch(() => locale);
   };
 
-  _updateRouteLocation = ({ route }: { route: string }) => {
+  _updateRouteLocation = (options: { route: string, params: ?Object }) => {
+    const routePath = buildRoute(options.route, options.params);
+    console.log(options.route, options.params, routePath);
     const currentRoute = this.stores.router.location.pathname;
-    if (currentRoute !== route) this.stores.router.push(route);
+    if (currentRoute !== routePath) this.stores.router.push(routePath);
   };
 
   _redirectToMainUiAfterLocaleIsSet = () => {
-    if (this.isCurrentLocaleSet && this.currentRoute === '/profile/language-selection') {
-      this.actions.router.goToRoute({ route: '/' });
+    if (this.isCurrentLocaleSet && this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION) {
+      this.actions.router.goToRoute({ route: ROUTES.ROOT });
     }
   };
 

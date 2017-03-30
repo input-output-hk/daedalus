@@ -6,7 +6,8 @@ import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavi
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import { oneOrManyChildElements } from '../../propTypes';
 import AdaRedemptionSuccessOverlay from '../../components/wallet/ada-redemption/AdaRedemptionSuccessOverlay';
-
+import { buildRoute } from '../../lib/routing-helpers';
+import { ROUTES } from '../../Routes';
 
 @inject('stores', 'actions') @observer
 export default class Wallet extends Component {
@@ -35,16 +36,19 @@ export default class Wallet extends Component {
     children: oneOrManyChildElements,
   };
 
-  isActiveScreen = (screen: string) => {
+  isActiveScreen = (page: string) => {
     const { app, wallets } = this.props.stores;
     if (!wallets.active) return false;
-    const screenRoute = `${wallets.BASE_ROUTE}/${wallets.active.id}/${screen}`;
+    const screenRoute = buildRoute(ROUTES.WALLETS.PAGE, { id: wallets.active.id, page });
     return app.currentRoute === screenRoute;
   };
 
-  handleWalletNavItemClick = (item: string) => {
+  handleWalletNavItemClick = (page: string) => {
     const { wallets } = this.props.stores;
-    this.props.actions.router.goToRoute({ route: `${wallets.BASE_ROUTE}/${wallets.active.id}/${item}` });
+    this.props.actions.router.goToRoute({
+      route: ROUTES.WALLETS.PAGE,
+      params: { id: wallets.active.id, page },
+    });
   };
 
   render() {
