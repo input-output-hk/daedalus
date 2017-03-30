@@ -2,6 +2,7 @@
 import { observable, action, computed, runInAction } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/Request';
+import { ROUTES } from '../Routes';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedDifficulties = null;
@@ -120,24 +121,27 @@ export default class NetworkStatusStore extends Store {
 
   _redirectToWalletAfterSync = () => {
     const { app, wallets } = this.stores;
-    if (!app.isCurrentLocaleSet) return;
+    if (app.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION) return;
     // TODO: introduce smarter way to bootsrap initial screens
     if (this.isConnected && this.isSynced && wallets.hasLoadedWallets && app.currentRoute === '/') {
       runInAction(() => { this.isLoadingWallets = false; });
       if (wallets.first) {
-        this.actions.router.goToRoute({ route: wallets.getWalletRoute(wallets.first.id) });
+        this.actions.router.goToRoute({
+          route: ROUTES.WALLETS.SUMMARY,
+          params: { id: wallets.first.id }
+        });
       } else {
-        this.actions.router.goToRoute({ route: '/no-wallets' });
+        this.actions.router.goToRoute({ route: ROUTES.NO_WALLETS });
       }
       this.actions.networkStatus.isSyncedAndReady();
     }
   };
 
   _redirectToLoadingWhenDisconnected = () => {
-    if (!this.stores.app.isCurrentLocaleSet) return;
+    if (this.stores.app.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION) return;
     if (!this.isConnected) {
       this._setInitialDifficulty();
-      this.actions.router.goToRoute({ route: '/' });
+      this.actions.router.goToRoute({ route: ROUTES.ROOT });
     }
   };
 

@@ -6,7 +6,7 @@ import AdaRedemptionForm from '../../components/wallet/ada-redemption/AdaRedempt
 import Wallet from '../../domain/Wallet';
 import Request from '../../stores/lib/Request';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
-import { AdaRedemptionCertificateParseError } from '../../stores/AdaRedemptionStore';
+import { AdaRedemptionCertificateParseError } from '../../i18n/errors';
 
 @inject('stores', 'actions') @observer
 export default class AdaRedemptionPage extends Component {

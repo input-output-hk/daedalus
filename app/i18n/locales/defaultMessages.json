@@ -1001,6 +1001,63 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!You have successfully copied wallet address",
+        "description": "Message for the wallet address copy success notification.",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "app/components/wallet/WalletAddressCopyNotification.js",
+        "id": "wallet.receive.page.addressCopyNotificationMessage",
+        "start": {
+          "column": 11,
+          "line": 9
+        }
+      }
+    ],
+    "path": "app/components/wallet/WalletAddressCopyNotification.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!You have successfully copied wallet address",
+        "description": "Message for the wallet address copy success notification.",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "app/components/wallet/WalletAddressCopySuccessNotification.js",
+        "id": "wallet.receive.page.addressCopyNotificationMessage",
+        "start": {
+          "column": 11,
+          "line": 9
+        }
+      }
+    ],
+    "path": "app/components/wallet/WalletAddressCopySuccessNotification.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!You have successfully copied wallet address",
+        "description": "Message for the wallet address copy success notification.",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "app/components/wallet/WalletAddressCopySuccessOverlay.js",
+        "id": "wallet.receive.page.addressCopySuccessMessage",
+        "start": {
+          "column": 11,
+          "line": 9
+        }
+      }
+    ],
+    "path": "app/components/wallet/WalletAddressCopySuccessOverlay.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Wallet Name",
         "description": "Label for the \"Wallet Name\" text input in the wallet create form.",
         "end": {
@@ -1080,13 +1137,13 @@
         "description": "Title for the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 13
+          "line": 15
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.title",
         "start": {
           "column": 26,
-          "line": 9
+          "line": 11
         }
       },
       {
@@ -1094,13 +1151,13 @@
         "description": "Instructions for sharing wallet address to receive payments on the wallet \"Receive Page\"",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 20
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.instructions",
         "start": {
           "column": 29,
-          "line": 14
+          "line": 16
         }
       }
     ],
@@ -1526,17 +1583,36 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!You have successfully copied wallet address",
+        "description": "Message for the wallet address copy success notification.",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "app/containers/wallet/WalletReceivePage.js",
+        "id": "wallet.receive.page.addressCopyNotificationMessage",
+        "start": {
+          "column": 11,
+          "line": 12
+        }
+      }
+    ],
+    "path": "app/containers/wallet/WalletReceivePage.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!No recent transactions",
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "app/containers/wallet/WalletSummaryPage.js",
         "id": "wallet.summary.no.transactions",
         "start": {
           "column": 18,
-          "line": 13
+          "line": 14
         }
       }
     ],
@@ -1549,13 +1625,13 @@
         "description": "Message shown when wallet has no transactions yet.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 16
         },
         "file": "app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions",
         "start": {
           "column": 18,
-          "line": 11
+          "line": 12
         }
       },
       {
@@ -1563,13 +1639,13 @@
         "description": "Message shown when wallet transaction search returns zero results.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions.found",
         "start": {
           "column": 23,
-          "line": 16
+          "line": 17
         }
       }
     ],
@@ -1617,6 +1693,90 @@
         "start": {
           "column": 19,
           "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!English",
+        "description": "Language name for \"English\" language.",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.language.english",
+        "start": {
+          "column": 19,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!Japanese",
+        "description": "Language name for \"Japanese\" language.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.language.japanese",
+        "start": {
+          "column": 20,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Chinese",
+        "description": "Language name for \"Chinese\" language.",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.language.chinese",
+        "start": {
+          "column": 19,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!Korean",
+        "description": "Language name for \"Korean\" language.",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.language.korean",
+        "start": {
+          "column": 18,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!German",
+        "description": "Language name for \"German\" language.",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.language.german",
+        "start": {
+          "column": 18,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!Croatian",
+        "description": "Language name for \"Croatian\" language.",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.language.croatian",
+        "start": {
+          "column": 20,
+          "line": 44
         }
       }
     ],

@@ -91,10 +91,12 @@ export default class MainLayout extends Component {
     const isWalletBackupInProgress = this.props.stores.walletBackup.inProgress;
     const isNodeUpdateAvailable = this.props.stores.nodeUpdate.isUpdateAvailable;
     const isUpdatePostponed = this.props.stores.nodeUpdate.isUpdatePostponed;
+    let activeDialog = null;
 
     const sidebarMenus = {
       wallets: {
         items: sidebar.wallets,
+        activeWalletId,
         actions: {
           onAddWallet: toggleAddWallet,
           onWalletItemClick: (walletId: string) => {
@@ -110,7 +112,6 @@ export default class MainLayout extends Component {
         categories={sidebar.CATEGORIES}
         activeSidebarCategory={sidebar.activeSidebarCategory}
         onCategoryClicked={category => actions.sidebar.activateSidebarCategory({ category })}
-        activeWalletId={activeWalletId}
         isSynced={isSynced}
       />
     );
@@ -119,44 +120,45 @@ export default class MainLayout extends Component {
         <NodeSyncStatusIcon isSynced={isSynced} syncPercentage={syncPercentage} />
       </TopBar>
     );
-    const addWalletRestoreDialog = wallets.isWalletRestoreDialogOpen ? (
-      <WalletRestoreDialog
-        onSubmit={this.handleRestoreWalletSubmit}
-        onCancel={toggleWalletRestore}
-        error={restoreRequest.error}
-        mnemonicValidator={mnemonic => this.props.stores.wallets.isValidMnemonic(mnemonic)}
-      />
-    ) : null;
-    const addWalletDialog = (
-      wallets.isAddWalletDialogOpen && !isWalletBackupInProgress ? <WalletAddPage /> : null
-    );
-    const createWalletDialog = wallets.isCreateWalletDialogOpen ? (
-      <WalletCreateDialog
-        onSubmit={this.handleAddWalletSubmit}
-        onCancel={toggleCreateWalletDialog}
-      />
-    ) : null;
-    const addWalletBackupDialog = (
-      isWalletBackupInProgress ? <WalletBackupPage /> : null
-    );
+
+    // TODO: Refactor dialogs logic away from the layout
+
+    if (wallets.isWalletRestoreDialogOpen) {
+      activeDialog = (
+        <WalletRestoreDialog
+          onSubmit={this.handleRestoreWalletSubmit}
+          onCancel={toggleWalletRestore}
+          error={restoreRequest.error}
+          mnemonicValidator={mnemonic => this.props.stores.wallets.isValidMnemonic(mnemonic)}
+        />
+      );
+    } else if (wallets.isAddWalletDialogOpen && !isWalletBackupInProgress) {
+      activeDialog = <WalletAddPage />;
+    } else if (wallets.isCreateWalletDialogOpen) {
+      activeDialog = (
+        <WalletCreateDialog
+          onSubmit={this.handleAddWalletSubmit}
+          onCancel={toggleCreateWalletDialog}
+        />
+      );
+    } else if (isWalletBackupInProgress) {
+      activeDialog = <WalletBackupPage />;
+    } else if (isWalletKeyImportDialogOpen) {
+      activeDialog = <WalletKeyImportPage />;
+    }
+
     const addNodeUpdateNotification = (
       isNodeUpdateAvailable && !isUpdatePostponed ? <NodeUpdatePage /> : null
     );
-    const addWalletKeyImportDialog = (
-      isWalletKeyImportDialogOpen ? <WalletKeyImportPage /> : null
-    );
+
     return (
       <SidebarLayout
         sidebar={sidebarComponent}
         topbar={topbar}
         notification={addNodeUpdateNotification}
+        contentDialog={activeDialog}
       >
         {this.props.children}
-        {addWalletDialog}
-        {createWalletDialog}
-        {addWalletRestoreDialog}
-        {addWalletBackupDialog}
-        {addWalletKeyImportDialog}
       </SidebarLayout>
     );
   }

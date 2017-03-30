@@ -10,7 +10,8 @@ import type {
   createTransactionRequest,
   walletRestoreRequest,
   redeemAdaRequest,
-  importKeyRequest
+  importKeyRequest,
+  deleteWalletRequest
 } from './index';
 import {
   // ApiMethodNotYetImplementedError,
@@ -73,6 +74,15 @@ export default class CardanoClientApi {
     console.debug('CardanoClientApi::createWallet called with', request);
     const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name, request.mnemonic);
     return this._createWalletFromServerData(response);
+  }
+
+  async deleteWallet(request: deleteWalletRequest) {
+    try {
+      await ClientApi.deleteWallet(request.walletId);
+      return true;
+    } catch (error) {
+      throw new GenericApiError();
+    }
   }
 
   async createTransaction(request: createTransactionRequest) {
@@ -280,11 +290,17 @@ export default class CardanoClientApi {
     return { localDifficulty, networkDifficulty };
   }
 
-  setUserLocale(locale: string) {
-    return new Promise((resolve) => {
-      // Fake async request here to make it more realistic
-      setTimeout(() => resolve(locale), 100);
-    });
+  async setUserLocale(locale: string) {
+    try {
+      const response = await ClientApi.updateLocale(locale);
+      return response.cpLocale;
+    } catch (error) {
+      throw new GenericApiError();
+    }
+  }
+
+  async getUserLocale() {
+    return await ClientApi.getLocale();
   }
 
   testReset() {

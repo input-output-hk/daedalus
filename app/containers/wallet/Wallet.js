@@ -1,10 +1,13 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer, inject } from 'mobx-react';
-import Layout from '../MainLayout';
+import MainLayout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import { oneOrManyChildElements } from '../../propTypes';
+import AdaRedemptionSuccessOverlay from '../../components/wallet/ada-redemption/AdaRedemptionSuccessOverlay';
+import { buildRoute } from '../../lib/routing-helpers';
+import { ROUTES } from '../../Routes';
 
 @inject('stores', 'actions') @observer
 export default class Wallet extends Component {
@@ -17,39 +20,57 @@ export default class Wallet extends Component {
       wallets: PropTypes.shape({
         hasLoadedWallets: PropTypes.bool.isRequired
       }).isRequired,
+      adaRedemption: PropTypes.shape({
+        showAdaRedemptionSuccessMessage: PropTypes.bool.isRequired,
+        amountRedeemed: PropTypes.number.isRequired,
+      }),
     }).isRequired,
     actions: PropTypes.shape({
       router: PropTypes.shape({
         goToRoute: PropTypes.func.isRequired,
       }),
+      adaRedemption: PropTypes.shape({
+        closeAdaRedemptionSuccessOverlay: PropTypes.func.isRequired,
+      }),
     }).isRequired,
     children: oneOrManyChildElements,
   };
 
-  isActiveScreen = (screen: string) => {
+  isActiveScreen = (page: string) => {
     const { app, wallets } = this.props.stores;
     if (!wallets.active) return false;
-    const screenRoute = `${wallets.BASE_ROUTE}/${wallets.active.id}/${screen}`;
+    const screenRoute = buildRoute(ROUTES.WALLETS.PAGE, { id: wallets.active.id, page });
     return app.currentRoute === screenRoute;
   };
 
-  handleWalletNavItemClick = (item: string) => {
+  handleWalletNavItemClick = (page: string) => {
     const { wallets } = this.props.stores;
-    this.props.actions.router.goToRoute({ route: `${wallets.BASE_ROUTE}/${wallets.active.id}/${item}` });
+    this.props.actions.router.goToRoute({
+      route: ROUTES.WALLETS.PAGE,
+      params: { id: wallets.active.id, page },
+    });
   };
 
   render() {
-    const { wallets } = this.props.stores;
-    if (!wallets.active) return <Layout><LoadingSpinner /></Layout>;
+    const { wallets, adaRedemption } = this.props.stores;
+    const { actions } = this.props;
+    const { showAdaRedemptionSuccessMessage, amountRedeemed } = adaRedemption;
+    if (!wallets.active) return <MainLayout><LoadingSpinner /></MainLayout>;
     return (
-      <Layout>
+      <MainLayout>
         <WalletWithNavigation
           isActiveScreen={this.isActiveScreen}
           onWalletNavItemClick={this.handleWalletNavItemClick}
         >
           {this.props.children}
         </WalletWithNavigation>
-      </Layout>
+        {showAdaRedemptionSuccessMessage ? (
+          <AdaRedemptionSuccessOverlay
+            amount={amountRedeemed}
+            onClose={actions.adaRedemption.closeAdaRedemptionSuccessOverlay}
+          />
+        ) : null}
+      </MainLayout>
     );
   }
 }

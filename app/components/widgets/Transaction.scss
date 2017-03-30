@@ -132,6 +132,10 @@ $type-box-size: 54px;
   background-color: #007600;
 }
 
+.assuranceLevel {
+  text-transform: capitalize;
+}
+
 .type {
   font-family: $font-light;
   font-size: 14px;

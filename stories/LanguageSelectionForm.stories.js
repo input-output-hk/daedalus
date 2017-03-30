@@ -2,6 +2,16 @@ import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
 import StoryDecorator from './support/StoryDecorator';
 import LanguageSelectionForm from '../app/components/profile/language-selection/LanguageSelectionForm';
+import globalMessages from '../app/i18n/global-messages';
+
+const LANGUAGES = [
+  { value: 'en-US', label: globalMessages.languageEnglish },
+  { value: 'ja-JP', label: globalMessages.languageJapanese },
+  { value: 'zh-CN', label: globalMessages.languageChinese },
+  { value: 'ko-KR', label: globalMessages.languageKorean },
+  { value: 'de-DE', label: globalMessages.languageGerman },
+  { value: 'hr-HR', label: globalMessages.languageCroatian },
+];
 
 storiesOf('LanguageSelectionForm', module)
 
@@ -17,15 +27,8 @@ storiesOf('LanguageSelectionForm', module)
     <div>
       <LanguageSelectionForm
         onSubmit={action('submit')}
+        languages={LANGUAGES}
         isSubmitting={false}
-        languages={[
-          { value: 'en-US', label: 'English' },
-          { value: 'ja-JP', label: 'Japanese' },
-          { value: 'zh-CN', label: 'Chinese' },
-          { value: 'ko-KR', label: 'Korean' },
-          { value: 'de-DE', label: 'German' },
-          { value: 'hr-HR', label: 'Croatian' },
-        ]}
       />
     </div>
   ))
@@ -34,15 +37,8 @@ storiesOf('LanguageSelectionForm', module)
     <div>
       <LanguageSelectionForm
         onSubmit={action('submit')}
-        isSubmitting={true}
-        languages={[
-          { value: 'en-US', label: 'English' },
-          { value: 'ja-JP', label: 'Japanese' },
-          { value: 'zh-CN', label: 'Chinese' },
-          { value: 'ko-KR', label: 'Korean' },
-          { value: 'de-DE', label: 'German' },
-          { value: 'hr-HR', label: 'Croatian' },
-        ]}
+        languages={LANGUAGES}
+        isSubmitting
       />
     </div>
   ));

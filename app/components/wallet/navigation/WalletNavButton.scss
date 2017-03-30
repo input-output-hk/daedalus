@@ -32,6 +32,10 @@
   max-height: 19px;
   max-width: 19px;
   margin-right: 10px;
+
+  @media (max-width: 950px) {
+    display: none;
+  }
 }
 
 // ========= STATES =========

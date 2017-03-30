@@ -1,0 +1,8 @@
+.button {
+  color: $color-light-red;
+  font-family: $font-medium;
+  font-size: 16px;
+  &:hover {
+    cursor: pointer;
+  }
+}

@@ -1,6 +1,7 @@
 $topBarHeight: 84px;
 
 .component {
+  background-color: $color-primary-bg;
   height: 100%;
   display: flex;
 }
@@ -22,8 +23,15 @@ $topBarHeight: 84px;
 .topbar {
   height: $topBarHeight;
   flex-shrink: 0;
+  // Show elements that overflow the topbar above the content area
+  z-index: 1;
 }
 
 .content {
+  height: 100%;
+}
+
+.contentWrapper {
+  position: relative;
   height: calc(100% - #{$topBarHeight});
 }

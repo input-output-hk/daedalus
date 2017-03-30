@@ -46,6 +46,10 @@ export type createWalletRequest = {
   mnemonic: string,
 };
 
+export type deleteWalletRequest = {
+  walletId: string,
+};
+
 export type createTransactionRequest = {
   walletId: string,
   sender: string,
