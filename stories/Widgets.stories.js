@@ -86,8 +86,9 @@ storiesOf('Widgets', module)
     <div>
       <NotificationMessage
         icon={NotificationIcon}
-        message='Address: <strong>1gGHFU9VsXV89kcJNzibNo8wJugxNtWsaqbjWaZEKzLtMGD</strong> copied to clipboard'
         show
-      />
+      >
+        Address: <strong>1gGHFU9VsXV89kcJNzibNo8wJugxNtWsaqbjWaZEKzLtMGD</strong> copied to clipboard
+      </NotificationMessage>
     </div>
   ));
