@@ -6,6 +6,7 @@ import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import LocalizableError from '../../../i18n/LocalizableError';
+import { translationMessageParams } from '../../../propTypes';
 import styles from './GeneralSettings.scss';
 
 const messages = defineMessages({
@@ -22,9 +23,9 @@ export default class GeneralSettings extends Component {
   static propTypes = {
     languages: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.shape({
       value: PropTypes.string.isRequired,
-      label: PropTypes.object.isRequired,
+      label: translationMessageParams.isRequired,
     })).isRequired,
-    currentLocale: PropTypes.string,
+    currentLocale: PropTypes.string.isRequired,
     onSelectLanguage: PropTypes.func.isRequired,
     isSubmitting: PropTypes.bool.isRequired,
     error: PropTypes.instanceOf(LocalizableError),

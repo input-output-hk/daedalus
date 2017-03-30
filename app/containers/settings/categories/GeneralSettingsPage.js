@@ -11,8 +11,8 @@ export default class GeneralSettingsPage extends Component {
     actions: PropTypes.shape({
       profile: PropTypes.shape({
         updateLocale: PropTypes.func.isRequired,
-      }),
-    }),
+      }).isRequired,
+    }).isRequired,
     stores: PropTypes.shape({
       app: PropTypes.shape({
         setProfileLocaleRequest: PropTypes.instanceOf(Request).isRequired,
@@ -23,7 +23,6 @@ export default class GeneralSettingsPage extends Component {
   };
 
   onSelectLanguage = (values: { locale: string }) => {
-    console.debug('SELECT LAGUAGE SUBMIT: ', values);
     this.props.actions.profile.updateLocale(values);
   };
 
