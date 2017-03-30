@@ -1,36 +1,32 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
+import classNames from 'classnames';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
-import Button from 'react-toolbox/lib/button/Button';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { translationMessageParams } from '../../../propTypes';
-import styles from './LanguageSelectionForm.scss';
+import styles from './GeneralSettings.scss';
 
 const messages = defineMessages({
   languageSelectLabel: {
-    id: 'profile.languageSelect.form.languageSelectLabel',
-    defaultMessage: '!!!Select your language',
+    id: 'settings.general.languageSelect.label',
+    defaultMessage: '!!!Language',
     description: 'Label for the language select.'
-  },
-  submitLabel: {
-    id: 'profile.languageSelect.form.submitLabel',
-    defaultMessage: '!!!Continue',
-    description: 'Label for the "Language select" form submit button.'
   },
 });
 
 @observer
-export default class LanguageSelectionForm extends Component {
+export default class GeneralSettings extends Component {
 
   static propTypes = {
     languages: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.shape({
       value: PropTypes.string.isRequired,
       label: translationMessageParams.isRequired,
     })).isRequired,
-    onSubmit: PropTypes.func.isRequired,
+    currentLocale: PropTypes.string.isRequired,
+    onSelectLanguage: PropTypes.func.isRequired,
     isSubmitting: PropTypes.bool.isRequired,
     error: PropTypes.instanceOf(LocalizableError),
   };
@@ -39,21 +35,15 @@ export default class LanguageSelectionForm extends Component {
     intl: intlShape.isRequired,
   };
 
-  submit = () => {
-    this.form.submit({
-      onSuccess: (form) => {
-        const { languageId } = form.values();
-        this.props.onSubmit({ locale: languageId });
-      },
-      onError: () => {}
-    });
+  selectLanguage = (values: { locale: string }) => {
+    this.props.onSelectLanguage({ locale: values });
   };
 
   form = new ReactToolboxMobxForm({
     fields: {
       languageId: {
         label: this.context.intl.formatMessage(messages.languageSelectLabel),
-        value: this.props.languages[0].value,
+        value: this.props.currentLocale,
         bindings: 'ReactToolbox',
       }
     }
@@ -64,35 +54,31 @@ export default class LanguageSelectionForm extends Component {
   });
 
   render() {
+    const { languages, isSubmitting, error } = this.props;
     const { intl } = this.context;
     const { form } = this;
-    const { languages, isSubmitting, error } = this.props;
     const languageId = form.$('languageId');
     const languageOptions = languages.map(language => ({
       value: language.value,
       label: intl.formatMessage(language.label)
     }));
-
+    const componentClassNames = classNames([styles.component, 'general']);
+    const languageSelectClassNames = classNames([
+      styles.language,
+      isSubmitting ? styles.submitLanguageSpinner : null,
+    ]);
     return (
-      <div className={styles.component}>
-        <div className={styles.centeredBox}>
+      <div className={componentClassNames}>
 
-          <Dropdown
-            className="language"
-            source={languageOptions}
-            {...languageId.bind()}
-          />
+        <Dropdown
+          className={languageSelectClassNames}
+          source={languageOptions}
+          {...languageId.bind()}
+          onChange={this.selectLanguage}
+        />
 
-          {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
+        {error && <p className={styles.error}>{error}</p>}
 
-          <Button
-            className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
-            label={intl.formatMessage(messages.submitLabel)}
-            onMouseUp={this.submit}
-            primary
-          />
-
-        </div>
       </div>
     );
   }

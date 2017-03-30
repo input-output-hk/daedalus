@@ -1,7 +1,7 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { inject, observer } from 'mobx-react';
-import UiDialogsStore from '../../../stores/UIDialogsStore';
+import UiDialogsStore from '../../../stores/UiDialogsStore';
 import WalletsStore from '../../../stores/WalletsStore';
 import DeleteWalletConfirmationDialog from '../../../components/wallet/settings/DeleteWalletConfirmationDialog';
 

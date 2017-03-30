@@ -32,6 +32,8 @@
   "profile.languageSelect.form.options.japanese": "Japanese",
   "profile.languageSelect.form.options.korean": "Korean",
   "profile.languageSelect.form.submitLabel": "Continue",
+  "settings.menu.general.link.label": "General",
+  "settings.general.languageSelect.label": "Language",
   "staking.chart.tooltip.commitments.label": "!!!commitments",
   "staking.chart.tooltip.mpc.phase.label": "!!!MPC phase",
   "staking.chart.tooltip.openings.label": "!!!openings",

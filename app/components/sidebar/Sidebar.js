@@ -7,6 +7,7 @@ import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import walletsIcon from '../../assets/images/sidebar/wallet-ic.svg';
 import adaRedemptionIcon from '../../assets/images/sidebar/ada.svg';
+import settingsIcon from '../../assets/images/sidebar/settings-ic.svg';
 
 @observer
 export default class Sidebar extends Component {
@@ -25,6 +26,7 @@ export default class Sidebar extends Component {
     categories: PropTypes.shape({
       WALLETS: PropTypes.string.isRequired,
       ADA_REDEMPTION: PropTypes.string.isRequired,
+      SETTINGS: PropTypes.string.isRequired,
     }),
     activeSidebarCategory: PropTypes.string,
     onCategoryClicked: PropTypes.func,
@@ -75,6 +77,13 @@ export default class Sidebar extends Component {
             active={activeSidebarCategory === categories.ADA_REDEMPTION}
             onClick={() => onCategoryClicked(categories.ADA_REDEMPTION)}
           />
+          <SidebarCategory
+            className="settings"
+            icon={settingsIcon}
+            active={activeSidebarCategory === categories.SETTINGS}
+            onClick={() => onCategoryClicked(categories.SETTINGS)}
+          />
+
         </div>
         {subMenu}
       </div>
