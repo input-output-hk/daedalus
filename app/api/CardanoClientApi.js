@@ -290,7 +290,7 @@ export default class CardanoClientApi {
     });
   }
 
-  async setWalletUnit(request: walletUpdateRequest) {
+  async updateWallet(request: walletUpdateRequest) {
     const { walletId, type, currency, name, assurance, unit } = request;
     try {
       return await ClientApi.updateWallet(walletId, type, currency, name, assurance, unit);

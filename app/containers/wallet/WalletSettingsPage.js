@@ -14,15 +14,21 @@ export default class WalletSettingsPage extends Component {
         active: PropTypes.instanceOf(Wallet),
       }),
       walletSettings: PropTypes.shape({
-        updateWalletUnitRequest: PropTypes.instanceOf(Request).isRequired,
+        updateWalletRequest: PropTypes.instanceOf(Request).isRequired,
+        WALLET_ASSURANCE_LEVEL_OPTIONS: PropTypes.array.isRequired,
         WALLET_UNIT_OPTIONS: PropTypes.array.isRequired,
       }),
     }),
     actions: PropTypes.shape({
       walletSettings: PropTypes.shape({
+        updateWalletAssuranceLevel: PropTypes.func.isRequired,
         updateWalletUnit: PropTypes.func.isRequired,
       }),
     }),
+  };
+
+  handleWalletAssuranceLevelUpdate = (values: { assurance: string }) => {
+    this.props.actions.walletSettings.updateWalletAssuranceLevel(values);
   };
 
   handleWalletUnitUpdate = (values: { unit: number }) => {
@@ -32,13 +38,20 @@ export default class WalletSettingsPage extends Component {
   render() {
     const { wallets, walletSettings } = this.props.stores;
     const wallet = wallets.active;
-    const { updateWalletUnitRequest, WALLET_UNIT_OPTIONS } = walletSettings;
+    const {
+      updateWalletRequest,
+      WALLET_ASSURANCE_LEVEL_OPTIONS,
+      WALLET_UNIT_OPTIONS,
+    } = walletSettings;
     return (
       <WalletSettings
+        assuranceLevels={WALLET_ASSURANCE_LEVEL_OPTIONS}
+        walletAssurance={wallet.assurance}
         walletUnit={wallet.unit}
+        onWalletAssuranceLevelUpdate={this.handleWalletAssuranceLevelUpdate}
         onWalletUnitUpdate={this.handleWalletUnitUpdate}
         units={WALLET_UNIT_OPTIONS}
-        error={updateWalletUnitRequest.error}
+        error={updateWalletRequest.error}
       />
     );
   }
