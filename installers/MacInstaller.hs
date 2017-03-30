@@ -82,8 +82,6 @@ doLauncher = "./cardano-launcher " <> (launcherArgs $ Launcher
   , nodeLogPath = appdata <> "Logs/cardano-node.log"
   , installerPath = appdata <> "installer.pkg"
   , runtimePath = appdata
-  , reportServerUrl = "http://35.156.164.19:8080"
-  , systemStart = Nothing
   })
     where
       appdata = "$HOME/Library/Application Support/Daedalus/"
