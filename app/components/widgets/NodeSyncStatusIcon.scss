@@ -1,16 +1,24 @@
 .component {
-  position: relative;
   overflow: visible;
+  position: absolute;
+  right: 12px;
   &:hover {
     .info {
       opacity: 1;
     }
   }
+  &.production {
+    right: 40px;
+    .icon {
+      height: 31px;
+      width: 31px;
+    }
+  }
 }
 
 .icon {
-  width: 31px;
-  height: 31px;
+  height: 22px;
+  width: 22px;
 }
 
 .syncing {
@@ -20,8 +28,7 @@
   }
 }
 
-.synced {
-}
+.synced {}
 
 .info {
   opacity: 0;
