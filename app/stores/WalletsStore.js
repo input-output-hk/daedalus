@@ -314,9 +314,9 @@ export default class WalletsStore extends Store {
     this.isWalletAddressCopyNotificationVisible = true;
   };
 
-  @action _onRouteChange = (params: { route: string }) => {
+  @action _onRouteChange = (options: { route: string, params: ?Object }) => {
     // Reset the send request anytime we visit the send page (e.g: to remove any previous errors)
-    if (matchRoute(`${this.BASE_ROUTE}/:id/send`, params.route)) {
+    if (matchRoute(ROUTES.WALLETS.SEND, buildRoute(options.route, options.params))) {
       this.sendMoneyRequest.reset();
     }
   };
