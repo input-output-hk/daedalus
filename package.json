@@ -111,6 +111,7 @@
     "classnames": "^2.2.5",
     "css-modules-require-hook": "^4.0.5",
     "electron-debug": "^1.0.1",
+    "electron-log": "^2.0.2",
     "es6-error": "^4.0.1",
     "faker": "^3.1.0",
     "immutability-helper": "^2.0.0",
