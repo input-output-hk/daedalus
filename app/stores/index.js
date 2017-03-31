@@ -10,6 +10,7 @@ import WalletBackupStore from './WalletBackupStore';
 import NetworkStatusStore from './NetworkStatusStore';
 import AdaRedemptionStore from './AdaRedemptionStore';
 import NodeUpdateStore from './NodeUpdateStore';
+import WalletSettingsStore from './WalletSettingsStore';
 import UiDialogsStore from './UiDialogsStore';
 
 const storeClasses = {
@@ -23,6 +24,7 @@ const storeClasses = {
   networkStatus: NetworkStatusStore,
   adaRedemption: AdaRedemptionStore,
   nodeUpdate: NodeUpdateStore,
+  walletSettings: WalletSettingsStore,
   uiDialogs: UiDialogsStore,
 };
 
@@ -39,6 +41,7 @@ const stores = observable({
   networkStatus: null,
   adaRedemption: null,
   nodeUpdate: null,
+  walletSettings: null,
   uiDialogs: null,
 });
 
@@ -65,5 +68,6 @@ export type storesType = {
   networkStatus: NetworkStatusStore,
   adaRedemption: AdaRedemptionStore,
   nodeUpdate: NodeUpdateStore,
+  walletSettings: WalletSettingsStore,
   uiDialogs: UiDialogsStore,
 };

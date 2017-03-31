@@ -9,6 +9,7 @@ import type {
   getTransactionsRequest,
   createTransactionRequest,
   walletRestoreRequest,
+  walletUpdateRequest,
   redeemAdaRequest,
   importKeyRequest,
   deleteWalletRequest
@@ -21,6 +22,8 @@ import {
   WalletKeyImportError,
   NotEnoughMoneyToSendError
 } from './errors';
+import type { AssuranceModeOption } from '../types/transactionAssuranceTypes';
+import { assuranceModes, assuranceModeOptions } from '../config/transactionAssuranceConfig';
 
 // const notYetImplemented = () => new Promise((_, reject) => {
 //   reject(new ApiMethodNotYetImplementedError());
@@ -124,6 +127,7 @@ export default class CardanoClientApi {
       type: data.cwMeta.cwType,
       currency: data.cwMeta.cwCurrency,
       name: data.cwMeta.cwName,
+      assurance: data.cwMeta.cwAssurance,
     });
   }
 
@@ -140,7 +144,6 @@ export default class CardanoClientApi {
       date: new Date(ctmDate * 1000),
       description: ctmDescription || '',
       numberOfConfirmations: data.ctConfirmations,
-      assuranceLevel: this._calculateAssuranceLevel(data.ctConfirmations),
     });
   }
 
@@ -201,18 +204,6 @@ export default class CardanoClientApi {
   }
 
   // PRIVATE
-
-  _calculateAssuranceLevel(numberOfConfirmations: number) {
-    let assuranceLevel;
-    if (numberOfConfirmations >= 33) {
-      assuranceLevel = 'high';
-    } else if (numberOfConfirmations >= 9) {
-      assuranceLevel = 'medium';
-    } else {
-      assuranceLevel = 'low';
-    }
-    return assuranceLevel;
-  }
 
   _onNotify = (rawMessage: string) => {
     console.debug('CardanoClientApi::notify message: ', rawMessage);
@@ -303,6 +294,15 @@ export default class CardanoClientApi {
     return await ClientApi.getLocale();
   }
 
+  async updateWallet(request: walletUpdateRequest) {
+    const { walletId, type, currency, name, assurance } = request;
+    try {
+      return await ClientApi.updateWallet(walletId, type, currency, name, assurance, 0);
+    } catch (error) {
+      throw new GenericApiError();
+    }
+  }
+
   testReset() {
     return ClientApi.testReset();
   }
@@ -319,6 +319,8 @@ type ServerWalletStruct = {
     cwName: string,
     cwType: string,
     cwCurrency: string,
+    cwUnit: number,
+    cwAssurance: AssuranceModeOption,
   },
 }
 
