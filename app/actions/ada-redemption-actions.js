@@ -15,6 +15,15 @@ export default defineActions({
   setRedemptionCode: {
     redemptionCode: PropTypes.string.isRequired,
   },
+  setEmail: {
+    email: PropTypes.string.isRequired,
+  },
+  setAdaPasscode: {
+    adaPasscode: PropTypes.string.isRequired,
+  },
+  setAdaAmount: {
+    adaAmount: PropTypes.string.isRequired,
+  },
   redeemAda: {
     walletId: PropTypes.string.isRequired,
   },

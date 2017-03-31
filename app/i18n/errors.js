@@ -17,3 +17,4 @@ export class AdaRedemptionCertificateParseError extends LocalizableError {
     });
   }
 }
+

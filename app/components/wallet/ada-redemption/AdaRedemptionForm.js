@@ -1,6 +1,7 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
+import { isEmail, isEmpty } from 'validator';
 import classnames from 'classnames';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import Button from 'react-toolbox/lib/button/Button';
@@ -11,7 +12,7 @@ import AdaCertificateUploadWidget from '../../widgets/forms/AdaCertificateUpload
 import AdaRedemptionChoices from './AdaRedemptionChoices';
 import BorderedBox from '../../widgets/BorderedBox';
 import LocalizableError from '../../../i18n/LocalizableError';
-import { InvalidMnemonicError } from '../../../i18n/errors';
+import { InvalidMnemonicError, InvalidEmailError } from '../../../i18n/errors';
 import { isValidMnemonic } from '../../../../lib/decrypt';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './AdaRedemptionForm.scss';
@@ -106,6 +107,36 @@ where Ada should be redeemed and enter 9 word mnemonic passphrase.</p>`,
     id: 'wallet.redeem.dialog.submitLabel',
     defaultMessage: '!!!Redeem your money',
     description: 'Label for the "Ada redemption" dialog submit button.'
+  },
+  emailLabel: {
+    id: 'wallet.redeem.dialog.emailLabel',
+    defaultMessage: '!!!Email',
+    description: 'Label for the email input field.'
+  },
+  emailHint: {
+    id: 'wallet.redeem.dialog.emailHint',
+    defaultMessage: '!!!Enter your email address',
+    description: 'Hint for the email input field.'
+  },
+  adaPasscodeLabel: {
+    id: 'wallet.redeem.dialog.adaPasscodeLabel',
+    defaultMessage: '!!!Ada passcode',
+    description: 'Label for the ada passcode input field.'
+  },
+  adaPasscodeHint: {
+    id: 'wallet.redeem.dialog.adaPasscodeHint',
+    defaultMessage: '!!!Enter your Ada passcode',
+    description: 'Hint for the Ada passcode input field.'
+  },
+  adaAmountLabel: {
+    id: 'wallet.redeem.dialog.adaAmountLabel',
+    defaultMessage: '!!!Ada amount',
+    description: 'Label for the ada amount input field.'
+  },
+  adaAmountHint: {
+    id: 'wallet.redeem.dialog.adaAmountHint',
+    defaultMessage: '!!!Enter your Ada passcode',
+    description: 'Hint for the Ada amount input field.'
   },
 });
 
@@ -206,7 +237,37 @@ export default class AdaRedemptionForm extends Component {
         label: this.context.intl.formatMessage(messages.walletSelectLabel),
         value: this.props.wallets[0].value,
         bindings: 'ReactToolbox',
-      }
+      },
+      email: {
+        label: this.context.intl.formatMessage(messages.emailLabel),
+        placeholder: this.context.intl.formatMessage(messages.emailHint),
+        value: '',
+        bindings: 'ReactToolbox',
+        validate: [({ field }) => {
+          return [
+            isEmail(field.value),
+            this.context.intl.formatMessage(new InvalidEmailError())
+          ];
+        }]
+      },
+      adaPasscode: {
+        label: this.context.intl.formatMessage(messages.adaPasscodeLabel),
+        placeholder: this.context.intl.formatMessage(messages.adaPasscodeHint),
+        value: '',
+        bindings: 'ReactToolbox',
+        validate: [({ field }) => {
+          if (field.value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
+        }]
+      },
+      adaAmount: {
+        label: this.context.intl.formatMessage(messages.adaAmountLabel),
+        placeholder: this.context.intl.formatMessage(messages.adaAmountHint),
+        value: '',
+        bindings: 'ReactToolbox',
+        validate: [({ field }) => {
+          if (field.value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
+        }]
+      },
     }
   }, {
     options: {
@@ -228,11 +289,16 @@ export default class AdaRedemptionForm extends Component {
     const redemptionKeyField = form.$('redemptionKey');
     const shieldedRedemptionKeyField = form.$('shieldedRedemptionKey');
     const walletId = form.$('walletId');
+    const emailField = form.$('email');
+    const adaPasscodeField = form.$('adaPasscode');
+    const adaAmountField = form.$('adaAmount');
     const componentClasses = classnames([
       styles.component,
       isSubmitting ? styles.isSubmitting : null
     ]);
-    const showPassPhraseWidget = isCertificateSelected && isCertificateEncrypted || redemptionType === 'paperVended';
+    const showPassPhraseWidget = isCertificateSelected && isCertificateEncrypted && redemptionType === 'regular' ||
+      redemptionType === 'paperVended';
+    const showInputsForDecryptingForceVendedCertificate = isCertificateSelected && isCertificateEncrypted && redemptionType === 'forceVended';
     const showUploadWidget = redemptionType !== 'paperVended';
     const canSubmit = redemptionCode !== '';
     let instructionMessage = '';
@@ -325,6 +391,51 @@ export default class AdaRedemptionForm extends Component {
               <Input
                 className="pass-phrase"
                 {...passPhrase.bind({
+                  onBlur: event => {
+                    event.preventDefault();
+                    passPhrase.onBlur();
+                    passPhrase.validate();
+                  }
+                })}
+              />
+            </div>
+          )}
+
+          {showInputsForDecryptingForceVendedCertificate && (
+            <div className={styles.email}>
+              <Input
+                className="email"
+                {...emailField.bind({
+                  onBlur: event => {
+                    event.preventDefault();
+                    passPhrase.onBlur();
+                    passPhrase.validate();
+                  }
+                })}
+              />
+            </div>
+          )}
+
+          {showInputsForDecryptingForceVendedCertificate && (
+            <div className={styles.email}>
+              <Input
+                className="email"
+                {...adaPasscodeField.bind({
+                  onBlur: event => {
+                    event.preventDefault();
+                    passPhrase.onBlur();
+                    passPhrase.validate();
+                  }
+                })}
+              />
+            </div>
+          )}
+
+          {showInputsForDecryptingForceVendedCertificate && (
+            <div className={styles.email}>
+              <Input
+                className="email"
+                {...adaAmountField.bind({
                   onBlur: event => {
                     event.preventDefault();
                     passPhrase.onBlur();

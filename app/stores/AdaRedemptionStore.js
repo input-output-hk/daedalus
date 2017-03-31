@@ -16,6 +16,9 @@ export default class AdaRedemptionStore extends Store {
   @observable certificate: ?File = null;
   @observable isCertificateEncrypted = false;
   @observable passPhrase: ?string = null;
+  @observable email: ?string = null;
+  @observable adaPasscode: ?string = null;
+  @observable adaAmount: ?string = null;
   @observable redemptionCode: string = '';
   @observable walletId: ?string = null;
   @observable error: ?LocalizableError = null;
@@ -29,6 +32,9 @@ export default class AdaRedemptionStore extends Store {
     actions.setCertificate.listen(this._setCertificate);
     actions.setPassPhrase.listen(this._setPassPhrase);
     actions.setRedemptionCode.listen(this._setRedemptionCode);
+    actions.setEmail.listen(this._setEmail);
+    actions.setAdaPasscode.listen(this._setAdaPasscode);
+    actions.setAdaAmount.listen(this._setAdaAmount);
     actions.redeemAda.listen(this._redeemAda);
     actions.adaSuccessfullyRedeemed.listen(this._onAdaSuccessfullyRedeemed);
     actions.closeAdaRedemptionSuccessOverlay.listen(this._onCloseAdaRedemptionSuccessOverlay);
@@ -69,6 +75,18 @@ export default class AdaRedemptionStore extends Store {
 
   _setRedemptionCode = action(({ redemptionCode }) => {
     this.redemptionCode = redemptionCode;
+  });
+
+  _setEmail = action(({ email }) => {
+    this.email = email;
+  });
+
+  _setAdaPasscode = action(({ adaPasscode }) => {
+    this.adaPasscode = adaPasscode;
+  });
+
+  _setAdaAmount = action(({ adaAmount }) => {
+    this.adaAmount = adaAmount;
   });
 
   _parseCodeFromCertificate() {
