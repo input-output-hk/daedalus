@@ -57,3 +57,19 @@
   font-size: 16px;
   overflow: visible;
 }
+
+@keyframes animateSuccess {
+  0% {
+    border-color: #c6cdd6;
+  }
+  33% {
+    border-color: #76c88c;
+  }
+  100% {
+    border-color: #c6cdd6;
+  }
+}
+
+.animateSuccess > .value > input {
+  animation: animateSuccess 3s;
+}

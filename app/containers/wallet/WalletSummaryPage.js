@@ -60,6 +60,7 @@ export default class WalletSummaryPage extends Component {
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           hasMoreToLoad={false}
           onLoadMore={() => {}}
+          assuranceMode={wallets.active.assuranceMode}
         />
       );
     } else if (!hasAny) {

@@ -1,4 +1,11 @@
+@import '../../themes/mixins/error-message';
+
 .component {
+  background-color: $color-primary-bg;
+  display: flex;
+  flex-direction: column;
+  font-family: $font-regular;
+  height: 100%;
   padding: 20px;
 }
 
@@ -6,4 +13,9 @@
   display: flex;
   justify-content: center;
   margin: 30px 0 10px;
+}
+
+.error {
+  @include error-message;
+  text-align: center;
 }

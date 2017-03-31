@@ -51,4 +51,34 @@ export default defineMessages({
     defaultMessage: '!!!Croatian',
     description: 'Language name for "Croatian" language.'
   },
+  assuranceLevelNormal: {
+    id: 'global.assuranceLevel.normal',
+    defaultMessage: '!!!Normal',
+    description: 'Name for "Normal" transaction assurance security level.'
+  },
+  assuranceLevelStrict: {
+    id: 'global.assuranceLevel.strict',
+    defaultMessage: '!!!Strict',
+    description: 'Name for "Strict" transaction assurance security level.'
+  },
+  unitAda: {
+    id: 'global.unit.ada',
+    defaultMessage: '!!!Ada',
+    description: 'Name for "Ada" unit.'
+  },
+  transactionAssuranceLevelLow: {
+    id: 'wallet.transaction.assuranceLevel.low',
+    defaultMessage: '!!!low',
+    description: 'Transaction assurance level "low".',
+  },
+  transactionAssuranceLevelMedium: {
+    id: 'wallet.transaction.assuranceLevel.medium',
+    defaultMessage: '!!!medium',
+    description: 'Transaction assurance level "medium".',
+  },
+  transactionAssuranceLevelHigh: {
+    id: 'wallet.transaction.assuranceLevel.high',
+    defaultMessage: '!!!high',
+    description: 'Transaction assurance level "high".',
+  },
 });

@@ -1,5 +1,7 @@
 // @flow
 import { observable } from 'mobx';
+import type { AssuranceMode, AssuranceLevel } from '../types/transactionAssuranceTypes';
+import { assuranceLevels } from '../config/transactionAssuranceConfig';
 
 export type TransactionType = 'card' | 'adaExpend' | 'adaIncome' | 'exchange';
 
@@ -25,6 +27,15 @@ export default class WalletTransaction {
     numberOfConfirmations: number
   }) {
     Object.assign(this, data);
+  }
+
+  getAssuranceLevelForMode(mode: AssuranceMode): AssuranceLevel {
+    if (this.numberOfConfirmations < mode.low) {
+      return assuranceLevels.LOW;
+    } else if (this.numberOfConfirmations < mode.medium) {
+      return assuranceLevels.MEDIUM;
+    }
+    return assuranceLevels.HIGH;
   }
 
 }
