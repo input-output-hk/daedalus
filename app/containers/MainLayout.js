@@ -119,7 +119,6 @@ export default class MainLayout extends Component {
 
     const isProduction = false; // TODO: replace with getEnv Api call
     const testnetVersion = 0.3;
-
     const testEnvironmentLabel = (
       !isProduction ? <WalletTestEnvironmentLabel version={testnetVersion} /> : null
     );
