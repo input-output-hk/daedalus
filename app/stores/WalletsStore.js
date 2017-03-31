@@ -14,7 +14,7 @@ export default class WalletsStore extends Store {
 
   WALLET_REFRESH_INTERVAL = 5000;
 
-  @observable active = null;
+  @observable active: ?Wallet = null;
   @observable walletsRequest = new CachedRequest(this.api, 'getWallets');
   @observable importFromKeyRequest = new Request(this.api, 'importWalletFromKey');
   @observable createWalletRequest = new Request(this.api, 'createWallet');

@@ -5,6 +5,7 @@ import RTAppBar from 'react-toolbox/lib/app_bar/AppBar';
 import { observer } from 'mobx-react';
 import Wallet from '../../domain/Wallet';
 import menuIcon from '../../assets/images/menu-ic.svg';
+import { oneOrManyChildElements } from '../../propTypes';
 import styles from './TopBar.scss';
 
 @observer
@@ -12,7 +13,7 @@ export default class TopBar extends Component {
 
   static propTypes = {
     onToggleSidebar: PropTypes.func,
-    children: PropTypes.element,
+    children: oneOrManyChildElements.isRequired,
     activeWallet: PropTypes.instanceOf(Wallet),
   };
 

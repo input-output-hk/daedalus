@@ -2,6 +2,7 @@
 import { action, observable } from 'mobx';
 import { ipcRenderer } from 'electron';
 import { isString } from 'lodash';
+import Log from 'electron-log';
 import Store from './lib/Store';
 import Request from './lib/Request';
 import { PARSE_REDEMPTION_CODE } from '../../electron/ipc-api/parse-redemption-code-from-pdf';
@@ -64,12 +65,12 @@ export default class AdaRedemptionStore extends Store {
   _parseCodeFromCertificate() {
     if (this.certificate == null) throw new Error('Certificate File is required for parsing.');
     const path = this.certificate.path;
-    console.debug('Parsing ADA Redemption code from certificate', path);
+    Log.debug('Parsing ADA Redemption code from certificate', path);
     ipcRenderer.send(PARSE_REDEMPTION_CODE.REQUEST, path, this.passPhrase);
   }
 
   _onCodeParsed = action((event, code) => {
-    console.debug('Redemption code parsed from certificate:', code);
+    Log.debug('Redemption code parsed from certificate:', code);
     this.redemptionCode = code;
   });
 
@@ -102,7 +103,7 @@ export default class AdaRedemptionStore extends Store {
   });
 
   _onAdaSuccessfullyRedeemed = action(({ walletId, amount }) => {
-    console.debug('ADA successfully redeemed for wallet', walletId);
+    Log.debug('ADA successfully redeemed for wallet', walletId);
     this.stores.wallets.goToWalletRoute(walletId);
     this.amountRedeemed = amount;
     this.showAdaRedemptionSuccessMessage = true;

@@ -8,6 +8,7 @@ import sidebarActions from './sidebar-actions';
 import windowActions from './window-actions';
 import networkStatusActions from './network-status-actions';
 import profileActions from './profile-actions';
+import walletSettingsActions from './wallet-settings-actions';
 import dialogsActions from './dialogs-actions';
 
 export default {
@@ -21,5 +22,6 @@ export default {
   window: windowActions,
   networkStatus: networkStatusActions,
   profile: profileActions,
+  walletSettings: walletSettingsActions,
   dialogs: dialogsActions,
 };
