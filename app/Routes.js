@@ -34,6 +34,10 @@ export const ROUTES = {
     RECEIVE: '/wallets/:id/receive',
     SETTINGS: '/wallets/:id/settings',
   },
+  SETTINGS: {
+    ROOT: '/settings',
+    GENERAL: '/settings/general',
+  },
 };
 
 export default (
