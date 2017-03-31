@@ -116,7 +116,7 @@ export default class MainLayout extends Component {
       />
     );
     const topbar = (
-      <TopBar onToggleSidebar={actions.sidebar.toggleSubMenus}>
+      <TopBar onToggleSidebar={actions.sidebar.toggleSubMenus} activeWallet={activeWallet}>
         <NodeSyncStatusIcon isSynced={isSynced} syncPercentage={syncPercentage} />
       </TopBar>
     );
