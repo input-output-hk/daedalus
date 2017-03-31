@@ -23,7 +23,6 @@ import {
   NotEnoughMoneyToSendError
 } from './errors';
 import type { AssuranceModeOption } from '../types/transactionAssuranceTypes';
-import { assuranceModes, assuranceModeOptions } from '../config/transactionAssuranceConfig';
 
 // const notYetImplemented = () => new Promise((_, reject) => {
 //   reject(new ApiMethodNotYetImplementedError());
