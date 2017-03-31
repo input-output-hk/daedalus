@@ -1,5 +1,5 @@
 // @flow
-import ClientApi from '/Users/darkomijic/iohk/cardano-sl/daedalus'; // eslint-disable-line
+import ClientApi from 'daedalus-client-api';
 import { action } from 'mobx';
 import { ipcRenderer } from 'electron';
 import Wallet from '../domain/Wallet';
