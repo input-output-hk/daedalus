@@ -116,7 +116,7 @@
   "wallet.send.form.errors.invalidTitle": "Please enter a title with at least 3 characters.",
   "wallet.send.form.receiver.hint": "Wallet Address",
   "wallet.send.form.receiver.label": "Receiver",
-  "wallet.send.form.submit": "send",
+  "wallet.send.form.submit": "Send",
   "wallet.send.form.title.hint": "E.g: Money for Frank",
   "wallet.send.form.title.label": "Title",
   "wallet.settings.assurance": "Transaction assurance security level",
