@@ -4,6 +4,7 @@ import Layout from '../MainLayout';
 import { oneOrManyChildElements } from '../../propTypes';
 import SettingsLayout from '../../components/settings/SettingsLayout';
 import SettingsMenu from '../../components/settings/menu/SettingsMenu';
+import { buildRoute } from '../../lib/routing-helpers';
 
 @inject('stores', 'actions') @observer
 export default class Settings extends Component {
@@ -24,20 +25,20 @@ export default class Settings extends Component {
     children: oneOrManyChildElements.isRequired,
   };
 
-  isActivePage = (page: string) => {
+  isActivePage = (route: string) => {
     const { location } = this.props.stores.router;
     if (location) {
-      return location.pathname === `/settings/${page}`;
+      console.log(location.pathname, buildRoute(route));
+      return location.pathname === buildRoute(route);
     }
     return false;
   };
 
   render() {
-    const settingsPath = '/settings';
     const { actions, children } = this.props;
     const menu = (
       <SettingsMenu
-        onItemClick={(page) => actions.router.goToRoute({ route: `${settingsPath}/${page}` })}
+        onItemClick={(route) => actions.router.goToRoute({ route })}
         isActiveItem={this.isActivePage}
       />
     );
