@@ -1699,17 +1699,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Units",
-        "description": "Label for the \"Units\" input.",
+        "defaultMessage": "!!!Transaction assurance security level",
+        "description": "Label for the \"Transaction assurance security level\" dropdown.",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 18
         },
         "file": "app/components/wallet/WalletSettings.js",
-        "id": "wallet.settings.units",
+        "id": "wallet.settings.assurance",
         "start": {
-          "column": 14,
-          "line": 10
+          "column": 23,
+          "line": 14
         }
       }
     ],
@@ -1774,13 +1774,13 @@
         "description": "Transaction type shown for credit card payments.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 15
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.type.card",
         "start": {
           "column": 8,
-          "line": 19
+          "line": 11
         }
       },
       {
@@ -1788,13 +1788,13 @@
         "description": "Transaction type shown for ada payments.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 20
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.type.ada",
         "start": {
           "column": 7,
-          "line": 24
+          "line": 16
         }
       },
       {
@@ -1802,55 +1802,13 @@
         "description": "Transaction type shown for money exchanges between currencies.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 25
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.type.exchange",
         "start": {
           "column": 12,
-          "line": 29
-        }
-      },
-      {
-        "defaultMessage": "!!!low",
-        "description": "Transaction assurance level \"low\".",
-        "end": {
-          "column": 3,
-          "line": 38
-        },
-        "file": "app/components/widgets/Transaction.js",
-        "id": "wallet.transaction.assuranceLevel.low",
-        "start": {
-          "column": 7,
-          "line": 34
-        }
-      },
-      {
-        "defaultMessage": "!!!medium",
-        "description": "Transaction assurance level \"medium\".",
-        "end": {
-          "column": 3,
-          "line": 43
-        },
-        "file": "app/components/widgets/Transaction.js",
-        "id": "wallet.transaction.assuranceLevel.medium",
-        "start": {
-          "column": 10,
-          "line": 39
-        }
-      },
-      {
-        "defaultMessage": "!!!high",
-        "description": "Transaction assurance level \"high\".",
-        "end": {
-          "column": 3,
-          "line": 48
-        },
-        "file": "app/components/widgets/Transaction.js",
-        "id": "wallet.transaction.assuranceLevel.high",
-        "start": {
-          "column": 8,
-          "line": 44
+          "line": 21
         }
       },
       {
@@ -1858,13 +1816,13 @@
         "description": "Transaction assurance level.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 30
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.assuranceLevel",
         "start": {
           "column": 18,
-          "line": 49
+          "line": 26
         }
       },
       {
@@ -1872,13 +1830,13 @@
         "description": "Transaction confirmations.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 35
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.confirmations",
         "start": {
           "column": 17,
-          "line": 54
+          "line": 31
         }
       },
       {
@@ -1886,13 +1844,13 @@
         "description": "Transaction ID.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 40
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.transactionId",
         "start": {
           "column": 17,
-          "line": 59
+          "line": 36
         }
       },
       {
@@ -1900,13 +1858,55 @@
         "description": "Conversion rate.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 45
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.conversion.rate",
         "start": {
           "column": 18,
-          "line": 64
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!low",
+        "description": "Transaction assurance level \"low\".",
+        "end": {
+          "column": 3,
+          "line": 53
+        },
+        "file": "app/components/widgets/Transaction.js",
+        "id": "wallet.transaction.assuranceLevel.low",
+        "start": {
+          "column": 25,
+          "line": 49
+        }
+      },
+      {
+        "defaultMessage": "!!!medium",
+        "description": "Transaction assurance level \"medium\".",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "app/components/widgets/Transaction.js",
+        "id": "wallet.transaction.assuranceLevel.medium",
+        "start": {
+          "column": 28,
+          "line": 54
+        }
+      },
+      {
+        "defaultMessage": "!!!high",
+        "description": "Transaction assurance level \"high\".",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "app/components/widgets/Transaction.js",
+        "id": "wallet.transaction.assuranceLevel.high",
+        "start": {
+          "column": 26,
+          "line": 59
         }
       }
     ],
@@ -1957,13 +1957,13 @@
         "description": "Message shown when wallet has no transactions yet.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 17
         },
         "file": "app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions",
         "start": {
           "column": 18,
-          "line": 12
+          "line": 13
         }
       },
       {
@@ -1971,13 +1971,13 @@
         "description": "Message shown when wallet transaction search returns zero results.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions.found",
         "start": {
           "column": 23,
-          "line": 17
+          "line": 18
         }
       }
     ],
@@ -2123,6 +2123,90 @@
         "start": {
           "column": 20,
           "line": 49
+        }
+      },
+      {
+        "defaultMessage": "!!!Normal",
+        "description": "Name for \"Normal\" transaction assurance security level.",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.assuranceLevel.normal",
+        "start": {
+          "column": 24,
+          "line": 54
+        }
+      },
+      {
+        "defaultMessage": "!!!Strict",
+        "description": "Name for \"Strict\" transaction assurance security level.",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.assuranceLevel.strict",
+        "start": {
+          "column": 24,
+          "line": 59
+        }
+      },
+      {
+        "defaultMessage": "!!!Ada",
+        "description": "Name for \"Ada\" unit.",
+        "end": {
+          "column": 3,
+          "line": 68
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.unit.ada",
+        "start": {
+          "column": 11,
+          "line": 64
+        }
+      },
+      {
+        "defaultMessage": "!!!low",
+        "description": "Transaction assurance level \"low\".",
+        "end": {
+          "column": 3,
+          "line": 73
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "wallet.transaction.assuranceLevel.low",
+        "start": {
+          "column": 32,
+          "line": 69
+        }
+      },
+      {
+        "defaultMessage": "!!!medium",
+        "description": "Transaction assurance level \"medium\".",
+        "end": {
+          "column": 3,
+          "line": 78
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "wallet.transaction.assuranceLevel.medium",
+        "start": {
+          "column": 35,
+          "line": 74
+        }
+      },
+      {
+        "defaultMessage": "!!!high",
+        "description": "Transaction assurance level \"high\".",
+        "end": {
+          "column": 3,
+          "line": 83
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "wallet.transaction.assuranceLevel.high",
+        "start": {
+          "column": 33,
+          "line": 79
         }
       }
     ],
