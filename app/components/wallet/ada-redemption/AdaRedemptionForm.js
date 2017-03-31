@@ -1,7 +1,7 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
-import { isEmail, isEmpty } from 'validator';
+import { isEmail } from 'validator';
 import classnames from 'classnames';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import Button from 'react-toolbox/lib/button/Button';
@@ -243,12 +243,10 @@ export default class AdaRedemptionForm extends Component {
         placeholder: this.context.intl.formatMessage(messages.emailHint),
         value: '',
         bindings: 'ReactToolbox',
-        validate: [({ field }) => {
-          return [
-            isEmail(field.value),
-            this.context.intl.formatMessage(new InvalidEmailError())
-          ];
-        }]
+        validate: [({ field }) => ([
+          isEmail(field.value),
+          this.context.intl.formatMessage(new InvalidEmailError())
+        ])]
       },
       adaPasscode: {
         label: this.context.intl.formatMessage(messages.adaPasscodeLabel),
