@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import SettingsMenuItem from './SettingsMenuItem';
 import styles from './SettingsMenu.scss';
+import { ROUTES } from '../../../Routes';
 
 const messages = defineMessages({
   general: {
@@ -33,8 +34,8 @@ export default class SettingsMenu extends Component {
         <div className={styles.component}>
           <SettingsMenuItem
             label={intl.formatMessage(messages.general)}
-            onClick={() => onItemClick('general')}
-            active={isActiveItem('general')}
+            onClick={() => onItemClick(ROUTES.SETTINGS.GENERAL)}
+            active={isActiveItem(ROUTES.SETTINGS.GENERAL)}
             className="general"
           />
         </div>
