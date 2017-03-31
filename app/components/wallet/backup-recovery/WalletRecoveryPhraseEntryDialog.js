@@ -93,18 +93,23 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
 
     const enteredPhraseString = enteredPhrase.reduce((phrase, { word }) => `${phrase} ${word}`, '');
 
-    const actions = [
-      {
+    const actions = [];
+
+    actions.push({
+      label: intl.formatMessage(messages.buttonLabelConfirm),
+      onClick: onFinishBackup,
+      disabled: !canFinishBackup,
+      primary: true
+    });
+
+    // Only show "Clear" button when user is not yet done with entering mnemonic
+    if (!isValid) {
+      actions.unshift({
         label: intl.formatMessage(messages.buttonLabelClear),
         onClick: onClear,
-      },
-      {
-        label: intl.formatMessage(messages.buttonLabelConfirm),
-        onClick: onFinishBackup,
-        disabled: !canFinishBackup,
-        primary: true
-      }
-    ];
+      });
+    }
+
     return (
       <Dialog
         title={intl.formatMessage(messages.recoveryPhrase)}
@@ -134,7 +139,9 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
         )}
 
         <DialogCloseButton onClose={onCancelBackup} />
-        <DialogBackButton onBack={onRestartBackup} />
+
+        {!isValid ? <DialogBackButton onBack={onRestartBackup} /> : null}
+
         {isValid && (
           <div>
             <CheckboxWithLongLabel
