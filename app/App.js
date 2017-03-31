@@ -8,14 +8,13 @@ import { IntlProvider } from 'react-intl';
 import Routes from './Routes';
 import { daedalusTheme } from './themes/daedalus';
 import environment from './environment';
-import { storesPropType } from './propTypes';
 import translations from './i18n/translations';
 
 @observer
 export default class App extends Component {
 
   static propTypes = {
-    stores: storesPropType,
+    stores: PropTypes.shape({}).isRequired,
     actions: PropTypes.shape({}).isRequired,
     history: PropTypes.shape({}).isRequired,
   };
