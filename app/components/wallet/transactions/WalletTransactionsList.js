@@ -1,16 +1,14 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { intlShape } from 'react-intl';
 import moment from 'moment';
 import classnames from 'classnames';
 import styles from './WalletTransactionsList.scss';
-import Transaction, { transactionShape } from '../../widgets/Transaction';
+import Transaction from '../../widgets/Transaction';
+import WalletTransaction from '../../../domain/WalletTransaction';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-
-defineMessages({
-
-});
+import { AssuranceModePropType } from '../../../types/transactionAssuranceTypes';
 
 const dateFormat = 'YYYY-MM-DD';
 
@@ -18,10 +16,13 @@ const dateFormat = 'YYYY-MM-DD';
 export default class WalletTransactionsList extends Component {
 
   static propTypes = {
-    transactions: MobxPropTypes.arrayOrObservableArrayOf(transactionShape).isRequired,
+    transactions: MobxPropTypes.arrayOrObservableArrayOf(
+      PropTypes.instanceOf(WalletTransaction)
+    ).isRequired,
     isLoadingTransactions: PropTypes.bool.isRequired,
     hasMoreToLoad: PropTypes.bool.isRequired,
-    onLoadMore: PropTypes.func.isRequired
+    onLoadMore: PropTypes.func.isRequired,
+    assuranceMode: AssuranceModePropType.isRequired,
   };
 
   static contextTypes = {
@@ -39,7 +40,7 @@ export default class WalletTransactionsList extends Component {
   list: HTMLElement;
   loadingSpinner: LoadingSpinner;
 
-  groupTransactionsByDay(transactions:[{ date: Date }]) {
+  groupTransactionsByDay(transactions:[WalletTransaction]) {
     const groups = [];
     for (const transaction of transactions) {
       let date = moment(transaction.date).format(dateFormat);
@@ -87,7 +88,13 @@ export default class WalletTransactionsList extends Component {
 
   render() {
     const { topShadow } = this.state;
-    const { transactions, isLoadingTransactions, hasMoreToLoad } = this.props;
+    const {
+      transactions,
+      isLoadingTransactions,
+      hasMoreToLoad,
+      assuranceMode,
+    } = this.props;
+
     const transactionsGroups = this.groupTransactionsByDay(transactions);
 
     const loadingSpinner = isLoadingTransactions || hasMoreToLoad ? (
@@ -114,6 +121,7 @@ export default class WalletTransactionsList extends Component {
                   <Transaction
                     data={transaction}
                     isLastInList={transactionIndex === group.transactions.length - 1}
+                    assuranceLevel={transaction.getAssuranceLevelForMode(assuranceMode)}
                   />
                 </div>
               ))}

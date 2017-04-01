@@ -6,6 +6,9 @@ export default defineActions({
     name: PropTypes.string.isRequired,
     currency: PropTypes.string.isRequired,
   },
+  delete: {
+    walletId: PropTypes.string.isRequired,
+  },
   toggleCreateWalletDialog: {},
   toggleAddWallet: {},
   toggleWalletRestore: {},
@@ -23,5 +26,7 @@ export default defineActions({
   },
   setActiveWallet: {
     walletId: PropTypes.string.isRequired,
-  }
+  },
+  showWalletAddressCopyNotification: {},
+
 });

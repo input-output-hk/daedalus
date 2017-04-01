@@ -2,6 +2,7 @@
 import ClientApi from 'daedalus-client-api';
 import { action } from 'mobx';
 import { ipcRenderer } from 'electron';
+import Log from 'electron-log';
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
 import type {
@@ -9,8 +10,10 @@ import type {
   getTransactionsRequest,
   createTransactionRequest,
   walletRestoreRequest,
+  walletUpdateRequest,
   redeemAdaRequest,
-  importKeyRequest
+  importKeyRequest,
+  deleteWalletRequest
 } from './index';
 import {
   // ApiMethodNotYetImplementedError,
@@ -20,6 +23,7 @@ import {
   WalletKeyImportError,
   NotEnoughMoneyToSendError
 } from './errors';
+import type { AssuranceModeOption } from '../types/transactionAssuranceTypes';
 
 // const notYetImplemented = () => new Promise((_, reject) => {
 //   reject(new ApiMethodNotYetImplementedError());
@@ -54,14 +58,14 @@ export default class CardanoClientApi {
   }
 
   async getWallets() {
-    console.debug('CardanoClientApi::getWallets called');
+    Log.debug('CardanoClientApi::getWallets called');
     const response = await ClientApi.getWallets();
     return response.map(data => this._createWalletFromServerData(data));
   }
 
   async getTransactions(request: getTransactionsRequest) {
     const { walletId, searchTerm, skip, limit } = request;
-    console.debug('CardanoClientApi::getTransactions called with', request);
+    Log.debug('CardanoClientApi::getTransactions called with', request);
     const history = await ClientApi.searchHistory(walletId, searchTerm, skip, limit);
     return new Promise((resolve) => resolve({
       transactions: history[0].map(data => this._createTransactionFromServerData(data, walletId)),
@@ -70,13 +74,22 @@ export default class CardanoClientApi {
   }
 
   async createWallet(request: createWalletRequest) {
-    console.debug('CardanoClientApi::createWallet called with', request);
+    Log.debug('CardanoClientApi::createWallet called with', request);
     const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name, request.mnemonic);
     return this._createWalletFromServerData(response);
   }
 
+  async deleteWallet(request: deleteWalletRequest) {
+    try {
+      await ClientApi.deleteWallet(request.walletId);
+      return true;
+    } catch (error) {
+      throw new GenericApiError();
+    }
+  }
+
   async createTransaction(request: createTransactionRequest) {
-    console.debug('CardanoClientApi::createTransaction called with', request);
+    Log.debug('CardanoClientApi::createTransaction called with', request);
     const { sender, receiver, amount, currency } = request;
     const description = 'no description provided';
     const title = 'no title provided';
@@ -114,6 +127,7 @@ export default class CardanoClientApi {
       type: data.cwMeta.cwType,
       currency: data.cwMeta.cwCurrency,
       name: data.cwMeta.cwName,
+      assurance: data.cwMeta.cwAssurance,
     });
   }
 
@@ -139,7 +153,7 @@ export default class CardanoClientApi {
 
   async restoreWallet(request: walletRestoreRequest) {
     const { recoveryPhrase, walletName } = request;
-    console.debug('CardanoClientApi::restoreWallet called with', request);
+    Log.debug('CardanoClientApi::restoreWallet called with', request);
     try {
       const restoredWallet = await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase);
       return this._createWalletFromServerData(restoredWallet);
@@ -158,7 +172,7 @@ export default class CardanoClientApi {
   }
 
   async importWalletFromKey(request: importKeyRequest) {
-    console.debug('CardanoClientApi::importWalletFromKey called with', request);
+    Log.debug('CardanoClientApi::importWalletFromKey called with', request);
     try {
       const importedWallet = await ClientApi.importKey(request.filePath);
       return this._createWalletFromServerData(importedWallet);
@@ -173,7 +187,7 @@ export default class CardanoClientApi {
 
   async redeemAda(request: redeemAdaRequest) {
     const { redemptionCode, walletId } = request;
-    console.debug('CardanoClientApi::redeemAda called with', request);
+    Log.debug('CardanoClientApi::redeemAda called with', request);
     try {
       const response: ServerWalletStruct = await ClientApi.redeemADA(redemptionCode, walletId);
       // TODO: Update response when it is implemented on the backend,
@@ -192,7 +206,7 @@ export default class CardanoClientApi {
   // PRIVATE
 
   _onNotify = (rawMessage: string) => {
-    console.debug('CardanoClientApi::notify message: ', rawMessage);
+    Log.debug('CardanoClientApi::notify message: ', rawMessage);
     // TODO: "ConnectionClosed" messages are not JSON parsable … so we need to catch that case here!
     let message = rawMessage;
     if (message !== 'ConnectionClosed') {
@@ -202,19 +216,19 @@ export default class CardanoClientApi {
   };
 
   _onNotifyError = (error: Error) => {
-    console.debug('CardanoClientApi::notify error: ', error);
+    Log.debug('CardanoClientApi::notify error: ', error);
     this.notifyCallbacks.forEach(cb => cb.error(error));
   };
 
 
   async nextUpdate() {
-    console.debug('CardanoClientApi::nextUpdate called');
+    Log.debug('CardanoClientApi::nextUpdate called');
     let nextUpdate = null;
     try {
       nextUpdate = JSON.parse(await ClientApi.nextUpdate());
-      console.debug('CardanoClientApi::nextUpdate returned', nextUpdate);
+      Log.debug('CardanoClientApi::nextUpdate returned', nextUpdate);
     } catch (error) {
-      console.log(error);
+      Log.debug(error);
       // TODO: Api is trowing an error when update is not available, handle other errors
     }
     return nextUpdate;
@@ -256,22 +270,36 @@ export default class CardanoClientApi {
   }
 
   async getSyncProgress() {
-    console.debug('CardanoClientApi::syncProgress called');
+    Log.debug('CardanoClientApi::syncProgress called');
     const response = await ClientApi.syncProgress();
-    console.log('CardanoClientApi::syncProgress response', response);
+    Log.debug('CardanoClientApi::syncProgress response', response);
     const localDifficulty = response._spLocalCD.getChainDifficulty;
     // In some cases we dont get network difficulty & we need to wait for it from the notify API
     let networkDifficulty = null;
     if (response._spNetworkCD) networkDifficulty = response._spNetworkCD.getChainDifficulty;
-    console.log({ localDifficulty, networkDifficulty });
     return { localDifficulty, networkDifficulty };
   }
 
-  setUserLocale(locale: string) {
-    return new Promise((resolve) => {
-      // Fake async request here to make it more realistic
-      setTimeout(() => resolve(locale), 100);
-    });
+  async setUserLocale(locale: string) {
+    try {
+      const response = await ClientApi.updateLocale(locale);
+      return response.cpLocale;
+    } catch (error) {
+      throw new GenericApiError();
+    }
+  }
+
+  async getUserLocale() {
+    return await ClientApi.getLocale();
+  }
+
+  async updateWallet(request: walletUpdateRequest) {
+    const { walletId, type, currency, name, assurance } = request;
+    try {
+      return await ClientApi.updateWallet(walletId, type, currency, name, assurance, 0);
+    } catch (error) {
+      throw new GenericApiError();
+    }
   }
 
   testReset() {
@@ -290,6 +318,8 @@ type ServerWalletStruct = {
     cwName: string,
     cwType: string,
     cwCurrency: string,
+    cwUnit: number,
+    cwAssurance: AssuranceModeOption,
   },
 }
 

@@ -4,50 +4,71 @@ import moment from 'moment';
 import classNames from 'classnames';
 import styles from './Transaction.scss';
 import adaSymbol from '../../assets/images/ada-symbol.svg';
-
-export const transactionShape = PropTypes.shape({
-  id: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
-  amount: PropTypes.number.isRequired,
-  numberOfConfirmations: PropTypes.number.isRequired,
-  currency: PropTypes.string.isRequired,
-  date: PropTypes.instanceOf(Date),
-});
+import WalletTransaction from '../../domain/WalletTransaction';
+import { assuranceLevels } from '../../config/transactionAssuranceConfig';
 
 const messages = defineMessages({
   card: {
     id: 'wallet.transaction.type.card',
     defaultMessage: '!!!Card payment',
-    description: 'Transaction type shown for credit card payments.'
+    description: 'Transaction type shown for credit card payments.',
   },
   ada: {
     id: 'wallet.transaction.type.ada',
     defaultMessage: '!!!ADA transaction',
-    description: 'Transaction type shown for ada payments.'
+    description: 'Transaction type shown for ada payments.',
   },
   exchange: {
     id: 'wallet.transaction.type.exchange',
-    defaultMessage: '!!!Exchange transaction',
-    description: 'Transaction type shown for money exchanges between currencies.'
+    defaultMessage: '!!!Exchange',
+    description: 'Transaction type shown for money exchanges between currencies.',
   },
-  pending: {
-    id: 'wallet.transaction.pendingLabel',
-    defaultMessage: '!!!Pending',
-    description: '"Pending" label on transaction list.'
+  assuranceLevel: {
+    id: 'wallet.transaction.assuranceLevel',
+    defaultMessage: '!!!Transaction assurance level',
+    description: 'Transaction assurance level.',
   },
-  verifications: {
-    id: 'wallet.transaction.verificationsLabel',
-    defaultMessage: '!!!verifications',
-    description: '"verifications" label on transaction list.'
+  confirmations: {
+    id: 'wallet.transaction.confirmations',
+    defaultMessage: '!!!confirmations',
+    description: 'Transaction confirmations.',
+  },
+  transactionId: {
+    id: 'wallet.transaction.transactionId',
+    defaultMessage: '!!!Transaction ID',
+    description: 'Transaction ID.',
+  },
+  conversionRate: {
+    id: 'wallet.transaction.conversion.rate',
+    defaultMessage: '!!!Conversion rate',
+    description: 'Conversion rate.',
+  },
+});
+
+const assuranceLevelTranslations = defineMessages({
+  [assuranceLevels.LOW]: {
+    id: 'wallet.transaction.assuranceLevel.low',
+    defaultMessage: '!!!low',
+    description: 'Transaction assurance level "low".',
+  },
+  [assuranceLevels.MEDIUM]: {
+    id: 'wallet.transaction.assuranceLevel.medium',
+    defaultMessage: '!!!medium',
+    description: 'Transaction assurance level "medium".',
+  },
+  [assuranceLevels.HIGH]: {
+    id: 'wallet.transaction.assuranceLevel.high',
+    defaultMessage: '!!!high',
+    description: 'Transaction assurance level "high".',
   },
 });
 
 export default class Transaction extends Component {
 
   static propTypes = {
-    data: transactionShape,
-    isLastInList: PropTypes.bool
+    data: PropTypes.instanceOf(WalletTransaction).isRequired,
+    assuranceLevel: PropTypes.string.isRequired,
+    isLastInList: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -64,20 +85,25 @@ export default class Transaction extends Component {
 
   render() {
     const data = this.props.data;
+    const { isLastInList, assuranceLevel } = this.props;
     const { isExpanded } = this.state;
     const { intl } = this.context;
     let typeMessage = data.type;
+
     const contentStyles = classNames([
       styles.content,
-      this.props.isLastInList ? styles.last : null
+      isLastInList ? styles.last : null
     ]);
+
     const detailsStyles = classNames([
       styles.details,
       isExpanded ? styles.expanded : styles.closed
     ]);
+
     if (data.type === 'adaExpend' || data.type === 'adaIncome') typeMessage = 'ada';
-    const status = data.numberOfConfirmations === 0 ?
-      intl.formatMessage(messages.pending) : `${data.numberOfConfirmations} ${intl.formatMessage(messages.verifications)}`;
+
+    const status = intl.formatMessage(assuranceLevelTranslations[assuranceLevel]);
+
     return (
       <div className={styles.component}>
         <div className={styles[data.type]} />
@@ -98,9 +124,9 @@ export default class Transaction extends Component {
             <div className={styles.type}>
               {intl.formatMessage(messages[typeMessage])}
               , {moment(data.date).format('hh:mm:ss A')}
-              {/* TODO: Use locale to format the date*/}
+              {/* TODO: Use locale to format the date */}
             </div>
-            <div className={styles.status}>{status}</div>
+            <div className={styles[assuranceLevel]}>{status}</div>
           </div>
 
 
@@ -110,17 +136,22 @@ export default class Transaction extends Component {
             {data.exchange && data.conversionRate && (
               <div className={styles.conversion}>
                 <div>
-                  <h2>Exchange</h2>
+                  <h2>{intl.formatMessage(messages.exchange)}</h2>
                   <span>{data.exchange}</span>
                 </div>
                 <div className={styles.conversionRate}>
-                  <h2>Conversion Rate</h2>
+                  <h2>{intl.formatMessage(messages.conversionRate)}</h2>
                   <span>{data.conversionRate}</span>
                 </div>
               </div>
             )}
             <div>
-              <h2>TransactionId</h2>
+              <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
+              <span>
+                <span className={styles.assuranceLevel}>{status}</span>
+                . {data.numberOfConfirmations} {intl.formatMessage(messages.confirmations)}.
+              </span>
+              <h2>{intl.formatMessage(messages.transactionId)}</h2>
               <span>{data.id}</span>
             </div>
             {/*

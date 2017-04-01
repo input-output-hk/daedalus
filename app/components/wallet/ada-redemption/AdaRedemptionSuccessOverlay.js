@@ -5,6 +5,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import styles from './AdaRedemptionSuccessOverlay.scss';
 import successIcon from '../../../assets/images/success-big.svg';
+import closeCrossWhite from '../../../assets/images/close-cross-white.svg';
 
 const messages = defineMessages({
   headline: {
@@ -36,7 +37,7 @@ export default class AdaRedemptionSuccessOverlay extends Component {
           <h1 className={styles.headline}>{intl.formatMessage(messages.headline)}</h1>
           <div className={styles.amount}>{amount} ADA</div>
         </div>
-        <DialogCloseButton onClose={onClose} />
+        <DialogCloseButton onClose={onClose} icon={closeCrossWhite} />
       </div>
     );
   }

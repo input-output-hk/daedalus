@@ -9,3 +9,5 @@ import './AdaRedemptionDialog.stories';
 import './AddWallet.stories';
 import './WalletSummary.stories';
 import './LanguageSelectionForm.stories';
+import './WalletDeleteConfirmationDialog.stories';
+import './TopBar.stories';

@@ -46,6 +46,10 @@ export type createWalletRequest = {
   mnemonic: string,
 };
 
+export type deleteWalletRequest = {
+  walletId: string,
+};
+
 export type createTransactionRequest = {
   walletId: string,
   sender: string,
@@ -63,6 +67,14 @@ export type getWalletRecoveryPhraseRequest = {
 export type walletRestoreRequest = {
   recoveryPhrase: string,
   walletName: string,
+};
+
+export type walletUpdateRequest = {
+  walletId: string,
+  type: string,
+  currency: string,
+  name: string,
+  assurance: string,
 };
 
 export type redeemAdaRequest = {

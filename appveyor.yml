@@ -1,4 +1,4 @@
-version: 0.3.{build}
+version: 0.4.{build}
 
 environment:
   nodejs_version: "6"
@@ -22,7 +22,7 @@ install:
   - npm install
   - mkdir node_modules\daedalus-client-api 
   - cd node_modules\daedalus-client-api
-  - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/jagajaga/cardano-sl/artifacts/CardanoSL.zip?branch=master' -FileName CardanoSL.zip
+  - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/jagajaga/cardano-sl/artifacts/CardanoSL.zip?branch=cardano-sl-0.3' -FileName CardanoSL.zip
   - 7z x CardanoSL.zip -y
   - cd ..\..\
   - move node_modules\daedalus-client-api\log-config-prod.yaml installers\log-config-prod.yaml

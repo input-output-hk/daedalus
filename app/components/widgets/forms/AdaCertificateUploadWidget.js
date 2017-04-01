@@ -6,7 +6,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import certificateNormalIcon from '../../../assets/images/cert-ic.svg';
 import certificateLockedIcon from '../../../assets/images/cert-locked-ic.svg';
 import certificateInvalidIcon from '../../../assets/images/cert-bad-ic.svg';
-import closeCrossIcon from '../../../assets/images/close-cross-redemption.svg';
+import closeCrossIcon from '../../../assets/images/close-cross.svg';
 import styles from './AdaCertificateUploadWidget.scss';
 
 const messages = defineMessages({

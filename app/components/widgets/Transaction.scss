@@ -107,12 +107,33 @@ $type-box-size: 54px;
   letter-spacing: 1px;
 }
 
-.status {
+.low, .medium, .high {
+  border-radius: 3px;
+  color: #fff;
+  display: inline-block;
+  font-family: $font-bold;
+  font-size: 8px;
+  line-height: 18px;
   margin-left: auto;
-  letter-spacing: 1px;
-  font-family: $font-light;
-  font-size: 14px;
   margin-top: 8px;
+  padding: 0 10px;
+  text-transform: uppercase;
+}
+
+.low {
+  background-color: #ab1700;
+}
+
+.medium {
+  background-color: #e6aa00;
+}
+
+.high {
+  background-color: #007600;
+}
+
+.assuranceLevel {
+  text-transform: capitalize;
 }
 
 .type {

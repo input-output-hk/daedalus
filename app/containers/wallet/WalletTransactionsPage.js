@@ -1,11 +1,13 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { observer, inject, PropTypes as MobxPropTypes } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
 // import WalletTransactionsSearch from '../../components/wallet/summary/WalletTransactionsSearch';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
-import CachedRequest from '../../stores/lib/CachedRequest';
+import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
+import TransactionsStore from '../../stores/TransactionsStore';
+import WalletsStore from '../../stores/WalletsStore';
 
 const messages = defineMessages({
   noTransactions: {
@@ -25,16 +27,8 @@ export default class WalletTransactionsPage extends Component {
 
   static propTypes = {
     stores: PropTypes.shape({
-      transactions: PropTypes.shape({
-        searchOptions: PropTypes.shape({
-          searchTerm: PropTypes.string.isRequired,
-          searchLimit: PropTypes.number.isRequired,
-        }),
-        allTransactionsRequest: PropTypes.instanceOf(CachedRequest),
-        filtered: MobxPropTypes.arrayOrObservableArray.isRequired,
-        hasAnyFiltered: PropTypes.bool.isRequired,
-        totalFilteredAvailable: PropTypes.number.isRequired,
-      })
+      transactions: PropTypes.instanceOf(TransactionsStore).isRequired,
+      wallets: PropTypes.instanceOf(WalletsStore).isRequired,
     }).isRequired,
     actions: PropTypes.shape({
       transactions: PropTypes.shape({
@@ -54,7 +48,7 @@ export default class WalletTransactionsPage extends Component {
   render() {
     const { intl } = this.context;
     const actions = this.props.actions;
-    const { transactions } = this.props.stores;
+    const { transactions, wallets } = this.props.stores;
     const {
       searchOptions,
       searchRequest,
@@ -87,6 +81,7 @@ export default class WalletTransactionsPage extends Component {
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
           hasMoreToLoad={totalAvailable > searchLimit}
           onLoadMore={actions.transactions.loadMoreTransactions}
+          assuranceMode={wallets.active.assuranceMode}
         />
       );
     } else if (wasSearched && !hasAny) {
@@ -96,10 +91,10 @@ export default class WalletTransactionsPage extends Component {
     }
 
     return (
-      <div>
+      <VerticalFlexContainer>
         {/* transactionSearch */}
         {walletTransactions}
-      </div>
+      </VerticalFlexContainer>
     );
   }
 
