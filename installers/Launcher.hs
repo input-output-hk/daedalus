@@ -24,7 +24,7 @@ launcherArgs launcher = unwords $
   ]
     where
       nodeArgs = [
-        "--listen", "0.0.0.0:12100",
+        "--listen", "127.0.0.1:12100",
         "--report-server", "http://35.156.164.19:8080",
         "--log-config", "log-config-prod.yaml",
         "--update-latest-path", quote (installerPath launcher),
