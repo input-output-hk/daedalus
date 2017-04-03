@@ -15,9 +15,7 @@ import           Launcher
 launcherScript :: [String]
 launcherScript =
   [ "@echo off"
-  , "FOR /F \"usebackq tokens=2,* skip=2\" %%L IN ("
-  , "    `reg query \"HKLM\\SOFTWARE\\Wow6432Node\\Daedalus\" /v Install_Dir`"
-  , ") DO SET DAEDALUS_DIR=%%M"
+  , "SET DAEDALUS_DIR=%~dp0"
   , "\"%DAEDALUS_DIR%\\cardano-launcher.exe\" " <> args
   ]
   where
@@ -31,7 +29,7 @@ launcherScript =
 
 daedalusShortcut :: [Attrib]
 daedalusShortcut =
-    [ Target "%APPDATA%\\Daedalus\\daedalus.bat"
+    [ Target "$INSTDIR\\daedalus.bat"
     , IconFile "$INSTDIR\\Daedalus.exe"
     , StartOptions "SW_SHOWMINIMIZED"
     , IconIndex 0
@@ -130,6 +128,7 @@ writeInstallerNSIS fullVersion = do
         file [] "log-config-prod.yaml"
         file [] "data\\ip-dht-mappings"
         file [] "version.txt"
+        writeFileLines "$INSTDIR\\daedalus.bat" (map str launcherScript)
         file [Recursive] "dlls\\"
         file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
 
