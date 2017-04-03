@@ -8,8 +8,9 @@ import           Development.NSIS
 import           System.Directory   (doesFileExist)
 import           System.Environment (lookupEnv)
 import           Turtle             (echo, proc, procs)
+import           Turtle.Line          (unsafeTextToLine)
 
-import Launcher
+import           Launcher
 
 shortcutParameters :: String
 shortcutParameters = launcherArgs $ Launcher
@@ -71,9 +72,9 @@ signFile filename = do
   if exists then do
     maybePass <- lookupEnv "CERT_PASS"
     case maybePass of
-      Nothing -> echo . pack $ "Skipping signing " <> filename <> " due to lack of password"
+      Nothing -> echo . unsafeTextToLine . pack $ "Skipping signing " <> filename <> " due to lack of password"
       Just pass -> do
-        echo . pack $ "Signing " <> filename
+        echo . unsafeTextToLine . pack $ "Signing " <> filename
         -- TODO: Double sign a file, SHA1 for vista/xp and SHA2 for windows 8 and on
         --procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\eureka.p12", "/p", pack pass, "/t", "http://timestamp.comodoca.com", "/v", pack filename] mempty
         procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\eureka.p12", "/p", pack pass, "/fd", "sha256", "/tr", "http://timestamp.comodoca.com/?td=sha256", "/td", "sha256", "/v", pack filename] mempty
@@ -84,7 +85,7 @@ parseVersion :: String -> [String]
 parseVersion ver =
   case split (== '.') (pack ver) of
     v@[_, _, _, _] -> map unpack v
-    _ -> ["0", "0", "0", "0"]
+    _              -> ["0", "0", "0", "0"]
 
 writeInstallerNSIS :: String -> IO ()
 writeInstallerNSIS fullVersion = do

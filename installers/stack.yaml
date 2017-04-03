@@ -9,9 +9,7 @@ packages:
       commit: 0658f28beb62d023655dd285a07fb9e3fdab416b
     extra-dep: true
 
-resolver: lts-7.16
-
-compiler: ghc-8.0.2
+resolver: lts-8.4
 
 nix:
     packages: [gmp,git]
