@@ -158,7 +158,7 @@ export default class CardanoClientApi {
       const restoredWallet = await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase);
       return this._createWalletFromServerData(restoredWallet);
     } catch (error) {
-      console.error(error);
+      Log.error(error);
       // TODO: backend will return something different here, if multiple wallets
       // are restored from the key and if there are duplicate wallets we will get
       // some kind of error and present the user with message that some wallets
@@ -167,7 +167,8 @@ export default class CardanoClientApi {
       if (error.message.includes('Wallet with that mnemonics already exists')) {
         throw new WalletAlreadyRestoredError();
       }
-      throw error;
+      // We don't know what the problem was -> throw generic error
+      throw new GenericApiError();
     }
   }
 
