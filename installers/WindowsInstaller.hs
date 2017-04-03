@@ -55,7 +55,6 @@ writeUninstallerNSIS fullVersion = do
       rmdir [Recursive,RebootOK] "$INSTDIR"
       delete [] "$SMPROGRAMS/Daedalus/*.*"
       delete [] "$DESKTOP\\Daedalus.lnk"
-      delete [] "$APPDATA\\Daedalus\\daedalus.bat"
       mapM_ injectLiteral
         [ "liteFirewall::RemoveRule \"$INSTDIR\\cardano-node.exe\" \"Cardano Node\""
         , "Pop $0"
@@ -121,7 +120,6 @@ writeInstallerNSIS fullVersion = do
         createDirectory "$APPDATA\\Daedalus\\Wallet-0.2"
         createDirectory "$APPDATA\\Daedalus\\Logs"
         createDirectory "$APPDATA\\Daedalus\\Secrets"
-        writeFileLines "$APPDATA\\Daedalus\\daedalus.bat" (map str launcherScript)
         createShortcut "$DESKTOP\\Daedalus.lnk" daedalusShortcut
         file [] "cardano-node.exe"
         file [] "cardano-launcher.exe"
