@@ -1,8 +1,27 @@
-import { app, BrowserWindow, Menu, shell, ipcMain, dialog } from 'electron';
+import { app, BrowserWindow, Menu, shell, ipcMain, dialog, crashReporter } from 'electron';
+import Log from 'electron-log';
 import osxMenu from './menus/osx';
-import fs from 'fs';
 import winLinuxMenu from './menus/win-linux';
 import ipcApi from './ipc-api';
+import getLogsFolderPath from './lib/getLogsFolderPath';
+
+const APP_NAME = 'Daedalus';
+// Configure default logger levels for console and file outputs
+const appLogFolderPath = getLogsFolderPath(process.platform, process.env, APP_NAME);
+Log.transports.console.level = 'warn';
+Log.transports.file.level = 'debug';
+Log.transports.file.file = `${appLogFolderPath}/${APP_NAME}.log`;
+
+// Configure & start crash reporter
+app.setPath('temp', appLogFolderPath);
+
+// TODO: Update when endpoint is ready (crash reports are only saved locally for now)
+crashReporter.start({
+  companyName: 'IOHK',
+  productName: APP_NAME,
+  submitURL: '',
+  uploadToServer: false
+});
 
 let menu;
 let mainWindow = null;

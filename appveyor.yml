@@ -2,9 +2,14 @@ version: 0.4.{build}
 
 environment:
   nodejs_version: "6"
-  global:
-    # Avoid long paths on Windows
-    STACK_ROOT: "c:\\sr"
+  AWS_ACCESS_KEY_ID:
+    secure: NoU3qXx0B+48v7PY3RzHrBrSqd4x/3dcJv8WwUzCNyE=
+  AWS_SECRET_ACCESS_KEY:
+    secure: TIIz2Xtcn63BxDJ9h+2Uj73vJrfmImtlZHh0y2YxGIpwu3eRV9OA+1jhDiG2zPch
+  CERT_PASS:
+    secure: 7YHNUjBuBUXrdsej2poKqcsTg0uItBKUZYqPAhWLgKc=
+  # Avoid long paths on Windows
+  STACK_ROOT: "c:\\sr"
 
 build: off
 
@@ -19,8 +24,6 @@ install:
   - cd node_modules\daedalus-client-api
   - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/jagajaga/cardano-sl/artifacts/CardanoSL.zip?branch=cardano-sl-0.3' -FileName CardanoSL.zip
   - 7z x CardanoSL.zip -y
-  - Echo "Build id of cardano-sl on appveyor:"
-  - type build-id
   - cd ..\..\
   - move node_modules\daedalus-client-api\log-config-prod.yaml installers\log-config-prod.yaml
   - move node_modules\daedalus-client-api\cardano-node.exe installers\
@@ -43,6 +46,7 @@ test_script:
   - 7z x DLLs.zip
   - del DLLs.zip
   - cd ..
+  - IF NOT DEFINED APPVEYOR_PULL_REQUEST_NUMBER aws s3 cp --region eu-central-1 s3://iohk-private/eureka.p12 C:/eureka.p12
   - stack setup --no-reinstall
   - appveyor-retry call stack --no-terminal build -j 2 --exec make-installer
   - cd ..
@@ -53,3 +57,5 @@ artifacts:
     type: zip
   - path: installers\daedalus-win64-*-installer.exe
     name: Daedalus Win64 Installer
+  - path: node_modules\daedalus-client-api\build-id
+    name: cardano-sl-build-id

@@ -45,7 +45,9 @@ const DEFAULT_OPTS = {
   ignore: [
     '^/test($|/)',
     '^/release($|/)',
-    '^/electron/main.development.js'
+    '^/electron/main.development.js',
+    '^/installers',
+    '^/cardano-sl'
   ]
   .concat(devDeps)
   .concat(depsExternal)

@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './SidebarWalletMenuItem.scss';
-import { eclipseString } from '../../../lib/string-helpers';
+import { ellipsis } from '../../../lib/string-helpers';
 
 @observer
 export default class SidebarWalletMenuItem extends Component {
@@ -21,7 +21,7 @@ export default class SidebarWalletMenuItem extends Component {
     return (
       <button className={componentStyles} onClick={onClick}>
         <span className={styles.meta}>
-          <span className={styles.title}>{eclipseString(title, 17)}</span>
+          <span className={styles.title}>{ellipsis(title, 17)}</span>
           <span className={styles.info}>{info}</span>
         </span>
       </button>

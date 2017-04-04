@@ -1,5 +1,6 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
+import Log from 'electron-log';
 import Store from './lib/Store';
 import Request from './lib/Request';
 import { ROUTES } from '../Routes';
@@ -51,10 +52,10 @@ export default class NetworkStatusStore extends Store {
       const relativeNetwork = this.networkDifficulty - this._localDifficultyStartedWith;
       // In case node is in sync after first local difficulty messages
       // local and network difficulty will be the same (0)
-      console.debug('Network difficulty: ', this.networkDifficulty);
-      console.debug('Local difficulty: ', this.localDifficulty);
-      console.debug('Relative local difficulty: ', relativeLocal);
-      console.debug('Relative network difficulty: ', relativeNetwork);
+      Log.debug('Network difficulty: ', this.networkDifficulty);
+      Log.debug('Local difficulty: ', this.localDifficulty);
+      Log.debug('Relative local difficulty: ', relativeLocal);
+      Log.debug('Relative network difficulty: ', relativeNetwork);
 
       if (relativeLocal >= relativeNetwork) return 100;
       return relativeLocal / relativeNetwork * 100;
@@ -86,7 +87,7 @@ export default class NetworkStatusStore extends Store {
         this._localDifficultyStartedWith = initialDifficulty.localDifficulty;
         this.localDifficulty = initialDifficulty.localDifficulty;
         this.networkDifficulty = initialDifficulty.networkDifficulty;
-        console.debug('Initial difficulty: ', initialDifficulty);
+        Log.debug('Initial difficulty: ', initialDifficulty);
       });
     }
   };
@@ -114,7 +115,7 @@ export default class NetworkStatusStore extends Store {
           this.isConnected = false;
           break;
         default:
-          console.log('Unknown server notification received:', message);
+          Log.warn('Unknown server notification received:', message);
       }
     }));
   }
