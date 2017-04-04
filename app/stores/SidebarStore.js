@@ -37,7 +37,7 @@ export default class SidebarStore extends Store {
     return wallets.all.map(w => ({
       id: w.id,
       title: w.name,
-      info: `${w.amount} ${w.currency}`,
+      info: `${w.amount.toFormat()} ${w.currency}`,
       isConnected: networkStatus.isConnected,
     }));
   }

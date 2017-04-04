@@ -13,7 +13,7 @@ export default class TopBar extends Component {
 
   static propTypes = {
     onToggleSidebar: PropTypes.func,
-    children: oneOrManyChildElements.isRequired,
+    children: oneOrManyChildElements,
     activeWallet: PropTypes.instanceOf(Wallet),
   };
 
@@ -27,7 +27,9 @@ export default class TopBar extends Component {
     const topBarTitle = activeWallet ? (
       <div className={styles.walletInfo}>
         <div className={styles.walletName}>{activeWallet.name}</div>
-        <div className={styles.walletAmount}>{activeWallet.amount + ' ' + activeWallet.currency}</div>
+        <div className={styles.walletAmount}>
+          {activeWallet.amount.toFormat() + ' ' + activeWallet.currency}
+        </div>
       </div>
     ) : null;
 

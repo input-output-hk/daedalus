@@ -1,6 +1,7 @@
 // @flow
 import { observable, computed, action, extendObservable } from 'mobx';
 import _ from 'lodash';
+import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
 import CachedRequest from './lib/CachedRequest';
 import WalletTransaction from '../domain/WalletTransaction';
@@ -110,15 +111,16 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get totalUnconfirmedAmount(): number {
+    let unconfirmedAmount = new BigNumber(0);
     const wallet = this.stores.wallets.active;
-    if (!wallet) return 0;
+    if (!wallet) return unconfirmedAmount;
     const result = this._getTransactionsAllRequest(wallet.id).result;
-    if (!result || !result.transactions) return 0;
-    let unconfirmedAmount = 0;
+    if (!result || !result.transactions) return unconfirmedAmount;
+
     for (const transaction of result.transactions) {
+      // TODO: move this magic constant (required numberOfConfirmations) to config!
       if (transaction.numberOfConfirmations <= 6) {
-        const t = transaction;
-        unconfirmedAmount += t.amount < 0 ? (-1 * t.amount) : t.amount;
+        unconfirmedAmount = unconfirmedAmount.plus(transaction.amount.absoluteValue());
       }
     }
     return unconfirmedAmount;

@@ -106,6 +106,7 @@
   },
   "dependencies": {
     "aes-js": "^2.1.0",
+    "bignumber.js": "^4.0.0",
     "bip39": "^2.2.0",
     "blakejs": "^1.0.1",
     "classnames": "^2.2.5",

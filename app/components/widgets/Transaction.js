@@ -115,7 +115,7 @@ export default class Transaction extends Component {
             <div className={styles.title}>
               {data.type === 'adaExpend' ? 'Ada Sent' : 'Ada Received'}
             </div>
-            <div className={styles.amount}>{data.amount}
+            <div className={styles.amount}>{data.amount.toFormat()}
               <img className={styles.currencySymbol} src={adaSymbol} role="presentation" />
             </div>
           </button>
