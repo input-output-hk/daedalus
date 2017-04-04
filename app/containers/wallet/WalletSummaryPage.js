@@ -1,13 +1,14 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
-import { observer, inject, PropTypes as MobxPropTypes } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import Wallet from '../../domain/Wallet';
 import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
 import WalletSummary from '../../components/wallet/summary/WalletSummary';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
-import Request from '../../stores/lib/Request';
+import WalletsStore from '../../stores/WalletsStore';
+import TransactionsStore from '../../stores/TransactionsStore';
+import SettingsStore from '../../stores/SettingsStore';
 
 const messages = defineMessages({
   noTransactions: {
@@ -22,16 +23,9 @@ export default class WalletSummaryPage extends Component {
 
   static propTypes = {
     stores: PropTypes.shape({
-      wallets: PropTypes.shape({
-        active: PropTypes.instanceOf(Wallet),
-      }),
-      transactions: PropTypes.shape({
-        recent: MobxPropTypes.arrayOrObservableArray.isRequired,
-        hasAny: PropTypes.bool.isRequired,
-        totalAvailable: PropTypes.number.isRequired,
-        totalUnconfirmedAmount: PropTypes.number.isRequired,
-        recentTransactionsRequest: PropTypes.instanceOf(Request),
-      }),
+      wallets: PropTypes.instanceOf(WalletsStore),
+      transactions: PropTypes.instanceOf(TransactionsStore),
+      settings: PropTypes.instanceOf(SettingsStore),
     }).isRequired,
   };
 
@@ -71,9 +65,9 @@ export default class WalletSummaryPage extends Component {
       <VerticalFlexContainer>
         <WalletSummary
           walletName={wallet.name}
-          amount={wallet.amount}
+          amount={wallet.amount.toFormat()}
           numberOfTransactions={totalAvailable}
-          pendingAmount={totalUnconfirmedAmount}
+          pendingAmount={totalUnconfirmedAmount.toFormat()}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
         />
         {walletTransactions}

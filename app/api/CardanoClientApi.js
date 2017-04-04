@@ -3,6 +3,7 @@ import ClientApi from 'daedalus-client-api';
 import { action } from 'mobx';
 import { ipcRenderer } from 'electron';
 import Log from 'electron-log';
+import BigNumber from 'bignumber.js';
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
 import type {
@@ -24,6 +25,7 @@ import {
   NotEnoughMoneyToSendError
 } from './errors';
 import type { AssuranceModeOption } from '../types/transactionAssuranceTypes';
+import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 
 // const notYetImplemented = () => new Promise((_, reject) => {
 //   reject(new ApiMethodNotYetImplementedError());
@@ -60,7 +62,7 @@ export default class CardanoClientApi {
   async getWallets() {
     Log.debug('CardanoClientApi::getWallets called');
     const response = await ClientApi.getWallets();
-    return response.map(data => this._createWalletFromServerData(data));
+    return response.map(data => _createWalletFromServerData(data));
   }
 
   async getTransactions(request: getTransactionsRequest) {
@@ -68,7 +70,7 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::getTransactions called with', request);
     const history = await ClientApi.searchHistory(walletId, searchTerm, skip, limit);
     return new Promise((resolve) => resolve({
-      transactions: history[0].map(data => this._createTransactionFromServerData(data, walletId)),
+      transactions: history[0].map(data => _createTransactionFromServerData(data, walletId)),
       total: history[1]
     }));
   }
@@ -76,7 +78,7 @@ export default class CardanoClientApi {
   async createWallet(request: createWalletRequest) {
     Log.debug('CardanoClientApi::createWallet called with', request);
     const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name, request.mnemonic);
-    return this._createWalletFromServerData(response);
+    return _createWalletFromServerData(response);
   }
 
   async deleteWallet(request: deleteWalletRequest) {
@@ -97,7 +99,7 @@ export default class CardanoClientApi {
       const response = await ClientApi.sendExtended(
         sender, receiver, amount, currency, title, description
       );
-      return this._createTransactionFromServerData(response);
+      return _createTransactionFromServerData(response);
     } catch (error) {
       console.error(error);
       if (error.message.includes('Not enough money to send')) {
@@ -119,34 +121,6 @@ export default class CardanoClientApi {
     return ClientApi.isValidRedeemCode(mnemonic);
   }
 
-  @action _createWalletFromServerData(data: ServerWalletStruct) {
-    return new Wallet({
-      id: data.cwAddress,
-      address: data.cwAddress,
-      amount: data.cwAmount.getCoin,
-      type: data.cwMeta.cwType,
-      currency: data.cwMeta.cwCurrency,
-      name: data.cwMeta.cwName,
-      assurance: data.cwMeta.cwAssurance,
-    });
-  }
-
-  @action _createTransactionFromServerData(data: ServerTransactionStruct) {
-    const isOutgoing = data.ctType.tag === 'CTOut';
-    const coins = data.ctAmount.getCoin;
-    const { ctmTitle, ctmDescription, ctmDate } = data.ctType.contents;
-    return new WalletTransaction({
-      id: data.ctId,
-      title: ctmTitle || isOutgoing ? 'Ada sent' : 'Ada received',
-      type: isOutgoing ? 'adaExpend' : 'adaIncome',
-      currency: 'ada',
-      amount: isOutgoing ? -1 * coins : coins,
-      date: new Date(ctmDate * 1000),
-      description: ctmDescription || '',
-      numberOfConfirmations: data.ctConfirmations,
-    });
-  }
-
   getWalletRecoveryPhrase() {
     return new Promise((resolve) => resolve(ClientApi.generateMnemonic().split(' ')));
   }
@@ -156,7 +130,7 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::restoreWallet called with', request);
     try {
       const restoredWallet = await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase);
-      return this._createWalletFromServerData(restoredWallet);
+      return _createWalletFromServerData(restoredWallet);
     } catch (error) {
       Log.error(error);
       // TODO: backend will return something different here, if multiple wallets
@@ -176,7 +150,7 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::importWalletFromKey called with', request);
     try {
       const importedWallet = await ClientApi.importKey(request.filePath);
-      return this._createWalletFromServerData(importedWallet);
+      return _createWalletFromServerData(importedWallet);
     } catch (error) {
       console.error(error);
       if (error.message.includes('Wallet with that mnemonics already exists')) {
@@ -193,7 +167,7 @@ export default class CardanoClientApi {
       const response: ServerWalletStruct = await ClientApi.redeemADA(redemptionCode, walletId);
       // TODO: Update response when it is implemented on the backend,
       // currently only wallet is returned
-      return this._createWalletFromServerData(response);
+      return _createWalletFromServerData(response);
     } catch (error) {
       console.error(error);
       throw new RedeemAdaError();
@@ -337,3 +311,33 @@ type ServerTransactionStruct = {
   ctAmount: ServerCoinAmountStruct,
   ctConfirmations: number,
 }
+
+// ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
+
+const _createWalletFromServerData = action((data: ServerWalletStruct) => (
+  new Wallet({
+    id: data.cwAddress,
+    address: data.cwAddress,
+    amount: new BigNumber(data.cwAmount.getCoin).dividedBy(LOVELACES_PER_ADA),
+    type: data.cwMeta.cwType,
+    currency: data.cwMeta.cwCurrency,
+    name: data.cwMeta.cwName,
+    assurance: data.cwMeta.cwAssurance,
+  })
+));
+
+const _createTransactionFromServerData = action((data: ServerTransactionStruct) => {
+  const isOutgoing = data.ctType.tag === 'CTOut';
+  const coins = data.ctAmount.getCoin;
+  const { ctmTitle, ctmDescription, ctmDate } = data.ctType.contents;
+  return new WalletTransaction({
+    id: data.ctId,
+    title: ctmTitle || isOutgoing ? 'Ada sent' : 'Ada received',
+    type: isOutgoing ? 'adaExpend' : 'adaIncome',
+    currency: 'ada',
+    amount: new BigNumber(isOutgoing ? -1 * coins : coins).dividedBy(LOVELACES_PER_ADA),
+    date: new Date(ctmDate * 1000),
+    description: ctmDescription || '',
+    numberOfConfirmations: data.ctConfirmations,
+  });
+});
