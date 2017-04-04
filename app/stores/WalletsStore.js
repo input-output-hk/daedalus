@@ -114,7 +114,7 @@ export default class WalletsStore extends Store {
     await this.sendMoneyRequest.execute({
       ...transactionDetails,
       walletId: wallet.id,
-      amount: parseFloat(transactionDetails.amount),
+      amount: transactionDetails.amount,
       sender: wallet.address,
       currency: wallet.currency,
     });

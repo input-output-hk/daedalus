@@ -46,7 +46,8 @@
     "no-useless-escape": 1,
     "prefer-const": 1,
     "object-curly-spacing": 1,
-    "spaced-comment": 1
+    "spaced-comment": 1,
+    "quotes": 1
   },
   "plugins": [
     "flowtype-errors",
