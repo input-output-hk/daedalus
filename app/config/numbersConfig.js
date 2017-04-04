@@ -1,1 +1,1 @@
-export const LOVELACES_PER_ADA = 1000000000;
+export const LOVELACES_PER_ADA = 1000000;
