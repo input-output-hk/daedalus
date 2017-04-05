@@ -27,6 +27,7 @@
   "loading.screen.loadingWalletData": "!!!Loading wallet data",
   "loading.screen.reconnectingToNetworkMessage": "!!!Network connection lost - reconnecting",
   "loading.screen.syncingBlocksMessage": "!!!Syncing blocks",
+  "loading.screen.waitingForSyncToStart": "!!!Connected - waiting for block syncing to start",
   "profile.languageSelect.form.languageSelectLabel": "!!!Select your language",
   "profile.languageSelect.form.submitLabel": "!!!Continue",
   "settings.general.languageSelect.label": "!!!Language",

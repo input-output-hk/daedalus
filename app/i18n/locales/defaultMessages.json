@@ -105,17 +105,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Network connection lost - reconnecting",
-        "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
+        "defaultMessage": "!!!Connected - waiting for block syncing to start",
+        "description": "Message \"Connected - waiting for block syncing to start\" on the loading screen.",
         "end": {
           "column": 3,
           "line": 21
         },
         "file": "app/components/loading/Loading.js",
+        "id": "loading.screen.waitingForSyncToStart",
+        "start": {
+          "column": 25,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!Network connection lost - reconnecting",
+        "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "app/components/loading/Loading.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 17
+          "line": 22
         }
       },
       {
@@ -123,13 +137,13 @@
         "description": "Message \"Syncing blocks\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 31
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.syncingBlocksMessage",
         "start": {
           "column": 11,
-          "line": 22
+          "line": 27
         }
       },
       {
@@ -137,13 +151,13 @@
         "description": "Message \"Loading wallet data\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 36
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
-          "line": 27
+          "line": 32
         }
       }
     ],
@@ -1788,13 +1802,13 @@
         "description": "Transaction type shown for credit card payments.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 16
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.type.card",
         "start": {
           "column": 8,
-          "line": 11
+          "line": 12
         }
       },
       {
@@ -1802,13 +1816,13 @@
         "description": "Transaction type shown for ada payments.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.type.ada",
         "start": {
           "column": 7,
-          "line": 16
+          "line": 17
         }
       },
       {
@@ -1816,13 +1830,13 @@
         "description": "Transaction type shown for money exchanges between currencies.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.type.exchange",
         "start": {
           "column": 12,
-          "line": 21
+          "line": 22
         }
       },
       {
@@ -1830,13 +1844,13 @@
         "description": "Transaction assurance level.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.assuranceLevel",
         "start": {
           "column": 18,
-          "line": 26
+          "line": 27
         }
       },
       {
@@ -1844,13 +1858,13 @@
         "description": "Transaction confirmations.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.confirmations",
         "start": {
           "column": 17,
-          "line": 31
+          "line": 32
         }
       },
       {
@@ -1858,13 +1872,13 @@
         "description": "Transaction ID.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.transactionId",
         "start": {
           "column": 17,
-          "line": 36
+          "line": 37
         }
       },
       {
@@ -1872,13 +1886,13 @@
         "description": "Conversion rate.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.conversion.rate",
         "start": {
           "column": 18,
-          "line": 41
+          "line": 42
         }
       },
       {
@@ -1886,13 +1900,13 @@
         "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.low",
         "start": {
           "column": 25,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -1900,13 +1914,13 @@
         "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 59
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
           "column": 28,
-          "line": 54
+          "line": 55
         }
       },
       {
@@ -1914,13 +1928,13 @@
         "description": "Transaction assurance level \"high\".",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.high",
         "start": {
           "column": 26,
-          "line": 59
+          "line": 60
         }
       }
     ],
@@ -1952,13 +1966,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "app/containers/wallet/WalletSummaryPage.js",
         "id": "wallet.summary.no.transactions",
         "start": {
           "column": 18,
-          "line": 14
+          "line": 15
         }
       }
     ],
