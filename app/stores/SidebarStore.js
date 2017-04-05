@@ -2,6 +2,7 @@
 import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
 import { ROUTES } from '../Routes';
+import { DECIMAL_PLACES_IN_ADA } from '../config/numbersConfig';
 
 export default class SidebarStore extends Store {
 
@@ -37,7 +38,7 @@ export default class SidebarStore extends Store {
     return wallets.all.map(w => ({
       id: w.id,
       title: w.name,
-      info: `${w.amount.toFormat()} ${w.currency}`,
+      info: `${w.amount.toFormat(DECIMAL_PLACES_IN_ADA)} ${w.currency}`,
       isConnected: networkStatus.isConnected,
     }));
   }
