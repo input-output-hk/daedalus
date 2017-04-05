@@ -305,6 +305,20 @@ export default class CardanoClientApi {
     }
   }
 
+  changeWalletPassword(walletId: string, oldPassword: string, newPassword: string) {
+    return new Promise((resolve) => {
+      // Fake async request here to make it more realistic
+      setTimeout(() => resolve(walletId, oldPassword, newPassword), 100);
+    });
+  }
+
+  setWalletPassword(walletId: string, password: string) {
+    return new Promise((resolve) => {
+      // Fake async request here to make it more realistic
+      setTimeout(() => resolve(walletId, password), 100);
+    });
+  }
+
   testReset() {
     return ClientApi.testReset();
   }

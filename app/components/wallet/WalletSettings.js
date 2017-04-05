@@ -48,7 +48,7 @@ export default class WalletSettings extends Component {
     walletAssurance: PropTypes.string.isRequired,
     onWalletAssuranceLevelUpdate: PropTypes.func.isRequired,
     hasWalletPassword: PropTypes.bool.isRequired,
-    walletPasswordUpdateDate: PropTypes.instanceOf(Date).isRequired,
+    walletPasswordUpdateDate: PropTypes.instanceOf(Date),
     error: PropTypes.instanceOf(LocalizableError),
     openDialogAction: PropTypes.func.isRequired,
     isDialogOpen: PropTypes.func.isRequired,

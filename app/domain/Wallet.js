@@ -14,7 +14,7 @@ export default class Wallet {
   @observable amount: number;
   @observable assurance: AssuranceMode;
   @observable hasPassword: bool;
-  @observable passwordUpdateDate: Date;
+  @observable passwordUpdateDate: ?Date;
   @observable transactions: Array<WalletTransaction> = [];
 
   constructor(data: {
@@ -26,7 +26,7 @@ export default class Wallet {
     amount: number,
     assuranceMode: AssuranceMode,
     hasPassword: bool,
-    passwordUpdateDate: Date,
+    passwordUpdateDate: ?Date,
   }) {
     Object.assign(this, data);
   }
