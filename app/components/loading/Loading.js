@@ -14,6 +14,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Connecting to network',
     description: 'Message "Connecting to network" on the loading screen.'
   },
+  waitingForSyncToStart: {
+    id: 'loading.screen.waitingForSyncToStart',
+    defaultMessage: '!!!Connected - waiting for block syncing to start',
+    description: 'Message "Connected - waiting for block syncing to start" on the loading screen.'
+  },
   reconnecting: {
     id: 'loading.screen.reconnectingToNetworkMessage',
     defaultMessage: '!!!Network connection lost - reconnecting',
@@ -42,6 +47,7 @@ export default class Loading extends Component {
     isConnecting: PropTypes.bool.isRequired,
     hasBeenConnected: PropTypes.bool.isRequired,
     isSyncing: PropTypes.bool.isRequired,
+    hasBlockSyncingStarted: PropTypes.bool.isRequired,
     isLoadingWallets: PropTypes.bool.isRequired,
     syncPercentage: PropTypes.number.isRequired,
   };
@@ -49,7 +55,7 @@ export default class Loading extends Component {
   render() {
     const { intl } = this.context;
     const {
-      isConnecting, isSyncing, syncPercentage, isLoadingWallets, hasBeenConnected
+      isConnecting, isSyncing, syncPercentage, isLoadingWallets, hasBeenConnected, hasBlockSyncingStarted
     } = this.props;
     const componentStyles = classNames([
       styles.component,
@@ -61,9 +67,14 @@ export default class Loading extends Component {
     return (
       <div className={componentStyles}>
         <img className={styles.logo} src={logo} role="presentation" />
-        {isConnecting && (
+        {isConnecting && !hasBlockSyncingStarted && (
           <div className={styles.connecting}>
             <h1 className={styles.headline}>{intl.formatMessage(connectingMessage)}</h1>
+          </div>
+        )}
+        {isConnecting && hasBlockSyncingStarted && (
+          <div className={styles.connecting}>
+            <h1 className={styles.headline}>{intl.formatMessage(messages.waitingForSyncToStart)}</h1>
           </div>
         )}
         {isSyncing && (

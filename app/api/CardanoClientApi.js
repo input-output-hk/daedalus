@@ -1,5 +1,5 @@
 // @flow
-import ClientApi from 'daedalus-client-api';
+import ClientApi from '/Users/darkomijic/iohk/cardano-sl/daedalus'; // eslint-disable-line
 import { action } from 'mobx';
 import { ipcRenderer } from 'electron';
 import Log from 'electron-log';
@@ -61,8 +61,17 @@ export default class CardanoClientApi {
 
   async getWallets() {
     Log.debug('CardanoClientApi::getWallets called');
-    const response = await ClientApi.getWallets();
-    return response.map(data => _createWalletFromServerData(data));
+    // const response = await ClientApi.getWallets();
+    // return response.map(data => _createWalletFromServerData(data));
+    return [new Wallet({
+      id: 'asldkjaldsk',
+      address: 'asldkjaldsk',
+      amount: new BigNumber(100000000.3478400).dividedBy(LOVELACES_PER_ADA),
+      type: 'CWTPersonal',
+      currency: 'Ada',
+      name: 'Fake wallet',
+      assurance: 'CWANormal',
+    })];
   }
 
   async getTransactions(request: getTransactionsRequest) {
@@ -113,7 +122,7 @@ export default class CardanoClientApi {
     return ClientApi.isValidAddress(currency, address);
   }
 
-  isValidMnemonic(mnemonic: string): Promise<bool> {
+  isValidMnemonic(mnemonic: string): Promise<bool> { // eslint-disable-line
     return ClientApi.isValidMnemonic(mnemonic);
   }
 

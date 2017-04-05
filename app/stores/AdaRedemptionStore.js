@@ -74,27 +74,39 @@ export default class AdaRedemptionStore extends Store {
     this._parseCodeFromCertificate();
   });
 
-  _setRedemptionCode = action(({ redemptionCode }) => {
+  _setRedemptionCode = action(({ redemptionCode } : { redemptionCode: string }) => {
     this.redemptionCode = redemptionCode;
   });
 
-  _setEmail = action(({ email }) => {
+  _setEmail = action(({ email } : { email: string }) => {
     this.email = email;
+    this._parseCodeFromCertificate();
   });
 
-  _setAdaPasscode = action(({ adaPasscode }) => {
+  _setAdaPasscode = action(({ adaPasscode } : { adaPasscode: string }) => {
     this.adaPasscode = adaPasscode;
+    this._parseCodeFromCertificate();
   });
 
-  _setAdaAmount = action(({ adaAmount }) => {
+  _setAdaAmount = action(({ adaAmount } : { adaAmount: string }) => {
     this.adaAmount = adaAmount;
+    this._parseCodeFromCertificate();
   });
 
   _parseCodeFromCertificate() {
+    if (this.redemptionType === 'regular') {
+      if (!this.passPhrase) return;
+    }
+    if (this.redemptionType === 'forceVended') {
+      if (!this.email || !this.adaAmount || !this.adaPasscode) return;
+    }
+    if (this.redemptionType === 'paperVended') return;
     if (this.certificate == null) throw new Error('Certificate File is required for parsing.');
     const path = this.certificate.path;
     Log.debug('Parsing ADA Redemption code from certificate', path);
-    ipcRenderer.send(PARSE_REDEMPTION_CODE.REQUEST, path, this.passPhrase);
+    const decryptionKey = this.redemptionType === 'regular' ? this.passPhrase :
+      [this.email, this.adaPasscode, this.adaAmount];
+    ipcRenderer.send(PARSE_REDEMPTION_CODE.REQUEST, path, decryptionKey, this.redemptionType);
   }
 
   _onCodeParsed = action((event, code) => {
@@ -114,7 +126,7 @@ export default class AdaRedemptionStore extends Store {
     this.passPhrase = '';
   });
 
-  _redeemAda = action(({ walletId }) => {
+  _redeemAda = action(({ walletId } : { walletId: string }) => {
     this.walletId = walletId;
     this.redeemAdaRequest.execute({ redemptionCode: this.redemptionCode, walletId })
       .then(action((wallet) => {

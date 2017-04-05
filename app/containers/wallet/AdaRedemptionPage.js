@@ -18,6 +18,9 @@ export default class AdaRedemptionPage extends Component {
         redeemAda: PropTypes.func.isRequired,
         setCertificate: PropTypes.func.isRequired,
         setPassPhrase: PropTypes.func.isRequired,
+        setEmail: PropTypes.func.isRequired,
+        setAdaPasscode: PropTypes.func.isRequired,
+        setAdaAmount: PropTypes.func.isRequired,
         setRedemptionCode: PropTypes.func.isRequired,
         removeCertificate: PropTypes.func.isRequired,
       }),
@@ -47,7 +50,8 @@ export default class AdaRedemptionPage extends Component {
       redeemAdaRequest, isCertificateEncrypted, isValidRedemptionKey, redemptionType, error
     } = adaRedemption;
     const {
-      chooseRedemptionType, setCertificate, setPassPhrase, setRedemptionCode, removeCertificate
+      chooseRedemptionType, setCertificate, setPassPhrase, setRedemptionCode, removeCertificate,
+      setEmail, setAdaPasscode, setAdaAmount
     } = this.props.actions.adaRedemption;
 
     const selectableWallets = wallets.all.map((w) => ({
@@ -61,6 +65,9 @@ export default class AdaRedemptionPage extends Component {
         <AdaRedemptionForm
           onCertificateSelected={(certificate) => setCertificate({ certificate })}
           onPassPhraseChanged={(passPhrase) => setPassPhrase({ passPhrase })}
+          onEmailChanged={(email) => setEmail({ email })}
+          onAdaAmountChanged={(adaAmount) => setAdaAmount({ adaAmount })}
+          onAdaPasscodeChanged={(adaPasscode) => setAdaPasscode({ adaPasscode })}
           onRedemptionCodeChanged={(redemptionCode) => setRedemptionCode({ redemptionCode })}
           onChooseRedemptionType={(choice) => chooseRedemptionType({ redemptionType: choice })}
           redemptionCode={adaRedemption.redemptionCode}

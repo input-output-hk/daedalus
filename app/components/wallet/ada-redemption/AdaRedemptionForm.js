@@ -1,7 +1,7 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
-import { isEmail } from 'validator';
+import { isEmail, isEmpty } from 'validator';
 import classnames from 'classnames';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import Button from 'react-toolbox/lib/button/Button';
@@ -12,7 +12,7 @@ import AdaCertificateUploadWidget from '../../widgets/forms/AdaCertificateUpload
 import AdaRedemptionChoices from './AdaRedemptionChoices';
 import BorderedBox from '../../widgets/BorderedBox';
 import LocalizableError from '../../../i18n/LocalizableError';
-import { InvalidMnemonicError, InvalidEmailError } from '../../../i18n/errors';
+import { InvalidMnemonicError, InvalidEmailError, FieldRequiredError } from '../../../i18n/errors';
 import { isValidMnemonic } from '../../../../lib/decrypt';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './AdaRedemptionForm.scss';
@@ -154,6 +154,9 @@ export default class AdaRedemptionForm extends Component {
     onCertificateSelected: PropTypes.func.isRequired,
     onRemoveCertificate: PropTypes.func.isRequired,
     onPassPhraseChanged: PropTypes.func.isRequired,
+    onEmailChanged: PropTypes.func.isRequired,
+    onAdaPasscodeChanged: PropTypes.func.isRequired,
+    onAdaAmountChanged: PropTypes.func.isRequired,
     onRedemptionCodeChanged: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired,
     redemptionType: PropTypes.string.isRequired,
@@ -229,7 +232,7 @@ export default class AdaRedemptionForm extends Component {
           if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           return [
             this.props.redemptionCodeValidator(value),
-            this.context.intl.formatMessage(messages.shie)
+            this.context.intl.formatMessage(messages.shieldedRedemptionKeyError)
           ];
         },
       },
@@ -243,10 +246,14 @@ export default class AdaRedemptionForm extends Component {
         placeholder: this.context.intl.formatMessage(messages.emailHint),
         value: '',
         bindings: 'ReactToolbox',
-        validate: [({ field }) => ([
-          isEmail(field.value),
-          this.context.intl.formatMessage(new InvalidEmailError())
-        ])]
+        validate: [({ field }) => {
+          const email = field.value;
+          if (isEmail(email)) this.props.onEmailChanged(email);
+          return [
+            isEmail(email),
+            this.context.intl.formatMessage(new InvalidEmailError())
+          ];
+        }]
       },
       adaPasscode: {
         label: this.context.intl.formatMessage(messages.adaPasscodeLabel),
@@ -254,7 +261,12 @@ export default class AdaRedemptionForm extends Component {
         value: '',
         bindings: 'ReactToolbox',
         validate: [({ field }) => {
-          if (field.value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
+          const adaPasscode = field.value;
+          if (!isEmpty(adaPasscode)) this.props.onAdaPasscodeChanged(adaPasscode);
+          return [
+            !isEmpty(adaPasscode),
+            this.context.intl.formatMessage(new FieldRequiredError())
+          ];
         }]
       },
       adaAmount: {
@@ -263,7 +275,12 @@ export default class AdaRedemptionForm extends Component {
         value: '',
         bindings: 'ReactToolbox',
         validate: [({ field }) => {
-          if (field.value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
+          const adaAmount = field.value;
+          if (!isEmpty(adaAmount)) this.props.onAdaAmountChanged(adaAmount);
+          return [
+            !isEmpty(adaAmount),
+            this.context.intl.formatMessage(new FieldRequiredError())
+          ];
         }]
       },
     }
@@ -406,8 +423,8 @@ export default class AdaRedemptionForm extends Component {
                 {...emailField.bind({
                   onBlur: event => {
                     event.preventDefault();
-                    passPhrase.onBlur();
-                    passPhrase.validate();
+                    emailField.onBlur();
+                    emailField.validate();
                   }
                 })}
               />
@@ -415,14 +432,14 @@ export default class AdaRedemptionForm extends Component {
           )}
 
           {showInputsForDecryptingForceVendedCertificate && (
-            <div className={styles.email}>
+            <div className={styles.adaPasscode}>
               <Input
-                className="email"
+                className="ada-passcode"
                 {...adaPasscodeField.bind({
                   onBlur: event => {
                     event.preventDefault();
-                    passPhrase.onBlur();
-                    passPhrase.validate();
+                    adaPasscodeField.onBlur();
+                    adaPasscodeField.validate();
                   }
                 })}
               />
@@ -430,14 +447,14 @@ export default class AdaRedemptionForm extends Component {
           )}
 
           {showInputsForDecryptingForceVendedCertificate && (
-            <div className={styles.email}>
+            <div className={styles.adaAmount}>
               <Input
-                className="email"
+                className="ada-amount"
                 {...adaAmountField.bind({
                   onBlur: event => {
                     event.preventDefault();
-                    passPhrase.onBlur();
-                    passPhrase.validate();
+                    adaAmountField.onBlur();
+                    adaAmountField.validate();
                   }
                 })}
               />

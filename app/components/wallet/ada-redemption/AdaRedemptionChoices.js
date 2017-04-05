@@ -37,7 +37,6 @@ export default class AdaRedemptionChoices extends Component {
   render() {
     const { intl } = this.context;
     const { activeChoice, onSelectChoice } = this.props;
-    console.log(activeChoice);
     return (
       <div className={styles.component}>
         <button
