@@ -9,6 +9,7 @@ import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer
 import WalletsStore from '../../stores/WalletsStore';
 import TransactionsStore from '../../stores/TransactionsStore';
 import SettingsStore from '../../stores/SettingsStore';
+import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 
 const messages = defineMessages({
   noTransactions: {
@@ -65,9 +66,9 @@ export default class WalletSummaryPage extends Component {
       <VerticalFlexContainer>
         <WalletSummary
           walletName={wallet.name}
-          amount={wallet.amount.toFormat()}
+          amount={wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
           numberOfTransactions={totalAvailable}
-          pendingAmount={totalUnconfirmedAmount.toFormat()}
+          pendingAmount={totalUnconfirmedAmount.toFormat(DECIMAL_PLACES_IN_ADA)}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
         />
         {walletTransactions}

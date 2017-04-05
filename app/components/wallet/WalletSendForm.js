@@ -6,7 +6,7 @@ import Button from 'react-toolbox/lib/button/Button';
 import { defineMessages, intlShape } from 'react-intl';
 import isInt from 'validator/lib/isInt';
 import BigNumber from 'bignumber.js';
-import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
+import { LOVELACES_PER_ADA, DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
 import styles from './WalletSendForm.scss';
@@ -154,7 +154,7 @@ export default class WalletSendForm extends Component {
     let adaAmount = '0';
     if (form.$('amount').isValid) {
       const lovelaces = new BigNumber(form.$('amount').value);
-      adaAmount = lovelaces.dividedBy(LOVELACES_PER_ADA).toFormat();
+      adaAmount = lovelaces.dividedBy(LOVELACES_PER_ADA).toFormat(DECIMAL_PLACES_IN_ADA);
     }
 
     return (

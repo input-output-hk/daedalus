@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import classNames from 'classnames';
 import RTAppBar from 'react-toolbox/lib/app_bar/AppBar';
 import { observer } from 'mobx-react';
+import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import Wallet from '../../domain/Wallet';
 import menuIcon from '../../assets/images/menu-ic.svg';
 import { oneOrManyChildElements } from '../../propTypes';
@@ -28,7 +29,7 @@ export default class TopBar extends Component {
       <div className={styles.walletInfo}>
         <div className={styles.walletName}>{activeWallet.name}</div>
         <div className={styles.walletAmount}>
-          {activeWallet.amount.toFormat() + ' ' + activeWallet.currency}
+          {activeWallet.amount.toFormat(DECIMAL_PLACES_IN_ADA) + ' ' + activeWallet.currency}
         </div>
       </div>
     ) : null;
