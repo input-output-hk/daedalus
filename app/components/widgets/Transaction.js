@@ -6,6 +6,7 @@ import styles from './Transaction.scss';
 import adaSymbol from '../../assets/images/ada-symbol.svg';
 import WalletTransaction from '../../domain/WalletTransaction';
 import { assuranceLevels } from '../../config/transactionAssuranceConfig';
+import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 
 const messages = defineMessages({
   card: {
@@ -115,7 +116,7 @@ export default class Transaction extends Component {
             <div className={styles.title}>
               {data.type === 'adaExpend' ? 'Ada Sent' : 'Ada Received'}
             </div>
-            <div className={styles.amount}>{data.amount.toFormat()}
+            <div className={styles.amount}>{data.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
               <img className={styles.currencySymbol} src={adaSymbol} role="presentation" />
             </div>
           </button>
