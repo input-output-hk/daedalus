@@ -33,7 +33,6 @@ export default class WalletSettingsStore extends Store {
     });
   };
 
-  // include walletId
   @action _changeWalletPassword = ({ walletId, oldPassword, newPassword }: {
     walletId: string, oldPassword: string, newPassword: string,
   }) => {
