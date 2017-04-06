@@ -43,7 +43,15 @@ export default class NetworkStatusStore extends Store {
   }
 
   @computed get isConnecting(): bool {
-    return !this.isConnected;
+    // until we start receiving network difficulty messages we are not connected to node and
+    // we should be on the blue connecting screen instead of displaying "Loading wallet data"
+    return !this.isConnected || this.networkDifficulty <= 1;
+  }
+
+  @computed get hasBlockSyncingStarted(): bool {
+    // until we start receiving network difficulty messages we are not connected to node and
+    // we should be on the blue connecting screen instead of displaying "Loading wallet data"
+    return this.networkDifficulty >= 1;
   }
 
   @computed get relativeSyncPercentage(): number {
@@ -72,11 +80,11 @@ export default class NetworkStatusStore extends Store {
   }
 
   @computed get isSyncing(): bool {
-    return !this.isConnecting && this.networkDifficulty > 0 && !this.isSynced;
+    return !this.isConnecting && this.hasBlockSyncingStarted && !this.isSynced;
   }
 
   @computed get isSynced(): bool {
-    return !this.isConnecting && this.syncPercentage >= 100;
+    return !this.isConnecting && this.syncPercentage >= 100 && this.hasBlockSyncingStarted;
   }
 
   @action _setInitialDifficulty = async () => {
@@ -104,12 +112,12 @@ export default class NetworkStatusStore extends Store {
           this.isConnected = true;
           break;
         case 'NetworkDifficultyChanged':
-          this.networkDifficulty = message.contents.getChainDifficulty;
+          if (message.contents.getChainDifficulty) this.networkDifficulty = message.contents.getChainDifficulty;
           this.isConnected = true;
           this.hasBeenConnected = true;
           break;
         case 'LocalDifficultyChanged':
-          this.localDifficulty = message.contents.getChainDifficulty;
+          if (message.contents.getChainDifficulty) this.localDifficulty = message.contents.getChainDifficulty;
           break;
         case 'ConnectionClosedReconnecting':
           this.isConnected = false;
