@@ -29,7 +29,6 @@ export default () => {
         // Write it to disk temporarily (so pdf extract can work with it)
         pdfPath = `${filePath}.pdf`;
         fs.writeFileSync(pdfPath, decryptedFile);
-        fs.writeFileSync('/Users/darkomijic/Desktop/cat.png', decryptedFile);
         isTemporaryDecryptedPdf = true;
       } catch (error) {
         Log.warn('ERROR!', error);
