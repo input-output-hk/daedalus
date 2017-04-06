@@ -49,6 +49,10 @@ export default function () {
     await this.navigateTo(`/wallets/${wallet.id}/${screen}`);
   });
 
+  this.Given(/^I see the add wallet dialog$/, function () {
+    return this.client.waitForVisible('.WalletAddDialog');
+  });
+
   this.Given(/^I see the create wallet dialog$/, function () {
     return this.client.waitForVisible('.WalletCreateDialog');
   });
@@ -62,6 +66,10 @@ export default function () {
     this.client.execute(walletId => {
       daedalus.actions.setActiveWallet({ walletId });
     }, wallet.id);
+  });
+
+  this.When(/^I click on the create wallet button in add wallet dialog$/, function () {
+    return this.waitAndClick('.WalletAddDialog .createWalletButton');
   });
 
   this.When(/^I click the wallet (.*) button$/, async function (buttonName) {
