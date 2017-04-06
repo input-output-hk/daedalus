@@ -182,7 +182,9 @@ export default class AdaRedemptionForm extends Component {
         const { walletId, shieldedRedemptionKey } = form.values();
         this.props.onSubmit({ walletId, shieldedRedemptionKey });
       },
-      onError: () => {}
+      onError: (form) => {
+        // console.log('FORM ERRORS', form.errors());
+      }
     });
   };
 
@@ -232,6 +234,7 @@ export default class AdaRedemptionForm extends Component {
         value: '',
         bindings: 'ReactToolbox',
         validate: ({ field }) => {
+          if (this.props.redemptionType !== 'paperVended') return [true];
           const value = field.value;
           if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           return [
@@ -340,6 +343,8 @@ export default class AdaRedemptionForm extends Component {
       default:
         instructionMessage = messages.instructionsRegular;
     }
+
+    // console.log('SUBMITED ERRORS', form.errors());
 
     return (
       <div className={componentClasses}>
