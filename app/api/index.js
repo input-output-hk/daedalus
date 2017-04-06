@@ -89,15 +89,29 @@ export type importKeyRequest = {
 // INTERFACE
 
 export type Api = {
+  notify(onSuccess: Function, onError?: Function): void,
+  reset(): void,
   getWallets(): Promise<[Wallet]>,
   getTransactions(request: getTransactionsRequest): Promise<{
     transactions: [WalletTransaction],
     total: number
   }>,
   createWallet(request: createWalletRequest): Promise<Wallet>,
+  deleteWallet(request: deleteWalletRequest): Promise<boolean>,
   createTransaction(request: createTransactionRequest): Promise<WalletTransaction>,
   isValidAddress(currency: string, address: string): Promise<boolean>,
-  getTermsOfUse(): Promise<string>,
+  isValidMnemonic(mnemonic: string): Promise<boolean>,
+  isValidRedemptionKey(mnemonic: string): Promise<boolean>,
   getWalletRecoveryPhrase(request: getWalletRecoveryPhraseRequest): Promise<string>,
-  restoreWallet(request: walletRestoreRequest) : Promise<any>
+  restoreWallet(request: walletRestoreRequest): Promise<any>,
+  importWalletFromKey(request: importKeyRequest): Promise<Wallet>,
+  redeemAda(request: redeemAdaRequest): Promise<Wallet>,
+  generateMnemonic(): string,
+  nextUpdate(): Promise<string>,
+  applyUpdate(): void,
+  getSyncProgress(): Promise<{ localDifficulty: number, networkDifficulty: number }>,
+  setUserLocale(locale: string): Promise<string>,
+  getUserLocale(): Promise<string>,
+  updateWallet(request: walletUpdateRequest): Promise<boolean>,
+  testReset(): void,
 };

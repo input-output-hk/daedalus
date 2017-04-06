@@ -1,26 +1,13 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
+import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
 export default class WalletAddPage extends Component {
 
-  static propTypes = {
-    actions: PropTypes.shape({
-      wallets: PropTypes.shape({
-        toggleCreateWalletDialog: PropTypes.func.isRequired,
-        toggleWalletRestore: PropTypes.func.isRequired,
-        toggleAddWallet: PropTypes.func.isRequired,
-        toggleWalletKeyImportDialog: PropTypes.func.isRequired,
-      }),
-    }).isRequired,
-    stores: PropTypes.shape({
-      wallets: PropTypes.shape({
-        hasAnyWallets: PropTypes.bool.isRequired
-      }).isRequired,
-    }).isRequired,
-  };
+  props: InjectedProps;
 
   render() {
     const {
@@ -32,10 +19,10 @@ export default class WalletAddPage extends Component {
     const { hasAnyWallets } = this.props.stores.wallets;
     return (
       <WalletAddDialog
-        onCreate={toggleCreateWalletDialog}
-        onRestore={toggleWalletRestore}
-        onImportKey={toggleWalletKeyImportDialog}
-        onCancel={toggleAddWallet}
+        onCreate={toggleCreateWalletDialog.trigger}
+        onRestore={toggleWalletRestore.trigger}
+        onImportKey={toggleWalletKeyImportDialog.trigger}
+        onCancel={toggleAddWallet.trigger}
         canClose={hasAnyWallets}
       />
     );

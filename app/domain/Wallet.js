@@ -2,7 +2,7 @@
 import { observable, action, computed } from 'mobx';
 import BigNumber from 'bignumber.js';
 import WalletTransaction from './WalletTransaction';
-import type { AssuranceMode } from '../types/transactionAssuranceTypes';
+import type { AssuranceMode, AssuranceModeOption } from '../types/transactionAssuranceTypes';
 import { assuranceModes, assuranceModeOptions } from '../config/transactionAssuranceConfig';
 
 export default class Wallet {
@@ -13,7 +13,7 @@ export default class Wallet {
   currency: string = '';
   @observable name: string = '';
   @observable amount: BigNumber;
-  @observable assurance: AssuranceMode;
+  @observable assurance: AssuranceModeOption;
   @observable transactions: Array<WalletTransaction> = [];
 
   constructor(data: {
@@ -23,7 +23,7 @@ export default class Wallet {
     address: string,
     currency: string,
     amount: BigNumber,
-    assuranceMode: AssuranceMode,
+    assurance: AssuranceModeOption,
   }) {
     Object.assign(this, data);
   }

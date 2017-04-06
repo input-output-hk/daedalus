@@ -1,44 +1,15 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
-import { observer, inject, PropTypes as MobxPropTypes } from 'mobx-react';
+import React, { Component } from 'react';
+import { observer, inject } from 'mobx-react';
 import WalletBackupPrivacyWarningDialog from '../../components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog';
 import WalletRecoveryPhraseDisplayDialog from '../../components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog';
 import WalletRecoveryPhraseEntryDialog from '../../components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog';
+import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
 export default class WalletBackupPage extends Component {
 
-  static propTypes = {
-    stores: PropTypes.shape({
-      walletBackup: PropTypes.shape({
-        currentStep: PropTypes.string.isRequired,
-        recoveryPhraseWords: MobxPropTypes.arrayOrObservableArray.isRequired,
-        recoveryPhraseShuffled: MobxPropTypes.arrayOrObservableArray.isRequired,
-        completed: PropTypes.bool.isRequired,
-        enteredPhrase: MobxPropTypes.arrayOrObservableArray.isRequired,
-        isPrivacyNoticeAccepted: PropTypes.bool.isRequired,
-        isEntering: PropTypes.bool.isRequired,
-        isRecoveryPhraseValid: PropTypes.bool.isRequired,
-        countdownRemaining: PropTypes.number.isRequired,
-        isTermDeviceAccepted: PropTypes.bool.isRequired,
-        isTermRecoveryAccepted: PropTypes.bool.isRequired
-      }),
-    }).isRequired,
-    actions: PropTypes.shape({
-      walletBackup: PropTypes.shape({
-        startWalletBackup: PropTypes.func.isRequired,
-        continueToRecoveryPhraseForWalletBackup: PropTypes.func.isRequired,
-        addWordToWalletBackupVerification: PropTypes.func.isRequired,
-        clearEnteredRecoveryPhrase: PropTypes.func.isRequired,
-        acceptWalletBackupTermDevice: PropTypes.func.isRequired,
-        acceptWalletBackupTermRecovery: PropTypes.func.isRequired,
-        restartWalletBackup: PropTypes.func.isRequired,
-        cancelWalletBackup: PropTypes.func.isRequired,
-        finishWalletBackup: PropTypes.func.isRequired,
-        acceptPrivacyNoticeForWalletBackup: PropTypes.func.isRequired
-      }),
-    }).isRequired
-  };
+  props: InjectedProps;
 
   render() {
     const {

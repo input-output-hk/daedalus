@@ -1,26 +1,13 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import NodeUpdateNotification from '../../components/notifications/NodeUpdateNotification';
+import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
 export default class NodeUpdatePage extends Component {
 
-  static propTypes = {
-    stores: PropTypes.shape({
-      nodeUpdate: PropTypes.shape({
-        isNotificationExpanded: PropTypes.bool.isRequired,
-        updateTitle: PropTypes.string.isRequired,
-      }),
-    }).isRequired,
-    actions: PropTypes.shape({
-      nodeUpdate: PropTypes.shape({
-        acceptNodeUpdate: PropTypes.func.isRequired,
-        postponeNodeUpdate: PropTypes.func.isRequired,
-        toggleNodeUpdateNotificationExpanded: PropTypes.func.isRequired,
-      }),
-    }).isRequired
-  };
+  props: InjectedProps;
 
   render() {
     const {

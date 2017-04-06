@@ -1,40 +1,18 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import MainLayout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
-import { oneOrManyChildElements } from '../../propTypes';
 import AdaRedemptionSuccessOverlay from '../../components/wallet/ada-redemption/AdaRedemptionSuccessOverlay';
 import { buildRoute } from '../../lib/routing-helpers';
 import { ROUTES } from '../../Routes';
+import type { InjectedContainerProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
 export default class Wallet extends Component {
 
-  static propTypes = {
-    stores: PropTypes.shape({
-      app: PropTypes.shape({
-        currentRoute: PropTypes.string.isRequired
-      }).isRequired,
-      wallets: PropTypes.shape({
-        hasLoadedWallets: PropTypes.bool.isRequired
-      }).isRequired,
-      adaRedemption: PropTypes.shape({
-        showAdaRedemptionSuccessMessage: PropTypes.bool.isRequired,
-        amountRedeemed: PropTypes.number.isRequired,
-      }),
-    }).isRequired,
-    actions: PropTypes.shape({
-      router: PropTypes.shape({
-        goToRoute: PropTypes.func.isRequired,
-      }),
-      adaRedemption: PropTypes.shape({
-        closeAdaRedemptionSuccessOverlay: PropTypes.func.isRequired,
-      }),
-    }).isRequired,
-    children: oneOrManyChildElements,
-  };
+  props: InjectedContainerProps;
 
   isActiveScreen = (page: string) => {
     const { app, wallets } = this.props.stores;

@@ -1,34 +1,20 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import Layout from '../MainLayout';
-import { oneOrManyChildElements } from '../../propTypes';
 import SettingsLayout from '../../components/settings/SettingsLayout';
 import SettingsMenu from '../../components/settings/menu/SettingsMenu';
 import { buildRoute } from '../../lib/routing-helpers';
+import type { InjectedContainerProps } from '../../types/injectedPropsType';
+
 
 @inject('stores', 'actions') @observer
 export default class Settings extends Component {
 
-  static propTypes = {
-    stores: PropTypes.shape({
-      router: PropTypes.shape({
-        location: PropTypes.shape({
-          pathname: PropTypes.string.isRequired,
-        }).isRequired,
-      }).isRequired,
-    }).isRequired,
-    actions: PropTypes.shape({
-      router: PropTypes.shape({
-        goToRoute: PropTypes.func.isRequired,
-      }).isRequired,
-    }).isRequired,
-    children: oneOrManyChildElements.isRequired,
-  };
+  props: InjectedContainerProps;
 
   isActivePage = (route: string) => {
     const { location } = this.props.stores.router;
     if (location) {
-      console.log(location.pathname, buildRoute(route));
       return location.pathname === buildRoute(route);
     }
     return false;

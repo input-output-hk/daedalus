@@ -21,7 +21,9 @@ export default class WalletSettingsStore extends Store {
   }
 
   @action _updateWalletAssuranceLevel = async ({ assurance }: { assurance: AssuranceMode }) => {
-    const { id: walletId, type, currency, name } = this.stores.wallets.active;
+    const activeWallet = this.stores.wallets.active;
+    if (!activeWallet) return;
+    const { id: walletId, type, currency, name } = activeWallet;
     await this.updateWalletRequest.execute({ walletId, type, currency, name, assurance });
     await this.stores.wallets.walletsRequest.patch(result => {
       const wallet = _.find(result, { id: walletId });

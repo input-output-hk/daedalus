@@ -178,24 +178,6 @@ export default class CardanoClientApi {
     return ClientApi.generateMnemonic().split(' ');
   }
 
-  // PRIVATE
-
-  _onNotify = (rawMessage: string) => {
-    Log.debug('CardanoClientApi::notify message: ', rawMessage);
-    // TODO: "ConnectionClosed" messages are not JSON parsable … so we need to catch that case here!
-    let message = rawMessage;
-    if (message !== 'ConnectionClosed') {
-      message = JSON.parse(rawMessage);
-    }
-    this.notifyCallbacks.forEach(cb => cb.message(message));
-  };
-
-  _onNotifyError = (error: Error) => {
-    Log.debug('CardanoClientApi::notify error: ', error);
-    this.notifyCallbacks.forEach(cb => cb.error(error));
-  };
-
-
   async nextUpdate() {
     Log.debug('CardanoClientApi::nextUpdate called');
     let nextUpdate = null;
@@ -280,6 +262,23 @@ export default class CardanoClientApi {
   testReset() {
     return ClientApi.testReset();
   }
+
+  // PRIVATE
+
+  _onNotify = (rawMessage: string) => {
+    Log.debug('CardanoClientApi::notify message: ', rawMessage);
+    // TODO: "ConnectionClosed" messages are not JSON parsable … so we need to catch that case here!
+    let message = rawMessage;
+    if (message !== 'ConnectionClosed') {
+      message = JSON.parse(rawMessage);
+    }
+    this.notifyCallbacks.forEach(cb => cb.message(message));
+  };
+
+  _onNotifyError = (error: Error) => {
+    Log.debug('CardanoClientApi::notify error: ', error);
+    this.notifyCallbacks.forEach(cb => cb.error(error));
+  };
 }
 
 type ServerCoinAmountStruct = {

@@ -1,13 +1,20 @@
-import PropTypes from 'prop-types';
-import defineActions from './lib/actions';
+// @flow
+import { Action } from './lib/actions';
 
-export default defineActions({
-  open: {
-    dialog: PropTypes.func.isRequired,
-  },
-  closeActiveDialog: {},
-  updateDataForActiveDialog: {
-    data: PropTypes.object.isRequired,
-  },
-  resetActiveDialog: {}
-});
+// ======= DIALOGS ACTIONS =======
+
+export type DialogsActions = {
+  open: Action<{ dialog: Object }>,
+  updateDataForActiveDialog: Action<{ data: Object }>,
+  closeActiveDialog: Action<any>,
+  resetActiveDialog: Action<any>,
+};
+
+const dialogActions: DialogsActions = {
+  open: new Action(),
+  updateDataForActiveDialog: new Action(),
+  closeActiveDialog: new Action(),
+  resetActiveDialog: new Action(),
+};
+
+export default dialogActions;

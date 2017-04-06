@@ -1,28 +1,16 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletSendForm from '../../components/wallet/WalletSendForm';
-import Request from '../../stores/lib/Request';
+import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
 export default class WalletSendPage extends Component {
 
-  static propTypes = {
-    stores: PropTypes.shape({
-      wallets: PropTypes.shape({
-        isValidAddress: PropTypes.func.isRequired,
-        sendMoneyRequest: PropTypes.instanceOf(Request),
-      })
-    }),
-    actions: PropTypes.shape({
-      wallets: PropTypes.shape({
-        sendMoney: PropTypes.func.isRequired,
-      }),
-    }),
-  };
+  props: InjectedProps;
 
   handleWalletSendFormSubmit(values: Object) {
-    this.props.actions.wallets.sendMoney(values);
+    this.props.actions.wallets.sendMoney.trigger(values);
   }
 
   render() {

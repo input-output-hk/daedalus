@@ -1,13 +1,13 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { observer, inject } from 'mobx-react';
 import WalletReceive from '../../components/wallet/WalletReceive';
-import Wallet from '../../domain/Wallet';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import NotificationMessage from '../../components/widgets/NotificationMessage';
 import successIcon from '../../assets/images/success-small.svg';
 import { ellipsis } from '../../lib/string-helpers';
+import type { InjectedProps } from '../../types/injectedPropsType';
 
 const messages = defineMessages({
   message: {
@@ -20,19 +20,7 @@ const messages = defineMessages({
 @inject('stores', 'actions') @observer
 export default class WalletReceivePage extends Component {
 
-  static propTypes = {
-    stores: PropTypes.shape({
-      wallets: PropTypes.shape({
-        active: PropTypes.instanceOf(Wallet).isRequired,
-        isWalletAddressCopyNotificationVisible: PropTypes.bool.isRequired,
-      }).isRequired,
-    }).isRequired,
-    actions: PropTypes.shape({
-      wallets: PropTypes.shape({
-        showWalletAddressCopyNotification: PropTypes.func.isRequired,
-      }),
-    }).isRequired,
-  };
+  props: InjectedProps;
 
   render() {
     const actions = this.props.actions;

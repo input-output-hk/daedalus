@@ -25,6 +25,8 @@
     "react/jsx-closing-bracket-location": 1,
     "react/prefer-stateless-function": "off",
     "react/no-unused-prop-types": [1, { "skipShapeProps": true }],
+    "react/prop-types": 0,
+    "react/sort-comp": 0,
     "flowtype-errors/show-errors": 2,
     "class-methods-use-this": 0,
     "no-duplicate-imports": 0,

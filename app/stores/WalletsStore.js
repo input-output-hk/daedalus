@@ -39,8 +39,8 @@ export default class WalletsStore extends Store {
 
   setup() {
     const { wallets, walletBackup, router } = this.actions;
-    wallets.create.listen(this._create);
-    wallets.delete.listen(this._delete);
+    wallets.createWallet.listen(this._create);
+    wallets.deleteWallet.listen(this._delete);
     wallets.sendMoney.listen(this._sendMoney);
     wallets.toggleAddWallet.listen(this._toggleAddWallet);
     wallets.toggleCreateWalletDialog.listen(this._toggleCreateWalletDialog);

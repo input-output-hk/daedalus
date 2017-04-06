@@ -1,28 +1,16 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletKeyImportDialog from '../../components/wallet/key-import/WalletKeyImportDialog';
-import Request from '../../stores/lib/Request';
+import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
 export default class WalletKeyImportPage extends Component {
 
-  static propTypes = {
-    actions: PropTypes.shape({
-      wallets: PropTypes.shape({
-        importWalletFromKey: PropTypes.func.isRequired,
-        toggleWalletKeyImportDialog: PropTypes.func.isRequired,
-      }),
-    }),
-    stores: PropTypes.shape({
-      wallets: PropTypes.shape({
-        importFromKeyRequest: PropTypes.instanceOf(Request).isRequired,
-      }).isRequired,
-    }).isRequired
-  };
+  props: InjectedProps;
 
   onSubmit = (values: { filePath: string }) => {
-    this.props.actions.wallets.importWalletFromKey(values);
+    this.props.actions.wallets.importWalletFromKey.trigger(values);
   };
 
   render() {
@@ -35,7 +23,7 @@ export default class WalletKeyImportPage extends Component {
         isSubmitting={importFromKeyRequest.isExecuting}
         onSubmit={this.onSubmit}
         error={importFromKeyRequest.error}
-        onClose={toggleWalletKeyImportDialog}
+        onClose={toggleWalletKeyImportDialog.trigger}
       />
     );
   }

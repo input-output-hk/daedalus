@@ -1,13 +1,12 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
 // import WalletTransactionsSearch from '../../components/wallet/summary/WalletTransactionsSearch';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
-import TransactionsStore from '../../stores/TransactionsStore';
-import WalletsStore from '../../stores/WalletsStore';
+import type { InjectedProps } from '../../types/injectedPropsType';
 
 const messages = defineMessages({
   noTransactions: {
@@ -25,17 +24,7 @@ const messages = defineMessages({
 @inject('stores', 'actions') @observer
 export default class WalletTransactionsPage extends Component {
 
-  static propTypes = {
-    stores: PropTypes.shape({
-      transactions: PropTypes.instanceOf(TransactionsStore).isRequired,
-      wallets: PropTypes.instanceOf(WalletsStore).isRequired,
-    }).isRequired,
-    actions: PropTypes.shape({
-      transactions: PropTypes.shape({
-        filterTransactions: PropTypes.func.isRequired,
-      }),
-    }).isRequired,
-  };
+  props: InjectedProps;
 
   static contextTypes = {
     intl: intlShape.isRequired,
