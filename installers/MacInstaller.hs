@@ -9,7 +9,7 @@ import           System.Environment   (lookupEnv)
 import           System.FilePath      (replaceExtension)
 import           System.FilePath.Glob (globDir1, compile)
 import           System.Directory
-import           Turtle               (procs, echo)
+import           Turtle               (procs, echo, shells)
 import           Turtle.Line          (unsafeTextToLine)
 
 import RewriteLibs                    (chain)
