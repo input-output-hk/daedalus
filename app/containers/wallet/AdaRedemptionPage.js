@@ -16,6 +16,7 @@ export default class AdaRedemptionPage extends Component {
       adaRedemption: PropTypes.shape({
         chooseRedemptionType: PropTypes.func.isRequired,
         redeemAda: PropTypes.func.isRequired,
+        redeemPaperVendedAda: PropTypes.func.isRequired,
         setCertificate: PropTypes.func.isRequired,
         setPassPhrase: PropTypes.func.isRequired,
         setEmail: PropTypes.func.isRequired,
@@ -31,9 +32,12 @@ export default class AdaRedemptionPage extends Component {
       }).isRequired,
       adaRedemption: PropTypes.shape({
         redeemAdaRequest: PropTypes.instanceOf(Request).isRequired,
+        redeemPaperVendedAdaRequest: PropTypes.instanceOf(Request).isRequired,
         certificate: PropTypes.instanceOf(File),
         isCertificateEncrypted: PropTypes.bool.isRequired,
         isValidRedemptionKey: PropTypes.func.isRequired,
+        isValidRedemptionMnemonic: PropTypes.func.isRequired,
+        isValidPostVendRedeemCode: PropTypes.func.isRequired,
         redemptionType: PropTypes.string.isRequired,
         error: PropTypes.instanceOf(Error),
       }).isRequired,
@@ -44,10 +48,15 @@ export default class AdaRedemptionPage extends Component {
     this.props.actions.adaRedemption.redeemAda(values);
   };
 
+  onSubmitPaperVended = (values: { walletId: string, shieldedRedemptionKey: string }) => {
+    this.props.actions.adaRedemption.redeemPaperVendedAda(values);
+  };
+
   render() {
     const { wallets, adaRedemption } = this.props.stores;
     const {
-      redeemAdaRequest, isCertificateEncrypted, isValidRedemptionKey, redemptionType, error
+      redeemAdaRequest, redeemPaperVendedAdaRequest, isCertificateEncrypted, isValidRedemptionKey,
+      redemptionType, isValidRedemptionMnemonic, isValidPostVendRedeemCode, error
     } = adaRedemption;
     const {
       chooseRedemptionType, setCertificate, setPassPhrase, setRedemptionCode, removeCertificate,
@@ -59,7 +68,12 @@ export default class AdaRedemptionPage extends Component {
     }));
 
     if (selectableWallets.length === 0) return <Layout><LoadingSpinner /></Layout>;
-
+    const request = redemptionType === 'paperVended' ? redeemPaperVendedAdaRequest : redeemAdaRequest;
+    const isCertificateSelected = adaRedemption.certificate !== null;
+    const showInputsForDecryptingForceVendedCertificate = isCertificateSelected && isCertificateEncrypted
+      && redemptionType === 'forceVended';
+    const showPassPhraseWidget = isCertificateSelected && isCertificateEncrypted && redemptionType === 'regular' ||
+      redemptionType === 'paperVended';
     return (
       <Layout>
         <AdaRedemptionForm
@@ -72,15 +86,19 @@ export default class AdaRedemptionPage extends Component {
           onChooseRedemptionType={(choice) => chooseRedemptionType({ redemptionType: choice })}
           redemptionCode={adaRedemption.redemptionCode}
           wallets={selectableWallets}
-          isCertificateSelected={adaRedemption.certificate !== null}
+          isCertificateSelected={isCertificateSelected}
           isCertificateEncrypted={isCertificateEncrypted}
           isCertificateInvalid={error && error instanceof AdaRedemptionCertificateParseError}
-          isSubmitting={redeemAdaRequest.isExecuting}
+          isSubmitting={request.isExecuting}
           error={adaRedemption.error}
-          onSubmit={this.onSubmit}
+          onSubmit={redemptionType === 'paperVended' ? this.onSubmitPaperVended : this.onSubmit}
           onRemoveCertificate={removeCertificate}
+          mnemonicValidator={isValidRedemptionMnemonic}
           redemptionCodeValidator={isValidRedemptionKey}
+          postVendRedemptionCodeValidator={isValidPostVendRedeemCode}
           redemptionType={redemptionType}
+          showInputsForDecryptingForceVendedCertificate={showInputsForDecryptingForceVendedCertificate}
+          showPassPhraseWidget={showPassPhraseWidget}
         />
       </Layout>
     );

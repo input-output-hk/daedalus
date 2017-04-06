@@ -9,8 +9,8 @@ export default class SettingsStore extends Store {
   @observable termsOfUseRequest = new CachedRequest(this.api, 'getTermsOfUse');
 
   @observable bigNumberDecimalFormat = {
-    decimalSeparator: ',',
-    groupSeparator: '.',
+    decimalSeparator: '.',
+    groupSeparator: ' ',
     groupSize: 3,
     secondaryGroupSize: 0,
     fractionGroupSeparator: ' ',

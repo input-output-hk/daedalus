@@ -55,7 +55,8 @@ export default class Loading extends Component {
   render() {
     const { intl } = this.context;
     const {
-      isConnecting, isSyncing, syncPercentage, isLoadingWallets, hasBeenConnected, hasBlockSyncingStarted
+      isConnecting, isSyncing, syncPercentage, isLoadingWallets,
+      hasBeenConnected, hasBlockSyncingStarted
     } = this.props;
     const componentStyles = classNames([
       styles.component,
@@ -74,7 +75,9 @@ export default class Loading extends Component {
         )}
         {isConnecting && hasBlockSyncingStarted && (
           <div className={styles.connecting}>
-            <h1 className={styles.headline}>{intl.formatMessage(messages.waitingForSyncToStart)}</h1>
+            <h1 className={styles.headline}>
+              {intl.formatMessage(messages.waitingForSyncToStart)}
+            </h1>
           </div>
         )}
         {isSyncing && (

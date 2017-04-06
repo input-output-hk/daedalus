@@ -27,6 +27,10 @@ export default defineActions({
   redeemAda: {
     walletId: PropTypes.string.isRequired,
   },
+  redeemPaperVendedAda: {
+    walletId: PropTypes.string.isRequired,
+    shieldedRedemptionKey: PropTypes.string.isRequired,
+  },
   adaSuccessfullyRedeemed: {},
   closeAdaRedemptionSuccessOverlay: {},
 });

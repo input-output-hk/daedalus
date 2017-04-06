@@ -28,7 +28,6 @@ export default class Settings extends Component {
   isActivePage = (route: string) => {
     const { location } = this.props.stores.router;
     if (location) {
-      console.log(location.pathname, buildRoute(route));
       return location.pathname === buildRoute(route);
     }
     return false;

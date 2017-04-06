@@ -5,8 +5,10 @@ import { isString } from 'lodash';
 import Log from 'electron-log';
 import Store from './lib/Store';
 import Request from './lib/Request';
+import WalletTransaction from '../domain/WalletTransaction';
 import { PARSE_REDEMPTION_CODE } from '../../electron/ipc-api/parse-redemption-code-from-pdf';
 import { InvalidMnemonicError, AdaRedemptionCertificateParseError } from '../i18n/errors';
+import { DECIMAL_PLACES_IN_ADA } from '../config/numbersConfig';
 import LocalizableError from '../i18n/LocalizableError';
 
 type redemptionTypeChoices = 'regular' | 'forceVended' | 'paperVended';
@@ -17,6 +19,7 @@ export default class AdaRedemptionStore extends Store {
   @observable certificate: ?File = null;
   @observable isCertificateEncrypted = false;
   @observable passPhrase: ?string = null;
+  @observable shieldedRedemptionKey: ?string = null;
   @observable email: ?string = null;
   @observable adaPasscode: ?string = null;
   @observable adaAmount: ?string = null;
@@ -26,6 +29,7 @@ export default class AdaRedemptionStore extends Store {
   @observable amountRedeemed: number = 0;
   @observable showAdaRedemptionSuccessMessage: boolean = false;
   @observable redeemAdaRequest = new Request(this.api, 'redeemAda');
+  @observable redeemPaperVendedAdaRequest = new Request(this.api, 'redeemPaperVendedAda');
 
   setup() {
     const actions = this.actions.adaRedemption;
@@ -37,6 +41,7 @@ export default class AdaRedemptionStore extends Store {
     actions.setAdaPasscode.listen(this._setAdaPasscode);
     actions.setAdaAmount.listen(this._setAdaAmount);
     actions.redeemAda.listen(this._redeemAda);
+    actions.redeemPaperVendedAda.listen(this._redeemPaperVendedAda);
     actions.adaSuccessfullyRedeemed.listen(this._onAdaSuccessfullyRedeemed);
     actions.closeAdaRedemptionSuccessOverlay.listen(this._onCloseAdaRedemptionSuccessOverlay);
     actions.removeCertificate.listen(this._onRemoveCertificate);
@@ -51,6 +56,8 @@ export default class AdaRedemptionStore extends Store {
   }
 
   isValidRedemptionKey = (redemptionKey: string) => this.api.isValidRedemptionKey(redemptionKey);
+  isValidRedemptionMnemonic = (mnemonic: string) => this.api.isValidRedemptionMnemonic(mnemonic);
+  isValidPostVendRedeemCode = (mnemonic: string) => this.api.isValidPostVendRedeemCode(mnemonic);
 
   @action _chooseRedemptionType = (params: {
     redemptionType: redemptionTypeChoices,
@@ -95,17 +102,24 @@ export default class AdaRedemptionStore extends Store {
 
   _parseCodeFromCertificate() {
     if (this.redemptionType === 'regular') {
-      if (!this.passPhrase) return;
+      if (!this.passPhrase && this.isCertificateEncrypted) return;
     }
     if (this.redemptionType === 'forceVended') {
-      if (!this.email || !this.adaAmount || !this.adaPasscode) return;
+      if ((!this.email || !this.adaAmount || !this.adaPasscode) && this.isCertificateEncrypted) {
+        return;
+      }
     }
     if (this.redemptionType === 'paperVended') return;
     if (this.certificate == null) throw new Error('Certificate File is required for parsing.');
-    const path = this.certificate.path;
+    const path = this.certificate.path; // eslint-disable-line
     Log.debug('Parsing ADA Redemption code from certificate', path);
-    const decryptionKey = this.redemptionType === 'regular' ? this.passPhrase :
-      [this.email, this.adaPasscode, this.adaAmount];
+    let decryptionKey = null;
+    if (this.redemptionType === 'regular' && this.isCertificateEncrypted) {
+      decryptionKey = this.passPhrase;
+    }
+    if (this.redemptionType === 'forceVended' && this.isCertificateEncrypted) {
+      decryptionKey = [this.email, this.adaPasscode, this.adaAmount];
+    }
     ipcRenderer.send(PARSE_REDEMPTION_CODE.REQUEST, path, decryptionKey, this.redemptionType);
   }
 
@@ -115,7 +129,6 @@ export default class AdaRedemptionStore extends Store {
   });
 
   _onParseError = action((event, error) => {
-    console.error('Error while parsing certificate:', error);
     const errorMessage = isString(error) ? error : error.message;
     if (errorMessage.includes('Invalid mnemonic')) {
       this.error = new InvalidMnemonicError();
@@ -129,12 +142,34 @@ export default class AdaRedemptionStore extends Store {
   _redeemAda = action(({ walletId } : { walletId: string }) => {
     this.walletId = walletId;
     this.redeemAdaRequest.execute({ redemptionCode: this.redemptionCode, walletId })
-      .then(action((wallet) => {
+      .then(action((transaction: WalletTransaction) => {
         this.error = null;
-        // TODO: Use amount returned by backend (when implemented!)
         this.actions.adaRedemption.adaSuccessfullyRedeemed({
-          walletId: wallet.id,
-          amount: 1000000,
+          walletId,
+          amount: transaction.amount.toFormat(DECIMAL_PLACES_IN_ADA),
+        });
+      }))
+      .catch(action((error) => {
+        this.error = error;
+      }));
+  });
+
+  _redeemPaperVendedAda = action(({ walletId, shieldedRedemptionKey } : {
+    walletId: string,
+    shieldedRedemptionKey: string
+  }) => {
+    this.walletId = walletId;
+
+    this.redeemPaperVendedAdaRequest.execute({
+      shieldedRedemptionKey,
+      mnemonics: this.passPhrase,
+      walletId
+    })
+      .then(action((transaction: WalletTransaction) => {
+        this.error = null;
+        this.actions.adaRedemption.adaSuccessfullyRedeemed({
+          walletId,
+          amount: transaction.amount.toFormat(DECIMAL_PLACES_IN_ADA),
         });
       }))
       .catch(action((error) => {

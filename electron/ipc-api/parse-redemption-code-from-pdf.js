@@ -15,7 +15,6 @@ export const PARSE_REDEMPTION_CODE = {
 
 export default () => {
   ipcMain.on(PARSE_REDEMPTION_CODE.REQUEST, (event, filePath, decryptionKey, redemptionType) => {
-    Log.warn('TEST!', filePath);
     const sender = event.sender;
     let pdfPath = null;
     let isTemporaryDecryptedPdf = false;

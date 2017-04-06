@@ -13,7 +13,6 @@ import AdaRedemptionChoices from './AdaRedemptionChoices';
 import BorderedBox from '../../widgets/BorderedBox';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { InvalidMnemonicError, InvalidEmailError, FieldRequiredError } from '../../../i18n/errors';
-import { isValidMnemonic } from '../../../../lib/decrypt';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './AdaRedemptionForm.scss';
 
@@ -161,9 +160,13 @@ export default class AdaRedemptionForm extends Component {
     onSubmit: PropTypes.func.isRequired,
     redemptionType: PropTypes.string.isRequired,
     redemptionCodeValidator: PropTypes.func.isRequired,
+    postVendRedemptionCodeValidator: PropTypes.func.isRequired,
+    mnemonicValidator: PropTypes.func.isRequired,
     isSubmitting: PropTypes.bool.isRequired,
     isCertificateSelected: PropTypes.bool.isRequired,
     isCertificateEncrypted: PropTypes.bool.isRequired,
+    showInputsForDecryptingForceVendedCertificate: PropTypes.bool.isRequired,
+    showPassPhraseWidget: PropTypes.bool.isRequired,
     isCertificateInvalid: PropTypes.bool,
     redemptionCode: PropTypes.string,
     error: PropTypes.instanceOf(LocalizableError),
@@ -176,8 +179,8 @@ export default class AdaRedemptionForm extends Component {
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        const { walletId } = form.values();
-        this.props.onSubmit({ walletId });
+        const { walletId, shieldedRedemptionKey } = form.values();
+        this.props.onSubmit({ walletId, shieldedRedemptionKey });
       },
       onError: () => {}
     });
@@ -198,12 +201,12 @@ export default class AdaRedemptionForm extends Component {
         bindings: 'ReactToolbox',
         validate: [({ field }) => {
           // Don't validate No pass phrase needed when certificate is not encrypted
-          if (!this.props.isCertificateEncrypted) return [true];
+          if (!this.props.showPassPhraseWidget) return [true];
           // Otherwise check mnemonic
           const passPhrase = field.value;
-          if (isValidMnemonic(passPhrase)) this.props.onPassPhraseChanged(passPhrase);
+          if (this.props.mnemonicValidator(passPhrase)) this.props.onPassPhraseChanged(passPhrase);
           return [
-            isValidMnemonic(passPhrase),
+            this.props.mnemonicValidator(passPhrase),
             this.context.intl.formatMessage(new InvalidMnemonicError())
           ];
         }]
@@ -214,6 +217,7 @@ export default class AdaRedemptionForm extends Component {
         value: '',
         bindings: 'ReactToolbox',
         validate: ({ field }) => {
+          if (this.props.redemptionType === 'paperVended') return [true];
           const value = this.props.redemptionCode ? this.props.redemptionCode : field.value;
           if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           return [
@@ -228,10 +232,10 @@ export default class AdaRedemptionForm extends Component {
         value: '',
         bindings: 'ReactToolbox',
         validate: ({ field }) => {
-          const value = this.props.redemptionCode ? this.props.redemptionCode : field.value;
+          const value = field.value;
           if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           return [
-            this.props.redemptionCodeValidator(value),
+            this.props.postVendRedemptionCodeValidator(value),
             this.context.intl.formatMessage(messages.shieldedRedemptionKeyError)
           ];
         },
@@ -247,6 +251,7 @@ export default class AdaRedemptionForm extends Component {
         value: '',
         bindings: 'ReactToolbox',
         validate: [({ field }) => {
+          if (!this.props.showInputsForDecryptingForceVendedCertificate) return [true];
           const email = field.value;
           if (isEmail(email)) this.props.onEmailChanged(email);
           return [
@@ -261,13 +266,14 @@ export default class AdaRedemptionForm extends Component {
         value: '',
         bindings: 'ReactToolbox',
         validate: [({ field }) => {
+          if (!this.props.showInputsForDecryptingForceVendedCertificate) return [true];
           const adaPasscode = field.value;
           if (!isEmpty(adaPasscode)) this.props.onAdaPasscodeChanged(adaPasscode);
           return [
             !isEmpty(adaPasscode),
             this.context.intl.formatMessage(new FieldRequiredError())
           ];
-        }]
+        }],
       },
       adaAmount: {
         label: this.context.intl.formatMessage(messages.adaAmountLabel),
@@ -275,13 +281,14 @@ export default class AdaRedemptionForm extends Component {
         value: '',
         bindings: 'ReactToolbox',
         validate: [({ field }) => {
+          if (!this.props.showInputsForDecryptingForceVendedCertificate) return [true];
           const adaAmount = field.value;
           if (!isEmpty(adaAmount)) this.props.onAdaAmountChanged(adaAmount);
           return [
             !isEmpty(adaAmount),
             this.context.intl.formatMessage(new FieldRequiredError())
           ];
-        }]
+        }],
       },
     }
   }, {
@@ -297,7 +304,8 @@ export default class AdaRedemptionForm extends Component {
       wallets, isCertificateSelected, isCertificateEncrypted,
       isSubmitting, onCertificateSelected, redemptionCode,
       onRedemptionCodeChanged, onRemoveCertificate, onChooseRedemptionType,
-      isCertificateInvalid, redemptionType, error
+      isCertificateInvalid, redemptionType, showInputsForDecryptingForceVendedCertificate,
+      showPassPhraseWidget, error
     } = this.props;
     const certificate = form.$('certificate');
     const passPhrase = form.$('passPhrase');
@@ -311,11 +319,13 @@ export default class AdaRedemptionForm extends Component {
       styles.component,
       isSubmitting ? styles.isSubmitting : null
     ]);
-    const showPassPhraseWidget = isCertificateSelected && isCertificateEncrypted && redemptionType === 'regular' ||
-      redemptionType === 'paperVended';
-    const showInputsForDecryptingForceVendedCertificate = isCertificateSelected && isCertificateEncrypted && redemptionType === 'forceVended';
+
     const showUploadWidget = redemptionType !== 'paperVended';
-    const canSubmit = redemptionCode !== '';
+    let canSubmit = false;
+    if (redemptionType === 'regular' && redemptionCode !== '') canSubmit = true;
+    if (redemptionType === 'forceVended' && redemptionCode !== '') canSubmit = true;
+    if (redemptionType === 'paperVended' && shieldedRedemptionKeyField.isValid && passPhrase.isValid) canSubmit = true;
+
     let instructionMessage = '';
     switch (redemptionType) {
       case 'regular':
@@ -364,12 +374,13 @@ export default class AdaRedemptionForm extends Component {
               ) : (
                 <Input
                   className="shielded-redemption-key"
-                  {...shieldedRedemptionKeyField.bind()}
-                  value={redemptionCode}
-                  onChange={(value) => {
-                    onRedemptionCodeChanged(value);
-                    redemptionKeyField.onChange(value);
-                  }}
+                  {...shieldedRedemptionKeyField.bind({
+                    onBlur: event => {
+                      event.preventDefault();
+                      shieldedRedemptionKeyField.onBlur();
+                      shieldedRedemptionKeyField.validate();
+                    }
+                  })}
                   disabled={isCertificateSelected}
                 />
               )}

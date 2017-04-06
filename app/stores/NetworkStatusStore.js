@@ -80,11 +80,11 @@ export default class NetworkStatusStore extends Store {
   }
 
   @computed get isSyncing(): bool {
-    return !this.isConnecting && this.networkDifficulty > 0 && !this.isSynced;
+    return !this.isConnecting && this.hasBlockSyncingStarted && !this.isSynced;
   }
 
   @computed get isSynced(): bool {
-    return !this.isConnecting && this.syncPercentage >= 100;
+    return !this.isConnecting && this.syncPercentage >= 100 && this.hasBlockSyncingStarted;
   }
 
   @action _setInitialDifficulty = async () => {
@@ -92,12 +92,9 @@ export default class NetworkStatusStore extends Store {
     const initialDifficulty = await this.networkDifficultyRequest.execute().promise;
     if (initialDifficulty) {
       runInAction('set initial difficulty', () => {
-        // this._localDifficultyStartedWith = initialDifficulty.localDifficulty;
-        // this.localDifficulty = initialDifficulty.localDifficulty;
-        // this.networkDifficulty = initialDifficulty.networkDifficulty;
-        this._localDifficultyStartedWith = 2;
-        this.localDifficulty = 2;
-        this.networkDifficulty = 2;
+        this._localDifficultyStartedWith = initialDifficulty.localDifficulty;
+        this.localDifficulty = initialDifficulty.localDifficulty;
+        this.networkDifficulty = initialDifficulty.networkDifficulty;
         Log.debug('Initial difficulty: ', initialDifficulty);
       });
     }
@@ -115,14 +112,12 @@ export default class NetworkStatusStore extends Store {
           this.isConnected = true;
           break;
         case 'NetworkDifficultyChanged':
-          // this.networkDifficulty = message.contents.getChainDifficulty;
-          this.networkDifficulty = 1;
+          if (message.contents.getChainDifficulty) this.networkDifficulty = message.contents.getChainDifficulty;
           this.isConnected = true;
           this.hasBeenConnected = true;
           break;
         case 'LocalDifficultyChanged':
-          // this.localDifficulty = message.contents.getChainDifficulty;
-          this.localDifficulty = 1;
+          if (message.contents.getChainDifficulty) this.localDifficulty = message.contents.getChainDifficulty;
           break;
         case 'ConnectionClosedReconnecting':
           this.isConnected = false;

@@ -13,6 +13,7 @@ import type {
   walletRestoreRequest,
   walletUpdateRequest,
   redeemAdaRequest,
+  redeemPaperVendedAdaRequest,
   importKeyRequest,
   deleteWalletRequest
 } from './index';
@@ -61,17 +62,8 @@ export default class CardanoClientApi {
 
   async getWallets() {
     Log.debug('CardanoClientApi::getWallets called');
-    // const response = await ClientApi.getWallets();
-    // return response.map(data => _createWalletFromServerData(data));
-    return [new Wallet({
-      id: 'asldkjaldsk',
-      address: 'asldkjaldsk',
-      amount: new BigNumber(100000000.3478400).dividedBy(LOVELACES_PER_ADA),
-      type: 'CWTPersonal',
-      currency: 'Ada',
-      name: 'Fake wallet',
-      assurance: 'CWANormal',
-    })];
+    const response = await ClientApi.getWallets();
+    return response.map(data => _createWalletFromServerData(data));
   }
 
   async getTransactions(request: getTransactionsRequest) {
@@ -110,7 +102,6 @@ export default class CardanoClientApi {
       );
       return _createTransactionFromServerData(response);
     } catch (error) {
-      console.error(error);
       if (error.message.includes('Not enough money to send')) {
         throw new NotEnoughMoneyToSendError();
       }
@@ -123,11 +114,19 @@ export default class CardanoClientApi {
   }
 
   isValidMnemonic(mnemonic: string): Promise<bool> { // eslint-disable-line
-    return ClientApi.isValidMnemonic(mnemonic);
+    return ClientApi.isValidMnemonic(12, mnemonic);
   }
 
   isValidRedemptionKey(mnemonic: string): Promise<bool> {
     return ClientApi.isValidRedeemCode(mnemonic);
+  }
+
+  isValidPostVendRedeemCode(redeemCode: string): Promise<bool> {
+    return ClientApi.isValidPostVendRedeemCode(redeemCode);
+  }
+
+  isValidRedemptionMnemonic(mnemonic: string): Promise<bool> {
+    return ClientApi.isValidMnemonic(9, mnemonic);
   }
 
   getWalletRecoveryPhrase() {
@@ -174,9 +173,22 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::redeemAda called with', request);
     try {
       const response: ServerWalletStruct = await ClientApi.redeemADA(redemptionCode, walletId);
-      // TODO: Update response when it is implemented on the backend,
-      // currently only wallet is returned
-      return _createWalletFromServerData(response);
+      return _createTransactionFromServerData(response);
+    } catch (error) {
+      console.error(error);
+      throw new RedeemAdaError();
+    }
+  }
+
+  async redeemPaperVendedAda(request: redeemPaperVendedAdaRequest) {
+    const { shieldedRedemptionKey, mnemonics, walletId } = request;
+    console.log('REQUEST', request);
+    Log.debug('CardanoClientApi::redeemPaperVendedAda called with', request);
+    try {
+      const response: ServerWalletStruct =
+        await ClientApi.postVendRedeemADA(shieldedRedemptionKey, mnemonics, walletId);
+      console.log('RESPONSE', response);
+      return _createTransactionFromServerData(response);
     } catch (error) {
       console.error(error);
       throw new RedeemAdaError();

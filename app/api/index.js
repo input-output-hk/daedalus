@@ -54,7 +54,7 @@ export type createTransactionRequest = {
   walletId: string,
   sender: string,
   receiver: string,
-  amount: number,
+  amount: string,
   currency: string,
   title: string,
   description: ?string,
@@ -79,6 +79,12 @@ export type walletUpdateRequest = {
 
 export type redeemAdaRequest = {
   redemptionCode: string,
+  walletId: string,
+};
+
+export type redeemPaperVendedAdaRequest = {
+  shieldedRedemptionKey: string,
+  mnemonics: string,
   walletId: string,
 };
 
