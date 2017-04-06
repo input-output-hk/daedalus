@@ -1,7 +1,9 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
+import Log from 'electron-log';
 import Store from './lib/Store';
 import Request from './lib/Request';
+import { ROUTES } from '../Routes';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedDifficulties = null;
@@ -50,10 +52,10 @@ export default class NetworkStatusStore extends Store {
       const relativeNetwork = this.networkDifficulty - this._localDifficultyStartedWith;
       // In case node is in sync after first local difficulty messages
       // local and network difficulty will be the same (0)
-      console.debug('Network difficulty: ', this.networkDifficulty);
-      console.debug('Local difficulty: ', this.localDifficulty);
-      console.debug('Relative local difficulty: ', relativeLocal);
-      console.debug('Relative network difficulty: ', relativeNetwork);
+      Log.debug('Network difficulty: ', this.networkDifficulty);
+      Log.debug('Local difficulty: ', this.localDifficulty);
+      Log.debug('Relative local difficulty: ', relativeLocal);
+      Log.debug('Relative network difficulty: ', relativeNetwork);
 
       if (relativeLocal >= relativeNetwork) return 100;
       return relativeLocal / relativeNetwork * 100;
@@ -85,7 +87,7 @@ export default class NetworkStatusStore extends Store {
         this._localDifficultyStartedWith = initialDifficulty.localDifficulty;
         this.localDifficulty = initialDifficulty.localDifficulty;
         this.networkDifficulty = initialDifficulty.networkDifficulty;
-        console.debug('Initial difficulty: ', initialDifficulty);
+        Log.debug('Initial difficulty: ', initialDifficulty);
       });
     }
   };
@@ -113,31 +115,34 @@ export default class NetworkStatusStore extends Store {
           this.isConnected = false;
           break;
         default:
-          console.log('Unknown server notification received:', message);
+          Log.warn('Unknown server notification received:', message);
       }
     }));
   }
 
   _redirectToWalletAfterSync = () => {
     const { app, wallets } = this.stores;
-    if (app.currentRoute === '/profile/language-selection') return;
+    if (app.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION) return;
     // TODO: introduce smarter way to bootsrap initial screens
     if (this.isConnected && this.isSynced && wallets.hasLoadedWallets && app.currentRoute === '/') {
       runInAction(() => { this.isLoadingWallets = false; });
       if (wallets.first) {
-        this.actions.router.goToRoute({ route: wallets.getWalletRoute(wallets.first.id) });
+        this.actions.router.goToRoute({
+          route: ROUTES.WALLETS.SUMMARY,
+          params: { id: wallets.first.id }
+        });
       } else {
-        this.actions.router.goToRoute({ route: '/no-wallets' });
+        this.actions.router.goToRoute({ route: ROUTES.NO_WALLETS });
       }
       this.actions.networkStatus.isSyncedAndReady();
     }
   };
 
   _redirectToLoadingWhenDisconnected = () => {
-    if (this.stores.app.currentRoute === '/profile/language-selection') return;
+    if (this.stores.app.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION) return;
     if (!this.isConnected) {
       this._setInitialDifficulty();
-      this.actions.router.goToRoute({ route: '/' });
+      this.actions.router.goToRoute({ route: ROUTES.ROOT });
     }
   };
 

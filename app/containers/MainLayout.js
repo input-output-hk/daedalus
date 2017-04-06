@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import Sidebar from '../components/sidebar/Sidebar';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
+import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import { oneOrManyChildElements } from '../propTypes';
 import WalletCreateDialog from '../components/wallet/WalletCreateDialog';
@@ -96,6 +97,7 @@ export default class MainLayout extends Component {
     const sidebarMenus = {
       wallets: {
         items: sidebar.wallets,
+        activeWalletId,
         actions: {
           onAddWallet: toggleAddWallet,
           onWalletItemClick: (walletId: string) => {
@@ -111,13 +113,24 @@ export default class MainLayout extends Component {
         categories={sidebar.CATEGORIES}
         activeSidebarCategory={sidebar.activeSidebarCategory}
         onCategoryClicked={category => actions.sidebar.activateSidebarCategory({ category })}
-        activeWalletId={activeWalletId}
         isSynced={isSynced}
       />
     );
+
+    const isProduction = false; // TODO: replace with getEnv Api call
+    const testnetVersion = 0.3;
+    const testEnvironmentLabel = (
+      !isProduction ? <WalletTestEnvironmentLabel version={testnetVersion} /> : null
+    );
+
     const topbar = (
-      <TopBar onToggleSidebar={actions.sidebar.toggleSubMenus}>
-        <NodeSyncStatusIcon isSynced={isSynced} syncPercentage={syncPercentage} />
+      <TopBar onToggleSidebar={actions.sidebar.toggleSubMenus} activeWallet={activeWallet}>
+        {testEnvironmentLabel}
+        <NodeSyncStatusIcon
+          isSynced={isSynced}
+          syncPercentage={syncPercentage}
+          isProduction={isProduction}
+        />
       </TopBar>
     );
 

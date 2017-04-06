@@ -3,10 +3,11 @@
 .component {
   display: flex;
   height: 100%;
+  justify-content: space-between;
 }
 
 .navItem {
   height: 100%;
-  flex-grow: 1;
+  width: percentage(1/5); // Update when adding new nav items!
   background-color: $wallet-nav-bg-color;
 }

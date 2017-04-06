@@ -13,7 +13,7 @@ storiesOf('WalletSummary', module)
 
   // ====== Stories ======
 
-  .add('WalletAddDialog', () => (
+  .add('default', () => (
     <div>
       <WalletSummary
         walletName="Shopping wallet"

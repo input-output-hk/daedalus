@@ -5,6 +5,8 @@ import Input from 'react-toolbox/lib/input/Input';
 import Button from 'react-toolbox/lib/button/Button';
 import { defineMessages, intlShape } from 'react-intl';
 import isInt from 'validator/lib/isInt';
+import BigNumber from 'bignumber.js';
+import { LOVELACES_PER_ADA, DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
 import styles from './WalletSendForm.scss';
@@ -37,9 +39,14 @@ const messages = defineMessages({
     defaultMessage: '!!!Amount',
     description: 'Label for the "Amount" number input in the wallet send form.'
   },
+  equalsAdaHint: {
+    id: 'wallet.send.form.amount.equalsAda',
+    defaultMessage: '!!!equals {amount} ADA',
+    description: 'Convertion hint for the "Amount" number input in the wallet send form.'
+  },
   amountHint: {
     id: 'wallet.send.form.amount.hint',
-    defaultMessage: '!!!Amount in $',
+    defaultMessage: '!!!Amount in Lovelaces',
     description: 'Hint inside the "Amount" number input in the wallet send form.'
   },
   descriptionLabel: {
@@ -64,7 +71,7 @@ const messages = defineMessages({
   },
   invalidAmount: {
     id: 'wallet.send.form.errors.invalidAmount',
-    defaultMessage: '!!!Please enter a valid amount.',
+    defaultMessage: '!!!Please enter a valid amount (positive integer).',
     description: 'Error message shown when invalid amount was entered.',
   },
   invalidTitle: {
@@ -93,16 +100,6 @@ export default class WalletSendForm extends Component {
   // FORM VALIDATION
   form = new ReactToolboxMobxForm({
     fields: {
-      // title: {
-      //   label: this.context.intl.formatMessage(messages.titleLabel),
-      //   placeholder: this.context.intl.formatMessage(messages.titleHint),
-      //   value: '',
-      //   validate: ({ field }) => {
-      //     const isValid = field.value.length >= 3;
-      //     return [isValid, this.context.intl.formatMessage(messages.invalidTitle)];
-      //   },
-      //   bindings: 'ReactToolbox',
-      // },
       receiver: {
         label: this.context.intl.formatMessage(messages.receiverLabel),
         placeholder: this.context.intl.formatMessage(messages.receiverHint),
@@ -123,6 +120,7 @@ export default class WalletSendForm extends Component {
           const isValid = isInt(field.value, {
             allow_leading_zeroes: false,
             min: 1,
+            max: 45000000000000000,
           });
           return [isValid, this.context.intl.formatMessage(messages.invalidAmount)];
         },
@@ -131,16 +129,10 @@ export default class WalletSendForm extends Component {
       currency: {
         value: 'ada' // TODO: Remove hardcoded currency
       },
-      // description: {
-      //   label: this.context.intl.formatMessage(messages.descriptionLabel),
-      //   placeholder: this.context.intl.formatMessage(messages.descriptionHint),
-      //   value: '',
-      //   bindings: 'ReactToolbox',
-      // },
     },
   }, {
     options: {
-      validateOnChange: false,
+      validateOnChange: true,
     },
   });
 
@@ -158,15 +150,30 @@ export default class WalletSendForm extends Component {
     const { form } = this;
     const { intl } = this.context;
     const { isSubmitting, error } = this.props;
+
+    let adaAmount = '0';
+    if (form.$('amount').isValid) {
+      const lovelaces = new BigNumber(form.$('amount').value);
+      adaAmount = lovelaces.dividedBy(LOVELACES_PER_ADA).toFormat(DECIMAL_PLACES_IN_ADA);
+    }
+
     return (
       <div className={styles.component}>
 
         <BorderedBox>
 
-          {/* <Input className="title" {...form.$('title').bind()} /> */}
           <Input className="receiver" {...form.$('receiver').bind()} />
-          <Input className="amount" {...form.$('amount').bind()} />
-          {/* <Input className="description" multiline {...form.$('description').bind()} /> */}
+
+          <div className={styles.amountInput}>
+
+            {!form.$('amount').error ? (
+              <span className={styles.adaAmount}>
+                {intl.formatMessage(messages.equalsAdaHint, { amount: adaAmount })}
+              </span>
+            ) : null}
+
+            <Input className="amount" {...form.$('amount').bind()} />
+          </div>
 
           {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
 

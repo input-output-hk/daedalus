@@ -1,0 +1,9 @@
+$settings-background-color: $color-primary-bg;
+$settings-content-background-color: $color-lighter-grey;
+$settings-content-border-color: $color-light-grey;
+
+@mixin borderAndBackground {
+  background-color: $settings-content-background-color;
+  border-radius: 4px;
+  border: solid 1px $settings-content-border-color;
+}

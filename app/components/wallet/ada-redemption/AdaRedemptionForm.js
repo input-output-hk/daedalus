@@ -10,7 +10,7 @@ import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import AdaCertificateUploadWidget from '../../widgets/forms/AdaCertificateUploadWidget';
 import BorderedBox from '../../widgets/BorderedBox';
 import LocalizableError from '../../../i18n/LocalizableError';
-import { InvalidMnemonicError } from '../../../i18n/global-errors';
+import { InvalidMnemonicError } from '../../../i18n/errors';
 import { isValidMnemonic } from '../../../../lib/decrypt';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './AdaRedemptionForm.scss';

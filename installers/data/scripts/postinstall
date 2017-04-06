@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+./dockutil --add /Applications/Daedalus.app --allhomes

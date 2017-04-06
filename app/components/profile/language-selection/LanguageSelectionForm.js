@@ -6,6 +6,7 @@ import Button from 'react-toolbox/lib/button/Button';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import LocalizableError from '../../../i18n/LocalizableError';
+import { translationMessageParams } from '../../../propTypes';
 import styles from './LanguageSelectionForm.scss';
 
 const messages = defineMessages({
@@ -27,7 +28,7 @@ export default class LanguageSelectionForm extends Component {
   static propTypes = {
     languages: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.shape({
       value: PropTypes.string.isRequired,
-      label: PropTypes.object.isRequired,
+      label: translationMessageParams.isRequired,
     })).isRequired,
     onSubmit: PropTypes.func.isRequired,
     isSubmitting: PropTypes.bool.isRequired,

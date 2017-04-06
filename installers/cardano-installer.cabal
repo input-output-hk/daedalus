@@ -14,12 +14,17 @@ executable make-installer
   main-is:             Installer.hs
   other-modules:       MacInstaller
                      , WindowsInstaller
+                     , RewriteLibs
+                     , Launcher
   build-depends:       base
+                     , filepath
                      , text
+                     , Glob
                      , nsis
                      , turtle
                      , directory
                      , temporary
+                     , megaparsec
 
   default-language:    Haskell2010
   ghc-options:         -threaded -rtsopts

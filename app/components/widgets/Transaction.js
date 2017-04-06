@@ -4,16 +4,9 @@ import moment from 'moment';
 import classNames from 'classnames';
 import styles from './Transaction.scss';
 import adaSymbol from '../../assets/images/ada-symbol.svg';
-
-export const transactionShape = PropTypes.shape({
-  id: PropTypes.string.isRequired,
-  title: PropTypes.string.isRequired,
-  type: PropTypes.string.isRequired,
-  amount: PropTypes.number.isRequired,
-  numberOfConfirmations: PropTypes.number.isRequired,
-  currency: PropTypes.string.isRequired,
-  date: PropTypes.instanceOf(Date),
-});
+import WalletTransaction from '../../domain/WalletTransaction';
+import { assuranceLevels } from '../../config/transactionAssuranceConfig';
+import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 
 const messages = defineMessages({
   card: {
@@ -30,21 +23,6 @@ const messages = defineMessages({
     id: 'wallet.transaction.type.exchange',
     defaultMessage: '!!!Exchange',
     description: 'Transaction type shown for money exchanges between currencies.',
-  },
-  low: {
-    id: 'wallet.transaction.assuranceLevel.low',
-    defaultMessage: '!!!low',
-    description: 'Transaction assurance level "low".',
-  },
-  medium: {
-    id: 'wallet.transaction.assuranceLevel.medium',
-    defaultMessage: '!!!medium',
-    description: 'Transaction assurance level "medium".',
-  },
-  high: {
-    id: 'wallet.transaction.assuranceLevel.high',
-    defaultMessage: '!!!high',
-    description: 'Transaction assurance level "high".',
   },
   assuranceLevel: {
     id: 'wallet.transaction.assuranceLevel',
@@ -68,11 +46,30 @@ const messages = defineMessages({
   },
 });
 
+const assuranceLevelTranslations = defineMessages({
+  [assuranceLevels.LOW]: {
+    id: 'wallet.transaction.assuranceLevel.low',
+    defaultMessage: '!!!low',
+    description: 'Transaction assurance level "low".',
+  },
+  [assuranceLevels.MEDIUM]: {
+    id: 'wallet.transaction.assuranceLevel.medium',
+    defaultMessage: '!!!medium',
+    description: 'Transaction assurance level "medium".',
+  },
+  [assuranceLevels.HIGH]: {
+    id: 'wallet.transaction.assuranceLevel.high',
+    defaultMessage: '!!!high',
+    description: 'Transaction assurance level "high".',
+  },
+});
+
 export default class Transaction extends Component {
 
   static propTypes = {
-    data: transactionShape,
-    isLastInList: PropTypes.bool
+    data: PropTypes.instanceOf(WalletTransaction).isRequired,
+    assuranceLevel: PropTypes.string.isRequired,
+    isLastInList: PropTypes.bool,
   };
 
   static contextTypes = {
@@ -89,19 +86,25 @@ export default class Transaction extends Component {
 
   render() {
     const data = this.props.data;
+    const { isLastInList, assuranceLevel } = this.props;
     const { isExpanded } = this.state;
     const { intl } = this.context;
     let typeMessage = data.type;
+
     const contentStyles = classNames([
       styles.content,
-      this.props.isLastInList ? styles.last : null
+      isLastInList ? styles.last : null
     ]);
+
     const detailsStyles = classNames([
       styles.details,
       isExpanded ? styles.expanded : styles.closed
     ]);
+
     if (data.type === 'adaExpend' || data.type === 'adaIncome') typeMessage = 'ada';
-    const status = intl.formatMessage(messages[data.assuranceLevel]);
+
+    const status = intl.formatMessage(assuranceLevelTranslations[assuranceLevel]);
+
     return (
       <div className={styles.component}>
         <div className={styles[data.type]} />
@@ -113,7 +116,7 @@ export default class Transaction extends Component {
             <div className={styles.title}>
               {data.type === 'adaExpend' ? 'Ada Sent' : 'Ada Received'}
             </div>
-            <div className={styles.amount}>{data.amount}
+            <div className={styles.amount}>{data.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
               <img className={styles.currencySymbol} src={adaSymbol} role="presentation" />
             </div>
           </button>
@@ -124,7 +127,7 @@ export default class Transaction extends Component {
               , {moment(data.date).format('hh:mm:ss A')}
               {/* TODO: Use locale to format the date */}
             </div>
-            <div className={styles[data.assuranceLevel]}>{status}</div>
+            <div className={styles[assuranceLevel]}>{status}</div>
           </div>
 
 

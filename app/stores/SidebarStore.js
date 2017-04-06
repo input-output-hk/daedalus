@@ -1,12 +1,15 @@
 // @flow
 import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
+import { ROUTES } from '../Routes';
+import { DECIMAL_PLACES_IN_ADA } from '../config/numbersConfig';
 
 export default class SidebarStore extends Store {
 
   CATEGORIES = {
-    WALLETS: '/wallets',
-    ADA_REDEMPTION: '/ada-redemption',
+    WALLETS: ROUTES.WALLETS.ROOT,
+    ADA_REDEMPTION: ROUTES.ADA_REDEMPTION,
+    SETTINGS: ROUTES.SETTINGS.ROOT,
   };
 
   INITIAL_HIDE_SUB_MENU_DELAY = 4000;
@@ -35,7 +38,7 @@ export default class SidebarStore extends Store {
     return wallets.all.map(w => ({
       id: w.id,
       title: w.name,
-      info: `${w.amount} ${w.currency}`,
+      info: `${w.amount.toFormat(DECIMAL_PLACES_IN_ADA)} ${w.currency}`,
       isConnected: networkStatus.isConnected,
     }));
   }
@@ -84,7 +87,8 @@ export default class SidebarStore extends Store {
     const route = this.stores.app.currentRoute;
     Object.keys(this.CATEGORIES).forEach((key) => {
       const category = this.CATEGORIES[key];
-      if (route.indexOf(category) !== -1) this._setActivateSidebarCategory(category);
+      // If the current route starts with the root of the category
+      if (route.indexOf(category) === 0) this._setActivateSidebarCategory(category);
     });
   };
 

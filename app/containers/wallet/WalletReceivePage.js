@@ -7,6 +7,7 @@ import Wallet from '../../domain/Wallet';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import NotificationMessage from '../../components/widgets/NotificationMessage';
 import successIcon from '../../assets/images/success-small.svg';
+import { ellipsis } from '../../lib/string-helpers';
 
 const messages = defineMessages({
   message: {
@@ -42,7 +43,7 @@ export default class WalletReceivePage extends Component {
     const notificationMessage = (
       <FormattedHTMLMessage
         {...messages.message}
-        values={{ walletAddress }}
+        values={{ walletAddress: ellipsis(walletAddress, 8) }}
       />
     );
 
