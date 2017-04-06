@@ -62,7 +62,10 @@ export default class AdaRedemptionStore extends Store {
   @action _chooseRedemptionType = (params: {
     redemptionType: redemptionTypeChoices,
   }) => {
-    this.redemptionType = params.redemptionType;
+    if (this.redemptionType !== params.redemptionType) {
+      this._reset();
+      this.redemptionType = params.redemptionType;
+    }
   };
 
   _setCertificate = action(({ certificate }) => {
@@ -143,7 +146,7 @@ export default class AdaRedemptionStore extends Store {
     this.walletId = walletId;
     this.redeemAdaRequest.execute({ redemptionCode: this.redemptionCode, walletId })
       .then(action((transaction: WalletTransaction) => {
-        this.error = null;
+        this._reset();
         this.actions.adaRedemption.adaSuccessfullyRedeemed({
           walletId,
           amount: transaction.amount.toFormat(DECIMAL_PLACES_IN_ADA),
@@ -166,7 +169,7 @@ export default class AdaRedemptionStore extends Store {
       walletId
     })
       .then(action((transaction: WalletTransaction) => {
-        this.error = null;
+        this._reset();
         this.actions.adaRedemption.adaSuccessfullyRedeemed({
           walletId,
           amount: transaction.amount.toFormat(DECIMAL_PLACES_IN_ADA),
@@ -196,5 +199,19 @@ export default class AdaRedemptionStore extends Store {
     this.passPhrase = '';
     this.error = null;
   });
+
+  @action _reset = () => {
+    this.error = null;
+    this.certificate = null;
+    this.isCertificateEncrypted = false;
+    this.passPhrase = null;
+    this.redemptionCode = '';
+    this.walletId = null;
+    this.redemptionType = 'regular';
+    this.shieldedRedemptionKey = null;
+    this.email = null;
+    this.adaPasscode = null;
+    this.adaAmount = null;
+  };
 
 }
