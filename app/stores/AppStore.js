@@ -50,7 +50,7 @@ export default class AppStore extends Store {
   }
 
   @computed get isCurrentLocaleSet(): bool {
-    return this.getProfileLocaleRequest.result;
+    return this.getProfileLocaleRequest.result != null;
   }
 
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
