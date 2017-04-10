@@ -100,6 +100,32 @@ export default function () {
     return this.client.click('.WalletCreateDialog .dialog_button');
   });
 
+  this.When(/^I see the create wallet privacy dialog$/, function () {
+    return this.client.waitForVisible('.WalletBackupPrivacyWarningDialog');
+  });
+
+  this.When(/^I click on "Please make sure nobody looks your screen" checkbox$/, function () {
+    return this.waitAndClick('.WalletBackupPrivacyWarningDialog .CheckboxWithLongLabel_checkbox');
+  });
+
+  this.When(/^I wait for 10 seconds and submit the create wallet privacy dialog$/, function () {
+    setTimeout(function() {
+      return this.waitAndClick('.WalletBackupPrivacyWarningDialog .dialog_button');
+    }, 10 * 1000);
+  });
+
+  this.When(/^I see the create wallet recovery phrase display dialog$/, function () {
+    return this.client.waitForVisible('.WalletRecoveryPhraseDisplayDialog');
+  });
+
+  this.When(/^I submit the create wallet recovery phrase display dialog$/, function () {
+    return this.waitAndClick('.WalletRecoveryPhraseDisplayDialog .dialog_button');
+  });
+
+  this.When(/^I see the create wallet recovery phrase entry dialog$/, function () {
+    return this.client.waitForVisible('.WalletRecoveryPhraseEntryDialog');
+  });
+
   this.Then(/^I should be on some wallet page$/, async function () {
     return this.client.waitForVisible('.WalletNavigation_component');
   });

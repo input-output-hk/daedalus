@@ -1,6 +1,7 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -60,6 +61,10 @@ export default class WalletBackupPrivacyWarningDialog extends Component {
       onContinue
     } = this.props;
     const countdownDisplay = countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
+    const dialogClasses = classnames([
+      styles.component,
+      'WalletBackupPrivacyWarningDialog',
+    ]);
 
     const actions = [
       {
@@ -69,12 +74,13 @@ export default class WalletBackupPrivacyWarningDialog extends Component {
         primary: true
       }
     ];
+
     return (
       <Dialog
+        className={dialogClasses}
         title={intl.formatMessage(messages.recoveryPhrase)}
         actions={actions}
         active
-        style={styles.component}
       >
         <WalletRecoveryInstructions
           instructionsText={intl.formatMessage(messages.recoveryPhraseInstructions)}
