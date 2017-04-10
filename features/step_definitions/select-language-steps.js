@@ -30,10 +30,10 @@ export default function () {
   });
 
   this.Then(/^I should have Japanese language set$/, async function () {
-    const currentLocale = await this.client.execute(function() {
-      return daedalus.stores.app.currentLocale;
+    const result = await this.client.executeAsync(function(done) {
+      daedalus.stores.app.getProfileLocaleRequest.invalidate().execute().then((locale) => done(locale));
     });
-    expect(currentLocale.value).to.equal('ja-JP');
+    expect(result.value).to.equal('ja-JP');
   });
 
   this.Then(/^I should not see the language selection screen anymore$/, function () {
