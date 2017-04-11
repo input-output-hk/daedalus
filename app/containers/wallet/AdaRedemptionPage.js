@@ -70,10 +70,10 @@ export default class AdaRedemptionPage extends Component {
     if (selectableWallets.length === 0) return <Layout><LoadingSpinner /></Layout>;
     const request = redemptionType === 'paperVended' ? redeemPaperVendedAdaRequest : redeemAdaRequest;
     const isCertificateSelected = adaRedemption.certificate !== null;
-    const showInputsForDecryptingForceVendedCertificate = isCertificateSelected && isCertificateEncrypted
-      && redemptionType === 'forceVended';
-    const showPassPhraseWidget = isCertificateSelected && isCertificateEncrypted && redemptionType === 'regular' ||
-      redemptionType === 'paperVended';
+    const showInputsForDecryptingForceVendedCertificate = isCertificateSelected &&
+      isCertificateEncrypted && redemptionType === 'forceVended';
+    const showPassPhraseWidget = isCertificateSelected && isCertificateEncrypted &&
+      redemptionType === 'regular' || redemptionType === 'paperVended';
     return (
       <Layout>
         <AdaRedemptionForm
@@ -97,7 +97,9 @@ export default class AdaRedemptionPage extends Component {
           redemptionCodeValidator={isValidRedemptionKey}
           postVendRedemptionCodeValidator={isValidPostVendRedeemCode}
           redemptionType={redemptionType}
-          showInputsForDecryptingForceVendedCertificate={showInputsForDecryptingForceVendedCertificate}
+          showInputsForDecryptingForceVendedCertificate={
+            showInputsForDecryptingForceVendedCertificate
+          }
           showPassPhraseWidget={showPassPhraseWidget}
         />
       </Layout>
