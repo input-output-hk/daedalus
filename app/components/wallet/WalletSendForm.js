@@ -4,8 +4,8 @@ import { observer } from 'mobx-react';
 import Input from 'react-toolbox/lib/input/Input';
 import Button from 'react-toolbox/lib/button/Button';
 import { defineMessages, intlShape } from 'react-intl';
-import isInt from 'validator/lib/isInt';
 import BigNumber from 'bignumber.js';
+import { isValidAmountInLovlelaces } from '../../lib/validations';
 import { LOVELACES_PER_ADA, DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
@@ -117,11 +117,7 @@ export default class WalletSendForm extends Component {
         placeholder: this.context.intl.formatMessage(messages.amountHint),
         value: '',
         validate: ({ field }) => {
-          const isValid = isInt(field.value, {
-            allow_leading_zeroes: false,
-            min: 1,
-            max: 45000000000000000,
-          });
+          const isValid = isValidAmountInLovlelaces(field.value);
           return [isValid, this.context.intl.formatMessage(messages.invalidAmount)];
         },
         bindings: 'ReactToolbox',
@@ -152,7 +148,8 @@ export default class WalletSendForm extends Component {
     const { isSubmitting, error } = this.props;
 
     let adaAmount = '0';
-    if (form.$('amount').value !== '' && form.$('amount').isValid) {
+    const enteredAmount = form.$('amount').value;
+    if (enteredAmount !== '' && isValidAmountInLovlelaces(enteredAmount)) {
       const lovelaces = new BigNumber(form.$('amount').value);
       adaAmount = lovelaces.dividedBy(LOVELACES_PER_ADA).toFormat(DECIMAL_PLACES_IN_ADA);
     }
