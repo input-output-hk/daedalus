@@ -116,7 +116,8 @@ export default function () {
     const expectedData = table.hashes()[0];
     await this.client.waitForVisible('.Transaction_title');
     const transactionTitle = await this.client.getText('.Transaction_title');
-    expect(transactionTitle[0]).to.equal(expectedData.title);
+    const expectedTransactionTitle = await this.intl(expectedData.title);
+    expect(expectedTransactionTitle).to.equal(transactionTitle[0]);
     const transactionAmount = await this.client.getText('.Transaction_amount');
     expect(transactionAmount[0]).to.include(expectedData.amount);
   });
