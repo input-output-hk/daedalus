@@ -6,7 +6,7 @@ export const isNotEmptyString = (value) => value !== '';
 
 export const isValidCurrency = (value) => value === 'ada';
 
-export const isValidAmountInLovlelaces = (value: string) => (
+export const isValidAmountInLovelaces = (value: string) => (
   isInt(value, {
     allow_leading_zeroes: false,
     min: 1,

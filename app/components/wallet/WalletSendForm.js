@@ -5,7 +5,7 @@ import Input from 'react-toolbox/lib/input/Input';
 import Button from 'react-toolbox/lib/button/Button';
 import { defineMessages, intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
-import { isValidAmountInLovlelaces } from '../../lib/validations';
+import { isValidAmountInLovelaces } from '../../lib/validations';
 import { LOVELACES_PER_ADA, DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
@@ -117,7 +117,7 @@ export default class WalletSendForm extends Component {
         placeholder: this.context.intl.formatMessage(messages.amountHint),
         value: '',
         validate: ({ field }) => {
-          const isValid = isValidAmountInLovlelaces(field.value);
+          const isValid = isValidAmountInLovelaces(field.value);
           return [isValid, this.context.intl.formatMessage(messages.invalidAmount)];
         },
         bindings: 'ReactToolbox',
@@ -149,7 +149,7 @@ export default class WalletSendForm extends Component {
 
     let adaAmount = '0';
     const enteredAmount = form.$('amount').value;
-    if (enteredAmount !== '' && isValidAmountInLovlelaces(enteredAmount)) {
+    if (enteredAmount !== '' && isValidAmountInLovelaces(enteredAmount)) {
       const lovelaces = new BigNumber(form.$('amount').value);
       adaAmount = lovelaces.dividedBy(LOVELACES_PER_ADA).toFormat(DECIMAL_PLACES_IN_ADA);
     }
