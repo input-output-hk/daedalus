@@ -1,11 +1,10 @@
-@skip
 Feature: Select Language
 
-  Background:
-    Given I have a wallet with funds
-    And the active wallet is "Personal Wallet"
-
   Scenario: User Selects Language
-    Given I am on the language selection screen
+    Given I dont have a language set
+    And I am on the language selection screen
+    And I open language selection dropdown
+    And I select Japanese language
     When I submit the language selection form
-    Then I should be on the "Personal Wallet" wallet "summary" screen
+    Then I should have Japanese language set
+    And I should not see the language selection screen anymore

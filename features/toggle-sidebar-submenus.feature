@@ -1,7 +1,8 @@
 Feature: Toggle Sidebar Submenus
 
   Background:
-    Given I have a wallet with funds
+    Given I have selected English language
+    And I have a wallet with funds
     And I am on the "Personal Wallet" wallet "summary" screen
 
   Scenario: Hide Sidebar Submenus
