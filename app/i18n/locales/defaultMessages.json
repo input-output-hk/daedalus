@@ -420,7 +420,7 @@
         }
       },
       {
-        "defaultMessage": "<p>To redeem your Ada upload your certificate or copy and paste your redemption\ncode from the certificate. Here is an example redemption key, yours will look similar:</p>\n<p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p>\n<p>If you upload a PDF file with your certificate redemption code will be automatically extracted.</p>\n<p>If you upload <strong>encrypted certificate</strong> you will need to provide a <strong>9 word mnemonic \npassphrase</strong> to decrypt your certificate and your redemption code will be automatically extracted.</p>",
+        "defaultMessage": "<p>To redeem your Ada upload your certificate or copy and paste your redemption\ncode from the certificate. Here is an example redemption key, yours will look similar:</p>\n<p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p>\n<p>If you upload a PDF file with your certificate redemption code will be automatically extracted.</p>\n<p>If you upload <strong>encrypted certificate</strong> you will need to provide a <strong>9 word mnemonic\npassphrase</strong> to decrypt your certificate and your redemption code will be automatically extracted.</p>",
         "description": "!!!Detailed instructions for redeeming Ada from the regular vending",
         "end": {
           "column": 3,
@@ -434,7 +434,7 @@
         }
       },
       {
-        "defaultMessage": "<p>To redeem your Ada upload your certificate or copy and paste your redemption code from the certificate. \nHere is an example redemption key, yours will look similar:</p><p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p>\n<p>If you upload a PDF file with your certificate redemption code will be automatically extracted.</p>\n<p>If you upload <strong>encrypted certificate</strong> you will need to provide a <strong>your email address, Ada passcode and Ada amount</strong>  \nto decrypt your certificate and your redemption code will be automatically extracted.</p>",
+        "defaultMessage": "<p>To redeem your Ada upload your certificate or copy and paste your redemption code from the certificate.\nHere is an example redemption key, yours will look similar:</p><p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p>\n<p>If you upload a PDF file with your certificate redemption code will be automatically extracted.</p>\n<p>If you upload <strong>encrypted certificate</strong> you will need to provide a <strong>your email address, Ada passcode and Ada amount</strong>\nto decrypt your certificate and your redemption code will be automatically extracted.</p>",
         "description": "!!!Detailed instructions.regular",
         "end": {
           "column": 3,
@@ -448,7 +448,7 @@
         }
       },
       {
-        "defaultMessage": "<p>To redeem your Ada enter your Shielded vending key from the certificate, choose a wallet \nwhere Ada should be redeemed and enter 9 word mnemonic passphrase.</p>",
+        "defaultMessage": "<p>To redeem your Ada enter your Shielded vending key from the certificate, choose a wallet\nwhere Ada should be redeemed and enter 9 word mnemonic passphrase.</p>",
         "description": "!!!Detailed instructions.regular",
         "end": {
           "column": 3,
@@ -1329,17 +1329,31 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Wallet Name",
-        "description": "Label for the \"Wallet Name\" text input in the wallet create form.",
+        "defaultMessage": "!!!Create a new wallet",
+        "description": "Title \"Create a new wallet\" in the wallet create form.",
         "end": {
           "column": 3,
           "line": 20
         },
         "file": "app/components/wallet/WalletCreateDialog.js",
+        "id": "wallet.create.dialog.title",
+        "start": {
+          "column": 15,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet Name",
+        "description": "Label for the \"Wallet Name\" text input in the wallet create form.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.name.label",
         "start": {
           "column": 14,
-          "line": 16
+          "line": 21
         }
       },
       {
@@ -1347,13 +1361,13 @@
         "description": "Hint for the \"Wallet Name\" text input in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 30
         },
         "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.walletNameHint",
         "start": {
           "column": 18,
-          "line": 21
+          "line": 26
         }
       },
       {
@@ -1361,13 +1375,13 @@
         "description": "Label for the \"Currency\" dropdown in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 35
         },
         "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.currency.label",
         "start": {
           "column": 17,
-          "line": 26
+          "line": 31
         }
       },
       {
@@ -1375,13 +1389,13 @@
         "description": "Error message shown when invalid currency was selected in create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 40
         },
         "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.errors.invalidCurrency",
         "start": {
           "column": 19,
-          "line": 31
+          "line": 36
         }
       },
       {
@@ -1389,13 +1403,13 @@
         "description": "Label for the \"Create personal wallet\" button on create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 45
         },
         "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.create.personal.wallet.button.label",
         "start": {
           "column": 24,
-          "line": 36
+          "line": 41
         }
       }
     ],
@@ -1896,17 +1910,45 @@
         }
       },
       {
+        "defaultMessage": "!!!Ada sent",
+        "description": "Label \"Ada sent\" for the transaction.",
+        "end": {
+          "column": 3,
+          "line": 51
+        },
+        "file": "app/components/widgets/Transaction.js",
+        "id": "wallet.transaction.adaSent",
+        "start": {
+          "column": 11,
+          "line": 47
+        }
+      },
+      {
+        "defaultMessage": "!!!Ada received",
+        "description": "Label \"Ada received\" for the transaction.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "app/components/widgets/Transaction.js",
+        "id": "wallet.transaction.adaReceived",
+        "start": {
+          "column": 15,
+          "line": 52
+        }
+      },
+      {
         "defaultMessage": "!!!low",
         "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 65
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.low",
         "start": {
           "column": 25,
-          "line": 50
+          "line": 61
         }
       },
       {
@@ -1914,13 +1956,13 @@
         "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 70
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
           "column": 28,
-          "line": 55
+          "line": 66
         }
       },
       {
@@ -1928,13 +1970,13 @@
         "description": "Transaction assurance level \"high\".",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 75
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.high",
         "start": {
           "column": 26,
-          "line": 60
+          "line": 71
         }
       }
     ],
@@ -2239,5 +2281,94 @@
       }
     ],
     "path": "app/i18n/global-messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!English",
+        "description": "Label for the language select option \"English\".",
+        "end": {
+          "column": 3,
+          "line": 12
+        },
+        "file": "app/stores/AppStore.js",
+        "id": "profile.languageSelect.form.options.english",
+        "start": {
+          "column": 25,
+          "line": 8
+        }
+      },
+      {
+        "defaultMessage": "!!!Japanese",
+        "description": "Label for the language select option \"Japanese\".",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "app/stores/AppStore.js",
+        "id": "profile.languageSelect.form.options.japanese",
+        "start": {
+          "column": 26,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Chinese",
+        "description": "Label for the language select option \"Chinese\".",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "app/stores/AppStore.js",
+        "id": "profile.languageSelect.form.options.chinese",
+        "start": {
+          "column": 25,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Korean",
+        "description": "Label for the language select option \"Korean\".",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "app/stores/AppStore.js",
+        "id": "profile.languageSelect.form.options.korean",
+        "start": {
+          "column": 24,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!German",
+        "description": "Label for the language select option \"German\".",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "app/stores/AppStore.js",
+        "id": "profile.languageSelect.form.options.german",
+        "start": {
+          "column": 24,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Croatian",
+        "description": "Label for the language select option \"Croatian\".",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "app/stores/AppStore.js",
+        "id": "profile.languageSelect.form.options.croatian",
+        "start": {
+          "column": 26,
+          "line": 33
+        }
+      }
+    ],
+    "path": "app/stores/AppStore.json"
   }
 ]
