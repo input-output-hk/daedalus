@@ -152,7 +152,7 @@ export default class WalletSendForm extends Component {
     const { isSubmitting, error } = this.props;
 
     let adaAmount = '0';
-    if (form.$('amount').isValid) {
+    if (form.$('amount').value !== '' && form.$('amount').isValid) {
       const lovelaces = new BigNumber(form.$('amount').value);
       adaAmount = lovelaces.dividedBy(LOVELACES_PER_ADA).toFormat(DECIMAL_PLACES_IN_ADA);
     }
