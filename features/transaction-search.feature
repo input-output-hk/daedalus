@@ -5,7 +5,8 @@ Feature: Transaction Search
   I want to be able to enter my search terms and have the transactions list filtered
 
   Background:
-    Given I have a wallet
+    Given I have selected English language
+    And I have a wallet
     And I made the following transactions with my wallet:
       | title  |
       | First  |

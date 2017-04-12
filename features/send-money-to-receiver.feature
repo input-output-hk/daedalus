@@ -1,7 +1,8 @@
 Feature: Send Money to Receiver
 
   Background:
-    Given I have a wallet with funds
+    Given I have selected English language
+    And I have a wallet with funds
     And I have the following wallets:
       | name   |
       | first  |
@@ -14,8 +15,8 @@ Feature: Send Money to Receiver
     And I submit the wallet send form
     Then I should be on the "Personal Wallet" wallet "summary" screen
     And the latest transaction should show:
-      | title    | amount |
-      | Ada Sent | -10    |
+      | title    | amount    |
+      | Ada Sent | -0,000010 |
 
   Scenario: User Submits Empty Form
     Given I am on the "Personal Wallet" wallet "send" screen
