@@ -8,5 +8,12 @@ export default (platform, env, appName) => {
     case 'win32': {
       return path.join(env['APPDATA'], appName, 'Logs');
     }
+    case 'linux': {
+      return path.join(env['HOME'], '.config', appName, 'Logs');
+    }
+    default: {
+      console.log('Unsupported platform');
+      process.exit(1);
+    }
   }
 };

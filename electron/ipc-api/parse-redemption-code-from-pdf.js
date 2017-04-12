@@ -1,7 +1,8 @@
 import { PDFExtract } from 'pdf.js-extract';
 import { ipcMain } from 'electron';
 import fs from 'fs';
-import decrypt from '../../lib/decrypt';
+import Log from 'electron-log';
+import { decryptRegularVend, decryptForceVend } from '../../lib/decrypt';
 
 const CHANNEL_NAME = 'parse-redemption-code-from-pdf';
 
@@ -13,21 +14,24 @@ export const PARSE_REDEMPTION_CODE = {
 };
 
 export default () => {
-  ipcMain.on(PARSE_REDEMPTION_CODE.REQUEST, (event, filePath, passPhrase) => {
+  ipcMain.on(PARSE_REDEMPTION_CODE.REQUEST, (event, filePath, decryptionKey, redemptionType) => {
     const sender = event.sender;
     let pdfPath = null;
     let isTemporaryDecryptedPdf = false;
     // If pass phrase is given assume that it's an encrypted certificate
-    if (passPhrase) {
+    if (decryptionKey) {
       try {
         // Decrypt the file
         const encryptedFile = fs.readFileSync(filePath);
-        const decryptedFile = decrypt(passPhrase, encryptedFile);
+        const decryptedFile = redemptionType === 'regular' ?
+          decryptRegularVend(decryptionKey, encryptedFile) :
+          decryptForceVend(decryptionKey, encryptedFile);
         // Write it to disk temporarily (so pdf extract can work with it)
         pdfPath = `${filePath}.pdf`;
         fs.writeFileSync(pdfPath, decryptedFile);
         isTemporaryDecryptedPdf = true;
       } catch (error) {
+        Log.warn('ERROR!', error);
         sender.send(PARSE_REDEMPTION_CODE.ERROR, error.message);
       }
     } else {

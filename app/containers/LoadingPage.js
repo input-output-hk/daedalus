@@ -11,6 +11,7 @@ export default class LoadingPage extends Component {
     stores: PropTypes.shape({
       networkStatus: PropTypes.shape({
         isConnecting: PropTypes.bool.isRequired,
+        hasBlockSyncingStarted: PropTypes.bool.isRequired,
         isSyncing: PropTypes.bool.isRequired,
         isLoadingWallets: PropTypes.bool.isRequired,
         hasBeenConnected: PropTypes.bool.isRequired,
@@ -25,7 +26,8 @@ export default class LoadingPage extends Component {
       isSyncing,
       syncPercentage,
       isLoadingWallets,
-      hasBeenConnected
+      hasBeenConnected,
+      hasBlockSyncingStarted
     } = this.props.stores.networkStatus;
     return (
       <CenteredLayout>
@@ -35,6 +37,7 @@ export default class LoadingPage extends Component {
           syncPercentage={syncPercentage}
           isLoadingWallets={isLoadingWallets}
           hasBeenConnected={hasBeenConnected}
+          hasBlockSyncingStarted={hasBlockSyncingStarted}
         />
       </CenteredLayout>
     );
