@@ -117,7 +117,7 @@
   "wallet.restore.dialog.wallet.name.input.label": "Wallet name",
   "wallet.send.form.amount.equalsAda": "equals {amount} ADA",
   "wallet.send.form.amount.hint": "Amount in Lovelaces",
-  "wallet.send.form.amount.label": "Amount in Lovelaces",
+  "wallet.send.form.amount.label": "Amount",
   "wallet.send.form.description.hint": "You can type a message here, if you want.",
   "wallet.send.form.description.label": "Description",
   "wallet.send.form.errors.invalidAddress": "Please enter a valid address.",
