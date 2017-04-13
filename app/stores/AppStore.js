@@ -46,7 +46,9 @@ export default class AppStore extends Store {
   }
 
   @computed get hasLoadedCurrentLocale(): bool {
-    return this.getProfileLocaleRequest.wasExecuted;
+    return (
+      this.getProfileLocaleRequest.wasExecuted && this.getProfileLocaleRequest.result !== null
+    );
   }
 
   @computed get isCurrentLocaleSet(): bool {
