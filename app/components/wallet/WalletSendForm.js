@@ -72,7 +72,7 @@ const messages = defineMessages({
   },
   invalidAmount: {
     id: 'wallet.send.form.errors.invalidAmount',
-    defaultMessage: '!!!Please enter a valid amount (positive integer).',
+    defaultMessage: '!!!Please enter a valid amount.',
     description: 'Error message shown when invalid amount was entered.',
   },
   invalidTitle: {
@@ -98,8 +98,8 @@ export default class WalletSendForm extends Component {
     intl: intlShape.isRequired,
   };
 
-  adaToLovelaces = (adaAmount: string | number) => (
-    adaAmount.toString().replace('.', '').replace(/^0+/, '')
+  adaToLovelaces = (adaAmount: string) => (
+    adaAmount.replace('.', '').replace(/^0+/, '')
   );
 
   // FORM VALIDATION
@@ -175,10 +175,17 @@ export default class WalletSendForm extends Component {
                 thousandSeparator=","
                 decimalSeparator="."
                 decimalPrecision={DECIMAL_PLACES_IN_ADA}
+                maxLength="22"
                 placeholder="0.000000"
-                value={amountField.value}
                 onChange={(e, value) => {
                   amountField.onChange(value);
+                }}
+                onKeyDown={(e) => {
+                  const isBlank = e.target.value === '';
+                  const isPeriodKeyPressed = e.keyCode === 190;
+                  if (isBlank && isPeriodKeyPressed) {
+                    e.preventDefault();
+                  }
                 }}
               />
               <label className="input_label" htmlFor="amount">
