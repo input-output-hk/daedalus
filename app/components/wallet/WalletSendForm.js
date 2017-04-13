@@ -1,12 +1,13 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
 import Input from 'react-toolbox/lib/input/Input';
 import Button from 'react-toolbox/lib/button/Button';
+import NumberFormat from 'react-number-format';
 import { defineMessages, intlShape } from 'react-intl';
 import isInt from 'validator/lib/isInt';
-import BigNumber from 'bignumber.js';
-import { LOVELACES_PER_ADA, DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
+import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
 import styles from './WalletSendForm.scss';
@@ -97,6 +98,10 @@ export default class WalletSendForm extends Component {
     intl: intlShape.isRequired,
   };
 
+  adaToLovelaces = (adaAmount: string | number) => (
+    adaAmount.toString().replace('.', '').replace(/^0+/, '')
+  );
+
   // FORM VALIDATION
   form = new ReactToolboxMobxForm({
     fields: {
@@ -117,7 +122,8 @@ export default class WalletSendForm extends Component {
         placeholder: this.context.intl.formatMessage(messages.amountHint),
         value: '',
         validate: ({ field }) => {
-          const isValid = isInt(field.value, {
+          const amountInLovelaces = this.adaToLovelaces(field.value);
+          const isValid = isInt(amountInLovelaces, {
             allow_leading_zeroes: false,
             min: 1,
             max: 45000000000000000,
@@ -139,7 +145,9 @@ export default class WalletSendForm extends Component {
   submit() {
     this.form.submit({
       onSuccess: (form) => {
-        this.props.onSubmit(form.values());
+        const formValues = form.values();
+        formValues.amount = this.adaToLovelaces(formValues.amount);
+        this.props.onSubmit(formValues);
         form.reset();
       },
       onError: () => {}
@@ -150,12 +158,11 @@ export default class WalletSendForm extends Component {
     const { form } = this;
     const { intl } = this.context;
     const { isSubmitting, error } = this.props;
-
-    let adaAmount = '0';
-    if (form.$('amount').value !== '' && form.$('amount').isValid) {
-      const lovelaces = new BigNumber(form.$('amount').value);
-      adaAmount = lovelaces.dividedBy(LOVELACES_PER_ADA).toFormat(DECIMAL_PLACES_IN_ADA);
-    }
+    const amountField = form.$('amount');
+    const amountFieldClasses = classnames([
+      'amount', 'input_input',
+      amountField.error ? 'input_errored' : null
+    ]);
 
     return (
       <div className={styles.component}>
@@ -165,14 +172,31 @@ export default class WalletSendForm extends Component {
           <Input className="receiver" {...form.$('receiver').bind()} />
 
           <div className={styles.amountInput}>
-
-            {!form.$('amount').error ? (
-              <span className={styles.adaAmount}>
-                {intl.formatMessage(messages.equalsAdaHint, { amount: adaAmount })}
+            <div className={amountFieldClasses}>
+              <NumberFormat
+                id="amount"
+                className="input_inputElement"
+                thousandSeparator=","
+                decimalSeparator="."
+                decimalPrecision={DECIMAL_PLACES_IN_ADA}
+                placeholder="0.000000"
+                value={amountField.value}
+                onChange={(e, value) => {
+                  amountField.onChange(value);
+                }}
+              />
+              <label className="input_label" htmlFor="amount">
+                {intl.formatMessage(messages.amountLabel)}
+              </label>
+              <span className={styles.adaLabel}>
+                {intl.formatMessage(globalMessages.unitAda)}
               </span>
-            ) : null}
-
-            <Input className="amount" {...form.$('amount').bind()} />
+              {amountField.error ? (
+                <span className="input_error">
+                  {intl.formatMessage(messages.invalidAmount)}
+                </span>
+              ) : null}
+            </div>
           </div>
 
           {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
@@ -183,7 +207,6 @@ export default class WalletSendForm extends Component {
             onMouseUp={this.submit.bind(this)}
             primary
           />
-
         </BorderedBox>
 
       </div>
