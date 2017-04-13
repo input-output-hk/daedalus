@@ -15,8 +15,8 @@ Feature: Send Money to Receiver
     And I submit the wallet send form
     Then I should be on the "Personal Wallet" wallet "summary" screen
     And the latest transaction should show:
-      | title    | amount    |
-      | Ada Sent | -0,000010 |
+      | title                      | amount    |
+      | wallet.transaction.adaSent | -0.000010 |
 
   Scenario: User Submits Empty Form
     Given I am on the "Personal Wallet" wallet "send" screen

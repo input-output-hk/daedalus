@@ -6,7 +6,7 @@ import Input from 'react-toolbox/lib/input/Input';
 import Button from 'react-toolbox/lib/button/Button';
 import NumberFormat from 'react-number-format';
 import { defineMessages, intlShape } from 'react-intl';
-import isInt from 'validator/lib/isInt';
+import { isValidAmountInLovelaces } from '../../lib/validations';
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
@@ -123,11 +123,7 @@ export default class WalletSendForm extends Component {
         value: '',
         validate: ({ field }) => {
           const amountInLovelaces = this.adaToLovelaces(field.value);
-          const isValid = isInt(amountInLovelaces, {
-            allow_leading_zeroes: false,
-            min: 1,
-            max: 45000000000000000,
-          });
+          const isValid = isValidAmountInLovelaces(amountInLovelaces);
           return [isValid, this.context.intl.formatMessage(messages.invalidAmount)];
         },
         bindings: 'ReactToolbox',
