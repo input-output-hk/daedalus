@@ -286,7 +286,10 @@ export default class CardanoClientApi {
   }
 
   async getUserLocale() {
-    return await ClientApi.getLocale();
+    Log.debug('CardanoClientApi::getLocale called');
+    const response = await ClientApi.getLocale();
+    Log.debug('CardanoClientApi::getLocale response: ', response);
+    return response;
   }
 
   async updateWallet(request: walletUpdateRequest) {
