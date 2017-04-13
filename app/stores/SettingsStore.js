@@ -10,7 +10,7 @@ export default class SettingsStore extends Store {
 
   @observable bigNumberDecimalFormat = {
     decimalSeparator: '.',
-    groupSeparator: ' ',
+    groupSeparator: ',',
     groupSize: 3,
     secondaryGroupSize: 0,
     fractionGroupSeparator: ' ',
