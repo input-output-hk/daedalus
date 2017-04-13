@@ -115,10 +115,13 @@ export default function () {
   this.Then(/^the latest transaction should show:$/, async function (table) {
     const expectedData = table.hashes()[0];
     await this.client.waitForVisible('.Transaction_title');
-    const transactionTitle = await this.client.getText('.Transaction_title');
-    expect(transactionTitle[0]).to.equal(expectedData.title);
-    const transactionAmount = await this.client.getText('.Transaction_amount');
-    expect(transactionAmount[0]).to.include(expectedData.amount);
+    let transactionTitles = await this.client.getText('.Transaction_title');
+    transactionTitles = [].concat(transactionTitles);
+    const expectedTransactionTitle = await this.intl(expectedData.title);
+    expect(expectedTransactionTitle).to.equal(transactionTitles[0]);
+    let transactionAmounts = await this.client.getText('.Transaction_amount');
+    transactionAmounts = [].concat(transactionAmounts);
+    expect(expectedData.amount).to.include(transactionAmounts[0]);
   });
 
 };
