@@ -57,7 +57,9 @@ export default class AdaRedemptionStore extends Store {
 
   isValidRedemptionKey = (redemptionKey: string) => this.api.isValidRedemptionKey(redemptionKey);
   isValidRedemptionMnemonic = (mnemonic: string) => this.api.isValidRedemptionMnemonic(mnemonic);
-  isValidPostVendRedeemCode = (mnemonic: string) => this.api.isValidPostVendRedeemCode(mnemonic);
+  isValidPaperVendRedemptionKey = (
+    mnemonic: string
+  ) => this.api.isValidPaperVendRedemptionKey(mnemonic);
 
   @action _chooseRedemptionType = (params: {
     redemptionType: redemptionTypeChoices,
@@ -135,7 +137,7 @@ export default class AdaRedemptionStore extends Store {
     const errorMessage = isString(error) ? error : error.message;
     if (errorMessage.includes('Invalid mnemonic')) {
       this.error = new InvalidMnemonicError();
-    } else {
+    } else if (this.redemptionType === 'regular') {
       this.error = new AdaRedemptionCertificateParseError();
     }
     this.redemptionCode = '';

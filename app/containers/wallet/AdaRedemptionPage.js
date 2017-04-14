@@ -37,7 +37,7 @@ export default class AdaRedemptionPage extends Component {
         isCertificateEncrypted: PropTypes.bool.isRequired,
         isValidRedemptionKey: PropTypes.func.isRequired,
         isValidRedemptionMnemonic: PropTypes.func.isRequired,
-        isValidPostVendRedeemCode: PropTypes.func.isRequired,
+        isValidPaperVendRedemptionKey: PropTypes.func.isRequired,
         redemptionType: PropTypes.string.isRequired,
         error: PropTypes.instanceOf(Error),
       }).isRequired,
@@ -56,7 +56,7 @@ export default class AdaRedemptionPage extends Component {
     const { wallets, adaRedemption } = this.props.stores;
     const {
       redeemAdaRequest, redeemPaperVendedAdaRequest, isCertificateEncrypted, isValidRedemptionKey,
-      redemptionType, isValidRedemptionMnemonic, isValidPostVendRedeemCode, error
+      redemptionType, isValidRedemptionMnemonic, isValidPaperVendRedemptionKey, error
     } = adaRedemption;
     const {
       chooseRedemptionType, setCertificate, setPassPhrase, setRedemptionCode, removeCertificate,
@@ -95,7 +95,7 @@ export default class AdaRedemptionPage extends Component {
           onRemoveCertificate={removeCertificate}
           mnemonicValidator={isValidRedemptionMnemonic}
           redemptionCodeValidator={isValidRedemptionKey}
-          postVendRedemptionCodeValidator={isValidPostVendRedeemCode}
+          postVendRedemptionCodeValidator={isValidPaperVendRedemptionKey}
           redemptionType={redemptionType}
           showInputsForDecryptingForceVendedCertificate={
             showInputsForDecryptingForceVendedCertificate

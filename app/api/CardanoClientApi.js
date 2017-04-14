@@ -163,11 +163,11 @@ export default class CardanoClientApi {
   }
 
   isValidRedemptionKey(mnemonic: string): Promise<bool> {
-    return ClientApi.isValidRedeemCode(mnemonic);
+    return ClientApi.isValidRedemptionKey(mnemonic);
   }
 
-  isValidPostVendRedeemCode(redeemCode: string): Promise<bool> {
-    return ClientApi.isValidPostVendRedeemCode(redeemCode);
+  isValidPaperVendRedemptionKey(redeemCode: string): Promise<bool> {
+    return ClientApi.isValidPaperVendRedemptionKey(redeemCode);
   }
 
   isValidRedemptionMnemonic(mnemonic: string): Promise<bool> {
@@ -227,7 +227,7 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::redeemAda called');
     const { redemptionCode, walletId } = request;
     try {
-      const response: ServerWalletStruct = await ClientApi.redeemADA(redemptionCode, walletId);
+      const response: ServerWalletStruct = await ClientApi.redeemAda(redemptionCode, walletId);
       Log.debug('CardanoClientApi::redeemAda success');
       return _createTransactionFromServerData(response);
     } catch (error) {
@@ -237,15 +237,15 @@ export default class CardanoClientApi {
   }
 
   async redeemPaperVendedAda(request: redeemPaperVendedAdaRequest) {
-    Log.debug('CardanoClientApi::redeemPaperVendedAda called');
+    Log.debug('CardanoClientApi::redeemAdaPaperVend called');
     const { shieldedRedemptionKey, mnemonics, walletId } = request;
     try {
       const response: ServerWalletStruct =
-        await ClientApi.postVendRedeemADA(shieldedRedemptionKey, mnemonics, walletId);
-      Log.debug('CardanoClientApi::redeemPaperVendedAda success');
+        await ClientApi.redeemAdaPaperVend(shieldedRedemptionKey, mnemonics, walletId);
+      Log.debug('CardanoClientApi::redeemAdaPaperVend success');
       return _createTransactionFromServerData(response);
     } catch (error) {
-      Log.error('CardanoClientApi::redeemPaperVendedAda error: ', error);
+      Log.error('CardanoClientApi::redeemAdaPaperVend error: ', error);
       throw new RedeemAdaError();
     }
   }
