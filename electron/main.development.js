@@ -16,21 +16,25 @@ Log.transports.console.level = 'warn';
 Log.transports.file.level = 'debug';
 Log.transports.file.file = logFilePath;
 
-// Tail Daedalus log and send it to remote logging server
-const daedalusLogTail = new Tail(logFilePath);
+try {
+  // Tail Daedalus log and send it to remote logging server
+  const daedalusLogTail = new Tail(logFilePath);
 
-daedalusLogTail.on('line', (line) => {
-  remoteLog.info(line);
-});
+  daedalusLogTail.on('line', (line) => {
+    remoteLog.info(line);
+  });
 
-// Tail Cardano node log and send it to remote logging server
-const cardanoNodeLogFilePath = path.join(appLogFolderPath, 'cardano-node.log');
+  // Tail Cardano node log and send it to remote logging server
+  const cardanoNodeLogFilePath = path.join(appLogFolderPath, 'cardano-node.log');
 
-const cardanoNodeLogTail = new Tail(cardanoNodeLogFilePath);
+  const cardanoNodeLogTail = new Tail(cardanoNodeLogFilePath);
 
-cardanoNodeLogTail.on('line', (line) => {
-  remoteLog.info(line);
-});
+  cardanoNodeLogTail.on('line', (line) => {
+    remoteLog.info(line);
+  });
+} catch (error) {
+  Log.error('Error setting up log tailing and logging to remote server', error);
+}
 
 // Configure & start crash reporter
 app.setPath('temp', appLogFolderPath);
