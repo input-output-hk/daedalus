@@ -1,7 +1,8 @@
 Feature: Navigate Sidebar Categories
 
   Background:
-    Given I have a wallet with funds
+    Given I have selected English language
+    And I have a wallet with funds
     And the active wallet is "Personal Wallet"
 
   Scenario Outline: Navigate Between Sidebar Categories

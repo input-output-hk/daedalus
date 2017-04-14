@@ -1,5 +1,8 @@
 Feature: Switching Between Wallets
 
+  Background:
+    Given I have selected English language
+
   Scenario Outline: Using the Sidebar to Switch Wallets
     Given I have the following wallets:
     | name   |

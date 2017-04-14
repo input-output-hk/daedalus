@@ -96,12 +96,14 @@ export default class WalletsStore extends Store {
   };
 
   _finishWalletCreation = async () => {
+    runInAction(() => { this.isAddWalletDialogOpen = false; });
     this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
     const wallet = await this.createWalletRequest.execute(this._newWalletDetails).promise;
     if (wallet) {
       await this.walletsRequest.patch(result => { result.push(wallet); });
       this.goToWalletRoute(wallet.id);
-      runInAction(() => { this.isAddWalletDialogOpen = false; });
+    } else {
+      runInAction(() => { this.isAddWalletDialogOpen = true; });
     }
   };
 
@@ -114,7 +116,7 @@ export default class WalletsStore extends Store {
     await this.sendMoneyRequest.execute({
       ...transactionDetails,
       walletId: wallet.id,
-      amount: parseFloat(transactionDetails.amount),
+      amount: transactionDetails.amount,
       sender: wallet.address,
       currency: wallet.currency,
     });

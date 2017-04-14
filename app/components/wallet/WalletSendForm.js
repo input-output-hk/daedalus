@@ -1,10 +1,13 @@
 // @flow
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
 import Input from 'react-toolbox/lib/input/Input';
 import Button from 'react-toolbox/lib/button/Button';
+import NumberFormat from 'react-number-format';
 import { defineMessages, intlShape } from 'react-intl';
-import isInt from 'validator/lib/isInt';
+import { isValidAmountInLovelaces } from '../../lib/validations';
+import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
 import styles from './WalletSendForm.scss';
@@ -37,9 +40,14 @@ const messages = defineMessages({
     defaultMessage: '!!!Amount',
     description: 'Label for the "Amount" number input in the wallet send form.'
   },
+  equalsAdaHint: {
+    id: 'wallet.send.form.amount.equalsAda',
+    defaultMessage: '!!!equals {amount} ADA',
+    description: 'Convertion hint for the "Amount" number input in the wallet send form.'
+  },
   amountHint: {
     id: 'wallet.send.form.amount.hint',
-    defaultMessage: '!!!Amount in $',
+    defaultMessage: '!!!Amount in Lovelaces',
     description: 'Hint inside the "Amount" number input in the wallet send form.'
   },
   descriptionLabel: {
@@ -90,19 +98,13 @@ export default class WalletSendForm extends Component {
     intl: intlShape.isRequired,
   };
 
+  adaToLovelaces = (adaAmount: string) => (
+    adaAmount.replace('.', '').replace(/^0+/, '')
+  );
+
   // FORM VALIDATION
   form = new ReactToolboxMobxForm({
     fields: {
-      // title: {
-      //   label: this.context.intl.formatMessage(messages.titleLabel),
-      //   placeholder: this.context.intl.formatMessage(messages.titleHint),
-      //   value: '',
-      //   validate: ({ field }) => {
-      //     const isValid = field.value.length >= 3;
-      //     return [isValid, this.context.intl.formatMessage(messages.invalidTitle)];
-      //   },
-      //   bindings: 'ReactToolbox',
-      // },
       receiver: {
         label: this.context.intl.formatMessage(messages.receiverLabel),
         placeholder: this.context.intl.formatMessage(messages.receiverHint),
@@ -120,10 +122,8 @@ export default class WalletSendForm extends Component {
         placeholder: this.context.intl.formatMessage(messages.amountHint),
         value: '',
         validate: ({ field }) => {
-          const isValid = isInt(field.value, {
-            allow_leading_zeroes: false,
-            min: 1,
-          });
+          const amountInLovelaces = this.adaToLovelaces(field.value);
+          const isValid = isValidAmountInLovelaces(amountInLovelaces);
           return [isValid, this.context.intl.formatMessage(messages.invalidAmount)];
         },
         bindings: 'ReactToolbox',
@@ -131,23 +131,19 @@ export default class WalletSendForm extends Component {
       currency: {
         value: 'ada' // TODO: Remove hardcoded currency
       },
-      // description: {
-      //   label: this.context.intl.formatMessage(messages.descriptionLabel),
-      //   placeholder: this.context.intl.formatMessage(messages.descriptionHint),
-      //   value: '',
-      //   bindings: 'ReactToolbox',
-      // },
     },
   }, {
     options: {
-      validateOnChange: false,
+      validateOnChange: true,
     },
   });
 
   submit() {
     this.form.submit({
       onSuccess: (form) => {
-        this.props.onSubmit(form.values());
+        const formValues = form.values();
+        formValues.amount = this.adaToLovelaces(formValues.amount);
+        this.props.onSubmit(formValues);
         form.reset();
       },
       onError: () => {}
@@ -158,15 +154,53 @@ export default class WalletSendForm extends Component {
     const { form } = this;
     const { intl } = this.context;
     const { isSubmitting, error } = this.props;
+    const amountField = form.$('amount');
+    const amountFieldClasses = classnames([
+      'amount', 'input_input',
+      amountField.error ? 'input_errored' : null
+    ]);
+
     return (
       <div className={styles.component}>
 
         <BorderedBox>
 
-          {/* <Input className="title" {...form.$('title').bind()} /> */}
           <Input className="receiver" {...form.$('receiver').bind()} />
-          <Input className="amount" {...form.$('amount').bind()} />
-          {/* <Input className="description" multiline {...form.$('description').bind()} /> */}
+
+          <div className={styles.amountInput}>
+            <div className={amountFieldClasses}>
+              <NumberFormat
+                id="amount"
+                className="input_inputElement"
+                thousandSeparator=","
+                decimalSeparator="."
+                decimalPrecision={DECIMAL_PLACES_IN_ADA}
+                maxLength="22"
+                placeholder="0.000000"
+                onChange={(e, value) => {
+                  amountField.onChange(value);
+                }}
+                onKeyDown={(e) => {
+                  const isBlank = e.target.value === '';
+                  const isPeriodKeyPressed = e.keyCode === 190;
+                  if (isBlank && isPeriodKeyPressed) {
+                    e.preventDefault();
+                  }
+                }}
+              />
+              <label className="input_label" htmlFor="amount">
+                {intl.formatMessage(messages.amountLabel)}
+              </label>
+              <span className={styles.adaLabel}>
+                {intl.formatMessage(globalMessages.unitAda)}
+              </span>
+              {amountField.error ? (
+                <span className="input_error">
+                  {intl.formatMessage(messages.invalidAmount)}
+                </span>
+              ) : null}
+            </div>
+          </div>
 
           {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
 
@@ -176,7 +210,6 @@ export default class WalletSendForm extends Component {
             onMouseUp={this.submit.bind(this)}
             primary
           />
-
         </BorderedBox>
 
       </div>

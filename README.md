@@ -34,7 +34,7 @@ Symlink the npm package in the subfolder `pos-haskell-prototype/daedalus`:
 * `npm link` (inside the daedalus sub folder of the Cardano client)
 * `npm link daedalus-client-api` (inside this daedalus frontend app)
 
-Run with `CARDANO_API=true npm run dev`
+Run with `npm run dev`
 
 ## Testing
 
