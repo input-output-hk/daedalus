@@ -1,16 +1,36 @@
 import { app, BrowserWindow, Menu, shell, ipcMain, dialog, crashReporter } from 'electron';
+import path from 'path';
 import Log from 'electron-log';
+import { Tail } from 'tail';
 import osxMenu from './menus/osx';
 import winLinuxMenu from './menus/win-linux';
 import ipcApi from './ipc-api';
 import getLogsFolderPath from './lib/getLogsFolderPath';
+import remoteLog from './lib/remoteLog';
 
 const APP_NAME = 'Daedalus';
 // Configure default logger levels for console and file outputs
 const appLogFolderPath = getLogsFolderPath(process.platform, process.env, APP_NAME);
+const logFilePath = path.join(appLogFolderPath, APP_NAME + '.log');
 Log.transports.console.level = 'warn';
 Log.transports.file.level = 'debug';
-Log.transports.file.file = `${appLogFolderPath}/${APP_NAME}.log`;
+Log.transports.file.file = logFilePath;
+
+// Tail Daedalus log and send it to remote logging server
+const daedalusLogTail = new Tail(logFilePath);
+
+daedalusLogTail.on('line', (line) => {
+  remoteLog.info(line);
+});
+
+// Tail Cardano node log and send it to remote logging server
+const cardanoNodeLogFilePath = path.join(appLogFolderPath, 'cardano-node.log');
+
+const cardanoNodeLogTail = new Tail(cardanoNodeLogFilePath);
+
+cardanoNodeLogTail.on('line', (line) => {
+  remoteLog.info(line);
+});
 
 // Configure & start crash reporter
 app.setPath('temp', appLogFolderPath);

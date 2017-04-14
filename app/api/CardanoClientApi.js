@@ -49,7 +49,6 @@ const getUserLocaleFromLocalStorage = () => new Promise((resolve, reject) => {
   localStorage.get('userLocale', (error, response) => {
     if (error) return reject(error);
     if (!response.locale) return resolve('');
-    console.log('LOCALE FROM STORAGE', response);
     resolve(response.locale);
   });
 });
@@ -157,7 +156,7 @@ export default class CardanoClientApi {
       const restoredWallet = await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase);
       return _createWalletFromServerData(restoredWallet);
     } catch (error) {
-      Log.error(error);
+      Log.error('Error restoring a wallet', error);
       // TODO: backend will return something different here, if multiple wallets
       // are restored from the key and if there are duplicate wallets we will get
       // some kind of error and present the user with message that some wallets
@@ -298,7 +297,7 @@ export default class CardanoClientApi {
       await setUserLocaleInLocalStorage(locale);
       return locale;
     } catch (error) {
-      console.log(error);
+      Log.error('Error setting user locale to local storage', error);
       throw new GenericApiError();
     }
   }
@@ -307,7 +306,7 @@ export default class CardanoClientApi {
     try {
       return await getUserLocaleFromLocalStorage();
     } catch (error) {
-      console.log(error);
+      Log.error('Error reading user locale from local storage', error);
       throw new GenericApiError();
     }
   }
@@ -317,6 +316,7 @@ export default class CardanoClientApi {
     try {
       return await ClientApi.updateWallet(walletId, type, currency, name, assurance, 0);
     } catch (error) {
+      Log.error('Error updating a wallet', error);
       throw new GenericApiError();
     }
   }
