@@ -1,4 +1,5 @@
 // @flow
+import localStorage from 'electron-json-storage';
 import ClientApi from 'daedalus-client-api';
 import { action } from 'mobx';
 import { ipcRenderer } from 'electron';
@@ -43,6 +44,22 @@ import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 //   const result = ClientApi.isValidRedeemCode('HSoXEnt9X541uHvtzBpy8vKfTo1C9TkAX3wat2c6ikg=');
 //   console.log('isValidRedeemCode', result);
 // })();
+
+const getUserLocaleFromLocalStorage = () => new Promise((resolve, reject) => {
+  localStorage.get('userLocale', (error, response) => {
+    if (error) return reject(error);
+    if (!response.locale) return resolve('');
+    console.log('LOCALE FROM STORAGE', response);
+    resolve(response.locale);
+  });
+});
+
+const setUserLocaleInLocalStorage = (locale) => new Promise((resolve, reject) => {
+  localStorage.set('userLocale', { locale }, (error) => {
+    if (error) return reject(error);
+    resolve();
+  });
+});
 
 export default class CardanoClientApi {
 
@@ -278,18 +295,21 @@ export default class CardanoClientApi {
 
   async setUserLocale(locale: string) {
     try {
-      const response = await ClientApi.updateLocale(locale);
-      return response.cpLocale;
+      await setUserLocaleInLocalStorage(locale);
+      return locale;
     } catch (error) {
+      console.log(error);
       throw new GenericApiError();
     }
   }
 
   async getUserLocale() {
-    Log.debug('CardanoClientApi::getLocale called');
-    const response = await ClientApi.getLocale();
-    Log.debug('CardanoClientApi::getLocale response: ', response);
-    return response;
+    try {
+      return await getUserLocaleFromLocalStorage();
+    } catch (error) {
+      console.log(error);
+      throw new GenericApiError();
+    }
   }
 
   async updateWallet(request: walletUpdateRequest) {
