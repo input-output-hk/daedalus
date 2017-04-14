@@ -6,7 +6,7 @@ import osxMenu from './menus/osx';
 import winLinuxMenu from './menus/win-linux';
 import ipcApi from './ipc-api';
 import getLogsFolderPath from './lib/getLogsFolderPath';
-import remoteLog from './lib/remoteLog';
+import { daedalusLogger, cardanoNodeLogger } from './lib/remoteLog';
 
 const APP_NAME = 'Daedalus';
 // Configure default logger levels for console and file outputs
@@ -21,7 +21,7 @@ try {
   const daedalusLogTail = new Tail(logFilePath);
 
   daedalusLogTail.on('line', (line) => {
-    remoteLog.info(line);
+    daedalusLogger.info(line);
   });
 
   // Tail Cardano node log and send it to remote logging server
@@ -30,7 +30,7 @@ try {
   const cardanoNodeLogTail = new Tail(cardanoNodeLogFilePath);
 
   cardanoNodeLogTail.on('line', (line) => {
-    remoteLog.info(line);
+    cardanoNodeLogger.info(line);
   });
 } catch (error) {
   Log.error('Error setting up log tailing and logging to remote server', error);

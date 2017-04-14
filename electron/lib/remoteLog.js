@@ -5,15 +5,35 @@ import winston from 'winston';
 // `winston.transports.Papertrail`
 require('winston-papertrail').Papertrail; // eslint-disable-line
 
-const winstonPapertrail = new winston.transports.Papertrail({
+const papertrailConfiguration = {
   host: 'logs5.papertrailapp.com',
-  port: 43689
+  port: 43689,
+};
+
+const winstonPapertrailDaedalus = new winston.transports.Papertrail(
+  Object.assign({}, papertrailConfiguration, {
+    program: 'Daedalus'
+  })
+);
+
+const winstonPapertrailCardanoNode = new winston.transports.Papertrail(
+  Object.assign({}, papertrailConfiguration, {
+    program: 'Cardano node'
+  })
+);
+
+winstonPapertrailDaedalus.on('error', (error: Error) => {
+  Log.error('Error connecting to papertrail logging service for Daedalus', error);
 });
 
-winstonPapertrail.on('error', (error: Error) => {
-  Log.error('Error connecting to papertrail logging service', error);
+winstonPapertrailCardanoNode.on('error', (error: Error) => {
+  Log.error('Error connecting to papertrail logging service for Cardano node', error);
 });
 
-export default new winston.Logger({
-  transports: [winstonPapertrail]
+export const daedalusLogger = new winston.Logger({
+  transports: [winstonPapertrailDaedalus]
+});
+
+export const cardanoNodeLogger = new winston.Logger({
+  transports: [winstonPapertrailCardanoNode]
 });
