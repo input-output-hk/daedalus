@@ -16,7 +16,7 @@ launcherScript :: [String]
 launcherScript =
   [ "@echo off"
   , "SET DAEDALUS_DIR=%~dp0"
-  , "\"%DAEDALUS_DIR%\\cardano-launcher.exe\" " <> args
+  , "start /D \"%DAEDALUS_DIR%\" cardano-launcher.exe " <> args
   ]
   where
     args = launcherArgs $ Launcher
