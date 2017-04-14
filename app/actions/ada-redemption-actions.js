@@ -2,6 +2,7 @@
 import { Action } from './lib/actions';
 
 // ======= ADA REDEMPTION ACTIONS =======
+
 export type AdaRedemptionActions = {
   setCertificate: Action<{ certificate: File }>,
   removeCertificate: Action<any>,

@@ -1,13 +1,13 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
-import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
+import React, { Component } from 'react';
+import { observer } from 'mobx-react';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import Button from 'react-toolbox/lib/button/Button';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import LocalizableError from '../../../i18n/LocalizableError';
-import { translationMessageParams } from '../../../propTypes';
 import styles from './LanguageSelectionForm.scss';
+import type { translationMessageType } from '../../../types/i18nTypes';
 
 const messages = defineMessages({
   languageSelectLabel: {
@@ -25,14 +25,11 @@ const messages = defineMessages({
 @observer
 export default class LanguageSelectionForm extends Component {
 
-  static propTypes = {
-    languages: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.shape({
-      value: PropTypes.string.isRequired,
-      label: translationMessageParams.isRequired,
-    })).isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    isSubmitting: PropTypes.bool.isRequired,
-    error: PropTypes.instanceOf(LocalizableError),
+  props: {
+    languages: Array<{ value: string, label: translationMessageType }>,
+    onSubmit: Function,
+    isSubmitting: boolean,
+    error?: ?LocalizableError,
   };
 
   static contextTypes = {

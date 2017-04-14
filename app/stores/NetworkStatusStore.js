@@ -4,6 +4,7 @@ import Log from 'electron-log';
 import Store from './lib/Store';
 import Request from './lib/Request';
 import { ROUTES } from '../Routes';
+import type { GetSyncProgressResponse } from '../api';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedDifficulties = null;
@@ -15,7 +16,7 @@ export default class NetworkStatusStore extends Store {
   @observable localDifficulty = 0;
   @observable networkDifficulty = 0;
   @observable isLoadingWallets = true;
-  @observable networkDifficultyRequest = new Request(this.api, 'getSyncProgress');
+  @observable networkDifficultyRequest: Request<GetSyncProgressResponse> = new Request(this.api.getSyncProgress);
   @observable _localDifficultyStartedWith = null;
 
   @action initialize() {
@@ -127,14 +128,14 @@ export default class NetworkStatusStore extends Store {
     if (this.isConnected && this.isSynced && wallets.hasLoadedWallets && app.currentRoute === '/') {
       runInAction(() => { this.isLoadingWallets = false; });
       if (wallets.first) {
-        this.actions.router.goToRoute({
+        this.actions.router.goToRoute.trigger({
           route: ROUTES.WALLETS.SUMMARY,
           params: { id: wallets.first.id }
         });
       } else {
-        this.actions.router.goToRoute({ route: ROUTES.NO_WALLETS });
+        this.actions.router.goToRoute.trigger({ route: ROUTES.NO_WALLETS });
       }
-      this.actions.networkStatus.isSyncedAndReady();
+      this.actions.networkStatus.isSyncedAndReady.trigger();
     }
   };
 
@@ -142,7 +143,7 @@ export default class NetworkStatusStore extends Store {
     if (this.stores.app.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION) return;
     if (!this.isConnected) {
       this._setInitialDifficulty();
-      this.actions.router.goToRoute({ route: ROUTES.ROOT });
+      this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
     }
   };
 

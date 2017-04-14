@@ -1,6 +1,6 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
-import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
+import React, { Component } from 'react';
+import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
@@ -8,29 +8,30 @@ import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import walletsIcon from '../../assets/images/sidebar/wallet-ic.svg';
 import adaRedemptionIcon from '../../assets/images/sidebar/ada.svg';
 import settingsIcon from '../../assets/images/sidebar/settings-ic.svg';
+import type { SidebarWalletType } from '../../stores/SidebarStore';
 
 @observer
 export default class Sidebar extends Component {
 
-  static propTypes = {
-    menus: PropTypes.shape({
-      wallets: PropTypes.shape({
-        items: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.object).isRequired,
-        activeWalletId: PropTypes.string,
-        actions: PropTypes.shape({
-          onAddWallet: PropTypes.func,
-          onWalletItemClick: PropTypes.func
-        })
-      })
-    }),
-    categories: PropTypes.shape({
-      WALLETS: PropTypes.string.isRequired,
-      ADA_REDEMPTION: PropTypes.string.isRequired,
-      SETTINGS: PropTypes.string.isRequired,
-    }),
-    activeSidebarCategory: PropTypes.string,
-    onCategoryClicked: PropTypes.func,
-    isShowingSubMenus: PropTypes.bool,
+  props: {
+    menus: {
+      wallets: {
+        items: Array<SidebarWalletType>,
+        activeWalletId: ?string,
+        actions: {
+          onAddWallet: Function,
+          onWalletItemClick: Function,
+        }
+      }
+    },
+    categories: {
+      WALLETS: string,
+      ADA_REDEMPTION: string,
+      SETTINGS: string,
+    },
+    activeSidebarCategory: string,
+    onCategoryClicked: Function,
+    isShowingSubMenus: boolean,
   };
 
   static defaultProps = {

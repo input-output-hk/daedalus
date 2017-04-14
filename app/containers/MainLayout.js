@@ -17,6 +17,7 @@ import type { InjectedContainerProps } from '../types/injectedPropsType';
 @inject('stores', 'actions') @observer
 export default class MainLayout extends Component {
 
+  static defaultProps = { actions: null, stores: null, children: null };
   props: InjectedContainerProps;
 
   handleAddWalletSubmit = (values: Object) => {
@@ -52,7 +53,7 @@ export default class MainLayout extends Component {
         actions: {
           onAddWallet: toggleAddWallet.trigger,
           onWalletItemClick: (walletId: string) => {
-            actions.sidebar.walletSelected({ walletId });
+            actions.sidebar.walletSelected.trigger({ walletId });
           }
         }
       }
@@ -63,7 +64,7 @@ export default class MainLayout extends Component {
         isShowingSubMenus={sidebar.isShowingSubMenus}
         categories={sidebar.CATEGORIES}
         activeSidebarCategory={sidebar.activeSidebarCategory}
-        onCategoryClicked={category => actions.sidebar.activateSidebarCategory({ category })}
+        onCategoryClicked={category => actions.sidebar.activateSidebarCategory.trigger({ category })}
         isSynced={isSynced}
       />
     );
@@ -75,7 +76,10 @@ export default class MainLayout extends Component {
     );
 
     const topbar = (
-      <TopBar onToggleSidebar={actions.sidebar.toggleSubMenus} activeWallet={activeWallet}>
+      <TopBar
+        onToggleSidebar={actions.sidebar.toggleSubMenus.trigger}
+        activeWallet={activeWallet}
+      >
         {testEnvironmentLabel}
         <NodeSyncStatusIcon
           isSynced={isSynced}

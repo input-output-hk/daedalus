@@ -7,33 +7,32 @@ class NotExecutedYetError extends ExtendableError {
   message = 'You have to call Request::execute before you can access it as promise';
 }
 
-export default class Request {
+export type ApiCallType = {
+  args: Array<any>,
+  result: any,
+};
 
-  @observable result: any = null;
-  @observable error: any = null;
-  @observable isExecuting: bool = false;
-  @observable isError: bool = false;
-  @observable wasExecuted: bool = false;
+export default class Request<Result> {
 
-  promise: ?Promise<any> = null;
+  @observable result: ?Result = null;
+  @observable error: ?Error = null;
+  @observable isExecuting: boolean = false;
+  @observable isError: boolean = false;
+  @observable wasExecuted: boolean = false;
 
-  _api: Object = {};
-  _method: string = '';
-  _isWaitingForResponse: bool = false;
+  promise: ?Promise<Result> = null;
+
+  _method: Function;
+  _isWaitingForResponse: boolean = false;
   _currentApiCall: ?ApiCallType = null;
 
-  constructor(api: Object, method: string) {
-    this._api = api;
+  constructor(method: Function) {
     this._method = method;
   }
 
-  execute(...callArgs: Array<any>): Request {
+  execute(...callArgs: Array<any>): Request<Result> {
     // Do not continue if this request is already loading
     if (this._isWaitingForResponse) return this;
-
-    if (!this._api[this._method]) {
-      throw new Error(`Missing method <${this._method}> on api object:`, this._api);
-    }
 
     // This timeout is necessary to avoid warnings from mobx
     // regarding triggering actions as side-effect of getters
@@ -43,7 +42,7 @@ export default class Request {
 
     // Issue api call & save it as promise that is handled to update the results of the operation
     this.promise = new Promise((resolve, reject) => {
-      this._api[this._method](...callArgs)
+      this._method(...callArgs)
         .then((result) => {
           setTimeout(action(() => {
             this.result = result;
@@ -72,7 +71,7 @@ export default class Request {
     return this;
   }
 
-  isExecutingWithArgs(...args: Array<any>): bool {
+  isExecutingWithArgs(...args: Array<any>): boolean {
     return (
       this.isExecuting &&
       (this._currentApiCall != null)
@@ -80,16 +79,16 @@ export default class Request {
     );
   }
 
-  @computed get isExecutingFirstTime(): bool {
+  @computed get isExecutingFirstTime(): boolean {
     return !this.wasExecuted && this.isExecuting;
   }
 
-  then(...args: Array<any>): Promise<any> {
+  then(...args: Array<any>): Promise<Result> {
     if (!this.promise) throw new NotExecutedYetError();
     return this.promise.then(...args);
   }
 
-  catch(...args: Array<any>): Promise<any> {
+  catch(...args: Array<any>): Promise<Error> {
     if (!this.promise) throw new NotExecutedYetError();
     return this.promise.catch(...args);
   }
@@ -101,8 +100,3 @@ export default class Request {
   }
 
 }
-
-export type ApiCallType = {
-  args: Array<any>,
-  result: any,
-};

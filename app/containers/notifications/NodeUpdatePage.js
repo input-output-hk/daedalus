@@ -7,26 +7,20 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 @inject('stores', 'actions') @observer
 export default class NodeUpdatePage extends Component {
 
+  static defaultProps = { actions: null, stores: null };
   props: InjectedProps;
 
   render() {
-    const {
-      isNotificationExpanded,
-      updateTitle,
-    } = this.props.stores.nodeUpdate;
-    const {
-      acceptNodeUpdate,
-      postponeNodeUpdate,
-      toggleNodeUpdateNotificationExpanded
-    } = this.props.actions.nodeUpdate;
+    const store = this.props.stores.nodeUpdate;
+    const actions = this.props.actions.nodeUpdate;
 
     return (
       <NodeUpdateNotification
-        title={updateTitle}
-        onAccept={acceptNodeUpdate}
-        onPostpone={postponeNodeUpdate}
-        onToggleExpanded={toggleNodeUpdateNotificationExpanded}
-        isExpanded={isNotificationExpanded}
+        title={store.updateTitle}
+        onAccept={actions.acceptNodeUpdate.trigger}
+        onPostpone={actions.postponeNodeUpdate.trigger}
+        onToggleExpanded={actions.toggleNodeUpdateNotificationExpanded.trigger}
+        isExpanded={store.isNotificationExpanded}
       />
     );
   }

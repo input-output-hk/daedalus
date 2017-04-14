@@ -1,5 +1,6 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import type { Children } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './SidebarMenu.scss';
@@ -7,12 +8,9 @@ import styles from './SidebarMenu.scss';
 @observer
 export default class SidebarMenu extends Component {
 
-  static propTypes = {
-    children: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.element),
-      PropTypes.element
-    ]).isRequired,
-    visible: PropTypes.bool
+  props: {
+    children?: Children,
+    visible: boolean,
   };
 
   render() {

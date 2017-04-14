@@ -4,7 +4,7 @@ import { Action } from './lib/actions';
 // ======= DIALOGS ACTIONS =======
 
 export type DialogsActions = {
-  open: Action<{ dialog: Object }>,
+  open: Action<{ dialog: Function }>,
   updateDataForActiveDialog: Action<{ data: Object }>,
   closeActiveDialog: Action<any>,
   resetActiveDialog: Action<any>,

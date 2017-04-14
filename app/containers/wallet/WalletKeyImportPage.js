@@ -7,6 +7,7 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 @inject('stores', 'actions') @observer
 export default class WalletKeyImportPage extends Component {
 
+  static defaultProps = { actions: null, stores: null };
   props: InjectedProps;
 
   onSubmit = (values: { filePath: string }) => {

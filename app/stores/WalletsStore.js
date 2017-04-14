@@ -67,8 +67,8 @@ export default class WalletsStore extends Store {
   }) => {
     Object.assign(this._newWalletDetails, params);
     try {
-      const recoveryPhrase = await this.getWalletRecoveryPhraseRequest.execute();
-      this.actions.walletBackup.initiateWalletBackup({ recoveryPhrase });
+      const recoveryPhrase: string[] = await this.getWalletRecoveryPhraseRequest.execute().promise;
+      this.actions.walletBackup.initiateWalletBackup.trigger({ recoveryPhrase });
     } catch (error) {
       throw error;
     }
@@ -89,7 +89,7 @@ export default class WalletsStore extends Store {
         this.goToWalletRoute(nextWalletInList.id);
       } else {
         this.active = null;
-        this.actions.router.goToRoute({ route: ROUTES.NO_WALLETS });
+        this.actions.router.goToRoute.trigger({ route: ROUTES.NO_WALLETS });
       }
     });
     this.refreshWalletsData();
@@ -256,7 +256,7 @@ export default class WalletsStore extends Store {
 
   goToWalletRoute(walletId: string) {
     const route = this.getWalletRoute(walletId);
-    this.actions.router.goToRoute({ route });
+    this.actions.router.goToRoute.trigger({ route });
   }
 
   _openAddWalletDialogWhenThereAreNoWallets = () => {

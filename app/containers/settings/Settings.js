@@ -10,6 +10,7 @@ import type { InjectedContainerProps } from '../../types/injectedPropsType';
 @inject('stores', 'actions') @observer
 export default class Settings extends Component {
 
+  static defaultProps = { actions: null, stores: null };
   props: InjectedContainerProps;
 
   isActivePage = (route: string) => {
@@ -24,7 +25,7 @@ export default class Settings extends Component {
     const { actions, children } = this.props;
     const menu = (
       <SettingsMenu
-        onItemClick={(route) => actions.router.goToRoute({ route })}
+        onItemClick={(route) => actions.router.goToRoute.trigger({ route })}
         isActiveItem={this.isActivePage}
       />
     );

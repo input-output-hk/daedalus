@@ -20,18 +20,21 @@ const messages = defineMessages({
 @inject('stores', 'actions') @observer
 export default class WalletReceivePage extends Component {
 
+  static defaultProps = { actions: null, stores: null };
   props: InjectedProps;
 
   render() {
     const actions = this.props.actions;
-    const stores = this.props.stores;
-    const wallet = stores.wallets.active;
-    const walletAddress = wallet.address;
+    const { wallets } = this.props.stores;
+    const wallet = wallets.active;
+
+    // Guard against potential null values
+    if (!wallet) throw new Error('Active wallet required for WalletReceivePage.');
 
     const notificationMessage = (
       <FormattedHTMLMessage
         {...messages.message}
-        values={{ walletAddress: ellipsis(walletAddress, 8) }}
+        values={{ walletAddress: ellipsis(wallet.address, 8) }}
       />
     );
 
@@ -41,12 +44,12 @@ export default class WalletReceivePage extends Component {
         <WalletReceive
           walletName={wallet.name}
           walletAddress={wallet.address}
-          onCopyAddress={actions.wallets.showWalletAddressCopyNotification}
+          onCopyAddress={actions.wallets.showWalletAddressCopyNotification.trigger}
         />
 
         <NotificationMessage
           icon={successIcon}
-          show={stores.wallets.isWalletAddressCopyNotificationVisible}
+          show={wallets.isWalletAddressCopyNotificationVisible}
         >
           {notificationMessage}
         </NotificationMessage>

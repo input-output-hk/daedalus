@@ -10,10 +10,11 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 @inject('stores', 'actions') @observer
 export default class AdaRedemptionPage extends Component {
 
+  static defaultProps = { actions: null, stores: null };
   props: InjectedProps;
 
   onSubmit = (values: { walletId: string }) => {
-    this.props.actions.adaRedemption.redeemAda(values);
+    this.props.actions.adaRedemption.redeemAda.trigger(values);
   };
 
   render() {
@@ -31,9 +32,9 @@ export default class AdaRedemptionPage extends Component {
     return (
       <Layout>
         <AdaRedemptionForm
-          onCertificateSelected={(certificate) => setCertificate({ certificate })}
-          onPassPhraseChanged={(passPhrase) => setPassPhrase({ passPhrase })}
-          onRedemptionCodeChanged={(redemptionCode) => setRedemptionCode({ redemptionCode })}
+          onCertificateSelected={(certificate) => setCertificate.trigger({ certificate })}
+          onPassPhraseChanged={(passPhrase) => setPassPhrase.trigger({ passPhrase })}
+          onRedemptionCodeChanged={(redemptionCode) => setRedemptionCode.trigger({ redemptionCode })}
           redemptionCode={adaRedemption.redemptionCode}
           wallets={selectableWallets}
           isCertificateSelected={adaRedemption.certificate !== null}
@@ -42,7 +43,7 @@ export default class AdaRedemptionPage extends Component {
           isSubmitting={redeemAdaRequest.isExecuting}
           error={adaRedemption.error}
           onSubmit={this.onSubmit}
-          onRemoveCertificate={removeCertificate}
+          onRemoveCertificate={removeCertificate.trigger}
           redemptionCodeValidator={isValidRedemptionKey}
         />
       </Layout>

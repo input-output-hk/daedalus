@@ -53,19 +53,18 @@ export default class SidebarStore extends Store {
     this._clearExistingHideSubMenuTimeout();
   };
 
-  @action _onActivateSidebarCategory = (
-      { category, showSubMenus }: { category: string, showSubMenus: boolean }
-    ) => {
+  @action _onActivateSidebarCategory = (params: { category: string, showSubMenu?: boolean }) => {
+    const { category, showSubMenu } = params;
     this._clearExistingHideSubMenuTimeout();
     if (category !== this.activeSidebarCategory) {
       this.activeSidebarCategory = category;
-      if (showSubMenus != null) this.isShowingSubMenus = showSubMenus;
-      this.actions.router.goToRoute({ route: category });
-    } else if (showSubMenus == null || this.isShowingSubMenus !== showSubMenus) {
+      if (showSubMenu != null) this.isShowingSubMenus = showSubMenu;
+      this.actions.router.goToRoute.trigger({ route: category });
+    } else if (showSubMenu == null || this.isShowingSubMenus !== showSubMenu) {
       // If no explicit preferred state is given -> toggle sub menus
       this._toggleSubMenus();
     } else {
-      this.isShowingSubMenus = showSubMenus;
+      this.isShowingSubMenus = showSubMenu;
     }
   };
 

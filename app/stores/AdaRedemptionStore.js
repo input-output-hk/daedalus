@@ -8,6 +8,7 @@ import Request from './lib/Request';
 import { PARSE_REDEMPTION_CODE } from '../../electron/ipc-api/parse-redemption-code-from-pdf';
 import { InvalidMnemonicError, AdaRedemptionCertificateParseError } from '../i18n/errors';
 import LocalizableError from '../i18n/LocalizableError';
+import Wallet from '../domain/Wallet';
 
 export default class AdaRedemptionStore extends Store {
 
@@ -19,7 +20,7 @@ export default class AdaRedemptionStore extends Store {
   @observable error: ?LocalizableError = null;
   @observable amountRedeemed: number = 0;
   @observable showAdaRedemptionSuccessMessage: boolean = false;
-  @observable redeemAdaRequest = new Request(this.api, 'redeemAda');
+  @observable redeemAdaRequest: Request<Wallet> = new Request(this.api.redeemAda);
 
   setup() {
     const actions = this.actions.adaRedemption;
@@ -92,7 +93,7 @@ export default class AdaRedemptionStore extends Store {
       .then(action((wallet) => {
         this.error = null;
         // TODO: Use amount returned by backend (when implemented!)
-        this.actions.adaRedemption.adaSuccessfullyRedeemed({
+        this.actions.adaRedemption.adaSuccessfullyRedeemed.trigger({
           walletId: wallet.id,
           amount: 1000000,
         });

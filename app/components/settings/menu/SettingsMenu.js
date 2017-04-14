@@ -17,9 +17,9 @@ const messages = defineMessages({
 @observer
 export default class SettingsMenu extends Component {
 
-  static propTypes = {
-    isActiveItem: PropTypes.func.isRequired,
-    onItemClick: PropTypes.func.isRequired
+  props: {
+    isActiveItem: Function,
+    onItemClick: Function,
   };
 
   static contextTypes = {

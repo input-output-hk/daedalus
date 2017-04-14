@@ -1,3 +1,4 @@
+// @flow
 import React, { Component, PropTypes } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -21,13 +22,13 @@ const messages = defineMessages({
 @observer
 export default class NodeUpdateNotification extends Component {
 
-  static propTypes = {
-    title: PropTypes.string.isRequired,
-    message: PropTypes.string, // TODO: make this required after it is implemented on the backend
-    onAccept: PropTypes.func.isRequired,
-    onPostpone: PropTypes.func.isRequired,
-    onToggleExpanded: PropTypes.func.isRequired,
-    isExpanded: PropTypes.bool.isRequired
+  props: {
+    title: string,
+    message?: string, // TODO: make this required after it is implemented on the backend
+    onAccept: Function,
+    onPostpone: Function,
+    onToggleExpanded: Function,
+    isExpanded: boolean,
   };
 
   static contextTypes = {

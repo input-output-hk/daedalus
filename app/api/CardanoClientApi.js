@@ -7,14 +7,14 @@ import BigNumber from 'bignumber.js';
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
 import type {
-  createWalletRequest,
-  getTransactionsRequest,
-  createTransactionRequest,
-  walletRestoreRequest,
-  walletUpdateRequest,
-  redeemAdaRequest,
-  importKeyRequest,
-  deleteWalletRequest
+  CreateWalletRequest,
+  GetTransactionsRequest,
+  CreateTransactionRequest,
+  RestoreWalletRequest,
+  UpdateWalletRequest,
+  RedeemAdaRequest,
+  ImportKeyRequest,
+  DeleteWalletRequest
 } from './index';
 import {
   // ApiMethodNotYetImplementedError,
@@ -65,7 +65,7 @@ export default class CardanoClientApi {
     return response.map(data => _createWalletFromServerData(data));
   }
 
-  async getTransactions(request: getTransactionsRequest) {
+  async getTransactions(request: GetTransactionsRequest) {
     const { walletId, searchTerm, skip, limit } = request;
     Log.debug('CardanoClientApi::getTransactions called with', request);
     const history = await ClientApi.searchHistory(walletId, searchTerm, skip, limit);
@@ -75,13 +75,13 @@ export default class CardanoClientApi {
     }));
   }
 
-  async createWallet(request: createWalletRequest) {
+  async createWallet(request: CreateWalletRequest) {
     Log.debug('CardanoClientApi::createWallet called with', request);
     const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name, request.mnemonic);
     return _createWalletFromServerData(response);
   }
 
-  async deleteWallet(request: deleteWalletRequest) {
+  async deleteWallet(request: DeleteWalletRequest) {
     try {
       await ClientApi.deleteWallet(request.walletId);
       return true;
@@ -90,7 +90,7 @@ export default class CardanoClientApi {
     }
   }
 
-  async createTransaction(request: createTransactionRequest) {
+  async createTransaction(request: CreateTransactionRequest) {
     Log.debug('CardanoClientApi::createTransaction called with', request);
     const { sender, receiver, amount, currency } = request;
     const description = 'no description provided';
@@ -125,7 +125,7 @@ export default class CardanoClientApi {
     return new Promise((resolve) => resolve(ClientApi.generateMnemonic().split(' ')));
   }
 
-  async restoreWallet(request: walletRestoreRequest) {
+  async restoreWallet(request: RestoreWalletRequest) {
     const { recoveryPhrase, walletName } = request;
     Log.debug('CardanoClientApi::restoreWallet called with', request);
     try {
@@ -146,7 +146,7 @@ export default class CardanoClientApi {
     }
   }
 
-  async importWalletFromKey(request: importKeyRequest) {
+  async importWalletFromKey(request: ImportKeyRequest) {
     Log.debug('CardanoClientApi::importWalletFromKey called with', request);
     try {
       const importedWallet = await ClientApi.importKey(request.filePath);
@@ -160,7 +160,7 @@ export default class CardanoClientApi {
     }
   }
 
-  async redeemAda(request: redeemAdaRequest) {
+  async redeemAda(request: RedeemAdaRequest) {
     const { redemptionCode, walletId } = request;
     Log.debug('CardanoClientApi::redeemAda called with', request);
     try {
@@ -250,7 +250,7 @@ export default class CardanoClientApi {
     return await ClientApi.getLocale();
   }
 
-  async updateWallet(request: walletUpdateRequest) {
+  async updateWallet(request: UpdateWalletRequest) {
     const { walletId, type, currency, name, assurance } = request;
     try {
       return await ClientApi.updateWallet(walletId, type, currency, name, assurance, 0);

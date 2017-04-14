@@ -20,6 +20,7 @@ const messages = defineMessages({
 @inject('stores', 'actions') @observer
 export default class WalletSummaryPage extends Component {
 
+  static defaultProps = { actions: null, stores: null };
   props: InjectedProps;
 
   static contextTypes = {
@@ -37,6 +38,10 @@ export default class WalletSummaryPage extends Component {
       totalUnconfirmedAmount
     } = transactions;
     const wallet = wallets.active;
+
+    // Guard against potential null values
+    if (!wallet) throw new Error('Active wallet required for WalletSummaryPage.');
+
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
@@ -47,7 +52,7 @@ export default class WalletSummaryPage extends Component {
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           hasMoreToLoad={false}
           onLoadMore={() => {}}
-          assuranceMode={wallets.active.assuranceMode}
+          assuranceMode={wallet.assuranceMode}
         />
       );
     } else if (!hasAny) {

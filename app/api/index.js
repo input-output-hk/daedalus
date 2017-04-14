@@ -2,55 +2,37 @@
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
 
-// STRUCTS
+// REQUEST & RESPONSE TYPES
 
-export type walletStruct = {
-  id: string,
-  userId: string,
-  address: string,
-  type: string,
-  currency: string,
-  amount: number,
-};
+export type GetWalletsResponse = Wallet[];
 
-export type transactionStruct = {
-  id: string,
-  walletId: string,
-  type: string,
-  title: string,
-  amount: number,
-  currency: string,
-  date: Date,
-  description: string,
-  exchange: ?string,
-  conversionRate: ?string,
-};
-
-export type walletRecoveryPhraseStruct = {
-  walletId: string,
-  recoveryPhrase: [string]
-};
-
-// REQUESTS
-
-export type getTransactionsRequest = {
+export type GetTransactionsRequest = {
   walletId: string,
   searchTerm: string,
   skip: number,
   limit: number
 };
 
-export type createWalletRequest = {
+export type GetTransactionsResponse = {
+  transactions: [WalletTransaction],
+  total: number
+};
+
+export type CreateWalletRequest = {
   name: string,
   currency: string,
   mnemonic: string,
 };
 
-export type deleteWalletRequest = {
+export type CreateWalletResponse = Wallet;
+
+export type DeleteWalletRequest = {
   walletId: string,
 };
 
-export type createTransactionRequest = {
+export type DeleteWalletResponse = boolean;
+
+export type CreateTransactionRequest = {
   walletId: string,
   sender: string,
   receiver: string,
@@ -60,16 +42,22 @@ export type createTransactionRequest = {
   description: ?string,
 };
 
-export type getWalletRecoveryPhraseRequest = {
+export type CreateTransactionResponse = WalletTransaction;
+
+export type GetWalletRecoveryPhraseRequest = {
   walletId: string
 };
 
-export type walletRestoreRequest = {
+export type GetWalletRecoveryPhraseResponse = string[];
+
+export type RestoreWalletRequest = {
   recoveryPhrase: string,
   walletName: string,
 };
 
-export type walletUpdateRequest = {
+export type RestoreWalletResponse = Wallet;
+
+export type UpdateWalletRequest = {
   walletId: string,
   type: string,
   currency: string,
@@ -77,41 +65,49 @@ export type walletUpdateRequest = {
   assurance: string,
 };
 
-export type redeemAdaRequest = {
+export type UpdateWalletResponse = boolean;
+
+export type RedeemAdaRequest = {
   redemptionCode: string,
   walletId: string,
 };
 
-export type importKeyRequest = {
+export type RedeemAdaResponse = Wallet;
+
+export type ImportKeyRequest = {
   filePath: string,
 };
 
-// INTERFACE
+export type ImportKeyResponse = Wallet;
+
+export type GetSyncProgressResponse = {
+  localDifficulty: number,
+  networkDifficulty: number
+};
+
+// API INTERFACE
 
 export type Api = {
   notify(onSuccess: Function, onError?: Function): void,
   reset(): void,
-  getWallets(): Promise<[Wallet]>,
-  getTransactions(request: getTransactionsRequest): Promise<{
-    transactions: [WalletTransaction],
-    total: number
-  }>,
-  createWallet(request: createWalletRequest): Promise<Wallet>,
-  deleteWallet(request: deleteWalletRequest): Promise<boolean>,
-  createTransaction(request: createTransactionRequest): Promise<WalletTransaction>,
+  getWallets(): Promise<GetWalletsResponse>,
+  getTransactions(request: GetTransactionsRequest): Promise<GetTransactionsResponse>,
+  createWallet(request: CreateWalletRequest): Promise<CreateWalletResponse>,
+  deleteWallet(request: DeleteWalletRequest): Promise<DeleteWalletResponse>,
+  createTransaction(request: CreateTransactionRequest): Promise<CreateTransactionResponse>,
   isValidAddress(currency: string, address: string): Promise<boolean>,
   isValidMnemonic(mnemonic: string): Promise<boolean>,
   isValidRedemptionKey(mnemonic: string): Promise<boolean>,
-  getWalletRecoveryPhrase(request: getWalletRecoveryPhraseRequest): Promise<string>,
-  restoreWallet(request: walletRestoreRequest): Promise<any>,
-  importWalletFromKey(request: importKeyRequest): Promise<Wallet>,
-  redeemAda(request: redeemAdaRequest): Promise<Wallet>,
+  getWalletRecoveryPhrase(request: GetWalletRecoveryPhraseRequest): Promise<GetWalletRecoveryPhraseResponse>,
+  restoreWallet(request: RestoreWalletRequest): Promise<RestoreWalletResponse>,
+  importWalletFromKey(request: ImportKeyRequest): Promise<ImportKeyResponse>,
+  redeemAda(request: RedeemAdaRequest): Promise<RedeemAdaResponse>,
   generateMnemonic(): string,
   nextUpdate(): Promise<string>,
   applyUpdate(): void,
-  getSyncProgress(): Promise<{ localDifficulty: number, networkDifficulty: number }>,
+  getSyncProgress(): Promise<GetSyncProgressResponse>,
   setUserLocale(locale: string): Promise<string>,
   getUserLocale(): Promise<string>,
-  updateWallet(request: walletUpdateRequest): Promise<boolean>,
+  updateWallet(request: UpdateWalletRequest): Promise<UpdateWalletResponse>,
   testReset(): void,
 };

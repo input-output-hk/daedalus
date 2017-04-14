@@ -19,8 +19,8 @@ export default class AppStore extends Store {
     { value: 'hr-HR', label: globalMessages.languageCroatian },
   ];
 
-  @observable getProfileLocaleRequest = new CachedRequest(this.api, 'getUserLocale');
-  @observable setProfileLocaleRequest = new Request(this.api, 'setUserLocale');
+  @observable getProfileLocaleRequest: CachedRequest<string> = new CachedRequest(this.api.getUserLocale);
+  @observable setProfileLocaleRequest: Request<string> = new Request(this.api.setUserLocale);
   @observable error: ?LocalizableError = null;
 
   setup() {
@@ -38,31 +38,32 @@ export default class AppStore extends Store {
   }
 
   @computed get currentLocale(): string {
-    if (!this.isCurrentLocaleSet) {
-      this.getProfileLocaleRequest.execute();
-      return 'en-US';
+    if (this.isCurrentLocaleSet) {
+      const result = this.getProfileLocaleRequest.execute().result;
+      if (result != null) return result;
     }
-    return this.getProfileLocaleRequest.result;
+    // default
+    return 'en-US';
   }
 
-  @computed get hasLoadedCurrentLocale(): bool {
+  @computed get hasLoadedCurrentLocale(): boolean {
     return this.getProfileLocaleRequest.wasExecuted;
   }
 
-  @computed get isCurrentLocaleSet(): bool {
-    return this.getProfileLocaleRequest.result;
+  @computed get isCurrentLocaleSet(): boolean {
+    return this.getProfileLocaleRequest.result != null;
   }
 
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
     const { isConnected } = this.stores.networkStatus;
     if (isConnected && this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
-      this.actions.router.goToRoute({ route: ROUTES.PROFILE.LANGUAGE_SELECTION });
+      this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.LANGUAGE_SELECTION });
     }
   };
 
   _redirectToLoadingScreenWhenDisconnected = () => {
     if (!this.stores.networkStatus.isConnected) {
-      this.actions.router.goToRoute({ route: ROUTES.ROOT });
+      this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
     }
   };
 
@@ -79,7 +80,7 @@ export default class AppStore extends Store {
 
   _redirectToMainUiAfterLocaleIsSet = () => {
     if (this.isCurrentLocaleSet && this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION) {
-      this.actions.router.goToRoute({ route: ROUTES.ROOT });
+      this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
     }
   };
 

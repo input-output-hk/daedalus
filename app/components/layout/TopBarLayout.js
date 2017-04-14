@@ -1,16 +1,16 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import type { Children, Element } from 'react';
 import { observer } from 'mobx-react';
 import styles from './TopBarLayout.scss';
-import { oneOrManyChildElements } from '../../propTypes';
 
 @observer
 export default class TopBarLayout extends Component {
 
-  static propTypes = {
-    children: oneOrManyChildElements,
-    notification: PropTypes.element,
-    topbar: PropTypes.element.isRequired,
+  props: {
+    topbar: Element<any>,
+    children?: ?Children,
+    notification?: ?Element<any>,
   };
 
   render() {

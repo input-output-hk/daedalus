@@ -7,6 +7,7 @@ import type { InjectedProps } from '../../../types/injectedPropsType';
 @inject('actions', 'stores') @observer
 export default class DeleteWalletDialogContainer extends Component {
 
+  static defaultProps = { actions: null, stores: null };
   props: InjectedProps;
 
   render() {
@@ -14,23 +15,27 @@ export default class DeleteWalletDialogContainer extends Component {
     const { wallets, uiDialogs } = this.props.stores;
     const dialogData = uiDialogs.dataForActiveDialog;
     const { updateDataForActiveDialog } = actions.dialogs;
-    updateDataForActiveDialog();
+    const activeWallet = wallets.active;
+
+    // Guard against potential null values
+    if (!activeWallet) throw new Error('Active wallet required for DeleteWalletDialogContainer.');
+
     return (
       <DeleteWalletConfirmationDialog
-        walletName={wallets.active.name}
-        hasWalletFunds={wallets.active.hasFunds}
+        walletName={activeWallet.name}
+        hasWalletFunds={activeWallet.hasFunds}
         countdownFn={uiDialogs.countdownSinceDialogOpened}
         isBackupNoticeAccepted={dialogData.isBackupNoticeAccepted}
-        onAcceptBackupNotice={() => updateDataForActiveDialog({
+        onAcceptBackupNotice={() => updateDataForActiveDialog.trigger({
           data: { isBackupNoticeAccepted: true }
         })}
         onContinue={() => {
-          actions.wallets.deleteWallet.trigger({ walletId: wallets.active.id });
-          actions.dialogs.resetActiveDialog();
+          actions.wallets.deleteWallet.trigger({ walletId: activeWallet.id });
+          actions.dialogs.resetActiveDialog.trigger();
         }}
         onCancel={actions.dialogs.closeActiveDialog}
         confirmationValue={dialogData.confirmationValue}
-        onConfirmationValueChange={confirmationValue => updateDataForActiveDialog({
+        onConfirmationValueChange={confirmationValue => updateDataForActiveDialog.trigger({
           data: { confirmationValue }
         })}
       />

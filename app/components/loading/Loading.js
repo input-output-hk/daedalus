@@ -34,16 +34,16 @@ const messages = defineMessages({
 @observer
 export default class Loading extends Component {
 
-  static contextTypes = {
-    intl: intlShape.isRequired,
+  props: {
+    isConnecting: boolean,
+    hasBeenConnected: boolean,
+    isSyncing: boolean,
+    isLoadingWallets: boolean,
+    syncPercentage: number,
   };
 
-  static propTypes = {
-    isConnecting: PropTypes.bool.isRequired,
-    hasBeenConnected: PropTypes.bool.isRequired,
-    isSyncing: PropTypes.bool.isRequired,
-    isLoadingWallets: PropTypes.bool.isRequired,
-    syncPercentage: PropTypes.number.isRequired,
+  static contextTypes = {
+    intl: intlShape.isRequired,
   };
 
   render() {

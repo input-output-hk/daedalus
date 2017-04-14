@@ -24,6 +24,7 @@ const messages = defineMessages({
 @inject('stores', 'actions') @observer
 export default class WalletTransactionsPage extends Component {
 
+  static defaultProps = { actions: null, stores: null };
   props: InjectedProps;
 
   static contextTypes = {
@@ -38,6 +39,7 @@ export default class WalletTransactionsPage extends Component {
     const { intl } = this.context;
     const actions = this.props.actions;
     const { transactions, wallets } = this.props.stores;
+    const activeWallet = wallets.active;
     const {
       searchOptions,
       searchRequest,
@@ -45,6 +47,10 @@ export default class WalletTransactionsPage extends Component {
       totalAvailable,
       filtered,
     } = transactions;
+
+    // Guard against potential null values
+    if (!searchOptions || !activeWallet) return null;
+
     const { searchLimit, searchTerm } = searchOptions;
     const wasSearched = searchTerm !== '';
     let walletTransactions = null;
@@ -70,7 +76,7 @@ export default class WalletTransactionsPage extends Component {
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
           hasMoreToLoad={totalAvailable > searchLimit}
           onLoadMore={actions.transactions.loadMoreTransactions}
-          assuranceMode={wallets.active.assuranceMode}
+          assuranceMode={activeWallet.assuranceMode}
         />
       );
     } else if (wasSearched && !hasAny) {

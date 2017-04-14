@@ -8,11 +8,11 @@ import { ellipsis } from '../../../lib/string-helpers';
 @observer
 export default class SidebarWalletMenuItem extends Component {
 
-  static propTypes = {
-    title: PropTypes.string.isRequired,
-    info: PropTypes.string.isRequired,
-    active: PropTypes.bool,
-    onClick: PropTypes.func,
+  props: {
+    title: string,
+    info: string,
+    active: boolean,
+    onClick: Function,
   };
 
   render() {

@@ -110,7 +110,7 @@ export default class TransactionsStore extends Store {
     return result ? result.transactions.length : 0;
   }
 
-  @computed get totalUnconfirmedAmount(): number {
+  @computed get totalUnconfirmedAmount(): BigNumber {
     let unconfirmedAmount = new BigNumber(0);
     const wallet = this.stores.wallets.active;
     if (!wallet) return unconfirmedAmount;

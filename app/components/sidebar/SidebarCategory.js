@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './SidebarCategory.scss';
@@ -7,11 +7,11 @@ import styles from './SidebarCategory.scss';
 @observer
 export default class SidebarCategory extends Component {
 
-  static propTypes = {
-    icon: PropTypes.string.isRequired,
-    active: PropTypes.bool,
-    onClick: PropTypes.func,
-    className: PropTypes.string
+  props: {
+    icon: string,
+    active: boolean,
+    onClick: Function,
+    className: string,
   };
 
   render() {

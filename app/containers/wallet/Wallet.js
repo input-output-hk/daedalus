@@ -12,6 +12,7 @@ import type { InjectedContainerProps } from '../../types/injectedPropsType';
 @inject('stores', 'actions') @observer
 export default class Wallet extends Component {
 
+  static defaultProps = { actions: null, stores: null };
   props: InjectedContainerProps;
 
   isActiveScreen = (page: string) => {
@@ -23,7 +24,8 @@ export default class Wallet extends Component {
 
   handleWalletNavItemClick = (page: string) => {
     const { wallets } = this.props.stores;
-    this.props.actions.router.goToRoute({
+    if (!wallets.active) return;
+    this.props.actions.router.goToRoute.trigger({
       route: ROUTES.WALLETS.PAGE,
       params: { id: wallets.active.id, page },
     });

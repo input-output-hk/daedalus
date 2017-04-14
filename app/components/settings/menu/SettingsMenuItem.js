@@ -7,12 +7,12 @@ import styles from './SettingsMenuItem.scss';
 @observer
 export default class SettingsMenuItem extends Component {
 
-  static propTypes = {
-    label: PropTypes.string.isRequired,
-    active: PropTypes.bool,
-    disabled: PropTypes.bool,
-    onClick: PropTypes.func,
-    className: PropTypes.string
+  props: {
+    label: string,
+    active: boolean,
+    onClick: Function,
+    className: string,
+    disabled?: boolean,
   };
 
   render() {
