@@ -57,7 +57,9 @@ export default class AdaRedemptionStore extends Store {
 
   isValidRedemptionKey = (redemptionKey: string) => this.api.isValidRedemptionKey(redemptionKey);
   isValidRedemptionMnemonic = (mnemonic: string) => this.api.isValidRedemptionMnemonic(mnemonic);
-  isValidPaperVendRedemptionKey = (mnemonic: string) => this.api.isValidPaperVendRedemptionKey(mnemonic);
+  isValidPaperVendRedemptionKey = (
+    mnemonic: string
+  ) => this.api.isValidPaperVendRedemptionKey(mnemonic);
 
   @action _chooseRedemptionType = (params: {
     redemptionType: redemptionTypeChoices,
