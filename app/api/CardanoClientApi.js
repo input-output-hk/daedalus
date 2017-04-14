@@ -135,11 +135,11 @@ export default class CardanoClientApi {
   }
 
   isValidRedemptionKey(mnemonic: string): Promise<bool> {
-    return ClientApi.isValidRedeemCode(mnemonic);
+    return ClientApi.isValidRedemptionKey(mnemonic);
   }
 
-  isValidPostVendRedeemCode(redeemCode: string): Promise<bool> {
-    return ClientApi.isValidPostVendRedeemCode(redeemCode);
+  isValidPaperVendRedemptionKey(redeemCode: string): Promise<bool> {
+    return ClientApi.isValidPaperVendRedemptionKey(redeemCode);
   }
 
   isValidRedemptionMnemonic(mnemonic: string): Promise<bool> {
@@ -189,7 +189,7 @@ export default class CardanoClientApi {
     const { redemptionCode, walletId } = request;
     Log.debug('CardanoClientApi::redeemAda called with', request);
     try {
-      const response: ServerWalletStruct = await ClientApi.redeemADA(redemptionCode, walletId);
+      const response: ServerWalletStruct = await ClientApi.redeemAda(redemptionCode, walletId);
       return _createTransactionFromServerData(response);
     } catch (error) {
       console.error(error);
@@ -203,7 +203,7 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::redeemPaperVendedAda called with', request);
     try {
       const response: ServerWalletStruct =
-        await ClientApi.postVendRedeemADA(shieldedRedemptionKey, mnemonics, walletId);
+        await ClientApi.redeemAdaPaperVend(shieldedRedemptionKey, mnemonics, walletId);
       console.log('RESPONSE', response);
       return _createTransactionFromServerData(response);
     } catch (error) {

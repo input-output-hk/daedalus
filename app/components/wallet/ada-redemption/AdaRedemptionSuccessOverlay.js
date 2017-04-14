@@ -23,7 +23,7 @@ export default class AdaRedemptionSuccessOverlay extends Component {
   };
 
   static propTypes = {
-    amount: PropTypes.number.isRequired,
+    amount: PropTypes.string.isRequired,
     onClose: PropTypes.func.isRequired,
   };
 
