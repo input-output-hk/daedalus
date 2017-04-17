@@ -47,6 +47,8 @@ crashReporter.start({
   uploadToServer: false
 });
 
+Log.info(`========== Daedalus is starting at ${new Date()} ==========`);
+
 let menu;
 let mainWindow = null;
 const isDev = process.env.NODE_ENV === 'development';

@@ -8,7 +8,17 @@ import { ROUTES } from '../Routes';
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedDifficulties = null;
 
+const STARTUP_STAGES = {
+  CONNECTING: 0,
+  SYNCING: 1,
+  LOADING: 2,
+  RUNNING: 3,
+};
+
 export default class NetworkStatusStore extends Store {
+
+  _startTime = Date.now();
+  _startupStage = STARTUP_STAGES.CONNECTING;
 
   @observable isConnected = false;
   @observable hasBeenConnected = false;
@@ -112,6 +122,12 @@ export default class NetworkStatusStore extends Store {
           Log.debug('ServerStatusNotification: ConnectionOpened');
           this._setInitialDifficulty();
           this.isConnected = true;
+          if (this._startupStage === STARTUP_STAGES.CONNECTING) {
+            Log.info(
+              `========== Connected after ${this._getStartupTimeDelta()} milliseconds ==========`
+            );
+            this._startupStage = STARTUP_STAGES.SYNCING;
+          }
           break;
         case 'NetworkDifficultyChanged':
           if (message.contents.getChainDifficulty) {
@@ -139,8 +155,16 @@ export default class NetworkStatusStore extends Store {
 
   _redirectToWalletAfterSync = () => {
     const { app, wallets } = this.stores;
+    if (this._startupStage === STARTUP_STAGES.SYNCING && this.isSynced) {
+      Log.info(`========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`);
+      this._startupStage = STARTUP_STAGES.LOADING;
+    }
     // TODO: introduce smarter way to bootsrap initial screens
     if (this.isConnected && this.isSynced && wallets.hasLoadedWallets) {
+      if (this._startupStage === STARTUP_STAGES.LOADING) {
+        Log.info(`========== Loaded after ${this._getStartupTimeDelta()} milliseconds ==========`);
+        this._startupStage = STARTUP_STAGES.RUNNING;
+      }
       runInAction(() => { this.isLoadingWallets = false; });
       if (app.currentRoute === '/') {
         if (wallets.first) {
@@ -163,5 +187,9 @@ export default class NetworkStatusStore extends Store {
       this.actions.router.goToRoute({ route: ROUTES.ROOT });
     }
   };
+
+  _getStartupTimeDelta() {
+    return Date.now() - this._startTime;
+  }
 
 }
