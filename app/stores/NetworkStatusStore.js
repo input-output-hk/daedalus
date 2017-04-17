@@ -115,12 +115,6 @@ export default class NetworkStatusStore extends Store {
       if (message === 'ConnectionClosed') {
         Log.debug('ServerStatusNotification: ConnectionClosed');
         this.isConnected = false;
-        if (this._startupStage === STARTUP_STAGES.CONNECTING) {
-          Log.info(
-            `========== Connected after ${this._getStartupTimeDelta()} milliseconds ==========`
-            );
-          this._startupStage = STARTUP_STAGES.SYNCING;
-        }
         return;
       }
       switch (message.tag) {
@@ -128,6 +122,12 @@ export default class NetworkStatusStore extends Store {
           Log.debug('ServerStatusNotification: ConnectionOpened');
           this._setInitialDifficulty();
           this.isConnected = true;
+          if (this._startupStage === STARTUP_STAGES.CONNECTING) {
+            Log.info(
+              `========== Connected after ${this._getStartupTimeDelta()} milliseconds ==========`
+            );
+            this._startupStage = STARTUP_STAGES.SYNCING;
+          }
           break;
         case 'NetworkDifficultyChanged':
           if (message.contents.getChainDifficulty) {
