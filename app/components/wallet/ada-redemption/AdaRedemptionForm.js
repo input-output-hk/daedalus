@@ -327,7 +327,11 @@ export default class AdaRedemptionForm extends Component {
     let canSubmit = false;
     if (redemptionType === 'regular' && redemptionCode !== '') canSubmit = true;
     if (redemptionType === 'forceVended' && redemptionCode !== '') canSubmit = true;
-    if (redemptionType === 'paperVended' && shieldedRedemptionKeyField.isValid && passPhrase.isValid) canSubmit = true;
+    if (
+      redemptionType === 'paperVended' &&
+      shieldedRedemptionKeyField.isValid && shieldedRedemptionKeyField.isDirty &&
+      passPhrase.isValid && passPhrase.isDirty
+    ) canSubmit = true;
 
     let instructionMessage = '';
     switch (redemptionType) {

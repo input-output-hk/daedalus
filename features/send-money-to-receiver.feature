@@ -10,13 +10,13 @@ Feature: Send Money to Receiver
   Scenario: User Sends Money to Receiver
     Given I am on the "Personal Wallet" wallet "send" screen
     When I fill out the send form with a transaction to "first" wallet:
-      | amount |
-      | 10     |
+      | amount    |
+      | 0.000010  |
     And I submit the wallet send form
     Then I should be on the "Personal Wallet" wallet "summary" screen
     And the latest transaction should show:
-      | title    | amount    |
-      | Ada Sent | -0,000010 |
+      | title                      | amount    |
+      | wallet.transaction.adaSent | -0.000010 |
 
   Scenario: User Submits Empty Form
     Given I am on the "Personal Wallet" wallet "send" screen
@@ -29,13 +29,14 @@ Feature: Send Money to Receiver
   Scenario: User Enters Wrong Receiver Address
     Given I am on the "Personal Wallet" wallet "send" screen
     When I fill out the wallet send form with:
-      | address | amount |
-      | invalid | 10     |
+      | address | amount    |
+      | invalid | 0.000010  |
     And I submit the wallet send form
     Then I should see the following error messages on the wallet send form:
       | message                                |
       | wallet.send.form.errors.invalidAddress |
 
+  @skip
   Scenario Outline: User Enters Wrong Amount
     Given I am on the "Personal Wallet" wallet "send" screen
     When I fill out the send form with a transaction to "first" wallet:

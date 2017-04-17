@@ -103,11 +103,13 @@ export default class NetworkStatusStore extends Store {
   _listenToServerStatusNotifications() {
     this.api.notify(action((message) => {
       if (message === 'ConnectionClosed') {
+        Log.debug('ServerStatusNotification: ConnectionClosed');
         this.isConnected = false;
         return;
       }
       switch (message.tag) {
         case 'ConnectionOpened':
+          Log.debug('ServerStatusNotification: ConnectionOpened');
           this._setInitialDifficulty();
           this.isConnected = true;
           break;
@@ -115,6 +117,7 @@ export default class NetworkStatusStore extends Store {
           if (message.contents.getChainDifficulty) {
             this.networkDifficulty = message.contents.getChainDifficulty;
           }
+          Log.debug('ServerStatusNotification: NetworkDifficultyChanged: ', this.networkDifficulty);
           this.isConnected = true;
           this.hasBeenConnected = true;
           break;
@@ -122,12 +125,14 @@ export default class NetworkStatusStore extends Store {
           if (message.contents.getChainDifficulty) {
             this.localDifficulty = message.contents.getChainDifficulty;
           }
+          Log.debug('ServerStatusNotification: LocalDifficultyChanged: ', this.localDifficulty);
           break;
         case 'ConnectionClosedReconnecting':
+          Log.debug('ServerStatusNotification: ConnectionClosedReconnecting');
           this.isConnected = false;
           break;
         default:
-          Log.warn('Unknown server notification received:', message);
+          Log.warn('ServerStatusNotification: Unknown server notification received: ', message);
       }
     }));
   }

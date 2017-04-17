@@ -29,14 +29,14 @@ export default function () {
     return this.waitAndClick('.LanguageSelectionForm_submitButton');
   });
 
-  this.Then(/^I should have Japanese language set$/, async function () {
-    const result = await this.client.executeAsync(function(done) {
-      daedalus.stores.app.getProfileLocaleRequest.invalidate().execute().then((locale) => done(locale));
-    });
-    expect(result.value).to.equal('ja-JP');
-  });
-
   this.Then(/^I should not see the language selection screen anymore$/, function () {
     return this.client.waitForVisible('.LanguageSelectionForm_component', null, true);
+  });
+
+  this.Then(/^I should have Japanese language set$/, async function () {
+    const result = await this.client.executeAsync(function(done) {
+      daedalus.stores.app.getProfileLocaleRequest.execute().then((locale) => done(locale));
+    });
+    expect(result.value).to.equal('ja-JP');
   });
 };
