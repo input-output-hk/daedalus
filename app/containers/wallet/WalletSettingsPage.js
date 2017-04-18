@@ -42,11 +42,14 @@ export default class WalletSettingsPage extends Component {
       updateWalletRequest,
       WALLET_ASSURANCE_LEVEL_OPTIONS,
     } = walletSettings;
+
     return (
       <WalletSettings
         assuranceLevels={WALLET_ASSURANCE_LEVEL_OPTIONS}
         walletAssurance={wallet.assurance}
         onWalletAssuranceLevelUpdate={this.handleWalletAssuranceLevelUpdate}
+        hasWalletPassword={wallet.hasPassword}
+        walletPasswordUpdateDate={wallet.passwordUpdateDate}
         error={updateWalletRequest.error}
         openDialogAction={actions.dialogs.open}
         isDialogOpen={uiDialogs.isOpen}

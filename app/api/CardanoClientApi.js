@@ -388,6 +388,21 @@ export default class CardanoClientApi {
     }
   }
 
+  changeWalletPassword(walletId: string, oldPassword: string, newPassword: string) {
+    return new Promise((resolve) => {
+      // Fake async request here to make it more realistic
+      setTimeout(() => resolve(walletId, oldPassword, newPassword), 100);
+    });
+  }
+
+  setWalletPassword(walletId: string, password: string) {
+    return new Promise((resolve) => {
+      // Fake async request here to make it more realistic
+      setTimeout(() => resolve(walletId, password), 100);
+    });
+  }
+
+
   async testReset() {
     Log.debug('CardanoClientApi::testReset called');
     await unsetUserLocaleInLocalStorage(); // TODO: remove after saving locale to API is restored
@@ -443,6 +458,8 @@ const _createWalletFromServerData = action((data: ServerWalletStruct) => (
     currency: data.cwMeta.cwCurrency,
     name: data.cwMeta.cwName,
     assurance: data.cwMeta.cwAssurance,
+    hasPassword: true, // TODO: replace with real API response
+    passwordUpdateDate: new Date('2017-02-01'), // TODO: replace with real API response
   })
 ));
 

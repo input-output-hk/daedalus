@@ -28,5 +28,4 @@ export default defineActions({
     walletId: PropTypes.string.isRequired,
   },
   showWalletAddressCopyNotification: {},
-
 });
