@@ -391,6 +391,7 @@ export default class CardanoClientApi {
     }
   }
 
+  // eslint-disable-next-line max-len
   changeWalletPassword(request: ChangeWalletPasswordRequest): Promise<ChangeWalletPasswordResponse> {
     return new Promise((resolve) => {
       // Fake async request here to make it more realistic

@@ -55,7 +55,7 @@ export default class NetworkStatusStore extends Store {
     };
   }
 
-  @computed get isConnecting(): bool {
+  @computed get isConnecting(): boolean {
     // until we start receiving network difficulty messages we are not connected to node and
     // we should be on the blue connecting screen instead of displaying "Loading wallet data"
     return !this.isConnected || this.networkDifficulty <= 1;

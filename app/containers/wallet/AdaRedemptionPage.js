@@ -53,7 +53,9 @@ export default class AdaRedemptionPage extends Component {
           onEmailChanged={(email) => setEmail.trigger({ email })}
           onAdaAmountChanged={(adaAmount) => setAdaAmount.trigger({ adaAmount })}
           onAdaPasscodeChanged={(adaPasscode) => setAdaPasscode.trigger({ adaPasscode })}
-          onChooseRedemptionType={(choice) => chooseRedemptionType.trigger({ redemptionType: choice })}
+          onChooseRedemptionType={(choice) => {
+            chooseRedemptionType.trigger({ redemptionType: choice });
+          }}
           redemptionCode={adaRedemption.redemptionCode}
           wallets={selectableWallets}
           isCertificateSelected={isCertificateSelected}
