@@ -33,7 +33,7 @@ export default class DeleteWalletDialogContainer extends Component {
           actions.wallets.deleteWallet.trigger({ walletId: activeWallet.id });
           actions.dialogs.resetActiveDialog.trigger();
         }}
-        onCancel={actions.dialogs.closeActiveDialog}
+        onCancel={actions.dialogs.closeActiveDialog.trigger}
         confirmationValue={dialogData.confirmationValue}
         onConfirmationValueChange={confirmationValue => updateDataForActiveDialog.trigger({
           data: { confirmationValue }

@@ -43,9 +43,9 @@ export default class WalletBackupPage extends Component {
           canPhraseBeShown={isPrivacyNoticeAccepted && countdownRemaining === 0}
           isPrivacyNoticeAccepted={isPrivacyNoticeAccepted}
           countdownRemaining={countdownRemaining}
-          onAcceptPrivacyNotice={acceptPrivacyNoticeForWalletBackup}
-          onCancelBackup={cancelWalletBackup}
-          onContinue={continueToRecoveryPhraseForWalletBackup}
+          onAcceptPrivacyNotice={acceptPrivacyNoticeForWalletBackup.trigger}
+          onCancelBackup={cancelWalletBackup.trigger}
+          onContinue={continueToRecoveryPhraseForWalletBackup.trigger}
         />
       );
     }
@@ -54,8 +54,8 @@ export default class WalletBackupPage extends Component {
       return (
         <WalletRecoveryPhraseDisplayDialog
           recoveryPhrase={recoveryPhraseWords.reduce((phrase, { word }) => `${phrase} ${word}`, '')}
-          onStartWalletBackup={startWalletBackup}
-          onCancelBackup={cancelWalletBackup}
+          onStartWalletBackup={startWalletBackup.trigger}
+          onCancelBackup={cancelWalletBackup.trigger}
         />
       );
     }
@@ -68,13 +68,13 @@ export default class WalletBackupPage extends Component {
           canFinishBackup={isRecoveryPhraseValid && isTermDeviceAccepted && isTermRecoveryAccepted}
           isTermRecoveryAccepted={isTermRecoveryAccepted}
           isValid={isRecoveryPhraseValid}
-          onAcceptTermDevice={acceptWalletBackupTermDevice}
-          onAcceptTermRecovery={acceptWalletBackupTermRecovery}
-          onAddWord={addWordToWalletBackupVerification}
-          onCancelBackup={cancelWalletBackup}
-          onClear={clearEnteredRecoveryPhrase}
-          onFinishBackup={finishWalletBackup}
-          onRestartBackup={restartWalletBackup}
+          onAcceptTermDevice={acceptWalletBackupTermDevice.trigger}
+          onAcceptTermRecovery={acceptWalletBackupTermRecovery.trigger}
+          onAddWord={addWordToWalletBackupVerification.trigger}
+          onCancelBackup={cancelWalletBackup.trigger}
+          onClear={clearEnteredRecoveryPhrase.trigger}
+          onFinishBackup={finishWalletBackup.trigger}
+          onRestartBackup={restartWalletBackup.trigger}
           recoveryPhraseShuffled={recoveryPhraseShuffled}
         />
       );

@@ -64,7 +64,9 @@ export default class MainLayout extends Component {
         isShowingSubMenus={sidebar.isShowingSubMenus}
         categories={sidebar.CATEGORIES}
         activeSidebarCategory={sidebar.activeSidebarCategory}
-        onCategoryClicked={category => actions.sidebar.activateSidebarCategory.trigger({ category })}
+        onCategoryClicked={category => {
+          actions.sidebar.activateSidebarCategory.trigger({ category });
+        }}
         isSynced={isSynced}
       />
     );

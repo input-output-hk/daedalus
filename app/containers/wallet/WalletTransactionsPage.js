@@ -75,7 +75,7 @@ export default class WalletTransactionsPage extends Component {
           transactions={filtered}
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
           hasMoreToLoad={totalAvailable > searchLimit}
-          onLoadMore={actions.transactions.loadMoreTransactions}
+          onLoadMore={actions.transactions.loadMoreTransactions.trigger}
           assuranceMode={activeWallet.assuranceMode}
         />
       );

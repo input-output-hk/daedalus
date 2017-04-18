@@ -1,16 +1,14 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import type { Element } from 'react';
 import { observer } from 'mobx-react';
 import styles from './WalletRecoveryInstructions.scss';
 
 @observer
 export default class WalletRecoveryInstructions extends Component {
 
-  static propTypes = {
-    instructionsText: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.element
-    ]).isRequired,
+  props: {
+    instructionsText: string | Element<any>,
   };
 
   render() {

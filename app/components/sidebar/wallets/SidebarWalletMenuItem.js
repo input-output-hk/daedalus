@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './SidebarWalletMenuItem.scss';

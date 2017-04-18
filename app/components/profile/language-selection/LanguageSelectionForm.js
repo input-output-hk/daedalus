@@ -7,7 +7,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './LanguageSelectionForm.scss';
-import type { translationMessageType } from '../../../types/i18nTypes';
+import type { ReactIntlMessage } from '../../../types/i18nTypes';
 
 const messages = defineMessages({
   languageSelectLabel: {
@@ -26,7 +26,7 @@ const messages = defineMessages({
 export default class LanguageSelectionForm extends Component {
 
   props: {
-    languages: Array<{ value: string, label: translationMessageType }>,
+    languages: Array<{ value: string, label: ReactIntlMessage }>,
     onSubmit: Function,
     isSubmitting: boolean,
     error?: ?LocalizableError,

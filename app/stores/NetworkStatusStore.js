@@ -2,10 +2,9 @@
 import { observable, action, computed, runInAction } from 'mobx';
 import Log from 'electron-log';
 import Store from './lib/Store';
-import Request from './lib/Request';
+import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../Routes';
 import type { GetSyncProgressResponse } from '../api';
-import LocalizableError from '../i18n/LocalizableError';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedDifficulties = null;
@@ -17,7 +16,9 @@ export default class NetworkStatusStore extends Store {
   @observable localDifficulty = 0;
   @observable networkDifficulty = 0;
   @observable isLoadingWallets = true;
-  @observable networkDifficultyRequest: Request<GetSyncProgressResponse, LocalizableError> = new Request(this.api.getSyncProgress);
+  @observable networkDifficultyRequest: Request<GetSyncProgressResponse> = new Request(
+    this.api.getSyncProgress
+  );
   @observable _localDifficultyStartedWith = null;
 
   @action initialize() {

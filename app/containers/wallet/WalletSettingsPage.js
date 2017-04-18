@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletSettings from '../../components/wallet/WalletSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import type { AssuranceMode } from '../../types/transactionAssuranceTypes';
 
 @inject('stores', 'actions') @observer
 export default class WalletSettingsPage extends Component {
@@ -10,8 +11,8 @@ export default class WalletSettingsPage extends Component {
   static defaultProps = { actions: null, stores: null };
   props: InjectedProps;
 
-  handleWalletAssuranceLevelUpdate = (values: { assurance: string }) => {
-    this.props.actions.walletSettings.updateWalletAssuranceLevel(values);
+  handleWalletAssuranceLevelUpdate = (values: { assurance: AssuranceMode }) => {
+    this.props.actions.walletSettings.updateWalletAssuranceLevel.trigger(values);
   };
 
   render() {
@@ -28,7 +29,7 @@ export default class WalletSettingsPage extends Component {
         walletAssurance={activeWallet.assurance}
         onWalletAssuranceLevelUpdate={this.handleWalletAssuranceLevelUpdate}
         error={walletSettings.updateWalletRequest.error}
-        openDialogAction={actions.dialogs.open}
+        openDialogAction={actions.dialogs.open.trigger}
         isDialogOpen={uiDialogs.isOpen}
       />
     );

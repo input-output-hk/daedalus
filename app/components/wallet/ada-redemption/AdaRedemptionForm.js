@@ -1,6 +1,6 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
-import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
+import React, { Component } from 'react';
+import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import Button from 'react-toolbox/lib/button/Button';
@@ -78,23 +78,20 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 @observer
 export default class AdaRedemptionForm extends Component {
 
-  static propTypes = {
-    wallets: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.shape({
-      value: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-    })).isRequired,
-    onCertificateSelected: PropTypes.func.isRequired,
-    onRemoveCertificate: PropTypes.func.isRequired,
-    onPassPhraseChanged: PropTypes.func.isRequired,
-    onRedemptionCodeChanged: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    redemptionCodeValidator: PropTypes.func.isRequired,
-    isSubmitting: PropTypes.bool.isRequired,
-    isCertificateSelected: PropTypes.bool.isRequired,
-    isCertificateEncrypted: PropTypes.bool.isRequired,
-    isCertificateInvalid: PropTypes.bool,
-    redemptionCode: PropTypes.string,
-    error: PropTypes.instanceOf(LocalizableError),
+  props: {
+    wallets: Array<{ value: string, label: string }>,
+    onCertificateSelected: Function,
+    onRemoveCertificate: Function,
+    onPassPhraseChanged: Function,
+    onRedemptionCodeChanged: Function,
+    onSubmit: Function,
+    redemptionCodeValidator: Function,
+    isSubmitting: boolean,
+    isCertificateSelected: boolean,
+    isCertificateEncrypted: boolean,
+    isCertificateInvalid: boolean,
+    redemptionCode: ?string,
+    error: ?LocalizableError,
   };
 
   static contextTypes = {

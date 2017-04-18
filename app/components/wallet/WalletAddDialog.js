@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
@@ -66,12 +66,12 @@ export default class WalletAddDialog extends Component {
     intl: intlShape.isRequired
   };
 
-  static propTypes = {
-    onCreate: PropTypes.func.isRequired,
-    onRestore: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired,
-    onImportKey: PropTypes.func.isRequired,
-    canClose: PropTypes.bool.isRequired,
+  props: {
+    onCreate: Function,
+    onRestore: Function,
+    onCancel: Function,
+    onImportKey: Function,
+    canClose: boolean,
   };
 
 

@@ -1,10 +1,10 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import styles from './WalletTestEnvironmentLabel.scss';
 
 export default class WalletTestEnvironmentLabel extends Component {
 
-  static propTypes = {
-    version: PropTypes.number.isRequired,
+  props: {
+    version: number,
   };
 
   render() {

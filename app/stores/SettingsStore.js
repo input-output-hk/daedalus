@@ -1,5 +1,5 @@
 // @flow
-import { observable, computed } from 'mobx';
+import { observable } from 'mobx';
 import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
 

@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import Input from 'react-toolbox/lib/input/Input';
@@ -15,9 +15,9 @@ const messages = defineMessages({
 @observer
 export default class WalletTransactionsSearch extends Component {
 
-  static propTypes = {
-    searchTerm: PropTypes.string.isRequired,
-    onChange: PropTypes.func
+  props: {
+    searchTerm: string,
+    onChange: Function,
   };
 
   static contextTypes = {

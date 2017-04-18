@@ -34,12 +34,14 @@ export default class AdaRedemptionPage extends Component {
         <AdaRedemptionForm
           onCertificateSelected={(certificate) => setCertificate.trigger({ certificate })}
           onPassPhraseChanged={(passPhrase) => setPassPhrase.trigger({ passPhrase })}
-          onRedemptionCodeChanged={(redemptionCode) => setRedemptionCode.trigger({ redemptionCode })}
+          onRedemptionCodeChanged={(redemptionCode) => {
+            setRedemptionCode.trigger({ redemptionCode });
+          }}
           redemptionCode={adaRedemption.redemptionCode}
           wallets={selectableWallets}
           isCertificateSelected={adaRedemption.certificate !== null}
           isCertificateEncrypted={isCertificateEncrypted}
-          isCertificateInvalid={error && error instanceof AdaRedemptionCertificateParseError}
+          isCertificateInvalid={error instanceof AdaRedemptionCertificateParseError}
           isSubmitting={redeemAdaRequest.isExecuting}
           error={adaRedemption.error}
           onSubmit={this.onSubmit}

@@ -70,7 +70,9 @@ export default class CachedRequest<Result, Error> extends Request<Result, Error>
     return this;
   }
 
-  invalidate(options: { immediately: boolean } = { immediately: false }): CachedRequest<Result, Error> {
+  invalidate(
+    options: { immediately: boolean } = { immediately: false }
+  ): CachedRequest<Result, Error> {
     this._isInvalidated = true;
     if (options.immediately && this._currentApiCall) {
       return this.execute(...this._currentApiCall.args);

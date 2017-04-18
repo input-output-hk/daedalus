@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
@@ -36,11 +36,11 @@ const messages = defineMessages({
 @observer
 export default class WalletKeyImportDialog extends Component {
 
-  static propTypes = {
-    onSubmit: PropTypes.func.isRequired,
-    onClose: PropTypes.func.isRequired,
-    isSubmitting: PropTypes.bool.isRequired,
-    error: PropTypes.instanceOf(LocalizableError),
+  props: {
+    onSubmit: Function,
+    onClose: Function,
+    isSubmitting: boolean,
+    error: ?LocalizableError,
   };
 
   static contextTypes = {

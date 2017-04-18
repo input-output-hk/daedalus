@@ -1,5 +1,6 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import type { Children } from 'react';
 import { ThemeProvider } from 'react-css-themr';
 import { IntlProvider } from 'react-intl';
 import { daedalusTheme } from '../../app/themes/daedalus';
@@ -7,11 +8,8 @@ import translations from '../../app/i18n/translations';
 
 export default class StoryDecorator extends Component {
 
-  static propTypes = {
-    children: PropTypes.oneOfType([
-      PropTypes.arrayOf(PropTypes.element),
-      PropTypes.element
-    ]).isRequired
+  props: {
+    children: Children,
   };
 
   render() {

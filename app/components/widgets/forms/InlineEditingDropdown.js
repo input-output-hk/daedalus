@@ -1,6 +1,6 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
-import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
+import React, { Component } from 'react';
+import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
@@ -16,22 +16,14 @@ const messages = defineMessages({
 
 @observer
 export default class InlineEditingDropdown extends Component {
-  static propTypes = {
-    isActive: PropTypes.bool.isRequired,
-    label: PropTypes.string.isRequired,
-    options: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.shape({
-      value: PropTypes.oneOfType([
-        PropTypes.number,
-        PropTypes.string
-      ]).isRequired,
-      label: PropTypes.string.isRequired,
-    })).isRequired,
-    value: PropTypes.oneOfType([
-      PropTypes.number,
-      PropTypes.string
-    ]).isRequired,
-    onChange: PropTypes.func.isRequired,
-    successfullyUpdated: PropTypes.bool.isRequired,
+
+  props: {
+    isActive: boolean,
+    label: string,
+    options: Array<{ value: (number | string), label: string }>,
+    value: number | string,
+    onChange: Function,
+    successfullyUpdated: boolean,
   };
 
   static contextTypes = {

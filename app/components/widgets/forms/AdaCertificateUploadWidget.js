@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import Dropzone from 'react-dropzone';
 import { defineMessages, intlShape } from 'react-intl';
@@ -25,14 +25,14 @@ const messages = defineMessages({
 @observer
 export default class AdaCertificateUploadWidget extends Component {
 
-  static propTypes = {
-    label: PropTypes.string.isRequired,
-    onFileSelected: PropTypes.func.isRequired,
-    onRemoveCertificate: PropTypes.func.isRequired,
-    acceptedFileTypes: PropTypes.string,
-    isCertificateEncrypted: PropTypes.bool,
-    isCertificateSelected: PropTypes.bool,
-    isCertificateInvalid: PropTypes.bool,
+  props: {
+    label: string,
+    onFileSelected: Function,
+    onRemoveCertificate: Function,
+    acceptedFileTypes: string,
+    isCertificateEncrypted: boolean,
+    isCertificateSelected: boolean,
+    isCertificateInvalid: boolean,
   };
 
   static contextTypes = {

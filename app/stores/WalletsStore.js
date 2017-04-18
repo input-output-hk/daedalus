@@ -4,8 +4,8 @@ import _ from 'lodash';
 import Store from './lib/Store';
 import Wallet from '../domain/Wallet';
 import { matchRoute, buildRoute } from '../lib/routing-helpers';
-import CachedRequest from './lib/CachedRequest';
-import Request from './lib/Request';
+import CachedRequest from './lib/LocalizedCachedRequest';
+import Request from './lib/LocalizedRequest';
 import environment from '../environment';
 import config from '../config';
 import { ROUTES } from '../Routes';
@@ -18,20 +18,24 @@ import type {
   GetWalletRecoveryPhraseResponse,
   RestoreWalletResponse
 } from '../api';
-import LocalizableError from '../i18n/LocalizableError';
 
 export default class WalletsStore extends Store {
 
   WALLET_REFRESH_INTERVAL = 5000;
 
   @observable active: ?Wallet = null;
-  @observable walletsRequest: CachedRequest<GetWalletsResponse, LocalizableError> = new CachedRequest(this.api.getWallets);
-  @observable importFromKeyRequest: Request<ImportKeyResponse, LocalizableError> = new Request(this.api.importWalletFromKey);
-  @observable createWalletRequest: Request<CreateWalletResponse, LocalizableError> = new Request(this.api.createWallet);
-  @observable deleteWalletRequest: Request<DeleteWalletResponse, LocalizableError> = new Request(this.api.deleteWallet);
-  @observable sendMoneyRequest: Request<CreateTransactionResponse, LocalizableError> = new Request(this.api.createTransaction);
-  @observable getWalletRecoveryPhraseRequest: Request<GetWalletRecoveryPhraseResponse, LocalizableError> = new Request(this.api.getWalletRecoveryPhrase);
-  @observable restoreRequest: Request<RestoreWalletResponse, LocalizableError> = new Request(this.api.restoreWallet);
+
+  // REQUESTS
+  /* eslint-disable max-len */
+  @observable walletsRequest: CachedRequest<GetWalletsResponse> = new CachedRequest(this.api.getWallets);
+  @observable importFromKeyRequest: Request<ImportKeyResponse> = new Request(this.api.importWalletFromKey);
+  @observable createWalletRequest: Request<CreateWalletResponse> = new Request(this.api.createWallet);
+  @observable deleteWalletRequest: Request<DeleteWalletResponse> = new Request(this.api.deleteWallet);
+  @observable sendMoneyRequest: Request<CreateTransactionResponse> = new Request(this.api.createTransaction);
+  @observable getWalletRecoveryPhraseRequest: Request<GetWalletRecoveryPhraseResponse> = new Request(this.api.getWalletRecoveryPhrase);
+  @observable restoreRequest: Request<RestoreWalletResponse> = new Request(this.api.restoreWallet);
+  /* eslint-enable max-len */
+
   // DIALOGUES
   @observable isAddWalletDialogOpen = false;
   @observable isCreateWalletDialogOpen = false;
@@ -77,9 +81,11 @@ export default class WalletsStore extends Store {
   }) => {
     Object.assign(this._newWalletDetails, params);
     try {
-      const recoveryPhrase: ?GetWalletRecoveryPhraseResponse = await this.getWalletRecoveryPhraseRequest.execute().promise;
+      const recoveryPhrase: ?GetWalletRecoveryPhraseResponse = await (
+        this.getWalletRecoveryPhraseRequest.execute().promise
+      );
       if (recoveryPhrase != null) {
-        this.actions.walletBackup.initiateWalletBackup.trigger({recoveryPhrase});
+        this.actions.walletBackup.initiateWalletBackup.trigger({ recoveryPhrase });
       }
     } catch (error) {
       throw error;

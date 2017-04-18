@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import Switch from 'react-toolbox/lib/switch';
 import styles from './StakingSwitch.scss';
@@ -7,8 +7,8 @@ import styles from './StakingSwitch.scss';
 @observer
 export default class StakingSwitch extends Component {
 
-  static propTypes = {
-    active: PropTypes.bool.isRequired,
+  props: {
+    active: boolean,
   };
 
   handleChange = () => {};

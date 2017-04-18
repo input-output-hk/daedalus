@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import spinnerIcon from '../../assets/images/top-bar/node-sync-spinner.png';
@@ -15,10 +15,10 @@ const messages = defineMessages({
 
 export default class NodeSyncStatusIcon extends Component {
 
-  static propTypes = {
-    isSynced: PropTypes.bool.isRequired,
-    syncPercentage: PropTypes.number.isRequired,
-    isProduction: PropTypes.bool.isRequired,
+  props: {
+    isSynced: boolean,
+    syncPercentage: number,
+    isProduction: boolean,
   };
 
   static contextTypes = {

@@ -1,6 +1,6 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
-import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
+import React, { Component } from 'react';
+import { observer } from 'mobx-react';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import WalletRecoveryPhraseMnemonic from './WalletRecoveryPhraseMnemonic';
@@ -48,25 +48,20 @@ const messages = defineMessages({
 @observer
 export default class WalletRecoveryPhraseEntryDialog extends Component {
 
-  static propTypes = {
-    recoveryPhraseShuffled: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.shape({
-      word: PropTypes.string.isRequired,
-      isActive: PropTypes.bool.isRequired
-    })).isRequired,
-    enteredPhrase: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.shape({
-      word: PropTypes.string.isRequired
-    })).isRequired,
-    isValid: PropTypes.bool.isRequired,
-    isTermDeviceAccepted: PropTypes.bool.isRequired,
-    isTermRecoveryAccepted: PropTypes.bool.isRequired,
-    onAddWord: PropTypes.func.isRequired,
-    canFinishBackup: PropTypes.bool.isRequired,
-    onClear: PropTypes.func.isRequired,
-    onAcceptTermDevice: PropTypes.func.isRequired,
-    onAcceptTermRecovery: PropTypes.func.isRequired,
-    onRestartBackup: PropTypes.func.isRequired,
-    onCancelBackup: PropTypes.func.isRequired,
-    onFinishBackup: PropTypes.func.isRequired
+  props: {
+    recoveryPhraseShuffled: Array<{ word: string, isActive: boolean }>,
+    enteredPhrase: Array<{ word: string }>,
+    isValid: boolean,
+    isTermDeviceAccepted: boolean,
+    isTermRecoveryAccepted: boolean,
+    onAddWord: Function,
+    canFinishBackup: boolean,
+    onClear: Function,
+    onAcceptTermDevice: Function,
+    onAcceptTermRecovery: Function,
+    onRestartBackup: Function,
+    onCancelBackup: Function,
+    onFinishBackup: Function,
   };
 
   static contextTypes = {

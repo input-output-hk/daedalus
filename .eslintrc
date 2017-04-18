@@ -24,7 +24,7 @@
     "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx"] }],
     "react/jsx-closing-bracket-location": 1,
     "react/prefer-stateless-function": "off",
-    "react/no-unused-prop-types": [1, { "skipShapeProps": true }],
+    "react/no-unused-prop-types": "off",
     "react/prop-types": 0,
     "react/sort-comp": 0,
     "flowtype-errors/show-errors": 2,
@@ -49,7 +49,9 @@
     "prefer-const": 1,
     "object-curly-spacing": 1,
     "spaced-comment": 1,
-    "quotes": 1
+    "quotes": 1,
+    "import/imports-first": 1,
+    "no-multi-spaces": 1
   },
   "plugins": [
     "flowtype-errors",

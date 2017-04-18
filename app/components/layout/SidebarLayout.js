@@ -1,8 +1,8 @@
 // @flow
 import React, { Component } from 'react';
+import type { Children, Element } from 'react';
 import { observer } from 'mobx-react';
 import styles from './SidebarLayout.scss';
-import type { Children, Element } from 'react';
 
 @observer
 export default class SidebarLayout extends Component {

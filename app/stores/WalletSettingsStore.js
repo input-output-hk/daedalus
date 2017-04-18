@@ -2,11 +2,10 @@
 import { observable, action } from 'mobx';
 import _ from 'lodash';
 import Store from './lib/Store';
-import Request from './lib/Request';
+import Request from './lib/LocalizedRequest';
 import globalMessages from '../i18n/global-messages';
 import type { AssuranceMode } from '../types/transactionAssuranceTypes';
 import type { UpdateWalletResponse } from '../api';
-import LocalizableError from '../i18n/LocalizableError';
 
 export default class WalletSettingsStore extends Store {
 
@@ -15,7 +14,9 @@ export default class WalletSettingsStore extends Store {
     { value: 'CWAStrict', label: globalMessages.assuranceLevelStrict },
   ];
 
-  @observable updateWalletRequest: Request<UpdateWalletResponse, LocalizableError> = new Request(this.api.updateWallet);
+  @observable updateWalletRequest: Request<UpdateWalletResponse> = new Request(
+    this.api.updateWallet
+  );
 
   setup() {
     const a = this.actions.walletSettings;

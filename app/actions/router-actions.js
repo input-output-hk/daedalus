@@ -1,5 +1,5 @@
 // @flow
-import { Action } from './lib/actions';
+import Action from './lib/Action';
 
 // ======= ROUTER ACTIONS =======
 

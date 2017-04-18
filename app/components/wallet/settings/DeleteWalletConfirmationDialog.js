@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-toolbox/lib/input/Input';
@@ -40,15 +40,15 @@ const messages = defineMessages({
 @observer
 export default class DeleteWalletConfirmationDialog extends Component {
 
-  static propTypes = {
-    walletName: PropTypes.string.isRequired,
-    countdownFn: PropTypes.func.isRequired,
-    isBackupNoticeAccepted: PropTypes.bool.isRequired,
-    confirmationValue: PropTypes.string,
-    onAcceptBackupNotice: PropTypes.func,
-    onContinue: PropTypes.func,
-    onCancel: PropTypes.func,
-    onConfirmationValueChange: PropTypes.func,
+  props: {
+    walletName: string,
+    countdownFn: Function,
+    isBackupNoticeAccepted: boolean,
+    confirmationValue: string,
+    onAcceptBackupNotice: Function,
+    onContinue: Function,
+    onCancel: Function,
+    onConfirmationValueChange: Function,
   };
 
   static defaultProps = {

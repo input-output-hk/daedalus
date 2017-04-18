@@ -1,8 +1,8 @@
 // @flow
 import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
-import Request from './lib/Request';
-import CachedRequest from './lib/CachedRequest';
+import Request from './lib/LocalizedRequest';
+import CachedRequest from './lib/LocalizedCachedRequest';
 import globalMessages from '../i18n/global-messages';
 import LocalizableError from '../i18n/LocalizableError';
 import { ROUTES } from '../Routes';
@@ -19,9 +19,11 @@ export default class AppStore extends Store {
     { value: 'hr-HR', label: globalMessages.languageCroatian },
   ];
 
-  @observable getProfileLocaleRequest: CachedRequest<string, LocalizableError> = new CachedRequest(this.api.getUserLocale);
-  @observable setProfileLocaleRequest: Request<string, LocalizableError> = new Request(this.api.setUserLocale);
+  /* eslint-disable max-len */
+  @observable getProfileLocaleRequest: CachedRequest<string> = new CachedRequest(this.api.getUserLocale);
+  @observable setProfileLocaleRequest: Request<string> = new Request(this.api.setUserLocale);
   @observable error: ?LocalizableError = null;
+  /* eslint-enable max-len */
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
