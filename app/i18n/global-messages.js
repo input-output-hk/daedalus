@@ -16,6 +16,16 @@ export default defineMessages({
     defaultMessage: '!!!Cancel',
     description: 'The word "cancel" reused at several places (like cancel buttons)',
   },
+  change: {
+    id: 'global.labels.change',
+    defaultMessage: '!!!Change',
+    description: 'The word "change" reused at several places (like change buttons)',
+  },
+  save: {
+    id: 'global.labels.save',
+    defaultMessage: '!!!Save',
+    description: 'The word "save" reused at several places (like save buttons)',
+  },
   invalidMnemonic: {
     id: 'global.errors.invalidMnemonic',
     defaultMessage: '!!!Invalid phrase entered, please check.',

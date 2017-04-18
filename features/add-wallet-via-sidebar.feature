@@ -1,7 +1,8 @@
 Feature: Add Wallet via Sidebar
 
   Background:
-    Given I have a wallet with funds
+    Given I have selected English language
+    And I have a wallet with funds
 
   Scenario: Successfully Adding a Wallet
     Given The sidebar shows the "wallets" category

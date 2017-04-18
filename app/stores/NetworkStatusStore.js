@@ -8,7 +8,17 @@ import { ROUTES } from '../Routes';
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedDifficulties = null;
 
+const STARTUP_STAGES = {
+  CONNECTING: 0,
+  SYNCING: 1,
+  LOADING: 2,
+  RUNNING: 3,
+};
+
 export default class NetworkStatusStore extends Store {
+
+  _startTime = Date.now();
+  _startupStage = STARTUP_STAGES.CONNECTING;
 
   @observable isConnected = false;
   @observable hasBeenConnected = false;
@@ -43,7 +53,15 @@ export default class NetworkStatusStore extends Store {
   }
 
   @computed get isConnecting(): bool {
-    return !this.isConnected;
+    // until we start receiving network difficulty messages we are not connected to node and
+    // we should be on the blue connecting screen instead of displaying "Loading wallet data"
+    return !this.isConnected || this.networkDifficulty <= 1;
+  }
+
+  @computed get hasBlockSyncingStarted(): bool {
+    // until we start receiving network difficulty messages we are not connected to node and
+    // we should be on the blue connecting screen instead of displaying "Loading wallet data"
+    return this.networkDifficulty >= 1;
   }
 
   @computed get relativeSyncPercentage(): number {
@@ -72,11 +90,11 @@ export default class NetworkStatusStore extends Store {
   }
 
   @computed get isSyncing(): bool {
-    return !this.isConnecting && this.networkDifficulty > 0 && !this.isSynced;
+    return !this.isConnecting && this.hasBlockSyncingStarted && !this.isSynced;
   }
 
   @computed get isSynced(): bool {
-    return !this.isConnecting && this.syncPercentage >= 100;
+    return !this.isConnecting && this.syncPercentage >= 100 && this.hasBlockSyncingStarted;
   }
 
   @action _setInitialDifficulty = async () => {
@@ -95,44 +113,68 @@ export default class NetworkStatusStore extends Store {
   _listenToServerStatusNotifications() {
     this.api.notify(action((message) => {
       if (message === 'ConnectionClosed') {
+        Log.debug('ServerStatusNotification: ConnectionClosed');
         this.isConnected = false;
         return;
       }
       switch (message.tag) {
         case 'ConnectionOpened':
+          Log.debug('ServerStatusNotification: ConnectionOpened');
           this._setInitialDifficulty();
           this.isConnected = true;
+          if (this._startupStage === STARTUP_STAGES.CONNECTING) {
+            Log.info(
+              `========== Connected after ${this._getStartupTimeDelta()} milliseconds ==========`
+            );
+            this._startupStage = STARTUP_STAGES.SYNCING;
+          }
           break;
         case 'NetworkDifficultyChanged':
-          this.networkDifficulty = message.contents.getChainDifficulty;
+          if (message.contents.getChainDifficulty) {
+            this.networkDifficulty = message.contents.getChainDifficulty;
+          }
+          Log.debug('ServerStatusNotification: NetworkDifficultyChanged: ', this.networkDifficulty);
           this.isConnected = true;
           this.hasBeenConnected = true;
           break;
         case 'LocalDifficultyChanged':
-          this.localDifficulty = message.contents.getChainDifficulty;
+          if (message.contents.getChainDifficulty) {
+            this.localDifficulty = message.contents.getChainDifficulty;
+          }
+          Log.debug('ServerStatusNotification: LocalDifficultyChanged: ', this.localDifficulty);
           break;
         case 'ConnectionClosedReconnecting':
+          Log.debug('ServerStatusNotification: ConnectionClosedReconnecting');
           this.isConnected = false;
           break;
         default:
-          Log.warn('Unknown server notification received:', message);
+          Log.warn('ServerStatusNotification: Unknown server notification received: ', message);
       }
     }));
   }
 
   _redirectToWalletAfterSync = () => {
     const { app, wallets } = this.stores;
-    if (app.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION) return;
+    if (this._startupStage === STARTUP_STAGES.SYNCING && this.isSynced) {
+      Log.info(`========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`);
+      this._startupStage = STARTUP_STAGES.LOADING;
+    }
     // TODO: introduce smarter way to bootsrap initial screens
-    if (this.isConnected && this.isSynced && wallets.hasLoadedWallets && app.currentRoute === '/') {
+    if (this.isConnected && this.isSynced && wallets.hasLoadedWallets) {
+      if (this._startupStage === STARTUP_STAGES.LOADING) {
+        Log.info(`========== Loaded after ${this._getStartupTimeDelta()} milliseconds ==========`);
+        this._startupStage = STARTUP_STAGES.RUNNING;
+      }
       runInAction(() => { this.isLoadingWallets = false; });
-      if (wallets.first) {
-        this.actions.router.goToRoute({
-          route: ROUTES.WALLETS.SUMMARY,
-          params: { id: wallets.first.id }
-        });
-      } else {
-        this.actions.router.goToRoute({ route: ROUTES.NO_WALLETS });
+      if (app.currentRoute === '/') {
+        if (wallets.first) {
+          this.actions.router.goToRoute({
+            route: ROUTES.WALLETS.SUMMARY,
+            params: { id: wallets.first.id }
+          });
+        } else {
+          this.actions.router.goToRoute({ route: ROUTES.NO_WALLETS });
+        }
       }
       this.actions.networkStatus.isSyncedAndReady();
     }
@@ -145,5 +187,9 @@ export default class NetworkStatusStore extends Store {
       this.actions.router.goToRoute({ route: ROUTES.ROOT });
     }
   };
+
+  _getStartupTimeDelta() {
+    return Date.now() - this._startTime;
+  }
 
 }

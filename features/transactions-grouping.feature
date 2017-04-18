@@ -5,7 +5,8 @@ Feature: Transactions Grouping
   I want to see them grouped by date
 
   Background:
-    Given I have a wallet
+    Given I have selected English language
+    And I have a wallet
 
   Scenario: Transactions are Grouped by Date
     Given I made the following transactions with my wallet:
