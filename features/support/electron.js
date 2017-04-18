@@ -39,7 +39,6 @@ export default function () {
       const connectToBackend = () => {
         if (daedalus.stores.networkStatus.isSynced) {
           daedalus.api.testReset();
-          daedalus.actions.profile.updateLocale.trigger({ locale: 'en-US' }); // TODO: Remove this
           if (isFirst) {
             daedalus.actions.networkStatus.isSyncedAndReady.once(done);
           } else {

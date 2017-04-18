@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-
 export default function () {
   this.Given(/^I am on the ada redemption screen$/, async function () {
     await this.navigateTo(`/ada-redemption`);

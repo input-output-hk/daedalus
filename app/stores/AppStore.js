@@ -13,10 +13,10 @@ export default class AppStore extends Store {
   LANGUAGE_OPTIONS = [
     { value: 'en-US', label: globalMessages.languageEnglish },
     { value: 'ja-JP', label: globalMessages.languageJapanese },
-    { value: 'zh-CN', label: globalMessages.languageChinese },
-    { value: 'ko-KR', label: globalMessages.languageKorean },
-    { value: 'de-DE', label: globalMessages.languageGerman },
-    { value: 'hr-HR', label: globalMessages.languageCroatian },
+    // { value: 'zh-CN', label: globalMessages.languageChinese },
+    // { value: 'ko-KR', label: globalMessages.languageKorean },
+    // { value: 'de-DE', label: globalMessages.languageGerman },
+    // { value: 'hr-HR', label: globalMessages.languageCroatian },
   ];
 
   /* eslint-disable max-len */
@@ -49,11 +49,13 @@ export default class AppStore extends Store {
   }
 
   @computed get hasLoadedCurrentLocale(): boolean {
-    return this.getProfileLocaleRequest.wasExecuted;
+    return (
+      this.getProfileLocaleRequest.wasExecuted && this.getProfileLocaleRequest.result !== null
+    );
   }
 
   @computed get isCurrentLocaleSet(): boolean {
-    return this.getProfileLocaleRequest.result != null;
+    return (this.getProfileLocaleRequest.result != null && this.getProfileLocaleRequest.result !== '');
   }
 
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
@@ -71,7 +73,7 @@ export default class AppStore extends Store {
 
   @action _updateLocale = async ({ locale }: { locale: string }) => {
     await this.setProfileLocaleRequest.execute(locale);
-    this.getProfileLocaleRequest.invalidate().patch(() => locale);
+    await this.getProfileLocaleRequest.execute();
   };
 
   _updateRouteLocation = (options: { route: string, params: ?Object }) => {

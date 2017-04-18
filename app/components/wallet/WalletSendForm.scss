@@ -11,8 +11,9 @@
 }
 
 .submitButton {
-  width: 100%;
-  text-transform: uppercase;
+  width: 65%;
+  margin: 0 auto;
+  display: block !important;
 }
 
 .error {
@@ -21,8 +22,15 @@
   margin-bottom: 1rem;
 }
 
-.adaAmount {
-  float: right;
-  font-family: $font-light;
+.amountInput {
+  position: relative;
+}
+
+.adaLabel {
+  bottom: 46px;
   color: $color-light-grey;
+  font-family: $font-light;
+  position: absolute;
+  right: 20px;
+  text-transform: uppercase;
 }

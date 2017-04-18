@@ -1,7 +1,8 @@
 Feature: Navigate Wallet Tabs
 
   Background:
-    Given I have a wallet with funds
+    Given I have selected English language
+    And I have a wallet with funds
 
   Scenario Outline: Switching Between Wallet Tabs
     Given I am on the "Personal Wallet" wallet "<FROM>" screen

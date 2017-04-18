@@ -6,8 +6,8 @@ import Store from './lib/Store';
 export default class SettingsStore extends Store {
 
   @observable bigNumberDecimalFormat = {
-    decimalSeparator: ',',
-    groupSeparator: '.',
+    decimalSeparator: '.',
+    groupSeparator: ',',
     groupSize: 3,
     secondaryGroupSize: 0,
     fractionGroupSeparator: ' ',

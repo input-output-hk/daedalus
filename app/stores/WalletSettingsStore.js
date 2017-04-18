@@ -17,9 +17,14 @@ export default class WalletSettingsStore extends Store {
   @observable updateWalletRequest: Request<UpdateWalletResponse> = new Request(
     this.api.updateWallet
   );
+  @observable changeWalletPasswordRequest = new Request(this.api, 'changeWalletPassword');
+  @observable setWalletPasswordRequest = new Request(this.api, 'setWalletPassword');
+  @observable updateWalletRequest = new Request(this.api, 'updateWallet');
 
   setup() {
     const a = this.actions.walletSettings;
+    a.changeWalletPassword.listen(this._changeWalletPassword);
+    a.setWalletPassword.listen(this._setWalletPassword);
     a.updateWalletAssuranceLevel.listen(this._updateWalletAssuranceLevel);
   }
 
@@ -32,6 +37,18 @@ export default class WalletSettingsStore extends Store {
       const wallet = _.find(result, { id: walletId });
       wallet.assurance = assurance;
     });
+  };
+
+  @action _changeWalletPassword = ({ walletId, oldPassword, newPassword }: {
+    walletId: string, oldPassword: string, newPassword: string,
+  }) => {
+    this.changeWalletPasswordRequest.execute(walletId, oldPassword, newPassword);
+  };
+
+  @action _setWalletPassword = ({ walletId, password }: {
+    walletId: string, password: string,
+  }) => {
+    this.setWalletPasswordRequest.execute(walletId, password);
   };
 
 }

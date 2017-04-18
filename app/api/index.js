@@ -36,7 +36,7 @@ export type CreateTransactionRequest = {
   walletId: string,
   sender: string,
   receiver: string,
-  amount: number,
+  amount: string,
   currency: string,
   title: string,
   description: ?string,
@@ -74,6 +74,14 @@ export type RedeemAdaRequest = {
 
 export type RedeemAdaResponse = Wallet;
 
+export type RedeemPaperVendedAdaRequest = {
+  shieldedRedemptionKey: string,
+  mnemonics: string,
+  walletId: string,
+};
+
+export type RedeemPaperVendedAdaResponse = RedeemPaperVendedAdaRequest;
+
 export type ImportKeyRequest = {
   filePath: string,
 };
@@ -91,6 +99,21 @@ export type NextUpdateResponse = {
 
 export type ApplyUpdateResponse = void;
 
+export type ChangeWalletPasswordRequest = {
+  walletId: string,
+  oldPassword: string,
+  newPassword: string,
+};
+
+export type ChangeWalletPasswordResponse = ChangeWalletPasswordRequest;
+
+export type SetWalletPasswordRequest = {
+  walletId: string,
+  password: string,
+};
+
+export type SetWalletPasswordResponse = SetWalletPasswordRequest;
+
 // API INTERFACE
 
 export type Api = {
@@ -104,10 +127,13 @@ export type Api = {
   isValidAddress(currency: string, address: string): Promise<boolean>,
   isValidMnemonic(mnemonic: string): Promise<boolean>,
   isValidRedemptionKey(mnemonic: string): Promise<boolean>,
+  isValidRedemptionMnemonic(mnemonic: string): Promise<boolean>,
+  isValidPaperVendRedemptionKey(mnemonic: string): Promise<boolean>,
   getWalletRecoveryPhrase(request: GetWalletRecoveryPhraseRequest): Promise<GetWalletRecoveryPhraseResponse>,
   restoreWallet(request: RestoreWalletRequest): Promise<RestoreWalletResponse>,
   importWalletFromKey(request: ImportKeyRequest): Promise<ImportKeyResponse>,
   redeemAda(request: RedeemAdaRequest): Promise<RedeemAdaResponse>,
+  redeemPaperVendedAda(request: RedeemPaperVendedAdaRequest): Promise<RedeemPaperVendedAdaResponse>,
   generateMnemonic(): string,
   nextUpdate(): Promise<NextUpdateResponse>,
   applyUpdate(): ApplyUpdateResponse,
@@ -116,4 +142,5 @@ export type Api = {
   getUserLocale(): Promise<string>,
   updateWallet(request: UpdateWalletRequest): Promise<UpdateWalletResponse>,
   testReset(): void,
+  changeWalletPassword(request: ChangeWalletPasswordRequest): Promise<ChangeWalletPasswordResponse>,
 };

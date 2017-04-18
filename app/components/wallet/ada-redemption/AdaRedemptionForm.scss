@@ -3,11 +3,19 @@
 
 .component {
   padding: 20px;
+  height: 100%;
+  overflow: auto;
+  &::-webkit-scrollbar-button {
+    height: 7px;
+    display: block;
+  }
 }
 
 .headline {
+  text-align: center;
+  text-transform: uppercase;
   font-family: $font-medium;
-  font-size: 24px;
+  font-size: 18px;
   margin-bottom: 2rem;
   margin-top: 10px;
   color: $text-color-accent;
@@ -42,10 +50,6 @@
   }
 }
 
-.certificate {
-  margin-bottom: 2rem;
-}
-
 .error {
   @include error-message;
   text-align: center;
@@ -60,8 +64,4 @@
 .submitButton {
   width: 100%;
   text-transform: uppercase;
-}
-
-.passPhrase {
-  margin-top: -20px;
 }

@@ -1,5 +1,3 @@
-import { expect } from 'chai';
-
 export default function () {
   this.Given(/^the sidebar submenu is (hidden|visible)/, async function (state) {
     const isVisible = state === 'visible';

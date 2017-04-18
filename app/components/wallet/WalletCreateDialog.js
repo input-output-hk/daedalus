@@ -13,6 +13,11 @@ import globalMessages from '../../i18n/global-messages';
 import styles from './WalletCreateDialog.scss';
 
 const messages = defineMessages({
+  dialogTitle: {
+    id: 'wallet.create.dialog.title',
+    defaultMessage: '!!!Create a new wallet',
+    description: 'Title "Create a new wallet" in the wallet create form.'
+  },
   walletName: {
     id: 'wallet.create.dialog.name.label',
     defaultMessage: '!!!Wallet Name',
@@ -126,6 +131,7 @@ export default class WalletCreateDialog extends Component {
 
   render() {
     const { form } = this;
+    const { intl } = this.context;
     const dialogClasses = classnames([
       styles.component,
       'WalletCreateDialog',
@@ -134,7 +140,7 @@ export default class WalletCreateDialog extends Component {
     return (
       <Dialog
         className={dialogClasses}
-        title="Create Wallet" // TODO: Missing translation
+        title={intl.formatMessage(messages.dialogTitle)}
         actions={this.actions}
         onOverlayClick={this.props.onCancel}
         active

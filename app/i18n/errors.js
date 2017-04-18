@@ -17,3 +17,21 @@ export class AdaRedemptionCertificateParseError extends LocalizableError {
     });
   }
 }
+
+export class InvalidEmailError extends LocalizableError {
+  constructor() {
+    super({
+      id: 'global.errors.invalidEmail',
+      defaultMessage: '!!!Invalid email entered, please check.',
+    });
+  }
+}
+
+export class FieldRequiredError extends LocalizableError {
+  constructor() {
+    super({
+      id: 'global.errors.fieldIsRequired',
+      defaultMessage: '!!!This field is required.',
+    });
+  }
+}

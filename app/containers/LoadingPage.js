@@ -13,13 +13,16 @@ export default class LoadingPage extends Component {
   };
 
   render() {
+    const { stores } = this.props;
     const {
       isConnecting,
       isSyncing,
       syncPercentage,
       isLoadingWallets,
-      hasBeenConnected
-    } = this.props.stores.networkStatus;
+      hasBeenConnected,
+      hasBlockSyncingStarted,
+    } = stores.networkStatus;
+    const { hasLoadedCurrentLocale } = stores.app;
     return (
       <CenteredLayout>
         <Loading
@@ -28,6 +31,8 @@ export default class LoadingPage extends Component {
           syncPercentage={syncPercentage}
           isLoadingWallets={isLoadingWallets}
           hasBeenConnected={hasBeenConnected}
+          hasBlockSyncingStarted={hasBlockSyncingStarted}
+          hasLoadedCurrentLocale={hasLoadedCurrentLocale}
         />
       </CenteredLayout>
     );

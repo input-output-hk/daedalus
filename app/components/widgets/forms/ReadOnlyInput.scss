@@ -1,0 +1,22 @@
+.component {
+  position: relative;
+
+  .input > input {
+    border: 1px solid $color-light-grey !important;
+  }
+
+  .button {
+    bottom: 43px;
+    color: $text-color-accent;
+    cursor: pointer;
+    font-family: $font-light;
+    font-size: 16px;
+    line-height: 1.38;
+    opacity: 0.5;
+    position: absolute;
+    right: 22px;
+    text-align: right;
+    text-transform: lowercase;
+  }
+}
+

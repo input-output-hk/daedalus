@@ -17,18 +17,31 @@ export default class AdaRedemptionPage extends Component {
     this.props.actions.adaRedemption.redeemAda.trigger(values);
   };
 
+  onSubmitPaperVended = (values: { walletId: string, shieldedRedemptionKey: string }) => {
+    this.props.actions.adaRedemption.redeemPaperVendedAda.trigger(values);
+  };
+
   render() {
     const { wallets, adaRedemption } = this.props.stores;
-    const { redeemAdaRequest, isCertificateEncrypted, isValidRedemptionKey, error } = adaRedemption;
     const {
-      setCertificate, setPassPhrase, setRedemptionCode, removeCertificate
+      redeemAdaRequest, redeemPaperVendedAdaRequest, isCertificateEncrypted, isValidRedemptionKey,
+      redemptionType, isValidRedemptionMnemonic, isValidPaperVendRedemptionKey, error
+    } = adaRedemption;
+    const {
+      chooseRedemptionType, setCertificate, setPassPhrase, setRedemptionCode, removeCertificate,
+      setEmail, setAdaPasscode, setAdaAmount
     } = this.props.actions.adaRedemption;
     const selectableWallets = wallets.all.map((w) => ({
       value: w.id, label: w.name
     }));
 
     if (selectableWallets.length === 0) return <Layout><LoadingSpinner /></Layout>;
-
+    const request = redemptionType === 'paperVended' ? redeemPaperVendedAdaRequest : redeemAdaRequest;
+    const isCertificateSelected = adaRedemption.certificate !== null;
+    const showInputsForDecryptingForceVendedCertificate = isCertificateSelected &&
+      isCertificateEncrypted && redemptionType === 'forceVended';
+    const showPassPhraseWidget = isCertificateSelected && isCertificateEncrypted &&
+      redemptionType === 'regular' || redemptionType === 'paperVended';
     return (
       <Layout>
         <AdaRedemptionForm
@@ -37,16 +50,27 @@ export default class AdaRedemptionPage extends Component {
           onRedemptionCodeChanged={(redemptionCode) => {
             setRedemptionCode.trigger({ redemptionCode });
           }}
+          onEmailChanged={(email) => setEmail.trigger({ email })}
+          onAdaAmountChanged={(adaAmount) => setAdaAmount.trigger({ adaAmount })}
+          onAdaPasscodeChanged={(adaPasscode) => setAdaPasscode.trigger({ adaPasscode })}
+          onChooseRedemptionType={(choice) => chooseRedemptionType.trigger({ redemptionType: choice })}
           redemptionCode={adaRedemption.redemptionCode}
           wallets={selectableWallets}
-          isCertificateSelected={adaRedemption.certificate !== null}
+          isCertificateSelected={isCertificateSelected}
           isCertificateEncrypted={isCertificateEncrypted}
           isCertificateInvalid={error instanceof AdaRedemptionCertificateParseError}
-          isSubmitting={redeemAdaRequest.isExecuting}
+          isSubmitting={request.isExecuting}
           error={adaRedemption.error}
-          onSubmit={this.onSubmit}
           onRemoveCertificate={removeCertificate.trigger}
+          onSubmit={redemptionType === 'paperVended' ? this.onSubmitPaperVended : this.onSubmit}
+          mnemonicValidator={isValidRedemptionMnemonic}
           redemptionCodeValidator={isValidRedemptionKey}
+          postVendRedemptionCodeValidator={isValidPaperVendRedemptionKey}
+          redemptionType={redemptionType}
+          showInputsForDecryptingForceVendedCertificate={
+            showInputsForDecryptingForceVendedCertificate
+          }
+          showPassPhraseWidget={showPassPhraseWidget}
         />
       </Layout>
     );
