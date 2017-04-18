@@ -15,29 +15,4 @@ export default class WalletBackupActions {
   restartWalletBackup: Action<any> = new Action();
   cancelWalletBackup: Action<any> = new Action();
   finishWalletBackup: Action<any> = new Action();
-};
-
-
-  // initiateWalletBackup: Action<{ recoveryPhrase: string[] }>,
-  // acceptPrivacyNoticeForWalletBackup: Action<any>,
-  // continueToRecoveryPhraseForWalletBackup: Action<any>,
-  // addWordToWalletBackupVerification: Action<{ word: string }>,
-  // clearEnteredRecoveryPhrase: Action<any>,
-  // acceptWalletBackupTermDevice: Action<any>,
-  // acceptWalletBackupTermRecovery: Action<any>,
-  // restartWalletBackup: Action<any>,
-  // cancelWalletBackup: Action<any>,
-  // finishWalletBackup: Action<any>
-
-//   startWalletBackup: new Action(),
-//   initiateWalletBackup: new Action(),
-//   acceptPrivacyNoticeForWalletBackup: new Action(),
-//   continueToRecoveryPhraseForWalletBackup: new Action(),
-//   addWordToWalletBackupVerification: new Action(),
-//   clearEnteredRecoveryPhrase: new Action(),
-//   acceptWalletBackupTermDevice: new Action(),
-//   acceptWalletBackupTermRecovery: new Action(),
-//   restartWalletBackup: new Action(),
-//   cancelWalletBackup: new Action(),
-//   finishWalletBackup: new Action(),
-// };
+}

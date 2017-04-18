@@ -1,8 +1,7 @@
-import PropTypes from 'prop-types';
-import defineActions from './lib/actions';
+// @flow
+import { Action } from './lib/actions';
+import type { AssuranceMode } from '../types/transactionAssuranceTypes';
 
-export default defineActions({
-  updateWalletAssuranceLevel: {
-    assurance: PropTypes.string.isRequired,
-  },
-});
+export default class WalletSettingsActions {
+  updateWalletAssuranceLevel: Action<{ assurance: AssuranceMode }> = new Action();
+}

@@ -3,34 +3,17 @@ import { Action } from './lib/actions';
 
 // ======= WALLET ACTIONS =======
 
-export type WalletsActions = {
-  createWallet: Action<{ name: string, currency: string }>,
-  restoreWallet: Action<{ recoveryPhrase: string, walletName: string }>,
-  importWalletFromKey: Action<{ filePath: string }>,
-  deleteWallet: Action<{ walletId: string }>,
-  sendMoney: Action<{ receiver: string, amount: string }>,
-  setActiveWallet: Action<{ walletId: string }>,
+export default class WalletsActions {
+  createWallet: Action<{ name: string, currency: string }> = new Action();
+  restoreWallet: Action<{ recoveryPhrase: string, walletName: string }> = new Action();
+  importWalletFromKey: Action<{ filePath: string }> = new Action();
+  deleteWallet: Action<{ walletId: string }> = new Action();
+  sendMoney: Action<{ receiver: string, amount: string }> = new Action();
+  setActiveWallet: Action<{ walletId: string }> = new Action();
   // TODO: refactor dialog toggles to use dialog-actions instead
-  toggleAddWallet: Action<any>,
-  toggleCreateWalletDialog: Action<any>,
-  toggleWalletRestore: Action<any>,
-  toggleWalletKeyImportDialog: Action<any>,
-  showWalletAddressCopyNotification: Action<any>,
-};
-
-const walletActions: WalletsActions = {
-  createWallet: new Action(),
-  restoreWallet: new Action(),
-  importWalletFromKey: new Action(),
-  deleteWallet: new Action(),
-  sendMoney: new Action(),
-  setActiveWallet: new Action(),
-  // TODO: refactor dialog toggles to use dialog-actions instead
-  toggleAddWallet: new Action(),
-  toggleCreateWalletDialog: new Action(),
-  toggleWalletRestore: new Action(),
-  toggleWalletKeyImportDialog: new Action(),
-  showWalletAddressCopyNotification: new Action(),
-};
-
-export default walletActions;
+  toggleAddWallet: Action<any> = new Action();
+  toggleCreateWalletDialog: Action<any> = new Action();
+  toggleWalletRestore: Action<any> = new Action();
+  toggleWalletKeyImportDialog: Action<any> = new Action();
+  showWalletAddressCopyNotification: Action<any> = new Action();
+}

@@ -3,18 +3,9 @@ import { Action } from './lib/actions';
 
 // ======= DIALOGS ACTIONS =======
 
-export type DialogsActions = {
-  open: Action<{ dialog: Function }>,
-  updateDataForActiveDialog: Action<{ data: Object }>,
-  closeActiveDialog: Action<any>,
-  resetActiveDialog: Action<any>,
-};
-
-const dialogActions: DialogsActions = {
-  open: new Action(),
-  updateDataForActiveDialog: new Action(),
-  closeActiveDialog: new Action(),
-  resetActiveDialog: new Action(),
-};
-
-export default dialogActions;
+export default class DialogsActions {
+  open: Action<{ dialog: Function }> = new Action();
+  updateDataForActiveDialog: Action<{ data: Object }> = new Action();
+  closeActiveDialog: Action<any> = new Action();
+  resetActiveDialog: Action<any> = new Action();
+}

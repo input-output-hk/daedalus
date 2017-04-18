@@ -3,16 +3,8 @@ import { Action } from './lib/actions';
 
 // ======= SIDEBAR ACTIONS =======
 
-export type SidebarActions = {
-  toggleSubMenus: Action<any>,
-  activateSidebarCategory: Action<{ category: string, showSubMenu?: boolean }>,
-  walletSelected: Action<{ walletId: string }>,
-};
-
-const sidebarActions: SidebarActions = {
-  toggleSubMenus: new Action(),
-  activateSidebarCategory: new Action(),
-  walletSelected: new Action(),
-};
-
-export default sidebarActions;
+export default class SidebarActions {
+  toggleSubMenus: Action<any> = new Action();
+  activateSidebarCategory: Action<{ category: string, showSubMenu?: boolean }> = new Action();
+  walletSelected: Action<{ walletId: string }> = new Action();
+}

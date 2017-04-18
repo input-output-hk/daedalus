@@ -3,25 +3,13 @@ import { Action } from './lib/actions';
 
 // ======= ADA REDEMPTION ACTIONS =======
 
-export type AdaRedemptionActions = {
-  setCertificate: Action<{ certificate: File }>,
-  removeCertificate: Action<any>,
-  setPassPhrase: Action<{ passPhrase: string }>,
-  setRedemptionCode: Action<{ redemptionCode: string }>,
-  redeemAda: Action<{ walletId: string }>,
-  adaSuccessfullyRedeemed: Action<any>,
+export default class AdaRedemptionActions {
+  setCertificate: Action<{ certificate: File }> = new Action();
+  removeCertificate: Action<any> = new Action();
+  setPassPhrase: Action<{ passPhrase: string }> = new Action();
+  setRedemptionCode: Action<{ redemptionCode: string }> = new Action();
+  redeemAda: Action<{ walletId: string }> = new Action();
+  adaSuccessfullyRedeemed: Action<any> = new Action();
   // TODO: refactor dialog toggles to use dialog-actions instead
-  closeAdaRedemptionSuccessOverlay: Action<any>,
-};
-
-const adaRedemptionActions: AdaRedemptionActions = {
-  setCertificate: new Action(),
-  removeCertificate: new Action(),
-  setPassPhrase: new Action(),
-  setRedemptionCode: new Action(),
-  redeemAda: new Action(),
-  adaSuccessfullyRedeemed: new Action(),
-  closeAdaRedemptionSuccessOverlay: new Action(),
-};
-
-export default adaRedemptionActions;
+  closeAdaRedemptionSuccessOverlay: Action<any> = new Action();
+}
