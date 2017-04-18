@@ -2,7 +2,6 @@
 import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/Request';
-import CachedRequest from './lib/CachedRequest';
 import globalMessages from '../i18n/global-messages';
 import LocalizableError from '../i18n/LocalizableError';
 import { ROUTES } from '../Routes';
@@ -13,13 +12,13 @@ export default class AppStore extends Store {
   LANGUAGE_OPTIONS = [
     { value: 'en-US', label: globalMessages.languageEnglish },
     { value: 'ja-JP', label: globalMessages.languageJapanese },
-    { value: 'zh-CN', label: globalMessages.languageChinese },
-    { value: 'ko-KR', label: globalMessages.languageKorean },
-    { value: 'de-DE', label: globalMessages.languageGerman },
-    { value: 'hr-HR', label: globalMessages.languageCroatian },
+    // { value: 'zh-CN', label: globalMessages.languageChinese },
+    // { value: 'ko-KR', label: globalMessages.languageKorean },
+    // { value: 'de-DE', label: globalMessages.languageGerman },
+    // { value: 'hr-HR', label: globalMessages.languageCroatian },
   ];
 
-  @observable getProfileLocaleRequest = new CachedRequest(this.api, 'getUserLocale');
+  @observable getProfileLocaleRequest = new Request(this.api, 'getUserLocale');
   @observable setProfileLocaleRequest = new Request(this.api, 'setUserLocale');
   @observable error: ?LocalizableError = null;
 
@@ -46,11 +45,13 @@ export default class AppStore extends Store {
   }
 
   @computed get hasLoadedCurrentLocale(): bool {
-    return this.getProfileLocaleRequest.wasExecuted;
+    return (
+      this.getProfileLocaleRequest.wasExecuted && this.getProfileLocaleRequest.result !== null
+    );
   }
 
   @computed get isCurrentLocaleSet(): bool {
-    return this.getProfileLocaleRequest.result;
+    return (this.getProfileLocaleRequest.result != null && this.getProfileLocaleRequest.result !== '');
   }
 
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
@@ -68,7 +69,7 @@ export default class AppStore extends Store {
 
   @action _updateLocale = async ({ locale }: { locale: string }) => {
     await this.setProfileLocaleRequest.execute(locale);
-    this.getProfileLocaleRequest.invalidate().patch(() => locale);
+    await this.getProfileLocaleRequest.execute();
   };
 
   _updateRouteLocation = (options: { route: string, params: ?Object }) => {

@@ -6,6 +6,7 @@ import styles from './Transaction.scss';
 import adaSymbol from '../../assets/images/ada-symbol.svg';
 import WalletTransaction from '../../domain/WalletTransaction';
 import { assuranceLevels } from '../../config/transactionAssuranceConfig';
+import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 
 const messages = defineMessages({
   card: {
@@ -43,6 +44,17 @@ const messages = defineMessages({
     defaultMessage: '!!!Conversion rate',
     description: 'Conversion rate.',
   },
+  adaSent: {
+    id: 'wallet.transaction.adaSent',
+    defaultMessage: '!!!Ada sent',
+    description: 'Label "Ada sent" for the transaction.',
+  },
+  adaReceived: {
+    id: 'wallet.transaction.adaReceived',
+    defaultMessage: '!!!Ada received',
+    description: 'Label "Ada received" for the transaction.',
+  },
+
 });
 
 const assuranceLevelTranslations = defineMessages({
@@ -113,9 +125,12 @@ export default class Transaction extends Component {
 
           <button className={styles.header} onClick={this.toggleDetails.bind(this)}>
             <div className={styles.title}>
-              {data.type === 'adaExpend' ? 'Ada Sent' : 'Ada Received'}
+              {data.type === 'adaExpend' ?
+                intl.formatMessage(messages.adaSent) :
+                intl.formatMessage(messages.adaReceived)
+              }
             </div>
-            <div className={styles.amount}>{data.amount}
+            <div className={styles.amount}>{data.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
               <img className={styles.currencySymbol} src={adaSymbol} role="presentation" />
             </div>
           </button>

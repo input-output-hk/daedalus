@@ -2,6 +2,7 @@ import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
 import StoryDecorator from './support/StoryDecorator';
 import AdaRedemptionForm from '../app/components/wallet/ada-redemption/AdaRedemptionForm';
+import AdaRedemptionChoices from '../app/components/wallet/ada-redemption/AdaRedemptionChoices';
 
 storiesOf('AdaRedemptionForm', module)
 
@@ -12,6 +13,14 @@ storiesOf('AdaRedemptionForm', module)
   ))
 
   // ====== Stories ======
+
+  .add('Ada redemption choices', () => (
+    <div>
+      <AdaRedemptionChoices
+        activeChoice="forceVended"
+      />
+    </div>
+  ))
 
   .add('Certificate not selected', () => (
     <div>

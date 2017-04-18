@@ -14,6 +14,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Connecting to network',
     description: 'Message "Connecting to network" on the loading screen.'
   },
+  waitingForSyncToStart: {
+    id: 'loading.screen.waitingForSyncToStart',
+    defaultMessage: '!!!Connected - waiting for block syncing to start',
+    description: 'Message "Connected - waiting for block syncing to start" on the loading screen.'
+  },
   reconnecting: {
     id: 'loading.screen.reconnectingToNetworkMessage',
     defaultMessage: '!!!Network connection lost - reconnecting',
@@ -42,14 +47,18 @@ export default class Loading extends Component {
     isConnecting: PropTypes.bool.isRequired,
     hasBeenConnected: PropTypes.bool.isRequired,
     isSyncing: PropTypes.bool.isRequired,
+    hasBlockSyncingStarted: PropTypes.bool.isRequired,
     isLoadingWallets: PropTypes.bool.isRequired,
     syncPercentage: PropTypes.number.isRequired,
+    hasLoadedCurrentLocale: PropTypes.bool.isRequired,
   };
 
   render() {
     const { intl } = this.context;
     const {
-      isConnecting, isSyncing, syncPercentage, isLoadingWallets, hasBeenConnected
+      isConnecting, isSyncing, syncPercentage, isLoadingWallets,
+      hasBeenConnected, hasBlockSyncingStarted,
+      hasLoadedCurrentLocale,
     } = this.props;
     const componentStyles = classNames([
       styles.component,
@@ -61,21 +70,37 @@ export default class Loading extends Component {
     return (
       <div className={componentStyles}>
         <img className={styles.logo} src={logo} role="presentation" />
-        {isConnecting && (
-          <div className={styles.connecting}>
-            <h1 className={styles.headline}>{intl.formatMessage(connectingMessage)}</h1>
-          </div>
-        )}
-        {isSyncing && (
-          <div className={styles.syncing}>
-            <h1 className={styles.headline}>
-              {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
-            </h1>
-          </div>
-        )}{!isSyncing && !isConnecting && isLoadingWallets && (
-          <div className={styles.syncing}>
-            <h1 className={styles.headline}>Loading wallet data</h1>
-            <LoadingSpinner />
+        {hasLoadedCurrentLocale && (
+          <div>
+            {isConnecting && !hasBlockSyncingStarted && (
+              <div className={styles.connecting}>
+                <h1 className={styles.headline}>
+                  {intl.formatMessage(connectingMessage)}
+                </h1>
+              </div>
+            )}
+            {isConnecting && hasBlockSyncingStarted && (
+              <div className={styles.connecting}>
+                <h1 className={styles.headline}>
+                  {intl.formatMessage(messages.waitingForSyncToStart)}
+                </h1>
+              </div>
+            )}
+            {isSyncing && (
+              <div className={styles.syncing}>
+                <h1 className={styles.headline}>
+                  {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
+                </h1>
+              </div>
+            )}
+            {!isSyncing && !isConnecting && isLoadingWallets && (
+              <div className={styles.syncing}>
+                <h1 className={styles.headline}>
+                  {intl.formatMessage(messages.loadingWalletData)}
+                </h1>
+                <LoadingSpinner />
+              </div>
+            )}
           </div>
         )}
       </div>

@@ -1,5 +1,6 @@
 // @flow
 import { observable, action, computed } from 'mobx';
+import BigNumber from 'bignumber.js';
 import WalletTransaction from './WalletTransaction';
 import type { AssuranceMode } from '../types/transactionAssuranceTypes';
 import { assuranceModes, assuranceModeOptions } from '../config/transactionAssuranceConfig';
@@ -11,7 +12,7 @@ export default class Wallet {
   address: string = '';
   currency: string = '';
   @observable name: string = '';
-  @observable amount: number;
+  @observable amount: BigNumber;
   @observable assurance: AssuranceMode;
   @observable hasPassword: bool;
   @observable passwordUpdateDate: ?Date;
@@ -23,7 +24,7 @@ export default class Wallet {
     name: string,
     address: string,
     currency: string,
-    amount: number,
+    amount: BigNumber,
     assuranceMode: AssuranceMode,
     hasPassword: bool,
     passwordUpdateDate: ?Date,
