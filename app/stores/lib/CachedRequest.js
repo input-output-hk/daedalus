@@ -4,12 +4,12 @@ import { isEqual, remove } from 'lodash';
 import Request from './Request';
 import type { ApiCallType } from './Request';
 
-export default class CachedRequest<Result> extends Request<Result> {
+export default class CachedRequest<Result, Error> extends Request<Result, Error> {
 
   _apiCalls: Array<ApiCallType> = [];
   _isInvalidated: boolean = true;
 
-  execute(...callArgs: Array<any>): CachedRequest<Result> {
+  execute(...callArgs: Array<any>): CachedRequest<Result, Error> {
     // Do not continue if this request is already loading
     if (this._isWaitingForResponse) return this;
 
@@ -70,7 +70,7 @@ export default class CachedRequest<Result> extends Request<Result> {
     return this;
   }
 
-  invalidate(options: { immediately: boolean } = { immediately: false }): CachedRequest<Result> {
+  invalidate(options: { immediately: boolean } = { immediately: false }): CachedRequest<Result, Error> {
     this._isInvalidated = true;
     if (options.immediately && this._currentApiCall) {
       return this.execute(...this._currentApiCall.args);
@@ -89,7 +89,7 @@ export default class CachedRequest<Result> extends Request<Result> {
    *
    * @returns {Promise}
    */
-  patch(modify: Function): Promise<CachedRequest<Result>> {
+  patch(modify: Function): Promise<CachedRequest<Result, Error>> {
     return new Promise((resolve) => {
       setTimeout(action(() => {
         const override = modify(this.result);

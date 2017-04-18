@@ -19,8 +19,8 @@ export default class AppStore extends Store {
     { value: 'hr-HR', label: globalMessages.languageCroatian },
   ];
 
-  @observable getProfileLocaleRequest: CachedRequest<string> = new CachedRequest(this.api.getUserLocale);
-  @observable setProfileLocaleRequest: Request<string> = new Request(this.api.setUserLocale);
+  @observable getProfileLocaleRequest: CachedRequest<string, LocalizableError> = new CachedRequest(this.api.getUserLocale);
+  @observable setProfileLocaleRequest: Request<string, LocalizableError> = new Request(this.api.setUserLocale);
   @observable error: ?LocalizableError = null;
 
   setup() {

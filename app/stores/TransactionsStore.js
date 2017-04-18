@@ -5,6 +5,8 @@ import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
 import CachedRequest from './lib/CachedRequest';
 import WalletTransaction from '../domain/WalletTransaction';
+import type { GetTransactionsResponse } from '../api';
+import LocalizableError from '../i18n/LocalizableError';
 
 export default class TransactionsStore extends Store {
 
@@ -15,8 +17,8 @@ export default class TransactionsStore extends Store {
 
   @observable transactionsRequests: Array<{
     walletId: string,
-    recentRequest: [CachedRequest],
-    allRequest: [CachedRequest]
+    recentRequest: CachedRequest<GetTransactionsResponse, LocalizableError>,
+    allRequest: CachedRequest<GetTransactionsResponse, LocalizableError>
   }> = [];
 
   @observable _searchOptionsForWallets = {};
@@ -39,15 +41,15 @@ export default class TransactionsStore extends Store {
     }
   };
 
-  @computed get recentTransactionsRequest(): CachedRequest {
+  @computed get recentTransactionsRequest(): CachedRequest<GetTransactionsResponse, LocalizableError> {
     const wallet = this.stores.wallets.active;
-    if (!wallet) return new CachedRequest(this.api, 'getTransactions'); // TODO: Do not return new request here
+    if (!wallet) return new CachedRequest(this.api.getTransactions); // TODO: Do not return new request here
     return this._getTransactionsRecentRequest(wallet.id);
   }
 
-  @computed get searchRequest(): CachedRequest {
+  @computed get searchRequest(): CachedRequest<GetTransactionsResponse, LocalizableError> {
     const wallet = this.stores.wallets.active;
-    if (!wallet) return new CachedRequest(this.api, 'getTransactions'); // TODO: Do not return new request here
+    if (!wallet) return new CachedRequest(this.api.getTransactions); // TODO: Do not return new request here
     return this._getTransactionsAllRequest(wallet.id);
   }
 
@@ -157,14 +159,14 @@ export default class TransactionsStore extends Store {
     }
   };
 
-  _getTransactionsRecentRequest = (walletId: string) => {
+  _getTransactionsRecentRequest = (walletId: string): CachedRequest<GetTransactionsResponse, LocalizableError> => {
     const foundRequest = _.find(this.transactionsRequests, { walletId });
-    return foundRequest && foundRequest.recentRequest ? foundRequest.recentRequest : new CachedRequest(this.api, 'getTransactions');
+    return foundRequest && foundRequest.recentRequest ? foundRequest.recentRequest : new CachedRequest(this.api.getTransactions);
   };
 
-  _getTransactionsAllRequest = (walletId: string) => {
+  _getTransactionsAllRequest = (walletId: string): CachedRequest<GetTransactionsResponse, LocalizableError> => {
     const foundRequest = _.find(this.transactionsRequests, { walletId });
-    return foundRequest && foundRequest.allRequest ? foundRequest.allRequest : new CachedRequest(this.api, 'getTransactions');
+    return foundRequest && foundRequest.allRequest ? foundRequest.allRequest : new CachedRequest(this.api.getTransactions);
   };
 
 }

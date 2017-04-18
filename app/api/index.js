@@ -14,7 +14,7 @@ export type GetTransactionsRequest = {
 };
 
 export type GetTransactionsResponse = {
-  transactions: [WalletTransaction],
+  transactions: WalletTransaction[],
   total: number
 };
 
@@ -85,6 +85,12 @@ export type GetSyncProgressResponse = {
   networkDifficulty: number
 };
 
+export type NextUpdateResponse = {
+  version: string,
+};
+
+export type ApplyUpdateResponse = void;
+
 // API INTERFACE
 
 export type Api = {
@@ -103,8 +109,8 @@ export type Api = {
   importWalletFromKey(request: ImportKeyRequest): Promise<ImportKeyResponse>,
   redeemAda(request: RedeemAdaRequest): Promise<RedeemAdaResponse>,
   generateMnemonic(): string,
-  nextUpdate(): Promise<string>,
-  applyUpdate(): void,
+  nextUpdate(): Promise<NextUpdateResponse>,
+  applyUpdate(): ApplyUpdateResponse,
   getSyncProgress(): Promise<GetSyncProgressResponse>,
   setUserLocale(locale: string): Promise<string>,
   getUserLocale(): Promise<string>,

@@ -12,7 +12,7 @@ export type ApiCallType = {
   result: any,
 };
 
-export default class Request<Result> {
+export default class Request<Result, Error> {
 
   @observable result: ?Result = null;
   @observable error: ?Error = null;
@@ -30,7 +30,7 @@ export default class Request<Result> {
     this._method = method;
   }
 
-  execute(...callArgs: Array<any>): Request<Result> {
+  execute(...callArgs: Array<any>): Request<Result, Error> {
     // Do not continue if this request is already loading
     if (this._isWaitingForResponse) return this;
 

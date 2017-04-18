@@ -9,19 +9,29 @@ import Request from './lib/Request';
 import environment from '../environment';
 import config from '../config';
 import { ROUTES } from '../Routes';
+import type {
+  GetWalletsResponse,
+  ImportKeyResponse,
+  CreateWalletResponse,
+  DeleteWalletResponse,
+  CreateTransactionResponse,
+  GetWalletRecoveryPhraseResponse,
+  RestoreWalletResponse
+} from '../api';
+import LocalizableError from '../i18n/LocalizableError';
 
 export default class WalletsStore extends Store {
 
   WALLET_REFRESH_INTERVAL = 5000;
 
   @observable active: ?Wallet = null;
-  @observable walletsRequest = new CachedRequest(this.api, 'getWallets');
-  @observable importFromKeyRequest = new Request(this.api, 'importWalletFromKey');
-  @observable createWalletRequest = new Request(this.api, 'createWallet');
-  @observable deleteWalletRequest = new Request(this.api, 'deleteWallet');
-  @observable sendMoneyRequest = new Request(this.api, 'createTransaction');
-  @observable getWalletRecoveryPhraseRequest = new Request(this.api, 'getWalletRecoveryPhrase');
-  @observable restoreRequest = new Request(this.api, 'restoreWallet');
+  @observable walletsRequest: CachedRequest<GetWalletsResponse, LocalizableError> = new CachedRequest(this.api.getWallets);
+  @observable importFromKeyRequest: Request<ImportKeyResponse, LocalizableError> = new Request(this.api.importWalletFromKey);
+  @observable createWalletRequest: Request<CreateWalletResponse, LocalizableError> = new Request(this.api.createWallet);
+  @observable deleteWalletRequest: Request<DeleteWalletResponse, LocalizableError> = new Request(this.api.deleteWallet);
+  @observable sendMoneyRequest: Request<CreateTransactionResponse, LocalizableError> = new Request(this.api.createTransaction);
+  @observable getWalletRecoveryPhraseRequest: Request<GetWalletRecoveryPhraseResponse, LocalizableError> = new Request(this.api.getWalletRecoveryPhrase);
+  @observable restoreRequest: Request<RestoreWalletResponse, LocalizableError> = new Request(this.api.restoreWallet);
   // DIALOGUES
   @observable isAddWalletDialogOpen = false;
   @observable isCreateWalletDialogOpen = false;
@@ -67,8 +77,10 @@ export default class WalletsStore extends Store {
   }) => {
     Object.assign(this._newWalletDetails, params);
     try {
-      const recoveryPhrase: string[] = await this.getWalletRecoveryPhraseRequest.execute().promise;
-      this.actions.walletBackup.initiateWalletBackup.trigger({ recoveryPhrase });
+      const recoveryPhrase: ?GetWalletRecoveryPhraseResponse = await this.getWalletRecoveryPhraseRequest.execute().promise;
+      if (recoveryPhrase != null) {
+        this.actions.walletBackup.initiateWalletBackup.trigger({recoveryPhrase});
+      }
     } catch (error) {
       throw error;
     }
