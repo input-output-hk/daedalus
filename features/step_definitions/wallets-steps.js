@@ -108,10 +108,12 @@ export default function () {
     return this.waitAndClick('.WalletBackupPrivacyWarningDialog .CheckboxWithLongLabel_checkbox');
   });
 
-  this.When(/^I wait for 10 seconds and submit the create wallet privacy dialog$/, function () {
-    setTimeout(function() {
-      return this.waitAndClick('.WalletBackupPrivacyWarningDialog .dialog_button');
-    }, 10 * 1000);
+  this.When(/^I wait for 10 seconds for submit button to become active$/, { timeout: 10 * 1000 }, function () {
+    return this.client.waitForEnabled('.WalletBackupPrivacyWarningDialog .dialog_button', 10 * 1000);
+  });
+
+  this.When(/^I submit the create wallet privacy dialog$/, function () {
+    return this.waitAndClick('.WalletBackupPrivacyWarningDialog .dialog_button');
   });
 
   this.When(/^I see the create wallet recovery phrase display dialog$/, function () {
