@@ -1,4 +1,4 @@
-version: 0.4.{build}
+version: 0.3.{build}
 
 environment:
   nodejs_version: "6"
