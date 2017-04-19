@@ -8,6 +8,8 @@ import Wallet from '../../domain/Wallet';
 import menuIcon from '../../assets/images/menu-ic.svg';
 import { oneOrManyChildElements } from '../../propTypes';
 import styles from './TopBar.scss';
+import { matchRoute } from '../../lib/routing-helpers';
+import { ROUTES } from '../../Routes';
 
 @observer
 export default class TopBar extends Component {
@@ -16,16 +18,19 @@ export default class TopBar extends Component {
     onToggleSidebar: PropTypes.func,
     children: oneOrManyChildElements,
     activeWallet: PropTypes.instanceOf(Wallet),
+    currentRoute: PropTypes.string.isRequired,
   };
 
   render() {
-    const { onToggleSidebar, activeWallet } = this.props;
+    const { onToggleSidebar, activeWallet, currentRoute } = this.props;
+    const walletRoutesMatch = matchRoute(`${ROUTES.WALLETS.ROOT}/:id(*page)`, currentRoute);
     const sidebarToggleIcon = onToggleSidebar && <img className={styles.sidebarIcon} src={menuIcon} role="presentation" />;
+    const showWalletInfo = activeWallet && walletRoutesMatch;
     const topBarStyles = classNames([
-      !activeWallet ? styles.noWallet : null,
+      showWalletInfo ? styles.withWallet : styles.withoutWallet,
     ]);
 
-    const topBarTitle = activeWallet ? (
+    const topBarTitle = showWalletInfo ? (
       <div className={styles.walletInfo}>
         <div className={styles.walletName}>{activeWallet.name}</div>
         <div className={styles.walletAmount}>
@@ -37,8 +42,8 @@ export default class TopBar extends Component {
     return (
       <RTAppBar
         className={topBarStyles}
-        leftIcon={sidebarToggleIcon}
-        onLeftIconClick={onToggleSidebar}
+        leftIcon={walletRoutesMatch ? sidebarToggleIcon : null}
+        onLeftIconClick={walletRoutesMatch ? onToggleSidebar : null}
       >
         <div className={styles.topBarTitle}>{topBarTitle}</div>
         {this.props.children}

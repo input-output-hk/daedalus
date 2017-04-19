@@ -19,6 +19,7 @@ export default class LanguageSelectionPage extends Component {
       app: PropTypes.shape({
         setProfileLocaleRequest: PropTypes.instanceOf(Request).isRequired,
         LANGUAGE_OPTIONS: PropTypes.array.isRequired,
+        currentRoute: PropTypes.string.isRequired,
       }).isRequired,
     }).isRequired,
   };
@@ -28,9 +29,9 @@ export default class LanguageSelectionPage extends Component {
   };
 
   render() {
-    const { setProfileLocaleRequest, LANGUAGE_OPTIONS } = this.props.stores.app;
+    const { setProfileLocaleRequest, LANGUAGE_OPTIONS, currentRoute } = this.props.stores.app;
     const isSubmitting = setProfileLocaleRequest.isExecuting;
-    const topbar = <TopBar />;
+    const topbar = <TopBar currentRoute={currentRoute} />;
     return (
       <TopBarLayout
         topbar={topbar}
