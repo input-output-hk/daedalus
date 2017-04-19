@@ -1,5 +1,5 @@
 // @flow
-import { observable, action, computed } from 'mobx';
+import { observable, computed } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import CachedRequest from './lib/LocalizedCachedRequest';
@@ -68,9 +68,10 @@ export default class AppStore extends Store {
     }
   };
 
-  @action _updateLocale = async ({ locale }: { locale: string }) => {
+  _updateLocale = async ({ locale }: { locale: string }) => {
     await this.setProfileLocaleRequest.execute(locale);
-    await this.getProfileLocaleRequest.execute();
+    await this.getProfileLocaleRequest.reset().execute();
+    if (this._isOnLanguageSelectionPage()) this._redirectToRoot();
   };
 
   _updateRouteLocation = (options: { route: string, params: ?Object }) => {
@@ -80,9 +81,15 @@ export default class AppStore extends Store {
   };
 
   _redirectToMainUiAfterLocaleIsSet = () => {
-    if (this.isCurrentLocaleSet && this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION) {
-      this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
+    if (this.isCurrentLocaleSet && this._isOnLanguageSelectionPage()) {
+      this._redirectToRoot();
     }
+  };
+
+  _isOnLanguageSelectionPage = () => this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION;
+
+  _redirectToRoot = () => {
+    this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
   };
 
 }

@@ -116,4 +116,10 @@ export default class CachedRequest<Result, Error> extends Request<Result, Error>
     return this._apiCalls.find(c => isEqual(c.args, args));
   }
 
+  reset(): CachedRequest<Result, Error> {
+    super.reset();
+    this._isInvalidated = true;
+    return this;
+  }
+
 }

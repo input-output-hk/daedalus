@@ -93,10 +93,14 @@ export default class Request<Result, Error> {
     return this.promise.catch(...args);
   }
 
-  reset() {
+  @action reset(): Request<Result, Error> {
     this.result = null;
     this.error = null;
     this.isError = false;
+    this.isExecuting = false;
+    this._isWaitingForResponse = false;
+    this._currentApiCall = null;
+    return this;
   }
 
 }

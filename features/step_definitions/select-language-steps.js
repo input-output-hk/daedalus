@@ -35,7 +35,7 @@ export default function () {
 
   this.Then(/^I should have Japanese language set$/, async function () {
     const result = await this.client.executeAsync(function(done) {
-      daedalus.stores.app.getProfileLocaleRequest.execute().then((locale) => done(locale));
+      daedalus.stores.app.getProfileLocaleRequest.execute().then(done);
     });
     expect(result.value).to.equal('ja-JP');
   });
