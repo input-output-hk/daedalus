@@ -37,7 +37,7 @@ export default class Action<Params> {
   }
 
   remove(listener: Listener<Params>) {
-    this.listeners.splice(self.listeners.indexOf(listener), 1);
+    this.listeners.splice(this.listeners.indexOf(listener), 1);
   }
 
   removeAll() {

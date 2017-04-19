@@ -7,7 +7,7 @@ export default function () {
       let sidebarWillAnimate = false;
       if (isShowingSubMenus !== visible) {
         sidebarWillAnimate = true;
-        daedalus.actions.sidebar.toggleSubMenus();
+        daedalus.actions.sidebar.toggleSubMenus.trigger();
       }
       if (sidebarWillAnimate) {
         // Wait until the sidebar transition is finished -> otherwise webdriver click error!
@@ -26,7 +26,7 @@ export default function () {
 
   this.Given(/^The sidebar shows the "([^"]*)" category$/, async function (cat) {
     await this.client.execute(function(category) {
-      daedalus.actions.sidebar.activateSidebarCategory({ category, showSubMenus: true });
+      daedalus.actions.sidebar.activateSidebarCategory.trigger({ category, showSubMenus: true });
     }, `/${cat}`);
     return this.client.waitForVisible(`.SidebarCategory_active.${cat}`);
   });

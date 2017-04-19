@@ -67,6 +67,7 @@ export default class Loading extends Component {
     ]);
     const logo = isConnecting ? cardanoLogoWhite : cardanoLogo;
     const connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
+
     return (
       <div className={componentStyles}>
         <img className={styles.logo} src={logo} role="presentation" />

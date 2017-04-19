@@ -3,7 +3,7 @@ import { expect } from 'chai';
 export default function () {
   this.Given(/^I have selected English language$/, async function () {
     await this.client.execute(locale => {
-      daedalus.actions.profile.updateLocale({ locale });
+      daedalus.actions.profile.updateLocale.trigger({ locale });
     }, 'en-US');
   });
 

@@ -40,12 +40,9 @@ export default class AppStore extends Store {
   }
 
   @computed get currentLocale(): string {
-    if (this.isCurrentLocaleSet) {
-      const result = this.getProfileLocaleRequest.execute().result;
-      if (result != null) return result;
-    }
-    // default
-    return 'en-US';
+    const { result } = this.getProfileLocaleRequest.execute();
+    if (this.isCurrentLocaleSet) return result;
+    return 'en-US'; // default
   }
 
   @computed get hasLoadedCurrentLocale(): boolean {
