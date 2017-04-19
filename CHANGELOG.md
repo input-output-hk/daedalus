@@ -1,6 +1,46 @@
 Changelog
 =========
 
+## vNEXT
+
+### Features
+
+### Fixes
+
+- Wallet name on the send screen was hardcoded in Japanese translation
+
+### Chores
+
+## 0.6.0
+
+### Features
+
+- Ada redemption with certificate decryption and parsing to extract the redemption key
+- Transaction assurance level with color coding for transactions and settings for a normal or strict mode
+- Wallet settings page with wallet deletion and transaction assurance level settings
+- User interface language option on application start and in settings with English and Japanese translations
+- Ada amounts formatting with thousands separator for displaying and entering amounts
+- Application header updated to show wallet name and amount of money in the wallet
+- Copy wallet address to the clipboard with UI notification
+- Testnet label
+- Application level settings page with language choice option
+- Wallet summary page
+- Showing absolute percentage with two decimals on the blockchain sync page
+- File logging and sending logs to Papertrail logging service without sensitive user data
+
+### Fixes
+
+- Toggling the application bar not working properly
+- UI glitch when quickly typing in Ada amounts on the send money form
+- “Add wallet” dialog does not disappear immediately after wallet creation
+- Clearing correctly entered backup recovery phrase should not be possible
+- Sidebar “randomly” closes/opens when navigating
+- Ada redemption overlay should also cover the wallet navigation
+- No transactions message is not vertically centered on Transactions page
+- Transactions ordering
+- Smaller UI improvements and fixes
+
+
 ## 0.5.0
 
 ![Main Wallet screenshot in 0.5.0](screenshots/2016-11-24 release 0.5.0 main-wallet.png)
