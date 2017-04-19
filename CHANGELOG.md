@@ -13,6 +13,9 @@ Changelog
 
 ### Chores
 
+- Logging improved by stringifying API requests and responses being logged
+- Added system information to logs: OS, OS version, CPU and total RAM information
+
 ## 0.6.0
 
 ### Features
