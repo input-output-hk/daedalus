@@ -53,6 +53,9 @@ export default class MainLayout extends Component {
         }).isRequired,
         activeSidebarCategory: PropTypes.string,
       }).isRequired,
+      app: PropTypes.shape({
+        currentRoute: PropTypes.string.isRequired,
+      }).isRequired,
     }).isRequired,
     actions: PropTypes.shape({
       router: PropTypes.shape({
@@ -81,7 +84,7 @@ export default class MainLayout extends Component {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, wallets, networkStatus } = stores;
+    const { sidebar, wallets, networkStatus, app } = stores;
     const { restoreRequest, isWalletKeyImportDialogOpen } = wallets;
     const {
       toggleAddWallet, toggleCreateWalletDialog, toggleWalletRestore
@@ -124,7 +127,11 @@ export default class MainLayout extends Component {
     );
 
     const topbar = (
-      <TopBar onToggleSidebar={actions.sidebar.toggleSubMenus} activeWallet={activeWallet}>
+      <TopBar
+        onToggleSidebar={actions.sidebar.toggleSubMenus}
+        activeWallet={activeWallet}
+        currentRoute={app.currentRoute}
+      >
         {testEnvironmentLabel}
         <NodeSyncStatusIcon
           isSynced={isSynced}
