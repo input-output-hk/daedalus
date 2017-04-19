@@ -26,7 +26,7 @@ export default function () {
 
   this.Given(/^The sidebar shows the "([^"]*)" category$/, async function (cat) {
     await this.client.execute(function(category) {
-      daedalus.actions.sidebar.activateSidebarCategory.trigger({ category, showSubMenus: true });
+      daedalus.actions.sidebar.activateSidebarCategory.trigger({ category });
     }, `/${cat}`);
     return this.client.waitForVisible(`.SidebarCategory_active.${cat}`);
   });

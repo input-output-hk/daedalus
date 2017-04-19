@@ -1,4 +1,3 @@
-@watch
 Feature: Select Language
 
   Scenario: User Selects Language
