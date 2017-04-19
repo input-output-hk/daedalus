@@ -2394,17 +2394,31 @@
         }
       },
       {
-        "defaultMessage": "!!!English",
-        "description": "Language name for \"English\" language.",
+        "defaultMessage": "!!!Invalid email entered, please check.",
+        "description": "Error message shown when invalid email was entered.",
         "end": {
           "column": 3,
           "line": 33
         },
         "file": "app/i18n/global-messages.js",
+        "id": "global.errors.invalidEmail",
+        "start": {
+          "column": 16,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!English",
+        "description": "Language name for \"English\" language.",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "app/i18n/global-messages.js",
         "id": "global.language.english",
         "start": {
           "column": 19,
-          "line": 29
+          "line": 34
         }
       },
       {
@@ -2412,13 +2426,13 @@
         "description": "Language name for \"Japanese\" language.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 43
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.japanese",
         "start": {
           "column": 20,
-          "line": 34
+          "line": 39
         }
       },
       {
@@ -2426,13 +2440,13 @@
         "description": "Language name for \"Chinese\" language.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 48
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.chinese",
         "start": {
           "column": 19,
-          "line": 39
+          "line": 44
         }
       },
       {
@@ -2440,13 +2454,13 @@
         "description": "Language name for \"Korean\" language.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 53
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.korean",
         "start": {
           "column": 18,
-          "line": 44
+          "line": 49
         }
       },
       {
@@ -2454,13 +2468,13 @@
         "description": "Language name for \"German\" language.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 58
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.german",
         "start": {
           "column": 18,
-          "line": 49
+          "line": 54
         }
       },
       {
@@ -2468,13 +2482,13 @@
         "description": "Language name for \"Croatian\" language.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 63
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.croatian",
         "start": {
           "column": 20,
-          "line": 54
+          "line": 59
         }
       },
       {
@@ -2482,13 +2496,13 @@
         "description": "Name for \"Normal\" transaction assurance security level.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 68
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.assuranceLevel.normal",
         "start": {
           "column": 24,
-          "line": 59
+          "line": 64
         }
       },
       {
@@ -2496,13 +2510,13 @@
         "description": "Name for \"Strict\" transaction assurance security level.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 73
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.assuranceLevel.strict",
         "start": {
           "column": 24,
-          "line": 64
+          "line": 69
         }
       },
       {
@@ -2510,13 +2524,13 @@
         "description": "Name for \"Ada\" unit.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 78
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.unit.ada",
         "start": {
           "column": 11,
-          "line": 69
+          "line": 74
         }
       },
       {
@@ -2524,13 +2538,13 @@
         "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 83
         },
         "file": "app/i18n/global-messages.js",
         "id": "wallet.transaction.assuranceLevel.low",
         "start": {
           "column": 32,
-          "line": 74
+          "line": 79
         }
       },
       {
@@ -2538,13 +2552,13 @@
         "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 88
         },
         "file": "app/i18n/global-messages.js",
         "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
           "column": 35,
-          "line": 79
+          "line": 84
         }
       },
       {
@@ -2552,13 +2566,13 @@
         "description": "Transaction assurance level \"high\".",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 93
         },
         "file": "app/i18n/global-messages.js",
         "id": "wallet.transaction.assuranceLevel.high",
         "start": {
           "column": 33,
-          "line": 84
+          "line": 89
         }
       }
     ],

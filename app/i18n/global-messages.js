@@ -26,6 +26,11 @@ export default defineMessages({
     defaultMessage: '!!!The ADA redemption code could not be parsed from the given document.',
     description: 'Error message shown when invalid Ada redemption certificate was uploaded.',
   },
+  invalidEmail: {
+    id: 'global.errors.invalidEmail',
+    defaultMessage: '!!!Invalid email entered, please check.',
+    description: 'Error message shown when invalid email was entered.'
+  },
   languageEnglish: {
     id: 'global.language.english',
     defaultMessage: '!!!English',

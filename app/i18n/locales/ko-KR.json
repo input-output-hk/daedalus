@@ -14,6 +14,7 @@
   "global.assuranceLevel.strict": "!!!Strict",
   "global.errors.AdaRedemptionCertificateParseError": "!!!The ADA redemption code could not be parsed from the given document.",
   "global.errors.fieldIsRequired": "!!!This field is required.",
+  "global.errors.invalidEmail": "!!!Invalid email entered, please check.",
   "global.errors.invalidMnemonic": "!!!Invalid phrase entered, please check.",
   "global.errors.invalidWalletName": "!!!The wallet name must have at least 3 letters.",
   "global.labels.cancel": "!!!Cancel",

@@ -14,6 +14,7 @@
   "global.assuranceLevel.strict": "厳重",
   "global.errors.AdaRedemptionCertificateParseError": "!!!The ADA redemption code could not be parsed from the given document.",
   "global.errors.fieldIsRequired": "このフィールドは必須です。",
+  "global.errors.invalidEmail": "!!!Invalid email entered, please check.",
   "global.errors.invalidMnemonic": "無効なパスフレーズが入力されました、再度確認してください。",
   "global.errors.invalidWalletName": "３文字以上のウォレット名を入力してください。",
   "global.labels.cancel": "キャンセル",
