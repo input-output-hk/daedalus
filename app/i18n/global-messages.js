@@ -21,6 +21,11 @@ export default defineMessages({
     defaultMessage: '!!!Invalid phrase entered, please check.',
     description: 'Error message shown when invalid bip39 mnemonic was entered.'
   },
+  invalidAdaRedemptionCertificate: {
+    id: 'global.errors.AdaRedemptionCertificateParseError',
+    defaultMessage: '!!!The ADA redemption code could not be parsed from the given document.',
+    description: 'Error message shown when invalid Ada redemption certificate was uploaded.',
+  },
   languageEnglish: {
     id: 'global.language.english',
     defaultMessage: '!!!English',
