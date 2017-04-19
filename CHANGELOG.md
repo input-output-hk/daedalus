@@ -7,7 +7,7 @@ Changelog
 
 ### Fixes
 
-- Hamburger button" and wallet's name are present on the "Ada redemption" and "Settings" screens
+- Wallet name on the send screen was hardcoded in Japanese translation
 
 ### Chores
 
