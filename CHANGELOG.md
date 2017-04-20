@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## vNEXT
+
+### Features
+
+- Improve sidebar toggling
+
+### Fixes
+
+### Chores
+
+
 ## 0.6.1
 
 ### Features
