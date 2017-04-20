@@ -1,6 +1,20 @@
 Changelog
 =========
 
+## vNEXT
+
+### Features
+
+- Improve sidebar toggling by adding automatic show/hide switching based on application window
+width where sidebar is hidden on widths lower and shown on widths larger than 1150px.
+In case user interacts with hamburger icon current sidebar visibility state is recorded and no
+longer changed regardless of the application window width.
+
+### Fixes
+
+### Chores
+
+
 ## 0.5.0
 
 ![Main Wallet screenshot in 0.5.0](screenshots/2016-11-24 release 0.5.0 main-wallet.png)
@@ -55,9 +69,9 @@ Changelog
 ### Features
 
 - Added wallet creation screen that appears when there is no wallet yet
-- Updated to the latest design specs and refactor to 
+- Updated to the latest design specs and refactor to
 [react-toolbox](http://react-toolbox.com/) instead of
-material-ui for the UI components. This gives us much better style 
+material-ui for the UI components. This gives us much better style
 customization and theming options.
 - Cleaned up the boilerplate app menus
 - Added basic form validations using [mobx-react-form](https://github.com/foxhound87/mobx-react-form)
@@ -65,7 +79,7 @@ customization and theming options.
 - Added wallet send / receive / transactions screens
 - Form submitting UX updated to the design specifications with introduction of button loading spinners
 and support for submitting the form with enter key
-- Added cut, copy & paste application menu items and keyboard shortcuts 
+- Added cut, copy & paste application menu items and keyboard shortcuts
 
 ### Fixes
 

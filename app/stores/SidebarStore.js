@@ -12,24 +12,19 @@ export default class SidebarStore extends Store {
     SETTINGS: ROUTES.SETTINGS.ROOT,
   };
 
-  INITIAL_HIDE_SUB_MENU_DELAY = 4000;
-  ACTION_HIDE_SUB_MENU_DELAY = 1000;
+  DEFAULT_WINDOW_WIDTH = 1150;
 
   @observable activeSidebarCategory: string = this.CATEGORIES.WALLETS;
-  @observable isShowingSubMenus: boolean = true;
-
-  _hideSubMenuTimeout = null;
+  @observable isShowingSubMenus: bool = false;
 
   setup() {
     const actions = this.actions.sidebar;
     actions.toggleSubMenus.listen(this._toggleSubMenus);
     actions.activateSidebarCategory.listen(this._onActivateSidebarCategory);
     actions.walletSelected.listen(this._onWalletSelected);
-    this.actions.networkStatus.isSyncedAndReady.listen(() => {
-      this._hideSubMenusAfterDelay(this.INITIAL_HIDE_SUB_MENU_DELAY);
-    });
     this.registerReactions([
       this._syncSidebarRouteWithRouter,
+      this._setInitialSubMenusState,
     ]);
   }
 
@@ -45,17 +40,11 @@ export default class SidebarStore extends Store {
 
   @action _toggleSubMenus = () => {
     this.isShowingSubMenus = !this.isShowingSubMenus;
-    this._clearExistingHideSubMenuTimeout();
-  };
-
-  @action _hideSubMenus = () => {
-    this.isShowingSubMenus = false;
-    this._clearExistingHideSubMenuTimeout();
+    window.removeEventListener('resize', this._handleWindowResize);
   };
 
   @action _onActivateSidebarCategory = (params: { category: string, showSubMenu?: boolean }) => {
     const { category, showSubMenu } = params;
-    this._clearExistingHideSubMenuTimeout();
     if (category !== this.activeSidebarCategory) {
       this.activeSidebarCategory = category;
       if (showSubMenu != null) this.isShowingSubMenus = showSubMenu;
@@ -68,18 +57,27 @@ export default class SidebarStore extends Store {
     }
   };
 
-  @action _hideSubMenusAfterDelay = (delay: number) => {
-    this._clearExistingHideSubMenuTimeout();
-    this._hideSubMenuTimeout = setTimeout(this._hideSubMenus, delay);
+  @action _handleWindowResize = () => {
+    if (document.documentElement.clientWidth < this.DEFAULT_WINDOW_WIDTH) {
+      this.isShowingSubMenus = false;
+    } else {
+      this.isShowingSubMenus = true;
+    }
   };
 
   @action _onWalletSelected = ({ walletId }: { walletId: string }) => {
     this.stores.wallets.goToWalletRoute(walletId);
-    this._hideSubMenusAfterDelay(this.ACTION_HIDE_SUB_MENU_DELAY);
   };
 
   @action _setActivateSidebarCategory = (category: string) => {
     this.activeSidebarCategory = category;
+  };
+
+  _setInitialSubMenusState = () => {
+    if (document.documentElement.clientWidth >= this.DEFAULT_WINDOW_WIDTH) {
+      this.isShowingSubMenus = true;
+    }
+    window.addEventListener('resize', this._handleWindowResize);
   };
 
   _syncSidebarRouteWithRouter = () => {
@@ -91,15 +89,11 @@ export default class SidebarStore extends Store {
     });
   };
 
-  _clearExistingHideSubMenuTimeout() {
-    if (this._hideSubMenuTimeout) clearTimeout(this._hideSubMenuTimeout);
-  }
-
 }
 
 export type SidebarWalletType = {
   id: string,
   title: string,
   info: string,
-  isConnected: boolean,
+  isConnected: bool,
 };
