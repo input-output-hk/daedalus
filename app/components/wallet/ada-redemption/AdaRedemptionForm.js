@@ -293,7 +293,9 @@ export default class AdaRedemptionForm extends Component {
     }
   }, {
     options: {
-      validateOnChange: false,
+      validateOnChange: true,
+      validationDebounceWait: 250,
+      validationDebounceOptions: { leading: false, },
     }
   });
 
@@ -354,7 +356,10 @@ export default class AdaRedemptionForm extends Component {
 
           <AdaRedemptionChoices
             activeChoice={redemptionType}
-            onSelectChoice={onChooseRedemptionType}
+            onSelectChoice={(choice: string) => {
+              redemptionKeyField.resetValidation();
+              onChooseRedemptionType(choice);
+            }}
           />
 
           <div className={styles.instructions}>
@@ -378,13 +383,7 @@ export default class AdaRedemptionForm extends Component {
               ) : (
                 <Input
                   className="shielded-redemption-key"
-                  {...shieldedRedemptionKeyField.bind({
-                    onBlur: event => {
-                      event.preventDefault();
-                      shieldedRedemptionKeyField.onBlur();
-                      shieldedRedemptionKeyField.validate();
-                    }
-                  })}
+                  {...shieldedRedemptionKeyField.bind()}
                   disabled={isCertificateSelected}
                 />
               )}
@@ -421,13 +420,7 @@ export default class AdaRedemptionForm extends Component {
             <div className={styles.passPhrase}>
               <Input
                 className="pass-phrase"
-                {...passPhrase.bind({
-                  onBlur: event => {
-                    event.preventDefault();
-                    passPhrase.onBlur();
-                    passPhrase.validate();
-                  }
-                })}
+                {...passPhrase.bind()}
               />
             </div>
           ) : null}
@@ -436,13 +429,7 @@ export default class AdaRedemptionForm extends Component {
             <div className={styles.email}>
               <Input
                 className="email"
-                {...emailField.bind({
-                  onBlur: event => {
-                    event.preventDefault();
-                    emailField.onBlur();
-                    emailField.validate();
-                  }
-                })}
+                {...emailField.bind()}
               />
             </div>
           ) : null}
@@ -451,13 +438,7 @@ export default class AdaRedemptionForm extends Component {
             <div className={styles.adaPasscode}>
               <Input
                 className="ada-passcode"
-                {...adaPasscodeField.bind({
-                  onBlur: event => {
-                    event.preventDefault();
-                    adaPasscodeField.onBlur();
-                    adaPasscodeField.validate();
-                  }
-                })}
+                {...adaPasscodeField.bind()}
               />
             </div>
           ) : null}
@@ -466,13 +447,7 @@ export default class AdaRedemptionForm extends Component {
             <div className={styles.adaAmount}>
               <Input
                 className="ada-amount"
-                {...adaAmountField.bind({
-                  onBlur: event => {
-                    event.preventDefault();
-                    adaAmountField.onBlur();
-                    adaAmountField.validate();
-                  }
-                })}
+                {...adaAmountField.bind()}
               />
             </div>
           ) : null}
