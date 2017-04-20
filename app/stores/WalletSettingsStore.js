@@ -5,7 +5,11 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import globalMessages from '../i18n/global-messages';
 import type { AssuranceMode } from '../types/transactionAssuranceTypes';
-import type { UpdateWalletResponse } from '../api';
+import type {
+  UpdateWalletResponse,
+  ChangeWalletPasswordResponse,
+  SetWalletPasswordResponse,
+} from '../api';
 
 export default class WalletSettingsStore extends Store {
 
@@ -17,9 +21,12 @@ export default class WalletSettingsStore extends Store {
   @observable updateWalletRequest: Request<UpdateWalletResponse> = new Request(
     this.api.updateWallet
   );
-  @observable changeWalletPasswordRequest = new Request(this.api, 'changeWalletPassword');
-  @observable setWalletPasswordRequest = new Request(this.api, 'setWalletPassword');
-  @observable updateWalletRequest = new Request(this.api, 'updateWallet');
+
+  /* eslint-disable max-len */
+  @observable changeWalletPasswordRequest: Request<ChangeWalletPasswordResponse> = new Request(this.api.changeWalletPassword);
+  @observable setWalletPasswordRequest: Request<SetWalletPasswordResponse> = new Request(this.api.setWalletPassword);
+  @observable updateWalletRequest: Request<UpdateWalletResponse> = new Request(this.api.updateWallet);
+  /* eslint-enable max-len */
 
   setup() {
     const a = this.actions.walletSettings;

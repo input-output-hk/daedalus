@@ -143,4 +143,5 @@ export type Api = {
   updateWallet(request: UpdateWalletRequest): Promise<UpdateWalletResponse>,
   testReset(): void,
   changeWalletPassword(request: ChangeWalletPasswordRequest): Promise<ChangeWalletPasswordResponse>,
+  setWalletPassword(request: SetWalletPasswordRequest): Promise<SetWalletPasswordResponse>,
 };

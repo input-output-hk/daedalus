@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-toolbox/lib/input/Input';
@@ -49,14 +49,14 @@ const messages = defineMessages({
 @observer
 export default class ChangeWalletPasswordDialog extends Component {
 
-  static propTypes = {
-    hasWalletPassword: PropTypes.bool.isRequired,
-    currentPasswordValue: PropTypes.string,
-    newPasswordValue: PropTypes.string,
-    repeatedPasswordValue: PropTypes.string,
-    onSave: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired,
-    onDataChange: PropTypes.func.isRequired,
+  props: {
+    hasWalletPassword: boolean,
+    currentPasswordValue: string,
+    newPasswordValue: string,
+    repeatedPasswordValue: string,
+    onSave: Function,
+    onCancel: Function,
+    onDataChange: Function,
   };
 
   static defaultProps = {

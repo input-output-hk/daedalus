@@ -39,7 +39,7 @@ export default class ChangeWalletPasswordDialogContainer extends Component {
           }
           actions.dialogs.resetActiveDialog.trigger();
         }}
-        onCancel={actions.dialogs.closeActiveDialog}
+        onCancel={actions.dialogs.closeActiveDialog.trigger}
         onDataChange={data => {
           updateDataForActiveDialog.trigger({ data });
         }}
