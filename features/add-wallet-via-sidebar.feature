@@ -24,4 +24,5 @@ Feature: Add Wallet via Sidebar
     And I click on the "Accept terms" checkboxes
     And I submit the create wallet recovery phrase entry dialog
     Then I should not see the create wallet recovery phrase entry dialog anymore
+    And I should have newly created "Test" wallet loaded
     And I should be on the "Test" wallet "summary" screen

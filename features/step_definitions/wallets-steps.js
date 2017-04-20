@@ -148,8 +148,11 @@ export default function () {
     return this.waitAndClick('.WalletRecoveryPhraseEntryDialog .dialog_button');
   });
 
-  this.Then(/^I should not see the create wallet recovery phrase entry dialog anymore$/, async function () {
-    await this.client.waitForVisible('.WalletRecoveryPhraseEntryDialog', null, true);
+  this.Then(/^I should not see the create wallet recovery phrase entry dialog anymore$/, function () {
+    return this.client.waitForVisible('.WalletRecoveryPhraseEntryDialog', null, true);
+  });
+
+  this.Then(/^I should have newly created "Test" wallet loaded$/, async function () {
     const result = await this.client.executeAsync(function(done) {
       daedalus.stores.wallets.walletsRequest.invalidate().execute().then(done);
     });
