@@ -1,29 +1,17 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import Request from '../../../stores/lib/Request';
 import GeneralSettings from '../../../components/settings/categories/GeneralSettings';
+import type { InjectedProps } from '../../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
 export default class GeneralSettingsPage extends Component {
 
-  static propTypes = {
-    actions: PropTypes.shape({
-      profile: PropTypes.shape({
-        updateLocale: PropTypes.func.isRequired,
-      }).isRequired,
-    }).isRequired,
-    stores: PropTypes.shape({
-      app: PropTypes.shape({
-        setProfileLocaleRequest: PropTypes.instanceOf(Request).isRequired,
-        LANGUAGE_OPTIONS: PropTypes.array.isRequired,
-        currentLocale: PropTypes.string.isRequired,
-      }).isRequired,
-    }).isRequired,
-  };
+  static defaultProps = { actions: null, stores: null };
+  props: InjectedProps;
 
   onSelectLanguage = (values: { locale: string }) => {
-    this.props.actions.profile.updateLocale(values);
+    this.props.actions.profile.updateLocale.trigger(values);
   };
 
   render() {

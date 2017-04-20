@@ -1,12 +1,12 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import closeCross from '../../assets/images/close-cross.svg';
 import styles from './DialogCloseButton.scss';
 
 export default class DialogCloseButton extends Component {
 
-  static propTypes = {
-    onClose: PropTypes.func.isRequired,
-    icon: PropTypes.string,
+  props: {
+    onClose: Function,
+    icon: string,
   };
 
   render() {

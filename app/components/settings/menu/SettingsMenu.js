@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import SettingsMenuItem from './SettingsMenuItem';
@@ -17,9 +17,9 @@ const messages = defineMessages({
 @observer
 export default class SettingsMenu extends Component {
 
-  static propTypes = {
-    isActiveItem: PropTypes.func.isRequired,
-    onItemClick: PropTypes.func.isRequired
+  props: {
+    isActiveItem: Function,
+    onItemClick: Function,
   };
 
   static contextTypes = {

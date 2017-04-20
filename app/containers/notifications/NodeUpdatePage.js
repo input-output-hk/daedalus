@@ -1,45 +1,26 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import NodeUpdateNotification from '../../components/notifications/NodeUpdateNotification';
+import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
 export default class NodeUpdatePage extends Component {
 
-  static propTypes = {
-    stores: PropTypes.shape({
-      nodeUpdate: PropTypes.shape({
-        isNotificationExpanded: PropTypes.bool.isRequired,
-        updateTitle: PropTypes.string.isRequired,
-      }),
-    }).isRequired,
-    actions: PropTypes.shape({
-      nodeUpdate: PropTypes.shape({
-        acceptNodeUpdate: PropTypes.func.isRequired,
-        postponeNodeUpdate: PropTypes.func.isRequired,
-        toggleNodeUpdateNotificationExpanded: PropTypes.func.isRequired,
-      }),
-    }).isRequired
-  };
+  static defaultProps = { actions: null, stores: null };
+  props: InjectedProps;
 
   render() {
-    const {
-      isNotificationExpanded,
-      updateTitle,
-    } = this.props.stores.nodeUpdate;
-    const {
-      acceptNodeUpdate,
-      postponeNodeUpdate,
-      toggleNodeUpdateNotificationExpanded
-    } = this.props.actions.nodeUpdate;
+    const store = this.props.stores.nodeUpdate;
+    const actions = this.props.actions.nodeUpdate;
 
     return (
       <NodeUpdateNotification
-        title={updateTitle}
-        onAccept={acceptNodeUpdate}
-        onPostpone={postponeNodeUpdate}
-        onToggleExpanded={toggleNodeUpdateNotificationExpanded}
-        isExpanded={isNotificationExpanded}
+        title={store.updateTitle}
+        onAccept={actions.acceptNodeUpdate.trigger}
+        onPostpone={actions.postponeNodeUpdate.trigger}
+        onToggleExpanded={actions.toggleNodeUpdateNotificationExpanded.trigger}
+        isExpanded={store.isNotificationExpanded}
       />
     );
   }

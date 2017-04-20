@@ -1,14 +1,14 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import type { Children } from 'react';
 import classNames from 'classnames';
-import { oneOrManyChildElements } from '../../propTypes';
 import styles from './NotificationMessage.scss';
 
 export default class NotificationMessage extends Component {
 
-  static propTypes = {
-    icon: PropTypes.string,
-    show: PropTypes.bool.isRequired,
-    children: oneOrManyChildElements.isRequired,
+  props: {
+    icon: string,
+    show: boolean,
+    children?: Children,
   };
 
   render() {

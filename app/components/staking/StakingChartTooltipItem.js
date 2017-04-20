@@ -1,14 +1,14 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import styles from './StakingChartTooltipItem.scss';
 
 @observer
 export default class StakingChartTooltipItem extends Component {
 
-  static propTypes = {
-    value: PropTypes.string.isRequired,
-    label: PropTypes.string.isRequired
+  props: {
+    value: string,
+    label: string
   };
 
   render() {

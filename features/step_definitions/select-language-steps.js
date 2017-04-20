@@ -3,7 +3,7 @@ import { expect } from 'chai';
 export default function () {
   this.Given(/^I have selected English language$/, async function () {
     await this.client.execute(locale => {
-      daedalus.actions.profile.updateLocale({ locale });
+      daedalus.actions.profile.updateLocale.trigger({ locale });
     }, 'en-US');
   });
 
@@ -35,7 +35,7 @@ export default function () {
 
   this.Then(/^I should have Japanese language set$/, async function () {
     const result = await this.client.executeAsync(function(done) {
-      daedalus.stores.app.getProfileLocaleRequest.execute().then((locale) => done(locale));
+      daedalus.stores.app.getProfileLocaleRequest.execute().then(done);
     });
     expect(result.value).to.equal('ja-JP');
   });

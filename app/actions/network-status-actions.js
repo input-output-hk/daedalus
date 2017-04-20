@@ -1,5 +1,8 @@
-import defineActions from './lib/actions';
+// @flow
+import Action from './lib/Action';
 
-export default defineActions({
-  isSyncedAndReady: {},
-});
+// ======= NETWORK STATUS ACTIONS =======
+
+export default class NetworkStatusActions {
+  isSyncedAndReady: Action<any> = new Action();
+}

@@ -14,7 +14,7 @@ import CardanoClientApi from './api/CardanoClientApi';
 import environment from './environment';
 import setupStores from './stores';
 import actions from './actions';
-import { resetAllActions } from './actions/lib/actions';
+import Action from './actions/lib/Action';
 import translations from './i18n/translations';
 import './themes/index.global.scss';
 
@@ -36,7 +36,7 @@ const initializeDaedalus = () => {
     stores,
     translations,
     reset: action(() => {
-      resetAllActions();
+      Action.resetAllActions();
       api.reset();
       setupStores(api, actions, router);
     }),

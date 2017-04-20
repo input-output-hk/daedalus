@@ -1,16 +1,14 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import type { Element } from 'react';
 import { Checkbox } from 'react-toolbox';
 import styles from './CheckboxWithLongLabel.scss';
 
 export default class CheckboxWithLongLabel extends Component {
 
-  static propTypes = {
-    label: PropTypes.oneOfType([
-      PropTypes.string,
-      PropTypes.element
-    ]).isRequired,
-    checked: PropTypes.bool.isRequired,
-    onChange: PropTypes.func.isRequired
+  props: {
+    label: string | Element<any>,
+    checked: boolean,
+    onChange: Function
   };
 
   render() {

@@ -1,12 +1,12 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
-import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
+import React, { Component } from 'react';
+import { observer } from 'mobx-react';
 import { isEmail, isEmpty } from 'validator';
 import classnames from 'classnames';
-import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import Button from 'react-toolbox/lib/button/Button';
 import Input from 'react-toolbox/lib/input/Input';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import Dropup from '../../widgets/forms/Dropup';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import AdaCertificateUploadWidget from '../../widgets/forms/AdaCertificateUploadWidget';
 import AdaRedemptionChoices from './AdaRedemptionChoices';
@@ -144,32 +144,29 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 @observer
 export default class AdaRedemptionForm extends Component {
 
-  static propTypes = {
-    wallets: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.shape({
-      value: PropTypes.string.isRequired,
-      label: PropTypes.string.isRequired,
-    })).isRequired,
-    onChooseRedemptionType: PropTypes.func.isRequired,
-    onCertificateSelected: PropTypes.func.isRequired,
-    onRemoveCertificate: PropTypes.func.isRequired,
-    onPassPhraseChanged: PropTypes.func.isRequired,
-    onEmailChanged: PropTypes.func.isRequired,
-    onAdaPasscodeChanged: PropTypes.func.isRequired,
-    onAdaAmountChanged: PropTypes.func.isRequired,
-    onRedemptionCodeChanged: PropTypes.func.isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    redemptionType: PropTypes.string.isRequired,
-    redemptionCodeValidator: PropTypes.func.isRequired,
-    postVendRedemptionCodeValidator: PropTypes.func.isRequired,
-    mnemonicValidator: PropTypes.func.isRequired,
-    isSubmitting: PropTypes.bool.isRequired,
-    isCertificateSelected: PropTypes.bool.isRequired,
-    isCertificateEncrypted: PropTypes.bool.isRequired,
-    showInputsForDecryptingForceVendedCertificate: PropTypes.bool.isRequired,
-    showPassPhraseWidget: PropTypes.bool.isRequired,
-    isCertificateInvalid: PropTypes.bool,
-    redemptionCode: PropTypes.string,
-    error: PropTypes.instanceOf(LocalizableError),
+  props: {
+    wallets: Array<{ value: string, label: string }>,
+    onChooseRedemptionType: Function,
+    onCertificateSelected: Function,
+    onRemoveCertificate: Function,
+    onPassPhraseChanged: Function,
+    onEmailChanged: Function,
+    onAdaPasscodeChanged: Function,
+    onAdaAmountChanged: Function,
+    onRedemptionCodeChanged: Function,
+    onSubmit: Function,
+    redemptionType: string,
+    postVendRedemptionCodeValidator: Function,
+    redemptionCodeValidator: Function,
+    mnemonicValidator: Function,
+    isSubmitting: boolean,
+    isCertificateSelected: boolean,
+    isCertificateEncrypted: boolean,
+    showInputsForDecryptingForceVendedCertificate: boolean,
+    showPassPhraseWidget: boolean,
+    isCertificateInvalid: boolean,
+    redemptionCode: ?string,
+    error: ?LocalizableError,
   };
 
   static contextTypes = {
@@ -392,7 +389,7 @@ export default class AdaRedemptionForm extends Component {
                 />
               )}
 
-              <Dropdown
+              <Dropup
                 className="wallet"
                 source={wallets}
                 {...walletId.bind()}

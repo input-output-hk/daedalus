@@ -1,14 +1,16 @@
 // @flow
 import React, { Component } from 'react';
+import type { Children } from 'react';
 import { observer } from 'mobx-react';
 import styles from './CenteredLayout.scss';
-import { oneOrManyChildElements } from '../../propTypes';
 
 @observer
 export default class CenteredLayout extends Component {
 
-  static propTypes = {
-    children: oneOrManyChildElements,
+  static defaultProps = { children: null };
+
+  props: {
+    children: Children,
   };
 
   render() {

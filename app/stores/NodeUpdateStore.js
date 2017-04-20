@@ -1,8 +1,9 @@
 // @flow
 import { observable, action } from 'mobx';
 import Store from './lib/Store';
-import Request from './lib/Request';
+import Request from './lib/LocalizedRequest';
 import environment from '../environment';
+import type { NextUpdateResponse, ApplyUpdateResponse } from '../api';
 
 export default class NodeUpdateStore extends Store {
 
@@ -14,8 +15,8 @@ export default class NodeUpdateStore extends Store {
   @observable isUpdateInstalled = false;
   @observable updateTitle = '';
   @observable updateVersion = null;
-  @observable nextUpdateRequest = new Request(this.api, 'nextUpdate');
-  @observable applyUpdateRequest = new Request(this.api, 'applyUpdate');
+  @observable nextUpdateRequest: Request<NextUpdateResponse> = new Request(this.api.nextUpdate);
+  @observable applyUpdateRequest: Request<ApplyUpdateResponse> = new Request(this.api.applyUpdate);
 
   setup() {
     const actions = this.actions.nodeUpdate;

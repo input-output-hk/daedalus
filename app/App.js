@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { Provider, observer } from 'mobx-react';
 import { ThemeProvider } from 'react-css-themr';
 import DevTools from 'mobx-react-devtools';
@@ -9,14 +9,16 @@ import Routes from './Routes';
 import { daedalusTheme } from './themes/daedalus';
 import environment from './environment';
 import translations from './i18n/translations';
+import type { StoresMap } from './stores/index';
+import type { ActionsMap } from './actions/index';
 
 @observer
 export default class App extends Component {
 
-  static propTypes = {
-    stores: PropTypes.shape({}).isRequired,
-    actions: PropTypes.shape({}).isRequired,
-    history: PropTypes.shape({}).isRequired,
+  props: {
+    stores: StoresMap,
+    actions: ActionsMap,
+    history: Object,
   };
 
   render() {

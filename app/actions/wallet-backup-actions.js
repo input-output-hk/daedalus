@@ -1,21 +1,18 @@
-import PropTypes from 'prop-types';
-import { PropTypes as MobxPropTypes } from 'mobx-react';
-import defineActions from './lib/actions';
+// @flow
+import Action from './lib/Action';
 
-export default defineActions({
-  startWalletBackup: {},
-  initiateWalletBackup: {
-    recoveryPhrase: MobxPropTypes.arrayOrObservableArray.isRequired,
-  },
-  acceptPrivacyNoticeForWalletBackup: {},
-  continueToRecoveryPhraseForWalletBackup: {},
-  addWordToWalletBackupVerification: {
-    word: PropTypes.string.isRequired
-  },
-  clearEnteredRecoveryPhrase: {},
-  acceptWalletBackupTermDevice: {},
-  acceptWalletBackupTermRecovery: {},
-  restartWalletBackup: {},
-  cancelWalletBackup: {},
-  finishWalletBackup: {},
-});
+// ======= WALLET BACKUP ACTIONS =======
+
+export default class WalletBackupActions {
+  startWalletBackup: Action<any> = new Action();
+  initiateWalletBackup: Action<{ recoveryPhrase: string[] }> = new Action();
+  acceptPrivacyNoticeForWalletBackup: Action<any> = new Action();
+  continueToRecoveryPhraseForWalletBackup: Action<any> = new Action();
+  addWordToWalletBackupVerification: Action<{ word: string }> = new Action();
+  clearEnteredRecoveryPhrase: Action<any> = new Action();
+  acceptWalletBackupTermDevice: Action<any> = new Action();
+  acceptWalletBackupTermRecovery: Action<any> = new Action();
+  restartWalletBackup: Action<any> = new Action();
+  cancelWalletBackup: Action<any> = new Action();
+  finishWalletBackup: Action<any> = new Action();
+}

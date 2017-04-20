@@ -1,27 +1,45 @@
-import walletsActions from './wallets-actions';
-import routerActions from './router-actions';
-import adaRedemptionActions from './ada-redemption-actions';
-import walletBackupActions from './wallet-backup-actions';
-import transactionsActions from './transactions-actions';
-import nodeUpdateActions from './node-update-actions';
-import sidebarActions from './sidebar-actions';
-import windowActions from './window-actions';
-import networkStatusActions from './network-status-actions';
-import profileActions from './profile-actions';
-import walletSettingsActions from './wallet-settings-actions';
-import dialogsActions from './dialogs-actions';
+// @flow
+import WalletsActions from './wallets-actions';
+import RouterActions from './router-actions';
+import AdaRedemptionActions from './ada-redemption-actions';
+import WalletBackupActions from './wallet-backup-actions';
+import TransactionsActions from './transactions-actions';
+import NodeUpdateActions from './node-update-actions';
+import SidebarActions from './sidebar-actions';
+import WindowActions from './window-actions';
+import NetworkStatusActions from './network-status-actions';
+import ProfileActions from './profile-actions';
+import WalletSettingsActions from './wallet-settings-actions';
+import DialogsActions from './dialogs-actions';
 
-export default {
-  router: routerActions,
-  wallets: walletsActions,
-  adaRedemption: adaRedemptionActions,
-  walletBackup: walletBackupActions,
-  transactions: transactionsActions,
-  nodeUpdate: nodeUpdateActions,
-  sidebar: sidebarActions,
-  window: windowActions,
-  networkStatus: networkStatusActions,
-  profile: profileActions,
-  walletSettings: walletSettingsActions,
-  dialogs: dialogsActions,
+export type ActionsMap = {
+  router: RouterActions,
+  wallets: WalletsActions,
+  adaRedemption: AdaRedemptionActions,
+  walletBackup: WalletBackupActions,
+  transactions: TransactionsActions,
+  nodeUpdate: NodeUpdateActions,
+  sidebar: SidebarActions,
+  window: WindowActions,
+  networkStatus: NetworkStatusActions,
+  profile: ProfileActions,
+  walletSettings: WalletSettingsActions,
+  dialogs: DialogsActions,
 };
+
+const actionsMap: ActionsMap = {
+  router: new RouterActions(),
+  wallets: new WalletsActions(),
+  adaRedemption: new AdaRedemptionActions(),
+  walletBackup: new WalletBackupActions(),
+  transactions: new TransactionsActions(),
+  nodeUpdate: new NodeUpdateActions(),
+  sidebar: new SidebarActions(),
+  window: new WindowActions(),
+  networkStatus: new NetworkStatusActions(),
+  profile: new ProfileActions(),
+  walletSettings: new WalletSettingsActions(),
+  dialogs: new DialogsActions(),
+};
+
+export default actionsMap;

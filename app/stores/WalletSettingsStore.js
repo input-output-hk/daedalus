@@ -2,9 +2,14 @@
 import { observable, action } from 'mobx';
 import _ from 'lodash';
 import Store from './lib/Store';
-import Request from './lib/Request';
+import Request from './lib/LocalizedRequest';
 import globalMessages from '../i18n/global-messages';
 import type { AssuranceMode } from '../types/transactionAssuranceTypes';
+import type {
+  UpdateWalletResponse,
+  ChangeWalletPasswordResponse,
+  SetWalletPasswordResponse,
+} from '../api';
 
 export default class WalletSettingsStore extends Store {
 
@@ -13,9 +18,15 @@ export default class WalletSettingsStore extends Store {
     { value: 'CWAStrict', label: globalMessages.assuranceLevelStrict },
   ];
 
-  @observable changeWalletPasswordRequest = new Request(this.api, 'changeWalletPassword');
-  @observable setWalletPasswordRequest = new Request(this.api, 'setWalletPassword');
-  @observable updateWalletRequest = new Request(this.api, 'updateWallet');
+  @observable updateWalletRequest: Request<UpdateWalletResponse> = new Request(
+    this.api.updateWallet
+  );
+
+  /* eslint-disable max-len */
+  @observable changeWalletPasswordRequest: Request<ChangeWalletPasswordResponse> = new Request(this.api.changeWalletPassword);
+  @observable setWalletPasswordRequest: Request<SetWalletPasswordResponse> = new Request(this.api.setWalletPassword);
+  @observable updateWalletRequest: Request<UpdateWalletResponse> = new Request(this.api.updateWallet);
+  /* eslint-enable max-len */
 
   setup() {
     const a = this.actions.walletSettings;
@@ -25,7 +36,9 @@ export default class WalletSettingsStore extends Store {
   }
 
   @action _updateWalletAssuranceLevel = async ({ assurance }: { assurance: AssuranceMode }) => {
-    const { id: walletId, type, currency, name } = this.stores.wallets.active;
+    const activeWallet = this.stores.wallets.active;
+    if (!activeWallet) return;
+    const { id: walletId, type, currency, name } = activeWallet;
     await this.updateWalletRequest.execute({ walletId, type, currency, name, assurance });
     await this.stores.wallets.walletsRequest.patch(result => {
       const wallet = _.find(result, { id: walletId });

@@ -64,7 +64,7 @@ export default function () {
   this.Given(/^the active wallet is "([^"]*)"$/, function (walletName) {
     const wallet = getWalletByName.call(this, walletName);
     this.client.execute(walletId => {
-      daedalus.actions.setActiveWallet({ walletId });
+      daedalus.actions.setActiveWallet.trigger({ walletId });
     }, wallet.id);
   });
 

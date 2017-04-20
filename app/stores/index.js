@@ -13,8 +13,24 @@ import NodeUpdateStore from './NodeUpdateStore';
 import WalletSettingsStore from './WalletSettingsStore';
 import UiDialogsStore from './UiDialogsStore';
 
-const storeClasses = {
+export const storeClasses = {
   app: AppStore,
+  settings: SettingsStore,
+  wallets: WalletsStore,
+  transactions: TransactionsStore,
+  sidebar: SidebarStore,
+  window: WindowStore,
+  walletBackup: WalletBackupStore,
+  networkStatus: NetworkStatusStore,
+  adaRedemption: AdaRedemptionStore,
+  nodeUpdate: NodeUpdateStore,
+  walletSettings: WalletSettingsStore,
+  uiDialogs: UiDialogsStore,
+};
+
+export type StoresMap = {
+  app: AppStore,
+  router: Object,
   settings: SettingsStore,
   wallets: WalletsStore,
   transactions: TransactionsStore,
@@ -46,7 +62,7 @@ const stores = observable({
 });
 
 // Set up and return the stores for this app -> also used to reset all stores to defaults
-export default action((api, actions, router): storesType => {
+export default action((api, actions, router): StoresMap => {
   // Assign mobx-react-router only once
   if (stores.router == null) stores.router = router;
   // All other stores have our lifecycle
@@ -56,18 +72,3 @@ export default action((api, actions, router): storesType => {
   storeNames.forEach(name => { if (stores[name]) stores[name].initialize(); });
   return stores;
 });
-
-export type storesType = {
-  app: AppStore,
-  settings: SettingsStore,
-  wallets: WalletsStore,
-  transactions: TransactionsStore,
-  sidebar: SidebarStore,
-  window: WindowStore,
-  walletBackup: WalletBackupStore,
-  networkStatus: NetworkStatusStore,
-  adaRedemption: AdaRedemptionStore,
-  nodeUpdate: NodeUpdateStore,
-  walletSettings: WalletSettingsStore,
-  uiDialogs: UiDialogsStore,
-};

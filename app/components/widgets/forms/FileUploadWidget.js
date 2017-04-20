@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import Dropzone from 'react-dropzone';
 import attachIcon from '../../../assets/images/attach-ic.svg';
@@ -8,12 +8,12 @@ import styles from './FileUploadWidget.scss';
 @observer
 export default class FileUploadWidget extends Component {
 
-  static propTypes = {
-    label: PropTypes.string.isRequired,
-    hint: PropTypes.string.isRequired,
-    onFileSelected: PropTypes.func.isRequired,
-    selectedFile: PropTypes.instanceOf(File),
-    acceptedFileTypes: PropTypes.string,
+  props: {
+    label: string,
+    hint: string,
+    onFileSelected: Function,
+    selectedFile: File,
+    acceptedFileTypes: string,
   };
 
   onDrop = (files: [File]) => {

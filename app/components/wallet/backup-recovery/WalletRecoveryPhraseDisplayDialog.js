@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
@@ -31,10 +31,10 @@ const messages = defineMessages({
 @observer
 export default class WalletRecoveryPhraseDisplayDialog extends Component {
 
-  static propTypes = {
-    recoveryPhrase: PropTypes.string.isRequired,
-    onStartWalletBackup: PropTypes.func.isRequired,
-    onCancelBackup: PropTypes.func.isRequired,
+  props: {
+    recoveryPhrase: string,
+    onStartWalletBackup: Function,
+    onCancelBackup: Function,
   };
 
   static contextTypes = {

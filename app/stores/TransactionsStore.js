@@ -3,8 +3,9 @@ import { observable, computed, action, extendObservable } from 'mobx';
 import _ from 'lodash';
 import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
-import CachedRequest from './lib/CachedRequest';
+import CachedRequest from './lib/LocalizedCachedRequest';
 import WalletTransaction from '../domain/WalletTransaction';
+import type { GetTransactionsResponse } from '../api';
 
 export default class TransactionsStore extends Store {
 
@@ -15,8 +16,8 @@ export default class TransactionsStore extends Store {
 
   @observable transactionsRequests: Array<{
     walletId: string,
-    recentRequest: [CachedRequest],
-    allRequest: [CachedRequest]
+    recentRequest: CachedRequest<GetTransactionsResponse>,
+    allRequest: CachedRequest<GetTransactionsResponse>
   }> = [];
 
   @observable _searchOptionsForWallets = {};
@@ -39,15 +40,17 @@ export default class TransactionsStore extends Store {
     }
   };
 
-  @computed get recentTransactionsRequest(): CachedRequest {
+  @computed get recentTransactionsRequest(): CachedRequest<GetTransactionsResponse> {
     const wallet = this.stores.wallets.active;
-    if (!wallet) return new CachedRequest(this.api, 'getTransactions'); // TODO: Do not return new request here
+    // TODO: Do not return new request here
+    if (!wallet) return new CachedRequest(this.api.getTransactions);
     return this._getTransactionsRecentRequest(wallet.id);
   }
 
-  @computed get searchRequest(): CachedRequest {
+  @computed get searchRequest(): CachedRequest<GetTransactionsResponse> {
     const wallet = this.stores.wallets.active;
-    if (!wallet) return new CachedRequest(this.api, 'getTransactions'); // TODO: Do not return new request here
+    // TODO: Do not return new request here
+    if (!wallet) return new CachedRequest(this.api.getTransactions);
     return this._getTransactionsAllRequest(wallet.id);
   }
 
@@ -89,14 +92,14 @@ export default class TransactionsStore extends Store {
     return result ? result.transactions.slice(0, this.RECENT_TRANSACTIONS_LIMIT) : [];
   }
 
-  @computed get hasAnyFiltered(): bool {
+  @computed get hasAnyFiltered(): boolean {
     const wallet = this.stores.wallets.active;
     if (!wallet) return false;
     const result = this._getTransactionsAllRequest(wallet.id).result;
     return result ? result.transactions.length > 0 : false;
   }
 
-  @computed get hasAny(): bool {
+  @computed get hasAny(): boolean {
     const wallet = this.stores.wallets.active;
     if (!wallet) return false;
     const result = this._getTransactionsRecentRequest(wallet.id).result;
@@ -110,7 +113,7 @@ export default class TransactionsStore extends Store {
     return result ? result.transactions.length : 0;
   }
 
-  @computed get totalUnconfirmedAmount(): number {
+  @computed get totalUnconfirmedAmount(): BigNumber {
     let unconfirmedAmount = new BigNumber(0);
     const wallet = this.stores.wallets.active;
     if (!wallet) return unconfirmedAmount;
@@ -157,14 +160,16 @@ export default class TransactionsStore extends Store {
     }
   };
 
-  _getTransactionsRecentRequest = (walletId: string) => {
+  _getTransactionsRecentRequest = (walletId: string): CachedRequest<GetTransactionsResponse> => {
     const foundRequest = _.find(this.transactionsRequests, { walletId });
-    return foundRequest && foundRequest.recentRequest ? foundRequest.recentRequest : new CachedRequest(this.api, 'getTransactions');
+    if (foundRequest && foundRequest.recentRequest) return foundRequest.recentRequest;
+    return new CachedRequest(this.api.getTransactions);
   };
 
-  _getTransactionsAllRequest = (walletId: string) => {
+  _getTransactionsAllRequest = (walletId: string): CachedRequest<GetTransactionsResponse> => {
     const foundRequest = _.find(this.transactionsRequests, { walletId });
-    return foundRequest && foundRequest.allRequest ? foundRequest.allRequest : new CachedRequest(this.api, 'getTransactions');
+    if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
+    return new CachedRequest(this.api.getTransactions);
   };
 
 }

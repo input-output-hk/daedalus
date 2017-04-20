@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -18,13 +18,13 @@ const messages = defineMessages({
 @observer
 export default class AdaRedemptionSuccessOverlay extends Component {
 
-  static contextTypes = {
-    intl: intlShape.isRequired
+  props: {
+    amount: number,
+    onClose: Function,
   };
 
-  static propTypes = {
-    amount: PropTypes.string.isRequired,
-    onClose: PropTypes.func.isRequired,
+  static contextTypes = {
+    intl: intlShape.isRequired
   };
 
   render() {

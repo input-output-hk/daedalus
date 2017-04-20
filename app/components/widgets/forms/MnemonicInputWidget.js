@@ -1,16 +1,16 @@
-import React, { Component, PropTypes } from 'react';
-import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
+import React, { Component } from 'react';
+import { observer } from 'mobx-react';
 import Input from 'react-toolbox/lib/input/Input';
 import styles from './MnemonicInputWidget.scss';
 
 @observer
 export default class MnemonicInputWidget extends Component {
 
-  static propTypes = {
-    label: PropTypes.string.isRequired,
-    tokens: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.string.isRequired).isRequired,
-    onTokenChanged: PropTypes.func.isRequired,
-    error: PropTypes.string,
+  props: {
+    label: string,
+    tokens: Array<string>,
+    onTokenChanged: Function,
+    error: string,
   };
 
   render() {

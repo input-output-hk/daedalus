@@ -39,7 +39,7 @@ export default class WalletBackupStore extends Store {
 
   @action _initiateWalletBackup = (params: { recoveryPhrase: Array<string> }) => {
     this.recoveryPhrase = params.recoveryPhrase;
-    this.actions.wallets.toggleCreateWalletDialog();
+    this.actions.wallets.toggleCreateWalletDialog.trigger();
     this.inProgress = true;
     this.currentStep = 'privacyWarning';
     this.recoveryPhraseWords = this.recoveryPhrase.map(word => ({ word }));
@@ -89,7 +89,7 @@ export default class WalletBackupStore extends Store {
     );
   };
 
-  @computed get isRecoveryPhraseValid(): bool {
+  @computed get isRecoveryPhraseValid(): boolean {
     return (
       this.recoveryPhraseWords.reduce((words, { word }) => words + word, '') ===
       this.enteredPhrase.reduce((words, { word }) => words + word, '')

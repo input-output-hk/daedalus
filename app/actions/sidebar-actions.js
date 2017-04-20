@@ -1,13 +1,10 @@
-import PropTypes from 'prop-types';
-import defineActions from './lib/actions';
+// @flow
+import Action from './lib/Action';
 
-export default defineActions({
-  toggleSubMenus: {},
-  activateSidebarCategory: {
-    category: PropTypes.string.isRequired,
-    showSubMenus: PropTypes.bool,
-  },
-  walletSelected: {
-    walletId: PropTypes.string.isRequired,
-  }
-});
+// ======= SIDEBAR ACTIONS =======
+
+export default class SidebarActions {
+  toggleSubMenus: Action<any> = new Action();
+  activateSidebarCategory: Action<{ category: string, showSubMenu?: boolean }> = new Action();
+  walletSelected: Action<{ walletId: string }> = new Action();
+}

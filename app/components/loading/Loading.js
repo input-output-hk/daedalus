@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
@@ -39,18 +39,18 @@ const messages = defineMessages({
 @observer
 export default class Loading extends Component {
 
-  static contextTypes = {
-    intl: intlShape.isRequired,
+  props: {
+    isConnecting: boolean,
+    hasBeenConnected: boolean,
+    isSyncing: boolean,
+    hasBlockSyncingStarted: boolean,
+    isLoadingWallets: boolean,
+    syncPercentage: number,
+    hasLoadedCurrentLocale: boolean,
   };
 
-  static propTypes = {
-    isConnecting: PropTypes.bool.isRequired,
-    hasBeenConnected: PropTypes.bool.isRequired,
-    isSyncing: PropTypes.bool.isRequired,
-    hasBlockSyncingStarted: PropTypes.bool.isRequired,
-    isLoadingWallets: PropTypes.bool.isRequired,
-    syncPercentage: PropTypes.number.isRequired,
-    hasLoadedCurrentLocale: PropTypes.bool.isRequired,
+  static contextTypes = {
+    intl: intlShape.isRequired,
   };
 
   render() {
@@ -67,6 +67,7 @@ export default class Loading extends Component {
     ]);
     const logo = isConnecting ? cardanoLogoWhite : cardanoLogo;
     const connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
+
     return (
       <div className={componentStyles}>
         <img className={styles.logo} src={logo} role="presentation" />

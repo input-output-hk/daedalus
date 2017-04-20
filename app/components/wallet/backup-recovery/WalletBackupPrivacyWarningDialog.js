@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
@@ -37,13 +37,13 @@ const messages = defineMessages({
 @observer
 export default class WalletBackupPrivacyWarningDialog extends Component {
 
-  static propTypes = {
-    countdownRemaining: PropTypes.number.isRequired,
-    canPhraseBeShown: PropTypes.bool.isRequired,
-    isPrivacyNoticeAccepted: PropTypes.bool.isRequired,
-    onAcceptPrivacyNotice: PropTypes.func.isRequired,
-    onContinue: PropTypes.func.isRequired,
-    onCancelBackup: PropTypes.func.isRequired,
+  props: {
+    countdownRemaining: number,
+    canPhraseBeShown: boolean,
+    isPrivacyNoticeAccepted: boolean,
+    onAcceptPrivacyNotice: Function,
+    onContinue: Function,
+    onCancelBackup: Function,
   };
 
   static contextTypes = {

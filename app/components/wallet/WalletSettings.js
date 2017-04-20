@@ -1,6 +1,6 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
-import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
+import React, { Component } from 'react';
+import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
@@ -11,6 +11,7 @@ import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
 import DeleteWalletButton from './settings/DeleteWalletButton';
 import DeleteWalletConfirmationDialog from './settings/DeleteWalletConfirmationDialog';
 import DeleteWalletDialogContainer from '../../containers/wallet/dialogs/DeleteWalletDialogContainer';
+import type { ReactIntlMessage } from '../../types/i18nTypes';
 import ChangeWalletPasswordDialog from './settings/ChangeWalletPasswordDialog';
 import ChangeWalletPasswordDialogContainer from '../../containers/wallet/dialogs/ChangeWalletPasswordDialogContainer';
 
@@ -40,18 +41,15 @@ const messages = defineMessages({
 @observer
 export default class WalletSettings extends Component {
 
-  static propTypes = {
-    assuranceLevels: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.shape({
-      value: PropTypes.string.isRequired,
-      label: PropTypes.object.isRequired,
-    })).isRequired,
-    walletAssurance: PropTypes.string.isRequired,
-    onWalletAssuranceLevelUpdate: PropTypes.func.isRequired,
-    hasWalletPassword: PropTypes.bool.isRequired,
-    walletPasswordUpdateDate: PropTypes.instanceOf(Date),
-    error: PropTypes.instanceOf(LocalizableError),
-    openDialogAction: PropTypes.func.isRequired,
-    isDialogOpen: PropTypes.func.isRequired,
+  props: {
+    assuranceLevels: Array<{ value: string, label: ReactIntlMessage }>,
+    walletAssurance: string,
+    onWalletAssuranceLevelUpdate: Function,
+    hasWalletPassword: boolean,
+    walletPasswordUpdateDate: ?Date,
+    error?: ?LocalizableError,
+    openDialogAction: Function,
+    isDialogOpen: Function,
   };
 
   static contextTypes = {

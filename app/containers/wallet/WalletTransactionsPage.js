@@ -1,13 +1,12 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
 // import WalletTransactionsSearch from '../../components/wallet/summary/WalletTransactionsSearch';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
-import TransactionsStore from '../../stores/TransactionsStore';
-import WalletsStore from '../../stores/WalletsStore';
+import type { InjectedProps } from '../../types/injectedPropsType';
 
 const messages = defineMessages({
   noTransactions: {
@@ -25,17 +24,8 @@ const messages = defineMessages({
 @inject('stores', 'actions') @observer
 export default class WalletTransactionsPage extends Component {
 
-  static propTypes = {
-    stores: PropTypes.shape({
-      transactions: PropTypes.instanceOf(TransactionsStore).isRequired,
-      wallets: PropTypes.instanceOf(WalletsStore).isRequired,
-    }).isRequired,
-    actions: PropTypes.shape({
-      transactions: PropTypes.shape({
-        filterTransactions: PropTypes.func.isRequired,
-      }),
-    }).isRequired,
-  };
+  static defaultProps = { actions: null, stores: null };
+  props: InjectedProps;
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -49,6 +39,7 @@ export default class WalletTransactionsPage extends Component {
     const { intl } = this.context;
     const actions = this.props.actions;
     const { transactions, wallets } = this.props.stores;
+    const activeWallet = wallets.active;
     const {
       searchOptions,
       searchRequest,
@@ -56,6 +47,10 @@ export default class WalletTransactionsPage extends Component {
       totalAvailable,
       filtered,
     } = transactions;
+
+    // Guard against potential null values
+    if (!searchOptions || !activeWallet) return null;
+
     const { searchLimit, searchTerm } = searchOptions;
     const wasSearched = searchTerm !== '';
     let walletTransactions = null;
@@ -80,8 +75,8 @@ export default class WalletTransactionsPage extends Component {
           transactions={filtered}
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
           hasMoreToLoad={totalAvailable > searchLimit}
-          onLoadMore={actions.transactions.loadMoreTransactions}
-          assuranceMode={wallets.active.assuranceMode}
+          onLoadMore={actions.transactions.loadMoreTransactions.trigger}
+          assuranceMode={activeWallet.assuranceMode}
         />
       );
     } else if (wasSearched && !hasAny) {

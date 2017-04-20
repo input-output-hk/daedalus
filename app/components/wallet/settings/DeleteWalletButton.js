@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './DeleteWalletButton.scss';
 
@@ -12,8 +12,8 @@ const messages = defineMessages({
 
 export default class DeleteWalletButton extends Component {
 
-  static propTypes = {
-    onClick: PropTypes.func
+  props: {
+    onClick: Function,
   };
 
   static contextTypes = {

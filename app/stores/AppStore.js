@@ -1,7 +1,7 @@
 // @flow
-import { observable, action, computed } from 'mobx';
+import { observable, computed } from 'mobx';
 import Store from './lib/Store';
-import Request from './lib/Request';
+import Request from './lib/LocalizedRequest';
 import globalMessages from '../i18n/global-messages';
 import LocalizableError from '../i18n/LocalizableError';
 import { ROUTES } from '../Routes';
@@ -18,9 +18,11 @@ export default class AppStore extends Store {
     // { value: 'hr-HR', label: globalMessages.languageCroatian },
   ];
 
-  @observable getProfileLocaleRequest = new Request(this.api, 'getUserLocale');
-  @observable setProfileLocaleRequest = new Request(this.api, 'setUserLocale');
+  /* eslint-disable max-len */
+  @observable getProfileLocaleRequest: Request<string> = new Request(this.api.getUserLocale);
+  @observable setProfileLocaleRequest: Request<string> = new Request(this.api.setUserLocale);
   @observable error: ?LocalizableError = null;
+  /* eslint-enable max-len */
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -37,37 +39,35 @@ export default class AppStore extends Store {
   }
 
   @computed get currentLocale(): string {
-    if (!this.isCurrentLocaleSet) {
-      this.getProfileLocaleRequest.execute();
-      return 'en-US';
-    }
-    return this.getProfileLocaleRequest.result;
+    const { result } = this.getProfileLocaleRequest.execute();
+    if (this.isCurrentLocaleSet) return result;
+    return 'en-US'; // default
   }
 
-  @computed get hasLoadedCurrentLocale(): bool {
+  @computed get hasLoadedCurrentLocale(): boolean {
     return (
       this.getProfileLocaleRequest.wasExecuted && this.getProfileLocaleRequest.result !== null
     );
   }
 
-  @computed get isCurrentLocaleSet(): bool {
+  @computed get isCurrentLocaleSet(): boolean {
     return (this.getProfileLocaleRequest.result != null && this.getProfileLocaleRequest.result !== '');
   }
 
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
     const { isConnected } = this.stores.networkStatus;
     if (isConnected && this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
-      this.actions.router.goToRoute({ route: ROUTES.PROFILE.LANGUAGE_SELECTION });
+      this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.LANGUAGE_SELECTION });
     }
   };
 
   _redirectToLoadingScreenWhenDisconnected = () => {
     if (!this.stores.networkStatus.isConnected) {
-      this.actions.router.goToRoute({ route: ROUTES.ROOT });
+      this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
     }
   };
 
-  @action _updateLocale = async ({ locale }: { locale: string }) => {
+  _updateLocale = async ({ locale }: { locale: string }) => {
     await this.setProfileLocaleRequest.execute(locale);
     await this.getProfileLocaleRequest.execute();
   };
@@ -79,9 +79,15 @@ export default class AppStore extends Store {
   };
 
   _redirectToMainUiAfterLocaleIsSet = () => {
-    if (this.isCurrentLocaleSet && this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION) {
-      this.actions.router.goToRoute({ route: ROUTES.ROOT });
+    if (this.isCurrentLocaleSet && this._isOnLanguageSelectionPage()) {
+      this._redirectToRoot();
     }
+  };
+
+  _isOnLanguageSelectionPage = () => this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION;
+
+  _redirectToRoot = () => {
+    this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
   };
 
 }

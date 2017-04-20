@@ -1,15 +1,13 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
 import WalletSummary from '../../components/wallet/summary/WalletSummary';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
-import WalletsStore from '../../stores/WalletsStore';
-import TransactionsStore from '../../stores/TransactionsStore';
-import SettingsStore from '../../stores/SettingsStore';
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
+import type { InjectedProps } from '../../types/injectedPropsType';
 
 const messages = defineMessages({
   noTransactions: {
@@ -22,13 +20,8 @@ const messages = defineMessages({
 @inject('stores', 'actions') @observer
 export default class WalletSummaryPage extends Component {
 
-  static propTypes = {
-    stores: PropTypes.shape({
-      wallets: PropTypes.instanceOf(WalletsStore),
-      transactions: PropTypes.instanceOf(TransactionsStore),
-      settings: PropTypes.instanceOf(SettingsStore),
-    }).isRequired,
-  };
+  static defaultProps = { actions: null, stores: null };
+  props: InjectedProps;
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -45,6 +38,10 @@ export default class WalletSummaryPage extends Component {
       totalUnconfirmedAmount
     } = transactions;
     const wallet = wallets.active;
+
+    // Guard against potential null values
+    if (!wallet) throw new Error('Active wallet required for WalletSummaryPage.');
+
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
@@ -55,7 +52,7 @@ export default class WalletSummaryPage extends Component {
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           hasMoreToLoad={false}
           onLoadMore={() => {}}
-          assuranceMode={wallets.active.assuranceMode}
+          assuranceMode={wallet.assuranceMode}
         />
       );
     } else if (!hasAny) {

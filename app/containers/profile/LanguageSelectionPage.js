@@ -1,30 +1,19 @@
 // @flow
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import Request from '../../stores/lib/Request';
 import TopBar from '../../components/layout/TopBar';
 import TopBarLayout from '../../components/layout/TopBarLayout';
 import LanguageSelectionForm from '../../components/profile/language-selection/LanguageSelectionForm';
+import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
 export default class LanguageSelectionPage extends Component {
 
-  static propTypes = {
-    actions: PropTypes.shape({
-      profile: PropTypes.shape({
-        updateLocale: PropTypes.func.isRequired,
-      }),
-    }),
-    stores: PropTypes.shape({
-      app: PropTypes.shape({
-        setProfileLocaleRequest: PropTypes.instanceOf(Request).isRequired,
-        LANGUAGE_OPTIONS: PropTypes.array.isRequired,
-      }).isRequired,
-    }).isRequired,
-  };
+  static defaultProps = { actions: null, stores: null };
+  props: InjectedProps;
 
   onSubmit = (values: { locale: string }) => {
-    this.props.actions.profile.updateLocale(values);
+    this.props.actions.profile.updateLocale.trigger(values);
   };
 
   render() {

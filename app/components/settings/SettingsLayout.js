@@ -1,15 +1,15 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import type { Children, Element } from 'react';
 import { observer } from 'mobx-react';
-import { oneOrManyChildElements } from '../../propTypes';
 import styles from './SettingsLayout.scss';
 
 @observer
 export default class SettingsLayout extends Component {
 
-  static propTypes = {
-    children: oneOrManyChildElements,
-    menu: PropTypes.element.isRequired
+  props: {
+    children: Children,
+    menu: Element<any>,
   };
 
   render() {

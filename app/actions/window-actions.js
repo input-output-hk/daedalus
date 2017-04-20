@@ -1,9 +1,6 @@
-import PropTypes from 'prop-types';
-import defineActions from './lib/actions';
+// @flow
+import Action from './lib/Action';
 
-export default defineActions({
-  resizeWindow: {
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
-  },
-});
+export default class WindowActions {
+  resizeWindow: Action<{ width: number, height: number }> = new Action();
+}

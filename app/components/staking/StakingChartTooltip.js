@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
@@ -44,15 +44,15 @@ const messages = defineMessages({
 @observer
 export default class StakingChartTooltip extends Component {
 
-  static propTypes = {
-    slot: PropTypes.number.isRequired,
-    time: PropTypes.instanceOf(Date),
-    hash: PropTypes.string.isRequired,
-    numberOfTransactions: PropTypes.number.isRequired,
-    mpcPhase: PropTypes.string.isRequired,
-    commitments: PropTypes.string.isRequired,
-    openings: PropTypes.string.isRequired,
-    shares: PropTypes.string.isRequired
+  props: {
+    slot: number,
+    time: Date,
+    hash: string,
+    numberOfTransactions: number,
+    mpcPhase: string,
+    commitments: string,
+    openings: string,
+    shares: string
   };
 
   static contextTypes = {

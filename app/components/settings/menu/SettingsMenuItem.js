@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './SettingsMenuItem.scss';
@@ -7,12 +7,12 @@ import styles from './SettingsMenuItem.scss';
 @observer
 export default class SettingsMenuItem extends Component {
 
-  static propTypes = {
-    label: PropTypes.string.isRequired,
-    active: PropTypes.bool,
-    disabled: PropTypes.bool,
-    onClick: PropTypes.func,
-    className: PropTypes.string
+  props: {
+    label: string,
+    active: boolean,
+    onClick: Function,
+    className: string,
+    disabled?: boolean,
   };
 
   render() {
