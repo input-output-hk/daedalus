@@ -11,6 +11,7 @@ Changelog
 - Button on the wallet send screen is too large
 - Hamburger button" and wallet's name are present on the "Ada redemption" and "Settings" screens
 - Ada redemption button is not enabled as soon as inputs are valid
+- Prevent navigation on file drop event in the application window
 
 ### Chores
 
