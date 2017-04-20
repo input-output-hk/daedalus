@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { isEmail, isEmpty } from 'validator';
 import classnames from 'classnames';
-import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import Button from 'react-toolbox/lib/button/Button';
 import Input from 'react-toolbox/lib/input/Input';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import Dropup from '../../widgets/forms/Dropup';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import AdaCertificateUploadWidget from '../../widgets/forms/AdaCertificateUploadWidget';
 import AdaRedemptionChoices from './AdaRedemptionChoices';
@@ -389,7 +389,7 @@ export default class AdaRedemptionForm extends Component {
                 />
               )}
 
-              <Dropdown
+              <Dropup
                 className="wallet"
                 source={wallets}
                 {...walletId.bind()}
