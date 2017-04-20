@@ -1,4 +1,3 @@
-@watch
 Feature: Toggle Sidebar Submenus
 
   Background:
