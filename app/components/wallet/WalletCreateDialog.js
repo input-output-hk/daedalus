@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
@@ -52,9 +52,9 @@ const currencies = [
 @observer
 export default class WalletCreateDialog extends Component {
 
-  static propTypes = {
-    onSubmit: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired
+  props: {
+    onSubmit: Function,
+    onCancel: Function,
   };
 
   static contextTypes = {

@@ -1,6 +1,6 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
-import { observer, PropTypes as MobxTypes } from 'mobx-react';
+import React, { Component } from 'react';
+import { observer } from 'mobx-react';
 import { BarChart, Bar, YAxis, XAxis, Cell, ReferenceLine } from 'recharts';
 import StakingChartTooltip from './StakingChartTooltip';
 import styles from './StakingChart.scss';
@@ -19,10 +19,10 @@ class CustomReferenceLine extends ReferenceLine {
 @observer
 export default class StakingChart extends Component {
 
-  static propTypes = {
-    width: PropTypes.number.isRequired,
-    height: PropTypes.number.isRequired,
-    options: MobxTypes.observableObject.isRequired,
+  props: {
+    width: number,
+    height: number,
+    options: Object,
   };
 
   state = {

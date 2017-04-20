@@ -4,24 +4,38 @@ import _ from 'lodash';
 import Store from './lib/Store';
 import Wallet from '../domain/Wallet';
 import { matchRoute, buildRoute } from '../lib/routing-helpers';
-import CachedRequest from './lib/CachedRequest';
-import Request from './lib/Request';
+import CachedRequest from './lib/LocalizedCachedRequest';
+import Request from './lib/LocalizedRequest';
 import environment from '../environment';
 import config from '../config';
 import { ROUTES } from '../Routes';
+import type {
+  GetWalletsResponse,
+  ImportKeyResponse,
+  CreateWalletResponse,
+  DeleteWalletResponse,
+  CreateTransactionResponse,
+  GetWalletRecoveryPhraseResponse,
+  RestoreWalletResponse
+} from '../api';
 
 export default class WalletsStore extends Store {
 
   WALLET_REFRESH_INTERVAL = 5000;
 
   @observable active: ?Wallet = null;
-  @observable walletsRequest = new CachedRequest(this.api, 'getWallets');
-  @observable importFromKeyRequest = new Request(this.api, 'importWalletFromKey');
-  @observable createWalletRequest = new Request(this.api, 'createWallet');
-  @observable deleteWalletRequest = new Request(this.api, 'deleteWallet');
-  @observable sendMoneyRequest = new Request(this.api, 'createTransaction');
-  @observable getWalletRecoveryPhraseRequest = new Request(this.api, 'getWalletRecoveryPhrase');
-  @observable restoreRequest = new Request(this.api, 'restoreWallet');
+
+  // REQUESTS
+  /* eslint-disable max-len */
+  @observable walletsRequest: CachedRequest<GetWalletsResponse> = new CachedRequest(this.api.getWallets);
+  @observable importFromKeyRequest: Request<ImportKeyResponse> = new Request(this.api.importWalletFromKey);
+  @observable createWalletRequest: Request<CreateWalletResponse> = new Request(this.api.createWallet);
+  @observable deleteWalletRequest: Request<DeleteWalletResponse> = new Request(this.api.deleteWallet);
+  @observable sendMoneyRequest: Request<CreateTransactionResponse> = new Request(this.api.createTransaction);
+  @observable getWalletRecoveryPhraseRequest: Request<GetWalletRecoveryPhraseResponse> = new Request(this.api.getWalletRecoveryPhrase);
+  @observable restoreRequest: Request<RestoreWalletResponse> = new Request(this.api.restoreWallet);
+  /* eslint-enable max-len */
+
   // DIALOGUES
   @observable isAddWalletDialogOpen = false;
   @observable isCreateWalletDialogOpen = false;
@@ -39,8 +53,8 @@ export default class WalletsStore extends Store {
 
   setup() {
     const { wallets, walletBackup, router } = this.actions;
-    wallets.create.listen(this._create);
-    wallets.delete.listen(this._delete);
+    wallets.createWallet.listen(this._create);
+    wallets.deleteWallet.listen(this._delete);
     wallets.sendMoney.listen(this._sendMoney);
     wallets.toggleAddWallet.listen(this._toggleAddWallet);
     wallets.toggleCreateWalletDialog.listen(this._toggleCreateWalletDialog);
@@ -67,8 +81,12 @@ export default class WalletsStore extends Store {
   }) => {
     Object.assign(this._newWalletDetails, params);
     try {
-      const recoveryPhrase = await this.getWalletRecoveryPhraseRequest.execute();
-      this.actions.walletBackup.initiateWalletBackup({ recoveryPhrase });
+      const recoveryPhrase: ?GetWalletRecoveryPhraseResponse = await (
+        this.getWalletRecoveryPhraseRequest.execute().promise
+      );
+      if (recoveryPhrase != null) {
+        this.actions.walletBackup.initiateWalletBackup.trigger({ recoveryPhrase });
+      }
     } catch (error) {
       throw error;
     }
@@ -89,7 +107,7 @@ export default class WalletsStore extends Store {
         this.goToWalletRoute(nextWalletInList.id);
       } else {
         this.active = null;
-        this.actions.router.goToRoute({ route: ROUTES.NO_WALLETS });
+        this.actions.router.goToRoute.trigger({ route: ROUTES.NO_WALLETS });
       }
     });
     this.refreshWalletsData();
@@ -124,11 +142,11 @@ export default class WalletsStore extends Store {
     this.goToWalletRoute(wallet.id);
   };
 
-  @computed get hasLoadedWallets(): bool {
+  @computed get hasLoadedWallets(): boolean {
     return this.walletsRequest.wasExecuted;
   }
 
-  @computed get hasAnyWallets(): bool {
+  @computed get hasAnyWallets(): boolean {
     if (this.walletsRequest.result == null) return false;
     return this.walletsRequest.wasExecuted && this.walletsRequest.result.length > 0;
   }
@@ -142,7 +160,7 @@ export default class WalletsStore extends Store {
     return this.getWalletRoute(this.active.id);
   }
 
-  @computed get hasAnyLoaded(): bool {
+  @computed get hasAnyLoaded(): boolean {
     return this.all.length > 0;
   }
 
@@ -258,7 +276,7 @@ export default class WalletsStore extends Store {
 
   goToWalletRoute(walletId: string) {
     const route = this.getWalletRoute(walletId);
-    this.actions.router.goToRoute({ route });
+    this.actions.router.goToRoute.trigger({ route });
   }
 
   _openAddWalletDialogWhenThereAreNoWallets = () => {

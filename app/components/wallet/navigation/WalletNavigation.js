@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './WalletNavigation.scss';
@@ -46,9 +46,9 @@ const messages = defineMessages({
 @observer
 export default class WalletNavigation extends Component {
 
-  static propTypes = {
-    isActiveNavItem: PropTypes.func.isRequired,
-    onNavItemClick: PropTypes.func
+  props: {
+    isActiveNavItem: Function,
+    onNavItemClick: Function,
   };
 
   static contextTypes = {

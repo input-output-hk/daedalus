@@ -1,8 +1,8 @@
-import PropTypes from 'prop-types';
-import defineActions from './lib/actions';
+// @flow
+import Action from './lib/Action';
 
-export default defineActions({
-  updateLocale: {
-    locale: PropTypes.string.isRequired,
-  },
-});
+// ======= PROFILE ACTIONS =======
+
+export default class ProfileActions {
+  updateLocale: Action<{ locale: string }> = new Action();
+}

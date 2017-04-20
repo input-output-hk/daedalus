@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import Input from 'react-toolbox/lib/input/Input';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
@@ -58,11 +58,11 @@ export default class WalletRestoreDialog extends Component {
     intl: intlShape.isRequired
   };
 
-  static propTypes = {
-    onSubmit: PropTypes.func.isRequired,
-    onCancel: PropTypes.func.isRequired,
-    mnemonicValidator: PropTypes.func.isRequired,
-    error: PropTypes.instanceOf(LocalizableError),
+  props: {
+    onSubmit: Function,
+    onCancel: Function,
+    mnemonicValidator: Function,
+    error?: ?LocalizableError,
   };
 
   state = {

@@ -2,8 +2,9 @@
 import { observable, action, computed, runInAction } from 'mobx';
 import Log from 'electron-log';
 import Store from './lib/Store';
-import Request from './lib/Request';
+import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../Routes';
+import type { GetSyncProgressResponse } from '../api';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedDifficulties = null;
@@ -25,7 +26,9 @@ export default class NetworkStatusStore extends Store {
   @observable localDifficulty = 0;
   @observable networkDifficulty = 0;
   @observable isLoadingWallets = true;
-  @observable networkDifficultyRequest = new Request(this.api, 'getSyncProgress');
+  @observable networkDifficultyRequest: Request<GetSyncProgressResponse> = new Request(
+    this.api.getSyncProgress
+  );
   @observable _localDifficultyStartedWith = null;
 
   @action initialize() {
@@ -52,13 +55,13 @@ export default class NetworkStatusStore extends Store {
     };
   }
 
-  @computed get isConnecting(): bool {
+  @computed get isConnecting(): boolean {
     // until we start receiving network difficulty messages we are not connected to node and
     // we should be on the blue connecting screen instead of displaying "Loading wallet data"
     return !this.isConnected || this.networkDifficulty <= 1;
   }
 
-  @computed get hasBlockSyncingStarted(): bool {
+  @computed get hasBlockSyncingStarted(): boolean {
     // until we start receiving network difficulty messages we are not connected to node and
     // we should be on the blue connecting screen instead of displaying "Loading wallet data"
     return this.networkDifficulty >= 1;
@@ -89,11 +92,11 @@ export default class NetworkStatusStore extends Store {
     return 0;
   }
 
-  @computed get isSyncing(): bool {
+  @computed get isSyncing(): boolean {
     return !this.isConnecting && this.hasBlockSyncingStarted && !this.isSynced;
   }
 
-  @computed get isSynced(): bool {
+  @computed get isSynced(): boolean {
     return !this.isConnecting && this.syncPercentage >= 100 && this.hasBlockSyncingStarted;
   }
 
@@ -168,15 +171,15 @@ export default class NetworkStatusStore extends Store {
       runInAction(() => { this.isLoadingWallets = false; });
       if (app.currentRoute === '/') {
         if (wallets.first) {
-          this.actions.router.goToRoute({
+          this.actions.router.goToRoute.trigger({
             route: ROUTES.WALLETS.SUMMARY,
             params: { id: wallets.first.id }
           });
         } else {
-          this.actions.router.goToRoute({ route: ROUTES.NO_WALLETS });
+          this.actions.router.goToRoute.trigger({ route: ROUTES.NO_WALLETS });
         }
       }
-      this.actions.networkStatus.isSyncedAndReady();
+      this.actions.networkStatus.isSyncedAndReady.trigger();
     }
   };
 
@@ -184,7 +187,7 @@ export default class NetworkStatusStore extends Store {
     if (this.stores.app.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION) return;
     if (!this.isConnected) {
       this._setInitialDifficulty();
-      this.actions.router.goToRoute({ route: ROUTES.ROOT });
+      this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
     }
   };
 

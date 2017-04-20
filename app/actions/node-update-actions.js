@@ -1,7 +1,10 @@
-import defineActions from './lib/actions';
+// @flow
+import Action from './lib/Action';
 
-export default defineActions({
-  acceptNodeUpdate: {},
-  postponeNodeUpdate: {},
-  toggleNodeUpdateNotificationExpanded: {},
-});
+// ======= NODE UPDATE ACTIONS =======
+
+export default class NodeUpdateActions {
+  acceptNodeUpdate: Action<any> = new Action();
+  postponeNodeUpdate: Action<any> = new Action();
+  toggleNodeUpdateNotificationExpanded: Action<any> = new Action();
+}

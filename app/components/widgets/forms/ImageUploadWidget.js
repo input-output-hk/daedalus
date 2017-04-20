@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './ImageUploadWidget.scss';
@@ -20,8 +20,8 @@ const messages = defineMessages({
 @observer
 export default class ImageUploadWidget extends Component {
 
-  static propTypes = {
-    label: PropTypes.string.isRequired
+  props: {
+    label: string
   };
 
   static contextTypes = {

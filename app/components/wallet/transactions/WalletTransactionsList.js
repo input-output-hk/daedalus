@@ -1,6 +1,6 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
-import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
+import React, { Component } from 'react';
+import { observer } from 'mobx-react';
 import { intlShape } from 'react-intl';
 import moment from 'moment';
 import classnames from 'classnames';
@@ -8,21 +8,19 @@ import styles from './WalletTransactionsList.scss';
 import Transaction from '../../widgets/Transaction';
 import WalletTransaction from '../../../domain/WalletTransaction';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-import { AssuranceModePropType } from '../../../types/transactionAssuranceTypes';
+import type { AssuranceMode } from '../../../types/transactionAssuranceTypes';
 
 const dateFormat = 'YYYY-MM-DD';
 
 @observer
 export default class WalletTransactionsList extends Component {
 
-  static propTypes = {
-    transactions: MobxPropTypes.arrayOrObservableArrayOf(
-      PropTypes.instanceOf(WalletTransaction)
-    ).isRequired,
-    isLoadingTransactions: PropTypes.bool.isRequired,
-    hasMoreToLoad: PropTypes.bool.isRequired,
-    onLoadMore: PropTypes.func.isRequired,
-    assuranceMode: AssuranceModePropType.isRequired,
+  props: {
+    transactions: Array<WalletTransaction>,
+    isLoadingTransactions: boolean,
+    hasMoreToLoad: boolean,
+    onLoadMore: Function,
+    assuranceMode: AssuranceMode,
   };
 
   static contextTypes = {
@@ -40,7 +38,7 @@ export default class WalletTransactionsList extends Component {
   list: HTMLElement;
   loadingSpinner: LoadingSpinner;
 
-  groupTransactionsByDay(transactions:[WalletTransaction]) {
+  groupTransactionsByDay(transactions: Array<WalletTransaction>) {
     const groups = [];
     for (const transaction of transactions) {
       let date = moment(transaction.date).format(dateFormat);

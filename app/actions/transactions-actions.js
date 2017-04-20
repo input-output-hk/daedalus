@@ -1,9 +1,9 @@
-import PropTypes from 'prop-types';
-import defineActions from './lib/actions';
+// @flow
+import Action from './lib/Action';
 
-export default defineActions({
-  filterTransactions: {
-    searchTerm: PropTypes.string.isRequired,
-  },
-  loadMoreTransactions: {},
-});
+// ======= TRANSACTIONS ACTIONS =======
+
+export default class TransactionsActions {
+  filterTransactions: Action<{ searchTerm: string }> = new Action();
+  loadMoreTransactions: Action<any> = new Action();
+}

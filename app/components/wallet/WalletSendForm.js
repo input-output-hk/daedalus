@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Input from 'react-toolbox/lib/input/Input';
@@ -87,11 +87,11 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 @observer
 export default class WalletSendForm extends Component {
 
-  static propTypes = {
-    onSubmit: PropTypes.func.isRequired,
-    isSubmitting: PropTypes.bool.isRequired,
-    addressValidator: PropTypes.func.isRequired,
-    error: PropTypes.instanceOf(LocalizableError),
+  props: {
+    onSubmit: Function,
+    isSubmitting: boolean,
+    addressValidator: Function,
+    error?: ?LocalizableError,
   };
 
   static contextTypes = {

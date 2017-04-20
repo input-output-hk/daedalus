@@ -1,82 +1,34 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import Sidebar from '../components/sidebar/Sidebar';
 import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
 import SidebarLayout from '../components/layout/SidebarLayout';
-import { oneOrManyChildElements } from '../propTypes';
 import WalletCreateDialog from '../components/wallet/WalletCreateDialog';
 import WalletRestoreDialog from '../components/wallet/WalletRestoreDialog';
 import WalletBackupPage from './wallet/WalletBackupPage';
 import WalletAddPage from './wallet/WalletAddPage';
 import WalletKeyImportPage from './wallet/WalletKeyImportPage';
 import NodeUpdatePage from './notifications/NodeUpdatePage';
-import Wallet from '../domain/Wallet';
-import Request from '../stores/lib/Request';
+import type { InjectedContainerProps } from '../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
 export default class MainLayout extends Component {
 
-  static propTypes = {
-    stores: PropTypes.shape({
-      wallets: PropTypes.shape({
-        active: PropTypes.instanceOf(Wallet),
-        isAddWalletDialogOpen: PropTypes.bool.isRequired,
-        isCreateWalletDialogOpen: PropTypes.bool.isRequired,
-        isWalletRestoreDialogOpen: PropTypes.bool.isRequired,
-        isWalletKeyImportDialogOpen: PropTypes.bool.isRequired,
-        walletBackup: PropTypes.shape({
-          inProgress: PropTypes.bool.isRequired
-        }),
-        restoreRequest: PropTypes.instanceOf(Request).isRequired,
-        isValidMnemonic: PropTypes.func.isRequired
-      }).isRequired,
-      walletBackup: PropTypes.shape({
-        inProgress: PropTypes.bool.isRequired,
-      }).isRequired,
-      networkStatus: PropTypes.shape({
-        isSynced: PropTypes.bool.isRequired,
-        isSyncing: PropTypes.bool.isRequired,
-        syncPercentage: PropTypes.number.isRequired,
-      }).isRequired,
-      nodeUpdate: PropTypes.shape({
-        isUpdateAvailable: PropTypes.bool.isRequired,
-        isUpdatePostponed: PropTypes.bool.isRequired,
-      }).isRequired,
-      sidebar: PropTypes.shape({
-        isShowingSubMenus: PropTypes.bool.isRequired,
-        CATEGORIES: PropTypes.shape({
-          WALLETS: PropTypes.string.isRequired,
-          ADA_REDEMPTION: PropTypes.string.isRequired,
-        }).isRequired,
-        activeSidebarCategory: PropTypes.string,
-      }).isRequired,
-    }).isRequired,
-    actions: PropTypes.shape({
-      router: PropTypes.shape({
-        goToRoute: PropTypes.func.isRequired,
-      }),
-      wallets: PropTypes.shape({
-        create: PropTypes.func.isRequired,
-        toggleAddWallet: PropTypes.func.isRequired,
-        toggleWalletRestore: PropTypes.func.isRequired,
-        restoreWallet: PropTypes.func.isRequired,
-      }),
-    }).isRequired,
-    children: oneOrManyChildElements
-  };
+  static defaultProps = { actions: null, stores: null, children: null };
+  props: InjectedContainerProps;
 
   handleAddWalletSubmit = (values: Object) => {
-    this.props.actions.wallets.create({
+    this.props.actions.wallets.createWallet.trigger({
       name: values.walletName,
       currency: values.currency,
     });
   };
 
   handleRestoreWalletSubmit = (values: Object) => {
-    this.props.actions.wallets.restoreWallet(values);
+    this.props.actions.wallets.restoreWallet.trigger(values);
   };
 
   render() {
@@ -99,9 +51,9 @@ export default class MainLayout extends Component {
         items: sidebar.wallets,
         activeWalletId,
         actions: {
-          onAddWallet: toggleAddWallet,
+          onAddWallet: toggleAddWallet.trigger,
           onWalletItemClick: (walletId: string) => {
-            actions.sidebar.walletSelected({ walletId });
+            actions.sidebar.walletSelected.trigger({ walletId });
           }
         }
       }
@@ -112,7 +64,9 @@ export default class MainLayout extends Component {
         isShowingSubMenus={sidebar.isShowingSubMenus}
         categories={sidebar.CATEGORIES}
         activeSidebarCategory={sidebar.activeSidebarCategory}
-        onCategoryClicked={category => actions.sidebar.activateSidebarCategory({ category })}
+        onCategoryClicked={category => {
+          actions.sidebar.activateSidebarCategory.trigger({ category });
+        }}
         isSynced={isSynced}
       />
     );
@@ -124,7 +78,10 @@ export default class MainLayout extends Component {
     );
 
     const topbar = (
-      <TopBar onToggleSidebar={actions.sidebar.toggleSubMenus} activeWallet={activeWallet}>
+      <TopBar
+        onToggleSidebar={actions.sidebar.toggleSubMenus.trigger}
+        activeWallet={activeWallet}
+      >
         {testEnvironmentLabel}
         <NodeSyncStatusIcon
           isSynced={isSynced}
@@ -140,7 +97,7 @@ export default class MainLayout extends Component {
       activeDialog = (
         <WalletRestoreDialog
           onSubmit={this.handleRestoreWalletSubmit}
-          onCancel={toggleWalletRestore}
+          onCancel={toggleWalletRestore.trigger}
           error={restoreRequest.error}
           mnemonicValidator={mnemonic => this.props.stores.wallets.isValidMnemonic(mnemonic)}
         />
@@ -151,7 +108,7 @@ export default class MainLayout extends Component {
       activeDialog = (
         <WalletCreateDialog
           onSubmit={this.handleAddWalletSubmit}
-          onCancel={toggleCreateWalletDialog}
+          onCancel={toggleCreateWalletDialog.trigger}
         />
       );
     } else if (isWalletBackupInProgress) {

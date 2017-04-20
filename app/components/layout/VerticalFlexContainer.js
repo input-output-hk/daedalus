@@ -1,14 +1,14 @@
 // @flow
 import React, { Component } from 'react';
+import type { Children } from 'react';
 import { observer } from 'mobx-react';
 import styles from './VerticalFlexContainer.scss';
-import { oneOrManyChildElements } from '../../propTypes';
 
 @observer
 export default class VerticalFlexContainer extends Component {
 
-  static propTypes = {
-    children: oneOrManyChildElements,
+  props: {
+    children?: ?Children,
   };
 
   render() {

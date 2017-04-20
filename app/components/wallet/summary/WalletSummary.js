@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import adaSymbolBig from '../../../assets/images/ada-symbol-big-dark.svg';
@@ -23,12 +23,12 @@ const messages = defineMessages({
 @observer
 export default class WalletSummary extends Component {
 
-  static propTypes = {
-    walletName: PropTypes.string.isRequired,
-    amount: PropTypes.string.isRequired,
-    numberOfTransactions: PropTypes.number.isRequired,
-    pendingAmount: PropTypes.string.isRequired,
-    isLoadingTransactions: PropTypes.bool.isRequired,
+  props: {
+    walletName: string,
+    amount: string,
+    numberOfTransactions: number,
+    pendingAmount: string,
+    isLoadingTransactions: boolean,
   };
 
   static contextTypes = {

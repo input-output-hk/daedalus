@@ -18,6 +18,7 @@ storiesOf('AdaRedemptionForm', module)
     <div>
       <AdaRedemptionChoices
         activeChoice="forceVended"
+        onSelectChoice={action('selectChoice')}
       />
     </div>
   ))
@@ -32,7 +33,9 @@ storiesOf('AdaRedemptionForm', module)
         onCertificateSelected={action('onCertificateSelected')}
         onPassPhraseChanged={action('onPassPhraseChanged')}
         onRedemptionCodeChanged={action('onRedemptionCodeChanged')}
-        redemptionCode=""
+        onChooseRedemptionType={action('onChooseRedemptionType')}
+        redemptionCode=''
+        redemptionType='regular'
         wallets={[
           { value: '', label: '...' },
           { value: 'wallet-1', label: 'First Wallet' },
@@ -53,6 +56,9 @@ storiesOf('AdaRedemptionForm', module)
         onCertificateSelected={action('onCertificateSelected')}
         onPassPhraseChanged={action('onPassPhraseChanged')}
         onRedemptionCodeChanged={action('onRedemptionCodeChanged')}
+        onChooseRedemptionType={action('onChooseRedemptionType')}
+        redemptionCode=''
+        redemptionType='regular'
         wallets={[
           { value: '', label: '...' },
           { value: 'wallet-1', label: 'First Wallet' },
@@ -73,6 +79,9 @@ storiesOf('AdaRedemptionForm', module)
         onCertificateSelected={action('onCertificateSelected')}
         onPassPhraseChanged={action('onPassPhraseChanged')}
         onRedemptionCodeChanged={action('onRedemptionCodeChanged')}
+        onChooseRedemptionType={action('onChooseRedemptionType')}
+        redemptionCode=''
+        redemptionType='regular'
         wallets={[
           { value: '', label: '...' },
           { value: 'wallet-1', label: 'First Wallet' },

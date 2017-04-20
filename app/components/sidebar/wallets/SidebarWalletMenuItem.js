@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './SidebarWalletMenuItem.scss';
@@ -8,11 +8,11 @@ import { ellipsis } from '../../../lib/string-helpers';
 @observer
 export default class SidebarWalletMenuItem extends Component {
 
-  static propTypes = {
-    title: PropTypes.string.isRequired,
-    info: PropTypes.string.isRequired,
-    active: PropTypes.bool,
-    onClick: PropTypes.func,
+  props: {
+    title: string,
+    info: string,
+    active: boolean,
+    onClick: Function,
   };
 
   render() {

@@ -26,6 +26,7 @@ storiesOf('AddWallet', module)
   .add('WalletImportDialog', () => (
     <div>
       <WalletRestoreDialog
+        mnemonicValidator={() => {}}
       />
     </div>
   ));

@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import styles from './WalletNavButton.scss';
@@ -7,13 +7,13 @@ import styles from './WalletNavButton.scss';
 @observer
 export default class WalletNavButton extends Component {
 
-  static propTypes = {
-    label: PropTypes.string.isRequired,
-    normalIcon: PropTypes.string.isRequired,
-    activeIcon: PropTypes.string.isRequired,
-    isActive: PropTypes.bool,
-    onClick: PropTypes.func,
-    className: PropTypes.string,
+  props: {
+    label: string,
+    normalIcon: string,
+    activeIcon: string,
+    isActive: boolean,
+    onClick: Function,
+    className?: string,
   };
 
   render() {

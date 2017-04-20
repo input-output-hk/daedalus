@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -23,10 +23,10 @@ const messages = defineMessages({
 @observer
 export default class WalletReceive extends Component {
 
-  static propTypes = {
-    walletName: PropTypes.string.isRequired,
-    walletAddress: PropTypes.string.isRequired,
-    onCopyAddress: PropTypes.func.isRequired,
+  props: {
+    walletName: string,
+    walletAddress: string,
+    onCopyAddress: Function,
   };
 
   static contextTypes = {

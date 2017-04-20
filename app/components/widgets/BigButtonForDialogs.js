@@ -1,15 +1,15 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import classnames from 'classnames';
 import styles from './BigButtonForDialogs.scss';
 
 export default class BigButtonForDialogs extends Component {
 
-  static propTypes = {
-    label: PropTypes.string.isRequired,
-    description: PropTypes.string.isRequired,
-    icon: PropTypes.string.isRequired,
-    onClick: PropTypes.func,
-    isDisabled: PropTypes.bool
+  props: {
+    label: string,
+    description: string,
+    icon: string,
+    onClick: Function,
+    isDisabled: boolean
   };
 
   render() {

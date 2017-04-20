@@ -1,36 +1,21 @@
-import PropTypes from 'prop-types';
-import defineActions from './lib/actions';
+// @flow
+import Action from './lib/Action';
+import type { RedemptionTypeChoices } from '../types/redemptionTypes';
 
-export default defineActions({
-  chooseRedemptionType: {
-    redemptionType: PropTypes.string.isRequired,
-  },
-  setCertificate: {
-    certificate: PropTypes.instanceOf(File).isRequired,
-  },
-  removeCertificate: {},
-  setPassPhrase: {
-    passPhrase: PropTypes.string.isRequired,
-  },
-  setRedemptionCode: {
-    redemptionCode: PropTypes.string.isRequired,
-  },
-  setEmail: {
-    email: PropTypes.string.isRequired,
-  },
-  setAdaPasscode: {
-    adaPasscode: PropTypes.string.isRequired,
-  },
-  setAdaAmount: {
-    adaAmount: PropTypes.string.isRequired,
-  },
-  redeemAda: {
-    walletId: PropTypes.string.isRequired,
-  },
-  redeemPaperVendedAda: {
-    walletId: PropTypes.string.isRequired,
-    shieldedRedemptionKey: PropTypes.string.isRequired,
-  },
-  adaSuccessfullyRedeemed: {},
-  closeAdaRedemptionSuccessOverlay: {},
-});
+// ======= ADA REDEMPTION ACTIONS =======
+
+export default class AdaRedemptionActions {
+  chooseRedemptionType: Action<{ redemptionType: RedemptionTypeChoices }> = new Action();
+  setCertificate: Action<{ certificate: File }> = new Action();
+  removeCertificate: Action<any> = new Action();
+  setPassPhrase: Action<{ passPhrase: string }> = new Action();
+  setRedemptionCode: Action<{ redemptionCode: string }> = new Action();
+  setEmail: Action<{ email: string }> = new Action();
+  setAdaPasscode: Action<{ adaPasscode: string }> = new Action();
+  setAdaAmount: Action<{ adaAmount: string }> = new Action();
+  redeemAda: Action<{ walletId: string }> = new Action();
+  redeemPaperVendedAda: Action<{ walletId: string, shieldedRedemptionKey: string }> = new Action();
+  adaSuccessfullyRedeemed: Action<any> = new Action();
+  // TODO: refactor dialog toggles to use dialog-actions instead
+  closeAdaRedemptionSuccessOverlay: Action<any> = new Action();
+}

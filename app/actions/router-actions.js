@@ -1,9 +1,8 @@
-import PropTypes from 'prop-types';
-import defineActions from './lib/actions';
+// @flow
+import Action from './lib/Action';
 
-export default defineActions({
-  goToRoute: {
-    route: PropTypes.string.isRequired,
-    params: PropTypes.object,
-  },
-});
+// ======= ROUTER ACTIONS =======
+
+export default class RouterActions {
+  goToRoute: Action<{ route: string, params?: ?Object }> = new Action();
+}

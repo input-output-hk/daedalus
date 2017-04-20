@@ -1,24 +1,21 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
-import { observer, PropTypes as MobxPropTypes } from 'mobx-react';
+import React, { Component } from 'react';
+import { observer } from 'mobx-react';
 import SidebarSubMenu from '../SidebarMenu';
 import styles from './SidebarWalletsMenu.scss';
 import addWalletIcon from '../../../assets/images/sidebar/add-wallet-ic.svg';
 import SidebarWalletMenuItem from './SidebarWalletMenuItem';
+import type { SidebarWalletType } from '../../../stores/SidebarStore';
 
 @observer
 export default class SidebarWalletsMenu extends Component {
 
-  static propTypes = {
-    wallets: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      title: PropTypes.string.isRequired,
-      info: PropTypes.string.isRequired
-    })).isRequired,
-    isActiveWallet: PropTypes.func.isRequired,
-    onAddWallet: PropTypes.func,
-    onWalletItemClick: PropTypes.func,
-    visible: PropTypes.bool,
+  props: {
+    wallets: Array<SidebarWalletType>,
+    isActiveWallet: Function,
+    onAddWallet: Function,
+    onWalletItemClick: Function,
+    visible: boolean,
   };
 
   render() {

@@ -1,55 +1,24 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
-import { observer, inject, PropTypes as MobxPropTypes } from 'mobx-react';
+import React, { Component } from 'react';
+import { observer, inject } from 'mobx-react';
 import Layout from '../MainLayout';
 import AdaRedemptionForm from '../../components/wallet/ada-redemption/AdaRedemptionForm';
-import Wallet from '../../domain/Wallet';
-import Request from '../../stores/lib/Request';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import { AdaRedemptionCertificateParseError } from '../../i18n/errors';
+import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
 export default class AdaRedemptionPage extends Component {
 
-  static propTypes = {
-    actions: PropTypes.shape({
-      adaRedemption: PropTypes.shape({
-        chooseRedemptionType: PropTypes.func.isRequired,
-        redeemAda: PropTypes.func.isRequired,
-        redeemPaperVendedAda: PropTypes.func.isRequired,
-        setCertificate: PropTypes.func.isRequired,
-        setPassPhrase: PropTypes.func.isRequired,
-        setEmail: PropTypes.func.isRequired,
-        setAdaPasscode: PropTypes.func.isRequired,
-        setAdaAmount: PropTypes.func.isRequired,
-        setRedemptionCode: PropTypes.func.isRequired,
-        removeCertificate: PropTypes.func.isRequired,
-      }),
-    }),
-    stores: PropTypes.shape({
-      wallets: PropTypes.shape({
-        all: MobxPropTypes.arrayOrObservableArrayOf(PropTypes.instanceOf(Wallet)).isRequired,
-      }).isRequired,
-      adaRedemption: PropTypes.shape({
-        redeemAdaRequest: PropTypes.instanceOf(Request).isRequired,
-        redeemPaperVendedAdaRequest: PropTypes.instanceOf(Request).isRequired,
-        certificate: PropTypes.instanceOf(File),
-        isCertificateEncrypted: PropTypes.bool.isRequired,
-        isValidRedemptionKey: PropTypes.func.isRequired,
-        isValidRedemptionMnemonic: PropTypes.func.isRequired,
-        isValidPaperVendRedemptionKey: PropTypes.func.isRequired,
-        redemptionType: PropTypes.string.isRequired,
-        error: PropTypes.instanceOf(Error),
-      }).isRequired,
-    }).isRequired
-  };
+  static defaultProps = { actions: null, stores: null };
+  props: InjectedProps;
 
   onSubmit = (values: { walletId: string }) => {
-    this.props.actions.adaRedemption.redeemAda(values);
+    this.props.actions.adaRedemption.redeemAda.trigger(values);
   };
 
   onSubmitPaperVended = (values: { walletId: string, shieldedRedemptionKey: string }) => {
-    this.props.actions.adaRedemption.redeemPaperVendedAda(values);
+    this.props.actions.adaRedemption.redeemPaperVendedAda.trigger(values);
   };
 
   render() {
@@ -62,7 +31,6 @@ export default class AdaRedemptionPage extends Component {
       chooseRedemptionType, setCertificate, setPassPhrase, setRedemptionCode, removeCertificate,
       setEmail, setAdaPasscode, setAdaAmount
     } = this.props.actions.adaRedemption;
-
     const selectableWallets = wallets.all.map((w) => ({
       value: w.id, label: w.name
     }));
@@ -77,22 +45,26 @@ export default class AdaRedemptionPage extends Component {
     return (
       <Layout>
         <AdaRedemptionForm
-          onCertificateSelected={(certificate) => setCertificate({ certificate })}
-          onPassPhraseChanged={(passPhrase) => setPassPhrase({ passPhrase })}
-          onEmailChanged={(email) => setEmail({ email })}
-          onAdaAmountChanged={(adaAmount) => setAdaAmount({ adaAmount })}
-          onAdaPasscodeChanged={(adaPasscode) => setAdaPasscode({ adaPasscode })}
-          onRedemptionCodeChanged={(redemptionCode) => setRedemptionCode({ redemptionCode })}
-          onChooseRedemptionType={(choice) => chooseRedemptionType({ redemptionType: choice })}
+          onCertificateSelected={(certificate) => setCertificate.trigger({ certificate })}
+          onPassPhraseChanged={(passPhrase) => setPassPhrase.trigger({ passPhrase })}
+          onRedemptionCodeChanged={(redemptionCode) => {
+            setRedemptionCode.trigger({ redemptionCode });
+          }}
+          onEmailChanged={(email) => setEmail.trigger({ email })}
+          onAdaAmountChanged={(adaAmount) => setAdaAmount.trigger({ adaAmount })}
+          onAdaPasscodeChanged={(adaPasscode) => setAdaPasscode.trigger({ adaPasscode })}
+          onChooseRedemptionType={(choice) => {
+            chooseRedemptionType.trigger({ redemptionType: choice });
+          }}
           redemptionCode={adaRedemption.redemptionCode}
           wallets={selectableWallets}
           isCertificateSelected={isCertificateSelected}
           isCertificateEncrypted={isCertificateEncrypted}
-          isCertificateInvalid={error && error instanceof AdaRedemptionCertificateParseError}
+          isCertificateInvalid={error instanceof AdaRedemptionCertificateParseError}
           isSubmitting={request.isExecuting}
           error={adaRedemption.error}
+          onRemoveCertificate={removeCertificate.trigger}
           onSubmit={redemptionType === 'paperVended' ? this.onSubmitPaperVended : this.onSubmit}
-          onRemoveCertificate={removeCertificate}
           mnemonicValidator={isValidRedemptionMnemonic}
           redemptionCodeValidator={isValidRedemptionKey}
           postVendRedemptionCodeValidator={isValidPaperVendRedemptionKey}

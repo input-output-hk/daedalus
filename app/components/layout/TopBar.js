@@ -1,21 +1,21 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
+import type { Children } from 'react';
 import classNames from 'classnames';
 import RTAppBar from 'react-toolbox/lib/app_bar/AppBar';
 import { observer } from 'mobx-react';
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import Wallet from '../../domain/Wallet';
 import menuIcon from '../../assets/images/menu-ic.svg';
-import { oneOrManyChildElements } from '../../propTypes';
 import styles from './TopBar.scss';
 
 @observer
 export default class TopBar extends Component {
 
-  static propTypes = {
-    onToggleSidebar: PropTypes.func,
-    children: oneOrManyChildElements,
-    activeWallet: PropTypes.instanceOf(Wallet),
+  props: {
+    onToggleSidebar?: ?Function,
+    children?: ?Children,
+    activeWallet?: ?Wallet,
   };
 
   render() {

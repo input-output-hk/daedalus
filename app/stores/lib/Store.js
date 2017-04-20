@@ -1,15 +1,18 @@
 // @flow
 import Reaction from './Reaction';
+import type { ActionsMap } from '../../actions/index';
+import type { StoresMap } from '../../stores/index';
+import type { Api } from '../../api/index';
 
 export default class Store {
 
-  stores: Object = {};
-  api: Object = {};
-  actions: Object = {};
+  stores: StoresMap;
+  api: Api;
+  actions: ActionsMap;
 
   _reactions: Array<Reaction> = [];
 
-  constructor(stores: Object, api: Object, actions: Object) {
+  constructor(stores: StoresMap, api: Api, actions: ActionsMap) {
     this.stores = stores;
     this.api = api;
     this.actions = actions;

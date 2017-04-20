@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import classNames from 'classnames';
@@ -77,10 +77,10 @@ const assuranceLevelTranslations = defineMessages({
 
 export default class Transaction extends Component {
 
-  static propTypes = {
-    data: PropTypes.instanceOf(WalletTransaction).isRequired,
-    assuranceLevel: PropTypes.string.isRequired,
-    isLastInList: PropTypes.bool,
+  props: {
+    data: WalletTransaction,
+    assuranceLevel: string,
+    isLastInList: boolean,
   };
 
   static contextTypes = {
