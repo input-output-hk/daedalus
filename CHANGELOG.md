@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## vNEXT
+
+### Features
+
+- Improve sidebar toggling
+
+### Fixes
+
+### Chores
+
+
 ## 0.6.1
 
 ### Features
@@ -34,7 +45,6 @@ Changelog
 - Wallet summary page
 - Showing absolute percentage with two decimals on the blockchain sync page
 - File logging and sending logs to Papertrail logging service without sensitive user data
-- Improve sidebar toggling
 
 ### Fixes
 
