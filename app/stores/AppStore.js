@@ -2,7 +2,6 @@
 import { observable, computed } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import CachedRequest from './lib/LocalizedCachedRequest';
 import globalMessages from '../i18n/global-messages';
 import LocalizableError from '../i18n/LocalizableError';
 import { ROUTES } from '../Routes';
@@ -20,7 +19,7 @@ export default class AppStore extends Store {
   ];
 
   /* eslint-disable max-len */
-  @observable getProfileLocaleRequest: CachedRequest<string> = new CachedRequest(this.api.getUserLocale);
+  @observable getProfileLocaleRequest: Request<string> = new Request(this.api.getUserLocale);
   @observable setProfileLocaleRequest: Request<string> = new Request(this.api.setUserLocale);
   @observable error: ?LocalizableError = null;
   /* eslint-enable max-len */
@@ -70,8 +69,7 @@ export default class AppStore extends Store {
 
   _updateLocale = async ({ locale }: { locale: string }) => {
     await this.setProfileLocaleRequest.execute(locale);
-    await this.getProfileLocaleRequest.reset().execute();
-    if (this._isOnLanguageSelectionPage()) this._redirectToRoot();
+    await this.getProfileLocaleRequest.execute();
   };
 
   _updateRouteLocation = (options: { route: string, params: ?Object }) => {
