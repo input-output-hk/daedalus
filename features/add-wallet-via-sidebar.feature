@@ -15,10 +15,13 @@ Feature: Add Wallet via Sidebar
     | Test       |
     And I see the create wallet privacy dialog
     And I click on "Please make sure nobody looks your screen" checkbox
-    And I wait for 10 seconds for submit button to become active
     And I submit the create wallet privacy dialog
     And I see the create wallet recovery phrase display dialog
+    And I note down the recovery phrase
     And I submit the create wallet recovery phrase display dialog
     And I see the create wallet recovery phrase entry dialog
-    Then I should be on the "Test" wallet "summary" screen
-    And I dont see the create wallet dialog anymore
+    And I click on recovery phrase mnemonics in correct order
+    And I click on the "Accept terms" checkboxes
+    And I submit the create wallet recovery phrase entry dialog
+    Then I should not see the create wallet recovery phrase entry dialog anymore
+    And I should be on the "Test" wallet "summary" screen
