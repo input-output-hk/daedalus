@@ -15,7 +15,7 @@ export default class SidebarStore extends Store {
   DEFAULT_WINDOW_WIDTH = 1150;
 
   @observable activeSidebarCategory: string = this.CATEGORIES.WALLETS;
-  @observable isShowingSubMenus: bool = false;
+  @observable isShowingSubMenus: boolean = false;
 
   setup() {
     const actions = this.actions.sidebar;
@@ -24,8 +24,8 @@ export default class SidebarStore extends Store {
     actions.walletSelected.listen(this._onWalletSelected);
     this.registerReactions([
       this._syncSidebarRouteWithRouter,
-      this._setInitialSubMenusState,
     ]);
+    this._setInitialSubMenusState();
   }
 
   @computed get wallets(): Array<SidebarWalletType> {
@@ -58,7 +58,7 @@ export default class SidebarStore extends Store {
   };
 
   @action _handleWindowResize = () => {
-    if (document.documentElement.clientWidth < this.DEFAULT_WINDOW_WIDTH) {
+    if (window.innerWidth < this.DEFAULT_WINDOW_WIDTH) {
       this.isShowingSubMenus = false;
     } else {
       this.isShowingSubMenus = true;
@@ -74,7 +74,7 @@ export default class SidebarStore extends Store {
   };
 
   _setInitialSubMenusState = () => {
-    if (document.documentElement.clientWidth >= this.DEFAULT_WINDOW_WIDTH) {
+    if (window.innerWidth >= this.DEFAULT_WINDOW_WIDTH) {
       this.isShowingSubMenus = true;
     }
     window.addEventListener('resize', this._handleWindowResize);
