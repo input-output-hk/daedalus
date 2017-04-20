@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## vNEXT
+## 0.6.1
 
 ### Features
 
