@@ -88,7 +88,7 @@ export default class WalletBackupStore extends Store {
     );
   };
 
-  @computed get isRecoveryPhraseValid(): bool {
+  @computed get isRecoveryPhraseValid(): boolean {
     return (
       this.recoveryPhraseWords.reduce((words, { word }) => words + word, '') ===
       this.enteredPhrase.reduce((words, { word }) => words + word, '')

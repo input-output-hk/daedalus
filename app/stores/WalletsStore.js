@@ -142,11 +142,11 @@ export default class WalletsStore extends Store {
     this.goToWalletRoute(wallet.id);
   };
 
-  @computed get hasLoadedWallets(): bool {
+  @computed get hasLoadedWallets(): boolean {
     return this.walletsRequest.wasExecuted;
   }
 
-  @computed get hasAnyWallets(): bool {
+  @computed get hasAnyWallets(): boolean {
     if (this.walletsRequest.result == null) return false;
     return this.walletsRequest.wasExecuted && this.walletsRequest.result.length > 0;
   }
@@ -160,7 +160,7 @@ export default class WalletsStore extends Store {
     return this.getWalletRoute(this.active.id);
   }
 
-  @computed get hasAnyLoaded(): bool {
+  @computed get hasAnyLoaded(): boolean {
     return this.all.length > 0;
   }
 

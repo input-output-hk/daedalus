@@ -16,7 +16,7 @@ export default class SidebarStore extends Store {
   ACTION_HIDE_SUB_MENU_DELAY = 1000;
 
   @observable activeSidebarCategory: string = this.CATEGORIES.WALLETS;
-  @observable isShowingSubMenus: bool = true;
+  @observable isShowingSubMenus: boolean = true;
 
   _hideSubMenuTimeout = null;
 
@@ -101,5 +101,5 @@ export type SidebarWalletType = {
   id: string,
   title: string,
   info: string,
-  isConnected: bool,
+  isConnected: boolean,
 };

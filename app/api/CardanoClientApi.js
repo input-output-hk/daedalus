@@ -158,23 +158,23 @@ export default class CardanoClientApi {
     }
   }
 
-  isValidAddress(currency: string, address: string): Promise<bool> {
+  isValidAddress(currency: string, address: string): Promise<boolean> {
     return ClientApi.isValidAddress(currency, address);
   }
 
-  isValidMnemonic(mnemonic: string): Promise<bool> { // eslint-disable-line
+  isValidMnemonic(mnemonic: string): Promise<boolean> { // eslint-disable-line
     return ClientApi.isValidMnemonic(12, mnemonic);
   }
 
-  isValidRedemptionKey(mnemonic: string): Promise<bool> {
+  isValidRedemptionKey(mnemonic: string): Promise<boolean> {
     return ClientApi.isValidRedemptionKey(mnemonic);
   }
 
-  isValidPaperVendRedemptionKey(redeemCode: string): Promise<bool> {
+  isValidPaperVendRedemptionKey(redeemCode: string): Promise<boolean> {
     return ClientApi.isValidPaperVendRedemptionKey(redeemCode);
   }
 
-  isValidRedemptionMnemonic(mnemonic: string): Promise<bool> {
+  isValidRedemptionMnemonic(mnemonic: string): Promise<boolean> {
     return ClientApi.isValidMnemonic(9, mnemonic);
   }
 

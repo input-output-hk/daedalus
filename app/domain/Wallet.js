@@ -14,7 +14,7 @@ export default class Wallet {
   @observable name: string = '';
   @observable amount: BigNumber;
   @observable assurance: AssuranceModeOption;
-  @observable hasPassword: bool;
+  @observable hasPassword: boolean;
   @observable passwordUpdateDate: ?Date;
   @observable transactions: Array<WalletTransaction> = [];
 
@@ -26,7 +26,7 @@ export default class Wallet {
     currency: string,
     amount: BigNumber,
     assurance: AssuranceModeOption,
-    hasPassword: bool,
+    hasPassword: boolean,
     passwordUpdateDate: ?Date,
   }) {
     Object.assign(this, data);

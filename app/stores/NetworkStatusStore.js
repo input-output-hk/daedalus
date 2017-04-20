@@ -61,7 +61,7 @@ export default class NetworkStatusStore extends Store {
     return !this.isConnected || this.networkDifficulty <= 1;
   }
 
-  @computed get hasBlockSyncingStarted(): bool {
+  @computed get hasBlockSyncingStarted(): boolean {
     // until we start receiving network difficulty messages we are not connected to node and
     // we should be on the blue connecting screen instead of displaying "Loading wallet data"
     return this.networkDifficulty >= 1;
@@ -92,11 +92,11 @@ export default class NetworkStatusStore extends Store {
     return 0;
   }
 
-  @computed get isSyncing(): bool {
+  @computed get isSyncing(): boolean {
     return !this.isConnecting && this.hasBlockSyncingStarted && !this.isSynced;
   }
 
-  @computed get isSynced(): bool {
+  @computed get isSynced(): boolean {
     return !this.isConnecting && this.syncPercentage >= 100 && this.hasBlockSyncingStarted;
   }
 

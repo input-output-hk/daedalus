@@ -25,6 +25,7 @@ storiesOf('SidebarWalletsMenu', module)
         { id: '4', title: 'Shopping wallet', info: 'ADA' },
       ]}
       isActiveWallet={(id) => id === 2}
+      onWalletItemClick={action('walletItemClick')}
       onAddWallet={action('addWallet')}
       visible
     />

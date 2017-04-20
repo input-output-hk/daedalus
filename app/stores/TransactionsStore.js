@@ -92,14 +92,14 @@ export default class TransactionsStore extends Store {
     return result ? result.transactions.slice(0, this.RECENT_TRANSACTIONS_LIMIT) : [];
   }
 
-  @computed get hasAnyFiltered(): bool {
+  @computed get hasAnyFiltered(): boolean {
     const wallet = this.stores.wallets.active;
     if (!wallet) return false;
     const result = this._getTransactionsAllRequest(wallet.id).result;
     return result ? result.transactions.length > 0 : false;
   }
 
-  @computed get hasAny(): bool {
+  @computed get hasAny(): boolean {
     const wallet = this.stores.wallets.active;
     if (!wallet) return false;
     const result = this._getTransactionsRecentRequest(wallet.id).result;
