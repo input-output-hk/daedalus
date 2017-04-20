@@ -39,7 +39,7 @@ const messages = defineMessages({
   },
   termRecovery: {
     id: 'wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery',
-    defaultMessage: `!!!I understand that if this application is moved to another device or deleted, my money can 
+    defaultMessage: `!!!I understand that if this application is moved to another device or deleted, my money can
     be only recovered with the backup phrase which were written down in a secure place`,
     description: 'Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase'
   }
@@ -124,8 +124,9 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
           <div className={styles.words}>
             {recoveryPhraseShuffled.map(({ word, isActive }, index) => (
               <MnemonicWord
-                word={word}
                 key={index}
+                word={word}
+                index={index}
                 isActive={isActive}
                 onClick={(value) => isActive && onAddWord(value)}
               />

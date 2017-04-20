@@ -74,11 +74,11 @@ export default class WalletBackupStore extends Store {
     this.currentStep = 'recoveryPhraseEntry';
   };
 
-  @action _addWordToWalletBackupVerification = (params: { word: string }) => {
-    const { word } = params;
+  @action _addWordToWalletBackupVerification = (params: { word: string, index: number }) => {
+    const { word, index } = params;
     this.enteredPhrase.push({ word });
-    const pickedWord = this.recoveryPhraseShuffled.find(w => w.word === word);
-    if (pickedWord) pickedWord.isActive = false;
+    const pickedWord = this.recoveryPhraseShuffled[index];
+    if (pickedWord && pickedWord.word === word) pickedWord.isActive = false;
   };
 
   @action _clearEnteredRecoveryPhrase = () => {
