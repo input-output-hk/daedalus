@@ -9,6 +9,7 @@ Changelog
 ### Fixes
 
 - Verification of mnemonic recovery phrase during wallet backup is not working if it contains duplicate words.
+- Prevent wallet send form reset on submit
 
 ### Chores
 
