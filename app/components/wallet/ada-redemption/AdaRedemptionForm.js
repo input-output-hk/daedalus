@@ -137,6 +137,16 @@ where Ada should be redeemed and enter 9 word mnemonic passphrase.</p>`,
     defaultMessage: '!!!Enter your Ada passcode',
     description: 'Hint for the Ada amount input field.'
   },
+  disclaimerTitle: {
+    id: 'wallet.redeem.dialog.disclaimerTitle',
+    defaultMessage: '!!!Daedalus Redemption Disclaimer',
+    description: 'Testnet Ada redemption disclaimer title.'
+  },
+  disclaimer: {
+    id: 'wallet.redeem.dialog.disclaimer',
+    defaultMessage: '!!!Disclaimer',
+    description: 'Testnet Ada redemption disclaimer.'
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -356,6 +366,9 @@ export default class AdaRedemptionForm extends Component {
         <BorderedBox>
 
           <h1 className={styles.headline}>{intl.formatMessage(messages.headline)}</h1>
+
+          <h2 className={styles.disclaimer}>{intl.formatMessage(messages.disclaimerTitle)}</h2>
+          <div className={styles.disclaimer}>{intl.formatMessage(messages.disclaimer)}</div>
 
           <AdaRedemptionChoices
             activeChoice={redemptionType}

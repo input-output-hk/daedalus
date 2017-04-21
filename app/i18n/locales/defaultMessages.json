@@ -712,6 +712,34 @@
           "column": 17,
           "line": 135
         }
+      },
+      {
+        "defaultMessage": "!!!Daedalus Redemption Disclaimer",
+        "description": "Testnet Ada redemption disclaimer title.",
+        "end": {
+          "column": 3,
+          "line": 144
+        },
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "id": "wallet.redeem.dialog.disclaimerTitle",
+        "start": {
+          "column": 19,
+          "line": 140
+        }
+      },
+      {
+        "defaultMessage": "!!!Disclaimer",
+        "description": "Testnet Ada redemption disclaimer.",
+        "end": {
+          "column": 3,
+          "line": 149
+        },
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "id": "wallet.redeem.dialog.disclaimer",
+        "start": {
+          "column": 14,
+          "line": 145
+        }
       }
     ],
     "path": "app/components/wallet/ada-redemption/AdaRedemptionForm.json"
@@ -996,39 +1024,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Select your language",
-        "description": "Label for the language select.",
-        "end": {
-          "column": 3,
-          "line": 15
-        },
-        "file": "app/components/wallet/language-selection/LanguageSelectionForm.js",
-        "id": "wallet.languageSelect.form.languageSelectLabel",
-        "start": {
-          "column": 23,
-          "line": 11
-        }
-      },
-      {
-        "defaultMessage": "!!!Continue",
-        "description": "Label for the \"Language select\" form submit button.",
-        "end": {
-          "column": 3,
-          "line": 20
-        },
-        "file": "app/components/wallet/language-selection/LanguageSelectionForm.js",
-        "id": "wallet.languageSelect.form.submitLabel",
-        "start": {
-          "column": 15,
-          "line": 16
-        }
-      }
-    ],
-    "path": "app/components/wallet/language-selection/LanguageSelectionForm.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Summary",
         "description": "Label for the \"Summary\" nav button in the wallet navigation.",
         "end": {
@@ -1297,81 +1292,6 @@
       }
     ],
     "path": "app/components/wallet/settings/DeleteWalletConfirmationDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Delete Wallet",
-        "description": "Title for the \"Delete wallet\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 17
-        },
-        "file": "app/components/wallet/settings/PasswordUpdateDialog.js",
-        "id": "wallet.settings.delete.dialog.title",
-        "start": {
-          "column": 15,
-          "line": 13
-        }
-      },
-      {
-        "defaultMessage": "!!!Delete",
-        "description": "Label for the \"Delete (x)\" button in the delete wallet dialog.",
-        "end": {
-          "column": 3,
-          "line": 22
-        },
-        "file": "app/components/wallet/settings/PasswordUpdateDialog.js",
-        "id": "wallet.settings.delete.dialog.confirmButtonLabel",
-        "start": {
-          "column": 22,
-          "line": 18
-        }
-      },
-      {
-        "defaultMessage": "!!!Do you really want to delete <strong>{walletName}</strong> wallet?",
-        "description": "Question if the user really wants to delete the wallet.",
-        "end": {
-          "column": 3,
-          "line": 27
-        },
-        "file": "app/components/wallet/settings/PasswordUpdateDialog.js",
-        "id": "wallet.settings.delete.dialog.wantToDeleteWalletQuestion",
-        "start": {
-          "column": 30,
-          "line": 23
-        }
-      },
-      {
-        "defaultMessage": "!!!Make sure you have access to backup before continuing. Otherwise, you will lose all your funds connected to this wallet.",
-        "description": "Notice to confirm if the user has made a backup of his wallet",
-        "end": {
-          "column": 3,
-          "line": 32
-        },
-        "file": "app/components/wallet/settings/PasswordUpdateDialog.js",
-        "id": "wallet.settings.delete.dialog.confirmBackupNotice",
-        "start": {
-          "column": 23,
-          "line": 28
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter the name of the wallet to confirm deletion:",
-        "description": "Instruction for recovery word on delete wallet dialog",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "app/components/wallet/settings/PasswordUpdateDialog.js",
-        "id": "wallet.settings.delete.dialog.enterRecoveryWordLabel",
-        "start": {
-          "column": 26,
-          "line": 33
-        }
-      }
-    ],
-    "path": "app/components/wallet/settings/PasswordUpdateDialog.json"
   },
   {
     "descriptors": [
@@ -2004,44 +1924,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Your changes have been saved",
-        "description": "Message \"Your changes have been saved\" for inline editing (eg. on Wallet Settings page).",
-        "end": {
-          "column": 3,
-          "line": 14
-        },
-        "file": "app/components/widgets/forms/InlineEditingDropdown.js",
-        "id": "inline.editing.dropdown.changesSaved",
-        "start": {
-          "column": 16,
-          "line": 10
-        }
-      }
-    ],
-    "path": "app/components/widgets/forms/InlineEditingDropdown.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!change",
-        "description": "Label \"change\" on inline editing inputs in inactive state.",
-        "end": {
-          "column": 3,
-          "line": 13
-        },
-        "file": "app/components/widgets/forms/ReadOnlyInput.js",
-        "id": "inline.editing.input.change.label",
-        "start": {
-          "column": 10,
-          "line": 9
-        }
-      }
-    ],
-    "path": "app/components/widgets/forms/ReadOnlyInput.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Blocks synced {percentage}%",
         "description": "Label for the blocks synced info overlay on node sync status icon.",
         "end": {
@@ -2249,25 +2131,6 @@
       }
     ],
     "path": "app/containers/wallet/WalletReceivePage.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!You have successfully copied wallet address",
-        "description": "Message for the wallet address copy success notification.",
-        "end": {
-          "column": 3,
-          "line": 16
-        },
-        "file": "app/containers/wallet/WalletSettingsPage.js",
-        "id": "wallet.receive.page.addressCopyNotificationMessage",
-        "start": {
-          "column": 11,
-          "line": 12
-        }
-      }
-    ],
-    "path": "app/containers/wallet/WalletSettingsPage.json"
   },
   {
     "descriptors": [
