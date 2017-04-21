@@ -6,6 +6,7 @@ import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
 import WalletTransaction from '../domain/WalletTransaction';
 import type { GetTransactionsResponse } from '../api';
+import type { UnconfirmedAmount } from '../types/unconfirmedAmountType';
 
 export default class TransactionsStore extends Store {
 
@@ -115,7 +116,7 @@ export default class TransactionsStore extends Store {
     return result ? result.transactions.length : 0;
   }
 
-  @computed get unconfirmedAmountCollection(): BigNumber {
+  @computed get unconfirmedAmount(): UnconfirmedAmount {
     const unconfirmedAmount = {
       total: new BigNumber(0),
       incoming: new BigNumber(0),

@@ -6,6 +6,7 @@ import adaSymbolBig from '../../../assets/images/ada-symbol-big-dark.svg';
 import adaSymbolSmallest from '../../../assets/images/ada-symbol-smallest-dark.svg';
 import BorderedBox from '../../widgets/BorderedBox';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import type { UnconfirmedAmount } from '../../../types/unconfirmedAmountType';
 import styles from './WalletSummary.scss';
 
 const messages = defineMessages({
@@ -33,7 +34,7 @@ export default class WalletSummary extends Component {
     walletName: string,
     amount: string,
     numberOfTransactions: number,
-    pendingAmount: Object,
+    pendingAmount: UnconfirmedAmount,
     isLoadingTransactions: boolean,
   };
 
@@ -59,13 +60,13 @@ export default class WalletSummary extends Component {
             <img src={adaSymbolBig} role="presentation" />
           </div>
           <div className={styles.pendingConfirmation}>
-            {`${intl.formatMessage(messages.pendingOutgoingConfirmationLabel)}`}
-            : {pendingAmount.outgoing.toFormat(DECIMAL_PLACES_IN_ADA)}
+            {`${intl.formatMessage(messages.pendingIncomingConfirmationLabel)}`}
+            : {pendingAmount.incoming.toFormat(DECIMAL_PLACES_IN_ADA)}
             <img src={adaSymbolSmallest} role="presentation" />
           </div>
           <div className={styles.pendingConfirmation}>
-            {`${intl.formatMessage(messages.pendingIncomingConfirmationLabel)}`}
-            : {pendingAmount.incoming.toFormat(DECIMAL_PLACES_IN_ADA)}
+            {`${intl.formatMessage(messages.pendingOutgoingConfirmationLabel)}`}
+            : {pendingAmount.outgoing.toFormat(DECIMAL_PLACES_IN_ADA)}
             <img src={adaSymbolSmallest} role="presentation" />
           </div>
           {!isLoadingTransactions ? (
