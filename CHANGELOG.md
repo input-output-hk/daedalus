@@ -6,6 +6,9 @@ Changelog
 
 ### Features
 
+- Sidebar is no longer auto-hiding if application window is width is greater than 1150px.
+- When user opens or closes the sidebar using the hamburger icon it stays open or closed.
+
 ### Fixes
 
 - Verification of mnemonic recovery phrase during wallet backup is not working if it contains duplicate words.
