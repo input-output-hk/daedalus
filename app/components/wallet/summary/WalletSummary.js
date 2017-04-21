@@ -5,13 +5,19 @@ import { defineMessages, intlShape } from 'react-intl';
 import adaSymbolBig from '../../../assets/images/ada-symbol-big-dark.svg';
 import adaSymbolSmallest from '../../../assets/images/ada-symbol-smallest-dark.svg';
 import BorderedBox from '../../widgets/BorderedBox';
+import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletSummary.scss';
 
 const messages = defineMessages({
-  pendingConfirmationLabel: {
-    id: 'wallet.summary.page.pendingConfirmationLabel',
-    defaultMessage: '!!!Pending confirmation',
-    description: '"Pending confirmation" label on Wallet summary page'
+  pendingOutgoingConfirmationLabel: {
+    id: 'wallet.summary.page.pendingOutgoingConfirmationLabel',
+    defaultMessage: '!!!Outgoing pending confirmation',
+    description: '"Outgoing pending confirmation" label on Wallet summary page'
+  },
+  pendingIncomingConfirmationLabel: {
+    id: 'wallet.summary.page.pendingIncomingConfirmationLabel',
+    defaultMessage: '!!!Incoming pending confirmation',
+    description: '"Incoming pending confirmation" label on Wallet summary page'
   },
   transactionsLabel: {
     id: 'wallet.summary.page.transactionsLabel',
@@ -27,7 +33,7 @@ export default class WalletSummary extends Component {
     walletName: string,
     amount: string,
     numberOfTransactions: number,
-    pendingAmount: string,
+    pendingAmount: Object,
     isLoadingTransactions: boolean,
   };
 
@@ -53,7 +59,13 @@ export default class WalletSummary extends Component {
             <img src={adaSymbolBig} role="presentation" />
           </div>
           <div className={styles.pendingConfirmation}>
-            {`${intl.formatMessage(messages.pendingConfirmationLabel)}`}: {pendingAmount}
+            {`${intl.formatMessage(messages.pendingOutgoingConfirmationLabel)}`}
+            : {pendingAmount.outgoing.toFormat(DECIMAL_PLACES_IN_ADA)}
+            <img src={adaSymbolSmallest} role="presentation" />
+          </div>
+          <div className={styles.pendingConfirmation}>
+            {`${intl.formatMessage(messages.pendingIncomingConfirmationLabel)}`}
+            : {pendingAmount.incoming.toFormat(DECIMAL_PLACES_IN_ADA)}
             <img src={adaSymbolSmallest} role="presentation" />
           </div>
           {!isLoadingTransactions ? (

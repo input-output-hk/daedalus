@@ -155,6 +155,8 @@
   "wallet.settings.passwordNotSet": "!!!Password",
   "wallet.summary.no.transactions": "!!!No recent transactions",
   "wallet.summary.page.pendingConfirmationLabel": "!!!Pending confirmation",
+  "wallet.summary.page.pendingOutgoingConfirmationLabel": "!!!Outgoing pending confirmation",
+  "wallet.summary.page.pendingIncomingConfirmationLabel": "!!!Incoming pending confirmation",
   "wallet.summary.page.transactionsLabel": "!!!Number of transactions",
   "wallet.transaction.adaReceived": "!!!Ada received",
   "wallet.transaction.adaSent": "!!!Ada sent",

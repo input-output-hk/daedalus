@@ -13,6 +13,8 @@ export default class TransactionsStore extends Store {
   SEARCH_LIMIT_INCREASE = 500;
   SEARCH_SKIP = 0;
   RECENT_TRANSACTIONS_LIMIT = 5;
+  OUTGOING_TRANSACTION_TYPE = 'adaExpend';
+  INCOMING_TRANSACTION_TYPE = 'adaIncome';
 
   @observable transactionsRequests: Array<{
     walletId: string,
@@ -113,8 +115,12 @@ export default class TransactionsStore extends Store {
     return result ? result.transactions.length : 0;
   }
 
-  @computed get totalUnconfirmedAmount(): BigNumber {
-    let unconfirmedAmount = new BigNumber(0);
+  @computed get unconfirmedAmountCollection(): BigNumber {
+    const unconfirmedAmount = {
+      total: new BigNumber(0),
+      incoming: new BigNumber(0),
+      outgoing: new BigNumber(0),
+    };
     const wallet = this.stores.wallets.active;
     if (!wallet) return unconfirmedAmount;
     const result = this._getTransactionsAllRequest(wallet.id).result;
@@ -123,7 +129,17 @@ export default class TransactionsStore extends Store {
     for (const transaction of result.transactions) {
       // TODO: move this magic constant (required numberOfConfirmations) to config!
       if (transaction.numberOfConfirmations <= 6) {
-        unconfirmedAmount = unconfirmedAmount.plus(transaction.amount.absoluteValue());
+        unconfirmedAmount.total = unconfirmedAmount.total.plus(transaction.amount.absoluteValue());
+        if (transaction.type === this.OUTGOING_TRANSACTION_TYPE) {
+          unconfirmedAmount.outgoing = unconfirmedAmount.outgoing.plus(
+            transaction.amount.absoluteValue()
+          );
+        }
+        if (transaction.type === this.INCOMING_TRANSACTION_TYPE) {
+          unconfirmedAmount.incoming = unconfirmedAmount.incoming.plus(
+            transaction.amount.absoluteValue()
+          );
+        }
       }
     }
     return unconfirmedAmount;

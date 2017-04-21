@@ -12,6 +12,7 @@ Changelog
 ### Fixes
 
 - Verification of mnemonic recovery phrase during wallet backup is not working if it contains duplicate words.
+- Pending confirmation amounts split (incoming and outgoing)
 
 ### Chores
 

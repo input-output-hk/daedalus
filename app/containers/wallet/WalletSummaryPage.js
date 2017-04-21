@@ -35,10 +35,9 @@ export default class WalletSummaryPage extends Component {
       totalAvailable,
       recent,
       recentTransactionsRequest,
-      totalUnconfirmedAmount
+      unconfirmedAmountCollection,
     } = transactions;
     const wallet = wallets.active;
-
     // Guard against potential null values
     if (!wallet) throw new Error('Active wallet required for WalletSummaryPage.');
 
@@ -65,7 +64,7 @@ export default class WalletSummaryPage extends Component {
           walletName={wallet.name}
           amount={wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
           numberOfTransactions={totalAvailable}
-          pendingAmount={totalUnconfirmedAmount.toFormat(DECIMAL_PLACES_IN_ADA)}
+          pendingAmount={unconfirmedAmountCollection}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
         />
         {walletTransactions}
