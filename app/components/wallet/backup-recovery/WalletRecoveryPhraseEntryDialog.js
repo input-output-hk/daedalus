@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import WalletRecoveryPhraseMnemonic from './WalletRecoveryPhraseMnemonic';
@@ -85,6 +86,10 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
       onCancelBackup,
       onFinishBackup
     } = this.props;
+    const dialogClasses = classnames([
+      styles.component,
+      'WalletRecoveryPhraseEntryDialog',
+    ]);
 
     const enteredPhraseString = enteredPhrase.reduce((phrase, { word }) => `${phrase} ${word}`, '');
 
@@ -107,10 +112,10 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
 
     return (
       <Dialog
+        className={dialogClasses}
         title={intl.formatMessage(messages.recoveryPhrase)}
         actions={actions}
         active
-        style={styles.component}
       >
         {!isValid && (
           <WalletRecoveryInstructions

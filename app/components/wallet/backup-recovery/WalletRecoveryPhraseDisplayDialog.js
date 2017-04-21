@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import WalletRecoveryPhraseMnemonic from './WalletRecoveryPhraseMnemonic';
@@ -16,7 +17,7 @@ const messages = defineMessages({
   },
   backupInstructions: {
     id: 'wallet.backup.recovery.phrase.display.dialog.backup.instructions',
-    defaultMessage: `!!!Please, make sure you have carefully written down your recovery phrase somewhere safe. 
+    defaultMessage: `!!!Please, make sure you have carefully written down your recovery phrase somewhere safe.
     You will need this phrase later for next use and recover. Phrase is case sensitive.`,
     description: 'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.'
   },
@@ -47,6 +48,10 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component {
       onStartWalletBackup,
       onCancelBackup,
     } = this.props;
+    const dialogClasses = classnames([
+      styles.component,
+      'WalletRecoveryPhraseDisplayDialog',
+    ]);
 
     const actions = [
       {
@@ -58,10 +63,10 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component {
 
     return (
       <Dialog
+        className={dialogClasses}
         title={intl.formatMessage(messages.recoveryPhrase)}
         actions={actions}
         active
-        style={styles.component}
       >
         <WalletRecoveryInstructions
           instructionsText={<FormattedHTMLMessage {...messages.backupInstructions} />}

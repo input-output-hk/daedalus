@@ -1,6 +1,7 @@
 // @flow
 import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
+import environment from '../environment';
 
 export type walletBackupSteps = 'privacyWarning' | 'recoveryPhraseDisplay' | 'recoveryPhraseEntry' | null;
 
@@ -51,7 +52,7 @@ export default class WalletBackupStore extends Store {
     this.isEntering = false;
     this.isTermDeviceAccepted = false;
     this.isTermRecoveryAccepted = false;
-    this.countdownRemaining = 10;
+    this.countdownRemaining = environment.isTest() ? 0 : 10;
     this.countdownTimer = null;
     this.countdownTimer = setInterval(() => {
       if (this.countdownRemaining > 0) {

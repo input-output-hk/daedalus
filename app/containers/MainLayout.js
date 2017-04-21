@@ -33,7 +33,7 @@ export default class MainLayout extends Component {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, wallets, networkStatus } = stores;
+    const { sidebar, wallets, networkStatus, app } = stores;
     const { restoreRequest, isWalletKeyImportDialogOpen } = wallets;
     const {
       toggleAddWallet, toggleCreateWalletDialog, toggleWalletRestore
@@ -81,6 +81,7 @@ export default class MainLayout extends Component {
       <TopBar
         onToggleSidebar={actions.sidebar.toggleSubMenus.trigger}
         activeWallet={activeWallet}
+        currentRoute={app.currentRoute}
       >
         {testEnvironmentLabel}
         <NodeSyncStatusIcon

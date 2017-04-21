@@ -17,9 +17,9 @@ export default class LanguageSelectionPage extends Component {
   };
 
   render() {
-    const { setProfileLocaleRequest, LANGUAGE_OPTIONS } = this.props.stores.app;
+    const { setProfileLocaleRequest, LANGUAGE_OPTIONS, currentRoute } = this.props.stores.app;
     const isSubmitting = setProfileLocaleRequest.isExecuting;
-    const topbar = <TopBar />;
+    const topbar = <TopBar currentRoute={currentRoute} />;
     return (
       <TopBarLayout
         topbar={topbar}

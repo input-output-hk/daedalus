@@ -9,12 +9,14 @@ export default class BigButtonForDialogs extends Component {
     description: string,
     icon: string,
     onClick: Function,
-    isDisabled: boolean
+    isDisabled: boolean,
+    className: string,
   };
 
   render() {
-    const { label, description, icon, onClick, isDisabled = false } = this.props;
+    const { label, description, icon, onClick, isDisabled = false, className } = this.props;
     const componentClasses = classnames([
+      className,
       styles.component,
       isDisabled ? styles.disabled : null
     ]);

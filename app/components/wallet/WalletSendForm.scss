@@ -5,15 +5,14 @@
   padding: 20px;
 }
 
-.submitButtonSpinning {
-  width: 100%;
-  @include loading-spinner("../../assets/images/spinner-light.svg");
+.submitButtonSpinning, .submitButton {
+  display: block !important;
+  margin: 0 auto;
+  width: 360px;
 }
 
-.submitButton {
-  width: 65%;
-  margin: 0 auto;
-  display: block !important;
+.submitButtonSpinning {
+  @include loading-spinner("../../assets/images/spinner-light.svg");
 }
 
 .error {

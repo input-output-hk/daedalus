@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../widgets/DialogCloseButton';
@@ -78,21 +79,27 @@ export default class WalletAddDialog extends Component {
   render() {
     const { intl } = this.context;
     const { onCreate, onRestore, onCancel, canClose, onImportKey } = this.props;
+    const dialogClasses = classnames([
+      styles.component,
+      'WalletAddDialog',
+    ]);
     return (
       <Dialog
-        className={styles.component}
+        className={dialogClasses}
         title={intl.formatMessage(messages.title)}
         active
       >
         <div className={styles.buttonsContainer}>
           <div className={styles.firstRow}>
             <BigButtonForDialogs
+              className="createWalletButton"
               onClick={onCreate}
               icon={createIcon}
               label={intl.formatMessage(messages.createLabel)}
               description={intl.formatMessage(messages.createDescription)}
             />
             <BigButtonForDialogs
+              className="joinWalletButton"
               icon={joinSharedIcon}
               label={intl.formatMessage(messages.joinLabel)}
               description={intl.formatMessage(messages.joinDescription)}
@@ -101,12 +108,14 @@ export default class WalletAddDialog extends Component {
           </div>
           <div className={styles.secondRow}>
             <BigButtonForDialogs
+              className="restoreWalletButton"
               onClick={onRestore}
               icon={restoreIcon}
               label={intl.formatMessage(messages.restoreLabel)}
               description={intl.formatMessage(messages.restoreDescription)}
             />
             <BigButtonForDialogs
+              className="importWalletButton"
               icon={importIcon}
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}
