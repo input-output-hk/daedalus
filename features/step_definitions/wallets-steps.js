@@ -49,6 +49,10 @@ export default function () {
     await this.navigateTo(`/wallets/${wallet.id}/${screen}`);
   });
 
+  this.Given(/^I see the add wallet dialog$/, function () {
+    return this.client.waitForVisible('.WalletAddDialog');
+  });
+
   this.Given(/^I see the create wallet dialog$/, function () {
     return this.client.waitForVisible('.WalletCreateDialog');
   });
@@ -62,6 +66,10 @@ export default function () {
     this.client.execute(walletId => {
       daedalus.actions.setActiveWallet.trigger({ walletId });
     }, wallet.id);
+  });
+
+  this.When(/^I click on the create wallet button in add wallet dialog$/, function () {
+    return this.waitAndClick('.WalletAddDialog .createWalletButton');
   });
 
   this.When(/^I click the wallet (.*) button$/, async function (buttonName) {
@@ -92,6 +100,70 @@ export default function () {
     return this.client.click('.WalletCreateDialog .dialog_button');
   });
 
+  this.When(/^I see the create wallet privacy dialog$/, function () {
+    return this.client.waitForVisible('.WalletBackupPrivacyWarningDialog');
+  });
+
+  this.When(/^I click on "Please make sure nobody looks your screen" checkbox$/, function () {
+    return this.waitAndClick('.WalletBackupPrivacyWarningDialog .CheckboxWithLongLabel_checkbox');
+  });
+
+  this.When(/^I submit the create wallet privacy dialog$/, function () {
+    return this.waitAndClick('.WalletBackupPrivacyWarningDialog .dialog_button');
+  });
+
+  this.When(/^I see the create wallet recovery phrase display dialog$/, function () {
+    return this.client.waitForVisible('.WalletRecoveryPhraseDisplayDialog');
+  });
+
+  this.When(/^I note down the recovery phrase$/, async function () {
+    const recoveryPhrase = await this.client.getText('.WalletRecoveryPhraseMnemonic_component');
+    this.recoveryPhrase = recoveryPhrase.split(' ');
+  });
+
+  this.When(/^I submit the create wallet recovery phrase display dialog$/, function () {
+    return this.waitAndClick('.WalletRecoveryPhraseDisplayDialog .dialog_button');
+  });
+
+  this.When(/^I see the create wallet recovery phrase entry dialog$/, function () {
+    return this.client.waitForVisible('.WalletRecoveryPhraseEntryDialog');
+  });
+
+  this.When(/^I click on recovery phrase mnemonics in correct order$/, async function () {
+    for (let i = 0; i < this.recoveryPhrase.length; i++) {
+      const recoveryPhraseMnemonic = this.recoveryPhrase[i];
+      await this.waitAndClick(`//button[contains(text(), "${recoveryPhraseMnemonic}") and @class="MnemonicWord_component MnemonicWord_active"]`);
+    }
+  });
+
+  this.When(/^I click on the "Accept terms" checkboxes$/, async function () {
+    const termsCheckboxes = await this.client.elements('.CheckboxWithLongLabel_checkbox');
+    for (let i = 0; i < termsCheckboxes.value.length; i++) {
+      const termsCheckbox = termsCheckboxes.value[i].ELEMENT;
+      await this.client.elementIdClick(termsCheckbox);
+    }
+  });
+
+  this.When(/^I submit the create wallet recovery phrase entry dialog$/, function () {
+    return this.waitAndClick('.WalletRecoveryPhraseEntryDialog .dialog_button');
+  });
+
+  this.Then(/^I should not see the create wallet recovery phrase entry dialog anymore$/, function () {
+    return this.client.waitForVisible('.WalletRecoveryPhraseEntryDialog', null, true);
+  });
+
+  this.Then(/^I should have newly created "Test" wallet loaded$/, async function () {
+    const result = await this.client.executeAsync(function(done) {
+      daedalus.stores.wallets.walletsRequest.invalidate().execute().then(done);
+    });
+    // Add or set the wallets for this scenario
+    if (this.wallets != null) {
+      this.wallets.push(...result.value);
+    } else {
+      this.wallets = result.value;
+    }
+  });
+
   this.Then(/^I should be on some wallet page$/, async function () {
     return this.client.waitForVisible('.WalletNavigation_component');
   });
@@ -106,7 +178,7 @@ export default function () {
     let errorsOnScreen = await this.client.getText('.WalletSendForm_component .input_error');
     if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
     const errors = data.hashes();
-    for (let i=0; i < errors.length; i++) {
+    for (let i = 0; i < errors.length; i++) {
       const expectedError = await this.intl(errors[i].message);
       expect(errorsOnScreen[i]).to.equal(expectedError);
     }
