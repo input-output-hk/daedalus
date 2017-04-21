@@ -72,13 +72,19 @@ main = do
        ]
   run "productbuild" productargs
 
-  -- Sign the installer with a special macOS dance
-  run "security" ["create-keychain", "-p", "travis", "macos-build.keychain"]
-  run "security" ["default-keychain", "-s", "macos-build.keychain"]
-  shells "security import macos.p12 -P $CERT_PASS -k macos-build.keychain -T `which productsign`" mempty
-  run "security" ["set-key-partition-list", "-S", "apple-tool:,apple:", "-s", "-k", "travis", "macos-build.keychain"]
-  run "security" ["unlock-keychain", "-p", "travis", "macos-build.keychain"]
-  shells ("productsign --sign \"Developer ID Installer: Nikolaos Bentenitis\" --keychain macos-build.keychain dist/temp2.pkg " <> T.pack pkg) mempty
+  isPullRequest <- fromMaybe "false" <$> lookupEnv "TRAVIS_PULL_REQUEST"
+  putStrLn isPullRequest
+  if isPullRequest == "false" then do
+    -- Sign the installer with a special macOS dance
+    run "security" ["create-keychain", "-p", "travis", "macos-build.keychain"]
+    run "security" ["default-keychain", "-s", "macos-build.keychain"]
+    shells "security import macos.p12 -P $CERT_PASS -k macos-build.keychain -T `which productsign`" mempty
+    run "security" ["set-key-partition-list", "-S", "apple-tool:,apple:", "-s", "-k", "travis", "macos-build.keychain"]
+    run "security" ["unlock-keychain", "-p", "travis", "macos-build.keychain"]
+    shells ("productsign --sign \"Developer ID Installer: Nikolaos Bentenitis\" --keychain macos-build.keychain dist/temp2.pkg " <> T.pack pkg) mempty
+  else do
+    echo "Pull request, not signing the installer."
+    run "cp" ["dist/temp2.pkg", T.pack pkg]
 
   run "rm" ["dist/temp.pkg"]
   run "rm" ["dist/temp2.pkg"]
