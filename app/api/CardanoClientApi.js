@@ -90,7 +90,7 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::getWallets called');
     try {
       const response = await ClientApi.getWallets();
-      Log.debug('CardanoClientApi::getWallets success: ', response);
+      Log.debug('CardanoClientApi::getWallets success: ', JSON.stringify(response, null, 2));
       return response.map(data => _createWalletFromServerData(data));
     } catch (error) {
       Log.error('CardanoClientApi::getWallets error: ', error);
@@ -99,11 +99,11 @@ export default class CardanoClientApi {
   }
 
   async getTransactions(request: GetTransactionsRequest) {
-    Log.debug('CardanoClientApi::searchHistory called: ', request);
+    Log.debug('CardanoClientApi::searchHistory called: ', JSON.stringify(request, null, 2));
     const { walletId, searchTerm, skip, limit } = request;
     try {
       const history = await ClientApi.searchHistory(walletId, searchTerm, skip, limit);
-      Log.debug('CardanoClientApi::searchHistory success: ', history);
+      Log.debug('CardanoClientApi::searchHistory success: ', JSON.stringify(history, null, 2));
       return new Promise((resolve) => resolve({
         transactions: history[0].map(data => _createTransactionFromServerData(data, walletId)),
         total: history[1]
@@ -118,7 +118,7 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::createWallet called');
     try {
       const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name, request.mnemonic);
-      Log.debug('CardanoClientApi::createWallet success');
+      Log.debug('CardanoClientApi::createWallet success: ', JSON.stringify(response, null, 2));
       return _createWalletFromServerData(response);
     } catch (error) {
       Log.error('CardanoClientApi::createWallet error: ', error);
@@ -127,10 +127,10 @@ export default class CardanoClientApi {
   }
 
   async deleteWallet(request: DeleteWalletRequest) {
-    Log.debug('CardanoClientApi::deleteWallet called: ', request);
+    Log.debug('CardanoClientApi::deleteWallet called: ', JSON.stringify(request, null, 2));
     try {
       await ClientApi.deleteWallet(request.walletId);
-      Log.debug('CardanoClientApi::deleteWallet success: ', request);
+      Log.debug('CardanoClientApi::deleteWallet success: ', JSON.stringify(request, null, 2));
       return true;
     } catch (error) {
       Log.error('CardanoClientApi::deleteWallet error: ', error);
@@ -139,7 +139,7 @@ export default class CardanoClientApi {
   }
 
   async createTransaction(request: CreateTransactionRequest) {
-    Log.debug('CardanoClientApi::createTransaction called: ', request);
+    Log.debug('CardanoClientApi::createTransaction called: ', JSON.stringify(request, null, 2));
     const { sender, receiver, amount, currency } = request;
     const description = 'no description provided';
     const title = 'no title provided';
@@ -147,7 +147,7 @@ export default class CardanoClientApi {
       const response = await ClientApi.sendExtended(
         sender, receiver, amount, currency, title, description
       );
-      Log.debug('CardanoClientApi::createTransaction success: ', response);
+      Log.debug('CardanoClientApi::createTransaction success: ', JSON.stringify(response, null, 2));
       return _createTransactionFromServerData(response);
     } catch (error) {
       Log.error('CardanoClientApi::createTransaction error: ', error);
@@ -288,7 +288,7 @@ export default class CardanoClientApi {
     let nextUpdate = null;
     try {
       nextUpdate = JSON.parse(await ClientApi.nextUpdate());
-      Log.debug('CardanoClientApi::nextUpdate success: ', nextUpdate);
+      Log.debug('CardanoClientApi::nextUpdate success: ', JSON.stringify(nextUpdate, null, 2));
     } catch (error) {
       Log.error('CardanoClientApi::nextUpdate error: ', error);
       // TODO: Api is trowing an error when update is not available, handle other errors
@@ -330,7 +330,7 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::applyUpdate called');
     try {
       const response = await ClientApi.applyUpdate();
-      Log.debug('CardanoClientApi::applyUpdate success: ', response);
+      Log.debug('CardanoClientApi::applyUpdate success: ', JSON.stringify(response, null, 2));
       ipcRenderer.send('kill-process');
     } catch (error) {
       Log.error('CardanoClientApi::applyUpdate error: ', error);
@@ -342,7 +342,7 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::syncProgress called');
     try {
       const response = await ClientApi.syncProgress();
-      Log.debug('CardanoClientApi::syncProgress success: ', response);
+      Log.debug('CardanoClientApi::syncProgress success: ', JSON.stringify(response, null, 2));
       const localDifficulty = response._spLocalCD.getChainDifficulty;
       // In some cases we dont get network difficulty & we need to wait for it from the notify API
       let networkDifficulty = null;
@@ -379,11 +379,11 @@ export default class CardanoClientApi {
   }
 
   async updateWallet(request: UpdateWalletRequest) {
-    Log.debug('CardanoClientApi::updateWallet called: ', request);
+    Log.debug('CardanoClientApi::updateWallet called: ', JSON.stringify(request, null, 2));
     const { walletId, type, currency, name, assurance } = request;
     try {
       const response = await ClientApi.updateWallet(walletId, type, currency, name, assurance, 0);
-      Log.debug('CardanoClientApi::updateWallet success: ', response);
+      Log.debug('CardanoClientApi::updateWallet success: ', JSON.stringify(response, null, 2));
       return response;
     } catch (error) {
       Log.error('CardanoClientApi::updateWallet error: ', error);
@@ -412,7 +412,7 @@ export default class CardanoClientApi {
     await unsetUserLocaleInLocalStorage(); // TODO: remove after saving locale to API is restored
     try {
       const response = await ClientApi.testReset();
-      Log.debug('CardanoClientApi::testReset success: ', response);
+      Log.debug('CardanoClientApi::testReset success: ', JSON.stringify(response, null, 2));
       return response;
     } catch (error) {
       Log.error('CardanoClientApi::testReset error: ', error);

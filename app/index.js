@@ -47,3 +47,5 @@ const initializeDaedalus = () => {
 };
 
 window.addEventListener('load', initializeDaedalus);
+window.addEventListener('dragover', (event) => event.preventDefault());
+window.addEventListener('drop', (event) => event.preventDefault());
