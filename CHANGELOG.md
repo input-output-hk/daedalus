@@ -7,7 +7,7 @@ Changelog
 
 ### Fixes
 
-- Improved recovery phrase handling to allow duplicate words within recovery phrase
+- Verification of mnemonic recovery phrase during wallet backup is not working if it contains duplicate words.
 
 
 ### Chores
