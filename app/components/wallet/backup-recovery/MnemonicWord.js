@@ -9,12 +9,13 @@ export default class MnemonicWord extends Component {
 
   props: {
     word: string,
+    index: number,
     isActive: boolean,
     onClick: Function,
   };
 
   render() {
-    const { word, isActive, onClick } = this.props;
+    const { word, index, isActive, onClick } = this.props;
     const componentClassNames = classnames([
       styles.component,
       isActive ? styles.active : styles.inactive
@@ -22,7 +23,7 @@ export default class MnemonicWord extends Component {
     return (
       <button
         className={componentClassNames}
-        onClick={() => onClick({ word })}
+        onClick={() => onClick({ word, index })}
       >
         {word}
       </button>

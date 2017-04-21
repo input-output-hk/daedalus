@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## vNEXT
+=======
+
+### Features
+
+### Fixes
+
+- Verification of mnemonic recovery phrase during wallet backup is not working if it contains duplicate words.
+
+### Chores
+
+
 ## 0.6.1
 
 ### Features
@@ -47,6 +59,7 @@ Changelog
 - Transactions ordering
 - Smaller UI improvements and fixes
 
+>>>>>>> master
 
 ## 0.5.0
 

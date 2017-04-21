@@ -129,8 +129,9 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
           <div className={styles.words}>
             {recoveryPhraseShuffled.map(({ word, isActive }, index) => (
               <MnemonicWord
-                word={word}
                 key={index}
+                word={word}
+                index={index}
                 isActive={isActive}
                 onClick={(value) => isActive && onAddWord(value)}
               />
