@@ -13,13 +13,17 @@ Changelog
 
 - Verification of mnemonic recovery phrase during wallet backup is not working if it contains duplicate words.
 - Pending confirmation amounts split (incoming and outgoing)
+- Prevent wallet send form reset on submit
 
 ### Chores
 
-
-## 0.6.1
+## 0.6.2
 
 ### Features
+
+- Ada redemption testnet disclaimer on Ada redemption pages
+
+## 0.6.1
 
 ### Fixes
 
@@ -63,7 +67,6 @@ Changelog
 - Transactions ordering
 - Smaller UI improvements and fixes
 
->>>>>>> master
 
 ## 0.5.0
 

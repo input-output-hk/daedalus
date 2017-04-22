@@ -144,7 +144,6 @@ export default class WalletSendForm extends Component {
         const formValues = form.values();
         formValues.amount = this.adaToLovelaces(formValues.amount);
         this.props.onSubmit(formValues);
-        form.reset();
       },
       onError: () => {}
     });
