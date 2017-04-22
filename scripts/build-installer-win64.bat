@@ -65,12 +65,25 @@ del /f node_modules\daedalus-client-api\*.exe
 call npm run package -- --icon installers/icons/64x64
 @if %errorlevel% neq 0 (@echo FAILED: Failed to package the frontend
 	exit /b 1)
+
 pushd installers
+    del /f LibreSSL.zip 2>nul
+    @echo Obtaining LibreSSL %LIBRESSL_VERSION%
+    ..\curl %LIBRESSL_URL% -o LibreSSL.zip
+    @if %errorlevel% neq 0 (@echo FAILED: LibreSSL couldn't be obtained
+	popd & exit /b 1)
+    7z x LibreSSL.zip
+    @if %errorlevel% neq 0 (@echo FAILED: LibreSSL couldn't be extracted from downloaded archive
+	popd & exit /b 1)
+    del LibreSSL.zip
+    rmdir /s/q libressl
+    move libressl-%LIBRESSL_VERSION%-windows libressl
+
     @echo Installing stack
-    ..\curl http://www.stackage.org/stack/windows-x86_64 -o stack.zip
+    ..\curl --location http://www.stackage.org/stack/windows-x86_64 -o stack.zip
     @if %errorlevel% neq 0 (@echo FAILED: stack couldn't be obtained
 	popd & exit /b 1)
-    del /f stack.exe
+    del /f stack.exe 2>nul
     7z x stack.zip stack.exe
     @if %errorlevel% neq 0 (@echo FAILED: couldn't extract stack from the distribution package
 	exit /b 1)
@@ -81,7 +94,7 @@ pushd installers
     rmdir /s/q DLLs 2>nul
     mkdir      DLLs
     pushd      DLLs
-        ..\..\curl %DLLS_URL% -o DLLs.zip
+        ..\..\curl --location %DLLS_URL% -o DLLs.zip
         @if %errorlevel% neq 0 (@echo FAILED: couldn't obtain CardanoSL DLL package
 		exit /b 1)
         7z x DLLs.zip
