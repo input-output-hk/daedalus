@@ -72,8 +72,7 @@ main = do
        ]
   run "productbuild" productargs
 
-  isPullRequest <- fromMaybe "false" <$> lookupEnv "TRAVIS_PULL_REQUEST"
-  putStrLn isPullRequest
+  isPullRequest <- fromMaybe "true" <$> lookupEnv "TRAVIS_PULL_REQUEST"
   if isPullRequest == "false" then do
     -- Sign the installer with a special macOS dance
     run "security" ["create-keychain", "-p", "travis", "macos-build.keychain"]
