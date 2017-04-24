@@ -8,6 +8,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import Dropup from '../widgets/forms/Dropup';
 import DialogCloseButton from '../widgets/DialogCloseButton';
+import Switch from '../widgets/Switch';
 import { isValidWalletName, isValidCurrency } from '../../lib/validations';
 import globalMessages from '../../i18n/global-messages';
 import styles from './WalletCreateDialog.scss';
@@ -42,7 +43,32 @@ const messages = defineMessages({
     id: 'wallet.create.dialog.create.personal.wallet.button.label',
     defaultMessage: '!!!Create personal wallet',
     description: 'Label for the "Create personal wallet" button on create wallet dialog.'
-  }
+  },
+  passwordSwitchLabel: {
+    id: 'wallet.create.dialog.passwordSwitchLabel',
+    defaultMessage: '!!!Password',
+    description: 'Label for the "Activate to create password" switch in the create wallet dialog.',
+  },
+  passwordSwitchPlaceholder: {
+    id: 'wallet.create.dialog.passwordSwitchPlaceholder',
+    defaultMessage: '!!!Activate to create password',
+    description: 'Text for the "Activate to create password" switch in the create wallet dialog.',
+  },
+  walletPasswordLabel: {
+    id: 'wallet.create.dialog.walletPasswordLabel',
+    defaultMessage: '!!!Wallet password',
+    description: 'Label for the "Wallet password" input in the create wallet dialog.',
+  },
+  repeatPasswordLabel: {
+    id: 'wallet.create.dialog.repeatPasswordLabel',
+    defaultMessage: '!!!Repeat password',
+    description: 'Label for the "Repeat password" input in the create wallet dialog.',
+  },
+  passwordFieldPlaceholder: {
+    id: 'wallet.create.dialog.passwordFieldPlaceholder',
+    defaultMessage: '!!!Password',
+    description: 'Placeholder for the "Password" inputs in the create wallet dialog.',
+  },
 });
 
 const currencies = [
@@ -62,7 +88,10 @@ export default class WalletCreateDialog extends Component {
   };
 
   state = {
-    isSubmitting: false
+    isSubmitting: false,
+    createPassword: false,
+    walletPasswordValue: '',
+    repeatPasswordValue: '',
   };
 
   componentDidMount() {
@@ -129,9 +158,20 @@ export default class WalletCreateDialog extends Component {
     }
   }
 
+  handlePasswordChange = (key: string, value: string) => {
+    const update = {};
+    update[key] = value;
+    this.setState(update);
+  };
+
   render() {
     const { form } = this;
     const { intl } = this.context;
+    const {
+      createPassword,
+      walletPasswordValue,
+      repeatPasswordValue
+    } = this.state;
     const dialogClasses = classnames([
       styles.component,
       'WalletCreateDialog',
@@ -158,6 +198,37 @@ export default class WalletCreateDialog extends Component {
           {...form.$('currency').bind()}
           source={currencies}
         />
+
+        <div className={styles.walletPassword}>
+          <div className={styles.walletPasswordSwitch}>
+            <Switch
+              label={intl.formatMessage(messages.passwordSwitchLabel)}
+              placeholder={intl.formatMessage(messages.passwordSwitchPlaceholder)}
+              active={createPassword}
+              onChange={(value) => this.handlePasswordChange('createPassword', value)}
+            />
+          </div>
+
+          {createPassword ? (
+            <div className={styles.walletPasswordFields}>
+              <Input
+                type="password"
+                label={intl.formatMessage(messages.walletPasswordLabel)}
+                placeholder={intl.formatMessage(messages.passwordFieldPlaceholder)}
+                value={walletPasswordValue}
+                onChange={(value) => this.handlePasswordChange('walletPasswordValue', value)}
+              />
+
+              <Input
+                type="password"
+                label={intl.formatMessage(messages.repeatPasswordLabel)}
+                placeholder={intl.formatMessage(messages.passwordFieldPlaceholder)}
+                value={repeatPasswordValue}
+                onChange={(value) => this.handlePasswordChange('repeatPasswordValue', value)}
+              />
+            </div>
+          ) : null}
+        </div>
 
         <DialogCloseButton onClose={this.props.onCancel} />
 
