@@ -4,7 +4,7 @@ import Action from './lib/Action';
 // ======= WALLET ACTIONS =======
 
 export default class WalletsActions {
-  createWallet: Action<{ name: string, currency: string }> = new Action();
+  createWallet: Action<{ name: string, currency: string, password: string }> = new Action();
   restoreWallet: Action<{ recoveryPhrase: string, walletName: string }> = new Action();
   importWalletFromKey: Action<{ filePath: string }> = new Action();
   deleteWallet: Action<{ walletId: string }> = new Action();

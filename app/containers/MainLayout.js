@@ -21,10 +21,12 @@ export default class MainLayout extends Component {
   props: InjectedContainerProps;
 
   handleAddWalletSubmit = (values: Object) => {
-    this.props.actions.wallets.createWallet.trigger({
+    const walletData = {
       name: values.walletName,
       currency: values.currency,
-    });
+      password: values.walletPassword,
+    };
+    this.props.actions.wallets.createWallet.trigger(walletData);
   };
 
   handleRestoreWalletSubmit = (values: Object) => {
