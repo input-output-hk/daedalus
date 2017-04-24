@@ -41,7 +41,7 @@ script:
 - nix-shell --run "npm run package -- --icon installers/icons/256x256"
 - echo "Size of Electron app is $(du -sh release)"
 - pushd installers
-- nix-shell -p awscli --run "aws s3 cp --region eu-central-1 s3://iohk-private/macos.p12 macos.p12"
+- if [[ "$TRAVIS_PULL_REQUEST" == "false" ]]; then travis_retry nix-shell -p awscli --run "aws s3 cp --region eu-central-1 s3://iohk-private/macos.p12 macos.p12"; fi
 - stack --no-terminal --nix build --exec make-installer --jobs 2
 - mkdir -p dist
 - popd
