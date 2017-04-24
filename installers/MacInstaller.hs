@@ -33,11 +33,12 @@ main = do
   echo "Preparing files ..."
   copyFile "cardano-launcher" (dir <> "/cardano-launcher")
   copyFile "cardano-node" (dir <> "/cardano-node")
+  copyFile "cardano-addr-convert" (dir <> "/cardano-addr-convert")
   copyFile "log-config-prod.yaml" (dir <> "/log-config-prod.yaml")
   copyFile "data/ip-dht-mappings" (dir <> "/ip-dht-mappings")
 
   -- Rewrite libs paths and bundle them
-  _ <- chain dir $ fmap T.pack [dir <> "/cardano-launcher", dir <> "/cardano-node"]
+  _ <- chain dir $ fmap T.pack [dir <> "/cardano-launcher", dir <> "/cardano-node", dir <> "/cardano-addr-convert"]
 
   -- Prepare launcher
   de <- doesFileExist (dir <> "/Frontend")
