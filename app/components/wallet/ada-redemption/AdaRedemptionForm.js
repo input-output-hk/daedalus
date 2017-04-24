@@ -213,7 +213,7 @@ export default class AdaRedemptionForm extends Component {
           if (!this.props.showPassPhraseWidget) return [true];
           // Otherwise check mnemonic
           const passPhrase = field.value;
-          if (this.props.mnemonicValidator(passPhrase)) this.props.onPassPhraseChanged(passPhrase);
+          if (!isEmpty(passPhrase)) this.props.onPassPhraseChanged(passPhrase);
           return [
             this.props.mnemonicValidator(passPhrase),
             this.context.intl.formatMessage(new InvalidMnemonicError())

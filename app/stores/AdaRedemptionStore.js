@@ -30,6 +30,7 @@ export default class AdaRedemptionStore extends Store {
   @observable amountRedeemed: number = 0;
   @observable showAdaRedemptionSuccessMessage: boolean = false;
   @observable redeemAdaRequest: Request<Wallet> = new Request(this.api.redeemAda);
+  @observable redeemAdaSubmitted: boolean = false;
   // eslint-disable-next-line
   @observable redeemPaperVendedAdaRequest: Request<RedeemPaperVendedAdaResponse> = new Request(this.api.redeemPaperVendedAda);
 
@@ -58,7 +59,6 @@ export default class AdaRedemptionStore extends Store {
   }
 
   isValidRedemptionKey = (redemptionKey: string) => this.api.isValidRedemptionKey(redemptionKey);
-
   isValidRedemptionMnemonic = (mnemonic: string) => this.api.isValidRedemptionMnemonic(mnemonic);
 
   isValidPaperVendRedemptionKey = (
@@ -118,6 +118,7 @@ export default class AdaRedemptionStore extends Store {
         return;
       }
     }
+    this.redeemAdaSubmitted = false;
     if (this.redemptionType === 'paperVended') return;
     if (this.certificate == null) throw new Error('Certificate File is required for parsing.');
     const path = this.certificate.path; // eslint-disable-line
@@ -144,12 +145,15 @@ export default class AdaRedemptionStore extends Store {
     } else if (this.redemptionType === 'regular') {
       this.error = new AdaRedemptionCertificateParseError();
     }
-    this.redemptionCode = '';
-    this.passPhrase = '';
+    if (!this.redeemAdaSubmitted) {
+      this.redemptionCode = '';
+      this.passPhrase = '';
+    }
   });
 
   _redeemAda = action(({ walletId } : { walletId: string }) => {
     this.walletId = walletId;
+    this.redeemAdaSubmitted = true;
     this.redeemAdaRequest.execute({ redemptionCode: this.redemptionCode, walletId })
       .then(action((transaction: WalletTransaction) => {
         this._reset();
@@ -218,6 +222,7 @@ export default class AdaRedemptionStore extends Store {
     this.email = null;
     this.adaPasscode = null;
     this.adaAmount = null;
+    this.redeemAdaSubmitted = false;
   };
 
 }
