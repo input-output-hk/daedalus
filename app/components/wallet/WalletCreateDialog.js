@@ -9,7 +9,7 @@ import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import Dropup from '../widgets/forms/Dropup';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import Switch from '../widgets/Switch';
-import { isValidWalletName, isValidCurrency } from '../../lib/validations';
+import { isValidWalletName, isValidCurrency, isValidWalletPassword, isValidRepeatPassword } from '../../lib/validations';
 import globalMessages from '../../i18n/global-messages';
 import styles from './WalletCreateDialog.scss';
 
@@ -90,8 +90,6 @@ export default class WalletCreateDialog extends Component {
   state = {
     isSubmitting: false,
     createPassword: false,
-    walletPasswordValue: '',
-    repeatPasswordValue: '',
   };
 
   componentDidMount() {
@@ -125,10 +123,43 @@ export default class WalletCreateDialog extends Component {
         )],
         bindings: 'ReactToolbox',
       },
+      walletPassword: {
+        type: 'password',
+        label: this.context.intl.formatMessage(messages.walletPasswordLabel),
+        placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
+        value: '',
+        validate: [({ field }) => {
+          if (!this.state.createPassword) return [true];
+          return [
+            isValidWalletPassword(field.value),
+            this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
+          ];
+        }],
+        bindings: 'ReactToolbox',
+      },
+      repeatPassword: {
+        type: 'password',
+        label: this.context.intl.formatMessage(messages.repeatPasswordLabel),
+        placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
+        value: '',
+        validate: [({ field }) => {
+          if (!this.state.createPassword) return [true];
+          const walletPassword = this.form.$('walletPassword').value;
+          if (walletPassword.length === 0) return [true];
+          return [
+            isValidRepeatPassword(walletPassword, field.value),
+            this.context.intl.formatMessage(globalMessages.invalidRepeatPassword)
+          ];
+        }],
+        bindings: 'ReactToolbox',
+      },
+
     }
   }, {
     options: {
-      validateOnChange: false
+      validateOnChange: true,
+      validationDebounceWait: 250,
+      validationDebounceOptions: { leading: false, },
     },
   });
 
@@ -148,7 +179,7 @@ export default class WalletCreateDialog extends Component {
       },
       onError: () => {
         this.setState({ isSubmitting: false });
-      }
+      },
     });
   };
 
@@ -158,25 +189,24 @@ export default class WalletCreateDialog extends Component {
     }
   }
 
-  handlePasswordChange = (key: string, value: string) => {
-    const update = {};
-    update[key] = value;
-    this.setState(update);
+  handlePasswordSwitchToggle = (value: boolean) => {
+    this.setState({ createPassword: value });
   };
 
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const {
-      createPassword,
-      walletPasswordValue,
-      repeatPasswordValue
-    } = this.state;
+    const { createPassword } = this.state;
     const dialogClasses = classnames([
       styles.component,
       'WalletCreateDialog',
       this.state.isSubmitting ? styles.isSubmitting : null
     ]);
+    const walletPasswordFieldsClasses = classnames([
+      styles.walletPasswordFields,
+      createPassword ? styles.show : null
+    ]);
+
     return (
       <Dialog
         className={dialogClasses}
@@ -205,29 +235,14 @@ export default class WalletCreateDialog extends Component {
               label={intl.formatMessage(messages.passwordSwitchLabel)}
               placeholder={intl.formatMessage(messages.passwordSwitchPlaceholder)}
               active={createPassword}
-              onChange={(value) => this.handlePasswordChange('createPassword', value)}
+              onChange={this.handlePasswordSwitchToggle}
             />
           </div>
 
-          {createPassword ? (
-            <div className={styles.walletPasswordFields}>
-              <Input
-                type="password"
-                label={intl.formatMessage(messages.walletPasswordLabel)}
-                placeholder={intl.formatMessage(messages.passwordFieldPlaceholder)}
-                value={walletPasswordValue}
-                onChange={(value) => this.handlePasswordChange('walletPasswordValue', value)}
-              />
-
-              <Input
-                type="password"
-                label={intl.formatMessage(messages.repeatPasswordLabel)}
-                placeholder={intl.formatMessage(messages.passwordFieldPlaceholder)}
-                value={repeatPasswordValue}
-                onChange={(value) => this.handlePasswordChange('repeatPasswordValue', value)}
-              />
-            </div>
-          ) : null}
+          <div className={walletPasswordFieldsClasses}>
+            <Input {...form.$('walletPassword').bind()} />
+            <Input {...form.$('repeatPassword').bind()} />
+          </div>
         </div>
 
         <DialogCloseButton onClose={this.props.onCancel} />
