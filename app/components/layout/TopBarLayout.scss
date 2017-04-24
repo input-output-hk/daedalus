@@ -17,4 +17,5 @@ $topBarHeight: 84px;
 
 .content {
   height: calc(100% - #{$topBarHeight});
+  overflow: auto;
 }

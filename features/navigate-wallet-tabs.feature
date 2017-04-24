@@ -2,6 +2,7 @@ Feature: Navigate Wallet Tabs
 
   Background:
     Given I have selected English language
+    And I have accepted "Terms of use"
     And I have a wallet with funds
 
   Scenario Outline: Switching Between Wallet Tabs
