@@ -2,20 +2,20 @@
 @import '../../../themes/mixins/error-message';
 
 .component {
-  align-items: center;
-  display: flex;
+  padding: 20px;
   height: 100%;
-  justify-content: center;
+  overflow-y: overlay;
+  &::-webkit-scrollbar-button {
+    height: 7px;
+    display: block;
+  }
 }
 
 .centeredBox {
   background-color: $color-lighter-grey;
   border: solid 1px $color-light-grey;
   border-radius: 4px;
-  margin: 20px;
   padding: 30px 30px 20px;
-  overflow: visible;
-  width: 100%;
 }
 
 .submitButton,
