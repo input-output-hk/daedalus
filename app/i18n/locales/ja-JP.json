@@ -36,6 +36,8 @@
   "loading.screen.waitingForSyncToStart": "接続完了 - ブロック同期開始を待機中",
   "profile.languageSelect.form.languageSelectLabel": "言語を設定",
   "profile.languageSelect.form.submitLabel": "次",
+  "profile.termsOfUse.checkboxLabel": "!!!I agree with terms of use",
+  "profile.termsOfUse.submitLabel": "!!!Continue",
   "settings.general.languageSelect.label": "言語",
   "settings.menu.general.link.label": "一般",
   "wallet.add.dialog.create.description": "新しいウォレットを作成",

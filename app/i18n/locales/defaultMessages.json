@@ -232,6 +232,39 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!I agree with terms of use",
+        "description": "Label for the \"I agree with terms of use\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "app/components/profile/terms-of-use/TermsOfUseForm.js",
+        "id": "profile.termsOfUse.checkboxLabel",
+        "start": {
+          "column": 17,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!Continue",
+        "description": "Label for the \"Terms of use\" form submit button.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "app/components/profile/terms-of-use/TermsOfUseForm.js",
+        "id": "profile.termsOfUse.submitLabel",
+        "start": {
+          "column": 15,
+          "line": 16
+        }
+      }
+    ],
+    "path": "app/components/profile/terms-of-use/TermsOfUseForm.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Language",
         "description": "Label for the language select.",
         "end": {
