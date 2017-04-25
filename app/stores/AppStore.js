@@ -21,17 +21,23 @@ export default class AppStore extends Store {
   /* eslint-disable max-len */
   @observable getProfileLocaleRequest: Request<string> = new Request(this.api.getUserLocale);
   @observable setProfileLocaleRequest: Request<string> = new Request(this.api.setUserLocale);
+  @observable getTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.getTermsOfUseAcceptance);
+  @observable setTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.setTermsOfUseAcceptance);
   @observable error: ?LocalizableError = null;
   /* eslint-enable max-len */
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
     this.actions.profile.updateLocale.listen(this._updateLocale);
+    this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
     this.registerReactions([
       this._redirectToMainUiAfterLocaleIsSet,
       this._redirectToLanguageSelectionIfNoLocaleSet,
-      this._redirectToLoadingScreenWhenDisconnected
+      this._redirectToMainUiAfterTermsOfUseAcceptance,
+      this._redirectToTermsOfUseScreenIfTermsNotAccepted,
+      this._redirectToLoadingScreenWhenDisconnected,
     ]);
+    this._getTermsOfUseAcceptance();
   }
 
   @computed get currentRoute(): string {
@@ -54,18 +60,16 @@ export default class AppStore extends Store {
     return (this.getProfileLocaleRequest.result != null && this.getProfileLocaleRequest.result !== '');
   }
 
-  _redirectToLanguageSelectionIfNoLocaleSet = () => {
-    const { isConnected } = this.stores.networkStatus;
-    if (isConnected && this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
-      this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.LANGUAGE_SELECTION });
-    }
-  };
+  @computed get areTermsOfUseAccepted(): boolean {
+    return this.getTermsOfUseAcceptanceRequest.result === true;
+  }
 
-  _redirectToLoadingScreenWhenDisconnected = () => {
-    if (!this.stores.networkStatus.isConnected) {
-      this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
-    }
-  };
+  @computed get hasLoadedTermsOfUseAcceptance(): boolean {
+    return (
+      this.getTermsOfUseAcceptanceRequest.wasExecuted &&
+      this.getTermsOfUseAcceptanceRequest.result !== null
+    );
+  }
 
   _updateLocale = async ({ locale }: { locale: string }) => {
     await this.setProfileLocaleRequest.execute(locale);
@@ -78,13 +82,51 @@ export default class AppStore extends Store {
     if (currentRoute !== routePath) this.stores.router.push(routePath);
   };
 
+  _acceptTermsOfUse = async () => {
+    await this.setTermsOfUseAcceptanceRequest.execute();
+    await this.getTermsOfUseAcceptanceRequest.execute();
+  };
+
+  _getTermsOfUseAcceptance = () => {
+    this.getTermsOfUseAcceptanceRequest.execute();
+  };
+
+  _redirectToLanguageSelectionIfNoLocaleSet = () => {
+    const { isConnected } = this.stores.networkStatus;
+    if (isConnected && this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
+      this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.LANGUAGE_SELECTION });
+    }
+  };
+
+  _isOnLanguageSelectionPage = () => this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION;
+
   _redirectToMainUiAfterLocaleIsSet = () => {
     if (this.isCurrentLocaleSet && this._isOnLanguageSelectionPage()) {
       this._redirectToRoot();
     }
   };
 
-  _isOnLanguageSelectionPage = () => this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION;
+  _redirectToTermsOfUseScreenIfTermsNotAccepted = () => {
+    const { isConnected } = this.stores.networkStatus;
+    if (isConnected && this.isCurrentLocaleSet &&
+      this.hasLoadedTermsOfUseAcceptance && !this.areTermsOfUseAccepted) {
+      this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.TERMS_OF_USE });
+    }
+  };
+
+  _isOnTermsOfUsePage = () => this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE;
+
+  _redirectToMainUiAfterTermsOfUseAcceptance = () => {
+    if (this.areTermsOfUseAccepted && this._isOnTermsOfUsePage()) {
+      this._redirectToRoot();
+    }
+  };
+
+  _redirectToLoadingScreenWhenDisconnected = () => {
+    if (!this.stores.networkStatus.isConnected) {
+      this._redirectToRoot();
+    }
+  };
 
   _redirectToRoot = () => {
     this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });

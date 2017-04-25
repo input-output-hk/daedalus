@@ -40,6 +40,8 @@
   "profile.languageSelect.form.options.japanese": "Japanese / 日本語",
   "profile.languageSelect.form.options.korean": "Korean",
   "profile.languageSelect.form.submitLabel": "Continue",
+  "profile.termsOfUse.checkboxLabel": "I agree with terms of use",
+  "profile.termsOfUse.submitLabel": "Continue",
   "settings.general.languageSelect.label": "Language",
   "settings.menu.general.link.label": "General",
   "staking.chart.tooltip.commitments.label": "commitments",

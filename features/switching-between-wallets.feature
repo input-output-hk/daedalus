@@ -2,6 +2,7 @@ Feature: Switching Between Wallets
 
   Background:
     Given I have selected English language
+    And I have accepted "Terms of use"
 
   Scenario Outline: Using the Sidebar to Switch Wallets
     Given I have the following wallets:

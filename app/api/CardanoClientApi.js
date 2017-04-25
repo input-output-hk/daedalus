@@ -64,8 +64,29 @@ const setUserLocaleInLocalStorage = (locale) => new Promise((resolve, reject) =>
   });
 });
 
-const unsetUserLocaleInLocalStorage = () => new Promise((resolve) => {
+const unsetUserLocaleFromLocalStorage = () => new Promise((resolve) => {
   localStorage.remove('userLocale', () => {
+    resolve();
+  });
+});
+
+const getTermsOfUseAcceptanceFromLocalStorage = () => new Promise((resolve, reject) => {
+  localStorage.get('termsOfUseAcceptance', (error, response) => {
+    if (error) return reject(error);
+    if (!response.accepted) return resolve(false);
+    resolve(response.accepted);
+  });
+});
+
+const setTermsOfUseAcceptanceInLocalStorage = () => new Promise((resolve, reject) => {
+  localStorage.set('termsOfUseAcceptance', { accepted: true }, (error) => {
+    if (error) return reject(error);
+    resolve();
+  });
+});
+
+const unsetTermsOfUseAcceptanceFromLocalStorage = () => new Promise((resolve) => {
+  localStorage.remove('termsOfUseAcceptance', () => {
     resolve();
   });
 });
@@ -378,6 +399,30 @@ export default class CardanoClientApi {
     }
   }
 
+  async setTermsOfUseAcceptance() {
+    Log.debug('CardanoClientApi::setTermsOfUseAcceptance called');
+    try {
+      await setTermsOfUseAcceptanceInLocalStorage();
+      Log.debug('CardanoClientApi::setTermsOfUseAcceptance success');
+      return true;
+    } catch (error) {
+      Log.error('CardanoClientApi::setTermsOfUseAcceptance error: ', error);
+      throw new GenericApiError();
+    }
+  }
+
+  async getTermsOfUseAcceptance() {
+    Log.debug('CardanoClientApi::getTermsOfUseAcceptance called');
+    try {
+      const acceptance = await getTermsOfUseAcceptanceFromLocalStorage();
+      Log.debug('CardanoClientApi::getTermsOfUseAcceptance success: ', acceptance);
+      return acceptance;
+    } catch (error) {
+      Log.error('CardanoClientApi::getTermsOfUseAcceptance error: ', error);
+      throw new GenericApiError();
+    }
+  }
+
   async updateWallet(request: UpdateWalletRequest) {
     Log.debug('CardanoClientApi::updateWallet called: ', JSON.stringify(request, null, 2));
     const { walletId, type, currency, name, assurance } = request;
@@ -409,7 +454,8 @@ export default class CardanoClientApi {
 
   async testReset() {
     Log.debug('CardanoClientApi::testReset called');
-    await unsetUserLocaleInLocalStorage(); // TODO: remove after saving locale to API is restored
+    await unsetUserLocaleFromLocalStorage(); // TODO: remove after saving locale to API is restored
+    await unsetTermsOfUseAcceptanceFromLocalStorage();
     try {
       const response = await ClientApi.testReset();
       Log.debug('CardanoClientApi::testReset success: ', JSON.stringify(response, null, 2));
