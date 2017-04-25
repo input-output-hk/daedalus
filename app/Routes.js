@@ -16,6 +16,7 @@ import NoWalletsPage from './containers/wallet/NoWalletsPage';
 import LanguageSelectionPage from './containers/profile/LanguageSelectionPage';
 import Settings from './containers/settings/Settings';
 import GeneralSettingsPage from './containers/settings/categories/GeneralSettingsPage';
+import TermsOfUsePage from './containers/profile/TermsOfUsePage';
 
 export const ROUTES = {
   ROOT: '/',
@@ -24,6 +25,7 @@ export const ROUTES = {
   NO_WALLETS: '/no-wallets',
   PROFILE: {
     LANGUAGE_SELECTION: '/profile/language-selection',
+    TERMS_OF_USE: '/profile/terms-of-use',
   },
   WALLETS: {
     ROOT: '/wallets',
@@ -44,6 +46,7 @@ export default (
   <div>
     <Route path={ROUTES.ROOT} component={LoadingPage} />
     <Route path={ROUTES.PROFILE.LANGUAGE_SELECTION} component={LanguageSelectionPage} />
+    <Route path={ROUTES.PROFILE.TERMS_OF_USE} component={TermsOfUsePage} />
     <Route path={ROUTES.STAKING} component={StakingPage} />
     <Route path={ROUTES.ADA_REDEMPTION} component={AdaRedemptionPage} />
     <Route path={ROUTES.NO_WALLETS} component={NoWalletsPage} />

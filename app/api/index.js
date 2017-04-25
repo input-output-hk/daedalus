@@ -141,6 +141,8 @@ export type Api = {
   getSyncProgress(): Promise<GetSyncProgressResponse>,
   setUserLocale(locale: string): Promise<string>,
   getUserLocale(): Promise<string>,
+  setTermsOfUseAcceptance(): Promise<boolean>,
+  getTermsOfUseAcceptance(): Promise<boolean>,
   updateWallet(request: UpdateWalletRequest): Promise<UpdateWalletResponse>,
   testReset(): void,
   changeWalletPassword(request: ChangeWalletPasswordRequest): Promise<ChangeWalletPasswordResponse>,

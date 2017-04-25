@@ -36,6 +36,8 @@
   "loading.screen.waitingForSyncToStart": "Connected - waiting for block syncing to start",
   "profile.languageSelect.form.languageSelectLabel": "Select your language",
   "profile.languageSelect.form.submitLabel": "Continue",
+  "profile.termsOfUse.checkboxLabel": "I agree with terms of use",
+  "profile.termsOfUse.submitLabel": "Continue",
   "settings.general.languageSelect.label": "Language",
   "settings.menu.general.link.label": "General",
   "wallet.add.dialog.create.description": "Create a new wallet",
