@@ -62,7 +62,7 @@ export default class WalletCreateDialog extends Component {
   };
 
   state = {
-    isSubmitting: false
+    isSubmitting: false,
   };
 
   componentDidMount() {
@@ -77,7 +77,7 @@ export default class WalletCreateDialog extends Component {
         label: this.context.intl.formatMessage(messages.walletName),
         placeholder: this.context.intl.formatMessage(messages.walletNameHint),
         value: '',
-        validate: [({ field }) => (
+        validators: [({ field }) => (
           [
             isValidWalletName(field.value),
             this.context.intl.formatMessage(globalMessages.invalidWalletName)
@@ -88,7 +88,7 @@ export default class WalletCreateDialog extends Component {
       currency: {
         label: this.context.intl.formatMessage(messages.currencyLabel),
         value: 'ada',
-        validate: [({ field }) => (
+        validators: [({ field }) => (
           [
             isValidCurrency(field.value),
             this.context.intl.formatMessage(messages.invalidCurrency)
@@ -99,7 +99,10 @@ export default class WalletCreateDialog extends Component {
     }
   }, {
     options: {
-      validateOnChange: false
+      showErrorsOnChange: true,
+      validateOnChange: true,
+      validationDebounceWait: 250,
+      validationDebounceOptions: { trailing: true, },
     },
   });
 
@@ -118,7 +121,7 @@ export default class WalletCreateDialog extends Component {
         this.props.onSubmit(form.values());
       },
       onError: () => {
-        this.setState({ isSubmitting: false });
+        this.setState({ isSubmitting: false, });
       }
     });
   };

@@ -109,7 +109,7 @@ export default class WalletSendForm extends Component {
         label: this.context.intl.formatMessage(messages.receiverLabel),
         placeholder: this.context.intl.formatMessage(messages.receiverHint),
         value: '',
-        validate: ({ field }) => {
+        validators: ({ field }) => {
           const value = field.value;
           if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           return this.props.addressValidator(field.value)
@@ -121,7 +121,7 @@ export default class WalletSendForm extends Component {
         label: this.context.intl.formatMessage(messages.amountLabel),
         placeholder: this.context.intl.formatMessage(messages.amountHint),
         value: '',
-        validate: ({ field }) => {
+        validators: ({ field }) => {
           const amountInLovelaces = this.adaToLovelaces(field.value);
           const isValid = isValidAmountInLovelaces(amountInLovelaces);
           return [isValid, this.context.intl.formatMessage(messages.invalidAmount)];
@@ -134,7 +134,10 @@ export default class WalletSendForm extends Component {
     },
   }, {
     options: {
+      showErrorsOnChange: true,
       validateOnChange: true,
+      validationDebounceWait: 250,
+      validationDebounceOptions: { trailing: true, },
     },
   });
 

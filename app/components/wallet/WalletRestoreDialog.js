@@ -66,7 +66,7 @@ export default class WalletRestoreDialog extends Component {
   };
 
   state = {
-    isSubmitting: false
+    isSubmitting: false,
   };
 
   form = new ReactToolboxMobxForm({
@@ -75,7 +75,7 @@ export default class WalletRestoreDialog extends Component {
         label: this.context.intl.formatMessage(messages.walletNameInputLabel),
         placeholder: this.context.intl.formatMessage(messages.walletNameInputHint),
         value: '',
-        validate: [({ field }) => (
+        validators: [({ field }) => (
           [
             isValidWalletName(field.value),
             this.context.intl.formatMessage(globalMessages.invalidWalletName)
@@ -87,7 +87,7 @@ export default class WalletRestoreDialog extends Component {
         label: this.context.intl.formatMessage(messages.recoveryPhraseInputLabel),
         placeholder: this.context.intl.formatMessage(messages.recoveryPhraseInputHint),
         value: '',
-        validate: ({ field }) => {
+        validators: ({ field }) => {
           const value = field.value;
           if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           return [
@@ -100,7 +100,10 @@ export default class WalletRestoreDialog extends Component {
     },
   }, {
     options: {
-      validateOnChange: false
+      showErrorsOnChange: true,
+      validateOnChange: true,
+      validationDebounceWait: 250,
+      validationDebounceOptions: { trailing: true, },
     },
   });
 
