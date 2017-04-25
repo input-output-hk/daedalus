@@ -42,9 +42,6 @@ move   node_modules\daedalus-client-api\cardano-node.exe     installers\
 move   node_modules\daedalus-client-api\cardano-launcher.exe installers\
 del /f node_modules\daedalus-client-api\*.exe
 
-rem @echo Obtaining LibreSSL %LIBRESSL_VERSION%
-rem https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-%LIBRESSL_VERSION%-windows.zip
-
 @echo Packaging frontend
 call npm run package -- --icon installers/icons/64x64
 @if %errorlevel% neq 0 (@echo FAILED: npm run package -- --icon installers/icons/64x64
