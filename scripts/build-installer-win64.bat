@@ -81,8 +81,10 @@ pushd installers
 	exit /b 1)
 
 :build
-    stack --no-terminal build -j 2 --exec make-installer
-    @if %errorlevel% neq 0 (
+    for /l %%x in (1, 1, 5) do (
+        stack --no-terminal build -j 2 --exec make-installer
+        @if %errorlevel% equ 0 goto :built
+
         @echo .
         @echo .
         @echo FAILED: stack --no-terminal build -j 2 --exec make-installer
@@ -91,8 +93,10 @@ pushd installers
         @echo Retrying -- and also waiting for GHC 8.2.1 [see https://github.com/commercialhaskell/stack/issues/2617]
         @echo .
         @echo .
-	goto build
-        )
+    )
+    @echo FATAL: persistent failure while building installer with:  stack --no-terminal build -j 2 --exec make-installer
+    exit /b 1
+:built
 popd
 
 @echo .
