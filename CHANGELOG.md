@@ -17,6 +17,8 @@ Changelog
 
 ### Chores
 
+- Prevent logging of harmless error messages to the terminal
+
 ## 0.6.2
 
 ### Features
