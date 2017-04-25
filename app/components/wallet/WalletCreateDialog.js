@@ -175,7 +175,14 @@ export default class WalletCreateDialog extends Component {
     this.form.submit({
       onSuccess: (form) => {
         this.setState({ isSubmitting: true });
-        this.props.onSubmit(form.values());
+        const { createPassword } = this.state;
+        const { walletName, currency, walletPassword } = form.values();
+        const walletData = {
+          name: walletName,
+          currency,
+          password: createPassword ? walletPassword : null,
+        };
+        this.props.onSubmit(walletData);
       },
       onError: () => {
         this.setState({ isSubmitting: false });
