@@ -1,6 +1,18 @@
 # daedalus
 Daedalus - cryptocurrency wallet
 
+## Quick all-in-one installer build script (Windows-only, for the time)
+
+0. Dependencies: `Node.js`, `7zip`, `git`
+1. Obtain https://github.com/input-output-hk/daedalus/blob/master/scripts/windows-build-fresh-daedalus.bat
+2. Run it:
+   ```cmd
+   C:\windows-build-fresh-daedalus.bat [BRANCH] [GITHUB-USER]
+   ```
+   ..where `BRANCH` defaults to the current release branch, and `GITHUB-USER`
+   defaults to `input-output-hk`.
+
+
 ## Install Dependencies.
 
 ```bash
