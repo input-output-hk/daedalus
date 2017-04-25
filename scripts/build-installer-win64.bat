@@ -2,7 +2,6 @@ rem DEPENDENCIES:
 rem   1. Node.js ('npm' binary in PATH)
 rem   2. 7zip    ('7z'  binary in PATH)
 
-set DEFAULT_CARDANO_BRANCH=cardano-sl-0.4
 set MIN_CARDANO_BYTES=50000000
 set LIBRESSL_VERSION=2.5.3
 
@@ -10,8 +9,8 @@ set DAEDALUS_VERSION=%1
 @if [%DAEDALUS_VERSION%]==[] (@echo FATAL: DAEDALUS_VERSION [argument #1] was not provided
     exit /b 1);
 set CARDANO_BRANCH=%2
-@if [%CARDANO_BRANCH%]==[]   (@echo NOTE: CARDANO_BRANCH [argument #2] was not provided, defaulting to %DEFAULT_CARDANO_BRANCH%
-    set CARDANO_BRANCH=%DEFAULT_CARDANO_BRANCH%);
+@if [%CARDANO_BRANCH%]==[]   (@echo NOTE: CARDANO_BRANCH [argument #2] was not provided
+    exit /b 1);
 
 @echo Building Daedalus version: %DAEDALUS_VERSION%
 @echo ..with Cardano branch:     %CARDANO_BRANCH%

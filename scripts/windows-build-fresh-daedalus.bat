@@ -25,5 +25,5 @@ git clone %URL%
 	exit /b 1)
     @for /f %%a in ('git show-ref --hash HEAD') do set version=%%a
     @call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
-    call scripts\build-installer-win64 %GITHUB_USER%-%BRANCH%-%version%
+    call scripts\build-installer-win64 %GITHUB_USER%-%BRANCH%-%version% %BRANCH%
 @popd
