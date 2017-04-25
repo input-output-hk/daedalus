@@ -116,14 +116,22 @@ app.on('ready', async () => {
   if (isDev) mainWindow.openDevTools();
 
   mainWindow.webContents.on('context-menu', (e, props) => {
-    const { x, y } = props;
+    const contextMenuOptions = [
+      { label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
+      { label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
+    ];
 
-    Menu.buildFromTemplate([{
-      label: 'Inspect element',
-      click() {
-        mainWindow.inspectElement(x, y);
-      }
-    }]).popup(mainWindow);
+    if (isDev) {
+      const { x, y } = props;
+      contextMenuOptions.push({
+        label: 'Inspect element',
+        click() {
+          mainWindow.inspectElement(x, y);
+        }
+      });
+    }
+
+    Menu.buildFromTemplate(contextMenuOptions).popup(mainWindow);
   });
 
   if (process.platform === 'darwin') {
