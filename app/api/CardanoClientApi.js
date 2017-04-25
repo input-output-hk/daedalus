@@ -290,7 +290,7 @@ export default class CardanoClientApi {
       nextUpdate = JSON.parse(await ClientApi.nextUpdate());
       Log.debug('CardanoClientApi::nextUpdate success: ', JSON.stringify(nextUpdate, null, 2));
     } catch (error) {
-      Log.error('CardanoClientApi::nextUpdate error: ', error);
+      Log.debug('CardanoClientApi::nextUpdate error: ', error);
       // TODO: Api is trowing an error when update is not available, handle other errors
     }
     return nextUpdate;
