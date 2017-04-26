@@ -8,7 +8,8 @@ import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import Dropup from '../widgets/forms/Dropup';
 import DialogCloseButton from '../widgets/DialogCloseButton';
-import { isValidWalletName, isValidCurrency } from '../../lib/validations';
+import Switch from '../widgets/Switch';
+import { isValidWalletName, isValidCurrency, isValidWalletPassword, isValidRepeatPassword } from '../../lib/validations';
 import globalMessages from '../../i18n/global-messages';
 import styles from './WalletCreateDialog.scss';
 
@@ -42,7 +43,32 @@ const messages = defineMessages({
     id: 'wallet.create.dialog.create.personal.wallet.button.label',
     defaultMessage: '!!!Create personal wallet',
     description: 'Label for the "Create personal wallet" button on create wallet dialog.'
-  }
+  },
+  passwordSwitchLabel: {
+    id: 'wallet.create.dialog.passwordSwitchLabel',
+    defaultMessage: '!!!Password',
+    description: 'Label for the "Activate to create password" switch in the create wallet dialog.',
+  },
+  passwordSwitchPlaceholder: {
+    id: 'wallet.create.dialog.passwordSwitchPlaceholder',
+    defaultMessage: '!!!Activate to create password',
+    description: 'Text for the "Activate to create password" switch in the create wallet dialog.',
+  },
+  walletPasswordLabel: {
+    id: 'wallet.create.dialog.walletPasswordLabel',
+    defaultMessage: '!!!Wallet password',
+    description: 'Label for the "Wallet password" input in the create wallet dialog.',
+  },
+  repeatPasswordLabel: {
+    id: 'wallet.create.dialog.repeatPasswordLabel',
+    defaultMessage: '!!!Repeat password',
+    description: 'Label for the "Repeat password" input in the create wallet dialog.',
+  },
+  passwordFieldPlaceholder: {
+    id: 'wallet.create.dialog.passwordFieldPlaceholder',
+    defaultMessage: '!!!Password',
+    description: 'Placeholder for the "Password" inputs in the create wallet dialog.',
+  },
 });
 
 const currencies = [
@@ -62,7 +88,8 @@ export default class WalletCreateDialog extends Component {
   };
 
   state = {
-    isSubmitting: false
+    isSubmitting: false,
+    createPassword: false,
   };
 
   componentDidMount() {
@@ -96,10 +123,43 @@ export default class WalletCreateDialog extends Component {
         )],
         bindings: 'ReactToolbox',
       },
+      walletPassword: {
+        type: 'password',
+        label: this.context.intl.formatMessage(messages.walletPasswordLabel),
+        placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
+        value: '',
+        validate: [({ field }) => {
+          if (!this.state.createPassword) return [true];
+          return [
+            isValidWalletPassword(field.value),
+            this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
+          ];
+        }],
+        bindings: 'ReactToolbox',
+      },
+      repeatPassword: {
+        type: 'password',
+        label: this.context.intl.formatMessage(messages.repeatPasswordLabel),
+        placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
+        value: '',
+        validate: [({ field }) => {
+          if (!this.state.createPassword) return [true];
+          const walletPassword = this.form.$('walletPassword').value;
+          if (walletPassword.length === 0) return [true];
+          return [
+            isValidRepeatPassword(walletPassword, field.value),
+            this.context.intl.formatMessage(globalMessages.invalidRepeatPassword)
+          ];
+        }],
+        bindings: 'ReactToolbox',
+      },
+
     }
   }, {
     options: {
-      validateOnChange: false
+      validateOnChange: true,
+      validationDebounceWait: 250,
+      validationDebounceOptions: { leading: false, },
     },
   });
 
@@ -115,11 +175,18 @@ export default class WalletCreateDialog extends Component {
     this.form.submit({
       onSuccess: (form) => {
         this.setState({ isSubmitting: true });
-        this.props.onSubmit(form.values());
+        const { createPassword } = this.state;
+        const { walletName, currency, walletPassword } = form.values();
+        const walletData = {
+          name: walletName,
+          currency,
+          password: createPassword ? walletPassword : null,
+        };
+        this.props.onSubmit(walletData);
       },
       onError: () => {
         this.setState({ isSubmitting: false });
-      }
+      },
     });
   };
 
@@ -129,14 +196,24 @@ export default class WalletCreateDialog extends Component {
     }
   }
 
+  handlePasswordSwitchToggle = (value: boolean) => {
+    this.setState({ createPassword: value });
+  };
+
   render() {
     const { form } = this;
     const { intl } = this.context;
+    const { createPassword } = this.state;
     const dialogClasses = classnames([
       styles.component,
       'WalletCreateDialog',
       this.state.isSubmitting ? styles.isSubmitting : null
     ]);
+    const walletPasswordFieldsClasses = classnames([
+      styles.walletPasswordFields,
+      createPassword ? styles.show : null
+    ]);
+
     return (
       <Dialog
         className={dialogClasses}
@@ -158,6 +235,22 @@ export default class WalletCreateDialog extends Component {
           {...form.$('currency').bind()}
           source={currencies}
         />
+
+        <div className={styles.walletPassword}>
+          <div className={styles.walletPasswordSwitch}>
+            <Switch
+              label={intl.formatMessage(messages.passwordSwitchLabel)}
+              placeholder={intl.formatMessage(messages.passwordSwitchPlaceholder)}
+              active={createPassword}
+              onChange={this.handlePasswordSwitchToggle}
+            />
+          </div>
+
+          <div className={walletPasswordFieldsClasses}>
+            <Input {...form.$('walletPassword').bind()} />
+            <Input {...form.$('repeatPassword').bind()} />
+          </div>
+        </div>
 
         <DialogCloseButton onClose={this.props.onCancel} />
 
