@@ -58,7 +58,6 @@ export default class AdaRedemptionStore extends Store {
   }
 
   isValidRedemptionKey = (redemptionKey: string) => this.api.isValidRedemptionKey(redemptionKey);
-
   isValidRedemptionMnemonic = (mnemonic: string) => this.api.isValidRedemptionMnemonic(mnemonic);
 
   isValidPaperVendRedemptionKey = (
@@ -200,18 +199,21 @@ export default class AdaRedemptionStore extends Store {
   });
 
   _onRemoveCertificate = action(() => {
+    this.error = null;
     this.certificate = null;
     this.redemptionCode = '';
     this.passPhrase = '';
-    this.error = null;
+    this.email = null;
+    this.adaPasscode = null;
+    this.adaAmount = null;
   });
 
   @action _reset = () => {
     this.error = null;
     this.certificate = null;
     this.isCertificateEncrypted = false;
-    this.passPhrase = null;
     this.redemptionCode = '';
+    this.passPhrase = '';
     this.walletId = null;
     this.redemptionType = 'regular';
     this.shieldedRedemptionKey = null;

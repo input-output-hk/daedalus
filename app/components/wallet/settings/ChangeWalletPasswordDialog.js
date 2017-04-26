@@ -50,7 +50,7 @@ const messages = defineMessages({
 export default class ChangeWalletPasswordDialog extends Component {
 
   props: {
-    hasWalletPassword: boolean,
+    isWalletPasswordSet: boolean,
     currentPasswordValue: string,
     newPasswordValue: string,
     repeatedPasswordValue: string,
@@ -76,7 +76,7 @@ export default class ChangeWalletPasswordDialog extends Component {
   render() {
     const { intl } = this.context;
     const {
-      hasWalletPassword,
+      isWalletPasswordSet,
       onSave,
       onCancel,
       currentPasswordValue,
@@ -95,7 +95,7 @@ export default class ChangeWalletPasswordDialog extends Component {
           onSave({ oldPassword: currentPasswordValue, newPassword: newPasswordValue });
         },
         disabled: (
-          (hasWalletPassword && isCurrentPasswordBlank) ||
+          (isWalletPasswordSet && isCurrentPasswordBlank) ||
           isNewPasswordBlank || !isRepeatedPasswordCorrect
         ),
         primary: true,
@@ -105,14 +105,14 @@ export default class ChangeWalletPasswordDialog extends Component {
     return (
       <Dialog
         title={intl.formatMessage(
-          !hasWalletPassword ? messages.dialogTitleSetPassword : messages.dialogTitleChangePassword
+          messages[!isWalletPasswordSet ? 'dialogTitleSetPassword' : 'dialogTitleChangePassword']
         )}
         actions={actions}
         active
         className={styles.dialog}
       >
 
-        {hasWalletPassword ? (
+        {isWalletPasswordSet ? (
           <Input
             type="password"
             className={styles.topInput}
@@ -125,9 +125,9 @@ export default class ChangeWalletPasswordDialog extends Component {
 
         <Input
           type="password"
-          className={!hasWalletPassword ? styles.topInput : null}
+          className={!isWalletPasswordSet ? styles.topInput : null}
           label={intl.formatMessage(
-            !hasWalletPassword ? messages.walletPasswordLabel : messages.newPasswordLabel
+            !isWalletPasswordSet ? messages.walletPasswordLabel : messages.newPasswordLabel
           )}
           placeholder={intl.formatMessage(messages.passwordFieldPlaceholder)}
           value={newPasswordValue}

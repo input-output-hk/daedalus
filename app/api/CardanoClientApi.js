@@ -64,8 +64,29 @@ const setUserLocaleInLocalStorage = (locale) => new Promise((resolve, reject) =>
   });
 });
 
-const unsetUserLocaleInLocalStorage = () => new Promise((resolve) => {
+const unsetUserLocaleFromLocalStorage = () => new Promise((resolve) => {
   localStorage.remove('userLocale', () => {
+    resolve();
+  });
+});
+
+const getTermsOfUseAcceptanceFromLocalStorage = () => new Promise((resolve, reject) => {
+  localStorage.get('termsOfUseAcceptance', (error, response) => {
+    if (error) return reject(error);
+    if (!response.accepted) return resolve(false);
+    resolve(response.accepted);
+  });
+});
+
+const setTermsOfUseAcceptanceInLocalStorage = () => new Promise((resolve, reject) => {
+  localStorage.set('termsOfUseAcceptance', { accepted: true }, (error) => {
+    if (error) return reject(error);
+    resolve();
+  });
+});
+
+const unsetTermsOfUseAcceptanceFromLocalStorage = () => new Promise((resolve) => {
+  localStorage.remove('termsOfUseAcceptance', () => {
     resolve();
   });
 });
@@ -117,7 +138,7 @@ export default class CardanoClientApi {
   async createWallet(request: CreateWalletRequest) {
     Log.debug('CardanoClientApi::createWallet called');
     try {
-      const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name, request.mnemonic);
+      const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name, request.mnemonic, request.password);
       Log.debug('CardanoClientApi::createWallet success: ', JSON.stringify(response, null, 2));
       return _createWalletFromServerData(response);
     } catch (error) {
@@ -139,13 +160,13 @@ export default class CardanoClientApi {
   }
 
   async createTransaction(request: CreateTransactionRequest) {
-    Log.debug('CardanoClientApi::createTransaction called: ', JSON.stringify(request, null, 2));
-    const { sender, receiver, amount, currency } = request;
+    Log.debug('CardanoClientApi::createTransaction called');
+    const { sender, receiver, amount, currency, password } = request;
     const description = 'no description provided';
     const title = 'no title provided';
     try {
       const response = await ClientApi.sendExtended(
-        sender, receiver, amount, currency, title, description
+        sender, receiver, amount, currency, title, description, password
       );
       Log.debug('CardanoClientApi::createTransaction success: ', JSON.stringify(response, null, 2));
       return _createTransactionFromServerData(response);
@@ -192,9 +213,9 @@ export default class CardanoClientApi {
 
   async restoreWallet(request: RestoreWalletRequest) {
     Log.debug('CardanoClientApi::restoreWallet called');
-    const { recoveryPhrase, walletName } = request;
+    const { recoveryPhrase, walletName, walletPassword } = request;
     try {
-      const restoredWallet = await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase);
+      const restoredWallet = await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase, walletPassword);
       Log.debug('CardanoClientApi::restoreWallet success');
       return _createWalletFromServerData(restoredWallet);
     } catch (error) {
@@ -290,7 +311,7 @@ export default class CardanoClientApi {
       nextUpdate = JSON.parse(await ClientApi.nextUpdate());
       Log.debug('CardanoClientApi::nextUpdate success: ', JSON.stringify(nextUpdate, null, 2));
     } catch (error) {
-      Log.error('CardanoClientApi::nextUpdate error: ', error);
+      Log.debug('CardanoClientApi::nextUpdate error: ', error);
       // TODO: Api is trowing an error when update is not available, handle other errors
     }
     return nextUpdate;
@@ -378,6 +399,30 @@ export default class CardanoClientApi {
     }
   }
 
+  async setTermsOfUseAcceptance() {
+    Log.debug('CardanoClientApi::setTermsOfUseAcceptance called');
+    try {
+      await setTermsOfUseAcceptanceInLocalStorage();
+      Log.debug('CardanoClientApi::setTermsOfUseAcceptance success');
+      return true;
+    } catch (error) {
+      Log.error('CardanoClientApi::setTermsOfUseAcceptance error: ', error);
+      throw new GenericApiError();
+    }
+  }
+
+  async getTermsOfUseAcceptance() {
+    Log.debug('CardanoClientApi::getTermsOfUseAcceptance called');
+    try {
+      const acceptance = await getTermsOfUseAcceptanceFromLocalStorage();
+      Log.debug('CardanoClientApi::getTermsOfUseAcceptance success: ', acceptance);
+      return acceptance;
+    } catch (error) {
+      Log.error('CardanoClientApi::getTermsOfUseAcceptance error: ', error);
+      throw new GenericApiError();
+    }
+  }
+
   async updateWallet(request: UpdateWalletRequest) {
     Log.debug('CardanoClientApi::updateWallet called: ', JSON.stringify(request, null, 2));
     const { walletId, type, currency, name, assurance } = request;
@@ -409,7 +454,8 @@ export default class CardanoClientApi {
 
   async testReset() {
     Log.debug('CardanoClientApi::testReset called');
-    await unsetUserLocaleInLocalStorage(); // TODO: remove after saving locale to API is restored
+    await unsetUserLocaleFromLocalStorage(); // TODO: remove after saving locale to API is restored
+    await unsetTermsOfUseAcceptanceFromLocalStorage();
     try {
       const response = await ClientApi.testReset();
       Log.debug('CardanoClientApi::testReset success: ', JSON.stringify(response, null, 2));
@@ -479,7 +525,7 @@ const _createWalletFromServerData = action((data: ServerWalletStruct) => (
     currency: data.cwMeta.cwCurrency,
     name: data.cwMeta.cwName,
     assurance: data.cwMeta.cwAssurance,
-    hasPassword: true, // TODO: replace with real API response
+    hasPassword: false, // TODO: replace with real API response
     passwordUpdateDate: new Date('2017-02-01'), // TODO: replace with real API response
   })
 ));

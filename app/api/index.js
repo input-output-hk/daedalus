@@ -22,6 +22,7 @@ export type CreateWalletRequest = {
   name: string,
   currency: string,
   mnemonic: string,
+  password: ?string,
 };
 
 export type CreateWalletResponse = Wallet;
@@ -40,6 +41,7 @@ export type CreateTransactionRequest = {
   currency: string,
   title: string,
   description: ?string,
+  password: ?string,
 };
 
 export type CreateTransactionResponse = WalletTransaction;
@@ -53,6 +55,7 @@ export type GetWalletRecoveryPhraseResponse = string[];
 export type RestoreWalletRequest = {
   recoveryPhrase: string,
   walletName: string,
+  walletPassword: ?string,
 };
 
 export type RestoreWalletResponse = Wallet;
@@ -140,6 +143,8 @@ export type Api = {
   getSyncProgress(): Promise<GetSyncProgressResponse>,
   setUserLocale(locale: string): Promise<string>,
   getUserLocale(): Promise<string>,
+  setTermsOfUseAcceptance(): Promise<boolean>,
+  getTermsOfUseAcceptance(): Promise<boolean>,
   updateWallet(request: UpdateWalletRequest): Promise<UpdateWalletResponse>,
   testReset(): void,
   changeWalletPassword(request: ChangeWalletPasswordRequest): Promise<ChangeWalletPasswordResponse>,

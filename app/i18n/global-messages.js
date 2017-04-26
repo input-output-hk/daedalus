@@ -11,6 +11,16 @@ export default defineMessages({
     defaultMessage: '!!!The wallet name must have at least 3 letters.',
     description: 'Error message shown when invalid wallet name was entered in create wallet dialog.'
   },
+  invalidWalletPassword: {
+    id: 'global.errors.invalidWalletPassword',
+    defaultMessage: '!!!Minimum 6 letters.',
+    description: 'Error message shown when invalid wallet password was entered in create wallet dialog.'
+  },
+  invalidRepeatPassword: {
+    id: 'global.errors.invalidRepeatPassword',
+    defaultMessage: '!!!Doesn\'t match.',
+    description: 'Error message shown when wallet password and repeat passwords don\'t match in create wallet dialog.'
+  },
   cancel: {
     id: 'global.labels.cancel',
     defaultMessage: '!!!Cancel',

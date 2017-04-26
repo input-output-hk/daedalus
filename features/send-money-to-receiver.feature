@@ -2,6 +2,7 @@ Feature: Send Money to Receiver
 
   Background:
     Given I have selected English language
+    And I have accepted "Terms of use"
     And I have a wallet with funds
     And I have the following wallets:
       | name   |

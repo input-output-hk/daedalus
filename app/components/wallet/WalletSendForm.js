@@ -80,6 +80,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Please enter a title with at least 3 characters.',
     description: 'Error message shown when invalid transaction title was entered.',
   },
+  walletPasswordLabel: {
+    id: 'wallet.send.form.walletPasswordLabel',
+    defaultMessage: '!!!Wallet password',
+    description: 'Label for the "Wallet password" input in the wallet send form.'
+  },
+  passwordFieldPlaceholder: {
+    id: 'wallet.send.form.passwordFieldPlaceholder',
+    defaultMessage: '!!!Password',
+    description: 'Placeholder for the "Password" inputs in the wallet send form.'
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -91,6 +101,7 @@ export default class WalletSendForm extends Component {
     onSubmit: Function,
     isSubmitting: boolean,
     addressValidator: Function,
+    isWalletPasswordSet: boolean,
     error?: ?LocalizableError,
   };
 
@@ -128,6 +139,19 @@ export default class WalletSendForm extends Component {
         },
         bindings: 'ReactToolbox',
       },
+      walletPassword: {
+        type: 'password',
+        label: this.context.intl.formatMessage(messages.walletPasswordLabel),
+        placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
+        value: '',
+        validate: [({ field }) => {
+          if (this.props.isWalletPasswordSet && field.value === '') {
+            return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
+          }
+          return [true];
+        }],
+        bindings: 'ReactToolbox',
+      },
       currency: {
         value: 'ada' // TODO: Remove hardcoded currency
       },
@@ -143,9 +167,14 @@ export default class WalletSendForm extends Component {
   submit() {
     this.form.submit({
       onSuccess: (form) => {
-        const formValues = form.values();
-        formValues.amount = this.adaToLovelaces(formValues.amount);
-        this.props.onSubmit(formValues);
+        const { isWalletPasswordSet } = this.props;
+        const { receiver, amount, walletPassword } = form.values();
+        const transactionData = {
+          receiver,
+          amount: this.adaToLovelaces(amount),
+          password: isWalletPasswordSet ? walletPassword : null,
+        };
+        this.props.onSubmit(transactionData);
       },
       onError: () => {}
     });
@@ -154,7 +183,7 @@ export default class WalletSendForm extends Component {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { isSubmitting, error } = this.props;
+    const { isWalletPasswordSet, isSubmitting, error } = this.props;
     const amountField = form.$('amount');
     const amountFieldClasses = classnames([
       'amount', 'input_input',
@@ -202,6 +231,10 @@ export default class WalletSendForm extends Component {
               ) : null}
             </div>
           </div>
+
+          {isWalletPasswordSet ? (
+            <Input {...form.$('walletPassword').bind()} />
+          ) : null}
 
           {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
 

@@ -1,12 +1,14 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import Input from 'react-toolbox/lib/input/Input';
+import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
+import Input from 'react-toolbox/lib/input/Input';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
-import { isValidWalletName } from '../../lib/validations';
+import Switch from '../widgets/Switch';
+import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../lib/validations';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletRestoreDialog.scss';
@@ -47,6 +49,31 @@ const messages = defineMessages({
     defaultMessage: '!!!Invalid recovery phrase',
     description: 'Error message shown when invalid recovery phrase was entered.'
   },
+  passwordSwitchLabel: {
+    id: 'wallet.restore.dialog.passwordSwitchLabel',
+    defaultMessage: '!!!Password',
+    description: 'Label for the "Activate to create password" switch in the wallet restore dialog.',
+  },
+  passwordSwitchPlaceholder: {
+    id: 'wallet.restore.dialog.passwordSwitchPlaceholder',
+    defaultMessage: '!!!Activate to create password',
+    description: 'Text for the "Activate to create password" switch in the wallet restore dialog.',
+  },
+  walletPasswordLabel: {
+    id: 'wallet.restore.dialog.walletPasswordLabel',
+    defaultMessage: '!!!Wallet password',
+    description: 'Label for the "Wallet password" input in the wallet restore dialog.',
+  },
+  repeatPasswordLabel: {
+    id: 'wallet.restore.dialog.repeatPasswordLabel',
+    defaultMessage: '!!!Repeat password',
+    description: 'Label for the "Repeat password" input in the wallet restore dialog.',
+  },
+  passwordFieldPlaceholder: {
+    id: 'wallet.restore.dialog.passwordFieldPlaceholder',
+    defaultMessage: '!!!Password',
+    description: 'Placeholder for the "Password" inputs in the wallet restore dialog.',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -67,6 +94,7 @@ export default class WalletRestoreDialog extends Component {
 
   state = {
     isSubmitting: false,
+    createPassword: false,
   };
 
   form = new ReactToolboxMobxForm({
@@ -97,6 +125,36 @@ export default class WalletRestoreDialog extends Component {
         },
         bindings: 'ReactToolbox',
       },
+      walletPassword: {
+        type: 'password',
+        label: this.context.intl.formatMessage(messages.walletPasswordLabel),
+        placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
+        value: '',
+        validate: [({ field }) => {
+          if (!this.state.createPassword) return [true];
+          return [
+            isValidWalletPassword(field.value),
+            this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
+          ];
+        }],
+        bindings: 'ReactToolbox',
+      },
+      repeatPassword: {
+        type: 'password',
+        label: this.context.intl.formatMessage(messages.repeatPasswordLabel),
+        placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
+        value: '',
+        validate: [({ field }) => {
+          if (!this.state.createPassword) return [true];
+          const walletPassword = this.form.$('walletPassword').value;
+          if (walletPassword.length === 0) return [true];
+          return [
+            isValidRepeatPassword(walletPassword, field.value),
+            this.context.intl.formatMessage(globalMessages.invalidRepeatPassword)
+          ];
+        }],
+        bindings: 'ReactToolbox',
+      },
     },
   }, {
     options: {
@@ -110,15 +168,26 @@ export default class WalletRestoreDialog extends Component {
     {
       label: this.context.intl.formatMessage(messages.importButtonLabel),
       primary: true,
-      onClick: () => this.submit()
-    }
+      onClick: () => this.submit(),
+    },
   ];
+
+  handlePasswordSwitchToggle = (value: boolean) => {
+    this.setState({ createPassword: value });
+  };
 
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
         this.setState({ isSubmitting: true });
-        this.props.onSubmit(form.values());
+        const { createPassword } = this.state;
+        const { recoveryPhrase, walletName, walletPassword } = form.values();
+        const walletData = {
+          recoveryPhrase,
+          walletName,
+          walletPassword: createPassword ? walletPassword : null,
+        };
+        this.props.onSubmit(walletData);
       },
       onError: () => {
         this.setState({ isSubmitting: false });
@@ -130,6 +199,12 @@ export default class WalletRestoreDialog extends Component {
     const { intl } = this.context;
     const { form } = this;
     const { error, onCancel } = this.props;
+    const { createPassword } = this.state;
+    const walletPasswordFieldsClasses = classnames([
+      styles.walletPasswordFields,
+      createPassword ? styles.show : null
+    ]);
+
     return (
       <Dialog
         className={styles.component}
@@ -145,6 +220,22 @@ export default class WalletRestoreDialog extends Component {
           rows={3}
           {...form.$('recoveryPhrase').bind()}
         />
+
+        <div className={styles.walletPassword}>
+          <div className={styles.walletPasswordSwitch}>
+            <Switch
+              label={intl.formatMessage(messages.passwordSwitchLabel)}
+              placeholder={intl.formatMessage(messages.passwordSwitchPlaceholder)}
+              active={createPassword}
+              onChange={this.handlePasswordSwitchToggle}
+            />
+          </div>
+
+          <div className={walletPasswordFieldsClasses}>
+            <Input {...form.$('walletPassword').bind()} />
+            <Input {...form.$('repeatPassword').bind()} />
+          </div>
+        </div>
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 

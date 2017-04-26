@@ -1,0 +1,80 @@
+@import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
+
+.component {
+  padding: 20px;
+  height: 100%;
+  overflow-y: overlay;
+  &::-webkit-scrollbar-button {
+    height: 7px;
+    display: block;
+  }
+}
+
+.centeredBox {
+  background-color: $color-lighter-grey;
+  border: solid 1px $color-light-grey;
+  border-radius: 4px;
+  padding: 30px 30px 20px;
+}
+
+.submitButton,
+.submitButtonSpinning {
+  display: block !important;
+  height: 50px !important;
+  margin: 0 auto;
+  width: 360px;
+}
+
+.submitButton {
+  font-size: 14px !important;
+  line-height: 50px !important;
+}
+
+.submitButtonSpinning {
+  @include loading-spinner("../../../assets/images/spinner-light.svg");
+}
+
+.error {
+  @include error-message;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.terms {
+  color: $text-color-accent;
+  margin-bottom: 30px;
+
+  h1, h2 {
+    font-family: $font-medium;
+    font-size: 19px;
+    margin-bottom: 11px;
+  }
+
+  h2 {
+    margin-top: 22px;
+  }
+
+  ul {
+    list-style: disc;
+    margin-left: 20px;
+  }
+
+  p, li {
+    font-family: $font-regular;
+    line-height: 1.38;
+    margin-bottom: 11px;
+
+    strong {
+      font-weight: 500;
+    }
+  }
+
+  // checkbox component selector
+  & > div:last-child {
+    padding-top: 10px !important;
+    & > div:last-child {
+      font-family: $font-regular !important;
+    }
+  }
+}
