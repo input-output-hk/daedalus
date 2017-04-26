@@ -55,6 +55,7 @@ export type GetWalletRecoveryPhraseResponse = string[];
 export type RestoreWalletRequest = {
   recoveryPhrase: string,
   walletName: string,
+  walletPassword: ?string,
 };
 
 export type RestoreWalletResponse = Wallet;

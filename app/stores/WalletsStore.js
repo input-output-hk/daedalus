@@ -45,10 +45,11 @@ export default class WalletsStore extends Store {
 
   _hideWalletAddressCopyNotificationTimeout = false;
 
-  _newWalletDetails: { name: string, currency: string, mnemonic: string, } = {
+  _newWalletDetails: { name: string, currency: string, mnemonic: string, password: ?string, } = {
     name: '',
     currency: '',
-    mnemonic: ''
+    mnemonic: '',
+    password: null,
   };
 
   setup() {
@@ -78,6 +79,7 @@ export default class WalletsStore extends Store {
   _create = async (params: {
     name: string,
     currency: string,
+    password: ?string,
   }) => {
     Object.assign(this._newWalletDetails, params);
     try {
@@ -241,6 +243,7 @@ export default class WalletsStore extends Store {
   @action _restoreWallet = async (params: {
     recoveryPhrase: string,
     walletName: string,
+    walletPassword: ?string,
   }) => {
     const restoredWallet = await this.restoreRequest.execute(params).promise;
     if (!restoredWallet) throw new Error('Restored wallet was not received correctly');

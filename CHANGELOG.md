@@ -11,6 +11,7 @@ Changelog
 - Optionally setting a password during wallet creation.
 - "Terms of use" screen on first application start
 - Spending password on "Send money" form
+- Optionally setting a password during wallet restore.
 
 ### Fixes
 
