@@ -103,7 +103,6 @@ export default class WalletRestoreDialog extends Component {
       showErrorsOnChange: true,
       validateOnChange: true,
       validationDebounceWait: 250,
-      validationDebounceOptions: { trailing: true, },
     },
   });
 
