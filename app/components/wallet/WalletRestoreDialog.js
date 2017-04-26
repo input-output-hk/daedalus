@@ -130,7 +130,7 @@ export default class WalletRestoreDialog extends Component {
         label: this.context.intl.formatMessage(messages.walletPasswordLabel),
         placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
         value: '',
-        validate: [({ field }) => {
+        validators: [({ field }) => {
           if (!this.state.createPassword) return [true];
           return [
             isValidWalletPassword(field.value),
@@ -144,7 +144,7 @@ export default class WalletRestoreDialog extends Component {
         label: this.context.intl.formatMessage(messages.repeatPasswordLabel),
         placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
         value: '',
-        validate: [({ field }) => {
+        validators: [({ field }) => {
           if (!this.state.createPassword) return [true];
           const walletPassword = this.form.$('walletPassword').value;
           if (walletPassword.length === 0) return [true];
@@ -158,7 +158,6 @@ export default class WalletRestoreDialog extends Component {
     },
   }, {
     options: {
-      showErrorsOnChange: true,
       validateOnChange: true,
       validationDebounceWait: 250,
     },

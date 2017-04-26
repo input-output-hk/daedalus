@@ -144,7 +144,7 @@ export default class WalletSendForm extends Component {
         label: this.context.intl.formatMessage(messages.walletPasswordLabel),
         placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
         value: '',
-        validate: [({ field }) => {
+        validators: [({ field }) => {
           if (this.props.isWalletPasswordSet && field.value === '') {
             return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           }
@@ -158,7 +158,6 @@ export default class WalletSendForm extends Component {
     },
   }, {
     options: {
-      showErrorsOnChange: true,
       validateOnChange: true,
       validationDebounceWait: 250,
     },
