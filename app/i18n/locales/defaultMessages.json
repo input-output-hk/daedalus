@@ -1893,6 +1893,34 @@
           "column": 16,
           "line": 78
         }
+      },
+      {
+        "defaultMessage": "!!!Wallet password",
+        "description": "Label for the \"Wallet password\" input in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 87
+        },
+        "file": "app/components/wallet/WalletSendForm.js",
+        "id": "wallet.send.form.walletPasswordLabel",
+        "start": {
+          "column": 23,
+          "line": 83
+        }
+      },
+      {
+        "defaultMessage": "!!!Password",
+        "description": "Placeholder for the \"Password\" inputs in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 92
+        },
+        "file": "app/components/wallet/WalletSendForm.js",
+        "id": "wallet.send.form.passwordFieldPlaceholder",
+        "start": {
+          "column": 28,
+          "line": 88
+        }
       }
     ],
     "path": "app/components/wallet/WalletSendForm.json"

@@ -30,7 +30,7 @@ export default class WalletSettingsPage extends Component {
         onWalletAssuranceLevelUpdate={this.handleWalletAssuranceLevelUpdate}
         error={walletSettings.updateWalletRequest.error}
         openDialogAction={actions.dialogs.open.trigger}
-        hasWalletPassword={activeWallet.hasPassword}
+        isWalletPasswordSet={activeWallet.hasPassword}
         walletPasswordUpdateDate={activeWallet.passwordUpdateDate}
         isDialogOpen={uiDialogs.isOpen}
       />

@@ -41,6 +41,7 @@ export type CreateTransactionRequest = {
   currency: string,
   title: string,
   description: ?string,
+  password: ?string,
 };
 
 export type CreateTransactionResponse = WalletTransaction;

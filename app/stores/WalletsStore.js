@@ -128,6 +128,7 @@ export default class WalletsStore extends Store {
   _sendMoney = async (transactionDetails: {
     receiver: string,
     amount: string,
+    password: ?string,
   }) => {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');

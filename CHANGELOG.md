@@ -10,6 +10,7 @@ Changelog
 - When user opens or closes the sidebar using the hamburger icon it stays open or closed.
 - Optionally setting a password during wallet creation.
 - "Terms of use" screen on first application start
+- Spending password on "Send money" form
 
 ### Fixes
 
