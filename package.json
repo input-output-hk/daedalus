@@ -18,7 +18,7 @@
     "package-all": "npm run package -- --all",
     "postinstall": "node node_modules/fbjs-scripts/node/check-dev-engines.js package.json",
     "preinstall": "which electron || npm install electron@1.4.15",
-    "dev": "concurrently --kill-others \"npm run hot-server\" \"npm run start-hot\"",
+    "dev": "npm run purge-translations && concurrently --kill-others \"npm run hot-server\" \"npm run start-hot\"",
     "debug": "concurrently --kill-others \"npm run hot-server\" \"npm run start-debug-hot\" \"electron-inspector\"",
     "cleanup": "mop -v",
     "cucumber": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 cucumber-js --compiler js:babel-register --snippet-interface synchronous --tags ~@skip",
@@ -28,7 +28,8 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "flow-test": "flow; test $? -eq 0 -o $? -eq 2",
-    "manage-translations": "node ./translations/translation-runner.js"
+    "manage-translations": "node ./translations/translation-runner.js",
+    "purge-translations": "rm -rf ./translations/messages/app"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"

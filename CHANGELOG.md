@@ -23,6 +23,7 @@ Changelog
 ### Chores
 
 - Prevent logging of harmless error messages to the terminal
+- Purge "translation/messages/app" as a part of npm dev script
 
 ## 0.6.2
 
