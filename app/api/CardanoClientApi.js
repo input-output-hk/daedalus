@@ -525,7 +525,7 @@ const _createWalletFromServerData = action((data: ServerWalletStruct) => (
     currency: data.cwMeta.cwCurrency,
     name: data.cwMeta.cwName,
     assurance: data.cwMeta.cwAssurance,
-    hasPassword: true, // TODO: replace with real API response
+    hasPassword: false, // TODO: replace with real API response
     passwordUpdateDate: new Date('2017-02-01'), // TODO: replace with real API response
   })
 ));
