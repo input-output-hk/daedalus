@@ -153,7 +153,6 @@ export default class WalletCreateDialog extends Component {
         }],
         bindings: 'ReactToolbox',
       },
-
     }
   }, {
     options: {
@@ -167,8 +166,8 @@ export default class WalletCreateDialog extends Component {
     {
       label: this.context.intl.formatMessage(messages.createPersonalWallet),
       primary: true,
-      onClick: () => this.submit()
-    }
+      onClick: () => this.submit(),
+    },
   ];
 
   submit = () => {
