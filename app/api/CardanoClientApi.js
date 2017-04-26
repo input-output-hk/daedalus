@@ -213,9 +213,9 @@ export default class CardanoClientApi {
 
   async restoreWallet(request: RestoreWalletRequest) {
     Log.debug('CardanoClientApi::restoreWallet called');
-    const { recoveryPhrase, walletName } = request;
+    const { recoveryPhrase, walletName, walletPassword } = request;
     try {
-      const restoredWallet = await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase);
+      const restoredWallet = await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase, walletPassword);
       Log.debug('CardanoClientApi::restoreWallet success');
       return _createWalletFromServerData(restoredWallet);
     } catch (error) {
