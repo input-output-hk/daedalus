@@ -21,10 +21,7 @@ export default class MainLayout extends Component {
   props: InjectedContainerProps;
 
   handleAddWalletSubmit = (values: Object) => {
-    this.props.actions.wallets.createWallet.trigger({
-      name: values.walletName,
-      currency: values.currency,
-    });
+    this.props.actions.wallets.createWallet.trigger(values);
   };
 
   handleRestoreWalletSubmit = (values: Object) => {

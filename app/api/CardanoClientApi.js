@@ -138,7 +138,7 @@ export default class CardanoClientApi {
   async createWallet(request: CreateWalletRequest) {
     Log.debug('CardanoClientApi::createWallet called');
     try {
-      const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name, request.mnemonic);
+      const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name, request.mnemonic, request.password);
       Log.debug('CardanoClientApi::createWallet success: ', JSON.stringify(response, null, 2));
       return _createWalletFromServerData(response);
     } catch (error) {

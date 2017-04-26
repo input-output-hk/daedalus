@@ -8,6 +8,7 @@ Changelog
 
 - Sidebar is no longer auto-hiding if application window is width is greater than 1150px.
 - When user opens or closes the sidebar using the hamburger icon it stays open or closed.
+- Optionally setting a password during wallet creation.
 - "Terms of use" screen on first application start
 
 ### Fixes

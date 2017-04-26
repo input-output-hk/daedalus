@@ -22,6 +22,7 @@ export type CreateWalletRequest = {
   name: string,
   currency: string,
   mnemonic: string,
+  password: ?string,
 };
 
 export type CreateWalletResponse = Wallet;
