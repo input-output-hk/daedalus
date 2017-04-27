@@ -34,5 +34,6 @@
 
 .error {
   @include error-message;
+  margin-top: 1rem;
   text-align: center;
 }

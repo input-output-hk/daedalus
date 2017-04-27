@@ -47,7 +47,7 @@ export default class GeneralSettings extends Component {
   }, {
     options: {
       validateOnChange: false,
-    }
+    },
   });
 
   render() {

@@ -57,7 +57,7 @@ export default class LanguageSelectionForm extends Component {
   }, {
     options: {
       validateOnChange: false,
-    }
+    },
   });
 
   render() {

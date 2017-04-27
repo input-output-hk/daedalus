@@ -206,7 +206,7 @@ export default class AdaRedemptionForm extends Component {
         placeholder: this.context.intl.formatMessage(messages.passphraseHint),
         value: '',
         bindings: 'ReactToolbox',
-        validate: [({ field }) => {
+        validators: [({ field }) => {
           // Don't validate No pass phrase needed when certificate is not encrypted
           if (!this.props.showPassPhraseWidget) return [true];
           // Otherwise check mnemonic
@@ -223,7 +223,7 @@ export default class AdaRedemptionForm extends Component {
         placeholder: this.context.intl.formatMessage(messages.redemptionKeyHint),
         value: '',
         bindings: 'ReactToolbox',
-        validate: ({ field }) => {
+        validators: ({ field }) => {
           if (this.props.redemptionType === 'paperVended') return [true];
           const value = this.props.redemptionCode || field.value;
           if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
@@ -238,7 +238,7 @@ export default class AdaRedemptionForm extends Component {
         placeholder: this.context.intl.formatMessage(messages.shieldedRedemptionKeyHint),
         value: '',
         bindings: 'ReactToolbox',
-        validate: ({ field }) => {
+        validators: ({ field }) => {
           if (this.props.redemptionType !== 'paperVended') return [true];
           const value = field.value;
           if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
@@ -258,7 +258,7 @@ export default class AdaRedemptionForm extends Component {
         placeholder: this.context.intl.formatMessage(messages.emailHint),
         value: '',
         bindings: 'ReactToolbox',
-        validate: [({ field }) => {
+        validators: [({ field }) => {
           if (!this.props.showInputsForDecryptingForceVendedCertificate) return [true];
           const email = field.value;
           if (isEmail(email)) this.props.onEmailChanged(email);
@@ -273,7 +273,7 @@ export default class AdaRedemptionForm extends Component {
         placeholder: this.context.intl.formatMessage(messages.adaPasscodeHint),
         value: '',
         bindings: 'ReactToolbox',
-        validate: [({ field }) => {
+        validators: [({ field }) => {
           if (!this.props.showInputsForDecryptingForceVendedCertificate) return [true];
           const adaPasscode = field.value;
           if (!isEmpty(adaPasscode)) this.props.onAdaPasscodeChanged(adaPasscode);
@@ -288,7 +288,7 @@ export default class AdaRedemptionForm extends Component {
         placeholder: this.context.intl.formatMessage(messages.adaAmountHint),
         value: '',
         bindings: 'ReactToolbox',
-        validate: [({ field }) => {
+        validators: [({ field }) => {
           if (!this.props.showInputsForDecryptingForceVendedCertificate) return [true];
           const adaAmount = field.value;
           if (!isEmpty(adaAmount)) this.props.onAdaAmountChanged(adaAmount);
@@ -303,7 +303,6 @@ export default class AdaRedemptionForm extends Component {
     options: {
       validateOnChange: true,
       validationDebounceWait: 250,
-      validationDebounceOptions: { leading: false, },
     },
   });
 

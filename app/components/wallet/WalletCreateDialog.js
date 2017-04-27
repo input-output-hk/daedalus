@@ -104,7 +104,7 @@ export default class WalletCreateDialog extends Component {
         label: this.context.intl.formatMessage(messages.walletName),
         placeholder: this.context.intl.formatMessage(messages.walletNameHint),
         value: '',
-        validate: [({ field }) => (
+        validators: [({ field }) => (
           [
             isValidWalletName(field.value),
             this.context.intl.formatMessage(globalMessages.invalidWalletName)
@@ -115,7 +115,7 @@ export default class WalletCreateDialog extends Component {
       currency: {
         label: this.context.intl.formatMessage(messages.currencyLabel),
         value: 'ada',
-        validate: [({ field }) => (
+        validators: [({ field }) => (
           [
             isValidCurrency(field.value),
             this.context.intl.formatMessage(messages.invalidCurrency)
@@ -128,7 +128,7 @@ export default class WalletCreateDialog extends Component {
         label: this.context.intl.formatMessage(messages.walletPasswordLabel),
         placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
         value: '',
-        validate: [({ field }) => {
+        validators: [({ field }) => {
           if (!this.state.createPassword) return [true];
           return [
             isValidWalletPassword(field.value),
@@ -142,7 +142,7 @@ export default class WalletCreateDialog extends Component {
         label: this.context.intl.formatMessage(messages.repeatPasswordLabel),
         placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
         value: '',
-        validate: [({ field }) => {
+        validators: [({ field }) => {
           if (!this.state.createPassword) return [true];
           const walletPassword = this.form.$('walletPassword').value;
           if (walletPassword.length === 0) return [true];
@@ -158,7 +158,6 @@ export default class WalletCreateDialog extends Component {
     options: {
       validateOnChange: true,
       validationDebounceWait: 250,
-      validationDebounceOptions: { leading: false, },
     },
   });
 
