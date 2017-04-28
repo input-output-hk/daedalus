@@ -20,6 +20,7 @@ Changelog
 - Prevent wallet send form reset on submit
 - Prevent redemption key reset after unsuccessful redemption.
 - Ghost boxes on "Loading" screen
+- Reset Ada redemption form values on page load and certificate add/remove events
 
 ### Chores
 

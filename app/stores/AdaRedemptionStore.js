@@ -5,12 +5,14 @@ import { isString } from 'lodash';
 import Log from 'electron-log';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
+import { matchRoute } from '../lib/routing-helpers';
 import WalletTransaction from '../domain/WalletTransaction';
 import { PARSE_REDEMPTION_CODE } from '../../electron/ipc-api/parse-redemption-code-from-pdf';
 import { InvalidMnemonicError, AdaRedemptionCertificateParseError } from '../i18n/errors';
 import { DECIMAL_PLACES_IN_ADA } from '../config/numbersConfig';
 import LocalizableError from '../i18n/LocalizableError';
 import Wallet from '../domain/Wallet';
+import { ROUTES } from '../Routes';
 import type { RedeemPaperVendedAdaResponse } from '../api/index';
 import type { RedemptionTypeChoices } from '../types/redemptionTypes';
 
@@ -49,6 +51,9 @@ export default class AdaRedemptionStore extends Store {
     actions.removeCertificate.listen(this._onRemoveCertificate);
     ipcRenderer.on(PARSE_REDEMPTION_CODE.SUCCESS, this._onCodeParsed);
     ipcRenderer.on(PARSE_REDEMPTION_CODE.ERROR, this._onParseError);
+    this.registerReactions([
+      this._resetRedemptionFormValuesOnAdaRedemptionPageLoad,
+    ]);
   }
 
   teardown() {
@@ -84,7 +89,7 @@ export default class AdaRedemptionStore extends Store {
     this._parseCodeFromCertificate();
   });
 
-  _setPassPhrase = action(({ passPhrase }) => {
+  _setPassPhrase = action(({ passPhrase } : { passPhrase: string }) => {
     this.passPhrase = passPhrase;
     this._parseCodeFromCertificate();
   });
@@ -144,7 +149,7 @@ export default class AdaRedemptionStore extends Store {
       this.error = new AdaRedemptionCertificateParseError();
     }
     this.redemptionCode = '';
-    this.passPhrase = '';
+    this.passPhrase = null;
   });
 
   _redeemAda = action(({ walletId } : { walletId: string }) => {
@@ -167,7 +172,6 @@ export default class AdaRedemptionStore extends Store {
     shieldedRedemptionKey: string
   }) => {
     this.walletId = walletId;
-
     this.redeemPaperVendedAdaRequest.execute({
       shieldedRedemptionKey,
       mnemonics: this.passPhrase,
@@ -191,18 +195,24 @@ export default class AdaRedemptionStore extends Store {
     this.amountRedeemed = amount;
     this.showAdaRedemptionSuccessMessage = true;
     this.redemptionCode = '';
-    this.passPhrase = '';
+    this.passPhrase = null;
   });
 
   _onCloseAdaRedemptionSuccessOverlay = action(() => {
     this.showAdaRedemptionSuccessMessage = false;
   });
 
+  _resetRedemptionFormValuesOnAdaRedemptionPageLoad = () => {
+    const currentRoute = this.stores.app.currentRoute;
+    const match = matchRoute(ROUTES.ADA_REDEMPTION, currentRoute);
+    if (match) this._reset();
+  }
+
   _onRemoveCertificate = action(() => {
     this.error = null;
     this.certificate = null;
     this.redemptionCode = '';
-    this.passPhrase = '';
+    this.passPhrase = null;
     this.email = null;
     this.adaPasscode = null;
     this.adaAmount = null;
@@ -212,11 +222,11 @@ export default class AdaRedemptionStore extends Store {
     this.error = null;
     this.certificate = null;
     this.isCertificateEncrypted = false;
-    this.redemptionCode = '';
-    this.passPhrase = '';
     this.walletId = null;
     this.redemptionType = 'regular';
+    this.redemptionCode = '';
     this.shieldedRedemptionKey = null;
+    this.passPhrase = null;
     this.email = null;
     this.adaPasscode = null;
     this.adaAmount = null;
