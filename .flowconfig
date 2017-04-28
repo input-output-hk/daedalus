@@ -10,6 +10,7 @@
 
 [libs]
 flow/declarations/
+node_modules/mobx/lib/mobx.js.flow
 
 [options]
 esproposal.class_static_fields=enable
