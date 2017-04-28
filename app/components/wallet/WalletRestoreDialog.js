@@ -133,6 +133,7 @@ export default class WalletRestoreDialog extends Component {
         className={styles.component}
         title={intl.formatMessage(messages.title)}
         actions={this.actions}
+        onOverlayClick={this.props.onCancel}
         active
       >
         <Input className="walletName" {...form.$('walletName').bind()} />

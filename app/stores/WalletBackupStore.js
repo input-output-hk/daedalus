@@ -2,6 +2,7 @@
 import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
 import environment from '../environment';
+import WalletBackupDialogWrapper from '../components/wallet/WalletBackupDialogWrapper';
 
 export type walletBackupSteps = 'privacyWarning' | 'recoveryPhraseDisplay' | 'recoveryPhraseEntry' | null;
 
@@ -20,7 +21,7 @@ export default class WalletBackupStore extends Store {
   @observable isTermRecoveryAccepted = false;
   @observable countdownRemaining = 0;
 
-  countdownTimer: ?number = null;
+  countdownTimerInterval: ?number = null;
 
   setup() {
     const a = this.actions.walletBackup;
@@ -39,7 +40,6 @@ export default class WalletBackupStore extends Store {
 
   @action _initiateWalletBackup = (params: { recoveryPhrase: Array<string> }) => {
     this.recoveryPhrase = params.recoveryPhrase;
-    this.actions.wallets.toggleCreateWalletDialog.trigger();
     this.inProgress = true;
     this.currentStep = 'privacyWarning';
     this.recoveryPhraseWords = this.recoveryPhrase.map(word => ({ word }));
@@ -53,14 +53,17 @@ export default class WalletBackupStore extends Store {
     this.isTermDeviceAccepted = false;
     this.isTermRecoveryAccepted = false;
     this.countdownRemaining = environment.isTest() ? 0 : 10;
-    this.countdownTimer = null;
-    this.countdownTimer = setInterval(() => {
+    if (this.countdownTimerInterval) clearInterval(this.countdownTimerInterval);
+    this.countdownTimerInterval = setInterval(() => {
       if (this.countdownRemaining > 0) {
         action(() => this.countdownRemaining--)();
-      } else if (this.countdownTimer != null) {
-        clearInterval(this.countdownTimer);
+      } else if (this.countdownTimerInterval != null) {
+        clearInterval(this.countdownTimerInterval);
       }
     }, 1000);
+    this.actions.dialogs.open.trigger({
+      dialog: WalletBackupDialogWrapper,
+    });
   };
 
   @action _acceptPrivacyNoticeForWalletBackup = () => {

@@ -8,6 +8,7 @@ import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import walletsIcon from '../../assets/images/sidebar/wallet-ic.svg';
 import adaRedemptionIcon from '../../assets/images/sidebar/ada.svg';
 import settingsIcon from '../../assets/images/sidebar/settings-ic.svg';
+import WalletAddDialog from '../../components/wallet/WalletAddDialog';
 import type { SidebarWalletType } from '../../stores/SidebarStore';
 
 @observer
@@ -19,7 +20,6 @@ export default class Sidebar extends Component {
         items: Array<SidebarWalletType>,
         activeWalletId: ?string,
         actions: {
-          onAddWallet: Function,
           onWalletItemClick: Function,
         }
       }
@@ -32,6 +32,7 @@ export default class Sidebar extends Component {
     activeSidebarCategory: string,
     onCategoryClicked: Function,
     isShowingSubMenus: boolean,
+    openDialogAction: Function,
   };
 
   static defaultProps = {
@@ -41,16 +42,18 @@ export default class Sidebar extends Component {
   render() {
     const {
       menus, categories, activeSidebarCategory,
-      isShowingSubMenus, onCategoryClicked
+      isShowingSubMenus, onCategoryClicked,
+      openDialogAction,
     } = this.props;
-
     let subMenu = null;
 
     if (menus && activeSidebarCategory === categories.WALLETS) {
       subMenu = (
         <SidebarWalletsMenu
           wallets={menus.wallets.items}
-          onAddWallet={menus.wallets.actions.onAddWallet}
+          onAddWallet={() => openDialogAction({
+            dialog: WalletAddDialog,
+          })}
           onWalletItemClick={menus.wallets.actions.onWalletItemClick}
           isActiveWallet={id => id === menus.wallets.activeWalletId}
           visible={isShowingSubMenus}
@@ -84,7 +87,6 @@ export default class Sidebar extends Component {
             active={activeSidebarCategory === categories.SETTINGS}
             onClick={() => onCategoryClicked(categories.SETTINGS)}
           />
-
         </div>
         {subMenu}
       </div>

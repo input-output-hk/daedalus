@@ -9,6 +9,7 @@ import Request from './lib/LocalizedRequest';
 import environment from '../environment';
 import config from '../config';
 import { ROUTES } from '../Routes';
+import WalletAddDialog from '../components/wallet/WalletAddDialog';
 import type {
   GetWalletsResponse,
   ImportKeyResponse,
@@ -37,10 +38,6 @@ export default class WalletsStore extends Store {
   /* eslint-enable max-len */
 
   // DIALOGUES
-  @observable isAddWalletDialogOpen = false;
-  @observable isCreateWalletDialogOpen = false;
-  @observable isWalletRestoreDialogOpen = false;
-  @observable isWalletKeyImportDialogOpen = false;
   @observable isWalletAddressCopyNotificationVisible = false;
 
   _hideWalletAddressCopyNotificationTimeout = false;
@@ -56,12 +53,10 @@ export default class WalletsStore extends Store {
     wallets.createWallet.listen(this._create);
     wallets.deleteWallet.listen(this._delete);
     wallets.sendMoney.listen(this._sendMoney);
-    wallets.toggleAddWallet.listen(this._toggleAddWallet);
-    wallets.toggleCreateWalletDialog.listen(this._toggleCreateWalletDialog);
-    wallets.toggleWalletRestore.listen(this._toggleWalletRestore);
     wallets.restoreWallet.listen(this._restoreWallet);
+    wallets.resetRestoreWallet.listen(this._resetRestoreWallet);
     wallets.importWalletFromKey.listen(this._importWalletFromKey);
-    wallets.toggleWalletKeyImportDialog.listen(this._toggleWalletKeyImportDialog);
+    wallets.resetImportWalletFromKey.listen(this._resetImportWalletFromKey);
     wallets.setActiveWallet.listen(this._setActiveWallet);
     wallets.showWalletAddressCopyNotification.listen(this._onShowWalletAddressCopyNotification);
     router.goToRoute.listen(this._onRouteChange);
@@ -114,14 +109,11 @@ export default class WalletsStore extends Store {
   };
 
   _finishWalletCreation = async () => {
-    runInAction(() => { this.isAddWalletDialogOpen = false; });
     this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
     const wallet = await this.createWalletRequest.execute(this._newWalletDetails).promise;
     if (wallet) {
       await this.walletsRequest.patch(result => { result.push(wallet); });
       this.goToWalletRoute(wallet.id);
-    } else {
-      runInAction(() => { this.isAddWalletDialogOpen = true; });
     }
   };
 
@@ -195,48 +187,6 @@ export default class WalletsStore extends Store {
     }
   };
 
-  @action _toggleAddWallet = () => {
-    if (this.hasAnyWallets) this.isAddWalletDialogOpen = !this.isAddWalletDialogOpen;
-  };
-
-  @action _toggleCreateWalletDialog = () => {
-    if (!this.isCreateWalletDialogOpen) {
-      this.isAddWalletDialogOpen = false;
-      this.isCreateWalletDialogOpen = true;
-    } else {
-      this.isCreateWalletDialogOpen = false;
-      if (!this.hasAnyWallets) {
-        this.isAddWalletDialogOpen = true;
-      }
-    }
-  };
-
-  @action _toggleWalletKeyImportDialog = () => {
-    if (!this.isWalletKeyImportDialogOpen) {
-      this.isAddWalletDialogOpen = false;
-      this.isWalletKeyImportDialogOpen = true;
-    } else {
-      this.isWalletKeyImportDialogOpen = false;
-      if (!this.hasAnyWallets) {
-        this.isAddWalletDialogOpen = true;
-      }
-      this.importFromKeyRequest.reset();
-    }
-  };
-
-  @action _toggleWalletRestore = () => {
-    if (!this.isWalletRestoreDialogOpen) {
-      this.isAddWalletDialogOpen = false;
-      this.isWalletRestoreDialogOpen = true;
-    } else {
-      this.isWalletRestoreDialogOpen = false;
-      if (!this.hasAnyWallets) {
-        this.isAddWalletDialogOpen = true;
-      }
-      this.restoreRequest.reset();
-    }
-  };
-
   @action _restoreWallet = async (params: {
     recoveryPhrase: string,
     walletName: string,
@@ -244,9 +194,12 @@ export default class WalletsStore extends Store {
     const restoredWallet = await this.restoreRequest.execute(params).promise;
     if (!restoredWallet) throw new Error('Restored wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(restoredWallet);
-    this._toggleWalletRestore();
     this.goToWalletRoute(restoredWallet.id);
     this.refreshWalletsData();
+  };
+
+  @action _resetRestoreWallet = () => {
+    this.restoreRequest.reset();
   };
 
   @action _importWalletFromKey = async (params: {
@@ -255,9 +208,12 @@ export default class WalletsStore extends Store {
     const importedWallet = await this.importFromKeyRequest.execute(params).promise;
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(importedWallet);
-    this._toggleWalletKeyImportDialog();
     this.goToWalletRoute(importedWallet.id);
     this.refreshWalletsData();
+  };
+
+  @action _resetImportWalletFromKey = () => {
+    this.importFromKeyRequest.reset();
   };
 
   @action _setActiveWallet = ({ walletId }: { walletId: string }) => {
@@ -270,18 +226,17 @@ export default class WalletsStore extends Store {
     this.active = null;
   };
 
-  @action _setIsWalletDialogOpen = (isOpen: boolean) => {
-    this.isAddWalletDialogOpen = isOpen;
-  };
-
   goToWalletRoute(walletId: string) {
     const route = this.getWalletRoute(walletId);
     this.actions.router.goToRoute.trigger({ route });
   }
 
   _openAddWalletDialogWhenThereAreNoWallets = () => {
-    const isOpenWhenThereAreNoWallets = !this.hasAnyWallets;
-    this._setIsWalletDialogOpen(isOpenWhenThereAreNoWallets);
+    if (this.hasLoadedWallets && !this.hasAnyWallets) {
+      this.actions.dialogs.open.trigger({
+        dialog: WalletAddDialog,
+      });
+    }
   };
 
   _updateActiveWalletOnRouteChanges = () => {

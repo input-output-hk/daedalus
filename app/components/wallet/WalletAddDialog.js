@@ -75,7 +75,6 @@ export default class WalletAddDialog extends Component {
     canClose: boolean,
   };
 
-
   render() {
     const { intl } = this.context;
     const { onCreate, onRestore, onCancel, canClose, onImportKey } = this.props;
@@ -116,10 +115,10 @@ export default class WalletAddDialog extends Component {
             />
             <BigButtonForDialogs
               className="importWalletButton"
+              onClick={onImportKey}
               icon={importIcon}
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}
-              onClick={onImportKey}
             />
           </div>
         </div>
