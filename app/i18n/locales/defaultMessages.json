@@ -2359,97 +2359,13 @@
         "description": "Error message when required fields are left empty.",
         "end": {
           "column": 3,
-          "line": 8
+          "line": 9
         },
-        "file": "app/i18n/global-messages.js",
+        "file": "app/i18n/errors.js",
         "id": "global.errors.fieldIsRequired",
         "start": {
           "column": 19,
-          "line": 4
-        }
-      },
-      {
-        "defaultMessage": "!!!The wallet name must have at least 3 letters.",
-        "description": "Error message shown when invalid wallet name was entered in create wallet dialog.",
-        "end": {
-          "column": 3,
-          "line": 13
-        },
-        "file": "app/i18n/global-messages.js",
-        "id": "global.errors.invalidWalletName",
-        "start": {
-          "column": 21,
-          "line": 9
-        }
-      },
-      {
-        "defaultMessage": "!!!Minimum 6 letters.",
-        "description": "Error message shown when invalid wallet password was entered in create wallet dialog.",
-        "end": {
-          "column": 3,
-          "line": 18
-        },
-        "file": "app/i18n/global-messages.js",
-        "id": "global.errors.invalidWalletPassword",
-        "start": {
-          "column": 25,
-          "line": 14
-        }
-      },
-      {
-        "defaultMessage": "!!!Doesn't match.",
-        "description": "Error message shown when wallet password and repeat passwords don't match in create wallet dialog.",
-        "end": {
-          "column": 3,
-          "line": 23
-        },
-        "file": "app/i18n/global-messages.js",
-        "id": "global.errors.invalidRepeatPassword",
-        "start": {
-          "column": 25,
-          "line": 19
-        }
-      },
-      {
-        "defaultMessage": "!!!Cancel",
-        "description": "The word \"cancel\" reused at several places (like cancel buttons)",
-        "end": {
-          "column": 3,
-          "line": 28
-        },
-        "file": "app/i18n/global-messages.js",
-        "id": "global.labels.cancel",
-        "start": {
-          "column": 10,
-          "line": 24
-        }
-      },
-      {
-        "defaultMessage": "!!!Change",
-        "description": "The word \"change\" reused at several places (like change buttons)",
-        "end": {
-          "column": 3,
-          "line": 33
-        },
-        "file": "app/i18n/global-messages.js",
-        "id": "global.labels.change",
-        "start": {
-          "column": 10,
-          "line": 29
-        }
-      },
-      {
-        "defaultMessage": "!!!Save",
-        "description": "The word \"save\" reused at several places (like save buttons)",
-        "end": {
-          "column": 3,
-          "line": 38
-        },
-        "file": "app/i18n/global-messages.js",
-        "id": "global.labels.save",
-        "start": {
-          "column": 8,
-          "line": 34
+          "line": 5
         }
       },
       {
@@ -2457,27 +2373,13 @@
         "description": "Error message shown when invalid bip39 mnemonic was entered.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 14
         },
-        "file": "app/i18n/global-messages.js",
+        "file": "app/i18n/errors.js",
         "id": "global.errors.invalidMnemonic",
         "start": {
           "column": 19,
-          "line": 39
-        }
-      },
-      {
-        "defaultMessage": "!!!The ADA redemption code could not be parsed from the given document.",
-        "description": "Error message shown when invalid Ada redemption certificate was uploaded.",
-        "end": {
-          "column": 3,
-          "line": 48
-        },
-        "file": "app/i18n/global-messages.js",
-        "id": "global.errors.AdaRedemptionCertificateParseError",
-        "start": {
-          "column": 35,
-          "line": 44
+          "line": 10
         }
       },
       {
@@ -2485,13 +2387,130 @@
         "description": "Error message shown when invalid email was entered.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 19
         },
-        "file": "app/i18n/global-messages.js",
+        "file": "app/i18n/errors.js",
         "id": "global.errors.invalidEmail",
         "start": {
           "column": 16,
-          "line": 49
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!The ADA redemption code could not be parsed from the given document.",
+        "description": "Error message shown when invalid Ada redemption certificate was uploaded.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "app/i18n/errors.js",
+        "id": "global.errors.AdaRedemptionCertificateParseError",
+        "start": {
+          "column": 35,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!The ADA redemption code could not be parsed, please check your passphrase.",
+        "description": "Error message shown when invalid Ada redemption certificate was uploaded.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "app/i18n/errors.js",
+        "id": "global.errors.AdaRedemptionEncryptedCertificateParseError",
+        "start": {
+          "column": 44,
+          "line": 25
+        }
+      }
+    ],
+    "path": "app/i18n/errors.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!The wallet name must have at least 3 letters.",
+        "description": "Error message shown when invalid wallet name was entered in create wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 8
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.errors.invalidWalletName",
+        "start": {
+          "column": 21,
+          "line": 4
+        }
+      },
+      {
+        "defaultMessage": "!!!Minimum 6 letters.",
+        "description": "Error message shown when invalid wallet password was entered in create wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.errors.invalidWalletPassword",
+        "start": {
+          "column": 25,
+          "line": 9
+        }
+      },
+      {
+        "defaultMessage": "!!!Doesn't match.",
+        "description": "Error message shown when wallet password and repeat passwords don't match in create wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.errors.invalidRepeatPassword",
+        "start": {
+          "column": 25,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Cancel",
+        "description": "The word \"cancel\" reused at several places (like cancel buttons)",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.labels.cancel",
+        "start": {
+          "column": 10,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!Change",
+        "description": "The word \"change\" reused at several places (like change buttons)",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.labels.change",
+        "start": {
+          "column": 10,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Save",
+        "description": "The word \"save\" reused at several places (like save buttons)",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.labels.save",
+        "start": {
+          "column": 8,
+          "line": 29
         }
       },
       {
@@ -2499,13 +2518,13 @@
         "description": "Language name for \"English\" language.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 38
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.english",
         "start": {
           "column": 19,
-          "line": 54
+          "line": 34
         }
       },
       {
@@ -2513,13 +2532,13 @@
         "description": "Language name for \"Japanese\" language.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 43
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.japanese",
         "start": {
           "column": 20,
-          "line": 59
+          "line": 39
         }
       },
       {
@@ -2527,13 +2546,13 @@
         "description": "Language name for \"Chinese\" language.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 48
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.chinese",
         "start": {
           "column": 19,
-          "line": 64
+          "line": 44
         }
       },
       {
@@ -2541,13 +2560,13 @@
         "description": "Language name for \"Korean\" language.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 53
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.korean",
         "start": {
           "column": 18,
-          "line": 69
+          "line": 49
         }
       },
       {
@@ -2555,13 +2574,13 @@
         "description": "Language name for \"German\" language.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 58
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.german",
         "start": {
           "column": 18,
-          "line": 74
+          "line": 54
         }
       },
       {
@@ -2569,13 +2588,13 @@
         "description": "Language name for \"Croatian\" language.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 63
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.croatian",
         "start": {
           "column": 20,
-          "line": 79
+          "line": 59
         }
       },
       {
@@ -2583,13 +2602,13 @@
         "description": "Name for \"Normal\" transaction assurance security level.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 68
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.assuranceLevel.normal",
         "start": {
           "column": 24,
-          "line": 84
+          "line": 64
         }
       },
       {
@@ -2597,13 +2616,13 @@
         "description": "Name for \"Strict\" transaction assurance security level.",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 73
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.assuranceLevel.strict",
         "start": {
           "column": 24,
-          "line": 89
+          "line": 69
         }
       },
       {
@@ -2611,13 +2630,13 @@
         "description": "Name for \"Ada\" unit.",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 78
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.unit.ada",
         "start": {
           "column": 11,
-          "line": 94
+          "line": 74
         }
       },
       {
@@ -2625,13 +2644,13 @@
         "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 83
         },
         "file": "app/i18n/global-messages.js",
         "id": "wallet.transaction.assuranceLevel.low",
         "start": {
           "column": 32,
-          "line": 99
+          "line": 79
         }
       },
       {
@@ -2639,13 +2658,13 @@
         "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 88
         },
         "file": "app/i18n/global-messages.js",
         "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
           "column": 35,
-          "line": 104
+          "line": 84
         }
       },
       {
@@ -2653,13 +2672,13 @@
         "description": "Transaction assurance level \"high\".",
         "end": {
           "column": 3,
-          "line": 113
+          "line": 93
         },
         "file": "app/i18n/global-messages.js",
         "id": "wallet.transaction.assuranceLevel.high",
         "start": {
           "column": 33,
-          "line": 109
+          "line": 89
         }
       }
     ],

@@ -13,6 +13,7 @@
   "global.assuranceLevel.normal": "!!!Normal",
   "global.assuranceLevel.strict": "!!!Strict",
   "global.errors.AdaRedemptionCertificateParseError": "!!!The ADA redemption code could not be parsed from the given document.",
+  "global.errors.AdaRedemptionEncryptedCertificateParseError": "!!!The ADA redemption code could not be parsed, please check your passphrase.",
   "global.errors.fieldIsRequired": "!!!This field is required.",
   "global.errors.invalidEmail": "!!!Invalid email entered, please check.",
   "global.errors.invalidMnemonic": "!!!Invalid phrase entered, please check.",

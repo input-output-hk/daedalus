@@ -8,7 +8,11 @@ import Request from './lib/LocalizedRequest';
 import { matchRoute } from '../lib/routing-helpers';
 import WalletTransaction from '../domain/WalletTransaction';
 import { PARSE_REDEMPTION_CODE } from '../../electron/ipc-api/parse-redemption-code-from-pdf';
-import { InvalidMnemonicError, AdaRedemptionCertificateParseError } from '../i18n/errors';
+import {
+  InvalidMnemonicError,
+  AdaRedemptionCertificateParseError,
+  AdaRedemptionEncryptedCertificateParseError
+} from '../i18n/errors';
 import { DECIMAL_PLACES_IN_ADA } from '../config/numbersConfig';
 import LocalizableError from '../i18n/LocalizableError';
 import Wallet from '../domain/Wallet';
@@ -91,7 +95,7 @@ export default class AdaRedemptionStore extends Store {
 
   _setPassPhrase = action(({ passPhrase } : { passPhrase: string }) => {
     this.passPhrase = passPhrase;
-    this._parseCodeFromCertificate();
+    if (this.isValidRedemptionMnemonic(passPhrase)) this._parseCodeFromCertificate();
   });
 
   _setRedemptionCode = action(({ redemptionCode } : { redemptionCode: string }) => {
@@ -146,7 +150,11 @@ export default class AdaRedemptionStore extends Store {
     if (errorMessage.includes('Invalid mnemonic')) {
       this.error = new InvalidMnemonicError();
     } else if (this.redemptionType === 'regular') {
-      this.error = new AdaRedemptionCertificateParseError();
+      if (this.isCertificateEncrypted) {
+        this.error = new AdaRedemptionEncryptedCertificateParseError();
+      } else {
+        this.error = new AdaRedemptionCertificateParseError();
+      }
     }
     this.redemptionCode = '';
     this.passPhrase = null;

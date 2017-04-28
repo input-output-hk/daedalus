@@ -18,6 +18,15 @@ export class AdaRedemptionCertificateParseError extends LocalizableError {
   }
 }
 
+export class AdaRedemptionEncryptedCertificateParseError extends LocalizableError {
+  constructor() {
+    super({
+      id: 'global.errors.AdaRedemptionEncryptedCertificateParseError',
+      defaultMessage: '!!!The ADA redemption code could not be parsed, please check your passphrase.',
+    });
+  }
+}
+
 export class InvalidEmailError extends LocalizableError {
   constructor() {
     super({
