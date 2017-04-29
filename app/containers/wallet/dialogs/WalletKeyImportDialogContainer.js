@@ -13,8 +13,11 @@ export default class WalletKeyImportDialogContainer extends Component {
 
   onSubmit = (values: { filePath: string }) => {
     this.props.actions.wallets.importWalletFromKey.trigger(values);
-    this.props.actions.dialogs.closeActiveDialog.trigger();
-    this.props.actions.wallets.resetImportWalletFromKey.trigger();
+  };
+
+  onCancel = () => {
+    this.props.onClose();
+    this.props.stores.wallets.importFromKeyRequest.reset();
   };
 
   render() {
@@ -25,8 +28,8 @@ export default class WalletKeyImportDialogContainer extends Component {
       <WalletKeyImportDialog
         isSubmitting={importFromKeyRequest.isExecuting}
         onSubmit={this.onSubmit}
+        onClose={this.onCancel}
         error={importFromKeyRequest.error}
-        onClose={this.props.onClose}
       />
     );
   }

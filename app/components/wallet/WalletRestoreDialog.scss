@@ -1,6 +1,13 @@
+@import '../../themes/mixins/loading-spinner';
 @import '../../themes/mixins/error-message';
 
 .error {
   @include error-message;
   text-align: center;
+}
+
+.isSubmitting {
+  button {
+    @include loading-spinner("../../assets/images/spinner-light.svg");
+  }
 }

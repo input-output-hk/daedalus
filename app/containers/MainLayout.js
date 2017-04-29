@@ -7,7 +7,7 @@ import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import NodeUpdatePage from './notifications/NodeUpdatePage';
-import AddWalletDialogContainer from './wallet/dialogs/AddWalletDialogContainer';
+import WalletAddPage from './wallet/WalletAddPage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
@@ -76,7 +76,7 @@ export default class MainLayout extends Component {
     );
 
     const addWalletDialog = (
-      <AddWalletDialogContainer />
+      <WalletAddPage />
     );
 
     return (

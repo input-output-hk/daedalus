@@ -132,6 +132,7 @@ export default class WalletCreateDialog extends Component {
   render() {
     const { form } = this;
     const { intl } = this.context;
+    const { onCancel } = this.props;
     const dialogClasses = classnames([
       styles.component,
       'WalletCreateDialog',
@@ -142,7 +143,7 @@ export default class WalletCreateDialog extends Component {
         className={dialogClasses}
         title={intl.formatMessage(messages.dialogTitle)}
         actions={this.actions}
-        onOverlayClick={this.props.onCancel}
+        onOverlayClick={onCancel}
         active
       >
 
@@ -159,7 +160,7 @@ export default class WalletCreateDialog extends Component {
           source={currencies}
         />
 
-        <DialogCloseButton onClose={this.props.onCancel} />
+        <DialogCloseButton onClose={onCancel} />
 
       </Dialog>
     );

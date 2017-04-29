@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletBackupDialogWrapper from '../../../components/wallet/WalletBackupDialogWrapper';
+import WalletBackupDialog from '../../../components/wallet/WalletBackupDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
@@ -17,7 +17,7 @@ export default class WalletBackupDialogContainer extends Component {
   }
 
   render() {
-    const { actions } = this.props;
+    const { actions, stores } = this.props;
     const {
       recoveryPhraseWords,
       enteredPhrase,
@@ -28,7 +28,7 @@ export default class WalletBackupDialogContainer extends Component {
       isTermRecoveryAccepted,
       isPrivacyNoticeAccepted,
       currentStep
-    } = this.props.stores.walletBackup;
+    } = stores.walletBackup;
     const {
       startWalletBackup,
       addWordToWalletBackupVerification,
@@ -41,7 +41,7 @@ export default class WalletBackupDialogContainer extends Component {
       continueToRecoveryPhraseForWalletBackup
     } = actions.walletBackup;
     return (
-      <WalletBackupDialogWrapper
+      <WalletBackupDialog
         // Global props for all dialogs
         currentStep={currentStep}
         onCancelBackup={this.onCancelBackup}

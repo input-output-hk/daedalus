@@ -6,7 +6,7 @@ import WalletRecoveryPhraseDisplayDialog from '../../components/wallet/backup-re
 import WalletRecoveryPhraseEntryDialog from '../../components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog';
 
 @observer
-export default class WalletBackupDialogWrapper extends Component {
+export default class WalletBackupDialog extends Component {
 
   props: {
     currentStep: ?string,

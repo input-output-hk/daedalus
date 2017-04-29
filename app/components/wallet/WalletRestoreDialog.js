@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
 import Input from 'react-toolbox/lib/input/Input';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
@@ -61,12 +62,9 @@ export default class WalletRestoreDialog extends Component {
   props: {
     onSubmit: Function,
     onCancel: Function,
+    isSubmitting: boolean,
     mnemonicValidator: Function,
     error?: ?LocalizableError,
-  };
-
-  state = {
-    isSubmitting: false
   };
 
   form = new ReactToolboxMobxForm({
@@ -115,25 +113,28 @@ export default class WalletRestoreDialog extends Component {
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        this.setState({ isSubmitting: true });
         this.props.onSubmit(form.values());
       },
-      onError: () => {
-        this.setState({ isSubmitting: false });
-      }
+      onError: () => {}
     });
   };
 
   render() {
     const { intl } = this.context;
     const { form } = this;
-    const { error, onCancel } = this.props;
+    const { isSubmitting, error, onCancel } = this.props;
+    const dialogClasses = classnames([
+      styles.component,
+      'WalletRestoreDialog',
+      isSubmitting ? styles.isSubmitting : null
+    ]);
+
     return (
       <Dialog
-        className={styles.component}
+        className={dialogClasses}
         title={intl.formatMessage(messages.title)}
         actions={this.actions}
-        onOverlayClick={this.props.onCancel}
+        onOverlayClick={onCancel}
         active
       >
         <Input className="walletName" {...form.$('walletName').bind()} />

@@ -36,8 +36,6 @@ export default class WalletsStore extends Store {
   @observable getWalletRecoveryPhraseRequest: Request<GetWalletRecoveryPhraseResponse> = new Request(this.api.getWalletRecoveryPhrase);
   @observable restoreRequest: Request<RestoreWalletResponse> = new Request(this.api.restoreWallet);
   /* eslint-enable max-len */
-
-  // DIALOGUES
   @observable isWalletAddressCopyNotificationVisible = false;
 
   _hideWalletAddressCopyNotificationTimeout = false;
@@ -54,9 +52,7 @@ export default class WalletsStore extends Store {
     wallets.deleteWallet.listen(this._delete);
     wallets.sendMoney.listen(this._sendMoney);
     wallets.restoreWallet.listen(this._restoreWallet);
-    wallets.resetRestoreWallet.listen(this._resetRestoreWallet);
     wallets.importWalletFromKey.listen(this._importWalletFromKey);
-    wallets.resetImportWalletFromKey.listen(this._resetImportWalletFromKey);
     wallets.setActiveWallet.listen(this._setActiveWallet);
     wallets.showWalletAddressCopyNotification.listen(this._onShowWalletAddressCopyNotification);
     router.goToRoute.listen(this._onRouteChange);
@@ -114,6 +110,10 @@ export default class WalletsStore extends Store {
     if (wallet) {
       await this.walletsRequest.patch(result => { result.push(wallet); });
       this.goToWalletRoute(wallet.id);
+    } else {
+      this.actions.dialogs.open.trigger({
+        dialog: WalletAddDialog,
+      });
     }
   };
 
@@ -194,12 +194,10 @@ export default class WalletsStore extends Store {
     const restoredWallet = await this.restoreRequest.execute(params).promise;
     if (!restoredWallet) throw new Error('Restored wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(restoredWallet);
+    this.actions.dialogs.closeActiveDialog.trigger();
+    this.restoreRequest.reset();
     this.goToWalletRoute(restoredWallet.id);
     this.refreshWalletsData();
-  };
-
-  @action _resetRestoreWallet = () => {
-    this.restoreRequest.reset();
   };
 
   @action _importWalletFromKey = async (params: {
@@ -208,12 +206,10 @@ export default class WalletsStore extends Store {
     const importedWallet = await this.importFromKeyRequest.execute(params).promise;
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(importedWallet);
+    this.actions.dialogs.closeActiveDialog.trigger();
+    this.importFromKeyRequest.reset();
     this.goToWalletRoute(importedWallet.id);
     this.refreshWalletsData();
-  };
-
-  @action _resetImportWalletFromKey = () => {
-    this.importFromKeyRequest.reset();
   };
 
   @action _setActiveWallet = ({ walletId }: { walletId: string }) => {
