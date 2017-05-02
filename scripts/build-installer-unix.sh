@@ -23,6 +23,7 @@ usage() {
     --nix-path NIX-PATH       NIX_PATH value
 
     --upload-s3               Upload the installer to S3
+    --test-install            Test the installer for installability
 
     --verbose                 Verbose operation
     --quiet                   Disable verbose operation
@@ -55,6 +56,7 @@ verbose=true
 build_id=0
 travis_pr=true
 upload_s3=
+test_install=
 
 daedalus_version="$1"; argnz "product version"; shift
 cardano_branch="$1";   argnz "Cardano SL branch to build Daedalus with"; shift
@@ -75,6 +77,7 @@ do case "$1" in
            --nix-path )       arg2nz "NIX_PATH value";
                                                      export NIX_PATH="$2"; shift;;
            --upload-s3 )                                   upload_s3=t;;
+           --test-install )                             test_install=t;;
 
            ###
            --verbose )        echo "$0: --verbose passed, enabling verbose operation"
@@ -144,6 +147,11 @@ cd installers
             echo "$0: --upload-s3 passed, will upload the installer to S3";
             retry 5 nix-shell -p awscli --run "aws s3 cp 'dist/Daedalus-installer-${DAEDALUS_VERSION}.pkg' s3://daedalus-internal/ --acl public-read"
     fi
+    if test -n "${test_install}"
+    then echo "$0:  --test-install passed, will test the installer for installability";
+         case ${os} in
+                 osx )   sudo installer -dumplog -verbose -pkg "dist/Daedalus-installer-${DAEDALUS_VERSION}.pkg" -target /;;
+                 linux ) echo "WARNING: installation testing not implemented on Linux" >&2;; esac; fi
 cd ..
 
 ls -la installers/dist
