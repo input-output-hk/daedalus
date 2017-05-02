@@ -20,7 +20,7 @@ env:
 install:
 - true
 script:
-- scripts/build-installer-unix.sh "$VERSION" "$CARDANO_SL_BRANCH" "$TRAVIS_OS_NAME"
+- scripts/build-installer-unix.sh "$VERSION" "$CARDANO_SL_BRANCH"
      --build-id       "$TRAVIS_BUILD_NUMBER"
      --travis-pr      "$TRAVIS_PULL_REQUEST"
      --nix-path       "$NIX_PATH"

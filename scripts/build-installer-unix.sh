@@ -11,11 +11,9 @@ usage() {
     test -z "$1" || { echo "ERROR: $*" >&2; echo >&2; }
     cat >&2 <<EOF
   Usage:
-    $0 DAEDALUS-VERSION CARDANO-BRANCH OS OPTIONS*
+    $0 DAEDALUS-VERSION CARDANO-BRANCH OPTIONS*
 
   Build a Daedalus installer.
-
-  OS is either 'linux' or 'osx'.
 
   Options:
     --build-id BUILD-NO       Identifier of the build; defaults to '0'
@@ -58,12 +56,11 @@ upload_s3=
 
 daedalus_version="$1"; argnz "product version"; shift
 cardano_branch="$1";   argnz "Cardano SL branch to build Daedalus with"; shift
-os="$1";               argnz "OS to build for"; shift
 
-case "${os}" in
-        linux ) key=linux.p12;;
-        osx )   key=macos.p12;;
-        * )     usage "Unsupported OS provided: ${os}";;
+case "$(uname -s)" in
+        Darwin ) os=osx;   key=macos.p12;;
+        Linux )  os=linux; key=linux.p12;;
+        * )     usage "Unsupported OS: $(uname -s)";;
 esac
 
 set -u ## Undefined variable firewall enabled
