@@ -12,6 +12,7 @@ Changelog
 - "Terms of use" screen on first application start
 - Spending password on "Send money" form
 - Optionally setting a password during wallet restore.
+- Ada redemption disclaimer
 
 ### Fixes
 

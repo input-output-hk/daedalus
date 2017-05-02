@@ -16,6 +16,7 @@ export default class AdaRedemptionActions {
   redeemAda: Action<{ walletId: string }> = new Action();
   redeemPaperVendedAda: Action<{ walletId: string, shieldedRedemptionKey: string }> = new Action();
   adaSuccessfullyRedeemed: Action<any> = new Action();
+  acceptRedemptionDisclaimer: Action<any> = new Action();
   // TODO: refactor dialog toggles to use dialog-actions instead
   closeAdaRedemptionSuccessOverlay: Action<any> = new Action();
 }

@@ -10,6 +10,7 @@ import Dropup from '../../widgets/forms/Dropup';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import AdaCertificateUploadWidget from '../../widgets/forms/AdaCertificateUploadWidget';
 import AdaRedemptionChoices from './AdaRedemptionChoices';
+import AdaRedemptionDisclaimer from './AdaRedemptionDisclaimer';
 import BorderedBox from '../../widgets/BorderedBox';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { InvalidMnemonicError, InvalidEmailError, FieldRequiredError } from '../../../i18n/errors';
@@ -137,16 +138,6 @@ where Ada should be redeemed and enter 9 word mnemonic passphrase.</p>`,
     defaultMessage: '!!!Enter your Ada passcode',
     description: 'Hint for the Ada amount input field.'
   },
-  disclaimerTitle: {
-    id: 'wallet.redeem.dialog.disclaimerTitle',
-    defaultMessage: '!!!Daedalus Redemption Disclaimer',
-    description: 'Testnet Ada redemption disclaimer title.'
-  },
-  disclaimer: {
-    id: 'wallet.redeem.dialog.disclaimer',
-    defaultMessage: '!!!Disclaimer',
-    description: 'Testnet Ada redemption disclaimer.'
-  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -156,6 +147,7 @@ export default class AdaRedemptionForm extends Component {
 
   props: {
     wallets: Array<{ value: string, label: string }>,
+    onAcceptRedemptionDisclaimer: Function,
     onChooseRedemptionType: Function,
     onCertificateSelected: Function,
     onRemoveCertificate: Function,
@@ -169,6 +161,7 @@ export default class AdaRedemptionForm extends Component {
     postVendRedemptionCodeValidator: Function,
     redemptionCodeValidator: Function,
     mnemonicValidator: Function,
+    isRedemptionDisclaimerAccepted: boolean,
     isSubmitting: boolean,
     isCertificateSelected: boolean,
     isCertificateEncrypted: boolean,
@@ -314,7 +307,7 @@ export default class AdaRedemptionForm extends Component {
       isSubmitting, onCertificateSelected, redemptionCode,
       onRedemptionCodeChanged, onRemoveCertificate, onChooseRedemptionType,
       isCertificateInvalid, redemptionType, showInputsForDecryptingForceVendedCertificate,
-      showPassPhraseWidget, error
+      showPassPhraseWidget, isRedemptionDisclaimerAccepted, onAcceptRedemptionDisclaimer, error
     } = this.props;
     const certificate = form.$('certificate');
     const passPhraseField = form.$('passPhrase');
@@ -360,9 +353,6 @@ export default class AdaRedemptionForm extends Component {
         <BorderedBox>
 
           <h1 className={styles.headline}>{intl.formatMessage(messages.headline)}</h1>
-
-          <h2 className={styles.disclaimer}>{intl.formatMessage(messages.disclaimerTitle)}</h2>
-          <div className={styles.disclaimer}>{intl.formatMessage(messages.disclaimer)}</div>
 
           <AdaRedemptionChoices
             activeChoice={redemptionType}
@@ -476,6 +466,12 @@ export default class AdaRedemptionForm extends Component {
           />
 
         </BorderedBox>
+
+        {!isRedemptionDisclaimerAccepted ? (
+          <AdaRedemptionDisclaimer
+            onSubmit={onAcceptRedemptionDisclaimer}
+          />
+        ) : null}
 
       </div>
     );
