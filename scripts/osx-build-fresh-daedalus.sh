@@ -55,6 +55,5 @@ pushd daedalus
     scripts/build-installer-unix.sh \
             "${GITHUB_USER}-${DAEDALUS_BRANCH}-$(git show-ref --hash HEAD)" \
             "${DEFAULT_DAEDALUS_BRANCH}" \
-            osx \
             "$@"
 popd
