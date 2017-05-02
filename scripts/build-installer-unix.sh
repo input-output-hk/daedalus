@@ -16,6 +16,7 @@ usage() {
   Build a Daedalus installer.
 
   Options:
+    --fast-impure             Fast, impure, incremental build
     --build-id BUILD-NO       Identifier of the build; defaults to '0'
 
     --travis-pr PR-ID         Travis pull request id we're building
@@ -49,6 +50,7 @@ retry() {
 ###
 ### Argument processing
 ###
+fast_impure=
 verbose=true
 build_id=0
 travis_pr=true
@@ -66,6 +68,7 @@ esac
 set -u ## Undefined variable firewall enabled
 while test $# -ge 1
 do case "$1" in
+           --fast-impure )                               fast_impure=true;;
            --build-id )       arg2nz "build identifier";    build_id="$2"; shift;;
            --travis-pr )      arg2nz "Travis pull request id";
                                                            travis_pr="$2"; shift;;
@@ -89,7 +92,10 @@ then set -x
 fi
 
 mkdir -p ~/.local/bin
+
 export PATH=$HOME/.local/bin:$PATH
+export DAEDALUS_VERSION=${daedalus_version}.${build_id}
+export SSL_CERT_FILE=$NIX_SSL_CERT_FILE
 
 if test "${os}" = "linux"
 then
@@ -100,30 +106,32 @@ else
         echo "INFO:  not attempting to establish sufficient free space for the build process:  not supported on OS X"
 fi
 
-retry 5 bash -c "curl -L https://www.stackage.org/stack/${os}-x86_64 | \
-      tar xz --strip-components=1 -C ~/.local/bin"
-retry 5 curl -o daedalus-bridge.tar.xz \
-      https://s3.eu-central-1.amazonaws.com/cardano-sl-travis/daedalus-bridge-${os}-${cardano_branch}.tar.xz
-
-mkdir -p node_modules/daedalus-client-api/
-du -sh  daedalus-bridge.tar.xz
-tar xJf daedalus-bridge.tar.xz --strip-components=1 -C node_modules/daedalus-client-api/
-rm      daedalus-bridge.tar.xz
+test -d node_modules/daedalus-client-api/ -a -n "${fast_impure}" || {
+        retry 5 curl -o daedalus-bridge.tar.xz \
+              https://s3.eu-central-1.amazonaws.com/cardano-sl-travis/daedalus-bridge-${os}-${cardano_branch}.tar.xz
+        mkdir -p node_modules/daedalus-client-api/
+        du -sh  daedalus-bridge.tar.xz
+        tar xJf daedalus-bridge.tar.xz --strip-components=1 -C node_modules/daedalus-client-api/
+        rm      daedalus-bridge.tar.xz
+        cd node_modules/daedalus-client-api
+              mv log-config-prod.yaml cardano-node cardano-launcher ../../installers
+        cd ../..
+        strip installers/cardano-node installers/cardano-launcher
+        rm -f node_modules/daedalus-client-api/cardano-*
+}
 echo "cardano-sl build id is $(cat node_modules/daedalus-client-api/build-id)"
 
-nix-shell --run "npm install"
+test $(ls node_modules/ | wc -l) -gt 100 -a -n "${fast_impure}" ||
+        nix-shell --run "npm install"
 
-cd node_modules/daedalus-client-api
-    mv log-config-prod.yaml cardano-node cardano-launcher ../../installers
-cd ../..
+test -d "release/darwin-x64/Daedalus-darwin-x64" -a -n "${fast_impure}" || {
+        nix-shell --run "npm run package -- --icon installers/icons/256x256"
+        echo "Size of Electron app is $(du -sh release)"
+}
 
-export DAEDALUS_VERSION=${daedalus_version}.${build_id}
-export SSL_CERT_FILE=$NIX_SSL_CERT_FILE
-
-strip installers/cardano-node installers/cardano-launcher
-rm node_modules/daedalus-client-api/cardano-*
-nix-shell --run "npm run package -- --icon installers/icons/256x256"
-echo "Size of Electron app is $(du -sh release)"
+test -n "$(which stack)"     -a -n "${fast_impure}" ||
+        retry 5 bash -c "curl -L https://www.stackage.org/stack/${os}-x86_64 | \
+                         tar xz --strip-components=1 -C ~/.local/bin"
 
 cd installers
     if test "${travis_pr}" = "false" -a "${os}" != "linux" # No Linux keys yet.
