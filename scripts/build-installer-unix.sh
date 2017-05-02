@@ -56,9 +56,9 @@ build_id=0
 travis_pr=true
 upload_s3=
 
-daedalus_version="$1"; arg2nz "product version"; shift
-cardano_branch="$1";   arg2nz "Cardano SL branch to build Daedalus with"; shift
-os="$1";               arg2nz "OS to build for"; shift
+daedalus_version="$1"; argnz "product version"; shift
+cardano_branch="$1";   argnz "Cardano SL branch to build Daedalus with"; shift
+os="$1";               argnz "OS to build for"; shift
 
 case "${os}" in
         linux ) key=linux.p12;;
