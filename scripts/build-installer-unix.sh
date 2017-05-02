@@ -100,15 +100,6 @@ export PATH=$HOME/.local/bin:$PATH
 export DAEDALUS_VERSION=${daedalus_version}.${build_id}
 export SSL_CERT_FILE=$NIX_SSL_CERT_FILE
 
-if test "${os}" = "linux"
-then
-        echo "INFO: running 'sudo mount -o remount,exec,size=4G,mode=755 /run/user'"
-        sudo mount -o remount,exec,size=4G,mode=755 /run/user ||
-                echo "WARNING:  Couldn't establish enough free space for the build process:  sudo failed" >&2
-else
-        echo "INFO:  not attempting to establish sufficient free space for the build process:  not supported on OS X"
-fi
-
 test -d node_modules/daedalus-client-api/ -a -n "${fast_impure}" || {
         retry 5 curl -o daedalus-bridge.tar.xz \
               https://s3.eu-central-1.amazonaws.com/cardano-sl-travis/daedalus-bridge-${os}-${cardano_branch}.tar.xz

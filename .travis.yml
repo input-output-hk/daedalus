@@ -20,6 +20,7 @@ env:
 install:
 - true
 script:
+- sudo mount -o remount,exec,size=4G,mode=755 /run/user || true    ## Travis-specific hack.
 - scripts/build-installer-unix.sh "$VERSION" "$CARDANO_SL_BRANCH"
      --build-id       "$TRAVIS_BUILD_NUMBER"
      --travis-pr      "$TRAVIS_PULL_REQUEST"
