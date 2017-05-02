@@ -1,21 +1,12 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { observer, inject } from 'mobx-react';
+import config from '../../config';
 import WalletReceive from '../../components/wallet/WalletReceive';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import NotificationMessage from '../../components/widgets/NotificationMessage';
-import successIcon from '../../assets/images/success-small.svg';
-import { ellipsis } from '../../lib/string-helpers';
+import NotificationsContainer from '../notifications/NotificationsContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
-
-const messages = defineMessages({
-  message: {
-    id: 'wallet.receive.page.addressCopyNotificationMessage',
-    defaultMessage: '!!!You have successfully copied wallet address',
-    description: 'Message for the wallet address copy success notification.',
-  },
-});
 
 @inject('stores', 'actions') @observer
 export default class WalletReceivePage extends Component {
@@ -25,18 +16,10 @@ export default class WalletReceivePage extends Component {
 
   render() {
     const actions = this.props.actions;
-    const { wallets } = this.props.stores;
+    const { wallets, uiNotifications } = this.props.stores;
     const wallet = wallets.active;
-
     // Guard against potential null values
     if (!wallet) throw new Error('Active wallet required for WalletReceivePage.');
-
-    const notificationMessage = (
-      <FormattedHTMLMessage
-        {...messages.message}
-        values={{ walletAddress: ellipsis(wallet.address, 8) }}
-      />
-    );
 
     return (
       <VerticalFlexContainer>
@@ -44,16 +27,15 @@ export default class WalletReceivePage extends Component {
         <WalletReceive
           walletName={wallet.name}
           walletAddress={wallet.address}
-          onCopyAddress={actions.wallets.showWalletAddressCopyNotification.trigger}
+          onCopyAddress={() => {
+            uiNotifications.countdownSinceNotificationOpened(
+              config.wallets.ADDRESS_COPY_NOTIFICATION_DURATION
+            );
+            actions.notifications.open.trigger({ notification: NotificationMessage });
+          }}
         />
-
-        <NotificationMessage
-          icon={successIcon}
-          show={wallets.isWalletAddressCopyNotificationVisible}
-        >
-          {notificationMessage}
-        </NotificationMessage>
-
+        {/* TODO: move NotificationContainer to Layout continer */}
+        {(uiNotifications.activeNotificationsList.length > 0) && <NotificationsContainer />}
       </VerticalFlexContainer>
     );
   }

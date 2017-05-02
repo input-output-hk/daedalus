@@ -7,7 +7,6 @@ import { matchRoute, buildRoute } from '../lib/routing-helpers';
 import CachedRequest from './lib/LocalizedCachedRequest';
 import Request from './lib/LocalizedRequest';
 import environment from '../environment';
-import config from '../config';
 import { ROUTES } from '../Routes';
 import WalletAddDialog from '../components/wallet/WalletAddDialog';
 import type {
@@ -36,9 +35,6 @@ export default class WalletsStore extends Store {
   @observable getWalletRecoveryPhraseRequest: Request<GetWalletRecoveryPhraseResponse> = new Request(this.api.getWalletRecoveryPhrase);
   @observable restoreRequest: Request<RestoreWalletResponse> = new Request(this.api.restoreWallet);
   /* eslint-enable max-len */
-  @observable isWalletAddressCopyNotificationVisible = false;
-
-  _hideWalletAddressCopyNotificationTimeout = false;
 
   _newWalletDetails: { name: string, currency: string, mnemonic: string, } = {
     name: '',
@@ -54,7 +50,6 @@ export default class WalletsStore extends Store {
     wallets.restoreWallet.listen(this._restoreWallet);
     wallets.importWalletFromKey.listen(this._importWalletFromKey);
     wallets.setActiveWallet.listen(this._setActiveWallet);
-    wallets.showWalletAddressCopyNotification.listen(this._onShowWalletAddressCopyNotification);
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishWalletCreation);
     this.registerReactions([
@@ -268,21 +263,6 @@ export default class WalletsStore extends Store {
     await this.walletsRequest.patch(result => {
       if (!_.find(result, { id: wallet.id })) result.push(wallet);
     });
-  };
-
-  @action _hideWalletAddressCopyNotification = () => {
-    this.isWalletAddressCopyNotificationVisible = false;
-  };
-
-  @action _onShowWalletAddressCopyNotification = () => {
-    if (this._hideWalletAddressCopyNotificationTimeout) {
-      clearTimeout(this._hideWalletAddressCopyNotificationTimeout);
-    }
-    this._hideWalletAddressCopyNotificationTimeout = setTimeout(
-      this._hideWalletAddressCopyNotification,
-      config.wallets.ADDRESS_COPY_NOTIFICATION_DURATION
-    );
-    this.isWalletAddressCopyNotificationVisible = true;
   };
 
   @action _onRouteChange = (options: { route: string, params: ?Object }) => {
