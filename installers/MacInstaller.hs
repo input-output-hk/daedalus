@@ -1,10 +1,18 @@
 module MacInstaller where
 
+---
+--- An overview of Mac .pkg internals:  http://www.peachpit.com/articles/article.aspx?p=605381&seqNum=2
+---
+
 import           Control.Monad        (unless)
 import           Data.Foldable        (for_)
 import           Data.Maybe           (fromMaybe)
 import           Data.Monoid          ((<>))
 import qualified Data.Text            as T
+import           System.Environment   (lookupEnv)
+import           System.FilePath      (replaceExtension)
+import           System.FilePath.Glob (globDir1, compile)
+import qualified System.File.Tree     as SFT
 import           System.Directory
 import           System.Environment   (lookupEnv)
 import           System.FilePath      (replaceExtension)
@@ -20,8 +28,10 @@ main :: IO ()
 main = do
   version <- fromMaybe "dev" <$> lookupEnv "DAEDALUS_VERSION"
 
-  let dir = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app/Contents/MacOS"
-      pkg = "dist/Daedalus-installer-" <> version <> ".pkg"
+  let appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
+      dir     = appRoot <> "/Contents/MacOS"
+      resDir  = appRoot <> "/Contents/Resources"
+      pkg     = "dist/Daedalus-installer-" <> version <> ".pkg"
   createDirectoryIfMissing False "dist"
 
   echo "Creating icons ..."
@@ -35,9 +45,28 @@ main = do
   copyFile "cardano-node" (dir <> "/cardano-node")
   copyFile "log-config-prod.yaml" (dir <> "/log-config-prod.yaml")
   copyFile "data/ip-dht-mappings" (dir <> "/ip-dht-mappings")
+  copyFile "data/ip-dht-mappings" (dir <> "/ip-dht-mappings")
+  copyFile "build-certificates-unix.sh" (dir <> "/build-certificates-unix.sh")
+  copyFile "tls/ca.conf" (dir <> "/ca.conf")
+  copyFile "tls/server.conf" (dir <> "/server.conf")
 
   -- Rewrite libs paths and bundle them
   _ <- chain dir $ fmap T.pack [dir <> "/cardano-launcher", dir <> "/cardano-node"]
+
+  -- Prepare postinstall script
+  createDirectoryIfMissing False resDir
+  writeFile (resDir <> "/postinstall") $ unlines
+    [ "#!/usr/bin/env bash"
+    , "src_pkg=\"$1\""
+    , "dst_root=\"$2\""
+    , "dst_mount=\"$3\""
+    , "sys_root=\"$4\""
+    --
+    , "dst_dir=\"${dst_root}/Applications/Daedalus.app/Contents/MacOS/\""
+    , "cd \"${dst_dir}\""
+    , "bash ./build-certificates-unix.sh"
+    ]
+  run "chmod" ["+x", T.pack (resDir <> "/postinstall")]
 
   -- Prepare launcher
   de <- doesFileExist (dir <> "/Frontend")

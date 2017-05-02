@@ -1,4 +1,13 @@
+@rem
+@rem
+@rem This is an install-time script that generates the CA/server key/cert pairs,
+@rem for front/backend channel security.
+@rem It must be run from the application install directory.
+@rem
 @rem Source: https://pki-tutorial.readthedocs.io/en/latest/simple/index.html
+@rem
+@rem WARNING: keep in sync with 'installers/build-certificates-unix.sh'
+
 @echo Generating certificates.
 @x64\openssl version
 
@@ -13,10 +22,8 @@ copy nul  tls\ca\db\ca.db.attr
 echo 01 > tls\ca\db\ca.crt.srl
 @echo ============================================================================
 
-@echo [2/6] Generating password
-@echo %RANDOM%  > tls\secret  & echo %RANDOM% >> tls\secret & echo %RANDOM% >> tls\secret & echo %RANDOM% >> tls\secret
-@echo %RANDOM% >> tls\secret  & echo %RANDOM% >> tls\secret & echo %RANDOM% >> tls\secret & echo %RANDOM% >> tls\secret
-@echo %RANDOM% >> tls\secret  & echo %RANDOM% >> tls\secret & echo %RANDOM% >> tls\secret & echo %RANDOM% >> tls\secret
+@echo [2/6] Generating install-time-only use password for the CA key
+@echo %RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM% > tls\secret
 @echo ============================================================================
 
 @echo [3/6] CA self-sign request
