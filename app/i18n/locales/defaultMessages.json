@@ -1047,13 +1047,13 @@
         "description": "Title for the \"Change wallet password\" dialog when there is no password set.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 21
         },
         "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.title.setPassword",
         "start": {
           "column": 26,
-          "line": 12
+          "line": 17
         }
       },
       {
@@ -1061,13 +1061,13 @@
         "description": "Title for the \"Change wallet password\" dialog when there is already password set.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 26
         },
         "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.title.changePassword",
         "start": {
           "column": 29,
-          "line": 17
+          "line": 22
         }
       },
       {
@@ -1075,13 +1075,13 @@
         "description": "Label for the \"Wallet password\" input in the change wallet password dialog.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 31
         },
         "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.walletPasswordLabel",
         "start": {
           "column": 23,
-          "line": 22
+          "line": 27
         }
       },
       {
@@ -1089,13 +1089,13 @@
         "description": "Label for the \"Current password\" input in the change wallet password dialog.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 36
         },
         "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.currentPasswordLabel",
         "start": {
           "column": 24,
-          "line": 27
+          "line": 32
         }
       },
       {
@@ -1103,13 +1103,13 @@
         "description": "Label for the \"New password\" input in the change wallet password dialog.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 41
         },
         "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.newPasswordLabel",
         "start": {
           "column": 20,
-          "line": 32
+          "line": 37
         }
       },
       {
@@ -1117,13 +1117,13 @@
         "description": "Label for the \"Repeat password\" input in the change wallet password dialog.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 46
         },
         "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
-          "line": 37
+          "line": 42
         }
       },
       {
@@ -1131,13 +1131,41 @@
         "description": "Placeholder for the \"Password\" inputs in the change wallet password dialog.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 51
         },
         "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.passwordFieldPlaceholder",
         "start": {
           "column": 28,
-          "line": 42
+          "line": 47
+        }
+      },
+      {
+        "defaultMessage": "!!!Remove password",
+        "description": "Label for the \"Check to deactivate password\" switch in the change wallet password dialog.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "id": "wallet.settings.changePassword.dialog.passwordSwitchLabel",
+        "start": {
+          "column": 23,
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!Check to deactivate password",
+        "description": "Text for the \"Check to deactivate password\" switch in the change wallet password dialog.",
+        "end": {
+          "column": 3,
+          "line": 61
+        },
+        "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "id": "wallet.settings.changePassword.dialog.passwordSwitchPlaceholder",
+        "start": {
+          "column": 29,
+          "line": 57
         }
       }
     ],
@@ -2040,8 +2068,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Password",
-        "description": "Not set message.",
+        "defaultMessage": "!!!You still don't have password",
+        "description": "You still don't have password set message.",
         "end": {
           "column": 3,
           "line": 38
@@ -2439,17 +2467,45 @@
         }
       },
       {
-        "defaultMessage": "!!!Save",
-        "description": "The word \"save\" reused at several places (like save buttons)",
+        "defaultMessage": "!!!Create",
+        "description": "The word \"create\" reused at several places (like create buttons)",
         "end": {
           "column": 3,
           "line": 38
         },
         "file": "app/i18n/global-messages.js",
+        "id": "global.labels.create",
+        "start": {
+          "column": 10,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!Remove",
+        "description": "The word \"remove\" reused at several places (like remove buttons)",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.labels.remove",
+        "start": {
+          "column": 10,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!Save",
+        "description": "The word \"save\" reused at several places (like save buttons)",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "app/i18n/global-messages.js",
         "id": "global.labels.save",
         "start": {
           "column": 8,
-          "line": 34
+          "line": 44
         }
       },
       {
@@ -2457,13 +2513,13 @@
         "description": "Error message shown when invalid bip39 mnemonic was entered.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 53
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.errors.invalidMnemonic",
         "start": {
           "column": 19,
-          "line": 39
+          "line": 49
         }
       },
       {
@@ -2471,13 +2527,13 @@
         "description": "Error message shown when invalid Ada redemption certificate was uploaded.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 58
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.errors.AdaRedemptionCertificateParseError",
         "start": {
           "column": 35,
-          "line": 44
+          "line": 54
         }
       },
       {
@@ -2485,13 +2541,13 @@
         "description": "Error message shown when invalid email was entered.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 63
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.errors.invalidEmail",
         "start": {
           "column": 16,
-          "line": 49
+          "line": 59
         }
       },
       {
@@ -2499,13 +2555,13 @@
         "description": "Language name for \"English\" language.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 68
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.english",
         "start": {
           "column": 19,
-          "line": 54
+          "line": 64
         }
       },
       {
@@ -2513,13 +2569,13 @@
         "description": "Language name for \"Japanese\" language.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 73
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.japanese",
         "start": {
           "column": 20,
-          "line": 59
+          "line": 69
         }
       },
       {
@@ -2527,13 +2583,13 @@
         "description": "Language name for \"Chinese\" language.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 78
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.chinese",
         "start": {
           "column": 19,
-          "line": 64
+          "line": 74
         }
       },
       {
@@ -2541,13 +2597,13 @@
         "description": "Language name for \"Korean\" language.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 83
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.korean",
         "start": {
           "column": 18,
-          "line": 69
+          "line": 79
         }
       },
       {
@@ -2555,13 +2611,13 @@
         "description": "Language name for \"German\" language.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 88
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.german",
         "start": {
           "column": 18,
-          "line": 74
+          "line": 84
         }
       },
       {
@@ -2569,13 +2625,13 @@
         "description": "Language name for \"Croatian\" language.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 93
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.croatian",
         "start": {
           "column": 20,
-          "line": 79
+          "line": 89
         }
       },
       {
@@ -2583,13 +2639,13 @@
         "description": "Name for \"Normal\" transaction assurance security level.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 98
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.assuranceLevel.normal",
         "start": {
           "column": 24,
-          "line": 84
+          "line": 94
         }
       },
       {
@@ -2597,13 +2653,13 @@
         "description": "Name for \"Strict\" transaction assurance security level.",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 103
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.assuranceLevel.strict",
         "start": {
           "column": 24,
-          "line": 89
+          "line": 99
         }
       },
       {
@@ -2611,13 +2667,13 @@
         "description": "Name for \"Ada\" unit.",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 108
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.unit.ada",
         "start": {
           "column": 11,
-          "line": 94
+          "line": 104
         }
       },
       {
@@ -2625,13 +2681,13 @@
         "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 113
         },
         "file": "app/i18n/global-messages.js",
         "id": "wallet.transaction.assuranceLevel.low",
         "start": {
           "column": 32,
-          "line": 99
+          "line": 109
         }
       },
       {
@@ -2639,13 +2695,13 @@
         "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 118
         },
         "file": "app/i18n/global-messages.js",
         "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
           "column": 35,
-          "line": 104
+          "line": 114
         }
       },
       {
@@ -2653,13 +2709,13 @@
         "description": "Transaction assurance level \"high\".",
         "end": {
           "column": 3,
-          "line": 113
+          "line": 123
         },
         "file": "app/i18n/global-messages.js",
         "id": "wallet.transaction.assuranceLevel.high",
         "start": {
           "column": 33,
-          "line": 109
+          "line": 119
         }
       }
     ],

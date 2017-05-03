@@ -33,8 +33,8 @@ const messages = defineMessages({
   },
   passwordNotSet: {
     id: 'wallet.settings.passwordNotSet',
-    defaultMessage: '!!!Password',
-    description: 'Not set message.',
+    defaultMessage: '!!!You still don\'t have password',
+    description: 'You still don\'t have password set message.',
   },
 });
 
@@ -92,6 +92,7 @@ export default class WalletSettings extends Component {
           <ReadOnlyInput
             label={intl.formatMessage(messages.passwordLabel)}
             value={passwordMessage}
+            isSet={isWalletPasswordSet}
             onClick={() => openDialogAction({
               dialog: ChangeWalletPasswordDialog,
             })}

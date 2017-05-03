@@ -31,6 +31,16 @@ export default defineMessages({
     defaultMessage: '!!!Change',
     description: 'The word "change" reused at several places (like change buttons)',
   },
+  create: {
+    id: 'global.labels.create',
+    defaultMessage: '!!!Create',
+    description: 'The word "create" reused at several places (like create buttons)',
+  },
+  remove: {
+    id: 'global.labels.remove',
+    defaultMessage: '!!!Remove',
+    description: 'The word "remove" reused at several places (like remove buttons)',
+  },
   save: {
     id: 'global.labels.save',
     defaultMessage: '!!!Save',
