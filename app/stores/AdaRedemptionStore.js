@@ -38,6 +38,7 @@ export default class AdaRedemptionStore extends Store {
   @observable redeemAdaRequest: Request<Wallet> = new Request(this.api.redeemAda);
   // eslint-disable-next-line
   @observable redeemPaperVendedAdaRequest: Request<RedeemPaperVendedAdaResponse> = new Request(this.api.redeemPaperVendedAda);
+  @observable isRedemptionDisclaimerAccepted = false;
 
   setup() {
     const actions = this.actions.adaRedemption;
@@ -53,6 +54,7 @@ export default class AdaRedemptionStore extends Store {
     actions.adaSuccessfullyRedeemed.listen(this._onAdaSuccessfullyRedeemed);
     actions.closeAdaRedemptionSuccessOverlay.listen(this._onCloseAdaRedemptionSuccessOverlay);
     actions.removeCertificate.listen(this._onRemoveCertificate);
+    actions.acceptRedemptionDisclaimer.listen(this._onAcceptRedemptionDisclaimer);
     ipcRenderer.on(PARSE_REDEMPTION_CODE.SUCCESS, this._onCodeParsed);
     ipcRenderer.on(PARSE_REDEMPTION_CODE.ERROR, this._onParseError);
     this.registerReactions([
@@ -81,6 +83,10 @@ export default class AdaRedemptionStore extends Store {
       this.redemptionType = params.redemptionType;
     }
   };
+
+  _onAcceptRedemptionDisclaimer = action(() => {
+    this.isRedemptionDisclaimerAccepted = true;
+  });
 
   _setCertificate = action(({ certificate }) => {
     this.certificate = certificate;
