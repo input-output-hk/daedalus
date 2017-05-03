@@ -6,15 +6,13 @@ import styles from './NotificationMessage.scss';
 export default class NotificationMessage extends Component {
 
   props: {
-    notificationNumber: number,
     icon: string,
     show: boolean,
     children?: Children,
   };
 
   render() {
-    const { icon, show, children, notificationNumber } = this.props;
-    const topPosition = (notificationNumber * 62 + notificationNumber) + 'px';
+    const { icon, show, children } = this.props;
 
     const notificationMessageStyles = classNames([
       styles.component,
@@ -22,7 +20,7 @@ export default class NotificationMessage extends Component {
     ]);
 
     return (
-      <div className={notificationMessageStyles} style={{ top: topPosition }}>
+      <div className={notificationMessageStyles}>
 
         {icon && <img className={styles.icon} src={icon} role="presentation" />}
 

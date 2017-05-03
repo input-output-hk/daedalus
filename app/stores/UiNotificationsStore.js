@@ -5,65 +5,59 @@ import Store from './lib/Store';
 
 export default class UiNotificationsStore extends Store {
 
-  @observable secondsSinceActiveNotificationIsOpen: number = 0;
-  @observable maxTimeout: number = 0;
-  @observable activeNotificationsList = [];
-
-  _secondsTimerInterval: ?number = null;
+  @observable activeNotifications = [];
 
   setup() {
     this.actions.notifications.open.listen(this._onOpen);
     this.actions.notifications.closeActiveNotification.listen(this._onClose);
   }
 
-  countdownSinceNotificationOpened = (countDownTo: number) => {
-    this.maxTimeout = countDownTo;
-    Math.max(countDownTo - this.secondsSinceActiveNotificationIsOpen, 0);
-  };
+  isOpen = (id: string): boolean => _.size(_.find(this.activeNotifications, ['id', id]));
 
-  @action _onOpen = ({ notification } : { notification : Function }) => {
-    this.secondsSinceActiveNotificationIsOpen = 0;
-
-    if (this._secondsTimerInterval) clearInterval(this._secondsTimerInterval);
-    if (this.maxTimeout > 0) {
-      this._secondsTimerInterval = setInterval(this._updateSeconds, 1000);
+  @action _onOpen = ({ id, duration } : { id : string, duration: number }) => {
+    const notification = {};
+    notification.id = id;
+    if (duration) {
+      notification.duration = duration;
+      notification.secondsTimerInterval = setInterval(this._updateSeconds, 1000, id);
     }
 
-    this.activeNotificationsList.push({
-      key: this.activeNotificationsList.length,
-      notification,
-      remaining: this.maxTimeout,
+    if (this.isOpen(id)) {
+      this._onClose(id);
+      setTimeout(() => this._set(notification), 200);
+    } else {
+      this._set(notification);
+    }
+  };
+
+  @action _set = (notification: Object) => {
+    this.activeNotifications.push(notification);
+  };
+
+  @action _onClose = (id: string) => {
+    const currentNotification = _.find(this.activeNotifications, ['id', id]);
+    if (currentNotification) {
+      if (currentNotification.secondsTimerInterval) {
+        clearInterval(currentNotification.secondsTimerInterval);
+      }
+      this.activeNotifications = _.reject(this.activeNotifications, ['id', id]);
+    }
+  };
+
+  @action _resetAll = () => {
+    _.map(this.activeNotifications, (notification) => {
+      this._onClose(notification.id);
     });
   };
 
-  @action _resetActiveNotificationsListOnTimeout = () => {
-    let counter = 0;
-    const newActiveList = [];
-    for (let i = this.activeNotificationsList.length - 1; i >= 0; i--) {
-      const activeNotification = {};
-      if (this.activeNotificationsList[i].remaining > 0) {
-        activeNotification.notification = this.activeNotificationsList[i].notification;
-        activeNotification.remaining = this.activeNotificationsList[i].remaining - 1;
-        activeNotification.key = counter;
-        counter++;
-        newActiveList.push(activeNotification);
-      }
-    }
-
-    this.activeNotificationsList = newActiveList;
-    if (newActiveList.length === 0) {
-      if (this._secondsTimerInterval) clearInterval(this._secondsTimerInterval);
+  @action _updateSeconds = (id: string) => {
+    const currentNotification = _.find(this.activeNotifications, ['id', id]);
+    const duration = currentNotification.duration - 1;
+    if (duration === 0) {
+      this._onClose(id);
+    } else {
+      currentNotification.duration -= 1;
+      this._set(currentNotification);
     }
   };
-
-  @action _onClose = ({ key } : { key : number }) => {
-    const index = _.findIndex(this.activeNotificationsList, { key });
-    this.activeNotificationsList = this.activeNotificationsList.splice(index, 1);
-  };
-
-  @action _updateSeconds = () => {
-    this.secondsSinceActiveNotificationIsOpen += 1;
-    this._resetActiveNotificationsListOnTimeout();
-  };
-
 }

@@ -1,18 +1,33 @@
 // @flow
 import React, { Component } from 'react';
+import _ from 'lodash';
+import { defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { observer, inject } from 'mobx-react';
+import { ellipsis } from '../../lib/string-helpers';
 import config from '../../config';
 import WalletReceive from '../../components/wallet/WalletReceive';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import NotificationMessage from '../../components/widgets/NotificationMessage';
-import NotificationsContainer from '../notifications/NotificationsContainer';
+import successIcon from '../../assets/images/success-small.svg';
 import type { InjectedProps } from '../../types/injectedPropsType';
+
+const messages = defineMessages({
+  message: {
+    id: 'wallet.receive.page.addressCopyNotificationMessage',
+    defaultMessage: '!!!You have successfully copied wallet address',
+    description: 'Message for the wallet address copy success notification.',
+  },
+});
 
 @inject('stores', 'actions') @observer
 export default class WalletReceivePage extends Component {
 
   static defaultProps = { actions: null, stores: null };
   props: InjectedProps;
+
+  componentWillUnmount() {
+    this.closeNotification();
+  }
 
   render() {
     const actions = this.props.actions;
@@ -21,6 +36,13 @@ export default class WalletReceivePage extends Component {
     // Guard against potential null values
     if (!wallet) throw new Error('Active wallet required for WalletReceivePage.');
 
+    const notificationMessage = (
+      <FormattedHTMLMessage
+        {...messages.message}
+        values={{ walletAddress: ellipsis(wallet.address, 8) }}
+      />
+    );
+
     return (
       <VerticalFlexContainer>
 
@@ -28,16 +50,27 @@ export default class WalletReceivePage extends Component {
           walletName={wallet.name}
           walletAddress={wallet.address}
           onCopyAddress={() => {
-            uiNotifications.countdownSinceNotificationOpened(
-              config.wallets.ADDRESS_COPY_NOTIFICATION_DURATION
-            );
-            actions.notifications.open.trigger({ notification: NotificationMessage });
+            actions.notifications.open.trigger({
+              id: wallet.id + '-copyNotification',
+              duration: config.wallets.ADDRESS_COPY_NOTIFICATION_DURATION
+            });
           }}
         />
-        {/* TODO: move NotificationContainer to Layout continer */}
-        {(uiNotifications.activeNotificationsList.length > 0) && <NotificationsContainer />}
+        <NotificationMessage
+          icon={successIcon}
+          show={uiNotifications.isOpen(wallet.id + '-copyNotification')}
+        >
+          {notificationMessage}
+        </NotificationMessage>
       </VerticalFlexContainer>
     );
   }
 
+  closeNotification = () => {
+    const { wallets } = this.props.stores;
+    const walletId = _.get(wallets, ['active', 'id']);
+    if (walletId) {
+      this.props.actions.notifications.closeActiveNotification.trigger(walletId + '-copyNotification');
+    }
+  }
 }
