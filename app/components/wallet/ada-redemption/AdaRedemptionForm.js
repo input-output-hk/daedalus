@@ -306,9 +306,19 @@ export default class AdaRedemptionForm extends Component {
     },
   });
 
+  resetForm = () => {
+    const { form } = this;
+    // We need to disable on-change validation before reseting the form in order to
+    // avoid debounced validation being called straight after the form is reset
+    form.state.options.set({ validateOnChange: false });
+    form.reset();
+    form.showErrors(false);
+    form.state.options.set({ validateOnChange: true });
+  };
+
   render() {
     const { intl } = this.context;
-    const { form } = this;
+    const { form, resetForm, submit } = this;
     const {
       wallets, isCertificateSelected, isCertificateEncrypted,
       isSubmitting, onCertificateSelected, redemptionCode,
@@ -316,7 +326,7 @@ export default class AdaRedemptionForm extends Component {
       isCertificateInvalid, redemptionType, showInputsForDecryptingForceVendedCertificate,
       showPassPhraseWidget, error
     } = this.props;
-    const certificate = form.$('certificate');
+    const certificateField = form.$('certificate');
     const passPhraseField = form.$('passPhrase');
     const redemptionKeyField = form.$('redemptionKey');
     const shieldedRedemptionKeyField = form.$('shieldedRedemptionKey');
@@ -335,8 +345,8 @@ export default class AdaRedemptionForm extends Component {
     if (redemptionType === 'forceVended' && redemptionCode !== '') canSubmit = true;
     if (
       redemptionType === 'paperVended' &&
-      shieldedRedemptionKeyField.isValid && shieldedRedemptionKeyField.isDirty &&
-      passPhraseField.isValid && passPhraseField.isDirty
+      shieldedRedemptionKeyField.isDirty &&
+      passPhraseField.isDirty
     ) canSubmit = true;
 
     let instructionMessage = '';
@@ -367,7 +377,8 @@ export default class AdaRedemptionForm extends Component {
           <AdaRedemptionChoices
             activeChoice={redemptionType}
             onSelectChoice={(choice: string) => {
-              redemptionKeyField.resetValidation();
+              const isRedemptionTypeChanged = redemptionType !== choice;
+              if (isRedemptionTypeChanged) resetForm();
               onChooseRedemptionType(choice);
             }}
           />
@@ -378,7 +389,6 @@ export default class AdaRedemptionForm extends Component {
 
           <div className={styles.redemption}>
             <div className={styles.inputs}>
-
               {redemptionType !== 'paperVended' ? (
                 <Input
                   className="redemption-key"
@@ -403,24 +413,24 @@ export default class AdaRedemptionForm extends Component {
                 source={wallets}
                 {...walletId.bind()}
               />
-
             </div>
 
             {showUploadWidget ? (
               <div className={styles.certificate}>
                 <div className={styles.certificate}>
                   <AdaCertificateUploadWidget
-                    {...certificate.bind()}
-                    selectedFile={certificate.value}
+                    {...certificateField.bind()}
+                    selectedFile={certificateField.value}
                     onFileSelected={(file) => {
+                      resetForm();
                       onCertificateSelected(file);
-                      certificate.onChange(file);
+                      certificateField.onChange(file);
                     }}
                     isCertificateEncrypted={isCertificateEncrypted}
                     isCertificateSelected={isCertificateSelected}
                     isCertificateInvalid={isCertificateInvalid}
                     onRemoveCertificate={() => {
-                      form.reset();
+                      resetForm();
                       onRemoveCertificate();
                     }}
                   />
@@ -470,7 +480,7 @@ export default class AdaRedemptionForm extends Component {
           <Button
             className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
             label={intl.formatMessage(messages.submitLabel)}
-            onMouseUp={this.submit}
+            onMouseUp={submit}
             primary
             disabled={!canSubmit}
           />
