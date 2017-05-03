@@ -1,63 +1,56 @@
 // @flow
 import { observable, action } from 'mobx';
-import _ from 'lodash';
 import Store from './lib/Store';
+import type { Notification } from '../types/notificationType';
 
 export default class UiNotificationsStore extends Store {
 
-  @observable activeNotifications = [];
+  @observable activeNotifications: Array<Notification> = [];
 
   setup() {
     this.actions.notifications.open.listen(this._onOpen);
     this.actions.notifications.closeActiveNotification.listen(this._onClose);
   }
 
-  isOpen = (id: string): boolean => _.size(_.find(this.activeNotifications, ['id', id]));
+  isOpen = (id: string): boolean => !!this._findNotificationById(id);
 
-  @action _onOpen = ({ id, duration } : { id : string, duration: number }) => {
-    const notification = {};
-    notification.id = id;
-    if (duration) {
-      notification.duration = duration;
-      notification.secondsTimerInterval = setInterval(this._updateSeconds, 1000, id);
-    }
+  _findNotificationById = (id: string): ?Notification =>
+    this.activeNotifications.find(notification => notification.id === id);
+
+  @action _onOpen = ({ id, duration } : { id: string, duration?: number }) => {
+    const notification = {
+      id,
+      duration: duration || null,
+      secondsTimerInterval: duration ? setInterval(this._updateSeconds, 1000, id) : null,
+    };
 
     if (this.isOpen(id)) {
-      this._onClose(id);
+      // if notification is currently active close and reopen it
+      this._onClose({ id });
       setTimeout(() => this._set(notification), 200);
     } else {
       this._set(notification);
     }
   };
 
-  @action _set = (notification: Object) => {
+  @action _set = (notification: Notification) => {
     this.activeNotifications.push(notification);
   };
 
-  @action _onClose = (id: string) => {
-    const currentNotification = _.find(this.activeNotifications, ['id', id]);
-    if (currentNotification) {
-      if (currentNotification.secondsTimerInterval) {
-        clearInterval(currentNotification.secondsTimerInterval);
-      }
-      this.activeNotifications = _.reject(this.activeNotifications, ['id', id]);
+  @action _onClose = ({ id } : { id: string }) => {
+    const notification = this._findNotificationById(id);
+    if (notification) {
+      if (notification.secondsTimerInterval) clearInterval(notification.secondsTimerInterval);
+      const indexOfNotification = this.activeNotifications.indexOf(notification);
+      this.activeNotifications.splice(indexOfNotification, 1);
     }
   };
 
-  @action _resetAll = () => {
-    _.map(this.activeNotifications, (notification) => {
-      this._onClose(notification.id);
-    });
-  };
-
   @action _updateSeconds = (id: string) => {
-    const currentNotification = _.find(this.activeNotifications, ['id', id]);
-    const duration = currentNotification.duration - 1;
-    if (duration === 0) {
-      this._onClose(id);
-    } else {
-      currentNotification.duration -= 1;
-      this._set(currentNotification);
+    const notification = this._findNotificationById(id);
+    if (notification && notification.duration) {
+      notification.duration -= 1;
+      if (notification.duration === 0) this._onClose({ id });
     }
   };
 }
