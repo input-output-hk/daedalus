@@ -25,26 +25,26 @@ const messages = defineMessages({
   },
   instructionsRegular: {
     id: 'wallet.redeem.dialog.instructions.regular',
-    defaultMessage: `<p>To redeem your Ada upload your certificate or copy and paste your redemption
-code from the certificate. Here is an example redemption key, yours will look similar:</p>
+    defaultMessage: `!!!<p>To redeem your Ada, upload your certificate or copy and paste your redemption code from the certificate.
+Below is an example of a redemption key. Your key will look similar:</p>
 <p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p>
-<p>If you upload a PDF file with your certificate redemption code will be automatically extracted.</p>
-<p>If you upload <strong>encrypted certificate</strong> you will need to provide a <strong>9 word mnemonic
+<p>If you upload a PDF file with your certificate, a redemption code will be automatically extracted.</p>
+<p>If you upload an <strong>encrypted certificate</strong>, you will need to provide a <strong>9 word mnemonic
 passphrase</strong> to decrypt your certificate and your redemption code will be automatically extracted.</p>`,
     description: '!!!Detailed instructions for redeeming Ada from the regular vending',
   },
   instructionsForceVended: {
     id: 'wallet.redeem.dialog.instructions.forceVended',
-    defaultMessage: `<p>To redeem your Ada upload your certificate or copy and paste your redemption code from the certificate.
-Here is an example redemption key, yours will look similar:</p><p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p>
-<p>If you upload a PDF file with your certificate redemption code will be automatically extracted.</p>
-<p>If you upload <strong>encrypted certificate</strong> you will need to provide a <strong>your email address, Ada passcode and Ada amount</strong>
+    defaultMessage: `!!!<p>To redeem your Ada, upload your certificate or copy and paste your redemption code from the certificate.
+Below is an example of a redemption key. Your key will look similar:</p><p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p>
+<p>If you upload a PDF file with your certificate, the redemption code will be automatically extracted.</p>
+<p>If you upload an <strong>encrypted certificate</strong>, you will need to provide <strong>your email address, Ada passcode and Ada amount</strong>
 to decrypt your certificate and your redemption code will be automatically extracted.</p>`,
     description: '!!!Detailed instructions.regular',
   },
   instructionsPaperVended: {
     id: 'wallet.redeem.dialog.instructions.paperVended',
-    defaultMessage: `<p>To redeem your Ada enter your Shielded vending key from the certificate, choose a wallet
+    defaultMessage: `<p>To redeem your Ada, enter your Shielded vending key from the certificate, choose a wallet
 where Ada should be redeemed and enter 9 word mnemonic passphrase.</p>`,
     description: '!!!Detailed instructions.regular',
   },

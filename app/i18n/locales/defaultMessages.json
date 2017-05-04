@@ -425,7 +425,7 @@
         }
       },
       {
-        "defaultMessage": "<p>To redeem your Ada upload your certificate or copy and paste your redemption\ncode from the certificate. Here is an example redemption key, yours will look similar:</p>\n<p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p>\n<p>If you upload a PDF file with your certificate redemption code will be automatically extracted.</p>\n<p>If you upload <strong>encrypted certificate</strong> you will need to provide a <strong>9 word mnemonic\npassphrase</strong> to decrypt your certificate and your redemption code will be automatically extracted.</p>",
+        "defaultMessage": "!!!<p>To redeem your Ada, upload your certificate or copy and paste your redemption code from the certificate.\nBelow is an example of a redemption key. Your key will look similar:</p>\n<p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p>\n<p>If you upload a PDF file with your certificate, a redemption code will be automatically extracted.</p>\n<p>If you upload an <strong>encrypted certificate</strong>, you will need to provide a <strong>9 word mnemonic\npassphrase</strong> to decrypt your certificate and your redemption code will be automatically extracted.</p>",
         "description": "!!!Detailed instructions for redeeming Ada from the regular vending",
         "end": {
           "column": 3,
@@ -439,7 +439,7 @@
         }
       },
       {
-        "defaultMessage": "<p>To redeem your Ada upload your certificate or copy and paste your redemption code from the certificate.\nHere is an example redemption key, yours will look similar:</p><p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p>\n<p>If you upload a PDF file with your certificate redemption code will be automatically extracted.</p>\n<p>If you upload <strong>encrypted certificate</strong> you will need to provide a <strong>your email address, Ada passcode and Ada amount</strong>\nto decrypt your certificate and your redemption code will be automatically extracted.</p>",
+        "defaultMessage": "!!!<p>To redeem your Ada, upload your certificate or copy and paste your redemption code from the certificate.\nBelow is an example of a redemption key. Your key will look similar:</p><p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p>\n<p>If you upload a PDF file with your certificate, the redemption code will be automatically extracted.</p>\n<p>If you upload an <strong>encrypted certificate</strong>, you will need to provide <strong>your email address, Ada passcode and Ada amount</strong>\nto decrypt your certificate and your redemption code will be automatically extracted.</p>",
         "description": "!!!Detailed instructions.regular",
         "end": {
           "column": 3,
@@ -453,7 +453,7 @@
         }
       },
       {
-        "defaultMessage": "<p>To redeem your Ada enter your Shielded vending key from the certificate, choose a wallet\nwhere Ada should be redeemed and enter 9 word mnemonic passphrase.</p>",
+        "defaultMessage": "<p>To redeem your Ada, enter your Shielded vending key from the certificate, choose a wallet\nwhere Ada should be redeemed and enter 9 word mnemonic passphrase.</p>",
         "description": "!!!Detailed instructions.regular",
         "end": {
           "column": 3,
@@ -2392,13 +2392,13 @@
         "description": "Error message when required fields are left empty.",
         "end": {
           "column": 3,
-          "line": 9
+          "line": 8
         },
-        "file": "app/i18n/errors.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.errors.fieldIsRequired",
         "start": {
           "column": 19,
-          "line": 5
+          "line": 4
         }
       },
       {
@@ -2406,13 +2406,13 @@
         "description": "Error message shown when invalid bip39 mnemonic was entered.",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 13
         },
-        "file": "app/i18n/errors.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.errors.invalidMnemonic",
         "start": {
           "column": 19,
-          "line": 10
+          "line": 9
         }
       },
       {
@@ -2420,13 +2420,13 @@
         "description": "Error message shown when invalid email was entered.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 18
         },
-        "file": "app/i18n/errors.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.errors.invalidEmail",
         "start": {
           "column": 16,
-          "line": 15
+          "line": 14
         }
       },
       {
@@ -2434,46 +2434,41 @@
         "description": "Error message shown when invalid Ada redemption certificate was uploaded.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 23
         },
-        "file": "app/i18n/errors.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.errors.AdaRedemptionCertificateParseError",
         "start": {
           "column": 35,
-          "line": 20
+          "line": 19
         }
       },
       {
         "defaultMessage": "!!!The ADA redemption code could not be parsed, please check your passphrase.",
-        "description": "Error message shown when invalid Ada redemption certificate was uploaded.",
+        "description": "Error message shown when invalid Ada redemption encrypted certificate was uploaded.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 28
         },
-        "file": "app/i18n/errors.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.errors.AdaRedemptionEncryptedCertificateParseError",
         "start": {
           "column": 44,
-          "line": 25
+          "line": 24
         }
-      }
-    ],
-    "path": "app/i18n/errors.json"
-  },
-  {
-    "descriptors": [
+      },
       {
         "defaultMessage": "!!!The wallet name must have at least 3 letters.",
         "description": "Error message shown when invalid wallet name was entered in create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 8
+          "line": 33
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.errors.invalidWalletName",
         "start": {
           "column": 21,
-          "line": 4
+          "line": 29
         }
       },
       {
@@ -2481,13 +2476,13 @@
         "description": "Error message shown when invalid wallet password was entered in create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 13
+          "line": 38
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.errors.invalidWalletPassword",
         "start": {
           "column": 25,
-          "line": 9
+          "line": 34
         }
       },
       {
@@ -2495,13 +2490,13 @@
         "description": "Error message shown when wallet password and repeat passwords don't match in create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 43
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.errors.invalidRepeatPassword",
         "start": {
           "column": 25,
-          "line": 14
+          "line": 39
         }
       },
       {
@@ -2509,13 +2504,13 @@
         "description": "The word \"cancel\" reused at several places (like cancel buttons)",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 48
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.labels.cancel",
         "start": {
           "column": 10,
-          "line": 19
+          "line": 44
         }
       },
       {
@@ -2523,13 +2518,13 @@
         "description": "The word \"change\" reused at several places (like change buttons)",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 53
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.labels.change",
         "start": {
           "column": 10,
-          "line": 24
+          "line": 49
         }
       },
       {
@@ -2537,13 +2532,13 @@
         "description": "The word \"save\" reused at several places (like save buttons)",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 58
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.labels.save",
         "start": {
           "column": 8,
-          "line": 29
+          "line": 54
         }
       },
       {
@@ -2551,13 +2546,13 @@
         "description": "Language name for \"English\" language.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 63
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.english",
         "start": {
           "column": 19,
-          "line": 34
+          "line": 59
         }
       },
       {
@@ -2565,13 +2560,13 @@
         "description": "Language name for \"Japanese\" language.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 68
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.japanese",
         "start": {
           "column": 20,
-          "line": 39
+          "line": 64
         }
       },
       {
@@ -2579,13 +2574,13 @@
         "description": "Language name for \"Chinese\" language.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 73
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.chinese",
         "start": {
           "column": 19,
-          "line": 44
+          "line": 69
         }
       },
       {
@@ -2593,13 +2588,13 @@
         "description": "Language name for \"Korean\" language.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 78
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.korean",
         "start": {
           "column": 18,
-          "line": 49
+          "line": 74
         }
       },
       {
@@ -2607,13 +2602,13 @@
         "description": "Language name for \"German\" language.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 83
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.german",
         "start": {
           "column": 18,
-          "line": 54
+          "line": 79
         }
       },
       {
@@ -2621,13 +2616,13 @@
         "description": "Language name for \"Croatian\" language.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 88
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.croatian",
         "start": {
           "column": 20,
-          "line": 59
+          "line": 84
         }
       },
       {
@@ -2635,13 +2630,13 @@
         "description": "Name for \"Normal\" transaction assurance security level.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 93
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.assuranceLevel.normal",
         "start": {
           "column": 24,
-          "line": 64
+          "line": 89
         }
       },
       {
@@ -2649,13 +2644,13 @@
         "description": "Name for \"Strict\" transaction assurance security level.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 98
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.assuranceLevel.strict",
         "start": {
           "column": 24,
-          "line": 69
+          "line": 94
         }
       },
       {
@@ -2663,13 +2658,13 @@
         "description": "Name for \"Ada\" unit.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 103
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.unit.ada",
         "start": {
           "column": 11,
-          "line": 74
+          "line": 99
         }
       },
       {
@@ -2677,13 +2672,13 @@
         "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 108
         },
         "file": "app/i18n/global-messages.js",
         "id": "wallet.transaction.assuranceLevel.low",
         "start": {
           "column": 32,
-          "line": 79
+          "line": 104
         }
       },
       {
@@ -2691,13 +2686,13 @@
         "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 113
         },
         "file": "app/i18n/global-messages.js",
         "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
           "column": 35,
-          "line": 84
+          "line": 109
         }
       },
       {
@@ -2705,13 +2700,13 @@
         "description": "Transaction assurance level \"high\".",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 118
         },
         "file": "app/i18n/global-messages.js",
         "id": "wallet.transaction.assuranceLevel.high",
         "start": {
           "column": 33,
-          "line": 89
+          "line": 114
         }
       }
     ],
