@@ -138,7 +138,7 @@ export default class CardanoClientApi {
   async createWallet(request: CreateWalletRequest) {
     Log.debug('CardanoClientApi::createWallet called');
     try {
-      const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name, request.mnemonic);
+      const response = await ClientApi.newWallet('CWTPersonal', 'ADA', request.name, request.mnemonic, request.password);
       Log.debug('CardanoClientApi::createWallet success: ', JSON.stringify(response, null, 2));
       return _createWalletFromServerData(response);
     } catch (error) {
@@ -160,13 +160,13 @@ export default class CardanoClientApi {
   }
 
   async createTransaction(request: CreateTransactionRequest) {
-    Log.debug('CardanoClientApi::createTransaction called: ', JSON.stringify(request, null, 2));
-    const { sender, receiver, amount, currency } = request;
+    Log.debug('CardanoClientApi::createTransaction called');
+    const { sender, receiver, amount, currency, password } = request;
     const description = 'no description provided';
     const title = 'no title provided';
     try {
       const response = await ClientApi.sendExtended(
-        sender, receiver, amount, currency, title, description
+        sender, receiver, amount, currency, title, description, password
       );
       Log.debug('CardanoClientApi::createTransaction success: ', JSON.stringify(response, null, 2));
       return _createTransactionFromServerData(response);
@@ -213,9 +213,9 @@ export default class CardanoClientApi {
 
   async restoreWallet(request: RestoreWalletRequest) {
     Log.debug('CardanoClientApi::restoreWallet called');
-    const { recoveryPhrase, walletName } = request;
+    const { recoveryPhrase, walletName, walletPassword } = request;
     try {
-      const restoredWallet = await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase);
+      const restoredWallet = await ClientApi.restoreWallet('CWTPersonal', 'ADA', walletName, recoveryPhrase, walletPassword);
       Log.debug('CardanoClientApi::restoreWallet success');
       return _createWalletFromServerData(restoredWallet);
     } catch (error) {
@@ -525,7 +525,7 @@ const _createWalletFromServerData = action((data: ServerWalletStruct) => (
     currency: data.cwMeta.cwCurrency,
     name: data.cwMeta.cwName,
     assurance: data.cwMeta.cwAssurance,
-    hasPassword: true, // TODO: replace with real API response
+    hasPassword: false, // TODO: replace with real API response
     passwordUpdateDate: new Date('2017-02-01'), // TODO: replace with real API response
   })
 ));

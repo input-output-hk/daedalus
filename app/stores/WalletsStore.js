@@ -36,10 +36,11 @@ export default class WalletsStore extends Store {
   @observable restoreRequest: Request<RestoreWalletResponse> = new Request(this.api.restoreWallet);
   /* eslint-enable max-len */
 
-  _newWalletDetails: { name: string, currency: string, mnemonic: string, } = {
+  _newWalletDetails: { name: string, currency: string, mnemonic: string, password: ?string, } = {
     name: '',
     currency: '',
-    mnemonic: ''
+    mnemonic: '',
+    password: null,
   };
 
   setup() {
@@ -64,6 +65,7 @@ export default class WalletsStore extends Store {
   _create = async (params: {
     name: string,
     currency: string,
+    password: ?string,
   }) => {
     Object.assign(this._newWalletDetails, params);
     try {
@@ -115,6 +117,7 @@ export default class WalletsStore extends Store {
   _sendMoney = async (transactionDetails: {
     receiver: string,
     amount: string,
+    password: ?string,
   }) => {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
@@ -185,6 +188,7 @@ export default class WalletsStore extends Store {
   @action _restoreWallet = async (params: {
     recoveryPhrase: string,
     walletName: string,
+    walletPassword: ?string,
   }) => {
     const restoredWallet = await this.restoreRequest.execute(params).promise;
     if (!restoredWallet) throw new Error('Restored wallet was not received correctly');

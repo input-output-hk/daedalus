@@ -8,17 +8,25 @@ Changelog
 
 - Sidebar is no longer auto-hiding if application window is width is greater than 1150px.
 - When user opens or closes the sidebar using the hamburger icon it stays open or closed.
+- Optionally setting a password during wallet creation.
 - "Terms of use" screen on first application start
+- Spending password on "Send money" form
+- Optionally setting a password during wallet restore.
+- Ada redemption disclaimer
 
 ### Fixes
 
 - Verification of mnemonic recovery phrase during wallet backup is not working if it contains duplicate words.
 - Pending confirmation amounts split (incoming and outgoing)
 - Prevent wallet send form reset on submit
+- Prevent redemption key reset after unsuccessful redemption.
+- Ghost boxes on "Loading" screen
+- Reset Ada redemption form values on page load and certificate add/remove events
 
 ### Chores
 
 - Prevent logging of harmless error messages to the terminal
+- Purge "translation/messages/app" as a part of npm dev script
 
 ## 0.6.2
 

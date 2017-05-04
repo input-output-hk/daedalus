@@ -15,12 +15,19 @@ export default class WalletSendPage extends Component {
   }
 
   render() {
-    const { isValidAddress, sendMoneyRequest } = this.props.stores.wallets;
+    const { wallets } = this.props.stores;
+    const { isValidAddress, sendMoneyRequest } = wallets;
+    const activeWallet = wallets.active;
+
+    // Guard against potential null values
+    if (!activeWallet) throw new Error('Active wallet required for WalletSendPage.');
+
     return (
       <WalletSendForm
         onSubmit={this.handleWalletSendFormSubmit.bind(this)}
         isSubmitting={sendMoneyRequest.isExecuting}
         addressValidator={address => isValidAddress(address)}
+        isWalletPasswordSet={activeWallet.hasPassword}
         error={sendMoneyRequest.error}
       />
     );

@@ -60,16 +60,16 @@ export default class WalletKeyImportDialog extends Component {
   form = new ReactToolboxMobxForm({
     fields: {
       keyFile: {
+        type: 'file',
         label: this.context.intl.formatMessage(messages.keyFileLabel),
         placeholder: this.context.intl.formatMessage(messages.keyFileHint),
-        type: 'file',
         bindings: 'ReactToolbox',
       }
     }
   }, {
     options: {
       validateOnChange: false,
-    }
+    },
   });
 
   render() {

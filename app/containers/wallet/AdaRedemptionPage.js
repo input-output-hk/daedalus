@@ -25,11 +25,12 @@ export default class AdaRedemptionPage extends Component {
     const { wallets, adaRedemption } = this.props.stores;
     const {
       redeemAdaRequest, redeemPaperVendedAdaRequest, isCertificateEncrypted, isValidRedemptionKey,
-      redemptionType, isValidRedemptionMnemonic, isValidPaperVendRedemptionKey, error
+      redemptionType, isValidRedemptionMnemonic, isValidPaperVendRedemptionKey,
+      isRedemptionDisclaimerAccepted, error
     } = adaRedemption;
     const {
       chooseRedemptionType, setCertificate, setPassPhrase, setRedemptionCode, removeCertificate,
-      setEmail, setAdaPasscode, setAdaAmount
+      setEmail, setAdaPasscode, setAdaAmount, acceptRedemptionDisclaimer
     } = this.props.actions.adaRedemption;
     const selectableWallets = wallets.all.map((w) => ({
       value: w.id, label: w.name
@@ -73,6 +74,8 @@ export default class AdaRedemptionPage extends Component {
             showInputsForDecryptingForceVendedCertificate
           }
           showPassPhraseWidget={showPassPhraseWidget}
+          isRedemptionDisclaimerAccepted={isRedemptionDisclaimerAccepted}
+          onAcceptRedemptionDisclaimer={() => acceptRedemptionDisclaimer.trigger()}
         />
       </Layout>
     );

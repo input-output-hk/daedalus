@@ -11,7 +11,7 @@ export default class WalletRestoreDialogContainer extends Component {
 
   props: InjectedDialogContainerProps;
 
-  onSubmit = (values: { recoveryPhrase: string, walletName: string }) => {
+  onSubmit = (values: { recoveryPhrase: string, walletName: string, walletPassword: ?string }) => {
     this.props.actions.wallets.restoreWallet.trigger(values);
   };
 

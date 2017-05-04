@@ -6,10 +6,40 @@ export default defineMessages({
     defaultMessage: '!!!This field is required.',
     description: 'Error message when required fields are left empty.'
   },
+  invalidMnemonic: {
+    id: 'global.errors.invalidMnemonic',
+    defaultMessage: '!!!Invalid phrase entered, please check.',
+    description: 'Error message shown when invalid bip39 mnemonic was entered.'
+  },
+  invalidEmail: {
+    id: 'global.errors.invalidEmail',
+    defaultMessage: '!!!Invalid email entered, please check.',
+    description: 'Error message shown when invalid email was entered.'
+  },
+  invalidAdaRedemptionCertificate: {
+    id: 'global.errors.AdaRedemptionCertificateParseError',
+    defaultMessage: '!!!The ADA redemption code could not be parsed from the given document.',
+    description: 'Error message shown when invalid Ada redemption certificate was uploaded.',
+  },
+  invalidAdaRedemptionEncryptedCertificate: {
+    id: 'global.errors.AdaRedemptionEncryptedCertificateParseError',
+    defaultMessage: '!!!The ADA redemption code could not be parsed, please check your passphrase.',
+    description: 'Error message shown when invalid Ada redemption encrypted certificate was uploaded.',
+  },
   invalidWalletName: {
     id: 'global.errors.invalidWalletName',
     defaultMessage: '!!!The wallet name must have at least 3 letters.',
     description: 'Error message shown when invalid wallet name was entered in create wallet dialog.'
+  },
+  invalidWalletPassword: {
+    id: 'global.errors.invalidWalletPassword',
+    defaultMessage: '!!!Minimum 6 letters.',
+    description: 'Error message shown when invalid wallet password was entered in create wallet dialog.'
+  },
+  invalidRepeatPassword: {
+    id: 'global.errors.invalidRepeatPassword',
+    defaultMessage: '!!!Doesn\'t match.',
+    description: 'Error message shown when wallet password and repeat passwords don\'t match in create wallet dialog.'
   },
   cancel: {
     id: 'global.labels.cancel',
@@ -25,21 +55,6 @@ export default defineMessages({
     id: 'global.labels.save',
     defaultMessage: '!!!Save',
     description: 'The word "save" reused at several places (like save buttons)',
-  },
-  invalidMnemonic: {
-    id: 'global.errors.invalidMnemonic',
-    defaultMessage: '!!!Invalid phrase entered, please check.',
-    description: 'Error message shown when invalid bip39 mnemonic was entered.'
-  },
-  invalidAdaRedemptionCertificate: {
-    id: 'global.errors.AdaRedemptionCertificateParseError',
-    defaultMessage: '!!!The ADA redemption code could not be parsed from the given document.',
-    description: 'Error message shown when invalid Ada redemption certificate was uploaded.',
-  },
-  invalidEmail: {
-    id: 'global.errors.invalidEmail',
-    defaultMessage: '!!!Invalid email entered, please check.',
-    description: 'Error message shown when invalid email was entered.'
   },
   languageEnglish: {
     id: 'global.language.english',

@@ -1,27 +1,32 @@
 @import "../../themes/mixins/animations";
 
 .component {
-  width: 100%;
   height: 100%;
   transition: background-color 500ms;
+  width: 100%;
   &.is-connecting {
     background-color: $color-primary;
   }
 }
 
-.connecting, .syncing {
+.connecting,
+.syncing {
+  bottom: 60px;
   position: absolute;
   text-align: center;
-  bottom: 60px;
   width: 100%;
 }
 
+.syncing {
+  color: #5e6066;
+}
+
 .logo {
-  position: absolute;
   display: block;
-  width: 86px;
-  top: calc(50% - 40px);
   left: calc(50% - (86px/2));
+  position: absolute;
+  top: calc(50% - 40px);
+  width: 86px;
 }
 
 .headline {
@@ -30,13 +35,13 @@
 }
 
 .connecting {
-  color: white;
+  color: #fff;
   .headline {
     overflow: visible;
     @include animated-ellipsis($width: 16px);
   }
 }
 
-.syncing {
-  color: #5e6066;
+.component, .headline, .logo {
+  -webkit-backface-visibility: hidden;
 }

@@ -80,6 +80,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Please enter a title with at least 3 characters.',
     description: 'Error message shown when invalid transaction title was entered.',
   },
+  walletPasswordLabel: {
+    id: 'wallet.send.form.walletPasswordLabel',
+    defaultMessage: '!!!Wallet password',
+    description: 'Label for the "Wallet password" input in the wallet send form.'
+  },
+  passwordFieldPlaceholder: {
+    id: 'wallet.send.form.passwordFieldPlaceholder',
+    defaultMessage: '!!!Password',
+    description: 'Placeholder for the "Password" inputs in the wallet send form.'
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -91,6 +101,7 @@ export default class WalletSendForm extends Component {
     onSubmit: Function,
     isSubmitting: boolean,
     addressValidator: Function,
+    isWalletPasswordSet: boolean,
     error?: ?LocalizableError,
   };
 
@@ -109,7 +120,7 @@ export default class WalletSendForm extends Component {
         label: this.context.intl.formatMessage(messages.receiverLabel),
         placeholder: this.context.intl.formatMessage(messages.receiverHint),
         value: '',
-        validate: ({ field }) => {
+        validators: ({ field }) => {
           const value = field.value;
           if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           return this.props.addressValidator(field.value)
@@ -121,11 +132,24 @@ export default class WalletSendForm extends Component {
         label: this.context.intl.formatMessage(messages.amountLabel),
         placeholder: this.context.intl.formatMessage(messages.amountHint),
         value: '',
-        validate: ({ field }) => {
+        validators: ({ field }) => {
           const amountInLovelaces = this.adaToLovelaces(field.value);
           const isValid = isValidAmountInLovelaces(amountInLovelaces);
           return [isValid, this.context.intl.formatMessage(messages.invalidAmount)];
         },
+        bindings: 'ReactToolbox',
+      },
+      walletPassword: {
+        type: 'password',
+        label: this.context.intl.formatMessage(messages.walletPasswordLabel),
+        placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
+        value: '',
+        validators: [({ field }) => {
+          if (this.props.isWalletPasswordSet && field.value === '') {
+            return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
+          }
+          return [true];
+        }],
         bindings: 'ReactToolbox',
       },
       currency: {
@@ -135,15 +159,21 @@ export default class WalletSendForm extends Component {
   }, {
     options: {
       validateOnChange: true,
+      validationDebounceWait: 250,
     },
   });
 
   submit() {
     this.form.submit({
       onSuccess: (form) => {
-        const formValues = form.values();
-        formValues.amount = this.adaToLovelaces(formValues.amount);
-        this.props.onSubmit(formValues);
+        const { isWalletPasswordSet } = this.props;
+        const { receiver, amount, walletPassword } = form.values();
+        const transactionData = {
+          receiver,
+          amount: this.adaToLovelaces(amount),
+          password: isWalletPasswordSet ? walletPassword : null,
+        };
+        this.props.onSubmit(transactionData);
       },
       onError: () => {}
     });
@@ -152,7 +182,7 @@ export default class WalletSendForm extends Component {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { isSubmitting, error } = this.props;
+    const { isWalletPasswordSet, isSubmitting, error } = this.props;
     const amountField = form.$('amount');
     const amountFieldClasses = classnames([
       'amount', 'input_input',
@@ -200,6 +230,10 @@ export default class WalletSendForm extends Component {
               ) : null}
             </div>
           </div>
+
+          {isWalletPasswordSet ? (
+            <Input {...form.$('walletPassword').bind()} />
+          ) : null}
 
           {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
 

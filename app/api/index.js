@@ -22,6 +22,7 @@ export type CreateWalletRequest = {
   name: string,
   currency: string,
   mnemonic: string,
+  password: ?string,
 };
 
 export type CreateWalletResponse = Wallet;
@@ -40,6 +41,7 @@ export type CreateTransactionRequest = {
   currency: string,
   title: string,
   description: ?string,
+  password: ?string,
 };
 
 export type CreateTransactionResponse = WalletTransaction;
@@ -53,6 +55,7 @@ export type GetWalletRecoveryPhraseResponse = string[];
 export type RestoreWalletRequest = {
   recoveryPhrase: string,
   walletName: string,
+  walletPassword: ?string,
 };
 
 export type RestoreWalletResponse = Wallet;

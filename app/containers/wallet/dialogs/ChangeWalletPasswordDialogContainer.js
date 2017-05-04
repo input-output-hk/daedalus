@@ -22,7 +22,7 @@ export default class ChangeWalletPasswordDialogContainer extends Component {
 
     return (
       <ChangeWalletPasswordDialog
-        hasWalletPassword={activeWallet.hasPassword}
+        isWalletPasswordSet={activeWallet.hasPassword}
         currentPasswordValue={dialogData.currentPasswordValue}
         newPasswordValue={dialogData.newPasswordValue}
         repeatedPasswordValue={dialogData.repeatedPasswordValue}

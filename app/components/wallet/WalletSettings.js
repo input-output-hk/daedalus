@@ -45,7 +45,7 @@ export default class WalletSettings extends Component {
     assuranceLevels: Array<{ value: string, label: ReactIntlMessage }>,
     walletAssurance: string,
     onWalletAssuranceLevelUpdate: Function,
-    hasWalletPassword: boolean,
+    isWalletPasswordSet: boolean,
     walletPasswordUpdateDate: ?Date,
     error?: ?LocalizableError,
     openDialogAction: Function,
@@ -61,7 +61,7 @@ export default class WalletSettings extends Component {
     const {
       assuranceLevels, walletAssurance,
       onWalletAssuranceLevelUpdate,
-      hasWalletPassword,
+      isWalletPasswordSet,
       walletPasswordUpdateDate, error,
       openDialogAction, isDialogOpen,
     } = this.props;
@@ -71,7 +71,7 @@ export default class WalletSettings extends Component {
       label: intl.formatMessage(assurance.label),
     }));
 
-    const passwordMessage = hasWalletPassword ? (
+    const passwordMessage = isWalletPasswordSet ? (
       intl.formatMessage(messages.passwordLastUpdated, {
         lastUpdated: moment(walletPasswordUpdateDate).fromNow(),
       })
