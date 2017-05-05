@@ -6,7 +6,8 @@ import RTAppBar from 'react-toolbox/lib/app_bar/AppBar';
 import { observer } from 'mobx-react';
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import Wallet from '../../domain/Wallet';
-import menuIcon from '../../assets/images/menu-ic.svg';
+import menuIconOpened from '../../assets/images/menu-second-level-ic.svg';
+import menuIconClosed from '../../assets/images/menu-ic.svg';
 import styles from './TopBar.scss';
 import { matchRoute } from '../../lib/routing-helpers';
 import { ROUTES } from '../../Routes';
@@ -19,12 +20,14 @@ export default class TopBar extends Component {
     children?: ?Children,
     activeWallet?: ?Wallet,
     currentRoute: string,
+    showSubMenus?: ?boolean,
   };
 
   render() {
-    const { onToggleSidebar, activeWallet, currentRoute } = this.props;
+    const { onToggleSidebar, activeWallet, currentRoute, showSubMenus } = this.props;
     const walletRoutesMatch = matchRoute(`${ROUTES.WALLETS.ROOT}/:id(*page)`, currentRoute);
-    const sidebarToggleIcon = onToggleSidebar && <img className={styles.sidebarIcon} src={menuIcon} role="presentation" />;
+    const sidebarToggleIconOpened = onToggleSidebar && <img className={styles.sidebarIcon} src={menuIconOpened} role="presentation" />;
+    const sidebarToggleIconClosed = onToggleSidebar && <img className={styles.sidebarIcon} src={menuIconClosed} role="presentation" />;
     const showWalletInfo = walletRoutesMatch && activeWallet != null;
     const topBarStyles = classNames([
       showWalletInfo ? styles.withWallet : styles.withoutWallet,
@@ -39,10 +42,19 @@ export default class TopBar extends Component {
       </div>
     ) : null;
 
+    let sidebarIcon;
+    if (walletRoutesMatch) {
+      if (showSubMenus) {
+        sidebarIcon = sidebarToggleIconOpened;
+      } else {
+        sidebarIcon = sidebarToggleIconClosed;
+      }
+    }
+
     return (
       <RTAppBar
         className={topBarStyles}
-        leftIcon={walletRoutesMatch ? sidebarToggleIcon : null}
+        leftIcon={sidebarIcon}
         onLeftIconClick={walletRoutesMatch ? onToggleSidebar : null}
       >
         <div className={styles.topBarTitle}>{topBarTitle}</div>

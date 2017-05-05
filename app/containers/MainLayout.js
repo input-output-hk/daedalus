@@ -79,6 +79,7 @@ export default class MainLayout extends Component {
         onToggleSidebar={actions.sidebar.toggleSubMenus.trigger}
         activeWallet={activeWallet}
         currentRoute={app.currentRoute}
+        showSubMenus={sidebar.isShowingSubMenus}
       >
         {testEnvironmentLabel}
         <NodeSyncStatusIcon
