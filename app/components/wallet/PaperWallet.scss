@@ -1,0 +1,33 @@
+.component {
+  background-color: $color-primary-bg;
+  display: flex;
+  flex-direction: column;
+  font-family: $font-regular;
+  height: 100%;
+  padding: 20px;
+
+  h1, p, button {
+    margin-bottom: 20px;
+  }
+
+  h1 {
+    font-size: 20px;
+  }
+
+  button {
+    background: #efefef;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    padding: 8px 16px;
+    &:hover {
+      box-shadow: 0 0 3px rgba(0,0,0,0.25);
+      transform: all 200ms ease;
+    }
+  }
+
+  .page {
+    border: 1px solid black;
+    width: 100%;
+  }
+}

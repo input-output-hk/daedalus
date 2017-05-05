@@ -12,6 +12,7 @@ import WalletSendPage from './containers/wallet/WalletSendPage';
 import WalletReceivePage from './containers/wallet/WalletReceivePage';
 import AdaRedemptionPage from './containers/wallet/AdaRedemptionPage';
 import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
+import PaperWalletPage from './containers/wallet/PaperWalletPage';
 import NoWalletsPage from './containers/wallet/NoWalletsPage';
 import LanguageSelectionPage from './containers/profile/LanguageSelectionPage';
 import Settings from './containers/settings/Settings';
@@ -35,6 +36,7 @@ export const ROUTES = {
     SEND: '/wallets/:id/send',
     RECEIVE: '/wallets/:id/receive',
     SETTINGS: '/wallets/:id/settings',
+    PAPER_WALLET: '/wallets/:id/paper-wallet',
   },
   SETTINGS: {
     ROOT: '/settings',
@@ -56,6 +58,7 @@ export default (
       <Route path={ROUTES.WALLETS.SEND} component={WalletSendPage} />
       <Route path={ROUTES.WALLETS.RECEIVE} component={WalletReceivePage} />
       <Route path={ROUTES.WALLETS.SETTINGS} component={WalletSettingsPage} />
+      <Route path={ROUTES.WALLETS.PAPER_WALLET} component={PaperWalletPage} />
     </Route>
     <Route path="/settings" component={Settings}>
       <IndexRedirect to="general" />
