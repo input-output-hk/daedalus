@@ -5,6 +5,7 @@ import Button from 'react-toolbox/lib/button/Button';
 import { defineMessages, intlShape } from 'react-intl';
 import CheckboxWithLongLabel from '../../widgets/forms/CheckboxWithLongLabel';
 import LocalizableError from '../../../i18n/LocalizableError';
+import termsOfUseMessages from '../../../i18n/termsOfUse';
 import styles from './TermsOfUseForm.scss';
 
 const messages = defineMessages({
@@ -55,61 +56,34 @@ export default class TermsOfUseForm extends Component {
         <div className={styles.centeredBox}>
 
           <div className={styles.terms}>
-            <h1>Terms of use</h1>
-
-            <p>
-              First paragraph quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur,
-              adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore
-              some link aliquam quaerat voluptatem.
-            </p>
-
-            <p>
-              Second paragraph ad minima veniam, quis nostrum exercitationem ullam corporis
-              suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum
-              iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur,
-              vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?
-            </p>
-
+            <h1>{intl.formatMessage(termsOfUseMessages.label)}</h1>
+            <p>{intl.formatMessage(termsOfUseMessages.firstParagraph)}</p>
+            <p>{intl.formatMessage(termsOfUseMessages.secondParagraph)}</p>
             <ol>
               <li>
-                <h2>1. Numbered title</h2>
+                <h2>{intl.formatMessage(termsOfUseMessages.firstNumberedTitle)}</h2>
                 <ul>
                   <li>
-                    <strong>1.1 Sub-title name.</strong>
-                    At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
-                    praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias
-                    excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui
-                    officia deserunt mollitia animi, id est laborum et dolorum fuga.
+                    <strong>{intl.formatMessage(termsOfUseMessages.firstSubtitle)}</strong>
+                    {intl.formatMessage(termsOfUseMessages.firstListText)}
                   </li>
                   <li>
-                    <strong>1.2 Sub-title name.</strong>
-                    Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore,
-                    cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod
-                    maxime placeat facere possimus, omnis voluptas assumenda est,
-                    omnis dolor repellendus.
+                    <strong>{intl.formatMessage(termsOfUseMessages.secondSubtitle)}</strong>
+                    {intl.formatMessage(termsOfUseMessages.secondListText)}
                   </li>
                 </ul>
               </li>
-
               <li>
-                <h2>2. Numbered title</h2>
+                <h2>{intl.formatMessage(termsOfUseMessages.secondNumberedTitle)}</h2>
                 <ul>
                   <li>
-                    <strong>2.1 Sub-title name.</strong>
-                    At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis
-                    praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias
-                    excepturi sint occaecati cupiditate non provident, similique sunt in culpa...
-                    and so on...
+                    <strong>{intl.formatMessage(termsOfUseMessages.thirdSubtitle)}</strong>
+                    {intl.formatMessage(termsOfUseMessages.thirdListText)}
                   </li>
                 </ul>
               </li>
             </ol>
-
-            <p>
-              Last paragraph quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur,
-              adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore
-              some link aliquam quaerat voluptatem.
-            </p>
+            <p>{intl.formatMessage(termsOfUseMessages.lastParagraph)}</p>
 
             <CheckboxWithLongLabel
               className={styles.checkbox}
@@ -117,7 +91,6 @@ export default class TermsOfUseForm extends Component {
               onChange={this.toggleAcceptance.bind(this)}
               checked={areTermsOfUseAccepted}
             />
-
           </div>
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}

@@ -236,13 +236,13 @@
         "description": "Label for the \"I agree with terms of use\" checkbox.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 16
         },
         "file": "app/components/profile/terms-of-use/TermsOfUseForm.js",
         "id": "profile.termsOfUse.checkboxLabel",
         "start": {
           "column": 17,
-          "line": 11
+          "line": 12
         }
       },
       {
@@ -250,13 +250,13 @@
         "description": "Label for the \"Terms of use\" form submit button.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "app/components/profile/terms-of-use/TermsOfUseForm.js",
         "id": "profile.termsOfUse.submitLabel",
         "start": {
           "column": 15,
-          "line": 16
+          "line": 17
         }
       }
     ],
@@ -295,6 +295,20 @@
         "start": {
           "column": 11,
           "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Terms of use",
+        "description": "Label for the \"Terms of use\" link in the settings menu.",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "app/components/settings/menu/SettingsMenu.js",
+        "id": "settings.menu.termsOfUse.link.label",
+        "start": {
+          "column": 14,
+          "line": 15
         }
       }
     ],
@@ -2392,13 +2406,13 @@
         "description": "Error message when required fields are left empty.",
         "end": {
           "column": 3,
-          "line": 9
+          "line": 8
         },
-        "file": "app/i18n/errors.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.errors.fieldIsRequired",
         "start": {
           "column": 19,
-          "line": 5
+          "line": 4
         }
       },
       {
@@ -2406,13 +2420,13 @@
         "description": "Error message shown when invalid bip39 mnemonic was entered.",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 13
         },
-        "file": "app/i18n/errors.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.errors.invalidMnemonic",
         "start": {
           "column": 19,
-          "line": 10
+          "line": 9
         }
       },
       {
@@ -2420,13 +2434,13 @@
         "description": "Error message shown when invalid email was entered.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 18
         },
-        "file": "app/i18n/errors.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.errors.invalidEmail",
         "start": {
           "column": 16,
-          "line": 15
+          "line": 14
         }
       },
       {
@@ -2434,46 +2448,41 @@
         "description": "Error message shown when invalid Ada redemption certificate was uploaded.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 23
         },
-        "file": "app/i18n/errors.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.errors.AdaRedemptionCertificateParseError",
         "start": {
           "column": 35,
-          "line": 20
+          "line": 19
         }
       },
       {
         "defaultMessage": "!!!The ADA redemption code could not be parsed, please check your passphrase.",
-        "description": "Error message shown when invalid Ada redemption certificate was uploaded.",
+        "description": "Error message shown when invalid Ada redemption encrypted certificate was uploaded.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 28
         },
-        "file": "app/i18n/errors.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.errors.AdaRedemptionEncryptedCertificateParseError",
         "start": {
           "column": 44,
-          "line": 25
+          "line": 24
         }
-      }
-    ],
-    "path": "app/i18n/errors.json"
-  },
-  {
-    "descriptors": [
+      },
       {
         "defaultMessage": "!!!The wallet name must have at least 3 letters.",
         "description": "Error message shown when invalid wallet name was entered in create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 8
+          "line": 33
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.errors.invalidWalletName",
         "start": {
           "column": 21,
-          "line": 4
+          "line": 29
         }
       },
       {
@@ -2481,13 +2490,13 @@
         "description": "Error message shown when invalid wallet password was entered in create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 13
+          "line": 38
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.errors.invalidWalletPassword",
         "start": {
           "column": 25,
-          "line": 9
+          "line": 34
         }
       },
       {
@@ -2495,13 +2504,13 @@
         "description": "Error message shown when wallet password and repeat passwords don't match in create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 43
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.errors.invalidRepeatPassword",
         "start": {
           "column": 25,
-          "line": 14
+          "line": 39
         }
       },
       {
@@ -2509,13 +2518,13 @@
         "description": "The word \"cancel\" reused at several places (like cancel buttons)",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 48
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.labels.cancel",
         "start": {
           "column": 10,
-          "line": 19
+          "line": 44
         }
       },
       {
@@ -2523,13 +2532,13 @@
         "description": "The word \"change\" reused at several places (like change buttons)",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 53
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.labels.change",
         "start": {
           "column": 10,
-          "line": 24
+          "line": 49
         }
       },
       {
@@ -2537,13 +2546,13 @@
         "description": "The word \"save\" reused at several places (like save buttons)",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 58
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.labels.save",
         "start": {
           "column": 8,
-          "line": 29
+          "line": 54
         }
       },
       {
@@ -2551,13 +2560,13 @@
         "description": "Language name for \"English\" language.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 63
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.english",
         "start": {
           "column": 19,
-          "line": 34
+          "line": 59
         }
       },
       {
@@ -2565,13 +2574,13 @@
         "description": "Language name for \"Japanese\" language.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 68
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.japanese",
         "start": {
           "column": 20,
-          "line": 39
+          "line": 64
         }
       },
       {
@@ -2579,13 +2588,13 @@
         "description": "Language name for \"Chinese\" language.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 73
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.chinese",
         "start": {
           "column": 19,
-          "line": 44
+          "line": 69
         }
       },
       {
@@ -2593,13 +2602,13 @@
         "description": "Language name for \"Korean\" language.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 78
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.korean",
         "start": {
           "column": 18,
-          "line": 49
+          "line": 74
         }
       },
       {
@@ -2607,13 +2616,13 @@
         "description": "Language name for \"German\" language.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 83
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.german",
         "start": {
           "column": 18,
-          "line": 54
+          "line": 79
         }
       },
       {
@@ -2621,13 +2630,13 @@
         "description": "Language name for \"Croatian\" language.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 88
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.croatian",
         "start": {
           "column": 20,
-          "line": 59
+          "line": 84
         }
       },
       {
@@ -2635,13 +2644,13 @@
         "description": "Name for \"Normal\" transaction assurance security level.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 93
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.assuranceLevel.normal",
         "start": {
           "column": 24,
-          "line": 64
+          "line": 89
         }
       },
       {
@@ -2649,13 +2658,13 @@
         "description": "Name for \"Strict\" transaction assurance security level.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 98
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.assuranceLevel.strict",
         "start": {
           "column": 24,
-          "line": 69
+          "line": 94
         }
       },
       {
@@ -2663,13 +2672,13 @@
         "description": "Name for \"Ada\" unit.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 103
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.unit.ada",
         "start": {
           "column": 11,
-          "line": 74
+          "line": 99
         }
       },
       {
@@ -2677,13 +2686,13 @@
         "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 108
         },
         "file": "app/i18n/global-messages.js",
         "id": "wallet.transaction.assuranceLevel.low",
         "start": {
           "column": 32,
-          "line": 79
+          "line": 104
         }
       },
       {
@@ -2691,13 +2700,13 @@
         "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 113
         },
         "file": "app/i18n/global-messages.js",
         "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
           "column": 35,
-          "line": 84
+          "line": 109
         }
       },
       {
@@ -2705,16 +2714,189 @@
         "description": "Transaction assurance level \"high\".",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 118
         },
         "file": "app/i18n/global-messages.js",
         "id": "wallet.transaction.assuranceLevel.high",
         "start": {
           "column": 33,
-          "line": 89
+          "line": 114
         }
       }
     ],
     "path": "app/i18n/global-messages.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Terms of Use",
+        "description": "Terms of use title",
+        "end": {
+          "column": 3,
+          "line": 8
+        },
+        "file": "app/i18n/termsOfUse.js",
+        "id": "termsOfUse.label",
+        "start": {
+          "column": 9,
+          "line": 4
+        }
+      },
+      {
+        "defaultMessage": "!!!First paragraph quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore some link aliquam quaerat voluptatem.",
+        "description": "Terms of use first paragraph",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "app/i18n/termsOfUse.js",
+        "id": "termsOfUse.firstParagraph",
+        "start": {
+          "column": 18,
+          "line": 9
+        }
+      },
+      {
+        "defaultMessage": "!!!Second paragraph ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?",
+        "description": "Terms of use second paragraph",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "app/i18n/termsOfUse.js",
+        "id": "termsOfUse.secondParagraph",
+        "start": {
+          "column": 19,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!1. Numbered title",
+        "description": "Terms of use first numbered title",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "app/i18n/termsOfUse.js",
+        "id": "termsOfUse.firstNumberedTitle",
+        "start": {
+          "column": 22,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!2. Numbered title",
+        "description": "Terms of use second numbered title",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "app/i18n/termsOfUse.js",
+        "id": "termsOfUse.secondNumberedTitle",
+        "start": {
+          "column": 23,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!1.1 Sub-title name.",
+        "description": "Terms of use first subtitle",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "app/i18n/termsOfUse.js",
+        "id": "termsOfUse.firstSubtitle",
+        "start": {
+          "column": 17,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!1.2 Sub-title name.",
+        "description": "Terms of use second subtitle",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "app/i18n/termsOfUse.js",
+        "id": "termsOfUse.secondSubtitle",
+        "start": {
+          "column": 18,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!2.1 Sub-title name.",
+        "description": "Terms of use third subtitle",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "app/i18n/termsOfUse.js",
+        "id": "termsOfUse.thirdSubtitle",
+        "start": {
+          "column": 17,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
+        "description": "Terms of use first list text",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "app/i18n/termsOfUse.js",
+        "id": "termsOfUse.firstListText",
+        "start": {
+          "column": 17,
+          "line": 44
+        }
+      },
+      {
+        "defaultMessage": "!!!Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.",
+        "description": "Terms of use second list text",
+        "end": {
+          "column": 3,
+          "line": 53
+        },
+        "file": "app/i18n/termsOfUse.js",
+        "id": "termsOfUse.secondListText",
+        "start": {
+          "column": 18,
+          "line": 49
+        }
+      },
+      {
+        "defaultMessage": "!!!At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa... and so on...",
+        "description": "Terms of use third list text",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "app/i18n/termsOfUse.js",
+        "id": "termsOfUse.thirdListText",
+        "start": {
+          "column": 17,
+          "line": 54
+        }
+      },
+      {
+        "defaultMessage": "!!!Last paragraph quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore some link aliquam quaerat voluptatem.",
+        "description": "Terms of use last paragraph",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "app/i18n/termsOfUse.js",
+        "id": "termsOfUse.lastParagraph",
+        "start": {
+          "column": 17,
+          "line": 59
+        }
+      }
+    ],
+    "path": "app/i18n/termsOfUse.json"
   }
 ]

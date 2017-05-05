@@ -4,6 +4,7 @@
 .component {
   padding: 20px;
   height: 100%;
+  overflow-x: hidden;
   overflow-y: overlay;
   &::-webkit-scrollbar-button {
     height: 7px;
