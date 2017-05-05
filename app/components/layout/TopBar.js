@@ -26,8 +26,6 @@ export default class TopBar extends Component {
   render() {
     const { onToggleSidebar, activeWallet, currentRoute, showSubMenus } = this.props;
     const walletRoutesMatch = matchRoute(`${ROUTES.WALLETS.ROOT}/:id(*page)`, currentRoute);
-    const sidebarToggleIconOpened = onToggleSidebar && <img className={styles.sidebarIcon} src={menuIconOpened} role="presentation" />;
-    const sidebarToggleIconClosed = onToggleSidebar && <img className={styles.sidebarIcon} src={menuIconClosed} role="presentation" />;
     const showWalletInfo = walletRoutesMatch && activeWallet != null;
     const topBarStyles = classNames([
       showWalletInfo ? styles.withWallet : styles.withoutWallet,
@@ -42,19 +40,18 @@ export default class TopBar extends Component {
       </div>
     ) : null;
 
-    let sidebarIcon;
-    if (walletRoutesMatch) {
-      if (showSubMenus) {
-        sidebarIcon = sidebarToggleIconOpened;
-      } else {
-        sidebarIcon = sidebarToggleIconClosed;
-      }
-    }
+    const sidebarToggleIcon = (
+      <img
+        className={styles.sidebarIcon}
+        src={showSubMenus ? menuIconOpened : menuIconClosed}
+        role="presentation"
+      />
+    );
 
     return (
       <RTAppBar
         className={topBarStyles}
-        leftIcon={sidebarIcon}
+        leftIcon={walletRoutesMatch ? sidebarToggleIcon : null}
         onLeftIconClick={walletRoutesMatch ? onToggleSidebar : null}
       >
         <div className={styles.topBarTitle}>{topBarTitle}</div>
