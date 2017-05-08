@@ -53,21 +53,6 @@ main = do
   -- Rewrite libs paths and bundle them
   _ <- chain dir $ fmap T.pack [dir <> "/cardano-launcher", dir <> "/cardano-node"]
 
-  -- Prepare postinstall script
-  createDirectoryIfMissing False resDir
-  writeFile (resDir <> "/postinstall") $ unlines
-    [ "#!/usr/bin/env bash"
-    , "src_pkg=\"$1\""
-    , "dst_root=\"$2\""
-    , "dst_mount=\"$3\""
-    , "sys_root=\"$4\""
-    --
-    , "dst_dir=\"${dst_root}/Applications/Daedalus.app/Contents/MacOS/\""
-    , "cd \"${dst_dir}\""
-    , "bash ./build-certificates-unix.sh"
-    ]
-  run "chmod" ["+x", T.pack (resDir <> "/postinstall")]
-
   -- Prepare launcher
   de <- doesFileExist (dir <> "/Frontend")
   unless de $ renameFile (dir <> "/Daedalus") (dir <> "/Frontend")
