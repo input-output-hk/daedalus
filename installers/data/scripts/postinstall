@@ -11,4 +11,4 @@ sys_root="$4"
 
 cd "${dst_root}/Daedalus.app/Contents/MacOS/"
 
-bash ./build-certificates-unix.sh
+bash ./build-certificates-unix.sh | tee "$HOME/Library/Application Support/Daedalus/Logs/build-certificates.log"
