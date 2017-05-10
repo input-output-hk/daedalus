@@ -23,6 +23,7 @@ Changelog
 - Prevent redemption key reset after unsuccessful redemption
 - Ghost boxes on "Loading" screen
 - Reset Ada redemption form values on page load and certificate add/remove events
+- Prevent sidebar auto-hiding feature and always show submenus on wallets page load
 - Apply grammatical fixes to redemption instructions
 
 ### Chores

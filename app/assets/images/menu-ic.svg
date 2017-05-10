@@ -1,18 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="60px" height="50px" viewBox="0 0 60 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <!-- Generator: sketchtool 40.3 (33839) - http://www.bohemiancoding.com/sketch -->
-    <title>A91B8AD4-63C1-4C13-8589-4A9EAAF5DE77</title>
-    <desc>Created with sketchtool.</desc>
-    <defs></defs>
-    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="header-opened-menu" transform="translate(-100.000000, -59.000000)" fill="#FAFBFC">
-            <g id="header">
-                <g id="menu-ic" transform="translate(100.000000, 59.000000)">
-                    <rect id="Rectangle" x="0" y="0" width="60" height="2" rx="1"></rect>
-                    <rect id="Rectangle-Copy" x="0" y="24" width="40" height="2" rx="1"></rect>
-                    <rect id="Rectangle-Copy-2" x="0" y="48" width="60" height="2" rx="1"></rect>
-                </g>
-            </g>
-        </g>
-    </g>
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="34" viewBox="0 0 40 34">
+    <path fill="#FAFBFC" fill-rule="evenodd" d="M0 .5h40v3H0v-3zm0 15h40v3H0v-3zm0 15h40v3H0v-3z"/>
 </svg>
