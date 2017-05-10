@@ -7,8 +7,8 @@ import { matchRoute, buildRoute } from '../lib/routing-helpers';
 import CachedRequest from './lib/LocalizedCachedRequest';
 import Request from './lib/LocalizedRequest';
 import environment from '../environment';
-import config from '../config';
 import { ROUTES } from '../Routes';
+import WalletAddDialog from '../components/wallet/WalletAddDialog';
 import type {
   GetWalletsResponse,
   ImportKeyResponse,
@@ -36,15 +36,6 @@ export default class WalletsStore extends Store {
   @observable restoreRequest: Request<RestoreWalletResponse> = new Request(this.api.restoreWallet);
   /* eslint-enable max-len */
 
-  // DIALOGUES
-  @observable isAddWalletDialogOpen = false;
-  @observable isCreateWalletDialogOpen = false;
-  @observable isWalletRestoreDialogOpen = false;
-  @observable isWalletKeyImportDialogOpen = false;
-  @observable isWalletAddressCopyNotificationVisible = false;
-
-  _hideWalletAddressCopyNotificationTimeout = false;
-
   _newWalletDetails: { name: string, currency: string, mnemonic: string, password: ?string, } = {
     name: '',
     currency: '',
@@ -57,14 +48,9 @@ export default class WalletsStore extends Store {
     wallets.createWallet.listen(this._create);
     wallets.deleteWallet.listen(this._delete);
     wallets.sendMoney.listen(this._sendMoney);
-    wallets.toggleAddWallet.listen(this._toggleAddWallet);
-    wallets.toggleCreateWalletDialog.listen(this._toggleCreateWalletDialog);
-    wallets.toggleWalletRestore.listen(this._toggleWalletRestore);
     wallets.restoreWallet.listen(this._restoreWallet);
     wallets.importWalletFromKey.listen(this._importWalletFromKey);
-    wallets.toggleWalletKeyImportDialog.listen(this._toggleWalletKeyImportDialog);
     wallets.setActiveWallet.listen(this._setActiveWallet);
-    wallets.showWalletAddressCopyNotification.listen(this._onShowWalletAddressCopyNotification);
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishWalletCreation);
     this.registerReactions([
@@ -116,14 +102,15 @@ export default class WalletsStore extends Store {
   };
 
   _finishWalletCreation = async () => {
-    runInAction(() => { this.isAddWalletDialogOpen = false; });
     this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
     const wallet = await this.createWalletRequest.execute(this._newWalletDetails).promise;
     if (wallet) {
       await this.walletsRequest.patch(result => { result.push(wallet); });
       this.goToWalletRoute(wallet.id);
     } else {
-      runInAction(() => { this.isAddWalletDialogOpen = true; });
+      this.actions.dialogs.open.trigger({
+        dialog: WalletAddDialog,
+      });
     }
   };
 
@@ -198,48 +185,6 @@ export default class WalletsStore extends Store {
     }
   };
 
-  @action _toggleAddWallet = () => {
-    if (this.hasAnyWallets) this.isAddWalletDialogOpen = !this.isAddWalletDialogOpen;
-  };
-
-  @action _toggleCreateWalletDialog = () => {
-    if (!this.isCreateWalletDialogOpen) {
-      this.isAddWalletDialogOpen = false;
-      this.isCreateWalletDialogOpen = true;
-    } else {
-      this.isCreateWalletDialogOpen = false;
-      if (!this.hasAnyWallets) {
-        this.isAddWalletDialogOpen = true;
-      }
-    }
-  };
-
-  @action _toggleWalletKeyImportDialog = () => {
-    if (!this.isWalletKeyImportDialogOpen) {
-      this.isAddWalletDialogOpen = false;
-      this.isWalletKeyImportDialogOpen = true;
-    } else {
-      this.isWalletKeyImportDialogOpen = false;
-      if (!this.hasAnyWallets) {
-        this.isAddWalletDialogOpen = true;
-      }
-      this.importFromKeyRequest.reset();
-    }
-  };
-
-  @action _toggleWalletRestore = () => {
-    if (!this.isWalletRestoreDialogOpen) {
-      this.isAddWalletDialogOpen = false;
-      this.isWalletRestoreDialogOpen = true;
-    } else {
-      this.isWalletRestoreDialogOpen = false;
-      if (!this.hasAnyWallets) {
-        this.isAddWalletDialogOpen = true;
-      }
-      this.restoreRequest.reset();
-    }
-  };
-
   @action _restoreWallet = async (params: {
     recoveryPhrase: string,
     walletName: string,
@@ -248,7 +193,8 @@ export default class WalletsStore extends Store {
     const restoredWallet = await this.restoreRequest.execute(params).promise;
     if (!restoredWallet) throw new Error('Restored wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(restoredWallet);
-    this._toggleWalletRestore();
+    this.actions.dialogs.closeActiveDialog.trigger();
+    this.restoreRequest.reset();
     this.goToWalletRoute(restoredWallet.id);
     this.refreshWalletsData();
   };
@@ -259,7 +205,8 @@ export default class WalletsStore extends Store {
     const importedWallet = await this.importFromKeyRequest.execute(params).promise;
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(importedWallet);
-    this._toggleWalletKeyImportDialog();
+    this.actions.dialogs.closeActiveDialog.trigger();
+    this.importFromKeyRequest.reset();
     this.goToWalletRoute(importedWallet.id);
     this.refreshWalletsData();
   };
@@ -274,18 +221,17 @@ export default class WalletsStore extends Store {
     this.active = null;
   };
 
-  @action _setIsWalletDialogOpen = (isOpen: boolean) => {
-    this.isAddWalletDialogOpen = isOpen;
-  };
-
   goToWalletRoute(walletId: string) {
     const route = this.getWalletRoute(walletId);
     this.actions.router.goToRoute.trigger({ route });
   }
 
   _openAddWalletDialogWhenThereAreNoWallets = () => {
-    const isOpenWhenThereAreNoWallets = !this.hasAnyWallets;
-    this._setIsWalletDialogOpen(isOpenWhenThereAreNoWallets);
+    if (this.hasLoadedWallets && !this.hasAnyWallets) {
+      this.actions.dialogs.open.trigger({
+        dialog: WalletAddDialog,
+      });
+    }
   };
 
   _updateActiveWalletOnRouteChanges = () => {
@@ -321,21 +267,6 @@ export default class WalletsStore extends Store {
     await this.walletsRequest.patch(result => {
       if (!_.find(result, { id: wallet.id })) result.push(wallet);
     });
-  };
-
-  @action _hideWalletAddressCopyNotification = () => {
-    this.isWalletAddressCopyNotificationVisible = false;
-  };
-
-  @action _onShowWalletAddressCopyNotification = () => {
-    if (this._hideWalletAddressCopyNotificationTimeout) {
-      clearTimeout(this._hideWalletAddressCopyNotificationTimeout);
-    }
-    this._hideWalletAddressCopyNotificationTimeout = setTimeout(
-      this._hideWalletAddressCopyNotification,
-      config.wallets.ADDRESS_COPY_NOTIFICATION_DURATION
-    );
-    this.isWalletAddressCopyNotificationVisible = true;
   };
 
   @action _onRouteChange = (options: { route: string, params: ?Object }) => {

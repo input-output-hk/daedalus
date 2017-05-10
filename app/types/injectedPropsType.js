@@ -13,3 +13,10 @@ export type InjectedContainerProps = {
   actions: any | ActionsMap,
   children: Children,
 };
+
+export type InjectedDialogContainerProps = {
+  stores: any | StoresMap,
+  actions: any | ActionsMap,
+  children: Children,
+  onClose: Function,
+};

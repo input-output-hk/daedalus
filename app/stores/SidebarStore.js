@@ -3,6 +3,7 @@ import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
 import { ROUTES } from '../Routes';
 import { DECIMAL_PLACES_IN_ADA } from '../config/numbersConfig';
+import { matchRoute } from './../lib/routing-helpers';
 
 export default class SidebarStore extends Store {
 
@@ -12,10 +13,8 @@ export default class SidebarStore extends Store {
     SETTINGS: ROUTES.SETTINGS.ROOT,
   };
 
-  DEFAULT_WINDOW_WIDTH = 1150;
-
   @observable activeSidebarCategory: string = this.CATEGORIES.WALLETS;
-  @observable isShowingSubMenus: boolean = false;
+  @observable isShowingSubMenus: boolean = true;
 
   setup() {
     const actions = this.actions.sidebar;
@@ -24,8 +23,8 @@ export default class SidebarStore extends Store {
     actions.walletSelected.listen(this._onWalletSelected);
     this.registerReactions([
       this._syncSidebarRouteWithRouter,
+      this._showSubMenusOnWalletsPageLoad,
     ]);
-    this._setInitialSubMenusState();
   }
 
   @computed get wallets(): Array<SidebarWalletType> {
@@ -40,7 +39,6 @@ export default class SidebarStore extends Store {
 
   @action _toggleSubMenus = () => {
     this.isShowingSubMenus = !this.isShowingSubMenus;
-    window.removeEventListener('resize', this._handleWindowResize);
   };
 
   @action _onActivateSidebarCategory = (params: { category: string, showSubMenu?: boolean }) => {
@@ -57,14 +55,6 @@ export default class SidebarStore extends Store {
     }
   };
 
-  @action _handleWindowResize = () => {
-    if (window.innerWidth < this.DEFAULT_WINDOW_WIDTH) {
-      this.isShowingSubMenus = false;
-    } else {
-      this.isShowingSubMenus = true;
-    }
-  };
-
   @action _onWalletSelected = ({ walletId }: { walletId: string }) => {
     this.stores.wallets.goToWalletRoute(walletId);
   };
@@ -73,11 +63,8 @@ export default class SidebarStore extends Store {
     this.activeSidebarCategory = category;
   };
 
-  _setInitialSubMenusState = () => {
-    if (window.innerWidth >= this.DEFAULT_WINDOW_WIDTH) {
-      this.isShowingSubMenus = true;
-    }
-    window.addEventListener('resize', this._handleWindowResize);
+  @action _showSubMenus = () => {
+    this.isShowingSubMenus = true;
   };
 
   _syncSidebarRouteWithRouter = () => {
@@ -88,6 +75,13 @@ export default class SidebarStore extends Store {
       if (route.indexOf(category) === 0) this._setActivateSidebarCategory(category);
     });
   };
+
+  _showSubMenusOnWalletsPageLoad = () => {
+    const currentRoute = this.stores.app.currentRoute;
+    if (matchRoute(ROUTES.WALLETS.ROOT, currentRoute)) {
+      this._showSubMenus();
+    }
+  }
 
 }
 

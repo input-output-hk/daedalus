@@ -115,6 +115,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
         className={dialogClasses}
         title={intl.formatMessage(messages.recoveryPhrase)}
         actions={actions}
+        onOverlayClick={onCancelBackup}
         active
       >
         {!isValid && (

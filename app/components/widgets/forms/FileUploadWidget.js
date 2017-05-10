@@ -31,7 +31,7 @@ export default class FileUploadWidget extends Component {
           multiple={false}
           accept={acceptedFileTypes}
         >
-          { selectedFile ? (
+          {selectedFile ? (
             <div className={styles.fileName}>{selectedFile.name}</div>
           ) : (
             <div className={styles.hint}>{hint}</div>

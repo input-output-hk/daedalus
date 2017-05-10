@@ -25,6 +25,13 @@
   margin-bottom: 10px;
 }
 
+.fileName {
+  overflow: hidden;
+  padding-right: 50px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .hint {
   opacity: 0.5;
 }
