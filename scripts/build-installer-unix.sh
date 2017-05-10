@@ -59,7 +59,7 @@ upload_s3=
 test_install=
 
 daedalus_version="$1"; argnz "product version"; shift
-cardano_branch="$1";   argnz "Cardano SL branch to build Daedalus with"; shift
+cardano_branch="$(printf '%s' "$1" | tr '/' '-')"; argnz "Cardano SL branch to build Daedalus with"; shift
 
 case "$(uname -s)" in
         Darwin ) os=osx;   key=macos.p12;;
