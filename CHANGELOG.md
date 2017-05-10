@@ -23,6 +23,7 @@ Changelog
 - Prevent redemption key reset after unsuccessful redemption
 - Ghost boxes on "Loading" screen
 - Reset Ada redemption form values on page load and certificate add/remove events
+- Apply grammatical fixes to redemption instructions
 
 ### Chores
 
