@@ -1,12 +1,17 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-toolbox/lib/input/Input';
 import { defineMessages, intlShape } from 'react-intl';
+import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
-import styles from './ChangeWalletPasswordDialog.scss';
+import Switch from '../../widgets/Switch';
+import { isValidWalletPassword, isValidRepeatPassword } from '../../../lib/validations';
 import globalMessages from '../../../i18n/global-messages';
+import styles from './ChangeWalletPasswordDialog.scss';
+
 
 const messages = defineMessages({
   dialogTitleSetPassword: {
@@ -44,6 +49,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Password',
     description: 'Placeholder for the "Password" inputs in the change wallet password dialog.',
   },
+  passwordSwitchLabel: {
+    id: 'wallet.settings.changePassword.dialog.passwordSwitchLabel',
+    defaultMessage: '!!!Remove password',
+    description: 'Label for the "Check to deactivate password" switch in the change wallet password dialog.',
+  },
+  passwordSwitchPlaceholder: {
+    id: 'wallet.settings.changePassword.dialog.passwordSwitchPlaceholder',
+    defaultMessage: '!!!Check to deactivate password',
+    description: 'Text for the "Check to deactivate password" switch in the change wallet password dialog.',
+  },
 });
 
 @observer
@@ -69,36 +84,116 @@ export default class ChangeWalletPasswordDialog extends Component {
     intl: intlShape.isRequired,
   };
 
+  state = {
+    isSubmitting: false,
+    removePassword: false,
+  };
+
+  form = new ReactToolboxMobxForm({
+    fields: {
+      currentPassword: {
+        type: 'password',
+        label: this.context.intl.formatMessage(messages.currentPasswordLabel),
+        placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
+        value: '',
+        validators: [({ field }) => {
+          if (!this.props.isWalletPasswordSet) return [true];
+          return [
+            isValidWalletPassword(field.value), // TODO: replace with real current password check
+            this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
+          ];
+        }],
+        bindings: 'ReactToolbox',
+      },
+      walletPassword: {
+        type: 'password',
+        label: this.context.intl.formatMessage(messages[
+          this.props.isWalletPasswordSet ? 'newPasswordLabel' : 'walletPasswordLabel'
+        ]),
+        placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
+        value: '',
+        validators: [({ field }) => {
+          if (this.state.removePassword) return [true];
+          return [
+            isValidWalletPassword(field.value),
+            this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
+          ];
+        }],
+        bindings: 'ReactToolbox',
+      },
+      repeatPassword: {
+        type: 'password',
+        label: this.context.intl.formatMessage(messages.repeatPasswordLabel),
+        placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
+        value: '',
+        validators: [({ field, form }) => {
+          if (this.state.removePassword) return [true];
+          const walletPassword = form.$('walletPassword').value;
+          if (walletPassword.length === 0) return [true];
+          return [
+            isValidRepeatPassword(walletPassword, field.value),
+            this.context.intl.formatMessage(globalMessages.invalidRepeatPassword)
+          ];
+        }],
+        bindings: 'ReactToolbox',
+      },
+    }
+  }, {
+    options: {
+      validateOnChange: true,
+      validationDebounceWait: 250,
+    },
+  });
+
+  submit = () => {
+    this.form.submit({
+      onSuccess: (form) => {
+        this.setState({ isSubmitting: true });
+        const { removePassword } = this.state;
+        const { currentPassword, walletPassword } = form.values();
+        const passwordData = {
+          oldPassword: currentPassword,
+          newPassword: removePassword ? null : walletPassword,
+        };
+        this.props.onSave(passwordData);
+      },
+      onError: () => {
+        this.setState({ isSubmitting: false });
+      },
+    });
+  };
+
+  handlePasswordSwitchToggle = (value: boolean) => {
+    this.setState({ removePassword: value });
+  };
+
   handleDataChange = (key: string, value: string) => {
     this.props.onDataChange({ [key]: value });
   };
 
   render() {
+    const { form } = this;
     const { intl } = this.context;
     const {
       isWalletPasswordSet,
-      onSave,
       onCancel,
       currentPasswordValue,
       newPasswordValue,
       repeatedPasswordValue,
     } = this.props;
+    const { removePassword } = this.state;
 
-    const isCurrentPasswordBlank = currentPasswordValue.length === 0;
-    const isNewPasswordBlank = newPasswordValue.length === 0;
-    const isRepeatedPasswordCorrect = repeatedPasswordValue === newPasswordValue;
+    const walletPasswordFieldsClasses = classnames([
+      styles.walletPasswordFields,
+      removePassword ? styles.hidden : null
+    ]);
 
     const actions = [
       {
-        label: intl.formatMessage(globalMessages.save),
-        onClick: () => {
-          onSave({ oldPassword: currentPasswordValue, newPassword: newPasswordValue });
-        },
-        disabled: (
-          (isWalletPasswordSet && isCurrentPasswordBlank) ||
-          isNewPasswordBlank || !isRepeatedPasswordCorrect
-        ),
+        label: intl.formatMessage(globalMessages[removePassword ? 'remove' : 'save']),
+        onClick: this.submit,
         primary: true,
+        className: removePassword ? styles.removeButton : null,
       },
     ];
 
@@ -113,34 +208,41 @@ export default class ChangeWalletPasswordDialog extends Component {
       >
 
         {isWalletPasswordSet ? (
-          <Input
-            type="password"
-            className={styles.topInput}
-            label={intl.formatMessage(messages.currentPasswordLabel)}
-            placeholder={intl.formatMessage(messages.passwordFieldPlaceholder)}
-            value={currentPasswordValue}
-            onChange={(value) => this.handleDataChange('currentPasswordValue', value)}
-          />
+          <div className={styles.walletPassword}>
+            <div className="walletPasswordSwitch">
+              <Switch
+                label={intl.formatMessage(messages.passwordSwitchLabel)}
+                placeholder={intl.formatMessage(messages.passwordSwitchPlaceholder)}
+                active={removePassword}
+                onChange={this.handlePasswordSwitchToggle}
+              />
+            </div>
+
+            <Input
+              type="password"
+              value={currentPasswordValue}
+              onChange={(value) => this.handleDataChange('currentPasswordValue', value)}
+              {...form.$('currentPassword').bind()}
+            />
+          </div>
         ) : null}
 
-        <Input
-          type="password"
-          className={!isWalletPasswordSet ? styles.topInput : null}
-          label={intl.formatMessage(
-            !isWalletPasswordSet ? messages.walletPasswordLabel : messages.newPasswordLabel
-          )}
-          placeholder={intl.formatMessage(messages.passwordFieldPlaceholder)}
-          value={newPasswordValue}
-          onChange={(value) => this.handleDataChange('newPasswordValue', value)}
-        />
+        <div className={walletPasswordFieldsClasses}>
+          <Input
+            type="password"
+            className={styles.newPassword}
+            value={newPasswordValue}
+            onChange={(value) => this.handleDataChange('newPasswordValue', value)}
+            {...form.$('walletPassword').bind()}
+          />
 
-        <Input
-          type="password"
-          label={intl.formatMessage(messages.repeatPasswordLabel)}
-          placeholder={intl.formatMessage(messages.passwordFieldPlaceholder)}
-          value={repeatedPasswordValue}
-          onChange={(value) => this.handleDataChange('repeatedPasswordValue', value)}
-        />
+          <Input
+            type="password"
+            value={repeatedPasswordValue}
+            onChange={(value) => this.handleDataChange('repeatedPasswordValue', value)}
+            {...form.$('repeatPassword').bind()}
+          />
+        </div>
 
         <DialogCloseButton onClose={onCancel} />
 
