@@ -183,7 +183,7 @@ export default class CardanoClientApi {
     return ClientApi.isValidAddress(currency, address);
   }
 
-  isValidMnemonic(mnemonic: string): Promise<boolean> { // eslint-disable-line
+  isValidMnemonic(mnemonic: string): Promise<boolean> {
     return ClientApi.isValidMnemonic(12, mnemonic);
   }
 

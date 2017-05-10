@@ -88,12 +88,12 @@ export default class WalletRestoreDialog extends Component {
   props: {
     onSubmit: Function,
     onCancel: Function,
+    isSubmitting: boolean,
     mnemonicValidator: Function,
     error?: ?LocalizableError,
   };
 
   state = {
-    isSubmitting: false,
     createPassword: false,
   };
 
@@ -178,7 +178,6 @@ export default class WalletRestoreDialog extends Component {
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        this.setState({ isSubmitting: true });
         const { createPassword } = this.state;
         const { recoveryPhrase, walletName, walletPassword } = form.values();
         const walletData = {
@@ -188,17 +187,22 @@ export default class WalletRestoreDialog extends Component {
         };
         this.props.onSubmit(walletData);
       },
-      onError: () => {
-        this.setState({ isSubmitting: false });
-      }
+      onError: () => {}
     });
   };
 
   render() {
     const { intl } = this.context;
     const { form } = this;
-    const { error, onCancel } = this.props;
+    const { isSubmitting, error, onCancel } = this.props;
     const { createPassword } = this.state;
+
+    const dialogClasses = classnames([
+      styles.component,
+      'WalletRestoreDialog',
+      isSubmitting ? styles.isSubmitting : null
+    ]);
+
     const walletPasswordFieldsClasses = classnames([
       styles.walletPasswordFields,
       createPassword ? styles.show : null
@@ -206,9 +210,10 @@ export default class WalletRestoreDialog extends Component {
 
     return (
       <Dialog
-        className={styles.component}
+        className={dialogClasses}
         title={intl.formatMessage(messages.title)}
         actions={this.actions}
+        onOverlayClick={onCancel}
         active
       >
         <Input className="walletName" {...form.$('walletName').bind()} />

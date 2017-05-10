@@ -201,11 +201,12 @@ export default class WalletCreateDialog extends Component {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { createPassword } = this.state;
+    const { onCancel } = this.props;
+    const { createPassword, isSubmitting } = this.state;
     const dialogClasses = classnames([
       styles.component,
       'WalletCreateDialog',
-      this.state.isSubmitting ? styles.isSubmitting : null
+      isSubmitting ? styles.isSubmitting : null
     ]);
     const walletPasswordFieldsClasses = classnames([
       styles.walletPasswordFields,
@@ -217,7 +218,7 @@ export default class WalletCreateDialog extends Component {
         className={dialogClasses}
         title={intl.formatMessage(messages.dialogTitle)}
         actions={this.actions}
-        onOverlayClick={this.props.onCancel}
+        onOverlayClick={onCancel}
         active
       >
 
@@ -250,7 +251,7 @@ export default class WalletCreateDialog extends Component {
           </div>
         </div>
 
-        <DialogCloseButton onClose={this.props.onCancel} />
+        <DialogCloseButton onClose={onCancel} />
 
       </Dialog>
     );

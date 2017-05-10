@@ -1,3 +1,4 @@
+@import '../../themes/mixins/loading-spinner';
 @import '../../themes/mixins/error-message';
 
 .walletPassword {
@@ -36,4 +37,10 @@
   @include error-message;
   margin-top: 1rem;
   text-align: center;
+}
+
+.isSubmitting {
+  button {
+    @include loading-spinner("../../assets/images/spinner-light.svg");
+  }
 }
