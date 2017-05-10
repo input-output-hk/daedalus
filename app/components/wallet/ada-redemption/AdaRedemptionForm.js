@@ -44,7 +44,7 @@ to decrypt your certificate and your redemption code will be automatically extra
   },
   instructionsPaperVended: {
     id: 'wallet.redeem.dialog.instructions.paperVended',
-    defaultMessage: `<p>To redeem your Ada, enter your Shielded vending key from the certificate, choose a wallet
+    defaultMessage: `<p>To redeem your Ada, enter your shielded vending key from the certificate, choose a wallet
 where Ada should be redeemed and enter 9 word mnemonic passphrase.</p>`,
     description: '!!!Detailed instructions.regular',
   },
@@ -90,8 +90,8 @@ where Ada should be redeemed and enter 9 word mnemonic passphrase.</p>`,
   },
   shieldedRedemptionKeyError: {
     id: 'wallet.redeem.dialog.shieldedRedemptionCodeError',
-    defaultMessage: '!!!Invalid Shielded Redemption Key',
-    description: 'Error "Invalid Redemption Code" for ada redemption code input',
+    defaultMessage: '!!!Invalid shielded vending key',
+    description: 'Error "Invalid shielded vending key" for ada redemption code input',
   },
   redemptionKeyHint: {
     id: 'wallet.redeem.dialog.redemptionCodeHint',
@@ -100,8 +100,8 @@ where Ada should be redeemed and enter 9 word mnemonic passphrase.</p>`,
   },
   shieldedRedemptionKeyHint: {
     id: 'wallet.redeem.dialog.shieldedRedemptionKeyHint',
-    defaultMessage: '!!!Enter your shielded redemption key',
-    description: 'Hint for shielded redemption key input',
+    defaultMessage: '!!!Enter your shielded vending key',
+    description: 'Hint for shielded vending key input',
   },
   submitLabel: {
     id: 'wallet.redeem.dialog.submitLabel',

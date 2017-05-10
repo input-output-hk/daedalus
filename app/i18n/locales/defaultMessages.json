@@ -453,7 +453,7 @@
         }
       },
       {
-        "defaultMessage": "<p>To redeem your Ada, enter your Shielded vending key from the certificate, choose a wallet\nwhere Ada should be redeemed and enter 9 word mnemonic passphrase.</p>",
+        "defaultMessage": "<p>To redeem your Ada, enter your shielded vending key from the certificate, choose a wallet\nwhere Ada should be redeemed and enter 9 word mnemonic passphrase.</p>",
         "description": "!!!Detailed instructions.regular",
         "end": {
           "column": 3,
@@ -579,8 +579,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Invalid Shielded Redemption Key",
-        "description": "Error \"Invalid Redemption Code\" for ada redemption code input",
+        "defaultMessage": "!!!Invalid shielded vending key",
+        "description": "Error \"Invalid shielded vending key\" for ada redemption code input",
         "end": {
           "column": 3,
           "line": 95
@@ -607,8 +607,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Enter your shielded redemption key",
-        "description": "Hint for shielded redemption key input",
+        "defaultMessage": "!!!Enter your shielded vending key",
+        "description": "Hint for shielded vending key input",
         "end": {
           "column": 3,
           "line": 105
