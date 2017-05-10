@@ -5,8 +5,9 @@ import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-toolbox/lib/input/Input';
 import { defineMessages, intlShape } from 'react-intl';
+import Select from 'react-polymorph/lib/components/Select';
+import SelectSkin from 'react-polymorph/lib/skins/simple/SelectSkin';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
-import Dropup from '../widgets/forms/Dropup';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import Switch from '../widgets/Switch';
 import { isValidWalletName, isValidCurrency, isValidWalletPassword, isValidRepeatPassword } from '../../lib/validations';
@@ -228,10 +229,11 @@ export default class WalletCreateDialog extends Component {
           {...form.$('walletName').bind()}
         />
 
-        <Dropup
+        <Select
           className="currency"
           {...form.$('currency').bind()}
-          source={currencies}
+          options={currencies}
+          skin={<SelectSkin />}
         />
 
         <div className={styles.walletPassword}>
