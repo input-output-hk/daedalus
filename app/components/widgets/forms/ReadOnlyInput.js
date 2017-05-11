@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { intlShape } from 'react-intl';
 import Input from 'react-toolbox/lib/input/Input';
@@ -8,10 +8,12 @@ import styles from './ReadOnlyInput.scss';
 
 @observer
 export default class ReadOnlyInput extends Component {
-  static propTypes = {
-    label: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
-    onClick: PropTypes.func.isRequired,
+
+  props: {
+    label: string,
+    value: string,
+    isSet: boolean,
+    onClick: Function,
   };
 
   static contextTypes = {
@@ -22,9 +24,11 @@ export default class ReadOnlyInput extends Component {
     const {
       label,
       value,
+      isSet,
       onClick,
     } = this.props;
     const { intl } = this.context;
+    const buttonLabel = intl.formatMessage(globalMessages[isSet ? 'change' : 'create']);
     return (
       <div className={styles.component}>
 
@@ -40,7 +44,7 @@ export default class ReadOnlyInput extends Component {
           className={styles.button}
           onClick={onClick}
         >
-          {intl.formatMessage(globalMessages.change)}
+          {buttonLabel}
         </button>
 
       </div>
