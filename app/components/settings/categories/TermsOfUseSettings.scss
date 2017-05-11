@@ -1,29 +1,3 @@
 .component {
-  color: $text-color-accent;
-  margin-bottom: 30px;
-
-  h1, h2 {
-    font-family: $font-medium;
-    font-size: 19px;
-    margin-bottom: 11px;
-  }
-
-  h2 {
-    margin-top: 22px;
-  }
-
-  ul {
-    list-style: disc;
-    margin-left: 20px;
-  }
-
-  p, li {
-    font-family: $font-regular;
-    line-height: 1.38;
-    margin-bottom: 11px;
-
-    strong {
-      font-weight: 500;
-    }
-  }
+  margin-bottom: 22px;
 }
