@@ -1,12 +1,12 @@
 @import './sidebarConfig';
 
 .component {
-  display: none;
   background-color: $sidebar-menu-bg;
-  width: 100%;
+  display: none;
   height: 100%;
-  position: relative;
   overflow: hidden;
+  position: relative;
+  width: 100%;
 }
 
 .visible {

@@ -2,33 +2,33 @@
 @import '../sidebarConfig';
 
 .wallets {
-  overflow-y: auto;
   height: calc(100% - #{$sidebar-button-height});
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .addWalletButton {
   @include button;
+  align-items: center;
   background-color: $sidebar-menu-item-active;
+  bottom: 0;
   color: white;
   display: flex;
-  align-items: center;
-  width: 100%;
   height: $sidebar-button-height;
   position: absolute;
-  bottom: 0;
+  width: $sidebar-width - $sidebar-minimized-category-width;
 
   &:hover {
     background-color: darken($sidebar-menu-item-active, 2%);
   }
 
   img {
+    margin: 0 20px;
     width: 25px;
-    margin: 0
-    20px;
   }
 
   span {
-    font-size: 18px;
     font-family: $font-regular;
+    font-size: 18px;
   }
 }
