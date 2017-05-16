@@ -60,25 +60,25 @@ export default class TermsOfUseForm extends Component {
 
             <ReactMarkdown source={localizedTermsOfUse} />
 
-            <CheckboxWithLongLabel
-              className={styles.checkbox}
-              label={intl.formatMessage(messages.checkboxLabel)}
-              onChange={this.toggleAcceptance.bind(this)}
-              checked={areTermsOfUseAccepted}
+            <div className={styles.checkbox}>
+              <CheckboxWithLongLabel
+                label={intl.formatMessage(messages.checkboxLabel)}
+                onChange={this.toggleAcceptance.bind(this)}
+                checked={areTermsOfUseAccepted}
+              />
+            </div>
+
+            {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
+
+            <Button
+              className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
+              label={intl.formatMessage(messages.submitLabel)}
+              onMouseUp={this.submit}
+              primary
+              disabled={!areTermsOfUseAccepted}
             />
 
           </div>
-
-          {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
-
-          <Button
-            className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
-            label={intl.formatMessage(messages.submitLabel)}
-            onMouseUp={this.submit}
-            primary
-            disabled={!areTermsOfUseAccepted}
-          />
-
         </div>
       </div>
     );

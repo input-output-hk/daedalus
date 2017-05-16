@@ -13,6 +13,7 @@ Changelog
 - Spending password on "Send money" form
 - Optionally setting a password during wallet restore
 - Ada redemption disclaimer
+- “Terms of use” page in settings section
 - Change wallet password dialog UX improvements
 
 ### Fixes

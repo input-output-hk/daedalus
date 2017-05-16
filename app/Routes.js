@@ -16,6 +16,7 @@ import NoWalletsPage from './containers/wallet/NoWalletsPage';
 import LanguageSelectionPage from './containers/profile/LanguageSelectionPage';
 import Settings from './containers/settings/Settings';
 import GeneralSettingsPage from './containers/settings/categories/GeneralSettingsPage';
+import TermsOfUseSettingsPage from './containers/settings/categories/TermsOfUseSettingsPage';
 import TermsOfUsePage from './containers/profile/TermsOfUsePage';
 
 export const ROUTES = {
@@ -39,6 +40,7 @@ export const ROUTES = {
   SETTINGS: {
     ROOT: '/settings',
     GENERAL: '/settings/general',
+    TERMS_OF_USE: '/settings/terms-of-use',
   },
 };
 
@@ -60,6 +62,7 @@ export default (
     <Route path="/settings" component={Settings}>
       <IndexRedirect to="general" />
       <Route path="general" component={GeneralSettingsPage} />
+      <Route path="terms-of-use" component={TermsOfUseSettingsPage} />
     </Route>
   </div>
 );
