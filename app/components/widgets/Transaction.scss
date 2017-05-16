@@ -71,6 +71,11 @@ $type-box-size: 54px;
     font-family: $font-light;
     font-size: 14px;
     word-break: break-all;
+
+    &.address {
+      display: block;
+      line-height: 19px;
+    }
   }
 }
 
