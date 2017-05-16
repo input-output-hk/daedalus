@@ -16,6 +16,10 @@ module.exports = validate({
       test: /\.json$/,
       loader: 'json-loader'
     }, {
+      test: /\.md$/,
+      loader: "html!markdown?gfm=false"
+    },
+    {
       test: /\.(?:png|jpg|svg|otf|ttf)$/,
       loader: 'url-loader'
     }]

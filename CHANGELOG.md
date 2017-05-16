@@ -30,6 +30,7 @@ Changelog
 
 - Prevent logging of harmless error messages to the terminal
 - Purge "translation/messages/app" as a part of npm dev script
+- Use markdown for terms of use
 
 ## 0.6.2
 
