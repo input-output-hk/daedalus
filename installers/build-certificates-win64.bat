@@ -1,6 +1,7 @@
+
 @rem
 @rem
-@rem This is an install-time script that generates the CA/server key/cert pairs,
+@rem This is an install-time script that generates the CA/server/client key/cert pairs,
 @rem for front/backend channel security.
 @rem It must be run from the application install directory.
 @rem
@@ -13,20 +14,20 @@
 
 @echo .
 @echo ============================================================================
-@echo [1/6] Creating database
-rmdir /s/q tls\ca tls\certs 2>nul
+@echo [1/9] Creating database
+rmdir /s/q tls\ca tls\server 2>nul
 
-mkdir tls\ca\private tls\ca\db tls\certs
+mkdir tls\ca\private tls\ca\db tls\client tls\server
 copy nul  tls\ca\db\ca.db
 copy nul  tls\ca\db\ca.db.attr
 echo 01 > tls\ca\db\ca.crt.srl
 @echo ============================================================================
 
-@echo [2/6] Generating install-time-only use password for the CA key
+@echo [2/9] Generating install-time-only use password for the CA key
 @echo %RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM% > tls\secret
 @echo ============================================================================
 
-@echo [3/6] CA self-sign request
+@echo [3/9] CA self-sign request
 x64\openssl req -new ^
             -config     ca.conf                ^
             -out        tls\ca\ca.csr          ^
@@ -36,7 +37,7 @@ x64\openssl req -new ^
 @echo .
 @echo ============================================================================
 
-@echo [4/6] CA certificate
+@echo [4/9] CA certificate
 x64\openssl ca  -selfsign -batch ^
             -config     ca.conf                ^
             -in         tls\ca\ca.csr          ^
@@ -47,28 +48,48 @@ x64\openssl ca  -selfsign -batch ^
 @echo .
 @echo ============================================================================
 
-@echo [5/6] Server certificate signing request
+@echo [5/9] Server certificate signing request
 x64\openssl req -new ^
-            -config     server.conf            ^
-            -out        tls\certs\server.csr   ^
-            -keyout     tls\certs\server.key
+            -config     server.conf             ^
+            -out        tls\server\server.csr   ^
+            -keyout     tls\server\server.key
 @if %errorlevel% neq 0 (@echo . & echo "FAILED: server certificate signing request" & exit /b 1)
 @echo .
 @echo ============================================================================
 
-@echo [6/6] Server certificate
+@echo [6/9] Client certificate signing request
+x64\openssl req -new ^
+            -config     client.conf             ^
+            -out        tls\client\client.csr   ^
+            -keyout     tls\client\client.key
+@if %errorlevel% neq 0 (@echo . & echo "FAILED: client certificate signing request" & exit /b 1)
+@echo .
+@echo ============================================================================
+
+@echo [7/9] Server certificate
 x64\openssl ca -batch ^
-            -config     ca.conf               ^
-            -in         tls\certs\server.csr  ^
-            -out        tls\certs\server.crt  ^
-            -passin     file:tls\secret       ^
+            -config     ca.conf                ^
+            -in         tls\server\server.csr  ^
+            -out        tls\server\server.crt  ^
+            -passin     file:tls\secret        ^
             -extensions server_ext
 @if %errorlevel% neq 0 (@echo . & echo "FAILED: server certificate signing" & exit /b 1)
 @echo .
 @echo ============================================================================
 
-@echo [7/6] Cleanup
-del tls\secret ca.conf server.conf
+@echo [8/9] Client certificate
+x64\openssl ca -batch ^
+            -config     ca.conf                ^
+            -in         tls\client\client.csr  ^
+            -out        tls\client\client.crt  ^
+            -passin     file:tls\secret        ^
+            -extensions client_ext
+@if %errorlevel% neq 0 (@echo . & echo "FAILED: client certificate signing" & exit /b 1)
+@echo .
+@echo ============================================================================
+
+@echo [9/9] Cleanup
+del tls\secret ca.conf server.conf client.conf
 rmdir /s/q tls\ca\private x86 x64
 
 @echo ============================================================================

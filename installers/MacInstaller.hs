@@ -49,6 +49,7 @@ main = do
   copyFile "build-certificates-unix.sh" (dir <> "/build-certificates-unix.sh")
   copyFile "tls/ca.conf" (dir <> "/ca.conf")
   copyFile "tls/server.conf" (dir <> "/server.conf")
+  copyFile "tls/client.conf" (dir <> "/client.conf")
 
   -- Rewrite libs paths and bundle them
   _ <- chain dir $ fmap T.pack [dir <> "/cardano-launcher", dir <> "/cardano-node"]

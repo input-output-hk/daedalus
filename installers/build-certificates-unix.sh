@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# This is an install-time script that generates the CA/server key/cert pairs,
+# This is an install-time script that generates the CA/server/client key/cert pairs,
 # for front/backend channel security.
 # It must be run from the application install directory.
 #
@@ -13,20 +13,20 @@ openssl version
 
 echo
 echo ============================================================================
-echo [1/6] Creating database
-rm -rf tls/ca tls/certs
+echo [1/9] Creating database
+rm -rf tls/ca tls/client tls/server
 
-mkdir -p  tls/ca/private tls/ca/db tls/certs
+mkdir -p  tls/ca/private tls/ca/db tls/client tls/server
 touch     tls/ca/db/ca.db
 touch     tls/ca/db/ca.db.attr
 echo 01 > tls/ca/db/ca.crt.srl
 echo ============================================================================
 
-echo [2/6] Generating install-time-only use password for the CA key
+echo [2/9] Generating install-time-only use password for the CA key
 echo "$RANDOM$RANDOM$RANDOM$RANDOM$RANDOM$RANDOM$RANDOM$RANDOM$RANDOM$RANDOM$RANDOM$RANDOM$RANDOM$RANDOM$RANDOM$RANDOM" > tls/secret
 echo ============================================================================
 
-echo [3/6] CA self-sign request
+echo [3/9] CA self-sign request
 openssl req -new \
             -config     ca.conf                \
             -out        tls/ca/ca.csr          \
@@ -36,7 +36,7 @@ openssl req -new \
 echo
 echo ============================================================================
 
-echo [4/6] CA certificate
+echo [4/9] CA certificate
 openssl ca  -selfsign -batch \
             -config     ca.conf                \
             -in         tls/ca/ca.csr          \
@@ -47,28 +47,48 @@ openssl ca  -selfsign -batch \
 echo
 echo ============================================================================
 
-echo [5/6] Server certificate signing request
+echo [5/9] Server certificate signing request
 openssl req -new \
-            -config     server.conf            \
-            -out        tls/certs/server.csr   \
-            -keyout     tls/certs/server.key || {
+            -config     server.conf             \
+            -out        tls/server/server.csr   \
+            -keyout     tls/server/server.key || {
         echo "FAILED: server certificate signing request" >&2; exit 1; }
 echo
 echo ============================================================================
 
-echo [6/6] Server certificate
+echo [6/9] Client certificate signing request
+openssl req -new \
+            -config     client.conf             \
+            -out        tls/client/client.csr   \
+            -keyout     tls/client/client.key || {
+        echo "FAILED: client certificate signing request" >&2; exit 1; }
+echo
+echo ============================================================================
+
+echo [7/9] Server certificate
 openssl ca -batch \
-            -config     ca.conf               \
-            -in         tls/certs/server.csr  \
-            -out        tls/certs/server.crt  \
-            -passin     file:tls/secret       \
+            -config     ca.conf                \
+            -in         tls/server/server.csr  \
+            -out        tls/server/server.crt  \
+            -passin     file:tls/secret        \
             -extensions server_ext || {
         echo "FAILED: server certificate signing" >&2; exit 1; }
 echo
 echo ============================================================================
 
-echo [7/6] Cleanup
-rm tls/secret ca.conf server.conf
+echo [8/9] client certificate
+openssl ca -batch \
+            -config     ca.conf                \
+            -in         tls/client/client.csr  \
+            -out        tls/client/client.crt  \
+            -passin     file:tls/secret        \
+            -extensions client_ext || {
+        echo "FAILED: client certificate signing" >&2; exit 1; }
+echo
+echo ============================================================================
+
+echo [9/9] Cleanup
+rm tls/secret ca.conf server.conf client.conf
 rm -rf tls/ca/private
 
 echo ============================================================================
