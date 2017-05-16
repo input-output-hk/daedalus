@@ -2,10 +2,10 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import Button from 'react-toolbox/lib/button/Button';
-import ReactMarkdown from 'react-markdown';
 import { defineMessages, intlShape } from 'react-intl';
 import CheckboxWithLongLabel from '../../widgets/forms/CheckboxWithLongLabel';
 import LocalizableError from '../../../i18n/LocalizableError';
+import TermsOfUseText from './TermsOfUseText';
 import styles from './TermsOfUseForm.scss';
 
 const messages = defineMessages({
@@ -56,29 +56,26 @@ export default class TermsOfUseForm extends Component {
       <div className={styles.component}>
         <div className={styles.centeredBox}>
 
-          <div className={styles.terms}>
+          <TermsOfUseText localizedTermsOfUse={localizedTermsOfUse} />
 
-            <ReactMarkdown source={localizedTermsOfUse} />
-
-            <div className={styles.checkbox}>
-              <CheckboxWithLongLabel
-                label={intl.formatMessage(messages.checkboxLabel)}
-                onChange={this.toggleAcceptance.bind(this)}
-                checked={areTermsOfUseAccepted}
-              />
-            </div>
-
-            {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
-
-            <Button
-              className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
-              label={intl.formatMessage(messages.submitLabel)}
-              onMouseUp={this.submit}
-              primary
-              disabled={!areTermsOfUseAccepted}
+          <div className={styles.checkbox}>
+            <CheckboxWithLongLabel
+              label={intl.formatMessage(messages.checkboxLabel)}
+              onChange={this.toggleAcceptance.bind(this)}
+              checked={areTermsOfUseAccepted}
             />
-
           </div>
+
+          {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
+
+          <Button
+            className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
+            label={intl.formatMessage(messages.submitLabel)}
+            onMouseUp={this.submit}
+            primary
+            disabled={!areTermsOfUseAccepted}
+          />
+
         </div>
       </div>
     );
