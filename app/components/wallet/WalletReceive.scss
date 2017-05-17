@@ -1,65 +1,136 @@
+@import '../../themes/mixins/loading-spinner';
+
 .component {
-  align-items: center;
-  display: flex;
-  height: 100%;
-  justify-content: center;
-}
-
-.centeredBox {
   color: #5e6066;
-  letter-spacing: 0.5px;
-  line-height: 1.4;
-  margin: 0 auto;
-  text-align: center;
-  width: calc(100% - 40px);
-}
-
-.heading {
-  font-size: 18px;
-  font-family: $font-medium;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  strong {
-    font-family: $font-bold;
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: overlay;
+  padding: 20px;
+  &::-webkit-scrollbar-button {
+    height: 7px;
+    display: block;
   }
 }
 
-.qrCode {
-  text-align: center;
-  padding: 20px 0 ;
-}
-
-.hash {
-  font-size: 19px;
-  font-family: $font-medium;
-  padding-bottom: 10px;
-  letter-spacing: 1px;
-}
-
-.instructions {
-  font-family: $font-regular;
-  font-size: 14px;
-  line-height: 1.4;
-  text-align: center;
-  color: #5e6066;
-  max-width: 640px;
-  margin: 0 auto 20px auto;
-  a {
-    font-size: 14px;
-    font-family: $font-semibold;
-    color: #345078;
-  }
-}
-
-.submitButton {
-  width: 100%;
-  text-transform: uppercase;
-}
-
-.icon {
+.copyIconBig,
+.copyIcon {
   cursor: pointer;
+  object-fit: contain;
+}
+
+.copyIconBig {
   height: 14.5px;
   margin-left: 6px;
-  object-fit: contain;
   width: 11.5px;
+}
+
+.copyIcon {
+  height: 12px;
+  margin-left: 4px;
+  width: 10px;
+}
+
+.qrCodeAndInstructions {
+  display: flex;
+  flex-direction: row;
+  margin: 10px 0 24px;
+  position: relative;
+
+  .qrCode {
+    margin-right: 20px;
+  }
+
+  .instructions {
+    font-family: $font-regular;
+    font-size: 14px;
+    line-height: 19px;
+
+    .hash {
+      font-size: 19px;
+      font-family: $font-medium;
+      line-height: 23px;
+      margin-bottom: 6px;
+      max-width: 90%;
+      word-break: break-all;
+    }
+
+    .hashLabel {
+      margin-bottom: 6px;
+      opacity: 0.5;
+    }
+
+    .instructionsText {
+      font-size: 16px;
+      line-height: 22px;
+      margin-bottom: 12px;
+      word-break: break-word;
+    }
+
+    .submitButtonSpinning, .submitButton {
+      display: block !important;
+      max-width: 360px;
+      width: 100%;
+    }
+
+    .submitButtonSpinning {
+      @include loading-spinner("../../assets/images/spinner-light.svg");
+    }
+  }
+
+  .protectedIcon {
+    height: 19.5px;
+    object-fit: contain;
+    position: absolute;
+    right: 0;
+    top: 1px;
+    width: 17px;
+  }
+}
+
+.generatedAddresses {
+  font-family: $font-regular;
+  font-size: 16px;
+  line-height: 22px;
+  padding-bottom: 10px;
+
+  h2 {
+    font-family: $font-medium;
+
+    button {
+      color: #5e6066;
+      cursor: pointer;
+      font-family: $font-regular;
+      font-size: 16px;
+      line-height: 22px;
+      margin-left: 12px;
+      opacity: 0.4;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .walletAddress {
+    display: inline-block;
+    margin-top: 11px;
+    width: 50%;
+    word-break: break-all;
+  }
+
+  .usedWalletAddress {
+    color: #aeaeb3;
+    text-decoration: line-through;
+
+    .copyIcon {
+      cursor: default;
+      opacity: 0.4;
+    }
+  }
+
+  @media (max-width: 1080px) {
+    .fullWidthOnSmallScreen {
+      width: 100%;
+    }
+  }
 }
