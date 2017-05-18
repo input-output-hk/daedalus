@@ -53,6 +53,10 @@ export default function () {
     return this.client.waitForVisible('.WalletAddDialog');
   });
 
+  this.Given(/^I see delete wallet dialog$/, function () {
+    return this.client.waitForVisible('.DeleteWalletConfirmationDialog_dialog');
+  });
+
   this.Given(/^I see the create wallet dialog$/, function () {
     return this.client.waitForVisible('.WalletCreateDialog');
   });
@@ -148,8 +152,28 @@ export default function () {
     return this.waitAndClick('.WalletRecoveryPhraseEntryDialog .dialog_button');
   });
 
+  this.When(/^I click on delete wallet button$/, async function () {
+    return this.client.click('.DeleteWalletButton_button');
+  });
+
+  this.When(/^I enter "([^"]*)" as name of the wallet to confirm$/, async function (walletName) {
+    return this.client.setValue('.DeleteWalletConfirmationDialog_confirmationInput input', walletName);
+  });
+
+  this.When(/^I click on the "Make sure you have access to backup before continuing" checkbox$/, function () {
+    return this.waitAndClick('.DeleteWalletConfirmationDialog_dialog .CheckboxWithLongLabel_checkbox');
+  });
+
+  this.When(/^I submit the delete wallet dialog$/, async function () {
+    return this.client.click('.DeleteWalletConfirmationDialog_dialog .button_primary');
+  });
+
   this.Then(/^I should not see the create wallet recovery phrase entry dialog anymore$/, function () {
     return this.client.waitForVisible('.WalletRecoveryPhraseEntryDialog', null, true);
+  });
+
+  this.Then(/^I should not see the delete wallet dialog anymore$/, function () {
+    return this.client.waitForVisible('.DeleteWalletConfirmationDialog_dialog', null, true);
   });
 
   this.Then(/^I should have newly created "Test" wallet loaded$/, async function () {
