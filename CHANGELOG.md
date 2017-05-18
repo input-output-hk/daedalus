@@ -31,6 +31,7 @@ Changelog
 
 - Prevent logging of harmless error messages to the terminal
 - Purge "translation/messages/app" as a part of npm dev script
+- Added manually written Flow types for API responses
 
 ## 0.6.2
 
