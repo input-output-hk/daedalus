@@ -131,7 +131,7 @@ cd installers
     if test "${travis_pr}" = "false" -a "${os}" != "linux" # No Linux keys yet.
     then retry 5 nix-shell -p awscli --run "aws s3 cp --region eu-central-1 s3://iohk-private/${key} ${key}"
     fi
-    stack --no-terminal --nix build --exec make-installer --jobs 2
+    retry 5 stack --no-terminal --nix build --exec make-installer --jobs 2
     mkdir -p dist
     if test -n "${upload_s3}"
     then
