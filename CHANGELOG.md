@@ -15,6 +15,7 @@ Changelog
 - Ada redemption disclaimer
 - “Terms of use” page in settings section
 - Change wallet password dialog UX improvements
+- Wallet rename
 
 ### Fixes
 

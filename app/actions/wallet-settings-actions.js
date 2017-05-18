@@ -8,6 +8,10 @@ export default class WalletSettingsActions {
     oldPassword: string,
     newPassword: string,
   }> = new Action();
-  setWalletPassword: Action<{ walletId: string, password: string, }> = new Action();
+  setWalletPassword: Action<{ walletId: string, password: string }> = new Action();
   updateWalletAssuranceLevel: Action<{ assurance: AssuranceMode }> = new Action();
+  startEditingWalletField: Action<{ field: string }> = new Action();
+  stopEditingWalletField: Action<any> = new Action();
+  cancelEditingWalletField: Action<any> = new Action();
+  updateWalletField: Action<{ field: string, value: string }> = new Action();
 }

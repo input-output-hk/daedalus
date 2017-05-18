@@ -6,7 +6,7 @@ import moment from 'moment';
 import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
 import LocalizableError from '../../i18n/LocalizableError';
 import BorderedBox from '../widgets/BorderedBox';
-import styles from './WalletSettings.scss';
+import InlineEditingInput from '../widgets/forms/InlineEditingInput';
 import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
 import DeleteWalletButton from './settings/DeleteWalletButton';
 import DeleteWalletConfirmationDialog from './settings/DeleteWalletConfirmationDialog';
@@ -14,8 +14,15 @@ import DeleteWalletDialogContainer from '../../containers/wallet/dialogs/DeleteW
 import type { ReactIntlMessage } from '../../types/i18nTypes';
 import ChangeWalletPasswordDialog from './settings/ChangeWalletPasswordDialog';
 import ChangeWalletPasswordDialogContainer from '../../containers/wallet/dialogs/ChangeWalletPasswordDialogContainer';
+import globalMessages from '../../i18n/global-messages';
+import styles from './WalletSettings.scss';
 
 const messages = defineMessages({
+  name: {
+    id: 'wallet.settings.name.label',
+    defaultMessage: '!!!Name',
+    description: 'Label for the "Name" text input on the wallet settings page.',
+  },
   assuranceLevelLabel: {
     id: 'wallet.settings.assurance',
     defaultMessage: '!!!Transaction assurance security level',
@@ -43,6 +50,7 @@ export default class WalletSettings extends Component {
 
   props: {
     assuranceLevels: Array<{ value: string, label: ReactIntlMessage }>,
+    walletName: string,
     walletAssurance: string,
     onWalletAssuranceLevelUpdate: Function,
     isWalletPasswordSet: boolean,
@@ -50,6 +58,15 @@ export default class WalletSettings extends Component {
     error?: ?LocalizableError,
     openDialogAction: Function,
     isDialogOpen: Function,
+    onFieldValueChange: Function,
+    onStartEditing: Function,
+    onStopEditing: Function,
+    onCancelEditing: Function,
+    nameValidator: Function,
+    activeField: string,
+    isSubmitting: boolean,
+    isInvalid: boolean,
+    lastUpdatedField: string,
   };
 
   static contextTypes = {
@@ -61,9 +78,14 @@ export default class WalletSettings extends Component {
     const {
       assuranceLevels, walletAssurance,
       onWalletAssuranceLevelUpdate,
-      isWalletPasswordSet,
+      walletName, isWalletPasswordSet,
       walletPasswordUpdateDate, error,
       openDialogAction, isDialogOpen,
+      onFieldValueChange, onStartEditing,
+      onStopEditing, onCancelEditing,
+      nameValidator, activeField,
+      isSubmitting, isInvalid,
+      lastUpdatedField,
     } = this.props;
 
     const assuranceLevelOptions = assuranceLevels.map(assurance => ({
@@ -81,6 +103,19 @@ export default class WalletSettings extends Component {
       <div className={styles.component}>
 
         <BorderedBox>
+
+          <InlineEditingInput
+            inputFieldLabel={intl.formatMessage(messages.name)}
+            inputFieldValue={walletName}
+            isActive={activeField === 'name'}
+            onStartEditing={() => onStartEditing('name')}
+            onStopEditing={onStopEditing}
+            onCancelEditing={onCancelEditing}
+            onSubmit={(value) => onFieldValueChange('name', value)}
+            isValid={nameValidator}
+            validationErrorMessage={intl.formatMessage(globalMessages.invalidWalletName)}
+            successfullyUpdated={!isSubmitting && lastUpdatedField === 'name' && !isInvalid}
+          />
 
           <Dropdown
             label={intl.formatMessage(messages.assuranceLevelLabel)}
