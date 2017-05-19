@@ -37,6 +37,10 @@ main.js.map
 
 # Editors
 .idea
+*~
+\#*
+.\#*
+.~*
 
 # Generated translation files
 translations/messages
