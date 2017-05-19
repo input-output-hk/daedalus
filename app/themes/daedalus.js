@@ -3,7 +3,6 @@ import {
 } from 'react-polymorph/lib/skins/simple/identifiers';
 import overlay from 'react-toolbox/lib/overlay/theme.scss';
 import navigation from 'react-toolbox/lib/navigation/theme.scss';
-import dropdown from './daedalus/dropdown.scss';
 import input from './daedalus/input.scss';
 import dialog from './daedalus/dialog.scss';
 import button from './daedalus/button.scss';
@@ -18,7 +17,6 @@ import SimpleInput from './simple/SimpleInput.scss';
 
 export const daedalusTheme = {
   RTInput: input,
-  RTDropdown: dropdown,
   RTOverlay: overlay,
   RTNavigation: navigation,
   RTDialog: dialog,
