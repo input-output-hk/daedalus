@@ -59,14 +59,14 @@ export default class WalletSummary extends Component {
             {amount}
             <img src={adaSymbolBig} role="presentation" />
           </div>
-          {pendingAmount.incoming.toFormat() > 0 &&
+          {pendingAmount.incoming.greaterThan(0) &&
             <div className={styles.pendingConfirmation}>
               {`${intl.formatMessage(messages.pendingIncomingConfirmationLabel)}`}
               : {pendingAmount.incoming.toFormat(DECIMAL_PLACES_IN_ADA)}
               <img src={adaSymbolSmallest} role="presentation" />
             </div>
           }
-          {pendingAmount.outgoing.toFormat() > 0 &&
+          {pendingAmount.outgoing.greaterThan(0) &&
             <div className={styles.pendingConfirmation}>
               {`${intl.formatMessage(messages.pendingOutgoingConfirmationLabel)}`}
               : {pendingAmount.outgoing.toFormat(DECIMAL_PLACES_IN_ADA)}
