@@ -528,5 +528,15 @@ const _createTransactionFromServerData = action((data: ApiTransaction) => {
     date: new Date(ctmDate * 1000),
     description: ctmDescription || '',
     numberOfConfirmations: data.ctConfirmations,
+    addresses: {
+      from: [
+        'c936d9b306af8fbb59f43e95244fe84f43b64ec9009ded75cc353f301d9f23a3',
+        '23a3c936d9b306af8fbb59f43e95244fe84f43b64ec9009ded75cc353f301d9f',
+        'd9f23a3c936d9b306af8fbb59f43e95244fe84f43b64ec9009ded75cc353f301',
+      ],
+      to: [
+        '9ded75cc353f301d9f23a3c936d9b306af8fbb59f43e95244fe84f43b64ec900',
+      ],
+    }
   });
 });

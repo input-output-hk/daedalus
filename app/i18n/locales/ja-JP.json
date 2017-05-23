@@ -182,6 +182,8 @@
   "wallet.summary.page.transactionsLabel": "トランズアクション数",
   "wallet.transaction.adaReceived": "Ada受取済み",
   "wallet.transaction.adaSent": "Ada送金済み",
+  "wallet.transaction.addresses.from": "!!!From addresses",
+  "wallet.transaction.addresses.to": "!!!To addresses",
   "wallet.transaction.assuranceLevel": "トランズアクション保証レベル",
   "wallet.transaction.assuranceLevel.high": "高",
   "wallet.transaction.assuranceLevel.low": "低",

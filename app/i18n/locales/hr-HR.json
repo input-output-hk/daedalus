@@ -182,6 +182,8 @@
   "wallet.summary.page.transactionsLabel": "!!!Number of transactions",
   "wallet.transaction.adaReceived": "!!!Ada received",
   "wallet.transaction.adaSent": "!!!Ada sent",
+  "wallet.transaction.addresses.from": "!!!From addresses",
+  "wallet.transaction.addresses.to": "!!!To addresses",
   "wallet.transaction.assuranceLevel": "Sigurnost transakcije",
   "wallet.transaction.assuranceLevel.high": "visok",
   "wallet.transaction.assuranceLevel.low": "nizak",
