@@ -17,7 +17,7 @@ export default class TermsOfUsePage extends Component {
   };
 
   render() {
-    const { setTermsOfUseAcceptanceRequest, currentRoute } = this.props.stores.app;
+    const { setTermsOfUseAcceptanceRequest, currentRoute, termsOfUse } = this.props.stores.app;
     const isSubmitting = setTermsOfUseAcceptanceRequest.isExecuting;
     const topbar = <TopBar currentRoute={currentRoute} />;
     return (
@@ -25,6 +25,7 @@ export default class TermsOfUsePage extends Component {
         topbar={topbar}
       >
         <TermsOfUseForm
+          localizedTermsOfUse={termsOfUse}
           onSubmit={this.onSubmit}
           isSubmitting={isSubmitting}
           error={setTermsOfUseAcceptanceRequest.error}

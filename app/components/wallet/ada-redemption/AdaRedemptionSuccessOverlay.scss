@@ -17,9 +17,10 @@
 }
 
 .text {
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  opacity: 0.8;
 }
 
 .headline {
@@ -31,4 +32,21 @@
 .amount {
   font-family: $font-medium;
   font-size: 28px;
+}
+
+.confirmButton {
+  border: solid 1px #fafbfc;
+  border-radius: 5px;
+  color: #fafbfc;
+  cursor: pointer;
+  font-size: 14px;
+  height: 50px;
+  margin-top: 30px;
+  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 360px;
+
+  &:hover {
+    background-color: #fafbfc;
+    color: #243e62;
+  }
 }

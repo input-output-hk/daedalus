@@ -13,7 +13,9 @@ Changelog
 - Spending password on "Send money" form
 - Optionally setting a password during wallet restore
 - Ada redemption disclaimer
+- “Terms of use” page in settings section
 - Change wallet password dialog UX improvements
+- Multiple input and output addresses in transaction details
 
 ### Fixes
 
@@ -25,11 +27,14 @@ Changelog
 - Reset Ada redemption form values on page load and certificate add/remove events
 - Prevent sidebar auto-hiding feature and always show submenus on wallets page load
 - Apply grammatical fixes to redemption instructions
+- Prevent sidebar visual glitch on sidebar open
 
 ### Chores
 
 - Prevent logging of harmless error messages to the terminal
 - Purge "translation/messages/app" as a part of npm dev script
+- Use markdown for "Terms of use" content
+- Added manually written Flow types for API responses
 
 ## 0.6.2
 
