@@ -3,22 +3,24 @@
 
 .component {
   @include button;
-  width: $sidebar-width - $sidebar-minimized-category-width;
-  height: $sidebar-button-height;
+  background-color: $sidebar-menu-bg;
   color: white;
   display: flex;
   flex-direction: row;
+  height: $sidebar-button-height;
   justify-content: space-between;
-  background-color: $sidebar-menu-bg;
+  overflow: hidden;
   padding: 0 20px;
+  width: $sidebar-width - $sidebar-minimized-category-width;
+
   &:hover {
     background-color:$sidebar-menu-item-hover;
   }
-  overflow: hidden;
 }
 
 .active {
   background-color: $sidebar-menu-item-active;
+
   &:hover {
     cursor: default;
     background-color: $sidebar-menu-item-active;
@@ -32,16 +34,16 @@
 }
 
 .title {
+  font-family: $font-regular;
   font-size: 18px;
   line-height: 1.5em;
-  font-family: $font-regular;
   white-space: nowrap;
 }
 
 .info {
-  font-size: 14px;
+  color: #fafbfc;
   font-family: $font-light;
+  font-size: 14px;
   letter-spacing: 1px;
   opacity: 0.7;
-  color: #fafbfc;
 }

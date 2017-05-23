@@ -1,15 +1,15 @@
 @import './sidebarConfig';
 
 .component {
-  width: $sidebar-width;
   background-color: $sidebar-bg;
   display: flex;
   height: 100%;
-  transition: width 200ms ease;
   overflow: hidden;
+  transition: width 200ms ease;
+  width: $sidebar-width;
 }
 
 .minimized {
-  width: 84px;
   flex-shrink: 0;
+  width: 84px;
 }
