@@ -27,11 +27,13 @@ Changelog
 - Reset Ada redemption form values on page load and certificate add/remove events
 - Prevent sidebar auto-hiding feature and always show submenus on wallets page load
 - Apply grammatical fixes to redemption instructions
+- Prevent sidebar visual glitch on sidebar open
 
 ### Chores
 
 - Prevent logging of harmless error messages to the terminal
 - Purge "translation/messages/app" as a part of npm dev script
+- Added manually written Flow types for API responses
 
 ## 0.6.2
 

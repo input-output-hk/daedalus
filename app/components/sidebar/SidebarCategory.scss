@@ -3,12 +3,13 @@
 
 .component {
   @include button;
-  width: 100%;
-  height: $sidebar-button-height;
-  color: white;
-  display: flex;
   align-items: center;
   background-color: $sidebar-bg;
+  color: white;
+  display: flex;
+  height: $sidebar-button-height;
+  width: 100%;
+
   &:hover {
     background-color: $sidebar-category-hover;
   }
@@ -16,19 +17,20 @@
 
 .active {
   background-color: $sidebar-category-active;
+
   &:hover {
-    cursor: default;
     background-color: $sidebar-category-active;
+    cursor: default;
   }
 }
 
 .icon {
-  width: 24px;
-  margin: 0 30px;
   flex-shrink: 0;
+  margin: 0 30px;
+  width: 24px;
 }
 
 .label {
-  font-size: 18px;
   font-family: $font-regular;
+  font-size: 18px;
 }

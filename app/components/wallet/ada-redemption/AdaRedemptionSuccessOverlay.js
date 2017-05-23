@@ -13,6 +13,11 @@ const messages = defineMessages({
     defaultMessage: '!!!You have successfully redeemed',
     description: 'Headline for the ada redemption success overlay.'
   },
+  confirmButton: {
+    id: 'wallet.redeem.success.overlay.confirmButton',
+    defaultMessage: '!!!Great',
+    description: 'Confirm button text'
+  },
 });
 
 @observer
@@ -36,6 +41,12 @@ export default class AdaRedemptionSuccessOverlay extends Component {
         <div className={styles.text}>
           <h1 className={styles.headline}>{intl.formatMessage(messages.headline)}</h1>
           <div className={styles.amount}>{amount} ADA</div>
+          <button
+            className={styles.confirmButton}
+            onClick={onClose}
+          >
+            {intl.formatMessage(messages.confirmButton)}
+          </button>
         </div>
         <DialogCloseButton onClose={onClose} icon={closeCrossWhite} />
       </div>
