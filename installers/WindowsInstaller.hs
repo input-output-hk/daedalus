@@ -118,8 +118,6 @@ writeInstallerNSIS fullVersion = do
     _ <- section "" [Required] $ do
         setOutPath "$INSTDIR"        -- Where to install files in this section
         writeRegStr HKLM "Software/Daedalus" "Install_Dir" "$INSTDIR" -- Used by launcher batch script
-        createDirectory "$APPDATA\\Daedalus\\DB-0.2"
-        createDirectory "$APPDATA\\Daedalus\\Wallet-0.2"
         createDirectory "$APPDATA\\Daedalus\\Logs"
         createDirectory "$APPDATA\\Daedalus\\Secrets"
         createShortcut "$DESKTOP\\Daedalus.lnk" daedalusShortcut
