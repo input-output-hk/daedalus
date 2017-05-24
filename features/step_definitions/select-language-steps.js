@@ -18,7 +18,7 @@ export default function () {
   });
 
   this.When(/^I open language selection dropdown$/, function () {
-    return this.waitAndClick('.LanguageSelectionForm_component .input_inputElement');
+    return this.waitAndClick('.LanguageSelectionForm_component .SimpleInput_input');
   });
 
   this.When(/^I select Japanese language$/, function () {

@@ -76,7 +76,7 @@ export default class LanguageSelectionForm extends Component {
         <div className={styles.centeredBox}>
 
           <Select
-            className="language"
+            className={styles.languageSelect}
             options={languageOptions}
             {...languageId.bind()}
             skin={<SelectSkin />}
