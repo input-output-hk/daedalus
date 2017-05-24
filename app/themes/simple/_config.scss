@@ -1,0 +1,13 @@
+@import "../daedalus/_theme";
+
+// THEME CONFIGURATION
+
+$theme-assets-path: "react-polymorph/lib/themes/simple/assets";
+
+$theme-font-thin: $font-thin;
+$theme-font-light: $font-light;
+$theme-font-medium: $font-medium;
+$theme-font-regular: $font-regular;
+$theme-font-bold: $font-bold;
+
+@import "~react-polymorph/lib/themes/simple/_theme";

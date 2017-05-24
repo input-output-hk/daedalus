@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
-import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
+import Select from 'react-polymorph/lib/components/Select';
+import SelectSkin from 'react-polymorph/lib/skins/simple/SelectSkin';
 import LocalizableError from '../../i18n/LocalizableError';
 import BorderedBox from '../widgets/BorderedBox';
 import styles from './WalletSettings.scss';
@@ -82,11 +83,13 @@ export default class WalletSettings extends Component {
 
         <BorderedBox>
 
-          <Dropdown
+          <Select
+            className={styles.assuranceLevelSelect}
             label={intl.formatMessage(messages.assuranceLevelLabel)}
-            source={assuranceLevelOptions}
+            options={assuranceLevelOptions}
             value={walletAssurance}
             onChange={(value) => onWalletAssuranceLevelUpdate({ assurance: value })}
+            skin={<SelectSkin />}
           />
 
           <ReadOnlyInput

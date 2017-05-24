@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './AdaRedemptionChoices.scss';
@@ -25,13 +25,13 @@ const messages = defineMessages({
 @observer
 export default class AdaRedemptionChoices extends Component {
 
-  static contextTypes = {
-    intl: intlShape.isRequired
+  props: {
+    activeChoice: string,
+    onSelectChoice: Function,
   };
 
-  static propTypes = {
-    activeChoice: PropTypes.string.isRequired,
-    onSelectChoice: PropTypes.func.isRequired,
+  static contextTypes = {
+    intl: intlShape.isRequired,
   };
 
   render() {
