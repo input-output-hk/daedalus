@@ -22,6 +22,8 @@ install:
   - IF NOT DEFINED APPVEYOR_PULL_REQUEST_NUMBER aws s3 cp --region eu-central-1 s3://iohk-private/iohk-windows-certificate.p12 C:/iohk-windows-certificate.p12
 
 test_script:
+  - dir "C:\Program Files (x86)\Windows Kits\8.1\bin\x64\*.exe"
+  - set PATH=%PATH%;"C:\Program Files (x86)\Windows Kits\8.1\bin\x64"
   - scripts\build-installer-win64.bat %APPVEYOR_BUILD_VERSION% cardano-sl-0.4
 
 artifacts:
