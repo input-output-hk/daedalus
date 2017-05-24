@@ -96,7 +96,4 @@ pushd installers
 :built
 popd
 
-@echo .
-@echo Successfully built Daedalus %DAEDALUS_VERSION%
-@echo .
 @dir /b/s installers\daedalus*

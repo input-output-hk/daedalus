@@ -1,5 +1,6 @@
 module WindowsInstaller where
 
+import           Control.Monad      (unless)
 import qualified Data.List          as L
 import           Data.Maybe         (fromJust, fromMaybe)
 import           Data.Monoid        ((<>))
@@ -7,7 +8,7 @@ import           Data.Text          (pack, split, unpack)
 import           Development.NSIS
 import           System.Directory   (doesFileExist)
 import           System.Environment (lookupEnv)
-import           Turtle             (echo, proc, procs)
+import           Turtle             (echo, proc, procs, ExitCode(..))
 import           Turtle.Line          (unsafeTextToLine)
 
 import           Launcher
@@ -82,7 +83,8 @@ signFile filename = do
         echo . unsafeTextToLine . pack $ "Signing " <> filename
         -- TODO: Double sign a file, SHA1 for vista/xp and SHA2 for windows 8 and on
         --procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\iohk-windows-certificate.p12", "/p", pack pass, "/t", "http://timestamp.comodoca.com", "/v", pack filename] mempty
-        procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\iohk-windows-certificate.p12", "/p", pack pass, "/fd", "sha256", "/tr", "http://timestamp.comodoca.com/?td=sha256", "/td", "sha256", "/v", pack filename] mempty
+        exitcode <- proc "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\iohk-windows-certificate.p12", "/p", pack pass, "/fd", "sha256", "/tr", "http://timestamp.comodoca.com/?td=sha256", "/td", "sha256", "/v", pack filename] mempty
+        unless (exitcode == ExitSuccess) $ error "Signing failed"
   else
     error $ "Unable to sign missing file '" <> filename <> "''"
 
