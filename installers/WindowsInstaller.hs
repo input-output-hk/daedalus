@@ -170,7 +170,7 @@ main = do
   signUninstaller
 
   echo "Adding permissions manifest to cardano-launcher.exe"
-  procs "mt.exe" ["-manifest", "cardano-launcher.exe.manifest", "-outputresource:cardano-launcher.exe;#1"] mempty
+  procs "C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\mt.exe" ["-manifest", "cardano-launcher.exe.manifest", "-outputresource:cardano-launcher.exe;#1"] mempty
 
   echo "Writing daedalus.nsi"
   writeInstallerNSIS fullVersion
