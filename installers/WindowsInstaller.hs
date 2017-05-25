@@ -107,7 +107,7 @@ writeInstallerNSIS fullVersion = do
     injectGlobalLiteral $ "VIAddVersionKey \"ProductVersion\" " <> fullVersion
     injectGlobalLiteral "Unicode true"
     installDir "$PROGRAMFILES64\\Daedalus"   -- The default installation directory
-    requestExecutionLevel Highest
+    requestExecutionLevel Admin
     injectGlobalLiteral "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
 
     page Directory                   -- Pick where to install
