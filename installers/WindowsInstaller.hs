@@ -116,8 +116,6 @@ writeInstallerNSIS fullVersion = do
     _ <- section "" [Required] $ do
         setOutPath "$INSTDIR"        -- Where to install files in this section
         writeRegStr HKLM "Software/Daedalus" "Install_Dir" "$INSTDIR" -- Used by launcher batch script
-        createDirectory "$APPDATA\\Daedalus\\DB-0.2"
-        createDirectory "$APPDATA\\Daedalus\\Wallet-0.2"
         createDirectory "$APPDATA\\Daedalus\\Logs"
         createDirectory "$APPDATA\\Daedalus\\Secrets"
         createShortcut "$DESKTOP\\Daedalus.lnk" daedalusShortcut
@@ -170,6 +168,9 @@ main = do
   echo "Writing uninstaller.nsi"
   writeUninstallerNSIS fullVersion
   signUninstaller
+
+  echo "Adding permissions manifest to cardano-launcher.exe"
+  procs "C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\mt.exe" ["-manifest", "cardano-launcher.exe.manifest", "-outputresource:cardano-launcher.exe;#1"] mempty
 
   echo "Writing daedalus.nsi"
   writeInstallerNSIS fullVersion
