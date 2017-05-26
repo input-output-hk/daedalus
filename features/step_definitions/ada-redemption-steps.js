@@ -2,6 +2,7 @@ import path from 'path';
 
 const regularAdaCertificateFilePath = path.resolve(__dirname, '../support/ada_certificates/regular.pdf');
 const regularEncryptedAdaCertificateFilePath = path.resolve(__dirname, '../support/ada_certificates/regular.pdf.enc');
+const forceVendedAdaCertificateFilePath = path.resolve(__dirname, '../support/ada_certificates/force-vended.pdf');
 const forceVendedEncryptedAdaCertificateFilePath = path.resolve(__dirname, '../support/ada_certificates/force-vended.pdf.enc');
 
 export default function () {
@@ -56,6 +57,15 @@ export default function () {
   this.When(/^I enter a valid "Regular" encrypted PDF certificate passphrase$/, function () {
     const passphrase = 'uncle bargain pistol obtain amount laugh explain type learn';
     return this.client.setValue('.AdaRedemptionForm_component .pass-phrase input', passphrase);
+  });
+
+  this.When(/^I enter a valid "Force vended" redemption key$/, function () {
+    const redemptionKey = 'LtOD4vxIqfEUYheTiHprRmvmAXHvMJbulllqHhjAGHc=';
+    return this.client.setValue('.AdaRedemptionForm_component .redemption-key input', redemptionKey);
+  });
+
+  this.When(/^I select a valid "Force vended" PDF certificate$/, async function () {
+    await this.client.chooseFile('.AdaRedemptionForm_certificate .AdaCertificateUploadWidget_uploadBox input', forceVendedAdaCertificateFilePath);
   });
 
   this.When(/^I select a valid "Force vended" encrypted PDF certificate$/, async function () {

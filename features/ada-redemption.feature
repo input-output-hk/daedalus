@@ -1,4 +1,3 @@
-@watch
 Feature: Ada Redemption
 
   Background:
@@ -41,17 +40,23 @@ Feature: Ada Redemption
     Then I should see the "Ada Redemption Success Overlay"
 
 
-  @skip
   Scenario: User redeems manually entered "Force vended" redemption key
     Given I am on the ada redemption screen
     And I have accepted "Daedalus Redemption Disclaimer"
     And I click on ada redemption choices "Force vended" tab
+    And I enter a valid "Force vended" redemption key
+    And ada redemption form submit button is no longer disabled
+    When I submit the ada redemption form
+    Then I should see the "Ada Redemption Success Overlay"
 
-  @skip
   Scenario: User redeems "Force vended" PDF certificate
     Given I am on the ada redemption screen
     And I have accepted "Daedalus Redemption Disclaimer"
     And I click on ada redemption choices "Force vended" tab
+    And I select a valid "Force vended" PDF certificate
+    And ada redemption form submit button is no longer disabled
+    When I submit the ada redemption form
+    Then I should see the "Ada Redemption Success Overlay"
 
   Scenario: User redeems "Force vended" encrypted PDF certificate
     Given I am on the ada redemption screen

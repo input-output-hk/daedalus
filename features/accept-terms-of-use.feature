@@ -1,4 +1,3 @@
-@watch
 Feature: Accept "Terms of use"
 
   Background:
