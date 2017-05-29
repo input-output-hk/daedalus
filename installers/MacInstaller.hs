@@ -9,7 +9,7 @@ import           System.Environment   (lookupEnv)
 import           System.FilePath      (replaceExtension)
 import           System.FilePath.Glob (globDir1, compile)
 import           System.Directory
-import           Turtle               (procs, echo, shells)
+import           Turtle               (procs, echo, shells, shell, ExitCode(..))
 import           Turtle.Line          (unsafeTextToLine)
 
 import RewriteLibs                    (chain)
@@ -77,7 +77,8 @@ main = do
     -- Sign the installer with a special macOS dance
     run "security" ["create-keychain", "-p", "travis", "macos-build.keychain"]
     run "security" ["default-keychain", "-s", "macos-build.keychain"]
-    shells "security import macos.p12 -P $CERT_PASS -k macos-build.keychain -T `which productsign`" mempty
+    exitcode <- shell "security import macos.p12 -P $CERT_PASS -k macos-build.keychain -T `which productsign`" mempty
+    unless (exitcode == ExitSuccess) $ error "Signing failed"
     run "security" ["set-key-partition-list", "-S", "apple-tool:,apple:", "-s", "-k", "travis", "macos-build.keychain"]
     run "security" ["unlock-keychain", "-p", "travis", "macos-build.keychain"]
     shells ("productsign --sign \"Developer ID Installer: Nikolaos Bentenitis\" --keychain macos-build.keychain dist/temp2.pkg " <> T.pack pkg) mempty
