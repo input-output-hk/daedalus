@@ -79,7 +79,7 @@ pushd installers
 
 :build
     for /l %%x in (1, 1, 5) do (
-        stack --no-terminal build -j 2 --exec make-installer
+        ..\scripts\appveyor-retry call stack --no-terminal build -j 2 --exec make-installer
         @if %errorlevel% equ 0 goto :built
 
         @echo .
