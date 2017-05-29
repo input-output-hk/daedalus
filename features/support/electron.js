@@ -31,7 +31,7 @@ export default function () {
     this.client = context.app.client;
     this.browserWindow = context.app.browserWindow;
     this.client.url('/');
-    this.client.timeoutsAsyncScript(30 * 1000);
+    this.client.timeouts('script', 30 * 1000);
 
     await this.client.executeAsync(function(isFirst, done) {
       daedalus.environment.current = daedalus.environment.TEST;
