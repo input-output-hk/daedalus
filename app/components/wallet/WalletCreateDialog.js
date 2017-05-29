@@ -70,10 +70,17 @@ const messages = defineMessages({
     defaultMessage: '!!!Password',
     description: 'Placeholder for the "Password" inputs in the create wallet dialog.',
   },
+  currencyComingSoonLabel: {
+    id: 'wallet.create.dialog.currencyComingSoonLabel',
+    defaultMessage: '!!!Coming soon',
+    description: 'Label for currency options that are disabled but coming soon.',
+  }
 });
 
 const currencies = [
   { value: 'ada', label: 'ADA' },
+  { value: 'btc', label: 'BTC', isDisabled: true },
+  { value: 'etc', label: 'ETC', isDisabled: true },
 ];
 
 @observer
@@ -234,6 +241,16 @@ export default class WalletCreateDialog extends Component {
           className="currency"
           {...form.$('currency').bind()}
           options={currencies}
+          optionRenderer={option => (
+            <div className={styles.currencyOption}>
+              <span>{option.label}</span>
+              {option.isDisabled && (
+                <span className={styles.currencyOptionComingSoon}>
+                  {intl.formatMessage(messages.currencyComingSoonLabel)}
+                </span>
+              )}
+            </div>
+          )}
           skin={<SelectSkin />}
         />
 

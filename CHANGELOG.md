@@ -16,6 +16,7 @@ Changelog
 - “Terms of use” page in settings section
 - Change wallet password dialog UX improvements
 - Multiple input and output addresses in transaction details
+- Show BTC and ETC currencies as coming soon in create wallet dialog
 
 ### Fixes
 
