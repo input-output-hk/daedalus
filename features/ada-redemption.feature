@@ -39,7 +39,6 @@ Feature: Ada Redemption
     When I submit the ada redemption form
     Then I should see the "Ada Redemption Success Overlay"
 
-
   Scenario: User redeems manually entered "Force vended" redemption key
     Given I am on the ada redemption screen
     And I have accepted "Daedalus Redemption Disclaimer"
@@ -67,7 +66,6 @@ Feature: Ada Redemption
     And ada redemption form submit button is no longer disabled
     When I submit the ada redemption form
     Then I should see the "Ada Redemption Success Overlay"
-
 
   Scenario: User redeems manually entered "Paper vended" shielded vending key and passphrase
     Given I am on the ada redemption screen
