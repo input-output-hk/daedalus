@@ -17,6 +17,7 @@ import actions from './actions';
 import Action from './actions/lib/Action';
 import translations from './i18n/translations';
 import './themes/index.global.scss';
+import patchCardanoApi from './api/mocks/patchCardanoApi';
 
 // run MobX in strict mode
 useStrict(true);
@@ -40,6 +41,9 @@ const initializeDaedalus = () => {
       api.reset();
       setupStores(api, actions, router);
     }),
+    test: {
+      patchCardanoApi
+    }
   };
   render((
     <App stores={stores} actions={actions} history={history} />

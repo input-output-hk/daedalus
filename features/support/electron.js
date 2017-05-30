@@ -1,5 +1,6 @@
 import { Application } from 'spectron';
 import electronPath from 'electron';
+import path from 'path';
 
 const context = {};
 let isFirstScenario = true;
@@ -33,8 +34,14 @@ export default function () {
     this.client.url('/');
     this.client.timeouts('script', 30 * 1000);
 
-    await this.client.executeAsync(function(isFirst, done) {
+    await this.client.executeAsync(function(isFirst, rootDir, done) {
       daedalus.environment.current = daedalus.environment.TEST;
+      // Patch parts of the cardano api in the test environment
+      if (daedalus.environment.CARDANO_API) {
+        daedalus.test.patchCardanoApi(daedalus.api);
+        // Reset the stores so that the patched api is used instead
+        daedalus.reset();
+      }
       if (!isFirst) daedalus.reset();
       const connectToBackend = () => {
         if (daedalus.stores.networkStatus.isSynced) {
@@ -49,7 +56,7 @@ export default function () {
         }
       };
       connectToBackend();
-    }, isFirstScenario);
+    }, isFirstScenario, path.join(__dirname, '../..'));
     isFirstScenario = false;
   });
 }

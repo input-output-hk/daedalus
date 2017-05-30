@@ -13,7 +13,6 @@ Feature: Ada Redemption
     Then I should not see the "Daedalus Redemption Disclaimer" overlay anymore
     And I should still be on the ada redemption screen
 
-
   Scenario: User redeems manually entered "Regular" redemption key
     Given I am on the ada redemption screen
     And I have accepted "Daedalus Redemption Disclaimer"
