@@ -1,5 +1,5 @@
 // @flow
-import { observable, computed, action, runInAction } from 'mobx';
+import { observable, computed, action, runInAction, untracked } from 'mobx';
 import _ from 'lodash';
 import Store from './lib/Store';
 import Wallet from '../domain/Wallet';
@@ -229,7 +229,7 @@ export default class WalletsStore extends Store {
   _toggleAddWalletDialogOnWalletsLoaded = () => {
     if (this.hasLoadedWallets && !this.hasAnyWallets) {
       this.actions.dialogs.open.trigger({ dialog: WalletAddDialog });
-    } else if (this.stores.uiDialogs.isOpen(WalletAddDialog)) {
+    } else if (untracked(() => this.stores.uiDialogs.isOpen(WalletAddDialog))) {
       this.actions.dialogs.closeActiveDialog.trigger();
     }
   };
