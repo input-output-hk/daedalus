@@ -85,6 +85,7 @@
   "wallet.create.dialog.title": "Create wallet",
   "wallet.create.dialog.walletNameHint": "e.g: Shopping Wallet",
   "wallet.create.dialog.walletPasswordLabel": "Wallet password",
+  "wallet.create.dialog.currencyComingSoonLabel": "Coming soon",
   "wallet.key.import.dialog.headline": "Import Wallet",
   "wallet.key.import.dialog.keyFileHint": "Drop file here or click to choose",
   "wallet.key.import.dialog.keyFileLabel": "Upload your key file",

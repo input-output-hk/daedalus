@@ -7,7 +7,7 @@ environment:
   AWS_SECRET_ACCESS_KEY:
     secure: TIIz2Xtcn63BxDJ9h+2Uj73vJrfmImtlZHh0y2YxGIpwu3eRV9OA+1jhDiG2zPch
   CERT_PASS:
-    secure: AvuOn55kobR/QusvSdyyFCCOh5EF/AFNXAUCk9R2brePbiwBwQiscFCX0f/TiupS
+    secure: 9tjYxdz1fqibx1WOrP5yn32iwbEXeYx+Btb5QJqHvMO4Ng2/yUtPi00/ZMXihFWV
   # Avoid long paths on Windows
   STACK_ROOT: "c:\\sr"
 
@@ -19,7 +19,7 @@ cache:
 
 install:
   - ps: Install-Product node $env:nodejs_version x64
-  - IF NOT DEFINED APPVEYOR_PULL_REQUEST_NUMBER aws s3 cp --region eu-central-1 s3://iohk-private/iohk-windows-certificate.p12 C:/iohk-windows-certificate.p12
+  - IF NOT DEFINED APPVEYOR_PULL_REQUEST_NUMBER aws s3 cp --region eu-central-1 s3://iohk-private/iohk-windows-certificate-2.p12 C:/iohk-windows-certificate.p12
 
 test_script:
   - scripts\build-installer-win64.bat %APPVEYOR_BUILD_VERSION% cardano-sl-0.4
