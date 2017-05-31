@@ -38,8 +38,8 @@ export default class WalletSettingsStore extends Store {
   @action _updateWalletAssuranceLevel = async ({ assurance }: { assurance: AssuranceMode }) => {
     const activeWallet = this.stores.wallets.active;
     if (!activeWallet) return;
-    const { id: walletId, type, currency, name } = activeWallet;
-    await this.updateWalletRequest.execute({ walletId, type, currency, name, assurance });
+    const { id: walletId, currency, name } = activeWallet;
+    await this.updateWalletRequest.execute({ walletId, currency, name, assurance });
     await this.stores.wallets.walletsRequest.patch(result => {
       const wallet = _.find(result, { id: walletId });
       wallet.assurance = assurance;

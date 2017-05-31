@@ -8,22 +8,20 @@ import { assuranceModes, assuranceModeOptions } from '../config/transactionAssur
 export default class Wallet {
 
   id: string = '';
-  type: string;
-  address: string = '';
-  currency: string = '';
+  currency: string = 'ADA';
+  address: string = 'current address';
   @observable name: string = '';
   @observable amount: BigNumber;
   @observable assurance: AssuranceModeOption;
   @observable hasPassword: boolean;
   @observable passwordUpdateDate: ?Date;
+
+  // TODO: we are not using this?
   @observable transactions: Array<WalletTransaction> = [];
 
   constructor(data: {
     id: string,
-    type: string,
     name: string,
-    address: string,
-    currency: string,
     amount: BigNumber,
     assurance: AssuranceModeOption,
     hasPassword: boolean,
@@ -32,6 +30,7 @@ export default class Wallet {
     Object.assign(this, data);
   }
 
+  // TODO: we are not using this?
   @action addTransaction(transaction: WalletTransaction) {
     this.transactions.push(transaction);
   }

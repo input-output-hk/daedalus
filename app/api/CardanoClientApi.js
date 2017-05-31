@@ -3,6 +3,7 @@ import localStorage from 'electron-json-storage';
 import ClientApi from 'daedalus-client-api';
 import type {
   ApiTransaction,
+  ApiAddress,
   ApiTransactions,
   ApiWallet,
   ApiWallets,
@@ -13,8 +14,10 @@ import Log from 'electron-log';
 import BigNumber from 'bignumber.js';
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
+import WalletAddress from '../domain/WalletAddress';
 import type {
   CreateWalletRequest,
+  GetAddressesRequest,
   GetTransactionsRequest,
   CreateTransactionRequest,
   RestoreWalletRequest,
@@ -52,6 +55,24 @@ import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 // (() => {
 //   const result = ClientApi.isValidRedeemCode('HSoXEnt9X541uHvtzBpy8vKfTo1C9TkAX3wat2c6ikg=');
 //   console.log('isValidRedeemCode', result);
+// })();
+
+
+// TODO: delete following commented out code
+
+// (async () => {
+//   const wallets = await ClientApi.getWalletSets();
+//   console.log('wallets:', JSON.stringify(wallets, null, 2));
+// })();
+//
+// (async () => {
+//   const addresses = await ClientApi.getWallets('1fsDg6r4SvopkzML9yrJ58m4v6zWuHDEX7XNUfpFwzKEpS6');
+//   console.log('addresses:', JSON.stringify(addresses, null, 2));
+// })();
+//
+// (async () => {
+//   const newAccount = await ClientApi.newAccount('1gCC3J43QAZo3fZiUTuyfYyT8sydFJHdhPnFFmckXL7mV3f@2147483648', '');
+//   console.log('newAccount:', JSON.stringify(newAccount, null, 2));
 // })();
 
 const getUserLocaleFromLocalStorage = () => new Promise((resolve, reject) => {
@@ -115,11 +136,28 @@ export default class CardanoClientApi {
   async getWallets() {
     Log.debug('CardanoClientApi::getWallets called');
     try {
-      const response: ApiWallets = await ClientApi.getWallets();
+      const response: ApiWallets = await ClientApi.getWalletSets();
       Log.debug('CardanoClientApi::getWallets success: ', JSON.stringify(response, null, 2));
-      return response.map(data => _createWalletFromServerData(data));
+      const wallets = response.map(data => _createWalletFromServerData(data));
+      return wallets;
     } catch (error) {
+      console.log(error);
       Log.error('CardanoClientApi::getWallets error: ', error);
+      throw new GenericApiError();
+    }
+  }
+
+  async getAddresses(request: GetAddressesRequest) {
+    Log.debug('CardanoClientApi::getAddresses called: ', JSON.stringify(request, null, 2));
+    const { walletId } = request;
+    try {
+      const response: ApiTransactions = await ClientApi.getWallets(walletId);
+      Log.debug('CardanoClientApi::getAddresses success: ', JSON.stringify(response, null, 2));
+      return new Promise((resolve) => resolve({
+        addresses: response[0].cwAccounts.map(data => _createAddressFromServerData(data)),
+      }));
+    } catch (error) {
+      Log.error('CardanoClientApi::searchHistory error: ', error);
       throw new GenericApiError();
     }
   }
@@ -174,8 +212,8 @@ export default class CardanoClientApi {
     const description = 'no description provided';
     const title = 'no title provided';
     try {
-      const response: ApiTransaction = await ClientApi.sendExtended(
-        sender, receiver, amount, currency, title, description, password
+      const response: ApiTransaction = await ClientApi.newPaymentExtended(
+        sender, receiver, amount, password
       );
       Log.debug('CardanoClientApi::createTransaction success: ', JSON.stringify(response, null, 2));
       return _createTransactionFromServerData(response);
@@ -224,8 +262,8 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::restoreWallet called');
     const { recoveryPhrase, walletName, walletPassword } = request;
     try {
-      const restoredWallet: ApiWallet = await ClientApi.restoreWallet(
-        'CWTPersonal', 'ADA', walletName, recoveryPhrase, walletPassword
+      const restoredWallet: ApiWallet = await ClientApi.restoreWalletSet(
+        walletName, 'CWANormal', 0, recoveryPhrase, walletPassword
       );
       Log.debug('CardanoClientApi::restoreWallet success');
       return _createWalletFromServerData(restoredWallet);
@@ -503,17 +541,22 @@ export default class CardanoClientApi {
 
 const _createWalletFromServerData = action((data: ApiWallet) => (
   new Wallet({
-    id: data.cwAddress,
-    address: data.cwAddress,
-    amount: new BigNumber(data.cwAmount.getCoin).dividedBy(LOVELACES_PER_ADA),
-    type: data.cwMeta.cwType,
-    currency: data.cwMeta.cwCurrency,
-    name: data.cwMeta.cwName,
-    assurance: data.cwMeta.cwAssurance,
-    hasPassword: false, // TODO: replace with real API response
+    id: data.cwsId,
+    amount: new BigNumber(data.cwsAmount.getCCoin).dividedBy(LOVELACES_PER_ADA),
+    name: data.cwsWSetMeta.cwsName,
+    assurance: data.cwsWSetMeta.cwsAssurance,
+    hasPassword: data.cwsHasPassphrase,
     passwordUpdateDate: new Date('2017-02-01'), // TODO: replace with real API response
   })
 ));
+
+const _createAddressFromServerData = action((data: ApiAddress) => {
+  const coins = data.caAmount.getCCoin;
+  return new WalletAddress({
+    id: data.caId,
+    amount: new BigNumber(coins).dividedBy(LOVELACES_PER_ADA),
+  });
+});
 
 const _createTransactionFromServerData = action((data: ApiTransaction) => {
   const isOutgoing = data.ctType.tag === 'CTOut';

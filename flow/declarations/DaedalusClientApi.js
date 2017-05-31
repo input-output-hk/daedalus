@@ -10,6 +10,21 @@ declare module 'daedalus-client-api' {
   };
   declare type ApiTransactionTag = 'CTIn' | 'CTOut';
 
+  declare type ApiAddress = {
+    ctAmount: ApiAmount,
+    ctConfirmations: number,
+    ctId: string,
+    ctType: {
+      tag: ApiTransactionTag,
+      contents: {
+        ctmCurrency: ApiCurrency,
+        ctmDate: Date,
+        ctmDescription: ?string,
+        ctmTitle: ?string,
+      }
+    },
+  };
+
   declare type ApiTransaction = {
     ctAmount: ApiAmount,
     ctConfirmations: number,
@@ -31,7 +46,7 @@ declare module 'daedalus-client-api' {
   ];
 
   declare type ApiWallet = {
-    cwAddress: string,
+    cwId: string,
     cwAmount: ApiAmount,
     cwMeta: {
       cwAssurance: ApiAssurance,

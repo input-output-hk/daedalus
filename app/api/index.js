@@ -1,16 +1,23 @@
 // @flow
 import Wallet from '../domain/Wallet';
+import WalletAddress from '../domain/WalletAddress';
 import WalletTransaction from '../domain/WalletTransaction';
 
 // REQUEST & RESPONSE TYPES
 
 export type GetWalletsResponse = Wallet[];
 
+export type GetAddressesResponse = WalletAddress[];
+
+export type GetAddressesRequest = {
+  walletId: string,
+};
+
 export type GetTransactionsRequest = {
   walletId: string,
   searchTerm: string,
   skip: number,
-  limit: number
+  limit: number,
 };
 
 export type GetTransactionsResponse = {
@@ -123,6 +130,7 @@ export type Api = {
   notify(onSuccess: Function, onError?: Function): void,
   reset(): void,
   getWallets(): Promise<GetWalletsResponse>,
+  getAddresses(): Promise<GetAddressesResponse>,
   getTransactions(request: GetTransactionsRequest): Promise<GetTransactionsResponse>,
   createWallet(request: CreateWalletRequest): Promise<CreateWalletResponse>,
   deleteWallet(request: DeleteWalletRequest): Promise<DeleteWalletResponse>,

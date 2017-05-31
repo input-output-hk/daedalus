@@ -125,8 +125,7 @@ export default class WalletsStore extends Store {
       ...transactionDetails,
       walletId: wallet.id,
       amount: transactionDetails.amount,
-      sender: wallet.address,
-      currency: wallet.currency,
+      // sender: wallet.address,
     });
     this.refreshWalletsData();
     this.goToWalletRoute(wallet.id);
@@ -181,6 +180,14 @@ export default class WalletsStore extends Store {
           allRequest: this.stores.transactions._getTransactionsAllRequest(walletId)
         }));
         this.stores.transactions._refreshTransactionData();
+      });
+      runInAction('refresh address data', () => {
+        const walletIds = result.map((wallet: Wallet) => wallet.id);
+        this.stores.addresses.addressesRequests = walletIds.map(walletId => ({
+          walletId,
+          allRequest: this.stores.addresses._getAddressesAllRequest(walletId)
+        }));
+        this.stores.addresses._refreshAddresses();
       });
     }
   };
