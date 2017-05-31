@@ -35,6 +35,7 @@ launcherArgs launcher = unwords $
         "--peers-file", "ip-dht-mappings",
         "--system-start", "1492428658",
         "--wallet",
+        "--web", "--web-port", "12300",
         "--explicit-initial"
         ]
 
