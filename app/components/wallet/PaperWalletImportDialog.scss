@@ -1,0 +1,46 @@
+@import '../../themes/mixins/loading-spinner';
+@import '../../themes/mixins/error-message';
+
+.walletPassword {
+  margin-bottom: -32px;
+
+  .walletPasswordSwitch {
+    border-top: 1px solid #dfe4e8;
+    padding-top: 20px;
+  }
+
+  .walletPasswordFields {
+    display: flex;
+    justify-content: space-between;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 400ms ease;
+
+    &.show {
+      max-height: 150px;
+      opacity: 1;
+      overflow: visible;
+    }
+
+    & > div {
+      width: 275px;
+    }
+  }
+
+  & + .error {
+    margin-top: 30px;
+  }
+}
+
+.error {
+  @include error-message;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+.isSubmitting {
+  button {
+    @include loading-spinner("../../assets/images/spinner-light.svg");
+  }
+}

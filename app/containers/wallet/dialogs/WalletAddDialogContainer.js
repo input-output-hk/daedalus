@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletAddDialog from '../../../components/wallet/WalletAddDialog';
 import WalletCreateDialog from '../../../components/wallet/WalletCreateDialog';
-import WalletRestoreDialog from '../../../components/wallet/WalletRestoreDialog';
+import PaperWalletImportDialog from '../../../components/wallet/PaperWalletImportDialog';
 import WalletKeyImportDialog from '../../../components/wallet/key-import/WalletKeyImportDialog';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 
@@ -20,7 +20,7 @@ export default class WalletAddDialogContainer extends Component {
           dialog: WalletCreateDialog,
         })}
         onRestore={() => actions.dialogs.open.trigger({
-          dialog: WalletRestoreDialog,
+          dialog: PaperWalletImportDialog,
         })}
         onImportKey={() => actions.dialogs.open.trigger({
           dialog: WalletKeyImportDialog,

@@ -168,6 +168,9 @@ export default class WalletsStore extends Store {
 
   isValidMnemonic = (mnemonic: string) => this.api.isValidMnemonic(mnemonic);
 
+  // TODO - call endpoint to check if private key is valid
+  isValidPrivateKey = () => { return true; }; // eslint-disable-line
+
   @action refreshWalletsData = async () => {
     if (this.stores.networkStatus.isConnected) {
       this.walletsRequest.invalidate();
