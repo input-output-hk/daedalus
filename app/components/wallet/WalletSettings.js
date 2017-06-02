@@ -12,6 +12,16 @@ import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
 import DeleteWalletButton from './settings/DeleteWalletButton';
 import DeleteWalletConfirmationDialog from './settings/DeleteWalletConfirmationDialog';
 import DeleteWalletDialogContainer from '../../containers/wallet/dialogs/DeleteWalletDialogContainer';
+import WalletExportDialog from './settings/WalletExportDialog';
+import WalletExportDialogContainer from '../../containers/wallet/dialogs/WalletExportDialogContainer';
+import ExportPaperWalletPrinterCopyDialog from './settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog';
+import ExportPaperWalletPrinterCopyDialogContainer from '../../containers/wallet/dialogs/paper-wallet-export/ExportPaperWalletPrinterCopyDialogContainer';
+import ExportPaperWalletMnemonicDialog from './settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog';
+import ExportPaperWalletMnemonicDialogContainer from '../../containers/wallet/dialogs/paper-wallet-export/ExportPaperWalletMnemonicDialogContainer';
+import ExportPaperWalletMnemonicVerificationDialog from './settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog';
+import ExportPaperWalletMnemonicVerificationDialogContainer from '../../containers/wallet/dialogs/paper-wallet-export/ExportPaperWalletMnemonicVerificationDialogContainer';
+import ExportPaperWalletCertificateDialog from './settings/paper-wallet-export-dialogs/ExportPaperWalletCertificateDialog';
+import ExportPaperWalletCertificateDialogContainer from '../../containers/wallet/dialogs/paper-wallet-export/ExportPaperWalletCertificateDialogContainer';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
 import ChangeWalletPasswordDialog from './settings/ChangeWalletPasswordDialog';
 import ChangeWalletPasswordDialogContainer from '../../containers/wallet/dialogs/ChangeWalletPasswordDialogContainer';
@@ -101,6 +111,21 @@ export default class WalletSettings extends Component {
             })}
           />
 
+          <div className={styles.export}>
+            <strong>Export</strong>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+            <p>Maecenas non fringilla velit. Vestibulum ante ipsum primis in
+              faucibus orci luctus et ultrices posuere cubilia Curae.</p>
+            <button
+              className={styles.export_link}
+              onClick={() => openDialogAction({
+                dialog: WalletExportDialog,
+              })}
+            >
+              export
+            </button>
+          </div>
+
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
           <div className={styles.deleteWalletButton}>
@@ -119,6 +144,26 @@ export default class WalletSettings extends Component {
 
         {isDialogOpen(DeleteWalletConfirmationDialog) ? (
           <DeleteWalletDialogContainer />
+        ) : null}
+
+        {isDialogOpen(WalletExportDialog) ? (
+          <WalletExportDialogContainer />
+        ) : null}
+
+        {isDialogOpen(ExportPaperWalletPrinterCopyDialog) ? (
+          <ExportPaperWalletPrinterCopyDialogContainer />
+        ) : null}
+
+        {isDialogOpen(ExportPaperWalletMnemonicDialog) ? (
+          <ExportPaperWalletMnemonicDialogContainer />
+        ) : null}
+
+        {isDialogOpen(ExportPaperWalletMnemonicVerificationDialog) ? (
+          <ExportPaperWalletMnemonicVerificationDialogContainer />
+        ) : null}
+
+        {isDialogOpen(ExportPaperWalletCertificateDialog) ? (
+          <ExportPaperWalletCertificateDialogContainer />
         ) : null}
 
       </div>
