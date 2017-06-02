@@ -1,5 +1,5 @@
 // @flow
-import { observable, computed, action, extendObservable } from 'mobx';
+import { observable, computed, action } from 'mobx';
 import _ from 'lodash';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
@@ -14,7 +14,7 @@ export default class AddressesStore extends Store {
   }> = [];
 
   setup() {
-    const actions = this.actions.addresses;
+    // const actions = this.actions.addresses;
   }
 
   @computed get all(): Array<WalletAddress> {

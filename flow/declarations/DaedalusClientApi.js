@@ -6,24 +6,27 @@ declare module 'daedalus-client-api' {
   declare type ApiCurrency = 'ADA';
   declare type ApiWalletType = 'CWTPersonal';
   declare type ApiAmount = {
-    getCoin: number,
+    getCCoin: number,
   };
   declare type ApiTransactionTag = 'CTIn' | 'CTOut';
 
   declare type ApiAddress = {
-    ctAmount: ApiAmount,
-    ctConfirmations: number,
-    ctId: string,
-    ctType: {
-      tag: ApiTransactionTag,
-      contents: {
-        ctmCurrency: ApiCurrency,
-        ctmDate: Date,
-        ctmDescription: ?string,
-        ctmTitle: ?string,
-      }
+    cadAmount: ApiAmount,
+    cadId: string,
+  };
+
+  declare type ApiAddresses = Array<ApiAddress>;
+
+  declare type ApiAccount = {
+    caAccount: ApiAddresses,
+    caAmount: ApiAmount,
+    caId: string,
+    caMeta: {
+      caName: string,
     },
   };
+
+  declare type ApiAccounts = Array<ApiAccount>;
 
   declare type ApiTransaction = {
     ctAmount: ApiAmount,
@@ -46,14 +49,15 @@ declare module 'daedalus-client-api' {
   ];
 
   declare type ApiWallet = {
-    cwId: string,
+    cwAccountsNumber: number,
     cwAmount: ApiAmount,
-    cwMeta: {
+    cwHasPassphrase: boolean,
+    cwId: string,
+    cwPassphraseLU: number,
+    wWSetMeta: {
       cwAssurance: ApiAssurance,
-      cwCurrency: ApiCurrency,
       cwName: string,
-      cwType: ApiWalletType,
-      cwUnit: number,
+      csUnit: number,
     },
   };
 
@@ -72,14 +76,14 @@ declare module 'daedalus-client-api' {
   declare function syncProgress(): any;
 
   // Validators
-  declare function isValidAddress(currency: string, address: string): Promise<boolean>;
+  declare function isValidAddress(address: string): Promise<boolean>;
   declare function isValidMnemonic(length: number, mnemonic: string): Promise<boolean>;
   declare function isValidRedemptionKey(mnemonic: string): Promise<boolean>;
   declare function isValidPaperVendRedemptionKey(mnemonic: string): Promise<boolean>;
 
   // Transactions
   declare function searchHistory(walletId: string, searchTerm: string, skip: number, limit: number): Promise<ApiTransactions>;
-  declare function sendExtended(sender: string, receiver: string, amount: string, currency: string, title: string, description: ?string, password: ?string): Promise<ApiTransaction>;
+  declare function newPaymentExtended(sender: string, receiver: string, amount: string, title: string, description: ?string, password: ?string): Promise<ApiTransaction>;
 
   // Ada Redemption
   declare function redeemAda(redemptionCode: string, walletId: string): Promise<ApiTransaction>;
@@ -87,9 +91,10 @@ declare module 'daedalus-client-api' {
 
   // Wallet
   declare function getWallets(): ApiWallets;
-  declare function newWallet(walletType: string, walletCurrency: string, walletName: string, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
+  declare function getWalletAccounts(walletId: string): Promise<ApiAccounts>;
+  declare function newWallet(walletName: string, assurance: string, unit: number, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
   declare function deleteWallet(walletId: string): Promise<{}>;
-  declare function restoreWallet(walletType: string, walletCurrency: string, walletName: string, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
+  declare function restoreWallet(walletName: string, assurance: string, unit: number, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
   declare function updateWallet(walletId: string, walletType: string, walletCurrency: string, walletName: string, assurance: string, unit: number): Promise<ApiWallet>;
   declare function importKey(filePath: string): Promise<ApiWallet>;
 

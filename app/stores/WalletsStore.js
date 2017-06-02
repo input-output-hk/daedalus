@@ -163,7 +163,7 @@ export default class WalletsStore extends Store {
 
   getWalletById = (id: string): ?Wallet => this.all.find(w => w.id === id);
 
-  isValidAddress = (address: string) => this.api.isValidAddress('ADA', address);
+  isValidAddress = (address: string) => this.api.isValidAddress(address);
 
   isValidMnemonic = (mnemonic: string) => this.api.isValidMnemonic(mnemonic);
 
@@ -177,7 +177,7 @@ export default class WalletsStore extends Store {
         this.stores.transactions.transactionsRequests = walletIds.map(walletId => ({
           walletId,
           recentRequest: this.stores.transactions._getTransactionsRecentRequest(walletId),
-          allRequest: this.stores.transactions._getTransactionsAllRequest(walletId)
+          allRequest: this.stores.transactions._getTransactionsAllRequest(walletId),
         }));
         this.stores.transactions._refreshTransactionData();
       });
@@ -185,7 +185,7 @@ export default class WalletsStore extends Store {
         const walletIds = result.map((wallet: Wallet) => wallet.id);
         this.stores.addresses.addressesRequests = walletIds.map(walletId => ({
           walletId,
-          allRequest: this.stores.addresses._getAddressesAllRequest(walletId)
+          allRequest: this.stores.addresses._getAddressesAllRequest(walletId),
         }));
         this.stores.addresses._refreshAddresses();
       });

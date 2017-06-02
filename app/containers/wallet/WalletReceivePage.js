@@ -39,11 +39,13 @@ export default class WalletReceivePage extends Component {
 
   render() {
     const actions = this.props.actions;
-    const { wallets, uiNotifications } = this.props.stores;
+    const { wallets, addresses, uiNotifications } = this.props.stores;
     const wallet = wallets.active;
 
     // Guard against potential null values
     if (!wallet) throw new Error('Active wallet required for WalletReceivePage.');
+
+    const walletAddress = addresses.active ? addresses.active.id : '';
 
     const notification = {
       id: `${wallet.id}-copyNotification`,
@@ -51,7 +53,7 @@ export default class WalletReceivePage extends Component {
       message: (
         <FormattedHTMLMessage
           {...messages.message}
-          values={{ walletAddress: ellipsis(wallet.address, 8) }}
+          values={{ walletAddress: ellipsis(walletAddress, 8) }}
         />
       ),
     };
@@ -61,7 +63,7 @@ export default class WalletReceivePage extends Component {
 
         <WalletReceive
           walletName={wallet.name}
-          walletAddress={wallet.address}
+          walletAddress={walletAddress}
           onCopyAddress={() => {
             actions.notifications.open.trigger({
               id: notification.id,
