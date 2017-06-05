@@ -32,15 +32,13 @@ declare module 'daedalus-client-api' {
     ctAmount: ApiAmount,
     ctConfirmations: number,
     ctId: string,
-    ctType: {
-      tag: ApiTransactionTag,
-      contents: {
-        ctmCurrency: ApiCurrency,
-        ctmDate: Date,
-        ctmDescription: ?string,
-        ctmTitle: ?string,
-      }
+    ctInputAddrs: Array<string>,
+    ctMeta: {
+      ctmDate: Date,
+      ctmDescription: ?string,
+      ctmTitle: ?string,
     },
+    ctOutputAddrs: Array<string>,
   };
 
   declare type ApiTransactions = [
@@ -53,7 +51,7 @@ declare module 'daedalus-client-api' {
     cwAmount: ApiAmount,
     cwHasPassphrase: boolean,
     cwId: string,
-    cwPassphraseLU: number,
+    cwPassphraseLU: Date,
     wWSetMeta: {
       cwAssurance: ApiAssurance,
       cwName: string,
@@ -81,9 +79,13 @@ declare module 'daedalus-client-api' {
   declare function isValidRedemptionKey(mnemonic: string): Promise<boolean>;
   declare function isValidPaperVendRedemptionKey(mnemonic: string): Promise<boolean>;
 
+  // Accounts
+  declare function getAccounts(): Promise<ApiAccounts>;
+  declare function newAccount(walletId: string, walletName: string, walletPassword: ?string): Promise<ApiAccount>;
+
   // Transactions
-  declare function searchHistory(walletId: string, searchTerm: string, skip: number, limit: number): Promise<ApiTransactions>;
-  declare function newPaymentExtended(sender: string, receiver: string, amount: string, title: string, description: ?string, password: ?string): Promise<ApiTransaction>;
+  declare function searchHistory(senderAccountId: string, searchTerm: string, skip: number, limit: number): Promise<ApiTransactions>;
+  declare function newPaymentExtended(senderAccountId: string, receiverAddress: string, amount: string, title: string, description: ?string, password: ?string): Promise<ApiTransaction>;
 
   // Ada Redemption
   declare function redeemAda(redemptionCode: string, walletId: string): Promise<ApiTransaction>;

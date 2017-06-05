@@ -60,6 +60,38 @@ import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 //   console.log('isValidRedeemCode', result);
 // })();
 
+
+// TODO: Remove after hd integraton is complete
+// (async () => {
+//   const account = await ClientApi.newAccount(
+//     '1g1weQDq9kc4FDiCCYTaqXQ21rr6ZSCx2e8Te2qCTW1KG6r',
+//     'Test',
+//     'secret'
+//   );
+//   console.log('account:', JSON.stringify(account, null, 2));
+// })();
+
+// (async () => {
+//   const accounts = await ClientApi.getAccounts();
+//   console.log('accounts:', JSON.stringify(accounts, null, 2));
+// })();
+
+// (async () => {
+//   const address = await ClientApi.newWAddress(
+//     '1fsHQP5N7sb9BsjTx7H5vwRrY86ioS7uHFNRf7Px271V6Ch'
+//   );
+//   console.log('addresses:', JSON.stringify(addresses, null, 2));
+// })();
+
+// (async () => {
+//   const addresses = await ClientApi.getWalletAccounts(
+//     '1fsHQP5N7sb9BsjTx7H5vwRrY86ioS7uHFNRf7Px271V6Ch'
+//   );
+//   console.log('addresses:', JSON.stringify(addresses, null, 2));
+// })();
+// TODO: ^^ Remove after hd integraton is complete
+
+
 const getUserLocaleFromLocalStorage = () => new Promise((resolve, reject) => {
   localStorage.get('userLocale', (error, response) => {
     if (error) return reject(error);
@@ -138,9 +170,13 @@ export default class CardanoClientApi {
       const response: ApiAccounts = await ClientApi.getWalletAccounts(walletId);
       Log.debug('CardanoClientApi::getAddresses success: ', JSON.stringify(response, null, 2));
 
-      // We use only the first account
+      if (!response.length) {
+        return new Promise((resolve) => resolve({ addresses: [] }));
+      }
+
+      // For now only the first account is used
       const firstAccount = response[0];
-      // Addresses are wrongly stored under account's caAccount property
+      // Addresses are wrongly mapped under account's caAccount property (should be 'caAddresses')
       const firstAccountAddresses = firstAccount.caAccount;
 
       return new Promise((resolve) => resolve({
@@ -154,16 +190,16 @@ export default class CardanoClientApi {
 
   async getTransactions(request: GetTransactionsRequest) {
     Log.debug('CardanoClientApi::searchHistory called: ', JSON.stringify(request, null, 2));
-    const { searchTerm, skip, limit } = request;
-    const walletId = '1gCC3J43QAZo3fZiUTuyfYyT8sydFJHdhPnFFmckXL7mV3f@2147483648'; // account.caId
+    const { /* walletId, */ searchTerm, skip, limit } = request;
+    const walletId = '1gCC3J43QAZo3fZiUTuyfYyT8sydFJHdhPnFFmckXL7mV3f@2147483648';
+    // searchHistory endpoint requires accountId (account.caId) and not walletId
     try {
       const history: ApiTransactions = await ClientApi.searchHistory(
         walletId, searchTerm, skip, limit
       );
-      console.log('history:', JSON.stringify(history, null, 2));
       Log.debug('CardanoClientApi::searchHistory success: ', JSON.stringify(history, null, 2));
       return new Promise((resolve) => resolve({
-        transactions: history[0].map(data => _createTransactionFromServerData(data, walletId)),
+        transactions: history[0].map(data => _createTransactionFromServerData(data)),
         total: history[1]
       }));
     } catch (error) {
@@ -173,14 +209,16 @@ export default class CardanoClientApi {
   }
 
   async createWallet(request: CreateWalletRequest) {
+    // wallets are created WITHOUT an account!!!
+    // after creation ClientApi.newAccount API call should be triggered
     Log.debug('CardanoClientApi::createWallet called');
     const { name, mnemonic, password } = request;
     const assurance = 'CWANormal';
     const unit = 0;
     try {
       const response: ApiWallet = await ClientApi.newWallet(
-        name, assurance, unit, mnemonic, password
-      );
+        name, assurance, unit, mnemonic, password || ''
+      ); // empty string must be used if no password is set ^^
       Log.debug('CardanoClientApi::createWallet success: ', JSON.stringify(response, null, 2));
       return _createWalletFromServerData(response);
     } catch (error) {
@@ -205,12 +243,13 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::createTransaction called');
     const { /* sender, */ receiver, amount, /* currency, */ password } = request;
     const sender = '1gCC3J43QAZo3fZiUTuyfYyT8sydFJHdhPnFFmckXL7mV3f@2147483648'; // account.caId
+    // newPaymentExtended endpoint requires accountId (account.caId) as sender and not walletId
     const description = 'no description provided';
     const title = 'no title provided';
     try {
       const response: ApiTransaction = await ClientApi.newPaymentExtended(
-        sender, receiver, amount, title, description, password
-      );
+        sender, receiver, amount, title, description, password || ''
+      ); // empty string must be used if no password is set ^^
       Log.debug('CardanoClientApi::createTransaction success: ', JSON.stringify(response, null, 2));
       return _createTransactionFromServerData(response);
     } catch (error) {
@@ -560,6 +599,7 @@ const _createWalletFromServerData = action((data: ApiWallet) => (
   })
 ));
 
+/* eslint-disable max-len */
 // {
 //   "caMeta": {
 //     "caName": "Initial account"
@@ -570,13 +610,14 @@ const _createWalletFromServerData = action((data: ApiWallet) => (
 //   },
 //   "caAccount": [
 //     {
-//       "cadId": "19Fv6JWbdLXRXqew721u2GEarEwc8rcfpAqsriRF...Y27cj7RUvNXcZWgTbPByq",
+//       "cadId": "19Fv6JWbdLXRXqew721u2GEarEwc8rcfpAqsriRFPameyCkQLHsNDKQRpwsM7W1M587CiswPuY27cj7RUvNXcZWgTbPByq",
 //       "cadAmount": {
 //         "getCCoin": "100"
 //       }
 //     }
 //   ]
 // }
+/* eslint-disable max-len */
 const _createAddressFromServerData = action((data: ApiAddress) => (
   new WalletAddress({
     id: data.cadId,
@@ -584,10 +625,31 @@ const _createAddressFromServerData = action((data: ApiAddress) => (
   })
 ));
 
+/* eslint-disable max-len */
+// transaction: {
+//   "ctOutputAddrs": [
+//     "19HwW3dCwdUufj2xLNHo7zo9JZKiMcD1kEFQFnu6j6hjY2swjJfG5VppXx52FgUnnE5z1vFgubPVLnbLhiKyb8LdDoycYx",
+//     "19FXgBS7SBiSDx32P7HPGN29ZYCxjSHwVMnVi4UzBBE29jaVsnBRvYkTuKbkhx2gny8MZ8w8eADy7NmvjBn5UsiLqUstYp"
+//   ],
+//   "ctMeta": {
+//     "ctmTitle": "Title",
+//     "ctmDescription": "Description",
+//     "ctmDate": 1496668808.203287
+//   },
+//   "ctInputAddrs": [
+//     "19GfE6f4u1jhKCMgLSgbYFJ5HWdmLpaTivd2ENLQHhixd28YiLcXz8iK49MfRHu4gqKmSEFeTuTm5vjTgdVTfuADPyZSk3"
+//   ],
+//   "ctId": "01ef89cd6a8e47342c6c851b4943bc2cf153e4340d631d967e956f63358b2922",
+//   "ctConfirmations": 0,
+//   "ctAmount": {
+//     "getCCoin": "99"
+//   }
+// }
+/* eslint-disable max-len */
 const _createTransactionFromServerData = action((data: ApiTransaction) => {
-  const isOutgoing = data.ctType.tag === 'CTOut';
+  const isOutgoing = 'CTOut'; // TODO: check how to determine ctType (data.ctType.tag === 'CTOut')
   const coins = data.ctAmount.getCCoin;
-  const { ctmTitle, ctmDescription, ctmDate } = data.ctType.contents;
+  const { ctmTitle, ctmDescription, ctmDate } = data.ctMeta;
   return new WalletTransaction({
     id: data.ctId,
     title: ctmTitle || isOutgoing ? 'Ada sent' : 'Ada received',
@@ -597,5 +659,9 @@ const _createTransactionFromServerData = action((data: ApiTransaction) => {
     date: new Date(ctmDate * 1000),
     description: ctmDescription || '',
     numberOfConfirmations: data.ctConfirmations,
+    addresses: {
+      from: data.ctInputAddrs,
+      to: data.ctOutputAddrs,
+    },
   });
 });
