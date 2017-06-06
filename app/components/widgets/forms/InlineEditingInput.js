@@ -28,6 +28,10 @@ const messages = defineMessages({
 @observer
 export default class InlineEditingInput extends Component {
 
+  state = {
+    isActive: false,
+  }
+
   props: {
     isActive: boolean,
     inputFieldLabel: string,
@@ -64,16 +68,7 @@ export default class InlineEditingInput extends Component {
     },
   });
 
-  handleInputKeyDown = (event: KeyboardEvent) => {
-    if (event.which === 13) { // ENTER key
-      this.submit();
-    }
-    if (event.which === 27) { // ESCAPE key
-      this.props.onCancelEditing();
-    }
-  };
-
-  submit() {
+  submit = () => {
     this.validator.submit({
       onSuccess: (form) => {
         const { inputField } = form.values();
@@ -83,8 +78,36 @@ export default class InlineEditingInput extends Component {
         } else {
           this.props.onCancelEditing();
         }
+        this.setState({ isActive: false });
       }
     });
+  }
+
+  handleInputKeyDown = (event: KeyboardEvent) => {
+    if (event.which === 13) { // ENTER key
+      this.onBlur();
+    }
+    if (event.which === 27) { // ESCAPE key
+      this.onCancel();
+    }
+  };
+
+  onFocus = () => {
+    this.setState({ isActive: true });
+    this.props.onStartEditing();
+  }
+
+  onBlur = () => {
+    if (this.state.isActive) {
+      this.submit();
+    }
+  }
+
+  onCancel = () => {
+    const inputField = this.validator.$('inputField');
+    inputField.value = this.props.inputFieldValue;
+    this.setState({ isActive: false });
+    this.props.onCancelEditing();
   }
 
   componentDidUpdate() {
@@ -100,8 +123,6 @@ export default class InlineEditingInput extends Component {
     const {
       inputFieldLabel,
       isActive,
-      onStartEditing,
-      onCancelEditing,
       inputFieldValue,
       successfullyUpdated
     } = this.props;
@@ -119,8 +140,8 @@ export default class InlineEditingInput extends Component {
     return (
       <div
         className={componentStyles}
-        onBlur={this.submit.bind(this)}
-        onClick={onStartEditing}
+        onBlur={this.onBlur}
+        onClick={this.onFocus}
         role="presentation"
         aria-hidden
       >
@@ -142,7 +163,7 @@ export default class InlineEditingInput extends Component {
         {isActive && (
           <button
             className={styles.button}
-            onClick={onCancelEditing}
+            onMouseDown={this.onCancel}
           >
             {intl.formatMessage(messages.cancel)}
           </button>
