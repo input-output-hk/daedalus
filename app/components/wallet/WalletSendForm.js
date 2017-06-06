@@ -134,7 +134,6 @@ export default class WalletSendForm extends Component {
         validators: ({ field }) => {
           const amountInLovelaces = this.adaToLovelaces(field.value);
           const isValid = isValidAmountInLovelaces(amountInLovelaces);
-          console.log(amountInLovelaces, isValid);
           return [isValid, this.context.intl.formatMessage(messages.invalidAmount)];
         },
         bindings: 'ReactToolbox',
