@@ -173,6 +173,9 @@ export default class CardanoClientApi {
     const { walletId } = request;
     try {
       const response: ApiAccounts = await ClientApi.getWalletAccounts(walletId);
+      // Remove "default" wallet from the response
+      // TODO: remove when default wallet is removed from the backend
+      response.shift();
       Log.debug('CardanoClientApi::getAddresses success: ', JSON.stringify(response, null, 2));
 
       if (!response.length) {
@@ -347,11 +350,12 @@ export default class CardanoClientApi {
   async importWalletFromKey(request: ImportKeyRequest) {
     Log.debug('CardanoClientApi::importWalletFromKey called');
     try {
-      const importedWallet: ApiWallet = await ClientApi.importKey(request.filePath, '');
+      const importedWallet: ApiWallet = await ClientApi.importWallet(request.filePath, '');
       Log.debug('CardanoClientApi::importWalletFromKey success');
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
       Log.error('CardanoClientApi::importWalletFromKey error: ', error);
+      console.log('ERROR', error);
       if (error.message.includes('Wallet with that mnemonics already exists')) {
         throw new WalletAlreadyRestoredError();
       }
@@ -619,8 +623,8 @@ const _createWalletFromServerData = action((data: ApiWallet) => (
   new Wallet({
     id: data.cwId,
     amount: new BigNumber(data.cwAmount.getCCoin).dividedBy(LOVELACES_PER_ADA),
-    name: data.wWSetMeta.cwName,
-    assurance: data.wWSetMeta.cwAssurance,
+    name: data.cwMeta.cwName,
+    assurance: data.cwMeta.cwAssurance,
     hasPassword: data.cwHasPassphrase,
     passwordUpdateDate: new Date(data.cwPassphraseLU * 1000),
   })

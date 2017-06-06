@@ -52,7 +52,7 @@ declare module 'daedalus-client-api' {
     cwHasPassphrase: boolean,
     cwId: string,
     cwPassphraseLU: Date,
-    wWSetMeta: {
+    cwMeta: {
       cwAssurance: ApiAssurance,
       cwName: string,
       csUnit: number,
@@ -98,7 +98,7 @@ declare module 'daedalus-client-api' {
   declare function deleteWallet(walletId: string): Promise<{}>;
   declare function restoreWallet(walletName: string, assurance: string, unit: number, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
   declare function updateWallet(walletId: string, walletType: string, walletCurrency: string, walletName: string, assurance: string, unit: number): Promise<ApiWallet>;
-  declare function importKey(filePath: string): Promise<ApiWallet>;
+  declare function importWallet(filePath: string): Promise<ApiWallet>;
   declare function newWAddress(accountId: string, walletPassword: ?string): Promise<ApiAddress>;
 
   // Test
