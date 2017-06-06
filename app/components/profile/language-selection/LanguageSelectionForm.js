@@ -1,7 +1,8 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
+import Select from 'react-polymorph/lib/components/Select';
+import SelectSkin from 'react-polymorph/lib/skins/simple/SelectSkin';
 import Button from 'react-toolbox/lib/button/Button';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
@@ -74,10 +75,11 @@ export default class LanguageSelectionForm extends Component {
       <div className={styles.component}>
         <div className={styles.centeredBox}>
 
-          <Dropdown
-            className="language"
-            source={languageOptions}
+          <Select
+            className={styles.languageSelect}
+            options={languageOptions}
             {...languageId.bind()}
+            skin={<SelectSkin />}
           />
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}

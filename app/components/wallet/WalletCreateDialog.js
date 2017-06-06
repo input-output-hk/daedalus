@@ -5,8 +5,9 @@ import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-toolbox/lib/input/Input';
 import { defineMessages, intlShape } from 'react-intl';
+import Select from 'react-polymorph/lib/components/Select';
+import SelectSkin from 'react-polymorph/lib/skins/simple/SelectSkin';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
-import Dropup from '../widgets/forms/Dropup';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import Switch from '../widgets/Switch';
 import { isValidWalletName, isValidCurrency, isValidWalletPassword, isValidRepeatPassword } from '../../lib/validations';
@@ -69,10 +70,17 @@ const messages = defineMessages({
     defaultMessage: '!!!Password',
     description: 'Placeholder for the "Password" inputs in the create wallet dialog.',
   },
+  currencyComingSoonLabel: {
+    id: 'wallet.create.dialog.currencyComingSoonLabel',
+    defaultMessage: '!!!Coming soon',
+    description: 'Label for currency options that are disabled but coming soon.',
+  }
 });
 
 const currencies = [
   { value: 'ada', label: 'ADA' },
+  { value: 'btc', label: 'BTC', isDisabled: true },
+  { value: 'etc', label: 'ETC', isDisabled: true },
 ];
 
 @observer
@@ -229,10 +237,21 @@ export default class WalletCreateDialog extends Component {
           {...form.$('walletName').bind()}
         />
 
-        <Dropup
+        <Select
           className="currency"
           {...form.$('currency').bind()}
-          source={currencies}
+          options={currencies}
+          optionRenderer={option => (
+            <div className={styles.currencyOption}>
+              <span>{option.label}</span>
+              {option.isDisabled && (
+                <span className={styles.currencyOptionComingSoon}>
+                  {intl.formatMessage(messages.currencyComingSoonLabel)}
+                </span>
+              )}
+            </div>
+          )}
+          skin={<SelectSkin />}
         />
 
         <div className={styles.walletPassword}>

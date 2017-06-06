@@ -16,36 +16,15 @@ env:
     # AWS secret key
     - secure: "PG0QbtFLEwRLdegn7yrHYhz36UuVm8AwypQ5ai5yvrTkFJQwx0pJoPF0483zLuXouDNMdkGy4w6Fo6o+XAuBylBheduuCYR0s0TmQmsCs5r+Yc+PsNVZVH5YTkgGXXrE5+mtZuUwSmACP6fEM48SBbJd5wXWPphIF6WfxiHxwFS+EhqVDXIFobcyYxgzSulfacB1mEtvsHS+o67HVMifAUJ4qrTRuE085/3oP2e+sdKuZleAI6tEsTQ6q4AkjxMiSYG3YLvNv4ZxMbtrGjPKkXBEG+KUfanCbfj6Lup0oFbfP2QDJAY2qT+1J6o3JZXaBvYJxnFivkv1YQrXCKas8z8DcFG/jdNBtR8JGTw/IB/Q8vHY0+jEPlrfzyPNMsgfiDSw7/WjuqqMjZPaZ8at/XDLmFkZeIcXt0syhqeF6Gc+qYd9F9I+f1HFvf9OePrBYmi/1EXC+vbnwlVGqcYKmXBoVdwQTvxth1MtnHfQCqwJd/3qBdNdT9aeT1/g8cni2s9ZDUV3l1F8MdCg4aJYSvKg9Phgy2lFrpkFOcQykb31yn8NDuyTv+4QXE+f8OMsrMq7UiH7W1WFuv94camff9HW/hZBVcgFzRmoTw/UW3ea4wYvbyJrvRAowuqDBvjRbYC5Ig7dDMg9eDlmISdf7WnQ6XN4wEJLXQd7nsloPyo="
     # p12 certs
-    - secure: "y/kRyNtg7fnK8lGMT7h1WL4UPjSNOOt5T92fqetuRXLh7OxqJdcUPL2tT162gktTC/vs8k0jxM1fWiDtkyCAVQAMvoGwjbJXRdHMA+dyYmqcqWPmbEtDHPKhv5L+sM++RwQRg7Kct2g62y3EjxepT8r52+1OsWaSS893Z8GPvIaIq0K8oaOWGE4+q5+bO+scVEU+mAqjwavTOySauBCfX78ZJETAT/v0lhZNj20yTnitQce/gpt70c0UYm8Nzdk0mWrq2BQxCjTBOOHWcdUQNzmrX0jS3YyMKRWBBS4mgjQ98TKgCP6EPuZGfUdzDUiFQymmacprGdT5rdXRB2ZGxNwAGqf+nVrToLKefkqdYK6pmXBbZtk3wMlWvdzLpRWJMeDZGjAOSvq1JtFvNrAHGeGfeWgcFpDQhQ27foN5+g71/qCC01CWYRQWPLjThBLzW6ZhanyzbM77RQBw0MQpoOoHakyVCXupe/Z3PuvzT7yN8EaJWOM3sGZfiEKmwbpJdRfzbX3fStaqI2qFEC47AzBpoZYo1efe65ivpUrN282Cxz14b1Ds+/ycDjQw9JIJ9WIwfHwUFyqy4Q7/8uQQr1PZSuJHe9ojpka6aXuehVMq+0MA8G/iFYddcajH9mZ6uQjg0/ZeN1M/2kFuuq3/h7esgw1Npb/k9Kw0eADHL8k="
+    - secure: "SFgvW0GUQcNXaoU1DUQEdoduLZaQAE2yyXCobXFoKkApoF5ssyv0PE8pWBfN9GkBVJsuGh1j/ky17dsVbkvBJKdj+jUgS1f6woDV5v7e6jdt2CmtA3RFzC2bmGR4lUE7IRcx0l4puKW4mI9gB2nKIVEZ7GqeWy0ziD/I2Yv9eoJ6ldqk75yNqja/M9PDolZGTqx7g/7kHmsO7CTU4/+g67enrM5jICk1/pr7Y53ofqSuScTboQ0rhrway5x+Rb23lDB1DwtFGvQorI4dTEnyi3IG5KBy2LAifPLtyj4hx/qDA3YzznrCpI2rQ82Hd3gRPkP/MNrGofbXltRIqbzR7J2hKPYDpg/UCZFyZDo7XaYSj9FuBcPhU0O0FHTAul0dBaHZX3coU51K/ifKJP4hILeV6yPHsuHm1QdlcoMqeax16A8rmdvNigxGJUHZIl1Lp+157WPL4PiSOLsdAOZ4CY1zPKew52WZcABQnlwKwqEKtpiZoqsST3KdNT+BTy42racp+g7nt/dmnkASNvx0xV+ngqG8cnhEYocDJilC5TBQXi7VWQbLQWvJiMbLoBjoMi6Mhoper/F90nuUZkUsQO5j44iZNP6OBDrc9ppPOT/r/2AnZFYg6cJtyvrPjOVEuDOo5VXXT8nz1QLLPUMzK2Xr1NWEaOyfUBFJ9fI2VjE="
 install:
-- mkdir -p ~/.local/bin
-- export PATH=$HOME/.local/bin:$PATH
-- sudo mount -o remount,exec,size=4G,mode=755 /run/user || true
-- travis_retry curl -L https://www.stackage.org/stack/$TRAVIS_OS_NAME-x86_64 | tar
-  xz --strip-components=1 -C ~/.local/bin
-- travis_retry curl -o daedalus-bridge.tar.xz https://s3.eu-central-1.amazonaws.com/cardano-sl-travis/daedalus-bridge-$TRAVIS_OS_NAME-$CARDANO_SL_BRANCH.tar.xz
-- mkdir -p node_modules/daedalus-client-api/
-- du -sh daedalus-bridge.tar.xz
-- tar xJf daedalus-bridge.tar.xz --strip-components=1 -C node_modules/daedalus-client-api/
-- rm daedalus-bridge.tar.xz
-- echo "cardano-sl build id is $(cat node_modules/daedalus-client-api/build-id)"
-- nix-shell --run "npm install"
+- true
 script:
-- export DAEDALUS_VERSION=$VERSION.$TRAVIS_BUILD_NUMBER
-- export SSL_CERT_FILE=$NIX_SSL_CERT_FILE
-- mv node_modules/daedalus-client-api/{log-config-prod.yaml,cardano-node,cardano-launcher}
-  installers/
-- strip installers/cardano-node
-- strip installers/cardano-launcher
-- rm node_modules/daedalus-client-api/cardano-*
-- nix-shell --run "npm run package -- --icon installers/icons/256x256"
-- echo "Size of Electron app is $(du -sh release)"
-- pushd installers
-- nix-shell -p awscli --run "aws s3 cp --region eu-central-1 s3://iohk-private/macos.p12 macos.p12"
-- stack --no-terminal --nix build --exec make-installer --jobs 2
-- mkdir -p dist
-- popd
-- echo "Size of Electron app after bundling $(du -sh release)"
+- sudo mount -o remount,exec,size=4G,mode=755 /run/user || true    ## Travis-specific hack.
+- scripts/build-installer-unix.sh "$VERSION" "$CARDANO_SL_BRANCH"
+     --build-id       "$TRAVIS_BUILD_NUMBER"
+     --travis-pr      "$TRAVIS_PULL_REQUEST"
+     --nix-path       "$NIX_PATH"
 notifications:
   slack:
     secure: hfzreJ033RxFI2UYtcGJ+MFgQX08UyUnQwhb8X8CuVuIZXDWhxz9JLMEUuL6QqogtffbiqfqIhyDwZ0PsE3aEJaHQAQ7lxJkMjZFU/o+CYvHBQy+WYCa/sFM0C8cEXn3Wb/LmhjvtKAgF302tnD5PAPglZTGtCJHpihKG/Wc+YwF2aFSon0DqoMtVmwVPvhD/WlAHyszARsE9C7jH7jN43gwupAmwj7QLH+kd96HKrrc2ItgMS0f5ucFnpM900c9LwhE5StxVdgTXLnogWQKcd1f4DwTNoXfS3Dy6VJkKj049VScvavcFcVPBL9xU62SMMy/eS/yRcHZkxJehUi16aoir2GXNZOKjQVQ85zEQofQgkR+b4roJJmtWJuCoyE0nptoHgDi4BlLwFuC1g7pkngtLvo3BrG3IjhV+s7QuhxFA9aA8MBQDTRBQNeZdU2I/iwJaYsggGQ2JYA/B2AE4C0sentbegGumsY4fah6HVQGOOZoCl3k9fmMDS42/D55kdteRAQBZBlixLHMXTsMf90jcJJGi/vkzVEnhby63RdTRNDW6MBA6RgvUIpI0VQgAIEM8LFHMNeHMYLoj++NnSI3gCrX8zi8nrnCUJmpCQ89WLDRbVy3rFltgcd7ds8SlRxMtSXCO9lulq/Q6Gk65mRhuq/My0FqBbT+DQUBg04=

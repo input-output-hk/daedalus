@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
-import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
+import Select from 'react-polymorph/lib/components/Select';
+import SelectSkin from 'react-polymorph/lib/skins/simple/SelectSkin';
 import styles from './InlineEditingDropdown.scss';
 
 const messages = defineMessages({
@@ -46,13 +47,14 @@ export default class InlineEditingDropdown extends Component {
     return (
       <div className={styles.component}>
 
-        <Dropdown
+        <Select
           className={dropdownStyles}
           label={label}
-          source={options}
+          options={options}
           value={value}
           onChange={onChange}
           disabled={!isActive}
+          skin={<SelectSkin />}
         />
 
         {successfullyUpdated && (

@@ -7,7 +7,7 @@ environment:
   AWS_SECRET_ACCESS_KEY:
     secure: TIIz2Xtcn63BxDJ9h+2Uj73vJrfmImtlZHh0y2YxGIpwu3eRV9OA+1jhDiG2zPch
   CERT_PASS:
-    secure: AvuOn55kobR/QusvSdyyFCCOh5EF/AFNXAUCk9R2brePbiwBwQiscFCX0f/TiupS
+    secure: 9tjYxdz1fqibx1WOrP5yn32iwbEXeYx+Btb5QJqHvMO4Ng2/yUtPi00/ZMXihFWV
   # Avoid long paths on Windows
   STACK_ROOT: "c:\\sr"
 
@@ -19,37 +19,10 @@ cache:
 
 install:
   - ps: Install-Product node $env:nodejs_version x64
-  - npm install
-  - mkdir node_modules\daedalus-client-api
-  - cd node_modules\daedalus-client-api
-  - ps: Start-FileDownload 'https://ci.appveyor.com/api/projects/jagajaga/cardano-sl/artifacts/CardanoSL.zip?branch=cardano-sl-0.4' -FileName CardanoSL.zip
-  - 7z x CardanoSL.zip -y
-  - cd ..\..\
-  - move node_modules\daedalus-client-api\log-config-prod.yaml installers\log-config-prod.yaml
-  - move node_modules\daedalus-client-api\cardano-node.exe installers\
-  - move node_modules\daedalus-client-api\cardano-launcher.exe installers\
-  - del /f node_modules\daedalus-client-api\*.exe
+  - IF NOT DEFINED APPVEYOR_PULL_REQUEST_NUMBER aws s3 cp --region eu-central-1 s3://iohk-private/iohk-windows-certificate-2.p12 C:/iohk-windows-certificate.p12
 
 test_script:
-  - SET DAEDALUS_VERSION=%APPVEYOR_BUILD_VERSION%
-  # Package frontend
-  - npm run package -- --icon installers/icons/64x64
-  - cd installers
-  # Install stack
-  - ps: Start-FileDownload http://www.stackage.org/stack/windows-x86_64 -FileName stack.zip
-  - 7z x stack.zip stack.exe
-  # Copy DLLs
-  # TODO: get rocksdb from rocksdb-haskell
-  - mkdir DLLs
-  - cd DLLs
-  - ps: Start-FileDownload 'https://s3.eu-central-1.amazonaws.com/cardano-sl-testing/DLLs.zip' -FileName DLLs.zip
-  - 7z x DLLs.zip
-  - del DLLs.zip
-  - cd ..
-  - IF NOT DEFINED APPVEYOR_PULL_REQUEST_NUMBER aws s3 cp --region eu-central-1 s3://iohk-private/iohk-windows-certificate.p12 C:/iohk-windows-certificate.p12
-  - stack setup --no-reinstall
-  - appveyor-retry call stack --no-terminal build -j 2 --exec make-installer
-  - cd ..
+  - scripts\build-installer-win64.bat %APPVEYOR_BUILD_VERSION% cardano-sl-0.4
 
 artifacts:
   - path: release\win32-x64\Daedalus-win32-x64

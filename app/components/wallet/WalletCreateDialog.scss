@@ -1,11 +1,5 @@
 @import '../../themes/mixins/loading-spinner';
 
-.component {
-  :global .dialog_body {
-    overflow-y: hidden;
-  }
-}
-
 .isSubmitting {
   button {
     @include loading-spinner("../../assets/images/spinner-light.svg");
@@ -39,4 +33,9 @@
       width: 275px;
     }
   }
+}
+
+.currencyOptionComingSoon {
+  float: right;
+  font-size: 14px;
 }
