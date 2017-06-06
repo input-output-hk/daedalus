@@ -12,10 +12,7 @@ module.exports = validate({
     loaders: [{
       test: /\.jsx?$/,
       loader: 'babel-loader',
-      exclude: [
-        /node_modules/,
-        /react-polymorph/
-      ]
+      exclude: /node_modules/,
     }, {
       test: /\.json$/,
       loader: 'json-loader'
@@ -39,13 +36,8 @@ module.exports = validate({
 
   // https://webpack.github.io/docs/configuration.html#resolve
   resolve: {
-    root: path.resolve(__dirname, '../node_modules'),
     extensions: ['', '.js', '.jsx', '.json'],
     packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main'],
-    modulesDirectories: [
-      'node_modules',
-      path.resolve(__dirname, '../node_modules')
-    ]
   },
 
   plugins: [
