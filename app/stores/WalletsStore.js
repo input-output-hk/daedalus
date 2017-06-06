@@ -121,11 +121,13 @@ export default class WalletsStore extends Store {
   }) => {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
+    const accountId = this.stores.addresses._getAccountIdByWalletId(wallet.id);
+    if (!accountId) throw new Error('Active account required before sending.');
     await this.sendMoneyRequest.execute({
       ...transactionDetails,
       walletId: wallet.id,
       amount: transactionDetails.amount,
-      // sender: wallet.address,
+      sender: accountId, // wallet.address,
     });
     this.refreshWalletsData();
     this.goToWalletRoute(wallet.id);
@@ -172,6 +174,14 @@ export default class WalletsStore extends Store {
       this.walletsRequest.invalidate();
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
+      runInAction('refresh address data', () => {
+        const walletIds = result.map((wallet: Wallet) => wallet.id);
+        this.stores.addresses.addressesRequests = walletIds.map(walletId => ({
+          walletId,
+          allRequest: this.stores.addresses._getAddressesAllRequest(walletId),
+        }));
+        this.stores.addresses._refreshAddresses();
+      });
       runInAction('refresh wallet data', () => {
         const walletIds = result.map((wallet: Wallet) => wallet.id);
         this.stores.transactions.transactionsRequests = walletIds.map(walletId => ({
@@ -180,14 +190,6 @@ export default class WalletsStore extends Store {
           allRequest: this.stores.transactions._getTransactionsAllRequest(walletId),
         }));
         this.stores.transactions._refreshTransactionData();
-      });
-      runInAction('refresh address data', () => {
-        const walletIds = result.map((wallet: Wallet) => wallet.id);
-        this.stores.addresses.addressesRequests = walletIds.map(walletId => ({
-          walletId,
-          allRequest: this.stores.addresses._getAddressesAllRequest(walletId),
-        }));
-        this.stores.addresses._refreshAddresses();
       });
     }
   };

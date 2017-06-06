@@ -4,13 +4,13 @@ import _ from 'lodash';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
 import WalletAddress from '../domain/WalletAddress';
-import type { GetTransactionsResponse } from '../api';
+import type { GetAddressesResponse } from '../api';
 
 export default class AddressesStore extends Store {
 
   @observable addressesRequests: Array<{
     walletId: string,
-    allRequest: CachedRequest<GetTransactionsResponse>
+    allRequest: CachedRequest<GetAddressesResponse>
   }> = [];
 
   setup() {
@@ -57,7 +57,12 @@ export default class AddressesStore extends Store {
     }
   };
 
-  _getAddressesAllRequest = (walletId: string): CachedRequest<GetTransactionsResponse> => {
+  _getAccountIdByWalletId = (walletId: string): ?string => {
+    const result = this._getAddressesAllRequest(walletId).result;
+    return result ? result.accountId : null;
+  };
+
+  _getAddressesAllRequest = (walletId: string): CachedRequest<GetAddressesResponse> => {
     const foundRequest = _.find(this.addressesRequests, { walletId });
     if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
     return new CachedRequest(this.api.getAddresses);

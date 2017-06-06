@@ -173,7 +173,7 @@
   "wallet.settings.delete.dialog.wantToDeleteWalletQuestion": "!!!Do you really want to delete <strong>{walletName}</strong> wallet?",
   "wallet.settings.deleteWalletButtonLabel": "!!!Delete wallet",
   "wallet.settings.password": "!!!Password",
-  "wallet.settings.passwordLastUpdated": "!!!Last updated",
+  "wallet.settings.passwordLastUpdated": "!!!Last updated {lastUpdated}",
   "wallet.settings.passwordNotSet": "!!!Password",
   "wallet.summary.no.transactions": "!!!No recent transactions",
   "wallet.summary.page.pendingIncomingConfirmationLabel": "!!!Incoming pending confirmation",

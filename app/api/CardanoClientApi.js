@@ -62,27 +62,32 @@ import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 
 
 // TODO: Remove after hd integraton is complete
+
+// Get all accounts
+// (async () => {
+//   const accounts = await ClientApi.getAccounts();
+//   console.log('accounts:', JSON.stringify(accounts, null, 2));
+// })();
+
+// Create account
 // (async () => {
 //   const account = await ClientApi.newAccount(
-//     '1g1weQDq9kc4FDiCCYTaqXQ21rr6ZSCx2e8Te2qCTW1KG6r',
+//     '1fCdJRF5Ht9yNvfLW9QYfoH3gBopLwKebhiVSuCwG1U96i8',
 //     'Test',
 //     'secret'
 //   );
 //   console.log('account:', JSON.stringify(account, null, 2));
 // })();
 
-// (async () => {
-//   const accounts = await ClientApi.getAccounts();
-//   console.log('accounts:', JSON.stringify(accounts, null, 2));
-// })();
-
+// Create address
 // (async () => {
 //   const address = await ClientApi.newWAddress(
-//     '1fsHQP5N7sb9BsjTx7H5vwRrY86ioS7uHFNRf7Px271V6Ch'
+//     '1fCdJRF5Ht9yNvfLW9QYfoH3gBopLwKebhiVSuCwG1U96i8@1218575036'
 //   );
-//   console.log('addresses:', JSON.stringify(addresses, null, 2));
+//   console.log('addresses:', JSON.stringify(address, null, 2));
 // })();
 
+// Get wallet accounts
 // (async () => {
 //   const addresses = await ClientApi.getWalletAccounts(
 //     '1fsHQP5N7sb9BsjTx7H5vwRrY86ioS7uHFNRf7Px271V6Ch'
@@ -171,15 +176,17 @@ export default class CardanoClientApi {
       Log.debug('CardanoClientApi::getAddresses success: ', JSON.stringify(response, null, 2));
 
       if (!response.length) {
-        return new Promise((resolve) => resolve({ addresses: [] }));
+        return new Promise((resolve) => resolve({ accountId: null, addresses: [] }));
       }
 
       // For now only the first account is used
       const firstAccount = response[0];
-      // Addresses are wrongly mapped under account's caAccount property (should be 'caAddresses')
+      const firstAccountId = firstAccount.caId;
       const firstAccountAddresses = firstAccount.caAccount;
+      // ^^ Addresses are wrongly mapped under caAccount property (should be 'caAddresses')
 
       return new Promise((resolve) => resolve({
+        accountId: firstAccountId,
         addresses: firstAccountAddresses.map(data => _createAddressFromServerData(data)),
       }));
     } catch (error) {
@@ -190,12 +197,11 @@ export default class CardanoClientApi {
 
   async getTransactions(request: GetTransactionsRequest) {
     Log.debug('CardanoClientApi::searchHistory called: ', JSON.stringify(request, null, 2));
-    const { /* walletId, */ searchTerm, skip, limit } = request;
-    const walletId = '1gCC3J43QAZo3fZiUTuyfYyT8sydFJHdhPnFFmckXL7mV3f@2147483648';
+    const { accountId, /* walletId, */ searchTerm, skip, limit } = request;
     // searchHistory endpoint requires accountId (account.caId) and not walletId
     try {
       const history: ApiTransactions = await ClientApi.searchHistory(
-        walletId, searchTerm, skip, limit
+        accountId, searchTerm, skip, limit
       );
       Log.debug('CardanoClientApi::searchHistory success: ', JSON.stringify(history, null, 2));
       return new Promise((resolve) => resolve({
@@ -216,11 +222,22 @@ export default class CardanoClientApi {
     const assurance = 'CWANormal';
     const unit = 0;
     try {
-      const response: ApiWallet = await ClientApi.newWallet(
+      // 1. create wallet
+      const wallet: ApiWallet = await ClientApi.newWallet(
         name, assurance, unit, mnemonic, password || ''
       ); // empty string must be used if no password is set ^^
-      Log.debug('CardanoClientApi::createWallet success: ', JSON.stringify(response, null, 2));
-      return _createWalletFromServerData(response);
+      console.log('wallet:', JSON.stringify(wallet, null, 2));
+      Log.debug('CardanoClientApi::createWallet success: ', JSON.stringify(wallet, null, 2));
+
+      // 2. create account
+      const account = await ClientApi.newAccount(wallet.cwId, name, password || '');
+      console.log('account:', JSON.stringify(account, null, 2));
+
+      // 3. create (initial) wallet address
+      const address = await ClientApi.newWAddress(account.caId, password || '');
+      console.log('address:', JSON.stringify(address, null, 2));
+
+      return _createWalletFromServerData(wallet);
     } catch (error) {
       Log.error('CardanoClientApi::createWallet error: ', error);
       throw new GenericApiError();
@@ -241,9 +258,8 @@ export default class CardanoClientApi {
 
   async createTransaction(request: CreateTransactionRequest) {
     Log.debug('CardanoClientApi::createTransaction called');
-    const { /* sender, */ receiver, amount, /* currency, */ password } = request;
-    const sender = '1gCC3J43QAZo3fZiUTuyfYyT8sydFJHdhPnFFmckXL7mV3f@2147483648'; // account.caId
-    // newPaymentExtended endpoint requires accountId (account.caId) as sender and not walletId
+    const { sender, receiver, amount, /* currency, */ password } = request;
+    // sender must be set as accountId (account.caId) and not walletId
     const description = 'no description provided';
     const title = 'no title provided';
     try {
@@ -297,11 +313,22 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::restoreWallet called');
     const { recoveryPhrase, walletName, walletPassword } = request;
     try {
-      const restoredWallet: ApiWallet = await ClientApi.restoreWallet(
-        walletName, 'CWANormal', 0, recoveryPhrase, walletPassword
-      );
+      // 1. restore wallet
+      const wallet: ApiWallet = await ClientApi.restoreWallet(
+        walletName, 'CWANormal', 0, recoveryPhrase, walletPassword || ''
+      ); // empty string must be used if no password is set ^^
+      console.log('wallet:', JSON.stringify(wallet, null, 2));
       Log.debug('CardanoClientApi::restoreWallet success');
-      return _createWalletFromServerData(restoredWallet);
+
+      // 2. create account
+      const account = await ClientApi.newAccount(wallet.cwId, walletName, walletPassword || '');
+      console.log('account:', JSON.stringify(account, null, 2));
+
+      // 3. create (initial) wallet address
+      const address = await ClientApi.newWAddress(account.caId, walletPassword || '');
+      console.log('address:', JSON.stringify(address, null, 2));
+
+      return _createWalletFromServerData(wallet);
     } catch (error) {
       Log.error('CardanoClientApi::restoreWallet error: ', error);
       // TODO: backend will return something different here, if multiple wallets
@@ -320,7 +347,7 @@ export default class CardanoClientApi {
   async importWalletFromKey(request: ImportKeyRequest) {
     Log.debug('CardanoClientApi::importWalletFromKey called');
     try {
-      const importedWallet: ApiWallet = await ClientApi.importKey(request.filePath);
+      const importedWallet: ApiWallet = await ClientApi.importKey(request.filePath, '');
       Log.debug('CardanoClientApi::importWalletFromKey success');
       return _createWalletFromServerData(importedWallet);
     } catch (error) {

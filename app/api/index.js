@@ -7,13 +7,17 @@ import WalletTransaction from '../domain/WalletTransaction';
 
 export type GetWalletsResponse = Wallet[];
 
-export type GetAddressesResponse = WalletAddress[];
+export type GetAddressesResponse = {
+  accountId: ?string,
+  addresses: WalletAddress[],
+};
 
 export type GetAddressesRequest = {
   walletId: string,
 };
 
 export type GetTransactionsRequest = {
+  accountId: string,
   walletId: string,
   searchTerm: string,
   skip: number,
@@ -22,7 +26,7 @@ export type GetTransactionsRequest = {
 
 export type GetTransactionsResponse = {
   transactions: WalletTransaction[],
-  total: number
+  total: number,
 };
 
 export type CreateWalletRequest = {
