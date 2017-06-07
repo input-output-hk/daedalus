@@ -1,5 +1,5 @@
 // @flow
-import { observable, computed, action } from 'mobx';
+import { observable, computed, action, runInAction } from 'mobx';
 import _ from 'lodash';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
@@ -12,6 +12,7 @@ import type {
 
 export default class AddressesStore extends Store {
 
+  @observable lastGeneratedAddress: ?WalletAddress = null;
   @observable addressesRequests: Array<{
     walletId: string,
     allRequest: CachedRequest<GetAddressesResponse>
@@ -34,7 +35,10 @@ export default class AddressesStore extends Store {
       const address: ?CreateAddressResponse = await this.createAddressRequest.execute({
         accountId, password
       }).promise;
-      if (address != null) this._refreshAddresses();
+      if (address != null) {
+        this._refreshAddresses();
+        runInAction('set last generated address', () => { this.lastGeneratedAddress = address; });
+      }
     } catch (error) {
       throw error;
     }
@@ -55,11 +59,11 @@ export default class AddressesStore extends Store {
   }
 
   @computed get active(): ?WalletAddress {
+    if (this.lastGeneratedAddress) return this.lastGeneratedAddress;
     const wallet = this.stores.wallets.active;
     if (!wallet) return;
     const result = this._getAddressesAllRequest(wallet.id).result;
     return result ? result.addresses[result.addresses.length - 1] : null;
-    // TODO: When user generates new address that one should be active
   }
 
   @computed get totalAvailable(): number {
