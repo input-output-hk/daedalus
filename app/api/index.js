@@ -16,6 +16,13 @@ export type GetAddressesRequest = {
   walletId: string,
 };
 
+export type CreateAddressResponse = WalletAddress;
+
+export type CreateAddressRequest = {
+  accountId: string,
+  password: ?string,
+};
+
 export type GetTransactionsRequest = {
   accountId: string,
   walletId: string,
@@ -139,6 +146,7 @@ export type Api = {
   createWallet(request: CreateWalletRequest): Promise<CreateWalletResponse>,
   deleteWallet(request: DeleteWalletRequest): Promise<DeleteWalletResponse>,
   createTransaction(request: CreateTransactionRequest): Promise<CreateTransactionResponse>,
+  createAddress(request: createAddressRequest): Promise<createAddressResponse>,
   isValidAddress(address: string): Promise<boolean>,
   isValidMnemonic(mnemonic: string): Promise<boolean>,
   isValidRedemptionKey(mnemonic: string): Promise<boolean>,

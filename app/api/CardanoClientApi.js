@@ -21,6 +21,7 @@ import WalletAddress from '../domain/WalletAddress';
 import type {
   CreateWalletRequest,
   GetAddressesRequest,
+  CreateAddressRequest,
   GetTransactionsRequest,
   CreateTransactionRequest,
   RestoreWalletRequest,
@@ -160,7 +161,7 @@ export default class CardanoClientApi {
     try {
       const response: ApiWallets = await ClientApi.getWallets();
       Log.debug('CardanoClientApi::getWallets success: ', JSON.stringify(response, null, 2));
-      console.log('getWallets', JSON.stringify(response, null, 2));
+      console.log('wallets', JSON.stringify(response, null, 2));
       const wallets = response.map(data => _createWalletFromServerData(data));
       return wallets;
     } catch (error) {
@@ -175,7 +176,7 @@ export default class CardanoClientApi {
     try {
       const response: ApiAccounts = await ClientApi.getWalletAccounts(walletId);
       Log.debug('CardanoClientApi::getAddresses success: ', JSON.stringify(response, null, 2));
-      console.log('getAddresses', JSON.stringify(response, null, 2));
+      console.log('accounts', JSON.stringify(response, null, 2));
       if (!response.length) {
         return new Promise((resolve) => resolve({ accountId: null, addresses: [] }));
       }
@@ -203,7 +204,7 @@ export default class CardanoClientApi {
       const history: ApiTransactions = await ClientApi.searchHistory(
         accountId, searchTerm, skip, limit
       );
-      console.log('getTransactions', JSON.stringify(history, null, 2));
+      console.log('transactions', JSON.stringify(history, null, 2));
       Log.debug('CardanoClientApi::searchHistory success: ', JSON.stringify(history, null, 2));
       return new Promise((resolve) => resolve({
         transactions: history[0].map(data => _createTransactionFromServerData(data)),
@@ -274,6 +275,23 @@ export default class CardanoClientApi {
       if (error.message.includes('Not enough money to send')) {
         throw new NotEnoughMoneyToSendError();
       }
+      throw new GenericApiError();
+    }
+  }
+
+  async createAddress(request: CreateAddressRequest) {
+    Log.debug('CardanoClientApi::createAddress called: ', JSON.stringify(request, null, 2));
+    const { accountId, password } = request;
+    try {
+      const data: ApiAddress = await ClientApi.newWAddress(
+        accountId, password || ''
+      ); // empty string must be used if no password is set
+      console.log('address:', JSON.stringify(data, null, 2));
+      Log.debug('CardanoClientApi::createAddress success: ', JSON.stringify(data, null, 2));
+      const address = _createAddressFromServerData(data);
+      return address;
+    } catch (error) {
+      Log.error('CardanoClientApi::createAddress error: ', error);
       throw new GenericApiError();
     }
   }
