@@ -1,5 +1,5 @@
 // @flow
-import { observable, action, computed } from 'mobx';
+import { observable, action, computed, isObservableArray } from 'mobx';
 import { isEqual } from 'lodash/fp';
 import ExtendableError from 'es6-error';
 
@@ -36,7 +36,7 @@ export default class Request<Result, Error> {
 
     // This timeout is necessary to avoid warnings from mobx
     // regarding triggering actions as side-effect of getters
-    setTimeout(action(() => {
+    setTimeout(action('Request::execute (setting this.isExecuting)', () => {
       this.isExecuting = true;
     }), 0);
 
@@ -44,8 +44,13 @@ export default class Request<Result, Error> {
     this.promise = new Promise((resolve, reject) => {
       this._method(...callArgs)
         .then((result) => {
-          setTimeout(action(() => {
-            this.result = result;
+          setTimeout(action('Request::execute/then', () => {
+            if (this.result != null && isObservableArray(this.result) && Array.isArray(result)) {
+              // $FlowFixMe
+              this.result.replace(result);
+            } else {
+              this.result = result;
+            }
             if (this._currentApiCall) this._currentApiCall.result = result;
             this.isExecuting = false;
             this.wasExecuted = true;
@@ -54,7 +59,7 @@ export default class Request<Result, Error> {
           }), 1);
           return result;
         })
-        .catch(action((error) => {
+        .catch(action('Request::execute/catch', (error) => {
           setTimeout(action(() => {
             this.error = error;
             this.isExecuting = false;
