@@ -160,6 +160,7 @@ export default class CardanoClientApi {
     try {
       const response: ApiWallets = await ClientApi.getWallets();
       Log.debug('CardanoClientApi::getWallets success: ', JSON.stringify(response, null, 2));
+      console.log('getWallets', JSON.stringify(response, null, 2));
       const wallets = response.map(data => _createWalletFromServerData(data));
       return wallets;
     } catch (error) {
@@ -173,11 +174,8 @@ export default class CardanoClientApi {
     const { walletId } = request;
     try {
       const response: ApiAccounts = await ClientApi.getWalletAccounts(walletId);
-      // Remove "default" wallet from the response
-      // TODO: remove when default wallet is removed from the backend
-      response.shift();
       Log.debug('CardanoClientApi::getAddresses success: ', JSON.stringify(response, null, 2));
-
+      console.log('getAddresses', JSON.stringify(response, null, 2));
       if (!response.length) {
         return new Promise((resolve) => resolve({ accountId: null, addresses: [] }));
       }
@@ -185,8 +183,7 @@ export default class CardanoClientApi {
       // For now only the first account is used
       const firstAccount = response[0];
       const firstAccountId = firstAccount.caId;
-      const firstAccountAddresses = firstAccount.caAccount;
-      // ^^ Addresses are wrongly mapped under caAccount property (should be 'caAddresses')
+      const firstAccountAddresses = firstAccount.caAddresses;
 
       return new Promise((resolve) => resolve({
         accountId: firstAccountId,
@@ -206,6 +203,7 @@ export default class CardanoClientApi {
       const history: ApiTransactions = await ClientApi.searchHistory(
         accountId, searchTerm, skip, limit
       );
+      console.log('getTransactions', JSON.stringify(history, null, 2));
       Log.debug('CardanoClientApi::searchHistory success: ', JSON.stringify(history, null, 2));
       return new Promise((resolve) => resolve({
         transactions: history[0].map(data => _createTransactionFromServerData(data)),
@@ -605,20 +603,6 @@ export default class CardanoClientApi {
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
 
-// {
-//   "wWSetMeta": {
-//     "cwName": "Precreated wallet full of money",
-//     "cwAssurance": "CWANormal",
-//     "csUnit": 0
-//   },
-//   "cwPassphraseLU": 1496323977.557551,
-//   "cwId": "1gCC3J43QAZo3fZiUTuyfYyT8sydFJHdhPnFFmckXL7mV3f",
-//   "cwHasPassphrase": false,
-//   "cwAmount": {
-//     "getCCoin": "100"
-//   },
-//   "cwAccountsNumber": 1
-// }
 const _createWalletFromServerData = action((data: ApiWallet) => (
   new Wallet({
     id: data.cwId,
@@ -630,53 +614,14 @@ const _createWalletFromServerData = action((data: ApiWallet) => (
   })
 ));
 
-/* eslint-disable max-len */
-// {
-//   "caMeta": {
-//     "caName": "Initial account"
-//   },
-//   "caId": "1gCC3J43QAZo3fZiUTuyfYyT8sydFJHdhPnFFmckXL7mV3f@2147483648",
-//   "caAmount": {
-//     "getCCoin": "100"
-//   },
-//   "caAccount": [
-//     {
-//       "cadId": "19Fv6JWbdLXRXqew721u2GEarEwc8rcfpAqsriRFPameyCkQLHsNDKQRpwsM7W1M587CiswPuY27cj7RUvNXcZWgTbPByq",
-//       "cadAmount": {
-//         "getCCoin": "100"
-//       }
-//     }
-//   ]
-// }
-/* eslint-disable max-len */
 const _createAddressFromServerData = action((data: ApiAddress) => (
   new WalletAddress({
     id: data.cadId,
     amount: new BigNumber(data.cadAmount.getCCoin).dividedBy(LOVELACES_PER_ADA),
+    isUsed: data.cadIsUsed,
   })
 ));
 
-/* eslint-disable max-len */
-// transaction: {
-//   "ctOutputAddrs": [
-//     "19HwW3dCwdUufj2xLNHo7zo9JZKiMcD1kEFQFnu6j6hjY2swjJfG5VppXx52FgUnnE5z1vFgubPVLnbLhiKyb8LdDoycYx",
-//     "19FXgBS7SBiSDx32P7HPGN29ZYCxjSHwVMnVi4UzBBE29jaVsnBRvYkTuKbkhx2gny8MZ8w8eADy7NmvjBn5UsiLqUstYp"
-//   ],
-//   "ctMeta": {
-//     "ctmTitle": "Title",
-//     "ctmDescription": "Description",
-//     "ctmDate": 1496668808.203287
-//   },
-//   "ctInputAddrs": [
-//     "19GfE6f4u1jhKCMgLSgbYFJ5HWdmLpaTivd2ENLQHhixd28YiLcXz8iK49MfRHu4gqKmSEFeTuTm5vjTgdVTfuADPyZSk3"
-//   ],
-//   "ctId": "01ef89cd6a8e47342c6c851b4943bc2cf153e4340d631d967e956f63358b2922",
-//   "ctConfirmations": 0,
-//   "ctAmount": {
-//     "getCCoin": "99"
-//   }
-// }
-/* eslint-disable max-len */
 const _createTransactionFromServerData = action((data: ApiTransaction) => {
   const isOutgoing = 'CTOut'; // TODO: check how to determine ctType (data.ctType.tag === 'CTOut')
   const coins = data.ctAmount.getCCoin;

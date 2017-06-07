@@ -13,12 +13,13 @@ declare module 'daedalus-client-api' {
   declare type ApiAddress = {
     cadAmount: ApiAmount,
     cadId: string,
+    cadIsUsed: boolean,
   };
 
   declare type ApiAddresses = Array<ApiAddress>;
 
   declare type ApiAccount = {
-    caAccount: ApiAddresses,
+    caAddresses: ApiAddresses,
     caAmount: ApiAmount,
     caId: string,
     caMeta: {
@@ -51,12 +52,12 @@ declare module 'daedalus-client-api' {
     cwAmount: ApiAmount,
     cwHasPassphrase: boolean,
     cwId: string,
-    cwPassphraseLU: Date,
     cwMeta: {
       cwAssurance: ApiAssurance,
       cwName: string,
       csUnit: number,
     },
+    cwPassphraseLU: Date,
   };
 
   declare type ApiWallets = Array<ApiWallet>;
