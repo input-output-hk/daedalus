@@ -57,7 +57,7 @@ export default class WalletsStore extends Store {
       this._toggleAddWalletDialogOnWalletsLoaded,
     ]);
     if (environment.CARDANO_API) {
-      setTimeout(this.refreshWalletsData, this.WALLET_REFRESH_INTERVAL);
+      setInterval(this.refreshWalletsData, this.WALLET_REFRESH_INTERVAL);
     }
   }
 
