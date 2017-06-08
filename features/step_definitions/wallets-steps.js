@@ -86,9 +86,16 @@ export default function () {
     return fillOutWalletSendForm.call(this, table.hashes()[0]);
   });
 
-  this.When(/^I fill out the send form with a transaction to "([^"]*)" wallet:$/, function (walletName, table) {
+  this.When(/^I fill out the send form with a transaction to "([^"]*)" wallet:$/, async function (walletName, table) {
     const values = table.hashes()[0];
-    values.address = this.wallets.find((w) => w.name === walletName).address;
+    const walletId = this.wallets.find((w) => w.name === walletName).id;
+    const walletAddress = await this.client.executeAsync(function(id, done) {
+      daedalus.api.getAddresses({ walletId: id }).then((response) => {
+        const address = response.addresses[0].id;
+        done(address);
+      });
+    }, walletId);
+    values.address = walletAddress.value;
     return fillOutWalletSendForm.call(this, values);
   });
 

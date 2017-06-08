@@ -4,7 +4,7 @@ Feature: Toggle Sidebar Submenus
     Given I have selected English language
     And I have accepted "Terms of use"
     And I have a wallet with funds
-    And I am on the "Personal Wallet" wallet "summary" screen
+    And I am on the "Genesis wallet" wallet "summary" screen
 
   Scenario: Hide Sidebar Submenus
     Given the sidebar submenu is visible
