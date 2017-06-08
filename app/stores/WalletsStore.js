@@ -57,7 +57,7 @@ export default class WalletsStore extends Store {
       this._toggleAddWalletDialogOnWalletsLoaded,
     ]);
     if (environment.CARDANO_API) {
-      setInterval(this.refreshWalletsData, this.WALLET_REFRESH_INTERVAL);
+      setTimeout(this.refreshWalletsData, this.WALLET_REFRESH_INTERVAL);
     }
   }
 
@@ -215,7 +215,6 @@ export default class WalletsStore extends Store {
 
   @action _setActiveWallet = ({ walletId }: { walletId: string }) => {
     if (this.hasAnyWallets) {
-      console.log('_setActiveWallet');
       this.active = this.all.find(wallet => wallet.id === walletId);
     }
   };

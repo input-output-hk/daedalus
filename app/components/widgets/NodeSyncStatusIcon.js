@@ -16,8 +16,10 @@ const messages = defineMessages({
 export default class NodeSyncStatusIcon extends Component {
 
   props: {
-    isSynced: boolean,
-    syncPercentage: number,
+    networkStatus: {
+      isSynced: boolean,
+      syncPercentage: number,
+    },
     isProduction: boolean,
   };
 
@@ -26,7 +28,8 @@ export default class NodeSyncStatusIcon extends Component {
   };
 
   render() {
-    const { isSynced, syncPercentage, isProduction } = this.props;
+    const { networkStatus, isProduction } = this.props;
+    const { isSynced, syncPercentage } = networkStatus;
     const { intl } = this.context;
     const statusIcon = isSynced ? syncedIcon : spinnerIcon;
     const componentClasses = classNames([

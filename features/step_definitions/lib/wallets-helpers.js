@@ -14,7 +14,7 @@ export const fillOutWalletSendForm = async function(values) {
   const formSelector = '.WalletSendForm_component';
   // await this.client.setValue(`${formSelector} .title .input_inputElement`, values.title);
   await this.client.setValue(`${formSelector} .receiver .input_inputElement`, values.address);
-  await this.client.setValue(`${formSelector} .amount .input_inputElement`, values.amount);
+  await this.client.setValue(`${formSelector} .amount .SimpleInput_input`, values.amount);
   // await this.client.setValue(`${formSelector} .description .input_inputElement`, values.description);
   this.walletSendFormValues = values;
 };

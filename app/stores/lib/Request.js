@@ -98,6 +98,28 @@ export default class Request<Result, Error> {
     return this.promise.catch(...args);
   }
 
+  /**
+   * Asynchronously patch the result of the request.
+   * This can be used for optimistic UI updates before the server has confirmed the change.
+   *
+   * @param modify {Function} - Custom function to path the result (which gets passed in as
+   * only param) You can either change the result directly (e.g: `result.push(something)` or
+   * if you need to replace the whole result of the request you need to return it from this
+   * function.
+   *
+   * @returns {Promise}
+   */
+  patch(modify: Function): Promise<Request<Result, Error>> {
+    return new Promise((resolve) => {
+      setTimeout(action(() => {
+        const override = modify(this.result);
+        if (override !== undefined) this.result = override;
+        if (this._currentApiCall) this._currentApiCall.result = this.result;
+        resolve(this);
+      }), 0);
+    });
+  }
+
   @action reset(): Request<Result, Error> {
     this.result = null;
     this.error = null;

@@ -194,13 +194,14 @@ export default class WalletSendForm extends Component {
           <div className={styles.amountInput}>
             <NumericInput
               {...amountField.bind()}
+              className="amount"
               label={intl.formatMessage(messages.amountLabel)}
               minValue={0.000001}
               maxValue={45000000000}
               maxAfterDot={6}
               maxBeforeDot={11}
               placeholder="0.000000"
-              onChange={(value) => amountField.onChange(value)}
+              onChange={amountField.onChange}
               error={amountField.error ? intl.formatMessage(messages.invalidAmount) : null}
               skin={<SimpleInputSkin />}
             />

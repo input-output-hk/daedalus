@@ -2,9 +2,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import Sidebar from '../components/sidebar/Sidebar';
-import TopBar from '../components/layout/TopBar';
-import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
-import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
+import TopBarContainer from './TopBarContainer';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import NodeUpdatePage from './notifications/NodeUpdatePage';
 import WalletAddPage from './wallet/WalletAddPage';
@@ -18,8 +16,7 @@ export default class MainLayout extends Component {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, networkStatus, app } = stores;
-    const { isSynced, syncPercentage } = networkStatus;
+    const { sidebar } = stores;
     const activeWallet = stores.wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const isNodeUpdateAvailable = this.props.stores.nodeUpdate.isUpdateAvailable;
@@ -45,47 +42,21 @@ export default class MainLayout extends Component {
         onCategoryClicked={category => {
           actions.sidebar.activateSidebarCategory.trigger({ category });
         }}
-        isSynced={isSynced}
+        isSynced
         openDialogAction={actions.dialogs.open.trigger}
       />
-    );
-
-    const isProduction = false; // TODO: replace with getEnv Api call
-    const testnetVersion = 0.3;
-    const testEnvironmentLabel = (
-      !isProduction ? <WalletTestEnvironmentLabel version={testnetVersion} /> : null
-    );
-
-    const topbar = (
-      <TopBar
-        onToggleSidebar={actions.sidebar.toggleSubMenus.trigger}
-        activeWallet={activeWallet}
-        currentRoute={app.currentRoute}
-        showSubMenus={sidebar.isShowingSubMenus}
-      >
-        {testEnvironmentLabel}
-        <NodeSyncStatusIcon
-          isSynced={isSynced}
-          syncPercentage={syncPercentage}
-          isProduction={isProduction}
-        />
-      </TopBar>
     );
 
     const addNodeUpdateNotification = (
       isNodeUpdateAvailable && !isUpdatePostponed ? <NodeUpdatePage /> : null
     );
 
-    const addWalletDialog = (
-      <WalletAddPage />
-    );
-
     return (
       <SidebarLayout
         sidebar={sidebarComponent}
-        topbar={topbar}
+        topbar={<TopBarContainer />}
         notification={addNodeUpdateNotification}
-        contentDialog={addWalletDialog}
+        contentDialog={<WalletAddPage />}
       >
         {this.props.children}
       </SidebarLayout>
