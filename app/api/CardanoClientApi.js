@@ -31,9 +31,7 @@ import type {
   DeleteWalletRequest,
   RedeemPaperVendedAdaRequest,
   ChangeWalletPasswordRequest,
-  ChangeWalletPasswordResponse,
   SetWalletPasswordRequest,
-  SetWalletPasswordResponse,
 } from './index';
 import {
   // ApiMethodNotYetImplementedError,
@@ -562,19 +560,34 @@ export default class CardanoClientApi {
     }
   }
 
-  // eslint-disable-next-line max-len
-  changeWalletPassword(request: ChangeWalletPasswordRequest): Promise<ChangeWalletPasswordResponse> {
-    return new Promise((resolve) => {
-      // Fake async request here to make it more realistic
-      setTimeout(() => resolve(request), 100);
-    });
+  async changeWalletPassword(request: ChangeWalletPasswordRequest) {
+    Log.debug('CardanoClientApi::changeWalletPassword called: ', JSON.stringify(request, null, 2));
+    const { walletId, oldPassword, newPassword } = request;
+    try {
+      await ClientApi.changeWalletPass(
+        walletId, oldPassword || '', newPassword || ''
+      ); // empty string must be used if no password is set
+      Log.debug('CardanoClientApi::changeWalletPassword success');
+      return true;
+    } catch (error) {
+      Log.error('CardanoClientApi::changeWalletPassword error: ', error);
+      throw new GenericApiError();
+    }
   }
 
-  setWalletPassword(request: SetWalletPasswordRequest): Promise<SetWalletPasswordResponse> {
-    return new Promise((resolve) => {
-      // Fake async request here to make it more realistic
-      setTimeout(() => resolve(request), 100);
-    });
+  async setWalletPassword(request: SetWalletPasswordRequest) {
+    Log.debug('CardanoClientApi::setWalletPassword called: ', JSON.stringify(request, null, 2));
+    const { walletId, password } = request;
+    try {
+      await ClientApi.changeWalletPass(
+        walletId, '', password || ''
+      ); // empty string must be used if no password is set
+      Log.debug('CardanoClientApi::setWalletPassword success');
+      return true;
+    } catch (error) {
+      Log.error('CardanoClientApi::setWalletPassword error: ', error);
+      throw new GenericApiError();
+    }
   }
 
 

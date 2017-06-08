@@ -49,16 +49,18 @@ export default class WalletSettingsStore extends Store {
     });
   };
 
-  @action _changeWalletPassword = ({ walletId, oldPassword, newPassword }: {
+  @action _changeWalletPassword = async ({ walletId, oldPassword, newPassword }: {
     walletId: string, oldPassword: string, newPassword: string,
   }) => {
-    this.changeWalletPasswordRequest.execute(walletId, oldPassword, newPassword);
+    await this.changeWalletPasswordRequest.execute({ walletId, oldPassword, newPassword });
+    this.stores.wallets.refreshWalletsData();
   };
 
-  @action _setWalletPassword = ({ walletId, password }: {
+  @action _setWalletPassword = async ({ walletId, password }: {
     walletId: string, password: string,
   }) => {
-    this.setWalletPasswordRequest.execute(walletId, password);
+    await this.setWalletPasswordRequest.execute({ walletId, password });
+    this.stores.wallets.refreshWalletsData();
   };
 
   @action _updateWalletField = async ({ field, value }: { field: string, value: string }) => {

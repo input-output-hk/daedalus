@@ -99,6 +99,8 @@ declare module 'daedalus-client-api' {
   declare function updateWallet(walletId: string, walletName: string, assurance: string, unit: number): Promise<ApiWallet>;
   declare function importWallet(filePath: string): Promise<ApiWallet>;
   declare function newWAddress(accountId: string, walletPassword: ?string): Promise<ApiAddress>;
+  declare function changeWalletPass(walletId: string, oldPassword: ?string, newPassword: ?string): Promise<{}>;
+  declare function renameWalletSet(walletId: string, walletName: string): Promise<ApiWallet>;
 
   // Test
   declare function testReset(): void;
