@@ -54,7 +54,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Ada received',
     description: 'Label "Ada received" for the transaction.',
   },
-
+  fromAddresses: {
+    id: 'wallet.transaction.addresses.from',
+    defaultMessage: '!!!From addresses',
+    description: 'From addresses',
+  },
+  toAddresses: {
+    id: 'wallet.transaction.addresses.to',
+    defaultMessage: '!!!To addresses',
+    description: 'To addresses',
+  },
 });
 
 const assuranceLevelTranslations = defineMessages({
@@ -161,6 +170,14 @@ export default class Transaction extends Component {
               </div>
             )}
             <div>
+              <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
+              {data.addresses.from.map((address) => (
+                <span key={address} className={styles.address}>{address}</span>
+              ))}
+              <h2>{intl.formatMessage(messages.toAddresses)}</h2>
+              {data.addresses.to.map((address) => (
+                <span key={address} className={styles.address}>{address}</span>
+              ))}
               <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
               <span>
                 <span className={styles.assuranceLevel}>{status}</span>

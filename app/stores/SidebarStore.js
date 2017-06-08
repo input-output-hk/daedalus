@@ -32,7 +32,7 @@ export default class SidebarStore extends Store {
     return wallets.all.map(w => ({
       id: w.id,
       title: w.name,
-      info: `${w.amount.toFormat(DECIMAL_PLACES_IN_ADA)} ${w.currency}`,
+      info: `${w.amount.toFormat(DECIMAL_PLACES_IN_ADA)} ADA`,
       isConnected: networkStatus.isConnected,
     }));
   }

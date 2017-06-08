@@ -65,10 +65,10 @@ import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 // TODO: Remove after hd integraton is complete
 
 // Get all accounts
-// (async () => {
-//   const accounts = await ClientApi.getAccounts();
-//   console.log('accounts:', JSON.stringify(accounts, null, 2));
-// })();
+(async () => {
+  const accounts = await ClientApi.getAccounts();
+  console.log('accounts:', JSON.stringify(accounts, null, 2));
+})();
 
 // Create account
 // (async () => {
@@ -235,10 +235,6 @@ export default class CardanoClientApi {
       const account = await ClientApi.newAccount(wallet.cwId, name, password || '');
       console.log('account:', JSON.stringify(account, null, 2));
 
-      // 3. create (initial) wallet address
-      const address = await ClientApi.newWAddress(account.caId, password || '');
-      console.log('address:', JSON.stringify(address, null, 2));
-
       return _createWalletFromServerData(wallet);
     } catch (error) {
       Log.error('CardanoClientApi::createWallet error: ', error);
@@ -260,7 +256,7 @@ export default class CardanoClientApi {
 
   async createTransaction(request: CreateTransactionRequest) {
     Log.debug('CardanoClientApi::createTransaction called');
-    const { sender, receiver, amount, /* currency, */ password } = request;
+    const { sender, receiver, amount, password } = request;
     // sender must be set as accountId (account.caId) and not walletId
     const description = 'no description provided';
     const title = 'no title provided';
@@ -342,10 +338,6 @@ export default class CardanoClientApi {
       // 2. create account
       const account = await ClientApi.newAccount(wallet.cwId, walletName, walletPassword || '');
       console.log('account:', JSON.stringify(account, null, 2));
-
-      // 3. create (initial) wallet address
-      const address = await ClientApi.newWAddress(account.caId, walletPassword || '');
-      console.log('address:', JSON.stringify(address, null, 2));
 
       return _createWalletFromServerData(wallet);
     } catch (error) {
@@ -557,10 +549,10 @@ export default class CardanoClientApi {
 
   async updateWallet(request: UpdateWalletRequest) {
     Log.debug('CardanoClientApi::updateWallet called: ', JSON.stringify(request, null, 2));
-    const { walletId, type, currency, name, assurance } = request;
+    const { walletId, name, assurance } = request;
     try {
       const response: ApiWallet = await ClientApi.updateWallet(
-        walletId, type, currency, name, assurance, 0
+        walletId, name, assurance, 0
       );
       Log.debug('CardanoClientApi::updateWallet success: ', JSON.stringify(response, null, 2));
       return response;
@@ -648,7 +640,6 @@ const _createTransactionFromServerData = action((data: ApiTransaction) => {
     id: data.ctId,
     title: ctmTitle || isOutgoing ? 'Ada sent' : 'Ada received',
     type: isOutgoing ? 'adaExpend' : 'adaIncome',
-    currency: 'ada',
     amount: new BigNumber(isOutgoing ? -1 * coins : coins).dividedBy(LOVELACES_PER_ADA),
     date: new Date(ctmDate * 1000),
     description: ctmDescription || '',

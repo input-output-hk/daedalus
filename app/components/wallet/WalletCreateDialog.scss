@@ -1,11 +1,5 @@
 @import '../../themes/mixins/loading-spinner';
 
-.component {
-  :global .dialog_body {
-    overflow-y: hidden;
-  }
-}
-
 .isSubmitting {
   button {
     @include loading-spinner("../../assets/images/spinner-light.svg");
@@ -17,7 +11,6 @@
 
   .walletPasswordSwitch {
     border-top: 1px solid #dfe4e8;
-    margin-top: 30px;
     padding-top: 20px;
   }
 

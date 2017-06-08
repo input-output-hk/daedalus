@@ -38,7 +38,6 @@ export type GetTransactionsResponse = {
 
 export type CreateWalletRequest = {
   name: string,
-  currency: string,
   mnemonic: string,
   password: ?string,
 };
@@ -56,7 +55,6 @@ export type CreateTransactionRequest = {
   sender: string,
   receiver: string,
   amount: string,
-  currency: string,
   title: string,
   description: ?string,
   password: ?string,
@@ -81,7 +79,6 @@ export type RestoreWalletResponse = Wallet;
 export type UpdateWalletRequest = {
   walletId: string,
   type: string,
-  currency: string,
   name: string,
   assurance: string,
 };

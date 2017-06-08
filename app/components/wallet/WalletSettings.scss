@@ -6,7 +6,11 @@
   flex-direction: column;
   font-family: $font-regular;
   height: 100%;
-  padding: 20px;
+  padding: 20px 30px;
+}
+
+.assuranceLevelSelect {
+  margin: 10px 0 30px;
 }
 
 .deleteWalletButton {

@@ -93,11 +93,13 @@ export default class NetworkStatusStore extends Store {
   }
 
   @computed get isSyncing(): boolean {
-    return !this.isConnecting && this.hasBlockSyncingStarted && !this.isSynced;
+    // return !this.isConnecting && this.hasBlockSyncingStarted && !this.isSynced;
+    return false;
   }
 
   @computed get isSynced(): boolean {
-    return !this.isConnecting && this.syncPercentage >= 100 && this.hasBlockSyncingStarted;
+    // return !this.isConnecting && this.syncPercentage >= 100 && this.hasBlockSyncingStarted;
+    return true;
   }
 
   @action _setInitialDifficulty = async () => {

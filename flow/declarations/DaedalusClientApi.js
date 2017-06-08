@@ -3,8 +3,6 @@ declare module 'daedalus-client-api' {
   // ========= Response Types =========
 
   declare type ApiAssurance = 'CWANormal' | 'CWAStrict';
-  declare type ApiCurrency = 'ADA';
-  declare type ApiWalletType = 'CWTPersonal';
   declare type ApiAmount = {
     getCCoin: number,
   };
@@ -98,7 +96,7 @@ declare module 'daedalus-client-api' {
   declare function newWallet(walletName: string, assurance: string, unit: number, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
   declare function deleteWallet(walletId: string): Promise<{}>;
   declare function restoreWallet(walletName: string, assurance: string, unit: number, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
-  declare function updateWallet(walletId: string, walletType: string, walletCurrency: string, walletName: string, assurance: string, unit: number): Promise<ApiWallet>;
+  declare function updateWallet(walletId: string, walletName: string, assurance: string, unit: number): Promise<ApiWallet>;
   declare function importWallet(filePath: string): Promise<ApiWallet>;
   declare function newWAddress(accountId: string, walletPassword: ?string): Promise<ApiAddress>;
 

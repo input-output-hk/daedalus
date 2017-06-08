@@ -4,7 +4,7 @@ import Action from './lib/Action';
 // ======= WALLET ACTIONS =======
 
 export default class WalletsActions {
-  createWallet: Action<{ name: string, currency: string, password: ?string }> = new Action();
+  createWallet: Action<{ name: string, password: ?string }> = new Action();
   // eslint-disable-next-line max-len
   restoreWallet: Action<{recoveryPhrase: string, walletName: string, walletPassword: ?string }> = new Action();
   importWalletFromKey: Action<{ filePath: string }> = new Action();

@@ -6,10 +6,9 @@ import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-toolbox/lib/input/Input';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
-import Dropup from '../widgets/forms/Dropup';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import Switch from '../widgets/Switch';
-import { isValidWalletName, isValidCurrency, isValidWalletPassword, isValidRepeatPassword } from '../../lib/validations';
+import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../lib/validations';
 import globalMessages from '../../i18n/global-messages';
 import styles from './WalletCreateDialog.scss';
 
@@ -28,16 +27,6 @@ const messages = defineMessages({
     id: 'wallet.create.dialog.walletNameHint',
     defaultMessage: '!!!e.g: Shopping Wallet',
     description: 'Hint for the "Wallet Name" text input in the wallet create form.'
-  },
-  currencyLabel: {
-    id: 'wallet.create.dialog.currency.label',
-    defaultMessage: '!!!Currency',
-    description: 'Label for the "Currency" dropdown in the wallet create form.'
-  },
-  invalidCurrency: {
-    id: 'wallet.create.dialog.errors.invalidCurrency',
-    defaultMessage: '!!!This currency is not yet supported.',
-    description: 'Error message shown when invalid currency was selected in create wallet dialog.'
   },
   createPersonalWallet: {
     id: 'wallet.create.dialog.create.personal.wallet.button.label',
@@ -70,10 +59,6 @@ const messages = defineMessages({
     description: 'Placeholder for the "Password" inputs in the create wallet dialog.',
   },
 });
-
-const currencies = [
-  { value: 'ada', label: 'ADA' },
-];
 
 @observer
 export default class WalletCreateDialog extends Component {
@@ -108,17 +93,6 @@ export default class WalletCreateDialog extends Component {
           [
             isValidWalletName(field.value),
             this.context.intl.formatMessage(globalMessages.invalidWalletName)
-          ]
-        )],
-        bindings: 'ReactToolbox',
-      },
-      currency: {
-        label: this.context.intl.formatMessage(messages.currencyLabel),
-        value: 'ada',
-        validators: [({ field }) => (
-          [
-            isValidCurrency(field.value),
-            this.context.intl.formatMessage(messages.invalidCurrency)
           ]
         )],
         bindings: 'ReactToolbox',
@@ -174,10 +148,9 @@ export default class WalletCreateDialog extends Component {
       onSuccess: (form) => {
         this.setState({ isSubmitting: true });
         const { createPassword } = this.state;
-        const { walletName, currency, walletPassword } = form.values();
+        const { walletName, walletPassword } = form.values();
         const walletData = {
           name: walletName,
-          currency,
           password: createPassword ? walletPassword : null,
         };
         this.props.onSubmit(walletData);
@@ -227,12 +200,6 @@ export default class WalletCreateDialog extends Component {
           onKeyPress={this.checkForEnterKey.bind(this)}
           ref={(input) => { this.walletNameInput = input; }}
           {...form.$('walletName').bind()}
-        />
-
-        <Dropup
-          className="currency"
-          {...form.$('currency').bind()}
-          source={currencies}
         />
 
         <div className={styles.walletPassword}>

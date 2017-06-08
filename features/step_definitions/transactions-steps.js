@@ -10,7 +10,6 @@ export default function () {
       sender: this.wallet.address,
       receiver: faker.finance.bitcoinAddress(),
       amount: parseFloat(faker.finance.amount(), 10),
-      currency: 'ada',
     }));
     const result = await this.client.execute(function (transactions) {
       return transactions.map(function(t) {

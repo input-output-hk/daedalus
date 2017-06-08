@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
@@ -33,12 +33,12 @@ const messages = defineMessages({
 @observer
 export default class AdaRedemptionDisclaimer extends Component {
 
-  static contextTypes = {
-    intl: intlShape.isRequired
+  props: {
+    onSubmit: Function,
   };
 
-  static propTypes = {
-    onSubmit: PropTypes.func.isRequired,
+  static contextTypes = {
+    intl: intlShape.isRequired,
   };
 
   state = {

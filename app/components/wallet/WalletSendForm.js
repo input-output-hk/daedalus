@@ -152,9 +152,6 @@ export default class WalletSendForm extends Component {
         }],
         bindings: 'ReactToolbox',
       },
-      currency: {
-        value: 'ada' // TODO: Remove hardcoded currency
-      },
     },
   }, {
     options: {

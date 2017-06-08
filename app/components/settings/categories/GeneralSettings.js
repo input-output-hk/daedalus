@@ -2,7 +2,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
-import Dropdown from 'react-toolbox/lib/dropdown/Dropdown';
+import Select from 'react-polymorph/lib/components/Select';
+import SelectSkin from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -67,11 +68,12 @@ export default class GeneralSettings extends Component {
     return (
       <div className={componentClassNames}>
 
-        <Dropdown
+        <Select
           className={languageSelectClassNames}
-          source={languageOptions}
+          options={languageOptions}
           {...languageId.bind()}
           onChange={this.selectLanguage}
+          skin={<SelectSkin />}
         />
 
         {error && <p className={styles.error}>{error}</p>}

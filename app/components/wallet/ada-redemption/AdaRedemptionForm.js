@@ -6,7 +6,8 @@ import classnames from 'classnames';
 import Button from 'react-toolbox/lib/button/Button';
 import Input from 'react-toolbox/lib/input/Input';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import Dropup from '../../widgets/forms/Dropup';
+import Select from 'react-polymorph/lib/components/Select';
+import SelectSkin from 'react-polymorph/lib/skins/simple/SelectSkin';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import AdaCertificateUploadWidget from '../../widgets/forms/AdaCertificateUploadWidget';
 import AdaRedemptionChoices from './AdaRedemptionChoices';
@@ -398,10 +399,12 @@ export default class AdaRedemptionForm extends Component {
                 />
               )}
 
-              <Dropup
-                className="wallet"
-                source={wallets}
+              <Select
+                className={styles.walletSelect}
+                options={wallets}
                 {...walletId.bind()}
+                isOpeningUpward
+                skin={<SelectSkin />}
               />
             </div>
 

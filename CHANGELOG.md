@@ -16,6 +16,11 @@ Changelog
 - “Terms of use” page in settings section
 - Change wallet password dialog UX improvements
 - New receive screen with support for HD wallets
+- Wallet rename
+- Multiple input and output addresses in transaction details
+- Ada redemption acceptance tests
+- Show BTC and ETC currencies as coming soon in create wallet dialog
+- Remove currencies dropdown on create wallet dialog
 
 ### Fixes
 
@@ -27,11 +32,14 @@ Changelog
 - Reset Ada redemption form values on page load and certificate add/remove events
 - Prevent sidebar auto-hiding feature and always show submenus on wallets page load
 - Apply grammatical fixes to redemption instructions
+- Prevent sidebar visual glitch on sidebar open
+- Added missing "Add wallet" button label translation key
 
 ### Chores
 
 - Prevent logging of harmless error messages to the terminal
 - Purge "translation/messages/app" as a part of npm dev script
+- Use markdown for "Terms of use" content
 - Added manually written Flow types for API responses
 
 ## 0.6.2

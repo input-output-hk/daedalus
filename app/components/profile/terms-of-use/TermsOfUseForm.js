@@ -25,6 +25,7 @@ const messages = defineMessages({
 export default class TermsOfUseForm extends Component {
 
   props: {
+    localizedTermsOfUse: string,
     onSubmit: Function,
     isSubmitting: boolean,
     error?: ?LocalizableError,
@@ -48,14 +49,14 @@ export default class TermsOfUseForm extends Component {
 
   render() {
     const { intl } = this.context;
-    const { isSubmitting, error } = this.props;
+    const { isSubmitting, error, localizedTermsOfUse } = this.props;
     const { areTermsOfUseAccepted } = this.state;
 
     return (
       <div className={styles.component}>
         <div className={styles.centeredBox}>
 
-          <TermsOfUseText />
+          <TermsOfUseText localizedTermsOfUse={localizedTermsOfUse} />
 
           <div className={styles.checkbox}>
             <CheckboxWithLongLabel

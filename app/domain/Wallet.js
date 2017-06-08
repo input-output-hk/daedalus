@@ -7,7 +7,6 @@ import { assuranceModes, assuranceModeOptions } from '../config/transactionAssur
 export default class Wallet {
 
   id: string = '';
-  currency: string = 'ADA';
   address: string = 'current address';
   @observable name: string = '';
   @observable amount: BigNumber;

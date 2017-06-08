@@ -50,6 +50,11 @@ export default class AppStore extends Store {
     return 'en-US'; // default
   }
 
+  @computed get termsOfUse(): string {
+    const localizedTermsOfUse = require(`../i18n/locales/terms-of-use/${this.currentLocale}.md`); // eslint-disable-line
+    return localizedTermsOfUse;
+  }
+
   @computed get hasLoadedCurrentLocale(): boolean {
     return (
       this.getProfileLocaleRequest.wasExecuted && this.getProfileLocaleRequest.result !== null

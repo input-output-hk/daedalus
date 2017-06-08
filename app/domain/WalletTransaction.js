@@ -11,7 +11,6 @@ export default class WalletTransaction {
   @observable id: string = '';
   @observable type: TransactionType;
   @observable title: string = '';
-  @observable currency: string = '';
   @observable amount: BigNumber;
   @observable date: Date;
   @observable description: string = '';
@@ -21,7 +20,6 @@ export default class WalletTransaction {
     id: string,
     type: TransactionType,
     title: string,
-    currency: string,
     amount: BigNumber,
     date: Date,
     description: string,

@@ -11,7 +11,7 @@ export default class WalletCreateDialogContainer extends Component {
 
   props: InjectedDialogContainerProps;
 
-  onSubmit = (values: { name: string, currency: string, password: ?string }) => {
+  onSubmit = (values: { name: string, password: ?string }) => {
     this.props.actions.wallets.createWallet.trigger(values);
   };
 
