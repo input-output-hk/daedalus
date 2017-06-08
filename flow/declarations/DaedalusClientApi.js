@@ -87,8 +87,8 @@ declare module 'daedalus-client-api' {
   declare function newPaymentExtended(senderAccountId: string, receiverAddress: string, amount: string, title: string, description: ?string, password: ?string): Promise<ApiTransaction>;
 
   // Ada Redemption
-  declare function redeemAda(redemptionCode: string, walletId: string): Promise<ApiTransaction>;
-  declare function redeemAdaPaperVend(shieldedRedemptionKey: string, mnemonics: string, walletId: string): Promise<ApiTransaction>;
+  declare function redeemAda(redemptionCode: string, accountId: string, walletPassword: ?string): Promise<ApiTransaction>;
+  declare function redeemAdaPaperVend(shieldedRedemptionKey: string, mnemonics: string, accountId: string, walletPassword: ?string): Promise<ApiTransaction>;
 
   // Wallet
   declare function getWallets(): ApiWallets;
@@ -96,8 +96,8 @@ declare module 'daedalus-client-api' {
   declare function newWallet(walletName: string, assurance: string, unit: number, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
   declare function deleteWallet(walletId: string): Promise<{}>;
   declare function restoreWallet(walletName: string, assurance: string, unit: number, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
-  declare function updateWallet(walletId: string, walletName: string, assurance: string, unit: number): Promise<ApiWallet>;
-  declare function importWallet(filePath: string): Promise<ApiWallet>;
+  declare function updateWallet(walletId: string, walletName: string, assurance: string, unit: number): Promise<ApiWallet>; // TODO: remove as it no longer exists
+  declare function importWallet(filePath: string, walletPassword: ?string): Promise<ApiWallet>;
   declare function newWAddress(accountId: string, walletPassword: ?string): Promise<ApiAddress>;
   declare function changeWalletPass(walletId: string, oldPassword: ?string, newPassword: ?string): Promise<{}>;
   declare function renameWalletSet(walletId: string, walletName: string): Promise<ApiWallet>;

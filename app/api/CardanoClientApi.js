@@ -64,10 +64,10 @@ import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 // TODO: Remove after hd integraton is complete
 
 // Get all accounts
-(async () => {
-  const accounts = await ClientApi.getAccounts();
-  console.log('accounts:', JSON.stringify(accounts, null, 2));
-})();
+// (async () => {
+//   const accounts = await ClientApi.getAccounts();
+//   console.log('accounts:', JSON.stringify(accounts, null, 2));
+// })();
 
 // Create account
 // (async () => {
@@ -160,7 +160,6 @@ export default class CardanoClientApi {
     try {
       const response: ApiWallets = await ClientApi.getWallets();
       Log.debug('CardanoClientApi::getWallets success: ', JSON.stringify(response, null, 2));
-      console.log('wallets', JSON.stringify(response, null, 2));
       const wallets = response.map(data => _createWalletFromServerData(data));
       return wallets;
     } catch (error) {
@@ -175,12 +174,12 @@ export default class CardanoClientApi {
     try {
       const response: ApiAccounts = await ClientApi.getWalletAccounts(walletId);
       Log.debug('CardanoClientApi::getAddresses success: ', JSON.stringify(response, null, 2));
-      console.log('accounts', JSON.stringify(response, null, 2));
+
       if (!response.length) {
         return new Promise((resolve) => resolve({ accountId: null, addresses: [] }));
       }
 
-      // For now only the first account is used
+      // For now only the first wallet account is used
       const firstAccount = response[0];
       const firstAccountId = firstAccount.caId;
       const firstAccountAddresses = firstAccount.caAddresses;
@@ -203,7 +202,6 @@ export default class CardanoClientApi {
       const history: ApiTransactions = await ClientApi.searchHistory(
         accountId, searchTerm, skip, limit
       );
-      console.log('transactions', JSON.stringify(history, null, 2));
       Log.debug('CardanoClientApi::searchHistory success: ', JSON.stringify(history, null, 2));
       return new Promise((resolve) => resolve({
         transactions: history[0].map(data => _createTransactionFromServerData(data)),
@@ -227,12 +225,10 @@ export default class CardanoClientApi {
       const wallet: ApiWallet = await ClientApi.newWallet(
         name, assurance, unit, mnemonic, password || ''
       ); // empty string must be used if no password is set ^^
-      console.log('wallet:', JSON.stringify(wallet, null, 2));
       Log.debug('CardanoClientApi::createWallet success: ', JSON.stringify(wallet, null, 2));
 
       // 2. create account
-      const account = await ClientApi.newAccount(wallet.cwId, name, password || '');
-      console.log('account:', JSON.stringify(account, null, 2));
+      await ClientApi.newAccount(wallet.cwId, name, password || '');
 
       return _createWalletFromServerData(wallet);
     } catch (error) {
@@ -281,10 +277,8 @@ export default class CardanoClientApi {
       const data: ApiAddress = await ClientApi.newWAddress(
         accountId, password || ''
       ); // empty string must be used if no password is set
-      console.log('address:', JSON.stringify(data, null, 2));
       Log.debug('CardanoClientApi::createAddress success: ', JSON.stringify(data, null, 2));
-      const address = _createAddressFromServerData(data);
-      return address;
+      return _createAddressFromServerData(data);
     } catch (error) {
       Log.error('CardanoClientApi::createAddress error: ', error);
       throw new GenericApiError();
@@ -331,12 +325,10 @@ export default class CardanoClientApi {
       const wallet: ApiWallet = await ClientApi.restoreWallet(
         walletName, 'CWANormal', 0, recoveryPhrase, walletPassword || ''
       ); // empty string must be used if no password is set ^^
-      console.log('wallet:', JSON.stringify(wallet, null, 2));
       Log.debug('CardanoClientApi::restoreWallet success');
 
       // 2. create account
-      const account = await ClientApi.newAccount(wallet.cwId, walletName, walletPassword || '');
-      console.log('account:', JSON.stringify(account, null, 2));
+      await ClientApi.newAccount(wallet.cwId, walletName, walletPassword || '');
 
       return _createWalletFromServerData(wallet);
     } catch (error) {
@@ -362,7 +354,6 @@ export default class CardanoClientApi {
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
       Log.error('CardanoClientApi::importWalletFromKey error: ', error);
-      console.log('ERROR', error);
       if (error.message.includes('Wallet with that mnemonics already exists')) {
         throw new WalletAlreadyRestoredError();
       }
@@ -565,9 +556,7 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::renameWallet called: ', JSON.stringify(request, null, 2));
     const { walletId, name } = request;
     try {
-      const response: ApiWallet = await ClientApi.renameWalletSet(
-        walletId, name
-      );
+      const response: ApiWallet = await ClientApi.renameWalletSet(walletId, name);
       Log.debug('CardanoClientApi::renameWallet success: ', JSON.stringify(response, null, 2));
       return response;
     } catch (error) {
@@ -595,9 +584,8 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::setWalletPassword called: ', JSON.stringify(request, null, 2));
     const { walletId, password } = request;
     try {
-      await ClientApi.changeWalletPass(
-        walletId, '', password || ''
-      ); // empty string must be used if no password is set
+      await ClientApi.changeWalletPass(walletId, '', password || '');
+      // empty string must be used if no password is set ^^
       Log.debug('CardanoClientApi::setWalletPassword success');
       return true;
     } catch (error) {
