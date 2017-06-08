@@ -30,6 +30,7 @@ import type {
   ImportKeyRequest,
   DeleteWalletRequest,
   RedeemPaperVendedAdaRequest,
+  RenameWalletRequest,
   ChangeWalletPasswordRequest,
   SetWalletPasswordRequest,
 } from './index';
@@ -556,6 +557,21 @@ export default class CardanoClientApi {
       return response;
     } catch (error) {
       Log.error('CardanoClientApi::updateWallet error: ', error);
+      throw new GenericApiError();
+    }
+  }
+
+  async renameWallet(request: RenameWalletRequest) {
+    Log.debug('CardanoClientApi::renameWallet called: ', JSON.stringify(request, null, 2));
+    const { walletId, name } = request;
+    try {
+      const response: ApiWallet = await ClientApi.renameWalletSet(
+        walletId, name
+      );
+      Log.debug('CardanoClientApi::renameWallet success: ', JSON.stringify(response, null, 2));
+      return response;
+    } catch (error) {
+      Log.error('CardanoClientApi::renameWallet error: ', error);
       throw new GenericApiError();
     }
   }

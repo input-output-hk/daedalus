@@ -132,6 +132,13 @@ export type SetWalletPasswordRequest = {
 
 export type SetWalletPasswordResponse = boolean;
 
+export type RenameWalletRequest = {
+  walletId: string,
+  name: string,
+};
+
+export type RenameWalletResponse = Wallet;
+
 // API INTERFACE
 
 export type Api = {
@@ -163,6 +170,7 @@ export type Api = {
   setTermsOfUseAcceptance(): Promise<boolean>,
   getTermsOfUseAcceptance(): Promise<boolean>,
   updateWallet(request: UpdateWalletRequest): Promise<UpdateWalletResponse>,
+  renameWallet(request: RenameWalletRequest): Promise<RenameWalletResponse>,
   changeWalletPassword(request: ChangeWalletPasswordRequest): Promise<ChangeWalletPasswordResponse>,
   setWalletPassword(request: SetWalletPasswordRequest): Promise<SetWalletPasswordResponse>,
   testReset(): void,
