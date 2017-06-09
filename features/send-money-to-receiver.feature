@@ -14,7 +14,6 @@ Feature: Send Money to Receiver
       | amount   |
       | 0.000010 |
     And I submit the wallet send form
-    And I freeze
     Then I should be on the "Genesis wallet" wallet "summary" screen
     And the latest transaction should show:
       | title                      | amount    |
