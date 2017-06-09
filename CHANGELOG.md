@@ -18,6 +18,7 @@ Changelog
 - Multiple input and output addresses in transaction details
 - Ada redemption acceptance tests
 - Show BTC and ETC currencies as coming soon in create wallet dialog
+- Prepared UI dialogs for importing paper wallets
 
 ### Fixes
 
