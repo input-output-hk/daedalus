@@ -20,6 +20,7 @@ Changelog
 - Ada redemption acceptance tests
 - Show BTC and ETC currencies as coming soon in create wallet dialog
 - Prepared UI dialogs for exporting paper wallets
+- Prepared UI dialogs for importing paper wallets
 
 ### Fixes
 
