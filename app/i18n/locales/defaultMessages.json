@@ -203,13 +203,13 @@
         "description": "Label for the language select.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "app/components/profile/language-selection/LanguageSelectionForm.js",
         "id": "profile.languageSelect.form.languageSelectLabel",
         "start": {
           "column": 23,
-          "line": 13
+          "line": 14
         }
       },
       {
@@ -217,13 +217,13 @@
         "description": "Label for the \"Language select\" form submit button.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "app/components/profile/language-selection/LanguageSelectionForm.js",
         "id": "profile.languageSelect.form.submitLabel",
         "start": {
           "column": 15,
-          "line": 18
+          "line": 19
         }
       }
     ],
@@ -269,13 +269,13 @@
         "description": "Label for the language select.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "app/components/settings/categories/GeneralSettings.js",
         "id": "settings.general.languageSelect.label",
         "start": {
           "column": 23,
-          "line": 13
+          "line": 14
         }
       }
     ],
@@ -429,13 +429,13 @@
         "description": "headline \"Ada redemption\" dialog.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.headline",
         "start": {
           "column": 12,
-          "line": 21
+          "line": 22
         }
       },
       {
@@ -443,13 +443,13 @@
         "description": "!!!Detailed instructions for redeeming Ada from the regular vending",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.instructions.regular",
         "start": {
           "column": 23,
-          "line": 26
+          "line": 27
         }
       },
       {
@@ -457,13 +457,13 @@
         "description": "!!!Detailed instructions.regular",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.instructions.forceVended",
         "start": {
           "column": 27,
-          "line": 36
+          "line": 37
         }
       },
       {
@@ -471,13 +471,13 @@
         "description": "!!!Detailed instructions.regular",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.instructions.paperVended",
         "start": {
           "column": 27,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -485,13 +485,13 @@
         "description": "Label for the certificate file upload",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.certificateLabel",
         "start": {
           "column": 20,
-          "line": 51
+          "line": 52
         }
       },
       {
@@ -499,13 +499,13 @@
         "description": "Hint for the certificate file upload",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.certificateHint",
         "start": {
           "column": 19,
-          "line": 56
+          "line": 57
         }
       },
       {
@@ -513,13 +513,13 @@
         "description": "Label for the wallet select field on Ada redemption form",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.walletSelectLabel",
         "start": {
           "column": 21,
-          "line": 61
+          "line": 62
         }
       },
       {
@@ -527,13 +527,13 @@
         "description": "Label for the passphrase to decrypt Ada voucher certificate input",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 71
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.passphraseLabel",
         "start": {
           "column": 19,
-          "line": 66
+          "line": 67
         }
       },
       {
@@ -541,13 +541,13 @@
         "description": "Hint for the mnemonic passphrase input",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 76
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.passphraseHint",
         "start": {
           "column": 18,
-          "line": 71
+          "line": 72
         }
       },
       {
@@ -555,13 +555,13 @@
         "description": "Label for ada redemption key input",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 81
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.redemptionKeyLabel",
         "start": {
           "column": 22,
-          "line": 76
+          "line": 77
         }
       },
       {
@@ -569,13 +569,13 @@
         "description": "Label for shielded redemption key input",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 86
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.shieldedRedemptionKeyLabel",
         "start": {
           "column": 30,
-          "line": 81
+          "line": 82
         }
       },
       {
@@ -583,13 +583,13 @@
         "description": "Error \"Invalid redemption key\" for ada redemption code input",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 91
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.redemptionCodeError",
         "start": {
           "column": 22,
-          "line": 86
+          "line": 87
         }
       },
       {
@@ -597,13 +597,13 @@
         "description": "Error \"Invalid shielded vending key\" for ada redemption code input",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 96
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.shieldedRedemptionCodeError",
         "start": {
           "column": 30,
-          "line": 91
+          "line": 92
         }
       },
       {
@@ -611,13 +611,13 @@
         "description": "Hint for ada redemption key input",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 101
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.redemptionCodeHint",
         "start": {
           "column": 21,
-          "line": 96
+          "line": 97
         }
       },
       {
@@ -625,13 +625,13 @@
         "description": "Hint for shielded vending key input",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 106
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.shieldedRedemptionKeyHint",
         "start": {
           "column": 29,
-          "line": 101
+          "line": 102
         }
       },
       {
@@ -639,13 +639,13 @@
         "description": "Label for the \"Ada redemption\" dialog submit button.",
         "end": {
           "column": 3,
-          "line": 110
+          "line": 111
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.submitLabel",
         "start": {
           "column": 15,
-          "line": 106
+          "line": 107
         }
       },
       {
@@ -653,13 +653,13 @@
         "description": "Label for the email input field.",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 116
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.emailLabel",
         "start": {
           "column": 14,
-          "line": 111
+          "line": 112
         }
       },
       {
@@ -667,13 +667,13 @@
         "description": "Hint for the email input field.",
         "end": {
           "column": 3,
-          "line": 120
+          "line": 121
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.emailHint",
         "start": {
           "column": 13,
-          "line": 116
+          "line": 117
         }
       },
       {
@@ -681,13 +681,13 @@
         "description": "Label for the ada passcode input field.",
         "end": {
           "column": 3,
-          "line": 125
+          "line": 126
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.adaPasscodeLabel",
         "start": {
           "column": 20,
-          "line": 121
+          "line": 122
         }
       },
       {
@@ -695,13 +695,13 @@
         "description": "Hint for the Ada passcode input field.",
         "end": {
           "column": 3,
-          "line": 130
+          "line": 131
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.adaPasscodeHint",
         "start": {
           "column": 19,
-          "line": 126
+          "line": 127
         }
       },
       {
@@ -709,13 +709,13 @@
         "description": "Label for the ada amount input field.",
         "end": {
           "column": 3,
-          "line": 135
+          "line": 136
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.adaAmountLabel",
         "start": {
           "column": 18,
-          "line": 131
+          "line": 132
         }
       },
       {
@@ -723,13 +723,13 @@
         "description": "Hint for the Ada amount input field.",
         "end": {
           "column": 3,
-          "line": 140
+          "line": 141
         },
         "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.adaAmountHint",
         "start": {
           "column": 17,
-          "line": 136
+          "line": 137
         }
       }
     ],
@@ -749,6 +749,20 @@
         "start": {
           "column": 12,
           "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!Great",
+        "description": "Confirm button text",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionSuccessOverlay.js",
+        "id": "wallet.redeem.success.overlay.confirmButton",
+        "start": {
+          "column": 17,
+          "line": 16
         }
       }
     ],
@@ -1244,13 +1258,13 @@
         "description": "Title for the \"Delete wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.title",
         "start": {
           "column": 15,
-          "line": 13
+          "line": 14
         }
       },
       {
@@ -1258,13 +1272,13 @@
         "description": "Label for the \"Delete (x)\" button in the delete wallet dialog.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -1272,13 +1286,13 @@
         "description": "Question if the user really wants to delete the wallet.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.wantToDeleteWalletQuestion",
         "start": {
           "column": 30,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -1286,13 +1300,13 @@
         "description": "Notice to confirm if the user has made a backup of his wallet",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.confirmBackupNotice",
         "start": {
           "column": 23,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -1300,17 +1314,299 @@
         "description": "Instruction for recovery word on delete wallet dialog",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.enterRecoveryWordLabel",
         "start": {
           "column": 26,
-          "line": 33
+          "line": 34
         }
       }
     ],
     "path": "app/components/wallet/settings/DeleteWalletConfirmationDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Paper certificate",
+        "description": "headline for \" for paper wallet mnemonic certificate dialog.",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletCertificateDialog.js",
+        "id": "paper.wallet.export.dialog.certificate.dialog.headline",
+        "start": {
+          "column": 12,
+          "line": 12
+        }
+      },
+      {
+        "defaultMessage": "!!!Finish",
+        "description": "Label \"Finish\" for paper wallet mnemonic certificate dialog.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletCertificateDialog.js",
+        "id": "paper.wallet.export.dialog.certificate.button.finishLabel",
+        "start": {
+          "column": 15,
+          "line": 17
+        }
+      }
+    ],
+    "path": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletCertificateDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Mnemonic",
+        "description": "headline\" for paper wallet mnemonic dialog.",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog.js",
+        "id": "paper.wallet.export.dialog.mnemonic.headline",
+        "start": {
+          "column": 12,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Continue",
+        "description": "Label \"Continue\" for paper wallet mnemonic dialog.",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog.js",
+        "id": "paper.wallet.export.dialog.mnemonic.button.continueLabel",
+        "start": {
+          "column": 17,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand all the importance of this phrase and wrote it my paper certificate.",
+        "description": "Notice to confirm that paper wallet recovery phrase is written to paper on paper wallet mnemonic dialog.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog.js",
+        "id": "paper.wallet.export.dialog.mnemonic.confirmPhraseWrittenNotice",
+        "start": {
+          "column": 30,
+          "line": 24
+        }
+      }
+    ],
+    "path": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Verify mnemonic",
+        "description": "headline for mnemonic certificate verification dialog.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
+        "id": "paper.wallet.export.dialog.mnemonic.verification.headline",
+        "start": {
+          "column": 12,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!Continue",
+        "description": "Label \"Continue\" on mnemonic certificate verification dialog",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
+        "id": "paper.wallet.export.dialog.mnemonic.verification.button.continueLabel",
+        "start": {
+          "column": 17,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Recovery phrase",
+        "description": "Label for the recovery phrase input on mnemonic certificate verification dialog.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
+        "id": "paper.wallet.export.dialog.mnemonic.verification.recovery.phrase.input.label",
+        "start": {
+          "column": 34,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter recovery phrase",
+        "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the mnemonic certificate verification dialog.",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
+        "id": "paper.wallet.export.dialog.mnemonic.verification.recovery.phrase.input.hint",
+        "start": {
+          "column": 33,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!Invalid recovery phrase",
+        "description": "Error message shown when invalid recovery phrase was entered on mnemonic certificate verification dialog.",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
+        "id": "paper.wallet.export.dialog.mnemonic.verification.form.errors.invalidRecoveryPhrase",
+        "start": {
+          "column": 19,
+          "line": 36
+        }
+      }
+    ],
+    "path": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Check printer copy",
+        "description": "headline for \"Check printer copy\" in wallet check printer copy dialog.",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog.js",
+        "id": "paper.wallet.export.dialog.printerCheck.headline",
+        "start": {
+          "column": 12,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Continue",
+        "description": "Label \"Continue\" on the dialog button for check printer copy in wallet check printer copy dialog.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog.js",
+        "id": "paper.wallet.export.dialog.button.continueLabel",
+        "start": {
+          "column": 17,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Yes, paper wallet is successfully printed and everything is readable and scannable.",
+        "description": "Notice to confirm if the paper wallet is correctly printed in wallet check printer copy dialog",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog.js",
+        "id": "paper.wallet.export.dialog.printerCheck.confirmPrinterCopyNotice",
+        "start": {
+          "column": 28,
+          "line": 23
+        }
+      }
+    ],
+    "path": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Export",
+        "description": "headline for \"export paper wallet\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "app/components/wallet/settings/WalletExportDialog.js",
+        "id": "wallet.export.dialog.headline",
+        "start": {
+          "column": 12,
+          "line": 12
+        }
+      },
+      {
+        "defaultMessage": "!!!Print",
+        "description": "Label \"Print\" on the dialog button for export paper wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "app/components/wallet/settings/WalletExportDialog.js",
+        "id": "paper.wallet.export.dialog.button.printLabel",
+        "start": {
+          "column": 14,
+          "line": 17
+        }
+      }
+    ],
+    "path": "app/components/wallet/settings/WalletExportDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Full",
+        "description": "Tab title \"Full\" on wallet export dialog.",
+        "end": {
+          "column": 3,
+          "line": 12
+        },
+        "file": "app/components/wallet/settings/WalletExportDialogChoices.js",
+        "id": "wallet.export.choices.tab.title.full",
+        "start": {
+          "column": 16,
+          "line": 8
+        }
+      },
+      {
+        "defaultMessage": "!!!Read-only",
+        "description": "Tab title \"Read-only\" on wallet export dialog.",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "app/components/wallet/settings/WalletExportDialogChoices.js",
+        "id": "wallet.export.choices.tab.title.readOnly",
+        "start": {
+          "column": 20,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Paper wallet",
+        "description": "Tab title \"Paper Wallet\" on wallet export dialog.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "app/components/wallet/settings/WalletExportDialogChoices.js",
+        "id": "wallet.export.choices.tab.title.paperWallet",
+        "start": {
+          "column": 23,
+          "line": 18
+        }
+      }
+    ],
+    "path": "app/components/wallet/settings/WalletExportDialogChoices.json"
   },
   {
     "descriptors": [
@@ -1497,13 +1793,13 @@
         "description": "Title \"Create a new wallet\" in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.title",
         "start": {
           "column": 15,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -1511,13 +1807,13 @@
         "description": "Label for the \"Wallet Name\" text input in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.name.label",
         "start": {
           "column": 14,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -1525,13 +1821,13 @@
         "description": "Hint for the \"Wallet Name\" text input in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.walletNameHint",
         "start": {
           "column": 18,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -1539,13 +1835,13 @@
         "description": "Label for the \"Currency\" dropdown in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
         "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.currency.label",
         "start": {
           "column": 17,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -1553,13 +1849,13 @@
         "description": "Error message shown when invalid currency was selected in create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 42
         },
         "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.errors.invalidCurrency",
         "start": {
           "column": 19,
-          "line": 37
+          "line": 38
         }
       },
       {
@@ -1567,13 +1863,13 @@
         "description": "Label for the \"Create personal wallet\" button on create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 47
         },
         "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.create.personal.wallet.button.label",
         "start": {
           "column": 24,
-          "line": 42
+          "line": 43
         }
       },
       {
@@ -1581,13 +1877,13 @@
         "description": "Label for the \"Activate to create password\" switch in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 52
         },
         "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.passwordSwitchLabel",
         "start": {
           "column": 23,
-          "line": 47
+          "line": 48
         }
       },
       {
@@ -1595,13 +1891,13 @@
         "description": "Text for the \"Activate to create password\" switch in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 57
         },
         "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.passwordSwitchPlaceholder",
         "start": {
           "column": 29,
-          "line": 52
+          "line": 53
         }
       },
       {
@@ -1609,13 +1905,13 @@
         "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 62
         },
         "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.walletPasswordLabel",
         "start": {
           "column": 23,
-          "line": 57
+          "line": 58
         }
       },
       {
@@ -1623,13 +1919,13 @@
         "description": "Label for the \"Repeat password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 67
         },
         "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
-          "line": 62
+          "line": 63
         }
       },
       {
@@ -1637,13 +1933,27 @@
         "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 72
         },
         "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.passwordFieldPlaceholder",
         "start": {
           "column": 28,
-          "line": 67
+          "line": 68
+        }
+      },
+      {
+        "defaultMessage": "!!!Coming soon",
+        "description": "Label for currency options that are disabled but coming soon.",
+        "end": {
+          "column": 3,
+          "line": 77
+        },
+        "file": "app/components/wallet/WalletCreateDialog.js",
+        "id": "wallet.create.dialog.currencyComingSoonLabel",
+        "start": {
+          "column": 27,
+          "line": 73
         }
       }
     ],
@@ -2077,13 +2387,13 @@
         "description": "Label for the \"Name\" text input on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 36
         },
         "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.name.label",
         "start": {
           "column": 8,
-          "line": 21
+          "line": 32
         }
       },
       {
@@ -2091,13 +2401,13 @@
         "description": "Label for the \"Transaction assurance security level\" dropdown.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 41
         },
         "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.assurance",
         "start": {
           "column": 23,
-          "line": 26
+          "line": 37
         }
       },
       {
@@ -2105,13 +2415,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 46
         },
         "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
-          "line": 31
+          "line": 42
         }
       },
       {
@@ -2119,13 +2429,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 51
         },
         "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 36
+          "line": 47
         }
       },
       {
@@ -2133,13 +2443,13 @@
         "description": "You still don't have password set message.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 56
         },
         "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.passwordNotSet",
         "start": {
           "column": 18,
-          "line": 41
+          "line": 52
         }
       }
     ],
@@ -2373,17 +2683,45 @@
         }
       },
       {
+        "defaultMessage": "!!!From addresses",
+        "description": "From addresses",
+        "end": {
+          "column": 3,
+          "line": 61
+        },
+        "file": "app/components/widgets/Transaction.js",
+        "id": "wallet.transaction.addresses.from",
+        "start": {
+          "column": 17,
+          "line": 57
+        }
+      },
+      {
+        "defaultMessage": "!!!To addresses",
+        "description": "To addresses",
+        "end": {
+          "column": 3,
+          "line": 66
+        },
+        "file": "app/components/widgets/Transaction.js",
+        "id": "wallet.transaction.addresses.to",
+        "start": {
+          "column": 15,
+          "line": 62
+        }
+      },
+      {
         "defaultMessage": "!!!low",
         "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 75
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.low",
         "start": {
           "column": 25,
-          "line": 61
+          "line": 71
         }
       },
       {
@@ -2391,13 +2729,13 @@
         "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 80
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
           "column": 28,
-          "line": 66
+          "line": 76
         }
       },
       {
@@ -2405,13 +2743,13 @@
         "description": "Transaction assurance level \"high\".",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 85
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.high",
         "start": {
           "column": 26,
-          "line": 71
+          "line": 81
         }
       }
     ],
@@ -2842,178 +3180,5 @@
       }
     ],
     "path": "app/i18n/global-messages.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Terms of Use",
-        "description": "Terms of use title",
-        "end": {
-          "column": 3,
-          "line": 8
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.label",
-        "start": {
-          "column": 9,
-          "line": 4
-        }
-      },
-      {
-        "defaultMessage": "!!!First paragraph quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore some link aliquam quaerat voluptatem.",
-        "description": "Terms of use first paragraph",
-        "end": {
-          "column": 3,
-          "line": 13
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.firstParagraph",
-        "start": {
-          "column": 18,
-          "line": 9
-        }
-      },
-      {
-        "defaultMessage": "!!!Second paragraph ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?",
-        "description": "Terms of use second paragraph",
-        "end": {
-          "column": 3,
-          "line": 18
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.secondParagraph",
-        "start": {
-          "column": 19,
-          "line": 14
-        }
-      },
-      {
-        "defaultMessage": "!!!1. Numbered title",
-        "description": "Terms of use first numbered title",
-        "end": {
-          "column": 3,
-          "line": 23
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.firstNumberedTitle",
-        "start": {
-          "column": 22,
-          "line": 19
-        }
-      },
-      {
-        "defaultMessage": "!!!2. Numbered title",
-        "description": "Terms of use second numbered title",
-        "end": {
-          "column": 3,
-          "line": 28
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.secondNumberedTitle",
-        "start": {
-          "column": 23,
-          "line": 24
-        }
-      },
-      {
-        "defaultMessage": "!!!1.1 Sub-title name.",
-        "description": "Terms of use first subtitle",
-        "end": {
-          "column": 3,
-          "line": 33
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.firstSubtitle",
-        "start": {
-          "column": 17,
-          "line": 29
-        }
-      },
-      {
-        "defaultMessage": "!!!1.2 Sub-title name.",
-        "description": "Terms of use second subtitle",
-        "end": {
-          "column": 3,
-          "line": 38
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.secondSubtitle",
-        "start": {
-          "column": 18,
-          "line": 34
-        }
-      },
-      {
-        "defaultMessage": "!!!2.1 Sub-title name.",
-        "description": "Terms of use third subtitle",
-        "end": {
-          "column": 3,
-          "line": 43
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.thirdSubtitle",
-        "start": {
-          "column": 17,
-          "line": 39
-        }
-      },
-      {
-        "defaultMessage": "!!!At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
-        "description": "Terms of use first list text",
-        "end": {
-          "column": 3,
-          "line": 48
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.firstListText",
-        "start": {
-          "column": 17,
-          "line": 44
-        }
-      },
-      {
-        "defaultMessage": "!!!Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.",
-        "description": "Terms of use second list text",
-        "end": {
-          "column": 3,
-          "line": 53
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.secondListText",
-        "start": {
-          "column": 18,
-          "line": 49
-        }
-      },
-      {
-        "defaultMessage": "!!!At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa... and so on...",
-        "description": "Terms of use third list text",
-        "end": {
-          "column": 3,
-          "line": 58
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.thirdListText",
-        "start": {
-          "column": 17,
-          "line": 54
-        }
-      },
-      {
-        "defaultMessage": "!!!Last paragraph quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore some link aliquam quaerat voluptatem.",
-        "description": "Terms of use last paragraph",
-        "end": {
-          "column": 3,
-          "line": 63
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.lastParagraph",
-        "start": {
-          "column": 17,
-          "line": 59
-        }
-      }
-    ],
-    "path": "app/i18n/termsOfUse.json"
   }
 ]

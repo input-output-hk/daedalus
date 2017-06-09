@@ -23,3 +23,28 @@
   @include error-message;
   text-align: center;
 }
+
+.export {
+  font-size: 16px;
+  p {
+    color: #abadb0;
+    font-family: $font-regular;
+    line-height: 1.38;
+  }
+
+  p:first-of-type {
+    margin-top: 14px;
+  }
+
+  strong {
+    color: #5e6066;
+    font-family: $font-bold;
+  }
+
+  & > .export_link {
+    color: #5e6066;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: underline;
+  }
+}

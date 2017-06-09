@@ -1,0 +1,16 @@
+.component {
+  :global .dialog_body {
+    overflow-y: hidden;
+  }
+}
+
+.instructions {
+  color: $text-color-accent;
+  margin-top: 30px;
+  margin-bottom: 18px;
+
+  p {
+    font-family: $font-regular;
+    line-height: 1.38;
+  }
+}

@@ -9,6 +9,7 @@ import Request from './lib/LocalizedRequest';
 import environment from '../environment';
 import { ROUTES } from '../Routes';
 import WalletAddDialog from '../components/wallet/WalletAddDialog';
+import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type {
   GetWalletsResponse,
   ImportKeyResponse,
@@ -36,6 +37,9 @@ export default class WalletsStore extends Store {
   @observable restoreRequest: Request<RestoreWalletResponse> = new Request(this.api.restoreWallet);
   /* eslint-enable max-len */
 
+  @observable walletExportType: walletExportTypeChoices = 'paperWallet';
+  @observable walletExportMnemonic = 'marine joke dry silk ticket thing sugar stereo aim';
+
   _newWalletDetails: { name: string, currency: string, mnemonic: string, password: ?string, } = {
     name: '',
     currency: '',
@@ -51,6 +55,7 @@ export default class WalletsStore extends Store {
     wallets.restoreWallet.listen(this._restoreWallet);
     wallets.importWalletFromKey.listen(this._importWalletFromKey);
     wallets.setActiveWallet.listen(this._setActiveWallet);
+    wallets.chooseWalletExportType.listen(this._chooseWalletExportType);
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishWalletCreation);
     this.registerReactions([
@@ -276,6 +281,14 @@ export default class WalletsStore extends Store {
     // Reset the send request anytime we visit the send page (e.g: to remove any previous errors)
     if (matchRoute(ROUTES.WALLETS.SEND, buildRoute(options.route, options.params))) {
       this.sendMoneyRequest.reset();
+    }
+  };
+
+  @action _chooseWalletExportType = (params: {
+    walletExportType: walletExportTypeChoices,
+  }) => {
+    if (this.walletExportType !== params.walletExportType) {
+      this.walletExportType = params.walletExportType;
     }
   };
 
