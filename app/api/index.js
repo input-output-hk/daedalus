@@ -150,7 +150,7 @@ export type Api = {
   createWallet(request: CreateWalletRequest): Promise<CreateWalletResponse>,
   deleteWallet(request: DeleteWalletRequest): Promise<DeleteWalletResponse>,
   createTransaction(request: CreateTransactionRequest): Promise<CreateTransactionResponse>,
-  createAddress(request: createAddressRequest): Promise<createAddressResponse>,
+  createAddress(request: CreateAddressRequest): Promise<CreateAddressResponse>,
   isValidAddress(address: string): Promise<boolean>,
   isValidMnemonic(mnemonic: string): Promise<boolean>,
   isValidRedemptionKey(mnemonic: string): Promise<boolean>,
