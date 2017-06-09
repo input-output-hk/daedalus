@@ -1,8 +1,8 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import Input from 'react-toolbox/lib/input/Input';
 import Button from 'react-toolbox/lib/button/Button';
+import Input from 'react-polymorph/lib/components/Input';
 import NumericInput from 'react-polymorph/lib/components/NumericInput';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
@@ -43,11 +43,6 @@ const messages = defineMessages({
     id: 'wallet.send.form.amount.equalsAda',
     defaultMessage: '!!!equals {amount} ADA',
     description: 'Convertion hint for the "Amount" number input in the wallet send form.'
-  },
-  amountHint: {
-    id: 'wallet.send.form.amount.hint',
-    defaultMessage: '!!!Amount in Lovelaces',
-    description: 'Hint inside the "Amount" number input in the wallet send form.'
   },
   descriptionLabel: {
     id: 'wallet.send.form.description.label',
@@ -125,18 +120,19 @@ export default class WalletSendForm extends Component {
           return this.props.addressValidator(field.value)
             .then(isValid => [isValid, this.context.intl.formatMessage(messages.invalidAddress)]);
         },
-        bindings: 'ReactToolbox',
       },
       amount: {
         label: this.context.intl.formatMessage(messages.amountLabel),
-        placeholder: this.context.intl.formatMessage(messages.amountHint),
+        placeholder: '0.000000',
         value: '',
         validators: ({ field }) => {
+          if (field.value === '') {
+            return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
+          }
           const amountInLovelaces = this.adaToLovelaces(field.value);
           const isValid = isValidAmountInLovelaces(amountInLovelaces);
           return [isValid, this.context.intl.formatMessage(messages.invalidAmount)];
         },
-        bindings: 'ReactToolbox',
       },
       walletPassword: {
         type: 'password',
@@ -183,13 +179,21 @@ export default class WalletSendForm extends Component {
     const { intl } = this.context;
     const { isWalletPasswordSet, isSubmitting, error } = this.props;
     const amountField = form.$('amount');
+    const receiverField = form.$('receiver');
 
     return (
       <div className={styles.component}>
 
         <BorderedBox>
 
-          <Input className="receiver" {...form.$('receiver').bind()} />
+          <div className={styles.receiverInput}>
+            <Input
+              className="receiver"
+              {...receiverField.bind()}
+              error={receiverField.error}
+              skin={<SimpleInputSkin />}
+            />
+          </div>
 
           <div className={styles.amountInput}>
             <NumericInput
@@ -200,9 +204,7 @@ export default class WalletSendForm extends Component {
               maxValue={45000000000}
               maxAfterDot={6}
               maxBeforeDot={11}
-              placeholder="0.000000"
-              onChange={amountField.onChange}
-              error={amountField.error ? intl.formatMessage(messages.invalidAmount) : null}
+              error={amountField.error}
               skin={<SimpleInputSkin />}
             />
             <span className={styles.adaLabel}>

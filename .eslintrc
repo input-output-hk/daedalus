@@ -51,7 +51,9 @@
     "spaced-comment": 1,
     "quotes": 1,
     "import/imports-first": 1,
-    "no-multi-spaces": 1
+    "no-multi-spaces": 1,
+    "no-multiple-empty-lines": 1,
+    "react/jsx-indent": 1
   },
   "plugins": [
     "flowtype-errors",
