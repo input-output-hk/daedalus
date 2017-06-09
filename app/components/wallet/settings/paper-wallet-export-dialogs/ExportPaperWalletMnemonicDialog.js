@@ -67,9 +67,7 @@ export default class ExportPaperWalletMnemonicDialog extends Component {
       {
         label: intl.formatMessage(messages.continueLabel),
         primary: true,
-        disabled: (
-          !isPhraseWrittenNoticeAccepted
-        ),
+        disabled: !isPhraseWrittenNoticeAccepted,
         onClick: () => onContinue(),
       }
     ];
