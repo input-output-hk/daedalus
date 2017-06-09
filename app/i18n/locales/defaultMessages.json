@@ -2383,17 +2383,31 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Name",
+        "description": "Label for the \"Name\" text input on the wallet settings page.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "app/components/wallet/WalletSettings.js",
+        "id": "wallet.settings.name.label",
+        "start": {
+          "column": 8,
+          "line": 32
+        }
+      },
+      {
         "defaultMessage": "!!!Transaction assurance security level",
         "description": "Label for the \"Transaction assurance security level\" dropdown.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 41
         },
         "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.assurance",
         "start": {
           "column": 23,
-          "line": 30
+          "line": 37
         }
       },
       {
@@ -2401,13 +2415,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 46
         },
         "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
-          "line": 35
+          "line": 42
         }
       },
       {
@@ -2415,13 +2429,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 51
         },
         "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 40
+          "line": 47
         }
       },
       {
@@ -2429,13 +2443,13 @@
         "description": "You still don't have password set message.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 56
         },
         "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.passwordNotSet",
         "start": {
           "column": 18,
-          "line": 45
+          "line": 52
         }
       }
     ],
@@ -2473,6 +2487,53 @@
       }
     ],
     "path": "app/components/widgets/forms/AdaCertificateUploadWidget.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!change",
+        "description": "Label \"change\" on inline editing inputs in inactive state.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "app/components/widgets/forms/InlineEditingInput.js",
+        "id": "inline.editing.input.change.label",
+        "start": {
+          "column": 10,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!cancel",
+        "description": "Label \"cancel\" on inline editing inputs in inactive state.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "app/components/widgets/forms/InlineEditingInput.js",
+        "id": "inline.editing.input.cancel.label",
+        "start": {
+          "column": 10,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!Your changes have been saved",
+        "description": "Message \"Your changes have been saved\" for inline editing (eg. on Profile Settings page).",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "app/components/widgets/forms/InlineEditingInput.js",
+        "id": "inline.editing.input.changesSaved",
+        "start": {
+          "column": 16,
+          "line": 21
+        }
+      }
+    ],
+    "path": "app/components/widgets/forms/InlineEditingInput.json"
   },
   {
     "descriptors": [
