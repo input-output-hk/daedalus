@@ -3,11 +3,11 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
 import WalletCreateDialog from '../../components/wallet/WalletCreateDialog';
-import PaperWalletImportDialog from '../../components/wallet/PaperWalletImportDialog';
+import WalletRestoreDialog from '../../components/wallet/WalletRestoreDialog';
 import WalletKeyImportDialog from '../../components/wallet/key-import/WalletKeyImportDialog';
 import WalletBackupDialog from '../../components/wallet/WalletBackupDialog';
 import WalletKeyImportDialogContainer from '../wallet/dialogs/WalletKeyImportDialogContainer';
-import PaperWalletImportDialogContainer from '../wallet/dialogs/PaperWalletImportDialogContainer';
+import WalletRestoreDialogContainer from '../wallet/dialogs/WalletRestoreDialogContainer';
 import WalletBackupDialogContainer from '../wallet/dialogs/WalletBackupDialogContainer';
 import WalletCreateDialogContainer from '../wallet/dialogs/WalletCreateDialogContainer';
 import WalletAddDialogContainer from '../wallet/dialogs/WalletAddDialogContainer';
@@ -56,9 +56,9 @@ export default class WalletAddPage extends Component {
       );
     }
 
-    if (uiDialogs.isOpen(PaperWalletImportDialog)) {
+    if (uiDialogs.isOpen(WalletRestoreDialog)) {
       activeDialog = (
-        <PaperWalletImportDialogContainer
+        <WalletRestoreDialogContainer
           onClose={this.onClose}
         />
       );
