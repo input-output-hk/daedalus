@@ -5,6 +5,7 @@ import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
 import Request from './lib/LocalizedRequest';
 import WalletAddress from '../domain/WalletAddress';
+import LocalizableError from '../i18n/LocalizableError';
 import type {
   GetAddressesResponse,
   CreateAddressResponse,
@@ -17,6 +18,7 @@ export default class AddressesStore extends Store {
     walletId: string,
     allRequest: CachedRequest<GetAddressesResponse>
   }> = [];
+  @observable error: ?LocalizableError = null;
 
   // REQUESTS
   /* eslint-disable max-len */
@@ -26,6 +28,7 @@ export default class AddressesStore extends Store {
   setup() {
     const actions = this.actions.addresses;
     actions.createAddress.listen(this._createAddress);
+    actions.resetErrors.listen(this._resetErrors);
   }
 
   _createAddress = async (params: { walletId: string, password: ?string }) => {
@@ -37,10 +40,10 @@ export default class AddressesStore extends Store {
       }).promise;
       if (address != null) {
         this._refreshAddresses();
-        runInAction('set last generated address', () => { this.lastGeneratedAddress = address; });
+        runInAction('set last generated address and reset error', () => { this.lastGeneratedAddress = address; this.error = null; });
       }
     } catch (error) {
-      throw error;
+      runInAction('set error', () => { this.error = error; });
     }
   };
 
@@ -83,6 +86,10 @@ export default class AddressesStore extends Store {
       }
     }
   };
+
+  @action _resetErrors = () => {
+    this.error = null;
+  }
 
   _getAccountIdByWalletId = (walletId: string): ?string => {
     const result = this._getAddressesAllRequest(walletId).result;

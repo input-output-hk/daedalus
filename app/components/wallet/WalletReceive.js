@@ -6,10 +6,14 @@ import classnames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
 import Button from 'react-toolbox/lib/button/Button';
+import Input from 'react-toolbox/lib/input/Input';
+import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
 import iconCopy from '../../assets/images/clipboard-ic.svg';
 import iconProtected from '../../assets/images/protected-off.svg';
 import WalletAddress from '../../domain/WalletAddress';
+import globalMessages from '../../i18n/global-messages';
+import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletReceive.scss';
 
 const messages = defineMessages({
@@ -43,7 +47,14 @@ const messages = defineMessages({
     defaultMessage: '!!!show used',
     description: 'Label for "show used" wallet addresses link on the wallet "Receive page"',
   },
+  spendingPasswordPlaceholder: {
+    id: 'wallet.receive.page.spendingPasswordPlaceholder',
+    defaultMessage: '!!!Password',
+    description: 'Placeholder for "spending password" on the wallet "Receive page"',
+  },
 });
+
+messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 @observer
 export default class WalletReceive extends Component {
@@ -54,6 +65,9 @@ export default class WalletReceive extends Component {
     onGenerateAddress: Function,
     onCopyAddress: Function,
     isSidebarExpanded: boolean,
+    walletHasPassword: boolean,
+    isSubmitting: boolean,
+    error?: ?LocalizableError,
   };
 
   static contextTypes = {
@@ -61,7 +75,6 @@ export default class WalletReceive extends Component {
   };
 
   state = {
-    isSubmitting: false,
     showUsed: true,
   };
 
@@ -69,13 +82,79 @@ export default class WalletReceive extends Component {
     this.setState({ showUsed: !this.state.showUsed });
   };
 
+  form = new ReactToolboxMobxForm({
+    fields: {
+      spendingPassword: {
+        type: 'password',
+        label: ' ',
+        placeholder: this.context.intl.formatMessage(messages.spendingPasswordPlaceholder),
+        value: '',
+        validators: [({ field }) => {
+          if (this.props.walletHasPassword && field.value === '') {
+            return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
+          }
+          return [true];
+        }],
+        bindings: 'ReactToolbox',
+      },
+    },
+  }, {
+    options: {
+      validateOnChange: true,
+      validationDebounceWait: 250,
+    },
+  });
+
+  submit() {
+    this.form.submit({
+      onSuccess: (form) => {
+        const { walletHasPassword } = this.props;
+        const { spendingPassword } = form.values();
+        const password = walletHasPassword ? spendingPassword : null;
+        this.props.onGenerateAddress(password);
+      },
+      onError: () => {}
+    });
+  }
+
   render() {
+    const { form } = this;
     const {
       walletAddress, walletAddresses,
-      onCopyAddress, isSidebarExpanded
+      onCopyAddress, isSidebarExpanded,
+      walletHasPassword, isSubmitting,
+      error,
     } = this.props;
     const { intl } = this.context;
-    const { isSubmitting, showUsed } = this.state;
+    const { showUsed } = this.state;
+
+    const generateAddressWrapperClasses = classnames([
+      styles.generateAddressWrapper,
+      isSidebarExpanded ? styles.fullWidthOnSmallScreen : null,
+    ]);
+
+    const generateAddressButtonClasses = classnames([
+      walletHasPassword ? styles.submitWithPasswordButton : styles.submitButton,
+      isSubmitting ? styles.spinning : null,
+    ]);
+
+    const generateAddressForm = (
+      <div className={generateAddressWrapperClasses}>
+        {walletHasPassword &&
+          <Input
+            className={styles.spendingPassword}
+            {...form.$('spendingPassword').bind()}
+          />
+        }
+
+        <Button
+          className={generateAddressButtonClasses}
+          label={intl.formatMessage(messages.generateNewAddressButtonLabel)}
+          onMouseUp={this.submit.bind(this)}
+          primary
+        />
+      </div>
+    );
 
     return (
       <div className={styles.component}>
@@ -110,12 +189,10 @@ export default class WalletReceive extends Component {
                 {intl.formatMessage(messages.walletReceiveInstructions)}
               </div>
 
-              <Button
-                className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
-                label={intl.formatMessage(messages.generateNewAddressButtonLabel)}
-                onMouseUp={this.props.onGenerateAddress.bind(this)}
-                primary
-              />
+              {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
+
+              {generateAddressForm}
+
             </div>
 
             <img className={styles.protectedIcon} src={iconProtected} role="presentation" />

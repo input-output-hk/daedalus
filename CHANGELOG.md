@@ -21,6 +21,7 @@ Changelog
 - Ada redemption acceptance tests
 - Show BTC and ETC currencies as coming soon in create wallet dialog
 - Remove currencies dropdown on create wallet dialog
+- Spending password on wallet receive page
 
 ### Fixes
 

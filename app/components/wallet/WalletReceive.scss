@@ -1,4 +1,5 @@
 @import '../../themes/mixins/loading-spinner';
+@import '../../themes/mixins/error-message';
 
 .component {
   color: #5e6066;
@@ -66,14 +67,63 @@
       word-break: break-word;
     }
 
-    .submitButtonSpinning, .submitButton {
+    .submitButton {
       display: block !important;
       max-width: 360px;
       width: 100%;
+      &.spinning {
+        @include loading-spinner("../../assets/images/spinner-light.svg");
+      }
     }
 
-    .submitButtonSpinning {
-      @include loading-spinner("../../assets/images/spinner-light.svg");
+    .submitWithPasswordButton {
+      max-width: 310px;
+      width: calc(50% - 10px);
+      &.spinning {
+        @include loading-spinner("../../assets/images/spinner-light.svg");
+      }
+    }
+
+    .spendingPassword {
+      display: inline-block !important;
+      margin-right: 20px;
+      max-width: 310px;
+      padding: 0 0 1.5rem;
+      width: calc(50% - 10px);
+
+      input {
+        border-radius: 2px;
+        height: 50px;
+        margin: 0 !important;
+      }
+
+      :global {
+        span.input_hint {
+          top: 1.1rem;
+        }
+
+        span.input_error {
+          bottom: 0;
+          margin: 0;
+          top: auto;
+        }
+      }
+    }
+
+    .generateAddressWrapper {
+      @media (max-width: 950px) {
+        &.fullWidthOnSmallScreen {
+          .spendingPassword,
+          .submitWithPasswordButton {
+            max-width: 360px;
+            width: 100%;
+          }
+
+          .spendingPassword {
+            margin: 0 0 12px;
+          }
+        }
+      }
     }
   }
 
@@ -135,4 +185,10 @@
       width: 100%;
     }
   }
+}
+
+.error {
+  @include error-message;
+  text-align: center;
+  margin-bottom: 1rem;
 }

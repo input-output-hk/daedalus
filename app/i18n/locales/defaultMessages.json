@@ -1619,13 +1619,13 @@
         "description": "Label for wallet address on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 24
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.walletAddressLabel",
         "start": {
           "column": 22,
-          "line": 16
+          "line": 20
         }
       },
       {
@@ -1633,13 +1633,13 @@
         "description": "Wallet receive payments instructions on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 29
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.walletReceiveInstructions",
         "start": {
           "column": 29,
-          "line": 21
+          "line": 25
         }
       },
       {
@@ -1647,13 +1647,13 @@
         "description": "Label for \"Generate new address\" button on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 34
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.generateNewAddressButtonLabel",
         "start": {
           "column": 33,
-          "line": 26
+          "line": 30
         }
       },
       {
@@ -1661,13 +1661,13 @@
         "description": "\"Generated addresses\" section title on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 39
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.generatedAddressesSectionTitle",
         "start": {
           "column": 34,
-          "line": 31
+          "line": 35
         }
       },
       {
@@ -1675,13 +1675,13 @@
         "description": "Label for \"hide used\" wallet addresses link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 44
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.hideUsedLabel",
         "start": {
           "column": 17,
-          "line": 36
+          "line": 40
         }
       },
       {
@@ -1689,13 +1689,27 @@
         "description": "Label for \"show used\" wallet addresses link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 49
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.showUsedLabel",
         "start": {
           "column": 17,
-          "line": 41
+          "line": 45
+        }
+      },
+      {
+        "defaultMessage": "!!!Password",
+        "description": "Placeholder for \"spending password\" on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "app/components/wallet/WalletReceive.js",
+        "id": "wallet.receive.page.spendingPasswordPlaceholder",
+        "start": {
+          "column": 31,
+          "line": 50
         }
       }
     ],

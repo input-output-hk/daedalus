@@ -30,17 +30,22 @@ export default class WalletReceivePage extends Component {
 
   componentWillUnmount() {
     this.closeNotification();
+    this.resetErrors();
   }
 
-  handleGenerateAddress = () => {
+  handleGenerateAddress = (password :string) => {
     const { wallets } = this.props.stores;
     const wallet = wallets.active;
     if (wallet) {
       this.props.actions.addresses.createAddress.trigger({
         walletId: wallet.id,
-        password: null, // TODO: there is no password input in the UI
+        password,
       });
     }
+  }
+
+  resetErrors = () => {
+    this.props.actions.addresses.resetErrors.trigger();
   }
 
   closeNotification = () => {
@@ -90,6 +95,9 @@ export default class WalletReceivePage extends Component {
             });
           }}
           isSidebarExpanded={sidebar.isShowingSubMenus}
+          walletHasPassword={wallet.hasPassword}
+          isSubmitting={addresses.createAddressRequest.isExecuting}
+          error={addresses.error}
         />
 
         <NotificationMessage
