@@ -9,6 +9,7 @@ import type { InjectedProps } from '../types/injectedPropsType';
 @inject('stores', 'actions') @observer
 export default class TopBarContainer extends Component {
 
+  static defaultProps = { actions: null, stores: null };
   props: InjectedProps;
 
   render() {

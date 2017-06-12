@@ -9,7 +9,7 @@ import type { InjectedDialogContainerProps } from '../../../../types/injectedPro
 @inject('stores', 'actions') @observer
 export default class ExportPaperWalletMnemonicDialogContainer extends Component {
 
-  static defaultProps = { actions: null, stores: null, children: null };
+  static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
 
   props: InjectedDialogContainerProps;
 
