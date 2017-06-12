@@ -7,7 +7,7 @@ import type { InjectedDialogContainerProps } from '../../../types/injectedPropsT
 @inject('stores', 'actions') @observer
 export default class WalletCreateDialogContainer extends Component {
 
-  static defaultProps = { actions: null, stores: null, children: null };
+  static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
 
   props: InjectedDialogContainerProps;
 

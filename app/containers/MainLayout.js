@@ -11,7 +11,7 @@ import type { InjectedContainerProps } from '../types/injectedPropsType';
 @inject('stores', 'actions') @observer
 export default class MainLayout extends Component {
 
-  static defaultProps = { actions: null, stores: null, children: null };
+  static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
   props: InjectedContainerProps;
 
   render() {
