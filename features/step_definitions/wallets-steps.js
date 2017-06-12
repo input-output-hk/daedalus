@@ -32,7 +32,7 @@ export default function () {
         });
       }))
       .then(() => {
-        daedalus.stores.wallets.walletsRequest.invalidate().execute().then(done);
+        daedalus.stores.wallets.walletsRequest.execute().then(done);
       })
       .catch((error) => done(error.stack));
     }, table.hashes());
@@ -185,7 +185,7 @@ export default function () {
 
   this.Then(/^I should have newly created "Test" wallet loaded$/, async function () {
     const result = await this.client.executeAsync(function(done) {
-      daedalus.stores.wallets.walletsRequest.invalidate().execute().then(done);
+      daedalus.stores.wallets.walletsRequest.execute().then(done);
     });
     // Add or set the wallets for this scenario
     if (this.wallets != null) {
@@ -205,8 +205,9 @@ export default function () {
   });
 
   this.Then(/^I should see the following error messages on the wallet send form:$/, async function (data) {
-    await this.client.waitForText('.WalletSendForm_component .input_error');
-    let errorsOnScreen = await this.client.getText('.WalletSendForm_component .input_error');
+    const errorSelector = '.WalletSendForm_component .SimpleFormField_error';
+    await this.client.waitForText(errorSelector);
+    let errorsOnScreen = await this.client.getText(errorSelector);
     if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
     const errors = data.hashes();
     for (let i = 0; i < errors.length; i++) {

@@ -4,11 +4,11 @@ import _ from 'lodash';
 import Store from './lib/Store';
 import Wallet from '../domain/Wallet';
 import { matchRoute, buildRoute } from '../lib/routing-helpers';
-import CachedRequest from './lib/LocalizedCachedRequest';
 import Request from './lib/LocalizedRequest';
 import environment from '../environment';
 import { ROUTES } from '../Routes';
 import WalletAddDialog from '../components/wallet/WalletAddDialog';
+import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type {
   GetWalletsResponse,
   ImportKeyResponse,
@@ -27,7 +27,7 @@ export default class WalletsStore extends Store {
 
   // REQUESTS
   /* eslint-disable max-len */
-  @observable walletsRequest: CachedRequest<GetWalletsResponse> = new CachedRequest(this.api.getWallets);
+  @observable walletsRequest: Request<GetWalletsResponse> = new Request(this.api.getWallets);
   @observable importFromKeyRequest: Request<ImportKeyResponse> = new Request(this.api.importWalletFromKey);
   @observable createWalletRequest: Request<CreateWalletResponse> = new Request(this.api.createWallet);
   @observable deleteWalletRequest: Request<DeleteWalletResponse> = new Request(this.api.deleteWallet);
@@ -35,6 +35,9 @@ export default class WalletsStore extends Store {
   @observable getWalletRecoveryPhraseRequest: Request<GetWalletRecoveryPhraseResponse> = new Request(this.api.getWalletRecoveryPhrase);
   @observable restoreRequest: Request<RestoreWalletResponse> = new Request(this.api.restoreWallet);
   /* eslint-enable max-len */
+
+  @observable walletExportType: walletExportTypeChoices = 'paperWallet';
+  @observable walletExportMnemonic = 'marine joke dry silk ticket thing sugar stereo aim';
 
   _newWalletDetails: { name: string, mnemonic: string, password: ?string, } = {
     name: '',
@@ -50,6 +53,7 @@ export default class WalletsStore extends Store {
     wallets.restoreWallet.listen(this._restoreWallet);
     wallets.importWalletFromKey.listen(this._importWalletFromKey);
     wallets.setActiveWallet.listen(this._setActiveWallet);
+    wallets.chooseWalletExportType.listen(this._chooseWalletExportType);
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishWalletCreation);
     this.registerReactions([
@@ -86,7 +90,7 @@ export default class WalletsStore extends Store {
     await this.walletsRequest.patch(result => {
       result.splice(indexOfWalletToDelete, 1);
     });
-    runInAction(() => {
+    runInAction('WalletsStore::_delete', () => {
       if (this.hasAnyWallets) {
         const nextIndexInList = Math.max(indexOfWalletToDelete - 1, 0);
         const nextWalletInList = this.all[nextIndexInList];
@@ -140,6 +144,10 @@ export default class WalletsStore extends Store {
     return this.walletsRequest.wasExecuted && this.walletsRequest.result.length > 0;
   }
 
+  @computed get hasActiveWallet(): boolean {
+    return !!this.active;
+  }
+
   @computed get all(): Array<Wallet> {
     return this.walletsRequest.result ? this.walletsRequest.result : [];
   }
@@ -167,9 +175,11 @@ export default class WalletsStore extends Store {
 
   isValidMnemonic = (mnemonic: string) => this.api.isValidMnemonic(mnemonic);
 
+  // TODO - call endpoint to check if private key is valid
+  isValidPrivateKey = () => { return true; }; // eslint-disable-line
+
   @action refreshWalletsData = async () => {
     if (this.stores.networkStatus.isConnected) {
-      this.walletsRequest.invalidate();
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
       runInAction('refresh address data', () => {
@@ -243,30 +253,31 @@ export default class WalletsStore extends Store {
 
   _updateActiveWalletOnRouteChanges = () => {
     const currentRoute = this.stores.app.currentRoute;
-    const hasActiveWallet = !!this.active;
     const hasAnyWalletsLoaded = this.hasAnyLoaded;
 
-    // There are not wallets loaded (yet) -> unset active and return
-    if (!hasAnyWalletsLoaded) return this._unsetActiveWallet();
-    const match = matchRoute(`${ROUTES.WALLETS.ROOT}/:id(*page)`, currentRoute);
-    if (match) {
-      // We have a route for a specific wallet -> lets try to find it
-      const walletForCurrentRoute = this.all.find(w => w.id === match.id);
-      if (walletForCurrentRoute) {
-        // The wallet exists, we are done
-        this._setActiveWallet({ walletId: walletForCurrentRoute.id });
-      } else if (hasAnyWalletsLoaded) {
-        // There is no wallet with given id -> pick first wallet
-        this._setActiveWallet({ walletId: this.all[0].id });
+    runInAction('WalletsStore::_updateActiveWalletOnRouteChanges', () => {
+      // There are not wallets loaded (yet) -> unset active and return
+      if (!hasAnyWalletsLoaded) return this._unsetActiveWallet();
+      const match = matchRoute(`${ROUTES.WALLETS.ROOT}/:id(*page)`, currentRoute);
+      if (match) {
+        // We have a route for a specific wallet -> lets try to find it
+        const walletForCurrentRoute = this.all.find(w => w.id === match.id);
+        if (walletForCurrentRoute) {
+          // The wallet exists, we are done
+          this._setActiveWallet({ walletId: walletForCurrentRoute.id });
+        } else if (hasAnyWalletsLoaded) {
+          // There is no wallet with given id -> pick first wallet
+          this._setActiveWallet({ walletId: this.all[0].id });
+          if (this.active) this.goToWalletRoute(this.active.id);
+        }
+      } else if (matchRoute(ROUTES.WALLETS.ROOT, currentRoute)) {
+        // The route does not specify any wallet -> pick first wallet
+        if (!this.hasActiveWallet && hasAnyWalletsLoaded) {
+          this._setActiveWallet({ walletId: this.all[0].id });
+        }
         if (this.active) this.goToWalletRoute(this.active.id);
       }
-    } else if (matchRoute(ROUTES.WALLETS.ROOT, currentRoute)) {
-      // The route does not specify any wallet -> pick first wallet
-      if (!hasActiveWallet && hasAnyWalletsLoaded) {
-        this._setActiveWallet({ walletId: this.all[0].id });
-      }
-      if (this.active) this.goToWalletRoute(this.active.id);
-    }
+    });
   };
 
   _patchWalletRequestWithNewWallet = async (wallet: Wallet) => {
@@ -280,6 +291,14 @@ export default class WalletsStore extends Store {
     // Reset the send request anytime we visit the send page (e.g: to remove any previous errors)
     if (matchRoute(ROUTES.WALLETS.SEND, buildRoute(options.route, options.params))) {
       this.sendMoneyRequest.reset();
+    }
+  };
+
+  @action _chooseWalletExportType = (params: {
+    walletExportType: walletExportTypeChoices,
+  }) => {
+    if (this.walletExportType !== params.walletExportType) {
+      this.walletExportType = params.walletExportType;
     }
   };
 

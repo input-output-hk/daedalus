@@ -114,7 +114,7 @@ export default class NetworkStatusStore extends Store {
   };
 
   _listenToServerStatusNotifications() {
-    this.api.notify(action((message) => {
+    this.api.notify(action('NetworkStatusStore::_listenToServerStatusNotifications', (message) => {
       if (message === 'ConnectionClosed') {
         Log.debug('ServerStatusNotification: ConnectionClosed');
         this.isConnected = false;
@@ -168,8 +168,8 @@ export default class NetworkStatusStore extends Store {
         Log.info(`========== Loaded after ${this._getStartupTimeDelta()} milliseconds ==========`);
         this._startupStage = STARTUP_STAGES.RUNNING;
       }
-      runInAction(() => { this.isLoadingWallets = false; });
-      if (app.currentRoute === '/') {
+      runInAction('NetworkStatusStore::_redirectToWalletAfterSync', () => { this.isLoadingWallets = false; });
+      if (app.currentRoute === ROUTES.ROOT) {
         if (wallets.first) {
           this.actions.router.goToRoute.trigger({
             route: ROUTES.WALLETS.SUMMARY,

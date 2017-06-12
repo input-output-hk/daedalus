@@ -3,6 +3,7 @@
  */
 
 const path = require('path');
+const fs = require('fs');
 const validate = require('webpack-validator');
 const webpack = require('webpack');
 
@@ -10,8 +11,8 @@ module.exports = validate({
   module: {
     loaders: [{
       test: /\.jsx?$/,
-      loaders: ['babel-loader'],
-      exclude: /node_modules/
+      loader: 'babel-loader',
+      exclude: /node_modules/,
     }, {
       test: /\.json$/,
       loader: 'json-loader'
@@ -36,7 +37,7 @@ module.exports = validate({
   // https://webpack.github.io/docs/configuration.html#resolve
   resolve: {
     extensions: ['', '.js', '.jsx', '.json'],
-    packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main']
+    packageMains: ['webpack', 'browser', 'web', 'browserify', ['jam', 'main'], 'main'],
   },
 
   plugins: [

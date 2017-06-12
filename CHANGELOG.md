@@ -22,6 +22,8 @@ Changelog
 - Show BTC and ETC currencies as coming soon in create wallet dialog
 - Remove currencies dropdown on create wallet dialog
 - Spending password on wallet receive page
+- Prepared UI dialogs for exporting paper wallets
+- Prepared UI dialogs for importing paper wallets
 
 ### Fixes
 

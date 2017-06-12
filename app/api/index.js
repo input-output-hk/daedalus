@@ -5,7 +5,7 @@ import WalletTransaction from '../domain/WalletTransaction';
 
 // REQUEST & RESPONSE TYPES
 
-export type GetWalletsResponse = Wallet[];
+export type GetWalletsResponse = IObservableArray<Wallet>;
 
 export type GetAddressesResponse = {
   accountId: ?string,

@@ -1,0 +1,38 @@
+@import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
+
+.error {
+  @include error-message;
+  text-align: center;
+}
+
+.component {
+  :global .dialog_body {
+    overflow-y: hidden;
+  }
+}
+
+.isSubmitting {
+  button {
+    @include loading-spinner("../../../assets/images/spinner-light.svg");
+  }
+}
+
+.instructions {
+  color: $text-color-accent;
+  margin-top: 30px;
+
+  ul {
+    list-style: disc;
+    margin-left: 20px;
+  }
+
+  li {
+    margin-bottom: 11px;
+  }
+
+  p, li {
+    font-family: $font-regular;
+    line-height: 1.38;
+  }
+}

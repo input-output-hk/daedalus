@@ -1,5 +1,6 @@
 // @flow
 import Action from './lib/Action';
+import type { walletExportTypeChoices } from '../types/walletExportTypes';
 
 // ======= WALLET ACTIONS =======
 
@@ -12,4 +13,5 @@ export default class WalletsActions {
   sendMoney: Action<{ receiver: string, amount: string, password: ?string }> = new Action();
   setActiveWallet: Action<{ walletId: string }> = new Action();
   showWalletAddressCopyNotification: Action<any> = new Action();
+  chooseWalletExportType: Action<{ walletExportType: walletExportTypeChoices }> = new Action();
 }

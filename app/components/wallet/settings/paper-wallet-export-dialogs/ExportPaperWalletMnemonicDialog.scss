@@ -1,0 +1,40 @@
+.component {
+  :global .dialog_body {
+    overflow-y: hidden;
+  }
+}
+
+.instructions {
+  color: $text-color-accent;
+  margin-top: 30px;
+
+  p {
+    font-family: $font-regular;
+    line-height: 1.38;
+  }
+}
+
+.recoveryPhrase {
+  background-color: rgba(68, 91, 124, 0.05);
+  border-radius: 2px;
+  color: #5e6066;
+  font-family: $font-medium;
+  font-size: 16px;
+  line-height: 1.38;
+  margin-top: 10px;
+  min-height: 50px;
+  padding: 14px;
+  text-align: center;
+  -webkit-user-select: none;
+}
+
+.paperWalletImageWrapper {
+  text-align: right;
+  margin-top: 30px;
+
+  img {
+    width: 490px;
+    height: 276px;
+  }
+}
+
