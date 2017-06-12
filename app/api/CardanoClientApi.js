@@ -501,42 +501,46 @@ export default class CardanoClientApi {
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
 
-const _createWalletFromServerData = action((data: ApiWallet) => (
-  new Wallet({
-    id: data.cwAddress,
-    address: data.cwAddress,
-    amount: new BigNumber(data.cwAmount.getCoin).dividedBy(LOVELACES_PER_ADA),
-    type: data.cwMeta.cwType,
-    currency: data.cwMeta.cwCurrency,
-    name: data.cwMeta.cwName,
-    assurance: data.cwMeta.cwAssurance,
-    hasPassword: false, // TODO: replace with real API response
-    passwordUpdateDate: new Date('2017-02-01'), // TODO: replace with real API response
-  })
-));
+const _createWalletFromServerData = action(
+  'CardanoClientApi::_createWalletFromServerData', (data: ApiWallet) => (
+    new Wallet({
+      id: data.cwAddress,
+      address: data.cwAddress,
+      amount: new BigNumber(data.cwAmount.getCoin).dividedBy(LOVELACES_PER_ADA),
+      type: data.cwMeta.cwType,
+      currency: data.cwMeta.cwCurrency,
+      name: data.cwMeta.cwName,
+      assurance: data.cwMeta.cwAssurance,
+      hasPassword: false, // TODO: replace with real API response
+      passwordUpdateDate: new Date('2017-02-01'), // TODO: replace with real API response
+    })
+  )
+);
 
-const _createTransactionFromServerData = action((data: ApiTransaction) => {
-  const isOutgoing = data.ctType.tag === 'CTOut';
-  const coins = data.ctAmount.getCoin;
-  const { ctmTitle, ctmDescription, ctmDate } = data.ctType.contents;
-  return new WalletTransaction({
-    id: data.ctId,
-    title: ctmTitle || isOutgoing ? 'Ada sent' : 'Ada received',
-    type: isOutgoing ? 'adaExpend' : 'adaIncome',
-    currency: 'ada',
-    amount: new BigNumber(isOutgoing ? -1 * coins : coins).dividedBy(LOVELACES_PER_ADA),
-    date: new Date(ctmDate * 1000),
-    description: ctmDescription || '',
-    numberOfConfirmations: data.ctConfirmations,
-    addresses: {
-      from: [
-        'c936d9b306af8fbb59f43e95244fe84f43b64ec9009ded75cc353f301d9f23a3',
-        '23a3c936d9b306af8fbb59f43e95244fe84f43b64ec9009ded75cc353f301d9f',
-        'd9f23a3c936d9b306af8fbb59f43e95244fe84f43b64ec9009ded75cc353f301',
-      ],
-      to: [
-        '9ded75cc353f301d9f23a3c936d9b306af8fbb59f43e95244fe84f43b64ec900',
-      ],
-    }
-  });
-});
+const _createTransactionFromServerData = action(
+  'CardanoClientApi::_createTransactionFromServerData', (data: ApiTransaction) => {
+    const isOutgoing = data.ctType.tag === 'CTOut';
+    const coins = data.ctAmount.getCoin;
+    const { ctmTitle, ctmDescription, ctmDate } = data.ctType.contents;
+    return new WalletTransaction({
+      id: data.ctId,
+      title: ctmTitle || isOutgoing ? 'Ada sent' : 'Ada received',
+      type: isOutgoing ? 'adaExpend' : 'adaIncome',
+      currency: 'ada',
+      amount: new BigNumber(isOutgoing ? -1 * coins : coins).dividedBy(LOVELACES_PER_ADA),
+      date: new Date(ctmDate * 1000),
+      description: ctmDescription || '',
+      numberOfConfirmations: data.ctConfirmations,
+      addresses: {
+        from: [
+          'c936d9b306af8fbb59f43e95244fe84f43b64ec9009ded75cc353f301d9f23a3',
+          '23a3c936d9b306af8fbb59f43e95244fe84f43b64ec9009ded75cc353f301d9f',
+          'd9f23a3c936d9b306af8fbb59f43e95244fe84f43b64ec9009ded75cc353f301',
+        ],
+        to: [
+          '9ded75cc353f301d9f23a3c936d9b306af8fbb59f43e95244fe84f43b64ec900',
+        ],
+      }
+    });
+  }
+);

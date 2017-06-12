@@ -23,9 +23,9 @@ Feature: Send Money to Receiver
     Given I am on the "Personal Wallet" wallet "send" screen
     When I submit the wallet send form
     Then I should see the following error messages on the wallet send form:
-      | message                               |
-      | global.errors.fieldIsRequired         |
-      | wallet.send.form.errors.invalidAmount |
+      | message                       |
+      | global.errors.fieldIsRequired |
+      | global.errors.fieldIsRequired |
 
   Scenario: User Enters Wrong Receiver Address
     Given I am on the "Personal Wallet" wallet "send" screen
@@ -37,7 +37,6 @@ Feature: Send Money to Receiver
       | message                                |
       | wallet.send.form.errors.invalidAddress |
 
-  @skip
   Scenario Outline: User Enters Wrong Amount
     Given I am on the "Personal Wallet" wallet "send" screen
     When I fill out the send form with a transaction to "first" wallet:
@@ -50,7 +49,5 @@ Feature: Send Money to Receiver
 
     Examples:
       | WRONG_AMOUNT |
-      | -15          |
-      | 5,5          |
-      | 5.5          |
-      | text         |
+      | 4500000001   |
+      | 0            |

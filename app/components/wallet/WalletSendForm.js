@@ -1,13 +1,12 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import classnames from 'classnames';
-import Input from 'react-toolbox/lib/input/Input';
 import Button from 'react-toolbox/lib/button/Button';
-import NumberFormat from 'react-number-format';
+import Input from 'react-polymorph/lib/components/Input';
+import NumericInput from 'react-polymorph/lib/components/NumericInput';
+import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import { isValidAmountInLovelaces } from '../../lib/validations';
-import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
 import styles from './WalletSendForm.scss';
@@ -44,11 +43,6 @@ const messages = defineMessages({
     id: 'wallet.send.form.amount.equalsAda',
     defaultMessage: '!!!equals {amount} ADA',
     description: 'Convertion hint for the "Amount" number input in the wallet send form.'
-  },
-  amountHint: {
-    id: 'wallet.send.form.amount.hint',
-    defaultMessage: '!!!Amount in Lovelaces',
-    description: 'Hint inside the "Amount" number input in the wallet send form.'
   },
   descriptionLabel: {
     id: 'wallet.send.form.description.label',
@@ -110,7 +104,7 @@ export default class WalletSendForm extends Component {
   };
 
   adaToLovelaces = (adaAmount: string) => (
-    adaAmount.replace('.', '').replace(/^0+/, '')
+    adaAmount.replace('.', '').replace(',', '').replace(/^0+/, '')
   );
 
   // FORM VALIDATION
@@ -126,18 +120,19 @@ export default class WalletSendForm extends Component {
           return this.props.addressValidator(field.value)
             .then(isValid => [isValid, this.context.intl.formatMessage(messages.invalidAddress)]);
         },
-        bindings: 'ReactToolbox',
       },
       amount: {
         label: this.context.intl.formatMessage(messages.amountLabel),
-        placeholder: this.context.intl.formatMessage(messages.amountHint),
+        placeholder: '0.000000',
         value: '',
         validators: ({ field }) => {
+          if (field.value === '') {
+            return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
+          }
           const amountInLovelaces = this.adaToLovelaces(field.value);
           const isValid = isValidAmountInLovelaces(amountInLovelaces);
           return [isValid, this.context.intl.formatMessage(messages.invalidAmount)];
         },
-        bindings: 'ReactToolbox',
       },
       walletPassword: {
         type: 'password',
@@ -184,51 +179,37 @@ export default class WalletSendForm extends Component {
     const { intl } = this.context;
     const { isWalletPasswordSet, isSubmitting, error } = this.props;
     const amountField = form.$('amount');
-    const amountFieldClasses = classnames([
-      'amount', 'input_input',
-      amountField.error ? 'input_errored' : null
-    ]);
+    const receiverField = form.$('receiver');
 
     return (
       <div className={styles.component}>
 
         <BorderedBox>
 
-          <Input className="receiver" {...form.$('receiver').bind()} />
+          <div className={styles.receiverInput}>
+            <Input
+              className="receiver"
+              {...receiverField.bind()}
+              error={receiverField.error}
+              skin={<SimpleInputSkin />}
+            />
+          </div>
 
           <div className={styles.amountInput}>
-            <div className={amountFieldClasses}>
-              <NumberFormat
-                id="amount"
-                className="input_inputElement"
-                thousandSeparator=","
-                decimalSeparator="."
-                decimalPrecision={DECIMAL_PLACES_IN_ADA}
-                maxLength="22"
-                placeholder="0.000000"
-                onChange={(e, value) => {
-                  amountField.onChange(value);
-                }}
-                onKeyDown={(e) => {
-                  const isBlank = e.target.value === '';
-                  const isPeriodKeyPressed = e.keyCode === 190;
-                  if (isBlank && isPeriodKeyPressed) {
-                    e.preventDefault();
-                  }
-                }}
-              />
-              <label className="input_label" htmlFor="amount">
-                {intl.formatMessage(messages.amountLabel)}
-              </label>
-              <span className={styles.adaLabel}>
-                {intl.formatMessage(globalMessages.unitAda)}
-              </span>
-              {amountField.error ? (
-                <span className="input_error">
-                  {intl.formatMessage(messages.invalidAmount)}
-                </span>
-              ) : null}
-            </div>
+            <NumericInput
+              {...amountField.bind()}
+              className="amount"
+              label={intl.formatMessage(messages.amountLabel)}
+              minValue={0.000001}
+              maxValue={45000000000}
+              maxAfterDot={6}
+              maxBeforeDot={11}
+              error={amountField.error}
+              skin={<SimpleInputSkin />}
+            />
+            <span className={styles.adaLabel}>
+              {intl.formatMessage(globalMessages.unitAda)}
+            </span>
           </div>
 
           {isWalletPasswordSet ? (

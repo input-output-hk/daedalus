@@ -1,5 +1,5 @@
 import {
-  SELECT, INPUT, FORM_FIELD
+  SELECT, INPUT, FORM_FIELD,
 } from 'react-polymorph/lib/skins/simple/identifiers';
 import overlay from 'react-toolbox/lib/overlay/theme.scss';
 import navigation from 'react-toolbox/lib/navigation/theme.scss';
