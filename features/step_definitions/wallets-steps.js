@@ -111,6 +111,18 @@ export default function () {
     return this.client.click('.WalletCreateDialog .dialog_button');
   });
 
+  this.When(/^I toggle "Activate to create password" switch$/, function () {
+    return this.waitAndClick('.WalletCreateDialog .switch_field');
+  });
+
+  this.When(/^I submit the create wallet with spending password dialog with the following inputs:$/, async function (table) {
+    const fields = table.hashes()[0];
+    await this.client.setValue('.WalletCreateDialog .walletName input', fields.walletName);
+    await this.client.setValue('.WalletCreateDialog .walletPassword input', fields.password);
+    await this.client.setValue('.WalletCreateDialog .repeatedPassword input', fields.repeatedPassword);
+    return this.client.click('.WalletCreateDialog .dialog_button');
+  });
+
   this.When(/^I see the create wallet privacy dialog$/, function () {
     return this.client.waitForVisible('.WalletBackupPrivacyWarningDialog');
   });
@@ -183,7 +195,7 @@ export default function () {
     return this.client.waitForVisible('.DeleteWalletConfirmationDialog_dialog', null, true);
   });
 
-  this.Then(/^I should have newly created "Test" wallet loaded$/, async function () {
+  this.Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function (walletName) {
     const result = await this.client.executeAsync(function(done) {
       daedalus.stores.wallets.walletsRequest.execute().then(done);
     });
@@ -193,6 +205,8 @@ export default function () {
     } else {
       this.wallets = result.value;
     }
+    const wallet = getWalletByName.call(this, walletName);
+    expect(wallet).to.be.an('object');
   });
 
   this.Then(/^I should be on some wallet page$/, async function () {
