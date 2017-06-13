@@ -30,8 +30,8 @@ launcherArgs launcher = unwords $
   ]
     where
       nodeArgs = [
+        "--report-server", "http://report-server.aws.iohk.io:8080",
         "--listen", "127.0.0.1:12100",
-        "--report-server", "http://52.59.7.118:8080",
         "--log-config", "log-config-prod.yaml",
         "--update-latest-path", quote (installerPath launcher),
         "--keyfile", quote (runtimePath launcher <> "Secrets" <> (pathSeparator : "secret.key")),
