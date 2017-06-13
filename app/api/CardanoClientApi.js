@@ -62,7 +62,6 @@ import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 
 
 // TODO: Remove after hd integraton is complete
-
 // Get all accounts
 // (async () => {
 //   const accounts = await ClientApi.getAccounts();
@@ -349,7 +348,8 @@ export default class CardanoClientApi {
   async importWalletFromKey(request: ImportKeyRequest) {
     Log.debug('CardanoClientApi::importWalletFromKey called');
     try {
-      const importedWallet: ApiWallet = await ClientApi.importWallet(request.filePath, '');
+      const { filePath, walletPassword } = request;
+      const importedWallet: ApiWallet = await ClientApi.importWallet(filePath, walletPassword || '');
       Log.debug('CardanoClientApi::importWalletFromKey success');
       return _createWalletFromServerData(importedWallet);
     } catch (error) {

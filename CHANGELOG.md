@@ -24,6 +24,7 @@ Changelog
 - Spending password on wallet receive page
 - Prepared UI dialogs for exporting paper wallets
 - Prepared UI dialogs for importing paper wallets
+- Spending password on import wallet from key dialog
 
 ### Fixes
 
