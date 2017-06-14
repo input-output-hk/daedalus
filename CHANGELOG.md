@@ -24,6 +24,7 @@ Changelog
 - Spending password on wallet receive page
 - Prepared UI dialogs for exporting paper wallets
 - Prepared UI dialogs for importing paper wallets
+- Spending password on "Ada redemption" forms
 - Acceptance test for "Restore wallet with and without spending password" feature
 - Acceptance test for "Create wallet with spending password" feature
 
