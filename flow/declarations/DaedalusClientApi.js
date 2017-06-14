@@ -32,6 +32,7 @@ declare module 'daedalus-client-api' {
     ctConfirmations: number,
     ctId: string,
     ctInputAddrs: Array<string>,
+    ctIsOutgoing: boolean,
     ctMeta: {
       ctmDate: Date,
       ctmDescription: ?string,
@@ -96,9 +97,9 @@ declare module 'daedalus-client-api' {
   declare function newWallet(walletName: string, assurance: string, unit: number, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
   declare function deleteWallet(walletId: string): Promise<{}>;
   declare function restoreWallet(walletName: string, assurance: string, unit: number, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
-  declare function updateWallet(walletId: string, walletName: string, assurance: string, unit: number): Promise<ApiWallet>; // TODO: remove as it no longer exists
+  declare function updateWallet(walletId: string, walletName: string, assurance: string, unit: number): Promise<ApiWallet>;
   declare function importWallet(filePath: string, walletPassword: ?string): Promise<ApiWallet>;
-  declare function newWAddress(accountId: string, walletPassword: ?string): Promise<ApiAddress>;
+  declare function newAddress(accountId: string, walletPassword: ?string): Promise<ApiAddress>;
   declare function changeWalletPass(walletId: string, oldPassword: ?string, newPassword: ?string): Promise<{}>;
   declare function renameWalletSet(walletId: string, walletName: string): Promise<ApiWallet>;
 
