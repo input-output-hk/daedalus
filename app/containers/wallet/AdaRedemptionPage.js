@@ -20,7 +20,7 @@ export default class AdaRedemptionPage extends Component {
   onSubmitPaperVended = (values: {
     walletId: string,
     shieldedRedemptionKey: string,
-    spendingPassword: ?string,
+    walletPassword: ?string,
   }) => {
     this.props.actions.adaRedemption.redeemPaperVendedAda.trigger(values);
   };
