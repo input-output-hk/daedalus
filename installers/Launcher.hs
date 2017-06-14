@@ -32,7 +32,7 @@ launcherArgs launcher = unwords $
         "--logs-prefix", quote (runtimePath launcher <> "Logs"),
         "--db-path", quote (runtimePath launcher <> "DB-0.4"),
         "--wallet-db-path", quote (runtimePath launcher <> "Wallet-0.4"),
-        "--peers-file", "ip-dht-mappings",
+        "--kademlia-peers-file", "ip-dht-mappings",
         "--system-start", "1497358420",
         "--wallet",
         "--explicit-initial"
