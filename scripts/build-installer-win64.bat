@@ -91,9 +91,11 @@ pushd installers
         @echo .
         @echo .
     )
+    @echo =
     @echo FATAL: persistent failure while building installer with:  stack --no-terminal build -j 2 --exec make-installer
     exit /b 1
 :built
+@echo SUCCESS: stack --no-terminal build -j 2 --exec make-installer
 popd
 
 @dir /b/s installers\daedalus*
