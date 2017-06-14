@@ -33,9 +33,9 @@ launcherArgs launcher = unwords $
         "--db-path", quote (runtimePath launcher <> "DB-0.4"),
         "--wallet-db-path", quote (runtimePath launcher <> "Wallet-0.4"),
         "--kademlia-peers-file", "ip-dht-mappings",
+        "--kademlia-explicit-initial",
         "--system-start", "1497358420",
-        "--wallet",
-        "--explicit-initial"
+        "--wallet"
         ]
 
 quote :: String -> String
