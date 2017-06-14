@@ -88,6 +88,7 @@ export type UpdateWalletResponse = boolean;
 export type RedeemAdaRequest = {
   redemptionCode: string,
   walletId: string,
+  walletPassword: ?string,
 };
 
 export type RedeemAdaResponse = Wallet;
@@ -96,6 +97,7 @@ export type RedeemPaperVendedAdaRequest = {
   shieldedRedemptionKey: string,
   mnemonics: string,
   walletId: string,
+  walletPassword: ?string,
 };
 
 export type RedeemPaperVendedAdaResponse = RedeemPaperVendedAdaRequest;

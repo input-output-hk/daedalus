@@ -363,9 +363,11 @@ export default class CardanoClientApi {
 
   async redeemAda(request: RedeemAdaRequest) {
     Log.debug('CardanoClientApi::redeemAda called');
-    const { redemptionCode, walletId } = request;
+    const { redemptionCode, walletId, walletPassword } = request;
     try {
-      const response: ApiTransaction = await ClientApi.redeemAda(redemptionCode, walletId);
+      const response: ApiTransaction = await ClientApi.redeemAda(
+        redemptionCode, walletId, walletPassword || ''
+      );
       Log.debug('CardanoClientApi::redeemAda success');
       return _createTransactionFromServerData(response);
     } catch (error) {
@@ -376,10 +378,10 @@ export default class CardanoClientApi {
 
   async redeemPaperVendedAda(request: RedeemPaperVendedAdaRequest) {
     Log.debug('CardanoClientApi::redeemAdaPaperVend called');
-    const { shieldedRedemptionKey, mnemonics, walletId } = request;
+    const { shieldedRedemptionKey, mnemonics, walletId, walletPassword } = request;
     try {
       const response: ApiTransaction = await ClientApi.redeemAdaPaperVend(
-        shieldedRedemptionKey, mnemonics, walletId
+        shieldedRedemptionKey, mnemonics, walletId, walletPassword || ''
       );
       Log.debug('CardanoClientApi::redeemAdaPaperVend success');
       return _createTransactionFromServerData(response);

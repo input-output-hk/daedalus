@@ -139,6 +139,16 @@ where Ada should be redeemed and enter 9 word mnemonic passphrase.</p>`,
     defaultMessage: '!!!Enter your Ada passcode',
     description: 'Hint for the Ada amount input field.'
   },
+  walletPasswordPlaceholder: {
+    id: 'wallet.redeem.dialog.walletPasswordPlaceholder',
+    defaultMessage: '!!!Password',
+    description: 'Placeholder for "spending password"',
+  },
+  walletPasswordLabel: {
+    id: 'wallet.redeem.dialog.walletPasswordLabel',
+    defaultMessage: '!!!Password',
+    description: 'Label for "spending password"',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -162,6 +172,7 @@ export default class AdaRedemptionForm extends Component {
     postVendRedemptionCodeValidator: Function,
     redemptionCodeValidator: Function,
     mnemonicValidator: Function,
+    getSelectedWallet: Function,
     isRedemptionDisclaimerAccepted: boolean,
     isSubmitting: boolean,
     isCertificateSelected: boolean,
@@ -180,8 +191,8 @@ export default class AdaRedemptionForm extends Component {
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        const { walletId, shieldedRedemptionKey } = form.values();
-        this.props.onSubmit({ walletId, shieldedRedemptionKey });
+        const { walletId, shieldedRedemptionKey, walletPassword } = form.values();
+        this.props.onSubmit({ walletId, shieldedRedemptionKey, walletPassword });
       },
       onError: () => {},
     });
@@ -292,6 +303,23 @@ export default class AdaRedemptionForm extends Component {
           ];
         }],
       },
+      walletPassword: {
+        type: 'password',
+        label: this.context.intl.formatMessage(messages.walletPasswordLabel),
+        placeholder: this.context.intl.formatMessage(messages.walletPasswordPlaceholder),
+        value: '',
+        validators: [({ field }) => {
+          let wallet;
+          if (this.form) {
+            wallet = this.props.getSelectedWallet(this.form.$('walletId').value);
+          }
+          if (wallet && wallet.hasPassword && field.value === '') {
+            return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
+          }
+          return [true];
+        }],
+        bindings: 'ReactToolbox',
+      },
     }
   }, {
     options: {
@@ -310,6 +338,12 @@ export default class AdaRedemptionForm extends Component {
     form.state.options.set({ validateOnChange: true });
   };
 
+  onWalletChange = (walletId: string) => {
+    const { form } = this;
+    form.$('walletId').value = walletId;
+    form.$('walletPassword').value = '';
+  }
+
   render() {
     const { intl } = this.context;
     const { form, resetForm, submit } = this;
@@ -318,7 +352,8 @@ export default class AdaRedemptionForm extends Component {
       isSubmitting, onCertificateSelected, redemptionCode,
       onRedemptionCodeChanged, onRemoveCertificate, onChooseRedemptionType,
       isCertificateInvalid, redemptionType, showInputsForDecryptingForceVendedCertificate,
-      showPassPhraseWidget, isRedemptionDisclaimerAccepted, onAcceptRedemptionDisclaimer, error
+      showPassPhraseWidget, isRedemptionDisclaimerAccepted, onAcceptRedemptionDisclaimer, error,
+      getSelectedWallet,
     } = this.props;
     const certificateField = form.$('certificate');
     const passPhraseField = form.$('passPhrase');
@@ -328,19 +363,28 @@ export default class AdaRedemptionForm extends Component {
     const emailField = form.$('email');
     const adaPasscodeField = form.$('adaPasscode');
     const adaAmountField = form.$('adaAmount');
+    const walletPassword = form.$('walletPassword');
     const componentClasses = classnames([
       styles.component,
       isSubmitting ? styles.isSubmitting : null
     ]);
 
+    const selectedWallet = getSelectedWallet(walletId.value);
+    const walletHasPassword = selectedWallet.hasPassword;
+
     const showUploadWidget = redemptionType !== 'paperVended';
+
+    let passwordCheck = false;
+    if (!walletHasPassword || (walletHasPassword && walletPassword.value !== '')) passwordCheck = true;
+
     let canSubmit = false;
-    if (redemptionType === 'regular' && redemptionCode !== '') canSubmit = true;
-    if (redemptionType === 'forceVended' && redemptionCode !== '') canSubmit = true;
+    if (redemptionType === 'regular' && redemptionCode !== '' && passwordCheck) canSubmit = true;
+    if (redemptionType === 'forceVended' && redemptionCode !== '' && passwordCheck) canSubmit = true;
     if (
       redemptionType === 'paperVended' &&
       shieldedRedemptionKeyField.isDirty &&
-      passPhraseField.isDirty
+      passPhraseField.isDirty &&
+      passwordCheck
     ) canSubmit = true;
 
     let instructionMessage = '';
@@ -403,6 +447,7 @@ export default class AdaRedemptionForm extends Component {
                 className={styles.walletSelect}
                 options={wallets}
                 {...walletId.bind()}
+                onChange={this.onWalletChange}
                 isOpeningUpward
                 skin={<SelectSkin />}
               />
@@ -464,6 +509,15 @@ export default class AdaRedemptionForm extends Component {
               <Input
                 className="ada-amount"
                 {...adaAmountField.bind()}
+              />
+            </div>
+          ) : null}
+
+          {walletHasPassword ? (
+            <div className={styles.passwordInput}>
+              <Input
+                className="walletPassword"
+                {...form.$('walletPassword').bind()}
               />
             </div>
           ) : null}

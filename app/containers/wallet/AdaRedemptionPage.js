@@ -13,11 +13,15 @@ export default class AdaRedemptionPage extends Component {
   static defaultProps = { actions: null, stores: null };
   props: InjectedProps;
 
-  onSubmit = (values: { walletId: string }) => {
+  onSubmit = (values: { walletId: string, walletPassword: ?string }) => {
     this.props.actions.adaRedemption.redeemAda.trigger(values);
   };
 
-  onSubmitPaperVended = (values: { walletId: string, shieldedRedemptionKey: string }) => {
+  onSubmitPaperVended = (values: {
+    walletId: string,
+    shieldedRedemptionKey: string,
+    spendingPassword: ?string,
+  }) => {
     this.props.actions.adaRedemption.redeemPaperVendedAda.trigger(values);
   };
 
@@ -76,6 +80,7 @@ export default class AdaRedemptionPage extends Component {
           showPassPhraseWidget={showPassPhraseWidget}
           isRedemptionDisclaimerAccepted={isRedemptionDisclaimerAccepted}
           onAcceptRedemptionDisclaimer={() => acceptRedemptionDisclaimer.trigger()}
+          getSelectedWallet={walletId => wallets.getWalletById(walletId)}
         />
       </Layout>
     );
