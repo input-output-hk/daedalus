@@ -113,6 +113,10 @@ export default function () {
     return this.client.click(submitButton);
   });
 
+  this.When(/^I toggle "Activate to create password" switch on the create wallet dialog$/, function () {
+    return this.waitAndClick('.WalletCreateDialog .switch_field');
+  });
+
   this.When(/^I toggle "Activate to create password" switch on the restore wallet dialog$/, function () {
     return this.waitAndClick('.WalletRestoreDialog .switch_field');
   });
@@ -120,6 +124,14 @@ export default function () {
   this.When(/^I submit the create wallet dialog with the following inputs:$/, async function (table) {
     const fields = table.hashes()[0];
     await this.client.setValue('.WalletCreateDialog .walletName input', fields.walletName);
+    return this.client.click('.WalletCreateDialog .dialog_button');
+  });
+
+  this.When(/^I submit the create wallet with spending password dialog with the following inputs:$/, async function (table) {
+    const fields = table.hashes()[0];
+    await this.client.setValue('.WalletCreateDialog .walletName input', fields.walletName);
+    await this.client.setValue('.WalletCreateDialog .walletPassword input', fields.password);
+    await this.client.setValue('.WalletCreateDialog .repeatedPassword input', fields.repeatedPassword);
     return this.client.click('.WalletCreateDialog .dialog_button');
   });
 
