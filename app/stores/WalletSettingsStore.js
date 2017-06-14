@@ -9,7 +9,6 @@ import type {
   UpdateWalletResponse,
   ChangeWalletPasswordResponse,
   SetWalletPasswordResponse,
-  RenameWalletResponse,
 } from '../api';
 
 export default class WalletSettingsStore extends Store {
@@ -23,7 +22,6 @@ export default class WalletSettingsStore extends Store {
   @observable changeWalletPasswordRequest: Request<ChangeWalletPasswordResponse> = new Request(this.api.changeWalletPassword);
   @observable setWalletPasswordRequest: Request<SetWalletPasswordResponse> = new Request(this.api.setWalletPassword);
   @observable updateWalletRequest: Request<UpdateWalletResponse> = new Request(this.api.updateWallet);
-  @observable renameWalletRequest: Request<RenameWalletResponse> = new Request(this.api.renameWallet);
   /* eslint-enable max-len */
 
   @observable walletFieldBeingEdited = null;
@@ -68,19 +66,10 @@ export default class WalletSettingsStore extends Store {
   @action _updateWalletField = async ({ field, value }: { field: string, value: string }) => {
     const activeWallet = this.stores.wallets.active;
     if (!activeWallet) return;
-
     const { id: walletId, name, assurance } = activeWallet;
-    if (field === 'name') {
-      // wallet rename has separate API endpoint
-      await this.renameWalletRequest.execute({ walletId, name: value });
-    } else {
-      // all other wallet fields are handled here
-      // TODO: replace _updateWalletAssuranceLevel with this generic update call
-      const walletData = { walletId, name, assurance };
-      walletData[field] = value;
-      await this.updateWalletRequest.execute(walletData);
-    }
-
+    const walletData = { walletId, name, assurance };
+    walletData[field] = value;
+    await this.updateWalletRequest.execute(walletData);
     await this.stores.wallets.walletsRequest.patch(result => {
       const wallet = _.find(result, { id: walletId });
       wallet[field] = value;

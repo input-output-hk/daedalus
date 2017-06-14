@@ -274,7 +274,7 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::createAddress called: ', JSON.stringify(request, null, 2));
     const { accountId, password } = request;
     try {
-      const data: ApiAddress = await ClientApi.newWAddress(
+      const data: ApiAddress = await ClientApi.newAddress(
         accountId, password || ''
       ); // empty string must be used if no password is set
       Log.debug('CardanoClientApi::createAddress success: ', JSON.stringify(data, null, 2));
@@ -554,6 +554,7 @@ export default class CardanoClientApi {
     }
   }
 
+  // TODO: remove this function - updateWallet is used for wallet rename
   async renameWallet(request: RenameWalletRequest) {
     Log.debug('CardanoClientApi::renameWallet called: ', JSON.stringify(request, null, 2));
     const { walletId, name } = request;
@@ -657,14 +658,13 @@ const _createAddressFromServerData = action(
 
 const _createTransactionFromServerData = action(
   'CardanoClientApi::_createTransactionFromServerData', (data: ApiTransaction) => {
-    const isOutgoing = 'CTOut'; // TODO: check how to determine ctType (data.ctType.tag === 'CTOut')
     const coins = data.ctAmount.getCCoin;
     const { ctmTitle, ctmDescription, ctmDate } = data.ctMeta;
     return new WalletTransaction({
       id: data.ctId,
-      title: ctmTitle || isOutgoing ? 'Ada sent' : 'Ada received',
-      type: isOutgoing ? 'adaExpend' : 'adaIncome',
-      amount: new BigNumber(isOutgoing ? -1 * coins : coins).dividedBy(LOVELACES_PER_ADA),
+      title: ctmTitle || data.ctIsOutgoing ? 'Ada sent' : 'Ada received',
+      type: data.ctIsOutgoing ? 'adaExpend' : 'adaIncome',
+      amount: new BigNumber(data.ctIsOutgoing ? -1 * coins : coins).dividedBy(LOVELACES_PER_ADA),
       date: new Date(ctmDate * 1000),
       description: ctmDescription || '',
       numberOfConfirmations: data.ctConfirmations,
