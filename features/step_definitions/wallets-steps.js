@@ -61,6 +61,10 @@ export default function () {
     return this.client.waitForVisible('.WalletCreateDialog');
   });
 
+  this.Given(/^I see the restore wallet dialog$/, function () {
+    return this.client.waitForVisible('.WalletRestoreDialog');
+  });
+
   this.Given(/^I dont see the create wallet dialog(?: anymore)?$/, function () {
     return this.client.waitForVisible('.WalletCreateDialog', null, true);
   });
@@ -74,6 +78,10 @@ export default function () {
 
   this.When(/^I click on the create wallet button in add wallet dialog$/, function () {
     return this.waitAndClick('.WalletAddDialog .createWalletButton');
+  });
+
+  this.When(/^I click on the restore wallet button in add wallet dialog$/, function () {
+    return this.waitAndClick('.WalletAddDialog .restoreWalletButton');
   });
 
   this.When(/^I click the wallet (.*) button$/, async function (buttonName) {
@@ -105,14 +113,18 @@ export default function () {
     return this.client.click(submitButton);
   });
 
+  this.When(/^I toggle "Activate to create password" switch on the create wallet dialog$/, function () {
+    return this.waitAndClick('.WalletCreateDialog .switch_field');
+  });
+
+  this.When(/^I toggle "Activate to create password" switch on the restore wallet dialog$/, function () {
+    return this.waitAndClick('.WalletRestoreDialog .switch_field');
+  });
+
   this.When(/^I submit the create wallet dialog with the following inputs:$/, async function (table) {
     const fields = table.hashes()[0];
     await this.client.setValue('.WalletCreateDialog .walletName input', fields.walletName);
     return this.client.click('.WalletCreateDialog .dialog_button');
-  });
-
-  this.When(/^I toggle "Activate to create password" switch$/, function () {
-    return this.waitAndClick('.WalletCreateDialog .switch_field');
   });
 
   this.When(/^I submit the create wallet with spending password dialog with the following inputs:$/, async function (table) {
@@ -121,6 +133,22 @@ export default function () {
     await this.client.setValue('.WalletCreateDialog .walletPassword input', fields.password);
     await this.client.setValue('.WalletCreateDialog .repeatedPassword input', fields.repeatedPassword);
     return this.client.click('.WalletCreateDialog .dialog_button');
+  });
+
+  this.When(/^I submit the restore wallet dialog with the following inputs:$/, async function (table) {
+    const fields = table.hashes()[0];
+    await this.client.setValue('.WalletRestoreDialog .walletName input', fields.walletName);
+    await this.client.setValue('.WalletRestoreDialog .recoveryPhrase textarea', fields.recoveryPhrase);
+    return this.client.click('.WalletRestoreDialog .dialog_button');
+  });
+
+  this.When(/^I submit the restore wallet with spending password dialog with the following inputs:$/, async function (table) {
+    const fields = table.hashes()[0];
+    await this.client.setValue('.WalletRestoreDialog .walletName input', fields.walletName);
+    await this.client.setValue('.WalletRestoreDialog .recoveryPhrase textarea', fields.recoveryPhrase);
+    await this.client.setValue('.WalletRestoreDialog .walletPassword input', fields.password);
+    await this.client.setValue('.WalletRestoreDialog .repeatedPassword input', fields.repeatedPassword);
+    return this.client.click('.WalletRestoreDialog .dialog_button');
   });
 
   this.When(/^I see the create wallet privacy dialog$/, function () {
@@ -193,6 +221,10 @@ export default function () {
 
   this.Then(/^I should not see the delete wallet dialog anymore$/, function () {
     return this.client.waitForVisible('.DeleteWalletConfirmationDialog_dialog', null, true);
+  });
+
+  this.Then(/^I should not see the restore wallet dialog anymore$/, function () {
+    return this.client.waitForVisible('.WalletRestoreDialog', null, true);
   });
 
   this.Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function (walletName) {

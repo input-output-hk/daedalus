@@ -34,7 +34,7 @@ Feature: Add Wallet via Sidebar
     And I see the add wallet dialog
     And I click on the create wallet button in add wallet dialog
     And I see the create wallet dialog
-    And I toggle "Activate to create password" switch
+    And I toggle "Activate to create password" switch on the create wallet dialog
     And I submit the create wallet with spending password dialog with the following inputs:
     | walletName | password | repeatedPassword |
     | New wallet | secret   | secret           |
