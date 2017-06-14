@@ -308,12 +308,11 @@ export default class AdaRedemptionForm extends Component {
         label: this.context.intl.formatMessage(messages.walletPasswordLabel),
         placeholder: this.context.intl.formatMessage(messages.walletPasswordPlaceholder),
         value: '',
-        validators: [({ field }) => {
-          let wallet;
-          if (this.form) {
-            wallet = this.props.getSelectedWallet(this.form.$('walletId').value);
-          }
-          if (wallet && wallet.hasPassword && field.value === '') {
+        validators: [({ field, form }) => {
+          const password = field.value;
+          const walletId = form.$('walletId').value;
+          const wallet = this.props.getSelectedWallet(walletId);
+          if (wallet && wallet.hasPassword && password === '') {
             return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           }
           return [true];
@@ -374,17 +373,16 @@ export default class AdaRedemptionForm extends Component {
 
     const showUploadWidget = redemptionType !== 'paperVended';
 
-    let passwordCheck = false;
-    if (!walletHasPassword || (walletHasPassword && walletPassword.value !== '')) passwordCheck = true;
+    const passwordSubmittable = !walletHasPassword || walletPassword.value !== '';
 
     let canSubmit = false;
-    if (redemptionType === 'regular' && redemptionCode !== '' && passwordCheck) canSubmit = true;
-    if (redemptionType === 'forceVended' && redemptionCode !== '' && passwordCheck) canSubmit = true;
+    if (redemptionType === 'regular' && redemptionCode !== '' && passwordSubmittable) canSubmit = true;
+    if (redemptionType === 'forceVended' && redemptionCode !== '' && passwordSubmittable) canSubmit = true;
     if (
       redemptionType === 'paperVended' &&
       shieldedRedemptionKeyField.isDirty &&
       passPhraseField.isDirty &&
-      passwordCheck
+      passwordSubmittable
     ) canSubmit = true;
 
     let instructionMessage = '';

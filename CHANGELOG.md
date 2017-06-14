@@ -24,7 +24,7 @@ Changelog
 - Spending password on wallet receive page
 - Prepared UI dialogs for exporting paper wallets
 - Prepared UI dialogs for importing paper wallets
-- Spending password added to ada-redemption screens
+- Spending password on "Ada redemption" forms
 
 ### Fixes
 
