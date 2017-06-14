@@ -41,7 +41,8 @@ launcherArgs launcher = unwords $
         "--peers-file", "ip-dht-mappings",
         "--system-start", "1492428658",
         "--wallet",
-        "--explicit-initial"
+        "--static-peers"
+        "--kademlia-explicit-initial",
         ]
 
 quote :: String -> String
