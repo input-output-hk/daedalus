@@ -36,13 +36,15 @@ launcherArgs launcher = unwords $
         "--update-latest-path", quote (installerPath launcher),
         "--keyfile", quote (runtimePath launcher <> "Secrets" <> (pathSeparator : "secret.key")),
         "--logs-prefix", quote (runtimePath launcher <> "Logs"),
-        "--db-path", quote (runtimePath launcher <> "DB-0.4"),
-        "--wallet-db-path", quote (runtimePath launcher <> "Wallet-0.4"),
-        "--peers-file", "ip-dht-mappings",
-        "--system-start", "1492428658",
-        "--wallet",
-        "--static-peers"
+        "--db-path", quote (runtimePath launcher <> "DB-0.5"),
+        "--wallet-db-path", quote (runtimePath launcher <> "Wallet-0.5"),
+        "--kademlia-peers-file", "ip-dht-mappings",
         "--kademlia-explicit-initial",
+        "--update-server", "http://localhost:8080/",
+        "--system-start", "1499360281",
+        "--wallet",
+        "--update-with-package"
+        "--static-peers",
         ]
 
 quote :: String -> String
