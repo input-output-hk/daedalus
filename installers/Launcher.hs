@@ -24,8 +24,6 @@ launcherArgs launcher = unwords $
   ]
     where
       nodeArgs = [
-        "--listen", "127.0.0.1:12100",
-        "--report-server", "http://35.156.39.53:8080",
         "--log-config", "log-config-prod.yaml",
         "--update-latest-path", quote (installerPath launcher),
         "--keyfile", quote (runtimePath launcher <> "Secrets" <> (pathSeparator : "secret.key")),
@@ -33,9 +31,11 @@ launcherArgs launcher = unwords $
         "--db-path", quote (runtimePath launcher <> "DB-0.4"),
         "--wallet-db-path", quote (runtimePath launcher <> "Wallet-0.4"),
         "--kademlia-peers-file", "ip-dht-mappings",
-        "--kademlia-explicit-initial",
-        "--system-start", "1497358420",
-        "--wallet"
+        "--update-server", "http://localhost:8080/",
+        "--system-start", "1497443187",
+        "--wallet",
+        "--update-with-package"
+        "--static-peers",
         ]
 
 quote :: String -> String
