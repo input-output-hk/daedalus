@@ -43,8 +43,8 @@ launcherArgs launcher = unwords $
         "--update-server", "http://localhost:8080/",
         "--system-start", "1499360281",
         "--wallet",
-        "--update-with-package"
-        "--static-peers",
+        "--update-with-package",
+        "--static-peers"
         ]
 
 quote :: String -> String
