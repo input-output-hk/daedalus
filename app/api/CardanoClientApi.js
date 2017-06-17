@@ -62,11 +62,16 @@ import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 
 
 // TODO: Remove after hd integraton is complete
-
 // Get all accounts
 // (async () => {
 //   const accounts = await ClientApi.getAccounts();
 //   console.log('accounts:', JSON.stringify(accounts, null, 2));
+// })();
+
+// Get all wallets
+// (async () => {
+//   const wallets = await ClientApi.getWallets();
+//   console.log('wallets:', JSON.stringify(wallets, null, 2));
 // })();
 
 // Create account
@@ -196,11 +201,10 @@ export default class CardanoClientApi {
 
   async getTransactions(request: GetTransactionsRequest) {
     Log.debug('CardanoClientApi::searchHistory called: ', JSON.stringify(request, null, 2));
-    const { accountId, /* walletId, */ searchTerm, skip, limit } = request;
-    // searchHistory endpoint requires accountId (account.caId) and not walletId
+    const { walletId, skip, limit } = request;
     try {
-      const history: ApiTransactions = await ClientApi.searchHistory(
-        accountId, searchTerm, skip, limit
+      const history: ApiTransactions = await ClientApi.getHistoryByWallet(
+        walletId, skip, limit
       );
       Log.debug('CardanoClientApi::searchHistory success: ', JSON.stringify(history, null, 2));
       return new Promise((resolve) => resolve({
@@ -223,12 +227,12 @@ export default class CardanoClientApi {
     try {
       // 1. create wallet
       const wallet: ApiWallet = await ClientApi.newWallet(
-        name, assurance, unit, mnemonic, password || ''
-      ); // empty string must be used if no password is set ^^
+        name, assurance, unit, mnemonic, password
+      );
       Log.debug('CardanoClientApi::createWallet success: ', JSON.stringify(wallet, null, 2));
 
       // 2. create account
-      await ClientApi.newAccount(wallet.cwId, name, password || '');
+      await ClientApi.newAccount(wallet.cwId, name, password);
 
       return _createWalletFromServerData(wallet);
     } catch (error) {
@@ -253,12 +257,10 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::createTransaction called');
     const { sender, receiver, amount, password } = request;
     // sender must be set as accountId (account.caId) and not walletId
-    const description = 'no description provided';
-    const title = 'no title provided';
     try {
-      const response: ApiTransaction = await ClientApi.newPaymentExtended(
-        sender, receiver, amount, title, description, password || ''
-      ); // empty string must be used if no password is set ^^
+      const response: ApiTransaction = await ClientApi.newPayment(
+        sender, receiver, amount, password
+      );
       Log.debug('CardanoClientApi::createTransaction success: ', JSON.stringify(response, null, 2));
       return _createTransactionFromServerData(response);
     } catch (error) {
@@ -274,9 +276,9 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::createAddress called: ', JSON.stringify(request, null, 2));
     const { accountId, password } = request;
     try {
-      const data: ApiAddress = await ClientApi.newAddress(
-        accountId, password || ''
-      ); // empty string must be used if no password is set
+      const data: ApiAddress = await ClientApi.newWAddress(
+        accountId, password
+      );
       Log.debug('CardanoClientApi::createAddress success: ', JSON.stringify(data, null, 2));
       return _createAddressFromServerData(data);
     } catch (error) {
@@ -323,12 +325,12 @@ export default class CardanoClientApi {
     try {
       // 1. restore wallet
       const wallet: ApiWallet = await ClientApi.restoreWallet(
-        walletName, 'CWANormal', 0, recoveryPhrase, walletPassword || ''
-      ); // empty string must be used if no password is set ^^
+        walletName, 'CWANormal', 0, recoveryPhrase, walletPassword
+      );
       Log.debug('CardanoClientApi::restoreWallet success');
 
       // 2. create account
-      await ClientApi.newAccount(wallet.cwId, walletName, walletPassword || '');
+      await ClientApi.newAccount(wallet.cwId, walletName, walletPassword);
 
       return _createWalletFromServerData(wallet);
     } catch (error) {
@@ -348,8 +350,11 @@ export default class CardanoClientApi {
 
   async importWalletFromKey(request: ImportKeyRequest) {
     Log.debug('CardanoClientApi::importWalletFromKey called');
+    const password = null;
     try {
-      const importedWallet: ApiWallet = await ClientApi.importWallet(request.filePath, '');
+      const importedWallet: ApiWallet = await ClientApi.importWallet(
+        request.filePath, password || ''
+      );
       Log.debug('CardanoClientApi::importWalletFromKey success');
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
@@ -366,7 +371,7 @@ export default class CardanoClientApi {
     const { redemptionCode, walletId, walletPassword } = request;
     try {
       const response: ApiTransaction = await ClientApi.redeemAda(
-        redemptionCode, walletId, walletPassword || ''
+        redemptionCode, walletId, walletPassword
       );
       Log.debug('CardanoClientApi::redeemAda success');
       return _createTransactionFromServerData(response);
@@ -381,7 +386,7 @@ export default class CardanoClientApi {
     const { shieldedRedemptionKey, mnemonics, walletId, walletPassword } = request;
     try {
       const response: ApiTransaction = await ClientApi.redeemAdaPaperVend(
-        shieldedRedemptionKey, mnemonics, walletId, walletPassword || ''
+        shieldedRedemptionKey, mnemonics, walletId, walletPassword
       );
       Log.debug('CardanoClientApi::redeemAdaPaperVend success');
       return _createTransactionFromServerData(response);
@@ -572,9 +577,7 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::changeWalletPassword called: ', JSON.stringify(request, null, 2));
     const { walletId, oldPassword, newPassword } = request;
     try {
-      await ClientApi.changeWalletPass(
-        walletId, oldPassword || '', newPassword || ''
-      ); // empty string must be used if no password is set
+      await ClientApi.changeWalletPass(walletId, oldPassword, newPassword);
       Log.debug('CardanoClientApi::changeWalletPassword success');
       return true;
     } catch (error) {
@@ -587,8 +590,7 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::setWalletPassword called: ', JSON.stringify(request, null, 2));
     const { walletId, password } = request;
     try {
-      await ClientApi.changeWalletPass(walletId, '', password || '');
-      // empty string must be used if no password is set ^^
+      await ClientApi.changeWalletPass(walletId, null, password);
       Log.debug('CardanoClientApi::setWalletPassword success');
       return true;
     } catch (error) {
@@ -596,7 +598,6 @@ export default class CardanoClientApi {
       throw new GenericApiError();
     }
   }
-
 
   async testReset() {
     Log.debug('CardanoClientApi::testReset called');

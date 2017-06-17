@@ -157,27 +157,22 @@ export default class TransactionsStore extends Store {
     if (this.stores.networkStatus.isConnected) {
       const allWallets = this.stores.wallets.all;
       for (const wallet of allWallets) {
-        const accountId = this.stores.addresses._getAccountIdByWalletId(wallet.id);
-        if (accountId) {
-          const recentRequest = this._getTransactionsRecentRequest(wallet.id);
-          recentRequest.invalidate({ immediately: false });
-          recentRequest.execute({
-            accountId,
-            walletId: wallet.id,
-            limit: this.RECENT_TRANSACTIONS_LIMIT,
-            skip: 0,
-            searchTerm: '',
-          });
-          const allRequest = this._getTransactionsAllRequest(wallet.id);
-          allRequest.invalidate({ immediately: false });
-          allRequest.execute({
-            accountId,
-            walletId: wallet.id,
-            limit: this.INITIAL_SEARCH_LIMIT,
-            skip: 0,
-            searchTerm: '',
-          });
-        }
+        const recentRequest = this._getTransactionsRecentRequest(wallet.id);
+        recentRequest.invalidate({ immediately: false });
+        recentRequest.execute({
+          walletId: wallet.id,
+          limit: this.RECENT_TRANSACTIONS_LIMIT,
+          skip: 0,
+          searchTerm: '',
+        });
+        const allRequest = this._getTransactionsAllRequest(wallet.id);
+        allRequest.invalidate({ immediately: false });
+        allRequest.execute({
+          walletId: wallet.id,
+          limit: this.INITIAL_SEARCH_LIMIT,
+          skip: 0,
+          searchTerm: '',
+        });
       }
     }
   };

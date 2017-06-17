@@ -24,7 +24,6 @@ export type CreateAddressRequest = {
 };
 
 export type GetTransactionsRequest = {
-  accountId: string,
   walletId: string,
   searchTerm: string,
   skip: number,
