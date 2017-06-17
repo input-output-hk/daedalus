@@ -350,10 +350,10 @@ export default class CardanoClientApi {
 
   async importWalletFromKey(request: ImportKeyRequest) {
     Log.debug('CardanoClientApi::importWalletFromKey called');
-    const password = null;
+    const password = null; // TODO: use real spending password from UI
     try {
       const importedWallet: ApiWallet = await ClientApi.importWallet(
-        request.filePath, password || ''
+        request.filePath, password
       );
       Log.debug('CardanoClientApi::importWalletFromKey success');
       return _createWalletFromServerData(importedWallet);
