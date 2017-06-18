@@ -166,9 +166,12 @@ export default class AdaRedemptionStore extends Store {
     this.passPhrase = null;
   });
 
-  _redeemAda = action(({ walletId } : { walletId: string }) => {
+  _redeemAda = action(({ walletId, walletPassword } : {
+    walletId: string,
+    walletPassword: ?string,
+  }) => {
     this.walletId = walletId;
-    this.redeemAdaRequest.execute({ redemptionCode: this.redemptionCode, walletId })
+    this.redeemAdaRequest.execute({ redemptionCode: this.redemptionCode, walletId, walletPassword })
       .then(action((transaction: WalletTransaction) => {
         this._reset();
         this.actions.adaRedemption.adaSuccessfullyRedeemed.trigger({
@@ -181,15 +184,17 @@ export default class AdaRedemptionStore extends Store {
       }));
   });
 
-  _redeemPaperVendedAda = action(({ walletId, shieldedRedemptionKey } : {
+  _redeemPaperVendedAda = action(({ walletId, shieldedRedemptionKey, walletPassword } : {
     walletId: string,
-    shieldedRedemptionKey: string
+    shieldedRedemptionKey: string,
+    walletPassword: ?string,
   }) => {
     this.walletId = walletId;
     this.redeemPaperVendedAdaRequest.execute({
       shieldedRedemptionKey,
       mnemonics: this.passPhrase,
-      walletId
+      walletId,
+      walletPassword,
     })
       .then(action((transaction: WalletTransaction) => {
         this._reset();

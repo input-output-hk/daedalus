@@ -112,6 +112,13 @@ export default class WalletReceive extends Component {
         const { spendingPassword } = form.values();
         const password = walletHasPassword ? spendingPassword : null;
         this.props.onGenerateAddress(password);
+
+        // We need to disable on-change validation before reseting the form in order to
+        // avoid debounced validation being called straight after the form is reset
+        form.state.options.set({ validateOnChange: false });
+        form.reset();
+        form.showErrors(false);
+        form.state.options.set({ validateOnChange: true });
       },
       onError: () => {}
     });
