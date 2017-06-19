@@ -53,6 +53,8 @@ export default class WalletSettingsStore extends Store {
     walletId: string, oldPassword: string, newPassword: string,
   }) => {
     await this.changeWalletPasswordRequest.execute({ walletId, oldPassword, newPassword });
+    this.actions.dialogs.closeActiveDialog.trigger();
+    this.changeWalletPasswordRequest.reset();
     this.stores.wallets.refreshWalletsData();
   };
 
@@ -60,6 +62,8 @@ export default class WalletSettingsStore extends Store {
     walletId: string, password: string,
   }) => {
     await this.setWalletPasswordRequest.execute({ walletId, password });
+    this.actions.dialogs.closeActiveDialog.trigger();
+    this.setWalletPasswordRequest.reset();
     this.stores.wallets.refreshWalletsData();
   };
 

@@ -41,6 +41,7 @@ Changelog
 - Apply grammatical fixes to redemption instructions
 - Prevent sidebar visual glitch on sidebar open
 - Added missing "Add wallet" button label translation key
+- Improved error handling on "Set/Change wallet password" dialog
 
 ### Chores
 
