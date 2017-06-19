@@ -218,6 +218,7 @@ export default class WalletsStore extends Store {
 
   @action _importWalletFromKey = async (params: {
     filePath: string,
+    walletPassword: ?string,
   }) => {
     const importedWallet = await this.importFromKeyRequest.execute(params).promise;
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');
