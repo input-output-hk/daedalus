@@ -28,7 +28,8 @@ export default function () {
       window.Promise.all(wallets.map((wallet) => {
         return daedalus.api.createWallet({
           name: wallet.name,
-          mnemonic: daedalus.api.generateMnemonic().join(' ')
+          mnemonic: daedalus.api.generateMnemonic().join(' '),
+          password: null,
         });
       }))
       .then(() => {
