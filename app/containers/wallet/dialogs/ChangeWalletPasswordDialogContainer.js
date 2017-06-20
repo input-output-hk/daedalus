@@ -11,12 +11,25 @@ export default class ChangeWalletPasswordDialogContainer extends Component {
 
   props: InjectedProps;
 
+  resetErrors = () => {
+    const {
+      changeWalletPasswordRequest,
+      setWalletPasswordRequest,
+    } = this.props.stores.walletSettings;
+    changeWalletPasswordRequest.reset();
+    setWalletPasswordRequest.reset();
+  };
+
   render() {
     const { actions } = this.props;
-    const { wallets, uiDialogs } = this.props.stores;
+    const { wallets, walletSettings, uiDialogs } = this.props.stores;
     const dialogData = uiDialogs.dataForActiveDialog;
     const { updateDataForActiveDialog } = actions.dialogs;
     const activeWallet = wallets.active;
+    const {
+      changeWalletPasswordRequest,
+      setWalletPasswordRequest,
+    } = walletSettings;
 
     if (!activeWallet) throw new Error('Active wallet required for ChangeWalletPasswordDialogContainer.');
 
@@ -37,12 +50,21 @@ export default class ChangeWalletPasswordDialogContainer extends Component {
               walletId, oldPassword: values.oldPassword, newPassword: values.newPassword
             });
           }
-          actions.dialogs.resetActiveDialog.trigger();
         }}
-        onCancel={actions.dialogs.closeActiveDialog.trigger}
+        onCancel={() => {
+          actions.dialogs.closeActiveDialog.trigger();
+          this.resetErrors();
+        }}
+        onPasswordSwitchToggle={this.resetErrors}
         onDataChange={data => {
           updateDataForActiveDialog.trigger({ data });
         }}
+        isSubmitting={
+          changeWalletPasswordRequest.isExecuting || setWalletPasswordRequest.isExecuting
+        }
+        error={
+          changeWalletPasswordRequest.error || setWalletPasswordRequest.error
+        }
       />
     );
   }
