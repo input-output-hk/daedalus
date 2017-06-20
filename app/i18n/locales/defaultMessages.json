@@ -84,6 +84,20 @@
           "column": 29,
           "line": 30
         }
+      },
+      {
+        "defaultMessage": "!!!Incorrect wallet password.",
+        "description": "\"Incorrect wallet password.\" error message.",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "app/api/errors.js",
+        "id": "api.errors.IncorrectPasswordError",
+        "start": {
+          "column": 32,
+          "line": 35
+        }
       }
     ],
     "path": "app/api/errors.json"
@@ -977,13 +991,13 @@
         "description": "headline for \"Import wallet from file with the key\" dialog.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 22
         },
         "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
         "id": "wallet.key.import.dialog.headline",
         "start": {
           "column": 12,
-          "line": 14
+          "line": 18
         }
       },
       {
@@ -991,13 +1005,13 @@
         "description": "Label \"Upload your key\" on the dialog for importing a wallet from the key.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 27
         },
         "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
         "id": "wallet.key.import.dialog.keyFileLabel",
         "start": {
           "column": 16,
-          "line": 19
+          "line": 23
         }
       },
       {
@@ -1005,13 +1019,13 @@
         "description": "Hint for the key file upload on the dialog for importing a wallet from the key.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 32
         },
         "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
         "id": "wallet.key.import.dialog.keyFileHint",
         "start": {
           "column": 15,
-          "line": 24
+          "line": 28
         }
       },
       {
@@ -1019,13 +1033,83 @@
         "description": "Label \"Import you key\" submit button on the dialog for importing a wallet from the key.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 37
         },
         "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
         "id": "wallet.key.import.dialog.submitLabel",
         "start": {
           "column": 15,
-          "line": 29
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Password",
+        "description": "Label for the \"Activate to create password\" switch in the wallet key import dialog.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
+        "id": "wallet.key.import.dialog.passwordSwitchLabel",
+        "start": {
+          "column": 23,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Activate to create password",
+        "description": "Text for the \"Activate to create password\" switch in the wallet key import dialog.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
+        "id": "wallet.key.import.dialog.passwordSwitchPlaceholder",
+        "start": {
+          "column": 29,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet password",
+        "description": "Label for the \"Wallet password\" input in the wallet key import dialog.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
+        "id": "wallet.key.import.dialog.walletPasswordLabel",
+        "start": {
+          "column": 23,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Repeat password",
+        "description": "Label for the \"Repeat password\" input in the wallet key import dialog.",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
+        "id": "wallet.key.import.dialog.repeatPasswordLabel",
+        "start": {
+          "column": 23,
+          "line": 53
+        }
+      },
+      {
+        "defaultMessage": "!!!Password",
+        "description": "Placeholder for the \"Password\" inputs in the wallet key import dialog.",
+        "end": {
+          "column": 3,
+          "line": 62
+        },
+        "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
+        "id": "wallet.key.import.dialog.passwordFieldPlaceholder",
+        "start": {
+          "column": 28,
+          "line": 58
         }
       }
     ],
@@ -1263,13 +1347,13 @@
         "description": "Title for the \"Delete wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.title",
         "start": {
           "column": 15,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -1277,13 +1361,13 @@
         "description": "Label for the \"Delete (x)\" button in the delete wallet dialog.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -1291,13 +1375,13 @@
         "description": "Question if the user really wants to delete the wallet.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.wantToDeleteWalletQuestion",
         "start": {
           "column": 30,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -1305,13 +1389,13 @@
         "description": "Notice to confirm if the user has made a backup of his wallet",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.confirmBackupNotice",
         "start": {
           "column": 23,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -1319,13 +1403,13 @@
         "description": "Instruction for recovery word on delete wallet dialog",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.enterRecoveryWordLabel",
         "start": {
           "column": 26,
-          "line": 34
+          "line": 35
         }
       }
     ],

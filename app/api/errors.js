@@ -32,6 +32,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Not enough money to make this transaction.',
     description: '"Not enough money to make this transaction." error message.'
   },
+  incorrectWalletPasswordError: {
+    id: 'api.errors.IncorrectPasswordError',
+    defaultMessage: '!!!Incorrect wallet password.',
+    description: '"Incorrect wallet password." error message.'
+  },
 });
 
 export class GenericApiError extends LocalizableError {
@@ -84,6 +89,15 @@ export class NotEnoughMoneyToSendError extends LocalizableError {
     super({
       id: messages.notEnoughMoneyToSendError.id,
       defaultMessage: messages.notEnoughMoneyToSendError.defaultMessage,
+    });
+  }
+}
+
+export class IncorrectWalletPasswordError extends LocalizableError {
+  constructor() {
+    super({
+      id: messages.incorrectWalletPasswordError.id,
+      defaultMessage: messages.incorrectWalletPasswordError.defaultMessage,
     });
   }
 }
