@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-toolbox/lib/input/Input';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -50,6 +51,7 @@ export default class DeleteWalletConfirmationDialog extends Component {
     onContinue: Function,
     onCancel: Function,
     onConfirmationValueChange: Function,
+    isSubmitting: boolean,
   };
 
   static defaultProps = {
@@ -71,13 +73,19 @@ export default class DeleteWalletConfirmationDialog extends Component {
       onContinue,
       walletName,
       confirmationValue,
-      onConfirmationValueChange
+      onConfirmationValueChange,
+      isSubmitting,
     } = this.props;
 
     const countdownRemaining = countdownFn(environment.isTest() ? 0 : 10);
     const countdownDisplay = countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
     const isCountdownFinished = countdownRemaining <= 0;
     const isWalletNameConfirmationCorrect = confirmationValue === walletName;
+
+    const dialogClasses = classnames([
+      styles.dialog,
+      isSubmitting ? styles.isSubmitting : null
+    ]);
 
     const actions = [
       {
@@ -99,7 +107,8 @@ export default class DeleteWalletConfirmationDialog extends Component {
         title={intl.formatMessage(messages.dialogTitle)}
         actions={actions}
         active
-        className={styles.dialog}
+        onOverlayClick={onCancel}
+        className={dialogClasses}
       >
         <FormattedHTMLMessage
           {...messages.wantToDeleteWalletQuestion}
