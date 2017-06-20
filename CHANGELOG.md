@@ -42,6 +42,7 @@ Changelog
 - Prevent sidebar visual glitch on sidebar open
 - Added missing "Add wallet" button label translation key
 - Prevent "Delete wallet" dialog from closing until deletion is over
+- Improved error handling on "Set/Change wallet password" dialog
 
 ### Chores
 
