@@ -94,12 +94,14 @@ export default class WalletsStore extends Store {
       if (this.hasAnyWallets) {
         const nextIndexInList = Math.max(indexOfWalletToDelete - 1, 0);
         const nextWalletInList = this.all[nextIndexInList];
+        this.actions.dialogs.closeActiveDialog.trigger();
         this.goToWalletRoute(nextWalletInList.id);
       } else {
         this.active = null;
         this.actions.router.goToRoute.trigger({ route: ROUTES.NO_WALLETS });
       }
     });
+    this.deleteWalletRequest.reset();
     this.refreshWalletsData();
   };
 
@@ -129,7 +131,7 @@ export default class WalletsStore extends Store {
       ...transactionDetails,
       walletId: wallet.id,
       amount: transactionDetails.amount,
-      sender: accountId, // wallet.address,
+      sender: accountId,
     });
     this.refreshWalletsData();
     this.goToWalletRoute(wallet.id);
@@ -255,7 +257,6 @@ export default class WalletsStore extends Store {
   _updateActiveWalletOnRouteChanges = () => {
     const currentRoute = this.stores.app.currentRoute;
     const hasAnyWalletsLoaded = this.hasAnyLoaded;
-
     runInAction('WalletsStore::_updateActiveWalletOnRouteChanges', () => {
       // There are not wallets loaded (yet) -> unset active and return
       if (!hasAnyWalletsLoaded) return this._unsetActiveWallet();

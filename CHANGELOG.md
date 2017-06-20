@@ -41,6 +41,7 @@ Changelog
 - Apply grammatical fixes to redemption instructions
 - Prevent sidebar visual glitch on sidebar open
 - Added missing "Add wallet" button label translation key
+- Prevent "Delete wallet" dialog from closing until deletion is over
 
 ### Chores
 
