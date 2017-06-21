@@ -78,7 +78,7 @@ export type UpdateWalletRequest = {
   assurance: string,
 };
 
-export type UpdateWalletResponse = boolean;
+export type UpdateWalletResponse = Wallet;
 
 export type RedeemAdaRequest = {
   redemptionCode: string,

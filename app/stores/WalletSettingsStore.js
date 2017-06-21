@@ -39,10 +39,11 @@ export default class WalletSettingsStore extends Store {
     const activeWallet = this.stores.wallets.active;
     if (!activeWallet) return;
     const { id: walletId, name } = activeWallet;
-    await this.updateWalletRequest.execute({ walletId, name, assurance });
+    const wallet = await this.updateWalletRequest.execute({ walletId, name, assurance }).promise;
+    if (!wallet) return;
     await this.stores.wallets.walletsRequest.patch(result => {
-      const wallet = _.find(result, { id: walletId });
-      wallet.assurance = assurance;
+      const walletIndex = _.findIndex(result, { id: walletId });
+      result[walletIndex] = wallet;
     });
   };
 
@@ -61,10 +62,11 @@ export default class WalletSettingsStore extends Store {
     const { id: walletId, name, assurance } = activeWallet;
     const walletData = { walletId, name, assurance };
     walletData[field] = value;
-    await this.updateWalletRequest.execute(walletData);
+    const wallet = await this.updateWalletRequest.execute(walletData).promise;
+    if (!wallet) return;
     await this.stores.wallets.walletsRequest.patch(result => {
-      const wallet = _.find(result, { id: walletId });
-      wallet[field] = value;
+      const walletIndex = _.findIndex(result, { id: walletId });
+      result[walletIndex] = wallet;
     });
   };
 

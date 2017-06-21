@@ -518,11 +518,11 @@ export default class CardanoClientApi {
     const { walletId, name, assurance } = request;
     const unit = 0;
     try {
-      const response: ApiWallet = await ClientApi.updateWallet(
+      const wallet: ApiWallet = await ClientApi.updateWallet(
         walletId, name, assurance, unit
       );
-      Log.debug('CardanoClientApi::updateWallet success: ', stringifyData(response));
-      return response;
+      Log.debug('CardanoClientApi::updateWallet success: ', stringifyData(wallet));
+      return _createWalletFromServerData(wallet);
     } catch (error) {
       Log.error('CardanoClientApi::updateWallet error: ' + stringifyError(error));
       throw new GenericApiError();
