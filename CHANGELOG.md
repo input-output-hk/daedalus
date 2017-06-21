@@ -47,6 +47,7 @@ Changelog
 - Prevent "Delete wallet" dialog from closing until deletion is over
 - Improved error handling on "Set/Change wallet password" dialog
 - Improved API response errors handling
+- Update active wallet after wallet update actions
 
 ### Chores
 
