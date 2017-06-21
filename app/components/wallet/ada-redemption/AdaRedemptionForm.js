@@ -188,16 +188,6 @@ export default class AdaRedemptionForm extends Component {
     intl: intlShape.isRequired,
   };
 
-  submit = () => {
-    this.form.submit({
-      onSuccess: (form) => {
-        const { walletId, shieldedRedemptionKey, walletPassword } = form.values();
-        this.props.onSubmit({ walletId, shieldedRedemptionKey, walletPassword });
-      },
-      onError: () => {},
-    });
-  };
-
   form = new ReactToolboxMobxForm({
     fields: {
       certificate: {
@@ -326,6 +316,20 @@ export default class AdaRedemptionForm extends Component {
       validationDebounceWait: 250,
     },
   });
+
+  submit = () => {
+    this.form.submit({
+      onSuccess: (form) => {
+        const { walletId, shieldedRedemptionKey, walletPassword } = form.values();
+        this.props.onSubmit({
+          walletId,
+          shieldedRedemptionKey,
+          walletPassword: walletPassword || null,
+        });
+      },
+      onError: () => {},
+    });
+  };
 
   resetForm = () => {
     const { form } = this;
@@ -475,6 +479,15 @@ export default class AdaRedemptionForm extends Component {
             ) : null}
           </div>
 
+          {walletHasPassword ? (
+            <div className={styles.passwordInput}>
+              <Input
+                className="walletPassword"
+                {...form.$('walletPassword').bind()}
+              />
+            </div>
+          ) : null}
+
           {showPassPhraseWidget ? (
             <div className={styles.passPhrase}>
               <Input
@@ -507,15 +520,6 @@ export default class AdaRedemptionForm extends Component {
               <Input
                 className="ada-amount"
                 {...adaAmountField.bind()}
-              />
-            </div>
-          ) : null}
-
-          {walletHasPassword ? (
-            <div className={styles.passwordInput}>
-              <Input
-                className="walletPassword"
-                {...form.$('walletPassword').bind()}
               />
             </div>
           ) : null}

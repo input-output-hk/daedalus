@@ -44,6 +44,7 @@ Changelog
 - Added missing "Add wallet" button label translation key
 - Prevent "Delete wallet" dialog from closing until deletion is over
 - Improved error handling on "Set/Change wallet password" dialog
+- Improved API response errors handling
 
 ### Chores
 
