@@ -28,6 +28,22 @@ export default function () {
     }
   });
 
+  this.Given(/^I have a wallet with funds and password$/, async function () {
+    const result = await this.client.executeAsync(function(filePath, done) {
+      // This assumes that we always have a default wallet on the backend!
+      daedalus.api.importWalletFromKey({ filePath, walletPassword: 'secret' }).then((wallet) => {
+        daedalus.stores.wallets.refreshWalletsData().then(() => done(wallet));
+      });
+    }, defaultWalletKeyFilePath);
+    this.wallet = result.value;
+    // Add or set the wallets for this scenario
+    if (this.wallets != null) {
+      this.wallets.push(this.wallet);
+    } else {
+      this.wallets = [this.wallet];
+    }
+  });
+
   this.Given(/^I have the following wallets:$/, async function (table) {
     const result = await this.client.executeAsync(function(wallets, done) {
       window.Promise.all(wallets.map((wallet) => {
