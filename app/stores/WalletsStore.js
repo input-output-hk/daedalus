@@ -129,8 +129,6 @@ export default class WalletsStore extends Store {
     if (!accountId) throw new Error('Active account required before sending.');
     await this.sendMoneyRequest.execute({
       ...transactionDetails,
-      walletId: wallet.id,
-      amount: transactionDetails.amount,
       sender: accountId,
     });
     this.refreshWalletsData();
@@ -192,7 +190,7 @@ export default class WalletsStore extends Store {
         }));
         this.stores.addresses._refreshAddresses();
       });
-      runInAction('refresh wallet data', () => {
+      runInAction('refresh transaction data', () => {
         const walletIds = result.map((wallet: Wallet) => wallet.id);
         this.stores.transactions.transactionsRequests = walletIds.map(walletId => ({
           walletId,
