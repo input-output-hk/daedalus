@@ -30,9 +30,7 @@ import type {
   ImportKeyRequest,
   DeleteWalletRequest,
   RedeemPaperVendedAdaRequest,
-  RenameWalletRequest,
-  ChangeWalletPasswordRequest,
-  SetWalletPasswordRequest,
+  UpdateWalletPasswordRequest,
 } from './index';
 import {
   // ApiMethodNotYetImplementedError,
@@ -59,48 +57,6 @@ import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 //   const result = ClientApi.isValidRedeemCode('HSoXEnt9X541uHvtzBpy8vKfTo1C9TkAX3wat2c6ikg=');
 //   console.log('isValidRedeemCode', result);
 // })();
-
-
-// TODO: Remove after hd integraton is complete
-// Get all accounts
-// (async () => {
-//   const accounts = await ClientApi.getAccounts();
-//   console.log('accounts:', JSON.stringify(accounts, null, 2));
-// })();
-
-// Get all wallets
-// (async () => {
-//   const wallets = await ClientApi.getWallets();
-//   console.log('wallets:', JSON.stringify(wallets, null, 2));
-// })();
-
-// Create account
-// (async () => {
-//   const account = await ClientApi.newAccount(
-//     '1fCdJRF5Ht9yNvfLW9QYfoH3gBopLwKebhiVSuCwG1U96i8',
-//     'Test',
-//     'secret'
-//   );
-//   console.log('account:', JSON.stringify(account, null, 2));
-// })();
-
-// Create address
-// (async () => {
-//   const address = await ClientApi.newWAddress(
-//     '1fCdJRF5Ht9yNvfLW9QYfoH3gBopLwKebhiVSuCwG1U96i8@1218575036'
-//   );
-//   console.log('addresses:', JSON.stringify(address, null, 2));
-// })();
-
-// Get wallet accounts
-// (async () => {
-//   const addresses = await ClientApi.getWalletAccounts(
-//     '1fsHQP5N7sb9BsjTx7H5vwRrY86ioS7uHFNRf7Px271V6Ch'
-//   );
-//   console.log('addresses:', JSON.stringify(addresses, null, 2));
-// })();
-// TODO: ^^ Remove after hd integraton is complete
-
 
 const getUserLocaleFromLocalStorage = () => new Promise((resolve, reject) => {
   localStorage.get('userLocale', (error, response) => {
@@ -322,10 +278,12 @@ export default class CardanoClientApi {
   async restoreWallet(request: RestoreWalletRequest) {
     Log.debug('CardanoClientApi::restoreWallet called');
     const { recoveryPhrase, walletName, walletPassword } = request;
+    const assurance = 'CWANormal';
+    const unit = 0;
     try {
       // 1. restore wallet
       const wallet: ApiWallet = await ClientApi.restoreWallet(
-        walletName, 'CWANormal', 0, recoveryPhrase, walletPassword
+        walletName, assurance, unit, recoveryPhrase, walletPassword
       );
       Log.debug('CardanoClientApi::restoreWallet success');
 
@@ -366,10 +324,10 @@ export default class CardanoClientApi {
 
   async redeemAda(request: RedeemAdaRequest) {
     Log.debug('CardanoClientApi::redeemAda called');
-    const { redemptionCode, walletId, walletPassword } = request;
+    const { redemptionCode, accountId, walletPassword } = request;
     try {
       const response: ApiTransaction = await ClientApi.redeemAda(
-        redemptionCode, walletId, walletPassword
+        redemptionCode, accountId, walletPassword
       );
       Log.debug('CardanoClientApi::redeemAda success');
       return _createTransactionFromServerData(response);
@@ -381,10 +339,10 @@ export default class CardanoClientApi {
 
   async redeemPaperVendedAda(request: RedeemPaperVendedAdaRequest) {
     Log.debug('CardanoClientApi::redeemAdaPaperVend called');
-    const { shieldedRedemptionKey, mnemonics, walletId, walletPassword } = request;
+    const { shieldedRedemptionKey, mnemonics, accountId, walletPassword } = request;
     try {
       const response: ApiTransaction = await ClientApi.redeemAdaPaperVend(
-        shieldedRedemptionKey, mnemonics, walletId, walletPassword
+        shieldedRedemptionKey, mnemonics, accountId, walletPassword
       );
       Log.debug('CardanoClientApi::redeemAdaPaperVend success');
       return _createTransactionFromServerData(response);
@@ -545,9 +503,10 @@ export default class CardanoClientApi {
   async updateWallet(request: UpdateWalletRequest) {
     Log.debug('CardanoClientApi::updateWallet called: ', JSON.stringify(request, null, 2));
     const { walletId, name, assurance } = request;
+    const unit = 0;
     try {
       const response: ApiWallet = await ClientApi.updateWallet(
-        walletId, name, assurance, 0
+        walletId, name, assurance, unit
       );
       Log.debug('CardanoClientApi::updateWallet success: ', JSON.stringify(response, null, 2));
       return response;
@@ -557,42 +516,15 @@ export default class CardanoClientApi {
     }
   }
 
-  // TODO: remove this function - updateWallet is used for wallet rename
-  async renameWallet(request: RenameWalletRequest) {
-    Log.debug('CardanoClientApi::renameWallet called: ', JSON.stringify(request, null, 2));
-    const { walletId, name } = request;
-    try {
-      const response: ApiWallet = await ClientApi.renameWalletSet(walletId, name);
-      Log.debug('CardanoClientApi::renameWallet success: ', JSON.stringify(response, null, 2));
-      return response;
-    } catch (error) {
-      Log.error('CardanoClientApi::renameWallet error: ', error);
-      throw new GenericApiError();
-    }
-  }
-
-  async changeWalletPassword(request: ChangeWalletPasswordRequest) {
-    Log.debug('CardanoClientApi::changeWalletPassword called: ', JSON.stringify(request, null, 2));
+  async updateWalletPassword(request: UpdateWalletPasswordRequest) {
+    Log.debug('CardanoClientApi::updateWalletPassword called');
     const { walletId, oldPassword, newPassword } = request;
     try {
       await ClientApi.changeWalletPass(walletId, oldPassword, newPassword);
-      Log.debug('CardanoClientApi::changeWalletPassword success');
+      Log.debug('CardanoClientApi::updateWalletPassword success');
       return true;
     } catch (error) {
-      Log.error('CardanoClientApi::changeWalletPassword error: ', error);
-      throw new GenericApiError();
-    }
-  }
-
-  async setWalletPassword(request: SetWalletPasswordRequest) {
-    Log.debug('CardanoClientApi::setWalletPassword called: ', JSON.stringify(request, null, 2));
-    const { walletId, password } = request;
-    try {
-      await ClientApi.changeWalletPass(walletId, null, password);
-      Log.debug('CardanoClientApi::setWalletPassword success');
-      return true;
-    } catch (error) {
-      Log.error('CardanoClientApi::setWalletPassword error: ', error);
+      Log.error('CardanoClientApi::updateWalletPassword error: ', error);
       throw new GenericApiError();
     }
   }
