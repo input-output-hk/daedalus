@@ -28,6 +28,7 @@ Changelog
 - Spending password on "Ada redemption" forms
 - Acceptance test for "Restore wallet with and without spending password" feature
 - Acceptance test for "Create wallet with spending password" feature
+- Acceptance test for "Import wallet with/without spending password " feature
 
 ### Fixes
 
