@@ -19,8 +19,27 @@ export default function () {
         daedalus.stores.wallets.refreshWalletsData().then(() => done(wallet));
       });
     }, defaultWalletKeyFilePath);
-    this.wallet = result.value;
-    this.wallets = [this.wallet];
+
+    if (this.wallets != null) {
+      this.wallets.push(result.value);
+    } else {
+      this.wallets = result.value;
+    }
+  });
+
+  this.Given(/^I have a wallet with funds and password$/, async function () {
+    const result = await this.client.executeAsync(function(filePath, done) {
+      // This assumes that we always have a default wallet on the backend!
+      daedalus.api.importWalletFromKey({ filePath, walletPassword: 'secret' }).then((wallet) => {
+        daedalus.stores.wallets.refreshWalletsData().then(() => done(wallet));
+      });
+    }, defaultWalletKeyFilePath);
+
+    if (this.wallets != null) {
+      this.wallets.push(result.value);
+    } else {
+      this.wallets = result.value;
+    }
   });
 
   this.Given(/^I have the following wallets:$/, async function (table) {
@@ -29,7 +48,7 @@ export default function () {
         return daedalus.api.createWallet({
           name: wallet.name,
           mnemonic: daedalus.api.generateMnemonic().join(' '),
-          password: null,
+          password: wallet.password || null,
         });
       }))
       .then(() => {
