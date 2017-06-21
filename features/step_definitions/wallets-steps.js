@@ -29,7 +29,7 @@ export default function () {
         return daedalus.api.createWallet({
           name: wallet.name,
           mnemonic: daedalus.api.generateMnemonic().join(' '),
-          password: null,
+          password: wallet.password || null,
         });
       }))
       .then(() => {
@@ -79,6 +79,18 @@ export default function () {
 
   this.When(/^I click on the create wallet button in add wallet dialog$/, function () {
     return this.waitAndClick('.WalletAddDialog .createWalletButton');
+  });
+
+  this.When(/^I have one wallet address$/, function () {
+    return this.client.waitForVisible('.generatedAddress-1');
+  });
+
+  this.When(/^I enter spending password "([^"]*)"$/, function (password) {
+    return this.client.setValue('.WalletReceive_spendingPassword input', password);
+  });
+
+  this.When(/^I click on the "Generate new address" button$/, function () {
+    return this.client.click('.generateAddressButton');
   });
 
   this.When(/^I click on the restore wallet button in add wallet dialog$/, function () {
@@ -273,6 +285,10 @@ export default function () {
     let transactionAmounts = await this.client.getText('.Transaction_amount');
     transactionAmounts = [].concat(transactionAmounts);
     expect(expectedData.amount).to.include(transactionAmounts[0]);
+  });
+
+  this.Then(/^I should see two wallet addresses$/, function () {
+    return this.client.waitForVisible('.generatedAddress-2');
   });
 
 };
