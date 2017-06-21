@@ -28,7 +28,8 @@ Changelog
 - Spending password on "Ada redemption" forms
 - Acceptance test for "Restore wallet with and without spending password" feature
 - Acceptance test for "Create wallet with spending password" feature
-- Acceptance test for "Import wallet with/without spending password " feature
+- Acceptance test for "Import wallet with/without spending password" feature
+- Acceptance test for "Generate wallet address" feature
 
 ### Fixes
 
@@ -44,6 +45,7 @@ Changelog
 - Added missing "Add wallet" button label translation key
 - Prevent "Delete wallet" dialog from closing until deletion is over
 - Improved error handling on "Set/Change wallet password" dialog
+- Improved API response errors handling
 
 ### Chores
 
