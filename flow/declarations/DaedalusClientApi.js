@@ -92,11 +92,11 @@ declare module 'daedalus-client-api' {
   //    - `getHistory` - any other combination will throw an error
   // * `getHistoryByWallet(wId, 1, 10)` - search only by wallet
   // * `getHistoryByAccount(acId, 1, 10)` - search only by account
-  // * `getHistoryByAddress(acId, addressId, 1, 10)` - search  by account and address within
+  // * `getAddressHistory(acId, addressId, 1, 10)` - search  by account and address within
   declare function getHistory(walletId: ?string, accountId: ?string, addressId: ?string, skip: number, limit: number): Promise<ApiTransactions>;
   declare function getHistoryByWallet(walletId: string, skip: number, limit: number): Promise<ApiTransactions>;
   declare function getHistoryByAccount(accountId: string, skip: number, limit: number): Promise<ApiTransactions>;
-  // declare function getHistoryByAddress(accountId: string, addressId: string, skip: number, limit: number): Promise<ApiTransactions>;
+  declare function getAddressHistory(accountId: string, addressId: string, skip: number, limit: number): Promise<ApiTransactions>;
 
   declare function newPayment(senderAccountId: string, receiverAddress: string, amount: string, password: ?string): Promise<ApiTransaction>;
 
@@ -114,7 +114,6 @@ declare module 'daedalus-client-api' {
   declare function importWallet(filePath: string, walletPassword: ?string): Promise<ApiWallet>;
   declare function newWAddress(accountId: string, walletPassword: ?string): Promise<ApiAddress>;
   declare function changeWalletPass(walletId: string, oldPassword: ?string, newPassword: ?string): Promise<{}>;
-  declare function renameWalletSet(walletId: string, walletName: string): Promise<ApiWallet>;
 
   // Test
   declare function testReset(): void;

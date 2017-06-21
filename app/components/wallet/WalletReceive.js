@@ -141,6 +141,7 @@ export default class WalletReceive extends Component {
     ]);
 
     const generateAddressButtonClasses = classnames([
+      'generateAddressButton',
       walletHasPassword ? styles.submitWithPasswordButton : styles.submitButton,
       isSubmitting ? styles.spinning : null,
     ]);
@@ -218,6 +219,7 @@ export default class WalletReceive extends Component {
               if (!isAddressVisible) return null;
 
               const addressClasses = classnames([
+                'generatedAddress-' + (index + 1),
                 styles.walletAddress,
                 address.isUsed ? styles.usedWalletAddress : null,
                 isSidebarExpanded ? styles.fullWidthOnSmallScreen : null,

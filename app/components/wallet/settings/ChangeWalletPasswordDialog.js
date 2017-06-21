@@ -153,7 +153,7 @@ export default class ChangeWalletPasswordDialog extends Component {
         const { removePassword } = this.state;
         const { currentPassword, walletPassword } = form.values();
         const passwordData = {
-          oldPassword: currentPassword,
+          oldPassword: currentPassword || null,
           newPassword: removePassword ? null : walletPassword,
         };
         this.props.onSave(passwordData);
