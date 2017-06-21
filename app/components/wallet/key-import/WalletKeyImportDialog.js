@@ -201,8 +201,14 @@ export default class WalletKeyImportDialog extends Component {
           </div>
 
           <div className={walletPasswordFieldsClasses}>
-            <Input {...form.$('walletPassword').bind()} />
-            <Input {...form.$('repeatPassword').bind()} />
+            <Input
+              className="walletPassword"
+              {...form.$('walletPassword').bind()}
+            />
+            <Input
+              className="repeatedPassword"
+              {...form.$('repeatPassword').bind()}
+            />
           </div>
         </div>
 

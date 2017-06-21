@@ -102,6 +102,36 @@ export default function () {
     return this.waitAndClick('.WalletAddDialog .createWalletButton');
   });
 
+  this.When(/^I click on the import wallet button in add wallet dialog$/, function () {
+    return this.waitAndClick('.WalletAddDialog .importWalletButton');
+  });
+
+  this.When(/^I see the import wallet dialog$/, function () {
+    return this.client.waitForVisible('.WalletKeyImportDialog');
+  });
+
+  this.When(/^I select a valid wallet import key file$/, async function () {
+    await this.client.chooseFile('.WalletKeyImportDialog_keyUpload .FileUploadWidget_dropZone input', defaultWalletKeyFilePath);
+  });
+
+  this.When(/^I toggle "Activate to create password" switch on the import wallet key dialog$/, function () {
+    return this.waitAndClick('.WalletKeyImportDialog .switch_field');
+  });
+
+  this.When(/^I enter wallet spending password:$/, async function (table) {
+    const fields = table.hashes()[0];
+    await this.client.setValue('.WalletKeyImportDialog .walletPassword input', fields.password);
+    await this.client.setValue('.WalletKeyImportDialog .repeatedPassword input', fields.repeatedPassword);
+  });
+
+  this.When(/^I click on the import wallet button in import wallet dialog$/, function () {
+    return this.waitAndClick('.WalletKeyImportDialog .dialog_button');
+  });
+
+  this.When(/^I should see wallet spending password inputs$/, function () {
+    return this.client.waitForVisible('.WalletKeyImportDialog .walletPassword input');
+  });
+
   this.When(/^I have one wallet address$/, function () {
     return this.client.waitForVisible('.generatedAddress-1');
   });
