@@ -5,6 +5,8 @@ import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import cardanoLogo from '../../assets/images/cardano-logo.svg';
+import daedalusLogoWhite from '../../assets/images/daedalus-logo-loading-white.svg';
+import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.svg';
 import cardanoLogoWhite from '../../assets/images/cardano-logo-white.svg';
 import styles from './Loading.scss';
 
@@ -65,12 +67,14 @@ export default class Loading extends Component {
       isConnecting ? styles['is-connecting'] : null,
       isSyncing ? styles['is-syncing'] : null,
     ]);
-    const logo = isConnecting ? cardanoLogoWhite : cardanoLogo;
+    const daedalusLoadingLogo = isConnecting ? daedalusLogoWhite : daedalusLogo;
+    const cardanoLoadingLogo = isConnecting ? cardanoLogoWhite : cardanoLogo;
     const connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
 
     return (
       <div className={componentStyles}>
-        <img className={styles.logo} src={logo} role="presentation" />
+        <img className={styles.cardanoLogo} src={cardanoLoadingLogo} role="presentation" />
+        <img className={styles.daedalusLogo} src={daedalusLoadingLogo} role="presentation" />
         {hasLoadedCurrentLocale && (
           <div>
             {isConnecting && !hasBlockSyncingStarted && (
