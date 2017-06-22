@@ -21,12 +21,20 @@
   color: #5e6066;
 }
 
-.logo {
+.cardanoLogo {
   display: block;
   left: calc(50% - (86px/2));
   position: absolute;
-  top: calc(50% - 40px);
+  top: calc(50% - 135px/2 - 115px);
   width: 86px;
+}
+
+.daedalusLogo {
+  display: block;
+  left: calc(50% - (173px/2));
+  position: absolute;
+  top: calc(50% - 135px/2);
+  width: 173px;
 }
 
 .headline {
