@@ -45,6 +45,7 @@ export default class WalletSettingsStore extends Store {
       const walletIndex = _.findIndex(result, { id: walletId });
       result[walletIndex] = wallet;
     });
+    this.stores.wallets._setActiveWallet({ walletId });
   };
 
   @action _updateWalletPassword = async ({ walletId, oldPassword, newPassword }: {
@@ -53,7 +54,8 @@ export default class WalletSettingsStore extends Store {
     await this.updateWalletPasswordRequest.execute({ walletId, oldPassword, newPassword });
     this.actions.dialogs.closeActiveDialog.trigger();
     this.updateWalletPasswordRequest.reset();
-    this.stores.wallets.refreshWalletsData();
+    await this.stores.wallets.refreshWalletsData();
+    this.stores.wallets._setActiveWallet({ walletId });
   };
 
   @action _updateWalletField = async ({ field, value }: { field: string, value: string }) => {
@@ -68,6 +70,7 @@ export default class WalletSettingsStore extends Store {
       const walletIndex = _.findIndex(result, { id: walletId });
       result[walletIndex] = wallet;
     });
+    this.stores.wallets._setActiveWallet({ walletId });
   };
 
   @action _startEditingWalletField = ({ field }: { field: string }) => {
