@@ -54,8 +54,7 @@ export default class WalletSettingsStore extends Store {
     await this.updateWalletPasswordRequest.execute({ walletId, oldPassword, newPassword });
     this.actions.dialogs.closeActiveDialog.trigger();
     this.updateWalletPasswordRequest.reset();
-    await this.stores.wallets.refreshWalletsData();
-    this.stores.wallets._setActiveWallet({ walletId });
+    this.stores.wallets.refreshWalletsData();
   };
 
   @action _updateWalletField = async ({ field, value }: { field: string, value: string }) => {

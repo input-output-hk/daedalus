@@ -32,7 +32,7 @@ Changelog
 - Acceptance test for "Send money from a wallet with spending password" feature
 - Acceptance test for "Generate wallet address" feature
 - Final version of Daedalus logo added on the loading screen
-- Final version of Daedalus logo added in the top-bar 
+- Final version of Daedalus logo added in the top-bar
 
 ### Fixes
 
@@ -50,6 +50,7 @@ Changelog
 - Improved error handling on "Set/Change wallet password" dialog
 - Improved API response errors handling
 - Update active wallet after wallet update actions
+- Improved active wallet data refresh after wallet balance/settings change
 
 ### Chores
 

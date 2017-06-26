@@ -131,8 +131,7 @@ export default class WalletsStore extends Store {
       ...transactionDetails,
       sender: accountId,
     });
-    await this.refreshWalletsData();
-    this._setActiveWallet({ walletId: wallet.id });
+    this.refreshWalletsData();
     this.goToWalletRoute(wallet.id);
   };
 
@@ -183,6 +182,11 @@ export default class WalletsStore extends Store {
     if (this.stores.networkStatus.isConnected) {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
+      runInAction('refresh active wallet', () => {
+        if (this.active) {
+          this._setActiveWallet({ walletId: this.active.id });
+        }
+      });
       runInAction('refresh address data', () => {
         const walletIds = result.map((wallet: Wallet) => wallet.id);
         this.stores.addresses.addressesRequests = walletIds.map(walletId => ({
