@@ -131,7 +131,8 @@ export default class WalletsStore extends Store {
       ...transactionDetails,
       sender: accountId,
     });
-    this.refreshWalletsData();
+    await this.refreshWalletsData();
+    this._setActiveWallet({ walletId: wallet.id });
     this.goToWalletRoute(wallet.id);
   };
 
