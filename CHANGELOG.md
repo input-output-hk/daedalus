@@ -31,6 +31,8 @@ Changelog
 - Acceptance test for "Import wallet with/without spending password" feature
 - Acceptance test for "Send money from a wallet with spending password" feature
 - Acceptance test for "Generate wallet address" feature
+- Final version of Daedalus logo added on the loading screen
+- Final version of Daedalus logo added in the top-bar 
 
 ### Fixes
 
@@ -55,6 +57,8 @@ Changelog
 - Purge "translation/messages/app" as a part of npm dev script
 - Use markdown for "Terms of use" content
 - Added manually written Flow types for API responses
+- Testnet version on the testnet label bumped from 0.3 to 0.5
+
 
 ## 0.6.2
 
