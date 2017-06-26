@@ -51,6 +51,7 @@ Changelog
 - Improved API response errors handling
 - Update active wallet after wallet update actions
 - Improved API nextUpdate response errors handling
+- Improved active wallet data refresh after wallet balance/settings change
 
 ### Chores
 
