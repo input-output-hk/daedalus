@@ -401,8 +401,11 @@ export default class CardanoClientApi {
       nextUpdate = JSON.parse(await ClientApi.nextUpdate());
       Log.debug('CardanoClientApi::nextUpdate success: ', stringifyData(nextUpdate));
     } catch (error) {
-      Log.debug('CardanoClientApi::nextUpdate error: ' + stringifyError(error));
-      // TODO: Api is trowing an error when update is not available, handle other errors
+      if (error.message.includes('No updates available')) {
+        Log.debug('CardanoClientApi::nextUpdate success: No updates available');
+      } else {
+        Log.error('CardanoClientApi::nextUpdate error: ' + stringifyError(error));
+      }
     }
     return nextUpdate;
     // TODO: remove hardcoded response after node update is tested
@@ -577,7 +580,7 @@ export default class CardanoClientApi {
 // ========== LOGGING =========
 
 const stringifyData = (data) => JSON.stringify(data, null, 2);
-const stringifyError = (error) => JSON.stringify(error, Object.getOwnPropertyNames(error));
+const stringifyError = (error) => JSON.stringify(error, Object.getOwnPropertyNames(error), 2);
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
 
