@@ -52,6 +52,7 @@ Changelog
 - Update active wallet after wallet update actions
 - Improved API nextUpdate response errors handling
 - Improved active wallet data refresh after wallet balance/settings change
+- Fixed failing wallet add/restore/import acceptance tests
 
 ### Chores
 

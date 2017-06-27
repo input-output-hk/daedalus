@@ -66,7 +66,6 @@ export default class WalletBackupDialogContainer extends Component {
         onClear={clearEnteredRecoveryPhrase.trigger}
         onFinishBackup={() => {
           finishWalletBackup.trigger();
-          actions.dialogs.closeActiveDialog.trigger();
         }}
         onRestartBackup={restartWalletBackup.trigger}
         recoveryPhraseShuffled={recoveryPhraseShuffled}
