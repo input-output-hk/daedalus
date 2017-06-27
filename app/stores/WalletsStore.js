@@ -110,6 +110,7 @@ export default class WalletsStore extends Store {
     const wallet = await this.createWalletRequest.execute(this._newWalletDetails).promise;
     if (wallet) {
       await this.walletsRequest.patch(result => { result.push(wallet); });
+      this.actions.dialogs.closeActiveDialog.trigger();
       this.goToWalletRoute(wallet.id);
     } else {
       this.actions.dialogs.open.trigger({

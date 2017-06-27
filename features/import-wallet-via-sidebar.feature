@@ -15,6 +15,7 @@ Feature: Import Wallet via Sidebar
     And I see the import wallet dialog
     And I select a valid wallet import key file
     And I click on the import wallet button in import wallet dialog
+    Then I should not see the import wallet dialog anymore
     And I should have newly created "Genesis wallet" wallet loaded
     And I should be on the "Genesis wallet" wallet "summary" screen
 
@@ -31,5 +32,6 @@ Feature: Import Wallet via Sidebar
     | password | repeatedPassword |
     | secret   | secret           |
     And I click on the import wallet button in import wallet dialog
+    Then I should not see the import wallet dialog anymore
     And I should have newly created "Genesis wallet" wallet loaded
     And I should be on the "Genesis wallet" wallet "summary" screen
