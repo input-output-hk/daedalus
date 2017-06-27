@@ -233,6 +233,7 @@ export default class WalletsStore extends Store {
   @action _setActiveWallet = ({ walletId }: { walletId: string }) => {
     if (this.hasAnyWallets) {
       this.active = this.all.find(wallet => wallet.id === walletId);
+      this.stores.addresses.lastGeneratedAddress = null;
     }
   };
 
