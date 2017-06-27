@@ -61,7 +61,7 @@ export default class WalletsStore extends Store {
       this._toggleAddWalletDialogOnWalletsLoaded,
     ]);
     if (environment.CARDANO_API) {
-      setInterval(this.refreshWalletsData, this.WALLET_REFRESH_INTERVAL);
+      setInterval(this.pollRefresh, this.WALLET_REFRESH_INTERVAL);
     }
   }
 
@@ -110,6 +110,7 @@ export default class WalletsStore extends Store {
     const wallet = await this.createWalletRequest.execute(this._newWalletDetails).promise;
     if (wallet) {
       await this.walletsRequest.patch(result => { result.push(wallet); });
+      this.actions.dialogs.closeActiveDialog.trigger();
       this.goToWalletRoute(wallet.id);
     } else {
       this.actions.dialogs.open.trigger({
@@ -207,6 +208,12 @@ export default class WalletsStore extends Store {
     }
   };
 
+  pollRefresh = async () => {
+    if (this.stores.networkStatus.isSynced) {
+      await this.refreshWalletsData();
+    }
+  };
+
   @action _restoreWallet = async (params: {
     recoveryPhrase: string,
     walletName: string,
@@ -237,6 +244,7 @@ export default class WalletsStore extends Store {
   @action _setActiveWallet = ({ walletId }: { walletId: string }) => {
     if (this.hasAnyWallets) {
       this.active = this.all.find(wallet => wallet.id === walletId);
+      this.stores.addresses.lastGeneratedAddress = null;
     }
   };
 

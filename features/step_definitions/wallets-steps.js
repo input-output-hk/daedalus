@@ -287,6 +287,10 @@ export default function () {
     return this.client.waitForVisible('.DeleteWalletConfirmationDialog_dialog', null, true);
   });
 
+  this.Then(/^I should not see the import wallet dialog anymore$/, function () {
+    return this.client.waitForVisible('.WalletKeyImportDialog', null, true);
+  });
+
   this.Then(/^I should not see the restore wallet dialog anymore$/, function () {
     return this.client.waitForVisible('.WalletRestoreDialog', null, true);
   });
