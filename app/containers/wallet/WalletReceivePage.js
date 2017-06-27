@@ -24,8 +24,28 @@ export default class WalletReceivePage extends Component {
   static defaultProps = { actions: null, stores: null };
   props: InjectedProps;
 
+  state = {
+    copiedAddress: '',
+  };
+
   componentWillUnmount() {
     this.closeNotification();
+    this.resetErrors();
+  }
+
+  handleGenerateAddress = (password :string) => {
+    const { wallets } = this.props.stores;
+    const wallet = wallets.active;
+    if (wallet) {
+      this.props.actions.addresses.createAddress.trigger({
+        walletId: wallet.id,
+        password,
+      });
+    }
+  }
+
+  resetErrors = () => {
+    this.props.actions.addresses.resetErrors.trigger();
   }
 
   closeNotification = () => {
@@ -38,12 +58,16 @@ export default class WalletReceivePage extends Component {
   };
 
   render() {
+    const { copiedAddress } = this.state;
     const actions = this.props.actions;
-    const { wallets, uiNotifications } = this.props.stores;
+    const { wallets, addresses, sidebar, uiNotifications } = this.props.stores;
     const wallet = wallets.active;
 
     // Guard against potential null values
     if (!wallet) throw new Error('Active wallet required for WalletReceivePage.');
+
+    const walletAddress = addresses.active ? addresses.active.id : '';
+    const walletAddresses = addresses.all.reverse();
 
     const notification = {
       id: `${wallet.id}-copyNotification`,
@@ -51,7 +75,7 @@ export default class WalletReceivePage extends Component {
       message: (
         <FormattedHTMLMessage
           {...messages.message}
-          values={{ walletAddress: ellipsis(wallet.address, 8) }}
+          values={{ walletAddress: ellipsis(copiedAddress, 8) }}
         />
       ),
     };
@@ -60,14 +84,20 @@ export default class WalletReceivePage extends Component {
       <VerticalFlexContainer>
 
         <WalletReceive
-          walletName={wallet.name}
-          walletAddress={wallet.address}
-          onCopyAddress={() => {
+          walletAddress={walletAddress}
+          walletAddresses={walletAddresses}
+          onGenerateAddress={this.handleGenerateAddress}
+          onCopyAddress={(address) => {
+            this.setState({ copiedAddress: address });
             actions.notifications.open.trigger({
               id: notification.id,
               duration: notification.duration,
             });
           }}
+          isSidebarExpanded={sidebar.isShowingSubMenus}
+          walletHasPassword={wallet.hasPassword}
+          isSubmitting={addresses.createAddressRequest.isExecuting}
+          error={addresses.error}
         />
 
         <NotificationMessage

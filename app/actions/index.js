@@ -12,6 +12,7 @@ import ProfileActions from './profile-actions';
 import WalletSettingsActions from './wallet-settings-actions';
 import DialogsActions from './dialogs-actions';
 import NotificationsActions from './notifications-actions';
+import AddressesActions from './addresses-actions';
 
 export type ActionsMap = {
   router: RouterActions,
@@ -27,6 +28,7 @@ export type ActionsMap = {
   walletSettings: WalletSettingsActions,
   dialogs: DialogsActions,
   notifications: NotificationsActions,
+  addresses: AddressesActions,
 };
 
 const actionsMap: ActionsMap = {
@@ -43,6 +45,7 @@ const actionsMap: ActionsMap = {
   walletSettings: new WalletSettingsActions(),
   dialogs: new DialogsActions(),
   notifications: new NotificationsActions(),
+  addresses: new AddressesActions(),
 };
 
 export default actionsMap;

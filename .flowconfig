@@ -17,6 +17,7 @@ esproposal.class_static_fields=enable
 esproposal.class_instance_fields=enable
 esproposal.export_star_as=enable
 esproposal.decorators=ignore
+module.ignore_non_literal_requires=true
 module.name_mapper.extension='scss' -> '<PROJECT_ROOT>/flow/mappers/CSSModule.js.flow'
 module.name_mapper.extension='png' -> '<PROJECT_ROOT>/flow/mappers/WebpackAsset.js.flow'
 module.name_mapper.extension='jpg' -> '<PROJECT_ROOT>/flow/mappers/WebpackAsset.js.flow'

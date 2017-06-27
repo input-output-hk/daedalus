@@ -3,6 +3,10 @@ import localStorage from 'electron-json-storage';
 import ClientApi from 'daedalus-client-api';
 import type {
   ApiTransaction,
+  // ApiAccount,
+  ApiAccounts,
+  ApiAddress,
+  // ApiAddresses,
   ApiTransactions,
   ApiWallet,
   ApiWallets,
@@ -13,8 +17,11 @@ import Log from 'electron-log';
 import BigNumber from 'bignumber.js';
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
+import WalletAddress from '../domain/WalletAddress';
 import type {
   CreateWalletRequest,
+  GetAddressesRequest,
+  CreateAddressRequest,
   GetTransactionsRequest,
   CreateTransactionRequest,
   RestoreWalletRequest,
@@ -23,10 +30,7 @@ import type {
   ImportKeyRequest,
   DeleteWalletRequest,
   RedeemPaperVendedAdaRequest,
-  ChangeWalletPasswordRequest,
-  ChangeWalletPasswordResponse,
-  SetWalletPasswordRequest,
-  SetWalletPasswordResponse,
+  UpdateWalletPasswordRequest,
 } from './index';
 import {
   // ApiMethodNotYetImplementedError,
@@ -35,6 +39,7 @@ import {
   RedeemAdaError,
   WalletKeyImportError,
   NotEnoughMoneyToSendError,
+  IncorrectWalletPasswordError,
 } from './errors';
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 
@@ -116,80 +121,137 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::getWallets called');
     try {
       const response: ApiWallets = await ClientApi.getWallets();
-      Log.debug('CardanoClientApi::getWallets success: ', JSON.stringify(response, null, 2));
-      return response.map(data => _createWalletFromServerData(data));
+      Log.debug('CardanoClientApi::getWallets success: ', stringifyData(response));
+      const wallets = response.map(data => _createWalletFromServerData(data));
+      return wallets;
     } catch (error) {
-      Log.error('CardanoClientApi::getWallets error: ', error);
+      Log.error('CardanoClientApi::getWallets error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async getAddresses(request: GetAddressesRequest) {
+    Log.debug('CardanoClientApi::getAddresses called: ', stringifyData(request));
+    const { walletId } = request;
+    try {
+      const response: ApiAccounts = await ClientApi.getWalletAccounts(walletId);
+      Log.debug('CardanoClientApi::getAddresses success: ', stringifyData(response));
+
+      if (!response.length) {
+        return new Promise((resolve) => resolve({ accountId: null, addresses: [] }));
+      }
+
+      // For now only the first wallet account is used
+      const firstAccount = response[0];
+      const firstAccountId = firstAccount.caId;
+      const firstAccountAddresses = firstAccount.caAddresses;
+
+      return new Promise((resolve) => resolve({
+        accountId: firstAccountId,
+        addresses: firstAccountAddresses.map(data => _createAddressFromServerData(data)),
+      }));
+    } catch (error) {
+      Log.error('CardanoClientApi::getAddresses error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
 
   async getTransactions(request: GetTransactionsRequest) {
-    Log.debug('CardanoClientApi::searchHistory called: ', JSON.stringify(request, null, 2));
-    const { walletId, searchTerm, skip, limit } = request;
+    Log.debug('CardanoClientApi::searchHistory called: ', stringifyData(request));
+    const { walletId, skip, limit } = request;
     try {
-      const history: ApiTransactions = await ClientApi.searchHistory(
-        walletId, searchTerm, skip, limit
+      const history: ApiTransactions = await ClientApi.getHistoryByWallet(
+        walletId, skip, limit
       );
-      Log.debug('CardanoClientApi::searchHistory success: ', JSON.stringify(history, null, 2));
+      Log.debug('CardanoClientApi::searchHistory success: ', stringifyData(history));
       return new Promise((resolve) => resolve({
-        transactions: history[0].map(data => _createTransactionFromServerData(data, walletId)),
+        transactions: history[0].map(data => _createTransactionFromServerData(data)),
         total: history[1]
       }));
     } catch (error) {
-      Log.error('CardanoClientApi::searchHistory error: ', error);
+      Log.error('CardanoClientApi::searchHistory error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
 
   async createWallet(request: CreateWalletRequest) {
+    // wallets are created WITHOUT an account!!!
+    // after creation ClientApi.newAccount API call should be triggered
     Log.debug('CardanoClientApi::createWallet called');
+    const { name, mnemonic, password } = request;
+    const assurance = 'CWANormal';
+    const unit = 0;
     try {
-      const response: ApiWallet = await ClientApi.newWallet(
-        'CWTPersonal', 'ADA', request.name, request.mnemonic, request.password
+      // 1. create wallet
+      const wallet: ApiWallet = await ClientApi.newWallet(
+        name, assurance, unit, mnemonic, password
       );
-      Log.debug('CardanoClientApi::createWallet success: ', JSON.stringify(response, null, 2));
-      return _createWalletFromServerData(response);
+      Log.debug('CardanoClientApi::createWallet success: ', stringifyData(wallet));
+
+      // 2. create account
+      await ClientApi.newAccount(wallet.cwId, name, password);
+
+      return _createWalletFromServerData(wallet);
     } catch (error) {
-      Log.error('CardanoClientApi::createWallet error: ', error);
+      Log.error('CardanoClientApi::createWallet error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
 
   async deleteWallet(request: DeleteWalletRequest) {
-    Log.debug('CardanoClientApi::deleteWallet called: ', JSON.stringify(request, null, 2));
+    Log.debug('CardanoClientApi::deleteWallet called: ', stringifyData(request));
     try {
       await ClientApi.deleteWallet(request.walletId);
-      Log.debug('CardanoClientApi::deleteWallet success: ', JSON.stringify(request, null, 2));
+      Log.debug('CardanoClientApi::deleteWallet success: ', stringifyData(request));
       return true;
     } catch (error) {
-      Log.error('CardanoClientApi::deleteWallet error: ', error);
+      Log.error('CardanoClientApi::deleteWallet error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
 
   async createTransaction(request: CreateTransactionRequest) {
     Log.debug('CardanoClientApi::createTransaction called');
-    const { sender, receiver, amount, currency, password } = request;
-    const description = 'no description provided';
-    const title = 'no title provided';
+    const { sender, receiver, amount, password } = request;
+    // sender must be set as accountId (account.caId) and not walletId
     try {
-      const response: ApiTransaction = await ClientApi.sendExtended(
-        sender, receiver, amount, currency, title, description, password
+      const response: ApiTransaction = await ClientApi.newPayment(
+        sender, receiver, amount, password
       );
-      Log.debug('CardanoClientApi::createTransaction success: ', JSON.stringify(response, null, 2));
+      Log.debug('CardanoClientApi::createTransaction success: ', stringifyData(response));
       return _createTransactionFromServerData(response);
     } catch (error) {
-      Log.error('CardanoClientApi::createTransaction error: ', error);
-      if (error.message.includes('Not enough money to send')) {
+      Log.error('CardanoClientApi::createTransaction error: ' + stringifyError(error));
+      if (error.message.includes('Not enough money')) {
         throw new NotEnoughMoneyToSendError();
+      }
+      if (error.message.includes('Passphrase doesn\'t match')) {
+        throw new IncorrectWalletPasswordError();
       }
       throw new GenericApiError();
     }
   }
 
-  isValidAddress(currency: string, address: string): Promise<boolean> {
-    return ClientApi.isValidAddress(currency, address);
+  async createAddress(request: CreateAddressRequest) {
+    Log.debug('CardanoClientApi::createAddress called: ', stringifyData(request));
+    const { accountId, password } = request;
+    try {
+      const response: ApiAddress = await ClientApi.newWAddress(
+        accountId, password
+      );
+      Log.debug('CardanoClientApi::createAddress success: ', stringifyData(response));
+      return _createAddressFromServerData(response);
+    } catch (error) {
+      Log.error('CardanoClientApi::createAddress error: ' + stringifyError(error));
+      if (error.message.includes('Passphrase doesn\'t match')) {
+        throw new IncorrectWalletPasswordError();
+      }
+      throw new GenericApiError();
+    }
+  }
+
+  isValidAddress(address: string): Promise<boolean> {
+    return ClientApi.isValidAddress(address);
   }
 
   isValidMnemonic(mnemonic: string): Promise<boolean> {
@@ -215,7 +277,7 @@ export default class CardanoClientApi {
       Log.debug('CardanoClientApi::getWalletRecoveryPhrase success');
       return response;
     } catch (error) {
-      Log.error('CardanoClientApi::getWalletRecoveryPhrase error: ', error);
+      Log.error('CardanoClientApi::getWalletRecoveryPhrase error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
@@ -223,14 +285,21 @@ export default class CardanoClientApi {
   async restoreWallet(request: RestoreWalletRequest) {
     Log.debug('CardanoClientApi::restoreWallet called');
     const { recoveryPhrase, walletName, walletPassword } = request;
+    const assurance = 'CWANormal';
+    const unit = 0;
     try {
-      const restoredWallet: ApiWallet = await ClientApi.restoreWallet(
-        'CWTPersonal', 'ADA', walletName, recoveryPhrase, walletPassword
+      // 1. restore wallet
+      const wallet: ApiWallet = await ClientApi.restoreWallet(
+        walletName, assurance, unit, recoveryPhrase, walletPassword
       );
       Log.debug('CardanoClientApi::restoreWallet success');
-      return _createWalletFromServerData(restoredWallet);
+
+      // 2. create account
+      await ClientApi.newAccount(wallet.cwId, walletName, walletPassword);
+
+      return _createWalletFromServerData(wallet);
     } catch (error) {
-      Log.error('CardanoClientApi::restoreWallet error: ', error);
+      Log.error('CardanoClientApi::restoreWallet error: ' + stringifyError(error));
       // TODO: backend will return something different here, if multiple wallets
       // are restored from the key and if there are duplicate wallets we will get
       // some kind of error and present the user with message that some wallets
@@ -246,12 +315,13 @@ export default class CardanoClientApi {
 
   async importWalletFromKey(request: ImportKeyRequest) {
     Log.debug('CardanoClientApi::importWalletFromKey called');
+    const { filePath, walletPassword } = request;
     try {
-      const importedWallet: ApiWallet = await ClientApi.importKey(request.filePath);
+      const importedWallet: ApiWallet = await ClientApi.importWallet(filePath, walletPassword);
       Log.debug('CardanoClientApi::importWalletFromKey success');
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
-      Log.error('CardanoClientApi::importWalletFromKey error: ', error);
+      Log.error('CardanoClientApi::importWalletFromKey error: ' + stringifyError(error));
       if (error.message.includes('Wallet with that mnemonics already exists')) {
         throw new WalletAlreadyRestoredError();
       }
@@ -261,28 +331,36 @@ export default class CardanoClientApi {
 
   async redeemAda(request: RedeemAdaRequest) {
     Log.debug('CardanoClientApi::redeemAda called');
-    const { redemptionCode, walletId } = request;
+    const { redemptionCode, accountId, walletPassword } = request;
     try {
-      const response: ApiTransaction = await ClientApi.redeemAda(redemptionCode, walletId);
+      const response: ApiTransaction = await ClientApi.redeemAda(
+        redemptionCode, accountId, walletPassword
+      );
       Log.debug('CardanoClientApi::redeemAda success');
       return _createTransactionFromServerData(response);
     } catch (error) {
-      Log.error('CardanoClientApi::redeemAda error: ', error);
+      Log.error('CardanoClientApi::redeemAda error: ' + stringifyError(error));
+      if (error.message.includes('Passphrase doesn\'t match')) {
+        throw new IncorrectWalletPasswordError();
+      }
       throw new RedeemAdaError();
     }
   }
 
   async redeemPaperVendedAda(request: RedeemPaperVendedAdaRequest) {
     Log.debug('CardanoClientApi::redeemAdaPaperVend called');
-    const { shieldedRedemptionKey, mnemonics, walletId } = request;
+    const { shieldedRedemptionKey, mnemonics, accountId, walletPassword } = request;
     try {
       const response: ApiTransaction = await ClientApi.redeemAdaPaperVend(
-        shieldedRedemptionKey, mnemonics, walletId
+        shieldedRedemptionKey, mnemonics, accountId, walletPassword
       );
       Log.debug('CardanoClientApi::redeemAdaPaperVend success');
       return _createTransactionFromServerData(response);
     } catch (error) {
-      Log.error('CardanoClientApi::redeemAdaPaperVend error: ', error);
+      Log.error('CardanoClientApi::redeemAdaPaperVend error: ' + stringifyError(error));
+      if (error.message.includes('Passphrase doesn\'t match')) {
+        throw new IncorrectWalletPasswordError();
+      }
       throw new RedeemAdaError();
     }
   }
@@ -294,7 +372,7 @@ export default class CardanoClientApi {
       Log.debug('CardanoClientApi::generateMnemonic success');
       return response;
     } catch (error) {
-      Log.error('CardanoClientApi::generateMnemonic error: ', error);
+      Log.error('CardanoClientApi::generateMnemonic error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
@@ -312,7 +390,7 @@ export default class CardanoClientApi {
   };
 
   _onNotifyError = (error: Error) => {
-    Log.error('CardanoClientApi::notify error: ', error);
+    Log.error('CardanoClientApi::notify error: ' + stringifyError(error));
     this.notifyCallbacks.forEach(cb => cb.error(error));
   };
 
@@ -321,10 +399,13 @@ export default class CardanoClientApi {
     let nextUpdate = null;
     try {
       nextUpdate = JSON.parse(await ClientApi.nextUpdate());
-      Log.debug('CardanoClientApi::nextUpdate success: ', JSON.stringify(nextUpdate, null, 2));
+      Log.debug('CardanoClientApi::nextUpdate success: ', stringifyData(nextUpdate));
     } catch (error) {
-      Log.debug('CardanoClientApi::nextUpdate error: ', error);
-      // TODO: Api is trowing an error when update is not available, handle other errors
+      if (error.message.includes('No updates available')) {
+        Log.debug('CardanoClientApi::nextUpdate success: No updates available');
+      } else {
+        Log.error('CardanoClientApi::nextUpdate error: ' + stringifyError(error));
+      }
     }
     return nextUpdate;
     // TODO: remove hardcoded response after node update is tested
@@ -363,10 +444,10 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::applyUpdate called');
     try {
       const response = await ClientApi.applyUpdate();
-      Log.debug('CardanoClientApi::applyUpdate success: ', JSON.stringify(response, null, 2));
+      Log.debug('CardanoClientApi::applyUpdate success: ', stringifyData(response));
       ipcRenderer.send('kill-process');
     } catch (error) {
-      Log.error('CardanoClientApi::applyUpdate error: ', error);
+      Log.error('CardanoClientApi::applyUpdate error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
@@ -375,14 +456,14 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::syncProgress called');
     try {
       const response = await ClientApi.syncProgress();
-      Log.debug('CardanoClientApi::syncProgress success: ', JSON.stringify(response, null, 2));
+      Log.debug('CardanoClientApi::syncProgress success: ', stringifyData(response));
       const localDifficulty = response._spLocalCD.getChainDifficulty;
       // In some cases we dont get network difficulty & we need to wait for it from the notify API
       let networkDifficulty = null;
       if (response._spNetworkCD) networkDifficulty = response._spNetworkCD.getChainDifficulty;
       return { localDifficulty, networkDifficulty };
     } catch (error) {
-      Log.error('CardanoClientApi::syncProgress error: ', error);
+      Log.error('CardanoClientApi::syncProgress error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
@@ -394,7 +475,7 @@ export default class CardanoClientApi {
       Log.debug('CardanoClientApi::updateLocale success: ', locale);
       return locale;
     } catch (error) {
-      Log.error('CardanoClientApi::updateLocale error: ', error);
+      Log.error('CardanoClientApi::updateLocale error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
@@ -406,7 +487,7 @@ export default class CardanoClientApi {
       Log.debug('CardanoClientApi::getLocale success: ', locale);
       return locale;
     } catch (error) {
-      Log.error('CardanoClientApi::getLocale error: ', error);
+      Log.error('CardanoClientApi::getLocale error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
@@ -418,7 +499,7 @@ export default class CardanoClientApi {
       Log.debug('CardanoClientApi::setTermsOfUseAcceptance success');
       return true;
     } catch (error) {
-      Log.error('CardanoClientApi::setTermsOfUseAcceptance error: ', error);
+      Log.error('CardanoClientApi::setTermsOfUseAcceptance error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
@@ -430,41 +511,39 @@ export default class CardanoClientApi {
       Log.debug('CardanoClientApi::getTermsOfUseAcceptance success: ', acceptance);
       return acceptance;
     } catch (error) {
-      Log.error('CardanoClientApi::getTermsOfUseAcceptance error: ', error);
+      Log.error('CardanoClientApi::getTermsOfUseAcceptance error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
 
   async updateWallet(request: UpdateWalletRequest) {
-    Log.debug('CardanoClientApi::updateWallet called: ', JSON.stringify(request, null, 2));
-    const { walletId, type, currency, name, assurance } = request;
+    Log.debug('CardanoClientApi::updateWallet called: ', stringifyData(request));
+    const { walletId, name, assurance } = request;
+    const unit = 0;
     try {
-      const response: ApiWallet = await ClientApi.updateWallet(
-        walletId, type, currency, name, assurance, 0
+      const wallet: ApiWallet = await ClientApi.updateWallet(
+        walletId, name, assurance, unit
       );
-      Log.debug('CardanoClientApi::updateWallet success: ', JSON.stringify(response, null, 2));
-      return response;
+      Log.debug('CardanoClientApi::updateWallet success: ', stringifyData(wallet));
+      return _createWalletFromServerData(wallet);
     } catch (error) {
-      Log.error('CardanoClientApi::updateWallet error: ', error);
+      Log.error('CardanoClientApi::updateWallet error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
 
-  // eslint-disable-next-line max-len
-  changeWalletPassword(request: ChangeWalletPasswordRequest): Promise<ChangeWalletPasswordResponse> {
-    return new Promise((resolve) => {
-      // Fake async request here to make it more realistic
-      setTimeout(() => resolve(request), 100);
-    });
+  async updateWalletPassword(request: UpdateWalletPasswordRequest) {
+    Log.debug('CardanoClientApi::updateWalletPassword called');
+    const { walletId, oldPassword, newPassword } = request;
+    try {
+      await ClientApi.changeWalletPass(walletId, oldPassword, newPassword);
+      Log.debug('CardanoClientApi::updateWalletPassword success');
+      return true;
+    } catch (error) {
+      Log.error('CardanoClientApi::updateWalletPassword error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
   }
-
-  setWalletPassword(request: SetWalletPasswordRequest): Promise<SetWalletPasswordResponse> {
-    return new Promise((resolve) => {
-      // Fake async request here to make it more realistic
-      setTimeout(() => resolve(request), 100);
-    });
-  }
-
 
   async testReset() {
     Log.debug('CardanoClientApi::testReset called');
@@ -472,10 +551,10 @@ export default class CardanoClientApi {
     await unsetTermsOfUseAcceptanceFromLocalStorage();
     try {
       const response = await ClientApi.testReset();
-      Log.debug('CardanoClientApi::testReset success: ', JSON.stringify(response, null, 2));
+      Log.debug('CardanoClientApi::testReset success: ', stringifyData(response));
       return response;
     } catch (error) {
-      Log.error('CardanoClientApi::testReset error: ', error);
+      Log.error('CardanoClientApi::testReset error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
@@ -493,54 +572,57 @@ export default class CardanoClientApi {
   };
 
   _onNotifyError = (error: Error) => {
-    Log.debug('CardanoClientApi::notify error: ', error);
+    Log.debug('CardanoClientApi::notify error: ' + stringifyError(error));
     this.notifyCallbacks.forEach(cb => cb.error(error));
   };
 }
 
+// ========== LOGGING =========
+
+const stringifyData = (data) => JSON.stringify(data, null, 2);
+const stringifyError = (error) => JSON.stringify(error, Object.getOwnPropertyNames(error), 2);
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
 
 const _createWalletFromServerData = action(
   'CardanoClientApi::_createWalletFromServerData', (data: ApiWallet) => (
     new Wallet({
-      id: data.cwAddress,
-      address: data.cwAddress,
-      amount: new BigNumber(data.cwAmount.getCoin).dividedBy(LOVELACES_PER_ADA),
-      type: data.cwMeta.cwType,
-      currency: data.cwMeta.cwCurrency,
+      id: data.cwId,
+      amount: new BigNumber(data.cwAmount.getCCoin).dividedBy(LOVELACES_PER_ADA),
       name: data.cwMeta.cwName,
       assurance: data.cwMeta.cwAssurance,
-      hasPassword: false, // TODO: replace with real API response
-      passwordUpdateDate: new Date('2017-02-01'), // TODO: replace with real API response
+      hasPassword: data.cwHasPassphrase,
+      passwordUpdateDate: new Date(data.cwPassphraseLU * 1000),
+    })
+  )
+);
+
+const _createAddressFromServerData = action(
+  'CardanoClientApi::_createAddressFromServerData', (data: ApiAddress) => (
+    new WalletAddress({
+      id: data.cadId,
+      amount: new BigNumber(data.cadAmount.getCCoin).dividedBy(LOVELACES_PER_ADA),
+      isUsed: data.cadIsUsed,
     })
   )
 );
 
 const _createTransactionFromServerData = action(
   'CardanoClientApi::_createTransactionFromServerData', (data: ApiTransaction) => {
-    const isOutgoing = data.ctType.tag === 'CTOut';
-    const coins = data.ctAmount.getCoin;
-    const { ctmTitle, ctmDescription, ctmDate } = data.ctType.contents;
+    const coins = data.ctAmount.getCCoin;
+    const { ctmTitle, ctmDescription, ctmDate } = data.ctMeta;
     return new WalletTransaction({
       id: data.ctId,
-      title: ctmTitle || isOutgoing ? 'Ada sent' : 'Ada received',
-      type: isOutgoing ? 'adaExpend' : 'adaIncome',
-      currency: 'ada',
-      amount: new BigNumber(isOutgoing ? -1 * coins : coins).dividedBy(LOVELACES_PER_ADA),
+      title: ctmTitle || data.ctIsOutgoing ? 'Ada sent' : 'Ada received',
+      type: data.ctIsOutgoing ? 'adaExpend' : 'adaIncome',
+      amount: new BigNumber(data.ctIsOutgoing ? -1 * coins : coins).dividedBy(LOVELACES_PER_ADA),
       date: new Date(ctmDate * 1000),
       description: ctmDescription || '',
       numberOfConfirmations: data.ctConfirmations,
       addresses: {
-        from: [
-          'c936d9b306af8fbb59f43e95244fe84f43b64ec9009ded75cc353f301d9f23a3',
-          '23a3c936d9b306af8fbb59f43e95244fe84f43b64ec9009ded75cc353f301d9f',
-          'd9f23a3c936d9b306af8fbb59f43e95244fe84f43b64ec9009ded75cc353f301',
-        ],
-        to: [
-          '9ded75cc353f301d9f23a3c936d9b306af8fbb59f43e95244fe84f43b64ec900',
-        ],
-      }
+        from: data.ctInputAddrs,
+        to: data.ctOutputAddrs,
+      },
     });
   }
 );

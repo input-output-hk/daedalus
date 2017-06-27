@@ -7,14 +7,10 @@ import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import CheckboxWithLongLabel from '../../widgets/forms/CheckboxWithLongLabel';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
+import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletBackupPrivacyWarningDialog.scss';
 
 const messages = defineMessages({
-  recoveryPhrase: {
-    id: 'wallet.backup.recovery.phrase.dialog.title',
-    defaultMessage: '!!!Recovery phrase',
-    description: 'Title for the "Recovery Phrase" dialog.'
-  },
   recoveryPhraseInstructions: {
     id: 'wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions',
     defaultMessage: `!!!On the following screen, you will see a set of X random words. This is
@@ -78,7 +74,7 @@ export default class WalletBackupPrivacyWarningDialog extends Component {
     return (
       <Dialog
         className={dialogClasses}
-        title={intl.formatMessage(messages.recoveryPhrase)}
+        title={intl.formatMessage(globalMessages.recoveryPhraseDialogTitle)}
         actions={actions}
         onOverlayClick={onCancelBackup}
         active

@@ -39,9 +39,8 @@ export default class WalletsStore extends Store {
   @observable walletExportType: walletExportTypeChoices = 'paperWallet';
   @observable walletExportMnemonic = 'marine joke dry silk ticket thing sugar stereo aim';
 
-  _newWalletDetails: { name: string, currency: string, mnemonic: string, password: ?string, } = {
+  _newWalletDetails: { name: string, mnemonic: string, password: ?string, } = {
     name: '',
-    currency: '',
     mnemonic: '',
     password: null,
   };
@@ -68,7 +67,6 @@ export default class WalletsStore extends Store {
 
   _create = async (params: {
     name: string,
-    currency: string,
     password: ?string,
   }) => {
     Object.assign(this._newWalletDetails, params);
@@ -96,12 +94,14 @@ export default class WalletsStore extends Store {
       if (this.hasAnyWallets) {
         const nextIndexInList = Math.max(indexOfWalletToDelete - 1, 0);
         const nextWalletInList = this.all[nextIndexInList];
+        this.actions.dialogs.closeActiveDialog.trigger();
         this.goToWalletRoute(nextWalletInList.id);
       } else {
         this.active = null;
         this.actions.router.goToRoute.trigger({ route: ROUTES.NO_WALLETS });
       }
     });
+    this.deleteWalletRequest.reset();
     this.refreshWalletsData();
   };
 
@@ -125,12 +125,11 @@ export default class WalletsStore extends Store {
   }) => {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
+    const accountId = this.stores.addresses._getAccountIdByWalletId(wallet.id);
+    if (!accountId) throw new Error('Active account required before sending.');
     await this.sendMoneyRequest.execute({
       ...transactionDetails,
-      walletId: wallet.id,
-      amount: transactionDetails.amount,
-      sender: wallet.address,
-      currency: wallet.currency,
+      sender: accountId,
     });
     this.refreshWalletsData();
     this.goToWalletRoute(wallet.id);
@@ -172,7 +171,7 @@ export default class WalletsStore extends Store {
 
   getWalletById = (id: string): ?Wallet => this.all.find(w => w.id === id);
 
-  isValidAddress = (address: string) => this.api.isValidAddress('ADA', address);
+  isValidAddress = (address: string) => this.api.isValidAddress(address);
 
   isValidMnemonic = (mnemonic: string) => this.api.isValidMnemonic(mnemonic);
 
@@ -183,12 +182,25 @@ export default class WalletsStore extends Store {
     if (this.stores.networkStatus.isConnected) {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
-      runInAction('refresh wallet data', () => {
+      runInAction('refresh active wallet', () => {
+        if (this.active) {
+          this._setActiveWallet({ walletId: this.active.id });
+        }
+      });
+      runInAction('refresh address data', () => {
+        const walletIds = result.map((wallet: Wallet) => wallet.id);
+        this.stores.addresses.addressesRequests = walletIds.map(walletId => ({
+          walletId,
+          allRequest: this.stores.addresses._getAddressesAllRequest(walletId),
+        }));
+        this.stores.addresses._refreshAddresses();
+      });
+      runInAction('refresh transaction data', () => {
         const walletIds = result.map((wallet: Wallet) => wallet.id);
         this.stores.transactions.transactionsRequests = walletIds.map(walletId => ({
           walletId,
           recentRequest: this.stores.transactions._getTransactionsRecentRequest(walletId),
-          allRequest: this.stores.transactions._getTransactionsAllRequest(walletId)
+          allRequest: this.stores.transactions._getTransactionsAllRequest(walletId),
         }));
         this.stores.transactions._refreshTransactionData();
       });
@@ -211,6 +223,7 @@ export default class WalletsStore extends Store {
 
   @action _importWalletFromKey = async (params: {
     filePath: string,
+    walletPassword: ?string,
   }) => {
     const importedWallet = await this.importFromKeyRequest.execute(params).promise;
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');
@@ -247,7 +260,6 @@ export default class WalletsStore extends Store {
   _updateActiveWalletOnRouteChanges = () => {
     const currentRoute = this.stores.app.currentRoute;
     const hasAnyWalletsLoaded = this.hasAnyLoaded;
-
     runInAction('WalletsStore::_updateActiveWalletOnRouteChanges', () => {
       // There are not wallets loaded (yet) -> unset active and return
       if (!hasAnyWalletsLoaded) return this._unsetActiveWallet();

@@ -10,14 +10,10 @@ import DialogBackButton from '../../widgets/DialogBackButton';
 import CheckboxWithLongLabel from '../../widgets/forms/CheckboxWithLongLabel';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import MnemonicWord from './MnemonicWord';
+import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletRecoveryPhraseEntryDialog.scss';
 
 const messages = defineMessages({
-  recoveryPhrase: {
-    id: 'wallet.backup.recovery.phrase.dialog.title',
-    defaultMessage: '!!!Recovery phrase',
-    description: 'Title for the "Recovery Phrase" dialog.'
-  },
   verificationInstructions: {
     id: 'wallet.backup.recovery.phrase.entry.dialog.verification.instructions',
     defaultMessage: '!!!Tap each word in the correct order to verify your recovery phrase',
@@ -113,7 +109,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
     return (
       <Dialog
         className={dialogClasses}
-        title={intl.formatMessage(messages.recoveryPhrase)}
+        title={intl.formatMessage(globalMessages.recoveryPhraseDialogTitle)}
         actions={actions}
         onOverlayClick={onCancelBackup}
         active

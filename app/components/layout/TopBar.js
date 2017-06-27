@@ -35,7 +35,7 @@ export default class TopBar extends Component {
       <div className={styles.walletInfo}>
         <div className={styles.walletName}>{activeWallet.name}</div>
         <div className={styles.walletAmount}>
-          {activeWallet.amount.toFormat(DECIMAL_PLACES_IN_ADA) + ' ' + activeWallet.currency}
+          {activeWallet.amount.toFormat(DECIMAL_PLACES_IN_ADA) + ' ADA'}
         </div>
       </div>
     ) : null;

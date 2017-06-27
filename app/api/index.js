@@ -1,26 +1,42 @@
 // @flow
 import Wallet from '../domain/Wallet';
+import WalletAddress from '../domain/WalletAddress';
 import WalletTransaction from '../domain/WalletTransaction';
 
 // REQUEST & RESPONSE TYPES
 
-export type GetWalletsResponse = IObservableArray<Wallet>;
+export type GetWalletsResponse = Wallet[];
+
+export type GetAddressesResponse = {
+  accountId: ?string,
+  addresses: WalletAddress[],
+};
+
+export type GetAddressesRequest = {
+  walletId: string,
+};
+
+export type CreateAddressResponse = WalletAddress;
+
+export type CreateAddressRequest = {
+  accountId: string,
+  password: ?string,
+};
 
 export type GetTransactionsRequest = {
   walletId: string,
   searchTerm: string,
   skip: number,
-  limit: number
+  limit: number,
 };
 
 export type GetTransactionsResponse = {
   transactions: WalletTransaction[],
-  total: number
+  total: number,
 };
 
 export type CreateWalletRequest = {
   name: string,
-  currency: string,
   mnemonic: string,
   password: ?string,
 };
@@ -34,20 +50,16 @@ export type DeleteWalletRequest = {
 export type DeleteWalletResponse = boolean;
 
 export type CreateTransactionRequest = {
-  walletId: string,
   sender: string,
   receiver: string,
   amount: string,
-  currency: string,
-  title: string,
-  description: ?string,
   password: ?string,
 };
 
 export type CreateTransactionResponse = WalletTransaction;
 
 export type GetWalletRecoveryPhraseRequest = {
-  walletId: string
+  walletId: string,
 };
 
 export type GetWalletRecoveryPhraseResponse = string[];
@@ -62,17 +74,16 @@ export type RestoreWalletResponse = Wallet;
 
 export type UpdateWalletRequest = {
   walletId: string,
-  type: string,
-  currency: string,
   name: string,
   assurance: string,
 };
 
-export type UpdateWalletResponse = boolean;
+export type UpdateWalletResponse = Wallet;
 
 export type RedeemAdaRequest = {
   redemptionCode: string,
-  walletId: string,
+  accountId: string,
+  walletPassword: ?string,
 };
 
 export type RedeemAdaResponse = Wallet;
@@ -80,13 +91,15 @@ export type RedeemAdaResponse = Wallet;
 export type RedeemPaperVendedAdaRequest = {
   shieldedRedemptionKey: string,
   mnemonics: string,
-  walletId: string,
+  accountId: string,
+  walletPassword: ?string,
 };
 
 export type RedeemPaperVendedAdaResponse = RedeemPaperVendedAdaRequest;
 
 export type ImportKeyRequest = {
   filePath: string,
+  walletPassword: ?string,
 };
 
 export type ImportKeyResponse = Wallet;
@@ -102,20 +115,13 @@ export type NextUpdateResponse = {
 
 export type ApplyUpdateResponse = void;
 
-export type ChangeWalletPasswordRequest = {
+export type UpdateWalletPasswordRequest = {
   walletId: string,
-  oldPassword: string,
-  newPassword: string,
+  oldPassword: ?string,
+  newPassword: ?string,
 };
 
-export type ChangeWalletPasswordResponse = ChangeWalletPasswordRequest;
-
-export type SetWalletPasswordRequest = {
-  walletId: string,
-  password: string,
-};
-
-export type SetWalletPasswordResponse = SetWalletPasswordRequest;
+export type UpdateWalletPasswordResponse = boolean;
 
 // API INTERFACE
 
@@ -123,11 +129,13 @@ export type Api = {
   notify(onSuccess: Function, onError?: Function): void,
   reset(): void,
   getWallets(): Promise<GetWalletsResponse>,
+  getAddresses(): Promise<GetAddressesResponse>,
   getTransactions(request: GetTransactionsRequest): Promise<GetTransactionsResponse>,
   createWallet(request: CreateWalletRequest): Promise<CreateWalletResponse>,
   deleteWallet(request: DeleteWalletRequest): Promise<DeleteWalletResponse>,
   createTransaction(request: CreateTransactionRequest): Promise<CreateTransactionResponse>,
-  isValidAddress(currency: string, address: string): Promise<boolean>,
+  createAddress(request: CreateAddressRequest): Promise<CreateAddressResponse>,
+  isValidAddress(address: string): Promise<boolean>,
   isValidMnemonic(mnemonic: string): Promise<boolean>,
   isValidRedemptionKey(mnemonic: string): Promise<boolean>,
   isValidRedemptionMnemonic(mnemonic: string): Promise<boolean>,
@@ -146,7 +154,6 @@ export type Api = {
   setTermsOfUseAcceptance(): Promise<boolean>,
   getTermsOfUseAcceptance(): Promise<boolean>,
   updateWallet(request: UpdateWalletRequest): Promise<UpdateWalletResponse>,
+  updateWalletPassword(request: UpdateWalletPasswordRequest): Promise<UpdateWalletPasswordResponse>,
   testReset(): void,
-  changeWalletPassword(request: ChangeWalletPasswordRequest): Promise<ChangeWalletPasswordResponse>,
-  setWalletPassword(request: SetWalletPasswordRequest): Promise<SetWalletPasswordResponse>,
 };

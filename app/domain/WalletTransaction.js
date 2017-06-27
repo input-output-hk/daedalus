@@ -6,26 +6,28 @@ import { assuranceLevels } from '../config/transactionAssuranceConfig';
 
 export type TransactionType = 'card' | 'adaExpend' | 'adaIncome' | 'exchange';
 
+export type TrasactionAddresses = { from: Array<string>, to: Array<string> };
+
 export default class WalletTransaction {
 
   @observable id: string = '';
   @observable type: TransactionType;
   @observable title: string = '';
-  @observable currency: string = '';
   @observable amount: BigNumber;
   @observable date: Date;
   @observable description: string = '';
   @observable numberOfConfirmations: number = 0;
+  @observable addresses: TrasactionAddresses = { from: [], to: [] };
 
   constructor(data: {
     id: string,
     type: TransactionType,
     title: string,
-    currency: string,
     amount: BigNumber,
     date: Date,
     description: string,
-    numberOfConfirmations: number
+    numberOfConfirmations: number,
+    addresses: TrasactionAddresses,
   }) {
     Object.assign(this, data);
   }

@@ -45,12 +45,13 @@ export default function () {
       if (!isFirst) daedalus.reset();
       const connectToBackend = () => {
         if (daedalus.stores.networkStatus.isSynced) {
-          daedalus.api.testReset();
-          if (isFirst) {
-            daedalus.actions.networkStatus.isSyncedAndReady.once(done);
-          } else {
-            done();
-          }
+          daedalus.api.testReset().then(() => {
+            if (isFirst) {
+              daedalus.actions.networkStatus.isSyncedAndReady.once(done);
+            } else {
+              done();
+            }
+          });
         } else {
           setTimeout(connectToBackend, 100);
         }
