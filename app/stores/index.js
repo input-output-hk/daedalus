@@ -13,6 +13,7 @@ import NodeUpdateStore from './NodeUpdateStore';
 import WalletSettingsStore from './WalletSettingsStore';
 import UiDialogsStore from './UiDialogsStore';
 import UiNotificationsStore from './UiNotificationsStore';
+import AddressesStore from './AddressesStore';
 
 export const storeClasses = {
   app: AppStore,
@@ -28,6 +29,7 @@ export const storeClasses = {
   walletSettings: WalletSettingsStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
+  addresses: AddressesStore,
 };
 
 export type StoresMap = {
@@ -45,6 +47,7 @@ export type StoresMap = {
   walletSettings: WalletSettingsStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
+  addresses: AddressesStore,
 };
 
 // Constant that does never change during lifetime
@@ -63,6 +66,7 @@ const stores = observable({
   walletSettings: null,
   uiDialogs: null,
   uiNotifications: null,
+  addresses: null,
 });
 
 // Set up and return the stores for this app -> also used to reset all stores to defaults

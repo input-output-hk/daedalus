@@ -10,8 +10,8 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Switch from '../../widgets/Switch';
 import { isValidWalletPassword, isValidRepeatPassword } from '../../../lib/validations';
 import globalMessages from '../../../i18n/global-messages';
+import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './ChangeWalletPasswordDialog.scss';
-
 
 const messages = defineMessages({
   dialogTitleSetPassword: {
@@ -72,6 +72,9 @@ export default class ChangeWalletPasswordDialog extends Component {
     onSave: Function,
     onCancel: Function,
     onDataChange: Function,
+    onPasswordSwitchToggle: Function,
+    isSubmitting: boolean,
+    error: ?LocalizableError,
   };
 
   static defaultProps = {
@@ -85,7 +88,6 @@ export default class ChangeWalletPasswordDialog extends Component {
   };
 
   state = {
-    isSubmitting: false,
     removePassword: false,
   };
 
@@ -99,7 +101,7 @@ export default class ChangeWalletPasswordDialog extends Component {
         validators: [({ field }) => {
           if (!this.props.isWalletPasswordSet) return [true];
           return [
-            isValidWalletPassword(field.value), // TODO: replace with real current password check
+            isValidWalletPassword(field.value),
             this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
           ];
         }],
@@ -148,23 +150,21 @@ export default class ChangeWalletPasswordDialog extends Component {
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        this.setState({ isSubmitting: true });
         const { removePassword } = this.state;
         const { currentPassword, walletPassword } = form.values();
         const passwordData = {
-          oldPassword: currentPassword,
+          oldPassword: currentPassword || null,
           newPassword: removePassword ? null : walletPassword,
         };
         this.props.onSave(passwordData);
       },
-      onError: () => {
-        this.setState({ isSubmitting: false });
-      },
+      onError: () => {},
     });
   };
 
   handlePasswordSwitchToggle = (value: boolean) => {
     this.setState({ removePassword: value });
+    this.props.onPasswordSwitchToggle();
   };
 
   handleDataChange = (key: string, value: string) => {
@@ -180,8 +180,15 @@ export default class ChangeWalletPasswordDialog extends Component {
       currentPasswordValue,
       newPasswordValue,
       repeatedPasswordValue,
+      isSubmitting,
+      error,
     } = this.props;
     const { removePassword } = this.state;
+
+    const dialogClasses = classnames([
+      styles.dialog,
+      isSubmitting ? styles.isSubmitting : null
+    ]);
 
     const walletPasswordFieldsClasses = classnames([
       styles.walletPasswordFields,
@@ -204,7 +211,8 @@ export default class ChangeWalletPasswordDialog extends Component {
         )}
         actions={actions}
         active
-        className={styles.dialog}
+        onOverlayClick={onCancel}
+        className={dialogClasses}
       >
 
         {isWalletPasswordSet ? (
@@ -243,6 +251,8 @@ export default class ChangeWalletPasswordDialog extends Component {
             {...form.$('repeatPassword').bind()}
           />
         </div>
+
+        {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
 
         <DialogCloseButton onClose={onCancel} />
 

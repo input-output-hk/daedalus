@@ -13,10 +13,11 @@ export default class ChangeWalletPasswordDialogContainer extends Component {
 
   render() {
     const { actions } = this.props;
-    const { wallets, uiDialogs } = this.props.stores;
+    const { wallets, walletSettings, uiDialogs } = this.props.stores;
     const dialogData = uiDialogs.dataForActiveDialog;
     const { updateDataForActiveDialog } = actions.dialogs;
     const activeWallet = wallets.active;
+    const { updateWalletPasswordRequest } = walletSettings;
 
     if (!activeWallet) throw new Error('Active wallet required for ChangeWalletPasswordDialogContainer.');
 
@@ -28,21 +29,23 @@ export default class ChangeWalletPasswordDialogContainer extends Component {
         repeatedPasswordValue={dialogData.repeatedPasswordValue}
         onSave={(values: { oldPassword: string, newPassword: string }) => {
           const walletId = activeWallet.id;
-          if (!activeWallet.hasPassword) {
-            actions.walletSettings.setWalletPassword.trigger({
-              walletId, password: values.newPassword
-            });
-          } else {
-            actions.walletSettings.changeWalletPassword.trigger({
-              walletId, oldPassword: values.oldPassword, newPassword: values.newPassword
-            });
-          }
-          actions.dialogs.resetActiveDialog.trigger();
+          const { oldPassword, newPassword } = values;
+          actions.walletSettings.updateWalletPassword.trigger({
+            walletId, oldPassword, newPassword
+          });
         }}
-        onCancel={actions.dialogs.closeActiveDialog.trigger}
+        onCancel={() => {
+          actions.dialogs.closeActiveDialog.trigger();
+          updateWalletPasswordRequest.reset();
+        }}
+        onPasswordSwitchToggle={() => {
+          updateWalletPasswordRequest.reset();
+        }}
         onDataChange={data => {
           updateDataForActiveDialog.trigger({ data });
         }}
+        isSubmitting={updateWalletPasswordRequest.isExecuting}
+        error={updateWalletPasswordRequest.error}
       />
     );
   }

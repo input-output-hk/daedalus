@@ -1,39 +1,28 @@
 // @flow
-import { observable, action, computed } from 'mobx';
+import { observable, computed } from 'mobx';
 import BigNumber from 'bignumber.js';
-import WalletTransaction from './WalletTransaction';
 import type { AssuranceMode, AssuranceModeOption } from '../types/transactionAssuranceTypes';
 import { assuranceModes, assuranceModeOptions } from '../config/transactionAssuranceConfig';
 
 export default class Wallet {
 
   id: string = '';
-  type: string;
-  address: string = '';
-  currency: string = '';
+  address: string = 'current address';
   @observable name: string = '';
   @observable amount: BigNumber;
   @observable assurance: AssuranceModeOption;
   @observable hasPassword: boolean;
   @observable passwordUpdateDate: ?Date;
-  @observable transactions: Array<WalletTransaction> = [];
 
   constructor(data: {
     id: string,
-    type: string,
     name: string,
-    address: string,
-    currency: string,
     amount: BigNumber,
     assurance: AssuranceModeOption,
     hasPassword: boolean,
     passwordUpdateDate: ?Date,
   }) {
     Object.assign(this, data);
-  }
-
-  @action addTransaction(transaction: WalletTransaction) {
-    this.transactions.push(transaction);
   }
 
   @computed get hasFunds(): boolean {

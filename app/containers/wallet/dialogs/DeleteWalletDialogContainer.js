@@ -16,6 +16,7 @@ export default class DeleteWalletDialogContainer extends Component {
     const dialogData = uiDialogs.dataForActiveDialog;
     const { updateDataForActiveDialog } = actions.dialogs;
     const activeWallet = wallets.active;
+    const { deleteWalletRequest } = wallets;
 
     // Guard against potential null values
     if (!activeWallet) throw new Error('Active wallet required for DeleteWalletDialogContainer.');
@@ -31,13 +32,16 @@ export default class DeleteWalletDialogContainer extends Component {
         })}
         onContinue={() => {
           actions.wallets.deleteWallet.trigger({ walletId: activeWallet.id });
-          actions.dialogs.resetActiveDialog.trigger();
         }}
-        onCancel={actions.dialogs.closeActiveDialog.trigger}
+        onCancel={() => {
+          actions.dialogs.closeActiveDialog.trigger();
+          deleteWalletRequest.reset();
+        }}
         confirmationValue={dialogData.confirmationValue}
         onConfirmationValueChange={confirmationValue => updateDataForActiveDialog.trigger({
           data: { confirmationValue }
         })}
+        isSubmitting={deleteWalletRequest.isExecuting}
       />
     );
   }

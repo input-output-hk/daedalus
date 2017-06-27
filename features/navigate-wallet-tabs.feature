@@ -6,9 +6,9 @@ Feature: Navigate Wallet Tabs
     And I have a wallet with funds
 
   Scenario Outline: Switching Between Wallet Tabs
-    Given I am on the "Personal Wallet" wallet "<FROM>" screen
+    Given I am on the "Genesis wallet" wallet "<FROM>" screen
     When I click the wallet <TO> button
-    Then I should be on the "Personal Wallet" wallet "<TO>" screen
+    Then I should be on the "Genesis wallet" wallet "<TO>" screen
 
     Examples:
     | FROM    | TO      |

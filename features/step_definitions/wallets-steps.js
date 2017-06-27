@@ -15,12 +15,33 @@ export default function () {
   this.Given(/^I have a wallet with funds$/, async function () {
     const result = await this.client.executeAsync(function(filePath, done) {
       // This assumes that we always have a default wallet on the backend!
-      daedalus.api.importWalletFromKey({ filePath }).then((wallet) => {
-        daedalus.stores.wallets.refreshWalletsData().then(() => done(wallet))
+      daedalus.api.importWalletFromKey({ filePath, walletPassword: null }).then((wallet) => {
+        daedalus.stores.wallets.refreshWalletsData().then(() => done(wallet));
       });
     }, defaultWalletKeyFilePath);
     this.wallet = result.value;
-    this.wallets = [this.wallet];
+    // Add or set the wallets for this scenario
+    if (this.wallets != null) {
+      this.wallets.push(this.wallet);
+    } else {
+      this.wallets = [this.wallet];
+    }
+  });
+
+  this.Given(/^I have a wallet with funds and password$/, async function () {
+    const result = await this.client.executeAsync(function(filePath, done) {
+      // This assumes that we always have a default wallet on the backend!
+      daedalus.api.importWalletFromKey({ filePath, walletPassword: 'secret' }).then((wallet) => {
+        daedalus.stores.wallets.refreshWalletsData().then(() => done(wallet));
+      });
+    }, defaultWalletKeyFilePath);
+    this.wallet = result.value;
+    // Add or set the wallets for this scenario
+    if (this.wallets != null) {
+      this.wallets.push(this.wallet);
+    } else {
+      this.wallets = [this.wallet];
+    }
   });
 
   this.Given(/^I have the following wallets:$/, async function (table) {
@@ -28,7 +49,8 @@ export default function () {
       window.Promise.all(wallets.map((wallet) => {
         return daedalus.api.createWallet({
           name: wallet.name,
-          mnemonic: daedalus.api.generateMnemonic().join(' ')
+          mnemonic: daedalus.api.generateMnemonic().join(' '),
+          password: wallet.password || null,
         });
       }))
       .then(() => {
@@ -61,6 +83,10 @@ export default function () {
     return this.client.waitForVisible('.WalletCreateDialog');
   });
 
+  this.Given(/^I see the restore wallet dialog$/, function () {
+    return this.client.waitForVisible('.WalletRestoreDialog');
+  });
+
   this.Given(/^I dont see the create wallet dialog(?: anymore)?$/, function () {
     return this.client.waitForVisible('.WalletCreateDialog', null, true);
   });
@@ -76,6 +102,52 @@ export default function () {
     return this.waitAndClick('.WalletAddDialog .createWalletButton');
   });
 
+  this.When(/^I click on the import wallet button in add wallet dialog$/, function () {
+    return this.waitAndClick('.WalletAddDialog .importWalletButton');
+  });
+
+  this.When(/^I see the import wallet dialog$/, function () {
+    return this.client.waitForVisible('.WalletKeyImportDialog');
+  });
+
+  this.When(/^I select a valid wallet import key file$/, async function () {
+    await this.client.chooseFile('.WalletKeyImportDialog_keyUpload .FileUploadWidget_dropZone input', defaultWalletKeyFilePath);
+  });
+
+  this.When(/^I toggle "Activate to create password" switch on the import wallet key dialog$/, function () {
+    return this.waitAndClick('.WalletKeyImportDialog .switch_field');
+  });
+
+  this.When(/^I enter wallet spending password:$/, async function (table) {
+    const fields = table.hashes()[0];
+    await this.client.setValue('.WalletKeyImportDialog .walletPassword input', fields.password);
+    await this.client.setValue('.WalletKeyImportDialog .repeatedPassword input', fields.repeatedPassword);
+  });
+
+  this.When(/^I click on the import wallet button in import wallet dialog$/, function () {
+    return this.waitAndClick('.WalletKeyImportDialog .dialog_button');
+  });
+
+  this.When(/^I should see wallet spending password inputs$/, function () {
+    return this.client.waitForVisible('.WalletKeyImportDialog .walletPassword input');
+  });
+
+  this.When(/^I have one wallet address$/, function () {
+    return this.client.waitForVisible('.generatedAddress-1');
+  });
+
+  this.When(/^I enter spending password "([^"]*)"$/, function (password) {
+    return this.client.setValue('.WalletReceive_spendingPassword input', password);
+  });
+
+  this.When(/^I click on the "Generate new address" button$/, function () {
+    return this.client.click('.generateAddressButton');
+  });
+
+  this.When(/^I click on the restore wallet button in add wallet dialog$/, function () {
+    return this.waitAndClick('.WalletAddDialog .restoreWalletButton');
+  });
+
   this.When(/^I click the wallet (.*) button$/, async function (buttonName) {
     const buttonSelector = `.WalletNavButton_component.${buttonName}`;
     await this.client.waitForVisible(buttonSelector);
@@ -86,9 +158,16 @@ export default function () {
     return fillOutWalletSendForm.call(this, table.hashes()[0]);
   });
 
-  this.When(/^I fill out the send form with a transaction to "([^"]*)" wallet:$/, function (walletName, table) {
+  this.When(/^I fill out the send form with a transaction to "([^"]*)" wallet:$/, async function (walletName, table) {
     const values = table.hashes()[0];
-    values.address = this.wallets.find((w) => w.name === walletName).address;
+    const walletId = this.wallets.find((w) => w.name === walletName).id;
+    const walletAddress = await this.client.executeAsync(function(id, done) {
+      daedalus.api.getAddresses({ walletId: id }).then((response) => {
+        const address = response.addresses[0].id;
+        done(address);
+      });
+    }, walletId);
+    values.address = walletAddress.value;
     return fillOutWalletSendForm.call(this, values);
   });
 
@@ -98,10 +177,42 @@ export default function () {
     return this.client.click(submitButton);
   });
 
+  this.When(/^I toggle "Activate to create password" switch on the create wallet dialog$/, function () {
+    return this.waitAndClick('.WalletCreateDialog .switch_field');
+  });
+
+  this.When(/^I toggle "Activate to create password" switch on the restore wallet dialog$/, function () {
+    return this.waitAndClick('.WalletRestoreDialog .switch_field');
+  });
+
   this.When(/^I submit the create wallet dialog with the following inputs:$/, async function (table) {
     const fields = table.hashes()[0];
     await this.client.setValue('.WalletCreateDialog .walletName input', fields.walletName);
     return this.client.click('.WalletCreateDialog .dialog_button');
+  });
+
+  this.When(/^I submit the create wallet with spending password dialog with the following inputs:$/, async function (table) {
+    const fields = table.hashes()[0];
+    await this.client.setValue('.WalletCreateDialog .walletName input', fields.walletName);
+    await this.client.setValue('.WalletCreateDialog .walletPassword input', fields.password);
+    await this.client.setValue('.WalletCreateDialog .repeatedPassword input', fields.repeatedPassword);
+    return this.client.click('.WalletCreateDialog .dialog_button');
+  });
+
+  this.When(/^I submit the restore wallet dialog with the following inputs:$/, async function (table) {
+    const fields = table.hashes()[0];
+    await this.client.setValue('.WalletRestoreDialog .walletName input', fields.walletName);
+    await this.client.setValue('.WalletRestoreDialog .recoveryPhrase textarea', fields.recoveryPhrase);
+    return this.client.click('.WalletRestoreDialog .dialog_button');
+  });
+
+  this.When(/^I submit the restore wallet with spending password dialog with the following inputs:$/, async function (table) {
+    const fields = table.hashes()[0];
+    await this.client.setValue('.WalletRestoreDialog .walletName input', fields.walletName);
+    await this.client.setValue('.WalletRestoreDialog .recoveryPhrase textarea', fields.recoveryPhrase);
+    await this.client.setValue('.WalletRestoreDialog .walletPassword input', fields.password);
+    await this.client.setValue('.WalletRestoreDialog .repeatedPassword input', fields.repeatedPassword);
+    return this.client.click('.WalletRestoreDialog .dialog_button');
   });
 
   this.When(/^I see the create wallet privacy dialog$/, function () {
@@ -176,7 +287,11 @@ export default function () {
     return this.client.waitForVisible('.DeleteWalletConfirmationDialog_dialog', null, true);
   });
 
-  this.Then(/^I should have newly created "Test" wallet loaded$/, async function () {
+  this.Then(/^I should not see the restore wallet dialog anymore$/, function () {
+    return this.client.waitForVisible('.WalletRestoreDialog', null, true);
+  });
+
+  this.Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function (walletName) {
     const result = await this.client.executeAsync(function(done) {
       daedalus.stores.wallets.walletsRequest.execute().then(done);
     });
@@ -186,6 +301,8 @@ export default function () {
     } else {
       this.wallets = result.value;
     }
+    const wallet = getWalletByName.call(this, walletName);
+    expect(wallet).to.be.an('object');
   });
 
   this.Then(/^I should be on some wallet page$/, async function () {
@@ -219,6 +336,10 @@ export default function () {
     let transactionAmounts = await this.client.getText('.Transaction_amount');
     transactionAmounts = [].concat(transactionAmounts);
     expect(expectedData.amount).to.include(transactionAmounts[0]);
+  });
+
+  this.Then(/^I should see two wallet addresses$/, function () {
+    return this.client.waitForVisible('.generatedAddress-2');
   });
 
 };
