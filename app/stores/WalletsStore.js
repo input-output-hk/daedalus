@@ -61,7 +61,7 @@ export default class WalletsStore extends Store {
       this._toggleAddWalletDialogOnWalletsLoaded,
     ]);
     if (environment.CARDANO_API) {
-      setInterval(this.refreshWalletsData, this.WALLET_REFRESH_INTERVAL);
+      setInterval(this.pollRefresh, this.WALLET_REFRESH_INTERVAL);
     }
   }
 
@@ -180,7 +180,7 @@ export default class WalletsStore extends Store {
   isValidPrivateKey = () => { return true; }; // eslint-disable-line
 
   @action refreshWalletsData = async () => {
-    if (this.stores.networkStatus.isSynced) {
+    if (this.stores.networkStatus.isConnected) {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
       runInAction('refresh active wallet', () => {
@@ -205,6 +205,12 @@ export default class WalletsStore extends Store {
         }));
         this.stores.transactions._refreshTransactionData();
       });
+    }
+  };
+
+  pollRefresh = async () => {
+    if (this.stores.networkStatus.isSynced) {
+      await this.refreshWalletsData();
     }
   };
 
