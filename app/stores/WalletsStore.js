@@ -180,7 +180,7 @@ export default class WalletsStore extends Store {
   isValidPrivateKey = () => { return true; }; // eslint-disable-line
 
   @action refreshWalletsData = async () => {
-    if (this.stores.networkStatus.isConnected) {
+    if (this.stores.networkStatus.isConnected && this.stores.networkStatus.isSynced) {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
       runInAction('refresh address data', () => {

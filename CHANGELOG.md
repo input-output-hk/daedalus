@@ -50,6 +50,7 @@ Changelog
 - Improved error handling on "Set/Change wallet password" dialog
 - Improved API response errors handling
 - Update active wallet after wallet update actions
+- Polling should be disable while node is syncing with the blockchain
 
 ### Chores
 
