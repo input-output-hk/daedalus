@@ -98,7 +98,7 @@ mkdir -p ~/.local/bin
 
 export PATH=$HOME/.local/bin:$PATH
 export DAEDALUS_VERSION=${daedalus_version}.${build_id}
-[[ -v NIX_SSL_CERT_FILE ]]; export SSL_CERT_FILE=$NIX_SSL_CERT_FILE
+export SSL_CERT_FILE=$NIX_SSL_CERT_FILE
 
 test -d node_modules/daedalus-client-api/ -a -n "${fast_impure}" || {
         retry 5 curl -o daedalus-bridge.tar.xz \
