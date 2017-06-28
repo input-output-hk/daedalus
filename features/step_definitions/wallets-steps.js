@@ -339,7 +339,14 @@ export default function () {
     expect(expectedTransactionTitle).to.equal(transactionTitles[0]);
     let transactionAmounts = await this.client.getText('.Transaction_amount');
     transactionAmounts = [].concat(transactionAmounts);
-    expect(expectedData.amount).to.include(transactionAmounts[0]);
+    expect(expectedData.amount).to.equal(transactionAmounts[0]);
+  });
+
+  this.Then(/^the balance of "([^"]*)" wallet should be:$/, async function (walletName, table) {
+    const expectedData = table.hashes()[0];
+    const receiverWallet = getWalletByName.call(this, walletName);
+    const receiverWalletBalance = await this.client.getText(`.SidebarWalletsMenu_wallets .Wallet_${receiverWallet.id} .SidebarWalletMenuItem_info`);
+    expect(receiverWalletBalance).to.equal(`${expectedData.balance} ADA`);
   });
 
   this.Then(/^I should see two wallet addresses$/, function () {

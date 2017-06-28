@@ -12,12 +12,17 @@ export default class SidebarWalletMenuItem extends Component {
     title: string,
     info: string,
     active: boolean,
+    className: string,
     onClick: Function,
   };
 
   render() {
-    const { title, info, active, onClick } = this.props;
-    const componentStyles = classNames([styles.component, active ? styles.active : null]);
+    const { title, info, active, className, onClick } = this.props;
+    const componentStyles = classNames([
+      styles.component,
+      active ? styles.active : null,
+      className,
+    ]);
     return (
       <button className={componentStyles} onClick={onClick}>
         <span className={styles.meta}>

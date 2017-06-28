@@ -56,6 +56,7 @@ Changelog
 - Fixed failing wallet add/restore/import acceptance tests
 - Polling should be disable while node is syncing with the blockchain
 - Prevent syncing icon from being always stuck in syncing state by refactoring in-sync state calculation
+- Acceptance test for "Sending money" feature should check receiver wallet's balance
 
 ### Chores
 
