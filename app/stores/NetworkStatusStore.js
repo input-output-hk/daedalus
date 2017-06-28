@@ -9,6 +9,9 @@ import type { GetSyncProgressResponse } from '../api';
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedDifficulties = null;
 
+// Maximum number of out-of-sync blocks above which we consider to be out-of-sync
+const OUT_OF_SYNC_BLOCKS_LIMIT = 10;
+
 const STARTUP_STAGES = {
   CONNECTING: 0,
   SYNCING: 1,
@@ -84,6 +87,23 @@ export default class NetworkStatusStore extends Store {
     return 0;
   }
 
+  @computed get relativeSyncBlocksDifference(): number {
+    if (this.networkDifficulty > 0 && this._localDifficultyStartedWith !== null) {
+      const relativeLocal = this.localDifficulty - this._localDifficultyStartedWith;
+      const relativeNetwork = this.networkDifficulty - this._localDifficultyStartedWith;
+      // In case node is in sync after first local difficulty messages
+      // local and network difficulty will be the same (0)
+      Log.debug('Network difficulty: ', this.networkDifficulty);
+      Log.debug('Local difficulty: ', this.localDifficulty);
+      Log.debug('Relative local difficulty: ', relativeLocal);
+      Log.debug('Relative network difficulty: ', relativeNetwork);
+
+      if (relativeLocal >= relativeNetwork) return 0;
+      return relativeNetwork - relativeLocal;
+    }
+    return 0;
+  }
+
   @computed get syncPercentage(): number {
     if (this.networkDifficulty > 0) {
       if (this.localDifficulty >= this.networkDifficulty) return 100;
@@ -97,7 +117,11 @@ export default class NetworkStatusStore extends Store {
   }
 
   @computed get isSynced(): boolean {
-    return !this.isConnecting && this.syncPercentage >= 100 && this.hasBlockSyncingStarted;
+    return (
+      !this.isConnecting &&
+      this.hasBlockSyncingStarted &&
+      this.relativeSyncBlocksDifference <= OUT_OF_SYNC_BLOCKS_LIMIT
+    );
   }
 
   @action _setInitialDifficulty = async () => {
