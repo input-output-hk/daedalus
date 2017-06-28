@@ -3016,7 +3016,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Invalid password.",
+        "defaultMessage": "!!!Invalid password",
         "description": "Error message shown when invalid wallet password was entered in create wallet dialog.",
         "end": {
           "column": 3,

@@ -33,7 +33,7 @@ export default defineMessages({
   },
   invalidWalletPassword: {
     id: 'global.errors.invalidWalletPassword',
-    defaultMessage: '!!!Invalid password.',
+    defaultMessage: '!!!Invalid password',
     description: 'Error message shown when invalid wallet password was entered in create wallet dialog.'
   },
   invalidRepeatPassword: {
