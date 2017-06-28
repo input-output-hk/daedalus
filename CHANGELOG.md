@@ -33,6 +33,7 @@ Changelog
 - Acceptance test for "Generate wallet address" feature
 - Final version of Daedalus logo added on the loading screen
 - Final version of Daedalus logo added in the top-bar
+- Receive page design update
 
 ### Fixes
 
