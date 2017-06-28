@@ -31,7 +31,7 @@ export default function () {
   this.Given(/^I have a wallet with funds and password$/, async function () {
     const result = await this.client.executeAsync(function(filePath, done) {
       // This assumes that we always have a default wallet on the backend!
-      daedalus.api.importWalletFromKey({ filePath, walletPassword: 'secret' }).then((wallet) => {
+      daedalus.api.importWalletFromKey({ filePath, walletPassword: 'Secret123' }).then((wallet) => {
         daedalus.stores.wallets.refreshWalletsData().then(() => done(wallet));
       });
     }, defaultWalletKeyFilePath);

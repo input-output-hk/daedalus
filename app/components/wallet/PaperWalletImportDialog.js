@@ -71,8 +71,8 @@ const messages = defineMessages({
   },
   passwordSwitchPlaceholder: {
     id: 'paper.wallet.import.dialog.passwordSwitchPlaceholder',
-    defaultMessage: '!!!Activate to create password',
-    description: 'Text for the "Activate to create password" switch in the paper wallet import dialog.',
+    defaultMessage: '!!!Activate to create password. Note that password needs to be at least 7 characters long, and have at least 1 uppercase, 1 lovercase letter and 1 number.',
+    description: 'Text for the "Activate to create password. Note that password needs to be at least 7 characters long, and have at least 1 uppercase, 1 lovercase letter and 1 number." switch in the paper wallet import dialog.',
   },
   walletPasswordLabel: {
     id: 'paper.wallet.import.dialog.walletPasswordLabel',
@@ -231,12 +231,12 @@ export default class PaperWalletImportDialog extends Component {
     const dialogClasses = classnames([
       styles.component,
       'PaperWalletImportDialog',
-      isSubmitting ? styles.isSubmitting : null
+      isSubmitting ? styles.isSubmitting : null,
     ]);
 
     const walletPasswordFieldsClasses = classnames([
       styles.walletPasswordFields,
-      createPassword ? styles.show : null
+      createPassword ? styles.show : null,
     ]);
 
     return (

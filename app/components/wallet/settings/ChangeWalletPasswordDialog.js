@@ -250,6 +250,10 @@ export default class ChangeWalletPasswordDialog extends Component {
             onChange={(value) => this.handleDataChange('repeatedPasswordValue', value)}
             {...form.$('repeatPassword').bind()}
           />
+
+          <p className={styles.passwordInstructions}>
+            {intl.formatMessage(globalMessages.passwordInstructions)}
+          </p>
         </div>
 
         {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
