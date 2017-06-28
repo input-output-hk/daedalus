@@ -18,6 +18,9 @@ Feature: Send Money to Receiver
     And the latest transaction should show:
       | title                      | amount    |
       | wallet.transaction.adaSent | -0.000010 |
+    And the balance of "first" wallet should be:
+      | balance  |
+      | 0.000010 |
 
   Scenario: User Sends Money from wallet with spending password to Receiver
     Given I have a wallet with funds and password
@@ -30,6 +33,9 @@ Feature: Send Money to Receiver
     And the latest transaction should show:
       | title                      | amount    |
       | wallet.transaction.adaSent | -0.000010 |
+    And the balance of "first" wallet should be:
+      | balance  |
+      | 0.000010 |
 
   Scenario: User Submits Empty Form
     Given I have a wallet with funds

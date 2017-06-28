@@ -55,6 +55,7 @@ Changelog
 - Improved active wallet data refresh after wallet balance/settings change
 - Fixed failing wallet add/restore/import acceptance tests
 - Polling should be disable while node is syncing with the blockchain
+- Acceptance test for "Sending money" feature should check receiver wallet's balance
 
 ### Chores
 
