@@ -11,6 +11,7 @@
 
   .walletPasswordFields {
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     max-height: 0;
     opacity: 0;
@@ -18,13 +19,21 @@
     transition: all 400ms ease;
 
     &.show {
-      max-height: 150px;
+      max-height: 250px;
       opacity: 1;
       overflow: visible;
     }
 
     & > div {
       width: 275px;
+    }
+
+    .passwordInstructions {
+      color: $text-color-accent;
+      font-family: $font-light;
+      line-height: 1.38;
+      margin: -15px 0 30px;
+      opacity: 0.5;
     }
   }
 

@@ -40,8 +40,8 @@ const messages = defineMessages({
   },
   passwordSwitchPlaceholder: {
     id: 'wallet.create.dialog.passwordSwitchPlaceholder',
-    defaultMessage: '!!!Activate to create password. Note that password needs to be at least 7 characters long, and have at least 1 uppercase, 1 lovercase letter and 1 number.',
-    description: 'Text for the "Activate to create password. Note that password needs to be at least 7 characters long, and have at least 1 uppercase, 1 lovercase letter and 1 number." switch in the create wallet dialog.',
+    defaultMessage: '!!!Activate to create password',
+    description: 'Text for the "Activate to create password" switch in the create wallet dialog.',
   },
   walletPasswordLabel: {
     id: 'wallet.create.dialog.walletPasswordLabel',
@@ -221,6 +221,9 @@ export default class WalletCreateDialog extends Component {
               className="repeatedPassword"
               {...form.$('repeatPassword').bind()}
             />
+            <p className={styles.passwordInstructions}>
+              {intl.formatMessage(globalMessages.passwordInstructions)}
+            </p>
           </div>
         </div>
 
