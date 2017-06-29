@@ -34,6 +34,7 @@ Changelog
 - Final version of Daedalus logo added on the loading screen
 - Final version of Daedalus logo added in the top-bar
 - Receive page design update
+- Acceptance test for wallet settings (Wallet password setting, Wallet setting invalid password, Wallet password update/change, Wallet password remove, Wallet rename, Wallet assurance level chage)
 
 ### Fixes
 

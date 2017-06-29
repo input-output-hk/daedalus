@@ -8,8 +8,6 @@ Feature: Wallet Settings
     | first  |           |
     | second | Secret123 |
 
-
-  @watch
   Scenario: Wallet password setting
     Given I am on the "first" wallet "settings" screen
     And I click on the "create" password label
@@ -20,8 +18,7 @@ Feature: Wallet Settings
     And I click on the "save" button in "create" wallet password dialog
     Then I should see "change" label in password field
 
-  @watch
-  Scenario: Wallet setting Invalid password
+  Scenario: Wallet setting invalid password
     Given I am on the "first" wallet "settings" screen
     And I click on the "create" password label
     And I should see the "create" wallet password dialog
@@ -33,7 +30,6 @@ Feature: Wallet Settings
     | message                             |
     | global.errors.invalidWalletPassword |
 
-  @watch
   Scenario: Wallet password update/change
     Given I am on the "second" wallet "settings" screen
     And I click on the "change" password label
@@ -44,7 +40,6 @@ Feature: Wallet Settings
     And I click on the "save" button in "create" wallet password dialog
     Then I should not see the change password dialog anymore
 
-  @watch
   Scenario: Wallet password remove
     Given I am on the "second" wallet "settings" screen
     And I click on the "change" password label
@@ -56,7 +51,6 @@ Feature: Wallet Settings
     And I click on the "remove" button in "change" wallet password dialog
     Then I should see "create" label in password field
 
-  @watch
   Scenario: Wallet rename
     Given I am on the "first" wallet "settings" screen
     And I click on "name" input field
@@ -66,7 +60,6 @@ Feature: Wallet Settings
     And I click outside form input fields
     Then I should see new wallet name "first Edited"
 
-  @watch
   Scenario: Wallet assurance level change
     Given I am on the "first" wallet "settings" screen
     And I open Transaction assurance security level selection dropdown
