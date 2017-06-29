@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
 import { intlShape } from 'react-intl';
 import Input from 'react-toolbox/lib/input/Input';
 import globalMessages from '../../../i18n/global-messages';
@@ -29,8 +30,14 @@ export default class ReadOnlyInput extends Component {
     } = this.props;
     const { intl } = this.context;
     const buttonLabel = intl.formatMessage(globalMessages[isSet ? 'change' : 'create']);
+
+    const mainClasses = classnames([
+      styles.component,
+      isSet ? 'changeLabel' : 'createLabel',
+    ]);
+
     return (
-      <div className={styles.component}>
+      <div className={mainClasses}>
 
         <Input
           className={styles.input}
