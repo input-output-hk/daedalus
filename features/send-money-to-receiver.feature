@@ -27,7 +27,7 @@ Feature: Send Money to Receiver
     And I am on the "Genesis wallet" wallet "send" screen
     When I fill out the send form with a transaction to "first" wallet:
       | amount   |  walletPassword |
-      | 0.000010 |  secret         |
+      | 0.000010 |  Secret123      |
     And I submit the wallet send form
     Then I should be on the "Genesis wallet" wallet "summary" screen
     And the latest transaction should show:

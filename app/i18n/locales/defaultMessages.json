@@ -3016,7 +3016,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Minimum 6 letters.",
+        "defaultMessage": "!!!Invalid password",
         "description": "Error message shown when invalid wallet password was entered in create wallet dialog.",
         "end": {
           "column": 3,
@@ -3044,17 +3044,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Cancel",
-        "description": "The word \"cancel\" reused at several places (like cancel buttons)",
+        "defaultMessage": "!!!Note that password needs to be at least 7 characters long, and have at least 1 uppercase, 1 lowercase letter and 1 number.",
+        "description": "Password instructions note.",
         "end": {
           "column": 3,
           "line": 48
         },
         "file": "app/i18n/global-messages.js",
+        "id": "global.passwordInstructions",
+        "start": {
+          "column": 24,
+          "line": 44
+        }
+      },
+      {
+        "defaultMessage": "!!!Cancel",
+        "description": "The word \"cancel\" reused at several places (like cancel buttons)",
+        "end": {
+          "column": 3,
+          "line": 53
+        },
+        "file": "app/i18n/global-messages.js",
         "id": "global.labels.cancel",
         "start": {
           "column": 10,
-          "line": 44
+          "line": 49
         }
       },
       {
@@ -3062,13 +3076,13 @@
         "description": "The word \"change\" reused at several places (like change buttons)",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 58
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.labels.change",
         "start": {
           "column": 10,
-          "line": 49
+          "line": 54
         }
       },
       {
@@ -3076,13 +3090,13 @@
         "description": "The word \"create\" reused at several places (like create buttons)",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 63
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.labels.create",
         "start": {
           "column": 10,
-          "line": 54
+          "line": 59
         }
       },
       {
@@ -3090,13 +3104,13 @@
         "description": "The word \"remove\" reused at several places (like remove buttons)",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 68
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.labels.remove",
         "start": {
           "column": 10,
-          "line": 59
+          "line": 64
         }
       },
       {
@@ -3104,13 +3118,13 @@
         "description": "The word \"save\" reused at several places (like save buttons)",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 73
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.labels.save",
         "start": {
           "column": 8,
-          "line": 64
+          "line": 69
         }
       },
       {
@@ -3118,13 +3132,13 @@
         "description": "Language name for \"English\" language.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 78
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.english",
         "start": {
           "column": 19,
-          "line": 69
+          "line": 74
         }
       },
       {
@@ -3132,13 +3146,13 @@
         "description": "Language name for \"Japanese\" language.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 83
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.japanese",
         "start": {
           "column": 20,
-          "line": 74
+          "line": 79
         }
       },
       {
@@ -3146,13 +3160,13 @@
         "description": "Language name for \"Chinese\" language.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 88
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.chinese",
         "start": {
           "column": 19,
-          "line": 79
+          "line": 84
         }
       },
       {
@@ -3160,13 +3174,13 @@
         "description": "Language name for \"Korean\" language.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 93
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.korean",
         "start": {
           "column": 18,
-          "line": 84
+          "line": 89
         }
       },
       {
@@ -3174,13 +3188,13 @@
         "description": "Language name for \"German\" language.",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 98
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.german",
         "start": {
           "column": 18,
-          "line": 89
+          "line": 94
         }
       },
       {
@@ -3188,13 +3202,13 @@
         "description": "Language name for \"Croatian\" language.",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 103
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.language.croatian",
         "start": {
           "column": 20,
-          "line": 94
+          "line": 99
         }
       },
       {
@@ -3202,13 +3216,13 @@
         "description": "Name for \"Normal\" transaction assurance security level.",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 108
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.assuranceLevel.normal",
         "start": {
           "column": 24,
-          "line": 99
+          "line": 104
         }
       },
       {
@@ -3216,13 +3230,13 @@
         "description": "Name for \"Strict\" transaction assurance security level.",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 113
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.assuranceLevel.strict",
         "start": {
           "column": 24,
-          "line": 104
+          "line": 109
         }
       },
       {
@@ -3230,13 +3244,13 @@
         "description": "Name for \"Ada\" unit.",
         "end": {
           "column": 3,
-          "line": 113
+          "line": 118
         },
         "file": "app/i18n/global-messages.js",
         "id": "global.unit.ada",
         "start": {
           "column": 11,
-          "line": 109
+          "line": 114
         }
       },
       {
@@ -3244,13 +3258,13 @@
         "description": "Title for the \"Recovery Phrase\" dialog.",
         "end": {
           "column": 3,
-          "line": 118
+          "line": 123
         },
         "file": "app/i18n/global-messages.js",
         "id": "wallet.backup.recovery.phrase.dialog.title",
         "start": {
           "column": 29,
-          "line": 114
+          "line": 119
         }
       }
     ],

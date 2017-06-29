@@ -33,13 +33,18 @@ export default defineMessages({
   },
   invalidWalletPassword: {
     id: 'global.errors.invalidWalletPassword',
-    defaultMessage: '!!!Minimum 6 letters.',
+    defaultMessage: '!!!Invalid password',
     description: 'Error message shown when invalid wallet password was entered in create wallet dialog.'
   },
   invalidRepeatPassword: {
     id: 'global.errors.invalidRepeatPassword',
     defaultMessage: '!!!Doesn\'t match.',
     description: 'Error message shown when wallet password and repeat passwords don\'t match in create wallet dialog.'
+  },
+  passwordInstructions: {
+    id: 'global.passwordInstructions',
+    defaultMessage: '!!!Note that password needs to be at least 7 characters long, and have at least 1 uppercase, 1 lowercase letter and 1 number.',
+    description: 'Password instructions note.',
   },
   cancel: {
     id: 'global.labels.cancel',
