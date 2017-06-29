@@ -34,7 +34,7 @@ launcherArgs launcher = unwords $
         "--wallet-db-path", quote (runtimePath launcher <> "Wallet-0.4"),
         "--kademlia-peers-file", "ip-dht-mappings",
         "--kademlia-explicit-initial",
-        "--system-start", "1498589304",
+        "--system-start", "1498743070",
         "--wallet"
         ]
 
