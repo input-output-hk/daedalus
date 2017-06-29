@@ -29,10 +29,6 @@
   height: 12px;
   margin-left: 4px;
   width: 10px;
-
-  canvas {
-    margin-bottom: 1.5rem;
-  }
 }
 
 .qrCodeAndInstructions {
@@ -45,6 +41,10 @@
     align-items: center;
     display: flex;
     margin-right: 30px;
+
+    canvas {
+      margin-bottom: 1.5rem;
+    }
   }
 
   .instructions {
