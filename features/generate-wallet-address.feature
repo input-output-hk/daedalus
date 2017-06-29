@@ -4,6 +4,7 @@ Feature: Generate Wallet Address
     Given I have selected English language
     And I have accepted "Terms of use"
 
+  @watch
   Scenario: Generating wallet address
     Given I have the following wallets:
     | name   |
@@ -11,8 +12,9 @@ Feature: Generate Wallet Address
     And I am on the "first" wallet "receive" screen
     And I have one wallet address
     And I click on the "Generate new address" button
-    Then I should see newly generated  address as active address on the wallet receive screen
+    Then I should see newly generated address as active address on the wallet receive screen
 
+  @watch
   Scenario: Generating wallet address for a wallet with spending password
     Given I have the following wallets:
     | name   | password  |
@@ -21,4 +23,4 @@ Feature: Generate Wallet Address
     And I have one wallet address
     And I enter spending password "Secret123"
     And I click on the "Generate new address" button
-    Then I should see newly generated  address as active address on the wallet receive screen
+    Then I should see newly generated address as active address on the wallet receive screen
