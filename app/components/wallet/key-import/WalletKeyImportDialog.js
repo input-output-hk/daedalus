@@ -156,12 +156,12 @@ export default class WalletKeyImportDialog extends Component {
     const dialogClasses = classnames([
       styles.component,
       'WalletKeyImportDialog',
-      isSubmitting ? styles.isSubmitting : null
+      isSubmitting ? styles.isSubmitting : null,
     ]);
 
     const walletPasswordFieldsClasses = classnames([
       styles.walletPasswordFields,
-      createPassword ? styles.show : null
+      createPassword ? styles.show : null,
     ]);
 
     const actions = [
@@ -209,6 +209,9 @@ export default class WalletKeyImportDialog extends Component {
               className="repeatedPassword"
               {...form.$('repeatPassword').bind()}
             />
+            <p className={styles.passwordInstructions}>
+              {intl.formatMessage(globalMessages.passwordInstructions)}
+            </p>
           </div>
         </div>
 

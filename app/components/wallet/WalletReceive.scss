@@ -38,7 +38,13 @@
   position: relative;
 
   .qrCode {
-    margin-right: 20px;
+    align-items: center;
+    display: flex;
+    margin-right: 30px;
+
+    canvas {
+      margin-bottom: 1.5rem;
+    }
   }
 
   .instructions {
@@ -163,27 +169,47 @@
 
   .walletAddress {
     box-sizing: border-box;
-    display: inline-block;
-    margin-top: 11px;
-    padding-right: 20px;
-    width: 50%;
+    display: flex;
+    padding: 10.5px 0;
     word-break: break-all;
+
+    & + .walletAddress {
+      border-top: 1px solid #dfe4e8;
+    }
+
+    .addressId {
+      margin-right: 32.5px;
+    }
+
+    .addressActions {
+      .copyAddress {
+        cursor: pointer;
+        display: inline-block;
+        line-height: 20px;
+        vertical-align: top;
+        white-space: nowrap;
+
+        * {
+          vertical-align: middle;
+        }
+
+        span {
+          color: #5e6066;
+          font-size: 14px;
+          margin-left: 6px;
+          opacity: 0.5;
+        }
+
+        &:hover span {
+          text-decoration: underline;
+        }
+      }
+    }
   }
 
-  .usedWalletAddress {
+  .usedWalletAddress .addressId {
     color: #aeaeb3;
     text-decoration: line-through;
-
-    .copyIcon {
-      cursor: default;
-      opacity: 0.4;
-    }
-  }
-
-  @media (max-width: 1080px) {
-    .fullWidthOnSmallScreen {
-      width: 100%;
-    }
   }
 }
 
