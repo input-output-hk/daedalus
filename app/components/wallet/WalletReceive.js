@@ -52,6 +52,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Password',
     description: 'Placeholder for "spending password" on the wallet "Receive page"',
   },
+  copyAddressLabel: {
+    id: 'wallet.receive.page.copyAddressLabel',
+    defaultMessage: '!!!Copy address',
+    description: 'Label for "Copy address" link on the wallet "Receive page"',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -222,21 +227,21 @@ export default class WalletReceive extends Component {
                 'generatedAddress-' + (index + 1),
                 styles.walletAddress,
                 address.isUsed ? styles.usedWalletAddress : null,
-                isSidebarExpanded ? styles.fullWidthOnSmallScreen : null,
               ]);
               return (
                 <div key={index} className={addressClasses}>
-                  {address.id}
-                  {address.isUsed ? (
-                    <img className={styles.copyIcon} src={iconCopy} role="presentation" />
-                  ) : (
+                  <div className={styles.addressId}>{address.id}</div>
+                  <div className={styles.addressActions}>
                     <CopyToClipboard
                       text={address.id}
                       onCopy={onCopyAddress.bind(this, address.id)}
                     >
-                      <img className={styles.copyIcon} src={iconCopy} role="presentation" />
+                      <span className={styles.copyAddress}>
+                        <img className={styles.copyIcon} src={iconCopy} role="presentation" />
+                        <span>{intl.formatMessage(messages.copyAddressLabel)}</span>
+                      </span>
                     </CopyToClipboard>
-                  )}
+                  </div>
                 </div>
               );
             })}

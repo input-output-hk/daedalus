@@ -44,6 +44,7 @@ export default class SidebarWalletsMenu extends Component {
               active={isActiveWallet(wallet.id)}
               onClick={() => onWalletItemClick(wallet.id)}
               key={wallet.id}
+              className={`Wallet_${wallet.id}`}
             />
           ))}
         </div>

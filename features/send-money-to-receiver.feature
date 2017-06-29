@@ -18,18 +18,24 @@ Feature: Send Money to Receiver
     And the latest transaction should show:
       | title                      | amount    |
       | wallet.transaction.adaSent | -0.000010 |
+    And the balance of "first" wallet should be:
+      | balance  |
+      | 0.000010 |
 
   Scenario: User Sends Money from wallet with spending password to Receiver
     Given I have a wallet with funds and password
     And I am on the "Genesis wallet" wallet "send" screen
     When I fill out the send form with a transaction to "first" wallet:
       | amount   |  walletPassword |
-      | 0.000010 |  secret         |
+      | 0.000010 |  Secret123      |
     And I submit the wallet send form
     Then I should be on the "Genesis wallet" wallet "summary" screen
     And the latest transaction should show:
       | title                      | amount    |
       | wallet.transaction.adaSent | -0.000010 |
+    And the balance of "first" wallet should be:
+      | balance  |
+      | 0.000010 |
 
   Scenario: User Submits Empty Form
     Given I have a wallet with funds
