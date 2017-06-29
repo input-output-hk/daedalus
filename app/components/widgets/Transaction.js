@@ -64,7 +64,6 @@ const messages = defineMessages({
     defaultMessage: '!!!To addresses',
     description: 'To addresses',
   },
-
 });
 
 const assuranceLevelTranslations = defineMessages({

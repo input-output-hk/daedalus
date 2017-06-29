@@ -3,26 +3,42 @@ declare module 'daedalus-client-api' {
   // ========= Response Types =========
 
   declare type ApiAssurance = 'CWANormal' | 'CWAStrict';
-  declare type ApiCurrency = 'ADA';
-  declare type ApiWalletType = 'CWTPersonal';
   declare type ApiAmount = {
-    getCoin: number,
+    getCCoin: number,
   };
   declare type ApiTransactionTag = 'CTIn' | 'CTOut';
+
+  declare type ApiAddress = {
+    cadAmount: ApiAmount,
+    cadId: string,
+    cadIsUsed: boolean,
+  };
+
+  declare type ApiAddresses = Array<ApiAddress>;
+
+  declare type ApiAccount = {
+    caAddresses: ApiAddresses,
+    caAmount: ApiAmount,
+    caId: string,
+    caMeta: {
+      caName: string,
+    },
+  };
+
+  declare type ApiAccounts = Array<ApiAccount>;
 
   declare type ApiTransaction = {
     ctAmount: ApiAmount,
     ctConfirmations: number,
     ctId: string,
-    ctType: {
-      tag: ApiTransactionTag,
-      contents: {
-        ctmCurrency: ApiCurrency,
-        ctmDate: Date,
-        ctmDescription: ?string,
-        ctmTitle: ?string,
-      }
+    ctInputAddrs: Array<string>,
+    ctIsOutgoing: boolean,
+    ctMeta: {
+      ctmDate: Date,
+      ctmDescription: ?string,
+      ctmTitle: ?string,
     },
+    ctOutputAddrs: Array<string>,
   };
 
   declare type ApiTransactions = [
@@ -31,15 +47,16 @@ declare module 'daedalus-client-api' {
   ];
 
   declare type ApiWallet = {
-    cwAddress: string,
+    cwAccountsNumber: number,
     cwAmount: ApiAmount,
+    cwHasPassphrase: boolean,
+    cwId: string,
     cwMeta: {
       cwAssurance: ApiAssurance,
-      cwCurrency: ApiCurrency,
       cwName: string,
-      cwType: ApiWalletType,
-      cwUnit: number,
+      csUnit: number,
     },
+    cwPassphraseLU: Date,
   };
 
   declare type ApiWallets = Array<ApiWallet>;
@@ -57,26 +74,46 @@ declare module 'daedalus-client-api' {
   declare function syncProgress(): any;
 
   // Validators
-  declare function isValidAddress(currency: string, address: string): Promise<boolean>;
+  declare function isValidAddress(address: string): Promise<boolean>;
   declare function isValidMnemonic(length: number, mnemonic: string): Promise<boolean>;
   declare function isValidRedemptionKey(mnemonic: string): Promise<boolean>;
   declare function isValidPaperVendRedemptionKey(mnemonic: string): Promise<boolean>;
 
+  // Accounts
+  declare function getAccounts(): Promise<ApiAccounts>;
+  declare function newAccount(walletId: string, walletName: string, walletPassword: ?string): Promise<ApiAccount>;
+
   // Transactions
-  declare function searchHistory(walletId: string, searchTerm: string, skip: number, limit: number): Promise<ApiTransactions>;
-  declare function sendExtended(sender: string, receiver: string, amount: string, currency: string, title: string, description: ?string, password: ?string): Promise<ApiTransaction>;
+  // * getHistory has first three parameters optional
+  //    - `getHistory(wId, null, null, 1, 10)` if you want to search with wallet
+  //    - `getHistory(null, accId, null, 1, 10)` if you want to search with account
+  //    - `getHistory(null, accId, addressId, 1, 10)` if you want to search specific address
+  //    - `getHistory(wId, null, addressId, 1, 10)` if you want to search specific address
+  //    - `getHistory` - any other combination will throw an error
+  // * `getHistoryByWallet(wId, 1, 10)` - search only by wallet
+  // * `getHistoryByAccount(acId, 1, 10)` - search only by account
+  // * `getAddressHistory(acId, addressId, 1, 10)` - search  by account and address within
+  declare function getHistory(walletId: ?string, accountId: ?string, addressId: ?string, skip: number, limit: number): Promise<ApiTransactions>;
+  declare function getHistoryByWallet(walletId: string, skip: number, limit: number): Promise<ApiTransactions>;
+  declare function getHistoryByAccount(accountId: string, skip: number, limit: number): Promise<ApiTransactions>;
+  declare function getAddressHistory(accountId: string, addressId: string, skip: number, limit: number): Promise<ApiTransactions>;
+
+  declare function newPayment(senderAccountId: string, receiverAddress: string, amount: string, password: ?string): Promise<ApiTransaction>;
 
   // Ada Redemption
-  declare function redeemAda(redemptionCode: string, walletId: string): Promise<ApiTransaction>;
-  declare function redeemAdaPaperVend(shieldedRedemptionKey: string, mnemonics: string, walletId: string): Promise<ApiTransaction>;
+  declare function redeemAda(redemptionCode: string, accountId: string, walletPassword: ?string): Promise<ApiTransaction>;
+  declare function redeemAdaPaperVend(shieldedRedemptionKey: string, mnemonics: string, accountId: string, walletPassword: ?string): Promise<ApiTransaction>;
 
   // Wallet
   declare function getWallets(): ApiWallets;
-  declare function newWallet(walletType: string, walletCurrency: string, walletName: string, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
+  declare function getWalletAccounts(walletId: string): Promise<ApiAccounts>;
+  declare function newWallet(walletName: string, assurance: string, unit: number, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
   declare function deleteWallet(walletId: string): Promise<{}>;
-  declare function restoreWallet(walletType: string, walletCurrency: string, walletName: string, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
-  declare function updateWallet(walletId: string, walletType: string, walletCurrency: string, walletName: string, assurance: string, unit: number): Promise<ApiWallet>;
-  declare function importKey(filePath: string): Promise<ApiWallet>;
+  declare function restoreWallet(walletName: string, assurance: string, unit: number, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
+  declare function updateWallet(walletId: string, walletName: string, assurance: string, unit: number): Promise<ApiWallet>;
+  declare function importWallet(filePath: string, walletPassword: ?string): Promise<ApiWallet>;
+  declare function newWAddress(accountId: string, walletPassword: ?string): Promise<ApiAddress>;
+  declare function changeWalletPass(walletId: string, oldPassword: ?string, newPassword: ?string): Promise<{}>;
 
   // Test
   declare function testReset(): void;

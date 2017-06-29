@@ -5,12 +5,10 @@ import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-toolbox/lib/input/Input';
 import { defineMessages, intlShape } from 'react-intl';
-import Select from 'react-polymorph/lib/components/Select';
-import SelectSkin from 'react-polymorph/lib/skins/simple/SelectSkin';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import Switch from '../widgets/Switch';
-import { isValidWalletName, isValidCurrency, isValidWalletPassword, isValidRepeatPassword } from '../../lib/validations';
+import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../lib/validations';
 import globalMessages from '../../i18n/global-messages';
 import styles from './WalletCreateDialog.scss';
 
@@ -29,16 +27,6 @@ const messages = defineMessages({
     id: 'wallet.create.dialog.walletNameHint',
     defaultMessage: '!!!e.g: Shopping Wallet',
     description: 'Hint for the "Wallet Name" text input in the wallet create form.'
-  },
-  currencyLabel: {
-    id: 'wallet.create.dialog.currency.label',
-    defaultMessage: '!!!Currency',
-    description: 'Label for the "Currency" dropdown in the wallet create form.'
-  },
-  invalidCurrency: {
-    id: 'wallet.create.dialog.errors.invalidCurrency',
-    defaultMessage: '!!!This currency is not yet supported.',
-    description: 'Error message shown when invalid currency was selected in create wallet dialog.'
   },
   createPersonalWallet: {
     id: 'wallet.create.dialog.create.personal.wallet.button.label',
@@ -70,18 +58,7 @@ const messages = defineMessages({
     defaultMessage: '!!!Password',
     description: 'Placeholder for the "Password" inputs in the create wallet dialog.',
   },
-  currencyComingSoonLabel: {
-    id: 'wallet.create.dialog.currencyComingSoonLabel',
-    defaultMessage: '!!!Coming soon',
-    description: 'Label for currency options that are disabled but coming soon.',
-  }
 });
-
-const currencies = [
-  { value: 'ada', label: 'ADA' },
-  { value: 'btc', label: 'BTC', isDisabled: true },
-  { value: 'etc', label: 'ETC', isDisabled: true },
-];
 
 @observer
 export default class WalletCreateDialog extends Component {
@@ -116,17 +93,6 @@ export default class WalletCreateDialog extends Component {
           [
             isValidWalletName(field.value),
             this.context.intl.formatMessage(globalMessages.invalidWalletName)
-          ]
-        )],
-        bindings: 'ReactToolbox',
-      },
-      currency: {
-        label: this.context.intl.formatMessage(messages.currencyLabel),
-        value: 'ada',
-        validators: [({ field }) => (
-          [
-            isValidCurrency(field.value),
-            this.context.intl.formatMessage(messages.invalidCurrency)
           ]
         )],
         bindings: 'ReactToolbox',
@@ -182,10 +148,9 @@ export default class WalletCreateDialog extends Component {
       onSuccess: (form) => {
         this.setState({ isSubmitting: true });
         const { createPassword } = this.state;
-        const { walletName, currency, walletPassword } = form.values();
+        const { walletName, walletPassword } = form.values();
         const walletData = {
           name: walletName,
-          currency,
           password: createPassword ? walletPassword : null,
         };
         this.props.onSubmit(walletData);
@@ -214,11 +179,11 @@ export default class WalletCreateDialog extends Component {
     const dialogClasses = classnames([
       styles.component,
       'WalletCreateDialog',
-      isSubmitting ? styles.isSubmitting : null
+      isSubmitting ? styles.isSubmitting : null,
     ]);
     const walletPasswordFieldsClasses = classnames([
       styles.walletPasswordFields,
-      createPassword ? styles.show : null
+      createPassword ? styles.show : null,
     ]);
 
     return (
@@ -237,23 +202,6 @@ export default class WalletCreateDialog extends Component {
           {...form.$('walletName').bind()}
         />
 
-        <Select
-          className="currency"
-          {...form.$('currency').bind()}
-          options={currencies}
-          optionRenderer={option => (
-            <div className={styles.currencyOption}>
-              <span>{option.label}</span>
-              {option.isDisabled && (
-                <span className={styles.currencyOptionComingSoon}>
-                  {intl.formatMessage(messages.currencyComingSoonLabel)}
-                </span>
-              )}
-            </div>
-          )}
-          skin={<SelectSkin />}
-        />
-
         <div className={styles.walletPassword}>
           <div className={styles.walletPasswordSwitch}>
             <Switch
@@ -265,8 +213,17 @@ export default class WalletCreateDialog extends Component {
           </div>
 
           <div className={walletPasswordFieldsClasses}>
-            <Input {...form.$('walletPassword').bind()} />
-            <Input {...form.$('repeatPassword').bind()} />
+            <Input
+              className="walletPassword"
+              {...form.$('walletPassword').bind()}
+            />
+            <Input
+              className="repeatedPassword"
+              {...form.$('repeatPassword').bind()}
+            />
+            <p className={styles.passwordInstructions}>
+              {intl.formatMessage(globalMessages.passwordInstructions)}
+            </p>
           </div>
         </div>
 

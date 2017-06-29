@@ -7,7 +7,7 @@ import type { InjectedDialogContainerProps } from '../../../types/injectedPropsT
 @inject('stores', 'actions') @observer
 export default class WalletBackupDialogContainer extends Component {
 
-  static defaultProps = { actions: null, stores: null, children: null };
+  static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
 
   props: InjectedDialogContainerProps;
 
@@ -66,7 +66,6 @@ export default class WalletBackupDialogContainer extends Component {
         onClear={clearEnteredRecoveryPhrase.trigger}
         onFinishBackup={() => {
           finishWalletBackup.trigger();
-          actions.dialogs.closeActiveDialog.trigger();
         }}
         onRestartBackup={restartWalletBackup.trigger}
         recoveryPhraseShuffled={recoveryPhraseShuffled}

@@ -200,12 +200,12 @@ export default class WalletRestoreDialog extends Component {
     const dialogClasses = classnames([
       styles.component,
       'WalletRestoreDialog',
-      isSubmitting ? styles.isSubmitting : null
+      isSubmitting ? styles.isSubmitting : null,
     ]);
 
     const walletPasswordFieldsClasses = classnames([
       styles.walletPasswordFields,
-      createPassword ? styles.show : null
+      createPassword ? styles.show : null,
     ]);
 
     return (
@@ -236,8 +236,17 @@ export default class WalletRestoreDialog extends Component {
           </div>
 
           <div className={walletPasswordFieldsClasses}>
-            <Input {...form.$('walletPassword').bind()} />
-            <Input {...form.$('repeatPassword').bind()} />
+            <Input
+              className="walletPassword"
+              {...form.$('walletPassword').bind()}
+            />
+            <Input
+              className="repeatedPassword"
+              {...form.$('repeatPassword').bind()}
+            />
+            <p className={styles.passwordInstructions}>
+              {intl.formatMessage(globalMessages.passwordInstructions)}
+            </p>
           </div>
         </div>
 

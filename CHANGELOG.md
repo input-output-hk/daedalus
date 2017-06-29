@@ -15,12 +15,25 @@ Changelog
 - Ada redemption disclaimer
 - “Terms of use” page in settings section
 - Change wallet password dialog UX improvements
+- New receive screen with support for HD wallets
 - Wallet rename
 - Multiple input and output addresses in transaction details
 - Ada redemption acceptance tests
 - Show BTC and ETC currencies as coming soon in create wallet dialog
+- Remove currencies dropdown on create wallet dialog
+- Spending password on wallet receive page
 - Prepared UI dialogs for exporting paper wallets
 - Prepared UI dialogs for importing paper wallets
+- Spending password on "Import wallet" dialog
+- Spending password on "Ada redemption" forms
+- Acceptance test for "Restore wallet with and without spending password" feature
+- Acceptance test for "Create wallet with spending password" feature
+- Acceptance test for "Import wallet with/without spending password" feature
+- Acceptance test for "Send money from a wallet with spending password" feature
+- Acceptance test for "Generate wallet address" feature
+- Final version of Daedalus logo added on the loading screen
+- Final version of Daedalus logo added in the top-bar
+- Receive page design update
 
 ### Fixes
 
@@ -33,6 +46,19 @@ Changelog
 - Prevent sidebar auto-hiding feature and always show submenus on wallets page load
 - Apply grammatical fixes to redemption instructions
 - Prevent sidebar visual glitch on sidebar open
+- Added missing "Add wallet" button label translation key
+- Prevent "Delete wallet" dialog from closing until deletion is over
+- Improved error handling on "Set/Change wallet password" dialog
+- Improved API response errors handling
+- Update active wallet after wallet update actions
+- Last generated address was not being reset when switching wallets and it was shown on the receive screen for the wrong wallet
+- Improved API nextUpdate response errors handling
+- Improved active wallet data refresh after wallet balance/settings change
+- Fixed failing wallet add/restore/import acceptance tests
+- Polling should be disable while node is syncing with the blockchain
+- Prevent syncing icon from being always stuck in syncing state by refactoring in-sync state calculation
+- Acceptance test for "Sending money" feature should check receiver wallet's balance
+- Improved spending password validation rules
 
 ### Chores
 
@@ -40,6 +66,8 @@ Changelog
 - Purge "translation/messages/app" as a part of npm dev script
 - Use markdown for "Terms of use" content
 - Added manually written Flow types for API responses
+- Testnet version on the testnet label bumped from 0.3 to 0.5
+
 
 ## 0.6.2
 

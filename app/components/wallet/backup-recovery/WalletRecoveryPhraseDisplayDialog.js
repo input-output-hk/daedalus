@@ -7,14 +7,10 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import WalletRecoveryPhraseMnemonic from './WalletRecoveryPhraseMnemonic';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
+import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletRecoveryPhraseDisplayDialog.scss';
 
 const messages = defineMessages({
-  recoveryPhrase: {
-    id: 'wallet.backup.recovery.phrase.dialog.title',
-    defaultMessage: '!!!Recovery phrase',
-    description: 'Title for the "Recovery Phrase" dialog.'
-  },
   backupInstructions: {
     id: 'wallet.backup.recovery.phrase.display.dialog.backup.instructions',
     defaultMessage: `!!!Please, make sure you have carefully written down your recovery phrase somewhere safe.
@@ -64,7 +60,7 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component {
     return (
       <Dialog
         className={dialogClasses}
-        title={intl.formatMessage(messages.recoveryPhrase)}
+        title={intl.formatMessage(globalMessages.recoveryPhraseDialogTitle)}
         actions={actions}
         onOverlayClick={onCancelBackup}
         active

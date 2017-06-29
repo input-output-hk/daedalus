@@ -166,9 +166,18 @@ export default class AdaRedemptionStore extends Store {
     this.passPhrase = null;
   });
 
-  _redeemAda = action(({ walletId } : { walletId: string }) => {
+  _redeemAda = action(({ walletId, walletPassword } : {
+    walletId: string,
+    walletPassword: ?string,
+  }) => {
     this.walletId = walletId;
-    this.redeemAdaRequest.execute({ redemptionCode: this.redemptionCode, walletId })
+    const accountId = this.stores.addresses._getAccountIdByWalletId(walletId);
+    if (!accountId) throw new Error('Active account required before redeeming Ada.');
+    this.redeemAdaRequest.execute({
+      redemptionCode: this.redemptionCode,
+      accountId,
+      walletPassword
+    })
       .then(action((transaction: WalletTransaction) => {
         this._reset();
         this.actions.adaRedemption.adaSuccessfullyRedeemed.trigger({
@@ -181,15 +190,19 @@ export default class AdaRedemptionStore extends Store {
       }));
   });
 
-  _redeemPaperVendedAda = action(({ walletId, shieldedRedemptionKey } : {
+  _redeemPaperVendedAda = action(({ walletId, shieldedRedemptionKey, walletPassword } : {
     walletId: string,
-    shieldedRedemptionKey: string
+    shieldedRedemptionKey: string,
+    walletPassword: ?string,
   }) => {
     this.walletId = walletId;
+    const accountId = this.stores.addresses._getAccountIdByWalletId(walletId);
+    if (!accountId) throw new Error('Active account required before redeeming Ada.');
     this.redeemPaperVendedAdaRequest.execute({
       shieldedRedemptionKey,
       mnemonics: this.passPhrase,
-      walletId
+      accountId,
+      walletPassword,
     })
       .then(action((transaction: WalletTransaction) => {
         this._reset();

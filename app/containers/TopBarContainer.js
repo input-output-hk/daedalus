@@ -9,13 +9,14 @@ import type { InjectedProps } from '../types/injectedPropsType';
 @inject('stores', 'actions') @observer
 export default class TopBarContainer extends Component {
 
+  static defaultProps = { actions: null, stores: null };
   props: InjectedProps;
 
   render() {
     const { actions, stores } = this.props;
     const { sidebar, networkStatus, app } = stores;
     const isProduction = false; // TODO: replace with getEnv Api call
-    const testnetVersion = 0.3;
+    const testnetVersion = 0.5;
     const testEnvironmentLabel = (
       !isProduction ? <WalletTestEnvironmentLabel version={testnetVersion} /> : null
     );

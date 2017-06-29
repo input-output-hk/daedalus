@@ -145,10 +145,6 @@ export default class WalletSendForm extends Component {
           }
           return [true];
         }],
-        bindings: 'ReactToolbox',
-      },
-      currency: {
-        value: 'ada' // TODO: Remove hardcoded currency
       },
     },
   }, {
@@ -180,6 +176,7 @@ export default class WalletSendForm extends Component {
     const { isWalletPasswordSet, isSubmitting, error } = this.props;
     const amountField = form.$('amount');
     const receiverField = form.$('receiver');
+    const passwordField = form.$('walletPassword');
 
     return (
       <div className={styles.component}>
@@ -213,7 +210,14 @@ export default class WalletSendForm extends Component {
           </div>
 
           {isWalletPasswordSet ? (
-            <Input {...form.$('walletPassword').bind()} />
+            <div className={styles.passwordInput}>
+              <Input
+                className="walletPassword"
+                {...passwordField.bind()}
+                error={passwordField.error}
+                skin={<SimpleInputSkin />}
+              />
+            </div>
           ) : null}
 
           {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}

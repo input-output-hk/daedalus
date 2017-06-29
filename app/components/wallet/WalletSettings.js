@@ -74,10 +74,10 @@ export default class WalletSettings extends Component {
     onStopEditing: Function,
     onCancelEditing: Function,
     nameValidator: Function,
-    activeField: string,
+    activeField: ?string,
     isSubmitting: boolean,
     isInvalid: boolean,
-    lastUpdatedField: string,
+    lastUpdatedField: ?string,
   };
 
   static contextTypes = {
