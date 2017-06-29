@@ -16,7 +16,7 @@ data Launcher = Launcher
 
 launcherArgs :: Launcher -> String
 launcherArgs launcher = unwords $
-    maybe [] (("--windows-updater-runner":) . (:[])) (windowsInstallerPath launcher) ++
+    maybe [] (("--updater-windows-runner":) . (:[]) . quote) (windowsInstallerPath launcher) ++
   [ "--node", quote (nodePath launcher)
   , "--node-log-path", quote (nodeLogPath launcher)
   , "--wallet", quote (walletPath launcher)
