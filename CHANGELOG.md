@@ -59,6 +59,7 @@ Changelog
 - Prevent syncing icon from being always stuck in syncing state by refactoring in-sync state calculation
 - Acceptance test for "Sending money" feature should check receiver wallet's balance
 - Improved spending password validation rules
+- Improved acceptance tests for generating new addresses
 
 ### Chores
 
