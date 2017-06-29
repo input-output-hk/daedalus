@@ -2105,6 +2105,20 @@
           "column": 31,
           "line": 50
         }
+      },
+      {
+        "defaultMessage": "!!!Copy address",
+        "description": "Label for \"Copy address\" link on the wallet \"Receive page\"",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "app/components/wallet/WalletReceive.js",
+        "id": "wallet.receive.page.copyAddressLabel",
+        "start": {
+          "column": 20,
+          "line": 55
+        }
       }
     ],
     "path": "app/components/wallet/WalletReceive.json"
