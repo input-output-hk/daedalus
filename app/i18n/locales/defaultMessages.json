@@ -459,7 +459,7 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Ada Redemption",
-        "description": "headline \"Ada redemption\" dialog.",
+        "description": "Headline \"Ada redemption\" dialog.",
         "end": {
           "column": 3,
           "line": 26
@@ -473,7 +473,7 @@
       },
       {
         "defaultMessage": "!!!<p>To redeem your Ada, upload your certificate or copy and paste your redemption code from the certificate.\nBelow is an example of a redemption key. Your key will look similar:</p>\n<p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p>\n<p>If you upload a PDF file with your certificate, a redemption code will be automatically extracted.</p>\n<p>If you upload an <strong>encrypted certificate</strong>, you will need to provide a <strong>9 word mnemonic\npassphrase</strong> to decrypt your certificate and your redemption code will be automatically extracted.</p>",
-        "description": "!!!Detailed instructions for redeeming Ada from the regular vending",
+        "description": "Detailed instructions for redeeming Ada from the regular vending",
         "end": {
           "column": 3,
           "line": 36
@@ -487,7 +487,7 @@
       },
       {
         "defaultMessage": "!!!<p>To redeem your Ada, upload your certificate or copy and paste your redemption code from the certificate.\nBelow is an example of a redemption key. Your key will look similar:</p><p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p>\n<p>If you upload a PDF file with your certificate, the redemption code will be automatically extracted.</p>\n<p>If you upload an <strong>encrypted certificate</strong>, you will need to provide <strong>your email address, Ada passcode and Ada amount</strong>\nto decrypt your certificate and your redemption code will be automatically extracted.</p>",
-        "description": "!!!Detailed instructions.regular",
+        "description": "Detailed instructions for redeeming Ada from the force vending",
         "end": {
           "column": 3,
           "line": 45
@@ -500,8 +500,8 @@
         }
       },
       {
-        "defaultMessage": "<p>To redeem your Ada, enter your shielded vending key from the certificate, choose a wallet\nwhere Ada should be redeemed and enter 9 word mnemonic passphrase.</p>",
-        "description": "!!!Detailed instructions.regular",
+        "defaultMessage": "!!!<p>To redeem your Ada, enter your shielded vending key from the certificate, choose a wallet\nwhere Ada should be redeemed and enter 9 word mnemonic passphrase.</p>",
+        "description": "Detailed instructions for redeeming Ada from the paper vending",
         "end": {
           "column": 3,
           "line": 51
