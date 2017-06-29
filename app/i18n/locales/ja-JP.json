@@ -73,6 +73,7 @@
   "wallet.add.dialog.restore.description": "バックアップからウォレットを復元",
   "wallet.add.dialog.restore.label": "復元",
   "wallet.add.dialog.title.label": "ウォレットを追加",
+  "wallet.amountInput.feesLabel": "!!!+ {amount} of fees",
   "wallet.backup.privacy.warning.dialog..button.labelContinue": "次",
   "wallet.backup.privacy.warning.dialog.checkbox.label.nobodyWatching": "他の人と資金を共有しない限り、誰も画面を見ていないことを確認してください。\n",
   "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions": "次の画面で Xつのランダムな単語が表示されます。これはウォレットの復元フレーズです。これはどのバージョンのDaedalusアプリケーションのウォレットの秘密キーや資金の復元、またはバックアップ時にも利用できます。",
