@@ -6,8 +6,11 @@ import Input from 'react-polymorph/lib/components/Input';
 import NumericInput from 'react-polymorph/lib/components/NumericInput';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
+import BigNumber from 'bignumber.js';
 import { isValidAmountInLovelaces } from '../../lib/validations';
+import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
+import AmountInputSkin from './skins/AmountInputSkin';
 import BorderedBox from '../widgets/BorderedBox';
 import styles from './WalletSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
@@ -178,6 +181,12 @@ export default class WalletSendForm extends Component {
     const receiverField = form.$('receiver');
     const passwordField = form.$('walletPassword');
 
+    // TODO: fetch fees from api endpoint
+    const FEES = new BigNumber(12.042481);
+    const amountFieldProps = amountField.bind();
+    const amountValue = new BigNumber(amountFieldProps.value !== '' ? amountFieldProps.value : 0);
+    const totalAmount = amountValue.add(FEES);
+
     return (
       <div className={styles.component}>
 
@@ -194,7 +203,7 @@ export default class WalletSendForm extends Component {
 
           <div className={styles.amountInput}>
             <NumericInput
-              {...amountField.bind()}
+              {...amountFieldProps}
               className="amount"
               label={intl.formatMessage(messages.amountLabel)}
               minValue={0.000001}
@@ -202,11 +211,12 @@ export default class WalletSendForm extends Component {
               maxAfterDot={6}
               maxBeforeDot={11}
               error={amountField.error}
-              skin={<SimpleInputSkin />}
+              // AmountInputSkin props
+              currency={intl.formatMessage(globalMessages.unitAda)}
+              fees={FEES.toFormat(DECIMAL_PLACES_IN_ADA)}
+              total={totalAmount.toFormat(DECIMAL_PLACES_IN_ADA)}
+              skin={<AmountInputSkin />}
             />
-            <span className={styles.adaLabel}>
-              {intl.formatMessage(globalMessages.unitAda)}
-            </span>
           </div>
 
           {isWalletPasswordSet ? (
