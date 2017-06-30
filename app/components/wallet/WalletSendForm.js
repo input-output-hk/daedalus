@@ -107,7 +107,7 @@ export default class WalletSendForm extends Component {
   };
 
   adaToLovelaces = (adaAmount: string) => (
-    adaAmount.replace('.', '').replace(',', '').replace(/^0+/, '')
+    adaAmount.replace('.', '').replace(/,/g, '').replace(/^0+/, '')
   );
 
   // FORM VALIDATION
@@ -184,7 +184,8 @@ export default class WalletSendForm extends Component {
     // TODO: fetch fees from api endpoint
     const FEES = new BigNumber(12.042481);
     const amountFieldProps = amountField.bind();
-    const amountValue = new BigNumber(amountFieldProps.value !== '' ? amountFieldProps.value : 0);
+    const cleanedAmount = amountFieldProps.value.replace(/,/g, '');
+    const amountValue = new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
     const totalAmount = amountValue.add(FEES);
 
     return (
