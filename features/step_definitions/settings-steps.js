@@ -16,7 +16,7 @@ export default function () {
     return this.client.click(selector);
   });
 
-  this.When(/^I set wallet password:$/, async function (table) {
+  this.When(/^I enter wallet password:$/, async function (table) {
     const fields = table.hashes()[0];
     await this.client.setValue('.createPasswordDialog .newPassword input', fields.password);
     await this.client.setValue('.createPasswordDialog .repeatedPassword input', fields.repeatedPassword);
@@ -55,11 +55,11 @@ export default function () {
     await this.client.setValue('.WalletSettings_component .InlineEditingInput_component input', fields.name);
   });
 
-  this.When(/^I click outside form input fields$/, function () {
+  this.When(/^I click outside "name" input field$/, function () {
     return this.client.click('.WalletSettings_component');
   });
 
-  this.When(/^I open Transaction assurance security level selection dropdown$/, function () {
+  this.When(/^I open "Transaction assurance security level" selection dropdown$/, function () {
     return this.waitAndClick('.WalletSettings_assuranceLevelSelect .SimpleInput_input');
   });
 
@@ -67,7 +67,7 @@ export default function () {
     return this.waitAndClick('//li[contains(text(), "Strict")]');
   });
 
-  this.Then(/^I should have wallet Strict assurance level$/, async function () {
+  this.Then(/^I should have wallet with "Strict" assurance level set$/, async function () {
     const activeWalletName = await getNameOfActiveWalletInSidebar.call(this);
     const wallets = await this.client.executeAsync(function(done) {
       daedalus.stores.wallets.walletsRequest.execute().then(done);

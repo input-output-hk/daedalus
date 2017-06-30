@@ -8,21 +8,21 @@ Feature: Wallet Settings
     | first  |           |
     | second | Secret123 |
 
-  Scenario: Wallet password setting
+  Scenario: User sets Wallet password
     Given I am on the "first" wallet "settings" screen
     And I click on the "create" password label
     And I should see the "create" wallet password dialog
-    And I set wallet password:
-    | password | repeatedPassword |
-    | Secret123   | Secret123           |
+    And I enter wallet password:
+    | password  | repeatedPassword |
+    | Secret123 | Secret123        |
     And I click on the "save" button in "create" wallet password dialog
     Then I should see "change" label in password field
 
-  Scenario: Wallet setting invalid password
+  Scenario: User tries to set Wallet password with invalid password format
     Given I am on the "first" wallet "settings" screen
     And I click on the "create" password label
     And I should see the "create" wallet password dialog
-    And I set wallet password:
+    And I enter wallet password:
     | password | repeatedPassword |
     | secret   | secret           |
     And I click on the "save" button in "create" wallet password dialog
@@ -30,7 +30,7 @@ Feature: Wallet Settings
     | message                             |
     | global.errors.invalidWalletPassword |
 
-  Scenario: Wallet password update/change
+  Scenario: User changes Wallet password
     Given I am on the "second" wallet "settings" screen
     And I click on the "change" password label
     And I should see the "change" wallet password dialog
@@ -40,7 +40,7 @@ Feature: Wallet Settings
     And I click on the "save" button in "create" wallet password dialog
     Then I should not see the change password dialog anymore
 
-  Scenario: Wallet password remove
+  Scenario: User removes Wallet password
     Given I am on the "second" wallet "settings" screen
     And I click on the "change" password label
     And I should see the "change" wallet password dialog
@@ -51,18 +51,17 @@ Feature: Wallet Settings
     And I click on the "remove" button in "change" wallet password dialog
     Then I should see "create" label in password field
 
-  Scenario: Wallet rename
+  Scenario: User renames Wallet
     Given I am on the "first" wallet "settings" screen
     And I click on "name" input field
     And I enter new wallet name:
     | name         |
     | first Edited |
-    And I click outside form input fields
+    And I click outside "name" input field
     Then I should see new wallet name "first Edited"
 
-  Scenario: Wallet assurance level change
+  Scenario: User changes Wallet assurance level
     Given I am on the "first" wallet "settings" screen
-    And I open Transaction assurance security level selection dropdown
+    And I open "Transaction assurance security level" selection dropdown
     And I select "Strict" assurance level
-    And I click outside form input fields
-    Then I should have wallet Strict assurance level
+    Then I should have wallet with "Strict" assurance level set
