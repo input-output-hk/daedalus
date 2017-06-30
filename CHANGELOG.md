@@ -31,6 +31,7 @@ Changelog
 - Acceptance test for "Import wallet with/without spending password" feature
 - Acceptance test for "Send money from a wallet with spending password" feature
 - Acceptance test for "Generate wallet address" feature
+- Acceptance test for "Wallet settings management" features
 - Final version of Daedalus logo added on the loading screen
 - Final version of Daedalus logo added in the top-bar
 - Receive page design update
