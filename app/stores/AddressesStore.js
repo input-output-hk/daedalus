@@ -40,7 +40,10 @@ export default class AddressesStore extends Store {
       }).promise;
       if (address != null) {
         this._refreshAddresses();
-        runInAction('set last generated address and reset error', () => { this.lastGeneratedAddress = address; this.error = null; });
+        runInAction('set last generated address and reset error', () => {
+          this.lastGeneratedAddress = address;
+          this.error = null;
+        });
       }
     } catch (error) {
       runInAction('set error', () => { this.error = error; });
