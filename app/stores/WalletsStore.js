@@ -243,13 +243,16 @@ export default class WalletsStore extends Store {
 
   @action _setActiveWallet = ({ walletId }: { walletId: string }) => {
     if (this.hasAnyWallets) {
+      const activeWalletId = this.active ? this.active.id : null;
+      const activeWalletChange = activeWalletId !== walletId;
+      if (activeWalletChange) this.stores.addresses.lastGeneratedAddress = null;
       this.active = this.all.find(wallet => wallet.id === walletId);
-      this.stores.addresses.lastGeneratedAddress = null;
     }
   };
 
   @action _unsetActiveWallet = () => {
     this.active = null;
+    this.stores.addresses.lastGeneratedAddress = null;
   };
 
   goToWalletRoute(walletId: string) {

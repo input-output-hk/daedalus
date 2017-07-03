@@ -186,6 +186,7 @@ export default class ChangeWalletPasswordDialog extends Component {
     const { removePassword } = this.state;
 
     const dialogClasses = classnames([
+      isWalletPasswordSet ? 'changePasswordDialog' : 'createPasswordDialog',
       styles.dialog,
       isSubmitting ? styles.isSubmitting : null
     ]);
@@ -195,12 +196,22 @@ export default class ChangeWalletPasswordDialog extends Component {
       removePassword ? styles.hidden : null
     ]);
 
+    const confirmButtonClasses = classnames([
+      'confirmButton',
+      removePassword ? styles.removeButton : null,
+    ]);
+
+    const newPasswordClasses = classnames([
+      'newPassword',
+      styles.newPassword,
+    ]);
+
     const actions = [
       {
         label: intl.formatMessage(globalMessages[removePassword ? 'remove' : 'save']),
         onClick: this.submit,
         primary: true,
-        className: removePassword ? styles.removeButton : null,
+        className: confirmButtonClasses,
       },
     ];
 
@@ -228,6 +239,7 @@ export default class ChangeWalletPasswordDialog extends Component {
 
             <Input
               type="password"
+              className="currentPassword"
               value={currentPasswordValue}
               onChange={(value) => this.handleDataChange('currentPasswordValue', value)}
               {...form.$('currentPassword').bind()}
@@ -238,7 +250,7 @@ export default class ChangeWalletPasswordDialog extends Component {
         <div className={walletPasswordFieldsClasses}>
           <Input
             type="password"
-            className={styles.newPassword}
+            className={newPasswordClasses}
             value={newPasswordValue}
             onChange={(value) => this.handleDataChange('newPasswordValue', value)}
             {...form.$('walletPassword').bind()}
@@ -246,6 +258,7 @@ export default class ChangeWalletPasswordDialog extends Component {
 
           <Input
             type="password"
+            className="repeatedPassword"
             value={repeatedPasswordValue}
             onChange={(value) => this.handleDataChange('repeatedPasswordValue', value)}
             {...form.$('repeatPassword').bind()}
