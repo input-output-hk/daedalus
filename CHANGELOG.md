@@ -69,6 +69,7 @@ Changelog
 - Use markdown for "Terms of use" content
 - Added manually written Flow types for API responses
 - Testnet version on the testnet label bumped from 0.3 to 0.5
+- Replaced all React-Toolbox components with React-Polymorph ones
 
 
 ## 0.6.2

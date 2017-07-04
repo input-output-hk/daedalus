@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
-import Input from 'react-toolbox/lib/input/Input';
+import Input from 'react-polymorph/lib/components/Input';
+import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -105,7 +106,6 @@ export default class ChangeWalletPasswordDialog extends Component {
             this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
           ];
         }],
-        bindings: 'ReactToolbox',
       },
       walletPassword: {
         type: 'password',
@@ -121,7 +121,6 @@ export default class ChangeWalletPasswordDialog extends Component {
             this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
           ];
         }],
-        bindings: 'ReactToolbox',
       },
       repeatPassword: {
         type: 'password',
@@ -137,7 +136,6 @@ export default class ChangeWalletPasswordDialog extends Component {
             this.context.intl.formatMessage(globalMessages.invalidRepeatPassword)
           ];
         }],
-        bindings: 'ReactToolbox',
       },
     }
   }, {
@@ -215,6 +213,10 @@ export default class ChangeWalletPasswordDialog extends Component {
       },
     ];
 
+    const currentPasswordField = form.$('currentPassword');
+    const newPasswordField = form.$('walletPassword');
+    const repeatedPasswordField = form.$('repeatPassword');
+
     return (
       <Dialog
         title={intl.formatMessage(
@@ -242,7 +244,9 @@ export default class ChangeWalletPasswordDialog extends Component {
               className="currentPassword"
               value={currentPasswordValue}
               onChange={(value) => this.handleDataChange('currentPasswordValue', value)}
-              {...form.$('currentPassword').bind()}
+              {...currentPasswordField.bind()}
+              error={currentPasswordField.error}
+              skin={<SimpleInputSkin />}
             />
           </div>
         ) : null}
@@ -253,7 +257,9 @@ export default class ChangeWalletPasswordDialog extends Component {
             className={newPasswordClasses}
             value={newPasswordValue}
             onChange={(value) => this.handleDataChange('newPasswordValue', value)}
-            {...form.$('walletPassword').bind()}
+            {...newPasswordField.bind()}
+            error={newPasswordField.error}
+            skin={<SimpleInputSkin />}
           />
 
           <Input
@@ -261,7 +267,9 @@ export default class ChangeWalletPasswordDialog extends Component {
             className="repeatedPassword"
             value={repeatedPasswordValue}
             onChange={(value) => this.handleDataChange('repeatedPasswordValue', value)}
-            {...form.$('repeatPassword').bind()}
+            {...repeatedPasswordField.bind()}
+            error={repeatedPasswordField.error}
+            skin={<SimpleInputSkin />}
           />
 
           <p className={styles.passwordInstructions}>

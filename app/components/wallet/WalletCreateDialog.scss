@@ -5,6 +5,7 @@
 
   .walletPasswordSwitch {
     border-top: 1px solid #dfe4e8;
+    margin-top: 32px;
     padding-top: 20px;
   }
 
@@ -31,7 +32,7 @@
       color: $text-color-accent;
       font-family: $font-light;
       line-height: 1.38;
-      margin: -15px 0 30px;
+      margin: 16px 0 32px;
       opacity: 0.5;
     }
   }

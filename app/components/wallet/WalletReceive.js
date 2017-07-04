@@ -6,7 +6,8 @@ import classnames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
 import Button from 'react-toolbox/lib/button/Button';
-import Input from 'react-toolbox/lib/input/Input';
+import Input from 'react-polymorph/lib/components/Input';
+import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
 import iconCopy from '../../assets/images/clipboard-ic.svg';
@@ -100,7 +101,6 @@ export default class WalletReceive extends Component {
           }
           return [true];
         }],
-        bindings: 'ReactToolbox',
       },
     },
   }, {
@@ -151,12 +151,15 @@ export default class WalletReceive extends Component {
       isSubmitting ? styles.spinning : null,
     ]);
 
+    const passwordField = form.$('spendingPassword');
     const generateAddressForm = (
       <div className={generateAddressWrapperClasses}>
         {walletHasPassword &&
           <Input
             className={styles.spendingPassword}
-            {...form.$('spendingPassword').bind()}
+            {...passwordField.bind()}
+            error={passwordField.error}
+            skin={<SimpleInputSkin />}
           />
         }
 

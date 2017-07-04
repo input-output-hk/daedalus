@@ -1,12 +1,15 @@
 .component {
+  margin-bottom: 32px;
   position: relative;
 
-  .input > input {
-    border: 1px solid $color-light-grey !important;
+  :global {
+    .SimpleFormField_label {
+      color: $theme-label-color !important;
+    }
   }
 
   .button {
-    bottom: 43px;
+    bottom: 13px;
     color: $text-color-accent;
     cursor: pointer;
     font-family: $font-light;
@@ -15,8 +18,9 @@
     opacity: 0.5;
     position: absolute;
     right: 22px;
-    text-align: right;
     text-transform: lowercase;
+    &:hover {
+      opacity: 1;
+    }
   }
 }
-

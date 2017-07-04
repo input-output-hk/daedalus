@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
-import Input from 'react-toolbox/lib/input/Input';
+import Input from 'react-polymorph/lib/components/Input';
+import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
@@ -78,7 +79,7 @@ export default class WalletCreateDialog extends Component {
   };
 
   componentDidMount() {
-    this.walletNameInput.getWrappedInstance().focus();
+    this.walletNameInput.focus();
   }
 
   walletNameInput: Input;
@@ -95,7 +96,6 @@ export default class WalletCreateDialog extends Component {
             this.context.intl.formatMessage(globalMessages.invalidWalletName)
           ]
         )],
-        bindings: 'ReactToolbox',
       },
       walletPassword: {
         type: 'password',
@@ -109,7 +109,6 @@ export default class WalletCreateDialog extends Component {
             this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
           ];
         }],
-        bindings: 'ReactToolbox',
       },
       repeatPassword: {
         type: 'password',
@@ -125,7 +124,6 @@ export default class WalletCreateDialog extends Component {
             this.context.intl.formatMessage(globalMessages.invalidRepeatPassword)
           ];
         }],
-        bindings: 'ReactToolbox',
       },
     }
   }, {
@@ -186,6 +184,10 @@ export default class WalletCreateDialog extends Component {
       createPassword ? styles.show : null,
     ]);
 
+    const walletNameField = form.$('walletName');
+    const walletPasswordField = form.$('walletPassword');
+    const repeatedPasswordField = form.$('repeatPassword');
+
     return (
       <Dialog
         className={dialogClasses}
@@ -199,7 +201,9 @@ export default class WalletCreateDialog extends Component {
           className="walletName"
           onKeyPress={this.checkForEnterKey.bind(this)}
           ref={(input) => { this.walletNameInput = input; }}
-          {...form.$('walletName').bind()}
+          {...walletNameField.bind()}
+          error={walletNameField.error}
+          skin={<SimpleInputSkin />}
         />
 
         <div className={styles.walletPassword}>
@@ -215,11 +219,15 @@ export default class WalletCreateDialog extends Component {
           <div className={walletPasswordFieldsClasses}>
             <Input
               className="walletPassword"
-              {...form.$('walletPassword').bind()}
+              {...walletPasswordField.bind()}
+              error={walletPasswordField.error}
+              skin={<SimpleInputSkin />}
             />
             <Input
               className="repeatedPassword"
-              {...form.$('repeatPassword').bind()}
+              {...repeatedPasswordField.bind()}
+              error={repeatedPasswordField.error}
+              skin={<SimpleInputSkin />}
             />
             <p className={styles.passwordInstructions}>
               {intl.formatMessage(globalMessages.passwordInstructions)}

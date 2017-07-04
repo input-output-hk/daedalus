@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
-import Input from 'react-toolbox/lib/input/Input';
+import Input from 'react-polymorph/lib/components/Input';
+import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import CheckboxWithLongLabel from '../../widgets/forms/CheckboxWithLongLabel';
@@ -125,6 +126,7 @@ export default class DeleteWalletConfirmationDialog extends Component {
             label={intl.formatMessage(messages.enterRecoveryWordLabel)}
             value={confirmationValue}
             onChange={onConfirmationValueChange}
+            skin={<SimpleInputSkin />}
           />
         ) : null}
         <DialogCloseButton onClose={onCancel} />
