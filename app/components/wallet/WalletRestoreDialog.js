@@ -3,7 +3,10 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
-import Input from 'react-toolbox/lib/input/Input';
+import Input from 'react-polymorph/lib/components/Input';
+import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
+import TextArea from 'react-polymorph/lib/components/TextArea';
+import SimpleTextAreaSkin from 'react-polymorph/lib/skins/simple/TextAreaSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
@@ -109,7 +112,6 @@ export default class WalletRestoreDialog extends Component {
             this.context.intl.formatMessage(globalMessages.invalidWalletName)
           ]
         )],
-        bindings: 'ReactToolbox',
       },
       recoveryPhrase: {
         label: this.context.intl.formatMessage(messages.recoveryPhraseInputLabel),
@@ -123,7 +125,6 @@ export default class WalletRestoreDialog extends Component {
             this.context.intl.formatMessage(messages.invalidRecoveryPhrase)
           ];
         },
-        bindings: 'ReactToolbox',
       },
       walletPassword: {
         type: 'password',
@@ -137,7 +138,6 @@ export default class WalletRestoreDialog extends Component {
             this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
           ];
         }],
-        bindings: 'ReactToolbox',
       },
       repeatPassword: {
         type: 'password',
@@ -153,7 +153,6 @@ export default class WalletRestoreDialog extends Component {
             this.context.intl.formatMessage(globalMessages.invalidRepeatPassword)
           ];
         }],
-        bindings: 'ReactToolbox',
       },
     },
   }, {
@@ -203,10 +202,20 @@ export default class WalletRestoreDialog extends Component {
       isSubmitting ? styles.isSubmitting : null,
     ]);
 
+    const walletNameFieldClasses = classnames([
+      'walletName',
+      styles.walletName,
+    ]);
+
     const walletPasswordFieldsClasses = classnames([
       styles.walletPasswordFields,
       createPassword ? styles.show : null,
     ]);
+
+    const walletNameField = form.$('walletName');
+    const recoveryPhraseField = form.$('recoveryPhrase');
+    const walletPasswordField = form.$('walletPassword');
+    const repeatedPasswordField = form.$('repeatPassword');
 
     return (
       <Dialog
@@ -216,13 +225,21 @@ export default class WalletRestoreDialog extends Component {
         onOverlayClick={onCancel}
         active
       >
-        <Input className="walletName" {...form.$('walletName').bind()} />
 
         <Input
+          className={walletNameFieldClasses}
+          {...walletNameField.bind()}
+          error={walletNameField.error}
+          skin={<SimpleInputSkin />}
+        />
+
+        <TextArea
           className="recoveryPhrase"
-          multiline
+          autoResize={false}
           rows={3}
-          {...form.$('recoveryPhrase').bind()}
+          {...recoveryPhraseField.bind()}
+          error={recoveryPhraseField.error}
+          skin={<SimpleTextAreaSkin />}
         />
 
         <div className={styles.walletPassword}>
@@ -238,11 +255,15 @@ export default class WalletRestoreDialog extends Component {
           <div className={walletPasswordFieldsClasses}>
             <Input
               className="walletPassword"
-              {...form.$('walletPassword').bind()}
+              {...walletPasswordField.bind()}
+              error={walletPasswordField.error}
+              skin={<SimpleInputSkin />}
             />
             <Input
               className="repeatedPassword"
-              {...form.$('repeatPassword').bind()}
+              {...repeatedPasswordField.bind()}
+              error={repeatedPasswordField.error}
+              skin={<SimpleInputSkin />}
             />
             <p className={styles.passwordInstructions}>
               {intl.formatMessage(globalMessages.passwordInstructions)}
