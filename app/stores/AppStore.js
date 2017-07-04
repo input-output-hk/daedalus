@@ -35,9 +35,9 @@ export default class AppStore extends Store {
     this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
     this.registerReactions([
       this._redirectToLanguageSelectionIfNoLocaleSet,
-      this._redirectToMainUiAfterSetSendLogsChoice,
       this._redirectToTermsOfUseScreenIfTermsNotAccepted,
-      this._redirectToSendLogsChoiceScreenIfNotSet,
+      this._redirectToSendLogsChoiceScreenIfSendLogsChoiceNotSet,
+      this._redirectToMainUiAfterSetSendLogsChoice,
       this._redirectToLoadingScreenWhenDisconnected,
     ]);
     this._getTermsOfUseAcceptance();
@@ -54,11 +54,6 @@ export default class AppStore extends Store {
     return 'en-US'; // default
   }
 
-  @computed get termsOfUse(): string {
-    const localizedTermsOfUse = require(`../i18n/locales/terms-of-use/${this.currentLocale}.md`); // eslint-disable-line
-    return localizedTermsOfUse;
-  }
-
   @computed get hasLoadedCurrentLocale(): boolean {
     return (
       this.getProfileLocaleRequest.wasExecuted && this.getProfileLocaleRequest.result !== null
@@ -69,8 +64,9 @@ export default class AppStore extends Store {
     return (this.getProfileLocaleRequest.result != null && this.getProfileLocaleRequest.result !== '');
   }
 
-  @computed get areTermsOfUseAccepted(): boolean {
-    return this.getTermsOfUseAcceptanceRequest.result === true;
+  @computed get termsOfUse(): string {
+    const localizedTermsOfUse = require(`../i18n/locales/terms-of-use/${this.currentLocale}.md`); // eslint-disable-line
+    return localizedTermsOfUse;
   }
 
   @computed get hasLoadedTermsOfUseAcceptance(): boolean {
@@ -78,6 +74,10 @@ export default class AppStore extends Store {
       this.getTermsOfUseAcceptanceRequest.wasExecuted &&
       this.getTermsOfUseAcceptanceRequest.result !== null
     );
+  }
+
+  @computed get areTermsOfUseAccepted(): boolean {
+    return this.getTermsOfUseAcceptanceRequest.result === true;
   }
 
   @computed get isSendLogsChoiceSet(): boolean {
@@ -88,15 +88,15 @@ export default class AppStore extends Store {
     return this.getSendLogsChoiceRequest.wasExecuted;
   }
 
-  _updateLocale = async ({ locale }: { locale: string }) => {
-    await this.setProfileLocaleRequest.execute(locale);
-    await this.getProfileLocaleRequest.execute();
-  };
-
   _updateRouteLocation = (options: { route: string, params: ?Object }) => {
     const routePath = buildRoute(options.route, options.params);
     const currentRoute = this.stores.router.location.pathname;
     if (currentRoute !== routePath) this.stores.router.push(routePath);
+  };
+
+  _updateLocale = async ({ locale }: { locale: string }) => {
+    await this.setProfileLocaleRequest.execute(locale);
+    await this.getProfileLocaleRequest.execute();
   };
 
   _acceptTermsOfUse = async () => {
@@ -132,11 +132,10 @@ export default class AppStore extends Store {
     }
   };
 
-  _redirectToSendLogsChoiceScreenIfNotSet = () => {
+  _redirectToSendLogsChoiceScreenIfSendLogsChoiceNotSet = () => {
     const { isConnected } = this.stores.networkStatus;
-    if (isConnected && this.isCurrentLocaleSet &&
-      this.areTermsOfUseAccepted && this.hasLoadedSendLogsChoice &&
-      !this.isSendLogsChoiceSet) {
+    if (isConnected && this.isCurrentLocaleSet && this.areTermsOfUseAccepted &&
+      this.hasLoadedSendLogsChoice && !this.isSendLogsChoiceSet) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.SEND_LOGS });
     }
   };

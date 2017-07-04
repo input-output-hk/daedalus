@@ -50,6 +50,10 @@
         background-color: rgba(68, 91, 124, 0.05) !important;
         color: $text-color-accent !important;
         margin-right: 20px;
+
+        &:hover {
+          background-color: rgba(68, 91, 124, 0.1) !important;
+        }
       }
 
       &.submitButtonSpinning {

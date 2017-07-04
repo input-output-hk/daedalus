@@ -52,13 +52,15 @@ export default class SendLogsChoiceForm extends Component {
     const { isSubmitting, error } = this.props;
 
     const acceptButtonClasses = classnames([
+      styles.button,
       styles.acceptButton,
-      isSubmitting ? styles.submitButtonSpinning : styles.button,
+      isSubmitting ? styles.submitButtonSpinning : null,
     ]);
 
     const declineButtonClasses = classnames([
+      styles.button,
       styles.declineButton,
-      isSubmitting ? styles.submitButtonSpinning : styles.button,
+      isSubmitting ? styles.submitButtonSpinning : null,
     ]);
 
     return (

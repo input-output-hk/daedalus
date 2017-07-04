@@ -527,7 +527,7 @@ export default class CardanoClientApi {
     }
   }
 
-  async setSendLogsChoice(sendLogs?: boolean) {
+  async setSendLogsChoice(sendLogs: boolean) {
     Log.debug('CardanoClientApi::setSendLogsChoice called: ', sendLogs);
     try {
       await setSendLogsChoiceInLocalStorage(sendLogs);

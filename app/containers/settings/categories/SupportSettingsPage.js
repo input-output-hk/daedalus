@@ -10,7 +10,7 @@ export default class SupportSettingsPage extends Component {
   static defaultProps = { actions: null, stores: null };
   props: InjectedProps;
 
-  onSubmit = (values: { logsAccepted: boolean }) => {
+  onSubmit = (values: { sendLogs: boolean }) => {
     this.props.actions.profile.setSendLogsChoice.trigger(values);
   };
 
