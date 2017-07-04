@@ -23,21 +23,25 @@ export default class AppStore extends Store {
   @observable setProfileLocaleRequest: Request<string> = new Request(this.api.setUserLocale);
   @observable getTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.getTermsOfUseAcceptance);
   @observable setTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.setTermsOfUseAcceptance);
+  @observable getSendLogsChoiceRequest: Request<string> = new Request(this.api.getSendLogsChoice);
+  @observable setSendLogsChoiceRequest: Request<string> = new Request(this.api.setSendLogsChoice);
   @observable error: ?LocalizableError = null;
   /* eslint-enable max-len */
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
     this.actions.profile.updateLocale.listen(this._updateLocale);
+    this.actions.profile.setSendLogsChoice.listen(this._setSendLogsChoice);
     this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
     this.registerReactions([
-      this._redirectToMainUiAfterLocaleIsSet,
       this._redirectToLanguageSelectionIfNoLocaleSet,
-      this._redirectToMainUiAfterTermsOfUseAcceptance,
+      this._redirectToMainUiAfterSetSendLogsChoice,
       this._redirectToTermsOfUseScreenIfTermsNotAccepted,
+      this._redirectToSendLogsChoiceScreenIfNotSet,
       this._redirectToLoadingScreenWhenDisconnected,
     ]);
     this._getTermsOfUseAcceptance();
+    this._getSendLogsChoice();
   }
 
   @computed get currentRoute(): string {
@@ -76,6 +80,14 @@ export default class AppStore extends Store {
     );
   }
 
+  @computed get isSendLogsChoiceSet(): boolean {
+    return this.getSendLogsChoiceRequest.result !== null;
+  }
+
+  @computed get hasLoadedSendLogsChoice(): boolean {
+    return this.getSendLogsChoiceRequest.wasExecuted;
+  }
+
   _updateLocale = async ({ locale }: { locale: string }) => {
     await this.setProfileLocaleRequest.execute(locale);
     await this.getProfileLocaleRequest.execute();
@@ -96,18 +108,19 @@ export default class AppStore extends Store {
     this.getTermsOfUseAcceptanceRequest.execute();
   };
 
+  _getSendLogsChoice = () => {
+    this.getSendLogsChoiceRequest.execute();
+  };
+
+  _setSendLogsChoice = async ({ sendLogs }: { sendLogs: boolean }) => {
+    await this.setSendLogsChoiceRequest.execute(sendLogs);
+    await this.getSendLogsChoiceRequest.execute();
+  };
+
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
     const { isConnected } = this.stores.networkStatus;
     if (isConnected && this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.LANGUAGE_SELECTION });
-    }
-  };
-
-  _isOnLanguageSelectionPage = () => this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION;
-
-  _redirectToMainUiAfterLocaleIsSet = () => {
-    if (this.isCurrentLocaleSet && this._isOnLanguageSelectionPage()) {
-      this._redirectToRoot();
     }
   };
 
@@ -119,10 +132,19 @@ export default class AppStore extends Store {
     }
   };
 
-  _isOnTermsOfUsePage = () => this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE;
+  _redirectToSendLogsChoiceScreenIfNotSet = () => {
+    const { isConnected } = this.stores.networkStatus;
+    if (isConnected && this.isCurrentLocaleSet &&
+      this.areTermsOfUseAccepted && this.hasLoadedSendLogsChoice &&
+      !this.isSendLogsChoiceSet) {
+      this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.SEND_LOGS });
+    }
+  };
 
-  _redirectToMainUiAfterTermsOfUseAcceptance = () => {
-    if (this.areTermsOfUseAccepted && this._isOnTermsOfUsePage()) {
+  _isOnSendLogsChoicePage = () => this.currentRoute === ROUTES.PROFILE.SEND_LOGS;
+
+  _redirectToMainUiAfterSetSendLogsChoice = () => {
+    if (this.isSendLogsChoiceSet && this._isOnSendLogsChoicePage()) {
       this._redirectToRoot();
     }
   };

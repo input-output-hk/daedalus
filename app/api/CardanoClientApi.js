@@ -101,6 +101,29 @@ const unsetTermsOfUseAcceptanceFromLocalStorage = () => new Promise((resolve) =>
   });
 });
 
+const getSendLogsChoiceFromLocalStorage = () => new Promise((resolve, reject) => {
+  localStorage.get('sendLogsChoice', (error, response) => {
+    if (error) return reject(error);
+    if (typeof response.sendLogs === 'undefined') {
+      return resolve(null);
+    }
+    resolve(response.sendLogs);
+  });
+});
+
+const setSendLogsChoiceInLocalStorage = (sendLogs) => new Promise((resolve, reject) => {
+  localStorage.set('sendLogsChoice', { sendLogs }, (error) => {
+    if (error) return reject(error);
+    resolve();
+  });
+});
+
+const unsetSendLogsChoiceFromLocalStorage = () => new Promise((resolve) => {
+  localStorage.remove('sendLogsChoice', () => {
+    resolve();
+  });
+});
+
 export default class CardanoClientApi {
 
   notifyCallbacks = [];
@@ -504,6 +527,30 @@ export default class CardanoClientApi {
     }
   }
 
+  async setSendLogsChoice(sendLogs?: boolean) {
+    Log.debug('CardanoClientApi::setSendLogsChoice called: ', sendLogs);
+    try {
+      await setSendLogsChoiceInLocalStorage(sendLogs);
+      Log.debug('CardanoClientApi::setSendLogsChoice success: ', sendLogs);
+      return sendLogs;
+    } catch (error) {
+      Log.error('CardanoClientApi::setSendLogsChoice error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async getSendLogsChoice() {
+    Log.debug('CardanoClientApi::getLogs called');
+    try {
+      const logs = await getSendLogsChoiceFromLocalStorage();
+      Log.debug('CardanoClientApi::getLocale success: ', logs);
+      return logs;
+    } catch (error) {
+      Log.error('CardanoClientApi::getLocale error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
   async getTermsOfUseAcceptance() {
     Log.debug('CardanoClientApi::getTermsOfUseAcceptance called');
     try {
@@ -549,6 +596,7 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::testReset called');
     await unsetUserLocaleFromLocalStorage(); // TODO: remove after saving locale to API is restored
     await unsetTermsOfUseAcceptanceFromLocalStorage();
+    await unsetSendLogsChoiceFromLocalStorage();
     try {
       const response = await ClientApi.testReset();
       Log.debug('CardanoClientApi::testReset success: ', stringifyData(response));
