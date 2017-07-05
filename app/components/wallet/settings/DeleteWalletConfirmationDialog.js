@@ -108,7 +108,7 @@ export default class DeleteWalletConfirmationDialog extends Component {
         title={intl.formatMessage(messages.dialogTitle)}
         actions={actions}
         active
-        onOverlayClick={onCancel}
+        onOverlayClick={!isSubmitting ? onCancel : null}
         className={dialogClasses}
       >
         <FormattedHTMLMessage

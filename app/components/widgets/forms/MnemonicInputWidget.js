@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import Input from 'react-toolbox/lib/input/Input';
+import Input from 'react-polymorph/lib/components/Input';
+import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import styles from './MnemonicInputWidget.scss';
 
 @observer
@@ -23,11 +24,12 @@ export default class MnemonicInputWidget extends Component {
           {tokens.map((token, index) => (
             <Input
               type="text"
-              hint="Token"
+              placeholder="Token"
               key={index}
               className={styles.input}
               value={token}
               onChange={(value) => onTokenChanged(index, value)}
+              skin={SimpleInputSkin}
             />
           ))}
         </div>

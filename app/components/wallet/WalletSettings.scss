@@ -10,22 +10,13 @@
 }
 
 .assuranceLevelSelect {
-  margin-bottom: 32px;
-}
-
-.deleteWalletButton {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 10px;
-}
-
-.error {
-  @include error-message;
-  text-align: center;
+  margin-bottom: 20px;
 }
 
 .export {
   font-size: 16px;
+  margin-bottom: 20px;
+
   p {
     color: #abadb0;
     font-family: $font-regular;
@@ -48,3 +39,15 @@
     text-decoration: underline;
   }
 }
+
+.deleteWalletButton {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.error {
+  @include error-message;
+  text-align: center;
+}
+

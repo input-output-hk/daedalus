@@ -222,7 +222,7 @@ export default class WalletRestoreDialog extends Component {
         className={dialogClasses}
         title={intl.formatMessage(messages.title)}
         actions={this.actions}
-        onOverlayClick={onCancel}
+        onOverlayClick={!isSubmitting ? onCancel : null}
         active
       >
 

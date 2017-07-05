@@ -4,7 +4,8 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
-import Input from 'react-toolbox/lib/input/Input';
+import Input from 'react-polymorph/lib/components/Input';
+import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
@@ -91,7 +92,6 @@ export default class WalletKeyImportDialog extends Component {
         type: 'file',
         label: this.context.intl.formatMessage(messages.keyFileLabel),
         placeholder: this.context.intl.formatMessage(messages.keyFileHint),
-        bindings: 'ReactToolbox',
       },
       walletPassword: {
         type: 'password',
@@ -105,7 +105,6 @@ export default class WalletKeyImportDialog extends Component {
             this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
           ];
         }],
-        bindings: 'ReactToolbox',
       },
       repeatPassword: {
         type: 'password',
@@ -121,7 +120,6 @@ export default class WalletKeyImportDialog extends Component {
             this.context.intl.formatMessage(globalMessages.invalidRepeatPassword)
           ];
         }],
-        bindings: 'ReactToolbox',
       },
     },
   }, {
@@ -173,12 +171,15 @@ export default class WalletKeyImportDialog extends Component {
       }
     ];
 
+    const walletPasswordField = form.$('walletPassword');
+    const repeatedPasswordField = form.$('repeatPassword');
+
     return (
       <Dialog
         className={dialogClasses}
         title={intl.formatMessage(messages.headline)}
         actions={actions}
-        onOverlayClick={onClose}
+        onOverlayClick={!isSubmitting ? onClose : null}
         active
       >
 
@@ -203,11 +204,15 @@ export default class WalletKeyImportDialog extends Component {
           <div className={walletPasswordFieldsClasses}>
             <Input
               className="walletPassword"
-              {...form.$('walletPassword').bind()}
+              {...walletPasswordField.bind()}
+              error={walletPasswordField.error}
+              skin={<SimpleInputSkin />}
             />
             <Input
               className="repeatedPassword"
-              {...form.$('repeatPassword').bind()}
+              {...repeatedPasswordField.bind()}
+              error={repeatedPasswordField.error}
+              skin={<SimpleInputSkin />}
             />
             <p className={styles.passwordInstructions}>
               {intl.formatMessage(globalMessages.passwordInstructions)}

@@ -193,7 +193,7 @@ export default class WalletCreateDialog extends Component {
         className={dialogClasses}
         title={intl.formatMessage(messages.dialogTitle)}
         actions={this.actions}
-        onOverlayClick={onCancel}
+        onOverlayClick={!isSubmitting ? onCancel : null}
         active
       >
 

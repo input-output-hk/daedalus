@@ -224,7 +224,7 @@ export default class ChangeWalletPasswordDialog extends Component {
         )}
         actions={actions}
         active
-        onOverlayClick={onCancel}
+        onOverlayClick={!isSubmitting ? onCancel : null}
         className={dialogClasses}
       >
 

@@ -1,11 +1,6 @@
 @import '../../../../themes/mixins/loading-spinner';
 @import '../../../../themes/mixins/error-message';
 
-.error {
-  @include error-message;
-  text-align: center;
-}
-
 .component {
   :global .dialog_body {
     overflow-y: hidden;
@@ -20,11 +15,16 @@
 
 .instructions {
   color: $text-color-accent;
-  margin-top: 30px;
   margin-bottom: 18px;
+  margin-top: 30px;
 
   p {
     font-family: $font-regular;
     line-height: 1.38;
   }
+}
+
+.error {
+  @include error-message;
+  text-align: center;
 }

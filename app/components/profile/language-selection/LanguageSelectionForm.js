@@ -52,7 +52,6 @@ export default class LanguageSelectionForm extends Component {
       languageId: {
         label: this.context.intl.formatMessage(messages.languageSelectLabel),
         value: this.props.languages[0].value,
-        bindings: 'ReactToolbox',
       }
     }
   }, {

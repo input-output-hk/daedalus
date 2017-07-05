@@ -5,23 +5,9 @@
   padding: 20px;
 }
 
-.submitButtonSpinning, .submitButton {
-  display: block !important;
-  margin: 0 auto;
-  width: 360px;
-}
-
-.submitButtonSpinning {
-  @include loading-spinner("../../assets/images/spinner-light.svg");
-}
-
-.error {
-  @include error-message;
-  text-align: center;
-  margin-bottom: 1rem;
-}
-
-.amountInput, .receiverInput, .passwordInput {
+.amountInput,
+.receiverInput,
+.passwordInput {
   position: relative;
   margin-bottom: 20px;
 }
@@ -33,4 +19,21 @@
   position: absolute;
   right: 20px;
   text-transform: uppercase;
+}
+
+.submitButton,
+.submitButtonSpinning  {
+  display: block !important;
+  margin: 30px auto 0;
+  width: 360px;
+}
+
+.submitButtonSpinning {
+  @include loading-spinner("../../assets/images/spinner-light.svg");
+}
+
+.error {
+  @include error-message;
+  text-align: center;
+  margin-bottom: 1rem;
 }
