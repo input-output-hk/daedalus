@@ -1,5 +1,5 @@
 export default function () {
-  this.Given(/^the sidebar submenu is (hidden|visible)/, async function (state) {
+  this.Given(/^the sidebar submenu is (hidden|visible)$/, async function (state) {
     const isVisible = state === 'visible';
     await this.client.waitForVisible('.Sidebar_component');
     await this.client.executeAsync(function(visible, done) {

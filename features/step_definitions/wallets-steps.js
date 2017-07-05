@@ -350,8 +350,8 @@ export default function () {
   });
 
   this.Then(/^I should see newly generated address as active address on the wallet receive screen$/, async function () {
-    const generatedAddress = await this.client.getText('.generatedAddress-1 .WalletReceive_addressId');
     const activeAddress = await this.client.getText('.WalletReceive_hash');
+    const generatedAddress = await this.client.getText('.generatedAddress-1 .WalletReceive_addressId');
     expect(generatedAddress).to.equal(activeAddress);
   });
 };
