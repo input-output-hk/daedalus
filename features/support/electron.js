@@ -7,7 +7,7 @@ let isFirstScenario = true;
 
 export default function () {
   // Boot up the electron app before all features
-  this.registerHandler('BeforeFeatures', { timeout: 20 * 1000 }, async function() {
+  this.registerHandler('BeforeFeatures', { timeout: 5 * 60 * 1000 }, async function() {
     const app = new Application({
       path: electronPath,
       args: ['./electron/main.testing'],
