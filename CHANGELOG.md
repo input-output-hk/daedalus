@@ -61,6 +61,7 @@ Changelog
 - Acceptance test for "Sending money" feature should check receiver wallet's balance
 - Improved spending password validation rules
 - Improved acceptance tests for generating new addresses
+- Prevent React key duplicates in transaction from/to addresses lists
 
 ### Chores
 
