@@ -9,7 +9,7 @@ data Launcher = Launcher
     { nodePath      :: String
     , nodeLogPath   :: String
     , walletPath    :: String
-    , installerPath :: Stringwallet
+    , installerPath :: String
     , runtimePath   :: String
     }
 
