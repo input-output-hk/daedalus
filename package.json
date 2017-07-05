@@ -96,7 +96,7 @@
     "resolve-url": "0.2.1",
     "sass-loader": "4.1.1",
     "sinon": "2.1.0",
-    "spectron": "3.6.0",
+    "spectron": "3.7.2",
     "style-loader": "0.13.2",
     "url-loader": "0.5.8",
     "webpack": "1.14.0",

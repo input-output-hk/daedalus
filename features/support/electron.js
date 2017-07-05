@@ -6,6 +6,9 @@ const context = {};
 let isFirstScenario = true;
 
 export default function () {
+
+  this.setDefaultTimeout(10000);
+
   // Boot up the electron app before all features
   this.registerHandler('BeforeFeatures', { timeout: 5 * 60 * 1000 }, async function() {
     const app = new Application({
@@ -32,7 +35,15 @@ export default function () {
     this.client = context.app.client;
     this.browserWindow = context.app.browserWindow;
     this.client.url('/');
+
+    // Set timeouts of various operations:
+
+    // Determines when to interrupt a script that is being evaluated.
     this.client.timeouts('script', 30 * 1000);
+    // Gives the timeout of when to abort locating an element.
+    this.client.timeouts('implicit', 10 * 1000);
+    // Provides the timeout limit used to interrupt navigation of the browsing context.
+    this.client.timeouts('pageLoad', 10 * 1000);
 
     await this.client.executeAsync(function(isFirst, rootDir, done) {
       daedalus.environment.current = daedalus.environment.TEST;
