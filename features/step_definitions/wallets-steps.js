@@ -111,7 +111,7 @@ export default function () {
   });
 
   this.When(/^I select a valid wallet import key file$/, async function () {
-    await this.client.chooseFile('.WalletKeyImportDialog_keyUpload .FileUploadWidget_dropZone input', defaultWalletKeyFilePath);
+    await this.client.chooseFile('.WalletKeyImportDialog .FileUploadWidget_dropZone input', defaultWalletKeyFilePath);
   });
 
   this.When(/^I toggle "Activate to create password" switch on the import wallet key dialog$/, function () {
