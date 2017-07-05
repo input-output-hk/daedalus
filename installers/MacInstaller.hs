@@ -96,8 +96,10 @@ doLauncher = "./cardano-launcher " <> (launcherArgs $ Launcher
   { nodePath = "./cardano-node"
   , walletPath = "./Frontend"
   , nodeLogPath = appdata <> "Logs/cardano-node.log"
-  , installerPath = appdata <> "installer.pkg"
   , windowsInstallerPath = Nothing
+  , installerPath = "/usr/bin/open"
+  , installerArgs = ["-FW"]
+  , installerArchivePath = Just $ appdata <> "installer.pkg"
   , runtimePath = appdata
   })
     where

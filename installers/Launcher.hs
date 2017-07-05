@@ -11,6 +11,8 @@ data Launcher = Launcher
     , walletPath           :: String
     , installerPath        :: String
     , windowsInstallerPath :: Maybe String
+    , installerArgs        :: [String]
+    , installerArchivePath :: Maybe String
     , runtimePath          :: String
     }
 
@@ -20,9 +22,11 @@ launcherArgs launcher = unwords $
   [ "--node", quote (nodePath launcher)
   , "--node-log-path", quote (nodeLogPath launcher)
   , "--wallet", quote (walletPath launcher)
-  , "--updater ", quote (installerPath launcher)
+  , "--updater", quote (installerPath launcher)
+  , unwords $ map ("-u " ++) (installerArgs launcher)
+  , maybe "" (("--update-archive " ++) . quote) (installerArchivePath launcher)
   , "--node-timeout 5"
-  , (" -n " ++ (L.intercalate " -n " nodeArgs))
+  , unwords $ map ("-n " ++) nodeArgs
   ]
     where
       nodeArgs = [

@@ -24,8 +24,10 @@ launcherScript =
       { nodePath = "%DAEDALUS_DIR%\\cardano-node.exe"
       , nodeLogPath = "%APPDATA%\\Daedalus\\Logs\\cardano-node.log"
       , walletPath = "%DAEDALUS_DIR%\\Daedalus.exe"
-      , installerPath = "%APPDATA%\\Daedalus\\Installer.exe"
       , windowsInstallerPath = Just "%APPDATA%\\Daedalus\\Installer.bat"
+      , installerPath = "%APPDATA%\\Daedalus\\Installer.exe"
+      , installerArgs = []
+      , installerArchivePath = Nothing
       , runtimePath = "%APPDATA%\\Daedalus\\"
       }
 
