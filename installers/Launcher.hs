@@ -9,7 +9,7 @@ data Launcher = Launcher
     { nodePath      :: String
     , nodeLogPath   :: String
     , walletPath    :: String
-    , installerPath :: String
+    , installerPath :: Stringwallet
     , runtimePath   :: String
     }
 
@@ -24,18 +24,17 @@ launcherArgs launcher = unwords $
   ]
     where
       nodeArgs = [
-        "--listen", "127.0.0.1:12100",
         "--report-server", "http://report-server.aws.iohkdev.io:8080",
         "--log-config", "log-config-prod.yaml",
         "--update-latest-path", quote (installerPath launcher),
         "--keyfile", quote (runtimePath launcher <> "Secrets" <> (pathSeparator : "secret.key")),
         "--logs-prefix", quote (runtimePath launcher <> "Logs"),
-        "--db-path", quote (runtimePath launcher <> "DB-0.4"),
-        "--wallet-db-path", quote (runtimePath launcher <> "Wallet-0.4"),
+        "--db-path", quote (runtimePath launcher <> "DB-0.5"),
+        "--wallet-db-path", quote (runtimePath launcher <> "Wallet-0.5"),
         "--kademlia-peers-file", "ip-dht-mappings",
-        "--kademlia-explicit-initial",
         "--system-start", "1499246772",
-        "--wallet"
+        "--wallet",
+        "--static-peers"
         ]
 
 quote :: String -> String
