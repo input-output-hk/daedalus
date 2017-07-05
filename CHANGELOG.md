@@ -63,6 +63,7 @@ Changelog
 - Improved acceptance tests for generating new addresses
 - Removed temporary workaround for creating new accounts during wallet create and wallet restore
 - Prevent React key duplicates in transaction from/to addresses lists
+- Acceptance tests configuration fixes (replaced default-wallet.key and increased before-steps timeout)
 
 ### Chores
 

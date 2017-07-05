@@ -28,7 +28,7 @@ export default function () {
   });
 
   // Make the electron app accessible in each scenario context
-  this.Before({ timeout: 50 * 1000 }, async function() {
+  this.Before({ timeout: 5 * 60 * 1000 }, async function() {
     this.client = context.app.client;
     this.browserWindow = context.app.browserWindow;
     this.client.url('/');
