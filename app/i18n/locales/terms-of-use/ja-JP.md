@@ -1,4 +1,4 @@
-# !!!Terms of Service Agreement
+# Terms of Service Agreement
 
 THIS TERMS OF SERVICE AGREEMENT (&quot;Agreement&quot;) is made between Input Output HK Limited (&quot;Company&quot;) and any person (&quot;User&quot;) who completes the process to download, utilize, or operate any software, data processing service, application, communication service, or other content created or offered by Company, including, but not limited to, the Daedalus Cryptocurrency Wallet application (&quot;Software&quot;). Company and User are collectively referred to as the &quot;parties.&quot;
 
