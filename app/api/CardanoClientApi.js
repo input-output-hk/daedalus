@@ -531,6 +531,9 @@ export default class CardanoClientApi {
       return true;
     } catch (error) {
       Log.error('CardanoClientApi::updateWalletPassword error: ' + stringifyError(error));
+      if (error.message.includes('Invalid old passphrase given')) {
+        throw new IncorrectWalletPasswordError();
+      }
       throw new GenericApiError();
     }
   }
