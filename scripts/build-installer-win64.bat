@@ -78,22 +78,13 @@ pushd installers
 	exit /b 1)
 
 :build
-    for /l %%x in (1, 1, 5) do (
-        ..\scripts\appveyor-retry call stack --no-terminal build -j 2 --exec make-installer
-        @if %errorlevel% equ 0 goto :built
+    call ..\scripts\appveyor-retry call stack --no-terminal build -j 2 --exec make-installer
+    @if %errorlevel% equ 0 goto :built
 
-        @echo .
-        @echo .
-        @echo FAILED: stack --no-terminal build -j 2 --exec make-installer
-        @echo .
-        @timeout 7
-        @echo Retrying -- and also waiting for GHC 8.2.1 [see https://github.com/commercialhaskell/stack/issues/2617]
-        @echo .
-        @echo .
-    )
-    @echo FATAL: persistent failure while building installer with:  stack --no-terminal build -j 2 --exec make-installer
+    @echo FATAL: persistent failure while building installer with:  call stack --no-terminal build -j 2 --exec make-installer
     exit /b 1
 :built
+@echo SUCCESS: call stack --no-terminal build -j 2 --exec make-installer
 popd
 
 @dir /b/s installers\daedalus*
