@@ -123,7 +123,7 @@
   "wallet.redeem.choices.tab.title.forceVended": "!!!Force vended",
   "wallet.redeem.choices.tab.title.paperVended": "!!!Paper vended",
   "wallet.redeem.choices.tab.title.regularVended": "!!!Regular",
-  "wallet.redeem.dialog.adaAmountHint": "!!!Enter your Ada passcode",
+  "wallet.redeem.dialog.adaAmountHint": "!!!Enter your Ada amount",
   "wallet.redeem.dialog.adaAmountLabel": "!!!Ada amount",
   "wallet.redeem.dialog.adaPasscodeHint": "!!!Enter your Ada passcode",
   "wallet.redeem.dialog.adaPasscodeLabel": "!!!Ada passcode",

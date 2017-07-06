@@ -136,7 +136,7 @@ where Ada should be redeemed and enter 9 word mnemonic passphrase.</p>`,
   },
   adaAmountHint: {
     id: 'wallet.redeem.dialog.adaAmountHint',
-    defaultMessage: '!!!Enter your Ada passcode',
+    defaultMessage: '!!!Enter your Ada amount',
     description: 'Hint for the Ada amount input field.'
   },
   walletPasswordPlaceholder: {
