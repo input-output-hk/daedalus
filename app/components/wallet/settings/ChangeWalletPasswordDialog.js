@@ -46,7 +46,7 @@ const messages = defineMessages({
   },
   currentPasswordFieldPlaceholder: {
     id: 'wallet.settings.changePassword.dialog.currentPasswordFieldPlaceholder',
-    defaultMessage: '!!!!!!Type current password',
+    defaultMessage: '!!!Type current password',
     description: 'Placeholder for the "Current password" inputs in the change wallet password dialog.',
   },
   newPasswordFieldPlaceholder: {

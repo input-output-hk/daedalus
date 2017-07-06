@@ -63,6 +63,7 @@ Changelog
 - Improved acceptance tests for generating new addresses
 - Removed temporary workaround for creating new accounts during wallet create and wallet restore
 - Prevent React key duplicates in transaction from/to addresses lists
+- Show more specific error messages on "Change password" dialog
 - Update password fields placeholders to match latest designs
 
 ### Chores

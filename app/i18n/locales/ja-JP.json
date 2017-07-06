@@ -180,7 +180,7 @@
   "wallet.send.form.title.label": "タイトル",
   "wallet.send.form.walletPasswordLabel": "ウォレットパスワード",
   "wallet.settings.assurance": "トランザクション保証のセキュリティレベル",
-  "wallet.settings.changePassword.dialog.currentPasswordFieldPlaceholder": "!!!!!!Type current password",
+  "wallet.settings.changePassword.dialog.currentPasswordFieldPlaceholder": "!!!Type current password",
   "wallet.settings.changePassword.dialog.currentPasswordLabel": "現在のパスワード",
   "wallet.settings.changePassword.dialog.newPasswordFieldPlaceholder": "!!!Type new password",
   "wallet.settings.changePassword.dialog.newPasswordLabel": "新しいパスワード",
