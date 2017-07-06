@@ -8,8 +8,8 @@ import           Data.Text          (pack, split, unpack)
 import           Development.NSIS
 import           System.Directory   (doesFileExist)
 import           System.Environment (lookupEnv)
-import           Turtle             (echo, proc, procs, ExitCode(..))
-import           Turtle.Line          (unsafeTextToLine)
+import           Turtle             (ExitCode (..), echo, proc, procs)
+import           Turtle.Line        (unsafeTextToLine)
 
 import           Launcher
 
@@ -118,8 +118,7 @@ writeInstallerNSIS fullVersion = do
     _ <- section "" [Required] $ do
         setOutPath "$INSTDIR"        -- Where to install files in this section
         writeRegStr HKLM "Software/Daedalus" "Install_Dir" "$INSTDIR" -- Used by launcher batch script
-        createDirectory "$APPDATA\\Daedalus\\Logs"
-        createDirectory "$APPDATA\\Daedalus\\Secrets"
+        createDirectory "$APPDATA\\Daedalus\\Secrets-0.5"
         createShortcut "$DESKTOP\\Daedalus.lnk" daedalusShortcut
         file [] "cardano-node.exe"
         file [] "cardano-launcher.exe"
