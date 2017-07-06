@@ -22,7 +22,6 @@ Feature: Send Money to Receiver
       | balance  |
       | 0.000010 |
 
-  @watch
   Scenario: User Sends Money from wallet with spending password to Receiver
     Given I have a wallet with funds and password
     And I am on the "Genesis wallet" wallet "send" screen

@@ -5,14 +5,14 @@ import path from 'path';
 const context = {};
 let isFirstScenario = true;
 
-const TEN_SECONDS = 10000;
+const DEFAULT_TIMEOUT = 20000;
 
 export default function () {
 
   // The cucumber timeout should be high (and nevery reached in best case)
   // because the errors thrown by webdriver.io timeouts are more descriptive
   // and helpful than "this step timed out after 5 seconds" messages thrown
-  this.setDefaultTimeout(TEN_SECONDS * 5);
+  this.setDefaultTimeout(DEFAULT_TIMEOUT * 10);
 
   // Boot up the electron app before all features
   this.registerHandler('BeforeFeatures', { timeout: 5 * 60 * 1000 }, async function() {
@@ -23,7 +23,7 @@ export default function () {
         HOT: 1,
         NODE_ENV: 'test'
       },
-      waitTimeout: TEN_SECONDS
+      waitTimeout: DEFAULT_TIMEOUT
     });
     await app.start();
     await app.client.waitUntilWindowLoaded();
@@ -44,11 +44,11 @@ export default function () {
     // Set timeouts of various operations:
 
     // Determines when to interrupt a script that is being evaluated.
-    this.client.timeouts('script', TEN_SECONDS);
+    this.client.timeouts('script', DEFAULT_TIMEOUT);
     // Gives the timeout of when to abort locating an element.
-    this.client.timeouts('implicit', TEN_SECONDS);
+    this.client.timeouts('implicit', DEFAULT_TIMEOUT);
     // Provides the timeout limit used to interrupt navigation of the browsing context.
-    this.client.timeouts('pageLoad', TEN_SECONDS);
+    this.client.timeouts('pageLoad', DEFAULT_TIMEOUT);
 
     await this.client.executeAsync(function(isFirst, rootDir, done) {
       daedalus.environment.current = daedalus.environment.TEST;
