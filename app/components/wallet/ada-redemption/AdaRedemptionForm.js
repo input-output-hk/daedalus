@@ -336,7 +336,19 @@ export default class AdaRedemptionForm extends Component {
     // We need to disable on-change validation before reseting the form in order to
     // avoid debounced validation being called straight after the form is reset
     form.state.options.set({ validateOnChange: false });
-    form.reset();
+
+    // We can not user form.reset() call here as it would reset selected walletId
+    // which is a bad UX since we are calling resetForm on certificate add/remove
+    form.$('walletPassword').reset();
+    form.$('adaAmount').reset();
+    form.$('adaPasscode').reset();
+    form.$('certificate').reset();
+    form.$('email').reset();
+    form.$('passPhrase').reset();
+    form.$('redemptionKey').reset();
+    form.$('shieldedRedemptionKey').reset();
+    form.$('walletPassword').reset();
+
     form.showErrors(false);
     form.state.options.set({ validateOnChange: true });
   };
