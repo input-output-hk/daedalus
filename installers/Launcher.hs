@@ -27,7 +27,7 @@ launcherArgs launcher = unwords $
         "--report-server", "http://report-server.aws.iohk.io:8080",
         "--log-config", "log-config-prod.yaml",
         "--update-latest-path", quote (installerPath launcher),
-        "--keyfile", quote (runtimePath launcher <> "Secrets" <> (pathSeparator : "secret.key")),
+        "--keyfile", quote (runtimePath launcher <> "Secrets-0.5" <> (pathSeparator : "secret.key")),
         "--logs-prefix", quote (runtimePath launcher <> "Logs"),
         "--db-path", quote (runtimePath launcher <> "DB-0.5"),
         "--wallet-db-path", quote (runtimePath launcher <> "Wallet-0.5"),

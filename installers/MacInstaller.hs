@@ -1,19 +1,19 @@
 module MacInstaller where
 
 import           Control.Monad        (unless)
-import qualified Data.Text            as T
 import           Data.Foldable        (for_)
 import           Data.Maybe           (fromMaybe)
 import           Data.Monoid          ((<>))
+import qualified Data.Text            as T
+import           System.Directory
 import           System.Environment   (lookupEnv)
 import           System.FilePath      (replaceExtension)
-import           System.FilePath.Glob (globDir1, compile)
-import           System.Directory
-import           Turtle               (procs, echo, shells, shell, ExitCode(..))
+import           System.FilePath.Glob (compile, globDir1)
+import           Turtle               (ExitCode (..), echo, procs, shell, shells)
 import           Turtle.Line          (unsafeTextToLine)
 
-import RewriteLibs                    (chain)
-import Launcher
+import           Launcher
+import           RewriteLibs          (chain)
 
 
 main :: IO ()
@@ -46,7 +46,7 @@ main = do
   writeFile (dir <> "/Daedalus") $ unlines
     [ "#!/usr/bin/env bash"
     , "cd \"$(dirname $0)\""
-    , "mkdir -p \"$HOME/Library/Application Support/Daedalus/\"{Wallet-0.2,DB-0.2,Logs,Secrets}"
+    , "mkdir -p \"$HOME/Library/Application Support/Daedalus/\"{Secrets-0.5}"
     , doLauncher
     ]
   run "chmod" ["+x", T.pack (dir <> "/Daedalus")]
