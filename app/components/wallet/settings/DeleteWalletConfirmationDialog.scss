@@ -4,11 +4,19 @@
   font-family: $font-light;
 
   :global {
-    .checkbox_check {
-      border-color: $color-light-red;
-      &.checkbox_checked {
-        background: $color-light-red;
+    .SimpleCheckbox_root {
+      margin-top: 20px;
+
+      .SimpleCheckbox_check {
         border-color: $color-light-red;
+
+        &.SimpleCheckbox_checked {
+          background: $color-light-red;
+        }
+      }
+
+      .SimpleCheckbox_label {
+        font-family: $font-light;
       }
     }
 
@@ -32,7 +40,7 @@
 }
 
 .confirmationInput {
-  margin-top: 32px;
+  margin-top: 20px;
 }
 
 .isSubmitting {

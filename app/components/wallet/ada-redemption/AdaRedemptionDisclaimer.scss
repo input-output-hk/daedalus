@@ -70,15 +70,12 @@
 
       .SimpleCheckbox_check {
         border-color: #fafbfc;
-        border-width: 2px;
 
         &.SimpleCheckbox_checked {
           background-color: #fafbfc;
-          border-color: #fafbfc;
 
           &:after {
             border-color: #ab1700;
-            margin: -7px 0 0 -3px;
           }
         }
       }

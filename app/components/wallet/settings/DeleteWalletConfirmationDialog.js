@@ -5,9 +5,10 @@ import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
-import CheckboxWithLongLabel from '../../widgets/forms/CheckboxWithLongLabel';
 import styles from './DeleteWalletConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import environment from '../../../environment';
@@ -115,10 +116,11 @@ export default class DeleteWalletConfirmationDialog extends Component {
           {...messages.wantToDeleteWalletQuestion}
           values={{ walletName }}
         />
-        <CheckboxWithLongLabel
+        <Checkbox
           label={intl.formatMessage(messages.confirmBackupNotice)}
           onChange={onAcceptBackupNotice}
           checked={isBackupNoticeAccepted}
+          skin={<SimpleCheckboxSkin />}
         />
         {isBackupNoticeAccepted ? (
           <Input
