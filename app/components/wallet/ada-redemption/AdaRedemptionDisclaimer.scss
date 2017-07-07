@@ -63,30 +63,27 @@
   }
 
   :global .adaRedemptionDisclaimerCheckbox {
-    .CheckboxWithLongLabel_component {
+    .SimpleCheckbox_root {
       margin-bottom: 30px;
       opacity: 0.8;
       padding-top: 20px;
 
-      .CheckboxWithLongLabel_checkbox {
-        flex-basis: 0;
-        margin-right: 20px;
+      .SimpleCheckbox_check {
+        border-color: #fafbfc;
+        border-width: 2px;
 
-        .checkbox_check {
+        &.SimpleCheckbox_checked {
+          background-color: #fafbfc;
           border-color: #fafbfc;
 
-          &.checkbox_checked {
-            background: #fafbfc;
-            border-color: #fafbfc;
-
-            &:after {
-              border-color: #ab1700;
-            }
+          &:after {
+            border-color: #ab1700;
+            margin: -7px 0 0 -3px;
           }
         }
       }
 
-      .CheckboxWithLongLabel_checkboxLabel {
+      .SimpleCheckbox_label {
         color: #fafbfc;
         font-family: $font-regular;
       }

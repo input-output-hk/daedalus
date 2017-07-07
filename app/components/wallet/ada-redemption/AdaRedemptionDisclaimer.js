@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
-import CheckboxWithLongLabel from '../../widgets/forms/CheckboxWithLongLabel';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import attentionIcon from '../../../assets/images/attention-big-light.svg';
 import styles from './AdaRedemptionDisclaimer.scss';
 
@@ -68,10 +69,11 @@ export default class AdaRedemptionDisclaimer extends Component {
         <p>{intl.formatMessage(messages.disclaimerText)}</p>
 
         <div className="adaRedemptionDisclaimerCheckbox">
-          <CheckboxWithLongLabel
+          <Checkbox
             label={intl.formatMessage(messages.checkboxLabel)}
             onChange={this.onAcceptToggle}
             checked={isAccepted}
+            skin={<SimpleCheckboxSkin />}
           />
         </div>
 
