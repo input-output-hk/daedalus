@@ -1,19 +1,19 @@
 module MacInstaller where
 
 import           Control.Monad        (unless)
-import qualified Data.Text            as T
 import           Data.Foldable        (for_)
 import           Data.Maybe           (fromMaybe)
 import           Data.Monoid          ((<>))
+import qualified Data.Text            as T
+import           System.Directory
 import           System.Environment   (lookupEnv)
 import           System.FilePath      (replaceExtension)
-import           System.FilePath.Glob (globDir1, compile)
-import           System.Directory
-import           Turtle               (procs, echo, shells, shell, ExitCode(..))
+import           System.FilePath.Glob (compile, globDir1)
+import           Turtle               (ExitCode (..), echo, procs, shell, shells)
 import           Turtle.Line          (unsafeTextToLine)
 
-import RewriteLibs                    (chain)
-import Launcher
+import           Launcher
+import           RewriteLibs          (chain)
 
 
 main :: IO ()
@@ -96,7 +96,10 @@ doLauncher = "./cardano-launcher " <> (launcherArgs $ Launcher
   { nodePath = "./cardano-node"
   , walletPath = "./Frontend"
   , nodeLogPath = appdata <> "Logs/cardano-node.log"
-  , installerPath = appdata <> "installer.pkg"
+  , windowsInstallerPath = Nothing
+  , installerPath = "/usr/bin/open"
+  , installerArgs = ["-FW"]
+  , installerArchivePath = Just $ appdata <> "installer.pkg"
   , runtimePath = appdata
   })
     where
