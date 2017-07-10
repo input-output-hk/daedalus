@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import Button from 'react-toolbox/lib/button/Button';
 import { defineMessages, intlShape } from 'react-intl';
-import CheckboxWithLongLabel from '../../widgets/forms/CheckboxWithLongLabel';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import LocalizableError from '../../../i18n/LocalizableError';
 import TermsOfUseText from './TermsOfUseText';
 import styles from './TermsOfUseForm.scss';
@@ -59,10 +60,11 @@ export default class TermsOfUseForm extends Component {
           <TermsOfUseText localizedTermsOfUse={localizedTermsOfUse} />
 
           <div className={styles.checkbox}>
-            <CheckboxWithLongLabel
+            <Checkbox
               label={intl.formatMessage(messages.checkboxLabel)}
               onChange={this.toggleAcceptance.bind(this)}
               checked={areTermsOfUseAccepted}
+              skin={<SimpleCheckboxSkin />}
             />
           </div>
 

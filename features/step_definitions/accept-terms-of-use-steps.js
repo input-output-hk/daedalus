@@ -18,7 +18,7 @@ export default function () {
   });
 
   this.When(/^I click on "I agree with terms of use" checkbox$/, function () {
-    return this.waitAndClick('.TermsOfUseForm_component .CheckboxWithLongLabel_checkbox');
+    return this.waitAndClick('.TermsOfUseForm_component .SimpleCheckbox_root');
   });
 
   this.When(/^I submit the "Terms of use" form$/, function () {

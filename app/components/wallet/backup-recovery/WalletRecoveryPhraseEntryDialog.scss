@@ -1,5 +1,4 @@
-.component {
-}
+.component {}
 
 .words {
   display: flex;
@@ -7,4 +6,12 @@
   flex-direction: row;
   justify-content: space-between;
   margin: 30px 0;
+}
+
+.checkbox {
+  margin-top: 30px;
+
+  & + .checkbox {
+    margin-top: 20px;
+  }
 }
