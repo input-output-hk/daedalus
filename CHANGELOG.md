@@ -67,6 +67,7 @@ Changelog
 - Show more specific error messages on "Change password" dialog
 - Update password fields placeholders to match latest designs
 - Prevent selected wallet reset on "Ada redemption" screen on tab or certificate change
+- Use correct styling for used addresses marking on wallet receive screen
 
 ### Chores
 
