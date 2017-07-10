@@ -12,6 +12,14 @@
     border-top: 1px solid #dfe4e8;
     margin-top: 30px;
     padding-top: 20px;
+
+    & > .passwordLabel {
+      color: #5e6066;
+      font-family: $font-semibold;
+      font-size: 16px;
+      line-height: 1.38;
+      margin-bottom: 10px;
+    }
   }
 
   .walletPasswordFields {

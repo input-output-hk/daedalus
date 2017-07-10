@@ -115,7 +115,7 @@ export default function () {
   });
 
   this.When(/^I toggle "Activate to create password" switch on the import wallet key dialog$/, function () {
-    return this.waitAndClick('.WalletKeyImportDialog .switch_field');
+    return this.waitAndClick('.WalletKeyImportDialog .SimpleSwitch_switch');
   });
 
   this.When(/^I enter wallet spending password:$/, async function (table) {
@@ -178,11 +178,11 @@ export default function () {
   });
 
   this.When(/^I toggle "Activate to create password" switch on the create wallet dialog$/, function () {
-    return this.waitAndClick('.WalletCreateDialog .switch_field');
+    return this.waitAndClick('.WalletCreateDialog .SimpleSwitch_switch');
   });
 
   this.When(/^I toggle "Activate to create password" switch on the restore wallet dialog$/, function () {
-    return this.waitAndClick('.WalletRestoreDialog .switch_field');
+    return this.waitAndClick('.WalletRestoreDialog .SimpleSwitch_switch');
   });
 
   this.When(/^I submit the create wallet dialog with the following inputs:$/, async function (table) {

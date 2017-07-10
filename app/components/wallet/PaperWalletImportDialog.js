@@ -10,7 +10,8 @@ import SimpleTextAreaSkin from 'react-polymorph/lib/skins/simple/TextAreaSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
-import Switch from '../widgets/Switch';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../lib/validations';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -282,11 +283,12 @@ export default class PaperWalletImportDialog extends Component {
 
         <div className={styles.walletPassword}>
           <div className={styles.walletPasswordSwitch}>
-            <Switch
-              label={intl.formatMessage(messages.passwordSwitchLabel)}
-              placeholder={intl.formatMessage(messages.passwordSwitchPlaceholder)}
-              active={createPassword}
+            <div className={styles.passwordLabel}>{intl.formatMessage(messages.passwordSwitchLabel)}</div>
+            <Checkbox
               onChange={this.handlePasswordSwitchToggle}
+              label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
+              checked={createPassword}
+              skin={<SimpleSwitchSkin />}
             />
           </div>
 

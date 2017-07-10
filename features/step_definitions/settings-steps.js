@@ -38,7 +38,7 @@ export default function () {
   });
 
   this.When(/^I toggle "Check to deactivate password" switch on the change wallet password dialog$/, function () {
-    return this.waitAndClick('.changePasswordDialog .switch_field');
+    return this.waitAndClick('.changePasswordDialog .SimpleSwitch_switch');
   });
 
   this.When(/^I enter current wallet password:$/, async function (table) {

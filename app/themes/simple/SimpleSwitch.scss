@@ -1,0 +1,15 @@
+@import "_config";
+// Theme config overrides go here …
+@import "~react-polymorph/lib/themes/simple/SimpleSwitch";
+// Css module overrides go here …
+
+.root {
+  flex-direction: row-reverse;
+  margin-bottom: 30px;
+}
+
+.label {
+  margin: 0px;
+  opacity: 0.5;
+  width: 100%;
+}

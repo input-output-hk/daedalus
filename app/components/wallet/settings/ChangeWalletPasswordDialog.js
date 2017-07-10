@@ -5,10 +5,11 @@ import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
-import Switch from '../../widgets/Switch';
 import { isValidWalletPassword, isValidRepeatPassword } from '../../../lib/validations';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -230,12 +231,15 @@ export default class ChangeWalletPasswordDialog extends Component {
 
         {isWalletPasswordSet ? (
           <div className={styles.walletPassword}>
-            <div className="walletPasswordSwitch">
-              <Switch
-                label={intl.formatMessage(messages.passwordSwitchLabel)}
-                placeholder={intl.formatMessage(messages.passwordSwitchPlaceholder)}
-                active={removePassword}
+            <div className={styles.walletPasswordSwitch}>
+              <div className={styles.passwordLabel}>
+                {intl.formatMessage(messages.passwordSwitchLabel)}
+              </div>
+              <Checkbox
                 onChange={this.handlePasswordSwitchToggle}
+                label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
+                checked={removePassword}
+                skin={<SimpleSwitchSkin />}
               />
             </div>
 

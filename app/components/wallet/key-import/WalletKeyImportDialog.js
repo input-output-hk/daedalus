@@ -6,10 +6,11 @@ import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
-import Switch from '../../widgets/Switch';
 import { isValidWalletPassword, isValidRepeatPassword } from '../../../lib/validations';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -36,15 +37,15 @@ const messages = defineMessages({
     defaultMessage: '!!!Import wallet',
     description: 'Label "Import you key" submit button on the dialog for importing a wallet from the key.'
   },
-  passwordSwitchLabel: {
-    id: 'wallet.key.import.dialog.passwordSwitchLabel',
-    defaultMessage: '!!!Password',
-    description: 'Label for the "Activate to create password" switch in the wallet key import dialog.',
-  },
   passwordSwitchPlaceholder: {
     id: 'wallet.key.import.dialog.passwordSwitchPlaceholder',
     defaultMessage: '!!!Activate to create password',
     description: 'Text for the "Activate to create password" switch in the wallet key import dialog.',
+  },
+  passwordSwitchLabel: {
+    id: 'wallet.key.import.dialog.passwordSwitchLabel',
+    defaultMessage: '!!!Password',
+    description: 'Label for the "Activate to create password" switch in the wallet key import dialog.',
   },
   walletPasswordLabel: {
     id: 'wallet.key.import.dialog.walletPasswordLabel',
@@ -193,11 +194,14 @@ export default class WalletKeyImportDialog extends Component {
 
         <div className={styles.walletPassword}>
           <div className={styles.walletPasswordSwitch}>
-            <Switch
-              label={intl.formatMessage(messages.passwordSwitchLabel)}
-              placeholder={intl.formatMessage(messages.passwordSwitchPlaceholder)}
-              active={createPassword}
+            <div className={styles.passwordLabel}>
+              {intl.formatMessage(messages.passwordSwitchLabel)}
+            </div>
+            <Checkbox
               onChange={this.handlePasswordSwitchToggle}
+              label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
+              checked={createPassword}
+              skin={<SimpleSwitchSkin />}
             />
           </div>
 

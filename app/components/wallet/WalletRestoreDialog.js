@@ -7,10 +7,11 @@ import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import TextArea from 'react-polymorph/lib/components/TextArea';
 import SimpleTextAreaSkin from 'react-polymorph/lib/skins/simple/TextAreaSkin';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
-import Switch from '../widgets/Switch';
 import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../lib/validations';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -52,15 +53,15 @@ const messages = defineMessages({
     defaultMessage: '!!!Invalid recovery phrase',
     description: 'Error message shown when invalid recovery phrase was entered.'
   },
-  passwordSwitchLabel: {
-    id: 'wallet.restore.dialog.passwordSwitchLabel',
-    defaultMessage: '!!!Password',
-    description: 'Label for the "Activate to create password" switch in the wallet restore dialog.',
-  },
   passwordSwitchPlaceholder: {
     id: 'wallet.restore.dialog.passwordSwitchPlaceholder',
     defaultMessage: '!!!Activate to create password',
     description: 'Text for the "Activate to create password" switch in the wallet restore dialog.',
+  },
+  passwordSwitchLabel: {
+    id: 'wallet.create.dialog.passwordSwitchLabel',
+    defaultMessage: '!!!Password',
+    description: 'Label for the "Activate to create password" switch in the create wallet dialog.',
   },
   walletPasswordLabel: {
     id: 'wallet.restore.dialog.walletPasswordLabel',
@@ -244,11 +245,14 @@ export default class WalletRestoreDialog extends Component {
 
         <div className={styles.walletPassword}>
           <div className={styles.walletPasswordSwitch}>
-            <Switch
-              label={intl.formatMessage(messages.passwordSwitchLabel)}
-              placeholder={intl.formatMessage(messages.passwordSwitchPlaceholder)}
-              active={createPassword}
+            <div className={styles.passwordLabel}>
+              {intl.formatMessage(messages.passwordSwitchLabel)}
+            </div>
+            <Checkbox
               onChange={this.handlePasswordSwitchToggle}
+              label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
+              checked={createPassword}
+              skin={<SimpleSwitchSkin />}
             />
           </div>
 
