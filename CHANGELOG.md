@@ -67,6 +67,7 @@ Changelog
 - Show more specific error messages on "Change password" dialog
 - Update password fields placeholders to match latest designs
 - Prevent selected wallet reset on "Ada redemption" screen on tab or certificate change
+- Fixed sending amount maximum value validation
 
 ### Chores
 
