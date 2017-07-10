@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { intlShape } from 'react-intl';
+import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import classnames from 'classnames';
 import styles from './WalletTransactionsList.scss';
@@ -10,7 +10,18 @@ import WalletTransaction from '../../../domain/WalletTransaction';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import type { AssuranceMode } from '../../../types/transactionAssuranceTypes';
 
-const dateFormat = 'YYYY-MM-DD';
+const messages = defineMessages({
+  today: {
+    id: 'wallet.summary.page.todayLabel',
+    defaultMessage: '!!!Today',
+    description: 'Label for the "Today" label on the wallet summary page.',
+  },
+  yesterday: {
+    id: 'wallet.summary.page.yesterdayLabel',
+    defaultMessage: '!!!Yesterday',
+    description: 'Label for the "Yesterday" label on the wallet summary page.',
+  },
+});
 
 @observer
 export default class WalletTransactionsList extends Component {
@@ -31,21 +42,30 @@ export default class WalletTransactionsList extends Component {
     topShadow: false,
   };
 
+  componentWillMount() {
+    this.dateFormat = moment.localeData().longDateFormat('L');
+    // Localized dateFormat:
+    // English - MM/DD/YYYY
+    // Japanese - YYYY/MM/DD
+  }
+
   componentDidMount() {
     this.calcShadow();
   }
 
   list: HTMLElement;
   loadingSpinner: LoadingSpinner;
+  dateFormat: 'MM/DD/YYYY';
 
   groupTransactionsByDay(transactions: Array<WalletTransaction>) {
+    const { intl } = this.context;
     const groups = [];
     for (const transaction of transactions) {
-      let date = moment(transaction.date).format(dateFormat);
-      const today = moment().format(dateFormat);
-      const yesterday = moment().subtract(1, 'days').format(dateFormat);
-      if (date === today) date = 'Today';
-      if (date === yesterday) date = 'Yesterday';
+      let date = moment(transaction.date).format(this.dateFormat);
+      const today = moment().format(this.dateFormat);
+      const yesterday = moment().subtract(1, 'days').format(this.dateFormat);
+      if (date === today) date = intl.formatMessage(messages.today);
+      if (date === yesterday) date = intl.formatMessage(messages.yesterday);
       let group = groups.find((g) => g.date === date);
       if (!group) {
         group = { date, transactions: [] };
