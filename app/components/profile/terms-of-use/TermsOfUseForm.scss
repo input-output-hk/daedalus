@@ -42,13 +42,11 @@
   margin-bottom: 1rem;
 }
 
-// checkbox component selector
 .checkbox {
-  & > div:last-child {
-    margin-bottom: 30px !important;
-    padding-top: 10px !important;
-    & > div:last-child {
-      font-family: $font-regular !important;
-    }
+  margin-bottom: 30px;
+  padding-top: 10px;
+
+  :global .SimpleCheckbox_label {
+    font-family: $font-regular;
   }
 }

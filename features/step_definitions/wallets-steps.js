@@ -220,7 +220,7 @@ export default function () {
   });
 
   this.When(/^I click on "Please make sure nobody looks your screen" checkbox$/, function () {
-    return this.waitAndClick('.WalletBackupPrivacyWarningDialog .CheckboxWithLongLabel_checkbox');
+    return this.waitAndClick('.WalletBackupPrivacyWarningDialog .SimpleCheckbox_root');
   });
 
   this.When(/^I submit the create wallet privacy dialog$/, function () {
@@ -252,7 +252,7 @@ export default function () {
   });
 
   this.When(/^I click on the "Accept terms" checkboxes$/, async function () {
-    const termsCheckboxes = await this.client.elements('.CheckboxWithLongLabel_checkbox');
+    const termsCheckboxes = await this.client.elements('.SimpleCheckbox_root');
     for (let i = 0; i < termsCheckboxes.value.length; i++) {
       const termsCheckbox = termsCheckboxes.value[i].ELEMENT;
       await this.client.elementIdClick(termsCheckbox);
@@ -272,7 +272,7 @@ export default function () {
   });
 
   this.When(/^I click on the "Make sure you have access to backup before continuing" checkbox$/, function () {
-    return this.waitAndClick('.DeleteWalletConfirmationDialog_dialog .CheckboxWithLongLabel_checkbox');
+    return this.waitAndClick('.DeleteWalletConfirmationDialog_dialog .SimpleCheckbox_root');
   });
 
   this.When(/^I submit the delete wallet dialog$/, async function () {

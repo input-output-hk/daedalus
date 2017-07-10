@@ -3,8 +3,9 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape } from 'react-intl';
-import CheckboxWithLongLabel from '../../../widgets/forms/CheckboxWithLongLabel';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import DialogBackButton from '../../../widgets/DialogBackButton';
 import styles from './ExportPaperWalletPrinterCopyDialog.scss';
@@ -87,11 +88,14 @@ export default class ExportPaperWalletPrinterCopyDialog extends Component {
           </p>
         </div>
 
-        <CheckboxWithLongLabel
-          label={intl.formatMessage(messages.confirmPrinterCopyNotice)}
-          onChange={onTogglePrinterCopyNotice}
-          checked={isPrinterCopyNoticeAccepted}
-        />
+        <div className={styles.checkbox}>
+          <Checkbox
+            label={intl.formatMessage(messages.confirmPrinterCopyNotice)}
+            onChange={onTogglePrinterCopyNotice}
+            checked={isPrinterCopyNoticeAccepted}
+            skin={<SimpleCheckboxSkin />}
+          />
+        </div>
 
         <DialogBackButton onBack={onBack} />
         <DialogCloseButton onClose={onClose} />

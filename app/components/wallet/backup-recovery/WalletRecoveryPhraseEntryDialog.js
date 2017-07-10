@@ -3,11 +3,12 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import WalletRecoveryPhraseMnemonic from './WalletRecoveryPhraseMnemonic';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
-import CheckboxWithLongLabel from '../../widgets/forms/CheckboxWithLongLabel';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import MnemonicWord from './MnemonicWord';
 import globalMessages from '../../../i18n/global-messages';
@@ -142,16 +143,22 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
 
         {isValid && (
           <div>
-            <CheckboxWithLongLabel
-              label={<FormattedHTMLMessage {...messages.termDevice} />}
-              onChange={onAcceptTermDevice}
-              checked={isTermDeviceAccepted}
-            />
-            <CheckboxWithLongLabel
-              label={intl.formatMessage(messages.termRecovery)}
-              onChange={onAcceptTermRecovery}
-              checked={isTermRecoveryAccepted}
-            />
+            <div className={styles.checkbox}>
+              <Checkbox
+                label={<FormattedHTMLMessage {...messages.termDevice} />}
+                onChange={onAcceptTermDevice}
+                checked={isTermDeviceAccepted}
+                skin={<SimpleCheckboxSkin />}
+              />
+            </div>
+            <div className={styles.checkbox}>
+              <Checkbox
+                label={intl.formatMessage(messages.termRecovery)}
+                onChange={onAcceptTermRecovery}
+                checked={isTermRecoveryAccepted}
+                skin={<SimpleCheckboxSkin />}
+              />
+            </div>
           </div>
         )}
       </Dialog>

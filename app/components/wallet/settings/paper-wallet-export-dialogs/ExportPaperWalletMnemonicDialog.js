@@ -3,8 +3,9 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Dialog from 'react-toolbox/lib/dialog/Dialog';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape } from 'react-intl';
-import CheckboxWithLongLabel from '../../../widgets/forms/CheckboxWithLongLabel';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import DialogBackButton from '../../../widgets/DialogBackButton';
 import styles from './ExportPaperWalletMnemonicDialog.scss';
@@ -96,12 +97,14 @@ export default class ExportPaperWalletMnemonicDialog extends Component {
           <img src={paperWalletImage} role="presentation" />
         </div>
 
-        <CheckboxWithLongLabel
-          label={intl.formatMessage(messages.confirmPhraseWrittenNotice)}
-          onChange={onTogglePhraseWrittenNotice}
-          checked={isPhraseWrittenNoticeAccepted}
-        />
-
+        <div className={styles.checkbox}>
+          <Checkbox
+            label={intl.formatMessage(messages.confirmPhraseWrittenNotice)}
+            onChange={onTogglePhraseWrittenNotice}
+            checked={isPhraseWrittenNoticeAccepted}
+            skin={<SimpleCheckboxSkin />}
+          />
+        </div>
 
         <DialogBackButton onBack={onBack} />
         <DialogCloseButton onClose={onClose} />
