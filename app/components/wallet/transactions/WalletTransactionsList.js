@@ -23,6 +23,8 @@ const messages = defineMessages({
   },
 });
 
+const dateFormat = 'YYYY-MM-DD';
+
 @observer
 export default class WalletTransactionsList extends Component {
 
@@ -43,7 +45,7 @@ export default class WalletTransactionsList extends Component {
   };
 
   componentWillMount() {
-    this.dateFormat = moment.localeData().longDateFormat('L');
+    this.localizedDateFormat = moment.localeData().longDateFormat('L');
     // Localized dateFormat:
     // English - MM/DD/YYYY
     // Japanese - YYYY/MM/DD
@@ -55,17 +57,12 @@ export default class WalletTransactionsList extends Component {
 
   list: HTMLElement;
   loadingSpinner: LoadingSpinner;
-  dateFormat: 'MM/DD/YYYY';
+  localizedDateFormat: 'MM/DD/YYYY';
 
   groupTransactionsByDay(transactions: Array<WalletTransaction>) {
-    const { intl } = this.context;
     const groups = [];
     for (const transaction of transactions) {
-      let date = moment(transaction.date).format(this.dateFormat);
-      const today = moment().format(this.dateFormat);
-      const yesterday = moment().subtract(1, 'days').format(this.dateFormat);
-      if (date === today) date = intl.formatMessage(messages.today);
-      if (date === yesterday) date = intl.formatMessage(messages.yesterday);
+      const date = moment(transaction.date).format(dateFormat);
       let group = groups.find((g) => g.date === date);
       if (!group) {
         group = { date, transactions: [] };
@@ -104,6 +101,15 @@ export default class WalletTransactionsList extends Component {
     }
   }
 
+  localizedDate(date: string) {
+    const { intl } = this.context;
+    const today = moment().format(dateFormat);
+    if (date === today) return intl.formatMessage(messages.today);
+    const yesterday = moment().subtract(1, 'days').format(dateFormat);
+    if (date === yesterday) return intl.formatMessage(messages.yesterday);
+    return moment(date).format(this.localizedDateFormat);
+  }
+
   render() {
     const { topShadow } = this.state;
     const {
@@ -132,7 +138,7 @@ export default class WalletTransactionsList extends Component {
       >
         {transactionsGroups.map((group, groupIndex) => (
           <div className={styles.group} key={groupIndex}>
-            <div className={styles.groupDate}>{group.date}</div>
+            <div className={styles.groupDate}>{this.localizedDate(group.date)}</div>
             <div className={styles.list}>
               {group.transactions.map((transaction, transactionIndex) => (
                 <div className={styles.transaction} key={transactionIndex}>
