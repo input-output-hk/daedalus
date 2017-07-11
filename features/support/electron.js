@@ -32,7 +32,7 @@ export default function () {
 
   // And tear it down after all features
   this.registerHandler('AfterFeatures', function() {
-    return context.app.stop();
+    // return context.app.stop();
   });
 
   // Make the electron app accessible in each scenario context

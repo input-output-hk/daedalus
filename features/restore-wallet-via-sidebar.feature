@@ -5,6 +5,7 @@ Feature: Add Wallet via Sidebar
     And I have accepted "Terms of use"
     And I have a wallet with funds
 
+  @watch
   Scenario: Successfully Restoring a Wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
