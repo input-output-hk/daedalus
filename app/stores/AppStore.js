@@ -116,7 +116,8 @@ export default class AppStore extends Store {
 
   _setSendLogsChoice = async ({ sendLogs }: { sendLogs: boolean }) => {
     await this.setSendLogsChoiceRequest.execute(sendLogs);
-    await this._getSendLogsChoice();
+    await this.getSendLogsChoiceRequest.execute();
+    ipcRenderer.send('send-logs-choice', sendLogs);
   };
 
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
