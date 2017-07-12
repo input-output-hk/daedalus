@@ -70,6 +70,7 @@ Changelog
 - Fixed sending amount maximum value validation
 - Use correct styling for used addresses marking on wallet receive screen
 - Implement MomentJs internationalization
+- Also quit whole app when last window is closed on osx
 
 ### Chores
 
