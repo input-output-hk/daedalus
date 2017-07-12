@@ -33,16 +33,6 @@ try {
   cardanoNodeLogTail.on('line', (line) => {
     cardanoNodeLogger.info(line);
   });
-
-  ipcMain.on('send-logs-choice', (event, sendLogs) => {
-    if (sendLogs) {
-      daedalusLogTail.watch();
-      cardanoNodeLogTail.watch();
-    } else {
-      daedalusLogTail.unwatch();
-      cardanoNodeLogTail.unwatch();
-    }
-  });
 } catch (error) {
   Log.error('Error setting up log tailing and logging to remote server', error);
 }
