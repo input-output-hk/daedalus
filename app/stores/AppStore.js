@@ -1,5 +1,6 @@
 // @flow
 import { observable, computed } from 'mobx';
+import { ipcRenderer } from 'electron';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import globalMessages from '../i18n/global-messages';
@@ -110,11 +111,13 @@ export default class AppStore extends Store {
 
   _getSendLogsChoice = async () => {
     await this.getSendLogsChoiceRequest.execute();
+    ipcRenderer.send('send-logs-choice', sendLogs);
   };
 
   _setSendLogsChoice = async ({ sendLogs }: { sendLogs: boolean }) => {
     await this.setSendLogsChoiceRequest.execute(sendLogs);
     await this.getSendLogsChoiceRequest.execute();
+    ipcRenderer.send('send-logs-choice', sendLogs);
   };
 
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
