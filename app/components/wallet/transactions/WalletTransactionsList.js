@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { intlShape } from 'react-intl';
+import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import classnames from 'classnames';
 import styles from './WalletTransactionsList.scss';
@@ -9,6 +9,19 @@ import Transaction from '../../widgets/Transaction';
 import WalletTransaction from '../../../domain/WalletTransaction';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import type { AssuranceMode } from '../../../types/transactionAssuranceTypes';
+
+const messages = defineMessages({
+  today: {
+    id: 'wallet.summary.page.todayLabel',
+    defaultMessage: '!!!Today',
+    description: 'Label for the "Today" label on the wallet summary page.',
+  },
+  yesterday: {
+    id: 'wallet.summary.page.yesterdayLabel',
+    defaultMessage: '!!!Yesterday',
+    description: 'Label for the "Yesterday" label on the wallet summary page.',
+  },
+});
 
 const dateFormat = 'YYYY-MM-DD';
 
@@ -31,21 +44,25 @@ export default class WalletTransactionsList extends Component {
     topShadow: false,
   };
 
+  componentWillMount() {
+    this.localizedDateFormat = moment.localeData().longDateFormat('L');
+    // Localized dateFormat:
+    // English - MM/DD/YYYY
+    // Japanese - YYYY/MM/DD
+  }
+
   componentDidMount() {
     this.calcShadow();
   }
 
   list: HTMLElement;
   loadingSpinner: LoadingSpinner;
+  localizedDateFormat: 'MM/DD/YYYY';
 
   groupTransactionsByDay(transactions: Array<WalletTransaction>) {
     const groups = [];
     for (const transaction of transactions) {
-      let date = moment(transaction.date).format(dateFormat);
-      const today = moment().format(dateFormat);
-      const yesterday = moment().subtract(1, 'days').format(dateFormat);
-      if (date === today) date = 'Today';
-      if (date === yesterday) date = 'Yesterday';
+      const date = moment(transaction.date).format(dateFormat);
       let group = groups.find((g) => g.date === date);
       if (!group) {
         group = { date, transactions: [] };
@@ -84,6 +101,15 @@ export default class WalletTransactionsList extends Component {
     }
   }
 
+  localizedDate(date: string) {
+    const { intl } = this.context;
+    const today = moment().format(dateFormat);
+    if (date === today) return intl.formatMessage(messages.today);
+    const yesterday = moment().subtract(1, 'days').format(dateFormat);
+    if (date === yesterday) return intl.formatMessage(messages.yesterday);
+    return moment(date).format(this.localizedDateFormat);
+  }
+
   render() {
     const { topShadow } = this.state;
     const {
@@ -112,7 +138,7 @@ export default class WalletTransactionsList extends Component {
       >
         {transactionsGroups.map((group, groupIndex) => (
           <div className={styles.group} key={groupIndex}>
-            <div className={styles.groupDate}>{group.date}</div>
+            <div className={styles.groupDate}>{this.localizedDate(group.date)}</div>
             <div className={styles.list}>
               {group.transactions.map((transaction, transactionIndex) => (
                 <div className={styles.transaction} key={transactionIndex}>

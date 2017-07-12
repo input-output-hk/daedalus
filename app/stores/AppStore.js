@@ -1,5 +1,6 @@
 // @flow
 import { observable, computed } from 'mobx';
+import moment from 'moment';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import globalMessages from '../i18n/global-messages';
@@ -31,6 +32,7 @@ export default class AppStore extends Store {
     this.actions.profile.updateLocale.listen(this._updateLocale);
     this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
     this.registerReactions([
+      this._updateMomentJsLocaleAfterLocaleChange,
       this._redirectToMainUiAfterLocaleIsSet,
       this._redirectToLanguageSelectionIfNoLocaleSet,
       this._redirectToMainUiAfterTermsOfUseAcceptance,
@@ -94,6 +96,10 @@ export default class AppStore extends Store {
 
   _getTermsOfUseAcceptance = () => {
     this.getTermsOfUseAcceptanceRequest.execute();
+  };
+
+  _updateMomentJsLocaleAfterLocaleChange = () => {
+    moment.locale(this.currentLocale);
   };
 
   _redirectToLanguageSelectionIfNoLocaleSet = () => {

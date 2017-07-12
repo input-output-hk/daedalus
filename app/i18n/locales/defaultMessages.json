@@ -1775,6 +1775,39 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Today",
+        "description": "Label for the \"Today\" label on the wallet summary page.",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "app/components/wallet/transactions/WalletTransactionsList.js",
+        "id": "wallet.summary.page.todayLabel",
+        "start": {
+          "column": 9,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Yesterday",
+        "description": "Label for the \"Yesterday\" label on the wallet summary page.",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "app/components/wallet/transactions/WalletTransactionsList.js",
+        "id": "wallet.summary.page.yesterdayLabel",
+        "start": {
+          "column": 13,
+          "line": 19
+        }
+      }
+    ],
+    "path": "app/components/wallet/transactions/WalletTransactionsList.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Add wallet",
         "description": "Label for the \"Add wallet\" title on the wallet add dialog.",
         "end": {

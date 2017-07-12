@@ -69,6 +69,7 @@ Changelog
 - Prevent selected wallet reset on "Ada redemption" screen on tab or certificate change
 - Fixed sending amount maximum value validation
 - Use correct styling for used addresses marking on wallet receive screen
+- Implement MomentJs internationalization
 
 ### Chores
 
