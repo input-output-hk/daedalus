@@ -24,8 +24,8 @@ export default class AppStore extends Store {
   @observable setProfileLocaleRequest: Request<string> = new Request(this.api.setUserLocale);
   @observable getTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.getTermsOfUseAcceptance);
   @observable setTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.setTermsOfUseAcceptance);
-  @observable getSendLogsChoiceRequest: Request<string> = new Request(this.api.getSendLogsChoice);
-  @observable setSendLogsChoiceRequest: Request<string> = new Request(this.api.setSendLogsChoice);
+  @observable getSendLogsChoiceRequest: Request<boolean> = new Request(this.api.getSendLogsChoice);
+  @observable setSendLogsChoiceRequest: Request = new Request(this.api.setSendLogsChoice);
   @observable error: ?LocalizableError = null;
   /* eslint-enable max-len */
 
@@ -42,7 +42,7 @@ export default class AppStore extends Store {
       this._redirectToLoadingScreenWhenDisconnected,
     ]);
     this._getTermsOfUseAcceptance();
-    this._getSendLogsChoice();
+    this._sendLogsChoiceToMainProcess();
   }
 
   @computed get currentRoute(): string {
@@ -109,15 +109,16 @@ export default class AppStore extends Store {
     this.getTermsOfUseAcceptanceRequest.execute();
   };
 
-  _getSendLogsChoice = async () => {
-    await this.getSendLogsChoiceRequest.execute();
-    ipcRenderer.send('send-logs-choice', sendLogs);
-  };
+  _getSendLogsChoice = async () => await this.getSendLogsChoiceRequest.execute().promise;
 
   _setSendLogsChoice = async ({ sendLogs }: { sendLogs: boolean }) => {
-    await this.setSendLogsChoiceRequest.execute(sendLogs);
-    await this.getSendLogsChoiceRequest.execute();
-    ipcRenderer.send('send-logs-choice', sendLogs);
+    await this.setSendLogsChoiceRequest.execute(sendLogs).promise;
+    await this._sendLogsChoiceToMainProcess();
+  };
+
+  _sendLogsChoiceToMainProcess = async () => {
+    const choice = await this._getSendLogsChoice();
+    ipcRenderer.send('send-logs-choice', choice);
   };
 
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
