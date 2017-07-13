@@ -59,7 +59,6 @@
 }
 
 .isSubmitting {
-  button {
-    @include loading-spinner("../../assets/images/spinner-light.svg");
-  }
+  position: relative;
+  @include loading-spinner("../../assets/images/spinner-light.svg");
 }

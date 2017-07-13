@@ -8,9 +8,8 @@
 }
 
 .isSubmitting {
-  button {
-    @include loading-spinner("../../../../assets/images/spinner-light.svg");
-  }
+  position: relative;
+  @include loading-spinner("../../../../assets/images/spinner-light.svg");
 }
 
 .instructions {
@@ -27,4 +26,10 @@
 .error {
   @include error-message;
   text-align: center;
+}
+
+:global {
+  .SimpleModal_modal {
+    min-width: 640px;
+  }
 }

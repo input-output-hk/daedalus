@@ -2,13 +2,13 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
+import Dialog from '../../widgets/Dialog';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
 import { isValidWalletPassword, isValidRepeatPassword } from '../../../lib/validations';
@@ -155,7 +155,6 @@ export default class WalletKeyImportDialog extends Component {
     const dialogClasses = classnames([
       styles.component,
       'WalletKeyImportDialog',
-      isSubmitting ? styles.isSubmitting : null,
     ]);
 
     const walletPasswordFieldsClasses = classnames([
@@ -165,10 +164,11 @@ export default class WalletKeyImportDialog extends Component {
 
     const actions = [
       {
+        className: isSubmitting ? styles.isSubmitting : null,
         label: intl.formatMessage(messages.submitLabel),
         primary: true,
         disabled: !(keyFile.value instanceof File),
-        onClick: () => this.submit()
+        onClick: this.submit,
       }
     ];
 
@@ -180,8 +180,9 @@ export default class WalletKeyImportDialog extends Component {
         className={dialogClasses}
         title={intl.formatMessage(messages.headline)}
         actions={actions}
-        onOverlayClick={!isSubmitting ? onClose : null}
-        active
+        closeOnOverlayClick
+        onClose={!isSubmitting ? onClose : null}
+        closeButton={<DialogCloseButton onClose={onClose} />}
       >
 
         <div className={styles.keyUpload}>
@@ -225,8 +226,6 @@ export default class WalletKeyImportDialog extends Component {
         </div>
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
-
-        <DialogCloseButton onClose={onClose} />
 
       </Dialog>
     );

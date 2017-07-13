@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import TextArea from 'react-polymorph/lib/components/TextArea';
@@ -10,6 +9,7 @@ import SimpleTextAreaSkin from 'react-polymorph/lib/skins/simple/TextAreaSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
+import Dialog from '../widgets/Dialog';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../lib/validations';
@@ -192,14 +192,6 @@ export default class PaperWalletImportDialog extends Component {
     },
   });
 
-  actions = [
-    {
-      label: this.context.intl.formatMessage(messages.importButtonLabel),
-      primary: true,
-      onClick: () => this.submit(),
-    },
-  ];
-
   handlePasswordSwitchToggle = (value: boolean) => {
     this.setState({ createPassword: value });
   };
@@ -230,7 +222,6 @@ export default class PaperWalletImportDialog extends Component {
     const dialogClasses = classnames([
       styles.component,
       'PaperWalletImportDialog',
-      isSubmitting ? styles.isSubmitting : null,
     ]);
 
     const mnemonicPhraseFieldClasses = classnames([
@@ -243,6 +234,15 @@ export default class PaperWalletImportDialog extends Component {
       createPassword ? styles.show : null,
     ]);
 
+    const actions = [
+      {
+        className: isSubmitting ? styles.isSubmitting : null,
+        label: this.context.intl.formatMessage(messages.importButtonLabel),
+        primary: true,
+        onClick: this.submit,
+      },
+    ];
+
     const privateKeyField = form.$('privateKey');
     const walletNameField = form.$('walletName');
     const mnemonicPhraseField = form.$('mnemonicPhrase');
@@ -253,9 +253,10 @@ export default class PaperWalletImportDialog extends Component {
       <Dialog
         className={dialogClasses}
         title={intl.formatMessage(messages.title)}
-        actions={this.actions}
-        onOverlayClick={!isSubmitting ? onCancel : null}
-        active
+        actions={actions}
+        closeOnOverlayClick
+        onClose={!isSubmitting ? onCancel : null}
+        closeButton={<DialogCloseButton onClose={onCancel} />}
       >
 
         <Input
@@ -312,8 +313,6 @@ export default class PaperWalletImportDialog extends Component {
         </div>
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
-
-        <DialogCloseButton onClose={onCancel} />
 
       </Dialog>
     );

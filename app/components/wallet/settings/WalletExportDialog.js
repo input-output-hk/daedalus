@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
+import Dialog from '../../widgets/Dialog';
 import WalletExportDialogChoices from './WalletExportDialogChoices';
 import styles from './WalletExportDialog.scss';
 
@@ -47,7 +47,7 @@ export default class WalletExportDialog extends Component {
       {
         label: intl.formatMessage(messages.printLabel),
         primary: true,
-        onClick: () => onPrint(),
+        onClick: onPrint,
       }
     ];
 
@@ -56,8 +56,9 @@ export default class WalletExportDialog extends Component {
         className={dialogClasses}
         title={intl.formatMessage(messages.headline)}
         actions={actions}
-        onOverlayClick={onClose}
-        active
+        closeOnOverlayClick
+        onClose={onClose}
+        closeButton={<DialogCloseButton onClose={onClose} />}
       >
         <WalletExportDialogChoices
           activeChoice={walletExportType}
@@ -79,8 +80,6 @@ export default class WalletExportDialog extends Component {
             <li>Store paper wallet safe.</li>
           </ul>
         </div>
-
-        <DialogCloseButton onClose={onClose} />
 
       </Dialog>
     );

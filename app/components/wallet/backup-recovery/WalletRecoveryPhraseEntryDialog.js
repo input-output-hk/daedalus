@@ -2,13 +2,13 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import WalletRecoveryPhraseMnemonic from './WalletRecoveryPhraseMnemonic';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
+import Dialog from '../../widgets/Dialog';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import MnemonicWord from './MnemonicWord';
 import globalMessages from '../../../i18n/global-messages';
@@ -112,8 +112,10 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
         className={dialogClasses}
         title={intl.formatMessage(globalMessages.recoveryPhraseDialogTitle)}
         actions={actions}
-        onOverlayClick={onCancelBackup}
-        active
+        closeOnOverlayClick
+        onClose={onCancelBackup}
+        closeButton={<DialogCloseButton onClose={onCancelBackup} />}
+        backButton={!isValid ? <DialogBackButton onBack={onRestartBackup} /> : null}
       >
         {!isValid && (
           <WalletRecoveryInstructions
@@ -136,10 +138,6 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
             ))}
           </div>
         )}
-
-        <DialogCloseButton onClose={onCancelBackup} />
-
-        {!isValid ? <DialogBackButton onBack={onRestartBackup} /> : null}
 
         {isValid && (
           <div>

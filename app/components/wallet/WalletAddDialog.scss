@@ -1,6 +1,7 @@
 .buttonsContainer {
   display: flex;
   flex-direction: column;
+  width: 580px;
 }
 
 .firstRow {
@@ -9,4 +10,10 @@
 
 .secondRow {
   display: flex;
+}
+
+.component {
+  :global .Dialog_title {
+    margin-bottom: 20px;
+  }
 }

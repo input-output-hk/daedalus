@@ -2,8 +2,14 @@
 @import '../../../themes/mixins/error-message';
 
 .component {
-  :global .dialog_body {
-    overflow-y: hidden;
+  :global {
+    .dialog_body {
+      overflow-y: hidden;
+    }
+
+    .Dialog_title {
+      margin-bottom: 20px;
+    }
   }
 }
 

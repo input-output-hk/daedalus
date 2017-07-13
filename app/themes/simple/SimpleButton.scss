@@ -1,0 +1,44 @@
+@import "_config";
+// Theme config overrides go here …
+@import "~react-polymorph/lib/themes/simple/SimpleButton";
+// Css module overrides go here …
+
+.root {
+  background: $button-up-bg;
+  font-size: 14px;
+  font-family: $font-medium;
+  text-transform: none;
+}
+
+:global {
+  .primary {
+    &[disabled] {
+      color: #fff;
+      opacity: 0.3;
+    }
+    &:not([disabled]) {
+      color: #fff;
+      &:hover {
+        background: $button-hover-bg;
+      }
+      &:active {
+        background: $button-pressed-bg;
+      }
+    }
+  }
+
+  .flat {
+    &:not([disabled]) {
+      background-color: #eef1f3;
+      color: #5e6066;
+      &:hover {
+        color: #5e6066;
+        background-color: darken(#eef1f3, 7%);
+      }
+    }
+    &[disabled] {
+      color: darken(#eef1f3, 7%);
+      opacity: 0.3;
+    }
+  }
+}

@@ -1,0 +1,35 @@
+.dialogWrapper {
+  color: $text-color-accent;
+  position: relative;
+  & > .title {
+    font-family: $font-medium;
+    font-size: 18px;
+    line-height: 1.39;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  & > .content {
+    flex: 1;
+  }
+
+  & > .actions {
+    display: flex;
+    margin-top: 30px;
+
+    button {
+      width: 50%;
+
+      &:only-child {
+        margin: auto;
+        width: 65%;
+      }
+
+      & + button {
+        margin-left: 20px;
+      }
+    }
+  }
+}

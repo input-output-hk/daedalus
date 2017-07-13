@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
@@ -10,6 +9,7 @@ import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
+import Dialog from '../../widgets/Dialog';
 import { isValidWalletPassword, isValidRepeatPassword } from '../../../lib/validations';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -187,7 +187,6 @@ export default class ChangeWalletPasswordDialog extends Component {
     const dialogClasses = classnames([
       isWalletPasswordSet ? 'changePasswordDialog' : 'createPasswordDialog',
       styles.dialog,
-      isSubmitting ? styles.isSubmitting : null
     ]);
 
     const walletPasswordFieldsClasses = classnames([
@@ -198,6 +197,7 @@ export default class ChangeWalletPasswordDialog extends Component {
     const confirmButtonClasses = classnames([
       'confirmButton',
       removePassword ? styles.removeButton : null,
+      isSubmitting ? styles.isSubmitting : null,
     ]);
 
     const newPasswordClasses = classnames([
@@ -224,9 +224,10 @@ export default class ChangeWalletPasswordDialog extends Component {
           messages[!isWalletPasswordSet ? 'dialogTitleSetPassword' : 'dialogTitleChangePassword']
         )}
         actions={actions}
-        active
-        onOverlayClick={!isSubmitting ? onCancel : null}
+        closeOnOverlayClick
+        onClose={!isSubmitting ? onCancel : null}
         className={dialogClasses}
+        closeButton={<DialogCloseButton onClose={onCancel} />}
       >
 
         {isWalletPasswordSet ? (
@@ -282,8 +283,6 @@ export default class ChangeWalletPasswordDialog extends Component {
         </div>
 
         {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
-
-        <DialogCloseButton onClose={onCancel} />
 
       </Dialog>
     );

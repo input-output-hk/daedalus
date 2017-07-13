@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
@@ -10,6 +9,7 @@ import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
+import Dialog from '../widgets/Dialog';
 import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../lib/validations';
 import globalMessages from '../../i18n/global-messages';
 import styles from './WalletCreateDialog.scss';
@@ -134,14 +134,6 @@ export default class WalletCreateDialog extends Component {
     },
   });
 
-  actions = [
-    {
-      label: this.context.intl.formatMessage(messages.createPersonalWallet),
-      primary: true,
-      onClick: () => this.submit(),
-    },
-  ];
-
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
@@ -178,12 +170,20 @@ export default class WalletCreateDialog extends Component {
     const dialogClasses = classnames([
       styles.component,
       'WalletCreateDialog',
-      isSubmitting ? styles.isSubmitting : null,
     ]);
     const walletPasswordFieldsClasses = classnames([
       styles.walletPasswordFields,
       createPassword ? styles.show : null,
     ]);
+
+    const actions = [
+      {
+        className: isSubmitting ? styles.isSubmitting : null,
+        label: this.context.intl.formatMessage(messages.createPersonalWallet),
+        primary: true,
+        onClick: this.submit,
+      },
+    ];
 
     const walletNameField = form.$('walletName');
     const walletPasswordField = form.$('walletPassword');
@@ -193,9 +193,10 @@ export default class WalletCreateDialog extends Component {
       <Dialog
         className={dialogClasses}
         title={intl.formatMessage(messages.dialogTitle)}
-        actions={this.actions}
-        onOverlayClick={!isSubmitting ? onCancel : null}
-        active
+        actions={actions}
+        closeOnOverlayClick
+        onClose={!isSubmitting ? onCancel : null}
+        closeButton={<DialogCloseButton onClose={onCancel} />}
       >
 
         <Input
@@ -238,8 +239,6 @@ export default class WalletCreateDialog extends Component {
             </p>
           </div>
         </div>
-
-        <DialogCloseButton onClose={onCancel} />
 
       </Dialog>
     );

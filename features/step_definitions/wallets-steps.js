@@ -125,7 +125,7 @@ export default function () {
   });
 
   this.When(/^I click on the import wallet button in import wallet dialog$/, function () {
-    return this.waitAndClick('.WalletKeyImportDialog .dialog_button');
+    return this.waitAndClick('.WalletKeyImportDialog .primary');
   });
 
   this.When(/^I should see wallet spending password inputs$/, function () {
@@ -188,7 +188,7 @@ export default function () {
   this.When(/^I submit the create wallet dialog with the following inputs:$/, async function (table) {
     const fields = table.hashes()[0];
     await this.client.setValue('.WalletCreateDialog .walletName input', fields.walletName);
-    return this.client.click('.WalletCreateDialog .dialog_button');
+    return this.client.click('.WalletCreateDialog .primary');
   });
 
   this.When(/^I submit the create wallet with spending password dialog with the following inputs:$/, async function (table) {
@@ -196,14 +196,14 @@ export default function () {
     await this.client.setValue('.WalletCreateDialog .walletName input', fields.walletName);
     await this.client.setValue('.WalletCreateDialog .walletPassword input', fields.password);
     await this.client.setValue('.WalletCreateDialog .repeatedPassword input', fields.repeatedPassword);
-    return this.client.click('.WalletCreateDialog .dialog_button');
+    return this.client.click('.WalletCreateDialog .primary');
   });
 
   this.When(/^I submit the restore wallet dialog with the following inputs:$/, async function (table) {
     const fields = table.hashes()[0];
     await this.client.setValue('.WalletRestoreDialog .walletName input', fields.walletName);
     await this.client.setValue('.WalletRestoreDialog .recoveryPhrase textarea', fields.recoveryPhrase);
-    return this.client.click('.WalletRestoreDialog .dialog_button');
+    return this.client.click('.WalletRestoreDialog .primary');
   });
 
   this.When(/^I submit the restore wallet with spending password dialog with the following inputs:$/, async function (table) {
@@ -212,7 +212,7 @@ export default function () {
     await this.client.setValue('.WalletRestoreDialog .recoveryPhrase textarea', fields.recoveryPhrase);
     await this.client.setValue('.WalletRestoreDialog .walletPassword input', fields.password);
     await this.client.setValue('.WalletRestoreDialog .repeatedPassword input', fields.repeatedPassword);
-    return this.client.click('.WalletRestoreDialog .dialog_button');
+    return this.client.click('.WalletRestoreDialog .primary');
   });
 
   this.When(/^I see the create wallet privacy dialog$/, function () {
@@ -224,7 +224,7 @@ export default function () {
   });
 
   this.When(/^I submit the create wallet privacy dialog$/, function () {
-    return this.waitAndClick('.WalletBackupPrivacyWarningDialog .dialog_button');
+    return this.waitAndClick('.WalletBackupPrivacyWarningDialog .primary');
   });
 
   this.When(/^I see the create wallet recovery phrase display dialog$/, function () {
@@ -237,7 +237,7 @@ export default function () {
   });
 
   this.When(/^I submit the create wallet recovery phrase display dialog$/, function () {
-    return this.waitAndClick('.WalletRecoveryPhraseDisplayDialog .dialog_button');
+    return this.waitAndClick('.WalletRecoveryPhraseDisplayDialog .primary');
   });
 
   this.When(/^I see the create wallet recovery phrase entry dialog$/, function () {
@@ -260,7 +260,7 @@ export default function () {
   });
 
   this.When(/^I submit the create wallet recovery phrase entry dialog$/, function () {
-    return this.waitAndClick('.WalletRecoveryPhraseEntryDialog .dialog_button');
+    return this.waitAndClick('.WalletRecoveryPhraseEntryDialog .primary');
   });
 
   this.When(/^I click on delete wallet button$/, async function () {
@@ -276,7 +276,7 @@ export default function () {
   });
 
   this.When(/^I submit the delete wallet dialog$/, async function () {
-    return this.client.click('.DeleteWalletConfirmationDialog_dialog .button_primary');
+    return this.client.click('.DeleteWalletConfirmationDialog_dialog .primary');
   });
 
   this.Then(/^I should not see the create wallet recovery phrase entry dialog anymore$/, function () {

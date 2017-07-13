@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import TextArea from 'react-polymorph/lib/components/TextArea';
@@ -12,6 +11,7 @@ import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
+import Dialog from '../widgets/Dialog';
 import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../lib/validations';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -163,14 +163,6 @@ export default class WalletRestoreDialog extends Component {
     },
   });
 
-  actions = [
-    {
-      label: this.context.intl.formatMessage(messages.importButtonLabel),
-      primary: true,
-      onClick: () => this.submit(),
-    },
-  ];
-
   handlePasswordSwitchToggle = (value: boolean) => {
     this.setState({ createPassword: value });
   };
@@ -200,7 +192,6 @@ export default class WalletRestoreDialog extends Component {
     const dialogClasses = classnames([
       styles.component,
       'WalletRestoreDialog',
-      isSubmitting ? styles.isSubmitting : null,
     ]);
 
     const walletNameFieldClasses = classnames([
@@ -218,13 +209,23 @@ export default class WalletRestoreDialog extends Component {
     const walletPasswordField = form.$('walletPassword');
     const repeatedPasswordField = form.$('repeatPassword');
 
+    const actions = [
+      {
+        className: isSubmitting ? styles.isSubmitting : null,
+        label: this.context.intl.formatMessage(messages.importButtonLabel),
+        primary: true,
+        onClick: this.submit,
+      },
+    ];
+
     return (
       <Dialog
         className={dialogClasses}
         title={intl.formatMessage(messages.title)}
-        actions={this.actions}
-        onOverlayClick={!isSubmitting ? onCancel : null}
-        active
+        actions={actions}
+        closeOnOverlayClick
+        onClose={!isSubmitting ? onCancel : null}
+        closeButton={<DialogCloseButton onClose={onCancel} />}
       >
 
         <Input
@@ -276,8 +277,6 @@ export default class WalletRestoreDialog extends Component {
         </div>
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
-
-        <DialogCloseButton onClose={onCancel} />
 
       </Dialog>
     );
