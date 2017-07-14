@@ -1,7 +1,9 @@
 // @flow
 import React, { Component } from 'react';
+import classnames from 'classnames';
 import { observer } from 'mobx-react';
-import Button from 'react-toolbox/lib/button/Button';
+import Button from 'react-polymorph/lib/components/Button';
+import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/CheckboxSkin';
@@ -52,6 +54,10 @@ export default class TermsOfUseForm extends Component {
     const { intl } = this.context;
     const { isSubmitting, error, localizedTermsOfUse } = this.props;
     const { areTermsOfUseAccepted } = this.state;
+    const buttonClasses = classnames([
+      'primary',
+      isSubmitting ? styles.submitButtonSpinning : styles.submitButton,
+    ]);
 
     return (
       <div className={styles.component}>
@@ -71,11 +77,11 @@ export default class TermsOfUseForm extends Component {
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
           <Button
-            className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
+            className={buttonClasses}
             label={intl.formatMessage(messages.submitLabel)}
             onMouseUp={this.submit}
-            primary
             disabled={!areTermsOfUseAccepted}
+            skin={<SimpleButtonSkin />}
           />
 
         </div>

@@ -5,7 +5,8 @@ import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
-import Button from 'react-toolbox/lib/button/Button';
+import Button from 'react-polymorph/lib/components/Button';
+import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
@@ -167,7 +168,7 @@ export default class WalletReceive extends Component {
           className={generateAddressButtonClasses}
           label={intl.formatMessage(messages.generateNewAddressButtonLabel)}
           onMouseUp={this.submit.bind(this)}
-          primary
+          skin={<SimpleButtonSkin />}
         />
       </div>
     );

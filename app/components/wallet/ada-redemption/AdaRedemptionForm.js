@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { isEmail, isEmpty } from 'validator';
 import classnames from 'classnames';
-import Button from 'react-toolbox/lib/button/Button';
+import Button from 'react-polymorph/lib/components/Button';
+import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -396,6 +397,11 @@ export default class AdaRedemptionForm extends Component {
         instructionMessage = messages.instructionsRegular;
     }
 
+    const submitButtonClasses = classnames([
+      'primary',
+      isSubmitting ? styles.submitButtonSpinning : styles.submitButton,
+    ]);
+
     return (
       <div className={componentClasses}>
 
@@ -531,11 +537,11 @@ export default class AdaRedemptionForm extends Component {
           {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
 
           <Button
-            className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
+            className={submitButtonClasses}
             label={intl.formatMessage(messages.submitLabel)}
             onMouseUp={submit}
-            primary
             disabled={!canSubmit}
+            skin={<SimpleButtonSkin />}
           />
 
         </BorderedBox>

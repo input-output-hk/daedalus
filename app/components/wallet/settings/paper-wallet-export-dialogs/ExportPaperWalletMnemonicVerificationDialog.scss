@@ -8,7 +8,6 @@
 }
 
 .isSubmitting {
-  position: relative;
   @include loading-spinner("../../../../assets/images/spinner-light.svg");
 }
 

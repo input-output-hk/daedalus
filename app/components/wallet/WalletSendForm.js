@@ -1,7 +1,9 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import Button from 'react-toolbox/lib/button/Button';
+import classnames from 'classnames';
+import Button from 'react-polymorph/lib/components/Button';
+import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import Input from 'react-polymorph/lib/components/Input';
 import NumericInput from 'react-polymorph/lib/components/NumericInput';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
@@ -178,6 +180,11 @@ export default class WalletSendForm extends Component {
     const receiverField = form.$('receiver');
     const passwordField = form.$('walletPassword');
 
+    const buttonClasses = classnames([
+      'primary',
+      isSubmitting ? styles.submitButtonSpinning : styles.submitButton,
+    ]);
+
     return (
       <div className={styles.component}>
 
@@ -223,11 +230,12 @@ export default class WalletSendForm extends Component {
           {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
 
           <Button
-            className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
+            className={buttonClasses}
             label={intl.formatMessage(messages.sendButtonLabel)}
             onMouseUp={this.submit.bind(this)}
-            primary
+            skin={<SimpleButtonSkin />}
           />
+
         </BorderedBox>
 
       </div>

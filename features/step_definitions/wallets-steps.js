@@ -247,7 +247,7 @@ export default function () {
   this.When(/^I click on recovery phrase mnemonics in correct order$/, async function () {
     for (let i = 0; i < this.recoveryPhrase.length; i++) {
       const recoveryPhraseMnemonic = this.recoveryPhrase[i];
-      await this.waitAndClick(`//button[contains(text(), "${recoveryPhraseMnemonic}") and @class="MnemonicWord_component MnemonicWord_active"]`);
+      await this.waitAndClick(`//button[contains(text(), "${recoveryPhraseMnemonic}") and @class="flat MnemonicWord_component MnemonicWord_active SimpleButton_root"]`);
     }
   });
 

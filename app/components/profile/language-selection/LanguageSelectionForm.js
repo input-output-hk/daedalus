@@ -1,9 +1,11 @@
 // @flow
 import React, { Component } from 'react';
+import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import Select from 'react-polymorph/lib/components/Select';
+import Button from 'react-polymorph/lib/components/Button';
+import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SelectSkin from 'react-polymorph/lib/skins/simple/SelectSkin';
-import Button from 'react-toolbox/lib/button/Button';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -69,6 +71,10 @@ export default class LanguageSelectionForm extends Component {
       value: language.value,
       label: intl.formatMessage(language.label)
     }));
+    const buttonClasses = classnames([
+      'primary',
+      isSubmitting ? styles.submitButtonSpinning : styles.submitButton,
+    ]);
 
     return (
       <div className={styles.component}>
@@ -84,10 +90,10 @@ export default class LanguageSelectionForm extends Component {
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
           <Button
-            className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
+            className={buttonClasses}
             label={intl.formatMessage(messages.submitLabel)}
             onMouseUp={this.submit}
-            primary
+            skin={<SimpleButtonSkin />}
           />
 
         </div>
