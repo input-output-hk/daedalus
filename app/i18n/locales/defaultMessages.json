@@ -246,6 +246,67 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Continue",
+        "description": "Label for the \"Send logs\" accept button",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
+        "id": "profile.sendLogsChoice.form.continueButtonLabel",
+        "start": {
+          "column": 23,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!Dont't send",
+        "description": "Label for the \"Send logs\" decline button",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
+        "id": "profile.sendLogsChoice.form.declineButtonLabel",
+        "start": {
+          "column": 22,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!Send logs to the central server",
+        "description": "Label for the \"Send logs\" content",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
+        "id": "profile.sendLogsChoice.form.contentLabel",
+        "start": {
+          "column": 16,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Do you want to help diagnose issues by opting in to send logs to our central logging server? Logs will not include any sensitive data.",
+        "description": "Send logs content",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
+        "id": "profile.sendLogsChoice.form.contentText",
+        "start": {
+          "column": 15,
+          "line": 26
+        }
+      }
+    ],
+    "path": "app/components/profile/send-logs-choice-form/SendLogsChoiceForm.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!I agree with terms of use",
         "description": "Label for the \"I agree with terms of use\" checkbox.",
         "end": {
@@ -298,6 +359,39 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Send logs to the central server",
+        "description": "Label for the \"Send logs\" switch on the support settings page.",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.sendLogs.switchLabel",
+        "start": {
+          "column": 19,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Do you want to help diagnose issues by opting in to send logs to our central logging server? Logs will not include any sensitive data.",
+        "description": "Text for the \"Send logs\" switch on the support settings page.",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.sendLogs.switchPlaceholder",
+        "start": {
+          "column": 25,
+          "line": 15
+        }
+      }
+    ],
+    "path": "app/components/settings/categories/SupportSettings.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!General",
         "description": "Label for the \"General\" link in the settings menu.",
         "end": {
@@ -312,17 +406,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Terms of use",
-        "description": "Label for the \"Terms of use\" link in the settings menu.",
+        "defaultMessage": "!!!Support",
+        "description": "Label for the \"Support\" link in the settings menu.",
         "end": {
           "column": 3,
           "line": 19
         },
         "file": "app/components/settings/menu/SettingsMenu.js",
+        "id": "settings.menu.support.link.label",
+        "start": {
+          "column": 11,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Terms of use",
+        "description": "Label for the \"Terms of use\" link in the settings menu.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "app/components/settings/menu/SettingsMenu.js",
         "id": "settings.menu.termsOfUse.link.label",
         "start": {
           "column": 14,
-          "line": 15
+          "line": 20
         }
       }
     ],

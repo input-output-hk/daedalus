@@ -39,7 +39,6 @@ export default class WalletBackupStore extends Store {
   }
 
   @action _initiateWalletBackup = (params: { recoveryPhrase: Array<string> }) => {
-    console.debug('initiate backup');
     this.recoveryPhrase = params.recoveryPhrase;
     this.inProgress = true;
     this.currentStep = 'privacyWarning';

@@ -35,6 +35,7 @@ Changelog
 - Final version of Daedalus logo added on the loading screen
 - Final version of Daedalus logo added in the top-bar
 - Receive page design update
+- Opt-in mode for sending logs to the remote server
 
 ### Fixes
 
