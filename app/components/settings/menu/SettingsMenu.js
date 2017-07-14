@@ -10,12 +10,17 @@ const messages = defineMessages({
   general: {
     id: 'settings.menu.general.link.label',
     defaultMessage: '!!!General',
-    description: 'Label for the "General" link in the settings menu.'
+    description: 'Label for the "General" link in the settings menu.',
+  },
+  support: {
+    id: 'settings.menu.support.link.label',
+    defaultMessage: '!!!Support',
+    description: 'Label for the "Support" link in the settings menu.',
   },
   termsOfUse: {
     id: 'settings.menu.termsOfUse.link.label',
     defaultMessage: '!!!Terms of use',
-    description: 'Label for the "Terms of use" link in the settings menu.'
+    description: 'Label for the "Terms of use" link in the settings menu.',
   },
 });
 
@@ -48,6 +53,12 @@ export default class SettingsMenu extends Component {
             onClick={() => onItemClick(ROUTES.SETTINGS.TERMS_OF_USE)}
             active={isActiveItem(ROUTES.SETTINGS.TERMS_OF_USE)}
             className="termsOfUse"
+          />
+          <SettingsMenuItem
+            label={intl.formatMessage(messages.support)}
+            onClick={() => onItemClick(ROUTES.SETTINGS.SUPPORT)}
+            active={isActiveItem(ROUTES.SETTINGS.SUPPORT)}
+            className="support"
           />
         </div>
       </div>

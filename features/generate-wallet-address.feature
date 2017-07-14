@@ -3,6 +3,7 @@ Feature: Generate Wallet Address
   Background:
     Given I have selected English language
     And I have accepted "Terms of use"
+    And I agree to send logs to remote server
 
   Scenario: Generating wallet address
     Given I have the following wallets:

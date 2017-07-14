@@ -18,20 +18,30 @@ Log.transports.file.level = 'debug';
 Log.transports.file.file = logFilePath;
 
 try {
-  // Tail Daedalus log and send it to remote logging server
-  const daedalusLogTail = new Tail(logFilePath);
+  let sendLogsToRemoteServer;
+  let isLogTailingActive = false;
+  ipcMain.on('send-logs-choice', (event, sendLogs) => {
+    // Save user's send-logs choice
+    sendLogsToRemoteServer = sendLogs;
 
-  daedalusLogTail.on('line', (line) => {
-    daedalusLogger.info(line);
-  });
+    // Start log tailing if it's not running
+    if (!isLogTailingActive) {
+      // Tail Daedalus log and send it to remote logging server
+      const daedalusLogTail = new Tail(logFilePath);
+      daedalusLogTail.on('line', (line) => {
+        if (sendLogsToRemoteServer) daedalusLogger.info(line);
+      });
 
-  // Tail Cardano node log and send it to remote logging server
-  const cardanoNodeLogFilePath = path.join(appLogFolderPath, 'cardano-node.log');
+      // Tail Cardano node log and send it to remote logging server
+      const cardanoNodeLogFilePath = path.join(appLogFolderPath, 'cardano-node.log');
+      const cardanoNodeLogTail = new Tail(cardanoNodeLogFilePath);
+      cardanoNodeLogTail.on('line', (line) => {
+        if (sendLogsToRemoteServer) cardanoNodeLogger.info(line);
+      });
 
-  const cardanoNodeLogTail = new Tail(cardanoNodeLogFilePath);
-
-  cardanoNodeLogTail.on('line', (line) => {
-    cardanoNodeLogger.info(line);
+      // Tailing is now active (no need re-init it on next send-logs-choice event)
+      isLogTailingActive = true;
+    }
   });
 } catch (error) {
   Log.error('Error setting up log tailing and logging to remote server', error);

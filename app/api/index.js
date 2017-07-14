@@ -153,6 +153,8 @@ export type Api = {
   getUserLocale(): Promise<string>,
   setTermsOfUseAcceptance(): Promise<boolean>,
   getTermsOfUseAcceptance(): Promise<boolean>,
+  setSendLogsChoice(sendLogs: boolean): Promise<boolean>,
+  getSendLogsChoice(): Promise<boolean>,
   updateWallet(request: UpdateWalletRequest): Promise<UpdateWalletResponse>,
   updateWalletPassword(request: UpdateWalletPasswordRequest): Promise<UpdateWalletPasswordResponse>,
   testReset(): void,
