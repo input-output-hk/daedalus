@@ -11,3 +11,4 @@ import './WalletSummary.stories';
 import './LanguageSelectionForm.stories';
 import './WalletDeleteConfirmationDialog.stories';
 import './TopBar.stories';
+import './WalletTransactionsList.stories';
