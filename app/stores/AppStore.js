@@ -1,6 +1,7 @@
 // @flow
 import { observable, computed } from 'mobx';
 import { ipcRenderer } from 'electron';
+import moment from 'moment';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import globalMessages from '../i18n/global-messages';
@@ -35,6 +36,7 @@ export default class AppStore extends Store {
     this.actions.profile.setSendLogsChoice.listen(this._setSendLogsChoice);
     this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
     this.registerReactions([
+      this._updateMomentJsLocaleAfterLocaleChange,
       this._redirectToLanguageSelectionIfNoLocaleSet,
       this._redirectToTermsOfUseScreenIfTermsNotAccepted,
       this._redirectToSendLogsChoiceScreenIfSendLogsChoiceNotSet,
@@ -98,6 +100,10 @@ export default class AppStore extends Store {
   _updateLocale = async ({ locale }: { locale: string }) => {
     await this.setProfileLocaleRequest.execute(locale);
     await this.getProfileLocaleRequest.execute();
+  };
+
+  _updateMomentJsLocaleAfterLocaleChange = () => {
+    moment.locale(this.currentLocale);
   };
 
   _acceptTermsOfUse = async () => {

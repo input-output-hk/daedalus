@@ -72,9 +72,7 @@ if (isDev) {
   require('electron-debug')(); // eslint-disable-line global-require
 }
 
-app.on('window-all-closed', () => {
-  if (process.platform !== 'darwin') app.quit();
-});
+app.on('window-all-closed', () => app.quit());
 
 const installExtensions = async () => {
   if (isDev) {

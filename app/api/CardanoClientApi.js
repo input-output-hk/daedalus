@@ -205,15 +205,10 @@ export default class CardanoClientApi {
     const assurance = 'CWANormal';
     const unit = 0;
     try {
-      // 1. create wallet
       const wallet: ApiWallet = await ClientApi.newWallet(
         name, assurance, unit, mnemonic, password
       );
-      Log.debug('CardanoClientApi::createWallet success: ', stringifyData(wallet));
-
-      // 2. create account
-      await ClientApi.newAccount(wallet.cwId, name, password);
-
+      Log.debug('CardanoClientApi::createWallet success');
       return _createWalletFromServerData(wallet);
     } catch (error) {
       Log.error('CardanoClientApi::createWallet error: ' + stringifyError(error));
@@ -311,15 +306,10 @@ export default class CardanoClientApi {
     const assurance = 'CWANormal';
     const unit = 0;
     try {
-      // 1. restore wallet
       const wallet: ApiWallet = await ClientApi.restoreWallet(
         walletName, assurance, unit, recoveryPhrase, walletPassword
       );
       Log.debug('CardanoClientApi::restoreWallet success');
-
-      // 2. create account
-      await ClientApi.newAccount(wallet.cwId, walletName, walletPassword);
-
       return _createWalletFromServerData(wallet);
     } catch (error) {
       Log.error('CardanoClientApi::restoreWallet error: ' + stringifyError(error));
@@ -571,6 +561,9 @@ export default class CardanoClientApi {
       return true;
     } catch (error) {
       Log.error('CardanoClientApi::updateWalletPassword error: ' + stringifyError(error));
+      if (error.message.includes('Invalid old passphrase given')) {
+        throw new IncorrectWalletPasswordError();
+      }
       throw new GenericApiError();
     }
   }

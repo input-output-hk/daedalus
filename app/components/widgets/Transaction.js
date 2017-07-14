@@ -171,12 +171,12 @@ export default class Transaction extends Component {
             )}
             <div>
               <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
-              {data.addresses.from.map((address) => (
-                <span key={address} className={styles.address}>{address}</span>
+              {data.addresses.from.map((address, addressIndex) => (
+                <span key={`${data.id}-from-${address}-${addressIndex}`} className={styles.address}>{address}</span>
               ))}
               <h2>{intl.formatMessage(messages.toAddresses)}</h2>
-              {data.addresses.to.map((address) => (
-                <span key={address} className={styles.address}>{address}</span>
+              {data.addresses.to.map((address, addressIndex) => (
+                <span key={`${data.id}-to-${address}-${addressIndex}`} className={styles.address}>{address}</span>
               ))}
               <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
               <span>
