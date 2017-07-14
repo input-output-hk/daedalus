@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import type { Children } from 'react';
 import classNames from 'classnames';
-import RTAppBar from 'react-toolbox/lib/app_bar/AppBar';
 import { observer } from 'mobx-react';
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import Wallet from '../../domain/Wallet';
@@ -28,6 +27,7 @@ export default class TopBar extends Component {
     const walletRoutesMatch = matchRoute(`${ROUTES.WALLETS.ROOT}/:id(*page)`, currentRoute);
     const showWalletInfo = walletRoutesMatch && activeWallet != null;
     const topBarStyles = classNames([
+      styles.topBar,
       showWalletInfo ? styles.withWallet : styles.withoutWallet,
     ]);
 
@@ -49,14 +49,15 @@ export default class TopBar extends Component {
     );
 
     return (
-      <RTAppBar
-        className={topBarStyles}
-        leftIcon={walletRoutesMatch ? sidebarToggleIcon : null}
-        onLeftIconClick={walletRoutesMatch ? onToggleSidebar : null}
-      >
+      <header className={topBarStyles}>
+        {walletRoutesMatch && (
+          <button className={styles.leftIcon} onClick={onToggleSidebar}>
+            {sidebarToggleIcon}
+          </button>
+        )}
         <div className={styles.topBarTitle}>{topBarTitle}</div>
         {this.props.children}
-      </RTAppBar>
+      </header>
     );
   }
 }
