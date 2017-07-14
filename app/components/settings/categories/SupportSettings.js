@@ -2,7 +2,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import Switch from '../../widgets/Switch';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './SupportSettings.scss';
 
@@ -43,14 +44,16 @@ export default class SupportSettings extends Component {
     return (
       <div className={styles.component}>
 
-        <div className="sendLogsSwitch">
-          <Switch
-            label={intl.formatMessage(messages.logsSwitchLabel)}
-            placeholder={intl.formatMessage(messages.logsSwitchPlaceholder)}
-            active={sendLogs}
-            onChange={this.handleLogsSwitchToggle}
-          />
+        <div className={styles.label}>
+          {intl.formatMessage(messages.logsSwitchLabel)}
         </div>
+
+        <Checkbox
+          onChange={this.handleLogsSwitchToggle}
+          label={intl.formatMessage(messages.logsSwitchPlaceholder)}
+          checked={sendLogs}
+          skin={<SimpleSwitchSkin />}
+        />
 
         {error && <p className={styles.error}>{error}</p>}
 

@@ -2,7 +2,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Button from 'react-toolbox/lib/button/Button';
+import Button from 'react-polymorph/lib/components/Button';
+import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './SendLogsChoiceForm.scss';
@@ -74,19 +75,21 @@ export default class SendLogsChoiceForm extends Component {
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
           <div className={styles.actions}>
+
             <Button
               className={declineButtonClasses}
               label={intl.formatMessage(messages.declineButtonLabel)}
               onMouseUp={this.submit.bind(this, false)}
-              primary
+              skin={<SimpleButtonSkin />}
             />
 
             <Button
               className={acceptButtonClasses}
               label={intl.formatMessage(messages.continueButtonLabel)}
               onMouseUp={this.submit.bind(this, true)}
-              primary
+              skin={<SimpleButtonSkin />}
             />
+
           </div>
 
         </div>
