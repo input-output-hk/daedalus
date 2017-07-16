@@ -1,6 +1,5 @@
 module Launcher where
 
-import qualified Data.List       as L
 import           Data.Monoid     ((<>))
 import           System.FilePath (pathSeparator)
 

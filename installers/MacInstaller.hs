@@ -30,7 +30,7 @@ main = do
 
   let appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
       dir     = appRoot <> "/Contents/MacOS"
-      resDir  = appRoot <> "/Contents/Resources"
+      -- resDir  = appRoot <> "/Contents/Resources"
       pkg     = "dist/Daedalus-installer-" <> version <> ".pkg"
   createDirectoryIfMissing False "dist"
 
