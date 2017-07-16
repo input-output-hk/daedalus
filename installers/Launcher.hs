@@ -43,8 +43,12 @@ launcherArgs launcher = unwords $
         "--system-start", "1499360281",
         "--wallet",
         "--update-with-package",
+        "--tlscert", quote (runtimePath launcher <> tlsPath <> "server" <> pathSeparator <> "server.crt"),
+        "--tlskey", quote (runtimePath launcher <> tlsPath <> "server" <> pathSeparator <> "server.key"),
+        "--tlsca", quote (runtimePath launcher <> tlsPath <> "ca" <> pathSeparator <> "ca.crt"),
         "--static-peers"
         ]
+      tlsPath = "tls" <> pathSeparator <> "tls" <> pathSeparator
 
 quote :: String -> String
 quote p = "\"" <> p <> "\""
