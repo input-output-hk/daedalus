@@ -28,6 +28,7 @@ storiesOf('AdaRedemptionForm', module)
       <AdaRedemptionForm
         onSubmit={action('submit')}
         isSubmitting={false}
+        isRedemptionDisclaimerAccepted={true}
         isCertificateSelected={false}
         isCertificateEncrypted={false}
         onCertificateSelected={action('onCertificateSelected')}
@@ -36,8 +37,8 @@ storiesOf('AdaRedemptionForm', module)
         onChooseRedemptionType={action('onChooseRedemptionType')}
         redemptionCode=''
         redemptionType='regular'
+        getSelectedWallet={() => ({})}
         wallets={[
-          { value: '', label: '...' },
           { value: 'wallet-1', label: 'First Wallet' },
           { value: 'wallet-2', label: 'Second Wallet' },
           { value: 'wallet-3', label: 'Third Wallet' },
@@ -51,6 +52,7 @@ storiesOf('AdaRedemptionForm', module)
       <AdaRedemptionForm
         onSubmit={action('submit')}
         isSubmitting={false}
+        isRedemptionDisclaimerAccepted={true}
         isCertificateSelected={true}
         isCertificateEncrypted={false}
         onCertificateSelected={action('onCertificateSelected')}
@@ -59,8 +61,8 @@ storiesOf('AdaRedemptionForm', module)
         onChooseRedemptionType={action('onChooseRedemptionType')}
         redemptionCode=''
         redemptionType='regular'
+        getSelectedWallet={() => ({})}
         wallets={[
-          { value: '', label: '...' },
           { value: 'wallet-1', label: 'First Wallet' },
           { value: 'wallet-2', label: 'Second Wallet' },
           { value: 'wallet-3', label: 'Third Wallet' },
@@ -74,6 +76,7 @@ storiesOf('AdaRedemptionForm', module)
       <AdaRedemptionForm
         onSubmit={action('submit')}
         isSubmitting={false}
+        isRedemptionDisclaimerAccepted={true}
         isCertificateSelected={true}
         isCertificateEncrypted={true}
         onCertificateSelected={action('onCertificateSelected')}
@@ -82,8 +85,8 @@ storiesOf('AdaRedemptionForm', module)
         onChooseRedemptionType={action('onChooseRedemptionType')}
         redemptionCode=''
         redemptionType='regular'
+        getSelectedWallet={() => ({})}
         wallets={[
-          { value: '', label: '...' },
           { value: 'wallet-1', label: 'First Wallet' },
           { value: 'wallet-2', label: 'Second Wallet' },
           { value: 'wallet-3', label: 'Third Wallet' },

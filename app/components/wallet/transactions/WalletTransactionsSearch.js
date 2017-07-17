@@ -36,7 +36,7 @@ export default class WalletTransactionsSearch extends Component {
           placeholder={intl.formatMessage(messages.searchHint)}
           value={searchTerm}
           onChange={onChange}
-          skin={SimpleInputSkin}
+          skin={<SimpleInputSkin />}
         />
       </div>
     );

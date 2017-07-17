@@ -29,7 +29,7 @@ export default class MnemonicInputWidget extends Component {
               className={styles.input}
               value={token}
               onChange={(value) => onTokenChanged(index, value)}
-              skin={SimpleInputSkin}
+              skin={<SimpleInputSkin />}
             />
           ))}
         </div>
