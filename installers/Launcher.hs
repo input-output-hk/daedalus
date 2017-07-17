@@ -48,7 +48,7 @@ launcherArgs launcher = unwords $
         "--tlsca", quote (runtimePath launcher <> tlsPath <> "ca" <> (pathSeparator : "ca.crt")),
         "--static-peers"
         ]
-      tlsPath = "tls" <> (pathSeparator : "tls") <> (pathSeparator : [])
+      tlsPath = (pathSeparator : "tls") <> (pathSeparator : [])
 
 quote :: String -> String
 quote p = "\"" <> p <> "\""
