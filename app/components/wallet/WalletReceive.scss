@@ -207,9 +207,15 @@
     }
   }
 
-  .usedWalletAddress .addressId {
-    color: #aeaeb3;
-    text-decoration: line-through;
+  .usedWalletAddress {
+    .addressId,
+    .addressActions .copyAddress img {
+      opacity: 0.4;
+    }
+
+    .addressActions .copyAddress span {
+      opacity: 0.2;
+    }
   }
 }
 

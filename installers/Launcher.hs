@@ -6,21 +6,27 @@ import           System.FilePath (pathSeparator)
 
 -- OS dependent configuration
 data Launcher = Launcher
-    { nodePath      :: String
-    , nodeLogPath   :: String
-    , walletPath    :: String
-    , installerPath :: String
-    , runtimePath   :: String
+    { nodePath             :: String
+    , nodeLogPath          :: String
+    , walletPath           :: String
+    , installerPath        :: String
+    , windowsInstallerPath :: Maybe String
+    , installerArgs        :: [String]
+    , installerArchivePath :: Maybe String
+    , runtimePath          :: String
     }
 
 launcherArgs :: Launcher -> String
 launcherArgs launcher = unwords $
+    maybe [] (("--updater-windows-runner":) . (:[]) . quote) (windowsInstallerPath launcher) ++
   [ "--node", quote (nodePath launcher)
   , "--node-log-path", quote (nodeLogPath launcher)
   , "--wallet", quote (walletPath launcher)
-  , "--updater ", quote (installerPath launcher)
+  , "--updater", quote (installerPath launcher)
+  , unwords $ map ("-u " ++) (installerArgs launcher)
+  , maybe "" (("--update-archive " ++) . quote) (installerArchivePath launcher)
   , "--node-timeout 5"
-  , (" -n " ++ (L.intercalate " -n " nodeArgs))
+  , unwords $ map ("-n " ++) nodeArgs
   ]
     where
       nodeArgs = [

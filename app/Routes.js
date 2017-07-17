@@ -16,8 +16,10 @@ import NoWalletsPage from './containers/wallet/NoWalletsPage';
 import LanguageSelectionPage from './containers/profile/LanguageSelectionPage';
 import Settings from './containers/settings/Settings';
 import GeneralSettingsPage from './containers/settings/categories/GeneralSettingsPage';
+import SupportSettingsPage from './containers/settings/categories/SupportSettingsPage';
 import TermsOfUseSettingsPage from './containers/settings/categories/TermsOfUseSettingsPage';
 import TermsOfUsePage from './containers/profile/TermsOfUsePage';
+import SendLogsChoicePage from './containers/profile/SendLogsChoicePage';
 
 export const ROUTES = {
   ROOT: '/',
@@ -27,6 +29,7 @@ export const ROUTES = {
   PROFILE: {
     LANGUAGE_SELECTION: '/profile/language-selection',
     TERMS_OF_USE: '/profile/terms-of-use',
+    SEND_LOGS: '/profile/send-logs-choice',
   },
   WALLETS: {
     ROOT: '/wallets',
@@ -41,6 +44,7 @@ export const ROUTES = {
     ROOT: '/settings',
     GENERAL: '/settings/general',
     TERMS_OF_USE: '/settings/terms-of-use',
+    SUPPORT: '/settings/support',
   },
 };
 
@@ -49,6 +53,7 @@ export default (
     <Route path={ROUTES.ROOT} component={LoadingPage} />
     <Route path={ROUTES.PROFILE.LANGUAGE_SELECTION} component={LanguageSelectionPage} />
     <Route path={ROUTES.PROFILE.TERMS_OF_USE} component={TermsOfUsePage} />
+    <Route path={ROUTES.PROFILE.SEND_LOGS} component={SendLogsChoicePage} />
     <Route path={ROUTES.STAKING} component={StakingPage} />
     <Route path={ROUTES.ADA_REDEMPTION} component={AdaRedemptionPage} />
     <Route path={ROUTES.NO_WALLETS} component={NoWalletsPage} />
@@ -63,6 +68,7 @@ export default (
       <IndexRedirect to="general" />
       <Route path="general" component={GeneralSettingsPage} />
       <Route path="terms-of-use" component={TermsOfUseSettingsPage} />
+      <Route path="support" component={SupportSettingsPage} />
     </Route>
   </div>
 );
