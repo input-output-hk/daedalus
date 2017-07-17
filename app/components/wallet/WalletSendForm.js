@@ -104,7 +104,7 @@ export default class WalletSendForm extends Component {
   };
 
   adaToLovelaces = (adaAmount: string) => (
-    adaAmount.replace('.', '').replace(',', '').replace(/^0+/, '')
+    adaAmount.replace('.', '').replace(/,/g, '').replace(/^0+/, '')
   );
 
   // FORM VALIDATION
