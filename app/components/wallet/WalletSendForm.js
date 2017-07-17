@@ -252,7 +252,9 @@ export default class WalletSendForm extends Component {
 
   _calculateTransactionFee(receiver: string, amountValue: string) {
     this.setState({ transactionFee: new BigNumber(0) });
-    this.props.calculateTransactionFee(receiver, new BigNumber(amountValue))
+    const cleanedAmount = amountValue.replace(/,/g, '');
+    const amount = new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
+    this.props.calculateTransactionFee(receiver, amount)
       .then((fee: BigNumber) => (
         this.setState({ transactionFee: fee })
       ))
