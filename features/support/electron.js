@@ -9,9 +9,9 @@ const DEFAULT_TIMEOUT = 30000;
 
 export default function () {
 
-  // The cucumber timeout should be high (and nevery reached in best case)
+  // The cucumber timeout should be high (and never reached in best case)
   // because the errors thrown by webdriver.io timeouts are more descriptive
-  // and helpful than "this step timed out after 5 seconds" messages thrown
+  // and helpful than "this step timed out after 5 seconds" messages
   this.setDefaultTimeout(DEFAULT_TIMEOUT * 10);
 
   // Boot up the electron app before all features
@@ -32,6 +32,9 @@ export default function () {
 
   // And tear it down after all features
   this.registerHandler('AfterFeatures', function() {
+    // Since we can have multiple instances of Daedalus running,
+    // it is easier to keep them open after running tests locally.
+    // TODO: this must be improved for CI testing though (i guess).
     // return context.app.stop();
   });
 
@@ -47,6 +50,8 @@ export default function () {
     this.client.timeouts('script', DEFAULT_TIMEOUT);
     // Provides the timeout limit used to interrupt navigation of the browsing context.
     this.client.timeouts('pageLoad', DEFAULT_TIMEOUT);
+    // Do not set 'implicit' timeout here because of this issue:
+    // https://github.com/webdriverio/webdriverio/issues/974
 
     await this.client.executeAsync(function(isFirst, rootDir, done) {
       daedalus.environment.current = daedalus.environment.TEST;
