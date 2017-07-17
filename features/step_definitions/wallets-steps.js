@@ -292,7 +292,7 @@ export default function () {
   });
 
   this.Then(/^I should not see the restore wallet dialog anymore$/, function () {
-    return this.client.waitForExist('.WalletRestoreDialog', null, true);
+    return this.client.waitForVisible('.WalletRestoreDialog', null, true);
   });
 
   this.Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function (walletName) {

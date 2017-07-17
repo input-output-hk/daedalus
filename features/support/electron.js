@@ -5,14 +5,14 @@ import path from 'path';
 const context = {};
 let isFirstScenario = true;
 
-const DEFAULT_TIMEOUT = 30000;
+const DEFAULT_TIMEOUT = 10000;
 
 export default function () {
 
   // The cucumber timeout should be high (and never reached in best case)
   // because the errors thrown by webdriver.io timeouts are more descriptive
   // and helpful than "this step timed out after 5 seconds" messages
-  this.setDefaultTimeout(DEFAULT_TIMEOUT * 10);
+  this.setDefaultTimeout(DEFAULT_TIMEOUT + 1000);
 
   // Boot up the electron app before all features
   this.registerHandler('BeforeFeatures', { timeout: 5 * 60 * 1000 }, async function() {
@@ -39,7 +39,7 @@ export default function () {
   });
 
   // Make the electron app accessible in each scenario context
-  this.Before({ timeout: 5 * 60 * 1000 }, async function() {
+  this.Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function() {
     this.client = context.app.client;
     this.browserWindow = context.app.browserWindow;
     this.client.url('/');
