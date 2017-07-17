@@ -292,13 +292,7 @@ export default function () {
   });
 
   this.Then(/^I should not see the restore wallet dialog anymore$/, function () {
-    return this.client.waitUntil(async () => {
-      const element = await this.client.element('.WalletRestoreDialog');
-      const isVisible = await this.client.isVisible('.WalletRestoreDialog');
-      console.log(element, isVisible);
-      return !isVisible;
-    });
-    // return this.client.waitForExist('.WalletRestoreDialog', null, true);
+    return this.client.waitForExist('.WalletRestoreDialog', null, true);
   });
 
   this.Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function (walletName) {

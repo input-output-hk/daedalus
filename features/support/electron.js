@@ -5,7 +5,7 @@ import path from 'path';
 const context = {};
 let isFirstScenario = true;
 
-const DEFAULT_TIMEOUT = 20000;
+const DEFAULT_TIMEOUT = 30000;
 
 export default function () {
 
@@ -45,8 +45,6 @@ export default function () {
 
     // Determines when to interrupt a script that is being evaluated.
     this.client.timeouts('script', DEFAULT_TIMEOUT);
-    // Gives the timeout of when to abort locating an element.
-    this.client.timeouts('implicit', DEFAULT_TIMEOUT);
     // Provides the timeout limit used to interrupt navigation of the browsing context.
     this.client.timeouts('pageLoad', DEFAULT_TIMEOUT);
 
