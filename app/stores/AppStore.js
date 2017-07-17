@@ -1,5 +1,7 @@
 // @flow
 import { observable, computed } from 'mobx';
+import { ipcRenderer } from 'electron';
+import moment from 'moment';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import globalMessages from '../i18n/global-messages';
@@ -23,21 +25,26 @@ export default class AppStore extends Store {
   @observable setProfileLocaleRequest: Request<string> = new Request(this.api.setUserLocale);
   @observable getTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.getTermsOfUseAcceptance);
   @observable setTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.setTermsOfUseAcceptance);
+  @observable getSendLogsChoiceRequest: Request<boolean> = new Request(this.api.getSendLogsChoice);
+  @observable setSendLogsChoiceRequest: Request = new Request(this.api.setSendLogsChoice);
   @observable error: ?LocalizableError = null;
   /* eslint-enable max-len */
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
     this.actions.profile.updateLocale.listen(this._updateLocale);
+    this.actions.profile.setSendLogsChoice.listen(this._setSendLogsChoice);
     this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
     this.registerReactions([
-      this._redirectToMainUiAfterLocaleIsSet,
+      this._updateMomentJsLocaleAfterLocaleChange,
       this._redirectToLanguageSelectionIfNoLocaleSet,
-      this._redirectToMainUiAfterTermsOfUseAcceptance,
       this._redirectToTermsOfUseScreenIfTermsNotAccepted,
+      this._redirectToSendLogsChoiceScreenIfSendLogsChoiceNotSet,
+      this._redirectToMainUiAfterSetSendLogsChoice,
       this._redirectToLoadingScreenWhenDisconnected,
     ]);
     this._getTermsOfUseAcceptance();
+    this._sendLogsChoiceToMainProcess();
   }
 
   @computed get currentRoute(): string {
@@ -50,11 +57,6 @@ export default class AppStore extends Store {
     return 'en-US'; // default
   }
 
-  @computed get termsOfUse(): string {
-    const localizedTermsOfUse = require(`../i18n/locales/terms-of-use/${this.currentLocale}.md`); // eslint-disable-line
-    return localizedTermsOfUse;
-  }
-
   @computed get hasLoadedCurrentLocale(): boolean {
     return (
       this.getProfileLocaleRequest.wasExecuted && this.getProfileLocaleRequest.result !== null
@@ -65,8 +67,9 @@ export default class AppStore extends Store {
     return (this.getProfileLocaleRequest.result != null && this.getProfileLocaleRequest.result !== '');
   }
 
-  @computed get areTermsOfUseAccepted(): boolean {
-    return this.getTermsOfUseAcceptanceRequest.result === true;
+  @computed get termsOfUse(): string {
+    const localizedTermsOfUse = require(`../i18n/locales/terms-of-use/${this.currentLocale}.md`); // eslint-disable-line
+    return localizedTermsOfUse;
   }
 
   @computed get hasLoadedTermsOfUseAcceptance(): boolean {
@@ -76,15 +79,31 @@ export default class AppStore extends Store {
     );
   }
 
-  _updateLocale = async ({ locale }: { locale: string }) => {
-    await this.setProfileLocaleRequest.execute(locale);
-    await this.getProfileLocaleRequest.execute();
-  };
+  @computed get areTermsOfUseAccepted(): boolean {
+    return this.getTermsOfUseAcceptanceRequest.result === true;
+  }
+
+  @computed get isSendLogsChoiceSet(): boolean {
+    return this.getSendLogsChoiceRequest.result !== null;
+  }
+
+  @computed get hasLoadedSendLogsChoice(): boolean {
+    return this.getSendLogsChoiceRequest.wasExecuted;
+  }
 
   _updateRouteLocation = (options: { route: string, params: ?Object }) => {
     const routePath = buildRoute(options.route, options.params);
     const currentRoute = this.stores.router.location.pathname;
     if (currentRoute !== routePath) this.stores.router.push(routePath);
+  };
+
+  _updateLocale = async ({ locale }: { locale: string }) => {
+    await this.setProfileLocaleRequest.execute(locale);
+    await this.getProfileLocaleRequest.execute();
+  };
+
+  _updateMomentJsLocaleAfterLocaleChange = () => {
+    moment.locale(this.currentLocale);
   };
 
   _acceptTermsOfUse = async () => {
@@ -96,18 +115,22 @@ export default class AppStore extends Store {
     this.getTermsOfUseAcceptanceRequest.execute();
   };
 
+  _getSendLogsChoice = async () => await this.getSendLogsChoiceRequest.execute().promise;
+
+  _setSendLogsChoice = async ({ sendLogs }: { sendLogs: boolean }) => {
+    await this.setSendLogsChoiceRequest.execute(sendLogs).promise;
+    await this._sendLogsChoiceToMainProcess();
+  };
+
+  _sendLogsChoiceToMainProcess = async () => {
+    const choice = await this._getSendLogsChoice();
+    ipcRenderer.send('send-logs-choice', choice);
+  };
+
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
     const { isConnected } = this.stores.networkStatus;
     if (isConnected && this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.LANGUAGE_SELECTION });
-    }
-  };
-
-  _isOnLanguageSelectionPage = () => this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION;
-
-  _redirectToMainUiAfterLocaleIsSet = () => {
-    if (this.isCurrentLocaleSet && this._isOnLanguageSelectionPage()) {
-      this._redirectToRoot();
     }
   };
 
@@ -119,10 +142,18 @@ export default class AppStore extends Store {
     }
   };
 
-  _isOnTermsOfUsePage = () => this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE;
+  _redirectToSendLogsChoiceScreenIfSendLogsChoiceNotSet = () => {
+    const { isConnected } = this.stores.networkStatus;
+    if (isConnected && this.isCurrentLocaleSet && this.areTermsOfUseAccepted &&
+      this.hasLoadedSendLogsChoice && !this.isSendLogsChoiceSet) {
+      this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.SEND_LOGS });
+    }
+  };
 
-  _redirectToMainUiAfterTermsOfUseAcceptance = () => {
-    if (this.areTermsOfUseAccepted && this._isOnTermsOfUsePage()) {
+  _isOnSendLogsChoicePage = () => this.currentRoute === ROUTES.PROFILE.SEND_LOGS;
+
+  _redirectToMainUiAfterSetSendLogsChoice = () => {
+    if (this.isSendLogsChoiceSet && this._isOnSendLogsChoicePage()) {
       this._redirectToRoot();
     }
   };

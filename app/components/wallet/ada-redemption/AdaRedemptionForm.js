@@ -136,7 +136,7 @@ where Ada should be redeemed and enter 9 word mnemonic passphrase.</p>`,
   },
   adaAmountHint: {
     id: 'wallet.redeem.dialog.adaAmountHint',
-    defaultMessage: '!!!Enter your Ada passcode',
+    defaultMessage: '!!!Enter your Ada amount',
     description: 'Hint for the Ada amount input field.'
   },
   walletPasswordPlaceholder: {
@@ -336,7 +336,19 @@ export default class AdaRedemptionForm extends Component {
     // We need to disable on-change validation before reseting the form in order to
     // avoid debounced validation being called straight after the form is reset
     form.state.options.set({ validateOnChange: false });
-    form.reset();
+
+    // We can not user form.reset() call here as it would reset selected walletId
+    // which is a bad UX since we are calling resetForm on certificate add/remove
+    form.$('walletPassword').reset();
+    form.$('adaAmount').reset();
+    form.$('adaPasscode').reset();
+    form.$('certificate').reset();
+    form.$('email').reset();
+    form.$('passPhrase').reset();
+    form.$('redemptionKey').reset();
+    form.$('shieldedRedemptionKey').reset();
+    form.$('walletPassword').reset();
+
     form.showErrors(false);
     form.state.options.set({ validateOnChange: true });
   };

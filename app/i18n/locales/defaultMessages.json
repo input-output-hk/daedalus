@@ -246,6 +246,67 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Continue",
+        "description": "Label for the \"Send logs\" accept button",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
+        "id": "profile.sendLogsChoice.form.continueButtonLabel",
+        "start": {
+          "column": 23,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!Dont't send",
+        "description": "Label for the \"Send logs\" decline button",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
+        "id": "profile.sendLogsChoice.form.declineButtonLabel",
+        "start": {
+          "column": 22,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!Send logs to the central server",
+        "description": "Label for the \"Send logs\" content",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
+        "id": "profile.sendLogsChoice.form.contentLabel",
+        "start": {
+          "column": 16,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Do you want to help diagnose issues by opting in to send logs to our central logging server? Logs will not include any sensitive data.",
+        "description": "Send logs content",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
+        "id": "profile.sendLogsChoice.form.contentText",
+        "start": {
+          "column": 15,
+          "line": 26
+        }
+      }
+    ],
+    "path": "app/components/profile/send-logs-choice-form/SendLogsChoiceForm.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!I agree with terms of use",
         "description": "Label for the \"I agree with terms of use\" checkbox.",
         "end": {
@@ -298,6 +359,39 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Send logs to the central server",
+        "description": "Label for the \"Send logs\" switch on the support settings page.",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.sendLogs.switchLabel",
+        "start": {
+          "column": 19,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Do you want to help diagnose issues by opting in to send logs to our central logging server? Logs will not include any sensitive data.",
+        "description": "Text for the \"Send logs\" switch on the support settings page.",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.sendLogs.switchPlaceholder",
+        "start": {
+          "column": 25,
+          "line": 15
+        }
+      }
+    ],
+    "path": "app/components/settings/categories/SupportSettings.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!General",
         "description": "Label for the \"General\" link in the settings menu.",
         "end": {
@@ -312,17 +406,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Terms of use",
-        "description": "Label for the \"Terms of use\" link in the settings menu.",
+        "defaultMessage": "!!!Support",
+        "description": "Label for the \"Support\" link in the settings menu.",
         "end": {
           "column": 3,
           "line": 19
         },
         "file": "app/components/settings/menu/SettingsMenu.js",
+        "id": "settings.menu.support.link.label",
+        "start": {
+          "column": 11,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Terms of use",
+        "description": "Label for the \"Terms of use\" link in the settings menu.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "app/components/settings/menu/SettingsMenu.js",
         "id": "settings.menu.termsOfUse.link.label",
         "start": {
           "column": 14,
-          "line": 15
+          "line": 20
         }
       }
     ],
@@ -752,7 +860,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Enter your Ada passcode",
+        "defaultMessage": "!!!Enter your Ada amount",
         "description": "Hint for the Ada amount input field.",
         "end": {
           "column": 3,
@@ -1277,17 +1385,45 @@
         }
       },
       {
-        "defaultMessage": "!!!Password",
-        "description": "Placeholder for the \"Password\" inputs in the change wallet password dialog.",
+        "defaultMessage": "!!!Type current password",
+        "description": "Placeholder for the \"Current password\" inputs in the change wallet password dialog.",
         "end": {
           "column": 3,
           "line": 51
         },
         "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
-        "id": "wallet.settings.changePassword.dialog.passwordFieldPlaceholder",
+        "id": "wallet.settings.changePassword.dialog.currentPasswordFieldPlaceholder",
         "start": {
-          "column": 28,
+          "column": 35,
           "line": 47
+        }
+      },
+      {
+        "defaultMessage": "!!!Type new password",
+        "description": "Placeholder for the \"New password\" inputs in the change wallet password dialog.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "id": "wallet.settings.changePassword.dialog.newPasswordFieldPlaceholder",
+        "start": {
+          "column": 31,
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!Repeat new password",
+        "description": "Placeholder for the \"Repeat password\" inputs in the change wallet password dialog.",
+        "end": {
+          "column": 3,
+          "line": 61
+        },
+        "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "id": "wallet.settings.changePassword.dialog.repeatPasswordFieldPlaceholder",
+        "start": {
+          "column": 34,
+          "line": 57
         }
       },
       {
@@ -1295,13 +1431,13 @@
         "description": "Label for the \"Check to deactivate password\" switch in the change wallet password dialog.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 66
         },
         "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.passwordSwitchLabel",
         "start": {
           "column": 23,
-          "line": 52
+          "line": 62
         }
       },
       {
@@ -1309,13 +1445,13 @@
         "description": "Text for the \"Check to deactivate password\" switch in the change wallet password dialog.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 71
         },
         "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.passwordSwitchPlaceholder",
         "start": {
           "column": 29,
-          "line": 57
+          "line": 67
         }
       }
     ],
@@ -1762,6 +1898,39 @@
       }
     ],
     "path": "app/components/wallet/summary/WalletSummary.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Today",
+        "description": "Label for the \"Today\" label on the wallet summary page.",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "app/components/wallet/transactions/WalletTransactionsList.js",
+        "id": "wallet.summary.page.todayLabel",
+        "start": {
+          "column": 9,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Yesterday",
+        "description": "Label for the \"Yesterday\" label on the wallet summary page.",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "app/components/wallet/transactions/WalletTransactionsList.js",
+        "id": "wallet.summary.page.yesterdayLabel",
+        "start": {
+          "column": 13,
+          "line": 19
+        }
+      }
+    ],
+    "path": "app/components/wallet/transactions/WalletTransactionsList.json"
   },
   {
     "descriptors": [

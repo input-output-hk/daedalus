@@ -22,3 +22,11 @@ export const fillOutWalletSendForm = async function(values) {
 export const getWalletByName = function(walletName) {
   return this.wallets.find((w) => w.name === walletName);
 };
+
+export const waitUntilWaletNamesEqual = function(walletName) {
+  const context = this;
+  return context.client.waitUntil(async function() {
+    const currentWalletName = await getNameOfActiveWalletInSidebar.call(context);
+    return currentWalletName === walletName;
+  });
+};
