@@ -96,6 +96,7 @@ export default class WalletSendForm extends Component {
 
   props: {
     onSubmit: Function,
+    calculateTransactionFee: (receiver: string, amount: string) => Promise<BigNumber>,
     isSubmitting: boolean,
     addressValidator: Function,
     isWalletPasswordSet: boolean,
@@ -104,6 +105,10 @@ export default class WalletSendForm extends Component {
 
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  state = {
+    transactionFee: new BigNumber(0),
   };
 
   adaToLovelaces = (adaAmount: string) => (
@@ -129,11 +134,15 @@ export default class WalletSendForm extends Component {
         placeholder: '0.000000',
         value: '',
         validators: ({ field }) => {
-          if (field.value === '') {
+          const amountValue = field.value;
+          if (amountValue === '') {
             return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           }
-          const amountInLovelaces = this.adaToLovelaces(field.value);
+          const amountInLovelaces = this.adaToLovelaces(amountValue);
           const isValid = isValidAmountInLovelaces(amountInLovelaces);
+          if (isValid) {
+            this._calculateTransactionFee(this.form.$('receiver').bind().value, amountValue);
+          }
           return [isValid, this.context.intl.formatMessage(messages.invalidAmount)];
         },
       },
@@ -177,16 +186,12 @@ export default class WalletSendForm extends Component {
     const { form } = this;
     const { intl } = this.context;
     const { isWalletPasswordSet, isSubmitting, error } = this.props;
+    const { transactionFee } = this.state;
     const amountField = form.$('amount');
     const receiverField = form.$('receiver');
     const passwordField = form.$('walletPassword');
-
-    // TODO: fetch fees from api endpoint
-    const FEES = new BigNumber(12.042481);
     const amountFieldProps = amountField.bind();
-    const cleanedAmount = amountFieldProps.value.replace(/,/g, '');
-    const amountValue = new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
-    const totalAmount = amountValue.add(FEES);
+    const totalAmount = this._calculateTotalAmount(amountFieldProps.value, transactionFee);
 
     return (
       <div className={styles.component}>
@@ -214,7 +219,7 @@ export default class WalletSendForm extends Component {
               error={amountField.error}
               // AmountInputSkin props
               currency={intl.formatMessage(globalMessages.unitAda)}
-              fees={FEES.toFormat(DECIMAL_PLACES_IN_ADA)}
+              fees={transactionFee.toFormat(DECIMAL_PLACES_IN_ADA)}
               total={totalAmount.toFormat(DECIMAL_PLACES_IN_ADA)}
               skin={<AmountInputSkin />}
             />
@@ -243,6 +248,23 @@ export default class WalletSendForm extends Component {
 
       </div>
     );
+  }
+
+  _calculateTransactionFee(receiver: string, amountValue: string) {
+    this.setState({ transactionFee: new BigNumber(0) });
+    this.props.calculateTransactionFee(receiver, new BigNumber(amountValue))
+      .then((fee: BigNumber) => (
+        this.setState({ transactionFee: fee })
+      ))
+      .catch((error: Error) => {
+        console.log(error);
+      });
+  }
+
+  _calculateTotalAmount(amountValue: string, transactionFee: BigNumber): BigNumber {
+    const cleanedAmount = amountValue.replace(/,/g, '');
+    const amount = new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
+    return amount.add(transactionFee);
   }
 }
 
