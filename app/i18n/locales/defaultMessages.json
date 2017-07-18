@@ -1836,6 +1836,25 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!+ {amount} of fees",
+        "description": "Label for the \"+ 12.042481 of fees\" message above amount input field.",
+        "end": {
+          "column": 3,
+          "line": 12
+        },
+        "file": "app/components/wallet/skins/AmountInputSkin.js",
+        "id": "wallet.amountInput.feesLabel",
+        "start": {
+          "column": 13,
+          "line": 8
+        }
+      }
+    ],
+    "path": "app/components/wallet/skins/AmountInputSkin.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Outgoing pending confirmation",
         "description": "\"Outgoing pending confirmation\" label on Wallet summary page",
         "end": {
@@ -2472,13 +2491,13 @@
         "description": "Label for the \"Title\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 24
         },
         "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.title.label",
         "start": {
           "column": 14,
-          "line": 17
+          "line": 20
         }
       },
       {
@@ -2486,13 +2505,13 @@
         "description": "Hint inside the \"Receiver\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 29
         },
         "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.title.hint",
         "start": {
           "column": 13,
-          "line": 22
+          "line": 25
         }
       },
       {
@@ -2500,13 +2519,13 @@
         "description": "Label for the \"Receiver\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 34
         },
         "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.receiver.label",
         "start": {
           "column": 17,
-          "line": 27
+          "line": 30
         }
       },
       {
@@ -2514,13 +2533,13 @@
         "description": "Hint inside the \"Receiver\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 39
         },
         "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.receiver.hint",
         "start": {
           "column": 16,
-          "line": 32
+          "line": 35
         }
       },
       {
@@ -2528,13 +2547,13 @@
         "description": "Label for the \"Amount\" number input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 44
         },
         "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.amount.label",
         "start": {
           "column": 15,
-          "line": 37
+          "line": 40
         }
       },
       {
@@ -2542,13 +2561,13 @@
         "description": "Convertion hint for the \"Amount\" number input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 49
         },
         "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.amount.equalsAda",
         "start": {
           "column": 17,
-          "line": 42
+          "line": 45
         }
       },
       {
@@ -2556,13 +2575,13 @@
         "description": "Label for the \"description\" text area in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 54
         },
         "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.description.label",
         "start": {
           "column": 20,
-          "line": 47
+          "line": 50
         }
       },
       {
@@ -2570,13 +2589,13 @@
         "description": "Hint in the \"description\" text area in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 59
         },
         "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.description.hint",
         "start": {
           "column": 19,
-          "line": 52
+          "line": 55
         }
       },
       {
@@ -2584,13 +2603,13 @@
         "description": "Label for the send button on the wallet send form.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 64
         },
         "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.submit",
         "start": {
           "column": 19,
-          "line": 57
+          "line": 60
         }
       },
       {
@@ -2598,13 +2617,13 @@
         "description": "Error message shown when invalid address was entered.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 69
         },
         "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.errors.invalidAddress",
         "start": {
           "column": 18,
-          "line": 62
+          "line": 65
         }
       },
       {
@@ -2612,13 +2631,13 @@
         "description": "Error message shown when invalid amount was entered.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 74
         },
         "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.errors.invalidAmount",
         "start": {
           "column": 17,
-          "line": 67
+          "line": 70
         }
       },
       {
@@ -2626,13 +2645,13 @@
         "description": "Error message shown when invalid transaction title was entered.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 79
         },
         "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.errors.invalidTitle",
         "start": {
           "column": 16,
-          "line": 72
+          "line": 75
         }
       },
       {
@@ -2640,13 +2659,13 @@
         "description": "Label for the \"Wallet password\" input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 84
         },
         "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.walletPasswordLabel",
         "start": {
           "column": 23,
-          "line": 77
+          "line": 80
         }
       },
       {
@@ -2654,13 +2673,13 @@
         "description": "Placeholder for the \"Password\" inputs in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 89
         },
         "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.passwordFieldPlaceholder",
         "start": {
           "column": 28,
-          "line": 82
+          "line": 85
         }
       }
     ],

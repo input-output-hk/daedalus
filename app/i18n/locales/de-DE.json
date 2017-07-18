@@ -80,6 +80,7 @@
   "wallet.add.dialog.restore.description": "!!!Restore wallet from backup",
   "wallet.add.dialog.restore.label": "!!!Restore",
   "wallet.add.dialog.title.label": "!!!Add wallet",
+  "wallet.amountInput.feesLabel": "!!!+ {amount} of fees",
   "wallet.backup.privacy.warning.dialog..button.labelContinue": "!!!Continue",
   "wallet.backup.privacy.warning.dialog.checkbox.label.nobodyWatching": "!!!Make sure nobody looks into your screen unless you want them to have access to your funds.",
   "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions": "!!!On the following screen, you will see a set of X random words. This is \n    your wallet backup phrase. It can be entered in any version of Daedalus application in order \n    to back up or restore your wallet’s funds and private key.",

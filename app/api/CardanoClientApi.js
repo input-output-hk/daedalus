@@ -31,6 +31,8 @@ import type {
   DeleteWalletRequest,
   RedeemPaperVendedAdaRequest,
   UpdateWalletPasswordRequest,
+  TransactionFeeRequest,
+  TransactionFeeResponse
 } from './index';
 import {
   // ApiMethodNotYetImplementedError,
@@ -564,6 +566,21 @@ export default class CardanoClientApi {
       if (error.message.includes('Invalid old passphrase given')) {
         throw new IncorrectWalletPasswordError();
       }
+      throw new GenericApiError();
+    }
+  }
+
+  async calculateTransactionFee(request: TransactionFeeRequest): Promise<TransactionFeeResponse> {
+    Log.debug('CardanoClientApi::TransactionFee called', stringifyData(request));
+    try {
+      // TODO: use real endpoint here to fetch fees (don't forget to cast bignumber to string!)
+      const fee = await new Promise((resolve) => {
+        setTimeout(() => resolve(request.amount.times(Math.random().toPrecision(2))), 1000);
+      });
+      Log.debug('CardanoClientApi::TransactionFee success: ', fee);
+      return fee;
+    } catch (error) {
+      Log.error('CardanoClientApi::TransactionFee error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }

@@ -6,8 +6,11 @@ import Input from 'react-polymorph/lib/components/Input';
 import NumericInput from 'react-polymorph/lib/components/NumericInput';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
+import BigNumber from 'bignumber.js';
 import { isValidAmountInLovelaces } from '../../lib/validations';
+import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
+import AmountInputSkin from './skins/AmountInputSkin';
 import BorderedBox from '../widgets/BorderedBox';
 import styles from './WalletSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
@@ -93,6 +96,7 @@ export default class WalletSendForm extends Component {
 
   props: {
     onSubmit: Function,
+    calculateTransactionFee: (receiver: string, amount: string) => Promise<BigNumber>,
     isSubmitting: boolean,
     addressValidator: Function,
     isWalletPasswordSet: boolean,
@@ -101,6 +105,10 @@ export default class WalletSendForm extends Component {
 
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  state = {
+    transactionFee: new BigNumber(0),
   };
 
   adaToLovelaces = (adaAmount: string) => (
@@ -126,11 +134,15 @@ export default class WalletSendForm extends Component {
         placeholder: '0.000000',
         value: '',
         validators: ({ field }) => {
-          if (field.value === '') {
+          const amountValue = field.value;
+          if (amountValue === '') {
             return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           }
-          const amountInLovelaces = this.adaToLovelaces(field.value);
+          const amountInLovelaces = this.adaToLovelaces(amountValue);
           const isValid = isValidAmountInLovelaces(amountInLovelaces);
+          if (isValid) {
+            this._calculateTransactionFee(this.form.$('receiver').bind().value, amountValue);
+          }
           return [isValid, this.context.intl.formatMessage(messages.invalidAmount)];
         },
       },
@@ -174,9 +186,12 @@ export default class WalletSendForm extends Component {
     const { form } = this;
     const { intl } = this.context;
     const { isWalletPasswordSet, isSubmitting, error } = this.props;
+    const { transactionFee } = this.state;
     const amountField = form.$('amount');
     const receiverField = form.$('receiver');
     const passwordField = form.$('walletPassword');
+    const amountFieldProps = amountField.bind();
+    const totalAmount = this._calculateTotalAmount(amountFieldProps.value, transactionFee);
 
     return (
       <div className={styles.component}>
@@ -194,7 +209,7 @@ export default class WalletSendForm extends Component {
 
           <div className={styles.amountInput}>
             <NumericInput
-              {...amountField.bind()}
+              {...amountFieldProps}
               className="amount"
               label={intl.formatMessage(messages.amountLabel)}
               minValue={0.000001}
@@ -202,11 +217,12 @@ export default class WalletSendForm extends Component {
               maxAfterDot={6}
               maxBeforeDot={11}
               error={amountField.error}
-              skin={<SimpleInputSkin />}
+              // AmountInputSkin props
+              currency={intl.formatMessage(globalMessages.unitAda)}
+              fees={transactionFee.toFormat(DECIMAL_PLACES_IN_ADA)}
+              total={totalAmount.toFormat(DECIMAL_PLACES_IN_ADA)}
+              skin={<AmountInputSkin />}
             />
-            <span className={styles.adaLabel}>
-              {intl.formatMessage(globalMessages.unitAda)}
-            </span>
           </div>
 
           {isWalletPasswordSet ? (
@@ -232,6 +248,25 @@ export default class WalletSendForm extends Component {
 
       </div>
     );
+  }
+
+  _calculateTransactionFee(receiver: string, amountValue: string) {
+    this.setState({ transactionFee: new BigNumber(0) });
+    const cleanedAmount = amountValue.replace(/,/g, '');
+    const amount = new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
+    this.props.calculateTransactionFee(receiver, amount)
+      .then((fee: BigNumber) => (
+        this.setState({ transactionFee: fee })
+      ))
+      .catch((error: Error) => {
+        console.log(error);
+      });
+  }
+
+  _calculateTotalAmount(amountValue: string, transactionFee: BigNumber): BigNumber {
+    const cleanedAmount = amountValue.replace(/,/g, '');
+    const amount = new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
+    return amount.add(transactionFee);
   }
 }
 

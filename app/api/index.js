@@ -1,4 +1,5 @@
 // @flow
+import BigNumber from 'bignumber.js';
 import Wallet from '../domain/Wallet';
 import WalletAddress from '../domain/WalletAddress';
 import WalletTransaction from '../domain/WalletTransaction';
@@ -123,6 +124,14 @@ export type UpdateWalletPasswordRequest = {
 
 export type UpdateWalletPasswordResponse = boolean;
 
+export type TransactionFeeRequest = {
+  from: string,
+  to: string,
+  amount: BigNumber,
+};
+
+export type TransactionFeeResponse = BigNumber;
+
 // API INTERFACE
 
 export type Api = {
@@ -157,5 +166,6 @@ export type Api = {
   getSendLogsChoice(): Promise<boolean>,
   updateWallet(request: UpdateWalletRequest): Promise<UpdateWalletResponse>,
   updateWalletPassword(request: UpdateWalletPasswordRequest): Promise<UpdateWalletPasswordResponse>,
+  calculateTransactionFee(request: TransactionFeeRequest): Promise<TransactionFeeResponse>,
   testReset(): void,
 };
