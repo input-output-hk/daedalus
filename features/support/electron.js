@@ -5,7 +5,7 @@ import path from 'path';
 const context = {};
 let isFirstScenario = true;
 
-const DEFAULT_TIMEOUT = 10000;
+const DEFAULT_TIMEOUT = 15000;
 
 export default function () {
 
@@ -53,30 +53,24 @@ export default function () {
     // Do not set 'implicit' timeout here because of this issue:
     // https://github.com/webdriverio/webdriverio/issues/974
 
-    await this.client.executeAsync(function(isFirst, rootDir, done) {
+    await this.client.executeAsync(function(isFirst, done) {
       daedalus.environment.current = daedalus.environment.TEST;
       // Patch parts of the cardano api in the test environment
       if (daedalus.environment.CARDANO_API) {
         daedalus.test.patchCardanoApi(daedalus.api);
-        // Reset the stores so that the patched api is used instead
-        daedalus.reset();
       }
-      if (!isFirst) daedalus.reset();
       const connectToBackend = () => {
         if (daedalus.stores.networkStatus.isSynced) {
           daedalus.api.testReset().then(() => {
-            if (isFirst) {
-              daedalus.actions.networkStatus.isSyncedAndReady.once(done);
-            } else {
-              done();
-            }
+            daedalus.reset();
+            daedalus.actions.networkStatus.isSyncedAndReady.once(done);
           });
         } else {
           setTimeout(connectToBackend, 100);
         }
       };
       connectToBackend();
-    }, isFirstScenario, path.join(__dirname, '../..'));
+    }, isFirstScenario);
     isFirstScenario = false;
   });
 }
