@@ -4,7 +4,9 @@ Feature: Ada Redemption
     Given I have selected English language
     And I have accepted "Terms of use"
     And I agree to send logs to remote server
-    And I have a wallet with funds
+    And I have the following wallets:
+      | name        |
+      | testWallet  |
 
   Scenario: User accepts "Daedalus Redemption Disclaimer"
     Given I am on the ada redemption screen

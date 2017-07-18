@@ -92,9 +92,9 @@ export default class AddressesStore extends Store {
 
   @action _resetErrors = () => {
     this.error = null;
-  }
+  };
 
-  _getAccountIdByWalletId = (walletId: string): ?string => {
+  _getAccountIdByWalletId = (walletId: string): (?string) => {
     const result = this._getAddressesAllRequest(walletId).result;
     return result ? result.accountId : null;
   };

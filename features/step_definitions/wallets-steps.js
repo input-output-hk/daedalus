@@ -2,6 +2,8 @@ import { expect } from 'chai';
 import {
   fillOutWalletSendForm,
   getWalletByName,
+  waitUntilWalletIsLoaded,
+  addOrSetWalletsForScenario,
 } from '../support/helpers/wallets-helpers';
 import {
   waitUntilUrlEquals,
@@ -14,34 +16,22 @@ const defaultWalletKeyFilePath = path.resolve(__dirname, '../support/default-wal
 export default function () {
 
   this.Given(/^I have a wallet with funds$/, async function () {
-    const result = await this.client.executeAsync(function(filePath, done) {
-      daedalus.api.importWalletFromKey({ filePath, walletPassword: null }).then((wallet) => {
-        daedalus.stores.wallets.refreshWalletsData().then(() => done(wallet));
-      });
+    await this.client.executeAsync(function(filePath, done) {
+      daedalus.api.importWalletFromKey({ filePath, walletPassword: null });
+      done();
     }, defaultWalletKeyFilePath);
-    this.wallet = result.value;
-    // Add or set the wallets for this scenario
-    if (this.wallets != null) {
-      this.wallets.push(this.wallet);
-    } else {
-      this.wallets = [this.wallet];
-    }
+    const wallet = await waitUntilWalletIsLoaded.call(this, 'Genesis wallet');
+    addOrSetWalletsForScenario.call(this, wallet);
   });
 
   this.Given(/^I have a wallet with funds and password$/, async function () {
-    const result = await this.client.executeAsync(function(filePath, done) {
+    await this.client.executeAsync(function(filePath, done) {
       // This assumes that we always have a default wallet on the backend!
-      daedalus.api.importWalletFromKey({ filePath, walletPassword: 'Secret123' }).then((wallet) => {
-        daedalus.stores.wallets.refreshWalletsData().then(() => done(wallet));
-      });
+      daedalus.api.importWalletFromKey({ filePath, walletPassword: 'Secret123' });
+      done();
     }, defaultWalletKeyFilePath);
-    this.wallet = result.value;
-    // Add or set the wallets for this scenario
-    if (this.wallets != null) {
-      this.wallets.push(this.wallet);
-    } else {
-      this.wallets = [this.wallet];
-    }
+    const wallet = await waitUntilWalletIsLoaded.call(this, 'Genesis wallet');
+    addOrSetWalletsForScenario.call(this, wallet);
   });
 
   this.Given(/^I have the following wallets:$/, async function (table) {
@@ -54,7 +44,10 @@ export default function () {
         });
       }))
       .then(() => {
-        daedalus.stores.wallets.walletsRequest.execute().then(done);
+        daedalus.stores.wallets.walletsRequest.execute().then((wallets) => {
+          daedalus.stores.wallets.refreshWalletsData();
+          done(wallets);
+        });
       })
       .catch((error) => done(error.stack));
     }, table.hashes());

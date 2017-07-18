@@ -170,7 +170,9 @@ export default class WalletsStore extends Store {
     buildRoute(ROUTES.WALLETS.PAGE, { id: walletId, page })
   );
 
-  getWalletById = (id: string): ?Wallet => this.all.find(w => w.id === id);
+  getWalletById = (id: string): (?Wallet) => this.all.find(w => w.id === id);
+
+  getWalletByName = (name: string): (?Wallet) => this.all.find(w => w.name === name);
 
   isValidAddress = (address: string) => this.api.isValidAddress(address);
 

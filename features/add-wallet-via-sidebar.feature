@@ -4,7 +4,9 @@ Feature: Add Wallet via Sidebar
     Given I have selected English language
     And I have accepted "Terms of use"
     And I agree to send logs to remote server
-    And I have a wallet with funds
+    And I have the following wallets:
+      | name        |
+      | testWallet  |
 
   Scenario: Successfully Adding a Wallet
     Given The sidebar shows the "wallets" category

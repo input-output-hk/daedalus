@@ -5,7 +5,7 @@ import path from 'path';
 const context = {};
 let isFirstScenario = true;
 
-const DEFAULT_TIMEOUT = 10000;
+const DEFAULT_TIMEOUT = 20000;
 
 export default function () {
 
@@ -65,9 +65,7 @@ export default function () {
     });
 
     // Load fresh root url with test environment for each test case
-    if (!isFirstScenario) {
-      await this.client.url('file://' + path.join(__dirname, '../../app/index.html?test=true'));
-    }
+    await this.client.url('file://' + path.join(__dirname, '../../app/index.html?test=true'));
 
     // Ensure that frontend is synced and ready before test case
     await this.client.executeAsync(function(done) {
@@ -80,7 +78,7 @@ export default function () {
       };
       waitUntilSyncedAndReady();
     });
-    
+
     isFirstScenario = false;
   });
 }

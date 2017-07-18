@@ -30,3 +30,27 @@ export const waitUntilWaletNamesEqual = function(walletName) {
     return currentWalletName === walletName;
   });
 };
+
+export const waitUntilWalletIsLoaded = async function(walletName) {
+  let wallet = null;
+  await this.client.waitUntil(async () => {
+    const result = await this.client.execute(function(name) {
+      return daedalus.stores.wallets.getWalletByName(name);
+    }, walletName);
+    if (result.value) {
+      wallet = result.value;
+      return true;
+    }
+    return false;
+  });
+  return wallet;
+};
+
+export const addOrSetWalletsForScenario = function(wallet) {
+  this.wallet = wallet;
+  if (this.wallets != null) {
+    this.wallets.push(this.wallet);
+  } else {
+    this.wallets = [this.wallet];
+  }
+};
