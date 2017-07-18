@@ -71,5 +71,5 @@ Feature: Send Money to Receiver
 
     Examples:
       | WRONG_AMOUNT |
-      | 4500000001   |
+      | 45000000001  |
       | 0            |
