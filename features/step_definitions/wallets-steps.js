@@ -2,10 +2,11 @@ import { expect } from 'chai';
 import {
   fillOutWalletSendForm,
   getWalletByName,
-} from './lib/wallets-helpers';
+} from '../support/helpers/wallets-helpers';
 import {
   waitUntilUrlEquals,
-} from './lib/route-helpers'
+  navigateTo,
+} from '../support/helpers/route-helpers'
 import path from 'path';
 
 const defaultWalletKeyFilePath = path.resolve(__dirname, '../support/default-wallet.key');
@@ -14,7 +15,6 @@ export default function () {
 
   this.Given(/^I have a wallet with funds$/, async function () {
     const result = await this.client.executeAsync(function(filePath, done) {
-      // This assumes that we always have a default wallet on the backend!
       daedalus.api.importWalletFromKey({ filePath, walletPassword: null }).then((wallet) => {
         daedalus.stores.wallets.refreshWalletsData().then(() => done(wallet));
       });
@@ -68,7 +68,7 @@ export default function () {
 
   this.Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function (walletName, screen) {
     const wallet = getWalletByName.call(this, walletName);
-    await this.navigateTo(`/wallets/${wallet.id}/${screen}`);
+    await navigateTo.call(this, `/wallets/${wallet.id}/${screen}`);
   });
 
   this.Given(/^I see the add wallet dialog$/, function () {

@@ -5,7 +5,7 @@ import path from 'path';
 const context = {};
 let isFirstScenario = true;
 
-const DEFAULT_TIMEOUT = 15000;
+const DEFAULT_TIMEOUT = 10000;
 
 export default function () {
 
@@ -42,7 +42,6 @@ export default function () {
   this.Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function() {
     this.client = context.app.client;
     this.browserWindow = context.app.browserWindow;
-    this.client.url('/');
 
     // Set timeouts of various operations:
 
@@ -53,24 +52,35 @@ export default function () {
     // Do not set 'implicit' timeout here because of this issue:
     // https://github.com/webdriverio/webdriverio/issues/974
 
-    await this.client.executeAsync(function(isFirst, done) {
-      daedalus.environment.current = daedalus.environment.TEST;
-      // Patch parts of the cardano api in the test environment
-      if (daedalus.environment.CARDANO_API) {
-        daedalus.test.patchCardanoApi(daedalus.api);
-      }
-      const connectToBackend = () => {
-        if (daedalus.stores.networkStatus.isSynced) {
-          daedalus.api.testReset().then(() => {
-            daedalus.reset();
-            daedalus.actions.networkStatus.isSyncedAndReady.once(done);
-          });
+    // Reset backend
+    await this.client.executeAsync(function(done) {
+      const resetBackend = () => {
+        if (daedalus.stores.networkStatus.isConnected) {
+          daedalus.api.testReset().then(done);
         } else {
-          setTimeout(connectToBackend, 100);
+          setTimeout(resetBackend, 100);
         }
       };
-      connectToBackend();
-    }, isFirstScenario);
+      resetBackend();
+    });
+
+    // Load fresh root url with test environment for each test case
+    if (!isFirstScenario) {
+      await this.client.url('file://' + path.join(__dirname, '../../app/index.html?test=true'));
+    }
+
+    // Ensure that frontend is synced and ready before test case
+    await this.client.executeAsync(function(done) {
+      const waitUntilSyncedAndReady = () => {
+        if (daedalus.stores.networkStatus.isSynced) {
+          daedalus.actions.networkStatus.isSyncedAndReady.once(done);
+        } else {
+          setTimeout(waitUntilSyncedAndReady, 100);
+        }
+      };
+      waitUntilSyncedAndReady();
+    });
+    
     isFirstScenario = false;
   });
 }

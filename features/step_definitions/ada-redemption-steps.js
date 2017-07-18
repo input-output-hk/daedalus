@@ -1,4 +1,5 @@
 import path from 'path';
+import { navigateTo } from '../support/helpers/route-helpers';
 
 const regularAdaCertificateFilePath = path.resolve(__dirname, '../support/ada_certificates/regular.pdf');
 const regularEncryptedAdaCertificateFilePath = path.resolve(__dirname, '../support/ada_certificates/regular.pdf.enc');
@@ -13,7 +14,7 @@ export default function () {
   });
 
   this.Given(/^I am on the ada redemption screen$/, async function () {
-    await this.navigateTo(`/ada-redemption`);
+    await navigateTo.call(this, '/ada-redemption');
     return this.client.waitForVisible(`.AdaRedemptionForm_component`);
   });
 

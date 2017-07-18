@@ -66,6 +66,7 @@ let menu;
 let mainWindow = null;
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = process.env.NODE_ENV === 'production';
+const isTest = process.env.NODE_ENV === 'test';
 const daedalusVersion = process.env.DAEDALUS_VERSION || 'dev';
 
 if (isDev) {
@@ -106,7 +107,7 @@ app.on('ready', async () => {
   // Initialize our ipc api methods that can be called by the render processes
   ipcApi({ mainWindow });
 
-  mainWindow.loadURL(`file://${__dirname}/../app/index.html`);
+  mainWindow.loadURL(`file://${__dirname}/../app/index.html` + (isTest ? '?test=true' : ''));
   mainWindow.on('page-title-updated', event => {
    event.preventDefault()
   });
