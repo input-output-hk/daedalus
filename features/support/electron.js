@@ -58,7 +58,7 @@ export default function () {
         if (daedalus.stores.networkStatus.isConnected) {
           daedalus.api.testReset().then(done);
         } else {
-          setTimeout(resetBackend, 100);
+          setTimeout(resetBackend, 50);
         }
       };
       resetBackend();
@@ -71,14 +71,13 @@ export default function () {
     await this.client.executeAsync(function(done) {
       const waitUntilSyncedAndReady = () => {
         if (daedalus.stores.networkStatus.isSynced) {
-          daedalus.actions.networkStatus.isSyncedAndReady.once(done);
+          done();
         } else {
-          setTimeout(waitUntilSyncedAndReady, 100);
+          setTimeout(waitUntilSyncedAndReady, 50);
         }
       };
       waitUntilSyncedAndReady();
     });
-
     isFirstScenario = false;
   });
 }
