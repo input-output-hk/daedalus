@@ -86,3 +86,23 @@ export const buildRoute = (pattern, params) => {
     // If there was a single slash only, keep it
     .replace(/^$/, '/');
 };
+
+/**
+ * Get a named url query parameter from given or current url.
+ *
+ * Taken from here:
+ * https://stackoverflow.com/questions/901115/how-can-i-get-query-string-values-in-javascript
+ *
+ * @param name
+ * @param url
+ * @returns {string}
+ */
+export const getUrlParameterByName = (name, url) => {
+  if (!url) url = window.location.href;
+  name = name.replace(/[[\]]/g, '\\$&');
+  const regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)');
+  const results = regex.exec(url);
+  if (!results) return null;
+  if (!results[2]) return '';
+  return decodeURIComponent(results[2].replace(/\+/g, ' '));
+};

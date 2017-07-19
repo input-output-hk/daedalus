@@ -2,10 +2,13 @@ import { expect } from 'chai';
 import {
   fillOutWalletSendForm,
   getWalletByName,
-} from './lib/wallets-helpers';
+  waitUntilWalletIsLoaded,
+  addOrSetWalletsForScenario,
+} from '../support/helpers/wallets-helpers';
 import {
   waitUntilUrlEquals,
-} from './lib/route-helpers'
+  navigateTo,
+} from '../support/helpers/route-helpers'
 import path from 'path';
 
 const defaultWalletKeyFilePath = path.resolve(__dirname, '../support/default-wallet.key');
@@ -13,35 +16,23 @@ const defaultWalletKeyFilePath = path.resolve(__dirname, '../support/default-wal
 export default function () {
 
   this.Given(/^I have a wallet with funds$/, async function () {
-    const result = await this.client.executeAsync(function(filePath, done) {
-      // This assumes that we always have a default wallet on the backend!
-      daedalus.api.importWalletFromKey({ filePath, walletPassword: null }).then((wallet) => {
-        daedalus.stores.wallets.refreshWalletsData().then(() => done(wallet));
+    await this.client.executeAsync(function(filePath, done) {
+      daedalus.api.importWalletFromKey({ filePath, walletPassword: null }).then(() => {
+        daedalus.stores.wallets.refreshWalletsData().then(done);
       });
     }, defaultWalletKeyFilePath);
-    this.wallet = result.value;
-    // Add or set the wallets for this scenario
-    if (this.wallets != null) {
-      this.wallets.push(this.wallet);
-    } else {
-      this.wallets = [this.wallet];
-    }
+    const wallet = await waitUntilWalletIsLoaded.call(this, 'Genesis wallet');
+    addOrSetWalletsForScenario.call(this, wallet);
   });
 
   this.Given(/^I have a wallet with funds and password$/, async function () {
-    const result = await this.client.executeAsync(function(filePath, done) {
-      // This assumes that we always have a default wallet on the backend!
-      daedalus.api.importWalletFromKey({ filePath, walletPassword: 'Secret123' }).then((wallet) => {
-        daedalus.stores.wallets.refreshWalletsData().then(() => done(wallet));
+    await this.client.executeAsync(function(filePath, done) {
+      daedalus.api.importWalletFromKey({ filePath, walletPassword: 'Secret123' }).then(() => {
+        daedalus.stores.wallets.refreshWalletsData().then(done);
       });
     }, defaultWalletKeyFilePath);
-    this.wallet = result.value;
-    // Add or set the wallets for this scenario
-    if (this.wallets != null) {
-      this.wallets.push(this.wallet);
-    } else {
-      this.wallets = [this.wallet];
-    }
+    const wallet = await waitUntilWalletIsLoaded.call(this, 'Genesis wallet');
+    addOrSetWalletsForScenario.call(this, wallet);
   });
 
   this.Given(/^I have the following wallets:$/, async function (table) {
@@ -54,7 +45,9 @@ export default function () {
         });
       }))
       .then(() => {
-        daedalus.stores.wallets.walletsRequest.execute().then(done);
+        daedalus.stores.wallets.walletsRequest.execute().then((wallets) => {
+          daedalus.stores.wallets.refreshWalletsData().then(() => done(wallets));
+        });
       })
       .catch((error) => done(error.stack));
     }, table.hashes());
@@ -68,7 +61,7 @@ export default function () {
 
   this.Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function (walletName, screen) {
     const wallet = getWalletByName.call(this, walletName);
-    await this.navigateTo(`/wallets/${wallet.id}/${screen}`);
+    await navigateTo.call(this, `/wallets/${wallet.id}/${screen}`);
   });
 
   this.Given(/^I see the add wallet dialog$/, function () {
@@ -350,8 +343,8 @@ export default function () {
   });
 
   this.Then(/^I should see newly generated address as active address on the wallet receive screen$/, async function () {
-    const generatedAddress = await this.client.getText('.generatedAddress-1 .WalletReceive_addressId');
     const activeAddress = await this.client.getText('.WalletReceive_hash');
+    const generatedAddress = await this.client.getText('.generatedAddress-1 .WalletReceive_addressId');
     expect(generatedAddress).to.equal(activeAddress);
   });
 };

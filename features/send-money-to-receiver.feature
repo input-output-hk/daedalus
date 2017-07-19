@@ -39,8 +39,7 @@ Feature: Send Money to Receiver
       | 0.000010 |
 
   Scenario: User Submits Empty Form
-    Given I have a wallet with funds
-    And I am on the "Genesis wallet" wallet "send" screen
+    Given I am on the "first" wallet "send" screen
     When I submit the wallet send form
     Then I should see the following error messages on the wallet send form:
       | message                       |
@@ -48,8 +47,7 @@ Feature: Send Money to Receiver
       | global.errors.fieldIsRequired |
 
   Scenario: User Enters Wrong Receiver Address
-    Given I have a wallet with funds
-    And I am on the "Genesis wallet" wallet "send" screen
+    Given I am on the "first" wallet "send" screen
     When I fill out the wallet send form with:
       | address | amount    |
       | invalid | 0.000010  |
@@ -59,8 +57,7 @@ Feature: Send Money to Receiver
       | wallet.send.form.errors.invalidAddress |
 
   Scenario Outline: User Enters Wrong Amount
-    Given I have a wallet with funds
-    And I am on the "Genesis wallet" wallet "send" screen
+    Given I am on the "first" wallet "send" screen
     When I fill out the send form with a transaction to "first" wallet:
       | title          | amount         |
       | my transaction | <WRONG_AMOUNT> |
@@ -71,5 +68,5 @@ Feature: Send Money to Receiver
 
     Examples:
       | WRONG_AMOUNT |
-      | 4500000001   |
+      | 45000000001  |
       | 0            |

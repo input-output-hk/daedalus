@@ -1,5 +1,5 @@
 // @flow
-import { action, observable } from 'mobx';
+import { action, observable, runInAction } from 'mobx';
 import { ipcRenderer } from 'electron';
 import { isString } from 'lodash';
 import Log from 'electron-log';
@@ -166,13 +166,16 @@ export default class AdaRedemptionStore extends Store {
     this.passPhrase = null;
   });
 
-  _redeemAda = action(({ walletId, walletPassword } : {
+  _redeemAda = async ({ walletId, walletPassword } : {
     walletId: string,
     walletPassword: ?string,
   }) => {
-    this.walletId = walletId;
+    runInAction(() => {
+      this.walletId = walletId;
+    });
     const accountId = this.stores.addresses._getAccountIdByWalletId(walletId);
     if (!accountId) throw new Error('Active account required before redeeming Ada.');
+
     this.redeemAdaRequest.execute({
       redemptionCode: this.redemptionCode,
       accountId,
@@ -188,7 +191,7 @@ export default class AdaRedemptionStore extends Store {
       .catch(action((error) => {
         this.error = error;
       }));
-  });
+  };
 
   _redeemPaperVendedAda = action(({ walletId, shieldedRedemptionKey, walletPassword } : {
     walletId: string,

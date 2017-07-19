@@ -1,9 +1,13 @@
 import path from 'path';
+import { navigateTo } from '../support/helpers/route-helpers';
 
 const regularAdaCertificateFilePath = path.resolve(__dirname, '../support/ada_certificates/regular.pdf');
 const regularEncryptedAdaCertificateFilePath = path.resolve(__dirname, '../support/ada_certificates/regular.pdf.enc');
 const forceVendedAdaCertificateFilePath = path.resolve(__dirname, '../support/ada_certificates/force-vended.pdf');
 const forceVendedEncryptedAdaCertificateFilePath = path.resolve(__dirname, '../support/ada_certificates/force-vended.pdf.enc');
+
+const CERTIFICATE_UPLOAD_BOX = '.AdaRedemptionForm_certificate .AdaCertificateUploadWidget_uploadBox input';
+const REDEMPTION_SUBMIT_BUTTON = '.AdaRedemptionForm_component .AdaRedemptionForm_submitButton';
 
 export default function () {
   this.Given(/^I have accepted "Daedalus Redemption Disclaimer"$/, async function () {
@@ -13,7 +17,7 @@ export default function () {
   });
 
   this.Given(/^I am on the ada redemption screen$/, async function () {
-    await this.navigateTo(`/ada-redemption`);
+    await navigateTo.call(this, '/ada-redemption');
     return this.client.waitForVisible(`.AdaRedemptionForm_component`);
   });
 
@@ -47,11 +51,11 @@ export default function () {
   });
 
   this.When(/^I select a valid "Regular" PDF certificate$/, async function () {
-    await this.client.chooseFile('.AdaRedemptionForm_certificate .AdaCertificateUploadWidget_uploadBox input', regularAdaCertificateFilePath);
+    await this.client.chooseFile(CERTIFICATE_UPLOAD_BOX, regularAdaCertificateFilePath);
   });
 
   this.When(/^I select a valid "Regular" encrypted PDF certificate$/, async function () {
-    await this.client.chooseFile('.AdaRedemptionForm_certificate .AdaCertificateUploadWidget_uploadBox input', regularEncryptedAdaCertificateFilePath);
+    await this.client.chooseFile(CERTIFICATE_UPLOAD_BOX, regularEncryptedAdaCertificateFilePath);
   });
 
   this.When(/^I enter a valid "Regular" encrypted PDF certificate passphrase$/, function () {
@@ -65,11 +69,11 @@ export default function () {
   });
 
   this.When(/^I select a valid "Force vended" PDF certificate$/, async function () {
-    await this.client.chooseFile('.AdaRedemptionForm_certificate .AdaCertificateUploadWidget_uploadBox input', forceVendedAdaCertificateFilePath);
+    await this.client.chooseFile(CERTIFICATE_UPLOAD_BOX, forceVendedAdaCertificateFilePath);
   });
 
   this.When(/^I select a valid "Force vended" encrypted PDF certificate$/, async function () {
-    await this.client.chooseFile('.AdaRedemptionForm_certificate .AdaCertificateUploadWidget_uploadBox input', forceVendedEncryptedAdaCertificateFilePath);
+    await this.client.chooseFile(CERTIFICATE_UPLOAD_BOX, forceVendedEncryptedAdaCertificateFilePath);
   });
 
   this.When(/^I enter a valid "Force vended" encrypted PDF certificate email, passcode and amount$/, async function () {
@@ -91,11 +95,11 @@ export default function () {
   });
 
   this.When(/^ada redemption form submit button is no longer disabled$/, function () {
-    return this.client.waitForEnabled('.AdaRedemptionForm_component .AdaRedemptionForm_submitButton');
+    return this.client.waitForEnabled(REDEMPTION_SUBMIT_BUTTON);
   });
 
   this.When(/^I submit the ada redemption form$/, function () {
-    return this.waitAndClick('.AdaRedemptionForm_component .AdaRedemptionForm_submitButton');
+    return this.waitAndClick(REDEMPTION_SUBMIT_BUTTON);
   });
 
   this.Then(/^I should see the "Ada Redemption Success Overlay"$/, function () {
