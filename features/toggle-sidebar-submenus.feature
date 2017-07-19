@@ -6,7 +6,7 @@ Feature: Toggle Sidebar Submenus
     And I agree to send logs to remote server
     And I have the following wallets:
       | name        |
-      | testWallet  |
+      | Test wallet |
 
   Scenario: Hide Sidebar Submenus
     Given the sidebar submenu is visible

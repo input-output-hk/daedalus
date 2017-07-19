@@ -17,8 +17,9 @@ export default function () {
 
   this.Given(/^I have a wallet with funds$/, async function () {
     await this.client.executeAsync(function(filePath, done) {
-      daedalus.api.importWalletFromKey({ filePath, walletPassword: null });
-      done();
+      daedalus.api.importWalletFromKey({ filePath, walletPassword: null }).then(() => {
+        daedalus.stores.wallets.refreshWalletsData().then(done);
+      });
     }, defaultWalletKeyFilePath);
     const wallet = await waitUntilWalletIsLoaded.call(this, 'Genesis wallet');
     addOrSetWalletsForScenario.call(this, wallet);
@@ -26,9 +27,9 @@ export default function () {
 
   this.Given(/^I have a wallet with funds and password$/, async function () {
     await this.client.executeAsync(function(filePath, done) {
-      // This assumes that we always have a default wallet on the backend!
-      daedalus.api.importWalletFromKey({ filePath, walletPassword: 'Secret123' });
-      done();
+      daedalus.api.importWalletFromKey({ filePath, walletPassword: 'Secret123' }).then(() => {
+        daedalus.stores.wallets.refreshWalletsData().then(done);
+      });
     }, defaultWalletKeyFilePath);
     const wallet = await waitUntilWalletIsLoaded.call(this, 'Genesis wallet');
     addOrSetWalletsForScenario.call(this, wallet);
@@ -45,8 +46,7 @@ export default function () {
       }))
       .then(() => {
         daedalus.stores.wallets.walletsRequest.execute().then((wallets) => {
-          daedalus.stores.wallets.refreshWalletsData();
-          done(wallets);
+          daedalus.stores.wallets.refreshWalletsData().then(() => done(wallets));
         });
       })
       .catch((error) => done(error.stack));
