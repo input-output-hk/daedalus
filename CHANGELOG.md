@@ -73,7 +73,7 @@ Changelog
 - Use correct styling for used addresses marking on wallet receive screen
 - Implement MomentJs internationalization
 - Also quit whole app when last window is closed on osx
-- Daedalus and Cardano node update notification text messages change
+- Daedalus and Cardano node update notification text messages change ([PR 392](https://github.com/input-output-hk/daedalus/pull/392))
 
 ### Chores
 
