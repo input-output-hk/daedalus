@@ -8,8 +8,8 @@ import           Data.Text          (pack, split, unpack)
 import           Development.NSIS
 import           System.Directory   (doesFileExist)
 import           System.Environment (lookupEnv)
-import           Turtle             (echo, proc, procs, ExitCode(..))
-import           Turtle.Line          (unsafeTextToLine)
+import           Turtle             (ExitCode (..), echo, proc, procs)
+import           Turtle.Line        (unsafeTextToLine)
 
 import           Launcher
 
@@ -24,7 +24,10 @@ launcherScript =
       { nodePath = "%DAEDALUS_DIR%\\cardano-node.exe"
       , nodeLogPath = "%APPDATA%\\Daedalus\\Logs\\cardano-node.log"
       , walletPath = "%DAEDALUS_DIR%\\Daedalus.exe"
+      , windowsInstallerPath = Just "%APPDATA%\\Daedalus\\Installer.bat"
       , installerPath = "%APPDATA%\\Daedalus\\Installer.exe"
+      , installerArgs = []
+      , installerArchivePath = Nothing
       , runtimePath = "%APPDATA%\\Daedalus\\"
       }
 

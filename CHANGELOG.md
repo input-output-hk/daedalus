@@ -35,6 +35,7 @@ Changelog
 - Final version of Daedalus logo added on the loading screen
 - Final version of Daedalus logo added in the top-bar
 - Receive page design update
+- UI for displaying transaction fees on wallet send screen
 - Correct placeholder text for Ada redemption "Ada amount" input
 - Opt-in mode for sending logs to the remote server
 
@@ -65,6 +66,7 @@ Changelog
 - Improved acceptance tests for generating new addresses
 - Removed temporary workaround for creating new accounts during wallet create and wallet restore
 - Prevent React key duplicates in transaction from/to addresses lists
+- Acceptance tests configuration fix for the timeouts
 - Show more specific error messages on "Change password" dialog
 - Update password fields placeholders to match latest designs
 - Prevent selected wallet reset on "Ada redemption" screen on tab or certificate change

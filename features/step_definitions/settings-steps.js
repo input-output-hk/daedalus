@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import {
   waitUntilWaletNamesEqual,
   getNameOfActiveWalletInSidebar
-} from './lib/wallets-helpers';
+} from '../support/helpers/wallets-helpers';
 
 export default function () {
 

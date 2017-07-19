@@ -1,10 +1,14 @@
 import { expect } from 'chai';
 
+const TERMS_OF_USE_FORM = '.TermsOfUseForm_component';
+
 export default function () {
   this.Given(/^I have accepted "Terms of use"$/, async function () {
+    await this.client.waitForVisible(TERMS_OF_USE_FORM);
     await this.client.execute(() => {
       daedalus.actions.profile.acceptTermsOfUse.trigger();
     });
+    return this.client.waitForVisible(TERMS_OF_USE_FORM, null, true)
   });
 
   this.Given(/^I didnt accept "Terms of use"$/, async function () {
@@ -14,7 +18,7 @@ export default function () {
   });
 
   this.Given(/^I am on the "Terms of use" screen$/, function () {
-    return this.client.waitForVisible('.TermsOfUseForm_component');
+    return this.client.waitForVisible(TERMS_OF_USE_FORM);
   });
 
   this.When(/^I click on "I agree with terms of use" checkbox$/, function () {
@@ -26,7 +30,7 @@ export default function () {
   });
 
   this.Then(/^I should not see the "Terms of use" screen anymore$/, function () {
-    return this.client.waitForVisible('.TermsOfUseForm_component', null, true);
+    return this.client.waitForVisible(TERMS_OF_USE_FORM, null, true);
   });
 
   this.Then(/^I should have "Terms of use" accepted$/, async function () {

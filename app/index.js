@@ -18,6 +18,7 @@ import Action from './actions/lib/Action';
 import translations from './i18n/translations';
 import './themes/index.global.scss';
 import patchCardanoApi from './api/mocks/patchCardanoApi';
+import { getUrlParameterByName } from './lib/routing-helpers';
 
 // run MobX in strict mode
 useStrict(true);
@@ -25,8 +26,13 @@ useStrict(true);
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([en, de, hr, ja]);
 
+// Use test env if the 'test' url param is set to 'true'
+const isInjectedTestEnv = getUrlParameterByName('test') === 'true';
+if (isInjectedTestEnv) environment.current = environment.TEST;
+
 const initializeDaedalus = () => {
   const api = new CardanoClientApi();
+  if (environment.isTest()) patchCardanoApi(api);
   const router = new RouterStore();
   const history = syncHistoryWithStore(hashHistory, router);
   const stores = setupStores(api, actions, router);
@@ -41,9 +47,6 @@ const initializeDaedalus = () => {
       api.reset();
       setupStores(api, actions, router);
     }),
-    test: {
-      patchCardanoApi
-    }
   };
   render((
     <App stores={stores} actions={actions} history={history} />

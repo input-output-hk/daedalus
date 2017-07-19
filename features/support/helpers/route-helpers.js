@@ -10,3 +10,9 @@ export const waitUntilUrlEquals = function(expectedUrl) {
     return url === expectedUrl;
   });
 };
+
+export const navigateTo = function(requestedRoute) {
+  return this.client.execute(function(route) {
+    daedalus.actions.router.goToRoute.trigger({ route });
+  }, requestedRoute);
+}
