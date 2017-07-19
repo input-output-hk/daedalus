@@ -2,12 +2,13 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
-import Input from 'react-toolbox/lib/input/Input';
+import TextArea from 'react-polymorph/lib/components/TextArea';
+import SimpleTextAreaSkin from 'react-polymorph/lib/skins/simple/TextAreaSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../../lib/ReactToolboxMobxForm';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import DialogBackButton from '../../../widgets/DialogBackButton';
+import Dialog from '../../../widgets/Dialog';
 import globalMessages from '../../../../i18n/global-messages';
 import LocalizableError from '../../../../i18n/LocalizableError';
 import styles from './ExportPaperWalletMnemonicVerificationDialog.scss';
@@ -76,7 +77,6 @@ export default class ExportPaperWalletMnemonicVerificationDialog extends Compone
             this.context.intl.formatMessage(messages.invalidMnemonic)
           ];
         },
-        bindings: 'ReactToolbox',
       },
     },
   }, {
@@ -112,42 +112,45 @@ export default class ExportPaperWalletMnemonicVerificationDialog extends Compone
     const dialogClasses = classnames([
       styles.component,
       'ExportPaperWalletMnemonicVerificationDialog',
-      isSubmitting ? styles.isSubmitting : null
     ]);
 
     const actions = [
       {
+        className: isSubmitting ? styles.isSubmitting : null,
         label: intl.formatMessage(messages.continueLabel),
         primary: true,
         disabled: !this.state.isValidRecoveryPhrase,
-        onClick: () => this.submit(),
+        onClick: this.submit,
       }
     ];
+
+    const recoveryPhraseField = form.$('recoveryPhrase');
 
     return (
       <Dialog
         className={dialogClasses}
         title={intl.formatMessage(messages.headline)}
         actions={actions}
-        onOverlayClick={onClose}
-        active
+        closeOnOverlayClick
+        onClose={!isSubmitting ? onClose : null}
+        closeButton={<DialogCloseButton onClose={onClose} />}
+        backButton={<DialogBackButton onBack={onBack} />}
       >
 
         <div className={styles.instructions}>
           <p>Enter words in the correct order to verify your mnemonic.</p>
         </div>
 
-        <Input
+        <TextArea
           className="recoveryPhrase"
-          multiline
+          autoResize={false}
           rows={3}
-          {...form.$('recoveryPhrase').bind()}
+          {...recoveryPhraseField.bind()}
+          error={recoveryPhraseField.error}
+          skin={<SimpleTextAreaSkin />}
         />
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
-
-        <DialogBackButton onBack={onBack} />
-        <DialogCloseButton onClose={onClose} />
 
       </Dialog>
     );

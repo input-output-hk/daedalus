@@ -2,14 +2,17 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
-import Input from 'react-toolbox/lib/input/Input';
+import Input from 'react-polymorph/lib/components/Input';
+import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
-import CheckboxWithLongLabel from '../../widgets/forms/CheckboxWithLongLabel';
+import Dialog from '../../widgets/Dialog';
 import styles from './DeleteWalletConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import environment from '../../../environment';
+
 
 const messages = defineMessages({
   dialogTitle: {
@@ -82,8 +85,9 @@ export default class DeleteWalletConfirmationDialog extends Component {
     const isCountdownFinished = countdownRemaining <= 0;
     const isWalletNameConfirmationCorrect = confirmationValue === walletName;
 
-    const dialogClasses = classnames([
-      styles.dialog,
+    const buttonClasses = classnames([
+      'deleteButton',
+      styles.deleteButton,
       isSubmitting ? styles.isSubmitting : null
     ]);
 
@@ -93,12 +97,13 @@ export default class DeleteWalletConfirmationDialog extends Component {
         onClick: onCancel,
       },
       {
+        className: buttonClasses,
         label: intl.formatMessage(messages.confirmButtonLabel) + countdownDisplay,
         onClick: onContinue,
         disabled: (
           !isCountdownFinished || !isBackupNoticeAccepted || !isWalletNameConfirmationCorrect
         ),
-        primary: true
+        primary: true,
       },
     ];
 
@@ -106,18 +111,20 @@ export default class DeleteWalletConfirmationDialog extends Component {
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
         actions={actions}
-        active
-        onOverlayClick={onCancel}
-        className={dialogClasses}
+        closeOnOverlayClick
+        onClose={onCancel}
+        className={styles.dialog}
+        closeButton={<DialogCloseButton onClose={onCancel} />}
       >
         <FormattedHTMLMessage
           {...messages.wantToDeleteWalletQuestion}
           values={{ walletName }}
         />
-        <CheckboxWithLongLabel
+        <Checkbox
           label={intl.formatMessage(messages.confirmBackupNotice)}
           onChange={onAcceptBackupNotice}
           checked={isBackupNoticeAccepted}
+          skin={<SimpleCheckboxSkin />}
         />
         {isBackupNoticeAccepted ? (
           <Input
@@ -125,9 +132,9 @@ export default class DeleteWalletConfirmationDialog extends Component {
             label={intl.formatMessage(messages.enterRecoveryWordLabel)}
             value={confirmationValue}
             onChange={onConfirmationValueChange}
+            skin={<SimpleInputSkin />}
           />
         ) : null}
-        <DialogCloseButton onClose={onCancel} />
       </Dialog>
     );
   }

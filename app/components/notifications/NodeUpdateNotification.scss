@@ -1,9 +1,39 @@
+%actionButton {
+  width: 150px;
+  height: 33px;
+  border-radius: 5px;
+  font-family: $font-medium;
+  font-size: 14px;
+  line-height: 1.36;
+  text-align: center;
+  color: #fafbfc;
+  margin-left: 10px;
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
 .component {
   //position: relative;
   background-color: $color-primary-bg;
   padding: 20px;
   display: flex;
   flex-direction: column;
+  .acceptButton {
+    @extend %actionButton;
+    background-color: #445b7c;
+    padding: 0;
+    &:hover {
+      background-color: darken(#445b7c, 10%);
+    }
+  }
+  .denyButton {
+    @extend %actionButton;
+    background-color: #afb9c6;
+    padding: 0;
+    &:hover {
+      background-color: darken(#afb9c6, 10%);
+    }
+  }
 }
 
 .titleBar {
@@ -32,20 +62,6 @@
 .actions {
   margin-top: 20px;
   margin-left: auto;
-}
-
-%actionButton {
-  width: 150px;
-  height: 33px;
-  border-radius: 5px;
-  font-family: $font-medium;
-  font-size: 14px;
-  line-height: 1.36;
-  text-align: center;
-  color: #fafbfc;
-  margin-left: 10px;
-  margin-bottom: 20px;
-  cursor: pointer;
 }
 
 .acceptButton {

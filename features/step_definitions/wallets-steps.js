@@ -104,11 +104,11 @@ export default function () {
   });
 
   this.When(/^I select a valid wallet import key file$/, async function () {
-    await this.client.chooseFile('.WalletKeyImportDialog_keyUpload .FileUploadWidget_dropZone input', defaultWalletKeyFilePath);
+    await this.client.chooseFile('.WalletKeyImportDialog .FileUploadWidget_dropZone input', defaultWalletKeyFilePath);
   });
 
   this.When(/^I toggle "Activate to create password" switch on the import wallet key dialog$/, function () {
-    return this.waitAndClick('.WalletKeyImportDialog .switch_field');
+    return this.waitAndClick('.WalletKeyImportDialog .SimpleSwitch_switch');
   });
 
   this.When(/^I enter wallet spending password:$/, async function (table) {
@@ -118,7 +118,7 @@ export default function () {
   });
 
   this.When(/^I click on the import wallet button in import wallet dialog$/, function () {
-    return this.waitAndClick('.WalletKeyImportDialog .dialog_button');
+    return this.waitAndClick('.WalletKeyImportDialog .primary');
   });
 
   this.When(/^I should see wallet spending password inputs$/, function () {
@@ -171,17 +171,17 @@ export default function () {
   });
 
   this.When(/^I toggle "Activate to create password" switch on the create wallet dialog$/, function () {
-    return this.waitAndClick('.WalletCreateDialog .switch_field');
+    return this.waitAndClick('.WalletCreateDialog .SimpleSwitch_switch');
   });
 
   this.When(/^I toggle "Activate to create password" switch on the restore wallet dialog$/, function () {
-    return this.waitAndClick('.WalletRestoreDialog .switch_field');
+    return this.waitAndClick('.WalletRestoreDialog .SimpleSwitch_switch');
   });
 
   this.When(/^I submit the create wallet dialog with the following inputs:$/, async function (table) {
     const fields = table.hashes()[0];
     await this.client.setValue('.WalletCreateDialog .walletName input', fields.walletName);
-    return this.client.click('.WalletCreateDialog .dialog_button');
+    return this.client.click('.WalletCreateDialog .primary');
   });
 
   this.When(/^I submit the create wallet with spending password dialog with the following inputs:$/, async function (table) {
@@ -189,14 +189,14 @@ export default function () {
     await this.client.setValue('.WalletCreateDialog .walletName input', fields.walletName);
     await this.client.setValue('.WalletCreateDialog .walletPassword input', fields.password);
     await this.client.setValue('.WalletCreateDialog .repeatedPassword input', fields.repeatedPassword);
-    return this.client.click('.WalletCreateDialog .dialog_button');
+    return this.client.click('.WalletCreateDialog .primary');
   });
 
   this.When(/^I submit the restore wallet dialog with the following inputs:$/, async function (table) {
     const fields = table.hashes()[0];
     await this.client.setValue('.WalletRestoreDialog .walletName input', fields.walletName);
     await this.client.setValue('.WalletRestoreDialog .recoveryPhrase textarea', fields.recoveryPhrase);
-    return this.client.click('.WalletRestoreDialog .dialog_button');
+    return this.client.click('.WalletRestoreDialog .primary');
   });
 
   this.When(/^I submit the restore wallet with spending password dialog with the following inputs:$/, async function (table) {
@@ -205,7 +205,7 @@ export default function () {
     await this.client.setValue('.WalletRestoreDialog .recoveryPhrase textarea', fields.recoveryPhrase);
     await this.client.setValue('.WalletRestoreDialog .walletPassword input', fields.password);
     await this.client.setValue('.WalletRestoreDialog .repeatedPassword input', fields.repeatedPassword);
-    return this.client.click('.WalletRestoreDialog .dialog_button');
+    return this.client.click('.WalletRestoreDialog .primary');
   });
 
   this.When(/^I see the create wallet privacy dialog$/, function () {
@@ -213,11 +213,11 @@ export default function () {
   });
 
   this.When(/^I click on "Please make sure nobody looks your screen" checkbox$/, function () {
-    return this.waitAndClick('.WalletBackupPrivacyWarningDialog .CheckboxWithLongLabel_checkbox');
+    return this.waitAndClick('.WalletBackupPrivacyWarningDialog .SimpleCheckbox_root');
   });
 
   this.When(/^I submit the create wallet privacy dialog$/, function () {
-    return this.waitAndClick('.WalletBackupPrivacyWarningDialog .dialog_button');
+    return this.waitAndClick('.WalletBackupPrivacyWarningDialog .primary');
   });
 
   this.When(/^I see the create wallet recovery phrase display dialog$/, function () {
@@ -230,7 +230,7 @@ export default function () {
   });
 
   this.When(/^I submit the create wallet recovery phrase display dialog$/, function () {
-    return this.waitAndClick('.WalletRecoveryPhraseDisplayDialog .dialog_button');
+    return this.waitAndClick('.WalletRecoveryPhraseDisplayDialog .primary');
   });
 
   this.When(/^I see the create wallet recovery phrase entry dialog$/, function () {
@@ -240,12 +240,12 @@ export default function () {
   this.When(/^I click on recovery phrase mnemonics in correct order$/, async function () {
     for (let i = 0; i < this.recoveryPhrase.length; i++) {
       const recoveryPhraseMnemonic = this.recoveryPhrase[i];
-      await this.waitAndClick(`//button[contains(text(), "${recoveryPhraseMnemonic}") and @class="MnemonicWord_component MnemonicWord_active"]`);
+      await this.waitAndClick(`//button[contains(text(), "${recoveryPhraseMnemonic}") and @class="flat MnemonicWord_component MnemonicWord_active SimpleButton_root"]`);
     }
   });
 
   this.When(/^I click on the "Accept terms" checkboxes$/, async function () {
-    const termsCheckboxes = await this.client.elements('.CheckboxWithLongLabel_checkbox');
+    const termsCheckboxes = await this.client.elements('.SimpleCheckbox_root');
     for (let i = 0; i < termsCheckboxes.value.length; i++) {
       const termsCheckbox = termsCheckboxes.value[i].ELEMENT;
       await this.client.elementIdClick(termsCheckbox);
@@ -253,7 +253,7 @@ export default function () {
   });
 
   this.When(/^I submit the create wallet recovery phrase entry dialog$/, function () {
-    return this.waitAndClick('.WalletRecoveryPhraseEntryDialog .dialog_button');
+    return this.waitAndClick('.WalletRecoveryPhraseEntryDialog .primary');
   });
 
   this.When(/^I click on delete wallet button$/, async function () {
@@ -265,11 +265,11 @@ export default function () {
   });
 
   this.When(/^I click on the "Make sure you have access to backup before continuing" checkbox$/, function () {
-    return this.waitAndClick('.DeleteWalletConfirmationDialog_dialog .CheckboxWithLongLabel_checkbox');
+    return this.waitAndClick('.DeleteWalletConfirmationDialog_dialog .SimpleCheckbox_root');
   });
 
   this.When(/^I submit the delete wallet dialog$/, async function () {
-    return this.client.click('.DeleteWalletConfirmationDialog_dialog .button_primary');
+    return this.client.click('.DeleteWalletConfirmationDialog_dialog .primary');
   });
 
   this.Then(/^I should not see the create wallet recovery phrase entry dialog anymore$/, function () {
@@ -343,8 +343,10 @@ export default function () {
   });
 
   this.Then(/^I should see newly generated address as active address on the wallet receive screen$/, async function () {
-    const activeAddress = await this.client.getText('.WalletReceive_hash');
-    const generatedAddress = await this.client.getText('.generatedAddress-1 .WalletReceive_addressId');
-    expect(generatedAddress).to.equal(activeAddress);
+    return this.client.waitUntil(async () => {
+      const activeAddress = await this.client.getText('.WalletReceive_hash');
+      const generatedAddress = await this.client.getText('.generatedAddress-1 .WalletReceive_addressId');
+      return generatedAddress === activeAddress;
+    });
   });
 };

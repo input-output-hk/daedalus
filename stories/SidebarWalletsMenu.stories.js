@@ -1,10 +1,15 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
+import StoryDecorator from './support/StoryDecorator';
 import SidebarWalletsMenu from '../app/components/sidebar/wallets/SidebarWalletsMenu';
 
 storiesOf('SidebarWalletsMenu', module)
 
-  .addDecorator((story) => (<div style={{ width: '360px' }}>{story()}</div>))
+  .addDecorator((story) => (
+    <StoryDecorator>
+      <div style={{ width: '200px' }}>{story()}</div>
+    </StoryDecorator>
+  ))
 
   // ====== Stories ======
 
@@ -24,7 +29,7 @@ storiesOf('SidebarWalletsMenu', module)
         { id: '3', title: 'Mining', info: '0,0004924712 BTC' },
         { id: '4', title: 'Shopping wallet', info: 'ADA' },
       ]}
-      isActiveWallet={(id) => id === 2}
+      isActiveWallet={(id) => id === '2'}
       onWalletItemClick={action('walletItemClick')}
       onAddWallet={action('addWallet')}
       visible

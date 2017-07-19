@@ -2,8 +2,11 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import classNames from 'classnames';
-import CheckboxWithLongLabel from '../../widgets/forms/CheckboxWithLongLabel';
+import classnames from 'classnames';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import Button from 'react-polymorph/lib/components/Button';
+import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import attentionIcon from '../../../assets/images/attention-big-light.svg';
 import styles from './AdaRedemptionDisclaimer.scss';
 
@@ -54,7 +57,7 @@ export default class AdaRedemptionDisclaimer extends Component {
     const { onSubmit } = this.props;
     const { isAccepted } = this.state;
 
-    const submitButtonStyles = classNames([
+    const submitButtonStyles = classnames([
       !isAccepted ? styles.disabled : null,
     ]);
 
@@ -68,19 +71,22 @@ export default class AdaRedemptionDisclaimer extends Component {
         <p>{intl.formatMessage(messages.disclaimerText)}</p>
 
         <div className="adaRedemptionDisclaimerCheckbox">
-          <CheckboxWithLongLabel
+          <Checkbox
             label={intl.formatMessage(messages.checkboxLabel)}
             onChange={this.onAcceptToggle}
             checked={isAccepted}
+            skin={<SimpleCheckboxSkin />}
           />
         </div>
 
-        <button
+        <Button
           className={submitButtonStyles}
+          label={intl.formatMessage(messages.submitLabel)}
           onClick={() => isAccepted && onSubmit()}
-        >
-          {intl.formatMessage(messages.submitLabel)}
-        </button>
+          disabled={!isAccepted}
+          skin={<SimpleButtonSkin />}
+        />
+
       </div>
     );
   }

@@ -8,10 +8,12 @@ import WalletTestEnvironmentLabel from '../app/components/widgets/WalletTestEnvi
 
 const topBarTestEnv = (
   <TopBar>
-    <WalletTestEnvironmentLabel version={0.3} />
+    <WalletTestEnvironmentLabel version={0.5} />
     <NodeSyncStatusIcon
-      isSynced
-      syncPercentage={100}
+      networkStatus={{
+        isSynced: true,
+        syncPercentage: 100,
+      }}
       isProduction={false}
     />
   </TopBar>
@@ -20,8 +22,10 @@ const topBarTestEnv = (
 const topBarProductionEnv = (
   <TopBar>
     <NodeSyncStatusIcon
-      isSynced
-      syncPercentage={100}
+      networkStatus={{
+        isSynced: true,
+        syncPercentage: 100,
+      }}
       isProduction
     />
   </TopBar>
@@ -38,15 +42,15 @@ storiesOf('TopBar', module)
    // ====== Stories ======
 
   .add('Test Environment label', () => (
-      <SidebarLayout
-        topbar={topBarTestEnv}
-        sidebar={<noscript />}
-      />
+    <SidebarLayout
+      topbar={topBarTestEnv}
+      sidebar={<noscript />}
+    />
   ))
 
   .add('Production Environment', () => (
-      <SidebarLayout
-        topbar={topBarProductionEnv}
-        sidebar={<noscript />}
-      />
+    <SidebarLayout
+      topbar={topBarProductionEnv}
+      sidebar={<noscript />}
+    />
   ))

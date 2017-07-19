@@ -3,8 +3,10 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { isEmail, isEmpty } from 'validator';
 import classnames from 'classnames';
-import Button from 'react-toolbox/lib/button/Button';
-import Input from 'react-toolbox/lib/input/Input';
+import Button from 'react-polymorph/lib/components/Button';
+import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import Input from 'react-polymorph/lib/components/Input';
+import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Select from 'react-polymorph/lib/components/Select';
 import SelectSkin from 'react-polymorph/lib/skins/simple/SelectSkin';
@@ -194,13 +196,11 @@ export default class AdaRedemptionForm extends Component {
         label: this.context.intl.formatMessage(messages.certificateLabel),
         placeholder: this.context.intl.formatMessage(messages.certificateHint),
         type: 'file',
-        bindings: 'ReactToolbox',
       },
       passPhrase: {
         label: this.context.intl.formatMessage(messages.passphraseLabel),
         placeholder: this.context.intl.formatMessage(messages.passphraseHint),
         value: '',
-        bindings: 'ReactToolbox',
         validators: [({ field }) => {
           // Don't validate No pass phrase needed when certificate is not encrypted
           if (!this.props.showPassPhraseWidget) return [true];
@@ -217,7 +217,6 @@ export default class AdaRedemptionForm extends Component {
         label: this.context.intl.formatMessage(messages.redemptionKeyLabel),
         placeholder: this.context.intl.formatMessage(messages.redemptionKeyHint),
         value: '',
-        bindings: 'ReactToolbox',
         validators: ({ field }) => {
           if (this.props.redemptionType === 'paperVended') return [true];
           const value = this.props.redemptionCode || field.value;
@@ -232,7 +231,6 @@ export default class AdaRedemptionForm extends Component {
         label: this.context.intl.formatMessage(messages.shieldedRedemptionKeyLabel),
         placeholder: this.context.intl.formatMessage(messages.shieldedRedemptionKeyHint),
         value: '',
-        bindings: 'ReactToolbox',
         validators: ({ field }) => {
           if (this.props.redemptionType !== 'paperVended') return [true];
           const value = field.value;
@@ -246,13 +244,11 @@ export default class AdaRedemptionForm extends Component {
       walletId: {
         label: this.context.intl.formatMessage(messages.walletSelectLabel),
         value: this.props.wallets[0].value,
-        bindings: 'ReactToolbox',
       },
       email: {
         label: this.context.intl.formatMessage(messages.emailLabel),
         placeholder: this.context.intl.formatMessage(messages.emailHint),
         value: '',
-        bindings: 'ReactToolbox',
         validators: [({ field }) => {
           if (!this.props.showInputsForDecryptingForceVendedCertificate) return [true];
           const email = field.value;
@@ -267,7 +263,6 @@ export default class AdaRedemptionForm extends Component {
         label: this.context.intl.formatMessage(messages.adaPasscodeLabel),
         placeholder: this.context.intl.formatMessage(messages.adaPasscodeHint),
         value: '',
-        bindings: 'ReactToolbox',
         validators: [({ field }) => {
           if (!this.props.showInputsForDecryptingForceVendedCertificate) return [true];
           const adaPasscode = field.value;
@@ -282,7 +277,6 @@ export default class AdaRedemptionForm extends Component {
         label: this.context.intl.formatMessage(messages.adaAmountLabel),
         placeholder: this.context.intl.formatMessage(messages.adaAmountHint),
         value: '',
-        bindings: 'ReactToolbox',
         validators: [({ field }) => {
           if (!this.props.showInputsForDecryptingForceVendedCertificate) return [true];
           const adaAmount = field.value;
@@ -307,7 +301,6 @@ export default class AdaRedemptionForm extends Component {
           }
           return [true];
         }],
-        bindings: 'ReactToolbox',
       },
     }
   }, {
@@ -378,7 +371,7 @@ export default class AdaRedemptionForm extends Component {
     const emailField = form.$('email');
     const adaPasscodeField = form.$('adaPasscode');
     const adaAmountField = form.$('adaAmount');
-    const walletPassword = form.$('walletPassword');
+    const walletPasswordField = form.$('walletPassword');
     const componentClasses = classnames([
       styles.component,
       isSubmitting ? styles.isSubmitting : null
@@ -389,7 +382,7 @@ export default class AdaRedemptionForm extends Component {
 
     const showUploadWidget = redemptionType !== 'paperVended';
 
-    const passwordSubmittable = !walletHasPassword || walletPassword.value !== '';
+    const passwordSubmittable = !walletHasPassword || walletPasswordField.value !== '';
 
     let canSubmit = false;
     if (redemptionType === 'regular' && redemptionCode !== '' && passwordSubmittable) canSubmit = true;
@@ -415,6 +408,11 @@ export default class AdaRedemptionForm extends Component {
       default:
         instructionMessage = messages.instructionsRegular;
     }
+
+    const submitButtonClasses = classnames([
+      'primary',
+      isSubmitting ? styles.submitButtonSpinning : styles.submitButton,
+    ]);
 
     return (
       <div className={componentClasses}>
@@ -448,12 +446,16 @@ export default class AdaRedemptionForm extends Component {
                     redemptionKeyField.onChange(value);
                   }}
                   disabled={isCertificateSelected}
+                  error={redemptionKeyField.error}
+                  skin={<SimpleInputSkin />}
                 />
               ) : (
                 <Input
                   className="shielded-redemption-key"
                   {...shieldedRedemptionKeyField.bind()}
                   disabled={isCertificateSelected}
+                  error={shieldedRedemptionKeyField.error}
+                  skin={<SimpleInputSkin />}
                 />
               )}
 
@@ -469,24 +471,22 @@ export default class AdaRedemptionForm extends Component {
 
             {showUploadWidget ? (
               <div className={styles.certificate}>
-                <div className={styles.certificate}>
-                  <AdaCertificateUploadWidget
-                    {...certificateField.bind()}
-                    selectedFile={certificateField.value}
-                    onFileSelected={(file) => {
-                      resetForm();
-                      onCertificateSelected(file);
-                      certificateField.onChange(file);
-                    }}
-                    isCertificateEncrypted={isCertificateEncrypted}
-                    isCertificateSelected={isCertificateSelected}
-                    isCertificateInvalid={isCertificateInvalid}
-                    onRemoveCertificate={() => {
-                      resetForm();
-                      onRemoveCertificate();
-                    }}
-                  />
-                </div>
+                <AdaCertificateUploadWidget
+                  {...certificateField.bind()}
+                  selectedFile={certificateField.value}
+                  onFileSelected={(file) => {
+                    resetForm();
+                    onCertificateSelected(file);
+                    certificateField.onChange(file);
+                  }}
+                  isCertificateEncrypted={isCertificateEncrypted}
+                  isCertificateSelected={isCertificateSelected}
+                  isCertificateInvalid={isCertificateInvalid}
+                  onRemoveCertificate={() => {
+                    resetForm();
+                    onRemoveCertificate();
+                  }}
+                />
               </div>
             ) : null}
           </div>
@@ -495,7 +495,9 @@ export default class AdaRedemptionForm extends Component {
             <div className={styles.passwordInput}>
               <Input
                 className="walletPassword"
-                {...form.$('walletPassword').bind()}
+                {...walletPasswordField.bind()}
+                error={walletPasswordField.error}
+                skin={<SimpleInputSkin />}
               />
             </div>
           ) : null}
@@ -505,6 +507,8 @@ export default class AdaRedemptionForm extends Component {
               <Input
                 className="pass-phrase"
                 {...passPhraseField.bind()}
+                error={passPhraseField.error}
+                skin={<SimpleInputSkin />}
               />
             </div>
           ) : null}
@@ -514,6 +518,8 @@ export default class AdaRedemptionForm extends Component {
               <Input
                 className="email"
                 {...emailField.bind()}
+                error={emailField.error}
+                skin={<SimpleInputSkin />}
               />
             </div>
           ) : null}
@@ -523,6 +529,8 @@ export default class AdaRedemptionForm extends Component {
               <Input
                 className="ada-passcode"
                 {...adaPasscodeField.bind()}
+                error={adaPasscodeField.error}
+                skin={<SimpleInputSkin />}
               />
             </div>
           ) : null}
@@ -532,6 +540,8 @@ export default class AdaRedemptionForm extends Component {
               <Input
                 className="ada-amount"
                 {...adaAmountField.bind()}
+                error={adaAmountField.error}
+                skin={<SimpleInputSkin />}
               />
             </div>
           ) : null}
@@ -539,11 +549,11 @@ export default class AdaRedemptionForm extends Component {
           {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
 
           <Button
-            className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
+            className={submitButtonClasses}
             label={intl.formatMessage(messages.submitLabel)}
             onMouseUp={submit}
-            primary
             disabled={!canSubmit}
+            skin={<SimpleButtonSkin />}
           />
 
         </BorderedBox>

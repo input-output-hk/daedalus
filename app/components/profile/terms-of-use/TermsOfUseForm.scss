@@ -22,14 +22,7 @@
 .submitButton,
 .submitButtonSpinning {
   display: block !important;
-  height: 50px !important;
   margin: 0 auto;
-  width: 360px;
-}
-
-.submitButton {
-  font-size: 14px !important;
-  line-height: 50px !important;
 }
 
 .submitButtonSpinning {
@@ -42,13 +35,11 @@
   margin-bottom: 1rem;
 }
 
-// checkbox component selector
 .checkbox {
-  & > div:last-child {
-    margin-bottom: 30px !important;
-    padding-top: 10px !important;
-    & > div:last-child {
-      font-family: $font-regular !important;
-    }
+  margin-bottom: 30px;
+  padding-top: 10px;
+
+  :global .SimpleCheckbox_label {
+    font-family: $font-regular;
   }
 }

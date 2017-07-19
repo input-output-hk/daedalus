@@ -2,10 +2,10 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import WalletRecoveryPhraseMnemonic from './WalletRecoveryPhraseMnemonic';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
+import Dialog from '../../widgets/Dialog';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletRecoveryPhraseDisplayDialog.scss';
@@ -62,14 +62,14 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component {
         className={dialogClasses}
         title={intl.formatMessage(globalMessages.recoveryPhraseDialogTitle)}
         actions={actions}
-        onOverlayClick={onCancelBackup}
-        active
+        onClose={onCancelBackup}
+        closeOnOverlayClick
+        closeButton={<DialogCloseButton onClose={onCancelBackup} />}
       >
         <WalletRecoveryInstructions
           instructionsText={<FormattedHTMLMessage {...messages.backupInstructions} />}
         />
         <WalletRecoveryPhraseMnemonic phrase={recoveryPhrase} />
-        <DialogCloseButton onClose={onCancelBackup} />
       </Dialog>
     );
   }

@@ -26,7 +26,7 @@ export default function () {
   });
 
   this.When(/^I click on the "I\'ve understood the information above" checkbox$/, function () {
-    return this.waitAndClick('.AdaRedemptionDisclaimer_component .CheckboxWithLongLabel_checkbox');
+    return this.waitAndClick('.AdaRedemptionDisclaimer_component .SimpleCheckbox_root');
   });
 
   this.When(/^I click on the "Continue" button$/, function () {
