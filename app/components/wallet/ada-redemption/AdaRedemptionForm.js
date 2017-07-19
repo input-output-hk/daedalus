@@ -419,134 +419,138 @@ export default class AdaRedemptionForm extends Component {
     return (
       <div className={componentClasses}>
 
-        <BorderedBox>
+        <div className={styles.scrollableContent}>
 
-          <h1 className={styles.headline}>{intl.formatMessage(messages.headline)}</h1>
+          <BorderedBox>
 
-          <AdaRedemptionChoices
-            activeChoice={redemptionType}
-            onSelectChoice={(choice: string) => {
-              const isRedemptionTypeChanged = redemptionType !== choice;
-              if (isRedemptionTypeChanged) resetForm();
-              onChooseRedemptionType(choice);
-            }}
-          />
+            <h1 className={styles.headline}>{intl.formatMessage(messages.headline)}</h1>
 
-          <div className={styles.instructions}>
-            <FormattedHTMLMessage {...instructionMessage} />
-          </div>
+            <AdaRedemptionChoices
+              activeChoice={redemptionType}
+              onSelectChoice={(choice: string) => {
+                const isRedemptionTypeChanged = redemptionType !== choice;
+                if (isRedemptionTypeChanged) resetForm();
+                onChooseRedemptionType(choice);
+              }}
+            />
 
-          <div className={styles.redemption}>
-            <div className={styles.inputs}>
-              {redemptionType !== 'paperVended' ? (
-                <Input
-                  className="redemption-key"
-                  {...redemptionKeyField.bind()}
-                  value={redemptionCode}
-                  onChange={(value) => {
-                    onRedemptionCodeChanged(value);
-                    redemptionKeyField.onChange(value);
-                  }}
-                  disabled={isCertificateSelected}
-                />
-              ) : (
-                <Input
-                  className="shielded-redemption-key"
-                  {...shieldedRedemptionKeyField.bind()}
-                  disabled={isCertificateSelected}
-                />
-              )}
-
-              <Select
-                className={styles.walletSelect}
-                options={wallets}
-                {...walletId.bind()}
-                onChange={this.onWalletChange}
-                isOpeningUpward
-                skin={<SelectSkin />}
-              />
+            <div className={styles.instructions}>
+              <FormattedHTMLMessage {...instructionMessage} />
             </div>
 
-            {showUploadWidget ? (
-              <div className={styles.certificate}>
-                <div className={styles.certificate}>
-                  <AdaCertificateUploadWidget
-                    {...certificateField.bind()}
-                    selectedFile={certificateField.value}
-                    onFileSelected={(file) => {
-                      resetForm();
-                      onCertificateSelected(file);
-                      certificateField.onChange(file);
+            <div className={styles.redemption}>
+              <div className={styles.inputs}>
+                {redemptionType !== 'paperVended' ? (
+                  <Input
+                    className="redemption-key"
+                    {...redemptionKeyField.bind()}
+                    value={redemptionCode}
+                    onChange={(value) => {
+                      onRedemptionCodeChanged(value);
+                      redemptionKeyField.onChange(value);
                     }}
-                    isCertificateEncrypted={isCertificateEncrypted}
-                    isCertificateSelected={isCertificateSelected}
-                    isCertificateInvalid={isCertificateInvalid}
-                    onRemoveCertificate={() => {
-                      resetForm();
-                      onRemoveCertificate();
-                    }}
+                    disabled={isCertificateSelected}
                   />
+                ) : (
+                  <Input
+                    className="shielded-redemption-key"
+                    {...shieldedRedemptionKeyField.bind()}
+                    disabled={isCertificateSelected}
+                  />
+                )}
+
+                <Select
+                  className={styles.walletSelect}
+                  options={wallets}
+                  {...walletId.bind()}
+                  onChange={this.onWalletChange}
+                  isOpeningUpward
+                  skin={<SelectSkin />}
+                />
+              </div>
+
+              {showUploadWidget ? (
+                <div className={styles.certificate}>
+                  <div className={styles.certificate}>
+                    <AdaCertificateUploadWidget
+                      {...certificateField.bind()}
+                      selectedFile={certificateField.value}
+                      onFileSelected={(file) => {
+                        resetForm();
+                        onCertificateSelected(file);
+                        certificateField.onChange(file);
+                      }}
+                      isCertificateEncrypted={isCertificateEncrypted}
+                      isCertificateSelected={isCertificateSelected}
+                      isCertificateInvalid={isCertificateInvalid}
+                      onRemoveCertificate={() => {
+                        resetForm();
+                        onRemoveCertificate();
+                      }}
+                    />
+                  </div>
                 </div>
+              ) : null}
+            </div>
+
+            {walletHasPassword ? (
+              <div className={styles.passwordInput}>
+                <Input
+                  className="walletPassword"
+                  {...form.$('walletPassword').bind()}
+                />
               </div>
             ) : null}
-          </div>
 
-          {walletHasPassword ? (
-            <div className={styles.passwordInput}>
-              <Input
-                className="walletPassword"
-                {...form.$('walletPassword').bind()}
-              />
-            </div>
-          ) : null}
+            {showPassPhraseWidget ? (
+              <div className={styles.passPhrase}>
+                <Input
+                  className="pass-phrase"
+                  {...passPhraseField.bind()}
+                />
+              </div>
+            ) : null}
 
-          {showPassPhraseWidget ? (
-            <div className={styles.passPhrase}>
-              <Input
-                className="pass-phrase"
-                {...passPhraseField.bind()}
-              />
-            </div>
-          ) : null}
+            {showInputsForDecryptingForceVendedCertificate ? (
+              <div className={styles.email}>
+                <Input
+                  className="email"
+                  {...emailField.bind()}
+                />
+              </div>
+            ) : null}
 
-          {showInputsForDecryptingForceVendedCertificate ? (
-            <div className={styles.email}>
-              <Input
-                className="email"
-                {...emailField.bind()}
-              />
-            </div>
-          ) : null}
+            {showInputsForDecryptingForceVendedCertificate ? (
+              <div className={styles.adaPasscode}>
+                <Input
+                  className="ada-passcode"
+                  {...adaPasscodeField.bind()}
+                />
+              </div>
+            ) : null}
 
-          {showInputsForDecryptingForceVendedCertificate ? (
-            <div className={styles.adaPasscode}>
-              <Input
-                className="ada-passcode"
-                {...adaPasscodeField.bind()}
-              />
-            </div>
-          ) : null}
+            {showInputsForDecryptingForceVendedCertificate ? (
+              <div className={styles.adaAmount}>
+                <Input
+                  className="ada-amount"
+                  {...adaAmountField.bind()}
+                />
+              </div>
+            ) : null}
 
-          {showInputsForDecryptingForceVendedCertificate ? (
-            <div className={styles.adaAmount}>
-              <Input
-                className="ada-amount"
-                {...adaAmountField.bind()}
-              />
-            </div>
-          ) : null}
+            {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
 
-          {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
+            <Button
+              className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
+              label={intl.formatMessage(messages.submitLabel)}
+              onMouseUp={submit}
+              primary
+              disabled={!canSubmit}
+            />
 
-          <Button
-            className={isSubmitting ? styles.submitButtonSpinning : styles.submitButton}
-            label={intl.formatMessage(messages.submitLabel)}
-            onMouseUp={submit}
-            primary
-            disabled={!canSubmit}
-          />
+          </BorderedBox>
 
-        </BorderedBox>
+        </div>
 
         {!isRedemptionDisclaimerAccepted ? (
           <AdaRedemptionDisclaimer

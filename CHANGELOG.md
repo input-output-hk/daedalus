@@ -73,6 +73,7 @@ Changelog
 - Use correct styling for used addresses marking on wallet receive screen
 - Implement MomentJs internationalization
 - Also quit whole app when last window is closed on osx
+- Daedalus and Cardano node update notification text messages change
 
 ### Chores
 

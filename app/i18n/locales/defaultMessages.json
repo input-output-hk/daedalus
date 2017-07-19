@@ -180,8 +180,8 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Accept",
-        "description": "Label \"Accept\" on the Cardano node update notification.",
+        "defaultMessage": "!!!Update and restart",
+        "description": "Label \"Update and restart\" on the Cardano node update notification.",
         "end": {
           "column": 3,
           "line": 14
@@ -195,7 +195,7 @@
       },
       {
         "defaultMessage": "!!!Postpone until restart",
-        "description": "Label \"Ask me later\" on the Cardano node update notification.",
+        "description": "Label \"Postpone until restart\" on the Cardano node update notification.",
         "end": {
           "column": 3,
           "line": 19
@@ -205,6 +205,48 @@
         "start": {
           "column": 13,
           "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano-Core update v{version} is available",
+        "description": "Cardano-Core update notification with version.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "app/components/notifications/NodeUpdateNotification.js",
+        "id": "cardano.node.update.notification.titleWithVersion",
+        "start": {
+          "column": 20,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano-Core update is available",
+        "description": "Cardano-Core update notification without version.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "app/components/notifications/NodeUpdateNotification.js",
+        "id": "cardano.node.update.notification.titleWithoutVersion",
+        "start": {
+          "column": 23,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus and Cardano node update is available. Would you like to install the update?",
+        "description": "Message shown when there is a Daedalus and Cardano node update available.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "app/components/notifications/NodeUpdateNotification.js",
+        "id": "cardano.node.update.notification.message",
+        "start": {
+          "column": 17,
+          "line": 30
         }
       }
     ],
