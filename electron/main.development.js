@@ -130,7 +130,7 @@ app.on('ready', async () => {
       { label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
     ];
 
-    if (isDev) {
+    if (isDev || isTest) {
       const { x, y } = props;
       contextMenuOptions.push({
         label: 'Inspect element',
