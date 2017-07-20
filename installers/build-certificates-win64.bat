@@ -14,7 +14,7 @@
 
 @echo .
 @echo ============================================================================
-@echo [1/9] Creating database
+@echo [1/10] Creating database
 rmdir /s/q tls\ca tls\server 2>nul
 
 mkdir tls\ca\private tls\ca\db tls\client tls\server
@@ -23,11 +23,20 @@ copy nul  tls\ca\db\ca.db.attr
 echo 01 > tls\ca\db\ca.crt.srl
 @echo ============================================================================
 
-@echo [2/9] Generating install-time-only use password for the CA key
+echo [2/10] Choosing OpenSSL message digest
+set MD=sha256
+echo Elected message digest '%MD%'
+echo Updating: installers/ca.conf installers/client.conf installers/server.conf
+powershell -Command "(gc ca.conf)     -replace '\%OPENSSL_MD\%', '%MD%' | Out-File -encoding ASCII ca.conf"
+powershell -Command "(gc client.conf) -replace '\%OPENSSL_MD\%', '%MD%' | Out-File -encoding ASCII client.conf"
+powershell -Command "(gc server.conf) -replace '\%OPENSSL_MD\%', '%MD%' | Out-File -encoding ASCII server.conf"
+echo ============================================================================
+
+@echo [3/10] Generating install-time-only use password for the CA key
 @echo %RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM% > tls\secret
 @echo ============================================================================
 
-@echo [3/9] CA self-sign request
+@echo [4/10] CA self-sign request
 x64\openssl req -new ^
             -config     ca.conf                ^
             -out        tls\ca\ca.csr          ^
@@ -37,7 +46,7 @@ x64\openssl req -new ^
 @echo .
 @echo ============================================================================
 
-@echo [4/9] CA certificate
+@echo [5/10] CA certificate
 x64\openssl ca  -selfsign -batch ^
             -config     ca.conf                ^
             -in         tls\ca\ca.csr          ^
@@ -48,7 +57,7 @@ x64\openssl ca  -selfsign -batch ^
 @echo .
 @echo ============================================================================
 
-@echo [5/9] Server certificate signing request
+@echo [6/10] Server certificate signing request
 x64\openssl req -new ^
             -config     server.conf             ^
             -out        tls\server\server.csr   ^
@@ -57,7 +66,7 @@ x64\openssl req -new ^
 @echo .
 @echo ============================================================================
 
-@echo [6/9] Client certificate signing request
+@echo [7/10] Client certificate signing request
 x64\openssl req -new ^
             -config     client.conf             ^
             -out        tls\client\client.csr   ^
@@ -66,7 +75,7 @@ x64\openssl req -new ^
 @echo .
 @echo ============================================================================
 
-@echo [7/9] Server certificate
+@echo [8/10] Server certificate
 x64\openssl ca -batch ^
             -config     ca.conf                ^
             -in         tls\server\server.csr  ^
@@ -77,7 +86,7 @@ x64\openssl ca -batch ^
 @echo .
 @echo ============================================================================
 
-@echo [8/9] Client certificate
+@echo [9/10] Client certificate
 x64\openssl ca -batch ^
             -config     ca.conf                ^
             -in         tls\client\client.csr  ^
@@ -88,7 +97,7 @@ x64\openssl ca -batch ^
 @echo .
 @echo ============================================================================
 
-@echo [9/9] Cleanup
+@echo [10/10] Cleanup
 del tls\secret ca.conf server.conf client.conf
 rmdir /s/q tls\ca\private x86 x64
 
