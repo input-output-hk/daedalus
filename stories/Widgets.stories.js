@@ -2,7 +2,6 @@ import React from 'react';
 import { storiesOf } from '@kadira/storybook';
 import { observable } from 'mobx';
 import StoryDecorator from './support/StoryDecorator';
-import CheckboxWithLongLabel from '../app/components/widgets/forms/CheckboxWithLongLabel';
 import BigButtonForDialogs from '../app/components/widgets/BigButtonForDialogs';
 import MnemonicInputWidget from '../app/components/widgets/forms/MnemonicInputWidget';
 import NotificationMessage from '../app/components/widgets/NotificationMessage';
@@ -20,28 +19,6 @@ storiesOf('Widgets', module)
   ))
 
   // ====== Stories ======
-
-  .add('CheckboxWithLongLabel - checked', () => (
-    <div>
-      <CheckboxWithLongLabel
-        label={`I understand that if this application is moved to another device or deleted,
-        my money can be only recovered with the backup phrase which were written down in a secure place`}
-        checked={true}
-        onChange={() => {}}
-      />
-    </div>
-  ))
-
-  .add('CheckboxWithLongLabel - unchecked', () => (
-    <div>
-      <CheckboxWithLongLabel
-        label={`I understand that if this application is moved to another device or deleted,
-        my money can be only recovered with the backup phrase which were written down in a secure place`}
-        checked={false}
-        onChange={() => {}}
-      />
-    </div>
-  ))
 
   .add('BigButtonForDialogs', () => (
     <div>

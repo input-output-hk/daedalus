@@ -1,15 +1,12 @@
 .component {
-  opacity: 0.9;
-  border-radius: 5px;
-  background-color: #e4e7ec;
-  display: flex;
-  width: 130px;
-  padding: 14px 0;
-  color: #5e6066;
-  justify-content: center;
+  background-color: #e4e7ec !important;
+  font-size: 16px !important;
   margin: 10px 0;
-  font-size: 16px;
-  font-family: $font-medium;
+  opacity: 0.9;
+  width: 130px !important;
+  &:hover {
+    background-color: none;
+  }
 }
 
 .inactive {

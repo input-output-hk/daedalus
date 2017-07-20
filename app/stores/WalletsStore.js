@@ -170,7 +170,9 @@ export default class WalletsStore extends Store {
     buildRoute(ROUTES.WALLETS.PAGE, { id: walletId, page })
   );
 
-  getWalletById = (id: string): ?Wallet => this.all.find(w => w.id === id);
+  getWalletById = (id: string): (?Wallet) => this.all.find(w => w.id === id);
+
+  getWalletByName = (name: string): (?Wallet) => this.all.find(w => w.name === name);
 
   isValidAddress = (address: string) => this.api.isValidAddress(address);
 
@@ -286,7 +288,7 @@ export default class WalletsStore extends Store {
           this._setActiveWallet({ walletId: this.all[0].id });
           if (this.active) this.goToWalletRoute(this.active.id);
         }
-      } else if (matchRoute(ROUTES.WALLETS.ROOT, currentRoute)) {
+      } else if (this._canRedirectToWallet) {
         // The route does not specify any wallet -> pick first wallet
         if (!this.hasActiveWallet && hasAnyWalletsLoaded) {
           this._setActiveWallet({ walletId: this.all[0].id });
@@ -302,6 +304,13 @@ export default class WalletsStore extends Store {
       if (!_.find(result, { id: wallet.id })) result.push(wallet);
     });
   };
+
+  @computed get _canRedirectToWallet(): boolean {
+    const currentRoute = this.stores.app.currentRoute;
+    const isRootRoute = matchRoute(ROUTES.WALLETS.ROOT, currentRoute);
+    const isNoWalletsRoute = matchRoute(ROUTES.NO_WALLETS, currentRoute);
+    return isRootRoute || isNoWalletsRoute;
+  }
 
   @action _onRouteChange = (options: { route: string, params: ?Object }) => {
     // Reset the send request anytime we visit the send page (e.g: to remove any previous errors)

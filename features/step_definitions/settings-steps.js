@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import {
   waitUntilWaletNamesEqual,
   getNameOfActiveWalletInSidebar
-} from './lib/wallets-helpers';
+} from '../support/helpers/wallets-helpers';
 
 export default function () {
 
@@ -38,7 +38,7 @@ export default function () {
   });
 
   this.When(/^I toggle "Check to deactivate password" switch on the change wallet password dialog$/, function () {
-    return this.waitAndClick('.changePasswordDialog .switch_field');
+    return this.waitAndClick('.changePasswordDialog .SimpleSwitch_switch');
   });
 
   this.When(/^I enter current wallet password:$/, async function (table) {
@@ -87,7 +87,7 @@ export default function () {
 
   this.Then(/^I should see the following error messages:$/, async function (data) {
     const error = data.hashes()[0];
-    const errorSelector = '.ChangeWalletPasswordDialog_newPassword .input_error';
+    const errorSelector = '.ChangeWalletPasswordDialog_newPassword .SimpleFormField_error';
     await this.client.waitForText(errorSelector);
     let errorsOnScreen = await this.client.getText(errorSelector);
     const expectedError = await this.intl(error.message);

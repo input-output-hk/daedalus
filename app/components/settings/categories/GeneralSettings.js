@@ -42,7 +42,6 @@ export default class GeneralSettings extends Component {
       languageId: {
         label: this.context.intl.formatMessage(messages.languageSelectLabel),
         value: this.props.currentLocale,
-        bindings: 'ReactToolbox',
       }
     }
   }, {

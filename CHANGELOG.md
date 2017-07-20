@@ -66,6 +66,7 @@ Changelog
 - Improved acceptance tests for generating new addresses
 - Removed temporary workaround for creating new accounts during wallet create and wallet restore
 - Prevent React key duplicates in transaction from/to addresses lists
+- Acceptance tests configuration fix for the timeouts
 - Show more specific error messages on "Change password" dialog
 - Update password fields placeholders to match latest designs
 - Prevent selected wallet reset on "Ada redemption" screen on tab or certificate change
@@ -82,8 +83,8 @@ Changelog
 - Use markdown for "Terms of use" content
 - Added manually written Flow types for API responses
 - Testnet version on the testnet label bumped from 0.3 to 0.5
+- Replaced all React-Toolbox components with React-Polymorph ones ([PR 361](https://github.com/input-output-hk/daedalus/pull/361))
 - Temporary workaround for missing Japanese translations for Terms of Use that allows users to accept them in English
-
 
 ## 0.6.2
 

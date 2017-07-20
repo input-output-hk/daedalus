@@ -5,10 +5,26 @@
   padding: 20px;
 }
 
-.submitButtonSpinning, .submitButton {
+.amountInput,
+.receiverInput,
+.passwordInput {
+  position: relative;
+  margin-bottom: 20px;
+}
+
+.adaLabel {
+  bottom: 16px;
+  color: $color-light-grey;
+  font-family: $font-light;
+  position: absolute;
+  right: 20px;
+  text-transform: uppercase;
+}
+
+.submitButton,
+.submitButtonSpinning  {
   display: block !important;
-  margin: 0 auto;
-  width: 360px;
+  margin: 30px auto 0;
 }
 
 .submitButtonSpinning {
@@ -19,9 +35,4 @@
   @include error-message;
   text-align: center;
   margin-bottom: 1rem;
-}
-
-.amountInput, .receiverInput, .passwordInput {
-  position: relative;
-  margin-bottom: 20px;
 }

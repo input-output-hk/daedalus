@@ -2,41 +2,39 @@
 
 .dialog {
   font-family: $font-light;
-
   :global {
-    .checkbox_check {
-      border-color: $color-light-red;
-      &.checkbox_checked {
-        background: $color-light-red;
+    .SimpleCheckbox_root {
+      margin-top: 20px;
+
+      .SimpleCheckbox_check {
         border-color: $color-light-red;
-      }
-    }
 
-    .button_flat.button_primary {
-      background: $color-light-red;
-
-      &[disabled] {
-        opacity: 0.3;
-      }
-
-      &:not([disabled]) {
-        &:hover {
-          background: $color-lighter-red;
-        }
-        &:active {
-          background: $color-dark-red;
+        &.SimpleCheckbox_checked {
+          background: $color-light-red;
         }
       }
     }
   }
-}
 
-.confirmationInput {
-  margin-top: 30px;
-}
+  .confirmationInput {
+    margin-top: 20px;
+  }
 
-.isSubmitting {
-  :global button.button_primary {
+  .isSubmitting {
     @include loading-spinner("../../../assets/images/spinner-light.svg");
   }
+
+  .deleteButton {
+    background: $color-light-red;
+    &:hover {
+      background: $color-lighter-red !important;
+    }
+    &:active {
+      background: $color-dark-red !important;
+    }
+  }
 }
+
+
+
+

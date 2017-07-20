@@ -2,9 +2,10 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape } from 'react-intl';
-import CheckboxWithLongLabel from '../../../widgets/forms/CheckboxWithLongLabel';
+import Dialog from '../../../widgets/Dialog';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import DialogBackButton from '../../../widgets/DialogBackButton';
 import styles from './ExportPaperWalletPrinterCopyDialog.scss';
@@ -68,7 +69,7 @@ export default class ExportPaperWalletPrinterCopyDialog extends Component {
         disabled: (
           !isPrinterCopyNoticeAccepted
         ),
-        onClick: () => onContinue()
+        onClick: onContinue
       }
     ];
 
@@ -77,8 +78,10 @@ export default class ExportPaperWalletPrinterCopyDialog extends Component {
         className={dialogClasses}
         title={intl.formatMessage(messages.headline)}
         actions={actions}
-        onOverlayClick={onClose}
-        active
+        closeOnOverlayClick
+        onClose={onClose}
+        closeButton={<DialogCloseButton onClose={onClose} />}
+        backButton={<DialogBackButton onBack={onBack} />}
       >
         <div className={styles.instructions}>
           <p>
@@ -87,14 +90,14 @@ export default class ExportPaperWalletPrinterCopyDialog extends Component {
           </p>
         </div>
 
-        <CheckboxWithLongLabel
-          label={intl.formatMessage(messages.confirmPrinterCopyNotice)}
-          onChange={onTogglePrinterCopyNotice}
-          checked={isPrinterCopyNoticeAccepted}
-        />
-
-        <DialogBackButton onBack={onBack} />
-        <DialogCloseButton onClose={onClose} />
+        <div className={styles.checkbox}>
+          <Checkbox
+            label={intl.formatMessage(messages.confirmPrinterCopyNotice)}
+            onChange={onTogglePrinterCopyNotice}
+            checked={isPrinterCopyNoticeAccepted}
+            skin={<SimpleCheckboxSkin />}
+          />
+        </div>
 
       </Dialog>
     );

@@ -1,3 +1,11 @@
-.component {
+.checkbox {
+  margin-top: 20px;
+}
 
+.component{
+  :global {
+    .WalletRecoveryInstructions_component {
+      text-align: left;
+    }
+  }
 }

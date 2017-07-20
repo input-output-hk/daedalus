@@ -1,21 +1,26 @@
-@import "~react-toolbox/lib/button/config";
-$button-border-radius: 0.3rem;
-$button-height: 50px;
-@import "~react-toolbox/lib/button/theme";
+@import "_config";
+// Theme config overrides go here …
+@import "~react-polymorph/lib/themes/simple/SimpleButton";
+// Css module overrides go here …
 
-.flat {
+.root {
+  background: $button-up-bg;
   font-size: 14px;
   font-family: $font-medium;
+  position: relative;
   text-transform: none;
-  background: $button-up-bg;
+  width: 360px;
+  height: 50px;
+}
 
-  &.primary {
+:global {
+  .primary {
     &[disabled] {
+      color: #fff;
       opacity: 0.3;
-      color: white;
     }
     &:not([disabled]) {
-      color: white;
+      color: #fff;
       &:hover {
         background: $button-hover-bg;
       }
@@ -25,18 +30,18 @@ $button-height: 50px;
     }
   }
 
-  &.neutral {
+  .flat {
     &:not([disabled]) {
-      color: #5e6066;
       background-color: #eef1f3;
+      color: #5e6066;
       &:hover {
         color: #5e6066;
         background-color: darken(#eef1f3, 7%);
       }
     }
     &[disabled] {
-      opacity: 0.3;
       color: darken(#eef1f3, 7%);
+      opacity: 0.3;
     }
   }
 }

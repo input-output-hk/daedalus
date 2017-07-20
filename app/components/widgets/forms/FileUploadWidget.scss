@@ -1,19 +1,19 @@
 .component {
+  color: $theme-input-hint-color;
+  font-family: $theme-input-hint-font;
   font-size: 16px;
   line-height: 1.38;
-  font-family: $theme-input-hint-font;
-  color: $theme-input-hint-color;
 }
 
 .dropZone {
-  height: 50px;
-  border-radius: 2px;
-  border: solid 1px $color-light-grey;
-  display: flex;
   align-items: center;
-  padding: 10px;
   background-color: $theme-input-background-color;
+  border: solid 1px $color-light-grey;
+  border-radius: 2px;
   cursor: pointer;
+  display: flex;
+  height: 50px;
+  padding: 10px 20px;
 
   &:hover .attachIcon {
     opacity: 1;
@@ -32,13 +32,13 @@
   white-space: nowrap;
 }
 
-.hint {
+.placeholder {
   opacity: 0.5;
 }
 
 .attachIcon {
-  width: 24px;
-  position: absolute;
-  right: 54px;
   opacity: 0.3;
+  position: absolute;
+  right: 24px;
+  width: 24px;
 }

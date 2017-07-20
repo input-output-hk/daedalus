@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
+import Dialog from '../../../widgets/Dialog';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import DialogBackButton from '../../../widgets/DialogBackButton';
 import styles from './ExportPaperWalletCertificateDialog.scss';
@@ -46,7 +46,7 @@ export default class ExportPaperWalletCertificateDialog extends Component {
       {
         label: intl.formatMessage(messages.finishLabel),
         primary: true,
-        onClick: () => onFinish(),
+        onClick: onFinish,
       }
     ];
 
@@ -55,8 +55,10 @@ export default class ExportPaperWalletCertificateDialog extends Component {
         className={dialogClasses}
         title={intl.formatMessage(messages.headline)}
         actions={actions}
-        onOverlayClick={onClose}
-        active
+        closeOnOverlayClick
+        onClose={onClose}
+        closeButton={<DialogCloseButton onClose={onClose} />}
+        backButton={<DialogBackButton onBack={onBack} />}
       >
 
         <div className={styles.instructions}>
@@ -66,9 +68,6 @@ export default class ExportPaperWalletCertificateDialog extends Component {
             To import wallet back crop glued certificate’s edges to reach inner part.
           </p>
         </div>
-
-        <DialogBackButton onBack={onBack} />
-        <DialogCloseButton onClose={onClose} />
 
       </Dialog>
     );

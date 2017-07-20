@@ -56,22 +56,31 @@
   }
 }
 
+.adaAmount,
+.adaPasscode,
+.email,
+.passPhrase,
+.passwordInput {
+  margin-bottom: 20px;
+}
+
+.walletSelect {
+  margin: 20px 0;
+}
+
+.submitButton,
+.submitButtonSpinning {
+  display: block !important;
+  margin-top: 30px;
+  width: 100% !important;
+}
+
+.submitButtonSpinning {
+  @include loading-spinner("../../../assets/images/spinner-light.svg");
+}
+
 .error {
   @include error-message;
   text-align: center;
   margin-bottom: 2rem;
-}
-
-.submitButtonSpinning {
-  width: 100%;
-  @include loading-spinner("../../../assets/images/spinner-light.svg");
-}
-
-.submitButton {
-  width: 100%;
-  text-transform: uppercase;
-}
-
-.walletSelect {
-  margin-bottom: 30px;
 }

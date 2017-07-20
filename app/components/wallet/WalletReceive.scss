@@ -104,16 +104,20 @@
       }
 
       :global {
-        span.input_hint {
-          top: 1.1rem;
+        .SimpleFormField_label {
+          display: none;
         }
 
-        span.input_error {
-          bottom: 0;
-          margin: 0;
-          top: auto;
+        .SimpleFormField_error {
+          bottom: -8px;
+          position: absolute;
+          right: 0;
         }
       }
+    }
+
+    .error {
+      text-align: left;
     }
 
     .generateAddressWrapper {
@@ -126,7 +130,7 @@
           }
 
           .spendingPassword {
-            margin: 0 0 12px;
+            margin: 0 0 2px;
           }
         }
       }
@@ -178,6 +182,7 @@
     }
 
     .addressId {
+      flex-grow: 1;
       margin-right: 32.5px;
     }
 

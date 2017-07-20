@@ -2,12 +2,16 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
-import Input from 'react-toolbox/lib/input/Input';
+import Input from 'react-polymorph/lib/components/Input';
+import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
+import TextArea from 'react-polymorph/lib/components/TextArea';
+import SimpleTextAreaSkin from 'react-polymorph/lib/skins/simple/TextAreaSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
-import Switch from '../widgets/Switch';
+import Dialog from '../widgets/Dialog';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../lib/validations';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -127,7 +131,6 @@ export default class PaperWalletImportDialog extends Component {
             this.context.intl.formatMessage(messages.invalidPrivateKey)
           ];
         },
-        bindings: 'ReactToolbox',
       },
       mnemonicPhrase: {
         label: this.context.intl.formatMessage(messages.mnemonicPhraseInputLabel),
@@ -141,7 +144,6 @@ export default class PaperWalletImportDialog extends Component {
             this.context.intl.formatMessage(messages.invalidMnemonicPhrase)
           ];
         },
-        bindings: 'ReactToolbox',
       },
       walletName: {
         label: this.context.intl.formatMessage(messages.walletNameInputLabel),
@@ -153,7 +155,6 @@ export default class PaperWalletImportDialog extends Component {
             this.context.intl.formatMessage(globalMessages.invalidWalletName)
           ]
         )],
-        bindings: 'ReactToolbox',
       },
       walletPassword: {
         type: 'password',
@@ -167,7 +168,6 @@ export default class PaperWalletImportDialog extends Component {
             this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
           ];
         }],
-        bindings: 'ReactToolbox',
       },
       repeatPassword: {
         type: 'password',
@@ -183,7 +183,6 @@ export default class PaperWalletImportDialog extends Component {
             this.context.intl.formatMessage(globalMessages.invalidRepeatPassword)
           ];
         }],
-        bindings: 'ReactToolbox',
       },
     },
   }, {
@@ -192,14 +191,6 @@ export default class PaperWalletImportDialog extends Component {
       validationDebounceWait: 250,
     },
   });
-
-  actions = [
-    {
-      label: this.context.intl.formatMessage(messages.importButtonLabel),
-      primary: true,
-      onClick: () => this.submit(),
-    },
-  ];
 
   handlePasswordSwitchToggle = (value: boolean) => {
     this.setState({ createPassword: value });
@@ -231,7 +222,11 @@ export default class PaperWalletImportDialog extends Component {
     const dialogClasses = classnames([
       styles.component,
       'PaperWalletImportDialog',
-      isSubmitting ? styles.isSubmitting : null,
+    ]);
+
+    const mnemonicPhraseFieldClasses = classnames([
+      'mnemonicPhrase',
+      styles.mnemonicPhrase,
     ]);
 
     const walletPasswordFieldsClasses = classnames([
@@ -239,44 +234,77 @@ export default class PaperWalletImportDialog extends Component {
       createPassword ? styles.show : null,
     ]);
 
+    const actions = [
+      {
+        className: isSubmitting ? styles.isSubmitting : null,
+        label: this.context.intl.formatMessage(messages.importButtonLabel),
+        primary: true,
+        onClick: this.submit,
+      },
+    ];
+
+    const privateKeyField = form.$('privateKey');
+    const walletNameField = form.$('walletName');
+    const mnemonicPhraseField = form.$('mnemonicPhrase');
+    const walletPasswordField = form.$('walletPassword');
+    const repeatedPasswordField = form.$('repeatPassword');
+
     return (
       <Dialog
         className={dialogClasses}
         title={intl.formatMessage(messages.title)}
-        actions={this.actions}
-        onOverlayClick={onCancel}
-        active
+        actions={actions}
+        closeOnOverlayClick
+        onClose={!isSubmitting ? onCancel : null}
+        closeButton={<DialogCloseButton onClose={onCancel} />}
       >
 
-        <Input className="privateKey" {...form.$('privateKey').bind()} />
-
         <Input
-          className="mnemonicPhrase"
-          multiline
-          rows={3}
-          {...form.$('mnemonicPhrase').bind()}
+          className="privateKey"
+          {...privateKeyField.bind()}
+          error={privateKeyField.error}
+          skin={<SimpleInputSkin />}
         />
 
-        <Input className="walletName" {...form.$('walletName').bind()} />
+        <TextArea
+          className={mnemonicPhraseFieldClasses}
+          autoResize={false}
+          rows={3}
+          {...mnemonicPhraseField.bind()}
+          error={mnemonicPhraseField.error}
+          skin={<SimpleTextAreaSkin />}
+        />
+
+        <Input
+          className="walletName"
+          {...walletNameField.bind()}
+          error={walletNameField.error}
+          skin={<SimpleInputSkin />}
+        />
 
         <div className={styles.walletPassword}>
           <div className={styles.walletPasswordSwitch}>
-            <Switch
-              label={intl.formatMessage(messages.passwordSwitchLabel)}
-              placeholder={intl.formatMessage(messages.passwordSwitchPlaceholder)}
-              active={createPassword}
+            <div className={styles.passwordLabel}>{intl.formatMessage(messages.passwordSwitchLabel)}</div>
+            <Checkbox
               onChange={this.handlePasswordSwitchToggle}
+              label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
+              checked={createPassword}
+              skin={<SimpleSwitchSkin />}
             />
           </div>
 
           <div className={walletPasswordFieldsClasses}>
             <Input
               className="walletPassword"
-              {...form.$('walletPassword').bind()}
+              {...walletPasswordField.bind()}
+              error={walletPasswordField.error}
+              skin={<SimpleInputSkin />}
             />
             <Input
               className="repeatedPassword"
-              {...form.$('repeatPassword').bind()}
+              {...repeatedPasswordField.bind()}
+              error={repeatedPasswordField.error}
+              skin={<SimpleInputSkin />}
             />
             <p className={styles.passwordInstructions}>
               {intl.formatMessage(globalMessages.passwordInstructions)}
@@ -285,8 +313,6 @@ export default class PaperWalletImportDialog extends Component {
         </div>
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
-
-        <DialogCloseButton onClose={onCancel} />
 
       </Dialog>
     );
