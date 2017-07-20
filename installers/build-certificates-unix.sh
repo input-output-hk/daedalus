@@ -88,8 +88,13 @@ echo
 echo ============================================================================
 
 echo [9/9] Cleanup
-rm tls/secret ca.conf server.conf client.conf
+rm tls/secret
 rm -rf tls/ca/private
+
+# ..if launched by OS X installer:
+if test ! -z "${INSTALL_PKG_SESSION_ID}"
+then rm -f ca.conf server.conf client.conf
+fi
 
 echo ============================================================================
 echo Oll Korrect
