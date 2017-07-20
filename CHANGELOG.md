@@ -74,7 +74,7 @@ Changelog
 - Use correct styling for used addresses marking on wallet receive screen
 - Implement MomentJs internationalization
 - Also quit whole app when last window is closed on osx
-- Fixed Numeric component caret position bug on wallet send screen
+- Fixed Numeric component caret position bug on wallet send screen ([PR 394](https://github.com/input-output-hk/daedalus/pull/394))
 
 ### Chores
 
