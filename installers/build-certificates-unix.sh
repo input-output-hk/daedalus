@@ -8,6 +8,8 @@
 #
 # WARNING: keep in sync with 'installers/build-certificates-win64.bat'
 
+set -e
+
 echo Generating certificates.
 openssl version
 
