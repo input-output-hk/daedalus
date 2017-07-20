@@ -89,7 +89,7 @@ export default function () {
     const error = data.hashes()[0];
     const errorSelector = '.ChangeWalletPasswordDialog_newPassword .SimpleFormField_error';
     await this.client.waitForText(errorSelector);
-    let errorsOnScreen = await this.client.getText(errorSelector);
+    const errorsOnScreen = await this.client.getText(errorSelector);
     const expectedError = await this.intl(error.message);
     expect(errorsOnScreen).to.equal(expectedError);
   });
