@@ -396,6 +396,7 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::nextUpdate called');
     let nextUpdate = null;
     try {
+      // TODO: add flow type definitions for nextUpdate response
       const response = JSON.parse(await ClientApi.nextUpdate());
       Log.debug('CardanoClientApi::nextUpdate success: ', stringifyData(response));
       if (response) {
