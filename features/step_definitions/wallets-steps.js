@@ -338,8 +338,10 @@ export default function () {
   this.Then(/^the balance of "([^"]*)" wallet should be:$/, async function (walletName, table) {
     const expectedData = table.hashes()[0];
     const receiverWallet = getWalletByName.call(this, walletName);
-    const receiverWalletBalance = await this.client.getText(`.SidebarWalletsMenu_wallets .Wallet_${receiverWallet.id} .SidebarWalletMenuItem_info`);
-    expect(receiverWalletBalance).to.equal(`${expectedData.balance} ADA`);
+    return this.client.waitUntil(async () => {
+      const receiverWalletBalance = await this.client.getText(`.SidebarWalletsMenu_wallets .Wallet_${receiverWallet.id} .SidebarWalletMenuItem_info`);
+      return receiverWalletBalance === `${expectedData.balance} ADA`;
+    });
   });
 
   this.Then(/^I should see newly generated address as active address on the wallet receive screen$/, async function () {
