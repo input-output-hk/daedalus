@@ -130,6 +130,9 @@ writeInstallerNSIS fullVersion = do
         file [] "data\\ip-dht-mappings"
         file [] "version.txt"
         file [] "build-certificates-win64.bat"
+        file [] "ca.conf"
+        file [] "server.conf"
+        file [] "client.conf"
         writeFileLines "$INSTDIR\\daedalus.bat" (map str launcherScript)
         file [Recursive] "dlls\\"
         file [Recursive] "libressl\\"
