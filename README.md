@@ -40,7 +40,7 @@ Invocation:
    ```
    ..where `BRANCH` defaults to the current release branch, and `GITHUB-USER`
    defaults to `input-output-hk`.
-   
+
    The remaining `OPTIONS` are passed as-is to the respective build scripts.
 
 ## Stepwise build
@@ -93,6 +93,8 @@ $ npm run test
 ```bash
 $ npm run test-watch
 ```
+
+You can find more details regarding tests setup within [Running Deadalus acceptance tests](https://github.com/input-output-hk/daedalus/features/README.md) README file.
 
 ### CSS Modules
 
