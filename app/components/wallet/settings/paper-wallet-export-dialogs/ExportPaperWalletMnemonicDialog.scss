@@ -5,7 +5,7 @@
 }
 
 .instructions {
-  color: $text-color-accent;
+  color: $theme-instructions-text-color;
   margin-top: 30px;
 
   p {
@@ -19,9 +19,9 @@
 }
 
 .recoveryPhrase {
-  background-color: rgba(68, 91, 124, 0.05);
+  background-color: $theme-mnemonic-background-color;
   border-radius: 2px;
-  color: #5e6066;
+  color: $theme-instructions-text-color;
   font-family: $font-medium;
   font-size: 16px;
   line-height: 1.38;

@@ -1,5 +1,5 @@
 .component {
-  color: #5e6066;
+  color: $theme-settings-menu-item-text-color;
   display: block;
   font-family: $font-regular;
   font-size: 16px;
@@ -10,18 +10,19 @@
 }
 
 .active {
-  background-color: #edf0f3;
-  border-left: 4px solid #445b7c;
+  color: $theme-settings-menu-item-text-color-active;
+  background-color: $theme-settings-menu-item-background-color-active;
+  border-left: 4px solid $theme-settings-menu-item-left-border-color-active;
   font-family: $font-bold;
 }
 
 .enabled {
   &:hover {
-    color: black;
+    color: $theme-settings-menu-item-text-color-enabled-hover;
     cursor: pointer;
   }
 }
 
 .disabled {
-  color: #b3b3b3;
+  color: $theme-settings-menu-item-text-color-disabled;
 }

@@ -2,15 +2,9 @@
   margin-bottom: 32px;
   position: relative;
 
-  :global {
-    .SimpleFormField_label {
-      color: $theme-label-color !important;
-    }
-  }
-
   .button {
     bottom: 13px;
-    color: $text-color-accent;
+    color: $theme-label-button-color;
     cursor: pointer;
     font-family: $font-light;
     font-size: 16px;

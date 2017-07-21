@@ -3,8 +3,8 @@
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(36, 61, 98, 0.88);
-  color: #fafbfc;
+  background-color: $theme-ada-redemption-success-overlay-background-color;
+  color: $theme-ada-redemption-success-overlay-message-color;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -37,7 +37,7 @@
     background: none;
     border: solid 1px #fafbfc;
     border-radius: 5px;
-    color: #fafbfc;
+    color: $theme-ada-redemption-success-overlay-button-text-color;
     cursor: pointer;
     font-size: 14px;
     height: 50px;
@@ -46,8 +46,8 @@
     width: 360px;
 
     &:hover {
-      background-color: #fafbfc !important;
-      color: #243e62;
+      background-color: $theme-ada-redemption-success-overlay-button-background-color-hover !important;
+      color: $theme-ada-redemption-success-overlay-button-text-color-hover;
     }
   }
 

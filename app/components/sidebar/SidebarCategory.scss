@@ -4,22 +4,22 @@
 .component {
   @include button;
   align-items: center;
-  background-color: $sidebar-bg;
-  color: white;
+  background-color: $theme-sidebar-background-color;
+  color: $theme-sidebar-category-text-color;
   display: flex;
   height: $sidebar-button-height;
   width: 100%;
 
   &:hover {
-    background-color: $sidebar-category-hover;
+    background-color: $theme-sidebar-category-background-color-hover;
   }
 }
 
 .active {
-  background-color: $sidebar-category-active;
+  background-color: $theme-sidebar-category-background-color-active;
 
   &:hover {
-    background-color: $sidebar-category-active;
+    background-color: $theme-sidebar-category-background-color-active;
     cursor: default;
   }
 }

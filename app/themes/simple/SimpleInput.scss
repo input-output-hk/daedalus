@@ -2,3 +2,29 @@
 // Theme config overrides go here …
 @import "~react-polymorph/lib/themes/simple/SimpleInput";
 // Css module overrides go here …
+
+.root {
+  & > .input {
+    background-color: inherit;
+    border: 1px solid $theme-input-border-color;
+    color: $theme-input-text-color;
+
+    &::-webkit-input-placeholder {
+      color: $theme-input-placeholder-color;
+    }
+  }
+
+  & > .errored {
+    border: 1px solid $theme-input-error-color;
+  }
+}
+
+.disabled {
+  background-color: inherit;
+}
+
+:global {
+  .AmountInputSkin_total, .AmountInputSkin_fees {
+    color: $theme-input-right-floating-text-color;
+  }
+}

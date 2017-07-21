@@ -1,0 +1,217 @@
+// _theme
+@import "~react-toolbox/lib/colors";
+@import "~react-toolbox/lib/globals";
+@import "~react-toolbox/lib/mixins";
+
+// ========== FONTS & TEXT ========= //
+
+// Make the default font ugly so we immediately see when something
+// is not yet defined correctly in our UI
+$preferred-font: "Times New Roman", serif;
+
+$font-ultralight: 'SFUIDisplay-Ultralight';
+$font-thin: 'SFUIDisplay-Thin';
+$font-light: 'SFUIDisplay-Light';
+$font-regular: 'SFUIDisplay-Regular';
+$font-medium: 'SFUIDisplay-Medium';
+$font-semibold: 'SFUIDisplay-Semibold';
+$font-bold: 'SFUIDisplay-Bold';
+$font-heavy: 'SFUIDisplay-Heavy';
+$font-black: 'SFUIDisplay-Black';
+
+//  ==== DARK BLUE THEME === //
+$theme-topbar-background-color: #263345;
+$theme-topbar-wallet-name-color: #e9f4fe;
+$theme-topbar-wallet-info-color: #e9f4fe;
+
+$theme-sidebar-background-color: #314259;
+
+$theme-sidebar-category-background-color-hover: #263345;
+$theme-sidebar-category-background-color-active: #263345;
+$theme-sidebar-category-text-color: #e9f4fe;
+
+$theme-sidebar-menu-background-color: #263345;
+
+$theme-sidebar-menu-item-background-color-hover: #1b2430;
+$theme-sidebar-menu-item-background-color-active: #1b2430;
+$theme-sidebar-menu-item-wallet-name-color: #e9f4fe;
+$theme-sidebar-menu-item-wallet-info-color: #bdc0c1;
+
+$theme-sidebar-menu-add-button-background-color-active: #1b2430;
+$theme-sidebar-menu-add-button-background-color-hover: darken($theme-sidebar-menu-add-button-background-color-active, 2%);
+$theme-sidebar-menu-add-button-text-color: #e9f4fe;
+
+
+$theme-nav-item-background-color: #263345;
+$theme-nav-item-background-color-hover: rgba(#536370, 0.1);
+$theme-nav-item-background-color-active: #536370;
+
+$theme-nav-item-text-color: #9ba6b3;
+$theme-nav-item-text-color-active: #e9f4fe;
+
+$theme-main-body-background-color: #0b1926;
+$theme-main-body-messages-color: #e9f4fe;
+
+$theme-topbar-layout-body-background-color: #0b1926;
+
+$theme-settings-body-background-color: #0b1926;
+$theme-settings-pane-background-color: #263345;
+$theme-settings-pane-border-color: #263345;
+
+$theme-settings-menu-box-background-color: #263345;
+$theme-settings-menu-box-border-color: #263345;
+$theme-settings-menu-item-text-color: #cecfd1;
+$theme-settings-menu-item-text-color-active: #0b1926;
+$theme-settings-menu-item-text-color-enabled-hover: #8793a1;
+$theme-settings-menu-item-text-color-disabled: #7a8691;
+$theme-settings-menu-item-background-color-active: #edf0f3;
+$theme-settings-menu-item-left-border-color-active: #8793a1;
+
+$theme-bordered-box-background-color: #263345;
+$theme-bordered-box-border-color: #263345;
+$theme-bordered-box-text-color: #e9f4fe;
+
+$theme-transactions-list-background-color: #263345;
+$theme-transactions-list-border-color: #263345;
+$theme-transactions-list-group-date-color: #7a8691;
+$theme-transactions-list-content-bottom-border-color: #334152;
+
+$theme-transactions-list-item-header-color: #e9f4fe;
+$theme-transactions-list-item-details-color: #e9f4fe;
+
+$theme-input-border-color: #8793a1;
+$theme-input-label-color: #e9f4fe;
+$theme-input-text-color: #e9f4fe;
+$theme-input-right-floating-text-color: #8793a1;
+$theme-input-placeholder-color: #8793a1;
+$theme-input-error-color: #de3226;
+
+$theme-dialog-input-label-color: #5e6066;
+$theme-dialog-input-text-color: #5e6066;
+$theme-dialog-input-right-floating-indicator-color: #5e6066;
+$theme-dialog-input-placeholder-color: #aeafb2;
+$theme-dialog-input-error-color: #de3226;
+
+$theme-button-background-color: #536370;
+$theme-button-background-color-hover: rgba(#536370, 0.8);
+$theme-button-text-color: #e9f4fe;
+
+$theme-switch-background-color-checked: #536370;
+$theme-switch-thumb-color-checked: #536370;
+
+$theme-notification-message-background-color: rgba(#536370, 0.8);
+$theme-notification-message-text-color: #fafbfc;
+
+$theme-label-button-color: #8793a1;
+
+$theme-uploader-text-color: #e9f4fe;
+$theme-uploader-border-color: #aeafb2;
+
+$theme-ada-redemption-headline-color: #e9f4fe;
+$theme-ada-redemption-instructions-color: #e9f4fe;
+
+$theme-ada-redemption-success-overlay-background-color: rgba(#263345, 0.88);
+$theme-ada-redemption-success-overlay-message-color: #e9f4fe;
+$theme-ada-redemption-success-overlay-button-text-color: #e9f4fe;
+$theme-ada-redemption-success-overlay-button-text-color-hover: #263345;
+$theme-ada-redemption-success-overlay-button-background-color-hover: #e9f4fe;
+
+$theme-ada-redemption-disclaimer-background-color: rgba(171, 23, 0, 0.94);
+$theme-ada-redemption-disclaimer-text-color: #fafbfc;
+$theme-ada-redemption-disclaimer-button-background-color: #ab1700;
+$theme-ada-redemption-disclaimer-button-text-color: #fafbfc;
+$theme-ada-redemption-disclaimer-button-background-color-hover: #fafbfc;
+$theme-ada-redemption-disclaimer-button-text-color-hover: #ab1700;
+$theme-ada-redemption-disclaimer-checkbox-color-check: #fafbfc;
+$theme-ada-redemption-disclaimer-checkbox-color-checked: #fafbfc;
+$theme-ada-redemption-disclaimer-checkbox-color-after: #ab1700;
+$theme-ada-redemption-disclaimer-checkbox-label-color: #fafbfc;
+$theme-ada-redemption-disclaimer-button-border-color: #fafbfc;
+
+$theme-mnemonic-background-color: #e4e7ec;
+
+$theme-instructions-text-color: #5e6066;
+
+$theme-backup-mnemonic-background-color: rgba(68, 91, 124, 0.05);
+
+$theme-wallet-password-switch-label-color: #5e6066;
+$theme-wallet-password-switch-top-border-color: #dfe4e8;
+
+$theme-terms-of-use-text-color: #e9f4fe;
+
+$theme-support-settings-text-color: #e9f4fe;
+$theme-support-settings-switch-label-color: #6e7b7e;
+
+$theme-switch-label-color: #e9f4fe;
+
+$theme-send-logs-text-color: #e9f4fe;
+
+$theme-checkbox-label-color: #e9f4fe;
+$theme-checkbox-border-color: #536370;
+$theme-checkbox-background-color-checked: #536370;
+
+$theme-dialog-checkbox-label-color: #8793a1;
+$theme-dialog-switch-label-color: #8793a1;
+
+$theme-input-remove-color-dark: #d34452;
+$theme-input-remove-color-light: #ea4c5b;
+$theme-input-remove-color-lighter: #ec5d6b;
+
+$theme-choice-tabs-text-color: #e9f4fe;
+$theme-choice-tabs-text-color-active: #e9f4fe;
+$theme-choice-tabs-bottom-border-color-active: #e9f4fe;
+
+$theme-dialog-choice-tabs-text-color: #5e6066;
+$theme-dialog-choice-tabs-text-color-active: #5e6066;
+$theme-dialog-choice-tabs-bottom-border-color-active: #5e6066;
+
+$theme-dialog-big-button-background-color: #f1f3f5;
+$theme-dialog-big-button-border-color: #d7dce0;
+$theme-dialog-big-button-label-color: #5e6066;
+$theme-dialog-big-button-description-color: #5e6066;
+
+$theme-dialog-title-color: #5e6066;
+
+$theme-transactions-card-background-color: #e6ebf2;
+$theme-transactions-card-income-background-color: #e6ebf2;
+$theme-transactions-card-expend-background-color: #f2e6e6;
+$theme-transactions-card-exchange-background-color: #f2e6e6;
+
+$theme-transactions-priority-color: #fff;
+$theme-transactions-priority-low-background-color: #ab1700;
+$theme-transactions-priority-medium-background-color: #e6aa00;
+$theme-transactions-priority-heigh-background-color: #007600;
+
+$theme-test-environment-label-background-color: #ab1700;
+$theme-test-environment-label-text-color: #fafbfc;
+
+$theme-loading-background-color: #ebeff2;
+
+$theme-connecting-background-color: #345078;
+
+$theme-staking-background-color: $theme-settings-body-background-color;
+$theme-staking-content-background-color: $theme-settings-pane-background-color;
+$theme-staking-content-border-color: $theme-settings-pane-border-color;
+$theme-staking-font-color-accent: $theme-settings-menu-item-text-color;
+$theme-staking-font-color-regular: $theme-settings-menu-item-text-color-active;
+
+$theme-node-update-background-color: $theme-settings-body-background-color;
+$theme-error-color: #de3226;
+
+
+
+// ==== TODO - replace with smarter logic ==== //
+
+$color-dark-grey-blue: #2f496e;
+$color-lighter-grey: #fafbfc;
+
+$text-color-placeholder: #5e6066;
+$text-color-regular: #a5a7ac;
+$text-color-accent: #5e6066;
+
+$theme-input-hint-font: $font-regular;
+
+
+
+
+

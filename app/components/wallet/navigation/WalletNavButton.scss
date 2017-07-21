@@ -42,12 +42,12 @@
 
 .normal {
   .container {
-    color: $wallet-nav-color;
+    color: $theme-nav-item-text-color;
   }
 
   &:hover {
     .container {
-      background-color: $wallet-nav-bg-color-hover;
+      background-color: $theme-nav-item-background-color-hover;
     }
     cursor: pointer;
   }
@@ -55,8 +55,8 @@
 
 .active {
   .container {
-    background-color: $wallet-nav-bg-color-active;
-    color: $wallet-nav-color-active;
+    background-color: $theme-nav-item-background-color-active;
+    color: $theme-nav-item-text-color-active;
   }
 
   &:hover {

@@ -9,8 +9,8 @@
 }
 
 .centeredBox {
-  background-color: $color-lighter-grey;
-  border: solid 1px $color-light-grey;
+  background-color: $theme-bordered-box-background-color;
+  border: solid 1px $theme-bordered-box-border-color;
   border-radius: 4px;
   padding: 30px 30px 20px;
   overflow: visible;

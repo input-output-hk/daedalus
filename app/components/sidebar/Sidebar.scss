@@ -1,7 +1,7 @@
 @import './sidebarConfig';
 
 .component {
-  background-color: $sidebar-bg;
+  background-color: $theme-sidebar-background-color;
   display: flex;
   height: 100%;
   overflow: hidden;

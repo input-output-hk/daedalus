@@ -7,10 +7,10 @@
       margin-top: 20px;
 
       .SimpleCheckbox_check {
-        border-color: $color-light-red;
+        border-color: $theme-input-remove-color-light;
 
         &.SimpleCheckbox_checked {
-          background: $color-light-red;
+          background: $theme-input-remove-color-light;
         }
       }
     }
@@ -25,16 +25,13 @@
   }
 
   .deleteButton {
-    background: $color-light-red;
+    background: $theme-input-remove-color-light !important;
     &:hover {
-      background: $color-lighter-red !important;
+      background: $theme-input-remove-color-lighter !important;
     }
     &:active {
-      background: $color-dark-red !important;
+      background: $theme-input-remove-color-dark !important;
     }
   }
 }
-
-
-
 

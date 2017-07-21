@@ -2,7 +2,7 @@
 
 .component {
   & > .label {
-    color: #5e6066;
+    color: $theme-support-settings-text-color;
     font-family: $font-semibold;
     font-size: 16px;
     line-height: 1.38;

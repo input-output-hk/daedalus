@@ -1,7 +1,7 @@
 @import './sidebarConfig';
 
 .component {
-  background-color: $sidebar-menu-bg;
+  background-color: $theme-sidebar-menu-background-color;
   display: none;
   height: 100%;
   overflow: hidden;

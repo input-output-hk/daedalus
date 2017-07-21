@@ -2,12 +2,6 @@
   margin-bottom: 20px;
   position: relative;
 
-  :global {
-    .SimpleFormField_label {
-      color: $theme-label-color !important;
-    }
-  }
-
   &.inactive {
     &:hover {
       input {
@@ -18,7 +12,7 @@
 
   .button {
     bottom: 13px;
-    color: $text-color-accent;
+    color: $theme-label-button-color;
     cursor: pointer;
     font-family: $font-light;
     font-size: 16px;
@@ -46,7 +40,7 @@
 
   .savingResultLabel {
     animation: animateSavingResultLabel 3s;
-    color: $text-color-accent;
+    color: $theme-input-right-floating-text-color;
     font-family: $font-light;
     font-size: 14px;
     opacity: 0;

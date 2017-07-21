@@ -1,5 +1,5 @@
 .component {
-  color: $theme-input-hint-color;
+  color: $theme-input-placeholder-color;
   font-family: $theme-input-hint-font;
   font-size: 16px;
   line-height: 1.38;
@@ -7,8 +7,8 @@
 
 .dropZone {
   align-items: center;
-  background-color: $theme-input-background-color;
-  border: solid 1px $color-light-grey;
+  background-color: inherit;
+  border: solid 1px $theme-uploader-border-color;
   border-radius: 2px;
   cursor: pointer;
   display: flex;
@@ -21,6 +21,7 @@
 }
 
 .label {
+  color: $theme-dialog-input-label-color;
   font-family: $font-semibold;
   margin-bottom: 10px;
 }

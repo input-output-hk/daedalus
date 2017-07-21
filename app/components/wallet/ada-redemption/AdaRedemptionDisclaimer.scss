@@ -1,9 +1,9 @@
 .component {
   align-items: center;
-  background-color: rgba(171, 23, 0, 0.94);
+  background-color: $theme-ada-redemption-disclaimer-background-color;
   bottom: 0;
   box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25);
-  color: #fafbfc;
+  color: $theme-ada-redemption-disclaimer-text-color;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -38,10 +38,10 @@
   }
 
   button {
-    background-color: #ab1700;
-    border: solid 1px #fafbfc;
+    background-color: $theme-ada-redemption-disclaimer-button-background-color;
+    border: solid 1px $theme-ada-redemption-disclaimer-button-border-color;
     border-radius: 5px;
-    color: #fafbfc;
+    color: $theme-ada-redemption-disclaimer-button-text-color;
     cursor: pointer;
     height: 50px;
     font-size: 14px;
@@ -51,8 +51,8 @@
 
     &:not(.disabled) {
       &:hover {
-        background-color: #fafbfc;
-        color: #ab1700;
+        background-color: $theme-ada-redemption-disclaimer-button-background-color-hover;
+        color: $theme-ada-redemption-disclaimer-button-text-color-hover;
       }
     }
 
@@ -69,19 +69,19 @@
       padding-top: 20px;
 
       .SimpleCheckbox_check {
-        border-color: #fafbfc;
+        border-color: $theme-ada-redemption-disclaimer-checkbox-color-check;
 
         &.SimpleCheckbox_checked {
-          background-color: #fafbfc;
+          background-color: $theme-ada-redemption-disclaimer-checkbox-color-checked;
 
           &:after {
-            border-color: #ab1700;
+            border-color: $theme-ada-redemption-disclaimer-checkbox-color-after;
           }
         }
       }
 
       .SimpleCheckbox_label {
-        color: #fafbfc;
+        color: $theme-ada-redemption-disclaimer-checkbox-label-color;
       }
     }
   }

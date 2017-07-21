@@ -4,7 +4,7 @@
 // Css module overrides go here …
 
 .root {
-  background: $button-up-bg;
+  background: $theme-button-background-color;
   font-size: 14px;
   font-family: $font-medium;
   position: relative;
@@ -16,16 +16,18 @@
 :global {
   .primary {
     &[disabled] {
-      color: #fff;
+      background: $theme-button-background-color;
+      color: $theme-button-text-color;
       opacity: 0.3;
     }
     &:not([disabled]) {
-      color: #fff;
+      color: $theme-button-text-color;
+      background: $theme-button-background-color;
       &:hover {
-        background: $button-hover-bg;
+        background: $theme-button-background-color-hover;
       }
       &:active {
-        background: $button-pressed-bg;
+        background: $theme-button-background-color;
       }
     }
   }

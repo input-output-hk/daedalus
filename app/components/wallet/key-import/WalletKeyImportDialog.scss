@@ -16,7 +16,7 @@
     padding-top: 20px;
 
     & > .passwordLabel {
-      color: #5e6066;
+      color: $theme-wallet-password-switch-label-color;
       font-family: $font-semibold;
       font-size: 16px;
       line-height: 1.38;
@@ -45,7 +45,7 @@
     }
 
     .passwordInstructions {
-      color: $text-color-accent;
+      color: $theme-instructions-text-color;
       font-family: $font-light;
       line-height: 1.38;
       margin: 16px 0 20px;

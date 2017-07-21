@@ -5,7 +5,7 @@
   transition: background-color 500ms;
   width: 100%;
   &.is-connecting {
-    background-color: $color-primary;
+    background-color: $theme-connecting-background-color;
   }
 }
 

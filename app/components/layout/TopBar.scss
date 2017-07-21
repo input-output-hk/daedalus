@@ -1,6 +1,6 @@
 .topBar {
   align-items: center;
-  background: $color-primary-dark;
+  background: $theme-topbar-background-color;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.25);
   display: flex;
   height: 84px;
@@ -9,20 +9,21 @@
   z-index: 100;
 
   &.withoutWallet {
-    background: $color-primary-dark url("../../assets/images/header-logo.svg") no-repeat center !important;
+    background: $theme-topbar-background-color url("../../assets/images/header-logo.svg") no-repeat center !important;
     background-size: 61px !important;
     box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25) !important;
   }
 
   &.withWallet {
     .walletInfo {
-      color: $color-lighter-grey;
+      color: $theme-topbar-wallet-info-color;
       font-family: $font-regular;
       text-align: center;
       text-shadow: 0 2.5px 10px rgba(0, 0, 0, 0.25);
 
       .walletName {
         font-size: 21px;
+        color: $theme-topbar-wallet-name-color;
       }
 
       .walletAmount {
@@ -52,3 +53,4 @@
     flex-grow: 1;
   }
 }
+

@@ -1,6 +1,6 @@
 .component {
-  background: $color-lighter-grey;
-  border: solid 1px $color-light-grey;
+  background: $theme-bordered-box-background-color;
+  border: solid 1px $theme-bordered-box-border-color;
   border-radius: 4px;
   padding: 20px 30px;
 }

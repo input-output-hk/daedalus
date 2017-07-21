@@ -5,7 +5,7 @@ $type-box-size: 54px;
 .component {
   width: 100%;
   display: flex;
-  color: #5e6066;
+  color: $theme-transactions-list-item-details-color;
 }
 
 // ========= TYPE INDICATORS FOR TRANSACTIONS =========
@@ -21,26 +21,26 @@ $type-box-size: 54px;
 
 .card {
   @extend %type-box;
-  background-color: #e6ebf2;
+  background-color: $theme-transactions-card-background-color;
   background-image: url("../../assets/images/card-payment-ic.svg");
 }
 
 .adaIncome {
   @extend %type-box;
-  background-color: #e6f2e6;
+  background-color: $theme-transactions-card-income-background-color;
   background-image: url("../../assets/images/receive-ic.svg");
 }
 
 .adaExpend {
   @extend %type-box;
-  background-color: #f2e6e6;
+  background-color: $theme-transactions-card-expend-background-color;
   background-image: url("../../assets/images/send-ic.svg");
   background-position-y: 7px;
 }
 
 .exchange {
   @extend %type-box;
-  background-color: #f2f0e6;
+  background-color: $theme-transactions-card-exchange-background-color;
   background-image: url("../../assets/images/exchange-ic.svg");
 }
 
@@ -49,7 +49,7 @@ $type-box-size: 54px;
 .content {
   width: calc(100% - #{$type-box-size});
   padding-left: 20px;
-  border-bottom: 1px solid #dfe4e8;
+  border-bottom: 1px solid $theme-transactions-list-content-bottom-border-color;
   padding-bottom: 22px;
   padding-top: 6px;
 }
@@ -89,12 +89,14 @@ $type-box-size: 54px;
 }
 
 .header {
+  color: $theme-transactions-list-item-header-color;
   display: flex;
   width: 100%;
   cursor: pointer;
 }
 
 .details {
+  color: $theme-transactions-list-item-details-color;
   display: flex;
   width: 100%;
 }
@@ -114,7 +116,7 @@ $type-box-size: 54px;
 
 .low, .medium, .high {
   border-radius: 3px;
-  color: #fff;
+  color: $theme-transactions-priority-color;
   display: inline-block;
   font-family: $font-bold;
   font-size: 8px;
@@ -126,15 +128,15 @@ $type-box-size: 54px;
 }
 
 .low {
-  background-color: #ab1700;
+  background-color: $theme-transactions-priority-low-background-color;
 }
 
 .medium {
-  background-color: #e6aa00;
+  background-color: $theme-transactions-priority-medium-background-color;
 }
 
 .high {
-  background-color: #007600;
+  background-color: $theme-transactions-priority-heigh-background-color;
 }
 
 .assuranceLevel {

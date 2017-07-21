@@ -2,7 +2,7 @@
   font-size: 16px;
   line-height: 1.38;
   font-family: $font-regular;
-  color: #5e6066;
+  color: $theme-uploader-text-color;
 }
 
 .label {
@@ -15,7 +15,7 @@
   width: 154px;
   height: 154px;
   border-radius: 2px;
-  border: solid 1px $color-light-grey;
+  border: solid 1px $theme-uploader-border-color;
   display: flex;
   align-items: center;
 }

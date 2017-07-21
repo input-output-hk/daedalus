@@ -4,7 +4,7 @@
   font-size: 14px;
   line-height: 1.36;
   letter-spacing: 0.5px;
-  color: $text-color-accent;
+  color: $theme-bordered-box-text-color;
 }
 
 .component {
@@ -16,7 +16,7 @@
   font-size: 16px;
   line-height: 1.38;
   letter-spacing: 0.5px;
-  color: $text-color-accent;
+  color: $theme-bordered-box-text-color;
   margin-bottom: 11px;
 }
 
@@ -24,7 +24,7 @@
   font-family: $font-thin;
   font-size: 40px;
   line-height: 1.0;
-  color: $text-color-accent;
+  color: $theme-bordered-box-text-color;
   margin-bottom: 11px;
   img {
     margin-left: 10px;

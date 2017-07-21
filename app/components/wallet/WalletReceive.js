@@ -147,6 +147,7 @@ export default class WalletReceive extends Component {
     ]);
 
     const generateAddressButtonClasses = classnames([
+      'primary',
       'generateAddressButton',
       walletHasPassword ? styles.submitWithPasswordButton : styles.submitButton,
       isSubmitting ? styles.spinning : null,
