@@ -94,7 +94,7 @@ $ npm run test
 $ npm run test-watch
 ```
 
-You can find more details regarding tests setup within [Running Deadalus acceptance tests](https://github.com/input-output-hk/daedalus/features/README.md) README file.
+You can find more details regarding tests setup within [Running Deadalus acceptance tests](https://github.com/input-output-hk/daedalus/blob/master/features/README.md) README file.
 
 ### CSS Modules
 
