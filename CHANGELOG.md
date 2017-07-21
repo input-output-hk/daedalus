@@ -86,6 +86,7 @@ Changelog
 - Testnet version on the testnet label bumped from 0.3 to 0.5
 - Replaced all React-Toolbox components with React-Polymorph ones ([PR 361](https://github.com/input-output-hk/daedalus/pull/361))
 - Temporary workaround for missing Japanese translations for Terms of Use that allows users to accept them in English
+- Added readme file for running acceptance tests ([PR 395](https://github.com/input-output-hk/daedalus/pull/395))
 
 ## 0.6.2
 
