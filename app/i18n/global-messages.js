@@ -120,5 +120,5 @@ export default defineMessages({
     id: 'wallet.backup.recovery.phrase.dialog.title',
     defaultMessage: '!!!Recovery phrase',
     description: 'Title for the "Recovery Phrase" dialog.'
-  },
+  }
 });
