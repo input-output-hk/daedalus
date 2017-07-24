@@ -127,11 +127,11 @@ export default class Transaction extends Component {
 
     return (
       <div className={styles.component}>
-        <div className={styles[data.type]} />
-        <div className={contentStyles}>
 
-          {/* ==== Clickable Header -> toggles details ==== */}
-          <div className={styles.toggler} onClick={this.toggleDetails.bind(this)} role="presentation" aria-hidden>
+        {/* ==== Clickable Header -> toggles details ==== */}
+        <div className={styles.toggler} onClick={this.toggleDetails.bind(this)} role="presentation" aria-hidden>
+          <div className={styles[data.type]} />
+          <div className={styles.togglerContent}>
             <div className={styles.header}>
               <div className={styles.title}>
                 {data.type === 'adaExpend' ?
@@ -152,9 +152,10 @@ export default class Transaction extends Component {
               <div className={styles[assuranceLevel]}>{status}</div>
             </div>
           </div>
+        </div>
 
-          {/* ==== Toggleable Transaction Details ==== */}
-
+        {/* ==== Toggleable Transaction Details ==== */}
+        <div className={contentStyles}>
           <div className={detailsStyles}>
             {data.exchange && data.conversionRate && (
               <div className={styles.conversion}>
@@ -193,6 +194,7 @@ export default class Transaction extends Component {
             */}
           </div>
         </div>
+
       </div>
     );
   }
