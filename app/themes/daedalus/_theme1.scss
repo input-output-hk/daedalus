@@ -19,112 +19,17 @@ $font-bold: 'SFUIDisplay-Bold';
 $font-heavy: 'SFUIDisplay-Heavy';
 $font-black: 'SFUIDisplay-Black';
 
+$theme-input-hint-font: $font-regular;
 
 //  ==== BLACK THEME === //
-
-$theme-topbar-background-color: #202225;
-$theme-topbar-wallet-name-color: #fafbfc;
-$theme-topbar-wallet-info-color: #fafbfc;
-
-$theme-sidebar-background-color: #4a5058;
-
-$theme-sidebar-category-background-color-hover: #34383d;
-$theme-sidebar-category-background-color-active: #34383d;
-$theme-sidebar-category-text-color: #fafbfc;
-
-$theme-sidebar-menu-background-color: #34383d;
-
-$theme-sidebar-menu-item-background-color-hover: #202225;
-$theme-sidebar-menu-item-background-color-active: #202225;
-$theme-sidebar-menu-item-wallet-name-color: #fafbfc;
-$theme-sidebar-menu-item-wallet-info-color: #bdc0c1;
-
-$theme-sidebar-menu-add-button-background-color-active: #202225;
-$theme-sidebar-menu-add-button-background-color-hover: darken($theme-sidebar-menu-add-button-background-color-active, 2%);
-$theme-sidebar-menu-add-button-text-color: #fafbfc;
-
-$theme-nav-item-background-color: #202225;
-$theme-nav-item-background-color-hover: rgba(#fafbfc, 0.1);
-$theme-nav-item-background-color-active: #fafbfc;
-
-$theme-nav-item-text-color: #cecfd1;
-$theme-nav-item-text-color-active: #5e6066;
-
-$theme-main-body-background-color: #efefef;
-$theme-main-body-messages-color: #5e6066;
-
-$theme-topbar-layout-body-background-color: #ebeff2;
-
-$theme-settings-body-background-color: #efefef;
-$theme-settings-pane-background-color: #fafbfc;
-$theme-settings-pane-border-color: #c6cdd6;
-
-$theme-settings-menu-box-background-color: #fafbfc;
-$theme-settings-menu-box-border-color: #c6cdd6;
-$theme-settings-menu-item-text-color: #5e6066;
-$theme-settings-menu-item-text-color-active: #5e6066;
-$theme-settings-menu-item-text-color-enabled-hover: #5e6066;
-$theme-settings-menu-item-text-color-disabled: #b3b3b3;
-$theme-settings-menu-item-background-color-active: #edf0f3;
-$theme-settings-menu-item-left-border-color-active: #2cbb69;
-
-$theme-bordered-box-background-color: #fff;
-$theme-bordered-box-border-color: #c6cdd6;
-$theme-bordered-box-text-color: #5e6066;
-
-$theme-transactions-list-background-color: #fff;
-$theme-transactions-list-border-color: #c6cdd6;
-$theme-transactions-list-group-date-color: #a6a7aa;
-$theme-transactions-list-content-bottom-border-color: #dfdfe0;
-
-$theme-transactions-list-item-header-color: #5e6066;
-$theme-transactions-list-item-details-color: #5e6066;
-
-$theme-input-border-color: #c6cdd6;
-$theme-input-label-color: #5e6066;
-$theme-input-text-color: #5e6066;
-$theme-input-right-floating-text-color: #aeafb2;
-$theme-input-placeholder-color: #aeafb2;
-$theme-input-error-color: #de3226;
-
-$theme-dialog-input-label-color: #5e6066;
-$theme-dialog-input-text-color: #5e6066;
-$theme-dialog-input-right-floating-indicator-color: #5e6066;
-$theme-dialog-input-placeholder-color: #aeafb2;
-$theme-dialog-input-error-color: #de3226;
-
-$theme-button-background-color: #2cbb69;
-$theme-button-background-color-hover: rgba(#2cbb69, 0.8);
-$theme-button-text-color: #fafbfc;
-
-$theme-switch-background-color-checked: #2cbb69;
-$theme-switch-thumb-color-checked: #2cbb69;
-
-$theme-notification-message-background-color: rgba(#2cbb69, 0.8);
-$theme-notification-message-text-color: #fafbfc;
-
-$theme-label-button-color: #5e6066;
-
-$theme-choice-tabs-text-color: #5e6066;
-$theme-choice-tabs-text-color-active: #5e6066;
-$theme-choice-tabs-bottom-border-color-active: #5e6066;
-
-$theme-dialog-choice-tabs-text-color: #5e6066;
-$theme-dialog-choice-tabs-text-color-active: #5e6066;
-$theme-dialog-choice-tabs-bottom-border-color-active: #5e6066;
-
-$theme-uploader-text-color: #5e6066;
-$theme-uploader-border-color: #c6cdd6;
-
 $theme-ada-redemption-headline-color: #5e6066;
 $theme-ada-redemption-instructions-color: #5e6066;
-
 $theme-ada-redemption-success-overlay-background-color: rgba(#2cbb69, 0.88);
+$theme-ada-redemption-success-overlay-border-color: #fafbfc;
 $theme-ada-redemption-success-overlay-message-color: #fafbfc;
 $theme-ada-redemption-success-overlay-button-text-color: #fafbfc;
 $theme-ada-redemption-success-overlay-button-text-color-hover: #2cbb69;
 $theme-ada-redemption-success-overlay-button-background-color-hover: #fafbfc;
-
 $theme-ada-redemption-disclaimer-background-color: rgba(171, 23, 0, 0.94);
 $theme-ada-redemption-disclaimer-text-color: #fafbfc;
 $theme-ada-redemption-disclaimer-button-background-color: #ab1700;
@@ -137,78 +42,150 @@ $theme-ada-redemption-disclaimer-checkbox-color-after: #ab1700;
 $theme-ada-redemption-disclaimer-checkbox-label-color: #fafbfc;
 $theme-ada-redemption-disclaimer-button-border-color: #fafbfc;
 
-$theme-mnemonic-background-color: #e4e7ec;
-$theme-instructions-text-color: #5e6066;
+$theme-bordered-box-background-color: #fff;
+$theme-bordered-box-border-color: #c6cdd6;
+$theme-bordered-box-text-color: #5e6066;
 
-$theme-backup-mnemonic-background-color: rgba(68, 91, 124, 0.05);
-
-$theme-wallet-password-switch-label-color: #5e6066;
-$theme-wallet-password-switch-top-border-color: #dfe4e8;
-
-$theme-terms-of-use-text-color: #5e6066;
-$theme-support-settings-text-color: #5e6066;
-$theme-support-settings-switch-label-color: #5e6066;
-$theme-switch-label-color: #5e6066;
-
-$theme-send-logs-text-color: #5e6066;
+$theme-button-background-color: #2cbb69;
+$theme-button-background-color-hover: rgba(#2cbb69, 0.8);
+$theme-button-text-color: #fafbfc;
 
 $theme-checkbox-label-color: #5e6066;
 $theme-checkbox-border-color: #2cbb69;
 $theme-checkbox-background-color-checked: #2cbb69;
 
-$theme-dialog-checkbox-label-color: #aeafb2;
-$theme-dialog-switch-label-color: #aeafb2;
+$theme-choice-tabs-text-color: #5e6066;
+$theme-choice-tabs-text-color-active: #5e6066;
+$theme-choice-tabs-bottom-border-color-active: #5e6066;
 
+$theme-dialog-input-label-color: #5e6066;
+$theme-dialog-input-text-color: #5e6066;
+$theme-dialog-input-right-floating-indicator-color: #5e6066;
+$theme-dialog-input-placeholder-color: #aeafb2;
+$theme-dialog-input-error-color: #de3226;
+$theme-dialog-switch-label-color: #5e6066;
+$theme-dialog-choice-tabs-text-color: #5e6066;
+$theme-dialog-choice-tabs-text-color-active: #5e6066;
+$theme-dialog-choice-tabs-bottom-border-color-active: #5e6066;
+$theme-dialog-checkbox-label-color: #aeafb2;
 $theme-dialog-big-button-background-color: #f1f3f5;
 $theme-dialog-big-button-border-color: #d7dce0;
 $theme-dialog-big-button-label-color: #5e6066;
 $theme-dialog-big-button-description-color: #5e6066;
-
 $theme-dialog-title-color: #5e6066;
+$theme-dialog-separation-border-color: #dfe4e8;
 
+$theme-input-border-color: #c6cdd6;
+$theme-input-label-color: #5e6066;
+$theme-input-text-color: #5e6066;
+$theme-input-right-floating-text-color: #aeafb2;
+$theme-input-placeholder-color: #aeafb2;
+$theme-input-error-color: #de3226;
 $theme-input-remove-color-dark: #d34452;
 $theme-input-remove-color-light: #ea4c5b;
 $theme-input-remove-color-lighter: #ec5d6b;
 
-$theme-transactions-card-background-color: #e6ebf2;
-$theme-transactions-card-income-background-color: #e6ebf2;
-$theme-transactions-card-expend-background-color: #f2e6e6;
-$theme-transactions-card-exchange-background-color: #f2e6e6;
+$theme-main-body-background-color: #efefef;
+$theme-main-body-messages-color: #5e6066;
 
-$theme-transactions-priority-color: #fff;
-$theme-transactions-priority-low-background-color: #ab1700;
-$theme-transactions-priority-medium-background-color: #e6aa00;
-$theme-transactions-priority-heigh-background-color: #007600;
+$theme-nav-item-background-color: #202225;
+$theme-nav-item-background-color-hover: rgba(#fafbfc, 0.1);
+$theme-nav-item-background-color-active: #fafbfc;
+$theme-nav-item-text-color: #cecfd1;
+$theme-nav-item-text-color-active: #5e6066;
 
-$theme-test-environment-label-background-color: #ab1700;
-$theme-test-environment-label-text-color: #fafbfc;
+$theme-node-update-background-color: $theme-main-body-background-color;
+$theme-node-update-title-color: #5e6066;
+$theme-node-update-message-color: #5e6066;
+$theme-node-sync-info-message-background-color: #fafbfc;
+$theme-node-sync-info-message-text-color: #5e6066;
 
-$theme-loading-background-color: #ebeff2;
-$theme-connecting-background-color: #345078;
+$theme-notification-message-background-color: rgba(#2cbb69, 0.8);
+$theme-notification-message-text-color: #fafbfc;
 
-$theme-staking-background-color: $theme-settings-body-background-color;
+$theme-settings-body-background-color: #efefef;
+$theme-settings-pane-background-color: #fafbfc;
+$theme-settings-pane-border-color: #c6cdd6;
+$theme-settings-menu-box-background-color: #fafbfc;
+$theme-settings-menu-box-border-color: #c6cdd6;
+$theme-settings-menu-item-text-color: #5e6066;
+$theme-settings-menu-item-text-color-active: #5e6066;
+$theme-settings-menu-item-text-color-enabled-hover: #5e6066;
+$theme-settings-menu-item-text-color-disabled: #b3b3b3;
+$theme-settings-menu-item-background-color-active: #edf0f3;
+$theme-settings-menu-item-left-border-color-active: #2cbb69;
+
+$theme-sidebar-background-color: #4a5058;
+$theme-sidebar-category-background-color-hover: #34383d;
+$theme-sidebar-category-background-color-active: #34383d;
+$theme-sidebar-category-text-color: #fafbfc;
+$theme-sidebar-menu-background-color: #34383d;
+$theme-sidebar-menu-item-background-color-hover: #202225;
+$theme-sidebar-menu-item-background-color-active: #202225;
+$theme-sidebar-menu-item-wallet-name-color: #fafbfc;
+$theme-sidebar-menu-item-wallet-info-color: #bdc0c1;
+$theme-sidebar-menu-add-button-background-color-active: #202225;
+$theme-sidebar-menu-add-button-background-color-hover: darken($theme-sidebar-menu-add-button-background-color-active, 2%);
+$theme-sidebar-menu-add-button-text-color: #fafbfc;
+
+$theme-staking-background-color: $theme-main-body-background-color;
 $theme-staking-content-background-color: $theme-settings-pane-background-color;
 $theme-staking-content-border-color: $theme-settings-pane-border-color;
 $theme-staking-font-color-accent: $theme-settings-menu-item-text-color;
 $theme-staking-font-color-regular: $theme-settings-menu-item-text-color-active;
 
-$theme-node-update-background-color: $theme-settings-body-background-color;
+$theme-switch-background-color-checked: #2cbb69;
+$theme-switch-thumb-color-checked: #2cbb69;
+$theme-switch-label-color: #5e6066;
 
-$theme-error-color: #de3226;
+$theme-test-environment-label-background-color: #ab1700;
+$theme-test-environment-label-text-color: #fafbfc;
 
+$theme-topbar-background-color: #202225;
+$theme-topbar-wallet-name-color: #fafbfc;
+$theme-topbar-wallet-info-color: #fafbfc;
+$theme-topbar-layout-body-background-color: #ebeff2;
 
-// ==== TODO - replace with smarter logic ==== //
+$theme-transactions-list-background-color: #fff;
+$theme-transactions-list-border-color: #c6cdd6;
+$theme-transactions-list-group-date-color: #a6a7aa;
+$theme-transactions-list-item-header-color: #5e6066;
+$theme-transactions-list-item-details-color: #5e6066;
+$theme-transactions-card-background-color: #e6ebf2;
+$theme-transactions-card-income-background-color: #e6ebf2;
+$theme-transactions-card-expend-background-color: #f2e6e6;
+$theme-transactions-card-exchange-background-color: #f2e6e6;
+$theme-transactions-priority-color: #fff;
+$theme-transactions-priority-low-background-color: #ab1700;
+$theme-transactions-priority-medium-background-color: #e6aa00;
+$theme-transactions-priority-heigh-background-color: #007600;
+$theme-transactions-search-background-color: #fafbfc;
 
-$color-dark-grey-blue: #2f496e;
-$color-lighter-grey: #fafbfc;
+$theme-uploader-text-color: #5e6066;
+$theme-uploader-border-color: #c6cdd6;
 
-$text-color-placeholder: #5e6066;
-$text-color-regular: #a5a7ac;
-$text-color-accent: #5e6066;
+$theme-backup-mnemonic-background-color: rgba(68, 91, 124, 0.05);
 
-$theme-input-hint-font: $font-regular;
+$theme-block-generation-info-color: #5e6066;
 
+$theme-connecting-background-color: #345078;
 
+$theme-error-color: #ea4c5b;
 
+$theme-instructions-text-color: #5e6066;
 
+$theme-label-button-color: #5e6066;
 
+$theme-loading-background-color: #ebeff2;
+
+$theme-mnemonic-background-color: #e4e7ec;
+
+$theme-send-logs-text-color: #5e6066;
+
+$theme-separation-border-color: #dfe4e8;
+
+$theme-support-settings-text-color: #5e6066;
+
+$theme-terms-of-use-text-color: #5e6066;
+
+$theme-wallet-password-switch-label-color: #5e6066;

@@ -179,7 +179,7 @@
     word-break: break-all;
 
     & + .walletAddress {
-      border-top: 1px solid #dfe4e8;
+      border-top: 1px solid $theme-separation-border-color;
     }
 
     .addressId {

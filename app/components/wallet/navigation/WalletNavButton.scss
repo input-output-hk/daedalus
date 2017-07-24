@@ -1,5 +1,3 @@
-@import './_walletNavConfig';
-
 // ========= LAYOUT =========
 
 .component {
@@ -23,7 +21,8 @@
 }
 
 .label {
-  @include walletNavLabelFont;
+  font-size: 14px;
+  font-family: $font-regular;
   display: block;
   overflow: visible;
 }

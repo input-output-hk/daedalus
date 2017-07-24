@@ -1,15 +1,8 @@
 %actionButton {
   width: 150px;
   height: 33px;
-  border-radius: 5px;
-  font-family: $font-medium;
-  font-size: 14px;
-  line-height: 1.36;
-  text-align: center;
-  color: #fafbfc;
   margin-left: 10px;
   margin-bottom: 20px;
-  cursor: pointer;
 }
 
 .component {
@@ -20,18 +13,16 @@
   flex-direction: column;
   .acceptButton {
     @extend %actionButton;
-    background-color: #445b7c;
     padding: 0;
-    &:hover {
-      background-color: darken(#445b7c, 10%);
-    }
   }
   .denyButton {
     @extend %actionButton;
-    background-color: #afb9c6;
+    background-color: $theme-button-background-color;
+    opacity: 0.3;
     padding: 0;
     &:hover {
-      background-color: darken(#afb9c6, 10%);
+      background-color: $theme-button-background-color;
+      opacity: 0.5;
     }
   }
 }
@@ -45,7 +36,7 @@
   font-family: $font-medium;
   font-size: 16px;
   line-height: 1.38;
-  color: $text-color-accent;
+  color: $theme-node-update-title-color;
   flex-grow: 1;
   margin-bottom: 10px;
 }
@@ -56,28 +47,12 @@
   font-size: 14px;
   line-height: 1.36;
   letter-spacing: 0.5px;
-  color: $text-color-accent;
+  color: $theme-node-update-message-color;
 }
 
 .actions {
   margin-top: 20px;
   margin-left: auto;
-}
-
-.acceptButton {
-  @extend %actionButton;
-  background-color: #445b7c;
-  &:hover {
-    background-color: darken(#445b7c, 10%);
-  }
-}
-
-.denyButton {
-  @extend %actionButton;
-  background-color: #afb9c6;
-  &:hover {
-    background-color: darken(#afb9c6, 10%);
-  }
 }
 
 .toggleButton {

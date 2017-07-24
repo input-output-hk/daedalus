@@ -49,7 +49,7 @@ $type-box-size: 54px;
 .content {
   width: calc(100% - #{$type-box-size});
   padding-left: 20px;
-  border-bottom: 1px solid $theme-transactions-list-content-bottom-border-color;
+  border-bottom: 1px solid $theme-separation-border-color;
   padding-bottom: 22px;
   padding-top: 6px;
 }

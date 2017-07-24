@@ -35,7 +35,7 @@
 
   .confirmButton {
     background: none;
-    border: solid 1px #fafbfc;
+    border: solid 1px $theme-ada-redemption-success-overlay-border-color;
     border-radius: 5px;
     color: $theme-ada-redemption-success-overlay-button-text-color;
     cursor: pointer;

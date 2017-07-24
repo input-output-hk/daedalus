@@ -14,7 +14,7 @@
       background: url("../../../assets/images/search-ic.svg") no-repeat 20px center;
       background-size: 15px;
       padding: 16px 1rem 16px 52px;
-      background-color: $color-lighter-grey;
+      background-color: $theme-transactions-search-background-color;
       font-family: $font-regular;
       &:focus {
         background: url("../../../assets/images/search-ic-dark.svg") no-repeat 20px center;

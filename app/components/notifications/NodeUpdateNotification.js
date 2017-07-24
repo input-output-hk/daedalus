@@ -43,6 +43,15 @@ export default class NodeUpdateNotification extends Component {
     const arrowClasses = classnames([
       isExpanded ? styles.arrow : styles.arrowCollapsed
     ]);
+    const acceptButtonClasses = classnames([
+      'primary',
+      styles.acceptButton,
+    ]);
+    const denyButtonClasses = classnames([
+      'primary',
+      styles.denyButton,
+    ]);
+
     return (
       <div className={styles.component}>
         <div className={styles.titleBar}>
@@ -62,14 +71,14 @@ export default class NodeUpdateNotification extends Component {
           <div className={styles.actions}>
 
             <Button
-              className={styles.acceptButton}
+              className={acceptButtonClasses}
               label={intl.formatMessage(messages.acceptLabel)}
               onClick={onAccept}
               skin={<SimpleButtonSkin />}
             />
 
             <Button
-              className={styles.denyButton}
+              className={denyButtonClasses}
               label={intl.formatMessage(messages.denyLabel)}
               onClick={onPostpone}
               skin={<SimpleButtonSkin />}
