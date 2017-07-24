@@ -42,6 +42,7 @@ import {
   WalletKeyImportError,
   NotEnoughMoneyToSendError,
   IncorrectWalletPasswordError,
+  NotAllowedToSendMoneyToSameAddressError,
 } from './errors';
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 
@@ -242,6 +243,10 @@ export default class CardanoClientApi {
       return _createTransactionFromServerData(response);
     } catch (error) {
       Log.error('CardanoClientApi::createTransaction error: ' + stringifyError(error));
+      // eslint-disable-next-line max-len
+      if (error.message.includes('It\'s not allowed to send money to the same address you are sending from')) {
+        throw new NotAllowedToSendMoneyToSameAddressError();
+      }
       if (error.message.includes('Not enough money')) {
         throw new NotEnoughMoneyToSendError();
       }
