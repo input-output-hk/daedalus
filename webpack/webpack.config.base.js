@@ -7,23 +7,33 @@ const fs = require('fs');
 const validate = require('webpack-validator');
 const webpack = require('webpack');
 const HappyPack = require('happypack');
+const ContextReplacementPlugin = require("webpack/lib/ContextReplacementPlugin");
+const DllReferencePlugin = require("webpack/lib/DllReferencePlugin");
 
 module.exports = validate({
+  cache: true,
   module: {
     loaders: [{
       test: /\.jsx?$/,
       loader: 'happypack/loader',
-      exclude: /node_modules/,
+      include: [
+        path.join(__dirname, '../app'),
+        path.join(__dirname, '../lib'),
+        path.join(__dirname, '../electron'),
+      ],
+      query: {
+        cacheDirectory: true,
+      }
     }, {
       test: /\.json$/,
-      loader: 'json-loader'
+      loader: 'json-loader',
     }, {
       test: /\.md$/,
-      loader: "html!markdown?gfm=false"
+      loader: "html!markdown?gfm=false",
     },
     {
       test: /\.(?:png|jpg|svg|otf|ttf)$/,
-      loader: 'url-loader'
+      loader: 'url-loader',
     }]
   },
 
@@ -49,12 +59,17 @@ module.exports = validate({
     }),
     new HappyPack({
       loaders: ['babel-loader'],
-    })
+    }),
+    new ContextReplacementPlugin(/moment[\\\/]locale$/, /^\.\/(en|ja|de|hr)$/),
+    new DllReferencePlugin({
+      context: path.join(__dirname, "../app"),
+      manifest: require("../dll/vendor-manifest.json")
+    }),
   ],
 
   externals: [
     // put your node 3rd party libraries which can't be built with webpack here
     // (mysql, mongodb, and so on..)
-    'daedalus-client-api',
-  ]
+  ],
+
 });

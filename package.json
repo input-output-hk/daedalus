@@ -29,7 +29,8 @@
     "build-storybook": "build-storybook",
     "flow-test": "flow; test $? -eq 0 -o $? -eq 2",
     "manage-translations": "node ./translations/translation-runner.js",
-    "purge-translations": "rm -rf ./translations/messages/app"
+    "purge-translations": "rm -rf ./translations/messages/app",
+    "build-dll": "webpack --config=webpack/webpack.config.dll.js"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
