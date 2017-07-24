@@ -6,12 +6,13 @@ const path = require('path');
 const fs = require('fs');
 const validate = require('webpack-validator');
 const webpack = require('webpack');
+const HappyPack = require('happypack');
 
 module.exports = validate({
   module: {
     loaders: [{
       test: /\.jsx?$/,
-      loader: 'babel-loader',
+      loader: 'happypack/loader',
       exclude: /node_modules/,
     }, {
       test: /\.json$/,
@@ -46,10 +47,14 @@ module.exports = validate({
       'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
       'process.env.DAEDALUS_VERSION': JSON.stringify(process.env.DAEDALUS_VERSION || 'dev')
     }),
+    new HappyPack({
+      loaders: ['babel-loader'],
+    })
   ],
 
   externals: [
     // put your node 3rd party libraries which can't be built with webpack here
     // (mysql, mongodb, and so on..)
+    'daedalus-client-api',
   ]
 });
