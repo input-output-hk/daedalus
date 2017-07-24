@@ -38,7 +38,7 @@ Changelog
 - UI for displaying transaction fees on wallet send screen
 - Correct placeholder text for Ada redemption "Ada amount" input
 - Opt-in mode for sending logs to the remote server
-- Setup environment variable for testnet/mainnet mode
+- Setup environment variable for testnet/mainnet mode ([PR 400](https://github.com/input-output-hk/daedalus/pull/400))
 
 ### Fixes
 
