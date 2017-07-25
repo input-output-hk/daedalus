@@ -38,6 +38,7 @@ Changelog
 - UI for displaying transaction fees on wallet send screen
 - Correct placeholder text for Ada redemption "Ada amount" input
 - Opt-in mode for sending logs to the remote server
+- Added support for Cmd+H hotkey shortcut for hiding application window on OSX ([PR 404](https://github.com/input-output-hk/daedalus/pull/404))
 
 ### Fixes
 
