@@ -459,10 +459,11 @@ export default class CardanoClientApi {
     try {
       const response = await ClientApi.syncProgress(tlsConfig);
       Log.debug('CardanoClientApi::syncProgress success: ', stringifyData(response));
-      const localDifficulty = response._spLocalCD.getChainDifficulty;
+      const localDifficulty = response._spLocalCD.getChainDifficulty.getBlockCount;
       // In some cases we dont get network difficulty & we need to wait for it from the notify API
       let networkDifficulty = null;
-      if (response._spNetworkCD) networkDifficulty = response._spNetworkCD.getChainDifficulty;
+      if (response._spNetworkCD) networkDifficulty = response._spNetworkCD.getChainDifficulty.getBlockCount;
+      console.log({ localDifficulty, networkDifficulty });
       return { localDifficulty, networkDifficulty };
     } catch (error) {
       Log.error('CardanoClientApi::syncProgress error: ' + stringifyError(error));
