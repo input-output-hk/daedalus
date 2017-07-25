@@ -3,7 +3,7 @@ const environment = Object.assign({
   DEVELOPMENT: 'development',
   TEST: 'test',
   PRODUCTION: 'production',
-  NETWORK: process.env.NETWORK || 'development', // options: mainnet | testnet | staging | development
+  NETWORK: process.env.NETWORK,
   CARDANO_API: process.env.CARDANO_API,
   MOBX_DEV_TOOLS: process.env.MOBX_DEV_TOOLS,
   current: process.env.NODE_ENV,
