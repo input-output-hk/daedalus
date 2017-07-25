@@ -9,9 +9,14 @@
     border: 1px solid $theme-input-border-color;
     color: $theme-input-text-color;
 
+    &[disabled] {
+      color: $theme-input-placeholder-color;
+    }
+
     &::-webkit-input-placeholder {
       color: $theme-input-placeholder-color;
     }
+
   }
 
   & > .errored {
@@ -21,6 +26,11 @@
 
 .disabled {
   background-color: inherit;
+  :global {
+    .SimpleFormField_label {
+      color: $theme-input-label-color;
+    }
+  }
 }
 
 :global {

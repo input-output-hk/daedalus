@@ -4,7 +4,7 @@
 // Css module overrides go here …
 
 .root {
-  background: $theme-button-background-color;
+  background: $theme-button-primary-background-color;
   font-size: 14px;
   font-family: $font-medium;
   position: relative;
@@ -16,33 +16,33 @@
 :global {
   .primary {
     &[disabled] {
-      background: $theme-button-background-color;
-      color: $theme-button-text-color;
+      background: $theme-button-primary-background-color;
+      color: $theme-button-primary-text-color;
       opacity: 0.3;
     }
     &:not([disabled]) {
-      color: $theme-button-text-color;
-      background: $theme-button-background-color;
+      color: $theme-button-primary-text-color;
+      background: $theme-button-primary-background-color;
       &:hover {
-        background: $theme-button-background-color-hover;
+        background: $theme-button-primary-background-color-hover;
       }
       &:active {
-        background: $theme-button-background-color;
+        background: $theme-button-primary-background-color;
       }
     }
   }
 
   .flat {
     &:not([disabled]) {
-      background-color: #eef1f3;
-      color: #5e6066;
+      background-color: $theme-button-flat-background-color;
+      color: $theme-button-flat-text-color;
       &:hover {
-        color: #5e6066;
-        background-color: darken(#eef1f3, 7%);
+        color: $theme-button-flat-text-color;
+        background-color: $theme-button-flat-background-color-hover;
       }
     }
     &[disabled] {
-      color: darken(#eef1f3, 7%);
+      color: $theme-button-flat-background-color-hover;
       opacity: 0.3;
     }
   }

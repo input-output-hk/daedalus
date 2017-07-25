@@ -7,6 +7,12 @@
   font-family: $font-regular;
   height: 100%;
   padding: 20px 30px;
+
+  :global {
+    .SimpleFormField_label {
+      color: $theme-input-label-color;
+    }
+  }
 }
 
 .assuranceLevelSelect {

@@ -17,11 +17,11 @@
   }
   .denyButton {
     @extend %actionButton;
-    background-color: $theme-button-background-color;
+    background-color: $theme-button-primary-background-color;
     opacity: 0.3;
     padding: 0;
     &:hover {
-      background-color: $theme-button-background-color;
+      background-color: $theme-button-primary-background-color;
       opacity: 0.5;
     }
   }
