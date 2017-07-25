@@ -4,7 +4,12 @@
 
   :global {
     .SimpleFormField_label {
-      color: $theme-label-color !important;
+      color: $theme-label-color;
+    }
+
+    .SimpleInput_disabled {
+      background-color: $theme-input-background-color;
+      border-color: $theme-input-border-color;
     }
   }
 
