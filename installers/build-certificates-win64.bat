@@ -27,9 +27,9 @@ echo [2/10] Choosing OpenSSL message digest
 set MD=sha256
 echo Elected message digest '%MD%'
 echo Updating: installers/ca.conf installers/client.conf installers/server.conf
-powershell -Command "(gc ca.conf)     -replace '\%OPENSSL_MD\%', '%MD%' | Out-File -encoding ASCII ca.conf"
-powershell -Command "(gc client.conf) -replace '\%OPENSSL_MD\%', '%MD%' | Out-File -encoding ASCII client.conf"
-powershell -Command "(gc server.conf) -replace '\%OPENSSL_MD\%', '%MD%' | Out-File -encoding ASCII server.conf"
+powershell -Command "(gc ca.conf)     -replace 'OPENSSL_MD', '%MD%' | Out-File -encoding ASCII ca.conf"
+powershell -Command "(gc client.conf) -replace 'OPENSSL_MD', '%MD%' | Out-File -encoding ASCII client.conf"
+powershell -Command "(gc server.conf) -replace 'OPENSSL_MD', '%MD%' | Out-File -encoding ASCII server.conf"
 echo ============================================================================
 
 @echo [3/10] Generating install-time-only use password for the CA key

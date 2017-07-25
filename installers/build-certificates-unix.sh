@@ -41,8 +41,8 @@ choose_message_digest() {
 choose_message_digest
 echo "Updating:" {ca,client,server}.conf
 case $(uname -s) in
-        Linux )  sed -i    "s/%OPENSSL_MD%/${MD}/g" {ca,client,server}.conf;;
-        Darwin ) sed -i "" "s/%OPENSSL_MD%/${MD}/g" {ca,client,server}.conf;;
+        Linux )  sed -i    "s/OPENSSL_MD/${MD}/g" {ca,client,server}.conf;;
+        Darwin ) sed -i "" "s/OPENSSL_MD/${MD}/g" {ca,client,server}.conf;;
 esac
 echo ============================================================================
 
