@@ -53,7 +53,7 @@ pushd installers
     @if %errorlevel% neq 0 (@echo powershell -Command "try { $wc = New-Object net.webclient; $wc.Downloadfile('http://www.stackage.org/stack/windows-x86_64', 'stack.zip'); } catch { exit 1; }"
 	popd & exit /b 1)
     del /f stack.exe
-    7z x stack.zip stack.exe
+    7z x stack.zip stack.exe\stack.exe
     @if %errorlevel% neq 0 (@echo FAILED: 7z x stack.zip stack.exe
 	exit /b 1)
     del stack.zip
