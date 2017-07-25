@@ -136,7 +136,6 @@ writeInstallerNSIS fullVersion = do
         writeFileLines "$INSTDIR\\daedalus.bat" (map str launcherScript)
         file [Recursive] "dlls\\"
         file [Recursive] "libressl\\"
-        file [Recursive] "tls\\"
         file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
 
         mapM_ injectLiteral
