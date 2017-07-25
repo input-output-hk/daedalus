@@ -38,6 +38,7 @@ Changelog
 - UI for displaying transaction fees on wallet send screen
 - Correct placeholder text for Ada redemption "Ada amount" input
 - Opt-in mode for sending logs to the remote server
+- Added support for Cmd+H hotkey shortcut for hiding application window on OSX ([PR 404](https://github.com/input-output-hk/daedalus/pull/404))
 - Setup environment variable for testnet/mainnet mode ([PR 400](https://github.com/input-output-hk/daedalus/pull/400))
 
 ### Fixes
@@ -78,6 +79,7 @@ Changelog
 - Daedalus and Cardano node update notification text messages change ([PR 392](https://github.com/input-output-hk/daedalus/pull/392))
 - Fixed brittle acceptance test steps (wallet latest transaction amount check) ([PR 393](https://github.com/input-output-hk/daedalus/pull/393))
 - Fixed Numeric component caret position bug on wallet send screen ([PR 394](https://github.com/input-output-hk/daedalus/pull/394))
+- Fixed eslint syntax warnings ([PR 403](https://github.com/input-output-hk/daedalus/pull/403))
 
 ### Chores
 

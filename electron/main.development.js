@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, shell, ipcMain, dialog, crashReporter } from 'electron';
+import { app, BrowserWindow, Menu, shell, ipcMain, dialog, crashReporter, globalShortcut } from 'electron';
 import os from 'os';
 import path from 'path';
 import Log from 'electron-log';
@@ -150,4 +150,20 @@ app.on('ready', async () => {
     menu = Menu.buildFromTemplate(winLinuxMenu(mainWindow));
     mainWindow.setMenu(menu);
   }
+
+  // Hide application window on Cmd+H hotkey (OSX only!)
+  if (process.platform === 'darwin') {
+    app.on('activate', () => {
+      if (!mainWindow.isVisible()) app.show();
+    });
+
+    mainWindow.on('focus', () => {
+      globalShortcut.register('CommandOrControl+H', app.hide);
+    });
+
+    mainWindow.on('blur', () => {
+      globalShortcut.unregister('CommandOrControl+H');
+    });
+  }
+
 });
