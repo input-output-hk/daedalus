@@ -54,8 +54,11 @@ pushd installers
 	popd & exit /b 1)
     del /f stack.exe
     7z x stack.zip stack.exe\stack.exe
-    @if %errorlevel% neq 0 (@echo FAILED: 7z x stack.zip stack.exe
+    @if %errorlevel% neq 0 (@echo FAILED: 7z x stack.zip stack.exe\stack.exe
 	exit /b 1)
+    move stack.exe tmp
+    move tmp\stack.exe .
+    rmdir tmp
     del stack.zip
 
     @echo Copying DLLs
