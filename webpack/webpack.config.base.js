@@ -60,7 +60,6 @@ module.exports = validate({
     new HappyPack({
       loaders: ['babel-loader'],
     }),
-    new ContextReplacementPlugin(/moment[\\\/]locale$/, /^\.\/(en|ja|de|hr)$/),
     new DllReferencePlugin({
       context: path.join(__dirname, "../app"),
       manifest: require("../dll/vendor-manifest.json")
