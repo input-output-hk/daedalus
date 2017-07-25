@@ -396,8 +396,14 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::nextUpdate called');
     let nextUpdate = null;
     try {
-      nextUpdate = JSON.parse(await ClientApi.nextUpdate());
-      Log.debug('CardanoClientApi::nextUpdate success: ', stringifyData(nextUpdate));
+      // TODO: add flow type definitions for nextUpdate response
+      const response = await ClientApi.nextUpdate();
+      Log.debug('CardanoClientApi::nextUpdate success: ', stringifyData(response));
+      if (response) {
+        nextUpdate = {
+          version: response.cuiSoftwareVersion && response.cuiSoftwareVersion.svNumber || null
+        };
+      }
     } catch (error) {
       if (error.message.includes('No updates available')) {
         Log.debug('CardanoClientApi::nextUpdate success: No updates available');
@@ -433,7 +439,7 @@ export default class CardanoClientApi {
     // if (nextUpdate && nextUpdate.cuiSoftwareVersion && nextUpdate.cuiSoftwareVersion.svNumber) {
     //   return { version: nextUpdate.cuiSoftwareVersion.svNumber };
     // } else if (nextUpdate) {
-    //   return { version: 'Unknown' };
+    //   return { version: null };
     // }
     // return null;
   }

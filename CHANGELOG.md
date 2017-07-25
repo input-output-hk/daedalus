@@ -74,6 +74,9 @@ Changelog
 - Use correct styling for used addresses marking on wallet receive screen
 - Implement MomentJs internationalization
 - Also quit whole app when last window is closed on osx
+- Daedalus and Cardano node update notification text messages change ([PR 392](https://github.com/input-output-hk/daedalus/pull/392))
+- Fixed brittle acceptance test steps (wallet latest transaction amount check) ([PR 393](https://github.com/input-output-hk/daedalus/pull/393))
+- Fixed Numeric component caret position bug on wallet send screen ([PR 394](https://github.com/input-output-hk/daedalus/pull/394))
 
 ### Chores
 
@@ -84,6 +87,7 @@ Changelog
 - Testnet version on the testnet label bumped from 0.3 to 0.5
 - Replaced all React-Toolbox components with React-Polymorph ones ([PR 361](https://github.com/input-output-hk/daedalus/pull/361))
 - Temporary workaround for missing Japanese translations for Terms of Use that allows users to accept them in English
+- Added readme file for running acceptance tests ([PR 395](https://github.com/input-output-hk/daedalus/pull/395))
 - Improved webpack build performance ([PR 402](https://github.com/input-output-hk/daedalus/pull/402))
 
 ## 0.6.2
