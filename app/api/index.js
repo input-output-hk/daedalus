@@ -168,4 +168,6 @@ export type Api = {
   updateWalletPassword(request: UpdateWalletPasswordRequest): Promise<UpdateWalletPasswordResponse>,
   calculateTransactionFee(request: TransactionFeeRequest): Promise<TransactionFeeResponse>,
   testReset(): void,
+  setUserTheme(theme: string): Promise<string>,
+  getUserTheme(): Promise<string>,
 };

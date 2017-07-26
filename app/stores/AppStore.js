@@ -27,6 +27,9 @@ export default class AppStore extends Store {
   @observable setTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.setTermsOfUseAcceptance);
   @observable getSendLogsChoiceRequest: Request<boolean> = new Request(this.api.getSendLogsChoice);
   @observable setSendLogsChoiceRequest: Request = new Request(this.api.setSendLogsChoice);
+  @observable getThemeRequest: Request<string> = new Request(this.api.getUserTheme);
+  @observable setThemeRequest: Request<string> = new Request(this.api.setUserTheme);
+
   @observable error: ?LocalizableError = null;
   /* eslint-enable max-len */
 
@@ -35,6 +38,7 @@ export default class AppStore extends Store {
     this.actions.profile.updateLocale.listen(this._updateLocale);
     this.actions.profile.setSendLogsChoice.listen(this._setSendLogsChoice);
     this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
+    this.actions.profile.updateTheme.listen(this._updateTheme);
     this.registerReactions([
       this._updateMomentJsLocaleAfterLocaleChange,
       this._redirectToLanguageSelectionIfNoLocaleSet,
@@ -57,6 +61,12 @@ export default class AppStore extends Store {
     return 'en-US'; // default
   }
 
+  @computed get currentTheme(): string {
+    const { result } = this.getThemeRequest.execute();
+    if (this.isCurrentThemeSet) return result;
+    return 'theme_default'; // default
+  }
+
   @computed get hasLoadedCurrentLocale(): boolean {
     return (
       this.getProfileLocaleRequest.wasExecuted && this.getProfileLocaleRequest.result !== null
@@ -65,6 +75,10 @@ export default class AppStore extends Store {
 
   @computed get isCurrentLocaleSet(): boolean {
     return (this.getProfileLocaleRequest.result != null && this.getProfileLocaleRequest.result !== '');
+  }
+
+  @computed get isCurrentThemeSet(): boolean {
+    return (this.getThemeRequest.result != null && this.getThemeRequest.result !== '');
   }
 
   @computed get termsOfUse(): string {
@@ -100,6 +114,11 @@ export default class AppStore extends Store {
   _updateLocale = async ({ locale }: { locale: string }) => {
     await this.setProfileLocaleRequest.execute(locale);
     await this.getProfileLocaleRequest.execute();
+  };
+
+  _updateTheme = async ({ theme }: { theme: string }) => {
+    await this.setThemeRequest.execute(theme);
+    await this.getThemeRequest.execute();
   };
 
   _updateMomentJsLocaleAfterLocaleChange = () => {

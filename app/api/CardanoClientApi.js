@@ -76,6 +76,21 @@ const setUserLocaleInLocalStorage = (locale) => new Promise((resolve, reject) =>
   });
 });
 
+const getUserThemeFromLocalStorage = () => new Promise((resolve, reject) => {
+  localStorage.get('theme', (error, response) => {
+    if (error) return reject(error);
+    if (!response.theme) return resolve('');
+    resolve(response.theme);
+  });
+});
+
+const setUserThemeInLocalStorage = (theme) => new Promise((resolve, reject) => {
+  localStorage.set('theme', { theme }, (error) => {
+    if (error) return reject(error);
+    resolve();
+  });
+});
+
 const unsetUserLocaleFromLocalStorage = () => new Promise((resolve) => {
   localStorage.remove('userLocale', () => {
     resolve();
@@ -486,6 +501,30 @@ export default class CardanoClientApi {
       return locale;
     } catch (error) {
       Log.error('CardanoClientApi::getLocale error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async setUserTheme(theme: string) {
+    Log.debug('CardanoClientApi::updateTheme called: ', theme);
+    try {
+      await setUserThemeInLocalStorage(theme);
+      Log.debug('CardanoClientApi::updateTheme success: ', theme);
+      return theme;
+    } catch (error) {
+      Log.error('CardanoClientApi::updateTheme error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async getUserTheme() {
+    Log.debug('CardanoClientApi::getTheme called');
+    try {
+      const theme = await getUserThemeFromLocalStorage();
+      Log.debug('CardanoClientApi::getTheme success: ', theme);
+      return theme;
+    } catch (error) {
+      Log.error('CardanoClientApi::gettheme error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }

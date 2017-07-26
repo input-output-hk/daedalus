@@ -1,0 +1,53 @@
+.component {
+  & > .label {
+    color: $theme-support-settings-text-color;
+    font-family: $font-semibold;
+    font-size: 16px;
+    line-height: 1.38;
+    margin-bottom: 10px;
+  }
+}
+
+.themesWrapper {
+  display: flex;
+  margin-top: 30px;
+
+  .themeImageWrapper {
+    opacity: 0.3;
+    width: 33%;
+
+    &.active {
+      opacity: 1;
+    }
+
+    & > img {
+      width: 100%;
+    }
+
+    & > span {
+      color: $theme-settings-theme-select-title-color;
+      display: inline-block;
+      font-family: $font-regular;
+      font-size: 16px;
+      line-height: 1.38;
+      margin-top: 11px;
+      text-align: center;
+    }
+
+    &.inactive {
+      &:hover {
+        cursor: pointer;
+        opacity: 0.6;
+      }
+    }
+
+    &:only-child {
+      margin: auto;
+      width: 30%;
+    }
+
+    & + .themeImageWrapper {
+      margin-left: 40px;
+    }
+  }
+}
