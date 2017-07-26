@@ -1,5 +1,6 @@
 @import '../../themes/mixins/loading-spinner';
 @import '../../themes/mixins/error-message';
+@import '../../themes/mixins/place-form-field-error-below-input';
 
 .mnemonicPhrase {
   margin: 20px 0;
@@ -41,6 +42,8 @@
     & > div {
       width: 275px;
     }
+
+    @include place-form-field-error-below-input;
 
     .passwordInstructions {
       color: $text-color-accent;

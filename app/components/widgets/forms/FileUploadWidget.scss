@@ -25,7 +25,8 @@
   margin-bottom: 10px;
 }
 
-.fileName {
+.fileName,
+.placeholder {
   overflow: hidden;
   padding-right: 50px;
   text-overflow: ellipsis;
