@@ -46,7 +46,7 @@ import {
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 
 const getTlsConfig = remote.require('./remote/get-tls-config');
-const RemoteClientApi = remote.require('daedalus-client-api');
+const registerNotifyCallback = remote.require('./remote/register-notify-callback');
 const tlsConfig = getTlsConfig();
 
 // const notYetImplemented = () => new Promise((_, reject) => {
@@ -135,7 +135,7 @@ export default class CardanoClientApi {
   notifyCallbacks = [];
 
   constructor() {
-    RemoteClientApi.notify(tlsConfig, this._onNotify, this._onNotifyError);
+    registerNotifyCallback(tlsConfig, this._onNotify, this._onNotifyError);
   }
 
   notify(onSuccess: Function, onError: Function = () => {}) {
@@ -463,7 +463,6 @@ export default class CardanoClientApi {
       // In some cases we dont get network difficulty & we need to wait for it from the notify API
       let networkDifficulty = null;
       if (response._spNetworkCD) networkDifficulty = response._spNetworkCD.getChainDifficulty.getBlockCount;
-      console.log({ localDifficulty, networkDifficulty });
       return { localDifficulty, networkDifficulty };
     } catch (error) {
       Log.error('CardanoClientApi::syncProgress error: ' + stringifyError(error));
