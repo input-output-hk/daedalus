@@ -59,9 +59,9 @@ const messages = defineMessages({
     description: 'Text for the "Activate to create password" switch in the wallet restore dialog.',
   },
   passwordSwitchLabel: {
-    id: 'wallet.create.dialog.passwordSwitchLabel',
+    id: 'wallet.restore.dialog.passwordSwitchLabel',
     defaultMessage: '!!!Password',
-    description: 'Label for the "Activate to create password" switch in the create wallet dialog.',
+    description: 'Label for the "Activate to create password" switch in the wallet restore dialog.',
   },
   walletPasswordLabel: {
     id: 'wallet.restore.dialog.walletPasswordLabel',

@@ -6,6 +6,7 @@ import AdaRedemptionForm from '../../components/wallet/ada-redemption/AdaRedempt
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import { AdaRedemptionCertificateParseError } from '../../i18n/errors';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import environment from '../../environment';
 
 @inject('stores', 'actions') @observer
 export default class AdaRedemptionPage extends Component {
@@ -78,7 +79,7 @@ export default class AdaRedemptionPage extends Component {
             showInputsForDecryptingForceVendedCertificate
           }
           showPassPhraseWidget={showPassPhraseWidget}
-          isRedemptionDisclaimerAccepted={isRedemptionDisclaimerAccepted}
+          isRedemptionDisclaimerAccepted={environment.isMainnet() || isRedemptionDisclaimerAccepted}
           onAcceptRedemptionDisclaimer={() => acceptRedemptionDisclaimer.trigger()}
           getSelectedWallet={walletId => wallets.getWalletById(walletId)}
         />

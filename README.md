@@ -79,6 +79,15 @@ Symlink the npm package in the subfolder `pos-haskell-prototype/daedalus`:
 
 Run with `npm run dev`
 
+### Development - network options
+
+There are four different network options you can run Deadalus in: `mainnet`, `testnet`, `staging` and `development` (default).
+To set desired network option use `NETWORK` environment variable:
+
+```bash
+$ NETWORK=testnet npm run dev
+```
+
 ### Testing
 
 You can run the test suite in two different modes during development

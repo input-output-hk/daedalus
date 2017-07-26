@@ -13,7 +13,6 @@ export default class NodeUpdateStore extends Store {
   @observable isUpdatePostponed = false;
   @observable isNotificationExpanded = false;
   @observable isUpdateInstalled = false;
-  @observable updateTitle = '';
   @observable updateVersion = null;
   @observable nextUpdateRequest: Request<NextUpdateResponse> = new Request(this.api.nextUpdate);
   @observable applyUpdateRequest: Request<ApplyUpdateResponse> = new Request(this.api.applyUpdate);
@@ -31,11 +30,11 @@ export default class NodeUpdateStore extends Store {
   @action refreshNextUpdate = () => {
     if (this.stores.networkStatus.isSynced) {
       this.nextUpdateRequest.execute();
-      if (this.nextUpdateRequest.result && !this.isUpdatePostponed && !this.isUpdateInstalled) {
+      if (this.nextUpdateRequest.result && !this.isUpdateAvailable &&
+        !this.isUpdatePostponed && !this.isUpdateInstalled) {
         this.isUpdateAvailable = true;
         this.isNotificationExpanded = true;
         this.updateVersion = this.nextUpdateRequest.result.version;
-        this.updateTitle = `Cardano-Core update v${this.updateVersion} is available`;
       }
     }
   };

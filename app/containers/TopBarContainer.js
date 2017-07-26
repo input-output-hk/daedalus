@@ -5,6 +5,7 @@ import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
 import type { InjectedProps } from '../types/injectedPropsType';
+import environment from '../environment';
 
 @inject('stores', 'actions') @observer
 export default class TopBarContainer extends Component {
@@ -15,10 +16,10 @@ export default class TopBarContainer extends Component {
   render() {
     const { actions, stores } = this.props;
     const { sidebar, networkStatus, app } = stores;
-    const isProduction = false; // TODO: replace with getEnv Api call
+    const isMainnet = environment.isMainnet();
     const testnetVersion = 0.5;
-    const testEnvironmentLabel = (
-      !isProduction ? <WalletTestEnvironmentLabel version={testnetVersion} /> : null
+    const testnetLabel = (
+      !isMainnet ? <WalletTestEnvironmentLabel version={testnetVersion} /> : null
     );
 
     return (
@@ -28,10 +29,10 @@ export default class TopBarContainer extends Component {
         currentRoute={app.currentRoute}
         showSubMenus={sidebar.isShowingSubMenus}
       >
-        {testEnvironmentLabel}
+        {testnetLabel}
         <NodeSyncStatusIcon
           networkStatus={networkStatus}
-          isProduction={isProduction}
+          isMainnet={isMainnet}
         />
       </TopBar>
     );

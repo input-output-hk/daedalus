@@ -20,7 +20,7 @@ export default class NodeSyncStatusIcon extends Component {
       isSynced: boolean,
       syncPercentage: number,
     },
-    isProduction: boolean,
+    isMainnet: boolean,
   };
 
   static contextTypes = {
@@ -28,14 +28,14 @@ export default class NodeSyncStatusIcon extends Component {
   };
 
   render() {
-    const { networkStatus, isProduction } = this.props;
+    const { networkStatus, isMainnet } = this.props;
     const { isSynced, syncPercentage } = networkStatus;
     const { intl } = this.context;
     const statusIcon = isSynced ? syncedIcon : spinnerIcon;
     const componentClasses = classNames([
       styles.component,
       isSynced ? styles.synced : styles.syncing,
-      isProduction && styles.production,
+      isMainnet && styles.mainnet,
     ]);
     return (
       <div className={componentClasses}>
