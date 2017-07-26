@@ -127,35 +127,35 @@ export default class Transaction extends Component {
 
     return (
       <div className={styles.component}>
-        <div className={styles[data.type]} />
-        <div className={contentStyles}>
 
-          {/* ==== Clickable Header -> toggles details ==== */}
+        {/* ==== Clickable Header -> toggles details ==== */}
+        <div className={styles.toggler} onClick={this.toggleDetails.bind(this)} role="presentation" aria-hidden>
+          <div className={styles[data.type]} />
+          <div className={styles.togglerContent}>
+            <div className={styles.header}>
+              <div className={styles.title}>
+                {data.type === 'adaExpend' ?
+                  intl.formatMessage(messages.adaSent) :
+                  intl.formatMessage(messages.adaReceived)
+                }
+              </div>
+              <div className={styles.amount}>{data.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
+                <img className={styles.currencySymbol} src={adaSymbol} role="presentation" />
+              </div>
+            </div>
 
-          <button className={styles.header} onClick={this.toggleDetails.bind(this)}>
-            <div className={styles.title}>
-              {data.type === 'adaExpend' ?
-                intl.formatMessage(messages.adaSent) :
-                intl.formatMessage(messages.adaReceived)
-              }
+            <div className={styles.details}>
+              <div className={styles.type}>
+                {intl.formatMessage(messages[typeMessage])}
+                , {moment(data.date).format('hh:mm:ss A')}
+              </div>
+              <div className={styles[assuranceLevel]}>{status}</div>
             </div>
-            <div className={styles.amount}>{data.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-              <img className={styles.currencySymbol} src={adaSymbol} role="presentation" />
-            </div>
-          </button>
-
-          <div className={styles.details}>
-            <div className={styles.type}>
-              {intl.formatMessage(messages[typeMessage])}
-              , {moment(data.date).format('hh:mm:ss A')}
-              {/* TODO: Use locale to format the date */}
-            </div>
-            <div className={styles[assuranceLevel]}>{status}</div>
           </div>
+        </div>
 
-
-          {/* ==== Toggleable Transaction Details ==== */}
-
+        {/* ==== Toggleable Transaction Details ==== */}
+        <div className={contentStyles}>
           <div className={detailsStyles}>
             {data.exchange && data.conversionRate && (
               <div className={styles.conversion}>
@@ -194,6 +194,7 @@ export default class Transaction extends Component {
             */}
           </div>
         </div>
+
       </div>
     );
   }

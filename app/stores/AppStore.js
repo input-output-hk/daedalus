@@ -8,6 +8,7 @@ import globalMessages from '../i18n/global-messages';
 import LocalizableError from '../i18n/LocalizableError';
 import { ROUTES } from '../Routes';
 import { buildRoute } from '../lib/routing-helpers';
+import environment from '../environment';
 
 export default class AppStore extends Store {
 
@@ -68,7 +69,8 @@ export default class AppStore extends Store {
   }
 
   @computed get termsOfUse(): string {
-    const localizedTermsOfUse = require(`../i18n/locales/terms-of-use/${this.currentLocale}.md`); // eslint-disable-line
+    const network = environment.isMainnet() ? 'mainnet' : 'other';
+    const localizedTermsOfUse = require(`../i18n/locales/terms-of-use/${network}/${this.currentLocale}.md`); // eslint-disable-line
     return localizedTermsOfUse;
   }
 

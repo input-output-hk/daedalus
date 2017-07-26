@@ -133,7 +133,7 @@ export type TransactionFeeRequest = {
 export type TransactionFeeResponse = BigNumber;
 
 // API INTERFACE
-
+/* eslint-disable max-len */
 export type Api = {
   notify(onSuccess: Function, onError?: Function): void,
   reset(): void,
@@ -169,3 +169,4 @@ export type Api = {
   calculateTransactionFee(request: TransactionFeeRequest): Promise<TransactionFeeResponse>,
   testReset(): void,
 };
+/* eslint-disable max-len */
