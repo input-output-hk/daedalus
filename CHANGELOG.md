@@ -81,6 +81,7 @@ Changelog
 - Fixed Numeric component caret position bug on wallet send screen ([PR 394](https://github.com/input-output-hk/daedalus/pull/394))
 - Fixed all design implementation issues ([PR 397](https://github.com/input-output-hk/daedalus/pull/397))
 - Fixed eslint syntax warnings ([PR 403](https://github.com/input-output-hk/daedalus/pull/403))
+- Fixed wallet spending password fields error messages positioning on wallet create/restore/import dialogs ([PR 407](https://github.com/input-output-hk/daedalus/pull/407))
 
 ### Chores
 
