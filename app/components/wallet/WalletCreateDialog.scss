@@ -1,4 +1,5 @@
 @import '../../themes/mixins/loading-spinner';
+@import '../../themes/mixins/place-form-field-error-below-input';
 
 .walletPassword {
   margin-bottom: -32px;
@@ -37,25 +38,7 @@
       width: 275px;
     }
 
-    :global {
-      .SimpleFormField_root {
-        &.SimpleInput_errored {
-          margin-bottom: 21px;
-
-          .SimpleFormField_error {
-            left: 0;
-            margin: 4px 0 0 0;
-            overflow: hidden;
-            position: absolute;
-            right: 0;
-            text-align: right;
-            text-overflow: ellipsis;
-            top: 100%;
-            white-space: nowrap;
-          }
-        }
-      }
-    }
+    @include place-form-field-error-below-input;
 
     .passwordInstructions {
       color: $text-color-accent;
