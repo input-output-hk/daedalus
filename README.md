@@ -81,7 +81,7 @@ Run with `npm run dev`
 
 ### Development - network options
 
-There are four different network options you can run Deadalus in: `mainnet`, `testnet`, `staging` and `development` (default).
+There are four different network options you can run Deadalus in: `mainnet`, `testnet` and `development` (default).
 To set desired network option use `NETWORK` environment variable:
 
 ```bash
