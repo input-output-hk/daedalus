@@ -2,6 +2,21 @@
   margin-bottom: 32px;
   position: relative;
 
+  :global {
+    .SimpleFormField_root {
+      & > label {
+        color: $theme-input-label-color;
+      }
+    }
+
+    .SimpleInput_disabled {
+      & .SimpleInput_input {
+        background-color: $theme-input-background-color;
+        border-color: $theme-input-border-color;
+      }
+    }
+  }
+
   .button {
     bottom: 13px;
     color: $theme-label-button-color;

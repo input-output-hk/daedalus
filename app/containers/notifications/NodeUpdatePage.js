@@ -16,7 +16,7 @@ export default class NodeUpdatePage extends Component {
 
     return (
       <NodeUpdateNotification
-        title={store.updateTitle}
+        version={store.updateVersion}
         onAccept={actions.acceptNodeUpdate.trigger}
         onPostpone={actions.postponeNodeUpdate.trigger}
         onToggleExpanded={actions.toggleNodeUpdateNotificationExpanded.trigger}

@@ -2,9 +2,15 @@
 @import '../../../themes/mixins/error-message';
 
 .component {
-  padding: 20px;
+  display: flex;
   height: 100%;
-  overflow: auto;
+}
+
+.scrollableContent {
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: overlay;
+  padding: 20px;
   &::-webkit-scrollbar-button {
     height: 7px;
     display: block;

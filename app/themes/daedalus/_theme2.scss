@@ -77,8 +77,10 @@ $theme-dialog-big-button-border-color: #d7dce0;
 $theme-dialog-big-button-label-color: #5e6066;
 $theme-dialog-big-button-description-color: #5e6066;
 $theme-dialog-separation-border-color: #dfe4e8;
+$theme-dialog-input-background-color: #fafbfc;
+$theme-dialog-input-focus-border-color: #5e6066;
 
-$theme-input-border-color: #8793a1;
+$theme-input-border-color: #c6cdd6;
 $theme-input-label-color: #e9f4fe;
 $theme-input-text-color: #e9f4fe;
 $theme-input-right-floating-text-color: #8793a1;
@@ -87,9 +89,15 @@ $theme-input-error-color: #de3226;
 $theme-input-remove-color-dark: #d34452;
 $theme-input-remove-color-light: #ea4c5b;
 $theme-input-remove-color-lighter: #ec5d6b;
+$theme-input-background-color: #263345;
+$theme-input-disabled-background-color: #cfcfcf;
+$theme-input-focus-border-color: #5e6066;
 
 $theme-main-body-background-color: #0b1926;
 $theme-main-body-messages-color: #e9f4fe;
+
+$theme-modal-overlay-background-color: rgba(0, 0, 0, 0.4);
+$theme-modal-background-color: #fafbfc;
 
 $theme-nav-item-background-color: #263345;
 $theme-nav-item-background-color-hover: rgba(#536370, 0.1);
@@ -102,6 +110,12 @@ $theme-node-update-title-color: #5e6066;
 $theme-node-update-message-color: #5e6066;
 $theme-node-sync-info-message-background-color: #fafbfc;
 $theme-node-sync-info-message-text-color: #5e6066;
+$theme-node-update-accept-button-backgroun-color: #536370;
+$theme-node-update-accept-button-backgroun-color-hover: darken(#536370, 10%);
+$theme-node-update-deny-button-backgroun-color: rgba(#536370, 0.3);
+$theme-node-update-deny-button-backgroun-color-hover: darken(#536370, 10%);
+$theme-node-update-button-text-color: #fafbfc;
+
 
 $theme-notification-message-background-color: rgba(#536370, 0.8);
 $theme-notification-message-text-color: #fafbfc;
@@ -153,7 +167,6 @@ $theme-topbar-layout-body-background-color: #0b1926;
 $theme-transactions-list-background-color: #263345;
 $theme-transactions-list-border-color: #263345;
 $theme-transactions-list-group-date-color: #7a8691;
-$theme-transactions-list-item-header-color: #e9f4fe;
 $theme-transactions-list-item-details-color: #e9f4fe;
 $theme-transactions-card-background-color: #e6ebf2;
 $theme-transactions-card-income-background-color: #e6ebf2;
@@ -169,16 +182,27 @@ $theme-uploader-text-color: #e9f4fe;
 $theme-uploader-border-color: #aeafb2;
 
 $theme-backup-mnemonic-background-color: rgba(68, 91, 124, 0.05);
-$theme-block-generation-info-color: #5e6066;
-$theme-connecting-background-color: #345078;
-$theme-error-color: #ea4c5b;
-$theme-instructions-text-color: #5e6066;
-$theme-label-button-color: #8793a1;
-$theme-loading-background-color: #ebeff2;
-$theme-mnemonic-background-color: rgba(68, 91, 124, 0.05);;
-$theme-send-logs-text-color: #e9f4fe;
-$theme-separation-border-color: #334152;
-$theme-support-settings-text-color: #e9f4fe;
-$theme-terms-of-use-text-color: #e9f4fe;
-$theme-wallet-password-switch-label-color: #5e6066;
 
+$theme-block-generation-info-color: #5e6066;
+
+$theme-connecting-background-color: #345078;
+
+$theme-error-color: #ea4c5b;
+
+$theme-instructions-text-color: #5e6066;
+
+$theme-label-button-color: #8793a1;
+
+$theme-loading-background-color: #ebeff2;
+
+$theme-mnemonic-background-color: rgba(68, 91, 124, 0.05);
+
+$theme-send-logs-text-color: #e9f4fe;
+
+$theme-separation-border-color: #334152;
+
+$theme-support-settings-text-color: #e9f4fe;
+
+$theme-terms-of-use-text-color: #e9f4fe;
+
+$theme-wallet-password-switch-label-color: #5e6066;

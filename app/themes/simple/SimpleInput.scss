@@ -4,10 +4,18 @@
 // Css module overrides go here …
 
 .root {
+  background-color: inherit;
   & > .input {
-    background-color: inherit;
+    background-color: $theme-input-background-color;
     border: 1px solid $theme-input-border-color;
-    color: $theme-input-text-color;
+
+    &:focus {
+      border: 1px solid $theme-input-focus-border-color;
+    }
+
+    &:not([disabled]) {
+      color: $theme-input-text-color;
+    }
 
     &[disabled] {
       color: $theme-input-placeholder-color;
@@ -21,15 +29,6 @@
 
   & > .errored {
     border: 1px solid $theme-input-error-color;
-  }
-}
-
-.disabled {
-  background-color: inherit;
-  :global {
-    .SimpleFormField_label {
-      color: $theme-input-label-color;
-    }
   }
 }
 

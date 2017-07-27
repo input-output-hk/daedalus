@@ -1,28 +1,40 @@
+
 %actionButton {
-  width: 150px;
+  box-sizing: border-box;
   height: 33px;
+  border-radius: 5px;
+  font-family: $font-medium;
+  font-size: 14px;
+  line-height: 1.36;
+  text-align: center;
+  color: $theme-node-update-button-text-color;
   margin-left: 10px;
-  margin-bottom: 20px;
+  max-width: 200px;
+  cursor: pointer;
+  padding: 0 30px;
+  white-space: nowrap;
 }
 
 .component {
-  //position: relative;
   background-color: $theme-node-update-background-color;
-  padding: 20px;
+  padding: 20px 40px;
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
+
   .acceptButton {
     @extend %actionButton;
-    padding: 0;
+    background-color: $theme-node-update-accept-button-backgroun-color;
+    &:hover {
+      background-color: $theme-node-update-accept-button-backgroun-color-hover !important;
+    }
   }
+
   .denyButton {
     @extend %actionButton;
-    background-color: $theme-button-primary-background-color;
-    opacity: 0.3;
-    padding: 0;
+    background-color: $theme-node-update-deny-button-backgroun-color;
     &:hover {
-      background-color: $theme-button-primary-background-color;
-      opacity: 0.5;
+      background-color: $theme-node-update-deny-button-backgroun-color-hover !important;
     }
   }
 }
@@ -35,10 +47,9 @@
   height: 22px;
   font-family: $font-medium;
   font-size: 16px;
-  line-height: 1.38;
+  line-height: 1.5;
   color: $theme-node-update-title-color;
   flex-grow: 1;
-  margin-bottom: 10px;
 }
 
 .message {
@@ -51,13 +62,15 @@
 }
 
 .actions {
+  display: flex;
+  justify-content: flex-end;
   margin-top: 20px;
-  margin-left: auto;
 }
 
 .toggleButton {
   align-self: flex-start;
   cursor: pointer;
+  margin-top: 3px;
 }
 
 .arrow {

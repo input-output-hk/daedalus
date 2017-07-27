@@ -2,6 +2,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import TextArea from 'react-polymorph/lib/components/TextArea';
@@ -10,8 +12,6 @@ import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import Dialog from '../widgets/Dialog';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../lib/validations';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -161,8 +161,10 @@ export default class PaperWalletImportDialog extends Component {
         label: this.context.intl.formatMessage(messages.walletPasswordLabel),
         placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
         value: '',
-        validators: [({ field }) => {
+        validators: [({ field, form }) => {
           if (!this.state.createPassword) return [true];
+          const repeatPasswordField = form.$('repeatPassword');
+          if (repeatPasswordField.value.length > 0) repeatPasswordField.validate(form);
           return [
             isValidWalletPassword(field.value),
             this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
@@ -284,7 +286,9 @@ export default class PaperWalletImportDialog extends Component {
 
         <div className={styles.walletPassword}>
           <div className={styles.walletPasswordSwitch}>
-            <div className={styles.passwordLabel}>{intl.formatMessage(messages.passwordSwitchLabel)}</div>
+            <div className={styles.passwordLabel}>
+              {intl.formatMessage(messages.passwordSwitchLabel)}
+            </div>
             <Checkbox
               onChange={this.handlePasswordSwitchToggle}
               label={intl.formatMessage(messages.passwordSwitchPlaceholder)}

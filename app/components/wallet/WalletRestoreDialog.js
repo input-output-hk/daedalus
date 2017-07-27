@@ -59,9 +59,9 @@ const messages = defineMessages({
     description: 'Text for the "Activate to create password" switch in the wallet restore dialog.',
   },
   passwordSwitchLabel: {
-    id: 'wallet.create.dialog.passwordSwitchLabel',
+    id: 'wallet.restore.dialog.passwordSwitchLabel',
     defaultMessage: '!!!Password',
-    description: 'Label for the "Activate to create password" switch in the create wallet dialog.',
+    description: 'Label for the "Activate to create password" switch in the wallet restore dialog.',
   },
   walletPasswordLabel: {
     id: 'wallet.restore.dialog.walletPasswordLabel',
@@ -132,8 +132,10 @@ export default class WalletRestoreDialog extends Component {
         label: this.context.intl.formatMessage(messages.walletPasswordLabel),
         placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
         value: '',
-        validators: [({ field }) => {
+        validators: [({ field, form }) => {
           if (!this.state.createPassword) return [true];
+          const repeatPasswordField = form.$('repeatPassword');
+          if (repeatPasswordField.value.length > 0) repeatPasswordField.validate(form);
           return [
             isValidWalletPassword(field.value),
             this.context.intl.formatMessage(globalMessages.invalidWalletPassword)

@@ -4,16 +4,20 @@
 // Css module overrides go here …
 
 .overlay {
+  background-color: $theme-modal-overlay-background-color;
   z-index: 100;
 }
 
 .modal {
   display: flex;
   flex-direction: column;
+  background: $theme-modal-background-color;
+
   :global {
     .SimpleInput_root {
       & > .SimpleInput_input {
         color: $theme-dialog-input-text-color;
+        background-color: $theme-dialog-input-background-color;
         &::-webkit-input-placeholder {
           color: $theme-dialog-input-placeholder-color;
         }

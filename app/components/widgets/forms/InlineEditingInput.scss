@@ -2,6 +2,21 @@
   margin-bottom: 20px;
   position: relative;
 
+  :global {
+    .SimpleFormField_root {
+      & > label {
+        color: $theme-input-label-color;
+      }
+    }
+
+    .SimpleInput_disabled {
+      & .SimpleInput_input {
+        background-color: $theme-input-background-color;
+        border-color: $theme-input-border-color;
+      }
+    }
+  }
+
   &.inactive {
     &:hover {
       input {

@@ -33,6 +33,12 @@ $topBarHeight: 84px;
 }
 
 .contentWrapper {
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: overlay;
   position: relative;
-  height: calc(100% - #{$topBarHeight});
+  &::-webkit-scrollbar-button {
+    height: 7px;
+    display: block;
+  }
 }
