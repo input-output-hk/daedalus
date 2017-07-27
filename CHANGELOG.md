@@ -82,6 +82,7 @@ Changelog
 - Fixed all design implementation issues ([PR 397](https://github.com/input-output-hk/daedalus/pull/397))
 - Fixed eslint syntax warnings ([PR 403](https://github.com/input-output-hk/daedalus/pull/403))
 - Fixed wallet spending password fields error messages positioning on wallet create/restore/import dialogs ([PR 407](https://github.com/input-output-hk/daedalus/pull/407))
+- Show correct error message for A -> A transaction error ([PR 401](https://github.com/input-output-hk/daedalus/pull/401))
 
 ### Chores
 
