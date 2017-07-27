@@ -94,6 +94,7 @@ Changelog
 - Temporary workaround for missing Japanese translations for Terms of Use that allows users to accept them in English
 - Added readme file for running acceptance tests ([PR 395](https://github.com/input-output-hk/daedalus/pull/395))
 - Improved webpack build performance ([PR 402](https://github.com/input-output-hk/daedalus/pull/402))
+- Updated README file "Development - network options" section ([PR 410](https://github.com/input-output-hk/daedalus/pull/410))
 
 ## 0.6.2
 
