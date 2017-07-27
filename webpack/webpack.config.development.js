@@ -30,16 +30,13 @@ module.exports = validate(merge(baseConfig, {
   },
 
   module: {
-    preLoaders: [
-      {
-        test: /\.js$/,
-        loader: 'eslint-loader',
-        include: [
-          path.resolve(__dirname, '../app'),
-          path.resolve(__dirname, '../features'),
-        ]
-      }
-    ],
+    // preLoaders: [
+    //   {
+    //     test: /\.js$/,
+    //     loader: 'eslint-loader',
+    //     include: SRC_PATHS,
+    //   }
+    // ],
     loaders: [
       {
         test: /\.global\.scss$/,
@@ -47,7 +44,7 @@ module.exports = validate(merge(baseConfig, {
           'style?sourceMap',
           'css?sourceMap',
           'sass?sourceMap'
-        ]
+        ],
       },
       {
         test: /^((?!\.global).)*\.scss$/,
@@ -55,7 +52,7 @@ module.exports = validate(merge(baseConfig, {
           'style?sourceMap',
           'css?sourceMap&modules&localIdentName=[name]_[local]&importLoaders=1',
           'sass?sourceMap'
-        ]
+        ],
       },
     ]
   },
