@@ -54,6 +54,7 @@ export default class SendLogsChoiceForm extends Component {
 
     const acceptButtonClasses = classnames([
       'primary',
+      'acceptButton',
       styles.button,
       isSubmitting ? styles.submitButtonSpinning : null,
     ]);
