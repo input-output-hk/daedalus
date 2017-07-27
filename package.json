@@ -29,7 +29,8 @@
     "build-storybook": "build-storybook",
     "flow-test": "flow; test $? -eq 0 -o $? -eq 2",
     "manage-translations": "node ./translations/translation-runner.js",
-    "purge-translations": "rm -rf ./translations/messages/app"
+    "purge-translations": "rm -rf ./translations/messages/app",
+    "build-dll": "webpack --config=webpack/webpack.config.dll.js"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -84,6 +85,7 @@
     "fbjs-scripts": "0.7.1",
     "file-loader": "0.9.0",
     "flow-bin": "0.43.0",
+    "happypack": "^4.0.0-beta.1",
     "json-loader": "0.5.4",
     "minimist": "1.2.0",
     "mobx-react-devtools": "4.2.11",
