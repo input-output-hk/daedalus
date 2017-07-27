@@ -168,6 +168,7 @@
   "wallet.redeem.success.overlay.headline": "還元に成功しました",
   "wallet.restore.dialog.form.errors.invalidRecoveryPhrase": "無効な復元フレーズ",
   "wallet.restore.dialog.passwordFieldPlaceholder": "パスワード",
+  "wallet.restore.dialog.passwordSwitchLabel": "パスワード",
   "wallet.restore.dialog.passwordSwitchPlaceholder": "パスワードを有効化する",
   "wallet.restore.dialog.recovery.phrase.input.hint": "復元フレーズを入力してください",
   "wallet.restore.dialog.recovery.phrase.input.label": "復元フレーズ",

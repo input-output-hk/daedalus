@@ -168,6 +168,7 @@
   "wallet.redeem.success.overlay.headline": "You successfully redeemed your Ada!",
   "wallet.restore.dialog.form.errors.invalidRecoveryPhrase": "Invalid recovery phrase",
   "wallet.restore.dialog.passwordFieldPlaceholder": "Password",
+  "wallet.restore.dialog.passwordSwitchLabel": "Password",
   "wallet.restore.dialog.passwordSwitchPlaceholder": "Activate to create password",
   "wallet.restore.dialog.recovery.phrase.input.hint": "Enter recovery phrase",
   "wallet.restore.dialog.recovery.phrase.input.label": "Recovery phrase",
