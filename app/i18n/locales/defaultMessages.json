@@ -2502,7 +2502,6 @@
       },
       {
         "defaultMessage": "!!!Password",
-        "description": "Label for the \"Activate to create password\" switch in the create wallet dialog.",
         "description": "Label for the \"Activate to create password\" switch in the wallet restore dialog.",
         "end": {
           "column": 3,
