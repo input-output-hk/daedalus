@@ -24,8 +24,8 @@ const messages = defineMessages({
   },
   display: {
     id: 'settings.menu.display.link.label',
-    defaultMessage: '!!!Display',
-    description: 'Label for the "Display" link in the settings menu.',
+    defaultMessage: '!!!Themes',
+    description: 'Label for the "Themes" link in the settings menu.',
   },
 });
 

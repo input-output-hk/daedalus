@@ -24,17 +24,17 @@
 
   .acceptButton {
     @extend %actionButton;
-    background-color: var(--theme-node-update-accept-button-backgroun-color);
+    background-color: var(--theme-node-update-accept-button-background-color);
     &:hover {
-      background-color: var(--theme-node-update-accept-button-backgroun-color-hover) !important;
+      background-color: var(--theme-node-update-accept-button-background-color-hover) !important;
     }
   }
 
   .denyButton {
     @extend %actionButton;
-    background-color: var(--theme-node-update-deny-button-backgroun-color);
+    background-color: var(--theme-node-update-deny-button-background-color);
     &:hover {
-      background-color: var(--theme-node-update-deny-button-backgroun-color-hover) !important;
+      background-color: var(--theme-node-update-deny-button-background-color-hover) !important;
     }
   }
 }

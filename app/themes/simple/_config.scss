@@ -1,14 +1,12 @@
-// @import "../daedalus/_theme";
-
 // THEME CONFIGURATION
 
 $path: "react-polymorph/lib/themes/simple/";
 $theme-assets-path: "react-polymorph/lib/themes/simple/assets";
 
-$font-thin: var(--font-thin);
-$font-light: var(--font-light);
-$font-medium: var(--font-medium);
-$font-regular: var(--font-regular);
-$font-bold: var(--font-bold);
+$theme-font-thin: var(--font-thin);
+$theme-font-light: var(--font-light);
+$theme-font-medium: var(--font-medium);
+$theme-font-regular: var(--font-regular);
+$theme-font-bold: var(--font-bold);
 
 @import "~react-polymorph/lib/themes/simple/_theme";
