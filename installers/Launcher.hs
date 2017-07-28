@@ -2,6 +2,7 @@ module Launcher where
 
 import           Data.Monoid     ((<>))
 import           System.FilePath (pathSeparator)
+import           System.Info     (os)
 
 -- OS dependent configuration
 data Launcher = Launcher
@@ -24,8 +25,8 @@ launcherArgs launcher = unwords $
   , "--updater", quote (installerPath launcher)
   , unwords $ map ("-u " ++) (installerArgs launcher)
   , maybe "" (("--update-archive " ++) . quote) (installerArchivePath launcher)
-  , "--node-timeout 5 ^\r\n"
-  , unwords $ map (\x -> "-n " ++ x ++ " ^\r\n") nodeArgs
+  , "--node-timeout 5 " ++ batchCmdNewline
+  , unwords $ map (\x -> "-n " ++ x ++ " " ++ batchCmdNewline) nodeArgs
   ]
     where
       nodeArgs = [
@@ -49,6 +50,9 @@ launcherArgs launcher = unwords $
         "--static-peers"
         ]
       tlsPath = "tls" <> (pathSeparator : [])
+      -- NOTE: looks like windows *.bat file is cut of on 1024 characters per line. This is a workaround
+      batchCmdNewline | os == "mingw32" = "^\r\n"
+                      | otherwise = mempty
 
 quote :: String -> String
 quote p = "\"" <> p <> "\""
