@@ -52,7 +52,7 @@ export default function () {
 
   this.When(/^I enter new wallet name:$/, async function (table) {
     const fields = table.hashes()[0];
-    await this.client.setValue('.WalletSettings_component .InlineEditingInput_component input', fields.name);
+    await this.client.setValue('.WalletSettings_component .walletName input', fields.name);
   });
 
   this.When(/^I click outside "name" input field$/, function () {
@@ -60,7 +60,7 @@ export default function () {
   });
 
   this.When(/^I open "Transaction assurance security level" selection dropdown$/, function () {
-    return this.waitAndClick('.WalletSettings_assuranceLevelSelect .SimpleInput_input');
+    return this.waitAndClick('.WalletSettings_component .walletAssuranceLevel input');
   });
 
   this.When(/^I select "Strict" assurance level$/, function () {
