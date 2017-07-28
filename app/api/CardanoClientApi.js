@@ -12,7 +12,7 @@ import type {
   ApiWallets,
 } from 'daedalus-client-api';
 import { action } from 'mobx';
-import { ipcRenderer } from 'electron';
+import { ipcRenderer, remote } from 'electron';
 import Log from 'electron-log';
 import BigNumber from 'bignumber.js';
 import Wallet from '../domain/Wallet';
@@ -44,6 +44,10 @@ import {
   IncorrectWalletPasswordError,
 } from './errors';
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
+
+const getTlsConfig = remote.require('./remote/get-tls-config');
+const registerNotifyCallback = remote.require('./remote/register-notify-callback');
+const tlsConfig = getTlsConfig();
 
 // const notYetImplemented = () => new Promise((_, reject) => {
 //   reject(new ApiMethodNotYetImplementedError());
@@ -131,7 +135,7 @@ export default class CardanoClientApi {
   notifyCallbacks = [];
 
   constructor() {
-    ClientApi.notify(this._onNotify, this._onNotifyError);
+    registerNotifyCallback(tlsConfig, this._onNotify, this._onNotifyError);
   }
 
   notify(onSuccess: Function, onError: Function = () => {}) {
@@ -145,7 +149,7 @@ export default class CardanoClientApi {
   async getWallets() {
     Log.debug('CardanoClientApi::getWallets called');
     try {
-      const response: ApiWallets = await ClientApi.getWallets();
+      const response: ApiWallets = await ClientApi.getWallets(tlsConfig);
       Log.debug('CardanoClientApi::getWallets success: ', stringifyData(response));
       const wallets = response.map(data => _createWalletFromServerData(data));
       return wallets;
@@ -159,7 +163,7 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::getAddresses called: ', stringifyData(request));
     const { walletId } = request;
     try {
-      const response: ApiAccounts = await ClientApi.getWalletAccounts(walletId);
+      const response: ApiAccounts = await ClientApi.getWalletAccounts(tlsConfig, walletId);
       Log.debug('CardanoClientApi::getAddresses success: ', stringifyData(response));
 
       if (!response.length) {
@@ -186,7 +190,7 @@ export default class CardanoClientApi {
     const { walletId, skip, limit } = request;
     try {
       const history: ApiTransactions = await ClientApi.getHistoryByWallet(
-        walletId, skip, limit
+        tlsConfig, walletId, skip, limit
       );
       Log.debug('CardanoClientApi::searchHistory success: ', stringifyData(history));
       return new Promise((resolve) => resolve({
@@ -208,7 +212,7 @@ export default class CardanoClientApi {
     const unit = 0;
     try {
       const wallet: ApiWallet = await ClientApi.newWallet(
-        name, assurance, unit, mnemonic, password
+        tlsConfig, name, assurance, unit, mnemonic, password
       );
       Log.debug('CardanoClientApi::createWallet success');
       return _createWalletFromServerData(wallet);
@@ -221,7 +225,7 @@ export default class CardanoClientApi {
   async deleteWallet(request: DeleteWalletRequest) {
     Log.debug('CardanoClientApi::deleteWallet called: ', stringifyData(request));
     try {
-      await ClientApi.deleteWallet(request.walletId);
+      await ClientApi.deleteWallet(tlsConfig, request.walletId);
       Log.debug('CardanoClientApi::deleteWallet success: ', stringifyData(request));
       return true;
     } catch (error) {
@@ -236,7 +240,7 @@ export default class CardanoClientApi {
     // sender must be set as accountId (account.caId) and not walletId
     try {
       const response: ApiTransaction = await ClientApi.newPayment(
-        sender, receiver, amount, password
+        tlsConfig, sender, receiver, amount, password
       );
       Log.debug('CardanoClientApi::createTransaction success: ', stringifyData(response));
       return _createTransactionFromServerData(response);
@@ -257,7 +261,7 @@ export default class CardanoClientApi {
     const { accountId, password } = request;
     try {
       const response: ApiAddress = await ClientApi.newWAddress(
-        accountId, password
+        tlsConfig, accountId, password
       );
       Log.debug('CardanoClientApi::createAddress success: ', stringifyData(response));
       return _createAddressFromServerData(response);
@@ -271,7 +275,7 @@ export default class CardanoClientApi {
   }
 
   isValidAddress(address: string): Promise<boolean> {
-    return ClientApi.isValidAddress(address);
+    return ClientApi.isValidAddress(tlsConfig, address);
   }
 
   isValidMnemonic(mnemonic: string): Promise<boolean> {
@@ -309,7 +313,7 @@ export default class CardanoClientApi {
     const unit = 0;
     try {
       const wallet: ApiWallet = await ClientApi.restoreWallet(
-        walletName, assurance, unit, recoveryPhrase, walletPassword
+        tlsConfig, walletName, assurance, unit, recoveryPhrase, walletPassword
       );
       Log.debug('CardanoClientApi::restoreWallet success');
       return _createWalletFromServerData(wallet);
@@ -332,7 +336,7 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::importWalletFromKey called');
     const { filePath, walletPassword } = request;
     try {
-      const importedWallet: ApiWallet = await ClientApi.importWallet(filePath, walletPassword);
+      const importedWallet: ApiWallet = await ClientApi.importWallet(tlsConfig, filePath, walletPassword);
       Log.debug('CardanoClientApi::importWalletFromKey success');
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
@@ -397,7 +401,7 @@ export default class CardanoClientApi {
     let nextUpdate = null;
     try {
       // TODO: add flow type definitions for nextUpdate response
-      const response = await ClientApi.nextUpdate();
+      const response = await ClientApi.nextUpdate(tlsConfig);
       Log.debug('CardanoClientApi::nextUpdate success: ', stringifyData(response));
       if (response) {
         nextUpdate = {
@@ -447,7 +451,7 @@ export default class CardanoClientApi {
   async applyUpdate() {
     Log.debug('CardanoClientApi::applyUpdate called');
     try {
-      const response = await ClientApi.applyUpdate();
+      const response = await ClientApi.applyUpdate(tlsConfig);
       Log.debug('CardanoClientApi::applyUpdate success: ', stringifyData(response));
       ipcRenderer.send('kill-process');
     } catch (error) {
@@ -459,12 +463,12 @@ export default class CardanoClientApi {
   async getSyncProgress() {
     Log.debug('CardanoClientApi::syncProgress called');
     try {
-      const response = await ClientApi.syncProgress();
+      const response = await ClientApi.syncProgress(tlsConfig);
       Log.debug('CardanoClientApi::syncProgress success: ', stringifyData(response));
-      const localDifficulty = response._spLocalCD.getChainDifficulty;
+      const localDifficulty = response._spLocalCD.getChainDifficulty.getBlockCount;
       // In some cases we dont get network difficulty & we need to wait for it from the notify API
       let networkDifficulty = null;
-      if (response._spNetworkCD) networkDifficulty = response._spNetworkCD.getChainDifficulty;
+      if (response._spNetworkCD) networkDifficulty = response._spNetworkCD.getChainDifficulty.getBlockCount;
       return { localDifficulty, networkDifficulty };
     } catch (error) {
       Log.error('CardanoClientApi::syncProgress error: ' + stringifyError(error));
@@ -550,7 +554,7 @@ export default class CardanoClientApi {
     const unit = 0;
     try {
       const wallet: ApiWallet = await ClientApi.updateWallet(
-        walletId, name, assurance, unit
+        tlsConfig, walletId, name, assurance, unit
       );
       Log.debug('CardanoClientApi::updateWallet success: ', stringifyData(wallet));
       return _createWalletFromServerData(wallet);
@@ -564,7 +568,7 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::updateWalletPassword called');
     const { walletId, oldPassword, newPassword } = request;
     try {
-      await ClientApi.changeWalletPass(walletId, oldPassword, newPassword);
+      await ClientApi.changeWalletPass(tlsConfig, walletId, oldPassword, newPassword);
       Log.debug('CardanoClientApi::updateWalletPassword success');
       return true;
     } catch (error) {
@@ -597,7 +601,7 @@ export default class CardanoClientApi {
     await unsetTermsOfUseAcceptanceFromLocalStorage();
     await unsetSendLogsChoiceFromLocalStorage();
     try {
-      const response = await ClientApi.testReset();
+      const response = await ClientApi.testReset(tlsConfig);
       Log.debug('CardanoClientApi::testReset success: ', stringifyData(response));
       return response;
     } catch (error) {
