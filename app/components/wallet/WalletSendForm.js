@@ -113,6 +113,16 @@ export default class WalletSendForm extends Component {
     transactionFee: new BigNumber(0),
   };
 
+  _isMounted = false;
+
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   adaToLovelaces = (adaAmount: string) => (
     adaAmount.replace('.', '').replace(/,/g, '').replace(/^0+/, '')
   );
@@ -262,9 +272,10 @@ export default class WalletSendForm extends Component {
     this.setState({ transactionFee: new BigNumber(0) });
     const cleanedAmount = amountValue.replace(/,/g, '');
     const amount = new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
+
     this.props.calculateTransactionFee(receiver, amount)
       .then((fee: BigNumber) => (
-        this.setState({ transactionFee: fee })
+        this._isMounted && this.setState({ transactionFee: fee })
       ))
       .catch((error: Error) => {
         console.log(error);
