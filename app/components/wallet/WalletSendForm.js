@@ -113,6 +113,9 @@ export default class WalletSendForm extends Component {
     transactionFee: new BigNumber(0),
   };
 
+  // We need to track the mounted state in order to avoid calling
+  // setState promise handling code after the component was already unmounted:
+  // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
   _isMounted = false;
 
   componentDidMount() {
