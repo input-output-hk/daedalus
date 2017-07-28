@@ -4,23 +4,31 @@
     font-family: $font-semibold;
     font-size: 16px;
     line-height: 1.38;
-    margin-bottom: 10px;
+    margin-bottom: 11px;
   }
 }
 
 .themesWrapper {
   display: flex;
-  margin-top: 30px;
+  margin-bottom: 20px;
 
   .themeImageWrapper {
     opacity: 0.3;
-    width: 33%;
 
     &.active {
       opacity: 1;
+      transition: opacity 400ms ease;
+    }
+
+    &.inactive {
+      &:hover {
+        cursor: pointer;
+        opacity: 0.6;
+      }
     }
 
     & > img {
+      display: block;
       width: 100%;
     }
 
@@ -32,18 +40,6 @@
       line-height: 1.38;
       margin-top: 11px;
       text-align: center;
-    }
-
-    &.inactive {
-      &:hover {
-        cursor: pointer;
-        opacity: 0.6;
-      }
-    }
-
-    &:only-child {
-      margin: auto;
-      width: 30%;
     }
 
     & + .themeImageWrapper {
