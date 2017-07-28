@@ -40,6 +40,7 @@ Changelog
 - Opt-in mode for sending logs to the remote server
 - Added support for Cmd+H hotkey shortcut for hiding application window on OSX ([PR 404](https://github.com/input-output-hk/daedalus/pull/404))
 - Setup environment variable for testnet/mainnet mode ([PR 400](https://github.com/input-output-hk/daedalus/pull/400))
+- Add theming options in settings ([PR 370](https://github.com/input-output-hk/daedalus/pull/398))
 
 ### Fixes
 
@@ -93,7 +94,7 @@ Changelog
 - Replaced all React-Toolbox components with React-Polymorph ones ([PR 361](https://github.com/input-output-hk/daedalus/pull/361))
 - Temporary workaround for missing Japanese translations for Terms of Use that allows users to accept them in English
 - Added readme file for running acceptance tests ([PR 395](https://github.com/input-output-hk/daedalus/pull/395))
-- All CSS hardcoded values replaced with variables
+- All CSS hardcoded values replaced with variables ([PR 370](https://github.com/input-output-hk/daedalus/pull/398))
 
 ## 0.6.2
 

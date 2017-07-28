@@ -1,7 +1,9 @@
 $topBarHeight: 84px;
 
 .component {
-  background-color: $theme-main-body-background-color;
+  // background-color: var(--theme-main-body-background-color);
+  background: blue; /* Fallback */
+  background: var(--theme-main-body-background-color);
   height: 100%;
   display: flex;
 }

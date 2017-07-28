@@ -9,6 +9,6 @@
   opacity: 0.5;
   font-size: 16px;
   line-height: 1.38;
-  font-family: $font-regular;
-  color: $theme-main-body-messages-color;
+  font-family: var(--font-regular);
+  color: var(--theme-main-body-messages-color);
 }

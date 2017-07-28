@@ -11,10 +11,10 @@ import environment from './environment';
 import translations from './i18n/translations';
 import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
+import ThemeManager from './ThemeManager';
 
 @observer
 export default class App extends Component {
-
   props: {
     stores: StoresMap,
     actions: ActionsMap,
@@ -25,18 +25,23 @@ export default class App extends Component {
     const { stores, actions, history } = this.props;
     const locale = stores.app.currentLocale;
     const mobxDevTools = environment.MOBX_DEV_TOOLS ? <DevTools /> : null;
+    const currentTheme = stores.app.currentTheme;
+    const theme = require(`./themes/daedalus/${currentTheme}.js`); // eslint-disable-line
 
     return (
-      <Provider stores={stores} actions={actions}>
-        <ThemeProvider theme={daedalusTheme}>
-          <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
-            <div style={{ height: '100%' }}>
-              <Router history={history} routes={Routes} />
-              {mobxDevTools}
-            </div>
-          </IntlProvider>
-        </ThemeProvider>
-      </Provider>
+      <div>
+        <ThemeManager variables={theme} />
+        <Provider stores={stores} actions={actions}>
+          <ThemeProvider theme={daedalusTheme}>
+            <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
+              <div style={{ height: '100%' }}>
+                <Router history={history} routes={Routes} />
+                {mobxDevTools}
+              </div>
+            </IntlProvider>
+          </ThemeProvider>
+        </Provider>
+      </div>
     );
   }
 }

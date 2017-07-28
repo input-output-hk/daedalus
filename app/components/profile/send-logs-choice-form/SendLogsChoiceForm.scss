@@ -8,8 +8,8 @@
   justify-content: center;
 
   .centeredBox {
-    background-color: $theme-settings-menu-box-background-color;
-    border: 1px solid $theme-settings-menu-box-border-color;
+    background-color: var(--theme-settings-menu-box-background-color);
+    border: 1px solid var(--theme-settings-menu-box-border-color);
     border-radius: 4px;
     padding: 30px 30px 20px;
     overflow: visible;
@@ -17,17 +17,17 @@
   }
 
   p {
-    color: $theme-send-logs-text-color;
+    color: var(--theme-send-logs-text-color);
     line-height: 1.38;
 
     &.sendLogsLabel {
-      font-family: $font-medium;
+      font-family: var(--font-medium);
       font-weight: 500;
       margin-bottom: 14px;
     }
 
     &.sendLogsText {
-      font-family: $font-regular;
+      font-family: var(--font-regular);
       font-size: 16px;
       margin-bottom: 30px;
     }

@@ -1,7 +1,7 @@
 %contentBorderAndBackground {
-  border: solid 1px $theme-staking-content-border-color;
+  border: solid 1px var(--theme-staking-content-border-color);
   border-radius: 4px;
-  background-color: $theme-staking-content-background-color;
+  background-color: var(--theme-staking-content-background-color);
 }
 
 %baseTypography {
@@ -11,12 +11,12 @@
 
 %accentText {
   @extend %baseTypography;
-  font-family: $font-semibold;
-  color: $theme-staking-font-color-accent;
+  font-family: var(--font-semibold);
+  color: var(--theme-staking-font-color-accent);
 }
 
 %regularText {
   @extend %baseTypography;
-  font-family: $font-regular;
-  color: $theme-staking-font-color-regular;
+  font-family: var(--font-regular);
+  color: var(--theme-staking-font-color-regular);
 }

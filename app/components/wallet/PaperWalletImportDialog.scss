@@ -10,13 +10,13 @@
   margin-bottom: -32px;
 
   .walletPasswordSwitch {
-    border-top: 1px solid $theme-separation-border-color;
+    border-top: 1px solid var(--theme-separation-border-color);
     margin-top: 30px;
     padding-top: 20px;
 
     & > .passwordLabel {
-      color: $theme-wallet-password-switch-label-color;
-      font-family: $font-semibold;
+      color: var(--theme-wallet-password-switch-label-color);
+      font-family: var(--font-semibold);
       font-size: 16px;
       line-height: 1.38;
       margin-bottom: 10px;
@@ -46,8 +46,8 @@
     @include place-form-field-error-below-input;
 
     .passwordInstructions {
-      color: $theme-instructions-text-color;
-      font-family: $font-light;
+      color: var(--theme-instructions-text-color);
+      font-family: var(--font-light);
       line-height: 1.38;
       margin: 16px 0 20px;
       opacity: 0.5;

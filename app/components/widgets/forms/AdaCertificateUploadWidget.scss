@@ -1,13 +1,13 @@
 %base {
   font-size: 16px;
   line-height: 1.38;
-  font-family: $font-regular;
-  color: $theme-uploader-text-color;
+  font-family: var(--font-regular);
+  color: var(--theme-uploader-text-color);
 }
 
 .label {
   @extend %base;
-  font-family: $font-semibold;
+  font-family: var(--font-semibold);
   margin-bottom: 10px;
 }
 
@@ -15,7 +15,7 @@
   width: 154px;
   height: 154px;
   border-radius: 2px;
-  border: solid 1px $theme-uploader-border-color;
+  border: solid 1px var(--theme-uploader-border-color);
   display: flex;
   align-items: center;
 }
@@ -42,7 +42,7 @@
   justify-content: center;
   .title {
     @extend %base;
-    font-family: $font-semibold;
+    font-family: var(--font-semibold);
   }
 
   .subtitle {

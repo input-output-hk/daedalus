@@ -1,8 +1,8 @@
 .dialogWrapper {
-  color: $theme-dialog-title-color;
+  color: var(--theme-dialog-title-color);
   position: relative;
   & > .title {
-    font-family: $font-medium;
+    font-family: var(--font-medium);
     font-size: 18px;
     line-height: 1.39;
     letter-spacing: 2px;

@@ -4,9 +4,9 @@
 // Css module overrides go here …
 
 .error {
-  color: $theme-input-error-color;
+  color: var(--theme-input-error-color);
 }
 
 .label {
-  color: $theme-input-label-color;
+  color: var(--theme-input-label-color);
 }

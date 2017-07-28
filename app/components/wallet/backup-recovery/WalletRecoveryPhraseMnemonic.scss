@@ -3,11 +3,11 @@
   padding: 14px;
   border-radius: 2px;
   text-align: center;
-  background-color: $theme-backup-mnemonic-background-color;
-  font-family: $font-medium;
+  background-color: var(--theme-backup-mnemonic-background-color);
+  font-family: var(--font-medium);
   font-size: 16px;
   line-height: 1.38;
-  color: $theme-instructions-text-color;
+  color: var(--theme-instructions-text-color);
   min-height: 50px;
   -webkit-user-select: none;
 }

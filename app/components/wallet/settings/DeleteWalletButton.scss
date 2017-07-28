@@ -1,6 +1,6 @@
 .button {
-  color: $theme-input-remove-color-light;
-  font-family: $font-medium;
+  color: var(--theme-input-remove-color-light);
+  font-family: var(--font-medium);
   font-size: 16px;
   &:hover {
     cursor: pointer;

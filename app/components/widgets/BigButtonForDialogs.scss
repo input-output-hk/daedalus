@@ -1,7 +1,7 @@
 .component {
   border-radius: 10px;
-  background-color: $theme-dialog-big-button-background-color;
-  border: solid 4px $theme-dialog-big-button-border-color;
+  background-color: var(--theme-dialog-big-button-background-color);
+  border: solid 4px var(--theme-dialog-big-button-border-color);
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -25,14 +25,14 @@
   margin-top: 20px;
   font-size: 19px;
   line-height: 1.37;
-  color: $theme-dialog-big-button-label-color;
-  font-family: $font-medium;
+  color: var(--theme-dialog-big-button-label-color);
+  font-family: var(--font-medium);
 }
 
 .description {
-  font-family: $font-regular;
+  font-family: var(--font-regular);
   height: 19px;
   font-size: 14px;
   line-height: 1.36;
-  color: $theme-dialog-big-button-description-color;
+  color: var(--theme-dialog-big-button-description-color);
 }

@@ -33,7 +33,7 @@ export default class DisplaySettings extends Component {
     const { intl } = this.context;
 
     const themeDefaultClasses = classnames([
-      theme === 'theme_default' ? styles.active : styles.inactive,
+      theme === 'themeDefault' ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
 
@@ -56,7 +56,7 @@ export default class DisplaySettings extends Component {
 
         <div className={styles.themesWrapper}>
 
-          <button className={themeDefaultClasses} onClick={selectTheme.bind(this, { theme: 'theme_default' })}>
+          <button className={themeDefaultClasses} onClick={selectTheme.bind(this, { theme: 'themeDefault' })}>
             <img src={themeDefault} role="presentation" />
             <span>Default Theme</span>
           </button>

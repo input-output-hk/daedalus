@@ -13,8 +13,8 @@
 }
 
 .centeredBox {
-  background-color: $theme-bordered-box-background-color;
-  border: solid 1px $theme-bordered-box-border-color;
+  background-color: var(--theme-bordered-box-background-color);
+  border: solid 1px var(--theme-bordered-box-border-color);
   border-radius: 4px;
   padding: 30px 30px 20px;
 }
@@ -40,6 +40,6 @@
   padding-top: 10px;
 
   :global .SimpleCheckbox_label {
-    font-family: $font-regular;
+    font-family: var(--font-regular);
   }
 }

@@ -6,17 +6,17 @@
   button {
     flex: 1;
     padding: 20px;
-    font-family: $font-medium;
+    font-family: var(--font-medium);
     font-size: 16px;
     text-align: center;
-    color: $theme-choice-tabs-text-color;
+    color: var(--theme-choice-tabs-text-color);
     cursor: pointer;
     opacity: 0.5;
   }
 
   .activeButton {
-    color: $theme-choice-tabs-text-color-active;
-    border-bottom: 2px solid $theme-choice-tabs-bottom-border-color-active;
+    color: var(--theme-choice-tabs-text-color-active);
+    border-bottom: 2px solid var(--theme-choice-tabs-bottom-border-color-active);
     cursor: default;
     opacity: 1;
   }

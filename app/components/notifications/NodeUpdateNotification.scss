@@ -3,11 +3,11 @@
   box-sizing: border-box;
   height: 33px;
   border-radius: 5px;
-  font-family: $font-medium;
+  font-family: var(--font-medium);
   font-size: 14px;
   line-height: 1.36;
   text-align: center;
-  color: $theme-node-update-button-text-color;
+  color: var(--theme-node-update-button-text-color);
   margin-left: 10px;
   max-width: 200px;
   cursor: pointer;
@@ -16,7 +16,7 @@
 }
 
 .component {
-  background-color: $theme-node-update-background-color;
+  background-color: var(--theme-node-update-background-color);
   padding: 20px 40px;
   display: flex;
   flex-direction: column;
@@ -24,17 +24,17 @@
 
   .acceptButton {
     @extend %actionButton;
-    background-color: $theme-node-update-accept-button-backgroun-color;
+    background-color: var(--theme-node-update-accept-button-backgroun-color);
     &:hover {
-      background-color: $theme-node-update-accept-button-backgroun-color-hover !important;
+      background-color: var(--theme-node-update-accept-button-backgroun-color-hover) !important;
     }
   }
 
   .denyButton {
     @extend %actionButton;
-    background-color: $theme-node-update-deny-button-backgroun-color;
+    background-color: var(--theme-node-update-deny-button-backgroun-color);
     &:hover {
-      background-color: $theme-node-update-deny-button-backgroun-color-hover !important;
+      background-color: var(--theme-node-update-deny-button-backgroun-color-hover) !important;
     }
   }
 }
@@ -45,20 +45,20 @@
 
 .title {
   height: 22px;
-  font-family: $font-medium;
+  font-family: var(--font-medium);
   font-size: 16px;
   line-height: 1.5;
-  color: $theme-node-update-title-color;
+  color: var(--theme-node-update-title-color);
   flex-grow: 1;
 }
 
 .message {
   margin-top: 12px;
-  font-family: $font-regular;
+  font-family: var(--font-regular);
   font-size: 14px;
   line-height: 1.36;
   letter-spacing: 0.5px;
-  color: $theme-node-update-message-color;
+  color: var(--theme-node-update-message-color);
 }
 
 .actions {

@@ -65,7 +65,7 @@ export default class AppStore extends Store {
   @computed get currentTheme(): string {
     const { result } = this.getThemeRequest.execute();
     if (this.isCurrentThemeSet) return result;
-    return 'theme_default'; // default
+    return 'themeDefault'; // default
   }
 
   @computed get hasLoadedCurrentLocale(): boolean {

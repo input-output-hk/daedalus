@@ -7,15 +7,15 @@
   flex-direction: row-reverse;
   margin-bottom: 30px;
   & > .checked {
-    background-color: $theme-switch-background-color-checked !important;
+    background-color: var(--theme-switch-background-color-checked) !important;
     & > .thumb {
-      box-shadow: inset -1.5px -1.5px 0 $theme-switch-thumb-color-checked, inset 1.5px 1.5px 0 $theme-switch-thumb-color-checked, inset 1.5px -1.5px 0 $theme-switch-thumb-color-checked, inset -1.5px 1.5px 0 $theme-switch-thumb-color-checked !important;
+      box-shadow: inset -1.5px -1.5px 0 var(--theme-switch-thumb-color-checked), inset 1.5px 1.5px 0 var(--theme-switch-thumb-color-checked), inset 1.5px -1.5px 0 var(--theme-switch-thumb-color-checked), inset -1.5px 1.5px 0 var(--theme-switch-thumb-color-checked) !important;
     }
   }
 }
 
 .label {
-  color: $theme-switch-label-color;
+  color: var(--theme-switch-label-color);
   margin: 0 30px 0 0 !important;
   opacity: 0.5;
   width: 100%;

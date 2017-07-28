@@ -14,8 +14,8 @@
 
 .adaLabel {
   bottom: 16px;
-  color: $theme-input-right-floating-text-color;
-  font-family: $font-light;
+  color: var(--theme-input-right-floating-text-color);
+  font-family: var(--font-light);
   position: absolute;
   right: 20px;
   text-transform: uppercase;

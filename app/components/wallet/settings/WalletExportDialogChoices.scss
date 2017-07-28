@@ -3,10 +3,10 @@
   width: 100%;
 
   button {
-    color: $theme-choice-tabs-text-color;
+    color: var(--theme-choice-tabs-text-color);
     cursor: pointer;
     flex: 1;
-    font-family: $font-medium;
+    font-family: var(--font-medium);
     font-size: 16px;
     opacity: 0.5;
     padding-bottom: 20px;
@@ -14,8 +14,8 @@
   }
 
   .activeButton {
-    border-bottom: 2px solid $theme-choice-tabs-bottom-border-color-active;
-    color: $theme-choice-tabs-text-color-active;
+    border-bottom: 2px solid var(--theme-choice-tabs-bottom-border-color-active);
+    color: var(--theme-choice-tabs-text-color-active);
     cursor: default;
     opacity: 1;
   }

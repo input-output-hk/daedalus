@@ -1,8 +1,8 @@
 @import "../settingsConfig";
 
 .component {
-  background-color: $theme-settings-menu-box-background-color;
-  border: 1px solid $theme-settings-menu-box-border-color;
+  background-color: var(--theme-settings-menu-box-background-color);
+  border: 1px solid var(--theme-settings-menu-box-border-color);
   border-radius: 4px;
   padding: 16px 0;
   width: 240px;

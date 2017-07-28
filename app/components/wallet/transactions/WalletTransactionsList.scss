@@ -15,9 +15,9 @@
 
 .list {
   border-radius: 4px;
-  background-color: $theme-transactions-list-background-color;
+  background-color: var(--theme-transactions-list-background-color);
   background-blend-mode: lighten;
-  border: solid 1px $theme-transactions-list-border-color;
+  border: solid 1px var(--theme-transactions-list-border-color);
   margin-bottom: 20px;
   &:last-child {
     margin: 0;
@@ -35,9 +35,9 @@
 }
 
 .groupDate {
-  font-family: $font-regular;
+  font-family: var(--font-regular);
   font-size: 16px;
-  color: $theme-transactions-list-group-date-color;
+  color: var(--theme-transactions-list-group-date-color);
   opacity: 0.5;
   margin-bottom: 10px;
   margin-left: 20px;

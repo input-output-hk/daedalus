@@ -5,14 +5,14 @@
 
 .root {
   .checked {
-    background-color: $theme-checkbox-background-color-checked;
+    background-color: var(--theme-checkbox-background-color-checked);
   }
 }
 
 .check {
-  border: 1px solid $theme-checkbox-border-color;
+  border: 1px solid var(--theme-checkbox-border-color);
 }
 
 .label {
-  color: $theme-checkbox-label-color;
+  color: var(--theme-checkbox-label-color);
 }

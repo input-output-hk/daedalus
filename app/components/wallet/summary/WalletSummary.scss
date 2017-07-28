@@ -1,10 +1,10 @@
 %smallText {
   height: 19px;
-  font-family: $font-regular;
+  font-family: var(--font-regular);
   font-size: 14px;
   line-height: 1.36;
   letter-spacing: 0.5px;
-  color: $theme-bordered-box-text-color;
+  color: var(--theme-bordered-box-text-color);
 }
 
 .component {
@@ -12,19 +12,19 @@
 }
 
 .walletName {
-  font-family: $font-bold;
+  font-family: var(--font-bold);
   font-size: 16px;
   line-height: 1.38;
   letter-spacing: 0.5px;
-  color: $theme-bordered-box-text-color;
+  color: var(--theme-bordered-box-text-color);
   margin-bottom: 11px;
 }
 
 .walletAmount {
-  font-family: $font-ultralight;
+  font-family: var(--font-ultralight);
   font-size: 40px;
   line-height: 1.0;
-  color: $theme-bordered-box-text-color;
+  color: var(--theme-bordered-box-text-color);
   margin-bottom: 11px;
   img {
     margin-left: 10px;

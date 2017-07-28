@@ -113,15 +113,17 @@ export default class NetworkStatusStore extends Store {
   }
 
   @computed get isSyncing(): boolean {
-    return !this.isConnecting && this.hasBlockSyncingStarted && !this.isSynced;
+    // return !this.isConnecting && this.hasBlockSyncingStarted && !this.isSynced;
+    return false;
   }
 
   @computed get isSynced(): boolean {
-    return (
+    /* return (
       !this.isConnecting &&
       this.hasBlockSyncingStarted &&
       this.relativeSyncBlocksDifference <= OUT_OF_SYNC_BLOCKS_LIMIT
-    );
+    ); */
+    return true;
   }
 
   @action _setInitialDifficulty = async () => {

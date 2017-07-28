@@ -4,22 +4,22 @@
 .component {
   @include button;
   align-items: center;
-  background-color: $theme-sidebar-background-color;
-  color: $theme-sidebar-category-text-color;
+  background-color: var(--theme-sidebar-background-color);
+  color: var(--theme-sidebar-category-text-color);
   display: flex;
   height: $sidebar-button-height;
   width: 100%;
 
   &:hover {
-    background-color: $theme-sidebar-category-background-color-hover;
+    background-color: var(--theme-sidebar-category-background-color-hover);
   }
 }
 
 .active {
-  background-color: $theme-sidebar-category-background-color-active;
+  background-color: var(--theme-sidebar-category-background-color-active);
 
   &:hover {
-    background-color: $theme-sidebar-category-background-color-active;
+    background-color: var(--theme-sidebar-category-background-color-active);
     cursor: default;
   }
 }
@@ -31,6 +31,6 @@
 }
 
 .label {
-  font-family: $font-regular;
+  font-family: var(--font-regular);
   font-size: 18px;
 }

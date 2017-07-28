@@ -152,5 +152,5 @@ html, body, #root, #root > [data-reactroot] {
 // General text formatting
 
 strong {
-  font-family: $font-medium;
+  font-family: var(--font-medium);
 }

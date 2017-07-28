@@ -1,6 +1,6 @@
 .component {
-  color: $theme-input-placeholder-color;
-  font-family: $theme-input-hint-font;
+  color: var(--theme-input-placeholder-color);
+  font-family: var(--theme-input-hint-font);
   font-size: 16px;
   line-height: 1.38;
 }
@@ -8,7 +8,7 @@
 .dropZone {
   align-items: center;
   background-color: inherit;
-  border: solid 1px $theme-uploader-border-color;
+  border: solid 1px var(--theme-uploader-border-color);
   border-radius: 2px;
   cursor: pointer;
   display: flex;
@@ -21,8 +21,8 @@
 }
 
 .label {
-  color: $theme-dialog-input-label-color;
-  font-family: $font-semibold;
+  color: var(--theme-dialog-input-label-color);
+  font-family: var(--font-semibold);
   margin-bottom: 10px;
 }
 

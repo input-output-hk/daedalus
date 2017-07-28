@@ -7,5 +7,5 @@
 .navItem {
   height: 100%;
   width: percentage(1/5); // Update when adding new nav items!
-  background-color: $theme-nav-item-background-color;
+  background-color: var(--theme-nav-item-background-color);
 }

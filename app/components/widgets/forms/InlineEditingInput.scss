@@ -5,14 +5,15 @@
   :global {
     .SimpleFormField_root {
       & > label {
-        color: $theme-input-label-color;
+        color: var(--theme-input-label-color);
       }
     }
 
     .SimpleInput_disabled {
       & .SimpleInput_input {
-        background-color: $theme-input-background-color;
-        border-color: $theme-input-border-color;
+        background-color: var(--theme-input-background-color);
+        border-color: var(--theme-input-border-color);
+        color: var(--theme-input-text-color) !important;
       }
     }
   }
@@ -27,9 +28,9 @@
 
   .button {
     bottom: 13px;
-    color: $theme-label-button-color;
+    color: var(--theme-label-button-color);
     cursor: pointer;
-    font-family: $font-light;
+    font-family: var(--font-light);
     font-size: 16px;
     line-height: 1.38;
     opacity: 0.5;
@@ -55,8 +56,8 @@
 
   .savingResultLabel {
     animation: animateSavingResultLabel 3s;
-    color: $theme-input-right-floating-text-color;
-    font-family: $font-light;
+    color: var(--theme-input-right-floating-text-color);
+    font-family: var(--font-light);
     font-size: 14px;
     opacity: 0;
     position: absolute;

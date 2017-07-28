@@ -10,8 +10,8 @@
 .label {
   flex: 1;
   padding-top: 1px;
-  font-family: $font-semibold;
+  font-family: var(--font-semibold);
   font-size: 16px;
   line-height: 1.38;
-  color: $theme-switch-label-color;
+  color: var(--theme-switch-label-color);
 }

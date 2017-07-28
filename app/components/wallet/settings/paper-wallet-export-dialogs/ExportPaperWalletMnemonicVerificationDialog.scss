@@ -12,12 +12,12 @@
 }
 
 .instructions {
-  color: $theme-instructions-text-color;
+  color: var(--theme-instructions-text-color);
   margin-bottom: 18px;
   margin-top: 30px;
 
   p {
-    font-family: $font-regular;
+    font-family: var(--font-regular);
     line-height: 1.38;
   }
 }

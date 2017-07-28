@@ -22,7 +22,7 @@
 
 .label {
   font-size: 14px;
-  font-family: $font-regular;
+  font-family: var(--font-regular);
   display: block;
   overflow: visible;
 }
@@ -41,12 +41,12 @@
 
 .normal {
   .container {
-    color: $theme-nav-item-text-color;
+    color: var(--theme-nav-item-text-color);
   }
 
   &:hover {
     .container {
-      background-color: $theme-nav-item-background-color-hover;
+      background-color: var(--theme-nav-item-background-color-hover);
     }
     cursor: pointer;
   }
@@ -54,8 +54,8 @@
 
 .active {
   .container {
-    background-color: $theme-nav-item-background-color-active;
-    color: $theme-nav-item-text-color-active;
+    background-color: var(--theme-nav-item-background-color-active);
+    color: var(--theme-nav-item-text-color-active);
   }
 
   &:hover {

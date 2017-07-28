@@ -1,7 +1,7 @@
 .component {
   & > .label {
-    color: $theme-support-settings-text-color;
-    font-family: $font-semibold;
+    color: var(--theme-support-settings-text-color);
+    font-family: var(--font-semibold);
     font-size: 16px;
     line-height: 1.38;
     margin-bottom: 10px;
@@ -25,9 +25,9 @@
     }
 
     & > span {
-      color: $theme-settings-theme-select-title-color;
+      color: var(--theme-settings-theme-select-title-color);
       display: inline-block;
-      font-family: $font-regular;
+      font-family: var(--font-regular);
       font-size: 16px;
       line-height: 1.38;
       margin-top: 11px;
