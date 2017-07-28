@@ -8,7 +8,6 @@ require("react-addons-css-transition-group");
 require("react-copy-to-clipboard");
 require("react-css-themr");
 require("react-dropzone");
-require("react-intl");
 require("react-number-format");
 require("mobx");
 require("mobx-react");
