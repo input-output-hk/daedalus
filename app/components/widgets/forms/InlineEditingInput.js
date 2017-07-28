@@ -34,6 +34,7 @@ export default class InlineEditingInput extends Component {
   }
 
   props: {
+    className?: string,
     isActive: boolean,
     inputFieldLabel: string,
     inputFieldValue: string,
@@ -122,6 +123,7 @@ export default class InlineEditingInput extends Component {
   render() {
     const { validator } = this;
     const {
+      className,
       inputFieldLabel,
       isActive,
       inputFieldValue,
@@ -130,6 +132,7 @@ export default class InlineEditingInput extends Component {
     const { intl } = this.context;
     const inputField = validator.$('inputField');
     const componentStyles = classnames([
+      className,
       styles.component,
       isActive ? null : styles.inactive,
     ]);

@@ -4,7 +4,7 @@
 
   :global {
     .SimpleFormField_root {
-      & > label {
+      .SimpleFormField_label {
         color: var(--theme-input-label-color);
       }
     }

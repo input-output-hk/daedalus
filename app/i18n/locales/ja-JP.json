@@ -37,6 +37,7 @@
   "global.language.korean": "韓国語",
   "global.passwordInstructions": "パスワードは７文字以上であり、英字大文字、小文字、数字を含む必要があります。",
   "global.unit.ada": "Ada",
+  "inline.editing.dropdown.changesSaved": "変更は保存されました",
   "inline.editing.input.cancel.label": "キャンセル",
   "inline.editing.input.change.label": "変更",
   "inline.editing.input.changesSaved": "変更は保存されました",

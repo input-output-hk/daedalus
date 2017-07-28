@@ -19,11 +19,14 @@ const messages = defineMessages({
 export default class InlineEditingDropdown extends Component {
 
   props: {
+    className?: string,
     isActive: boolean,
     label: string,
     options: Array<{ value: (number | string), label: string }>,
     value: number | string,
-    onChange: Function,
+    onSubmit: Function,
+    onStartEditing: Function,
+    onStopEditing: Function,
     successfullyUpdated: boolean,
   };
 
@@ -31,28 +34,34 @@ export default class InlineEditingDropdown extends Component {
     intl: intlShape.isRequired,
   };
 
+  onChange = (value: number | string) => {
+    this.props.onStartEditing();
+    this.props.onSubmit(value);
+    this.props.onStopEditing();
+  };
+
   render() {
     const { intl } = this.context;
     const {
-      isActive,
-      label,
-      options,
-      value,
-      onChange,
-      successfullyUpdated,
+      className, isActive, label, options,
+      value, successfullyUpdated,
     } = this.props;
+    const componentClasses = classnames([
+      className,
+      styles.component,
+    ]);
     const dropdownStyles = classnames([
       successfullyUpdated ? 'dropdown_animateSuccess' : null,
     ]);
     return (
-      <div className={styles.component}>
+      <div className={componentClasses}>
 
         <Select
           className={dropdownStyles}
           label={label}
           options={options}
           value={value}
-          onChange={onChange}
+          onChange={this.onChange}
           disabled={!isActive}
           skin={<SelectSkin />}
         />
