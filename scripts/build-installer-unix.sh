@@ -119,7 +119,7 @@ test $(ls node_modules/ | wc -l) -gt 100 -a -n "${fast_impure}" ||
         nix-shell --run "npm install"
 
 test -d "release/darwin-x64/Daedalus-darwin-x64" -a -n "${fast_impure}" || {
-        nix-shell --run "npm run package -- --icon installers/icons/256x256"
+        nix-shell --run "npm run package -- --icon installers/icons/256x256.png"
         echo "Size of Electron app is $(du -sh release)"
 }
 
@@ -141,7 +141,7 @@ cd installers
     if test -n "${test_install}"
     then echo "$0:  --test-install passed, will test the installer for installability";
          case ${os} in
-                 osx )   sudo installer -dumplog -verbose -pkg "dist/Daedalus-installer-${DAEDALUS_VERSION}.pkg" -target /;;
+                 osx )   sudo installer -dumplog -verbose -target / -pkg "dist/Daedalus-installer-${DAEDALUS_VERSION}.pkg";;
                  linux ) echo "WARNING: installation testing not implemented on Linux" >&2;; esac; fi
 cd ..
 

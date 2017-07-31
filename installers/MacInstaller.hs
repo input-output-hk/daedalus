@@ -4,24 +4,17 @@ module MacInstaller where
 --- An overview of Mac .pkg internals:  http://www.peachpit.com/articles/article.aspx?p=605381&seqNum=2
 ---
 
-import           Control.Monad        (unless)
-import           Data.Foldable        (for_)
-import           Data.Maybe           (fromMaybe)
-import           Data.Monoid          ((<>))
-import qualified Data.Text            as T
-import           System.Environment   (lookupEnv)
-import           System.FilePath      (replaceExtension)
-import           System.FilePath.Glob (globDir1, compile)
-import qualified System.File.Tree     as SFT
+import           Control.Monad      (unless)
+import           Data.Maybe         (fromMaybe)
+import           Data.Monoid        ((<>))
+import qualified Data.Text          as T
 import           System.Directory
-import           System.Environment   (lookupEnv)
-import           System.FilePath      (replaceExtension)
-import           System.FilePath.Glob (compile, globDir1)
-import           Turtle               (ExitCode (..), echo, procs, shell, shells)
-import           Turtle.Line          (unsafeTextToLine)
+import           System.Environment (lookupEnv)
+import           Turtle             (ExitCode (..), echo, procs, shell, shells)
+import           Turtle.Line        (unsafeTextToLine)
 
 import           Launcher
-import           RewriteLibs          (chain)
+import           RewriteLibs        (chain)
 
 
 main :: IO ()
@@ -35,10 +28,7 @@ main = do
   createDirectoryIfMissing False "dist"
 
   echo "Creating icons ..."
-  icons <- globDir1 (compile "*.png") "icons"
-  for_ icons $ \icon -> do
-    let file = replaceExtension icon "icns"
-    procs "sips" ["-s", "format", "icns", T.pack icon, "--out", T.pack file] mempty
+  procs "iconutil" ["--convert", "icns", "--output", T.pack dir <> "/../Resources/electron.icns", "icons/electron.iconset"] mempty
 
   echo "Preparing files ..."
   copyFile "cardano-launcher" (dir <> "/cardano-launcher")
@@ -61,7 +51,7 @@ main = do
   writeFile (dir <> "/Daedalus") $ unlines
     [ "#!/usr/bin/env bash"
     , "cd \"$(dirname $0)\""
-    , "mkdir -p \"$HOME/Library/Application Support/Daedalus/\"{Wallet-0.2,DB-0.2,Logs,Secrets}"
+    , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Secrets-0.5\""
     , doLauncher
     ]
   run "chmod" ["+x", T.pack (dir <> "/Daedalus")]
