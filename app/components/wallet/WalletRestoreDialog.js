@@ -2,12 +2,16 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
-import Input from 'react-toolbox/lib/input/Input';
+import Input from 'react-polymorph/lib/components/Input';
+import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
+import TextArea from 'react-polymorph/lib/components/TextArea';
+import SimpleTextAreaSkin from 'react-polymorph/lib/skins/simple/TextAreaSkin';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
-import Switch from '../widgets/Switch';
+import Dialog from '../widgets/Dialog';
 import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../lib/validations';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -49,15 +53,15 @@ const messages = defineMessages({
     defaultMessage: '!!!Invalid recovery phrase',
     description: 'Error message shown when invalid recovery phrase was entered.'
   },
-  passwordSwitchLabel: {
-    id: 'wallet.restore.dialog.passwordSwitchLabel',
-    defaultMessage: '!!!Password',
-    description: 'Label for the "Activate to create password" switch in the wallet restore dialog.',
-  },
   passwordSwitchPlaceholder: {
     id: 'wallet.restore.dialog.passwordSwitchPlaceholder',
     defaultMessage: '!!!Activate to create password',
     description: 'Text for the "Activate to create password" switch in the wallet restore dialog.',
+  },
+  passwordSwitchLabel: {
+    id: 'wallet.restore.dialog.passwordSwitchLabel',
+    defaultMessage: '!!!Password',
+    description: 'Label for the "Activate to create password" switch in the wallet restore dialog.',
   },
   walletPasswordLabel: {
     id: 'wallet.restore.dialog.walletPasswordLabel',
@@ -109,7 +113,6 @@ export default class WalletRestoreDialog extends Component {
             this.context.intl.formatMessage(globalMessages.invalidWalletName)
           ]
         )],
-        bindings: 'ReactToolbox',
       },
       recoveryPhrase: {
         label: this.context.intl.formatMessage(messages.recoveryPhraseInputLabel),
@@ -123,21 +126,21 @@ export default class WalletRestoreDialog extends Component {
             this.context.intl.formatMessage(messages.invalidRecoveryPhrase)
           ];
         },
-        bindings: 'ReactToolbox',
       },
       walletPassword: {
         type: 'password',
         label: this.context.intl.formatMessage(messages.walletPasswordLabel),
         placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
         value: '',
-        validators: [({ field }) => {
+        validators: [({ field, form }) => {
           if (!this.state.createPassword) return [true];
+          const repeatPasswordField = form.$('repeatPassword');
+          if (repeatPasswordField.value.length > 0) repeatPasswordField.validate(form);
           return [
             isValidWalletPassword(field.value),
             this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
           ];
         }],
-        bindings: 'ReactToolbox',
       },
       repeatPassword: {
         type: 'password',
@@ -153,7 +156,6 @@ export default class WalletRestoreDialog extends Component {
             this.context.intl.formatMessage(globalMessages.invalidRepeatPassword)
           ];
         }],
-        bindings: 'ReactToolbox',
       },
     },
   }, {
@@ -162,14 +164,6 @@ export default class WalletRestoreDialog extends Component {
       validationDebounceWait: 250,
     },
   });
-
-  actions = [
-    {
-      label: this.context.intl.formatMessage(messages.importButtonLabel),
-      primary: true,
-      onClick: () => this.submit(),
-    },
-  ];
 
   handlePasswordSwitchToggle = (value: boolean) => {
     this.setState({ createPassword: value });
@@ -200,7 +194,11 @@ export default class WalletRestoreDialog extends Component {
     const dialogClasses = classnames([
       styles.component,
       'WalletRestoreDialog',
-      isSubmitting ? styles.isSubmitting : null,
+    ]);
+
+    const walletNameFieldClasses = classnames([
+      'walletName',
+      styles.walletName,
     ]);
 
     const walletPasswordFieldsClasses = classnames([
@@ -208,41 +206,71 @@ export default class WalletRestoreDialog extends Component {
       createPassword ? styles.show : null,
     ]);
 
+    const walletNameField = form.$('walletName');
+    const recoveryPhraseField = form.$('recoveryPhrase');
+    const walletPasswordField = form.$('walletPassword');
+    const repeatedPasswordField = form.$('repeatPassword');
+
+    const actions = [
+      {
+        className: isSubmitting ? styles.isSubmitting : null,
+        label: this.context.intl.formatMessage(messages.importButtonLabel),
+        primary: true,
+        onClick: this.submit,
+      },
+    ];
+
     return (
       <Dialog
         className={dialogClasses}
         title={intl.formatMessage(messages.title)}
-        actions={this.actions}
-        onOverlayClick={onCancel}
-        active
+        actions={actions}
+        closeOnOverlayClick
+        onClose={!isSubmitting ? onCancel : null}
+        closeButton={<DialogCloseButton onClose={onCancel} />}
       >
-        <Input className="walletName" {...form.$('walletName').bind()} />
 
         <Input
+          className={walletNameFieldClasses}
+          {...walletNameField.bind()}
+          error={walletNameField.error}
+          skin={<SimpleInputSkin />}
+        />
+
+        <TextArea
           className="recoveryPhrase"
-          multiline
+          autoResize={false}
           rows={3}
-          {...form.$('recoveryPhrase').bind()}
+          {...recoveryPhraseField.bind()}
+          error={recoveryPhraseField.error}
+          skin={<SimpleTextAreaSkin />}
         />
 
         <div className={styles.walletPassword}>
           <div className={styles.walletPasswordSwitch}>
-            <Switch
-              label={intl.formatMessage(messages.passwordSwitchLabel)}
-              placeholder={intl.formatMessage(messages.passwordSwitchPlaceholder)}
-              active={createPassword}
+            <div className={styles.passwordLabel}>
+              {intl.formatMessage(messages.passwordSwitchLabel)}
+            </div>
+            <Checkbox
               onChange={this.handlePasswordSwitchToggle}
+              label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
+              checked={createPassword}
+              skin={<SimpleSwitchSkin />}
             />
           </div>
 
           <div className={walletPasswordFieldsClasses}>
             <Input
               className="walletPassword"
-              {...form.$('walletPassword').bind()}
+              {...walletPasswordField.bind()}
+              error={walletPasswordField.error}
+              skin={<SimpleInputSkin />}
             />
             <Input
               className="repeatedPassword"
-              {...form.$('repeatPassword').bind()}
+              {...repeatedPasswordField.bind()}
+              error={repeatedPasswordField.error}
+              skin={<SimpleInputSkin />}
             />
             <p className={styles.passwordInstructions}>
               {intl.formatMessage(globalMessages.passwordInstructions)}
@@ -251,8 +279,6 @@ export default class WalletRestoreDialog extends Component {
         </div>
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
-
-        <DialogCloseButton onClose={onCancel} />
 
       </Dialog>
     );

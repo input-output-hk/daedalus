@@ -2,11 +2,12 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape } from 'react-intl';
-import CheckboxWithLongLabel from '../../../widgets/forms/CheckboxWithLongLabel';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import DialogBackButton from '../../../widgets/DialogBackButton';
+import Dialog from '../../../widgets/Dialog';
 import styles from './ExportPaperWalletMnemonicDialog.scss';
 import paperWalletImage from '../../../../assets/images/paper-wallet.png';
 
@@ -68,7 +69,7 @@ export default class ExportPaperWalletMnemonicDialog extends Component {
         label: intl.formatMessage(messages.continueLabel),
         primary: true,
         disabled: !isPhraseWrittenNoticeAccepted,
-        onClick: () => onContinue(),
+        onClick: onContinue,
       }
     ];
 
@@ -77,8 +78,10 @@ export default class ExportPaperWalletMnemonicDialog extends Component {
         className={dialogClasses}
         title={intl.formatMessage(messages.headline)}
         actions={actions}
-        onOverlayClick={onClose}
-        active
+        closeOnOverlayClick
+        onClose={onClose}
+        closeButton={<DialogCloseButton onClose={onClose} />}
+        backButton={<DialogBackButton onBack={onBack} />}
       >
 
         <div className={styles.instructions}>
@@ -96,15 +99,14 @@ export default class ExportPaperWalletMnemonicDialog extends Component {
           <img src={paperWalletImage} role="presentation" />
         </div>
 
-        <CheckboxWithLongLabel
-          label={intl.formatMessage(messages.confirmPhraseWrittenNotice)}
-          onChange={onTogglePhraseWrittenNotice}
-          checked={isPhraseWrittenNoticeAccepted}
-        />
-
-
-        <DialogBackButton onBack={onBack} />
-        <DialogCloseButton onClose={onClose} />
+        <div className={styles.checkbox}>
+          <Checkbox
+            label={intl.formatMessage(messages.confirmPhraseWrittenNotice)}
+            onChange={onTogglePhraseWrittenNotice}
+            checked={isPhraseWrittenNoticeAccepted}
+            skin={<SimpleCheckboxSkin />}
+          />
+        </div>
 
       </Dialog>
     );

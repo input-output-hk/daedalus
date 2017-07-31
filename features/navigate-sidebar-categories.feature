@@ -3,8 +3,10 @@ Feature: Navigate Sidebar Categories
   Background:
     Given I have selected English language
     And I have accepted "Terms of use"
-    And I have a wallet with funds
-    And the active wallet is "Genesis wallet"
+    And I agree to send logs to remote server
+    And I have the following wallets:
+      | name        |
+      | Test wallet |
 
   Scenario Outline: Navigate Between Sidebar Categories
     Given The sidebar shows the "<FROM>" category
@@ -17,7 +19,7 @@ Feature: Navigate Sidebar Categories
     | ada-redemption | wallets        |
 
   Scenario: Navigate from a Wallet to Ada Redemption screen
-    Given I am on the "Genesis wallet" wallet "summary" screen
+    Given I am on the "Test wallet" wallet "summary" screen
     And The sidebar shows the "wallets" category
     When I click on the "ada-redemption" category in the sidebar
     Then I should be on the ada redemption screen
@@ -27,4 +29,4 @@ Feature: Navigate Sidebar Categories
     And The sidebar shows the "ada-redemption" category
     When I click on the "wallets" category in the sidebar
     Then The "wallets" category should be active
-    But I should be on the "Genesis wallet" wallet "summary" screen
+    But I should be on the "Test wallet" wallet "summary" screen

@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import {
   waitUntilWaletNamesEqual,
   getNameOfActiveWalletInSidebar
-} from './lib/wallets-helpers';
+} from '../support/helpers/wallets-helpers';
 
 export default function () {
 
@@ -38,7 +38,7 @@ export default function () {
   });
 
   this.When(/^I toggle "Check to deactivate password" switch on the change wallet password dialog$/, function () {
-    return this.waitAndClick('.changePasswordDialog .switch_field');
+    return this.waitAndClick('.changePasswordDialog .SimpleSwitch_switch');
   });
 
   this.When(/^I enter current wallet password:$/, async function (table) {
@@ -52,7 +52,7 @@ export default function () {
 
   this.When(/^I enter new wallet name:$/, async function (table) {
     const fields = table.hashes()[0];
-    await this.client.setValue('.WalletSettings_component .InlineEditingInput_component input', fields.name);
+    await this.client.setValue('.WalletSettings_component .walletName input', fields.name);
   });
 
   this.When(/^I click outside "name" input field$/, function () {
@@ -60,7 +60,7 @@ export default function () {
   });
 
   this.When(/^I open "Transaction assurance security level" selection dropdown$/, function () {
-    return this.waitAndClick('.WalletSettings_assuranceLevelSelect .SimpleInput_input');
+    return this.waitAndClick('.WalletSettings_component .walletAssuranceLevel input');
   });
 
   this.When(/^I select "Strict" assurance level$/, function () {
@@ -87,9 +87,9 @@ export default function () {
 
   this.Then(/^I should see the following error messages:$/, async function (data) {
     const error = data.hashes()[0];
-    const errorSelector = '.ChangeWalletPasswordDialog_newPassword .input_error';
+    const errorSelector = '.ChangeWalletPasswordDialog_newPassword .SimpleFormField_error';
     await this.client.waitForText(errorSelector);
-    let errorsOnScreen = await this.client.getText(errorSelector);
+    const errorsOnScreen = await this.client.getText(errorSelector);
     const expectedError = await this.intl(error.message);
     expect(errorsOnScreen).to.equal(expectedError);
   });

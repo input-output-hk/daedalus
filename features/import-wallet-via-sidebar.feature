@@ -3,9 +3,10 @@ Feature: Import Wallet via Sidebar
   Background:
     Given I have selected English language
     And I have accepted "Terms of use"
+    And I agree to send logs to remote server
     And I have the following wallets:
-    | name  |
-    | first |
+      | name        |
+      | Test wallet |
 
   Scenario: Successfully Importing a Wallet
     Given The sidebar shows the "wallets" category

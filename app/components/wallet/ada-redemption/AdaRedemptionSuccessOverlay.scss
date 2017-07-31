@@ -9,44 +9,52 @@
   justify-content: center;
   align-items: center;
   flex-direction: column;
-}
 
-.icon {
-  width: 110px;
-  margin-bottom: 36px;
-}
+  .icon {
+    width: 110px;
+    margin-bottom: 36px;
+  }
 
-.text {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  opacity: 0.8;
-}
+  .text {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    opacity: 0.8;
+  }
 
-.headline {
-  font-family: $font-regular;
-  font-size: 20px;
-  margin-bottom: 12px;
-}
+  .headline {
+    font-family: $font-regular;
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
 
-.amount {
-  font-family: $font-medium;
-  font-size: 28px;
-}
+  .amount {
+    font-family: $font-medium;
+    font-size: 28px;
+  }
 
-.confirmButton {
-  border: solid 1px #fafbfc;
-  border-radius: 5px;
-  color: #fafbfc;
-  cursor: pointer;
-  font-size: 14px;
-  height: 50px;
-  margin-top: 30px;
-  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  width: 360px;
+  .confirmButton {
+    background: none;
+    border: solid 1px #fafbfc;
+    border-radius: 5px;
+    color: #fafbfc;
+    cursor: pointer;
+    font-size: 14px;
+    height: 50px;
+    margin-top: 30px;
+    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 360px;
 
-  &:hover {
-    background-color: #fafbfc;
-    color: #243e62;
+    &:hover {
+      background-color: #fafbfc !important;
+      color: #243e62;
+    }
+  }
+
+  :global {
+    .DialogCloseButton_component {
+      top: 36px;
+      right: 55px;
+    }
   }
 }

@@ -14,6 +14,10 @@
   }
 }
 
+.checkbox {
+  margin-top: 30px;
+}
+
 .recoveryPhrase {
   background-color: rgba(68, 91, 124, 0.05);
   border-radius: 2px;
@@ -29,12 +33,12 @@
 }
 
 .paperWalletImageWrapper {
-  text-align: right;
   margin-top: 30px;
+  text-align: right;
 
   img {
-    width: 490px;
     height: 276px;
+    width: 490px;
   }
 }
 

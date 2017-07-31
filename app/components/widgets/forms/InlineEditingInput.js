@@ -3,7 +3,8 @@ import React, { Component, } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
-import Input from 'react-toolbox/lib/input/Input';
+import Input from 'react-polymorph/lib/components/Input';
+import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import styles from './InlineEditingInput.scss';
 
@@ -33,6 +34,7 @@ export default class InlineEditingInput extends Component {
   }
 
   props: {
+    className?: string,
     isActive: boolean,
     inputFieldLabel: string,
     inputFieldValue: string,
@@ -112,7 +114,7 @@ export default class InlineEditingInput extends Component {
 
   componentDidUpdate() {
     if (this.props.isActive) {
-      this.inputField.getWrappedInstance().focus();
+      this.inputField.focus();
     }
   }
 
@@ -121,6 +123,7 @@ export default class InlineEditingInput extends Component {
   render() {
     const { validator } = this;
     const {
+      className,
       inputFieldLabel,
       isActive,
       inputFieldValue,
@@ -129,6 +132,7 @@ export default class InlineEditingInput extends Component {
     const { intl } = this.context;
     const inputField = validator.$('inputField');
     const componentStyles = classnames([
+      className,
       styles.component,
       isActive ? null : styles.inactive,
     ]);
@@ -158,6 +162,7 @@ export default class InlineEditingInput extends Component {
           error={isActive ? inputField.error : null}
           disabled={!isActive}
           ref={(input) => { this.inputField = input; }}
+          skin={<SimpleInputSkin />}
         />
 
         {isActive && (

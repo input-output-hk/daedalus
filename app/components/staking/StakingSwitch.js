@@ -1,7 +1,8 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import Switch from 'react-toolbox/lib/switch';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import styles from './StakingSwitch.scss';
 
 @observer
@@ -18,9 +19,10 @@ export default class StakingSwitch extends Component {
     return (
       <div className={styles.component}>
         <div className={styles.label}>Staking</div>
-        <Switch
+        <Checkbox
+          onChange={this.handleChange}
           checked={active}
-          onChange={() => this.handleChange()}
+          skin={<SimpleSwitchSkin />}
         />
       </div>
     );

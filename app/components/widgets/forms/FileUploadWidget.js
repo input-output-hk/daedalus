@@ -10,7 +10,7 @@ export default class FileUploadWidget extends Component {
 
   props: {
     label: string,
-    hint: string,
+    placeholder: string,
     onFileSelected: Function,
     selectedFile: File,
     acceptedFileTypes: string,
@@ -21,7 +21,7 @@ export default class FileUploadWidget extends Component {
   };
 
   render() {
-    const { label, hint, acceptedFileTypes, selectedFile } = this.props;
+    const { label, placeholder, acceptedFileTypes, selectedFile } = this.props;
     return (
       <div className={styles.component}>
         <div className={styles.label}>{label}</div>
@@ -34,7 +34,7 @@ export default class FileUploadWidget extends Component {
           {selectedFile ? (
             <div className={styles.fileName}>{selectedFile.name}</div>
           ) : (
-            <div className={styles.hint}>{hint}</div>
+            <div className={styles.placeholder}>{placeholder}</div>
           )}
           <img src={attachIcon} className={styles.attachIcon} role="presentation" />
         </Dropzone>

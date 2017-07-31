@@ -9,23 +9,10 @@
   padding: 20px 30px;
 }
 
-.assuranceLevelSelect {
-  margin: 10px 0 30px;
-}
-
-.deleteWalletButton {
-  display: flex;
-  justify-content: center;
-  margin: 30px 0 10px;
-}
-
-.error {
-  @include error-message;
-  text-align: center;
-}
-
 .export {
   font-size: 16px;
+  margin-bottom: 20px;
+
   p {
     color: #abadb0;
     font-family: $font-regular;
@@ -48,3 +35,15 @@
     text-decoration: underline;
   }
 }
+
+.deleteWalletButton {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.error {
+  @include error-message;
+  text-align: center;
+}
+

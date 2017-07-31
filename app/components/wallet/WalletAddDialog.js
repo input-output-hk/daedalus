@@ -2,11 +2,11 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
+import styles from './WalletAddDialog.scss';
+import Dialog from '../widgets/Dialog';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import BigButtonForDialogs from '../widgets/BigButtonForDialogs';
-import styles from './WalletAddDialog.scss';
 import createIcon from '../../assets/images/create-ic.svg';
 import importIcon from '../../assets/images/import-ic.svg';
 import joinSharedIcon from '../../assets/images/join-shared-ic.svg';
@@ -86,8 +86,9 @@ export default class WalletAddDialog extends Component {
       <Dialog
         className={dialogClasses}
         title={intl.formatMessage(messages.title)}
-        onOverlayClick={canClose ? onCancel : null}
-        active
+        closeOnOverlayClick
+        onClose={canClose ? onCancel : null}
+        closeButton={canClose && <DialogCloseButton onClose={onCancel} />}
       >
         <div className={styles.buttonsContainer}>
           <div className={styles.firstRow}>
@@ -123,9 +124,6 @@ export default class WalletAddDialog extends Component {
             />
           </div>
         </div>
-        {canClose && (
-          <DialogCloseButton onClose={onCancel} />
-        )}
       </Dialog>
     );
   }

@@ -40,7 +40,7 @@ Invocation:
    ```
    ..where `BRANCH` defaults to the current release branch, and `GITHUB-USER`
    defaults to `input-output-hk`.
-   
+
    The remaining `OPTIONS` are passed as-is to the respective build scripts.
 
 ## Stepwise build
@@ -79,6 +79,15 @@ Symlink the npm package in the subfolder `pos-haskell-prototype/daedalus`:
 
 Run with `npm run dev`
 
+### Development - network options
+
+There are four different network options you can run Deadalus in: `mainnet`, `testnet` and `development` (default).
+To set desired network option use `NETWORK` environment variable:
+
+```bash
+$ NETWORK=testnet npm run dev
+```
+
 ### Testing
 
 You can run the test suite in two different modes during development
@@ -93,6 +102,8 @@ $ npm run test
 ```bash
 $ npm run test-watch
 ```
+
+You can find more details regarding tests setup within [Running Deadalus acceptance tests](https://github.com/input-output-hk/daedalus/blob/master/features/README.md) README file.
 
 ### CSS Modules
 

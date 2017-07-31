@@ -128,8 +128,13 @@ writeInstallerNSIS fullVersion = do
         file [] "log-config-prod.yaml"
         file [] "data\\ip-dht-mappings"
         file [] "version.txt"
+        file [] "build-certificates-win64.bat"
+        file [] "ca.conf"
+        file [] "server.conf"
+        file [] "client.conf"
         writeFileLines "$INSTDIR\\daedalus.bat" (map str launcherScript)
         file [Recursive] "dlls\\"
+        file [Recursive] "libressl\\"
         file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
 
         mapM_ injectLiteral
@@ -137,6 +142,8 @@ writeInstallerNSIS fullVersion = do
           , "Pop $0"
           , "DetailPrint \"liteFirewall::AddRule: $0\""
           ]
+
+        exec "build-certificates-win64.bat >%APPDATA%\\Daedalus\\Logs\\build-certificates.log 2>&1"
 
         -- Uninstaller
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "InstallLocation" "$INSTDIR\\Daedalus"

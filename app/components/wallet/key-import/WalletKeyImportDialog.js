@@ -2,13 +2,15 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
 import { defineMessages, intlShape } from 'react-intl';
-import Input from 'react-toolbox/lib/input/Input';
+import Input from 'react-polymorph/lib/components/Input';
+import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
+import Dialog from '../../widgets/Dialog';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
-import Switch from '../../widgets/Switch';
 import { isValidWalletPassword, isValidRepeatPassword } from '../../../lib/validations';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -35,15 +37,15 @@ const messages = defineMessages({
     defaultMessage: '!!!Import wallet',
     description: 'Label "Import you key" submit button on the dialog for importing a wallet from the key.'
   },
-  passwordSwitchLabel: {
-    id: 'wallet.key.import.dialog.passwordSwitchLabel',
-    defaultMessage: '!!!Password',
-    description: 'Label for the "Activate to create password" switch in the wallet key import dialog.',
-  },
   passwordSwitchPlaceholder: {
     id: 'wallet.key.import.dialog.passwordSwitchPlaceholder',
     defaultMessage: '!!!Activate to create password',
     description: 'Text for the "Activate to create password" switch in the wallet key import dialog.',
+  },
+  passwordSwitchLabel: {
+    id: 'wallet.key.import.dialog.passwordSwitchLabel',
+    defaultMessage: '!!!Password',
+    description: 'Label for the "Activate to create password" switch in the wallet key import dialog.',
   },
   walletPasswordLabel: {
     id: 'wallet.key.import.dialog.walletPasswordLabel',
@@ -91,21 +93,21 @@ export default class WalletKeyImportDialog extends Component {
         type: 'file',
         label: this.context.intl.formatMessage(messages.keyFileLabel),
         placeholder: this.context.intl.formatMessage(messages.keyFileHint),
-        bindings: 'ReactToolbox',
       },
       walletPassword: {
         type: 'password',
         label: this.context.intl.formatMessage(messages.walletPasswordLabel),
         placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
         value: '',
-        validators: [({ field }) => {
+        validators: [({ field, form }) => {
           if (!this.state.createPassword) return [true];
+          const repeatPasswordField = form.$('repeatPassword');
+          if (repeatPasswordField.value.length > 0) repeatPasswordField.validate(form);
           return [
             isValidWalletPassword(field.value),
             this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
           ];
         }],
-        bindings: 'ReactToolbox',
       },
       repeatPassword: {
         type: 'password',
@@ -121,7 +123,6 @@ export default class WalletKeyImportDialog extends Component {
             this.context.intl.formatMessage(globalMessages.invalidRepeatPassword)
           ];
         }],
-        bindings: 'ReactToolbox',
       },
     },
   }, {
@@ -156,7 +157,6 @@ export default class WalletKeyImportDialog extends Component {
     const dialogClasses = classnames([
       styles.component,
       'WalletKeyImportDialog',
-      isSubmitting ? styles.isSubmitting : null,
     ]);
 
     const walletPasswordFieldsClasses = classnames([
@@ -166,20 +166,25 @@ export default class WalletKeyImportDialog extends Component {
 
     const actions = [
       {
+        className: isSubmitting ? styles.isSubmitting : null,
         label: intl.formatMessage(messages.submitLabel),
         primary: true,
         disabled: !(keyFile.value instanceof File),
-        onClick: () => this.submit()
+        onClick: this.submit,
       }
     ];
+
+    const walletPasswordField = form.$('walletPassword');
+    const repeatedPasswordField = form.$('repeatPassword');
 
     return (
       <Dialog
         className={dialogClasses}
         title={intl.formatMessage(messages.headline)}
         actions={actions}
-        onOverlayClick={onClose}
-        active
+        closeOnOverlayClick
+        onClose={!isSubmitting ? onClose : null}
+        closeButton={<DialogCloseButton onClose={onClose} />}
       >
 
         <div className={styles.keyUpload}>
@@ -192,22 +197,29 @@ export default class WalletKeyImportDialog extends Component {
 
         <div className={styles.walletPassword}>
           <div className={styles.walletPasswordSwitch}>
-            <Switch
-              label={intl.formatMessage(messages.passwordSwitchLabel)}
-              placeholder={intl.formatMessage(messages.passwordSwitchPlaceholder)}
-              active={createPassword}
+            <div className={styles.passwordLabel}>
+              {intl.formatMessage(messages.passwordSwitchLabel)}
+            </div>
+            <Checkbox
               onChange={this.handlePasswordSwitchToggle}
+              label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
+              checked={createPassword}
+              skin={<SimpleSwitchSkin />}
             />
           </div>
 
           <div className={walletPasswordFieldsClasses}>
             <Input
               className="walletPassword"
-              {...form.$('walletPassword').bind()}
+              {...walletPasswordField.bind()}
+              error={walletPasswordField.error}
+              skin={<SimpleInputSkin />}
             />
             <Input
               className="repeatedPassword"
-              {...form.$('repeatPassword').bind()}
+              {...repeatedPasswordField.bind()}
+              error={repeatedPasswordField.error}
+              skin={<SimpleInputSkin />}
             />
             <p className={styles.passwordInstructions}>
               {intl.formatMessage(globalMessages.passwordInstructions)}
@@ -216,8 +228,6 @@ export default class WalletKeyImportDialog extends Component {
         </div>
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
-
-        <DialogCloseButton onClose={onClose} />
 
       </Dialog>
     );

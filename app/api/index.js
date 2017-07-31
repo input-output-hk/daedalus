@@ -1,4 +1,5 @@
 // @flow
+import BigNumber from 'bignumber.js';
 import Wallet from '../domain/Wallet';
 import WalletAddress from '../domain/WalletAddress';
 import WalletTransaction from '../domain/WalletTransaction';
@@ -123,8 +124,16 @@ export type UpdateWalletPasswordRequest = {
 
 export type UpdateWalletPasswordResponse = boolean;
 
-// API INTERFACE
+export type TransactionFeeRequest = {
+  from: string,
+  to: string,
+  amount: BigNumber,
+};
 
+export type TransactionFeeResponse = BigNumber;
+
+// API INTERFACE
+/* eslint-disable max-len */
 export type Api = {
   notify(onSuccess: Function, onError?: Function): void,
   reset(): void,
@@ -153,7 +162,11 @@ export type Api = {
   getUserLocale(): Promise<string>,
   setTermsOfUseAcceptance(): Promise<boolean>,
   getTermsOfUseAcceptance(): Promise<boolean>,
+  setSendLogsChoice(sendLogs: boolean): Promise<boolean>,
+  getSendLogsChoice(): Promise<boolean>,
   updateWallet(request: UpdateWalletRequest): Promise<UpdateWalletResponse>,
   updateWalletPassword(request: UpdateWalletPasswordRequest): Promise<UpdateWalletPasswordResponse>,
+  calculateTransactionFee(request: TransactionFeeRequest): Promise<TransactionFeeResponse>,
   testReset(): void,
 };
+/* eslint-disable max-len */

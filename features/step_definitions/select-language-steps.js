@@ -1,10 +1,14 @@
 import { expect } from 'chai';
 
+const LANGUAGE_SELECTION_FORM = '.LanguageSelectionForm_component';
+
 export default function () {
   this.Given(/^I have selected English language$/, async function () {
+    await this.client.waitForVisible(LANGUAGE_SELECTION_FORM);
     await this.client.execute(locale => {
       daedalus.actions.profile.updateLocale.trigger({ locale });
     }, 'en-US');
+    await this.client.waitForVisible(LANGUAGE_SELECTION_FORM, null, true);
   });
 
   this.Given(/^I dont have a language set$/, async function () {
@@ -30,7 +34,7 @@ export default function () {
   });
 
   this.Then(/^I should not see the language selection screen anymore$/, function () {
-    return this.client.waitForVisible('.LanguageSelectionForm_component', null, true);
+    return this.client.waitForVisible(LANGUAGE_SELECTION_FORM, null, true);
   });
 
   this.Then(/^I should have Japanese language set$/, async function () {

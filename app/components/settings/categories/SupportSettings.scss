@@ -1,0 +1,16 @@
+@import '../../../themes/mixins/error-message';
+
+.component {
+  & > .label {
+    color: #5e6066;
+    font-family: $font-semibold;
+    font-size: 16px;
+    line-height: 1.38;
+    margin-bottom: 10px;
+  }
+}
+
+.error {
+  @include error-message;
+  text-align: center;
+}

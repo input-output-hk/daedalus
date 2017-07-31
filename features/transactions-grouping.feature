@@ -1,3 +1,4 @@
+# TODO: Fix this test case!
 @skip
 Feature: Transactions Grouping
   In order to see clearly when transactions have been executed
@@ -7,6 +8,7 @@ Feature: Transactions Grouping
   Background:
     Given I have selected English language
     And I have accepted "Terms of use"
+    And I agree to send logs to remote server
     And I have a wallet
 
   Scenario: Transactions are Grouped by Date

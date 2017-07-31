@@ -3,7 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { intlShape } from 'react-intl';
-import Input from 'react-toolbox/lib/input/Input';
+import Input from 'react-polymorph/lib/components/Input';
+import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './ReadOnlyInput.scss';
 
@@ -45,6 +46,7 @@ export default class ReadOnlyInput extends Component {
           label={label}
           value={value}
           disabled
+          skin={<SimpleInputSkin />}
         />
 
         <button

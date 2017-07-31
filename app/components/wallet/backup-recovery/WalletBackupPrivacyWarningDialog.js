@@ -2,10 +2,11 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape } from 'react-intl';
+import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
-import CheckboxWithLongLabel from '../../widgets/forms/CheckboxWithLongLabel';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletBackupPrivacyWarningDialog.scss';
@@ -76,18 +77,21 @@ export default class WalletBackupPrivacyWarningDialog extends Component {
         className={dialogClasses}
         title={intl.formatMessage(globalMessages.recoveryPhraseDialogTitle)}
         actions={actions}
-        onOverlayClick={onCancelBackup}
-        active
+        closeOnOverlayClick
+        onClose={onCancelBackup}
+        closeButton={<DialogCloseButton onClose={onCancelBackup} />}
       >
         <WalletRecoveryInstructions
           instructionsText={intl.formatMessage(messages.recoveryPhraseInstructions)}
         />
-        <CheckboxWithLongLabel
-          label={intl.formatMessage(messages.termNobodyWatching)}
-          onChange={onAcceptPrivacyNotice}
-          checked={isPrivacyNoticeAccepted}
-        />
-        <DialogCloseButton onClose={onCancelBackup} />
+        <div className={styles.checkbox}>
+          <Checkbox
+            label={intl.formatMessage(messages.termNobodyWatching)}
+            onChange={onAcceptPrivacyNotice}
+            checked={isPrivacyNoticeAccepted}
+            skin={<SimpleCheckboxSkin />}
+          />
+        </div>
       </Dialog>
     );
   }

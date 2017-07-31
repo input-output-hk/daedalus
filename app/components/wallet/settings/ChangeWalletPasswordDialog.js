@@ -2,12 +2,14 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Dialog from 'react-toolbox/lib/dialog/Dialog';
-import Input from 'react-toolbox/lib/input/Input';
+import Input from 'react-polymorph/lib/components/Input';
+import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
-import Switch from '../../widgets/Switch';
+import Dialog from '../../widgets/Dialog';
 import { isValidWalletPassword, isValidRepeatPassword } from '../../../lib/validations';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -115,7 +117,6 @@ export default class ChangeWalletPasswordDialog extends Component {
             this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
           ];
         }],
-        bindings: 'ReactToolbox',
       },
       walletPassword: {
         type: 'password',
@@ -124,14 +125,15 @@ export default class ChangeWalletPasswordDialog extends Component {
         ]),
         placeholder: this.context.intl.formatMessage(messages.newPasswordFieldPlaceholder),
         value: '',
-        validators: [({ field }) => {
+        validators: [({ field, form }) => {
           if (this.state.removePassword) return [true];
+          const repeatPasswordField = form.$('repeatPassword');
+          if (repeatPasswordField.value.length > 0) repeatPasswordField.validate(form);
           return [
             isValidWalletPassword(field.value),
             this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
           ];
         }],
-        bindings: 'ReactToolbox',
       },
       repeatPassword: {
         type: 'password',
@@ -147,7 +149,6 @@ export default class ChangeWalletPasswordDialog extends Component {
             this.context.intl.formatMessage(globalMessages.invalidRepeatPassword)
           ];
         }],
-        bindings: 'ReactToolbox',
       },
     }
   }, {
@@ -198,7 +199,6 @@ export default class ChangeWalletPasswordDialog extends Component {
     const dialogClasses = classnames([
       isWalletPasswordSet ? 'changePasswordDialog' : 'createPasswordDialog',
       styles.dialog,
-      isSubmitting ? styles.isSubmitting : null
     ]);
 
     const walletPasswordFieldsClasses = classnames([
@@ -209,6 +209,7 @@ export default class ChangeWalletPasswordDialog extends Component {
     const confirmButtonClasses = classnames([
       'confirmButton',
       removePassword ? styles.removeButton : null,
+      isSubmitting ? styles.isSubmitting : null,
     ]);
 
     const newPasswordClasses = classnames([
@@ -225,25 +226,33 @@ export default class ChangeWalletPasswordDialog extends Component {
       },
     ];
 
+    const currentPasswordField = form.$('currentPassword');
+    const newPasswordField = form.$('walletPassword');
+    const repeatedPasswordField = form.$('repeatPassword');
+
     return (
       <Dialog
         title={intl.formatMessage(
           messages[!isWalletPasswordSet ? 'dialogTitleSetPassword' : 'dialogTitleChangePassword']
         )}
         actions={actions}
-        active
-        onOverlayClick={onCancel}
+        closeOnOverlayClick
+        onClose={!isSubmitting ? onCancel : null}
         className={dialogClasses}
+        closeButton={<DialogCloseButton onClose={onCancel} />}
       >
 
         {isWalletPasswordSet ? (
           <div className={styles.walletPassword}>
-            <div className="walletPasswordSwitch">
-              <Switch
-                label={intl.formatMessage(messages.passwordSwitchLabel)}
-                placeholder={intl.formatMessage(messages.passwordSwitchPlaceholder)}
-                active={removePassword}
+            <div className={styles.walletPasswordSwitch}>
+              <div className={styles.passwordLabel}>
+                {intl.formatMessage(messages.passwordSwitchLabel)}
+              </div>
+              <Checkbox
                 onChange={this.handlePasswordSwitchToggle}
+                label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
+                checked={removePassword}
+                skin={<SimpleSwitchSkin />}
               />
             </div>
 
@@ -252,7 +261,9 @@ export default class ChangeWalletPasswordDialog extends Component {
               className="currentPassword"
               value={currentPasswordValue}
               onChange={(value) => this.handleDataChange('currentPasswordValue', value)}
-              {...form.$('currentPassword').bind()}
+              {...currentPasswordField.bind()}
+              error={currentPasswordField.error}
+              skin={<SimpleInputSkin />}
             />
           </div>
         ) : null}
@@ -263,7 +274,9 @@ export default class ChangeWalletPasswordDialog extends Component {
             className={newPasswordClasses}
             value={newPasswordValue}
             onChange={(value) => this.handleDataChange('newPasswordValue', value)}
-            {...form.$('walletPassword').bind()}
+            {...newPasswordField.bind()}
+            error={newPasswordField.error}
+            skin={<SimpleInputSkin />}
           />
 
           <Input
@@ -271,7 +284,9 @@ export default class ChangeWalletPasswordDialog extends Component {
             className="repeatedPassword"
             value={repeatedPasswordValue}
             onChange={(value) => this.handleDataChange('repeatedPasswordValue', value)}
-            {...form.$('repeatPassword').bind()}
+            {...repeatedPasswordField.bind()}
+            error={repeatedPasswordField.error}
+            skin={<SimpleInputSkin />}
           />
 
           <p className={styles.passwordInstructions}>
@@ -280,8 +295,6 @@ export default class ChangeWalletPasswordDialog extends Component {
         </div>
 
         {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
-
-        <DialogCloseButton onClose={onCancel} />
 
       </Dialog>
     );

@@ -1,27 +1,40 @@
 .component {
+  margin-bottom: 20px;
   position: relative;
+
+  :global {
+    .SimpleFormField_label {
+      color: $theme-label-color !important;
+    }
+
+    .SimpleInput_disabled {
+      background-color: $theme-input-background-color;
+      border-color: $theme-input-border-color;
+    }
+  }
 
   &.inactive {
     &:hover {
-      cursor: pointer;
-      opacity: 1;
-    }
-    .input_inputElement {
-      cursor: pointer;
-      opacity: 1;
+      input {
+        cursor: pointer;
+      }
     }
   }
 
   .button {
-    bottom: 43px;
+    bottom: 13px;
     color: $text-color-accent;
+    cursor: pointer;
     font-family: $font-light;
     font-size: 16px;
     line-height: 1.38;
     opacity: 0.5;
     position: absolute;
     right: 22px;
-    text-align: right;
+    text-transform: lowercase;
+    &:hover {
+      opacity: 1;
+    }
   }
 
   @keyframes animateSavingResultLabel {

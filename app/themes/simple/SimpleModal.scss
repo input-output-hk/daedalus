@@ -1,0 +1,14 @@
+@import "_config";
+// Theme config overrides go here …
+@import "~react-polymorph/lib/themes/simple/SimpleModal";
+// Css module overrides go here …
+
+.overlay {
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+}
+
+.modal {
+  display: flex;
+  flex-direction: column;
+}

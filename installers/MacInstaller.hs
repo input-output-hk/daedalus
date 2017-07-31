@@ -1,24 +1,30 @@
 module MacInstaller where
 
-import           Control.Monad        (unless)
-import qualified Data.Text            as T
-import           Data.Maybe           (fromMaybe)
-import           Data.Monoid          ((<>))
+---
+--- An overview of Mac .pkg internals:  http://www.peachpit.com/articles/article.aspx?p=605381&seqNum=2
+---
+
+import           Control.Monad      (unless)
+import           Data.Maybe         (fromMaybe)
+import           Data.Monoid        ((<>))
+import qualified Data.Text          as T
 import           System.Directory
-import           System.Environment   (lookupEnv)
-import           Turtle               (procs, echo, shells, shell, ExitCode(..))
-import           Turtle.Line          (unsafeTextToLine)
+import           System.Environment (lookupEnv)
+import           Turtle             (ExitCode (..), echo, procs, shell, shells)
+import           Turtle.Line        (unsafeTextToLine)
 
 import           Launcher
-import           RewriteLibs          (chain)
+import           RewriteLibs        (chain)
 
 
 main :: IO ()
 main = do
   version <- fromMaybe "dev" <$> lookupEnv "DAEDALUS_VERSION"
 
-  let dir = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app/Contents/MacOS"
-      pkg = "dist/Daedalus-installer-" <> version <> ".pkg"
+  let appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
+      dir     = appRoot <> "/Contents/MacOS"
+      -- resDir  = appRoot <> "/Contents/Resources"
+      pkg     = "dist/Daedalus-installer-" <> version <> ".pkg"
   createDirectoryIfMissing False "dist"
 
   echo "Creating icons ..."
@@ -29,6 +35,11 @@ main = do
   copyFile "cardano-node" (dir <> "/cardano-node")
   copyFile "log-config-prod.yaml" (dir <> "/log-config-prod.yaml")
   copyFile "data/ip-dht-mappings" (dir <> "/ip-dht-mappings")
+  copyFile "data/ip-dht-mappings" (dir <> "/ip-dht-mappings")
+  copyFile "build-certificates-unix.sh" (dir <> "/build-certificates-unix.sh")
+  copyFile "ca.conf"     (dir <> "/ca.conf")
+  copyFile "server.conf" (dir <> "/server.conf")
+  copyFile "client.conf" (dir <> "/client.conf")
 
   -- Rewrite libs paths and bundle them
   _ <- chain dir $ fmap T.pack [dir <> "/cardano-launcher", dir <> "/cardano-node"]

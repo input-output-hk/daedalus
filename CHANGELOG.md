@@ -35,7 +35,11 @@ Changelog
 - Final version of Daedalus logo added on the loading screen
 - Final version of Daedalus logo added in the top-bar
 - Receive page design update
+- UI for displaying transaction fees on wallet send screen
 - Correct placeholder text for Ada redemption "Ada amount" input
+- Opt-in mode for sending logs to the remote server
+- Added support for Cmd+H hotkey shortcut for hiding application window on OSX ([PR 404](https://github.com/input-output-hk/daedalus/pull/404))
+- Setup environment variable for testnet/mainnet mode ([PR 400](https://github.com/input-output-hk/daedalus/pull/400))
 
 ### Fixes
 
@@ -64,11 +68,21 @@ Changelog
 - Improved acceptance tests for generating new addresses
 - Removed temporary workaround for creating new accounts during wallet create and wallet restore
 - Prevent React key duplicates in transaction from/to addresses lists
+- Acceptance tests configuration fix for the timeouts
 - Show more specific error messages on "Change password" dialog
 - Update password fields placeholders to match latest designs
 - Prevent selected wallet reset on "Ada redemption" screen on tab or certificate change
 - Fixed sending amount maximum value validation
 - Use correct styling for used addresses marking on wallet receive screen
+- Implement MomentJs internationalization
+- Also quit whole app when last window is closed on osx
+- Daedalus and Cardano node update notification text messages change ([PR 392](https://github.com/input-output-hk/daedalus/pull/392))
+- Fixed brittle acceptance test steps (wallet latest transaction amount check) ([PR 393](https://github.com/input-output-hk/daedalus/pull/393))
+- Fixed Numeric component caret position bug on wallet send screen ([PR 394](https://github.com/input-output-hk/daedalus/pull/394))
+- Fixed all design implementation issues ([PR 397](https://github.com/input-output-hk/daedalus/pull/397))
+- Fixed eslint syntax warnings ([PR 403](https://github.com/input-output-hk/daedalus/pull/403))
+- Fixed wallet spending password fields error messages positioning on wallet create/restore/import dialogs ([PR 407](https://github.com/input-output-hk/daedalus/pull/407))
+- Fixed inline-editing success-messages on wallet settings screen ([PR 408](https://github.com/input-output-hk/daedalus/pull/408))
 
 ### Chores
 
@@ -77,8 +91,11 @@ Changelog
 - Use markdown for "Terms of use" content
 - Added manually written Flow types for API responses
 - Testnet version on the testnet label bumped from 0.3 to 0.5
+- Replaced all React-Toolbox components with React-Polymorph ones ([PR 361](https://github.com/input-output-hk/daedalus/pull/361))
 - Temporary workaround for missing Japanese translations for Terms of Use that allows users to accept them in English
-
+- Added readme file for running acceptance tests ([PR 395](https://github.com/input-output-hk/daedalus/pull/395))
+- Improved webpack build performance ([PR 402](https://github.com/input-output-hk/daedalus/pull/402))
+- Updated README file "Development - network options" section ([PR 410](https://github.com/input-output-hk/daedalus/pull/410))
 
 ## 0.6.2
 

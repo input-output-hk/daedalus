@@ -158,7 +158,7 @@ export default class NetworkStatusStore extends Store {
           break;
         case 'NetworkDifficultyChanged':
           if (message.contents.getChainDifficulty) {
-            this.networkDifficulty = message.contents.getChainDifficulty;
+            this.networkDifficulty = message.contents.getChainDifficulty.getBlockCount;
           }
           Log.debug('ServerStatusNotification: NetworkDifficultyChanged: ', this.networkDifficulty);
           this.isConnected = true;
@@ -166,7 +166,7 @@ export default class NetworkStatusStore extends Store {
           break;
         case 'LocalDifficultyChanged':
           if (message.contents.getChainDifficulty) {
-            this.localDifficulty = message.contents.getChainDifficulty;
+            this.localDifficulty = message.contents.getChainDifficulty.getBlockCount;
           }
           Log.debug('ServerStatusNotification: LocalDifficultyChanged: ', this.localDifficulty);
           break;

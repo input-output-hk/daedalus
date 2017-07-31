@@ -3,11 +3,10 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
-import Select from 'react-polymorph/lib/components/Select';
-import SelectSkin from 'react-polymorph/lib/skins/simple/SelectSkin';
 import LocalizableError from '../../i18n/LocalizableError';
 import BorderedBox from '../widgets/BorderedBox';
 import InlineEditingInput from '../widgets/forms/InlineEditingInput';
+import InlineEditingDropdown from '../widgets/forms/InlineEditingDropdown';
 import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
 import DeleteWalletButton from './settings/DeleteWalletButton';
 import DeleteWalletConfirmationDialog from './settings/DeleteWalletConfirmationDialog';
@@ -63,7 +62,6 @@ export default class WalletSettings extends Component {
     assuranceLevels: Array<{ value: string, label: ReactIntlMessage }>,
     walletName: string,
     walletAssurance: string,
-    onWalletAssuranceLevelUpdate: Function,
     isWalletPasswordSet: boolean,
     walletPasswordUpdateDate: ?Date,
     error?: ?LocalizableError,
@@ -84,11 +82,15 @@ export default class WalletSettings extends Component {
     intl: intlShape.isRequired,
   };
 
+  componentWillUnmount() {
+    // This call is used to prevent display of old successfully-updated messages
+    this.props.onCancelEditing();
+  }
+
   render() {
     const { intl } = this.context;
     const {
       assuranceLevels, walletAssurance,
-      onWalletAssuranceLevelUpdate,
       walletName, isWalletPasswordSet,
       walletPasswordUpdateDate, error,
       openDialogAction, isDialogOpen,
@@ -116,6 +118,7 @@ export default class WalletSettings extends Component {
         <BorderedBox>
 
           <InlineEditingInput
+            className="walletName"
             inputFieldLabel={intl.formatMessage(messages.name)}
             inputFieldValue={walletName}
             isActive={activeField === 'name'}
@@ -128,13 +131,16 @@ export default class WalletSettings extends Component {
             successfullyUpdated={!isSubmitting && lastUpdatedField === 'name' && !isInvalid}
           />
 
-          <Select
-            className={styles.assuranceLevelSelect}
+          <InlineEditingDropdown
+            className="walletAssuranceLevel"
             label={intl.formatMessage(messages.assuranceLevelLabel)}
             options={assuranceLevelOptions}
             value={walletAssurance}
-            onChange={(value) => onWalletAssuranceLevelUpdate({ assurance: value })}
-            skin={<SelectSkin />}
+            isActive={activeField === 'assurance'}
+            onStartEditing={() => onStartEditing('assurance')}
+            onStopEditing={onStopEditing}
+            onSubmit={(value) => onFieldValueChange('assurance', value)}
+            successfullyUpdated={!isSubmitting && lastUpdatedField === 'assurance'}
           />
 
           <ReadOnlyInput
@@ -147,21 +153,21 @@ export default class WalletSettings extends Component {
           />
 
           {/* TODO: Reactivate for paper wallet export feature!
-             <div className={styles.export}>
-             <strong>Export</strong>
-             <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-             <p>Maecenas non fringilla velit. Vestibulum ante ipsum primis in
-             faucibus orci luctus et ultrices posuere cubilia Curae.</p>
-             <button
-             className={styles.export_link}
-             onClick={() => openDialogAction({
-             dialog: WalletExportDialog,
-             })}
-             >
-             export
-             </button>
-             </div>
-           */}
+            <div className={styles.export}>
+              <strong>Export</strong>
+              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+              <p>Maecenas non fringilla velit. Vestibulum ante ipsum primis in
+              faucibus orci luctus et ultrices posuere cubilia Curae.</p>
+              <button
+                className={styles.export_link}
+                onClick={() => openDialogAction({
+                  dialog: WalletExportDialog,
+                })}
+              >
+                export
+              </button>
+            </div>
+          */}
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
