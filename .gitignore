@@ -29,6 +29,11 @@ node_modules
 # OSX
 .DS_Store
 
+# TLS output
+installers/tls/ca
+installers/tls/client
+installers/tls/server
+
 # App packaged
 dist
 release

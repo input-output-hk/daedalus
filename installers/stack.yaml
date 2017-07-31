@@ -9,6 +9,11 @@ packages:
       commit: 0658f28beb62d023655dd285a07fb9e3fdab416b
     extra-dep: true
 
+extra-deps:
+  - filesystem-trees-0.1.0.6
+  - cond-0.4.1.1
+  - directory-1.2.7.1
+
 resolver: lts-8.4
 
 nix:
