@@ -184,7 +184,7 @@ export default class WalletKeyImportDialog extends Component {
         actions={actions}
         closeOnOverlayClick
         onClose={!isSubmitting ? onClose : null}
-        closeButton={<DialogCloseButton onClose={onClose} />}
+        closeButton={<DialogCloseButton />}
       >
 
         <div className={styles.keyUpload}>
