@@ -11,12 +11,12 @@ export const assuranceModeOptions: {
 
 export const assuranceModes: { NORMAL: AssuranceMode, STRICT: AssuranceMode } = {
   NORMAL: {
-    low: 3,
-    medium: 7,
+    low: 2,
+    medium: 6,
   },
   STRICT: {
-    low: 5,
-    medium: 11,
+    low: 4,
+    medium: 10,
   }
 };
 
