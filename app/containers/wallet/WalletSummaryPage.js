@@ -52,6 +52,7 @@ export default class WalletSummaryPage extends Component {
           hasMoreToLoad={false}
           onLoadMore={() => {}}
           assuranceMode={wallet.assuranceMode}
+          walletId={wallet.id}
         />
       );
     } else if (!hasAny) {

@@ -48,5 +48,6 @@ storiesOf('WalletTransactionsList', module)
       isLoadingTransactions={false}
       hasMoreToLoad={false}
       assuranceMode={{ low: 1, medium: 2 }}
+      walletId="test-wallet"
     />
   ));
