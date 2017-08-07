@@ -5,7 +5,6 @@ import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-import WalletExportDialogChoices from './WalletExportDialogChoices';
 import styles from './WalletExportDialog.scss';
 
 const messages = defineMessages({
@@ -14,30 +13,59 @@ const messages = defineMessages({
     defaultMessage: '!!!Export',
     description: 'headline for "export paper wallet" dialog.'
   },
-  printLabel: {
-    id: 'paper.wallet.export.dialog.button.printLabel',
-    defaultMessage: '!!!Print',
-    description: 'Label "Print" on the dialog button for export paper wallet dialog.'
+  fullTabTitle: {
+    id: 'wallet.export.choices.tab.title.full',
+    defaultMessage: '!!!Full',
+    description: 'Tab title "Full" on wallet export dialog.'
   },
+  readOnlyTabTitle: {
+    id: 'wallet.export.choices.tab.title.readOnly',
+    defaultMessage: '!!!Read-only',
+    description: 'Tab title "Read-only" on wallet export dialog.'
+  },
+  exportButtonLabel: {
+    id: 'wallet.export.submit.label',
+    defaultMessage: '!!!Export wallet',
+    description: 'Label for export wallet submit button.'
+  }
 });
+
+type ExportType = 'full' | 'readOnly';
+
+type WalletExportDialogState = {
+  exportType: ExportType,
+};
 
 @observer
 export default class WalletExportDialog extends Component {
-
-  props: {
-    onPrint: Function,
-    onClose: Function,
-    onChooseWalletExportType: Function,
-    walletExportType: string,
-  };
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
+  props: {
+    onClose: Function,
+  };
+
+  state: WalletExportDialogState;
+
+  constructor(props: any, children: any) {
+    super(props, children);
+    this.state = { exportType: 'full' };
+  }
+
+  setState(object: WalletExportDialogState) {
+    super.setState(object);
+  }
+
+  onChangeExportType(exportType: ExportType) {
+    this.setState({ exportType });
+  }
+
   render() {
     const { intl } = this.context;
-    const { onPrint, onClose, walletExportType, onChooseWalletExportType } = this.props;
+    const { onClose } = this.props;
+    const { exportType } = this.state;
     const dialogClasses = classnames([
       styles.component,
       'WalletExportDialog',
@@ -45,9 +73,9 @@ export default class WalletExportDialog extends Component {
 
     const actions = [
       {
-        label: intl.formatMessage(messages.printLabel),
+        label: intl.formatMessage(messages.exportButtonLabel),
         primary: true,
-        onClick: onPrint,
+        onClick: () => console.log('submit'),
       }
     ];
 
@@ -58,27 +86,21 @@ export default class WalletExportDialog extends Component {
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
-        closeButton={<DialogCloseButton onClose={onClose} />}
+        closeButton={<DialogCloseButton />}
       >
-        <WalletExportDialogChoices
-          activeChoice={walletExportType}
-          onSelectChoice={(choice: string) => {
-            onChooseWalletExportType(choice);
-          }}
-        />
-
-        <div className={styles.instructions}>
-          <p>Instructions:</p>
-          <ul>
-            <li>
-                Because of creating new address to store your money,
-                new wallet will be created.
-            </li>
-            <li>All funds will be transfered there. </li>
-            <li>Paper certificate will be printed.</li>
-            <li>Mnemonic phrase should be written down on your certificate.</li>
-            <li>Store paper wallet safe.</li>
-          </ul>
+        <div className={styles.choices}>
+          <button
+            className={exportType === 'full' ? styles.activeButton : ''}
+            onClick={() => this.onChangeExportType('full')}
+          >
+            {intl.formatMessage(messages.fullTabTitle)}
+          </button>
+          <button
+            className={exportType === 'readOnly' ? styles.activeButton : ''}
+            onClick={() => this.onChangeExportType('readOnly')}
+          >
+            {intl.formatMessage(messages.readOnlyTabTitle)}
+          </button>
         </div>
 
       </Dialog>

@@ -152,22 +152,19 @@ export default class WalletSettings extends Component {
             })}
           />
 
-          {/* TODO: Reactivate for paper wallet export feature!
-            <div className={styles.export}>
-              <strong>Export</strong>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-              <p>Maecenas non fringilla velit. Vestibulum ante ipsum primis in
-              faucibus orci luctus et ultrices posuere cubilia Curae.</p>
-              <button
-                className={styles.export_link}
-                onClick={() => openDialogAction({
-                  dialog: WalletExportDialog,
-                })}
-              >
-                export
-              </button>
-            </div>
-          */}
+          <div className={styles.export}>
+            <h1>Export</h1>
+            <p>
+              Use your wallet on multiple devices
+              or give read-only copies to friends.
+            </p>
+            <button
+              className={styles.export_link}
+              onClick={() => openDialogAction({ dialog: WalletExportDialog })}
+            >
+              Export this wallet
+            </button>
+          </div>
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 

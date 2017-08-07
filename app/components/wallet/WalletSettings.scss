@@ -13,7 +13,7 @@
   font-size: 16px;
   margin-bottom: 20px;
 
-  p {
+  p, li {
     color: #abadb0;
     font-family: $font-regular;
     line-height: 1.38;
@@ -21,6 +21,11 @@
 
   p:first-of-type {
     margin-top: 14px;
+  }
+
+  li {
+    list-style-type: disc;
+    margin-left: 18px;
   }
 
   strong {
@@ -33,6 +38,7 @@
     cursor: pointer;
     font-size: 16px;
     text-decoration: underline;
+    margin-top: 14px;
   }
 }
 

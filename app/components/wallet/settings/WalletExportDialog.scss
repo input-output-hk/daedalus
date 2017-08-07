@@ -13,27 +13,31 @@
   }
 }
 
-.isSubmitting {
-  @include loading-spinner("../../../assets/images/spinner-light.svg");
+.choices {
+  display: flex;
+  width: 100%;
+
+  button {
+    color: $text-color-accent;
+    cursor: pointer;
+    flex: 1;
+    font-family: $font-medium;
+    font-size: 16px;
+    opacity: 0.5;
+    padding-bottom: 20px;
+    text-align: center;
+  }
+
+  .activeButton {
+    border-bottom: 2px solid $text-color-accent;
+    color: $text-color-accent;
+    cursor: default;
+    opacity: 1;
+  }
 }
 
-.instructions {
-  color: $text-color-accent;
-  margin-top: 30px;
-
-  ul {
-    list-style: disc;
-    margin-left: 20px;
-  }
-
-  li {
-    margin-bottom: 11px;
-  }
-
-  p, li {
-    font-family: $font-regular;
-    line-height: 1.38;
-  }
+.isSubmitting {
+  @include loading-spinner("../../../assets/images/spinner-light.svg");
 }
 
 .error {
