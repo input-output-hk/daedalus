@@ -227,7 +227,7 @@ export default class WalletRestoreDialog extends Component {
         actions={actions}
         closeOnOverlayClick
         onClose={!isSubmitting ? onCancel : null}
-        closeButton={<DialogCloseButton onClose={onCancel} />}
+        closeButton={<DialogCloseButton />}
       >
 
         <Input
