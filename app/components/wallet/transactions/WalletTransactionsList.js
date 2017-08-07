@@ -34,6 +34,7 @@ export default class WalletTransactionsList extends Component {
     hasMoreToLoad: boolean,
     onLoadMore: Function,
     assuranceMode: AssuranceMode,
+    walletId: string,
   };
 
   static contextTypes = {
@@ -117,6 +118,7 @@ export default class WalletTransactionsList extends Component {
       isLoadingTransactions,
       hasMoreToLoad,
       assuranceMode,
+      walletId,
     } = this.props;
 
     const transactionsGroups = this.groupTransactionsByDay(transactions);
@@ -137,11 +139,11 @@ export default class WalletTransactionsList extends Component {
         ref={(div) => { this.list = div; }}
       >
         {transactionsGroups.map((group, groupIndex) => (
-          <div className={styles.group} key={groupIndex}>
+          <div className={styles.group} key={walletId + '-' + groupIndex}>
             <div className={styles.groupDate}>{this.localizedDate(group.date)}</div>
             <div className={styles.list}>
               {group.transactions.map((transaction, transactionIndex) => (
-                <div key={transactionIndex}>
+                <div key={walletId + '-' + transaction.id}>
                   <Transaction
                     data={transaction}
                     isLastInList={transactionIndex === group.transactions.length - 1}
