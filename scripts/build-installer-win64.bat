@@ -62,6 +62,7 @@ move   node_modules\daedalus-client-api\cardano-launcher.exe installers\
 del /f node_modules\daedalus-client-api\*.exe
 
 @echo Packaging frontend
+call npm run build-dll
 call npm run package -- --icon installers/icons/64x64
 @if %errorlevel% neq 0 (@echo FAILED: Failed to package the frontend
 	exit /b 1)
