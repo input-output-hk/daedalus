@@ -11,6 +11,9 @@ const merge = require('webpack-merge');
 const formatter = ('eslint-formatter-pretty');
 const Joi = require('webpack-validator').Joi;
 const baseConfig = require('./webpack.config.base');
+const DllReferencePlugin = require("webpack/lib/DllReferencePlugin");
+const ContextReplacementPlugin = require("webpack/lib/ContextReplacementPlugin");
+const HappyPack = require('happypack');
 
 const port = process.env.PORT || 4000;
 
@@ -38,6 +41,18 @@ module.exports = validate(merge(baseConfig, {
     //   }
     // ],
     loaders: [
+      {
+        test: /\.jsx?$/,
+        loader: 'happypack/loader',
+        include: [
+          path.join(__dirname, '../app'),
+          path.join(__dirname, '../lib'),
+          path.join(__dirname, '../electron'),
+        ],
+        query: {
+          cacheDirectory: true,
+        }
+      },
       {
         test: /\.global\.scss$/,
         loaders: [
@@ -76,7 +91,14 @@ module.exports = validate(merge(baseConfig, {
     // NODE_ENV should be production so that modules do not perform certain development checks
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify('development'),
-    })
+    }),
+    new HappyPack({
+      loaders: ['babel-loader'],
+    }),
+    new DllReferencePlugin({
+      context: path.join(__dirname, "../app"),
+      manifest: require("../dll/vendor-manifest.json")
+    }),
   ],
 
   // https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works
