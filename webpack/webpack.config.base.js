@@ -13,7 +13,11 @@ module.exports = validate({
     loaders: [{
       test: /\.jsx?$/,
       loader: 'babel-loader',
-      exclude: /node_modules/,
+      include: [
+        path.join(__dirname, '../app'),
+        path.join(__dirname, '../lib'),
+        path.join(__dirname, '../electron'),
+      ],
     }, {
       test: /\.json$/,
       loader: 'json-loader',
