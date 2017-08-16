@@ -62,12 +62,6 @@ export default class AppStore extends Store {
     return 'en-US'; // default
   }
 
-  @computed get currentTheme(): string {
-    const { result } = this.getThemeRequest.execute();
-    if (this.isCurrentThemeSet) return result;
-    return 'themeDefault'; // default
-  }
-
   @computed get hasLoadedCurrentLocale(): boolean {
     return (
       this.getProfileLocaleRequest.wasExecuted && this.getProfileLocaleRequest.result !== null
@@ -75,11 +69,21 @@ export default class AppStore extends Store {
   }
 
   @computed get isCurrentLocaleSet(): boolean {
-    return (this.getProfileLocaleRequest.result != null && this.getProfileLocaleRequest.result !== '');
+    return (this.getProfileLocaleRequest.result !== null && this.getProfileLocaleRequest.result !== '');
+  }
+
+  @computed get currentTheme(): string {
+    const { result } = this.getThemeRequest.execute();
+    if (this.isCurrentThemeSet) return result;
+    return 'themeDefault'; // default
   }
 
   @computed get isCurrentThemeSet(): boolean {
-    return (this.getThemeRequest.result != null && this.getThemeRequest.result !== '');
+    return (this.getThemeRequest.result !== null && this.getThemeRequest.result !== '');
+  }
+
+  @computed get hasLoadedCurrentTheme(): boolean {
+    return (this.getThemeRequest.wasExecuted && this.getThemeRequest.result !== null);
   }
 
   @computed get termsOfUse(): string {
