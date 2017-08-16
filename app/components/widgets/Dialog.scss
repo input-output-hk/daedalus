@@ -1,6 +1,10 @@
 .dialogWrapper {
   color: var(--theme-dialog-title-color);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   position: relative;
+
   & > .title {
     font-family: var(--font-medium);
     font-size: 18px;
@@ -13,10 +17,14 @@
 
   & > .content {
     flex: 1;
+    margin-right: -24px;
+    overflow-y: overlay;
+    padding-right: 24px;
   }
 
   & > .actions {
     display: flex;
+    flex-shrink: 0;
     margin-top: 30px;
 
     button {
