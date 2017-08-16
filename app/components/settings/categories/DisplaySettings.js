@@ -63,12 +63,12 @@ export default class DisplaySettings extends Component {
 
           <button className={themeOneClasses} onClick={selectTheme.bind(this, { theme: 'theme1' })}>
             <img src={theme1} role="presentation" />
-            <span>Almond Frost</span>
+            <span>Sea Vulcan</span>
           </button>
 
           <button className={themeTwoClasses} onClick={selectTheme.bind(this, { theme: 'theme2' })}>
             <img src={theme2} role="presentation" />
-            <span>Sea Vulcan</span>
+            <span>Jagger</span>
           </button>
 
         </div>
