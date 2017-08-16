@@ -180,7 +180,7 @@ export default {
 
   '--theme-block-generation-info-color': '#5e6066',
 
-  '--theme-connecting-background-color': '#345078',
+  '--theme-connecting-background-color': '#202225',
 
   '--theme-error-color': '#ea4c5b',
 
