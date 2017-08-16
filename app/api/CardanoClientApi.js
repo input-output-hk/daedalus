@@ -352,7 +352,7 @@ export default class CardanoClientApi {
     const { redemptionCode, accountId, walletPassword } = request;
     try {
       const response: ApiTransaction = await ClientApi.redeemAda(
-        redemptionCode, accountId, walletPassword
+        tlsConfig, redemptionCode, accountId, walletPassword
       );
       Log.debug('CardanoClientApi::redeemAda success');
       return _createTransactionFromServerData(response);
@@ -370,7 +370,7 @@ export default class CardanoClientApi {
     const { shieldedRedemptionKey, mnemonics, accountId, walletPassword } = request;
     try {
       const response: ApiTransaction = await ClientApi.redeemAdaPaperVend(
-        shieldedRedemptionKey, mnemonics, accountId, walletPassword
+        tlsConfig, shieldedRedemptionKey, mnemonics, accountId, walletPassword
       );
       Log.debug('CardanoClientApi::redeemAdaPaperVend success');
       return _createTransactionFromServerData(response);
