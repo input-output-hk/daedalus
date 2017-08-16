@@ -105,7 +105,7 @@ app.on('ready', async () => {
     let messageCallback, errorCallback = null;
 
     jsClientApi.notify(
-      tlsConfig,
+      ca,
       function handleNotifyMessage(...args) {
         if (messageCallback) {
           try {
