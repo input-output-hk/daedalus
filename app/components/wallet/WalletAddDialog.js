@@ -88,7 +88,7 @@ export default class WalletAddDialog extends Component {
         title={intl.formatMessage(messages.title)}
         closeOnOverlayClick
         onClose={canClose ? onCancel : null}
-        closeButton={canClose && <DialogCloseButton onClose={onCancel} />}
+        closeButton={canClose && <DialogCloseButton />}
       >
         <div className={styles.buttonsContainer}>
           <div className={styles.firstRow}>

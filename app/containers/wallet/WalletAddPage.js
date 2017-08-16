@@ -28,48 +28,30 @@ export default class WalletAddPage extends Component {
         dialog: WalletAddDialog,
       });
     }
-  }
+  };
 
   render() {
     const { uiDialogs } = this.props.stores;
     let activeDialog = null;
 
     if (uiDialogs.isOpen(WalletAddDialog)) {
-      activeDialog = (
-        <WalletAddDialogContainer />
-      );
+      activeDialog = <WalletAddDialogContainer />;
     }
 
     if (uiDialogs.isOpen(WalletCreateDialog)) {
-      activeDialog = (
-        <WalletCreateDialogContainer
-          onClose={this.onClose}
-        />
-      );
+      activeDialog = <WalletCreateDialogContainer onClose={this.onClose} />;
     }
 
     if (uiDialogs.isOpen(WalletBackupDialog)) {
-      activeDialog = (
-        <WalletBackupDialogContainer
-          onClose={this.onClose}
-        />
-      );
+      activeDialog = <WalletBackupDialogContainer onClose={this.onClose} />;
     }
 
     if (uiDialogs.isOpen(WalletRestoreDialog)) {
-      activeDialog = (
-        <WalletRestoreDialogContainer
-          onClose={this.onClose}
-        />
-      );
+      activeDialog = <WalletRestoreDialogContainer onClose={this.onClose} />;
     }
 
     if (uiDialogs.isOpen(WalletKeyImportDialog)) {
-      activeDialog = (
-        <WalletKeyImportDialogContainer
-          onClose={this.onClose}
-        />
-      );
+      activeDialog = <WalletKeyImportDialogContainer onClose={this.onClose} />;
     }
 
     return activeDialog;
