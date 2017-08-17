@@ -6,24 +6,18 @@ const path = require('path');
 const fs = require('fs');
 const validate = require('webpack-validator');
 const webpack = require('webpack');
-const HappyPack = require('happypack');
-const ContextReplacementPlugin = require("webpack/lib/ContextReplacementPlugin");
-const DllReferencePlugin = require("webpack/lib/DllReferencePlugin");
 
 module.exports = validate({
   cache: true,
   module: {
     loaders: [{
       test: /\.jsx?$/,
-      loader: 'happypack/loader',
+      loader: 'babel-loader',
       include: [
         path.join(__dirname, '../app'),
         path.join(__dirname, '../lib'),
         path.join(__dirname, '../electron'),
       ],
-      query: {
-        cacheDirectory: true,
-      }
     }, {
       test: /\.json$/,
       loader: 'json-loader',
@@ -57,13 +51,6 @@ module.exports = validate({
       'process.env.CARDANO_API': process.env.CARDANO_API || 1,
       'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
       'process.env.DAEDALUS_VERSION': JSON.stringify(process.env.DAEDALUS_VERSION || 'dev')
-    }),
-    new HappyPack({
-      loaders: ['babel-loader'],
-    }),
-    new DllReferencePlugin({
-      context: path.join(__dirname, "../app"),
-      manifest: require("../dll/vendor-manifest.json")
     }),
   ],
 

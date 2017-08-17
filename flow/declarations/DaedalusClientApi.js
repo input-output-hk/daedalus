@@ -61,6 +61,8 @@ declare module 'daedalus-client-api' {
 
   declare type ApiWallets = Array<ApiWallet>;
 
+  declare type TlsConfig = Object;
+
 
   // ========= Functions =========
 
@@ -68,20 +70,20 @@ declare module 'daedalus-client-api' {
   declare function generateMnemonic(): string;
 
   // Status
-  declare function notify(onSuccess: Function, onError?: Function): void;
-  declare function nextUpdate(): any;
-  declare function applyUpdate(): any;
-  declare function syncProgress(): any;
+  declare function notify(tls: TlsConfig, onSuccess: Function, onError?: Function): void;
+  declare function nextUpdate(tls: TlsConfig): any;
+  declare function applyUpdate(tls: TlsConfig): any;
+  declare function syncProgress(tls: TlsConfig): any;
 
   // Validators
-  declare function isValidAddress(address: string): Promise<boolean>;
+  declare function isValidAddress(tls: TlsConfig, address: string): Promise<boolean>;
   declare function isValidMnemonic(length: number, mnemonic: string): Promise<boolean>;
   declare function isValidRedemptionKey(mnemonic: string): Promise<boolean>;
   declare function isValidPaperVendRedemptionKey(mnemonic: string): Promise<boolean>;
 
   // Accounts
-  declare function getAccounts(): Promise<ApiAccounts>;
-  declare function newAccount(walletId: string, walletName: string, walletPassword: ?string): Promise<ApiAccount>;
+  declare function getAccounts(tls: TlsConfig): Promise<ApiAccounts>;
+  declare function newAccount(tls: TlsConfig, walletId: string, walletName: string, walletPassword: ?string): Promise<ApiAccount>;
 
   // Transactions
   // * getHistory has first three parameters optional
@@ -93,29 +95,29 @@ declare module 'daedalus-client-api' {
   // * `getHistoryByWallet(wId, 1, 10)` - search only by wallet
   // * `getHistoryByAccount(acId, 1, 10)` - search only by account
   // * `getAddressHistory(acId, addressId, 1, 10)` - search  by account and address within
-  declare function getHistory(walletId: ?string, accountId: ?string, addressId: ?string, skip: number, limit: number): Promise<ApiTransactions>;
-  declare function getHistoryByWallet(walletId: string, skip: number, limit: number): Promise<ApiTransactions>;
-  declare function getHistoryByAccount(accountId: string, skip: number, limit: number): Promise<ApiTransactions>;
-  declare function getAddressHistory(accountId: string, addressId: string, skip: number, limit: number): Promise<ApiTransactions>;
+  declare function getHistory(tls: TlsConfig, walletId: ?string, accountId: ?string, addressId: ?string, skip: number, limit: number): Promise<ApiTransactions>;
+  declare function getHistoryByWallet(tls: TlsConfig, walletId: string, skip: number, limit: number): Promise<ApiTransactions>;
+  declare function getHistoryByAccount(tls: TlsConfig, accountId: string, skip: number, limit: number): Promise<ApiTransactions>;
+  declare function getAddressHistory(tls: TlsConfig, accountId: string, addressId: string, skip: number, limit: number): Promise<ApiTransactions>;
 
-  declare function newPayment(senderAccountId: string, receiverAddress: string, amount: string, password: ?string): Promise<ApiTransaction>;
+  declare function newPayment(tls: TlsConfig, senderAccountId: string, receiverAddress: string, amount: string, password: ?string): Promise<ApiTransaction>;
 
   // Ada Redemption
-  declare function redeemAda(redemptionCode: string, accountId: string, walletPassword: ?string): Promise<ApiTransaction>;
-  declare function redeemAdaPaperVend(shieldedRedemptionKey: string, mnemonics: string, accountId: string, walletPassword: ?string): Promise<ApiTransaction>;
+  declare function redeemAda(tls: TlsConfig, redemptionCode: string, accountId: string, walletPassword: ?string): Promise<ApiTransaction>;
+  declare function redeemAdaPaperVend(tls: TlsConfig, shieldedRedemptionKey: string, mnemonics: string, accountId: string, walletPassword: ?string): Promise<ApiTransaction>;
 
   // Wallet
-  declare function getWallets(): ApiWallets;
-  declare function getWalletAccounts(walletId: string): Promise<ApiAccounts>;
-  declare function newWallet(walletName: string, assurance: string, unit: number, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
-  declare function deleteWallet(walletId: string): Promise<{}>;
-  declare function restoreWallet(walletName: string, assurance: string, unit: number, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
-  declare function updateWallet(walletId: string, walletName: string, assurance: string, unit: number): Promise<ApiWallet>;
-  declare function importWallet(filePath: string, walletPassword: ?string): Promise<ApiWallet>;
-  declare function newWAddress(accountId: string, walletPassword: ?string): Promise<ApiAddress>;
-  declare function changeWalletPass(walletId: string, oldPassword: ?string, newPassword: ?string): Promise<{}>;
+  declare function getWallets(tls: TlsConfig): ApiWallets;
+  declare function getWalletAccounts(tls: TlsConfig, walletId: string): Promise<ApiAccounts>;
+  declare function newWallet(tls: TlsConfig, walletName: string, assurance: string, unit: number, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
+  declare function deleteWallet(tls: TlsConfig, walletId: string): Promise<{}>;
+  declare function restoreWallet(tls: TlsConfig, walletName: string, assurance: string, unit: number, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
+  declare function updateWallet(tls: TlsConfig, walletId: string, walletName: string, assurance: string, unit: number): Promise<ApiWallet>;
+  declare function importWallet(tls: TlsConfig, filePath: string, walletPassword: ?string): Promise<ApiWallet>;
+  declare function newWAddress(tls: TlsConfig, accountId: string, walletPassword: ?string): Promise<ApiAddress>;
+  declare function changeWalletPass(tls: TlsConfig, walletId: string, oldPassword: ?string, newPassword: ?string): Promise<{}>;
 
   // Test
-  declare function testReset(): void;
+  declare function testReset(tls: TlsConfig): void;
 
 }

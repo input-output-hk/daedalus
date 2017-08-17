@@ -16,7 +16,6 @@ require("mobx-react-router");
 require("immutability-helper");
 require("moment");
 require("classnames");
-require("recharts");
 require("lodash");
 require("route-parser");
 require("bignumber.js");
