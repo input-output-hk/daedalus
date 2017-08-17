@@ -1,12 +1,12 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletExportDialog from '../../../components/wallet/settings/export/WalletExportDialog';
-import type { OnSubmitParams } from '../../../components/wallet/settings/export/WalletExportDialog';
+import WalletExportDialog from '../../../components/wallet/settings/export/WalletExportToFileDialog';
+import type { OnSubmitParams } from '../../../components/wallet/settings/export/WalletExportToFileDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
-export default class WalletExportDialogContainer extends Component {
+export default class WalletExportToFileDialogContainer extends Component {
 
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
 

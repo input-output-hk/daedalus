@@ -7,26 +7,25 @@ import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import ReactToolboxMobxForm from '../../../../lib/ReactToolboxMobxForm';
-import { isValidWalletPassword, isValidRepeatPassword } from '../../../../lib/validations';
 import globalMessages from '../../../../i18n/global-messages';
 import Dialog from '../../../widgets/Dialog';
 import styles from './WalletExportDialog.scss';
 
 const messages = defineMessages({
   headline: {
-    id: 'wallet.export.dialog.headline',
+    id: 'wallet.exportToFile.dialog.headline',
     defaultMessage: '!!!Export Wallet',
-    description: 'headline for "export paper wallet" dialog.'
+    description: 'headline for "export wallet to file" dialog.'
   },
   introduction: {
-    id: 'wallet.export.dialog.introduction',
+    id: 'wallet.exportToFile.dialog.introduction',
     defaultMessage: '!!!You are exporting <strong>{walletName}</strong> to a file.',
-    description: 'headline for "export paper wallet" dialog.'
+    description: 'headline for "export wallet to file" dialog.'
   },
   exportButtonLabel: {
-    id: 'wallet.export.submit.label',
+    id: 'wallet.exportToFile.submit.label',
     defaultMessage: '!!!Export',
-    description: 'Label for export wallet submit button.'
+    description: 'Label for export wallet to file submit button.'
   },
   // TODO: re-enable when we have full/readOnly exports
   // fullTabTitle: {
@@ -44,8 +43,8 @@ const messages = defineMessages({
 type ExportType = 'full' | 'readOnly';
 
 type WalletExportDialogState = {
-  isSubmitting: boolean,
-  exportType: ExportType,
+  isSubmitting?: boolean,
+  exportType?: ExportType,
 };
 
 export type OnSubmitParams = {
@@ -53,7 +52,7 @@ export type OnSubmitParams = {
 };
 
 @observer
-export default class WalletExportDialog extends Component {
+export default class WalletExportToFileDialog extends Component {
 
   static contextTypes = {
     intl: intlShape.isRequired,
