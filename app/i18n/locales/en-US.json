@@ -106,7 +106,7 @@
   "wallet.export.choices.tab.title.full": "Full",
   "wallet.export.choices.tab.title.paperWallet": "Paper wallet",
   "wallet.export.choices.tab.title.readOnly": "Read-only",
-  "wallet.export.dialog.headline": "Export",
+  "wallet.export.dialog.headline": "Export Wallet",
   "wallet.key.import.dialog.headline": "Import Wallet",
   "wallet.key.import.dialog.keyFileHint": "Drop file here or click to choose",
   "wallet.key.import.dialog.keyFileLabel": "Upload your key file",

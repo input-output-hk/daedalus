@@ -120,5 +120,15 @@ export default defineMessages({
     id: 'wallet.backup.recovery.phrase.dialog.title',
     defaultMessage: '!!!Recovery phrase',
     description: 'Title for the "Recovery Phrase" dialog.'
-  }
+  },
+  spendingPasswordLabel: {
+    id: 'global.spendingPasswordLabel',
+    defaultMessage: '!!!Spending Password',
+    description: 'Label for the "Wallet password" input in the create wallet dialog.',
+  },
+  spendingPasswordPlaceholder: {
+    id: 'global.spendingPasswordPlaceholder',
+    defaultMessage: '!!!Password',
+    description: 'Placeholder for the "Password" inputs in the create wallet dialog.',
+  },
 });

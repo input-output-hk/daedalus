@@ -96,6 +96,7 @@ export default class WalletExportDialog extends Component {
             {intl.formatMessage(messages.fullTabTitle)}
           </button>
           <button
+            disabled
             className={exportType === 'readOnly' ? styles.activeButton : ''}
             onClick={() => this.onChangeExportType('readOnly')}
           >

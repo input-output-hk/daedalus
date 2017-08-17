@@ -1,8 +1,8 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletExportDialog from '../../../components/wallet/settings/WalletExportDialog';
-import ExportPaperWalletPrinterCopyDialog from '../../../components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog';
+import WalletExportDialog from '../../../components/wallet/settings/export/WalletExportDialog';
+import type { OnSubmitParams } from '../../../components/wallet/settings/export/WalletExportDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
@@ -12,10 +12,8 @@ export default class WalletExportDialogContainer extends Component {
 
   props: InjectedDialogContainerProps;
 
-  onPrint = () => {
-    this.props.actions.dialogs.open.trigger({
-      dialog: ExportPaperWalletPrinterCopyDialog,
-    });
+  onSubmit = (params: OnSubmitParams) => {
+    console.log('onSubmit', params);
   };
 
   onCancel = () => {
@@ -23,16 +21,18 @@ export default class WalletExportDialogContainer extends Component {
   };
 
   render() {
-    const { stores, actions } = this.props;
+    const { stores } = this.props;
+    const activeWallet = stores.wallets.active;
+
+    // We need an active wallet
+    if (!activeWallet) return null;
 
     return (
       <WalletExportDialog
-        onPrint={this.onPrint}
+        walletName={activeWallet.name}
+        hasSpendingPassword={activeWallet.hasPassword}
+        onSubmit={this.onSubmit}
         onClose={this.onCancel}
-        onChooseWalletExportType={(choice) => {
-          actions.wallets.chooseWalletExportType.trigger({ walletExportType: choice });
-        }}
-        walletExportType={stores.wallets.walletExportType}
       />
     );
   }
