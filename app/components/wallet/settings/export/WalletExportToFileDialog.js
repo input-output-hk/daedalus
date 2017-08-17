@@ -23,7 +23,7 @@ const messages = defineMessages({
     description: 'headline for "export wallet to file" dialog.'
   },
   exportButtonLabel: {
-    id: 'wallet.exportToFile.submit.label',
+    id: 'wallet.exportToFile.dialog.submit.label',
     defaultMessage: '!!!Export',
     description: 'Label for export wallet to file submit button.'
   },
@@ -114,10 +114,10 @@ export default class WalletExportToFileDialog extends Component {
       onSuccess: (form) => {
         this.setState({ isSubmitting: true });
         const { hasSpendingPassword } = this.props;
-        const { walletPassword } = form.values();
+        const { spendingPassword } = form.values();
         const formData = {
           exportType: this.state.exportType,
-          password: hasSpendingPassword ? walletPassword : null,
+          password: hasSpendingPassword ? spendingPassword : null,
         };
         this.props.onSubmit(formData);
       },
