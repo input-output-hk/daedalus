@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
 import StoryDecorator from './support/StoryDecorator';
-import WalletExportDialog from '../app/components/wallet/settings/export/WalletExportToFileDialog';
+import WalletExportDialog from '../app/components/wallet/settings/export-to-file/WalletExportToFileDialog';
 
 storiesOf('WalletExportDialog', module)
 

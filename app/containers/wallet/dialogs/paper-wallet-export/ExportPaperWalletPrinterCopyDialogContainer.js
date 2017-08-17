@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import ExportPaperWalletPrinterCopyDialog from '../../../../components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog';
 import ExportPaperWalletMnemonicDialog from '../../../../components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog';
-import WalletExportDialog from '../../../../components/wallet/settings/export/WalletExportToFileDialog';
+import WalletExportDialog from '../../../../components/wallet/settings/export-to-file/WalletExportToFileDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer

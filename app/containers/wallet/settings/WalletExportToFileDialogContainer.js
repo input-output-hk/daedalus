@@ -1,8 +1,8 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletExportDialog from '../../../components/wallet/settings/export/WalletExportToFileDialog';
-import type { OnSubmitParams } from '../../../components/wallet/settings/export/WalletExportToFileDialog';
+import WalletExportDialog from '../../../components/wallet/settings/export-to-file/WalletExportToFileDialog';
+import type { OnSubmitParams } from '../../../components/wallet/settings/export-to-file/WalletExportToFileDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer

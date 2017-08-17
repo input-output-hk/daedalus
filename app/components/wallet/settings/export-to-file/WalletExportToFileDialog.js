@@ -9,7 +9,7 @@ import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import ReactToolboxMobxForm from '../../../../lib/ReactToolboxMobxForm';
 import globalMessages from '../../../../i18n/global-messages';
 import Dialog from '../../../widgets/Dialog';
-import styles from './WalletExportDialog.scss';
+import styles from './WalletExportToFileDialog.scss';
 
 const messages = defineMessages({
   headline: {
