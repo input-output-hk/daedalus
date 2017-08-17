@@ -42,12 +42,12 @@ const messages = defineMessages({
 
 type ExportType = 'full' | 'readOnly';
 
-type WalletExportDialogState = {
-  isSubmitting?: boolean,
-  exportType?: ExportType,
+type DialogState = {
+  exportType: ExportType,
 };
 
 export type OnSubmitParams = {
+  exportType: ExportType,
   password: ?string,
 };
 
@@ -60,26 +60,22 @@ export default class WalletExportToFileDialog extends Component {
 
   props: {
     walletName: string,
-    hasSpendingPassword?: boolean,
+    hasSpendingPassword: boolean,
+    isSubmitting: false,
     onSubmit: (OnSubmitParams) => void,
     onClose: () => void,
   };
 
-  defaultProps = {
-    hasSpendingPassword: false,
-  };
-
-  state: WalletExportDialogState;
+  state: DialogState;
 
   constructor(props: any, children: any) {
     super(props, children);
     this.state = {
-      isSubmitting: false,
       exportType: 'full',
     };
   }
 
-  setState(object: WalletExportDialogState) {
+  setState(object: DialogState) {
     super.setState(object);
   }
 
@@ -112,7 +108,6 @@ export default class WalletExportToFileDialog extends Component {
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        this.setState({ isSubmitting: true });
         const { hasSpendingPassword } = this.props;
         const { spendingPassword } = form.values();
         const formData = {
@@ -121,16 +116,13 @@ export default class WalletExportToFileDialog extends Component {
         };
         this.props.onSubmit(formData);
       },
-      onError: () => {
-        this.setState({ isSubmitting: false });
-      },
     });
   };
 
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onClose, walletName, hasSpendingPassword } = this.props;
+    const { onClose, walletName, hasSpendingPassword, isSubmitting } = this.props;
     // const { exportType } = this.state;
     const dialogClasses = classnames([
       styles.component,
@@ -139,6 +131,7 @@ export default class WalletExportToFileDialog extends Component {
 
     const actions = [
       {
+        className: isSubmitting ? styles.isSubmitting : null,
         label: intl.formatMessage(messages.exportButtonLabel),
         primary: true,
         onClick: this.submit,

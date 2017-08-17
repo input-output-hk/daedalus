@@ -32,7 +32,9 @@ import type {
   RedeemPaperVendedAdaRequest,
   UpdateWalletPasswordRequest,
   TransactionFeeRequest,
-  TransactionFeeResponse
+  TransactionFeeResponse,
+  ExportWalletToFileRequest,
+  ExportWalletToFileResponse,
 } from './index';
 import {
   // ApiMethodNotYetImplementedError,
@@ -590,6 +592,18 @@ export default class CardanoClientApi {
       return fee;
     } catch (error) {
       Log.error('CardanoClientApi::TransactionFee error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async exportWalletToFile(request: ExportWalletToFileRequest): ExportWalletToFileResponse {
+    Log.debug('CardanoClientApi::exportWalletToFile called');
+    try {
+      const response = await ClientApi.exportBackupJSON(tlsConfig, request.walletId);
+      Log.debug('CardanoClientApi::exportWalletToFile success: ', stringifyData(response));
+      return response;
+    } catch (error) {
+      Log.error('CardanoClientApi::exportWalletToFile error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }

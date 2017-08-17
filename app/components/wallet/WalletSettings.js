@@ -12,7 +12,7 @@ import DeleteWalletButton from './settings/DeleteWalletButton';
 import DeleteWalletConfirmationDialog from './settings/DeleteWalletConfirmationDialog';
 import DeleteWalletDialogContainer from '../../containers/wallet/dialogs/DeleteWalletDialogContainer';
 import WalletExportDialog from './settings/export-to-file/WalletExportToFileDialog';
-import WalletExportDialogContainer from '../../containers/wallet/settings/WalletExportToFileDialogContainer';
+import WalletExportToFileDialogContainer from '../../containers/wallet/settings/WalletExportToFileDialogContainer';
 import ExportPaperWalletPrinterCopyDialog from './settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog';
 import ExportPaperWalletPrinterCopyDialogContainer from '../../containers/wallet/dialogs/paper-wallet-export/ExportPaperWalletPrinterCopyDialogContainer';
 import ExportPaperWalletMnemonicDialog from './settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog';
@@ -187,7 +187,7 @@ export default class WalletSettings extends Component {
         ) : null}
 
         {isDialogOpen(WalletExportDialog) ? (
-          <WalletExportDialogContainer />
+          <WalletExportToFileDialogContainer />
         ) : null}
 
         {isDialogOpen(ExportPaperWalletPrinterCopyDialog) ? (

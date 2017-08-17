@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import { remote } from 'electron';
 import WalletExportDialog from '../../../components/wallet/settings/export-to-file/WalletExportToFileDialog';
 import type { OnSubmitParams } from '../../../components/wallet/settings/export-to-file/WalletExportToFileDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
@@ -13,7 +14,19 @@ export default class WalletExportToFileDialogContainer extends Component {
   props: InjectedDialogContainerProps;
 
   onSubmit = (params: OnSubmitParams) => {
-    console.log('onSubmit', params);
+    const filePath = remote.dialog.showSaveDialog({
+      filters: [
+        { name: 'Json', extensions: ['json'] },
+      ]
+    });
+    const { stores, actions } = this.props;
+    const activeWallet = stores.wallets.active;
+    if (!filePath || !activeWallet) return;
+    actions.walletSettings.exportToFile.trigger({
+      walletId: activeWallet.id,
+      filePath,
+      ...params
+    });
   };
 
   onCancel = () => {
@@ -31,6 +44,7 @@ export default class WalletExportToFileDialogContainer extends Component {
       <WalletExportDialog
         walletName={activeWallet.name}
         hasSpendingPassword={activeWallet.hasPassword}
+        isSubmitting={false}
         onSubmit={this.onSubmit}
         onClose={this.onCancel}
       />

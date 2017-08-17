@@ -18,17 +18,25 @@ storiesOf('WalletExportDialog', module)
       <WalletExportDialog
         walletName="Test Wallet"
         onClose={action('onClose')}
+        isSubmitting={false}
       />
     </div>
   ))
 
+  .add('submitting', () => (
+    <div>
+      <WalletExportDialog walletName="Test Wallet" isSubmitting />
+    </div>
+  ))
+
   .add('spending password', () => (
-  <div>
-    <WalletExportDialog
-      walletName="Test Wallet"
-      hasSpendingPassword
-      onSubmit={action('onSubmit')}
-      onClose={action('onClose')}
-    />
-  </div>
-));
+    <div>
+      <WalletExportDialog
+        walletName="Test Wallet"
+        hasSpendingPassword
+        onSubmit={action('onSubmit')}
+        onClose={action('onClose')}
+        isSubmitting={false}
+      />
+    </div>
+  ));

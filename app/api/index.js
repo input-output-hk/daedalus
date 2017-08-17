@@ -132,6 +132,10 @@ export type TransactionFeeRequest = {
 
 export type TransactionFeeResponse = BigNumber;
 
+export type ExportWalletToFileRequest = { walletId: string };
+
+export type ExportWalletToFileResponse = {};
+
 // API INTERFACE
 /* eslint-disable max-len */
 export type Api = {
@@ -168,5 +172,6 @@ export type Api = {
   updateWalletPassword(request: UpdateWalletPasswordRequest): Promise<UpdateWalletPasswordResponse>,
   calculateTransactionFee(request: TransactionFeeRequest): Promise<TransactionFeeResponse>,
   testReset(): void,
+  exportWalletToFile(request: ExportWalletToFileRequest): Promise<ExportWalletToFileResponse>,
 };
 /* eslint-disable max-len */
