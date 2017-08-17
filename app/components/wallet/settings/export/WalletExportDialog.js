@@ -2,38 +2,54 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { defineMessages, intlShape } from 'react-intl';
-import DialogCloseButton from '../../widgets/DialogCloseButton';
-import Dialog from '../../widgets/Dialog';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import Input from 'react-polymorph/lib/components/Input';
+import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
+import DialogCloseButton from '../../../widgets/DialogCloseButton';
+import ReactToolboxMobxForm from '../../../../lib/ReactToolboxMobxForm';
+import { isValidWalletPassword, isValidRepeatPassword } from '../../../../lib/validations';
+import globalMessages from '../../../../i18n/global-messages';
+import Dialog from '../../../widgets/Dialog';
 import styles from './WalletExportDialog.scss';
 
 const messages = defineMessages({
   headline: {
     id: 'wallet.export.dialog.headline',
-    defaultMessage: '!!!Export',
+    defaultMessage: '!!!Export Wallet',
     description: 'headline for "export paper wallet" dialog.'
   },
-  fullTabTitle: {
-    id: 'wallet.export.choices.tab.title.full',
-    defaultMessage: '!!!Full',
-    description: 'Tab title "Full" on wallet export dialog.'
-  },
-  readOnlyTabTitle: {
-    id: 'wallet.export.choices.tab.title.readOnly',
-    defaultMessage: '!!!Read-only',
-    description: 'Tab title "Read-only" on wallet export dialog.'
+  introduction: {
+    id: 'wallet.export.dialog.introduction',
+    defaultMessage: '!!!You are exporting <strong>{walletName}</strong> to a file.',
+    description: 'headline for "export paper wallet" dialog.'
   },
   exportButtonLabel: {
     id: 'wallet.export.submit.label',
-    defaultMessage: '!!!Export wallet',
+    defaultMessage: '!!!Export',
     description: 'Label for export wallet submit button.'
-  }
+  },
+  // TODO: re-enable when we have full/readOnly exports
+  // fullTabTitle: {
+  //   id: 'wallet.export.choices.tab.title.full',
+  //   defaultMessage: '!!!Full',
+  //   description: 'Tab title "Full" on wallet export dialog.'
+  // },
+  // readOnlyTabTitle: {
+  //   id: 'wallet.export.choices.tab.title.readOnly',
+  //   defaultMessage: '!!!Read-only',
+  //   description: 'Tab title "Read-only" on wallet export dialog.'
+  // },
 });
 
 type ExportType = 'full' | 'readOnly';
 
 type WalletExportDialogState = {
+  isSubmitting: boolean,
   exportType: ExportType,
+};
+
+export type OnSubmitParams = {
+  password: ?string,
 };
 
 @observer
@@ -44,28 +60,79 @@ export default class WalletExportDialog extends Component {
   };
 
   props: {
-    onClose: Function,
+    walletName: string,
+    hasSpendingPassword?: boolean,
+    onSubmit: (OnSubmitParams) => void,
+    onClose: () => void,
+  };
+
+  defaultProps = {
+    hasSpendingPassword: false,
   };
 
   state: WalletExportDialogState;
 
   constructor(props: any, children: any) {
     super(props, children);
-    this.state = { exportType: 'full' };
+    this.state = {
+      isSubmitting: false,
+      exportType: 'full',
+    };
   }
 
   setState(object: WalletExportDialogState) {
     super.setState(object);
   }
 
-  onChangeExportType(exportType: ExportType) {
-    this.setState({ exportType });
-  }
+  // onChangeExportType(exportType: ExportType) {
+  //   this.setState({ exportType });
+  // }
+
+  form = new ReactToolboxMobxForm({
+    fields: {
+      spendingPassword: {
+        type: 'password',
+        label: this.context.intl.formatMessage(globalMessages.spendingPasswordLabel),
+        placeholder: this.context.intl.formatMessage(globalMessages.spendingPasswordPlaceholder),
+        value: '',
+        validators: [({ field }) => {
+          if (this.props.hasSpendingPassword && field.value === '') {
+            return [false, this.context.intl.formatMessage(globalMessages.fieldIsRequired)];
+          }
+          return [true];
+        }],
+      },
+    }
+  }, {
+    options: {
+      validateOnChange: true,
+      validationDebounceWait: 250,
+    },
+  });
+
+  submit = () => {
+    this.form.submit({
+      onSuccess: (form) => {
+        this.setState({ isSubmitting: true });
+        const { hasSpendingPassword } = this.props;
+        const { walletPassword } = form.values();
+        const formData = {
+          exportType: this.state.exportType,
+          password: hasSpendingPassword ? walletPassword : null,
+        };
+        this.props.onSubmit(formData);
+      },
+      onError: () => {
+        this.setState({ isSubmitting: false });
+      },
+    });
+  };
 
   render() {
+    const { form } = this;
     const { intl } = this.context;
-    const { onClose } = this.props;
-    const { exportType } = this.state;
+    const { onClose, walletName, hasSpendingPassword } = this.props;
+    // const { exportType } = this.state;
     const dialogClasses = classnames([
       styles.component,
       'WalletExportDialog',
@@ -75,9 +142,11 @@ export default class WalletExportDialog extends Component {
       {
         label: intl.formatMessage(messages.exportButtonLabel),
         primary: true,
-        onClick: () => console.log('submit'),
+        onClick: this.submit,
       }
     ];
+
+    const spendingPasswordField = form.$('spendingPassword');
 
     return (
       <Dialog
@@ -88,6 +157,8 @@ export default class WalletExportDialog extends Component {
         onClose={onClose}
         closeButton={<DialogCloseButton />}
       >
+        {/* TODO: re-enable when we have full/readOnly exports
+
         <div className={styles.choices}>
           <button
             className={exportType === 'full' ? styles.activeButton : ''}
@@ -103,6 +174,23 @@ export default class WalletExportDialog extends Component {
             {intl.formatMessage(messages.readOnlyTabTitle)}
           </button>
         </div>
+        */}
+
+        <div className={styles.introduction}>
+          <FormattedHTMLMessage
+            {...messages.introduction}
+            values={{ walletName }}
+          />
+        </div>
+
+        {hasSpendingPassword ? (
+          <Input
+            className={styles.spendingPassword}
+            {...spendingPasswordField.bind()}
+            error={spendingPasswordField.error}
+            skin={<SimpleInputSkin />}
+          />
+        ) : null}
 
       </Dialog>
     );

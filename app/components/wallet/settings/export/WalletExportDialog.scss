@@ -1,5 +1,5 @@
-@import '../../../themes/mixins/loading-spinner';
-@import '../../../themes/mixins/error-message';
+@import '../../../../themes/mixins/loading-spinner';
+@import '../../../../themes/mixins/error-message';
 
 .component {
   :global {
@@ -13,34 +13,45 @@
   }
 }
 
-.choices {
-  display: flex;
-  width: 100%;
+.introduction {
+  font-family: $font-light;
+  text-align: center;
+}
 
-  button {
-    color: $text-color-accent;
-    cursor: pointer;
-    flex: 1;
-    font-family: $font-medium;
-    font-size: 16px;
-    opacity: 0.5;
-    padding-bottom: 20px;
-    text-align: center;
-  }
-
-  .activeButton {
-    border-bottom: 2px solid $text-color-accent;
-    color: $text-color-accent;
-    cursor: default;
-    opacity: 1;
-  }
+.spendingPassword {
+  margin-top: 20px;
 }
 
 .isSubmitting {
-  @include loading-spinner("../../../assets/images/spinner-light.svg");
+  @include loading-spinner("../../../../assets/images/spinner-light.svg");
 }
 
 .error {
   @include error-message;
   text-align: center;
 }
+
+// TODO: re-enable when we have full/readOnly exports
+
+//.choices {
+//  display: flex;
+//  width: 100%;
+//
+//  button {
+//    color: $text-color-accent;
+//    cursor: pointer;
+//    flex: 1;
+//    font-family: $font-medium;
+//    font-size: 16px;
+//    opacity: 0.5;
+//    padding-bottom: 20px;
+//    text-align: center;
+//  }
+//
+//  .activeButton {
+//    border-bottom: 2px solid $text-color-accent;
+//    color: $text-color-accent;
+//    cursor: default;
+//    opacity: 1;
+//  }
+//}
