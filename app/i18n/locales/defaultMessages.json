@@ -86,17 +86,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Incorrect wallet password.",
-        "description": "\"Incorrect wallet password.\" error message.",
+        "defaultMessage": "!!!It is not allowed to send money to Ada redemption address.",
+        "description": "\"It is not allowed to send money to Ada redemption address.\" error message.",
         "end": {
           "column": 3,
           "line": 39
         },
         "file": "app/api/errors.js",
+        "id": "api.errors.NotAllowedToSendMoneyToRedeemAddressError",
+        "start": {
+          "column": 45,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!Incorrect wallet password.",
+        "description": "\"Incorrect wallet password.\" error message.",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "app/api/errors.js",
         "id": "api.errors.IncorrectPasswordError",
         "start": {
           "column": 32,
-          "line": 35
+          "line": 40
         }
       }
     ],
