@@ -8,6 +8,8 @@ import winLinuxMenu from './menus/win-linux';
 import ipcApi from './ipc-api';
 import getLogsFolderPath from './lib/getLogsFolderPath';
 import { daedalusLogger, cardanoNodeLogger } from './lib/remoteLog';
+import ClientApi from 'daedalus-client-api';
+import jsClientApi from 'daedalus-client-api/src/tls_workaround';
 
 const APP_NAME = 'Daedalus';
 // Configure default logger levels for console and file outputs
@@ -94,6 +96,47 @@ const installExtensions = async () => {
 
 app.on('ready', async () => {
   await installExtensions();
+
+  try {
+
+    const ca = jsClientApi.readCA(path.join(__dirname, '../tls/ca.crt'));
+
+    const tlsConfig = ClientApi.tlsInit(ca);
+    let messageCallback, errorCallback = null;
+
+    jsClientApi.notify(
+      ca,
+      function handleNotifyMessage(...args) {
+        if (messageCallback) {
+          try {
+            messageCallback(...args);
+          } catch (e) {
+            // The callback might have been released on page refresh etc.
+            messageCallback = null;
+          }
+        }
+      },
+      function handleNotifyError(...args) {
+        if (errorCallback) {
+          try {
+            errorCallback(...args);
+          } catch (e) {
+            // The callback might have been released on page refresh etc.
+            errorCallback = null;
+          }
+        }
+      }
+    );
+    Object.assign(global, {
+      tlsConfig,
+      registerNotifyCallback: (onMessage, onError) => {
+        messageCallback = onMessage;
+        errorCallback = onError;
+      },
+    });
+  } catch(error) {
+    Log.info("error:", error);
+  }
 
   mainWindow = new BrowserWindow({
     show: false,

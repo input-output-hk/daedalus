@@ -45,9 +45,8 @@ import {
 } from './errors';
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 
-const getTlsConfig = remote.require('./remote/get-tls-config');
-const registerNotifyCallback = remote.require('./remote/register-notify-callback');
-const tlsConfig = getTlsConfig();
+const tlsConfig = remote.getGlobal('tlsConfig');
+const registerNotifyCallback = remote.getGlobal('registerNotifyCallback');
 
 // const notYetImplemented = () => new Promise((_, reject) => {
 //   reject(new ApiMethodNotYetImplementedError());
@@ -135,7 +134,7 @@ export default class CardanoClientApi {
   notifyCallbacks = [];
 
   constructor() {
-    registerNotifyCallback(tlsConfig, this._onNotify, this._onNotifyError);
+    registerNotifyCallback(this._onNotify, this._onNotifyError);
   }
 
   notify(onSuccess: Function, onError: Function = () => {}) {
@@ -353,7 +352,7 @@ export default class CardanoClientApi {
     const { redemptionCode, accountId, walletPassword } = request;
     try {
       const response: ApiTransaction = await ClientApi.redeemAda(
-        redemptionCode, accountId, walletPassword
+        tlsConfig, redemptionCode, accountId, walletPassword
       );
       Log.debug('CardanoClientApi::redeemAda success');
       return _createTransactionFromServerData(response);
@@ -371,7 +370,7 @@ export default class CardanoClientApi {
     const { shieldedRedemptionKey, mnemonics, accountId, walletPassword } = request;
     try {
       const response: ApiTransaction = await ClientApi.redeemAdaPaperVend(
-        shieldedRedemptionKey, mnemonics, accountId, walletPassword
+        tlsConfig, shieldedRedemptionKey, mnemonics, accountId, walletPassword
       );
       Log.debug('CardanoClientApi::redeemAdaPaperVend success');
       return _createTransactionFromServerData(response);
