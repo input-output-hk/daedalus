@@ -14,13 +14,22 @@
   </head>
   <body>
     <div id="root"></div>
-    <script src="../dll/dll.vendor.js"></script>
     <script>
       {
-        const script = document.createElement('script');
+        const bundle = document.createElement('script');
+        const isHotMode = process.env.HOT;
+
+        // load dll.vendor.js in dev mode
+        if (isHotMode) {
+          const dll = document.createElement('script');
+          dll.src = "../dll/dll.vendor.js";
+          document.write(dll.outerHTML);
+        }
+
+        // load bundle.js
         const port = process.env.PORT || 4000;
-        script.src = (process.env.HOT) ? `http://localhost:${port}/dist/bundle.js` : '../dist/bundle.js';
-        document.write(script.outerHTML);
+        bundle.src = (isHotMode) ? `http://localhost:${port}/dist/bundle.js` : '../dist/bundle.js';
+        document.write(bundle.outerHTML);
       }
     </script>
   </body>
