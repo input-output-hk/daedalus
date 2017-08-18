@@ -89,6 +89,7 @@ Changelog
 - Fixed promise handling for unmounted wallet send form [PR 412](https://github.com/input-output-hk/daedalus/pull/412)
 - Fixes Transaction toggle issue on active wallet change ([PR 421](https://github.com/input-output-hk/daedalus/pull/421))
 - Fixed missing 'used address' styling for default wallet address on wallet receive screen ([PR 422](https://github.com/input-output-hk/daedalus/pull/422))
+- Show correct error message on sending money to Ada redemption address ([PR 423](https://github.com/input-output-hk/daedalus/pull/423))
 
 ### Chores
 
