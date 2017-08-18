@@ -88,6 +88,7 @@ Changelog
 - Fixes Transaction additional info showing/hiding affects all user's wallets ([PR 411](https://github.com/input-output-hk/daedalus/pull/411))
 - Fixed promise handling for unmounted wallet send form [PR 412](https://github.com/input-output-hk/daedalus/pull/412)
 - Fixed missing 'used address' styling for default wallet address on wallet receive screen ([PR 422](https://github.com/input-output-hk/daedalus/pull/422))
+- Terms of service for the mainnet ([PR 425](https://github.com/input-output-hk/daedalus/pull/425))
 
 ### Chores
 
