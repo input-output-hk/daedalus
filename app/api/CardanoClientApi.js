@@ -588,7 +588,7 @@ export default class CardanoClientApi {
     try {
       // TODO: use real endpoint here to fetch fees (don't forget to cast bignumber to string!)
       const fee = await new Promise((resolve) => {
-        setTimeout(() => resolve(request.amount.times(Math.random().toPrecision(2))), 1000);
+        setTimeout(() => resolve(new BigNumber(1).dividedBy(LOVELACES_PER_ADA)), 1000);
       });
       Log.debug('CardanoClientApi::TransactionFee success: ', fee);
       return fee;
