@@ -1,4 +1,6 @@
 import { expect } from 'chai';
+import path from 'path';
+import BigNumber from 'bignumber.js';
 import {
   fillOutWalletSendForm,
   getWalletByName,
@@ -9,7 +11,7 @@ import {
   waitUntilUrlEquals,
   navigateTo,
 } from '../support/helpers/route-helpers'
-import path from 'path';
+import { DECIMAL_PLACES_IN_ADA } from '../../app/config/numbersConfig';
 
 const defaultWalletKeyFilePath = path.resolve(__dirname, '../support/default-wallet.key');
 
@@ -162,6 +164,15 @@ export default function () {
     }, walletId);
     values.address = walletAddress.value;
     return fillOutWalletSendForm.call(this, values);
+  });
+
+  this.When(/^the transaction fees are calculated$/, async function () {
+    this.fees = await this.client.waitUntil(async () => {
+      // Expected transactionFeeText format "+ 0.000001 of fees"
+      const transactionFeeText = await this.client.getText('.AmountInputSkin_fees');
+      const transactionFeeAmount = new BigNumber(transactionFeeText.substr(2, 8));
+      return transactionFeeAmount.greaterThan(0) ? transactionFeeAmount : false;
+    });
   });
 
   this.When(/^I submit the wallet send form$/, async function () {
@@ -332,7 +343,12 @@ export default function () {
     expect(expectedTransactionTitle).to.equal(transactionTitles[0]);
     let transactionAmounts = await this.client.getText('.Transaction_amount');
     transactionAmounts = [].concat(transactionAmounts);
-    expect(expectedData.amount).to.equal(transactionAmounts[0]);
+    // Transaction amount includes transaction fees so we need to
+    // substract them in order to get a match with expectedData.amountWithoutFees.
+    // NOTE: we use "add()" as this is outgoing transaction and amount is a negative value!
+    const transactionAmount = new BigNumber(transactionAmounts[0]);
+    const transactionAmountWithoutFees = transactionAmount.add(this.fees).toFormat(DECIMAL_PLACES_IN_ADA);
+    expect(expectedData.amountWithoutFees).to.equal(transactionAmountWithoutFees);
   });
 
   this.Then(/^the balance of "([^"]*)" wallet should be:$/, async function (walletName, table) {
