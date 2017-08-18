@@ -28,6 +28,7 @@
     }
 
     & > img {
+      border: 1px solid var(--theme-input-border-color);
       display: block;
       width: 100%;
     }

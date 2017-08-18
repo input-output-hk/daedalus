@@ -118,16 +118,18 @@ export default {
   '--theme-notification-message-background-color': 'rgba(83, 99, 112, 0.8)',
   '--theme-notification-message-text-color': '#fafbfc',
 
+  '--theme-receive-qr-code-color': '#e9f4fe',
+
   '--theme-settings-body-background-color': '#0b1926',
   '--theme-settings-pane-background-color': '#263345',
   '--theme-settings-pane-border-color': '#263345',
   '--theme-settings-menu-box-background-color': '#263345',
   '--theme-settings-menu-box-border-color': '#263345',
   '--theme-settings-menu-item-text-color': '#cecfd1',
-  '--theme-settings-menu-item-text-color-active': '#0b1926',
+  '--theme-settings-menu-item-text-color-active': '#cecfd1',
   '--theme-settings-menu-item-text-color-enabled-hover': '#8793a1',
   '--theme-settings-menu-item-text-color-disabled': '#7a8691',
-  '--theme-settings-menu-item-background-color-active': '#edf0f3',
+  '--theme-settings-menu-item-background-color-active': '#0b1926',
   '--theme-settings-menu-item-left-border-color-active': '#8793a1',
   '--theme-settings-theme-select-title-color': '#5e6066',
 

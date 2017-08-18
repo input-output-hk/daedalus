@@ -2,8 +2,6 @@
 @import '../../themes/mixins/place-form-field-error-below-input';
 
 .walletPassword {
-  margin-bottom: -32px;
-
   .walletPasswordSwitch {
     border-top: 1px solid var(--theme-dialog-separation-border-color);
     margin-top: 30px;
@@ -16,6 +14,12 @@
       line-height: 1.38;
       margin-bottom: 10px;
     }
+
+    :global {
+      .SimpleSwitch_root {
+        margin-bottom: 0;
+      }
+    }
   }
 
   .walletPasswordFields {
@@ -25,7 +29,6 @@
     max-height: 0;
     opacity: 0;
     overflow: hidden;
-    padding-bottom: 10px;
     transition: all 400ms ease;
 
     &.show {
@@ -35,6 +38,7 @@
     }
 
     & > div {
+      margin-top: 30px;
       width: 275px;
     }
 
@@ -44,7 +48,7 @@
       color: var(--theme-instructions-text-color);
       font-family: var(--font-light);
       line-height: 1.38;
-      margin: 16px 0 20px;
+      margin-top: 16px;
       opacity: 0.5;
     }
   }

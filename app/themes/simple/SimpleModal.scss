@@ -9,9 +9,10 @@
 }
 
 .modal {
+  background: var(--theme-modal-background-color);
   display: flex;
   flex-direction: column;
-  background: var(--theme-modal-background-color);
+  max-height: 90%;
 
   :global {
     .SimpleInput_root {

@@ -4,6 +4,9 @@
   height: 100%;
   transition: background-color 500ms;
   width: 100%;
+  &.is-loading-theme {
+    background-color: transparent !important;
+  }
   &.is-connecting {
     background-color: var(--theme-connecting-background-color);
   }

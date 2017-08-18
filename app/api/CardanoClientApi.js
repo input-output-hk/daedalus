@@ -76,21 +76,6 @@ const setUserLocaleInLocalStorage = (locale) => new Promise((resolve, reject) =>
   });
 });
 
-const getUserThemeFromLocalStorage = () => new Promise((resolve, reject) => {
-  localStorage.get('theme', (error, response) => {
-    if (error) return reject(error);
-    if (!response.theme) return resolve('');
-    resolve(response.theme);
-  });
-});
-
-const setUserThemeInLocalStorage = (theme) => new Promise((resolve, reject) => {
-  localStorage.set('theme', { theme }, (error) => {
-    if (error) return reject(error);
-    resolve();
-  });
-});
-
 const unsetUserLocaleFromLocalStorage = () => new Promise((resolve) => {
   localStorage.remove('userLocale', () => {
     resolve();
@@ -137,6 +122,27 @@ const setSendLogsChoiceInLocalStorage = (sendLogs) => new Promise((resolve, reje
 
 const unsetSendLogsChoiceFromLocalStorage = () => new Promise((resolve) => {
   localStorage.remove('sendLogsChoice', () => {
+    resolve();
+  });
+});
+
+const getUserThemeFromLocalStorage = () => new Promise((resolve, reject) => {
+  localStorage.get('theme', (error, response) => {
+    if (error) return reject(error);
+    if (!response.theme) return resolve('');
+    resolve(response.theme);
+  });
+});
+
+const setUserThemeInLocalStorage = (theme) => new Promise((resolve, reject) => {
+  localStorage.set('theme', { theme }, (error) => {
+    if (error) return reject(error);
+    resolve();
+  });
+});
+
+const unsetUserThemeFromLocalStorage = () => new Promise((resolve) => {
+  localStorage.remove('theme', () => {
     resolve();
   });
 });
@@ -635,6 +641,7 @@ export default class CardanoClientApi {
     await unsetUserLocaleFromLocalStorage(); // TODO: remove after saving locale to API is restored
     await unsetTermsOfUseAcceptanceFromLocalStorage();
     await unsetSendLogsChoiceFromLocalStorage();
+    await unsetUserThemeFromLocalStorage();
     try {
       const response = await ClientApi.testReset();
       Log.debug('CardanoClientApi::testReset success: ', stringifyData(response));

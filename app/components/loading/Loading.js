@@ -50,6 +50,7 @@ export default class Loading extends Component {
     isLoadingWallets: boolean,
     syncPercentage: number,
     hasLoadedCurrentLocale: boolean,
+    hasLoadedCurrentTheme: boolean,
   };
 
   static contextTypes = {
@@ -61,10 +62,11 @@ export default class Loading extends Component {
     const {
       isConnecting, isSyncing, syncPercentage, isLoadingWallets,
       hasBeenConnected, hasBlockSyncingStarted,
-      hasLoadedCurrentLocale,
+      hasLoadedCurrentLocale, hasLoadedCurrentTheme,
     } = this.props;
     const componentStyles = classNames([
       styles.component,
+      hasLoadedCurrentTheme ? null : styles['is-loading-theme'],
       isConnecting ? styles['is-connecting'] : null,
       isSyncing ? styles['is-syncing'] : null,
     ]);
