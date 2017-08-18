@@ -87,6 +87,7 @@ Changelog
 - Fixed calculation and display of transaction assurance levels ([PR 390](https://github.com/input-output-hk/daedalus/pull/416))
 - Fixes Transaction additional info showing/hiding affects all user's wallets ([PR 411](https://github.com/input-output-hk/daedalus/pull/411))
 - Fixed missing 'used address' styling for default wallet address on wallet receive screen ([PR 422](https://github.com/input-output-hk/daedalus/pull/422))
+- Fixed failing acceptance tests ([PR 424](https://github.com/input-output-hk/daedalus/pull/424))
 
 ### Chores
 

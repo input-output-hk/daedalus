@@ -14,11 +14,12 @@ Feature: Send Money to Receiver
     When I fill out the send form with a transaction to "first" wallet:
       | amount   |
       | 0.000010 |
+    And the transaction fees are calculated
     And I submit the wallet send form
     Then I should be on the "Genesis wallet" wallet "summary" screen
     And the latest transaction should show:
-      | title                      | amount    |
-      | wallet.transaction.adaSent | -0.000010 |
+      | title                      | amountWithoutFees |
+      | wallet.transaction.adaSent | -0.000010         |
     And the balance of "first" wallet should be:
       | balance  |
       | 0.000010 |
@@ -29,11 +30,12 @@ Feature: Send Money to Receiver
     When I fill out the send form with a transaction to "first" wallet:
       | amount   |  walletPassword |
       | 0.000010 |  Secret123      |
+    And the transaction fees are calculated
     And I submit the wallet send form
     Then I should be on the "Genesis wallet" wallet "summary" screen
     And the latest transaction should show:
-      | title                      | amount    |
-      | wallet.transaction.adaSent | -0.000010 |
+      | title                      | amountWithoutFees |
+      | wallet.transaction.adaSent | -0.000010         |
     And the balance of "first" wallet should be:
       | balance  |
       | 0.000010 |
