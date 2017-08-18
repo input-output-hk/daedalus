@@ -7,7 +7,6 @@ import TransactionsStore from './TransactionsStore';
 import SidebarStore from './SidebarStore';
 import WindowStore from './WindowStore';
 import WalletBackupStore from './WalletBackupStore';
-import WalletExportStore from './WalletExportStore';
 import NetworkStatusStore from './NetworkStatusStore';
 import AdaRedemptionStore from './AdaRedemptionStore';
 import NodeUpdateStore from './NodeUpdateStore';
@@ -24,7 +23,6 @@ export const storeClasses = {
   sidebar: SidebarStore,
   window: WindowStore,
   walletBackup: WalletBackupStore,
-  walletExport: WalletExportStore,
   networkStatus: NetworkStatusStore,
   adaRedemption: AdaRedemptionStore,
   nodeUpdate: NodeUpdateStore,
@@ -43,7 +41,6 @@ export type StoresMap = {
   sidebar: SidebarStore,
   window: WindowStore,
   walletBackup: WalletBackupStore,
-  walletExport: WalletExportStore,
   networkStatus: NetworkStatusStore,
   adaRedemption: AdaRedemptionStore,
   nodeUpdate: NodeUpdateStore,
@@ -63,7 +60,6 @@ const stores = observable({
   sidebar: null,
   window: null,
   walletBackup: null,
-  walletExport: null,
   networkStatus: null,
   adaRedemption: null,
   nodeUpdate: null,
