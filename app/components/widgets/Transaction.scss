@@ -21,24 +21,6 @@ $type-box-size: 44px;
   background-image: url("../../assets/images/card-payment-ic.svg");
 }
 
-.adaIncome {
-  @extend %type-box;
-  background-image: url("../../assets/images/receive-ic.svg");
-  background-size: 44px;
-}
-
-.adaExpend {
-  @extend %type-box;
-  background-image: url("../../assets/images/send-ic.svg");
-  background-size: 44px;
-}
-
-.exchange {
-  @extend %type-box;
-  background-color: var(--theme-transactions-card-exchange-background-color);
-  background-image: url("../../assets/images/exchange-ic.svg");
-}
-
 // ========= TOGGLER =========
 
 .toggler {
@@ -166,7 +148,14 @@ $type-box-size: 44px;
 }
 
 .currencySymbol {
+  display: inline-block;
   margin-bottom: -1px;
   margin-left: 4px;
-  height: 14px;
+  & > svg {
+    width: 12px;
+    height: 12px;
+    & > g > g {
+      stroke: var(--theme-icon-transactions-ada-symbol-color);
+    }
+  }
 }

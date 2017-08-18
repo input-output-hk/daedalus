@@ -28,6 +28,9 @@
     &:hover {
       background-color: var(--theme-node-update-accept-button-background-color-hover) !important;
     }
+    &:active {
+      background-color: var(--theme-node-update-accept-button-background-color-active) !important;
+    }
   }
 
   .denyButton {
@@ -35,6 +38,9 @@
     background-color: var(--theme-node-update-deny-button-background-color);
     &:hover {
       background-color: var(--theme-node-update-deny-button-background-color-hover) !important;
+    }
+    &:active {
+      background-color: var(--theme-node-update-deny-button-background-color-active) !important;
     }
   }
 }
@@ -74,10 +80,20 @@
 }
 
 .arrow {
-  width: 16px;
-  transform: rotate(180deg);
+  & > svg {
+    width: 16px;
+    transform: rotate(180deg);
+    & polyline {
+      stroke: var(--theme-icon-node-update-notification-arrow-color);
+    }
+  }
 }
 
 .arrowCollapsed {
-  width: 16px;
+  & > svg {
+    width: 16px;
+    & polyline {
+      stroke: var(--theme-icon-node-update-notification-arrow-color);
+    }
+  }
 }

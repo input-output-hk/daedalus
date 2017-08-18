@@ -26,18 +26,31 @@
   line-height: 1.0;
   color: var(--theme-bordered-box-text-color);
   margin-bottom: 11px;
-  img {
+  & > .adaSymbolBig {
+    display: inline-block;
     margin-left: 10px;
-    width: 25px;
-    height: 27.5px;
+    & > svg {
+      width: 25px;
+      height: 27.5px;
+      & > g > g {
+        stroke: var(--theme-icon-ada-summary-wallet-amount-symbol-color);
+      }
+    }
   }
 }
 
 .pendingConfirmation {
   @extend %smallText;
-  img {
+  & > .adaSymbolSmallest {
+    display: inline-block;
     margin-left: 1px;
-    height: 10px;
+    & > svg {
+      height: 10px;
+      width: 9px;
+      & > g > g {
+        stroke: var(--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color);
+      }
+    }
   }
 }
 

@@ -18,7 +18,12 @@
 }
 
 .icon {
-  height: 48px;
+  & > svg {
+    height: 48px;
+    & path {
+      fill: var(--theme-icon-add-wallet-dialog-big-button-color);
+    }
+  }
 }
 
 .label {

@@ -15,10 +15,21 @@
   top: 0;
 
   .icon {
-    height: 110px;
     margin-bottom: 36px;
     object-fit: contain;
-    width: 110px;
+    & > svg {
+      height: 110px;
+      width: 110px;
+      & path {
+        fill: var(--theme-icon-ada-redemption-attention-color);
+      }
+      & path:nth-child(1) {
+        opacity: 0.2;
+      }
+      & path:nth-child(2) {
+        opacity: 0.6;
+      }
+    }
   }
 
   h1, p, button {

@@ -22,9 +22,16 @@
     background-color: var(--theme-sidebar-menu-add-button-background-color-hover);
   }
 
-  img {
-    margin: 0 20px;
+  .icon {
     width: 25px;
+    line-height: 12px;
+    margin: 0 20px;
+    & > svg {
+      width: 25px;
+      & path {
+        fill: var(--theme-icon-add-wallet-from-sidebar-color);
+      }
+    }
   }
 
   span {

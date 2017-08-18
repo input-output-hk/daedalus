@@ -19,10 +19,12 @@
 
 .icon {
   display: inline-block;
-  height: 44px;
   margin-right: 10px;
   vertical-align: top;
-  width: 44px;
+  & > svg {
+    height: 44px;
+    width: 44px;
+  }
 }
 
 .message {

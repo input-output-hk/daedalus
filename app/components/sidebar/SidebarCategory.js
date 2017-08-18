@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import SvgInline  from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './SidebarCategory.scss';
@@ -23,7 +24,7 @@ export default class SidebarCategory extends Component {
     ]);
     return (
       <button className={componentStyles} onClick={onClick}>
-        <img className={styles.icon} src={icon} role="presentation" />
+        <SvgInline svg={icon} className={styles.icon} />
       </button>
     );
   }

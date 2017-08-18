@@ -11,8 +11,15 @@
   flex-direction: column;
 
   .icon {
-    width: 110px;
     margin-bottom: 36px;
+    line-height: 0;
+    & > svg {
+      width: 110px;
+      height: 110px;
+      & path {
+        fill: var(--theme-icon-ada-redemption-success-color);
+      }
+    }
   }
 
   .text {

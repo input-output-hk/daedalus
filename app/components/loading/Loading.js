@@ -1,13 +1,14 @@
 // @flow
 import React, { Component } from 'react';
+import SvgInline  from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import LoadingSpinner from '../widgets/LoadingSpinner';
-import cardanoLogo from '../../assets/images/cardano-logo.svg';
-import daedalusLogoWhite from '../../assets/images/daedalus-logo-loading-white.svg';
-import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.svg';
-import cardanoLogoWhite from '../../assets/images/cardano-logo-white.svg';
+import cardanoLogo from '../../assets/images/cardano-logo.svg?inline-svg';
+import daedalusLogoWhite from '../../assets/images/daedalus-logo-loading-white.svg?inline-svg';
+import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.svg?inline-svg';
+import cardanoLogoWhite from '../../assets/images/cardano-logo-white.svg?inline-svg';
 import styles from './Loading.scss';
 
 const messages = defineMessages({
@@ -67,14 +68,23 @@ export default class Loading extends Component {
       isConnecting ? styles['is-connecting'] : null,
       isSyncing ? styles['is-syncing'] : null,
     ]);
+    const daedalusLogoStyles = classNames([
+      styles.daedalusLogo,
+      isConnecting ? styles.connectingLogo : styles.syncingLogo,
+    ]);
+    const cardanoLogoStyles = classNames([
+      styles.cardanoLogo,
+      isConnecting ? styles.connectingLogo : styles.syncingLogo,
+    ]);
+
     const daedalusLoadingLogo = isConnecting ? daedalusLogoWhite : daedalusLogo;
     const cardanoLoadingLogo = isConnecting ? cardanoLogoWhite : cardanoLogo;
     const connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
 
     return (
       <div className={componentStyles}>
-        <img className={styles.cardanoLogo} src={cardanoLoadingLogo} role="presentation" />
-        <img className={styles.daedalusLogo} src={daedalusLoadingLogo} role="presentation" />
+        <SvgInline svg={cardanoLoadingLogo} className={cardanoLogoStyles} />
+        <SvgInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
         {hasLoadedCurrentLocale && (
           <div>
             {isConnecting && !hasBlockSyncingStarted && (

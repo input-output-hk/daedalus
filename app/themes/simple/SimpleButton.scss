@@ -16,9 +16,8 @@
 :global {
   .primary {
     &[disabled] {
-      background: var(--theme-button-primary-background-color);
+      background: var(--theme-button-primary-background-color-disabled);
       color: var(--theme-button-primary-text-color);
-      opacity: 0.3;
     }
     &:not([disabled]) {
       color: var(--theme-button-primary-text-color);

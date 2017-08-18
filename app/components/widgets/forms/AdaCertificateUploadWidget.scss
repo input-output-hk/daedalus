@@ -61,9 +61,17 @@
 }
 
 .certificateIcon {
-  width: 54px;
-  height: 74px;
   margin: auto;
+  & > svg {
+    width: 54px;
+    height: 74px;
+    & > g > path {
+      fill: var(--theme-icon-ada-redemption-certificate-color);
+    }
+    & > g > g {
+      stroke: var(--theme-icon-ada-redemption-certificate-color);
+    }
+  }
 }
 
 .removeFileButton {
@@ -73,8 +81,13 @@
   right: 10px;
 
   .closeCrossIcon {
-    height: 11px;
-    width: 11px;
+    & > svg {
+      height: 11px;
+      width: 11px;
+      & polygon {
+        fill: var(--theme-icon-close-button-color);
+      }
+    }
   }
 }
 

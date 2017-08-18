@@ -7,7 +7,7 @@ import config from '../../config';
 import WalletReceive from '../../components/wallet/WalletReceive';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import NotificationMessage from '../../components/widgets/NotificationMessage';
-import successIcon from '../../assets/images/success-small.svg';
+import successIcon from '../../assets/images/success-small.svg?inline-svg';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 const messages = defineMessages({

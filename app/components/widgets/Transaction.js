@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
+import SvgInline  from 'react-svg-inline';
 import classNames from 'classnames';
 import styles from './Transaction.scss';
-import adaSymbol from '../../assets/images/ada-symbol.svg';
+import TransactionTypeIcon from './TransactionTypeIcon';
+import adaSymbol from '../../assets/images/ada-symbol.svg?inline-svg';
 import WalletTransaction from '../../domain/WalletTransaction';
 import { assuranceLevels } from '../../config/transactionAssuranceConfig';
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
@@ -131,6 +133,9 @@ export default class Transaction extends Component {
         {/* ==== Clickable Header -> toggles details ==== */}
         <div className={styles.toggler} onClick={this.toggleDetails.bind(this)} role="presentation" aria-hidden>
           <div className={styles[data.type]} />
+
+          <TransactionTypeIcon iconType={data.type} />
+
           <div className={styles.togglerContent}>
             <div className={styles.header}>
               <div className={styles.title}>
@@ -140,7 +145,7 @@ export default class Transaction extends Component {
                 }
               </div>
               <div className={styles.amount}>{data.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-                <img className={styles.currencySymbol} src={adaSymbol} role="presentation" />
+                <SvgInline svg={adaSymbol} className={styles.currencySymbol} />
               </div>
             </div>
 

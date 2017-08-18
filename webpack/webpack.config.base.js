@@ -34,6 +34,10 @@ module.exports = validate({
     {
       test: /\.(?:png|jpg|svg|otf|ttf)$/,
       loader: 'url-loader',
+    },
+    {
+      test: /\.svg\?inline-svg$/,
+      loader: 'raw-loader'
     }]
   },
 

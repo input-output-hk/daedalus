@@ -1,12 +1,13 @@
 // @flow
 import React, { Component } from 'react';
+import SvgInline  from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
 import Button from 'react-polymorph/lib/components/Button';
 import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './NodeUpdateNotification.scss';
-import arrow from '../../assets/images/arrow.svg';
+import arrowIcon from '../../assets/images/arrow.svg?inline-svg';
 
 const messages = defineMessages({
   acceptLabel: {
@@ -70,7 +71,7 @@ export default class NodeUpdateNotification extends Component {
             onClick={onToggleExpanded}
             className={styles.toggleButton}
           >
-            <img className={arrowClasses} src={arrow} role="presentation" />
+            <SvgInline svg={arrowIcon} className={arrowClasses} />
           </button>
         </div>
         {isExpanded && (

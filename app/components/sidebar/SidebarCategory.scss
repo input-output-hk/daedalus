@@ -27,7 +27,17 @@
 .icon {
   flex-shrink: 0;
   margin: 0 30px;
-  width: 24px;
+  & > svg {
+    width: 24px;
+
+    & > g > path {
+      fill: var(--theme-icon-sidebar-color);
+    }
+    // ada.svg icon need stroke attribute
+    & > g > g {
+      stroke: var(--theme-icon-sidebar-color);
+    }
+  }
 }
 
 .label {

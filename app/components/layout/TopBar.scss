@@ -45,7 +45,13 @@
     width: 50px;
 
     .sidebarIcon {
-      height: 17px;
+      & > svg {
+        height: 17px;
+      }
+
+      & path:nth-child(2) {
+        fill: var(--theme-icon-toggle-menu-color);
+      }
     }
   }
 

@@ -42,5 +42,10 @@
   opacity: 0.3;
   position: absolute;
   right: 24px;
-  width: 24px;
+  & > svg {
+    width: 24px;
+    & path {
+      fill: var(--theme-icon-file-upload-color);
+    }
+  }
 }

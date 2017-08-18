@@ -3,8 +3,11 @@
   top: 4px;
   left: 0;
   cursor: pointer;
-  img {
+  svg {
     width: 20px;
     height: 16px;
+    & path {
+      fill: var(--theme-icon-back-button-color);
+    }
   }
 }

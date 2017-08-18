@@ -4,16 +4,11 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './WalletNavigation.scss';
 import WalletNavButton from './WalletNavButton';
-import summaryIcon from '../../../assets/images/wallet-nav/summary-ic-light.svg';
-import summaryIconActive from '../../../assets/images/wallet-nav/summary-ic-dark.svg';
-import sendIcon from '../../../assets/images/wallet-nav/send-ic-light.svg';
-import sendIconActive from '../../../assets/images/wallet-nav/send-ic-dark.svg';
-import receiveIcon from '../../../assets/images/wallet-nav/receive-ic-light.svg';
-import receiveIconActive from '../../../assets/images/wallet-nav/receive-ic-dark.svg';
-import transactionsIcon from '../../../assets/images/wallet-nav/transactions-ic-light.svg';
-import transactionsIconActive from '../../../assets/images/wallet-nav/transactions-ic-dark.svg';
-import settingsIcon from '../../../assets/images/wallet-nav/settings-ic-light.svg';
-import settingsIconActive from '../../../assets/images/wallet-nav/settings-ic-dark.svg';
+import summaryIcon from '../../../assets/images/wallet-nav/summary-ic.svg?inline-svg';
+import sendIcon from '../../../assets/images/wallet-nav/send-ic.svg?inline-svg';
+import receiveIcon from '../../../assets/images/wallet-nav/receive-ic.svg?inline-svg';
+import transactionsIcon from '../../../assets/images/wallet-nav/transactions-ic.svg?inline-svg';
+import settingsIcon from '../../../assets/images/wallet-nav/wallet-settings-2-ic.svg?inline-svg';
 
 const messages = defineMessages({
   summary: {
@@ -65,8 +60,7 @@ export default class WalletNavigation extends Component {
           <WalletNavButton
             className="summary"
             label={intl.formatMessage(messages.summary)}
-            normalIcon={summaryIcon}
-            activeIcon={summaryIconActive}
+            icon={summaryIcon}
             isActive={isActiveNavItem('summary')}
             onClick={() => onNavItemClick('summary')}
           />
@@ -76,8 +70,7 @@ export default class WalletNavigation extends Component {
           <WalletNavButton
             className="send"
             label={intl.formatMessage(messages.send)}
-            normalIcon={sendIcon}
-            activeIcon={sendIconActive}
+            icon={sendIcon}
             isActive={isActiveNavItem('send')}
             onClick={() => onNavItemClick('send')}
           />
@@ -87,8 +80,7 @@ export default class WalletNavigation extends Component {
           <WalletNavButton
             className="receive"
             label={intl.formatMessage(messages.receive)}
-            normalIcon={receiveIcon}
-            activeIcon={receiveIconActive}
+            icon={receiveIcon}
             isActive={isActiveNavItem('receive')}
             onClick={() => onNavItemClick('receive')}
           />
@@ -97,8 +89,7 @@ export default class WalletNavigation extends Component {
         <div className={styles.navItem}>
           <WalletNavButton
             label={intl.formatMessage(messages.transactions)}
-            normalIcon={transactionsIcon}
-            activeIcon={transactionsIconActive}
+            icon={transactionsIcon}
             isActive={isActiveNavItem('transactions')}
             onClick={() => onNavItemClick('transactions')}
           />
@@ -107,8 +98,7 @@ export default class WalletNavigation extends Component {
         <div className={styles.navItem}>
           <WalletNavButton
             label={intl.formatMessage(messages.settings)}
-            normalIcon={settingsIcon}
-            activeIcon={settingsIconActive}
+            icon={settingsIcon}
             isActive={isActiveNavItem('settings')}
             onClick={() => onNavItemClick('settings')}
           />
