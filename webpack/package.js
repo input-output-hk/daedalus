@@ -43,11 +43,13 @@ const DEFAULT_OPTS = {
   name: appName,
   asar: shouldUseAsar,
   ignore: [
-    '^/test($|/)',
+    '^/features($|/)',
+    '^/stories($|/)',
+    '^/flow($|/)',
+    '^/dll($|/)',
     '^/release($|/)',
     '^/electron/main.development.js',
     '^/installers',
-    '^/cardano-sl'
   ]
   .concat(devDeps)
   .concat(depsExternal)
