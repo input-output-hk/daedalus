@@ -4,7 +4,7 @@
   "api.errors.ApiMethodNotYetImplementedError": "このAPIは未実装です。",
   "api.errors.GenericApiError": "エラーが発生しました。しばらくしてからもう一度お試しください。",
   "api.errors.IncorrectPasswordError": "無効なウォレットパスワード",
-  "api.errors.NotAllowedToSendMoneyToRedeemAddressError": "!!!It is not allowed to send money to Ada redemption address.",
+  "api.errors.NotAllowedToSendMoneyToRedeemAddressError": "Ada還元アドレスに送金することはできません。",
   "api.errors.NotEnoughMoneyToSendError": "トランザクションを行うための金額が不足しております。",
   "api.errors.RedeemAdaError": "ADAを正常に還元できませんでした。",
   "api.errors.WalletAlreadyRestoredError": "この復元フレーズは使用済みです。",
