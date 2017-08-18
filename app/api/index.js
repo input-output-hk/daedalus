@@ -132,7 +132,7 @@ export type TransactionFeeRequest = {
 
 export type TransactionFeeResponse = BigNumber;
 
-export type ExportWalletToFileRequest = { walletId: string };
+export type ExportWalletToFileRequest = { filePath: string };
 
 export type ExportWalletToFileResponse = {};
 

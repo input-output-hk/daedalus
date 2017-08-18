@@ -603,7 +603,7 @@ export default class CardanoClientApi {
   async exportWalletToFile(request: ExportWalletToFileRequest): ExportWalletToFileResponse {
     Log.debug('CardanoClientApi::exportWalletToFile called');
     try {
-      const response = await ClientApi.exportBackupJSON(tlsConfig, request.walletId);
+      const response = await ClientApi.exportBackupJSON(tlsConfig, request.filePath);
       Log.debug('CardanoClientApi::exportWalletToFile success: ', stringifyData(response));
       return response;
     } catch (error) {
