@@ -20,7 +20,7 @@
 .icon {
   & > svg {
     height: 48px;
-    & path {
+    path {
       fill: var(--theme-icon-add-wallet-dialog-big-button-color);
     }
   }

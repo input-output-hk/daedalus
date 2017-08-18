@@ -37,7 +37,7 @@ module.exports = validate({
     },
     {
       test: /\.svg\?inline-svg$/,
-      loader: 'raw-loader'
+      loader: 'raw-loader',
     }]
   },
 

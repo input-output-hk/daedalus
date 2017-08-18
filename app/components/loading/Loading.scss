@@ -31,9 +31,6 @@
     position: absolute;
     top: calc(50% - 135px/2 - 115px);
     width: 86px;
-    & path {
-      fill: red;
-    }
   }
 }
 
@@ -53,7 +50,7 @@
   }
 }
 
-.syncingLogo > svg path{
+.syncingLogo > svg path {
   fill: var(--theme-icon-syncing-logo-color);
 }
 

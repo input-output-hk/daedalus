@@ -1,9 +1,9 @@
 .transactionTypeIconWrapper {
-  width: 44px;
-  height: 44px;
   border-radius: 10px;
+  height: 44px;
   opacity: 0.8;
   padding: 12.5px 10.5px;
+  width: 44px;
   &.adaExpend {
     background: var(--theme-transactions-icon-type-expend-background-color);
   }
@@ -21,7 +21,7 @@
   & > svg {
     height: 19px;
     width: 23px;
-    & path {
+    path {
       fill: var(--theme-icon-transaction-type-color);
     }
   }

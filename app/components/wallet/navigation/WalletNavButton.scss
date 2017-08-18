@@ -42,13 +42,13 @@
 // ========= STATES =========
 
 .activeIcon {
-  & path {
+  path {
     fill: var(--theme-icon-nav-color-active);
   }
 }
 
 .normalIcon {
-  & path {
+  path {
     fill: var(--theme-icon-nav-color);
   }
 }

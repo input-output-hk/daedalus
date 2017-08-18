@@ -83,7 +83,7 @@
   & > svg {
     width: 16px;
     transform: rotate(180deg);
-    & polyline {
+    polyline {
       stroke: var(--theme-icon-node-update-notification-arrow-color);
     }
   }
@@ -92,7 +92,7 @@
 .arrowCollapsed {
   & > svg {
     width: 16px;
-    & polyline {
+    polyline {
       stroke: var(--theme-icon-node-update-notification-arrow-color);
     }
   }
