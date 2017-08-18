@@ -32,6 +32,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Not enough money to make this transaction.',
     description: '"Not enough money to make this transaction." error message.'
   },
+  notAllowedToSendMoneyToRedeemAddressError: {
+    id: 'api.errors.NotAllowedToSendMoneyToRedeemAddressError',
+    defaultMessage: '!!!It is not allowed to send money to Ada redemption address.',
+    description: '"It is not allowed to send money to Ada redemption address." error message.'
+  },
   incorrectWalletPasswordError: {
     id: 'api.errors.IncorrectPasswordError',
     defaultMessage: '!!!Incorrect wallet password.',
@@ -89,6 +94,15 @@ export class NotEnoughMoneyToSendError extends LocalizableError {
     super({
       id: messages.notEnoughMoneyToSendError.id,
       defaultMessage: messages.notEnoughMoneyToSendError.defaultMessage,
+    });
+  }
+}
+
+export class NotAllowedToSendMoneyToRedeemAddressError extends LocalizableError {
+  constructor() {
+    super({
+      id: messages.notAllowedToSendMoneyToRedeemAddressError.id,
+      defaultMessage: messages.notAllowedToSendMoneyToRedeemAddressError.defaultMessage,
     });
   }
 }
