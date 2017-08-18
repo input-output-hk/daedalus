@@ -86,6 +86,12 @@ Changelog
 - Fixed the issue of dialogs being closable while wallet import/creation/restoring is happening ([PR 393](https://github.com/input-output-hk/daedalus/pull/414))
 - Fixed calculation and display of transaction assurance levels ([PR 390](https://github.com/input-output-hk/daedalus/pull/416))
 - Fixes Transaction additional info showing/hiding affects all user's wallets ([PR 411](https://github.com/input-output-hk/daedalus/pull/411))
+- Fixed promise handling for unmounted wallet send form [PR 412](https://github.com/input-output-hk/daedalus/pull/412)
+- Fixes Transaction toggle issue on active wallet change ([PR 421](https://github.com/input-output-hk/daedalus/pull/421))
+- Fixed missing 'used address' styling for default wallet address on wallet receive screen ([PR 422](https://github.com/input-output-hk/daedalus/pull/422))
+- Terms of service for the mainnet ([PR 425](https://github.com/input-output-hk/daedalus/pull/425))
+- Fixed failing acceptance tests ([PR 424](https://github.com/input-output-hk/daedalus/pull/424))
+- Show correct error message on sending money to Ada redemption address ([PR 423](https://github.com/input-output-hk/daedalus/pull/423))
 
 ### Chores
 

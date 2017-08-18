@@ -68,6 +68,7 @@ export default class WalletReceive extends Component {
 
   props: {
     walletAddress: string,
+    isWalletAddressUsed: boolean,
     walletAddresses: Array<WalletAddress>,
     onGenerateAddress: Function,
     onCopyAddress: Function,
@@ -136,10 +137,15 @@ export default class WalletReceive extends Component {
       walletAddress, walletAddresses,
       onCopyAddress, isSidebarExpanded,
       walletHasPassword, isSubmitting,
-      error,
+      error, isWalletAddressUsed,
     } = this.props;
     const { intl } = this.context;
     const { showUsed } = this.state;
+
+    const walletAddressClasses = classnames([
+      styles.hash,
+      isWalletAddressUsed ? styles.usedHash : null,
+    ]);
 
     const generateAddressWrapperClasses = classnames([
       styles.generateAddressWrapper,
@@ -188,7 +194,7 @@ export default class WalletReceive extends Component {
             </div>
 
             <div className={styles.instructions}>
-              <div className={styles.hash}>
+              <div className={walletAddressClasses}>
                 {walletAddress}
                 <CopyToClipboard
                   text={walletAddress}
