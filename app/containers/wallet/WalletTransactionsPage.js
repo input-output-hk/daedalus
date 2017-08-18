@@ -77,6 +77,7 @@ export default class WalletTransactionsPage extends Component {
           hasMoreToLoad={totalAvailable > searchLimit}
           onLoadMore={actions.transactions.loadMoreTransactions.trigger}
           assuranceMode={activeWallet.assuranceMode}
+          walletId={activeWallet.id}
         />
       );
     } else if (wasSearched && !hasAny) {

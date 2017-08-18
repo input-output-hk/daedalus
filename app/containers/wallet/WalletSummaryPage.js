@@ -47,11 +47,13 @@ export default class WalletSummaryPage extends Component {
     if (recentTransactionsRequest.isExecutingFirstTime || hasAny) {
       walletTransactions = (
         <WalletTransactionsList
+          key={`WalletTransactionsList_${wallet.id}`}
           transactions={recent}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           hasMoreToLoad={false}
           onLoadMore={() => {}}
           assuranceMode={wallet.assuranceMode}
+          walletId={wallet.id}
         />
       );
     } else if (!hasAny) {

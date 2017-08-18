@@ -67,6 +67,7 @@ export default class WalletReceivePage extends Component {
     if (!wallet) throw new Error('Active wallet required for WalletReceivePage.');
 
     const walletAddress = addresses.active ? addresses.active.id : '';
+    const isWalletAddressUsed = addresses.active ? addresses.active.isUsed : false;
     const walletAddresses = addresses.all.reverse();
 
     const notification = {
@@ -85,6 +86,7 @@ export default class WalletReceivePage extends Component {
 
         <WalletReceive
           walletAddress={walletAddress}
+          isWalletAddressUsed={isWalletAddressUsed}
           walletAddresses={walletAddresses}
           onGenerateAddress={this.handleGenerateAddress}
           onCopyAddress={(address) => {

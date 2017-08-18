@@ -113,6 +113,19 @@ export default class WalletSendForm extends Component {
     transactionFee: new BigNumber(0),
   };
 
+  // We need to track the mounted state in order to avoid calling
+  // setState promise handling code after the component was already unmounted:
+  // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
+  _isMounted = false;
+
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
+
   adaToLovelaces = (adaAmount: string) => (
     adaAmount.replace('.', '').replace(/,/g, '').replace(/^0+/, '')
   );
@@ -262,9 +275,10 @@ export default class WalletSendForm extends Component {
     this.setState({ transactionFee: new BigNumber(0) });
     const cleanedAmount = amountValue.replace(/,/g, '');
     const amount = new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
+
     this.props.calculateTransactionFee(receiver, amount)
       .then((fee: BigNumber) => (
-        this.setState({ transactionFee: fee })
+        this._isMounted && this.setState({ transactionFee: fee })
       ))
       .catch((error: Error) => {
         console.log(error);

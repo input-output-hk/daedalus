@@ -75,7 +75,7 @@ export default class Dialog extends Component {
             </div>
           }
 
-          {closeButton}
+          {closeButton ? React.cloneElement(closeButton, { onClose: onClose }) : null}
           {backButton}
 
         </div>
