@@ -74,6 +74,7 @@ export default {
   '--theme-dialog-title-color': '#5e6066',
   '--theme-dialog-separation-border-color': '#dfe4e8',
   '--theme-dialog-input-background-color': '#fafbfc',
+  '--theme-dialog-input-border-color': '#c6cdd6',
   '--theme-dialog-input-focus-border-color': '#5e6066',
 
   '--theme-input-border-color': '#c6cdd6',

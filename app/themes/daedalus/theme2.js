@@ -182,7 +182,7 @@ export default {
   '--theme-transactions-icon-type-exchange-background-color': '#10aca4',
 
   '--theme-uploader-text-color': '#e9f4fe',
-  '--theme-uploader-border-color': '#aeafb2',
+  '--theme-uploader-border-color': '#5e6066',
 
   '--theme-icon-nav-color': '#9ba6b3',
   '--theme-icon-nav-color-active': '#e9f4fe',

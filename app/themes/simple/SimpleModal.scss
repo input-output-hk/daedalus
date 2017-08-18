@@ -19,7 +19,9 @@
       & > .SimpleInput_input {
         color: var(--theme-dialog-input-text-color);
         background-color: var(--theme-dialog-input-background-color);
-        border: 1px solid var(--theme-dialog-input-border-color);
+        &:not(.SimpleInput_errored) {
+          border: 1px solid var(--theme-dialog-input-border-color);
+        }
         &:focus {
           border: 1px solid var(--theme-dialog-input-focus-border-color);
         }
