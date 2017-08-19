@@ -86,6 +86,7 @@ export default {
   '--theme-input-remove-color-dark': '#d34452',
   '--theme-input-remove-color-light': '#ea4c5b',
   '--theme-input-remove-color-lighter': '#ec5d6b',
+  '--theme-input-remove-color-lightest': '#fac8ce',
   '--theme-input-background-color': '#fafbfc',
   '--theme-input-disabled-background-color': '#cfcfcf',
   '--theme-input-focus-border-color': '#5e6066',
@@ -220,7 +221,8 @@ export default {
 
   '--theme-loading-background-color': '#ebeff2',
 
-  '--theme-mnemonic-background-color': 'rgba(68, 91, 124, 0.05)',
+  '--theme-mnemonic-background-color': '#e6e9ee',
+  '--theme-mnemonic-background-color-hover': '#eaecf1',
 
   '--theme-send-logs-text-color': '#5e6066',
 

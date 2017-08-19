@@ -20,8 +20,8 @@
       color: var(--theme-button-primary-text-color);
     }
     &:not([disabled]) {
-      color: var(--theme-button-primary-text-color);
       background: var(--theme-button-primary-background-color);
+      color: var(--theme-button-primary-text-color);
       &:hover {
         background: var(--theme-button-primary-background-color-hover);
       }
@@ -32,20 +32,20 @@
   }
 
   .flat {
+    &[disabled] {
+      color: var(--theme-button-flat-background-color-hover);
+      opacity: 0.3;
+    }
     &:not([disabled]) {
       background-color: var(--theme-button-flat-background-color);
       color: var(--theme-button-flat-text-color);
       &:hover {
-        color: var(--theme-button-flat-text-color);
         background-color: var(--theme-button-flat-background-color-hover);
+        color: var(--theme-button-flat-text-color);
       }
       &:active {
         background-color: var(--theme-button-flat-background-color-active);
       }
-    }
-    &[disabled] {
-      color: var(--theme-button-flat-background-color-hover);
-      opacity: 0.3;
     }
   }
 }

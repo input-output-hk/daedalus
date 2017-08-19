@@ -25,13 +25,19 @@
   }
 
   .deleteButton {
-    background: var(--theme-input-remove-color-light) !important;
-    &:hover {
-      background: var(--theme-input-remove-color-lighter) !important;
+    &[disabled] {
+      background: var(--theme-input-remove-color-lightest);
+      color: var(--theme-modal-background-color);
     }
-    &:active {
-      background: var(--theme-input-remove-color-dark) !important;
+    &:not([disabled]) {
+      background: var(--theme-input-remove-color-light);
+      color: var(--theme-modal-background-color);
+      &:hover {
+        background: var(--theme-input-remove-color-lighter);
+      }
+      &:active {
+        background: var(--theme-input-remove-color-dark);
+      }
     }
   }
 }
-
