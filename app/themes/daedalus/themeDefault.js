@@ -220,7 +220,7 @@ export default {
 
   '--theme-loading-background-color': '#ebeff2',
 
-  '--theme-mnemonic-background-color': 'rgba(68, 91, 124, 0.05);',
+  '--theme-mnemonic-background-color': 'rgba(68, 91, 124, 0.05)',
 
   '--theme-send-logs-text-color': '#5e6066',
 
