@@ -3,6 +3,7 @@ import localStorage from 'electron-json-storage';
 import ClientApi from 'daedalus-client-api';
 import type {
   ApiTransaction,
+  ApiTransactionFee,
   // ApiAccount,
   ApiAccounts,
   ApiAddress,
@@ -255,6 +256,21 @@ export default class CardanoClientApi {
       if (error.message.includes('Passphrase doesn\'t match')) {
         throw new IncorrectWalletPasswordError();
       }
+      throw new GenericApiError();
+    }
+  }
+
+  async calculateTransactionFee(request: TransactionFeeRequest) {
+    Log.debug('CardanoClientApi::calculateTransactionFee called');
+    const { sender, receiver, amount } = request;
+    try {
+      const response: ApiTransactionFee = await ClientApi.txFee(
+        tlsConfig, sender, receiver, amount
+      );
+      Log.debug('CardanoClientApi::calculateTransactionFee success: ', stringifyData(response));
+      return _createTransactionFeeFromServerData(response);
+    } catch (error) {
+      Log.error('CardanoClientApi::calculateTransactionFee error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
@@ -583,21 +599,6 @@ export default class CardanoClientApi {
     }
   }
 
-  async calculateTransactionFee(request: TransactionFeeRequest): Promise<TransactionFeeResponse> {
-    Log.debug('CardanoClientApi::TransactionFee called', stringifyData(request));
-    try {
-      // TODO: use real endpoint here to fetch fees (don't forget to cast bignumber to string!)
-      const fee = await new Promise((resolve) => {
-        setTimeout(() => resolve(new BigNumber(1).dividedBy(LOVELACES_PER_ADA)), 1000);
-      });
-      Log.debug('CardanoClientApi::TransactionFee success: ', fee);
-      return fee;
-    } catch (error) {
-      Log.error('CardanoClientApi::TransactionFee error: ' + stringifyError(error));
-      throw new GenericApiError();
-    }
-  }
-
   async testReset() {
     Log.debug('CardanoClientApi::testReset called');
     await unsetUserLocaleFromLocalStorage(); // TODO: remove after saving locale to API is restored
@@ -678,5 +679,12 @@ const _createTransactionFromServerData = action(
         to: data.ctOutputAddrs,
       },
     });
+  }
+);
+
+const _createTransactionFeeFromServerData = action(
+  'CardanoClientApi::_createTransactionFeeFromServerData', (data: ApiTransactionFee) => {
+    const coins = data.getCCoin;
+    return new BigNumber(coins).dividedBy(LOVELACES_PER_ADA);
   }
 );

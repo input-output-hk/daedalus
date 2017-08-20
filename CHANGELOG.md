@@ -40,6 +40,7 @@ Changelog
 - Opt-in mode for sending logs to the remote server
 - Added support for Cmd+H hotkey shortcut for hiding application window on OSX ([PR 404](https://github.com/input-output-hk/daedalus/pull/404))
 - Setup environment variable for testnet/mainnet mode ([PR 400](https://github.com/input-output-hk/daedalus/pull/400))
+- Integrates transaction fees API endpoint ([PR 427](https://github.com/input-output-hk/daedalus/pull/427))
 
 ### Fixes
 
