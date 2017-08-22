@@ -3,10 +3,6 @@
 
 .component {
   :global {
-    .dialog_body {
-      overflow-y: hidden;
-    }
-
     .Dialog_title {
       margin-bottom: 20px;
     }
@@ -15,6 +11,7 @@
 
 .introduction {
   font-family: var(--font-light);
+  overflow: hidden;
   text-align: center;
 }
 
