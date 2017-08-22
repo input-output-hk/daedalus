@@ -131,6 +131,7 @@
     "moment": "2.18.1",
     "numeral": "2.0.6",
     "pdf.js-extract": "0.0.5",
+    "pdfmake": "0.1.29",
     "postcss": "5.2.16",
     "qrcode.react": "0.6.1",
     "random-words": "0.0.1",
