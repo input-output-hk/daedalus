@@ -149,7 +149,6 @@
     "react-svg-inline": "2.0.0",
     "route-parser": "0.0.5",
     "source-map-support": "0.4.14",
-    "tail": "1.2.1",
     "validator": "6.3.0",
     "wallet-address-validator": "0.1.0",
     "winston": "2.3.1",

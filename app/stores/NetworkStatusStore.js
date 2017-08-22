@@ -1,8 +1,8 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
-import Log from 'electron-log';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
+import { Logger } from '../lib/logger';
 import { ROUTES } from '../Routes';
 import type { GetSyncProgressResponse } from '../api';
 
@@ -76,10 +76,10 @@ export default class NetworkStatusStore extends Store {
       const relativeNetwork = this.networkDifficulty - this._localDifficultyStartedWith;
       // In case node is in sync after first local difficulty messages
       // local and network difficulty will be the same (0)
-      Log.debug('Network difficulty: ', this.networkDifficulty);
-      Log.debug('Local difficulty: ', this.localDifficulty);
-      Log.debug('Relative local difficulty: ', relativeLocal);
-      Log.debug('Relative network difficulty: ', relativeNetwork);
+      Logger.debug('Network difficulty: ' + this.networkDifficulty);
+      Logger.debug('Local difficulty: ' + this.localDifficulty);
+      Logger.debug('Relative local difficulty: ' + relativeLocal);
+      Logger.debug('Relative network difficulty: ' + relativeNetwork);
 
       if (relativeLocal >= relativeNetwork) return 100;
       return relativeLocal / relativeNetwork * 100;
@@ -93,10 +93,10 @@ export default class NetworkStatusStore extends Store {
       const relativeNetwork = this.networkDifficulty - this._localDifficultyStartedWith;
       // In case node is in sync after first local difficulty messages
       // local and network difficulty will be the same (0)
-      Log.debug('Network difficulty: ', this.networkDifficulty);
-      Log.debug('Local difficulty: ', this.localDifficulty);
-      Log.debug('Relative local difficulty: ', relativeLocal);
-      Log.debug('Relative network difficulty: ', relativeNetwork);
+      Logger.debug('Network difficulty: ' + this.networkDifficulty);
+      Logger.debug('Local difficulty: ' + this.localDifficulty);
+      Logger.debug('Relative local difficulty: ' + relativeLocal);
+      Logger.debug('Relative network difficulty: ' + relativeNetwork);
 
       if (relativeLocal >= relativeNetwork) return 0;
       return relativeNetwork - relativeLocal;
@@ -132,7 +132,7 @@ export default class NetworkStatusStore extends Store {
         this._localDifficultyStartedWith = initialDifficulty.localDifficulty;
         this.localDifficulty = initialDifficulty.localDifficulty;
         this.networkDifficulty = initialDifficulty.networkDifficulty;
-        Log.debug('Initial difficulty: ', initialDifficulty);
+        Logger.debug('Initial difficulty: ' + initialDifficulty);
       });
     }
   };
@@ -140,17 +140,17 @@ export default class NetworkStatusStore extends Store {
   _listenToServerStatusNotifications() {
     this.api.notify(action('NetworkStatusStore::_listenToServerStatusNotifications', (message) => {
       if (message === 'ConnectionClosed') {
-        Log.debug('ServerStatusNotification: ConnectionClosed');
+        Logger.debug('ServerStatusNotification: ConnectionClosed');
         this.isConnected = false;
         return;
       }
       switch (message.tag) {
         case 'ConnectionOpened':
-          Log.debug('ServerStatusNotification: ConnectionOpened');
+          Logger.debug('ServerStatusNotification: ConnectionOpened');
           this._setInitialDifficulty();
           this.isConnected = true;
           if (this._startupStage === STARTUP_STAGES.CONNECTING) {
-            Log.info(
+            Logger.info(
               `========== Connected after ${this._getStartupTimeDelta()} milliseconds ==========`
             );
             this._startupStage = STARTUP_STAGES.SYNCING;
@@ -160,7 +160,7 @@ export default class NetworkStatusStore extends Store {
           if (message.contents.getChainDifficulty) {
             this.networkDifficulty = message.contents.getChainDifficulty.getBlockCount;
           }
-          Log.debug('ServerStatusNotification: NetworkDifficultyChanged: ', this.networkDifficulty);
+          Logger.debug('ServerStatusNotification: NetworkDifficultyChanged: ' + this.networkDifficulty);
           this.isConnected = true;
           this.hasBeenConnected = true;
           break;
@@ -168,14 +168,14 @@ export default class NetworkStatusStore extends Store {
           if (message.contents.getChainDifficulty) {
             this.localDifficulty = message.contents.getChainDifficulty.getBlockCount;
           }
-          Log.debug('ServerStatusNotification: LocalDifficultyChanged: ', this.localDifficulty);
+          Logger.debug('ServerStatusNotification: LocalDifficultyChanged: ' + this.localDifficulty);
           break;
         case 'ConnectionClosedReconnecting':
-          Log.debug('ServerStatusNotification: ConnectionClosedReconnecting');
+          Logger.debug('ServerStatusNotification: ConnectionClosedReconnecting');
           this.isConnected = false;
           break;
         default:
-          Log.warn('ServerStatusNotification: Unknown server notification received: ', message);
+          Logger.warn('ServerStatusNotification: Unknown server notification received: ' + message);
       }
     }));
   }
@@ -183,13 +183,13 @@ export default class NetworkStatusStore extends Store {
   _redirectToWalletAfterSync = () => {
     const { app, wallets } = this.stores;
     if (this._startupStage === STARTUP_STAGES.SYNCING && this.isSynced) {
-      Log.info(`========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`);
+      Logger.info(`========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`);
       this._startupStage = STARTUP_STAGES.LOADING;
     }
     // TODO: introduce smarter way to bootsrap initial screens
     if (this.isConnected && this.isSynced && wallets.hasLoadedWallets) {
       if (this._startupStage === STARTUP_STAGES.LOADING) {
-        Log.info(`========== Loaded after ${this._getStartupTimeDelta()} milliseconds ==========`);
+        Logger.info(`========== Loaded after ${this._getStartupTimeDelta()} milliseconds ==========`);
         this._startupStage = STARTUP_STAGES.RUNNING;
       }
       runInAction('NetworkStatusStore::_redirectToWalletAfterSync', () => { this.isLoadingWallets = false; });
