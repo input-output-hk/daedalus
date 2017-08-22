@@ -1,9 +1,9 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
 import StoryDecorator from './support/StoryDecorator';
-import WalletExportDialog from '../app/components/wallet/settings/export-to-file/WalletExportToFileDialog';
+import WalletExportToFileDialog from '../app/components/wallet/settings/export-to-file/WalletExportToFileDialog';
 
-storiesOf('WalletExportDialog', module)
+storiesOf('WalletExportToFileDialog', module)
 
   .addDecorator((story) => (
     <StoryDecorator>
@@ -15,7 +15,7 @@ storiesOf('WalletExportDialog', module)
 
   .add('default', () => (
     <div>
-      <WalletExportDialog
+      <WalletExportToFileDialog
         walletName="Test Wallet"
         onClose={action('onClose')}
         isSubmitting={false}
@@ -25,13 +25,13 @@ storiesOf('WalletExportDialog', module)
 
   .add('submitting', () => (
     <div>
-      <WalletExportDialog walletName="Test Wallet" isSubmitting />
+      <WalletExportToFileDialog walletName="Test Wallet" isSubmitting />
     </div>
   ))
 
   .add('spending password', () => (
     <div>
-      <WalletExportDialog
+      <WalletExportToFileDialog
         walletName="Test Wallet"
         hasSpendingPassword
         onSubmit={action('onSubmit')}
