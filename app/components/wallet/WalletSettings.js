@@ -153,7 +153,7 @@ export default class WalletSettings extends Component {
           />
 
           <div className={styles.export}>
-            <h1>Export</h1>
+            <h2>Export</h2>
             <p>
               Use your wallet on multiple devices
               or give read-only copies to friends.

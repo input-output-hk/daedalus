@@ -1,7 +1,7 @@
 import React from 'react';
 import { storiesOf, action } from '@kadira/storybook';
 import SidebarCategory from '../app/components/sidebar/SidebarCategory';
-import walletsIcon from '../app/assets/images/sidebar/wallet-ic.svg';
+import walletsIcon from '../app/assets/images/sidebar/wallet-ic.inline.svg';
 
 storiesOf('SidebarCategory', module)
 

@@ -19,10 +19,17 @@
   font-size: 16px;
   margin-bottom: 20px;
 
+  h2 {
+    color: var(--theme-bordered-box-text-color);
+    font-family: var(--font-medium);
+    line-height: 1.38;
+  }
+
   p, li {
     color: var(--theme-bordered-box-text-color);
     font-family: var(--font-regular);
     line-height: 1.38;
+    opacity: 0.5;
   }
 
   p:first-of-type {
@@ -35,12 +42,12 @@
   }
 
   strong {
-    color: var(--theme-label-button-color);
+    color: var(--theme-bordered-box-text-color);
     font-family: var(--font-bold);
   }
 
   & > .export_link {
-    color: var(--theme-label-button-color);
+    color: var(--theme-bordered-box-text-color);
     cursor: pointer;
     font-size: 16px;
     text-decoration: underline;
