@@ -2,12 +2,11 @@ import { app, BrowserWindow, Menu, shell, ipcMain, dialog, crashReporter, global
 import os from 'os';
 import path from 'path';
 import Log from 'electron-log';
-import { Tail } from 'tail';
 import osxMenu from './menus/osx';
 import winLinuxMenu from './menus/win-linux';
 import ipcApi from './ipc-api';
 import getLogsFolderPath from './lib/getLogsFolderPath';
-import { daedalusLogger, cardanoNodeLogger } from './lib/remoteLog';
+import { daedalusLogger } from './lib/remoteLog';
 import ClientApi from 'daedalus-client-api';
 import { readCA, notify } from './tls-workaround';
 
@@ -21,32 +20,14 @@ Log.transports.file.file = logFilePath;
 
 try {
   let sendLogsToRemoteServer;
-  let isLogTailingActive = false;
   ipcMain.on('send-logs-choice', (event, sendLogs) => {
-    // Save user's send-logs choice
     sendLogsToRemoteServer = sendLogs;
-
-    // Start log tailing if it's not running
-    if (!isLogTailingActive) {
-      // Tail Daedalus log and send it to remote logging server
-      const daedalusLogTail = new Tail(logFilePath);
-      daedalusLogTail.on('line', (line) => {
-        if (sendLogsToRemoteServer) daedalusLogger.info(line);
-      });
-
-      // Tail Cardano node log and send it to remote logging server
-      const cardanoNodeLogFilePath = path.join(appLogFolderPath, 'cardano-node.log');
-      const cardanoNodeLogTail = new Tail(cardanoNodeLogFilePath);
-      cardanoNodeLogTail.on('line', (line) => {
-        if (sendLogsToRemoteServer) cardanoNodeLogger.info(line);
-      });
-
-      // Tailing is now active (no need re-init it on next send-logs-choice event)
-      isLogTailingActive = true;
-    }
+  });
+  ipcMain.on('log-to-remote', (event, logEntry) => {
+    if (sendLogsToRemoteServer) daedalusLogger.info(logEntry);
   });
 } catch (error) {
-  Log.error('Error setting up log tailing and logging to remote server', error);
+  Log.error('Error setting up log logging to remote server', error);
 }
 
 // Configure & start crash reporter

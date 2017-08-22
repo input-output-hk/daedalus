@@ -2,9 +2,9 @@
 import { action, observable, runInAction } from 'mobx';
 import { ipcRenderer } from 'electron';
 import { isString } from 'lodash';
-import Log from 'electron-log';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
+import { Logger } from '../lib/logger';
 import { matchRoute } from '../lib/routing-helpers';
 import WalletTransaction from '../domain/WalletTransaction';
 import { PARSE_REDEMPTION_CODE } from '../../electron/ipc-api/parse-redemption-code-from-pdf';
@@ -135,7 +135,7 @@ export default class AdaRedemptionStore extends Store {
     if (this.redemptionType === 'paperVended') return;
     if (this.certificate == null) throw new Error('Certificate File is required for parsing.');
     const path = this.certificate.path; // eslint-disable-line
-    Log.debug('Parsing ADA Redemption code from certificate', path);
+    Logger.debug('Parsing ADA Redemption code from certificate: ' + path);
     let decryptionKey = null;
     if (this.redemptionType === 'regular' && this.isCertificateEncrypted) {
       decryptionKey = this.passPhrase;
@@ -147,7 +147,7 @@ export default class AdaRedemptionStore extends Store {
   }
 
   _onCodeParsed = action((event, code) => {
-    Log.debug('Redemption code parsed from certificate:', code);
+    Logger.debug('Redemption code parsed from certificate: ' + code);
     this.redemptionCode = code;
   });
 
@@ -220,7 +220,7 @@ export default class AdaRedemptionStore extends Store {
   });
 
   _onAdaSuccessfullyRedeemed = action(({ walletId, amount }) => {
-    Log.debug('ADA successfully redeemed for wallet', walletId);
+    Logger.debug('ADA successfully redeemed for wallet: ' + walletId);
     this.stores.wallets.goToWalletRoute(walletId);
     this.amountRedeemed = amount;
     this.showAdaRedemptionSuccessMessage = true;

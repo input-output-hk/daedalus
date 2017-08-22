@@ -95,6 +95,7 @@ Changelog
 - Terms of service for the mainnet ([PR 425](https://github.com/input-output-hk/daedalus/pull/425))
 - Fixed failing acceptance tests ([PR 424](https://github.com/input-output-hk/daedalus/pull/424))
 - Show correct error message on sending money to Ada redemption address ([PR 423](https://github.com/input-output-hk/daedalus/pull/423))
+- Fixed ENOENT error on log file rotation ([PR 428](https://github.com/input-output-hk/daedalus/pull/428))
 
 ### Chores
 
