@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import SvgInline  from 'react-svg-inline';
 import classnames from 'classnames';
 import styles from './BigButtonForDialogs.scss';
 
@@ -26,7 +27,7 @@ export default class BigButtonForDialogs extends Component {
         onClick={onClick}
         disabled={isDisabled}
       >
-        <img className={styles.icon} src={icon} role="presentation" />
+        <SvgInline svg={icon} className={styles.icon} />
         <div className={styles.label}>{label}</div>
         <div className={styles.description}>{description}</div>
       </button>

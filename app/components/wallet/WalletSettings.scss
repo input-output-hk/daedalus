@@ -1,21 +1,33 @@
 @import '../../themes/mixins/error-message';
 
 .component {
-  background-color: $color-primary-bg;
+  background-color: var(--theme-main-body-background-color);
   display: flex;
   flex-direction: column;
-  font-family: $font-regular;
+  font-family: var(--font-regular);
   height: 100%;
   padding: 20px 30px;
+
+  :global {
+    .SimpleFormField_label {
+      color: var(--theme-input-label-color);
+    }
+  }
 }
 
 .export {
   font-size: 16px;
   margin-bottom: 20px;
 
+<<<<<<< HEAD
   p, li {
     color: #abadb0;
     font-family: $font-regular;
+=======
+  p {
+    color: var(--theme-bordered-box-text-color);
+    font-family: var(--font-regular);
+>>>>>>> master
     line-height: 1.38;
   }
 
@@ -29,12 +41,12 @@
   }
 
   strong {
-    color: #5e6066;
-    font-family: $font-bold;
+    color: var(--theme-label-button-color);
+    font-family: var(--font-bold);
   }
 
   & > .export_link {
-    color: #5e6066;
+    color: var(--theme-label-button-color);
     cursor: pointer;
     font-size: 16px;
     text-decoration: underline;

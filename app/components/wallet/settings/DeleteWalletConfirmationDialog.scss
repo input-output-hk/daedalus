@@ -1,16 +1,16 @@
 @import '../../../themes/mixins/loading-spinner';
 
 .dialog {
-  font-family: $font-light;
+  font-family: var(--font-light);
   :global {
     .SimpleCheckbox_root {
       margin-top: 20px;
 
       .SimpleCheckbox_check {
-        border-color: $color-light-red;
+        border-color: var(--theme-input-remove-color-light);
 
         &.SimpleCheckbox_checked {
-          background: $color-light-red;
+          background: var(--theme-input-remove-color-light);
         }
       }
     }
@@ -25,16 +25,19 @@
   }
 
   .deleteButton {
-    background: $color-light-red;
-    &:hover {
-      background: $color-lighter-red !important;
+    &[disabled] {
+      background: var(--theme-input-remove-color-lightest);
+      color: var(--theme-modal-background-color);
     }
-    &:active {
-      background: $color-dark-red !important;
+    &:not([disabled]) {
+      background: var(--theme-input-remove-color-light);
+      color: var(--theme-modal-background-color);
+      &:hover {
+        background: var(--theme-input-remove-color-lighter);
+      }
+      &:active {
+        background: var(--theme-input-remove-color-dark);
+      }
     }
   }
 }
-
-
-
-

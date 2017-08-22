@@ -41,6 +41,7 @@ Changelog
 - Added support for Cmd+H hotkey shortcut for hiding application window on OSX ([PR 404](https://github.com/input-output-hk/daedalus/pull/404))
 - Setup environment variable for testnet/mainnet mode ([PR 400](https://github.com/input-output-hk/daedalus/pull/400))
 - Export wallet to file ([PR 426](https://github.com/input-output-hk/daedalus/pull/426))
+- Add theming options in settings ([PR 370](https://github.com/input-output-hk/daedalus/pull/398))
 
 ### Fixes
 
@@ -84,6 +85,7 @@ Changelog
 - Fixed eslint syntax warnings ([PR 403](https://github.com/input-output-hk/daedalus/pull/403))
 - Fixed wallet spending password fields error messages positioning on wallet create/restore/import dialogs ([PR 407](https://github.com/input-output-hk/daedalus/pull/407))
 - Fixed inline-editing success-messages on wallet settings screen ([PR 408](https://github.com/input-output-hk/daedalus/pull/408))
+- Fixed dialogs cut-off content on smaller screens ([PR 370](https://github.com/input-output-hk/daedalus/pull/398))
 - Fixed the issue of dialogs being closable while wallet import/creation/restoring is happening ([PR 393](https://github.com/input-output-hk/daedalus/pull/414))
 - Fixed calculation and display of transaction assurance levels ([PR 390](https://github.com/input-output-hk/daedalus/pull/416))
 - Fixes Transaction additional info showing/hiding affects all user's wallets ([PR 411](https://github.com/input-output-hk/daedalus/pull/411))
@@ -106,6 +108,7 @@ Changelog
 - Added readme file for running acceptance tests ([PR 395](https://github.com/input-output-hk/daedalus/pull/395))
 - Improved webpack build performance ([PR 402](https://github.com/input-output-hk/daedalus/pull/402))
 - Updated README file "Development - network options" section ([PR 410](https://github.com/input-output-hk/daedalus/pull/410))
+- All CSS hardcoded values replaced with variables ([PR 370](https://github.com/input-output-hk/daedalus/pull/398))
 
 ## 0.6.2
 

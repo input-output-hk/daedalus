@@ -1,8 +1,9 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import SvgInline  from 'react-svg-inline';
 import Dropzone from 'react-dropzone';
-import attachIcon from '../../../assets/images/attach-ic.svg';
+import attachIcon from '../../../assets/images/attach-ic.inline.svg';
 import styles from './FileUploadWidget.scss';
 
 @observer
@@ -36,7 +37,7 @@ export default class FileUploadWidget extends Component {
           ) : (
             <div className={styles.placeholder}>{placeholder}</div>
           )}
-          <img src={attachIcon} className={styles.attachIcon} role="presentation" />
+          <SvgInline svg={attachIcon} className={styles.attachIcon} />
         </Dropzone>
       </div>
     );

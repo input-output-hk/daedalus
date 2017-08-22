@@ -1,0 +1,42 @@
+@import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
+
+.component {
+  :global {
+    .dialog_body {
+      overflow-y: hidden;
+    }
+
+    .Dialog_title {
+      margin-bottom: 20px;
+    }
+  }
+}
+
+.isSubmitting {
+  @include loading-spinner("../../../assets/images/spinner-light.svg");
+}
+
+.instructions {
+  color: var(--theme-instructions-text-color);
+  margin-top: 30px;
+
+  ul {
+    list-style: disc;
+    margin-left: 20px;
+  }
+
+  li {
+    margin-bottom: 11px;
+  }
+
+  p, li {
+    font-family: var(--font-regular);
+    line-height: 1.38;
+  }
+}
+
+.error {
+  @include error-message;
+  text-align: center;
+}

@@ -23,11 +23,16 @@ module.exports = validate({
       loader: 'json-loader',
     }, {
       test: /\.md$/,
-      loader: "html!markdown?gfm=false",
+      loader: 'html!markdown?gfm=false',
     },
     {
       test: /\.(?:png|jpg|svg|otf|ttf)$/,
       loader: 'url-loader',
+      exclude: /\.inline\.svg$/,
+    },
+    {
+      test: /\.inline\.svg$/,
+      loader: 'raw-loader',
     }]
   },
 

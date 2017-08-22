@@ -23,5 +23,6 @@ export const ROUTES = {
     GENERAL: '/settings/general',
     TERMS_OF_USE: '/settings/terms-of-use',
     SUPPORT: '/settings/support',
+    DISPLAY: '/settings/display',
   },
 };

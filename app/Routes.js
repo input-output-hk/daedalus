@@ -21,6 +21,7 @@ import SupportSettingsPage from './containers/settings/categories/SupportSetting
 import TermsOfUseSettingsPage from './containers/settings/categories/TermsOfUseSettingsPage';
 import TermsOfUsePage from './containers/profile/TermsOfUsePage';
 import SendLogsChoicePage from './containers/profile/SendLogsChoicePage';
+import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
 
 export const Routes = (
   <div>
@@ -43,6 +44,7 @@ export const Routes = (
       <Route path="general" component={GeneralSettingsPage} />
       <Route path="terms-of-use" component={TermsOfUseSettingsPage} />
       <Route path="support" component={SupportSettingsPage} />
+      <Route path="display" component={DisplaySettingsPage} />
     </Route>
   </div>
 );

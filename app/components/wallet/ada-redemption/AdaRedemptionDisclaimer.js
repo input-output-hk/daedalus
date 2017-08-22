@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import SvgInline  from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
@@ -7,7 +8,7 @@ import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import Button from 'react-polymorph/lib/components/Button';
 import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import attentionIcon from '../../../assets/images/attention-big-light.svg';
+import attentionIcon from '../../../assets/images/attention-big-light.inline.svg';
 import styles from './AdaRedemptionDisclaimer.scss';
 
 const messages = defineMessages({
@@ -64,7 +65,7 @@ export default class AdaRedemptionDisclaimer extends Component {
     return (
       <div className={styles.component}>
 
-        <img className={styles.icon} src={attentionIcon} role="presentation" />
+        <SvgInline svg={attentionIcon} className={styles.icon} />
 
         <h1>{intl.formatMessage(messages.disclaimerTitle)}</h1>
 

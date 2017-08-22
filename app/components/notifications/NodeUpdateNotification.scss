@@ -1,12 +1,13 @@
+
 %actionButton {
   box-sizing: border-box;
   height: 33px;
   border-radius: 5px;
-  font-family: $font-medium;
+  font-family: var(--font-medium);
   font-size: 14px;
   line-height: 1.36;
   text-align: center;
-  color: #fafbfc;
+  color: var(--theme-node-update-button-text-color);
   margin-left: 10px;
   max-width: 200px;
   cursor: pointer;
@@ -15,7 +16,7 @@
 }
 
 .component {
-  background-color: $color-primary-bg;
+  background-color: var(--theme-node-update-background-color);
   padding: 20px 40px;
   display: flex;
   flex-direction: column;
@@ -23,18 +24,23 @@
 
   .acceptButton {
     @extend %actionButton;
-    background-color: #445b7c;
+    background-color: var(--theme-node-update-accept-button-background-color);
     &:hover {
-      background-color: darken(#445b7c, 10%);
+      background-color: var(--theme-node-update-accept-button-background-color-hover) !important;
+    }
+    &:active {
+      background-color: var(--theme-node-update-accept-button-background-color-active) !important;
     }
   }
 
   .denyButton {
     @extend %actionButton;
-    background-color: #afb9c6;
-    margin-left: 10px;
+    background-color: var(--theme-node-update-deny-button-background-color);
     &:hover {
-      background-color: darken(#afb9c6, 10%);
+      background-color: var(--theme-node-update-deny-button-background-color-hover) !important;
+    }
+    &:active {
+      background-color: var(--theme-node-update-deny-button-background-color-active) !important;
     }
   }
 }
@@ -45,20 +51,20 @@
 
 .title {
   height: 22px;
-  font-family: $font-medium;
+  font-family: var(--font-medium);
   font-size: 16px;
   line-height: 1.5;
-  color: $text-color-accent;
+  color: var(--theme-node-update-title-color);
   flex-grow: 1;
 }
 
 .message {
   margin-top: 12px;
-  font-family: $font-regular;
+  font-family: var(--font-regular);
   font-size: 14px;
   line-height: 1.36;
   letter-spacing: 0.5px;
-  color: $text-color-accent;
+  color: var(--theme-node-update-message-color);
 }
 
 .actions {
@@ -74,10 +80,20 @@
 }
 
 .arrow {
-  width: 16px;
-  transform: rotate(180deg);
+  & > svg {
+    width: 16px;
+    transform: rotate(180deg);
+    polyline {
+      stroke: var(--theme-icon-node-update-notification-arrow-color);
+    }
+  }
 }
 
 .arrowCollapsed {
-  width: 16px;
+  & > svg {
+    width: 16px;
+    polyline {
+      stroke: var(--theme-icon-node-update-notification-arrow-color);
+    }
+  }
 }

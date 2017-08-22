@@ -1,13 +1,13 @@
 %base {
   font-size: 16px;
   line-height: 1.38;
-  font-family: $font-regular;
-  color: #5e6066;
+  font-family: var(--font-regular);
+  color: var(--theme-uploader-text-color);
 }
 
 .label {
   @extend %base;
-  font-family: $font-semibold;
+  font-family: var(--font-semibold);
   margin-bottom: 10px;
 }
 
@@ -15,7 +15,7 @@
   width: 154px;
   height: 154px;
   border-radius: 2px;
-  border: solid 1px $color-light-grey;
+  border: solid 1px var(--theme-uploader-border-color);
   display: flex;
   align-items: center;
 }
@@ -42,7 +42,7 @@
   justify-content: center;
   .title {
     @extend %base;
-    font-family: $font-semibold;
+    font-family: var(--font-semibold);
   }
 
   .subtitle {
@@ -61,9 +61,17 @@
 }
 
 .certificateIcon {
-  width: 54px;
-  height: 74px;
   margin: auto;
+  & > svg {
+    width: 54px;
+    height: 74px;
+    & > g > path {
+      fill: var(--theme-icon-ada-redemption-certificate-color);
+    }
+    & > g > g {
+      stroke: var(--theme-icon-ada-redemption-certificate-color);
+    }
+  }
 }
 
 .removeFileButton {
@@ -73,8 +81,13 @@
   right: 10px;
 
   .closeCrossIcon {
-    height: 11px;
-    width: 11px;
+    & > svg {
+      height: 11px;
+      width: 11px;
+      polygon {
+        fill: var(--theme-icon-close-button-color);
+      }
+    }
   }
 }
 

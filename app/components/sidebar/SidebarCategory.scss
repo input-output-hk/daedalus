@@ -4,22 +4,22 @@
 .component {
   @include button;
   align-items: center;
-  background-color: $sidebar-bg;
-  color: white;
+  background-color: var(--theme-sidebar-background-color);
+  color: var(--theme-sidebar-category-text-color);
   display: flex;
   height: $sidebar-button-height;
   width: 100%;
 
   &:hover {
-    background-color: $sidebar-category-hover;
+    background-color: var(--theme-sidebar-category-background-color-hover);
   }
 }
 
 .active {
-  background-color: $sidebar-category-active;
+  background-color: var(--theme-sidebar-category-background-color-active);
 
   &:hover {
-    background-color: $sidebar-category-active;
+    background-color: var(--theme-sidebar-category-background-color-active);
     cursor: default;
   }
 }
@@ -27,10 +27,20 @@
 .icon {
   flex-shrink: 0;
   margin: 0 30px;
-  width: 24px;
+  & > svg {
+    width: 24px;
+
+    & > g > path {
+      fill: var(--theme-icon-sidebar-color);
+    }
+    // ada.svg icon need stroke attribute
+    & > g > g {
+      stroke: var(--theme-icon-sidebar-color);
+    }
+  }
 }
 
 .label {
-  font-family: $font-regular;
+  font-family: var(--font-regular);
   font-size: 18px;
 }

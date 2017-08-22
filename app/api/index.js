@@ -173,5 +173,7 @@ export type Api = {
   calculateTransactionFee(request: TransactionFeeRequest): Promise<TransactionFeeResponse>,
   testReset(): void,
   exportWalletToFile(request: ExportWalletToFileRequest): Promise<ExportWalletToFileResponse>,
+  setUserTheme(theme: string): Promise<string>,
+  getUserTheme(): Promise<string>,
 };
 /* eslint-disable max-len */
