@@ -7,7 +7,7 @@ import classnames from 'classnames';
 import Button from 'react-polymorph/lib/components/Button';
 import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './NodeUpdateNotification.scss';
-import arrowIcon from '../../assets/images/arrow.svg?inline-svg';
+import arrowIcon from '../../assets/images/arrow.inline.svg';
 
 const messages = defineMessages({
   acceptLabel: {

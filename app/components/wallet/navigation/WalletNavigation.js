@@ -4,11 +4,11 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './WalletNavigation.scss';
 import WalletNavButton from './WalletNavButton';
-import summaryIcon from '../../../assets/images/wallet-nav/summary-ic.svg?inline-svg';
-import sendIcon from '../../../assets/images/wallet-nav/send-ic.svg?inline-svg';
-import receiveIcon from '../../../assets/images/wallet-nav/receive-ic.svg?inline-svg';
-import transactionsIcon from '../../../assets/images/wallet-nav/transactions-ic.svg?inline-svg';
-import settingsIcon from '../../../assets/images/wallet-nav/wallet-settings-2-ic.svg?inline-svg';
+import summaryIcon from '../../../assets/images/wallet-nav/summary-ic.inline.svg';
+import sendIcon from '../../../assets/images/wallet-nav/send-ic.inline.svg';
+import receiveIcon from '../../../assets/images/wallet-nav/receive-ic.inline.svg';
+import transactionsIcon from '../../../assets/images/wallet-nav/transactions-ic.inline.svg';
+import settingsIcon from '../../../assets/images/wallet-nav/wallet-settings-2-ic.inline.svg';
 
 const messages = defineMessages({
   summary: {

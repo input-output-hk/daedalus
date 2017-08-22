@@ -7,10 +7,10 @@ import styles from './WalletAddDialog.scss';
 import Dialog from '../widgets/Dialog';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import BigButtonForDialogs from '../widgets/BigButtonForDialogs';
-import createIcon from '../../assets/images/create-ic.svg?inline-svg';
-import importIcon from '../../assets/images/import-ic.svg?inline-svg';
-import joinSharedIcon from '../../assets/images/join-shared-ic.svg?inline-svg';
-import restoreIcon from '../../assets/images/restore-ic.svg?inline-svg';
+import createIcon from '../../assets/images/create-ic.inline.svg';
+import importIcon from '../../assets/images/import-ic.inline.svg';
+import joinSharedIcon from '../../assets/images/join-shared-ic.inline.svg';
+import restoreIcon from '../../assets/images/restore-ic.inline.svg';
 
 const messages = defineMessages({
   title: {

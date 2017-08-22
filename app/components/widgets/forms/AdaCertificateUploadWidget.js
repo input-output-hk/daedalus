@@ -4,10 +4,10 @@ import { observer } from 'mobx-react';
 import SvgInline  from 'react-svg-inline';
 import Dropzone from 'react-dropzone';
 import { defineMessages, intlShape } from 'react-intl';
-import certificateNormalIcon from '../../../assets/images/cert-ic.svg?inline-svg';
-import certificateLockedIcon from '../../../assets/images/cert-locked-ic.svg?inline-svg';
-import certificateInvalidIcon from '../../../assets/images/cert-bad-ic.svg?inline-svg';
-import closeCrossIcon from '../../../assets/images/close-cross.svg?inline-svg';
+import certificateNormalIcon from '../../../assets/images/cert-ic.inline.svg';
+import certificateLockedIcon from '../../../assets/images/cert-locked-ic.inline.svg';
+import certificateInvalidIcon from '../../../assets/images/cert-bad-ic.inline.svg';
+import closeCrossIcon from '../../../assets/images/close-cross.inline.svg';
 import styles from './AdaCertificateUploadWidget.scss';
 
 const messages = defineMessages({

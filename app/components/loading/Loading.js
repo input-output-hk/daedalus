@@ -1,14 +1,14 @@
 // @flow
 import React, { Component } from 'react';
-import SvgInline  from 'react-svg-inline';
+import SvgInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import LoadingSpinner from '../widgets/LoadingSpinner';
-import cardanoLogo from '../../assets/images/cardano-logo.svg?inline-svg';
-import daedalusLogoWhite from '../../assets/images/daedalus-logo-loading-white.svg?inline-svg';
-import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.svg?inline-svg';
-import cardanoLogoWhite from '../../assets/images/cardano-logo-white.svg?inline-svg';
+import cardanoLogo from '../../assets/images/cardano-logo.inline.svg';
+import daedalusLogoWhite from '../../assets/images/daedalus-logo-loading-white.inline.svg';
+import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
+import cardanoLogoWhite from '../../assets/images/cardano-logo-white.inline.svg';
 import styles from './Loading.scss';
 
 const messages = defineMessages({

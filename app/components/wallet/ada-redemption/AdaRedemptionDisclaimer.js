@@ -8,7 +8,7 @@ import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import Button from 'react-polymorph/lib/components/Button';
 import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import attentionIcon from '../../../assets/images/attention-big-light.svg?inline-svg';
+import attentionIcon from '../../../assets/images/attention-big-light.inline.svg';
 import styles from './AdaRedemptionDisclaimer.scss';
 
 const messages = defineMessages({

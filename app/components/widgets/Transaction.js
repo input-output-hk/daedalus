@@ -5,7 +5,7 @@ import SvgInline  from 'react-svg-inline';
 import classNames from 'classnames';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
-import adaSymbol from '../../assets/images/ada-symbol.svg?inline-svg';
+import adaSymbol from '../../assets/images/ada-symbol.inline.svg';
 import WalletTransaction from '../../domain/WalletTransaction';
 import { assuranceLevels } from '../../config/transactionAssuranceConfig';
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';

@@ -7,8 +7,8 @@ import Button from 'react-polymorph/lib/components/Button';
 import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import styles from './AdaRedemptionSuccessOverlay.scss';
-import successIcon from '../../../assets/images/success-big.svg?inline-svg';
-import closeCrossWhite from '../../../assets/images/close-cross-white.svg?inline-svg';
+import successIcon from '../../../assets/images/success-big.inline.svg';
+import closeCrossWhite from '../../../assets/images/close-cross-white.inline.svg';
 
 const messages = defineMessages({
   headline: {

@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import SvgInline  from 'react-svg-inline';
-import adaExpendIcon from '../../assets/images/wallet-nav/send-ic.svg?inline-svg';
-import adaIncomeIcon from '../../assets/images/wallet-nav/receive-ic.svg?inline-svg';
-import exchangeIcon from '../../assets/images/exchange-ic.svg?inline-svg';
+import adaExpendIcon from '../../assets/images/wallet-nav/send-ic.inline.svg';
+import adaIncomeIcon from '../../assets/images/wallet-nav/receive-ic.inline.svg';
+import exchangeIcon from '../../assets/images/exchange-ic.inline.svg';
 import styles from './TransactionTypeIcon.scss';
 
 export default class TransactionTypeIcon extends Component {
