@@ -525,25 +525,25 @@ export default class CardanoClientApi {
   }
 
   async setUserTheme(theme: string) {
-    Log.debug('CardanoClientApi::updateTheme called: ', theme);
+    Logger.debug('CardanoClientApi::updateTheme called: ' + theme);
     try {
       await setUserThemeInLocalStorage(theme);
-      Log.debug('CardanoClientApi::updateTheme success: ', theme);
+      Logger.debug('CardanoClientApi::updateTheme success: ' + theme);
       return theme;
     } catch (error) {
-      Log.error('CardanoClientApi::updateTheme error: ' + stringifyError(error));
+      Logger.error('CardanoClientApi::updateTheme error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
 
   async getUserTheme() {
-    Log.debug('CardanoClientApi::getTheme called');
+    Logger.debug('CardanoClientApi::getTheme called');
     try {
       const theme = await getUserThemeFromLocalStorage();
-      Log.debug('CardanoClientApi::getTheme success: ', theme);
+      Logger.debug('CardanoClientApi::getTheme success: ' + theme);
       return theme;
     } catch (error) {
-      Log.error('CardanoClientApi::gettheme error: ' + stringifyError(error));
+      Logger.error('CardanoClientApi::gettheme error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
