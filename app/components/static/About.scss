@@ -1,0 +1,72 @@
+.container {
+  background-color: #fafbfc;
+  display: flex;
+  flex-direction: column;
+  padding: 30px 30px 20px;
+
+  .headerWrapper {
+    border-bottom: 1px solid #dfe4e8;
+    display: flex;
+    padding-bottom: 20px;
+
+    .daedalusIcon {
+      height: 58px;
+      width: 74px;
+    }
+
+    .daedalusTitleVersion {
+      color: #5e6066;
+      flex: 1;
+      margin-left: 30px;
+
+      .daedalusTitle {
+        font-family: 'Montserrat-Medium';
+        font-size: 24px;
+        letter-spacing: 6px;
+        line-height: 1.33;
+        -webkit-text-stroke: 0.5px #5e6066;
+      }
+
+      .daedalusVersion {
+        font-family: $font-regular;
+        font-size: 16px;
+        font-weight: 300;
+        line-height: 1.38;
+        margin-top: 4px;
+      }
+    }
+
+    .cardanoIcon {
+      height: 43px;
+      margin-top: 7.5px;
+      width: 47px;
+    }
+  }
+
+  .contentText {
+    border-bottom: 1px solid #dfe4e8;
+    color: #5e6066;
+    flex: 1;
+    font-family: $font-regular;
+    font-size: 12px;
+    line-height: 1.25;
+    margin-top: 20px;
+    padding-bottom: 20px;
+  }
+
+  .footerWrapper {
+    margin-top: 20px;
+
+    a,
+    .copyright {
+      color: #5e6066;
+      font-family: $font-regular;
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .copyright {
+      margin-top: 6px;
+    }
+  }
+}

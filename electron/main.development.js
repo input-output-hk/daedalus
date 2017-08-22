@@ -66,6 +66,8 @@ with CPU: ${JSON.stringify(os.cpus(), null, 2)} with ${JSON.stringify(os.totalme
 
 let menu;
 let mainWindow = null;
+let aboutWindow = null;
+
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = process.env.NODE_ENV === 'production';
 const isTest = process.env.NODE_ENV === 'test';
@@ -93,6 +95,66 @@ const installExtensions = async () => {
     }
   }
 };
+
+// handles events passed from menu directly to the main process
+function menuEventHandler(event) {
+  let currentInitWindow;
+  // open "About Daedalus" window
+  if (event === 'open-about') {
+    const width = 640;
+    const height = 486;
+    aboutWindow = new BrowserWindow({
+      show: false,
+      width,
+      height,
+    });
+
+    // prevent resize about window
+    aboutWindow.setMinimumSize(width, height);
+    aboutWindow.setMaximumSize(width, height);
+
+    aboutWindow.loadURL(`file://${__dirname}/../app/about.html?static=about`);
+    aboutWindow.on('page-title-updated', event => {
+     event.preventDefault()
+    });
+    aboutWindow.setTitle(`About Daedalus`); // default title
+
+    // prevent direct link navigation in electron window -> open in default browser
+    aboutWindow.webContents.on('will-navigate', (e, url) => {
+      e.preventDefault()
+      require('electron').shell.openExternal(url)
+    })
+
+    aboutWindow.webContents.on('context-menu', (e, props) => {
+      const contextMenuOptions = [];
+
+      if (isDev || isTest) {
+        const { x, y } = props;
+        contextMenuOptions.push({
+          label: 'Inspect element',
+          click() {
+            aboutWindow.inspectElement(x, y);
+          }
+        });
+      }
+      Menu.buildFromTemplate(contextMenuOptions).popup(aboutWindow);
+    });
+    currentInitWindow = aboutWindow;
+  }
+  // handle open window on finish
+  currentInitWindow.webContents.on('did-finish-load', ()=>{
+    aboutWindow.show();
+    aboutWindow.focus();
+  });
+
+}
+
+// update about window title when translation is ready
+ipcMain.on('about-window-title', (event, title) => {
+  if (aboutWindow) {
+    aboutWindow.setTitle(title);
+  }
+});
 
 app.on('ready', async () => {
   await installExtensions();
@@ -187,10 +249,10 @@ app.on('ready', async () => {
   });
 
   if (process.platform === 'darwin') {
-    menu = Menu.buildFromTemplate(osxMenu(app, mainWindow));
+    menu = Menu.buildFromTemplate(osxMenu(app, mainWindow, menuEventHandler));
     Menu.setApplicationMenu(menu);
   } else {
-    menu = Menu.buildFromTemplate(winLinuxMenu(mainWindow));
+    menu = Menu.buildFromTemplate(winLinuxMenu(app, mainWindow, menuEventHandler));
     mainWindow.setMenu(menu);
   }
 

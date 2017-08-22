@@ -10,6 +10,8 @@ import ja from 'react-intl/locale-data/ja';
 import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
 import { hashHistory } from 'react-router';
 import App from './App';
+import SystemMenuProvider from './SystemMenuProvider';
+import AboutPage from './containers/static/AboutPage';
 import CardanoClientApi from './api/CardanoClientApi';
 import environment from './environment';
 import setupStores from './stores';
@@ -28,9 +30,11 @@ addLocaleData([en, de, hr, ja]);
 
 // Use test env if the 'test' url param is set to 'true'
 const isInjectedTestEnv = getUrlParameterByName('test') === 'true';
+const injectedMenuParam = getUrlParameterByName('static');
 if (isInjectedTestEnv) environment.current = environment.TEST;
 
 const initializeDaedalus = () => {
+  const url = window.location.href;
   const api = new CardanoClientApi();
   if (environment.isTest()) patchCardanoApi(api);
   const router = new RouterStore();
@@ -48,9 +52,16 @@ const initializeDaedalus = () => {
       setupStores(api, actions, router);
     }),
   };
-  render((
-    <App stores={stores} actions={actions} history={history} />
-  ), document.getElementById('root'));
+
+  if (injectedMenuParam) {
+    render((
+      <SystemMenuProvider stores={stores} actions={actions} history={history} route={injectedMenuParam} />
+    ), document.getElementById('root'));
+  } else {
+    render((
+      <App stores={stores} actions={actions} history={history} />
+    ), document.getElementById('root'));
+  }
 };
 
 window.addEventListener('load', initializeDaedalus);

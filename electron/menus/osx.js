@@ -1,7 +1,13 @@
-export default (app, window) => {
+
+export default (app, window, mainEventHandler = null) => {
   return [{
     label: 'Daedalus',
     submenu: [{
+      label: 'About',
+      click() {
+        mainEventHandler('open-about');
+      },
+    }, {
       label: 'Quit',
       accelerator: 'Command+Q',
       click: () => app.quit()

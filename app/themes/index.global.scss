@@ -107,6 +107,11 @@ button {
   src: url("../assets/fonts/Electrolize-Regular.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: 'Montserrat-Medium';
+  src: url("../assets/fonts/Montserrat-Medium.ttf") format("truetype");
+}
+
 // ============ BASE ===========
 
 html, body, #root, #root > [data-reactroot] {
