@@ -47,7 +47,6 @@ module.exports = validate(merge(baseConfig, {
         include: [
           path.join(__dirname, '../app'),
           path.join(__dirname, '../lib'),
-          path.join(__dirname, '../electron'),
         ],
         query: {
           cacheDirectory: true,

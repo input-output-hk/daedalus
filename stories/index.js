@@ -12,4 +12,4 @@ import './LanguageSelectionForm.stories';
 import './WalletDeleteConfirmationDialog.stories';
 import './TopBar.stories';
 import './WalletTransactionsList.stories';
-import './WalletExportDialog.stories';
+import './WalletExportToFileDialog.stories';
