@@ -1,12 +1,13 @@
 // @flow
 import React, { Component } from 'react';
+import SvgInline  from 'react-svg-inline';
 import type { Children } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import Wallet from '../../domain/Wallet';
-import menuIconOpened from '../../assets/images/menu-second-level-ic.svg';
-import menuIconClosed from '../../assets/images/menu-ic.svg';
+import menuIconOpened from '../../assets/images/menu-opened-ic.inline.svg';
+import menuIconClosed from '../../assets/images/menu-ic.inline.svg';
 import styles from './TopBar.scss';
 import { matchRoute } from '../../lib/routing-helpers';
 import { ROUTES } from '../../Routes';
@@ -41,11 +42,7 @@ export default class TopBar extends Component {
     ) : null;
 
     const sidebarToggleIcon = (
-      <img
-        className={styles.sidebarIcon}
-        src={showSubMenus ? menuIconOpened : menuIconClosed}
-        role="presentation"
-      />
+      <SvgInline svg={showSubMenus ? menuIconOpened : menuIconClosed} className={styles.sidebarIcon} />
     );
 
     return (

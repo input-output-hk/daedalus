@@ -2,8 +2,9 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import adaSymbolBig from '../../../assets/images/ada-symbol-big-dark.svg';
-import adaSymbolSmallest from '../../../assets/images/ada-symbol-smallest-dark.svg';
+import SvgInline  from 'react-svg-inline';
+import adaSymbolBig from '../../../assets/images/ada-symbol-big-dark.inline.svg';
+import adaSymbolSmallest from '../../../assets/images/ada-symbol-smallest-dark.inline.svg';
 import BorderedBox from '../../widgets/BorderedBox';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import type { UnconfirmedAmount } from '../../../types/unconfirmedAmountType';
@@ -57,20 +58,20 @@ export default class WalletSummary extends Component {
           <div className={styles.walletName}>{walletName}</div>
           <div className={styles.walletAmount}>
             {amount}
-            <img src={adaSymbolBig} role="presentation" />
+            <SvgInline svg={adaSymbolBig} className={styles.adaSymbolBig}/>
           </div>
           {pendingAmount.incoming.greaterThan(0) &&
             <div className={styles.pendingConfirmation}>
               {`${intl.formatMessage(messages.pendingIncomingConfirmationLabel)}`}
               : {pendingAmount.incoming.toFormat(DECIMAL_PLACES_IN_ADA)}
-              <img src={adaSymbolSmallest} role="presentation" />
+              <SvgInline svg={adaSymbolSmallest} className={styles.adaSymbolSmallest} />
             </div>
           }
           {pendingAmount.outgoing.greaterThan(0) &&
             <div className={styles.pendingConfirmation}>
               {`${intl.formatMessage(messages.pendingOutgoingConfirmationLabel)}`}
               : {pendingAmount.outgoing.toFormat(DECIMAL_PLACES_IN_ADA)}
-              <img src={adaSymbolSmallest} role="presentation" />
+              <SvgInline svg={adaSymbolSmallest} className={styles.adaSymbolSmallest} />
             </div>
           }
           {!isLoadingTransactions ? (

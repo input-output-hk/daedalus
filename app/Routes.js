@@ -20,6 +20,7 @@ import SupportSettingsPage from './containers/settings/categories/SupportSetting
 import TermsOfUseSettingsPage from './containers/settings/categories/TermsOfUseSettingsPage';
 import TermsOfUsePage from './containers/profile/TermsOfUsePage';
 import SendLogsChoicePage from './containers/profile/SendLogsChoicePage';
+import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
 
 export const ROUTES = {
   ROOT: '/',
@@ -45,6 +46,7 @@ export const ROUTES = {
     GENERAL: '/settings/general',
     TERMS_OF_USE: '/settings/terms-of-use',
     SUPPORT: '/settings/support',
+    DISPLAY: '/settings/display',
   },
 };
 
@@ -69,6 +71,7 @@ export default (
       <Route path="general" component={GeneralSettingsPage} />
       <Route path="terms-of-use" component={TermsOfUseSettingsPage} />
       <Route path="support" component={SupportSettingsPage} />
+      <Route path="display" component={DisplaySettingsPage} />
     </Route>
   </div>
 );

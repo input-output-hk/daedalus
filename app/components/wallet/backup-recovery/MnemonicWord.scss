@@ -1,18 +1,18 @@
 .component {
-  background-color: #e4e7ec !important;
+  background-color: var(--theme-mnemonic-background-color) !important;
   font-size: 16px !important;
   margin: 10px 0;
-  opacity: 0.9;
   width: 130px !important;
-  &:hover {
-    background-color: none;
-  }
 }
 
 .inactive {
+  cursor: default !important;
   opacity: 0.3;
 }
 
 .active {
   cursor: pointer;
+  &:hover {
+    background-color: var(--theme-mnemonic-background-color-hover) !important;
+  }
 }

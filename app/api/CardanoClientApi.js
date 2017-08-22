@@ -130,6 +130,27 @@ const unsetSendLogsChoiceFromLocalStorage = () => new Promise((resolve) => {
   });
 });
 
+const getUserThemeFromLocalStorage = () => new Promise((resolve, reject) => {
+  localStorage.get('theme', (error, response) => {
+    if (error) return reject(error);
+    if (!response.theme) return resolve('');
+    resolve(response.theme);
+  });
+});
+
+const setUserThemeInLocalStorage = (theme) => new Promise((resolve, reject) => {
+  localStorage.set('theme', { theme }, (error) => {
+    if (error) return reject(error);
+    resolve();
+  });
+});
+
+const unsetUserThemeFromLocalStorage = () => new Promise((resolve) => {
+  localStorage.remove('theme', () => {
+    resolve();
+  });
+});
+
 export default class CardanoClientApi {
 
   notifyCallbacks = [];
@@ -503,6 +524,30 @@ export default class CardanoClientApi {
     }
   }
 
+  async setUserTheme(theme: string) {
+    Log.debug('CardanoClientApi::updateTheme called: ', theme);
+    try {
+      await setUserThemeInLocalStorage(theme);
+      Log.debug('CardanoClientApi::updateTheme success: ', theme);
+      return theme;
+    } catch (error) {
+      Log.error('CardanoClientApi::updateTheme error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async getUserTheme() {
+    Log.debug('CardanoClientApi::getTheme called');
+    try {
+      const theme = await getUserThemeFromLocalStorage();
+      Log.debug('CardanoClientApi::getTheme success: ', theme);
+      return theme;
+    } catch (error) {
+      Log.error('CardanoClientApi::gettheme error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
   async setTermsOfUseAcceptance() {
     Log.debug('CardanoClientApi::setTermsOfUseAcceptance called');
     try {
@@ -603,6 +648,7 @@ export default class CardanoClientApi {
     await unsetUserLocaleFromLocalStorage(); // TODO: remove after saving locale to API is restored
     await unsetTermsOfUseAcceptanceFromLocalStorage();
     await unsetSendLogsChoiceFromLocalStorage();
+    await unsetUserThemeFromLocalStorage();
     try {
       const response = await ClientApi.testReset(tlsConfig);
       Log.debug('CardanoClientApi::testReset success: ', stringifyData(response));

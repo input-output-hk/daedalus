@@ -1,12 +1,13 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import SvgInline  from 'react-svg-inline';
 import Dropzone from 'react-dropzone';
 import { defineMessages, intlShape } from 'react-intl';
-import certificateNormalIcon from '../../../assets/images/cert-ic.svg';
-import certificateLockedIcon from '../../../assets/images/cert-locked-ic.svg';
-import certificateInvalidIcon from '../../../assets/images/cert-bad-ic.svg';
-import closeCrossIcon from '../../../assets/images/close-cross.svg';
+import certificateNormalIcon from '../../../assets/images/cert-ic.inline.svg';
+import certificateLockedIcon from '../../../assets/images/cert-locked-ic.inline.svg';
+import certificateInvalidIcon from '../../../assets/images/cert-bad-ic.inline.svg';
+import closeCrossIcon from '../../../assets/images/close-cross.inline.svg';
 import styles from './AdaCertificateUploadWidget.scss';
 
 const messages = defineMessages({
@@ -62,9 +63,9 @@ export default class AdaCertificateUploadWidget extends Component {
           {isCertificateSelected ? (
             <div className={styles.certificateUploaded}>
               <button className={styles.removeFileButton} onClick={onRemoveCertificate}>
-                <img src={closeCrossIcon} className={styles.closeCrossIcon} role="presentation" />
+                <SvgInline svg={closeCrossIcon} className={styles.closeCrossIcon} />
               </button>
-              <img src={certificateIcon} className={styles.certificateIcon} role="presentation" />
+              <SvgInline svg={certificateIcon} className={styles.certificateIcon} />
             </div>
           ) : (
             <Dropzone
