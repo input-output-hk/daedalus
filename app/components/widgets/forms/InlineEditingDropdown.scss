@@ -16,8 +16,8 @@
 
   .savingResultLabel {
     animation: animateSavingResultLabel 3s;
-    color: $text-color-accent;
-    font-family: $font-light;
+    color: var(--theme-input-right-floating-text-color);
+    font-family: var(--font-light);
     font-size: 14px;
     opacity: 0;
     position: absolute;

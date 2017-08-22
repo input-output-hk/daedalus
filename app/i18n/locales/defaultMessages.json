@@ -396,6 +396,25 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Theme",
+        "description": "Label for the \"Theme\" selection on the display settings page.",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "app/components/settings/categories/DisplaySettings.js",
+        "id": "settings.display.themeLabel",
+        "start": {
+          "column": 14,
+          "line": 12
+        }
+      }
+    ],
+    "path": "app/components/settings/categories/DisplaySettings.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Language",
         "description": "Label for the language select.",
         "end": {
@@ -487,6 +506,20 @@
         "start": {
           "column": 14,
           "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Themes",
+        "description": "Label for the \"Themes\" link in the settings menu.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "app/components/settings/menu/SettingsMenu.js",
+        "id": "settings.menu.display.link.label",
+        "start": {
+          "column": 11,
+          "line": 25
         }
       }
     ],

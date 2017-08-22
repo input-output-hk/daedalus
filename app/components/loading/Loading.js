@@ -1,13 +1,14 @@
 // @flow
 import React, { Component } from 'react';
+import SvgInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import LoadingSpinner from '../widgets/LoadingSpinner';
-import cardanoLogo from '../../assets/images/cardano-logo.svg';
-import daedalusLogoWhite from '../../assets/images/daedalus-logo-loading-white.svg';
-import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.svg';
-import cardanoLogoWhite from '../../assets/images/cardano-logo-white.svg';
+import cardanoLogo from '../../assets/images/cardano-logo.inline.svg';
+import daedalusLogoWhite from '../../assets/images/daedalus-logo-loading-white.inline.svg';
+import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
+import cardanoLogoWhite from '../../assets/images/cardano-logo-white.inline.svg';
 import styles from './Loading.scss';
 
 const messages = defineMessages({
@@ -49,6 +50,7 @@ export default class Loading extends Component {
     isLoadingWallets: boolean,
     syncPercentage: number,
     hasLoadedCurrentLocale: boolean,
+    hasLoadedCurrentTheme: boolean,
   };
 
   static contextTypes = {
@@ -60,21 +62,31 @@ export default class Loading extends Component {
     const {
       isConnecting, isSyncing, syncPercentage, isLoadingWallets,
       hasBeenConnected, hasBlockSyncingStarted,
-      hasLoadedCurrentLocale,
+      hasLoadedCurrentLocale, hasLoadedCurrentTheme,
     } = this.props;
     const componentStyles = classNames([
       styles.component,
+      hasLoadedCurrentTheme ? null : styles['is-loading-theme'],
       isConnecting ? styles['is-connecting'] : null,
       isSyncing ? styles['is-syncing'] : null,
     ]);
+    const daedalusLogoStyles = classNames([
+      styles.daedalusLogo,
+      isConnecting ? styles.connectingLogo : styles.syncingLogo,
+    ]);
+    const cardanoLogoStyles = classNames([
+      styles.cardanoLogo,
+      isConnecting ? styles.connectingLogo : styles.syncingLogo,
+    ]);
+
     const daedalusLoadingLogo = isConnecting ? daedalusLogoWhite : daedalusLogo;
     const cardanoLoadingLogo = isConnecting ? cardanoLogoWhite : cardanoLogo;
     const connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
 
     return (
       <div className={componentStyles}>
-        <img className={styles.cardanoLogo} src={cardanoLoadingLogo} role="presentation" />
-        <img className={styles.daedalusLogo} src={daedalusLoadingLogo} role="presentation" />
+        <SvgInline svg={cardanoLoadingLogo} className={cardanoLogoStyles} />
+        <SvgInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
         {hasLoadedCurrentLocale && (
           <div>
             {isConnecting && !hasBlockSyncingStarted && (

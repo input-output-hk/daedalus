@@ -1,9 +1,7 @@
-@import '../../themes/daedalus/theme';
-
 $type-box-size: 44px;
 
 .component {
-  color: #5e6066;
+  color: var(--theme-transactions-list-item-details-color);
 }
 
 // ========= TYPE INDICATORS FOR TRANSACTIONS =========
@@ -19,26 +17,8 @@ $type-box-size: 44px;
 
 .card {
   @extend %type-box;
-  background-color: #e6ebf2;
+  background-color: var(--theme-transactions-card-background-color);
   background-image: url("../../assets/images/card-payment-ic.svg");
-}
-
-.adaIncome {
-  @extend %type-box;
-  background-image: url("../../assets/images/receive-ic.svg");
-  background-size: 44px;
-}
-
-.adaExpend {
-  @extend %type-box;
-  background-image: url("../../assets/images/send-ic.svg");
-  background-size: 44px;
-}
-
-.exchange {
-  @extend %type-box;
-  background-color: #f2f0e6;
-  background-image: url("../../assets/images/exchange-ic.svg");
 }
 
 // ========= TOGGLER =========
@@ -58,14 +38,15 @@ $type-box-size: 44px;
 
 .header,
 .details {
+  color: var(--theme-transactions-list-item-details-color);
   display: flex;
   width: 100%;
 }
 
 .title, .amount {
-  color: #5e6066;
+  color: var(--theme-transactions-list-item-details-color);
   font-size: 16px;
-  font-family: $font-semibold;
+  font-family: var(--font-semibold);
   height: 22px;
   line-height: 1.38;
   text-align: left;
@@ -73,16 +54,16 @@ $type-box-size: 44px;
 
 .amount {
   margin-left: auto;
-  font-family: $font-medium;
+  font-family: var(--font-medium);
   font-size: 16px;
   letter-spacing: 1px;
 }
 
 .low, .medium, .high {
   border-radius: 3px;
-  color: #fff;
+  color: var(--theme-transactions-priority-color);
   display: inline-block;
-  font-family: $font-bold;
+  font-family: var(--font-bold);
   font-size: 8px;
   line-height: 18px;
   margin-left: auto;
@@ -92,15 +73,15 @@ $type-box-size: 44px;
 }
 
 .low {
-  background-color: #ab1700;
+  background-color: var(--theme-transactions-priority-low-background-color);
 }
 
 .medium {
-  background-color: #e6aa00;
+  background-color: var(--theme-transactions-priority-medium-background-color);
 }
 
 .high {
-  background-color: #007600;
+  background-color: var(--theme-transactions-priority-heigh-background-color);
 }
 
 .assuranceLevel {
@@ -108,7 +89,7 @@ $type-box-size: 44px;
 }
 
 .type {
-  font-family: $font-light;
+  font-family: var(--font-light);
   font-size: 14px;
   margin-top: 3px;
 }
@@ -116,7 +97,7 @@ $type-box-size: 44px;
 // ========= DETAILS =========
 
 .content {
-  border-bottom: 1px solid #dfe4e8;
+  border-bottom: 1px solid var(--theme-separation-border-color);
   margin-left: calc(40px + #{$type-box-size});
   margin-right: 20px;
 }
@@ -131,12 +112,12 @@ $type-box-size: 44px;
     margin-top: 20px;
   }
   h2 {
-    font-family: $font-medium;
+    font-family: var(--font-medium);
     font-size: 16px;
     margin-bottom: 8px;
   }
   span {
-    font-family: $font-light;
+    font-family: var(--font-light);
     font-size: 14px;
     word-break: break-all;
 
@@ -167,7 +148,14 @@ $type-box-size: 44px;
 }
 
 .currencySymbol {
+  display: inline-block;
   margin-bottom: -1px;
   margin-left: 4px;
-  height: 14px;
+  & > svg {
+    width: 12px;
+    height: 12px;
+    & > g > g {
+      stroke: var(--theme-icon-transactions-ada-symbol-color);
+    }
+  }
 }

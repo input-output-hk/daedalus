@@ -1,7 +1,7 @@
 .component {
   border-radius: 10px;
-  background-color: #f1f3f5;
-  border: solid 4px #d7dce0;
+  background-color: var(--theme-dialog-big-button-background-color);
+  border: solid 4px var(--theme-dialog-big-button-border-color);
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -18,21 +18,26 @@
 }
 
 .icon {
-  height: 48px;
+  & > svg {
+    height: 48px;
+    path {
+      fill: var(--theme-icon-add-wallet-dialog-big-button-color);
+    }
+  }
 }
 
 .label {
   margin-top: 20px;
   font-size: 19px;
   line-height: 1.37;
-  color: $text-color-accent;
-  font-family: $font-medium;
+  color: var(--theme-dialog-big-button-label-color);
+  font-family: var(--font-medium);
 }
 
 .description {
-  font-family: $font-regular;
+  font-family: var(--font-regular);
   height: 19px;
   font-size: 14px;
   line-height: 1.36;
-  color: $text-color-accent;
+  color: var(--theme-dialog-big-button-description-color);
 }

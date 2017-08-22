@@ -3,16 +3,23 @@
   top: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(36, 61, 98, 0.88);
-  color: #fafbfc;
+  background-color: var(--theme-ada-redemption-success-overlay-background-color);
+  color: var(--theme-ada-redemption-success-overlay-message-color);
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 
   .icon {
-    width: 110px;
     margin-bottom: 36px;
+    line-height: 0;
+    & > svg {
+      width: 110px;
+      height: 110px;
+      path {
+        fill: var(--theme-icon-ada-redemption-success-color);
+      }
+    }
   }
 
   .text {
@@ -23,21 +30,21 @@
   }
 
   .headline {
-    font-family: $font-regular;
+    font-family: var(--font-regular);
     font-size: 20px;
     margin-bottom: 12px;
   }
 
   .amount {
-    font-family: $font-medium;
+    font-family: var(--font-medium);
     font-size: 28px;
   }
 
   .confirmButton {
     background: none;
-    border: solid 1px #fafbfc;
+    border: solid 1px var(--theme-ada-redemption-success-overlay-border-color);
     border-radius: 5px;
-    color: #fafbfc;
+    color: var(--theme-ada-redemption-success-overlay-button-text-color);
     cursor: pointer;
     font-size: 14px;
     height: 50px;
@@ -46,8 +53,8 @@
     width: 360px;
 
     &:hover {
-      background-color: #fafbfc !important;
-      color: #243e62;
+      background-color: var(--theme-ada-redemption-success-overlay-button-background-color-hover) !important;
+      color: var(--theme-ada-redemption-success-overlay-button-text-color-hover);
     }
   }
 

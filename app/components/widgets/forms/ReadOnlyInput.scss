@@ -3,21 +3,26 @@
   position: relative;
 
   :global {
-    .SimpleFormField_label {
-      color: $theme-label-color !important;
+    .SimpleFormField_root {
+      .SimpleFormField_label {
+        color: var(--theme-input-label-color);
+      }
     }
 
     .SimpleInput_disabled {
-      background-color: $theme-input-background-color;
-      border-color: $theme-input-border-color;
+      & .SimpleInput_input {
+        background-color: var(--theme-input-background-color);
+        border-color: var(--theme-input-border-color);
+        color: var(--theme-input-text-color) !important;
+      }
     }
   }
 
   .button {
     bottom: 13px;
-    color: $text-color-accent;
+    color: var(--theme-label-button-color);
     cursor: pointer;
-    font-family: $font-light;
+    font-family: var(--font-light);
     font-size: 16px;
     line-height: 1.38;
     opacity: 0.5;

@@ -1,7 +1,7 @@
 $topBarHeight: 84px;
 
 .component {
-  background-color: $color-primary-bg;
+  background-color: var(--theme-topbar-layout-body-background-color);
   box-shadow: 0 0 70px 0 rgba(0,0,0,0.75);
   display: flex;
   flex-direction: column;

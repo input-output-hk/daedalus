@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import closeCross from '../../assets/images/close-cross.svg';
+import SvgInline  from 'react-svg-inline';
+import closeCross from '../../assets/images/close-cross.inline.svg';
 import styles from './DialogCloseButton.scss';
 
 export default class DialogCloseButton extends Component {
@@ -13,7 +14,7 @@ export default class DialogCloseButton extends Component {
     const { onClose, icon } = this.props;
     return (
       <button onClick={onClose} className={styles.component}>
-        <img src={icon || closeCross} role="presentation" />
+        <SvgInline svg={icon || closeCross} />
       </button>
     );
   }

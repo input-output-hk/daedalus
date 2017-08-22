@@ -5,9 +5,9 @@ import classNames from 'classnames';
 import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
-import walletsIcon from '../../assets/images/sidebar/wallet-ic.svg';
-import adaRedemptionIcon from '../../assets/images/sidebar/ada.svg';
-import settingsIcon from '../../assets/images/sidebar/settings-ic.svg';
+import walletsIcon from '../../assets/images/sidebar/wallet-ic.inline.svg';
+import adaRedemptionIcon from '../../assets/images/sidebar/ada-redemption-ic.inline.svg';
+import settingsIcon from '../../assets/images/sidebar/settings-ic.inline.svg';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
 import type { SidebarWalletType } from '../../stores/SidebarStore';
 

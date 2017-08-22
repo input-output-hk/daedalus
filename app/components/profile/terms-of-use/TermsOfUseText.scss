@@ -1,9 +1,9 @@
 .terms {
-  color: $text-color-accent;
+  color: var(--theme-terms-of-use-text-color);
   text-align: justify;
 
   h1, h2 {
-    font-family: $font-medium;
+    font-family: var(--font-medium);
     font-size: 19px;
     margin-bottom: 11px;
   }
@@ -18,7 +18,7 @@
   }
 
   p, li {
-    font-family: $font-regular;
+    font-family: var(--font-regular);
     line-height: 1.38;
     margin-bottom: 11px;
 

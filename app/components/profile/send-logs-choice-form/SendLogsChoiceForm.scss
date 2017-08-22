@@ -8,8 +8,8 @@
   justify-content: center;
 
   .centeredBox {
-    background-color: $color-lighter-grey;
-    border: 1px solid $color-light-grey;
+    background-color: var(--theme-settings-menu-box-background-color);
+    border: 1px solid var(--theme-settings-menu-box-border-color);
     border-radius: 4px;
     padding: 30px 30px 20px;
     overflow: visible;
@@ -17,17 +17,17 @@
   }
 
   p {
-    color: $text-color-accent;
+    color: var(--theme-send-logs-text-color);
     line-height: 1.38;
 
     &.sendLogsLabel {
-      font-family: $font-medium;
+      font-family: var(--font-medium);
       font-weight: 500;
       margin-bottom: 14px;
     }
 
     &.sendLogsText {
-      font-family: $font-regular;
+      font-family: var(--font-regular);
       font-size: 16px;
       margin-bottom: 30px;
     }
@@ -41,18 +41,8 @@
       font-size: 14px;
       width: 50%;
 
-      &.acceptButton {
-        background-color: #445b7c;
-      }
-
       &.declineButton {
-        background-color: rgba(68, 91, 124, 0.05) !important;
-        color: $text-color-accent !important;
         margin-right: 20px;
-
-        &:hover {
-          background-color: rgba(68, 91, 124, 0.1) !important;
-        }
       }
 
       &.submitButtonSpinning {

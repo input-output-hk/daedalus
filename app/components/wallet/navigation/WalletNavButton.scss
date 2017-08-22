@@ -1,5 +1,3 @@
-@import './_walletNavConfig';
-
 // ========= LAYOUT =========
 
 .component {
@@ -23,15 +21,18 @@
 }
 
 .label {
-  @include walletNavLabelFont;
+  font-size: 14px;
+  font-family: var(--font-regular);
   display: block;
   overflow: visible;
 }
 
 .icon {
-  max-height: 19px;
-  max-width: 19px;
   margin-right: 10px;
+  & > svg {
+    max-height: 19px;
+    max-width: 19px;
+  }
 
   @media (max-width: 950px) {
     display: none;
@@ -40,14 +41,26 @@
 
 // ========= STATES =========
 
+.activeIcon {
+  path {
+    fill: var(--theme-icon-nav-color-active);
+  }
+}
+
+.normalIcon {
+  path {
+    fill: var(--theme-icon-nav-color);
+  }
+}
+
 .normal {
   .container {
-    color: $wallet-nav-color;
+    color: var(--theme-nav-item-text-color);
   }
 
   &:hover {
     .container {
-      background-color: $wallet-nav-bg-color-hover;
+      background-color: var(--theme-nav-item-background-color-hover);
     }
     cursor: pointer;
   }
@@ -55,8 +68,8 @@
 
 .active {
   .container {
-    background-color: $wallet-nav-bg-color-active;
-    color: $wallet-nav-color-active;
+    background-color: var(--theme-nav-item-background-color-active);
+    color: var(--theme-nav-item-text-color-active);
   }
 
   &:hover {

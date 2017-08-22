@@ -4,8 +4,11 @@
   height: 100%;
   transition: background-color 500ms;
   width: 100%;
+  &.is-loading-theme {
+    background-color: transparent !important;
+  }
   &.is-connecting {
-    background-color: $color-primary;
+    background-color: var(--theme-connecting-background-color);
   }
 }
 
@@ -22,23 +25,37 @@
 }
 
 .cardanoLogo {
-  display: block;
-  left: calc(50% - (86px/2));
-  position: absolute;
-  top: calc(50% - 135px/2 - 115px);
-  width: 86px;
+  & > svg {
+    display: block;
+    left: calc(50% - (86px/2));
+    position: absolute;
+    top: calc(50% - 135px/2 - 115px);
+    width: 86px;
+  }
 }
 
 .daedalusLogo {
-  display: block;
-  left: calc(50% - (173px/2));
-  position: absolute;
-  top: calc(50% - 135px/2);
-  width: 173px;
+  & > svg {
+    display: block;
+    left: calc(50% - (173px/2));
+    position: absolute;
+    top: calc(50% - 135px/2);
+    width: 173px;
+  }
+}
+
+.connectingLogo {
+  & > svg path {
+    fill: var(--theme-icon-connecting-logo-color);
+  }
+}
+
+.syncingLogo > svg path {
+  fill: var(--theme-icon-syncing-logo-color);
 }
 
 .headline {
-  font-family: $font-light;
+  font-family: var(--font-light);
   font-size: 16px;
 }
 

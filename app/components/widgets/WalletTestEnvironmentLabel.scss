@@ -1,8 +1,8 @@
 .component {
-  background-color: #ab1700;
+  background-color: var(--theme-test-environment-label-background-color);
   box-shadow: 0 1px 4px 0 rgba(0, 0, 0, 0.38);
-  color: #fafbfc;
-  font-family: $font-regular;
+  color: var(--theme-test-environment-label-text-color);
+  font-family: var(--font-regular);
   font-size: 14px;
   height: 34px;
   line-height: 1.21;
