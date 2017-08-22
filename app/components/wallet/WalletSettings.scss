@@ -19,15 +19,9 @@
   font-size: 16px;
   margin-bottom: 20px;
 
-<<<<<<< HEAD
   p, li {
-    color: #abadb0;
-    font-family: $font-regular;
-=======
-  p {
     color: var(--theme-bordered-box-text-color);
     font-family: var(--font-regular);
->>>>>>> master
     line-height: 1.38;
   }
 
