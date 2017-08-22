@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import SettingsMenuItem from './SettingsMenuItem';
 import styles from './SettingsMenu.scss';
-import { ROUTES } from '../../../Routes';
+import { ROUTES } from '../../../routes-config';
 
 const messages = defineMessages({
   general: {

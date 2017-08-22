@@ -6,7 +6,7 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import globalMessages from '../i18n/global-messages';
 import LocalizableError from '../i18n/LocalizableError';
-import { ROUTES } from '../Routes';
+import { ROUTES } from '../routes-config';
 import { buildRoute } from '../lib/routing-helpers';
 import environment from '../environment';
 

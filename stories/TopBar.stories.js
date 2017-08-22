@@ -53,4 +53,4 @@ storiesOf('TopBar', module)
       topbar={topBarProductionEnv}
       sidebar={<noscript />}
     />
-  ))
+  ));

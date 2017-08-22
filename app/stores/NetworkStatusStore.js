@@ -3,7 +3,7 @@ import { observable, action, computed, runInAction } from 'mobx';
 import Log from 'electron-log';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import { ROUTES } from '../Routes';
+import { ROUTES } from '../routes-config';
 import type { GetSyncProgressResponse } from '../api';
 
 // To avoid slow reconnecting on store reset, we cache the most important props

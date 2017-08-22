@@ -5,7 +5,7 @@ import { ThemeProvider } from 'react-css-themr';
 import DevTools from 'mobx-react-devtools';
 import { Router } from 'react-router';
 import { IntlProvider } from 'react-intl';
-import Routes from './Routes';
+import { Routes } from './Routes';
 import { daedalusTheme } from './themes/daedalus';
 import environment from './environment';
 import translations from './i18n/translations';
