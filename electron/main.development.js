@@ -9,7 +9,7 @@ import ipcApi from './ipc-api';
 import getLogsFolderPath from './lib/getLogsFolderPath';
 import { daedalusLogger, cardanoNodeLogger } from './lib/remoteLog';
 import ClientApi from 'daedalus-client-api';
-import jsClientApi from 'daedalus-client-api/src/tls_workaround';
+import { readCA, notify } from './tls-workaround';
 
 const APP_NAME = 'Daedalus';
 // Configure default logger levels for console and file outputs
@@ -99,12 +99,12 @@ app.on('ready', async () => {
 
   try {
 
-    const ca = jsClientApi.readCA(path.join(__dirname, '../tls/ca.crt'));
+    const ca = readCA(path.join(__dirname, '../tls/ca.crt'));
 
     const tlsConfig = ClientApi.tlsInit(ca);
     let messageCallback, errorCallback = null;
 
-    jsClientApi.notify(
+    notify(
       ca,
       function handleNotifyMessage(...args) {
         if (messageCallback) {

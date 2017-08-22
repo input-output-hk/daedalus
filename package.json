@@ -151,7 +151,8 @@
     "validator": "6.3.0",
     "wallet-address-validator": "0.1.0",
     "winston": "2.3.1",
-    "winston-papertrail": "1.0.4"
+    "winston-papertrail": "1.0.4",
+    "ws": "^3.1.0"
   },
   "devEngines": {
     "node": "6.x",
