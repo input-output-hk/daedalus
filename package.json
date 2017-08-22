@@ -134,6 +134,7 @@
     "postcss": "5.2.16",
     "qrcode.react": "0.6.1",
     "random-words": "0.0.1",
+    "raw-loader": "0.5.1",
     "react": "15.4.2",
     "react-addons-css-transition-group": "15.4.2",
     "react-copy-to-clipboard": "4.2.3",
@@ -145,13 +146,14 @@
     "react-number-format": "1.1.2",
     "react-polymorph": "0.3.1",
     "react-router": "3.0.3",
+    "react-svg-inline": "2.0.0",
     "route-parser": "0.0.5",
     "source-map-support": "0.4.14",
-    "tail": "1.2.1",
     "validator": "6.3.0",
     "wallet-address-validator": "0.1.0",
     "winston": "2.3.1",
-    "winston-papertrail": "1.0.4"
+    "winston-papertrail": "1.0.4",
+    "ws": "^3.1.0"
   },
   "devEngines": {
     "node": "6.x",

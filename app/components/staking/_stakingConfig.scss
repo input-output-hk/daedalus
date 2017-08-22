@@ -1,14 +1,7 @@
-$staking-background-color: $color-primary-bg;
-$staking-content-background-color: $color-lighter-grey;
-$staking-content-border-color: $color-light-grey;
-$staking-font-color-regular: $text-color-regular;
-$staking-font-color-accent: $text-color-accent;
-$staking-font-color-link: $text-color-accent;
-
 %contentBorderAndBackground {
-  border: solid 1px $staking-content-border-color;
+  border: solid 1px var(--theme-staking-content-border-color);
   border-radius: 4px;
-  background-color: $staking-content-background-color;
+  background-color: var(--theme-staking-content-background-color);
 }
 
 %baseTypography {
@@ -18,12 +11,12 @@ $staking-font-color-link: $text-color-accent;
 
 %accentText {
   @extend %baseTypography;
-  font-family: $font-semibold;
-  color: $staking-font-color-accent;
+  font-family: var(--font-semibold);
+  color: var(--theme-staking-font-color-accent);
 }
 
 %regularText {
   @extend %baseTypography;
-  font-family: $font-regular;
-  color: $staking-font-color-regular;
+  font-family: var(--font-regular);
+  color: var(--theme-staking-font-color-regular);
 }

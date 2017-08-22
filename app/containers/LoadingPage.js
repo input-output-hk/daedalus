@@ -22,7 +22,10 @@ export default class LoadingPage extends Component {
       hasBeenConnected,
       hasBlockSyncingStarted,
     } = stores.networkStatus;
-    const { hasLoadedCurrentLocale } = stores.app;
+    const {
+      hasLoadedCurrentLocale,
+      hasLoadedCurrentTheme,
+    } = stores.app;
     return (
       <CenteredLayout>
         <Loading
@@ -33,6 +36,7 @@ export default class LoadingPage extends Component {
           hasBeenConnected={hasBeenConnected}
           hasBlockSyncingStarted={hasBlockSyncingStarted}
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
+          hasLoadedCurrentTheme={hasLoadedCurrentTheme}
         />
       </CenteredLayout>
     );

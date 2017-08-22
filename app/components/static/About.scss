@@ -1,21 +1,27 @@
 .container {
-  background-color: #fafbfc;
+  background-color: var(--theme-about-window-background-color);
   display: flex;
   flex-direction: column;
+  height: 100%;
   padding: 30px 30px 20px;
 
   .headerWrapper {
-    border-bottom: 1px solid #dfe4e8;
+    border-bottom: 1px solid var(--theme-about-window-header-bottom-border-color);
     display: flex;
     padding-bottom: 20px;
 
     .daedalusIcon {
-      height: 58px;
-      width: 74px;
+      svg {
+        height: 58px;
+        width: 74px;
+        path {
+          fill: var(--theme-about-window-daedalus-icon-color);
+        }
+      }
     }
 
     .daedalusTitleVersion {
-      color: #5e6066;
+      color: var(--theme-about-window-title-varsion-color);
       flex: 1;
       margin-left: 30px;
 
@@ -24,11 +30,11 @@
         font-size: 24px;
         letter-spacing: 6px;
         line-height: 1.33;
-        -webkit-text-stroke: 0.5px #5e6066;
+        -webkit-text-stroke: 0.5px var(--theme-about-window-title-stroke-color);
       }
 
       .daedalusVersion {
-        font-family: $font-regular;
+        font-family: var(--font-regular);
         font-size: 16px;
         font-weight: 300;
         line-height: 1.38;
@@ -37,17 +43,22 @@
     }
 
     .cardanoIcon {
-      height: 43px;
       margin-top: 7.5px;
-      width: 47px;
+      svg {
+        height: 43px;
+        width: 47px;
+        path {
+          fill: var(--theme-about-window-cardano-icon-color);
+        }
+      }
     }
   }
 
   .contentText {
-    border-bottom: 1px solid #dfe4e8;
-    color: #5e6066;
+    border-bottom: 1px solid var(--theme-about-window-content-bottom-border-color);
+    color: var(--theme-about-window-content-text-color);
     flex: 1;
-    font-family: $font-regular;
+    font-family: var(--font-regular);
     font-size: 12px;
     line-height: 1.25;
     margin-top: 20px;
@@ -59,8 +70,8 @@
 
     a,
     .copyright {
-      color: #5e6066;
-      font-family: $font-regular;
+      color: var(--theme-about-window-copyright-color);
+      font-family: var(--font-regular);
       font-size: 12px;
       line-height: 1.25;
     }

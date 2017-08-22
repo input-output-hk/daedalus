@@ -22,7 +22,7 @@ export default function () {
   });
 
   this.When(/^I click on "Continue" button$/, function () {
-    return this.waitAndClick('.SendLogsChoiceForm_component .SendLogsChoiceForm_acceptButton');
+    return this.waitAndClick('.SendLogsChoiceForm_component .acceptButton');
   });
 
   this.Then(/^I should not see the "Send logs choice" screen anymore$/, function () {

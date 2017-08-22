@@ -1,9 +1,9 @@
 .component {
   align-items: center;
-  background-color: rgba(171, 23, 0, 0.94);
+  background-color: var(--theme-ada-redemption-disclaimer-background-color);
   bottom: 0;
   box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25);
-  color: #fafbfc;
+  color: var(--theme-ada-redemption-disclaimer-text-color);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -15,14 +15,25 @@
   top: 0;
 
   .icon {
-    height: 110px;
     margin-bottom: 36px;
     object-fit: contain;
-    width: 110px;
+    & > svg {
+      height: 110px;
+      width: 110px;
+      path {
+        fill: var(--theme-icon-ada-redemption-attention-color);
+      }
+      path:nth-child(1) {
+        opacity: 0.2;
+      }
+      path:nth-child(2) {
+        opacity: 0.6;
+      }
+    }
   }
 
   h1, p, button {
-    font-family: $font-regular;
+    font-family: var(--font-regular);
   }
 
   h1 {
@@ -38,10 +49,10 @@
   }
 
   button {
-    background-color: #ab1700;
-    border: solid 1px #fafbfc;
+    background-color: var(--theme-ada-redemption-disclaimer-button-background-color);
+    border: solid 1px var(--theme-ada-redemption-disclaimer-button-border-color);
     border-radius: 5px;
-    color: #fafbfc;
+    color: var(--theme-ada-redemption-disclaimer-button-text-color);
     cursor: pointer;
     height: 50px;
     font-size: 14px;
@@ -51,8 +62,8 @@
 
     &:not(.disabled) {
       &:hover {
-        background-color: #fafbfc;
-        color: #ab1700;
+        background-color: var(--theme-ada-redemption-disclaimer-button-background-color-hover);
+        color: var(--theme-ada-redemption-disclaimer-button-text-color-hover);
       }
     }
 
@@ -69,19 +80,19 @@
       padding-top: 20px;
 
       .SimpleCheckbox_check {
-        border-color: #fafbfc;
+        border-color: var(--theme-ada-redemption-disclaimer-checkbox-color-check);
 
         &.SimpleCheckbox_checked {
-          background-color: #fafbfc;
+          background-color: var(--theme-ada-redemption-disclaimer-checkbox-color-checked);
 
           &:after {
-            border-color: #ab1700;
+            border-color: var(--theme-ada-redemption-disclaimer-checkbox-color-after);
           }
         }
       }
 
       .SimpleCheckbox_label {
-        color: #fafbfc;
+        color: var(--theme-ada-redemption-disclaimer-checkbox-label-color);
       }
     }
   }

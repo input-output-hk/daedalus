@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import SvgInline  from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import styles from './WalletNavButton.scss';
@@ -9,25 +10,27 @@ export default class WalletNavButton extends Component {
 
   props: {
     label: string,
-    normalIcon: string,
-    activeIcon: string,
+    icon: string,
     isActive: boolean,
     onClick: Function,
     className?: string,
   };
 
   render() {
-    const { isActive, normalIcon, activeIcon, onClick, className } = this.props;
-    const iconUrl = isActive ? activeIcon : normalIcon;
+    const { isActive, icon, onClick, className } = this.props;
     const componentClasses = classnames([
       className,
       styles.component,
       isActive ? styles.active : styles.normal
     ]);
+    const iconClasses = classnames([
+      styles.icon,
+      isActive ? styles.activeIcon : styles.normalIcon
+    ]);
     return (
       <button className={componentClasses} onClick={onClick}>
         <div className={styles.container}>
-          <img className={styles.icon} src={iconUrl} role="presentation" />
+          <SvgInline svg={icon} className={iconClasses} />
           <span className={styles.label}>{this.props.label}</span>
         </div>
       </button>

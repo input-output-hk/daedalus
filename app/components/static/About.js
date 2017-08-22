@@ -1,10 +1,11 @@
 // @flow
 import React, {Component} from 'react';
+import SvgInline from 'react-svg-inline';
 import { ipcRenderer } from 'electron';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './About.scss';
-import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.svg';
-import cardanoIcon from '../../assets/images/cardano-logo.svg';
+import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
+import cardanoIcon from '../../assets/images/cardano-logo.inline.svg';
 
 const messages = defineMessages({
   aboutWindowTitle: {
@@ -52,14 +53,14 @@ export default class About extends Component {
 
         <div className={styles.headerWrapper}>
 
-          <img className={styles.daedalusIcon} src={daedalusIcon} role="presentation" />
+          <SvgInline svg={daedalusIcon} className={styles.daedalusIcon} />
 
           <div className={styles.daedalusTitleVersion}>
             <div className={styles.daedalusTitle}>{intl.formatMessage(messages.aboutTitle)}</div>
             <div className={styles.daedalusVersion}>{intl.formatMessage(messages.aboutReleaseVersion)}</div>
           </div>
 
-          <img className={styles.cardanoIcon} src={cardanoIcon} role="presentation" />
+          <SvgInline svg={cardanoIcon} className={styles.cardanoIcon} />
         </div>
 
         <div className={styles.contentText}>

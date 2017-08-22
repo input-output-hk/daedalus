@@ -6,8 +6,8 @@
   position: absolute;
   bottom: 60px;
   right: 19px;
-  color: $color-light-grey;
-  font-family: $font-light;
+  color: var(--theme-input-right-floating-text-color);
+  font-family: var(--font-light);
   font-size: 14px;
 }
 
@@ -15,8 +15,8 @@
   position: absolute;
   bottom: 16px;
   right: 20px;
-  color: $color-light-grey;
-  font-family: $font-light;
+  color: var(--theme-input-right-floating-text-color);
+  font-family: var(--font-light);
   font-size: 16px;
   text-transform: uppercase;
 }

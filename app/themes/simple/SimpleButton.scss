@@ -4,9 +4,9 @@
 // Css module overrides go here …
 
 .root {
-  background: $button-up-bg;
+  background: var(--theme-button-primary-background-color);
   font-size: 14px;
-  font-family: $font-medium;
+  font-family: var(--font-medium);
   position: relative;
   text-transform: none;
   width: 360px;
@@ -16,32 +16,36 @@
 :global {
   .primary {
     &[disabled] {
-      color: #fff;
-      opacity: 0.3;
+      background: var(--theme-button-primary-background-color-disabled);
+      color: var(--theme-button-primary-text-color);
     }
     &:not([disabled]) {
-      color: #fff;
+      background: var(--theme-button-primary-background-color);
+      color: var(--theme-button-primary-text-color);
       &:hover {
-        background: $button-hover-bg;
+        background: var(--theme-button-primary-background-color-hover);
       }
       &:active {
-        background: $button-pressed-bg;
+        background: var(--theme-button-primary-background-color-active);
       }
     }
   }
 
   .flat {
-    &:not([disabled]) {
-      background-color: #eef1f3;
-      color: #5e6066;
-      &:hover {
-        color: #5e6066;
-        background-color: darken(#eef1f3, 7%);
-      }
-    }
     &[disabled] {
-      color: darken(#eef1f3, 7%);
+      color: var(--theme-button-flat-background-color-hover);
       opacity: 0.3;
+    }
+    &:not([disabled]) {
+      background-color: var(--theme-button-flat-background-color);
+      color: var(--theme-button-flat-text-color);
+      &:hover {
+        background-color: var(--theme-button-flat-background-color-hover);
+        color: var(--theme-button-flat-text-color);
+      }
+      &:active {
+        background-color: var(--theme-button-flat-background-color-active);
+      }
     }
   }
 }

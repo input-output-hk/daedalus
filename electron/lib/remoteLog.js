@@ -16,24 +16,10 @@ const winstonPapertrailDaedalus = new winston.transports.Papertrail(
   })
 );
 
-const winstonPapertrailCardanoNode = new winston.transports.Papertrail(
-  Object.assign({}, papertrailConfiguration, {
-    program: 'Cardano node'
-  })
-);
-
 winstonPapertrailDaedalus.on('error', (error: Error) => {
   Log.error('Error connecting to papertrail logging service for Daedalus', error);
 });
 
-winstonPapertrailCardanoNode.on('error', (error: Error) => {
-  Log.error('Error connecting to papertrail logging service for Cardano node', error);
-});
-
 export const daedalusLogger = new winston.Logger({
   transports: [winstonPapertrailDaedalus]
-});
-
-export const cardanoNodeLogger = new winston.Logger({
-  transports: [winstonPapertrailCardanoNode]
 });

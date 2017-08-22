@@ -5,11 +5,12 @@ import { ThemeProvider } from 'react-css-themr';
 import { Router } from 'react-router';
 import { IntlProvider } from 'react-intl';
 import Routes from './Routes';
+import AboutPage from './containers/static/AboutPage';
 import { daedalusTheme } from './themes/daedalus';
 import translations from './i18n/translations';
 import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
-import AboutPage from './containers/static/AboutPage';
+import ThemeManager from './ThemeManager';
 
 @observer
 export default class SystemMenuProvider extends Component {
@@ -24,6 +25,8 @@ export default class SystemMenuProvider extends Component {
   render() {
     const { stores, actions, history, route } = this.props;
     const locale = stores.app.currentLocale;
+    const currentTheme = stores.app.currentTheme;
+    const theme = require(`./themes/daedalus/${currentTheme}.js`); // eslint-disable-line
 
     let page;
     if (route === 'about') {
@@ -31,13 +34,16 @@ export default class SystemMenuProvider extends Component {
     }
 
     return (
-      <Provider stores={stores} actions={actions}>
-        <ThemeProvider theme={daedalusTheme}>
-          <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
-            {page}
-          </IntlProvider>
-        </ThemeProvider>
-      </Provider>
+      <div>
+        <ThemeManager variables={theme} />
+        <Provider stores={stores} actions={actions}>
+          <ThemeProvider theme={daedalusTheme}>
+            <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
+              {page}
+            </IntlProvider>
+          </ThemeProvider>
+        </Provider>
+      </div>
     );
   }
 }

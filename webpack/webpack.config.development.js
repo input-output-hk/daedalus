@@ -72,10 +72,6 @@ module.exports = validate(merge(baseConfig, {
     ]
   },
 
-  sassLoader: {
-    data: '@import "' + './app/themes/daedalus/_theme.scss' + '";'
-  },
-
   // eslint: {
   //   formatter: formatter
   // },

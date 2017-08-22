@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import SvgInline  from 'react-svg-inline';
 import classnames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
@@ -11,8 +12,8 @@ import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
-import iconCopy from '../../assets/images/clipboard-ic.svg';
-import iconProtected from '../../assets/images/protected-off.svg';
+import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
+import iconProtected from '../../assets/images/protected-off.inline.svg';
 import WalletAddress from '../../domain/WalletAddress';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -153,6 +154,7 @@ export default class WalletReceive extends Component {
     ]);
 
     const generateAddressButtonClasses = classnames([
+      'primary',
       'generateAddressButton',
       walletHasPassword ? styles.submitWithPasswordButton : styles.submitButton,
       isSubmitting ? styles.spinning : null,
@@ -179,6 +181,10 @@ export default class WalletReceive extends Component {
       </div>
     );
 
+    // Get QRCode color value from active theme's CSS variable
+    const qrCodeColor = document.documentElement ?
+      document.documentElement.style.getPropertyValue('--theme-receive-qr-code-color') : '#000';
+
     return (
       <div className={styles.component}>
 
@@ -189,6 +195,7 @@ export default class WalletReceive extends Component {
               <QRCode
                 value={walletAddress}
                 bgColor="transparent"
+                fgColor={qrCodeColor}
                 size={160}
               />
             </div>
@@ -200,7 +207,7 @@ export default class WalletReceive extends Component {
                   text={walletAddress}
                   onCopy={onCopyAddress.bind(this, walletAddress)}
                 >
-                  <img className={styles.copyIconBig} src={iconCopy} role="presentation" />
+                  <SvgInline svg={iconCopy} className={styles.copyIconBig} />
                 </CopyToClipboard>
               </div>
 
@@ -218,7 +225,7 @@ export default class WalletReceive extends Component {
 
             </div>
 
-            <img className={styles.protectedIcon} src={iconProtected} role="presentation" />
+            <SvgInline svg={iconProtected} className={styles.protectedIcon} />
           </div>
 
           <div className={styles.generatedAddresses}>
@@ -247,7 +254,7 @@ export default class WalletReceive extends Component {
                       onCopy={onCopyAddress.bind(this, address.id)}
                     >
                       <span className={styles.copyAddress}>
-                        <img className={styles.copyIcon} src={iconCopy} role="presentation" />
+                        <SvgInline svg={iconCopy} className={styles.copyIcon} />
                         <span>{intl.formatMessage(messages.copyAddressLabel)}</span>
                       </span>
                     </CopyToClipboard>
