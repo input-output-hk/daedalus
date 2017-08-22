@@ -341,7 +341,9 @@ export default class CardanoClientApi {
     Log.debug('CardanoClientApi::importWalletFromKey called');
     const { filePath, walletPassword } = request;
     try {
-      const importedWallet: ApiWallet = await ClientApi.importWallet(tlsConfig, filePath, walletPassword);
+      const importedWallet: ApiWallet = await ClientApi.importWallet(
+        tlsConfig, filePath, walletPassword
+      );
       Log.debug('CardanoClientApi::importWalletFromKey success');
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
@@ -473,7 +475,9 @@ export default class CardanoClientApi {
       const localDifficulty = response._spLocalCD.getChainDifficulty.getBlockCount;
       // In some cases we dont get network difficulty & we need to wait for it from the notify API
       let networkDifficulty = null;
-      if (response._spNetworkCD) networkDifficulty = response._spNetworkCD.getChainDifficulty.getBlockCount;
+      if (response._spNetworkCD) {
+        networkDifficulty = response._spNetworkCD.getChainDifficulty.getBlockCount;
+      }
       return { localDifficulty, networkDifficulty };
     } catch (error) {
       Log.error('CardanoClientApi::syncProgress error: ' + stringifyError(error));

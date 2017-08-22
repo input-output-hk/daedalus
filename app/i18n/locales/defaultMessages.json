@@ -1610,6 +1610,53 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Export Wallet",
+        "description": "headline for \"export wallet to file\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "app/components/wallet/settings/export-to-file/WalletExportToFileDialog.js",
+        "id": "wallet.exportToFile.dialog.headline",
+        "start": {
+          "column": 12,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!You are exporting <strong>{walletName}</strong> to a file.",
+        "description": "headline for \"export wallet to file\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "app/components/wallet/settings/export-to-file/WalletExportToFileDialog.js",
+        "id": "wallet.exportToFile.dialog.introduction",
+        "start": {
+          "column": 16,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Export",
+        "description": "Label for export wallet to file submit button.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "app/components/wallet/settings/export-to-file/WalletExportToFileDialog.js",
+        "id": "wallet.exportToFile.dialog.submit.label",
+        "start": {
+          "column": 21,
+          "line": 25
+        }
+      }
+    ],
+    "path": "app/components/wallet/settings/export-to-file/WalletExportToFileDialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Paper certificate",
         "description": "headline for \" for paper wallet mnemonic certificate dialog.",
         "end": {
@@ -1808,86 +1855,6 @@
       }
     ],
     "path": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Export",
-        "description": "headline for \"export paper wallet\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 16
-        },
-        "file": "app/components/wallet/settings/WalletExportDialog.js",
-        "id": "wallet.export.dialog.headline",
-        "start": {
-          "column": 12,
-          "line": 12
-        }
-      },
-      {
-        "defaultMessage": "!!!Print",
-        "description": "Label \"Print\" on the dialog button for export paper wallet dialog.",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "app/components/wallet/settings/WalletExportDialog.js",
-        "id": "paper.wallet.export.dialog.button.printLabel",
-        "start": {
-          "column": 14,
-          "line": 17
-        }
-      }
-    ],
-    "path": "app/components/wallet/settings/WalletExportDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Full",
-        "description": "Tab title \"Full\" on wallet export dialog.",
-        "end": {
-          "column": 3,
-          "line": 12
-        },
-        "file": "app/components/wallet/settings/WalletExportDialogChoices.js",
-        "id": "wallet.export.choices.tab.title.full",
-        "start": {
-          "column": 16,
-          "line": 8
-        }
-      },
-      {
-        "defaultMessage": "!!!Read-only",
-        "description": "Tab title \"Read-only\" on wallet export dialog.",
-        "end": {
-          "column": 3,
-          "line": 17
-        },
-        "file": "app/components/wallet/settings/WalletExportDialogChoices.js",
-        "id": "wallet.export.choices.tab.title.readOnly",
-        "start": {
-          "column": 20,
-          "line": 13
-        }
-      },
-      {
-        "defaultMessage": "!!!Paper wallet",
-        "description": "Tab title \"Paper Wallet\" on wallet export dialog.",
-        "end": {
-          "column": 3,
-          "line": 22
-        },
-        "file": "app/components/wallet/settings/WalletExportDialogChoices.js",
-        "id": "wallet.export.choices.tab.title.paperWallet",
-        "start": {
-          "column": 23,
-          "line": 18
-        }
-      }
-    ],
-    "path": "app/components/wallet/settings/WalletExportDialogChoices.json"
   },
   {
     "descriptors": [
@@ -3542,6 +3509,34 @@
         "start": {
           "column": 29,
           "line": 119
+        }
+      },
+      {
+        "defaultMessage": "!!!Spending Password",
+        "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 128
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.spendingPasswordLabel",
+        "start": {
+          "column": 25,
+          "line": 124
+        }
+      },
+      {
+        "defaultMessage": "!!!Password",
+        "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 133
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "global.spendingPasswordPlaceholder",
+        "start": {
+          "column": 31,
+          "line": 129
         }
       }
     ],
