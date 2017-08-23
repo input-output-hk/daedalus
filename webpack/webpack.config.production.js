@@ -42,10 +42,6 @@ export default validate(merge(baseConfig, {
     ]
   },
 
-  sassLoader: {
-    data: '@import "' + './app/themes/daedalus/_theme.scss' + '";'
-  },
-
   plugins: [
     // https://webpack.github.io/docs/list-of-plugins.html#occurrenceorderplugin
     // https://github.com/webpack/webpack/issues/864
