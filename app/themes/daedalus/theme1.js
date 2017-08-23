@@ -214,7 +214,7 @@ export default {
   '--theme-about-window-title-varsion-color': '#5e6066',
   '--theme-about-window-title-stroke-color': '#5e6066',
   '--theme-about-window-content-text-color': '#5e6066',
-  '--theme-about-window-content-bottom-border-color': '#5e6066',
+  '--theme-about-window-content-bottom-border-color': '#dfe4e8',
   '--theme-about-window-copyright-color': '#5e6066',
 
   '--theme-backup-mnemonic-background-color': 'rgba(68, 91, 124, 0.05)',

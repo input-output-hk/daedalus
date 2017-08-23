@@ -1,12 +1,6 @@
 @import '../../../../themes/mixins/loading-spinner';
 @import '../../../../themes/mixins/error-message';
 
-.component {
-  :global .dialog_body {
-    overflow-y: hidden;
-  }
-}
-
 .isSubmitting {
   @include loading-spinner("../../../../assets/images/spinner-light.svg");
 }

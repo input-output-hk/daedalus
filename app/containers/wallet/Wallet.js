@@ -6,7 +6,7 @@ import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavi
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import AdaRedemptionSuccessOverlay from '../../components/wallet/ada-redemption/AdaRedemptionSuccessOverlay';
 import { buildRoute } from '../../lib/routing-helpers';
-import { ROUTES } from '../../Routes';
+import { ROUTES } from '../../routes-config';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer

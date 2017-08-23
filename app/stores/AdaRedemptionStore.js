@@ -16,7 +16,7 @@ import {
 import { DECIMAL_PLACES_IN_ADA } from '../config/numbersConfig';
 import LocalizableError from '../i18n/LocalizableError';
 import Wallet from '../domain/Wallet';
-import { ROUTES } from '../Routes';
+import { ROUTES } from '../routes-config';
 import type { RedeemPaperVendedAdaResponse } from '../api/index';
 import type { RedemptionTypeChoices } from '../types/redemptionTypes';
 
