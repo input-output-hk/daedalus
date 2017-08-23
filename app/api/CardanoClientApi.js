@@ -32,7 +32,9 @@ import type {
   RedeemPaperVendedAdaRequest,
   UpdateWalletPasswordRequest,
   TransactionFeeRequest,
-  TransactionFeeResponse
+  TransactionFeeResponse,
+  ExportWalletToFileRequest,
+  ExportWalletToFileResponse,
 } from './index';
 import {
   // ApiMethodNotYetImplementedError,
@@ -56,13 +58,13 @@ const registerNotifyCallback = remote.getGlobal('registerNotifyCallback');
 // Commented out helper code for testing async APIs
 // (async () => {
 //   const result = await ClientApi.nextUpdate();
-//   console.log('nextUpdate', result);
+//   console.Logger('nextUpdate', result);
 // })();
 
 // Commented out helper code for testing sync APIs
 // (() => {
 //   const result = ClientApi.isValidRedeemCode('HSoXEnt9X541uHvtzBpy8vKfTo1C9TkAX3wat2c6ikg=');
-//   console.log('isValidRedeemCode', result);
+//   console.Logger('isValidRedeemCode', result);
 // })();
 
 const getUserLocaleFromLocalStorage = () => new Promise((resolve, reject) => {
@@ -492,7 +494,9 @@ export default class CardanoClientApi {
       const localDifficulty = response._spLocalCD.getChainDifficulty.getBlockCount;
       // In some cases we dont get network difficulty & we need to wait for it from the notify API
       let networkDifficulty = null;
-      if (response._spNetworkCD) networkDifficulty = response._spNetworkCD.getChainDifficulty.getBlockCount;
+      if (response._spNetworkCD) {
+        networkDifficulty = response._spNetworkCD.getChainDifficulty.getBlockCount;
+      }
       return { localDifficulty, networkDifficulty };
     } catch (error) {
       Logger.error('CardanoClientApi::syncProgress error: ' + stringifyError(error));
@@ -525,25 +529,25 @@ export default class CardanoClientApi {
   }
 
   async setUserTheme(theme: string) {
-    Log.debug('CardanoClientApi::updateTheme called: ', theme);
+    Logger.debug('CardanoClientApi::updateTheme called: ', theme);
     try {
       await setUserThemeInLocalStorage(theme);
-      Log.debug('CardanoClientApi::updateTheme success: ', theme);
+      Logger.debug('CardanoClientApi::updateTheme success: ', theme);
       return theme;
     } catch (error) {
-      Log.error('CardanoClientApi::updateTheme error: ' + stringifyError(error));
+      Logger.error('CardanoClientApi::updateTheme error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
 
   async getUserTheme() {
-    Log.debug('CardanoClientApi::getTheme called');
+    Logger.debug('CardanoClientApi::getTheme called');
     try {
       const theme = await getUserThemeFromLocalStorage();
-      Log.debug('CardanoClientApi::getTheme success: ', theme);
+      Logger.debug('CardanoClientApi::getTheme success: ', theme);
       return theme;
     } catch (error) {
-      Log.error('CardanoClientApi::gettheme error: ' + stringifyError(error));
+      Logger.error('CardanoClientApi::gettheme error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
@@ -639,6 +643,18 @@ export default class CardanoClientApi {
       return fee;
     } catch (error) {
       Logger.error('CardanoClientApi::TransactionFee error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async exportWalletToFile(request: ExportWalletToFileRequest): ExportWalletToFileResponse {
+    Logger.debug('CardanoClientApi::exportWalletToFile called');
+    try {
+      const response = await ClientApi.exportBackupJSON(tlsConfig, request.filePath);
+      Logger.debug('CardanoClientApi::exportWalletToFile success: ', stringifyData(response));
+      return response;
+    } catch (error) {
+      Logger.error('CardanoClientApi::exportWalletToFile error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }

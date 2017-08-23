@@ -7,7 +7,7 @@ export default class DialogCloseButton extends Component {
 
   props: {
     onClose: Function,
-    icon: string,
+    icon?: string,
   };
 
   render() {

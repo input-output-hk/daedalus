@@ -6,8 +6,12 @@
 // When you add this file, we won't add the default configurations which is similar
 // to "React Create App". This only has babel loader to load JavaScript.
 devConfig = require('../webpack/webpack.config.development');
+const HappyPack = require('happypack');
 
 module.exports = {
   module: devConfig.module,
-  sassLoader: devConfig.sassLoader
+  sassLoader: devConfig.sassLoader,
+  plugins: [
+    new HappyPack({ loaders: ['babel-loader'] }),
+  ]
 };

@@ -6,7 +6,7 @@ import Wallet from '../domain/Wallet';
 import { matchRoute, buildRoute } from '../lib/routing-helpers';
 import Request from './lib/LocalizedRequest';
 import environment from '../environment';
-import { ROUTES } from '../Routes';
+import { ROUTES } from '../routes-config';
 import WalletAddDialog from '../components/wallet/WalletAddDialog';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type {
