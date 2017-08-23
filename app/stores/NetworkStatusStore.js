@@ -2,8 +2,8 @@
 import { observable, action, computed, runInAction } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
+import { ROUTES } from '../routes-config';
 import { Logger } from '../lib/logger';
-import { ROUTES } from '../Routes';
 import type { GetSyncProgressResponse } from '../api';
 
 // To avoid slow reconnecting on store reset, we cache the most important props

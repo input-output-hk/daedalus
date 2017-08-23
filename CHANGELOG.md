@@ -42,6 +42,7 @@ Changelog
 - Environment variable `NETWORK` introduced for distinguishing testnet/mainnet mode ([PR 400](https://github.com/input-output-hk/daedalus/pull/400))
 - Transaction fees API endpoint integrated ([PR 427](https://github.com/input-output-hk/daedalus/pull/427))
 - Setup environment variable for testnet/mainnet mode ([PR 400](https://github.com/input-output-hk/daedalus/pull/400))
+- Export wallet to file ([PR 426](https://github.com/input-output-hk/daedalus/pull/426))
 - Add theming options in settings ([PR 370](https://github.com/input-output-hk/daedalus/pull/398))
 
 ### Fixes
@@ -97,6 +98,8 @@ Changelog
 - Fixed failing acceptance tests ([PR 424](https://github.com/input-output-hk/daedalus/pull/424))
 - Show correct error message on sending money to Ada redemption address ([PR 423](https://github.com/input-output-hk/daedalus/pull/423))
 - Fixed ENOENT error on log file rotation ([PR 428](https://github.com/input-output-hk/daedalus/pull/428))
+- Fixed logging error ([PR 431](https://github.com/input-output-hk/daedalus/pull/431))
+- Add theming support on UI which was introduced after introduction of Theming feature ([PR 434](https://github.com/input-output-hk/daedalus/pull/434))
 
 ### Chores
 

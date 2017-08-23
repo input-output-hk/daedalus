@@ -11,8 +11,8 @@ import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
 import DeleteWalletButton from './settings/DeleteWalletButton';
 import DeleteWalletConfirmationDialog from './settings/DeleteWalletConfirmationDialog';
 import DeleteWalletDialogContainer from '../../containers/wallet/dialogs/DeleteWalletDialogContainer';
-import WalletExportDialog from './settings/WalletExportDialog';
-import WalletExportDialogContainer from '../../containers/wallet/dialogs/WalletExportDialogContainer';
+import WalletExportDialog from './settings/export-to-file/WalletExportToFileDialog';
+import WalletExportToFileDialogContainer from '../../containers/wallet/settings/WalletExportToFileDialogContainer';
 import ExportPaperWalletPrinterCopyDialog from './settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog';
 import ExportPaperWalletPrinterCopyDialogContainer from '../../containers/wallet/dialogs/paper-wallet-export/ExportPaperWalletPrinterCopyDialogContainer';
 import ExportPaperWalletMnemonicDialog from './settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog';
@@ -152,22 +152,19 @@ export default class WalletSettings extends Component {
             })}
           />
 
-          {/* TODO: Reactivate for paper wallet export feature!
-            <div className={styles.export}>
-              <strong>Export</strong>
-              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-              <p>Maecenas non fringilla velit. Vestibulum ante ipsum primis in
-              faucibus orci luctus et ultrices posuere cubilia Curae.</p>
-              <button
-                className={styles.export_link}
-                onClick={() => openDialogAction({
-                  dialog: WalletExportDialog,
-                })}
-              >
-                export
-              </button>
-            </div>
-          */}
+          <div className={styles.export}>
+            <h2>Export</h2>
+            <p>
+              Use your wallet on multiple devices
+              or give read-only copies to friends.
+            </p>
+            <button
+              className={styles.export_link}
+              onClick={() => openDialogAction({ dialog: WalletExportDialog })}
+            >
+              Export this wallet
+            </button>
+          </div>
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
@@ -190,7 +187,7 @@ export default class WalletSettings extends Component {
         ) : null}
 
         {isDialogOpen(WalletExportDialog) ? (
-          <WalletExportDialogContainer />
+          <WalletExportToFileDialogContainer />
         ) : null}
 
         {isDialogOpen(ExportPaperWalletPrinterCopyDialog) ? (

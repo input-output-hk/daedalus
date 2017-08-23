@@ -21,7 +21,7 @@
 }
 
 .syncing {
-  color: #5e6066;
+  color: var(--theme-syncing-text-color);
 }
 
 .cardanoLogo {
@@ -60,7 +60,7 @@
 }
 
 .connecting {
-  color: #fff;
+  color: var(--theme-connecting-text-color);
   .headline {
     overflow: visible;
     @include animated-ellipsis($width: 16px);

@@ -10,7 +10,7 @@ import menuIconOpened from '../../assets/images/menu-opened-ic.inline.svg';
 import menuIconClosed from '../../assets/images/menu-ic.inline.svg';
 import styles from './TopBar.scss';
 import { matchRoute } from '../../lib/routing-helpers';
-import { ROUTES } from '../../Routes';
+import { ROUTES } from '../../routes-config';
 
 @observer
 export default class TopBar extends Component {
