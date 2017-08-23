@@ -77,57 +77,52 @@ const installExtensions = async () => {
   }
 };
 
-// handles events passed from menu directly to the main process
-function menuEventHandler(event) {
-  let currentInitWindow;
-  // open "About Daedalus" window
-  if (event === 'open-about') {
-    const width = 640;
-    const height = 486;
-    aboutWindow = new BrowserWindow({
-      show: false,
-      width,
-      height,
-    });
+// open "About Daedalus" window
+function openAbout(event) {
+  const width = 640;
+  const height = 486;
+  aboutWindow = new BrowserWindow({
+    show: false,
+    width,
+    height,
+  });
 
-    // prevent resize about window
-    aboutWindow.setMinimumSize(width, height);
-    aboutWindow.setMaximumSize(width, height);
+  // prevent resize about window
+  aboutWindow.setMinimumSize(width, height);
+  aboutWindow.setMaximumSize(width, height);
 
-    aboutWindow.loadURL(`file://${__dirname}/../app/about.html?static=about`);
-    aboutWindow.on('page-title-updated', event => {
-     event.preventDefault()
-    });
-    aboutWindow.setTitle(`About Daedalus`); // default title
+  aboutWindow.loadURL(`file://${__dirname}/../app/index.html?window=about`);
+  aboutWindow.on('page-title-updated', event => {
+   event.preventDefault()
+  });
+  aboutWindow.setTitle(`About Daedalus`); // default title
 
-    // prevent direct link navigation in electron window -> open in default browser
-    aboutWindow.webContents.on('will-navigate', (e, url) => {
-      e.preventDefault()
-      require('electron').shell.openExternal(url)
-    })
+  // prevent direct link navigation in electron window -> open in default browser
+  aboutWindow.webContents.on('will-navigate', (e, url) => {
+    e.preventDefault()
+    require('electron').shell.openExternal(url)
+  })
 
-    aboutWindow.webContents.on('context-menu', (e, props) => {
-      const contextMenuOptions = [];
+  aboutWindow.webContents.on('context-menu', (e, props) => {
+    const contextMenuOptions = [];
 
-      if (isDev || isTest) {
-        const { x, y } = props;
-        contextMenuOptions.push({
-          label: 'Inspect element',
-          click() {
-            aboutWindow.inspectElement(x, y);
-          }
-        });
-      }
-      Menu.buildFromTemplate(contextMenuOptions).popup(aboutWindow);
-    });
-    currentInitWindow = aboutWindow;
-  }
-  // handle open window on finish
-  currentInitWindow.webContents.on('did-finish-load', ()=>{
+    if (isDev || isTest) {
+      const { x, y } = props;
+      contextMenuOptions.push({
+        label: 'Inspect element',
+        click() {
+          aboutWindow.inspectElement(x, y);
+        }
+      });
+    }
+    Menu.buildFromTemplate(contextMenuOptions).popup(aboutWindow);
+  });
+
+  // handle about window when content loaded
+  aboutWindow.webContents.on('did-finish-load', ()=>{
     aboutWindow.show();
     aboutWindow.focus();
   });
-
 }
 
 // update about window title when translation is ready
@@ -230,10 +225,10 @@ app.on('ready', async () => {
   });
 
   if (process.platform === 'darwin') {
-    menu = Menu.buildFromTemplate(osxMenu(app, mainWindow, menuEventHandler));
+    menu = Menu.buildFromTemplate(osxMenu(app, mainWindow, openAbout));
     Menu.setApplicationMenu(menu);
   } else {
-    menu = Menu.buildFromTemplate(winLinuxMenu(app, mainWindow, menuEventHandler));
+    menu = Menu.buildFromTemplate(winLinuxMenu(app, mainWindow, openAbout));
     mainWindow.setMenu(menu);
   }
 

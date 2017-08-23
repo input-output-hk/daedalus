@@ -1,10 +1,10 @@
-export default (app, window, mainEventHandler = null) => {
+export default (app, window, openAbout) => {
   return [{
     label: '&Daedalus',
     submenu: [{
       label: '&About',
       click() {
-        mainEventHandler('open-about');
+        openAbout();
       }
     }, {
       label: '&Close',

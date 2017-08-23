@@ -10,8 +10,7 @@ import ja from 'react-intl/locale-data/ja';
 import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
 import { hashHistory } from 'react-router';
 import App from './App';
-import SystemMenuProvider from './SystemMenuProvider';
-import AboutPage from './containers/static/AboutPage';
+import About from './About';
 import CardanoClientApi from './api/CardanoClientApi';
 import environment from './environment';
 import setupStores from './stores';
@@ -30,7 +29,7 @@ addLocaleData([en, de, hr, ja]);
 
 // Use test env if the 'test' url param is set to 'true'
 const isInjectedTestEnv = getUrlParameterByName('test') === 'true';
-const injectedMenuParam = getUrlParameterByName('static');
+const injectedWindowParam = getUrlParameterByName('window');
 if (isInjectedTestEnv) environment.current = environment.TEST;
 
 const initializeDaedalus = () => {
@@ -53,9 +52,9 @@ const initializeDaedalus = () => {
     }),
   };
 
-  if (injectedMenuParam) {
+  if (injectedWindowParam && injectedWindowParam === 'about') {
     render((
-      <SystemMenuProvider stores={stores} actions={actions} history={history} route={injectedMenuParam} />
+      <About stores={stores} />
     ), document.getElementById('root'));
   } else {
     render((
