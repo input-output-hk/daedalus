@@ -29,7 +29,7 @@ addLocaleData([en, de, hr, ja]);
 
 // Use test env if the 'test' url param is set to 'true'
 const isInjectedTestEnv = getUrlParameterByName('test') === 'true';
-const injectedWindowParam = getUrlParameterByName('window');
+const isAboutWindow = getUrlParameterByName('window') === 'about';
 if (isInjectedTestEnv) environment.current = environment.TEST;
 
 const initializeDaedalus = () => {
@@ -52,7 +52,7 @@ const initializeDaedalus = () => {
     }),
   };
 
-  if (injectedWindowParam && injectedWindowParam === 'about') {
+  if (isAboutWindow) {
     render((
       <About stores={stores} />
     ), document.getElementById('root'));

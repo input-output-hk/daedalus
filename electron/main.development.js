@@ -78,7 +78,7 @@ const installExtensions = async () => {
 };
 
 // open "About Daedalus" window
-function openAbout(event) {
+function openAbout() {
   const width = 640;
   const height = 486;
   aboutWindow = new BrowserWindow({
