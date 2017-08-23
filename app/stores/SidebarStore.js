@@ -1,7 +1,7 @@
 // @flow
 import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
-import { ROUTES } from '../Routes';
+import { ROUTES } from '../routes-config';
 import { DECIMAL_PLACES_IN_ADA } from '../config/numbersConfig';
 import { matchRoute } from './../lib/routing-helpers';
 

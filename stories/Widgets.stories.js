@@ -5,10 +5,10 @@ import StoryDecorator from './support/StoryDecorator';
 import BigButtonForDialogs from '../app/components/widgets/BigButtonForDialogs';
 import MnemonicInputWidget from '../app/components/widgets/forms/MnemonicInputWidget';
 import NotificationMessage from '../app/components/widgets/NotificationMessage';
-import createIcon from '../app/assets/images/create-ic.svg';
-import importIcon from '../app/assets/images/import-ic.svg';
-import joinSharedIcon from '../app/assets/images/join-shared-ic.svg';
-import NotificationIcon from '../app/assets/images/success-small.svg';
+import createIcon from '../app/assets/images/create-ic.inline.svg';
+import importIcon from '../app/assets/images/import-ic.inline.svg';
+import joinSharedIcon from '../app/assets/images/join-shared-ic.inline.svg';
+import NotificationIcon from '../app/assets/images/success-small.inline.svg';
 
 storiesOf('Widgets', module)
 

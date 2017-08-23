@@ -32,7 +32,9 @@ import type {
   RedeemPaperVendedAdaRequest,
   UpdateWalletPasswordRequest,
   TransactionFeeRequest,
-  TransactionFeeResponse
+  TransactionFeeResponse,
+  ExportWalletToFileRequest,
+  ExportWalletToFileResponse,
 } from './index';
 import {
   // ApiMethodNotYetImplementedError,
@@ -492,7 +494,9 @@ export default class CardanoClientApi {
       const localDifficulty = response._spLocalCD.getChainDifficulty.getBlockCount;
       // In some cases we dont get network difficulty & we need to wait for it from the notify API
       let networkDifficulty = null;
-      if (response._spNetworkCD) networkDifficulty = response._spNetworkCD.getChainDifficulty.getBlockCount;
+      if (response._spNetworkCD) {
+        networkDifficulty = response._spNetworkCD.getChainDifficulty.getBlockCount;
+      }
       return { localDifficulty, networkDifficulty };
     } catch (error) {
       Logger.error('CardanoClientApi::syncProgress error: ' + stringifyError(error));
@@ -639,6 +643,18 @@ export default class CardanoClientApi {
       return fee;
     } catch (error) {
       Logger.error('CardanoClientApi::TransactionFee error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async exportWalletToFile(request: ExportWalletToFileRequest): ExportWalletToFileResponse {
+    Logger.debug('CardanoClientApi::exportWalletToFile called');
+    try {
+      const response = await ClientApi.exportBackupJSON(tlsConfig, request.filePath);
+      Logger.debug('CardanoClientApi::exportWalletToFile success: ', stringifyData(response));
+      return response;
+    } catch (error) {
+      Logger.error('CardanoClientApi::exportWalletToFile error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }

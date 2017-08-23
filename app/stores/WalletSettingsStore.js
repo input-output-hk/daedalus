@@ -7,7 +7,9 @@ import globalMessages from '../i18n/global-messages';
 import type {
   UpdateWalletResponse,
   UpdateWalletPasswordResponse,
+  ExportWalletToFileResponse,
 } from '../api';
+import type { WalletExportToFileParams } from '../actions/wallet-settings-actions';
 
 export default class WalletSettingsStore extends Store {
 
@@ -19,6 +21,7 @@ export default class WalletSettingsStore extends Store {
   /* eslint-disable max-len */
   @observable updateWalletRequest: Request<UpdateWalletResponse> = new Request(this.api.updateWallet);
   @observable updateWalletPasswordRequest: Request<UpdateWalletPasswordResponse> = new Request(this.api.updateWalletPassword);
+  @observable exportWalletToFileRequest: Request<ExportWalletToFileResponse> = new Request(this.api.exportWalletToFile);
   /* eslint-enable max-len */
 
   @observable walletFieldBeingEdited = null;
@@ -31,6 +34,7 @@ export default class WalletSettingsStore extends Store {
     a.cancelEditingWalletField.listen(this._cancelEditingWalletField);
     a.updateWalletField.listen(this._updateWalletField);
     a.updateWalletPassword.listen(this._updateWalletPassword);
+    a.exportToFile.listen(this._exportToFile);
   }
 
   @action _updateWalletPassword = async ({ walletId, oldPassword, newPassword }: {
@@ -72,5 +76,12 @@ export default class WalletSettingsStore extends Store {
     this.lastUpdatedWalletField = null;
     this.walletFieldBeingEdited = null;
   };
+
+  @action _exportToFile = async (params: WalletExportToFileParams) => {
+    await this.exportWalletToFileRequest.execute({
+      filePath: params.filePath
+    });
+    this.actions.dialogs.closeActiveDialog.trigger();
+  }
 
 }
