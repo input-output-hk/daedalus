@@ -97,6 +97,7 @@ Changelog
 - Show correct error message on sending money to Ada redemption address ([PR 423](https://github.com/input-output-hk/daedalus/pull/423))
 - Fixed ENOENT error on log file rotation ([PR 428](https://github.com/input-output-hk/daedalus/pull/428))
 - Fixed logging error ([PR 431](https://github.com/input-output-hk/daedalus/pull/431))
+- Add theming support on UI which was introduced after introduction of Theming feature ([PR 434](https://github.com/input-output-hk/daedalus/pull/434))
 
 ### Chores
 
