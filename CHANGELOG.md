@@ -12,6 +12,7 @@ Changelog
 - Export wallet to file ([PR 426](https://github.com/input-output-hk/daedalus/pull/426))
 - Add theming options in settings ([PR 370](https://github.com/input-output-hk/daedalus/pull/398))
 - About page, available from the system menu ([PR 430](https://github.com/input-output-hk/daedalus/pull/430))
+- Send crash reports to the logging server ([PR 436](https://github.com/input-output-hk/daedalus/pull/436))
 
 ### Fixes
 

@@ -18,10 +18,21 @@ Log.transports.console.level = 'warn';
 Log.transports.file.level = 'debug';
 Log.transports.file.file = logFilePath;
 
+// Configure & start crash reporter
+app.setPath('temp', appLogFolderPath);
+
+crashReporter.start({
+  companyName: 'IOHK',
+  productName: APP_NAME,
+  submitURL: 'http://report-server.aws.iohk.io:8080/reporting/electroncrash',
+  uploadToServer: false
+});
+
 try {
   let sendLogsToRemoteServer;
   ipcMain.on('send-logs-choice', (event, sendLogs) => {
     sendLogsToRemoteServer = sendLogs;
+    crashReporter.setUploadToServer(sendLogs);
   });
   ipcMain.on('log-to-remote', (event, logEntry) => {
     if (sendLogsToRemoteServer) daedalusLogger.info(logEntry);
@@ -29,17 +40,6 @@ try {
 } catch (error) {
   Log.error('Error setting up log logging to remote server', error);
 }
-
-// Configure & start crash reporter
-app.setPath('temp', appLogFolderPath);
-
-// TODO: Update when endpoint is ready (crash reports are only saved locally for now)
-crashReporter.start({
-  companyName: 'IOHK',
-  productName: APP_NAME,
-  submitURL: '',
-  uploadToServer: false
-});
 
 Log.info(`========== Daedalus is starting at ${new Date()} ==========`);
 Log.info(`!!! Daedalus is running on ${os.platform()} version ${os.release()}
