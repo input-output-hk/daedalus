@@ -14,6 +14,7 @@ import type {
 import { action } from 'mobx';
 import { ipcRenderer, remote } from 'electron';
 import BigNumber from 'bignumber.js';
+import request from 'request';
 import { Logger } from '../lib/logger';
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
@@ -48,8 +49,8 @@ import {
 } from './errors';
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 
-const tlsConfig = remote.getGlobal('tlsConfig');
-const registerNotifyCallback = remote.getGlobal('registerNotifyCallback');
+const tls = remote.getGlobal('tls');
+const tlsConfig = ClientApi.tlsInit(tls.ca);
 
 // const notYetImplemented = () => new Promise((_, reject) => {
 //   reject(new ApiMethodNotYetImplementedError());
@@ -158,7 +159,9 @@ export default class CardanoClientApi {
   notifyCallbacks = [];
 
   constructor() {
-    registerNotifyCallback(this._onNotify, this._onNotifyError);
+    request.get({ url: 'http://localhost:8090/', ...tls }, function (error, response, body) {
+      console.log(error, response, body);
+    });
   }
 
   notify(onSuccess: Function, onError: Function = () => {}) {

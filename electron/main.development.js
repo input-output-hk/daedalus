@@ -1,14 +1,13 @@
 import { app, BrowserWindow, Menu, shell, ipcMain, dialog, crashReporter, globalShortcut } from 'electron';
 import os from 'os';
 import path from 'path';
+import fs from 'fs';
 import Log from 'electron-log';
 import osxMenu from './menus/osx';
 import winLinuxMenu from './menus/win-linux';
 import ipcApi from './ipc-api';
 import getLogsFolderPath from './lib/getLogsFolderPath';
 import { daedalusLogger } from './lib/remoteLog';
-import ClientApi from 'daedalus-client-api';
-import { readCA, notify } from './tls-workaround';
 
 const APP_NAME = 'Daedalus';
 // Configure default logger levels for console and file outputs
@@ -78,46 +77,18 @@ const installExtensions = async () => {
 app.on('ready', async () => {
   await installExtensions();
 
-  try {
-
-    const ca = readCA(path.join(__dirname, '../tls/ca.crt'));
-
-    const tlsConfig = ClientApi.tlsInit(ca);
-    let messageCallback, errorCallback = null;
-
-    notify(
-      ca,
-      function handleNotifyMessage(...args) {
-        if (messageCallback) {
-          try {
-            messageCallback(...args);
-          } catch (e) {
-            // The callback might have been released on page refresh etc.
-            messageCallback = null;
-          }
-        }
-      },
-      function handleNotifyError(...args) {
-        if (errorCallback) {
-          try {
-            errorCallback(...args);
-          } catch (e) {
-            // The callback might have been released on page refresh etc.
-            errorCallback = null;
-          }
-        }
-      }
-    );
-    Object.assign(global, {
-      tlsConfig,
-      registerNotifyCallback: (onMessage, onError) => {
-        messageCallback = onMessage;
-        errorCallback = onError;
-      },
-    });
-  } catch(error) {
-    Log.info("error:", error);
-  }
+  /**
+   * Here we are reading the TLS certificates from the file system
+   * and make it available to render processes via a global variable
+   * so that it can be used in HTTP and Websocket connections.
+   */
+  Object.assign(global, {
+    tls: {
+      cert: fs.readFileSync(path.join(__dirname, '../tls/server.crt')),
+      key: fs.readFileSync(path.join(__dirname, '../tls/server.key')),
+      ca: fs.readFileSync(path.join(__dirname, '../tls/ca.crt')),
+    }
+  });
 
   mainWindow = new BrowserWindow({
     show: false,
