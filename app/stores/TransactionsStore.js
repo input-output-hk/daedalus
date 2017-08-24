@@ -153,9 +153,11 @@ export default class TransactionsStore extends Store {
     return result ? result.transactions.length : 0;
   }
 
-  calculateTransactionFee = (from: string, to: string, amount: string) => (
-    this.api.calculateTransactionFee({ from, to, amount: new BigNumber(amount) })
-  );
+  calculateTransactionFee = (walletId: string, receiver: string, amount: string) => {
+    const accountId = this.stores.addresses._getAccountIdByWalletId(walletId);
+    if (!accountId) throw new Error('Active account required before calculating transaction fees.');
+    return this.api.calculateTransactionFee({ sender: accountId, receiver, amount });
+  }
 
   @action _refreshTransactionData = () => {
     if (this.stores.networkStatus.isConnected) {

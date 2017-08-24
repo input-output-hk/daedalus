@@ -26,8 +26,8 @@ export default class WalletSendPage extends Component {
     return (
       <WalletSendForm
         onSubmit={this.handleWalletSendFormSubmit}
-        calculateTransactionFee={(to, amount) => (
-          calculateTransactionFee(activeWallet.address, to, amount)
+        calculateTransactionFee={(receiver, amount) => (
+          calculateTransactionFee(activeWallet.id, receiver, amount)
         )}
         isSubmitting={sendMoneyRequest.isExecuting}
         addressValidator={isValidAddress}
