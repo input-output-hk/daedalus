@@ -157,6 +157,12 @@ export default {
   '--theme-switch-thumb-color-checked': '#2cbb69',
   '--theme-switch-label-color': '#5e6066',
 
+  '--theme-toggler-background': '#2cbb69',
+  '--theme-toggler-background-disabled': 'rgba(44, 187, 105, 0.3)',
+  '--theme-toggler-label-off-color': '#fafbfc',
+  '--theme-toggler-label-on-color': '#2cbb69',
+  '--theme-toggler-label-on-background': '#fafbfc',
+
   '--theme-test-environment-label-background-color': '#ab1700',
   '--theme-test-environment-label-text-color': '#fafbfc',
 

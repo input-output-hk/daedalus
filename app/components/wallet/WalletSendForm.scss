@@ -12,6 +12,22 @@
   margin-bottom: 20px;
 }
 
+.transactionFees {
+  margin-top: 15px;
+
+  .transactionFeesToggler {
+    margin: 0 8px;
+  }
+
+  .transactionFeesText {
+    color: var(--theme-bordered-box-text-color);
+    font-family: var(--font-regular);
+    line-height: 1.38;
+    opacity: 0.5;
+    vertical-align: middle;
+  }
+}
+
 .adaLabel {
   bottom: 16px;
   color: var(--theme-input-right-floating-text-color);

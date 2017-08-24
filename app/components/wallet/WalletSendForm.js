@@ -4,6 +4,8 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Button from 'react-polymorph/lib/components/Button';
 import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import SimpleTogglerSkin from 'react-polymorph/lib/skins/simple/TogglerSkin';
 import Input from 'react-polymorph/lib/components/Input';
 import NumericInput from 'react-polymorph/lib/components/NumericInput';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
@@ -111,6 +113,7 @@ export default class WalletSendForm extends Component {
 
   state = {
     transactionFee: new BigNumber(0),
+    isTransactionFeeIncluded: false,
   };
 
   // We need to track the mounted state in order to avoid calling
@@ -129,6 +132,11 @@ export default class WalletSendForm extends Component {
   adaToLovelaces = (adaAmount: string) => (
     adaAmount.replace('.', '').replace(/,/g, '').replace(/^0+/, '')
   );
+
+  onToggleTransactionFeeInclusion = (value: boolean) => {
+    this.setState({ isTransactionFeeIncluded: value });
+    // TODO: recalculate transaction fees!
+  };
 
   // FORM VALIDATION
   form = new ReactToolboxMobxForm({
@@ -201,7 +209,7 @@ export default class WalletSendForm extends Component {
     const { form } = this;
     const { intl } = this.context;
     const { isWalletPasswordSet, isSubmitting, error } = this.props;
-    const { transactionFee } = this.state;
+    const { transactionFee, isTransactionFeeIncluded } = this.state;
     const amountField = form.$('amount');
     const receiverField = form.$('receiver');
     const passwordField = form.$('walletPassword');
@@ -243,6 +251,19 @@ export default class WalletSendForm extends Component {
               total={totalAmount.toFormat(DECIMAL_PLACES_IN_ADA)}
               skin={<AmountInputSkin />}
             />
+
+            <div className={styles.transactionFees}>
+              <span className={styles.transactionFeesText}>Fees</span>
+              <Checkbox
+                className={styles.transactionFeesToggler}
+                labelLeft="Included"
+                labelRight="Excluded"
+                onChange={this.onToggleTransactionFeeInclusion}
+                checked={isTransactionFeeIncluded}
+                skin={<SimpleTogglerSkin />}
+              />
+              <span className={styles.transactionFeesText}>from the amount</span>
+            </div>
           </div>
 
           {isWalletPasswordSet ? (

@@ -10,3 +10,9 @@ $theme-font-regular: var(--font-regular);
 $theme-font-bold: var(--font-bold);
 
 @import "~react-polymorph/lib/themes/simple/_theme";
+
+$toggler-background: var(--theme-toggler-background);
+$toggler-background-disabled: var(--theme-toggler-background-disabled);
+$toggler-label-off-color: var(--theme-toggler-label-off-color);
+$toggler-label-on-color: var(--theme-toggler-label-on-color);
+$toggler-label-on-background: var(--theme-toggler-label-on-background);
