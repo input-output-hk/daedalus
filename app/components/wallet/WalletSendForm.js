@@ -91,6 +91,26 @@ const messages = defineMessages({
     defaultMessage: '!!!Password',
     description: 'Placeholder for the "Password" inputs in the wallet send form.'
   },
+  fees: {
+    id: 'wallet.send.form.feesNote.fees',
+    defaultMessage: '!!!Fees',
+    description: '"Fees" word before the Included/Excluded toggler in the transaction fees "Fees Included/Excluded from the amount" note.'
+  },
+  included: {
+    id: 'wallet.send.form.feesNote.included',
+    defaultMessage: '!!!Included',
+    description: '"Included" word from the Included/Excluded toggler in the transaction fees "Fees Included/Excluded from the amount" note.'
+  },
+  excluded: {
+    id: 'wallet.send.form.feesNote.excluded',
+    defaultMessage: '!!!Excluded',
+    description: '"Excluded" word from the Included/Excluded toggler in the transaction fees "Fees Included/Excluded from the amount" note.'
+  },
+  fromTheAmount: {
+    id: 'wallet.send.form.feesNote.fromTheAmount',
+    defaultMessage: '!!!from the amount',
+    description: '"from the amount" part after the Included/Excluded toggler in the transaction fees "Fees Included/Excluded from the amount" note.'
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -253,16 +273,20 @@ export default class WalletSendForm extends Component {
             />
 
             <div className={styles.transactionFees}>
-              <span className={styles.transactionFeesText}>Fees</span>
+              <span className={styles.transactionFeesText}>
+                {intl.formatMessage(messages.fees)}
+              </span>
               <Checkbox
                 className={styles.transactionFeesToggler}
-                labelLeft="Included"
-                labelRight="Excluded"
+                labelLeft={intl.formatMessage(messages.included)}
+                labelRight={intl.formatMessage(messages.excluded)}
                 onChange={this.onToggleTransactionFeeInclusion}
                 checked={isTransactionFeeIncluded}
                 skin={<SimpleTogglerSkin />}
               />
-              <span className={styles.transactionFeesText}>from the amount</span>
+              <span className={styles.transactionFeesText}>
+                {intl.formatMessage(messages.fromTheAmount)}
+              </span>
             </div>
           </div>
 
