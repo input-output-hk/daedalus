@@ -207,11 +207,23 @@ export default {
   '--theme-icon-connecting-logo-color': '#fafbfc',
   '--theme-icon-transaction-type-color': '#fafbfc',
 
+  '--theme-about-window-background-color': '#fafbfc',
+  '--theme-about-window-header-bottom-border-color': '#dfe4e8',
+  '--theme-about-window-daedalus-icon-color': '#5e6066',
+  '--theme-about-window-cardano-icon-color': '#5e6066',
+  '--theme-about-window-title-varsion-color': '#5e6066',
+  '--theme-about-window-title-stroke-color': '#5e6066',
+  '--theme-about-window-content-text-color': '#5e6066',
+  '--theme-about-window-content-bottom-border-color': '#dfe4e8',
+  '--theme-about-window-copyright-color': '#5e6066',
+
   '--theme-backup-mnemonic-background-color': 'rgba(68, 91, 124, 0.05)',
 
   '--theme-block-generation-info-color': '#5e6066',
 
   '--theme-connecting-background-color': '#345078',
+  '--theme-connecting-text-color': '#fff',
+  '--theme-syncing-text-color': '#5e6066',
 
   '--theme-error-color': '#ea4c5b',
 

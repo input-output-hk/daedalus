@@ -3,6 +3,7 @@ import localStorage from 'electron-json-storage';
 import ClientApi from 'daedalus-client-api';
 import type {
   ApiTransaction,
+  ApiTransactionFee,
   // ApiAccount,
   ApiAccounts,
   ApiAddress,
@@ -58,13 +59,13 @@ const registerNotifyCallback = remote.getGlobal('registerNotifyCallback');
 // Commented out helper code for testing async APIs
 // (async () => {
 //   const result = await ClientApi.nextUpdate();
-//   console.Logger('nextUpdate', result);
+//   console.log('nextUpdate', result);
 // })();
 
 // Commented out helper code for testing sync APIs
 // (() => {
 //   const result = ClientApi.isValidRedeemCode('HSoXEnt9X541uHvtzBpy8vKfTo1C9TkAX3wat2c6ikg=');
-//   console.Logger('isValidRedeemCode', result);
+//   console.log('isValidRedeemCode', result);
 // })();
 
 const getUserLocaleFromLocalStorage = () => new Promise((resolve, reject) => {
@@ -278,6 +279,21 @@ export default class CardanoClientApi {
       if (error.message.includes('Passphrase doesn\'t match')) {
         throw new IncorrectWalletPasswordError();
       }
+      throw new GenericApiError();
+    }
+  }
+
+  async calculateTransactionFee(request: TransactionFeeRequest) {
+    Log.debug('CardanoClientApi::calculateTransactionFee called');
+    const { sender, receiver, amount } = request;
+    try {
+      const response: ApiTransactionFee = await ClientApi.txFee(
+        tlsConfig, sender, receiver, amount
+      );
+      Log.debug('CardanoClientApi::calculateTransactionFee success: ', stringifyData(response));
+      return _createTransactionFeeFromServerData(response);
+    } catch (error) {
+      Log.error('CardanoClientApi::calculateTransactionFee error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
@@ -529,10 +545,10 @@ export default class CardanoClientApi {
   }
 
   async setUserTheme(theme: string) {
-    Logger.debug('CardanoClientApi::updateTheme called: ', theme);
+    Logger.debug('CardanoClientApi::updateTheme called: ' + theme);
     try {
       await setUserThemeInLocalStorage(theme);
-      Logger.debug('CardanoClientApi::updateTheme success: ', theme);
+      Logger.debug('CardanoClientApi::updateTheme success: ' + theme);
       return theme;
     } catch (error) {
       Logger.error('CardanoClientApi::updateTheme error: ' + stringifyError(error));
@@ -544,7 +560,7 @@ export default class CardanoClientApi {
     Logger.debug('CardanoClientApi::getTheme called');
     try {
       const theme = await getUserThemeFromLocalStorage();
-      Logger.debug('CardanoClientApi::getTheme success: ', theme);
+      Logger.debug('CardanoClientApi::getTheme success: ' + theme);
       return theme;
     } catch (error) {
       Logger.error('CardanoClientApi::gettheme error: ' + stringifyError(error));
@@ -651,7 +667,7 @@ export default class CardanoClientApi {
     Logger.debug('CardanoClientApi::exportWalletToFile called');
     try {
       const response = await ClientApi.exportBackupJSON(tlsConfig, request.filePath);
-      Logger.debug('CardanoClientApi::exportWalletToFile success: ', stringifyData(response));
+      Logger.debug('CardanoClientApi::exportWalletToFile success: ' + stringifyData(response));
       return response;
     } catch (error) {
       Logger.error('CardanoClientApi::exportWalletToFile error: ' + stringifyError(error));
@@ -740,5 +756,12 @@ const _createTransactionFromServerData = action(
         to: data.ctOutputAddrs,
       },
     });
+  }
+);
+
+const _createTransactionFeeFromServerData = action(
+  'CardanoClientApi::_createTransactionFeeFromServerData', (data: ApiTransactionFee) => {
+    const coins = data.getCCoin;
+    return new BigNumber(coins).dividedBy(LOVELACES_PER_ADA);
   }
 );

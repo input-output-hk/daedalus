@@ -125,9 +125,9 @@ export type UpdateWalletPasswordRequest = {
 export type UpdateWalletPasswordResponse = boolean;
 
 export type TransactionFeeRequest = {
-  from: string,
-  to: string,
-  amount: BigNumber,
+  sender: string,
+  receiver: string,
+  amount: string,
 };
 
 export type TransactionFeeResponse = BigNumber;
