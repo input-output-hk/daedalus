@@ -24,8 +24,8 @@ const messages = defineMessages({
   },
   walletKeyImportError: {
     id: 'api.errors.WalletKeyImportError',
-    defaultMessage: '!!!Key could not be imported, please make sure you are providing a correct key file.',
-    description: '"Key could not be imported, please make sure you are providing a correct key file." error message.'
+    defaultMessage: '!!!Wallet could not be imported, please make sure you are providing a correct file.',
+    description: '"Wallet could not be imported, please make sure you are providing a correct file." error message.'
   },
   notEnoughMoneyToSendError: {
     id: 'api.errors.NotEnoughMoneyToSendError',
