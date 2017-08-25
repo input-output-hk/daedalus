@@ -19,7 +19,7 @@ export default function () {
 
   this.Given(/^I have a wallet with funds$/, async function () {
     await this.client.executeAsync(function(filePath, done) {
-      daedalus.api.importWalletFromKey({ filePath, walletPassword: null }).then(() => {
+      daedalus.api.importWalletFromFile({ filePath, walletPassword: null, walletName: null }).then(() => {
         daedalus.stores.wallets.refreshWalletsData().then(done);
       });
     }, defaultWalletKeyFilePath);
@@ -29,7 +29,7 @@ export default function () {
 
   this.Given(/^I have a wallet with funds and password$/, async function () {
     await this.client.executeAsync(function(filePath, done) {
-      daedalus.api.importWalletFromKey({ filePath, walletPassword: 'Secret123' }).then(() => {
+      daedalus.api.importWalletFromFile({ filePath, walletPassword: 'Secret123', walletName: null }).then(() => {
         daedalus.stores.wallets.refreshWalletsData().then(done);
       });
     }, defaultWalletKeyFilePath);
