@@ -37,6 +37,7 @@ Changelog
 - Fixed ENOENT error on log file rotation ([PR 428](https://github.com/input-output-hk/daedalus/pull/428))
 - Fixed logging error ([PR 431](https://github.com/input-output-hk/daedalus/pull/431))
 - Add theming support on UI which was introduced after introduction of Theming feature ([PR 434](https://github.com/input-output-hk/daedalus/pull/434))
+- Fixed logger statement for the api call for calculating transaction fee ([PR 442](https://github.com/input-output-hk/daedalus/pull/442))
 
 ### Chores
 

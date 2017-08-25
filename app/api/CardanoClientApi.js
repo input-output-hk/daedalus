@@ -284,16 +284,16 @@ export default class CardanoClientApi {
   }
 
   async calculateTransactionFee(request: TransactionFeeRequest) {
-    Log.debug('CardanoClientApi::calculateTransactionFee called');
+    Logger.debug('CardanoClientApi::calculateTransactionFee called');
     const { sender, receiver, amount } = request;
     try {
       const response: ApiTransactionFee = await ClientApi.txFee(
         tlsConfig, sender, receiver, amount
       );
-      Log.debug('CardanoClientApi::calculateTransactionFee success: ', stringifyData(response));
+      Logger.debug('CardanoClientApi::calculateTransactionFee success: ' + stringifyData(response));
       return _createTransactionFeeFromServerData(response);
     } catch (error) {
-      Log.error('CardanoClientApi::calculateTransactionFee error: ' + stringifyError(error));
+      Logger.error('CardanoClientApi::calculateTransactionFee error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
