@@ -122,6 +122,8 @@
   "wallet.key.import.dialog.passwordSwitchPlaceholder": "!!!Activate to create password",
   "wallet.key.import.dialog.repeatPasswordLabel": "!!!Repeat password",
   "wallet.key.import.dialog.submitLabel": "!!!Import wallet",
+  "wallet.key.import.dialog.wallet.name.input.hint": "!!!e.g: Shopping Wallet",
+  "wallet.key.import.dialog.wallet.name.input.label": "!!!Wallet name",
   "wallet.key.import.dialog.walletPasswordLabel": "!!!Wallet password",
   "wallet.navigation.receive": "!!!Receive",
   "wallet.navigation.send": "!!!Send",

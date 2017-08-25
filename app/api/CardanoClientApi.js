@@ -376,9 +376,11 @@ export default class CardanoClientApi {
 
   async importWalletFromKey(request: ImportKeyRequest) {
     Logger.debug('CardanoClientApi::importWalletFromKey called');
-    const { filePath, walletPassword } = request;
+    const { filePath, walletPassword, walletName } = request;
     try {
-      const importedWallet: ApiWallet = await ClientApi.importWallet(tlsConfig, filePath, walletPassword);
+      const importedWallet: ApiWallet = await ClientApi.importWallet(
+        tlsConfig, filePath, walletPassword, walletName
+      );
       Logger.debug('CardanoClientApi::importWalletFromKey success');
       return _createWalletFromServerData(importedWallet);
     } catch (error) {

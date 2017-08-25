@@ -101,6 +101,7 @@ export type RedeemPaperVendedAdaResponse = RedeemPaperVendedAdaRequest;
 export type ImportKeyRequest = {
   filePath: string,
   walletPassword: ?string,
+  walletName: ?string,
 };
 
 export type ImportKeyResponse = Wallet;
