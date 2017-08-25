@@ -14,6 +14,7 @@ import {
 import { DECIMAL_PLACES_IN_ADA } from '../../app/config/numbersConfig';
 
 const defaultWalletKeyFilePath = path.resolve(__dirname, '../support/default-wallet.key');
+const defaultWalletJSONFilePath = path.resolve(__dirname, '../support/default-wallet.json');
 
 export default function () {
 
@@ -106,7 +107,7 @@ export default function () {
   });
 
   this.When(/^I select a valid wallet import key file$/, async function () {
-    await this.client.chooseFile('.WalletFileImportDialog .FileUploadWidget_dropZone input', defaultWalletKeyFilePath);
+    await this.client.chooseFile('.WalletFileImportDialog .FileUploadWidget_dropZone input', defaultWalletJSONFilePath);
   });
 
   this.When(/^I toggle "Activate to create password" switch on the import wallet key dialog$/, function () {
