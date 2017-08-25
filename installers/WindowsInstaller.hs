@@ -143,6 +143,7 @@ writeInstallerNSIS fullVersion = do
           , "DetailPrint \"liteFirewall::AddRule: $0\""
           ]
 
+        createDirectory "$APPDATA\\Daedalus\\Logs"
         exec "build-certificates-win64.bat >%APPDATA%\\Daedalus\\Logs\\build-certificates.log 2>&1"
 
         -- Uninstaller
