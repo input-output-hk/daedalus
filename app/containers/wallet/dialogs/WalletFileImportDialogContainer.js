@@ -1,11 +1,11 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletKeyImportDialog from '../../../components/wallet/key-import/WalletKeyImportDialog';
+import WalletFileImportDialog from '../../../components/wallet/file-import/WalletFileImportDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
-export default class WalletKeyImportDialogContainer extends Component {
+export default class WalletFileImportDialogContainer extends Component {
 
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
 
@@ -17,19 +17,19 @@ export default class WalletKeyImportDialogContainer extends Component {
 
   onCancel = () => {
     this.props.onClose();
-    this.props.stores.wallets.importFromKeyRequest.reset();
+    this.props.stores.wallets.importFromFileRequest.reset();
   };
 
   render() {
     const { wallets } = this.props.stores;
-    const { importFromKeyRequest } = wallets;
+    const { importFromFileRequest } = wallets;
 
     return (
-      <WalletKeyImportDialog
-        isSubmitting={importFromKeyRequest.isExecuting}
+      <WalletFileImportDialog
+        isSubmitting={importFromFileRequest.isExecuting}
         onSubmit={this.onSubmit}
         onClose={this.onCancel}
-        error={importFromKeyRequest.error}
+        error={importFromFileRequest.error}
       />
     );
   }

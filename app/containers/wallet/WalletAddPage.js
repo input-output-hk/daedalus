@@ -4,9 +4,9 @@ import { inject, observer } from 'mobx-react';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
 import WalletCreateDialog from '../../components/wallet/WalletCreateDialog';
 import WalletRestoreDialog from '../../components/wallet/WalletRestoreDialog';
-import WalletKeyImportDialog from '../../components/wallet/key-import/WalletKeyImportDialog';
+import WalletFileImportDialog from '../../components/wallet/file-import/WalletFileImportDialog';
 import WalletBackupDialog from '../../components/wallet/WalletBackupDialog';
-import WalletKeyImportDialogContainer from '../wallet/dialogs/WalletKeyImportDialogContainer';
+import WalletFileImportDialogContainer from '../wallet/dialogs/WalletFileImportDialogContainer';
 import WalletRestoreDialogContainer from '../wallet/dialogs/WalletRestoreDialogContainer';
 import WalletBackupDialogContainer from '../wallet/dialogs/WalletBackupDialogContainer';
 import WalletCreateDialogContainer from '../wallet/dialogs/WalletCreateDialogContainer';
@@ -50,8 +50,8 @@ export default class WalletAddPage extends Component {
       activeDialog = <WalletRestoreDialogContainer onClose={this.onClose} />;
     }
 
-    if (uiDialogs.isOpen(WalletKeyImportDialog)) {
-      activeDialog = <WalletKeyImportDialogContainer onClose={this.onClose} />;
+    if (uiDialogs.isOpen(WalletFileImportDialog)) {
+      activeDialog = <WalletFileImportDialogContainer onClose={this.onClose} />;
     }
 
     return activeDialog;

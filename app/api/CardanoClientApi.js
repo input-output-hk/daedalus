@@ -28,6 +28,7 @@ import type {
   RestoreWalletRequest,
   UpdateWalletRequest,
   RedeemAdaRequest,
+  ImportWalletFromKeyRequest,
   ImportWalletFromFileRequest,
   DeleteWalletRequest,
   RedeemPaperVendedAdaRequest,
@@ -42,7 +43,7 @@ import {
   GenericApiError,
   WalletAlreadyRestoredError,
   RedeemAdaError,
-  WalletKeyImportError,
+  WalletFileImportError,
   NotEnoughMoneyToSendError,
   NotAllowedToSendMoneyToRedeemAddressError,
   IncorrectWalletPasswordError,
@@ -374,6 +375,24 @@ export default class CardanoClientApi {
     }
   }
 
+  async importWalletFromKey(request: ImportWalletFromKeyRequest) {
+    Logger.debug('CardanoClientApi::importWalletFromKey called');
+    const { filePath, walletPassword } = request;
+    try {
+      const importedWallet: ApiWallet = await ClientApi.importWallet(
+        tlsConfig, filePath, walletPassword
+      );
+      Logger.debug('CardanoClientApi::importWalletFromKey success');
+      return _createWalletFromServerData(importedWallet);
+    } catch (error) {
+      Logger.error('CardanoClientApi::importWalletFromKey error: ' + stringifyError(error));
+      if (error.message.includes('Wallet with that mnemonics already exists')) {
+        throw new WalletAlreadyRestoredError();
+      }
+      throw new WalletFileImportError();
+    }
+  }
+
   async importWalletFromFile(request: ImportWalletFromFileRequest) {
     Logger.debug('CardanoClientApi::importWalletFromFile called');
     const { filePath, walletPassword, walletName } = request;
@@ -388,7 +407,7 @@ export default class CardanoClientApi {
       if (error.message.includes('Wallet with that mnemonics already exists')) {
         throw new WalletAlreadyRestoredError();
       }
-      throw new WalletKeyImportError();
+      throw new WalletFileImportError();
     }
   }
 

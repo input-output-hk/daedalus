@@ -14,68 +14,68 @@ import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
 import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../../lib/validations';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
-import styles from './WalletKeyImportDialog.scss';
+import styles from './WalletFileImportDialog.scss';
 
 const messages = defineMessages({
   headline: {
-    id: 'wallet.key.import.dialog.headline',
+    id: 'wallet.file.import.dialog.headline',
     defaultMessage: '!!!Import Wallet',
-    description: 'headline for "Import wallet from file with the key" dialog.'
+    description: 'headline for "Import wallet from file" dialog.'
   },
-  keyFileLabel: {
-    id: 'wallet.key.import.dialog.keyFileLabel',
-    defaultMessage: '!!!Upload your key',
-    description: 'Label "Upload your key" on the dialog for importing a wallet from the key.'
+  walletFileLabel: {
+    id: 'wallet.file.import.dialog.walletFileLabel',
+    defaultMessage: '!!!Import file',
+    description: 'Label "Import file" on the dialog for importing a wallet from a file.'
   },
-  keyFileHint: {
-    id: 'wallet.key.import.dialog.keyFileHint',
+  walletFileHint: {
+    id: 'wallet.file.import.dialog.walletFileHint',
     defaultMessage: '!!!Drop file here or click to choose',
-    description: 'Hint for the key file upload on the dialog for importing a wallet from the key.'
+    description: 'Hint for the file upload field on the dialog for importing a wallet from a file.'
   },
   walletNameInputLabel: {
-    id: 'wallet.key.import.dialog.wallet.name.input.label',
+    id: 'wallet.file.import.dialog.wallet.name.input.label',
     defaultMessage: '!!!Wallet name',
-    description: 'Label for the "wallet name" input in the wallet key import dialog.'
+    description: 'Label for the "wallet name" input in the wallet file import dialog.'
   },
   walletNameInputHint: {
-    id: 'wallet.key.import.dialog.wallet.name.input.hint',
+    id: 'wallet.file.import.dialog.wallet.name.input.hint',
     defaultMessage: '!!!e.g: Shopping Wallet',
-    description: 'Hint for the "Wallet name" in the wallet key import dialog.'
+    description: 'Hint for the "Wallet name" in the wallet file import dialog.'
   },
   submitLabel: {
-    id: 'wallet.key.import.dialog.submitLabel',
+    id: 'wallet.file.import.dialog.submitLabel',
     defaultMessage: '!!!Import wallet',
-    description: 'Label "Import you key" submit button on the dialog for importing a wallet from the key.'
+    description: 'Label "Import wallet" submit button on the dialog for importing a wallet from a file.'
   },
   passwordSwitchPlaceholder: {
-    id: 'wallet.key.import.dialog.passwordSwitchPlaceholder',
+    id: 'wallet.file.import.dialog.passwordSwitchPlaceholder',
     defaultMessage: '!!!Activate to create password',
-    description: 'Text for the "Activate to create password" switch in the wallet key import dialog.',
+    description: 'Text for the "Activate to create password" switch in the wallet file import dialog.',
   },
   passwordSwitchLabel: {
-    id: 'wallet.key.import.dialog.passwordSwitchLabel',
+    id: 'wallet.file.import.dialog.passwordSwitchLabel',
     defaultMessage: '!!!Password',
-    description: 'Label for the "Activate to create password" switch in the wallet key import dialog.',
+    description: 'Label for the "Activate to create password" switch in the wallet file import dialog.',
   },
   walletPasswordLabel: {
-    id: 'wallet.key.import.dialog.walletPasswordLabel',
+    id: 'wallet.file.import.dialog.walletPasswordLabel',
     defaultMessage: '!!!Wallet password',
-    description: 'Label for the "Wallet password" input in the wallet key import dialog.',
+    description: 'Label for the "Wallet password" input in the wallet file import dialog.',
   },
   repeatPasswordLabel: {
-    id: 'wallet.key.import.dialog.repeatPasswordLabel',
+    id: 'wallet.file.import.dialog.repeatPasswordLabel',
     defaultMessage: '!!!Repeat password',
-    description: 'Label for the "Repeat password" input in the wallet key import dialog.',
+    description: 'Label for the "Repeat password" input in the wallet file import dialog.',
   },
   passwordFieldPlaceholder: {
-    id: 'wallet.key.import.dialog.passwordFieldPlaceholder',
+    id: 'wallet.file.import.dialog.passwordFieldPlaceholder',
     defaultMessage: '!!!Password',
-    description: 'Placeholder for the "Password" inputs in the wallet key import dialog.',
+    description: 'Placeholder for the "Password" inputs in the wallet file import dialog.',
   },
 });
 
 @observer
-export default class WalletKeyImportDialog extends Component {
+export default class WalletFileImportDialog extends Component {
 
   props: {
     onSubmit: Function,
@@ -99,10 +99,10 @@ export default class WalletKeyImportDialog extends Component {
 
   form = new ReactToolboxMobxForm({
     fields: {
-      keyFile: {
+      walletFile: {
         type: 'file',
-        label: this.context.intl.formatMessage(messages.keyFileLabel),
-        placeholder: this.context.intl.formatMessage(messages.keyFileHint),
+        label: this.context.intl.formatMessage(messages.walletFileLabel),
+        placeholder: this.context.intl.formatMessage(messages.walletFileHint),
       },
       walletName: {
         label: this.context.intl.formatMessage(messages.walletNameInputLabel),
@@ -113,7 +113,7 @@ export default class WalletKeyImportDialog extends Component {
           return [
             isValidWalletName(field.value),
             this.context.intl.formatMessage(globalMessages.invalidWalletName)
-          ]
+          ];
         }],
       },
       walletPassword: {
@@ -158,9 +158,9 @@ export default class WalletKeyImportDialog extends Component {
     this.form.submit({
       onSuccess: (form) => {
         const { createPassword } = this.state;
-        const { keyFile, walletPassword, walletName } = form.values();
+        const { walletFile, walletPassword, walletName } = form.values();
         const walletData = {
-          filePath: keyFile.path,
+          filePath: walletFile.path,
           walletPassword: createPassword ? walletPassword : null,
           walletName: (walletName.length > 0) ? walletName : null,
         };
@@ -176,10 +176,10 @@ export default class WalletKeyImportDialog extends Component {
     const { isSubmitting, error, onClose } = this.props;
     const { createPassword } = this.state;
 
-    const keyFile = form.$('keyFile');
+    const walletFile = form.$('walletFile');
     const dialogClasses = classnames([
       styles.component,
-      'WalletKeyImportDialog',
+      'WalletFileImportDialog',
     ]);
 
     const walletPasswordFieldsClasses = classnames([
@@ -192,7 +192,7 @@ export default class WalletKeyImportDialog extends Component {
         className: isSubmitting ? styles.isSubmitting : null,
         label: intl.formatMessage(messages.submitLabel),
         primary: true,
-        disabled: !(keyFile.value instanceof File),
+        disabled: !(walletFile.value instanceof File),
         onClick: this.submit,
       }
     ];
@@ -211,11 +211,11 @@ export default class WalletKeyImportDialog extends Component {
         closeButton={<DialogCloseButton />}
       >
 
-        <div className={styles.keyUpload}>
+        <div className={styles.fileUpload}>
           <FileUploadWidget
-            {...keyFile.bind()}
-            selectedFile={keyFile.value}
-            onFileSelected={keyFile.onChange}
+            {...walletFile.bind()}
+            selectedFile={walletFile.value}
+            onFileSelected={walletFile.onChange}
           />
         </div>
 

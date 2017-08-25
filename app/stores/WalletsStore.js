@@ -29,7 +29,7 @@ export default class WalletsStore extends Store {
   // REQUESTS
   /* eslint-disable max-len */
   @observable walletsRequest: Request<GetWalletsResponse> = new Request(this.api.getWallets);
-  @observable importFromKeyRequest: Request<ImportWalletFromFileResponse> = new Request(this.api.importWalletFromFile);
+  @observable importFromFileRequest: Request<ImportWalletFromFileResponse> = new Request(this.api.importWalletFromFile);
   @observable createWalletRequest: Request<CreateWalletResponse> = new Request(this.api.createWallet);
   @observable deleteWalletRequest: Request<DeleteWalletResponse> = new Request(this.api.deleteWallet);
   @observable sendMoneyRequest: Request<CreateTransactionResponse> = new Request(this.api.createTransaction);
@@ -233,13 +233,13 @@ export default class WalletsStore extends Store {
 
   @action _importWalletFromFile = async (params: WalletImportFromFileParams) => {
     const { filePath, walletName, walletPassword } = params;
-    const importedWallet = await this.importFromKeyRequest.execute({
+    const importedWallet = await this.importFromFileRequest.execute({
       filePath, walletName, walletPassword,
     }).promise;
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(importedWallet);
     this.actions.dialogs.closeActiveDialog.trigger();
-    this.importFromKeyRequest.reset();
+    this.importFromFileRequest.reset();
     this.goToWalletRoute(importedWallet.id);
     this.refreshWalletsData();
   }

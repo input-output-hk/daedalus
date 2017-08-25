@@ -22,8 +22,8 @@ const messages = defineMessages({
     defaultMessage: '!!!Your ADA could not be redeemed correctly.',
     description: '"Your ADA could not be redeemed correctly." error message.'
   },
-  walletKeyImportError: {
-    id: 'api.errors.WalletKeyImportError',
+  walletFileImportError: {
+    id: 'api.errors.WalletFileImportError',
     defaultMessage: '!!!Wallet could not be imported, please make sure you are providing a correct file.',
     description: '"Wallet could not be imported, please make sure you are providing a correct file." error message.'
   },
@@ -80,11 +80,11 @@ export class RedeemAdaError extends LocalizableError {
   }
 }
 
-export class WalletKeyImportError extends LocalizableError {
+export class WalletFileImportError extends LocalizableError {
   constructor() {
     super({
-      id: messages.walletKeyImportError.id,
-      defaultMessage: messages.walletKeyImportError.defaultMessage,
+      id: messages.walletFileImportError.id,
+      defaultMessage: messages.walletFileImportError.defaultMessage,
     });
   }
 }

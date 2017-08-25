@@ -65,7 +65,7 @@
           "line": 29
         },
         "file": "app/api/errors.js",
-        "id": "api.errors.WalletKeyImportError",
+        "id": "api.errors.WalletFileImportError",
         "start": {
           "column": 24,
           "line": 25
@@ -1260,27 +1260,27 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Import Wallet",
-        "description": "headline for \"Import wallet from file with the key\" dialog.",
+        "description": "headline for \"Import wallet from file\" dialog.",
         "end": {
           "column": 3,
           "line": 24
         },
-        "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
-        "id": "wallet.key.import.dialog.headline",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
+        "id": "wallet.file.import.dialog.headline",
         "start": {
           "column": 12,
           "line": 20
         }
       },
       {
-        "defaultMessage": "!!!Upload your key",
-        "description": "Label \"Upload your key\" on the dialog for importing a wallet from the key.",
+        "defaultMessage": "!!!Import file",
+        "description": "Label \"Import file\" on the dialog for importing a wallet from a file.",
         "end": {
           "column": 3,
           "line": 29
         },
-        "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
-        "id": "wallet.key.import.dialog.keyFileLabel",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
+        "id": "wallet.file.import.dialog.walletFileLabel",
         "start": {
           "column": 16,
           "line": 25
@@ -1288,13 +1288,13 @@
       },
       {
         "defaultMessage": "!!!Drop file here or click to choose",
-        "description": "Hint for the key file upload on the dialog for importing a wallet from the key.",
+        "description": "Hint for the file upload field on the dialog for importing a wallet from a file.",
         "end": {
           "column": 3,
           "line": 34
         },
-        "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
-        "id": "wallet.key.import.dialog.keyFileHint",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
+        "id": "wallet.file.import.dialog.walletFileHint",
         "start": {
           "column": 15,
           "line": 30
@@ -1302,13 +1302,13 @@
       },
       {
         "defaultMessage": "!!!Wallet name",
-        "description": "Label for the \"wallet name\" input in the wallet key import dialog.",
+        "description": "Label for the \"wallet name\" input in the wallet file import dialog.",
         "end": {
           "column": 3,
           "line": 39
         },
-        "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
-        "id": "wallet.key.import.dialog.wallet.name.input.label",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
+        "id": "wallet.file.import.dialog.wallet.name.input.label",
         "start": {
           "column": 24,
           "line": 35
@@ -1316,13 +1316,13 @@
       },
       {
         "defaultMessage": "!!!e.g: Shopping Wallet",
-        "description": "Hint for the \"Wallet name\" in the wallet key import dialog.",
+        "description": "Hint for the \"Wallet name\" in the wallet file import dialog.",
         "end": {
           "column": 3,
           "line": 44
         },
-        "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
-        "id": "wallet.key.import.dialog.wallet.name.input.hint",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
+        "id": "wallet.file.import.dialog.wallet.name.input.hint",
         "start": {
           "column": 23,
           "line": 40
@@ -1330,13 +1330,13 @@
       },
       {
         "defaultMessage": "!!!Import wallet",
-        "description": "Label \"Import you key\" submit button on the dialog for importing a wallet from the key.",
+        "description": "Label \"Import wallet\" submit button on the dialog for importing a wallet from a file.",
         "end": {
           "column": 3,
           "line": 49
         },
-        "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
-        "id": "wallet.key.import.dialog.submitLabel",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
+        "id": "wallet.file.import.dialog.submitLabel",
         "start": {
           "column": 15,
           "line": 45
@@ -1344,13 +1344,13 @@
       },
       {
         "defaultMessage": "!!!Activate to create password",
-        "description": "Text for the \"Activate to create password\" switch in the wallet key import dialog.",
+        "description": "Text for the \"Activate to create password\" switch in the wallet file import dialog.",
         "end": {
           "column": 3,
           "line": 54
         },
-        "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
-        "id": "wallet.key.import.dialog.passwordSwitchPlaceholder",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
+        "id": "wallet.file.import.dialog.passwordSwitchPlaceholder",
         "start": {
           "column": 29,
           "line": 50
@@ -1358,13 +1358,13 @@
       },
       {
         "defaultMessage": "!!!Password",
-        "description": "Label for the \"Activate to create password\" switch in the wallet key import dialog.",
+        "description": "Label for the \"Activate to create password\" switch in the wallet file import dialog.",
         "end": {
           "column": 3,
           "line": 59
         },
-        "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
-        "id": "wallet.key.import.dialog.passwordSwitchLabel",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
+        "id": "wallet.file.import.dialog.passwordSwitchLabel",
         "start": {
           "column": 23,
           "line": 55
@@ -1372,13 +1372,13 @@
       },
       {
         "defaultMessage": "!!!Wallet password",
-        "description": "Label for the \"Wallet password\" input in the wallet key import dialog.",
+        "description": "Label for the \"Wallet password\" input in the wallet file import dialog.",
         "end": {
           "column": 3,
           "line": 64
         },
-        "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
-        "id": "wallet.key.import.dialog.walletPasswordLabel",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
+        "id": "wallet.file.import.dialog.walletPasswordLabel",
         "start": {
           "column": 23,
           "line": 60
@@ -1386,13 +1386,13 @@
       },
       {
         "defaultMessage": "!!!Repeat password",
-        "description": "Label for the \"Repeat password\" input in the wallet key import dialog.",
+        "description": "Label for the \"Repeat password\" input in the wallet file import dialog.",
         "end": {
           "column": 3,
           "line": 69
         },
-        "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
-        "id": "wallet.key.import.dialog.repeatPasswordLabel",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
+        "id": "wallet.file.import.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
           "line": 65
@@ -1400,20 +1400,20 @@
       },
       {
         "defaultMessage": "!!!Password",
-        "description": "Placeholder for the \"Password\" inputs in the wallet key import dialog.",
+        "description": "Placeholder for the \"Password\" inputs in the wallet file import dialog.",
         "end": {
           "column": 3,
           "line": 74
         },
-        "file": "app/components/wallet/key-import/WalletKeyImportDialog.js",
-        "id": "wallet.key.import.dialog.passwordFieldPlaceholder",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
+        "id": "wallet.file.import.dialog.passwordFieldPlaceholder",
         "start": {
           "column": 28,
           "line": 70
         }
       }
     ],
-    "path": "app/components/wallet/key-import/WalletKeyImportDialog.json"
+    "path": "app/components/wallet/file-import/WalletFileImportDialog.json"
   },
   {
     "descriptors": [

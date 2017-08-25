@@ -19,7 +19,7 @@ export default function () {
 
   this.Given(/^I have a wallet with funds$/, async function () {
     await this.client.executeAsync(function(filePath, done) {
-      daedalus.api.importWalletFromFile({ filePath, walletPassword: null, walletName: null }).then(() => {
+      daedalus.api.importWalletFromKey({ filePath, walletPassword: null }).then(() => {
         daedalus.stores.wallets.refreshWalletsData().then(done);
       });
     }, defaultWalletKeyFilePath);
@@ -29,7 +29,7 @@ export default function () {
 
   this.Given(/^I have a wallet with funds and password$/, async function () {
     await this.client.executeAsync(function(filePath, done) {
-      daedalus.api.importWalletFromFile({ filePath, walletPassword: 'Secret123', walletName: null }).then(() => {
+      daedalus.api.importWalletFromKey({ filePath, walletPassword: 'Secret123' }).then(() => {
         daedalus.stores.wallets.refreshWalletsData().then(done);
       });
     }, defaultWalletKeyFilePath);
@@ -102,29 +102,29 @@ export default function () {
   });
 
   this.When(/^I see the import wallet dialog$/, function () {
-    return this.client.waitForVisible('.WalletKeyImportDialog');
+    return this.client.waitForVisible('.WalletFileImportDialog');
   });
 
   this.When(/^I select a valid wallet import key file$/, async function () {
-    await this.client.chooseFile('.WalletKeyImportDialog .FileUploadWidget_dropZone input', defaultWalletKeyFilePath);
+    await this.client.chooseFile('.WalletFileImportDialog .FileUploadWidget_dropZone input', defaultWalletKeyFilePath);
   });
 
   this.When(/^I toggle "Activate to create password" switch on the import wallet key dialog$/, function () {
-    return this.waitAndClick('.WalletKeyImportDialog .SimpleSwitch_switch');
+    return this.waitAndClick('.WalletFileImportDialog .SimpleSwitch_switch');
   });
 
   this.When(/^I enter wallet spending password:$/, async function (table) {
     const fields = table.hashes()[0];
-    await this.client.setValue('.WalletKeyImportDialog .walletPassword input', fields.password);
-    await this.client.setValue('.WalletKeyImportDialog .repeatedPassword input', fields.repeatedPassword);
+    await this.client.setValue('.WalletFileImportDialog .walletPassword input', fields.password);
+    await this.client.setValue('.WalletFileImportDialog .repeatedPassword input', fields.repeatedPassword);
   });
 
   this.When(/^I click on the import wallet button in import wallet dialog$/, function () {
-    return this.waitAndClick('.WalletKeyImportDialog .primary');
+    return this.waitAndClick('.WalletFileImportDialog .primary');
   });
 
   this.When(/^I should see wallet spending password inputs$/, function () {
-    return this.client.waitForVisible('.WalletKeyImportDialog .walletPassword input');
+    return this.client.waitForVisible('.WalletFileImportDialog .walletPassword input');
   });
 
   this.When(/^I have one wallet address$/, function () {
@@ -292,7 +292,7 @@ export default function () {
   });
 
   this.Then(/^I should not see the import wallet dialog anymore$/, function () {
-    return this.client.waitForVisible('.WalletKeyImportDialog', null, true);
+    return this.client.waitForVisible('.WalletFileImportDialog', null, true);
   });
 
   this.Then(/^I should not see the restore wallet dialog anymore$/, function () {
