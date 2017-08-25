@@ -48,6 +48,7 @@ with CPU: ${JSON.stringify(os.cpus(), null, 2)} with ${JSON.stringify(os.totalme
 let menu;
 let mainWindow = null;
 let aboutWindow = null;
+let terminateAboutWindow = false;
 
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = process.env.NODE_ENV === 'production';
@@ -58,7 +59,9 @@ if (isDev) {
   require('electron-debug')(); // eslint-disable-line global-require
 }
 
-app.on('window-all-closed', () => app.quit());
+app.on('window-all-closed', () => {
+  app.quit()
+});
 
 const installExtensions = async () => {
   if (isDev) {
@@ -77,52 +80,11 @@ const installExtensions = async () => {
   }
 };
 
-// open "About Daedalus" window
 function openAbout() {
-  const width = 640;
-  const height = 486;
-  aboutWindow = new BrowserWindow({
-    show: false,
-    width,
-    height,
-  });
-
-  // prevent resize about window
-  aboutWindow.setMinimumSize(width, height);
-  aboutWindow.setMaximumSize(width, height);
-
-  aboutWindow.loadURL(`file://${__dirname}/../app/index.html?window=about`);
-  aboutWindow.on('page-title-updated', event => {
-   event.preventDefault()
-  });
-  aboutWindow.setTitle(`About Daedalus`); // default title
-
-  // prevent direct link navigation in electron window -> open in default browser
-  aboutWindow.webContents.on('will-navigate', (e, url) => {
-    e.preventDefault()
-    require('electron').shell.openExternal(url)
-  })
-
-  aboutWindow.webContents.on('context-menu', (e, props) => {
-    const contextMenuOptions = [];
-
-    if (isDev || isTest) {
-      const { x, y } = props;
-      contextMenuOptions.push({
-        label: 'Inspect element',
-        click() {
-          aboutWindow.inspectElement(x, y);
-        }
-      });
-    }
-    Menu.buildFromTemplate(contextMenuOptions).popup(aboutWindow);
-  });
-
-  // handle about window when content loaded
-  aboutWindow.webContents.on('did-finish-load', ()=>{
+  if (aboutWindow) {
     aboutWindow.show();
     aboutWindow.focus();
-  });
+  }
 }
 
 // update about window title when translation is ready
@@ -130,6 +92,10 @@ ipcMain.on('about-window-title', (event, title) => {
   if (aboutWindow) {
     aboutWindow.setTitle(title);
   }
+});
+
+app.on('before-quit', () => {
+  terminateAboutWindow = true;
 });
 
 app.on('ready', async () => {
@@ -200,7 +166,7 @@ app.on('ready', async () => {
   });
 
   mainWindow.on('closed', () => {
-    mainWindow = null;
+    app.quit();
   });
 
   if (isDev) mainWindow.openDevTools();
@@ -246,5 +212,56 @@ app.on('ready', async () => {
       globalShortcut.unregister('CommandOrControl+H');
     });
   }
+
+ // Load About window but keep it hidden
+  const width = 640;
+  const height = 486;
+  aboutWindow = new BrowserWindow({
+    show: false,
+    width,
+    height,
+  });
+
+  // prevent resize about window
+  aboutWindow.setMinimumSize(width, height);
+  aboutWindow.setMaximumSize(width, height);
+
+  aboutWindow.loadURL(`file://${__dirname}/../app/index.html?window=about`);
+  aboutWindow.on('page-title-updated', event => {
+   event.preventDefault()
+  });
+  aboutWindow.setTitle(`About Daedalus`); // default title
+
+  // prevent direct link navigation in electron window -> open in default browser
+  aboutWindow.webContents.on('will-navigate', (e, url) => {
+    e.preventDefault()
+    require('electron').shell.openExternal(url)
+  })
+
+  aboutWindow.webContents.on('context-menu', (e, props) => {
+    const contextMenuOptions = [];
+
+    if (isDev || isTest) {
+      const { x, y } = props;
+      contextMenuOptions.push({
+        label: 'Inspect element',
+        click() {
+          aboutWindow.inspectElement(x, y);
+        }
+      });
+    }
+    Menu.buildFromTemplate(contextMenuOptions).popup(aboutWindow);
+  });
+
+  aboutWindow.on('close', (e) => {
+    if (terminateAboutWindow) {
+      /* the user tried to quit the app */
+      app.quit();
+    } else {
+      /* the user only tried to close the aboutWindow */
+      e.preventDefault();
+      aboutWindow.hide();
+    }
+  });
 
 });
