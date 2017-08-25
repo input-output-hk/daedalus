@@ -67,7 +67,7 @@
         "file": "app/api/errors.js",
         "id": "api.errors.WalletFileImportError",
         "start": {
-          "column": 24,
+          "column": 25,
           "line": 25
         }
       },
@@ -1282,7 +1282,7 @@
         "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
         "id": "wallet.file.import.dialog.walletFileLabel",
         "start": {
-          "column": 16,
+          "column": 19,
           "line": 25
         }
       },
@@ -1296,7 +1296,7 @@
         "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
         "id": "wallet.file.import.dialog.walletFileHint",
         "start": {
-          "column": 15,
+          "column": 18,
           "line": 30
         }
       },
