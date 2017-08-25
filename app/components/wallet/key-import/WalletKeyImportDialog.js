@@ -162,7 +162,7 @@ export default class WalletKeyImportDialog extends Component {
         const walletData = {
           filePath: keyFile.path,
           walletPassword: createPassword ? walletPassword : null,
-          walletName: walletName ? walletName : null,
+          walletName: (walletName.length > 0) ? walletName : null,
         };
         this.props.onSubmit(walletData);
       },

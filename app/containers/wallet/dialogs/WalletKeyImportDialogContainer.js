@@ -12,7 +12,7 @@ export default class WalletKeyImportDialogContainer extends Component {
   props: InjectedDialogContainerProps;
 
   onSubmit = (values: { filePath: string, walletPassword: ?string, walletName: ?string }) => {
-    this.props.actions.wallets.importWalletFromKey.trigger(values);
+    this.props.actions.wallets.importWalletFromFile.trigger(values);
   };
 
   onCancel = () => {

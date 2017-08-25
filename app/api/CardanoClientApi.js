@@ -28,7 +28,7 @@ import type {
   RestoreWalletRequest,
   UpdateWalletRequest,
   RedeemAdaRequest,
-  ImportKeyRequest,
+  ImportWalletFromFileRequest,
   DeleteWalletRequest,
   RedeemPaperVendedAdaRequest,
   UpdateWalletPasswordRequest,
@@ -374,17 +374,17 @@ export default class CardanoClientApi {
     }
   }
 
-  async importWalletFromKey(request: ImportKeyRequest) {
-    Logger.debug('CardanoClientApi::importWalletFromKey called');
+  async importWalletFromFile(request: ImportWalletFromFileRequest) {
+    Logger.debug('CardanoClientApi::importWalletFromFile called');
     const { filePath, walletPassword, walletName } = request;
     try {
-      const importedWallet: ApiWallet = await ClientApi.importWallet(
+      const importedWallet: ApiWallet = await ClientApi.importBackupJSON(
         tlsConfig, filePath, walletPassword, walletName
       );
-      Logger.debug('CardanoClientApi::importWalletFromKey success');
+      Logger.debug('CardanoClientApi::importWalletFromFile success');
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
-      Logger.error('CardanoClientApi::importWalletFromKey error: ' + stringifyError(error));
+      Logger.error('CardanoClientApi::importWalletFromFile error: ' + stringifyError(error));
       if (error.message.includes('Wallet with that mnemonics already exists')) {
         throw new WalletAlreadyRestoredError();
       }
