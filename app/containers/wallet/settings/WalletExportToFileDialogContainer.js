@@ -31,11 +31,13 @@ export default class WalletExportToFileDialogContainer extends Component {
 
   onCancel = () => {
     this.props.actions.dialogs.closeActiveDialog.trigger();
+    this.props.stores.walletSettings.exportWalletToFileRequest.reset();
   };
 
   render() {
-    const { stores } = this.props;
-    const activeWallet = stores.wallets.active;
+    const { wallets, walletSettings } = this.props.stores;
+    const activeWallet = wallets.active;
+    const { exportWalletToFileRequest } = walletSettings;
 
     // We need an active wallet
     if (!activeWallet) return null;
@@ -45,8 +47,10 @@ export default class WalletExportToFileDialogContainer extends Component {
         walletName={activeWallet.name}
         hasSpendingPassword={activeWallet.hasPassword}
         isSubmitting={false}
+        isSubmitting={exportWalletToFileRequest.isExecuting}
         onSubmit={this.onSubmit}
         onClose={this.onCancel}
+        error={exportWalletToFileRequest.error}
       />
     );
   }
