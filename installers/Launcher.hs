@@ -26,7 +26,7 @@ launcherArgs launcher = unwords $
   , unwords $ map ("-u " ++) (installerArgs launcher)
   , maybe "" (("--update-archive " ++) . quote) (installerArchivePath launcher)
   , "--node-timeout 5 " ++ batchCmdNewline
-  , unwords $ map (\x -> "-n " ++ x ++ " " ++ batchCmdNewline) nodeArgs
+  , unwords $ map (\x ->  batchCmdNewline ++ "-n " ++ x) nodeArgs
   ]
     where
       nodeArgs = [
