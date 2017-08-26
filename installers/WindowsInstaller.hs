@@ -132,6 +132,7 @@ writeInstallerNSIS fullVersion = do
         file [] "ca.conf"
         file [] "server.conf"
         file [] "client.conf"
+        file [] "wallet-topology.yaml"
         writeFileLines "$INSTDIR\\daedalus.bat" (map str launcherScript)
         file [Recursive] "dlls\\"
         file [Recursive] "libressl\\"
