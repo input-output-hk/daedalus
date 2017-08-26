@@ -1,6 +1,9 @@
 rem DEPENDENCIES:
 rem   1. Node.js ('npm' binary in PATH)
 rem   2. 7zip    ('7z'  binary in PATH)
+rem   3. NSIS v3 ('makensis'  binary in C:\Program Files (x86)\NSIS\makensis)
+rem      3.1  Install this: https://downloads.sourceforge.net/project/nsis/NSIS%203/3.02.1/nsis-3.02.1-setup.exe
+rem      3.2  Overlay contents of this zip file: https://downloads.sourceforge.net/project/nsis/NSIS%203/3.02.1/nsis-3.02.1-strlen_8192.zip
 
 set MIN_CARDANO_BYTES=50000000
 set LIBRESSL_VERSION=2.5.3
