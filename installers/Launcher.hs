@@ -49,7 +49,7 @@ launcherArgs Launcher{..} = unwords $
               , "--update-archive ", quote updArchivePath
               ]
       nodeArgs = [
-        "--report-server", "http://report-server.aws.iohk.io:8080",
+        "--report-server", "http://report-server.awstest.iohkdev.io:8080",
         "--log-config", "log-config-prod.yaml",
         "--update-latest-path", quote (updArchivePath updater),
         "--keyfile", quote (runtimePath <> "Secrets-0.6" <> (pathSeparator : "secret.key")),
