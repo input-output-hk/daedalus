@@ -1,23 +1,25 @@
 rem DEPENDENCIES:
 rem   1. Node.js ('npm' binary in PATH)
 rem   2. 7zip    ('7z'  binary in PATH)
-rem   3. NSIS v3 ('makensis'  binary in C:\Program Files (x86)\NSIS\makensis)
-rem      3.1  Install this: https://downloads.sourceforge.net/project/nsis/NSIS%203/3.02.1/nsis-3.02.1-setup.exe
-rem      3.2  Overlay contents of this zip file: https://downloads.sourceforge.net/project/nsis/NSIS%203/3.02.1/nsis-3.02.1-strlen_8192.zip
 
 set MIN_CARDANO_BYTES=50000000
 set LIBRESSL_VERSION=2.5.3
 set CURL_VERSION=7.54.0
+set CARDANO_BRANCH_DEFAULT=cardano-sl-0.6-staging
+set DAEDALUS_VERSION_DEFAULT=local-dev-build-%CARDANO_BRANCH_DEFAULT%
 
 set DAEDALUS_VERSION=%1
-@if [%DAEDALUS_VERSION%]==[] (@echo FATAL: DAEDALUS_VERSION [argument #1] was not provided
-    exit /b 1);
+@if [%DAEDALUS_VERSION%]==[] (@echo WARNING: DAEDALUS_VERSION [argument #1] was not provided, defaulting to %DAEDALUS_VERSION_DEFAULT%
+    set DAEDALUS_VERSION=%DAEDALUS_VERSION_DEFAULT%);
 set CARDANO_BRANCH=%2
-@if [%CARDANO_BRANCH%]==[]   (@echo NOTE: CARDANO_BRANCH [argument #2] was not provided
-    exit /b 1);
+@if [%CARDANO_BRANCH%]==[]   (@echo WARNING: CARDANO_BRANCH [argument #2] was not provided, defaulting to %CARDANO_BRANCH_DEFAULT%
+    set CARDANO_BRANCH=%CARDANO_BRANCH_DEFAULT%);
 
 set CURL_URL=https://bintray.com/artifact/download/vszakats/generic/curl-%CURL_VERSION%-win64-mingw.7z
 set CURL_BIN=curl-%CURL_VERSION%-win64-mingw\bin
+set NSISVER=3.02.1
+set NSIS_URL=https://downloads.sourceforge.net/project/nsis/NSIS%%203/%NSISVER%/nsis-%NSISVER%-setup.exe
+set NSIS_PATCH_URL=https://downloads.sourceforge.net/project/nsis/NSIS%%203/%NSISVER%/nsis-%NSISVER%-strlen_8192.zip
 set CARDANO_URL=https://ci.appveyor.com/api/projects/jagajaga/cardano-sl/artifacts/CardanoSL.zip?branch=%CARDANO_BRANCH%
 set LIBRESSL_URL=https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-%LIBRESSL_VERSION%-windows.zip
 set DLLS_URL=https://s3.eu-central-1.amazonaws.com/cardano-sl-testing/DLLs.zip
@@ -36,6 +38,25 @@ del /f curl.exe curl-ca-bundle.crt libcurl.dll
 @if %errorlevel% neq 0 (@echo FAILED: couldn't extract curl from downloaded archive
 	popd & exit /b 1)
 
+@echo Obtaining NSIS %NSISVER% with 8k-string patch
+del /f nsis-setup.exe nsis-strlen_8192.zip
+curl -o nsis-setup.exe       --location %NSIS_URL%
+@if %errorlevel% neq 0 (@echo FAILED: curl -o nsis-setup.exe       --location %NSIS_URL%
+    exit /b 1)
+
+curl -o nsis-strlen_8192.zip --location %NSIS_PATCH_URL%
+@if %errorlevel% neq 0 (@echo FAILED: curl -o nsis-strlen_8192.zip --location %NSIS_PATCH_URL%
+    exit /b 1)
+
+nsis-setup.exe /S /SD
+@if %errorlevel% neq 0 (@echo FAILED: nsis-setup.exe /S /SD
+    exit /b 1)
+
+7z    x nsis-strlen_8192.zip -o"c:\Program Files (x86)\NSIS" -aoa -r
+@if %errorlevel% neq 0 (@echo FAILED: 7z    x nsis-strlen_8192.zip -o"c:\Program Files (x86)\NSIS" -aoa -r
+    exit /b 1)
+
+@echo Installing NPM
 call npm install
 @if %errorlevel% neq 0 (@echo FAILED: npm install
     exit /b 1)
