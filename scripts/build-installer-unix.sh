@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # DEPENDENCIES (binaries should be in PATH):
 #   0. 'git'
 #   1. 'curl'
@@ -107,13 +107,14 @@ test -d node_modules/daedalus-client-api/ -a -n "${fast_impure}" || {
         du -sh  daedalus-bridge.tar.xz
         tar xJf daedalus-bridge.tar.xz --strip-components=1 -C node_modules/daedalus-client-api/
         rm      daedalus-bridge.tar.xz
-        cd node_modules/daedalus-client-api
+        echo "cardano-sl build id is $(cat node_modules/daedalus-client-api/build-id)"
+        pushd node_modules/daedalus-client-api
               mv log-config-prod.yaml cardano-node cardano-launcher ../../installers
-        cd ../..
-        strip installers/cardano-node installers/cardano-launcher
+        popd
+        chmod +w installers/cardano-{node,launcher}
+        strip installers/cardano-{node,launcher}
         rm -f node_modules/daedalus-client-api/cardano-*
 }
-echo "cardano-sl build id is $(cat node_modules/daedalus-client-api/build-id)"
 
 test $(ls node_modules/ | wc -l) -gt 100 -a -n "${fast_impure}" ||
         nix-shell --run "npm install"
