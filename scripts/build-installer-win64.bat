@@ -128,7 +128,7 @@ pushd installers
     popd
 
     @echo Building the installer
-    stack setup --no-reinstall
+    stack setup --no-reinstall > nul
     @if %errorlevel% neq 0 (@echo FAILED: stack setup --no-reinstall
 	exit /b 1)
 
