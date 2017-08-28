@@ -123,7 +123,7 @@
   "wallet.file.import.dialog.wallet.name.input.hint": "例：ショッピングウォレット",
   "wallet.file.import.dialog.wallet.name.input.label": "ウォレット名",
   "wallet.file.import.dialog.walletFileHint": "ここにファイルをドロップする、またはクリックして選択してください",
-  "wallet.file.import.dialog.walletFileLabel": "キーをアップロード",
+  "wallet.file.import.dialog.walletFileLabel": "ファイルをインポート",
   "wallet.file.import.dialog.walletPasswordLabel": "ウォレットパスワード",
   "wallet.navigation.receive": "入金",
   "wallet.navigation.send": "送金",
