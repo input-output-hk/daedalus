@@ -41,6 +41,7 @@ import type {
 import {
   // ApiMethodNotYetImplementedError,
   GenericApiError,
+  WalletAlreadyImportedError,
   WalletAlreadyRestoredError,
   RedeemAdaError,
   WalletFileImportError,
@@ -386,8 +387,8 @@ export default class CardanoClientApi {
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
       Logger.error('CardanoClientApi::importWalletFromKey error: ' + stringifyError(error));
-      if (error.message.includes('Wallet with that mnemonics already exists')) {
-        throw new WalletAlreadyRestoredError();
+      if (error.message.includes('already exists')) {
+        throw new WalletAlreadyImportedError();
       }
       throw new WalletFileImportError();
     }
@@ -404,8 +405,8 @@ export default class CardanoClientApi {
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
       Logger.error('CardanoClientApi::importWalletFromFile error: ' + stringifyError(error));
-      if (error.message.includes('Wallet with that mnemonics already exists')) {
-        throw new WalletAlreadyRestoredError();
+      if (error.message.includes('already exists')) {
+        throw new WalletAlreadyImportedError();
       }
       throw new WalletFileImportError();
     }

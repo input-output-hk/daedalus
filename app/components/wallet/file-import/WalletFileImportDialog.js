@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
+// import Input from 'react-polymorph/lib/components/Input';
+// import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
+// import Checkbox from 'react-polymorph/lib/components/Checkbox';
+// import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
@@ -174,7 +174,7 @@ export default class WalletFileImportDialog extends Component {
     const { intl } = this.context;
     const { form } = this;
     const { isSubmitting, error, onClose } = this.props;
-    const { createPassword } = this.state;
+    // const { createPassword } = this.state;
 
     const walletFile = form.$('walletFile');
     const dialogClasses = classnames([
@@ -182,10 +182,10 @@ export default class WalletFileImportDialog extends Component {
       'WalletFileImportDialog',
     ]);
 
-    const walletPasswordFieldsClasses = classnames([
-      styles.walletPasswordFields,
-      createPassword ? styles.show : null,
-    ]);
+    // const walletPasswordFieldsClasses = classnames([
+    //   styles.walletPasswordFields,
+    //   createPassword ? styles.show : null,
+    // ]);
 
     const actions = [
       {
@@ -197,9 +197,9 @@ export default class WalletFileImportDialog extends Component {
       }
     ];
 
-    const walletNameField = form.$('walletName');
-    const walletPasswordField = form.$('walletPassword');
-    const repeatedPasswordField = form.$('repeatPassword');
+    // const walletNameField = form.$('walletName');
+    // const walletPasswordField = form.$('walletPassword');
+    // const repeatedPasswordField = form.$('repeatPassword');
 
     return (
       <Dialog
@@ -218,6 +218,9 @@ export default class WalletFileImportDialog extends Component {
             onFileSelected={walletFile.onChange}
           />
         </div>
+
+        {/* TODO: re-enable when wallet-name and wallet-password
+            support is added to the API endpoint
 
         <Input
           className="walletName"
@@ -257,6 +260,7 @@ export default class WalletFileImportDialog extends Component {
             </p>
           </div>
         </div>
+        */}
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 

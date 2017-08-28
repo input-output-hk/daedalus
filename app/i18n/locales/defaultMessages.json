@@ -30,17 +30,31 @@
         }
       },
       {
-        "defaultMessage": "!!!You already restored a wallet with this phrase.",
-        "description": "\"You already restored a wallet with this phrase.\" error message.",
+        "defaultMessage": "!!!Wallet you are trying to import already exists.",
+        "description": "\"Wallet you are trying to import already exists.\" error message.",
         "end": {
           "column": 3,
           "line": 19
         },
         "file": "app/api/errors.js",
-        "id": "api.errors.WalletAlreadyRestoredError",
+        "id": "api.errors.WalletAlreadyImportedError",
         "start": {
           "column": 30,
           "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet you are trying to restore already exists.",
+        "description": "\"Wallet you are trying to restore already exists.\" error message.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "app/api/errors.js",
+        "id": "api.errors.WalletAlreadyRestoredError",
+        "start": {
+          "column": 30,
+          "line": 20
         }
       },
       {
@@ -48,13 +62,13 @@
         "description": "\"Your ADA could not be redeemed correctly.\" error message.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 29
         },
         "file": "app/api/errors.js",
         "id": "api.errors.RedeemAdaError",
         "start": {
           "column": 18,
-          "line": 20
+          "line": 25
         }
       },
       {
@@ -62,13 +76,13 @@
         "description": "\"Wallet could not be imported, please make sure you are providing a correct file.\" error message.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 34
         },
         "file": "app/api/errors.js",
         "id": "api.errors.WalletFileImportError",
         "start": {
           "column": 25,
-          "line": 25
+          "line": 30
         }
       },
       {
@@ -76,13 +90,13 @@
         "description": "\"Not enough money to make this transaction.\" error message.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 39
         },
         "file": "app/api/errors.js",
         "id": "api.errors.NotEnoughMoneyToSendError",
         "start": {
           "column": 29,
-          "line": 30
+          "line": 35
         }
       },
       {
@@ -90,13 +104,13 @@
         "description": "\"It is not allowed to send money to Ada redemption address.\" error message.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 44
         },
         "file": "app/api/errors.js",
         "id": "api.errors.NotAllowedToSendMoneyToRedeemAddressError",
         "start": {
           "column": 45,
-          "line": 35
+          "line": 40
         }
       },
       {
@@ -104,13 +118,13 @@
         "description": "\"Incorrect wallet password.\" error message.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 49
         },
         "file": "app/api/errors.js",
         "id": "api.errors.IncorrectPasswordError",
         "start": {
           "column": 32,
-          "line": 40
+          "line": 45
         }
       }
     ],

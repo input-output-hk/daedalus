@@ -12,10 +12,15 @@ const messages = defineMessages({
     defaultMessage: '!!!This API method is not yet implemented.',
     description: '"This API method is not yet implemented." error message.'
   },
+  walletAlreadyImportedError: {
+    id: 'api.errors.WalletAlreadyImportedError',
+    defaultMessage: '!!!Wallet you are trying to import already exists.',
+    description: '"Wallet you are trying to import already exists." error message.'
+  },
   walletAlreadyRestoredError: {
     id: 'api.errors.WalletAlreadyRestoredError',
-    defaultMessage: '!!!You already restored a wallet with this phrase.',
-    description: '"You already restored a wallet with this phrase." error message.'
+    defaultMessage: '!!!Wallet you are trying to restore already exists.',
+    description: '"Wallet you are trying to restore already exists." error message.'
   },
   redeemAdaError: {
     id: 'api.errors.RedeemAdaError',
@@ -58,6 +63,15 @@ export class ApiMethodNotYetImplementedError extends LocalizableError {
     super({
       id: messages.apiMethodNotYetImplementedError.id,
       defaultMessage: messages.apiMethodNotYetImplementedError.defaultMessage,
+    });
+  }
+}
+
+export class WalletAlreadyImportedError extends LocalizableError {
+  constructor() {
+    super({
+      id: messages.walletAlreadyImportedError.id,
+      defaultMessage: messages.walletAlreadyImportedError.defaultMessage,
     });
   }
 }
