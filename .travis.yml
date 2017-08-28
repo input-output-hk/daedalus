@@ -8,7 +8,7 @@ matrix:
 env:
   global:
     - VERSION=0.5
-    - CARDANO_SL_BRANCH=cardano-sl-0.5
+    - CARDANO_SL_BRANCH=master
       # NOTE: when bumping nixpkgs, also update default.nix
     - NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/48ecdcf5980a6504cd3b884b121e29efb2fb83dc.tar.gz
     # AWS access key

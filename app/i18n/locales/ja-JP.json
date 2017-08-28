@@ -5,6 +5,7 @@
   "api.errors.GenericApiError": "エラーが発生しました。しばらくしてからもう一度お試しください。",
   "api.errors.IncorrectPasswordError": "無効なウォレットパスワード",
   "api.errors.NotAllowedToSendMoneyToRedeemAddressError": "Ada還元アドレスに送金することはできません。",
+  "api.errors.NotAllowedToSendMoneyToSameAddressError": "送金元と入金先が同じアドレスである場合にはトランザクションは行えません。このウォレットに十分なアドレスがあることを確認するか、別のアドレスに送金を行なってください。",
   "api.errors.NotEnoughMoneyToSendError": "トランザクションを行うための金額が不足しております。",
   "api.errors.RedeemAdaError": "ADAを正常に還元できませんでした。",
   "api.errors.WalletAlreadyRestoredError": "この復元フレーズは使用済みです。",
