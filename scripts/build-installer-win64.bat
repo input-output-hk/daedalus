@@ -1,6 +1,8 @@
 rem DEPENDENCIES:
 rem   1. Node.js ('npm' binary in PATH)
 rem   2. 7zip    ('7z'  binary in PATH)
+rem
+rem   installer dev mode:  set FAST_REBUILD/FASTER_REBUILD to skip to frontend/installer compilation
 
 set MIN_CARDANO_BYTES=50000000
 set LIBRESSL_VERSION=2.5.3
@@ -28,6 +30,11 @@ set DLLS_URL=https://s3.eu-central-1.amazonaws.com/cardano-sl-testing/DLLs.zip
 @echo ..with Cardano branch:      %CARDANO_BRANCH%
 @echo ..with LibreSSL version:    %LIBRESSL_VERSION%
 @echo .
+
+@if not [%FASTER_REBUILD%]==[] (@echo WARNING: FASTER_REBUILD set, skipping to frontend packaging       
+    pushd installers & goto :build)
+@if not [%FAST_REBUILD%]==[]   (@echo WARNING: FAST_REBUILD set, skipping directly to installer rebuild
+    pushd installers & goto :fast_rebuild)
 
 @echo Obtaining curl
 powershell -Command "try { Import-Module BitsTransfer; Start-BitsTransfer -Source '%CURL_URL%' -Destination 'curl.7z'; } catch { exit 1; }"
@@ -85,6 +92,7 @@ move   node_modules\daedalus-client-api\cardano-node.exe     installers\
 move   node_modules\daedalus-client-api\cardano-launcher.exe installers\
 del /f node_modules\daedalus-client-api\*.exe
 
+:fast_rebuild
 @echo Packaging frontend
 call npm run package -- --icon installers/icons/64x64
 @if %errorlevel% neq 0 (@echo FAILED: Failed to package the frontend
