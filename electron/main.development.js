@@ -141,35 +141,42 @@ app.on('ready', async () => {
 
     const tlsConfig = ClientApi.tlsInit(ca);
     let messageCallback, errorCallback = null;
+    let isNotiyRunning = false;
 
-    notify(
-      ca,
-      function handleNotifyMessage(...args) {
-        if (messageCallback) {
-          try {
-            messageCallback(...args);
-          } catch (e) {
-            // The callback might have been released on page refresh etc.
-            messageCallback = null;
+    const startNotify = () => {
+      notify(
+        ca,
+        function handleNotifyMessage(...args) {
+          console.log(...args);
+          if (messageCallback) {
+            try {
+              messageCallback(...args);
+            } catch (e) {
+              // The callback might have been released on page refresh etc.
+              messageCallback = null;
+            }
+          }
+        },
+        function handleNotifyError(...args) {
+          console.log(...args);
+          if (errorCallback) {
+            try {
+              errorCallback(...args);
+            } catch (e) {
+              // The callback might have been released on page refresh etc.
+              errorCallback = null;
+            }
           }
         }
-      },
-      function handleNotifyError(...args) {
-        if (errorCallback) {
-          try {
-            errorCallback(...args);
-          } catch (e) {
-            // The callback might have been released on page refresh etc.
-            errorCallback = null;
-          }
-        }
-      }
-    );
+      );
+    };
+
     Object.assign(global, {
       tlsConfig,
       registerNotifyCallback: (onMessage, onError) => {
         messageCallback = onMessage;
         errorCallback = onError;
+        if (!isNotiyRunning) startNotify();
       },
     });
   } catch(error) {
