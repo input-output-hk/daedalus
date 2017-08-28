@@ -40,16 +40,17 @@ launcherArgs launcher = unwords $
         "--update-server", "http://localhost:8080/",
         "--system-start", "1499360281",
         "--update-with-package",
-        "--tlscert", quote (runtimePath launcher <> tlsPath <> "server" <> (pathSeparator : "server.crt")),
-        "--tlskey", quote (runtimePath launcher <> tlsPath <> "server" <> (pathSeparator : "server.key")),
-        "--tlsca", quote (runtimePath launcher <> tlsPath <> "ca" <> (pathSeparator : "ca.crt"))
+        "--tlscert", quote (tlsBase <> "server" <> (pathSeparator : "server.crt")),
+        "--tlskey",  quote (tlsBase <> "server" <> (pathSeparator : "server.key")),
+        "--tlsca",   quote (tlsBase <> "ca"     <> (pathSeparator : "ca.crt"))
         ] <> walletTopology
-      tlsPath = "tls" <> (pathSeparator : [])
       -- NOTE: looks like windows *.bat file is cut of on 1024 characters per line. This is a workaround
-      walletTopology  | os == "mingw32" = ["--topology", quote "%DAEDALUS_DIR%\\wallet-topology.yaml"]
-                      | otherwise = mempty
       batchCmdNewline | os == "mingw32" = "^\r\n"
                       | otherwise = mempty
+      walletTopology  | os == "mingw32" = ["--topology", quote "%DAEDALUS_DIR%\\wallet-topology.yaml"]
+                      | otherwise = mempty
+      tlsBase         | os == "mingw32" = "%DAEDALUS_DIR%\\"   <> "tls" <> (pathSeparator : [])
+                      | otherwise       = runtimePath launcher <> "tls" <> (pathSeparator : [])
 
 quote :: String -> String
 quote p = "\"" <> p <> "\""
