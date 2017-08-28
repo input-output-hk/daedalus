@@ -14,7 +14,7 @@ import type {
 import { action } from 'mobx';
 import { ipcRenderer, remote } from 'electron';
 import BigNumber from 'bignumber.js';
-import request from 'request';
+import { Request } from './js-api/lib/Request';
 import { Logger } from '../lib/logger';
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
@@ -48,6 +48,8 @@ import {
   IncorrectWalletPasswordError,
 } from './errors';
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
+
+import type { GetSyncProgressRequest } from "./js-api/getSyncProgress";
 
 const tls = remote.getGlobal('tls');
 const tlsConfig = ClientApi.tlsInit(tls.ca);
@@ -159,9 +161,21 @@ export default class CardanoClientApi {
   notifyCallbacks = [];
 
   constructor() {
-    request.get({ url: 'http://localhost:8090/', ...tls }, function (error, response, body) {
-      console.log(error, response, body);
+    const syncProgressRequest: GetSyncProgressRequest = new Request({
+      hostname: 'localhost',
+      method: 'GET',
+      path: '/api/settings/sync/progress',
+      port: 8090,
+      ca: tls.ca,
     });
+    try {
+      syncProgressRequest.send().then((result) => {
+        console.log('local difficulty', result.Right._spLocalCD.getChainDifficulty.getBlockCount);
+        console.log('network difficulty', result.Right._spNetworkCD.getChainDifficulty.getBlockCount);
+      });
+    } catch (error) {
+      console.log('error', error);
+    }
   }
 
   notify(onSuccess: Function, onError: Function = () => {}) {
