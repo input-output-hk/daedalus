@@ -137,7 +137,7 @@ app.on('ready', async () => {
 
   try {
 
-    const ca = readCA(path.join(__dirname, '../tls/ca.crt'));
+    const ca = readCA(path.join(__dirname, '../../../tls/ca/ca.crt'));
 
     const tlsConfig = ClientApi.tlsInit(ca);
     let messageCallback, errorCallback = null;
