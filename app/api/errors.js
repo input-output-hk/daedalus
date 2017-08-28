@@ -32,6 +32,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Not enough money to make this transaction.',
     description: '"Not enough money to make this transaction." error message.'
   },
+  notAllowedToSendMoneyToSameAddressError: {
+    id: 'api.errors.NotAllowedToSendMoneyToSameAddressError',
+    defaultMessage: '!!!It\'s not allowed to send money to the same address you are sending from. Make sure you have enough addresses with money in this account or send to a different address.',
+    description: '"It\'s not allowed to send money to the same address you are sending from." error message.'
+  },
   notAllowedToSendMoneyToRedeemAddressError: {
     id: 'api.errors.NotAllowedToSendMoneyToRedeemAddressError',
     defaultMessage: '!!!It is not allowed to send money to Ada redemption address.',
@@ -94,6 +99,15 @@ export class NotEnoughMoneyToSendError extends LocalizableError {
     super({
       id: messages.notEnoughMoneyToSendError.id,
       defaultMessage: messages.notEnoughMoneyToSendError.defaultMessage,
+    });
+  }
+}
+
+export class NotAllowedToSendMoneyToSameAddressError extends LocalizableError {
+  constructor() {
+    super({
+      id: messages.notAllowedToSendMoneyToSameAddressError.id,
+      defaultMessage: messages.notAllowedToSendMoneyToSameAddressError.defaultMessage,
     });
   }
 }
