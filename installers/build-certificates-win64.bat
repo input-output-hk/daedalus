@@ -14,11 +14,12 @@ set OUTDIR=%1
 @echo .
 @echo ============================================================================
 @echo [1/10] Creating database in %OUTDIR%
-rmdir /s /q          %OUTDIR%\tls\ca %OUTDIR%\tls\server %OUTDIR%\x64 2>nul
-mkdir                %OUTDIR% %OUTDIR%\x64
+rmdir /s /q          %OUTDIR%\tls\ca %OUTDIR%\tls\server 2>nul
+mkdir                %OUTDIR%
 copy  /y ca.conf     %OUTDIR%
 copy  /y client.conf %OUTDIR%
 copy  /y server.conf %OUTDIR%
+xcopy /y /s /e  x86  %OUTDIR%\x86
 xcopy /y /s /e  x64  %OUTDIR%\x64
 cd                   %OUTDIR%
 
@@ -104,7 +105,7 @@ x64\openssl ca -batch ^
 
 @echo [10/10] Cleanup
 del tls\secret ca.conf server.conf client.conf
-rmdir /s/q tls\ca\private x64
+rmdir /s/q tls\ca\private
 
 @echo ============================================================================
 @echo Oll Korrect
