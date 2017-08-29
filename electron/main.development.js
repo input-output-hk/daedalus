@@ -135,7 +135,7 @@ app.on('ready', async () => {
   await installExtensions();
 
   /**
-   * Here we are reading the TLS certificates from the file system
+   * Here we are reading the TLS certificate from the file system
    * and make it available to render processes via a global variable
    * so that it can be used in HTTP and Websocket connections.
    */

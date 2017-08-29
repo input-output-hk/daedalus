@@ -160,33 +160,15 @@ const unsetUserThemeFromLocalStorage = () => new Promise((resolve) => {
 
 export default class CardanoClientApi {
 
-  notifyCallbacks = [];
+  syncProgressRequest: GetSyncProgressRequest = new Request({
+    hostname: 'localhost',
+    method: 'GET',
+    path: '/api/settings/sync/progress',
+    port: 8090,
+    ca: tls.ca,
+  });
 
-  constructor() {
-    const syncProgressRequest: GetSyncProgressRequest = new Request({
-      hostname: 'localhost',
-      method: 'GET',
-      path: '/api/settings/sync/progress',
-      port: 8090,
-      ca: tls.ca,
-    });
-    try {
-      syncProgressRequest.send().then((result) => {
-        console.log('local difficulty', result.Right._spLocalCD.getChainDifficulty.getBlockCount);
-        console.log('network difficulty', result.Right._spNetworkCD.getChainDifficulty.getBlockCount);
-      });
-    } catch (error) {
-      console.log('error', error);
-    }
-  }
-
-  notify(onSuccess: Function, onError: Function = () => {}) {
-    this.notifyCallbacks.push({ message: onSuccess, error: onError });
-  }
-
-  reset() {
-    this.notifyCallbacks = [];
-  }
+  reset() {}
 
   async getWallets() {
     Logger.debug('CardanoClientApi::getWallets called');
@@ -526,14 +508,15 @@ export default class CardanoClientApi {
 
   async getSyncProgress() {
     Logger.debug('CardanoClientApi::syncProgress called');
+
     try {
-      const response = await ClientApi.syncProgress(tlsConfig);
+      const response = await this.syncProgressRequest.send();
       Logger.debug('CardanoClientApi::syncProgress success: ' + stringifyData(response));
-      const localDifficulty = response._spLocalCD.getChainDifficulty.getBlockCount;
+      const localDifficulty = response.Right._spLocalCD.getChainDifficulty.getBlockCount;
       // In some cases we dont get network difficulty & we need to wait for it from the notify API
       let networkDifficulty = null;
       if (response._spNetworkCD) {
-        networkDifficulty = response._spNetworkCD.getChainDifficulty.getBlockCount;
+        networkDifficulty = response.Right._spNetworkCD.getChainDifficulty.getBlockCount;
       }
       return { localDifficulty, networkDifficulty };
     } catch (error) {
