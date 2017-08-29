@@ -198,7 +198,7 @@ export default class WalletReceive extends Component {
                 value={walletAddress}
                 bgColor={qrCodeBackgroundColor}
                 fgColor={qrCodeForegroundColor}
-                size={160}
+                size={152}
               />
             </div>
 

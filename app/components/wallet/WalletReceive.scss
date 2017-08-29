@@ -52,6 +52,8 @@
     margin-right: 30px;
 
     canvas {
+      border: 4px solid var(--theme-receive-qr-code-background-color);
+      box-sizing: content-box;
       margin-bottom: 1.5rem;
     }
   }
