@@ -422,6 +422,48 @@
           "column": 14,
           "line": 12
         }
+      },
+      {
+        "defaultMessage": "!!!Light blue",
+        "description": "Name of the \"Light blue\" theme on the display settings page.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "app/components/settings/categories/DisplaySettings.js",
+        "id": "settings.display.themeNames.lightBlue",
+        "start": {
+          "column": 18,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano",
+        "description": "Name of the \"Cardano\" theme on the display settings page.",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "app/components/settings/categories/DisplaySettings.js",
+        "id": "settings.display.themeNames.cardano",
+        "start": {
+          "column": 16,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Dark blue",
+        "description": "Name of the \"Dark blue\" theme on the display settings page.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "app/components/settings/categories/DisplaySettings.js",
+        "id": "settings.display.themeNames.darkBlue",
+        "start": {
+          "column": 17,
+          "line": 27
+        }
       }
     ],
     "path": "app/components/settings/categories/DisplaySettings.json"
