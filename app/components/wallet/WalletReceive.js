@@ -182,8 +182,10 @@ export default class WalletReceive extends Component {
     );
 
     // Get QRCode color value from active theme's CSS variable
-    const qrCodeColor = document.documentElement ?
-      document.documentElement.style.getPropertyValue('--theme-receive-qr-code-color') : '#000';
+    const qrCodeBackgroundColor = document.documentElement ?
+      document.documentElement.style.getPropertyValue('--theme-receive-qr-code-background-color') : 'transparent';
+    const qrCodeForegroundColor = document.documentElement ?
+      document.documentElement.style.getPropertyValue('--theme-receive-qr-code-foreground-color') : '#000';
 
     return (
       <div className={styles.component}>
@@ -194,8 +196,8 @@ export default class WalletReceive extends Component {
             <div className={styles.qrCode}>
               <QRCode
                 value={walletAddress}
-                bgColor="transparent"
-                fgColor={qrCodeColor}
+                bgColor={qrCodeBackgroundColor}
+                fgColor={qrCodeForegroundColor}
                 size={160}
               />
             </div>

@@ -38,6 +38,7 @@ Changelog
 - Fixed logging error ([PR 431](https://github.com/input-output-hk/daedalus/pull/431))
 - Add theming support on UI which was introduced after introduction of Theming feature ([PR 434](https://github.com/input-output-hk/daedalus/pull/434))
 - Show correct error message for A -> A transaction error ([PR 441](https://github.com/input-output-hk/daedalus/pull/441))
+- Improved QR code colors on wallet send screen for dark themes ([PR 448](https://github.com/input-output-hk/daedalus/pull/448))
 
 ### Chores
 

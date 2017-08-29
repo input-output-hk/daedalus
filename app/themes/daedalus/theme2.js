@@ -119,7 +119,8 @@ export default {
   '--theme-notification-message-background-color': 'rgba(83, 99, 112, 0.8)',
   '--theme-notification-message-text-color': '#fafbfc',
 
-  '--theme-receive-qr-code-color': '#e9f4fe',
+  '--theme-receive-qr-code-background-color': '#fff',
+  '--theme-receive-qr-code-foreground-color': '#000',
 
   '--theme-settings-body-background-color': '#0b1926',
   '--theme-settings-pane-background-color': '#263345',
