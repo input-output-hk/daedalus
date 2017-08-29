@@ -104,13 +104,13 @@
         "description": "\"It's not allowed to send money to the same address you are sending from.\" error message.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 44
         },
         "file": "app/api/errors.js",
         "id": "api.errors.NotAllowedToSendMoneyToSameAddressError",
         "start": {
           "column": 43,
-          "line": 35
+          "line": 40
         }
       },
       {
@@ -118,13 +118,13 @@
         "description": "\"It is not allowed to send money to Ada redemption address.\" error message.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 49
         },
         "file": "app/api/errors.js",
         "id": "api.errors.NotAllowedToSendMoneyToRedeemAddressError",
         "start": {
           "column": 45,
-          "line": 40
+          "line": 45
         }
       },
       {
@@ -132,13 +132,13 @@
         "description": "\"Incorrect wallet password.\" error message.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 54
         },
         "file": "app/api/errors.js",
         "id": "api.errors.IncorrectPasswordError",
         "start": {
           "column": 32,
-          "line": 45
+          "line": 50
         }
       }
     ],
