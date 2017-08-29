@@ -198,7 +198,7 @@
   "wallet.send.form.submit": "送金",
   "wallet.send.form.title.hint": "例：太郎のための資金",
   "wallet.send.form.title.label": "タイトル",
-  "wallet.send.form.transactionFeeError": "!!!Transaction fees could not be calculated. Please try reducing sending amount.",
+  "wallet.send.form.transactionFeeError": "!!!Not enough Ada for fees. Try sending a smaller amount.",
   "wallet.send.form.walletPasswordLabel": "ウォレットパスワード",
   "wallet.settings.assurance": "トランザクション保証のセキュリティレベル",
   "wallet.settings.changePassword.dialog.currentPasswordFieldPlaceholder": "現在のパスワードを入力してください",

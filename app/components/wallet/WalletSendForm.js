@@ -91,8 +91,8 @@ const messages = defineMessages({
   },
   transactionFeeError: {
     id: 'wallet.send.form.transactionFeeError',
-    defaultMessage: '!!!Transaction fees could not be calculated. Please try reducing sending amount.',
-    description: 'Error message shown when transaction fees calculation fails.',
+    defaultMessage: '!!!Not enough Ada for fees. Try sending a smaller amount.',
+    description: '"Not enough Ada for fees. Try sending a smaller amount." error message',
   }
 });
 
