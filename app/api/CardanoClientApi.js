@@ -53,8 +53,8 @@ import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 
 import type { GetSyncProgressRequest } from "./js-api/getSyncProgress";
 
-const tls = remote.getGlobal('tls');
-const tlsConfig = ClientApi.tlsInit(tls.ca);
+const ca = remote.getGlobal('ca');
+const tlsConfig = ClientApi.tlsInit(ca);
 
 // const notYetImplemented = () => new Promise((_, reject) => {
 //   reject(new ApiMethodNotYetImplementedError());

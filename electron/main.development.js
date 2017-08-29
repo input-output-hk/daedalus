@@ -140,11 +140,7 @@ app.on('ready', async () => {
    * so that it can be used in HTTP and Websocket connections.
    */
   Object.assign(global, {
-    tls: {
-      cert: fs.readFileSync(path.join(__dirname, '../tls/server.crt')),
-      key: fs.readFileSync(path.join(__dirname, '../tls/server.key')),
-      ca: fs.readFileSync(path.join(__dirname, '../tls/ca.crt')),
-    }
+    ca: fs.readFileSync(path.join(__dirname, '../tls/ca.crt')),
   });
 
   mainWindow = new BrowserWindow({
