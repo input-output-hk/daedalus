@@ -165,7 +165,7 @@ export default class CardanoClientApi {
     method: 'GET',
     path: '/api/settings/sync/progress',
     port: 8090,
-    ca: tls.ca,
+    ca,
   });
 
   reset() {}
@@ -506,7 +506,7 @@ export default class CardanoClientApi {
     }
   }
 
-  async getSyncProgress() {
+  getSyncProgress = async () => {
     Logger.debug('CardanoClientApi::syncProgress called');
 
     try {
@@ -515,7 +515,7 @@ export default class CardanoClientApi {
       const localDifficulty = response.Right._spLocalCD.getChainDifficulty.getBlockCount;
       // In some cases we dont get network difficulty & we need to wait for it from the notify API
       let networkDifficulty = null;
-      if (response._spNetworkCD) {
+      if (response.Right._spNetworkCD) {
         networkDifficulty = response.Right._spNetworkCD.getChainDifficulty.getBlockCount;
       }
       return { localDifficulty, networkDifficulty };
@@ -523,7 +523,7 @@ export default class CardanoClientApi {
       Logger.error('CardanoClientApi::syncProgress error: ' + stringifyError(error));
       throw new GenericApiError();
     }
-  }
+  };
 
   async setUserLocale(locale: string) {
     Logger.debug('CardanoClientApi::updateLocale called: ' + locale);
@@ -695,23 +695,6 @@ export default class CardanoClientApi {
       throw new GenericApiError();
     }
   }
-
-  // PRIVATE
-
-  _onNotify = (rawMessage: string) => {
-    Logger.debug('CardanoClientApi::notify message: ' + rawMessage);
-    // TODO: "ConnectionClosed" messages are not JSON parsable … so we need to catch that case here!
-    let message = rawMessage;
-    if (message !== 'ConnectionClosed') {
-      message = JSON.parse(rawMessage);
-    }
-    this.notifyCallbacks.forEach(cb => cb.message(message));
-  };
-
-  _onNotifyError = (error: Error) => {
-    Logger.debug('CardanoClientApi::notify error: ' + stringifyError(error));
-    this.notifyCallbacks.forEach(cb => cb.error(error));
-  };
 }
 
 // ========== LOGGING =========
