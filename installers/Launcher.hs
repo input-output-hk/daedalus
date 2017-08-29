@@ -26,33 +26,31 @@ launcherArgs launcher = unwords $
   , unwords $ map ("-u " ++) (installerArgs launcher)
   , maybe "" (("--update-archive " ++) . quote) (installerArchivePath launcher)
   , "--node-timeout 5 " ++ batchCmdNewline
-  , unwords $ map (\x -> "-n " ++ x ++ " " ++ batchCmdNewline) nodeArgs
+  , unwords $ map (\x ->  batchCmdNewline ++ "-n " ++ x) nodeArgs
   ]
     where
       nodeArgs = [
         "--report-server", "http://report-server.aws.iohk.io:8080",
-        "--listen", "127.0.0.1:12100",
         "--log-config", "log-config-prod.yaml",
         "--update-latest-path", quote (installerPath launcher),
         "--keyfile", quote (runtimePath launcher <> "Secrets-0.5" <> (pathSeparator : "secret.key")),
         "--logs-prefix", quote (runtimePath launcher <> "Logs"),
         "--db-path", quote (runtimePath launcher <> "DB-0.5"),
         "--wallet-db-path", quote (runtimePath launcher <> "Wallet-0.5"),
-        "--kademlia-peers-file", "ip-dht-mappings",
-        "--kademlia-explicit-initial",
         "--update-server", "http://localhost:8080/",
         "--system-start", "1499360281",
-        "--wallet",
         "--update-with-package",
-        "--tlscert", quote (runtimePath launcher <> tlsPath <> "server" <> (pathSeparator : "server.crt")),
-        "--tlskey", quote (runtimePath launcher <> tlsPath <> "server" <> (pathSeparator : "server.key")),
-        "--tlsca", quote (runtimePath launcher <> tlsPath <> "ca" <> (pathSeparator : "ca.crt")),
-        "--static-peers"
-        ]
-      tlsPath = "tls" <> (pathSeparator : [])
+        "--tlscert", quote (tlsBase <> "server" <> (pathSeparator : "server.crt")),
+        "--tlskey",  quote (tlsBase <> "server" <> (pathSeparator : "server.key")),
+        "--tlsca",   quote (tlsBase <> "ca"     <> (pathSeparator : "ca.crt"))
+        ] <> walletTopology
       -- NOTE: looks like windows *.bat file is cut of on 1024 characters per line. This is a workaround
       batchCmdNewline | os == "mingw32" = "^\r\n"
                       | otherwise = mempty
+      walletTopology  | os == "mingw32" = ["--topology", quote "%DAEDALUS_DIR%\\wallet-topology.yaml"]
+                      | otherwise = mempty
+      tlsBase         | os == "mingw32" = "%DAEDALUS_DIR%\\"   <> "tls" <> (pathSeparator : [])
+                      | otherwise       = runtimePath launcher <> "tls" <> (pathSeparator : [])
 
 quote :: String -> String
 quote p = "\"" <> p <> "\""
