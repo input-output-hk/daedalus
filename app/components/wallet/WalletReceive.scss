@@ -69,7 +69,6 @@
       font-family: var(--font-medium);
       line-height: 23px;
       margin-bottom: 6px;
-      max-width: 90%;
       word-break: break-all;
     }
 
@@ -149,24 +148,6 @@
             margin: 0 0 2px;
           }
         }
-      }
-    }
-  }
-
-  .protectedIcon {
-    object-fit: contain;
-    position: absolute;
-    right: 0;
-    top: 1px;
-    & > svg {
-      height: 19.5px;
-      vertical-align: middle;
-      width: 17px;
-      & > g > path {
-        fill: var(--theme-icon-address-protected-color);
-      }
-      & > g > g {
-        stroke: var(--theme-icon-address-protected-color);
       }
     }
   }

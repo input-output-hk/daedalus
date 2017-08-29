@@ -13,7 +13,6 @@ import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
-import iconProtected from '../../assets/images/protected-off.inline.svg';
 import WalletAddress from '../../domain/WalletAddress';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -226,8 +225,6 @@ export default class WalletReceive extends Component {
               {generateAddressForm}
 
             </div>
-
-            <SvgInline svg={iconProtected} className={styles.protectedIcon} />
           </div>
 
           <div className={styles.generatedAddresses}>

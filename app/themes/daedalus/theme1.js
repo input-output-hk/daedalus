@@ -199,7 +199,6 @@ export default {
   '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color': '#5e6066',
   '--theme-icon-add-wallet-dialog-big-button-color': '#8a98ab',
   '--theme-icon-copy-address-color': '#5e6066',
-  '--theme-icon-address-protected-color': '#5e6066',
   '--theme-icon-back-button-color': '#5e6066',
   '--theme-icon-close-button-color': '#5e6066',
   '--theme-icon-file-upload-color': '#5e6066',
