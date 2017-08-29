@@ -45,6 +45,7 @@ export default class NetworkStatusStore extends Store {
       this._redirectToLoadingWhenDisconnected,
     ]);
     this._listenToServerStatusNotifications();
+    this._setInitialDifficulty();
   }
 
   teardown() {
@@ -125,14 +126,14 @@ export default class NetworkStatusStore extends Store {
   }
 
   @action _setInitialDifficulty = async () => {
-    this._localDifficultyStartedWith = null;
     const initialDifficulty = await this.networkDifficultyRequest.execute().promise;
     if (initialDifficulty) {
       runInAction('set initial difficulty', () => {
+        this.isConnected = true;
         this._localDifficultyStartedWith = initialDifficulty.localDifficulty;
         this.localDifficulty = initialDifficulty.localDifficulty;
         this.networkDifficulty = initialDifficulty.networkDifficulty;
-        Logger.debug('Initial difficulty: ' + initialDifficulty);
+        Logger.debug('Initial difficulty: ' + JSON.stringify(initialDifficulty));
       });
     }
   };
