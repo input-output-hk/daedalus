@@ -5,6 +5,7 @@
   "api.errors.GenericApiError": "!!!An error occurred, please try again later.",
   "api.errors.IncorrectPasswordError": "!!!Incorrect wallet password.",
   "api.errors.NotAllowedToSendMoneyToRedeemAddressError": "!!!It is not allowed to send money to Ada redemption address.",
+  "api.errors.NotAllowedToSendMoneyToSameAddressError": "!!!It's not allowed to send money to the same address you are sending from. Make sure you have enough addresses with money in this account or send to a different address.",
   "api.errors.NotEnoughMoneyToSendError": "!!!Not enough money to make this transaction.",
   "api.errors.RedeemAdaError": "!!!Your ADA could not be redeemed correctly.",
   "api.errors.WalletAlreadyRestoredError": "!!!You already restored a wallet with this phrase.",
@@ -79,6 +80,10 @@
   "settings.support.sendLogs.switchLabel": "!!!Send logs to the central server",
   "settings.support.sendLogs.switchPlaceholder": "!!!Do you want to help diagnose issues by opting in to send logs to our central logging server? Logs will not include any sensitive data.",
   "sidebar.wallets.addWallet": "!!!Add wallet",
+  "static.about.content.text": "!!!Charles Hoskinson, Jeremy Wood, Aggelos Kiayias, Eileen Fitzgerald, Philip Wadler, Elias Koutsoupias, Mario Larangeira, Bernardo David, Peter Gaži, Rafael Dowsley, Roman Oliynykov, Dmitry Shtukenberg, Duncan Coutts, Lars Brünjes, Philipp Kant, Peter Thompson, Darryl McAdams, Ante Kegalj, Jens Krause, Kristijan Šarić, Denis Shevchenko, Alfredo Di Napoli, Jonn Mostovoy, Arseniy Seroka, Alexander Vieth, Mikhail Volkhov, George Agapov, Ivan Gromakovskii, Alexandre Baldé, Artyom Kazak, Dmitry Kovanikov, Alan McSherry, Alan Verbner, Nicolas Tallar, Lukasz Gasior, Adam Smolarek, Radek Tkaczyk, Alexander Chepurnoy, Dmitry Meshkov, Jan Kotek, Darko Mijić, Dominik Guzei, Nikola Glumac, Tomislav Horaček, Domen Kožar, Jacob Mitchell, Serge Kosyrev, Michael Bishop, Christian Lindgren, Reslav Hollos, Daniel Friedman, Alejandro Garcia, Dmytro Kaidalov, Andrii Nastenko, Mariia Rodinko, Oleksiy Shevtsov, Richard Wild, Tomas Vrana, Alexander Rukin, Jonny Smillie, Jane Wild, Carlo Vicari, Christian Seberino, Laurie Wang, Leonidas Tsagkalias, Costas Saragkas, Tamara Haasen, Naho Nagahara",
+  "static.about.copyright": "!!!2016–2017 IOHK. All rights reserved.",
+  "static.about.release.version": "!!!2017.0.1 x64 Release",
+  "static.about.title": "!!!Daedalus",
   "wallet.add.dialog.create.description": "!!!Create a new wallet",
   "wallet.add.dialog.create.label": "!!!Create",
   "wallet.add.dialog.import.description": "!!!Import wallet from a key",
@@ -237,5 +242,6 @@
   "wallet.transaction.type.card": "Kreditkartenzahlung",
   "wallet.transaction.type.exchange": "Währungsumtausch",
   "wallet.transactions.no.transactions": "Keine Transaktionen vorhanden",
-  "wallet.transactions.no.transactions.found": "Keine Transaktionen gefunden"
+  "wallet.transactions.no.transactions.found": "Keine Transaktionen gefunden",
+  "window.about.title": "!!!About Daedalus"
 }

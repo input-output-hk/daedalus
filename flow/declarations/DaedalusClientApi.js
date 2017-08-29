@@ -46,6 +46,8 @@ declare module 'daedalus-client-api' {
     number,
   ];
 
+  declare type ApiTransactionFee = ApiAmount;
+
   declare type ApiWallet = {
     cwAccountsNumber: number,
     cwAmount: ApiAmount,
@@ -102,6 +104,7 @@ declare module 'daedalus-client-api' {
   declare function getAddressHistory(tls: TlsConfig, accountId: string, addressId: string, skip: number, limit: number): Promise<ApiTransactions>;
 
   declare function newPayment(tls: TlsConfig, senderAccountId: string, receiverAddress: string, amount: string, password: ?string): Promise<ApiTransaction>;
+  declare function txFee(tls: TlsConfig, senderAccountId: string, receiverAddress: string, amount: string): Promise<ApiTransactionFee>;
 
   // Ada Redemption
   declare function redeemAda(tls: TlsConfig, redemptionCode: string, accountId: string, walletPassword: ?string): Promise<ApiTransaction>;

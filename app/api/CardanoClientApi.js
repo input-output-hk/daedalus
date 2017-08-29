@@ -3,6 +3,7 @@ import localStorage from 'electron-json-storage';
 import ClientApi from 'daedalus-client-api';
 import type {
   ApiTransaction,
+  ApiTransactionFee,
   // ApiAccount,
   ApiAccounts,
   ApiAddress,
@@ -44,6 +45,7 @@ import {
   RedeemAdaError,
   WalletKeyImportError,
   NotEnoughMoneyToSendError,
+  NotAllowedToSendMoneyToSameAddressError,
   NotAllowedToSendMoneyToRedeemAddressError,
   IncorrectWalletPasswordError,
 } from './errors';
@@ -286,6 +288,10 @@ export default class CardanoClientApi {
       return _createTransactionFromServerData(response);
     } catch (error) {
       Logger.error('CardanoClientApi::createTransaction error: ' + stringifyError(error));
+      // eslint-disable-next-line max-len
+      if (error.message.includes('It\'s not allowed to send money to the same address you are sending from')) {
+        throw new NotAllowedToSendMoneyToSameAddressError();
+      }
       if (error.message.includes('Destination address can\'t be redeem address')) {
         throw new NotAllowedToSendMoneyToRedeemAddressError();
       }
@@ -295,6 +301,21 @@ export default class CardanoClientApi {
       if (error.message.includes('Passphrase doesn\'t match')) {
         throw new IncorrectWalletPasswordError();
       }
+      throw new GenericApiError();
+    }
+  }
+
+  async calculateTransactionFee(request: TransactionFeeRequest) {
+    Logger.debug('CardanoClientApi::calculateTransactionFee called');
+    const { sender, receiver, amount } = request;
+    try {
+      const response: ApiTransactionFee = await ClientApi.txFee(
+        tlsConfig, sender, receiver, amount
+      );
+      Logger.debug('CardanoClientApi::calculateTransactionFee success: ' + stringifyData(response));
+      return _createTransactionFeeFromServerData(response);
+    } catch (error) {
+      Logger.error('CardanoClientApi::calculateTransactionFee error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
@@ -757,5 +778,12 @@ const _createTransactionFromServerData = action(
         to: data.ctOutputAddrs,
       },
     });
+  }
+);
+
+const _createTransactionFeeFromServerData = action(
+  'CardanoClientApi::_createTransactionFeeFromServerData', (data: ApiTransactionFee) => {
+    const coins = data.getCCoin;
+    return new BigNumber(coins).dividedBy(LOVELACES_PER_ADA);
   }
 );
