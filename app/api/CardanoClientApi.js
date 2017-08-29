@@ -33,7 +33,6 @@ import type {
   RedeemPaperVendedAdaRequest,
   UpdateWalletPasswordRequest,
   TransactionFeeRequest,
-  TransactionFeeResponse,
   ExportWalletToFileRequest,
   ExportWalletToFileResponse,
 } from './index';
@@ -649,21 +648,6 @@ export default class CardanoClientApi {
       if (error.message.includes('Invalid old passphrase given')) {
         throw new IncorrectWalletPasswordError();
       }
-      throw new GenericApiError();
-    }
-  }
-
-  async calculateTransactionFee(request: TransactionFeeRequest): Promise<TransactionFeeResponse> {
-    Logger.debug('CardanoClientApi::TransactionFee called: ' + stringifyData(request));
-    try {
-      // TODO: use real endpoint here to fetch fees (don't forget to cast bignumber to string!)
-      const fee = await new Promise((resolve) => {
-        setTimeout(() => resolve(new BigNumber(1).dividedBy(LOVELACES_PER_ADA)), 1000);
-      });
-      Logger.debug('CardanoClientApi::TransactionFee success: ' + fee);
-      return fee;
-    } catch (error) {
-      Logger.error('CardanoClientApi::TransactionFee error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
