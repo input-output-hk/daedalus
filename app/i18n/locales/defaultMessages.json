@@ -100,6 +100,20 @@
         }
       },
       {
+        "defaultMessage": "!!!It's not allowed to send money to the same address you are sending from. Make sure you have enough addresses with money in this account or send to a different address.",
+        "description": "\"It's not allowed to send money to the same address you are sending from.\" error message.",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "app/api/errors.js",
+        "id": "api.errors.NotAllowedToSendMoneyToSameAddressError",
+        "start": {
+          "column": 43,
+          "line": 35
+        }
+      },
+      {
         "defaultMessage": "!!!It is not allowed to send money to Ada redemption address.",
         "description": "\"It is not allowed to send money to Ada redemption address.\" error message.",
         "end": {

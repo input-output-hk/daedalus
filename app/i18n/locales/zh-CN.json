@@ -5,6 +5,7 @@
   "api.errors.GenericApiError": "!!!An error occurred, please try again later.",
   "api.errors.IncorrectPasswordError": "!!!Incorrect wallet password.",
   "api.errors.NotAllowedToSendMoneyToRedeemAddressError": "!!!It is not allowed to send money to Ada redemption address.",
+  "api.errors.NotAllowedToSendMoneyToSameAddressError": "!!!It's not allowed to send money to the same address you are sending from. Make sure you have enough addresses with money in this account or send to a different address.",
   "api.errors.NotEnoughMoneyToSendError": "!!!Not enough money to make this transaction.",
   "api.errors.RedeemAdaError": "!!!Your ADA could not be redeemed correctly.",
   "api.errors.WalletAlreadyImportedError": "!!!Wallet you are trying to import already exists.",

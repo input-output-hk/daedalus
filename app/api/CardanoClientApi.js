@@ -46,6 +46,7 @@ import {
   RedeemAdaError,
   WalletFileImportError,
   NotEnoughMoneyToSendError,
+  NotAllowedToSendMoneyToSameAddressError,
   NotAllowedToSendMoneyToRedeemAddressError,
   IncorrectWalletPasswordError,
 } from './errors';
@@ -272,6 +273,10 @@ export default class CardanoClientApi {
       return _createTransactionFromServerData(response);
     } catch (error) {
       Logger.error('CardanoClientApi::createTransaction error: ' + stringifyError(error));
+      // eslint-disable-next-line max-len
+      if (error.message.includes('It\'s not allowed to send money to the same address you are sending from')) {
+        throw new NotAllowedToSendMoneyToSameAddressError();
+      }
       if (error.message.includes('Destination address can\'t be redeem address')) {
         throw new NotAllowedToSendMoneyToRedeemAddressError();
       }
@@ -286,16 +291,16 @@ export default class CardanoClientApi {
   }
 
   async calculateTransactionFee(request: TransactionFeeRequest) {
-    Log.debug('CardanoClientApi::calculateTransactionFee called');
+    Logger.debug('CardanoClientApi::calculateTransactionFee called');
     const { sender, receiver, amount } = request;
     try {
       const response: ApiTransactionFee = await ClientApi.txFee(
         tlsConfig, sender, receiver, amount
       );
-      Log.debug('CardanoClientApi::calculateTransactionFee success: ', stringifyData(response));
+      Logger.debug('CardanoClientApi::calculateTransactionFee success: ' + stringifyData(response));
       return _createTransactionFeeFromServerData(response);
     } catch (error) {
-      Log.error('CardanoClientApi::calculateTransactionFee error: ' + stringifyError(error));
+      Logger.error('CardanoClientApi::calculateTransactionFee error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
