@@ -34,15 +34,18 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}) => {
       response.on('data', (chunk) => body += chunk);
       // Reject errors
       request.on('error', (error) => reject(error));
-      // Resolve JSON results and only return the "Right" property
-      // which is always the root that is returned by the backend (no idea why)
+      // Resolve JSON results and handle weird backend behavior
+      // of "Left" (for errors) and "Right" (for success) properties
       response.on('end', () => {
         const parsedBody = JSON.parse(body);
         if (parsedBody.Right) {
+          // "Right" means 200 ok (success)
           resolve(parsedBody.Right);
         } else if(parsedBody.Left) {
+          // "Left" means error case -> return error with contents
           reject(new Error(parsedBody.Left.contents));
         } else {
+          // TODO: investigate if that can happen! (no Right or Left in a response)
           reject(new Error("Unknown response from backend."));
         }
       });
