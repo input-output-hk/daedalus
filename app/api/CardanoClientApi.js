@@ -15,7 +15,6 @@ import type {
 import { action } from 'mobx';
 import { ipcRenderer, remote } from 'electron';
 import BigNumber from 'bignumber.js';
-import { Request } from './js-api/lib/Request';
 import { Logger } from '../lib/logger';
 import Wallet from '../domain/Wallet';
 import WalletTransaction from '../domain/WalletTransaction';
@@ -51,7 +50,8 @@ import {
 } from './errors';
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 
-import type { GetSyncProgressRequest } from "./js-api/getSyncProgress";
+import { getSyncProgress } from "./js-api/getSyncProgress";
+import { makePayment } from "./js-api/makePayment";
 
 const ca = remote.getGlobal('ca');
 const tlsConfig = ClientApi.tlsInit(ca);
@@ -160,14 +160,6 @@ const unsetUserThemeFromLocalStorage = () => new Promise((resolve) => {
 
 export default class CardanoClientApi {
 
-  syncProgressRequest: GetSyncProgressRequest = new Request({
-    hostname: 'localhost',
-    method: 'GET',
-    path: '/api/settings/sync/progress',
-    port: 8090,
-    ca,
-  });
-
   reset() {}
 
   async getWallets() {
@@ -263,9 +255,7 @@ export default class CardanoClientApi {
     const { sender, receiver, amount, password } = request;
     // sender must be set as accountId (account.caId) and not walletId
     try {
-      const response: ApiTransaction = await ClientApi.newPayment(
-        tlsConfig, sender, receiver, amount, password
-      );
+      const response = await makePayment(ca, { from: sender, to: receiver, amount }, { passphrase: password });
       Logger.debug('CardanoClientApi::createTransaction success: ' + stringifyData(response));
       return _createTransactionFromServerData(response);
     } catch (error) {
@@ -510,13 +500,13 @@ export default class CardanoClientApi {
     Logger.debug('CardanoClientApi::syncProgress called');
 
     try {
-      const response = await this.syncProgressRequest.send();
+      const response = await getSyncProgress(ca);
       Logger.debug('CardanoClientApi::syncProgress success: ' + stringifyData(response));
-      const localDifficulty = response.Right._spLocalCD.getChainDifficulty.getBlockCount;
+      const localDifficulty = response._spLocalCD.getChainDifficulty.getBlockCount;
       // In some cases we dont get network difficulty & we need to wait for it from the notify API
       let networkDifficulty = null;
-      if (response.Right._spNetworkCD) {
-        networkDifficulty = response.Right._spNetworkCD.getChainDifficulty.getBlockCount;
+      if (response._spNetworkCD) {
+        networkDifficulty = response._spNetworkCD.getChainDifficulty.getBlockCount;
       }
       return { localDifficulty, networkDifficulty };
     } catch (error) {
