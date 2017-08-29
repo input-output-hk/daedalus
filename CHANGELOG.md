@@ -45,6 +45,7 @@ Changelog
 - Improved webpack build performance ([PR 402](https://github.com/input-output-hk/daedalus/pull/402))
 - Updated README file "Development - network options" section ([PR 410](https://github.com/input-output-hk/daedalus/pull/410))
 - All CSS hardcoded values replaced with variables ([PR 370](https://github.com/input-output-hk/daedalus/pull/398))
+- Implemented sync progress and payment requests with new JS api as first step to remove the purescript api ([PR 437](https://github.com/input-output-hk/daedalus/pull/437))
 
 ## 0.7.0
 
