@@ -30,7 +30,7 @@ launcherArgs launcher = unwords $
   ]
     where
       nodeArgs = [
-        "--report-server", "http://report-server.aws.iohk.io:8080",
+        "--report-server", "http://report-server.aws.iohkdev.io:8080",
         "--log-config", "log-config-prod.yaml",
         "--update-latest-path", quote (installerPath launcher),
         "--keyfile", quote (runtimePath launcher <> "Secrets-0.5" <> (pathSeparator : "secret.key")),
@@ -38,7 +38,7 @@ launcherArgs launcher = unwords $
         "--db-path", quote (runtimePath launcher <> "DB-0.5"),
         "--wallet-db-path", quote (runtimePath launcher <> "Wallet-0.5"),
         "--update-server", "http://localhost:8080/",
-        "--system-start", "1499360281",
+        "--system-start", "1504019546",
         "--update-with-package",
         "--tlscert", quote (tlsBase <> "server" <> (pathSeparator : "server.crt")),
         "--tlskey",  quote (tlsBase <> "server" <> (pathSeparator : "server.key")),
