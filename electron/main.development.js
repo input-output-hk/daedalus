@@ -147,7 +147,6 @@ app.on('ready', async () => {
       notify(
         ca,
         function handleNotifyMessage(...args) {
-          console.log(...args);
           if (messageCallback) {
             try {
               messageCallback(...args);
@@ -158,7 +157,6 @@ app.on('ready', async () => {
           }
         },
         function handleNotifyError(...args) {
-          console.log(...args);
           if (errorCallback) {
             try {
               errorCallback(...args);
