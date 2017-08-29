@@ -141,7 +141,7 @@ app.on('ready', async () => {
 
     const tlsConfig = ClientApi.tlsInit(ca);
     let messageCallback, errorCallback = null;
-    let isNotiyRunning = false;
+    let isNotifyRunning = false;
 
     const startNotify = () => {
       notify(
@@ -169,6 +169,7 @@ app.on('ready', async () => {
           }
         }
       );
+      isNotifyRunning = true;
     };
 
     Object.assign(global, {
@@ -176,7 +177,7 @@ app.on('ready', async () => {
       registerNotifyCallback: (onMessage, onError) => {
         messageCallback = onMessage;
         errorCallback = onError;
-        if (!isNotiyRunning) startNotify();
+        if (!isNotifyRunning) startNotify();
       },
     });
   } catch(error) {
