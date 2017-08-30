@@ -2868,6 +2868,20 @@
           "column": 28,
           "line": 87
         }
+      },
+      {
+        "defaultMessage": "!!!Not enough Ada for fees. Try sending a smaller amount.",
+        "description": "\"Not enough Ada for fees. Try sending a smaller amount.\" error message",
+        "end": {
+          "column": 3,
+          "line": 96
+        },
+        "file": "app/components/wallet/WalletSendForm.js",
+        "id": "wallet.send.form.transactionFeeError",
+        "start": {
+          "column": 23,
+          "line": 92
+        }
       }
     ],
     "path": "app/components/wallet/WalletSendForm.json"
