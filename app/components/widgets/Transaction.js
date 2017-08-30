@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
-import SvgInline  from 'react-svg-inline';
+import SvgInline from 'react-svg-inline';
 import classNames from 'classnames';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';

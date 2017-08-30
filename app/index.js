@@ -33,7 +33,6 @@ const isAboutWindow = getUrlParameterByName('window') === 'about';
 if (isInjectedTestEnv) environment.current = environment.TEST;
 
 const initializeDaedalus = () => {
-  const url = window.location.href;
   const api = new CardanoClientApi();
   if (environment.isTest()) patchCardanoApi(api);
   const router = new RouterStore();

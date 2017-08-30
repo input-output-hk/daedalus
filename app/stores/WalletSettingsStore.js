@@ -78,9 +78,8 @@ export default class WalletSettingsStore extends Store {
   };
 
   @action _exportToFile = async (params: WalletExportToFileParams) => {
-    await this.exportWalletToFileRequest.execute({
-      filePath: params.filePath
-    });
+    const { walletId, filePath, password } = params;
+    await this.exportWalletToFileRequest.execute({ walletId, filePath, password });
     this.actions.dialogs.closeActiveDialog.trigger();
   }
 

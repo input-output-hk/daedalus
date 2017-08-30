@@ -1,5 +1,5 @@
 // @flow
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import SvgInline from 'react-svg-inline';
 import { ipcRenderer } from 'electron';
 import { defineMessages, intlShape } from 'react-intl';
@@ -56,8 +56,12 @@ export default class About extends Component {
           <SvgInline svg={daedalusIcon} className={styles.daedalusIcon} />
 
           <div className={styles.daedalusTitleVersion}>
-            <div className={styles.daedalusTitle}>{intl.formatMessage(messages.aboutTitle)}</div>
-            <div className={styles.daedalusVersion}>{intl.formatMessage(messages.aboutReleaseVersion)}</div>
+            <div className={styles.daedalusTitle}>
+              {intl.formatMessage(messages.aboutTitle)}
+            </div>
+            <div className={styles.daedalusVersion}>
+              {intl.formatMessage(messages.aboutReleaseVersion)}
+            </div>
           </div>
 
           <SvgInline svg={cardanoIcon} className={styles.cardanoIcon} />
@@ -68,7 +72,7 @@ export default class About extends Component {
         </div>
 
         <div className={styles.footerWrapper}>
-          <a href='http://daedaluswallet.io'>http://daedaluswallet.io</a>
+          <a href="http://daedaluswallet.io">http://daedaluswallet.io</a>
           <div className={styles.copyright}>{intl.formatMessage(messages.aboutCopyright)}</div>
         </div>
 
