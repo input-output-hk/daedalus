@@ -52,6 +52,7 @@ Changelog
 - Updated README file "Development - network options" section ([PR 410](https://github.com/input-output-hk/daedalus/pull/410))
 - All CSS hardcoded values replaced with variables ([PR 370](https://github.com/input-output-hk/daedalus/pull/398))
 - Speed optimizations for page reloads while running tests by loading bundled up for one-time tests runs ([PR 448](https://github.com/input-output-hk/daedalus/pull/445))
+- Optimized structure and naming of theming files ([PR 453](https://github.com/input-output-hk/daedalus/pull/453))
 
 ## 0.7.0
 
