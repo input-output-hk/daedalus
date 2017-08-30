@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import SvgInline  from 'react-svg-inline';
+import SvgInline from 'react-svg-inline';
 import closeCross from '../../assets/images/close-cross.inline.svg';
 import styles from './DialogCloseButton.scss';
 

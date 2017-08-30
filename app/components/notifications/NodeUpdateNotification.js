@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import SvgInline  from 'react-svg-inline';
+import SvgInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
