@@ -137,7 +137,13 @@ app.on('ready', async () => {
 
   try {
 
-    const ca = readCA(path.join(__dirname, '../../../tls/ca/ca.crt'));
+    // Path to certificate in development
+    let pathToCertificate = '../tls/ca.crt';
+    if (isProd) {
+    // --> PATH TO CERTIFICATE IN PRODUCTION:
+      pathToCertificate = '../../../tls/ca/ca.crt';
+    }
+    const ca = readCA(path.join(__dirname, pathToCertificate));
 
     const tlsConfig = ClientApi.tlsInit(ca);
     let messageCallback, errorCallback = null;
