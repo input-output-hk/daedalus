@@ -4,9 +4,9 @@ import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './DisplaySettings.scss';
-import themeLightBlue from '../../../assets/images/themes/light-blue.png';
-import themeCardano from '../../../assets/images/themes/cardano.png';
-import themeDarkBlue from '../../../assets/images/themes/dark-blue.png';
+import themeLightBluePreview from '../../../assets/images/themes/light-blue.png';
+import themeCardanoPreview from '../../../assets/images/themes/cardano.png';
+import themeDarkBluePreview from '../../../assets/images/themes/dark-blue.png';
 
 const messages = defineMessages({
   themeLabel: {
@@ -72,17 +72,17 @@ export default class DisplaySettings extends Component {
         <div className={styles.themesWrapper}>
 
           <button className={themeLightBlueClasses} onClick={selectTheme.bind(this, { theme: 'light-blue' })}>
-            <img src={themeLightBlue} role="presentation" />
+            <img src={themeLightBluePreview} role="presentation" />
             <span>{intl.formatMessage(messages.themeLightBlue)}</span>
           </button>
 
           <button className={themeCardanoClasses} onClick={selectTheme.bind(this, { theme: 'cardano' })}>
-            <img src={themeCardano} role="presentation" />
+            <img src={themeCardanoPreview} role="presentation" />
             <span>{intl.formatMessage(messages.themeCardano)}</span>
           </button>
 
           <button className={themeDarkBlueClasses} onClick={selectTheme.bind(this, { theme: 'dark-blue' })}>
-            <img src={themeDarkBlue} role="presentation" />
+            <img src={themeDarkBluePreview} role="presentation" />
             <span>{intl.formatMessage(messages.themeDarkBlue)}</span>
           </button>
 
