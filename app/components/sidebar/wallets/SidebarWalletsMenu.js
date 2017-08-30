@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import SvgInline  from 'react-svg-inline';
+import SvgInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import SidebarSubMenu from '../SidebarMenu';
@@ -50,7 +50,7 @@ export default class SidebarWalletsMenu extends Component {
           ))}
         </div>
         <button className={styles.addWalletButton} onClick={onAddWallet}>
-          <SvgInline svg={addWalletIcon} className={styles.icon}/>
+          <SvgInline svg={addWalletIcon} className={styles.icon} />
           <span>{intl.formatMessage(messages.addAdaWallet)}</span>
         </button>
       </SidebarSubMenu>
