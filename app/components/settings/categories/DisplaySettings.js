@@ -7,6 +7,7 @@ import styles from './DisplaySettings.scss';
 import themeLightBluePreview from '../../../assets/images/themes/light-blue.png';
 import themeCardanoPreview from '../../../assets/images/themes/cardano.png';
 import themeDarkBluePreview from '../../../assets/images/themes/dark-blue.png';
+import { THEMES } from '../../../themes/index';
 
 const messages = defineMessages({
   themeLabel: {
@@ -48,17 +49,17 @@ export default class DisplaySettings extends Component {
     const { intl } = this.context;
 
     const themeLightBlueClasses = classnames([
-      theme === 'light-blue' ? styles.active : styles.inactive,
+      theme === THEMES.LIGHT_BLUE ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
 
     const themeCardanoClasses = classnames([
-      theme === 'cardano' ? styles.active : styles.inactive,
+      theme === THEMES.CARDANO ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
 
     const themeDarkBlueClasses = classnames([
-      theme === 'dark-blue' ? styles.active : styles.inactive,
+      theme === THEMES.DARK_BLUE ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
 
@@ -71,17 +72,26 @@ export default class DisplaySettings extends Component {
 
         <div className={styles.themesWrapper}>
 
-          <button className={themeLightBlueClasses} onClick={selectTheme.bind(this, { theme: 'light-blue' })}>
+          <button
+            className={themeLightBlueClasses}
+            onClick={selectTheme.bind(this, { theme: THEMES.LIGHT_BLUE })}
+          >
             <img src={themeLightBluePreview} role="presentation" />
             <span>{intl.formatMessage(messages.themeLightBlue)}</span>
           </button>
 
-          <button className={themeCardanoClasses} onClick={selectTheme.bind(this, { theme: 'cardano' })}>
+          <button
+            className={themeCardanoClasses}
+            onClick={selectTheme.bind(this, { theme: THEMES.CARDANO })}
+          >
             <img src={themeCardanoPreview} role="presentation" />
             <span>{intl.formatMessage(messages.themeCardano)}</span>
           </button>
 
-          <button className={themeDarkBlueClasses} onClick={selectTheme.bind(this, { theme: 'dark-blue' })}>
+          <button
+            className={themeDarkBlueClasses}
+            onClick={selectTheme.bind(this, { theme: THEMES.DARK_BLUE })}
+          >
             <img src={themeDarkBluePreview} role="presentation" />
             <span>{intl.formatMessage(messages.themeDarkBlue)}</span>
           </button>
