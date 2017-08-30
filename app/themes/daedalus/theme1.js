@@ -1,4 +1,4 @@
-//  ==== BLACK THEME === //
+//  ==== Theme: Cardano === //
 
 export default {
   '--preferred-font': '"Times New Roman", serif',

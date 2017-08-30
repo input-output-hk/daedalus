@@ -14,6 +14,21 @@ const messages = defineMessages({
     defaultMessage: '!!!Theme',
     description: 'Label for the "Theme" selection on the display settings page.',
   },
+  themeLightBlue: {
+    id: 'settings.display.themeNames.lightBlue',
+    defaultMessage: '!!!Light blue',
+    description: 'Name of the "Light blue" theme on the display settings page.',
+  },
+  themeCardano: {
+    id: 'settings.display.themeNames.cardano',
+    defaultMessage: '!!!Cardano',
+    description: 'Name of the "Cardano" theme on the display settings page.',
+  },
+  themeDarkBlue: {
+    id: 'settings.display.themeNames.darkBlue',
+    defaultMessage: '!!!Dark blue',
+    description: 'Name of the "Dark blue" theme on the display settings page.',
+  },
 });
 
 @observer
@@ -58,17 +73,17 @@ export default class DisplaySettings extends Component {
 
           <button className={themeDefaultClasses} onClick={selectTheme.bind(this, { theme: 'themeDefault' })}>
             <img src={themeDefault} role="presentation" />
-            <span>Default Theme</span>
+            <span>{intl.formatMessage(messages.themeLightBlue)}</span>
           </button>
 
           <button className={themeOneClasses} onClick={selectTheme.bind(this, { theme: 'theme1' })}>
             <img src={theme1} role="presentation" />
-            <span>Sea Vulcan</span>
+            <span>{intl.formatMessage(messages.themeCardano)}</span>
           </button>
 
           <button className={themeTwoClasses} onClick={selectTheme.bind(this, { theme: 'theme2' })}>
             <img src={theme2} role="presentation" />
-            <span>Jagger</span>
+            <span>{intl.formatMessage(messages.themeDarkBlue)}</span>
           </button>
 
         </div>

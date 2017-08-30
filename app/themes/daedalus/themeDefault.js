@@ -1,4 +1,4 @@
-//  ==== DEFAULT BLUE THEME === //
+//  ==== Theme: Light blue === //
 
 export default {
   '--preferred-font': '"Times New Roman", serif',
