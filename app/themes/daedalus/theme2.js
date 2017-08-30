@@ -119,7 +119,8 @@ export default {
   '--theme-notification-message-background-color': 'rgba(83, 99, 112, 0.8)',
   '--theme-notification-message-text-color': '#fafbfc',
 
-  '--theme-receive-qr-code-color': '#e9f4fe',
+  '--theme-receive-qr-code-background-color': '#fff',
+  '--theme-receive-qr-code-foreground-color': '#000',
 
   '--theme-settings-body-background-color': '#0b1926',
   '--theme-settings-pane-background-color': '#263345',
@@ -198,7 +199,6 @@ export default {
   '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color': '#e9f4fe',
   '--theme-icon-add-wallet-dialog-big-button-color': '#8a98ab',
   '--theme-icon-copy-address-color': '#8793a1',
-  '--theme-icon-address-protected-color': '#8793a1',
   '--theme-icon-back-button-color': '#5e6066',
   '--theme-icon-close-button-color': '#5e6066',
   '--theme-icon-file-upload-color': '#5e6066',

@@ -13,7 +13,6 @@ import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
-import iconProtected from '../../assets/images/protected-off.inline.svg';
 import WalletAddress from '../../domain/WalletAddress';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -182,8 +181,10 @@ export default class WalletReceive extends Component {
     );
 
     // Get QRCode color value from active theme's CSS variable
-    const qrCodeColor = document.documentElement ?
-      document.documentElement.style.getPropertyValue('--theme-receive-qr-code-color') : '#000';
+    const qrCodeBackgroundColor = document.documentElement ?
+      document.documentElement.style.getPropertyValue('--theme-receive-qr-code-background-color') : 'transparent';
+    const qrCodeForegroundColor = document.documentElement ?
+      document.documentElement.style.getPropertyValue('--theme-receive-qr-code-foreground-color') : '#000';
 
     return (
       <div className={styles.component}>
@@ -194,9 +195,9 @@ export default class WalletReceive extends Component {
             <div className={styles.qrCode}>
               <QRCode
                 value={walletAddress}
-                bgColor="transparent"
-                fgColor={qrCodeColor}
-                size={160}
+                bgColor={qrCodeBackgroundColor}
+                fgColor={qrCodeForegroundColor}
+                size={152}
               />
             </div>
 
@@ -224,8 +225,6 @@ export default class WalletReceive extends Component {
               {generateAddressForm}
 
             </div>
-
-            <SvgInline svg={iconProtected} className={styles.protectedIcon} />
           </div>
 
           <div className={styles.generatedAddresses}>
