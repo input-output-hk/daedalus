@@ -40,20 +40,11 @@ Feature: Send Money to Receiver
       | balance  |
       | 0.000010 |
 
-  Scenario: User Submits Empty Form
-    Given I am on the "first" wallet "send" screen
-    When I submit the wallet send form
-    Then I should see the following error messages on the wallet send form:
-      | message                       |
-      | global.errors.fieldIsRequired |
-      | global.errors.fieldIsRequired |
-
   Scenario: User Enters Wrong Receiver Address
     Given I am on the "first" wallet "send" screen
     When I fill out the wallet send form with:
       | address | amount    |
       | invalid | 0.000010  |
-    And I submit the wallet send form
     Then I should see the following error messages on the wallet send form:
       | message                                |
       | wallet.send.form.errors.invalidAddress |
@@ -63,7 +54,6 @@ Feature: Send Money to Receiver
     When I fill out the send form with a transaction to "first" wallet:
       | title          | amount         |
       | my transaction | <WRONG_AMOUNT> |
-    And I submit the wallet send form
     Then I should see the following error messages on the wallet send form:
       | message                               |
       | wallet.send.form.errors.invalidAmount |
