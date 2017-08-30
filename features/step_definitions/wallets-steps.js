@@ -352,7 +352,9 @@ export default function () {
     expect(expectedData.amountWithoutFees).to.equal(transactionAmountWithoutFees);
   });
 
-  this.Then(/^the balance of "([^"]*)" wallet should be:$/, async function (walletName, table) {
+  // Extended timeout is used for this step as it takes more than DEFAULT_TIMEOUT
+  // for the receiver wallet's balance to be updated on the backend after creating transactions
+  this.Then(/^the balance of "([^"]*)" wallet should be:$/, { timeout: 40000 }, async function (walletName, table) {
     const expectedData = table.hashes()[0];
     const receiverWallet = getWalletByName.call(this, walletName);
     return this.client.waitUntil(async () => {
