@@ -11,13 +11,14 @@ import WalletAddDialog from '../components/wallet/WalletAddDialog';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type {
   GetWalletsResponse,
-  ImportKeyResponse,
+  ImportWalletFromFileResponse,
   CreateWalletResponse,
   DeleteWalletResponse,
   CreateTransactionResponse,
   GetWalletRecoveryPhraseResponse,
   RestoreWalletResponse
 } from '../api';
+import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 
 export default class WalletsStore extends Store {
 
@@ -28,7 +29,7 @@ export default class WalletsStore extends Store {
   // REQUESTS
   /* eslint-disable max-len */
   @observable walletsRequest: Request<GetWalletsResponse> = new Request(this.api.getWallets);
-  @observable importFromKeyRequest: Request<ImportKeyResponse> = new Request(this.api.importWalletFromKey);
+  @observable importFromFileRequest: Request<ImportWalletFromFileResponse> = new Request(this.api.importWalletFromFile);
   @observable createWalletRequest: Request<CreateWalletResponse> = new Request(this.api.createWallet);
   @observable deleteWalletRequest: Request<DeleteWalletResponse> = new Request(this.api.deleteWallet);
   @observable sendMoneyRequest: Request<CreateTransactionResponse> = new Request(this.api.createTransaction);
@@ -51,7 +52,7 @@ export default class WalletsStore extends Store {
     wallets.deleteWallet.listen(this._delete);
     wallets.sendMoney.listen(this._sendMoney);
     wallets.restoreWallet.listen(this._restoreWallet);
-    wallets.importWalletFromKey.listen(this._importWalletFromKey);
+    wallets.importWalletFromFile.listen(this._importWalletFromFile);
     wallets.setActiveWallet.listen(this._setActiveWallet);
     wallets.chooseWalletExportType.listen(this._chooseWalletExportType);
     router.goToRoute.listen(this._onRouteChange);
@@ -230,18 +231,18 @@ export default class WalletsStore extends Store {
     this.refreshWalletsData();
   };
 
-  @action _importWalletFromKey = async (params: {
-    filePath: string,
-    walletPassword: ?string,
-  }) => {
-    const importedWallet = await this.importFromKeyRequest.execute(params).promise;
+  @action _importWalletFromFile = async (params: WalletImportFromFileParams) => {
+    const { filePath, walletName, walletPassword } = params;
+    const importedWallet = await this.importFromFileRequest.execute({
+      filePath, walletName, walletPassword,
+    }).promise;
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(importedWallet);
     this.actions.dialogs.closeActiveDialog.trigger();
-    this.importFromKeyRequest.reset();
+    this.importFromFileRequest.reset();
     this.goToWalletRoute(importedWallet.id);
     this.refreshWalletsData();
-  };
+  }
 
   @action _setActiveWallet = ({ walletId }: { walletId: string }) => {
     if (this.hasAnyWallets) {

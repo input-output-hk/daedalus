@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import SvgInline  from 'react-svg-inline';
+import SvgInline from 'react-svg-inline';
 import Button from 'react-polymorph/lib/components/Button';
 import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';

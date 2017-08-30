@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import SvgInline  from 'react-svg-inline';
+import SvgInline from 'react-svg-inline';
 import adaSymbolBig from '../../../assets/images/ada-symbol-big-dark.inline.svg';
 import adaSymbolSmallest from '../../../assets/images/ada-symbol-smallest-dark.inline.svg';
 import BorderedBox from '../../widgets/BorderedBox';
@@ -58,7 +58,7 @@ export default class WalletSummary extends Component {
           <div className={styles.walletName}>{walletName}</div>
           <div className={styles.walletAmount}>
             {amount}
-            <SvgInline svg={adaSymbolBig} className={styles.adaSymbolBig}/>
+            <SvgInline svg={adaSymbolBig} className={styles.adaSymbolBig} />
           </div>
           {pendingAmount.incoming.greaterThan(0) &&
             <div className={styles.pendingConfirmation}>
