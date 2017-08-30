@@ -204,6 +204,7 @@
   "wallet.send.form.submit": "Send",
   "wallet.send.form.title.hint": "E.g: Money for Frank",
   "wallet.send.form.title.label": "Title",
+  "wallet.send.form.transactionFeeError": "Not enough Ada for fees. Try sending a smaller amount.",
   "wallet.send.form.walletPasswordLabel": "Wallet password",
   "wallet.settings.assurance": "Transaction assurance security level",
   "wallet.settings.changePassword.dialog.currentPasswordFieldPlaceholder": "Type current password",
