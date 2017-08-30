@@ -140,10 +140,18 @@ app.on('ready', async () => {
    * so that it can be used in HTTP and Websocket connections.
    */
   try {
-    const pathToCertificate = isProd ? '../../../tls/ca/ca.crt' : '../tls/ca.crt';
+    // Path to certificate in development
+    let pathToCertificate = '../tls/ca.crt';
+    
+    if (isProd) {
+      // --> PATH TO CERTIFICATE IN PRODUCTION:
+      pathToCertificate = '../../../tls/ca/ca.crt';
+    }
+
     Object.assign(global, {
       ca: fs.readFileSync(path.join(__dirname, pathToCertificate)),
     });
+
   } catch (error) {
     Log.error(`Error while loading ca.crt: ${error}`);
   }
