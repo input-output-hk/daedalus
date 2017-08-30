@@ -28,21 +28,22 @@ import type {
   RestoreWalletRequest,
   UpdateWalletRequest,
   RedeemAdaRequest,
-  ImportKeyRequest,
+  ImportWalletFromKeyRequest,
+  ImportWalletFromFileRequest,
   DeleteWalletRequest,
   RedeemPaperVendedAdaRequest,
   UpdateWalletPasswordRequest,
   TransactionFeeRequest,
-  TransactionFeeResponse,
   ExportWalletToFileRequest,
   ExportWalletToFileResponse,
 } from './index';
 import {
   // ApiMethodNotYetImplementedError,
   GenericApiError,
+  WalletAlreadyImportedError,
   WalletAlreadyRestoredError,
   RedeemAdaError,
-  WalletKeyImportError,
+  WalletFileImportError,
   NotEnoughMoneyToSendError,
   NotAllowedToSendMoneyToSameAddressError,
   NotAllowedToSendMoneyToRedeemAddressError,
@@ -368,19 +369,46 @@ export default class CardanoClientApi {
     }
   }
 
-  async importWalletFromKey(request: ImportKeyRequest) {
+  async importWalletFromKey(request: ImportWalletFromKeyRequest) {
     Logger.debug('CardanoClientApi::importWalletFromKey called');
     const { filePath, walletPassword } = request;
     try {
-      const importedWallet: ApiWallet = await ClientApi.importWallet(tlsConfig, filePath, walletPassword);
+      const importedWallet: ApiWallet = await ClientApi.importWallet(
+        tlsConfig, filePath, walletPassword
+      );
       Logger.debug('CardanoClientApi::importWalletFromKey success');
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
       Logger.error('CardanoClientApi::importWalletFromKey error: ' + stringifyError(error));
-      if (error.message.includes('Wallet with that mnemonics already exists')) {
-        throw new WalletAlreadyRestoredError();
+      if (error.message.includes('already exists')) {
+        throw new WalletAlreadyImportedError();
       }
-      throw new WalletKeyImportError();
+      throw new WalletFileImportError();
+    }
+  }
+
+  async importWalletFromFile(request: ImportWalletFromFileRequest) {
+    Logger.debug('CardanoClientApi::importWalletFromFile called');
+    const { filePath, walletPassword, walletName } = request;
+    const isKeyFile = filePath.split('.').pop().toLowerCase() === 'key';
+    try {
+      const importedWallet: ApiWallet = isKeyFile ? (
+        await ClientApi.importWallet(
+          tlsConfig, filePath, walletPassword
+        )
+      ) : (
+        await ClientApi.importBackupJSON(
+          tlsConfig, filePath, walletPassword, walletName
+        )
+      );
+      Logger.debug('CardanoClientApi::importWalletFromFile success');
+      return _createWalletFromServerData(importedWallet);
+    } catch (error) {
+      Logger.error('CardanoClientApi::importWalletFromFile error: ' + stringifyError(error));
+      if (error.message.includes('already exists')) {
+        throw new WalletAlreadyImportedError();
+      }
+      throw new WalletFileImportError();
     }
   }
 
@@ -643,25 +671,11 @@ export default class CardanoClientApi {
     }
   }
 
-  async calculateTransactionFee(request: TransactionFeeRequest): Promise<TransactionFeeResponse> {
-    Logger.debug('CardanoClientApi::TransactionFee called: ' + stringifyData(request));
-    try {
-      // TODO: use real endpoint here to fetch fees (don't forget to cast bignumber to string!)
-      const fee = await new Promise((resolve) => {
-        setTimeout(() => resolve(new BigNumber(1).dividedBy(LOVELACES_PER_ADA)), 1000);
-      });
-      Logger.debug('CardanoClientApi::TransactionFee success: ' + fee);
-      return fee;
-    } catch (error) {
-      Logger.error('CardanoClientApi::TransactionFee error: ' + stringifyError(error));
-      throw new GenericApiError();
-    }
-  }
-
   async exportWalletToFile(request: ExportWalletToFileRequest): ExportWalletToFileResponse {
+    const { walletId, filePath, password } = request;
     Logger.debug('CardanoClientApi::exportWalletToFile called');
     try {
-      const response = await ClientApi.exportBackupJSON(tlsConfig, request.filePath);
+      const response = await ClientApi.exportBackupJSON(tlsConfig, walletId, filePath, password);
       Logger.debug('CardanoClientApi::exportWalletToFile success: ' + stringifyData(response));
       return response;
     } catch (error) {

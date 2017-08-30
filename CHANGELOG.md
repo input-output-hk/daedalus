@@ -12,6 +12,8 @@ Changelog
 - Export wallet to file ([PR 426](https://github.com/input-output-hk/daedalus/pull/426))
 - Add theming options in settings ([PR 370](https://github.com/input-output-hk/daedalus/pull/398))
 - About page, available from the system menu ([PR 430](https://github.com/input-output-hk/daedalus/pull/430))
+- Setup default themes for TN and MN and introduce new theme names ([PR 451](https://github.com/input-output-hk/daedalus/pull/451))
+- Transaction fees UX improvements on wallet sent screen ([PR 449](https://github.com/input-output-hk/daedalus/pull/449))
 
 ### Fixes
 
@@ -37,7 +39,10 @@ Changelog
 - Fixed ENOENT error on log file rotation ([PR 428](https://github.com/input-output-hk/daedalus/pull/428))
 - Fixed logging error ([PR 431](https://github.com/input-output-hk/daedalus/pull/431))
 - Add theming support on UI which was introduced after introduction of Theming feature ([PR 434](https://github.com/input-output-hk/daedalus/pull/434))
+- Importing a wallet from a file updated-API integration ([PR 439](https://github.com/input-output-hk/daedalus/pull/439))
+- Exporting a wallet updated-API integration ([PR 438](https://github.com/input-output-hk/daedalus/pull/438))
 - Show correct error message for A -> A transaction error ([PR 441](https://github.com/input-output-hk/daedalus/pull/441))
+- Improved QR code colors on wallet send screen for dark themes ([PR 448](https://github.com/input-output-hk/daedalus/pull/448))
 
 ### Chores
 
@@ -46,6 +51,7 @@ Changelog
 - Updated README file "Development - network options" section ([PR 410](https://github.com/input-output-hk/daedalus/pull/410))
 - All CSS hardcoded values replaced with variables ([PR 370](https://github.com/input-output-hk/daedalus/pull/398))
 - Implemented sync progress and payment requests with new JS api as first step to remove the purescript api ([PR 437](https://github.com/input-output-hk/daedalus/pull/437))
+- Speed optimizations for page reloads while running tests by loading bundled up for one-time tests runs ([PR 448](https://github.com/input-output-hk/daedalus/pull/445))
 
 ## 0.7.0
 

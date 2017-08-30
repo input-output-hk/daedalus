@@ -75,7 +75,7 @@ export default class AppStore extends Store {
   @computed get currentTheme(): string {
     const { result } = this.getThemeRequest.execute();
     if (this.isCurrentThemeSet) return result;
-    return 'themeDefault'; // default
+    return environment.isMainnet() ? 'theme1' : 'themeDefault'; // default
   }
 
   @computed get isCurrentThemeSet(): boolean {

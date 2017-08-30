@@ -20,6 +20,7 @@ Feature: Import Wallet via Sidebar
     And I should have newly created "Genesis wallet" wallet loaded
     And I should be on the "Genesis wallet" wallet "summary" screen
 
+  @skip
   Scenario: Successfully Importing a Wallet with spending password
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar

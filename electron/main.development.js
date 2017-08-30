@@ -139,9 +139,14 @@ app.on('ready', async () => {
    * and make it available to render processes via a global variable
    * so that it can be used in HTTP and Websocket connections.
    */
-  Object.assign(global, {
-    ca: fs.readFileSync(path.join(__dirname, '../tls/ca.crt')),
-  });
+  try {
+    const pathToCertificate = isProd ? '../../../tls/ca/ca.crt' : '../tls/ca.crt';
+    Object.assign(global, {
+      ca: fs.readFileSync(path.join(__dirname, pathToCertificate)),
+    });
+  } catch (error) {
+    Log.error(`Error while loading ca.crt: ${error}`);
+  }
 
   mainWindow = new BrowserWindow({
     show: false,

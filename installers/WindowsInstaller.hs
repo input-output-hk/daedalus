@@ -122,6 +122,7 @@ writeInstallerNSIS fullVersion = do
         setOutPath "$INSTDIR"        -- Where to install files in this section
         writeRegStr HKLM "Software/Daedalus" "Install_Dir" "$INSTDIR" -- Used by launcher batch script
         createDirectory "$APPDATA\\Daedalus\\Secrets-0.5"
+        createDirectory "$APPDATA\\Daedalus\\Logs"
         createShortcut "$DESKTOP\\Daedalus.lnk" daedalusShortcut
         file [] "cardano-node.exe"
         file [] "cardano-launcher.exe"
@@ -132,6 +133,7 @@ writeInstallerNSIS fullVersion = do
         file [] "ca.conf"
         file [] "server.conf"
         file [] "client.conf"
+        file [] "wallet-topology.yaml"
         writeFileLines "$INSTDIR\\daedalus.bat" (map str launcherScript)
         file [Recursive] "dlls\\"
         file [Recursive] "libressl\\"
@@ -143,7 +145,7 @@ writeInstallerNSIS fullVersion = do
           , "DetailPrint \"liteFirewall::AddRule: $0\""
           ]
 
-        exec "build-certificates-win64.bat >%APPDATA%\\Daedalus\\Logs\\build-certificates.log 2>&1"
+        exec "build-certificates-win64.bat \"$INSTDIR\" >%APPDATA%\\Daedalus\\Logs\\build-certificates.log 2>&1"
 
         -- Uninstaller
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "InstallLocation" "$INSTDIR\\Daedalus"

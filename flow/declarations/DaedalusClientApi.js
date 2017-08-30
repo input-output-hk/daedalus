@@ -118,9 +118,10 @@ declare module 'daedalus-client-api' {
   declare function restoreWallet(tls: TlsConfig, walletName: string, assurance: string, unit: number, walletMnemonic: string, walletPassword: ?string): Promise<ApiWallet>;
   declare function updateWallet(tls: TlsConfig, walletId: string, walletName: string, assurance: string, unit: number): Promise<ApiWallet>;
   declare function importWallet(tls: TlsConfig, filePath: string, walletPassword: ?string): Promise<ApiWallet>;
+  declare function importBackupJSON(tls: TlsConfig, filePath: string, walletPassword: ?string, walletName: ?string): Promise<ApiWallet>;
   declare function newWAddress(tls: TlsConfig, accountId: string, walletPassword: ?string): Promise<ApiAddress>;
   declare function changeWalletPass(tls: TlsConfig, walletId: string, oldPassword: ?string, newPassword: ?string): Promise<{}>;
-  declare function exportBackupJSON(tls: TlsConfig, filePath: string): Promise<string>;
+  declare function exportBackupJSON(tls: TlsConfig, walletId: string, filePath: string, walletPassword: ?string): Promise<string>;
 
   // Test
   declare function testReset(tls: TlsConfig): void;
