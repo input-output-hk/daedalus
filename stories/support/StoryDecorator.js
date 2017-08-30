@@ -15,7 +15,7 @@ export default class StoryDecorator extends Component {
 
   render() {
     const { children } = this.props;
-    const theme = require(`../../app/themes/daedalus/themeDefault.js`);
+    const theme = require(`../../app/themes/daedalus/light-blue.js`);
     return (
       <div>
         <ThemeManager variables={theme} />

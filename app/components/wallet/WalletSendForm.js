@@ -160,7 +160,7 @@ export default class WalletSendForm extends Component {
               } else {
                 this._resetTransactionFee();
               }
-              return [isValid, this.context.intl.formatMessage(messages.invalidAddress)]
+              return [isValid, this.context.intl.formatMessage(messages.invalidAddress)];
             });
         }],
       },

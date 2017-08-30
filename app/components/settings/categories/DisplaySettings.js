@@ -4,9 +4,9 @@ import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './DisplaySettings.scss';
-import themeDefault from '../../../assets/images/themes/theme-default.png';
-import theme1 from '../../../assets/images/themes/theme-1.png';
-import theme2 from '../../../assets/images/themes/theme-2.png';
+import themeLightBlue from '../../../assets/images/themes/light-blue.png';
+import themeCardano from '../../../assets/images/themes/cardano.png';
+import themeDarkBlue from '../../../assets/images/themes/dark-blue.png';
 
 const messages = defineMessages({
   themeLabel: {
@@ -47,18 +47,18 @@ export default class DisplaySettings extends Component {
     const { theme, selectTheme } = this.props;
     const { intl } = this.context;
 
-    const themeDefaultClasses = classnames([
-      theme === 'themeDefault' ? styles.active : styles.inactive,
+    const themeLightBlueClasses = classnames([
+      theme === 'light-blue' ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
 
-    const themeOneClasses = classnames([
-      theme === 'theme1' ? styles.active : styles.inactive,
+    const themeCardanoClasses = classnames([
+      theme === 'cardano' ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
 
-    const themeTwoClasses = classnames([
-      theme === 'theme2' ? styles.active : styles.inactive,
+    const themeDarkBlueClasses = classnames([
+      theme === 'dark-blue' ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
 
@@ -71,18 +71,18 @@ export default class DisplaySettings extends Component {
 
         <div className={styles.themesWrapper}>
 
-          <button className={themeDefaultClasses} onClick={selectTheme.bind(this, { theme: 'themeDefault' })}>
-            <img src={themeDefault} role="presentation" />
+          <button className={themeLightBlueClasses} onClick={selectTheme.bind(this, { theme: 'light-blue' })}>
+            <img src={themeLightBlue} role="presentation" />
             <span>{intl.formatMessage(messages.themeLightBlue)}</span>
           </button>
 
-          <button className={themeOneClasses} onClick={selectTheme.bind(this, { theme: 'theme1' })}>
-            <img src={theme1} role="presentation" />
+          <button className={themeCardanoClasses} onClick={selectTheme.bind(this, { theme: 'cardano' })}>
+            <img src={themeCardano} role="presentation" />
             <span>{intl.formatMessage(messages.themeCardano)}</span>
           </button>
 
-          <button className={themeTwoClasses} onClick={selectTheme.bind(this, { theme: 'theme2' })}>
-            <img src={theme2} role="presentation" />
+          <button className={themeDarkBlueClasses} onClick={selectTheme.bind(this, { theme: 'dark-blue' })}>
+            <img src={themeDarkBlue} role="presentation" />
             <span>{intl.formatMessage(messages.themeDarkBlue)}</span>
           </button>
 
