@@ -50,7 +50,7 @@ launcherArgs launcher = unwords $
       walletTopology  | os == "mingw32" = ["--topology", quote "%DAEDALUS_DIR%\\wallet-topology.yaml"]
                       | otherwise = mempty
       tlsBase         | os == "mingw32" = "%DAEDALUS_DIR%\\"   <> "tls" <> (pathSeparator : [])
-                      | otherwise       = runtimePath launcher <> "tls" <> (pathSeparator : [])
+                      | otherwise       = "./"                 <> "tls" <> (pathSeparator : [])
 
 quote :: String -> String
 quote p = "\"" <> p <> "\""
