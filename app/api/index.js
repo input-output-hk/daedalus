@@ -98,12 +98,20 @@ export type RedeemPaperVendedAdaRequest = {
 
 export type RedeemPaperVendedAdaResponse = RedeemPaperVendedAdaRequest;
 
-export type ImportKeyRequest = {
+export type ImportWalletFromKeyRequest = {
   filePath: string,
   walletPassword: ?string,
 };
 
-export type ImportKeyResponse = Wallet;
+export type ImportWalletFromKeyResponse = Wallet;
+
+export type ImportWalletFromFileRequest = {
+  filePath: string,
+  walletPassword: ?string,
+  walletName: ?string,
+};
+
+export type ImportWalletFromFileResponse = Wallet;
 
 export type GetSyncProgressResponse = {
   localDifficulty: number,
@@ -132,7 +140,11 @@ export type TransactionFeeRequest = {
 
 export type TransactionFeeResponse = BigNumber;
 
-export type ExportWalletToFileRequest = { filePath: string };
+export type ExportWalletToFileRequest = {
+  walletId: string,
+  filePath: string,
+  password: ?string
+};
 
 export type ExportWalletToFileResponse = {};
 
@@ -155,7 +167,8 @@ export type Api = {
   isValidPaperVendRedemptionKey(mnemonic: string): Promise<boolean>,
   getWalletRecoveryPhrase(request: GetWalletRecoveryPhraseRequest): Promise<GetWalletRecoveryPhraseResponse>,
   restoreWallet(request: RestoreWalletRequest): Promise<RestoreWalletResponse>,
-  importWalletFromKey(request: ImportKeyRequest): Promise<ImportKeyResponse>,
+  importWalletFromKey(request: ImportWalletFromKeyRequest): Promise<ImportWalletFromKeyResponse>,
+  importWalletFromFile(request: ImportWalletFromFileRequest): Promise<ImportWalletFromFileResponse>,
   redeemAda(request: RedeemAdaRequest): Promise<RedeemAdaResponse>,
   redeemPaperVendedAda(request: RedeemPaperVendedAdaRequest): Promise<RedeemPaperVendedAdaResponse>,
   generateMnemonic(): string,

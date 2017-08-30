@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import SvgInline  from 'react-svg-inline';
+import SvgInline from 'react-svg-inline';
 import adaExpendIcon from '../../assets/images/wallet-nav/send-ic.inline.svg';
 import adaIncomeIcon from '../../assets/images/wallet-nav/receive-ic.inline.svg';
 import exchangeIcon from '../../assets/images/exchange-ic.inline.svg';
@@ -22,7 +22,7 @@ export default class TransactionTypeIcon extends Component {
     ]);
 
     let icon;
-    switch(iconType) {
+    switch (iconType) {
       case 'adaExpend':
         icon = adaExpendIcon;
         break;
@@ -30,7 +30,7 @@ export default class TransactionTypeIcon extends Component {
         icon = adaIncomeIcon;
         break;
       case 'exchange':
-        icon =  exchangeIcon;
+        icon = exchangeIcon;
         break;
       default:
         icon = '';

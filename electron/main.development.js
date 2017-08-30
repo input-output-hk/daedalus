@@ -137,39 +137,45 @@ app.on('ready', async () => {
 
   try {
 
-    const ca = readCA(path.join(__dirname, '../tls/ca.crt'));
+    const ca = readCA(path.join(__dirname, '../../../tls/ca/ca.crt'));
 
     const tlsConfig = ClientApi.tlsInit(ca);
     let messageCallback, errorCallback = null;
+    let isNotifyRunning = false;
 
-    notify(
-      ca,
-      function handleNotifyMessage(...args) {
-        if (messageCallback) {
-          try {
-            messageCallback(...args);
-          } catch (e) {
-            // The callback might have been released on page refresh etc.
-            messageCallback = null;
+    const startNotify = () => {
+      notify(
+        ca,
+        function handleNotifyMessage(...args) {
+          if (messageCallback) {
+            try {
+              messageCallback(...args);
+            } catch (e) {
+              // The callback might have been released on page refresh etc.
+              messageCallback = null;
+            }
+          }
+        },
+        function handleNotifyError(...args) {
+          if (errorCallback) {
+            try {
+              errorCallback(...args);
+            } catch (e) {
+              // The callback might have been released on page refresh etc.
+              errorCallback = null;
+            }
           }
         }
-      },
-      function handleNotifyError(...args) {
-        if (errorCallback) {
-          try {
-            errorCallback(...args);
-          } catch (e) {
-            // The callback might have been released on page refresh etc.
-            errorCallback = null;
-          }
-        }
-      }
-    );
+      );
+      isNotifyRunning = true;
+    };
+
     Object.assign(global, {
       tlsConfig,
       registerNotifyCallback: (onMessage, onError) => {
         messageCallback = onMessage;
         errorCallback = onError;
+        if (!isNotifyRunning) startNotify();
       },
     });
   } catch(error) {

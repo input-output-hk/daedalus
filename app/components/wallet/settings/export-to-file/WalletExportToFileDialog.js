@@ -9,6 +9,7 @@ import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import ReactToolboxMobxForm from '../../../../lib/ReactToolboxMobxForm';
 import globalMessages from '../../../../i18n/global-messages';
 import Dialog from '../../../widgets/Dialog';
+import LocalizableError from '../../../../i18n/LocalizableError';
 import styles from './WalletExportToFileDialog.scss';
 
 const messages = defineMessages({
@@ -64,6 +65,7 @@ export default class WalletExportToFileDialog extends Component {
     isSubmitting: false,
     onSubmit: (OnSubmitParams) => void,
     onClose: () => void,
+    error?: ?LocalizableError,
   };
 
   state: DialogState;
@@ -122,7 +124,11 @@ export default class WalletExportToFileDialog extends Component {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onClose, walletName, hasSpendingPassword, isSubmitting } = this.props;
+    const {
+      onClose, walletName,
+      hasSpendingPassword,
+      isSubmitting, error,
+    } = this.props;
     // const { exportType } = this.state;
     const dialogClasses = classnames([
       styles.component,
@@ -183,6 +189,8 @@ export default class WalletExportToFileDialog extends Component {
             skin={<SimpleInputSkin />}
           />
         ) : null}
+
+        {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
       </Dialog>
     );
