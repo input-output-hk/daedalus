@@ -698,9 +698,10 @@ export default class CardanoClientApi {
   }
 
   async exportWalletToFile(request: ExportWalletToFileRequest): ExportWalletToFileResponse {
+    const { walletId, filePath, password } = request;
     Logger.debug('CardanoClientApi::exportWalletToFile called');
     try {
-      const response = await ClientApi.exportBackupJSON(tlsConfig, request.filePath);
+      const response = await ClientApi.exportBackupJSON(tlsConfig, walletId, filePath, password);
       Logger.debug('CardanoClientApi::exportWalletToFile success: ' + stringifyData(response));
       return response;
     } catch (error) {

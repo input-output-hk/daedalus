@@ -90,15 +90,32 @@ $ NETWORK=testnet npm run dev
 
 ### Testing
 
-You can run the test suite in two different modes during development
-(Currently you always need to run `npm run dev` before that)
+You can run the test suite in two different modes:
 
 **One-time run:**
+For running tests once using the application in prod mode (which is fast)
+instead of dev with webpack hot-reload server (which is slow).
+
+Execute this once before running the tests (which creates the `dist/bundle.js`):
+```bash
+$ npm run build
+``` 
+
+After that, execute this to run the tests:
+
 ```bash
 $ npm run test
 ```
 
 **Watch & Rerun on file changes:**
+For development purposes run the tests continuously in watch mode which will re-run tests when source code changes.
+
+Execute:
+```bash
+$ npm run hot-server
+```
+
+and then this:
 ```bash
 $ npm run test-watch
 ```
