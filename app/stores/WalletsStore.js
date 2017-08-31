@@ -25,6 +25,8 @@ export default class WalletsStore extends Store {
   WALLET_REFRESH_INTERVAL = 5000;
 
   @observable active: ?Wallet = null;
+  @observable isImportActive = false;
+  @observable isRestoreActive = false;
 
   // REQUESTS
   /* eslint-disable max-len */
@@ -217,31 +219,59 @@ export default class WalletsStore extends Store {
     }
   };
 
+  @action _setIsRestoreActive = (active: boolean) => {
+    this.isRestoreActive = active;
+  };
+
   @action _restoreWallet = async (params: {
     recoveryPhrase: string,
     walletName: string,
     walletPassword: ?string,
   }) => {
+    this.restoreRequest.reset();
+
+    // Hide restore wallet dialog 500ms after restore has been started
+    // ...or keep it open in case it has errored out (so that error message can be shown)
+    setTimeout(() => {
+      if (!this.restoreRequest.isError) {
+        this._setIsRestoreActive(true);
+        this.actions.dialogs.closeActiveDialog.trigger();
+      }
+    }, 500);
+
     const restoredWallet = await this.restoreRequest.execute(params).promise;
     if (!restoredWallet) throw new Error('Restored wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(restoredWallet);
-    this.actions.dialogs.closeActiveDialog.trigger();
     this.restoreRequest.reset();
-    this.goToWalletRoute(restoredWallet.id);
     this.refreshWalletsData();
+    this._setIsRestoreActive(false);
+  };
+
+  @action _setIsImportActive = (active: boolean) => {
+    this.isImportActive = active;
   };
 
   @action _importWalletFromFile = async (params: WalletImportFromFileParams) => {
+    this.importFromFileRequest.reset();
+
+    // Hide import wallet dialog 500ms after import has been started
+    // ...or keep it open in case it has errored out (so that error message can be shown)
+    setTimeout(() => {
+      if (!this.importFromFileRequest.isError) {
+        this._setIsImportActive(true);
+        this.actions.dialogs.closeActiveDialog.trigger();
+      }
+    }, 500);
+
     const { filePath, walletName, walletPassword } = params;
     const importedWallet = await this.importFromFileRequest.execute({
       filePath, walletName, walletPassword,
     }).promise;
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(importedWallet);
-    this.actions.dialogs.closeActiveDialog.trigger();
     this.importFromFileRequest.reset();
-    this.goToWalletRoute(importedWallet.id);
     this.refreshWalletsData();
+    this._setIsImportActive(false);
   }
 
   @action _setActiveWallet = ({ walletId }: { walletId: string }) => {

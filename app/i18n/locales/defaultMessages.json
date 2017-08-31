@@ -297,6 +297,39 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Wallet import in progress",
+        "description": "Status message \"Wallet import in progress\" shown while wallet is being imported.",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "app/components/notifications/StatusMessagesNotification.js",
+        "id": "wallet.statusMessages.activeImport",
+        "start": {
+          "column": 23,
+          "line": 9
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet restore in progress",
+        "description": "Status message \"Wallet restore in progress\" shown while wallet is being restored.",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "app/components/notifications/StatusMessagesNotification.js",
+        "id": "wallet.statusMessages.activeRestore",
+        "start": {
+          "column": 24,
+          "line": 14
+        }
+      }
+    ],
+    "path": "app/components/notifications/StatusMessagesNotification.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Select your language",
         "description": "Label for the language select.",
         "end": {
@@ -428,13 +461,13 @@
         "description": "Label for the \"Theme\" selection on the display settings page.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 17
         },
         "file": "app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeLabel",
         "start": {
           "column": 14,
-          "line": 12
+          "line": 13
         }
       },
       {
@@ -442,13 +475,13 @@
         "description": "Name of the \"Light blue\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.lightBlue",
         "start": {
           "column": 18,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -456,13 +489,13 @@
         "description": "Name of the \"Cardano\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.cardano",
         "start": {
           "column": 16,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -470,13 +503,13 @@
         "description": "Name of the \"Dark blue\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.darkBlue",
         "start": {
           "column": 17,
-          "line": 27
+          "line": 28
         }
       }
     ],
@@ -2430,13 +2463,13 @@
         "description": "Label for wallet address on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 26
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.walletAddressLabel",
         "start": {
           "column": 22,
-          "line": 23
+          "line": 22
         }
       },
       {
@@ -2444,13 +2477,13 @@
         "description": "Wallet receive payments instructions on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 31
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.walletReceiveInstructions",
         "start": {
           "column": 29,
-          "line": 28
+          "line": 27
         }
       },
       {
@@ -2458,13 +2491,13 @@
         "description": "Label for \"Generate new address\" button on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 36
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.generateNewAddressButtonLabel",
         "start": {
           "column": 33,
-          "line": 33
+          "line": 32
         }
       },
       {
@@ -2472,13 +2505,13 @@
         "description": "\"Generated addresses\" section title on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 41
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.generatedAddressesSectionTitle",
         "start": {
           "column": 34,
-          "line": 38
+          "line": 37
         }
       },
       {
@@ -2486,13 +2519,13 @@
         "description": "Label for \"hide used\" wallet addresses link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 46
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.hideUsedLabel",
         "start": {
           "column": 17,
-          "line": 43
+          "line": 42
         }
       },
       {
@@ -2500,13 +2533,13 @@
         "description": "Label for \"show used\" wallet addresses link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 51
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.showUsedLabel",
         "start": {
           "column": 17,
-          "line": 48
+          "line": 47
         }
       },
       {
@@ -2514,13 +2547,13 @@
         "description": "Placeholder for \"spending password\" on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 56
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 53
+          "line": 52
         }
       },
       {
@@ -2528,13 +2561,13 @@
         "description": "Label for \"Copy address\" link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 61
         },
         "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.copyAddressLabel",
         "start": {
           "column": 20,
-          "line": 58
+          "line": 57
         }
       }
     ],

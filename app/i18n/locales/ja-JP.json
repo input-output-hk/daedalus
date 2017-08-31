@@ -228,6 +228,8 @@
   "wallet.settings.password": "パスワード",
   "wallet.settings.passwordLastUpdated": "最終更新 {lastUpdated}",
   "wallet.settings.passwordNotSet": "パスワードが設定されていません",
+  "wallet.statusMessages.activeImport": "!!!Wallet import in progress",
+  "wallet.statusMessages.activeRestore": "!!!Wallet restore in progress",
   "wallet.summary.no.transactions": "最近のトランザクションはありません",
   "wallet.summary.page.pendingIncomingConfirmationLabel": "保留中の入金確認",
   "wallet.summary.page.pendingOutgoingConfirmationLabel": "保留中の送金確認",
