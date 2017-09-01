@@ -1,6 +1,3 @@
-
-@rem
-@rem
 @rem This is an install-time script that generates the CA/server/client key/cert pairs,
 @rem for front/backend channel security.
 @rem It must be run from the application install directory.
@@ -9,13 +6,22 @@
 @rem
 @rem WARNING: keep in sync with 'installers/build-certificates-unix.sh'
 
-@echo Generating certificates.
+set OUTDIR=%1
+
+@echo Generating certificates in %OUTDIR%.
 @x64\openssl version
 
 @echo .
 @echo ============================================================================
-@echo [1/10] Creating database
-rmdir /s/q tls\ca tls\server 2>nul
+@echo [1/10] Creating database in %OUTDIR%
+rmdir /s /q          %OUTDIR%\tls\ca %OUTDIR%\tls\server 2>nul
+mkdir                %OUTDIR%
+copy  /y ca.conf     %OUTDIR%
+copy  /y client.conf %OUTDIR%
+copy  /y server.conf %OUTDIR%
+xcopy /y /s /e  x86  %OUTDIR%\x86
+xcopy /y /s /e  x64  %OUTDIR%\x64
+cd                   %OUTDIR%
 
 mkdir tls\ca\private tls\ca\db tls\client tls\server
 copy nul  tls\ca\db\ca.db
@@ -26,7 +32,7 @@ echo 01 > tls\ca\db\ca.crt.srl
 echo [2/10] Choosing OpenSSL message digest
 set MD=sha256
 echo Elected message digest '%MD%'
-echo Updating: installers/ca.conf installers/client.conf installers/server.conf
+echo Updating: ca.conf client.conf server.conf
 powershell -Command "(gc ca.conf)     -replace 'OPENSSL_MD', '%MD%' | Out-File -encoding ASCII ca.conf"
 powershell -Command "(gc client.conf) -replace 'OPENSSL_MD', '%MD%' | Out-File -encoding ASCII client.conf"
 powershell -Command "(gc server.conf) -replace 'OPENSSL_MD', '%MD%' | Out-File -encoding ASCII server.conf"
@@ -99,7 +105,7 @@ x64\openssl ca -batch ^
 
 @echo [10/10] Cleanup
 del tls\secret ca.conf server.conf client.conf
-rmdir /s/q tls\ca\private x86 x64
+rmdir /s/q tls\ca\private
 
 @echo ============================================================================
 @echo Oll Korrect

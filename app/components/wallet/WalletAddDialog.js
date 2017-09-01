@@ -55,7 +55,7 @@ const messages = defineMessages({
   },
   importDescription: {
     id: 'wallet.add.dialog.import.description',
-    defaultMessage: '!!!Import wallet from a key',
+    defaultMessage: '!!!Import wallet from a file',
     description: 'Description for the "Import" button on the wallet add dialog.'
   }
 });
@@ -71,13 +71,13 @@ export default class WalletAddDialog extends Component {
     onCreate: Function,
     onRestore: Function,
     onCancel: Function,
-    onImportKey: Function,
+    onImportFile: Function,
     canClose: boolean,
   };
 
   render() {
     const { intl } = this.context;
-    const { onCreate, onRestore, onCancel, canClose, onImportKey } = this.props;
+    const { onCreate, onRestore, onCancel, canClose, onImportFile } = this.props;
     const dialogClasses = classnames([
       styles.component,
       'WalletAddDialog',
@@ -117,7 +117,7 @@ export default class WalletAddDialog extends Component {
             />
             <BigButtonForDialogs
               className="importWalletButton"
-              onClick={onImportKey}
+              onClick={onImportFile}
               icon={importIcon}
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}

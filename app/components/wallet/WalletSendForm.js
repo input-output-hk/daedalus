@@ -89,6 +89,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Password',
     description: 'Placeholder for the "Password" inputs in the wallet send form.'
   },
+  transactionFeeError: {
+    id: 'wallet.send.form.transactionFeeError',
+    defaultMessage: '!!!Not enough Ada for fees. Try sending a smaller amount.',
+    description: '"Not enough Ada for fees. Try sending a smaller amount." error message',
+  }
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -110,7 +115,9 @@ export default class WalletSendForm extends Component {
   };
 
   state = {
+    isTransactionFeeCalculated: false,
     transactionFee: new BigNumber(0),
+    transactionFeeError: null,
   };
 
   // We need to track the mounted state in order to avoid calling
@@ -137,29 +144,48 @@ export default class WalletSendForm extends Component {
         label: this.context.intl.formatMessage(messages.receiverLabel),
         placeholder: this.context.intl.formatMessage(messages.receiverHint),
         value: '',
-        validators: ({ field }) => {
+        validators: [({ field, form }) => {
           const value = field.value;
-          if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
-          return this.props.addressValidator(field.value)
-            .then(isValid => [isValid, this.context.intl.formatMessage(messages.invalidAddress)]);
-        },
+          if (value === '') {
+            this._resetTransactionFee();
+            return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
+          }
+          return this.props.addressValidator(value)
+            .then(isValid => {
+              const amountField = form.$('amount');
+              const amountValue = amountField.value;
+              const isAmountValid = amountField.isValid;
+              if (isValid && isAmountValid) {
+                this._calculateTransactionFee(value, amountValue);
+              } else {
+                this._resetTransactionFee();
+              }
+              return [isValid, this.context.intl.formatMessage(messages.invalidAddress)];
+            });
+        }],
       },
       amount: {
         label: this.context.intl.formatMessage(messages.amountLabel),
         placeholder: '0.000000',
         value: '',
-        validators: ({ field }) => {
+        validators: [({ field, form }) => {
           const amountValue = field.value;
           if (amountValue === '') {
+            this._resetTransactionFee();
             return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           }
           const amountInLovelaces = this.adaToLovelaces(amountValue);
           const isValid = isValidAmountInLovelaces(amountInLovelaces);
-          if (isValid) {
-            this._calculateTransactionFee(this.form.$('receiver').bind().value, amountValue);
+          const receiverField = form.$('receiver');
+          const receiverValue = receiverField.value;
+          const isReceiverValid = receiverField.isValid;
+          if (isValid && isReceiverValid) {
+            this._calculateTransactionFee(receiverValue, amountValue);
+          } else {
+            this._resetTransactionFee();
           }
           return [isValid, this.context.intl.formatMessage(messages.invalidAmount)];
-        },
+        }],
       },
       walletPassword: {
         type: 'password',
@@ -201,7 +227,7 @@ export default class WalletSendForm extends Component {
     const { form } = this;
     const { intl } = this.context;
     const { isWalletPasswordSet, isSubmitting, error } = this.props;
-    const { transactionFee } = this.state;
+    const { isTransactionFeeCalculated, transactionFee, transactionFeeError } = this.state;
     const amountField = form.$('amount');
     const receiverField = form.$('receiver');
     const passwordField = form.$('walletPassword');
@@ -212,6 +238,10 @@ export default class WalletSendForm extends Component {
       'primary',
       isSubmitting ? styles.submitButtonSpinning : styles.submitButton,
     ]);
+
+    // Form can't be submitted in case transaction fees are not calculated
+    // or that user has not entered wallet password (if wallet has one)
+    const isButtonDisabled = !isTransactionFeeCalculated || !passwordField.isValid;
 
     return (
       <div className={styles.component}>
@@ -232,11 +262,9 @@ export default class WalletSendForm extends Component {
               {...amountFieldProps}
               className="amount"
               label={intl.formatMessage(messages.amountLabel)}
-              minValue={0.000001}
-              maxValue={45000000000}
               maxAfterDot={6}
               maxBeforeDot={11}
-              error={amountField.error}
+              error={transactionFeeError || amountField.error}
               // AmountInputSkin props
               currency={intl.formatMessage(globalMessages.unitAda)}
               fees={transactionFee.toFormat(DECIMAL_PLACES_IN_ADA)}
@@ -262,6 +290,7 @@ export default class WalletSendForm extends Component {
             className={buttonClasses}
             label={intl.formatMessage(messages.sendButtonLabel)}
             onMouseUp={this.submit.bind(this)}
+            disabled={isButtonDisabled}
             skin={<SimpleButtonSkin />}
           />
 
@@ -271,14 +300,32 @@ export default class WalletSendForm extends Component {
     );
   }
 
+  _resetTransactionFee() {
+    if (this._isMounted) {
+      this.setState({
+        isTransactionFeeCalculated: false,
+        transactionFee: new BigNumber(0),
+        transactionFeeError: null,
+      });
+    }
+  }
+
   _calculateTransactionFee(receiver: string, amountValue: string) {
-    this.setState({ transactionFee: new BigNumber(0) });
+    this._resetTransactionFee();
     this.props.calculateTransactionFee(receiver, this.adaToLovelaces(amountValue))
       .then((fee: BigNumber) => (
-        this._isMounted && this.setState({ transactionFee: fee })
+        this._isMounted && this.setState({
+          isTransactionFeeCalculated: true,
+          transactionFee: fee,
+          transactionFeeError: null,
+        })
       ))
-      .catch((error: Error) => {
-        console.log(error);
+      .catch(() => {
+        if (this._isMounted) {
+          this.setState({
+            transactionFeeError: this.context.intl.formatMessage(messages.transactionFeeError),
+          });
+        }
       });
   }
 

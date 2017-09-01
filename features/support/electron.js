@@ -20,7 +20,7 @@ export default function () {
       path: electronPath,
       args: ['./electron/main.testing'],
       env: {
-        HOT: 1,
+        HOT: process.env.HOT,
         NODE_ENV: 'test'
       },
       waitTimeout: DEFAULT_TIMEOUT

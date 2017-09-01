@@ -12,25 +12,35 @@ const messages = defineMessages({
     defaultMessage: '!!!This API method is not yet implemented.',
     description: '"This API method is not yet implemented." error message.'
   },
+  walletAlreadyImportedError: {
+    id: 'api.errors.WalletAlreadyImportedError',
+    defaultMessage: '!!!Wallet you are trying to import already exists.',
+    description: '"Wallet you are trying to import already exists." error message.'
+  },
   walletAlreadyRestoredError: {
     id: 'api.errors.WalletAlreadyRestoredError',
-    defaultMessage: '!!!You already restored a wallet with this phrase.',
-    description: '"You already restored a wallet with this phrase." error message.'
+    defaultMessage: '!!!Wallet you are trying to restore already exists.',
+    description: '"Wallet you are trying to restore already exists." error message.'
   },
   redeemAdaError: {
     id: 'api.errors.RedeemAdaError',
     defaultMessage: '!!!Your ADA could not be redeemed correctly.',
     description: '"Your ADA could not be redeemed correctly." error message.'
   },
-  walletKeyImportError: {
-    id: 'api.errors.WalletKeyImportError',
-    defaultMessage: '!!!Key could not be imported, please make sure you are providing a correct key file.',
-    description: '"Key could not be imported, please make sure you are providing a correct key file." error message.'
+  walletFileImportError: {
+    id: 'api.errors.WalletFileImportError',
+    defaultMessage: '!!!Wallet could not be imported, please make sure you are providing a correct file.',
+    description: '"Wallet could not be imported, please make sure you are providing a correct file." error message.'
   },
   notEnoughMoneyToSendError: {
     id: 'api.errors.NotEnoughMoneyToSendError',
     defaultMessage: '!!!Not enough money to make this transaction.',
     description: '"Not enough money to make this transaction." error message.'
+  },
+  notAllowedToSendMoneyToSameAddressError: {
+    id: 'api.errors.NotAllowedToSendMoneyToSameAddressError',
+    defaultMessage: '!!!It\'s not allowed to send money to the same address you are sending from. Make sure you have enough addresses with money in this account or send to a different address.',
+    description: '"It\'s not allowed to send money to the same address you are sending from." error message.'
   },
   notAllowedToSendMoneyToRedeemAddressError: {
     id: 'api.errors.NotAllowedToSendMoneyToRedeemAddressError',
@@ -62,6 +72,15 @@ export class ApiMethodNotYetImplementedError extends LocalizableError {
   }
 }
 
+export class WalletAlreadyImportedError extends LocalizableError {
+  constructor() {
+    super({
+      id: messages.walletAlreadyImportedError.id,
+      defaultMessage: messages.walletAlreadyImportedError.defaultMessage,
+    });
+  }
+}
+
 export class WalletAlreadyRestoredError extends LocalizableError {
   constructor() {
     super({
@@ -80,11 +99,11 @@ export class RedeemAdaError extends LocalizableError {
   }
 }
 
-export class WalletKeyImportError extends LocalizableError {
+export class WalletFileImportError extends LocalizableError {
   constructor() {
     super({
-      id: messages.walletKeyImportError.id,
-      defaultMessage: messages.walletKeyImportError.defaultMessage,
+      id: messages.walletFileImportError.id,
+      defaultMessage: messages.walletFileImportError.defaultMessage,
     });
   }
 }
@@ -94,6 +113,15 @@ export class NotEnoughMoneyToSendError extends LocalizableError {
     super({
       id: messages.notEnoughMoneyToSendError.id,
       defaultMessage: messages.notEnoughMoneyToSendError.defaultMessage,
+    });
+  }
+}
+
+export class NotAllowedToSendMoneyToSameAddressError extends LocalizableError {
+  constructor() {
+    super({
+      id: messages.notAllowedToSendMoneyToSameAddressError.id,
+      defaultMessage: messages.notAllowedToSendMoneyToSameAddressError.defaultMessage,
     });
   }
 }
