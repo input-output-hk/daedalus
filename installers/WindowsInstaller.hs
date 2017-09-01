@@ -47,10 +47,10 @@ writeUninstallerNSIS fullVersion = do
     _ <- constantStr "Version" (str fullVersion)
     name "Daedalus Uninstaller $Version"
     outFile . str $ tempDir <> "\\tempinstaller.exe"
-    injectGlobalLiteral "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
-    injectGlobalLiteral "SetCompress off"
+    unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
+    unsafeInjectGlobal "SetCompress off"
     _ <- section "" [Required] $ do
-      injectLiteral $ "WriteUninstaller \"" <> tempDir <> "\\uninstall.exe\""
+      unsafeInject $ "WriteUninstaller \"" <> tempDir <> "\\uninstall.exe\""
 
     uninstall $ do
       -- Remove registry keys
@@ -59,7 +59,7 @@ writeUninstallerNSIS fullVersion = do
       rmdir [Recursive,RebootOK] "$INSTDIR"
       delete [] "$SMPROGRAMS/Daedalus/*.*"
       delete [] "$DESKTOP\\Daedalus.lnk"
-      mapM_ injectLiteral
+      mapM_ unsafeInject
         [ "liteFirewall::RemoveRule \"$INSTDIR\\cardano-node.exe\" \"Cardano Node\""
         , "Pop $0"
         , "DetailPrint \"liteFirewall::RemoveRule: $0\""
@@ -104,16 +104,16 @@ writeInstallerNSIS fullVersion = do
     _ <- constantStr "Version" (str fullVersion)
     name "Daedalus ($Version)"                  -- The name of the installer
     outFile "daedalus-win64-$Version-installer.exe"           -- Where to produce the installer
-    injectGlobalLiteral $ "!define MUI_ICON \"icons\\64x64.ico\""
-    injectGlobalLiteral $ "!define MUI_HEADERIMAGE"
-    injectGlobalLiteral $ "!define MUI_HEADERIMAGE_BITMAP \"icons\\installBanner.bmp\""
-    injectGlobalLiteral $ "!define MUI_HEADERIMAGE_RIGHT"
-    injectGlobalLiteral $ "VIProductVersion " <> (L.intercalate "." $ parseVersion fullVersion)
-    injectGlobalLiteral $ "VIAddVersionKey \"ProductVersion\" " <> fullVersion
-    injectGlobalLiteral "Unicode true"
+    unsafeInjectGlobal $ "!define MUI_ICON \"icons\\64x64.ico\""
+    unsafeInjectGlobal $ "!define MUI_HEADERIMAGE"
+    unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_BITMAP \"icons\\installBanner.bmp\""
+    unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_RIGHT"
+    unsafeInjectGlobal $ "VIProductVersion " <> (L.intercalate "." $ parseVersion fullVersion)
+    unsafeInjectGlobal $ "VIAddVersionKey \"ProductVersion\" " <> fullVersion
+    unsafeInjectGlobal "Unicode true"
     installDir "$PROGRAMFILES64\\Daedalus"   -- The default installation directory
     requestExecutionLevel Highest
-    injectGlobalLiteral "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
+    unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
 
     page Directory                   -- Pick where to install
     page InstFiles                   -- Give a progress bar while installing
@@ -139,7 +139,7 @@ writeInstallerNSIS fullVersion = do
         file [Recursive] "libressl\\"
         file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
 
-        mapM_ injectLiteral
+        mapM_ unsafeInject
           [ "liteFirewall::AddRule \"$INSTDIR\\cardano-node.exe\" \"Cardano Node\""
           , "Pop $0"
           , "DetailPrint \"liteFirewall::AddRule: $0\""
