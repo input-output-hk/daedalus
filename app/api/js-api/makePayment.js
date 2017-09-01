@@ -1,6 +1,6 @@
 // @flow
-import { request } from './lib/request';
 import type { ApiTransaction } from 'daedalus-client-api';
+import { request } from './lib/request';
 
 export type MakePaymentPathParams = {
   from: string,

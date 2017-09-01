@@ -51,8 +51,8 @@ import {
 } from './errors';
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 
-import { getSyncProgress } from "./js-api/getSyncProgress";
-import { makePayment } from "./js-api/makePayment";
+import { getSyncProgress } from './js-api/getSyncProgress';
+import { makePayment } from './js-api/makePayment';
 
 const ca = remote.getGlobal('ca');
 const tlsConfig = ClientApi.tlsInit(ca);
@@ -256,7 +256,13 @@ export default class CardanoClientApi {
     const { sender, receiver, amount, password } = request;
     // sender must be set as accountId (account.caId) and not walletId
     try {
-      const response = await makePayment(ca, { from: sender, to: receiver, amount }, { passphrase: password });
+      const response: ApiTransaction = await ClientApi.newPayment(
+        tlsConfig, sender, receiver, amount, password
+      );
+      // Passphrase handling is broken in js-api
+      // const response = await makePayment(
+      //   ca, { from: sender, to: receiver, amount }, { passphrase: password }
+      // );
       Logger.debug('CardanoClientApi::createTransaction success: ' + stringifyData(response));
       return _createTransactionFromServerData(response);
     } catch (error) {
