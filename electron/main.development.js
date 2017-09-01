@@ -92,7 +92,7 @@ function openAbout() {
 
   aboutWindow.loadURL(`file://${__dirname}/../app/index.html?window=about`);
   aboutWindow.on('page-title-updated', event => {
-   event.preventDefault()
+    event.preventDefault()
   });
   aboutWindow.setTitle(`About Daedalus`); // default title
 
@@ -119,8 +119,7 @@ function openAbout() {
 
   // handle about window when content loaded
   aboutWindow.webContents.on('did-finish-load', ()=>{
-    aboutWindow.show();
-    aboutWindow.focus();
+    aboutWindow.show(); // show also focuses the window
   });
 }
 
@@ -142,7 +141,7 @@ app.on('ready', async () => {
   try {
     // Path to certificate in development
     let pathToCertificate = '../tls/ca.crt';
-    
+
     if (isProd) {
       // --> PATH TO CERTIFICATE IN PRODUCTION:
       pathToCertificate = '../../../tls/ca/ca.crt';
@@ -175,8 +174,11 @@ app.on('ready', async () => {
   mainWindow.setTitle(`Daedalus (${daedalusVersion})`);
 
   mainWindow.webContents.on('did-finish-load', () => {
-    mainWindow.show();
-    mainWindow.focus();
+    if (isTest) {
+      mainWindow.showInactive(); // show without focusing the window
+    } else {
+      mainWindow.show(); // show also focuses the window
+    }
   });
 
   mainWindow.on('closed', () => {
