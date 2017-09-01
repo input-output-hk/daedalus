@@ -6,16 +6,20 @@ import Log from 'electron-log';
 import osxMenu from './menus/osx';
 import winLinuxMenu from './menus/win-linux';
 import ipcApi from './ipc-api';
-import getLogsFolderPath from './lib/getLogsFolderPath';
+import getRuntimeFolderPath from './lib/getRuntimeFolderPath';
 import { daedalusLogger } from './lib/remoteLog';
 
 const APP_NAME = 'Daedalus';
 // Configure default logger levels for console and file outputs
-const appLogFolderPath = getLogsFolderPath(process.platform, process.env, APP_NAME);
+const runtimeFolderPath = getRuntimeFolderPath(process.platform, process.env, APP_NAME);
+const appLogFolderPath = path.join(runtimeFolderPath, 'Logs')
 const logFilePath = path.join(appLogFolderPath, APP_NAME + '.log');
 Log.transports.console.level = 'warn';
 Log.transports.file.level = 'debug';
 Log.transports.file.file = logFilePath;
+// TODO: depends on launcher script current directory, move this to getRuntimeFolderPath location
+//const caProductionPath = path.join(runtimeFolderPath, 'CA', 'tls', 'ca', 'ca.crt');
+const caProductionPath = path.join(process.cwd(), 'tls', 'ca', 'ca.crt');
 
 try {
   let sendLogsToRemoteServer;
@@ -140,16 +144,16 @@ app.on('ready', async () => {
    * so that it can be used in HTTP and Websocket connections.
    */
   try {
-    // Path to certificate in development
-    let pathToCertificate = '../tls/ca.crt';
-    
     if (isProd) {
-      // --> PATH TO CERTIFICATE IN PRODUCTION:
-      pathToCertificate = '../../../tls/ca/ca.crt';
+      var pathToCertificate = caProductionPath;
+    } else {
+      // Path to certificate in development
+      var pathToCertificate = path.join(__dirname, '../tls/ca.crt');
     }
+    Log.info('Using certificates from: ' + caProductionPath);
 
     Object.assign(global, {
-      ca: fs.readFileSync(path.join(__dirname, pathToCertificate)),
+      ca: fs.readFileSync(pathToCertificate),
     });
 
   } catch (error) {
