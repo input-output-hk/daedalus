@@ -1,4 +1,4 @@
-//@flow
+// @flow
 import https from 'https';
 import querystring from 'querystring';
 
@@ -17,7 +17,7 @@ export type RequestOptions = {
 export const request = (httpOptions: RequestOptions, queryParams?: {}) => {
   return new Promise((resolve, reject) => {
     // Prepare request with http options and (optional) query params
-    let options: RequestOptions = Object.assign({}, httpOptions);
+    const options: RequestOptions = Object.assign({}, httpOptions);
     let requestBody = '';
     if (queryParams) {
       requestBody = querystring.stringify(queryParams);
@@ -33,7 +33,7 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}) => {
       // Cardano-sl returns chunked requests, so we need to concat them
       response.on('data', (chunk) => body += chunk);
       // Reject errors
-      request.on('error', (error) => reject(error));
+      response.on('error', (error) => reject(error));
       // Resolve JSON results and handle weird backend behavior
       // of "Left" (for errors) and "Right" (for success) properties
       response.on('end', () => {
@@ -41,12 +41,12 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}) => {
         if (parsedBody.Right) {
           // "Right" means 200 ok (success)
           resolve(parsedBody.Right);
-        } else if(parsedBody.Left) {
+        } else if (parsedBody.Left) {
           // "Left" means error case -> return error with contents
           reject(new Error(parsedBody.Left.contents));
         } else {
           // TODO: investigate if that can happen! (no Right or Left in a response)
-          reject(new Error("Unknown response from backend."));
+          reject(new Error('Unknown response from backend.'));
         }
       });
     });
