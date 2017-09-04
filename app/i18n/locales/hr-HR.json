@@ -88,6 +88,7 @@
   "static.about.copyright": "!!!2016–2017 IOHK. All rights reserved.",
   "static.about.release.version": "!!!2017.0.1 x64 Release",
   "static.about.title": "!!!Daedalus",
+  "test.environment.testnetLabel": "!!!Testnet vx",
   "wallet.add.dialog.create.description": "!!!Create a new wallet",
   "wallet.add.dialog.create.label": "!!!Create",
   "wallet.add.dialog.import.description": "!!!Import wallet from a file",

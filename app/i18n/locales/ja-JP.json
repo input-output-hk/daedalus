@@ -88,6 +88,7 @@
   "static.about.copyright": "!!!2016–2017 IOHK. All rights reserved.",
   "static.about.release.version": "!!!2017.0.1 x64 Release",
   "static.about.title": "!!!Daedalus",
+  "test.environment.testnetLabel": "リリース候補版",
   "wallet.add.dialog.create.description": "ウォレット新規作成",
   "wallet.add.dialog.create.label": "作成",
   "wallet.add.dialog.import.description": "ファイルからウォレットをインポートする",
