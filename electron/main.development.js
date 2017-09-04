@@ -12,7 +12,7 @@ import { daedalusLogger } from './lib/remoteLog';
 const APP_NAME = 'Daedalus';
 // Configure default logger levels for console and file outputs
 const runtimeFolderPath = getRuntimeFolderPath(process.platform, process.env, APP_NAME);
-const appLogFolderPath = path.join(runtimeFolderPath, 'Logs')
+const appLogFolderPath = path.join(runtimeFolderPath, 'Logs');
 const logFilePath = path.join(appLogFolderPath, APP_NAME + '.log');
 Log.transports.console.level = 'warn';
 Log.transports.file.level = 'debug';
@@ -102,9 +102,9 @@ function openAbout() {
 
   // prevent direct link navigation in electron window -> open in default browser
   aboutWindow.webContents.on('will-navigate', (e, url) => {
-    e.preventDefault()
+    e.preventDefault();
     require('electron').shell.openExternal(url)
-  })
+  });
 
   aboutWindow.webContents.on('context-menu', (e, props) => {
     const contextMenuOptions = [];
@@ -122,7 +122,7 @@ function openAbout() {
   });
 
   // handle about window when content loaded
-  aboutWindow.webContents.on('did-finish-load', ()=>{
+  aboutWindow.webContents.on('did-finish-load', () => {
     aboutWindow.show(); // show also focuses the window
   });
 }
