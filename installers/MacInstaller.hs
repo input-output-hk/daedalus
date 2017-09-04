@@ -103,10 +103,13 @@ doLauncher = "./cardano-launcher " <> (launcherArgs $ Launcher
   , walletPath = "./Frontend"
   , nodeLogPath = appdata <> "Logs/cardano-node.log"
   , windowsInstallerPath = Nothing
-  , installerPath = "/usr/bin/open"
-  , installerArgs = ["-FW"]
-  , installerArchivePath = Just $ appdata <> "installer.pkg"
   , runtimePath = appdata
+  , updater =
+      WithUpdater
+        { updArchivePath = appdata <> "installer.pkg"
+        , updExec = "/usr/bin/open"
+        , updArgs = ["-FW"]
+        }
   })
     where
       appdata = "$HOME/Library/Application Support/Daedalus/"
