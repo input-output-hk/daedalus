@@ -18,7 +18,6 @@ executable make-installer
                      , Launcher
   build-depends:       base
                      , filepath
-                     , filesystem-trees
                      , text
                      , Glob
                      , nsis

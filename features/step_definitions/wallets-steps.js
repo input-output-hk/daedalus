@@ -14,6 +14,7 @@ import {
 import { DECIMAL_PLACES_IN_ADA } from '../../app/config/numbersConfig';
 
 const defaultWalletKeyFilePath = path.resolve(__dirname, '../support/default-wallet.key');
+const defaultWalletJSONFilePath = path.resolve(__dirname, '../support/default-wallet.json');
 
 export default function () {
 
@@ -102,29 +103,29 @@ export default function () {
   });
 
   this.When(/^I see the import wallet dialog$/, function () {
-    return this.client.waitForVisible('.WalletKeyImportDialog');
+    return this.client.waitForVisible('.WalletFileImportDialog');
   });
 
   this.When(/^I select a valid wallet import key file$/, async function () {
-    await this.client.chooseFile('.WalletKeyImportDialog .FileUploadWidget_dropZone input', defaultWalletKeyFilePath);
+    await this.client.chooseFile('.WalletFileImportDialog .FileUploadWidget_dropZone input', defaultWalletJSONFilePath);
   });
 
   this.When(/^I toggle "Activate to create password" switch on the import wallet key dialog$/, function () {
-    return this.waitAndClick('.WalletKeyImportDialog .SimpleSwitch_switch');
+    return this.waitAndClick('.WalletFileImportDialog .SimpleSwitch_switch');
   });
 
   this.When(/^I enter wallet spending password:$/, async function (table) {
     const fields = table.hashes()[0];
-    await this.client.setValue('.WalletKeyImportDialog .walletPassword input', fields.password);
-    await this.client.setValue('.WalletKeyImportDialog .repeatedPassword input', fields.repeatedPassword);
+    await this.client.setValue('.WalletFileImportDialog .walletPassword input', fields.password);
+    await this.client.setValue('.WalletFileImportDialog .repeatedPassword input', fields.repeatedPassword);
   });
 
   this.When(/^I click on the import wallet button in import wallet dialog$/, function () {
-    return this.waitAndClick('.WalletKeyImportDialog .primary');
+    return this.waitAndClick('.WalletFileImportDialog .primary');
   });
 
   this.When(/^I should see wallet spending password inputs$/, function () {
-    return this.client.waitForVisible('.WalletKeyImportDialog .walletPassword input');
+    return this.client.waitForVisible('.WalletFileImportDialog .walletPassword input');
   });
 
   this.When(/^I have one wallet address$/, function () {
@@ -292,7 +293,7 @@ export default function () {
   });
 
   this.Then(/^I should not see the import wallet dialog anymore$/, function () {
-    return this.client.waitForVisible('.WalletKeyImportDialog', null, true);
+    return this.client.waitForVisible('.WalletFileImportDialog', null, true);
   });
 
   this.Then(/^I should not see the restore wallet dialog anymore$/, function () {
@@ -351,7 +352,9 @@ export default function () {
     expect(expectedData.amountWithoutFees).to.equal(transactionAmountWithoutFees);
   });
 
-  this.Then(/^the balance of "([^"]*)" wallet should be:$/, async function (walletName, table) {
+  // Extended timeout is used for this step as it takes more than DEFAULT_TIMEOUT
+  // for the receiver wallet's balance to be updated on the backend after creating transactions
+  this.Then(/^the balance of "([^"]*)" wallet should be:$/, { timeout: 40000 }, async function (walletName, table) {
     const expectedData = table.hashes()[0];
     const receiverWallet = getWalletByName.call(this, walletName);
     return this.client.waitUntil(async () => {

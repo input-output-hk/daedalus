@@ -1,4 +1,4 @@
-//  ==== DEFAULT BLUE THEME === //
+//  ==== Theme: Light blue === //
 
 export default {
   '--preferred-font': '"Times New Roman", serif',
@@ -119,7 +119,8 @@ export default {
   '--theme-notification-message-background-color': 'rgba(36, 61, 98, 0.8)',
   '--theme-notification-message-text-color': '#fafbfc',
 
-  '--theme-receive-qr-code-color': '#000',
+  '--theme-receive-qr-code-background-color': 'transparent',
+  '--theme-receive-qr-code-foreground-color': '#000',
 
   '--theme-settings-body-background-color': '#ebeff2',
   '--theme-settings-pane-background-color': '#fafbfc',
@@ -198,7 +199,6 @@ export default {
   '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color': '#5e6066',
   '--theme-icon-add-wallet-dialog-big-button-color': '#8a98ab',
   '--theme-icon-copy-address-color': '#5e6066',
-  '--theme-icon-address-protected-color': '#5e6066',
   '--theme-icon-back-button-color': '#5e6066',
   '--theme-icon-close-button-color': '#5e6066',
   '--theme-icon-file-upload-color': '#5e6066',

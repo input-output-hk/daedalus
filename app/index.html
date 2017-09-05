@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <title>Daedalus</title>
     <script>
-      if (!process.env.HOT) {
+      if (process.env.HOT !== '1') {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = '../dist/style.css';
@@ -17,7 +17,7 @@
     <script>
       {
         const bundle = document.createElement('script');
-        const isHotMode = process.env.HOT;
+        const isHotMode = process.env.HOT === '1';
 
         // load dll.vendor.js in dev mode
         if (isHotMode) {

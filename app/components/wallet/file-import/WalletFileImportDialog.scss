@@ -55,6 +55,10 @@
   }
 }
 
+.fileUpload {
+  margin-bottom: 20px;
+}
+
 .error {
   @include error-message;
   margin-top: 30px;

@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # DEPENDENCIES (binaries should be in PATH):
 #   0. 'git'
 #   1. 'curl'
@@ -31,14 +31,11 @@ usage() {
 EOF
     test -z "$1" || exit 1
 }
-alias   argnz='test $# -ge 1 -a ! -z "$1" || usage "empty value for"'
-alias  arg2nz='test $# -ge 2 -a ! -z "$2" || usage "empty value for"'
-alias  argnzf='test $# -ge 1 -a ! -z "$1" || fail "missing value for"'
-alias arg2nzf='test $# -ge 2 -a ! -z "$2" || fail "missing value for"'
-fail() { echo "ERROR: $*" >&2; exit 1;
-}
+
+arg2nz() { test $# -ge 2 -a ! -z "$2" || usage "empty value for" $1; }
+fail() { echo "ERROR: $*" >&2; exit 1; }
 retry() {
-        local tries=$1; argnzf "iteration count"; shift
+        local tries=$1; arg2nz "iteration count" $1; shift
         for i in $(seq 1 ${tries})
         do if "$@"
            then return 0
@@ -58,8 +55,8 @@ travis_pr=true
 upload_s3=
 test_install=
 
-daedalus_version="$1"; argnz "product version"; shift
-cardano_branch="$(printf '%s' "$1" | tr '/' '-')"; argnz "Cardano SL branch to build Daedalus with"; shift
+daedalus_version="$1"; arg2nz "daedalus version" $1; shift
+cardano_branch="$(printf '%s' "$1" | tr '/' '-')"; arg2nz "Cardano SL branch to build Daedalus with" $1; shift
 
 case "$(uname -s)" in
         Darwin ) os=osx;   key=macos-2.p12;;
@@ -71,10 +68,10 @@ set -u ## Undefined variable firewall enabled
 while test $# -ge 1
 do case "$1" in
            --fast-impure )                               fast_impure=true;;
-           --build-id )       arg2nz "build identifier";    build_id="$2"; shift;;
-           --travis-pr )      arg2nz "Travis pull request id";
+           --build-id )       arg2nz "build identifier" $2;    build_id="$2"; shift;;
+           --travis-pr )      arg2nz "Travis pull request id" $2;
                                                            travis_pr="$2"; shift;;
-           --nix-path )       arg2nz "NIX_PATH value";
+           --nix-path )       arg2nz "NIX_PATH value" $2;
                                                      export NIX_PATH="$2"; shift;;
            --upload-s3 )                                   upload_s3=t;;
            --test-install )                             test_install=t;;
@@ -98,24 +95,25 @@ mkdir -p ~/.local/bin
 
 export PATH=$HOME/.local/bin:$PATH
 export DAEDALUS_VERSION=${daedalus_version}.${build_id}
-export SSL_CERT_FILE=$NIX_SSL_CERT_FILE
+if [ -n "${NIX_SSL_CERT_FILE-}" ]; then export SSL_CERT_FILE=$NIX_SSL_CERT_FILE; fi
 
 test -d node_modules/daedalus-client-api/ -a -n "${fast_impure}" || {
         retry 5 curl -o daedalus-bridge.tar.xz \
-              https://s3.eu-central-1.amazonaws.com/cardano-sl-travis/daedalus-bridge-${os}-${cardano_branch}.tar.xz
+              "https://s3.eu-central-1.amazonaws.com/cardano-sl-travis/daedalus-bridge-${os}-${cardano_branch}.tar.xz"
         mkdir -p node_modules/daedalus-client-api/
         du -sh  daedalus-bridge.tar.xz
         tar xJf daedalus-bridge.tar.xz --strip-components=1 -C node_modules/daedalus-client-api/
         rm      daedalus-bridge.tar.xz
-        cd node_modules/daedalus-client-api
+        echo "cardano-sl build id is $(cat node_modules/daedalus-client-api/build-id)"
+        pushd node_modules/daedalus-client-api
               mv log-config-prod.yaml cardano-node cardano-launcher ../../installers
-        cd ../..
-        strip installers/cardano-node installers/cardano-launcher
+        popd
+        chmod +w installers/cardano-{node,launcher}
+        strip installers/cardano-{node,launcher}
         rm -f node_modules/daedalus-client-api/cardano-*
 }
-echo "cardano-sl build id is $(cat node_modules/daedalus-client-api/build-id)"
 
-test $(ls node_modules/ | wc -l) -gt 100 -a -n "${fast_impure}" ||
+test "$(find node_modules/ | wc -l)" -gt 100 -a -n "${fast_impure}" ||
         nix-shell --run "npm install"
 
 test -d "release/darwin-x64/Daedalus-darwin-x64" -a -n "${fast_impure}" || {
@@ -131,7 +129,7 @@ cd installers
     if test "${travis_pr}" = "false" -a "${os}" != "linux" # No Linux keys yet.
     then retry 5 nix-shell -p awscli --run "aws s3 cp --region eu-central-1 s3://iohk-private/${key} macos.p12"
     fi
-    retry 5 stack --no-terminal --nix build --exec make-installer --jobs 2
+    retry 5 $(nix-build -j 2)/bin/make-installer
     mkdir -p dist
     if test -n "${upload_s3}"
     then

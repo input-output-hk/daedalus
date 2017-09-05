@@ -8,6 +8,7 @@ import globalMessages from '../i18n/global-messages';
 import LocalizableError from '../i18n/LocalizableError';
 import { ROUTES } from '../routes-config';
 import { buildRoute } from '../lib/routing-helpers';
+import { THEMES } from '../themes/index';
 import environment from '../environment';
 
 export default class AppStore extends Store {
@@ -75,7 +76,7 @@ export default class AppStore extends Store {
   @computed get currentTheme(): string {
     const { result } = this.getThemeRequest.execute();
     if (this.isCurrentThemeSet) return result;
-    return 'themeDefault'; // default
+    return environment.isMainnet() ? THEMES.CARDANO : THEMES.LIGHT_BLUE; // default
   }
 
   @computed get isCurrentThemeSet(): boolean {
