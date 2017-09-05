@@ -51,8 +51,11 @@ import {
 } from './errors';
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 
-const tlsConfig = remote.getGlobal('tlsConfig');
-const registerNotifyCallback = remote.getGlobal('registerNotifyCallback');
+import { getSyncProgress } from './js-api/getSyncProgress';
+import { makePayment } from './js-api/makePayment';
+
+const ca = remote.getGlobal('ca');
+const tlsConfig = ClientApi.tlsInit(ca);
 
 // const notYetImplemented = () => new Promise((_, reject) => {
 //   reject(new ApiMethodNotYetImplementedError());
@@ -158,19 +161,7 @@ const unsetUserThemeFromLocalStorage = () => new Promise((resolve) => {
 
 export default class CardanoClientApi {
 
-  notifyCallbacks = [];
-
-  constructor() {
-    registerNotifyCallback(this._onNotify, this._onNotifyError);
-  }
-
-  notify(onSuccess: Function, onError: Function = () => {}) {
-    this.notifyCallbacks.push({ message: onSuccess, error: onError });
-  }
-
-  reset() {
-    this.notifyCallbacks = [];
-  }
+  reset() {}
 
   async getWallets() {
     Logger.debug('CardanoClientApi::getWallets called');
@@ -268,6 +259,10 @@ export default class CardanoClientApi {
       const response: ApiTransaction = await ClientApi.newPayment(
         tlsConfig, sender, receiver, amount, password
       );
+      // Passphrase handling is broken in js-api
+      // const response = await makePayment(
+      //   ca, { from: sender, to: receiver, amount }, { passphrase: password }
+      // );
       Logger.debug('CardanoClientApi::createTransaction success: ' + stringifyData(response));
       return _createTransactionFromServerData(response);
     } catch (error) {
@@ -535,10 +530,11 @@ export default class CardanoClientApi {
     }
   }
 
-  async getSyncProgress() {
+  getSyncProgress = async () => {
     Logger.debug('CardanoClientApi::syncProgress called');
+
     try {
-      const response = await ClientApi.syncProgress(tlsConfig);
+      const response = await getSyncProgress(ca);
       Logger.debug('CardanoClientApi::syncProgress success: ' + stringifyData(response));
       const localDifficulty = response._spLocalCD.getChainDifficulty.getBlockCount;
       // In some cases we dont get network difficulty & we need to wait for it from the notify API
@@ -551,7 +547,7 @@ export default class CardanoClientApi {
       Logger.error('CardanoClientApi::syncProgress error: ' + stringifyError(error));
       throw new GenericApiError();
     }
-  }
+  };
 
   async setUserLocale(locale: string) {
     Logger.debug('CardanoClientApi::updateLocale called: ' + locale);
@@ -709,23 +705,6 @@ export default class CardanoClientApi {
       throw new GenericApiError();
     }
   }
-
-  // PRIVATE
-
-  _onNotify = (rawMessage: string) => {
-    Logger.debug('CardanoClientApi::notify message: ' + rawMessage);
-    // TODO: "ConnectionClosed" messages are not JSON parsable … so we need to catch that case here!
-    let message = rawMessage;
-    if (message !== 'ConnectionClosed') {
-      message = JSON.parse(rawMessage);
-    }
-    this.notifyCallbacks.forEach(cb => cb.message(message));
-  };
-
-  _onNotifyError = (error: Error) => {
-    Logger.debug('CardanoClientApi::notify error: ' + stringifyError(error));
-    this.notifyCallbacks.forEach(cb => cb.error(error));
-  };
 }
 
 // ========== LOGGING =========

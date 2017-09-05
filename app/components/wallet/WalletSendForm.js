@@ -164,7 +164,7 @@ export default class WalletSendForm extends Component {
               } else {
                 this._resetTransactionFee();
               }
-              return [isValid, this.context.intl.formatMessage(messages.invalidAddress)]
+              return [isValid, this.context.intl.formatMessage(messages.invalidAddress)];
             });
         }],
       },
@@ -270,8 +270,6 @@ export default class WalletSendForm extends Component {
               {...amountFieldProps}
               className="amount"
               label={intl.formatMessage(messages.amountLabel)}
-              minValue={0.000001}
-              maxValue={45000000000}
               maxAfterDot={6}
               maxBeforeDot={11}
               error={transactionFeeError || amountField.error}

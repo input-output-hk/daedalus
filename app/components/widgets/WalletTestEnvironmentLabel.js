@@ -1,17 +1,26 @@
 import React, { Component } from 'react';
+import { defineMessages, intlShape } from 'react-intl';
 import styles from './WalletTestEnvironmentLabel.scss';
+
+const messages = defineMessages({
+  testnetLabel: {
+    id: 'test.environment.testnetLabel',
+    defaultMessage: '!!!Testnet vx',
+    description: 'Label for testnet with version.'
+  },
+});
 
 export default class WalletTestEnvironmentLabel extends Component {
 
-  props: {
-    version: number,
+  static contextTypes = {
+    intl: intlShape.isRequired,
   };
 
   render() {
-    const { version } = this.props;
+    const { intl } = this.context;
     return (
       <div className={styles.component}>
-        Testnet v{version}
+        {intl.formatMessage(messages.testnetLabel)}
       </div>
     );
   }

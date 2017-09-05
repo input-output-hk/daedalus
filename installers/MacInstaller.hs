@@ -33,6 +33,7 @@ main = do
   echo "Preparing files ..."
   copyFile "cardano-launcher" (dir <> "/cardano-launcher")
   copyFile "cardano-node" (dir <> "/cardano-node")
+  copyFile "wallet-topology.yaml" (dir <> "/wallet-topology.yaml")
   copyFile "log-config-prod.yaml" (dir <> "/log-config-prod.yaml")
   copyFile "data/ip-dht-mappings" (dir <> "/ip-dht-mappings")
   copyFile "data/ip-dht-mappings" (dir <> "/ip-dht-mappings")
@@ -102,10 +103,13 @@ doLauncher = "./cardano-launcher " <> (launcherArgs $ Launcher
   , walletPath = "./Frontend"
   , nodeLogPath = appdata <> "Logs/cardano-node.log"
   , windowsInstallerPath = Nothing
-  , installerPath = "/usr/bin/open"
-  , installerArgs = ["-FW"]
-  , installerArchivePath = Just $ appdata <> "installer.pkg"
   , runtimePath = appdata
+  , updater =
+      WithUpdater
+        { updArchivePath = appdata <> "installer.pkg"
+        , updExec = "/usr/bin/open"
+        , updArgs = ["-FW"]
+        }
   })
     where
       appdata = "$HOME/Library/Application Support/Daedalus/"

@@ -70,6 +70,7 @@ declare module 'daedalus-client-api' {
 
   // Common
   declare function generateMnemonic(): string;
+  declare function tlsInit(ca: string): Object;
 
   // Status
   declare function notify(tls: TlsConfig, onSuccess: Function, onError?: Function): void;

@@ -1,22 +1,25 @@
 import { app, BrowserWindow, Menu, shell, ipcMain, dialog, crashReporter, globalShortcut } from 'electron';
 import os from 'os';
 import path from 'path';
+import fs from 'fs';
 import Log from 'electron-log';
 import osxMenu from './menus/osx';
 import winLinuxMenu from './menus/win-linux';
 import ipcApi from './ipc-api';
-import getLogsFolderPath from './lib/getLogsFolderPath';
+import getRuntimeFolderPath from './lib/getRuntimeFolderPath';
 import { daedalusLogger } from './lib/remoteLog';
-import ClientApi from 'daedalus-client-api';
-import { readCA, notify } from './tls-workaround';
 
 const APP_NAME = 'Daedalus';
 // Configure default logger levels for console and file outputs
-const appLogFolderPath = getLogsFolderPath(process.platform, process.env, APP_NAME);
+const runtimeFolderPath = getRuntimeFolderPath(process.platform, process.env, APP_NAME);
+const appLogFolderPath = path.join(runtimeFolderPath, 'Logs');
 const logFilePath = path.join(appLogFolderPath, APP_NAME + '.log');
 Log.transports.console.level = 'warn';
 Log.transports.file.level = 'debug';
 Log.transports.file.file = logFilePath;
+// TODO: depends on launcher script current directory, move this to getRuntimeFolderPath location
+//const caProductionPath = path.join(runtimeFolderPath, 'CA', 'tls', 'ca', 'ca.crt');
+const caProductionPath = path.join(process.cwd(), 'tls', 'ca', 'ca.crt');
 
 try {
   let sendLogsToRemoteServer;
@@ -93,15 +96,15 @@ function openAbout() {
 
   aboutWindow.loadURL(`file://${__dirname}/../app/index.html?window=about`);
   aboutWindow.on('page-title-updated', event => {
-   event.preventDefault()
+    event.preventDefault()
   });
   aboutWindow.setTitle(`About Daedalus`); // default title
 
   // prevent direct link navigation in electron window -> open in default browser
   aboutWindow.webContents.on('will-navigate', (e, url) => {
-    e.preventDefault()
+    e.preventDefault();
     require('electron').shell.openExternal(url)
-  })
+  });
 
   aboutWindow.webContents.on('context-menu', (e, props) => {
     const contextMenuOptions = [];
@@ -119,9 +122,8 @@ function openAbout() {
   });
 
   // handle about window when content loaded
-  aboutWindow.webContents.on('did-finish-load', ()=>{
-    aboutWindow.show();
-    aboutWindow.focus();
+  aboutWindow.webContents.on('did-finish-load', () => {
+    aboutWindow.show(); // show also focuses the window
   });
 }
 
@@ -135,51 +137,19 @@ ipcMain.on('about-window-title', (event, title) => {
 app.on('ready', async () => {
   await installExtensions();
 
+  /**
+   * Here we are reading the TLS certificate from the file system
+   * and make it available to render processes via a global variable
+   * so that it can be used in HTTP and Websocket connections.
+   */
   try {
-
-    const ca = readCA(path.join(__dirname, '../../../tls/ca/ca.crt'));
-
-    const tlsConfig = ClientApi.tlsInit(ca);
-    let messageCallback, errorCallback = null;
-    let isNotifyRunning = false;
-
-    const startNotify = () => {
-      notify(
-        ca,
-        function handleNotifyMessage(...args) {
-          if (messageCallback) {
-            try {
-              messageCallback(...args);
-            } catch (e) {
-              // The callback might have been released on page refresh etc.
-              messageCallback = null;
-            }
-          }
-        },
-        function handleNotifyError(...args) {
-          if (errorCallback) {
-            try {
-              errorCallback(...args);
-            } catch (e) {
-              // The callback might have been released on page refresh etc.
-              errorCallback = null;
-            }
-          }
-        }
-      );
-      isNotifyRunning = true;
-    };
-
+    const pathToCertificate = isProd ? caProductionPath : path.join(__dirname, '../tls/ca.crt');
+    Log.info('Using certificates from: ' + pathToCertificate);
     Object.assign(global, {
-      tlsConfig,
-      registerNotifyCallback: (onMessage, onError) => {
-        messageCallback = onMessage;
-        errorCallback = onError;
-        if (!isNotifyRunning) startNotify();
-      },
+      ca: fs.readFileSync(pathToCertificate),
     });
-  } catch(error) {
-    Log.info("error:", error);
+  } catch (error) {
+    Log.error(`Error while loading ca.crt: ${error}`);
   }
 
   mainWindow = new BrowserWindow({
@@ -201,8 +171,11 @@ app.on('ready', async () => {
   mainWindow.setTitle(`Daedalus (${daedalusVersion})`);
 
   mainWindow.webContents.on('did-finish-load', () => {
-    mainWindow.show();
-    mainWindow.focus();
+    if (isTest) {
+      mainWindow.showInactive(); // show without focusing the window
+    } else {
+      mainWindow.show(); // show also focuses the window
+    }
   });
 
   mainWindow.on('closed', () => {

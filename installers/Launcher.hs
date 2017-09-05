@@ -1,44 +1,63 @@
+{-# LANGUAGE RecordWildCards #-}
 module Launcher where
 
 import           Data.Monoid     ((<>))
 import           System.FilePath (pathSeparator)
 import           System.Info     (os)
 
+data Updater =
+    SelfUnpacking
+      { updArchivePath :: FilePath
+      , updArgs        :: [String]
+      }
+  | WithUpdater
+      { updArchivePath :: FilePath
+      , updExec        :: FilePath
+      , updArgs        :: [String]
+      }
+
 -- OS dependent configuration
 data Launcher = Launcher
-    { nodePath             :: String
-    , nodeLogPath          :: String
-    , walletPath           :: String
-    , installerPath        :: String
-    , windowsInstallerPath :: Maybe String
-    , installerArgs        :: [String]
-    , installerArchivePath :: Maybe String
-    , runtimePath          :: String
+    { nodePath             :: FilePath
+    , nodeLogPath          :: FilePath
+    , walletPath           :: FilePath
+    , runtimePath          :: FilePath
+    , updater              :: Updater
+    , windowsInstallerPath :: Maybe FilePath
     }
 
 launcherArgs :: Launcher -> String
-launcherArgs launcher = unwords $
-    maybe [] (("--updater-windows-runner":) . (:[]) . quote) (windowsInstallerPath launcher) ++
-  [ "--node", quote (nodePath launcher)
-  , "--node-log-path", quote (nodeLogPath launcher)
-  , "--wallet", quote (walletPath launcher)
-  , "--updater", quote (installerPath launcher)
-  , unwords $ map ("-u " ++) (installerArgs launcher)
-  , maybe "" (("--update-archive " ++) . quote) (installerArchivePath launcher)
-  , "--node-timeout 5 " ++ batchCmdNewline
+launcherArgs Launcher{..} = unwords $
+    maybe [] (\wi -> ["--updater-windows-runner", quote wi]) windowsInstallerPath ++
+  [ "--node", quote nodePath
+  , "--node-log-path", quote nodeLogPath
+  , "--wallet", quote walletPath
+  ] ++ updaterLArgs ++
+  [ "--node-timeout 5 " ++ batchCmdNewline
   , unwords $ map (\x ->  batchCmdNewline ++ "-n " ++ x) nodeArgs
   ]
     where
+      updaterLArgs =
+          case updater of
+            SelfUnpacking {..} ->
+              [ "--updater", quote updArchivePath
+              , unwords $ map ("-u " ++) updArgs
+              ]
+            WithUpdater {..} ->
+              [ "--updater", quote updExec
+              , unwords $ map ("-u " ++) updArgs
+              , "--update-archive ", quote updArchivePath
+              ]
       nodeArgs = [
         "--report-server", "http://report-server.aws.iohk.io:8080",
         "--log-config", "log-config-prod.yaml",
-        "--update-latest-path", quote (installerPath launcher),
-        "--keyfile", quote (runtimePath launcher <> "Secrets-0.5" <> (pathSeparator : "secret.key")),
-        "--logs-prefix", quote (runtimePath launcher <> "Logs"),
-        "--db-path", quote (runtimePath launcher <> "DB-0.5"),
-        "--wallet-db-path", quote (runtimePath launcher <> "Wallet-0.5"),
-        "--update-server", "http://localhost:8080/",
-        "--system-start", "1499360281",
+        "--update-latest-path", quote (updArchivePath updater),
+        "--keyfile", quote (runtimePath <> "Secrets-0.5" <> (pathSeparator : "secret.key")),
+        "--logs-prefix", quote (runtimePath <> "Logs"),
+        "--db-path", quote (runtimePath <> "DB-0.5"),
+        "--wallet-db-path", quote (runtimePath <> "Wallet-0.5"),
+        "--update-server", "https://s3.eu-central-1.amazonaws.com/update-system-testing/",
+        "--system-start", "1504487214",
         "--update-with-package",
         "--tlscert", quote (tlsBase <> "server" <> (pathSeparator : "server.crt")),
         "--tlskey",  quote (tlsBase <> "server" <> (pathSeparator : "server.key")),
@@ -48,9 +67,9 @@ launcherArgs launcher = unwords $
       batchCmdNewline | os == "mingw32" = "^\r\n"
                       | otherwise = mempty
       walletTopology  | os == "mingw32" = ["--topology", quote "%DAEDALUS_DIR%\\wallet-topology.yaml"]
-                      | otherwise = mempty
+                      | otherwise = ["--topology", quote "./wallet-topology.yaml"]
       tlsBase         | os == "mingw32" = "%DAEDALUS_DIR%\\"   <> "tls" <> (pathSeparator : [])
-                      | otherwise       = runtimePath launcher <> "tls" <> (pathSeparator : [])
+                      | otherwise       = "./"                 <> "tls" <> (pathSeparator : [])
 
 quote :: String -> String
 quote p = "\"" <> p <> "\""

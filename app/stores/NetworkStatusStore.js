@@ -11,6 +11,7 @@ let cachedDifficulties = null;
 
 // Maximum number of out-of-sync blocks above which we consider to be out-of-sync
 const OUT_OF_SYNC_BLOCKS_LIMIT = 10;
+const SYNC_PROGRESS_INTERVAL = 2000;
 
 const STARTUP_STAGES = {
   CONNECTING: 0,
@@ -29,7 +30,7 @@ export default class NetworkStatusStore extends Store {
   @observable localDifficulty = 0;
   @observable networkDifficulty = 0;
   @observable isLoadingWallets = true;
-  @observable networkDifficultyRequest: Request<GetSyncProgressResponse> = new Request(
+  @observable syncProgressRequest: Request<GetSyncProgressResponse> = new Request(
     this.api.getSyncProgress
   );
   @observable _localDifficultyStartedWith = null;
@@ -44,8 +45,7 @@ export default class NetworkStatusStore extends Store {
       this._redirectToWalletAfterSync,
       this._redirectToLoadingWhenDisconnected,
     ]);
-    this._listenToServerStatusNotifications();
-    this._setInitialDifficulty();
+    this._pollSyncProgress();
   }
 
   teardown() {
@@ -125,60 +125,40 @@ export default class NetworkStatusStore extends Store {
     );
   }
 
-  @action _setInitialDifficulty = async () => {
-    const initialDifficulty = await this.networkDifficultyRequest.execute().promise;
-    if (initialDifficulty) {
-      runInAction('set initial difficulty', () => {
+  @action _updateSyncProgress = async () => {
+    try {
+      const difficulty = await this.syncProgressRequest.execute().promise;
+      runInAction('update difficulties', () => {
         this.isConnected = true;
-        this._localDifficultyStartedWith = initialDifficulty.localDifficulty;
-        this.localDifficulty = initialDifficulty.localDifficulty;
-        this.networkDifficulty = initialDifficulty.networkDifficulty;
-        Logger.debug('Initial difficulty: ' + JSON.stringify(initialDifficulty));
+        // We are connected, move on to syncing stage
+        if (this._startupStage === STARTUP_STAGES.CONNECTING) {
+          Logger.info(
+            `========== Connected after ${this._getStartupTimeDelta()} milliseconds ==========`
+          );
+          this._startupStage = STARTUP_STAGES.SYNCING;
+        }
+        // If we haven't set local difficulty before, mark the first
+        // result as "start" difficulty for the sync progress
+        if (this._localDifficultyStartedWith === null) {
+          this._localDifficultyStartedWith = difficulty.localDifficulty;
+          Logger.debug('Initial difficulty: ' + JSON.stringify(difficulty));
+        }
+        // Update the local and network difficulties on each request
+        this.localDifficulty = difficulty.localDifficulty;
+        Logger.debug('Network difficulty changed: ' + this.networkDifficulty);
+        this.networkDifficulty = difficulty.networkDifficulty;
+        Logger.debug('Local difficulty changed: ' + this.networkDifficulty);
       });
+    } catch (error) {
+      // If the sync progress request fails, switch to disconnected state
+      runInAction('update connected status', () => this.isConnected = false);
+      Logger.debug('Connection Lost. Reconnecting …');
     }
   };
 
-  _listenToServerStatusNotifications() {
-    this.api.notify(action('NetworkStatusStore::_listenToServerStatusNotifications', (message) => {
-      if (message === 'ConnectionClosed') {
-        Logger.debug('ServerStatusNotification: ConnectionClosed');
-        this.isConnected = false;
-        return;
-      }
-      switch (message.tag) {
-        case 'ConnectionOpened':
-          Logger.debug('ServerStatusNotification: ConnectionOpened');
-          this._setInitialDifficulty();
-          this.isConnected = true;
-          if (this._startupStage === STARTUP_STAGES.CONNECTING) {
-            Logger.info(
-              `========== Connected after ${this._getStartupTimeDelta()} milliseconds ==========`
-            );
-            this._startupStage = STARTUP_STAGES.SYNCING;
-          }
-          break;
-        case 'NetworkDifficultyChanged':
-          if (message.contents.getChainDifficulty) {
-            this.networkDifficulty = message.contents.getChainDifficulty.getBlockCount;
-          }
-          Logger.debug('ServerStatusNotification: NetworkDifficultyChanged: ' + this.networkDifficulty);
-          this.isConnected = true;
-          this.hasBeenConnected = true;
-          break;
-        case 'LocalDifficultyChanged':
-          if (message.contents.getChainDifficulty) {
-            this.localDifficulty = message.contents.getChainDifficulty.getBlockCount;
-          }
-          Logger.debug('ServerStatusNotification: LocalDifficultyChanged: ' + this.localDifficulty);
-          break;
-        case 'ConnectionClosedReconnecting':
-          Logger.debug('ServerStatusNotification: ConnectionClosedReconnecting');
-          this.isConnected = false;
-          break;
-        default:
-          Logger.warn('ServerStatusNotification: Unknown server notification received: ' + message);
-      }
-    }));
+  _pollSyncProgress() {
+    setInterval(this._updateSyncProgress, SYNC_PROGRESS_INTERVAL);
+    this._updateSyncProgress();
   }
 
   _redirectToWalletAfterSync = () => {
@@ -211,7 +191,7 @@ export default class NetworkStatusStore extends Store {
   _redirectToLoadingWhenDisconnected = () => {
     if (this.stores.app.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION) return;
     if (!this.isConnected) {
-      this._setInitialDifficulty();
+      this._updateSyncProgress();
       this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
     }
   };
