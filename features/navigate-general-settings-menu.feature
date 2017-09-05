@@ -1,4 +1,4 @@
-Feature: Navigate through General Settings menu
+Feature: General Settings
 
   Background:
     Given I have selected English language
@@ -36,8 +36,8 @@ Feature: Navigate through General Settings menu
 
   Scenario: Change theme in General Settings
     Given I am on the General Settings "display" screen
-    And I select "Second" theme
-    Then I should see "Second" theme as selected
+    And I select second theme
+    Then I should see second theme as selected
 
   Scenario: Change send-logs option in General Settings
     Given I am on the General Settings "support" screen

@@ -1,4 +1,3 @@
-import { expect } from 'chai';
 import _ from 'lodash';
 import {
   navigateTo,
@@ -6,7 +5,6 @@ import {
 } from '../support/helpers/route-helpers'
 
 export default function () {
-
   this.Given(/^I am on the General Settings "([^"]*)" screen$/, async function (screen) {
     await navigateTo.call(this, `/settings/${screen}`);
   });
@@ -17,8 +15,8 @@ export default function () {
     await this.client.click(buttonSelector);
   });
 
-  this.When(/^I select "Second" theme$/, async function () {
-    const test = await this.client.element(".DisplaySettings_themesWrapper > button:nth-child(2)").click();
+  this.When(/^I select second theme$/, async function () {
+    await this.client.click(".DisplaySettings_themesWrapper > button:nth-child(2)");
   });
 
   this.When(/^I toggle switch to disable send-logs$/, async function () {
@@ -26,8 +24,8 @@ export default function () {
     await this.client.click('.SupportSettings_component .SimpleSwitch_checked');
   });
 
-  this.When(/^I open General Settings language selection dropdown$/, function () {
-    return this.waitAndClick('.GeneralSettings_component .SimpleInput_input');
+  this.When(/^I open General Settings language selection dropdown$/, async function () {
+    await this.client.click('.GeneralSettings_component .SimpleInput_input');
   });
 
   this.Then(/^I should see General Settings "([^"]*)" screen$/, async function (screenName) {
@@ -35,18 +33,17 @@ export default function () {
   });
 
   this.Then(/^I should see Japanese language as selected$/, async function () {
-    await this.client.waitForVisible('.GeneralSettings_component .SimpleInput_input');
-    let selectedLanguageValue = await this.client.getValue('.GeneralSettings_component .SimpleInput_input');
-    const expectedLanguage = await this.intl('global.language.japanese');
-    expect(selectedLanguageValue).to.equal(expectedLanguage);
+    return this.client.waitUntil(async () => {
+      const selectedLanguage = await this.client.getText('.GeneralSettings_component .SimpleInput_input');
+      return selectedLanguage === selectedLanguage;
+    });
   });
 
-  this.Then(/^I should see "Second" theme as selected$/, async function () {
+  this.Then(/^I should see second theme as selected$/, async function () {
     await this.client.waitForVisible(".DisplaySettings_themesWrapper button:nth-child(2).DisplaySettings_active");
   });
 
   this.Then(/^I should not see send-logs switch checked anymore$/, async function () {
     return this.client.waitForVisible('.SupportSettings_component .SimpleSwitch_checked', null, true);
   });
-
 }
