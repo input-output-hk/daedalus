@@ -59,7 +59,7 @@ daedalus_version="$1"; arg2nz "daedalus version" $1; shift
 cardano_branch="$(printf '%s' "$1" | tr '/' '-')"; arg2nz "Cardano SL branch to build Daedalus with" $1; shift
 
 case "$(uname -s)" in
-        Darwin ) os=osx;   key=macos-2.p12;;
+        Darwin ) os=osx;   key=macos-3.p12;;
         Linux )  os=linux; key=linux.p12;;
         * )     usage "Unsupported OS: $(uname -s)";;
 esac
