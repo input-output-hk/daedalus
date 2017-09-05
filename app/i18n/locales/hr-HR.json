@@ -25,7 +25,7 @@
   "global.errors.invalidEmail": "!!!Invalid email entered, please check.",
   "global.errors.invalidMnemonic": "!!!Invalid phrase entered, please check.",
   "global.errors.invalidRepeatPassword": "!!!Doesn't match",
-  "global.errors.invalidWalletName": "!!!The wallet name must have at least 3 letters.",
+  "global.errors.invalidWalletName": "!!!Requires at least 3 and at most 40 letters.",
   "global.errors.invalidWalletPassword": "!!!Invalid password",
   "global.labels.cancel": "!!!Cancel",
   "global.labels.change": "!!!Change",

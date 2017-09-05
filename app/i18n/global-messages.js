@@ -28,7 +28,7 @@ export default defineMessages({
   },
   invalidWalletName: {
     id: 'global.errors.invalidWalletName',
-    defaultMessage: '!!!The wallet name must have at least 3 letters.',
+    defaultMessage: '!!!Requires at least 3 and at most 40 letters.',
     description: 'Error message shown when invalid wallet name was entered in create wallet dialog.'
   },
   invalidWalletPassword: {
