@@ -16,7 +16,7 @@ export default function () {
   });
 
   this.When(/^I select second theme$/, async function () {
-    await this.client.click(".DisplaySettings_themesWrapper > button:nth-child(2)");
+    await this.client.click('.DisplaySettings_themesWrapper > button:nth-child(2)');
   });
 
   this.When(/^I toggle switch to disable send-logs$/, async function () {
@@ -34,8 +34,9 @@ export default function () {
 
   this.Then(/^I should see Japanese language as selected$/, async function () {
     return this.client.waitUntil(async () => {
-      const selectedLanguage = await this.client.getText('.GeneralSettings_component .SimpleInput_input');
-      return selectedLanguage === selectedLanguage;
+      const selectedLanguage = await this.client.getValue('.GeneralSettings_component .SimpleInput_input');
+      const expectedLanguage = await this.intl('global.language.japanese');
+      return selectedLanguage === expectedLanguage;
     });
   });
 
