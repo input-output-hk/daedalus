@@ -96,6 +96,15 @@ ipcMain.on('about-window-title', (event, title) => {
   }
 });
 
+// IPC endpoint to reload about window (e.g: for updating displayed language)
+ipcMain.on('reload-about-window', (event) => {
+  // Check that the about window exists but is not the sender of the ipc message!
+  // Otherwise it endlessly re-loads itself.
+  if (aboutWindow && event.sender !== aboutWindow.webContents) {
+    aboutWindow.reload();
+  }
+});
+
 app.on('before-quit', () => {
   terminateAboutWindow = true;
 });
@@ -213,9 +222,9 @@ app.on('ready', async () => {
 
   // prevent direct link navigation in electron window -> open in default browser
   aboutWindow.webContents.on('will-navigate', (e, url) => {
-    e.preventDefault()
+    e.preventDefault();
     require('electron').shell.openExternal(url)
-  })
+  });
 
   aboutWindow.webContents.on('context-menu', (e, props) => {
     const contextMenuOptions = [];

@@ -23,15 +23,35 @@ const messages = defineMessages({
     defaultMessage: '!!!2017.0.1 x64 Release',
     description: 'Label for "App Release Version"',
   },
-  aboutContentText: {
-    id: 'static.about.content.text',
-    defaultMessage: '!!!Charles Hoskinson, Jeremy Wood, Aggelos Kiayias, Eileen Fitzgerald, Philip Wadler, Elias Koutsoupias, Mario Larangeira, Bernardo David, Peter Gaži, Rafael Dowsley, Roman Oliynykov, Dmitry Shtukenberg, Duncan Coutts, Lars Brünjes, Philipp Kant, Peter Thompson, Darryl McAdams, Ante Kegalj, Jens Krause, Kristijan Šarić, Denis Shevchenko, Alfredo Di Napoli, Jonn Mostovoy, Arseniy Seroka, Alexander Vieth, Mikhail Volkhov, George Agapov, Ivan Gromakovskii, Alexandre Baldé, Artyom Kazak, Dmitry Kovanikov, Alan McSherry, Alan Verbner, Nicolas Tallar, Lukasz Gasior, Adam Smolarek, Radek Tkaczyk, Alexander Chepurnoy, Dmitry Meshkov, Jan Kotek, Darko Mijić, Dominik Guzei, Nikola Glumac, Tomislav Horaček, Domen Kožar, Jacob Mitchell, Serge Kosyrev, Michael Bishop, Christian Lindgren, Reslav Hollos, Daniel Friedman, Alejandro Garcia, Dmytro Kaidalov, Andrii Nastenko, Mariia Rodinko, Oleksiy Shevtsov, Richard Wild, Tomas Vrana, Alexander Rukin, Jonny Smillie, Jane Wild, Carlo Vicari, Christian Seberino, Laurie Wang, Leonidas Tsagkalias, Costas Saragkas, Tamara Haasen, Naho Nagahara',
-    description: 'About page main  text',
+  aboutContentDaedalusHeadline: {
+    id: 'static.about.content.daedalus.headline',
+    defaultMessage: '!!!Daedalus Team:',
+    description: 'About page daedalus team headline',
+  },
+  aboutContentCardanoHeadline: {
+    id: 'static.about.content.cardano.headline',
+    defaultMessage: '!!!Cardano Team:',
+    description: 'About page cardano team headline',
+  },
+  aboutContentDaedalusMembers: {
+    id: 'static.about.content.daedalus.members',
+    defaultMessage: '!!!Alexander Rukin, Charles Hoskinson, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Tomislav Horaček',
+    description: 'About page daedalus team members',
+  },
+  aboutContentCardanoMembers: {
+    id: 'static.about.content.cardano.members',
+    defaultMessage: '!!!Alexander Sukhoverkhov, Alexander Vieth, Alexandre Rodrigues Baldé, Alfredo Di Napoli, Anastasiya Besman, Andrzej Rybczak, Ante Kegalj, Anton Belyy, Anupam Jain, Arseniy Seroka, Artyom Kazak, Carlos D\'Agostino, Charles Hoskinson, Denis Shevchenko, Dmitry Kovanikov, Dmitry Mukhutdinov, Dmitry Nikulin, Domen Kožar, Duncan Coutts, Edsko de Vries, George Agapov, Hiroto Shioi, Ilia Liubimov, Ilya Peresadin, Ivan Gromakovskii, Jens Krause, Jeremy Wood, Joel Mislov Kunst, Jonn Mostovoy, Konstantin Ivanov, Kristijan Šarić, Lars Brünjes, Lionel Miller, Michael Bishop, Mikhail Volkhov, Niklas Hambüchen, Philipp Kant, Vincent Hanquez',
+    description: 'About page cardano team members',
   },
   aboutCopyright: {
     id: 'static.about.copyright',
-    defaultMessage: '!!!2016–2017 IOHK. All rights reserved.',
+    defaultMessage: '!!!Input Output HK Limited. Licensed under',
     description: 'About "copyright"',
+  },
+  licenseLink: {
+    id: 'static.about.license',
+    defaultMessage: '!!!MIT licence',
+    description: 'About page license name',
   },
 });
 
@@ -68,12 +88,29 @@ export default class About extends Component {
         </div>
 
         <div className={styles.contentText}>
-          {intl.formatMessage(messages.aboutContentText)}
+
+          <h2>{intl.formatMessage(messages.aboutContentDaedalusHeadline)}</h2>
+
+          <div className={styles.contentDaedalus}>
+            {intl.formatMessage(messages.aboutContentDaedalusMembers)}
+          </div>
+
+          <h2>{intl.formatMessage(messages.aboutContentCardanoHeadline)}</h2>
+
+          <div className={styles.contentCardanoMembers}>
+            {intl.formatMessage(messages.aboutContentCardanoMembers)}
+          </div>
+
         </div>
 
         <div className={styles.footerWrapper}>
           <a href="http://daedaluswallet.io">http://daedaluswallet.io</a>
-          <div className={styles.copyright}>{intl.formatMessage(messages.aboutCopyright)}</div>
+          <div className={styles.copyright}>
+            {intl.formatMessage(messages.aboutCopyright)}&nbsp;
+            <a href="https://github.com/input-output-hk/daedalus/blob/master/LICENSE">
+              {intl.formatMessage(messages.licenseLink)}
+            </a>
+          </div>
         </div>
 
       </div>

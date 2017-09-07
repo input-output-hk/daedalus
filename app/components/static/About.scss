@@ -63,6 +63,15 @@
     line-height: 1.25;
     margin-top: 20px;
     padding-bottom: 20px;
+
+    h2 {
+      font-family: var(--font-semibold);
+      margin-bottom: 3px;
+    }
+
+    .contentDaedalus {
+      margin-bottom: 12px;
+    }
   }
 
   .footerWrapper {
