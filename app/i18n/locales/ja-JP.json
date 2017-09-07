@@ -88,10 +88,10 @@
   "static.about.content.cardano.members": "Alexander Sukhoverkhov, Alexander Vieth, Alexandre Rodrigues Baldé, Alfredo Di Napoli, Anastasiya Besman, Andrzej Rybczak, Ante Kegalj, Anton Belyy, Anupam Jain, Arseniy Seroka, Artyom Kazak, Carlos D'Agostino, Charles Hoskinson, Denis Shevchenko, Dmitry Kovanikov, Dmitry Mukhutdinov, Dmitry Nikulin, Domen Kožar, Duncan Coutts, Edsko de Vries, George Agapov, Hiroto Shioi, Ilia Liubimov, Ilya Peresadin, Ivan Gromakovskii, Jens Krause, Jeremy Wood, Joel Mislov Kunst, Jonn Mostovoy, Konstantin Ivanov, Kristijan Šarić, Lars Brünjes, Lionel Miller, Michael Bishop, Mikhail Volkhov, Niklas Hambüchen, Philipp Kant, Vincent Hanquez",
   "static.about.content.daedalus.headline": "ダイダロスチーム",
   "static.about.content.daedalus.members": "Alexander Rukin, Charles Hoskinson, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Tomislav Horaček",
-  "static.about.copyright": "!!!Input Output HK Limited. Licensed under",
-  "static.about.license": "!!!MIT licence",
-  "static.about.release.version": "!!!2017.0.1 x64 Release",
-  "static.about.title": "!!!Daedalus",
+  "static.about.copyright": "Input Output HK Limited. Licensed under",
+  "static.about.license": "MIT licence",
+  "static.about.release.version": "0.7.1",
+  "static.about.title": "ダイダロス",
   "test.environment.testnetLabel": "リリース候補版",
   "wallet.add.dialog.create.description": "ウォレット新規作成",
   "wallet.add.dialog.create.label": "作成",
@@ -255,5 +255,5 @@
   "wallet.transaction.type.exchange": "換金",
   "wallet.transactions.no.transactions": "トランザクションはありません",
   "wallet.transactions.no.transactions.found": "トランザクションが見つかりません",
-  "window.about.title": "!!!About Daedalus"
+  "window.about.title": "ダイダロス"
 }

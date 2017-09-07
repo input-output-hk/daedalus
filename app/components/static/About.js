@@ -20,7 +20,7 @@ const messages = defineMessages({
   },
   aboutReleaseVersion: {
     id: 'static.about.release.version',
-    defaultMessage: '!!!2017.0.1 x64 Release',
+    defaultMessage: '!!!0.7.1',
     description: 'Label for "App Release Version"',
   },
   aboutContentDaedalusHeadline: {

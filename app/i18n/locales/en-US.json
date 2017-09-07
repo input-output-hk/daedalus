@@ -90,7 +90,7 @@
   "static.about.content.daedalus.members": "Alexander Rukin, Charles Hoskinson, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Tomislav Horaček",
   "static.about.copyright": "Input Output HK Limited. Licensed under",
   "static.about.license": "MIT licence",
-  "static.about.release.version": "2017.0.1 x64 Release",
+  "static.about.release.version": "0.7.1",
   "static.about.title": "Daedalus",
   "test.environment.testnetLabel": "Release candidate",
   "wallet.add.dialog.create.description": "Create a new wallet",
@@ -255,5 +255,5 @@
   "wallet.transaction.type.exchange": "Exchange",
   "wallet.transactions.no.transactions": "No transactions",
   "wallet.transactions.no.transactions.found": "No transactions found",
-  "window.about.title": "About Daedalus"
+  "window.about.title": "Daedalus"
 }
