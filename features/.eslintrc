@@ -1,0 +1,16 @@
+{
+  "rules": {
+    "max-len": 0,
+    "new-cap": [2, {
+      "capIsNewExceptions": [
+        "Before",
+        "Given",
+        "When",
+        "Then"
+      ]
+    }]
+  },
+  "globals": {
+    "daedalus": true
+  }
+}
