@@ -59,7 +59,7 @@ daedalus_version="$1"; arg2nz "daedalus version" $1; shift
 cardano_branch="$(printf '%s' "$1" | tr '/' '-')"; arg2nz "Cardano SL branch to build Daedalus with" $1; shift
 
 case "$(uname -s)" in
-        Darwin ) os=osx;   key=macos-2.p12;;
+        Darwin ) os=osx;   key=macos-3.p12;;
         Linux )  os=linux; key=linux.p12;;
         * )     usage "Unsupported OS: $(uname -s)";;
 esac
@@ -129,7 +129,7 @@ cd installers
     if test "${travis_pr}" = "false" -a "${os}" != "linux" # No Linux keys yet.
     then retry 5 nix-shell -p awscli --run "aws s3 cp --region eu-central-1 s3://iohk-private/${key} macos.p12"
     fi
-    retry 5 stack --no-terminal --nix build --exec make-installer --jobs 2
+    retry 5 $(nix-build -j 2)/bin/make-installer
     mkdir -p dist
     if test -n "${upload_s3}"
     then

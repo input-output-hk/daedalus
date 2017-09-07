@@ -33,6 +33,7 @@ main = do
   echo "Preparing files ..."
   copyFile "cardano-launcher" (dir <> "/cardano-launcher")
   copyFile "cardano-node" (dir <> "/cardano-node")
+  copyFile "wallet-topology.yaml" (dir <> "/wallet-topology.yaml")
   copyFile "log-config-prod.yaml" (dir <> "/log-config-prod.yaml")
   copyFile "data/ip-dht-mappings" (dir <> "/ip-dht-mappings")
   copyFile "data/ip-dht-mappings" (dir <> "/ip-dht-mappings")
@@ -82,11 +83,11 @@ main = do
     -- Sign the installer with a special macOS dance
     run "security" ["create-keychain", "-p", "travis", "macos-build.keychain"]
     run "security" ["default-keychain", "-s", "macos-build.keychain"]
-    exitcode <- shell "security import macos.p12 -P $CERT_PASS -k macos-build.keychain -T `which productsign`" mempty
+    exitcode <- shell "security import macos.p12 -P \"$CERT_PASS\" -k macos-build.keychain -T `which productsign`" mempty
     unless (exitcode == ExitSuccess) $ error "Signing failed"
     run "security" ["set-key-partition-list", "-S", "apple-tool:,apple:", "-s", "-k", "travis", "macos-build.keychain"]
     run "security" ["unlock-keychain", "-p", "travis", "macos-build.keychain"]
-    shells ("productsign --sign \"Developer ID Installer: Nikolaos Bentenitis\" --keychain macos-build.keychain dist/temp2.pkg " <> T.pack pkg) mempty
+    shells ("productsign --sign \"Developer ID Installer: Input Output HK Limited (89TW38X994)\" --keychain macos-build.keychain dist/temp2.pkg " <> T.pack pkg) mempty
   else do
     echo "Pull request, not signing the installer."
     run "cp" ["dist/temp2.pkg", T.pack pkg]
@@ -102,10 +103,13 @@ doLauncher = "./cardano-launcher " <> (launcherArgs $ Launcher
   , walletPath = "./Frontend"
   , nodeLogPath = appdata <> "Logs/cardano-node.log"
   , windowsInstallerPath = Nothing
-  , installerPath = "/usr/bin/open"
-  , installerArgs = ["-FW"]
-  , installerArchivePath = Just $ appdata <> "installer.pkg"
   , runtimePath = appdata
+  , updater =
+      WithUpdater
+        { updArchivePath = appdata <> "installer.pkg"
+        , updExec = "/usr/bin/open"
+        , updArgs = ["-FW"]
+        }
   })
     where
       appdata = "$HOME/Library/Application Support/Daedalus/"
