@@ -1,7 +1,10 @@
 import BigNumber from 'bignumber.js';
 import isInt from 'validator/lib/isInt';
 
-export const isValidWalletName = (walletName) => walletName.length >= 3;
+export const isValidWalletName = (walletName) => {
+  const nameLength = walletName.length;
+  return nameLength >= 3 && nameLength <= 40;
+};
 
 export const isValidWalletPassword = (walletPassword) => {
   // Validation rules:
