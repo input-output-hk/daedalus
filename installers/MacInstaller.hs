@@ -52,7 +52,7 @@ main = do
   writeFile (dir <> "/Daedalus") $ unlines
     [ "#!/usr/bin/env bash"
     , "cd \"$(dirname $0)\""
-    , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Secrets-0.5\""
+    , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Secrets-0.6\""
     , doLauncher
     ]
   run "chmod" ["+x", T.pack (dir <> "/Daedalus")]
