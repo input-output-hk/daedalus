@@ -2,7 +2,7 @@ import faker from 'faker';
 import { expect } from 'chai';
 
 export default function () {
-  this.Given(/^I made the following transactions with my wallet:$/, async (table) => {
+  this.Given(/^I made the following transactions with my wallet:$/, async function (table) {
     const data = table.hashes().map((t) => ({
       title: t.title,
       date: t.date || null,
@@ -24,17 +24,17 @@ export default function () {
     });
   });
 
-  this.Given(/^I see all expected transactions on screen$/, async () => {
+  this.Given(/^I see all expected transactions on screen$/, async function () {
     const visibleTitles = await this.client.getText('.Transaction_title');
     this.transactions.forEach((t, i) => expect(visibleTitles[i]).to.equal(t.title));
   });
 
-  this.When(/^I enter "([^"]*)" into the transaction search$/, (searchTerm) => {
+  this.When(/^I enter "([^"]*)" into the transaction search$/, function (searchTerm) {
     const searchField = '.WalletTransactionsSearch_component .input_inputElement';
     return this.client.setValue(searchField, searchTerm);
   });
 
-  this.Then(/^I should only see the following transactions:$/, async (table) => {
+  this.Then(/^I should only see the following transactions:$/, async function (table) {
     await this.client.waitForVisible('.Transaction_title');
     let visibleTitles = await this.client.getText('.Transaction_title');
     visibleTitles = [].concat(visibleTitles);
@@ -42,7 +42,7 @@ export default function () {
     expect(visibleTitles).to.deep.equal(expectedTitles);
   });
 
-  this.Then(/^I should see the transactions grouped by their date$/, async () => {
+  this.Then(/^I should see the transactions grouped by their date$/, async function () {
     // TODO: this is not testing for correct nesting into groups etc. (could be done with XPATH)
     const sortedTransactions = this.transactions.sort((a, b) => new Date(a.date) < new Date(b.date));
     const visibleGroupDates = await this.client.getText('.WalletTransactionsList_groupDate');

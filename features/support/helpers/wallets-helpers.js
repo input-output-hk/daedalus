@@ -1,16 +1,16 @@
 import { expect } from 'chai';
 
-export const getNameOfActiveWalletInSidebar = async () => {
+export const getNameOfActiveWalletInSidebar = async function () {
   await this.client.waitForVisible('.SidebarWalletMenuItem_active');
   return this.client.getText('.SidebarWalletMenuItem_active .SidebarWalletMenuItem_title');
 };
 
-export const expectActiveWallet = async (walletName) => {
+export const expectActiveWallet = async function (walletName) {
   const displayedWalletName = await getNameOfActiveWalletInSidebar.call(this);
   expect(displayedWalletName.toLowerCase().trim()).to.equal(walletName.toLowerCase().trim());
 };
 
-export const fillOutWalletSendForm = async (values) => {
+export const fillOutWalletSendForm = async function (values) {
   const formSelector = '.WalletSendForm_component';
   await this.client.setValue(`${formSelector} .receiver .SimpleInput_input`, values.address);
   await this.client.setValue(`${formSelector} .amount .SimpleInput_input`, values.amount);
@@ -20,11 +20,11 @@ export const fillOutWalletSendForm = async (values) => {
   this.walletSendFormValues = values;
 };
 
-export const getWalletByName = (walletName) => (
-  this.wallets.find((w) => w.name === walletName)
-);
+export const getWalletByName = function (walletName) {
+  return this.wallets.find((w) => w.name === walletName);
+};
 
-export const waitUntilWaletNamesEqual = (walletName) => {
+export const waitUntilWaletNamesEqual = function (walletName) {
   const context = this;
   return context.client.waitUntil(async () => {
     const currentWalletName = await getNameOfActiveWalletInSidebar.call(context);
@@ -32,9 +32,9 @@ export const waitUntilWaletNamesEqual = (walletName) => {
   });
 };
 
-export const waitUntilWalletIsLoaded = async (walletName) => {
+export const waitUntilWalletIsLoaded = async function (walletName) {
   let wallet = null;
-  await this.client.waitUntil(async () => {
+  await this.client.waitUntil(async function () {
     const result = await this.client.execute((name) => (
       daedalus.stores.wallets.getWalletByName(name)
     ), walletName);
@@ -47,7 +47,7 @@ export const waitUntilWalletIsLoaded = async (walletName) => {
   return wallet;
 };
 
-export const addOrSetWalletsForScenario = (wallet) => {
+export const addOrSetWalletsForScenario = function (wallet) {
   this.wallet = wallet;
   if (this.wallets != null) {
     this.wallets.push(this.wallet);

@@ -17,7 +17,7 @@ const defaultWalletKeyFilePath = path.resolve(__dirname, '../support/default-wal
 const defaultWalletJSONFilePath = path.resolve(__dirname, '../support/default-wallet.json');
 
 export default function () {
-  this.Given(/^I have a wallet with funds$/, async () => {
+  this.Given(/^I have a wallet with funds$/, async function () {
     await this.client.executeAsync((filePath, done) => {
       daedalus.api.importWalletFromKey({ filePath, walletPassword: null })
       .then(() => (
@@ -31,7 +31,7 @@ export default function () {
     addOrSetWalletsForScenario.call(this, wallet);
   });
 
-  this.Given(/^I have a wallet with funds and password$/, async () => {
+  this.Given(/^I have a wallet with funds and password$/, async function () {
     await this.client.executeAsync((filePath, done) => {
       daedalus.api.importWalletFromKey({ filePath, walletPassword: 'Secret123' })
       .then(() => (
@@ -45,7 +45,7 @@ export default function () {
     addOrSetWalletsForScenario.call(this, wallet);
   });
 
-  this.Given(/^I have the following wallets:$/, async (table) => {
+  this.Given(/^I have the following wallets:$/, async function (table) {
     const result = await this.client.executeAsync((wallets, done) => {
       window.Promise.all(wallets.map((wallet) => (
         daedalus.api.createWallet({
@@ -73,99 +73,99 @@ export default function () {
     }
   });
 
-  this.Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async (walletName, screen) => {
+  this.Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function (walletName, screen) {
     const wallet = getWalletByName.call(this, walletName);
     await navigateTo.call(this, `/wallets/${wallet.id}/${screen}`);
   });
 
-  this.Given(/^I see the add wallet dialog$/, () => (
-    this.client.waitForVisible('.WalletAddDialog')
-  ));
+  this.Given(/^I see the add wallet dialog$/, function () {
+    return this.client.waitForVisible('.WalletAddDialog');
+  });
 
-  this.Given(/^I see delete wallet dialog$/, () => (
-    this.client.waitForVisible('.DeleteWalletConfirmationDialog_dialog')
-  ));
+  this.Given(/^I see delete wallet dialog$/, function () {
+    return this.client.waitForVisible('.DeleteWalletConfirmationDialog_dialog');
+  });
 
-  this.Given(/^I see the create wallet dialog$/, () => (
-    this.client.waitForVisible('.WalletCreateDialog')
-  ));
+  this.Given(/^I see the create wallet dialog$/, function () {
+    return this.client.waitForVisible('.WalletCreateDialog');
+  });
 
-  this.Given(/^I see the restore wallet dialog$/, () => (
-    this.client.waitForVisible('.WalletRestoreDialog')
-  ));
+  this.Given(/^I see the restore wallet dialog$/, function () {
+    return this.client.waitForVisible('.WalletRestoreDialog');
+  });
 
-  this.Given(/^I dont see the create wallet dialog(?: anymore)?$/, () => (
-    this.client.waitForVisible('.WalletCreateDialog', null, true)
-  ));
+  this.Given(/^I dont see the create wallet dialog(?: anymore)?$/, function () {
+    return this.client.waitForVisible('.WalletCreateDialog', null, true);
+  });
 
-  this.Given(/^the active wallet is "([^"]*)"$/, (walletName) => {
+  this.Given(/^the active wallet is "([^"]*)"$/, function (walletName) {
     const wallet = getWalletByName.call(this, walletName);
     this.client.execute(walletId => {
       daedalus.actions.setActiveWallet.trigger({ walletId });
     }, wallet.id);
   });
 
-  this.When(/^I click on the create wallet button in add wallet dialog$/, () => (
-    this.waitAndClick('.WalletAddDialog .createWalletButton')
-  ));
+  this.When(/^I click on the create wallet button in add wallet dialog$/, function () {
+    return this.waitAndClick('.WalletAddDialog .createWalletButton');
+  });
 
-  this.When(/^I click on the import wallet button in add wallet dialog$/, () => (
-    this.waitAndClick('.WalletAddDialog .importWalletButton')
-  ));
+  this.When(/^I click on the import wallet button in add wallet dialog$/, function () {
+    return this.waitAndClick('.WalletAddDialog .importWalletButton');
+  });
 
-  this.When(/^I see the import wallet dialog$/, () => (
-    this.client.waitForVisible('.WalletFileImportDialog')
-  ));
+  this.When(/^I see the import wallet dialog$/, function () {
+    return this.client.waitForVisible('.WalletFileImportDialog');
+  });
 
-  this.When(/^I select a valid wallet import key file$/, async () => {
+  this.When(/^I select a valid wallet import key file$/, async function () {
     await this.client.chooseFile('.WalletFileImportDialog .FileUploadWidget_dropZone input', defaultWalletJSONFilePath);
   });
 
-  this.When(/^I toggle "Activate to create password" switch on the import wallet key dialog$/, () => (
-    this.waitAndClick('.WalletFileImportDialog .SimpleSwitch_switch')
-  ));
+  this.When(/^I toggle "Activate to create password" switch on the import wallet key dialog$/, function () {
+    return this.waitAndClick('.WalletFileImportDialog .SimpleSwitch_switch');
+  });
 
-  this.When(/^I enter wallet spending password:$/, async (table) => {
+  this.When(/^I enter wallet spending password:$/, async function (table) {
     const fields = table.hashes()[0];
     await this.client.setValue('.WalletFileImportDialog .walletPassword input', fields.password);
     await this.client.setValue('.WalletFileImportDialog .repeatedPassword input', fields.repeatedPassword);
   });
 
-  this.When(/^I click on the import wallet button in import wallet dialog$/, () => (
-    this.waitAndClick('.WalletFileImportDialog .primary')
-  ));
+  this.When(/^I click on the import wallet button in import wallet dialog$/, function () {
+    return this.waitAndClick('.WalletFileImportDialog .primary');
+  });
 
-  this.When(/^I should see wallet spending password inputs$/, () => (
-    this.client.waitForVisible('.WalletFileImportDialog .walletPassword input')
-  ));
+  this.When(/^I should see wallet spending password inputs$/, function () {
+    return this.client.waitForVisible('.WalletFileImportDialog .walletPassword input');
+  });
 
-  this.When(/^I have one wallet address$/, () => (
-    this.client.waitForVisible('.generatedAddress-1')
-  ));
+  this.When(/^I have one wallet address$/, function () {
+    return this.client.waitForVisible('.generatedAddress-1');
+  });
 
-  this.When(/^I enter spending password "([^"]*)"$/, (password) => (
-    this.client.setValue('.WalletReceive_spendingPassword input', password)
-  ));
+  this.When(/^I enter spending password "([^"]*)"$/, function (password) {
+    return this.client.setValue('.WalletReceive_spendingPassword input', password);
+  });
 
-  this.When(/^I click on the "Generate new address" button$/, () => (
-    this.client.click('.generateAddressButton')
-  ));
+  this.When(/^I click on the "Generate new address" button$/, function () {
+    return this.client.click('.generateAddressButton');
+  });
 
-  this.When(/^I click on the restore wallet button in add wallet dialog$/, () => (
-    this.waitAndClick('.WalletAddDialog .restoreWalletButton')
-  ));
+  this.When(/^I click on the restore wallet button in add wallet dialog$/, function () {
+    return this.waitAndClick('.WalletAddDialog .restoreWalletButton');
+  });
 
-  this.When(/^I click the wallet (.*) button$/, async (buttonName) => {
+  this.When(/^I click the wallet (.*) button$/, async function (buttonName) {
     const buttonSelector = `.WalletNavButton_component.${buttonName}`;
     await this.client.waitForVisible(buttonSelector);
     await this.client.click(buttonSelector);
   });
 
-  this.When(/^I fill out the wallet send form with:$/, (table) => (
-    fillOutWalletSendForm.call(this, table.hashes()[0])
-  ));
+  this.When(/^I fill out the wallet send form with:$/, function (table) {
+    return fillOutWalletSendForm.call(this, table.hashes()[0]);
+  });
 
-  this.When(/^I fill out the send form with a transaction to "([^"]*)" wallet:$/, async (walletName, table) => {
+  this.When(/^I fill out the send form with a transaction to "([^"]*)" wallet:$/, async function (walletName, table) {
     const values = table.hashes()[0];
     const walletId = this.wallets.find((w) => w.name === walletName).id;
     const walletAddress = await this.client.executeAsync((id, done) => {
@@ -179,7 +179,7 @@ export default function () {
     return fillOutWalletSendForm.call(this, values);
   });
 
-  this.When(/^the transaction fees are calculated$/, async () => {
+  this.When(/^the transaction fees are calculated$/, async function () {
     this.fees = await this.client.waitUntil(async () => {
       // Expected transactionFeeText format "+ 0.000001 of fees"
       const transactionFeeText = await this.client.getText('.AmountInputSkin_fees');
@@ -188,27 +188,27 @@ export default function () {
     });
   });
 
-  this.When(/^I submit the wallet send form$/, async () => {
+  this.When(/^I submit the wallet send form$/, async function () {
     const submitButton = '.WalletSendForm_submitButton';
     await this.client.waitForVisible(submitButton);
     return this.client.click(submitButton);
   });
 
-  this.When(/^I toggle "Activate to create password" switch on the create wallet dialog$/, () => (
-    this.waitAndClick('.WalletCreateDialog .SimpleSwitch_switch')
-  ));
+  this.When(/^I toggle "Activate to create password" switch on the create wallet dialog$/, function () {
+    return this.waitAndClick('.WalletCreateDialog .SimpleSwitch_switch');
+  });
 
-  this.When(/^I toggle "Activate to create password" switch on the restore wallet dialog$/, () => (
-    this.waitAndClick('.WalletRestoreDialog .SimpleSwitch_switch')
-  ));
+  this.When(/^I toggle "Activate to create password" switch on the restore wallet dialog$/, function () {
+    return this.waitAndClick('.WalletRestoreDialog .SimpleSwitch_switch');
+  });
 
-  this.When(/^I submit the create wallet dialog with the following inputs:$/, async (table) => {
+  this.When(/^I submit the create wallet dialog with the following inputs:$/, async function (table) {
     const fields = table.hashes()[0];
     await this.client.setValue('.WalletCreateDialog .walletName input', fields.walletName);
     return this.client.click('.WalletCreateDialog .primary');
   });
 
-  this.When(/^I submit the create wallet with spending password dialog with the following inputs:$/, async (table) => {
+  this.When(/^I submit the create wallet with spending password dialog with the following inputs:$/, async function (table) {
     const fields = table.hashes()[0];
     await this.client.setValue('.WalletCreateDialog .walletName input', fields.walletName);
     await this.client.setValue('.WalletCreateDialog .walletPassword input', fields.password);
@@ -216,14 +216,14 @@ export default function () {
     return this.client.click('.WalletCreateDialog .primary');
   });
 
-  this.When(/^I submit the restore wallet dialog with the following inputs:$/, async (table) => {
+  this.When(/^I submit the restore wallet dialog with the following inputs:$/, async function (table) {
     const fields = table.hashes()[0];
     await this.client.setValue('.WalletRestoreDialog .walletName input', fields.walletName);
     await this.client.setValue('.WalletRestoreDialog .recoveryPhrase textarea', fields.recoveryPhrase);
     return this.client.click('.WalletRestoreDialog .primary');
   });
 
-  this.When(/^I submit the restore wallet with spending password dialog with the following inputs:$/, async (table) => {
+  this.When(/^I submit the restore wallet with spending password dialog with the following inputs:$/, async function (table) {
     const fields = table.hashes()[0];
     await this.client.setValue('.WalletRestoreDialog .walletName input', fields.walletName);
     await this.client.setValue('.WalletRestoreDialog .recoveryPhrase textarea', fields.recoveryPhrase);
@@ -232,43 +232,43 @@ export default function () {
     return this.client.click('.WalletRestoreDialog .primary');
   });
 
-  this.When(/^I see the create wallet privacy dialog$/, () => (
-    this.client.waitForVisible('.WalletBackupPrivacyWarningDialog')
-  ));
+  this.When(/^I see the create wallet privacy dialog$/, function () {
+    return this.client.waitForVisible('.WalletBackupPrivacyWarningDialog');
+  });
 
-  this.When(/^I click on "Please make sure nobody looks your screen" checkbox$/, () => (
-    this.waitAndClick('.WalletBackupPrivacyWarningDialog .SimpleCheckbox_root')
-  ));
+  this.When(/^I click on "Please make sure nobody looks your screen" checkbox$/, function () {
+    return this.waitAndClick('.WalletBackupPrivacyWarningDialog .SimpleCheckbox_root');
+  });
 
-  this.When(/^I submit the create wallet privacy dialog$/, () => (
-    this.waitAndClick('.WalletBackupPrivacyWarningDialog .primary')
-  ));
+  this.When(/^I submit the create wallet privacy dialog$/, function () {
+    return this.waitAndClick('.WalletBackupPrivacyWarningDialog .primary');
+  });
 
-  this.When(/^I see the create wallet recovery phrase display dialog$/, () => (
-    this.client.waitForVisible('.WalletRecoveryPhraseDisplayDialog')
-  ));
+  this.When(/^I see the create wallet recovery phrase display dialog$/, function () {
+    return this.client.waitForVisible('.WalletRecoveryPhraseDisplayDialog');
+  });
 
-  this.When(/^I note down the recovery phrase$/, async () => {
+  this.When(/^I note down the recovery phrase$/, async function () {
     const recoveryPhrase = await this.client.getText('.WalletRecoveryPhraseMnemonic_component');
     this.recoveryPhrase = recoveryPhrase.split(' ');
   });
 
-  this.When(/^I submit the create wallet recovery phrase display dialog$/, () => (
-    this.waitAndClick('.WalletRecoveryPhraseDisplayDialog .primary')
-  ));
+  this.When(/^I submit the create wallet recovery phrase display dialog$/, function () {
+    return this.waitAndClick('.WalletRecoveryPhraseDisplayDialog .primary');
+  });
 
-  this.When(/^I see the create wallet recovery phrase entry dialog$/, () => (
-    this.client.waitForVisible('.WalletRecoveryPhraseEntryDialog')
-  ));
+  this.When(/^I see the create wallet recovery phrase entry dialog$/, function () {
+    return this.client.waitForVisible('.WalletRecoveryPhraseEntryDialog');
+  });
 
-  this.When(/^I click on recovery phrase mnemonics in correct order$/, async () => {
+  this.When(/^I click on recovery phrase mnemonics in correct order$/, async function () {
     for (let i = 0; i < this.recoveryPhrase.length; i++) {
       const recoveryPhraseMnemonic = this.recoveryPhrase[i];
       await this.waitAndClick(`//button[contains(text(), "${recoveryPhraseMnemonic}") and @class="flat MnemonicWord_component MnemonicWord_active SimpleButton_root"]`);
     }
   });
 
-  this.When(/^I click on the "Accept terms" checkboxes$/, async () => {
+  this.When(/^I click on the "Accept terms" checkboxes$/, async function () {
     const termsCheckboxes = await this.client.elements('.SimpleCheckbox_root');
     for (let i = 0; i < termsCheckboxes.value.length; i++) {
       const termsCheckbox = termsCheckboxes.value[i].ELEMENT;
@@ -276,47 +276,47 @@ export default function () {
     }
   });
 
-  this.When(/^I submit the create wallet recovery phrase entry dialog$/, () => (
-    this.waitAndClick('.WalletRecoveryPhraseEntryDialog .primary')
-  ));
+  this.When(/^I submit the create wallet recovery phrase entry dialog$/, function () {
+    return this.waitAndClick('.WalletRecoveryPhraseEntryDialog .primary');
+  });
 
-  this.When(/^I click on delete wallet button$/, async () => (
-    this.client.click('.DeleteWalletButton_button')
-  ));
+  this.When(/^I click on delete wallet button$/, async function () {
+    return this.client.click('.DeleteWalletButton_button');
+  });
 
-  this.When(/^I enter "([^"]*)" as name of the wallet to confirm$/, async (walletName) => (
-    this.client.setValue('.DeleteWalletConfirmationDialog_confirmationInput input', walletName)
-  ));
+  this.When(/^I enter "([^"]*)" as name of the wallet to confirm$/, async function (walletName) {
+    return this.client.setValue('.DeleteWalletConfirmationDialog_confirmationInput input', walletName);
+  });
 
-  this.When(/^I click on the "Make sure you have access to backup before continuing" checkbox$/, () => (
-    this.waitAndClick('.DeleteWalletConfirmationDialog_dialog .SimpleCheckbox_root')
-  ));
+  this.When(/^I click on the "Make sure you have access to backup before continuing" checkbox$/, function () {
+    return this.waitAndClick('.DeleteWalletConfirmationDialog_dialog .SimpleCheckbox_root');
+  });
 
-  this.When(/^I submit the delete wallet dialog$/, async () => (
-    this.client.click('.DeleteWalletConfirmationDialog_dialog .primary')
-  ));
+  this.When(/^I submit the delete wallet dialog$/, async function () {
+    return this.client.click('.DeleteWalletConfirmationDialog_dialog .primary');
+  });
 
-  this.Then(/^I should not see the create wallet recovery phrase entry dialog anymore$/, () => (
-    this.client.waitForVisible('.WalletRecoveryPhraseEntryDialog', null, true)
-  ));
+  this.Then(/^I should not see the create wallet recovery phrase entry dialog anymore$/, function () {
+    return this.client.waitForVisible('.WalletRecoveryPhraseEntryDialog', null, true);
+  });
 
-  this.Then(/^I should not see the delete wallet dialog anymore$/, () => (
-    this.client.waitForVisible('.DeleteWalletConfirmationDialog_dialog', null, true)
-  ));
+  this.Then(/^I should not see the delete wallet dialog anymore$/, function () {
+    return this.client.waitForVisible('.DeleteWalletConfirmationDialog_dialog', null, true);
+  });
 
-  this.Then(/^I should not see the import wallet dialog anymore$/, () => (
-    this.client.waitForVisible('.WalletFileImportDialog', null, true)
-  ));
+  this.Then(/^I should not see the import wallet dialog anymore$/, function () {
+    return this.client.waitForVisible('.WalletFileImportDialog', null, true);
+  });
 
-  this.Then(/^I should not see the restore wallet dialog anymore$/, () => (
-    this.client.waitForVisible('.WalletRestoreDialog', null, true)
-  ));
+  this.Then(/^I should not see the restore wallet dialog anymore$/, function () {
+    return this.client.waitForVisible('.WalletRestoreDialog', null, true);
+  });
 
-  this.Then(/^I should have newly created "([^"]*)" wallet loaded$/, async (walletName) => {
+  this.Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function (walletName) {
     const result = await this.client.executeAsync((done) => {
       daedalus.stores.wallets.walletsRequest.execute()
-      .then(done)
-      .catch((error) => done(error));
+        .then(done)
+        .catch((error) => done(error));
     });
     // Add or set the wallets for this scenario
     if (this.wallets != null) {
@@ -328,16 +328,16 @@ export default function () {
     expect(wallet).to.be.an('object');
   });
 
-  this.Then(/^I should be on some wallet page$/, async () => (
-    this.client.waitForVisible('.WalletNavigation_component')
-  ));
+  this.Then(/^I should be on some wallet page$/, async function () {
+    return this.client.waitForVisible('.WalletNavigation_component');
+  });
 
-  this.Then(/^I should be on the "([^"]*)" wallet "([^"]*)" screen$/, async (walletName, screenName) => {
+  this.Then(/^I should be on the "([^"]*)" wallet "([^"]*)" screen$/, async function (walletName, screenName) {
     const wallet = getWalletByName.call(this, walletName);
     return waitUntilUrlEquals.call(this, `/wallets/${wallet.id}/${screenName}`);
   });
 
-  this.Then(/^I should see the following error messages on the wallet send form:$/, async (data) => {
+  this.Then(/^I should see the following error messages on the wallet send form:$/, async function (data) {
     const errorSelector = '.WalletSendForm_component .SimpleFormField_error';
     await this.client.waitForText(errorSelector);
     let errorsOnScreen = await this.client.getText(errorSelector);
@@ -349,7 +349,7 @@ export default function () {
     }
   });
 
-  this.Then(/^the latest transaction should show:$/, async (table) => {
+  this.Then(/^the latest transaction should show:$/, async function (table) {
     const expectedData = table.hashes()[0];
     await this.client.waitForVisible('.Transaction_title');
     let transactionTitles = await this.client.getText('.Transaction_title');
@@ -368,7 +368,7 @@ export default function () {
 
   // Extended timeout is used for this step as it takes more than DEFAULT_TIMEOUT
   // for the receiver wallet's balance to be updated on the backend after creating transactions
-  this.Then(/^the balance of "([^"]*)" wallet should be:$/, { timeout: 40000 }, async (walletName, table) => {
+  this.Then(/^the balance of "([^"]*)" wallet should be:$/, { timeout: 40000 }, async function (walletName, table) {
     const expectedData = table.hashes()[0];
     const receiverWallet = getWalletByName.call(this, walletName);
     return this.client.waitUntil(async () => {
@@ -377,11 +377,11 @@ export default function () {
     });
   });
 
-  this.Then(/^I should see newly generated address as active address on the wallet receive screen$/, async () => (
-    this.client.waitUntil(async () => {
+  this.Then(/^I should see newly generated address as active address on the wallet receive screen$/, async function () {
+    return this.client.waitUntil(async () => {
       const activeAddress = await this.client.getText('.WalletReceive_hash');
       const generatedAddress = await this.client.getText('.generatedAddress-1 .WalletReceive_addressId');
       return generatedAddress === activeAddress;
-    })
-  ));
+    });
+  });
 }

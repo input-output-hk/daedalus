@@ -37,7 +37,7 @@ export default function () {
   });
 
   // Make the electron app accessible in each scenario context
-  this.Before({ timeout: DEFAULT_TIMEOUT * 2 }, async () => {
+  this.Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function () {
     this.client = context.app.client;
     this.browserWindow = context.app.browserWindow;
 
@@ -55,8 +55,8 @@ export default function () {
       const resetBackend = () => {
         if (daedalus.stores.networkStatus.isConnected) {
           daedalus.api.testReset()
-          .then(done)
-          .catch((error) => done(error));
+            .then(done)
+            .catch((error) => done(error));
         } else {
           setTimeout(resetBackend, 50);
         }
