@@ -120,6 +120,10 @@ export default class WalletSendForm extends Component {
     transactionFeeError: null,
   };
 
+  // We need to track form submitting state in order to avoid calling
+  // calculate/reset transaction fee functions which causes them to flicker
+  _isSubmitting = false;
+
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
   // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
@@ -208,6 +212,7 @@ export default class WalletSendForm extends Component {
   });
 
   submit() {
+    this._isSubmitting = true;
     this.form.submit({
       onSuccess: (form) => {
         const { isWalletPasswordSet } = this.props;
@@ -217,9 +222,12 @@ export default class WalletSendForm extends Component {
           amount: this.adaToLovelaces(amount),
           password: isWalletPasswordSet ? walletPassword : null,
         };
+        this._isSubmitting = false;
         this.props.onSubmit(transactionData);
       },
-      onError: () => {}
+      onError: () => {
+        this._isSubmitting = false;
+      }
     });
   }
 
@@ -301,7 +309,7 @@ export default class WalletSendForm extends Component {
   }
 
   _resetTransactionFee() {
-    if (this._isMounted) {
+    if (this._isMounted && !this._isSubmitting) {
       this.setState({
         isTransactionFeeCalculated: false,
         transactionFee: new BigNumber(0),
@@ -311,6 +319,8 @@ export default class WalletSendForm extends Component {
   }
 
   _calculateTransactionFee(receiver: string, amountValue: string) {
+    if (this._isSubmitting) return;
+
     this._resetTransactionFee();
     this.props.calculateTransactionFee(receiver, this.adaToLovelaces(amountValue))
       .then((fee: BigNumber) => (
