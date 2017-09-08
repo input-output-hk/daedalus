@@ -21,7 +21,7 @@ export default function () {
     await this.client.setValue('.createPasswordDialog .repeatedPassword input', fields.repeatedPassword);
   });
 
-  this.When(/^I click on the "([^"]*)" button in "([^"]*)" wallet password dialog$/, function () {
+  this.When(/^I submit the wallet password dialog$/, function () {
     return this.client.click('.confirmButton');
   });
 

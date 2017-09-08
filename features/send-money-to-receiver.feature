@@ -40,6 +40,7 @@ Feature: Send Money to Receiver
       | balance  |
       | 0.000010 |
 
+  @watch
   Scenario: User Enters Wrong Receiver Address
     Given I am on the "first" wallet "send" screen
     When I fill out the wallet send form with:
