@@ -29,7 +29,7 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}) => {
     if (queryParams) {
       // Handle passphrase
       if (_.has(queryParams, 'passphrase')) {
-        const passpharse = queryParams.passphrase;
+        const passpharse = _.get(queryParams, 'passphrase');
 
         // If passphrase is present it must be encrypted and included in options.path
         if (passpharse !== null) {

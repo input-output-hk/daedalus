@@ -256,7 +256,7 @@ export default class CardanoClientApi {
     const { sender, receiver, amount, password } = request;
     // sender must be set as accountId (account.caId) and not walletId
     try {
-      const response = await makePayment(
+      const response: ApiTransaction = await makePayment(
         ca, { from: sender, to: receiver, amount }, { passphrase: password }
       );
       Logger.debug('CardanoClientApi::createTransaction success: ' + stringifyData(response));
