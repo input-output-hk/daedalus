@@ -2,7 +2,7 @@ export default function () {
   this.Given(/^the sidebar submenu is (hidden|visible)/, async function (state) {
     const isVisible = state === 'visible';
     await this.client.waitForVisible('.Sidebar_component');
-    await this.client.executeAsync(function(visible, done) {
+    await this.client.executeAsync((visible, done) => {
       const { isShowingSubMenus } = daedalus.stores.sidebar;
       let sidebarWillAnimate = false;
       if (isShowingSubMenus !== visible) {
@@ -21,11 +21,11 @@ export default function () {
         done();
       }
     }, isVisible);
-    return this.client.waitForExist(`.SidebarMenu_visible`, null, !isVisible);
+    return this.client.waitForExist('.SidebarMenu_visible', null, !isVisible);
   });
 
   this.Given(/^The sidebar shows the "([^"]*)" category$/, async function (cat) {
-    await this.client.execute(function(category) {
+    await this.client.execute((category) => {
       daedalus.actions.sidebar.activateSidebarCategory.trigger({ category, showSubMenu: true });
     }, `/${cat}`);
     return this.client.waitForVisible(`.SidebarCategory_active.${cat}`);
@@ -49,7 +49,7 @@ export default function () {
 
   this.Then(/^the sidebar submenu should be (hidden|visible)/, function (state) {
     const waitForHidden = state === 'hidden';
-    return this.client.waitForVisible(`.SidebarMenu_component`, null, waitForHidden);
+    return this.client.waitForVisible('.SidebarMenu_component', null, waitForHidden);
   });
 
   this.Then(/^The "([^"]*)" category should be active$/, function (category) {

@@ -5,7 +5,7 @@
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main.js",
   "scripts": {
-    "lint": "eslint --format=node_modules/eslint-formatter-pretty app features *.js",
+    "lint": "eslint --format=node_modules/eslint-formatter-pretty app electron features *.js",
     "hot-server": "cross-env NODE_ENV=development node --preserve-symlinks -r babel-register webpack/server.js",
     "build-main": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack/webpack.config.electron.js --progress --profile --colors",
     "build-renderer": "cross-env NODE_ENV=production node -r babel-register ./node_modules/webpack/bin/webpack --config webpack/webpack.config.production.js --progress --profile --colors",
