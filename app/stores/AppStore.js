@@ -196,7 +196,8 @@ export default class AppStore extends Store {
   };
 
   _reloadAboutWindowOnLocaleChange = () => {
-    this.currentLocale;
+    // register observer for current locale
+    this.currentLocale; // eslint-disable-line
     ipcRenderer.send('reload-about-window');
   }
 
