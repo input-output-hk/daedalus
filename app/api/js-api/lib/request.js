@@ -18,7 +18,7 @@ export type RequestOptions = {
 
 const bytesToB16 = (bytes) => Buffer.from(bytes).toString('hex');
 const blake2b = (data) => blakejs.blake2b(data, null, 32);
-const encryptPasspharse = (passphrase) => bytesToB16(blake2b(passphrase));
+const encryptPassphrase = (passphrase) => bytesToB16(blake2b(passphrase));
 
 export const request = (httpOptions: RequestOptions, queryParams?: {}) => {
   return new Promise((resolve, reject) => {
@@ -29,11 +29,11 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}) => {
     if (queryParams) {
       // Handle passphrase
       if (_.has(queryParams, 'passphrase')) {
-        const passpharse = _.get(queryParams, 'passphrase');
+        const passphrase = _.get(queryParams, 'passphrase');
 
         // If passphrase is present it must be encrypted and included in options.path
-        if (passpharse !== null) {
-          const encryptedPassphrase = encryptPasspharse(passpharse);
+        if (passphrase !== null) {
+          const encryptedPassphrase = encryptPassphrase(passphrase);
           options.path += `?passphrase=${encryptedPassphrase}`;
         }
 
