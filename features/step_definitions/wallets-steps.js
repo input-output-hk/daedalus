@@ -10,48 +10,59 @@ import {
 import {
   waitUntilUrlEquals,
   navigateTo,
-} from '../support/helpers/route-helpers'
+} from '../support/helpers/route-helpers';
 import { DECIMAL_PLACES_IN_ADA } from '../../app/config/numbersConfig';
 
 const defaultWalletKeyFilePath = path.resolve(__dirname, '../support/default-wallet.key');
 const defaultWalletJSONFilePath = path.resolve(__dirname, '../support/default-wallet.json');
 
 export default function () {
-
   this.Given(/^I have a wallet with funds$/, async function () {
-    await this.client.executeAsync(function(filePath, done) {
-      daedalus.api.importWalletFromKey({ filePath, walletPassword: null }).then(() => {
-        daedalus.stores.wallets.refreshWalletsData().then(done);
-      });
+    await this.client.executeAsync((filePath, done) => {
+      daedalus.api.importWalletFromKey({ filePath, walletPassword: null })
+        .then(() => (
+          daedalus.stores.wallets.refreshWalletsData()
+            .then(done)
+            .catch((error) => done(error))
+        ))
+        .catch((error) => done(error));
     }, defaultWalletKeyFilePath);
     const wallet = await waitUntilWalletIsLoaded.call(this, 'Genesis wallet');
     addOrSetWalletsForScenario.call(this, wallet);
   });
 
   this.Given(/^I have a wallet with funds and password$/, async function () {
-    await this.client.executeAsync(function(filePath, done) {
-      daedalus.api.importWalletFromKey({ filePath, walletPassword: 'Secret123' }).then(() => {
-        daedalus.stores.wallets.refreshWalletsData().then(done);
-      });
+    await this.client.executeAsync((filePath, done) => {
+      daedalus.api.importWalletFromKey({ filePath, walletPassword: 'Secret123' })
+        .then(() => (
+          daedalus.stores.wallets.refreshWalletsData()
+            .then(done)
+            .catch((error) => done(error))
+        ))
+        .catch((error) => done(error));
     }, defaultWalletKeyFilePath);
     const wallet = await waitUntilWalletIsLoaded.call(this, 'Genesis wallet');
     addOrSetWalletsForScenario.call(this, wallet);
   });
 
   this.Given(/^I have the following wallets:$/, async function (table) {
-    const result = await this.client.executeAsync(function(wallets, done) {
-      window.Promise.all(wallets.map((wallet) => {
-        return daedalus.api.createWallet({
+    const result = await this.client.executeAsync((wallets, done) => {
+      window.Promise.all(wallets.map((wallet) => (
+        daedalus.api.createWallet({
           name: wallet.name,
           mnemonic: daedalus.api.generateMnemonic().join(' '),
           password: wallet.password || null,
-        });
-      }))
-      .then(() => {
-        daedalus.stores.wallets.walletsRequest.execute().then((wallets) => {
-          daedalus.stores.wallets.refreshWalletsData().then(() => done(wallets));
-        });
-      })
+        })
+      )))
+      .then(() => (
+        daedalus.stores.wallets.walletsRequest.execute()
+          .then((storeWallets) => (
+            daedalus.stores.wallets.refreshWalletsData()
+              .then(() => done(storeWallets))
+              .catch((error) => done(error))
+          ))
+          .catch((error) => done(error))
+      ))
       .catch((error) => done(error.stack));
     }, table.hashes());
     // Add or set the wallets for this scenario
@@ -157,11 +168,12 @@ export default function () {
   this.When(/^I fill out the send form with a transaction to "([^"]*)" wallet:$/, async function (walletName, table) {
     const values = table.hashes()[0];
     const walletId = this.wallets.find((w) => w.name === walletName).id;
-    const walletAddress = await this.client.executeAsync(function(id, done) {
-      daedalus.api.getAddresses({ walletId: id }).then((response) => {
-        const address = response.addresses[0].id;
-        done(address);
-      });
+    const walletAddress = await this.client.executeAsync((id, done) => {
+      daedalus.api.getAddresses({ walletId: id })
+        .then((response) => (
+          done(response.addresses[0].id)
+        ))
+        .catch((error) => done(error));
     }, walletId);
     values.address = walletAddress.value;
     return fillOutWalletSendForm.call(this, values);
@@ -301,8 +313,10 @@ export default function () {
   });
 
   this.Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function (walletName) {
-    const result = await this.client.executeAsync(function(done) {
-      daedalus.stores.wallets.walletsRequest.execute().then(done);
+    const result = await this.client.executeAsync((done) => {
+      daedalus.stores.wallets.walletsRequest.execute()
+        .then(done)
+        .catch((error) => done(error));
     });
     // Add or set the wallets for this scenario
     if (this.wallets != null) {
@@ -370,4 +384,4 @@ export default function () {
       return generatedAddress === activeAddress;
     });
   });
-};
+}

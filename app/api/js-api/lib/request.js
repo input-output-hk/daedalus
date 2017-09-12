@@ -20,8 +20,8 @@ const bytesToB16 = (bytes) => Buffer.from(bytes).toString('hex');
 const blake2b = (data) => blakejs.blake2b(data, null, 32);
 const encryptPassphrase = (passphrase) => bytesToB16(blake2b(passphrase));
 
-export const request = (httpOptions: RequestOptions, queryParams?: {}) => {
-  return new Promise((resolve, reject) => {
+export const request = (httpOptions: RequestOptions, queryParams?: {}) => (
+  new Promise((resolve, reject) => {
     // Prepare request with http options and (optional) query params
     const options: RequestOptions = Object.assign({}, httpOptions);
     let hasRequestBody = false;
@@ -56,7 +56,7 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}) => {
     request.on('response', (response) => {
       let body = '';
       // Cardano-sl returns chunked requests, so we need to concat them
-      response.on('data', (chunk) => body += chunk);
+      response.on('data', (chunk) => (body += chunk));
       // Reject errors
       response.on('error', (error) => reject(error));
       // Resolve JSON results and handle weird backend behavior
@@ -77,5 +77,5 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}) => {
     });
     request.on('error', (error) => reject(error));
     request.end();
-  });
-};
+  })
+);

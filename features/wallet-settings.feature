@@ -16,7 +16,7 @@ Feature: Wallet Settings
     And I enter wallet password:
     | password  | repeatedPassword |
     | Secret123 | Secret123        |
-    And I click on the "save" button in "create" wallet password dialog
+    And I submit the wallet password dialog
     Then I should see "change" label in password field
 
   Scenario: User tries to set Wallet password with invalid password format
@@ -26,7 +26,7 @@ Feature: Wallet Settings
     And I enter wallet password:
     | password | repeatedPassword |
     | secret   | secret           |
-    And I click on the "save" button in "create" wallet password dialog
+    And I submit the wallet password dialog
     Then I should see the following error messages:
     | message                             |
     | global.errors.invalidWalletPassword |
@@ -38,7 +38,7 @@ Feature: Wallet Settings
     And I change wallet password:
     | currentPassword | password     | repeatedPassword |
     | Secret123       | newSecret123 | newSecret123     |
-    And I click on the "save" button in "create" wallet password dialog
+    And I submit the wallet password dialog
     Then I should not see the change password dialog anymore
 
   Scenario: User removes Wallet password
@@ -49,7 +49,7 @@ Feature: Wallet Settings
     And I enter current wallet password:
     | currentPassword |
     | Secret123       |
-    And I click on the "remove" button in "change" wallet password dialog
+    And I submit the wallet password dialog
     Then I should see "create" label in password field
 
   Scenario: User renames Wallet

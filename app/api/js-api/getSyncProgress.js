@@ -15,12 +15,12 @@ export type GetSyncProgressResponse = {
   _spPeers: number,
 };
 
-export const getSyncProgress = (ca: string): Promise<GetSyncProgressResponse> => {
-  return request({
+export const getSyncProgress = (ca: string): Promise<GetSyncProgressResponse> => (
+  request({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/settings/sync/progress',
     port: 8090,
     ca,
-  });
-};
+  })
+);
