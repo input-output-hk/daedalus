@@ -2,7 +2,7 @@ import _ from 'lodash';
 import {
   navigateTo,
   waitUntilUrlEquals,
-} from '../support/helpers/route-helpers'
+} from '../support/helpers/route-helpers';
 
 export default function () {
   this.Given(/^I am on the General Settings "([^"]*)" screen$/, async function (screen) {
@@ -41,7 +41,7 @@ export default function () {
   });
 
   this.Then(/^I should see second theme as selected$/, async function () {
-    await this.client.waitForVisible(".DisplaySettings_themesWrapper button:nth-child(2).DisplaySettings_active");
+    await this.client.waitForVisible('.DisplaySettings_themesWrapper button:nth-child(2).DisplaySettings_active');
   });
 
   this.Then(/^I should not see send-logs switch checked anymore$/, async function () {

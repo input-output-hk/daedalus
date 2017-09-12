@@ -9,6 +9,7 @@ Changelog
 ### Fixes
 
 - Fix all features eslint warnings ([PR 468](https://github.com/input-output-hk/daedalus/pull/468))
+- Fix for disabled buttons on dark-blue theme ([PR 473](https://github.com/input-output-hk/daedalus/pull/473))
 
 ### Chores
 
