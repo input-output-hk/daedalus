@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, shell, ipcMain, dialog, crashReporter, globalShortcut } from 'electron';
+import { app, BrowserWindow, Menu, shell, ipcMain, crashReporter, globalShortcut } from 'electron';
 import os from 'os';
 import path from 'path';
 import fs from 'fs';
@@ -18,7 +18,7 @@ Log.transports.console.level = 'warn';
 Log.transports.file.level = 'debug';
 Log.transports.file.file = logFilePath;
 // TODO: depends on launcher script current directory, move this to getRuntimeFolderPath location
-//const caProductionPath = path.join(runtimeFolderPath, 'CA', 'tls', 'ca', 'ca.crt');
+// const caProductionPath = path.join(runtimeFolderPath, 'CA', 'tls', 'ca', 'ca.crt');
 const caProductionPath = path.join(process.cwd(), 'tls', 'ca', 'ca.crt');
 
 try {
@@ -63,7 +63,7 @@ if (isDev) {
 }
 
 app.on('window-all-closed', () => {
-  app.quit()
+  app.quit();
 });
 
 const installExtensions = async () => {
@@ -77,8 +77,7 @@ const installExtensions = async () => {
     for (const name of extensions) {
       try {
         await installer.default(installer[name], forceDownload);
-      } catch (e) {
-      } // eslint-disable-line
+      } catch (e) {} // eslint-disable-line
     }
   }
 };
@@ -142,14 +141,14 @@ app.on('ready', async () => {
 
   aboutWindow.loadURL(`file://${__dirname}/../app/index.html?window=about${isTest ? '&test=true' : ''}`);
   aboutWindow.on('page-title-updated', event => {
-   event.preventDefault()
+    event.preventDefault();
   });
   aboutWindow.setTitle('About Daedalus'); // default title
 
   // prevent direct link navigation in electron window -> open in default browser
   aboutWindow.webContents.on('will-navigate', (e, url) => {
     e.preventDefault();
-    require('electron').shell.openExternal(url)
+    shell.openExternal(url);
   });
 
   aboutWindow.webContents.on('context-menu', (e, props) => {
@@ -192,7 +191,7 @@ app.on('ready', async () => {
 
   mainWindow.loadURL(`file://${__dirname}/../app/index.html${isTest ? '?test=true' : ''}`);
   mainWindow.on('page-title-updated', event => {
-   event.preventDefault()
+    event.preventDefault();
   });
   mainWindow.setTitle(`Daedalus (${daedalusVersion})`);
 

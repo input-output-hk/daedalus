@@ -52,7 +52,9 @@ export default () => {
           }
           sender.send(PARSE_REDEMPTION_CODE.SUCCESS, data.pages[0].content[8].str);
           // Remove the temporary, decrypted PDF from disk
-          if (isTemporaryDecryptedPdf) try { fs.unlinkSync(pdfPath); } catch (e) {}
+          if (isTemporaryDecryptedPdf) {
+            try { fs.unlinkSync(pdfPath); } catch (e) {} // eslint-disable-line
+          }
         } catch (exception) {
           sender.send(PARSE_REDEMPTION_CODE.ERROR, exception.message);
         }
@@ -60,7 +62,9 @@ export default () => {
     } catch (error) {
       sender.send(PARSE_REDEMPTION_CODE.ERROR, error.message);
       // Remove the temporary, decrypted PDF from disk
-      if (isTemporaryDecryptedPdf) try { fs.unlinkSync(pdfPath); } catch (e) {}
+      if (isTemporaryDecryptedPdf) {
+        try { fs.unlinkSync(pdfPath); } catch (e) {} // eslint-disable-line
+      }
     }
   });
 };
