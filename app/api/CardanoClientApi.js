@@ -52,7 +52,7 @@ import {
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 
 import { getSyncProgress } from './js-api/getSyncProgress';
-import { makePayment } from './js-api/makePayment';
+// import { makePayment } from './js-api/makePayment';
 
 const ca = remote.getGlobal('ca');
 const tlsConfig = ClientApi.tlsInit(ca);

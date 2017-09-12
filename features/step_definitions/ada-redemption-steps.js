@@ -18,14 +18,14 @@ export default function () {
 
   this.Given(/^I am on the ada redemption screen$/, async function () {
     await navigateTo.call(this, '/ada-redemption');
-    return this.client.waitForVisible(`.AdaRedemptionForm_component`);
+    return this.client.waitForVisible('.AdaRedemptionForm_component');
   });
 
   this.Given(/^I see the "Daedalus Redemption Disclaimer" overlay$/, function () {
     return this.client.waitForVisible('.AdaRedemptionDisclaimer_component');
   });
 
-  this.When(/^I click on the "I\'ve understood the information above" checkbox$/, function () {
+  this.When(/^I click on the "I've understood the information above" checkbox$/, function () {
     return this.waitAndClick('.AdaRedemptionDisclaimer_component .SimpleCheckbox_root');
   });
 
@@ -38,7 +38,7 @@ export default function () {
   });
 
   this.Then(/^I should(?: still)? be on the ada redemption screen$/, function () {
-    return this.client.waitForVisible(`.AdaRedemptionForm_component`);
+    return this.client.waitForVisible('.AdaRedemptionForm_component');
   });
 
   this.When(/^I click on ada redemption choices "([^"]*)" tab$/, function (tabText) {
@@ -103,6 +103,6 @@ export default function () {
   });
 
   this.Then(/^I should see the "Ada Redemption Success Overlay"$/, function () {
-    return this.client.waitForVisible(`.AdaRedemptionSuccessOverlay_component`);
+    return this.client.waitForVisible('.AdaRedemptionSuccessOverlay_component');
   });
 }
