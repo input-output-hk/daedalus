@@ -43,6 +43,7 @@ export default class AppStore extends Store {
     this.actions.profile.updateTheme.listen(this._updateTheme);
     this.registerReactions([
       this._updateMomentJsLocaleAfterLocaleChange,
+      this._reloadAboutWindowOnLocaleChange,
       this._redirectToLanguageSelectionIfNoLocaleSet,
       this._redirectToTermsOfUseScreenIfTermsNotAccepted,
       this._redirectToSendLogsChoiceScreenIfSendLogsChoiceNotSet,
@@ -193,5 +194,11 @@ export default class AppStore extends Store {
   _redirectToRoot = () => {
     this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
   };
+
+  _reloadAboutWindowOnLocaleChange = () => {
+    // register mobx observer for currentLocale in order to trigger reaction on change
+    this.currentLocale; // eslint-disable-line
+    ipcRenderer.send('reload-about-window');
+  }
 
 }
