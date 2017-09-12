@@ -196,7 +196,7 @@ export default class AppStore extends Store {
   };
 
   _reloadAboutWindowOnLocaleChange = () => {
-    // register observer for current locale
+    // register mobx observer for currentLocale in order to trigger reaction on change
     this.currentLocale; // eslint-disable-line
     ipcRenderer.send('reload-about-window');
   }
