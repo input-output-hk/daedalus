@@ -147,7 +147,7 @@ writeInstallerNSIS fullVersion = do
           , "DetailPrint \"liteFirewall::AddRule: $0\""
           ]
 
-        exec "build-certificates-win64.bat \"$INSTDIR\" >%APPDATA%\\Daedalus\\Logs\\build-certificates.log 2>&1"
+        execWait "build-certificates-win64.bat \"$INSTDIR\" >%APPDATA%\\Daedalus\\Logs\\build-certificates.log 2>&1"
 
         -- Uninstaller
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "InstallLocation" "$INSTDIR\\Daedalus"
