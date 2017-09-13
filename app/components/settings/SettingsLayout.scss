@@ -4,14 +4,14 @@
   background-color: var(--theme-settings-body-background-color);
   display: flex;
   height: 100%;
-  padding: 20px;
+  padding: 20px 20px 0;
 }
 
 .settingsPaneWrapper {
   flex: 1;
   overflow-x: hidden;
   overflow-y: overlay;
-  padding-right: 20px;
+  padding: 0 20px 20px 0;
 }
 
 .settingsPane {
