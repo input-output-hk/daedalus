@@ -4,6 +4,19 @@
 // Css module overrides go here …
 
 :global {
+  .SimpleSelect_selectInput {
+    &:after {
+      background-color: var(--theme-select-arrow-color);
+    }
+  }
+
+  .SimpleSelect_select {
+    &.SimpleSelect_isOpen {
+      .SimpleSelect_selectInput:after {
+        background-color: var(--theme-select-arrow-color-open);
+      }
+    }
+  }
   .SimpleSelect_options {
     li {
       background-color: var(--theme-select-background-color);

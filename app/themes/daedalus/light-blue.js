@@ -56,6 +56,8 @@ export default {
 
   '--theme-select-background-color': '#fff',
   '--theme-select-option-highlight-color': '#edf0f3',
+  '--theme-select-arrow-color': '#c6cdd6',
+  '--theme-select-arrow-color-open': '#5e6066',
 
   '--theme-choice-tabs-text-color': '#5e6066',
   '--theme-choice-tabs-text-color-active': '#5e6066',
