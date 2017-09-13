@@ -5,7 +5,6 @@ import {
 } from '../support/helpers/wallets-helpers';
 
 export default function () {
-
   this.Given(/^I should see the "([^"]*)" wallet password dialog$/, function (dialogType) {
     const selector = '.' + dialogType + 'PasswordDialog';
     return this.client.waitForVisible(selector);
@@ -22,7 +21,7 @@ export default function () {
     await this.client.setValue('.createPasswordDialog .repeatedPassword input', fields.repeatedPassword);
   });
 
-  this.When(/^I click on the "([^"]*)" button in "([^"]*)" wallet password dialog$/, function (action, dialogType) {
+  this.When(/^I submit the wallet password dialog$/, function () {
     return this.client.click('.confirmButton');
   });
 
@@ -69,8 +68,10 @@ export default function () {
 
   this.Then(/^I should have wallet with "Strict" assurance level set$/, async function () {
     const activeWalletName = await getNameOfActiveWalletInSidebar.call(this);
-    const wallets = await this.client.executeAsync(function(done) {
-      daedalus.stores.wallets.walletsRequest.execute().then(done);
+    const wallets = await this.client.executeAsync((done) => {
+      daedalus.stores.wallets.walletsRequest.execute()
+        .then(done)
+        .catch((error) => done(error));
     });
     const activeWallet = wallets.value.find((w) => w.name === activeWalletName);
     expect(activeWallet.assurance).to.equal('CWAStrict');

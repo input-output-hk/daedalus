@@ -6,6 +6,20 @@ Changelog
 
 ### Features
 
+- Do not block the UI while wallet is being restored/imported ([PR 457](https://github.com/input-output-hk/daedalus/pull/457))
+
+### Fixes
+
+- Fix all features eslint warnings ([PR 468](https://github.com/input-output-hk/daedalus/pull/468))
+- Fix for disabled buttons on dark-blue theme ([PR 473](https://github.com/input-output-hk/daedalus/pull/473))
+- Remove maximum screen width and height in full-screen mode ([PR 472](https://github.com/input-output-hk/daedalus/pull/472))
+
+### Chores
+
+## 0.8.0
+
+### Features
+
 - Opt-in mode for sending logs to the remote server
 - Added support for Cmd+H hotkey shortcut for hiding application window on OSX ([PR 404](https://github.com/input-output-hk/daedalus/pull/404))
 - Setup environment variable for testnet/mainnet mode ([PR 400](https://github.com/input-output-hk/daedalus/pull/400))
@@ -14,7 +28,7 @@ Changelog
 - About page, available from the system menu ([PR 430](https://github.com/input-output-hk/daedalus/pull/430))
 - Setup default themes for TN and MN and introduce new theme names ([PR 451](https://github.com/input-output-hk/daedalus/pull/451))
 - Transaction fees UX improvements on wallet sent screen ([PR 449](https://github.com/input-output-hk/daedalus/pull/449))
-- Do not block the UI while wallet is being restored/imported ([PR 457](https://github.com/input-output-hk/daedalus/pull/457))
+- Acceptance tests for General Settings screens ([PR 466](https://github.com/input-output-hk/daedalus/pull/466))
 
 ### Fixes
 
@@ -40,6 +54,7 @@ Changelog
 - Fixed ENOENT error on log file rotation ([PR 428](https://github.com/input-output-hk/daedalus/pull/428))
 - Fixed logging error ([PR 431](https://github.com/input-output-hk/daedalus/pull/431))
 - Add theming support on UI which was introduced after introduction of Theming feature ([PR 434](https://github.com/input-output-hk/daedalus/pull/434))
+- Speed-up About page opening time ([PR 450](https://github.com/input-output-hk/daedalus/pull/450))
 - Importing a wallet from a file updated-API integration ([PR 439](https://github.com/input-output-hk/daedalus/pull/439))
 - Exporting a wallet updated-API integration ([PR 438](https://github.com/input-output-hk/daedalus/pull/438))
 - Show correct error message for A -> A transaction error ([PR 441](https://github.com/input-output-hk/daedalus/pull/441))
