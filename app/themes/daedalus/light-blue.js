@@ -54,6 +54,9 @@ export default {
   '--theme-checkbox-border-color': '#2f496e',
   '--theme-checkbox-background-color-checked': '#2f496e',
 
+  '--theme-select-background-color': '#fff',
+  '--theme-select-option-highlight-color': '#edf0f3',
+
   '--theme-choice-tabs-text-color': '#5e6066',
   '--theme-choice-tabs-text-color-active': '#5e6066',
   '--theme-choice-tabs-bottom-border-color-active': '#5e6066',
@@ -155,8 +158,9 @@ export default {
   '--theme-staking-font-color-accent': '#5e6066',
   '--theme-staking-font-color-regular': '#5e6066',
 
+  '--theme-switch-background-color': '#2f496e',
   '--theme-switch-background-color-checked': '#2f496e',
-  '--theme-switch-thumb-color-checked': '#2f496e',
+  '--theme-switch-thumb-color-checked': '#fff',
   '--theme-switch-label-color': '#5e6066',
 
   '--theme-test-environment-label-background-color': '#ab1700',

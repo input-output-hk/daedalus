@@ -54,6 +54,9 @@ export default {
   '--theme-checkbox-border-color': '#536370',
   '--theme-checkbox-background-color-checked': '#536370',
 
+  '--theme-select-background-color': '#fff',
+  '--theme-select-option-highlight-color': '#edf0f3',
+
   '--theme-choice-tabs-text-color': '#e9f4fe',
   '--theme-choice-tabs-text-color-active': '#e9f4fe',
   '--theme-choice-tabs-bottom-border-color-active': '#e9f4fe',
@@ -78,7 +81,7 @@ export default {
   '--theme-dialog-input-border-color': '#c6cdd6',
   '--theme-dialog-input-focus-border-color': '#5e6066',
 
-  '--theme-input-border-color': '#5e6066',
+  '--theme-input-border-color': '#334152',
   '--theme-input-label-color': '#e9f4fe',
   '--theme-input-text-color': '#e9f4fe',
   '--theme-input-right-floating-text-color': '#8793a1',
@@ -155,8 +158,9 @@ export default {
   '--theme-staking-font-color-accent': '#cecfd1',
   '--theme-staking-font-color-regular': '#0b1926',
 
+  '--theme-switch-background-color': '#536370',
   '--theme-switch-background-color-checked': '#536370',
-  '--theme-switch-thumb-color-checked': '#536370',
+  '--theme-switch-thumb-color-checked': '#fff',
   '--theme-switch-label-color': '#e9f4fe',
 
   '--theme-test-environment-label-background-color': '#ab1700',

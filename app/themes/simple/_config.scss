@@ -10,3 +10,8 @@ $theme-font-regular: var(--font-regular);
 $theme-font-bold: var(--font-bold);
 
 @import "~react-polymorph/lib/themes/simple/_theme";
+
+$switch-on-accent-color: var(--theme-switch-background-color-checked);
+$switch-off-accent-color: var(--theme-switch-background-color-checked);
+$switch-thumb-accent-color: var(--theme-switch-thumb-color-checked);
+$switch-label-color: var(--theme-switch-label-color);
