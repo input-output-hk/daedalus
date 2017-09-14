@@ -22,9 +22,7 @@ export default class NodeUpdateStore extends Store {
     actions.acceptNodeUpdate.listen(this._acceptNodeUpdate);
     actions.postponeNodeUpdate.listen(this._postponeNodeUpdate);
     actions.toggleNodeUpdateNotificationExpanded.listen(this._toggleNotificationExpanded);
-    if (environment.CARDANO_API) {
-      setInterval(this.refreshNextUpdate, this.NODE_UPDATE_POLL_INTERVAL);
-    }
+    setInterval(this.refreshNextUpdate, this.NODE_UPDATE_POLL_INTERVAL);
   }
 
   @action refreshNextUpdate = () => {

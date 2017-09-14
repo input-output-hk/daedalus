@@ -52,8 +52,8 @@ module.exports = validate({
 
   plugins: [
     new webpack.DefinePlugin({
+      'process.env.API': process.env.COIN || 'ada',
       'process.env.NETWORK': JSON.stringify(process.env.NETWORK || 'development'),
-      'process.env.CARDANO_API': process.env.CARDANO_API || 1,
       'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
       'process.env.DAEDALUS_VERSION': JSON.stringify(process.env.DAEDALUS_VERSION || 'dev')
     }),

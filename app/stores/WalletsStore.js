@@ -61,9 +61,7 @@ export default class WalletsStore extends Store {
       this._updateActiveWalletOnRouteChanges,
       this._toggleAddWalletDialogOnWalletsLoaded,
     ]);
-    if (environment.CARDANO_API) {
-      setInterval(this.pollRefresh, this.WALLET_REFRESH_INTERVAL);
-    }
+    setInterval(this.pollRefresh, this.WALLET_REFRESH_INTERVAL);
   }
 
   _create = async (params: {
