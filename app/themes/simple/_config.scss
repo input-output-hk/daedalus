@@ -11,6 +11,9 @@ $theme-font-bold: var(--font-bold);
 
 @import "~react-polymorph/lib/themes/simple/_theme";
 
+// TODO: add all other SimpleSelect variables here
+$select-input-border-focus-color: var(--theme-input-focus-border-color);
+
 $switch-on-accent-color: var(--theme-switch-background-color-checked);
 $switch-off-accent-color: var(--theme-switch-background-color-checked);
 $switch-thumb-accent-color: var(--theme-switch-thumb-color-checked);
