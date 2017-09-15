@@ -229,6 +229,7 @@
   "wallet.settings.delete.dialog.title": "ウォレット削除",
   "wallet.settings.delete.dialog.wantToDeleteWalletQuestion": "本当に<strong>{walletName}</strong>を削除しますか?",
   "wallet.settings.deleteWalletButtonLabel": "ウォレット削除",
+  "wallet.settings.exportWalletButtonLabel": "!!!Export wallet",
   "wallet.settings.name.label": "ウォレット名",
   "wallet.settings.password": "パスワード",
   "wallet.settings.passwordLastUpdated": "最終更新 {lastUpdated}",

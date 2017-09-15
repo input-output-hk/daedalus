@@ -2,7 +2,7 @@
 
 .component {
   background-color: var(--theme-settings-menu-box-background-color);
-  border: 1px solid var(--theme-settings-menu-box-border-color);
+  border: var(--theme-settings-menu-box-border);
   border-radius: 4px;
   margin: 20px 0;
   padding: 16px 0;

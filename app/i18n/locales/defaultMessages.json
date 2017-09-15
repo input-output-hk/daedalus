@@ -2191,13 +2191,13 @@
         "description": "Label for the \"Today\" label on the wallet summary page.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 17
         },
         "file": "app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.todayLabel",
         "start": {
           "column": 9,
-          "line": 14
+          "line": 13
         }
       },
       {
@@ -2205,13 +2205,13 @@
         "description": "Label for the \"Yesterday\" label on the wallet summary page.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 22
         },
         "file": "app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.yesterdayLabel",
         "start": {
           "column": 13,
-          "line": 19
+          "line": 18
         }
       }
     ],
@@ -3054,6 +3054,20 @@
         "start": {
           "column": 18,
           "line": 51
+        }
+      },
+      {
+        "defaultMessage": "!!!Export wallet",
+        "description": "Label for the export button on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 60
+        },
+        "file": "app/components/wallet/WalletSettings.js",
+        "id": "wallet.settings.exportWalletButtonLabel",
+        "start": {
+          "column": 21,
+          "line": 56
         }
       }
     ],
