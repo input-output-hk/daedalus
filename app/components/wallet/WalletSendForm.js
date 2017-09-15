@@ -16,7 +16,8 @@ import AmountInputSkin from './skins/AmountInputSkin';
 import BorderedBox from '../widgets/BorderedBox';
 import styles from './WalletSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
-import LocalizableError from '../../i18n/LocalizableError';
+import WalletSendConfirmationDialog from './WalletSendConfirmationDialog';
+import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
 
 const messages = defineMessages({
   titleLabel: {
@@ -59,10 +60,10 @@ const messages = defineMessages({
     defaultMessage: '!!!You can add a message if you want',
     description: 'Hint in the "description" text area in the wallet send form.'
   },
-  sendButtonLabel: {
-    id: 'wallet.send.form.submit',
-    defaultMessage: '!!!Send',
-    description: 'Label for the send button on the wallet send form.'
+  nextButtonLabel: {
+    id: 'wallet.send.form.next',
+    defaultMessage: '!!!Next',
+    description: 'Label for the next button on the wallet send form.'
   },
   invalidAddress: {
     id: 'wallet.send.form.errors.invalidAddress',
@@ -79,16 +80,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Please enter a title with at least 3 characters.',
     description: 'Error message shown when invalid transaction title was entered.',
   },
-  walletPasswordLabel: {
-    id: 'wallet.send.form.walletPasswordLabel',
-    defaultMessage: '!!!Wallet password',
-    description: 'Label for the "Wallet password" input in the wallet send form.'
-  },
-  passwordFieldPlaceholder: {
-    id: 'wallet.send.form.passwordFieldPlaceholder',
-    defaultMessage: '!!!Password',
-    description: 'Placeholder for the "Password" inputs in the wallet send form.'
-  },
   transactionFeeError: {
     id: 'wallet.send.form.transactionFeeError',
     defaultMessage: '!!!Not enough Ada for fees. Try sending a smaller amount.',
@@ -102,12 +93,10 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 export default class WalletSendForm extends Component {
 
   props: {
-    onSubmit: Function,
     calculateTransactionFee: (receiver: string, amount: string) => Promise<BigNumber>,
-    isSubmitting: boolean,
     addressValidator: Function,
-    isWalletPasswordSet: boolean,
-    error?: ?LocalizableError,
+    openDialogAction: Function,
+    isDialogOpen: Function,
   };
 
   static contextTypes = {
@@ -191,18 +180,6 @@ export default class WalletSendForm extends Component {
           return [isValid, this.context.intl.formatMessage(messages.invalidAmount)];
         }],
       },
-      walletPassword: {
-        type: 'password',
-        label: this.context.intl.formatMessage(messages.walletPasswordLabel),
-        placeholder: this.context.intl.formatMessage(messages.passwordFieldPlaceholder),
-        value: '',
-        validators: [({ field }) => {
-          if (this.props.isWalletPasswordSet && field.value === '') {
-            return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
-          }
-          return [true];
-        }],
-      },
     },
   }, {
     options: {
@@ -211,45 +188,21 @@ export default class WalletSendForm extends Component {
     },
   });
 
-  submit() {
-    this._isSubmitting = true;
-    this.form.submit({
-      onSuccess: (form) => {
-        const { isWalletPasswordSet } = this.props;
-        const { receiver, amount, walletPassword } = form.values();
-        const transactionData = {
-          receiver,
-          amount: this.adaToLovelaces(amount),
-          password: isWalletPasswordSet ? walletPassword : null,
-        };
-        this._isSubmitting = false;
-        this.props.onSubmit(transactionData);
-      },
-      onError: () => {
-        this._isSubmitting = false;
-      }
-    });
-  }
-
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { isWalletPasswordSet, isSubmitting, error } = this.props;
+    const { openDialogAction, isDialogOpen, } = this.props;
     const { isTransactionFeeCalculated, transactionFee, transactionFeeError } = this.state;
     const amountField = form.$('amount');
     const receiverField = form.$('receiver');
-    const passwordField = form.$('walletPassword');
+    const receiverFieldProps = receiverField.bind();
     const amountFieldProps = amountField.bind();
     const totalAmount = this._calculateTotalAmount(amountFieldProps.value, transactionFee);
 
     const buttonClasses = classnames([
       'primary',
-      isSubmitting ? styles.submitButtonSpinning : styles.submitButton,
+      styles.nextButton,
     ]);
-
-    // Form can't be submitted in case transaction fees are not calculated
-    // or that user has not entered wallet password (if wallet has one)
-    const isButtonDisabled = !isTransactionFeeCalculated || !passwordField.isValid;
 
     return (
       <div className={styles.component}>
@@ -281,28 +234,28 @@ export default class WalletSendForm extends Component {
             />
           </div>
 
-          {isWalletPasswordSet ? (
-            <div className={styles.passwordInput}>
-              <Input
-                className="walletPassword"
-                {...passwordField.bind()}
-                error={passwordField.error}
-                skin={<SimpleInputSkin />}
-              />
-            </div>
-          ) : null}
-
-          {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
-
           <Button
             className={buttonClasses}
-            label={intl.formatMessage(messages.sendButtonLabel)}
-            onMouseUp={this.submit.bind(this)}
-            disabled={isButtonDisabled}
+            label={intl.formatMessage(messages.nextButtonLabel)}
+            onMouseUp={() => openDialogAction({
+              dialog: WalletSendConfirmationDialog,
+            })}
+            // Form can't be submitted in case transaction fees are not calculated
+            disabled={!isTransactionFeeCalculated}
             skin={<SimpleButtonSkin />}
           />
 
         </BorderedBox>
+
+        {isDialogOpen(WalletSendConfirmationDialog) ? (
+          <WalletSendConfirmationDialogContainer
+            amount={amountFieldProps.value}
+            receiver={receiverFieldProps.value}
+            totalAmount={totalAmount.toFormat(DECIMAL_PLACES_IN_ADA)}
+            transactionFee={transactionFee.toFormat(DECIMAL_PLACES_IN_ADA)}
+            adaToLovelaces={this.adaToLovelaces}
+          />
+        ) : null}
 
       </div>
     );

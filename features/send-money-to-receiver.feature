@@ -15,6 +15,8 @@ Feature: Send Money to Receiver
       | amount   |
       | 0.000010 |
     And the transaction fees are calculated
+    And I click on the next button in the wallet send form
+    And I see send money confirmation dialog
     And I submit the wallet send form
     Then I should be on the "Genesis wallet" wallet "summary" screen
     And the latest transaction should show:
@@ -28,9 +30,12 @@ Feature: Send Money to Receiver
     Given I have a wallet with funds and password
     And I am on the "Genesis wallet" wallet "send" screen
     When I fill out the send form with a transaction to "first" wallet:
-      | amount   |  walletPassword |
-      | 0.000010 |  Secret123      |
+      | amount   |
+      | 0.000010 |
     And the transaction fees are calculated
+    And I click on the next button in the wallet send form
+    And I see send money confirmation dialog
+    And I enter wallet spending password in confirmation dialog "Secret123"
     And I submit the wallet send form
     Then I should be on the "Genesis wallet" wallet "summary" screen
     And the latest transaction should show:

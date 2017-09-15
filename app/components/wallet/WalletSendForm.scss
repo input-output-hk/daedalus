@@ -6,8 +6,7 @@
 }
 
 .amountInput,
-.receiverInput,
-.passwordInput {
+.receiverInput {
   position: relative;
   margin-bottom: 20px;
 }
@@ -21,18 +20,7 @@
   text-transform: uppercase;
 }
 
-.submitButton,
-.submitButtonSpinning  {
+.nextButton {
   display: block !important;
   margin: 30px auto 0;
-}
-
-.submitButtonSpinning {
-  @include loading-spinner("../../assets/images/spinner-light.svg");
-}
-
-.error {
-  @include error-message;
-  text-align: center;
-  margin-bottom: 1rem;
 }

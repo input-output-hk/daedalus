@@ -188,10 +188,23 @@ export default function () {
     });
   });
 
-  this.When(/^I submit the wallet send form$/, async function () {
-    const submitButton = '.WalletSendForm_submitButton';
+  this.When(/^I click on the next button in the wallet send form$/, async function () {
+    const submitButton = '.WalletSendForm_nextButton';
     await this.client.waitForVisible(submitButton);
     return this.client.click(submitButton);
+  });
+
+  this.When(/^I see send money confirmation dialog$/, function () {
+    return this.client.waitForVisible('.WalletSendConfirmationDialog_dialog');
+  });
+
+  this.When(/^I enter wallet spending password in confirmation dialog "([^"]*)"$/, async function (password) {
+    await this.client.setValue('.WalletSendConfirmationDialog_walletPassword input', password);
+  });
+
+  this.When(/^I submit the wallet send form$/, async function () {
+    await this.client.waitForEnabled('.WalletSendConfirmationDialog_dialog .confirmButton');
+    return this.client.click('.WalletSendConfirmationDialog_dialog .confirmButton');
   });
 
   this.When(/^I toggle "Activate to create password" switch on the create wallet dialog$/, function () {
