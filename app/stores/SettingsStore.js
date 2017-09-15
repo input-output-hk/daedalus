@@ -21,6 +21,13 @@ export default class SettingsStore extends Store {
     ]);
   }
 
+  async reset() {
+    await this.unsetUserLocale(); // TODO: remove after saving locale to API is restored
+    await this.unsetTermsOfUseAcceptance();
+    await this.unsetSendLogsChoice();
+    await this.unsetUserTheme();
+  }
+
   _setBigNumberFormat = () => {
     BigNumber.config({ FORMAT: this.bigNumberDecimalFormat });
   };

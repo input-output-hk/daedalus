@@ -45,7 +45,6 @@ const initializeDaedalus = () => {
     translations,
     reset: action(() => {
       Action.resetAllActions();
-      api.reset();
       setupStores(api, actions, router);
     }),
   };

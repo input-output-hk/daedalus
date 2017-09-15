@@ -516,10 +516,6 @@ export default class AdaApi {
 
   async testReset() {
     Logger.debug('CardanoClientApi::testReset called');
-    await unsetUserLocaleFromLocalStorage(); // TODO: remove after saving locale to API is restored
-    await unsetTermsOfUseAcceptanceFromLocalStorage();
-    await unsetSendLogsChoiceFromLocalStorage();
-    await unsetUserThemeFromLocalStorage();
     try {
       const response = await ClientApi.testReset(tlsConfig);
       Logger.debug('CardanoClientApi::testReset success: ' + stringifyData(response));
