@@ -25,8 +25,8 @@ export default class WalletsStore extends Store {
   WALLET_REFRESH_INTERVAL = 5000;
 
   @observable active: ?Wallet = null;
-  @observable isImportActive = false;
-  @observable isRestoreActive = false;
+  @observable isImportActive: boolean = false;
+  @observable isRestoreActive: boolean = false;
 
   // REQUESTS
   /* eslint-disable max-len */
@@ -234,17 +234,17 @@ export default class WalletsStore extends Store {
     // ...or keep it open in case it has errored out (so that error message can be shown)
     setTimeout(() => {
       if (!this.restoreRequest.isError) {
-        this._setIsRestoreActive(true);
         this.actions.dialogs.closeActiveDialog.trigger();
+        this._setIsRestoreActive(true);
       }
     }, 500);
 
     const restoredWallet = await this.restoreRequest.execute(params).promise;
     if (!restoredWallet) throw new Error('Restored wallet was not received correctly');
-    await this._patchWalletRequestWithNewWallet(restoredWallet);
-    this.restoreRequest.reset();
-    this.refreshWalletsData();
     this._setIsRestoreActive(false);
+    this.restoreRequest.reset();
+    await this._patchWalletRequestWithNewWallet(restoredWallet);
+    this.refreshWalletsData();
   };
 
   @action _setIsImportActive = (active: boolean) => {
@@ -258,8 +258,8 @@ export default class WalletsStore extends Store {
     // ...or keep it open in case it has errored out (so that error message can be shown)
     setTimeout(() => {
       if (!this.importFromFileRequest.isError) {
-        this._setIsImportActive(true);
         this.actions.dialogs.closeActiveDialog.trigger();
+        this._setIsImportActive(true);
       }
     }, 500);
 
@@ -268,10 +268,10 @@ export default class WalletsStore extends Store {
       filePath, walletName, walletPassword,
     }).promise;
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');
-    await this._patchWalletRequestWithNewWallet(importedWallet);
-    this.importFromFileRequest.reset();
-    this.refreshWalletsData();
     this._setIsImportActive(false);
+    this.importFromFileRequest.reset();
+    await this._patchWalletRequestWithNewWallet(importedWallet);
+    this.refreshWalletsData();
   }
 
   @action _setActiveWallet = ({ walletId }: { walletId: string }) => {
@@ -294,6 +294,9 @@ export default class WalletsStore extends Store {
   }
 
   _toggleAddWalletDialogOnWalletsLoaded = () => {
+    // register mobx observers for isImportActive & isRestoreActive in order to trigger reaction on change
+    this.isImportActive; // eslint-disable-line
+    this.isRestoreActive; // eslint-disable-line
     if (this.hasLoadedWallets && !this.hasAnyWallets) {
       this.actions.dialogs.open.trigger({ dialog: WalletAddDialog });
     } else if (untracked(() => this.stores.uiDialogs.isOpen(WalletAddDialog))) {

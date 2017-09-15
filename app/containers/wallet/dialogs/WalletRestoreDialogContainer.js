@@ -17,7 +17,10 @@ export default class WalletRestoreDialogContainer extends Component {
 
   onCancel = () => {
     this.props.onClose();
-    this.props.stores.wallets.restoreRequest.reset();
+
+    // Restore request should be reset only in case restore is finished/errored
+    const { restoreRequest } = this.props.stores.wallets;
+    if (!restoreRequest.isExecuting) restoreRequest.reset();
   };
 
   render() {

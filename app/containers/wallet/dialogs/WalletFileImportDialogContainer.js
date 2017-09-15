@@ -17,7 +17,10 @@ export default class WalletFileImportDialogContainer extends Component {
 
   onCancel = () => {
     this.props.onClose();
-    this.props.stores.wallets.importFromFileRequest.reset();
+
+    // Import request should be reset only in case restore is finished/errored
+    const { importFromFileRequest } = this.props.stores.wallets;
+    if (!importFromFileRequest.isExecuting) importFromFileRequest.reset();
   };
 
   render() {
