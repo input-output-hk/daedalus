@@ -201,6 +201,7 @@
   "wallet.send.confirmationDialog.back": "Back",
   "wallet.send.confirmationDialog.feesLabel": "Fees",
   "wallet.send.confirmationDialog.submit": "Send",
+  "wallet.send.confirmationDialog.title": "Send Recipe",
   "wallet.send.confirmationDialog.totalLabel": "Total",
   "wallet.send.confirmationDialog.walletPasswordFieldPlaceholder": "Type your spending password",
   "wallet.send.confirmationDialog.walletPasswordLabel": "Spending password",

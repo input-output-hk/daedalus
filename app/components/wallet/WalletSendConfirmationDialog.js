@@ -7,11 +7,17 @@ import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
 import Dialog from '../widgets/Dialog';
+import DialogCloseButton from '../widgets/DialogCloseButton';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletSendConfirmationDialog.scss';
 
 const messages = defineMessages({
+  dialogTitle: {
+    id: 'wallet.send.confirmationDialog.title',
+    defaultMessage: '!!!Send Recipe',
+    description: 'Title for the "Send Recipe" dialog.'
+  },
   walletPasswordLabel: {
     id: 'wallet.send.confirmationDialog.walletPasswordLabel',
     defaultMessage: '!!!Spending password',
@@ -150,10 +156,12 @@ export default class WalletSendConfirmationDialog extends Component {
 
     return (
       <Dialog
+        title={intl.formatMessage(messages.dialogTitle)}
         actions={actions}
         closeOnOverlayClick
         onClose={!isSubmitting ? onCancel : null}
         className={styles.dialog}
+        closeButton={<DialogCloseButton onClose={!isSubmitting ? onCancel : null} />}
       >
         <div className={styles.walletPasswordFields}>
           <div className={styles.addressToLabelWrapper}>

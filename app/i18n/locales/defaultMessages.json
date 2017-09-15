@@ -2772,17 +2772,31 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Send Recipe",
+        "description": "Title for the \"Send Recipe\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "app/components/wallet/WalletSendConfirmationDialog.js",
+        "id": "wallet.send.confirmationDialog.title",
+        "start": {
+          "column": 15,
+          "line": 16
+        }
+      },
+      {
         "defaultMessage": "!!!Spending password",
         "description": "Label for the \"Spending password\" input in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 25
         },
         "file": "app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.walletPasswordLabel",
         "start": {
           "column": 23,
-          "line": 15
+          "line": 21
         }
       },
       {
@@ -2790,13 +2804,13 @@
         "description": "Label for the \"To\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 30
         },
         "file": "app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.addressToLabel",
         "start": {
           "column": 18,
-          "line": 20
+          "line": 26
         }
       },
       {
@@ -2804,13 +2818,13 @@
         "description": "Label for the \"Amount\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 35
         },
         "file": "app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.amountLabel",
         "start": {
           "column": 15,
-          "line": 25
+          "line": 31
         }
       },
       {
@@ -2818,13 +2832,13 @@
         "description": "Label for the \"Fees\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 40
         },
         "file": "app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 30
+          "line": 36
         }
       },
       {
@@ -2832,13 +2846,13 @@
         "description": "Label for the \"Total\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 45
         },
         "file": "app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.totalLabel",
         "start": {
           "column": 14,
-          "line": 35
+          "line": 41
         }
       },
       {
@@ -2846,13 +2860,13 @@
         "description": "Placeholder for the \"Spending password\" inputs in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 50
         },
         "file": "app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.walletPasswordFieldPlaceholder",
         "start": {
           "column": 34,
-          "line": 40
+          "line": 46
         }
       },
       {
@@ -2860,13 +2874,13 @@
         "description": "Label for the send button in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 55
         },
         "file": "app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.submit",
         "start": {
           "column": 19,
-          "line": 45
+          "line": 51
         }
       },
       {
@@ -2874,13 +2888,13 @@
         "description": "Label for the back button in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 60
         },
         "file": "app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.back",
         "start": {
           "column": 19,
-          "line": 50
+          "line": 56
         }
       }
     ],
