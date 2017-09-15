@@ -14,8 +14,8 @@ export type RequestOptions = {
   },
 };
 
-export const request = (httpOptions: RequestOptions, queryParams?: {}) => {
-  return new Promise((resolve, reject) => {
+export const request = (httpOptions: RequestOptions, queryParams?: {}) => (
+  new Promise((resolve, reject) => {
     // Prepare request with http options and (optional) query params
     const options: RequestOptions = Object.assign({}, httpOptions);
     let requestBody = '';
@@ -26,12 +26,12 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}) => {
         'Content-Length': requestBody.length,
       };
     }
-    const request = https.request(options);
-    if (queryParams) { request.write(requestBody); }
-    request.on('response', (response) => {
+    const httpsRequest = https.request(options);
+    if (queryParams) { httpsRequest.write(requestBody); }
+    httpsRequest.on('response', (response) => {
       let body = '';
       // Cardano-sl returns chunked requests, so we need to concat them
-      response.on('data', (chunk) => body += chunk);
+      response.on('data', (chunk) => (body += chunk));
       // Reject errors
       response.on('error', (error) => reject(error));
       // Resolve JSON results and handle weird backend behavior
@@ -50,7 +50,7 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}) => {
         }
       });
     });
-    request.on('error', (error) => reject(error));
-    request.end();
-  });
-};
+    httpsRequest.on('error', (error) => reject(error));
+    httpsRequest.end();
+  })
+);

@@ -17,7 +17,7 @@
   .primary {
     &[disabled] {
       background: var(--theme-button-primary-background-color-disabled);
-      color: var(--theme-button-primary-text-color);
+      color: var(--theme-button-primary-text-color-disabled);
     }
     &:not([disabled]) {
       background: var(--theme-button-primary-background-color);

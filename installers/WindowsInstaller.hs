@@ -113,11 +113,16 @@ writeInstallerNSIS fullVersion = do
     unsafeInjectGlobal $ "VIProductVersion " <> (L.intercalate "." $ parseVersion fullVersion)
     unsafeInjectGlobal $ "VIAddVersionKey \"ProductVersion\" " <> fullVersion
     unsafeInjectGlobal "Unicode true"
-    installDir "$PROGRAMFILES64\\Daedalus"   -- The default installation directory
     requestExecutionLevel Highest
     unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
 
+    installDir "$PROGRAMFILES64\\Daedalus"                   -- Default installation directory...
+    installDirRegKey HKLM "Software/Daedalus" "Install_Dir"  -- ...except when already installed.
+
     page Directory                   -- Pick where to install
+    constant "INSTALLEDAT" $ readRegStr HKLM "Software/Daedalus" "Install_Dir"
+    onPagePre Directory (iff_ (strLength "$INSTALLEDAT" %/= 0) $ abort "")
+
     page InstFiles                   -- Give a progress bar while installing
 
     _ <- section "" [Required] $ do
@@ -147,7 +152,7 @@ writeInstallerNSIS fullVersion = do
           , "DetailPrint \"liteFirewall::AddRule: $0\""
           ]
 
-        execWait "build-certificates-win64.bat \"$INSTDIR\" >%APPDATA%\\Daedalus\\Logs\\build-certificates.log 2>&1"
+        execWait "build-certificates-win64.bat \"$INSTDIR\" >\"%APPDATA%\\Daedalus\\Logs\\build-certificates.log\" 2>&1"
 
         -- Uninstaller
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "InstallLocation" "$INSTDIR\\Daedalus"

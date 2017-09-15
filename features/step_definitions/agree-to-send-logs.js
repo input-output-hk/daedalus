@@ -5,7 +5,7 @@ const SEND_LOGS_CHOICE_FORM = '.SendLogsChoiceForm_component';
 export default function () {
   this.Given(/^I agree to send logs to remote server$/, async function () {
     await this.client.waitForVisible(SEND_LOGS_CHOICE_FORM);
-    await this.client.execute((sendLogs) => {
+    await this.client.execute(() => {
       daedalus.actions.profile.setSendLogsChoice.trigger({ sendLogs: true });
     });
     return this.client.waitForVisible(SEND_LOGS_CHOICE_FORM, null, true);
@@ -30,10 +30,11 @@ export default function () {
   });
 
   this.Then(/^I should have "Send logs" accepted$/, async function () {
-    const result = await this.client.executeAsync(function(done) {
-      daedalus.stores.app.getSendLogsChoiceRequest.execute().then(done);
+    const result = await this.client.executeAsync((done) => {
+      daedalus.stores.app.getSendLogsChoiceRequest.execute()
+        .then(done)
+        .catch((error) => done(error));
     });
     expect(result.value).to.equal(true);
   });
-
-};
+}
