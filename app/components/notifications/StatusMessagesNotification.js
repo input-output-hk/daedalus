@@ -1,5 +1,7 @@
 // @flow
 import React, { Component } from 'react';
+import classnames from 'classnames';
+import { observer } from 'mobx-react';
 import SvgInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
 import spinnerIcon from '../../assets/images/spinner-dark.inline.svg';
@@ -18,6 +20,7 @@ const messages = defineMessages({
   },
 });
 
+@observer
 export default class StatusMessagesNotification extends Component {
 
   props: {
@@ -32,17 +35,28 @@ export default class StatusMessagesNotification extends Component {
   render() {
     const { intl } = this.context;
     const { isImportActive, isRestoreActive } = this.props;
+
+    const importMessageClasses = classnames([
+      styles.message,
+      'ActiveImportNotification',
+    ]);
+
+    const restoreMessageClasses = classnames([
+      styles.message,
+      'ActiveRestoreNotification',
+    ]);
+
     return (
       <div className={styles.component}>
         {isImportActive && (
-          <div className={styles.message}>
+          <div className={importMessageClasses}>
             <span className={styles.text}>{intl.formatMessage(messages.activeImportMessage)}</span>
             <SvgInline svg={spinnerIcon} className={styles.icon} />
           </div>
         )}
 
         {isRestoreActive && (
-          <div className={styles.message}>
+          <div className={restoreMessageClasses}>
             <span className={styles.text}>{intl.formatMessage(messages.activeRestoreMessage)}</span>
             <SvgInline svg={spinnerIcon} className={styles.icon} />
           </div>

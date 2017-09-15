@@ -80,7 +80,7 @@ export default class DeleteWalletConfirmationDialog extends Component {
       isSubmitting,
     } = this.props;
 
-    const countdownRemaining = countdownFn(environment.isTest() ? 0 : 0);
+    const countdownRemaining = countdownFn(environment.isTest() ? 0 : 10);
     const countdownDisplay = countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
     const isCountdownFinished = countdownRemaining <= 0;
     const isWalletNameConfirmationCorrect = confirmationValue === walletName;

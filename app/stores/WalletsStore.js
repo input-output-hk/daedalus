@@ -294,7 +294,7 @@ export default class WalletsStore extends Store {
   }
 
   _toggleAddWalletDialogOnWalletsLoaded = () => {
-    // register mobx observers for isImportActive & isRestoreActive in order to trigger reaction on change
+    // Register mobx observers for active import and restore in order to trigger reaction on change
     this.isImportActive; // eslint-disable-line
     this.isRestoreActive; // eslint-disable-line
     if (this.hasLoadedWallets && !this.hasAnyWallets) {

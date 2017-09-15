@@ -312,6 +312,22 @@ export default function () {
     return this.client.waitForVisible('.WalletRestoreDialog', null, true);
   });
 
+  this.Then(/^I should see the import status notification while import is running$/, async function () {
+    await this.client.waitForVisible('.ActiveImportNotification');
+  });
+
+  this.Then(/^I should not see the import status notification one import is finished$/, async function () {
+    await this.client.waitForVisible('.ActiveImportNotification', null, true);
+  });
+
+  this.Then(/^I should see the restore status notification while restore is running$/, async function () {
+    await this.client.waitForVisible('.ActiveRestoreNotification');
+  });
+
+  this.Then(/^I should not see the restore status notification one restore is finished$/, async function () {
+    await this.client.waitForVisible('.ActiveRestoreNotification', null, true);
+  });
+
   this.Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function (walletName) {
     const result = await this.client.executeAsync((done) => {
       daedalus.stores.wallets.walletsRequest.execute()
