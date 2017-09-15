@@ -57,7 +57,7 @@ launcherArgs Launcher{..} = unwords $
         "--db-path", quote (runtimePath <> "DB-0.6"),
         "--wallet-db-path", quote (runtimePath <> "Wallet-0.6"),
         "--update-server", "https://s3.eu-central-1.amazonaws.com/update-system/",
-        "--system-start", "1505475370",
+        "--system-start", "1505501792",
         "--update-with-package",
         "--tlscert", quote (tlsBase <> "server" <> (pathSeparator : "server.crt")),
         "--tlskey",  quote (tlsBase <> "server" <> (pathSeparator : "server.key")),
