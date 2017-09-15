@@ -15,7 +15,7 @@ export type GetSyncProgressResponse = {
   _spPeers: number,
 };
 
-export const getSyncProgress = (ca: string): Promise<GetSyncProgressResponse> => (
+export const getAdaSyncProgress = (ca: string): Promise<GetSyncProgressResponse> => (
   request({
     hostname: 'localhost',
     method: 'GET',

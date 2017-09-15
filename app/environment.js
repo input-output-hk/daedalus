@@ -11,6 +11,8 @@ const environment = Object.assign({
   isTest: () => environment.current === environment.TEST,
   isProduction: () => environment.current === environment.PRODUCTION,
   isMainnet: () => environment.NETWORK === 'mainnet',
+  isAdaApi: () => environment.API === 'ada',
+  isEtcApi: () => environment.API === 'etc',
 }, process.env);
 
 export default environment;

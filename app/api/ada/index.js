@@ -1,5 +1,4 @@
 // @flow
-import localStorage from 'electron-json-storage';
 import ClientApi from 'daedalus-client-api';
 import type {
   ApiTransaction,
@@ -15,10 +14,10 @@ import type {
 import { action } from 'mobx';
 import { ipcRenderer, remote } from 'electron';
 import BigNumber from 'bignumber.js';
-import { Logger } from '../lib/logger';
-import Wallet from '../domain/Wallet';
-import WalletTransaction from '../domain/WalletTransaction';
-import WalletAddress from '../domain/WalletAddress';
+import { Logger } from '../../lib/logger';
+import Wallet from '../../domain/Wallet';
+import WalletTransaction from '../../domain/WalletTransaction';
+import WalletAddress from '../../domain/WalletAddress';
 import type {
   CreateWalletRequest,
   GetAddressesRequest,
@@ -36,10 +35,10 @@ import type {
   TransactionFeeRequest,
   ExportWalletToFileRequest,
   ExportWalletToFileResponse,
-} from './index';
+} from '../index';
+import { GenericApiError } from '../errors';
 import {
   // ApiMethodNotYetImplementedError,
-  GenericApiError,
   WalletAlreadyImportedError,
   WalletAlreadyRestoredError,
   RedeemAdaError,
@@ -49,9 +48,11 @@ import {
   NotAllowedToSendMoneyToRedeemAddressError,
   IncorrectWalletPasswordError,
 } from './errors';
-import { LOVELACES_PER_ADA } from '../config/numbersConfig';
-
-import { getSyncProgress } from './js-api/getSyncProgress';
+import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
+import { stringifyData, stringifyError } from "../../lib/logger";
+import { getAdaSyncProgress } from './getAdaSyncProgress';
+import environment from "../../environment";
+import patchAdaApi from "./mocks/patchAdaApi";
 // import { makePayment } from './js-api/makePayment';
 
 const ca = remote.getGlobal('ca');
@@ -73,95 +74,14 @@ const tlsConfig = ClientApi.tlsInit(ca);
 //   console.log('isValidRedeemCode', result);
 // })();
 
-const getUserLocaleFromLocalStorage = () => new Promise((resolve, reject) => {
-  localStorage.get('userLocale', (error, response) => {
-    if (error) return reject(error);
-    if (!response.locale) return resolve('');
-    resolve(response.locale);
-  });
-});
 
-const setUserLocaleInLocalStorage = (locale) => new Promise((resolve, reject) => {
-  localStorage.set('userLocale', { locale }, (error) => {
-    if (error) return reject(error);
-    resolve();
-  });
-});
+export default class AdaApi {
 
-const unsetUserLocaleFromLocalStorage = () => new Promise((resolve) => {
-  localStorage.remove('userLocale', () => {
-    resolve();
-  });
-});
-
-const getTermsOfUseAcceptanceFromLocalStorage = () => new Promise((resolve, reject) => {
-  localStorage.get('termsOfUseAcceptance', (error, response) => {
-    if (error) return reject(error);
-    if (!response.accepted) return resolve(false);
-    resolve(response.accepted);
-  });
-});
-
-const setTermsOfUseAcceptanceInLocalStorage = () => new Promise((resolve, reject) => {
-  localStorage.set('termsOfUseAcceptance', { accepted: true }, (error) => {
-    if (error) return reject(error);
-    resolve();
-  });
-});
-
-const unsetTermsOfUseAcceptanceFromLocalStorage = () => new Promise((resolve) => {
-  localStorage.remove('termsOfUseAcceptance', () => {
-    resolve();
-  });
-});
-
-const getSendLogsChoiceFromLocalStorage = () => new Promise((resolve, reject) => {
-  localStorage.get('sendLogsChoice', (error, response) => {
-    if (error) return reject(error);
-    if (typeof response.sendLogs === 'undefined') {
-      return resolve(null);
+  constructor() {
+    if (environment.isTest()) {
+      patchAdaApi(this);
     }
-    resolve(response.sendLogs);
-  });
-});
-
-const setSendLogsChoiceInLocalStorage = (sendLogs) => new Promise((resolve, reject) => {
-  localStorage.set('sendLogsChoice', { sendLogs }, (error) => {
-    if (error) return reject(error);
-    resolve();
-  });
-});
-
-const unsetSendLogsChoiceFromLocalStorage = () => new Promise((resolve) => {
-  localStorage.remove('sendLogsChoice', () => {
-    resolve();
-  });
-});
-
-const getUserThemeFromLocalStorage = () => new Promise((resolve, reject) => {
-  localStorage.get('theme', (error, response) => {
-    if (error) return reject(error);
-    if (!response.theme) return resolve('');
-    resolve(response.theme);
-  });
-});
-
-const setUserThemeInLocalStorage = (theme) => new Promise((resolve, reject) => {
-  localStorage.set('theme', { theme }, (error) => {
-    if (error) return reject(error);
-    resolve();
-  });
-});
-
-const unsetUserThemeFromLocalStorage = () => new Promise((resolve) => {
-  localStorage.remove('theme', () => {
-    resolve();
-  });
-});
-
-export default class CardanoClientApi {
-
-  reset() {}
+  }
 
   async getWallets() {
     Logger.debug('CardanoClientApi::getWallets called');
@@ -534,7 +454,7 @@ export default class CardanoClientApi {
     Logger.debug('CardanoClientApi::syncProgress called');
 
     try {
-      const response = await getSyncProgress(ca);
+      const response = await getAdaSyncProgress(ca);
       Logger.debug('CardanoClientApi::syncProgress success: ' + stringifyData(response));
       const localDifficulty = response._spLocalCD.getChainDifficulty.getBlockCount;
       // In some cases we dont get network difficulty & we need to wait for it from the notify API
@@ -548,102 +468,6 @@ export default class CardanoClientApi {
       throw new GenericApiError();
     }
   };
-
-  async setUserLocale(locale: string) {
-    Logger.debug('CardanoClientApi::updateLocale called: ' + locale);
-    try {
-      await setUserLocaleInLocalStorage(locale);
-      Logger.debug('CardanoClientApi::updateLocale success: ' + locale);
-      return locale;
-    } catch (error) {
-      Logger.error('CardanoClientApi::updateLocale error: ' + stringifyError(error));
-      throw new GenericApiError();
-    }
-  }
-
-  async getUserLocale() {
-    Logger.debug('CardanoClientApi::getLocale called');
-    try {
-      const locale = await getUserLocaleFromLocalStorage();
-      Logger.debug('CardanoClientApi::getLocale success: ' + locale);
-      return locale;
-    } catch (error) {
-      Logger.error('CardanoClientApi::getLocale error: ' + stringifyError(error));
-      throw new GenericApiError();
-    }
-  }
-
-  async setUserTheme(theme: string) {
-    Logger.debug('CardanoClientApi::updateTheme called: ' + theme);
-    try {
-      await setUserThemeInLocalStorage(theme);
-      Logger.debug('CardanoClientApi::updateTheme success: ' + theme);
-      return theme;
-    } catch (error) {
-      Logger.error('CardanoClientApi::updateTheme error: ' + stringifyError(error));
-      throw new GenericApiError();
-    }
-  }
-
-  async getUserTheme() {
-    Logger.debug('CardanoClientApi::getTheme called');
-    try {
-      const theme = await getUserThemeFromLocalStorage();
-      Logger.debug('CardanoClientApi::getTheme success: ' + theme);
-      return theme;
-    } catch (error) {
-      Logger.error('CardanoClientApi::gettheme error: ' + stringifyError(error));
-      throw new GenericApiError();
-    }
-  }
-
-  async setTermsOfUseAcceptance() {
-    Logger.debug('CardanoClientApi::setTermsOfUseAcceptance called');
-    try {
-      await setTermsOfUseAcceptanceInLocalStorage();
-      Logger.debug('CardanoClientApi::setTermsOfUseAcceptance success');
-      return true;
-    } catch (error) {
-      Logger.error('CardanoClientApi::setTermsOfUseAcceptance error: ' + stringifyError(error));
-      throw new GenericApiError();
-    }
-  }
-
-  async setSendLogsChoice(sendLogs: boolean) {
-    Logger.debug('CardanoClientApi::setSendLogsChoice called: ' + stringifyData(sendLogs));
-    try {
-      await setSendLogsChoiceInLocalStorage(sendLogs);
-      Logger.debug('CardanoClientApi::setSendLogsChoice success: ' + stringifyData(sendLogs));
-      return sendLogs;
-    } catch (error) {
-      Logger.error('CardanoClientApi::setSendLogsChoice error: ' + stringifyError(error));
-      throw new GenericApiError();
-    }
-  }
-
-  async getSendLogsChoice() {
-    Logger.debug('CardanoClientApi::getSendLogsChoice called');
-    try {
-      const logs = await getSendLogsChoiceFromLocalStorage();
-      Logger.debug('CardanoClientApi::getSendLogsChoice success: ' + stringifyData(logs));
-      return logs;
-    } catch (error) {
-      Logger.error('CardanoClientApi::getSendLogsChoice error: ' + stringifyError(error));
-      throw new GenericApiError();
-    }
-  }
-
-  async getTermsOfUseAcceptance() {
-    Logger.debug('CardanoClientApi::getTermsOfUseAcceptance called');
-    try {
-      const acceptance = await getTermsOfUseAcceptanceFromLocalStorage();
-      Logger.debug('CardanoClientApi::getTermsOfUseAcceptance success: ' + stringifyData(acceptance));
-      return acceptance;
-    } catch (error) {
-      Logger.error('CardanoClientApi::getTermsOfUseAcceptance error: ' + stringifyError(error));
-      throw new GenericApiError();
-    }
-  }
 
   async updateWallet(request: UpdateWalletRequest) {
     Logger.debug('CardanoClientApi::updateWallet called: ' + stringifyData(request));
@@ -706,11 +530,6 @@ export default class CardanoClientApi {
     }
   }
 }
-
-// ========== LOGGING =========
-
-const stringifyData = (data) => JSON.stringify(data, null, 2);
-const stringifyError = (error) => JSON.stringify(error, Object.getOwnPropertyNames(error), 2);
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
 

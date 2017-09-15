@@ -113,11 +113,6 @@ export type ImportWalletFromFileRequest = {
 
 export type ImportWalletFromFileResponse = Wallet;
 
-export type GetSyncProgressResponse = {
-  localDifficulty: number,
-  networkDifficulty: number
-};
-
 export type NextUpdateResponse = {
   version: string,
 };
@@ -148,11 +143,16 @@ export type ExportWalletToFileRequest = {
 
 export type ExportWalletToFileResponse = {};
 
+// Universal API params (work the same for any coin API)
+
+export type GetSyncProgressResponse = {
+  localDifficulty: ?number,
+  networkDifficulty: ?number,
+};
+
 // API INTERFACE
 /* eslint-disable max-len */
-export type Api = {
-  notify(onSuccess: Function, onError?: Function): void,
-  reset(): void,
+export type UniversalApi = {
   getWallets(): Promise<GetWalletsResponse>,
   getAddresses(): Promise<GetAddressesResponse>,
   getTransactions(request: GetTransactionsRequest): Promise<GetTransactionsResponse>,
@@ -174,13 +174,6 @@ export type Api = {
   generateMnemonic(): string,
   nextUpdate(): Promise<NextUpdateResponse>,
   applyUpdate(): ApplyUpdateResponse,
-  getSyncProgress(): Promise<GetSyncProgressResponse>,
-  setUserLocale(locale: string): Promise<string>,
-  getUserLocale(): Promise<string>,
-  setTermsOfUseAcceptance(): Promise<boolean>,
-  getTermsOfUseAcceptance(): Promise<boolean>,
-  setSendLogsChoice(sendLogs: boolean): Promise<boolean>,
-  getSendLogsChoice(): Promise<boolean>,
   updateWallet(request: UpdateWalletRequest): Promise<UpdateWalletResponse>,
   updateWalletPassword(request: UpdateWalletPasswordRequest): Promise<UpdateWalletPasswordResponse>,
   calculateTransactionFee(request: TransactionFeeRequest): Promise<TransactionFeeResponse>,
@@ -188,5 +181,8 @@ export type Api = {
   exportWalletToFile(request: ExportWalletToFileRequest): Promise<ExportWalletToFileResponse>,
   setUserTheme(theme: string): Promise<string>,
   getUserTheme(): Promise<string>,
+
+  // Universal API methods (work the same for any coin api)
+  getSyncProgress(): Promise<GetSyncProgressResponse>,
 };
 /* eslint-disable max-len */
