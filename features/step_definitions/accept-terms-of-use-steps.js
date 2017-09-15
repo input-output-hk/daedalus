@@ -8,7 +8,7 @@ export default function () {
     await this.client.execute(() => {
       daedalus.actions.profile.acceptTermsOfUse.trigger();
     });
-    return this.client.waitForVisible(TERMS_OF_USE_FORM, null, true)
+    return this.client.waitForVisible(TERMS_OF_USE_FORM, null, true);
   });
 
   this.Given(/^I didnt accept "Terms of use"$/, async function () {
@@ -34,10 +34,11 @@ export default function () {
   });
 
   this.Then(/^I should have "Terms of use" accepted$/, async function () {
-    const result = await this.client.executeAsync(function(done) {
-      daedalus.stores.app.getTermsOfUseAcceptanceRequest.execute().then(done);
+    const result = await this.client.executeAsync((done) => {
+      daedalus.stores.app.getTermsOfUseAcceptanceRequest.execute()
+        .then(done)
+        .catch((error) => done(error));
     });
     expect(result.value).to.equal(true);
   });
-
-};
+}

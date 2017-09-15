@@ -1,6 +1,5 @@
-
-export default (app, window, openAbout) => {
-  return [{
+export default (app, window, openAbout) => (
+  [{
     label: 'Daedalus',
     submenu: [{
       label: 'About',
@@ -60,5 +59,5 @@ export default (app, window, openAbout) => {
         click: () => window.toggleDevTools()
       }
     ]
-  }];
-};
+  }]
+);
