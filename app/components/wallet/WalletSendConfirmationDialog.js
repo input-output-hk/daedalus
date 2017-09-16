@@ -15,8 +15,8 @@ import styles from './WalletSendConfirmationDialog.scss';
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.send.confirmationDialog.title',
-    defaultMessage: '!!!Send Recipe',
-    description: 'Title for the "Send Recipe" dialog.'
+    defaultMessage: '!!!Confirm transaction',
+    description: 'Title for the "Confirm transaction" dialog.'
   },
   walletPasswordLabel: {
     id: 'wallet.send.confirmationDialog.walletPasswordLabel',
@@ -161,7 +161,7 @@ export default class WalletSendConfirmationDialog extends Component {
         closeOnOverlayClick
         onClose={!isSubmitting ? onCancel : null}
         className={styles.dialog}
-        closeButton={<DialogCloseButton onClose={!isSubmitting ? onCancel : null} />}
+        closeButton={<DialogCloseButton />}
       >
         <div className={styles.walletPasswordFields}>
           <div className={styles.addressToLabelWrapper}>

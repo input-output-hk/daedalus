@@ -2772,8 +2772,8 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Send Recipe",
-        "description": "Title for the \"Send Recipe\" dialog.",
+        "defaultMessage": "!!!Confirm transaction",
+        "description": "Title for the \"Confirm transaction\" dialog.",
         "end": {
           "column": 3,
           "line": 20

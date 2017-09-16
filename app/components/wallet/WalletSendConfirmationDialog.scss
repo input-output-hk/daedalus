@@ -2,7 +2,7 @@
 @import '../../themes/mixins/error-message';
 
 .dialog {
-  color: #5e6066;
+  color: var(--theme-send-confirmation-dialog-text-main-color);
   font-family: var(--font-medium);
   font-size: 16px;
 
@@ -41,7 +41,7 @@
     }
     .amount,
     .fees {
-      color: #ea4c5b;
+      color: var(--theme-send-confirmation-dialog-send-values-color);
       line-height: 1.38;
       margin-top: 6px;
     }
@@ -55,7 +55,7 @@
   }
 
   .totalAmount {
-    color: #ea4c5b;
+    color: var(--theme-send-confirmation-dialog-send-values-color);
     line-height: 1.38;
     margin-top: 6px;
   }
