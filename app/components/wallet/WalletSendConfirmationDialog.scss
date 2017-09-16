@@ -6,6 +6,12 @@
   font-family: var(--font-medium);
   font-size: 16px;
 
+  :global {
+    .Dialog_title {
+      margin-bottom: 20px;
+    }
+  }
+
   .adaSymbol {
     font-family: var(--font-light);
   }
