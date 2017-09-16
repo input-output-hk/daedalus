@@ -3,19 +3,17 @@ import electronPath from 'electron';
 import path from 'path';
 
 const context = {};
-let isFirstScenario = true;
 
 const DEFAULT_TIMEOUT = 20000;
 
 export default function () {
-
   // The cucumber timeout should be high (and never reached in best case)
   // because the errors thrown by webdriver.io timeouts are more descriptive
   // and helpful than "this step timed out after 5 seconds" messages
   this.setDefaultTimeout(DEFAULT_TIMEOUT + 1000);
 
   // Boot up the electron app before all features
-  this.registerHandler('BeforeFeatures', { timeout: 5 * 60 * 1000 }, async function() {
+  this.registerHandler('BeforeFeatures', { timeout: 5 * 60 * 1000 }, async () => {
     const app = new Application({
       path: electronPath,
       args: ['./electron/main.testing'],
@@ -31,7 +29,7 @@ export default function () {
   });
 
   // And tear it down after all features
-  this.registerHandler('AfterFeatures', function() {
+  this.registerHandler('AfterFeatures', () => {
     // Since we can have multiple instances of Daedalus running,
     // it is easier to keep them open after running tests locally.
     // TODO: this must be improved for CI testing though (i guess).
@@ -39,7 +37,7 @@ export default function () {
   });
 
   // Make the electron app accessible in each scenario context
-  this.Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function() {
+  this.Before({ timeout: DEFAULT_TIMEOUT * 2 }, async function () {
     this.client = context.app.client;
     this.browserWindow = context.app.browserWindow;
 
@@ -53,10 +51,12 @@ export default function () {
     // https://github.com/webdriverio/webdriverio/issues/974
 
     // Reset backend
-    await this.client.executeAsync(function(done) {
+    await this.client.executeAsync((done) => {
       const resetBackend = () => {
         if (daedalus.stores.networkStatus.isConnected) {
-          daedalus.api.testReset().then(done);
+          daedalus.api.testReset()
+            .then(done)
+            .catch((error) => done(error));
         } else {
           setTimeout(resetBackend, 50);
         }
@@ -68,7 +68,7 @@ export default function () {
     await this.client.url('file://' + path.join(__dirname, '../../app/index.html?test=true'));
 
     // Ensure that frontend is synced and ready before test case
-    await this.client.executeAsync(function(done) {
+    await this.client.executeAsync((done) => {
       const waitUntilSyncedAndReady = () => {
         if (daedalus.stores.networkStatus.isSynced) {
           done();
@@ -78,6 +78,5 @@ export default function () {
       };
       waitUntilSyncedAndReady();
     });
-    isFirstScenario = false;
   });
 }

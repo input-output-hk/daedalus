@@ -11,13 +11,13 @@ export default function () {
       receiver: faker.finance.bitcoinAddress(),
       amount: parseFloat(faker.finance.amount(), 10),
     }));
-    const result = await this.client.execute(function (transactions) {
-      return transactions.map(function(t) {
+    const result = await this.client.execute((transactions) => (
+      transactions.map((t) => {
         const transaction = daedalus.api.repository.generateTransaction(t, t);
         transaction.date = transaction.date.toUTCString();
         return transaction;
-      });
-    }, data);
+      })
+    ), data);
     this.transactions = result.value.map((t) => {
       t.date = new Date(t.date);
       return t;
@@ -44,7 +44,7 @@ export default function () {
 
   this.Then(/^I should see the transactions grouped by their date$/, async function () {
     // TODO: this is not testing for correct nesting into groups etc. (could be done with XPATH)
-    const sortedTransactions = this.transactions.sort((a,b) => new Date(a.date) < new Date(b.date));
+    const sortedTransactions = this.transactions.sort((a, b) => new Date(a.date) < new Date(b.date));
     const visibleGroupDates = await this.client.getText('.WalletTransactionsList_groupDate');
     const visibleTransactionTitles = await this.client.getText('.Transaction_title');
     expect(sortedTransactions.map(t => t.date)).to.deep.equal(visibleGroupDates.map(d => new Date(d)));

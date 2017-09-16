@@ -4,7 +4,7 @@ import WebSocket from 'ws';
 export const readCA = (path) => fs.readFileSync(path);
 
 export const notify = (ca, succ, err) => {
-  const ws = new WebSocket('wss://localhost:8090', {ca: ca});
+  const ws = new WebSocket('wss://localhost:8090', { ca });
   ws.on('close', () => {
     setTimeout(() => {
       // reconnect

@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 
-export default ({ mainWindow }) => {
-  ipcMain.on('kill-process', (event) => {
+export default () => {
+  ipcMain.on('kill-process', () => {
     // if (event.sender !== mainWindow.webContents) return;
     // TODO: fix this
     process.exit(20);
