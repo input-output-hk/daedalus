@@ -14,15 +14,14 @@ $theme-font-bold: var(--font-bold);
 $modal-overlay-color: var(--theme-modal-overlay-background-color);
 $modal-bg: var(--theme-modal-background-color);
 
-// TODO: uncomment after react-polymorph version 0.3.4 is released!
-// $select-arrow-color: var(--theme-select-arrow-color);
-// $select-arrow-focus-color: var(--theme-select-arrow-color-open);
-// $select-input-border-focus-color: var(--theme-input-focus-border-color);
-// $select-option-bg-color: var(--theme-select-background-color);
-// $select-option-font-color: var(--theme-select-option-text-color);
-// $select-option-highlight-color: var(--theme-select-option-highlight-color);
-// $select-options-border-color: var(--theme-select-options-border-color);
-// $select-options-shadow: var(--theme-select-options-shadow);
+$select-arrow-color: var(--theme-select-arrow-color);
+$select-arrow-focus-color: var(--theme-select-arrow-color-open);
+$select-input-border-focus-color: var(--theme-input-focus-border-color);
+$select-option-bg-color: var(--theme-select-background-color);
+$select-option-font-color: var(--theme-select-option-text-color);
+$select-option-highlight-color: var(--theme-select-option-highlight-color);
+$select-options-border-color: var(--theme-select-options-border-color);
+$select-options-shadow: var(--theme-select-options-shadow);
 
 $switch-on-accent-color: var(--theme-switch-background-color-checked);
 $switch-off-accent-color: var(--theme-switch-background-color-checked);
