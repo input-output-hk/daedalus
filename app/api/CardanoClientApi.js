@@ -518,6 +518,17 @@ export default class CardanoClientApi {
     // return null;
   }
 
+  async postponeUpdate() {
+    Logger.debug('CardanoClientApi::postponeUpdate called');
+    try {
+      const response = await ClientApi.postponeUpdate(tlsConfig);
+      Logger.debug('CardanoClientApi::postponeUpdate success: ' + stringifyData(response));
+    } catch (error) {
+      Logger.error('CardanoClientApi::postponeUpdate error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
   async applyUpdate() {
     Logger.debug('CardanoClientApi::applyUpdate called');
     try {
