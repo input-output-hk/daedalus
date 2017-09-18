@@ -1,7 +1,7 @@
 {
   "ImageUploadWidget.clickToUploadLabel": "または選択してアップロード",
   "ImageUploadWidget.dropFileHint": "ファイルをここにドロップしてください",
-  "api.errors.AllFundsAlreadyAtReceiverAddressError": "!!!All your funds are already at the address you are trying send money to.",
+  "api.errors.AllFundsAlreadyAtReceiverAddressError": "送ろうとしている資金は既に送金先のアドレスにて反映済みです。",
   "api.errors.ApiMethodNotYetImplementedError": "このAPIは未実装です。",
   "api.errors.GenericApiError": "エラーが発生しました。しばらくしてからもう一度お試しください。",
   "api.errors.IncorrectPasswordError": "無効なウォレットパスワード",
