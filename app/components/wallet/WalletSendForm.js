@@ -89,11 +89,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Password',
     description: 'Placeholder for the "Password" inputs in the wallet send form.'
   },
-  transactionFeeError: {
-    id: 'wallet.send.form.transactionFeeError',
-    defaultMessage: '!!!Not enough Ada for fees. Try sending a smaller amount.',
-    description: '"Not enough Ada for fees. Try sending a smaller amount." error message',
-  }
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -330,10 +325,10 @@ export default class WalletSendForm extends Component {
           transactionFeeError: null,
         })
       ))
-      .catch(() => {
+      .catch((error: LocalizableError) => {
         if (this._isMounted) {
           this.setState({
-            transactionFeeError: this.context.intl.formatMessage(messages.transactionFeeError),
+            transactionFeeError: this.context.intl.formatMessage(error),
           });
         }
       });
