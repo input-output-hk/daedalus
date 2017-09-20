@@ -59,16 +59,23 @@ launcherArgs Launcher{..} = unwords $
         "--wallet-db-path", quote (runtimePath <> "Wallet-" <> version),
         "--update-server", "https://s3.eu-central-1.amazonaws.com/update-system/",
         "--system-start", "1505865883",
+        "--configuration-key", "testnet_staging_wallet",
         "--update-with-package",
         "--tlscert", quote (tlsBase <> "server" <> (pathSeparator : "server.crt")),
         "--tlskey",  quote (tlsBase <> "server" <> (pathSeparator : "server.key")),
         "--tlsca",   quote (tlsBase <> "ca"     <> (pathSeparator : "ca.crt"))
-        ] <> walletTopology
+        ] <> configFiles
       -- NOTE: looks like windows *.bat file is cut of on 1024 characters per line. This is a workaround
       batchCmdNewline | os == "mingw32" = "^\r\n"
                       | otherwise = mempty
-      walletTopology  | os == "mingw32" = ["--topology", quote "%DAEDALUS_DIR%\\wallet-topology.yaml"]
-                      | otherwise = ["--topology", quote "./wallet-topology.yaml"]
+      configFiles     | os == "mingw32" =
+                        [ "--topology",           quote "%DAEDALUS_DIR%\\wallet-topology.yaml"
+                        , "--configuration-file", quote "%DAEDALUS_DIR%\\configuration.mainnet.yaml"
+                        ]
+                      | otherwise =
+                        [ "--topology",           quote "./wallet-topology.yaml"
+                        , "--configuration-file", quote "./configuration.mainnet.yaml"
+                        ]
       tlsBase         | os == "mingw32" = "%DAEDALUS_DIR%\\"   <> "tls" <> (pathSeparator : [])
                       | otherwise       = "./"                 <> "tls" <> (pathSeparator : [])
 
