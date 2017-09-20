@@ -128,7 +128,7 @@ writeInstallerNSIS fullVersion = do
     _ <- section "" [Required] $ do
         setOutPath "$INSTDIR"        -- Where to install files in this section
         writeRegStr HKLM "Software/Daedalus" "Install_Dir" "$INSTDIR" -- Used by launcher batch script
-        createDirectory ("$APPDATA\\Daedalus\\Secrets-" <> fullVersion)
+        createDirectory "$APPDATA\\Daedalus\\Secrets-1.0-rc"
         createDirectory "$APPDATA\\Daedalus\\Logs"
         createShortcut "$DESKTOP\\Daedalus.lnk" daedalusShortcut
         file [] "cardano-node.exe"
