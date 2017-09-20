@@ -175,6 +175,8 @@ export default {
   '--theme-transactions-card-income-background-color': '#e6ebf2',
   '--theme-transactions-card-expend-background-color': '#f2e6e6',
   '--theme-transactions-card-exchange-background-color': '#f2e6e6',
+  '--theme-transactions-state-failed-background-color': '#5e6066',
+  '--theme-transactions-state-pending-background-color': '#ab1700',
   '--theme-transactions-priority-color': '#fafbfc',
   '--theme-transactions-priority-low-background-color': '#ab1700',
   '--theme-transactions-priority-medium-background-color': '#e6aa00',

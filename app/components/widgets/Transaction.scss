@@ -2,6 +2,12 @@ $type-box-size: 44px;
 
 .component {
   color: var(--theme-transactions-list-item-details-color);
+
+  &.failed {
+    .togglerContent {
+      opacity: 0.5;
+    }
+  }
 }
 
 // ========= TYPE INDICATORS FOR TRANSACTIONS =========
@@ -59,7 +65,7 @@ $type-box-size: 44px;
   letter-spacing: 1px;
 }
 
-.low, .medium, .high {
+.pendingLabel, .failedLabel, .low, .medium, .high {
   border-radius: 3px;
   color: var(--theme-transactions-priority-color);
   display: inline-block;
@@ -70,6 +76,14 @@ $type-box-size: 44px;
   margin-top: 3px;
   padding: 0 10px;
   text-transform: uppercase;
+}
+
+.pendingLabel {
+  background-color: var(--theme-transactions-state-pending-background-color);
+}
+
+.failedLabel {
+  background-color: var(--theme-transactions-state-failed-background-color);
 }
 
 .low {

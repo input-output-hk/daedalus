@@ -753,6 +753,7 @@ const _createTransactionFromServerData = action(
         from: data.ctInputAddrs,
         to: data.ctOutputAddrs,
       },
+      condition: data.ctCondition,
     });
   }
 );

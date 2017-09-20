@@ -147,6 +147,7 @@ export default class WalletTransactionsList extends Component {
                   <Transaction
                     data={transaction}
                     isLastInList={transactionIndex === group.transactions.length - 1}
+                    state={transaction.getState()}
                     assuranceLevel={transaction.getAssuranceLevelForMode(assuranceMode)}
                   />
                 </div>

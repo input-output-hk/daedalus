@@ -3,6 +3,7 @@ declare module 'daedalus-client-api' {
   // ========= Response Types =========
 
   declare type ApiAssurance = 'CWANormal' | 'CWAStrict';
+  declare type TransactionCondition = 'CPtxApplying' | 'CPtxInBlocks' | 'CPtxWontApply' | 'CPtxNotTracked';
   declare type ApiAmount = {
     getCCoin: number,
   };
@@ -39,6 +40,7 @@ declare module 'daedalus-client-api' {
       ctmTitle: ?string,
     },
     ctOutputAddrs: Array<string>,
+    ctCondition: TransactionCondition,
   };
 
   declare type ApiTransactions = [
