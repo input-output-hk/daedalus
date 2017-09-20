@@ -37,6 +37,7 @@ launcherArgs Launcher{..} = unwords $
   , unwords $ map (\x ->  batchCmdNewline ++ "-n " ++ x) nodeArgs
   ]
     where
+      version = "1.0-rc"
       updaterLArgs =
           case updater of
             SelfUnpacking {..} ->
@@ -52,10 +53,10 @@ launcherArgs Launcher{..} = unwords $
         "--report-server", "http://report-server.awstest.iohkdev.io:8080",
         "--log-config", "log-config-prod.yaml",
         "--update-latest-path", quote (updArchivePath updater),
-        "--keyfile", quote (runtimePath <> "Secrets-0.6" <> (pathSeparator : "secret.key")),
+        "--keyfile", quote (runtimePath <> "Secrets-" <> version <> (pathSeparator : "secret.key")),
         "--logs-prefix", quote (runtimePath <> "Logs"),
-        "--db-path", quote (runtimePath <> "DB-0.6"),
-        "--wallet-db-path", quote (runtimePath <> "Wallet-0.6"),
+        "--db-path", quote (runtimePath <> "DB-" <> version),
+        "--wallet-db-path", quote (runtimePath <> "Wallet-" <> version),
         "--update-server", "https://s3.eu-central-1.amazonaws.com/update-system/",
         "--system-start", "1505865883",
         "--update-with-package",
