@@ -617,6 +617,95 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!slot",
+        "description": "\"slot\" label on staking chart tooltip.",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "app/components/staking/StakingChartTooltip.js",
+        "id": "staking.chart.tooltip.slot.label",
+        "start": {
+          "column": 8,
+          "line": 12
+        }
+      },
+      {
+        "defaultMessage": "!!!transactions",
+        "description": "\"transactions\" label on staking chart tooltip.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "app/components/staking/StakingChartTooltip.js",
+        "id": "staking.chart.tooltip.transactions.label",
+        "start": {
+          "column": 16,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!MPC phase",
+        "description": "\"MPC phase\" label on staking chart tooltip.",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "app/components/staking/StakingChartTooltip.js",
+        "id": "staking.chart.tooltip.mpc.phase.label",
+        "start": {
+          "column": 12,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!commitments",
+        "description": "\"commitments\" label on staking chart tooltip.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "app/components/staking/StakingChartTooltip.js",
+        "id": "staking.chart.tooltip.commitments.label",
+        "start": {
+          "column": 15,
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!openings",
+        "description": "\"openings\" label on staking chart tooltip.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "app/components/staking/StakingChartTooltip.js",
+        "id": "staking.chart.tooltip.openings.label",
+        "start": {
+          "column": 12,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!shares",
+        "description": "\"shares\" label on staking chart tooltip.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "app/components/staking/StakingChartTooltip.js",
+        "id": "staking.chart.tooltip.shares.label",
+        "start": {
+          "column": 10,
+          "line": 37
+        }
+      }
+    ],
+    "path": "app/components/staking/StakingChartTooltip.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!About Daedalus",
         "description": "About Window \"title\"",
         "end": {
@@ -3184,13 +3273,13 @@
         "description": "Transaction type shown for credit card payments.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.type.card",
         "start": {
           "column": 8,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -3198,13 +3287,13 @@
         "description": "Transaction type shown for ada payments.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.type.ada",
         "start": {
           "column": 7,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -3212,13 +3301,13 @@
         "description": "Transaction type shown for money exchanges between currencies.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.type.exchange",
         "start": {
           "column": 12,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -3226,13 +3315,13 @@
         "description": "Transaction assurance level.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.assuranceLevel",
         "start": {
           "column": 18,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -3240,13 +3329,13 @@
         "description": "Transaction confirmations.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.confirmations",
         "start": {
           "column": 17,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -3254,13 +3343,13 @@
         "description": "Transaction ID.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.transactionId",
         "start": {
           "column": 17,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -3268,13 +3357,13 @@
         "description": "Conversion rate.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.conversion.rate",
         "start": {
           "column": 18,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -3282,13 +3371,13 @@
         "description": "Label \"Ada sent\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.adaSent",
         "start": {
           "column": 11,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -3296,13 +3385,13 @@
         "description": "Label \"Ada received\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 59
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.adaReceived",
         "start": {
           "column": 15,
-          "line": 54
+          "line": 55
         }
       },
       {
@@ -3310,13 +3399,13 @@
         "description": "From addresses",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.addresses.from",
         "start": {
           "column": 17,
-          "line": 59
+          "line": 60
         }
       },
       {
@@ -3324,13 +3413,13 @@
         "description": "To addresses",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 69
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.addresses.to",
         "start": {
           "column": 15,
-          "line": 64
+          "line": 65
         }
       },
       {
@@ -3338,13 +3427,13 @@
         "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 77
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.low",
         "start": {
           "column": 25,
-          "line": 72
+          "line": 73
         }
       },
       {
@@ -3352,13 +3441,13 @@
         "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 82
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
           "column": 28,
-          "line": 77
+          "line": 78
         }
       },
       {
@@ -3366,13 +3455,41 @@
         "description": "Transaction assurance level \"high\".",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 87
         },
         "file": "app/components/widgets/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.high",
         "start": {
           "column": 26,
-          "line": 82
+          "line": 83
+        }
+      },
+      {
+        "defaultMessage": "!!!Transaction pending",
+        "description": "Transaction state \"pending\"",
+        "end": {
+          "column": 3,
+          "line": 95
+        },
+        "file": "app/components/widgets/Transaction.js",
+        "id": "wallet.transaction.state.pending",
+        "start": {
+          "column": 31,
+          "line": 91
+        }
+      },
+      {
+        "defaultMessage": "!!!Transaction failed",
+        "description": "Transaction state \"pending\"",
+        "end": {
+          "column": 3,
+          "line": 100
+        },
+        "file": "app/components/widgets/Transaction.js",
+        "id": "wallet.transaction.state.failed",
+        "start": {
+          "column": 30,
+          "line": 96
         }
       }
     ],
