@@ -126,11 +126,12 @@ export default class Transaction extends Component {
     const { isLastInList, state, assuranceLevel } = this.props;
     const { isExpanded } = this.state;
     const { intl } = this.context;
+    const isFailedTransaction = state === transactionStates.FAILED;
     let typeMessage = data.type;
 
     const componentStyles = classNames([
       styles.component,
-      state === transactionStates.FAILED ? styles.failed : null
+      isFailedTransaction ? styles.failed : null
     ]);
 
     const contentStyles = classNames([
@@ -154,7 +155,9 @@ export default class Transaction extends Component {
         <div className={styles.toggler} onClick={this.toggleDetails.bind(this)} role="presentation" aria-hidden>
           <div className={styles[data.type]} />
 
-          <TransactionTypeIcon iconType={data.type} />
+          <TransactionTypeIcon
+            iconType={isFailedTransaction ? transactionStates.FAILED : data.type}
+          />
 
           <div className={styles.togglerContent}>
             <div className={styles.header}>

@@ -4,8 +4,13 @@ $type-box-size: 44px;
   color: var(--theme-transactions-list-item-details-color);
 
   &.failed {
-    .togglerContent {
-      opacity: 0.5;
+    .title, .amount, .details {
+      color: var(--theme-transactions-state-failed-text-color);
+    }
+    .currencySymbol {
+      & > svg > g > g {
+        stroke: var(--theme-transactions-state-failed-text-color);
+      }
     }
   }
 }
@@ -71,15 +76,40 @@ $type-box-size: 44px;
   display: inline-block;
   font-family: var(--font-bold);
   font-size: 8px;
-  line-height: 18px;
+  line-height: 16px;
   margin-left: auto;
   margin-top: 3px;
-  padding: 0 10px;
+  padding: 0 9px;
   text-transform: uppercase;
 }
 
 .pendingLabel {
+  :global {
+    @keyframes pending-label-animation {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: 50px 50px;
+      }
+    }
+  }
+
   background-color: var(--theme-transactions-state-pending-background-color);
+  background-image:
+    linear-gradient(
+        -45deg,
+        var(--theme-transactions-state-pending-stripes-color) 25%,
+        transparent 25%,
+        transparent 50%,
+        var(--theme-transactions-state-pending-stripes-color) 50%,
+        var(--theme-transactions-state-pending-stripes-color) 75%,
+        transparent 75%,
+        transparent
+    );
+  background-size:50px 50px;
+  animation: pending-label-animation 2s linear infinite;
+  overflow: hidden;
 }
 
 .failedLabel {
