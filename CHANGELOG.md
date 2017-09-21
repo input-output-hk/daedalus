@@ -12,6 +12,8 @@ Changelog
 - Fix for disabled buttons on dark-blue theme ([PR 473](https://github.com/input-output-hk/daedalus/pull/473))
 - Remove maximum screen width and height in full-screen mode ([PR 472](https://github.com/input-output-hk/daedalus/pull/472))
 - Fix "label click" dropdown issue in react-polymorph ([PR 479](https://github.com/input-output-hk/daedalus/pull/479))
+- Fix error message text for A to A transaction error ([PR 484](https://github.com/input-output-hk/daedalus/pull/484))
+- Fix "label prop type" checkbox issue in react-polymorph ([PR 487](https://github.com/input-output-hk/daedalus/pull/487))
 
 ### Chores
 

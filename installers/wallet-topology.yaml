@@ -1,4 +1,4 @@
 wallet:
-  relays: [[{"addr": "52.59.160.100"},{"addr": "52.58.254.151"},{"addr": "52.57.160.162"},{"addr": "52.198.239.93"}]]
-  valency: 3
-  fallbacks: 2
+  relays: [[{"host": "cardano-node-0.aws.iohk.io"},{"host": "cardano-node-1.aws.iohk.io"},{"host": "cardano-node-2.aws.iohk.io"},{"host": "cardano-node-3.aws.iohk.io"},{"host": "cardano-node-4.aws.iohk.io"},{"host": "cardano-node-5.aws.iohk.io"},{"host": "cardano-node-6.aws.iohk.io"}]]
+  valency: 1
+  fallbacks: 7

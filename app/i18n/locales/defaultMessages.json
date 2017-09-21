@@ -128,17 +128,45 @@
         }
       },
       {
-        "defaultMessage": "!!!Incorrect wallet password.",
-        "description": "\"Incorrect wallet password.\" error message.",
+        "defaultMessage": "!!!All your funds are already at the address you are trying send money to.",
+        "description": "\"All your funds are already at the address you are trying send money to.\" error message.",
         "end": {
           "column": 3,
           "line": 54
         },
         "file": "app/api/errors.js",
+        "id": "api.errors.AllFundsAlreadyAtReceiverAddressError",
+        "start": {
+          "column": 41,
+          "line": 50
+        }
+      },
+      {
+        "defaultMessage": "!!!Not enough Ada for fees. Try sending a smaller amount.",
+        "description": "\"Not enough Ada for fees. Try sending a smaller amount.\" error message",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "app/api/errors.js",
+        "id": "api.errors.NotEnoughFundsForTransactionFeesError",
+        "start": {
+          "column": 41,
+          "line": 55
+        }
+      },
+      {
+        "defaultMessage": "!!!Incorrect wallet password.",
+        "description": "\"Incorrect wallet password.\" error message.",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "app/api/errors.js",
         "id": "api.errors.IncorrectPasswordError",
         "start": {
           "column": 32,
-          "line": 50
+          "line": 60
         }
       }
     ],
@@ -2965,20 +2993,6 @@
         "start": {
           "column": 28,
           "line": 87
-        }
-      },
-      {
-        "defaultMessage": "!!!Not enough Ada for fees. Try sending a smaller amount.",
-        "description": "\"Not enough Ada for fees. Try sending a smaller amount.\" error message",
-        "end": {
-          "column": 3,
-          "line": 96
-        },
-        "file": "app/components/wallet/WalletSendForm.js",
-        "id": "wallet.send.form.transactionFeeError",
-        "start": {
-          "column": 23,
-          "line": 92
         }
       }
     ],

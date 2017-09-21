@@ -47,6 +47,8 @@ import {
   NotEnoughMoneyToSendError,
   NotAllowedToSendMoneyToSameAddressError,
   NotAllowedToSendMoneyToRedeemAddressError,
+  NotEnoughFundsForTransactionFeesError,
+  AllFundsAlreadyAtReceiverAddressError,
   IncorrectWalletPasswordError,
 } from './errors';
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
@@ -293,6 +295,13 @@ export default class CardanoClientApi {
       return _createTransactionFeeFromServerData(response);
     } catch (error) {
       Logger.error('CardanoClientApi::calculateTransactionFee error: ' + stringifyError(error));
+      // eslint-disable-next-line max-len
+      if (error.message.includes('not enough money on addresses which are not included in output addresses set')) {
+        throw new AllFundsAlreadyAtReceiverAddressError();
+      }
+      if (error.message.includes('not enough money')) {
+        throw new NotEnoughFundsForTransactionFeesError();
+      }
       throw new GenericApiError();
     }
   }
