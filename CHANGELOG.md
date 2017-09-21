@@ -6,6 +6,8 @@ Changelog
 
 ### Features
 
+- Postpone Update Api call integration ([PR 485](https://github.com/input-output-hk/daedalus/pull/485))
+
 ### Fixes
 
 - Fix all features eslint warnings ([PR 468](https://github.com/input-output-hk/daedalus/pull/468))
