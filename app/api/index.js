@@ -122,6 +122,8 @@ export type NextUpdateResponse = {
   version: string,
 };
 
+export type PostponeUpdateResponse = void;
+
 export type ApplyUpdateResponse = void;
 
 export type UpdateWalletPasswordRequest = {
@@ -173,6 +175,7 @@ export type Api = {
   redeemPaperVendedAda(request: RedeemPaperVendedAdaRequest): Promise<RedeemPaperVendedAdaResponse>,
   generateMnemonic(): string,
   nextUpdate(): Promise<NextUpdateResponse>,
+  postponeUpdate(): PostponeUpdateResponse,
   applyUpdate(): ApplyUpdateResponse,
   getSyncProgress(): Promise<GetSyncProgressResponse>,
   setUserLocale(locale: string): Promise<string>,

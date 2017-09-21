@@ -13,7 +13,15 @@
 }
 
 .component {
-  :global .Dialog_title {
-    margin-bottom: 20px;
+  margin: 0 -20px -10px;
+
+  :global {
+    .Dialog_title {
+      margin-bottom: 10px !important;
+    }
+
+    .DialogCloseButton_component {
+      right: 16px;
+    }
   }
 }

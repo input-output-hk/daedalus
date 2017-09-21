@@ -9,7 +9,7 @@
 
   .centeredBox {
     background-color: var(--theme-settings-menu-box-background-color);
-    border: 1px solid var(--theme-settings-menu-box-border-color);
+    border: var(--theme-settings-menu-box-border);
     border-radius: 4px;
     padding: 30px 30px 20px;
     overflow: visible;

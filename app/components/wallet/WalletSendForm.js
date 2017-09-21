@@ -16,6 +16,7 @@ import AmountInputSkin from './skins/AmountInputSkin';
 import BorderedBox from '../widgets/BorderedBox';
 import styles from './WalletSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
+import LocalizableError from '../../i18n/LocalizableError';
 import WalletSendConfirmationDialog from './WalletSendConfirmationDialog';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
 
@@ -283,10 +284,10 @@ export default class WalletSendForm extends Component {
           transactionFeeError: null,
         })
       ))
-      .catch(() => {
+      .catch((error: LocalizableError) => {
         if (this._isMounted) {
           this.setState({
-            transactionFeeError: this.context.intl.formatMessage(messages.transactionFeeError),
+            transactionFeeError: this.context.intl.formatMessage(error),
           });
         }
       });

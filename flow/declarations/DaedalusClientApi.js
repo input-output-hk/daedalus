@@ -75,6 +75,7 @@ declare module 'daedalus-client-api' {
   // Status
   declare function notify(tls: TlsConfig, onSuccess: Function, onError?: Function): void;
   declare function nextUpdate(tls: TlsConfig): any;
+  declare function postponeUpdate(tls: TlsConfig): any;
   declare function applyUpdate(tls: TlsConfig): any;
   declare function syncProgress(tls: TlsConfig): any;
 

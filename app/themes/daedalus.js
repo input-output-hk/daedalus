@@ -1,5 +1,5 @@
 import {
-  SELECT, INPUT, FORM_FIELD, CHECKBOX, SWITCH, MODAL, BUTTON,
+  SELECT, INPUT, FORM_FIELD, CHECKBOX, SWITCH, MODAL, BUTTON, TEXT_AREA,
 } from 'react-polymorph/lib/skins/simple/identifiers';
 
 // react-polymorph components
@@ -10,6 +10,7 @@ import SimpleCheckbox from './simple/SimpleCheckbox.scss';
 import SimpleSwitch from './simple/SimpleSwitch.scss';
 import SimpleModal from './simple/SimpleModal.scss';
 import SimpleButton from './simple/SimpleButton.scss';
+import SimpleTextArea from './simple/SimpleTextArea.scss';
 
 export const daedalusTheme = {
   [FORM_FIELD]: SimpleFormField,
@@ -19,4 +20,5 @@ export const daedalusTheme = {
   [SWITCH]: SimpleSwitch,
   [MODAL]: SimpleModal,
   [BUTTON]: SimpleButton,
+  [TEXT_AREA]: SimpleTextArea,
 };
