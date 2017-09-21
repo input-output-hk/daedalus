@@ -163,8 +163,6 @@ const unsetUserThemeFromLocalStorage = () => new Promise((resolve) => {
 
 export default class CardanoClientApi {
 
-  reset() {}
-
   async getWallets() {
     Logger.debug('CardanoClientApi::getWallets called');
     try {
@@ -714,6 +712,7 @@ export default class CardanoClientApi {
       throw new GenericApiError();
     }
   }
+
 }
 
 // ========== LOGGING =========

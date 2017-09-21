@@ -130,6 +130,7 @@ app.on('ready', async () => {
   const width = 640;
   const height = 486;
   aboutWindow = new BrowserWindow({
+    fullscreenable: false,
     show: false,
     width,
     height,

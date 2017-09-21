@@ -64,6 +64,7 @@ Changelog
 - Fixed failing acceptance-tests ([PR 454](https://github.com/input-output-hk/daedalus/pull/454))
 - Prevent application window auto focusing while running acceptance-tests ([PR 458](https://github.com/input-output-hk/daedalus/pull/458))
 - Limit and validate wallet's name maximum length ([PR 465](https://github.com/input-output-hk/daedalus/pull/465))
+- UI/UX fixes ([PR 476](https://github.com/input-output-hk/daedalus/pull/476))
 
 ### Chores
 

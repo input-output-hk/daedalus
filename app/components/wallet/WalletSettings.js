@@ -53,6 +53,11 @@ const messages = defineMessages({
     defaultMessage: '!!!You still don\'t have password',
     description: 'You still don\'t have password set message.',
   },
+  exportButtonLabel: {
+    id: 'wallet.settings.exportWalletButtonLabel',
+    defaultMessage: '!!!Export wallet',
+    description: 'Label for the export button on wallet settings.',
+  },
 });
 
 @observer
@@ -152,23 +157,36 @@ export default class WalletSettings extends Component {
             })}
           />
 
-          <div className={styles.export}>
-            <h2>Export</h2>
-            <p>
-              Use your wallet on multiple devices
-              or give read-only copies to friends.
-            </p>
-            <button
-              className={styles.export_link}
-              onClick={() => openDialogAction({ dialog: WalletExportDialog })}
-            >
-              Export this wallet
-            </button>
-          </div>
+          {/*
+            <div className={styles.export}>
+              <h2>Export</h2>
+              <p>
+                Use your wallet on multiple devices
+                or give read-only copies to friends.
+              </p>
+              <button
+                className={styles.export_link}
+                onClick={() => openDialogAction({
+                  dialog: WalletExportDialog
+                })}
+              >
+                {intl.formatMessage(messages.exportButtonLabel)}
+              </button>
+            </div>
+          */}
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
-          <div className={styles.deleteWalletButton}>
+          <div className={styles.actionButtons}>
+            <button
+              className={styles.exportLink}
+              onClick={() => openDialogAction({
+                dialog: WalletExportDialog
+              })}
+            >
+              {intl.formatMessage(messages.exportButtonLabel)}
+            </button>
+
             <DeleteWalletButton
               onClick={() => openDialogAction({
                 dialog: DeleteWalletConfirmationDialog,
