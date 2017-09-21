@@ -56,6 +56,7 @@ storiesOf('WalletTransactionsList', module)
   .add('failed and pending transactions', () => (
     <WalletTransactionsList
       transactions={[
+        generateTransaction('adaIncome', new Date(), new BigNumber(1), 1, 'CPtxInBlocks'),
         generateTransaction('adaIncome', new Date(), new BigNumber(1), 0, 'CPtxApplying'),
         generateTransaction('adaIncome', new Date(), new BigNumber(1), 0, 'CPtxWontApply'),
       ]}
