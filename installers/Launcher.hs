@@ -58,7 +58,6 @@ launcherArgs Launcher{..} = unwords $
         "--db-path", quote (runtimePath <> "DB-" <> version),
         "--wallet-db-path", quote (runtimePath <> "Wallet-" <> version),
         "--update-server", "https://s3.eu-central-1.amazonaws.com/update-system/",
-        "--system-start", "1505865883",
         "--update-with-package",
         "--tlscert", quote (tlsBase <> "server" <> (pathSeparator : "server.crt")),
         "--tlskey",  quote (tlsBase <> "server" <> (pathSeparator : "server.key")),
@@ -69,13 +68,13 @@ launcherArgs Launcher{..} = unwords $
                       | otherwise = mempty
       configFiles     | os == "mingw32" =
                         [ "--topology",           quote "%DAEDALUS_DIR%\\wallet-topology.yaml"
-                        , "--configuration-file", quote "%DAEDALUS_DIR%\\configuration.mainnet.yaml"
-                        , "--configuration-key",  quote "testnet_staging_wallet_win64"
+                        , "--configuration-file", quote "%DAEDALUS_DIR%\\configuration.yaml"
+                        , "--configuration-key",  quote "mainnet_wallet_win64"
                         ]
                       | otherwise =
                         [ "--topology",           quote "./wallet-topology.yaml"
-                        , "--configuration-file", quote "./configuration.mainnet.yaml"
-                        , "--configuration-key",  quote "testnet_staging_wallet_macos64"
+                        , "--configuration-file", quote "./configuration.yaml"
+                        , "--configuration-key",  quote "mainnet_wallet_macos64"
                         ]
       tlsBase         | os == "mingw32" = "%DAEDALUS_DIR%\\"   <> "tls" <> (pathSeparator : [])
                       | otherwise       = "./"                 <> "tls" <> (pathSeparator : [])
