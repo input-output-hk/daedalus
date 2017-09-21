@@ -18,6 +18,11 @@
     &[disabled] {
       background: var(--theme-button-primary-background-color-disabled);
       color: var(--theme-button-primary-text-color-disabled);
+      cursor: default !important;
+      &:hover,
+      &:active {
+        background: var(--theme-button-primary-background-color-disabled);
+      }
     }
     &:not([disabled]) {
       background: var(--theme-button-primary-background-color);
@@ -33,8 +38,13 @@
 
   .flat {
     &[disabled] {
-      color: var(--theme-button-flat-background-color-hover);
-      opacity: 0.3;
+      background: var(--theme-button-flat-background-color-disabled);
+      color: var(--theme-button-flat-text-color-disabled);
+      cursor: default !important;
+      &:hover,
+      &:active {
+        background: var(--theme-button-flat-background-color-disabled);
+      }
     }
     &:not([disabled]) {
       background-color: var(--theme-button-flat-background-color);

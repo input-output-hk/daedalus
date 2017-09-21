@@ -13,23 +13,31 @@
   margin-bottom: 20px;
 
   .themeImageWrapper {
-    opacity: 0.3;
-
     &.active {
-      opacity: 1;
-      transition: opacity 400ms ease;
+      img,
+      span {
+        opacity: 1;
+        transition: opacity 400ms ease;
+      }
     }
 
     &.inactive {
       &:hover {
-        cursor: pointer;
-        opacity: 0.6;
+        img {
+          cursor: pointer;
+          opacity: 0.6;
+        }
+
+        span {
+          opacity: 0.8;
+        }
       }
     }
 
     & > img {
       border: 1px solid var(--theme-input-border-color);
       display: block;
+      opacity: 0.3;
       width: 100%;
     }
 
@@ -40,6 +48,7 @@
       font-size: 16px;
       line-height: 1.38;
       margin-top: 11px;
+      opacity: 0.5;
       text-align: center;
     }
 

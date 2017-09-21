@@ -15,6 +15,8 @@ export default {
 
   '--theme-input-hint-font': 'SFUIDisplay-Regular',
 
+  '--theme-scrollbar-thumb-background': '#e9f4fe',
+
   '--theme-ada-redemption-headline-color': '#e9f4fe',
   '--theme-ada-redemption-instructions-color': '#e9f4fe',
   '--theme-ada-redemption-success-overlay-background-color': 'rgba(38, 51, 69, 0.88)',
@@ -36,7 +38,7 @@ export default {
   '--theme-ada-redemption-disclaimer-button-border-color': '#fafbfc',
 
   '--theme-bordered-box-background-color': '#263345',
-  '--theme-bordered-box-border-color': '#263345',
+  '--theme-bordered-box-border': 'none',
   '--theme-bordered-box-text-color': '#e9f4fe',
 
   '--theme-button-primary-background-color': '#536370',
@@ -45,40 +47,40 @@ export default {
   '--theme-button-primary-background-color-disabled': 'rgba(83, 99, 112, 0.3)',
   '--theme-button-primary-text-color-disabled': 'rgba(233, 244, 254, 0.5)',
   '--theme-button-primary-text-color': '#e9f4fe',
-  '--theme-button-flat-background-color': '#f0f3f5',
-  '--theme-button-flat-background-color-hover': '#f3f5f7',
-  '--theme-button-flat-background-color-active': '#ebeef0',
-  '--theme-button-flat-text-color': '#5e6066',
+
+  '--theme-button-flat-background-color': 'rgba(83, 99, 112, 0.3)',
+  '--theme-button-flat-background-color-hover': 'rgba(102, 122, 138, 0.3)',
+  '--theme-button-flat-background-color-active': 'rgba(73, 88, 99, 0.3)',
+  '--theme-button-flat-background-color-disabled': 'rgba(83, 99, 112, 0.1)',
+  '--theme-button-flat-text-color-disabled': 'rgba(233, 244, 254, 0.3)',
+  '--theme-button-flat-text-color': '#e9f4fe',
 
   '--theme-checkbox-label-color': '#e9f4fe',
   '--theme-checkbox-border-color': '#536370',
   '--theme-checkbox-background-color-checked': '#536370',
 
+  '--theme-select-arrow-color': '#606d7b',
+  '--theme-select-arrow-color-open': '#e9f4fe',
+  '--theme-select-background-color': '#263345',
+  '--theme-select-option-highlight-color': '#536370',
+  '--theme-select-option-text-color': '#e9f4fe',
+  '--theme-select-options-border-color': '#667a8a',
+  '--theme-select-options-shadow': '0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 0 4px 0 rgba(0, 0, 0, 0.1)',
+
   '--theme-choice-tabs-text-color': '#e9f4fe',
   '--theme-choice-tabs-text-color-active': '#e9f4fe',
   '--theme-choice-tabs-bottom-border-color-active': '#e9f4fe',
 
-  '--theme-dialog-input-label-color': '#5e6066',
-  '--theme-dialog-input-text-color': '#5e6066',
-  '--theme-dialog-input-right-floating-indicator-color': 'rgba(94, 96, 102, 0.5)',
-  '--theme-dialog-input-placeholder-color': 'rgba(94, 96, 102, 0.5)',
-  '--theme-dialog-input-error-color': '#ea4c5b',
-  '--theme-dialog-switch-label-color': '#5e6066',
-  '--theme-dialog-title-color': '#5e6066',
-  '--theme-dialog-checkbox-label-color': '#5e6066',
-  '--theme-dialog-choice-tabs-text-color': '#5e6066',
-  '--theme-dialog-choice-tabs-text-color-active': '#5e6066',
-  '--theme-dialog-choice-tabs-bottom-border-color-active': '#5e6066',
-  '--theme-dialog-big-button-background-color': '#f1f3f5',
-  '--theme-dialog-big-button-border-color': '#d7dce0',
-  '--theme-dialog-big-button-label-color': '#5e6066',
-  '--theme-dialog-big-button-description-color': '#5e6066',
-  '--theme-dialog-separation-border-color': '#dfe4e8',
-  '--theme-dialog-input-background-color': '#fafbfc',
-  '--theme-dialog-input-border-color': '#c6cdd6',
-  '--theme-dialog-input-focus-border-color': '#5e6066',
+  '--theme-dialog-choice-tabs-text-color': '#e9f4fe',
+  '--theme-dialog-choice-tabs-text-color-active': '#e9f4fe',
+  '--theme-dialog-choice-tabs-bottom-border-color-active': '#e9f4fe',
+  '--theme-dialog-big-button-background-color': '#536370',
+  '--theme-dialog-big-button-border-color': '#536370',
+  '--theme-dialog-big-button-label-color': '#e9f4fe',
+  '--theme-dialog-big-button-description-color': 'rgba(233, 244, 254, 0.6)',
+  '--theme-dialog-title-color': '#e9f4fe',
 
-  '--theme-input-border-color': '#5e6066',
+  '--theme-input-border-color': 'rgba(102, 122, 138, 0.3)',
   '--theme-input-label-color': '#e9f4fe',
   '--theme-input-text-color': '#e9f4fe',
   '--theme-input-right-floating-text-color': '#8793a1',
@@ -87,16 +89,16 @@ export default {
   '--theme-input-remove-color-dark': '#d34452',
   '--theme-input-remove-color-light': '#ea4c5b',
   '--theme-input-remove-color-lighter': '#ec5d6b',
-  '--theme-input-remove-color-lightest': '#fac8ce',
+  '--theme-input-remove-color-lightest': '#393546',
   '--theme-input-background-color': '#263345',
   '--theme-input-disabled-background-color': '#cfcfcf',
-  '--theme-input-focus-border-color': '#c6cdd6',
+  '--theme-input-focus-border-color': '#667a8a',
 
   '--theme-main-body-background-color': '#0b1926',
   '--theme-main-body-messages-color': '#e9f4fe',
 
   '--theme-modal-overlay-background-color': 'rgba(0, 0, 0, 0.4)',
-  '--theme-modal-background-color': '#fafbfc',
+  '--theme-modal-background-color': '#263345',
 
   '--theme-nav-item-background-color': '#263345',
   '--theme-nav-item-background-color-hover': 'rgba(83, 99, 112, 0.1)',
@@ -125,16 +127,16 @@ export default {
 
   '--theme-settings-body-background-color': '#0b1926',
   '--theme-settings-pane-background-color': '#263345',
-  '--theme-settings-pane-border-color': '#263345',
+  '--theme-settings-pane-border': 'none',
   '--theme-settings-menu-box-background-color': '#263345',
-  '--theme-settings-menu-box-border-color': '#263345',
+  '--theme-settings-menu-box-border': 'none',
   '--theme-settings-menu-item-text-color': '#cecfd1',
   '--theme-settings-menu-item-text-color-active': '#cecfd1',
   '--theme-settings-menu-item-text-color-enabled-hover': '#8793a1',
   '--theme-settings-menu-item-text-color-disabled': '#7a8691',
-  '--theme-settings-menu-item-background-color-active': '#0b1926',
-  '--theme-settings-menu-item-left-border-color-active': '#8793a1',
-  '--theme-settings-theme-select-title-color': '#5e6066',
+  '--theme-settings-menu-item-background-color-active': '#536370',
+  '--theme-settings-menu-item-left-border-color-active': '#0b1926',
+  '--theme-settings-theme-select-title-color': '#cecfd1',
 
   '--theme-sidebar-background-color': '#314259',
   '--theme-sidebar-category-background-color-hover': '#263345',
@@ -155,8 +157,9 @@ export default {
   '--theme-staking-font-color-accent': '#cecfd1',
   '--theme-staking-font-color-regular': '#0b1926',
 
+  '--theme-switch-background-color': '#536370',
   '--theme-switch-background-color-checked': '#536370',
-  '--theme-switch-thumb-color-checked': '#536370',
+  '--theme-switch-thumb-color-checked': '#fff',
   '--theme-switch-label-color': '#e9f4fe',
 
   '--theme-test-environment-label-background-color': '#ab1700',
@@ -187,7 +190,7 @@ export default {
   '--theme-transactions-icon-type-exchange-background-color': '#10aca4',
 
   '--theme-uploader-text-color': '#e9f4fe',
-  '--theme-uploader-border-color': '#5e6066',
+  '--theme-uploader-border-color': 'rgba(102, 122, 138, 0.3)',
 
   '--theme-icon-nav-color': '#9ba6b3',
   '--theme-icon-nav-color-active': '#e9f4fe',
@@ -200,11 +203,11 @@ export default {
   '--theme-icon-ada-redemption-certificate-color': '#9eabbb',
   '--theme-icon-ada-summary-wallet-amount-symbol-color': '#e9f4fe',
   '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color': '#e9f4fe',
-  '--theme-icon-add-wallet-dialog-big-button-color': '#8a98ab',
+  '--theme-icon-add-wallet-dialog-big-button-color': 'rgba(233, 244, 254, 0.8)',
   '--theme-icon-copy-address-color': '#8793a1',
-  '--theme-icon-back-button-color': '#5e6066',
-  '--theme-icon-close-button-color': '#5e6066',
-  '--theme-icon-file-upload-color': '#5e6066',
+  '--theme-icon-back-button-color': '#e9f4fe',
+  '--theme-icon-close-button-color': '#e9f4fe',
+  '--theme-icon-file-upload-color': '#8793a1',
   '--theme-icon-transactions-ada-symbol-color': '#e9f4fe',
   '--theme-icon-syncing-logo-color': '#5e6066',
   '--theme-icon-connecting-logo-color': '#fafbfc',
@@ -220,7 +223,7 @@ export default {
   '--theme-about-window-content-bottom-border-color': '#dfe4e8',
   '--theme-about-window-copyright-color': '#5e6066',
 
-  '--theme-backup-mnemonic-background-color': 'rgba(68, 91, 124, 0.05)',
+  '--theme-backup-mnemonic-background-color': 'rgba(233, 244, 254, 0.05)',
 
   '--theme-block-generation-info-color': '#5e6066',
 
@@ -230,14 +233,14 @@ export default {
 
   '--theme-error-color': '#ea4c5b',
 
-  '--theme-instructions-text-color': '#5e6066',
+  '--theme-instructions-text-color': '#e9f4fe',
 
   '--theme-label-button-color': '#8793a1',
 
   '--theme-loading-background-color': '#ebeff2',
 
-  '--theme-mnemonic-background-color': '#e6e9ee',
-  '--theme-mnemonic-background-color-hover': '#eaecf1',
+  '--theme-mnemonic-background-color': 'rgba(83, 99, 112, 0.3)',
+  '--theme-mnemonic-background-color-hover': 'rgba(102, 122, 138, 0.3)',
 
   '--theme-send-logs-text-color': '#e9f4fe',
 
@@ -247,5 +250,5 @@ export default {
 
   '--theme-terms-of-use-text-color': '#e9f4fe',
 
-  '--theme-wallet-password-switch-label-color': '#5e6066',
+  '--theme-wallet-password-switch-label-color': '#e9f4fe',
 };

@@ -1,0 +1,9 @@
+@import "_config";
+// Theme config overrides go here …
+@import "~react-polymorph/lib/themes/simple/SimpleTextArea";
+// Css module overrides go here …
+
+.textarea {
+  border-radius: 2px;
+  resize: none;
+}

@@ -128,17 +128,45 @@
         }
       },
       {
-        "defaultMessage": "!!!Incorrect wallet password.",
-        "description": "\"Incorrect wallet password.\" error message.",
+        "defaultMessage": "!!!All your funds are already at the address you are trying send money to.",
+        "description": "\"All your funds are already at the address you are trying send money to.\" error message.",
         "end": {
           "column": 3,
           "line": 54
         },
         "file": "app/api/errors.js",
+        "id": "api.errors.AllFundsAlreadyAtReceiverAddressError",
+        "start": {
+          "column": 41,
+          "line": 50
+        }
+      },
+      {
+        "defaultMessage": "!!!Not enough Ada for fees. Try sending a smaller amount.",
+        "description": "\"Not enough Ada for fees. Try sending a smaller amount.\" error message",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "app/api/errors.js",
+        "id": "api.errors.NotEnoughFundsForTransactionFeesError",
+        "start": {
+          "column": 41,
+          "line": 55
+        }
+      },
+      {
+        "defaultMessage": "!!!Incorrect wallet password.",
+        "description": "\"Incorrect wallet password.\" error message.",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "app/api/errors.js",
         "id": "api.errors.IncorrectPasswordError",
         "start": {
           "column": 32,
-          "line": 50
+          "line": 60
         }
       }
     ],
@@ -2280,13 +2308,13 @@
         "description": "Label for the \"Today\" label on the wallet summary page.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 17
         },
         "file": "app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.todayLabel",
         "start": {
           "column": 9,
-          "line": 14
+          "line": 13
         }
       },
       {
@@ -2294,13 +2322,13 @@
         "description": "Label for the \"Yesterday\" label on the wallet summary page.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 22
         },
         "file": "app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.yesterdayLabel",
         "start": {
           "column": 13,
-          "line": 19
+          "line": 18
         }
       }
     ],
@@ -3055,20 +3083,6 @@
           "column": 28,
           "line": 87
         }
-      },
-      {
-        "defaultMessage": "!!!Not enough Ada for fees. Try sending a smaller amount.",
-        "description": "\"Not enough Ada for fees. Try sending a smaller amount.\" error message",
-        "end": {
-          "column": 3,
-          "line": 96
-        },
-        "file": "app/components/wallet/WalletSendForm.js",
-        "id": "wallet.send.form.transactionFeeError",
-        "start": {
-          "column": 23,
-          "line": 92
-        }
       }
     ],
     "path": "app/components/wallet/WalletSendForm.json"
@@ -3143,6 +3157,20 @@
         "start": {
           "column": 18,
           "line": 51
+        }
+      },
+      {
+        "defaultMessage": "!!!Export wallet",
+        "description": "Label for the export button on wallet settings.",
+        "end": {
+          "column": 3,
+          "line": 60
+        },
+        "file": "app/components/wallet/WalletSettings.js",
+        "id": "wallet.settings.exportWalletButtonLabel",
+        "start": {
+          "column": 21,
+          "line": 56
         }
       }
     ],

@@ -10,7 +10,7 @@
 
 .centeredBox {
   background-color: var(--theme-bordered-box-background-color);
-  border: solid 1px var(--theme-bordered-box-border-color);
+  border: var(--theme-bordered-box-border);
   border-radius: 4px;
   padding: 30px 30px 20px;
   overflow: visible;

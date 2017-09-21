@@ -6,12 +6,16 @@ Changelog
 
 ### Features
 
+- Postpone Update Api call integration ([PR 485](https://github.com/input-output-hk/daedalus/pull/485))
+
 ### Fixes
 
 - Fix all features eslint warnings ([PR 468](https://github.com/input-output-hk/daedalus/pull/468))
 - Fix for disabled buttons on dark-blue theme ([PR 473](https://github.com/input-output-hk/daedalus/pull/473))
 - Remove maximum screen width and height in full-screen mode ([PR 472](https://github.com/input-output-hk/daedalus/pull/472))
 - Fix "label click" dropdown issue in react-polymorph ([PR 479](https://github.com/input-output-hk/daedalus/pull/479))
+- Fix error message text for A to A transaction error ([PR 484](https://github.com/input-output-hk/daedalus/pull/484))
+- Fix "label prop type" checkbox issue in react-polymorph ([PR 487](https://github.com/input-output-hk/daedalus/pull/487))
 
 ### Chores
 
@@ -28,6 +32,7 @@ Changelog
 - Setup default themes for TN and MN and introduce new theme names ([PR 451](https://github.com/input-output-hk/daedalus/pull/451))
 - Transaction fees UX improvements on wallet sent screen ([PR 449](https://github.com/input-output-hk/daedalus/pull/449))
 - Acceptance tests for General Settings screens ([PR 466](https://github.com/input-output-hk/daedalus/pull/466))
+- Japanese terms of use for the mainnet ([PR 486](https://github.com/input-output-hk/daedalus/pull/486))
 
 ### Fixes
 
@@ -62,6 +67,7 @@ Changelog
 - Fixed failing acceptance-tests ([PR 454](https://github.com/input-output-hk/daedalus/pull/454))
 - Prevent application window auto focusing while running acceptance-tests ([PR 458](https://github.com/input-output-hk/daedalus/pull/458))
 - Limit and validate wallet's name maximum length ([PR 465](https://github.com/input-output-hk/daedalus/pull/465))
+- UI/UX fixes ([PR 476](https://github.com/input-output-hk/daedalus/pull/476))
 
 ### Chores
 
