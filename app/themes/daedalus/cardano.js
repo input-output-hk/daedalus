@@ -125,6 +125,9 @@ export default {
   '--theme-receive-qr-code-background-color': 'transparent',
   '--theme-receive-qr-code-foreground-color': '#000',
 
+  '--theme-send-confirmation-dialog-text-main-color': '#5e6066',
+  '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',
+
   '--theme-settings-body-background-color': '#efefef',
   '--theme-settings-pane-background-color': '#fafbfc',
   '--theme-settings-pane-border': '1px solid #c6cdd6',
