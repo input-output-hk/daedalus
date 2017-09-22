@@ -32,7 +32,7 @@ launcherArgs Launcher{..} = unwords $
   [ "--node", quote nodePath
   , "--node-log-path", quote nodeLogPath
   , "--wallet", quote walletPath
-  ] ++ updaterLArgs ++
+  ] ++ updaterLArgs ++ configurationArgs ++
   [ "--node-timeout 5 " ++ batchCmdNewline
   , unwords $ map (\x ->  batchCmdNewline ++ "-n " ++ x) nodeArgs
   ]
@@ -49,6 +49,14 @@ launcherArgs Launcher{..} = unwords $
               , unwords $ map ("-u " ++) updArgs
               , "--update-archive ", quote updArchivePath
               ]
+      configurationArgs | os == "mingw32" =
+                          [ "--configuration-file", quote "%DAEDALUS_DIR%\\node\\configuration.yaml"
+                          , "--configuration-key",  quote "mainnet_wallet_win64"
+                          ]
+                        | otherwise =
+                          [ "--configuration-file", quote "./configuration.yaml"
+                          , "--configuration-key",  quote "mainnet_wallet_macos64"
+                         ]
       nodeArgs = [
         "--report-server", "http://report-server.awstest.iohkdev.io:8080",
         "--log-config", "log-config-prod.yaml",
@@ -68,13 +76,9 @@ launcherArgs Launcher{..} = unwords $
                       | otherwise = mempty
       configFiles     | os == "mingw32" =
                         [ "--topology",           quote "%DAEDALUS_DIR%\\wallet-topology.yaml"
-                        , "--configuration-file", quote "%DAEDALUS_DIR%\\configuration.yaml"
-                        , "--configuration-key",  quote "mainnet_wallet_win64"
                         ]
                       | otherwise =
                         [ "--topology",           quote "./wallet-topology.yaml"
-                        , "--configuration-file", quote "./configuration.yaml"
-                        , "--configuration-key",  quote "mainnet_wallet_macos64"
                         ]
       tlsBase         | os == "mingw32" = "%DAEDALUS_DIR%\\"   <> "tls" <> (pathSeparator : [])
                       | otherwise       = "./"                 <> "tls" <> (pathSeparator : [])
