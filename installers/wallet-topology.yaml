@@ -1,4 +1,4 @@
 wallet:
-  relays: [[{"host": "cardano-node-0.awstest.iohkdev.io"},{"host": "cardano-node-1.awstest.iohkdev.io"},{"host": "cardano-node-2.awstest.iohkdev.io"},{"host": "cardano-node-3.awstest.iohkdev.io"},{"host": "cardano-node-4.awstest.iohkdev.io"},{"host": "cardano-node-5.awstest.iohkdev.io"},{"host": "cardano-node-6.awstest.iohkdev.io"}]]
+  relays: [[{"host": "nodes.awstest.iohkdev.io"}]]
   valency: 1
   fallbacks: 7
