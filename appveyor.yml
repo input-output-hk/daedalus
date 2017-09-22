@@ -1,4 +1,4 @@
-version: 1.0-rc.{build}
+version: 1.0.{build}
 
 environment:
   nodejs_version: "6"
