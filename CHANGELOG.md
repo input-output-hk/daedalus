@@ -19,6 +19,8 @@ Changelog
 
 ### Chores
 
+- Set Dark theme as default one for the mainnet ([PR 497](https://github.com/input-output-hk/daedalus/pull/497))
+
 ## 0.8.0
 
 ### Features
