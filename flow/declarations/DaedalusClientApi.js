@@ -49,7 +49,7 @@ declare module 'daedalus-client-api' {
   ];
 
   declare type ApiTransactionInputOutput = [
-    Array<string, ApiAmount>
+    [string, ApiAmount]
   ];
 
   declare type ApiTransactionFee = ApiAmount;
