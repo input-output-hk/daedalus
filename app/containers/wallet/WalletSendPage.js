@@ -10,13 +10,10 @@ export default class WalletSendPage extends Component {
   static defaultProps = { actions: null, stores: null };
   props: InjectedProps;
 
-  handleWalletSendFormSubmit = (values: Object) => {
-    this.props.actions.wallets.sendMoney.trigger(values);
-  };
-
   render() {
-    const { wallets, transactions } = this.props.stores;
-    const { isValidAddress, sendMoneyRequest } = wallets;
+    const { wallets, transactions, uiDialogs } = this.props.stores;
+    const { actions } = this.props;
+    const { isValidAddress } = wallets;
     const { calculateTransactionFee } = transactions;
     const activeWallet = wallets.active;
 
@@ -25,14 +22,12 @@ export default class WalletSendPage extends Component {
 
     return (
       <WalletSendForm
-        onSubmit={this.handleWalletSendFormSubmit}
         calculateTransactionFee={(receiver, amount) => (
           calculateTransactionFee(activeWallet.id, receiver, amount)
         )}
-        isSubmitting={sendMoneyRequest.isExecuting}
         addressValidator={isValidAddress}
-        isWalletPasswordSet={activeWallet.hasPassword}
-        error={sendMoneyRequest.error}
+        isDialogOpen={uiDialogs.isOpen}
+        openDialogAction={actions.dialogs.open.trigger}
       />
     );
   }

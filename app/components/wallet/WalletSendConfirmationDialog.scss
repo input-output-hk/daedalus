@@ -1,0 +1,82 @@
+@import '../../themes/mixins/loading-spinner';
+@import '../../themes/mixins/error-message';
+
+.dialog {
+  color: var(--theme-send-confirmation-dialog-text-main-color);
+  font-family: var(--font-medium);
+  font-size: 16px;
+
+  :global {
+    .Dialog_title {
+      margin-bottom: 20px;
+    }
+  }
+
+  .adaSymbol {
+    font-family: var(--font-light);
+  }
+
+  .addressToLabelWrapper,
+  .amountFeesWrapper{
+    margin-bottom: 20px;
+  }
+
+  .addressToLabel {
+    font-size: 16px;
+    line-height: 1.38;
+  }
+
+  .addressTo {
+    font-family: var(--font-light);
+    line-height: 1.38;
+    margin-top: 6px;
+    opacity: 0.5;
+    word-wrap: break-word;
+  }
+
+  .amountFeesWrapper {
+    display: flex;
+    flex-direction: row;
+    .amountWrapper,
+    .feesWrapper {
+      width: 50%;
+    }
+    .amountLabel,
+    .feesLabel {
+      line-height: 1.38;
+    }
+    .amount,
+    .fees {
+      color: var(--theme-send-confirmation-dialog-send-values-color);
+      line-height: 1.38;
+      margin-top: 6px;
+    }
+    .fees {
+      opacity: 0.5;
+    }
+  }
+
+  .totalAmountLabel {
+    line-height: 1.38;
+  }
+
+  .totalAmount {
+    color: var(--theme-send-confirmation-dialog-send-values-color);
+    line-height: 1.38;
+    margin-top: 6px;
+  }
+
+  .walletPassword {
+    margin-top: 20px;
+  }
+
+  .error {
+    @include error-message;
+    text-align: center;
+    margin-top: 27px;
+  }
+}
+
+.submitButtonSpinning {
+  @include loading-spinner("../../assets/images/spinner-light.svg");
+}
