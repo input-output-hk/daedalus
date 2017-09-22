@@ -153,8 +153,6 @@ export default class Transaction extends Component {
 
         {/* ==== Clickable Header -> toggles details ==== */}
         <div className={styles.toggler} onClick={this.toggleDetails.bind(this)} role="presentation" aria-hidden>
-          <div className={styles[data.type]} />
-
           <TransactionTypeIcon
             iconType={isFailedTransaction ? transactionStates.FAILED : data.type}
           />

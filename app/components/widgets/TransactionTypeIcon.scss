@@ -1,9 +1,13 @@
 .transactionTypeIconWrapper {
+  align-items: center;
   border-radius: 10px;
+  display: flex;
+  flex-direction: column;
   height: 44px;
+  justify-content: center;
   opacity: 0.8;
-  padding: 12.5px 10.5px;
   width: 44px;
+
   &.adaExpend {
     background: var(--theme-transactions-icon-type-expend-background-color);
   }
@@ -26,6 +30,8 @@
 }
 
 .transactionTypeIcon {
+  display: flex;
+
   & > svg {
     height: 19px;
     width: 23px;

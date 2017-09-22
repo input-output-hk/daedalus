@@ -1,5 +1,3 @@
-$type-box-size: 44px;
-
 .component {
   color: var(--theme-transactions-list-item-details-color);
 
@@ -13,23 +11,6 @@ $type-box-size: 44px;
       }
     }
   }
-}
-
-// ========= TYPE INDICATORS FOR TRANSACTIONS =========
-
-%type-box {
-  width: $type-box-size;
-  height: $type-box-size;
-  background: no-repeat center;
-  background-size: 30px;
-  border-radius: 10px;
-  flex-shrink: 0;
-}
-
-.card {
-  @extend %type-box;
-  background-color: var(--theme-transactions-card-background-color);
-  background-image: url("../../assets/images/card-payment-ic.svg");
 }
 
 // ========= TOGGLER =========
@@ -142,7 +123,7 @@ $type-box-size: 44px;
 
 .content {
   border-bottom: 1px solid var(--theme-separation-border-color);
-  margin-left: calc(40px + #{$type-box-size});
+  margin-left: 84px;
   margin-right: 20px;
 }
 

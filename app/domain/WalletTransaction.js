@@ -1,9 +1,9 @@
 // @flow
 import { observable } from 'mobx';
 import BigNumber from 'bignumber.js';
+import type { TransactionCondition } from 'daedalus-client-api';
 import type { AssuranceMode, AssuranceLevel } from '../types/transactionAssuranceTypes';
 import { assuranceLevels } from '../config/transactionAssuranceConfig';
-import type { TransactionCondition } from 'daedalus-client-api';
 
 export type TransactionState = 'pending' | 'failed' | 'ok';
 export type TrasactionAddresses = { from: Array<string>, to: Array<string> };
@@ -51,7 +51,7 @@ export default class WalletTransaction {
   }
 
   getState(): TransactionState {
-    switch(this.condition) {
+    switch (this.condition) {
       case 'CPtxApplying': return 'pending';
       case 'CPtxWontApply': return 'failed';
       default: return 'ok'; // CPtxInBlocks && CPtxNotTracked
