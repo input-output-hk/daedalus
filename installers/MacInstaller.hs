@@ -35,7 +35,7 @@ main = do
   copyFile "cardano-node" (dir <> "/cardano-node")
   copyFile "wallet-topology.yaml" (dir <> "/wallet-topology.yaml")
   copyFile "configuration.yaml" (dir <> "/configuration.yaml")
-  copyFile "mainnet-genesis-internal-dryrun.json" (dir <> "/mainnet-genesis-internal-dryrun.json")
+  copyFile "mainnet-genesis-dryrun-with-stakeholders.json" (dir <> "/mainnet-genesis-dryrun-with-stakeholders.json")
   copyFile "log-config-prod.yaml" (dir <> "/log-config-prod.yaml")
   copyFile "data/ip-dht-mappings" (dir <> "/ip-dht-mappings")
   copyFile "data/ip-dht-mappings" (dir <> "/ip-dht-mappings")
