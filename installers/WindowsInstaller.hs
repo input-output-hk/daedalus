@@ -102,6 +102,8 @@ parseVersion ver =
 writeInstallerNSIS :: String -> IO ()
 writeInstallerNSIS fullVersion = do
   tempDir <- fmap fromJust $ lookupEnv "TEMP"
+  let viProductVersion = L.intercalate "." $ parseVersion fullVersion
+  echo $ unsafeTextToLine $ pack $ "VIProductVersion: " <> viProductVersion
   writeFile "daedalus.nsi" $ nsis $ do
     _ <- constantStr "Version" (str fullVersion)
     name "Daedalus ($Version)"                  -- The name of the installer
@@ -110,7 +112,7 @@ writeInstallerNSIS fullVersion = do
     unsafeInjectGlobal $ "!define MUI_HEADERIMAGE"
     unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_BITMAP \"icons\\installBanner.bmp\""
     unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_RIGHT"
-    unsafeInjectGlobal $ "VIProductVersion " <> (L.intercalate "." $ parseVersion fullVersion)
+    unsafeInjectGlobal $ "VIProductVersion " <> viProductVersion
     unsafeInjectGlobal $ "VIAddVersionKey \"ProductVersion\" " <> fullVersion
     unsafeInjectGlobal "Unicode true"
     requestExecutionLevel Highest
