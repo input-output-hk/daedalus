@@ -122,7 +122,7 @@ writeInstallerNSIS fullVersion = do
     installDirRegKey HKLM "Software/Daedalus" "Install_Dir"  -- ...except when already installed.
 
     page Directory                   -- Pick where to install
-    constant "INSTALLEDAT" $ readRegStr HKLM "Software/Daedalus" "Install_Dir"
+    _ <- constant "INSTALLEDAT" $ readRegStr HKLM "Software/Daedalus" "Install_Dir"
     onPagePre Directory (iff_ (strLength "$INSTALLEDAT" %/= 0) $ abort "")
 
     page InstFiles                   -- Give a progress bar while installing
