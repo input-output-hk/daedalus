@@ -125,7 +125,6 @@ export default {
   '--theme-receive-qr-code-background-color': '#fff',
   '--theme-receive-qr-code-foreground-color': '#000',
 
-  '--theme-send-confirmation-dialog-text-main-color': '#5e6066',
   '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',
 
   '--theme-settings-body-background-color': '#0b1926',
