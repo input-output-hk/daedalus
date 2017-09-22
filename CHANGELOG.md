@@ -19,6 +19,8 @@ Changelog
 
 ### Chores
 
+- Update version in About dialog to 0.8.2 ([PR 496](https://github.com/input-output-hk/daedalus/pull/496))
+
 ## 0.8.0
 
 ### Features
