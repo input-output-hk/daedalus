@@ -32,20 +32,24 @@ declare module 'daedalus-client-api' {
     ctAmount: ApiAmount,
     ctConfirmations: number,
     ctId: string,
-    ctInputAddrs: Array<string>,
+    ctInputs: ApiTransactionInputOutput,
     ctIsOutgoing: boolean,
     ctMeta: {
       ctmDate: Date,
       ctmDescription: ?string,
       ctmTitle: ?string,
     },
-    ctOutputAddrs: Array<string>,
+    ctOutputs: ApiTransactionInputOutput,
     ctCondition: TransactionCondition,
   };
 
   declare type ApiTransactions = [
     Array<ApiTransaction>,
     number,
+  ];
+
+  declare type ApiTransactionInputOutput = [
+    Array<string, ApiAmount>
   ];
 
   declare type ApiTransactionFee = ApiAmount;

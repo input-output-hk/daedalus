@@ -769,8 +769,8 @@ const _createTransactionFromServerData = action(
       description: ctmDescription || '',
       numberOfConfirmations: data.ctConfirmations,
       addresses: {
-        from: data.ctInputAddrs,
-        to: data.ctOutputAddrs,
+        from: data.ctInputs.map(address => address[0]),
+        to: data.ctOutputs.map(address => address[0]),
       },
       condition: data.ctCondition,
     });
