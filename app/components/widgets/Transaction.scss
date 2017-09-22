@@ -1,24 +1,16 @@
-$type-box-size: 44px;
-
 .component {
   color: var(--theme-transactions-list-item-details-color);
-}
 
-// ========= TYPE INDICATORS FOR TRANSACTIONS =========
-
-%type-box {
-  width: $type-box-size;
-  height: $type-box-size;
-  background: no-repeat center;
-  background-size: 30px;
-  border-radius: 10px;
-  flex-shrink: 0;
-}
-
-.card {
-  @extend %type-box;
-  background-color: var(--theme-transactions-card-background-color);
-  background-image: url("../../assets/images/card-payment-ic.svg");
+  &.failed {
+    .title, .amount, .details {
+      color: var(--theme-transactions-state-failed-text-color);
+    }
+    .currencySymbol {
+      & > svg > g > g {
+        stroke: var(--theme-transactions-state-failed-text-color);
+      }
+    }
+  }
 }
 
 // ========= TOGGLER =========
@@ -59,17 +51,50 @@ $type-box-size: 44px;
   letter-spacing: 1px;
 }
 
-.low, .medium, .high {
+.pendingLabel, .failedLabel, .low, .medium, .high {
   border-radius: 3px;
   color: var(--theme-transactions-priority-color);
   display: inline-block;
   font-family: var(--font-bold);
   font-size: 8px;
-  line-height: 18px;
+  line-height: 16px;
   margin-left: auto;
   margin-top: 3px;
-  padding: 0 10px;
+  padding: 0 9px;
   text-transform: uppercase;
+}
+
+.pendingLabel {
+  :global {
+    @keyframes pending-label-animation {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: 50px 50px;
+      }
+    }
+  }
+
+  background-color: var(--theme-transactions-state-pending-background-color);
+  background-image:
+    linear-gradient(
+        -45deg,
+        var(--theme-transactions-state-pending-stripes-color) 25%,
+        transparent 25%,
+        transparent 50%,
+        var(--theme-transactions-state-pending-stripes-color) 50%,
+        var(--theme-transactions-state-pending-stripes-color) 75%,
+        transparent 75%,
+        transparent
+    );
+  background-size:50px 50px;
+  animation: pending-label-animation 2s linear infinite;
+  overflow: hidden;
+}
+
+.failedLabel {
+  background-color: var(--theme-transactions-state-failed-background-color);
 }
 
 .low {
@@ -98,7 +123,7 @@ $type-box-size: 44px;
 
 .content {
   border-bottom: 1px solid var(--theme-separation-border-color);
-  margin-left: calc(40px + #{$type-box-size});
+  margin-left: 84px;
   margin-right: 20px;
 }
 

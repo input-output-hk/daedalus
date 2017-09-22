@@ -10,7 +10,7 @@ import TrasactionAddresses from '../app/domain/WalletTransaction';
 import BigNumber from 'bignumber.js';
 
 const generateTransaction = (
-  type, date, amount, confirmations=1
+  type, date, amount, confirmations=1, condition='CPtxInBlocks'
 ) => {
   return new WalletTransaction({
     id: faker.random.uuid(),
@@ -18,6 +18,7 @@ const generateTransaction = (
     type,
     amount,
     date,
+    condition,
     description: '',
     numberOfConfirmations: confirmations,
     addresses: new TrasactionAddresses({
@@ -44,6 +45,20 @@ storiesOf('WalletTransactionsList', module)
         generateTransaction('adaIncome', new Date(), new BigNumber(1)),
         generateTransaction('adaIncome', moment().subtract(2, 'days').toDate(), new BigNumber(1)),
         generateTransaction('adaIncome', moment().subtract(1, 'days').toDate(), new BigNumber(1)),
+      ]}
+      isLoadingTransactions={false}
+      hasMoreToLoad={false}
+      assuranceMode={{ low: 1, medium: 2 }}
+      walletId="test-wallet"
+    />
+  ))
+
+  .add('failed and pending transactions', () => (
+    <WalletTransactionsList
+      transactions={[
+        generateTransaction('adaIncome', new Date(), new BigNumber(1), 1, 'CPtxInBlocks'),
+        generateTransaction('adaIncome', new Date(), new BigNumber(1), 0, 'CPtxApplying'),
+        generateTransaction('adaIncome', new Date(), new BigNumber(1), 0, 'CPtxWontApply'),
       ]}
       isLoadingTransactions={false}
       hasMoreToLoad={false}
