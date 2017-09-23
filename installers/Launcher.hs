@@ -37,7 +37,7 @@ launcherArgs Launcher{..} = unwords $
   , unwords $ map (\x ->  batchCmdNewline ++ "-n " ++ x) nodeArgs
   ]
     where
-      version = "1.0-rc"
+      version = "1.0"
       updaterLArgs =
           case updater of
             SelfUnpacking {..} ->
