@@ -55,6 +55,7 @@ main = do
     [ "#!/usr/bin/env bash"
     , "cd \"$(dirname $0)\""
     , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Secrets-1.0-rc\""
+    , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Logs/pub\""
     , doLauncher
     ]
   run "chmod" ["+x", T.pack (dir <> "/Daedalus")]
