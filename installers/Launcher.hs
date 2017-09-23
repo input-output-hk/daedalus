@@ -50,7 +50,7 @@ launcherArgs Launcher{..} = unwords $
               , "--update-archive ", quote updArchivePath
               ]
       configurationArgs | os == "mingw32" =
-                          [ "--configuration-file", quote "%DAEDALUS_DIR%\\node\\configuration.yaml"
+                          [ "--configuration-file", quote "%DAEDALUS_DIR%\\configuration.yaml"
                           , "--configuration-key",  quote "mainnet_wallet_win64"
                           ]
                         | otherwise =
