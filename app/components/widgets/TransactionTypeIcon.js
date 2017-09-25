@@ -5,6 +5,7 @@ import SvgInline from 'react-svg-inline';
 import adaExpendIcon from '../../assets/images/wallet-nav/send-ic.inline.svg';
 import adaIncomeIcon from '../../assets/images/wallet-nav/receive-ic.inline.svg';
 import exchangeIcon from '../../assets/images/exchange-ic.inline.svg';
+import failedIcon from '../../assets/images/wallet-nav/deny-ic.inline.svg';
 import styles from './TransactionTypeIcon.scss';
 
 export default class TransactionTypeIcon extends Component {
@@ -31,6 +32,9 @@ export default class TransactionTypeIcon extends Component {
         break;
       case 'exchange':
         icon = exchangeIcon;
+        break;
+      case 'failed':
+        icon = failedIcon;
         break;
       default:
         icon = '';

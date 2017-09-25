@@ -18,7 +18,7 @@ const messages = defineMessages({
   },
   orClickToUpload: {
     id: 'ImageUploadWidget.clickToUploadLabel',
-    defaultMessage: '!!!or click to upload',
+    defaultMessage: '!!!Click to upload',
     description: 'Label "or click to upload" on the file upload widget.'
   },
 });
@@ -75,8 +75,7 @@ export default class AdaCertificateUploadWidget extends Component {
               accept={acceptedFileTypes}
             >
               <div className={styles.instructions}>
-                <div className={styles.title}>{intl.formatMessage(messages.dropFileHere)}</div>
-                <div className={styles.subtitle}>
+                <div className={styles.title}>
                   {intl.formatMessage(messages.orClickToUpload)}
                 </div>
               </div>
