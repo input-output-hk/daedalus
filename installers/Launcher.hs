@@ -49,7 +49,7 @@ launcherArgs Launcher{..} = unwords $
               , "--update-archive ", quote updArchivePath
               ]
       nodeArgs = [
-        "--report-server", "http://report-server.aws.iohk.io:8080",
+        "--report-server", "http://report-server.aws.iohkdev.io:8080",
         "--log-config", "log-config-prod.yaml",
         "--update-latest-path", quote (updArchivePath updater),
         "--keyfile", quote (runtimePath <> "Secrets-0.6" <> (pathSeparator : "secret.key")),
@@ -57,7 +57,7 @@ launcherArgs Launcher{..} = unwords $
         "--db-path", quote (runtimePath <> "DB-0.6"),
         "--wallet-db-path", quote (runtimePath <> "Wallet-0.6"),
         "--update-server", "https://s3.eu-central-1.amazonaws.com/update-system/",
-        "--system-start", "1504820421",
+        "--system-start", "1505501792",
         "--update-with-package",
         "--tlscert", quote (tlsBase <> "server" <> (pathSeparator : "server.crt")),
         "--tlskey",  quote (tlsBase <> "server" <> (pathSeparator : "server.key")),
