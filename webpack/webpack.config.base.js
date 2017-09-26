@@ -3,9 +3,17 @@
  */
 
 const path = require('path');
-const fs = require('fs');
 const validate = require('webpack-validator');
 const webpack = require('webpack');
+
+const TARGET_API = process.env.API || 'ada';
+let API_TO_LOAD = null;
+if (TARGET_API === 'ada') {
+  API_TO_LOAD = path.resolve('./app/api/ada/index.js');
+}
+if (TARGET_API === 'etc') {
+  API_TO_LOAD = path.resolve('./app/api/etc/index.js');
+}
 
 module.exports = validate({
   cache: true,
@@ -52,11 +60,12 @@ module.exports = validate({
 
   plugins: [
     new webpack.DefinePlugin({
+      'process.env.API': JSON.stringify(TARGET_API),
       'process.env.NETWORK': JSON.stringify(process.env.NETWORK || 'development'),
-      'process.env.CARDANO_API': process.env.CARDANO_API || 1,
       'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
       'process.env.DAEDALUS_VERSION': JSON.stringify(process.env.DAEDALUS_VERSION || 'dev')
     }),
+    TARGET_API !== 'mock' && new webpack.NormalModuleReplacementPlugin(/api\/mock\/index\.js/, API_TO_LOAD),
   ],
 
   externals: [

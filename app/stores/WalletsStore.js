@@ -5,7 +5,6 @@ import Store from './lib/Store';
 import Wallet from '../domain/Wallet';
 import { matchRoute, buildRoute } from '../lib/routing-helpers';
 import Request from './lib/LocalizedRequest';
-import environment from '../environment';
 import { ROUTES } from '../routes-config';
 import WalletAddDialog from '../components/wallet/WalletAddDialog';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
@@ -61,9 +60,7 @@ export default class WalletsStore extends Store {
       this._updateActiveWalletOnRouteChanges,
       this._toggleAddWalletDialogOnWalletsLoaded,
     ]);
-    if (environment.CARDANO_API) {
-      setInterval(this.pollRefresh, this.WALLET_REFRESH_INTERVAL);
-    }
+    setInterval(this.pollRefresh, this.WALLET_REFRESH_INTERVAL);
   }
 
   _create = async (params: {

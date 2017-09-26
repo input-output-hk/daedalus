@@ -16,8 +16,8 @@ import UiNotificationsStore from './UiNotificationsStore';
 import AddressesStore from './AddressesStore';
 
 export const storeClasses = {
-  app: AppStore,
   settings: SettingsStore,
+  app: AppStore,
   wallets: WalletsStore,
   transactions: TransactionsStore,
   sidebar: SidebarStore,
@@ -33,9 +33,9 @@ export const storeClasses = {
 };
 
 export type StoresMap = {
+  settings: SettingsStore,
   app: AppStore,
   router: Object,
-  settings: SettingsStore,
   wallets: WalletsStore,
   transactions: TransactionsStore,
   sidebar: SidebarStore,
@@ -52,9 +52,9 @@ export type StoresMap = {
 
 // Constant that does never change during lifetime
 const stores = observable({
+  settings: null,
   router: null,
   app: null,
-  settings: null,
   wallets: null,
   transactions: null,
   sidebar: null,
