@@ -18,6 +18,7 @@ Changelog
 - Fix "label prop type" checkbox issue in react-polymorph ([PR 487](https://github.com/input-output-hk/daedalus/pull/487))
 - Remove all drag and drop instructions from UI ([PR 495](https://github.com/input-output-hk/daedalus/pull/495))
 - Preferences saved to local storage prefixed with network ([PR 501](https://github.com/input-output-hk/daedalus/pull/501))
+- Disable wallet import feature for the mainnet ([PR 503](https://github.com/input-output-hk/daedalus/pull/503))
 
 ### Chores
 
