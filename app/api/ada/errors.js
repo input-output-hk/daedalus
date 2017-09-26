@@ -59,8 +59,6 @@ const messages = defineMessages({
   },
 });
 
-
-
 export class ApiMethodNotYetImplementedError extends LocalizableError {
   constructor() {
     super({

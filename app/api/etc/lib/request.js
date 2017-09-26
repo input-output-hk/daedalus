@@ -1,6 +1,5 @@
 // @flow
 import http from 'http';
-import querystring from 'querystring';
 
 export type RequestOptions = {
   hostname: string,
@@ -31,7 +30,7 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}) => (
       response.on('error', (error) => reject(error));
       // Resolve JSON results and handle weird backend behavior
       // of "Left" (for errors) and "Right" (for success) properties
-      response.on('end', () => { resolve(JSON.parse(body)) });
+      response.on('end', () => { resolve(JSON.parse(body)); });
     });
     httpsRequest.on('error', (error) => reject(error));
     if (queryParams) { httpsRequest.write(requestBody); }

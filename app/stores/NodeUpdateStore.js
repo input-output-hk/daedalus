@@ -2,7 +2,6 @@
 import { observable, action } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import environment from '../environment';
 import type {
   NextUpdateResponse,
   PostponeUpdateResponse,

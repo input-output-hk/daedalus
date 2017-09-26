@@ -1,8 +1,7 @@
-//@flow
-import {Logger} from "../../lib/logger";
+// @flow
 import { getEtcSyncProgress } from './getEtcSyncProgress';
-import { stringifyData, stringifyError } from "../../lib/logger";
-import { GenericApiError } from "../errors";
+import { Logger, stringifyData, stringifyError } from '../../lib/logger';
+import { GenericApiError } from '../errors';
 import type { GetSyncProgressResponse } from '../index';
 import type { GetEtcSyncProgressResponse } from './getEtcSyncProgress';
 
@@ -18,15 +17,14 @@ export default class EtcApi {
       return {
         localDifficulty: response.result ? parseInt(response.result.currentBlock, 16) : null,
         networkDifficulty: response.result ? parseInt(response.result.highestBlock, 16) : null,
-      }
+      };
     } catch (error) {
       Logger.error('EtcApi::getSyncProgress error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
 
-  async getWallets() {
-
-  }
+  // eslint-disable-next-line no-empty-function
+  async getWallets() {}
 
 }

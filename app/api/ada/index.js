@@ -14,7 +14,7 @@ import type {
 import { action } from 'mobx';
 import { ipcRenderer, remote } from 'electron';
 import BigNumber from 'bignumber.js';
-import { Logger } from '../../lib/logger';
+import { Logger, stringifyData, stringifyError } from '../../lib/logger';
 import Wallet from '../../domain/Wallet';
 import WalletTransaction from '../../domain/WalletTransaction';
 import WalletAddress from '../../domain/WalletAddress';
@@ -51,10 +51,9 @@ import {
   IncorrectWalletPasswordError,
 } from './errors';
 import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
-import { stringifyData, stringifyError } from "../../lib/logger";
 import { getAdaSyncProgress } from './getAdaSyncProgress';
-import environment from "../../environment";
-import patchAdaApi from "./mocks/patchAdaApi";
+import environment from '../../environment';
+import patchAdaApi from './mocks/patchAdaApi';
 // import { makePayment } from './js-api/makePayment';
 
 const ca = remote.getGlobal('ca');

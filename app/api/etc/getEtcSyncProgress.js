@@ -19,7 +19,7 @@ export const getEtcSyncProgress = (): Promise<GetEtcSyncProgressResponse> => (
     path: '/',
     port: ETC_API_PORT,
   }, {
-    jsonrpc: "2.0",
-    method: "eth_syncing",
+    jsonrpc: '2.0',
+    method: 'eth_syncing',
   })
 );
