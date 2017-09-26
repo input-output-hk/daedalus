@@ -20,8 +20,8 @@ set CARDANO_BRANCH=%2
 set CURL_URL=https://bintray.com/artifact/download/vszakats/generic/curl-%CURL_VERSION%-win64-mingw.7z
 set CURL_BIN=curl-%CURL_VERSION%-win64-mingw\bin
 set NSISVER=3.02.1
-set NSIS_URL=https://downloads.sourceforge.net/project/nsis/NSIS%%203/%NSISVER%/nsis-%NSISVER%-setup.exe
-set NSIS_PATCH_URL=https://downloads.sourceforge.net/project/nsis/NSIS%%203/%NSISVER%/nsis-%NSISVER%-strlen_8192.zip
+set NSIS_URL=https://s3.eu-central-1.amazonaws.com/ci-static/nsis-%NSISVER%-setup.exe
+set NSIS_PATCH_URL=https://s3.eu-central-1.amazonaws.com/ci-static/nsis-%NSISVER%-strlen_8192.zip
 set CARDANO_URL=https://ci.appveyor.com/api/projects/jagajaga/cardano-sl/artifacts/CardanoSL.zip?branch=%CARDANO_BRANCH%
 set LIBRESSL_URL=https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-%LIBRESSL_VERSION%-windows.zip
 set DLLS_URL=https://s3.eu-central-1.amazonaws.com/cardano-sl-testing/DLLs.zip
