@@ -42,6 +42,16 @@ const messages = defineMessages({
     defaultMessage: '!!!It is not allowed to send money to Ada redemption address.',
     description: '"It is not allowed to send money to Ada redemption address." error message.'
   },
+  allFundsAlreadyAtReceiverAddressError: {
+    id: 'api.errors.AllFundsAlreadyAtReceiverAddressError',
+    defaultMessage: '!!!All your funds are already at the address you are trying send money to.',
+    description: '"All your funds are already at the address you are trying send money to." error message.'
+  },
+  notEnoughFundsForTransactionFeesError: {
+    id: 'api.errors.NotEnoughFundsForTransactionFeesError',
+    defaultMessage: '!!!Not enough Ada for fees. Try sending a smaller amount.',
+    description: '"Not enough Ada for fees. Try sending a smaller amount." error message'
+  },
   incorrectWalletPasswordError: {
     id: 'api.errors.IncorrectPasswordError',
     defaultMessage: '!!!Incorrect wallet password.',
@@ -119,6 +129,24 @@ export class NotAllowedToSendMoneyToRedeemAddressError extends LocalizableError 
     super({
       id: messages.notAllowedToSendMoneyToRedeemAddressError.id,
       defaultMessage: messages.notAllowedToSendMoneyToRedeemAddressError.defaultMessage,
+    });
+  }
+}
+
+export class AllFundsAlreadyAtReceiverAddressError extends LocalizableError {
+  constructor() {
+    super({
+      id: messages.allFundsAlreadyAtReceiverAddressError.id,
+      defaultMessage: messages.allFundsAlreadyAtReceiverAddressError.defaultMessage,
+    });
+  }
+}
+
+export class NotEnoughFundsForTransactionFeesError extends LocalizableError {
+  constructor() {
+    super({
+      id: messages.notEnoughFundsForTransactionFeesError.id,
+      defaultMessage: messages.notEnoughFundsForTransactionFeesError.defaultMessage,
     });
   }
 }

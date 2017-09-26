@@ -6,9 +6,10 @@ import classNames from 'classnames';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
 import adaSymbol from '../../assets/images/ada-symbol.inline.svg';
-import WalletTransaction from '../../domain/WalletTransaction';
+import WalletTransaction, { transactionStates } from '../../domain/WalletTransaction';
 import { assuranceLevels } from '../../config/transactionAssuranceConfig';
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
+import type { TransactionState } from '../../domain/WalletTransaction';
 
 const messages = defineMessages({
   card: {
@@ -86,10 +87,24 @@ const assuranceLevelTranslations = defineMessages({
   },
 });
 
+const stateTranslations = defineMessages({
+  [transactionStates.PENDING]: {
+    id: 'wallet.transaction.state.pending',
+    defaultMessage: '!!!Transaction pending',
+    description: 'Transaction state "pending"',
+  },
+  [transactionStates.FAILED]: {
+    id: 'wallet.transaction.state.failed',
+    defaultMessage: '!!!Transaction failed',
+    description: 'Transaction state "pending"',
+  },
+});
+
 export default class Transaction extends Component {
 
   props: {
     data: WalletTransaction,
+    state: TransactionState,
     assuranceLevel: string,
     isLastInList: boolean,
   };
@@ -108,10 +123,16 @@ export default class Transaction extends Component {
 
   render() {
     const data = this.props.data;
-    const { isLastInList, assuranceLevel } = this.props;
+    const { isLastInList, state, assuranceLevel } = this.props;
     const { isExpanded } = this.state;
     const { intl } = this.context;
+    const isFailedTransaction = state === transactionStates.FAILED;
     let typeMessage = data.type;
+
+    const componentStyles = classNames([
+      styles.component,
+      isFailedTransaction ? styles.failed : null
+    ]);
 
     const contentStyles = classNames([
       styles.content,
@@ -128,13 +149,13 @@ export default class Transaction extends Component {
     const status = intl.formatMessage(assuranceLevelTranslations[assuranceLevel]);
 
     return (
-      <div className={styles.component}>
+      <div className={componentStyles}>
 
         {/* ==== Clickable Header -> toggles details ==== */}
         <div className={styles.toggler} onClick={this.toggleDetails.bind(this)} role="presentation" aria-hidden>
-          <div className={styles[data.type]} />
-
-          <TransactionTypeIcon iconType={data.type} />
+          <TransactionTypeIcon
+            iconType={isFailedTransaction ? transactionStates.FAILED : data.type}
+          />
 
           <div className={styles.togglerContent}>
             <div className={styles.header}>
@@ -154,7 +175,14 @@ export default class Transaction extends Component {
                 {intl.formatMessage(messages[typeMessage])}
                 , {moment(data.date).format('hh:mm:ss A')}
               </div>
-              <div className={styles[assuranceLevel]}>{status}</div>
+
+              {state === transactionStates.OK ? (
+                <div className={styles[assuranceLevel]}>{status}</div>
+              ) : (
+                <div className={styles[`${state}Label`]}>
+                  {intl.formatMessage(stateTranslations[state])}
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -184,10 +212,14 @@ export default class Transaction extends Component {
                 <span key={`${data.id}-to-${address}-${addressIndex}`} className={styles.address}>{address}</span>
               ))}
               <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
-              <span>
-                <span className={styles.assuranceLevel}>{status}</span>
-                . {data.numberOfConfirmations} {intl.formatMessage(messages.confirmations)}.
-              </span>
+
+              {state === transactionStates.OK ? (
+                <span>
+                  <span className={styles.assuranceLevel}>{status}</span>
+                  . {data.numberOfConfirmations} {intl.formatMessage(messages.confirmations)}.
+                </span>
+              ) : null}
+
               <h2>{intl.formatMessage(messages.transactionId)}</h2>
               <span>{data.id}</span>
             </div>

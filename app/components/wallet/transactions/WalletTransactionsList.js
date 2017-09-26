@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
-import classnames from 'classnames';
 import styles from './WalletTransactionsList.scss';
 import Transaction from '../../widgets/Transaction';
 import WalletTransaction from '../../../domain/WalletTransaction';
@@ -41,19 +40,11 @@ export default class WalletTransactionsList extends Component {
     intl: intlShape.isRequired,
   };
 
-  state = {
-    topShadow: false,
-  };
-
   componentWillMount() {
     this.localizedDateFormat = moment.localeData().longDateFormat('L');
     // Localized dateFormat:
     // English - MM/DD/YYYY
     // Japanese - YYYY/MM/DD
-  }
-
-  componentDidMount() {
-    this.calcShadow();
   }
 
   list: HTMLElement;
@@ -77,13 +68,6 @@ export default class WalletTransactionsList extends Component {
     return groups;
   }
 
-  calcShadow() {
-    const target = this.list;
-    const scrollPosition = target.scrollTop;
-    const topShadow = scrollPosition > 20;
-    this.setState({ topShadow });
-  }
-
   isSpinnerVisible() {
     const spinner = this.loadingSpinner;
     if (spinner == null || spinner.root == null) return false;
@@ -92,14 +76,6 @@ export default class WalletTransactionsList extends Component {
     const windowHeight = window.innerHeight;
     const viewHeight = Math.max(clientHeight, windowHeight);
     return !(spinnerRect.bottom < 0 || spinnerRect.top - viewHeight >= 0);
-  }
-
-  handleListScroll() {
-    this.calcShadow();
-    const { hasMoreToLoad, isLoadingTransactions, onLoadMore } = this.props;
-    if (this.isSpinnerVisible() && hasMoreToLoad && !isLoadingTransactions) {
-      onLoadMore();
-    }
   }
 
   localizedDate(date: string) {
@@ -112,7 +88,6 @@ export default class WalletTransactionsList extends Component {
   }
 
   render() {
-    const { topShadow } = this.state;
     const {
       transactions,
       isLoadingTransactions,
@@ -127,17 +102,8 @@ export default class WalletTransactionsList extends Component {
       <LoadingSpinner ref={(component) => { this.loadingSpinner = component; }} />
     ) : null;
 
-    const componentStyles = classnames([
-      styles.component,
-      topShadow ? styles.topShadow : null,
-    ]);
-
     return (
-      <div
-        className={componentStyles}
-        onScroll={this.handleListScroll.bind(this)}
-        ref={(div) => { this.list = div; }}
-      >
+      <div className={styles.component}>
         {transactionsGroups.map((group, groupIndex) => (
           <div className={styles.group} key={walletId + '-' + groupIndex}>
             <div className={styles.groupDate}>{this.localizedDate(group.date)}</div>
@@ -147,6 +113,7 @@ export default class WalletTransactionsList extends Component {
                   <Transaction
                     data={transaction}
                     isLastInList={transactionIndex === group.transactions.length - 1}
+                    state={transaction.getState()}
                     assuranceLevel={transaction.getAssuranceLevelForMode(assuranceMode)}
                   />
                 </div>

@@ -117,6 +117,8 @@ export type NextUpdateResponse = {
   version: string,
 };
 
+export type PostponeUpdateResponse = void;
+
 export type ApplyUpdateResponse = void;
 
 export type UpdateWalletPasswordRequest = {
@@ -173,6 +175,7 @@ export type UniversalApi = {
   redeemPaperVendedAda(request: RedeemPaperVendedAdaRequest): Promise<RedeemPaperVendedAdaResponse>,
   generateMnemonic(): string,
   nextUpdate(): Promise<NextUpdateResponse>,
+  postponeUpdate(): PostponeUpdateResponse,
   applyUpdate(): ApplyUpdateResponse,
   updateWallet(request: UpdateWalletRequest): Promise<UpdateWalletResponse>,
   updateWalletPassword(request: UpdateWalletPasswordRequest): Promise<UpdateWalletPasswordResponse>,

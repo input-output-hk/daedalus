@@ -4,44 +4,15 @@
 // Css module overrides go here …
 
 .overlay {
-  background-color: var(--theme-modal-overlay-background-color);
   z-index: 100;
 }
 
 .modal {
-  background: var(--theme-modal-background-color);
   display: flex;
   flex-direction: column;
   max-height: 90%;
 
   :global {
-    .SimpleInput_root {
-      & > .SimpleInput_input {
-        color: var(--theme-dialog-input-text-color);
-        background-color: var(--theme-dialog-input-background-color);
-        &:not(.SimpleInput_errored) {
-          border: 1px solid var(--theme-dialog-input-border-color);
-        }
-        &:focus {
-          border: 1px solid var(--theme-dialog-input-focus-border-color);
-        }
-        &::-webkit-input-placeholder {
-          color: var(--theme-dialog-input-placeholder-color);
-        }
-      }
-    }
-    .SimpleSwitch_label{
-      color: var(--theme-dialog-switch-label-color);
-    }
-
-    .SimpleFormField_label {
-      color: var(--theme-dialog-input-label-color);
-    }
-
-    .SimpleCheckbox_label {
-      color: var(--theme-dialog-checkbox-label-color);
-    }
-
     .WalletExportDialogChoices_component {
       & > button {
         color: var(--theme-dialog-choice-tabs-text-color);

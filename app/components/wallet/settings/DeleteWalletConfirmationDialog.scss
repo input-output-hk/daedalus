@@ -27,11 +27,13 @@
   .deleteButton {
     &[disabled] {
       background: var(--theme-input-remove-color-lightest);
-      color: var(--theme-modal-background-color);
+      &:hover,
+      &:active {
+        background: var(--theme-input-remove-color-lightest);
+      }
     }
     &:not([disabled]) {
       background: var(--theme-input-remove-color-light);
-      color: var(--theme-modal-background-color);
       &:hover {
         background: var(--theme-input-remove-color-lighter);
       }

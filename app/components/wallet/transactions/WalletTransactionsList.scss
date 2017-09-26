@@ -1,16 +1,5 @@
 .component {
-  margin-top: 20px;
-  padding-left: 20px;
-  overflow-y: scroll;
-
-  &::-webkit-scrollbar-button {
-    height: 10px;
-    display: block;
-  }
-}
-
-.topShadow {
-  box-shadow: inset 0 2px 8px 0 rgba(0, 0, 0, 0.24);
+  padding: 20px 20px 0;
 }
 
 .list {
@@ -19,6 +8,7 @@
   background-blend-mode: lighten;
   border: solid 1px var(--theme-transactions-list-border-color);
   margin-bottom: 20px;
+
   &:last-child {
     margin: 0;
   }
@@ -26,9 +16,11 @@
 
 .group {
   margin-top: 20px;
+
   &:first-child {
     margin-top: 0;
   }
+
   &:last-child {
     margin-bottom: 20px;
   }
