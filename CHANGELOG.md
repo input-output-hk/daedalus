@@ -24,6 +24,7 @@ Changelog
 
 - Update version in About dialog to 0.8.2 ([PR 496](https://github.com/input-output-hk/daedalus/pull/496))
 - Set Dark theme as default one for the mainnet ([PR 497](https://github.com/input-output-hk/daedalus/pull/497))
+- Log file moved to public folder and Electron crash reporter removed ([PR 505](https://github.com/input-output-hk/daedalus/pull/505))
 
 ## 0.8.0
 
