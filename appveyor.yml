@@ -2,7 +2,7 @@ version: 1.0.{build}
 
 environment:
   nodejs_version: "6"
-  NETWORK: "mainnet"
+  NETWORK: "testnet"
   AWS_ACCESS_KEY_ID:
     secure: NoU3qXx0B+48v7PY3RzHrBrSqd4x/3dcJv8WwUzCNyE=
   AWS_SECRET_ACCESS_KEY:
