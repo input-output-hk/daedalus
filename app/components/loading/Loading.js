@@ -5,11 +5,10 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import LoadingSpinner from '../widgets/LoadingSpinner';
-import cardanoLogo from '../../assets/images/cardano-logo.inline.svg';
-import cardanoLogoWhite from '../../assets/images/cardano-logo-white.inline.svg';
 import daedalusLogoWhite from '../../assets/images/daedalus-logo-loading-white.inline.svg';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import styles from './Loading.scss';
+import type { ReactIntlMessage } from "../../types/i18nTypes";
 
 const messages = defineMessages({
   connecting: {
@@ -32,23 +31,21 @@ const messages = defineMessages({
     defaultMessage: '!!!Syncing blocks',
     description: 'Message "Syncing blocks" on the loading screen.'
   },
-  loadingWalletData: {
-    id: 'loading.screen.loadingWalletData',
-    defaultMessage: '!!!Loading wallet data',
-    description: 'Message "Loading wallet data" on the loading screen.'
-  }
 });
 
 @observer
 export default class Loading extends Component {
 
   props: {
+    currencyIcon: string,
+    currencyIconWhite: string,
     isConnecting: boolean,
     hasBeenConnected: boolean,
-    isSyncing: boolean,
     hasBlockSyncingStarted: boolean,
-    isLoadingWallets: boolean,
+    isSyncing: boolean,
     syncPercentage: number,
+    isLoadingDataForNextScreen: boolean,
+    loadingDataForNextScreenMessage: ReactIntlMessage,
     hasLoadedCurrentLocale: boolean,
     hasLoadedCurrentTheme: boolean,
   };
@@ -60,9 +57,9 @@ export default class Loading extends Component {
   render() {
     const { intl } = this.context;
     const {
-      isConnecting, isSyncing, syncPercentage, isLoadingWallets,
-      hasBeenConnected, hasBlockSyncingStarted,
-      hasLoadedCurrentLocale, hasLoadedCurrentTheme,
+      currencyIcon, currencyIconWhite, isConnecting, isSyncing, syncPercentage,
+      isLoadingDataForNextScreen, loadingDataForNextScreenMessage, hasBeenConnected,
+      hasBlockSyncingStarted, hasLoadedCurrentLocale, hasLoadedCurrentTheme,
     } = this.props;
     const componentStyles = classNames([
       styles.component,
@@ -80,12 +77,12 @@ export default class Loading extends Component {
     ]);
 
     const daedalusLoadingLogo = isConnecting ? daedalusLogoWhite : daedalusLogo;
-    const cardanoLoadingLogo = isConnecting ? cardanoLogoWhite : cardanoLogo;
+    const currencyLoadingLogo = isConnecting ? currencyIconWhite : currencyIcon;
     const connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
 
     return (
       <div className={componentStyles}>
-        <SvgInline svg={cardanoLoadingLogo} className={cardanoLogoStyles} />
+        <SvgInline svg={currencyLoadingLogo} className={cardanoLogoStyles} />
         <SvgInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
         {hasLoadedCurrentLocale && (
           <div>
@@ -110,10 +107,10 @@ export default class Loading extends Component {
                 </h1>
               </div>
             )}
-            {!isSyncing && !isConnecting && isLoadingWallets && (
+            {!isSyncing && !isConnecting && isLoadingDataForNextScreen && (
               <div className={styles.syncing}>
                 <h1 className={styles.headline}>
-                  {intl.formatMessage(messages.loadingWalletData)}
+                  {intl.formatMessage(loadingDataForNextScreenMessage)}
                 </h1>
                 <LoadingSpinner />
               </div>
