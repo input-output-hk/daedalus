@@ -6,11 +6,9 @@ import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import etcLogo from '../../../assets/images/etc-logo.inline.svg';
-import etcLogoWhite from '../../../assets/images/etc-logo-white.inline.svg';
 import daedalusLogoWhite from '../../../assets/images/daedalus-logo-loading-white.inline.svg';
 import daedalusLogo from '../../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import styles from '../Loading.scss';
-import etcStyles from './Loading.scss';
 
 const messages = defineMessages({
   connecting: {
@@ -76,17 +74,16 @@ export default class Loading extends Component {
       isConnecting ? styles.connectingLogo : styles.syncingLogo,
     ]);
     const etcLogoStyles = classNames([
-      etcStyles.etcLogo,
-      isConnecting ? etcStyles.connectingLogo : etcStyles.syncingLogo,
+      styles.etcLogo,
+      isConnecting ? styles.connectingLogo : styles.syncingLogo,
     ]);
 
     const daedalusLoadingLogo = isConnecting ? daedalusLogoWhite : daedalusLogo;
-    const etcLoadingLogo = isConnecting ? etcLogoWhite : etcLogo;
     const connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
 
     return (
       <div className={componentStyles}>
-        <SvgInline svg={etcLoadingLogo} className={etcLogoStyles} />
+        <SvgInline svg={etcLogo} className={etcLogoStyles} />
         <SvgInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
         {hasLoadedCurrentLocale && (
           <div>
