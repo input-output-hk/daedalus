@@ -1,0 +1,25 @@
+.etcLogo {
+  & > svg {
+    display: block;
+    left: calc(50% - (48.5px/2));
+    position: absolute;
+    top: calc(50% - 80.5px/2 - 115px);
+    width: 48.5px;
+  }
+
+  &.connectingLogo svg path {
+    fill: transparent;
+    stroke: var(--theme-icon-connecting-logo-color);
+    & + path {
+      fill: var(--theme-icon-connecting-logo-color);
+    }
+  }
+
+  &.syncingLogo svg path {
+    fill: transparent;
+    stroke: var(--theme-icon-syncing-logo-color);
+    & + path {
+      fill: var(--theme-icon-syncing-logo-color);
+    }
+  }
+}

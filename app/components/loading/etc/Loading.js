@@ -4,12 +4,13 @@ import SvgInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
-import LoadingSpinner from '../widgets/LoadingSpinner';
-import cardanoLogo from '../../assets/images/cardano-logo.inline.svg';
-import cardanoLogoWhite from '../../assets/images/cardano-logo-white.inline.svg';
-import daedalusLogoWhite from '../../assets/images/daedalus-logo-loading-white.inline.svg';
-import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
-import styles from './Loading.scss';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
+import etcLogo from '../../../assets/images/etc-logo.inline.svg';
+import etcLogoWhite from '../../../assets/images/etc-logo-white.inline.svg';
+import daedalusLogoWhite from '../../../assets/images/daedalus-logo-loading-white.inline.svg';
+import daedalusLogo from '../../../assets/images/daedalus-logo-loading-grey.inline.svg';
+import styles from '../Loading.scss';
+import etcStyles from './Loading.scss';
 
 const messages = defineMessages({
   connecting: {
@@ -74,18 +75,18 @@ export default class Loading extends Component {
       styles.daedalusLogo,
       isConnecting ? styles.connectingLogo : styles.syncingLogo,
     ]);
-    const cardanoLogoStyles = classNames([
-      styles.cardanoLogo,
-      isConnecting ? styles.connectingLogo : styles.syncingLogo,
+    const etcLogoStyles = classNames([
+      etcStyles.etcLogo,
+      isConnecting ? etcStyles.connectingLogo : etcStyles.syncingLogo,
     ]);
 
     const daedalusLoadingLogo = isConnecting ? daedalusLogoWhite : daedalusLogo;
-    const cardanoLoadingLogo = isConnecting ? cardanoLogoWhite : cardanoLogo;
+    const etcLoadingLogo = isConnecting ? etcLogoWhite : etcLogo;
     const connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
 
     return (
       <div className={componentStyles}>
-        <SvgInline svg={cardanoLoadingLogo} className={cardanoLogoStyles} />
+        <SvgInline svg={etcLoadingLogo} className={etcLogoStyles} />
         <SvgInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
         {hasLoadedCurrentLocale && (
           <div>
