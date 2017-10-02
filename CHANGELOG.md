@@ -24,6 +24,7 @@ Changelog
 
 - Update version in About dialog to 0.8.2 ([PR 496](https://github.com/input-output-hk/daedalus/pull/496))
 - Set Dark theme as default one for the mainnet ([PR 497](https://github.com/input-output-hk/daedalus/pull/497))
+- Only log errors to papertrail ([PR 509](https://github.com/input-output-hk/daedalus/pull/509))
 
 ## 0.8.0
 
