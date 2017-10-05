@@ -27,7 +27,7 @@ export default class AdaRedemptionPage extends Component {
   };
 
   render() {
-    const { wallets, adaRedemption } = this.props.stores;
+    const { wallets, adaRedemption } = this.props.stores.ada;
     const {
       redeemAdaRequest, redeemPaperVendedAdaRequest, isCertificateEncrypted, isValidRedemptionKey,
       redemptionType, isValidRedemptionMnemonic, isValidPaperVendRedemptionKey,

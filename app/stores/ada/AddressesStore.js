@@ -51,14 +51,14 @@ export default class AddressesStore extends Store {
   };
 
   @computed get all(): Array<WalletAddress> {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.stores.ada.wallets.active;
     if (!wallet) return [];
     const result = this._getAddressesAllRequest(wallet.id).result;
     return result ? result.addresses : [];
   }
 
   @computed get hasAny(): boolean {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.stores.ada.wallets.active;
     if (!wallet) return false;
     const result = this._getAddressesAllRequest(wallet.id).result;
     return result ? result.addresses.length > 0 : false;
@@ -66,22 +66,22 @@ export default class AddressesStore extends Store {
 
   @computed get active(): ?WalletAddress {
     if (this.lastGeneratedAddress) return this.lastGeneratedAddress;
-    const wallet = this.stores.wallets.active;
+    const wallet = this.stores.ada.wallets.active;
     if (!wallet) return;
     const result = this._getAddressesAllRequest(wallet.id).result;
     return result ? result.addresses[result.addresses.length - 1] : null;
   }
 
   @computed get totalAvailable(): number {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.stores.ada.wallets.active;
     if (!wallet) return 0;
     const result = this._getAddressesAllRequest(wallet.id).result;
     return result ? result.addresses.length : 0;
   }
 
   @action _refreshAddresses = () => {
-    if (this.stores.networkStatus.isConnected) {
-      const allWallets = this.stores.wallets.all;
+    if (this.stores.ada.networkStatus.isConnected) {
+      const allWallets = this.stores.ada.wallets.all;
       for (const wallet of allWallets) {
         const allRequest = this._getAddressesAllRequest(wallet.id);
         allRequest.invalidate({ immediately: false });

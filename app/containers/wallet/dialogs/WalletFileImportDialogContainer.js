@@ -17,11 +17,11 @@ export default class WalletFileImportDialogContainer extends Component {
 
   onCancel = () => {
     this.props.onClose();
-    this.props.stores.wallets.importFromFileRequest.reset();
+    this.props.stores.ada.wallets.importFromFileRequest.reset();
   };
 
   render() {
-    const { wallets } = this.props.stores;
+    const { wallets } = this.props.stores.ada;
     const { importFromFileRequest } = wallets;
 
     return (

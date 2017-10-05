@@ -13,7 +13,8 @@ export default class ChangeWalletPasswordDialogContainer extends Component {
 
   render() {
     const { actions } = this.props;
-    const { wallets, walletSettings, uiDialogs } = this.props.stores;
+    const { uiDialogs } = this.props.stores;
+    const { wallets, walletSettings } = this.props.stores.ada;
     const dialogData = uiDialogs.dataForActiveDialog;
     const { updateDataForActiveDialog } = actions.dialogs;
     const activeWallet = wallets.active;

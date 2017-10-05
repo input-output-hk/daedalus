@@ -21,7 +21,7 @@ export default function () {
     await this.client.executeAsync((filePath, done) => {
       daedalus.api.ada.importWalletFromKey({ filePath, walletPassword: null })
         .then(() => (
-          daedalus.stores.wallets.refreshWalletsData()
+          daedalus.stores.ada.wallets.refreshWalletsData()
             .then(done)
             .catch((error) => done(error))
         ))
@@ -35,7 +35,7 @@ export default function () {
     await this.client.executeAsync((filePath, done) => {
       daedalus.api.ada.importWalletFromKey({ filePath, walletPassword: 'Secret123' })
         .then(() => (
-          daedalus.stores.wallets.refreshWalletsData()
+          daedalus.stores.ada.wallets.refreshWalletsData()
             .then(done)
             .catch((error) => done(error))
         ))
@@ -55,9 +55,9 @@ export default function () {
         })
       )))
       .then(() => (
-        daedalus.stores.wallets.walletsRequest.execute()
+        daedalus.stores.ada.wallets.walletsRequest.execute()
           .then((storeWallets) => (
-            daedalus.stores.wallets.refreshWalletsData()
+            daedalus.stores.ada.wallets.refreshWalletsData()
               .then(() => done(storeWallets))
               .catch((error) => done(error))
           ))
@@ -327,7 +327,7 @@ export default function () {
 
   this.Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function (walletName) {
     const result = await this.client.executeAsync((done) => {
-      daedalus.stores.wallets.walletsRequest.execute()
+      daedalus.stores.ada.wallets.walletsRequest.execute()
         .then(done)
         .catch((error) => done(error));
     });

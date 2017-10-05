@@ -28,7 +28,7 @@ export default class SidebarStore extends Store {
   }
 
   @computed get wallets(): Array<SidebarWalletType> {
-    const { wallets, networkStatus } = this.stores;
+    const { wallets, networkStatus } = this.stores.ada;
     return wallets.all.map(w => ({
       id: w.id,
       title: w.name,
@@ -56,7 +56,7 @@ export default class SidebarStore extends Store {
   };
 
   @action _onWalletSelected = ({ walletId }: { walletId: string }) => {
-    this.stores.wallets.goToWalletRoute(walletId);
+    this.stores.ada.wallets.goToWalletRoute(walletId);
   };
 
   @action _setActivateSidebarCategory = (category: string) => {

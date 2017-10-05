@@ -42,22 +42,22 @@ export default class WalletSettingsStore extends Store {
     await this.updateWalletPasswordRequest.execute({ walletId, oldPassword, newPassword });
     this.actions.dialogs.closeActiveDialog.trigger();
     this.updateWalletPasswordRequest.reset();
-    this.stores.wallets.refreshWalletsData();
+    this.stores.ada.wallets.refreshWalletsData();
   };
 
   @action _updateWalletField = async ({ field, value }: { field: string, value: string }) => {
-    const activeWallet = this.stores.wallets.active;
+    const activeWallet = this.stores.ada.wallets.active;
     if (!activeWallet) return;
     const { id: walletId, name, assurance } = activeWallet;
     const walletData = { walletId, name, assurance };
     walletData[field] = value;
     const wallet = await this.updateWalletRequest.execute(walletData).promise;
     if (!wallet) return;
-    await this.stores.wallets.walletsRequest.patch(result => {
+    await this.stores.ada.wallets.walletsRequest.patch(result => {
       const walletIndex = _.findIndex(result, { id: walletId });
       result[walletIndex] = wallet;
     });
-    this.stores.wallets._setActiveWallet({ walletId });
+    this.stores.ada.wallets._setActiveWallet({ walletId });
   };
 
   @action _startEditingWalletField = ({ field }: { field: string }) => {

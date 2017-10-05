@@ -101,7 +101,7 @@ export default class WalletsStore extends Store {
   };
 
   _finishWalletCreation = async () => {
-    this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
+    this._newWalletDetails.mnemonic = this.stores.ada.walletBackup.recoveryPhrase.join(' ');
     const wallet = await this.createWalletRequest.execute(this._newWalletDetails).promise;
     if (wallet) {
       await this.walletsRequest.patch(result => { result.push(wallet); });
@@ -121,7 +121,7 @@ export default class WalletsStore extends Store {
   }) => {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
-    const accountId = this.stores.addresses._getAccountIdByWalletId(wallet.id);
+    const accountId = this.stores.ada.addresses._getAccountIdByWalletId(wallet.id);
     if (!accountId) throw new Error('Active account required before sending.');
     await this.sendMoneyRequest.execute({
       ...transactionDetails,
@@ -178,7 +178,7 @@ export default class WalletsStore extends Store {
   isValidPrivateKey = () => { return true; }; // eslint-disable-line
 
   @action refreshWalletsData = async () => {
-    if (this.stores.networkStatus.isConnected) {
+    if (this.stores.ada.networkStatus.isConnected) {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
       runInAction('refresh active wallet', () => {
@@ -188,26 +188,26 @@ export default class WalletsStore extends Store {
       });
       runInAction('refresh address data', () => {
         const walletIds = result.map((wallet: Wallet) => wallet.id);
-        this.stores.addresses.addressesRequests = walletIds.map(walletId => ({
+        this.stores.ada.addresses.addressesRequests = walletIds.map(walletId => ({
           walletId,
-          allRequest: this.stores.addresses._getAddressesAllRequest(walletId),
+          allRequest: this.stores.ada.addresses._getAddressesAllRequest(walletId),
         }));
-        this.stores.addresses._refreshAddresses();
+        this.stores.ada.addresses._refreshAddresses();
       });
       runInAction('refresh transaction data', () => {
         const walletIds = result.map((wallet: Wallet) => wallet.id);
-        this.stores.transactions.transactionsRequests = walletIds.map(walletId => ({
+        this.stores.ada.transactions.transactionsRequests = walletIds.map(walletId => ({
           walletId,
-          recentRequest: this.stores.transactions._getTransactionsRecentRequest(walletId),
-          allRequest: this.stores.transactions._getTransactionsAllRequest(walletId),
+          recentRequest: this.stores.ada.transactions._getTransactionsRecentRequest(walletId),
+          allRequest: this.stores.ada.transactions._getTransactionsAllRequest(walletId),
         }));
-        this.stores.transactions._refreshTransactionData();
+        this.stores.ada.transactions._refreshTransactionData();
       });
     }
   };
 
   pollRefresh = async () => {
-    if (this.stores.networkStatus.isSynced) {
+    if (this.stores.ada.networkStatus.isSynced) {
       await this.refreshWalletsData();
     }
   };
@@ -243,14 +243,14 @@ export default class WalletsStore extends Store {
     if (this.hasAnyWallets) {
       const activeWalletId = this.active ? this.active.id : null;
       const activeWalletChange = activeWalletId !== walletId;
-      if (activeWalletChange) this.stores.addresses.lastGeneratedAddress = null;
+      if (activeWalletChange) this.stores.ada.addresses.lastGeneratedAddress = null;
       this.active = this.all.find(wallet => wallet.id === walletId);
     }
   };
 
   @action _unsetActiveWallet = () => {
     this.active = null;
-    this.stores.addresses.lastGeneratedAddress = null;
+    this.stores.ada.addresses.lastGeneratedAddress = null;
   };
 
   goToWalletRoute(walletId: string) {

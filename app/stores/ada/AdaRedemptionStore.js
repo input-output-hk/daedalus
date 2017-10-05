@@ -173,7 +173,7 @@ export default class AdaRedemptionStore extends Store {
     runInAction(() => {
       this.walletId = walletId;
     });
-    const accountId = this.stores.addresses._getAccountIdByWalletId(walletId);
+    const accountId = this.stores.ada.addresses._getAccountIdByWalletId(walletId);
     if (!accountId) throw new Error('Active account required before redeeming Ada.');
 
     this.redeemAdaRequest.execute({
@@ -199,7 +199,7 @@ export default class AdaRedemptionStore extends Store {
     walletPassword: ?string,
   }) => {
     this.walletId = walletId;
-    const accountId = this.stores.addresses._getAccountIdByWalletId(walletId);
+    const accountId = this.stores.ada.addresses._getAccountIdByWalletId(walletId);
     if (!accountId) throw new Error('Active account required before redeeming Ada.');
     this.redeemPaperVendedAdaRequest.execute({
       shieldedRedemptionKey,
@@ -221,7 +221,7 @@ export default class AdaRedemptionStore extends Store {
 
   _onAdaSuccessfullyRedeemed = action(({ walletId, amount }) => {
     Logger.debug('ADA successfully redeemed for wallet: ' + walletId);
-    this.stores.wallets.goToWalletRoute(walletId);
+    this.stores.ada.wallets.goToWalletRoute(walletId);
     this.amountRedeemed = amount;
     this.showAdaRedemptionSuccessMessage = true;
     this.redemptionCode = '';

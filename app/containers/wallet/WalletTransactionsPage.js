@@ -38,7 +38,7 @@ export default class WalletTransactionsPage extends Component {
   render() {
     const { intl } = this.context;
     const actions = this.props.actions;
-    const { transactions, wallets } = this.props.stores;
+    const { transactions, wallets } = this.props.stores.ada;
     const activeWallet = wallets.active;
     const {
       searchOptions,

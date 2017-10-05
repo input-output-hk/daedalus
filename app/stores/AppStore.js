@@ -155,14 +155,14 @@ export default class AppStore extends Store {
   };
 
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
-    const { isConnected } = this.stores.networkStatus;
+    const { isConnected } = this.stores.ada.networkStatus;
     if (isConnected && this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.LANGUAGE_SELECTION });
     }
   };
 
   _redirectToTermsOfUseScreenIfTermsNotAccepted = () => {
-    const { isConnected } = this.stores.networkStatus;
+    const { isConnected } = this.stores.ada.networkStatus;
     if (isConnected && this.isCurrentLocaleSet &&
       this.hasLoadedTermsOfUseAcceptance && !this.areTermsOfUseAccepted) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.TERMS_OF_USE });
@@ -170,7 +170,7 @@ export default class AppStore extends Store {
   };
 
   _redirectToSendLogsChoiceScreenIfSendLogsChoiceNotSet = () => {
-    const { isConnected } = this.stores.networkStatus;
+    const { isConnected } = this.stores.ada.networkStatus;
     if (isConnected && this.isCurrentLocaleSet && this.areTermsOfUseAccepted &&
       this.hasLoadedSendLogsChoice && !this.isSendLogsChoiceSet) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.SEND_LOGS });
@@ -186,7 +186,7 @@ export default class AppStore extends Store {
   };
 
   _redirectToLoadingScreenWhenDisconnected = () => {
-    if (!this.stores.networkStatus.isConnected) {
+    if (!this.stores.ada.networkStatus.isConnected) {
       this._redirectToRoot();
     }
   };

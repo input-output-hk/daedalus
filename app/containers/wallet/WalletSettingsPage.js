@@ -12,7 +12,8 @@ export default class WalletSettingsPage extends Component {
   props: InjectedProps;
 
   render() {
-    const { wallets, walletSettings, uiDialogs } = this.props.stores;
+    const { uiDialogs } = this.props.stores;
+    const { wallets, walletSettings } = this.props.stores.ada;
     const { actions } = this.props;
     const activeWallet = wallets.active;
     const {

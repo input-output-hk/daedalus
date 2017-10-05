@@ -28,7 +28,7 @@ export default class WalletBackupDialogContainer extends Component {
       isTermRecoveryAccepted,
       isPrivacyNoticeAccepted,
       currentStep
-    } = stores.walletBackup;
+    } = stores.ada.walletBackup;
     const {
       startWalletBackup,
       addWordToWalletBackupVerification,

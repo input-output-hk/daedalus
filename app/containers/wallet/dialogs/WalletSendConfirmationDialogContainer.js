@@ -26,7 +26,7 @@ export default class WalletSendConfirmationDialogContainer extends Component {
 
   render() {
     const { actions, amount, receiver, totalAmount, transactionFee, adaToLovelaces } = this.props;
-    const { wallets } = this.props.stores;
+    const { wallets } = this.props.stores.ada;
     const { sendMoneyRequest } = wallets;
     const activeWallet = wallets.active;
 

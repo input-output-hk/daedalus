@@ -27,7 +27,7 @@ export default class LoadingPage extends Component {
     const {
       isConnecting, isSyncing, syncPercentage, isLoadingWallets,
       hasBeenConnected, hasBlockSyncingStarted,
-    } = stores.networkStatus;
+    } = stores.ada.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = stores.app;
     return (
       <CenteredLayout>

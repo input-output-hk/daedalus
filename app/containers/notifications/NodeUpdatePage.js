@@ -11,7 +11,7 @@ export default class NodeUpdatePage extends Component {
   props: InjectedProps;
 
   render() {
-    const store = this.props.stores.nodeUpdate;
+    const store = this.props.stores.ada.nodeUpdate;
     const actions = this.props.actions.nodeUpdate;
 
     return (

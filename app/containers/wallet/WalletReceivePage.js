@@ -34,7 +34,7 @@ export default class WalletReceivePage extends Component {
   }
 
   handleGenerateAddress = (password :string) => {
-    const { wallets } = this.props.stores;
+    const { wallets } = this.props.stores.ada;
     const wallet = wallets.active;
     if (wallet) {
       this.props.actions.addresses.createAddress.trigger({
@@ -42,14 +42,14 @@ export default class WalletReceivePage extends Component {
         password,
       });
     }
-  }
+  };
 
   resetErrors = () => {
     this.props.actions.addresses.resetErrors.trigger();
-  }
+  };
 
   closeNotification = () => {
-    const { wallets } = this.props.stores;
+    const { wallets } = this.props.stores.ada;
     const wallet = wallets.active;
     if (wallet) {
       const notificationId = `${wallet.id}-copyNotification`;
@@ -60,7 +60,8 @@ export default class WalletReceivePage extends Component {
   render() {
     const { copiedAddress } = this.state;
     const actions = this.props.actions;
-    const { wallets, addresses, sidebar, uiNotifications } = this.props.stores;
+    const { sidebar, uiNotifications } = this.props.stores;
+    const { wallets, addresses } = this.props.stores.ada;
     const wallet = wallets.active;
 
     // Guard against potential null values
