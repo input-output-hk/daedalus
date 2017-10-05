@@ -4,7 +4,7 @@ const environment = Object.assign({
   TEST: 'test',
   PRODUCTION: 'production',
   NETWORK: process.env.NETWORK,
-  API: process.env.API,
+  API: process.env.API || 'ada',
   MOBX_DEV_TOOLS: process.env.MOBX_DEV_TOOLS,
   current: process.env.NODE_ENV,
   isDev: () => environment.current === environment.DEVELOPMENT,

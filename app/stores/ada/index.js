@@ -3,7 +3,7 @@ import { observable, action } from 'mobx';
 import WalletsStore from './WalletsStore';
 import TransactionsStore from './TransactionsStore';
 import WalletBackupStore from './WalletBackupStore';
-import NetworkStatusStore from './NetworkStatusStore';
+import NetworkStatusStore from '../NetworkStatusStore';
 import AdaRedemptionStore from './AdaRedemptionStore';
 import NodeUpdateStore from './NodeUpdateStore';
 import WalletSettingsStore from './WalletSettingsStore';
