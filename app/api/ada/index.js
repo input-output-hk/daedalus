@@ -15,7 +15,8 @@ import {Logger, stringifyData, stringifyError} from '../../lib/logger';
 import Wallet from '../../domain/Wallet';
 import WalletTransaction from '../../domain/WalletTransaction';
 import WalletAddress from '../../domain/WalletAddress';
-import {GenericApiError} from '../errors';
+import type { GetSyncProgressResponse } from "../common";
+import { GenericApiError } from '../common';
 import {
   AllFundsAlreadyAtReceiverAddressError,
   IncorrectWalletPasswordError,
@@ -140,10 +141,6 @@ export type ExportWalletToFileRequest = {
   password: ?string
 };
 export type ExportWalletToFileResponse = {};
-export type GetSyncProgressResponse = {
-  localDifficulty: ?number,
-  networkDifficulty: ?number,
-};
 // const notYetImplemented = () => new Promise((_, reject) => {
 //   reject(new ApiMethodNotYetImplementedError());
 // });

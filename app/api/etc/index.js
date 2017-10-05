@@ -1,8 +1,8 @@
 // @flow
 import { getEtcSyncProgress } from './getEtcSyncProgress';
 import { Logger, stringifyData, stringifyError } from '../../lib/logger';
-import { GenericApiError } from '../errors';
-import type { GetSyncProgressResponse } from '../ada/index';
+import { GenericApiError } from '../common';
+import type { GetSyncProgressResponse } from '../common';
 import type { GetEtcSyncProgressResponse } from './getEtcSyncProgress';
 
 export const ETC_API_HOST = 'ec2-52-30-28-57.eu-west-1.compute.amazonaws.com';

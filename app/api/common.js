@@ -1,4 +1,4 @@
-import { defineMessages } from 'react-intl';
+import {defineMessages} from 'react-intl';
 import LocalizableError from '../i18n/LocalizableError';
 
 const messages = defineMessages({
@@ -17,3 +17,8 @@ export class GenericApiError extends LocalizableError {
     });
   }
 }
+
+export type GetSyncProgressResponse = {
+  localDifficulty: ?number,
+  networkDifficulty: ?number,
+};
