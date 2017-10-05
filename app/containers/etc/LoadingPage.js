@@ -2,17 +2,16 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { defineMessages } from 'react-intl';
-import CenteredLayout from '../components/layout/CenteredLayout';
-import Loading from '../components/loading/Loading';
-import type { StoresMap } from '../stores/index';
-import cardanoLogo from '../assets/images/cardano-logo.inline.svg';
-import cardanoLogoWhite from '../assets/images/cardano-logo-white.inline.svg';
+import CenteredLayout from '../../components/layout/CenteredLayout';
+import Loading from '../../components/loading/Loading';
+import type { StoresMap } from '../../stores/index';
+import etcLogo from '../../assets/images/etc-logo.inline.svg';
 
 const messages = defineMessages({
-  loadingWalletData: {
-    id: 'loading.screen.ada.loadingWalletData',
-    defaultMessage: '!!!Loading wallet data',
-    description: 'Message "Loading wallet data" on the ada loading screen.'
+  loadingAccountData: {
+    id: 'loading.screen.etc.loadingAccountData',
+    defaultMessage: '!!!Loading account data',
+    description: 'Message "Loading account data" on the etc loading screen.'
   },
 });
 
@@ -33,13 +32,13 @@ export default class LoadingPage extends Component {
     return (
       <CenteredLayout>
         <Loading
-          currencyIcon={cardanoLogo}
-          currencyIconWhite={cardanoLogoWhite}
+          currencyIcon={etcLogo}
+          currencyIconWhite={etcLogo}
           isSyncing={isSyncing}
           isConnecting={isConnecting}
           syncPercentage={syncPercentage}
           isLoadingDataForNextScreen={isLoadingWallets}
-          loadingDataForNextScreenMessage={messages.loadingWalletData}
+          loadingDataForNextScreenMessage={messages.loadingAccountData}
           hasBeenConnected={hasBeenConnected}
           hasBlockSyncingStarted={hasBlockSyncingStarted}
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}

@@ -2,11 +2,11 @@
 import React from 'react';
 import { Route, IndexRedirect } from 'react-router';
 import { ROUTES } from './routes-config';
+import resolver from './lib/resolver';
 
 // PAGES
 import Wallet from './containers/wallet/Wallet';
 import StakingPage from './containers/staking/StakingPage';
-import LoadingPage from './containers/LoadingPage';
 import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
 import WalletTransactionsPage from './containers/wallet/WalletTransactionsPage';
 import WalletSendPage from './containers/wallet/WalletSendPage';
@@ -22,6 +22,9 @@ import TermsOfUseSettingsPage from './containers/settings/categories/TermsOfUseS
 import TermsOfUsePage from './containers/profile/TermsOfUsePage';
 import SendLogsChoicePage from './containers/profile/SendLogsChoicePage';
 import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
+
+// Dynamic container loading - resolver loads file relative to '/app/' directory
+const LoadingPage = resolver('containers/LoadingPage');
 
 export const Routes = (
   <div>
