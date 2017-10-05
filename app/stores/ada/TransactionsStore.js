@@ -2,11 +2,11 @@
 import { observable, computed, action, extendObservable } from 'mobx';
 import _ from 'lodash';
 import BigNumber from 'bignumber.js';
-import Store from './lib/Store';
-import CachedRequest from './lib/LocalizedCachedRequest';
-import WalletTransaction from '../domain/WalletTransaction';
-import type { GetTransactionsResponse } from '../api/ada/index';
-import type { UnconfirmedAmount } from '../types/unconfirmedAmountType';
+import Store from '../lib/Store';
+import CachedRequest from '../lib/LocalizedCachedRequest';
+import WalletTransaction from '../../domain/WalletTransaction';
+import type { GetTransactionsResponse } from '../../api/ada/index';
+import type { UnconfirmedAmount } from '../../types/unconfirmedAmountType';
 
 export default class TransactionsStore extends Store {
 

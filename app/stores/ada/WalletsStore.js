@@ -1,20 +1,20 @@
 // @flow
 import { observable, computed, action, runInAction, untracked } from 'mobx';
 import _ from 'lodash';
-import Store from './lib/Store';
-import Wallet from '../domain/Wallet';
-import { matchRoute, buildRoute } from '../lib/routing-helpers';
-import Request from './lib/LocalizedRequest';
-import { ROUTES } from '../routes-config';
-import WalletAddDialog from '../components/wallet/WalletAddDialog';
-import type { walletExportTypeChoices } from '../types/walletExportTypes';
+import Store from '../lib/Store';
+import Wallet from '../../domain/Wallet';
+import { matchRoute, buildRoute } from '../../lib/routing-helpers';
+import Request from '.././lib/LocalizedRequest';
+import { ROUTES } from '../../routes-config';
+import WalletAddDialog from '../../components/wallet/WalletAddDialog';
+import type { walletExportTypeChoices } from '../../types/walletExportTypes';
 import type {
-  ImportWalletFromFileResponse} from '../api/ada/index';
-import type { WalletImportFromFileParams } from '../actions/wallets-actions';
+  ImportWalletFromFileResponse} from '../../api/ada/index';
+import type { WalletImportFromFileParams } from '../../actions/wallets-actions';
 import type {
   CreateTransactionResponse, CreateWalletResponse, DeleteWalletResponse, GetWalletRecoveryPhraseResponse,
   GetWalletsResponse, RestoreWalletResponse
-} from "../api/ada/index";
+} from "../../api/ada/index";
 
 export default class WalletsStore extends Store {
 

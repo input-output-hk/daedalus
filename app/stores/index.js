@@ -2,18 +2,18 @@
 import { observable, action } from 'mobx';
 import AppStore from './AppStore';
 import SettingsStore from './SettingsStore';
-import WalletsStore from './WalletsStore';
-import TransactionsStore from './TransactionsStore';
+import WalletsStore from './ada/WalletsStore';
+import TransactionsStore from './ada/TransactionsStore';
 import SidebarStore from './SidebarStore';
 import WindowStore from './WindowStore';
-import WalletBackupStore from './WalletBackupStore';
-import NetworkStatusStore from './NetworkStatusStore';
-import AdaRedemptionStore from './AdaRedemptionStore';
-import NodeUpdateStore from './NodeUpdateStore';
-import WalletSettingsStore from './WalletSettingsStore';
+import WalletBackupStore from './ada/WalletBackupStore';
+import NetworkStatusStore from './ada/NetworkStatusStore';
+import AdaRedemptionStore from './ada/AdaRedemptionStore';
+import NodeUpdateStore from './ada/NodeUpdateStore';
+import WalletSettingsStore from './ada/WalletSettingsStore';
 import UiDialogsStore from './UiDialogsStore';
 import UiNotificationsStore from './UiNotificationsStore';
-import AddressesStore from './AddressesStore';
+import AddressesStore from './ada/AddressesStore';
 
 export const storeClasses = {
   settings: SettingsStore,

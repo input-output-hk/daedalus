@@ -2,23 +2,23 @@
 import { action, observable, runInAction } from 'mobx';
 import { ipcRenderer } from 'electron';
 import { isString } from 'lodash';
-import Store from './lib/Store';
-import Request from './lib/LocalizedRequest';
-import { Logger } from '../lib/logger';
-import { matchRoute } from '../lib/routing-helpers';
-import WalletTransaction from '../domain/WalletTransaction';
-import { PARSE_REDEMPTION_CODE } from '../../electron/ipc-api/parse-redemption-code-from-pdf';
+import Store from '../lib/Store';
+import Request from '../lib/LocalizedRequest';
+import { Logger } from '../../lib/logger';
+import { matchRoute } from '../../lib/routing-helpers';
+import WalletTransaction from '../../domain/WalletTransaction';
+import { PARSE_REDEMPTION_CODE } from '../../../electron/ipc-api/parse-redemption-code-from-pdf';
 import {
   InvalidMnemonicError,
   AdaRedemptionCertificateParseError,
   AdaRedemptionEncryptedCertificateParseError
-} from '../i18n/errors';
-import { DECIMAL_PLACES_IN_ADA } from '../config/numbersConfig';
-import LocalizableError from '../i18n/LocalizableError';
-import Wallet from '../domain/Wallet';
-import { ROUTES } from '../routes-config';
-import type { RedeemPaperVendedAdaResponse } from '../api/ada/index';
-import type { RedemptionTypeChoices } from '../types/redemptionTypes';
+} from '../../i18n/errors';
+import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
+import LocalizableError from '../../i18n/LocalizableError';
+import Wallet from '../../domain/Wallet';
+import { ROUTES } from '../../routes-config';
+import type { RedeemPaperVendedAdaResponse } from '../../api/ada/index';
+import type { RedemptionTypeChoices } from '../../types/redemptionTypes';
 
 export default class AdaRedemptionStore extends Store {
 

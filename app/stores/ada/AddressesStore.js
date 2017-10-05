@@ -1,15 +1,15 @@
 // @flow
 import { observable, computed, action, runInAction } from 'mobx';
 import _ from 'lodash';
-import Store from './lib/Store';
-import CachedRequest from './lib/LocalizedCachedRequest';
-import Request from './lib/LocalizedRequest';
-import WalletAddress from '../domain/WalletAddress';
-import LocalizableError from '../i18n/LocalizableError';
+import Store from '../lib/Store';
+import CachedRequest from '../lib/LocalizedCachedRequest';
+import Request from '../lib/LocalizedRequest';
+import WalletAddress from '../../domain/WalletAddress';
+import LocalizableError from '../../i18n/LocalizableError';
 import type {
   CreateAddressResponse,
-} from '../api/ada/index';
-import type {GetAddressesResponse} from "../api/ada/index";
+} from '../../api/ada/index';
+import type {GetAddressesResponse} from "../../api/ada/index";
 
 export default class AddressesStore extends Store {
 

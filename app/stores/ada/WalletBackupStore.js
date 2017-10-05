@@ -1,8 +1,8 @@
 // @flow
 import { observable, action, computed } from 'mobx';
-import Store from './lib/Store';
-import environment from '../environment';
-import WalletBackupDialog from '../components/wallet/WalletBackupDialog';
+import Store from '../lib/Store';
+import environment from '../../environment';
+import WalletBackupDialog from '../../components/wallet/WalletBackupDialog';
 
 export type walletBackupSteps = 'privacyWarning' | 'recoveryPhraseDisplay' | 'recoveryPhraseEntry' | null;
 
