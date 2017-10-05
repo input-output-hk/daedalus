@@ -5,7 +5,7 @@ import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
 import WalletTransaction from '../domain/WalletTransaction';
-import type { GetTransactionsResponse } from '../api';
+import type { GetTransactionsResponse } from '../api/ada/index';
 import type { UnconfirmedAmount } from '../types/unconfirmedAmountType';
 
 export default class TransactionsStore extends Store {
@@ -46,14 +46,14 @@ export default class TransactionsStore extends Store {
   @computed get recentTransactionsRequest(): CachedRequest<GetTransactionsResponse> {
     const wallet = this.stores.wallets.active;
     // TODO: Do not return new request here
-    if (!wallet) return new CachedRequest(this.api.getTransactions);
+    if (!wallet) return new CachedRequest(this.api.ada.getTransactions);
     return this._getTransactionsRecentRequest(wallet.id);
   }
 
   @computed get searchRequest(): CachedRequest<GetTransactionsResponse> {
     const wallet = this.stores.wallets.active;
     // TODO: Do not return new request here
-    if (!wallet) return new CachedRequest(this.api.getTransactions);
+    if (!wallet) return new CachedRequest(this.api.ada.getTransactions);
     return this._getTransactionsAllRequest(wallet.id);
   }
 
@@ -156,7 +156,7 @@ export default class TransactionsStore extends Store {
   calculateTransactionFee = (walletId: string, receiver: string, amount: string) => {
     const accountId = this.stores.addresses._getAccountIdByWalletId(walletId);
     if (!accountId) throw new Error('Active account required before calculating transaction fees.');
-    return this.api.calculateTransactionFee({ sender: accountId, receiver, amount });
+    return this.api.ada.calculateTransactionFee({ sender: accountId, receiver, amount });
   }
 
   @action _refreshTransactionData = () => {
@@ -186,13 +186,13 @@ export default class TransactionsStore extends Store {
   _getTransactionsRecentRequest = (walletId: string): CachedRequest<GetTransactionsResponse> => {
     const foundRequest = _.find(this.transactionsRequests, { walletId });
     if (foundRequest && foundRequest.recentRequest) return foundRequest.recentRequest;
-    return new CachedRequest(this.api.getTransactions);
+    return new CachedRequest(this.api.ada.getTransactions);
   };
 
   _getTransactionsAllRequest = (walletId: string): CachedRequest<GetTransactionsResponse> => {
     const foundRequest = _.find(this.transactionsRequests, { walletId });
     if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
-    return new CachedRequest(this.api.getTransactions);
+    return new CachedRequest(this.api.ada.getTransactions);
   };
 
 }

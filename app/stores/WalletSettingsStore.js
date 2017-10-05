@@ -5,11 +5,10 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import globalMessages from '../i18n/global-messages';
 import type {
-  UpdateWalletResponse,
-  UpdateWalletPasswordResponse,
   ExportWalletToFileResponse,
-} from '../api';
+} from '../api/ada/index';
 import type { WalletExportToFileParams } from '../actions/wallet-settings-actions';
+import type {UpdateWalletPasswordResponse, UpdateWalletResponse} from "../api/ada/index";
 
 export default class WalletSettingsStore extends Store {
 
@@ -19,9 +18,9 @@ export default class WalletSettingsStore extends Store {
   ];
 
   /* eslint-disable max-len */
-  @observable updateWalletRequest: Request<UpdateWalletResponse> = new Request(this.api.updateWallet);
-  @observable updateWalletPasswordRequest: Request<UpdateWalletPasswordResponse> = new Request(this.api.updateWalletPassword);
-  @observable exportWalletToFileRequest: Request<ExportWalletToFileResponse> = new Request(this.api.exportWalletToFile);
+  @observable updateWalletRequest: Request<UpdateWalletResponse> = new Request(this.api.ada.updateWallet);
+  @observable updateWalletPasswordRequest: Request<UpdateWalletPasswordResponse> = new Request(this.api.ada.updateWalletPassword);
+  @observable exportWalletToFileRequest: Request<ExportWalletToFileResponse> = new Request(this.api.ada.exportWalletToFile);
   /* eslint-enable max-len */
 
   @observable walletFieldBeingEdited = null;

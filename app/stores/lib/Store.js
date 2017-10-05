@@ -2,17 +2,17 @@
 import Reaction from './Reaction';
 import type { ActionsMap } from '../../actions/index';
 import type { StoresMap } from '../../stores/index';
-import type { UniversalApi } from '../../api/index';
+import type { Api } from '../../api/index';
 
 export default class Store {
 
   stores: StoresMap;
-  api: UniversalApi;
+  api: Api;
   actions: ActionsMap;
 
   _reactions: Array<Reaction> = [];
 
-  constructor(stores: StoresMap, api: UniversalApi, actions: ActionsMap) {
+  constructor(stores: StoresMap, api: Api, actions: ActionsMap) {
     this.stores = stores;
     this.api = api;
     this.actions = actions;

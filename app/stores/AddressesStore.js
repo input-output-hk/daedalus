@@ -7,9 +7,9 @@ import Request from './lib/LocalizedRequest';
 import WalletAddress from '../domain/WalletAddress';
 import LocalizableError from '../i18n/LocalizableError';
 import type {
-  GetAddressesResponse,
   CreateAddressResponse,
-} from '../api';
+} from '../api/ada/index';
+import type {GetAddressesResponse} from "../api/ada/index";
 
 export default class AddressesStore extends Store {
 
@@ -22,7 +22,7 @@ export default class AddressesStore extends Store {
 
   // REQUESTS
   /* eslint-disable max-len */
-  @observable createAddressRequest: Request<CreateAddressResponse> = new Request(this.api.createAddress);
+  @observable createAddressRequest: Request<CreateAddressResponse> = new Request(this.api.ada.createAddress);
   /* eslint-disable max-len */
 
   setup() {
@@ -102,7 +102,7 @@ export default class AddressesStore extends Store {
   _getAddressesAllRequest = (walletId: string): CachedRequest<GetAddressesResponse> => {
     const foundRequest = _.find(this.addressesRequests, { walletId });
     if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
-    return new CachedRequest(this.api.getAddresses);
+    return new CachedRequest(this.api.ada.getAddresses);
   };
 
 }

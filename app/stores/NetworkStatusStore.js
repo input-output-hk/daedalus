@@ -4,7 +4,7 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
 import { Logger } from '../lib/logger';
-import type { GetSyncProgressResponse } from '../api';
+import type { GetSyncProgressResponse } from '../api/ada/index';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedDifficulties = null;
@@ -31,7 +31,7 @@ export default class NetworkStatusStore extends Store {
   @observable networkDifficulty = 0;
   @observable isLoadingWallets = true;
   @observable syncProgressRequest: Request<GetSyncProgressResponse> = new Request(
-    this.api.getSyncProgress
+    this.api.ada.getSyncProgress
   );
   @observable _localDifficultyStartedWith = null;
 

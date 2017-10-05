@@ -9,15 +9,12 @@ import { ROUTES } from '../routes-config';
 import WalletAddDialog from '../components/wallet/WalletAddDialog';
 import type { walletExportTypeChoices } from '../types/walletExportTypes';
 import type {
-  GetWalletsResponse,
-  ImportWalletFromFileResponse,
-  CreateWalletResponse,
-  DeleteWalletResponse,
-  CreateTransactionResponse,
-  GetWalletRecoveryPhraseResponse,
-  RestoreWalletResponse
-} from '../api';
+  ImportWalletFromFileResponse} from '../api/ada/index';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
+import type {
+  CreateTransactionResponse, CreateWalletResponse, DeleteWalletResponse, GetWalletRecoveryPhraseResponse,
+  GetWalletsResponse, RestoreWalletResponse
+} from "../api/ada/index";
 
 export default class WalletsStore extends Store {
 
@@ -27,13 +24,13 @@ export default class WalletsStore extends Store {
 
   // REQUESTS
   /* eslint-disable max-len */
-  @observable walletsRequest: Request<GetWalletsResponse> = new Request(this.api.getWallets);
-  @observable importFromFileRequest: Request<ImportWalletFromFileResponse> = new Request(this.api.importWalletFromFile);
-  @observable createWalletRequest: Request<CreateWalletResponse> = new Request(this.api.createWallet);
-  @observable deleteWalletRequest: Request<DeleteWalletResponse> = new Request(this.api.deleteWallet);
-  @observable sendMoneyRequest: Request<CreateTransactionResponse> = new Request(this.api.createTransaction);
-  @observable getWalletRecoveryPhraseRequest: Request<GetWalletRecoveryPhraseResponse> = new Request(this.api.getWalletRecoveryPhrase);
-  @observable restoreRequest: Request<RestoreWalletResponse> = new Request(this.api.restoreWallet);
+  @observable walletsRequest: Request<GetWalletsResponse> = new Request(this.api.ada.getWallets);
+  @observable importFromFileRequest: Request<ImportWalletFromFileResponse> = new Request(this.api.ada.importWalletFromFile);
+  @observable createWalletRequest: Request<CreateWalletResponse> = new Request(this.api.ada.createWallet);
+  @observable deleteWalletRequest: Request<DeleteWalletResponse> = new Request(this.api.ada.deleteWallet);
+  @observable sendMoneyRequest: Request<CreateTransactionResponse> = new Request(this.api.ada.createTransaction);
+  @observable getWalletRecoveryPhraseRequest: Request<GetWalletRecoveryPhraseResponse> = new Request(this.api.ada.getWalletRecoveryPhrase);
+  @observable restoreRequest: Request<RestoreWalletResponse> = new Request(this.api.ada.restoreWallet);
   /* eslint-enable max-len */
 
   @observable walletExportType: walletExportTypeChoices = 'paperWallet';
@@ -173,9 +170,9 @@ export default class WalletsStore extends Store {
 
   getWalletByName = (name: string): (?Wallet) => this.all.find(w => w.name === name);
 
-  isValidAddress = (address: string) => this.api.isValidAddress(address);
+  isValidAddress = (address: string) => this.api.ada.isValidAddress(address);
 
-  isValidMnemonic = (mnemonic: string) => this.api.isValidMnemonic(mnemonic);
+  isValidMnemonic = (mnemonic: string) => this.api.ada.isValidMnemonic(mnemonic);
 
   // TODO - call endpoint to check if private key is valid
   isValidPrivateKey = () => { return true; }; // eslint-disable-line

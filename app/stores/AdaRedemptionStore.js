@@ -17,7 +17,7 @@ import { DECIMAL_PLACES_IN_ADA } from '../config/numbersConfig';
 import LocalizableError from '../i18n/LocalizableError';
 import Wallet from '../domain/Wallet';
 import { ROUTES } from '../routes-config';
-import type { RedeemPaperVendedAdaResponse } from '../api/index';
+import type { RedeemPaperVendedAdaResponse } from '../api/ada/index';
 import type { RedemptionTypeChoices } from '../types/redemptionTypes';
 
 export default class AdaRedemptionStore extends Store {
@@ -35,9 +35,9 @@ export default class AdaRedemptionStore extends Store {
   @observable error: ?LocalizableError = null;
   @observable amountRedeemed: number = 0;
   @observable showAdaRedemptionSuccessMessage: boolean = false;
-  @observable redeemAdaRequest: Request<Wallet> = new Request(this.api.redeemAda);
+  @observable redeemAdaRequest: Request<Wallet> = new Request(this.api.ada.redeemAda);
   // eslint-disable-next-line
-  @observable redeemPaperVendedAdaRequest: Request<RedeemPaperVendedAdaResponse> = new Request(this.api.redeemPaperVendedAda);
+  @observable redeemPaperVendedAdaRequest: Request<RedeemPaperVendedAdaResponse> = new Request(this.api.ada.redeemPaperVendedAda);
   @observable isRedemptionDisclaimerAccepted = false;
 
   setup() {
@@ -68,12 +68,12 @@ export default class AdaRedemptionStore extends Store {
     ipcRenderer.removeAllListeners(PARSE_REDEMPTION_CODE.ERROR);
   }
 
-  isValidRedemptionKey = (redemptionKey: string) => this.api.isValidRedemptionKey(redemptionKey);
-  isValidRedemptionMnemonic = (mnemonic: string) => this.api.isValidRedemptionMnemonic(mnemonic);
+  isValidRedemptionKey = (redemptionKey: string) => this.api.ada.isValidRedemptionKey(redemptionKey);
+  isValidRedemptionMnemonic = (mnemonic: string) => this.api.ada.isValidRedemptionMnemonic(mnemonic);
 
   isValidPaperVendRedemptionKey = (
     mnemonic: string
-  ) => this.api.isValidPaperVendRedemptionKey(mnemonic);
+  ) => this.api.ada.isValidPaperVendRedemptionKey(mnemonic);
 
   @action _chooseRedemptionType = (params: {
     redemptionType: RedemptionTypeChoices,

@@ -3,10 +3,9 @@ import { observable, action } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import type {
-  NextUpdateResponse,
-  PostponeUpdateResponse,
   ApplyUpdateResponse,
-} from '../api';
+} from '../api/ada/index';
+import type {NextUpdateResponse, PostponeUpdateResponse} from "../api/ada/index";
 
 export default class NodeUpdateStore extends Store {
 
@@ -20,9 +19,9 @@ export default class NodeUpdateStore extends Store {
 
   // REQUESTS
   /* eslint-disable max-len */
-  @observable nextUpdateRequest: Request<NextUpdateResponse> = new Request(this.api.nextUpdate);
-  @observable postponeUpdateRequest: Request<PostponeUpdateResponse> = new Request(this.api.postponeUpdate);
-  @observable applyUpdateRequest: Request<ApplyUpdateResponse> = new Request(this.api.applyUpdate);
+  @observable nextUpdateRequest: Request<NextUpdateResponse> = new Request(this.api.ada.nextUpdate);
+  @observable postponeUpdateRequest: Request<PostponeUpdateResponse> = new Request(this.api.ada.postponeUpdate);
+  @observable applyUpdateRequest: Request<ApplyUpdateResponse> = new Request(this.api.ada.applyUpdate);
   /* eslint-disable max-len */
 
   setup() {
