@@ -34,6 +34,16 @@
   }
 }
 
+.etcLogo {
+  & > svg {
+    display: block;
+    left: calc(50% - (48.5px/2));
+    position: absolute;
+    top: calc(50% - 80.5px/2 - 115px);
+    width: 48.5px;
+  }
+}
+
 .daedalusLogo {
   & > svg {
     display: block;
@@ -50,7 +60,7 @@
   }
 }
 
-.syncingLogo > svg path {
+.syncingLogo svg path {
   fill: var(--theme-icon-syncing-logo-color);
 }
 
