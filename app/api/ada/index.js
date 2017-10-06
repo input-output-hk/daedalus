@@ -36,6 +36,11 @@ import patchAdaApi from './mocks/patchAdaApi';
 import BigNumber from "bignumber.js";
 // import { makePayment } from './js-api/makePayment';
 
+/**
+ * The api layer that is used for all requests to the
+ * cardano backend when working with the ADA coin.
+ */
+
 const ca = remote.getGlobal('ca');
 const tlsConfig = ClientApi.tlsInit(ca);
 

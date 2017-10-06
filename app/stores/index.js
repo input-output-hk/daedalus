@@ -1,7 +1,7 @@
 // @flow
 import { observable, extendObservable, action } from 'mobx';
 import AppStore from './AppStore';
-import SettingsStore from './SettingsStore';
+import ProfileStore from './ProfileStore';
 import SidebarStore from './SidebarStore';
 import WindowStore from './WindowStore';
 import UiDialogsStore from './UiDialogsStore';
@@ -10,7 +10,7 @@ import setupAdaStores from './ada/index';
 import type { AdaStoresMap } from './ada/index';
 
 export const storeClasses = {
-  settings: SettingsStore,
+  profile: ProfileStore,
   app: AppStore,
   sidebar: SidebarStore,
   window: WindowStore,
@@ -19,7 +19,7 @@ export const storeClasses = {
 };
 
 export type StoresMap = {
-  settings: SettingsStore,
+  profile: ProfileStore,
   app: AppStore,
   router: Object,
   sidebar: SidebarStore,
@@ -31,7 +31,7 @@ export type StoresMap = {
 
 // Constant that does never change during lifetime
 const stores = observable({
-  settings: null,
+  profile: null,
   router: null,
   app: null,
   sidebar: null,

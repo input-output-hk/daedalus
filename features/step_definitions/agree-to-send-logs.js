@@ -31,7 +31,7 @@ export default function () {
 
   this.Then(/^I should have "Send logs" accepted$/, async function () {
     const result = await this.client.executeAsync((done) => {
-      daedalus.stores.app.getSendLogsChoiceRequest.execute()
+      daedalus.stores.profile.getSendLogsChoiceRequest.execute()
         .then(done)
         .catch((error) => done(error));
     });

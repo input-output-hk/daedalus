@@ -15,7 +15,7 @@ export default class SupportSettingsPage extends Component {
   };
 
   render() {
-    const { setSendLogsChoiceRequest, getSendLogsChoiceRequest } = this.props.stores.app;
+    const { setSendLogsChoiceRequest, getSendLogsChoiceRequest } = this.props.stores.profile;
     return (
       <SupportSettings
         onSubmit={this.onSubmit}

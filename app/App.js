@@ -23,9 +23,9 @@ export default class App extends Component {
 
   render() {
     const { stores, actions, history } = this.props;
-    const locale = stores.app.currentLocale;
+    const locale = stores.profile.currentLocale;
     const mobxDevTools = environment.MOBX_DEV_TOOLS ? <DevTools /> : null;
-    const currentTheme = stores.app.currentTheme;
+    const currentTheme = stores.profile.currentTheme;
     const theme = require(`./themes/daedalus/${currentTheme}.js`); // eslint-disable-line
 
     return (

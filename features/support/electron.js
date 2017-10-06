@@ -55,7 +55,7 @@ export default function () {
       const resetBackend = () => {
         if (daedalus.stores.ada.networkStatus.isConnected) {
           daedalus.api.testReset()
-            .then(() => daedalus.stores.settings.reset())
+            .then(() => daedalus.stores.profile.reset())
             .then(done)
             .catch((error) => done(error));
         } else {
