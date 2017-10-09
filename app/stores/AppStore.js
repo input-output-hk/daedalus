@@ -23,14 +23,14 @@ export default class AppStore extends Store {
   ];
 
   /* eslint-disable max-len */
-  @observable getProfileLocaleRequest: Request<string> = new Request(this.api.getUserLocale);
-  @observable setProfileLocaleRequest: Request<string> = new Request(this.api.setUserLocale);
-  @observable getTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.getTermsOfUseAcceptance);
-  @observable setTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.setTermsOfUseAcceptance);
-  @observable getSendLogsChoiceRequest: Request<boolean> = new Request(this.api.getSendLogsChoice);
-  @observable setSendLogsChoiceRequest: Request = new Request(this.api.setSendLogsChoice);
-  @observable getThemeRequest: Request<string> = new Request(this.api.getUserTheme);
-  @observable setThemeRequest: Request<string> = new Request(this.api.setUserTheme);
+  @observable getProfileLocaleRequest: Request<string> = new Request(this.stores.settings.getUserLocale);
+  @observable setProfileLocaleRequest: Request<string> = new Request(this.stores.settings.setUserLocale);
+  @observable getTermsOfUseAcceptanceRequest: Request<string> = new Request(this.stores.settings.getTermsOfUseAcceptance);
+  @observable setTermsOfUseAcceptanceRequest: Request<string> = new Request(this.stores.settings.setTermsOfUseAcceptance);
+  @observable getSendLogsChoiceRequest: Request<boolean> = new Request(this.stores.settings.getSendLogsChoice);
+  @observable setSendLogsChoiceRequest: Request = new Request(this.stores.settings.setSendLogsChoice);
+  @observable getThemeRequest: Request<string> = new Request(this.stores.settings.getUserTheme);
+  @observable setThemeRequest: Request<string> = new Request(this.stores.settings.setUserTheme);
 
   @observable error: ?LocalizableError = null;
   /* eslint-enable max-len */

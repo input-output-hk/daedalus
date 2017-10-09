@@ -1,11 +1,11 @@
 import BigNumber from 'bignumber.js';
-import { Logger } from '../../lib/logger';
+import { Logger } from '../../../lib/logger';
 import { RedeemAdaError } from '../errors';
 import type {
   RedeemAdaRequest,
   RedeemPaperVendedAdaRequest,
-} from '../index';
-import CardanoClientApi from '../CardanoClientApi';
+} from '../../index';
+import CardanoClientApi from '../index';
 
 // ========== LOGGING =========
 

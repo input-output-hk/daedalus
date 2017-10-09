@@ -60,8 +60,9 @@
     "react"
   ],
   "globals": {
-    "CARDANO_API": true,
-    "AUTO_LOGIN": true,
-    "MOBX_DEV_TOOLS": true
+    "API": true,
+    "NETWORK": true,
+    "MOBX_DEV_TOOLS": true,
+    "DAEDALUS_VERSION": true
   }
 }
