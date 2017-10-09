@@ -30,14 +30,14 @@ export default class SettingsStore extends Store {
     fractionGroupSize: 0
   };
 
-  @observable getProfileLocaleRequest: Request<string> = new Request(this.api.local.getUserLocale);
-  @observable setProfileLocaleRequest: Request<string> = new Request(this.api.local.setUserLocale);
-  @observable getTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.local.getTermsOfUseAcceptance);
-  @observable setTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.local.setTermsOfUseAcceptance);
-  @observable getSendLogsChoiceRequest: Request<boolean> = new Request(this.api.local.getSendLogsChoice);
-  @observable setSendLogsChoiceRequest: Request = new Request(this.api.local.setSendLogsChoice);
-  @observable getThemeRequest: Request<string> = new Request(this.api.local.getUserTheme);
-  @observable setThemeRequest: Request<string> = new Request(this.api.local.setUserTheme);
+  @observable getProfileLocaleRequest: Request<string> = new Request(this.api.localStorage.getUserLocale);
+  @observable setProfileLocaleRequest: Request<string> = new Request(this.api.localStorage.setUserLocale);
+  @observable getTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.localStorage.getTermsOfUseAcceptance);
+  @observable setTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.localStorage.setTermsOfUseAcceptance);
+  @observable getSendLogsChoiceRequest: Request<boolean> = new Request(this.api.localStorage.getSendLogsChoice);
+  @observable setSendLogsChoiceRequest: Request = new Request(this.api.localStorage.setSendLogsChoice);
+  @observable getThemeRequest: Request<string> = new Request(this.api.localStorage.getUserTheme);
+  @observable setThemeRequest: Request<string> = new Request(this.api.localStorage.setUserTheme);
 
   setup() {
     this.actions.profile.updateLocale.listen(this._updateLocale);

@@ -5,7 +5,7 @@ import localStorage from "electron-json-storage";
  * for user settings that are not synced with any coin backend.
  */
 
-export default class LocalApi {
+export default class LocalStorageApi {
 
   getUserLocale= () => new Promise((resolve, reject) => {
     localStorage.get('userLocale', (error, response) => {

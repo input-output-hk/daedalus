@@ -1,16 +1,16 @@
 // @flow
 import AdaApi from './ada/index';
 import EtcApi from './etc/index';
-import LocalApi from './local/index';
+import LocalStorageApi from './localStorage/index';
 
 export type Api = {
   ada: AdaApi,
   etc: EtcApi,
-  local: LocalApi,
+  localStorage: LocalStorageApi,
 };
 
 export const setupApi = (): Api => ({
   ada: new AdaApi(),
   etc: new EtcApi(),
-  local: new LocalApi(),
+  localStorage: new LocalStorageApi(),
 });
