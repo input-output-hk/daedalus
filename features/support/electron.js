@@ -54,8 +54,8 @@ export default function () {
     await this.client.executeAsync((done) => {
       const resetBackend = () => {
         if (daedalus.stores.ada.networkStatus.isConnected) {
-          daedalus.api.testReset()
-            .then(() => daedalus.stores.profile.reset())
+          daedalus.api.ada.testReset()
+            .then(() => daedalus.api.localStorage.reset())
             .then(done)
             .catch((error) => done(error));
         } else {
