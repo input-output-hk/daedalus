@@ -106,7 +106,7 @@ test -d node_modules/daedalus-client-api/ -a -n "${fast_impure}" || {
         rm      daedalus-bridge.tar.xz
         echo "cardano-sl build id is $(cat node_modules/daedalus-client-api/build-id)"
         pushd node_modules/daedalus-client-api
-              mv log-config-prod.yaml cardano-node cardano-launcher ../../installers
+              mv log-config-prod.yaml cardano-node cardano-launcher configuration.yaml *genesis*.json ../../installers
         popd
         chmod +w installers/cardano-{node,launcher}
         strip installers/cardano-{node,launcher}

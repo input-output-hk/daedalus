@@ -137,7 +137,6 @@ writeInstallerNSIS fullVersion = do
         file [] "cardano-node.exe"
         file [] "cardano-launcher.exe"
         file [] "log-config-prod.yaml"
-        file [] "data\\ip-dht-mappings"
         file [] "version.txt"
         file [] "build-certificates-win64.bat"
         file [] "ca.conf"
@@ -145,7 +144,7 @@ writeInstallerNSIS fullVersion = do
         file [] "client.conf"
         file [] "wallet-topology.yaml"
         file [] "configuration.yaml"
-        file [] "mainnet-genesis.json"
+        file [] "*genesis*.json"
         writeFileLines "$INSTDIR\\daedalus.bat" (map str launcherScript)
         file [Recursive] "dlls\\"
         file [Recursive] "libressl\\"
