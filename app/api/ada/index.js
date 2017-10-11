@@ -1,3 +1,4 @@
+// @flow
 import type {
   ApiAccounts,
   ApiAddress,
@@ -7,7 +8,6 @@ import type {
   ApiWallet,
   ApiWallets,
 } from 'daedalus-client-api';
-// @flow
 import ClientApi from 'daedalus-client-api';
 import {action} from 'mobx';
 import {ipcRenderer, remote} from 'electron';
@@ -33,7 +33,7 @@ import {LOVELACES_PER_ADA} from '../../config/numbersConfig';
 import {getAdaSyncProgress} from './getAdaSyncProgress';
 import environment from '../../environment';
 import patchAdaApi from './mocks/patchAdaApi';
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js';
 // import { makePayment } from './js-api/makePayment';
 
 /**
@@ -123,11 +123,11 @@ export type ImportWalletFromFileRequest = {
   walletName: ?string,
 };
 export type ImportWalletFromFileResponse = Wallet;
-export type NextUpdateResponse = {
+export type NextUpdateResponse = ?{
   version: string,
 };
-export type PostponeUpdateResponse = void;
-export type ApplyUpdateResponse = void;
+export type PostponeUpdateResponse = Promise<void>;
+export type ApplyUpdateResponse = Promise<void>;
 export type UpdateWalletPasswordRequest = {
   walletId: string,
   oldPassword: ?string,
@@ -469,7 +469,7 @@ export default class AdaApi {
     }
   }
 
-  generateMnemonic(): string {
+  generateMnemonic(): Array<string> {
     Logger.debug('CardanoClientApi::generateMnemonic called');
     try {
       const response = ClientApi.generateMnemonic().split(' ');
@@ -620,7 +620,7 @@ export default class AdaApi {
     }
   }
 
-  async testReset(): void {
+  async testReset(): Promise<void> {
     Logger.debug('CardanoClientApi::testReset called');
     try {
       const response = await ClientApi.testReset(tlsConfig);
