@@ -145,7 +145,7 @@ writeInstallerNSIS fullVersion = do
         file [] "client.conf"
         file [] "wallet-topology.yaml"
         file [] "configuration.yaml"
-        file [] "mainnet-genesis.json"
+        file [] "mainnet-genesis-dryrun-with-stakeholders.json"
         writeFileLines "$INSTDIR\\daedalus.bat" (map str launcherScript)
         file [Recursive] "dlls\\"
         file [Recursive] "libressl\\"
