@@ -8,7 +8,7 @@ import Request from '.././lib/LocalizedRequest';
 import { ROUTES } from '../../routes-config';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
 import type { walletExportTypeChoices } from '../../types/walletExportTypes';
-import type { WalletImportFromFileParams } from '../../actions/wallets-actions';
+import type { WalletImportFromFileParams } from '../../actions/ada/wallets-actions';
 import type {
   CreateTransactionResponse, CreateWalletResponse, DeleteWalletResponse,
   GetWalletRecoveryPhraseResponse, GetWalletsResponse, RestoreWalletResponse,
@@ -42,7 +42,8 @@ export default class WalletsStore extends Store {
   };
 
   setup() {
-    const { wallets, walletBackup, router } = this.actions;
+    const { router, ada } = this.actions;
+    const { wallets, walletBackup } = ada;
     wallets.createWallet.listen(this._create);
     wallets.deleteWallet.listen(this._delete);
     wallets.sendMoney.listen(this._sendMoney);
@@ -69,7 +70,7 @@ export default class WalletsStore extends Store {
         this.getWalletRecoveryPhraseRequest.execute().promise
       );
       if (recoveryPhrase != null) {
-        this.actions.walletBackup.initiateWalletBackup.trigger({ recoveryPhrase });
+        this.actions.ada.walletBackup.initiateWalletBackup.trigger({ recoveryPhrase });
       }
     } catch (error) {
       throw error;

@@ -13,7 +13,7 @@ export default class WalletBackupDialogContainer extends Component {
 
   onCancelBackup = () => {
     this.props.onClose();
-    this.props.actions.walletBackup.cancelWalletBackup.trigger();
+    this.props.actions.ada.walletBackup.cancelWalletBackup.trigger();
   }
 
   render() {
@@ -39,7 +39,7 @@ export default class WalletBackupDialogContainer extends Component {
       finishWalletBackup,
       acceptPrivacyNoticeForWalletBackup,
       continueToRecoveryPhraseForWalletBackup
-    } = actions.walletBackup;
+    } = actions.ada.walletBackup;
     return (
       <WalletBackupDialog
         // Global props for all dialogs

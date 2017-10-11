@@ -24,7 +24,7 @@ export default class NodeUpdateStore extends Store {
   /* eslint-disable max-len */
 
   setup() {
-    const actions = this.actions.nodeUpdate;
+    const actions = this.actions.ada.nodeUpdate;
     actions.acceptNodeUpdate.listen(this._acceptNodeUpdate);
     actions.postponeNodeUpdate.listen(this._postponeNodeUpdate);
     actions.toggleNodeUpdateNotificationExpanded.listen(this._toggleNotificationExpanded);

@@ -21,7 +21,7 @@ export default class WalletSendConfirmationDialogContainer extends Component {
   };
 
   handleWalletSendFormSubmit = (values: Object) => {
-    this.props.actions.wallets.sendMoney.trigger(values);
+    this.props.actions.ada.wallets.sendMoney.trigger(values);
   };
 
   render() {

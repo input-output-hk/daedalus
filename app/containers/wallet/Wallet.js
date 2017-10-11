@@ -48,7 +48,7 @@ export default class Wallet extends Component {
         {showAdaRedemptionSuccessMessage ? (
           <AdaRedemptionSuccessOverlay
             amount={amountRedeemed}
-            onClose={actions.adaRedemption.closeAdaRedemptionSuccessOverlay.trigger}
+            onClose={actions.ada.adaRedemption.closeAdaRedemptionSuccessOverlay.trigger}
           />
         ) : null}
       </MainLayout>

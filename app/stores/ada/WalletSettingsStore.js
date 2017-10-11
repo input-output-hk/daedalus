@@ -4,7 +4,7 @@ import _ from 'lodash';
 import Store from '../lib/Store';
 import Request from '../lib/LocalizedRequest';
 import globalMessages from '../../i18n/global-messages';
-import type { WalletExportToFileParams } from '../../actions/wallet-settings-actions';
+import type { WalletExportToFileParams } from '../../actions/ada/wallet-settings-actions';
 import type {
   UpdateWalletPasswordResponse, UpdateWalletResponse, ExportWalletToFileResponse
 } from '../../api/ada/index';
@@ -26,7 +26,7 @@ export default class WalletSettingsStore extends Store {
   @observable lastUpdatedWalletField = null;
 
   setup() {
-    const a = this.actions.walletSettings;
+    const a = this.actions.ada.walletSettings;
     a.startEditingWalletField.listen(this._startEditingWalletField);
     a.stopEditingWalletField.listen(this._stopEditingWalletField);
     a.cancelEditingWalletField.listen(this._cancelEditingWalletField);

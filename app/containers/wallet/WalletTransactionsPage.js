@@ -32,7 +32,7 @@ export default class WalletTransactionsPage extends Component {
   };
 
   // _handleSearchInputChange = (value: string, event: Object) => {
-  //   this.props.actions.transactions.filterTransactions({ searchTerm: event.target.value });
+  //   this.props.actions.ada.transactions.filterTransactions({ searchTerm: event.target.value });
   // };
 
   render() {
@@ -75,7 +75,7 @@ export default class WalletTransactionsPage extends Component {
           transactions={filtered}
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
           hasMoreToLoad={totalAvailable > searchLimit}
-          onLoadMore={actions.transactions.loadMoreTransactions.trigger}
+          onLoadMore={actions.ada.transactions.loadMoreTransactions.trigger}
           assuranceMode={activeWallet.assuranceMode}
           walletId={activeWallet.id}
         />

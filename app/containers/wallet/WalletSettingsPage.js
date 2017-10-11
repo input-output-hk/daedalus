@@ -26,7 +26,7 @@ export default class WalletSettingsPage extends Component {
       stopEditingWalletField,
       cancelEditingWalletField,
       updateWalletField,
-    } = actions.walletSettings;
+    } = actions.ada.walletSettings;
 
     // Guard against potential null values
     if (!activeWallet) throw new Error('Active wallet required for WalletSettingsPage.');

@@ -26,7 +26,7 @@ export default class TransactionsStore extends Store {
   @observable _searchOptionsForWallets = {};
 
   setup() {
-    const actions = this.actions.transactions;
+    const actions = this.actions.ada.transactions;
     actions.filterTransactions.listen(this._updateSearchTerm);
     actions.loadMoreTransactions.listen(this._increaseSearchLimit);
   }
