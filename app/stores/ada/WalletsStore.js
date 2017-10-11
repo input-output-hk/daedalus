@@ -178,7 +178,7 @@ export default class WalletsStore extends Store {
   isValidPrivateKey = () => { return true; }; // eslint-disable-line
 
   @action refreshWalletsData = async () => {
-    if (this.stores.ada.networkStatus.isConnected) {
+    if (this.stores.networkStatus.isConnected) {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
       runInAction('refresh active wallet', () => {
@@ -207,7 +207,7 @@ export default class WalletsStore extends Store {
   };
 
   pollRefresh = async () => {
-    if (this.stores.ada.networkStatus.isSynced) {
+    if (this.stores.networkStatus.isSynced) {
       await this.refreshWalletsData();
     }
   };

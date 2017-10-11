@@ -28,7 +28,8 @@ export default class SidebarStore extends Store {
   }
 
   @computed get wallets(): Array<SidebarWalletType> {
-    const { wallets, networkStatus } = this.stores.ada;
+    const { networkStatus, ada } = this.stores;
+    const { wallets } = ada;
     return wallets.all.map(w => ({
       id: w.id,
       title: w.name,

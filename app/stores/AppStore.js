@@ -21,7 +21,7 @@ export default class AppStore extends Store {
   }
 
   _redirectToLoadingScreenWhenDisconnected = () => {
-    if (!this.stores.ada.networkStatus.isConnected) {
+    if (!this.stores.networkStatus.isConnected) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
     }
   };

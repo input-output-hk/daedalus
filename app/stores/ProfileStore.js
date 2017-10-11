@@ -154,14 +154,14 @@ export default class SettingsStore extends Store {
   };
 
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
-    const { isConnected } = this.stores.ada.networkStatus;
+    const { isConnected } = this.stores.networkStatus;
     if (isConnected && this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.LANGUAGE_SELECTION });
     }
   };
 
   _redirectToTermsOfUseScreenIfTermsNotAccepted = () => {
-    const { isConnected } = this.stores.ada.networkStatus;
+    const { isConnected } = this.stores.networkStatus;
     if (isConnected && this.isCurrentLocaleSet &&
       this.hasLoadedTermsOfUseAcceptance && !this.areTermsOfUseAccepted) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.TERMS_OF_USE });
@@ -169,7 +169,7 @@ export default class SettingsStore extends Store {
   };
 
   _redirectToSendLogsChoiceScreenIfSendLogsChoiceNotSet = () => {
-    const { isConnected } = this.stores.ada.networkStatus;
+    const { isConnected } = this.stores.networkStatus;
     if (isConnected && this.isCurrentLocaleSet && this.areTermsOfUseAccepted &&
       this.hasLoadedSendLogsChoice && !this.isSendLogsChoiceSet) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.SEND_LOGS });

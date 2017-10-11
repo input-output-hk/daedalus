@@ -33,7 +33,7 @@ export default class NodeUpdateStore extends Store {
   }
 
   @action refreshNextUpdate = () => {
-    if (this.stores.ada.networkStatus.isSynced) {
+    if (this.stores.networkStatus.isSynced) {
       this.nextUpdateRequest.execute();
       if (this.nextUpdateRequest.result && !this.isUpdateAvailable &&
         !this.isUpdatePostponed && !this.isUpdateInstalled) {

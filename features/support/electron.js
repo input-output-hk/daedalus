@@ -53,7 +53,7 @@ export default function () {
     // Reset backend
     await this.client.executeAsync((done) => {
       const resetBackend = () => {
-        if (daedalus.stores.ada.networkStatus.isConnected) {
+        if (daedalus.stores.networkStatus.isConnected) {
           daedalus.api.ada.testReset()
             .then(() => daedalus.api.localStorage.reset())
             .then(done)
@@ -71,7 +71,7 @@ export default function () {
     // Ensure that frontend is synced and ready before test case
     await this.client.executeAsync((done) => {
       const waitUntilSyncedAndReady = () => {
-        if (daedalus.stores.ada.networkStatus.isSynced) {
+        if (daedalus.stores.networkStatus.isSynced) {
           done();
         } else {
           setTimeout(waitUntilSyncedAndReady, 50);

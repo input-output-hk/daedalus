@@ -160,7 +160,7 @@ export default class TransactionsStore extends Store {
   }
 
   @action _refreshTransactionData = () => {
-    if (this.stores.ada.networkStatus.isConnected) {
+    if (this.stores.networkStatus.isConnected) {
       const allWallets = this.stores.ada.wallets.all;
       for (const wallet of allWallets) {
         const recentRequest = this._getTransactionsRecentRequest(wallet.id);
