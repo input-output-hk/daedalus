@@ -6,10 +6,7 @@ import CachedRequest from '../lib/LocalizedCachedRequest';
 import Request from '../lib/LocalizedRequest';
 import WalletAddress from '../../domain/WalletAddress';
 import LocalizableError from '../../i18n/LocalizableError';
-import type {
-  CreateAddressResponse,
-} from '../../api/ada/index';
-import type {GetAddressesResponse} from "../../api/ada/index";
+import type { GetAddressesResponse, CreateAddressResponse } from '../../api/ada/index';
 
 export default class AddressesStore extends Store {
 

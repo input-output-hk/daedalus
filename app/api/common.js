@@ -1,4 +1,4 @@
-import {defineMessages} from 'react-intl';
+import { defineMessages } from 'react-intl';
 import LocalizableError from '../i18n/LocalizableError';
 
 const messages = defineMessages({

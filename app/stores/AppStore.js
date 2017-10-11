@@ -3,7 +3,7 @@ import { observable, computed } from 'mobx';
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../lib/routing-helpers';
-import { ROUTES } from "../routes-config";
+import { ROUTES } from '../routes-config';
 
 export default class AppStore extends Store {
 

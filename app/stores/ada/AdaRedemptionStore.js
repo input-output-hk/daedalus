@@ -68,8 +68,13 @@ export default class AdaRedemptionStore extends Store {
     ipcRenderer.removeAllListeners(PARSE_REDEMPTION_CODE.ERROR);
   }
 
-  isValidRedemptionKey = (redemptionKey: string) => this.api.ada.isValidRedemptionKey(redemptionKey);
-  isValidRedemptionMnemonic = (mnemonic: string) => this.api.ada.isValidRedemptionMnemonic(mnemonic);
+  isValidRedemptionKey = (redemptionKey: string) => (
+    this.api.ada.isValidRedemptionKey(redemptionKey)
+  );
+
+  isValidRedemptionMnemonic = (mnemonic: string) => (
+    this.api.ada.isValidRedemptionMnemonic(mnemonic)
+  );
 
   isValidPaperVendRedemptionKey = (
     mnemonic: string

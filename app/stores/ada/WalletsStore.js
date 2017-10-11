@@ -8,13 +8,12 @@ import Request from '.././lib/LocalizedRequest';
 import { ROUTES } from '../../routes-config';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
 import type { walletExportTypeChoices } from '../../types/walletExportTypes';
-import type {
-  ImportWalletFromFileResponse} from '../../api/ada/index';
 import type { WalletImportFromFileParams } from '../../actions/wallets-actions';
 import type {
-  CreateTransactionResponse, CreateWalletResponse, DeleteWalletResponse, GetWalletRecoveryPhraseResponse,
-  GetWalletsResponse, RestoreWalletResponse
-} from "../../api/ada/index";
+  CreateTransactionResponse, CreateWalletResponse, DeleteWalletResponse,
+  GetWalletRecoveryPhraseResponse, GetWalletsResponse, RestoreWalletResponse,
+  ImportWalletFromFileResponse
+} from '../../api/ada/index';
 
 export default class WalletsStore extends Store {
 

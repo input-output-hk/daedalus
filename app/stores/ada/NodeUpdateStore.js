@@ -3,9 +3,8 @@ import { observable, action } from 'mobx';
 import Store from '../lib/Store';
 import Request from '../lib/LocalizedRequest';
 import type {
-  ApplyUpdateResponse,
+  NextUpdateResponse, PostponeUpdateResponse, ApplyUpdateResponse
 } from '../../api/ada/index';
-import type {NextUpdateResponse, PostponeUpdateResponse} from "../../api/ada/index";
 
 export default class NodeUpdateStore extends Store {
 

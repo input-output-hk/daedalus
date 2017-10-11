@@ -42,7 +42,9 @@ const adaStores = observable({
 export default action((stores, api, actions): AdaStoresMap => {
   const storeNames = Object.keys(adaStoreClasses);
   storeNames.forEach(name => { if (adaStores[name]) adaStores[name].teardown(); });
-  storeNames.forEach(name => { adaStores[name] = new adaStoreClasses[name](stores, api, actions); });
+  storeNames.forEach(name => {
+    adaStores[name] = new adaStoreClasses[name](stores, api, actions);
+  });
   storeNames.forEach(name => { if (adaStores[name]) adaStores[name].initialize(); });
   return adaStores;
 });

@@ -1,4 +1,4 @@
-import localStorage from "electron-json-storage";
+import localStorage from 'electron-json-storage';
 
 /**
  * This api layer provides access to the electron local storage

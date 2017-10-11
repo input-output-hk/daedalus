@@ -9,13 +9,14 @@ import type {
   ApiWallets,
 } from 'daedalus-client-api';
 import ClientApi from 'daedalus-client-api';
-import {action} from 'mobx';
-import {ipcRenderer, remote} from 'electron';
-import {Logger, stringifyData, stringifyError} from '../../lib/logger';
+import { action } from 'mobx';
+import { ipcRenderer, remote } from 'electron';
+import BigNumber from 'bignumber.js';
+import { Logger, stringifyData, stringifyError } from '../../lib/logger';
 import Wallet from '../../domain/Wallet';
 import WalletTransaction from '../../domain/WalletTransaction';
 import WalletAddress from '../../domain/WalletAddress';
-import type { GetSyncProgressResponse } from "../common";
+import type { GetSyncProgressResponse } from '../common';
 import { GenericApiError } from '../common';
 import {
   AllFundsAlreadyAtReceiverAddressError,
@@ -29,11 +30,10 @@ import {
   WalletAlreadyRestoredError,
   WalletFileImportError,
 } from './errors';
-import {LOVELACES_PER_ADA} from '../../config/numbersConfig';
-import {getAdaSyncProgress} from './getAdaSyncProgress';
+import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
+import { getAdaSyncProgress } from './getAdaSyncProgress';
 import environment from '../../environment';
 import patchAdaApi from './mocks/patchAdaApi';
-import BigNumber from 'bignumber.js';
 // import { makePayment } from './js-api/makePayment';
 
 /**
@@ -390,7 +390,9 @@ export default class AdaApi {
     }
   }
 
-  async importWalletFromKey(request: ImportWalletFromKeyRequest): Promise<ImportWalletFromKeyResponse> {
+  async importWalletFromKey(
+    request: ImportWalletFromKeyRequest
+  ): Promise<ImportWalletFromKeyResponse> {
     Logger.debug('CardanoClientApi::importWalletFromKey called');
     const { filePath, walletPassword } = request;
     try {
@@ -408,7 +410,9 @@ export default class AdaApi {
     }
   }
 
-  async importWalletFromFile(request: ImportWalletFromFileRequest): Promise<ImportWalletFromFileResponse> {
+  async importWalletFromFile(
+    request: ImportWalletFromFileRequest
+  ): Promise<ImportWalletFromFileResponse> {
     Logger.debug('CardanoClientApi::importWalletFromFile called');
     const { filePath, walletPassword, walletName } = request;
     const isKeyFile = filePath.split('.').pop().toLowerCase() === 'key';
@@ -451,7 +455,9 @@ export default class AdaApi {
     }
   }
 
-  async redeemPaperVendedAda(request: RedeemPaperVendedAdaRequest): Promise<RedeemPaperVendedAdaResponse> {
+  async redeemPaperVendedAda(
+    request: RedeemPaperVendedAdaRequest
+  ): Promise<RedeemPaperVendedAdaResponse> {
     Logger.debug('CardanoClientApi::redeemAdaPaperVend called');
     const { shieldedRedemptionKey, mnemonics, accountId, walletPassword } = request;
     try {
@@ -505,7 +511,7 @@ export default class AdaApi {
     // nextUpdate = {
     //   cuiSoftwareVersion: {
     //     svAppName: {
-    //       getApplicationName: "cardano"
+    //       getApplicationName: 'cardano'
     //     },
     //     svNumber: 1
     //   },
@@ -591,7 +597,9 @@ export default class AdaApi {
     }
   }
 
-  async updateWalletPassword(request: UpdateWalletPasswordRequest): Promise<UpdateWalletPasswordResponse> {
+  async updateWalletPassword(
+    request: UpdateWalletPasswordRequest
+  ): Promise<UpdateWalletPasswordResponse> {
     Logger.debug('CardanoClientApi::updateWalletPassword called');
     const { walletId, oldPassword, newPassword } = request;
     try {
@@ -607,7 +615,9 @@ export default class AdaApi {
     }
   }
 
-  async exportWalletToFile(request: ExportWalletToFileRequest): Promise<ExportWalletToFileResponse> {
+  async exportWalletToFile(
+    request: ExportWalletToFileRequest
+  ): Promise<ExportWalletToFileResponse> {
     const { walletId, filePath, password } = request;
     Logger.debug('CardanoClientApi::exportWalletToFile called');
     try {

@@ -4,11 +4,10 @@ import _ from 'lodash';
 import Store from '../lib/Store';
 import Request from '../lib/LocalizedRequest';
 import globalMessages from '../../i18n/global-messages';
-import type {
-  ExportWalletToFileResponse,
-} from '../../api/ada/index';
 import type { WalletExportToFileParams } from '../../actions/wallet-settings-actions';
-import type {UpdateWalletPasswordResponse, UpdateWalletResponse} from "../../api/ada/index";
+import type {
+  UpdateWalletPasswordResponse, UpdateWalletResponse, ExportWalletToFileResponse
+} from '../../api/ada/index';
 
 export default class WalletSettingsStore extends Store {
 

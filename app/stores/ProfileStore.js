@@ -1,14 +1,14 @@
 // @flow
 import { observable, computed } from 'mobx';
 import BigNumber from 'bignumber.js';
+import moment from 'moment/moment';
 import { ipcRenderer } from 'electron';
 import Store from './lib/Store';
-import Request from "./lib/LocalizedRequest";
-import environment from "../environment";
-import moment from "moment/moment";
-import { THEMES } from "../themes/index";
-import { ROUTES } from "../routes-config";
-import globalMessages from "../i18n/global-messages";
+import Request from './lib/LocalizedRequest';
+import environment from '../environment';
+import { THEMES } from '../themes/index';
+import { ROUTES } from '../routes-config';
+import globalMessages from '../i18n/global-messages';
 
 export default class SettingsStore extends Store {
 
@@ -30,6 +30,7 @@ export default class SettingsStore extends Store {
     fractionGroupSize: 0
   };
 
+  /* eslint-disable max-len */
   @observable getProfileLocaleRequest: Request<string> = new Request(this.api.localStorage.getUserLocale);
   @observable setProfileLocaleRequest: Request<string> = new Request(this.api.localStorage.setUserLocale);
   @observable getTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.localStorage.getTermsOfUseAcceptance);
@@ -38,6 +39,7 @@ export default class SettingsStore extends Store {
   @observable setSendLogsChoiceRequest: Request = new Request(this.api.localStorage.setSendLogsChoice);
   @observable getThemeRequest: Request<string> = new Request(this.api.localStorage.getUserTheme);
   @observable setThemeRequest: Request<string> = new Request(this.api.localStorage.setUserTheme);
+  /* eslint-enable max-len */
 
   setup() {
     this.actions.profile.updateLocale.listen(this._updateLocale);

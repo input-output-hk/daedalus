@@ -1,5 +1,5 @@
 // @flow
-import { observable, extendObservable, action } from 'mobx';
+import { observable, action } from 'mobx';
 import AppStore from './AppStore';
 import ProfileStore from './ProfileStore';
 import SidebarStore from './SidebarStore';

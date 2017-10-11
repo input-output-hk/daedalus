@@ -18,7 +18,7 @@ import Action from './actions/lib/Action';
 import translations from './i18n/translations';
 import './themes/index.global.scss';
 import { getUrlParameterByName } from './lib/routing-helpers';
-import { setupApi } from "./api/index";
+import { setupApi } from './api/index';
 
 // run MobX in strict mode
 useStrict(true);
