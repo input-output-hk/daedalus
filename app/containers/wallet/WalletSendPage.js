@@ -11,7 +11,8 @@ export default class WalletSendPage extends Component {
   props: InjectedProps;
 
   render() {
-    const { wallets, transactions, uiDialogs } = this.props.stores;
+    const { uiDialogs } = this.props.stores;
+    const { wallets, transactions } = this.props.stores.ada;
     const { actions } = this.props;
     const { isValidAddress } = wallets;
     const { calculateTransactionFee } = transactions;

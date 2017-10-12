@@ -1,12 +1,10 @@
 // @flow
 import { observable, action } from 'mobx';
-import Store from './lib/Store';
-import Request from './lib/LocalizedRequest';
+import Store from '../lib/Store';
+import Request from '../lib/LocalizedRequest';
 import type {
-  NextUpdateResponse,
-  PostponeUpdateResponse,
-  ApplyUpdateResponse,
-} from '../api';
+  NextUpdateResponse, PostponeUpdateResponse, ApplyUpdateResponse
+} from '../../api/ada/index';
 
 export default class NodeUpdateStore extends Store {
 
@@ -20,13 +18,13 @@ export default class NodeUpdateStore extends Store {
 
   // REQUESTS
   /* eslint-disable max-len */
-  @observable nextUpdateRequest: Request<NextUpdateResponse> = new Request(this.api.nextUpdate);
-  @observable postponeUpdateRequest: Request<PostponeUpdateResponse> = new Request(this.api.postponeUpdate);
-  @observable applyUpdateRequest: Request<ApplyUpdateResponse> = new Request(this.api.applyUpdate);
+  @observable nextUpdateRequest: Request<NextUpdateResponse> = new Request(this.api.ada.nextUpdate);
+  @observable postponeUpdateRequest: Request<PostponeUpdateResponse> = new Request(this.api.ada.postponeUpdate);
+  @observable applyUpdateRequest: Request<ApplyUpdateResponse> = new Request(this.api.ada.applyUpdate);
   /* eslint-disable max-len */
 
   setup() {
-    const actions = this.actions.nodeUpdate;
+    const actions = this.actions.ada.nodeUpdate;
     actions.acceptNodeUpdate.listen(this._acceptNodeUpdate);
     actions.postponeNodeUpdate.listen(this._postponeNodeUpdate);
     actions.toggleNodeUpdateNotificationExpanded.listen(this._toggleNotificationExpanded);

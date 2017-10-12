@@ -18,8 +18,7 @@ import Action from './actions/lib/Action';
 import translations from './i18n/translations';
 import './themes/index.global.scss';
 import { getUrlParameterByName } from './lib/routing-helpers';
-import Api from './api/mock/index';
-import type { UniversalApi } from './api/index';
+import { setupApi } from './api/index';
 
 // run MobX in strict mode
 useStrict(true);
@@ -33,7 +32,7 @@ const isAboutWindow = getUrlParameterByName('window') === 'about';
 if (isInjectedTestEnv) environment.current = environment.TEST;
 
 const initializeDaedalus = () => {
-  const api: UniversalApi = new Api();
+  const api = setupApi();
   const router = new RouterStore();
   const history = syncHistoryWithStore(hashHistory, router);
   const stores = setupStores(api, actions, router);

@@ -1,16 +1,14 @@
 // @flow
-import ClientApi from 'daedalus-client-api';
 import type {
-  ApiTransaction,
-  ApiTransactionFee,
-  // ApiAccount,
   ApiAccounts,
   ApiAddress,
-  // ApiAddresses,
+  ApiTransaction,
+  ApiTransactionFee,
   ApiTransactions,
   ApiWallet,
   ApiWallets,
 } from 'daedalus-client-api';
+import ClientApi from 'daedalus-client-api';
 import { action } from 'mobx';
 import { ipcRenderer, remote } from 'electron';
 import BigNumber from 'bignumber.js';
@@ -18,37 +16,19 @@ import { Logger, stringifyData, stringifyError } from '../../lib/logger';
 import Wallet from '../../domain/Wallet';
 import WalletTransaction from '../../domain/WalletTransaction';
 import WalletAddress from '../../domain/WalletAddress';
-import type {
-  CreateWalletRequest,
-  GetAddressesRequest,
-  CreateAddressRequest,
-  GetTransactionsRequest,
-  CreateTransactionRequest,
-  RestoreWalletRequest,
-  UpdateWalletRequest,
-  RedeemAdaRequest,
-  ImportWalletFromKeyRequest,
-  ImportWalletFromFileRequest,
-  DeleteWalletRequest,
-  RedeemPaperVendedAdaRequest,
-  UpdateWalletPasswordRequest,
-  TransactionFeeRequest,
-  ExportWalletToFileRequest,
-  ExportWalletToFileResponse,
-} from '../index';
-import { GenericApiError } from '../errors';
+import type { GetSyncProgressResponse } from '../common';
+import { GenericApiError } from '../common';
 import {
-  // ApiMethodNotYetImplementedError,
-  WalletAlreadyImportedError,
-  WalletAlreadyRestoredError,
-  RedeemAdaError,
-  WalletFileImportError,
-  NotEnoughMoneyToSendError,
-  NotAllowedToSendMoneyToSameAddressError,
-  NotAllowedToSendMoneyToRedeemAddressError,
-  NotEnoughFundsForTransactionFeesError,
   AllFundsAlreadyAtReceiverAddressError,
   IncorrectWalletPasswordError,
+  NotAllowedToSendMoneyToRedeemAddressError,
+  NotAllowedToSendMoneyToSameAddressError,
+  NotEnoughFundsForTransactionFeesError,
+  NotEnoughMoneyToSendError,
+  RedeemAdaError,
+  WalletAlreadyImportedError,
+  WalletAlreadyRestoredError,
+  WalletFileImportError,
 } from './errors';
 import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
 import { getAdaSyncProgress } from './getAdaSyncProgress';
@@ -56,9 +36,116 @@ import environment from '../../environment';
 import patchAdaApi from './mocks/patchAdaApi';
 // import { makePayment } from './js-api/makePayment';
 
+/**
+ * The api layer that is used for all requests to the
+ * cardano backend when working with the ADA coin.
+ */
+
 const ca = remote.getGlobal('ca');
 const tlsConfig = ClientApi.tlsInit(ca);
 
+export type GetWalletsResponse = Wallet[];
+export type GetAddressesResponse = {
+  accountId: ?string,
+  addresses: WalletAddress[],
+};
+export type GetAddressesRequest = {
+  walletId: string,
+};
+export type CreateAddressResponse = WalletAddress;
+export type CreateAddressRequest = {
+  accountId: string,
+  password: ?string,
+};
+export type GetTransactionsRequest = {
+  walletId: string,
+  searchTerm: string,
+  skip: number,
+  limit: number,
+};
+export type GetTransactionsResponse = {
+  transactions: WalletTransaction[],
+  total: number,
+};
+export type CreateWalletRequest = {
+  name: string,
+  mnemonic: string,
+  password: ?string,
+};
+export type CreateWalletResponse = Wallet;
+export type DeleteWalletRequest = {
+  walletId: string,
+};
+export type DeleteWalletResponse = boolean;
+export type CreateTransactionRequest = {
+  sender: string,
+  receiver: string,
+  amount: string,
+  password: ?string,
+};
+export type CreateTransactionResponse = WalletTransaction;
+
+export type GetWalletRecoveryPhraseResponse = string[];
+
+export type RestoreWalletRequest = {
+  recoveryPhrase: string,
+  walletName: string,
+  walletPassword: ?string,
+};
+export type RestoreWalletResponse = Wallet;
+export type UpdateWalletRequest = {
+  walletId: string,
+  name: string,
+  assurance: string,
+};
+export type UpdateWalletResponse = Wallet;
+export type RedeemAdaRequest = {
+  redemptionCode: string,
+  accountId: string,
+  walletPassword: ?string,
+};
+export type RedeemAdaResponse = Wallet;
+export type RedeemPaperVendedAdaRequest = {
+  shieldedRedemptionKey: string,
+  mnemonics: string,
+  accountId: string,
+  walletPassword: ?string,
+};
+export type RedeemPaperVendedAdaResponse = RedeemPaperVendedAdaRequest;
+export type ImportWalletFromKeyRequest = {
+  filePath: string,
+  walletPassword: ?string,
+};
+export type ImportWalletFromKeyResponse = Wallet;
+export type ImportWalletFromFileRequest = {
+  filePath: string,
+  walletPassword: ?string,
+  walletName: ?string,
+};
+export type ImportWalletFromFileResponse = Wallet;
+export type NextUpdateResponse = ?{
+  version: string,
+};
+export type PostponeUpdateResponse = Promise<void>;
+export type ApplyUpdateResponse = Promise<void>;
+export type UpdateWalletPasswordRequest = {
+  walletId: string,
+  oldPassword: ?string,
+  newPassword: ?string,
+};
+export type UpdateWalletPasswordResponse = boolean;
+export type TransactionFeeRequest = {
+  sender: string,
+  receiver: string,
+  amount: string,
+};
+export type TransactionFeeResponse = BigNumber;
+export type ExportWalletToFileRequest = {
+  walletId: string,
+  filePath: string,
+  password: ?string
+};
+export type ExportWalletToFileResponse = {};
 // const notYetImplemented = () => new Promise((_, reject) => {
 //   reject(new ApiMethodNotYetImplementedError());
 // });
@@ -84,7 +171,7 @@ export default class AdaApi {
     }
   }
 
-  async getWallets() {
+  async getWallets(): Promise<GetWalletsResponse> {
     Logger.debug('CardanoClientApi::getWallets called');
     try {
       const response: ApiWallets = await ClientApi.getWallets(tlsConfig);
@@ -97,7 +184,7 @@ export default class AdaApi {
     }
   }
 
-  async getAddresses(request: GetAddressesRequest) {
+  async getAddresses(request: GetAddressesRequest): Promise<GetAddressesResponse> {
     Logger.debug('CardanoClientApi::getAddresses called: ' + stringifyData(request));
     const { walletId } = request;
     try {
@@ -123,7 +210,7 @@ export default class AdaApi {
     }
   }
 
-  async getTransactions(request: GetTransactionsRequest) {
+  async getTransactions(request: GetTransactionsRequest): Promise<GetTransactionsResponse> {
     Logger.debug('CardanoClientApi::searchHistory called: ' + stringifyData(request));
     const { walletId, skip, limit } = request;
     try {
@@ -141,7 +228,7 @@ export default class AdaApi {
     }
   }
 
-  async createWallet(request: CreateWalletRequest) {
+  async createWallet(request: CreateWalletRequest): Promise<CreateWalletResponse> {
     // wallets are created WITHOUT an account!!!
     // after creation ClientApi.newAccount API call should be triggered
     Logger.debug('CardanoClientApi::createWallet called');
@@ -160,7 +247,7 @@ export default class AdaApi {
     }
   }
 
-  async deleteWallet(request: DeleteWalletRequest) {
+  async deleteWallet(request: DeleteWalletRequest): Promise<DeleteWalletResponse> {
     Logger.debug('CardanoClientApi::deleteWallet called: ' + stringifyData(request));
     try {
       await ClientApi.deleteWallet(tlsConfig, request.walletId);
@@ -172,7 +259,7 @@ export default class AdaApi {
     }
   }
 
-  async createTransaction(request: CreateTransactionRequest) {
+  async createTransaction(request: CreateTransactionRequest): Promise<CreateTransactionResponse> {
     Logger.debug('CardanoClientApi::createTransaction called');
     const { sender, receiver, amount, password } = request;
     // sender must be set as accountId (account.caId) and not walletId
@@ -205,7 +292,7 @@ export default class AdaApi {
     }
   }
 
-  async calculateTransactionFee(request: TransactionFeeRequest) {
+  async calculateTransactionFee(request: TransactionFeeRequest): Promise<TransactionFeeResponse> {
     Logger.debug('CardanoClientApi::calculateTransactionFee called');
     const { sender, receiver, amount } = request;
     try {
@@ -227,7 +314,7 @@ export default class AdaApi {
     }
   }
 
-  async createAddress(request: CreateAddressRequest) {
+  async createAddress(request: CreateAddressRequest): Promise<CreateAddressResponse> {
     Logger.debug('CardanoClientApi::createAddress called: ' + stringifyData(request));
     const { accountId, password } = request;
     try {
@@ -265,7 +352,7 @@ export default class AdaApi {
     return ClientApi.isValidMnemonic(9, mnemonic);
   }
 
-  getWalletRecoveryPhrase() {
+  getWalletRecoveryPhrase(): Promise<GetWalletRecoveryPhraseResponse> {
     Logger.debug('CardanoClientApi::getWalletRecoveryPhrase called');
     try {
       const response = new Promise((resolve) => resolve(ClientApi.generateMnemonic().split(' ')));
@@ -277,7 +364,7 @@ export default class AdaApi {
     }
   }
 
-  async restoreWallet(request: RestoreWalletRequest) {
+  async restoreWallet(request: RestoreWalletRequest): Promise<RestoreWalletResponse> {
     Logger.debug('CardanoClientApi::restoreWallet called');
     const { recoveryPhrase, walletName, walletPassword } = request;
     const assurance = 'CWANormal';
@@ -303,7 +390,9 @@ export default class AdaApi {
     }
   }
 
-  async importWalletFromKey(request: ImportWalletFromKeyRequest) {
+  async importWalletFromKey(
+    request: ImportWalletFromKeyRequest
+  ): Promise<ImportWalletFromKeyResponse> {
     Logger.debug('CardanoClientApi::importWalletFromKey called');
     const { filePath, walletPassword } = request;
     try {
@@ -321,7 +410,9 @@ export default class AdaApi {
     }
   }
 
-  async importWalletFromFile(request: ImportWalletFromFileRequest) {
+  async importWalletFromFile(
+    request: ImportWalletFromFileRequest
+  ): Promise<ImportWalletFromFileResponse> {
     Logger.debug('CardanoClientApi::importWalletFromFile called');
     const { filePath, walletPassword, walletName } = request;
     const isKeyFile = filePath.split('.').pop().toLowerCase() === 'key';
@@ -346,7 +437,7 @@ export default class AdaApi {
     }
   }
 
-  async redeemAda(request: RedeemAdaRequest) {
+  async redeemAda(request: RedeemAdaRequest): Promise<RedeemAdaResponse> {
     Logger.debug('CardanoClientApi::redeemAda called');
     const { redemptionCode, accountId, walletPassword } = request;
     try {
@@ -364,7 +455,9 @@ export default class AdaApi {
     }
   }
 
-  async redeemPaperVendedAda(request: RedeemPaperVendedAdaRequest) {
+  async redeemPaperVendedAda(
+    request: RedeemPaperVendedAdaRequest
+  ): Promise<RedeemPaperVendedAdaResponse> {
     Logger.debug('CardanoClientApi::redeemAdaPaperVend called');
     const { shieldedRedemptionKey, mnemonics, accountId, walletPassword } = request;
     try {
@@ -382,7 +475,7 @@ export default class AdaApi {
     }
   }
 
-  generateMnemonic() {
+  generateMnemonic(): Array<string> {
     Logger.debug('CardanoClientApi::generateMnemonic called');
     try {
       const response = ClientApi.generateMnemonic().split(' ');
@@ -394,7 +487,7 @@ export default class AdaApi {
     }
   }
 
-  async nextUpdate() {
+  async nextUpdate(): Promise<NextUpdateResponse> {
     Logger.debug('CardanoClientApi::nextUpdate called');
     let nextUpdate = null;
     try {
@@ -418,7 +511,7 @@ export default class AdaApi {
     // nextUpdate = {
     //   cuiSoftwareVersion: {
     //     svAppName: {
-    //       getApplicationName: "cardano"
+    //       getApplicationName: 'cardano'
     //     },
     //     svNumber: 1
     //   },
@@ -446,7 +539,7 @@ export default class AdaApi {
     // return null;
   }
 
-  async postponeUpdate() {
+  async postponeUpdate(): PostponeUpdateResponse {
     Logger.debug('CardanoClientApi::postponeUpdate called');
     try {
       const response = await ClientApi.postponeUpdate(tlsConfig);
@@ -457,7 +550,7 @@ export default class AdaApi {
     }
   }
 
-  async applyUpdate() {
+  async applyUpdate(): ApplyUpdateResponse {
     Logger.debug('CardanoClientApi::applyUpdate called');
     try {
       const response = await ClientApi.applyUpdate(tlsConfig);
@@ -469,7 +562,7 @@ export default class AdaApi {
     }
   }
 
-  getSyncProgress = async () => {
+  getSyncProgress = async (): Promise<GetSyncProgressResponse> => {
     Logger.debug('CardanoClientApi::syncProgress called');
 
     try {
@@ -488,7 +581,7 @@ export default class AdaApi {
     }
   };
 
-  async updateWallet(request: UpdateWalletRequest) {
+  async updateWallet(request: UpdateWalletRequest): Promise<UpdateWalletResponse> {
     Logger.debug('CardanoClientApi::updateWallet called: ' + stringifyData(request));
     const { walletId, name, assurance } = request;
     const unit = 0;
@@ -504,7 +597,9 @@ export default class AdaApi {
     }
   }
 
-  async updateWalletPassword(request: UpdateWalletPasswordRequest) {
+  async updateWalletPassword(
+    request: UpdateWalletPasswordRequest
+  ): Promise<UpdateWalletPasswordResponse> {
     Logger.debug('CardanoClientApi::updateWalletPassword called');
     const { walletId, oldPassword, newPassword } = request;
     try {
@@ -520,7 +615,9 @@ export default class AdaApi {
     }
   }
 
-  async exportWalletToFile(request: ExportWalletToFileRequest): ExportWalletToFileResponse {
+  async exportWalletToFile(
+    request: ExportWalletToFileRequest
+  ): Promise<ExportWalletToFileResponse> {
     const { walletId, filePath, password } = request;
     Logger.debug('CardanoClientApi::exportWalletToFile called');
     try {
@@ -533,7 +630,7 @@ export default class AdaApi {
     }
   }
 
-  async testReset() {
+  async testReset(): Promise<void> {
     Logger.debug('CardanoClientApi::testReset called');
     try {
       const response = await ClientApi.testReset(tlsConfig);

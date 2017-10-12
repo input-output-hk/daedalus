@@ -21,12 +21,12 @@ export default class WalletSendConfirmationDialogContainer extends Component {
   };
 
   handleWalletSendFormSubmit = (values: Object) => {
-    this.props.actions.wallets.sendMoney.trigger(values);
+    this.props.actions.ada.wallets.sendMoney.trigger(values);
   };
 
   render() {
     const { actions, amount, receiver, totalAmount, transactionFee, adaToLovelaces } = this.props;
-    const { wallets } = this.props.stores;
+    const { wallets } = this.props.stores.ada;
     const { sendMoneyRequest } = wallets;
     const activeWallet = wallets.active;
 

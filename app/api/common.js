@@ -17,3 +17,8 @@ export class GenericApiError extends LocalizableError {
     });
   }
 }
+
+export type GetSyncProgressResponse = {
+  localDifficulty: ?number,
+  networkDifficulty: ?number,
+};

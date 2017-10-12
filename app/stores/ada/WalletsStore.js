@@ -1,23 +1,19 @@
 // @flow
 import { observable, computed, action, runInAction, untracked } from 'mobx';
 import _ from 'lodash';
-import Store from './lib/Store';
-import Wallet from '../domain/Wallet';
-import { matchRoute, buildRoute } from '../lib/routing-helpers';
-import Request from './lib/LocalizedRequest';
-import { ROUTES } from '../routes-config';
-import WalletAddDialog from '../components/wallet/WalletAddDialog';
-import type { walletExportTypeChoices } from '../types/walletExportTypes';
+import Store from '../lib/Store';
+import Wallet from '../../domain/Wallet';
+import { matchRoute, buildRoute } from '../../lib/routing-helpers';
+import Request from '.././lib/LocalizedRequest';
+import { ROUTES } from '../../routes-config';
+import WalletAddDialog from '../../components/wallet/WalletAddDialog';
+import type { walletExportTypeChoices } from '../../types/walletExportTypes';
+import type { WalletImportFromFileParams } from '../../actions/ada/wallets-actions';
 import type {
-  GetWalletsResponse,
-  ImportWalletFromFileResponse,
-  CreateWalletResponse,
-  DeleteWalletResponse,
-  CreateTransactionResponse,
-  GetWalletRecoveryPhraseResponse,
-  RestoreWalletResponse
-} from '../api';
-import type { WalletImportFromFileParams } from '../actions/wallets-actions';
+  CreateTransactionResponse, CreateWalletResponse, DeleteWalletResponse,
+  GetWalletRecoveryPhraseResponse, GetWalletsResponse, RestoreWalletResponse,
+  ImportWalletFromFileResponse
+} from '../../api/ada/index';
 
 export default class WalletsStore extends Store {
 
@@ -27,13 +23,13 @@ export default class WalletsStore extends Store {
 
   // REQUESTS
   /* eslint-disable max-len */
-  @observable walletsRequest: Request<GetWalletsResponse> = new Request(this.api.getWallets);
-  @observable importFromFileRequest: Request<ImportWalletFromFileResponse> = new Request(this.api.importWalletFromFile);
-  @observable createWalletRequest: Request<CreateWalletResponse> = new Request(this.api.createWallet);
-  @observable deleteWalletRequest: Request<DeleteWalletResponse> = new Request(this.api.deleteWallet);
-  @observable sendMoneyRequest: Request<CreateTransactionResponse> = new Request(this.api.createTransaction);
-  @observable getWalletRecoveryPhraseRequest: Request<GetWalletRecoveryPhraseResponse> = new Request(this.api.getWalletRecoveryPhrase);
-  @observable restoreRequest: Request<RestoreWalletResponse> = new Request(this.api.restoreWallet);
+  @observable walletsRequest: Request<GetWalletsResponse> = new Request(this.api.ada.getWallets);
+  @observable importFromFileRequest: Request<ImportWalletFromFileResponse> = new Request(this.api.ada.importWalletFromFile);
+  @observable createWalletRequest: Request<CreateWalletResponse> = new Request(this.api.ada.createWallet);
+  @observable deleteWalletRequest: Request<DeleteWalletResponse> = new Request(this.api.ada.deleteWallet);
+  @observable sendMoneyRequest: Request<CreateTransactionResponse> = new Request(this.api.ada.createTransaction);
+  @observable getWalletRecoveryPhraseRequest: Request<GetWalletRecoveryPhraseResponse> = new Request(this.api.ada.getWalletRecoveryPhrase);
+  @observable restoreRequest: Request<RestoreWalletResponse> = new Request(this.api.ada.restoreWallet);
   /* eslint-enable max-len */
 
   @observable walletExportType: walletExportTypeChoices = 'paperWallet';
@@ -46,7 +42,8 @@ export default class WalletsStore extends Store {
   };
 
   setup() {
-    const { wallets, walletBackup, router } = this.actions;
+    const { router, ada } = this.actions;
+    const { wallets, walletBackup } = ada;
     wallets.createWallet.listen(this._create);
     wallets.deleteWallet.listen(this._delete);
     wallets.sendMoney.listen(this._sendMoney);
@@ -73,7 +70,7 @@ export default class WalletsStore extends Store {
         this.getWalletRecoveryPhraseRequest.execute().promise
       );
       if (recoveryPhrase != null) {
-        this.actions.walletBackup.initiateWalletBackup.trigger({ recoveryPhrase });
+        this.actions.ada.walletBackup.initiateWalletBackup.trigger({ recoveryPhrase });
       }
     } catch (error) {
       throw error;
@@ -104,7 +101,7 @@ export default class WalletsStore extends Store {
   };
 
   _finishWalletCreation = async () => {
-    this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
+    this._newWalletDetails.mnemonic = this.stores.ada.walletBackup.recoveryPhrase.join(' ');
     const wallet = await this.createWalletRequest.execute(this._newWalletDetails).promise;
     if (wallet) {
       await this.walletsRequest.patch(result => { result.push(wallet); });
@@ -124,7 +121,7 @@ export default class WalletsStore extends Store {
   }) => {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
-    const accountId = this.stores.addresses._getAccountIdByWalletId(wallet.id);
+    const accountId = this.stores.ada.addresses._getAccountIdByWalletId(wallet.id);
     if (!accountId) throw new Error('Active account required before sending.');
     await this.sendMoneyRequest.execute({
       ...transactionDetails,
@@ -173,9 +170,9 @@ export default class WalletsStore extends Store {
 
   getWalletByName = (name: string): (?Wallet) => this.all.find(w => w.name === name);
 
-  isValidAddress = (address: string) => this.api.isValidAddress(address);
+  isValidAddress = (address: string) => this.api.ada.isValidAddress(address);
 
-  isValidMnemonic = (mnemonic: string) => this.api.isValidMnemonic(mnemonic);
+  isValidMnemonic = (mnemonic: string) => this.api.ada.isValidMnemonic(mnemonic);
 
   // TODO - call endpoint to check if private key is valid
   isValidPrivateKey = () => { return true; }; // eslint-disable-line
@@ -191,20 +188,20 @@ export default class WalletsStore extends Store {
       });
       runInAction('refresh address data', () => {
         const walletIds = result.map((wallet: Wallet) => wallet.id);
-        this.stores.addresses.addressesRequests = walletIds.map(walletId => ({
+        this.stores.ada.addresses.addressesRequests = walletIds.map(walletId => ({
           walletId,
-          allRequest: this.stores.addresses._getAddressesAllRequest(walletId),
+          allRequest: this.stores.ada.addresses._getAddressesAllRequest(walletId),
         }));
-        this.stores.addresses._refreshAddresses();
+        this.stores.ada.addresses._refreshAddresses();
       });
       runInAction('refresh transaction data', () => {
         const walletIds = result.map((wallet: Wallet) => wallet.id);
-        this.stores.transactions.transactionsRequests = walletIds.map(walletId => ({
+        this.stores.ada.transactions.transactionsRequests = walletIds.map(walletId => ({
           walletId,
-          recentRequest: this.stores.transactions._getTransactionsRecentRequest(walletId),
-          allRequest: this.stores.transactions._getTransactionsAllRequest(walletId),
+          recentRequest: this.stores.ada.transactions._getTransactionsRecentRequest(walletId),
+          allRequest: this.stores.ada.transactions._getTransactionsAllRequest(walletId),
         }));
-        this.stores.transactions._refreshTransactionData();
+        this.stores.ada.transactions._refreshTransactionData();
       });
     }
   };
@@ -246,14 +243,14 @@ export default class WalletsStore extends Store {
     if (this.hasAnyWallets) {
       const activeWalletId = this.active ? this.active.id : null;
       const activeWalletChange = activeWalletId !== walletId;
-      if (activeWalletChange) this.stores.addresses.lastGeneratedAddress = null;
+      if (activeWalletChange) this.stores.ada.addresses.lastGeneratedAddress = null;
       this.active = this.all.find(wallet => wallet.id === walletId);
     }
   };
 
   @action _unsetActiveWallet = () => {
     this.active = null;
-    this.stores.addresses.lastGeneratedAddress = null;
+    this.stores.ada.addresses.lastGeneratedAddress = null;
   };
 
   goToWalletRoute(walletId: string) {

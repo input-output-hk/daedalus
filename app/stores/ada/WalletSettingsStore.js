@@ -1,15 +1,13 @@
 // @flow
 import { observable, action } from 'mobx';
 import _ from 'lodash';
-import Store from './lib/Store';
-import Request from './lib/LocalizedRequest';
-import globalMessages from '../i18n/global-messages';
+import Store from '../lib/Store';
+import Request from '../lib/LocalizedRequest';
+import globalMessages from '../../i18n/global-messages';
+import type { WalletExportToFileParams } from '../../actions/ada/wallet-settings-actions';
 import type {
-  UpdateWalletResponse,
-  UpdateWalletPasswordResponse,
-  ExportWalletToFileResponse,
-} from '../api';
-import type { WalletExportToFileParams } from '../actions/wallet-settings-actions';
+  UpdateWalletPasswordResponse, UpdateWalletResponse, ExportWalletToFileResponse
+} from '../../api/ada/index';
 
 export default class WalletSettingsStore extends Store {
 
@@ -19,16 +17,16 @@ export default class WalletSettingsStore extends Store {
   ];
 
   /* eslint-disable max-len */
-  @observable updateWalletRequest: Request<UpdateWalletResponse> = new Request(this.api.updateWallet);
-  @observable updateWalletPasswordRequest: Request<UpdateWalletPasswordResponse> = new Request(this.api.updateWalletPassword);
-  @observable exportWalletToFileRequest: Request<ExportWalletToFileResponse> = new Request(this.api.exportWalletToFile);
+  @observable updateWalletRequest: Request<UpdateWalletResponse> = new Request(this.api.ada.updateWallet);
+  @observable updateWalletPasswordRequest: Request<UpdateWalletPasswordResponse> = new Request(this.api.ada.updateWalletPassword);
+  @observable exportWalletToFileRequest: Request<ExportWalletToFileResponse> = new Request(this.api.ada.exportWalletToFile);
   /* eslint-enable max-len */
 
   @observable walletFieldBeingEdited = null;
   @observable lastUpdatedWalletField = null;
 
   setup() {
-    const a = this.actions.walletSettings;
+    const a = this.actions.ada.walletSettings;
     a.startEditingWalletField.listen(this._startEditingWalletField);
     a.stopEditingWalletField.listen(this._stopEditingWalletField);
     a.cancelEditingWalletField.listen(this._cancelEditingWalletField);
@@ -43,22 +41,22 @@ export default class WalletSettingsStore extends Store {
     await this.updateWalletPasswordRequest.execute({ walletId, oldPassword, newPassword });
     this.actions.dialogs.closeActiveDialog.trigger();
     this.updateWalletPasswordRequest.reset();
-    this.stores.wallets.refreshWalletsData();
+    this.stores.ada.wallets.refreshWalletsData();
   };
 
   @action _updateWalletField = async ({ field, value }: { field: string, value: string }) => {
-    const activeWallet = this.stores.wallets.active;
+    const activeWallet = this.stores.ada.wallets.active;
     if (!activeWallet) return;
     const { id: walletId, name, assurance } = activeWallet;
     const walletData = { walletId, name, assurance };
     walletData[field] = value;
     const wallet = await this.updateWalletRequest.execute(walletData).promise;
     if (!wallet) return;
-    await this.stores.wallets.walletsRequest.patch(result => {
+    await this.stores.ada.wallets.walletsRequest.patch(result => {
       const walletIndex = _.findIndex(result, { id: walletId });
       result[walletIndex] = wallet;
     });
-    this.stores.wallets._setActiveWallet({ walletId });
+    this.stores.ada.wallets._setActiveWallet({ walletId });
   };
 
   @action _startEditingWalletField = ({ field }: { field: string }) => {

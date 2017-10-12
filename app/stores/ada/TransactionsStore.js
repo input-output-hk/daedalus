@@ -2,11 +2,11 @@
 import { observable, computed, action, extendObservable } from 'mobx';
 import _ from 'lodash';
 import BigNumber from 'bignumber.js';
-import Store from './lib/Store';
-import CachedRequest from './lib/LocalizedCachedRequest';
-import WalletTransaction from '../domain/WalletTransaction';
-import type { GetTransactionsResponse } from '../api';
-import type { UnconfirmedAmount } from '../types/unconfirmedAmountType';
+import Store from '../lib/Store';
+import CachedRequest from '../lib/LocalizedCachedRequest';
+import WalletTransaction from '../../domain/WalletTransaction';
+import type { GetTransactionsResponse } from '../../api/ada/index';
+import type { UnconfirmedAmount } from '../../types/unconfirmedAmountType';
 
 export default class TransactionsStore extends Store {
 
@@ -26,7 +26,7 @@ export default class TransactionsStore extends Store {
   @observable _searchOptionsForWallets = {};
 
   setup() {
-    const actions = this.actions.transactions;
+    const actions = this.actions.ada.transactions;
     actions.filterTransactions.listen(this._updateSearchTerm);
     actions.loadMoreTransactions.listen(this._increaseSearchLimit);
   }
@@ -44,21 +44,21 @@ export default class TransactionsStore extends Store {
   };
 
   @computed get recentTransactionsRequest(): CachedRequest<GetTransactionsResponse> {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.stores.ada.wallets.active;
     // TODO: Do not return new request here
-    if (!wallet) return new CachedRequest(this.api.getTransactions);
+    if (!wallet) return new CachedRequest(this.api.ada.getTransactions);
     return this._getTransactionsRecentRequest(wallet.id);
   }
 
   @computed get searchRequest(): CachedRequest<GetTransactionsResponse> {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.stores.ada.wallets.active;
     // TODO: Do not return new request here
-    if (!wallet) return new CachedRequest(this.api.getTransactions);
+    if (!wallet) return new CachedRequest(this.api.ada.getTransactions);
     return this._getTransactionsAllRequest(wallet.id);
   }
 
   @computed get searchOptions(): ?TransactionSearchOptionsStruct {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.stores.ada.wallets.active;
     if (!wallet) return null;
     let options = this._searchOptionsForWallets[wallet.id];
     if (!options) {
@@ -76,7 +76,7 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get filtered(): Array<WalletTransaction> {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.stores.ada.wallets.active;
     if (!wallet || !this.searchOptions) return [];
     const { searchTerm } = this.searchOptions;
     const request = this._getTransactionsAllRequest(wallet.id);
@@ -89,28 +89,28 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get recent(): Array<WalletTransaction> {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.stores.ada.wallets.active;
     if (!wallet) return [];
     const result = this._getTransactionsRecentRequest(wallet.id).result;
     return result ? result.transactions.slice(0, this.RECENT_TRANSACTIONS_LIMIT) : [];
   }
 
   @computed get hasAnyFiltered(): boolean {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.stores.ada.wallets.active;
     if (!wallet) return false;
     const result = this._getTransactionsAllRequest(wallet.id).result;
     return result ? result.transactions.length > 0 : false;
   }
 
   @computed get hasAny(): boolean {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.stores.ada.wallets.active;
     if (!wallet) return false;
     const result = this._getTransactionsRecentRequest(wallet.id).result;
     return result ? result.transactions.length > 0 : false;
   }
 
   @computed get totalAvailable(): number {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.stores.ada.wallets.active;
     if (!wallet) return 0;
     const result = this._getTransactionsAllRequest(wallet.id).result;
     return result ? result.transactions.length : 0;
@@ -122,7 +122,7 @@ export default class TransactionsStore extends Store {
       incoming: new BigNumber(0),
       outgoing: new BigNumber(0),
     };
-    const wallet = this.stores.wallets.active;
+    const wallet = this.stores.ada.wallets.active;
     if (!wallet) return unconfirmedAmount;
     const result = this._getTransactionsAllRequest(wallet.id).result;
     if (!result || !result.transactions) return unconfirmedAmount;
@@ -147,21 +147,21 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get totalFilteredAvailable(): number {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.stores.ada.wallets.active;
     if (!wallet) return 0;
     const result = this._getTransactionsAllRequest(wallet.id).result;
     return result ? result.transactions.length : 0;
   }
 
   calculateTransactionFee = (walletId: string, receiver: string, amount: string) => {
-    const accountId = this.stores.addresses._getAccountIdByWalletId(walletId);
+    const accountId = this.stores.ada.addresses._getAccountIdByWalletId(walletId);
     if (!accountId) throw new Error('Active account required before calculating transaction fees.');
-    return this.api.calculateTransactionFee({ sender: accountId, receiver, amount });
+    return this.api.ada.calculateTransactionFee({ sender: accountId, receiver, amount });
   }
 
   @action _refreshTransactionData = () => {
     if (this.stores.networkStatus.isConnected) {
-      const allWallets = this.stores.wallets.all;
+      const allWallets = this.stores.ada.wallets.all;
       for (const wallet of allWallets) {
         const recentRequest = this._getTransactionsRecentRequest(wallet.id);
         recentRequest.invalidate({ immediately: false });
@@ -186,13 +186,13 @@ export default class TransactionsStore extends Store {
   _getTransactionsRecentRequest = (walletId: string): CachedRequest<GetTransactionsResponse> => {
     const foundRequest = _.find(this.transactionsRequests, { walletId });
     if (foundRequest && foundRequest.recentRequest) return foundRequest.recentRequest;
-    return new CachedRequest(this.api.getTransactions);
+    return new CachedRequest(this.api.ada.getTransactions);
   };
 
   _getTransactionsAllRequest = (walletId: string): CachedRequest<GetTransactionsResponse> => {
     const foundRequest = _.find(this.transactionsRequests, { walletId });
     if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
-    return new CachedRequest(this.api.getTransactions);
+    return new CachedRequest(this.api.ada.getTransactions);
   };
 
 }

@@ -1,15 +1,12 @@
 // @flow
 import { observable, computed, action, runInAction } from 'mobx';
 import _ from 'lodash';
-import Store from './lib/Store';
-import CachedRequest from './lib/LocalizedCachedRequest';
-import Request from './lib/LocalizedRequest';
-import WalletAddress from '../domain/WalletAddress';
-import LocalizableError from '../i18n/LocalizableError';
-import type {
-  GetAddressesResponse,
-  CreateAddressResponse,
-} from '../api';
+import Store from '../lib/Store';
+import CachedRequest from '../lib/LocalizedCachedRequest';
+import Request from '../lib/LocalizedRequest';
+import WalletAddress from '../../domain/WalletAddress';
+import LocalizableError from '../../i18n/LocalizableError';
+import type { GetAddressesResponse, CreateAddressResponse } from '../../api/ada/index';
 
 export default class AddressesStore extends Store {
 
@@ -22,11 +19,11 @@ export default class AddressesStore extends Store {
 
   // REQUESTS
   /* eslint-disable max-len */
-  @observable createAddressRequest: Request<CreateAddressResponse> = new Request(this.api.createAddress);
+  @observable createAddressRequest: Request<CreateAddressResponse> = new Request(this.api.ada.createAddress);
   /* eslint-disable max-len */
 
   setup() {
-    const actions = this.actions.addresses;
+    const actions = this.actions.ada.addresses;
     actions.createAddress.listen(this._createAddress);
     actions.resetErrors.listen(this._resetErrors);
   }
@@ -51,14 +48,14 @@ export default class AddressesStore extends Store {
   };
 
   @computed get all(): Array<WalletAddress> {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.stores.ada.wallets.active;
     if (!wallet) return [];
     const result = this._getAddressesAllRequest(wallet.id).result;
     return result ? result.addresses : [];
   }
 
   @computed get hasAny(): boolean {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.stores.ada.wallets.active;
     if (!wallet) return false;
     const result = this._getAddressesAllRequest(wallet.id).result;
     return result ? result.addresses.length > 0 : false;
@@ -66,14 +63,14 @@ export default class AddressesStore extends Store {
 
   @computed get active(): ?WalletAddress {
     if (this.lastGeneratedAddress) return this.lastGeneratedAddress;
-    const wallet = this.stores.wallets.active;
+    const wallet = this.stores.ada.wallets.active;
     if (!wallet) return;
     const result = this._getAddressesAllRequest(wallet.id).result;
     return result ? result.addresses[result.addresses.length - 1] : null;
   }
 
   @computed get totalAvailable(): number {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.stores.ada.wallets.active;
     if (!wallet) return 0;
     const result = this._getAddressesAllRequest(wallet.id).result;
     return result ? result.addresses.length : 0;
@@ -81,7 +78,7 @@ export default class AddressesStore extends Store {
 
   @action _refreshAddresses = () => {
     if (this.stores.networkStatus.isConnected) {
-      const allWallets = this.stores.wallets.all;
+      const allWallets = this.stores.ada.wallets.all;
       for (const wallet of allWallets) {
         const allRequest = this._getAddressesAllRequest(wallet.id);
         allRequest.invalidate({ immediately: false });
@@ -102,7 +99,7 @@ export default class AddressesStore extends Store {
   _getAddressesAllRequest = (walletId: string): CachedRequest<GetAddressesResponse> => {
     const foundRequest = _.find(this.addressesRequests, { walletId });
     if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
-    return new CachedRequest(this.api.getAddresses);
+    return new CachedRequest(this.api.ada.getAddresses);
   };
 
 }

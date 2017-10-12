@@ -37,7 +37,7 @@ export const waitUntilWalletIsLoaded = async function (walletName) {
   const context = this;
   await context.client.waitUntil(async () => {
     const result = await context.client.execute((name) => (
-      daedalus.stores.wallets.getWalletByName(name)
+      daedalus.stores.ada.wallets.getWalletByName(name)
     ), walletName);
     if (result.value) {
       wallet = result.value;

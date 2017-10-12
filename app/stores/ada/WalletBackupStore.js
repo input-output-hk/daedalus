@@ -1,8 +1,8 @@
 // @flow
 import { observable, action, computed } from 'mobx';
-import Store from './lib/Store';
-import environment from '../environment';
-import WalletBackupDialog from '../components/wallet/WalletBackupDialog';
+import Store from '../lib/Store';
+import environment from '../../environment';
+import WalletBackupDialog from '../../components/wallet/WalletBackupDialog';
 
 export type walletBackupSteps = 'privacyWarning' | 'recoveryPhraseDisplay' | 'recoveryPhraseEntry' | null;
 
@@ -24,7 +24,7 @@ export default class WalletBackupStore extends Store {
   countdownTimerInterval: ?number = null;
 
   setup() {
-    const a = this.actions.walletBackup;
+    const a = this.actions.ada.walletBackup;
     a.initiateWalletBackup.listen(this._initiateWalletBackup);
     a.acceptPrivacyNoticeForWalletBackup.listen(this._acceptPrivacyNoticeForWalletBackup);
     a.continueToRecoveryPhraseForWalletBackup.listen(this._continueToRecoveryPhraseForWalletBackup);

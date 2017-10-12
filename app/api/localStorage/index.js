@@ -1,36 +1,11 @@
-// @flow
-import { observable } from 'mobx';
-import BigNumber from 'bignumber.js';
 import localStorage from 'electron-json-storage';
-import Store from './lib/Store';
 
-export default class SettingsStore extends Store {
+/**
+ * This api layer provides access to the electron local storage
+ * for user settings that are not synced with any coin backend.
+ */
 
-  @observable bigNumberDecimalFormat = {
-    decimalSeparator: '.',
-    groupSeparator: ',',
-    groupSize: 3,
-    secondaryGroupSize: 0,
-    fractionGroupSeparator: ' ',
-    fractionGroupSize: 0
-  };
-
-  setup() {
-    this.registerReactions([
-      this._setBigNumberFormat,
-    ]);
-  }
-
-  async reset() {
-    await this.unsetUserLocale(); // TODO: remove after saving locale to API is restored
-    await this.unsetTermsOfUseAcceptance();
-    await this.unsetSendLogsChoice();
-    await this.unsetUserTheme();
-  }
-
-  _setBigNumberFormat = () => {
-    BigNumber.config({ FORMAT: this.bigNumberDecimalFormat });
-  };
+export default class LocalStorageApi {
 
   getUserLocale= () => new Promise((resolve, reject) => {
     localStorage.get('userLocale', (error, response) => {
@@ -117,4 +92,12 @@ export default class SettingsStore extends Store {
       resolve();
     });
   });
+
+  async reset() {
+    await this.unsetUserLocale(); // TODO: remove after saving locale to API is restored
+    await this.unsetTermsOfUseAcceptance();
+    await this.unsetSendLogsChoice();
+    await this.unsetUserTheme();
+  }
+
 }

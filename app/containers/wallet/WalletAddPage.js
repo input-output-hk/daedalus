@@ -21,7 +21,7 @@ export default class WalletAddPage extends Component {
   props: InjectedProps;
 
   onClose = () => {
-    if (this.props.stores.wallets.hasAnyWallets) {
+    if (this.props.stores.ada.wallets.hasAnyWallets) {
       this.props.actions.dialogs.closeActiveDialog.trigger();
     } else {
       this.props.actions.dialogs.open.trigger({

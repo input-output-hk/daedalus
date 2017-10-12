@@ -35,7 +35,7 @@ export default function () {
 
   this.Then(/^I should have "Terms of use" accepted$/, async function () {
     const result = await this.client.executeAsync((done) => {
-      daedalus.stores.app.getTermsOfUseAcceptanceRequest.execute()
+      daedalus.stores.profile.getTermsOfUseAcceptanceRequest.execute()
         .then(done)
         .catch((error) => done(error));
     });
