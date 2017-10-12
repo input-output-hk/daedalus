@@ -90,6 +90,8 @@ popd
 move   node_modules\daedalus-client-api\log-config-prod.yaml installers\log-config-prod.yaml
 move   node_modules\daedalus-client-api\cardano-node.exe     installers\
 move   node_modules\daedalus-client-api\cardano-launcher.exe installers\
+move   node_modules\daedalus-client-api\configuration.yaml installers\
+move   node_modules\daedalus-client-api\*genesis*.json installers\
 del /f node_modules\daedalus-client-api\*.exe
 
 :build_frontend
