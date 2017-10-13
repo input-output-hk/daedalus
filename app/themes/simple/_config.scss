@@ -11,6 +11,19 @@ $theme-font-bold: var(--font-bold);
 
 @import "~react-polymorph/lib/themes/simple/_theme";
 
+$autocomplete-bg-color: var(--theme-autocomplete-bg-color);
+$autocomplete-border: var(--theme-autocomplete-border);
+$autocomplete-border-focus-color: var(--theme-autocomplete-border-focus-color);
+$autocomplete-placeholder-color: var(--theme-autocomplete-placeholder-color);
+$autocomplete-search-color: var(--theme-autocomplete-search-color);
+$autocomplete-selected-word-text-color: var(--theme-autocomplete-selected-word-text-color);
+$autocomplete-selected-word-box-background-color: var(--theme-autocomplete-selected-word-box-background-color);
+$autocomplete-suggestions-list-border-color: var(--theme-autocomplete-suggestions-list-border-color);
+$autocomplete-suggestions-list-border: 1px solid $autocomplete-suggestions-list-border-color;
+$autocomplete-suggestions-list-item-bg-color: var(--theme-autocomplete-suggestions-list-item-bg-color);
+$autocomplete-suggestions-list-item-font-color: var(--theme-autocomplete-suggestions-list-item-font-color);
+$autocomplete-suggestions-list-item-highlight-color: var(--theme-autocomplete-suggestions-list-item-highlight-color);
+
 $modal-overlay-color: var(--theme-modal-overlay-background-color);
 $modal-bg: var(--theme-modal-background-color);
 

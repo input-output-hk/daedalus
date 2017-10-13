@@ -1,0 +1,13 @@
+@import "_config";
+// Theme config overrides go here …
+@import "~react-polymorph/lib/themes/simple/SimpleAutocomplete";
+// Css module overrides go here …
+
+.root {
+  input {
+    font-family: var(--font-light), sans-serif;
+  }
+  .selectedWords {
+    font-family: var(--font-regular) !important;
+  }
+}

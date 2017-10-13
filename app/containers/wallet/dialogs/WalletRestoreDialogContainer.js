@@ -22,11 +22,12 @@ export default class WalletRestoreDialogContainer extends Component {
 
   render() {
     const { wallets } = this.props.stores;
-    const { restoreRequest } = wallets;
+    const { restoreRequest, SUGGESTED_MNEMONICS } = wallets;
 
     return (
       <WalletRestoreDialog
         mnemonicValidator={mnemonic => this.props.stores.wallets.isValidMnemonic(mnemonic)}
+        suggestedMnemonics={SUGGESTED_MNEMONICS}
         isSubmitting={restoreRequest.isExecuting}
         onSubmit={this.onSubmit}
         onCancel={this.onCancel}
