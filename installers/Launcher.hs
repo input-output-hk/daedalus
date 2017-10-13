@@ -20,6 +20,7 @@ data Updater =
 data Launcher = Launcher
     { nodePath             :: FilePath
     , nodeLogPath          :: FilePath
+    , launcherLogPath      :: FilePath
     , walletPath           :: FilePath
     , runtimePath          :: FilePath
     , updater              :: Updater
@@ -32,8 +33,9 @@ launcherArgs Launcher{..} = unwords $
   [ "--node", quote nodePath
   , "--node-log-path", quote nodeLogPath
   , "--wallet", quote walletPath
+  , "--launcher-logs-prefix", quote launcherLogPath
   ] ++ updaterLArgs ++ configurationArgs ++
-  [ "--node-timeout 5 " ++ batchCmdNewline
+  [ "--node-timeout 30 " ++ batchCmdNewline
   , unwords $ map (\x ->  batchCmdNewline ++ "-n " ++ x) nodeArgs
   ]
     where

@@ -105,6 +105,7 @@ doLauncher = "./cardano-launcher " <> (launcherArgs $ Launcher
   { nodePath = "./cardano-node"
   , walletPath = "./Frontend"
   , nodeLogPath = appdata <> "Logs/cardano-node.log"
+  , launcherLogPath = appdata <> "Logs/pub/"
   , windowsInstallerPath = Nothing
   , runtimePath = appdata
   , updater =
