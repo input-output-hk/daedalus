@@ -14,6 +14,6 @@ export const getEtcAccounts = (): Promise<GetEtcAccountsResponse> => (
     port: ETC_API_PORT,
   }, {
     jsonrpc: '2.0',
-    method: 'eth_accounts',
+    method: 'personal_listAccounts',
   })
 );
