@@ -2,6 +2,7 @@
 import { getEtcSyncProgress } from './getEtcSyncProgress';
 import { Logger, stringifyData, stringifyError } from '../../lib/logger';
 import { GenericApiError } from '../common';
+import { getEtcAccounts } from './getEtcAccounts';
 import type { GetSyncProgressResponse } from '../common';
 import type { GetEtcSyncProgressResponse } from './getEtcSyncProgress';
 
@@ -27,6 +28,18 @@ export default class EtcApi {
       };
     } catch (error) {
       Logger.error('EtcApi::getSyncProgress error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async getAccounts() {
+    Logger.debug('EtcApi::getAccounts called');
+    try {
+      const response = await getEtcAccounts();
+      Logger.debug('EtcApi::getAccounts success: ' + stringifyData(response));
+      return response;
+    } catch (error) {
+      Logger.error('EtcApi::getAccounts error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }

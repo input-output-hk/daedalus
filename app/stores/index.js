@@ -8,6 +8,7 @@ import UiDialogsStore from './UiDialogsStore';
 import UiNotificationsStore from './UiNotificationsStore';
 import NetworkStatusStore from './NetworkStatusStore';
 import setupAdaStores from './ada/index';
+import setupEtcStores from './etc/index';
 import type { AdaStoresMap } from './ada/index';
 
 export const storeClasses = {
@@ -57,6 +58,7 @@ export default action((api, actions, router): StoresMap => {
 
   // Add currency specific stores
   stores.ada = setupAdaStores(stores, api, actions);
+  stores.etc = setupEtcStores(stores, api, actions);
 
   return stores;
 });
