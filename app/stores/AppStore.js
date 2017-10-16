@@ -3,7 +3,6 @@ import { observable, computed } from 'mobx';
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../lib/routing-helpers';
-import { ROUTES } from '../routes-config';
 
 export default class AppStore extends Store {
 
@@ -11,20 +10,11 @@ export default class AppStore extends Store {
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
-    this.registerReactions([
-      this._redirectToLoadingScreenWhenDisconnected,
-    ]);
   }
 
   @computed get currentRoute(): string {
     return this.stores.router.location.pathname;
   }
-
-  _redirectToLoadingScreenWhenDisconnected = () => {
-    if (!this.stores.networkStatus.isConnected) {
-      this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
-    }
-  };
 
   _updateRouteLocation = (options: { route: string, params: ?Object }) => {
     const routePath = buildRoute(options.route, options.params);
