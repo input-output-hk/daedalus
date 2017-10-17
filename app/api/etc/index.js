@@ -1,5 +1,4 @@
 // @flow
-import bip39 from 'bip39';
 import { getEtcSyncProgress } from './getEtcSyncProgress';
 import { Logger, stringifyData, stringifyError } from '../../lib/logger';
 import { GenericApiError } from '../common';
@@ -12,7 +11,7 @@ import type { GetEtcAccountsResponse } from './getEtcAccounts';
 import type { GetEtcAccountBalanceResponse } from './getEtcAccountBalance';
 import type { CreateEtcAccountResponse } from './createEtcAccount';
 import Wallet from '../../domain/Wallet';
-import { toBigNumber } from './lib/utils';
+import { mnemonicToSeedHex, toBigNumber } from './lib/utils';
 
 /**
  * The ETC api layer that handles all requests to the
@@ -80,17 +79,20 @@ export default class EtcApi {
   async createWallet(request: CreateWalletRequest) {
     Logger.debug('EtcApi::createWallet called');
     const { name, mnemonic, password } = request;
-    const privateKey = bip39.mnemonicToSeedHex(mnemonic, password); // unencrypted private key (hex string)
+    const privateKey = mnemonicToSeedHex(mnemonic, password); // unencrypted private key (hex string)
     try {
-      const response = await createEtcAccount(
+      const response = await createEtcAccount([
         privateKey, password || '' // if password is not provided send empty string to the Api
-      );
-      Logger.debug('EtcApi::createWallet success');
-
-      // save 'name' to the local storage and return it back as a part of newly created wallet
-      // based on the 'password' presence return 'hasPassword' and 'passwordUpdateDate' for newly created wallet
-
-      return response;
+      ]);
+      Logger.debug('EtcApi::createWallet success: ' + stringifyData(response));
+      return new Wallet({
+        id: response.result,
+        name,
+        amount: toBigNumber(0),
+        assurance: 'CWANormal',
+        hasPassword: password ? true : false,
+        passwordUpdateDate: password ? new Date() : null,
+      });
     } catch (error) {
       Logger.error('EtcApi::createWallet error: ' + stringifyError(error));
       throw new GenericApiError();

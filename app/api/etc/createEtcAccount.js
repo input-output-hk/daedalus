@@ -5,10 +5,10 @@ import { ETC_API_HOST, ETC_API_PORT } from './index';
 export type CreateEtcAccountParams = [string, string];
 
 export type CreateEtcAccountResponse = {
-  result: Array<string>,
+  result: string,
 };
 
-export const getEtcAccounts = (params: CreateEtcAccountParams): Promise<CreateEtcAccountResponse> => (
+export const createEtcAccount = (params: CreateEtcAccountParams): Promise<CreateEtcAccountResponse> => (
   request({
     hostname: ETC_API_HOST,
     method: 'POST',
