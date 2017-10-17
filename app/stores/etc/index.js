@@ -1,6 +1,6 @@
 // @flow
 import { observable, action } from 'mobx';
-import AccountsStore from './AccountsStore';
+import AccountsStore from './WalletsStore';
 
 export const adaStoreClasses = {
   wallets: AccountsStore,
