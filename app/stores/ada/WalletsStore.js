@@ -56,6 +56,9 @@ export default class WalletsStore extends Store {
     this.registerReactions([
       this._updateActiveWalletOnRouteChanges,
       this._toggleAddWalletDialogOnWalletsLoaded,
+    ]);this.registerReactions([
+      this._updateActiveWalletOnRouteChanges,
+      this._toggleAddWalletDialogOnWalletsLoaded,
     ]);
     setInterval(this.pollRefresh, this.WALLET_REFRESH_INTERVAL);
   }

@@ -7,7 +7,9 @@ import { getEtcAccountBalance } from './getEtcAccountBalance';
 import type { GetSyncProgressResponse } from '../common';
 import type { GetEtcSyncProgressResponse } from './getEtcSyncProgress';
 import type { GetEtcAccountsResponse } from './getEtcAccounts';
-import type { GetEtcAccountBalanceResponse } from './GetEtcAccountBalanceResponse';
+import type { GetEtcAccountBalanceResponse } from './getEtcAccountBalance';
+import Wallet from '../../domain/Wallet';
+import { toBigNumber } from './lib/utils';
 
 /**
  * The ETC api layer that handles all requests to the
@@ -34,28 +36,32 @@ export default class EtcApi {
     }
   }
 
-  getAccounts = async () => {
-    Logger.debug('EtcApi::getAccounts called');
+  getWallets = async () => {
+    Logger.debug('EtcApi::getWallets called');
     try {
       const response: GetEtcAccountsResponse = await getEtcAccounts();
-      Logger.debug('EtcApi::getAccounts success: ' + stringifyData(response));
+      Logger.debug('EtcApi::getWallets success: ' + stringifyData(response));
       const accounts = response.result;
-      return Promise.all(accounts.map(async (id) => ({
+      return Promise.all(accounts.map(async (id) => (new Wallet({
         id,
-        balance: await this.getAccountBalance(id),
-      })));
+        name: 'Untitled Wallet',
+        amount: await this.getAccountBalance(id),
+        assurance: 'CWANormal',
+        hasPassword: false,
+        passwordUpdateDate: null,
+      }))));
     } catch (error) {
-      Logger.error('EtcApi::getAccounts error: ' + stringifyError(error));
+      Logger.error('EtcApi::getWallets error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   };
 
-  async getAccountBalance(accountId) {
+  async getAccountBalance(accountId: string) {
     Logger.debug('EtcApi::getAccountBalance called');
     try {
       const response: GetEtcAccountBalanceResponse = await getEtcAccountBalance([accountId, 'latest']);
       Logger.debug('EtcApi::getAccountBalance success: ' + stringifyData(response));
-      return parseInt(response.result, 16);
+      return toBigNumber(response.result);
     } catch (error) {
       Logger.error('EtcApi::getAccountBalance error: ' + stringifyError(error));
       throw new GenericApiError();

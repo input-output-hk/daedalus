@@ -5,9 +5,7 @@ import { ROUTES } from './routes-config';
 import resolver from './lib/resolver';
 
 // PAGES
-import Wallet from './containers/wallet/Wallet';
 import StakingPage from './containers/staking/StakingPage';
-import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
 import WalletTransactionsPage from './containers/wallet/WalletTransactionsPage';
 import WalletSendPage from './containers/wallet/WalletSendPage';
 import WalletReceivePage from './containers/wallet/WalletReceivePage';
@@ -25,6 +23,8 @@ import DisplaySettingsPage from './containers/settings/categories/DisplaySetting
 
 // Dynamic container loading - resolver loads file relative to '/app/' directory
 const LoadingPage = resolver('containers/LoadingPage');
+const Wallet = resolver('containers/wallet/Wallet');
+const WalletSummaryPage = resolver('containers/wallet/WalletSummaryPage');
 
 export const Routes = (
   <div>
