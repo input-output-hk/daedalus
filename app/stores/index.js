@@ -10,6 +10,7 @@ import NetworkStatusStore from './NetworkStatusStore';
 import setupAdaStores from './ada/index';
 import setupEtcStores from './etc/index';
 import type { AdaStoresMap } from './ada/index';
+import type { EtcStoresMap } from './etc/index';
 
 export const storeClasses = {
   profile: ProfileStore,
@@ -31,6 +32,7 @@ export type StoresMap = {
   uiNotifications: UiNotificationsStore,
   networkStatus: NetworkStatusStore,
   ada: AdaStoresMap,
+  etc: EtcStoresMap,
 };
 
 // Constant that does never change during lifetime
@@ -44,6 +46,7 @@ const stores = observable({
   uiNotifications: null,
   networkStatus: null,
   ada: null,
+  etc: null,
 });
 
 // Set up and return the stores for this app -> also used to reset all stores to defaults

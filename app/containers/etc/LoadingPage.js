@@ -10,7 +10,7 @@ import etcLogo from '../../assets/images/etc-logo.inline.svg';
 const messages = defineMessages({
   loadingAccountData: {
     id: 'loading.screen.etc.loadingAccountData',
-    defaultMessage: '!!!Loading account data',
+    defaultMessage: '!!!Loading wallet data',
     description: 'Message "Loading account data" on the etc loading screen.'
   },
 });

@@ -165,7 +165,7 @@ export default class NetworkStatusStore extends Store {
 
   _redirectToWalletAfterSync = () => {
     const { app } = this.stores;
-    const { wallets } = this.stores.ada;
+    const { wallets } = this.stores[environment.API];
     if (this._startupStage === STARTUP_STAGES.SYNCING && this.isSynced) {
       Logger.info(`========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`);
       this._startupStage = STARTUP_STAGES.LOADING;

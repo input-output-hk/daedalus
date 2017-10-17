@@ -1,26 +1,26 @@
 // @flow
 import { observable, action } from 'mobx';
-import AccountsStore from './AccountsStore';
+import WalletsStore from './WalletsStore';
 
-export const adaStoreClasses = {
-  wallets: AccountsStore,
+export const etcStoreClasses = {
+  wallets: WalletsStore,
 };
 
-export type AdaStoresMap = {
-  wallets: AccountsStore,
+export type EtcStoresMap = {
+  wallets: WalletsStore,
 };
 
-const adaStores = observable({
+const etcStores = observable({
   wallets: null,
 });
 
 // Set up and return the stores and reset all stores to defaults
-export default action((stores, api, actions): AdaStoresMap => {
-  const storeNames = Object.keys(adaStoreClasses);
-  storeNames.forEach(name => { if (adaStores[name]) adaStores[name].teardown(); });
+export default action((stores, api, actions): EtcStoresMap => {
+  const storeNames = Object.keys(etcStoreClasses);
+  storeNames.forEach(name => { if (etcStores[name]) etcStores[name].teardown(); });
   storeNames.forEach(name => {
-    adaStores[name] = new adaStoreClasses[name](stores, api, actions);
+    etcStores[name] = new etcStoreClasses[name](stores, api, actions);
   });
-  storeNames.forEach(name => { if (adaStores[name]) adaStores[name].initialize(); });
-  return adaStores;
+  storeNames.forEach(name => { if (etcStores[name]) etcStores[name].initialize(); });
+  return etcStores;
 });
