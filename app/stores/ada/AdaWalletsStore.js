@@ -1,7 +1,7 @@
 // @flow
 import { observable, computed, action, runInAction, untracked } from 'mobx';
 import _ from 'lodash';
-import Store from '../lib/Store';
+import WalletStore from '../WalletStore';
 import Wallet from '../../domain/Wallet';
 import { matchRoute, buildRoute } from '../../lib/routing-helpers';
 import Request from '.././lib/LocalizedRequest';
@@ -15,11 +15,7 @@ import type {
   ImportWalletFromFileResponse
 } from '../../api/ada/index';
 
-export default class WalletsStore extends Store {
-
-  WALLET_REFRESH_INTERVAL = 5000;
-
-  @observable active: ?Wallet = null;
+export default class AdaWalletsStore extends WalletStore {
 
   // REQUESTS
   /* eslint-disable max-len */
@@ -56,11 +52,8 @@ export default class WalletsStore extends Store {
     this.registerReactions([
       this._updateActiveWalletOnRouteChanges,
       this._toggleAddWalletDialogOnWalletsLoaded,
-    ]);this.registerReactions([
-      this._updateActiveWalletOnRouteChanges,
-      this._toggleAddWalletDialogOnWalletsLoaded,
     ]);
-    setInterval(this.pollRefresh, this.WALLET_REFRESH_INTERVAL);
+    setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
   }
 
   _create = async (params: {
@@ -135,44 +128,6 @@ export default class WalletsStore extends Store {
     this.goToWalletRoute(wallet.id);
   };
 
-  @computed get hasLoadedWallets(): boolean {
-    return this.walletsRequest.wasExecuted;
-  }
-
-  @computed get hasAnyWallets(): boolean {
-    if (this.walletsRequest.result == null) return false;
-    return this.walletsRequest.wasExecuted && this.walletsRequest.result.length > 0;
-  }
-
-  @computed get hasActiveWallet(): boolean {
-    return !!this.active;
-  }
-
-  @computed get all(): Array<Wallet> {
-    return this.walletsRequest.result ? this.walletsRequest.result : [];
-  }
-
-  @computed get activeWalletRoute(): ?string {
-    if (!this.active) return null;
-    return this.getWalletRoute(this.active.id);
-  }
-
-  @computed get hasAnyLoaded(): boolean {
-    return this.all.length > 0;
-  }
-
-  @computed get first(): ?Wallet {
-    return this.all.length > 0 ? this.all[0] : null;
-  }
-
-  getWalletRoute = (walletId: string, page: string = 'summary'): string => (
-    buildRoute(ROUTES.WALLETS.PAGE, { id: walletId, page })
-  );
-
-  getWalletById = (id: string): (?Wallet) => this.all.find(w => w.id === id);
-
-  getWalletByName = (name: string): (?Wallet) => this.all.find(w => w.name === name);
-
   isValidAddress = (address: string) => this.api.ada.isValidAddress(address);
 
   isValidMnemonic = (mnemonic: string) => this.api.ada.isValidMnemonic(mnemonic);
@@ -209,12 +164,6 @@ export default class WalletsStore extends Store {
     }
   };
 
-  pollRefresh = async () => {
-    if (this.stores.networkStatus.isSynced) {
-      await this.refreshWalletsData();
-    }
-  };
-
   @action _restoreWallet = async (params: {
     recoveryPhrase: string,
     walletName: string,
@@ -240,7 +189,7 @@ export default class WalletsStore extends Store {
     this.importFromFileRequest.reset();
     this.goToWalletRoute(importedWallet.id);
     this.refreshWalletsData();
-  }
+  };
 
   @action _setActiveWallet = ({ walletId }: { walletId: string }) => {
     if (this.hasAnyWallets) {
@@ -256,11 +205,6 @@ export default class WalletsStore extends Store {
     this.stores.ada.addresses.lastGeneratedAddress = null;
   };
 
-  goToWalletRoute(walletId: string) {
-    const route = this.getWalletRoute(walletId);
-    this.actions.router.goToRoute.trigger({ route });
-  }
-
   _toggleAddWalletDialogOnWalletsLoaded = () => {
     if (this.hasLoadedWallets && !this.hasAnyWallets) {
       this.actions.dialogs.open.trigger({ dialog: WalletAddDialog });
@@ -269,47 +213,12 @@ export default class WalletsStore extends Store {
     }
   };
 
-  _updateActiveWalletOnRouteChanges = () => {
-    const currentRoute = this.stores.app.currentRoute;
-    const hasAnyWalletsLoaded = this.hasAnyLoaded;
-    runInAction('WalletsStore::_updateActiveWalletOnRouteChanges', () => {
-      // There are not wallets loaded (yet) -> unset active and return
-      if (!hasAnyWalletsLoaded) return this._unsetActiveWallet();
-      const match = matchRoute(`${ROUTES.WALLETS.ROOT}/:id(*page)`, currentRoute);
-      if (match) {
-        // We have a route for a specific wallet -> lets try to find it
-        const walletForCurrentRoute = this.all.find(w => w.id === match.id);
-        if (walletForCurrentRoute) {
-          // The wallet exists, we are done
-          this._setActiveWallet({ walletId: walletForCurrentRoute.id });
-        } else if (hasAnyWalletsLoaded) {
-          // There is no wallet with given id -> pick first wallet
-          this._setActiveWallet({ walletId: this.all[0].id });
-          if (this.active) this.goToWalletRoute(this.active.id);
-        }
-      } else if (this._canRedirectToWallet) {
-        // The route does not specify any wallet -> pick first wallet
-        if (!this.hasActiveWallet && hasAnyWalletsLoaded) {
-          this._setActiveWallet({ walletId: this.all[0].id });
-        }
-        if (this.active) this.goToWalletRoute(this.active.id);
-      }
-    });
-  };
-
   _patchWalletRequestWithNewWallet = async (wallet: Wallet) => {
     // Only add the new wallet if it does not exist yet in the result!
     await this.walletsRequest.patch(result => {
       if (!_.find(result, { id: wallet.id })) result.push(wallet);
     });
   };
-
-  @computed get _canRedirectToWallet(): boolean {
-    const currentRoute = this.stores.app.currentRoute;
-    const isRootRoute = matchRoute(ROUTES.WALLETS.ROOT, currentRoute);
-    const isNoWalletsRoute = matchRoute(ROUTES.NO_WALLETS, currentRoute);
-    return isRootRoute || isNoWalletsRoute;
-  }
 
   @action _onRouteChange = (options: { route: string, params: ?Object }) => {
     // Reset the send request anytime we visit the send page (e.g: to remove any previous errors)

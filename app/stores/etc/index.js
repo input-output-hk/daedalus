@@ -1,13 +1,13 @@
 // @flow
 import { observable, action } from 'mobx';
-import WalletsStore from './WalletsStore';
+import EtcWalletsStore from './EtcWalletsStore';
 
 export const etcStoreClasses = {
-  wallets: WalletsStore,
+  wallets: EtcWalletsStore,
 };
 
 export type EtcStoresMap = {
-  wallets: WalletsStore,
+  wallets: EtcWalletsStore,
 };
 
 const etcStores = observable({

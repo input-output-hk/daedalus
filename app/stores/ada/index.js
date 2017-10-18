@@ -1,6 +1,6 @@
 // @flow
 import { observable, action } from 'mobx';
-import WalletsStore from './WalletsStore';
+import AdaWalletsStore from './AdaWalletsStore';
 import TransactionsStore from './TransactionsStore';
 import WalletBackupStore from './WalletBackupStore';
 import AdaRedemptionStore from './AdaRedemptionStore';
@@ -9,7 +9,7 @@ import WalletSettingsStore from './WalletSettingsStore';
 import AddressesStore from './AddressesStore';
 
 export const adaStoreClasses = {
-  wallets: WalletsStore,
+  wallets: AdaWalletsStore,
   transactions: TransactionsStore,
   walletBackup: WalletBackupStore,
   adaRedemption: AdaRedemptionStore,
@@ -19,7 +19,7 @@ export const adaStoreClasses = {
 };
 
 export type AdaStoresMap = {
-  wallets: WalletsStore,
+  wallets: AdaWalletsStore,
   transactions: TransactionsStore,
   walletBackup: WalletBackupStore,
   adaRedemption: AdaRedemptionStore,
