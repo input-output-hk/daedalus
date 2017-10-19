@@ -55,9 +55,6 @@ export default class SettingsStore extends Store {
       this._redirectToSendLogsChoiceScreenIfSendLogsChoiceNotSet,
       this._redirectToMainUiAfterSetSendLogsChoice,
     ]);
-    this.registerReactions([
-
-    ]);
     this._getTermsOfUseAcceptance();
     this._sendLogsChoiceToMainProcess();
   }

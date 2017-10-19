@@ -1,5 +1,5 @@
 // @flow
-import { observable, computed, action, runInAction, untracked } from 'mobx';
+import { observable, action, runInAction } from 'mobx';
 import _ from 'lodash';
 import WalletStore from '../WalletStore';
 import Wallet from '../../domain/Wallet';
@@ -30,12 +30,6 @@ export default class AdaWalletsStore extends WalletStore {
 
   @observable walletExportType: walletExportTypeChoices = 'paperWallet';
   @observable walletExportMnemonic = 'marine joke dry silk ticket thing sugar stereo aim';
-
-  _newWalletDetails: { name: string, mnemonic: string, password: ?string, } = {
-    name: '',
-    mnemonic: '',
-    password: null,
-  };
 
   setup() {
     const { router, ada } = this.actions;
@@ -203,14 +197,6 @@ export default class AdaWalletsStore extends WalletStore {
   @action _unsetActiveWallet = () => {
     this.active = null;
     this.stores.ada.addresses.lastGeneratedAddress = null;
-  };
-
-  _toggleAddWalletDialogOnWalletsLoaded = () => {
-    if (this.hasLoadedWallets && !this.hasAnyWallets) {
-      this.actions.dialogs.open.trigger({ dialog: WalletAddDialog });
-    } else if (untracked(() => this.stores.uiDialogs.isOpen(WalletAddDialog))) {
-      this.actions.dialogs.closeActiveDialog.trigger();
-    }
   };
 
   _patchWalletRequestWithNewWallet = async (wallet: Wallet) => {

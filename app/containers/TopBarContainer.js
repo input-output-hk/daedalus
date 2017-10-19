@@ -24,7 +24,7 @@ export default class TopBarContainer extends Component {
     return (
       <TopBar
         onToggleSidebar={actions.sidebar.toggleSubMenus.trigger}
-        activeWallet={stores.ada.wallets.active}
+        activeWallet={stores[environment.API].wallets.active}
         currentRoute={app.currentRoute}
         showSubMenus={sidebar.isShowingSubMenus}
       >

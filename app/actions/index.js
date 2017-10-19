@@ -7,7 +7,9 @@ import ProfileActions from './profile-actions';
 import DialogsActions from './dialogs-actions';
 import NotificationsActions from './notifications-actions';
 import adaActionsMap from './ada/index';
+import etcActionsMap from './etc/index';
 import type { AdaActionsMap } from './ada/index';
+import type { EtcActionsMap } from './etc/index';
 
 export type ActionsMap = {
   router: RouterActions,
@@ -18,6 +20,7 @@ export type ActionsMap = {
   dialogs: DialogsActions,
   notifications: NotificationsActions,
   ada: AdaActionsMap,
+  etc: EtcActionsMap,
 };
 
 const actionsMap: ActionsMap = {
@@ -29,6 +32,7 @@ const actionsMap: ActionsMap = {
   dialogs: new DialogsActions(),
   notifications: new NotificationsActions(),
   ada: adaActionsMap,
+  etc: etcActionsMap,
 };
 
 export default actionsMap;

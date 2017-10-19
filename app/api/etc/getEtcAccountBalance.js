@@ -8,7 +8,9 @@ export type GetEtcAccountBalanceResponse = {
   result: string,
 };
 
-export const getEtcAccountBalance = (params: GetEtcAccountBalanceParams): Promise<GetEtcAccountBalanceResponse> => (
+export const getEtcAccountBalance = (
+  params: GetEtcAccountBalanceParams
+): Promise<GetEtcAccountBalanceResponse> => (
   request({
     hostname: ETC_API_HOST,
     method: 'POST',

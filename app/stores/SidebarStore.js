@@ -4,6 +4,7 @@ import Store from './lib/Store';
 import { ROUTES } from '../routes-config';
 import { DECIMAL_PLACES_IN_ADA } from '../config/numbersConfig';
 import { matchRoute } from './../lib/routing-helpers';
+import environment from '../environment';
 
 export default class SidebarStore extends Store {
 
@@ -28,8 +29,8 @@ export default class SidebarStore extends Store {
   }
 
   @computed get wallets(): Array<SidebarWalletType> {
-    const { networkStatus, ada } = this.stores;
-    const { wallets } = ada;
+    const { networkStatus } = this.stores;
+    const { wallets } = this.stores[environment.API];
     return wallets.all.map(w => ({
       id: w.id,
       title: w.name,
@@ -57,7 +58,7 @@ export default class SidebarStore extends Store {
   };
 
   @action _onWalletSelected = ({ walletId }: { walletId: string }) => {
-    this.stores.ada.wallets.goToWalletRoute(walletId);
+    this.stores[environment.API].wallets.goToWalletRoute(walletId);
   };
 
   @action _setActivateSidebarCategory = (category: string) => {

@@ -8,7 +8,9 @@ export type CreateEtcAccountResponse = {
   result: string,
 };
 
-export const createEtcAccount = (params: CreateEtcAccountParams): Promise<CreateEtcAccountResponse> => (
+export const createEtcAccount = (
+  params: CreateEtcAccountParams
+): Promise<CreateEtcAccountResponse> => (
   request({
     hostname: ETC_API_HOST,
     method: 'POST',

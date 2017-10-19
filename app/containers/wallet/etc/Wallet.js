@@ -1,12 +1,14 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import MainLayout from '../../MainLayout';
 import WalletWithNavigation from '../../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../../components/widgets/LoadingSpinner';
+import resolver from '../../../lib/resolver';
 import { buildRoute } from '../../../lib/routing-helpers';
 import { ROUTES } from '../../../routes-config';
 import type { InjectedContainerProps } from '../../../types/injectedPropsType';
+
+const MainLayout = resolver('containers/MainLayout');
 
 @inject('stores', 'actions') @observer
 export default class Wallet extends Component {

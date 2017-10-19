@@ -1,10 +1,11 @@
 // @flow
-import { observable, action, computed, runInAction } from 'mobx';
+import { observable, action, computed, runInAction, untracked } from 'mobx';
 import Store from './lib/Store';
 import Wallet from '../domain/Wallet';
 import Request from './lib/LocalizedRequest';
 import { buildRoute, matchRoute } from '../lib/routing-helpers';
 import { ROUTES } from '../routes-config';
+import WalletAddDialog from '../components/wallet/WalletAddDialog';
 
 /**
  * The base wallet store that contains the shared logic
@@ -17,6 +18,12 @@ export default class WalletsStore extends Store {
 
   @observable active: ?Wallet = null;
   @observable walletsRequest: Request<any>;
+
+  _newWalletDetails: { name: string, mnemonic: string, password: ?string } = {
+    name: '',
+    mnemonic: '',
+    password: null,
+  };
 
   setup() {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
@@ -96,6 +103,14 @@ export default class WalletsStore extends Store {
   _pollRefresh = async () => (
     this.stores.networkStatus.isSynced && await this.refreshWalletsData()
   );
+
+  _toggleAddWalletDialogOnWalletsLoaded = () => {
+    if (this.hasLoadedWallets && !this.hasAnyWallets) {
+      this.actions.dialogs.open.trigger({ dialog: WalletAddDialog });
+    } else if (untracked(() => this.stores.uiDialogs.isOpen(WalletAddDialog))) {
+      this.actions.dialogs.closeActiveDialog.trigger();
+    }
+  };
 
   _updateActiveWalletOnRouteChanges = () => {
     const currentRoute = this.stores.app.currentRoute;

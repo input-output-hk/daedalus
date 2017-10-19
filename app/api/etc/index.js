@@ -4,6 +4,7 @@ import { Logger, stringifyData, stringifyError } from '../../lib/logger';
 import { GenericApiError } from '../common';
 import { getEtcAccounts } from './getEtcAccounts';
 import { getEtcAccountBalance } from './getEtcAccountBalance';
+import { getEtcAccountRecoveryPhrase } from './getEtcAccountRecoveryPhrase';
 import { createEtcAccount } from './createEtcAccount';
 import type { GetSyncProgressResponse } from '../common';
 import type { GetEtcSyncProgressResponse } from './getEtcSyncProgress';
@@ -21,11 +22,14 @@ import { mnemonicToSeedHex, toBigNumber } from './lib/utils';
 export const ETC_API_HOST = 'ec2-52-30-28-57.eu-west-1.compute.amazonaws.com';
 export const ETC_API_PORT = 8546;
 
+export type GetWalletsResponse = Wallet[];
 export type CreateWalletRequest = {
   name: string,
   mnemonic: string,
   password: ?string,
 };
+export type CreateWalletResponse = Wallet;
+export type GetWalletRecoveryPhraseResponse = string[];
 
 export default class EtcApi {
 
@@ -44,7 +48,7 @@ export default class EtcApi {
     }
   }
 
-  getWallets = async () => {
+  getWallets = async (): Promise<GetWalletsResponse> => {
     Logger.debug('EtcApi::getWallets called');
     try {
       const response: GetEtcAccountsResponse = await getEtcAccounts();
@@ -76,13 +80,13 @@ export default class EtcApi {
     }
   }
 
-  async createWallet(request: CreateWalletRequest) {
+  async createWallet(request: CreateWalletRequest): Promise<CreateWalletResponse> {
     Logger.debug('EtcApi::createWallet called');
     const { name, mnemonic, password } = request;
-    const privateKey = mnemonicToSeedHex(mnemonic, password); // unencrypted private key (hex string)
+    const privateKey = mnemonicToSeedHex(mnemonic, password);
     try {
-      const response = await createEtcAccount([
-        privateKey, password || '' // if password is not provided send empty string to the Api
+      const response: CreateEtcAccountResponse = await createEtcAccount([
+        privateKey, password || '' // if password is not provided send empty string is to the Api
       ]);
       Logger.debug('EtcApi::createWallet success: ' + stringifyData(response));
       return new Wallet({
@@ -90,11 +94,23 @@ export default class EtcApi {
         name,
         amount: toBigNumber(0),
         assurance: 'CWANormal',
-        hasPassword: password ? true : false,
-        passwordUpdateDate: password ? new Date() : null,
+        hasPassword: password !== null,
+        passwordUpdateDate: password !== null ? new Date() : null,
       });
     } catch (error) {
       Logger.error('EtcApi::createWallet error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  getWalletRecoveryPhrase(): Promise<GetWalletRecoveryPhraseResponse> {
+    Logger.debug('EtcApi::getWalletRecoveryPhrase called');
+    try {
+      const response = new Promise((resolve) => resolve(getEtcAccountRecoveryPhrase()));
+      Logger.debug('EtcApi::getWalletRecoveryPhrase success');
+      return response;
+    } catch (error) {
+      Logger.error('EtcApi::getWalletRecoveryPhrase error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }

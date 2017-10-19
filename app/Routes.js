@@ -7,7 +7,6 @@ import resolver from './lib/resolver';
 // PAGES
 import StakingPage from './containers/staking/StakingPage';
 import WalletTransactionsPage from './containers/wallet/WalletTransactionsPage';
-import WalletSendPage from './containers/wallet/WalletSendPage';
 import WalletReceivePage from './containers/wallet/WalletReceivePage';
 import AdaRedemptionPage from './containers/wallet/AdaRedemptionPage';
 import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
@@ -25,6 +24,7 @@ import DisplaySettingsPage from './containers/settings/categories/DisplaySetting
 const LoadingPage = resolver('containers/LoadingPage');
 const Wallet = resolver('containers/wallet/Wallet');
 const WalletSummaryPage = resolver('containers/wallet/WalletSummaryPage');
+const WalletSendPage = resolver('containers/wallet/WalletSendPage');
 
 export const Routes = (
   <div>

@@ -11,6 +11,7 @@ import setupAdaStores from './ada/index';
 import setupEtcStores from './etc/index';
 import type { AdaStoresMap } from './ada/index';
 import type { EtcStoresMap } from './etc/index';
+import environment from '../environment';
 
 export const storeClasses = {
   profile: ProfileStore,
@@ -60,8 +61,8 @@ export default action((api, actions, router): StoresMap => {
   storeNames.forEach(name => { if (stores[name]) stores[name].initialize(); });
 
   // Add currency specific stores
-  stores.ada = setupAdaStores(stores, api, actions);
-  stores.etc = setupEtcStores(stores, api, actions);
+  if (environment.API === 'ada') stores.ada = setupAdaStores(stores, api, actions);
+  if (environment.API === 'etc') stores.etc = setupEtcStores(stores, api, actions);
 
   return stores;
 });
