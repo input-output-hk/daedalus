@@ -32,8 +32,8 @@ export default class AdaWalletsStore extends WalletStore {
   @observable walletExportMnemonic = 'marine joke dry silk ticket thing sugar stereo aim';
 
   setup() {
-    const { router, ada } = this.actions;
-    const { wallets, walletBackup } = ada;
+    const { router, walletBackup, ada } = this.actions;
+    const { wallets } = ada;
     wallets.createWallet.listen(this._create);
     wallets.deleteWallet.listen(this._delete);
     wallets.sendMoney.listen(this._sendMoney);
@@ -60,7 +60,7 @@ export default class AdaWalletsStore extends WalletStore {
         this.getWalletRecoveryPhraseRequest.execute().promise
       );
       if (recoveryPhrase != null) {
-        this.actions.ada.walletBackup.initiateWalletBackup.trigger({ recoveryPhrase });
+        this.actions.walletBackup.initiateWalletBackup.trigger({ recoveryPhrase });
       }
     } catch (error) {
       throw error;
@@ -91,7 +91,7 @@ export default class AdaWalletsStore extends WalletStore {
   };
 
   _finishWalletCreation = async () => {
-    this._newWalletDetails.mnemonic = this.stores.ada.walletBackup.recoveryPhrase.join(' ');
+    this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
     const wallet = await this.createWalletRequest.execute(this._newWalletDetails).promise;
     if (wallet) {
       await this.walletsRequest.patch(result => { result.push(wallet); });

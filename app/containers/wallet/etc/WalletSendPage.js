@@ -12,11 +12,15 @@ export default class WalletSendPage extends Component {
 
   render() {
     const { uiDialogs } = this.props.stores;
-    const { wallets, transactions } = this.props.stores.etc;
+    const { /* transactions, */ wallets } = this.props.stores.etc;
     const { actions } = this.props;
-    const { isValidAddress } = wallets;
-    const { calculateTransactionFee } = transactions;
+    // const { isValidAddress } = wallets;
+    // const { calculateTransactionFee } = transactions;
     const activeWallet = wallets.active;
+
+    // Faked missing data and methods
+    const isValidAddress = () => (true);
+    const calculateTransactionFee = () => ('0');
 
     // Guard against potential null values
     if (!activeWallet) throw new Error('Active wallet required for WalletSendPage.');

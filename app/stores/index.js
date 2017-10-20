@@ -2,6 +2,7 @@
 import { observable, action } from 'mobx';
 import AppStore from './AppStore';
 import ProfileStore from './ProfileStore';
+import WalletBackupStore from './WalletBackupStore';
 import SidebarStore from './SidebarStore';
 import WindowStore from './WindowStore';
 import UiDialogsStore from './UiDialogsStore';
@@ -17,6 +18,7 @@ export const storeClasses = {
   profile: ProfileStore,
   app: AppStore,
   sidebar: SidebarStore,
+  walletBackup: WalletBackupStore,
   window: WindowStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
@@ -28,6 +30,7 @@ export type StoresMap = {
   app: AppStore,
   router: Object,
   sidebar: SidebarStore,
+  walletBackup: WalletBackupStore,
   window: WindowStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
@@ -42,6 +45,7 @@ const stores = observable({
   router: null,
   app: null,
   sidebar: null,
+  walletBackup: null,
   window: null,
   uiDialogs: null,
   uiNotifications: null,

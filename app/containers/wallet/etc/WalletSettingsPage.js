@@ -1,9 +1,9 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletSettings from '../../components/wallet/WalletSettings';
-import type { InjectedProps } from '../../types/injectedPropsType';
-import { isValidWalletName } from '../../lib/validations';
+import WalletSettings from '../../../components/wallet/WalletSettings';
+import type { InjectedProps } from '../../../types/injectedPropsType';
+import { isValidWalletName } from '../../../lib/validations';
 
 @inject('stores', 'actions') @observer
 export default class WalletSettingsPage extends Component {
@@ -13,21 +13,33 @@ export default class WalletSettingsPage extends Component {
 
   render() {
     const { uiDialogs } = this.props.stores;
-    const { wallets, walletSettings } = this.props.stores.ada;
+    const { wallets /* , walletSettings */ } = this.props.stores.etc;
     const { actions } = this.props;
     const activeWallet = wallets.active;
-    const {
-      WALLET_ASSURANCE_LEVEL_OPTIONS,
-      updateWalletRequest,
-      lastUpdatedWalletField,
-      walletFieldBeingEdited,
-    } = walletSettings;
-    const {
-      startEditingWalletField,
-      stopEditingWalletField,
-      cancelEditingWalletField,
-      updateWalletField,
-    } = actions.ada.walletSettings;
+    // const {
+    //   WALLET_ASSURANCE_LEVEL_OPTIONS,
+    //   updateWalletRequest,
+    //   lastUpdatedWalletField,
+    //   walletFieldBeingEdited,
+    // } = walletSettings;
+    // const {
+    //   startEditingWalletField,
+    //   stopEditingWalletField,
+    //   cancelEditingWalletField,
+    //   updateWalletField,
+    // } = actions.etc.walletSettings;
+
+    // Faked missing data and methods
+    const WALLET_ASSURANCE_LEVEL_OPTIONS = [];
+    const updateWalletRequest = {};
+    const lastUpdatedWalletField = null;
+    const walletFieldBeingEdited = null;
+    const startEditingWalletField = {};
+    const stopEditingWalletField = {};
+    const cancelEditingWalletField = {
+      trigger: () => (null),
+    };
+    const updateWalletField = {};
 
     // Guard against potential null values
     if (!activeWallet) throw new Error('Active wallet required for WalletSettingsPage.');

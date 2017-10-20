@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletCreateDialog from '../../../components/wallet/WalletCreateDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
+import environment from '../../../environment';
 
 @inject('stores', 'actions') @observer
 export default class WalletCreateDialogContainer extends Component {
@@ -12,7 +13,7 @@ export default class WalletCreateDialogContainer extends Component {
   props: InjectedDialogContainerProps;
 
   onSubmit = (values: { name: string, password: ?string }) => {
-    this.props.actions.ada.wallets.createWallet.trigger(values);
+    this.props.actions[environment.API].wallets.createWallet.trigger(values);
   };
 
   render() {

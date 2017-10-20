@@ -151,6 +151,8 @@
   "wallet.navigation.transactions": "Transactions",
   "wallet.receive.page.addressCopyNotificationMessage": "Address: <strong>{walletAddress}</strong> copied to clipboard",
   "wallet.receive.page.copyAddressLabel": "Copy address",
+  "wallet.receive.page.etc.walletAddressLabel": "Your wallet address",
+  "wallet.receive.page.etc.walletReceiveInstructions": "Share this wallet address to receive payments.",
   "wallet.receive.page.generateNewAddressButtonLabel": "Generate new address",
   "wallet.receive.page.generatedAddressesSectionTitle": "Generated addresses",
   "wallet.receive.page.hideUsedLabel": "hide used",

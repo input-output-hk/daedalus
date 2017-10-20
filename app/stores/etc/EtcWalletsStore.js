@@ -3,8 +3,10 @@ import { observable } from 'mobx';
 import WalletStore from '../WalletStore';
 import Request from '.././lib/LocalizedRequest';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
-import type { CreateWalletResponse, GetWalletsResponse } from '../../api/etc/index';
-import type { GetWalletRecoveryPhraseResponse } from '../../api/ada/index';
+import type {
+  CreateWalletResponse, GetWalletsResponse,
+  GetWalletRecoveryPhraseResponse,
+} from '../../api/etc/index';
 
 export default class EtcWalletsStore extends WalletStore {
 
@@ -15,12 +17,11 @@ export default class EtcWalletsStore extends WalletStore {
   @observable getWalletRecoveryPhraseRequest: Request<GetWalletRecoveryPhraseResponse> = new Request(this.api.etc.getWalletRecoveryPhrase);
   /* eslint-disable max-len */
 
-  setup () {
-    const { router, etc } = this.actions;
-    const { wallets, walletBackup } = etc;
+  setup() {
+    const { walletBackup, etc } = this.actions;
+    const { wallets } = etc;
     wallets.createWallet.listen(this._create);
     walletBackup.finishWalletBackup.listen(this._finishWalletCreation);
-    router.goToRoute.listen(this._onRouteChange);
     this.registerReactions([
       this._updateActiveWalletOnRouteChanges,
       this._toggleAddWalletDialogOnWalletsLoaded,
@@ -38,7 +39,7 @@ export default class EtcWalletsStore extends WalletStore {
         this.getWalletRecoveryPhraseRequest.execute().promise
       );
       if (recoveryPhrase != null) {
-        this.actions.ada.walletBackup.initiateWalletBackup.trigger({ recoveryPhrase });
+        this.actions.walletBackup.initiateWalletBackup.trigger({ recoveryPhrase });
       }
     } catch (error) {
       throw error;
@@ -46,7 +47,7 @@ export default class EtcWalletsStore extends WalletStore {
   };
 
   _finishWalletCreation = async () => {
-    this._newWalletDetails.mnemonic = this.stores.ada.walletBackup.recoveryPhrase.join(' ');
+    this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
     const wallet = await this.createWalletRequest.execute(this._newWalletDetails).promise;
     if (wallet) {
       await this.walletsRequest.patch(result => { result.push(wallet); });

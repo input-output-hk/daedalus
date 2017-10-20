@@ -2,7 +2,6 @@
 import { observable, action } from 'mobx';
 import AdaWalletsStore from './AdaWalletsStore';
 import TransactionsStore from './TransactionsStore';
-import WalletBackupStore from './WalletBackupStore';
 import AdaRedemptionStore from './AdaRedemptionStore';
 import NodeUpdateStore from './NodeUpdateStore';
 import WalletSettingsStore from './WalletSettingsStore';
@@ -11,7 +10,6 @@ import AddressesStore from './AddressesStore';
 export const adaStoreClasses = {
   wallets: AdaWalletsStore,
   transactions: TransactionsStore,
-  walletBackup: WalletBackupStore,
   adaRedemption: AdaRedemptionStore,
   nodeUpdate: NodeUpdateStore,
   walletSettings: WalletSettingsStore,
@@ -21,7 +19,6 @@ export const adaStoreClasses = {
 export type AdaStoresMap = {
   wallets: AdaWalletsStore,
   transactions: TransactionsStore,
-  walletBackup: WalletBackupStore,
   adaRedemption: AdaRedemptionStore,
   nodeUpdate: NodeUpdateStore,
   walletSettings: WalletSettingsStore,
@@ -31,7 +28,6 @@ export type AdaStoresMap = {
 const adaStores = observable({
   wallets: null,
   transactions: null,
-  walletBackup: null,
   adaRedemption: null,
   nodeUpdate: null,
   walletSettings: null,
