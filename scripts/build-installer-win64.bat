@@ -87,6 +87,13 @@ pushd node_modules\daedalus-client-api
     del CardanoSL.zip
 popd
 
+@echo cardano-sl build-id:
+type node_modules\daedalus-client-api\build-id
+@echo cardano-sl commit-id:
+type node_modules\daedalus-client-api\commit-id
+@echo cardano-sl ci-url:
+type node_modules\daedalus-client-api\ci-url
+
 move   node_modules\daedalus-client-api\log-config-prod.yaml installers\log-config-prod.yaml
 move   node_modules\daedalus-client-api\cardano-node.exe     installers\
 move   node_modules\daedalus-client-api\cardano-launcher.exe installers\
