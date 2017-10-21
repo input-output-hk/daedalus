@@ -4,13 +4,15 @@ import SvgInline from 'react-svg-inline';
 import type { Children } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
-import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import Wallet from '../../domain/Wallet';
 import menuIconOpened from '../../assets/images/menu-opened-ic.inline.svg';
 import menuIconClosed from '../../assets/images/menu-ic.inline.svg';
 import styles from './TopBar.scss';
+import resolver from '../../lib/resolver';
 import { matchRoute } from '../../lib/routing-helpers';
 import { ROUTES } from '../../routes-config';
+
+const { formattedWalletAmount } = resolver('helpers/formatters');
 
 @observer
 export default class TopBar extends Component {
@@ -36,7 +38,7 @@ export default class TopBar extends Component {
       <div className={styles.walletInfo}>
         <div className={styles.walletName}>{activeWallet.name}</div>
         <div className={styles.walletAmount}>
-          {activeWallet.amount.toFormat(DECIMAL_PLACES_IN_ADA) + ' ADA'}
+          {formattedWalletAmount(activeWallet.amount)}
         </div>
       </div>
     ) : null;

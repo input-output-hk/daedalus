@@ -1,0 +1,8 @@
+// @flow
+import { ROUTES } from '../../routes-config';
+
+export const CATEGORIES = {
+  WALLETS: ROUTES.WALLETS.ROOT,
+  ADA_REDEMPTION: ROUTES.ADA_REDEMPTION,
+  SETTINGS: ROUTES.SETTINGS.ROOT,
+};

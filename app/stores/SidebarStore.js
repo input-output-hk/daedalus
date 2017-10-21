@@ -1,18 +1,17 @@
 // @flow
 import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
+import resolver from '../lib/resolver';
 import { ROUTES } from '../routes-config';
-import { DECIMAL_PLACES_IN_ADA } from '../config/numbersConfig';
 import { matchRoute } from './../lib/routing-helpers';
 import environment from '../environment';
 
+const sidebarConfig = resolver('config/sidebarConfig');
+const { formattedWalletAmount } = resolver('helpers/formatters');
+
 export default class SidebarStore extends Store {
 
-  CATEGORIES = {
-    WALLETS: ROUTES.WALLETS.ROOT,
-    ADA_REDEMPTION: ROUTES.ADA_REDEMPTION,
-    SETTINGS: ROUTES.SETTINGS.ROOT,
-  };
+  CATEGORIES = sidebarConfig.CATEGORIES;
 
   @observable activeSidebarCategory: string = this.CATEGORIES.WALLETS;
   @observable isShowingSubMenus: boolean = true;
@@ -34,7 +33,7 @@ export default class SidebarStore extends Store {
     return wallets.all.map(w => ({
       id: w.id,
       title: w.name,
-      info: `${w.amount.toFormat(DECIMAL_PLACES_IN_ADA)} ADA`,
+      info: formattedWalletAmount(w.amount),
       isConnected: networkStatus.isConnected,
     }));
   }

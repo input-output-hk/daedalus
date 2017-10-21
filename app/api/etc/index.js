@@ -6,6 +6,7 @@ import { getEtcAccounts } from './getEtcAccounts';
 import { getEtcAccountBalance } from './getEtcAccountBalance';
 import { getEtcAccountRecoveryPhrase } from './getEtcAccountRecoveryPhrase';
 import { createEtcAccount } from './createEtcAccount';
+import { getWalletName, setWalletName } from './etcLocalStorage';
 import type { GetSyncProgressResponse } from '../common';
 import type { GetEtcSyncProgressResponse } from './getEtcSyncProgress';
 import type { GetEtcAccountsResponse } from './getEtcAccounts';
@@ -56,7 +57,7 @@ export default class EtcApi {
       const accounts = response.result;
       return Promise.all(accounts.map(async (id) => (new Wallet({
         id,
-        name: 'Untitled Wallet',
+        name: await getWalletName(id),
         amount: await this.getAccountBalance(id),
         assurance: 'CWANormal',
         hasPassword: false,
@@ -89,8 +90,10 @@ export default class EtcApi {
         privateKey, password || '' // if password is not provided send empty string is to the Api
       ]);
       Logger.debug('EtcApi::createWallet success: ' + stringifyData(response));
+      const walletId = response.result;
+      await setWalletName(walletId, name);
       return new Wallet({
-        id: response.result,
+        id: walletId,
         name,
         amount: toBigNumber(0),
         assurance: 'CWANormal',

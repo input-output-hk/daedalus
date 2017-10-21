@@ -10,6 +10,7 @@ import adaRedemptionIcon from '../../assets/images/sidebar/ada-redemption-ic.inl
 import settingsIcon from '../../assets/images/sidebar/settings-ic.inline.svg';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
 import type { SidebarWalletType } from '../../stores/SidebarStore';
+import environment from '../../environment';
 
 @observer
 export default class Sidebar extends Component {
@@ -75,12 +76,14 @@ export default class Sidebar extends Component {
             active={activeSidebarCategory === categories.WALLETS}
             onClick={() => onCategoryClicked(categories.WALLETS)}
           />
-          <SidebarCategory
-            className="ada-redemption"
-            icon={adaRedemptionIcon}
-            active={activeSidebarCategory === categories.ADA_REDEMPTION}
-            onClick={() => onCategoryClicked(categories.ADA_REDEMPTION)}
-          />
+          {environment.API === 'ada' ? (
+            <SidebarCategory
+              className="ada-redemption"
+              icon={adaRedemptionIcon}
+              active={activeSidebarCategory === categories.ADA_REDEMPTION}
+              onClick={() => onCategoryClicked(categories.ADA_REDEMPTION)}
+            />
+          ) : null}
           <SidebarCategory
             className="settings"
             icon={settingsIcon}
