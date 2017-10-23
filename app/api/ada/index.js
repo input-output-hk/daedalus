@@ -36,6 +36,12 @@ import environment from '../../environment';
 import patchAdaApi from './mocks/patchAdaApi';
 // import { makePayment } from './js-api/makePayment';
 
+import { changeAdaWalletPassphrase } from './changeAdaWalletPassphrase';
+import { deleteAdaWallet } from './deleteAdaWallet';
+import { getAdaWallets } from './getAdaWallets';
+import { importWallet } from './importAdaWallet';
+import { newAdaWallet } from './newAdaWallet';
+
 /**
  * The api layer that is used for all requests to the
  * cardano backend when working with the ADA coin.
@@ -174,7 +180,7 @@ export default class AdaApi {
   async getWallets(): Promise<GetWalletsResponse> {
     Logger.debug('CardanoClientApi::getWallets called');
     try {
-      const response: ApiWallets = await ClientApi.getWallets(tlsConfig);
+      const response: ApiWallets = await getAdaWallets(ca);
       Logger.debug('CardanoClientApi::getWallets success: ' + stringifyData(response));
       const wallets = response.map(data => _createWalletFromServerData(data));
       return wallets;
@@ -250,7 +256,7 @@ export default class AdaApi {
   async deleteWallet(request: DeleteWalletRequest): Promise<DeleteWalletResponse> {
     Logger.debug('CardanoClientApi::deleteWallet called: ' + stringifyData(request));
     try {
-      await ClientApi.deleteWallet(tlsConfig, request.walletId);
+      await deleteAdaWallet(ca, { walletId: request.walletId });
       Logger.debug('CardanoClientApi::deleteWallet success: ' + stringifyData(request));
       return true;
     } catch (error) {
@@ -413,6 +419,7 @@ export default class AdaApi {
   async importWalletFromFile(
     request: ImportWalletFromFileRequest
   ): Promise<ImportWalletFromFileResponse> {
+
     Logger.debug('CardanoClientApi::importWalletFromFile called');
     const { filePath, walletPassword, walletName } = request;
     const isKeyFile = filePath.split('.').pop().toLowerCase() === 'key';
@@ -603,7 +610,7 @@ export default class AdaApi {
     Logger.debug('CardanoClientApi::updateWalletPassword called');
     const { walletId, oldPassword, newPassword } = request;
     try {
-      await ClientApi.changeWalletPass(tlsConfig, walletId, oldPassword, newPassword);
+      await changeAdaWalletPassphrase(ca, { walletId }, { old: oldPassword, new: newPassword });
       Logger.debug('CardanoClientApi::updateWalletPassword success');
       return true;
     } catch (error) {
@@ -682,8 +689,8 @@ const _createTransactionFromServerData = action(
       description: ctmDescription || '',
       numberOfConfirmations: data.ctConfirmations,
       addresses: {
-        from: data.ctInputs.map(address => address[0]),
-        to: data.ctOutputs.map(address => address[0]),
+        from: data.ctInputAddrs.map(address => address),
+        to: data.ctOutputAddrs.map(address => address),
       },
       condition: data.ctCondition,
     });
