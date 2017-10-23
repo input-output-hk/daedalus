@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
 import WalletSendConfirmationDialog from '../../../components/wallet/WalletSendConfirmationDialog';
+import environment from '../../../environment';
 
 @inject('actions', 'stores') @observer
 export default class WalletSendConfirmationDialogContainer extends Component {
@@ -17,16 +18,20 @@ export default class WalletSendConfirmationDialogContainer extends Component {
     receiver: string,
     totalAmount: string,
     transactionFee: string,
-    adaToLovelaces: Function,
+    amountToNaturalUnits: (amountWithFractions: string) => string,
+    currencyUnit: string,
   };
 
   handleWalletSendFormSubmit = (values: Object) => {
-    this.props.actions.ada.wallets.sendMoney.trigger(values);
+    this.props.actions[environment.API].wallets.sendMoney.trigger(values);
   };
 
   render() {
-    const { actions, amount, receiver, totalAmount, transactionFee, adaToLovelaces } = this.props;
-    const { wallets } = this.props.stores.ada;
+    const {
+      actions, amount, receiver, totalAmount,
+      transactionFee, amountToNaturalUnits, currencyUnit
+    } = this.props;
+    const { wallets } = this.props.stores[environment.API];
     const { sendMoneyRequest } = wallets;
     const activeWallet = wallets.active;
 
@@ -39,13 +44,14 @@ export default class WalletSendConfirmationDialogContainer extends Component {
         receiver={receiver}
         totalAmount={totalAmount}
         transactionFee={transactionFee}
-        adaToLovelaces={adaToLovelaces}
+        amountToNaturalUnits={amountToNaturalUnits}
         onSubmit={this.handleWalletSendFormSubmit}
         isSubmitting={sendMoneyRequest.isExecuting}
         onCancel={() => {
           actions.dialogs.closeActiveDialog.trigger();
         }}
         error={sendMoneyRequest.error}
+        currencyUnit={currencyUnit}
       />
     );
   }

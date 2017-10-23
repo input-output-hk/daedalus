@@ -1,7 +1,7 @@
 // @flow
 import { getEtcSyncProgress } from './getEtcSyncProgress';
 import { Logger, stringifyData, stringifyError } from '../../lib/logger';
-import { GenericApiError } from '../common';
+import { GenericApiError, IncorrectWalletPasswordError } from '../common';
 import { getEtcAccounts } from './getEtcAccounts';
 import { getEtcAccountBalance } from './getEtcAccountBalance';
 import { getEtcAccountRecoveryPhrase } from './getEtcAccountRecoveryPhrase';
@@ -14,6 +14,8 @@ import type { GetEtcAccountBalanceResponse } from './getEtcAccountBalance';
 import type { CreateEtcAccountResponse } from './createEtcAccount';
 import Wallet from '../../domain/Wallet';
 import { mnemonicToSeedHex, toBigNumber } from './lib/utils';
+import type { SendEtcTransactionParams, SendEtcTransactionResponse } from './sendEtcTransaction';
+import { sendEtcTransaction } from './sendEtcTransaction';
 
 /**
  * The ETC api layer that handles all requests to the
@@ -40,8 +42,8 @@ export default class EtcApi {
       const response: GetEtcSyncProgressResponse = await getEtcSyncProgress();
       Logger.debug('EtcApi::getSyncProgress success: ' + stringifyData(response));
       return {
-        localDifficulty: response.result ? parseInt(response.result.currentBlock, 16) : 100,
-        networkDifficulty: response.result ? parseInt(response.result.highestBlock, 16) : 100,
+        localDifficulty: response ? parseInt(response.currentBlock, 16) : 100,
+        networkDifficulty: response ? parseInt(response.highestBlock, 16) : 100,
       };
     } catch (error) {
       Logger.error('EtcApi::getSyncProgress error: ' + stringifyError(error));
@@ -54,14 +56,14 @@ export default class EtcApi {
     try {
       const response: GetEtcAccountsResponse = await getEtcAccounts();
       Logger.debug('EtcApi::getWallets success: ' + stringifyData(response));
-      const accounts = response.result;
+      const accounts = response;
       return Promise.all(accounts.map(async (id) => (new Wallet({
         id,
         name: await getWalletName(id),
         amount: await this.getAccountBalance(id),
         assurance: 'CWANormal',
-        hasPassword: false,
-        passwordUpdateDate: null,
+        hasPassword: true,
+        passwordUpdateDate: new Date(),
       }))));
     } catch (error) {
       Logger.error('EtcApi::getWallets error: ' + stringifyError(error));
@@ -74,7 +76,7 @@ export default class EtcApi {
     try {
       const response: GetEtcAccountBalanceResponse = await getEtcAccountBalance([accountId, 'latest']);
       Logger.debug('EtcApi::getAccountBalance success: ' + stringifyData(response));
-      return toBigNumber(response.result);
+      return toBigNumber(response);
     } catch (error) {
       Logger.error('EtcApi::getAccountBalance error: ' + stringifyError(error));
       throw new GenericApiError();
@@ -90,12 +92,12 @@ export default class EtcApi {
         privateKey, password || '' // if password is not provided send empty string is to the Api
       ]);
       Logger.debug('EtcApi::createWallet success: ' + stringifyData(response));
-      const walletId = response.result;
+      const walletId = response;
       await setWalletName(walletId, name);
       return new Wallet({
         id: walletId,
         name,
-        amount: toBigNumber(0),
+        amount: toBigNumber('0'),
         assurance: 'CWANormal',
         hasPassword: password !== null,
         passwordUpdateDate: password !== null ? new Date() : null,
@@ -114,6 +116,22 @@ export default class EtcApi {
       return response;
     } catch (error) {
       Logger.error('EtcApi::getWalletRecoveryPhrase error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async createTransaction(params: SendEtcTransactionParams): Promise<string> {
+    Logger.debug('EtcApi::createTransaction called with ' + stringifyData(params));
+    try {
+      const response: SendEtcTransactionResponse = await sendEtcTransaction(params);
+      Logger.debug('EtcApi::createTransaction success: ' + stringifyData(response));
+      // TODO: actually fetch transaction data and return that instead of just the ID
+      return response;
+    } catch (error) {
+      Logger.error('EtcApi::createTransaction error: ' + stringifyError(error));
+      if (error.message.includes('Could not decrypt key with given passphrase')) {
+        throw new IncorrectWalletPasswordError();
+      }
       throw new GenericApiError();
     }
   }

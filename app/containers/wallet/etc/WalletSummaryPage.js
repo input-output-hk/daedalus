@@ -30,7 +30,7 @@ export default class WalletSummaryPage extends Component {
     const { intl } = this.context;
     const { wallets } = this.props.stores.etc;
     const wallet = wallets.active;
-    console.log(wallet);
+
     // Guard against potential null values
     if (!wallet) throw new Error('Active wallet required for WalletSummaryPage.');
 

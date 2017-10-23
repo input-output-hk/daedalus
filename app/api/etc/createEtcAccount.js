@@ -4,9 +4,7 @@ import { ETC_API_HOST, ETC_API_PORT } from './index';
 
 export type CreateEtcAccountParams = [string, string];
 
-export type CreateEtcAccountResponse = {
-  result: string,
-};
+export type CreateEtcAccountResponse = string;
 
 export const createEtcAccount = (
   params: CreateEtcAccountParams

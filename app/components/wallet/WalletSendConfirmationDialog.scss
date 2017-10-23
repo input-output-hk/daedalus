@@ -10,8 +10,9 @@
     }
   }
 
-  .adaSymbol {
+  .currencySymbol {
     font-family: var(--font-light);
+    text-transform: uppercase;
   }
 
   .addressToLabelWrapper,

@@ -44,6 +44,7 @@
   "global.spendingPasswordLabel": "Spending Password",
   "global.spendingPasswordPlaceholder": "Password",
   "global.unit.ada": "Ada",
+  "global.unit.etc": "Etc",
   "inline.editing.dropdown.changesSaved": "Your changes have been saved",
   "inline.editing.input.cancel.label": "cancel",
   "inline.editing.input.change.label": "change",

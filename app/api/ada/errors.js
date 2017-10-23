@@ -52,11 +52,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Not enough Ada for fees. Try sending a smaller amount.',
     description: '"Not enough Ada for fees. Try sending a smaller amount." error message'
   },
-  incorrectWalletPasswordError: {
-    id: 'api.errors.IncorrectPasswordError',
-    defaultMessage: '!!!Incorrect wallet password.',
-    description: '"Incorrect wallet password." error message.'
-  },
 });
 
 export class ApiMethodNotYetImplementedError extends LocalizableError {
@@ -145,15 +140,6 @@ export class NotEnoughFundsForTransactionFeesError extends LocalizableError {
     super({
       id: messages.notEnoughFundsForTransactionFeesError.id,
       defaultMessage: messages.notEnoughFundsForTransactionFeesError.defaultMessage,
-    });
-  }
-}
-
-export class IncorrectWalletPasswordError extends LocalizableError {
-  constructor() {
-    super({
-      id: messages.incorrectWalletPasswordError.id,
-      defaultMessage: messages.incorrectWalletPasswordError.defaultMessage,
     });
   }
 }

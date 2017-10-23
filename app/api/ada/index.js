@@ -17,10 +17,9 @@ import Wallet from '../../domain/Wallet';
 import WalletTransaction from '../../domain/WalletTransaction';
 import WalletAddress from '../../domain/WalletAddress';
 import type { GetSyncProgressResponse } from '../common';
-import { GenericApiError } from '../common';
+import { GenericApiError, IncorrectWalletPasswordError } from '../common';
 import {
   AllFundsAlreadyAtReceiverAddressError,
-  IncorrectWalletPasswordError,
   NotAllowedToSendMoneyToRedeemAddressError,
   NotAllowedToSendMoneyToSameAddressError,
   NotEnoughFundsForTransactionFeesError,

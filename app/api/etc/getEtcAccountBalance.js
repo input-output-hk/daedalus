@@ -4,9 +4,7 @@ import { ETC_API_HOST, ETC_API_PORT } from './index';
 
 export type GetEtcAccountBalanceParams = [string, 'latest' | 'earliest' | 'pending'];
 
-export type GetEtcAccountBalanceResponse = {
-  result: string,
-};
+export type GetEtcAccountBalanceResponse = string;
 
 export const getEtcAccountBalance = (
   params: GetEtcAccountBalanceParams

@@ -7,6 +7,11 @@ const messages = defineMessages({
     defaultMessage: '!!!An error occurred, please try again later.',
     description: 'Generic error message.'
   },
+  incorrectWalletPasswordError: {
+    id: 'api.errors.IncorrectPasswordError',
+    defaultMessage: '!!!Incorrect wallet password.',
+    description: '"Incorrect wallet password." error message.'
+  },
 });
 
 export class GenericApiError extends LocalizableError {
@@ -14,6 +19,15 @@ export class GenericApiError extends LocalizableError {
     super({
       id: messages.genericApiError.id,
       defaultMessage: messages.genericApiError.defaultMessage,
+    });
+  }
+}
+
+export class IncorrectWalletPasswordError extends LocalizableError {
+  constructor() {
+    super({
+      id: messages.incorrectWalletPasswordError.id,
+      defaultMessage: messages.incorrectWalletPasswordError.defaultMessage,
     });
   }
 }

@@ -2,9 +2,7 @@
 import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
 
-export type GetEtcAccountsResponse = {
-  result: Array<string>,
-};
+export type GetEtcAccountsResponse = Array<string>;
 
 export const getEtcAccounts = (): Promise<GetEtcAccountsResponse> => (
   request({
