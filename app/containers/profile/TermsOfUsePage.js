@@ -17,7 +17,8 @@ export default class TermsOfUsePage extends Component {
   };
 
   render() {
-    const { setTermsOfUseAcceptanceRequest, currentRoute, termsOfUse } = this.props.stores.app;
+    const { setTermsOfUseAcceptanceRequest, termsOfUse } = this.props.stores.profile;
+    const { currentRoute } = this.props.stores.app;
     const isSubmitting = setTermsOfUseAcceptanceRequest.isExecuting;
     const topbar = <TopBar currentRoute={currentRoute} />;
     return (

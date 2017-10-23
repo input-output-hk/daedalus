@@ -26,7 +26,7 @@ export default class WalletAddDialogContainer extends Component {
           dialog: WalletFileImportDialog,
         })}
         onCancel={actions.dialogs.closeActiveDialog.trigger}
-        canClose={stores.wallets.hasAnyWallets}
+        canClose={stores.ada.wallets.hasAnyWallets}
       />
     );
   }

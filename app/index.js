@@ -11,15 +11,14 @@ import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
 import { hashHistory } from 'react-router';
 import App from './App';
 import About from './About';
-import CardanoClientApi from './api/CardanoClientApi';
 import environment from './environment';
 import setupStores from './stores';
 import actions from './actions';
 import Action from './actions/lib/Action';
 import translations from './i18n/translations';
 import './themes/index.global.scss';
-import patchCardanoApi from './api/mocks/patchCardanoApi';
 import { getUrlParameterByName } from './lib/routing-helpers';
+import { setupApi } from './api/index';
 
 // run MobX in strict mode
 useStrict(true);
@@ -33,8 +32,7 @@ const isAboutWindow = getUrlParameterByName('window') === 'about';
 if (isInjectedTestEnv) environment.current = environment.TEST;
 
 const initializeDaedalus = () => {
-  const api = new CardanoClientApi();
-  if (environment.isTest()) patchCardanoApi(api);
+  const api = setupApi();
   const router = new RouterStore();
   const history = syncHistoryWithStore(hashHistory, router);
   const stores = setupStores(api, actions, router);

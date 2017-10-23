@@ -39,7 +39,7 @@ export default function () {
 
   this.Then(/^I should have Japanese language set$/, async function () {
     const result = await this.client.executeAsync((done) => {
-      daedalus.stores.app.getProfileLocaleRequest.execute()
+      daedalus.stores.profile.getProfileLocaleRequest.execute()
         .then(done)
         .catch((error) => done(error));
     });

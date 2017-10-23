@@ -13,6 +13,7 @@
     "generator-star-spacing": "off",
     "import/no-unresolved": ["error", { "ignore": ["electron"] }],
     "import/no-extraneous-dependencies": "off",
+    "import/no-dynamic-require": "off",
     "import/prefer-default-export": "off",
     "no-use-before-define": "off",
     "promise/param-names": 2,
@@ -52,7 +53,8 @@
     "import/imports-first": 1,
     "no-multi-spaces": 1,
     "no-multiple-empty-lines": 1,
-    "react/jsx-indent": 1
+    "react/jsx-indent": 1,
+    "global-require": "off"
   },
   "plugins": [
     "import",
@@ -60,8 +62,9 @@
     "react"
   ],
   "globals": {
-    "CARDANO_API": true,
-    "AUTO_LOGIN": true,
-    "MOBX_DEV_TOOLS": true
+    "API": true,
+    "NETWORK": true,
+    "MOBX_DEV_TOOLS": true,
+    "DAEDALUS_VERSION": true
   }
 }

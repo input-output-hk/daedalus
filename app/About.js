@@ -18,8 +18,8 @@ export default class About extends Component {
 
   render() {
     const { stores } = this.props;
-    const locale = stores.app.currentLocale;
-    const currentTheme = stores.app.currentTheme;
+    const locale = stores.profile.currentLocale;
+    const currentTheme = stores.profile.currentTheme;
     const theme = require(`./themes/daedalus/${currentTheme}.js`); // eslint-disable-line
 
     return (

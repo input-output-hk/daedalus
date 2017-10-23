@@ -69,7 +69,7 @@ export default function () {
   this.Then(/^I should have wallet with "Strict" assurance level set$/, async function () {
     const activeWalletName = await getNameOfActiveWalletInSidebar.call(this);
     const wallets = await this.client.executeAsync((done) => {
-      daedalus.stores.wallets.walletsRequest.execute()
+      daedalus.stores.ada.wallets.walletsRequest.execute()
         .then(done)
         .catch((error) => done(error));
     });

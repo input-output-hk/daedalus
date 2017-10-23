@@ -13,7 +13,8 @@ export default class ChangeWalletPasswordDialogContainer extends Component {
 
   render() {
     const { actions } = this.props;
-    const { wallets, walletSettings, uiDialogs } = this.props.stores;
+    const { uiDialogs } = this.props.stores;
+    const { wallets, walletSettings } = this.props.stores.ada;
     const dialogData = uiDialogs.dataForActiveDialog;
     const { updateDataForActiveDialog } = actions.dialogs;
     const activeWallet = wallets.active;
@@ -30,7 +31,7 @@ export default class ChangeWalletPasswordDialogContainer extends Component {
         onSave={(values: { oldPassword: string, newPassword: string }) => {
           const walletId = activeWallet.id;
           const { oldPassword, newPassword } = values;
-          actions.walletSettings.updateWalletPassword.trigger({
+          actions.ada.walletSettings.updateWalletPassword.trigger({
             walletId, oldPassword, newPassword
           });
         }}

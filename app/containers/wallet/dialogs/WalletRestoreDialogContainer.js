@@ -12,21 +12,21 @@ export default class WalletRestoreDialogContainer extends Component {
   props: InjectedDialogContainerProps;
 
   onSubmit = (values: { recoveryPhrase: string, walletName: string, walletPassword: ?string }) => {
-    this.props.actions.wallets.restoreWallet.trigger(values);
+    this.props.actions.ada.wallets.restoreWallet.trigger(values);
   };
 
   onCancel = () => {
     this.props.onClose();
-    this.props.stores.wallets.restoreRequest.reset();
+    this.props.stores.ada.wallets.restoreRequest.reset();
   };
 
   render() {
-    const { wallets } = this.props.stores;
+    const { wallets } = this.props.stores.ada;
     const { restoreRequest } = wallets;
 
     return (
       <WalletRestoreDialog
-        mnemonicValidator={mnemonic => this.props.stores.wallets.isValidMnemonic(mnemonic)}
+        mnemonicValidator={mnemonic => this.props.stores.ada.wallets.isValidMnemonic(mnemonic)}
         isSubmitting={restoreRequest.isExecuting}
         onSubmit={this.onSubmit}
         onCancel={this.onCancel}

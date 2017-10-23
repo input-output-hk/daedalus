@@ -15,7 +15,7 @@ export default class GeneralSettingsPage extends Component {
   };
 
   render() {
-    const { setProfileLocaleRequest, LANGUAGE_OPTIONS, currentLocale } = this.props.stores.app;
+    const { setProfileLocaleRequest, LANGUAGE_OPTIONS, currentLocale } = this.props.stores.profile;
     const isSubmitting = setProfileLocaleRequest.isExecuting;
     return (
       <GeneralSettings

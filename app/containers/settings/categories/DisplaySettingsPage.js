@@ -15,7 +15,7 @@ export default class DisplaySettingsPage extends Component {
   }
 
   render() {
-    const { currentTheme } = this.props.stores.app;
+    const { currentTheme } = this.props.stores.profile;
 
     return (
       <DisplaySettings
