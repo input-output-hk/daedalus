@@ -6,6 +6,16 @@ import localStorage from 'electron-json-storage';
  * for account/wallet properties that are not synced with ETC backend.
  */
 
+// TODO: restructure data handling
+// etcWallets = {
+//   [wallet.id]: {
+//     name: 'Untitled Wallet',
+//     assurance: 'CWANormal',
+//     hasPassword: true,
+//     passwordUpdateDate: new Date(),
+//   }
+// }
+
 export const getWalletName = (walletId: string) => new Promise((resolve, reject) => {
   localStorage.get('walletNames', (error, response) => {
     if (error) return reject(error);
@@ -28,3 +38,4 @@ export const unsetWalletNames = () => new Promise((resolve) => {
     resolve();
   });
 });
+

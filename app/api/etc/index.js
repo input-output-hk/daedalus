@@ -7,7 +7,7 @@ import { getEtcAccountBalance } from './getEtcAccountBalance';
 import { getEtcAccountRecoveryPhrase } from './getEtcAccountRecoveryPhrase';
 import { createEtcAccount } from './createEtcAccount';
 import { getWalletName, setWalletName } from './etcLocalStorage';
-import type { GetSyncProgressResponse } from '../common';
+import type { GetSyncProgressResponse, GetWalletRecoveryPhraseResponse } from '../common';
 import type { GetEtcSyncProgressResponse } from './getEtcSyncProgress';
 import type { GetEtcAccountsResponse } from './getEtcAccounts';
 import type { GetEtcAccountBalanceResponse } from './getEtcAccountBalance';
@@ -25,14 +25,13 @@ import { sendEtcTransaction } from './sendEtcTransaction';
 export const ETC_API_HOST = 'ec2-52-30-28-57.eu-west-1.compute.amazonaws.com';
 export const ETC_API_PORT = 8546;
 
-export type GetWalletsResponse = Wallet[];
+export type GetWalletsResponse = Array<Wallet>;
 export type CreateWalletRequest = {
   name: string,
   mnemonic: string,
   password: ?string,
 };
 export type CreateWalletResponse = Wallet;
-export type GetWalletRecoveryPhraseResponse = string[];
 
 export default class EtcApi {
 

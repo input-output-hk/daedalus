@@ -6,6 +6,7 @@ import Request from './lib/LocalizedRequest';
 import { buildRoute, matchRoute } from '../lib/routing-helpers';
 import { ROUTES } from '../routes-config';
 import WalletAddDialog from '../components/wallet/WalletAddDialog';
+import type { GetWalletRecoveryPhraseResponse } from '../api/common';
 
 /**
  * The base wallet store that contains the shared logic
@@ -18,6 +19,8 @@ export default class WalletsStore extends Store {
 
   @observable active: ?Wallet = null;
   @observable walletsRequest: Request<any>;
+  @observable createWalletRequest: Request<any>;
+  @observable getWalletRecoveryPhraseRequest: Request<any>;
 
   _newWalletDetails: { name: string, mnemonic: string, password: ?string } = {
     name: '',
@@ -31,6 +34,37 @@ export default class WalletsStore extends Store {
       this._updateActiveWalletOnRouteChanges,
     ]);
   }
+
+  _create = async (params: {
+    name: string,
+    password: ?string,
+  }) => {
+    Object.assign(this._newWalletDetails, params);
+    try {
+      const recoveryPhrase: ?GetWalletRecoveryPhraseResponse = await (
+        this.getWalletRecoveryPhraseRequest.execute().promise
+      );
+      if (recoveryPhrase != null) {
+        this.actions.walletBackup.initiateWalletBackup.trigger({ recoveryPhrase });
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  _finishWalletCreation = async () => {
+    this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
+    const wallet = await this.createWalletRequest.execute(this._newWalletDetails).promise;
+    if (wallet) {
+      await this.walletsRequest.patch(result => { result.push(wallet); });
+      this.actions.dialogs.closeActiveDialog.trigger();
+      this.goToWalletRoute(wallet.id);
+    } else {
+      this.actions.dialogs.open.trigger({
+        dialog: WalletAddDialog,
+      });
+    }
+  };
 
   // =================== PUBLIC API ==================== //
 

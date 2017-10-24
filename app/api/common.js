@@ -36,3 +36,5 @@ export type GetSyncProgressResponse = {
   localDifficulty: ?number,
   networkDifficulty: ?number,
 };
+
+export type GetWalletRecoveryPhraseResponse = Array<string>;

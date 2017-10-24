@@ -2,12 +2,9 @@
 import { observable } from 'mobx';
 import WalletStore from '../WalletStore';
 import Request from '.././lib/LocalizedRequest';
-import WalletAddDialog from '../../components/wallet/WalletAddDialog';
-import type {
-  CreateWalletResponse, GetWalletsResponse,
-  GetWalletRecoveryPhraseResponse,
-} from '../../api/etc/index';
+import type { CreateWalletResponse, GetWalletsResponse } from '../../api/etc/index';
 import type { SendEtcTransactionResponse } from '../../api/etc/sendEtcTransaction';
+import type { GetWalletRecoveryPhraseResponse } from '../../api/common';
 
 export default class EtcWalletsStore extends WalletStore {
 
@@ -32,37 +29,6 @@ export default class EtcWalletsStore extends WalletStore {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
   }
 
-  _create = async (params: {
-    name: string,
-    password: ?string,
-  }) => {
-    Object.assign(this._newWalletDetails, params);
-    try {
-      const recoveryPhrase: ?GetWalletRecoveryPhraseResponse = await (
-        this.getWalletRecoveryPhraseRequest.execute().promise
-      );
-      if (recoveryPhrase != null) {
-        this.actions.walletBackup.initiateWalletBackup.trigger({ recoveryPhrase });
-      }
-    } catch (error) {
-      throw error;
-    }
-  };
-
-  _finishWalletCreation = async () => {
-    this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
-    const wallet = await this.createWalletRequest.execute(this._newWalletDetails).promise;
-    if (wallet) {
-      await this.walletsRequest.patch(result => { result.push(wallet); });
-      this.actions.dialogs.closeActiveDialog.trigger();
-      this.goToWalletRoute(wallet.id);
-    } else {
-      this.actions.dialogs.open.trigger({
-        dialog: WalletAddDialog,
-      });
-    }
-  };
-
   _sendMoney = async (transactionDetails: {
     receiver: string,
     amount: string,
@@ -77,6 +43,6 @@ export default class EtcWalletsStore extends WalletStore {
     ]);
     // TODO: fetch transactions, refresh wallet balances etc.
     console.log(transaction);
-  }
+  };
 
 }

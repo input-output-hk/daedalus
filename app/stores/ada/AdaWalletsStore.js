@@ -6,14 +6,13 @@ import Wallet from '../../domain/Wallet';
 import { matchRoute, buildRoute } from '../../lib/routing-helpers';
 import Request from '.././lib/LocalizedRequest';
 import { ROUTES } from '../../routes-config';
-import WalletAddDialog from '../../components/wallet/WalletAddDialog';
 import type { walletExportTypeChoices } from '../../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../../actions/ada/wallets-actions';
 import type {
   CreateTransactionResponse, CreateWalletResponse, DeleteWalletResponse,
-  GetWalletRecoveryPhraseResponse, GetWalletsResponse, RestoreWalletResponse,
-  ImportWalletFromFileResponse
+  GetWalletsResponse, RestoreWalletResponse, ImportWalletFromFileResponse
 } from '../../api/ada/index';
+import type { GetWalletRecoveryPhraseResponse } from '../../api/common';
 
 export default class AdaWalletsStore extends WalletStore {
 
@@ -50,23 +49,6 @@ export default class AdaWalletsStore extends WalletStore {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
   }
 
-  _create = async (params: {
-    name: string,
-    password: ?string,
-  }) => {
-    Object.assign(this._newWalletDetails, params);
-    try {
-      const recoveryPhrase: ?GetWalletRecoveryPhraseResponse = await (
-        this.getWalletRecoveryPhraseRequest.execute().promise
-      );
-      if (recoveryPhrase != null) {
-        this.actions.walletBackup.initiateWalletBackup.trigger({ recoveryPhrase });
-      }
-    } catch (error) {
-      throw error;
-    }
-  };
-
   _delete = async (params: { walletId: string }) => {
     const walletToDelete = this.getWalletById(params.walletId);
     if (!walletToDelete) return;
@@ -88,20 +70,6 @@ export default class AdaWalletsStore extends WalletStore {
     });
     this.deleteWalletRequest.reset();
     this.refreshWalletsData();
-  };
-
-  _finishWalletCreation = async () => {
-    this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
-    const wallet = await this.createWalletRequest.execute(this._newWalletDetails).promise;
-    if (wallet) {
-      await this.walletsRequest.patch(result => { result.push(wallet); });
-      this.actions.dialogs.closeActiveDialog.trigger();
-      this.goToWalletRoute(wallet.id);
-    } else {
-      this.actions.dialogs.open.trigger({
-        dialog: WalletAddDialog,
-      });
-    }
   };
 
   _sendMoney = async (transactionDetails: {

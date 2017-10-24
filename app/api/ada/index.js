@@ -16,7 +16,7 @@ import { Logger, stringifyData, stringifyError } from '../../lib/logger';
 import Wallet from '../../domain/Wallet';
 import WalletTransaction from '../../domain/WalletTransaction';
 import WalletAddress from '../../domain/WalletAddress';
-import type { GetSyncProgressResponse } from '../common';
+import type { GetSyncProgressResponse, GetWalletRecoveryPhraseResponse } from '../common';
 import { GenericApiError, IncorrectWalletPasswordError } from '../common';
 import {
   AllFundsAlreadyAtReceiverAddressError,
@@ -43,10 +43,10 @@ import patchAdaApi from './mocks/patchAdaApi';
 const ca = remote.getGlobal('ca');
 const tlsConfig = ClientApi.tlsInit(ca);
 
-export type GetWalletsResponse = Wallet[];
+export type GetWalletsResponse = Array<Wallet>;
 export type GetAddressesResponse = {
   accountId: ?string,
-  addresses: WalletAddress[],
+  addresses: Array<WalletAddress>,
 };
 export type GetAddressesRequest = {
   walletId: string,
@@ -63,7 +63,7 @@ export type GetTransactionsRequest = {
   limit: number,
 };
 export type GetTransactionsResponse = {
-  transactions: WalletTransaction[],
+  transactions: Array<WalletTransaction>,
   total: number,
 };
 export type CreateWalletRequest = {
@@ -83,8 +83,6 @@ export type CreateTransactionRequest = {
   password: ?string,
 };
 export type CreateTransactionResponse = WalletTransaction;
-
-export type GetWalletRecoveryPhraseResponse = string[];
 
 export type RestoreWalletRequest = {
   recoveryPhrase: string,
