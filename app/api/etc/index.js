@@ -6,7 +6,6 @@ import { getEtcAccounts } from './getEtcAccounts';
 import { getEtcAccountBalance } from './getEtcAccountBalance';
 import { getEtcAccountRecoveryPhrase } from './getEtcAccountRecoveryPhrase';
 import { createEtcAccount } from './createEtcAccount';
-import { getWalletName, setWalletName } from './etcLocalStorage';
 import type { GetSyncProgressResponse, GetWalletRecoveryPhraseResponse } from '../common';
 import type { GetEtcSyncProgressResponse } from './getEtcSyncProgress';
 import type { GetEtcAccountsResponse } from './getEtcAccounts';
@@ -16,6 +15,15 @@ import Wallet from '../../domain/Wallet';
 import { mnemonicToSeedHex, toBigNumber } from './lib/utils';
 import type { SendEtcTransactionParams, SendEtcTransactionResponse } from './sendEtcTransaction';
 import { sendEtcTransaction } from './sendEtcTransaction';
+import {
+  getEtcWalletData, setEtcWalletData,
+  setEtcWalletsData, ETC_WALLETS_DATA,
+} from './etcLocalStorage';
+
+// Load Dummy ETC Wallets into Local Storage
+(async () => {
+  await setEtcWalletsData(ETC_WALLETS_DATA);
+})();
 
 /**
  * The ETC api layer that handles all requests to the
@@ -56,14 +64,12 @@ export default class EtcApi {
       const response: GetEtcAccountsResponse = await getEtcAccounts();
       Logger.debug('EtcApi::getWallets success: ' + stringifyData(response));
       const accounts = response;
-      return Promise.all(accounts.map(async (id) => (new Wallet({
-        id,
-        name: await getWalletName(id),
-        amount: await this.getAccountBalance(id),
-        assurance: 'CWANormal',
-        hasPassword: true,
-        passwordUpdateDate: new Date(),
-      }))));
+      return Promise.all(accounts.map(async (id) => {
+        const walletData = await getEtcWalletData(id); // fetch wallet data from local storage
+        const { name, assurance, hasPassword, passwordUpdateDate } = walletData;
+        const amount = await this.getAccountBalance(id);
+        return new Wallet({ id, name, amount, assurance, hasPassword, passwordUpdateDate });
+      }));
     } catch (error) {
       Logger.error('EtcApi::getWallets error: ' + stringifyError(error));
       throw new GenericApiError();
@@ -88,19 +94,16 @@ export default class EtcApi {
     const privateKey = mnemonicToSeedHex(mnemonic, password);
     try {
       const response: CreateEtcAccountResponse = await createEtcAccount([
-        privateKey, password || '' // if password is not provided send empty string is to the Api
+        privateKey, password || '' // if password is not provided send empty string to the Api
       ]);
       Logger.debug('EtcApi::createWallet success: ' + stringifyData(response));
-      const walletId = response;
-      await setWalletName(walletId, name);
-      return new Wallet({
-        id: walletId,
-        name,
-        amount: toBigNumber('0'),
-        assurance: 'CWANormal',
-        hasPassword: password !== null,
-        passwordUpdateDate: password !== null ? new Date() : null,
-      });
+      const id = response;
+      const amount = toBigNumber('0');
+      const assurance = 'CWANormal';
+      const hasPassword = password !== null;
+      const passwordUpdateDate = hasPassword ? new Date() : null;
+      await setEtcWalletData({ id, name, assurance, hasPassword, passwordUpdateDate });
+      return new Wallet({ id, name, amount, assurance, hasPassword, passwordUpdateDate });
     } catch (error) {
       Logger.error('EtcApi::createWallet error: ' + stringifyError(error));
       throw new GenericApiError();
