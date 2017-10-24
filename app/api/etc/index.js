@@ -65,10 +65,24 @@ export default class EtcApi {
       Logger.debug('EtcApi::getWallets success: ' + stringifyData(response));
       const accounts = response;
       return Promise.all(accounts.map(async (id) => {
-        const walletData = await getEtcWalletData(id); // fetch wallet data from local storage
-        const { name, assurance, hasPassword, passwordUpdateDate } = walletData;
         const amount = await this.getAccountBalance(id);
-        return new Wallet({ id, name, amount, assurance, hasPassword, passwordUpdateDate });
+        try {
+          // use wallet data from local storage
+          const walletData = await getEtcWalletData(id); // fetch wallet data from local storage
+          const { name, assurance, hasPassword, passwordUpdateDate } = walletData;
+          return new Wallet({ id, name, amount, assurance, hasPassword, passwordUpdateDate });
+        } catch (error) {
+          // there is no wallet data in local storage - use fallback data
+          const fallbackWalletData = {
+            id,
+            name: 'Untitled Wallet (*)',
+            assurance: 'CWANormal',
+            hasPassword: true,
+            passwordUpdateDate: new Date(),
+          };
+          const { name, assurance, hasPassword, passwordUpdateDate } = fallbackWalletData;
+          return new Wallet({ id, name, amount, assurance, hasPassword, passwordUpdateDate });
+        }
       }));
     } catch (error) {
       Logger.error('EtcApi::getWallets error: ' + stringifyError(error));
@@ -91,7 +105,7 @@ export default class EtcApi {
   async createWallet(request: CreateWalletRequest): Promise<CreateWalletResponse> {
     Logger.debug('EtcApi::createWallet called');
     const { name, mnemonic, password } = request;
-    const privateKey = mnemonicToSeedHex(mnemonic, password);
+    const privateKey = mnemonicToSeedHex(mnemonic);
     try {
       const response: CreateEtcAccountResponse = await createEtcAccount([
         privateKey, password || '' // if password is not provided send empty string to the Api

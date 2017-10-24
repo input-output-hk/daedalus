@@ -1,6 +1,6 @@
 // @flow
 import localStorage from 'electron-json-storage';
-import { get, set } from 'lodash';
+import { set } from 'lodash';
 import type { AssuranceModeOption } from '../../types/transactionAssuranceTypes';
 
 /**
@@ -24,7 +24,9 @@ export const getEtcWalletsData = () => new Promise((resolve, reject) => {
   });
 });
 
-export const setEtcWalletsData = (walletsData: Array<EtcWalletData>) => new Promise((resolve, reject) => {
+export const setEtcWalletsData = (
+  walletsData: Array<EtcWalletData>
+) => new Promise((resolve, reject) => {
   const wallets = {};
   walletsData.forEach(walletData => {
     wallets[walletData.id] = walletData;
@@ -37,16 +39,8 @@ export const setEtcWalletsData = (walletsData: Array<EtcWalletData>) => new Prom
 
 export const getEtcWalletData = (walletId: string) => new Promise(async (resolve) => {
   const walletsData = await getEtcWalletsData();
-  const walletData = get(walletsData, walletId, {
-    id: walletId,
-    name: 'Untitled Wallet',
-    assurance: 'CWANormal',
-    hasPassword: true,
-    passwordUpdateDate: new Date(),
-  });
-  resolve(walletData);
+  resolve(walletsData[walletId]);
 });
-
 
 export const setEtcWalletData = (
   walletData: EtcWalletData
