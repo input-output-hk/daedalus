@@ -12,7 +12,7 @@ import ClientApi from 'daedalus-client-api';
 import { action } from 'mobx';
 import { ipcRenderer, remote } from 'electron';
 import BigNumber from 'bignumber.js';
-import { Logger, stringifyData, stringifyError } from '../../lib/logger';
+import { Logger, stringifyData, stringifyError } from '../../utils/logging';
 import Wallet from '../../domain/Wallet';
 import WalletTransaction from '../../domain/WalletTransaction';
 import WalletAddress from '../../domain/WalletAddress';

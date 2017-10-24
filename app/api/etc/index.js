@@ -1,6 +1,6 @@
 // @flow
 import { getEtcSyncProgress } from './getEtcSyncProgress';
-import { Logger, stringifyData, stringifyError } from '../../lib/logger';
+import { Logger, stringifyData, stringifyError } from '../../utils/logging';
 import { GenericApiError, IncorrectWalletPasswordError } from '../common';
 import { getEtcAccounts } from './getEtcAccounts';
 import { getEtcAccountBalance } from './getEtcAccountBalance';

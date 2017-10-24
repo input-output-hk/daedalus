@@ -3,7 +3,7 @@ import { observable, action, computed, runInAction, untracked } from 'mobx';
 import Store from './lib/Store';
 import Wallet from '../domain/Wallet';
 import Request from './lib/LocalizedRequest';
-import { buildRoute, matchRoute } from '../lib/routing-helpers';
+import { buildRoute, matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
 import WalletAddDialog from '../components/wallet/WalletAddDialog';
 import type { GetWalletRecoveryPhraseResponse } from '../api/common';

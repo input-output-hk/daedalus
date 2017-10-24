@@ -4,8 +4,8 @@ import { ipcRenderer } from 'electron';
 import { isString } from 'lodash';
 import Store from '../lib/Store';
 import Request from '../lib/LocalizedRequest';
-import { Logger } from '../../lib/logger';
-import { matchRoute } from '../../lib/routing-helpers';
+import { Logger } from '../../utils/logging';
+import { matchRoute } from '../../utils/routing';
 import WalletTransaction from '../../domain/WalletTransaction';
 import { PARSE_REDEMPTION_CODE } from '../../../electron/ipc-api/parse-redemption-code-from-pdf';
 import {

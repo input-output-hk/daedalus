@@ -3,7 +3,7 @@ import { observable, action, runInAction } from 'mobx';
 import _ from 'lodash';
 import WalletStore from '../WalletStore';
 import Wallet from '../../domain/Wallet';
-import { matchRoute, buildRoute } from '../../lib/routing-helpers';
+import { matchRoute, buildRoute } from '../../utils/routing';
 import Request from '.././lib/LocalizedRequest';
 import { ROUTES } from '../../routes-config';
 import type { walletExportTypeChoices } from '../../types/walletExportTypes';

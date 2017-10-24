@@ -5,7 +5,7 @@ import MainLayout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import AdaRedemptionSuccessOverlay from '../../components/wallet/ada-redemption/AdaRedemptionSuccessOverlay';
-import { buildRoute } from '../../lib/routing-helpers';
+import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 

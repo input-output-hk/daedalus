@@ -10,7 +10,7 @@ import Button from 'react-polymorph/lib/components/Button';
 import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
-import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import WalletAddress from '../../domain/WalletAddress';

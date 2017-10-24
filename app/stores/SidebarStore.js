@@ -1,13 +1,13 @@
 // @flow
 import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
-import resolver from '../lib/resolver';
+import resolver from '../utils/imports';
 import { ROUTES } from '../routes-config';
-import { matchRoute } from './../lib/routing-helpers';
+import { matchRoute } from '../utils/routing';
 import environment from '../environment';
 
 const sidebarConfig = resolver('config/sidebarConfig');
-const { formattedWalletAmount } = resolver('helpers/formatters');
+const { formattedWalletAmount } = resolver('utils/formatters');
 
 export default class SidebarStore extends Store {
 

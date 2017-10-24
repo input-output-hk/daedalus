@@ -8,11 +8,11 @@ import Wallet from '../../domain/Wallet';
 import menuIconOpened from '../../assets/images/menu-opened-ic.inline.svg';
 import menuIconClosed from '../../assets/images/menu-ic.inline.svg';
 import styles from './TopBar.scss';
-import resolver from '../../lib/resolver';
-import { matchRoute } from '../../lib/routing-helpers';
+import resolver from '../../utils/imports';
+import { matchRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 
-const { formattedWalletAmount } = resolver('helpers/formatters');
+const { formattedWalletAmount } = resolver('utils/formatters');
 
 @observer
 export default class TopBar extends Component {

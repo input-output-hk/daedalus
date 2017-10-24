@@ -10,7 +10,7 @@ import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Select from 'react-polymorph/lib/components/Select';
 import SelectSkin from 'react-polymorph/lib/skins/simple/SelectSkin';
-import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import AdaCertificateUploadWidget from '../../widgets/forms/AdaCertificateUploadWidget';
 import AdaRedemptionChoices from './AdaRedemptionChoices';
 import AdaRedemptionDisclaimer from './AdaRedemptionDisclaimer';

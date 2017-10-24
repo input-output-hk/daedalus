@@ -2,7 +2,7 @@
 import React from 'react';
 import { Route, IndexRedirect } from 'react-router';
 import { ROUTES } from './routes-config';
-import resolver from './lib/resolver';
+import resolver from './utils/imports';
 
 // PAGES
 import StakingPage from './containers/staking/StakingPage';
