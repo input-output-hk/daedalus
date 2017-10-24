@@ -9,7 +9,7 @@ import NumericInput from 'react-polymorph/lib/components/NumericInput';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
-import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import AmountInputSkin from './skins/AmountInputSkin';
 import BorderedBox from '../widgets/BorderedBox';
 import styles from './WalletSendForm.scss';

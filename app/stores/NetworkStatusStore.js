@@ -3,7 +3,7 @@ import { observable, action, computed, runInAction } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
-import { Logger } from '../lib/logger';
+import { Logger } from '../utils/logging';
 import type { GetSyncProgressResponse } from '../api/common';
 import environment from '../environment';
 

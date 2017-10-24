@@ -7,7 +7,7 @@ import CachedRequest from '../lib/LocalizedCachedRequest';
 import WalletTransaction from '../../domain/WalletTransaction';
 import type { GetTransactionsResponse } from '../../api/ada/index';
 import type { UnconfirmedAmount } from '../../types/unconfirmedAmountType';
-import { isValidAmountInLovelaces } from '../../lib/validations';
+import { isValidAmountInLovelaces } from '../../utils/validations';
 
 export default class TransactionsStore extends Store {
 

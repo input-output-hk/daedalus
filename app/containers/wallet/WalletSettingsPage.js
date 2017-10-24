@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletSettings from '../../components/wallet/WalletSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import { isValidWalletName } from '../../lib/validations';
+import { isValidWalletName } from '../../utils/validations';
 
 @inject('stores', 'actions') @observer
 export default class WalletSettingsPage extends Component {

@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletWithNavigation from '../../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../../components/widgets/LoadingSpinner';
-import resolver from '../../../lib/resolver';
-import { buildRoute } from '../../../lib/routing-helpers';
+import resolver from '../../../utils/imports';
+import { buildRoute } from '../../../utils/routing';
 import { ROUTES } from '../../../routes-config';
 import type { InjectedContainerProps } from '../../../types/injectedPropsType';
 

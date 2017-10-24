@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import TextArea from 'react-polymorph/lib/components/TextArea';
 import SimpleTextAreaSkin from 'react-polymorph/lib/skins/simple/TextAreaSkin';
 import { defineMessages, intlShape } from 'react-intl';
-import ReactToolboxMobxForm from '../../../../lib/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import DialogBackButton from '../../../widgets/DialogBackButton';
 import Dialog from '../../../widgets/Dialog';
