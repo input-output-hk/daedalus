@@ -13,7 +13,7 @@ export default class SidebarStore extends Store {
 
   CATEGORIES = sidebarConfig.CATEGORIES;
 
-  @observable activeSidebarCategory: string = this.CATEGORIES.WALLETS;
+  @observable activeSidebarCategory: string = this.CATEGORIES[0].route;
   @observable isShowingSubMenus: boolean = true;
 
   setup() {
@@ -70,10 +70,9 @@ export default class SidebarStore extends Store {
 
   _syncSidebarRouteWithRouter = () => {
     const route = this.stores.app.currentRoute;
-    Object.keys(this.CATEGORIES).forEach((key) => {
-      const category = this.CATEGORIES[key];
+    this.CATEGORIES.forEach((category) => {
       // If the current route starts with the root of the category
-      if (route.indexOf(category) === 0) this._setActivateSidebarCategory(category);
+      if (route.indexOf(category.route) === 0) this._setActivateSidebarCategory(category.route);
     });
   };
 
