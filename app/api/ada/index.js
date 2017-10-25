@@ -672,7 +672,7 @@ const _createTransactionFromServerData = action(
     return new WalletTransaction({
       id: data.ctId,
       title: ctmTitle || data.ctIsOutgoing ? 'Ada sent' : 'Ada received',
-      type: data.ctIsOutgoing ? 'adaExpend' : 'adaIncome',
+      type: data.ctIsOutgoing ? 'expend' : 'income',
       amount: new BigNumber(data.ctIsOutgoing ? -1 * coins : coins).dividedBy(LOVELACES_PER_ADA),
       date: new Date(ctmDate * 1000),
       description: ctmDescription || '',

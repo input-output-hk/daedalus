@@ -15,8 +15,8 @@ export default class TransactionsStore extends Store {
   SEARCH_LIMIT_INCREASE = 500;
   SEARCH_SKIP = 0;
   RECENT_TRANSACTIONS_LIMIT = 5;
-  OUTGOING_TRANSACTION_TYPE = 'adaExpend';
-  INCOMING_TRANSACTION_TYPE = 'adaIncome';
+  OUTGOING_TRANSACTION_TYPE = 'expend';
+  INCOMING_TRANSACTION_TYPE = 'income';
 
   @observable transactionsRequests: Array<{
     walletId: string,

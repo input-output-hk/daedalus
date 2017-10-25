@@ -48,8 +48,11 @@ export default class EtcWalletsStore extends WalletStore {
       { from: wallet.id, to: receiver, amount },
       password !== null ? password : '',
     ]);
-    // TODO: fetch transactions, refresh wallet balances etc.
-    console.log(transaction);
+    if (!this.sendMoneyRequest.isError) {
+      this.refreshWalletsData();
+      this.actions.dialogs.closeActiveDialog.trigger();
+      this.goToWalletRoute(wallet.id);
+    }
   };
 
   isValidMnemonic = (mnemonic: string) => this.api.etc.isValidMnemonic(mnemonic);

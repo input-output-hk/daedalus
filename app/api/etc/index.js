@@ -6,20 +6,24 @@ import { getEtcAccounts } from './getEtcAccounts';
 import { getEtcAccountBalance } from './getEtcAccountBalance';
 import { getEtcAccountRecoveryPhrase } from './getEtcAccountRecoveryPhrase';
 import { createEtcAccount } from './createEtcAccount';
-import type { GetSyncProgressResponse, GetWalletRecoveryPhraseResponse } from '../common';
-import type { GetEtcSyncProgressResponse } from './getEtcSyncProgress';
-import type { GetEtcAccountsResponse } from './getEtcAccounts';
-import type { GetEtcAccountBalanceResponse } from './getEtcAccountBalance';
-import type { CreateEtcAccountResponse } from './createEtcAccount';
 import Wallet from '../../domain/Wallet';
-import { mnemonicToSeedHex, toBigNumber } from './lib/utils';
+import { mnemonicToSeedHex, toBigNumber, unixTimestampToDate } from './lib/utils';
+import { getEtcTransactionByHash } from './getEtcTransaction';
+import { getEtcBlockByHash } from './getEtcBlock';
 import { isValidMnemonic } from '../../../lib/decrypt';
-import type { SendEtcTransactionParams, SendEtcTransactionResponse } from './sendEtcTransaction';
 import { sendEtcTransaction } from './sendEtcTransaction';
 import {
   getEtcWalletData, setEtcWalletData, unsetEtcWalletData, updateEtcWalletData,
   setEtcWalletsData, ETC_WALLETS_DATA,
 } from './etcLocalStorage';
+import WalletTransaction from '../../domain/WalletTransaction';
+import type { GetSyncProgressResponse, GetWalletRecoveryPhraseResponse } from '../common';
+import type { GetEtcSyncProgressResponse } from './getEtcSyncProgress';
+import type { GetEtcAccountsResponse } from './getEtcAccounts';
+import type { GetEtcAccountBalanceResponse } from './getEtcAccountBalance';
+import type { CreateEtcAccountResponse } from './createEtcAccount';
+import type { SendEtcTransactionParams, SendEtcTransactionResponse } from './sendEtcTransaction';
+import type { GetEtcTransactionByHashResponse } from './getEtcTransaction';
 
 // Load Dummy ETC Wallets into Local Storage
 (async () => {
@@ -155,13 +159,13 @@ export default class EtcApi {
     }
   }
 
-  async createTransaction(params: SendEtcTransactionParams): Promise<string> {
+  async createTransaction(params: SendEtcTransactionParams): Promise<WalletTransaction> {
     Logger.debug('EtcApi::createTransaction called with ' + stringifyData(params));
     try {
-      const response: SendEtcTransactionResponse = await sendEtcTransaction(params);
-      Logger.debug('EtcApi::createTransaction success: ' + stringifyData(response));
-      // TODO: actually fetch transaction data and return that instead of just the ID
-      return response;
+      const senderAccount = params[0].from;
+      const txHash: SendEtcTransactionResponse = await sendEtcTransaction(params);
+      Logger.debug('EtcApi::createTransaction success: ' + stringifyData(txHash));
+      return _createTransaction(senderAccount, txHash);
     } catch (error) {
       Logger.error('EtcApi::createTransaction error: ' + stringifyError(error));
       if (error.message.includes('Could not decrypt key with given passphrase')) {
@@ -246,3 +250,23 @@ export default class EtcApi {
   }
 
 }
+
+const _createTransaction = async (senderAccount: string, txHash: string) => {
+  const txData: GetEtcTransactionByHashResponse = await getEtcTransactionByHash(txHash);
+  const txBlock = txData.blockHash ? await getEtcBlockByHash(txData.blockHash) : null;
+  const blockDate = txBlock ? unixTimestampToDate(txBlock.timestamp) : new Date();
+  return new WalletTransaction({
+    id: txData.hash,
+    type: senderAccount === txData.from ? 'expend' : 'income',
+    title: '',
+    description: '',
+    amount: toBigNumber(txData.value),
+    date: blockDate,
+    numberOfConfirmations: 0,
+    addresses: {
+      from: [txData.from],
+      to: [txData.to],
+    },
+    condition: 'CPtxInBlocks',
+  });
+};
