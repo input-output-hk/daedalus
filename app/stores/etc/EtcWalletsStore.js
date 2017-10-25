@@ -1,5 +1,6 @@
 // @flow
 import { observable } from 'mobx';
+import BigNumber from 'bignumber.js';
 import WalletStore from '../WalletStore';
 import Request from '.././lib/LocalizedRequest';
 import type {
@@ -45,7 +46,7 @@ export default class EtcWalletsStore extends WalletStore {
     if (!wallet) throw new Error('Active wallet required before sending.');
     const { receiver, amount, password } = transactionDetails;
     const transaction = await this.sendMoneyRequest.execute([
-      { from: wallet.id, to: receiver, amount },
+      { from: wallet.id, to: receiver, value: new BigNumber(amount) },
       password !== null ? password : '',
     ]);
     if (!this.sendMoneyRequest.isError) {

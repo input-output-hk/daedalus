@@ -24,6 +24,7 @@ import type { GetEtcAccountBalanceResponse } from './getEtcAccountBalance';
 import type { CreateEtcAccountResponse } from './createEtcAccount';
 import type { SendEtcTransactionParams, SendEtcTransactionResponse } from './sendEtcTransaction';
 import type { GetEtcTransactionByHashResponse } from './getEtcTransaction';
+import { LOVELACES_PER_ADA, WEI_PER_ETC } from '../../config/numbersConfig';
 
 // Load Dummy ETC Wallets into Local Storage
 (async () => {
@@ -118,7 +119,7 @@ export default class EtcApi {
     try {
       const response: GetEtcAccountBalanceResponse = await getEtcAccountBalance([accountId, 'latest']);
       Logger.debug('EtcApi::getAccountBalance success: ' + stringifyData(response));
-      return toBigNumber(response);
+      return toBigNumber(response).dividedBy(WEI_PER_ETC);
     } catch (error) {
       Logger.error('EtcApi::getAccountBalance error: ' + stringifyError(error));
       throw new GenericApiError();

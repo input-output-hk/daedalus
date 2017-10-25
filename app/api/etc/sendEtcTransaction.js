@@ -1,9 +1,10 @@
 // @flow
 import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
+import BigNumber from 'bignumber.js';
 
 export type SendEtcTransactionParams = [
-  { from: string, to: string, value: string }, // transaction details
+  { from: string, to: string, value: BigNumber }, // transaction details
   string // password
 ];
 
@@ -20,6 +21,6 @@ export const sendEtcTransaction = (
   }, {
     jsonrpc: '2.0',
     method: 'personal_sendTransaction',
-    params
+    params: [{ ...params[0], value: params[0].value.toString(16) }, params[1]]
   })
 );
