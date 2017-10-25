@@ -17,7 +17,5 @@ export default class WalletsActions {
   importWalletFromFile: Action<WalletImportFromFileParams> = new Action();
   deleteWallet: Action<{ walletId: string }> = new Action();
   sendMoney: Action<{ receiver: string, amount: string, password: ?string }> = new Action();
-  setActiveWallet: Action<{ walletId: string }> = new Action();
-  showWalletAddressCopyNotification: Action<any> = new Action();
   chooseWalletExportType: Action<{ walletExportType: walletExportTypeChoices }> = new Action();
 }

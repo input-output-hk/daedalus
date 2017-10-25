@@ -1,6 +1,6 @@
 // @flow
 import localStorage from 'electron-json-storage';
-import { set } from 'lodash';
+import { set, unset } from 'lodash';
 import type { AssuranceModeOption } from '../../types/transactionAssuranceTypes';
 
 /**
@@ -47,6 +47,33 @@ export const setEtcWalletData = (
 ) => new Promise(async (resolve, reject) => {
   const walletsData = await getEtcWalletsData();
   set(walletsData, walletData.id, walletData);
+  localStorage.set('etcWallets', { wallets: walletsData }, (error) => {
+    if (error) return reject(error);
+    resolve();
+  });
+});
+
+export const updateEtcWalletData = (
+  walletData: {
+    id: string,
+    name?: string,
+    assurance?: AssuranceModeOption,
+    hasPassword?: boolean,
+    passwordUpdateDate?: ?Date,
+  }
+) => new Promise(async (resolve, reject) => {
+  const walletsData = await getEtcWalletsData();
+  const walletId = walletData.id;
+  Object.assign(walletsData[walletId], walletData);
+  localStorage.set('etcWallets', { wallets: walletsData }, (error) => {
+    if (error) return reject(error);
+    resolve();
+  });
+});
+
+export const unsetEtcWalletData = (walletId: string) => new Promise(async (resolve, reject) => {
+  const walletsData = await getEtcWalletsData();
+  unset(walletsData, walletId);
   localStorage.set('etcWallets', { wallets: walletsData }, (error) => {
     if (error) return reject(error);
     resolve();
@@ -132,4 +159,11 @@ export const ETC_WALLETS_DATA = [
     hasPassword: false,
     passwordUpdateDate: null,
   },
+  {
+    id: '0x2ba43ca4dc0788ae2b09a3e75e4c1ff191a84279',
+    name: 'Wallet 11',
+    assurance: 'CWANormal',
+    hasPassword: false,
+    passwordUpdateDate: null,
+  }
 ];

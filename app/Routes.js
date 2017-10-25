@@ -5,6 +5,7 @@ import { ROUTES } from './routes-config';
 import resolver from './utils/imports';
 
 // PAGES
+import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
 import StakingPage from './containers/staking/StakingPage';
 import AdaRedemptionPage from './containers/wallet/AdaRedemptionPage';
 import NoWalletsPage from './containers/wallet/NoWalletsPage';
@@ -24,7 +25,6 @@ const WalletSummaryPage = resolver('containers/wallet/WalletSummaryPage');
 const WalletSendPage = resolver('containers/wallet/WalletSendPage');
 const WalletReceivePage = resolver('containers/wallet/WalletReceivePage');
 const WalletTransactionsPage = resolver('containers/wallet/WalletTransactionsPage');
-const WalletSettingsPage = resolver('containers/wallet/WalletSettingsPage');
 
 export const Routes = (
   <div>

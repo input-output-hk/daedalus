@@ -1,5 +1,6 @@
 // @flow
 import { observable, action, computed, runInAction, untracked } from 'mobx';
+import _ from 'lodash';
 import Store from './lib/Store';
 import Wallet from '../domain/Wallet';
 import Request from './lib/LocalizedRequest';
@@ -20,7 +21,9 @@ export default class WalletsStore extends Store {
   @observable active: ?Wallet = null;
   @observable walletsRequest: Request<any>;
   @observable createWalletRequest: Request<any>;
+  @observable deleteWalletRequest: Request<any>;
   @observable getWalletRecoveryPhraseRequest: Request<any>;
+  @observable restoreRequest: Request<any>;
 
   _newWalletDetails: { name: string, mnemonic: string, password: ?string } = {
     name: '',
@@ -52,7 +55,7 @@ export default class WalletsStore extends Store {
     }
   };
 
-  _finishWalletCreation = async () => {
+  _finishCreation = async () => {
     this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(' ');
     const wallet = await this.createWalletRequest.execute(this._newWalletDetails).promise;
     if (wallet) {
@@ -64,6 +67,43 @@ export default class WalletsStore extends Store {
         dialog: WalletAddDialog,
       });
     }
+  };
+
+  _delete = async (params: { walletId: string }) => {
+    const walletToDelete = this.getWalletById(params.walletId);
+    if (!walletToDelete) return;
+    const indexOfWalletToDelete = this.all.indexOf(walletToDelete);
+    await this.deleteWalletRequest.execute({ walletId: params.walletId });
+    await this.walletsRequest.patch(result => {
+      result.splice(indexOfWalletToDelete, 1);
+    });
+    runInAction('WalletsStore::_delete', () => {
+      if (this.hasAnyWallets) {
+        const nextIndexInList = Math.max(indexOfWalletToDelete - 1, 0);
+        const nextWalletInList = this.all[nextIndexInList];
+        this.actions.dialogs.closeActiveDialog.trigger();
+        this.goToWalletRoute(nextWalletInList.id);
+      } else {
+        this.active = null;
+        this.actions.router.goToRoute.trigger({ route: ROUTES.NO_WALLETS });
+      }
+    });
+    this.deleteWalletRequest.reset();
+    this.refreshWalletsData();
+  };
+
+  _restore = async (params: {
+    recoveryPhrase: string,
+    walletName: string,
+    walletPassword: ?string,
+  }) => {
+    const restoredWallet = await this.restoreRequest.execute(params).promise;
+    if (!restoredWallet) throw new Error('Restored wallet was not received correctly');
+    await this._patchWalletRequestWithNewWallet(restoredWallet);
+    this.actions.dialogs.closeActiveDialog.trigger();
+    this.restoreRequest.reset();
+    this.goToWalletRoute(restoredWallet.id);
+    this.refreshWalletsData();
   };
 
   // =================== PUBLIC API ==================== //
@@ -133,6 +173,13 @@ export default class WalletsStore extends Store {
     const isNoWalletsRoute = matchRoute(ROUTES.NO_WALLETS, currentRoute);
     return isRootRoute || isNoWalletsRoute;
   }
+
+  _patchWalletRequestWithNewWallet = async (wallet: Wallet) => {
+    // Only add the new wallet if it does not exist yet in the result!
+    await this.walletsRequest.patch(result => {
+      if (!_.find(result, { id: wallet.id })) result.push(wallet);
+    });
+  };
 
   _pollRefresh = async () => (
     this.stores.networkStatus.isSynced && await this.refreshWalletsData()

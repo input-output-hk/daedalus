@@ -5,7 +5,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import WalletSummary from '../../../components/wallet/summary/etc/WalletSummary';
 import WalletNoTransactions from '../../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../../components/layout/VerticalFlexContainer';
-import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import { DECIMAL_PLACES_IN_ETC } from '../../../config/numbersConfig';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 
 const messages = defineMessages({
@@ -41,7 +41,7 @@ export default class WalletSummaryPage extends Component {
       <VerticalFlexContainer>
         <WalletSummary
           walletName={wallet.name}
-          amount={wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
+          amount={wallet.amount.toFormat(DECIMAL_PLACES_IN_ETC)}
         />
         {walletTransactions}
       </VerticalFlexContainer>

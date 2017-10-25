@@ -4,7 +4,7 @@ import AdaWalletsStore from './AdaWalletsStore';
 import TransactionsStore from './TransactionsStore';
 import AdaRedemptionStore from './AdaRedemptionStore';
 import NodeUpdateStore from './NodeUpdateStore';
-import WalletSettingsStore from './WalletSettingsStore';
+import AdaWalletSettingsStore from './AdaWalletSettingsStore';
 import AddressesStore from './AddressesStore';
 
 export const adaStoreClasses = {
@@ -12,7 +12,7 @@ export const adaStoreClasses = {
   transactions: TransactionsStore,
   adaRedemption: AdaRedemptionStore,
   nodeUpdate: NodeUpdateStore,
-  walletSettings: WalletSettingsStore,
+  walletSettings: AdaWalletSettingsStore,
   addresses: AddressesStore,
 };
 
@@ -21,7 +21,7 @@ export type AdaStoresMap = {
   transactions: TransactionsStore,
   adaRedemption: AdaRedemptionStore,
   nodeUpdate: NodeUpdateStore,
-  walletSettings: WalletSettingsStore,
+  walletSettings: AdaWalletSettingsStore,
   addresses: AddressesStore,
 };
 

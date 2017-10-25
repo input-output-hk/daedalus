@@ -1,29 +1,20 @@
 // @flow
 import { observable, action } from 'mobx';
 import _ from 'lodash';
-import Store from '../lib/Store';
+import WalletSettingsStore from '../WalletSettingsStore';
 import Request from '../lib/LocalizedRequest';
-import globalMessages from '../../i18n/global-messages';
 import type { WalletExportToFileParams } from '../../actions/ada/wallet-settings-actions';
 import type {
   UpdateWalletPasswordResponse, UpdateWalletResponse, ExportWalletToFileResponse
 } from '../../api/ada/index';
 
-export default class WalletSettingsStore extends Store {
-
-  WALLET_ASSURANCE_LEVEL_OPTIONS = [
-    { value: 'CWANormal', label: globalMessages.assuranceLevelNormal },
-    { value: 'CWAStrict', label: globalMessages.assuranceLevelStrict },
-  ];
+export default class EtcWalletSettingsStore extends WalletSettingsStore {
 
   /* eslint-disable max-len */
   @observable updateWalletRequest: Request<UpdateWalletResponse> = new Request(this.api.ada.updateWallet);
   @observable updateWalletPasswordRequest: Request<UpdateWalletPasswordResponse> = new Request(this.api.ada.updateWalletPassword);
   @observable exportWalletToFileRequest: Request<ExportWalletToFileResponse> = new Request(this.api.ada.exportWalletToFile);
   /* eslint-enable max-len */
-
-  @observable walletFieldBeingEdited = null;
-  @observable lastUpdatedWalletField = null;
 
   setup() {
     const a = this.actions.ada.walletSettings;
@@ -57,22 +48,6 @@ export default class WalletSettingsStore extends Store {
       result[walletIndex] = wallet;
     });
     this.stores.ada.wallets._setActiveWallet({ walletId });
-  };
-
-  @action _startEditingWalletField = ({ field }: { field: string }) => {
-    this.walletFieldBeingEdited = field;
-  };
-
-  @action _stopEditingWalletField = () => {
-    if (this.walletFieldBeingEdited) {
-      this.lastUpdatedWalletField = this.walletFieldBeingEdited;
-    }
-    this.walletFieldBeingEdited = null;
-  };
-
-  @action _cancelEditingWalletField = () => {
-    this.lastUpdatedWalletField = null;
-    this.walletFieldBeingEdited = null;
   };
 
   @action _exportToFile = async (params: WalletExportToFileParams) => {

@@ -13,10 +13,11 @@ import type { GetEtcAccountBalanceResponse } from './getEtcAccountBalance';
 import type { CreateEtcAccountResponse } from './createEtcAccount';
 import Wallet from '../../domain/Wallet';
 import { mnemonicToSeedHex, toBigNumber } from './lib/utils';
+import { isValidMnemonic } from '../../../lib/decrypt';
 import type { SendEtcTransactionParams, SendEtcTransactionResponse } from './sendEtcTransaction';
 import { sendEtcTransaction } from './sendEtcTransaction';
 import {
-  getEtcWalletData, setEtcWalletData,
+  getEtcWalletData, setEtcWalletData, unsetEtcWalletData, updateEtcWalletData,
   setEtcWalletsData, ETC_WALLETS_DATA,
 } from './etcLocalStorage';
 
@@ -40,6 +41,24 @@ export type CreateWalletRequest = {
   password: ?string,
 };
 export type CreateWalletResponse = Wallet;
+export type UpdateWalletRequest = Wallet;
+export type UpdateWalletResponse = Wallet;
+export type UpdateWalletPasswordRequest = {
+  walletId: string,
+  oldPassword: ?string,
+  newPassword: ?string,
+};
+export type UpdateWalletPasswordResponse = boolean;
+export type DeleteWalletRequest = {
+  walletId: string,
+};
+export type DeleteWalletResponse = boolean;
+export type RestoreWalletRequest = {
+  recoveryPhrase: string,
+  walletName: string,
+  walletPassword: ?string,
+};
+export type RestoreWalletResponse = Wallet;
 
 export default class EtcApi {
 
@@ -150,6 +169,80 @@ export default class EtcApi {
       }
       throw new GenericApiError();
     }
+  }
+
+  async updateWallet(request: UpdateWalletRequest): Promise<UpdateWalletResponse> {
+    Logger.debug('EtcApi::updateWallet called: ' + stringifyData(request));
+    const { id, name, amount, assurance, hasPassword, passwordUpdateDate } = request;
+    try {
+      await setEtcWalletData({ id, name, assurance, hasPassword, passwordUpdateDate });
+      Logger.debug('EtcApi::updateWallet success: ' + stringifyData(request));
+      return new Wallet({ id, name, amount, assurance, hasPassword, passwordUpdateDate });
+    } catch (error) {
+      Logger.error('EtcApi::updateWallet error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async updateWalletPassword(
+    request: UpdateWalletPasswordRequest
+  ): Promise<UpdateWalletPasswordResponse> {
+    Logger.debug('EtcApi::updateWalletPassword called');
+    const { walletId, oldPassword, newPassword } = request;
+    try {
+      // TODO: insert real Api update wallet password call here
+      console.debug(walletId, oldPassword, newPassword);
+      Logger.debug('EtcApi::updateWalletPassword success');
+      const hasPassword = newPassword !== null;
+      const passwordUpdateDate = hasPassword ? new Date() : null;
+      await updateEtcWalletData({ id: walletId, hasPassword, passwordUpdateDate });
+      return true;
+    } catch (error) {
+      Logger.error('EtcApi::updateWalletPassword error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async deleteWallet(request: DeleteWalletRequest): Promise<DeleteWalletResponse> {
+    Logger.debug('EtcApi::deleteWallet called: ' + stringifyData(request));
+    const { walletId } = request;
+    try {
+      // TODO: insert real Api delete wallet endpoint call here
+      console.debug(walletId);
+      Logger.debug('EtcApi::deleteWallet success: ' + stringifyData(request));
+      await unsetEtcWalletData(walletId); // remove wallet data from local storage
+      return true;
+    } catch (error) {
+      Logger.error('EtcApi::deleteWallet error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async restoreWallet(request: RestoreWalletRequest): Promise<RestoreWalletResponse> {
+    Logger.debug('EtcApi::restoreWallet called');
+    const { recoveryPhrase: mnemonic, walletName: name, walletPassword: password } = request;
+    const privateKey = mnemonicToSeedHex(mnemonic);
+    try {
+      // TODO: check if we are allowed to use create endpoint for this call
+      const response: CreateEtcAccountResponse = await createEtcAccount([
+        privateKey, password || '' // if password is not provided send empty string to the Api
+      ]);
+      Logger.debug('EtcApi::restoreWallet success: ' + stringifyData(response));
+      const id = response;
+      const amount = toBigNumber('0');
+      const assurance = 'CWANormal';
+      const hasPassword = password !== null;
+      const passwordUpdateDate = hasPassword ? new Date() : null;
+      await setEtcWalletData({ id, name, assurance, hasPassword, passwordUpdateDate });
+      return new Wallet({ id, name, amount, assurance, hasPassword, passwordUpdateDate });
+    } catch (error) {
+      Logger.error('EtcApi::restoreWallet error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  isValidMnemonic(mnemonic: string): Promise<boolean> {
+    return isValidMnemonic(mnemonic, 12);
   }
 
 }

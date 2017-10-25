@@ -25,7 +25,7 @@ export default class WalletSummary extends Component {
           <div className={styles.walletName}>{walletName}</div>
           <div className={styles.walletAmount}>
             {amount}
-            <SvgInline svg={etcSymbol} className={styles.etcSymbol} />
+            <SvgInline svg={etcSymbol} className={styles.currencySymbolBig} />
           </div>
         </BorderedBox>
       </div>

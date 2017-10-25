@@ -83,7 +83,6 @@ export type CreateTransactionRequest = {
   password: ?string,
 };
 export type CreateTransactionResponse = WalletTransaction;
-
 export type RestoreWalletRequest = {
   recoveryPhrase: string,
   walletName: string,

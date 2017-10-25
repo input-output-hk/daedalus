@@ -1,6 +1,5 @@
 // @flow
 import { observable, action, runInAction } from 'mobx';
-import _ from 'lodash';
 import WalletStore from '../WalletStore';
 import Wallet from '../../domain/Wallet';
 import { matchRoute, buildRoute } from '../../utils/routing';
@@ -36,41 +35,17 @@ export default class AdaWalletsStore extends WalletStore {
     wallets.createWallet.listen(this._create);
     wallets.deleteWallet.listen(this._delete);
     wallets.sendMoney.listen(this._sendMoney);
-    wallets.restoreWallet.listen(this._restoreWallet);
+    wallets.restoreWallet.listen(this._restore);
     wallets.importWalletFromFile.listen(this._importWalletFromFile);
-    wallets.setActiveWallet.listen(this._setActiveWallet);
     wallets.chooseWalletExportType.listen(this._chooseWalletExportType);
     router.goToRoute.listen(this._onRouteChange);
-    walletBackup.finishWalletBackup.listen(this._finishWalletCreation);
+    walletBackup.finishWalletBackup.listen(this._finishCreation);
     this.registerReactions([
       this._updateActiveWalletOnRouteChanges,
       this._toggleAddWalletDialogOnWalletsLoaded,
     ]);
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
   }
-
-  _delete = async (params: { walletId: string }) => {
-    const walletToDelete = this.getWalletById(params.walletId);
-    if (!walletToDelete) return;
-    const indexOfWalletToDelete = this.all.indexOf(walletToDelete);
-    await this.deleteWalletRequest.execute({ walletId: params.walletId });
-    await this.walletsRequest.patch(result => {
-      result.splice(indexOfWalletToDelete, 1);
-    });
-    runInAction('WalletsStore::_delete', () => {
-      if (this.hasAnyWallets) {
-        const nextIndexInList = Math.max(indexOfWalletToDelete - 1, 0);
-        const nextWalletInList = this.all[nextIndexInList];
-        this.actions.dialogs.closeActiveDialog.trigger();
-        this.goToWalletRoute(nextWalletInList.id);
-      } else {
-        this.active = null;
-        this.actions.router.goToRoute.trigger({ route: ROUTES.NO_WALLETS });
-      }
-    });
-    this.deleteWalletRequest.reset();
-    this.refreshWalletsData();
-  };
 
   _sendMoney = async (transactionDetails: {
     receiver: string,
@@ -126,20 +101,6 @@ export default class AdaWalletsStore extends WalletStore {
     }
   };
 
-  @action _restoreWallet = async (params: {
-    recoveryPhrase: string,
-    walletName: string,
-    walletPassword: ?string,
-  }) => {
-    const restoredWallet = await this.restoreRequest.execute(params).promise;
-    if (!restoredWallet) throw new Error('Restored wallet was not received correctly');
-    await this._patchWalletRequestWithNewWallet(restoredWallet);
-    this.actions.dialogs.closeActiveDialog.trigger();
-    this.restoreRequest.reset();
-    this.goToWalletRoute(restoredWallet.id);
-    this.refreshWalletsData();
-  };
-
   @action _importWalletFromFile = async (params: WalletImportFromFileParams) => {
     const { filePath, walletName, walletPassword } = params;
     const importedWallet = await this.importFromFileRequest.execute({
@@ -165,13 +126,6 @@ export default class AdaWalletsStore extends WalletStore {
   @action _unsetActiveWallet = () => {
     this.active = null;
     this.stores.ada.addresses.lastGeneratedAddress = null;
-  };
-
-  _patchWalletRequestWithNewWallet = async (wallet: Wallet) => {
-    // Only add the new wallet if it does not exist yet in the result!
-    await this.walletsRequest.patch(result => {
-      if (!_.find(result, { id: wallet.id })) result.push(wallet);
-    });
   };
 
   @action _onRouteChange = (options: { route: string, params: ?Object }) => {

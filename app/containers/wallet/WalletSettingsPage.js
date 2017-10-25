@@ -1,9 +1,12 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletSettings from '../../components/wallet/WalletSettings';
+import resolver from '../../utils/imports';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { isValidWalletName } from '../../utils/validations';
+import environment from '../../environment';
+
+const WalletSettings = resolver('components/wallet/WalletSettings');
 
 @inject('stores', 'actions') @observer
 export default class WalletSettingsPage extends Component {
@@ -13,7 +16,7 @@ export default class WalletSettingsPage extends Component {
 
   render() {
     const { uiDialogs } = this.props.stores;
-    const { wallets, walletSettings } = this.props.stores.ada;
+    const { wallets, walletSettings } = this.props.stores[environment.API];
     const { actions } = this.props;
     const activeWallet = wallets.active;
     const {
@@ -27,7 +30,7 @@ export default class WalletSettingsPage extends Component {
       stopEditingWalletField,
       cancelEditingWalletField,
       updateWalletField,
-    } = actions.ada.walletSettings;
+    } = actions[environment.API].walletSettings;
 
     // Guard against potential null values
     if (!activeWallet) throw new Error('Active wallet required for WalletSettingsPage.');

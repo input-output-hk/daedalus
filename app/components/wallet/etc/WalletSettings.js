@@ -11,16 +11,6 @@ import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
 import DeleteWalletButton from '../settings/DeleteWalletButton';
 import DeleteWalletConfirmationDialog from '../settings/DeleteWalletConfirmationDialog';
 import DeleteWalletDialogContainer from '../../../containers/wallet/dialogs/DeleteWalletDialogContainer';
-import WalletExportDialog from '../settings/export-to-file/WalletExportToFileDialog';
-import WalletExportToFileDialogContainer from '../../../containers/wallet/settings/WalletExportToFileDialogContainer';
-import ExportPaperWalletPrinterCopyDialog from '../settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog';
-import ExportPaperWalletPrinterCopyDialogContainer from '../../../containers/wallet/dialogs/paper-wallet-export/ExportPaperWalletPrinterCopyDialogContainer';
-import ExportPaperWalletMnemonicDialog from '../settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog';
-import ExportPaperWalletMnemonicDialogContainer from '../../../containers/wallet/dialogs/paper-wallet-export/ExportPaperWalletMnemonicDialogContainer';
-import ExportPaperWalletMnemonicVerificationDialog from '../settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog';
-import ExportPaperWalletMnemonicVerificationDialogContainer from '../../../containers/wallet/dialogs/paper-wallet-export/ExportPaperWalletMnemonicVerificationDialogContainer';
-import ExportPaperWalletCertificateDialog from '../settings/paper-wallet-export-dialogs/ExportPaperWalletCertificateDialog';
-import ExportPaperWalletCertificateDialogContainer from '../../../containers/wallet/dialogs/paper-wallet-export/ExportPaperWalletCertificateDialogContainer';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
 import ChangeWalletPasswordDialog from '../settings/ChangeWalletPasswordDialog';
 import ChangeWalletPasswordDialogContainer from '../../../containers/wallet/dialogs/ChangeWalletPasswordDialogContainer';
@@ -157,36 +147,9 @@ export default class WalletSettings extends Component {
             })}
           />
 
-          {/*
-            <div className={styles.export}>
-              <h2>Export</h2>
-              <p>
-                Use your wallet on multiple devices
-                or give read-only copies to friends.
-              </p>
-              <button
-                className={styles.export_link}
-                onClick={() => openDialogAction({
-                  dialog: WalletExportDialog
-                })}
-              >
-                {intl.formatMessage(messages.exportButtonLabel)}
-              </button>
-            </div>
-          */}
-
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
           <div className={styles.actionButtons}>
-            <button
-              className={styles.exportLink}
-              onClick={() => openDialogAction({
-                dialog: WalletExportDialog
-              })}
-            >
-              {intl.formatMessage(messages.exportButtonLabel)}
-            </button>
-
             <DeleteWalletButton
               onClick={() => openDialogAction({
                 dialog: DeleteWalletConfirmationDialog,
@@ -202,26 +165,6 @@ export default class WalletSettings extends Component {
 
         {isDialogOpen(DeleteWalletConfirmationDialog) ? (
           <DeleteWalletDialogContainer />
-        ) : null}
-
-        {isDialogOpen(WalletExportDialog) ? (
-          <WalletExportToFileDialogContainer />
-        ) : null}
-
-        {isDialogOpen(ExportPaperWalletPrinterCopyDialog) ? (
-          <ExportPaperWalletPrinterCopyDialogContainer />
-        ) : null}
-
-        {isDialogOpen(ExportPaperWalletMnemonicDialog) ? (
-          <ExportPaperWalletMnemonicDialogContainer />
-        ) : null}
-
-        {isDialogOpen(ExportPaperWalletMnemonicVerificationDialog) ? (
-          <ExportPaperWalletMnemonicVerificationDialogContainer />
-        ) : null}
-
-        {isDialogOpen(ExportPaperWalletCertificateDialog) ? (
-          <ExportPaperWalletCertificateDialogContainer />
         ) : null}
 
       </div>
