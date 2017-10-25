@@ -24,7 +24,7 @@ import type { GetEtcAccountBalanceResponse } from './getEtcAccountBalance';
 import type { CreateEtcAccountResponse } from './createEtcAccount';
 import type { SendEtcTransactionParams, SendEtcTransactionResponse } from './sendEtcTransaction';
 import type { GetEtcTransactionByHashResponse } from './getEtcTransaction';
-import { LOVELACES_PER_ADA, WEI_PER_ETC } from '../../config/numbersConfig';
+import { WEI_PER_ETC } from '../../config/numbersConfig';
 
 // Load Dummy ETC Wallets into Local Storage
 (async () => {
