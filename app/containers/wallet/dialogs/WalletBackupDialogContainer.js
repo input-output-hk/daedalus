@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletBackupDialog from '../../../components/wallet/WalletBackupDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
+import environment from '../../../environment';
 
 @inject('stores', 'actions') @observer
 export default class WalletBackupDialogContainer extends Component {
@@ -40,6 +41,7 @@ export default class WalletBackupDialogContainer extends Component {
       acceptPrivacyNoticeForWalletBackup,
       continueToRecoveryPhraseForWalletBackup
     } = actions.walletBackup;
+    const { createWalletRequest } = stores[environment.API].wallets;
     return (
       <WalletBackupDialog
         // Global props for all dialogs
@@ -60,6 +62,7 @@ export default class WalletBackupDialogContainer extends Component {
         canFinishBackup={isRecoveryPhraseValid && isTermDeviceAccepted && isTermRecoveryAccepted}
         isTermRecoveryAccepted={isTermRecoveryAccepted}
         isValid={isRecoveryPhraseValid}
+        isSubmitting={createWalletRequest.isExecuting}
         onAcceptTermDevice={acceptWalletBackupTermDevice.trigger}
         onAcceptTermRecovery={acceptWalletBackupTermRecovery.trigger}
         onAddWord={addWordToWalletBackupVerification.trigger}

@@ -180,4 +180,11 @@ export const ETC_WALLETS_DATA = [
     hasPassword: false,
     passwordUpdateDate: null,
   },
+  {
+    id: '0x2fecc6a10ab19719f7a4cd493e018742d119f945',
+    name: 'Wallet 14',
+    assurance: 'CWANormal',
+    hasPassword: false,
+    passwordUpdateDate: null,
+  },
 ];
