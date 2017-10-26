@@ -118,7 +118,7 @@ Changelog
 - Spending password on "Send money" form
 - Optionally setting a password during wallet restore
 - Ada redemption disclaimer
-- ?Terms of use? page in settings section
+- "Terms of use" page in settings section
 - Change wallet password dialog UX improvements
 - New receive screen with support for HD wallets
 - Wallet rename
@@ -229,9 +229,9 @@ Changelog
 
 - Toggling the application bar not working properly
 - UI glitch when quickly typing in Ada amounts on the send money form
-- ?Add wallet? dialog does not disappear immediately after wallet creation
+- "Add wallet" dialog does not disappear immediately after wallet creation
 - Clearing correctly entered backup recovery phrase should not be possible
-- Sidebar ?randomly? closes/opens when navigating
+- Sidebar "randomly" closes/opens when navigating
 - Ada redemption overlay should also cover the wallet navigation
 - No transactions message is not vertically centered on Transactions page
 - Transactions ordering
@@ -245,12 +245,12 @@ Changelog
 
 ### Features
 
-- Infinite loading for transaction list, testable with ?Main wallet?
+- Infinite loading for transaction list, testable with "Main wallet"
 - Simple transaction search by title
 - Adding new personal wallet via sidebar menu
 - Profile settings screen
-- ?No transactions? message for wallets with no transactions
-- ?No transactions found? message when transaction search returns no results
+- "No transactions" message for wallets with no transactions
+- "No transactions found" message when transaction search returns no results
 - Loading indicator on application startup
 
 ### Fixes
