@@ -7,7 +7,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
 import BorderedBox from '../../widgets/BorderedBox';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
-import styles from '../WalletReceive.scss';
+import styles from './WalletReceive.scss';
 
 const messages = defineMessages({
   walletAddressLabel: {
@@ -55,7 +55,7 @@ export default class WalletReceive extends Component {
                 value={walletAddress}
                 bgColor={qrCodeBackgroundColor}
                 fgColor={qrCodeForegroundColor}
-                size={152}
+                size={116}
               />
             </div>
 
@@ -66,7 +66,7 @@ export default class WalletReceive extends Component {
                   text={walletAddress}
                   onCopy={onCopyAddress.bind(this, walletAddress)}
                 >
-                  <SvgInline svg={iconCopy} className={styles.copyIconBig} />
+                  <SvgInline svg={iconCopy} className={styles.copyIcon} />
                 </CopyToClipboard>
               </div>
 
