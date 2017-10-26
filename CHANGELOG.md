@@ -6,14 +6,22 @@ Changelog
 
 ### Features
 
+### Fixes
+
+### Chores
+
+## 0.8.3
+
+### Fixes
+
+## 0.8.2
+
+### Features
+
 - Postpone Update Api call integration ([PR 485](https://github.com/input-output-hk/daedalus/pull/485))
 
 ### Fixes
 
-- Fix all features eslint warnings ([PR 468](https://github.com/input-output-hk/daedalus/pull/468))
-- Fix for disabled buttons on dark-blue theme ([PR 473](https://github.com/input-output-hk/daedalus/pull/473))
-- Remove maximum screen width and height in full-screen mode ([PR 472](https://github.com/input-output-hk/daedalus/pull/472))
-- Fix "label click" dropdown issue in react-polymorph ([PR 479](https://github.com/input-output-hk/daedalus/pull/479))
 - Fix error message text for A to A transaction error ([PR 484](https://github.com/input-output-hk/daedalus/pull/484))
 - Fix "label prop type" checkbox issue in react-polymorph ([PR 487](https://github.com/input-output-hk/daedalus/pull/487))
 - Remove all drag and drop instructions from UI ([PR 495](https://github.com/input-output-hk/daedalus/pull/495))
@@ -25,6 +33,15 @@ Changelog
 - Update version in About dialog to 0.8.2 ([PR 496](https://github.com/input-output-hk/daedalus/pull/496))
 - Set Dark theme as default one for the mainnet ([PR 497](https://github.com/input-output-hk/daedalus/pull/497))
 - Only log errors to papertrail ([PR 509](https://github.com/input-output-hk/daedalus/pull/509))
+
+## 0.8.1
+
+### Fixes
+
+- Fix all features eslint warnings ([PR 468](https://github.com/input-output-hk/daedalus/pull/468))
+- Fix for disabled buttons on dark-blue theme ([PR 473](https://github.com/input-output-hk/daedalus/pull/473))
+- Remove maximum screen width and height in full-screen mode ([PR 472](https://github.com/input-output-hk/daedalus/pull/472))
+- Fix "label click" dropdown issue in react-polymorph ([PR 479](https://github.com/input-output-hk/daedalus/pull/479))
 
 ## 0.8.0
 
