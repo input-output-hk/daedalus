@@ -1,6 +1,5 @@
 // @flow
 import { observable, action, computed } from 'mobx';
-import { sortBy } from 'lodash';
 import Store from './lib/Store';
 import resolver from '../utils/imports';
 import { ROUTES } from '../routes-config';
@@ -31,8 +30,7 @@ export default class SidebarStore extends Store {
   @computed get wallets(): Array<SidebarWalletType> {
     const { networkStatus } = this.stores;
     const { wallets } = this.stores[environment.API];
-    const sortedWallets = sortBy(wallets.all, ['name']);
-    return sortedWallets.map(w => ({
+    return wallets.all.map(w => ({
       id: w.id,
       title: w.name,
       info: formattedWalletAmount(w.amount),
