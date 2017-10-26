@@ -41,6 +41,8 @@ declare module 'daedalus-client-api' {
     },
     ctOutputs: ApiTransactionInputOutput,
     ctCondition: TransactionCondition,
+    ctInputAddrs: Array<string>,
+    ctOutputAddrs: Array<string>,
   };
 
   declare type ApiTransactions = [

@@ -2,18 +2,18 @@
 import type { ApiTransaction } from 'daedalus-client-api';
 import { request } from './lib/request';
 
-export type MakePaymentPathParams = {
+export type NewPaymentPathParams = {
   from: string,
   to: string,
   amount: string,
 };
 
-export type MakePaymentQueryParams = {
+export type NewPaymentQueryParams = {
   passphrase: ?string,
 };
 
-export const makePayment = (
-  ca: string, pathParams: MakePaymentPathParams, queryParams: MakePaymentQueryParams
+export const newAdaPayment = (
+  ca: string, pathParams: NewPaymentPathParams, queryParams: NewPaymentQueryParams
 ): Promise<ApiTransaction> => {
   const { from, to, amount } = pathParams;
   return request({
