@@ -242,11 +242,11 @@ export default class WalletRestoreDialog extends Component {
         <Autocomplete
           label="Recovery phrase"
           placeholder="Enter recovery phrase"
-          suggestedWords={suggestedMnemonics}
+          options={suggestedMnemonics}
           maxSelections={12}
           {...recoveryPhraseField.bind()}
           error={recoveryPhraseField.error}
-          maxVisibleSuggestions={5}
+          maxVisibleOptions={5}
           skin={<SimpleAutocompleteSkin />}
         />
 

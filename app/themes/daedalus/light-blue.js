@@ -43,7 +43,7 @@ export default {
   '--theme-autocomplete-search-color': '#5e6066',
   '--theme-autocomplete-placeholder-color': 'rgba(94, 96, 102, 0.5)',
   '--theme-autocomplete-selected-word-text-color': '#fafbfc',
-  '--theme-autocomplete-selected-word-box-background-color': '#445b7c',
+  '--theme-autocomplete-selected-word-box-background-color': 'rgba(68, 91, 124, 0.5)',
   '--theme-autocomplete-suggestions-list-border-color': '#c6cdd6',
   '--theme-autocomplete-suggestions-list-item-bg-color': '#fafbfc',
   '--theme-autocomplete-suggestions-list-item-font-color': '#5e6066',
