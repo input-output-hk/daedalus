@@ -44,6 +44,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Enter recovery phrase',
     description: 'Hint "Enter recovery phrase" for the recovery phrase input on the wallet restore dialog.'
   },
+  recoveryPhraseNoResults: {
+    id: 'wallet.restore.dialog.recovery.phrase.input.noResults',
+    defaultMessage: '!!!No results',
+    description: '"No results" message for the recovery phrase input search results.'
+  },
   importButtonLabel: {
     id: 'wallet.restore.dialog.restore.wallet.button.label',
     defaultMessage: '!!!Restore wallet',
@@ -240,13 +245,12 @@ export default class WalletRestoreDialog extends Component {
         />
 
         <Autocomplete
-          label="Recovery phrase"
-          placeholder="Enter recovery phrase"
           options={suggestedMnemonics}
           maxSelections={12}
           {...recoveryPhraseField.bind()}
           error={recoveryPhraseField.error}
           maxVisibleOptions={5}
+          noResultsMessage={intl.formatMessage(messages.recoveryPhraseNoResults)}
           skin={<SimpleAutocompleteSkin />}
         />
 

@@ -645,95 +645,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!slot",
-        "description": "\"slot\" label on staking chart tooltip.",
-        "end": {
-          "column": 3,
-          "line": 16
-        },
-        "file": "app/components/staking/StakingChartTooltip.js",
-        "id": "staking.chart.tooltip.slot.label",
-        "start": {
-          "column": 8,
-          "line": 12
-        }
-      },
-      {
-        "defaultMessage": "!!!transactions",
-        "description": "\"transactions\" label on staking chart tooltip.",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "app/components/staking/StakingChartTooltip.js",
-        "id": "staking.chart.tooltip.transactions.label",
-        "start": {
-          "column": 16,
-          "line": 17
-        }
-      },
-      {
-        "defaultMessage": "!!!MPC phase",
-        "description": "\"MPC phase\" label on staking chart tooltip.",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "app/components/staking/StakingChartTooltip.js",
-        "id": "staking.chart.tooltip.mpc.phase.label",
-        "start": {
-          "column": 12,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!commitments",
-        "description": "\"commitments\" label on staking chart tooltip.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "app/components/staking/StakingChartTooltip.js",
-        "id": "staking.chart.tooltip.commitments.label",
-        "start": {
-          "column": 15,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!openings",
-        "description": "\"openings\" label on staking chart tooltip.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "app/components/staking/StakingChartTooltip.js",
-        "id": "staking.chart.tooltip.openings.label",
-        "start": {
-          "column": 12,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!shares",
-        "description": "\"shares\" label on staking chart tooltip.",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "app/components/staking/StakingChartTooltip.js",
-        "id": "staking.chart.tooltip.shares.label",
-        "start": {
-          "column": 10,
-          "line": 37
-        }
-      }
-    ],
-    "path": "app/components/staking/StakingChartTooltip.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!About Daedalus",
         "description": "About Window \"title\"",
         "end": {
@@ -2341,13 +2252,13 @@
         "description": "Label for the \"Add wallet\" title on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.title.label",
         "start": {
           "column": 9,
-          "line": 16
+          "line": 17
         }
       },
       {
@@ -2355,13 +2266,13 @@
         "description": "Label for the \"Create\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.create.label",
         "start": {
           "column": 15,
-          "line": 21
+          "line": 22
         }
       },
       {
@@ -2369,13 +2280,13 @@
         "description": "Description for the \"Create\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.create.description",
         "start": {
           "column": 21,
-          "line": 26
+          "line": 27
         }
       },
       {
@@ -2383,13 +2294,13 @@
         "description": "Label for the \"Join\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.join.label",
         "start": {
           "column": 13,
-          "line": 31
+          "line": 32
         }
       },
       {
@@ -2397,13 +2308,13 @@
         "description": "Description for the \"Join\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.join.description",
         "start": {
           "column": 19,
-          "line": 36
+          "line": 37
         }
       },
       {
@@ -2411,13 +2322,13 @@
         "description": "Label for the \"Restore\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.restore.label",
         "start": {
           "column": 16,
-          "line": 41
+          "line": 42
         }
       },
       {
@@ -2425,13 +2336,13 @@
         "description": "Description for the \"Restore\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.restore.description",
         "start": {
           "column": 22,
-          "line": 46
+          "line": 47
         }
       },
       {
@@ -2439,13 +2350,13 @@
         "description": "Label for the \"Import\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.import.label",
         "start": {
           "column": 15,
-          "line": 51
+          "line": 52
         }
       },
       {
@@ -2453,13 +2364,13 @@
         "description": "Description for the \"Import\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.import.description",
         "start": {
           "column": 21,
-          "line": 56
+          "line": 57
         }
       }
     ],
@@ -2720,13 +2631,13 @@
         "description": "Label \"Restore wallet\" on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.title.label",
         "start": {
           "column": 9,
-          "line": 21
+          "line": 22
         }
       },
       {
@@ -2734,13 +2645,13 @@
         "description": "Label for the wallet name input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.wallet.name.input.label",
         "start": {
           "column": 24,
-          "line": 26
+          "line": 27
         }
       },
       {
@@ -2748,13 +2659,13 @@
         "description": "Hint \"Enter wallet name\" for the wallet name input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.wallet.name.input.hint",
         "start": {
           "column": 23,
-          "line": 31
+          "line": 32
         }
       },
       {
@@ -2762,13 +2673,13 @@
         "description": "Label for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.input.label",
         "start": {
           "column": 28,
-          "line": 36
+          "line": 37
         }
       },
       {
@@ -2776,13 +2687,27 @@
         "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.input.hint",
         "start": {
           "column": 27,
-          "line": 41
+          "line": 42
+        }
+      },
+      {
+        "defaultMessage": "!!!No results",
+        "description": "\"No results\" message for the recovery phrase input search results.",
+        "end": {
+          "column": 3,
+          "line": 51
+        },
+        "file": "app/components/wallet/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.recovery.phrase.input.noResults",
+        "start": {
+          "column": 27,
+          "line": 47
         }
       },
       {
@@ -2790,13 +2715,13 @@
         "description": "Label for the \"Restore wallet\" button on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 56
         },
         "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.restore.wallet.button.label",
         "start": {
           "column": 21,
-          "line": 46
+          "line": 52
         }
       },
       {
@@ -2804,13 +2729,13 @@
         "description": "Error message shown when invalid recovery phrase was entered.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 61
         },
         "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.form.errors.invalidRecoveryPhrase",
         "start": {
           "column": 25,
-          "line": 51
+          "line": 57
         }
       },
       {
@@ -2818,13 +2743,13 @@
         "description": "Text for the \"Activate to create password\" switch in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 66
         },
         "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.passwordSwitchPlaceholder",
         "start": {
           "column": 29,
-          "line": 56
+          "line": 62
         }
       },
       {
@@ -2832,13 +2757,13 @@
         "description": "Label for the \"Activate to create password\" switch in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 71
         },
         "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.passwordSwitchLabel",
         "start": {
           "column": 23,
-          "line": 61
+          "line": 67
         }
       },
       {
@@ -2846,13 +2771,13 @@
         "description": "Label for the \"Wallet password\" input in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 76
         },
         "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.walletPasswordLabel",
         "start": {
           "column": 23,
-          "line": 66
+          "line": 72
         }
       },
       {
@@ -2860,13 +2785,13 @@
         "description": "Label for the \"Repeat password\" input in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 81
         },
         "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
-          "line": 71
+          "line": 77
         }
       },
       {
@@ -2874,13 +2799,13 @@
         "description": "Placeholder for the \"Password\" inputs in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 86
         },
         "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.passwordFieldPlaceholder",
         "start": {
           "column": 28,
-          "line": 76
+          "line": 82
         }
       }
     ],
@@ -3211,13 +3136,13 @@
         "description": "Label for the \"Name\" text input on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.name.label",
         "start": {
           "column": 8,
-          "line": 31
+          "line": 32
         }
       },
       {
@@ -3225,13 +3150,13 @@
         "description": "Label for the \"Transaction assurance security level\" dropdown.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.assurance",
         "start": {
           "column": 23,
-          "line": 36
+          "line": 37
         }
       },
       {
@@ -3239,13 +3164,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
-          "line": 41
+          "line": 42
         }
       },
       {
@@ -3253,13 +3178,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 46
+          "line": 47
         }
       },
       {
@@ -3267,13 +3192,13 @@
         "description": "You still don't have password set message.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.passwordNotSet",
         "start": {
           "column": 18,
-          "line": 51
+          "line": 52
         }
       },
       {
@@ -3281,13 +3206,13 @@
         "description": "Label for the export button on wallet settings.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.exportWalletButtonLabel",
         "start": {
           "column": 21,
-          "line": 56
+          "line": 57
         }
       }
     ],
@@ -3310,7 +3235,7 @@
         }
       },
       {
-        "defaultMessage": "!!!or click to upload",
+        "defaultMessage": "!!!Click to upload",
         "description": "Label \"or click to upload\" on the file upload widget.",
         "end": {
           "column": 3,
