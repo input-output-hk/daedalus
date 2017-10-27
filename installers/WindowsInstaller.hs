@@ -186,15 +186,15 @@ main = do
   let fullVersion = version <> ".0"
   writeFile "version.txt" fullVersion
 
+  echo "Adding permissions manifest to cardano-launcher.exe"
+  procs "C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\mt.exe" ["-manifest", "cardano-launcher.exe.manifest", "-outputresource:cardano-launcher.exe;#1"] mempty
+
   signFile "cardano-launcher.exe"
   signFile "cardano-node.exe"
 
   echo "Writing uninstaller.nsi"
   writeUninstallerNSIS fullVersion
   signUninstaller
-
-  echo "Adding permissions manifest to cardano-launcher.exe"
-  procs "C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\mt.exe" ["-manifest", "cardano-launcher.exe.manifest", "-outputresource:cardano-launcher.exe;#1"] mempty
 
   echo "Writing daedalus.nsi"
   writeInstallerNSIS fullVersion
