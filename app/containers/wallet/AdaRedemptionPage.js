@@ -6,7 +6,7 @@ import AdaRedemptionForm from '../../components/wallet/ada-redemption/AdaRedempt
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import { AdaRedemptionCertificateParseError } from '../../i18n/errors';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import SUGGESTED_MNEMONICS from '../../../lib/valid-words.en.js';
+import validWords from '../../../lib/valid-words.en';
 import environment from '../../environment';
 
 @inject('stores', 'actions') @observer
@@ -65,7 +65,7 @@ export default class AdaRedemptionPage extends Component {
           }}
           redemptionCode={adaRedemption.redemptionCode}
           wallets={selectableWallets}
-          suggestedMnemonics={SUGGESTED_MNEMONICS}
+          suggestedMnemonics={validWords}
           isCertificateSelected={isCertificateSelected}
           isCertificateEncrypted={isCertificateEncrypted}
           isCertificateInvalid={error instanceof AdaRedemptionCertificateParseError}

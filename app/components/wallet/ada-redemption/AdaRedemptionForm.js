@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { join } from 'lodash';
 import { isEmail, isEmpty } from 'validator';
 import classnames from 'classnames';
 import Button from 'react-polymorph/lib/components/Button';
@@ -191,6 +192,7 @@ export default class AdaRedemptionForm extends Component {
     isCertificateInvalid: boolean,
     redemptionCode: ?string,
     error: ?LocalizableError,
+    suggestedMnemonics: Array<string>,
   };
 
   static contextTypes = {
@@ -212,7 +214,7 @@ export default class AdaRedemptionForm extends Component {
           // Don't validate No pass phrase needed when certificate is not encrypted
           if (!this.props.showPassPhraseWidget) return [true];
           // Otherwise check mnemonic
-          const passPhrase = _.join(field.value, ' ');
+          const passPhrase = join(field.value, ' ');
           if (!isEmpty(passPhrase)) this.props.onPassPhraseChanged(passPhrase);
           return [
             this.props.mnemonicValidator(passPhrase),
@@ -521,6 +523,7 @@ export default class AdaRedemptionForm extends Component {
                   error={passPhraseField.error}
                   maxVisibleOptions={5}
                   noResultsMessage={intl.formatMessage(messages.passphraseNoResults)}
+                  isOpeningUpward
                   skin={<SimpleAutocompleteSkin />}
                 />
               </div>

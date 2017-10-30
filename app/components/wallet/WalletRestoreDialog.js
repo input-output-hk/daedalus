@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import _ from 'lodash';
+import { join } from 'lodash';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Input from 'react-polymorph/lib/components/Input';
@@ -126,7 +126,7 @@ export default class WalletRestoreDialog extends Component {
         placeholder: this.context.intl.formatMessage(messages.recoveryPhraseInputHint),
         value: '',
         validators: ({ field }) => {
-          const value = _.join(field.value, ' ');
+          const value = join(field.value, ' ');
           if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           return [
             this.props.mnemonicValidator(value),
@@ -182,7 +182,7 @@ export default class WalletRestoreDialog extends Component {
         const { createPassword } = this.state;
         const { recoveryPhrase, walletName, walletPassword } = form.values();
         const walletData = {
-          recoveryPhrase: _.join(recoveryPhrase, ' '),
+          recoveryPhrase: join(recoveryPhrase, ' '),
           walletName,
           walletPassword: createPassword ? walletPassword : null,
         };
