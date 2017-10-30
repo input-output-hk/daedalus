@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletRestoreDialog from '../../../components/wallet/WalletRestoreDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
+import SUGGESTED_MNEMONICS from '../../../../lib/valid-words.en.js';
 
 @inject('stores', 'actions') @observer
 export default class WalletRestoreDialogContainer extends Component {
@@ -22,7 +23,7 @@ export default class WalletRestoreDialogContainer extends Component {
 
   render() {
     const { wallets } = this.props.stores;
-    const { restoreRequest, SUGGESTED_MNEMONICS } = wallets;
+    const { restoreRequest } = wallets;
 
     return (
       <WalletRestoreDialog

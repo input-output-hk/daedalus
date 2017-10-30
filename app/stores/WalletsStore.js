@@ -22,7 +22,6 @@ import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 
 export default class WalletsStore extends Store {
 
-  SUGGESTED_MNEMONICS = require('../lib/suggested-mnemonics.json'); // eslint-disable-line
   WALLET_REFRESH_INTERVAL = 5000;
 
   @observable active: ?Wallet = null;

@@ -10,6 +10,8 @@ import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Select from 'react-polymorph/lib/components/Select';
 import SelectSkin from 'react-polymorph/lib/skins/simple/SelectSkin';
+import Autocomplete from 'react-polymorph/lib/components/Autocomplete';
+import SimpleAutocompleteSkin from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
 import AdaCertificateUploadWidget from '../../widgets/forms/AdaCertificateUploadWidget';
 import AdaRedemptionChoices from './AdaRedemptionChoices';
@@ -75,6 +77,11 @@ where Ada should be redeemed and enter 9 word mnemonic passphrase.</p>`,
     id: 'wallet.redeem.dialog.passphraseHint',
     defaultMessage: '!!!Enter your 9 word mnemonic here',
     description: 'Hint for the mnemonic passphrase input'
+  },
+  passphraseNoResults: {
+    id: 'wallet.redeem.dialog.passphrase.input.noResults',
+    defaultMessage: '!!!No results',
+    description: '"No results" message for the passphrase input search results.'
   },
   redemptionKeyLabel: {
     id: 'wallet.redeem.dialog.redemptionKeyLabel',
@@ -205,7 +212,7 @@ export default class AdaRedemptionForm extends Component {
           // Don't validate No pass phrase needed when certificate is not encrypted
           if (!this.props.showPassPhraseWidget) return [true];
           // Otherwise check mnemonic
-          const passPhrase = field.value;
+          const passPhrase = _.join(field.value, ' ');
           if (!isEmpty(passPhrase)) this.props.onPassPhraseChanged(passPhrase);
           return [
             this.props.mnemonicValidator(passPhrase),
@@ -361,7 +368,7 @@ export default class AdaRedemptionForm extends Component {
       onRedemptionCodeChanged, onRemoveCertificate, onChooseRedemptionType,
       isCertificateInvalid, redemptionType, showInputsForDecryptingForceVendedCertificate,
       showPassPhraseWidget, isRedemptionDisclaimerAccepted, onAcceptRedemptionDisclaimer, error,
-      getSelectedWallet,
+      getSelectedWallet, suggestedMnemonics,
     } = this.props;
     const certificateField = form.$('certificate');
     const passPhraseField = form.$('passPhrase');
@@ -506,11 +513,15 @@ export default class AdaRedemptionForm extends Component {
 
             {showPassPhraseWidget ? (
               <div className={styles.passPhrase}>
-                <Input
+                <Autocomplete
                   className="pass-phrase"
+                  options={suggestedMnemonics}
+                  maxSelections={9}
                   {...passPhraseField.bind()}
                   error={passPhraseField.error}
-                  skin={<SimpleInputSkin />}
+                  maxVisibleOptions={5}
+                  noResultsMessage={intl.formatMessage(messages.passphraseNoResults)}
+                  skin={<SimpleAutocompleteSkin />}
                 />
               </div>
             ) : null}
