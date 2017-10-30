@@ -79,4 +79,6 @@ export default class EtcWalletsStore extends WalletStore {
   isValidMnemonic = (mnemonic: string) => this.api.etc.isValidMnemonic(mnemonic);
 
   isValidAddress = (address: string) => this.api.etc.isValidAddress(address);
+
+  isValidAmount = (amount: string) => !(new BigNumber(amount).isNegative());
 }

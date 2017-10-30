@@ -24,9 +24,6 @@ export default class WalletSendPage extends Component {
     const { actions } = this.props;
     const activeWallet = wallets.active;
 
-    // TODO: replace with real endpoints!!
-    const validateAmount = () => Promise.resolve(true);
-
     // Guard against potential null values
     if (!activeWallet) throw new Error('Active wallet required for WalletSendPage.');
 
@@ -34,7 +31,7 @@ export default class WalletSendPage extends Component {
       <WalletSendForm
         currencyUnit={intl.formatMessage(globalMessages.unitEtc)}
         currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ETC}
-        validateAmount={validateAmount}
+        validateAmount={wallets.isValidAmount}
         calculateTransactionFee={(receiver, amount) => (
           wallets.calculateTransactionFee({ sender: activeWallet.id, receiver, amount })
         )}

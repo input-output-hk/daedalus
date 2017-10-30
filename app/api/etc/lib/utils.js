@@ -4,16 +4,21 @@ import { pbkdf2Sync as pbkdf2 } from 'pbkdf2';
 import * as unorm from 'unorm';
 import BigNumber from 'bignumber.js';
 import { isString } from 'lodash';
-import { toBigNumber } from 'web3-utils/src/utils';
 
 /**
- * Takes a hex QUANTITY and transforms it into a bignumber
+ * Takes an input and transforms it into an bignumber
  *
- * @method quantityToBigNumber
- * @param quantity {String} string, quantity as HEX string
+ * @method toBigNumber
+ * @param number {Number|String|BigNumber} string, HEX string
  * @return {BigNumber} BigNumber
  */
-export const quantityToBigNumber = (quantity: string) => toBigNumber(quantity);
+export const quantityToBigNumber = (number: string) => {
+  number = number || '0';
+  if (isString(number) && (number.indexOf('0x') === 0 || number.indexOf('-0x') === 0)) {
+    return new BigNumber(number.replace('0x', ''), 16);
+  }
+  return new BigNumber(number.toString(10), 10);
+};
 
 export const mnemonicToSeedHex = (mnemonic: string, password: ?string) => {
   const mnemonicBuffer = Buffer.from(unorm.nfkd(mnemonic), 'utf8');

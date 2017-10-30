@@ -100,7 +100,7 @@ export default class EtcApi {
       const response: GetEtcAccountsResponse = await getEtcAccounts();
       Logger.debug('EtcApi::getWallets success: ' + stringifyData(response));
       const accounts = response;
-      return Promise.all(accounts.map(async (id) => {
+      return await Promise.all(accounts.map(async (id) => {
         const amount = await this.getAccountBalance(id);
         try {
           // use wallet data from local storage
