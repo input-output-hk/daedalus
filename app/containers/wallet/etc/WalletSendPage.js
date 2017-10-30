@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import BigNumber from 'bignumber.js';
 import { intlShape } from 'react-intl';
 import WalletSendForm from '../../../components/wallet/WalletSendForm';
 import type { InjectedProps } from '../../../types/injectedPropsType';
@@ -27,7 +26,6 @@ export default class WalletSendPage extends Component {
 
     // TODO: replace with real endpoints!!
     const isValidAddress = () => Promise.resolve(true);
-    const calculateTransactionFee = () => Promise.resolve(new BigNumber(0));
     const validateAmount = () => Promise.resolve(true);
 
     // Guard against potential null values
@@ -39,7 +37,7 @@ export default class WalletSendPage extends Component {
         currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ETC}
         validateAmount={validateAmount}
         calculateTransactionFee={(receiver, amount) => (
-          calculateTransactionFee(activeWallet.id, receiver, amount)
+          wallets.calculateTransactionFee({ sender: activeWallet.id, receiver, amount })
         )}
         addressValidator={isValidAddress}
         isDialogOpen={uiDialogs.isOpen}

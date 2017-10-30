@@ -14,9 +14,9 @@ import AmountInputSkin from './skins/AmountInputSkin';
 import BorderedBox from '../widgets/BorderedBox';
 import styles from './WalletSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
-import LocalizableError from '../../i18n/LocalizableError';
 import WalletSendConfirmationDialog from './WalletSendConfirmationDialog';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
+import { formattedAmountToBigNumber, formattedAmountToNaturalUnits } from '../../utils/formatters';
 
 const messages = defineMessages({
   titleLabel: {
@@ -129,10 +129,6 @@ export default class WalletSendForm extends Component {
     this._isMounted = false;
   }
 
-  amountToNaturalUnits = (amount: string) => (
-    amount.replace('.', '').replace(/,/g, '').replace(/^0+/, '')
-  );
-
   // FORM VALIDATION
   form = new ReactToolboxMobxForm({
     fields: {
@@ -170,7 +166,7 @@ export default class WalletSendForm extends Component {
             this._resetTransactionFee();
             return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           }
-          const isValid = this.props.validateAmount(this.amountToNaturalUnits(amountValue));
+          const isValid = this.props.validateAmount(formattedAmountToNaturalUnits(amountValue));
           const receiverField = form.$('receiver');
           const receiverValue = receiverField.value;
           const isReceiverValid = receiverField.isValid;
@@ -202,7 +198,7 @@ export default class WalletSendForm extends Component {
     const receiverField = form.$('receiver');
     const receiverFieldProps = receiverField.bind();
     const amountFieldProps = amountField.bind();
-    const totalAmount = this._calculateTotalAmount(amountFieldProps.value, transactionFee);
+    const totalAmount = formattedAmountToBigNumber(amountFieldProps.value).add(transactionFee);
 
     const buttonClasses = classnames([
       'primary',
@@ -258,7 +254,7 @@ export default class WalletSendForm extends Component {
             receiver={receiverFieldProps.value}
             totalAmount={totalAmount.toFormat(currencyMaxFractionalDigits)}
             transactionFee={transactionFee.toFormat(currencyMaxFractionalDigits)}
-            amountToNaturalUnits={this.amountToNaturalUnits}
+            amountToNaturalUnits={formattedAmountToNaturalUnits}
             currencyUnit={currencyUnit}
           />
         ) : null}
@@ -277,31 +273,26 @@ export default class WalletSendForm extends Component {
     }
   }
 
-  _calculateTransactionFee(receiver: string, amountValue: string) {
+  async _calculateTransactionFee(receiver: string, amountValue: string) {
     if (this._isSubmitting) return;
-
     this._resetTransactionFee();
-    this.props.calculateTransactionFee(receiver, this.amountToNaturalUnits(amountValue))
-      .then((fee: BigNumber) => (
-        this._isMounted && this.setState({
+    const amount = formattedAmountToNaturalUnits(amountValue);
+    try {
+      const fee = await this.props.calculateTransactionFee(receiver, amount);
+      if (this._isMounted) {
+        this.setState({
           isTransactionFeeCalculated: true,
           transactionFee: fee,
           transactionFeeError: null,
-        })
-      ))
-      .catch((error: LocalizableError) => {
-        if (this._isMounted) {
-          this.setState({
-            transactionFeeError: this.context.intl.formatMessage(error),
-          });
-        }
-      });
-  }
-
-  _calculateTotalAmount(amountValue: string, transactionFee: BigNumber): BigNumber {
-    const cleanedAmount = amountValue.replace(/,/g, '');
-    const amount = new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
-    return amount.add(transactionFee);
+        });
+      }
+    } catch (error) {
+      if (this._isMounted) {
+        this.setState({
+          transactionFeeError: this.context.intl.formatMessage(error)
+        });
+      }
+    }
   }
 }
 

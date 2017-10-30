@@ -7,7 +7,7 @@ import { getEtcAccountBalance } from './getEtcAccountBalance';
 import { getEtcAccountRecoveryPhrase } from './getEtcAccountRecoveryPhrase';
 import { createEtcAccount } from './createEtcAccount';
 import Wallet from '../../domain/Wallet';
-import { mnemonicToSeedHex, toBigNumber, unixTimestampToDate } from './lib/utils';
+import { mnemonicToSeedHex, quantityToBigNumber, unixTimestampToDate } from './lib/utils';
 import { getEtcTransactionByHash } from './getEtcTransaction';
 import { getEtcBlockByHash } from './getEtcBlock';
 import { isValidMnemonic } from '../../../lib/decrypt';
@@ -24,7 +24,9 @@ import type { GetEtcAccountBalanceResponse } from './getEtcAccountBalance';
 import type { CreateEtcAccountResponse } from './createEtcAccount';
 import type { SendEtcTransactionParams, SendEtcTransactionResponse } from './sendEtcTransaction';
 import type { GetEtcTransactionByHashResponse } from './getEtcTransaction';
-import { LOVELACES_PER_ADA, WEI_PER_ETC } from '../../config/numbersConfig';
+import { ETC_DEFAULT_GAS_PRICE, LOVELACES_PER_ADA, WEI_PER_ETC } from '../../config/numbersConfig';
+import BigNumber from 'bignumber.js';
+import { getEtcEstimatedGas } from './getEtcEstimatedGas';
 
 // Load Dummy ETC Wallets into Local Storage
 (async () => {
@@ -64,6 +66,15 @@ export type RestoreWalletRequest = {
   walletPassword: ?string,
 };
 export type RestoreWalletResponse = Wallet;
+
+export type CreateTransactionRequest = {
+  from: string,
+  to: string,
+  value: BigNumber,
+  password: string,
+};
+export type CreateTransactionResponse = Promise<WalletTransaction>;
+export type GetEstimatedGasPriceResponse = Promise<BigNumber>;
 
 export default class EtcApi {
 
@@ -119,7 +130,7 @@ export default class EtcApi {
     try {
       const response: GetEtcAccountBalanceResponse = await getEtcAccountBalance([accountId, 'latest']);
       Logger.debug('EtcApi::getAccountBalance success: ' + stringifyData(response));
-      return toBigNumber(response).dividedBy(WEI_PER_ETC);
+      return quantityToBigNumber(response).dividedBy(WEI_PER_ETC);
     } catch (error) {
       Logger.error('EtcApi::getAccountBalance error: ' + stringifyError(error));
       throw new GenericApiError();
@@ -136,7 +147,7 @@ export default class EtcApi {
       ]);
       Logger.debug('EtcApi::createWallet success: ' + stringifyData(response));
       const id = response;
-      const amount = toBigNumber('0');
+      const amount = quantityToBigNumber('0');
       const assurance = 'CWANormal';
       const hasPassword = password !== null;
       const passwordUpdateDate = hasPassword ? new Date() : null;
@@ -160,11 +171,14 @@ export default class EtcApi {
     }
   }
 
-  async createTransaction(params: SendEtcTransactionParams): Promise<WalletTransaction> {
+  async createTransaction(params: CreateTransactionRequest): CreateTransactionResponse {
     Logger.debug('EtcApi::createTransaction called with ' + stringifyData(params));
     try {
-      const senderAccount = params[0].from;
-      const txHash: SendEtcTransactionResponse = await sendEtcTransaction(params);
+      const senderAccount = params.from;
+      const txHash: SendEtcTransactionResponse = await sendEtcTransaction({
+        ...params,
+        gasPrice: ETC_DEFAULT_GAS_PRICE,
+      });
       Logger.debug('EtcApi::createTransaction success: ' + stringifyData(txHash));
       return _createTransaction(senderAccount, txHash);
     } catch (error) {
@@ -234,7 +248,7 @@ export default class EtcApi {
       ]);
       Logger.debug('EtcApi::restoreWallet success: ' + stringifyData(response));
       const id = response;
-      const amount = toBigNumber('0');
+      const amount = quantityToBigNumber('0');
       const assurance = 'CWANormal';
       const hasPassword = password !== null;
       const passwordUpdateDate = hasPassword ? new Date() : null;
@@ -250,6 +264,18 @@ export default class EtcApi {
     return isValidMnemonic(mnemonic, 12);
   }
 
+  async getEstimatedGasPriceResponse(params: SendEtcTransactionParams): GetEstimatedGasPriceResponse {
+    Logger.debug('EtcApi::getEstimatedGasPriceResponse called');
+    try {
+      const estimatedGas = await getEtcEstimatedGas(params);
+      Logger.debug('EtcApi::getEstimatedGasPriceResponse success: ' + stringifyData(estimatedGas));
+      return quantityToBigNumber(estimatedGas).times(params.gasPrice).dividedBy(WEI_PER_ETC);
+    } catch (error) {
+      Logger.error('EtcApi::getEstimatedGasPriceResponse error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
 }
 
 const _createTransaction = async (senderAccount: string, txHash: string) => {
@@ -261,7 +287,7 @@ const _createTransaction = async (senderAccount: string, txHash: string) => {
     type: senderAccount === txData.from ? 'expend' : 'income',
     title: '',
     description: '',
-    amount: toBigNumber(txData.value),
+    amount: quantityToBigNumber(txData.value),
     date: blockDate,
     numberOfConfirmations: 0,
     addresses: {

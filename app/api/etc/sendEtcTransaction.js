@@ -3,10 +3,13 @@ import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
 import BigNumber from 'bignumber.js';
 
-export type SendEtcTransactionParams = [
-  { from: string, to: string, value: BigNumber }, // transaction details
-  string // password
-];
+export type SendEtcTransactionParams = {
+  from: string,
+  to: string,
+  value: BigNumber,
+  gasPrice: BigNumber,
+  password: string,
+};
 
 export type SendEtcTransactionResponse = string; // tx address
 
@@ -21,6 +24,13 @@ export const sendEtcTransaction = (
   }, {
     jsonrpc: '2.0',
     method: 'personal_sendTransaction',
-    params: [{ ...params[0], value: params[0].value.toString(16) }, params[1]]
+    params: [
+      {
+        ...params,
+        value: params.value.toString(16),
+        gasPrice: params.gasPrice.toString(16),
+      },
+      params.password
+    ]
   })
 );

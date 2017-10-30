@@ -126,6 +126,7 @@ export default class Request<Result, Error> {
     this.error = null;
     this.isError = false;
     this.isExecuting = false;
+    this.wasExecuted = false;
     this._isWaitingForResponse = false;
     this._currentApiCall = null;
     return this;
