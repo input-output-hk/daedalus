@@ -1,4 +1,5 @@
 // @flow
+import BigNumber from 'bignumber.js';
 import { isAddress } from 'web3-utils/src/utils';
 import { getEtcSyncProgress } from './getEtcSyncProgress';
 import { Logger, stringifyData, stringifyError } from '../../utils/logging';
@@ -26,7 +27,6 @@ import type { CreateEtcAccountResponse } from './createEtcAccount';
 import type { SendEtcTransactionParams, SendEtcTransactionResponse } from './sendEtcTransaction';
 import type { GetEtcTransactionByHashResponse } from './getEtcTransaction';
 import { ETC_DEFAULT_GAS_PRICE, WEI_PER_ETC } from '../../config/numbersConfig';
-import BigNumber from 'bignumber.js';
 import { getEtcEstimatedGas } from './getEtcEstimatedGas';
 
 // Load Dummy ETC Wallets into Local Storage
