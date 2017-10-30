@@ -165,5 +165,26 @@ export const ETC_WALLETS_DATA = [
     assurance: 'CWANormal',
     hasPassword: false,
     passwordUpdateDate: null,
-  }
+  },
+  {
+    id: '0x9a62039f33d6ade11d00a127a30ba5fee4c969cb',
+    name: 'Wallet 12',
+    assurance: 'CWANormal',
+    hasPassword: false,
+    passwordUpdateDate: null,
+  },
+  {
+    id: '0xf39c9ed4abd09e18abc3ba40a53d7c65e2e6c25f',
+    name: 'Wallet 13',
+    assurance: 'CWANormal',
+    hasPassword: false,
+    passwordUpdateDate: null,
+  },
+  {
+    id: '0x2fecc6a10ab19719f7a4cd493e018742d119f945',
+    name: 'Wallet 14',
+    assurance: 'CWANormal',
+    hasPassword: false,
+    passwordUpdateDate: null,
+  },
 ];

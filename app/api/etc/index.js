@@ -24,7 +24,7 @@ import type { GetEtcAccountBalanceResponse } from './getEtcAccountBalance';
 import type { CreateEtcAccountResponse } from './createEtcAccount';
 import type { SendEtcTransactionParams, SendEtcTransactionResponse } from './sendEtcTransaction';
 import type { GetEtcTransactionByHashResponse } from './getEtcTransaction';
-import { ETC_DEFAULT_GAS_PRICE, LOVELACES_PER_ADA, WEI_PER_ETC } from '../../config/numbersConfig';
+import { ETC_DEFAULT_GAS_PRICE, WEI_PER_ETC } from '../../config/numbersConfig';
 import BigNumber from 'bignumber.js';
 import { getEtcEstimatedGas } from './getEtcEstimatedGas';
 
@@ -264,7 +264,9 @@ export default class EtcApi {
     return isValidMnemonic(mnemonic, 12);
   }
 
-  async getEstimatedGasPriceResponse(params: SendEtcTransactionParams): GetEstimatedGasPriceResponse {
+  async getEstimatedGasPriceResponse(
+    params: SendEtcTransactionParams
+  ): GetEstimatedGasPriceResponse {
     Logger.debug('EtcApi::getEstimatedGasPriceResponse called');
     try {
       const estimatedGas = await getEtcEstimatedGas(params);
@@ -275,7 +277,6 @@ export default class EtcApi {
       throw new GenericApiError();
     }
   }
-
 }
 
 const _createTransaction = async (senderAccount: string, txHash: string) => {

@@ -17,6 +17,7 @@ export default class WalletBackupDialog extends Component {
     canFinishBackup: boolean,
     isTermRecoveryAccepted: boolean,
     isValid: boolean,
+    isSubmitting: boolean,
     recoveryPhrase: string,
     recoveryPhraseShuffled: Array<{ word: string, isActive: boolean }>,
     enteredPhrase: Array<{ word: string }>,
@@ -40,7 +41,7 @@ export default class WalletBackupDialog extends Component {
       onContinue, recoveryPhrase,
       onStartWalletBackup, isTermDeviceAccepted,
       enteredPhrase, canFinishBackup,
-      isTermRecoveryAccepted, isValid,
+      isTermRecoveryAccepted, isValid, isSubmitting,
       onAcceptTermDevice, onAcceptTermRecovery,
       onAddWord, onClear, onFinishBackup,
       onRestartBackup, recoveryPhraseShuffled,
@@ -77,6 +78,7 @@ export default class WalletBackupDialog extends Component {
           canFinishBackup={canFinishBackup}
           isTermRecoveryAccepted={isTermRecoveryAccepted}
           isValid={isValid}
+          isSubmitting={isSubmitting}
           onAcceptTermDevice={onAcceptTermDevice}
           onAcceptTermRecovery={onAcceptTermRecovery}
           onAddWord={onAddWord}

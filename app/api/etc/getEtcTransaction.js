@@ -16,7 +16,9 @@ export type GetEtcTransactionByHashResponse = {
   input: string,
 };
 
-export const getEtcTransactionByHash = (txHash: string): Promise<GetEtcTransactionByHashResponse> => (
+export const getEtcTransactionByHash = (
+  txHash: string
+): Promise<GetEtcTransactionByHashResponse> => (
   request({
     hostname: ETC_API_HOST,
     method: 'POST',

@@ -52,6 +52,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
     isValid: boolean,
     isTermDeviceAccepted: boolean,
     isTermRecoveryAccepted: boolean,
+    isSubmitting: boolean,
     onAddWord: Function,
     canFinishBackup: boolean,
     onClear: Function,
@@ -74,6 +75,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
       isValid,
       isTermDeviceAccepted,
       isTermRecoveryAccepted,
+      isSubmitting,
       onAddWord,
       onClear,
       onAcceptTermDevice,
@@ -93,6 +95,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
     const actions = [];
 
     actions.push({
+      className: isSubmitting ? styles.isSubmitting : null,
       label: intl.formatMessage(messages.buttonLabelConfirm),
       onClick: onFinishBackup,
       disabled: !canFinishBackup,
