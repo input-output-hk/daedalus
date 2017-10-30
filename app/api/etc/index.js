@@ -1,4 +1,5 @@
 // @flow
+import { isAddress } from 'web3-utils/src/utils';
 import { getEtcSyncProgress } from './getEtcSyncProgress';
 import { Logger, stringifyData, stringifyError } from '../../utils/logging';
 import { GenericApiError, IncorrectWalletPasswordError } from '../common';
@@ -262,6 +263,10 @@ export default class EtcApi {
 
   isValidMnemonic(mnemonic: string): Promise<boolean> {
     return isValidMnemonic(mnemonic, 12);
+  }
+
+  isValidAddress(address: string): Promise<boolean> {
+    return Promise.resolve(isAddress(address));
   }
 
   async getEstimatedGasPriceResponse(

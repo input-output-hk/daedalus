@@ -25,7 +25,6 @@ export default class WalletSendPage extends Component {
     const activeWallet = wallets.active;
 
     // TODO: replace with real endpoints!!
-    const isValidAddress = () => Promise.resolve(true);
     const validateAmount = () => Promise.resolve(true);
 
     // Guard against potential null values
@@ -39,7 +38,7 @@ export default class WalletSendPage extends Component {
         calculateTransactionFee={(receiver, amount) => (
           wallets.calculateTransactionFee({ sender: activeWallet.id, receiver, amount })
         )}
-        addressValidator={isValidAddress}
+        addressValidator={wallets.isValidAddress}
         isDialogOpen={uiDialogs.isOpen}
         openDialogAction={actions.dialogs.open.trigger}
       />
