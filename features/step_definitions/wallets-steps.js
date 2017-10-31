@@ -239,9 +239,9 @@ export default function () {
     for (let i = 0; i < recoveryPhrase.length; i++) {
       const word = recoveryPhrase[i];
       await this.client.setValue('.SimpleAutocomplete_autocompleteWrapper input', word);
-      await this.client.waitForVisible('//li[contains(text(), ' + word + ')]');
-      await this.waitAndClick('//li[contains(text(), ' + word + ')]');
-      await this.client.waitForVisible('//span[contains(text(), ' + word + ')]');
+      await this.client.waitForVisible(`//li[contains(text(), '${word}')]`);
+      await this.waitAndClick(`//li[contains(text(), '${word}')]`);
+      await this.client.waitForVisible(`//span[contains(text(), '${word}')]`);
     }
   });
 
