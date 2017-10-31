@@ -8,9 +8,9 @@ export type UpdateAdaWalletPathParams = {
 
 export type UpdateAdaWalletRawBodyParams = {
   walletMeta: {
-    "cwName": string,
-    "cwAssurance": string,
-    "cwUnit": number,
+    cwName: string,
+    cwAssurance: string,
+    cwUnit: number,
   }
 };
 

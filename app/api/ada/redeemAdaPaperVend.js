@@ -8,8 +8,11 @@ export type RedeemAdaPaperVendQueryParams = {
 
 export type RedeemAdaPaperVendRawBodyParams = {
   redeemPaperVendedData: {
-    crWalletId: string,
-    crSeed: string,
+    pvWalletId: string,
+    pvSeed: string,
+    pvBackupPhrase: {
+      bpToList: [],
+    }
   }
 };
 

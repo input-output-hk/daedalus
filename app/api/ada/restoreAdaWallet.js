@@ -9,9 +9,9 @@ export type restoreAdaWalletQueryParams = {
 export type restoreAdaWalletRawBodyParams = {
   walletInitData: {
     cwInitMeta: {
-      "cwName": string,
-      "cwAssurance": string,
-      "cwUnit": number,
+      cwName: string,
+      cwAssurance: string,
+      cwUnit: number,
     },
     cwBackupPhrase: {
       bpToList: [],

@@ -1,6 +1,6 @@
 // @flow
-import _ from 'lodash';
 import https from 'https';
+import { size, has, get, omit } from 'lodash';
 import querystring from 'querystring';
 import { encryptPassphrase } from './encryptPassphrase';
 
@@ -23,10 +23,10 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}, rawBodyPa
     let requestBody = '';
 
     let queryString = '';
-    if (queryParams && _.size(queryParams) > 0) {
+    if (queryParams && size(queryParams) > 0) {
       // Handle passphrase
-      if (_.has(queryParams, 'passphrase')) {
-        const passphrase = _.get(queryParams, 'passphrase');
+      if (has(queryParams, 'passphrase')) {
+        const passphrase = get(queryParams, 'passphrase');
 
         // If passphrase is present it must be encrypted and included in options.path
         if (passphrase !== null) {
@@ -35,9 +35,9 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}, rawBodyPa
         }
 
         // Passphrase must be ommited from rest query params
-        queryParams = _.omit(queryParams, 'passphrase');
+        queryParams = omit(queryParams, 'passphrase');
 
-        if (_.size(queryParams > 1) && passphrase) {
+        if (size(queryParams > 1) && passphrase) {
           queryString += `&${querystring.stringify(queryParams)}`;
         }
       } else {
@@ -69,12 +69,12 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}, rawBodyPa
       // of "Left" (for errors) and "Right" (for success) properties
       response.on('end', () => {
         const parsedBody = JSON.parse(body);
-        if (parsedBody.Right || typeof parsedBody.Right === 'boolean') {
+        if (has(parsedBody, 'Right')) {
           // "Right" means 200 ok (success) -> also handle if Right: false (boolean response)
           resolve(parsedBody.Right);
-        } else if (parsedBody.Left) {
+        } else if (has(parsedBody, 'Left')) {
           // "Left" means error case -> return error with contents (exception on nextUpdate)
-          if (parsedBody.Left.contents !== 'No updates available') {
+          if (parsedBody.Left.contents && (parsedBody.Left.contents !== 'No updates available')) {
             reject(new Error(parsedBody.Left.contents));
           }
         } else {

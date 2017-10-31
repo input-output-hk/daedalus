@@ -8,10 +8,10 @@ export type NewAdaWalletQueryParams = {
 
 export type NewAdaWalletRawBodyParams = {
   accountInitData: {
-    "caInitMeta": {
-      "caName": string,
+    caInitMeta: {
+      caName: string,
     },
-    "caInitWId": string,
+    caInitWId: string,
   }
 };
 

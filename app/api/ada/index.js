@@ -1,5 +1,5 @@
 // @flow
-import _ from 'lodash';
+import { split, get } from 'lodash';
 import type {
   ApiAccounts,
   ApiAddress,
@@ -19,6 +19,7 @@ import WalletTransaction from '../../domain/WalletTransaction';
 import WalletAddress from '../../domain/WalletAddress';
 import type { GetSyncProgressResponse } from '../common';
 import { GenericApiError } from '../common';
+import { isValidMnemonic } from '../../../lib/decrypt';
 import {
   AllFundsAlreadyAtReceiverAddressError,
   IncorrectWalletPasswordError,
@@ -51,14 +52,12 @@ import { isValidAdaAddress } from './isValidAdaAddress';
 import { adaTxFee } from './adaTxFee';
 import { newAdaPayment } from './newAdaPayment';
 import { redeemAda } from './redeemAda';
-// TODO - uncomment when rawBodyParams will be provided
-// import { redeemAdaPaperVend } from './redeemAdaPaperVend';
+import { redeemAdaPaperVend } from './redeemAdaPaperVend';
 import { nextAdaUpdate } from './nextAdaUpdate';
 import { postponeAdaUpdate } from './postponeAdaUpdate';
 import { applyAdaUpdate } from './applyAdaUpdate';
 import { adaTestReset } from './adaTestReset';
 import { getAdaHistoryByWallet } from './getAdaHistoryByWallet';
-import { isValidAdaMnemonic } from './isValidAdaMnemonic';
 
 /**
  * The api layer that is used for all requests to the
@@ -266,7 +265,7 @@ export default class AdaApi {
           cwUnit: unit,
         },
         cwBackupPhrase: {
-          bpToList: _.split(mnemonic), // array of mnemonic words
+          bpToList: split(mnemonic), // array of mnemonic words
         }
       };
 
@@ -369,7 +368,7 @@ export default class AdaApi {
   }
 
   isValidMnemonic(mnemonic: string): Promise<boolean> {
-    return isValidAdaMnemonic(mnemonic, 12);
+    return isValidMnemonic(mnemonic, 12);
   }
 
   isValidRedemptionKey(mnemonic: string): Promise<boolean> {
@@ -381,7 +380,7 @@ export default class AdaApi {
   }
 
   isValidRedemptionMnemonic(mnemonic: string): Promise<boolean> {
-    return isValidAdaMnemonic(mnemonic, 9);
+    return isValidMnemonic(mnemonic, 9);
   }
 
   getWalletRecoveryPhrase(): Promise<GetWalletRecoveryPhraseResponse> {
@@ -409,7 +408,7 @@ export default class AdaApi {
         cwUnit: unit,
       },
       cwBackupPhrase: {
-        bpToList: _.split(recoveryPhrase), // array of mnemonic words
+        bpToList: split(recoveryPhrase), // array of mnemonic words
       }
     };
 
@@ -504,24 +503,25 @@ export default class AdaApi {
   async redeemPaperVendedAda(
     request: RedeemPaperVendedAdaRequest
   ): Promise<RedeemPaperVendedAdaResponse> {
-    Logger.debug('CardanoClientApi::redeemAdaPaperVend called');
+    Logger.debug('JsApi-ADA::redeemAdaPaperVend called');
     const { shieldedRedemptionKey, mnemonics, accountId, walletPassword } = request;
-
-
     try {
-      const response: ApiTransaction = await ClientApi.redeemAdaPaperVend(
-        tlsConfig, shieldedRedemptionKey, mnemonics, accountId, walletPassword
+      const redeemPaperVendedData = {
+        pvWalletId: accountId,
+        pvSeed: shieldedRedemptionKey,
+        pvBackupPhrase: {
+          bpToList: split(mnemonics),
+        }
+      };
+
+      const response: ApiTransaction = await redeemAdaPaperVend(
+        ca, {}, { passphrase: walletPassword }, { redeemPaperVendedData }
       );
 
-      // TODO
-      // const response: ApiTransaction = redeemAdaPaperVend(
-      //   ca, {}, { passphrase: walletPassword }, { redeemPaperVendedData }
-      // );
-
-      Logger.debug('CardanoClientApi::redeemAdaPaperVend success');
+      Logger.debug('JsApi-ADA::redeemAdaPaperVend success');
       return _createTransactionFromServerData(response);
     } catch (error) {
-      Logger.error('CardanoClientApi::redeemAdaPaperVend error: ' + stringifyError(error));
+      Logger.error('JsApi-ADA::redeemAdaPaperVend error: ' + stringifyError(error));
       if (error.message.includes('Passphrase doesn\'t match')) {
         throw new IncorrectWalletPasswordError();
       }
@@ -550,7 +550,7 @@ export default class AdaApi {
       Logger.debug('JsApi-ADA::nextUpdate success: ' + stringifyData(response));
       if (response && response.cuiSoftwareVersion) {
         nextUpdate = {
-          version: _.get(response, ['cuiSoftwareVersion', 'svNumber'], null)
+          version: get(response, ['cuiSoftwareVersion', 'svNumber'], null)
         };
       }
     } catch (error) {
