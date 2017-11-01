@@ -62,14 +62,14 @@ launcherArgs Launcher{..} = unwords $
                          ]
       nodeDbPath = runtimePath <> "DB-" <> version
       nodeArgs = [
-        "--report-server", "http://report-server.cardano-mainnet.iohk.io:8080",
+        "--report-server", "http://report-server.staging-11.iohkdev.io:8080",
         "--log-config", "log-config-prod.yaml",
         "--update-latest-path", quote (updArchivePath updater),
         "--keyfile", quote (runtimePath <> "Secrets-" <> version <> (pathSeparator : "secret.key")),
         "--logs-prefix", quote (runtimePath <> "Logs"),
         "--db-path", quote nodeDbPath,
         "--wallet-db-path", quote (runtimePath <> "Wallet-" <> version),
-        "--update-server", "http://update.cardano-mainnet.iohk.io",
+        "--update-server", "https://s3.eu-central-1.amazonaws.com/update-system-testing/",
         "--update-with-package",
         "--no-ntp",
         "--tlscert", quote (tlsBase <> "server" <> (pathSeparator : "server.crt")),
