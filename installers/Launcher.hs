@@ -65,7 +65,6 @@ launcherArgs Launcher{..} = unwords $
         "--logs-prefix", quote (runtimePath <> "Logs"),
         "--db-path", quote (runtimePath <> "DB-" <> version),
         "--wallet-db-path", quote (runtimePath <> "Wallet-" <> version),
-        "--update-server", "http://update.cardano-mainnet.iohk.io",
         "--update-with-package",
         "--no-ntp",
         "--tlscert", quote (tlsBase <> "server" <> (pathSeparator : "server.crt")),
