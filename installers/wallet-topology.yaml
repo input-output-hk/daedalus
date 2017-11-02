@@ -1,4 +1,4 @@
 wallet:
-  relays: [[{"host": "relays.cardano-mainnet.iohk.io"}]]
+  relays: [[{"addr": "18.194.225.92"}]]
   valency: 1
-  fallbacks: 7
+  fallbacks: 1
