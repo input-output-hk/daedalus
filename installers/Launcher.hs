@@ -58,7 +58,7 @@ launcherArgs Launcher{..} = unwords $
                           , "--configuration-key",  quote "mainnet_staging_short_epoch_wallet_macos64"
                          ]
       nodeArgs = [
-        "--report-server", "http://report-server.cardano-mainnet.iohk.io:8080",
+        "--report-server", "http://18.194.252.190:8080",
         "--log-config", "log-config-prod.yaml",
         "--update-latest-path", quote (updArchivePath updater),
         "--keyfile", quote (runtimePath <> "Secrets-" <> version <> (pathSeparator : "secret.key")),
