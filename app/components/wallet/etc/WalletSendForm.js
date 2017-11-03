@@ -9,14 +9,14 @@ import NumericInput from 'react-polymorph/lib/components/NumericInput';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
-import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
-import AmountInputSkin from './skins/AmountInputSkin';
-import BorderedBox from '../widgets/BorderedBox';
-import styles from './WalletSendForm.scss';
-import globalMessages from '../../i18n/global-messages';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import AmountInputSkin from '../skins/etc/AmountInputSkin';
+import BorderedBox from '../../widgets/BorderedBox';
+import styles from '../WalletSendForm.scss';
+import globalMessages from '../../../i18n/global-messages';
 import WalletSendConfirmationDialog from './WalletSendConfirmationDialog';
-import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
-import { formattedAmountToBigNumber, formattedAmountToNaturalUnits } from '../../utils/formatters';
+import WalletSendConfirmationDialogContainer from '../../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
+import { formattedAmountToBigNumber, formattedAmountToNaturalUnits } from '../../../utils/formatters';
 
 const messages = defineMessages({
   titleLabel: {
@@ -229,8 +229,8 @@ export default class WalletSendForm extends Component {
               error={transactionFeeError || amountField.error}
               // AmountInputSkin props
               currency={currencyUnit}
-              fees={transactionFee.toFormat(currencyMaxFractionalDigits)}
-              total={totalAmount.toFormat(currencyMaxFractionalDigits)}
+              fees={transactionFee.toPrecision()}
+              total={totalAmount.toPrecision()}
               skin={<AmountInputSkin />}
             />
           </div>

@@ -17,7 +17,7 @@ import { sendEtcTransaction } from './sendEtcTransaction';
 import { deleteEtcAccount } from './deleteEtcAccount';
 import {
   getEtcWalletData, setEtcWalletData, unsetEtcWalletData, updateEtcWalletData,
-  setEtcWalletsData, ETC_WALLETS_DATA,
+  initEtcWalletsDummyData,
 } from './etcLocalStorage';
 import WalletTransaction from '../../domain/WalletTransaction';
 import type { GetSyncProgressResponse, GetWalletRecoveryPhraseResponse } from '../common';
@@ -32,7 +32,7 @@ import { getEtcEstimatedGas } from './getEtcEstimatedGas';
 
 // Load Dummy ETC Wallets into Local Storage
 (async () => {
-  await setEtcWalletsData(ETC_WALLETS_DATA);
+  await initEtcWalletsDummyData();
 })();
 
 /**

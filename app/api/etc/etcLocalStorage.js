@@ -121,8 +121,8 @@ export const ETC_WALLETS_DATA = [
     id: '0x31d3500eaff3f8e6a3cfa1ab0523abe2e7910424',
     name: 'Wallet 5',
     assurance: 'CWANormal',
-    hasPassword: true,
-    passwordUpdateDate: new Date('2017-10-01'),
+    hasPassword: false,
+    passwordUpdateDate: null,
   },
   {
     id: '0xf5c12ec7f63d6a134366c886bcf9e70777107fd8',
@@ -188,3 +188,14 @@ export const ETC_WALLETS_DATA = [
     passwordUpdateDate: null,
   },
 ];
+
+export const initEtcWalletsDummyData = () => new Promise(async (resolve, reject) => {
+  const wallets = await getEtcWalletsData();
+  ETC_WALLETS_DATA.forEach(walletData => {
+    set(wallets, walletData.id, walletData);
+  });
+  localStorage.set('etcWallets', { wallets }, (error) => {
+    if (error) return reject(error);
+    resolve();
+  });
+});

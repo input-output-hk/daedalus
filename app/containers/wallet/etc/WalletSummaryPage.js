@@ -37,11 +37,18 @@ export default class WalletSummaryPage extends Component {
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
 
+    // Format wallet amount into Integer and Decimal part
+    const amount = wallet.amount.toFormat(DECIMAL_PLACES_IN_ETC);
+    const amountParts = amount.split('.');
+    const amountIntegerPart = amountParts[0];
+    const amountDecimalPart = amountParts[1];
+
     return (
       <VerticalFlexContainer>
         <WalletSummary
           walletName={wallet.name}
-          amount={wallet.amount.toFormat(DECIMAL_PLACES_IN_ETC)}
+          amountInteger={amountIntegerPart}
+          amountDecimal={amountDecimalPart}
         />
         {walletTransactions}
       </VerticalFlexContainer>

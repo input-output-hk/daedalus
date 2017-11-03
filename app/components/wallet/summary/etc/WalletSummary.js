@@ -11,20 +11,21 @@ export default class WalletSummary extends Component {
 
   props: {
     walletName: string,
-    amount: string,
+    amountInteger: string,
+    amountDecimal: string,
   };
 
   render() {
     const {
-      walletName,
-      amount,
+      walletName, amountInteger, amountDecimal,
     } = this.props;
     return (
       <div className={styles.component}>
         <BorderedBox>
           <div className={styles.walletName}>{walletName}</div>
           <div className={styles.walletAmount}>
-            {amount}
+            {amountInteger}
+            <span className={styles.decimal}>.{amountDecimal}</span>
             <SvgInline svg={etcSymbol} className={styles.currencySymbolBig} />
           </div>
         </BorderedBox>

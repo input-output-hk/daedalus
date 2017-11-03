@@ -3,8 +3,10 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
-import WalletSendConfirmationDialog from '../../../components/wallet/WalletSendConfirmationDialog';
 import environment from '../../../environment';
+import resolver from '../../../utils/imports';
+
+const WalletSendConfirmationDialog = resolver('components/wallet/WalletSendConfirmationDialog');
 
 @inject('actions', 'stores') @observer
 export default class WalletSendConfirmationDialogContainer extends Component {
@@ -49,6 +51,7 @@ export default class WalletSendConfirmationDialogContainer extends Component {
         isSubmitting={sendMoneyRequest.isExecuting}
         onCancel={() => {
           actions.dialogs.closeActiveDialog.trigger();
+          sendMoneyRequest.reset();
         }}
         error={sendMoneyRequest.error}
         currencyUnit={currencyUnit}

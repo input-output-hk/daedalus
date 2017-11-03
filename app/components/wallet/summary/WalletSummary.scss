@@ -27,6 +27,12 @@
   color: var(--theme-bordered-box-text-color);
   margin-bottom: 11px;
   word-break: break-all;
+
+  & > .decimal {
+    font-family: var(--font-medium);
+    font-size: 18px;
+  }
+
   & > .currencySymbolBig {
     display: inline-block;
     margin-left: 10px;

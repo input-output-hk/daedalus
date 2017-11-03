@@ -1,0 +1,25 @@
+.root {
+  position: relative;
+}
+
+.fees,
+.total {
+  color: var(--theme-input-right-floating-text-color);
+  font-family: var(--font-light);
+  font-size: 14px;
+}
+
+.fees {
+  position: absolute;
+  right: 19px;
+  top: 7px;
+}
+
+.total {
+  display: block;
+  line-height: 1.38;
+  margin: 9px 19px 0;
+  text-align: right;
+  text-transform: uppercase;
+  word-break: break-all;
+}
