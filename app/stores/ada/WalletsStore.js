@@ -11,9 +11,11 @@ import type { walletExportTypeChoices } from '../../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../../actions/ada/wallets-actions';
 import type {
   CreateTransactionResponse, CreateWalletResponse, DeleteWalletResponse,
-  GetWalletRecoveryPhraseResponse, GetWalletsResponse, RestoreWalletResponse,
+  GetWalletsResponse, RestoreWalletResponse,
   ImportWalletFromFileResponse
 } from '../../api/ada/index';
+
+import type { GetWalletRecoveryPhraseResponse } from '../../api/common';
 
 export default class WalletsStore extends Store {
 

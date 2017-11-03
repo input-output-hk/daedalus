@@ -2,11 +2,11 @@
 import type { ApiAccount } from 'daedalus-client-api';
 import { request } from './lib/request';
 
-export type NewAdaWalletQueryParams = {
+export type NewAdaAccountQueryParams = {
   passphrase: ?string,
 };
 
-export type NewAdaWalletRawBodyParams = {
+export type NewAdaAccountRawBodyParams = {
   accountInitData: {
     caInitMeta: {
       caName: string,
@@ -18,8 +18,8 @@ export type NewAdaWalletRawBodyParams = {
 export const newAdaAccount = (
   ca: string,
   pathParams: {},
-  queryParams: NewAdaWalletQueryParams,
-  rawBodyParams: NewAdaWalletRawBodyParams,
+  queryParams: NewAdaAccountQueryParams,
+  rawBodyParams: NewAdaAccountRawBodyParams,
 ): Promise<ApiAccount> => {
   const { accountInitData } = rawBodyParams;
   return request({

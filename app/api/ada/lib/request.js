@@ -74,8 +74,10 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}, rawBodyPa
           resolve(parsedBody.Right);
         } else if (has(parsedBody, 'Left')) {
           // "Left" means error case -> return error with contents (exception on nextUpdate)
-          if (parsedBody.Left.contents && (parsedBody.Left.contents !== 'No updates available')) {
+          if (parsedBody.Left.contents) {
             reject(new Error(parsedBody.Left.contents));
+          } else {
+            reject(new Error('Unknown response from backend.'));
           }
         } else {
           // TODO: investigate if that can happen! (no Right or Left in a response)
