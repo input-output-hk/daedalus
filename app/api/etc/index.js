@@ -14,6 +14,7 @@ import { getEtcTransactionByHash } from './getEtcTransaction';
 import { getEtcBlockByHash } from './getEtcBlock';
 import { isValidMnemonic } from '../../../lib/decrypt';
 import { sendEtcTransaction } from './sendEtcTransaction';
+import { deleteEtcAccount } from './deleteEtcAccount';
 import {
   getEtcWalletData, setEtcWalletData, unsetEtcWalletData, updateEtcWalletData,
   setEtcWalletsData, ETC_WALLETS_DATA,
@@ -39,7 +40,7 @@ import { getEtcEstimatedGas } from './getEtcEstimatedGas';
  * mantis client which is used as backend for ETC blockchain.
  */
 
-export const ETC_API_HOST = 'ec2-52-30-28-57.eu-west-1.compute.amazonaws.com';
+export const ETC_API_HOST = 'ec2-52-30-28-57.eu-west-1.compute.amazonaws.com'; // '127.0.0.1'
 export const ETC_API_PORT = 8546;
 
 export type GetWalletsResponse = Array<Wallet>;
@@ -227,8 +228,7 @@ export default class EtcApi {
     Logger.debug('EtcApi::deleteWallet called: ' + stringifyData(request));
     const { walletId } = request;
     try {
-      // TODO: insert real Api delete wallet endpoint call here
-      console.debug(walletId);
+      await deleteEtcAccount(walletId);
       Logger.debug('EtcApi::deleteWallet success: ' + stringifyData(request));
       await unsetEtcWalletData(walletId); // remove wallet data from local storage
       return true;
