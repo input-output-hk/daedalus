@@ -17,7 +17,10 @@ import Wallet from '../../domain/Wallet';
 import WalletTransaction from '../../domain/WalletTransaction';
 import WalletAddress from '../../domain/WalletAddress';
 import type { GetSyncProgressResponse, GetWalletRecoveryPhraseResponse } from '../common';
-import { GenericApiError, IncorrectWalletPasswordError } from '../common';
+import {
+  GenericApiError, IncorrectWalletPasswordError,
+  WalletAlreadyRestoredError,
+} from '../common';
 import {
   AllFundsAlreadyAtReceiverAddressError,
   NotAllowedToSendMoneyToRedeemAddressError,
@@ -26,7 +29,6 @@ import {
   NotEnoughMoneyToSendError,
   RedeemAdaError,
   WalletAlreadyImportedError,
-  WalletAlreadyRestoredError,
   WalletFileImportError,
 } from './errors';
 import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
