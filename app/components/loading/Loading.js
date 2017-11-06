@@ -4,12 +4,14 @@ import SvgInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
+import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import cardanoLogo from '../../assets/images/cardano-logo.inline.svg';
 import daedalusLogoWhite from '../../assets/images/daedalus-logo-loading-white.inline.svg';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import cardanoLogoWhite from '../../assets/images/cardano-logo-white.inline.svg';
 import styles from './Loading.scss';
+
 
 const messages = defineMessages({
   connecting: {
@@ -63,6 +65,7 @@ export default class Loading extends Component {
       isConnecting, isSyncing, syncPercentage, isLoadingWallets,
       hasBeenConnected, hasBlockSyncingStarted,
       hasLoadedCurrentLocale, hasLoadedCurrentTheme,
+      isSystemTimeCorrect,
     } = this.props;
     const componentStyles = classNames([
       styles.component,
@@ -104,10 +107,13 @@ export default class Loading extends Component {
               </div>
             )}
             {isSyncing && (
-              <div className={styles.syncing}>
-                <h1 className={styles.headline}>
-                  {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
-                </h1>
+              <div className='syncingWrapper'>
+                <div className={styles.syncing}>
+                  <h1 className={styles.headline}>
+                    {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
+                  </h1>
+                </div>
+                {!isSystemTimeCorrect && <SystemTimeErrorOverlay />}
               </div>
             )}
             {!isSyncing && !isConnecting && isLoadingWallets && (

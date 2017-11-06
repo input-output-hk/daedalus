@@ -164,6 +164,15 @@ export default {
   '--theme-switch-thumb-color-checked': '#fff',
   '--theme-switch-label-color': '#e9f4fe',
 
+  '--theme-system-error-overlay-attention-icon-color': '#fafbfc',
+  '--theme-system-error-overlay-background-color': 'rgba(171, 23, 0, 0.94)',
+  '--theme-system-error-overlay-button-background-color': '#ab1700',
+  '--theme-system-error-overlay-button-background-color-hover': '#fafbfc',
+  '--theme-system-error-overlay-button-border-color': '#fafbfc',
+  '--theme-system-error-overlay-button-text-color': '#fafbfc',
+  '--theme-system-error-overlay-button-text-color-hover': '#ab1700',
+  '--theme-system-error-overlay-text-color': '#fafbfc',
+
   '--theme-test-environment-label-background-color': '#ab1700',
   '--theme-test-environment-label-text-color': '#fafbfc',
 

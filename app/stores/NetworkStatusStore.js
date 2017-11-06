@@ -125,6 +125,11 @@ export default class NetworkStatusStore extends Store {
     );
   }
 
+  @computed get isSystemTimeCorrect(): boolean {
+    // TODO - replace hardcoded value with api response
+    return true;
+  }
+
   @action _updateSyncProgress = async () => {
     try {
       const difficulty = await this.syncProgressRequest.execute().promise;

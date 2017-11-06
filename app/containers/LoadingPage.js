@@ -17,6 +17,7 @@ export default class LoadingPage extends Component {
     const {
       isConnecting,
       isSyncing,
+      isSystemTimeCorrect,
       syncPercentage,
       isLoadingWallets,
       hasBeenConnected,
@@ -30,6 +31,7 @@ export default class LoadingPage extends Component {
       <CenteredLayout>
         <Loading
           isSyncing={isSyncing}
+          isSystemTimeCorrect={isSystemTimeCorrect}
           isConnecting={isConnecting}
           syncPercentage={syncPercentage}
           isLoadingWallets={isLoadingWallets}
