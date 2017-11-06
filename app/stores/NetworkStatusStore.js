@@ -145,9 +145,9 @@ export default class NetworkStatusStore extends Store {
         }
         // Update the local and network difficulties on each request
         this.localDifficulty = difficulty.localDifficulty;
-        Logger.debug('Network difficulty changed: ' + this.networkDifficulty);
+        Logger.debug('Local difficulty changed: ' + this.localDifficulty);
         this.networkDifficulty = difficulty.networkDifficulty;
-        Logger.debug('Local difficulty changed: ' + this.networkDifficulty);
+        Logger.debug('Network difficulty changed: ' + this.networkDifficulty);
       });
     } catch (error) {
       // If the sync progress request fails, switch to disconnected state

@@ -47,6 +47,8 @@ import {
   NotEnoughMoneyToSendError,
   NotAllowedToSendMoneyToSameAddressError,
   NotAllowedToSendMoneyToRedeemAddressError,
+  NotEnoughFundsForTransactionFeesError,
+  AllFundsAlreadyAtReceiverAddressError,
   IncorrectWalletPasswordError,
 } from './errors';
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
@@ -160,8 +162,6 @@ const unsetUserThemeFromLocalStorage = () => new Promise((resolve) => {
 });
 
 export default class CardanoClientApi {
-
-  reset() {}
 
   async getWallets() {
     Logger.debug('CardanoClientApi::getWallets called');
@@ -295,6 +295,13 @@ export default class CardanoClientApi {
       return _createTransactionFeeFromServerData(response);
     } catch (error) {
       Logger.error('CardanoClientApi::calculateTransactionFee error: ' + stringifyError(error));
+      // eslint-disable-next-line max-len
+      if (error.message.includes('not enough money on addresses which are not included in output addresses set')) {
+        throw new AllFundsAlreadyAtReceiverAddressError();
+      }
+      if (error.message.includes('not enough money')) {
+        throw new NotEnoughFundsForTransactionFeesError();
+      }
       throw new GenericApiError();
     }
   }
@@ -518,6 +525,17 @@ export default class CardanoClientApi {
     // return null;
   }
 
+  async postponeUpdate() {
+    Logger.debug('CardanoClientApi::postponeUpdate called');
+    try {
+      const response = await ClientApi.postponeUpdate(tlsConfig);
+      Logger.debug('CardanoClientApi::postponeUpdate success: ' + stringifyData(response));
+    } catch (error) {
+      Logger.error('CardanoClientApi::postponeUpdate error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
   async applyUpdate() {
     Logger.debug('CardanoClientApi::applyUpdate called');
     try {
@@ -705,6 +723,7 @@ export default class CardanoClientApi {
       throw new GenericApiError();
     }
   }
+
 }
 
 // ========== LOGGING =========
@@ -750,9 +769,10 @@ const _createTransactionFromServerData = action(
       description: ctmDescription || '',
       numberOfConfirmations: data.ctConfirmations,
       addresses: {
-        from: data.ctInputAddrs,
-        to: data.ctOutputAddrs,
+        from: data.ctInputs.map(address => address[0]),
+        to: data.ctOutputs.map(address => address[0]),
       },
+      condition: data.ctCondition,
     });
   }
 );

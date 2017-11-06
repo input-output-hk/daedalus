@@ -3,6 +3,7 @@ declare module 'daedalus-client-api' {
   // ========= Response Types =========
 
   declare type ApiAssurance = 'CWANormal' | 'CWAStrict';
+  declare type TransactionCondition = 'CPtxApplying' | 'CPtxInBlocks' | 'CPtxWontApply' | 'CPtxNotTracked';
   declare type ApiAmount = {
     getCCoin: number,
   };
@@ -31,19 +32,24 @@ declare module 'daedalus-client-api' {
     ctAmount: ApiAmount,
     ctConfirmations: number,
     ctId: string,
-    ctInputAddrs: Array<string>,
+    ctInputs: ApiTransactionInputOutput,
     ctIsOutgoing: boolean,
     ctMeta: {
       ctmDate: Date,
       ctmDescription: ?string,
       ctmTitle: ?string,
     },
-    ctOutputAddrs: Array<string>,
+    ctOutputs: ApiTransactionInputOutput,
+    ctCondition: TransactionCondition,
   };
 
   declare type ApiTransactions = [
     Array<ApiTransaction>,
     number,
+  ];
+
+  declare type ApiTransactionInputOutput = [
+    [string, ApiAmount],
   ];
 
   declare type ApiTransactionFee = ApiAmount;
@@ -75,6 +81,7 @@ declare module 'daedalus-client-api' {
   // Status
   declare function notify(tls: TlsConfig, onSuccess: Function, onError?: Function): void;
   declare function nextUpdate(tls: TlsConfig): any;
+  declare function postponeUpdate(tls: TlsConfig): any;
   declare function applyUpdate(tls: TlsConfig): any;
   declare function syncProgress(tls: TlsConfig): any;
 

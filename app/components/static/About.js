@@ -20,7 +20,7 @@ const messages = defineMessages({
   },
   aboutReleaseVersion: {
     id: 'static.about.release.version',
-    defaultMessage: '!!!0.7.1',
+    defaultMessage: '!!!0.8.2',
     description: 'Label for "App Release Version"',
   },
   aboutContentDaedalusHeadline: {
@@ -40,7 +40,7 @@ const messages = defineMessages({
   },
   aboutContentCardanoMembers: {
     id: 'static.about.content.cardano.members',
-    defaultMessage: '!!!Alexander Sukhoverkhov, Alexander Vieth, Alexandre Rodrigues Baldé, Alfredo Di Napoli, Anastasiya Besman, Andrzej Rybczak, Ante Kegalj, Anton Belyy, Anupam Jain, Arseniy Seroka, Artyom Kazak, Carlos D\'Agostino, Charles Hoskinson, Denis Shevchenko, Dmitry Kovanikov, Dmitry Mukhutdinov, Dmitry Nikulin, Domen Kožar, Duncan Coutts, Edsko de Vries, George Agapov, Hiroto Shioi, Ilia Liubimov, Ilya Peresadin, Ivan Gromakovskii, Jens Krause, Jeremy Wood, Joel Mislov Kunst, Jonn Mostovoy, Konstantin Ivanov, Kristijan Šarić, Lars Brünjes, Lionel Miller, Michael Bishop, Mikhail Volkhov, Niklas Hambüchen, Philipp Kant, Vincent Hanquez',
+    defaultMessage: '!!!Alexander Sukhoverkhov, Alexander Vieth, Alexandre Rodrigues Baldé, Alfredo Di Napoli, Anastasiya Besman, Andrzej Rybczak, Ante Kegalj, Anton Belyy, Anupam Jain, Arseniy Seroka, Artyom Kazak, Carlos D\'Agostino, Charles Hoskinson, Dan Friedman, Denis Shevchenko, Dmitry Kovanikov, Dmitry Mukhutdinov, Dmitry Nikulin, Domen Kožar, Duncan Coutts, Edsko de Vries, Eileen Fitzgerald, George Agapov, Hiroto Shioi, Ilya Lubimov, Ilya Peresadin, Ivan Gromakovskii, Jake Mitchell, Jane Wild, Jens Krause, Jeremy Wood, Joel Mislov Kunst, Jonn Mostovoy, Konstantin Ivanov, Kristijan Šarić, Lars Brünjes, Laurie Wang, Lionel Miller, Michael Bishop, Mikhail Volkhov, Niklas Hambüchen, Peter Gaži, Philipp Kant, Serge Kosyrev, Vincent Hanquez',
     description: 'About page cardano team members',
   },
   aboutCopyright: {

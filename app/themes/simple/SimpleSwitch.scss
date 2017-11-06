@@ -6,16 +6,15 @@
 .root {
   flex-direction: row-reverse;
   margin-bottom: 30px;
-  & > .checked {
-    background-color: var(--theme-switch-background-color-checked) !important;
-    & > .thumb {
-      box-shadow: inset -1.5px -1.5px 0 var(--theme-switch-thumb-color-checked), inset 1.5px 1.5px 0 var(--theme-switch-thumb-color-checked), inset 1.5px -1.5px 0 var(--theme-switch-thumb-color-checked), inset -1.5px 1.5px 0 var(--theme-switch-thumb-color-checked) !important;
+  &:not(.checked) {
+    .switch {
+      box-shadow: 0 2px 0 -1px transparent; // fix for cut-off bottom
+      opacity: 0.3;
     }
   }
 }
 
 .label {
-  color: var(--theme-switch-label-color);
   margin: 0 30px 0 0 !important;
   opacity: 0.5;
   width: 100%;

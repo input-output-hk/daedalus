@@ -6,7 +6,7 @@
   flex-direction: column;
   font-family: var(--font-regular);
   height: 100%;
-  padding: 20px 30px;
+  padding: 20px;
 
   :global {
     .SimpleFormField_label {
@@ -55,10 +55,17 @@
   }
 }
 
-.deleteWalletButton {
+.actionButtons {
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   margin-bottom: 10px;
+
+  .exportLink {
+    color: var(--theme-bordered-box-text-color);
+    cursor: pointer;
+    font-family: var(--font-medium);
+    font-size: 16px;
+  }
 }
 
 .error {

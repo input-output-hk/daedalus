@@ -3,7 +3,11 @@ import { observable, action } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import environment from '../environment';
-import type { NextUpdateResponse, ApplyUpdateResponse } from '../api';
+import type {
+  NextUpdateResponse,
+  PostponeUpdateResponse,
+  ApplyUpdateResponse,
+} from '../api';
 
 export default class NodeUpdateStore extends Store {
 
@@ -14,8 +18,13 @@ export default class NodeUpdateStore extends Store {
   @observable isNotificationExpanded = false;
   @observable isUpdateInstalled = false;
   @observable updateVersion = null;
+
+  // REQUESTS
+  /* eslint-disable max-len */
   @observable nextUpdateRequest: Request<NextUpdateResponse> = new Request(this.api.nextUpdate);
+  @observable postponeUpdateRequest: Request<PostponeUpdateResponse> = new Request(this.api.postponeUpdate);
   @observable applyUpdateRequest: Request<ApplyUpdateResponse> = new Request(this.api.applyUpdate);
+  /* eslint-disable max-len */
 
   setup() {
     const actions = this.actions.nodeUpdate;
@@ -40,6 +49,7 @@ export default class NodeUpdateStore extends Store {
   };
 
   @action _postponeNodeUpdate = () => {
+    this.postponeUpdateRequest.execute();
     this.isUpdatePostponed = true;
   };
 
