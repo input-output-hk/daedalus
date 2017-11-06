@@ -12,7 +12,6 @@ import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.
 import cardanoLogoWhite from '../../assets/images/cardano-logo-white.inline.svg';
 import styles from './Loading.scss';
 
-
 const messages = defineMessages({
   connecting: {
     id: 'loading.screen.connectingToNetworkMessage',
@@ -129,4 +128,5 @@ export default class Loading extends Component {
       </div>
     );
   }
+
 }

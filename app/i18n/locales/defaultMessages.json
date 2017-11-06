@@ -2,184 +2,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!This API method is not yet implemented.",
-        "description": "\"This API method is not yet implemented.\" error message.",
-        "end": {
-          "column": 3,
-          "line": 9
-        },
-        "file": "app/api/ada/errors.js",
-        "id": "api.errors.ApiMethodNotYetImplementedError",
-        "start": {
-          "column": 35,
-          "line": 5
-        }
-      },
-      {
-        "defaultMessage": "!!!Wallet you are trying to import already exists.",
-        "description": "\"Wallet you are trying to import already exists.\" error message.",
-        "end": {
-          "column": 3,
-          "line": 14
-        },
-        "file": "app/api/ada/errors.js",
-        "id": "api.errors.WalletAlreadyImportedError",
-        "start": {
-          "column": 30,
-          "line": 10
-        }
-      },
-      {
-        "defaultMessage": "!!!Wallet you are trying to restore already exists.",
-        "description": "\"Wallet you are trying to restore already exists.\" error message.",
-        "end": {
-          "column": 3,
-          "line": 19
-        },
-        "file": "app/api/ada/errors.js",
-        "id": "api.errors.WalletAlreadyRestoredError",
-        "start": {
-          "column": 30,
-          "line": 15
-        }
-      },
-      {
-        "defaultMessage": "!!!Your ADA could not be redeemed correctly.",
-        "description": "\"Your ADA could not be redeemed correctly.\" error message.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "app/api/ada/errors.js",
-        "id": "api.errors.RedeemAdaError",
-        "start": {
-          "column": 18,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!Wallet could not be imported, please make sure you are providing a correct file.",
-        "description": "\"Wallet could not be imported, please make sure you are providing a correct file.\" error message.",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "app/api/ada/errors.js",
-        "id": "api.errors.WalletFileImportError",
-        "start": {
-          "column": 25,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Not enough money to make this transaction.",
-        "description": "\"Not enough money to make this transaction.\" error message.",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "app/api/ada/errors.js",
-        "id": "api.errors.NotEnoughMoneyToSendError",
-        "start": {
-          "column": 29,
-          "line": 30
-        }
-      },
-      {
-        "defaultMessage": "!!!It's not allowed to send money to the same address you are sending from. Make sure you have enough addresses with money in this account or send to a different address.",
-        "description": "\"It's not allowed to send money to the same address you are sending from.\" error message.",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "app/api/ada/errors.js",
-        "id": "api.errors.NotAllowedToSendMoneyToSameAddressError",
-        "start": {
-          "column": 43,
-          "line": 35
-        }
-      },
-      {
-        "defaultMessage": "!!!It is not allowed to send money to Ada redemption address.",
-        "description": "\"It is not allowed to send money to Ada redemption address.\" error message.",
-        "end": {
-          "column": 3,
-          "line": 44
-        },
-        "file": "app/api/ada/errors.js",
-        "id": "api.errors.NotAllowedToSendMoneyToRedeemAddressError",
-        "start": {
-          "column": 45,
-          "line": 40
-        }
-      },
-      {
-        "defaultMessage": "!!!All your funds are already at the address you are trying send money to.",
-        "description": "\"All your funds are already at the address you are trying send money to.\" error message.",
-        "end": {
-          "column": 3,
-          "line": 49
-        },
-        "file": "app/api/ada/errors.js",
-        "id": "api.errors.AllFundsAlreadyAtReceiverAddressError",
-        "start": {
-          "column": 41,
-          "line": 45
-        }
-      },
-      {
-        "defaultMessage": "!!!Not enough Ada for fees. Try sending a smaller amount.",
-        "description": "\"Not enough Ada for fees. Try sending a smaller amount.\" error message",
-        "end": {
-          "column": 3,
-          "line": 54
-        },
-        "file": "app/api/ada/errors.js",
-        "id": "api.errors.NotEnoughFundsForTransactionFeesError",
-        "start": {
-          "column": 41,
-          "line": 50
-        }
-      },
-      {
-        "defaultMessage": "!!!Incorrect wallet password.",
-        "description": "\"Incorrect wallet password.\" error message.",
-        "end": {
-          "column": 3,
-          "line": 59
-        },
-        "file": "app/api/ada/errors.js",
-        "id": "api.errors.IncorrectPasswordError",
-        "start": {
-          "column": 32,
-          "line": 55
-        }
-      }
-    ],
-    "path": "app/api/ada/errors.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!An error occurred, please try again later.",
-        "description": "Generic error message.",
-        "end": {
-          "column": 3,
-          "line": 9
-        },
-        "file": "app/api/common.js",
-        "id": "api.errors.GenericApiError",
-        "start": {
-          "column": 19,
-          "line": 5
-        }
-      }
-    ],
-    "path": "app/api/common.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!An error occurred, please try again later.",
         "description": "Generic error message.",
         "end": {
@@ -357,13 +179,13 @@
         "description": "Message \"Connecting to network\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 20
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.connectingToNetworkMessage",
         "start": {
           "column": 14,
-          "line": 17
+          "line": 16
         }
       },
       {
@@ -371,13 +193,13 @@
         "description": "Message \"Connected - waiting for block syncing to start\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 25
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.waitingForSyncToStart",
         "start": {
           "column": 25,
-          "line": 22
+          "line": 21
         }
       },
       {
@@ -385,13 +207,13 @@
         "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 30
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 27
+          "line": 26
         }
       },
       {
@@ -399,13 +221,13 @@
         "description": "Message \"Syncing blocks\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 35
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.syncingBlocksMessage",
         "start": {
           "column": 11,
-          "line": 32
+          "line": 31
         }
       },
       {
@@ -413,13 +235,13 @@
         "description": "Message \"Loading wallet data\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 40
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
-          "line": 37
+          "line": 36
         }
       }
     ],
@@ -870,95 +692,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!slot",
-        "description": "\"slot\" label on staking chart tooltip.",
-        "end": {
-          "column": 3,
-          "line": 16
-        },
-        "file": "app/components/staking/StakingChartTooltip.js",
-        "id": "staking.chart.tooltip.slot.label",
-        "start": {
-          "column": 8,
-          "line": 12
-        }
-      },
-      {
-        "defaultMessage": "!!!transactions",
-        "description": "\"transactions\" label on staking chart tooltip.",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "app/components/staking/StakingChartTooltip.js",
-        "id": "staking.chart.tooltip.transactions.label",
-        "start": {
-          "column": 16,
-          "line": 17
-        }
-      },
-      {
-        "defaultMessage": "!!!MPC phase",
-        "description": "\"MPC phase\" label on staking chart tooltip.",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "app/components/staking/StakingChartTooltip.js",
-        "id": "staking.chart.tooltip.mpc.phase.label",
-        "start": {
-          "column": 12,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!commitments",
-        "description": "\"commitments\" label on staking chart tooltip.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "app/components/staking/StakingChartTooltip.js",
-        "id": "staking.chart.tooltip.commitments.label",
-        "start": {
-          "column": 15,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!openings",
-        "description": "\"openings\" label on staking chart tooltip.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "app/components/staking/StakingChartTooltip.js",
-        "id": "staking.chart.tooltip.openings.label",
-        "start": {
-          "column": 12,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!shares",
-        "description": "\"shares\" label on staking chart tooltip.",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "app/components/staking/StakingChartTooltip.js",
-        "id": "staking.chart.tooltip.shares.label",
-        "start": {
-          "column": 10,
-          "line": 37
-        }
-      }
-    ],
-    "path": "app/components/staking/StakingChartTooltip.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!About Daedalus",
         "description": "About Window \"title\"",
         "end": {
@@ -1086,53 +819,6 @@
       }
     ],
     "path": "app/components/static/About.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Daedalus Sync Error",
-        "description": "Title of Sync error overlay",
-        "end": {
-          "column": 3,
-          "line": 16
-        },
-        "file": "app/components/sync-error/SyncErrorOverlay.js",
-        "id": "sync.error.overlayTitle",
-        "start": {
-          "column": 16,
-          "line": 12
-        }
-      },
-      {
-        "defaultMessage": "!!!ATTENTION: Time of your machine is different from global time. You are 2 hours 12 minutes 54 seconds behind. You need to fix issue, because you are gonna be unable to sync system!",
-        "description": "Text of Sync error overlay",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "app/components/sync-error/SyncErrorOverlay.js",
-        "id": "sync.error.overlayText",
-        "start": {
-          "column": 15,
-          "line": 17
-        }
-      },
-      {
-        "defaultMessage": "!!!See problem solutions",
-        "description": "Button label of Sync error overlay",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "app/components/sync-error/SyncErrorOverlay.js",
-        "id": "sync.error.overlayButtonLabel",
-        "start": {
-          "column": 15,
-          "line": 22
-        }
-      }
-    ],
-    "path": "app/components/sync-error/SyncErrorOverlay.json"
   },
   {
     "descriptors": [
@@ -2008,221 +1694,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Paper wallet import",
-        "description": "Label \"Paper wallet import\" on the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 25
-        },
-        "file": "app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.title.label",
-        "start": {
-          "column": 9,
-          "line": 21
-        }
-      },
-      {
-        "defaultMessage": "!!!Private key",
-        "description": "Label for the wallet private key input on the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 30
-        },
-        "file": "app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.wallet.privateKey.input.label",
-        "start": {
-          "column": 24,
-          "line": 26
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter private key",
-        "description": "Hint \"Enter private key\" for the wallet private key input on the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 35
-        },
-        "file": "app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.wallet.privateKey.input.hint",
-        "start": {
-          "column": 23,
-          "line": 31
-        }
-      },
-      {
-        "defaultMessage": "!!!Mnemonic phrase",
-        "description": "Label for the mnemonic phrase input on the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 40
-        },
-        "file": "app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.mnemonic.phrase.input.label",
-        "start": {
-          "column": 28,
-          "line": 36
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter mnemonic phrase",
-        "description": "Hint \"Enter mnemonic phrase\" for the mnemonic phrase input on the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 45
-        },
-        "file": "app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.mnemonic.phrase.input.hint",
-        "start": {
-          "column": 27,
-          "line": 41
-        }
-      },
-      {
-        "defaultMessage": "!!!Wallet name",
-        "description": "Label for the wallet name input on the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 50
-        },
-        "file": "app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.wallet.name.input.label",
-        "start": {
-          "column": 24,
-          "line": 46
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter wallet name",
-        "description": "Hint \"Enter wallet name\" for the wallet name input on the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 55
-        },
-        "file": "app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.wallet.name.input.hint",
-        "start": {
-          "column": 23,
-          "line": 51
-        }
-      },
-      {
-        "defaultMessage": "!!!Import wallet",
-        "description": "Label for the \"Import wallet\" button on the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 60
-        },
-        "file": "app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.import.wallet.button.label",
-        "start": {
-          "column": 21,
-          "line": 56
-        }
-      },
-      {
-        "defaultMessage": "!!!Invalid mnemonic phrase",
-        "description": "Error message shown when invalid mnemonic phrase was entered.",
-        "end": {
-          "column": 3,
-          "line": 65
-        },
-        "file": "app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.form.errors.invalidMnemonicPhrase",
-        "start": {
-          "column": 25,
-          "line": 61
-        }
-      },
-      {
-        "defaultMessage": "!!!Invalid private key",
-        "description": "Error message shown when invalid private key was entered.",
-        "end": {
-          "column": 3,
-          "line": 70
-        },
-        "file": "app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.form.errors.invalidPrivateKey",
-        "start": {
-          "column": 21,
-          "line": 66
-        }
-      },
-      {
-        "defaultMessage": "!!!Password",
-        "description": "Label for the \"Activate to create password\" switch in the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 75
-        },
-        "file": "app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.passwordSwitchLabel",
-        "start": {
-          "column": 23,
-          "line": 71
-        }
-      },
-      {
-        "defaultMessage": "!!!Activate to create password",
-        "description": "Text for the \"Activate to create password\" switch in the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 80
-        },
-        "file": "app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.passwordSwitchPlaceholder",
-        "start": {
-          "column": 29,
-          "line": 76
-        }
-      },
-      {
-        "defaultMessage": "!!!Wallet password",
-        "description": "Label for the \"Wallet password\" input in the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 85
-        },
-        "file": "app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.walletPasswordLabel",
-        "start": {
-          "column": 23,
-          "line": 81
-        }
-      },
-      {
-        "defaultMessage": "!!!Repeat password",
-        "description": "Label for the \"Repeat password\" input in the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 90
-        },
-        "file": "app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.repeatPasswordLabel",
-        "start": {
-          "column": 23,
-          "line": 86
-        }
-      },
-      {
-        "defaultMessage": "!!!Password",
-        "description": "Placeholder for the \"Password\" inputs in the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 95
-        },
-        "file": "app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.passwordFieldPlaceholder",
-        "start": {
-          "column": 28,
-          "line": 91
-        }
-      }
-    ],
-    "path": "app/components/wallet/PaperWalletImportDialog.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Password",
         "description": "Title for the \"Change wallet password\" dialog when there is no password set.",
         "end": {
@@ -2820,25 +2291,6 @@
       }
     ],
     "path": "app/components/wallet/transactions/WalletTransactionsList.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Search transaction",
-        "description": "Hint in the transactions search box.",
-        "end": {
-          "column": 3,
-          "line": 13
-        },
-        "file": "app/components/wallet/transactions/WalletTransactionsSearch.js",
-        "id": "wallet.transactions.search.hint",
-        "start": {
-          "column": 14,
-          "line": 9
-        }
-      }
-    ],
-    "path": "app/components/wallet/transactions/WalletTransactionsSearch.json"
   },
   {
     "descriptors": [
@@ -3835,39 +3287,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Drop file here",
-        "description": "Label \"Drop file here\" on the file upload widget.",
-        "end": {
-          "column": 3,
-          "line": 12
-        },
-        "file": "app/components/widgets/forms/ImageUploadWidget.js",
-        "id": "ImageUploadWidget.dropFileHint",
-        "start": {
-          "column": 16,
-          "line": 8
-        }
-      },
-      {
-        "defaultMessage": "!!!or click to upload",
-        "description": "Label \"or click to upload\" on the file upload widget.",
-        "end": {
-          "column": 3,
-          "line": 17
-        },
-        "file": "app/components/widgets/forms/ImageUploadWidget.js",
-        "id": "ImageUploadWidget.clickToUploadLabel",
-        "start": {
-          "column": 19,
-          "line": 13
-        }
-      }
-    ],
-    "path": "app/components/widgets/forms/ImageUploadWidget.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Your changes have been saved",
         "description": "Message \"Your changes have been saved\" for inline editing (eg. on Wallet Settings page).",
         "end": {
@@ -4197,44 +3616,6 @@
       }
     ],
     "path": "app/components/widgets/WalletTestEnvironmentLabel.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Loading account data",
-        "description": "Message \"Loading account data\" on the etc loading screen.",
-        "end": {
-          "column": 3,
-          "line": 15
-        },
-        "file": "app/containers/etc/LoadingPage.js",
-        "id": "loading.screen.etc.loadingAccountData",
-        "start": {
-          "column": 22,
-          "line": 11
-        }
-      }
-    ],
-    "path": "app/containers/etc/LoadingPage.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Loading wallet data",
-        "description": "Message \"Loading wallet data\" on the ada loading screen.",
-        "end": {
-          "column": 3,
-          "line": 16
-        },
-        "file": "app/containers/LoadingPage.js",
-        "id": "loading.screen.ada.loadingWalletData",
-        "start": {
-          "column": 21,
-          "line": 12
-        }
-      }
-    ],
-    "path": "app/containers/LoadingPage.json"
   },
   {
     "descriptors": [
@@ -4675,178 +4056,5 @@
       }
     ],
     "path": "app/i18n/global-messages.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Terms of Use",
-        "description": "Terms of use title",
-        "end": {
-          "column": 3,
-          "line": 8
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.label",
-        "start": {
-          "column": 9,
-          "line": 4
-        }
-      },
-      {
-        "defaultMessage": "!!!First paragraph quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore some link aliquam quaerat voluptatem.",
-        "description": "Terms of use first paragraph",
-        "end": {
-          "column": 3,
-          "line": 13
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.firstParagraph",
-        "start": {
-          "column": 18,
-          "line": 9
-        }
-      },
-      {
-        "defaultMessage": "!!!Second paragraph ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?",
-        "description": "Terms of use second paragraph",
-        "end": {
-          "column": 3,
-          "line": 18
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.secondParagraph",
-        "start": {
-          "column": 19,
-          "line": 14
-        }
-      },
-      {
-        "defaultMessage": "!!!1. Numbered title",
-        "description": "Terms of use first numbered title",
-        "end": {
-          "column": 3,
-          "line": 23
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.firstNumberedTitle",
-        "start": {
-          "column": 22,
-          "line": 19
-        }
-      },
-      {
-        "defaultMessage": "!!!2. Numbered title",
-        "description": "Terms of use second numbered title",
-        "end": {
-          "column": 3,
-          "line": 28
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.secondNumberedTitle",
-        "start": {
-          "column": 23,
-          "line": 24
-        }
-      },
-      {
-        "defaultMessage": "!!!1.1 Sub-title name.",
-        "description": "Terms of use first subtitle",
-        "end": {
-          "column": 3,
-          "line": 33
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.firstSubtitle",
-        "start": {
-          "column": 17,
-          "line": 29
-        }
-      },
-      {
-        "defaultMessage": "!!!1.2 Sub-title name.",
-        "description": "Terms of use second subtitle",
-        "end": {
-          "column": 3,
-          "line": 38
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.secondSubtitle",
-        "start": {
-          "column": 18,
-          "line": 34
-        }
-      },
-      {
-        "defaultMessage": "!!!2.1 Sub-title name.",
-        "description": "Terms of use third subtitle",
-        "end": {
-          "column": 3,
-          "line": 43
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.thirdSubtitle",
-        "start": {
-          "column": 17,
-          "line": 39
-        }
-      },
-      {
-        "defaultMessage": "!!!At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.",
-        "description": "Terms of use first list text",
-        "end": {
-          "column": 3,
-          "line": 48
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.firstListText",
-        "start": {
-          "column": 17,
-          "line": 44
-        }
-      },
-      {
-        "defaultMessage": "!!!Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.",
-        "description": "Terms of use second list text",
-        "end": {
-          "column": 3,
-          "line": 53
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.secondListText",
-        "start": {
-          "column": 18,
-          "line": 49
-        }
-      },
-      {
-        "defaultMessage": "!!!At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa... and so on...",
-        "description": "Terms of use third list text",
-        "end": {
-          "column": 3,
-          "line": 58
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.thirdListText",
-        "start": {
-          "column": 17,
-          "line": 54
-        }
-      },
-      {
-        "defaultMessage": "!!!Last paragraph quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore some link aliquam quaerat voluptatem.",
-        "description": "Terms of use last paragraph",
-        "end": {
-          "column": 3,
-          "line": 63
-        },
-        "file": "app/i18n/termsOfUse.js",
-        "id": "termsOfUse.lastParagraph",
-        "start": {
-          "column": 17,
-          "line": 59
-        }
-      }
-    ],
-    "path": "app/i18n/termsOfUse.json"
   }
 ]

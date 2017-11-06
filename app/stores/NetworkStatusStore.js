@@ -121,7 +121,8 @@ export default class NetworkStatusStore extends Store {
     return (
       !this.isConnecting &&
       this.hasBlockSyncingStarted &&
-      this.relativeSyncBlocksDifference <= OUT_OF_SYNC_BLOCKS_LIMIT
+      this.relativeSyncBlocksDifference <= OUT_OF_SYNC_BLOCKS_LIMIT &&
+      this.isSystemTimeCorrect
     );
   }
 
