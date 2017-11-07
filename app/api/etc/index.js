@@ -40,8 +40,8 @@ import { getEtcEstimatedGas } from './getEtcEstimatedGas';
  * mantis client which is used as backend for ETC blockchain.
  */
 
-export const ETC_API_HOST = 'ec2-52-30-28-57.eu-west-1.compute.amazonaws.com';
-// export const ETC_API_HOST = '127.0.0.1';
+// export const ETC_API_HOST = 'ec2-52-30-28-57.eu-west-1.compute.amazonaws.com';
+export const ETC_API_HOST = '127.0.0.1';
 export const ETC_API_PORT = 8546;
 
 export type GetWalletsResponse = Array<Wallet>;
