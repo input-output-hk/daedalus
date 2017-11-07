@@ -16,7 +16,6 @@ import { Logger, stringifyData, stringifyError } from '../../utils/logging';
 import Wallet from '../../domain/Wallet';
 import WalletTransaction from '../../domain/WalletTransaction';
 import WalletAddress from '../../domain/WalletAddress';
-import type { GetSyncProgressResponse, GetWalletRecoveryPhraseResponse } from '../common';
 import { GenericApiError, IncorrectWalletPasswordError } from '../common';
 import {
   AllFundsAlreadyAtReceiverAddressError,
@@ -34,6 +33,11 @@ import { getAdaSyncProgress } from './getAdaSyncProgress';
 import environment from '../../environment';
 import patchAdaApi from './mocks/patchAdaApi';
 // import { makePayment } from './js-api/makePayment';
+import type {
+  GetSyncProgressResponse,
+  GetWalletRecoveryPhraseResponse,
+  GetTransactionsResponse
+} from '../common';
 
 /**
  * The api layer that is used for all requests to the
@@ -61,10 +65,6 @@ export type GetTransactionsRequest = {
   searchTerm: string,
   skip: number,
   limit: number,
-};
-export type GetTransactionsResponse = {
-  transactions: Array<WalletTransaction>,
-  total: number,
 };
 export type CreateWalletRequest = {
   name: string,

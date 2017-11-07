@@ -7,6 +7,7 @@ import WalletNoTransactions from '../../../components/wallet/transactions/Wallet
 import VerticalFlexContainer from '../../../components/layout/VerticalFlexContainer';
 import { DECIMAL_PLACES_IN_ETC } from '../../../config/numbersConfig';
 import type { InjectedProps } from '../../../types/injectedPropsType';
+import WalletTransactionsList from '../../../components/wallet/transactions/WalletTransactionsList';
 
 const messages = defineMessages({
   noTransactions: {
@@ -28,14 +29,35 @@ export default class WalletSummaryPage extends Component {
 
   render() {
     const { intl } = this.context;
-    const { wallets } = this.props.stores.etc;
+    const { wallets, transactions } = this.props.stores.etc;
+    const {
+      hasAny,
+      recent,
+      recentTransactionsRequest,
+    } = transactions;
     const wallet = wallets.active;
 
     // Guard against potential null values
     if (!wallet) throw new Error('Active wallet required for WalletSummaryPage.');
 
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
-    const walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
+    let walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
+
+    if (recentTransactionsRequest.isExecutingFirstTime || hasAny) {
+      walletTransactions = (
+        <WalletTransactionsList
+          key={`WalletTransactionsList_${wallet.id}`}
+          transactions={recent}
+          isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
+          hasMoreToLoad={false}
+          onLoadMore={() => {}}
+          assuranceMode={wallet.assuranceMode}
+          walletId={wallet.id}
+        />
+      );
+    } else if (!hasAny) {
+      walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
+    }
 
     // Format wallet amount into Integer and Decimal part
     const amount = wallet.amount.toFormat(DECIMAL_PLACES_IN_ETC);

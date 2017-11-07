@@ -1,5 +1,5 @@
 // @flow
-import { observable } from 'mobx';
+import { observable, runInAction, action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import WalletStore from '../WalletStore';
 import Request from '.././lib/LocalizedRequest';
@@ -11,6 +11,7 @@ import type {
 import type { SendEtcTransactionResponse } from '../../api/etc/sendEtcTransaction';
 import type { GetWalletRecoveryPhraseResponse } from '../../api/common';
 import { ETC_DEFAULT_GAS_PRICE } from '../../config/numbersConfig';
+import Wallet from '../../domain/Wallet';
 
 export default class EtcWalletsStore extends WalletStore {
 

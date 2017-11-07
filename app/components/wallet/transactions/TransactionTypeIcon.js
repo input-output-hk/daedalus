@@ -2,10 +2,10 @@
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import SvgInline from 'react-svg-inline';
-import expendIcon from '../../assets/images/wallet-nav/send-ic.inline.svg';
-import incomeIcon from '../../assets/images/wallet-nav/receive-ic.inline.svg';
-import exchangeIcon from '../../assets/images/exchange-ic.inline.svg';
-import failedIcon from '../../assets/images/wallet-nav/deny-ic.inline.svg';
+import expendIcon from '../../../assets/images/wallet-nav/send-ic.inline.svg';
+import incomeIcon from '../../../assets/images/wallet-nav/receive-ic.inline.svg';
+import exchangeIcon from '../../../assets/images/exchange-ic.inline.svg';
+import failedIcon from '../../../assets/images/wallet-nav/deny-ic.inline.svg';
 import styles from './TransactionTypeIcon.scss';
 
 export default class TransactionTypeIcon extends Component {

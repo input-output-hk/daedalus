@@ -19,16 +19,22 @@ import {
   getEtcWalletData, setEtcWalletData, unsetEtcWalletData, updateEtcWalletData,
   initEtcWalletsDummyData,
 } from './etcLocalStorage';
+import { ETC_DEFAULT_GAS_PRICE, WEI_PER_ETC } from '../../config/numbersConfig';
+import { getEtcEstimatedGas } from './getEtcEstimatedGas';
+import { getEtcTransactionsForAccount } from './getEtcTransactions';
 import WalletTransaction from '../../domain/WalletTransaction';
-import type { GetSyncProgressResponse, GetWalletRecoveryPhraseResponse } from '../common';
+import type {
+  GetSyncProgressResponse,
+  GetWalletRecoveryPhraseResponse,
+  GetTransactionsResponse,
+} from '../common';
 import type { GetEtcSyncProgressResponse } from './getEtcSyncProgress';
 import type { GetEtcAccountsResponse } from './getEtcAccounts';
 import type { GetEtcAccountBalanceResponse } from './getEtcAccountBalance';
 import type { CreateEtcAccountResponse } from './createEtcAccount';
 import type { SendEtcTransactionParams, SendEtcTransactionResponse } from './sendEtcTransaction';
 import type { GetEtcTransactionByHashResponse } from './getEtcTransaction';
-import { ETC_DEFAULT_GAS_PRICE, WEI_PER_ETC } from '../../config/numbersConfig';
-import { getEtcEstimatedGas } from './getEtcEstimatedGas';
+import type { GetEtcTransactionsParams, GetEtcTransactionsResponse } from './getEtcTransactions';
 
 // Load Dummy ETC Wallets into Local Storage
 (async () => {
@@ -136,6 +142,50 @@ export default class EtcApi {
       return quantityToBigNumber(response).dividedBy(WEI_PER_ETC);
     } catch (error) {
       Logger.error('EtcApi::getAccountBalance error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  getTransactions = async (params: GetEtcTransactionsParams): Promise<GetTransactionsResponse> => {
+    Logger.debug('EtcApi::getTransactions called: ' + stringifyData(params));
+    try {
+      // const transactions: GetEtcTransactionsResponse = await getEtcTransactionsForAccount(params);
+      // Logger.debug('EtcApi::getTransactions success: ' + stringifyData(transactions));
+      return {
+        transactions: [
+          new WalletTransaction({
+            id: 'test-transaction-1',
+            type: 'income',
+            title: '',
+            description: '',
+            amount: new BigNumber(1),
+            date: new Date(),
+            numberOfConfirmations: 0,
+            addresses: {
+              from: ['tx-from-1'],
+              to: ['tx-to-2'],
+            },
+            condition: 'CPtxInBlocks',
+          }),
+          new WalletTransaction({
+            id: 'test-transaction-2',
+            type: 'expend',
+            title: '',
+            description: '',
+            amount: new BigNumber(1),
+            date: new Date(),
+            numberOfConfirmations: 0,
+            addresses: {
+              from: ['tx-from-2'],
+              to: ['tx-to-2'],
+            },
+            condition: 'CPtxInBlocks',
+          })
+        ],
+        total: 1,
+      };
+    } catch (error) {
+      Logger.error('EtcApi::getTransactions error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
