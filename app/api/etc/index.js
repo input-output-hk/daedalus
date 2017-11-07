@@ -3,7 +3,10 @@ import BigNumber from 'bignumber.js';
 import { isAddress } from 'web3-utils/src/utils';
 import { getEtcSyncProgress } from './getEtcSyncProgress';
 import { Logger, stringifyData, stringifyError } from '../../utils/logging';
-import { GenericApiError, IncorrectWalletPasswordError } from '../common';
+import {
+  GenericApiError, IncorrectWalletPasswordError,
+  WalletAlreadyRestoredError,
+} from '../common';
 import { getEtcAccounts } from './getEtcAccounts';
 import { getEtcAccountBalance } from './getEtcAccountBalance';
 import { getEtcAccountRecoveryPhrase } from './getEtcAccountRecoveryPhrase';
@@ -258,6 +261,9 @@ export default class EtcApi {
       return new Wallet({ id, name, amount, assurance, hasPassword, passwordUpdateDate });
     } catch (error) {
       Logger.error('EtcApi::restoreWallet error: ' + stringifyError(error));
+      if (error.message.includes('account already exists')) {
+        throw new WalletAlreadyRestoredError();
+      }
       throw new GenericApiError();
     }
   }
