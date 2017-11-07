@@ -13,6 +13,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Incorrect wallet password.',
     description: '"Incorrect wallet password." error message.'
   },
+  walletAlreadyRestoredError: {
+    id: 'api.errors.WalletAlreadyRestoredError',
+    defaultMessage: '!!!Wallet you are trying to restore already exists.',
+    description: '"Wallet you are trying to restore already exists." error message.'
+  },
 });
 
 export class GenericApiError extends LocalizableError {
@@ -29,6 +34,15 @@ export class IncorrectWalletPasswordError extends LocalizableError {
     super({
       id: messages.incorrectWalletPasswordError.id,
       defaultMessage: messages.incorrectWalletPasswordError.defaultMessage,
+    });
+  }
+}
+
+export class WalletAlreadyRestoredError extends LocalizableError {
+  constructor() {
+    super({
+      id: messages.walletAlreadyRestoredError.id,
+      defaultMessage: messages.walletAlreadyRestoredError.defaultMessage,
     });
   }
 }

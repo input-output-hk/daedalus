@@ -3,7 +3,10 @@ import BigNumber from 'bignumber.js';
 import { isAddress } from 'web3-utils/src/utils';
 import { getEtcSyncProgress } from './getEtcSyncProgress';
 import { Logger, stringifyData, stringifyError } from '../../utils/logging';
-import { GenericApiError, IncorrectWalletPasswordError } from '../common';
+import {
+  GenericApiError, IncorrectWalletPasswordError,
+  WalletAlreadyRestoredError,
+} from '../common';
 import { getEtcAccounts } from './getEtcAccounts';
 import { getEtcAccountBalance } from './getEtcAccountBalance';
 import { getEtcAccountRecoveryPhrase } from './getEtcAccountRecoveryPhrase';
@@ -46,8 +49,8 @@ import type { GetEtcTransactionsParams, GetEtcTransactionsResponse } from './get
  * mantis client which is used as backend for ETC blockchain.
  */
 
-export const ETC_API_HOST = 'ec2-52-30-28-57.eu-west-1.compute.amazonaws.com';
-// export const ETC_API_HOST = '127.0.0.1';
+// export const ETC_API_HOST = 'ec2-52-30-28-57.eu-west-1.compute.amazonaws.com';
+export const ETC_API_HOST = '127.0.0.1';
 export const ETC_API_PORT = 8546;
 
 export type GetWalletsResponse = Array<Wallet>;
@@ -308,6 +311,9 @@ export default class EtcApi {
       return new Wallet({ id, name, amount, assurance, hasPassword, passwordUpdateDate });
     } catch (error) {
       Logger.error('EtcApi::restoreWallet error: ' + stringifyError(error));
+      if (error.message.includes('account already exists')) {
+        throw new WalletAlreadyRestoredError();
+      }
       throw new GenericApiError();
     }
   }
