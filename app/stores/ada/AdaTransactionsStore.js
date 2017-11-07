@@ -4,11 +4,9 @@ import BigNumber from 'bignumber.js';
 import type { UnconfirmedAmount } from '../../types/unconfirmedAmountType';
 import { isValidAmountInLovelaces } from '../../utils/validations';
 import TransactionsStore from '../TransactionsStore';
+import { transactionTypes } from '../../domain/WalletTransaction';
 
 export default class AdaTransactionsStore extends TransactionsStore {
-
-  OUTGOING_TRANSACTION_TYPE = 'expend';
-  INCOMING_TRANSACTION_TYPE = 'income';
 
   @computed get unconfirmedAmount(): UnconfirmedAmount {
     const unconfirmedAmount = {
@@ -25,12 +23,12 @@ export default class AdaTransactionsStore extends TransactionsStore {
       // TODO: move this magic constant (required numberOfConfirmations) to config!
       if (transaction.numberOfConfirmations <= 6) {
         unconfirmedAmount.total = unconfirmedAmount.total.plus(transaction.amount.absoluteValue());
-        if (transaction.type === this.OUTGOING_TRANSACTION_TYPE) {
+        if (transaction.type === transactionTypes.EXPEND) {
           unconfirmedAmount.outgoing = unconfirmedAmount.outgoing.plus(
             transaction.amount.absoluteValue()
           );
         }
-        if (transaction.type === this.INCOMING_TRANSACTION_TYPE) {
+        if (transaction.type === transactionTypes.INCOME) {
           unconfirmedAmount.incoming = unconfirmedAmount.incoming.plus(
             transaction.amount.absoluteValue()
           );

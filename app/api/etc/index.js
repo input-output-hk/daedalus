@@ -25,10 +25,11 @@ import {
 import { ETC_DEFAULT_GAS_PRICE, WEI_PER_ETC } from '../../config/numbersConfig';
 import { getEtcEstimatedGas } from './getEtcEstimatedGas';
 import { getEtcTransactionsForAccount } from './getEtcTransactions';
-import WalletTransaction from '../../domain/WalletTransaction';
+import WalletTransaction, { transactionStates, transactionTypes } from '../../domain/WalletTransaction';
 import type {
   GetSyncProgressResponse,
   GetWalletRecoveryPhraseResponse,
+  GetTransactionsParams,
   GetTransactionsResponse,
 } from '../common';
 import type { GetEtcSyncProgressResponse } from './getEtcSyncProgress';
@@ -37,7 +38,9 @@ import type { GetEtcAccountBalanceResponse } from './getEtcAccountBalance';
 import type { CreateEtcAccountResponse } from './createEtcAccount';
 import type { SendEtcTransactionParams, SendEtcTransactionResponse } from './sendEtcTransaction';
 import type { GetEtcTransactionByHashResponse } from './getEtcTransaction';
-import type { GetEtcTransactionsParams, GetEtcTransactionsResponse } from './getEtcTransactions';
+import type { GetEtcTransactionsResponse } from './getEtcTransactions';
+import type { EtcTransaction } from './types';
+import type { TransactionType } from '../../domain/WalletTransaction';
 
 // Load Dummy ETC Wallets into Local Storage
 (async () => {
@@ -149,43 +152,27 @@ export default class EtcApi {
     }
   }
 
-  getTransactions = async (params: GetEtcTransactionsParams): Promise<GetTransactionsResponse> => {
+  getTransactions = async (params: GetTransactionsParams): Promise<GetTransactionsResponse> => {
     Logger.debug('EtcApi::getTransactions called: ' + stringifyData(params));
     try {
-      // const transactions: GetEtcTransactionsResponse = await getEtcTransactionsForAccount(params);
-      // Logger.debug('EtcApi::getTransactions success: ' + stringifyData(transactions));
+      const transactions: GetEtcTransactionsResponse = await getEtcTransactionsForAccount({
+        accountAddress: params.walletId,
+      });
+      Logger.debug('EtcApi::getTransactions success: ' + stringifyData(transactions));
+      const receivedTxs = await Promise.all(
+        transactions.received.map(async (tx: EtcTransaction) => (
+          _createWalletTransactionFromServerData(transactionTypes.INCOME, tx)
+        ))
+      );
+      const sentTxs = await Promise.all(
+        transactions.sent.map(async (tx: EtcTransaction) => (
+          _createWalletTransactionFromServerData(transactionTypes.EXPEND, tx)
+        ))
+      );
+      const allTxs = receivedTxs.concat(sentTxs);
       return {
-        transactions: [
-          new WalletTransaction({
-            id: 'test-transaction-1',
-            type: 'income',
-            title: '',
-            description: '',
-            amount: new BigNumber(1),
-            date: new Date(),
-            numberOfConfirmations: 0,
-            addresses: {
-              from: ['tx-from-1'],
-              to: ['tx-to-2'],
-            },
-            condition: 'CPtxInBlocks',
-          }),
-          new WalletTransaction({
-            id: 'test-transaction-2',
-            type: 'expend',
-            title: '',
-            description: '',
-            amount: new BigNumber(1),
-            date: new Date(),
-            numberOfConfirmations: 0,
-            addresses: {
-              from: ['tx-from-2'],
-              to: ['tx-to-2'],
-            },
-            condition: 'CPtxInBlocks',
-          })
-        ],
-        total: 1,
+        transactions: allTxs,
+        total: allTxs.length,
       };
     } catch (error) {
       Logger.error('EtcApi::getTransactions error: ' + stringifyError(error));
@@ -341,22 +328,29 @@ export default class EtcApi {
   }
 }
 
-const _createTransaction = async (senderAccount: string, txHash: string) => {
-  const txData: GetEtcTransactionByHashResponse = await getEtcTransactionByHash(txHash);
+const _createWalletTransactionFromServerData = async (
+  type: TransactionType, txData: EtcTransaction
+) => {
   const txBlock = txData.blockHash ? await getEtcBlockByHash(txData.blockHash) : null;
   const blockDate = txBlock ? unixTimestampToDate(txBlock.timestamp) : new Date();
   return new WalletTransaction({
     id: txData.hash,
-    type: senderAccount === txData.from ? 'expend' : 'income',
+    type,
     title: '',
     description: '',
-    amount: quantityToBigNumber(txData.value),
+    amount: quantityToBigNumber(txData.value).dividedBy(WEI_PER_ETC),
     date: blockDate,
     numberOfConfirmations: 0,
     addresses: {
       from: [txData.from],
       to: [txData.to],
     },
-    condition: 'CPtxInBlocks',
+    state: txData.pending ? transactionStates.PENDING : transactionStates.OK,
   });
+};
+
+const _createTransaction = async (senderAccount: string, txHash: string) => {
+  const txData: GetEtcTransactionByHashResponse = await getEtcTransactionByHash(txHash);
+  const type = senderAccount === txData.from ? transactionTypes.EXPEND : transactionTypes.INCOME;
+  return _createWalletTransactionFromServerData(type, txData);
 };

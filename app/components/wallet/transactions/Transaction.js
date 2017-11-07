@@ -7,9 +7,8 @@ import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
 import etcSymbol from '../../../assets/images/etc-logo.inline.svg';
-import WalletTransaction, { transactionStates } from '../../../domain/WalletTransaction';
+import WalletTransaction, { transactionStates, transactionTypes } from '../../../domain/WalletTransaction';
 import { assuranceLevels } from '../../../config/transactionAssuranceConfig';
-import { DECIMAL_PLACES_IN_ADA, DECIMAL_PLACES_IN_ETC } from '../../../config/numbersConfig';
 import { environmentSpecificMessages } from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../domain/WalletTransaction';
 import environment from '../../../environment';
@@ -153,6 +152,8 @@ export default class Transaction extends Component {
     const currency = intl.formatMessage(environmentSpecificMessages[environment.API].currency);
     const symbol = environment.isAdaApi() ? adaSymbol : etcSymbol;
 
+    console.log(data.amount.toString());
+    
     return (
       <div className={componentStyles}>
 
@@ -165,7 +166,7 @@ export default class Transaction extends Component {
           <div className={styles.togglerContent}>
             <div className={styles.header}>
               <div className={styles.title}>
-                {data.type === 'expend' ?
+                {data.type === transactionTypes.EXPEND ?
                   intl.formatMessage(messages.sent, { currency }) :
                   intl.formatMessage(messages.received, { currency })
                 }

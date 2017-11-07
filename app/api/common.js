@@ -54,6 +54,13 @@ export type GetSyncProgressResponse = {
 
 export type GetWalletRecoveryPhraseResponse = Array<string>;
 
+export type GetTransactionsParams = {
+  walletId: string,
+  searchTerm: string,
+  skip: number,
+  limit: number,
+};
+
 export type GetTransactionsResponse = {
   transactions: Array<WalletTransaction>,
   total: number,

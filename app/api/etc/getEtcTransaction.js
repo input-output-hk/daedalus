@@ -1,20 +1,9 @@
 // @flow
 import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
+import type { EtcTransaction } from './types';
 
-export type GetEtcTransactionByHashResponse = {
-  hash: string,
-  nonce: string,
-  blockHash: string,
-  blockNumber: string,
-  transactionIndex: string,
-  from: string,
-  to: string,
-  value: string,
-  gasPrice: string,
-  gas: string,
-  input: string,
-};
+export type GetEtcTransactionByHashResponse = EtcTransaction;
 
 export const getEtcTransactionByHash = (
   txHash: string
