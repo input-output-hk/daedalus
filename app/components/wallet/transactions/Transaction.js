@@ -152,8 +152,6 @@ export default class Transaction extends Component {
     const currency = intl.formatMessage(environmentSpecificMessages[environment.API].currency);
     const symbol = environment.isAdaApi() ? adaSymbol : etcSymbol;
 
-    console.log(data.amount.toString());
-    
     return (
       <div className={componentStyles}>
 
