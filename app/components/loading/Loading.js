@@ -9,6 +9,7 @@ import daedalusLogoWhite from '../../assets/images/daedalus-logo-loading-white.i
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import styles from './Loading.scss';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
+import environment from '../../environment';
 
 const messages = defineMessages({
   connecting: {
@@ -71,8 +72,8 @@ export default class Loading extends Component {
       styles.daedalusLogo,
       isConnecting ? styles.connectingLogo : styles.syncingLogo,
     ]);
-    const cardanoLogoStyles = classNames([
-      styles.cardanoLogo,
+    const currencyLogoStyles = classNames([
+      styles[`${environment.API}-logo`],
       isConnecting ? styles.connectingLogo : styles.syncingLogo,
     ]);
 
@@ -82,7 +83,7 @@ export default class Loading extends Component {
 
     return (
       <div className={componentStyles}>
-        <SvgInline svg={currencyLoadingLogo} className={cardanoLogoStyles} />
+        <SvgInline svg={currencyLoadingLogo} className={currencyLogoStyles} />
         <SvgInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
         {hasLoadedCurrentLocale && (
           <div>

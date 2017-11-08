@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { Logger } from '../../../lib/logger';
+import { Logger } from '../../../utils/logging';
 import { RedeemAdaError } from '../errors';
 import CardanoClientApi from '../index';
 import type {

@@ -13,23 +13,24 @@ import ClientApi from 'daedalus-client-api';
 import { action } from 'mobx';
 import { ipcRenderer, remote } from 'electron';
 import BigNumber from 'bignumber.js';
-import { Logger, stringifyData, stringifyError } from '../../lib/logger';
+import { Logger, stringifyData, stringifyError } from '../../utils/logging';
 import Wallet from '../../domain/Wallet';
 import WalletTransaction from '../../domain/WalletTransaction';
 import WalletAddress from '../../domain/WalletAddress';
 import type { GetSyncProgressResponse, GetWalletRecoveryPhraseResponse } from '../common';
-import { GenericApiError } from '../common';
 import { isValidMnemonic } from '../../../lib/decrypt';
 import {
+  GenericApiError, IncorrectWalletPasswordError,
+  WalletAlreadyRestoredError,
+} from '../common';
+import {
   AllFundsAlreadyAtReceiverAddressError,
-  IncorrectWalletPasswordError,
   NotAllowedToSendMoneyToRedeemAddressError,
   NotAllowedToSendMoneyToSameAddressError,
   NotEnoughFundsForTransactionFeesError,
   NotEnoughMoneyToSendError,
   RedeemAdaError,
   WalletAlreadyImportedError,
-  WalletAlreadyRestoredError,
   WalletFileImportError,
 } from './errors';
 import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
@@ -67,10 +68,10 @@ import { getAdaAccountRecoveryPhrase } from './getAdaAccountRecoveryPhrase';
 
 const ca = remote.getGlobal('ca');
 
-export type GetWalletsResponse = Wallet[];
+export type GetWalletsResponse = Array<Wallet>;
 export type GetAddressesResponse = {
   accountId: ?string,
-  addresses: WalletAddress[],
+  addresses: Array<WalletAddress>,
 };
 export type GetAddressesRequest = {
   walletId: string,
@@ -87,7 +88,7 @@ export type GetTransactionsRequest = {
   limit: number,
 };
 export type GetTransactionsResponse = {
-  transactions: WalletTransaction[],
+  transactions: Array<WalletTransaction>,
   total: number,
 };
 export type CreateWalletRequest = {
@@ -107,7 +108,6 @@ export type CreateTransactionRequest = {
   password: ?string,
 };
 export type CreateTransactionResponse = WalletTransaction;
-
 export type RestoreWalletRequest = {
   recoveryPhrase: string,
   walletName: string,
@@ -376,6 +376,7 @@ export default class AdaApi {
   }
 
   isValidMnemonic(mnemonic: string): Promise<boolean> {
+    console.debug('isValidMnemonic: ', isValidMnemonic(mnemonic, 12));
     return isValidMnemonic(mnemonic, 12);
   }
 
@@ -732,7 +733,7 @@ const _createTransactionFromServerData = action(
     return new WalletTransaction({
       id: data.ctId,
       title: ctmTitle || data.ctIsOutgoing ? 'Ada sent' : 'Ada received',
-      type: data.ctIsOutgoing ? 'adaExpend' : 'adaIncome',
+      type: data.ctIsOutgoing ? 'expend' : 'income',
       amount: new BigNumber(data.ctIsOutgoing ? -1 * coins : coins).dividedBy(LOVELACES_PER_ADA),
       date: new Date(ctmDate * 1000),
       description: ctmDescription || '',

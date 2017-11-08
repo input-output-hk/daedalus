@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletRestoreDialog from '../../../components/wallet/WalletRestoreDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
+import environment from '../../../environment';
 
 @inject('stores', 'actions') @observer
 export default class WalletRestoreDialogContainer extends Component {
@@ -12,21 +13,21 @@ export default class WalletRestoreDialogContainer extends Component {
   props: InjectedDialogContainerProps;
 
   onSubmit = (values: { recoveryPhrase: string, walletName: string, walletPassword: ?string }) => {
-    this.props.actions.ada.wallets.restoreWallet.trigger(values);
+    this.props.actions[environment.API].wallets.restoreWallet.trigger(values);
   };
 
   onCancel = () => {
     this.props.onClose();
-    this.props.stores.ada.wallets.restoreRequest.reset();
+    this.props.stores[environment.API].wallets.restoreRequest.reset();
   };
 
   render() {
-    const { wallets } = this.props.stores.ada;
+    const { wallets } = this.props.stores[environment.API];
     const { restoreRequest } = wallets;
 
     return (
       <WalletRestoreDialog
-        mnemonicValidator={mnemonic => this.props.stores.ada.wallets.isValidMnemonic(mnemonic)}
+        mnemonicValidator={mnemonic => wallets.isValidMnemonic(mnemonic)}
         isSubmitting={restoreRequest.isExecuting}
         onSubmit={this.onSubmit}
         onCancel={this.onCancel}

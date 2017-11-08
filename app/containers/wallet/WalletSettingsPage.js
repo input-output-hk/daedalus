@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletSettings from '../../components/wallet/WalletSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import { isValidWalletName } from '../../lib/validations';
+import { isValidWalletName } from '../../utils/validations';
 
 @inject('stores', 'actions') @observer
 export default class WalletSettingsPage extends Component {
@@ -17,6 +17,7 @@ export default class WalletSettingsPage extends Component {
     const { actions } = this.props;
     const activeWallet = wallets.active;
     const {
+      WALLET_ASSURANCE_LEVEL_OPTIONS,
       updateWalletRequest,
       lastUpdatedWalletField,
       walletFieldBeingEdited,
@@ -33,9 +34,9 @@ export default class WalletSettingsPage extends Component {
 
     return (
       <WalletSettings
-        assuranceLevels={walletSettings.WALLET_ASSURANCE_LEVEL_OPTIONS}
+        assuranceLevels={WALLET_ASSURANCE_LEVEL_OPTIONS}
         walletAssurance={activeWallet.assurance}
-        error={walletSettings.updateWalletRequest.error}
+        error={updateWalletRequest.error}
         openDialogAction={actions.dialogs.open.trigger}
         isWalletPasswordSet={activeWallet.hasPassword}
         walletPasswordUpdateDate={activeWallet.passwordUpdateDate}

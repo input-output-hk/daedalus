@@ -3,7 +3,7 @@ import { observable, action, computed, runInAction } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
-import { Logger } from '../lib/logger';
+import { Logger } from '../utils/logging';
 import type { GetSyncProgressResponse } from '../api/common';
 import environment from '../environment';
 
@@ -165,7 +165,7 @@ export default class NetworkStatusStore extends Store {
 
   _redirectToWalletAfterSync = () => {
     const { app } = this.stores;
-    const { wallets } = this.stores.ada;
+    const { wallets } = this.stores[environment.API];
     if (this._startupStage === STARTUP_STAGES.SYNCING && this.isSynced) {
       Logger.info(`========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`);
       this._startupStage = STARTUP_STAGES.LOADING;

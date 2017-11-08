@@ -7,7 +7,7 @@ import localStorage from 'electron-json-storage';
 
 export default class LocalStorageApi {
 
-  getUserLocale= () => new Promise((resolve, reject) => {
+  getUserLocale = () => new Promise((resolve, reject) => {
     localStorage.get('userLocale', (error, response) => {
       if (error) return reject(error);
       if (!response.locale) return resolve('');

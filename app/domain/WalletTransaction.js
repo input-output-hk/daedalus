@@ -7,7 +7,7 @@ import { assuranceLevels } from '../config/transactionAssuranceConfig';
 
 export type TransactionState = 'pending' | 'failed' | 'ok';
 export type TrasactionAddresses = { from: Array<string>, to: Array<string> };
-export type TransactionType = 'card' | 'adaExpend' | 'adaIncome' | 'exchange';
+export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';
 
 export const transactionStates: {
   PENDING: TransactionState, FAILED: TransactionState, OK: TransactionState,

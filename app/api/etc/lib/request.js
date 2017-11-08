@@ -29,8 +29,17 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}) => (
       // Reject errors
       response.on('error', (error) => reject(error));
       // Resolve JSON results and handle weird backend behavior
-      // of "Left" (for errors) and "Right" (for success) properties
-      response.on('end', () => { resolve(JSON.parse(body)); });
+      response.on('end', () => {
+        const parsedBody = JSON.parse(body);
+        if (parsedBody.result != null) {
+          resolve(parsedBody.result);
+        } else if (parsedBody.error) {
+          reject(new Error(parsedBody.error.message));
+        } else {
+          // TODO: investigate if that can happen! (no Right or Left in a response)
+          reject(new Error('Unknown response from backend.'));
+        }
+      });
     });
     httpsRequest.on('error', (error) => reject(error));
     if (queryParams) { httpsRequest.write(requestBody); }

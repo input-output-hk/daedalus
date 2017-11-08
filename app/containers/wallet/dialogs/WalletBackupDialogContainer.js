@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletBackupDialog from '../../../components/wallet/WalletBackupDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
+import environment from '../../../environment';
 
 @inject('stores', 'actions') @observer
 export default class WalletBackupDialogContainer extends Component {
@@ -13,7 +14,7 @@ export default class WalletBackupDialogContainer extends Component {
 
   onCancelBackup = () => {
     this.props.onClose();
-    this.props.actions.ada.walletBackup.cancelWalletBackup.trigger();
+    this.props.actions.walletBackup.cancelWalletBackup.trigger();
   }
 
   render() {
@@ -28,7 +29,7 @@ export default class WalletBackupDialogContainer extends Component {
       isTermRecoveryAccepted,
       isPrivacyNoticeAccepted,
       currentStep
-    } = stores.ada.walletBackup;
+    } = stores.walletBackup;
     const {
       startWalletBackup,
       addWordToWalletBackupVerification,
@@ -39,7 +40,8 @@ export default class WalletBackupDialogContainer extends Component {
       finishWalletBackup,
       acceptPrivacyNoticeForWalletBackup,
       continueToRecoveryPhraseForWalletBackup
-    } = actions.ada.walletBackup;
+    } = actions.walletBackup;
+    const { createWalletRequest } = stores[environment.API].wallets;
     return (
       <WalletBackupDialog
         // Global props for all dialogs
@@ -60,6 +62,7 @@ export default class WalletBackupDialogContainer extends Component {
         canFinishBackup={isRecoveryPhraseValid && isTermDeviceAccepted && isTermRecoveryAccepted}
         isTermRecoveryAccepted={isTermRecoveryAccepted}
         isValid={isRecoveryPhraseValid}
+        isSubmitting={createWalletRequest.isExecuting}
         onAcceptTermDevice={acceptWalletBackupTermDevice.trigger}
         onAcceptTermRecovery={acceptWalletBackupTermRecovery.trigger}
         onAddWord={addWordToWalletBackupVerification.trigger}

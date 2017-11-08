@@ -144,7 +144,7 @@ export default class Transaction extends Component {
       isExpanded ? styles.expanded : styles.closed
     ]);
 
-    if (data.type === 'adaExpend' || data.type === 'adaIncome') typeMessage = 'ada';
+    if (data.type === 'expend' || data.type === 'income') typeMessage = 'ada';
 
     const status = intl.formatMessage(assuranceLevelTranslations[assuranceLevel]);
 
@@ -160,7 +160,7 @@ export default class Transaction extends Component {
           <div className={styles.togglerContent}>
             <div className={styles.header}>
               <div className={styles.title}>
-                {data.type === 'adaExpend' ?
+                {data.type === 'expend' ?
                   intl.formatMessage(messages.adaSent) :
                   intl.formatMessage(messages.adaReceived)
                 }

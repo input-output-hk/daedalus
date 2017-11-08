@@ -5,7 +5,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
-import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import styles from './InlineEditingInput.scss';
 
 const messages = defineMessages({

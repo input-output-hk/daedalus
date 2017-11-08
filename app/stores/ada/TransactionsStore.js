@@ -7,6 +7,7 @@ import CachedRequest from '../lib/LocalizedCachedRequest';
 import WalletTransaction from '../../domain/WalletTransaction';
 import type { GetTransactionsResponse } from '../../api/ada/index';
 import type { UnconfirmedAmount } from '../../types/unconfirmedAmountType';
+import { isValidAmountInLovelaces } from '../../utils/validations';
 
 export default class TransactionsStore extends Store {
 
@@ -14,8 +15,8 @@ export default class TransactionsStore extends Store {
   SEARCH_LIMIT_INCREASE = 500;
   SEARCH_SKIP = 0;
   RECENT_TRANSACTIONS_LIMIT = 5;
-  OUTGOING_TRANSACTION_TYPE = 'adaExpend';
-  INCOMING_TRANSACTION_TYPE = 'adaIncome';
+  OUTGOING_TRANSACTION_TYPE = 'expend';
+  INCOMING_TRANSACTION_TYPE = 'income';
 
   @observable transactionsRequests: Array<{
     walletId: string,
@@ -157,7 +158,11 @@ export default class TransactionsStore extends Store {
     const accountId = this.stores.ada.addresses._getAccountIdByWalletId(walletId);
     if (!accountId) throw new Error('Active account required before calculating transaction fees.');
     return this.api.ada.calculateTransactionFee({ sender: accountId, receiver, amount });
-  }
+  };
+
+  validateAmount = (amountInLovelaces: string) => (
+    Promise.resolve(isValidAmountInLovelaces(amountInLovelaces))
+  );
 
   @action _refreshTransactionData = () => {
     if (this.stores.networkStatus.isConnected) {

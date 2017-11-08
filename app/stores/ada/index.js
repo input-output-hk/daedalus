@@ -1,37 +1,33 @@
 // @flow
 import { observable, action } from 'mobx';
-import WalletsStore from './WalletsStore';
+import AdaWalletsStore from './AdaWalletsStore';
 import TransactionsStore from './TransactionsStore';
-import WalletBackupStore from './WalletBackupStore';
 import AdaRedemptionStore from './AdaRedemptionStore';
 import NodeUpdateStore from './NodeUpdateStore';
-import WalletSettingsStore from './WalletSettingsStore';
+import AdaWalletSettingsStore from './AdaWalletSettingsStore';
 import AddressesStore from './AddressesStore';
 
 export const adaStoreClasses = {
-  wallets: WalletsStore,
+  wallets: AdaWalletsStore,
   transactions: TransactionsStore,
-  walletBackup: WalletBackupStore,
   adaRedemption: AdaRedemptionStore,
   nodeUpdate: NodeUpdateStore,
-  walletSettings: WalletSettingsStore,
+  walletSettings: AdaWalletSettingsStore,
   addresses: AddressesStore,
 };
 
 export type AdaStoresMap = {
-  wallets: WalletsStore,
+  wallets: AdaWalletsStore,
   transactions: TransactionsStore,
-  walletBackup: WalletBackupStore,
   adaRedemption: AdaRedemptionStore,
   nodeUpdate: NodeUpdateStore,
-  walletSettings: WalletSettingsStore,
+  walletSettings: AdaWalletSettingsStore,
   addresses: AddressesStore,
 };
 
 const adaStores = observable({
   wallets: null,
   transactions: null,
-  walletBackup: null,
   adaRedemption: null,
   nodeUpdate: null,
   walletSettings: null,
