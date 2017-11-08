@@ -249,6 +249,8 @@
   "wallet.settings.password": "Password",
   "wallet.settings.passwordLastUpdated": "Last updated {lastUpdated}",
   "wallet.settings.passwordNotSet": "You still don't have password",
+  "wallet.statusMessages.activeImport": "Wallet import in progress",
+  "wallet.statusMessages.activeRestore": "Wallet restore in progress",
   "wallet.summary.no.transactions": "No recent transactions",
   "wallet.summary.page.pendingIncomingConfirmationLabel": "Incoming pending confirmation",
   "wallet.summary.page.pendingOutgoingConfirmationLabel": "Outgoing pending confirmation",

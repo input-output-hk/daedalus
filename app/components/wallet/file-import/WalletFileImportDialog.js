@@ -192,7 +192,7 @@ export default class WalletFileImportDialog extends Component {
         className: isSubmitting ? styles.isSubmitting : null,
         label: intl.formatMessage(messages.submitLabel),
         primary: true,
-        disabled: !(walletFile.value instanceof File),
+        disabled: isSubmitting || !(walletFile.value instanceof File),
         onClick: this.submit,
       }
     ];
@@ -207,7 +207,7 @@ export default class WalletFileImportDialog extends Component {
         title={intl.formatMessage(messages.headline)}
         actions={actions}
         closeOnOverlayClick
-        onClose={!isSubmitting ? onClose : null}
+        onClose={onClose}
         closeButton={<DialogCloseButton />}
       >
 

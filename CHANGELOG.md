@@ -6,6 +6,7 @@ Changelog
 
 ### Features
 
+- Do not block the UI while wallet is being restored/imported ([PR 457](https://github.com/input-output-hk/daedalus/pull/457))
 - Postpone Update Api call integration ([PR 485](https://github.com/input-output-hk/daedalus/pull/485))
 
 ### Fixes

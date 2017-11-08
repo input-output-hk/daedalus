@@ -325,6 +325,39 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Wallet import in progress",
+        "description": "Status message \"Wallet import in progress\" shown while wallet is being imported.",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "app/components/notifications/StatusMessagesNotification.js",
+        "id": "wallet.statusMessages.activeImport",
+        "start": {
+          "column": 23,
+          "line": 9
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet restore in progress",
+        "description": "Status message \"Wallet restore in progress\" shown while wallet is being restored.",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "app/components/notifications/StatusMessagesNotification.js",
+        "id": "wallet.statusMessages.activeRestore",
+        "start": {
+          "column": 24,
+          "line": 14
+        }
+      }
+    ],
+    "path": "app/components/notifications/StatusMessagesNotification.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Select your language",
         "description": "Label for the language select.",
         "end": {
