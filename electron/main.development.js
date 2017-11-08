@@ -185,7 +185,6 @@ app.on('ready', async () => {
   });
 
   mainWindow.setMinimumSize(900, 600);
-  mainWindow.setMaximumSize(1500, 2500);
 
   // Initialize our ipc api methods that can be called by the render processes
   ipcApi({ mainWindow });
@@ -236,15 +235,6 @@ app.on('ready', async () => {
     menu = Menu.buildFromTemplate(winLinuxMenu(app, mainWindow, openAbout));
     mainWindow.setMenu(menu);
   }
-
-  // Unset max height/width in fullscreen
-  mainWindow.on('enter-full-screen', () => {
-    mainWindow.setMaximumSize(2147483647, 2147483647);
-  });
-
-  mainWindow.on('leave-full-screen', () => {
-    mainWindow.setMaximumSize(1500, 2500);
-  });
 
   // Hide application window on Cmd+H hotkey (OSX only!)
   if (process.platform === 'darwin') {

@@ -488,7 +488,7 @@ export default class AdaRedemptionForm extends Component {
                     onFileSelected={(file) => {
                       resetForm();
                       onCertificateSelected(file);
-                      certificateField.onChange(file);
+                      certificateField.set(file);
                     }}
                     isCertificateEncrypted={isCertificateEncrypted}
                     isCertificateSelected={isCertificateSelected}

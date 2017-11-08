@@ -316,7 +316,7 @@ export default class CardanoClientApi {
   }
 
   async createAddress(request: CreateAddressRequest) {
-    Logger.debug('CardanoClientApi::createAddress called: ' + stringifyData(request));
+    Logger.debug('CardanoClientApi::createAddress called');
     const { accountId, password } = request;
     try {
       const response: ApiAddress = await ClientApi.newWAddress(
@@ -705,8 +705,8 @@ export default class CardanoClientApi {
   }
 
   async exportWalletToFile(request: ExportWalletToFileRequest): ExportWalletToFileResponse {
-    const { walletId, filePath, password } = request;
     Logger.debug('CardanoClientApi::exportWalletToFile called');
+    const { walletId, filePath, password } = request;
     try {
       const response = await ClientApi.exportBackupJSON(tlsConfig, walletId, filePath, password);
       Logger.debug('CardanoClientApi::exportWalletToFile success: ' + stringifyData(response));

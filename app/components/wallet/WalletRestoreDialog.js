@@ -223,6 +223,7 @@ export default class WalletRestoreDialog extends Component {
         className: isSubmitting ? styles.isSubmitting : null,
         label: this.context.intl.formatMessage(messages.importButtonLabel),
         primary: true,
+        disabled: isSubmitting,
         onClick: this.submit,
       },
     ];
@@ -233,7 +234,7 @@ export default class WalletRestoreDialog extends Component {
         title={intl.formatMessage(messages.title)}
         actions={actions}
         closeOnOverlayClick
-        onClose={!isSubmitting ? onCancel : null}
+        onClose={onCancel}
         closeButton={<DialogCloseButton />}
       >
 
