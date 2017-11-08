@@ -1,5 +1,4 @@
 import { defineMessages } from 'react-intl';
-import environment from '../environment';
 
 export default defineMessages({
   fieldIsRequired: {

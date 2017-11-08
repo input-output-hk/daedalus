@@ -155,14 +155,15 @@ export default class WalletsStore extends Store {
     if (!this.stores.networkStatus.isConnected) return;
     const result = await this.walletsRequest.execute().promise;
     if (!result) return;
+    const transactions = this.stores[environment.API].transactions;
     runInAction('refresh transaction data', () => {
       const walletIds = result.map((wallet: Wallet) => wallet.id);
-      this.stores[environment.API].transactions.transactionsRequests = walletIds.map(walletId => ({
+      transactions.transactionsRequests = walletIds.map(walletId => ({
         walletId,
-        recentRequest: this.stores[environment.API].transactions._getTransactionsRecentRequest(walletId),
-        allRequest: this.stores[environment.API].transactions._getTransactionsAllRequest(walletId),
+        recentRequest: transactions._getTransactionsRecentRequest(walletId),
+        allRequest: transactions._getTransactionsAllRequest(walletId),
       }));
-      this.stores[environment.API].transactions._refreshTransactionData();
+      transactions._refreshTransactionData();
     });
   };
 

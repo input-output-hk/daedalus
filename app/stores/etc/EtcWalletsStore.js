@@ -1,5 +1,5 @@
 // @flow
-import { observable, runInAction, action } from 'mobx';
+import { observable } from 'mobx';
 import BigNumber from 'bignumber.js';
 import WalletStore from '../WalletStore';
 import Request from '.././lib/LocalizedRequest';
@@ -11,7 +11,6 @@ import type {
 import type { SendEtcTransactionResponse } from '../../api/etc/sendEtcTransaction';
 import type { GetWalletRecoveryPhraseResponse } from '../../api/common';
 import { ETC_DEFAULT_GAS_PRICE } from '../../config/numbersConfig';
-import Wallet from '../../domain/Wallet';
 
 export default class EtcWalletsStore extends WalletStore {
 
@@ -49,7 +48,7 @@ export default class EtcWalletsStore extends WalletStore {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
     const { receiver, amount, password } = transactionDetails;
-    const transaction = await this.sendMoneyRequest.execute({
+    await this.sendMoneyRequest.execute({
       from: wallet.id,
       to: receiver,
       value: new BigNumber(amount),
@@ -57,7 +56,7 @@ export default class EtcWalletsStore extends WalletStore {
       gasPrice: ETC_DEFAULT_GAS_PRICE,
     });
     if (!this.sendMoneyRequest.isError) {
-      this.refreshWalletsData();
+      await this.refreshWalletsData();
       this.actions.dialogs.closeActiveDialog.trigger();
       this.goToWalletRoute(wallet.id);
     }

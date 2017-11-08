@@ -1,7 +1,6 @@
 // @flow
 import { observable } from 'mobx';
 import BigNumber from 'bignumber.js';
-import type { TransactionCondition } from 'daedalus-client-api';
 import type { AssuranceMode, AssuranceLevel } from '../types/transactionAssuranceTypes';
 import { assuranceLevels } from '../config/transactionAssuranceConfig';
 
