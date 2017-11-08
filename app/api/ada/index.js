@@ -186,8 +186,6 @@ export type ExportWalletToFileResponse = [];
 
 export default class AdaApi {
 
-  DEFAULT_GROUPING_POLICY = 'OptimizeForSecurity';
-
   constructor() {
     if (environment.isTest()) {
       patchAdaApi(this);
@@ -297,8 +295,10 @@ export default class AdaApi {
     // sender must be set as accountId (account.caId) and not walletId
     try {
       const inputSelectionPolicy = {
-        groupingPolicy: this.DEFAULT_GROUPING_POLICY,
+        // default value. Select (OptimizeForSecurity | OptimizeForSize) will be implemented
+        groupingPolicy: 'OptimizeForSecurity',
       };
+
       const response: ApiTransaction = await newAdaPayment(
         ca,
         { from: sender, to: receiver, amount },
@@ -332,7 +332,8 @@ export default class AdaApi {
     const { sender, receiver, amount } = request;
     try {
       const inputSelectionPolicy = {
-        groupingPolicy: this.DEFAULT_GROUPING_POLICY,
+        // default value. Select (OptimizeForSecurity | OptimizeForSize) will be implemented
+        groupingPolicy: 'OptimizeForSecurity',
       };
       const response: adaTxFee = await adaTxFee(
         ca, { from: sender, to: receiver, amount }, {}, { inputSelectionPolicy }
@@ -737,8 +738,8 @@ const _createTransactionFromServerData = action(
       description: ctmDescription || '',
       numberOfConfirmations: data.ctConfirmations,
       addresses: {
-        from: data.ctInputAddrs.map(address => address),
-        to: data.ctOutputAddrs.map(address => address),
+        from: data.ctInputs.map(address => address[0]),
+        to: data.ctOutputs.map(address => address[0]),
       },
       condition: data.ctCondition,
     });
