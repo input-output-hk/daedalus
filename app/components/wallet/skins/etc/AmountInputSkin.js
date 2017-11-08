@@ -3,6 +3,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import InputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import styles from './AmountInputSkin.scss';
+import { formattedAmountWithoutTrailingZeros } from '../../../../utils/formatters';
 
 const messages = defineMessages({
   feesLabel: {
@@ -29,16 +30,19 @@ export default class AmountInputSkin extends Component {
     const { error, fees, total, currency } = this.props;
     const { intl } = this.context;
 
+    const formattedFees = formattedAmountWithoutTrailingZeros(fees);
+    const formattedTotal = formattedAmountWithoutTrailingZeros(total);
+
     return (
       <div className={styles.root}>
         <InputSkin {...this.props} />
         {!error && (
           <span className={styles.fees}>
-            {intl.formatMessage(messages.feesLabel, { amount: fees })}
+            {intl.formatMessage(messages.feesLabel, { amount: formattedFees })}
           </span>
         )}
         <span className={styles.total}>
-          = {total} {currency}
+          = {formattedTotal} {currency}
         </span>
       </div>
     );

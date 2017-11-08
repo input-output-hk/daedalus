@@ -27,8 +27,8 @@ export const mnemonicToSeedHex = (mnemonic: string, password: ?string) => {
   return pbkdf2(mnemonicBuffer, saltBuffer, 2048, 32, 'sha512').toString('hex');
 };
 
-export const unixTimestampToDate = (rawTimestamp: string) => {
+export const unixTimestampToDate = (rawTimestamp: string) => (
   // We have to convert unix timestamp (seconds since …) to
   // JS date (milliseconds since …) by multiplying it with 1000
-  return new Date(quantityToBigNumber(rawTimestamp).times(1000).toNumber());
-};
+  new Date(quantityToBigNumber(rawTimestamp).times(1000).toNumber())
+);

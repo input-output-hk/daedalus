@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
-import etcSymbol from '../../../assets/images/etc-logo.inline.svg';
+import etcSymbol from '../../../assets/images/etc-symbol.inline.svg';
 import WalletTransaction, { transactionStates, transactionTypes } from '../../../domain/WalletTransaction';
 import { assuranceLevels } from '../../../config/transactionAssuranceConfig';
 import { environmentSpecificMessages } from '../../../i18n/global-messages';
@@ -71,6 +71,11 @@ const messages = defineMessages({
     id: 'wallet.transaction.addresses.to',
     defaultMessage: '!!!To addresses',
     description: 'To addresses',
+  },
+  transactionAmount: {
+    id: 'wallet.transaction.transactionAmount',
+    defaultMessage: '!!!Transaction amount',
+    description: 'Transaction amount.',
   },
 });
 
@@ -169,7 +174,11 @@ export default class Transaction extends Component {
                   intl.formatMessage(messages.received, { currency })
                 }
               </div>
-              <div className={styles.amount}>{formattedWalletAmount(data.amount)}
+              <div className={styles.amount}>
+                {
+                  // hide currency (we are showing symbol instead)
+                  formattedWalletAmount(data.amount, false)
+                }
                 <SvgInline svg={symbol} className={styles.currencySymbol} />
               </div>
             </div>
@@ -215,13 +224,29 @@ export default class Transaction extends Component {
               {data.addresses.to.map((address, addressIndex) => (
                 <span key={`${data.id}-to-${address}-${addressIndex}`} className={styles.address}>{address}</span>
               ))}
-              <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
 
-              {state === transactionStates.OK ? (
-                <span>
-                  <span className={styles.assuranceLevel}>{status}</span>
-                  . {data.numberOfConfirmations} {intl.formatMessage(messages.confirmations)}.
-                </span>
+              {environment.isAdaApi() ? (
+                <div className={styles.row}>
+                  <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
+                  {state === transactionStates.OK ? (
+                    <span>
+                      <span className={styles.assuranceLevel}>{status}</span>
+                      . {data.numberOfConfirmations} {intl.formatMessage(messages.confirmations)}.
+                    </span>
+                  ) : null}
+                </div>
+              ) : null}
+
+              {environment.isEtcApi() ? (
+                <div className={styles.row}>
+                  <h2>{intl.formatMessage(messages.transactionAmount)}</h2>
+                  <span>
+                    {
+                      // show currency and use long format (e.g. in ETC show all decimal places)
+                      formattedWalletAmount(data.amount, true, true)
+                    }
+                  </span>
+                </div>
               ) : null}
 
               <h2>{intl.formatMessage(messages.transactionId)}</h2>
