@@ -133,7 +133,8 @@
 
 .details {
   height: auto;
-  * + h2 {
+  * + h2,
+  * + .row {
     margin-top: 20px;
   }
   h2 {

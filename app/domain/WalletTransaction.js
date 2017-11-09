@@ -1,7 +1,6 @@
 // @flow
 import { observable } from 'mobx';
 import BigNumber from 'bignumber.js';
-import type { TransactionCondition } from 'daedalus-client-api';
 import type { AssuranceMode, AssuranceLevel } from '../types/transactionAssuranceTypes';
 import { assuranceLevels } from '../config/transactionAssuranceConfig';
 
@@ -15,6 +14,18 @@ export const transactionStates: {
   PENDING: 'pending', FAILED: 'failed', OK: 'ok',
 };
 
+export const transactionTypes: {
+  CARD: TransactionType,
+  EXPEND: TransactionType,
+  INCOME: TransactionType,
+  EXCHANGE: TransactionType,
+} = {
+  CARD: 'card',
+  EXPEND: 'expend',
+  INCOME: 'income',
+  EXCHANGE: 'exchange',
+};
+
 export default class WalletTransaction {
 
   @observable id: string = '';
@@ -25,7 +36,7 @@ export default class WalletTransaction {
   @observable description: string = '';
   @observable numberOfConfirmations: number = 0;
   @observable addresses: TrasactionAddresses = { from: [], to: [] };
-  @observable condition: TransactionCondition;
+  @observable state: TransactionState;
 
   constructor(data: {
     id: string,
@@ -36,7 +47,7 @@ export default class WalletTransaction {
     description: string,
     numberOfConfirmations: number,
     addresses: TrasactionAddresses,
-    condition: TransactionCondition,
+    state: TransactionState,
   }) {
     Object.assign(this, data);
   }
@@ -48,14 +59,6 @@ export default class WalletTransaction {
       return assuranceLevels.MEDIUM;
     }
     return assuranceLevels.HIGH;
-  }
-
-  getState(): TransactionState {
-    switch (this.condition) {
-      case 'CPtxApplying': return 'pending';
-      case 'CPtxWontApply': return 'failed';
-      default: return 'ok'; // CPtxInBlocks && CPtxNotTracked
-    }
   }
 
 }

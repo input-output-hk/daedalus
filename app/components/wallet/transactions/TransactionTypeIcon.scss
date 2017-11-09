@@ -8,11 +8,11 @@
   opacity: 0.8;
   width: 44px;
 
-  &.adaExpend {
+  &.expend {
     background: var(--theme-transactions-icon-type-expend-background-color);
   }
 
-  &.adaIncome {
+  &.income {
     background: var(--theme-transactions-icon-type-income-background-color);
   }
 

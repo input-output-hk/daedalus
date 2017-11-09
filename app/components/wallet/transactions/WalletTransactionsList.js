@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import styles from './WalletTransactionsList.scss';
-import Transaction from '../../widgets/Transaction';
+import Transaction from './Transaction';
 import WalletTransaction from '../../../domain/WalletTransaction';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import type { AssuranceMode } from '../../../types/transactionAssuranceTypes';
@@ -113,7 +113,7 @@ export default class WalletTransactionsList extends Component {
                   <Transaction
                     data={transaction}
                     isLastInList={transactionIndex === group.transactions.length - 1}
-                    state={transaction.getState()}
+                    state={transaction.state}
                     assuranceLevel={transaction.getAssuranceLevelForMode(assuranceMode)}
                   />
                 </div>

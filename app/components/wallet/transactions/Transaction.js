@@ -5,11 +5,16 @@ import SvgInline from 'react-svg-inline';
 import classNames from 'classnames';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
-import adaSymbol from '../../assets/images/ada-symbol.inline.svg';
-import WalletTransaction, { transactionStates } from '../../domain/WalletTransaction';
-import { assuranceLevels } from '../../config/transactionAssuranceConfig';
-import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
-import type { TransactionState } from '../../domain/WalletTransaction';
+import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
+import etcSymbol from '../../../assets/images/etc-symbol.inline.svg';
+import WalletTransaction, { transactionStates, transactionTypes } from '../../../domain/WalletTransaction';
+import { assuranceLevels } from '../../../config/transactionAssuranceConfig';
+import { environmentSpecificMessages } from '../../../i18n/global-messages';
+import type { TransactionState } from '../../../domain/WalletTransaction';
+import environment from '../../../environment';
+import resolver from '../../../utils/imports';
+
+const { formattedWalletAmount } = resolver('utils/formatters');
 
 const messages = defineMessages({
   card: {
@@ -17,10 +22,10 @@ const messages = defineMessages({
     defaultMessage: '!!!Card payment',
     description: 'Transaction type shown for credit card payments.',
   },
-  ada: {
-    id: 'wallet.transaction.type.ada',
-    defaultMessage: '!!!ADA transaction',
-    description: 'Transaction type shown for ada payments.',
+  type: {
+    id: 'wallet.transaction.type',
+    defaultMessage: '!!!{currency} transaction',
+    description: 'Transaction type shown for {currency} transactions.',
   },
   exchange: {
     id: 'wallet.transaction.type.exchange',
@@ -47,15 +52,15 @@ const messages = defineMessages({
     defaultMessage: '!!!Conversion rate',
     description: 'Conversion rate.',
   },
-  adaSent: {
-    id: 'wallet.transaction.adaSent',
-    defaultMessage: '!!!Ada sent',
-    description: 'Label "Ada sent" for the transaction.',
+  sent: {
+    id: 'wallet.transaction.sent',
+    defaultMessage: '!!!{currency} sent',
+    description: 'Label "{currency} sent" for the transaction.',
   },
-  adaReceived: {
-    id: 'wallet.transaction.adaReceived',
-    defaultMessage: '!!!Ada received',
-    description: 'Label "Ada received" for the transaction.',
+  received: {
+    id: 'wallet.transaction.received',
+    defaultMessage: '!!!{currency} received',
+    description: 'Label "{currency} received" for the transaction.',
   },
   fromAddresses: {
     id: 'wallet.transaction.addresses.from',
@@ -66,6 +71,11 @@ const messages = defineMessages({
     id: 'wallet.transaction.addresses.to',
     defaultMessage: '!!!To addresses',
     description: 'To addresses',
+  },
+  transactionAmount: {
+    id: 'wallet.transaction.transactionAmount',
+    defaultMessage: '!!!Transaction amount',
+    description: 'Transaction amount.',
   },
 });
 
@@ -127,7 +137,6 @@ export default class Transaction extends Component {
     const { isExpanded } = this.state;
     const { intl } = this.context;
     const isFailedTransaction = state === transactionStates.FAILED;
-    let typeMessage = data.type;
 
     const componentStyles = classNames([
       styles.component,
@@ -144,9 +153,9 @@ export default class Transaction extends Component {
       isExpanded ? styles.expanded : styles.closed
     ]);
 
-    if (data.type === 'expend' || data.type === 'income') typeMessage = 'ada';
-
     const status = intl.formatMessage(assuranceLevelTranslations[assuranceLevel]);
+    const currency = intl.formatMessage(environmentSpecificMessages[environment.API].currency);
+    const symbol = environment.isAdaApi() ? adaSymbol : etcSymbol;
 
     return (
       <div className={componentStyles}>
@@ -160,19 +169,23 @@ export default class Transaction extends Component {
           <div className={styles.togglerContent}>
             <div className={styles.header}>
               <div className={styles.title}>
-                {data.type === 'expend' ?
-                  intl.formatMessage(messages.adaSent) :
-                  intl.formatMessage(messages.adaReceived)
+                {data.type === transactionTypes.EXPEND ?
+                  intl.formatMessage(messages.sent, { currency }) :
+                  intl.formatMessage(messages.received, { currency })
                 }
               </div>
-              <div className={styles.amount}>{data.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-                <SvgInline svg={adaSymbol} className={styles.currencySymbol} />
+              <div className={styles.amount}>
+                {
+                  // hide currency (we are showing symbol instead)
+                  formattedWalletAmount(data.amount, false)
+                }
+                <SvgInline svg={symbol} className={styles.currencySymbol} />
               </div>
             </div>
 
             <div className={styles.details}>
               <div className={styles.type}>
-                {intl.formatMessage(messages[typeMessage])}
+                {intl.formatMessage(messages.type, { currency })}
                 , {moment(data.date).format('hh:mm:ss A')}
               </div>
 
@@ -211,13 +224,29 @@ export default class Transaction extends Component {
               {data.addresses.to.map((address, addressIndex) => (
                 <span key={`${data.id}-to-${address}-${addressIndex}`} className={styles.address}>{address}</span>
               ))}
-              <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
 
-              {state === transactionStates.OK ? (
-                <span>
-                  <span className={styles.assuranceLevel}>{status}</span>
-                  . {data.numberOfConfirmations} {intl.formatMessage(messages.confirmations)}.
-                </span>
+              {environment.isAdaApi() ? (
+                <div className={styles.row}>
+                  <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
+                  {state === transactionStates.OK ? (
+                    <span>
+                      <span className={styles.assuranceLevel}>{status}</span>
+                      . {data.numberOfConfirmations} {intl.formatMessage(messages.confirmations)}.
+                    </span>
+                  ) : null}
+                </div>
+              ) : null}
+
+              {environment.isEtcApi() ? (
+                <div className={styles.row}>
+                  <h2>{intl.formatMessage(messages.transactionAmount)}</h2>
+                  <span>
+                    {
+                      // show currency and use long format (e.g. in ETC show all decimal places)
+                      formattedWalletAmount(data.amount, true, true)
+                    }
+                  </span>
+                </div>
               ) : null}
 
               <h2>{intl.formatMessage(messages.transactionId)}</h2>

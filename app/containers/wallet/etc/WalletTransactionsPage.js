@@ -38,22 +38,15 @@ export default class WalletTransactionsPage extends Component {
   render() {
     const { intl } = this.context;
     const actions = this.props.actions;
-    const { /* transactions, */ wallets } = this.props.stores.etc;
+    const { transactions, wallets } = this.props.stores.etc;
     const activeWallet = wallets.active;
-    // const {
-    //   searchOptions,
-    //   searchRequest,
-    //   hasAny,
-    //   totalAvailable,
-    //   filtered,
-    // } = transactions;
-
-    // Faked missing data and methods
-    const searchOptions = { searchTerm: '', searchLimit: 1000, searchSkip: 5 };
-    const searchRequest = { isExecutingFirstTime: false };
-    const hasAny = false;
-    const totalAvailable = 0;
-    const filtered = [];
+    const {
+      searchOptions,
+      searchRequest,
+      hasAny,
+      totalAvailable,
+      filtered,
+    } = transactions;
 
     // Guard against potential null values
     if (!searchOptions || !activeWallet) return null;

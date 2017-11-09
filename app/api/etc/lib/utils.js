@@ -15,9 +15,9 @@ import { isString } from 'lodash';
 export const quantityToBigNumber = (number: string) => {
   number = number || '0';
   if (isString(number) && (number.indexOf('0x') === 0 || number.indexOf('-0x') === 0)) {
-    return new BigNumber(number.replace('0x', ''), 16);
+    return new BigNumber(number, 16);
   }
-  return new BigNumber(number.toString(10), 10);
+  return new BigNumber(number, 10);
 };
 
 export const mnemonicToSeedHex = (mnemonic: string, password: ?string) => {
@@ -30,5 +30,5 @@ export const mnemonicToSeedHex = (mnemonic: string, password: ?string) => {
 export const unixTimestampToDate = (rawTimestamp: string) => (
   // We have to convert unix timestamp (seconds since …) to
   // JS date (milliseconds since …) by multiplying it with 1000
-  new Date(quantityToBigNumber(rawTimestamp).times(1000))
+  new Date(quantityToBigNumber(rawTimestamp).times(1000).toNumber())
 );
