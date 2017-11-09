@@ -118,6 +118,8 @@ export type GetSyncProgressResponse = {
   networkDifficulty: number
 };
 
+export type GetLocalTimeDifferenceResponse = number;
+
 export type NextUpdateResponse = {
   version: string,
 };
@@ -178,6 +180,7 @@ export type Api = {
   postponeUpdate(): PostponeUpdateResponse,
   applyUpdate(): ApplyUpdateResponse,
   getSyncProgress(): Promise<GetSyncProgressResponse>,
+  getLocalTimeDifference(): Promise<GetLocalTimeDifferenceResponse>,
   setUserLocale(locale: string): Promise<string>,
   getUserLocale(): Promise<string>,
   setTermsOfUseAcceptance(): Promise<boolean>,

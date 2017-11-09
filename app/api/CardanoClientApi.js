@@ -55,6 +55,7 @@ import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 
 import { getSyncProgress } from './js-api/getSyncProgress';
 // import { makePayment } from './js-api/makePayment';
+import { getLocalTimeDifference } from './js-api/getLocalTimeDifference';
 
 const ca = remote.getGlobal('ca');
 const tlsConfig = ClientApi.tlsInit(ca);
@@ -550,7 +551,6 @@ export default class CardanoClientApi {
 
   getSyncProgress = async () => {
     Logger.debug('CardanoClientApi::syncProgress called');
-
     try {
       const response = await getSyncProgress(ca);
       Logger.debug('CardanoClientApi::syncProgress success: ' + stringifyData(response));
@@ -566,6 +566,18 @@ export default class CardanoClientApi {
       throw new GenericApiError();
     }
   };
+
+  getLocalTimeDifference = async () => {
+    Logger.debug('AdaApi::localTimeDifference called');
+    try {
+      const response = await getLocalTimeDifference(ca);
+      Logger.debug('AdaApi::localTimeDifference success: ' + stringifyData(response));
+      return response;
+    } catch (error) {
+      Logger.error('AdaApi::localTimeDifference error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
 
   async setUserLocale(locale: string) {
     Logger.debug('CardanoClientApi::updateLocale called: ' + locale);

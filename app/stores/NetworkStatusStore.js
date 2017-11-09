@@ -4,7 +4,7 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
 import { Logger } from '../lib/logger';
-import type { GetSyncProgressResponse } from '../api';
+import type { GetSyncProgressResponse, GetLocalTimeDifferenceResponse } from '../api';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedDifficulties = null;
@@ -12,6 +12,7 @@ let cachedDifficulties = null;
 // Maximum number of out-of-sync blocks above which we consider to be out-of-sync
 const OUT_OF_SYNC_BLOCKS_LIMIT = 10;
 const SYNC_PROGRESS_INTERVAL = 2000;
+const TIME_DIFF_POLL_INTERVAL = 86400000; // 24 hours interval
 
 const STARTUP_STAGES = {
   CONNECTING: 0,
@@ -30,8 +31,12 @@ export default class NetworkStatusStore extends Store {
   @observable localDifficulty = 0;
   @observable networkDifficulty = 0;
   @observable isLoadingWallets = true;
+  @observable isSystemTimeCorrect = true;
   @observable syncProgressRequest: Request<GetSyncProgressResponse> = new Request(
     this.api.getSyncProgress
+  );
+  @observable localTimeDifferenceRequest: Request<GetLocalTimeDifferenceResponse> = new Request(
+    this.api.getLocalTimeDifference
   );
   @observable _localDifficultyStartedWith = null;
 
@@ -44,8 +49,10 @@ export default class NetworkStatusStore extends Store {
     this.registerReactions([
       this._redirectToWalletAfterSync,
       this._redirectToLoadingWhenDisconnected,
+      this._redirectToSyncingWhenLocalTimeDifferent,
     ]);
     this._pollSyncProgress();
+    this._pollLocalTimeDifference();
   }
 
   teardown() {
@@ -126,11 +133,6 @@ export default class NetworkStatusStore extends Store {
     );
   }
 
-  @computed get isSystemTimeCorrect(): boolean {
-    // TODO - replace hardcoded value with api response
-    return true;
-  }
-
   @action _updateSyncProgress = async () => {
     try {
       const difficulty = await this.syncProgressRequest.execute().promise;
@@ -161,6 +163,20 @@ export default class NetworkStatusStore extends Store {
       Logger.debug('Connection Lost. Reconnecting …');
     }
   };
+
+  @action _updateLocalTimeDifference = async () => {
+    try {
+      const response = await this.localTimeDifferenceRequest.execute().promise;
+      runInAction('update time difference', () => (this.isSystemTimeCorrect = response === 0));
+    } catch (error) {
+      runInAction('update time difference', () => (this.isSystemTimeCorrect = false));
+    }
+  }
+
+  _pollLocalTimeDifference() {
+    setInterval(this._updateLocalTimeDifference, TIME_DIFF_POLL_INTERVAL);
+    this._updateLocalTimeDifference();
+  }
 
   _pollSyncProgress() {
     setInterval(this._updateSyncProgress, SYNC_PROGRESS_INTERVAL);
@@ -197,6 +213,13 @@ export default class NetworkStatusStore extends Store {
   _redirectToLoadingWhenDisconnected = () => {
     if (this.stores.app.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION) return;
     if (!this.isConnected) {
+      this._updateSyncProgress();
+      this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
+    }
+  };
+
+  _redirectToSyncingWhenLocalTimeDifferent = () => {
+    if (!this.isSystemTimeCorrect) {
       this._updateSyncProgress();
       this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
     }

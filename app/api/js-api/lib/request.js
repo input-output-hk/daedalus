@@ -1,5 +1,6 @@
 // @flow
 import https from 'https';
+import { has } from 'lodash';
 import querystring from 'querystring';
 
 export type RequestOptions = {
@@ -38,10 +39,10 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}) => (
       // of "Left" (for errors) and "Right" (for success) properties
       response.on('end', () => {
         const parsedBody = JSON.parse(body);
-        if (parsedBody.Right) {
+        if (has(parsedBody, 'Right')) {
           // "Right" means 200 ok (success)
           resolve(parsedBody.Right);
-        } else if (parsedBody.Left) {
+        } else if (has(parsedBody, 'Left')) {
           // "Left" means error case -> return error with contents
           reject(new Error(parsedBody.Left.contents));
         } else {

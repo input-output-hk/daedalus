@@ -52,6 +52,7 @@ export default class Loading extends Component {
     syncPercentage: number,
     hasLoadedCurrentLocale: boolean,
     hasLoadedCurrentTheme: boolean,
+    isSystemTimeCorrect: boolean,
   };
 
   static contextTypes = {
