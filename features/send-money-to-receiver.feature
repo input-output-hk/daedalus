@@ -20,8 +20,8 @@ Feature: Send Money to Receiver
     And I submit the wallet send form
     Then I should be on the "Genesis wallet" wallet "summary" screen
     And the latest transaction should show:
-      | title                      | amountWithoutFees |
-      | wallet.transaction.adaSent | -0.000010         |
+      | title                   | amountWithoutFees |
+      | wallet.transaction.sent | -0.000010         |
     And the balance of "first" wallet should be:
       | balance  |
       | 0.000010 |
@@ -39,8 +39,8 @@ Feature: Send Money to Receiver
     And I submit the wallet send form
     Then I should be on the "Genesis wallet" wallet "summary" screen
     And the latest transaction should show:
-      | title                      | amountWithoutFees |
-      | wallet.transaction.adaSent | -0.000010         |
+      | title                   | amountWithoutFees |
+      | wallet.transaction.sent | -0.000010         |
     And the balance of "first" wallet should be:
       | balance  |
       | 0.000010 |
