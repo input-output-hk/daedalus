@@ -8,6 +8,7 @@ Changelog
 
 - Do not block the UI while wallet is being restored/imported ([PR 457](https://github.com/input-output-hk/daedalus/pull/457))
 - Postpone Update Api call integration ([PR 485](https://github.com/input-output-hk/daedalus/pull/485))
+- Wallet restore recovery phrase textarea replaced with React-Polymorph Autocomplete ([PR 516](https://github.com/input-output-hk/daedalus/pull/516))
 
 ### Fixes
 
@@ -18,12 +19,15 @@ Changelog
 - Fix error message text for A to A transaction error ([PR 484](https://github.com/input-output-hk/daedalus/pull/484))
 - Fix "label prop type" checkbox issue in react-polymorph ([PR 487](https://github.com/input-output-hk/daedalus/pull/487))
 - Remove all drag and drop instructions from UI ([PR 495](https://github.com/input-output-hk/daedalus/pull/495))
+- Preferences saved to local storage prefixed with network ([PR 501](https://github.com/input-output-hk/daedalus/pull/501))
+- Disable wallet import and export features for the mainnet ([PR 503](https://github.com/input-output-hk/daedalus/pull/503))
 - Correctly prevent max-window-size in electron ([PR 532](https://github.com/input-output-hk/daedalus/pull/532))
 
 ### Chores
 
 - Update version in About dialog to 0.8.2 ([PR 496](https://github.com/input-output-hk/daedalus/pull/496))
 - Set Dark theme as default one for the mainnet ([PR 497](https://github.com/input-output-hk/daedalus/pull/497))
+- Only log errors to papertrail ([PR 509](https://github.com/input-output-hk/daedalus/pull/509))
 - Update MobX React Form to latest version ([PR 533](https://github.com/input-output-hk/daedalus/pull/533))
 
 ## 0.8.0

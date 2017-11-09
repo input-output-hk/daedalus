@@ -52,6 +52,7 @@ import {
   IncorrectWalletPasswordError,
 } from './errors';
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
+import environment from '../environment';
 
 import { getSyncProgress } from './js-api/getSyncProgress';
 // import { makePayment } from './js-api/makePayment';
@@ -75,8 +76,16 @@ const tlsConfig = ClientApi.tlsInit(ca);
 //   console.log('isValidRedeemCode', result);
 // })();
 
+const networkForLocalStorage = String(environment.NETWORK);
+const localStorageKeys = {
+  USER_LOCALE: networkForLocalStorage + '-USER-LOCALE',
+  TERMS_OF_USE_ACCEPTANCE: networkForLocalStorage + '-TERMS-OF-USE-ACCEPTANCE',
+  SEND_LOGS_CHOICE: networkForLocalStorage + '-SEND-LOGS-CHOICE',
+  THEME: networkForLocalStorage + '-THEME'
+};
+
 const getUserLocaleFromLocalStorage = () => new Promise((resolve, reject) => {
-  localStorage.get('userLocale', (error, response) => {
+  localStorage.get(localStorageKeys.USER_LOCALE, (error, response) => {
     if (error) return reject(error);
     if (!response.locale) return resolve('');
     resolve(response.locale);
@@ -84,20 +93,20 @@ const getUserLocaleFromLocalStorage = () => new Promise((resolve, reject) => {
 });
 
 const setUserLocaleInLocalStorage = (locale) => new Promise((resolve, reject) => {
-  localStorage.set('userLocale', { locale }, (error) => {
+  localStorage.set(localStorageKeys.USER_LOCALE, { locale }, (error) => {
     if (error) return reject(error);
     resolve();
   });
 });
 
 const unsetUserLocaleFromLocalStorage = () => new Promise((resolve) => {
-  localStorage.remove('userLocale', () => {
+  localStorage.remove(localStorageKeys.USER_LOCALE, () => {
     resolve();
   });
 });
 
 const getTermsOfUseAcceptanceFromLocalStorage = () => new Promise((resolve, reject) => {
-  localStorage.get('termsOfUseAcceptance', (error, response) => {
+  localStorage.get(localStorageKeys.TERMS_OF_USE_ACCEPTANCE, (error, response) => {
     if (error) return reject(error);
     if (!response.accepted) return resolve(false);
     resolve(response.accepted);
@@ -105,20 +114,20 @@ const getTermsOfUseAcceptanceFromLocalStorage = () => new Promise((resolve, reje
 });
 
 const setTermsOfUseAcceptanceInLocalStorage = () => new Promise((resolve, reject) => {
-  localStorage.set('termsOfUseAcceptance', { accepted: true }, (error) => {
+  localStorage.set(localStorageKeys.TERMS_OF_USE_ACCEPTANCE, { accepted: true }, (error) => {
     if (error) return reject(error);
     resolve();
   });
 });
 
 const unsetTermsOfUseAcceptanceFromLocalStorage = () => new Promise((resolve) => {
-  localStorage.remove('termsOfUseAcceptance', () => {
+  localStorage.remove(localStorageKeys.TERMS_OF_USE_ACCEPTANCE, () => {
     resolve();
   });
 });
 
 const getSendLogsChoiceFromLocalStorage = () => new Promise((resolve, reject) => {
-  localStorage.get('sendLogsChoice', (error, response) => {
+  localStorage.get(localStorageKeys.SEND_LOGS_CHOICE, (error, response) => {
     if (error) return reject(error);
     if (typeof response.sendLogs === 'undefined') {
       return resolve(null);
@@ -128,20 +137,20 @@ const getSendLogsChoiceFromLocalStorage = () => new Promise((resolve, reject) =>
 });
 
 const setSendLogsChoiceInLocalStorage = (sendLogs) => new Promise((resolve, reject) => {
-  localStorage.set('sendLogsChoice', { sendLogs }, (error) => {
+  localStorage.set(localStorageKeys.SEND_LOGS_CHOICE, { sendLogs }, (error) => {
     if (error) return reject(error);
     resolve();
   });
 });
 
 const unsetSendLogsChoiceFromLocalStorage = () => new Promise((resolve) => {
-  localStorage.remove('sendLogsChoice', () => {
+  localStorage.remove(localStorageKeys.SEND_LOGS_CHOICE, () => {
     resolve();
   });
 });
 
 const getUserThemeFromLocalStorage = () => new Promise((resolve, reject) => {
-  localStorage.get('theme', (error, response) => {
+  localStorage.get(localStorageKeys.THEME, (error, response) => {
     if (error) return reject(error);
     if (!response.theme) return resolve('');
     resolve(response.theme);
@@ -149,14 +158,14 @@ const getUserThemeFromLocalStorage = () => new Promise((resolve, reject) => {
 });
 
 const setUserThemeInLocalStorage = (theme) => new Promise((resolve, reject) => {
-  localStorage.set('theme', { theme }, (error) => {
+  localStorage.set(localStorageKeys.THEME, { theme }, (error) => {
     if (error) return reject(error);
     resolve();
   });
 });
 
 const unsetUserThemeFromLocalStorage = () => new Promise((resolve) => {
-  localStorage.remove('theme', () => {
+  localStorage.remove(localStorageKeys.THEME, () => {
     resolve();
   });
 });

@@ -34,6 +34,8 @@ main = do
   copyFile "cardano-launcher" (dir <> "/cardano-launcher")
   copyFile "cardano-node" (dir <> "/cardano-node")
   copyFile "wallet-topology.yaml" (dir <> "/wallet-topology.yaml")
+  copyFile "configuration.yaml" (dir <> "/configuration.yaml")
+  copyFile "mainnet-genesis.json" (dir <> "/mainnet-genesis.json")
   copyFile "log-config-prod.yaml" (dir <> "/log-config-prod.yaml")
   copyFile "data/ip-dht-mappings" (dir <> "/ip-dht-mappings")
   copyFile "data/ip-dht-mappings" (dir <> "/ip-dht-mappings")
@@ -52,7 +54,8 @@ main = do
   writeFile (dir <> "/Daedalus") $ unlines
     [ "#!/usr/bin/env bash"
     , "cd \"$(dirname $0)\""
-    , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Secrets-0.6\""
+    , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Secrets-1.0\""
+    , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Logs/pub\""
     , doLauncher
     ]
   run "chmod" ["+x", T.pack (dir <> "/Daedalus")]

@@ -1,12 +1,13 @@
 // @flow
 import React, { Component } from 'react';
+import { join } from 'lodash';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
-import TextArea from 'react-polymorph/lib/components/TextArea';
-import SimpleTextAreaSkin from 'react-polymorph/lib/skins/simple/TextAreaSkin';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
+import Autocomplete from 'react-polymorph/lib/components/Autocomplete';
+import SimpleAutocompleteSkin from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
@@ -42,6 +43,11 @@ const messages = defineMessages({
     id: 'wallet.restore.dialog.recovery.phrase.input.hint',
     defaultMessage: '!!!Enter recovery phrase',
     description: 'Hint "Enter recovery phrase" for the recovery phrase input on the wallet restore dialog.'
+  },
+  recoveryPhraseNoResults: {
+    id: 'wallet.restore.dialog.recovery.phrase.input.noResults',
+    defaultMessage: '!!!No results',
+    description: '"No results" message for the recovery phrase input search results.'
   },
   importButtonLabel: {
     id: 'wallet.restore.dialog.restore.wallet.button.label',
@@ -95,6 +101,7 @@ export default class WalletRestoreDialog extends Component {
     isSubmitting: boolean,
     mnemonicValidator: Function,
     error?: ?LocalizableError,
+    suggestedMnemonics: Array<string>,
   };
 
   state = {
@@ -119,10 +126,10 @@ export default class WalletRestoreDialog extends Component {
         placeholder: this.context.intl.formatMessage(messages.recoveryPhraseInputHint),
         value: '',
         validators: ({ field }) => {
-          const value = field.value;
+          const value = join(field.value, ' ');
           if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           return [
-            this.props.mnemonicValidator(field.value),
+            this.props.mnemonicValidator(value),
             this.context.intl.formatMessage(messages.invalidRecoveryPhrase)
           ];
         },
@@ -175,7 +182,7 @@ export default class WalletRestoreDialog extends Component {
         const { createPassword } = this.state;
         const { recoveryPhrase, walletName, walletPassword } = form.values();
         const walletData = {
-          recoveryPhrase,
+          recoveryPhrase: join(recoveryPhrase, ' '),
           walletName,
           walletPassword: createPassword ? walletPassword : null,
         };
@@ -188,7 +195,7 @@ export default class WalletRestoreDialog extends Component {
   render() {
     const { intl } = this.context;
     const { form } = this;
-    const { isSubmitting, error, onCancel } = this.props;
+    const { suggestedMnemonics, isSubmitting, error, onCancel } = this.props;
     const { createPassword } = this.state;
 
     const dialogClasses = classnames([
@@ -238,13 +245,14 @@ export default class WalletRestoreDialog extends Component {
           skin={<SimpleInputSkin />}
         />
 
-        <TextArea
-          className="recoveryPhrase"
-          autoResize={false}
-          rows={3}
+        <Autocomplete
+          options={suggestedMnemonics}
+          maxSelections={12}
           {...recoveryPhraseField.bind()}
           error={recoveryPhraseField.error}
-          skin={<SimpleTextAreaSkin />}
+          maxVisibleOptions={5}
+          noResultsMessage={intl.formatMessage(messages.recoveryPhraseNoResults)}
+          skin={<SimpleAutocompleteSkin />}
         />
 
         <div className={styles.walletPassword}>

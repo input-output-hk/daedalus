@@ -14,9 +14,11 @@ Feature: Add Wallet via Sidebar
     And I see the add wallet dialog
     And I click on the restore wallet button in add wallet dialog
     And I see the restore wallet dialog
-    And I submit the restore wallet dialog with the following inputs:
-    | walletName      | recoveryPhrase                                                            |
-    | Restored wallet | marriage glide need gold actress grant judge eager spawn plug sister whip |
+    And I enter wallet name "Restored wallet" in restore wallet dialog
+    And I enter recovery phrase in restore wallet dialog:
+    | recoveryPhrase                                                            |
+    | marriage glide need gold actress grant judge eager spawn plug sister whip |
+    And I submit the restore wallet dialog
     Then I should not see the restore wallet dialog anymore
     And I should see the restore status notification while restore is running
     And I should not see the restore status notification one restore is finished
@@ -28,10 +30,15 @@ Feature: Add Wallet via Sidebar
     And I see the add wallet dialog
     And I click on the restore wallet button in add wallet dialog
     And I see the restore wallet dialog
+    And I enter wallet name "Restored wallet" in restore wallet dialog
+    And I enter recovery phrase in restore wallet dialog:
+    | recoveryPhrase                                                            |
+    | marriage glide need gold actress grant judge eager spawn plug sister whip |
     And I toggle "Activate to create password" switch on the restore wallet dialog
-    And I submit the restore wallet with spending password dialog with the following inputs:
-    | walletName      | password  | repeatedPassword | recoveryPhrase                                                            |
-    | Restored wallet | Secret123 | Secret123        | marriage glide need gold actress grant judge eager spawn plug sister whip |
+    And I enter wallet password in restore wallet dialog:
+    | password  | repeatedPassword |
+    | Secret123 | Secret123        |
+    And I submit the restore wallet dialog
     Then I should not see the restore wallet dialog anymore
     And I should see the restore status notification while restore is running
     And I should not see the restore status notification one restore is finished
