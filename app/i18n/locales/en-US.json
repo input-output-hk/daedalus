@@ -19,6 +19,8 @@
   "cardano.node.update.notification.postpone.button.label": "Postpone until restart",
   "cardano.node.update.notification.titleWithVersion": "Cardano-Core update v{version} is available",
   "cardano.node.update.notification.titleWithoutVersion": "Cardano-Core update is available",
+  "environment.currency.ada": "ADA",
+  "environment.currency.etc": "ETC",
   "global.assuranceLevel.normal": "Normal",
   "global.assuranceLevel.strict": "Strict",
   "global.errors.AdaRedemptionCertificateParseError": "The ADA redemption code could not be parsed from the given document.",
@@ -50,8 +52,7 @@
   "inline.editing.input.change.label": "change",
   "inline.editing.input.changesSaved": "Your changes have been saved",
   "loading.screen.connectingToNetworkMessage": "Connecting to network",
-  "loading.screen.ada.loadingWalletData": "Loading wallet data",
-  "loading.screen.etc.loadingAccountData": "Loading wallet data",
+  "loading.screen.loadingWalletData": "Loading wallet data",
   "loading.screen.reconnectingToNetworkMessage": "Network connection lost - reconnecting",
   "loading.screen.syncingBlocksMessage": "Syncing blocks",
   "loading.screen.waitingForSyncToStart": "Connected - waiting for block syncing to start",
@@ -278,7 +279,5 @@
   "wallet.transaction.type.exchange": "Exchange",
   "wallet.transactions.no.transactions": "No transactions",
   "wallet.transactions.no.transactions.found": "No transactions found",
-  "window.about.title": "Daedalus",
-  "environment.currency.ada": "ADA",
-  "environment.currency.etc": "ETC"
+  "window.about.title": "Daedalus"
 }
