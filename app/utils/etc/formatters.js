@@ -58,7 +58,7 @@ export const formattedWalletAmount = (
 
   if (withCurrency) formattedAmount += ' ETC';
 
-  return formattedAmount;
+  return formattedAmount.toString();
 };
 
 /* eslint-disable no-tabs */

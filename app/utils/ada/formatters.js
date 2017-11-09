@@ -10,5 +10,5 @@ export const formattedWalletAmount = (
 
   if (withCurrency) formattedAmount += ' ADA';
 
-  return formattedAmount;
+  return formattedAmount.toString();
 };
