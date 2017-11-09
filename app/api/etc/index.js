@@ -18,6 +18,7 @@ import { getEtcBlockByHash } from './getEtcBlock';
 import { isValidMnemonic } from '../../../lib/decrypt';
 import { sendEtcTransaction } from './sendEtcTransaction';
 import { deleteEtcAccount } from './deleteEtcAccount';
+import { changeEtcAccountPassphrase } from './changeEtcAccountPassphrase';
 import {
   getEtcWalletData, setEtcWalletData, unsetEtcWalletData, updateEtcWalletData,
   initEtcWalletsDummyData,
@@ -252,8 +253,11 @@ export default class EtcApi {
     Logger.debug('EtcApi::updateWalletPassword called');
     const { walletId, oldPassword, newPassword } = request;
     try {
-      // TODO: insert real Api update wallet password call here
-      console.debug(walletId, oldPassword, newPassword);
+      await changeEtcAccountPassphrase({
+        address: walletId,
+        oldPassphrase: oldPassword || '',
+        newPassphrase: newPassword || '',
+      });
       Logger.debug('EtcApi::updateWalletPassword success');
       const hasPassword = newPassword !== null;
       const passwordUpdateDate = hasPassword ? new Date() : null;
@@ -261,6 +265,9 @@ export default class EtcApi {
       return true;
     } catch (error) {
       Logger.error('EtcApi::updateWalletPassword error: ' + stringifyError(error));
+      if (error.message.includes('Could not decrypt key with given passphrase')) {
+        throw new IncorrectWalletPasswordError();
+      }
       throw new GenericApiError();
     }
   }
@@ -284,7 +291,6 @@ export default class EtcApi {
     const { recoveryPhrase: mnemonic, walletName: name, walletPassword: password } = request;
     const privateKey = mnemonicToSeedHex(mnemonic);
     try {
-      // TODO: check if we are allowed to use create endpoint for this call
       const response: CreateEtcAccountResponse = await createEtcAccount([
         privateKey, password || '' // if password is not provided send empty string to the Api
       ]);
