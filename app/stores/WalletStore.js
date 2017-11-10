@@ -8,6 +8,7 @@ import { buildRoute, matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
 import WalletAddDialog from '../components/wallet/WalletAddDialog';
 import type { GetWalletRecoveryPhraseResponse } from '../api/common';
+import environment from '../environment';
 
 /**
  * The base wallet store that contains the shared logic
@@ -150,7 +151,26 @@ export default class WalletsStore extends Store {
 
   // ACTIONS
 
-  @action refreshWalletsData = () => this.walletsRequest.execute();
+  @action refreshWalletsData = async () => {
+    if (!this.stores.networkStatus.isConnected) return;
+    const result = await this.walletsRequest.execute().promise;
+    if (!result) return;
+    runInAction('refresh active wallet', () => {
+      if (this.active) {
+        this._setActiveWallet({ walletId: this.active.id });
+      }
+    });
+    const transactions = this.stores[environment.API].transactions;
+    runInAction('refresh transaction data', () => {
+      const walletIds = result.map((wallet: Wallet) => wallet.id);
+      transactions.transactionsRequests = walletIds.map(walletId => ({
+        walletId,
+        recentRequest: transactions._getTransactionsRecentRequest(walletId),
+        allRequest: transactions._getTransactionsAllRequest(walletId),
+      }));
+      transactions._refreshTransactionData();
+    });
+  };
 
   @action _setActiveWallet = ({ walletId }: { walletId: string }) => {
     if (this.hasAnyWallets) {

@@ -18,20 +18,30 @@ import { getEtcBlockByHash } from './getEtcBlock';
 import { isValidMnemonic } from '../../../lib/decrypt';
 import { sendEtcTransaction } from './sendEtcTransaction';
 import { deleteEtcAccount } from './deleteEtcAccount';
+import { changeEtcAccountPassphrase } from './changeEtcAccountPassphrase';
 import {
   getEtcWalletData, setEtcWalletData, unsetEtcWalletData, updateEtcWalletData,
   initEtcWalletsDummyData,
 } from './etcLocalStorage';
-import WalletTransaction from '../../domain/WalletTransaction';
-import type { GetSyncProgressResponse, GetWalletRecoveryPhraseResponse } from '../common';
+import { ETC_DEFAULT_GAS_PRICE, WEI_PER_ETC } from '../../config/numbersConfig';
+import { getEtcEstimatedGas } from './getEtcEstimatedGas';
+import { getEtcTransactionsForAccount } from './getEtcTransactions';
+import WalletTransaction, { transactionStates, transactionTypes } from '../../domain/WalletTransaction';
+import type {
+  GetSyncProgressResponse,
+  GetWalletRecoveryPhraseResponse,
+  GetTransactionsParams,
+  GetTransactionsResponse,
+} from '../common';
 import type { GetEtcSyncProgressResponse } from './getEtcSyncProgress';
 import type { GetEtcAccountsResponse } from './getEtcAccounts';
 import type { GetEtcAccountBalanceResponse } from './getEtcAccountBalance';
 import type { CreateEtcAccountResponse } from './createEtcAccount';
 import type { SendEtcTransactionParams, SendEtcTransactionResponse } from './sendEtcTransaction';
 import type { GetEtcTransactionByHashResponse } from './getEtcTransaction';
-import { ETC_DEFAULT_GAS_PRICE, WEI_PER_ETC } from '../../config/numbersConfig';
-import { getEtcEstimatedGas } from './getEtcEstimatedGas';
+import type { GetEtcTransactionsResponse } from './getEtcTransactions';
+import type { EtcTransaction } from './types';
+import type { TransactionType } from '../../domain/WalletTransaction';
 
 // Load Dummy ETC Wallets into Local Storage
 (async () => {
@@ -143,6 +153,34 @@ export default class EtcApi {
     }
   }
 
+  getTransactions = async (params: GetTransactionsParams): Promise<GetTransactionsResponse> => {
+    Logger.debug('EtcApi::getTransactions called: ' + stringifyData(params));
+    try {
+      const transactions: GetEtcTransactionsResponse = await getEtcTransactionsForAccount({
+        accountAddress: params.walletId,
+      });
+      Logger.debug('EtcApi::getTransactions success: ' + stringifyData(transactions));
+      const receivedTxs = await Promise.all(
+        transactions.received.map(async (tx: EtcTransaction) => (
+          _createWalletTransactionFromServerData(transactionTypes.INCOME, tx)
+        ))
+      );
+      const sentTxs = await Promise.all(
+        transactions.sent.map(async (tx: EtcTransaction) => (
+          _createWalletTransactionFromServerData(transactionTypes.EXPEND, tx)
+        ))
+      );
+      const allTxs = receivedTxs.concat(sentTxs);
+      return {
+        transactions: allTxs,
+        total: allTxs.length,
+      };
+    } catch (error) {
+      Logger.error('EtcApi::getTransactions error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
   async createWallet(request: CreateWalletRequest): Promise<CreateWalletResponse> {
     Logger.debug('EtcApi::createWallet called');
     const { name, mnemonic, password } = request;
@@ -215,8 +253,11 @@ export default class EtcApi {
     Logger.debug('EtcApi::updateWalletPassword called');
     const { walletId, oldPassword, newPassword } = request;
     try {
-      // TODO: insert real Api update wallet password call here
-      console.debug(walletId, oldPassword, newPassword);
+      await changeEtcAccountPassphrase({
+        address: walletId,
+        oldPassphrase: oldPassword || '',
+        newPassphrase: newPassword || '',
+      });
       Logger.debug('EtcApi::updateWalletPassword success');
       const hasPassword = newPassword !== null;
       const passwordUpdateDate = hasPassword ? new Date() : null;
@@ -224,6 +265,9 @@ export default class EtcApi {
       return true;
     } catch (error) {
       Logger.error('EtcApi::updateWalletPassword error: ' + stringifyError(error));
+      if (error.message.includes('Could not decrypt key with given passphrase')) {
+        throw new IncorrectWalletPasswordError();
+      }
       throw new GenericApiError();
     }
   }
@@ -247,7 +291,6 @@ export default class EtcApi {
     const { recoveryPhrase: mnemonic, walletName: name, walletPassword: password } = request;
     const privateKey = mnemonicToSeedHex(mnemonic);
     try {
-      // TODO: check if we are allowed to use create endpoint for this call
       const response: CreateEtcAccountResponse = await createEtcAccount([
         privateKey, password || '' // if password is not provided send empty string to the Api
       ]);
@@ -291,22 +334,29 @@ export default class EtcApi {
   }
 }
 
-const _createTransaction = async (senderAccount: string, txHash: string) => {
-  const txData: GetEtcTransactionByHashResponse = await getEtcTransactionByHash(txHash);
+const _createWalletTransactionFromServerData = async (
+  type: TransactionType, txData: EtcTransaction
+) => {
   const txBlock = txData.blockHash ? await getEtcBlockByHash(txData.blockHash) : null;
   const blockDate = txBlock ? unixTimestampToDate(txBlock.timestamp) : new Date();
   return new WalletTransaction({
     id: txData.hash,
-    type: senderAccount === txData.from ? 'expend' : 'income',
+    type,
     title: '',
     description: '',
-    amount: quantityToBigNumber(txData.value),
+    amount: quantityToBigNumber(txData.value).dividedBy(WEI_PER_ETC),
     date: blockDate,
     numberOfConfirmations: 0,
     addresses: {
       from: [txData.from],
       to: [txData.to],
     },
-    condition: 'CPtxInBlocks',
+    state: txData.pending ? transactionStates.PENDING : transactionStates.OK,
   });
+};
+
+const _createTransaction = async (senderAccount: string, txHash: string) => {
+  const txData: GetEtcTransactionByHashResponse = await getEtcTransactionByHash(txHash);
+  const type = senderAccount === txData.from ? transactionTypes.EXPEND : transactionTypes.INCOME;
+  return _createWalletTransactionFromServerData(type, txData);
 };

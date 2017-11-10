@@ -1,11 +1,19 @@
 // @flow
 import BigNumber from 'bignumber.js';
+import { DECIMAL_PLACES_IN_ETC } from '../../config/numbersConfig';
 
 // Amount shown in the Topbar and Sidebar
-export const formattedWalletAmount = (amount: BigNumber) => {
+export const formattedWalletAmount = (
+  amount: BigNumber,
+  withCurrency: boolean = true,
+  long: boolean = false,
+) => {
   let formattedAmount = '';
+
   /* eslint-disable max-len */
-  if (amount.isZero()) {
+  if (long) {
+    formattedAmount = amount.toFormat(DECIMAL_PLACES_IN_ETC);
+  } else if (amount.isZero()) {
     formattedAmount = '0';
   } else if (amount.lessThan(0.000001)) {
     formattedAmount = '< 0.000001';
@@ -47,7 +55,10 @@ export const formattedWalletAmount = (amount: BigNumber) => {
     formattedAmount = `${amount.dividedBy(1000000000000000000000000000000000000000000000000).round(1, BigNumber.ROUND_DOWN)}TTTT`;
   }
   /* eslint-disable max-len */
-  return `${formattedAmount} ETC`;
+
+  if (withCurrency) formattedAmount += ' ETC';
+
+  return formattedAmount.toString();
 };
 
 /* eslint-disable no-tabs */

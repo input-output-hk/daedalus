@@ -137,3 +137,20 @@ export default defineMessages({
     description: 'Placeholder for the "Password" inputs in the create wallet dialog.',
   },
 });
+
+export const environmentSpecificMessages = {
+  ada: defineMessages({
+    currency: {
+      id: 'environment.currency.ada',
+      defaultMessage: '!!!Ada',
+      description: 'Name for "Ada" unit.'
+    },
+  }),
+  etc: defineMessages({
+    currency: {
+      id: 'environment.currency.etc',
+      defaultMessage: '!!!Etc',
+      description: 'Name for "Ada" unit.'
+    },
+  }),
+};

@@ -1,5 +1,6 @@
 import { defineMessages } from 'react-intl';
 import LocalizableError from '../i18n/LocalizableError';
+import WalletTransaction from '../domain/WalletTransaction';
 
 const messages = defineMessages({
   genericApiError: {
@@ -52,3 +53,15 @@ export type GetSyncProgressResponse = {
 };
 
 export type GetWalletRecoveryPhraseResponse = Array<string>;
+
+export type GetTransactionsParams = {
+  walletId: string,
+  searchTerm: string,
+  skip: number,
+  limit: number,
+};
+
+export type GetTransactionsResponse = {
+  transactions: Array<WalletTransaction>,
+  total: number,
+};

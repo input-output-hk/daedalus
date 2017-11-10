@@ -48,7 +48,7 @@ export default class EtcWalletsStore extends WalletStore {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
     const { receiver, amount, password } = transactionDetails;
-    const transaction = await this.sendMoneyRequest.execute({
+    await this.sendMoneyRequest.execute({
       from: wallet.id,
       to: receiver,
       value: new BigNumber(amount),
@@ -56,7 +56,7 @@ export default class EtcWalletsStore extends WalletStore {
       gasPrice: ETC_DEFAULT_GAS_PRICE,
     });
     if (!this.sendMoneyRequest.isError) {
-      this.refreshWalletsData();
+      await this.refreshWalletsData();
       this.actions.dialogs.closeActiveDialog.trigger();
       this.goToWalletRoute(wallet.id);
     }

@@ -229,8 +229,8 @@ export default class WalletSendForm extends Component {
               error={transactionFeeError || amountField.error}
               // AmountInputSkin props
               currency={currencyUnit}
-              fees={transactionFee.toPrecision()}
-              total={totalAmount.toPrecision()}
+              fees={transactionFee.toFormat(currencyMaxFractionalDigits)}
+              total={totalAmount.toFormat(currencyMaxFractionalDigits)}
               skin={<AmountInputSkin />}
             />
           </div>

@@ -15,12 +15,12 @@ import { ipcRenderer, remote } from 'electron';
 import BigNumber from 'bignumber.js';
 import { Logger, stringifyData, stringifyError } from '../../utils/logging';
 import Wallet from '../../domain/Wallet';
-import WalletTransaction from '../../domain/WalletTransaction';
+import WalletTransaction, { transactionTypes } from '../../domain/WalletTransaction';
 import WalletAddress from '../../domain/WalletAddress';
-import type { GetSyncProgressResponse, GetWalletRecoveryPhraseResponse } from '../common';
 import { isValidMnemonic } from '../../../lib/decrypt';
 import {
-  GenericApiError, IncorrectWalletPasswordError,
+  GenericApiError,
+  IncorrectWalletPasswordError,
   WalletAlreadyRestoredError,
 } from '../common';
 import {
@@ -60,6 +60,12 @@ import { applyAdaUpdate } from './applyAdaUpdate';
 import { adaTestReset } from './adaTestReset';
 import { getAdaHistoryByWallet } from './getAdaHistoryByWallet';
 import { getAdaAccountRecoveryPhrase } from './getAdaAccountRecoveryPhrase';
+import type {
+  GetSyncProgressResponse,
+  GetWalletRecoveryPhraseResponse,
+  GetTransactionsParams,
+  GetTransactionsResponse,
+} from '../common';
 
 /**
  * The api layer that is used for all requests to the
@@ -80,16 +86,6 @@ export type CreateAddressResponse = WalletAddress;
 export type CreateAddressRequest = {
   accountId: string,
   password: ?string,
-};
-export type GetTransactionsRequest = {
-  walletId: string,
-  searchTerm: string,
-  skip: number,
-  limit: number,
-};
-export type GetTransactionsResponse = {
-  transactions: Array<WalletTransaction>,
-  total: number,
 };
 export type CreateWalletRequest = {
   name: string,
@@ -230,7 +226,7 @@ export default class AdaApi {
     }
   }
 
-  async getTransactions(request: GetTransactionsRequest): Promise<GetTransactionsResponse> {
+  async getTransactions(request: GetTransactionsParams): Promise<GetTransactionsResponse> {
     Logger.debug('AdaApi::searchHistory called: ' + stringifyData(request));
     const { walletId, skip, limit } = request;
     try {
@@ -726,6 +722,14 @@ const _createAddressFromServerData = action(
   )
 );
 
+const _conditionToTxState = (condition: string) => {
+  switch (condition) {
+    case 'CPtxApplying': return 'pending';
+    case 'CPtxWontApply': return 'failed';
+    default: return 'ok'; // CPtxInBlocks && CPtxNotTracked
+  }
+};
+
 const _createTransactionFromServerData = action(
   'AdaApi::_createTransactionFromServerData', (data: ApiTransaction) => {
     const coins = data.ctAmount.getCCoin;
@@ -733,7 +737,7 @@ const _createTransactionFromServerData = action(
     return new WalletTransaction({
       id: data.ctId,
       title: ctmTitle || data.ctIsOutgoing ? 'Ada sent' : 'Ada received',
-      type: data.ctIsOutgoing ? 'expend' : 'income',
+      type: data.ctIsOutgoing ? transactionTypes.EXPEND : transactionTypes.INCOME,
       amount: new BigNumber(data.ctIsOutgoing ? -1 * coins : coins).dividedBy(LOVELACES_PER_ADA),
       date: new Date(ctmDate * 1000),
       description: ctmDescription || '',
@@ -742,7 +746,7 @@ const _createTransactionFromServerData = action(
         from: data.ctInputs.map(address => address[0]),
         to: data.ctOutputs.map(address => address[0]),
       },
-      condition: data.ctCondition,
+      state: _conditionToTxState(data.ctCondition),
     });
   }
 );

@@ -1,7 +1,7 @@
 // @flow
 import { observable, action } from 'mobx';
 import AdaWalletsStore from './AdaWalletsStore';
-import TransactionsStore from './TransactionsStore';
+import TransactionsStore from './AdaTransactionsStore';
 import AdaRedemptionStore from './AdaRedemptionStore';
 import NodeUpdateStore from './NodeUpdateStore';
 import AdaWalletSettingsStore from './AdaWalletSettingsStore';

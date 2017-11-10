@@ -14,7 +14,7 @@ export const deleteEtcAccount = (
     port: ETC_API_PORT,
   }, {
     jsonrpc: '2.0',
-    method: 'personal_deleteWallet',
+    method: 'daedalus_deleteWallet',
     params: [accountId]
   })
 );

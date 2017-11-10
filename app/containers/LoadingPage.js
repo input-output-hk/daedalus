@@ -10,9 +10,9 @@ import cardanoLogoWhite from '../assets/images/cardano-logo-white.inline.svg';
 
 const messages = defineMessages({
   loadingWalletData: {
-    id: 'loading.screen.ada.loadingWalletData',
+    id: 'loading.screen.loadingWalletData',
     defaultMessage: '!!!Loading wallet data',
-    description: 'Message "Loading wallet data" on the ada loading screen.'
+    description: 'Message "Loading wallet data" on the loading screen.'
   },
 });
 
