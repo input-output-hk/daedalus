@@ -9,7 +9,6 @@ import type {
   ApiWallet,
   ApiWallets,
 } from 'daedalus-client-api';
-import ClientApi from 'daedalus-client-api';
 import { action } from 'mobx';
 import { ipcRenderer, remote } from 'electron';
 import BigNumber from 'bignumber.js';
@@ -18,6 +17,7 @@ import Wallet from '../../domain/Wallet';
 import WalletTransaction, { transactionTypes } from '../../domain/WalletTransaction';
 import WalletAddress from '../../domain/WalletAddress';
 import { isValidMnemonic } from '../../../lib/decrypt';
+import { isValidRedemptionKey, isValidPaperVendRedemptionKey } from '../../../lib/redemption-key-validation';
 import {
   GenericApiError,
   IncorrectWalletPasswordError,
@@ -372,16 +372,15 @@ export default class AdaApi {
   }
 
   isValidMnemonic(mnemonic: string): Promise<boolean> {
-    console.debug('isValidMnemonic: ', isValidMnemonic(mnemonic, 12));
     return isValidMnemonic(mnemonic, 12);
   }
 
   isValidRedemptionKey(mnemonic: string): Promise<boolean> {
-    return ClientApi.isValidRedemptionKey(mnemonic);
+    return isValidRedemptionKey(mnemonic);
   }
 
   isValidPaperVendRedemptionKey(mnemonic: string): Promise<boolean> {
-    return ClientApi.isValidPaperVendRedemptionKey(mnemonic);
+    return isValidPaperVendRedemptionKey(mnemonic);
   }
 
   isValidRedemptionMnemonic(mnemonic: string): Promise<boolean> {
@@ -389,13 +388,13 @@ export default class AdaApi {
   }
 
   getWalletRecoveryPhrase(): Promise<GetWalletRecoveryPhraseResponse> {
-    Logger.debug('CardanoClientApi::getWalletRecoveryPhrase called');
+    Logger.debug('AdaApi::getWalletRecoveryPhrase called');
     try {
       const response = new Promise((resolve) => resolve(getAdaAccountRecoveryPhrase()));
-      Logger.debug('CardanoClientApi::getWalletRecoveryPhrase success');
+      Logger.debug('AdaApi::getWalletRecoveryPhrase success');
       return response;
     } catch (error) {
-      Logger.error('CardanoClientApi::getWalletRecoveryPhrase error: ' + stringifyError(error));
+      Logger.error('AdaApi::getWalletRecoveryPhrase error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
