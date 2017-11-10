@@ -11,13 +11,14 @@ export type ChangeEtcAccountPassphraseParams = {
 export type ChangeEtcAccountPassphraseResponse = '';
 
 export const changeEtcAccountPassphrase = (
- { address, oldPassphrase, newPassphrase }: ChangeEtcAccountPassphraseParams
+  ca: string, { address, oldPassphrase, newPassphrase }: ChangeEtcAccountPassphraseParams
 ): Promise<ChangeEtcAccountPassphraseResponse> => (
   request({
     hostname: ETC_API_HOST,
     method: 'POST',
     path: '/',
     port: ETC_API_PORT,
+    ca,
   }, {
     jsonrpc: '2.0',
     method: 'daedalus_changePassphrase',

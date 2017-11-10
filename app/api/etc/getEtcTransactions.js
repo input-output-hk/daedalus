@@ -13,13 +13,14 @@ export type GetEtcTransactionsResponse = {
 };
 
 export const getEtcTransactionsForAccount = (
-  params: GetEtcTransactionsParams
+  ca: string, params: GetEtcTransactionsParams
 ): Promise<GetEtcTransactionsResponse> => (
   request({
     hostname: ETC_API_HOST,
     method: 'POST',
     path: '/',
     port: ETC_API_PORT,
+    ca,
   }, {
     jsonrpc: '2.0',
     method: 'daedalus_getAccountRecentTransactions',
