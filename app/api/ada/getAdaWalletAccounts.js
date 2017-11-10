@@ -3,7 +3,7 @@ import type { ApiAccounts } from 'daedalus-client-api';
 import { request } from './lib/request';
 
 export type getAdaWalletAccountsQueryParams = {
-  accountId: ?string,
+  walletId: ?string,
 };
 
 export const getAdaWalletAccounts = (
