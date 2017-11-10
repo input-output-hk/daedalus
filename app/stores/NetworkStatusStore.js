@@ -21,6 +21,8 @@ const STARTUP_STAGES = {
   RUNNING: 3,
 };
 
+const ALLOWED_TIME_DIFFERENCE = 0;
+
 export default class NetworkStatusStore extends Store {
 
   _startTime = Date.now();
@@ -31,7 +33,8 @@ export default class NetworkStatusStore extends Store {
   @observable localDifficulty = 0;
   @observable networkDifficulty = 0;
   @observable isLoadingWallets = true;
-  @observable isSystemTimeCorrect = true;
+  @observable localTimeDifference = ALLOWED_TIME_DIFFERENCE;
+  @observable allowedTimeDifference = ALLOWED_TIME_DIFFERENCE;
   @observable syncProgressRequest: Request<GetSyncProgressResponse> = new Request(
     this.api.getSyncProgress
   );
@@ -129,7 +132,8 @@ export default class NetworkStatusStore extends Store {
       !this.isConnecting &&
       this.hasBlockSyncingStarted &&
       this.relativeSyncBlocksDifference <= OUT_OF_SYNC_BLOCKS_LIMIT &&
-      this.isSystemTimeCorrect
+      this.localTimeDifferenceRequest.wasExecuted &&
+      this.localTimeDifferenceRequest.result <= ALLOWED_TIME_DIFFERENCE
     );
   }
 
@@ -166,13 +170,12 @@ export default class NetworkStatusStore extends Store {
 
   @action _updateLocalTimeDifference = async () => {
     try {
-      const response = await this.localTimeDifferenceRequest.execute().promise;
-      runInAction('update time difference', () => (this.isSystemTimeCorrect = response === 0));
+      const responese = await this.localTimeDifferenceRequest.execute().promise;
+      runInAction('update time difference', () => (this.localTimeDifference = responese));
     } catch (error) {
-      runInAction('update time difference', () => (this.isSystemTimeCorrect = false));
+      runInAction('update time difference', () => (this.localTimeDifference = ALLOWED_TIME_DIFFERENCE + 1));
     }
   }
-
   _pollLocalTimeDifference() {
     setInterval(this._updateLocalTimeDifference, TIME_DIFF_POLL_INTERVAL);
     this._updateLocalTimeDifference();
@@ -219,7 +222,13 @@ export default class NetworkStatusStore extends Store {
   };
 
   _redirectToSyncingWhenLocalTimeDifferent = () => {
-    if (!this.isSystemTimeCorrect) {
+    if (
+      this.localTimeDifference > ALLOWED_TIME_DIFFERENCE &&
+      !this.isSynced &&
+      this.stores.app.currentRoute !== ROUTES.PROFILE.LANGUAGE_SELECTION &&
+      this.stores.app.currentRoute !== ROUTES.PROFILE.TERMS_OF_USE &&
+      this.stores.app.currentRoute !== ROUTES.PROFILE.SEND_LOGS
+    ) {
       this._updateSyncProgress();
       this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
     }

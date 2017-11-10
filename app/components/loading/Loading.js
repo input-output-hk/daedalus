@@ -52,7 +52,9 @@ export default class Loading extends Component {
     syncPercentage: number,
     hasLoadedCurrentLocale: boolean,
     hasLoadedCurrentTheme: boolean,
-    isSystemTimeCorrect: boolean,
+    localTimeDifference: number,
+    allowedTimeDifference: number,
+    currentLocale: string
   };
 
   static contextTypes = {
@@ -65,7 +67,7 @@ export default class Loading extends Component {
       isConnecting, isSyncing, syncPercentage, isLoadingWallets,
       hasBeenConnected, hasBlockSyncingStarted,
       hasLoadedCurrentLocale, hasLoadedCurrentTheme,
-      isSystemTimeCorrect,
+      localTimeDifference, allowedTimeDifference, currentLocale,
     } = this.props;
     const componentStyles = classNames([
       styles.component,
@@ -107,13 +109,18 @@ export default class Loading extends Component {
               </div>
             )}
             {isSyncing && (
-              <div className='syncingWrapper'>
+              <div className="syncingWrapper">
                 <div className={styles.syncing}>
                   <h1 className={styles.headline}>
                     {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
                   </h1>
                 </div>
-                {!isSystemTimeCorrect && <SystemTimeErrorOverlay />}
+                {(localTimeDifference > allowedTimeDifference) &&
+                  <SystemTimeErrorOverlay
+                    localTimeDifference={localTimeDifference}
+                    currentLocale={currentLocale}
+                  />
+                }
               </div>
             )}
             {!isSyncing && !isConnecting && isLoadingWallets && (

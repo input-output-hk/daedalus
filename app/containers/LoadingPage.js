@@ -17,7 +17,8 @@ export default class LoadingPage extends Component {
     const {
       isConnecting,
       isSyncing,
-      isSystemTimeCorrect,
+      localTimeDifference,
+      allowedTimeDifference,
       syncPercentage,
       isLoadingWallets,
       hasBeenConnected,
@@ -26,12 +27,14 @@ export default class LoadingPage extends Component {
     const {
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
+      currentLocale,
     } = stores.app;
     return (
       <CenteredLayout>
         <Loading
           isSyncing={isSyncing}
-          isSystemTimeCorrect={isSystemTimeCorrect}
+          localTimeDifference={localTimeDifference}
+          allowedTimeDifference={allowedTimeDifference}
           isConnecting={isConnecting}
           syncPercentage={syncPercentage}
           isLoadingWallets={isLoadingWallets}
@@ -39,6 +42,7 @@ export default class LoadingPage extends Component {
           hasBlockSyncingStarted={hasBlockSyncingStarted}
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
+          currentLocale={currentLocale}
         />
       </CenteredLayout>
     );

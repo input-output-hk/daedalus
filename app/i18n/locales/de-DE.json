@@ -95,7 +95,7 @@
   "static.about.release.version": "0.8.2",
   "static.about.title": "!!!Daedalus",
   "systemTime.error.overlayButtonLabel": "!!!See problem solutions",
-  "systemTime.error.overlayText": "!!!ATTENTION: Time of your machine is different from global time. You are 2 hours 12 minutes 54 seconds behind. You need to fix issue, because you are gonna be unable to sync system!",
+  "systemTime.error.overlayText": "!!!ATTENTION: Time of your machine is different from global time. You are {behindTime} behind. You need to fix issue, because you are gonna be unable to sync system!",
   "systemTime.error.overlayTitle": "!!!Daedalus Sync Error",
   "test.environment.testnetLabel": "!!!Testnet vx",
   "wallet.add.dialog.create.description": "!!!Create a new wallet",

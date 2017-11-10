@@ -254,13 +254,13 @@
         "description": "Title of Sync error overlay",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 17
         },
         "file": "app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.overlayTitle",
         "start": {
           "column": 16,
-          "line": 12
+          "line": 13
         }
       },
       {
@@ -268,13 +268,13 @@
         "description": "Text of Sync error overlay",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.overlayText",
         "start": {
           "column": 15,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -282,13 +282,13 @@
         "description": "Button label of Sync error overlay",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.overlayButtonLabel",
         "start": {
           "column": 15,
-          "line": 22
+          "line": 23
         }
       }
     ],
