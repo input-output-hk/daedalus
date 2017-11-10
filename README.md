@@ -1,4 +1,5 @@
 # daedalus
+
 Daedalus - cryptocurrency wallet
 
 ## Automated build

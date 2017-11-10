@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
+import environment from '../../environment';
 import LocalizableError from '../../i18n/LocalizableError';
 import BorderedBox from '../widgets/BorderedBox';
 import InlineEditingInput from '../widgets/forms/InlineEditingInput';
@@ -178,14 +179,16 @@ export default class WalletSettings extends Component {
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
           <div className={styles.actionButtons}>
-            <button
-              className={styles.exportLink}
-              onClick={() => openDialogAction({
-                dialog: WalletExportDialog
-              })}
-            >
-              {intl.formatMessage(messages.exportButtonLabel)}
-            </button>
+            {!environment.isMainnet() ? (
+              <button
+                className={styles.exportLink}
+                onClick={() => openDialogAction({
+                  dialog: WalletExportDialog
+                })}
+              >
+                {intl.formatMessage(messages.exportButtonLabel)}
+              </button>
+            ) : null}
 
             <DeleteWalletButton
               onClick={() => openDialogAction({

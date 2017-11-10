@@ -7,7 +7,7 @@ rem   installer dev mode:  set SKIP_TO_FRONTEND/SKIP_TO_INSTALLER
 set MIN_CARDANO_BYTES=50000000
 set LIBRESSL_VERSION=2.5.3
 set CURL_VERSION=7.54.0
-set CARDANO_BRANCH_DEFAULT=cardano-sl-0.6-staging
+set CARDANO_BRANCH_DEFAULT=cardano-sl-1.0
 set DAEDALUS_VERSION_DEFAULT=local-dev-build-%CARDANO_BRANCH_DEFAULT%
 
 set DAEDALUS_VERSION=%1
@@ -86,6 +86,13 @@ pushd node_modules\daedalus-client-api
 	popd & exit /b 1)
     del CardanoSL.zip
 popd
+
+@echo cardano-sl build-id:
+type node_modules\daedalus-client-api\build-id
+@echo cardano-sl commit-id:
+type node_modules\daedalus-client-api\commit-id
+@echo cardano-sl ci-url:
+type node_modules\daedalus-client-api\ci-url
 
 move   node_modules\daedalus-client-api\log-config-prod.yaml installers\log-config-prod.yaml
 move   node_modules\daedalus-client-api\cardano-node.exe     installers\
