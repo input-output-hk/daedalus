@@ -205,7 +205,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::getAddresses called: ' + stringifyData(request));
     const { walletId } = request;
     try {
-      const response: ApiAccounts = await getAdaWalletAccounts(ca, {}, { walletId });
+      const response: ApiAccounts = await getAdaWalletAccounts(ca, {}, { accountId: walletId });
       Logger.debug('AdaApi::getAddresses success: ' + stringifyData(response));
       if (!response.length) {
         return new Promise((resolve) => resolve({ accountId: null, addresses: [] }));
