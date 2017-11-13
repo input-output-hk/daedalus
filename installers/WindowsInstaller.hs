@@ -102,6 +102,8 @@ parseVersion ver =
 writeInstallerNSIS :: String -> IO ()
 writeInstallerNSIS fullVersion = do
   tempDir <- fmap fromJust $ lookupEnv "TEMP"
+  let viProductVersion = L.intercalate "." $ parseVersion fullVersion
+  echo $ unsafeTextToLine $ pack $ "VIProductVersion: " <> viProductVersion
   writeFile "daedalus.nsi" $ nsis $ do
     _ <- constantStr "Version" (str fullVersion)
     name "Daedalus ($Version)"                  -- The name of the installer
@@ -110,7 +112,7 @@ writeInstallerNSIS fullVersion = do
     unsafeInjectGlobal $ "!define MUI_HEADERIMAGE"
     unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_BITMAP \"icons\\installBanner.bmp\""
     unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_RIGHT"
-    unsafeInjectGlobal $ "VIProductVersion " <> (L.intercalate "." $ parseVersion fullVersion)
+    unsafeInjectGlobal $ "VIProductVersion " <> viProductVersion
     unsafeInjectGlobal $ "VIAddVersionKey \"ProductVersion\" " <> fullVersion
     unsafeInjectGlobal "Unicode true"
     requestExecutionLevel Highest
@@ -120,7 +122,7 @@ writeInstallerNSIS fullVersion = do
     installDirRegKey HKLM "Software/Daedalus" "Install_Dir"  -- ...except when already installed.
 
     page Directory                   -- Pick where to install
-    constant "INSTALLEDAT" $ readRegStr HKLM "Software/Daedalus" "Install_Dir"
+    _ <- constant "INSTALLEDAT" $ readRegStr HKLM "Software/Daedalus" "Install_Dir"
     onPagePre Directory (iff_ (strLength "$INSTALLEDAT" %/= 0) $ abort "")
 
     page InstFiles                   -- Give a progress bar while installing
@@ -128,8 +130,9 @@ writeInstallerNSIS fullVersion = do
     _ <- section "" [Required] $ do
         setOutPath "$INSTDIR"        -- Where to install files in this section
         writeRegStr HKLM "Software/Daedalus" "Install_Dir" "$INSTDIR" -- Used by launcher batch script
-        createDirectory "$APPDATA\\Daedalus\\Secrets-0.6"
+        createDirectory "$APPDATA\\Daedalus\\Secrets-1.0"
         createDirectory "$APPDATA\\Daedalus\\Logs"
+        createDirectory "$APPDATA\\Daedalus\\Logs\\pub"
         createShortcut "$DESKTOP\\Daedalus.lnk" daedalusShortcut
         file [] "cardano-node.exe"
         file [] "cardano-launcher.exe"
@@ -141,6 +144,8 @@ writeInstallerNSIS fullVersion = do
         file [] "server.conf"
         file [] "client.conf"
         file [] "wallet-topology.yaml"
+        file [] "configuration.yaml"
+        file [] "mainnet-genesis.json"
         writeFileLines "$INSTDIR\\daedalus.bat" (map str launcherScript)
         file [Recursive] "dlls\\"
         file [Recursive] "libressl\\"
