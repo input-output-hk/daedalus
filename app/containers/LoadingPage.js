@@ -18,11 +18,11 @@ export default class LoadingPage extends Component {
       isConnecting,
       isSyncing,
       localTimeDifference,
-      allowedTimeDifference,
       syncPercentage,
       isLoadingWallets,
       hasBeenConnected,
       hasBlockSyncingStarted,
+      ALLOWED_TIME_DIFFERENCE,
     } = stores.networkStatus;
     const {
       hasLoadedCurrentLocale,
@@ -34,7 +34,7 @@ export default class LoadingPage extends Component {
         <Loading
           isSyncing={isSyncing}
           localTimeDifference={localTimeDifference}
-          allowedTimeDifference={allowedTimeDifference}
+          allowedTimeDifference={ALLOWED_TIME_DIFFERENCE}
           isConnecting={isConnecting}
           syncPercentage={syncPercentage}
           isLoadingWallets={isLoadingWallets}

@@ -21,20 +21,19 @@ const STARTUP_STAGES = {
   RUNNING: 3,
 };
 
-const ALLOWED_TIME_DIFFERENCE = 0;
-
 export default class NetworkStatusStore extends Store {
 
   _startTime = Date.now();
   _startupStage = STARTUP_STAGES.CONNECTING;
+
+  ALLOWED_TIME_DIFFERENCE = 0;
 
   @observable isConnected = false;
   @observable hasBeenConnected = false;
   @observable localDifficulty = 0;
   @observable networkDifficulty = 0;
   @observable isLoadingWallets = true;
-  @observable localTimeDifference = ALLOWED_TIME_DIFFERENCE;
-  @observable allowedTimeDifference = ALLOWED_TIME_DIFFERENCE;
+  @observable localTimeDifference = this.ALLOWED_TIME_DIFFERENCE;
   @observable syncProgressRequest: Request<GetSyncProgressResponse> = new Request(
     this.api.getSyncProgress
   );
@@ -123,6 +122,13 @@ export default class NetworkStatusStore extends Store {
     return 0;
   }
 
+  @computed get isSystemTimeCorrect(): boolean {
+    return (
+      this.localTimeDifferenceRequest.wasExecuted &&
+      this.localTimeDifferenceRequest.result <= this.ALLOWED_TIME_DIFFERENCE
+    );
+  }
+
   @computed get isSyncing(): boolean {
     return !this.isConnecting && this.hasBlockSyncingStarted && !this.isSynced;
   }
@@ -132,8 +138,7 @@ export default class NetworkStatusStore extends Store {
       !this.isConnecting &&
       this.hasBlockSyncingStarted &&
       this.relativeSyncBlocksDifference <= OUT_OF_SYNC_BLOCKS_LIMIT &&
-      this.localTimeDifferenceRequest.wasExecuted &&
-      this.localTimeDifferenceRequest.result <= ALLOWED_TIME_DIFFERENCE
+      this.isSystemTimeCorrect
     );
   }
 
@@ -173,7 +178,7 @@ export default class NetworkStatusStore extends Store {
       const responese = await this.localTimeDifferenceRequest.execute().promise;
       runInAction('update time difference', () => (this.localTimeDifference = responese));
     } catch (error) {
-      runInAction('update time difference', () => (this.localTimeDifference = ALLOWED_TIME_DIFFERENCE + 1));
+      runInAction('update time difference', () => (this.localTimeDifference = this.ALLOWED_TIME_DIFFERENCE + 1));
     }
   }
   _pollLocalTimeDifference() {
@@ -223,7 +228,7 @@ export default class NetworkStatusStore extends Store {
 
   _redirectToSyncingWhenLocalTimeDifferent = () => {
     if (
-      this.localTimeDifference > ALLOWED_TIME_DIFFERENCE &&
+      this.localTimeDifference > this.ALLOWED_TIME_DIFFERENCE &&
       !this.isSynced &&
       this.stores.app.currentRoute !== ROUTES.PROFILE.LANGUAGE_SELECTION &&
       this.stores.app.currentRoute !== ROUTES.PROFILE.TERMS_OF_USE &&
