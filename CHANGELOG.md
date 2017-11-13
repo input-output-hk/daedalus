@@ -22,6 +22,7 @@ Changelog
 
 - Update version in About dialog to 0.8.2 ([PR 496](https://github.com/input-output-hk/daedalus/pull/496))
 - Set Dark theme as default one for the mainnet ([PR 497](https://github.com/input-output-hk/daedalus/pull/497))
+- Electron updated to version 1.7.9 ([PR 541](https://github.com/input-output-hk/daedalus/pull/541))
 
 ## 0.8.0
 
