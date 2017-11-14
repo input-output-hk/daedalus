@@ -671,7 +671,7 @@ export default class AdaApi {
   async testReset(): Promise<void> {
     Logger.debug('AdaApi::testReset called');
     try {
-      const response = await adaTestReset(ca);
+      const response = await adaTestReset({ ca });
       Logger.debug('AdaApi::testReset success: ' + stringifyData(response));
       return response;
     } catch (error) {

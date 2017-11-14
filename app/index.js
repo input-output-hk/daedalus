@@ -14,6 +14,7 @@ import About from './About';
 import environment from './environment';
 import setupStores from './stores';
 import actions from './actions';
+import utils from './utils';
 import Action from './actions/lib/Action';
 import translations from './i18n/translations';
 import './themes/index.global.scss';
@@ -40,6 +41,7 @@ const initializeDaedalus = () => {
     api,
     environment,
     actions,
+    utils,
     stores,
     translations,
     reset: action(() => {
