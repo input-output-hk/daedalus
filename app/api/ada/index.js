@@ -13,6 +13,7 @@ import { action } from 'mobx';
 import { ipcRenderer, remote } from 'electron';
 import BigNumber from 'bignumber.js';
 import { Logger, stringifyData, stringifyError } from '../../utils/logging';
+import { unixTimestampToDate } from './lib/utils';
 import Wallet from '../../domain/Wallet';
 import WalletTransaction, { transactionTypes } from '../../domain/WalletTransaction';
 import WalletAddress from '../../domain/WalletAddress';
@@ -193,8 +194,7 @@ export default class AdaApi {
     try {
       const response: ApiWallets = await getAdaWallets({ ca });
       Logger.debug('AdaApi::getWallets success: ' + stringifyData(response));
-      const wallets = response.map(data => _createWalletFromServerData(data));
-      return wallets;
+      return response.map(data => _createWalletFromServerData(data));
     } catch (error) {
       Logger.error('AdaApi::getWallets error: ' + stringifyError(error));
       throw new GenericApiError();
@@ -691,7 +691,7 @@ const _createWalletFromServerData = action(
       name: data.cwMeta.cwName,
       assurance: data.cwMeta.cwAssurance,
       hasPassword: data.cwHasPassphrase,
-      passwordUpdateDate: new Date(data.cwPassphraseLU * 1000),
+      passwordUpdateDate: unixTimestampToDate(data.cwPassphraseLU),
     })
   )
 );
@@ -723,7 +723,7 @@ const _createTransactionFromServerData = action(
       title: ctmTitle || data.ctIsOutgoing ? 'Ada sent' : 'Ada received',
       type: data.ctIsOutgoing ? transactionTypes.EXPEND : transactionTypes.INCOME,
       amount: new BigNumber(data.ctIsOutgoing ? -1 * coins : coins).dividedBy(LOVELACES_PER_ADA),
-      date: new Date(ctmDate * 1000),
+      date: unixTimestampToDate(ctmDate),
       description: ctmDescription || '',
       numberOfConfirmations: data.ctConfirmations,
       addresses: {
