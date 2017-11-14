@@ -236,7 +236,7 @@ export default class WalletsStore extends Store {
     setTimeout(() => {
       if (!this.restoreRequest.isError) {
         this.actions.dialogs.closeActiveDialog.trigger();
-        this._setIsRestoreActive(true);
+        if (this.restoreRequest.isExecuting) this._setIsRestoreActive(true);
       }
     }, 500);
 
@@ -260,7 +260,7 @@ export default class WalletsStore extends Store {
     setTimeout(() => {
       if (!this.importFromFileRequest.isError) {
         this.actions.dialogs.closeActiveDialog.trigger();
-        this._setIsImportActive(true);
+        if (this.importFromFileRequest.isExecuting) this._setIsImportActive(true);
       }
     }, 500);
 
