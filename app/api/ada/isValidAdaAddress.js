@@ -9,11 +9,11 @@ export type IsValidAdaAddressParams = {
 export const isValidAdaAddress = (
   { ca, address }: IsValidAdaAddressParams
 ): Promise<boolean> => {
-  const path = `/api/addresses/${address}`;
+  const encodedAddress = encodeURIComponent(address);
   return request({
     hostname: 'localhost',
     method: 'GET',
-    path: encodeURIComponent(path),
+    path: `/api/addresses/${encodedAddress}`,
     port: 8090,
     ca,
   });
