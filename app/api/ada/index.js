@@ -191,7 +191,7 @@ export default class AdaApi {
   async getWallets(): Promise<GetWalletsResponse> {
     Logger.debug('AdaApi::getWallets called');
     try {
-      const response: ApiWallets = await getAdaWallets(ca);
+      const response: ApiWallets = await getAdaWallets({ ca });
       Logger.debug('AdaApi::getWallets success: ' + stringifyData(response));
       const wallets = response.map(data => _createWalletFromServerData(data));
       return wallets;
@@ -205,7 +205,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::getAddresses called: ' + stringifyData(request));
     const { walletId } = request;
     try {
-      const response: ApiAccounts = await getAdaWalletAccounts(ca, {}, { accountId: walletId });
+      const response: ApiAccounts = await getAdaWalletAccounts({ ca, walletId });
       Logger.debug('AdaApi::getAddresses success: ' + stringifyData(response));
       if (!response.length) {
         return new Promise((resolve) => resolve({ accountId: null, addresses: [] }));
@@ -230,9 +230,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::searchHistory called: ' + stringifyData(request));
     const { walletId, skip, limit } = request;
     try {
-      const history: ApiTransactions = await getAdaHistoryByWallet(
-        ca, {}, { walletId, skip, limit }
-      );
+      const history: ApiTransactions = await getAdaHistoryByWallet({ ca, walletId, skip, limit });
       Logger.debug('AdaApi::searchHistory success: ' + stringifyData(history));
       return new Promise((resolve) => resolve({
         transactions: history[0].map(data => _createTransactionFromServerData(data)),
@@ -260,11 +258,7 @@ export default class AdaApi {
           bpToList: split(mnemonic), // array of mnemonic words
         }
       };
-
-      const wallet: ApiWallet = await newAdaWallet(
-        ca, {}, { passphrase: password }, { walletInitData }
-      );
-
+      const wallet: ApiWallet = await newAdaWallet({ ca, password, walletInitData });
       Logger.debug('AdaApi::createWallet success');
       return _createWalletFromServerData(wallet);
     } catch (error) {
@@ -276,7 +270,8 @@ export default class AdaApi {
   async deleteWallet(request: DeleteWalletRequest): Promise<DeleteWalletResponse> {
     Logger.debug('AdaApi::deleteWallet called: ' + stringifyData(request));
     try {
-      await deleteAdaWallet(ca, { walletId: request.walletId });
+      const { walletId } = request;
+      await deleteAdaWallet({ ca, walletId });
       Logger.debug('AdaApi::deleteWallet success: ' + stringifyData(request));
       return true;
     } catch (error) {
@@ -290,18 +285,11 @@ export default class AdaApi {
     const { sender, receiver, amount, password } = request;
     // sender must be set as accountId (account.caId) and not walletId
     try {
-      const inputSelectionPolicy = {
-        // default value. Select (OptimizeForSecurity | OptimizeForSize) will be implemented
-        groupingPolicy: 'OptimizeForSecurity',
-      };
-
+      // default value. Select (OptimizeForSecurity | OptimizeForSize) will be implemented
+      const groupingPolicy = 'OptimizeForSecurity';
       const response: ApiTransaction = await newAdaPayment(
-        ca,
-        { from: sender, to: receiver, amount },
-        { passphrase: password },
-        { inputSelectionPolicy }
+        { ca, sender, receiver, amount, groupingPolicy, password }
       );
-
       Logger.debug('AdaApi::createTransaction success: ' + stringifyData(response));
       return _createTransactionFromServerData(response);
     } catch (error) {
@@ -327,12 +315,10 @@ export default class AdaApi {
     Logger.debug('AdaApi::calculateTransactionFee called');
     const { sender, receiver, amount } = request;
     try {
-      const inputSelectionPolicy = {
-        // default value. Select (OptimizeForSecurity | OptimizeForSize) will be implemented
-        groupingPolicy: 'OptimizeForSecurity',
-      };
+      // default value. Select (OptimizeForSecurity | OptimizeForSize) will be implemented
+      const groupingPolicy = 'OptimizeForSecurity';
       const response: adaTxFee = await adaTxFee(
-        ca, { from: sender, to: receiver, amount }, {}, { inputSelectionPolicy }
+        { ca, sender, receiver, amount, groupingPolicy }
       );
       Logger.debug('AdaApi::calculateTransactionFee success: ' + stringifyData(response));
       return _createTransactionFeeFromServerData(response);
@@ -354,7 +340,7 @@ export default class AdaApi {
     const { accountId, password } = request;
     try {
       const response: ApiAddress = await newAdaWalletAddress(
-        ca, {}, { passphrase: password }, { accountId },
+        { ca, password, accountId }
       );
       Logger.debug('AdaApi::createAddress success: ' + stringifyData(response));
       return _createAddressFromServerData(response);
@@ -368,7 +354,7 @@ export default class AdaApi {
   }
 
   isValidAddress(address: string): Promise<boolean> {
-    return isValidAdaAddress(ca, { address }, {});
+    return isValidAdaAddress({ ca, address });
   }
 
   isValidMnemonic(mnemonic: string): Promise<boolean> {
@@ -418,9 +404,8 @@ export default class AdaApi {
 
     try {
       const wallet: ApiWallet = await restoreAdaWallet(
-        ca, {}, { passphrase: walletPassword }, { walletInitData }
+        { ca, walletPassword, walletInitData }
       );
-
       Logger.debug('AdaApi::restoreWallet success');
       return _createWalletFromServerData(wallet);
     } catch (error) {
@@ -445,7 +430,7 @@ export default class AdaApi {
     const { filePath, walletPassword } = request;
     try {
       const importedWallet = await importAdaWallet(
-        ca, {}, { passphrase: walletPassword }, { filePath }
+        { ca, walletPassword, filePath }
       );
       Logger.debug('AdaApi::importWalletFromKey success');
       return _createWalletFromServerData(importedWallet);
@@ -466,9 +451,9 @@ export default class AdaApi {
     const isKeyFile = filePath.split('.').pop().toLowerCase() === 'key';
     try {
       const importedWallet: ApiWallet = isKeyFile ? (
-        await importAdaWallet(ca, {}, { passphrase: walletPassword }, { filePath })
+        await importAdaWallet({ ca, walletPassword, filePath })
       ) : (
-        await importAdaBackupJSON(ca, {}, {}, { filePath })
+        await importAdaBackupJSON({ ca, filePath })
       );
       Logger.debug('AdaApi::importWalletFromFile success');
       return _createWalletFromServerData(importedWallet);
@@ -491,7 +476,7 @@ export default class AdaApi {
       };
 
       const response: ApiTransaction = await redeemAda(
-        ca, {}, { passphrase: walletPassword }, { walletRedeemData }
+        { ca, walletPassword, walletRedeemData }
       );
 
       Logger.debug('AdaApi::redeemAda success');
@@ -520,7 +505,7 @@ export default class AdaApi {
       };
 
       const response: ApiTransaction = await redeemAdaPaperVend(
-        ca, {}, { passphrase: walletPassword }, { redeemPaperVendedData }
+        { ca, walletPassword, redeemPaperVendedData }
       );
 
       Logger.debug('AdaApi::redeemAdaPaperVend success');
@@ -539,7 +524,7 @@ export default class AdaApi {
     let nextUpdate = null;
     try {
       // TODO: add flow type definitions for nextUpdate response
-      const response = await nextAdaUpdate(ca);
+      const response = await nextAdaUpdate({ ca });
       Logger.debug('AdaApi::nextUpdate success: ' + stringifyData(response));
       if (response && response.cuiSoftwareVersion) {
         nextUpdate = {
@@ -590,7 +575,7 @@ export default class AdaApi {
   async postponeUpdate(): PostponeUpdateResponse {
     Logger.debug('AdaApi::postponeUpdate called');
     try {
-      const response = await postponeAdaUpdate(ca);
+      const response = await postponeAdaUpdate({ ca });
       Logger.debug('AdaApi::postponeUpdate success: ' + stringifyData(response));
     } catch (error) {
       Logger.error('AdaApi::postponeUpdate error: ' + stringifyError(error));
@@ -601,7 +586,7 @@ export default class AdaApi {
   async applyUpdate(): ApplyUpdateResponse {
     Logger.debug('AdaApi::applyUpdate called');
     try {
-      const response = await applyAdaUpdate(ca);
+      const response = await applyAdaUpdate({ ca });
       Logger.debug('AdaApi::applyUpdate success: ' + stringifyData(response));
       ipcRenderer.send('kill-process');
     } catch (error) {
@@ -614,7 +599,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::syncProgress called');
 
     try {
-      const response = await getAdaSyncProgress(ca);
+      const response = await getAdaSyncProgress({ ca });
       Logger.debug('AdaApi::syncProgress success: ' + stringifyData(response));
       const localDifficulty = response._spLocalCD.getChainDifficulty.getBlockCount;
       // In some cases we dont get network difficulty & we need to wait for it from the notify API
@@ -641,7 +626,7 @@ export default class AdaApi {
     };
 
     try {
-      const wallet: ApiWallet = await updateAdaWallet(ca, { walletId }, {}, { walletMeta });
+      const wallet: ApiWallet = await updateAdaWallet({ ca, walletId, walletMeta });
       Logger.debug('AdaApi::updateWallet success: ' + stringifyData(wallet));
       return _createWalletFromServerData(wallet);
     } catch (error) {
@@ -656,7 +641,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::updateWalletPassword called');
     const { walletId, oldPassword, newPassword } = request;
     try {
-      await changeAdaWalletPassphrase(ca, { walletId }, { old: oldPassword, new: newPassword });
+      await changeAdaWalletPassphrase({ ca, walletId, oldPassword, newPassword });
       Logger.debug('AdaApi::updateWalletPassword success');
       return true;
     } catch (error) {
@@ -674,7 +659,7 @@ export default class AdaApi {
     const { walletId, filePath } = request;
     Logger.debug('AdaApi::exportWalletToFile called');
     try {
-      const response = await exportAdaBackupJSON(ca, { walletId }, {}, { filePath });
+      const response = await exportAdaBackupJSON({ ca, walletId, filePath });
       Logger.debug('AdaApi::exportWalletToFile success: ' + stringifyData(response));
       return response;
     } catch (error) {

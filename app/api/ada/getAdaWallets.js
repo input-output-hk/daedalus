@@ -2,7 +2,13 @@
 import type { ApiWallets } from 'daedalus-client-api';
 import { request } from './lib/request';
 
-export const getAdaWallets = (ca: string): Promise<ApiWallets> => (
+export type GetAdaWalletParams = {
+  ca: string,
+};
+
+export const getAdaWallets = (
+  { ca }: GetAdaWalletParams
+  ): Promise<ApiWallets> => (
   request({
     hostname: 'localhost',
     method: 'GET',

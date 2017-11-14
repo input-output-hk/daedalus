@@ -29,7 +29,7 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}, rawBodyPa
         const passphrase = get(queryParams, 'passphrase');
 
         // If passphrase is present it must be encrypted and included in options.path
-        if (passphrase !== null) {
+        if (passphrase) {
           const encryptedPassphrase = encryptPassphrase(passphrase);
           queryString = `?passphrase=${encryptedPassphrase}`;
         }

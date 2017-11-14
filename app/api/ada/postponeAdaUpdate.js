@@ -1,7 +1,13 @@
 // @flow
 import { request } from './lib/request';
 
-export const postponeAdaUpdate = (ca: string): Promise<any> => (
+export type PostponeAdaUpdateParams = {
+  ca: string,
+};
+
+export const postponeAdaUpdate = (
+  { ca }: PostponeAdaUpdateParams
+  ): Promise<any> => (
   request({
     hostname: 'localhost',
     method: 'POST',

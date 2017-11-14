@@ -2,12 +2,14 @@
 import type { ApiAccounts } from 'daedalus-client-api';
 import { request } from './lib/request';
 
-export type getAdaWalletAccountsQueryParams = {
-  accountId: ?string,
+
+export type GetAdaWalletAccountsParams = {
+  ca: string,
+  walletId: string,
 };
 
 export const getAdaWalletAccounts = (
-  ca: string, pathParams: {}, queryParams: getAdaWalletAccountsQueryParams
+  { ca, walletId }: GetAdaWalletAccountsParams
 ): Promise<ApiAccounts> => (
   request({
     hostname: 'localhost',
@@ -15,5 +17,5 @@ export const getAdaWalletAccounts = (
     path: '/api/accounts',
     port: 8090,
     ca,
-  }, queryParams)
+  }, { accountId: walletId })
 );

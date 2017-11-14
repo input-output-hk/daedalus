@@ -1,36 +1,22 @@
 // @flow
 import type { ApiWallet } from 'daedalus-client-api';
+import type { WalletInitData } from './types';
 import { request } from './lib/request';
 
-export type NewAdaWalletQueryParams = {
-  passphrase: ?string,
-};
-
-export type NewAdaWalletRawBodyParams = {
-  walletInitData: {
-    cwInitMeta: {
-      cwName: string,
-      cwAssurance: string,
-      cwUnit: number,
-    },
-    cwBackupPhrase: {
-      bpToList: [],
-    }
-  }
+export type NewAdaWalletParams = {
+  ca: string,
+  password: ?string,
+  walletInitData: WalletInitData
 };
 
 export const newAdaWallet = (
-  ca: string,
-  pathParams: {},
-  queryParams: NewAdaWalletQueryParams,
-  rawBodyParams: NewAdaWalletRawBodyParams,
-): Promise<ApiWallet> => {
-  const { walletInitData } = rawBodyParams;
-  return request({
+  { ca, password, walletInitData }: NewAdaWalletParams
+  ): Promise<ApiWallet> => (
+  request({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/wallets/new',
     port: 8090,
     ca,
-  }, queryParams, walletInitData);
-};
+  }, { passphrase: password }, walletInitData)
+);

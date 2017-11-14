@@ -3,34 +3,23 @@ import type { ApiWallet } from 'daedalus-client-api';
 import { request } from './lib/request';
 import { encryptPassphrase } from './lib/encryptPassphrase';
 
-export type ChangeAdaWalletPassphrasePathParams = {
+export type ChangeAdaWalletPassphraseParams = {
+  ca: string,
   walletId: string,
-};
-
-export type ChangeAdaWalletPassphraseQueryParams = {
-  old: ?string,
-  new: ?string,
+  oldPassword: ?string,
+  newPassword: ?string,
 };
 
 export const changeAdaWalletPassphrase = (
-  ca: string,
-  pathParams: ChangeAdaWalletPassphrasePathParams,
-  queryParams: ChangeAdaWalletPassphraseQueryParams,
+  { ca, walletId, oldPassword, newPassword }: ChangeAdaWalletPassphraseParams
 ): Promise<ApiWallet> => {
-  const { walletId } = pathParams;
-  const encryptedOldPassphrase = queryParams.old ? encryptPassphrase(queryParams.old) : null;
-  const encryptedNewPassphrase = queryParams.new ? encryptPassphrase(queryParams.new) : null;
-
-  const newQueryParams = {
-    old: encryptedOldPassphrase,
-    new: encryptedNewPassphrase,
-  };
-
+  const encryptedOldPassphrase = oldPassword ? encryptPassphrase(oldPassword) : null;
+  const encryptedNewPassphrase = newPassword ? encryptPassphrase(newPassword) : null;
   return request({
     hostname: 'localhost',
     method: 'POST',
     path: `/api/wallets/password/${walletId}`,
     port: 8090,
     ca,
-  }, newQueryParams);
+  }, { old: encryptedOldPassphrase, new: encryptedNewPassphrase });
 };

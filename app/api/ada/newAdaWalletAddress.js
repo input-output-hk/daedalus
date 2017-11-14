@@ -2,26 +2,21 @@
 import type { ApiAddress } from 'daedalus-client-api';
 import { request } from './lib/request';
 
-export type NewAdaWalletAddressQueryParams = {
-  passphrase: ?string,
-};
-
-export type NewAdaWalletAddressRawBodyParams = {
+export type NewAdaWalletAddressParams = {
+  ca: string,
+  password: ?string,
   accountId: string,
 };
 
 export const newAdaWalletAddress = (
-  ca: string,
-  pathParams: {},
-  queryParams: NewAdaWalletAddressQueryParams,
-  rawBodyParams: NewAdaWalletAddressRawBodyParams
-): Promise<ApiAddress> => {
-  const { accountId } = rawBodyParams;
-  return request({
+  { ca, password, accountId }: NewAdaWalletAddressParams
+): Promise<ApiAddress> => (
+  request({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/addresses',
     port: 8090,
     ca,
-  }, queryParams, accountId);
-};
+  }, { passphrase: password }, accountId)
+);
+

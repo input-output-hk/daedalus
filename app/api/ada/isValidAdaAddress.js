@@ -1,14 +1,14 @@
 // @flow
 import { request } from './lib/request';
 
-export type isValidAdaAddressPathParams = {
+export type IsValidAdaAddressParams = {
+  ca: string,
   address: string,
 };
 
 export const isValidAdaAddress = (
-  ca: string, pathParams: isValidAdaAddressPathParams
+  { ca, address }: IsValidAdaAddressParams
 ): Promise<boolean> => {
-  const { address } = pathParams;
   const path = `/api/addresses/${address}`;
   return request({
     hostname: 'localhost',
