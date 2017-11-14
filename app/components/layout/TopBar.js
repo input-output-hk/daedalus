@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import SvgInline from 'react-svg-inline';
-import type { Children } from 'react';
+import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
 import Wallet from '../../domain/Wallet';
@@ -14,16 +14,16 @@ import { ROUTES } from '../../routes-config';
 
 const { formattedWalletAmount } = resolver('utils/formatters');
 
-@observer
-export default class TopBar extends Component {
+type Props = {
+  onToggleSidebar?: ?Function,
+  children?: ?Node,
+  activeWallet?: ?Wallet,
+  currentRoute: string,
+  showSubMenus?: ?boolean,
+};
 
-  props: {
-    onToggleSidebar?: ?Function,
-    children?: ?Children,
-    activeWallet?: ?Wallet,
-    currentRoute: string,
-    showSubMenus?: ?boolean,
-  };
+@observer
+export default class TopBar extends Component<Props> {
 
   render() {
     const { onToggleSidebar, activeWallet, currentRoute, showSubMenus } = this.props;

@@ -25,15 +25,15 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class LanguageSelectionForm extends Component {
+type Props = {
+  languages: Array<{ value: string, label: ReactIntlMessage }>,
+  onSubmit: Function,
+  isSubmitting: boolean,
+  error?: ?LocalizableError,
+};
 
-  props: {
-    languages: Array<{ value: string, label: ReactIntlMessage }>,
-    onSubmit: Function,
-    isSubmitting: boolean,
-    error?: ?LocalizableError,
-  };
+@observer
+export default class LanguageSelectionForm extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

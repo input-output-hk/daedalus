@@ -14,7 +14,7 @@ export type RequestOptions = {
   },
 };
 
-export const request = (httpOptions: RequestOptions, queryParams?: {}) => (
+export const request = (httpOptions: RequestOptions, queryParams?: {}): Promise<Object> => (
   new Promise((resolve, reject) => {
     // Prepare request with http options and (optional) query params
     const options: RequestOptions = Object.assign({}, httpOptions);

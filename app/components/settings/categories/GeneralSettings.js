@@ -18,16 +18,16 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class GeneralSettings extends Component {
+type Props = {
+  languages: Array<{ value: string, label: ReactIntlMessage }>,
+  currentLocale: string,
+  onSelectLanguage: Function,
+  isSubmitting: boolean,
+  error?: ?LocalizableError,
+};
 
-  props: {
-    languages: Array<{ value: string, label: ReactIntlMessage }>,
-    currentLocale: string,
-    onSelectLanguage: Function,
-    isSubmitting: boolean,
-    error?: ?LocalizableError,
-  };
+@observer
+export default class GeneralSettings extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
