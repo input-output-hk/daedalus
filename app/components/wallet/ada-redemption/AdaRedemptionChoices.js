@@ -22,13 +22,13 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class AdaRedemptionChoices extends Component {
+type Props = {
+  activeChoice: string,
+  onSelectChoice: Function,
+};
 
-  props: {
-    activeChoice: string,
-    onSelectChoice: Function,
-  };
+@observer
+export default class AdaRedemptionChoices extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

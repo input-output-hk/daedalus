@@ -1,18 +1,18 @@
 // @flow
 import React, { Component } from 'react';
-import type { Children } from 'react';
+import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import WalletNavigation from '../navigation/WalletNavigation';
 import styles from './WalletWithNavigation.scss';
 
-@observer
-export default class WalletWithNavigation extends Component {
+type Props = {
+  children?: Node,
+  isActiveScreen: Function,
+  onWalletNavItemClick: Function,
+};
 
-  props: {
-    children?: Children,
-    isActiveScreen: Function,
-    onWalletNavItemClick: Function,
-  };
+@observer
+export default class WalletWithNavigation extends Component<Props> {
 
   render() {
     const { children, isActiveScreen, onWalletNavItemClick } = this.props;

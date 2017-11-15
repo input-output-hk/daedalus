@@ -3,12 +3,12 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import styles from './WalletRecoveryPhraseMnemonic.scss';
 
-@observer
-export default class WalletRecoveryPhraseMnemonic extends Component {
+type Props = {
+  phrase: string,
+};
 
-  props: {
-    phrase: string,
-  };
+@observer
+export default class WalletRecoveryPhraseMnemonic extends Component<Props> {
 
   render() {
     const { phrase } = this.props;

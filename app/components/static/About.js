@@ -55,7 +55,7 @@ const messages = defineMessages({
   },
 });
 
-export default class About extends Component {
+export default class About extends Component<void> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

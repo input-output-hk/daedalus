@@ -38,26 +38,26 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class WalletSettings extends Component {
+type Props = {
+  walletName: string,
+  isWalletPasswordSet: boolean,
+  walletPasswordUpdateDate: ?Date,
+  error?: ?LocalizableError,
+  openDialogAction: Function,
+  isDialogOpen: Function,
+  onFieldValueChange: Function,
+  onStartEditing: Function,
+  onStopEditing: Function,
+  onCancelEditing: Function,
+  nameValidator: Function,
+  activeField: ?string,
+  isSubmitting: boolean,
+  isInvalid: boolean,
+  lastUpdatedField: ?string,
+};
 
-  props: {
-    walletName: string,
-    isWalletPasswordSet: boolean,
-    walletPasswordUpdateDate: ?Date,
-    error?: ?LocalizableError,
-    openDialogAction: Function,
-    isDialogOpen: Function,
-    onFieldValueChange: Function,
-    onStartEditing: Function,
-    onStopEditing: Function,
-    onCancelEditing: Function,
-    nameValidator: Function,
-    activeField: ?string,
-    isSubmitting: boolean,
-    isInvalid: boolean,
-    lastUpdatedField: ?string,
-  };
+@observer
+export default class WalletSettings extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
