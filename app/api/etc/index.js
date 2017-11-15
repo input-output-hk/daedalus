@@ -42,6 +42,7 @@ import type { GetEtcTransactionByHashResponse } from './getEtcTransaction';
 import type { GetEtcTransactionsResponse } from './getEtcTransactions';
 import type { EtcTransaction } from './types';
 import type { TransactionType } from '../../domain/WalletTransaction';
+import { AccountLockedOrUnknown, NoKeyForGivenAddress } from './errors';
 
 // Load Dummy ETC Wallets into Local Storage
 (async () => {
@@ -229,6 +230,10 @@ export default class EtcApi {
       Logger.error('EtcApi::createTransaction error: ' + stringifyError(error));
       if (error.message.includes('Could not decrypt key with given passphrase')) {
         throw new IncorrectWalletPasswordError();
+      } else if (error.message.includes('No key found for the given address')) {
+        throw new NoKeyForGivenAddress();
+      } else if (error.message.includes('account is locked or unknown')) {
+        throw new AccountLockedOrUnknown();
       }
       throw new GenericApiError();
     }
