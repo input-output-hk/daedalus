@@ -28,16 +28,16 @@ const messages = defineMessages({
   }
 });
 
-@observer
-export default class WalletSummary extends Component {
+type Props = {
+  walletName: string,
+  amount: string,
+  numberOfTransactions: number,
+  pendingAmount: UnconfirmedAmount,
+  isLoadingTransactions: boolean,
+};
 
-  props: {
-    walletName: string,
-    amount: string,
-    numberOfTransactions: number,
-    pendingAmount: UnconfirmedAmount,
-    isLoadingTransactions: boolean,
-  };
+@observer
+export default class WalletSummary extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

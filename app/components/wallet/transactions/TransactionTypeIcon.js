@@ -8,11 +8,11 @@ import exchangeIcon from '../../../assets/images/exchange-ic.inline.svg';
 import failedIcon from '../../../assets/images/wallet-nav/deny-ic.inline.svg';
 import styles from './TransactionTypeIcon.scss';
 
-export default class TransactionTypeIcon extends Component {
+type Props = {
+  iconType: string,
+};
 
-  props: {
-    iconType: string,
-  };
+export default class TransactionTypeIcon extends Component<Props> {
 
   render() {
     const { iconType } = this.props;

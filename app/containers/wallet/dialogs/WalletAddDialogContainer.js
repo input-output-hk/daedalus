@@ -8,11 +8,12 @@ import WalletFileImportDialog from '../../../components/wallet/file-import/Walle
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import environment from '../../../environment';
 
+type Props = InjectedProps
+
 @inject('stores', 'actions') @observer
-export default class WalletAddDialogContainer extends Component {
+export default class WalletAddDialogContainer extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
   render() {
     const { actions, stores } = this.props;
     return (

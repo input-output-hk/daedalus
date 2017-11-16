@@ -62,22 +62,22 @@ const messages = defineMessages({
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
-@observer
-export default class WalletSendConfirmationDialog extends Component {
+type Props = {
+  isWalletPasswordSet: boolean,
+  amount: string,
+  receiver: string,
+  totalAmount: string,
+  transactionFee: string,
+  onSubmit: Function,
+  amountToNaturalUnits: (amountWithFractions: string) => string,
+  onCancel: Function,
+  isSubmitting: boolean,
+  error: ?LocalizableError,
+  currencyUnit: string,
+};
 
-  props: {
-    isWalletPasswordSet: boolean,
-    amount: string,
-    receiver: string,
-    totalAmount: string,
-    transactionFee: string,
-    onSubmit: Function,
-    amountToNaturalUnits: (amountWithFractions: string) => string,
-    onCancel: Function,
-    isSubmitting: boolean,
-    error: ?LocalizableError,
-    currencyUnit: string,
-  };
+@observer
+export default class WalletSendConfirmationDialog extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

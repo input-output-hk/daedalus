@@ -73,21 +73,25 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class ChangeWalletPasswordDialog extends Component {
+type Props = {
+  isWalletPasswordSet: boolean,
+  currentPasswordValue: string,
+  newPasswordValue: string,
+  repeatedPasswordValue: string,
+  onSave: Function,
+  onCancel: Function,
+  onDataChange: Function,
+  onPasswordSwitchToggle: Function,
+  isSubmitting: boolean,
+  error: ?LocalizableError,
+};
 
-  props: {
-    isWalletPasswordSet: boolean,
-    currentPasswordValue: string,
-    newPasswordValue: string,
-    repeatedPasswordValue: string,
-    onSave: Function,
-    onCancel: Function,
-    onDataChange: Function,
-    onPasswordSwitchToggle: Function,
-    isSubmitting: boolean,
-    error: ?LocalizableError,
-  };
+type State = {
+  removePassword: boolean,
+};
+
+@observer
+export default class ChangeWalletPasswordDialog extends Component<Props, State> {
 
   static defaultProps = {
     currentPasswordValue: '',

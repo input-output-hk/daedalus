@@ -26,25 +26,29 @@ const messages = defineMessages({
   }
 });
 
+type Props = {
+  className?: string,
+  isActive: boolean,
+  inputFieldLabel: string,
+  inputFieldValue: string,
+  onStartEditing: Function,
+  onStopEditing: Function,
+  onCancelEditing: Function,
+  onSubmit: Function,
+  isValid: Function,
+  validationErrorMessage: string,
+  successfullyUpdated: boolean,
+};
+
+type State = {
+  isActive: boolean,
+};
+
 @observer
-export default class InlineEditingInput extends Component {
+export default class InlineEditingInput extends Component<Props, State> {
 
   state = {
     isActive: false,
-  }
-
-  props: {
-    className?: string,
-    isActive: boolean,
-    inputFieldLabel: string,
-    inputFieldValue: string,
-    onStartEditing: Function,
-    onStopEditing: Function,
-    onCancelEditing: Function,
-    onSubmit: Function,
-    isValid: Function,
-    validationErrorMessage: string,
-    successfullyUpdated: boolean,
   };
 
   static contextTypes = {
@@ -83,7 +87,7 @@ export default class InlineEditingInput extends Component {
         this.setState({ isActive: false });
       }
     });
-  }
+  };
 
   handleInputKeyDown = (event: KeyboardEvent) => {
     if (event.which === 13) { // ENTER key
@@ -97,20 +101,20 @@ export default class InlineEditingInput extends Component {
   onFocus = () => {
     this.setState({ isActive: true });
     this.props.onStartEditing();
-  }
+  };
 
   onBlur = () => {
     if (this.state.isActive) {
       this.submit();
     }
-  }
+  };
 
   onCancel = () => {
     const inputField = this.validator.$('inputField');
     inputField.value = this.props.inputFieldValue;
     this.setState({ isActive: false });
     this.props.onCancelEditing();
-  }
+  };
 
   componentDidUpdate() {
     if (this.props.isActive) {

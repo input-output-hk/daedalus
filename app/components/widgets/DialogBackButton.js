@@ -3,11 +3,11 @@ import SvgInline from 'react-svg-inline';
 import backArrow from '../../assets/images/back-arrow-ic.inline.svg';
 import styles from './DialogBackButton.scss';
 
-export default class DialogBackButton extends Component {
+type Props = {
+  onBack: Function
+};
 
-  props: {
-    onBack: Function
-  };
+export default class DialogBackButton extends Component<Props> {
 
   render() {
     const { onBack } = this.props;

@@ -5,12 +5,12 @@ import WalletRestoreDialog from '../../../components/wallet/WalletRestoreDialog'
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 import environment from '../../../environment';
 
+type Props = InjectedDialogContainerProps;
+
 @inject('stores', 'actions') @observer
-export default class WalletRestoreDialogContainer extends Component {
+export default class WalletRestoreDialogContainer extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
-
-  props: InjectedDialogContainerProps;
 
   onSubmit = (values: { recoveryPhrase: string, walletName: string, walletPassword: ?string }) => {
     this.props.actions[environment.API].wallets.restoreWallet.trigger(values);

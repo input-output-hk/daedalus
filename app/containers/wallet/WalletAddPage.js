@@ -14,12 +14,12 @@ import WalletAddDialogContainer from '../wallet/dialogs/WalletAddDialogContainer
 import type { InjectedProps } from '../../types/injectedPropsType';
 import environment from '../../environment';
 
+type Props = InjectedProps;
+
 @inject('actions', 'stores') @observer
-export default class WalletAddPage extends Component {
+export default class WalletAddPage extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
-
-  props: InjectedProps;
 
   onClose = () => {
     if (this.props.stores[environment.API].wallets.hasAnyWallets) {

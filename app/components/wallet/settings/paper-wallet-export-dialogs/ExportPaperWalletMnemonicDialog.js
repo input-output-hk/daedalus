@@ -29,17 +29,17 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class ExportPaperWalletMnemonicDialog extends Component {
+type Props = {
+  onContinue: Function,
+  onClose: Function,
+  onBack: Function,
+  onTogglePhraseWrittenNotice: Function,
+  isPhraseWrittenNoticeAccepted: boolean,
+  recoveryPhrase: string,
+};
 
-  props: {
-    onContinue: Function,
-    onClose: Function,
-    onBack: Function,
-    onTogglePhraseWrittenNotice: Function,
-    isPhraseWrittenNoticeAccepted: boolean,
-    recoveryPhrase: string,
-  };
+@observer
+export default class ExportPaperWalletMnemonicDialog extends Component<Props> {
 
   static defaultProps = {
     isPhraseWrittenNoticeAccepted: false,

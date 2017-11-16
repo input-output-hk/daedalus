@@ -5,12 +5,12 @@ import WalletCreateDialog from '../../../components/wallet/WalletCreateDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 import environment from '../../../environment';
 
+type Props = InjectedDialogContainerProps;
+
 @inject('stores', 'actions') @observer
-export default class WalletCreateDialogContainer extends Component {
+export default class WalletCreateDialogContainer extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
-
-  props: InjectedDialogContainerProps;
 
   onSubmit = (values: { name: string, password: ?string }) => {
     this.props.actions[environment.API].wallets.createWallet.trigger(values);

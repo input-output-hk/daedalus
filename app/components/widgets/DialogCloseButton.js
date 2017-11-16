@@ -3,12 +3,12 @@ import SvgInline from 'react-svg-inline';
 import closeCross from '../../assets/images/close-cross.inline.svg';
 import styles from './DialogCloseButton.scss';
 
-export default class DialogCloseButton extends Component {
+type Props = {
+  onClose: Function,
+  icon?: string,
+};
 
-  props: {
-    onClose: Function,
-    icon?: string,
-  };
+export default class DialogCloseButton extends Component<Props> {
 
   render() {
     const { onClose, icon } = this.props;

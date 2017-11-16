@@ -5,11 +5,12 @@ import DeleteWalletConfirmationDialog from '../../../components/wallet/settings/
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import environment from '../../../environment';
 
+type Props = InjectedProps;
+
 @inject('actions', 'stores') @observer
-export default class DeleteWalletDialogContainer extends Component {
+export default class DeleteWalletDialogContainer extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   render() {
     const { actions } = this.props;

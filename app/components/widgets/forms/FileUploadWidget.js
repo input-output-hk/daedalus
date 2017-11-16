@@ -6,16 +6,16 @@ import Dropzone from 'react-dropzone';
 import attachIcon from '../../../assets/images/attach-ic.inline.svg';
 import styles from './FileUploadWidget.scss';
 
-@observer
-export default class FileUploadWidget extends Component {
+type Props = {
+  label: string,
+  placeholder: string,
+  onFileSelected: Function,
+  selectedFile: File,
+  acceptedFileTypes: string,
+};
 
-  props: {
-    label: string,
-    placeholder: string,
-    onFileSelected: Function,
-    selectedFile: File,
-    acceptedFileTypes: string,
-  };
+@observer
+export default class FileUploadWidget extends Component<Props> {
 
   onDrop = (files: [File]) => {
     this.props.onFileSelected(files[0]);

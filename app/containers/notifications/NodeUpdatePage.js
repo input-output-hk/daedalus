@@ -5,10 +5,9 @@ import NodeUpdateNotification from '../../components/notifications/NodeUpdateNot
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
-export default class NodeUpdatePage extends Component {
+export default class NodeUpdatePage extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   render() {
     const store = this.props.stores.ada.nodeUpdate;

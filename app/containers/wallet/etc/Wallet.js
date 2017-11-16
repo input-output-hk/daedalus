@@ -10,11 +10,12 @@ import type { InjectedContainerProps } from '../../../types/injectedPropsType';
 
 const MainLayout = resolver('containers/MainLayout');
 
+type Props = InjectedContainerProps;
+
 @inject('stores', 'actions') @observer
-export default class Wallet extends Component {
+export default class Wallet extends Component<Props> {
 
   static defaultProps = { stores: null };
-  props: InjectedContainerProps;
 
   isActiveScreen = (page: string) => {
     const { app } = this.props.stores;

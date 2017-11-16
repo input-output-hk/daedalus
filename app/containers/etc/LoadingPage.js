@@ -15,12 +15,12 @@ const messages = defineMessages({
   },
 });
 
-@inject(['stores']) @observer
-export default class LoadingPage extends Component {
+type Props = {
+  stores: StoresMap,
+};
 
-  props: {
-    stores: StoresMap,
-  };
+@inject(['stores']) @observer
+export default class LoadingPage extends Component<Props> {
 
   render() {
     const { stores } = this.props;
