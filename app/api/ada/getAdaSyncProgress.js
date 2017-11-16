@@ -1,6 +1,10 @@
 // @flow
 import { request } from './lib/request';
 
+export type GetAdaSyncProgressParams = {
+  ca: string,
+};
+
 export type GetSyncProgressResponse = {
   _spLocalCD: {
     getChainDifficulty: {
@@ -15,7 +19,9 @@ export type GetSyncProgressResponse = {
   _spPeers: number,
 };
 
-export const getAdaSyncProgress = (ca: string): Promise<GetSyncProgressResponse> => (
+export const getAdaSyncProgress = (
+  { ca }: GetAdaSyncProgressParams
+): Promise<GetSyncProgressResponse> => (
   request({
     hostname: 'localhost',
     method: 'GET',

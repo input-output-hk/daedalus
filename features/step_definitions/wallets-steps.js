@@ -50,7 +50,7 @@ export default function () {
       window.Promise.all(wallets.map((wallet) => (
         daedalus.api.ada.createWallet({
           name: wallet.name,
-          mnemonic: daedalus.api.ada.generateMnemonic().join(' '),
+          mnemonic: daedalus.utils.crypto.generateMnemonic(),
           password: wallet.password || null,
         })
       )))

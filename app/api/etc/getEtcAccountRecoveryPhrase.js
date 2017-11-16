@@ -1,10 +1,8 @@
 // @flow
-import bip39 from 'bip39';
-import validWords from '../../../lib/valid-words.en';
+import { generateMnemonic } from '../../utils/crypto';
 
 export type GetEtcAccountRecoveryPhraseResponse = Array<string>;
 
 export const getEtcAccountRecoveryPhrase = (): GetEtcAccountRecoveryPhraseResponse => {
-  const mnemonics = bip39.generateMnemonic(null, null, validWords);
-  return mnemonics.split(' ');
+  return generateMnemonic().split(' ');
 };
