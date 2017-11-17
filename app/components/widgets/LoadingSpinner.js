@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import styles from './LoadingSpinner.scss';
 
-export default class LoadingSpinner extends Component<void> {
+export default class LoadingSpinner extends Component<any> {
 
   root: ?HTMLElement;
 

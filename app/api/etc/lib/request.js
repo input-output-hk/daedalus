@@ -12,8 +12,10 @@ export type RequestOptions = {
   },
 };
 
-export const request = (httpOptions: RequestOptions, queryParams?: {}): Promise<Object> => (
-  new Promise((resolve, reject) => {
+function typedRequest<Response>(
+  httpOptions: RequestOptions, queryParams?: {}
+): Promise<Response> {
+  return new Promise((resolve, reject) => {
     // Prepare request with http options and (optional) query params
     const options: RequestOptions = Object.assign({}, httpOptions);
     let requestBody = '';
@@ -42,7 +44,11 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}): Promise<
       });
     });
     httpsRequest.on('error', (error) => reject(error));
-    if (queryParams) { httpsRequest.write(requestBody); }
+    if (queryParams) {
+      httpsRequest.write(requestBody);
+    }
     httpsRequest.end();
-  })
-);
+  });
+}
+
+export const request = typedRequest;

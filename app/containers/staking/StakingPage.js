@@ -7,7 +7,7 @@ import resolver from '../../utils/imports';
 const Layout = resolver('containers/MainLayout');
 
 @observer
-export default class StakingPage extends Component<void> {
+export default class StakingPage extends Component<any> {
 
   render() {
     return (

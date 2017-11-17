@@ -44,7 +44,7 @@ export default class AdaTransactionsStore extends TransactionsStore {
     return this.api.ada.calculateTransactionFee({ sender: accountId, receiver, amount });
   };
 
-  validateAmount = (amountInLovelaces: string) => (
+  validateAmount = (amountInLovelaces: string): Promise<boolean> => (
     Promise.resolve(isValidAmountInLovelaces(amountInLovelaces))
   );
 

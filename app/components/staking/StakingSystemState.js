@@ -5,7 +5,7 @@ import StakingSystemStateElement from './StakingSystemStateElement';
 import styles from './StakingSystemState.scss';
 
 @observer
-export default class StakingSystemState extends Component<void> {
+export default class StakingSystemState extends Component<any> {
 
   render() {
     return (

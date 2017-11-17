@@ -8,7 +8,7 @@ export type ChangeEtcAccountPassphraseParams = {
   newPassphrase: string,
 };
 
-export type ChangeEtcAccountPassphraseResponse = '';
+export type ChangeEtcAccountPassphraseResponse = string;
 
 export const changeEtcAccountPassphrase = (
  { address, oldPassphrase, newPassphrase }: ChangeEtcAccountPassphraseParams
