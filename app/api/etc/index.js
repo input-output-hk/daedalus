@@ -43,6 +43,7 @@ import type { GetEtcTransactionByHashResponse } from './getEtcTransaction';
 import type { GetEtcTransactionsResponse } from './getEtcTransactions';
 import type { EtcTransaction } from './types';
 import type { TransactionType } from '../../domain/WalletTransaction';
+import { getEtcBlockNumber } from './getEtcBlockNumber';
 
 // Load Dummy ETC Wallets into Local Storage
 (async () => {
@@ -159,8 +160,11 @@ export default class EtcApi {
   getTransactions = async (params: GetTransactionsParams): Promise<GetTransactionsResponse> => {
     Logger.debug('EtcApi::getTransactions called: ' + stringifyData(params));
     try {
+      const mostRecentBlockNumber = await getEtcBlockNumber(ca);
       const transactions: GetEtcTransactionsResponse = await getEtcTransactionsForAccount(ca, {
         accountAddress: params.walletId,
+        fromBlock: Math.max(mostRecentBlockNumber - 10000, 0),
+        toBlock: mostRecentBlockNumber
       });
       Logger.debug('EtcApi::getTransactions success: ' + stringifyData(transactions));
       const receivedTxs = await Promise.all(

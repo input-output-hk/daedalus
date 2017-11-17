@@ -1,10 +1,13 @@
 // @flow
+import BigNumber from 'bignumber.js';
 import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
 import type { EtcTransaction } from './types';
 
 export type GetEtcTransactionsParams = {
   accountAddress: string,
+  fromBlock: number,
+  toBlock: number,
 };
 
 export type GetEtcTransactionsResponse = {
@@ -12,8 +15,17 @@ export type GetEtcTransactionsResponse = {
   sent: Array<EtcTransaction>,
 };
 
+/**
+ * Returns account transactions (both sent and received) from a range of blocks.
+ * The response also includes pending transactions.
+ * @param ca (the TLS certificate)
+ * @param accountAddress
+ * @param fromBlock (in the past)
+ * @param toBlock (more recent)
+ * @returns {*}
+ */
 export const getEtcTransactionsForAccount = (
-  ca: string, params: GetEtcTransactionsParams
+  ca: string, { accountAddress, fromBlock, toBlock }: GetEtcTransactionsParams
 ): Promise<GetEtcTransactionsResponse> => (
   request({
     hostname: ETC_API_HOST,
@@ -23,7 +35,11 @@ export const getEtcTransactionsForAccount = (
     ca,
   }, {
     jsonrpc: '2.0',
-    method: 'daedalus_getAccountRecentTransactions',
-    params: [params.accountAddress]
+    method: 'daedalus_getAccountTransactions',
+    params: [
+      accountAddress,
+      new BigNumber(fromBlock).toString(16),
+      new BigNumber(toBlock).toString(16),
+    ]
   })
 );
