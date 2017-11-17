@@ -13,13 +13,14 @@ export type GetEtcEstimatedGasParams = {
 export type GetEtcEstimatedGasResponse = string;
 
 export const getEtcEstimatedGas = (
-  params: GetEtcEstimatedGasParams
+  ca: string, params: GetEtcEstimatedGasParams
 ): Promise<GetEtcEstimatedGasResponse> => (
   request({
     hostname: ETC_API_HOST,
     method: 'POST',
     path: '/',
     port: ETC_API_PORT,
+    ca,
   }, {
     jsonrpc: '2.0',
     method: 'eth_estimateGas',

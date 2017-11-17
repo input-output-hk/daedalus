@@ -14,13 +14,14 @@ export type SendEtcTransactionParams = {
 export type SendEtcTransactionResponse = string; // tx address
 
 export const sendEtcTransaction = (
-  params: SendEtcTransactionParams
+  ca: string, params: SendEtcTransactionParams
 ): Promise<SendEtcTransactionResponse> => (
   request({
     hostname: ETC_API_HOST,
     method: 'POST',
     path: '/',
     port: ETC_API_PORT,
+    ca,
   }, {
     jsonrpc: '2.0',
     method: 'personal_sendTransaction',
