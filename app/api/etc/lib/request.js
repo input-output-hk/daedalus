@@ -1,11 +1,12 @@
 // @flow
-import http from 'http';
+import https from 'https';
 
 export type RequestOptions = {
   hostname: string,
   method: string,
   path: string,
   port: number,
+  ca: string,
   headers?: {
     'Content-Type': string,
     'Content-Length': number,
@@ -24,7 +25,7 @@ function typedRequest<Response>(
       'Content-Type': 'application/json',
       'Content-Length': requestBody.length,
     });
-    const httpsRequest = http.request(options, (response) => {
+    const httpsRequest = https.request(options, (response) => {
       let body = '';
       // Cardano-sl returns chunked requests, so we need to concat them
       response.on('data', (chunk) => (body += chunk));

@@ -8,12 +8,15 @@ export type GetEtcSyncProgressResponse = false | {
   highestBlock: string
 };
 
-export const getEtcSyncProgress = (): Promise<GetEtcSyncProgressResponse> => (
+export const getEtcSyncProgress = (
+  ca: string
+): Promise<GetEtcSyncProgressResponse> => (
   request({
     hostname: ETC_API_HOST,
     method: 'POST',
     path: '/',
     port: ETC_API_PORT,
+    ca,
   }, {
     jsonrpc: '2.0',
     method: 'eth_syncing',

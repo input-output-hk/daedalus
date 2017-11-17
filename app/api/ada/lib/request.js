@@ -1,33 +1,68 @@
 // @flow
 import https from 'https';
+import { size, has, get, omit } from 'lodash';
 import querystring from 'querystring';
+import { encryptPassphrase } from './encryptPassphrase';
 
 export type RequestOptions = {
   hostname: string,
   method: string,
   path: string,
   port: number,
-  ca?: string,
+  ca: string,
   headers?: {
     'Content-Type': string,
     'Content-Length': number,
   },
 };
 
-export const request = (httpOptions: RequestOptions, queryParams?: {}): Promise<Object> => (
-  new Promise((resolve, reject) => {
-    // Prepare request with http options and (optional) query params
+function typedRequest<Response>(
+  httpOptions: RequestOptions, queryParams?: {}, rawBodyParams?: any
+): Promise<Response> {
+  return new Promise((resolve, reject) => {
     const options: RequestOptions = Object.assign({}, httpOptions);
+    let hasRequestBody = false;
     let requestBody = '';
-    if (queryParams) {
-      requestBody = querystring.stringify(queryParams);
+
+    let queryString = '';
+    if (queryParams && size(queryParams) > 0) {
+      // Handle passphrase
+      if (has(queryParams, 'passphrase')) {
+        const passphrase = get(queryParams, 'passphrase');
+
+        // If passphrase is present it must be encrypted and included in options.path
+        if (passphrase) {
+          const encryptedPassphrase = encryptPassphrase(passphrase);
+          queryString = `?passphrase=${encryptedPassphrase}`;
+        }
+
+        // Passphrase must be ommited from rest query params
+        queryParams = omit(queryParams, 'passphrase');
+
+        if (size(queryParams > 1) && passphrase) {
+          queryString += `&${querystring.stringify(queryParams)}`;
+        }
+      } else {
+        queryString = `?${querystring.stringify(queryParams)}`;
+      }
+
+      if (queryString) options.path += queryString;
+    }
+
+    // Handle raw body params
+    if (rawBodyParams) {
+      hasRequestBody = true;
+      requestBody = JSON.stringify(rawBodyParams);
       options.headers = {
-        'Content-Type': 'application/x-www-form-urlencoded',
         'Content-Length': requestBody.length,
+        'Content-Type': 'application/json',
       };
     }
+
     const httpsRequest = https.request(options);
-    if (queryParams) { httpsRequest.write(requestBody); }
+    if (hasRequestBody) {
+      httpsRequest.write(requestBody);
+    }
     httpsRequest.on('response', (response) => {
       let body = '';
       // Cardano-sl returns chunked requests, so we need to concat them
@@ -38,12 +73,16 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}): Promise<
       // of "Left" (for errors) and "Right" (for success) properties
       response.on('end', () => {
         const parsedBody = JSON.parse(body);
-        if (parsedBody.Right) {
-          // "Right" means 200 ok (success)
+        if (has(parsedBody, 'Right')) {
+          // "Right" means 200 ok (success) -> also handle if Right: false (boolean response)
           resolve(parsedBody.Right);
-        } else if (parsedBody.Left) {
-          // "Left" means error case -> return error with contents
-          reject(new Error(parsedBody.Left.contents));
+        } else if (has(parsedBody, 'Left')) {
+          // "Left" means error case -> return error with contents (exception on nextUpdate)
+          if (parsedBody.Left.contents) {
+            reject(new Error(parsedBody.Left.contents));
+          } else {
+            reject(new Error('Unknown response from backend.'));
+          }
         } else {
           // TODO: investigate if that can happen! (no Right or Left in a response)
           reject(new Error('Unknown response from backend.'));
@@ -52,5 +91,7 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}): Promise<
     });
     httpsRequest.on('error', (error) => reject(error));
     httpsRequest.end();
-  })
-);
+  });
+}
+
+export const request = typedRequest;
