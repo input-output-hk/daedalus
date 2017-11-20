@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import WalletRestoreDialog from '../../../components/wallet/WalletRestoreDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 import environment from '../../../environment';
+import validWords from '../../../../lib/valid-words.en';
 
 @inject('stores', 'actions') @observer
 export default class WalletRestoreDialogContainer extends Component {
@@ -18,21 +19,28 @@ export default class WalletRestoreDialogContainer extends Component {
 
   onCancel = () => {
     this.props.onClose();
-    this.props.stores[environment.API].wallets.restoreRequest.reset();
+    // Restore request should be reset only in case restore is finished/errored
+    const { restoreRequest } = this._getWalletsStore();
+    if (!restoreRequest.isExecuting) restoreRequest.reset();
   };
 
   render() {
-    const { wallets } = this.props.stores[environment.API];
+    const wallets = this._getWalletsStore();
     const { restoreRequest } = wallets;
 
     return (
       <WalletRestoreDialog
         mnemonicValidator={mnemonic => wallets.isValidMnemonic(mnemonic)}
+        suggestedMnemonics={validWords}
         isSubmitting={restoreRequest.isExecuting}
         onSubmit={this.onSubmit}
         onCancel={this.onCancel}
         error={restoreRequest.error}
       />
     );
+  }
+
+  _getWalletsStore() {
+    return this.props.stores[environment.API].wallets;
   }
 }

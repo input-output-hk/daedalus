@@ -7,12 +7,10 @@ export const Logger = {
 
   debug: (data: string) => {
     Log.debug(data);
-    Logger.sendToRemote('debug', data);
   },
 
   info: (data: string) => {
     Log.info(data);
-    Logger.sendToRemote('info', data);
   },
 
   error: (data: string) => {
@@ -22,7 +20,6 @@ export const Logger = {
 
   warn: (data: string) => {
     Log.info(data);
-    Logger.sendToRemote('warn', data);
   },
 
   sendToRemote: (type: string, data: string) => {

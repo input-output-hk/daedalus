@@ -21,5 +21,4 @@ export default class AppStore extends Store {
     const currentRoute = this.stores.router.location.pathname;
     if (currentRoute !== routePath) this.stores.router.push(routePath);
   };
-
 }

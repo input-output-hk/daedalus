@@ -26,6 +26,7 @@ export default class EtcWalletsStore extends WalletStore {
   /* eslint-disable max-len */
 
   setup() {
+    super.setup();
     const { walletBackup, etc } = this.actions;
     const { wallets } = etc;
     wallets.createWallet.listen(this._create);
@@ -33,11 +34,6 @@ export default class EtcWalletsStore extends WalletStore {
     wallets.sendMoney.listen(this._sendMoney);
     wallets.restoreWallet.listen(this._restore);
     walletBackup.finishWalletBackup.listen(this._finishCreation);
-    this.registerReactions([
-      this._updateActiveWalletOnRouteChanges,
-      this._toggleAddWalletDialogOnWalletsLoaded,
-    ]);
-    setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
   }
 
   _sendMoney = async (transactionDetails: {

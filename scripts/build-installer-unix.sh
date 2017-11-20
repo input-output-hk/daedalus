@@ -105,6 +105,8 @@ test -d node_modules/daedalus-client-api/ -a -n "${fast_impure}" || {
         tar xJf daedalus-bridge.tar.xz --strip-components=1 -C node_modules/daedalus-client-api/
         rm      daedalus-bridge.tar.xz
         echo "cardano-sl build id is $(cat node_modules/daedalus-client-api/build-id)"
+        if [ -f node_modules/daedalus-client-api/commit-id ]; then echo "cardano-sl revision is $(cat node_modules/daedalus-client-api/commit-id)"; fi
+        if [ -f node_modules/daedalus-client-api/ci-url ]; then echo "cardano-sl ci-url is $(cat node_modules/daedalus-client-api/ci-url)"; fi
         pushd node_modules/daedalus-client-api
               mv log-config-prod.yaml cardano-node cardano-launcher ../../installers
         popd

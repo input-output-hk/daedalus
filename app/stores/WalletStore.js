@@ -25,6 +25,8 @@ export default class WalletsStore extends Store {
   @observable deleteWalletRequest: Request<any>;
   @observable getWalletRecoveryPhraseRequest: Request<any>;
   @observable restoreRequest: Request<any>;
+  @observable isImportActive: boolean = false;
+  @observable isRestoreActive: boolean = false;
 
   _newWalletDetails: { name: string, mnemonic: string, password: ?string } = {
     name: '',
@@ -36,6 +38,7 @@ export default class WalletsStore extends Store {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
     this.registerReactions([
       this._updateActiveWalletOnRouteChanges,
+      this._toggleAddWalletDialogOnWalletsLoaded,
     ]);
   }
 
@@ -206,6 +209,9 @@ export default class WalletsStore extends Store {
   );
 
   _toggleAddWalletDialogOnWalletsLoaded = () => {
+    // Register mobx observers for active import and restore in order to trigger reaction on change
+    this.isImportActive; // eslint-disable-line
+    this.isRestoreActive; // eslint-disable-line
     if (this.hasLoadedWallets && !this.hasAnyWallets) {
       this.actions.dialogs.open.trigger({ dialog: WalletAddDialog });
     } else if (untracked(() => this.stores.uiDialogs.isOpen(WalletAddDialog))) {

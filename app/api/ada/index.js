@@ -336,7 +336,7 @@ export default class AdaApi {
   }
 
   async createAddress(request: CreateAddressRequest): Promise<CreateAddressResponse> {
-    Logger.debug('AdaApi::createAddress called: ' + stringifyData(request));
+    Logger.debug('AdaApi::createAddress called');
     const { accountId, password } = request;
     try {
       const response: ApiAddress = await newAdaWalletAddress(

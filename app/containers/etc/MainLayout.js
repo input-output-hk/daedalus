@@ -6,6 +6,7 @@ import TopBarContainer from '../TopBarContainer';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import WalletAddPage from '../wallet/WalletAddPage';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
+import StatusMessagesNotification from '../../components/notifications/StatusMessagesNotification';
 
 @inject('stores', 'actions') @observer
 export default class MainLayout extends Component {
@@ -16,8 +17,10 @@ export default class MainLayout extends Component {
   render() {
     const { actions, stores } = this.props;
     const { sidebar } = stores;
-    const activeWallet = stores.etc.wallets.active;
+    const wallets = stores.etc.wallets;
+    const activeWallet = wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
+    const { isImportActive, isRestoreActive } = wallets;
 
     const sidebarMenus = {
       wallets: {
@@ -44,11 +47,21 @@ export default class MainLayout extends Component {
       />
     );
 
+    const addStatusMessagesNotification = (
+      isImportActive || isRestoreActive ? (
+        <StatusMessagesNotification
+          isImportActive={isImportActive}
+          isRestoreActive={isRestoreActive}
+        />
+      ) : null
+    );
+
     return (
       <SidebarLayout
         sidebar={sidebarComponent}
         topbar={<TopBarContainer />}
         contentDialog={<WalletAddPage />}
+        notification={addStatusMessagesNotification}
       >
         {this.props.children}
       </SidebarLayout>

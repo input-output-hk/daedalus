@@ -58,9 +58,15 @@ export default function () {
     await this.client.chooseFile(CERTIFICATE_UPLOAD_BOX, regularEncryptedAdaCertificateFilePath);
   });
 
-  this.When(/^I enter a valid "Regular" encrypted PDF certificate passphrase$/, function () {
-    const passphrase = 'uncle bargain pistol obtain amount laugh explain type learn';
-    return this.client.setValue('.AdaRedemptionForm_component .pass-phrase input', passphrase);
+  this.When(/^I enter a valid "Regular" encrypted PDF certificate passphrase$/, async function () {
+    const passphrase = ['uncle', 'bargain', 'pistol', 'obtain', 'amount', 'laugh', 'explain', 'type', 'learn'];
+    for (let i = 0; i < passphrase.length; i++) {
+      const word = passphrase[i];
+      await this.client.setValue('.AdaRedemptionForm_component .pass-phrase input', word);
+      await this.client.waitForVisible(`//li[contains(text(), '${word}')]`);
+      await this.waitAndClick(`//li[contains(text(), '${word}')]`);
+      await this.client.waitForVisible(`//span[contains(text(), '${word}')]`);
+    }
   });
 
   this.When(/^I enter a valid "Force vended" redemption key$/, function () {
@@ -89,9 +95,15 @@ export default function () {
     return this.client.setValue('.AdaRedemptionForm_component .shielded-redemption-key input', '6ANn43jbzR7zZGnV3BYnna1myW5HajPgjiCPg4vpcayf');
   });
 
-  this.When(/^I enter a valid "Paper vended" shielded vending key passphrase$/, function () {
-    const passphrase = 'fitness engage danger escape marriage answer coffee develop afraid';
-    return this.client.setValue('.AdaRedemptionForm_component .pass-phrase input', passphrase);
+  this.When(/^I enter a valid "Paper vended" shielded vending key passphrase$/, async function () {
+    const passphrase = ['fitness', 'engage', 'danger', 'escape', 'marriage', 'answer', 'coffee', 'develop', 'afraid'];
+    for (let i = 0; i < passphrase.length; i++) {
+      const word = passphrase[i];
+      await this.client.setValue('.AdaRedemptionForm_component .pass-phrase input', word);
+      await this.client.waitForVisible(`//li[contains(text(), '${word}')]`);
+      await this.waitAndClick(`//li[contains(text(), '${word}')]`);
+      await this.client.waitForVisible(`//span[contains(text(), '${word}')]`);
+    }
   });
 
   this.When(/^ada redemption form submit button is no longer disabled$/, function () {

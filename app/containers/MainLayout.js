@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import Sidebar from '../components/sidebar/Sidebar';
 import TopBarContainer from './TopBarContainer';
 import SidebarLayout from '../components/layout/SidebarLayout';
+import StatusMessagesNotification from '../components/notifications/StatusMessagesNotification';
 import NodeUpdatePage from './notifications/NodeUpdatePage';
 import WalletAddPage from './wallet/WalletAddPage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
@@ -17,10 +18,12 @@ export default class MainLayout extends Component {
   render() {
     const { actions, stores } = this.props;
     const { sidebar } = stores;
-    const activeWallet = stores.ada.wallets.active;
+    const wallets = stores.ada.wallets;
+    const activeWallet = wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const isNodeUpdateAvailable = this.props.stores.ada.nodeUpdate.isUpdateAvailable;
     const isUpdatePostponed = this.props.stores.ada.nodeUpdate.isUpdatePostponed;
+    const { isImportActive, isRestoreActive } = wallets;
 
     const sidebarMenus = {
       wallets: {
@@ -51,11 +54,20 @@ export default class MainLayout extends Component {
       isNodeUpdateAvailable && !isUpdatePostponed ? <NodeUpdatePage /> : null
     );
 
+    const addStatusMessagesNotification = (
+      isImportActive || isRestoreActive ? (
+        <StatusMessagesNotification
+          isImportActive={isImportActive}
+          isRestoreActive={isRestoreActive}
+        />
+      ) : null
+    );
+
     return (
       <SidebarLayout
         sidebar={sidebarComponent}
         topbar={<TopBarContainer />}
-        notification={addNodeUpdateNotification}
+        notification={addStatusMessagesNotification || addNodeUpdateNotification}
         contentDialog={<WalletAddPage />}
       >
         {this.props.children}

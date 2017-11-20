@@ -122,7 +122,7 @@ export default class WalletAddDialog extends Component {
               icon={importIcon}
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}
-              isDisabled={environment.API === 'etc'}
+              isDisabled={environment.isEtcApi() || (environment.isAdaApi() && environment.isMainnet())}
             />
           </div>
         </div>

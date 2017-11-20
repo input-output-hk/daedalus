@@ -100,9 +100,9 @@ export default class WalletFileImportDialog extends Component {
   form = new ReactToolboxMobxForm({
     fields: {
       walletFile: {
-        type: 'file',
         label: this.context.intl.formatMessage(messages.walletFileLabel),
         placeholder: this.context.intl.formatMessage(messages.walletFileHint),
+        type: 'file',
       },
       walletName: {
         label: this.context.intl.formatMessage(messages.walletNameInputLabel),
@@ -192,7 +192,7 @@ export default class WalletFileImportDialog extends Component {
         className: isSubmitting ? styles.isSubmitting : null,
         label: intl.formatMessage(messages.submitLabel),
         primary: true,
-        disabled: !(walletFile.value instanceof File),
+        disabled: isSubmitting || !(walletFile.value instanceof File),
         onClick: this.submit,
       }
     ];
@@ -207,7 +207,7 @@ export default class WalletFileImportDialog extends Component {
         title={intl.formatMessage(messages.headline)}
         actions={actions}
         closeOnOverlayClick
-        onClose={!isSubmitting ? onClose : null}
+        onClose={onClose}
         closeButton={<DialogCloseButton />}
       >
 
@@ -215,7 +215,10 @@ export default class WalletFileImportDialog extends Component {
           <FileUploadWidget
             {...walletFile.bind()}
             selectedFile={walletFile.value}
-            onFileSelected={walletFile.onChange}
+            onFileSelected={(file) => {
+              // "set(value)" is an unbound method and thus must be explicitly called
+              walletFile.set(file);
+            }}
           />
         </div>
 

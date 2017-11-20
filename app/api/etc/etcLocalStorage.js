@@ -2,6 +2,12 @@
 import localStorage from 'electron-json-storage';
 import { set, unset } from 'lodash';
 import type { AssuranceModeOption } from '../../types/transactionAssuranceTypes';
+import environment from '../../environment';
+
+const networkForLocalStorage = String(environment.NETWORK);
+const localStorageKeys = {
+  WALLETS: networkForLocalStorage + '-ETC-WALLETS',
+};
 
 /**
  * This api layer provides access to the electron local storage
@@ -17,7 +23,7 @@ export type EtcWalletData = {
 };
 
 export const getEtcWalletsData = () => new Promise((resolve, reject) => {
-  localStorage.get('etcWallets', (error, response) => {
+  localStorage.get(localStorageKeys.WALLETS, (error, response) => {
     if (error) return reject(error);
     if (!response.wallets) return resolve({});
     resolve(response.wallets);
@@ -31,7 +37,7 @@ export const setEtcWalletsData = (
   walletsData.forEach(walletData => {
     wallets[walletData.id] = walletData;
   });
-  localStorage.set('etcWallets', { wallets }, (error) => {
+  localStorage.set(localStorageKeys.WALLETS, { wallets }, (error) => {
     if (error) return reject(error);
     resolve();
   });
@@ -47,7 +53,7 @@ export const setEtcWalletData = (
 ) => new Promise(async (resolve, reject) => {
   const walletsData = await getEtcWalletsData();
   set(walletsData, walletData.id, walletData);
-  localStorage.set('etcWallets', { wallets: walletsData }, (error) => {
+  localStorage.set(localStorageKeys.WALLETS, { wallets: walletsData }, (error) => {
     if (error) return reject(error);
     resolve();
   });
@@ -65,7 +71,7 @@ export const updateEtcWalletData = (
   const walletsData = await getEtcWalletsData();
   const walletId = walletData.id;
   Object.assign(walletsData[walletId], walletData);
-  localStorage.set('etcWallets', { wallets: walletsData }, (error) => {
+  localStorage.set(localStorageKeys.WALLETS, { wallets: walletsData }, (error) => {
     if (error) return reject(error);
     resolve();
   });
@@ -74,14 +80,14 @@ export const updateEtcWalletData = (
 export const unsetEtcWalletData = (walletId: string) => new Promise(async (resolve, reject) => {
   const walletsData = await getEtcWalletsData();
   unset(walletsData, walletId);
-  localStorage.set('etcWallets', { wallets: walletsData }, (error) => {
+  localStorage.set(localStorageKeys.WALLETS, { wallets: walletsData }, (error) => {
     if (error) return reject(error);
     resolve();
   });
 });
 
 export const unsetEtcWalletsData = () => new Promise((resolve) => {
-  localStorage.remove('etcWallets', () => {
+  localStorage.remove(localStorageKeys.WALLETS, () => {
     resolve();
   });
 });
@@ -194,7 +200,7 @@ export const initEtcWalletsDummyData = () => new Promise(async (resolve, reject)
   ETC_WALLETS_DATA.forEach(walletData => {
     set(wallets, walletData.id, walletData);
   });
-  localStorage.set('etcWallets', { wallets }, (error) => {
+  localStorage.set(localStorageKeys.WALLETS, { wallets }, (error) => {
     if (error) return reject(error);
     resolve();
   });
