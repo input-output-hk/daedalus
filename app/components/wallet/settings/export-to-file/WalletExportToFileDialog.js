@@ -43,42 +43,36 @@ const messages = defineMessages({
 
 type ExportType = 'full' | 'readOnly';
 
-type DialogState = {
-  exportType: ExportType,
-};
-
 export type OnSubmitParams = {
   exportType: ExportType,
   password: ?string,
 };
 
+type Props = {
+  walletName: string,
+  hasSpendingPassword: boolean,
+  isSubmitting: false,
+  onSubmit: (OnSubmitParams) => void,
+  onClose: () => void,
+  error?: ?LocalizableError,
+};
+
+type State = {
+  exportType: ExportType,
+};
+
 @observer
-export default class WalletExportToFileDialog extends Component {
+export default class WalletExportToFileDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  props: {
-    walletName: string,
-    hasSpendingPassword: boolean,
-    isSubmitting: false,
-    onSubmit: (OnSubmitParams) => void,
-    onClose: () => void,
-    error?: ?LocalizableError,
-  };
-
-  state: DialogState;
 
   constructor(props: any, children: any) {
     super(props, children);
     this.state = {
       exportType: 'full',
     };
-  }
-
-  setState(object: DialogState) {
-    super.setState(object);
   }
 
   // onChangeExportType(exportType: ExportType) {

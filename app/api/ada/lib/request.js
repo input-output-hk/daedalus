@@ -16,8 +16,10 @@ export type RequestOptions = {
   },
 };
 
-export const request = (httpOptions: RequestOptions, queryParams?: {}, rawBodyParams?: any) => (
-  new Promise((resolve, reject) => {
+function typedRequest<Response>(
+  httpOptions: RequestOptions, queryParams?: {}, rawBodyParams?: any
+): Promise<Response> {
+  return new Promise((resolve, reject) => {
     const options: RequestOptions = Object.assign({}, httpOptions);
     let hasRequestBody = false;
     let requestBody = '';
@@ -58,7 +60,9 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}, rawBodyPa
     }
 
     const httpsRequest = https.request(options);
-    if (hasRequestBody) { httpsRequest.write(requestBody); }
+    if (hasRequestBody) {
+      httpsRequest.write(requestBody);
+    }
     httpsRequest.on('response', (response) => {
       let body = '';
       // Cardano-sl returns chunked requests, so we need to concat them
@@ -87,5 +91,7 @@ export const request = (httpOptions: RequestOptions, queryParams?: {}, rawBodyPa
     });
     httpsRequest.on('error', (error) => reject(error));
     httpsRequest.end();
-  })
-);
+  });
+}
+
+export const request = typedRequest;

@@ -9,29 +9,29 @@ import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
 import type { SidebarWalletType } from '../../stores/SidebarStore';
 
-@observer
-export default class Sidebar extends Component {
-
-  props: {
-    menus: {
-      wallets: {
-        items: Array<SidebarWalletType>,
-        activeWalletId: ?string,
-        actions: {
-          onWalletItemClick: Function,
-        }
+type Props = {
+  menus: {
+    wallets: {
+      items: Array<SidebarWalletType>,
+      activeWalletId: ?string,
+      actions: {
+        onWalletItemClick: Function,
       }
-    },
-    categories: Array<{
-      name: string,
-      route: string,
-      icon: string,
-    }>,
-    activeSidebarCategory: string,
-    onCategoryClicked: Function,
-    isShowingSubMenus: boolean,
-    openDialogAction: Function,
-  };
+    }
+  },
+  categories: Array<{
+    name: string,
+    route: string,
+    icon: string,
+  }>,
+  activeSidebarCategory: string,
+  onCategoryClicked: Function,
+  isShowingSubMenus: boolean,
+  openDialogAction: Function,
+};
+
+@observer
+export default class Sidebar extends Component<Props> {
 
   static defaultProps = {
     isShowingSubMenus: false,

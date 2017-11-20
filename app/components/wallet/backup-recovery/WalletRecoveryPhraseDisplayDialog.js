@@ -24,14 +24,14 @@ const messages = defineMessages({
   }
 });
 
-@observer
-export default class WalletRecoveryPhraseDisplayDialog extends Component {
+type Props = {
+  recoveryPhrase: string,
+  onStartWalletBackup: Function,
+  onCancelBackup: Function,
+};
 
-  props: {
-    recoveryPhrase: string,
-    onStartWalletBackup: Function,
-    onCancelBackup: Function,
-  };
+@observer
+export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

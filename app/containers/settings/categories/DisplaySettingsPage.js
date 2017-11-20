@@ -5,10 +5,9 @@ import DisplaySettings from '../../../components/settings/categories/DisplaySett
 import type { InjectedProps } from '../../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
-export default class DisplaySettingsPage extends Component {
+export default class DisplaySettingsPage extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   selectTheme = (values: { theme: string }) => {
     this.props.actions.profile.updateTheme.trigger(values);

@@ -1,5 +1,5 @@
 // @flow
-import type { Children } from 'react';
+import type { Node } from 'react';
 import type { StoresMap } from '../stores/index';
 import type { ActionsMap } from '../actions/index';
 
@@ -11,12 +11,12 @@ export type InjectedProps = {
 export type InjectedContainerProps = {
   stores: any | StoresMap,
   actions: any | ActionsMap,
-  children: Children,
+  children: Node,
 };
 
 export type InjectedDialogContainerProps = {
   stores: any | StoresMap,
   actions: any | ActionsMap,
-  children: Children,
+  children: Node,
   onClose: Function,
 };

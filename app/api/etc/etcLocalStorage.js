@@ -22,17 +22,21 @@ export type EtcWalletData = {
   passwordUpdateDate: ?Date,
 };
 
-export const getEtcWalletsData = () => new Promise((resolve, reject) => {
+export type EtcWalletsData = {
+  wallets: Array<EtcWalletData>,
+};
+
+export const getEtcWalletsData = (): Promise<EtcWalletsData> => new Promise((resolve, reject) => {
   localStorage.get(localStorageKeys.WALLETS, (error, response) => {
     if (error) return reject(error);
-    if (!response.wallets) return resolve({});
+    if (!response.wallets) return resolve({ wallets: [] });
     resolve(response.wallets);
   });
 });
 
 export const setEtcWalletsData = (
   walletsData: Array<EtcWalletData>
-) => new Promise((resolve, reject) => {
+): Promise<void> => new Promise((resolve, reject) => {
   const wallets = {};
   walletsData.forEach(walletData => {
     wallets[walletData.id] = walletData;
@@ -43,14 +47,16 @@ export const setEtcWalletsData = (
   });
 });
 
-export const getEtcWalletData = (walletId: string) => new Promise(async (resolve) => {
+export const getEtcWalletData = (
+  walletId: string
+): Promise<EtcWalletData> => new Promise(async (resolve) => {
   const walletsData = await getEtcWalletsData();
   resolve(walletsData[walletId]);
 });
 
 export const setEtcWalletData = (
   walletData: EtcWalletData
-) => new Promise(async (resolve, reject) => {
+): Promise<void> => new Promise(async (resolve, reject) => {
   const walletsData = await getEtcWalletsData();
   set(walletsData, walletData.id, walletData);
   localStorage.set(localStorageKeys.WALLETS, { wallets: walletsData }, (error) => {
@@ -67,7 +73,7 @@ export const updateEtcWalletData = (
     hasPassword?: boolean,
     passwordUpdateDate?: ?Date,
   }
-) => new Promise(async (resolve, reject) => {
+): Promise<void> => new Promise(async (resolve, reject) => {
   const walletsData = await getEtcWalletsData();
   const walletId = walletData.id;
   Object.assign(walletsData[walletId], walletData);
@@ -77,7 +83,9 @@ export const updateEtcWalletData = (
   });
 });
 
-export const unsetEtcWalletData = (walletId: string) => new Promise(async (resolve, reject) => {
+export const unsetEtcWalletData = (
+  walletId: string
+): Promise<void> => new Promise(async (resolve, reject) => {
   const walletsData = await getEtcWalletsData();
   unset(walletsData, walletId);
   localStorage.set(localStorageKeys.WALLETS, { wallets: walletsData }, (error) => {
@@ -86,7 +94,7 @@ export const unsetEtcWalletData = (walletId: string) => new Promise(async (resol
   });
 });
 
-export const unsetEtcWalletsData = () => new Promise((resolve) => {
+export const unsetEtcWalletsData = (): Promise<void> => new Promise((resolve) => {
   localStorage.remove(localStorageKeys.WALLETS, () => {
     resolve();
   });
@@ -195,7 +203,7 @@ export const ETC_WALLETS_DATA = [
   },
 ];
 
-export const initEtcWalletsDummyData = () => new Promise(async (resolve, reject) => {
+export const initEtcWalletsDummyData = (): Promise<void> => new Promise(async (resolve, reject) => {
   const wallets = await getEtcWalletsData();
   ETC_WALLETS_DATA.forEach(walletData => {
     set(wallets, walletData.id, walletData);

@@ -9,11 +9,12 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import validWords from '../../../lib/valid-words.en';
 import environment from '../../environment';
 
+type Props = InjectedProps;
+
 @inject('stores', 'actions') @observer
-export default class AdaRedemptionPage extends Component {
+export default class AdaRedemptionPage extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   onSubmit = (values: { walletId: string, walletPassword: ?string }) => {
     this.props.actions.ada.adaRedemption.redeemAda.trigger(values);

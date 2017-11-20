@@ -7,10 +7,9 @@ import TermsOfUseForm from '../../components/profile/terms-of-use/TermsOfUseForm
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
-export default class TermsOfUsePage extends Component {
+export default class TermsOfUsePage extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   onSubmit = () => {
     this.props.actions.profile.acceptTermsOfUse.trigger();

@@ -17,11 +17,12 @@ const messages = defineMessages({
   },
 });
 
+type Props = InjectedProps;
+
 @inject('stores', 'actions') @observer
-export default class WalletSummaryPage extends Component {
+export default class WalletSummaryPage extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   static contextTypes = {
     intl: intlShape.isRequired,

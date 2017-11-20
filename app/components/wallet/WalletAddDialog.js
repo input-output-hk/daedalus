@@ -61,19 +61,19 @@ const messages = defineMessages({
   }
 });
 
+type Props = {
+  onCreate: Function,
+  onRestore: Function,
+  onCancel: Function,
+  onImportFile: Function,
+  canClose: boolean,
+};
+
 @observer
-export default class WalletAddDialog extends Component {
+export default class WalletAddDialog extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired
-  };
-
-  props: {
-    onCreate: Function,
-    onRestore: Function,
-    onCancel: Function,
-    onImportFile: Function,
-    canClose: boolean,
   };
 
   render() {

@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import styles from './BlockGenerationInfo.scss';
 
 @observer
-export default class BlockGenerationInfo extends Component {
+export default class BlockGenerationInfo extends Component<any> {
 
   render() {
     return (

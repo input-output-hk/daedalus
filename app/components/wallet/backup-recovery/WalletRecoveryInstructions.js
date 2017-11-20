@@ -4,12 +4,12 @@ import type { Element } from 'react';
 import { observer } from 'mobx-react';
 import styles from './WalletRecoveryInstructions.scss';
 
-@observer
-export default class WalletRecoveryInstructions extends Component {
+type Props = {
+  instructionsText: string | Element<any>,
+};
 
-  props: {
-    instructionsText: string | Element<any>,
-  };
+@observer
+export default class WalletRecoveryInstructions extends Component<Props> {
 
   render() {
     const { instructionsText } = this.props;

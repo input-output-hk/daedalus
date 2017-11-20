@@ -29,13 +29,13 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class SettingsMenu extends Component {
+type Props = {
+  isActiveItem: Function,
+  onItemClick: Function,
+};
 
-  props: {
-    isActiveItem: Function,
-    onItemClick: Function,
-  };
+@observer
+export default class SettingsMenu extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

@@ -74,15 +74,19 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class WalletFileImportDialog extends Component {
+type Props = {
+  onSubmit: Function,
+  onClose: Function,
+  isSubmitting: boolean,
+  error: ?LocalizableError,
+};
 
-  props: {
-    onSubmit: Function,
-    onClose: Function,
-    isSubmitting: boolean,
-    error: ?LocalizableError,
-  };
+type State = {
+  createPassword: boolean,
+};
+
+@observer
+export default class WalletFileImportDialog extends Component<Props, State> {
 
   state = {
     createPassword: false,

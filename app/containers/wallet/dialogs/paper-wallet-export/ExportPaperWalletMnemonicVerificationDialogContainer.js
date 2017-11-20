@@ -6,12 +6,13 @@ import ExportPaperWalletCertificateDialog from '../../../../components/wallet/se
 import ExportPaperWalletMnemonicDialog from '../../../../components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 
+type Props = InjectedDialogContainerProps;
+
 @inject('stores', 'actions') @observer
-export default class ExportPaperWalletMnemonicVerificationDialogContainer extends Component {
+// eslint-disable-next-line max-len
+export default class ExportPaperWalletMnemonicVerificationDialogContainer extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
-
-  props: InjectedDialogContainerProps;
 
   onContinue = () => {
     this.props.actions.dialogs.open.trigger({

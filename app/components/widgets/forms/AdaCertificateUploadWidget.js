@@ -23,18 +23,18 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class AdaCertificateUploadWidget extends Component {
+type Props = {
+  label: string,
+  onFileSelected: Function,
+  onRemoveCertificate: Function,
+  acceptedFileTypes: string,
+  isCertificateEncrypted: boolean,
+  isCertificateSelected: boolean,
+  isCertificateInvalid: boolean,
+};
 
-  props: {
-    label: string,
-    onFileSelected: Function,
-    onRemoveCertificate: Function,
-    acceptedFileTypes: string,
-    isCertificateEncrypted: boolean,
-    isCertificateSelected: boolean,
-    isCertificateInvalid: boolean,
-  };
+@observer
+export default class AdaCertificateUploadWidget extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

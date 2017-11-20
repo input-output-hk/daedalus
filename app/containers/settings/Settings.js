@@ -9,10 +9,9 @@ import type { InjectedContainerProps } from '../../types/injectedPropsType';
 const Layout = resolver('containers/MainLayout');
 
 @inject('stores', 'actions') @observer
-export default class Settings extends Component {
+export default class Settings extends Component<InjectedContainerProps> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedContainerProps;
 
   isActivePage = (route: string) => {
     const { location } = this.props.stores.router;

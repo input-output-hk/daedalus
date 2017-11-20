@@ -7,11 +7,12 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import globalMessages from '../../i18n/global-messages';
 import { DECIMAL_PLACES_IN_ADA, MAX_INTEGER_PLACES_IN_ADA } from '../../config/numbersConfig';
 
+type Props = InjectedProps;
+
 @inject('stores', 'actions') @observer
-export default class WalletSendPage extends Component {
+export default class WalletSendPage extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   static contextTypes = {
     intl: intlShape.isRequired,

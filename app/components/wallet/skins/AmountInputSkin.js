@@ -12,14 +12,14 @@ const messages = defineMessages({
   },
 });
 
-export default class AmountInputSkin extends Component {
+type Props = {
+  currency: string,
+  fees: BigNumber,
+  total: BigNumber,
+  error: boolean,
+};
 
-  props: {
-    currency: string,
-    fees: BigNumber,
-    total: BigNumber,
-    error: boolean,
-  };
+export default class AmountInputSkin extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

@@ -9,10 +9,14 @@ import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import StatusMessagesNotification from '../../components/notifications/StatusMessagesNotification';
 
 @inject('stores', 'actions') @observer
-export default class MainLayout extends Component {
+export default class MainLayout extends Component<InjectedContainerProps> {
 
-  static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
-  props: InjectedContainerProps;
+  static defaultProps = {
+    actions: null,
+    stores: null,
+    children: null,
+    onClose: () => {}
+  };
 
   render() {
     const { actions, stores } = this.props;

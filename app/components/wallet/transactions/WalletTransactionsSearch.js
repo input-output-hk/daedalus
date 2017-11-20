@@ -13,13 +13,13 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class WalletTransactionsSearch extends Component {
+type Props = {
+  searchTerm: string,
+  onChange: Function,
+};
 
-  props: {
-    searchTerm: string,
-    onChange: Function,
-  };
+@observer
+export default class WalletTransactionsSearch extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

@@ -34,22 +34,22 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class Loading extends Component {
+type Props = {
+  currencyIcon: string,
+  currencyIconWhite: string,
+  isConnecting: boolean,
+  hasBeenConnected: boolean,
+  hasBlockSyncingStarted: boolean,
+  isSyncing: boolean,
+  syncPercentage: number,
+  isLoadingDataForNextScreen: boolean,
+  loadingDataForNextScreenMessage: ReactIntlMessage,
+  hasLoadedCurrentLocale: boolean,
+  hasLoadedCurrentTheme: boolean,
+};
 
-  props: {
-    currencyIcon: string,
-    currencyIconWhite: string,
-    isConnecting: boolean,
-    hasBeenConnected: boolean,
-    hasBlockSyncingStarted: boolean,
-    isSyncing: boolean,
-    syncPercentage: number,
-    isLoadingDataForNextScreen: boolean,
-    loadingDataForNextScreenMessage: ReactIntlMessage,
-    hasLoadedCurrentLocale: boolean,
-    hasLoadedCurrentTheme: boolean,
-  };
+@observer
+export default class Loading extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

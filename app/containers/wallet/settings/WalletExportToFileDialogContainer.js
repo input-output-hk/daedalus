@@ -6,12 +6,12 @@ import WalletExportDialog from '../../../components/wallet/settings/export-to-fi
 import type { OnSubmitParams } from '../../../components/wallet/settings/export-to-file/WalletExportToFileDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
+type Props = InjectedDialogContainerProps;
+
 @inject('stores', 'actions') @observer
-export default class WalletExportToFileDialogContainer extends Component {
+export default class WalletExportToFileDialogContainer extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
-
-  props: InjectedDialogContainerProps;
 
   onSubmit = (params: OnSubmitParams) => {
     const filePath = remote.dialog.showSaveDialog({

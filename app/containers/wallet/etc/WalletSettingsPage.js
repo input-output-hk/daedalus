@@ -5,11 +5,12 @@ import WalletSettings from '../../../components/wallet/etc/WalletSettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { isValidWalletName } from '../../../utils/validations';
 
+type Props = InjectedProps
+
 @inject('stores', 'actions') @observer
-export default class WalletSettingsPage extends Component {
+export default class WalletSettingsPage extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   render() {
     const { uiDialogs } = this.props.stores;

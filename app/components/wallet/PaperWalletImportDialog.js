@@ -97,20 +97,24 @@ const messages = defineMessages({
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
+type Props = {
+  onSubmit: Function,
+  onCancel: Function,
+  isSubmitting: boolean,
+  mnemonicValidator: Function,
+  privateKeyValidator: Function,
+  error?: ?LocalizableError,
+};
+
+type State = {
+  createPassword: boolean,
+};
+
 @observer
-export default class PaperWalletImportDialog extends Component {
+export default class PaperWalletImportDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired
-  };
-
-  props: {
-    onSubmit: Function,
-    onCancel: Function,
-    isSubmitting: boolean,
-    mnemonicValidator: Function,
-    privateKeyValidator: Function,
-    error?: ?LocalizableError,
   };
 
   state = {

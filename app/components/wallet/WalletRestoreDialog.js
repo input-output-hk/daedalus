@@ -88,20 +88,24 @@ const messages = defineMessages({
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
+type Props = {
+  onSubmit: Function,
+  onCancel: Function,
+  isSubmitting: boolean,
+  mnemonicValidator: Function,
+  error?: ?LocalizableError,
+  suggestedMnemonics: Array<string>,
+};
+
+type State = {
+  createPassword: boolean,
+};
+
 @observer
-export default class WalletRestoreDialog extends Component {
+export default class WalletRestoreDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired
-  };
-
-  props: {
-    onSubmit: Function,
-    onCancel: Function,
-    isSubmitting: boolean,
-    mnemonicValidator: Function,
-    error?: ?LocalizableError,
-    suggestedMnemonics: Array<string>,
   };
 
   state = {

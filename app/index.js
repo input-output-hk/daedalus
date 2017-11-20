@@ -50,14 +50,12 @@ const initializeDaedalus = () => {
     }),
   };
 
+  const rootElement = document.getElementById('root');
+  if (!rootElement) throw new Error('No #root element found.');
   if (isAboutWindow) {
-    render((
-      <About stores={stores} />
-    ), document.getElementById('root'));
+    render(<About stores={stores} />, rootElement);
   } else {
-    render((
-      <App stores={stores} actions={actions} history={history} />
-    ), document.getElementById('root'));
+    render(<App stores={stores} actions={actions} history={history} />, rootElement);
   }
 };
 

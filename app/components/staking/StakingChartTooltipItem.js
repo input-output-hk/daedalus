@@ -3,13 +3,13 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import styles from './StakingChartTooltipItem.scss';
 
-@observer
-export default class StakingChartTooltipItem extends Component {
+type Props = {
+  value: string,
+  label: string
+};
 
-  props: {
-    value: string,
-    label: string
-  };
+@observer
+export default class StakingChartTooltipItem extends Component<Props> {
 
   render() {
     const { value, label } = this.props;
