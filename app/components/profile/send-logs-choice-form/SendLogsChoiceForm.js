@@ -31,14 +31,14 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class SendLogsChoiceForm extends Component {
+type Props = {
+  onSubmit: Function,
+  isSubmitting: boolean,
+  error?: ?LocalizableError,
+};
 
-  props: {
-    onSubmit: Function,
-    isSubmitting: boolean,
-    error?: ?LocalizableError,
-  };
+@observer
+export default class SendLogsChoiceForm extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

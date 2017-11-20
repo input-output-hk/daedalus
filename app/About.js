@@ -9,13 +9,10 @@ import translations from './i18n/translations';
 import type { StoresMap } from './stores/index';
 import ThemeManager from './ThemeManager';
 
+type Props = { stores: StoresMap };
+
 @observer
-export default class About extends Component {
-
-  props: {
-    stores: StoresMap,
-  };
-
+export default class About extends Component<Props> {
   render() {
     const { stores } = this.props;
     const locale = stores.profile.currentLocale;

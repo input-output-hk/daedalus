@@ -41,19 +41,19 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class StakingChartTooltip extends Component {
+type Props = {
+  slot: number,
+  time: Date,
+  hash: string,
+  numberOfTransactions: number,
+  mpcPhase: string,
+  commitments: string,
+  openings: string,
+  shares: string
+};
 
-  props: {
-    slot: number,
-    time: Date,
-    hash: string,
-    numberOfTransactions: number,
-    mpcPhase: string,
-    commitments: string,
-    openings: string,
-    shares: string
-  };
+@observer
+export default class StakingChartTooltip extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

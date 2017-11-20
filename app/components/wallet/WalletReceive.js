@@ -63,20 +63,24 @@ const messages = defineMessages({
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
-@observer
-export default class WalletReceive extends Component {
+type Props = {
+  walletAddress: string,
+  isWalletAddressUsed: boolean,
+  walletAddresses: Array<WalletAddress>,
+  onGenerateAddress: Function,
+  onCopyAddress: Function,
+  isSidebarExpanded: boolean,
+  walletHasPassword: boolean,
+  isSubmitting: boolean,
+  error?: ?LocalizableError,
+};
 
-  props: {
-    walletAddress: string,
-    isWalletAddressUsed: boolean,
-    walletAddresses: Array<WalletAddress>,
-    onGenerateAddress: Function,
-    onCopyAddress: Function,
-    isSidebarExpanded: boolean,
-    walletHasPassword: boolean,
-    isSubmitting: boolean,
-    error?: ?LocalizableError,
-  };
+type State = {
+  showUsed: boolean,
+};
+
+@observer
+export default class WalletReceive extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

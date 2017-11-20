@@ -37,17 +37,17 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class NodeUpdateNotification extends Component {
+type Props = {
+  version: ?string,
+  message?: string, // TODO: make this required after it is implemented on the backend
+  onAccept: Function,
+  onPostpone: Function,
+  onToggleExpanded: Function,
+  isExpanded: boolean,
+};
 
-  props: {
-    version: ?string,
-    message?: string, // TODO: make this required after it is implemented on the backend
-    onAccept: Function,
-    onPostpone: Function,
-    onToggleExpanded: Function,
-    isExpanded: boolean,
-  };
+@observer
+export default class NodeUpdateNotification extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

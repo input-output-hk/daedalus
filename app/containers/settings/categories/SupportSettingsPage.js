@@ -5,10 +5,9 @@ import SupportSettings from '../../../components/settings/categories/SupportSett
 import type { InjectedProps } from '../../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
-export default class SupportSettingsPage extends Component {
+export default class SupportSettingsPage extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   onSubmit = (values: { sendLogs: boolean }) => {
     this.props.actions.profile.setSendLogsChoice.trigger(values);

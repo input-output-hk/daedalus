@@ -94,7 +94,7 @@ export default class Request<Result, Error> {
     return this.promise.then(...args);
   }
 
-  catch(...args: Array<any>): Promise<Error> {
+  catch(...args: Array<any>): Promise<any> {
     if (!this.promise) throw new NotExecutedYetError();
     return this.promise.catch(...args);
   }

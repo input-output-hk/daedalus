@@ -5,33 +5,33 @@ import WalletBackupPrivacyWarningDialog from '../../components/wallet/backup-rec
 import WalletRecoveryPhraseDisplayDialog from '../../components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog';
 import WalletRecoveryPhraseEntryDialog from '../../components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog';
 
-@observer
-export default class WalletBackupDialog extends Component {
+type Props = {
+  currentStep: ?string,
+  canPhraseBeShown: boolean,
+  isPrivacyNoticeAccepted: boolean,
+  countdownRemaining: number,
+  isTermDeviceAccepted: boolean,
+  canFinishBackup: boolean,
+  isTermRecoveryAccepted: boolean,
+  isValid: boolean,
+  isSubmitting: boolean,
+  recoveryPhrase: string,
+  recoveryPhraseShuffled: Array<{ word: string, isActive: boolean }>,
+  enteredPhrase: Array<{ word: string }>,
+  onCancelBackup: Function,
+  onAcceptPrivacyNotice: Function,
+  onContinue: Function,
+  onStartWalletBackup: Function,
+  onAcceptTermDevice: Function,
+  onAcceptTermRecovery: Function,
+  onAddWord: Function,
+  onClear: Function,
+  onFinishBackup: Function,
+  onRestartBackup: Function,
+};
 
-  props: {
-    currentStep: ?string,
-    canPhraseBeShown: boolean,
-    isPrivacyNoticeAccepted: boolean,
-    countdownRemaining: number,
-    isTermDeviceAccepted: boolean,
-    canFinishBackup: boolean,
-    isTermRecoveryAccepted: boolean,
-    isValid: boolean,
-    isSubmitting: boolean,
-    recoveryPhrase: string,
-    recoveryPhraseShuffled: Array<{ word: string, isActive: boolean }>,
-    enteredPhrase: Array<{ word: string }>,
-    onCancelBackup: Function,
-    onAcceptPrivacyNotice: Function,
-    onContinue: Function,
-    onStartWalletBackup: Function,
-    onAcceptTermDevice: Function,
-    onAcceptTermRecovery: Function,
-    onAddWord: Function,
-    onClear: Function,
-    onFinishBackup: Function,
-    onRestartBackup: Function,
-  };
+@observer
+export default class WalletBackupDialog extends Component<Props> {
 
   render() {
     const {

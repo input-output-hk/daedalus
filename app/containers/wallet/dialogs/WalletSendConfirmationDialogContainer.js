@@ -8,21 +8,21 @@ import resolver from '../../../utils/imports';
 
 const WalletSendConfirmationDialog = resolver('components/wallet/WalletSendConfirmationDialog');
 
+type Props = {
+  stores: any | StoresMap,
+  actions: any | ActionsMap,
+  amount: string,
+  receiver: string,
+  totalAmount: string,
+  transactionFee: string,
+  amountToNaturalUnits: (amountWithFractions: string) => string,
+  currencyUnit: string,
+};
+
 @inject('actions', 'stores') @observer
-export default class WalletSendConfirmationDialogContainer extends Component {
+export default class WalletSendConfirmationDialogContainer extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
-
-  props: {
-    stores: any | StoresMap,
-    actions: any | ActionsMap,
-    amount: string,
-    receiver: string,
-    totalAmount: string,
-    transactionFee: string,
-    amountToNaturalUnits: (amountWithFractions: string) => string,
-    currencyUnit: string,
-  };
 
   handleWalletSendFormSubmit = (values: Object) => {
     this.props.actions[environment.API].wallets.sendMoney.trigger(values);

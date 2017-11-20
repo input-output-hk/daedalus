@@ -9,11 +9,12 @@ import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 
+type Props = InjectedContainerProps;
+
 @inject('stores', 'actions') @observer
-export default class Wallet extends Component {
+export default class Wallet extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedContainerProps;
 
   isActiveScreen = (page: string) => {
     const { app } = this.props.stores;

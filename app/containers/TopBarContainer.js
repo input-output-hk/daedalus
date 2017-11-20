@@ -7,11 +7,12 @@ import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironm
 import type { InjectedProps } from '../types/injectedPropsType';
 import environment from '../environment';
 
+type Props = InjectedProps;
+
 @inject('stores', 'actions') @observer
-export default class TopBarContainer extends Component {
+export default class TopBarContainer extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   render() {
     const { actions, stores } = this.props;

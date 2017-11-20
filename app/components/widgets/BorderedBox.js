@@ -1,15 +1,15 @@
 // @flow
 import React, { Component } from 'react';
-import type { Children } from 'react';
+import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import styles from './BorderedBox.scss';
 
-@observer
-export default class BorderedBox extends Component {
+type Props = {
+  children?: Node,
+};
 
-  props: {
-    children?: Children,
-  };
+@observer
+export default class BorderedBox extends Component<Props> {
 
   render() {
     const { children } = this.props;

@@ -62,13 +62,18 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class WalletCreateDialog extends Component {
+type Props = {
+  onSubmit: Function,
+  onCancel: Function,
+};
 
-  props: {
-    onSubmit: Function,
-    onCancel: Function,
-  };
+type State = {
+  isSubmitting: boolean,
+  createPassword: boolean,
+};
+
+@observer
+export default class WalletCreateDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

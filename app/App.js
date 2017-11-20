@@ -14,13 +14,11 @@ import type { ActionsMap } from './actions/index';
 import ThemeManager from './ThemeManager';
 
 @observer
-export default class App extends Component {
-  props: {
-    stores: StoresMap,
-    actions: ActionsMap,
-    history: Object,
-  };
-
+export default class App extends Component<{
+  stores: StoresMap,
+  actions: ActionsMap,
+  history: Object,
+}> {
   render() {
     const { stores, actions, history } = this.props;
     const locale = stores.profile.currentLocale;

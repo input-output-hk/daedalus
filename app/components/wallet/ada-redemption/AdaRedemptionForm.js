@@ -155,36 +155,36 @@ where Ada should be redeemed and enter 9 word mnemonic passphrase.</p>`,
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
-@observer
-export default class AdaRedemptionForm extends Component {
+type Props = {
+  wallets: Array<{ value: string, label: string }>,
+  onAcceptRedemptionDisclaimer: Function,
+  onChooseRedemptionType: Function,
+  onCertificateSelected: Function,
+  onRemoveCertificate: Function,
+  onPassPhraseChanged: Function,
+  onEmailChanged: Function,
+  onAdaPasscodeChanged: Function,
+  onAdaAmountChanged: Function,
+  onRedemptionCodeChanged: Function,
+  onSubmit: Function,
+  redemptionType: string,
+  postVendRedemptionCodeValidator: Function,
+  redemptionCodeValidator: Function,
+  mnemonicValidator: Function,
+  getSelectedWallet: Function,
+  isRedemptionDisclaimerAccepted: boolean,
+  isSubmitting: boolean,
+  isCertificateSelected: boolean,
+  isCertificateEncrypted: boolean,
+  showInputsForDecryptingForceVendedCertificate: boolean,
+  showPassPhraseWidget: boolean,
+  isCertificateInvalid: boolean,
+  redemptionCode: ?string,
+  error: ?LocalizableError,
+};
 
-  props: {
-    wallets: Array<{ value: string, label: string }>,
-    onAcceptRedemptionDisclaimer: Function,
-    onChooseRedemptionType: Function,
-    onCertificateSelected: Function,
-    onRemoveCertificate: Function,
-    onPassPhraseChanged: Function,
-    onEmailChanged: Function,
-    onAdaPasscodeChanged: Function,
-    onAdaAmountChanged: Function,
-    onRedemptionCodeChanged: Function,
-    onSubmit: Function,
-    redemptionType: string,
-    postVendRedemptionCodeValidator: Function,
-    redemptionCodeValidator: Function,
-    mnemonicValidator: Function,
-    getSelectedWallet: Function,
-    isRedemptionDisclaimerAccepted: boolean,
-    isSubmitting: boolean,
-    isCertificateSelected: boolean,
-    isCertificateEncrypted: boolean,
-    showInputsForDecryptingForceVendedCertificate: boolean,
-    showPassPhraseWidget: boolean,
-    isCertificateInvalid: boolean,
-    redemptionCode: ?string,
-    error: ?LocalizableError,
-  };
+@observer
+export default class AdaRedemptionForm extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

@@ -110,14 +110,18 @@ const stateTranslations = defineMessages({
   },
 });
 
-export default class Transaction extends Component {
+type Props = {
+  data: WalletTransaction,
+  state: TransactionState,
+  assuranceLevel: string,
+  isLastInList: boolean,
+};
 
-  props: {
-    data: WalletTransaction,
-    state: TransactionState,
-    assuranceLevel: string,
-    isLastInList: boolean,
-  };
+type State = {
+  isExpanded: boolean,
+};
+
+export default class Transaction extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

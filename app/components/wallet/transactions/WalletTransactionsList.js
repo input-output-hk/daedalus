@@ -24,17 +24,17 @@ const messages = defineMessages({
 
 const dateFormat = 'YYYY-MM-DD';
 
-@observer
-export default class WalletTransactionsList extends Component {
+type Props = {
+  transactions: Array<WalletTransaction>,
+  isLoadingTransactions: boolean,
+  hasMoreToLoad: boolean,
+  onLoadMore: Function,
+  assuranceMode: AssuranceMode,
+  walletId: string,
+};
 
-  props: {
-    transactions: Array<WalletTransaction>,
-    isLoadingTransactions: boolean,
-    hasMoreToLoad: boolean,
-    onLoadMore: Function,
-    assuranceMode: AssuranceMode,
-    walletId: string,
-  };
+@observer
+export default class WalletTransactionsList extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -48,7 +48,7 @@ export default class WalletTransactionsList extends Component {
   }
 
   list: HTMLElement;
-  loadingSpinner: LoadingSpinner;
+  loadingSpinner: ?LoadingSpinner;
   localizedDateFormat: 'MM/DD/YYYY';
 
   groupTransactionsByDay(transactions: Array<WalletTransaction>) {

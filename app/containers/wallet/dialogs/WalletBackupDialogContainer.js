@@ -5,12 +5,12 @@ import WalletBackupDialog from '../../../components/wallet/WalletBackupDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 import environment from '../../../environment';
 
+type Props = InjectedDialogContainerProps;
+
 @inject('stores', 'actions') @observer
-export default class WalletBackupDialogContainer extends Component {
+export default class WalletBackupDialogContainer extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
-
-  props: InjectedDialogContainerProps;
 
   onCancelBackup = () => {
     this.props.onClose();

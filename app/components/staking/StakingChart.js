@@ -16,19 +16,28 @@ class CustomReferenceLine extends ReferenceLine {
   }
 }
 
-@observer
-export default class StakingChart extends Component {
+type Props = {
+  width: number,
+  height: number,
+  options: Object,
+};
 
-  props: {
-    width: number,
-    height: number,
-    options: Object,
-  };
+type State = {
+  isHovered: boolean,
+  hoveredBarData: ?Object,
+  tooltipPos?: ?{
+    left: number,
+    top: number,
+  },
+};
+
+@observer
+export default class StakingChart extends Component<Props, State> {
 
   state = {
     isHovered: false,
-    hoveredBarData: undefined,
-    tooltipPos: undefined
+    hoveredBarData: null,
+    tooltipPos: null
   };
 
   onMouseMove(event:MouseEvent) {
@@ -86,7 +95,7 @@ export default class StakingChart extends Component {
           <Bar
             dataKey="numberOfTransactions"
             onMouseEnter={(barData) => this.setState({ isHovered: true, hoveredBarData: barData })}
-            onMouseLeave={() => this.setState({ isHovered: false, hoveredBarData: undefined })}
+            onMouseLeave={() => this.setState({ isHovered: false, hoveredBarData: null })}
             minPointSize={2}
             isAnimationActive={false}
           >

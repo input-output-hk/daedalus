@@ -1,17 +1,17 @@
 // @flow
 import React, { Component } from 'react';
-import type { Children, Element } from 'react';
+import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import styles from './TopBarLayout.scss';
 
-@observer
-export default class TopBarLayout extends Component {
+type Props = {
+  topbar: Node,
+  children?: ?Node,
+  notification?: ?Node,
+};
 
-  props: {
-    topbar: Element<any>,
-    children?: ?Children,
-    notification?: ?Element<any>,
-  };
+@observer
+export default class TopBarLayout extends Component<Props> {
 
   render() {
     const { children, topbar, notification } = this.props;

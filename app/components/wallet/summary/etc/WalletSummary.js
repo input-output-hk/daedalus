@@ -6,14 +6,14 @@ import etcSymbol from '../../../../assets/images/etc-logo.inline.svg';
 import BorderedBox from '../../../widgets/BorderedBox';
 import styles from '../WalletSummary.scss';
 
-@observer
-export default class WalletSummary extends Component {
+type Props = {
+  walletName: string,
+  amountInteger: string,
+  amountDecimal: string,
+};
 
-  props: {
-    walletName: string,
-    amountInteger: string,
-    amountDecimal: string,
-  };
+@observer
+export default class WalletSummary extends Component<Props> {
 
   render() {
     const {

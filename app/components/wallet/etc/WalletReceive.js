@@ -22,13 +22,13 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class WalletReceive extends Component {
+type Props = {
+  walletAddress: string,
+  onCopyAddress: Function,
+};
 
-  props: {
-    walletAddress: string,
-    onCopyAddress: Function,
-  };
+@observer
+export default class WalletReceive extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

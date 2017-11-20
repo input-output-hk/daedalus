@@ -8,11 +8,12 @@ import NodeUpdatePage from './notifications/NodeUpdatePage';
 import WalletAddPage from './wallet/WalletAddPage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 
+type Props = InjectedContainerProps;
+
 @inject('stores', 'actions') @observer
-export default class MainLayout extends Component {
+export default class MainLayout extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
-  props: InjectedContainerProps;
 
   render() {
     const { actions, stores } = this.props;

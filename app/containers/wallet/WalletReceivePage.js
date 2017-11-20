@@ -18,11 +18,16 @@ const messages = defineMessages({
   },
 });
 
+type Props = InjectedProps;
+
+type State = {
+  copiedAddress: string,
+};
+
 @inject('stores', 'actions') @observer
-export default class WalletReceivePage extends Component {
+export default class WalletReceivePage extends Component<Props, State> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   state = {
     copiedAddress: '',

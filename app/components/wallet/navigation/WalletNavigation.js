@@ -38,13 +38,13 @@ const messages = defineMessages({
   }
 });
 
-@observer
-export default class WalletNavigation extends Component {
+type Props = {
+  isActiveNavItem: Function,
+  onNavItemClick: Function,
+};
 
-  props: {
-    isActiveNavItem: Function,
-    onNavItemClick: Function,
-  };
+@observer
+export default class WalletNavigation extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

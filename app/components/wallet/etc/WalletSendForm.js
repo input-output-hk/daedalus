@@ -88,19 +88,25 @@ const messages = defineMessages({
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
-@observer
-export default class WalletSendForm extends Component {
+type Props = {
+  currencyUnit: string,
+  currencyMaxIntegerDigits?: number,
+  currencyMaxFractionalDigits: number,
+  validateAmount: (amountInNaturalUnits: string) => Promise<boolean>,
+  calculateTransactionFee: (receiver: string, amount: string) => Promise<BigNumber>,
+  addressValidator: Function,
+  openDialogAction: Function,
+  isDialogOpen: Function,
+};
 
-  props: {
-    currencyUnit: string,
-    currencyMaxIntegerDigits?: number,
-    currencyMaxFractionalDigits: number,
-    validateAmount: (amountInNaturalUnits: string) => Promise<boolean>,
-    calculateTransactionFee: (receiver: string, amount: string) => Promise<BigNumber>,
-    addressValidator: Function,
-    openDialogAction: Function,
-    isDialogOpen: Function,
-  };
+type State = {
+  isTransactionFeeCalculated: boolean,
+  transactionFee: BigNumber,
+  transactionFeeError: ?string,
+};
+
+@observer
+export default class WalletSendForm extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

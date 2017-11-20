@@ -17,19 +17,19 @@ const messages = defineMessages({
   },
 });
 
+type Props = {
+  wallets: Array<SidebarWalletType>,
+  isActiveWallet: Function,
+  onAddWallet: Function,
+  onWalletItemClick: Function,
+  visible: boolean,
+};
+
 @observer
-export default class SidebarWalletsMenu extends Component {
+export default class SidebarWalletsMenu extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired
-  };
-
-  props: {
-    wallets: Array<SidebarWalletType>,
-    isActiveWallet: Function,
-    onAddWallet: Function,
-    onWalletItemClick: Function,
-    visible: boolean,
   };
 
   render() {
