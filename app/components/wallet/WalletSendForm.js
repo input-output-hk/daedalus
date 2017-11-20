@@ -166,13 +166,13 @@ export default class WalletSendForm extends Component<Props, State> {
         label: this.context.intl.formatMessage(messages.amountLabel),
         placeholder: `0.${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
         value: '',
-        validators: [({ field, form }) => {
+        validators: [async ({ field, form }) => {
           const amountValue = field.value;
           if (amountValue === '') {
             this._resetTransactionFee();
             return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           }
-          const isValid = this.props.validateAmount(formattedAmountToNaturalUnits(amountValue));
+          const isValid = await this.props.validateAmount(formattedAmountToNaturalUnits(amountValue));
           const receiverField = form.$('receiver');
           const receiverValue = receiverField.value;
           const isReceiverValid = receiverField.isValid;
