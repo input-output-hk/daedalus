@@ -111,13 +111,12 @@ export default class AdaWalletsStore extends WalletStore {
     // Hide restore wallet dialog some time after restore has been started
     // ...or keep it open in case it has errored out (so that error message can be shown)
     setTimeout(() => {
+      if (!this.restoreRequest.isExecuting) this._setIsRestoreActive(false);
       if (!this.restoreRequest.isError) this.actions.dialogs.closeActiveDialog.trigger();
     }, this.WAIT_FOR_SERVER_ERROR_TIME);
 
     const restoredWallet = await this.restoreRequest.execute(params).promise;
     if (!restoredWallet) throw new Error('Restored wallet was not received correctly');
-    // Ensure that we show the notification at least for some milliseconds
-    setTimeout(() => { this._setIsRestoreActive(false); }, this.MIN_NOTIFICATION_DURATION);
     this.restoreRequest.reset();
     await this._patchWalletRequestWithNewWallet(restoredWallet);
     this.refreshWalletsData();
@@ -133,6 +132,7 @@ export default class AdaWalletsStore extends WalletStore {
     // Hide import wallet dialog some time after import has been started
     // ...or keep it open in case it has errored out (so that error message can be shown)
     setTimeout(() => {
+      if (!this.importFromFileRequest.isExecuting) this._setIsImportActive(false);
       if (!this.importFromFileRequest.isError) this.actions.dialogs.closeActiveDialog.trigger();
     }, this.WAIT_FOR_SERVER_ERROR_TIME);
 
@@ -141,8 +141,6 @@ export default class AdaWalletsStore extends WalletStore {
       filePath, walletName, walletPassword,
     }).promise;
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');
-    // Ensure that we show the notification at least for some milliseconds
-    setTimeout(() => { this._setIsImportActive(false); }, this.MIN_NOTIFICATION_DURATION);
     this.importFromFileRequest.reset();
     await this._patchWalletRequestWithNewWallet(importedWallet);
     this.refreshWalletsData();
