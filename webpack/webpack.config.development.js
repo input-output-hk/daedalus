@@ -64,7 +64,7 @@ module.exports = validate(merge(baseConfig, {
         test: /^((?!\.global).)*\.scss$/,
         loaders: [
           'style?sourceMap',
-          'css?sourceMap&modules&localIdentName=[path][name]_[local]&importLoaders=1',
+          'css?sourceMap&modules&localIdentName=[name]_[local]&importLoaders=1',
           'sass?sourceMap'
         ],
       },
