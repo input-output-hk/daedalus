@@ -2716,17 +2716,45 @@
         }
       },
       {
-        "defaultMessage": "!!!From addresses",
-        "description": "From addresses",
+        "defaultMessage": "!!!From address",
+        "description": "From address",
         "end": {
           "column": 3,
           "line": 69
         },
         "file": "app/components/wallet/transactions/Transaction.js",
+        "id": "wallet.transaction.address.from",
+        "start": {
+          "column": 15,
+          "line": 65
+        }
+      },
+      {
+        "defaultMessage": "!!!From addresses",
+        "description": "From addresses",
+        "end": {
+          "column": 3,
+          "line": 74
+        },
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.from",
         "start": {
           "column": 17,
-          "line": 65
+          "line": 70
+        }
+      },
+      {
+        "defaultMessage": "!!!To address",
+        "description": "To address",
+        "end": {
+          "column": 3,
+          "line": 79
+        },
+        "file": "app/components/wallet/transactions/Transaction.js",
+        "id": "wallet.transaction.address.to",
+        "start": {
+          "column": 13,
+          "line": 75
         }
       },
       {
@@ -2734,13 +2762,13 @@
         "description": "To addresses",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 84
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.to",
         "start": {
           "column": 15,
-          "line": 70
+          "line": 80
         }
       },
       {
@@ -2748,13 +2776,13 @@
         "description": "Transaction amount.",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 89
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionAmount",
         "start": {
           "column": 21,
-          "line": 75
+          "line": 85
         }
       },
       {
@@ -2762,13 +2790,13 @@
         "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 97
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.low",
         "start": {
           "column": 25,
-          "line": 83
+          "line": 93
         }
       },
       {
@@ -2776,13 +2804,13 @@
         "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 102
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
           "column": 28,
-          "line": 88
+          "line": 98
         }
       },
       {
@@ -2790,13 +2818,13 @@
         "description": "Transaction assurance level \"high\".",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 107
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.high",
         "start": {
           "column": 26,
-          "line": 93
+          "line": 103
         }
       },
       {
@@ -2804,13 +2832,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 115
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 101
+          "line": 111
         }
       },
       {
@@ -2818,13 +2846,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 110
+          "line": 120
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.failed",
         "start": {
           "column": 30,
-          "line": 106
+          "line": 116
         }
       }
     ],
