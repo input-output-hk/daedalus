@@ -1,19 +1,11 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { defineMessages } from 'react-intl';
 import CenteredLayout from '../../components/layout/CenteredLayout';
 import Loading from '../../components/loading/Loading';
 import type { StoresMap } from '../../stores/index';
 import etcLogo from '../../assets/images/etc-logo.inline.svg';
-
-const messages = defineMessages({
-  loadingAccountData: {
-    id: 'loading.screen.loadingWalletData',
-    defaultMessage: '!!!Loading wallet data',
-    description: 'Message "Loading account data" on the loading screen.'
-  },
-});
+import { messages } from '../LoadingPage';
 
 type Props = {
   stores: StoresMap,
@@ -38,7 +30,7 @@ export default class LoadingPage extends Component<Props> {
           isConnecting={isConnecting}
           syncPercentage={syncPercentage}
           isLoadingDataForNextScreen={isLoadingWallets}
-          loadingDataForNextScreenMessage={messages.loadingAccountData}
+          loadingDataForNextScreenMessage={messages.loadingWalletData}
           hasBeenConnected={hasBeenConnected}
           hasBlockSyncingStarted={hasBlockSyncingStarted}
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
@@ -47,4 +39,5 @@ export default class LoadingPage extends Component<Props> {
       </CenteredLayout>
     );
   }
+
 }

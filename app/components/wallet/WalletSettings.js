@@ -28,7 +28,7 @@ import ChangeWalletPasswordDialogContainer from '../../containers/wallet/dialogs
 import globalMessages from '../../i18n/global-messages';
 import styles from './WalletSettings.scss';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   name: {
     id: 'wallet.settings.name.label',
     defaultMessage: '!!!Name',

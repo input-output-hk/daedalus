@@ -8,7 +8,7 @@ import WalletNoTransactions from '../../components/wallet/transactions/WalletNoT
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   noTransactions: {
     id: 'wallet.transactions.no.transactions',
     defaultMessage: '!!!No transactions',

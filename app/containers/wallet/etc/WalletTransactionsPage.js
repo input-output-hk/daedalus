@@ -1,25 +1,13 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { intlShape } from 'react-intl';
 import WalletTransactionsList from '../../../components/wallet/transactions/WalletTransactionsList';
 // import WalletTransactionsSearch from '../../components/wallet/summary/WalletTransactionsSearch';
 import WalletNoTransactions from '../../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../../components/layout/VerticalFlexContainer';
 import type { InjectedProps } from '../../../types/injectedPropsType';
-
-const messages = defineMessages({
-  noTransactions: {
-    id: 'wallet.transactions.no.transactions',
-    defaultMessage: '!!!No transactions',
-    description: 'Message shown when wallet has no transactions yet.'
-  },
-  noTransactionsFound: {
-    id: 'wallet.transactions.no.transactions.found',
-    defaultMessage: '!!!No transactions found',
-    description: 'Message shown when wallet transaction search returns zero results.'
-  }
-});
+import { messages } from '../WalletTransactionsPage';
 
 type Props = InjectedProps;
 
