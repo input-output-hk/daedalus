@@ -339,7 +339,7 @@ export default function () {
     await this.client.waitForVisible('.ActiveImportNotification');
   });
 
-  this.Then(/^I should not see the import status notification one import is finished$/, async function () {
+  this.Then(/^I should not see the import status notification once import is finished$/, async function () {
     await this.client.waitForVisible('.ActiveImportNotification', null, true);
   });
 
@@ -347,7 +347,7 @@ export default function () {
     await this.client.waitForVisible('.ActiveRestoreNotification');
   });
 
-  this.Then(/^I should not see the restore status notification one restore is finished$/, async function () {
+  this.Then(/^I should not see the restore status notification once restore is finished$/, async function () {
     await this.client.waitForVisible('.ActiveRestoreNotification', null, true);
   });
 

@@ -18,7 +18,7 @@ Feature: Import Wallet via Sidebar
     And I click on the import wallet button in import wallet dialog
     Then I should not see the import wallet dialog anymore
     And I should see the import status notification while import is running
-    And I should not see the import status notification one import is finished
+    And I should not see the import status notification once import is finished
     And I should have newly created "Genesis wallet" wallet loaded
 
   @skip
@@ -37,5 +37,5 @@ Feature: Import Wallet via Sidebar
     And I click on the import wallet button in import wallet dialog
     Then I should not see the import wallet dialog anymore
     And I should see the import status notification while import is running
-    And I should not see the import status notification one import is finished
+    And I should not see the import status notification once import is finished
     And I should have newly created "Genesis wallet" wallet loaded
