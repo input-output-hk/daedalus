@@ -36,7 +36,7 @@ export default class AdaWalletsStore extends WalletStore {
     wallets.createWallet.listen(this._create);
     wallets.deleteWallet.listen(this._delete);
     wallets.sendMoney.listen(this._sendMoney);
-    wallets.restoreWallet.listen(this._restore);
+    wallets.restoreWallet.listen(this._restoreWallet);
     wallets.importWalletFromFile.listen(this._importWalletFromFile);
     wallets.chooseWalletExportType.listen(this._chooseWalletExportType);
     router.goToRoute.listen(this._onRouteChange);
