@@ -56,3 +56,15 @@ export const addOrSetWalletsForScenario = function (wallet) {
     this.wallets = [this.wallet];
   }
 };
+
+export const importWalletWithFunds = async (client, { keyFilePath, password }) => {
+  return await client.executeAsync((filePath, walletPassword, done) => {
+    daedalus.api.ada.importWalletFromKey({ filePath, walletPassword })
+      .then(() => (
+        daedalus.stores.ada.wallets.refreshWalletsData()
+          .then(done)
+          .catch((error) => done(error))
+      ))
+      .catch((error) => done(error));
+  }, keyFilePath, password);
+};

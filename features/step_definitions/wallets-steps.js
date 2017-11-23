@@ -6,41 +6,37 @@ import {
   getWalletByName,
   waitUntilWalletIsLoaded,
   addOrSetWalletsForScenario,
+  importWalletWithFunds
 } from '../support/helpers/wallets-helpers';
 import {
   waitUntilUrlEquals,
   navigateTo,
 } from '../support/helpers/route-helpers';
 import { DECIMAL_PLACES_IN_ADA } from '../../app/config/numbersConfig';
+import sidebar from '../support/helpers/sidebar-helpers';
+import addWalletDialog from '../support/helpers/dialogs/add-wallet-dialog-helpers';
+import importWalletDialog from '../support/helpers/dialogs/import-wallet-dialog-helpers';
+import i18n from '../support/helpers/i18n-helpers';
+import { waitForActiveImportNotification } from '../support/helpers/notifications-helpers';
 
 const defaultWalletKeyFilePath = path.resolve(__dirname, '../support/default-wallet.key');
 const defaultWalletJSONFilePath = path.resolve(__dirname, '../support/default-wallet.json');
 
 export default function () {
   this.Given(/^I have a wallet with funds$/, async function () {
-    await this.client.executeAsync((filePath, done) => {
-      daedalus.api.ada.importWalletFromKey({ filePath, walletPassword: null })
-        .then(() => (
-          daedalus.stores.ada.wallets.refreshWalletsData()
-            .then(done)
-            .catch((error) => done(error))
-        ))
-        .catch((error) => done(error));
-    }, defaultWalletKeyFilePath);
+    await importWalletWithFunds(this.client, {
+      keyFilePath: defaultWalletKeyFilePath,
+      password: null,
+    });
     const wallet = await waitUntilWalletIsLoaded.call(this, 'Genesis wallet');
     addOrSetWalletsForScenario.call(this, wallet);
   });
 
   this.Given(/^I have a wallet with funds and password$/, async function () {
-    await this.client.executeAsync((filePath, done) => {
-      daedalus.api.ada.importWalletFromKey({ filePath, walletPassword: 'Secret123' })
-        .then(() => (
-          daedalus.stores.ada.wallets.refreshWalletsData()
-            .then(done)
-            .catch((error) => done(error))
-        ))
-        .catch((error) => done(error));
-    }, defaultWalletKeyFilePath);
+    await importWalletWithFunds(this.client, {
+      keyFilePath: defaultWalletKeyFilePath,
+      password: 'Secret123',
+    });
     const wallet = await waitUntilWalletIsLoaded.call(this, 'Genesis wallet');
     addOrSetWalletsForScenario.call(this, wallet);
   });
@@ -79,7 +75,7 @@ export default function () {
   });
 
   this.Given(/^I see the add wallet dialog$/, function () {
-    return this.client.waitForVisible('.WalletAddDialog');
+    return addWalletDialog.waitForDialog(this.client);
   });
 
   this.Given(/^I see delete wallet dialog$/, function () {
@@ -110,15 +106,15 @@ export default function () {
   });
 
   this.When(/^I click on the import wallet button in add wallet dialog$/, function () {
-    return this.waitAndClick('.WalletAddDialog .importWalletButton');
+    return addWalletDialog.clickImportButton(this.client);
   });
 
   this.When(/^I see the import wallet dialog$/, function () {
-    return this.client.waitForVisible('.WalletFileImportDialog');
+    return importWalletDialog.waitForDialog(this.client);
   });
 
-  this.When(/^I select a valid wallet import key file$/, async function () {
-    await this.client.chooseFile('.WalletFileImportDialog .FileUploadWidget_dropZone input', defaultWalletJSONFilePath);
+  this.When(/^I select a valid wallet import key file$/, function () {
+    return importWalletDialog.selectFile(this.client, { filePath: defaultWalletJSONFilePath });
   });
 
   this.When(/^I toggle "Activate to create password" switch on the import wallet key dialog$/, function () {
@@ -132,7 +128,7 @@ export default function () {
   });
 
   this.When(/^I click on the import wallet button in import wallet dialog$/, function () {
-    return this.waitAndClick('.WalletFileImportDialog .primary');
+    return importWalletDialog.clickImport(this.client);
   });
 
   this.When(/^I should see wallet spending password inputs$/, function () {
@@ -315,8 +311,24 @@ export default function () {
     return this.waitAndClick('.DeleteWalletConfirmationDialog_dialog .SimpleCheckbox_root');
   });
 
-  this.When(/^I submit the delete wallet dialog$/, async function () {
+  this.When(/^I submit the delete wallet dialog$/, function () {
     return this.client.click('.DeleteWalletConfirmationDialog_dialog .primary');
+  });
+
+  this.When(/^I try to import the wallet with funds again$/, async function () {
+    await sidebar.activateCategory(this.client, { category: 'wallets' });
+    await sidebar.clickAddWalletButton(this.client);
+    await addWalletDialog.waitForDialog(this.client);
+    await addWalletDialog.clickImportButton(this.client);
+    await importWalletDialog.waitForDialog(this.client);
+    await importWalletDialog.selectFile(this.client, { filePath: defaultWalletJSONFilePath });
+    return importWalletDialog.clickImport(this.client);
+  });
+
+  this.Then(/^I see the import wallet dialog with an error that the wallet already exists$/, async function () {
+    return importWalletDialog.expectError(this.client, {
+      error: await i18n.formatMessage(this.client, { id: 'api.errors.WalletAlreadyImportedError' })
+    });
   });
 
   this.Then(/^I should not see the create wallet recovery phrase entry dialog anymore$/, function () {
@@ -328,7 +340,7 @@ export default function () {
   });
 
   this.Then(/^I should not see the import wallet dialog anymore$/, function () {
-    return this.client.waitForVisible('.WalletFileImportDialog', null, true);
+    return importWalletDialog.waitForDialog(this.client, { isHidden: true });
   });
 
   this.Then(/^I should not see the restore wallet dialog anymore$/, function () {
@@ -336,18 +348,18 @@ export default function () {
   });
 
   this.Then(/^I should see the import status notification while import is running$/, async function () {
-    await this.client.waitForVisible('.ActiveImportNotification');
+    await waitForActiveImportNotification(this.client);
   });
 
-  this.Then(/^I should not see the import status notification one import is finished$/, async function () {
-    await this.client.waitForVisible('.ActiveImportNotification', null, true);
+  this.Then(/^I should not see the import status notification once import is finished$/, async function () {
+    await waitForActiveImportNotification(this.client, { isHidden: true });
   });
 
   this.Then(/^I should see the restore status notification while restore is running$/, async function () {
     await this.client.waitForVisible('.ActiveRestoreNotification');
   });
 
-  this.Then(/^I should not see the restore status notification one restore is finished$/, async function () {
+  this.Then(/^I should not see the restore status notification once restore is finished$/, async function () {
     await this.client.waitForVisible('.ActiveRestoreNotification', null, true);
   });
 
@@ -422,5 +434,9 @@ export default function () {
       const generatedAddress = await this.client.getText('.generatedAddress-1 .WalletReceive_addressId');
       return generatedAddress === activeAddress;
     });
+  });
+
+  this.Then(/^I should not see the import status notification anymore$/, async function () {
+    await waitForActiveImportNotification(this.client, { isHidden: true });
   });
 }
