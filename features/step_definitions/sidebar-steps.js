@@ -1,3 +1,5 @@
+import sidebar from '../support/helpers/sidebar-helpers';
+
 export default function () {
   this.Given(/^the sidebar submenu is (hidden|visible)/, async function (state) {
     const isVisible = state === 'visible';
@@ -24,11 +26,8 @@ export default function () {
     return this.client.waitForExist('.SidebarMenu_visible', null, !isVisible);
   });
 
-  this.Given(/^The sidebar shows the "([^"]*)" category$/, async function (cat) {
-    await this.client.execute((category) => {
-      daedalus.actions.sidebar.activateSidebarCategory.trigger({ category, showSubMenu: true });
-    }, `/${cat}`);
-    return this.client.waitForVisible(`.SidebarCategory_active.${cat}`);
+  this.Given(/^The sidebar shows the "([^"]*)" category$/, function (category) {
+    return sidebar.activateCategory(this.client, { category });
   });
 
   this.When(/^I click on the sidebar toggle button$/, function () {
@@ -40,7 +39,7 @@ export default function () {
   });
 
   this.When(/^I click on the add wallet button in the sidebar$/, function () {
-    return this.waitAndClick('.SidebarWalletsMenu_addWalletButton');
+    return sidebar.clickAddWalletButton(this.client);
   });
 
   this.When(/^I click on the "([^"]*)" wallet in the sidebar$/, function (walletName) {

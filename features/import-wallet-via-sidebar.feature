@@ -21,6 +21,12 @@ Feature: Import Wallet via Sidebar
     And I should not see the import status notification once import is finished
     And I should have newly created "Genesis wallet" wallet loaded
 
+  Scenario: Wallet Already Imported Error
+    Given I have a wallet with funds
+    When I try to import the wallet with funds again
+    Then I see the import wallet dialog with an error that the wallet already exists
+    And I should not see the import status notification anymore
+
   @skip
   Scenario: Successfully Importing a Wallet with spending password
     Given The sidebar shows the "wallets" category
