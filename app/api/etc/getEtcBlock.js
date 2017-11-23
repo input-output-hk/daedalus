@@ -2,12 +2,17 @@
 import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
 
+export type GetEtcBlockByHashParams = {
+  ca: string,
+  blockHash: string,
+};
+
 export type GetEtcBlockByHashResponse = {
   timestamp: string,
 };
 
 export const getEtcBlockByHash = (
-  ca: string, blockHash: string
+  { ca, blockHash }: GetEtcBlockByHashParams
 ): Promise<GetEtcBlockByHashResponse> => (
   request({
     hostname: ETC_API_HOST,

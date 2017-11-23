@@ -2,12 +2,16 @@
 import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
 
-export type CreateEtcAccountParams = [string, string];
+export type CreateEtcAccountParams = {
+  ca: string,
+  privateKey: string,
+  password: ?string,
+};
 
 export type CreateEtcAccountResponse = string;
 
 export const createEtcAccount = (
-  ca: string, params: CreateEtcAccountParams
+  { ca, privateKey, password }: CreateEtcAccountParams
 ): Promise<CreateEtcAccountResponse> => (
   request({
     hostname: ETC_API_HOST,
@@ -18,6 +22,9 @@ export const createEtcAccount = (
   }, {
     jsonrpc: '2.0',
     method: 'personal_importRawKey',
-    params
+    params: [
+      privateKey,
+      password || '',
+    ]
   })
 );

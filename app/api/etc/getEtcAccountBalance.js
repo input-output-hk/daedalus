@@ -2,12 +2,17 @@
 import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
 
-export type GetEtcAccountBalanceParams = [string, 'latest' | 'earliest' | 'pending'];
+
+export type GetEtcAccountBalanceParams = {
+  ca: string,
+  walletId: string,
+  status: 'latest' | 'earliest' | 'pending',
+};
 
 export type GetEtcAccountBalanceResponse = string;
 
 export const getEtcAccountBalance = (
-  ca: string, params: GetEtcAccountBalanceParams
+  { ca, walletId, status }: GetEtcAccountBalanceParams
 ): Promise<GetEtcAccountBalanceResponse> => (
   request({
     hostname: ETC_API_HOST,
@@ -18,6 +23,9 @@ export const getEtcAccountBalance = (
   }, {
     jsonrpc: '2.0',
     method: 'eth_getBalance',
-    params
+    params: [
+      walletId,
+      status
+    ]
   })
 );
