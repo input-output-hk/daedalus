@@ -5,14 +5,14 @@ import { ETC_API_HOST, ETC_API_PORT } from './index';
 export type ChangeEtcAccountPassphraseParams = {
   ca: string,
   walletId: string,
-  oldPassphrase: string,
-  newPassphrase: string,
+  oldPassword: ?string,
+  newPassword: ?string,
 };
 
 export type ChangeEtcAccountPassphraseResponse = string;
 
 export const changeEtcAccountPassphrase = (
-  { ca, walletId, oldPassphrase, newPassphrase }: ChangeEtcAccountPassphraseParams
+  { ca, walletId, oldPassword, newPassword }: ChangeEtcAccountPassphraseParams
 ): Promise<ChangeEtcAccountPassphraseResponse> => (
   request({
     hostname: ETC_API_HOST,
@@ -25,8 +25,8 @@ export const changeEtcAccountPassphrase = (
     method: 'daedalus_changePassphrase',
     params: [
       walletId,
-      oldPassphrase,
-      newPassphrase
+      oldPassword || '',
+      newPassword || '',
     ]
   })
 );

@@ -5,14 +5,14 @@ import { ETC_API_HOST, ETC_API_PORT } from './index';
 
 export type GetEtcAccountBalanceParams = {
   ca: string,
-  accountId: string,
+  walletId: string,
   status: 'latest' | 'earliest' | 'pending',
 };
 
 export type GetEtcAccountBalanceResponse = string;
 
 export const getEtcAccountBalance = (
-  { ca, accountId, status }: GetEtcAccountBalanceParams
+  { ca, walletId, status }: GetEtcAccountBalanceParams
 ): Promise<GetEtcAccountBalanceResponse> => (
   request({
     hostname: ETC_API_HOST,
@@ -23,6 +23,9 @@ export const getEtcAccountBalance = (
   }, {
     jsonrpc: '2.0',
     method: 'eth_getBalance',
-    params: [accountId, status]
+    params: [
+      walletId,
+      status
+    ]
   })
 );

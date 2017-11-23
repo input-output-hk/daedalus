@@ -6,7 +6,7 @@ import type { EtcTransaction } from './types';
 
 export type GetEtcTransactionsParams = {
   ca: string,
-  accountAddress: string,
+  walletId: string,
   fromBlock: number,
   toBlock: number,
 };
@@ -20,30 +20,27 @@ export type GetEtcTransactionsResponse = {
  * Returns account transactions (both sent and received) from a range of blocks.
  * The response also includes pending transactions.
  * @param ca (the TLS certificate)
- * @param accountAddress
+ * @param walletId
  * @param fromBlock (in the past)
  * @param toBlock (more recent)
  * @returns {*}
  */
-export const getEtcTransactionsForAccount = (
-  { ca, accountAddress, fromBlock, toBlock }: GetEtcTransactionsParams
-): Promise<GetEtcTransactionsResponse> => {
-  const params = [
-    accountAddress,
-    new BigNumber(fromBlock).toString(16),
-    new BigNumber(toBlock).toString(16),
-  ];
-  return (
-    request({
-      hostname: ETC_API_HOST,
-      method: 'POST',
-      path: '/',
-      port: ETC_API_PORT,
-      ca,
-    }, {
-      jsonrpc: '2.0',
-      method: 'daedalus_getAccountTransactions',
-      params,
-    })
-  );
-};
+export const getEtcTransactions = (
+  { ca, walletId, fromBlock, toBlock }: GetEtcTransactionsParams
+): Promise<GetEtcTransactionsResponse> => (
+  request({
+    hostname: ETC_API_HOST,
+    method: 'POST',
+    path: '/',
+    port: ETC_API_PORT,
+    ca,
+  }, {
+    jsonrpc: '2.0',
+    method: 'daedalus_getAccountTransactions',
+    params: [
+      walletId,
+      new BigNumber(fromBlock).toString(16),
+      new BigNumber(toBlock).toString(16),
+    ],
+  })
+);

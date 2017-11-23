@@ -22,6 +22,9 @@ export const createEtcAccount = (
   }, {
     jsonrpc: '2.0',
     method: 'personal_importRawKey',
-    params: [privateKey, password || '']
+    params: [
+      privateKey,
+      password || '',
+    ]
   })
 );

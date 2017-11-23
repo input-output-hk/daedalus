@@ -35,7 +35,7 @@ export const sendEtcTransaction = (
       method: 'personal_sendTransaction',
       params: [
         txParams,
-        password
+        password,
       ]
     })
   );
