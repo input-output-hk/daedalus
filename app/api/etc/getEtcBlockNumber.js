@@ -2,6 +2,10 @@
 import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
 
+export type GetEtcBlockNumberParams = {
+  ca: string,
+}
+
 export type GetEtcBlockNumberResponse = number;
 
 /**
@@ -10,7 +14,9 @@ export type GetEtcBlockNumberResponse = number;
  * @returns {Promise<number>} integer of the current block number the client is on.
  */
 
-export const getEtcBlockNumber = async (ca: string): Promise<GetEtcBlockNumberResponse> => {
+export const getEtcBlockNumber = async (
+  { ca }: GetEtcBlockNumberParams
+): Promise<GetEtcBlockNumberResponse> => {
   const response = await request({
     hostname: ETC_API_HOST,
     method: 'POST',

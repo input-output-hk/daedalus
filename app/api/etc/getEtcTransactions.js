@@ -5,6 +5,7 @@ import { ETC_API_HOST, ETC_API_PORT } from './index';
 import type { EtcTransaction } from './types';
 
 export type GetEtcTransactionsParams = {
+  ca: string,
   accountAddress: string,
   fromBlock: number,
   toBlock: number,
@@ -25,21 +26,24 @@ export type GetEtcTransactionsResponse = {
  * @returns {*}
  */
 export const getEtcTransactionsForAccount = (
-  ca: string, { accountAddress, fromBlock, toBlock }: GetEtcTransactionsParams
-): Promise<GetEtcTransactionsResponse> => (
-  request({
-    hostname: ETC_API_HOST,
-    method: 'POST',
-    path: '/',
-    port: ETC_API_PORT,
-    ca,
-  }, {
-    jsonrpc: '2.0',
-    method: 'daedalus_getAccountTransactions',
-    params: [
-      accountAddress,
-      new BigNumber(fromBlock).toString(16),
-      new BigNumber(toBlock).toString(16),
-    ]
-  })
-);
+  { ca, accountAddress, fromBlock, toBlock }: GetEtcTransactionsParams
+): Promise<GetEtcTransactionsResponse> => {
+  const params = [
+    accountAddress,
+    new BigNumber(fromBlock).toString(16),
+    new BigNumber(toBlock).toString(16),
+  ];
+  return (
+    request({
+      hostname: ETC_API_HOST,
+      method: 'POST',
+      path: '/',
+      port: ETC_API_PORT,
+      ca,
+    }, {
+      jsonrpc: '2.0',
+      method: 'daedalus_getAccountTransactions',
+      params,
+    })
+  );
+};

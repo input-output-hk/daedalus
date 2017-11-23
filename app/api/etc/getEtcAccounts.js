@@ -2,10 +2,14 @@
 import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
 
+export type GetEtcAccountsParams = {
+  ca: string,
+};
+
 export type GetEtcAccountsResponse = Array<string>;
 
 export const getEtcAccounts = (
-  ca: string
+  { ca }: GetEtcAccountsParams
 ): Promise<GetEtcAccountsResponse> => (
   request({
     hostname: ETC_API_HOST,

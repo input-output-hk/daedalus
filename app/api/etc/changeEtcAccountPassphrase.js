@@ -3,7 +3,8 @@ import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
 
 export type ChangeEtcAccountPassphraseParams = {
-  address: string,
+  ca: string,
+  walletId: string,
   oldPassphrase: string,
   newPassphrase: string,
 };
@@ -11,7 +12,7 @@ export type ChangeEtcAccountPassphraseParams = {
 export type ChangeEtcAccountPassphraseResponse = string;
 
 export const changeEtcAccountPassphrase = (
-  ca: string, { address, oldPassphrase, newPassphrase }: ChangeEtcAccountPassphraseParams
+  { ca, walletId, oldPassphrase, newPassphrase }: ChangeEtcAccountPassphraseParams
 ): Promise<ChangeEtcAccountPassphraseResponse> => (
   request({
     hostname: ETC_API_HOST,
@@ -22,6 +23,10 @@ export const changeEtcAccountPassphrase = (
   }, {
     jsonrpc: '2.0',
     method: 'daedalus_changePassphrase',
-    params: [address, oldPassphrase, newPassphrase]
+    params: [
+      walletId,
+      oldPassphrase,
+      newPassphrase
+    ]
   })
 );
