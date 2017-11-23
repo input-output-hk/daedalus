@@ -1,14 +1,11 @@
 import { expect } from 'chai';
+import sendLogsChoice from '../support/helpers/send-logs-choice-helpers';
 
 const SEND_LOGS_CHOICE_FORM = '.SendLogsChoiceForm_component';
 
 export default function () {
   this.Given(/^I agree to send logs to remote server$/, async function () {
-    await this.client.waitForVisible(SEND_LOGS_CHOICE_FORM);
-    await this.client.execute(() => {
-      daedalus.actions.profile.setSendLogsChoice.trigger({ sendLogs: true });
-    });
-    return this.client.waitForVisible(SEND_LOGS_CHOICE_FORM, null, true);
+    await sendLogsChoice.agree(this.client);
   });
 
   this.Given(/^I am on the "Send logs choice" screen$/, function () {
