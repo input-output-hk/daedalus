@@ -24,6 +24,7 @@ launcherScript =
       { nodePath = "%DAEDALUS_DIR%\\cardano-node.exe"
       , nodeLogPath = "%APPDATA%\\Daedalus\\Logs\\cardano-node.log"
       , walletPath = "%DAEDALUS_DIR%\\Daedalus.exe"
+      , launcherLogPath = "%APPDATA%\\Daedalus\\Logs\\pub\\"
       , windowsInstallerPath = Just "%APPDATA%\\Daedalus\\Installer.bat"
       , updater =
           SelfUnpacking
@@ -137,7 +138,6 @@ writeInstallerNSIS fullVersion = do
         file [] "cardano-node.exe"
         file [] "cardano-launcher.exe"
         file [] "log-config-prod.yaml"
-        file [] "data\\ip-dht-mappings"
         file [] "version.txt"
         file [] "build-certificates-win64.bat"
         file [] "ca.conf"
@@ -145,7 +145,7 @@ writeInstallerNSIS fullVersion = do
         file [] "client.conf"
         file [] "wallet-topology.yaml"
         file [] "configuration.yaml"
-        file [] "mainnet-genesis.json"
+        file [] "*genesis*.json"
         writeFileLines "$INSTDIR\\daedalus.bat" (map str launcherScript)
         file [Recursive] "dlls\\"
         file [Recursive] "libressl\\"
@@ -187,15 +187,15 @@ main = do
   let fullVersion = version <> ".0"
   writeFile "version.txt" fullVersion
 
+  echo "Adding permissions manifest to cardano-launcher.exe"
+  procs "C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\mt.exe" ["-manifest", "cardano-launcher.exe.manifest", "-outputresource:cardano-launcher.exe;#1"] mempty
+
   signFile "cardano-launcher.exe"
   signFile "cardano-node.exe"
 
   echo "Writing uninstaller.nsi"
   writeUninstallerNSIS fullVersion
   signUninstaller
-
-  echo "Adding permissions manifest to cardano-launcher.exe"
-  procs "C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\mt.exe" ["-manifest", "cardano-launcher.exe.manifest", "-outputresource:cardano-launcher.exe;#1"] mempty
 
   echo "Writing daedalus.nsi"
   writeInstallerNSIS fullVersion

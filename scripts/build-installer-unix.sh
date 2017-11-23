@@ -108,7 +108,7 @@ test -d node_modules/daedalus-client-api/ -a -n "${fast_impure}" || {
         if [ -f node_modules/daedalus-client-api/commit-id ]; then echo "cardano-sl revision is $(cat node_modules/daedalus-client-api/commit-id)"; fi
         if [ -f node_modules/daedalus-client-api/ci-url ]; then echo "cardano-sl ci-url is $(cat node_modules/daedalus-client-api/ci-url)"; fi
         pushd node_modules/daedalus-client-api
-              mv log-config-prod.yaml cardano-node cardano-launcher ../../installers
+              mv log-config-prod.yaml cardano-node cardano-launcher configuration.yaml *genesis*.json ../../installers
         popd
         chmod +w installers/cardano-{node,launcher}
         strip installers/cardano-{node,launcher}
