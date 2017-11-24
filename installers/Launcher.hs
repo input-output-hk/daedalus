@@ -32,6 +32,7 @@ launcherArgs Launcher{..} = unwords $
     maybe [] (\wi -> ["--updater-windows-runner", quote wi]) windowsInstallerPath ++
   [ "--node", quote nodePath
   , "--node-log-path", quote nodeLogPath
+  , "--db-path", quote nodeDbPath
   , "--wallet", quote walletPath
   , "--launcher-logs-prefix", quote launcherLogPath
   ] ++ updaterLArgs ++ configurationArgs ++
@@ -59,13 +60,14 @@ launcherArgs Launcher{..} = unwords $
                           [ "--configuration-file", quote "./configuration.yaml"
                           , "--configuration-key",  quote "mainnet_wallet_macos64"
                          ]
+      nodeDbPath = runtimePath <> "DB-" <> version
       nodeArgs = [
         "--report-server", "http://report-server.cardano-mainnet.iohk.io:8080",
         "--log-config", "log-config-prod.yaml",
         "--update-latest-path", quote (updArchivePath updater),
         "--keyfile", quote (runtimePath <> "Secrets-" <> version <> (pathSeparator : "secret.key")),
         "--logs-prefix", quote (runtimePath <> "Logs"),
-        "--db-path", quote (runtimePath <> "DB-" <> version),
+        "--db-path", quote nodeDbPath,
         "--wallet-db-path", quote (runtimePath <> "Wallet-" <> version),
         "--update-server", "http://update.cardano-mainnet.iohk.io",
         "--update-with-package",
