@@ -355,6 +355,19 @@ export default class EtcApi {
       throw new GenericApiError();
     }
   }
+
+  async testReset(): Promise<boolean> {
+    Logger.debug('EtcApi::testReset called');
+    try {
+      const accounts: GetEtcAccountsResponse = await getEtcAccounts({ ca });
+      await Promise.all(accounts.map(async (id) => this.deleteWallet({ walletId: id })));
+      Logger.debug('EtcApi::testReset success');
+      return true;
+    } catch (error) {
+      Logger.error('EtcApi::testReset error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
 }
 
 const _createWalletTransactionFromServerData = async (
