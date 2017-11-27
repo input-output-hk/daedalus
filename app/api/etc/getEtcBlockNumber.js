@@ -1,12 +1,11 @@
 // @flow
 import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
+import type { EtcBlockNumber } from './types';
 
 export type GetEtcBlockNumberParams = {
   ca: string,
-}
-
-export type GetEtcBlockNumberResponse = number;
+};
 
 /**
  * Returns the number of most recent block.
@@ -16,7 +15,7 @@ export type GetEtcBlockNumberResponse = number;
 
 export const getEtcBlockNumber = async (
   { ca }: GetEtcBlockNumberParams
-): Promise<GetEtcBlockNumberResponse> => {
+): Promise<EtcBlockNumber> => {
   const response = await request({
     hostname: ETC_API_HOST,
     method: 'POST',

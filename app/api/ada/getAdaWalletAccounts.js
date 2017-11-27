@@ -1,5 +1,5 @@
 // @flow
-import type { ApiAccounts } from 'daedalus-client-api';
+import type { ApiAccounts } from './types';
 import { request } from './lib/request';
 
 

@@ -1,5 +1,5 @@
 // @flow
-import type { ApiWallet } from 'daedalus-client-api';
+import type { ApiWallet } from './types';
 import { request } from './lib/request';
 
 export type ImportAdaBackupJSONParams = {

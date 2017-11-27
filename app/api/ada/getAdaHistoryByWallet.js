@@ -1,5 +1,5 @@
 // @flow
-import type { ApiTransactions } from 'daedalus-client-api';
+import type { ApiTransactions } from './types';
 import { request } from './lib/request';
 
 export type GetAdaHistoryByWalletParams = {

@@ -1,8 +1,8 @@
 // @flow
 import { generateMnemonic } from '../../utils/crypto';
 
-export type GetAdaAccountRecoveryPhraseResponse = Array<string>;
+export type ApiWalletRecoveryPhraseResponse = Array<string>;
 
-export const getAdaAccountRecoveryPhrase = (): GetAdaAccountRecoveryPhraseResponse => (
+export const getAdaAccountRecoveryPhrase = (): ApiWalletRecoveryPhraseResponse => (
   generateMnemonic().split(' ')
 );

@@ -1,6 +1,6 @@
 import { defineMessages } from 'react-intl';
 import LocalizableError from '../i18n/LocalizableError';
-import WalletTransaction from '../domain/WalletTransaction';
+import { WalletTransaction, Wallet } from '../domain/WalletTransaction';
 
 const messages = defineMessages({
   genericApiError: {
@@ -47,14 +47,43 @@ export class WalletAlreadyRestoredError extends LocalizableError {
   }
 }
 
+export type CreateTransactionResponse = WalletTransaction;
+export type CreateWalletResponse = Wallet;
+export type DeleteWalletResponse = boolean;
+export type GetWalletsResponse = Array<Wallet>;
+export type GetWalletRecoveryPhraseResponse = Array<string>;
+export type RestoreWalletResponse = Wallet;
+export type UpdateWalletResponse = Wallet;
+export type UpdateWalletPasswordResponse = boolean;
+
+export type CreateWalletRequest = {
+  name: string,
+  mnemonic: string,
+  password: ?string,
+};
+
+export type UpdateWalletPasswordRequest = {
+  walletId: string,
+  oldPassword: ?string,
+  newPassword: ?string,
+};
+
+export type DeleteWalletRequest = {
+  walletId: string,
+};
+
+export type RestoreWalletRequest = {
+  recoveryPhrase: string,
+  walletName: string,
+  walletPassword: ?string,
+};
+
 export type GetSyncProgressResponse = {
   localDifficulty: ?number,
   networkDifficulty: ?number,
 };
 
-export type GetWalletRecoveryPhraseResponse = Array<string>;
-
-export type GetTransactionsParams = {
+export type GetTransactionsRequest = {
   walletId: string,
   searchTerm: string,
   skip: number,

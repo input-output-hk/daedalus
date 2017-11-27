@@ -1,8 +1,16 @@
 // @flow
-import type { ApiAccounts } from 'daedalus-client-api';
+import type { ApiAccounts } from './types';
 import { request } from './lib/request';
 
-export const getAdaAccounts = (ca: string): Promise<ApiAccounts> => (
+export type GetAdaAccountsParams = {
+  ca: string,
+  walletId: string,
+  filePath: string,
+};
+
+export const getAdaAccounts = (
+  { ca }: GetAdaAccountsParams
+): Promise<ApiAccounts> => (
   request({
     hostname: 'localhost',
     method: 'GET',

@@ -1,14 +1,5 @@
 // @flow
 import { split, get } from 'lodash';
-import type {
-  ApiAccounts,
-  ApiAddress,
-  ApiTransaction,
-  ApiTransactionFee,
-  ApiTransactions,
-  ApiWallet,
-  ApiWallets,
-} from 'daedalus-client-api';
 import { action } from 'mobx';
 import { ipcRenderer, remote } from 'electron';
 import BigNumber from 'bignumber.js';
@@ -19,21 +10,6 @@ import WalletTransaction, { transactionTypes } from '../../domain/WalletTransact
 import WalletAddress from '../../domain/WalletAddress';
 import { isValidMnemonic } from '../../../lib/decrypt';
 import { isValidRedemptionKey, isValidPaperVendRedemptionKey } from '../../../lib/redemption-key-validation';
-import {
-  GenericApiError,
-  IncorrectWalletPasswordError,
-  WalletAlreadyRestoredError,
-} from '../common';
-import {
-  AllFundsAlreadyAtReceiverAddressError,
-  NotAllowedToSendMoneyToRedeemAddressError,
-  NotAllowedToSendMoneyToSameAddressError,
-  NotEnoughFundsForTransactionFeesError,
-  NotEnoughMoneyToSendError,
-  RedeemAdaError,
-  WalletAlreadyImportedError,
-  WalletFileImportError,
-} from './errors';
 import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
 import { getAdaSyncProgress } from './getAdaSyncProgress';
 import environment from '../../environment';
@@ -61,12 +37,53 @@ import { applyAdaUpdate } from './applyAdaUpdate';
 import { adaTestReset } from './adaTestReset';
 import { getAdaHistoryByWallet } from './getAdaHistoryByWallet';
 import { getAdaAccountRecoveryPhrase } from './getAdaAccountRecoveryPhrase';
+
 import type {
+  ApiSyncProgressResponse,
+  ApiAddress,
+  ApiAccounts,
+  ApiTransaction,
+  ApiTransactionFee,
+  ApiTransactions,
+  ApiWallet,
+  ApiWallets,
+  ApiWalletRecoveryPhraseResponse,
+} from './types';
+
+import type {
+  CreateWalletRequest,
+  CreateWalletResponse,
+  CreateTransactionResponse,
+  DeleteWalletRequest,
+  DeleteWalletResponse,
   GetSyncProgressResponse,
-  GetWalletRecoveryPhraseResponse,
-  GetTransactionsParams,
+  GetTransactionsRequest,
   GetTransactionsResponse,
+  GetWalletRecoveryPhraseResponse,
+  GetWalletsResponse,
+  RestoreWalletRequest,
+  RestoreWalletResponse,
+  UpdateWalletResponse,
+  UpdateWalletPasswordRequest,
+  UpdateWalletPasswordResponse,
 } from '../common';
+
+import {
+  GenericApiError,
+  IncorrectWalletPasswordError,
+  WalletAlreadyRestoredError,
+} from '../common';
+
+import {
+  AllFundsAlreadyAtReceiverAddressError,
+  NotAllowedToSendMoneyToRedeemAddressError,
+  NotAllowedToSendMoneyToSameAddressError,
+  NotEnoughFundsForTransactionFeesError,
+  NotEnoughMoneyToSendError,
+  RedeemAdaError,
+  WalletAlreadyImportedError,
+  WalletFileImportError,
+} from './errors';
 
 /**
  * The api layer that is used for all requests to the
@@ -75,7 +92,7 @@ import type {
 
 const ca = remote.getGlobal('ca');
 
-export type GetWalletsResponse = Array<Wallet>;
+// ADA specific Request / Response params
 export type GetAddressesResponse = {
   accountId: ?string,
   addresses: Array<WalletAddress>,
@@ -88,35 +105,18 @@ export type CreateAddressRequest = {
   accountId: string,
   password: ?string,
 };
-export type CreateWalletRequest = {
-  name: string,
-  mnemonic: string,
-  password: ?string,
-};
-export type CreateWalletResponse = Wallet;
-export type DeleteWalletRequest = {
-  walletId: string,
-};
-export type DeleteWalletResponse = boolean;
+
 export type CreateTransactionRequest = {
   sender: string,
   receiver: string,
   amount: string,
   password: ?string,
 };
-export type CreateTransactionResponse = WalletTransaction;
-export type RestoreWalletRequest = {
-  recoveryPhrase: string,
-  walletName: string,
-  walletPassword: ?string,
-};
-export type RestoreWalletResponse = Wallet;
 export type UpdateWalletRequest = {
   walletId: string,
   name: string,
   assurance: string,
 };
-export type UpdateWalletResponse = Wallet;
 export type RedeemAdaRequest = {
   redemptionCode: string,
   accountId: string,
@@ -146,12 +146,7 @@ export type NextUpdateResponse = ?{
 };
 export type PostponeUpdateResponse = Promise<void>;
 export type ApplyUpdateResponse = Promise<void>;
-export type UpdateWalletPasswordRequest = {
-  walletId: string,
-  oldPassword: ?string,
-  newPassword: ?string,
-};
-export type UpdateWalletPasswordResponse = boolean;
+
 export type TransactionFeeRequest = {
   sender: string,
   receiver: string,
@@ -210,7 +205,6 @@ export default class AdaApi {
       if (!response.length) {
         return new Promise((resolve) => resolve({ accountId: null, addresses: [] }));
       }
-
       // For now only the first wallet account is used
       const firstAccount = response[0];
       const firstAccountId = firstAccount.caId;
@@ -226,7 +220,7 @@ export default class AdaApi {
     }
   }
 
-  async getTransactions(request: GetTransactionsParams): Promise<GetTransactionsResponse> {
+  async getTransactions(request: GetTransactionsRequest): Promise<GetTransactionsResponse> {
     Logger.debug('AdaApi::searchHistory called: ' + stringifyData(request));
     const { walletId, skip, limit } = request;
     try {
@@ -376,7 +370,9 @@ export default class AdaApi {
   getWalletRecoveryPhrase(): Promise<GetWalletRecoveryPhraseResponse> {
     Logger.debug('AdaApi::getWalletRecoveryPhrase called');
     try {
-      const response = new Promise((resolve) => resolve(getAdaAccountRecoveryPhrase()));
+      const response: Promise<ApiWalletRecoveryPhraseResponse> = new Promise(
+        (resolve) => resolve(getAdaAccountRecoveryPhrase())
+      );
       Logger.debug('AdaApi::getWalletRecoveryPhrase success');
       return response;
     } catch (error) {
@@ -429,7 +425,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::importWalletFromKey called');
     const { filePath, walletPassword } = request;
     try {
-      const importedWallet = await importAdaWallet(
+      const importedWallet: ApiWallet = await importAdaWallet(
         { ca, walletPassword, filePath }
       );
       Logger.debug('AdaApi::importWalletFromKey success');
@@ -524,7 +520,7 @@ export default class AdaApi {
     let nextUpdate = null;
     try {
       // TODO: add flow type definitions for nextUpdate response
-      const response = await nextAdaUpdate({ ca });
+      const response: Promise<any> = await nextAdaUpdate({ ca });
       Logger.debug('AdaApi::nextUpdate success: ' + stringifyData(response));
       if (response && response.cuiSoftwareVersion) {
         nextUpdate = {
@@ -575,7 +571,7 @@ export default class AdaApi {
   async postponeUpdate(): PostponeUpdateResponse {
     Logger.debug('AdaApi::postponeUpdate called');
     try {
-      const response = await postponeAdaUpdate({ ca });
+      const response: Promise<any> = await postponeAdaUpdate({ ca });
       Logger.debug('AdaApi::postponeUpdate success: ' + stringifyData(response));
     } catch (error) {
       Logger.error('AdaApi::postponeUpdate error: ' + stringifyError(error));
@@ -586,7 +582,7 @@ export default class AdaApi {
   async applyUpdate(): ApplyUpdateResponse {
     Logger.debug('AdaApi::applyUpdate called');
     try {
-      const response = await applyAdaUpdate({ ca });
+      const response: Promise<any> = await applyAdaUpdate({ ca });
       Logger.debug('AdaApi::applyUpdate success: ' + stringifyData(response));
       ipcRenderer.send('kill-process');
     } catch (error) {
@@ -599,7 +595,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::syncProgress called');
 
     try {
-      const response = await getAdaSyncProgress({ ca });
+      const response: ApiSyncProgressResponse = await getAdaSyncProgress({ ca });
       Logger.debug('AdaApi::syncProgress success: ' + stringifyData(response));
       const localDifficulty = response._spLocalCD.getChainDifficulty.getBlockCount;
       // In some cases we dont get network difficulty & we need to wait for it from the notify API
@@ -659,7 +655,7 @@ export default class AdaApi {
     const { walletId, filePath } = request;
     Logger.debug('AdaApi::exportWalletToFile called');
     try {
-      const response = await exportAdaBackupJSON({ ca, walletId, filePath });
+      const response: Promise<[]> = await exportAdaBackupJSON({ ca, walletId, filePath });
       Logger.debug('AdaApi::exportWalletToFile success: ' + stringifyData(response));
       return response;
     } catch (error) {
@@ -671,7 +667,7 @@ export default class AdaApi {
   async testReset(): Promise<void> {
     Logger.debug('AdaApi::testReset called');
     try {
-      const response = await adaTestReset({ ca });
+      const response: Promise<void> = await adaTestReset({ ca });
       Logger.debug('AdaApi::testReset success: ' + stringifyData(response));
       return response;
     } catch (error) {

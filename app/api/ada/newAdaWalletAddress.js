@@ -1,5 +1,5 @@
 // @flow
-import type { ApiAddress } from 'daedalus-client-api';
+import type { ApiAddress } from './types';
 import { request } from './lib/request';
 
 export type NewAdaWalletAddressParams = {

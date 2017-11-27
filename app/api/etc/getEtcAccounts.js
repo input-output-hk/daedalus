@@ -1,16 +1,15 @@
 // @flow
 import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
+import type { EtcAccounts } from './types';
 
 export type GetEtcAccountsParams = {
   ca: string,
 };
 
-export type GetEtcAccountsResponse = Array<string>;
-
 export const getEtcAccounts = (
   { ca }: GetEtcAccountsParams
-): Promise<GetEtcAccountsResponse> => (
+): Promise<EtcAccounts> => (
   request({
     hostname: ETC_API_HOST,
     method: 'POST',

@@ -2,6 +2,7 @@
 import BigNumber from 'bignumber.js';
 import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
+import type { EtcGas } from './types';
 
 export type GetEtcEstimatedGasParams = {
   ca: string,
@@ -11,11 +12,9 @@ export type GetEtcEstimatedGasParams = {
   gasPrice: BigNumber, // QUANTITY in WEI with base 10
 };
 
-export type GetEtcEstimatedGasResponse = string;
-
 export const getEtcEstimatedGas = (
   { ca, from, to, value, gasPrice }: GetEtcEstimatedGasParams
-): Promise<GetEtcEstimatedGasResponse> => (
+): Promise<EtcGas> => (
   request({
     hostname: ETC_API_HOST,
     method: 'POST',

@@ -8,42 +8,46 @@ import {
   GenericApiError, IncorrectWalletPasswordError,
   WalletAlreadyRestoredError,
 } from '../common';
-import { getEtcAccounts } from './getEtcAccounts';
-import { getEtcAccountBalance } from './getEtcAccountBalance';
-import { getEtcAccountRecoveryPhrase } from './getEtcAccountRecoveryPhrase';
-import { createEtcAccount } from './createEtcAccount';
-import Wallet from '../../domain/Wallet';
 import { mnemonicToSeedHex, quantityToBigNumber, unixTimestampToDate } from './lib/utils';
-import { getEtcTransactionByHash } from './getEtcTransaction';
-import { getEtcBlockByHash } from './getEtcBlock';
-import { isValidMnemonic } from '../../../lib/decrypt';
-import { sendEtcTransaction } from './sendEtcTransaction';
-import { deleteEtcAccount } from './deleteEtcAccount';
-import { changeEtcAccountPassphrase } from './changeEtcAccountPassphrase';
 import {
   getEtcWalletData, setEtcWalletData, unsetEtcWalletData, updateEtcWalletData,
   initEtcWalletsDummyData,
 } from './etcLocalStorage';
 import { ETC_DEFAULT_GAS_PRICE, WEI_PER_ETC } from '../../config/numbersConfig';
+import Wallet from '../../domain/Wallet';
+import WalletTransaction, { transactionStates, transactionTypes } from '../../domain/WalletTransaction';
+
+import { getEtcAccounts } from './getEtcAccounts';
+import { getEtcAccountBalance } from './getEtcAccountBalance';
+import { getEtcAccountRecoveryPhrase } from './getEtcAccountRecoveryPhrase';
+import { createEtcAccount } from './createEtcAccount';
+import { getEtcBlockByHash } from './getEtcBlock';
+import { sendEtcTransaction } from './sendEtcTransaction';
+import { deleteEtcAccount } from './deleteEtcAccount';
+import { getEtcTransactionByHash } from './getEtcTransaction';
+import { changeEtcAccountPassphrase } from './changeEtcAccountPassphrase';
 import { getEtcEstimatedGas } from './getEtcEstimatedGas';
 import { getEtcTransactions } from './getEtcTransactions';
-import WalletTransaction, { transactionStates, transactionTypes } from '../../domain/WalletTransaction';
-import type {
-  GetSyncProgressResponse,
-  GetWalletRecoveryPhraseResponse,
-  GetTransactionsParams,
-  GetTransactionsResponse,
-} from '../common';
-import type { GetEtcSyncProgressResponse } from './getEtcSyncProgress';
-import type { GetEtcAccountsResponse } from './getEtcAccounts';
-import type { GetEtcAccountBalanceResponse } from './getEtcAccountBalance';
-import type { CreateEtcAccountResponse } from './createEtcAccount';
-import type { SendEtcTransactionParams, SendEtcTransactionResponse } from './sendEtcTransaction';
-import type { GetEtcTransactionByHashResponse } from './getEtcTransaction';
-import type { GetEtcTransactionsResponse } from './getEtcTransactions';
-import type { EtcTransaction } from './types';
-import type { TransactionType } from '../../domain/WalletTransaction';
 import { getEtcBlockNumber } from './getEtcBlockNumber';
+import { isValidMnemonic } from '../../../lib/decrypt';
+
+import type { TransactionType } from '../../domain/WalletTransaction';
+import type {
+  GetSyncProgressResponse, GetWalletRecoveryPhraseResponse,
+  GetTransactionsRequest, GetTransactionsResponse, GetWalletsResponse,
+  CreateWalletRequest, CreateWalletResponse, UpdateWalletResponse,
+  UpdateWalletPasswordRequest, UpdateWalletPasswordResponse,
+  DeleteWalletRequest, DeleteWalletResponse,
+  RestoreWalletRequest, RestoreWalletResponse,
+  CreateTransactionResponse
+} from '../common';
+import type {
+  EtcSyncProgress, EtcAccounts, EtcWalletBalance,
+  EtcTransactions, EtcBlockNumber, EtcWalletId,
+  EtcRecoveryPassphrase, EtcTxHash, EtcGas,
+  EtcBlock, EtcTransaction,
+} from './types';
+
 
 // Load Dummy ETC Wallets into Local Storage
 (async () => {
@@ -61,31 +65,8 @@ const ca = remote.getGlobal('ca');
 export const ETC_API_HOST = 'localhost';
 export const ETC_API_PORT = 8546;
 
-export type GetWalletsResponse = Array<Wallet>;
-export type CreateWalletRequest = {
-  name: string,
-  mnemonic: string,
-  password: ?string,
-};
-export type CreateWalletResponse = Wallet;
+// ETC specific Request / Response params
 export type UpdateWalletRequest = Wallet;
-export type UpdateWalletResponse = Wallet;
-export type UpdateWalletPasswordRequest = {
-  walletId: string,
-  oldPassword: ?string,
-  newPassword: ?string,
-};
-export type UpdateWalletPasswordResponse = boolean;
-export type DeleteWalletRequest = {
-  walletId: string,
-};
-export type DeleteWalletResponse = boolean;
-export type RestoreWalletRequest = {
-  recoveryPhrase: string,
-  walletName: string,
-  walletPassword: ?string,
-};
-export type RestoreWalletResponse = Wallet;
 
 export type CreateTransactionRequest = {
   from: string,
@@ -93,7 +74,14 @@ export type CreateTransactionRequest = {
   value: BigNumber,
   password: string,
 };
-export type CreateTransactionResponse = Promise<WalletTransaction>;
+
+export type GetEstimatedGasPriceRequest = {
+  ca: string,
+  from: string,
+  to: string,
+  value: BigNumber,
+  gasPrice: BigNumber,
+};
 export type GetEstimatedGasPriceResponse = Promise<BigNumber>;
 
 export default class EtcApi {
@@ -101,7 +89,7 @@ export default class EtcApi {
   async getSyncProgress(): Promise<GetSyncProgressResponse> {
     Logger.debug('EtcApi::getSyncProgress called');
     try {
-      const response: GetEtcSyncProgressResponse = await getEtcSyncProgress({ ca });
+      const response: EtcSyncProgress = await getEtcSyncProgress({ ca });
       Logger.debug('EtcApi::getSyncProgress success: ' + stringifyData(response));
       return {
         localDifficulty: response ? parseInt(response.currentBlock, 16) : 100,
@@ -116,7 +104,7 @@ export default class EtcApi {
   getWallets = async (): Promise<GetWalletsResponse> => {
     Logger.debug('EtcApi::getWallets called');
     try {
-      const response: GetEtcAccountsResponse = await getEtcAccounts({ ca });
+      const response: EtcAccounts = await getEtcAccounts({ ca });
       Logger.debug('EtcApi::getWallets success: ' + stringifyData(response));
       const accounts = response;
       return await Promise.all(accounts.map(async (id) => {
@@ -145,11 +133,11 @@ export default class EtcApi {
     }
   };
 
-  async getAccountBalance(walletId: string) {
+  async getAccountBalance(walletId: string): Promise<GetTransactionsResponse> {
     Logger.debug('EtcApi::getAccountBalance called');
     try {
       const status = 'latest';
-      const response: GetEtcAccountBalanceResponse = await getEtcAccountBalance({
+      const response: EtcWalletBalance = await getEtcAccountBalance({
         ca, walletId, status,
       });
       Logger.debug('EtcApi::getAccountBalance success: ' + stringifyData(response));
@@ -160,12 +148,12 @@ export default class EtcApi {
     }
   }
 
-  getTransactions = async (params: GetTransactionsParams): Promise<GetTransactionsResponse> => {
-    Logger.debug('EtcApi::getTransactions called: ' + stringifyData(params));
+  getTransactions = async (request: GetTransactionsRequest): Promise<GetTransactionsResponse> => {
+    Logger.debug('EtcApi::getTransactions called: ' + stringifyData(request));
     try {
-      const walletId = params.walletId;
-      const mostRecentBlockNumber = await getEtcBlockNumber({ ca });
-      const transactions: GetEtcTransactionsResponse = await getEtcTransactions({
+      const walletId = request.walletId;
+      const mostRecentBlockNumber: EtcBlockNumber = await getEtcBlockNumber({ ca });
+      const transactions: EtcTransactions = await getEtcTransactions({
         ca,
         walletId,
         fromBlock: Math.max(mostRecentBlockNumber - 10000, 0),
@@ -198,7 +186,7 @@ export default class EtcApi {
     const { name, mnemonic, password } = request;
     const privateKey = mnemonicToSeedHex(mnemonic);
     try {
-      const response: CreateEtcAccountResponse = await createEtcAccount({
+      const response: EtcWalletId = await createEtcAccount({
         ca, privateKey, password,
       });
       Logger.debug('EtcApi::createWallet success: ' + stringifyData(response));
@@ -220,7 +208,9 @@ export default class EtcApi {
   getWalletRecoveryPhrase(): Promise<GetWalletRecoveryPhraseResponse> {
     Logger.debug('EtcApi::getWalletRecoveryPhrase called');
     try {
-      const response = new Promise((resolve) => resolve(getEtcAccountRecoveryPhrase()));
+      const response: Promise<EtcRecoveryPassphrase> = new Promise(
+        (resolve) => resolve(getEtcAccountRecoveryPhrase())
+      );
       Logger.debug('EtcApi::getWalletRecoveryPhrase success');
       return response;
     } catch (error) {
@@ -229,12 +219,12 @@ export default class EtcApi {
     }
   }
 
-  async createTransaction(params: CreateTransactionRequest): CreateTransactionResponse {
+  async createTransaction(params: CreateTransactionRequest): Promise<CreateTransactionResponse> {
     Logger.debug('EtcApi::createTransaction called with ' + stringifyData(params));
     try {
       const senderAccount = params.from;
       const { from, to, value, password } = params;
-      const txHash: SendEtcTransactionResponse = await sendEtcTransaction({
+      const txHash: EtcTxHash = await sendEtcTransaction({
         ca, from, to, value, password, gasPrice: ETC_DEFAULT_GAS_PRICE,
       });
       Logger.debug('EtcApi::createTransaction success: ' + stringifyData(txHash));
@@ -309,7 +299,7 @@ export default class EtcApi {
     const { recoveryPhrase: mnemonic, walletName: name, walletPassword: password } = request;
     const privateKey = mnemonicToSeedHex(mnemonic);
     try {
-      const response: CreateEtcAccountResponse = await createEtcAccount({
+      const response: EtcWalletId = await createEtcAccount({
         ca, privateKey, password,
       });
       Logger.debug('EtcApi::restoreWallet success: ' + stringifyData(response));
@@ -340,16 +330,16 @@ export default class EtcApi {
   }
 
   async getEstimatedGasPriceResponse(
-    params: SendEtcTransactionParams
+    request: GetEstimatedGasPriceRequest
   ): GetEstimatedGasPriceResponse {
     Logger.debug('EtcApi::getEstimatedGasPriceResponse called');
     try {
-      const { from, to, value, gasPrice } = params;
-      const estimatedGas = await getEtcEstimatedGas({
+      const { from, to, value, gasPrice } = request;
+      const estimatedGas: EtcGas = await getEtcEstimatedGas({
         ca, from, to, value, gasPrice,
       });
       Logger.debug('EtcApi::getEstimatedGasPriceResponse success: ' + stringifyData(estimatedGas));
-      return quantityToBigNumber(estimatedGas).times(params.gasPrice).dividedBy(WEI_PER_ETC);
+      return quantityToBigNumber(estimatedGas).times(request.gasPrice).dividedBy(WEI_PER_ETC);
     } catch (error) {
       Logger.error('EtcApi::getEstimatedGasPriceResponse error: ' + stringifyError(error));
       throw new GenericApiError();
@@ -357,11 +347,13 @@ export default class EtcApi {
   }
 }
 
+// ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
+
 const _createWalletTransactionFromServerData = async (
   type: TransactionType, txData: EtcTransaction
-) => {
+): Promise<WalletTransaction> => {
   const { hash, blockHash, value, from, to, pending, } = txData;
-  const txBlock = blockHash ? await getEtcBlockByHash({
+  const txBlock: ?EtcBlock = blockHash ? await getEtcBlockByHash({
     ca, blockHash,
   }) : null;
   const blockDate = txBlock ? unixTimestampToDate(txBlock.timestamp) : new Date();
@@ -381,8 +373,8 @@ const _createWalletTransactionFromServerData = async (
   });
 };
 
-const _createTransaction = async (senderAccount: string, txHash: string) => {
-  const txData: GetEtcTransactionByHashResponse = await getEtcTransactionByHash({
+const _createTransaction = async (senderAccount: EtcWalletId, txHash: EtcTxHash) => {
+  const txData: EtcTransaction = await getEtcTransactionByHash({
     ca, txHash,
   });
   const type = senderAccount === txData.from ? transactionTypes.EXPEND : transactionTypes.INCOME;

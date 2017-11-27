@@ -6,13 +6,11 @@ import type { EtcTransaction } from './types';
 export type GetEtcTransactionByHashParams = {
   ca: string,
   txHash: string
-}
-
-export type GetEtcTransactionByHashResponse = EtcTransaction;
+};
 
 export const getEtcTransactionByHash = (
   { ca, txHash }: GetEtcTransactionByHashParams
-): Promise<GetEtcTransactionByHashResponse> => (
+): Promise<EtcTransaction> => (
   request({
     hostname: ETC_API_HOST,
     method: 'POST',

@@ -1,12 +1,11 @@
 // @flow
-import type { ApiWallet } from 'daedalus-client-api';
-import type { WalletInitData } from './types';
+import type { ApiWallet, ApiWalletInitData } from './types';
 import { request } from './lib/request';
 
 export type RestoreAdaWalletParams = {
   ca: string,
   walletPassword: ?string,
-  walletInitData: WalletInitData
+  walletInitData: ApiWalletInitData
 };
 
 export const restoreAdaWallet = (
