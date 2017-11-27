@@ -1,11 +1,11 @@
 // @flow
 
 // ========= Response Types =========
-export type ApiAssurance = 'CWANormal' | 'CWAStrict';
-export type ApiTransactionCondition = 'CPtxApplying' | 'CPtxInBlocks' | 'CPtxWontApply' | 'CPtxNotTracked';
-export type ApiWalletRecoveryPhraseResponse = Array<string>;
+export type AdaAssurance = 'CWANormal' | 'CWAStrict';
+export type AdaTransactionCondition = 'CPtxApplying' | 'CPtxInBlocks' | 'CPtxWontApply' | 'CPtxNotTracked';
+export type AdaWalletRecoveryPhraseResponse = Array<string>;
 
-export type ApiSyncProgressResponse = {
+export type AdaSyncProgressResponse = {
   _spLocalCD: {
     getChainDifficulty: {
       getBlockCount: number,
@@ -19,10 +19,10 @@ export type ApiSyncProgressResponse = {
   _spPeers: number,
 };
 
-export type ApiWalletInitData = {
+export type AdaWalletInitData = {
   cwInitMeta: {
     cwName: string,
-    cwAssurance: ApiAssurance,
+    cwAssurance: AdaAssurance,
     cwUnit: number,
   },
   cwBackupPhrase: {
@@ -30,67 +30,67 @@ export type ApiWalletInitData = {
   }
 };
 
-export type ApiAmount = {
+export type AdaAmount = {
   getCCoin: number,
 };
-export type ApiTransactionTag = 'CTIn' | 'CTOut';
+export type AdaTransactionTag = 'CTIn' | 'CTOut';
 
-export type ApiAddress = {
-  cadAmount: ApiAmount,
+export type AdaAddress = {
+  cadAmount: AdaAmount,
   cadId: string,
   cadIsUsed: boolean,
 };
 
-export type ApiAddresses = Array<ApiAddress>;
+export type AdaAddresses = Array<AdaAddress>;
 
-export type ApiAccount = {
-  caAddresses: ApiAddresses,
-  caAmount: ApiAmount,
+export type AdaAccount = {
+  caAddresses: AdaAddresses,
+  caAmount: AdaAmount,
   caId: string,
   caMeta: {
     caName: string,
   },
 };
 
-export type ApiAccounts = Array<ApiAccount>;
+export type AdaAccounts = Array<AdaAccount>;
 
-export type ApiTransaction = {
-  ctAmount: ApiAmount,
+export type AdaTransaction = {
+  ctAmount: AdaAmount,
   ctConfirmations: number,
   ctId: string,
-  ctInputs: ApiTransactionInputOutput,
+  ctInputs: AdaTransactionInputOutput,
   ctIsOutgoing: boolean,
   ctMeta: {
     ctmDate: Date,
     ctmDescription: ?string,
     ctmTitle: ?string,
   },
-  ctOutputs: ApiTransactionInputOutput,
-  ctCondition: ApiTransactionCondition,
+  ctOutputs: AdaTransactionInputOutput,
+  ctCondition: AdaTransactionCondition,
 };
 
-export type ApiTransactions = [
-  Array<ApiTransaction>,
+export type AdaTransactions = [
+  Array<AdaTransaction>,
   number,
 ];
 
-export type ApiTransactionInputOutput = [
-  [string, ApiAmount],
+export type AdaTransactionInputOutput = [
+  [string, AdaAmount],
 ];
 
-export type ApiTransactionFee = ApiAmount;
+export type AdaTransactionFee = AdaAmount;
 
-export type ApiWallet = {
+export type AdaWallet = {
   cwAccountsNumber: number,
-  cwAmount: ApiAmount,
+  cwAmount: AdaAmount,
   cwHasPassphrase: boolean,
   cwId: string,
   cwMeta: {
-    cwAssurance: ApiAssurance,
+    cwAssurance: AdaAssurance,
     cwName: string,
     csUnit: number,
   },
   cwPassphraseLU: Date,
 };
 
-export type ApiWallets = Array<ApiWallet>;
+export type AdaWallets = Array<AdaWallet>;

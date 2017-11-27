@@ -1,5 +1,5 @@
 // @flow
-import type { ApiSyncProgressResponse } from './types';
+import type { AdaSyncProgressResponse } from './types';
 import { request } from './lib/request';
 
 export type GetAdaSyncProgressParams = {
@@ -8,7 +8,7 @@ export type GetAdaSyncProgressParams = {
 
 export const getAdaSyncProgress = (
   { ca }: GetAdaSyncProgressParams
-): Promise<ApiSyncProgressResponse> => (
+): Promise<AdaSyncProgressResponse> => (
   request({
     hostname: 'localhost',
     method: 'GET',

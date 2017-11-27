@@ -1,16 +1,16 @@
 // @flow
-import type { ApiWallet, ApiWalletInitData } from './types';
+import type { AdaWallet, AdaWalletInitData } from './types';
 import { request } from './lib/request';
 
 export type RestoreAdaWalletParams = {
   ca: string,
   walletPassword: ?string,
-  walletInitData: ApiWalletInitData
+  walletInitData: AdaWalletInitData
 };
 
 export const restoreAdaWallet = (
   { ca, walletPassword, walletInitData }: RestoreAdaWalletParams
-): Promise<ApiWallet> => (
+): Promise<AdaWallet> => (
   request({
     hostname: 'localhost',
     method: 'POST',

@@ -1,5 +1,5 @@
 // @flow
-import type { ApiAccounts } from './types';
+import type { AdaAccounts } from './types';
 import { request } from './lib/request';
 
 export type GetAdaAccountsParams = {
@@ -10,7 +10,7 @@ export type GetAdaAccountsParams = {
 
 export const getAdaAccounts = (
   { ca }: GetAdaAccountsParams
-): Promise<ApiAccounts> => (
+): Promise<AdaAccounts> => (
   request({
     hostname: 'localhost',
     method: 'GET',

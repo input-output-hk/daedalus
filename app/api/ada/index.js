@@ -39,15 +39,15 @@ import { getAdaHistoryByWallet } from './getAdaHistoryByWallet';
 import { getAdaAccountRecoveryPhrase } from './getAdaAccountRecoveryPhrase';
 
 import type {
-  ApiSyncProgressResponse,
-  ApiAddress,
-  ApiAccounts,
-  ApiTransaction,
-  ApiTransactionFee,
-  ApiTransactions,
-  ApiWallet,
-  ApiWallets,
-  ApiWalletRecoveryPhraseResponse,
+  AdaSyncProgressResponse,
+  AdaAddress,
+  AdaAccounts,
+  AdaTransaction,
+  AdaTransactionFee,
+  AdaTransactions,
+  AdaWallet,
+  AdaWallets,
+  AdaWalletRecoveryPhraseResponse,
 } from './types';
 
 import type {
@@ -187,7 +187,7 @@ export default class AdaApi {
   async getWallets(): Promise<GetWalletsResponse> {
     Logger.debug('AdaApi::getWallets called');
     try {
-      const response: ApiWallets = await getAdaWallets({ ca });
+      const response: AdaWallets = await getAdaWallets({ ca });
       Logger.debug('AdaApi::getWallets success: ' + stringifyData(response));
       return response.map(data => _createWalletFromServerData(data));
     } catch (error) {
@@ -200,7 +200,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::getAddresses called: ' + stringifyData(request));
     const { walletId } = request;
     try {
-      const response: ApiAccounts = await getAdaWalletAccounts({ ca, walletId });
+      const response: AdaAccounts = await getAdaWalletAccounts({ ca, walletId });
       Logger.debug('AdaApi::getAddresses success: ' + stringifyData(response));
       if (!response.length) {
         return new Promise((resolve) => resolve({ accountId: null, addresses: [] }));
@@ -224,7 +224,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::searchHistory called: ' + stringifyData(request));
     const { walletId, skip, limit } = request;
     try {
-      const history: ApiTransactions = await getAdaHistoryByWallet({ ca, walletId, skip, limit });
+      const history: AdaTransactions = await getAdaHistoryByWallet({ ca, walletId, skip, limit });
       Logger.debug('AdaApi::searchHistory success: ' + stringifyData(history));
       return new Promise((resolve) => resolve({
         transactions: history[0].map(data => _createTransactionFromServerData(data)),
@@ -252,7 +252,7 @@ export default class AdaApi {
           bpToList: split(mnemonic), // array of mnemonic words
         }
       };
-      const wallet: ApiWallet = await newAdaWallet({ ca, password, walletInitData });
+      const wallet: AdaWallet = await newAdaWallet({ ca, password, walletInitData });
       Logger.debug('AdaApi::createWallet success');
       return _createWalletFromServerData(wallet);
     } catch (error) {
@@ -281,7 +281,7 @@ export default class AdaApi {
     try {
       // default value. Select (OptimizeForSecurity | OptimizeForSize) will be implemented
       const groupingPolicy = 'OptimizeForSecurity';
-      const response: ApiTransaction = await newAdaPayment(
+      const response: AdaTransaction = await newAdaPayment(
         { ca, sender, receiver, amount, groupingPolicy, password }
       );
       Logger.debug('AdaApi::createTransaction success: ' + stringifyData(response));
@@ -333,7 +333,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::createAddress called');
     const { accountId, password } = request;
     try {
-      const response: ApiAddress = await newAdaWalletAddress(
+      const response: AdaAddress = await newAdaWalletAddress(
         { ca, password, accountId }
       );
       Logger.debug('AdaApi::createAddress success: ' + stringifyData(response));
@@ -370,7 +370,7 @@ export default class AdaApi {
   getWalletRecoveryPhrase(): Promise<GetWalletRecoveryPhraseResponse> {
     Logger.debug('AdaApi::getWalletRecoveryPhrase called');
     try {
-      const response: Promise<ApiWalletRecoveryPhraseResponse> = new Promise(
+      const response: Promise<AdaWalletRecoveryPhraseResponse> = new Promise(
         (resolve) => resolve(getAdaAccountRecoveryPhrase())
       );
       Logger.debug('AdaApi::getWalletRecoveryPhrase success');
@@ -399,7 +399,7 @@ export default class AdaApi {
     };
 
     try {
-      const wallet: ApiWallet = await restoreAdaWallet(
+      const wallet: AdaWallet = await restoreAdaWallet(
         { ca, walletPassword, walletInitData }
       );
       Logger.debug('AdaApi::restoreWallet success');
@@ -425,7 +425,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::importWalletFromKey called');
     const { filePath, walletPassword } = request;
     try {
-      const importedWallet: ApiWallet = await importAdaWallet(
+      const importedWallet: AdaWallet = await importAdaWallet(
         { ca, walletPassword, filePath }
       );
       Logger.debug('AdaApi::importWalletFromKey success');
@@ -446,7 +446,7 @@ export default class AdaApi {
     const { filePath, walletPassword } = request;
     const isKeyFile = filePath.split('.').pop().toLowerCase() === 'key';
     try {
-      const importedWallet: ApiWallet = isKeyFile ? (
+      const importedWallet: AdaWallet = isKeyFile ? (
         await importAdaWallet({ ca, walletPassword, filePath })
       ) : (
         await importAdaBackupJSON({ ca, filePath })
@@ -471,7 +471,7 @@ export default class AdaApi {
         crSeed: redemptionCode,
       };
 
-      const response: ApiTransaction = await redeemAda(
+      const response: AdaTransaction = await redeemAda(
         { ca, walletPassword, walletRedeemData }
       );
 
@@ -500,7 +500,7 @@ export default class AdaApi {
         }
       };
 
-      const response: ApiTransaction = await redeemAdaPaperVend(
+      const response: AdaTransaction = await redeemAdaPaperVend(
         { ca, walletPassword, redeemPaperVendedData }
       );
 
@@ -595,7 +595,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::syncProgress called');
 
     try {
-      const response: ApiSyncProgressResponse = await getAdaSyncProgress({ ca });
+      const response: AdaSyncProgressResponse = await getAdaSyncProgress({ ca });
       Logger.debug('AdaApi::syncProgress success: ' + stringifyData(response));
       const localDifficulty = response._spLocalCD.getChainDifficulty.getBlockCount;
       // In some cases we dont get network difficulty & we need to wait for it from the notify API
@@ -622,7 +622,7 @@ export default class AdaApi {
     };
 
     try {
-      const wallet: ApiWallet = await updateAdaWallet({ ca, walletId, walletMeta });
+      const wallet: AdaWallet = await updateAdaWallet({ ca, walletId, walletMeta });
       Logger.debug('AdaApi::updateWallet success: ' + stringifyData(wallet));
       return _createWalletFromServerData(wallet);
     } catch (error) {
@@ -680,7 +680,7 @@ export default class AdaApi {
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
 
 const _createWalletFromServerData = action(
-  'AdaApi::_createWalletFromServerData', (data: ApiWallet) => (
+  'AdaApi::_createWalletFromServerData', (data: AdaWallet) => (
     new Wallet({
       id: data.cwId,
       amount: new BigNumber(data.cwAmount.getCCoin).dividedBy(LOVELACES_PER_ADA),
@@ -693,7 +693,7 @@ const _createWalletFromServerData = action(
 );
 
 const _createAddressFromServerData = action(
-  'AdaApi::_createAddressFromServerData', (data: ApiAddress) => (
+  'AdaApi::_createAddressFromServerData', (data: AdaAddress) => (
     new WalletAddress({
       id: data.cadId,
       amount: new BigNumber(data.cadAmount.getCCoin).dividedBy(LOVELACES_PER_ADA),
@@ -711,7 +711,7 @@ const _conditionToTxState = (condition: string) => {
 };
 
 const _createTransactionFromServerData = action(
-  'AdaApi::_createTransactionFromServerData', (data: ApiTransaction) => {
+  'AdaApi::_createTransactionFromServerData', (data: AdaTransaction) => {
     const coins = data.ctAmount.getCCoin;
     const { ctmTitle, ctmDescription, ctmDate } = data.ctMeta;
     return new WalletTransaction({
@@ -732,7 +732,7 @@ const _createTransactionFromServerData = action(
 );
 
 const _createTransactionFeeFromServerData = action(
-  'AdaApi::_createTransactionFeeFromServerData', (data: ApiTransactionFee) => {
+  'AdaApi::_createTransactionFeeFromServerData', (data: AdaTransactionFee) => {
     const coins = data.getCCoin;
     return new BigNumber(coins).dividedBy(LOVELACES_PER_ADA);
   }

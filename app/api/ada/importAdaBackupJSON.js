@@ -1,5 +1,5 @@
 // @flow
-import type { ApiWallet } from './types';
+import type { AdaWallet } from './types';
 import { request } from './lib/request';
 
 export type ImportAdaBackupJSONParams = {
@@ -9,7 +9,7 @@ export type ImportAdaBackupJSONParams = {
 
 export const importAdaBackupJSON = (
   { ca, filePath }: ImportAdaBackupJSONParams,
-): Promise<ApiWallet> => (
+): Promise<AdaWallet> => (
   request({
     hostname: 'localhost',
     method: 'POST',

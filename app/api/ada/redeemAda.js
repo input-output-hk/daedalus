@@ -1,5 +1,5 @@
 // @flow
-import type { ApiTransaction } from './types';
+import type { AdaTransaction } from './types';
 import { request } from './lib/request';
 
 export type RedeemAdaParams = {
@@ -13,7 +13,7 @@ export type RedeemAdaParams = {
 
 export const redeemAda = (
 { ca, walletPassword, walletRedeemData }: RedeemAdaParams
-): Promise<ApiTransaction> => (
+): Promise<AdaTransaction> => (
   request({
     hostname: 'localhost',
     method: 'POST',
