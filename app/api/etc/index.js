@@ -62,6 +62,12 @@ export const ETC_API_HOST = 'localhost';
 export const ETC_API_PORT = 8546;
 
 export type GetWalletsResponse = Array<Wallet>;
+export type ImportWalletRequest = {
+  name: string,
+  privateKey: string,
+  password: ?string,
+};
+export type ImportWalletResponse = Wallet;
 export type CreateWalletRequest = {
   name: string,
   mnemonic: string,
@@ -191,17 +197,16 @@ export default class EtcApi {
       Logger.error('EtcApi::getTransactions error: ' + stringifyError(error));
       throw new GenericApiError();
     }
-  }
+  };
 
-  async createWallet(request: CreateWalletRequest): Promise<CreateWalletResponse> {
-    Logger.debug('EtcApi::createWallet called');
-    const { name, mnemonic, password } = request;
-    const privateKey = mnemonicToSeedHex(mnemonic);
+  async importWallet(request: ImportWalletRequest): Promise<ImportWalletResponse> {
+    Logger.debug('EtcApi::importWallet called');
+    const { name, privateKey, password } = request;
     try {
       const response: CreateEtcAccountResponse = await createEtcAccount({
         ca, privateKey, password,
       });
-      Logger.debug('EtcApi::createWallet success: ' + stringifyData(response));
+      Logger.debug('EtcApi::importWallet success: ' + stringifyData(response));
       const id = response;
       const amount = quantityToBigNumber('0');
       const assurance = 'CWANormal';
@@ -211,6 +216,22 @@ export default class EtcApi {
         id, name, assurance, hasPassword, passwordUpdateDate,
       });
       return new Wallet({ id, name, amount, assurance, hasPassword, passwordUpdateDate });
+    } catch (error) {
+      Logger.error('EtcApi::importWallet error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  createWallet = async (request: CreateWalletRequest): Promise<CreateWalletResponse> => {
+    Logger.debug('EtcApi::createWallet called');
+    const { name, mnemonic, password } = request;
+    const privateKey = mnemonicToSeedHex(mnemonic);
+    try {
+      const response: ImportWalletResponse = await this.importWallet({
+        name, privateKey, password,
+      });
+      Logger.debug('EtcApi::createWallet success: ' + stringifyData(response));
+      return response;
     } catch (error) {
       Logger.error('EtcApi::createWallet error: ' + stringifyError(error));
       throw new GenericApiError();
@@ -292,9 +313,7 @@ export default class EtcApi {
     Logger.debug('EtcApi::deleteWallet called: ' + stringifyData(request));
     const { walletId } = request;
     try {
-      await deleteEtcAccount({
-        ca, walletId,
-      });
+      await deleteEtcAccount({ ca, walletId });
       Logger.debug('EtcApi::deleteWallet success: ' + stringifyData(request));
       await unsetEtcWalletData(walletId); // remove wallet data from local storage
       return true;
@@ -304,24 +323,14 @@ export default class EtcApi {
     }
   }
 
-  async restoreWallet(request: RestoreWalletRequest): Promise<RestoreWalletResponse> {
+  restoreWallet = async (request: RestoreWalletRequest): Promise<RestoreWalletResponse> => {
     Logger.debug('EtcApi::restoreWallet called');
     const { recoveryPhrase: mnemonic, walletName: name, walletPassword: password } = request;
     const privateKey = mnemonicToSeedHex(mnemonic);
     try {
-      const response: CreateEtcAccountResponse = await createEtcAccount({
-        ca, privateKey, password,
-      });
-      Logger.debug('EtcApi::restoreWallet success: ' + stringifyData(response));
-      const id = response;
-      const amount = quantityToBigNumber('0');
-      const assurance = 'CWANormal';
-      const hasPassword = password !== null;
-      const passwordUpdateDate = hasPassword ? new Date() : null;
-      await setEtcWalletData({
-        id, name, assurance, hasPassword, passwordUpdateDate,
-      });
-      return new Wallet({ id, name, amount, assurance, hasPassword, passwordUpdateDate });
+      const wallet: ImportWalletResponse = await this.importWallet({ name, privateKey, password });
+      Logger.debug('EtcApi::restoreWallet success: ' + stringifyData(wallet));
+      return wallet;
     } catch (error) {
       Logger.error('EtcApi::restoreWallet error: ' + stringifyError(error));
       if (error.message.includes('account already exists')) {
