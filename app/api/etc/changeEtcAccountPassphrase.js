@@ -1,7 +1,7 @@
 // @flow
 import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
-import type { EtcTransactioPassphrase } from './types';
+import type { EtcAccountPassphrase } from './types';
 
 export type ChangeEtcAccountPassphraseParams = {
   ca: string,
@@ -12,7 +12,7 @@ export type ChangeEtcAccountPassphraseParams = {
 
 export const changeEtcAccountPassphrase = (
   { ca, walletId, oldPassword, newPassword }: ChangeEtcAccountPassphraseParams
-): Promise<EtcTransactioPassphrase> => (
+): Promise<EtcAccountPassphrase> => (
   request({
     hostname: ETC_API_HOST,
     method: 'POST',

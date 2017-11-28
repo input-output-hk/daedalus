@@ -4,8 +4,6 @@ import { request } from './lib/request';
 
 export type GetAdaAccountsParams = {
   ca: string,
-  walletId: string,
-  filePath: string,
 };
 
 export const getAdaAccounts = (
