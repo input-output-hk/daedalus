@@ -65,7 +65,9 @@ export default class WalletTransactionsList extends Component<Props> {
     for (const group of groups) {
       group.transactions.sort((a, b) => b.date.getTime() - a.date.getTime());
     }
-    return groups;
+    return groups.sort(
+      (a, b) => b.transactions[0].date.getTime() - a.transactions[0].date.getTime()
+    );
   }
 
   isSpinnerVisible() {

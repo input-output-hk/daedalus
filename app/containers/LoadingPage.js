@@ -8,7 +8,7 @@ import type { StoresMap } from '../stores/index';
 import cardanoLogo from '../assets/images/cardano-logo.inline.svg';
 import cardanoLogoWhite from '../assets/images/cardano-logo-white.inline.svg';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   loadingWalletData: {
     id: 'loading.screen.loadingWalletData',
     defaultMessage: '!!!Loading wallet data',
@@ -46,4 +46,5 @@ export default class LoadingPage extends Component<Props> {
       </CenteredLayout>
     );
   }
+
 }

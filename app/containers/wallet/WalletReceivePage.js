@@ -10,7 +10,7 @@ import NotificationMessage from '../../components/widgets/NotificationMessage';
 import successIcon from '../../assets/images/success-small.inline.svg';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   message: {
     id: 'wallet.receive.page.addressCopyNotificationMessage',
     defaultMessage: '!!!You have successfully copied wallet address',

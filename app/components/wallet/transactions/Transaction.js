@@ -62,10 +62,20 @@ const messages = defineMessages({
     defaultMessage: '!!!{currency} received',
     description: 'Label "{currency} received" for the transaction.',
   },
+  fromAddress: {
+    id: 'wallet.transaction.address.from',
+    defaultMessage: '!!!From address',
+    description: 'From address',
+  },
   fromAddresses: {
     id: 'wallet.transaction.addresses.from',
     defaultMessage: '!!!From addresses',
     description: 'From addresses',
+  },
+  toAddress: {
+    id: 'wallet.transaction.address.to',
+    defaultMessage: '!!!To address',
+    description: 'To address',
   },
   toAddresses: {
     id: 'wallet.transaction.addresses.to',
@@ -220,11 +230,19 @@ export default class Transaction extends Component<Props, State> {
               </div>
             )}
             <div>
-              <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
+              <h2>
+                {intl.formatMessage(messages[
+                  environment.isEtcApi() ? 'fromAddress' : 'fromAddresses'
+                ])}
+              </h2>
               {data.addresses.from.map((address, addressIndex) => (
                 <span key={`${data.id}-from-${address}-${addressIndex}`} className={styles.address}>{address}</span>
               ))}
-              <h2>{intl.formatMessage(messages.toAddresses)}</h2>
+              <h2>
+                {intl.formatMessage(messages[
+                  environment.isEtcApi() ? 'toAddress' : 'toAddresses'
+                ])}
+              </h2>
               {data.addresses.to.map((address, addressIndex) => (
                 <span key={`${data.id}-to-${address}-${addressIndex}`} className={styles.address}>{address}</span>
               ))}

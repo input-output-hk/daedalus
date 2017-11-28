@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './ImageUploadWidget.scss';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   dropFileHere: {
     id: 'ImageUploadWidget.dropFileHint',
     defaultMessage: '!!!Drop file here',

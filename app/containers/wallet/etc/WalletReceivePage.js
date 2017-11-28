@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, FormattedHTMLMessage } from 'react-intl';
+import { FormattedHTMLMessage } from 'react-intl';
 import { observer, inject } from 'mobx-react';
 import { ellipsis } from '../../../utils/strings';
 import config from '../../../config';
@@ -9,16 +9,9 @@ import VerticalFlexContainer from '../../../components/layout/VerticalFlexContai
 import NotificationMessage from '../../../components/widgets/NotificationMessage';
 import successIcon from '../../../assets/images/success-small.inline.svg';
 import type { InjectedProps } from '../../../types/injectedPropsType';
+import { messages } from '../WalletReceivePage';
 
-const messages = defineMessages({
-  message: {
-    id: 'wallet.receive.page.addressCopyNotificationMessage',
-    defaultMessage: '!!!You have successfully copied wallet address',
-    description: 'Message for the wallet address copy success notification.',
-  },
-});
-
-type Props = InjectedProps
+type Props = InjectedProps;
 
 type State = {
   copiedAddress: string,

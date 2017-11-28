@@ -3,25 +3,13 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import SvgInline from 'react-svg-inline';
 import Dropzone from 'react-dropzone';
-import { defineMessages, intlShape } from 'react-intl';
+import { intlShape } from 'react-intl';
 import certificateNormalIcon from '../../../assets/images/cert-ic.inline.svg';
 import certificateLockedIcon from '../../../assets/images/cert-locked-ic.inline.svg';
 import certificateInvalidIcon from '../../../assets/images/cert-bad-ic.inline.svg';
 import closeCrossIcon from '../../../assets/images/close-cross.inline.svg';
 import styles from './AdaCertificateUploadWidget.scss';
-
-const messages = defineMessages({
-  dropFileHere: {
-    id: 'ImageUploadWidget.dropFileHint',
-    defaultMessage: '!!!Drop file here',
-    description: 'Label "Drop file here" on the file upload widget.'
-  },
-  orClickToUpload: {
-    id: 'ImageUploadWidget.clickToUploadLabel',
-    defaultMessage: '!!!Click to upload',
-    description: 'Label "or click to upload" on the file upload widget.'
-  },
-});
+import { messages } from './ImageUploadWidget';
 
 type Props = {
   label: string,

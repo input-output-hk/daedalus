@@ -12,7 +12,7 @@ import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletSendConfirmationDialog.scss';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.send.confirmationDialog.title',
     defaultMessage: '!!!Confirm transaction',

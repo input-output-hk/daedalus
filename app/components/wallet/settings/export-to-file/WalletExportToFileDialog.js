@@ -166,6 +166,7 @@ export default class WalletExportToFileDialog extends Component<Props, State> {
             {intl.formatMessage(messages.readOnlyTabTitle)}
           </button>
         </div>
+
         */}
 
         <div className={styles.introduction}>

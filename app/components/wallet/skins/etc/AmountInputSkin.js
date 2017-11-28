@@ -1,17 +1,10 @@
 import React, { Component } from 'react';
-import { defineMessages, intlShape } from 'react-intl';
+import { intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import InputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
-import styles from './AmountInputSkin.scss';
+import styles from './AmountInputSkinEtc.scss';
 import { formattedAmountWithoutTrailingZeros } from '../../../../utils/formatters';
-
-const messages = defineMessages({
-  feesLabel: {
-    id: 'wallet.amountInput.feesLabel',
-    defaultMessage: '!!!+ {amount} of fees',
-    description: 'Label for the "+ 12.042481 of fees" message above amount input field.'
-  },
-});
+import { messages } from '../AmountInputSkin';
 
 type Props = {
   currency: string,

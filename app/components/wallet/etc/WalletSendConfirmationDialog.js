@@ -4,64 +4,14 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
-import { defineMessages, intlShape } from 'react-intl';
+import { intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
-import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from '../WalletSendConfirmationDialog.scss';
 import { formattedAmountWithoutTrailingZeros } from '../../../utils/formatters';
-
-const messages = defineMessages({
-  dialogTitle: {
-    id: 'wallet.send.confirmationDialog.title',
-    defaultMessage: '!!!Confirm transaction',
-    description: 'Title for the "Confirm transaction" dialog.'
-  },
-  walletPasswordLabel: {
-    id: 'wallet.send.confirmationDialog.walletPasswordLabel',
-    defaultMessage: '!!!Spending password',
-    description: 'Label for the "Spending password" input in the wallet send confirmation dialog.',
-  },
-  addressToLabel: {
-    id: 'wallet.send.confirmationDialog.addressToLabel',
-    defaultMessage: '!!!To',
-    description: 'Label for the "To" in the wallet send confirmation dialog.',
-  },
-  amountLabel: {
-    id: 'wallet.send.confirmationDialog.amountLabel',
-    defaultMessage: '!!!Amount',
-    description: 'Label for the "Amount" in the wallet send confirmation dialog.',
-  },
-  feesLabel: {
-    id: 'wallet.send.confirmationDialog.feesLabel',
-    defaultMessage: '!!!Fees',
-    description: 'Label for the "Fees" in the wallet send confirmation dialog.',
-  },
-  totalLabel: {
-    id: 'wallet.send.confirmationDialog.totalLabel',
-    defaultMessage: '!!!Total',
-    description: 'Label for the "Total" in the wallet send confirmation dialog.',
-  },
-  walletPasswordFieldPlaceholder: {
-    id: 'wallet.send.confirmationDialog.walletPasswordFieldPlaceholder',
-    defaultMessage: '!!!Type your spending password',
-    description: 'Placeholder for the "Spending password" inputs in the wallet send confirmation dialog.',
-  },
-  sendButtonLabel: {
-    id: 'wallet.send.confirmationDialog.submit',
-    defaultMessage: '!!!Send',
-    description: 'Label for the send button in the wallet send confirmation dialog.'
-  },
-  backButtonLabel: {
-    id: 'wallet.send.confirmationDialog.back',
-    defaultMessage: '!!!Back',
-    description: 'Label for the back button in the wallet send confirmation dialog.'
-  },
-});
-
-messages.fieldIsRequired = globalMessages.fieldIsRequired;
+import { messages } from '../WalletSendConfirmationDialog';
 
 type Props = {
   isWalletPasswordSet: boolean,

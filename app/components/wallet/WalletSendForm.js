@@ -18,7 +18,7 @@ import WalletSendConfirmationDialog from './WalletSendConfirmationDialog';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
 import { formattedAmountToBigNumber, formattedAmountToNaturalUnits } from '../../utils/formatters';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   titleLabel: {
     id: 'wallet.send.form.title.label',
     defaultMessage: '!!!Title',
@@ -189,6 +189,7 @@ export default class WalletSendForm extends Component<Props, State> {
     },
   }, {
     options: {
+      validateOnBlur: false,
       validateOnChange: true,
       validationDebounceWait: 250,
     },

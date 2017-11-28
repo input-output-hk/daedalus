@@ -51,11 +51,10 @@ export default class EtcWalletsStore extends WalletStore {
       password: password != null ? password : '',
       gasPrice: ETC_DEFAULT_GAS_PRICE,
     });
-    if (!this.sendMoneyRequest.isError) {
-      await this.refreshWalletsData();
-      this.actions.dialogs.closeActiveDialog.trigger();
-      this.goToWalletRoute(wallet.id);
-    }
+    this.refreshWalletsData();
+    this.actions.dialogs.closeActiveDialog.trigger();
+    this.sendMoneyRequest.reset();
+    this.goToWalletRoute(wallet.id);
   };
 
   calculateTransactionFee = async (transactionDetails: {

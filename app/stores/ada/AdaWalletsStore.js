@@ -58,6 +58,7 @@ export default class AdaWalletsStore extends WalletStore {
     });
     this.refreshWalletsData();
     this.actions.dialogs.closeActiveDialog.trigger();
+    this.sendMoneyRequest.reset();
     this.goToWalletRoute(wallet.id);
   };
 
