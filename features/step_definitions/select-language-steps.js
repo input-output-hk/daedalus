@@ -1,14 +1,11 @@
 import { expect } from 'chai';
+import languageSelection from '../support/helpers/language-selection-helpers';
 
 const LANGUAGE_SELECTION_FORM = '.LanguageSelectionForm_component';
 
 export default function () {
   this.Given(/^I have selected English language$/, async function () {
-    await this.client.waitForVisible(LANGUAGE_SELECTION_FORM);
-    await this.client.execute(locale => {
-      daedalus.actions.profile.updateLocale.trigger({ locale });
-    }, 'en-US');
-    await this.client.waitForVisible(LANGUAGE_SELECTION_FORM, null, true);
+    await languageSelection.ensureLanguageIsSelected(this.client, { language: 'en-US' });
   });
 
   this.Given(/^I dont have a language set$/, async function () {

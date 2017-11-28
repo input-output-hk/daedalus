@@ -1,9 +1,7 @@
 Feature: Generate Wallet Address
 
   Background:
-    Given I have selected English language
-    And I have accepted "Terms of use"
-    And I agree to send logs to remote server
+    Given I have completed the basic setup
 
   Scenario: Generating wallet address
     Given I have the following wallets:

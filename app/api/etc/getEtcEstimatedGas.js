@@ -4,6 +4,7 @@ import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
 
 export type GetEtcEstimatedGasParams = {
+  ca: string,
   from: string,
   to: string,
   value: BigNumber, // QUANTITY in WEI with base 10
@@ -13,7 +14,7 @@ export type GetEtcEstimatedGasParams = {
 export type GetEtcEstimatedGasResponse = string;
 
 export const getEtcEstimatedGas = (
-  ca: string, params: GetEtcEstimatedGasParams
+  { ca, from, to, value, gasPrice }: GetEtcEstimatedGasParams
 ): Promise<GetEtcEstimatedGasResponse> => (
   request({
     hostname: ETC_API_HOST,
@@ -25,10 +26,11 @@ export const getEtcEstimatedGas = (
     jsonrpc: '2.0',
     method: 'eth_estimateGas',
     params: [{
-      ...params,
+      from,
+      to,
       // Convert quantities to HEX for the ETC api
-      value: new BigNumber(params.value).toString(16),
-      gasPrice: new BigNumber(params.gasPrice).toString(16),
+      value: new BigNumber(value).toString(16),
+      gasPrice: new BigNumber(gasPrice).toString(16),
     }]
   })
 );

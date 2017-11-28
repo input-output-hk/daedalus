@@ -36,7 +36,7 @@ export default class AdaWalletsStore extends WalletStore {
     wallets.createWallet.listen(this._create);
     wallets.deleteWallet.listen(this._delete);
     wallets.sendMoney.listen(this._sendMoney);
-    wallets.restoreWallet.listen(this._restore);
+    wallets.restoreWallet.listen(this._restoreWallet);
     wallets.importWalletFromFile.listen(this._importWalletFromFile);
     wallets.chooseWalletExportType.listen(this._chooseWalletExportType);
     router.goToRoute.listen(this._onRouteChange);
@@ -108,19 +108,17 @@ export default class AdaWalletsStore extends WalletStore {
     walletPassword: ?string,
   }) => {
     this.restoreRequest.reset();
-
-    // Hide restore wallet dialog 500ms after restore has been started
+    this._setIsRestoreActive(true);
+    // Hide restore wallet dialog some time after restore has been started
     // ...or keep it open in case it has errored out (so that error message can be shown)
     setTimeout(() => {
-      if (!this.restoreRequest.isError) {
-        this.actions.dialogs.closeActiveDialog.trigger();
-        if (this.restoreRequest.isExecuting) this._setIsRestoreActive(true);
-      }
-    }, 500);
+      if (!this.restoreRequest.isExecuting) this._setIsRestoreActive(false);
+      if (!this.restoreRequest.isError) this.actions.dialogs.closeActiveDialog.trigger();
+    }, this.WAIT_FOR_SERVER_ERROR_TIME);
 
     const restoredWallet = await this.restoreRequest.execute(params).promise;
+    setTimeout(() => { this._setIsRestoreActive(false); }, this.MIN_NOTIFICATION_TIME);
     if (!restoredWallet) throw new Error('Restored wallet was not received correctly');
-    this._setIsRestoreActive(false);
     this.restoreRequest.reset();
     await this._patchWalletRequestWithNewWallet(restoredWallet);
     this.refreshWalletsData();
@@ -132,22 +130,20 @@ export default class AdaWalletsStore extends WalletStore {
 
   @action _importWalletFromFile = async (params: WalletImportFromFileParams) => {
     this.importFromFileRequest.reset();
-
-    // Hide import wallet dialog 500ms after import has been started
+    this._setIsImportActive(true);
+    // Hide import wallet dialog some time after import has been started
     // ...or keep it open in case it has errored out (so that error message can be shown)
     setTimeout(() => {
-      if (!this.importFromFileRequest.isError) {
-        this.actions.dialogs.closeActiveDialog.trigger();
-        if (this.importFromFileRequest.isExecuting) this._setIsImportActive(true);
-      }
-    }, 500);
+      if (!this.importFromFileRequest.isExecuting) this._setIsImportActive(false);
+      if (!this.importFromFileRequest.isError) this.actions.dialogs.closeActiveDialog.trigger();
+    }, this.WAIT_FOR_SERVER_ERROR_TIME);
 
     const { filePath, walletName, walletPassword } = params;
     const importedWallet = await this.importFromFileRequest.execute({
       filePath, walletName, walletPassword,
     }).promise;
+    setTimeout(() => { this._setIsImportActive(false); }, this.MIN_NOTIFICATION_TIME);
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');
-    this._setIsImportActive(false);
     this.importFromFileRequest.reset();
     await this._patchWalletRequestWithNewWallet(importedWallet);
     this.refreshWalletsData();

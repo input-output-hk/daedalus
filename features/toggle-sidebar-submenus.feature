@@ -1,9 +1,7 @@
 Feature: Toggle Sidebar Submenus
 
   Background:
-    Given I have selected English language
-    And I have accepted "Terms of use"
-    And I agree to send logs to remote server
+    Given I have completed the basic setup
     And I have the following wallets:
       | name        |
       | Test wallet |

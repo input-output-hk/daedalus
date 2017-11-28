@@ -1,14 +1,11 @@
 import { expect } from 'chai';
+import termsOfUse from '../support/helpers/terms-of-use-helpers';
 
 const TERMS_OF_USE_FORM = '.TermsOfUseForm_component';
 
 export default function () {
   this.Given(/^I have accepted "Terms of use"$/, async function () {
-    await this.client.waitForVisible(TERMS_OF_USE_FORM);
-    await this.client.execute(() => {
-      daedalus.actions.profile.acceptTermsOfUse.trigger();
-    });
-    return this.client.waitForVisible(TERMS_OF_USE_FORM, null, true);
+    await termsOfUse.acceptTerms(this.client);
   });
 
   this.Given(/^I didnt accept "Terms of use"$/, async function () {

@@ -2,6 +2,10 @@
 import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
 
+export type GetEtcSyncProgressParams = {
+  ca: string,
+};
+
 export type GetEtcSyncProgressResponse = false | {
   startingBlock: string,
   currentBlock: string,
@@ -9,7 +13,7 @@ export type GetEtcSyncProgressResponse = false | {
 };
 
 export const getEtcSyncProgress = (
-  ca: string
+  { ca }: GetEtcSyncProgressParams
 ): Promise<GetEtcSyncProgressResponse> => (
   request({
     hostname: ETC_API_HOST,
