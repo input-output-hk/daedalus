@@ -122,9 +122,8 @@ export default class EtcApi {
   getWallets = async (): Promise<GetWalletsResponse> => {
     Logger.debug('EtcApi::getWallets called');
     try {
-      const response: GetEtcAccountsResponse = await getEtcAccounts({ ca });
-      Logger.debug('EtcApi::getWallets success: ' + stringifyData(response));
-      const accounts = response;
+      const accounts: GetEtcAccountsResponse = await getEtcAccounts({ ca });
+      Logger.debug('EtcApi::getWallets success: ' + stringifyData(accounts));
       return await Promise.all(accounts.map(async (id) => {
         const amount = await this.getAccountBalance(id);
         try {
@@ -218,7 +217,7 @@ export default class EtcApi {
       return new Wallet({ id, name, amount, assurance, hasPassword, passwordUpdateDate });
     } catch (error) {
       Logger.error('EtcApi::importWallet error: ' + stringifyError(error));
-      throw new GenericApiError();
+      throw error; // Error is handled in parent method (e.g. createWallet/restoreWallet)
     }
   }
 
@@ -251,7 +250,7 @@ export default class EtcApi {
   }
 
   async createTransaction(params: CreateTransactionRequest): CreateTransactionResponse {
-    Logger.debug('EtcApi::createTransaction called with ' + stringifyData(params));
+    Logger.debug('EtcApi::createTransaction called');
     try {
       const senderAccount = params.from;
       const { from, to, value, password } = params;
@@ -365,7 +364,7 @@ export default class EtcApi {
     }
   }
 
-  async testReset(): Promise<boolean> {
+  testReset = async (): Promise<boolean> => {
     Logger.debug('EtcApi::testReset called');
     try {
       const accounts: GetEtcAccountsResponse = await getEtcAccounts({ ca });
