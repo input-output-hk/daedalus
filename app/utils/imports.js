@@ -13,7 +13,7 @@ const resolver = (path: string) => {
   } catch (e) {
     file = require(`../${path}.js`); // eslint-disable-line
   }
-  return file;
+  return file.default || file;
 };
 
 export default resolver;

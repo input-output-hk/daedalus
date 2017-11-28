@@ -9,7 +9,7 @@ import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   noTransactions: {
     id: 'wallet.summary.no.transactions',
     defaultMessage: '!!!No recent transactions',

@@ -7,7 +7,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
 import BorderedBox from '../../widgets/BorderedBox';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
-import styles from './WalletReceive.scss';
+import styles from './WalletReceiveEtc.scss';
 
 const messages = defineMessages({
   walletAddressLabel: {

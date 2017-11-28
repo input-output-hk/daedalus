@@ -1,21 +1,14 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { intlShape } from 'react-intl';
 import WalletSummary from '../../../components/wallet/summary/etc/WalletSummary';
 import WalletNoTransactions from '../../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../../components/layout/VerticalFlexContainer';
 import { DECIMAL_PLACES_IN_ETC } from '../../../config/numbersConfig';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import WalletTransactionsList from '../../../components/wallet/transactions/WalletTransactionsList';
-
-const messages = defineMessages({
-  noTransactions: {
-    id: 'wallet.summary.no.transactions',
-    defaultMessage: '!!!No recent transactions',
-    description: 'Message shown when wallet has no transactions on wallet summary page.'
-  },
-});
+import { messages } from '../WalletSummaryPage';
 
 type Props = InjectedProps;
 

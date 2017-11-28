@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { intlShape } from 'react-intl';
 import moment from 'moment';
 import LocalizableError from '../../../i18n/LocalizableError';
 import BorderedBox from '../../widgets/BorderedBox';
@@ -14,29 +14,7 @@ import ChangeWalletPasswordDialog from '../settings/ChangeWalletPasswordDialog';
 import ChangeWalletPasswordDialogContainer from '../../../containers/wallet/dialogs/ChangeWalletPasswordDialogContainer';
 import globalMessages from '../../../i18n/global-messages';
 import styles from '../WalletSettings.scss';
-
-const messages = defineMessages({
-  name: {
-    id: 'wallet.settings.name.label',
-    defaultMessage: '!!!Name',
-    description: 'Label for the "Name" text input on the wallet settings page.',
-  },
-  passwordLabel: {
-    id: 'wallet.settings.password',
-    defaultMessage: '!!!Password',
-    description: 'Label for the "Password" field.',
-  },
-  passwordLastUpdated: {
-    id: 'wallet.settings.passwordLastUpdated',
-    defaultMessage: '!!!Last updated',
-    description: 'Last updated X time ago message.',
-  },
-  passwordNotSet: {
-    id: 'wallet.settings.passwordNotSet',
-    defaultMessage: '!!!You still don\'t have password',
-    description: 'You still don\'t have password set message.',
-  },
-});
+import { messages } from '../WalletSettings';
 
 type Props = {
   walletName: string,

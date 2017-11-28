@@ -104,21 +104,21 @@ export const unsetEtcWalletsData = (): Promise<void> => new Promise((resolve) =>
 
 export const ETC_WALLETS_DATA = [
   {
-    id: '0x6f71adcdb471af7f7623d7e4ff27d9e5de4fd3b1',
+    id: '0xafe149dce151dc829008779820cc4a947ab2257e',
     name: 'Wallet 1',
     assurance: 'CWANormal',
     hasPassword: true,
     passwordUpdateDate: new Date('2017-10-01'),
   },
   {
-    id: '0xde81f296a5c102ce0a4ac2b98f203f6763895185',
+    id: '0x6f71adcdb471af7f7623d7e4ff27d9e5de4fd3b1',
     name: 'Wallet 2',
     assurance: 'CWANormal',
     hasPassword: true,
     passwordUpdateDate: new Date('2017-10-01'),
   },
   {
-    id: '0xafe149dce151dc829008779820cc4a947ab2257e',
+    id: '0xde81f296a5c102ce0a4ac2b98f203f6763895185',
     name: 'Wallet 3',
     assurance: 'CWANormal',
     hasPassword: true,

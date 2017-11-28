@@ -5,7 +5,7 @@ import { ROUTES } from './routes-config';
 import resolver from './utils/imports';
 
 // PAGES
-import StakingPage from './containers/staking/StakingPage';
+// import StakingPage from './containers/staking/StakingPage';
 import AdaRedemptionPage from './containers/wallet/AdaRedemptionPage';
 import NoWalletsPage from './containers/wallet/NoWalletsPage';
 import LanguageSelectionPage from './containers/profile/LanguageSelectionPage';
@@ -32,7 +32,7 @@ export const Routes = (
     <Route path={ROUTES.PROFILE.LANGUAGE_SELECTION} component={LanguageSelectionPage} />
     <Route path={ROUTES.PROFILE.TERMS_OF_USE} component={TermsOfUsePage} />
     <Route path={ROUTES.PROFILE.SEND_LOGS} component={SendLogsChoicePage} />
-    <Route path={ROUTES.STAKING} component={StakingPage} />
+    {/* <Route path={ROUTES.STAKING} component={StakingPage} /> */}
     <Route path={ROUTES.ADA_REDEMPTION} component={AdaRedemptionPage} />
     <Route path={ROUTES.NO_WALLETS} component={NoWalletsPage} />
     <Route path={ROUTES.WALLETS.ROOT} component={Wallet}>

@@ -154,7 +154,7 @@ export default class NetworkStatusStore extends Store {
     } catch (error) {
       // If the sync progress request fails, switch to disconnected state
       runInAction('update connected status', () => (this.isConnected = false));
-      Logger.debug('Connection Lost. Reconnecting …');
+      Logger.debug('Connection Lost. Reconnecting...');
     }
   };
 
