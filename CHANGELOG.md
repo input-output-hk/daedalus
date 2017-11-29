@@ -36,6 +36,7 @@ Changelog
 - Cleanup and standardization of ETC Api calls ([PR 549](https://github.com/input-output-hk/daedalus/pull/549))
 - Unused vendor dependencies cleanup and DLL file optimization ([PR 555](https://github.com/input-output-hk/daedalus/pull/555))
 - Introduce `testReset` endpoint for ETC api ([PR 558](https://github.com/input-output-hk/daedalus/pull/558))
+- Update acceptance tests suite dependencies ([PR 561](https://github.com/input-output-hk/daedalus/pull/561))
 
 ## 0.8.0
 

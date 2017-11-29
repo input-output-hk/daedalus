@@ -1,5 +1,7 @@
-export default function () {
-  this.Before(function () {
+import { defineSupportCode } from 'cucumber';
+
+defineSupportCode(({ Before }) => {
+  Before(function () {
     this.intl = async (translationId, translationValues = {}) => {
       const translation = await this.client.execute((id, values) => {
         const IntlProvider = require('react-intl').IntlProvider; // eslint-disable-line
@@ -11,4 +13,4 @@ export default function () {
       return translation.value;
     };
   });
-}
+});
