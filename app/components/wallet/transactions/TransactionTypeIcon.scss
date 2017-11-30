@@ -1,0 +1,42 @@
+.transactionTypeIconWrapper {
+  align-items: center;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  height: 44px;
+  justify-content: center;
+  opacity: 0.8;
+  width: 44px;
+
+  &.expend {
+    background: var(--theme-transactions-icon-type-expend-background-color);
+  }
+
+  &.income {
+    background: var(--theme-transactions-icon-type-income-background-color);
+  }
+
+  &.exchange {
+    background: var(--theme-transactions-icon-type-exchange-background-color);
+  }
+
+  &.failed {
+    background: var(--theme-transactions-icon-type-failed-background-color);
+    .transactionTypeIcon > svg {
+      height: 16px;
+      width: 22px;
+    }
+  }
+}
+
+.transactionTypeIcon {
+  display: flex;
+
+  & > svg {
+    height: 19px;
+    width: 23px;
+    path {
+      fill: var(--theme-icon-transaction-type-color);
+    }
+  }
+}

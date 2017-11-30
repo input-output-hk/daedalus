@@ -5,13 +5,12 @@ import TermsOfUseSettings from '../../../components/settings/categories/TermsOfU
 import type { InjectedProps } from '../../../types/injectedPropsType';
 
 @inject('stores') @observer
-export default class TermsOfUseSettingsPage extends Component {
+export default class TermsOfUseSettingsPage extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   render() {
-    const { termsOfUse } = this.props.stores.app;
+    const { termsOfUse } = this.props.stores.profile;
     return (
       <TermsOfUseSettings localizedTermsOfUse={termsOfUse} />
     );

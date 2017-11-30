@@ -3,8 +3,9 @@ import { observable, action, computed, runInAction } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
-import { Logger } from '../lib/logger';
-import type { GetSyncProgressResponse } from '../api';
+import { Logger } from '../utils/logging';
+import type { GetSyncProgressResponse } from '../api/common';
+import environment from '../environment';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedDifficulties = null;
@@ -31,7 +32,8 @@ export default class NetworkStatusStore extends Store {
   @observable networkDifficulty = 0;
   @observable isLoadingWallets = true;
   @observable syncProgressRequest: Request<GetSyncProgressResponse> = new Request(
-    this.api.getSyncProgress
+    // Use the sync progress for target API
+    this.api[environment.API].getSyncProgress
   );
   @observable _localDifficultyStartedWith = null;
 
@@ -61,13 +63,13 @@ export default class NetworkStatusStore extends Store {
 
   @computed get isConnecting(): boolean {
     // until we start receiving network difficulty messages we are not connected to node and
-    // we should be on the blue connecting screen instead of displaying "Loading wallet data"
+    // we should be on the blue connecting screen instead of displaying 'Loading wallet data'
     return !this.isConnected || this.networkDifficulty <= 1;
   }
 
   @computed get hasBlockSyncingStarted(): boolean {
     // until we start receiving network difficulty messages we are not connected to node and
-    // we should be on the blue connecting screen instead of displaying "Loading wallet data"
+    // we should be on the blue connecting screen instead of displaying 'Loading wallet data'
     return this.networkDifficulty >= 1;
   }
 
@@ -138,7 +140,7 @@ export default class NetworkStatusStore extends Store {
           this._startupStage = STARTUP_STAGES.SYNCING;
         }
         // If we haven't set local difficulty before, mark the first
-        // result as "start" difficulty for the sync progress
+        // result as 'start' difficulty for the sync progress
         if (this._localDifficultyStartedWith === null) {
           this._localDifficultyStartedWith = difficulty.localDifficulty;
           Logger.debug('Initial difficulty: ' + JSON.stringify(difficulty));
@@ -152,7 +154,7 @@ export default class NetworkStatusStore extends Store {
     } catch (error) {
       // If the sync progress request fails, switch to disconnected state
       runInAction('update connected status', () => (this.isConnected = false));
-      Logger.debug('Connection Lost. Reconnecting …');
+      Logger.debug('Connection Lost. Reconnecting...');
     }
   };
 
@@ -162,7 +164,8 @@ export default class NetworkStatusStore extends Store {
   }
 
   _redirectToWalletAfterSync = () => {
-    const { app, wallets } = this.stores;
+    const { app } = this.stores;
+    const { wallets } = this.stores[environment.API];
     if (this._startupStage === STARTUP_STAGES.SYNCING && this.isSynced) {
       Logger.info(`========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`);
       this._startupStage = STARTUP_STAGES.LOADING;

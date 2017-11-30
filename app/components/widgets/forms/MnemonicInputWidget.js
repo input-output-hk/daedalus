@@ -4,15 +4,15 @@ import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import styles from './MnemonicInputWidget.scss';
 
-@observer
-export default class MnemonicInputWidget extends Component {
+type Props = {
+  label: string,
+  tokens: Array<string>,
+  onTokenChanged: Function,
+  error: string,
+};
 
-  props: {
-    label: string,
-    tokens: Array<string>,
-    onTokenChanged: Function,
-    error: string,
-  };
+@observer
+export default class MnemonicInputWidget extends Component<Props> {
 
   render() {
     const { label, tokens, onTokenChanged, error } = this.props;

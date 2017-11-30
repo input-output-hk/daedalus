@@ -7,17 +7,17 @@ import TermsOfUseForm from '../../components/profile/terms-of-use/TermsOfUseForm
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
-export default class TermsOfUsePage extends Component {
+export default class TermsOfUsePage extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   onSubmit = () => {
     this.props.actions.profile.acceptTermsOfUse.trigger();
   };
 
   render() {
-    const { setTermsOfUseAcceptanceRequest, currentRoute, termsOfUse } = this.props.stores.app;
+    const { setTermsOfUseAcceptanceRequest, termsOfUse } = this.props.stores.profile;
+    const { currentRoute } = this.props.stores.app;
     const isSubmitting = setTermsOfUseAcceptanceRequest.isExecuting;
     const topbar = <TopBar currentRoute={currentRoute} />;
     return (

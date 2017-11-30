@@ -38,14 +38,23 @@ Changelog
 - Disable wallet import and export features for the mainnet ([PR 503](https://github.com/input-output-hk/daedalus/pull/503))
 - Correctly prevent max-window-size in electron ([PR 532](https://github.com/input-output-hk/daedalus/pull/532))
 - Make sure wallet import and restore in-progress notification is hidden once process is done ([PR 540](https://github.com/input-output-hk/daedalus/pull/540))
+- Fix broken translation files loading ([PR 559](https://github.com/input-output-hk/daedalus/pull/559))
+- Fix async wallet import/restore issues ([PR 562](https://github.com/input-output-hk/daedalus/pull/562))
 
 ### Chores
 
 - Update version in About dialog to 0.8.2 ([PR 496](https://github.com/input-output-hk/daedalus/pull/496))
 - Set Dark theme as default one for the mainnet ([PR 497](https://github.com/input-output-hk/daedalus/pull/497))
+- JS-Api integration ([PR 525](https://github.com/input-output-hk/daedalus/pull/525))
 - Only log errors to papertrail ([PR 509](https://github.com/input-output-hk/daedalus/pull/509))
 - Update MobX React Form to latest version ([PR 533](https://github.com/input-output-hk/daedalus/pull/533))
 - Update Electron, electron-devtools-installer, electron-packager and electron-rebuild to latest versions ([PR 541](https://github.com/input-output-hk/daedalus/pull/541))
+- Update flow-bin to version `0.59.0` ([PR 544](https://github.com/input-output-hk/daedalus/pull/544))
+- Cleanup and standardization of ETC Api calls ([PR 549](https://github.com/input-output-hk/daedalus/pull/549))
+- Unused vendor dependencies cleanup and DLL file optimization ([PR 555](https://github.com/input-output-hk/daedalus/pull/555))
+- Introduce `testReset` endpoint for ETC api ([PR 558](https://github.com/input-output-hk/daedalus/pull/558))
+- Update acceptance tests suite dependencies ([PR 561](https://github.com/input-output-hk/daedalus/pull/561))
+- Refactor Cardano type declarations to type folder ([PR 557](https://github.com/input-output-hk/daedalus/pull/557))
 
 ## 0.8.1
 

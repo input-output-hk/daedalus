@@ -6,10 +6,9 @@ import ExportPaperWalletMnemonicVerificationDialog from '../../../../components/
 import type { InjectedProps } from '../../../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
-export default class ExportPaperWalletCertificateDialogContainer extends Component {
+export default class ExportPaperWalletCertificateDialogContainer extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   onFinish = () => {
     this.onCancel();

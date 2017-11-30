@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import Select from 'react-polymorph/lib/components/Select';
 import SelectSkin from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { defineMessages, intlShape } from 'react-intl';
-import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './GeneralSettings.scss';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
@@ -18,16 +18,16 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class GeneralSettings extends Component {
+type Props = {
+  languages: Array<{ value: string, label: ReactIntlMessage }>,
+  currentLocale: string,
+  onSelectLanguage: Function,
+  isSubmitting: boolean,
+  error?: ?LocalizableError,
+};
 
-  props: {
-    languages: Array<{ value: string, label: ReactIntlMessage }>,
-    currentLocale: string,
-    onSelectLanguage: Function,
-    isSubmitting: boolean,
-    error?: ?LocalizableError,
-  };
+@observer
+export default class GeneralSettings extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

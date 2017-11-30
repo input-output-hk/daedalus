@@ -20,14 +20,14 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class SupportSettings extends Component {
+type Props = {
+  onSubmit: Function,
+  error?: ?LocalizableError,
+  sendLogs: boolean,
+};
 
-  props: {
-    onSubmit: Function,
-    error?: ?LocalizableError,
-    sendLogs: boolean,
-  };
+@observer
+export default class SupportSettings extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

@@ -7,24 +7,26 @@ import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironm
 import type { InjectedProps } from '../types/injectedPropsType';
 import environment from '../environment';
 
+type Props = InjectedProps;
+
 @inject('stores', 'actions') @observer
-export default class TopBarContainer extends Component {
+export default class TopBarContainer extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, networkStatus, app } = stores;
+    const { sidebar, app, networkStatus } = stores;
     const isMainnet = environment.isMainnet();
+    const isAdaApi = environment.isAdaApi();
     const testnetLabel = (
-      !isMainnet ? <WalletTestEnvironmentLabel /> : null
+      isAdaApi && !isMainnet ? <WalletTestEnvironmentLabel /> : null
     );
 
     return (
       <TopBar
         onToggleSidebar={actions.sidebar.toggleSubMenus.trigger}
-        activeWallet={stores.wallets.active}
+        activeWallet={stores[environment.API].wallets.active}
         currentRoute={app.currentRoute}
         showSubMenus={sidebar.isShowingSubMenus}
       >

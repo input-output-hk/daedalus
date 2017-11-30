@@ -3,16 +3,19 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import DeleteWalletConfirmationDialog from '../../../components/wallet/settings/DeleteWalletConfirmationDialog';
 import type { InjectedProps } from '../../../types/injectedPropsType';
+import environment from '../../../environment';
+
+type Props = InjectedProps;
 
 @inject('actions', 'stores') @observer
-export default class DeleteWalletDialogContainer extends Component {
+export default class DeleteWalletDialogContainer extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   render() {
     const { actions } = this.props;
-    const { wallets, uiDialogs } = this.props.stores;
+    const { uiDialogs } = this.props.stores;
+    const { wallets } = this.props.stores[environment.API];
     const dialogData = uiDialogs.dataForActiveDialog;
     const { updateDataForActiveDialog } = actions.dialogs;
     const activeWallet = wallets.active;
@@ -31,7 +34,7 @@ export default class DeleteWalletDialogContainer extends Component {
           data: { isBackupNoticeAccepted: true }
         })}
         onContinue={() => {
-          actions.wallets.deleteWallet.trigger({ walletId: activeWallet.id });
+          actions[environment.API].wallets.deleteWallet.trigger({ walletId: activeWallet.id });
         }}
         onCancel={() => {
           actions.dialogs.closeActiveDialog.trigger();

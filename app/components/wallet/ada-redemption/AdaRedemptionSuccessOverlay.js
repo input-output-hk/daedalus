@@ -23,13 +23,13 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class AdaRedemptionSuccessOverlay extends Component {
+type Props = {
+  amount: number,
+  onClose: Function,
+};
 
-  props: {
-    amount: number,
-    onClose: Function,
-  };
+@observer
+export default class AdaRedemptionSuccessOverlay extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired

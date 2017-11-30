@@ -7,7 +7,7 @@ import Button from 'react-polymorph/lib/components/Button';
 import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SelectSkin from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { defineMessages, intlShape } from 'react-intl';
-import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './LanguageSelectionForm.scss';
 import type { ReactIntlMessage } from '../../../types/i18nTypes';
@@ -25,15 +25,15 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class LanguageSelectionForm extends Component {
+type Props = {
+  languages: Array<{ value: string, label: ReactIntlMessage }>,
+  onSubmit: Function,
+  isSubmitting: boolean,
+  error?: ?LocalizableError,
+};
 
-  props: {
-    languages: Array<{ value: string, label: ReactIntlMessage }>,
-    onSubmit: Function,
-    isSubmitting: boolean,
-    error?: ?LocalizableError,
-  };
+@observer
+export default class LanguageSelectionForm extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

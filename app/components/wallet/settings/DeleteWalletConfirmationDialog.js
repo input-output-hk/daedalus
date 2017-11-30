@@ -42,20 +42,20 @@ const messages = defineMessages({
   }
 });
 
-@observer
-export default class DeleteWalletConfirmationDialog extends Component {
+type Props = {
+  walletName: string,
+  countdownFn: Function,
+  isBackupNoticeAccepted: boolean,
+  confirmationValue: string,
+  onAcceptBackupNotice: Function,
+  onContinue: Function,
+  onCancel: Function,
+  onConfirmationValueChange: Function,
+  isSubmitting: boolean,
+};
 
-  props: {
-    walletName: string,
-    countdownFn: Function,
-    isBackupNoticeAccepted: boolean,
-    confirmationValue: string,
-    onAcceptBackupNotice: Function,
-    onContinue: Function,
-    onCancel: Function,
-    onConfirmationValueChange: Function,
-    isSubmitting: boolean,
-  };
+@observer
+export default class DeleteWalletConfirmationDialog extends Component<Props> {
 
   static defaultProps = {
     isBackupNoticeAccepted: false,

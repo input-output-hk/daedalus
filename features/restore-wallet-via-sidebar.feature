@@ -1,9 +1,7 @@
 Feature: Add Wallet via Sidebar
 
   Background:
-    Given I have selected English language
-    And I have accepted "Terms of use"
-    And I agree to send logs to remote server
+    Given I have completed the basic setup
     And I have the following wallets:
       | name        |
       | Test wallet |
@@ -19,9 +17,9 @@ Feature: Add Wallet via Sidebar
     | recoveryPhrase                                                            |
     | marriage glide need gold actress grant judge eager spawn plug sister whip |
     And I submit the restore wallet dialog
-    Then I should not see the restore wallet dialog anymore
-    And I should see the restore status notification while restore is running
-    And I should not see the restore status notification one restore is finished
+    Then I should see the restore status notification while restore is running
+    And I should not see the restore wallet dialog anymore
+    And I should not see the restore status notification once restore is finished
     And I should have newly created "Restored wallet" wallet loaded
 
   Scenario: Successfully Restoring a Wallet with spending password
@@ -39,7 +37,7 @@ Feature: Add Wallet via Sidebar
     | password  | repeatedPassword |
     | Secret123 | Secret123        |
     And I submit the restore wallet dialog
-    Then I should not see the restore wallet dialog anymore
-    And I should see the restore status notification while restore is running
-    And I should not see the restore status notification one restore is finished
+    Then I should see the restore status notification while restore is running
+    And I should not see the restore wallet dialog anymore
+    And I should not see the restore status notification once restore is finished
     And I should have newly created "Restored wallet" wallet loaded

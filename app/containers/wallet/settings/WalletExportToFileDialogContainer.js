@@ -6,12 +6,12 @@ import WalletExportDialog from '../../../components/wallet/settings/export-to-fi
 import type { OnSubmitParams } from '../../../components/wallet/settings/export-to-file/WalletExportToFileDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
+type Props = InjectedDialogContainerProps;
+
 @inject('stores', 'actions') @observer
-export default class WalletExportToFileDialogContainer extends Component {
+export default class WalletExportToFileDialogContainer extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
-
-  props: InjectedDialogContainerProps;
 
   onSubmit = (params: OnSubmitParams) => {
     const filePath = remote.dialog.showSaveDialog({
@@ -20,9 +20,9 @@ export default class WalletExportToFileDialogContainer extends Component {
       ]
     });
     const { stores, actions } = this.props;
-    const activeWallet = stores.wallets.active;
+    const activeWallet = stores.ada.wallets.active;
     if (!filePath || !activeWallet) return;
-    actions.walletSettings.exportToFile.trigger({
+    actions.ada.walletSettings.exportToFile.trigger({
       walletId: activeWallet.id,
       filePath,
       ...params
@@ -31,11 +31,11 @@ export default class WalletExportToFileDialogContainer extends Component {
 
   onCancel = () => {
     this.props.actions.dialogs.closeActiveDialog.trigger();
-    this.props.stores.walletSettings.exportWalletToFileRequest.reset();
+    this.props.stores.ada.walletSettings.exportWalletToFileRequest.reset();
   };
 
   render() {
-    const { wallets, walletSettings } = this.props.stores;
+    const { wallets, walletSettings } = this.props.stores.ada;
     const activeWallet = wallets.active;
     const { exportWalletToFileRequest } = walletSettings;
 

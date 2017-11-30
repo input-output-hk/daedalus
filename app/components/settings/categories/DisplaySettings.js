@@ -32,13 +32,13 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class DisplaySettings extends Component {
+type Props = {
+  theme: string,
+  selectTheme: Function,
+};
 
-  props: {
-    theme: string,
-    selectTheme: Function,
-  };
+@observer
+export default class DisplaySettings extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

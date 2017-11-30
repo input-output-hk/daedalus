@@ -116,6 +116,11 @@ export default defineMessages({
     defaultMessage: '!!!Ada',
     description: 'Name for "Ada" unit.'
   },
+  unitEtc: {
+    id: 'global.unit.etc',
+    defaultMessage: '!!!Etc',
+    description: 'Name for "Etc" unit.'
+  },
   recoveryPhraseDialogTitle: {
     id: 'wallet.backup.recovery.phrase.dialog.title',
     defaultMessage: '!!!Recovery phrase',
@@ -132,3 +137,20 @@ export default defineMessages({
     description: 'Placeholder for the "Password" inputs in the create wallet dialog.',
   },
 });
+
+export const environmentSpecificMessages = {
+  ada: defineMessages({
+    currency: {
+      id: 'environment.currency.ada',
+      defaultMessage: '!!!Ada',
+      description: 'Name for "Ada" unit.'
+    },
+  }),
+  etc: defineMessages({
+    currency: {
+      id: 'environment.currency.etc',
+      defaultMessage: '!!!Etc',
+      description: 'Name for "Ada" unit.'
+    },
+  }),
+};

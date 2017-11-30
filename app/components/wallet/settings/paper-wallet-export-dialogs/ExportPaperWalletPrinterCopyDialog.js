@@ -28,16 +28,16 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class ExportPaperWalletPrinterCopyDialog extends Component {
+type Props = {
+  onContinue: Function,
+  onClose: Function,
+  onBack: Function,
+  onTogglePrinterCopyNotice: Function,
+  isPrinterCopyNoticeAccepted: boolean,
+};
 
-  props: {
-    onContinue: Function,
-    onClose: Function,
-    onBack: Function,
-    onTogglePrinterCopyNotice: Function,
-    isPrinterCopyNoticeAccepted: boolean,
-  };
+@observer
+export default class ExportPaperWalletPrinterCopyDialog extends Component<Props> {
 
   static defaultProps = {
     isPrinterCopyNoticeAccepted: false,

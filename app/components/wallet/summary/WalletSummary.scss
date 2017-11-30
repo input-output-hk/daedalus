@@ -26,7 +26,14 @@
   line-height: 1.0;
   color: var(--theme-bordered-box-text-color);
   margin-bottom: 11px;
-  & > .adaSymbolBig {
+  word-break: break-all;
+
+  & > .decimal {
+    font-family: var(--font-medium);
+    font-size: 18px;
+  }
+
+  & > .currencySymbolBig {
     display: inline-block;
     margin-left: 10px;
     & > svg {
@@ -41,7 +48,7 @@
 
 .pendingConfirmation {
   @extend %smallText;
-  & > .adaSymbolSmallest {
+  & > .currencySymbolSmallest {
     display: inline-block;
     margin-left: 1px;
     & > svg {

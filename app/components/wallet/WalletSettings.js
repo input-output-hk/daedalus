@@ -14,21 +14,23 @@ import DeleteWalletConfirmationDialog from './settings/DeleteWalletConfirmationD
 import DeleteWalletDialogContainer from '../../containers/wallet/dialogs/DeleteWalletDialogContainer';
 import WalletExportDialog from './settings/export-to-file/WalletExportToFileDialog';
 import WalletExportToFileDialogContainer from '../../containers/wallet/settings/WalletExportToFileDialogContainer';
-import ExportPaperWalletPrinterCopyDialog from './settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog';
-import ExportPaperWalletPrinterCopyDialogContainer from '../../containers/wallet/dialogs/paper-wallet-export/ExportPaperWalletPrinterCopyDialogContainer';
-import ExportPaperWalletMnemonicDialog from './settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog';
-import ExportPaperWalletMnemonicDialogContainer from '../../containers/wallet/dialogs/paper-wallet-export/ExportPaperWalletMnemonicDialogContainer';
-import ExportPaperWalletMnemonicVerificationDialog from './settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog';
-import ExportPaperWalletMnemonicVerificationDialogContainer from '../../containers/wallet/dialogs/paper-wallet-export/ExportPaperWalletMnemonicVerificationDialogContainer';
-import ExportPaperWalletCertificateDialog from './settings/paper-wallet-export-dialogs/ExportPaperWalletCertificateDialog';
-import ExportPaperWalletCertificateDialogContainer from '../../containers/wallet/dialogs/paper-wallet-export/ExportPaperWalletCertificateDialogContainer';
+/* eslint-disable max-len */
+// import ExportPaperWalletPrinterCopyDialog from './settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog';
+// import ExportPaperWalletPrinterCopyDialogContainer from '../../containers/wallet/dialogs/paper-wallet-export/ExportPaperWalletPrinterCopyDialogContainer';
+// import ExportPaperWalletMnemonicDialog from './settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog';
+// import ExportPaperWalletMnemonicDialogContainer from '../../containers/wallet/dialogs/paper-wallet-export/ExportPaperWalletMnemonicDialogContainer';
+// import ExportPaperWalletMnemonicVerificationDialog from './settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog';
+// import ExportPaperWalletMnemonicVerificationDialogContainer from '../../containers/wallet/dialogs/paper-wallet-export/ExportPaperWalletMnemonicVerificationDialogContainer';
+// import ExportPaperWalletCertificateDialog from './settings/paper-wallet-export-dialogs/ExportPaperWalletCertificateDialog';
+// import ExportPaperWalletCertificateDialogContainer from '../../containers/wallet/dialogs/paper-wallet-export/ExportPaperWalletCertificateDialogContainer';
+/* eslint-disable max-len */
 import type { ReactIntlMessage } from '../../types/i18nTypes';
 import ChangeWalletPasswordDialog from './settings/ChangeWalletPasswordDialog';
 import ChangeWalletPasswordDialogContainer from '../../containers/wallet/dialogs/ChangeWalletPasswordDialogContainer';
 import globalMessages from '../../i18n/global-messages';
 import styles from './WalletSettings.scss';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   name: {
     id: 'wallet.settings.name.label',
     defaultMessage: '!!!Name',
@@ -61,28 +63,28 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class WalletSettings extends Component {
+type Props = {
+  assuranceLevels: Array<{ value: string, label: ReactIntlMessage }>,
+  walletName: string,
+  walletAssurance: string,
+  isWalletPasswordSet: boolean,
+  walletPasswordUpdateDate: ?Date,
+  error?: ?LocalizableError,
+  openDialogAction: Function,
+  isDialogOpen: Function,
+  onFieldValueChange: Function,
+  onStartEditing: Function,
+  onStopEditing: Function,
+  onCancelEditing: Function,
+  nameValidator: Function,
+  activeField: ?string,
+  isSubmitting: boolean,
+  isInvalid: boolean,
+  lastUpdatedField: ?string,
+};
 
-  props: {
-    assuranceLevels: Array<{ value: string, label: ReactIntlMessage }>,
-    walletName: string,
-    walletAssurance: string,
-    isWalletPasswordSet: boolean,
-    walletPasswordUpdateDate: ?Date,
-    error?: ?LocalizableError,
-    openDialogAction: Function,
-    isDialogOpen: Function,
-    onFieldValueChange: Function,
-    onStartEditing: Function,
-    onStopEditing: Function,
-    onCancelEditing: Function,
-    nameValidator: Function,
-    activeField: ?string,
-    isSubmitting: boolean,
-    isInvalid: boolean,
-    lastUpdatedField: ?string,
-  };
+@observer
+export default class WalletSettings extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -211,21 +213,23 @@ export default class WalletSettings extends Component {
           <WalletExportToFileDialogContainer />
         ) : null}
 
-        {isDialogOpen(ExportPaperWalletPrinterCopyDialog) ? (
-          <ExportPaperWalletPrinterCopyDialogContainer />
-        ) : null}
+        {/*
+          {isDialogOpen(ExportPaperWalletPrinterCopyDialog) ? (
+            <ExportPaperWalletPrinterCopyDialogContainer />
+          ) : null}
 
-        {isDialogOpen(ExportPaperWalletMnemonicDialog) ? (
-          <ExportPaperWalletMnemonicDialogContainer />
-        ) : null}
+          {isDialogOpen(ExportPaperWalletMnemonicDialog) ? (
+            <ExportPaperWalletMnemonicDialogContainer />
+          ) : null}
 
-        {isDialogOpen(ExportPaperWalletMnemonicVerificationDialog) ? (
-          <ExportPaperWalletMnemonicVerificationDialogContainer />
-        ) : null}
+          {isDialogOpen(ExportPaperWalletMnemonicVerificationDialog) ? (
+            <ExportPaperWalletMnemonicVerificationDialogContainer />
+          ) : null}
 
-        {isDialogOpen(ExportPaperWalletCertificateDialog) ? (
-          <ExportPaperWalletCertificateDialogContainer />
-        ) : null}
+          {isDialogOpen(ExportPaperWalletCertificateDialog) ? (
+            <ExportPaperWalletCertificateDialogContainer />
+          ) : null}
+        */}
 
       </div>
     );

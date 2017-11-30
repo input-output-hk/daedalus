@@ -9,19 +9,21 @@ import NodeUpdatePage from './notifications/NodeUpdatePage';
 import WalletAddPage from './wallet/WalletAddPage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 
+type Props = InjectedContainerProps;
+
 @inject('stores', 'actions') @observer
-export default class MainLayout extends Component {
+export default class MainLayout extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
-  props: InjectedContainerProps;
 
   render() {
     const { actions, stores } = this.props;
-    const { nodeUpdate, sidebar, wallets } = stores;
+    const { sidebar } = stores;
+    const wallets = stores.ada.wallets;
     const activeWallet = wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
-    const isNodeUpdateAvailable = nodeUpdate.isUpdateAvailable;
-    const isUpdatePostponed = nodeUpdate.isUpdatePostponed;
+    const isNodeUpdateAvailable = this.props.stores.ada.nodeUpdate.isUpdateAvailable;
+    const isUpdatePostponed = this.props.stores.ada.nodeUpdate.isUpdatePostponed;
     const { isImportActive, isRestoreActive } = wallets;
 
     const sidebarMenus = {

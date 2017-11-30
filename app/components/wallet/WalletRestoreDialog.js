@@ -10,10 +10,10 @@ import Autocomplete from 'react-polymorph/lib/components/Autocomplete';
 import SimpleAutocompleteSkin from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { defineMessages, intlShape } from 'react-intl';
-import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import Dialog from '../widgets/Dialog';
-import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../lib/validations';
+import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../utils/validations';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletRestoreDialog.scss';
@@ -88,20 +88,24 @@ const messages = defineMessages({
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
+type Props = {
+  onSubmit: Function,
+  onCancel: Function,
+  isSubmitting: boolean,
+  mnemonicValidator: Function,
+  error?: ?LocalizableError,
+  suggestedMnemonics: Array<string>,
+};
+
+type State = {
+  createPassword: boolean,
+};
+
 @observer
-export default class WalletRestoreDialog extends Component {
+export default class WalletRestoreDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired
-  };
-
-  props: {
-    onSubmit: Function,
-    onCancel: Function,
-    isSubmitting: boolean,
-    mnemonicValidator: Function,
-    error?: ?LocalizableError,
-    suggestedMnemonics: Array<string>,
   };
 
   state = {

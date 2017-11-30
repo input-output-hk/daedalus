@@ -42,6 +42,7 @@ export default class Request<Result, Error> {
 
     // Issue api call & save it as promise that is handled to update the results of the operation
     this.promise = new Promise((resolve, reject) => {
+      if (!this._method) reject('Request method not defined');
       this._method(...callArgs)
         .then((result) => {
           setTimeout(action('Request::execute/then', () => {
@@ -93,7 +94,7 @@ export default class Request<Result, Error> {
     return this.promise.then(...args);
   }
 
-  catch(...args: Array<any>): Promise<Error> {
+  catch(...args: Array<any>): Promise<any> {
     if (!this.promise) throw new NotExecutedYetError();
     return this.promise.catch(...args);
   }
@@ -125,6 +126,7 @@ export default class Request<Result, Error> {
     this.error = null;
     this.isError = false;
     this.isExecuting = false;
+    this.wasExecuted = false;
     this._isWaitingForResponse = false;
     this._currentApiCall = null;
     return this;

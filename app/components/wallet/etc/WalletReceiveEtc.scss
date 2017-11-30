@@ -1,0 +1,70 @@
+.component {
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: overlay;
+  padding: 20px;
+  &::-webkit-scrollbar-button {
+    height: 7px;
+    display: block;
+  }
+}
+
+.copyIcon {
+  cursor: pointer;
+  margin-left: 6px;
+  object-fit: contain;
+  & > svg {
+    height: 14.5px;
+    width: 11.5px;
+    path {
+      fill: var(--theme-icon-copy-address-color);
+    }
+  }
+}
+
+.qrCodeAndInstructions {
+  display: flex;
+  flex-direction: row;
+  margin: 10px 0;
+
+  .qrCode {
+    align-items: center;
+    display: flex;
+    margin-right: 20px;
+
+    canvas {
+      border: 4px solid var(--theme-receive-qr-code-background-color);
+      box-sizing: content-box;
+    }
+  }
+
+  .instructions {
+    color: var(--theme-bordered-box-text-color);
+    font-family: var(--font-regular);
+    font-size: 14px;
+    line-height: 19px;
+
+    .hash {
+      font-size: 19px;
+      font-family: var(--font-medium);
+      line-height: 23px;
+      margin-bottom: 6px;
+      word-break: break-all;
+    }
+
+    .usedHash {
+      opacity: 0.4;
+    }
+
+    .hashLabel {
+      margin-bottom: 6px;
+      opacity: 0.5;
+    }
+
+    .instructionsText {
+      font-size: 16px;
+      line-height: 22px;
+      word-break: break-word;
+    }
+  }
+}

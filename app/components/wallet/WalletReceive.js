@@ -10,7 +10,7 @@ import Button from 'react-polymorph/lib/components/Button';
 import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
-import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import WalletAddress from '../../domain/WalletAddress';
@@ -63,20 +63,24 @@ const messages = defineMessages({
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
-@observer
-export default class WalletReceive extends Component {
+type Props = {
+  walletAddress: string,
+  isWalletAddressUsed: boolean,
+  walletAddresses: Array<WalletAddress>,
+  onGenerateAddress: Function,
+  onCopyAddress: Function,
+  isSidebarExpanded: boolean,
+  walletHasPassword: boolean,
+  isSubmitting: boolean,
+  error?: ?LocalizableError,
+};
 
-  props: {
-    walletAddress: string,
-    isWalletAddressUsed: boolean,
-    walletAddresses: Array<WalletAddress>,
-    onGenerateAddress: Function,
-    onCopyAddress: Function,
-    isSidebarExpanded: boolean,
-    walletHasPassword: boolean,
-    isSubmitting: boolean,
-    error?: ?LocalizableError,
-  };
+type State = {
+  showUsed: boolean,
+};
+
+@observer
+export default class WalletReceive extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

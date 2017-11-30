@@ -6,12 +6,14 @@ import WalletCreateDialog from '../../../components/wallet/WalletCreateDialog';
 import WalletRestoreDialog from '../../../components/wallet/WalletRestoreDialog';
 import WalletFileImportDialog from '../../../components/wallet/file-import/WalletFileImportDialog';
 import type { InjectedProps } from '../../../types/injectedPropsType';
+import environment from '../../../environment';
+
+type Props = InjectedProps
 
 @inject('stores', 'actions') @observer
-export default class WalletAddDialogContainer extends Component {
+export default class WalletAddDialogContainer extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
   render() {
     const { actions, stores } = this.props;
     return (
@@ -26,7 +28,7 @@ export default class WalletAddDialogContainer extends Component {
           dialog: WalletFileImportDialog,
         })}
         onCancel={actions.dialogs.closeActiveDialog.trigger}
-        canClose={stores.wallets.hasAnyWallets}
+        canClose={stores[environment.API].wallets.hasAnyWallets}
       />
     );
   }

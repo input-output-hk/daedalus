@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 import InputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import styles from './AmountInputSkin.scss';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   feesLabel: {
     id: 'wallet.amountInput.feesLabel',
     defaultMessage: '!!!+ {amount} of fees',
@@ -12,14 +12,14 @@ const messages = defineMessages({
   },
 });
 
-export default class AmountInputSkin extends Component {
+type Props = {
+  currency: string,
+  fees: BigNumber,
+  total: BigNumber,
+  error: boolean,
+};
 
-  props: {
-    currency: string,
-    fees: BigNumber,
-    total: BigNumber,
-    error: boolean,
-  };
+export default class AmountInputSkin extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

@@ -4,13 +4,12 @@ import { observer } from 'mobx-react';
 import ReactMarkdown from 'react-markdown';
 import styles from './TermsOfUseText.scss';
 
+type Props = {
+  localizedTermsOfUse: string,
+};
+
 @observer
-export default class TermsOfUseText extends Component {
-
-  props: {
-    localizedTermsOfUse: string,
-  };
-
+export default class TermsOfUseText extends Component<Props> {
   render() {
     return (
       <div className={styles.terms}>

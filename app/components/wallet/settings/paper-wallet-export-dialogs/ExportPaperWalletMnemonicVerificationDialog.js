@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import TextArea from 'react-polymorph/lib/components/TextArea';
 import SimpleTextAreaSkin from 'react-polymorph/lib/skins/simple/TextAreaSkin';
 import { defineMessages, intlShape } from 'react-intl';
-import ReactToolboxMobxForm from '../../../../lib/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import DialogBackButton from '../../../widgets/DialogBackButton';
 import Dialog from '../../../widgets/Dialog';
@@ -43,17 +43,21 @@ const messages = defineMessages({
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
-@observer
-export default class ExportPaperWalletMnemonicVerificationDialog extends Component {
+type Props = {
+  onContinue: Function,
+  onClose: Function,
+  onBack: Function,
+  isSubmitting: boolean,
+  walletExportMnemonic: string,
+  error: ?LocalizableError,
+};
 
-  props: {
-    onContinue: Function,
-    onClose: Function,
-    onBack: Function,
-    isSubmitting: boolean,
-    walletExportMnemonic: string,
-    error: ?LocalizableError,
-  };
+type State = {
+  isValidRecoveryPhrase: boolean,
+};
+
+@observer
+export default class ExportPaperWalletMnemonicVerificationDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -61,7 +65,7 @@ export default class ExportPaperWalletMnemonicVerificationDialog extends Compone
 
   state = {
     isValidRecoveryPhrase: false,
-  }
+  };
 
   form = new ReactToolboxMobxForm({
     fields: {
@@ -90,7 +94,7 @@ export default class ExportPaperWalletMnemonicVerificationDialog extends Compone
     const isValidRecoveryPhrase = value === this.props.walletExportMnemonic;
     this.setState({ isValidRecoveryPhrase });
     return isValidRecoveryPhrase;
-  }
+  };
 
   submit = () => {
     this.form.submit({

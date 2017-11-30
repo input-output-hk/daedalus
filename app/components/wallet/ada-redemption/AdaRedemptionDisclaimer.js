@@ -34,12 +34,16 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class AdaRedemptionDisclaimer extends Component {
+type Props = {
+  onSubmit: Function,
+};
 
-  props: {
-    onSubmit: Function,
-  };
+type State = {
+  isAccepted: boolean,
+};
+
+@observer
+export default class AdaRedemptionDisclaimer extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

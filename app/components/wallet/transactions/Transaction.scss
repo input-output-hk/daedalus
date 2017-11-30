@@ -1,0 +1,187 @@
+.component {
+  color: var(--theme-transactions-list-item-details-color);
+
+  &.failed {
+    .title, .amount, .details {
+      color: var(--theme-transactions-state-failed-text-color);
+    }
+    .currencySymbol {
+      & > svg > g > g {
+        stroke: var(--theme-transactions-state-failed-text-color);
+      }
+    }
+  }
+}
+
+// ========= TOGGLER =========
+
+.toggler {
+  cursor: pointer;
+  display: flex;
+  padding: 20px;
+  -webkit-user-select: none;
+}
+
+.togglerContent {
+  flex: 1;
+  margin-left: 20px;
+  padding-top: 1px;
+}
+
+.header,
+.details {
+  color: var(--theme-transactions-list-item-details-color);
+  display: flex;
+  width: 100%;
+}
+
+.title, .amount {
+  color: var(--theme-transactions-list-item-details-color);
+  font-size: 16px;
+  font-family: var(--font-semibold);
+  height: 22px;
+  line-height: 1.38;
+  text-align: left;
+}
+
+.amount {
+  margin-left: auto;
+  font-family: var(--font-medium);
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.pendingLabel, .failedLabel, .low, .medium, .high {
+  border-radius: 3px;
+  color: var(--theme-transactions-priority-color);
+  display: inline-block;
+  font-family: var(--font-bold);
+  font-size: 8px;
+  line-height: 16px;
+  margin-left: auto;
+  margin-top: 3px;
+  padding: 0 9px;
+  text-transform: uppercase;
+}
+
+.pendingLabel {
+  :global {
+    @keyframes pending-label-animation {
+      0% {
+        background-position: 0 0;
+      }
+      100% {
+        background-position: 50px 50px;
+      }
+    }
+  }
+
+  background-color: var(--theme-transactions-state-pending-background-color);
+  background-image:
+    linear-gradient(
+        -45deg,
+        var(--theme-transactions-state-pending-stripes-color) 25%,
+        transparent 25%,
+        transparent 50%,
+        var(--theme-transactions-state-pending-stripes-color) 50%,
+        var(--theme-transactions-state-pending-stripes-color) 75%,
+        transparent 75%,
+        transparent
+    );
+  background-size:50px 50px;
+  animation: pending-label-animation 2s linear infinite;
+  overflow: hidden;
+}
+
+.failedLabel {
+  background-color: var(--theme-transactions-state-failed-background-color);
+}
+
+.low {
+  background-color: var(--theme-transactions-priority-low-background-color);
+}
+
+.medium {
+  background-color: var(--theme-transactions-priority-medium-background-color);
+}
+
+.high {
+  background-color: var(--theme-transactions-priority-heigh-background-color);
+}
+
+.assuranceLevel {
+  text-transform: capitalize;
+}
+
+.type {
+  font-family: var(--font-light);
+  font-size: 14px;
+  margin-top: 3px;
+}
+
+// ========= DETAILS =========
+
+.content {
+  border-bottom: 1px solid var(--theme-separation-border-color);
+  margin-left: 84px;
+  margin-right: 20px;
+}
+
+.last {
+  border: none;
+}
+
+.details {
+  height: auto;
+  * + h2,
+  * + .row {
+    margin-top: 20px;
+  }
+  h2 {
+    font-family: var(--font-medium);
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+  span {
+    font-family: var(--font-light);
+    font-size: 14px;
+    word-break: break-all;
+
+    &.address {
+      display: block;
+      line-height: 19px;
+    }
+  }
+}
+
+.closed {
+  max-height: 0;
+  overflow: hidden;
+  padding-bottom: 0;
+}
+
+.expanded {
+  max-height: 100%;
+  padding-bottom: 20px;
+}
+
+.conversion {
+  display: flex;
+}
+
+.conversionRate {
+  margin-left: 76px;
+}
+
+.currencySymbol {
+  display: inline-block;
+  margin-bottom: -1px;
+  margin-left: 4px;
+  & > svg {
+    width: 12px;
+    height: 12px;
+    & > g > g {
+      stroke: var(--theme-icon-transactions-ada-symbol-color);
+    }
+  }
+}

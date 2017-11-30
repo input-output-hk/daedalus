@@ -24,13 +24,23 @@
   color: var(--theme-syncing-text-color);
 }
 
-.cardanoLogo {
+.ada-logo {
   & > svg {
     display: block;
     left: calc(50% - (86px/2));
     position: absolute;
-    top: calc(50% - 135px/2 - 115px);
+    top: calc(50% - 224px);
     width: 86px;
+  }
+}
+
+.etc-logo {
+  & > svg {
+    display: block;
+    left: calc(50% - (48.5px/2));
+    position: absolute;
+    top: calc(50% - 224px);
+    width: 48.5px;
   }
 }
 
@@ -39,7 +49,7 @@
     display: block;
     left: calc(50% - (173px/2));
     position: absolute;
-    top: calc(50% - 135px/2);
+    top: calc(50% - 135px);
     width: 173px;
   }
 }
@@ -50,7 +60,7 @@
   }
 }
 
-.syncingLogo > svg path {
+.syncingLogo svg path {
   fill: var(--theme-icon-syncing-logo-color);
 }
 
