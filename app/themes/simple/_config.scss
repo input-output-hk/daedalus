@@ -11,17 +11,27 @@ $theme-font-bold: var(--font-bold);
 
 @import "~react-polymorph/lib/themes/simple/_theme";
 
+$autocomplete-bg-color: var(--theme-autocomplete-bg-color);
+$autocomplete-border: var(--theme-autocomplete-border);
+$autocomplete-border-focus-color: var(--theme-autocomplete-border-focus-color);
+$autocomplete-placeholder-color: var(--theme-autocomplete-placeholder-color);
+$autocomplete-search-color: var(--theme-autocomplete-search-color);
+$autocomplete-selected-word-text-color: var(--theme-autocomplete-selected-word-text-color);
+$autocomplete-selected-word-box-background-color: var(--theme-autocomplete-selected-word-box-background-color);
+$autocomplete-selected-words-font-family: $theme-font-regular;
+
 $modal-overlay-color: var(--theme-modal-overlay-background-color);
 $modal-bg: var(--theme-modal-background-color);
 
 $select-arrow-color: var(--theme-select-arrow-color);
 $select-arrow-focus-color: var(--theme-select-arrow-color-open);
 $select-input-border-focus-color: var(--theme-input-focus-border-color);
-$select-option-bg-color: var(--theme-select-background-color);
-$select-option-font-color: var(--theme-select-option-text-color);
-$select-option-highlight-color: var(--theme-select-option-highlight-color);
-$select-options-border-color: var(--theme-select-options-border-color);
-$select-options-shadow: var(--theme-select-options-shadow);
+
+$option-bg-color: var(--theme-select-background-color);
+$option-font-color: var(--theme-select-option-text-color);
+$option-highlight-color: var(--theme-select-option-highlight-color);
+$options-border-color: var(--theme-select-options-border-color);
+$options-shadow: var(--theme-select-options-shadow);
 
 $switch-on-accent-color: var(--theme-switch-background-color-checked);
 $switch-off-accent-color: var(--theme-switch-background-color-checked);

@@ -229,19 +229,29 @@ export default function () {
     return this.client.click('.WalletCreateDialog .primary');
   });
 
-  this.When(/^I submit the restore wallet dialog with the following inputs:$/, async function (table) {
-    const fields = table.hashes()[0];
-    await this.client.setValue('.WalletRestoreDialog .walletName input', fields.walletName);
-    await this.client.setValue('.WalletRestoreDialog .recoveryPhrase textarea', fields.recoveryPhrase);
-    return this.client.click('.WalletRestoreDialog .primary');
+  this.When(/^I enter wallet name "([^"]*)" in restore wallet dialog$/, async function (walletName) {
+    return this.client.setValue('.WalletRestoreDialog .walletName input', walletName);
   });
 
-  this.When(/^I submit the restore wallet with spending password dialog with the following inputs:$/, async function (table) {
+  this.When(/^I enter recovery phrase in restore wallet dialog:$/, async function (table) {
     const fields = table.hashes()[0];
-    await this.client.setValue('.WalletRestoreDialog .walletName input', fields.walletName);
-    await this.client.setValue('.WalletRestoreDialog .recoveryPhrase textarea', fields.recoveryPhrase);
+    const recoveryPhrase = fields.recoveryPhrase.split(' ');
+    for (let i = 0; i < recoveryPhrase.length; i++) {
+      const word = recoveryPhrase[i];
+      await this.client.setValue('.SimpleAutocomplete_autocompleteWrapper input', word);
+      await this.client.waitForVisible(`//li[contains(text(), '${word}')]`);
+      await this.waitAndClick(`//li[contains(text(), '${word}')]`);
+      await this.client.waitForVisible(`//span[contains(text(), '${word}')]`);
+    }
+  });
+
+  this.When(/^I enter wallet password in restore wallet dialog:$/, async function (table) {
+    const fields = table.hashes()[0];
     await this.client.setValue('.WalletRestoreDialog .walletPassword input', fields.password);
     await this.client.setValue('.WalletRestoreDialog .repeatedPassword input', fields.repeatedPassword);
+  });
+
+  this.When(/^I submit the restore wallet dialog$/, function () {
     return this.client.click('.WalletRestoreDialog .primary');
   });
 
@@ -323,6 +333,22 @@ export default function () {
 
   this.Then(/^I should not see the restore wallet dialog anymore$/, function () {
     return this.client.waitForVisible('.WalletRestoreDialog', null, true);
+  });
+
+  this.Then(/^I should see the import status notification while import is running$/, async function () {
+    await this.client.waitForVisible('.ActiveImportNotification');
+  });
+
+  this.Then(/^I should not see the import status notification one import is finished$/, async function () {
+    await this.client.waitForVisible('.ActiveImportNotification', null, true);
+  });
+
+  this.Then(/^I should see the restore status notification while restore is running$/, async function () {
+    await this.client.waitForVisible('.ActiveRestoreNotification');
+  });
+
+  this.Then(/^I should not see the restore status notification one restore is finished$/, async function () {
+    await this.client.waitForVisible('.ActiveRestoreNotification', null, true);
   });
 
   this.Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function (walletName) {

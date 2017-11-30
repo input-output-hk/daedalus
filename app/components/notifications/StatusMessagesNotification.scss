@@ -1,0 +1,43 @@
+.component {
+  background-color: var(--theme-node-update-background-color);
+  padding: 20px 40px;
+}
+
+.message {
+  display: flex;
+
+  & + .message {
+    border-top: 1px solid var(--theme-bordered-box-border-color);
+    margin-top: 20px;
+    padding-top: 20px;
+  }
+
+  .text {
+    color: var(--theme-node-update-title-color);
+    flex: 1;
+    flex-grow: 1;
+    font-family: var(--font-medium);
+    font-size: 16px;
+    height: 22px;
+    line-height: 1.5;
+    margin-right: 8px;
+  }
+
+  .icon {
+    flex-shrink: 0;
+    height: 22px;
+    width: 22px;
+    & > svg {
+      height: inherit;
+      width: inherit;
+      path {
+        fill: var(--theme-icon-node-update-notification-arrow-color);
+      }
+    }
+  }
+
+  .icon :global {
+    animation: loading-spin 1.5s linear;
+    animation-iteration-count: infinite;
+  }
+}

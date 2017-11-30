@@ -37,6 +37,18 @@ export default {
   '--theme-ada-redemption-disclaimer-checkbox-label-color': '#fafbfc',
   '--theme-ada-redemption-disclaimer-button-border-color': '#fafbfc',
 
+  '--theme-autocomplete-bg-color': '#fafbfc',
+  '--theme-autocomplete-border': '1px solid #c6cdd6',
+  '--theme-autocomplete-border-focus-color': '#5e6066',
+  '--theme-autocomplete-search-color': '#5e6066',
+  '--theme-autocomplete-placeholder-color': 'rgba(94, 96, 102, 0.5)',
+  '--theme-autocomplete-selected-word-text-color': '#fafbfc',
+  '--theme-autocomplete-selected-word-box-background-color': 'rgba(68, 91, 124, 0.5)',
+  '--theme-autocomplete-suggestions-list-border-color': '#c6cdd6',
+  '--theme-autocomplete-suggestions-list-item-bg-color': '#fafbfc',
+  '--theme-autocomplete-suggestions-list-item-font-color': '#5e6066',
+  '--theme-autocomplete-suggestions-list-item-highlight-color': '#edf0f3',
+
   '--theme-bordered-box-background-color': '#fafbfc',
   '--theme-bordered-box-border': '1px solid #c6cdd6',
   '--theme-bordered-box-text-color': '#5e6066',
