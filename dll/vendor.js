@@ -27,7 +27,7 @@ require("react-copy-to-clipboard");
 require("react-css-themr");
 require("react-dom");
 require("react-dropzone");
-require("react-intl");
+// require("react-intl");
 // require("react-markdown");
 require("react-number-format");
 // require("react-polymorph");
