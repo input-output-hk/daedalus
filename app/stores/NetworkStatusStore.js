@@ -12,7 +12,7 @@ let cachedDifficulties = null;
 // Maximum number of out-of-sync blocks above which we consider to be out-of-sync
 const OUT_OF_SYNC_BLOCKS_LIMIT = 10;
 const SYNC_PROGRESS_INTERVAL = 2000;
-const TIME_DIFF_POLL_INTERVAL = 86400000; // 24 hours interval
+const TIME_DIFF_POLL_INTERVAL = 2000;
 
 const STARTUP_STAGES = {
   CONNECTING: 0,
@@ -175,8 +175,8 @@ export default class NetworkStatusStore extends Store {
 
   @action _updateLocalTimeDifference = async () => {
     try {
-      const responese = await this.localTimeDifferenceRequest.execute().promise;
-      runInAction('update time difference', () => (this.localTimeDifference = responese));
+      const response = await this.localTimeDifferenceRequest.execute().promise;
+      runInAction('update time difference', () => (this.localTimeDifference = response));
     } catch (error) {
       runInAction('update time difference', () => (this.localTimeDifference = this.ALLOWED_TIME_DIFFERENCE + 1));
     }
