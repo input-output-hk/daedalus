@@ -1,6 +1,7 @@
 // @flow
 import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
+import type { EtcWalletId } from './types';
 
 export type CreateEtcAccountParams = {
   ca: string,
@@ -8,11 +9,9 @@ export type CreateEtcAccountParams = {
   password: ?string,
 };
 
-export type CreateEtcAccountResponse = string;
-
 export const createEtcAccount = (
   { ca, privateKey, password }: CreateEtcAccountParams
-): Promise<CreateEtcAccountResponse> => (
+): Promise<EtcWalletId> => (
   request({
     hostname: ETC_API_HOST,
     method: 'POST',

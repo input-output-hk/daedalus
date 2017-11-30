@@ -1,5 +1,5 @@
 // @flow
-import type { ApiWallet } from 'daedalus-client-api';
+import type { AdaWallet } from './types';
 import { request } from './lib/request';
 import { encryptPassphrase } from './lib/encryptPassphrase';
 
@@ -12,7 +12,7 @@ export type ChangeAdaWalletPassphraseParams = {
 
 export const changeAdaWalletPassphrase = (
   { ca, walletId, oldPassword, newPassword }: ChangeAdaWalletPassphraseParams
-): Promise<ApiWallet> => {
+): Promise<AdaWallet> => {
   const encryptedOldPassphrase = oldPassword ? encryptPassphrase(oldPassword) : null;
   const encryptedNewPassphrase = newPassword ? encryptPassphrase(newPassword) : null;
   return request({

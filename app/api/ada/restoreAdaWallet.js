@@ -1,17 +1,16 @@
 // @flow
-import type { ApiWallet } from 'daedalus-client-api';
-import type { WalletInitData } from './types';
+import type { AdaWallet, AdaWalletInitData } from './types';
 import { request } from './lib/request';
 
 export type RestoreAdaWalletParams = {
   ca: string,
   walletPassword: ?string,
-  walletInitData: WalletInitData
+  walletInitData: AdaWalletInitData
 };
 
 export const restoreAdaWallet = (
   { ca, walletPassword, walletInitData }: RestoreAdaWalletParams
-): Promise<ApiWallet> => (
+): Promise<AdaWallet> => (
   request({
     hostname: 'localhost',
     method: 'POST',

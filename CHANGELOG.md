@@ -23,6 +23,8 @@ Changelog
 - Disable wallet import and export features for the mainnet ([PR 503](https://github.com/input-output-hk/daedalus/pull/503))
 - Correctly prevent max-window-size in electron ([PR 532](https://github.com/input-output-hk/daedalus/pull/532))
 - Make sure wallet import and restore in-progress notification is hidden once process is done ([PR 540](https://github.com/input-output-hk/daedalus/pull/540))
+- Fix broken translation files loading ([PR 559](https://github.com/input-output-hk/daedalus/pull/559))
+- Fix async wallet import/restore issues ([PR 562](https://github.com/input-output-hk/daedalus/pull/562))
 
 ### Chores
 
@@ -37,6 +39,7 @@ Changelog
 - Unused vendor dependencies cleanup and DLL file optimization ([PR 555](https://github.com/input-output-hk/daedalus/pull/555))
 - Introduce `testReset` endpoint for ETC api ([PR 558](https://github.com/input-output-hk/daedalus/pull/558))
 - Update acceptance tests suite dependencies ([PR 561](https://github.com/input-output-hk/daedalus/pull/561))
+- Refactor Cardano type declarations to type folder ([PR 557](https://github.com/input-output-hk/daedalus/pull/557))
 
 ## 0.8.0
 

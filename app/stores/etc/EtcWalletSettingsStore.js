@@ -3,7 +3,7 @@ import { observable, action } from 'mobx';
 import _ from 'lodash';
 import WalletSettingsStore from '../WalletSettingsStore';
 import Request from '../lib/LocalizedRequest';
-import type { UpdateWalletPasswordResponse, UpdateWalletResponse } from '../../api/etc/index';
+import type { UpdateWalletPasswordResponse, UpdateWalletResponse } from '../../api/common';
 
 export default class EtcWalletSettingsStore extends WalletSettingsStore {
 

@@ -1,5 +1,5 @@
 // @flow
-import type { ApiTransaction } from 'daedalus-client-api';
+import type { AdaTransaction } from './types';
 import { request } from './lib/request';
 
 export type NewAdaPaymentParams = {
@@ -16,7 +16,7 @@ export type NewAdaPaymentParams = {
 
 export const newAdaPayment = (
   { ca, sender, receiver, amount, groupingPolicy, password }: NewAdaPaymentParams
-): Promise<ApiTransaction> => (
+): Promise<AdaTransaction> => (
   request({
     hostname: 'localhost',
     method: 'POST',

@@ -2,18 +2,13 @@
 import BigNumber from 'bignumber.js';
 import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
-import type { EtcTransaction } from './types';
+import type { EtcTransactions } from './types';
 
 export type GetEtcTransactionsParams = {
   ca: string,
   walletId: string,
   fromBlock: number,
   toBlock: number,
-};
-
-export type GetEtcTransactionsResponse = {
-  received: Array<EtcTransaction>,
-  sent: Array<EtcTransaction>,
 };
 
 /**
@@ -27,7 +22,7 @@ export type GetEtcTransactionsResponse = {
  */
 export const getEtcTransactions = (
   { ca, walletId, fromBlock, toBlock }: GetEtcTransactionsParams
-): Promise<GetEtcTransactionsResponse> => (
+): Promise<EtcTransactions> => (
   request({
     hostname: ETC_API_HOST,
     method: 'POST',

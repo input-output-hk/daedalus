@@ -1,8 +1,9 @@
 // @flow
-import type { ApiTransactions } from 'daedalus-client-api';
+import type { AdaTransactions } from './types';
 import { request } from './lib/request';
 
-export type GetAdaAddressHistoryQueryParams = {
+export type GetAdaAddressHistoryParams = {
+  ca: string,
   accountId: string,
   address: string,
   skip: number,
@@ -10,13 +11,13 @@ export type GetAdaAddressHistoryQueryParams = {
 };
 
 export const getAdaAddressHistory = (
-  ca: string, pathParams: {}, queryParams: GetAdaAddressHistoryQueryParams
-): Promise<ApiTransactions> => (
+  { ca, accountId, address, skip, limit }: GetAdaAddressHistoryParams
+): Promise<AdaTransactions> => (
   request({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/txs/histories',
     port: 8090,
     ca,
-  }, queryParams)
+  }, { accountId, address, skip, limit })
 );

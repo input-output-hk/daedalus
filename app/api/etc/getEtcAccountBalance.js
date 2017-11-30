@@ -1,7 +1,7 @@
 // @flow
 import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
-
+import type { EtcWalletBalance } from './types';
 
 export type GetEtcAccountBalanceParams = {
   ca: string,
@@ -9,11 +9,9 @@ export type GetEtcAccountBalanceParams = {
   status: 'latest' | 'earliest' | 'pending',
 };
 
-export type GetEtcAccountBalanceResponse = string;
-
 export const getEtcAccountBalance = (
   { ca, walletId, status }: GetEtcAccountBalanceParams
-): Promise<GetEtcAccountBalanceResponse> => (
+): Promise<EtcWalletBalance> => (
   request({
     hostname: ETC_API_HOST,
     method: 'POST',

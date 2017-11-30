@@ -1,20 +1,15 @@
 // @flow
 import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
+import type { EtcSyncProgress } from './types';
 
 export type GetEtcSyncProgressParams = {
   ca: string,
 };
 
-export type GetEtcSyncProgressResponse = false | {
-  startingBlock: string,
-  currentBlock: string,
-  highestBlock: string
-};
-
 export const getEtcSyncProgress = (
   { ca }: GetEtcSyncProgressParams
-): Promise<GetEtcSyncProgressResponse> => (
+): Promise<EtcSyncProgress> => (
   request({
     hostname: ETC_API_HOST,
     method: 'POST',

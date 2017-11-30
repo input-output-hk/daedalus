@@ -1,5 +1,5 @@
 // @flow
-import type { ApiWallets } from 'daedalus-client-api';
+import type { AdaWallets } from './types';
 import { request } from './lib/request';
 
 export type GetAdaWalletParams = {
@@ -8,7 +8,7 @@ export type GetAdaWalletParams = {
 
 export const getAdaWallets = (
   { ca }: GetAdaWalletParams
-  ): Promise<ApiWallets> => (
+  ): Promise<AdaWallets> => (
   request({
     hostname: 'localhost',
     method: 'GET',

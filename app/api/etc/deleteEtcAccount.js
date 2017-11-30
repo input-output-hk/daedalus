@@ -5,13 +5,11 @@ import { ETC_API_HOST, ETC_API_PORT } from './index';
 export type DeleteEtcAccountBalanceParams = {
   ca: string,
   walletId: string,
-}
-
-export type DeleteEtcAccountBalanceResponse = boolean;
+};
 
 export const deleteEtcAccount = (
   { ca, walletId }: DeleteEtcAccountBalanceParams
-): Promise<DeleteEtcAccountBalanceResponse> => (
+): Promise<boolean> => (
   request({
     hostname: ETC_API_HOST,
     method: 'POST',
