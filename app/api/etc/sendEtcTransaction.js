@@ -2,6 +2,7 @@
 import BigNumber from 'bignumber.js';
 import { request } from './lib/request';
 import { ETC_API_HOST, ETC_API_PORT } from './index';
+import type { EtcTxHash } from './types';
 
 export type SendEtcTransactionParams = {
   ca: string,
@@ -12,11 +13,9 @@ export type SendEtcTransactionParams = {
   gasPrice: BigNumber,
 };
 
-export type SendEtcTransactionResponse = string; // tx address
-
 export const sendEtcTransaction = (
   { ca, from, to, value, password, gasPrice }: SendEtcTransactionParams
-): Promise<SendEtcTransactionResponse> => {
+): Promise<EtcTxHash> => {
   const txParams = {
     from,
     to,

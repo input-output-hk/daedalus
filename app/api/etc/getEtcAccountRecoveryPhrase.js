@@ -1,8 +1,7 @@
 // @flow
 import { generateMnemonic } from '../../utils/crypto';
+import type { EtcRecoveryPassphrase } from './types';
 
-export type GetEtcAccountRecoveryPhraseResponse = Array<string>;
-
-export const getEtcAccountRecoveryPhrase = (): GetEtcAccountRecoveryPhraseResponse => (
+export const getEtcAccountRecoveryPhrase = (): EtcRecoveryPassphrase => (
   generateMnemonic().split(' ')
 );

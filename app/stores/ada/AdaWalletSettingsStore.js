@@ -4,9 +4,8 @@ import _ from 'lodash';
 import WalletSettingsStore from '../WalletSettingsStore';
 import Request from '../lib/LocalizedRequest';
 import type { WalletExportToFileParams } from '../../actions/ada/wallet-settings-actions';
-import type {
-  UpdateWalletPasswordResponse, UpdateWalletResponse, ExportWalletToFileResponse
-} from '../../api/ada/index';
+import type { ExportWalletToFileResponse } from '../../api/ada/index';
+import type { UpdateWalletPasswordResponse, UpdateWalletResponse } from '../../api/common';
 
 export default class EtcWalletSettingsStore extends WalletSettingsStore {
 

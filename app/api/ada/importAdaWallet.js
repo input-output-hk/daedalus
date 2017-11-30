@@ -1,5 +1,5 @@
 // @flow
-import type { ApiWallet } from 'daedalus-client-api';
+import type { AdaWallet } from './types';
 import { request } from './lib/request';
 
 export type ImportAdaWalletParams = {
@@ -10,7 +10,7 @@ export type ImportAdaWalletParams = {
 
 export const importAdaWallet = (
   { ca, walletPassword, filePath }: ImportAdaWalletParams
-): Promise<ApiWallet> => (
+): Promise<AdaWallet> => (
   request({
     hostname: 'localhost',
     method: 'POST',

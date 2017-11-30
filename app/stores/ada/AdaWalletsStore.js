@@ -7,11 +7,12 @@ import Request from '.././lib/LocalizedRequest';
 import { ROUTES } from '../../routes-config';
 import type { walletExportTypeChoices } from '../../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../../actions/ada/wallets-actions';
+import type { ImportWalletFromFileResponse } from '../../api/ada/index';
 import type {
   CreateTransactionResponse, CreateWalletResponse, DeleteWalletResponse,
-  GetWalletsResponse, RestoreWalletResponse, ImportWalletFromFileResponse
-} from '../../api/ada/index';
-import type { GetWalletRecoveryPhraseResponse } from '../../api/common';
+  GetWalletsResponse, RestoreWalletResponse,
+  GetWalletRecoveryPhraseResponse,
+} from '../../api/common';
 
 export default class AdaWalletsStore extends WalletStore {
 

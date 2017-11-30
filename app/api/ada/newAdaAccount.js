@@ -1,5 +1,5 @@
 // @flow
-import type { ApiAccount } from 'daedalus-client-api';
+import type { AdaAccount } from './types';
 import { request } from './lib/request';
 
 export type NewAdaAccountQueryParams = {
@@ -20,7 +20,7 @@ export const newAdaAccount = (
   pathParams: {},
   queryParams: NewAdaAccountQueryParams,
   rawBodyParams: NewAdaAccountRawBodyParams,
-): Promise<ApiAccount> => {
+): Promise<AdaAccount> => {
   const { accountInitData } = rawBodyParams;
   return request({
     hostname: 'localhost',
