@@ -4,8 +4,8 @@ import humanizeDuration from 'humanize-duration';
 import SvgInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
+// import Button from 'react-polymorph/lib/components/Button';
+// import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import attentionIcon from '../../assets/images/attention-big-light.inline.svg';
 import styles from './SystemTimeErrorOverlay.scss';
 
@@ -75,10 +75,10 @@ export default class SystemTimeErrorOverlay extends Component {
 
         <p>{intl.formatMessage(messages.overlayText, { behindTime })}</p>
 
-        <Button
+        {/* <Button
           label={intl.formatMessage(messages.buttonLabel)}
           skin={<SimpleButtonSkin />}
-        />
+        /> */}
 
       </div>
     );

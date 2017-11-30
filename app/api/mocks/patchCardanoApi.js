@@ -9,6 +9,8 @@ import CardanoClientApi from '../CardanoClientApi';
 
 // ========== LOGGING =========
 
+let LOCAL_TIME_DIFFERENCE = 0;
+
 const stringifyData = (data) => JSON.stringify(data, null, 2);
 
 export default (api: CardanoClientApi) => {
@@ -35,5 +37,14 @@ export default (api: CardanoClientApi) => {
       throw new RedeemAdaError();
     }
     return { amount: new BigNumber(1000) };
+  };
+
+  api.getLocalTimeDifference = async () => {
+    const response = Promise.resolve(LOCAL_TIME_DIFFERENCE);
+    return response;
+  };
+
+  api.setLocalTimeDifference = async (timeDifference) => {
+    LOCAL_TIME_DIFFERENCE = timeDifference;
   };
 };
