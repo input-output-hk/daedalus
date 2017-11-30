@@ -117,7 +117,10 @@ export default class AdaWalletsStore extends WalletStore {
     }, this.WAIT_FOR_SERVER_ERROR_TIME);
 
     const restoredWallet = await this.restoreRequest.execute(params).promise;
-    setTimeout(() => { this._setIsRestoreActive(false); }, this.MIN_NOTIFICATION_TIME);
+    setTimeout(() => {
+      this._setIsRestoreActive(false);
+      this.actions.dialogs.closeActiveDialog.trigger();
+    }, this.MIN_NOTIFICATION_TIME);
     if (!restoredWallet) throw new Error('Restored wallet was not received correctly');
     this.restoreRequest.reset();
     await this._patchWalletRequestWithNewWallet(restoredWallet);
@@ -142,7 +145,10 @@ export default class AdaWalletsStore extends WalletStore {
     const importedWallet = await this.importFromFileRequest.execute({
       filePath, walletName, walletPassword,
     }).promise;
-    setTimeout(() => { this._setIsImportActive(false); }, this.MIN_NOTIFICATION_TIME);
+    setTimeout(() => {
+      this._setIsImportActive(false);
+      this.actions.dialogs.closeActiveDialog.trigger();
+    }, this.MIN_NOTIFICATION_TIME);
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');
     this.importFromFileRequest.reset();
     await this._patchWalletRequestWithNewWallet(importedWallet);
