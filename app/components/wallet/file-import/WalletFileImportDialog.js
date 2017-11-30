@@ -9,9 +9,9 @@ import { defineMessages, intlShape } from 'react-intl';
 // import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import FileUploadWidget from '../../widgets/forms/FileUploadWidget';
-import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../../lib/validations';
+import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../../utils/validations';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './WalletFileImportDialog.scss';
@@ -74,15 +74,19 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class WalletFileImportDialog extends Component {
+type Props = {
+  onSubmit: Function,
+  onClose: Function,
+  isSubmitting: boolean,
+  error: ?LocalizableError,
+};
 
-  props: {
-    onSubmit: Function,
-    onClose: Function,
-    isSubmitting: boolean,
-    error: ?LocalizableError,
-  };
+type State = {
+  createPassword: boolean,
+};
+
+@observer
+export default class WalletFileImportDialog extends Component<Props, State> {
 
   state = {
     createPassword: false,

@@ -32,6 +32,7 @@
         letter-spacing: 0.5px;
         line-height: 1.36;
         opacity: 0.7;
+        word-break: break-all;
       }
     }
   }
@@ -57,6 +58,7 @@
 
   .topBarTitle {
     flex-grow: 1;
+    margin-right: 24px;
   }
 }
 

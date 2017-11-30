@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './ImageUploadWidget.scss';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   dropFileHere: {
     id: 'ImageUploadWidget.dropFileHint',
     defaultMessage: '!!!Drop file here',
@@ -17,12 +17,12 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class ImageUploadWidget extends Component {
+type Props = {
+  label: string
+};
 
-  props: {
-    label: string
-  };
+@observer
+export default class ImageUploadWidget extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

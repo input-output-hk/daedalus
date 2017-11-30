@@ -8,7 +8,7 @@ import WalletNoTransactions from '../../components/wallet/transactions/WalletNoT
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   noTransactions: {
     id: 'wallet.transactions.no.transactions',
     defaultMessage: '!!!No transactions',
@@ -21,24 +21,25 @@ const messages = defineMessages({
   }
 });
 
+type Props = InjectedProps;
+
 @inject('stores', 'actions') @observer
-export default class WalletTransactionsPage extends Component {
+export default class WalletTransactionsPage extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   // _handleSearchInputChange = (value: string, event: Object) => {
-  //   this.props.actions.transactions.filterTransactions({ searchTerm: event.target.value });
+  //   this.props.actions.ada.transactions.filterTransactions({ searchTerm: event.target.value });
   // };
 
   render() {
     const { intl } = this.context;
     const actions = this.props.actions;
-    const { transactions, wallets } = this.props.stores;
+    const { transactions, wallets } = this.props.stores.ada;
     const activeWallet = wallets.active;
     const {
       searchOptions,
@@ -75,7 +76,7 @@ export default class WalletTransactionsPage extends Component {
           transactions={filtered}
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
           hasMoreToLoad={totalAvailable > searchLimit}
-          onLoadMore={actions.transactions.loadMoreTransactions.trigger}
+          onLoadMore={actions.ada.transactions.loadMoreTransactions.trigger}
           assuranceMode={activeWallet.assuranceMode}
           walletId={activeWallet.id}
         />

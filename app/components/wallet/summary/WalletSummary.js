@@ -28,16 +28,16 @@ const messages = defineMessages({
   }
 });
 
-@observer
-export default class WalletSummary extends Component {
+type Props = {
+  walletName: string,
+  amount: string,
+  numberOfTransactions: number,
+  pendingAmount: UnconfirmedAmount,
+  isLoadingTransactions: boolean,
+};
 
-  props: {
-    walletName: string,
-    amount: string,
-    numberOfTransactions: number,
-    pendingAmount: UnconfirmedAmount,
-    isLoadingTransactions: boolean,
-  };
+@observer
+export default class WalletSummary extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -58,20 +58,20 @@ export default class WalletSummary extends Component {
           <div className={styles.walletName}>{walletName}</div>
           <div className={styles.walletAmount}>
             {amount}
-            <SvgInline svg={adaSymbolBig} className={styles.adaSymbolBig} />
+            <SvgInline svg={adaSymbolBig} className={styles.currencySymbolBig} />
           </div>
           {pendingAmount.incoming.greaterThan(0) &&
             <div className={styles.pendingConfirmation}>
               {`${intl.formatMessage(messages.pendingIncomingConfirmationLabel)}`}
               : {pendingAmount.incoming.toFormat(DECIMAL_PLACES_IN_ADA)}
-              <SvgInline svg={adaSymbolSmallest} className={styles.adaSymbolSmallest} />
+              <SvgInline svg={adaSymbolSmallest} className={styles.currencySymbolSmallest} />
             </div>
           }
           {pendingAmount.outgoing.greaterThan(0) &&
             <div className={styles.pendingConfirmation}>
               {`${intl.formatMessage(messages.pendingOutgoingConfirmationLabel)}`}
               : {pendingAmount.outgoing.toFormat(DECIMAL_PLACES_IN_ADA)}
-              <SvgInline svg={adaSymbolSmallest} className={styles.adaSymbolSmallest} />
+              <SvgInline svg={adaSymbolSmallest} className={styles.currencySymbolSmallest} />
             </div>
           }
           {!isLoadingTransactions ? (

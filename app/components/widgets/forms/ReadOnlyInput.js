@@ -8,15 +8,15 @@ import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './ReadOnlyInput.scss';
 
-@observer
-export default class ReadOnlyInput extends Component {
+type Props = {
+  label: string,
+  value: string,
+  isSet: boolean,
+  onClick: Function,
+};
 
-  props: {
-    label: string,
-    value: string,
-    isSet: boolean,
-    onClick: Function,
-  };
+@observer
+export default class ReadOnlyInput extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

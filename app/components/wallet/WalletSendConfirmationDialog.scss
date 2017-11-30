@@ -3,6 +3,7 @@
 
 .dialog {
   font-family: var(--font-medium);
+  width: 580px;
 
   :global {
     .Dialog_title {
@@ -10,8 +11,9 @@
     }
   }
 
-  .adaSymbol {
+  .currencySymbol {
     font-family: var(--font-light);
+    text-transform: uppercase;
   }
 
   .addressToLabelWrapper,
@@ -39,6 +41,12 @@
     .feesWrapper {
       width: 50%;
     }
+    .amountWrapper {
+      margin-right: 10px;
+    }
+    .feesWrapper {
+      margin-left: 10px;
+    }
     .amountLabel,
     .feesLabel {
       line-height: 1.38;
@@ -48,6 +56,7 @@
       color: var(--theme-send-confirmation-dialog-send-values-color);
       line-height: 1.38;
       margin-top: 6px;
+      word-break: break-word;
     }
     .fees {
       opacity: 0.5;
@@ -62,6 +71,7 @@
     color: var(--theme-send-confirmation-dialog-send-values-color);
     line-height: 1.38;
     margin-top: 6px;
+    word-break: break-word;
   }
 
   .walletPassword {

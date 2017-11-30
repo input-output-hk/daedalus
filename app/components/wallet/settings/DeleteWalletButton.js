@@ -10,11 +10,11 @@ const messages = defineMessages({
   },
 });
 
-export default class DeleteWalletButton extends Component {
+type Props = {
+  onClick: Function,
+};
 
-  props: {
-    onClick: Function,
-  };
+export default class DeleteWalletButton extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

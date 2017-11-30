@@ -15,20 +15,20 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class InlineEditingDropdown extends Component {
+type Props = {
+  className?: string,
+  isActive: boolean,
+  label: string,
+  options: Array<{ value: (number | string), label: string }>,
+  value: number | string,
+  onSubmit: Function,
+  onStartEditing: Function,
+  onStopEditing: Function,
+  successfullyUpdated: boolean,
+};
 
-  props: {
-    className?: string,
-    isActive: boolean,
-    label: string,
-    options: Array<{ value: (number | string), label: string }>,
-    value: number | string,
-    onSubmit: Function,
-    onStartEditing: Function,
-    onStopEditing: Function,
-    successfullyUpdated: boolean,
-  };
+@observer
+export default class InlineEditingDropdown extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

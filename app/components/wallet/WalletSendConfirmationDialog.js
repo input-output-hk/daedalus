@@ -5,14 +5,14 @@ import classnames from 'classnames';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
-import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import Dialog from '../widgets/Dialog';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletSendConfirmationDialog.scss';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.send.confirmationDialog.title',
     defaultMessage: '!!!Confirm transaction',
@@ -62,21 +62,22 @@ const messages = defineMessages({
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
-@observer
-export default class WalletSendConfirmationDialog extends Component {
+type Props = {
+  isWalletPasswordSet: boolean,
+  amount: string,
+  receiver: string,
+  totalAmount: string,
+  transactionFee: string,
+  onSubmit: Function,
+  amountToNaturalUnits: (amountWithFractions: string) => string,
+  onCancel: Function,
+  isSubmitting: boolean,
+  error: ?LocalizableError,
+  currencyUnit: string,
+};
 
-  props: {
-    isWalletPasswordSet: boolean,
-    amount: string,
-    receiver: string,
-    totalAmount: string,
-    transactionFee: string,
-    onSubmit: Function,
-    adaToLovelaces: Function,
-    onCancel: Function,
-    isSubmitting: boolean,
-    error: ?LocalizableError,
-  };
+@observer
+export default class WalletSendConfirmationDialog extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -107,11 +108,11 @@ export default class WalletSendConfirmationDialog extends Component {
   submit() {
     this.form.submit({
       onSuccess: (form) => {
-        const { isWalletPasswordSet, receiver, amount, adaToLovelaces } = this.props;
+        const { isWalletPasswordSet, receiver, amount, amountToNaturalUnits } = this.props;
         const { walletPassword } = form.values();
         const transactionData = {
           receiver,
-          amount: adaToLovelaces(amount),
+          amount: amountToNaturalUnits(amount),
           password: isWalletPasswordSet ? walletPassword : null,
         };
         this.props.onSubmit(transactionData);
@@ -133,6 +134,7 @@ export default class WalletSendConfirmationDialog extends Component {
       transactionFee,
       isSubmitting,
       error,
+      currencyUnit
     } = this.props;
 
     const confirmButtonClasses = classnames([
@@ -175,14 +177,14 @@ export default class WalletSendConfirmationDialog extends Component {
             <div className={styles.amountWrapper}>
               <div className={styles.amountLabel}>{intl.formatMessage(messages.amountLabel)}</div>
               <div className={styles.amount}>{amount}
-                <span className={styles.adaSymbol}> ADA</span>
+                <span className={styles.currencySymbol}>&nbsp;{currencyUnit}</span>
               </div>
             </div>
 
             <div className={styles.feesWrapper}>
               <div className={styles.feesLabel}>{intl.formatMessage(messages.feesLabel)}</div>
               <div className={styles.fees}>+{transactionFee}
-                <span className={styles.adaSymbol}> ADA</span>
+                <span className={styles.currencySymbol}>&nbsp;{currencyUnit}</span>
               </div>
             </div>
           </div>
@@ -190,7 +192,7 @@ export default class WalletSendConfirmationDialog extends Component {
           <div className={styles.totalAmountWrapper}>
             <div className={styles.totalAmountLabel}>{intl.formatMessage(messages.totalLabel)}</div>
             <div className={styles.totalAmount}>{totalAmount}
-              <span className={styles.adaSymbol}> ADA</span>
+              <span className={styles.currencySymbol}>&nbsp;{currencyUnit}</span>
             </div>
           </div>
 

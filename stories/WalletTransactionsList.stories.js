@@ -40,11 +40,11 @@ storiesOf('WalletTransactionsList', module)
   .add('transactions grouped by days', () => (
     <WalletTransactionsList
       transactions={[
-        generateTransaction('adaIncome', new Date(), new BigNumber(1)),
-        generateTransaction('adaIncome', moment().subtract(1, 'days').toDate(), new BigNumber(1)),
-        generateTransaction('adaIncome', new Date(), new BigNumber(1)),
-        generateTransaction('adaIncome', moment().subtract(2, 'days').toDate(), new BigNumber(1)),
-        generateTransaction('adaIncome', moment().subtract(1, 'days').toDate(), new BigNumber(1)),
+        generateTransaction('income', new Date(), new BigNumber(1)),
+        generateTransaction('income', moment().subtract(1, 'days').toDate(), new BigNumber(1)),
+        generateTransaction('income', new Date(), new BigNumber(1)),
+        generateTransaction('income', moment().subtract(2, 'days').toDate(), new BigNumber(1)),
+        generateTransaction('income', moment().subtract(1, 'days').toDate(), new BigNumber(1)),
       ]}
       isLoadingTransactions={false}
       hasMoreToLoad={false}
@@ -56,9 +56,9 @@ storiesOf('WalletTransactionsList', module)
   .add('failed and pending transactions', () => (
     <WalletTransactionsList
       transactions={[
-        generateTransaction('adaIncome', new Date(), new BigNumber(1), 1, 'CPtxInBlocks'),
-        generateTransaction('adaIncome', new Date(), new BigNumber(1), 0, 'CPtxApplying'),
-        generateTransaction('adaIncome', new Date(), new BigNumber(1), 0, 'CPtxWontApply'),
+        generateTransaction('income', new Date(), new BigNumber(1), 1, 'CPtxInBlocks'),
+        generateTransaction('income', new Date(), new BigNumber(1), 0, 'CPtxApplying'),
+        generateTransaction('income', new Date(), new BigNumber(1), 0, 'CPtxWontApply'),
       ]}
       isLoadingTransactions={false}
       hasMoreToLoad={false}

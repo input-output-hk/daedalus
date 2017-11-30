@@ -9,18 +9,16 @@ import NumericInput from 'react-polymorph/lib/components/NumericInput';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
-import { isValidAmountInLovelaces } from '../../lib/validations';
-import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
-import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import AmountInputSkin from './skins/AmountInputSkin';
 import BorderedBox from '../widgets/BorderedBox';
 import styles from './WalletSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
-import LocalizableError from '../../i18n/LocalizableError';
 import WalletSendConfirmationDialog from './WalletSendConfirmationDialog';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
+import { formattedAmountToBigNumber, formattedAmountToNaturalUnits } from '../../utils/formatters';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   titleLabel: {
     id: 'wallet.send.form.title.label',
     defaultMessage: '!!!Title',
@@ -90,15 +88,25 @@ const messages = defineMessages({
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
-@observer
-export default class WalletSendForm extends Component {
+type Props = {
+  currencyUnit: string,
+  currencyMaxIntegerDigits?: number,
+  currencyMaxFractionalDigits: number,
+  validateAmount: (amountInNaturalUnits: string) => Promise<boolean>,
+  calculateTransactionFee: (receiver: string, amount: string) => Promise<BigNumber>,
+  addressValidator: Function,
+  openDialogAction: Function,
+  isDialogOpen: Function,
+};
 
-  props: {
-    calculateTransactionFee: (receiver: string, amount: string) => Promise<BigNumber>,
-    addressValidator: Function,
-    openDialogAction: Function,
-    isDialogOpen: Function,
-  };
+type State = {
+  isTransactionFeeCalculated: boolean,
+  transactionFee: BigNumber,
+  transactionFeeError: ?string,
+};
+
+@observer
+export default class WalletSendForm extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -127,10 +135,6 @@ export default class WalletSendForm extends Component {
     this._isMounted = false;
   }
 
-  adaToLovelaces = (adaAmount: string) => (
-    adaAmount.replace('.', '').replace(/,/g, '').replace(/^0+/, '')
-  );
-
   // FORM VALIDATION
   form = new ReactToolboxMobxForm({
     fields: {
@@ -155,25 +159,22 @@ export default class WalletSendForm extends Component {
                 this._resetTransactionFee();
               }
               return [isValid, this.context.intl.formatMessage(messages.invalidAddress)];
-            })
-            .catch(() => {
-              this._resetTransactionFee();
-              return [false, this.context.intl.formatMessage(messages.invalidAddress)];
             });
         }],
       },
       amount: {
         label: this.context.intl.formatMessage(messages.amountLabel),
-        placeholder: '0.000000',
+        placeholder: `0.${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
         value: '',
-        validators: [({ field, form }) => {
+        validators: [async ({ field, form }) => {
           const amountValue = field.value;
           if (amountValue === '') {
             this._resetTransactionFee();
             return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           }
-          const amountInLovelaces = this.adaToLovelaces(amountValue);
-          const isValid = isValidAmountInLovelaces(amountInLovelaces);
+          const isValid = await this.props.validateAmount(
+            formattedAmountToNaturalUnits(amountValue)
+          );
           const receiverField = form.$('receiver');
           const receiverValue = receiverField.value;
           const isReceiverValid = receiverField.isValid;
@@ -188,6 +189,7 @@ export default class WalletSendForm extends Component {
     },
   }, {
     options: {
+      validateOnBlur: false,
       validateOnChange: true,
       validationDebounceWait: 250,
     },
@@ -196,13 +198,16 @@ export default class WalletSendForm extends Component {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { openDialogAction, isDialogOpen, } = this.props;
+    const {
+      currencyUnit, currencyMaxIntegerDigits, currencyMaxFractionalDigits,
+      openDialogAction, isDialogOpen
+    } = this.props;
     const { isTransactionFeeCalculated, transactionFee, transactionFeeError } = this.state;
     const amountField = form.$('amount');
     const receiverField = form.$('receiver');
     const receiverFieldProps = receiverField.bind();
     const amountFieldProps = amountField.bind();
-    const totalAmount = this._calculateTotalAmount(amountFieldProps.value, transactionFee);
+    const totalAmount = formattedAmountToBigNumber(amountFieldProps.value).add(transactionFee);
 
     const buttonClasses = classnames([
       'primary',
@@ -228,13 +233,13 @@ export default class WalletSendForm extends Component {
               {...amountFieldProps}
               className="amount"
               label={intl.formatMessage(messages.amountLabel)}
-              maxAfterDot={6}
-              maxBeforeDot={11}
+              maxBeforeDot={currencyMaxIntegerDigits}
+              maxAfterDot={currencyMaxFractionalDigits}
               error={transactionFeeError || amountField.error}
               // AmountInputSkin props
-              currency={intl.formatMessage(globalMessages.unitAda)}
-              fees={transactionFee.toFormat(DECIMAL_PLACES_IN_ADA)}
-              total={totalAmount.toFormat(DECIMAL_PLACES_IN_ADA)}
+              currency={currencyUnit}
+              fees={transactionFee.toFormat(currencyMaxFractionalDigits)}
+              total={totalAmount.toFormat(currencyMaxFractionalDigits)}
               skin={<AmountInputSkin />}
             />
           </div>
@@ -256,9 +261,10 @@ export default class WalletSendForm extends Component {
           <WalletSendConfirmationDialogContainer
             amount={amountFieldProps.value}
             receiver={receiverFieldProps.value}
-            totalAmount={totalAmount.toFormat(DECIMAL_PLACES_IN_ADA)}
-            transactionFee={transactionFee.toFormat(DECIMAL_PLACES_IN_ADA)}
-            adaToLovelaces={this.adaToLovelaces}
+            totalAmount={totalAmount.toFormat(currencyMaxFractionalDigits)}
+            transactionFee={transactionFee.toFormat(currencyMaxFractionalDigits)}
+            amountToNaturalUnits={formattedAmountToNaturalUnits}
+            currencyUnit={currencyUnit}
           />
         ) : null}
 
@@ -276,31 +282,25 @@ export default class WalletSendForm extends Component {
     }
   }
 
-  _calculateTransactionFee(receiver: string, amountValue: string) {
+  async _calculateTransactionFee(receiver: string, amountValue: string) {
     if (this._isSubmitting) return;
-
     this._resetTransactionFee();
-    this.props.calculateTransactionFee(receiver, this.adaToLovelaces(amountValue))
-      .then((fee: BigNumber) => (
-        this._isMounted && this.setState({
+    const amount = formattedAmountToNaturalUnits(amountValue);
+    try {
+      const fee = await this.props.calculateTransactionFee(receiver, amount);
+      if (this._isMounted) {
+        this.setState({
           isTransactionFeeCalculated: true,
           transactionFee: fee,
           transactionFeeError: null,
-        })
-      ))
-      .catch((error: LocalizableError) => {
-        if (this._isMounted) {
-          this.setState({
-            transactionFeeError: this.context.intl.formatMessage(error),
-          });
-        }
-      });
-  }
-
-  _calculateTotalAmount(amountValue: string, transactionFee: BigNumber): BigNumber {
-    const cleanedAmount = amountValue.replace(/,/g, '');
-    const amount = new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
-    return amount.add(transactionFee);
+        });
+      }
+    } catch (error) {
+      if (this._isMounted) {
+        this.setState({
+          transactionFeeError: this.context.intl.formatMessage(error)
+        });
+      }
+    }
   }
 }
-

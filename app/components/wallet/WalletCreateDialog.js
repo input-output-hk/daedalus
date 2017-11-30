@@ -7,10 +7,10 @@ import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { defineMessages, intlShape } from 'react-intl';
-import ReactToolboxMobxForm from '../../lib/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import Dialog from '../widgets/Dialog';
-import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../lib/validations';
+import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../utils/validations';
 import globalMessages from '../../i18n/global-messages';
 import styles from './WalletCreateDialog.scss';
 
@@ -62,13 +62,18 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class WalletCreateDialog extends Component {
+type Props = {
+  onSubmit: Function,
+  onCancel: Function,
+};
 
-  props: {
-    onSubmit: Function,
-    onCancel: Function,
-  };
+type State = {
+  isSubmitting: boolean,
+  createPassword: boolean,
+};
+
+@observer
+export default class WalletCreateDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

@@ -20,13 +20,13 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class StatusMessagesNotification extends Component {
+type Props = {
+  isImportActive: boolean,
+  isRestoreActive: boolean,
+};
 
-  props: {
-    isImportActive: boolean,
-    isRestoreActive: boolean,
-  };
+@observer
+export default class StatusMessagesNotification extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

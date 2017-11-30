@@ -4,13 +4,13 @@ import SvgInline from 'react-svg-inline';
 import classNames from 'classnames';
 import styles from './NotificationMessage.scss';
 
-export default class NotificationMessage extends Component {
+type Props = {
+  icon: string,
+  show: boolean,
+  children?: Children,
+};
 
-  props: {
-    icon: string,
-    show: boolean,
-    children?: Children,
-  };
+export default class NotificationMessage extends Component<Props> {
 
   render() {
     const { icon, show, children } = this.props;

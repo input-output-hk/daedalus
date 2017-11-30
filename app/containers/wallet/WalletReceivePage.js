@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { defineMessages, FormattedHTMLMessage } from 'react-intl';
 import { observer, inject } from 'mobx-react';
-import { ellipsis } from '../../lib/string-helpers';
+import { ellipsis } from '../../utils/strings';
 import config from '../../config';
 import WalletReceive from '../../components/wallet/WalletReceive';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
@@ -10,7 +10,7 @@ import NotificationMessage from '../../components/widgets/NotificationMessage';
 import successIcon from '../../assets/images/success-small.inline.svg';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   message: {
     id: 'wallet.receive.page.addressCopyNotificationMessage',
     defaultMessage: '!!!You have successfully copied wallet address',
@@ -18,11 +18,16 @@ const messages = defineMessages({
   },
 });
 
+type Props = InjectedProps;
+
+type State = {
+  copiedAddress: string,
+};
+
 @inject('stores', 'actions') @observer
-export default class WalletReceivePage extends Component {
+export default class WalletReceivePage extends Component<Props, State> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   state = {
     copiedAddress: '',
@@ -34,22 +39,22 @@ export default class WalletReceivePage extends Component {
   }
 
   handleGenerateAddress = (password :string) => {
-    const { wallets } = this.props.stores;
+    const { wallets } = this.props.stores.ada;
     const wallet = wallets.active;
     if (wallet) {
-      this.props.actions.addresses.createAddress.trigger({
+      this.props.actions.ada.addresses.createAddress.trigger({
         walletId: wallet.id,
         password,
       });
     }
-  }
+  };
 
   resetErrors = () => {
-    this.props.actions.addresses.resetErrors.trigger();
-  }
+    this.props.actions.ada.addresses.resetErrors.trigger();
+  };
 
   closeNotification = () => {
-    const { wallets } = this.props.stores;
+    const { wallets } = this.props.stores.ada;
     const wallet = wallets.active;
     if (wallet) {
       const notificationId = `${wallet.id}-copyNotification`;
@@ -60,7 +65,8 @@ export default class WalletReceivePage extends Component {
   render() {
     const { copiedAddress } = this.state;
     const actions = this.props.actions;
-    const { wallets, addresses, sidebar, uiNotifications } = this.props.stores;
+    const { sidebar, uiNotifications } = this.props.stores;
+    const { wallets, addresses } = this.props.stores.ada;
     const wallet = wallets.active;
 
     // Guard against potential null values

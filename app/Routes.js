@@ -2,17 +2,11 @@
 import React from 'react';
 import { Route, IndexRedirect } from 'react-router';
 import { ROUTES } from './routes-config';
+import resolver from './utils/imports';
 
 // PAGES
-import Wallet from './containers/wallet/Wallet';
-import StakingPage from './containers/staking/StakingPage';
-import LoadingPage from './containers/LoadingPage';
-import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
-import WalletTransactionsPage from './containers/wallet/WalletTransactionsPage';
-import WalletSendPage from './containers/wallet/WalletSendPage';
-import WalletReceivePage from './containers/wallet/WalletReceivePage';
+// import StakingPage from './containers/staking/StakingPage';
 import AdaRedemptionPage from './containers/wallet/AdaRedemptionPage';
-import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
 import NoWalletsPage from './containers/wallet/NoWalletsPage';
 import LanguageSelectionPage from './containers/profile/LanguageSelectionPage';
 import Settings from './containers/settings/Settings';
@@ -23,13 +17,22 @@ import TermsOfUsePage from './containers/profile/TermsOfUsePage';
 import SendLogsChoicePage from './containers/profile/SendLogsChoicePage';
 import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
 
+// Dynamic container loading - resolver loads file relative to '/app/' directory
+const LoadingPage = resolver('containers/LoadingPage');
+const Wallet = resolver('containers/wallet/Wallet');
+const WalletSummaryPage = resolver('containers/wallet/WalletSummaryPage');
+const WalletSendPage = resolver('containers/wallet/WalletSendPage');
+const WalletReceivePage = resolver('containers/wallet/WalletReceivePage');
+const WalletTransactionsPage = resolver('containers/wallet/WalletTransactionsPage');
+const WalletSettingsPage = resolver('containers/wallet/WalletSettingsPage');
+
 export const Routes = (
   <div>
     <Route path={ROUTES.ROOT} component={LoadingPage} />
     <Route path={ROUTES.PROFILE.LANGUAGE_SELECTION} component={LanguageSelectionPage} />
     <Route path={ROUTES.PROFILE.TERMS_OF_USE} component={TermsOfUsePage} />
     <Route path={ROUTES.PROFILE.SEND_LOGS} component={SendLogsChoicePage} />
-    <Route path={ROUTES.STAKING} component={StakingPage} />
+    {/* <Route path={ROUTES.STAKING} component={StakingPage} /> */}
     <Route path={ROUTES.ADA_REDEMPTION} component={AdaRedemptionPage} />
     <Route path={ROUTES.NO_WALLETS} component={NoWalletsPage} />
     <Route path={ROUTES.WALLETS.ROOT} component={Wallet}>

@@ -6,7 +6,7 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
-import ReactToolboxMobxForm from '../../../../lib/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../../i18n/global-messages';
 import Dialog from '../../../widgets/Dialog';
 import LocalizableError from '../../../../i18n/LocalizableError';
@@ -43,42 +43,36 @@ const messages = defineMessages({
 
 type ExportType = 'full' | 'readOnly';
 
-type DialogState = {
-  exportType: ExportType,
-};
-
 export type OnSubmitParams = {
   exportType: ExportType,
   password: ?string,
 };
 
+type Props = {
+  walletName: string,
+  hasSpendingPassword: boolean,
+  isSubmitting: false,
+  onSubmit: (OnSubmitParams) => void,
+  onClose: () => void,
+  error?: ?LocalizableError,
+};
+
+type State = {
+  exportType: ExportType,
+};
+
 @observer
-export default class WalletExportToFileDialog extends Component {
+export default class WalletExportToFileDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  props: {
-    walletName: string,
-    hasSpendingPassword: boolean,
-    isSubmitting: false,
-    onSubmit: (OnSubmitParams) => void,
-    onClose: () => void,
-    error?: ?LocalizableError,
-  };
-
-  state: DialogState;
 
   constructor(props: any, children: any) {
     super(props, children);
     this.state = {
       exportType: 'full',
     };
-  }
-
-  setState(object: DialogState) {
-    super.setState(object);
   }
 
   // onChangeExportType(exportType: ExportType) {
@@ -172,6 +166,7 @@ export default class WalletExportToFileDialog extends Component {
             {intl.formatMessage(messages.readOnlyTabTitle)}
           </button>
         </div>
+
         */}
 
         <div className={styles.introduction}>

@@ -13,15 +13,15 @@ const messages = defineMessages({
   },
 });
 
-export default class NodeSyncStatusIcon extends Component {
+type Props = {
+  networkStatus: {
+    isSynced: boolean,
+    syncPercentage: number,
+  },
+  isMainnet: boolean,
+};
 
-  props: {
-    networkStatus: {
-      isSynced: boolean,
-      syncPercentage: number,
-    },
-    isMainnet: boolean,
-  };
+export default class NodeSyncStatusIcon extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired

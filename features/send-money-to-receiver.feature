@@ -1,9 +1,7 @@
 Feature: Send Money to Receiver
 
   Background:
-    Given I have selected English language
-    And I have accepted "Terms of use"
-    And I agree to send logs to remote server
+    Given I have completed the basic setup
     And I have the following wallets:
       | name   |
       | first  |
@@ -20,8 +18,8 @@ Feature: Send Money to Receiver
     And I submit the wallet send form
     Then I should be on the "Genesis wallet" wallet "summary" screen
     And the latest transaction should show:
-      | title                      | amountWithoutFees |
-      | wallet.transaction.adaSent | -0.000010         |
+      | title                   | amountWithoutFees |
+      | wallet.transaction.sent | -0.000010         |
     And the balance of "first" wallet should be:
       | balance  |
       | 0.000010 |
@@ -39,8 +37,8 @@ Feature: Send Money to Receiver
     And I submit the wallet send form
     Then I should be on the "Genesis wallet" wallet "summary" screen
     And the latest transaction should show:
-      | title                      | amountWithoutFees |
-      | wallet.transaction.adaSent | -0.000010         |
+      | title                   | amountWithoutFees |
+      | wallet.transaction.sent | -0.000010         |
     And the balance of "first" wallet should be:
       | balance  |
       | 0.000010 |

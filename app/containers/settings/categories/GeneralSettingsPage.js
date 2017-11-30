@@ -5,17 +5,16 @@ import GeneralSettings from '../../../components/settings/categories/GeneralSett
 import type { InjectedProps } from '../../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
-export default class GeneralSettingsPage extends Component {
+export default class GeneralSettingsPage extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   onSelectLanguage = (values: { locale: string }) => {
     this.props.actions.profile.updateLocale.trigger(values);
   };
 
   render() {
-    const { setProfileLocaleRequest, LANGUAGE_OPTIONS, currentLocale } = this.props.stores.app;
+    const { setProfileLocaleRequest, LANGUAGE_OPTIONS, currentLocale } = this.props.stores.profile;
     const isSubmitting = setProfileLocaleRequest.isExecuting;
     return (
       <GeneralSettings

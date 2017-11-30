@@ -1,3 +1,5 @@
+@import '../../../themes/mixins/loading-spinner';
+
 .words {
   display: flex;
   flex-wrap: wrap;
@@ -20,4 +22,8 @@
       text-align: center;
     }
   }
+}
+
+.isSubmitting {
+  @include loading-spinner("../../../assets/images/spinner-light.svg");
 }

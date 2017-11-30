@@ -37,7 +37,7 @@ export const waitUntilWalletIsLoaded = async function (walletName) {
   const context = this;
   await context.client.waitUntil(async () => {
     const result = await context.client.execute((name) => (
-      daedalus.stores.wallets.getWalletByName(name)
+      daedalus.stores.ada.wallets.getWalletByName(name)
     ), walletName);
     if (result.value) {
       wallet = result.value;
@@ -56,3 +56,15 @@ export const addOrSetWalletsForScenario = function (wallet) {
     this.wallets = [this.wallet];
   }
 };
+
+export const importWalletWithFunds = async (client, { keyFilePath, password }) => (
+  await client.executeAsync((filePath, walletPassword, done) => {
+    daedalus.api.ada.importWalletFromKey({ filePath, walletPassword })
+      .then(() => (
+        daedalus.stores.ada.wallets.refreshWalletsData()
+          .then(done)
+          .catch((error) => done(error))
+      ))
+      .catch((error) => done(error));
+  }, keyFilePath, password)
+);
