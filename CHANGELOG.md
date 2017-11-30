@@ -24,6 +24,7 @@ Changelog
 - Correctly prevent max-window-size in electron ([PR 532](https://github.com/input-output-hk/daedalus/pull/532))
 - Make sure wallet import and restore in-progress notification is hidden once process is done ([PR 540](https://github.com/input-output-hk/daedalus/pull/540))
 - Fix broken translation files loading ([PR 559](https://github.com/input-output-hk/daedalus/pull/559))
+- Fix async wallet import/restore issues ([PR 562](https://github.com/input-output-hk/daedalus/pull/562))
 
 ### Chores
 
