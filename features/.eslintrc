@@ -4,6 +4,8 @@
     "max-len": 0,
     "new-cap": [2, {
       "capIsNewExceptions": [
+        "AfterAll",
+        "BeforeAll",
         "Before",
         "Given",
         "When",
