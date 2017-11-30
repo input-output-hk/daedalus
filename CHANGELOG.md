@@ -6,16 +6,31 @@ Changelog
 
 ### Features
 
+### Fixes
+
+### Chores
+
+## 0.8.3
+=======
+
+### Features
+
 - Do not block the UI while wallet is being restored/imported ([PR 457](https://github.com/input-output-hk/daedalus/pull/457))
+
+### Fixes
+
+- Improved messages for update notifications ([PR 526](https://github.com/input-output-hk/daedalus/pull/526))
+
+## 0.8.2
+=======
+
+### Features
+
 - Postpone Update Api call integration ([PR 485](https://github.com/input-output-hk/daedalus/pull/485))
 - Wallet restore recovery phrase textarea replaced with React-Polymorph Autocomplete ([PR 516](https://github.com/input-output-hk/daedalus/pull/516))
 
 ### Fixes
 
-- Fix all features eslint warnings ([PR 468](https://github.com/input-output-hk/daedalus/pull/468))
-- Fix for disabled buttons on dark-blue theme ([PR 473](https://github.com/input-output-hk/daedalus/pull/473))
-- Remove maximum screen width and height in full-screen mode ([PR 472](https://github.com/input-output-hk/daedalus/pull/472))
-- Fix "label click" dropdown issue in react-polymorph ([PR 479](https://github.com/input-output-hk/daedalus/pull/479))
 - Fix error message text for A to A transaction error ([PR 484](https://github.com/input-output-hk/daedalus/pull/484))
 - Fix "label prop type" checkbox issue in react-polymorph ([PR 487](https://github.com/input-output-hk/daedalus/pull/487))
 - Remove all drag and drop instructions from UI ([PR 495](https://github.com/input-output-hk/daedalus/pull/495))
@@ -40,6 +55,15 @@ Changelog
 - Introduce `testReset` endpoint for ETC api ([PR 558](https://github.com/input-output-hk/daedalus/pull/558))
 - Update acceptance tests suite dependencies ([PR 561](https://github.com/input-output-hk/daedalus/pull/561))
 - Refactor Cardano type declarations to type folder ([PR 557](https://github.com/input-output-hk/daedalus/pull/557))
+
+## 0.8.1
+
+### Fixes
+
+- Fix all features eslint warnings ([PR 468](https://github.com/input-output-hk/daedalus/pull/468))
+- Fix for disabled buttons on dark-blue theme ([PR 473](https://github.com/input-output-hk/daedalus/pull/473))
+- Remove maximum screen width and height in full-screen mode ([PR 472](https://github.com/input-output-hk/daedalus/pull/472))
+- Fix "label click" dropdown issue in react-polymorph ([PR 479](https://github.com/input-output-hk/daedalus/pull/479))
 
 ## 0.8.0
 
@@ -114,7 +138,7 @@ Changelog
 - Spending password on "Send money" form
 - Optionally setting a password during wallet restore
 - Ada redemption disclaimer
-- “Terms of use” page in settings section
+- "Terms of use" page in settings section
 - Change wallet password dialog UX improvements
 - New receive screen with support for HD wallets
 - Wallet rename
@@ -225,9 +249,9 @@ Changelog
 
 - Toggling the application bar not working properly
 - UI glitch when quickly typing in Ada amounts on the send money form
-- “Add wallet” dialog does not disappear immediately after wallet creation
+- "Add wallet" dialog does not disappear immediately after wallet creation
 - Clearing correctly entered backup recovery phrase should not be possible
-- Sidebar “randomly” closes/opens when navigating
+- Sidebar "randomly" closes/opens when navigating
 - Ada redemption overlay should also cover the wallet navigation
 - No transactions message is not vertically centered on Transactions page
 - Transactions ordering
@@ -241,12 +265,12 @@ Changelog
 
 ### Features
 
-- Infinite loading for transaction list, testable with “Main wallet”
+- Infinite loading for transaction list, testable with "Main wallet"
 - Simple transaction search by title
 - Adding new personal wallet via sidebar menu
 - Profile settings screen
-- “No transactions” message for wallets with no transactions
-- “No transactions found” message when transaction search returns no results
+- "No transactions" message for wallets with no transactions
+- "No transactions found" message when transaction search returns no results
 - Loading indicator on application startup
 
 ### Fixes
