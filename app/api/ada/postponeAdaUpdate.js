@@ -7,7 +7,7 @@ export type PostponeAdaUpdateParams = {
 
 export const postponeAdaUpdate = (
   { ca }: PostponeAdaUpdateParams
-  ): Promise<any> => (
+): Promise<any> => (
   request({
     hostname: 'localhost',
     method: 'POST',

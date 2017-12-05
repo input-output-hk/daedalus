@@ -8,7 +8,7 @@ export type GetAdaWalletParams = {
 
 export const getAdaWallets = (
   { ca }: GetAdaWalletParams
-  ): Promise<AdaWallets> => (
+): Promise<AdaWallets> => (
   request({
     hostname: 'localhost',
     method: 'GET',

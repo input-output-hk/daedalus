@@ -24,7 +24,7 @@ export default (api: AdaApi) => {
     return { amount: new BigNumber(1000) };
   };
 
-  api.redeemPaperVendedAda = async(request: RedeemPaperVendedAdaRequest) => {
+  api.redeemPaperVendedAda = async (request: RedeemPaperVendedAdaRequest) => {
     Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) called: ' + stringifyData(request));
     const { shieldedRedemptionKey, mnemonics } = request;
     const isValidKey = await api.isValidPaperVendRedemptionKey(shieldedRedemptionKey);

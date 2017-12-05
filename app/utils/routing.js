@@ -19,7 +19,7 @@ export const buildRoute = (pattern, params) => {
     return Object.prototype.toString.call(val) !== '[object Array]' ? [val] : val;
   }
   const reRepeatingSlashes = /\/+/g; // '/some//path'
-  const reSplatParams = /\*{1,2}/g;  // '/some/*/complex/**/path'
+  const reSplatParams = /\*{1,2}/g; // '/some/*/complex/**/path'
   const reResolvedOptionalParams = /\(([^:*?#]+?)\)/g; // '/path/with/(resolved/params)'
   // '/path/with/(groups/containing/:unresolved/optional/:params)'
   const reUnresolvedOptionalParams = /\([^:?#]*:[^?#]*?\)/g;

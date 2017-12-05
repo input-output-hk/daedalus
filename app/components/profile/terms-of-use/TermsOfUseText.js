@@ -13,7 +13,7 @@ export default class TermsOfUseText extends Component<Props> {
   render() {
     return (
       <div className={styles.terms}>
-        <ReactMarkdown source={this.props.localizedTermsOfUse} />
+        <ReactMarkdown escapeHtml={false} source={this.props.localizedTermsOfUse} />
       </div>
     );
   }
