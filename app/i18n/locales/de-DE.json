@@ -98,7 +98,7 @@
   "static.about.content.daedalus.members": "!!!Alexander Rukin, Charles Hoskinson, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Tomislav Horaček",
   "static.about.copyright": "!!!2016–2017 IOHK. All rights reserved.",
   "static.about.license": "!!!MIT licence",
-  "static.about.release.version": "0.8.2",
+  "static.about.release.version": "0.8.3",
   "static.about.title": "!!!Daedalus",
   "test.environment.testnetLabel": "!!!Testnet vx",
   "wallet.add.dialog.create.description": "!!!Create a new wallet",
