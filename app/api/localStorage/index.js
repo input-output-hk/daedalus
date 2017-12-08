@@ -1,8 +1,10 @@
-import localStorage from 'electron-json-storage';
+import Store from 'electron-store';
 import environment from '../../environment';
 
+const store = new Store();
+
 const networkForLocalStorage = String(environment.NETWORK);
-const localStorageKeys = {
+const storageKeys = {
   USER_LOCALE: networkForLocalStorage + '-USER-LOCALE',
   TERMS_OF_USE_ACCEPTANCE: networkForLocalStorage + '-TERMS-OF-USE-ACCEPTANCE',
   SEND_LOGS_CHOICE: networkForLocalStorage + '-SEND-LOGS-CHOICE',
@@ -17,89 +19,107 @@ const localStorageKeys = {
 export default class LocalStorageApi {
 
   getUserLocale = () => new Promise((resolve, reject) => {
-    localStorage.get(localStorageKeys.USER_LOCALE, (error, response) => {
-      if (error) return reject(error);
-      if (!response.locale) return resolve('');
-      resolve(response.locale);
-    });
+    try {
+      const locale = store.get(storageKeys.USER_LOCALE);
+      if (!locale) return resolve('');
+      resolve(locale);
+    } catch (error) {
+      return reject(error);
+    }
   });
 
   setUserLocale = (locale: string) => new Promise((resolve, reject) => {
-    localStorage.set(localStorageKeys.USER_LOCALE, { locale }, (error) => {
-      if (error) return reject(error);
+    try {
+      store.set(storageKeys.USER_LOCALE, locale);
       resolve();
-    });
+    } catch (error) {
+      return reject(error);
+    }
   });
 
   unsetUserLocale = () => new Promise((resolve) => {
-    localStorage.remove(localStorageKeys.USER_LOCALE, () => {
+    try {
+      store.delete(storageKeys.USER_LOCALE);
       resolve();
-    });
+    } catch (error) {} // eslint-disable-line
   });
 
   getTermsOfUseAcceptance = () => new Promise((resolve, reject) => {
-    localStorage.get(localStorageKeys.TERMS_OF_USE_ACCEPTANCE, (error, response) => {
-      if (error) return reject(error);
-      if (!response.accepted) return resolve(false);
-      resolve(response.accepted);
-    });
+    try {
+      const accepted = store.get(storageKeys.TERMS_OF_USE_ACCEPTANCE);
+      if (!accepted) return resolve(false);
+      resolve(accepted);
+    } catch (error) {
+      return reject(error);
+    }
   });
 
   setTermsOfUseAcceptance = () => new Promise((resolve, reject) => {
-    localStorage.set(localStorageKeys.TERMS_OF_USE_ACCEPTANCE, { accepted: true }, (error) => {
-      if (error) return reject(error);
+    try {
+      store.set(storageKeys.TERMS_OF_USE_ACCEPTANCE, true);
       resolve();
-    });
+    } catch (error) {
+      return reject(error);
+    }
   });
 
   unsetTermsOfUseAcceptance = () => new Promise((resolve) => {
-    localStorage.remove(localStorageKeys.TERMS_OF_USE_ACCEPTANCE, () => {
+    try {
+      store.delete(storageKeys.TERMS_OF_USE_ACCEPTANCE);
       resolve();
-    });
+    } catch (error) {} // eslint-disable-line
   });
 
   getSendLogsChoice = () => new Promise((resolve, reject) => {
-    localStorage.get(localStorageKeys.SEND_LOGS_CHOICE, (error, response) => {
-      if (error) return reject(error);
-      if (typeof response.sendLogs === 'undefined') {
-        return resolve(null);
-      }
-      resolve(response.sendLogs);
-    });
+    try {
+      const sendLogs = store.get(storageKeys.SEND_LOGS_CHOICE);
+      if (typeof sendLogs === 'undefined') return resolve(null);
+      resolve(sendLogs);
+    } catch (error) {
+      return reject(error);
+    }
   });
 
   setSendLogsChoice = (sendLogs: boolean) => new Promise((resolve, reject) => {
-    localStorage.set(localStorageKeys.SEND_LOGS_CHOICE, { sendLogs }, (error) => {
-      if (error) return reject(error);
+    try {
+      store.set(storageKeys.SEND_LOGS_CHOICE, sendLogs);
       resolve();
-    });
+    } catch (error) {
+      return reject(error);
+    }
   });
 
   unsetSendLogsChoice = () => new Promise((resolve) => {
-    localStorage.remove(localStorageKeys.SEND_LOGS_CHOICE, () => {
+    try {
+      store.delete(storageKeys.SEND_LOGS_CHOICE);
       resolve();
-    });
+    } catch (error) {} // eslint-disable-line
   });
 
   getUserTheme = () => new Promise((resolve, reject) => {
-    localStorage.get(localStorageKeys.THEME, (error, response) => {
-      if (error) return reject(error);
-      if (!response.theme) return resolve('');
-      resolve(response.theme);
-    });
+    try {
+      const theme = store.get(storageKeys.THEME);
+      if (!theme) return resolve('');
+      resolve(theme);
+    } catch (error) {
+      return reject(error);
+    }
   });
 
   setUserTheme = (theme: string) => new Promise((resolve, reject) => {
-    localStorage.set(localStorageKeys.THEME, { theme }, (error) => {
-      if (error) return reject(error);
+    try {
+      store.set(storageKeys.THEME, theme);
       resolve();
-    });
+    } catch (error) {
+      return reject(error);
+    }
   });
 
   unsetUserTheme = () => new Promise((resolve) => {
-    localStorage.remove(localStorageKeys.THEME, () => {
+    try {
+      store.delete(storageKeys.THEME);
       resolve();
-    });
+    } catch (error) {} // eslint-disable-line
   });
 
   async reset() {
