@@ -56,7 +56,32 @@ let terminateAboutWindow = false;
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = process.env.NODE_ENV === 'production';
 const isTest = process.env.NODE_ENV === 'test';
+
+const isEtcApi = process.env.API === 'etc';
+const mantisCmd = process.env.MANTIS_CMD || null;
+const mantisArgs = process.env.MANTIS_ARGS || '';
+const mantisPath = process.env.MANTIS_PATH || null;
+
 const daedalusVersion = process.env.DAEDALUS_VERSION || 'dev';
+
+if (isEtcApi && mantisCmd && mantisPath) {
+  const { spawn } = require('child_process');
+  const psTree = require('ps-tree');
+
+  // Start Mantis
+  Log.info('Starting Mantis...');
+  const mantis = spawn(mantisCmd, [mantisArgs], { cwd: mantisPath, detached: true, shell: true });
+
+  // Stop Mantis (on app quit)
+  app.on('will-quit', () => {
+    Log.info('Stopping Mantis...');
+    psTree(mantis.pid, (err, children) => {
+      // Kill all Mantis child processes
+      spawn('kill', ['-9'].concat(children.map((p) => (p.PID))));
+    });
+    spawn('kill', ['-9', mantis.pid]); // Kill main Mantis process
+  });
+}
 
 if (isDev) {
   require('electron-debug')(); // eslint-disable-line global-require

@@ -17,10 +17,5 @@ module.exports = {
       name: "[name]",
       context: path.resolve(__dirname, "../app")
     }),
-    new webpack.optimize.OccurenceOrderPlugin(),
   ],
-  resolve: {
-    root: path.resolve(__dirname, "../app"),
-    modulesDirectories: ["node_modules"]
-  }
 };
