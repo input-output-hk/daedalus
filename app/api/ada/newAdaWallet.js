@@ -10,7 +10,7 @@ export type NewAdaWalletParams = {
 
 export const newAdaWallet = (
   { ca, password, walletInitData }: NewAdaWalletParams
-  ): Promise<AdaWallet> => (
+): Promise<AdaWallet> => (
   request({
     hostname: 'localhost',
     method: 'POST',

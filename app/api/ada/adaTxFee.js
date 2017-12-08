@@ -13,7 +13,7 @@ export type AdaTxFeeParams = {
 };
 
 export const adaTxFee = (
-{ ca, sender, receiver, amount, groupingPolicy }: AdaTxFeeParams
+  { ca, sender, receiver, amount, groupingPolicy }: AdaTxFeeParams
 ): Promise<AdaTransactionFee> => (
   request({
     hostname: 'localhost',

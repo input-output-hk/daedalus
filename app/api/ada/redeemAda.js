@@ -12,7 +12,7 @@ export type RedeemAdaParams = {
 };
 
 export const redeemAda = (
-{ ca, walletPassword, walletRedeemData }: RedeemAdaParams
+  { ca, walletPassword, walletRedeemData }: RedeemAdaParams
 ): Promise<AdaTransaction> => (
   request({
     hostname: 'localhost',

@@ -11,7 +11,8 @@ class CustomReferenceLine extends ReferenceLine {
     const end = endPoints[0];
     const start = endPoints[1];
     end.y += 10;
-    end.x = start.x = end.x - 7;
+    end.x -= 7;
+    start.x = end.x;
     return endPoints;
   }
 }

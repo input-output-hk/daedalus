@@ -11,7 +11,7 @@ require("classnames");
 // require("electron-debug");
 // require("electron-json-storage");
 // require("electron-log");
-require("es6-error");
+// require("es6-error");
 require("lodash");
 require("mobx");
 require("mobx-react");
