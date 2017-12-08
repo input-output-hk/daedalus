@@ -3,9 +3,15 @@ with import (import ./fetchNixpkgs.nix {
   sha256 = "1z5zp60dlr61748nlcjlka94v02misn0z3d6gb44k7c8gbi7kkmi";
 }) { config = {}; };
 let
+  master_config = {
+    daedalus_build_number = "3619";
+    cardano_rev = "0c1fab91";
+    daedalus_hash = "0w0pz93yz380xrizlsbzm9wisnf99s6z2jq0ph9xqap9cpjlyr7x";
+    cardano_hash = "1z2yjkm0qwhf588qnxcbz2d5mxvhqdxawwl8dczfnl47rb48jm52";
+  };
   darwinPackage = fetchurl {
-    url = "http://s3.eu-central-1.amazonaws.com/daedalus-travis/Daedalus-installer-1.0.3253.pkg";
-    sha256 = "13992425b5408abb60e75bcf8ae01916c2d214d921f68d923eae594ef7a080d6";
+    url = "http://s3.eu-central-1.amazonaws.com/daedalus-travis/Daedalus-installer-1.0.${master_config.daedalus_build_number}.pkg";
+    sha256 = master_config.daedalus_hash;
   };
   rawapp = pkgs.runCommand "daedalus-app" { buildInputs = with pkgs; [ xar cpio ]; } ''
     xar -xf ${darwinPackage}
@@ -20,8 +26,8 @@ let
   cardanoSrc = pkgs.fetchFromGitHub {
     owner = "input-output-hk";
     repo = "cardano-sl";
-    rev = "4b518a9db8cf171d8f509aaf3e5c8cc2dc804815";
-    sha256 = "0d33d69fscyj21ad3sh48vq95sj2d2j7abj02s1pnfrfhbcmbmyg";
+    rev = master_config.cardano_rev;
+    sha256 = master_config.cardano_hash;
   };
   cardanoPkgs = import cardanoSrc { gitrev = cardanoSrc.rev; };
   version = "1.0";
