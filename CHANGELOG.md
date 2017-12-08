@@ -6,6 +6,8 @@ Changelog
 
 ### Features
 
+- Start and stop Mantis Client from Daedalus main process ([PR 568](https://github.com/input-output-hk/daedalus/pull/568))
+
 ### Fixes
 
 ### Chores
