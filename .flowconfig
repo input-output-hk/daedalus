@@ -2,6 +2,7 @@
 .*/node_modules/fbjs/.*
 .*/node_modules/electron-packager/.*
 .*/node_modules/npm/.*
+.*/node_modules/oboe/.*
 .*/dist/.*
 .*/release/.*
 .*/git/.*

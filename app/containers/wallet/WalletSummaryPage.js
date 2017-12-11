@@ -9,7 +9,7 @@ import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
-const messages = defineMessages({
+export const messages = defineMessages({
   noTransactions: {
     id: 'wallet.summary.no.transactions',
     defaultMessage: '!!!No recent transactions',
@@ -17,11 +17,12 @@ const messages = defineMessages({
   },
 });
 
+type Props = InjectedProps;
+
 @inject('stores', 'actions') @observer
-export default class WalletSummaryPage extends Component {
+export default class WalletSummaryPage extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -29,7 +30,7 @@ export default class WalletSummaryPage extends Component {
 
   render() {
     const { intl } = this.context;
-    const { wallets, transactions } = this.props.stores;
+    const { wallets, transactions } = this.props.stores.ada;
     const {
       hasAny,
       totalAvailable,

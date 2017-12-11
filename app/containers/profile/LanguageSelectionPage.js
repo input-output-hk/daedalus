@@ -7,17 +7,17 @@ import LanguageSelectionForm from '../../components/profile/language-selection/L
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
-export default class LanguageSelectionPage extends Component {
+export default class LanguageSelectionPage extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   onSubmit = (values: { locale: string }) => {
     this.props.actions.profile.updateLocale.trigger(values);
   };
 
   render() {
-    const { setProfileLocaleRequest, LANGUAGE_OPTIONS, currentRoute } = this.props.stores.app;
+    const { currentRoute } = this.props.stores.app;
+    const { setProfileLocaleRequest, LANGUAGE_OPTIONS } = this.props.stores.profile;
     const isSubmitting = setProfileLocaleRequest.isExecuting;
     const topbar = <TopBar currentRoute={currentRoute} />;
     return (

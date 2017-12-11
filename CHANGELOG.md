@@ -6,10 +6,63 @@ Changelog
 
 ### Features
 
+- Start and stop Mantis Client from Daedalus main process ([PR 568](https://github.com/input-output-hk/daedalus/pull/568))
+
+### Fixes
+
+### Chores
+
+- Update DLL package and cleanup translation files ([PR 566](https://github.com/input-output-hk/daedalus/pull/566))
+- Replace electron-json-storage with electron-storage ([PR 579](https://github.com/input-output-hk/daedalus/pull/579))
+
+## 0.8.3
+=======
+
+### Features
+
 - Do not block the UI while wallet is being restored/imported ([PR 457](https://github.com/input-output-hk/daedalus/pull/457))
+
+### Fixes
+
+- Improved messages for update notifications ([PR 526](https://github.com/input-output-hk/daedalus/pull/526))
+
+## 0.8.2
+=======
+
+### Features
+
 - Postpone Update Api call integration ([PR 485](https://github.com/input-output-hk/daedalus/pull/485))
 - Wallet restore recovery phrase textarea replaced with React-Polymorph Autocomplete ([PR 516](https://github.com/input-output-hk/daedalus/pull/516))
 - Instructions for setting up NTP on Daedalus website ([PR 531](https://github.com/input-output-hk/daedalus/pull/531))
+
+### Fixes
+
+- Fix error message text for A to A transaction error ([PR 484](https://github.com/input-output-hk/daedalus/pull/484))
+- Fix "label prop type" checkbox issue in react-polymorph ([PR 487](https://github.com/input-output-hk/daedalus/pull/487))
+- Remove all drag and drop instructions from UI ([PR 495](https://github.com/input-output-hk/daedalus/pull/495))
+- Preferences saved to local storage prefixed with network ([PR 501](https://github.com/input-output-hk/daedalus/pull/501))
+- Disable wallet import and export features for the mainnet ([PR 503](https://github.com/input-output-hk/daedalus/pull/503))
+- Correctly prevent max-window-size in electron ([PR 532](https://github.com/input-output-hk/daedalus/pull/532))
+- Make sure wallet import and restore in-progress notification is hidden once process is done ([PR 540](https://github.com/input-output-hk/daedalus/pull/540))
+- Fix broken translation files loading ([PR 559](https://github.com/input-output-hk/daedalus/pull/559))
+- Fix async wallet import/restore issues ([PR 562](https://github.com/input-output-hk/daedalus/pull/562))
+
+### Chores
+
+- Update version in About dialog to 0.8.2 ([PR 496](https://github.com/input-output-hk/daedalus/pull/496))
+- Set Dark theme as default one for the mainnet ([PR 497](https://github.com/input-output-hk/daedalus/pull/497))
+- JS-Api integration ([PR 525](https://github.com/input-output-hk/daedalus/pull/525))
+- Only log errors to papertrail ([PR 509](https://github.com/input-output-hk/daedalus/pull/509))
+- Update MobX React Form to latest version ([PR 533](https://github.com/input-output-hk/daedalus/pull/533))
+- Update Electron, electron-devtools-installer, electron-packager and electron-rebuild to latest versions ([PR 541](https://github.com/input-output-hk/daedalus/pull/541))
+- Update flow-bin to version `0.59.0` ([PR 544](https://github.com/input-output-hk/daedalus/pull/544))
+- Cleanup and standardization of ETC Api calls ([PR 549](https://github.com/input-output-hk/daedalus/pull/549))
+- Unused vendor dependencies cleanup and DLL file optimization ([PR 555](https://github.com/input-output-hk/daedalus/pull/555))
+- Introduce `testReset` endpoint for ETC api ([PR 558](https://github.com/input-output-hk/daedalus/pull/558))
+- Update acceptance tests suite dependencies ([PR 561](https://github.com/input-output-hk/daedalus/pull/561))
+- Refactor Cardano type declarations to type folder ([PR 557](https://github.com/input-output-hk/daedalus/pull/557))
+
+## 0.8.1
 
 ### Fixes
 
@@ -17,19 +70,6 @@ Changelog
 - Fix for disabled buttons on dark-blue theme ([PR 473](https://github.com/input-output-hk/daedalus/pull/473))
 - Remove maximum screen width and height in full-screen mode ([PR 472](https://github.com/input-output-hk/daedalus/pull/472))
 - Fix "label click" dropdown issue in react-polymorph ([PR 479](https://github.com/input-output-hk/daedalus/pull/479))
-- Fix error message text for A to A transaction error ([PR 484](https://github.com/input-output-hk/daedalus/pull/484))
-- Fix "label prop type" checkbox issue in react-polymorph ([PR 487](https://github.com/input-output-hk/daedalus/pull/487))
-- Remove all drag and drop instructions from UI ([PR 495](https://github.com/input-output-hk/daedalus/pull/495))
-- Preferences saved to local storage prefixed with network ([PR 501](https://github.com/input-output-hk/daedalus/pull/501))
-- Disable wallet import and export features for the mainnet ([PR 503](https://github.com/input-output-hk/daedalus/pull/503))
-- Correctly prevent max-window-size in electron ([PR 532](https://github.com/input-output-hk/daedalus/pull/532))
-
-### Chores
-
-- Update version in About dialog to 0.8.2 ([PR 496](https://github.com/input-output-hk/daedalus/pull/496))
-- Set Dark theme as default one for the mainnet ([PR 497](https://github.com/input-output-hk/daedalus/pull/497))
-- Only log errors to papertrail ([PR 509](https://github.com/input-output-hk/daedalus/pull/509))
-- Update MobX React Form to latest version ([PR 533](https://github.com/input-output-hk/daedalus/pull/533))
 
 ## 0.8.0
 
@@ -104,7 +144,7 @@ Changelog
 - Spending password on "Send money" form
 - Optionally setting a password during wallet restore
 - Ada redemption disclaimer
-- “Terms of use” page in settings section
+- "Terms of use" page in settings section
 - Change wallet password dialog UX improvements
 - New receive screen with support for HD wallets
 - Wallet rename
@@ -215,9 +255,9 @@ Changelog
 
 - Toggling the application bar not working properly
 - UI glitch when quickly typing in Ada amounts on the send money form
-- “Add wallet” dialog does not disappear immediately after wallet creation
+- "Add wallet" dialog does not disappear immediately after wallet creation
 - Clearing correctly entered backup recovery phrase should not be possible
-- Sidebar “randomly” closes/opens when navigating
+- Sidebar "randomly" closes/opens when navigating
 - Ada redemption overlay should also cover the wallet navigation
 - No transactions message is not vertically centered on Transactions page
 - Transactions ordering
@@ -231,12 +271,12 @@ Changelog
 
 ### Features
 
-- Infinite loading for transaction list, testable with “Main wallet”
+- Infinite loading for transaction list, testable with "Main wallet"
 - Simple transaction search by title
 - Adding new personal wallet via sidebar menu
 - Profile settings screen
-- “No transactions” message for wallets with no transactions
-- “No transactions found” message when transaction search returns no results
+- "No transactions" message for wallets with no transactions
+- "No transactions found" message when transaction search returns no results
 - Loading indicator on application startup
 
 ### Fixes

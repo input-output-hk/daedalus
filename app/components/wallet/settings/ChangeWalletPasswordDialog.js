@@ -7,10 +7,10 @@ import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import { defineMessages, intlShape } from 'react-intl';
-import ReactToolboxMobxForm from '../../../lib/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-import { isValidWalletPassword, isValidRepeatPassword } from '../../../lib/validations';
+import { isValidWalletPassword, isValidRepeatPassword } from '../../../utils/validations';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './ChangeWalletPasswordDialog.scss';
@@ -73,21 +73,25 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class ChangeWalletPasswordDialog extends Component {
+type Props = {
+  isWalletPasswordSet: boolean,
+  currentPasswordValue: string,
+  newPasswordValue: string,
+  repeatedPasswordValue: string,
+  onSave: Function,
+  onCancel: Function,
+  onDataChange: Function,
+  onPasswordSwitchToggle: Function,
+  isSubmitting: boolean,
+  error: ?LocalizableError,
+};
 
-  props: {
-    isWalletPasswordSet: boolean,
-    currentPasswordValue: string,
-    newPasswordValue: string,
-    repeatedPasswordValue: string,
-    onSave: Function,
-    onCancel: Function,
-    onDataChange: Function,
-    onPasswordSwitchToggle: Function,
-    isSubmitting: boolean,
-    error: ?LocalizableError,
-  };
+type State = {
+  removePassword: boolean,
+};
+
+@observer
+export default class ChangeWalletPasswordDialog extends Component<Props, State> {
 
   static defaultProps = {
     currentPasswordValue: '',

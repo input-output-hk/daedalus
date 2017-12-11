@@ -6,12 +6,13 @@ import ExportPaperWalletMnemonicDialog from '../../../../components/wallet/setti
 import WalletExportDialog from '../../../../components/wallet/settings/export-to-file/WalletExportToFileDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 
+type Props = InjectedDialogContainerProps;
+
 @inject('stores', 'actions') @observer
-export default class ExportPaperWalletPrinterCopyDialogContainer extends Component {
+// eslint-disable-next-line max-len
+export default class ExportPaperWalletPrinterCopyDialogContainer extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
-
-  props: InjectedDialogContainerProps;
 
   onContinue = () => {
     this.props.actions.dialogs.open.trigger({

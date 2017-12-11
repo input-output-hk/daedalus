@@ -21,14 +21,14 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class ExportPaperWalletCertificateDialog extends Component {
+type Props = {
+  onFinish: Function,
+  onClose: Function,
+  onBack: Function,
+};
 
-  props: {
-    onFinish: Function,
-    onClose: Function,
-    onBack: Function,
-  };
+@observer
+export default class ExportPaperWalletCertificateDialog extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

@@ -27,13 +27,13 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class SystemTimeErrorOverlay extends Component {
+type Props = {
+  localTimeDifference: number,
+  currentLocale?: string,
+};
 
-  props: {
-    localTimeDifference: number,
-    currentLocale: string,
-  }
+@observer
+export default class SystemTimeErrorOverlay extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

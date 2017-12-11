@@ -5,12 +5,12 @@ import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import styles from './StakingSwitch.scss';
 
-@observer
-export default class StakingSwitch extends Component {
+type Props = {
+  active: boolean,
+};
 
-  props: {
-    active: boolean,
-  };
+@observer
+export default class StakingSwitch extends Component<Props> {
 
   handleChange = () => {};
 

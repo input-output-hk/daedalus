@@ -3,17 +3,17 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ChangeWalletPasswordDialog from '../../../components/wallet/settings/ChangeWalletPasswordDialog';
 import type { InjectedProps } from '../../../types/injectedPropsType';
+import environment from '../../../environment';
 
 @inject('actions', 'stores') @observer
-export default class ChangeWalletPasswordDialogContainer extends Component {
+export default class ChangeWalletPasswordDialogContainer extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
 
-  props: InjectedProps;
-
   render() {
     const { actions } = this.props;
-    const { wallets, walletSettings, uiDialogs } = this.props.stores;
+    const { uiDialogs } = this.props.stores;
+    const { wallets, walletSettings } = this.props.stores[environment.API];
     const dialogData = uiDialogs.dataForActiveDialog;
     const { updateDataForActiveDialog } = actions.dialogs;
     const activeWallet = wallets.active;
@@ -30,7 +30,7 @@ export default class ChangeWalletPasswordDialogContainer extends Component {
         onSave={(values: { oldPassword: string, newPassword: string }) => {
           const walletId = activeWallet.id;
           const { oldPassword, newPassword } = values;
-          actions.walletSettings.updateWalletPassword.trigger({
+          actions[environment.API].walletSettings.updateWalletPassword.trigger({
             walletId, oldPassword, newPassword
           });
         }}

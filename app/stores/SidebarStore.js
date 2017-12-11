@@ -1,19 +1,19 @@
 // @flow
 import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
+import resolver from '../utils/imports';
 import { ROUTES } from '../routes-config';
-import { DECIMAL_PLACES_IN_ADA } from '../config/numbersConfig';
-import { matchRoute } from './../lib/routing-helpers';
+import { matchRoute } from '../utils/routing';
+import environment from '../environment';
+
+const sidebarConfig = resolver('config/sidebarConfig');
+const { formattedWalletAmount } = resolver('utils/formatters');
 
 export default class SidebarStore extends Store {
 
-  CATEGORIES = {
-    WALLETS: ROUTES.WALLETS.ROOT,
-    ADA_REDEMPTION: ROUTES.ADA_REDEMPTION,
-    SETTINGS: ROUTES.SETTINGS.ROOT,
-  };
+  CATEGORIES = sidebarConfig.CATEGORIES;
 
-  @observable activeSidebarCategory: string = this.CATEGORIES.WALLETS;
+  @observable activeSidebarCategory: string = this.CATEGORIES[0].route;
   @observable isShowingSubMenus: boolean = true;
 
   setup() {
@@ -28,11 +28,12 @@ export default class SidebarStore extends Store {
   }
 
   @computed get wallets(): Array<SidebarWalletType> {
-    const { wallets, networkStatus } = this.stores;
+    const { networkStatus } = this.stores;
+    const { wallets } = this.stores[environment.API];
     return wallets.all.map(w => ({
       id: w.id,
       title: w.name,
-      info: `${w.amount.toFormat(DECIMAL_PLACES_IN_ADA)} ADA`,
+      info: formattedWalletAmount(w.amount),
       isConnected: networkStatus.isConnected,
     }));
   }
@@ -56,7 +57,7 @@ export default class SidebarStore extends Store {
   };
 
   @action _onWalletSelected = ({ walletId }: { walletId: string }) => {
-    this.stores.wallets.goToWalletRoute(walletId);
+    this.stores[environment.API].wallets.goToWalletRoute(walletId);
   };
 
   @action _setActivateSidebarCategory = (category: string) => {
@@ -69,10 +70,9 @@ export default class SidebarStore extends Store {
 
   _syncSidebarRouteWithRouter = () => {
     const route = this.stores.app.currentRoute;
-    Object.keys(this.CATEGORIES).forEach((key) => {
-      const category = this.CATEGORIES[key];
+    this.CATEGORIES.forEach((category) => {
       // If the current route starts with the root of the category
-      if (route.indexOf(category) === 0) this._setActivateSidebarCategory(category);
+      if (route.indexOf(category.route) === 0) this._setActivateSidebarCategory(category.route);
     });
   };
 

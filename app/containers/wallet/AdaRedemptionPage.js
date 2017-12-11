@@ -9,14 +9,15 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import validWords from '../../../lib/valid-words.en';
 import environment from '../../environment';
 
+type Props = InjectedProps;
+
 @inject('stores', 'actions') @observer
-export default class AdaRedemptionPage extends Component {
+export default class AdaRedemptionPage extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedProps;
 
   onSubmit = (values: { walletId: string, walletPassword: ?string }) => {
-    this.props.actions.adaRedemption.redeemAda.trigger(values);
+    this.props.actions.ada.adaRedemption.redeemAda.trigger(values);
   };
 
   onSubmitPaperVended = (values: {
@@ -24,11 +25,11 @@ export default class AdaRedemptionPage extends Component {
     shieldedRedemptionKey: string,
     walletPassword: ?string,
   }) => {
-    this.props.actions.adaRedemption.redeemPaperVendedAda.trigger(values);
+    this.props.actions.ada.adaRedemption.redeemPaperVendedAda.trigger(values);
   };
 
   render() {
-    const { wallets, adaRedemption } = this.props.stores;
+    const { wallets, adaRedemption } = this.props.stores.ada;
     const {
       redeemAdaRequest, redeemPaperVendedAdaRequest, isCertificateEncrypted, isValidRedemptionKey,
       redemptionType, isValidRedemptionMnemonic, isValidPaperVendRedemptionKey,
@@ -37,7 +38,7 @@ export default class AdaRedemptionPage extends Component {
     const {
       chooseRedemptionType, setCertificate, setPassPhrase, setRedemptionCode, removeCertificate,
       setEmail, setAdaPasscode, setAdaAmount, acceptRedemptionDisclaimer
-    } = this.props.actions.adaRedemption;
+    } = this.props.actions.ada.adaRedemption;
     const selectableWallets = wallets.all.map((w) => ({
       value: w.id, label: w.name
     }));

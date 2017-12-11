@@ -4,12 +4,12 @@ import { observer, inject } from 'mobx-react';
 import PaperWalletImportDialog from '../../../components/wallet/PaperWalletImportDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
+type Props = InjectedDialogContainerProps;
+
 @inject('stores') @observer
-export default class PaperWalletImportDialogContainer extends Component {
+export default class PaperWalletImportDialogContainer extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
-
-  props: InjectedDialogContainerProps;
 
   onSubmit = () => {
     // TODO - call proper method to store paper wallet
@@ -21,7 +21,7 @@ export default class PaperWalletImportDialogContainer extends Component {
   };
 
   render() {
-    const { wallets } = this.props.stores;
+    const { wallets } = this.props.stores.ada;
 
     return (
       <PaperWalletImportDialog

@@ -3,7 +3,6 @@
  */
 
 const path = require('path');
-const fs = require('fs');
 const validate = require('webpack-validator');
 const webpack = require('webpack');
 
@@ -52,8 +51,8 @@ module.exports = validate({
 
   plugins: [
     new webpack.DefinePlugin({
+      'process.env.API': JSON.stringify(process.env.API || 'ada'),
       'process.env.NETWORK': JSON.stringify(process.env.NETWORK || 'development'),
-      'process.env.CARDANO_API': process.env.CARDANO_API || 1,
       'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
       'process.env.DAEDALUS_VERSION': JSON.stringify(process.env.DAEDALUS_VERSION || 'dev')
     }),
@@ -62,6 +61,7 @@ module.exports = validate({
   externals: [
     // put your node 3rd party libraries which can't be built with webpack here
     // (mysql, mongodb, and so on..)
+    'electron-store',
   ],
 
 });

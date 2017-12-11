@@ -4,17 +4,16 @@ import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import styles from './SidebarWalletMenuItem.scss';
 
+type Props = {
+  title: string,
+  info: string,
+  active: boolean,
+  className: string,
+  onClick: Function,
+};
+
 @observer
-export default class SidebarWalletMenuItem extends Component {
-
-  props: {
-    title: string,
-    info: string,
-    active: boolean,
-    className: string,
-    onClick: Function,
-  };
-
+export default class SidebarWalletMenuItem extends Component<Props> {
   render() {
     const { title, info, active, className, onClick } = this.props;
     const componentStyles = classNames([

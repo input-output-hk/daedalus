@@ -31,17 +31,17 @@ const messages = defineMessages({
   }
 });
 
-@observer
-export default class WalletBackupPrivacyWarningDialog extends Component {
+type Props = {
+  countdownRemaining: number,
+  canPhraseBeShown: boolean,
+  isPrivacyNoticeAccepted: boolean,
+  onAcceptPrivacyNotice: Function,
+  onContinue: Function,
+  onCancelBackup: Function,
+};
 
-  props: {
-    countdownRemaining: number,
-    canPhraseBeShown: boolean,
-    isPrivacyNoticeAccepted: boolean,
-    onAcceptPrivacyNotice: Function,
-    onContinue: Function,
-    onCancelBackup: Function,
-  };
+@observer
+export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

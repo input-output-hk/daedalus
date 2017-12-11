@@ -1,27 +1,29 @@
 // @flow
 import React, { Component } from 'react';
 import SvgInline from 'react-svg-inline';
-import type { Children } from 'react';
+import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
-import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import Wallet from '../../domain/Wallet';
 import menuIconOpened from '../../assets/images/menu-opened-ic.inline.svg';
 import menuIconClosed from '../../assets/images/menu-ic.inline.svg';
 import styles from './TopBar.scss';
-import { matchRoute } from '../../lib/routing-helpers';
+import resolver from '../../utils/imports';
+import { matchRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 
-@observer
-export default class TopBar extends Component {
+const { formattedWalletAmount } = resolver('utils/formatters');
 
-  props: {
-    onToggleSidebar?: ?Function,
-    children?: ?Children,
-    activeWallet?: ?Wallet,
-    currentRoute: string,
-    showSubMenus?: ?boolean,
-  };
+type Props = {
+  onToggleSidebar?: ?Function,
+  children?: ?Node,
+  activeWallet?: ?Wallet,
+  currentRoute: string,
+  showSubMenus?: ?boolean,
+};
+
+@observer
+export default class TopBar extends Component<Props> {
 
   render() {
     const { onToggleSidebar, activeWallet, currentRoute, showSubMenus } = this.props;
@@ -36,7 +38,10 @@ export default class TopBar extends Component {
       <div className={styles.walletInfo}>
         <div className={styles.walletName}>{activeWallet.name}</div>
         <div className={styles.walletAmount}>
-          {activeWallet.amount.toFormat(DECIMAL_PLACES_IN_ADA) + ' ADA'}
+          {
+            // show currency and use long format (e.g. in ETC show all decimal places)
+            formattedWalletAmount(activeWallet.amount, true, true)
+          }
         </div>
       </div>
     ) : null;

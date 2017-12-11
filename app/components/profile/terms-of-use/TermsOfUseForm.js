@@ -24,15 +24,19 @@ const messages = defineMessages({
   },
 });
 
-@observer
-export default class TermsOfUseForm extends Component {
+type Props = {
+  localizedTermsOfUse: string,
+  onSubmit: Function,
+  isSubmitting: boolean,
+  error?: ?LocalizableError,
+};
 
-  props: {
-    localizedTermsOfUse: string,
-    onSubmit: Function,
-    isSubmitting: boolean,
-    error?: ?LocalizableError,
-  };
+type State = {
+  areTermsOfUseAccepted: boolean,
+};
+
+@observer
+export default class TermsOfUseForm extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

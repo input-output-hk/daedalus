@@ -5,25 +5,27 @@ import MainLayout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import AdaRedemptionSuccessOverlay from '../../components/wallet/ada-redemption/AdaRedemptionSuccessOverlay';
-import { buildRoute } from '../../lib/routing-helpers';
+import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 
+type Props = InjectedContainerProps;
+
 @inject('stores', 'actions') @observer
-export default class Wallet extends Component {
+export default class Wallet extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
-  props: InjectedContainerProps;
 
   isActiveScreen = (page: string) => {
-    const { app, wallets } = this.props.stores;
+    const { app } = this.props.stores;
+    const { wallets } = this.props.stores.ada;
     if (!wallets.active) return false;
     const screenRoute = buildRoute(ROUTES.WALLETS.PAGE, { id: wallets.active.id, page });
     return app.currentRoute === screenRoute;
   };
 
   handleWalletNavItemClick = (page: string) => {
-    const { wallets } = this.props.stores;
+    const { wallets } = this.props.stores.ada;
     if (!wallets.active) return;
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.WALLETS.PAGE,
@@ -32,7 +34,7 @@ export default class Wallet extends Component {
   };
 
   render() {
-    const { wallets, adaRedemption } = this.props.stores;
+    const { wallets, adaRedemption } = this.props.stores.ada;
     const { actions } = this.props;
     const { showAdaRedemptionSuccessMessage, amountRedeemed } = adaRedemption;
     if (!wallets.active) return <MainLayout><LoadingSpinner /></MainLayout>;
@@ -47,7 +49,7 @@ export default class Wallet extends Component {
         {showAdaRedemptionSuccessMessage ? (
           <AdaRedemptionSuccessOverlay
             amount={amountRedeemed}
-            onClose={actions.adaRedemption.closeAdaRedemptionSuccessOverlay.trigger}
+            onClose={actions.ada.adaRedemption.closeAdaRedemptionSuccessOverlay.trigger}
           />
         ) : null}
       </MainLayout>

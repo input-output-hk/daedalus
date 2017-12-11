@@ -5,32 +5,33 @@ import WalletBackupPrivacyWarningDialog from '../../components/wallet/backup-rec
 import WalletRecoveryPhraseDisplayDialog from '../../components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog';
 import WalletRecoveryPhraseEntryDialog from '../../components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog';
 
-@observer
-export default class WalletBackupDialog extends Component {
+type Props = {
+  currentStep: ?string,
+  canPhraseBeShown: boolean,
+  isPrivacyNoticeAccepted: boolean,
+  countdownRemaining: number,
+  isTermDeviceAccepted: boolean,
+  canFinishBackup: boolean,
+  isTermRecoveryAccepted: boolean,
+  isValid: boolean,
+  isSubmitting: boolean,
+  recoveryPhrase: string,
+  recoveryPhraseShuffled: Array<{ word: string, isActive: boolean }>,
+  enteredPhrase: Array<{ word: string }>,
+  onCancelBackup: Function,
+  onAcceptPrivacyNotice: Function,
+  onContinue: Function,
+  onStartWalletBackup: Function,
+  onAcceptTermDevice: Function,
+  onAcceptTermRecovery: Function,
+  onAddWord: Function,
+  onClear: Function,
+  onFinishBackup: Function,
+  onRestartBackup: Function,
+};
 
-  props: {
-    currentStep: ?string,
-    canPhraseBeShown: boolean,
-    isPrivacyNoticeAccepted: boolean,
-    countdownRemaining: number,
-    isTermDeviceAccepted: boolean,
-    canFinishBackup: boolean,
-    isTermRecoveryAccepted: boolean,
-    isValid: boolean,
-    recoveryPhrase: string,
-    recoveryPhraseShuffled: Array<{ word: string, isActive: boolean }>,
-    enteredPhrase: Array<{ word: string }>,
-    onCancelBackup: Function,
-    onAcceptPrivacyNotice: Function,
-    onContinue: Function,
-    onStartWalletBackup: Function,
-    onAcceptTermDevice: Function,
-    onAcceptTermRecovery: Function,
-    onAddWord: Function,
-    onClear: Function,
-    onFinishBackup: Function,
-    onRestartBackup: Function,
-  };
+@observer
+export default class WalletBackupDialog extends Component<Props> {
 
   render() {
     const {
@@ -40,7 +41,7 @@ export default class WalletBackupDialog extends Component {
       onContinue, recoveryPhrase,
       onStartWalletBackup, isTermDeviceAccepted,
       enteredPhrase, canFinishBackup,
-      isTermRecoveryAccepted, isValid,
+      isTermRecoveryAccepted, isValid, isSubmitting,
       onAcceptTermDevice, onAcceptTermRecovery,
       onAddWord, onClear, onFinishBackup,
       onRestartBackup, recoveryPhraseShuffled,
@@ -77,6 +78,7 @@ export default class WalletBackupDialog extends Component {
           canFinishBackup={canFinishBackup}
           isTermRecoveryAccepted={isTermRecoveryAccepted}
           isValid={isValid}
+          isSubmitting={isSubmitting}
           onAcceptTermDevice={onAcceptTermDevice}
           onAcceptTermRecovery={onAcceptTermRecovery}
           onAddWord={onAddWord}

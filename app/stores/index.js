@@ -1,72 +1,57 @@
 // @flow
 import { observable, action } from 'mobx';
 import AppStore from './AppStore';
-import SettingsStore from './SettingsStore';
-import WalletsStore from './WalletsStore';
-import TransactionsStore from './TransactionsStore';
+import ProfileStore from './ProfileStore';
+import WalletBackupStore from './WalletBackupStore';
 import SidebarStore from './SidebarStore';
 import WindowStore from './WindowStore';
-import WalletBackupStore from './WalletBackupStore';
-import NetworkStatusStore from './NetworkStatusStore';
-import AdaRedemptionStore from './AdaRedemptionStore';
-import NodeUpdateStore from './NodeUpdateStore';
-import WalletSettingsStore from './WalletSettingsStore';
 import UiDialogsStore from './UiDialogsStore';
 import UiNotificationsStore from './UiNotificationsStore';
-import AddressesStore from './AddressesStore';
+import NetworkStatusStore from './NetworkStatusStore';
+import setupAdaStores from './ada/index';
+import setupEtcStores from './etc/index';
+import type { AdaStoresMap } from './ada/index';
+import type { EtcStoresMap } from './etc/index';
+import environment from '../environment';
 
 export const storeClasses = {
+  profile: ProfileStore,
   app: AppStore,
-  settings: SettingsStore,
-  wallets: WalletsStore,
-  transactions: TransactionsStore,
   sidebar: SidebarStore,
-  window: WindowStore,
   walletBackup: WalletBackupStore,
-  networkStatus: NetworkStatusStore,
-  adaRedemption: AdaRedemptionStore,
-  nodeUpdate: NodeUpdateStore,
-  walletSettings: WalletSettingsStore,
+  window: WindowStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
-  addresses: AddressesStore,
+  networkStatus: NetworkStatusStore,
 };
 
 export type StoresMap = {
+  profile: ProfileStore,
   app: AppStore,
   router: Object,
-  settings: SettingsStore,
-  wallets: WalletsStore,
-  transactions: TransactionsStore,
   sidebar: SidebarStore,
-  window: WindowStore,
   walletBackup: WalletBackupStore,
-  networkStatus: NetworkStatusStore,
-  adaRedemption: AdaRedemptionStore,
-  nodeUpdate: NodeUpdateStore,
-  walletSettings: WalletSettingsStore,
+  window: WindowStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
-  addresses: AddressesStore,
+  networkStatus: NetworkStatusStore,
+  ada: AdaStoresMap,
+  etc: EtcStoresMap,
 };
 
 // Constant that does never change during lifetime
 const stores = observable({
+  profile: null,
   router: null,
   app: null,
-  settings: null,
-  wallets: null,
-  transactions: null,
   sidebar: null,
-  window: null,
   walletBackup: null,
-  networkStatus: null,
-  adaRedemption: null,
-  nodeUpdate: null,
-  walletSettings: null,
+  window: null,
   uiDialogs: null,
   uiNotifications: null,
-  addresses: null,
+  networkStatus: null,
+  ada: null,
+  etc: null,
 });
 
 // Set up and return the stores for this app -> also used to reset all stores to defaults
@@ -78,5 +63,10 @@ export default action((api, actions, router): StoresMap => {
   storeNames.forEach(name => { if (stores[name]) stores[name].teardown(); });
   storeNames.forEach(name => { stores[name] = new storeClasses[name](stores, api, actions); });
   storeNames.forEach(name => { if (stores[name]) stores[name].initialize(); });
+
+  // Add currency specific stores
+  if (environment.API === 'ada') stores.ada = setupAdaStores(stores, api, actions);
+  if (environment.API === 'etc') stores.etc = setupEtcStores(stores, api, actions);
+
   return stores;
 });

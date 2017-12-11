@@ -43,24 +43,25 @@ const messages = defineMessages({
   }
 });
 
-@observer
-export default class WalletRecoveryPhraseEntryDialog extends Component {
+type Props = {
+  recoveryPhraseShuffled: Array<{ word: string, isActive: boolean }>,
+  enteredPhrase: Array<{ word: string }>,
+  isValid: boolean,
+  isTermDeviceAccepted: boolean,
+  isTermRecoveryAccepted: boolean,
+  isSubmitting: boolean,
+  onAddWord: Function,
+  canFinishBackup: boolean,
+  onClear: Function,
+  onAcceptTermDevice: Function,
+  onAcceptTermRecovery: Function,
+  onRestartBackup: Function,
+  onCancelBackup: Function,
+  onFinishBackup: Function,
+};
 
-  props: {
-    recoveryPhraseShuffled: Array<{ word: string, isActive: boolean }>,
-    enteredPhrase: Array<{ word: string }>,
-    isValid: boolean,
-    isTermDeviceAccepted: boolean,
-    isTermRecoveryAccepted: boolean,
-    onAddWord: Function,
-    canFinishBackup: boolean,
-    onClear: Function,
-    onAcceptTermDevice: Function,
-    onAcceptTermRecovery: Function,
-    onRestartBackup: Function,
-    onCancelBackup: Function,
-    onFinishBackup: Function,
-  };
+@observer
+export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -74,6 +75,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
       isValid,
       isTermDeviceAccepted,
       isTermRecoveryAccepted,
+      isSubmitting,
       onAddWord,
       onClear,
       onAcceptTermDevice,
@@ -93,6 +95,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component {
     const actions = [];
 
     actions.push({
+      className: isSubmitting ? styles.isSubmitting : null,
       label: intl.formatMessage(messages.buttonLabelConfirm),
       onClick: onFinishBackup,
       disabled: !canFinishBackup,
