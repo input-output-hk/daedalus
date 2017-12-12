@@ -39,10 +39,9 @@ export default (api: AdaApi) => {
     return { amount: new BigNumber(1000) };
   };
 
-  api.getLocalTimeDifference = async () => {
-    const response = Promise.resolve(LOCAL_TIME_DIFFERENCE);
-    return response;
-  };
+  api.getLocalTimeDifference = async () => (
+    Promise.resolve(LOCAL_TIME_DIFFERENCE)
+  );
 
   api.setLocalTimeDifference = async (timeDifference) => {
     LOCAL_TIME_DIFFERENCE = timeDifference;

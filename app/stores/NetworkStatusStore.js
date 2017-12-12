@@ -145,6 +145,14 @@ export default class NetworkStatusStore extends Store {
     );
   }
 
+  @computed get isSetupPage(): boolean {
+    return (
+      this.stores.app.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
+      this.stores.app.currentRoute === ROUTES.PROFILE.TERMS_OF_USE ||
+      this.stores.app.currentRoute === ROUTES.PROFILE.SEND_LOGS
+    );
+  }
+
   @action _updateSyncProgress = async () => {
     try {
       const difficulty = await this.syncProgressRequest.execute().promise;
@@ -235,9 +243,7 @@ export default class NetworkStatusStore extends Store {
     if (
       this.localTimeDifference > this.ALLOWED_TIME_DIFFERENCE &&
       !this.isSynced &&
-      this.stores.app.currentRoute !== ROUTES.PROFILE.LANGUAGE_SELECTION &&
-      this.stores.app.currentRoute !== ROUTES.PROFILE.TERMS_OF_USE &&
-      this.stores.app.currentRoute !== ROUTES.PROFILE.SEND_LOGS
+      !this.isSetupPage
     ) {
       this._updateSyncProgress();
       this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });

@@ -680,13 +680,13 @@ export default class AdaApi {
   }
 
   async getLocalTimeDifference(): Promise<GetLocalTimeDifferenceResponse> {
-    Logger.debug('AdaApi::getWallets called');
+    Logger.debug('AdaApi::getLocalTimeDifference called');
     try {
       const response: AdaLocalTimeDifference = await getAdaLocalTimeDifference({ ca });
       Logger.debug('AdaApi::getLocalTimeDifference success: ' + stringifyData(response));
       return response;
     } catch (error) {
-      Logger.error('AdaApi::getWallets error: ' + stringifyError(error));
+      Logger.error('AdaApi::getLocalTimeDifference error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
