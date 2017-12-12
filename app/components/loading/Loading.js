@@ -47,9 +47,9 @@ type Props = {
   loadingDataForNextScreenMessage: ReactIntlMessage,
   hasLoadedCurrentLocale: boolean,
   hasLoadedCurrentTheme: boolean,
-  localTimeDifference?: number,
-  allowedTimeDifference?: number,
-  currentLocale?: string,
+  localTimeDifference: number,
+  allowedTimeDifference: number,
+  currentLocale: string,
 };
 
 @observer
@@ -114,14 +114,12 @@ export default class Loading extends Component<Props> {
                     {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
                   </h1>
                 </div>
-                {(typeof localTimeDifference !== 'undefined' &&
-                  typeof allowedTimeDifference !== 'undefined' &&
-                  localTimeDifference > allowedTimeDifference) &&
+                {(localTimeDifference > allowedTimeDifference) && (
                   <SystemTimeErrorOverlay
                     localTimeDifference={localTimeDifference}
                     currentLocale={currentLocale}
                   />
-                }
+                )}
               </div>
             )}
             {!isSyncing && !isConnecting && isLoadingDataForNextScreen && (

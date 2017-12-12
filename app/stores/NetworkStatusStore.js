@@ -40,7 +40,7 @@ export default class NetworkStatusStore extends Store {
     this.api[environment.API].getSyncProgress
   );
   @observable localTimeDifferenceRequest: Request<GetLocalTimeDifferenceResponse> = new Request(
-    this.api[environment.API].getLocalTimeDifference
+    this.api.ada.getLocalTimeDifference
   );
   @observable _localDifficultyStartedWith = null;
 
@@ -56,7 +56,7 @@ export default class NetworkStatusStore extends Store {
       this._redirectToSyncingWhenLocalTimeDifferent,
     ]);
     this._pollSyncProgress();
-    this._pollLocalTimeDifference();
+    if (environment.isAdaApi()) this._pollLocalTimeDifference();
   }
 
   teardown() {
@@ -125,6 +125,7 @@ export default class NetworkStatusStore extends Store {
   }
 
   @computed get isSystemTimeCorrect(): boolean {
+    if (!environment.isAdaApi()) return true;
     return (
       this.localTimeDifferenceRequest.wasExecuted &&
       this.localTimeDifferenceRequest.result <= this.ALLOWED_TIME_DIFFERENCE
@@ -140,7 +141,7 @@ export default class NetworkStatusStore extends Store {
       !this.isConnecting &&
       this.hasBlockSyncingStarted &&
       this.relativeSyncBlocksDifference <= OUT_OF_SYNC_BLOCKS_LIMIT &&
-      (environment.isAdaApi ? this.isSystemTimeCorrect : true)
+      this.isSystemTimeCorrect
     );
   }
 
@@ -185,10 +186,8 @@ export default class NetworkStatusStore extends Store {
   }
 
   _pollLocalTimeDifference() {
-    if (environment.isAdaApi) {
-      setInterval(this._updateLocalTimeDifference, TIME_DIFF_POLL_INTERVAL);
-      this._updateLocalTimeDifference();
-    }
+    setInterval(this._updateLocalTimeDifference, TIME_DIFF_POLL_INTERVAL);
+    this._updateLocalTimeDifference();
   }
 
   _pollSyncProgress() {
