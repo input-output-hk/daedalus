@@ -114,6 +114,8 @@
   "static.about.content.cardano.members": "Alexander Sukhoverkhov, Alexander Vieth, Alexandre Rodrigues Baldé, Alfredo Di Napoli, Anastasiya Besman, Andrzej Rybczak, Ante Kegalj, Anton Belyy, Anupam Jain, Arseniy Seroka, Artyom Kazak, Carlos D'Agostino, Charles Hoskinson, Dan Friedman, Denis Shevchenko, Dmitry Kovanikov, Dmitry Mukhutdinov, Dmitry Nikulin, Domen Kožar, Duncan Coutts, Edsko de Vries, Eileen Fitzgerald, George Agapov, Hiroto Shioi, Ilya Lubimov, Ilya Peresadin, Ivan Gromakovskii, Jake Mitchell, Jane Wild, Jens Krause, Jeremy Wood, Joel Mislov Kunst, Jonn Mostovoy, Konstantin Ivanov, Kristijan Šarić, Lars Brünjes, Laurie Wang, Lionel Miller, Michael Bishop, Mikhail Volkhov, Niklas Hambüchen, Peter Gaži, Philipp Kant, Serge Kosyrev, Vincent Hanquez",
   "static.about.content.daedalus.headline": "Daedalus Team:",
   "static.about.content.daedalus.members": "Alexander Rukin, Charles Hoskinson, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Tomislav Horaček",
+  "static.about.content.mantis.headline": "Mantis Team:",
+  "static.about.content.mantis.members": "Alan Verbner, Nicolas Taller, Lukasz Gasior, Radek Tkaczyk, Konrad Staniec, Mirko Alic, Javier Diaz, Adam Smolarek, Jan Ziniewicz, Alejandro Garcia, Alan McSherry",
   "static.about.copyright": "Input Output HK Limited. Licensed under",
   "static.about.license": "MIT licence",
   "static.about.release.version": "0.8.3",
