@@ -5,7 +5,6 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import LoadingSpinner from '../widgets/LoadingSpinner';
-import daedalusLogoWhite from '../../assets/images/daedalus-logo-loading-white.inline.svg';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import styles from './Loading.scss';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
@@ -36,9 +35,7 @@ const messages = defineMessages({
 
 type Props = {
   currencyIcon: string,
-  currencyIconWhite: string,
   nodeIcon: string,
-  nodeIconWhite: string,
   isConnecting: boolean,
   hasBeenConnected: boolean,
   hasBlockSyncingStarted: boolean,
@@ -61,7 +58,6 @@ export default class Loading extends Component<Props> {
     const { intl } = this.context;
     const {
       currencyIcon,
-      currencyIconWhite,
       nodeIcon,
       // isConnecting,
       // isSyncing,
@@ -101,8 +97,8 @@ export default class Loading extends Component<Props> {
       isConnecting ? styles.connectingLogo : styles.syncingLogo,
     ]);
 
-    const daedalusLoadingLogo = isConnecting ? daedalusLogoWhite : daedalusLogo;
-    const currencyLoadingLogo = isConnecting ? currencyIconWhite : currencyIcon;
+    const daedalusLoadingLogo = daedalusLogo;
+    const currencyLoadingLogo = currencyIcon;
     const nodeLoadingLogo = nodeIcon;
 
     const connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
