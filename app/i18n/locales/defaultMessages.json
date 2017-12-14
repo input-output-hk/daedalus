@@ -184,13 +184,13 @@
         "description": "Message \"Connecting to network\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.connectingToNetworkMessage",
         "start": {
           "column": 14,
-          "line": 15
+          "line": 16
         }
       },
       {
@@ -198,13 +198,13 @@
         "description": "Message \"Connected - waiting for block syncing to start\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.waitingForSyncToStart",
         "start": {
           "column": 25,
-          "line": 20
+          "line": 21
         }
       },
       {
@@ -212,13 +212,13 @@
         "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 25
+          "line": 26
         }
       },
       {
@@ -226,17 +226,64 @@
         "description": "Message \"Syncing blocks\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.syncingBlocksMessage",
         "start": {
           "column": 11,
-          "line": 30
+          "line": 31
         }
       }
     ],
     "path": "app/components/loading/Loading.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Daedalus Sync Error",
+        "description": "Title of Sync error overlay",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "app/components/loading/SystemTimeErrorOverlay.js",
+        "id": "systemTime.error.overlayTitle",
+        "start": {
+          "column": 16,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!ATTENTION: Time of your machine is different from global time. You are 2 hours 12 minutes 54 seconds behind. You need to fix issue, because you are gonna be unable to sync system!",
+        "description": "Text of Sync error overlay",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "app/components/loading/SystemTimeErrorOverlay.js",
+        "id": "systemTime.error.overlayText",
+        "start": {
+          "column": 15,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!See problem solutions",
+        "description": "Button label of Sync error overlay",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "app/components/loading/SystemTimeErrorOverlay.js",
+        "id": "systemTime.error.overlayButtonLabel",
+        "start": {
+          "column": 15,
+          "line": 23
+        }
+      }
+    ],
+    "path": "app/components/loading/SystemTimeErrorOverlay.json"
   },
   {
     "descriptors": [

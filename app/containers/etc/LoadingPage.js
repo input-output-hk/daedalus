@@ -18,15 +18,18 @@ export default class LoadingPage extends Component<Props> {
     const { stores } = this.props;
     const {
       isConnecting, isSyncing, syncPercentage, isLoadingWallets,
-      hasBeenConnected, hasBlockSyncingStarted,
+      hasBeenConnected, hasBlockSyncingStarted, localTimeDifference,
+      ALLOWED_TIME_DIFFERENCE,
     } = stores.networkStatus;
-    const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = stores.profile;
+    const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     return (
       <CenteredLayout>
         <Loading
           currencyIcon={etcLogo}
           currencyIconWhite={etcLogo}
           isSyncing={isSyncing}
+          localTimeDifference={localTimeDifference}
+          allowedTimeDifference={ALLOWED_TIME_DIFFERENCE}
           isConnecting={isConnecting}
           syncPercentage={syncPercentage}
           isLoadingDataForNextScreen={isLoadingWallets}
@@ -35,6 +38,7 @@ export default class LoadingPage extends Component<Props> {
           hasBlockSyncingStarted={hasBlockSyncingStarted}
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
+          currentLocale={currentLocale}
         />
       </CenteredLayout>
     );
