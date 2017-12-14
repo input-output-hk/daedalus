@@ -3886,6 +3886,151 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Support request",
+        "description": "Title for the \"Settings support\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "app/components/wallet/WalletSupportRequestDialog.js",
+        "id": "wallet.supportRequest.dialog.title",
+        "start": {
+          "column": 9,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Your e-mail",
+        "description": "Label for the \"Email\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "app/components/wallet/WalletSupportRequestDialog.js",
+        "id": "wallet.supportRequest.dialog.emailLabel",
+        "start": {
+          "column": 14,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter your e-mail here, so we can answer you",
+        "description": "Placeholder for the \"Email\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "app/components/wallet/WalletSupportRequestDialog.js",
+        "id": "wallet.supportRequest.dialog.emailPlaceholder",
+        "start": {
+          "column": 20,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!Subject",
+        "description": "Label for the \"Subject\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "app/components/wallet/WalletSupportRequestDialog.js",
+        "id": "wallet.supportRequest.dialog.subjectLabel",
+        "start": {
+          "column": 16,
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter subject of your problem",
+        "description": "Placeholder for the \"Subject\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "app/components/wallet/WalletSupportRequestDialog.js",
+        "id": "wallet.supportRequest.dialog.subjectPlaceholder",
+        "start": {
+          "column": 22,
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!Problem",
+        "description": "Label for the \"Problem\" text area on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 50
+        },
+        "file": "app/components/wallet/WalletSupportRequestDialog.js",
+        "id": "wallet.supportRequest.dialog.problemLabel",
+        "start": {
+          "column": 16,
+          "line": 46
+        }
+      },
+      {
+        "defaultMessage": "!!!Describe steps which got you to problem",
+        "description": "Placeholder for the \"Problem\" text area on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 55
+        },
+        "file": "app/components/wallet/WalletSupportRequestDialog.js",
+        "id": "wallet.supportRequest.dialog.problemPlaceholder",
+        "start": {
+          "column": 22,
+          "line": 51
+        }
+      },
+      {
+        "defaultMessage": "!!!Attach logs",
+        "description": "Label for the \"Attach logs\" switch on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 60
+        },
+        "file": "app/components/wallet/WalletSupportRequestDialog.js",
+        "id": "wallet.supportRequest.dialog.logsSwitchLabel",
+        "start": {
+          "column": 19,
+          "line": 56
+        }
+      },
+      {
+        "defaultMessage": "!!!Logs will help to find out problem you are describing",
+        "description": "Text for the \"Attach logs\" switch on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 65
+        },
+        "file": "app/components/wallet/WalletSupportRequestDialog.js",
+        "id": "wallet.supportRequest.dialog.logsSwitchPlaceholder",
+        "start": {
+          "column": 25,
+          "line": 61
+        }
+      },
+      {
+        "defaultMessage": "!!!Send request",
+        "description": "Label for the \"Send request\" button on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 70
+        },
+        "file": "app/components/wallet/WalletSupportRequestDialog.js",
+        "id": "wallet.supportRequest.dialog.button.label",
+        "start": {
+          "column": 21,
+          "line": 66
+        }
+      }
+    ],
+    "path": "app/components/wallet/WalletSupportRequestDialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Drop file here",
         "description": "Label \"Drop file here\" on the file upload widget.",
         "end": {

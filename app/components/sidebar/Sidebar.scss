@@ -1,3 +1,4 @@
+@import '../../themes/mixins/buttons';
 @import './sidebarConfig';
 
 .component {
@@ -12,4 +13,23 @@
 .minimized {
   flex-shrink: 0;
   width: 84px;
+}
+
+.settingsSupport {
+  bottom: 0;
+  height: $sidebar-button-height;
+  position: absolute;
+
+  .icon {
+    margin: 0 30px;
+    & > svg {
+      width: 24px;
+      height: 24px;
+    }
+  }
+
+  &:hover {
+    background-color: var(--theme-sidebar-category-background-color-hover);
+    cursor: pointer;
+  }
 }
