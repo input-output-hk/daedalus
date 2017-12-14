@@ -52,7 +52,7 @@ const messages = defineMessages({
   },
   aboutContentMantisMembers: {
     id: 'static.about.content.mantis.members',
-    defaultMessage: '!!!Alan Verbner, Nicolas Taller, Lukasz Gasior, Radek Tkaczyk, Konrad Staniec, Mirko Alic, Javier Diaz, Adam Smolarek, Jan Ziniewicz, Alejandro Garcia, Alan McSherry',
+    defaultMessage: '!!!Adam Smolarek, Alan McSherry, Alan Verbner, Alejandro Garcia, Charles Hoskinson, Domen Kožar, Eileen Fitzgerald, Hiroto Shioi, Jane Wild, Jan Ziniewicz, Javier Diaz, Jeremy Wood, Laurie Wang, Łukasz Gąsior, Konrad Staniec, Michael Bishop, Mirko Alić, Nicolás Tallar, Radek Tkaczyk, Serge Kosyrev',
     description: 'About page mantis team members',
   },
   aboutCopyright: {
