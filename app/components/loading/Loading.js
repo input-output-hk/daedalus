@@ -37,6 +37,8 @@ const messages = defineMessages({
 type Props = {
   currencyIcon: string,
   currencyIconWhite: string,
+  nodeIcon: string,
+  nodeIconWhite: string,
   isConnecting: boolean,
   hasBeenConnected: boolean,
   hasBlockSyncingStarted: boolean,
@@ -58,9 +60,18 @@ export default class Loading extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      currencyIcon, currencyIconWhite, isConnecting, isSyncing, syncPercentage,
-      isLoadingDataForNextScreen, loadingDataForNextScreenMessage, hasBeenConnected,
-      hasBlockSyncingStarted, hasLoadedCurrentLocale, hasLoadedCurrentTheme,
+      currencyIcon,
+      currencyIconWhite,
+      nodeIcon,
+      isConnecting,
+      isSyncing,
+      syncPercentage,
+      isLoadingDataForNextScreen,
+      loadingDataForNextScreenMessage,
+      hasBeenConnected,
+      hasBlockSyncingStarted,
+      hasLoadedCurrentLocale,
+      hasLoadedCurrentTheme,
     } = this.props;
     const componentStyles = classNames([
       styles.component,
@@ -76,15 +87,24 @@ export default class Loading extends Component<Props> {
       styles[`${environment.API}-logo`],
       isConnecting ? styles.connectingLogo : styles.syncingLogo,
     ]);
+    const nodeLogoStyles = classNames([
+      styles[`${environment.API}-nodeLogo`],
+      isConnecting ? styles.connectingLogo : styles.syncingLogo,
+    ]);
 
     const daedalusLoadingLogo = isConnecting ? daedalusLogoWhite : daedalusLogo;
     const currencyLoadingLogo = isConnecting ? currencyIconWhite : currencyIcon;
+    const nodeLoadingLogo = isConnecting ? nodeIconWhite : nodeIcon;
+    // const currencyLoadingLogo = isConnecting ? currencyIconWhite : currencyIcon;
     const connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
 
     return (
       <div className={componentStyles}>
-        <SvgInline svg={currencyLoadingLogo} className={currencyLogoStyles} />
-        <SvgInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
+        <div className={styles.logos}>
+          <SvgInline svg={currencyLoadingLogo} className={currencyLogoStyles} />
+          <SvgInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
+          <SvgInline svg={nodeLoadingLogo} className={nodeLogoStyles} />
+        </div>
         {hasLoadedCurrentLocale && (
           <div>
             {isConnecting && !hasBlockSyncingStarted && (
