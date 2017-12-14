@@ -59,24 +59,16 @@ export default class Loading extends Component<Props> {
     const {
       currencyIcon,
       nodeIcon,
-      // isConnecting,
-      // isSyncing,
+      isConnecting,
+      isSyncing,
       syncPercentage,
       isLoadingDataForNextScreen,
       loadingDataForNextScreenMessage,
-      // hasBeenConnected,
-      // hasBlockSyncingStarted,
-      // hasLoadedCurrentLocale,
-      // hasLoadedCurrentTheme,
+      hasBeenConnected,
+      hasBlockSyncingStarted,
+      hasLoadedCurrentLocale,
+      hasLoadedCurrentTheme,
     } = this.props;
-
-    // debug data
-    const hasBeenConnected = true;
-    const isConnecting = false;
-    const isSyncing = true;
-    const hasBlockSyncingStarted = true;
-    const hasLoadedCurrentLocale = true;
-    const hasLoadedCurrentTheme = false;
 
     const componentStyles = classNames([
       styles.component,
