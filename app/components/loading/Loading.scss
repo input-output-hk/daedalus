@@ -12,6 +12,14 @@
   }
 }
 
+.logos {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+
 .connecting,
 .syncing {
   bottom: 60px;
@@ -24,33 +32,26 @@
   color: var(--theme-syncing-text-color);
 }
 
-.ada-logo {
+.ada-logo,
+.ada-nodeLogo,
+.etc-logo,
+.etc-nodeLogo {
   & > svg {
     display: block;
-    left: calc(50% - (86px/2));
-    position: absolute;
-    top: calc(50% - 224px);
-    width: 86px;
+    width: 48.5px;
+    opacity: 0.5;
   }
 }
 
-.etc-logo {
-  & > svg {
-    display: block;
-    left: calc(50% - (48.5px/2));
-    position: absolute;
-    top: calc(50% - 224px);
-    width: 48.5px;
-  }
+.etc-nodeLogo > svg {
+  margin-top: 7px; // aligning the icon visually in the middle
 }
 
 .daedalusLogo {
   & > svg {
     display: block;
-    left: calc(50% - (173px/2));
-    position: absolute;
-    top: calc(50% - 135px);
     width: 173px;
+    margin: 0 114px;
   }
 }
 

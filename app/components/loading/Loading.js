@@ -63,16 +63,25 @@ export default class Loading extends Component<Props> {
       currencyIcon,
       currencyIconWhite,
       nodeIcon,
-      isConnecting,
-      isSyncing,
+      // isConnecting,
+      // isSyncing,
       syncPercentage,
       isLoadingDataForNextScreen,
       loadingDataForNextScreenMessage,
-      hasBeenConnected,
-      hasBlockSyncingStarted,
-      hasLoadedCurrentLocale,
-      hasLoadedCurrentTheme,
+      // hasBeenConnected,
+      // hasBlockSyncingStarted,
+      // hasLoadedCurrentLocale,
+      // hasLoadedCurrentTheme,
     } = this.props;
+
+    // debug data
+    const hasBeenConnected = true;
+    const isConnecting = false;
+    const isSyncing = true;
+    const hasBlockSyncingStarted = true;
+    const hasLoadedCurrentLocale = true;
+    const hasLoadedCurrentTheme = false;
+
     const componentStyles = classNames([
       styles.component,
       hasLoadedCurrentTheme ? null : styles['is-loading-theme'],
@@ -94,8 +103,8 @@ export default class Loading extends Component<Props> {
 
     const daedalusLoadingLogo = isConnecting ? daedalusLogoWhite : daedalusLogo;
     const currencyLoadingLogo = isConnecting ? currencyIconWhite : currencyIcon;
-    const nodeLoadingLogo = isConnecting ? nodeIconWhite : nodeIcon;
-    // const currencyLoadingLogo = isConnecting ? currencyIconWhite : currencyIcon;
+    const nodeLoadingLogo = nodeIcon;
+
     const connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
 
     return (
