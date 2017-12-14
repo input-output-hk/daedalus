@@ -82,7 +82,10 @@ export default class SettingsStore extends Store {
   @computed get currentTheme(): string {
     const { result } = this.getThemeRequest.execute();
     if (this.isCurrentThemeSet) return result;
-    return environment.isMainnet() ? THEMES.DARK_BLUE : THEMES.LIGHT_BLUE; // default
+    if (environment.isAdaApi()) {
+      return environment.isMainnet() ? THEMES.DARK_BLUE : THEMES.LIGHT_BLUE; // defaults
+    }
+    return THEMES.LIGHT_BLUE; // default for ETC
   }
 
   @computed get isCurrentThemeSet(): boolean {
