@@ -38,9 +38,20 @@
 .etc-nodeLogo {
   & > svg {
     display: block;
-    width: 48.5px;
+    width: 48px;
     opacity: 0.5;
   }
+}
+
+$cardanoLogoWidth: 86px;
+.ada-nodeLogo > svg {
+  width: $cardanoLogoWidth;
+}
+
+$adaLogoWidth: 43px;
+.ada-logo > svg {
+  width: $adaLogoWidth;
+  margin: 0 ($cardanoLogoWidth - $adaLogoWidth) / 2; // Needs to be the same dimension as the nodeLogo
 }
 
 .etc-nodeLogo > svg {
