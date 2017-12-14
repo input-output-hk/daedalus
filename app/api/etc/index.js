@@ -224,7 +224,7 @@ export default class EtcApi {
       Logger.error('EtcApi::createWallet error: ' + stringifyError(error));
       throw new GenericApiError();
     }
-  }
+  };
 
   getWalletRecoveryPhrase(): Promise<GetWalletRecoveryPhraseResponse> {
     Logger.debug('EtcApi::getWalletRecoveryPhrase called');
@@ -245,8 +245,12 @@ export default class EtcApi {
     try {
       const senderAccount = params.from;
       const { from, to, value, password } = params;
+      const gasPrice = ETC_DEFAULT_GAS_PRICE;
+      const gas = quantityToBigNumber(
+        await getEtcEstimatedGas({ ca, from, to, value, gasPrice })
+      );
       const txHash: EtcTxHash = await sendEtcTransaction({
-        ca, from, to, value, password, gasPrice: ETC_DEFAULT_GAS_PRICE,
+        ca, from, to, value, password, gasPrice, gas
       });
       Logger.debug('EtcApi::createTransaction success: ' + stringifyData(txHash));
       return _createTransaction(senderAccount, txHash);
@@ -328,7 +332,7 @@ export default class EtcApi {
       }
       throw new GenericApiError();
     }
-  }
+  };
 
   isValidMnemonic(mnemonic: string): Promise<boolean> {
     return isValidMnemonic(mnemonic, 12);
