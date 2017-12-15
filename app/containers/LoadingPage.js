@@ -32,7 +32,7 @@ export default class LoadingPage extends Component<Props> {
       <CenteredLayout>
         <Loading
           currencyIcon={adaLogo}
-          nodeIcon={cardanoLogo}
+          apiIcon={cardanoLogo}
           isSyncing={isSyncing}
           isConnecting={isConnecting}
           syncPercentage={syncPercentage}

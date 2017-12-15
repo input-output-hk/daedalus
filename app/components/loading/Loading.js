@@ -35,7 +35,7 @@ const messages = defineMessages({
 
 type Props = {
   currencyIcon: string,
-  nodeIcon: string,
+  apiIcon: string,
   isConnecting: boolean,
   hasBeenConnected: boolean,
   hasBlockSyncingStarted: boolean,
@@ -58,7 +58,7 @@ export default class Loading extends Component<Props> {
     const { intl } = this.context;
     const {
       currencyIcon,
-      nodeIcon,
+      apiIcon,
       isConnecting,
       isSyncing,
       syncPercentage,
@@ -84,14 +84,14 @@ export default class Loading extends Component<Props> {
       styles[`${environment.API}-logo`],
       isConnecting ? styles.connectingLogo : styles.syncingLogo,
     ]);
-    const nodeLogoStyles = classNames([
-      styles[`${environment.API}-nodeLogo`],
+    const apiLogoStyles = classNames([
+      styles[`${environment.API}-apiLogo`],
       isConnecting ? styles.connectingLogo : styles.syncingLogo,
     ]);
 
     const daedalusLoadingLogo = daedalusLogo;
     const currencyLoadingLogo = currencyIcon;
-    const nodeLoadingLogo = nodeIcon;
+    const nodeLoadingLogo = apiIcon;
 
     const connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
 
@@ -100,7 +100,7 @@ export default class Loading extends Component<Props> {
         <div className={styles.logos}>
           <SvgInline svg={currencyLoadingLogo} className={currencyLogoStyles} />
           <SvgInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
-          <SvgInline svg={nodeLoadingLogo} className={nodeLogoStyles} />
+          <SvgInline svg={nodeLoadingLogo} className={apiLogoStyles} />
         </div>
         {hasLoadedCurrentLocale && (
           <div>

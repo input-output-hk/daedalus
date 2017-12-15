@@ -26,7 +26,7 @@ export default class LoadingPage extends Component<Props> {
       <CenteredLayout>
         <Loading
           currencyIcon={etcLogo}
-          nodeIcon={mantisLogo}
+          apiIcon={mantisLogo}
           isSyncing={isSyncing}
           isConnecting={isConnecting}
           syncPercentage={syncPercentage}
