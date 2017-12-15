@@ -4,6 +4,7 @@ import SvgInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
+import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import styles from './Loading.scss';
@@ -45,6 +46,9 @@ type Props = {
   loadingDataForNextScreenMessage: ReactIntlMessage,
   hasLoadedCurrentLocale: boolean,
   hasLoadedCurrentTheme: boolean,
+  localTimeDifference: number,
+  allowedTimeDifference: number,
+  currentLocale: string,
 };
 
 @observer
@@ -68,6 +72,9 @@ export default class Loading extends Component<Props> {
       hasBlockSyncingStarted,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
+      localTimeDifference,
+      allowedTimeDifference,
+      currentLocale,
     } = this.props;
 
     const componentStyles = classNames([
@@ -119,10 +126,18 @@ export default class Loading extends Component<Props> {
               </div>
             )}
             {isSyncing && (
-              <div className={styles.syncing}>
-                <h1 className={styles.headline}>
-                  {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
-                </h1>
+              <div className="syncingWrapper">
+                <div className={styles.syncing}>
+                  <h1 className={styles.headline}>
+                    {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
+                  </h1>
+                </div>
+                {(localTimeDifference > allowedTimeDifference) && (
+                  <SystemTimeErrorOverlay
+                    localTimeDifference={localTimeDifference}
+                    currentLocale={currentLocale}
+                  />
+                )}
               </div>
             )}
             {!isSyncing && !isConnecting && isLoadingDataForNextScreen && (
@@ -138,4 +153,5 @@ export default class Loading extends Component<Props> {
       </div>
     );
   }
+
 }
