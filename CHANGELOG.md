@@ -7,9 +7,11 @@ Changelog
 ### Features
 
 - Start and stop Mantis Client from Daedalus main process ([PR 568](https://github.com/input-output-hk/daedalus/pull/568))
-- Add ADA and Mantis logo to loader screens ([PR 457](https://github.com/input-output-hk/daedalus/pull/584))
+- Add ADA and Mantis logo to loader screens ([PR 584](https://github.com/input-output-hk/daedalus/pull/584))
 
 ### Fixes
+
+- Remove transactions sorting ([PR 587](https://github.com/input-output-hk/daedalus/pull/587))
 
 ### Chores
 
