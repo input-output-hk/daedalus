@@ -91,7 +91,7 @@ export default class Loading extends Component<Props> {
 
     const daedalusLoadingLogo = daedalusLogo;
     const currencyLoadingLogo = currencyIcon;
-    const nodeLoadingLogo = apiIcon;
+    const apiLoadingLogo = apiIcon;
 
     const connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
 
@@ -100,7 +100,7 @@ export default class Loading extends Component<Props> {
         <div className={styles.logos}>
           <SvgInline svg={currencyLoadingLogo} className={currencyLogoStyles} />
           <SvgInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
-          <SvgInline svg={nodeLoadingLogo} className={apiLogoStyles} />
+          <SvgInline svg={apiLoadingLogo} className={apiLogoStyles} />
         </div>
         {hasLoadedCurrentLocale && (
           <div>
