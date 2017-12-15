@@ -809,13 +809,13 @@
         "description": "About Window \"title\"",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 17
         },
         "file": "app/components/static/About.js",
         "id": "window.about.title",
         "start": {
           "column": 20,
-          "line": 11
+          "line": 13
         }
       },
       {
@@ -823,13 +823,13 @@
         "description": "About \"title\"",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 22
         },
         "file": "app/components/static/About.js",
         "id": "static.about.title",
         "start": {
           "column": 14,
-          "line": 16
+          "line": 18
         }
       },
       {
@@ -837,13 +837,13 @@
         "description": "Label for \"App Release Version\"",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 27
         },
         "file": "app/components/static/About.js",
         "id": "static.about.release.version",
         "start": {
           "column": 23,
-          "line": 21
+          "line": 23
         }
       },
       {
@@ -851,13 +851,13 @@
         "description": "About page daedalus team headline",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 32
         },
         "file": "app/components/static/About.js",
         "id": "static.about.content.daedalus.headline",
         "start": {
           "column": 32,
-          "line": 26
+          "line": 28
         }
       },
       {
@@ -865,27 +865,41 @@
         "description": "About page cardano team headline",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 37
         },
         "file": "app/components/static/About.js",
         "id": "static.about.content.cardano.headline",
         "start": {
           "column": 31,
-          "line": 31
+          "line": 33
         }
       },
       {
-        "defaultMessage": "!!!Alexander Rukin, Charles Hoskinson, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Tomislav Horaček",
+        "defaultMessage": "!!!Mantis Team:",
+        "description": "About page mantis team headline",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "app/components/static/About.js",
+        "id": "static.about.content.mantis.headline",
+        "start": {
+          "column": 30,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Alexander Rukin, Charles Hoskinson, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Tomislav Horaček, Stefan Malzner",
         "description": "About page daedalus team members",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 47
         },
         "file": "app/components/static/About.js",
         "id": "static.about.content.daedalus.members",
         "start": {
           "column": 31,
-          "line": 36
+          "line": 43
         }
       },
       {
@@ -893,13 +907,27 @@
         "description": "About page cardano team members",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 52
         },
         "file": "app/components/static/About.js",
         "id": "static.about.content.cardano.members",
         "start": {
           "column": 30,
-          "line": 41
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Adam Smolarek, Alan McSherry, Alan Verbner, Alejandro Garcia, Charles Hoskinson, Domen Kožar, Eileen Fitzgerald, Hiroto Shioi, Jane Wild, Jan Ziniewicz, Javier Diaz, Jeremy Wood, Laurie Wang, Łukasz Gąsior, Konrad Staniec, Michael Bishop, Mirko Alić, Nicolás Tallar, Radek Tkaczyk, Serge Kosyrev",
+        "description": "About page mantis team members",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "app/components/static/About.js",
+        "id": "static.about.content.mantis.members",
+        "start": {
+          "column": 29,
+          "line": 53
         }
       },
       {
@@ -907,13 +935,13 @@
         "description": "About \"copyright\"",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 62
         },
         "file": "app/components/static/About.js",
         "id": "static.about.copyright",
         "start": {
           "column": 18,
-          "line": 46
+          "line": 58
         }
       },
       {
@@ -921,13 +949,13 @@
         "description": "About page license name",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 67
         },
         "file": "app/components/static/About.js",
         "id": "static.about.license",
         "start": {
           "column": 15,
-          "line": 51
+          "line": 63
         }
       }
     ],
