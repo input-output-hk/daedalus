@@ -250,7 +250,7 @@ export default class EtcApi {
         await getEtcEstimatedGas({ ca, from, to, value, gasPrice })
       );
       const txHash: EtcTxHash = await sendEtcTransaction({
-        ca, from, to, value, password, gasPrice, gas
+        ca, from, to, value, password, gasPrice, gas,
       });
       Logger.debug('EtcApi::createTransaction success: ' + stringifyData(txHash));
       return _createTransaction(senderAccount, txHash);
