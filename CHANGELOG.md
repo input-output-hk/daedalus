@@ -11,6 +11,9 @@ Changelog
 
 ### Fixes
 
+- Fixed about dialog for ETC build ([PR 586](https://github.com/input-output-hk/daedalus/pull/586))
+- Made `Light Blue` theme the default for ETC build ([PR 586](https://github.com/input-output-hk/daedalus/pull/586))
+- Fixed a bug related to gas limit when sending transactions ([PR 586](https://github.com/input-output-hk/daedalus/pull/586))
 - Improve ETC transaction amount validation ([PR 590](https://github.com/input-output-hk/daedalus/pull/590))
 
 ### Chores
