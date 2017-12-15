@@ -5,8 +5,8 @@ import { defineMessages } from 'react-intl';
 import CenteredLayout from '../components/layout/CenteredLayout';
 import Loading from '../components/loading/Loading';
 import type { StoresMap } from '../stores/index';
+import adaLogo from '../assets/images/ada-logo.inline.svg';
 import cardanoLogo from '../assets/images/cardano-logo.inline.svg';
-import cardanoLogoWhite from '../assets/images/cardano-logo-white.inline.svg';
 
 export const messages = defineMessages({
   loadingWalletData: {
@@ -32,8 +32,8 @@ export default class LoadingPage extends Component<Props> {
     return (
       <CenteredLayout>
         <Loading
-          currencyIcon={cardanoLogo}
-          currencyIconWhite={cardanoLogoWhite}
+          currencyIcon={adaLogo}
+          apiIcon={cardanoLogo}
           isSyncing={isSyncing}
           localTimeDifference={localTimeDifference}
           allowedTimeDifference={ALLOWED_TIME_DIFFERENCE}
