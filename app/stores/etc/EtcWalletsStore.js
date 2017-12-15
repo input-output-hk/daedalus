@@ -11,7 +11,7 @@ import type {
   DeleteWalletResponse, RestoreWalletResponse,
   CreateTransactionResponse, GetWalletRecoveryPhraseResponse
 } from '../../api/common';
-import { ETC_DEFAULT_GAS_PRICE } from '../../config/numbersConfig';
+import { ETC_DEFAULT_GAS_PRICE, WEI_PER_ETC } from '../../config/numbersConfig';
 
 export default class EtcWalletsStore extends WalletStore {
 
@@ -76,5 +76,12 @@ export default class EtcWalletsStore extends WalletStore {
 
   isValidAddress = (address: string) => this.api.etc.isValidAddress(address);
 
-  isValidAmount = (amount: string) => !(new BigNumber(amount).isNegative());
+  isValidAmount = (amount: string) => {
+    const wallet = this.active;
+    if (!wallet) throw new Error('Active wallet required before sending.');
+    const amountInETC = new BigNumber(amount).dividedBy(WEI_PER_ETC);
+    const isGreaterThanZero = amountInETC.greaterThan(0);
+    const isLessOrEqualToWalletAmount = amountInETC.lessThanOrEqualTo(wallet.amount);
+    return isGreaterThanZero && isLessOrEqualToWalletAmount;
+  };
 }

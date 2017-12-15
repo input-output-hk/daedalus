@@ -11,6 +11,8 @@ Changelog
 
 ### Fixes
 
+- Improve ETC transaction amount validation ([PR 590](https://github.com/input-output-hk/daedalus/pull/590))
+
 ### Chores
 
 - Update DLL package and cleanup translation files ([PR 566](https://github.com/input-output-hk/daedalus/pull/566))
