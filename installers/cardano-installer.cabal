@@ -16,15 +16,19 @@ executable make-installer
                      , WindowsInstaller
                      , RewriteLibs
                      , Launcher
-  build-depends:       base
-                     , filepath
-                     , text
-                     , Glob
-                     , nsis
-                     , turtle
+  build-depends:       Glob
+                     , aeson
+                     , base
+                     , bytestring
                      , directory
-                     , temporary
+                     , filepath
                      , megaparsec
+                     , nsis
+                     , temporary
+                     , text
+                     , turtle
+                     , universum
+                     , yaml
 
   default-language:    Haskell2010
   ghc-options:         -threaded -rtsopts
@@ -32,4 +36,5 @@ executable make-installer
                        -fno-warn-orphans
                        -with-rtsopts=-N
                        -O2
-  default-extensions: OverloadedStrings
+  default-extensions: NoImplicitPrelude
+                      OverloadedStrings
