@@ -91,6 +91,7 @@
   "profile.sendLogsChoice.form.continueButtonLabel": "Continue",
   "profile.sendLogsChoice.form.declineButtonLabel": "Don't send",
   "profile.termsOfUse.checkboxLabel": "I agree with terms of use",
+  "profile.termsOfUse.checkboxLabelWithDisclaimer": "I agree with terms of use",
   "profile.termsOfUse.submitLabel": "Continue",
   "settings.display.themeLabel": "Theme",
   "settings.display.themeNames.cardano": "Cardano",
