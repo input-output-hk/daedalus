@@ -39,4 +39,6 @@ export type EtcTransaction = {
   isOutgoing: boolean,
 };
 
-export type EtcTransactions = Array<EtcTransaction>;
+export type EtcTransactions = {
+  transactions: Array<EtcTransaction>,
+};

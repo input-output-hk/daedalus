@@ -166,7 +166,7 @@ export default class EtcApi {
       });
       Logger.debug('EtcApi::getTransactions success: ' + stringifyData(response));
       const transactions = await Promise.all(
-        response.map(async (txData: EtcTransaction) => (
+        response.transactions.map(async (txData: EtcTransaction) => (
           _createWalletTransactionFromServerData(txData)
         ))
       );
