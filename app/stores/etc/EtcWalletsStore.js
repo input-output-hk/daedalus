@@ -80,8 +80,10 @@ export default class EtcWalletsStore extends WalletStore {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
     const amountInETC = new BigNumber(amount).dividedBy(WEI_PER_ETC);
+    const transactionFees = new BigNumber(0.00042); // Hardcoded transaction fees amount
     const isGreaterThanZero = amountInETC.greaterThan(0);
-    const isLessOrEqualToWalletAmount = amountInETC.lessThanOrEqualTo(wallet.amount);
+    const isLessOrEqualToWalletAmount =
+      amountInETC.add(transactionFees).lessThanOrEqualTo(wallet.amount);
     return isGreaterThanZero && isLessOrEqualToWalletAmount;
   };
 }
