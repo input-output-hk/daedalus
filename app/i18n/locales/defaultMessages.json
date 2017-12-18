@@ -184,13 +184,13 @@
         "description": "Message \"Connecting to network\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 19
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.connectingToNetworkMessage",
         "start": {
           "column": 14,
-          "line": 16
+          "line": 15
         }
       },
       {
@@ -198,13 +198,13 @@
         "description": "Message \"Connected - waiting for block syncing to start\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 24
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.waitingForSyncToStart",
         "start": {
           "column": 25,
-          "line": 21
+          "line": 20
         }
       },
       {
@@ -212,13 +212,13 @@
         "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 29
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 26
+          "line": 25
         }
       },
       {
@@ -226,13 +226,13 @@
         "description": "Message \"Syncing blocks\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 34
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.syncingBlocksMessage",
         "start": {
           "column": 11,
-          "line": 31
+          "line": 30
         }
       }
     ],
@@ -494,13 +494,27 @@
         "description": "Label for the \"I agree with terms of use\" checkbox.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "app/components/profile/terms-of-use/TermsOfUseForm.js",
         "id": "profile.termsOfUse.checkboxLabel",
         "start": {
           "column": 17,
-          "line": 15
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand that the terms of use are only available in English and agree to the terms of use",
+        "description": "Label for the \"I agree with terms of use\" checkbox when terms of use are not translated.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "app/components/profile/terms-of-use/TermsOfUseForm.js",
+        "id": "profile.termsOfUse.checkboxLabelWithDisclaimer",
+        "start": {
+          "column": 31,
+          "line": 21
         }
       },
       {
@@ -508,13 +522,13 @@
         "description": "Label for the \"Terms of use\" form submit button.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 30
         },
         "file": "app/components/profile/terms-of-use/TermsOfUseForm.js",
         "id": "profile.termsOfUse.submitLabel",
         "start": {
           "column": 15,
-          "line": 20
+          "line": 26
         }
       }
     ],
