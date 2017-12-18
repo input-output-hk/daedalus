@@ -7,13 +7,14 @@ Changelog
 ### Features
 
 - Start and stop Mantis Client from Daedalus main process ([PR 568](https://github.com/input-output-hk/daedalus/pull/568))
-- Add ADA and Mantis logo to loader screens ([PR 457](https://github.com/input-output-hk/daedalus/pull/584))
+- Add ADA and Mantis logo to loader screens ([PR 584](https://github.com/input-output-hk/daedalus/pull/584))
 
 ### Fixes
 
 - Fixed about dialog for ETC build ([PR 586](https://github.com/input-output-hk/daedalus/pull/586))
 - Made `Light Blue` theme the default for ETC build ([PR 586](https://github.com/input-output-hk/daedalus/pull/586))
 - Fixed a bug related to gas limit when sending transactions ([PR 586](https://github.com/input-output-hk/daedalus/pull/586))
+- Remove transactions sorting ([PR 587](https://github.com/input-output-hk/daedalus/pull/587))
 - Improve ETC transaction amount validation ([PR 590](https://github.com/input-output-hk/daedalus/pull/590))
 
 ### Chores

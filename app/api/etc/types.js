@@ -36,9 +36,9 @@ export type EtcTransaction = {
   gas: EtcGas,
   input: string,
   pending: boolean,
+  isOutgoing: boolean,
 };
 
 export type EtcTransactions = {
-  received: Array<EtcTransaction>,
-  sent: Array<EtcTransaction>,
+  transactions: Array<EtcTransaction>,
 };
