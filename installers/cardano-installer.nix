@@ -1,5 +1,5 @@
 { mkDerivation, base, directory, filepath, Glob, megaparsec, nsis
-, stdenv, temporary, text, turtle
+, stdenv, temporary, text, turtle, aeson, yaml, universum
 }:
 mkDerivation {
   pname = "cardano-installer";
