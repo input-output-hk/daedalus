@@ -98,10 +98,7 @@ export default class SettingsStore extends Store {
 
   @computed get termsOfUse(): string {
     const network = environment.isMainnet() ? 'mainnet' : 'other';
-    if (environment.isEtcApi()) {
-      return require(`../i18n/locales/terms-of-use/etc/${network}/${this.currentLocale}.md`);
-    }
-    return require(`../i18n/locales/terms-of-use/${network}/${this.currentLocale}.md`);
+    return require(`../i18n/locales/terms-of-use/${environment.API}/${network}/${this.currentLocale}.md`);
   }
 
   @computed get hasLoadedTermsOfUseAcceptance(): boolean {
