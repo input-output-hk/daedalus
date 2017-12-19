@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { find, kebabCase } from 'lodash';
-import SvgInline from 'react-svg-inline';
 import classNames from 'classnames';
 import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
@@ -10,7 +9,6 @@ import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
 import WalletSupportRequestDialog from '../../components/wallet/WalletSupportRequestDialog';
 import supportIcon from '../../assets/images/sidebar/bug-report-ic.inline.svg';
-import supportIconActive from '../../assets/images/sidebar/bug-report-active-ic.inline.svg';
 import type { SidebarWalletType } from '../../stores/SidebarStore';
 
 type Props = {
@@ -35,19 +33,11 @@ type Props = {
   isDialogOpen: Function,
 };
 
-type State = {
-  isSupportRequestHovered: boolean,
-};
-
 @observer
-export default class Sidebar extends Component<Props, State> {
+export default class Sidebar extends Component<Props> {
 
   static defaultProps = {
     isShowingSubMenus: false,
-  };
-
-  state = {
-    isSupportRequestHovered: false,
   };
 
   render() {
@@ -56,7 +46,7 @@ export default class Sidebar extends Component<Props, State> {
       isShowingSubMenus, onCategoryClicked,
       openDialogAction, isDialogOpen
     } = this.props;
-    const { isSupportRequestHovered } = this.state;
+
     let subMenu = null;
 
     const walletsCategory = find(categories, { name: 'WALLETS' }).route;
@@ -79,10 +69,6 @@ export default class Sidebar extends Component<Props, State> {
       !isShowingSubMenus || subMenu == null ? styles.minimized : null
     ]);
 
-    const supportRequsetIcon = (
-      isSupportRequestHovered || isDialogOpen(WalletSupportRequestDialog)
-    ) ? supportIconActive : supportIcon;
-
     return (
       <div className={sidebarStyles}>
         <div className={styles.minimized}>
@@ -98,23 +84,19 @@ export default class Sidebar extends Component<Props, State> {
               />
             );
           })}
-          <button
-            className={styles.settingsSupport}
+
+          <SidebarCategory
+            className="supportRequest"
+            icon={supportIcon}
+            active={isDialogOpen(WalletSupportRequestDialog)}
             onClick={this.handleSupportRequestClick}
-            onMouseEnter={this.handleSupportRequestHover}
-            onMouseLeave={this.handleSupportRequestHover}
-          >
-            <SvgInline svg={supportRequsetIcon} className={styles.icon} />
-          </button>
+          />
+
         </div>
 
         {subMenu}
       </div>
     );
-  }
-
-  handleSupportRequestHover = () => {
-    this.setState({ isSupportRequestHovered: !this.state.isSupportRequestHovered });
   }
 
   handleSupportRequestClick = () => {

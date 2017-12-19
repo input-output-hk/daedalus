@@ -72,7 +72,7 @@ export default class MainLayout extends Component<Props> {
         topbar={<TopBarContainer />}
         notification={addStatusMessagesNotification || addNodeUpdateNotification}
         contentDialogs={[
-          <WalletSupportRequestPage key="walletSupportRequestPage" />,
+          <WalletSupportRequestPage key="WalletSupportRequestPage" />,
           <WalletAddPage key="WalletAddPage" />
         ]}
       >

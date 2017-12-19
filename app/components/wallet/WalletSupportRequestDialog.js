@@ -162,26 +162,6 @@ export default class WalletSupportRequestDialog extends Component<Props, State> 
     const { onCancel, isSubmitting, error } = this.props;
     const { attachLogs } = this.state;
 
-    const dialogClasses = classnames([
-      styles.component,
-      'supportRequestDialog',
-    ]);
-
-    const emailFieldClasses = classnames([
-      'email',
-      styles.inputField,
-    ]);
-
-    const subjectFieldClasses = classnames([
-      'subject',
-      styles.inputField,
-    ]);
-
-    const problemFieldClasses = classnames([
-      'problem',
-      styles.inputField,
-    ]);
-
     const attachedLogsClasses = classnames([
       styles.attachedLogs,
       attachLogs ? styles.show : null,
@@ -208,7 +188,7 @@ export default class WalletSupportRequestDialog extends Component<Props, State> 
 
     return (
       <Dialog
-        className={dialogClasses}
+        className="supportRequestDialog"
         title={intl.formatMessage(messages.title)}
         actions={actions}
         closeOnOverlayClick
@@ -216,28 +196,35 @@ export default class WalletSupportRequestDialog extends Component<Props, State> 
         closeButton={<DialogCloseButton onClose={onCancel} />}
       >
 
-        <Input
-          className={emailFieldClasses}
-          {...emailField.bind()}
-          error={emailField.error}
-          skin={<SimpleInputSkin />}
-        />
+        <div className={styles.emailInput}>
+          <Input
+            className="email"
+            {...emailField.bind()}
+            error={emailField.error}
+            skin={<SimpleInputSkin />}
+          />
+        </div>
 
-        <Input
-          className={subjectFieldClasses}
-          {...subjectField.bind()}
-          error={subjectField.error}
-          skin={<SimpleInputSkin />}
-        />
+        <div className={styles.subjectInput}>
+          <Input
+            className="subject"
+            {...subjectField.bind()}
+            error={subjectField.error}
+            skin={<SimpleInputSkin />}
+          />
+        </div>
 
-        <TextArea
-          className={problemFieldClasses}
-          autoResize={false}
-          rows={3}
-          {...problemField.bind()}
-          error={problemField.error}
-          skin={<SimpleTextAreaSkin />}
-        />
+        <div className={styles.problemTextarea}>
+          <TextArea
+            className="problemDescription"
+            autoResize={false}
+            rows={3}
+            {...problemField.bind()}
+            error={problemField.error}
+            skin={<SimpleTextAreaSkin />}
+          />
+        </div>
+
         <div className={styles.attachLogs}>
           <div className={styles.logsSwitch}>
             <div className={styles.logsSwitchlabel}>

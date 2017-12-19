@@ -2,7 +2,9 @@
 @import '../../themes/mixins/error-message';
 @import '../../themes/mixins/place-form-field-error-below-input';
 
-.inputField {
+.emailInput,
+.subjectInput,
+.problemTextarea {
   margin-bottom: 20px;
 }
 
@@ -36,7 +38,7 @@
     word-break: break-all;
 
     &.show {
-      max-height: 250px;
+      max-height: 500px;
       opacity: 1;
     }
 

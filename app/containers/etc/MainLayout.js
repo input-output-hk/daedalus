@@ -67,7 +67,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         sidebar={sidebarComponent}
         topbar={<TopBarContainer />}
         contentDialogs={[
-          <WalletSupportRequestPage key="walletSupportRequestPage" />,
+          <WalletSupportRequestPage key="WalletSupportRequestPage" />,
           <WalletAddPage key="WalletAddPage" />
         ]}
         notification={addStatusMessagesNotification}
