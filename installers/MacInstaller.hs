@@ -14,21 +14,18 @@ import           Control.Monad (unless)
 import           Data.Maybe (fromMaybe)
 import           Data.Monoid ((<>))
 import qualified Data.Text as T
-import           System.Directory (copyFile, createDirectoryIfMissing, doesFileExist,
-                                   getHomeDirectory, renameFile)
+import           System.Directory (copyFile, createDirectoryIfMissing, doesFileExist, renameFile)
 import           System.Environment (lookupEnv)
 import           System.FilePath.Glob (glob)
 import           Turtle (ExitCode (..), echo, procs, shell, shells)
 import           Turtle.Line (unsafeTextToLine)
 
-import           Launcher (Launcher (..), Updater (..), writeLauncherConfig)
 import           RewriteLibs (chain)
 
 
 main :: IO ()
 main = do
     version <- fromMaybe "dev" <$> lookupEnv "DAEDALUS_VERSION"
-    home <- getHomeDirectory
 
     let appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
         dir     = appRoot <> "/Contents/MacOS"
@@ -53,7 +50,7 @@ main = do
     copyFile "client.conf" (dir <> "/client.conf")
 
     let launcherConfigPath = dir <> "/launcher-config.yaml"
-    writeLauncherConfig launcherConfigPath (launcherConfig home)
+    copyFile "launcher-config-mac.yaml" launcherConfigPath
 
     -- Rewrite libs paths and bundle them
     _ <- chain dir $ fmap T.pack [dir <> "/cardano-launcher", dir <> "/cardano-node"]
@@ -65,8 +62,8 @@ main = do
     writeFile (dir <> "/Daedalus") $ unlines
         [ "#!/usr/bin/env bash"
         , "cd \"$(dirname $0)\""
-        , "mkdir -p \"" <> (toText $ appdata home) <> "Secrets-1.0\""
-        , "mkdir -p \"" <> (toText $ appdata home) <> "Logs/pub\""
+        , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Secrets-1.0\""
+        , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Logs/pub\""
         , "./cardano-launcher -c " <> toText launcherConfigPath
         ]
     run "chmod" ["+x", T.pack (dir <> "/Daedalus")]
@@ -110,25 +107,6 @@ main = do
     run "rm" ["dist/temp2.pkg"]
 
     echo $ "Generated " <> unsafeTextToLine (T.pack pkg)
-  where
-    launcherConfig :: FilePath -> Launcher
-    launcherConfig home = Launcher
-        { nodePath = "./cardano-node"
-        , walletPath = "./Frontend"
-        , nodeLogPath = appdata home <> "Logs/cardano-node.log"
-        , launcherLogPath = appdata home <> "Logs/pub/"
-        , windowsInstallerPath = Nothing
-        , runtimePath = appdata home
-        , updater =
-                WithUpdater
-                    { updArchivePath = appdata home <> "installer.pkg"
-                    , updExec = "/usr/bin/open"
-                    , updArgs = ["-FW"]
-                    }
-        }
-
-    appdata :: FilePath -> FilePath
-    appdata home = home <> "/Library/Application Support/Daedalus/"
 
 run :: T.Text -> [T.Text] -> IO ()
 run cmd args = do

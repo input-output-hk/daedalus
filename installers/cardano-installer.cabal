@@ -15,7 +15,6 @@ executable make-installer
   other-modules:       MacInstaller
                      , WindowsInstaller
                      , RewriteLibs
-                     , Launcher
   build-depends:       Glob
                      , aeson
                      , base

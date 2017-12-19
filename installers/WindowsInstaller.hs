@@ -4,15 +4,14 @@ module WindowsInstaller
     ( main
     ) where
 
-import           Universum hiding (lines, pass, writeFile)
+import           Universum hiding (pass, writeFile)
 
 import           Control.Monad (unless)
-import qualified Data.ByteString.Char8 as BS (unpack)
 import qualified Data.List as L
 import           Data.Maybe (fromJust, fromMaybe)
 import           Data.Monoid ((<>))
 import           Data.Text (pack, split, unpack)
-import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recursive, Required, StartOptions, Target),
+import           Development.NSIS (Attrib (IconFile, IconIndex, OName, RebootOK, Recursive, Required, StartOptions, Target),
                                    HKEY (HKLM), Level (Highest), Page (Directory, InstFiles), abort,
                                    constant, constantStr, createDirectory, createShortcut, delete,
                                    deleteRegKey, execWait, file, iff_, installDir, installDirRegKey,
@@ -20,14 +19,12 @@ import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recurs
                                    requestExecutionLevel, rmdir, section, setOutPath, str,
                                    strLength, uninstall, unsafeInject, unsafeInjectGlobal,
                                    writeFileLines, writeRegDWORD, writeRegStr, (%/=))
-import           Prelude (lines, (!!))
+import           Prelude ((!!))
 import           System.Directory (doesFileExist)
 import           System.Environment (lookupEnv)
 import           System.IO (writeFile)
 import           Turtle (ExitCode (..), echo, proc, procs)
 import           Turtle.Line (unsafeTextToLine)
-
-import           Launcher (Launcher (..), Updater (..), getLauncherConfig)
 
 
 daedalusShortcut :: [Attrib]
@@ -142,7 +139,7 @@ writeInstallerNSIS fullVersion = do
                 file [] "wallet-topology.yaml"
                 file [] "configuration.yaml"
                 file [] "*genesis*.json"
-                writeFileLines "$INSTDIR\\launcher-config.yaml" $ map str $ lines $ BS.unpack launcherConfig
+                file [OName (str "launcher-config.yaml")] "launcher-config-windows.yaml"
                 writeFileLines "$INSTDIR\\daedalus.bat" (map (str . toString) launcherScript)
                 file [Recursive] "dlls\\"
                 file [Recursive] "libressl\\"
@@ -183,20 +180,6 @@ writeInstallerNSIS fullVersion = do
         , "SET DAEDALUS_DIR=%~dp0"
         , "start /D \"%DAEDALUS_DIR%\" cardano-launcher.exe -c $INSTDIR\\launcher-config.yaml"
         ]
-    launcherConfig :: ByteString
-    launcherConfig = getLauncherConfig $ Launcher
-        { nodePath = "%DAEDALUS_DIR%\\cardano-node.exe"
-        , nodeLogPath = "%APPDATA%\\Daedalus\\Logs\\cardano-node.log"
-        , walletPath = "%DAEDALUS_DIR%\\Daedalus.exe"
-        , launcherLogPath = "%APPDATA%\\Daedalus\\Logs\\pub"
-        , windowsInstallerPath = Just "%APPDATA%\\Daedalus\\Installer.bat"
-        , updater =
-                SelfUnpacking
-                    { updArchivePath = "%APPDATA%\\Daedalus\\Installer.exe"
-                    , updArgs = []
-                    }
-        , runtimePath = "%APPDATA%\\Daedalus\\"
-        }
 
 main :: IO ()
 main = do
