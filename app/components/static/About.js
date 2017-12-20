@@ -6,6 +6,8 @@ import { defineMessages, intlShape } from 'react-intl';
 import styles from './About.scss';
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import cardanoIcon from '../../assets/images/cardano-logo.inline.svg';
+import mantisIcon from '../../assets/images/mantis-logo.inline.svg';
+import environment from '../../environment';
 
 const messages = defineMessages({
   aboutWindowTitle: {
@@ -33,15 +35,25 @@ const messages = defineMessages({
     defaultMessage: '!!!Cardano Team:',
     description: 'About page cardano team headline',
   },
+  aboutContentMantisHeadline: {
+    id: 'static.about.content.mantis.headline',
+    defaultMessage: '!!!Mantis Team:',
+    description: 'About page mantis team headline',
+  },
   aboutContentDaedalusMembers: {
     id: 'static.about.content.daedalus.members',
-    defaultMessage: '!!!Alexander Rukin, Charles Hoskinson, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Tomislav Horaček',
+    defaultMessage: '!!!Alexander Rukin, Charles Hoskinson, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Tomislav Horaček, Stefan Malzner',
     description: 'About page daedalus team members',
   },
   aboutContentCardanoMembers: {
     id: 'static.about.content.cardano.members',
     defaultMessage: '!!!Alexander Sukhoverkhov, Alexander Vieth, Alexandre Rodrigues Baldé, Alfredo Di Napoli, Anastasiya Besman, Andrzej Rybczak, Ante Kegalj, Anton Belyy, Anupam Jain, Arseniy Seroka, Artyom Kazak, Carlos D\'Agostino, Charles Hoskinson, Dan Friedman, Denis Shevchenko, Dmitry Kovanikov, Dmitry Mukhutdinov, Dmitry Nikulin, Domen Kožar, Duncan Coutts, Edsko de Vries, Eileen Fitzgerald, George Agapov, Hiroto Shioi, Ilya Lubimov, Ilya Peresadin, Ivan Gromakovskii, Jake Mitchell, Jane Wild, Jens Krause, Jeremy Wood, Joel Mislov Kunst, Jonn Mostovoy, Konstantin Ivanov, Kristijan Šarić, Lars Brünjes, Laurie Wang, Lionel Miller, Michael Bishop, Mikhail Volkhov, Niklas Hambüchen, Peter Gaži, Philipp Kant, Serge Kosyrev, Vincent Hanquez',
     description: 'About page cardano team members',
+  },
+  aboutContentMantisMembers: {
+    id: 'static.about.content.mantis.members',
+    defaultMessage: '!!!Adam Smolarek, Alan McSherry, Alan Verbner, Alejandro Garcia, Charles Hoskinson, Domen Kožar, Eileen Fitzgerald, Hiroto Shioi, Jane Wild, Jan Ziniewicz, Javier Diaz, Jeremy Wood, Laurie Wang, Łukasz Gąsior, Konrad Staniec, Michael Bishop, Mirko Alić, Nicolás Tallar, Radek Tkaczyk, Serge Kosyrev',
+    description: 'About page mantis team members',
   },
   aboutCopyright: {
     id: 'static.about.copyright',
@@ -68,6 +80,16 @@ export default class About extends Component<any> {
   render() {
     const { intl } = this.context;
 
+    const apiHeadline = environment.isAdaApi()
+      ? intl.formatMessage(messages.aboutContentCardanoHeadline)
+      : intl.formatMessage(messages.aboutContentMantisHeadline);
+
+    const apiMembers = environment.isAdaApi()
+      ? intl.formatMessage(messages.aboutContentCardanoMembers)
+      : intl.formatMessage(messages.aboutContentMantisMembers);
+
+    const apiIcon = environment.isAdaApi() ? cardanoIcon : mantisIcon;
+
     return (
       <div className={styles.container}>
 
@@ -84,7 +106,7 @@ export default class About extends Component<any> {
             </div>
           </div>
 
-          <SvgInline svg={cardanoIcon} className={styles.cardanoIcon} />
+          <SvgInline svg={apiIcon} className={styles.apiIcon} />
         </div>
 
         <div className={styles.contentText}>
@@ -95,10 +117,10 @@ export default class About extends Component<any> {
             {intl.formatMessage(messages.aboutContentDaedalusMembers)}
           </div>
 
-          <h2>{intl.formatMessage(messages.aboutContentCardanoHeadline)}</h2>
+          <h2>{apiHeadline}</h2>
 
-          <div className={styles.contentCardanoMembers}>
-            {intl.formatMessage(messages.aboutContentCardanoMembers)}
+          <div className={styles.apiMembers}>
+            {apiMembers}
           </div>
 
         </div>

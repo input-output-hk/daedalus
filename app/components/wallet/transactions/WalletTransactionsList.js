@@ -62,9 +62,6 @@ export default class WalletTransactionsList extends Component<Props> {
       }
       group.transactions.push(transaction);
     }
-    for (const group of groups) {
-      group.transactions.sort((a, b) => b.date.getTime() - a.date.getTime());
-    }
     return groups.sort(
       (a, b) => b.transactions[0].date.getTime() - a.transactions[0].date.getTime()
     );

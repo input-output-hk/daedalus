@@ -50,6 +50,7 @@ export class WalletAlreadyRestoredError extends LocalizableError {
 export type CreateTransactionResponse = WalletTransaction;
 export type CreateWalletResponse = Wallet;
 export type DeleteWalletResponse = boolean;
+export type GetLocalTimeDifferenceResponse = number;
 export type GetWalletsResponse = Array<Wallet>;
 export type GetWalletRecoveryPhraseResponse = Array<string>;
 export type RestoreWalletResponse = Wallet;

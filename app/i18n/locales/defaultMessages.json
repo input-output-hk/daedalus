@@ -241,6 +241,53 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Daedalus Sync Error",
+        "description": "Title of Sync error overlay",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "app/components/loading/SystemTimeErrorOverlay.js",
+        "id": "systemTime.error.overlayTitle",
+        "start": {
+          "column": 16,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!ATTENTION: Time of your machine is different from global time. You are 2 hours 12 minutes 54 seconds behind. You need to fix issue, because you are gonna be unable to sync system!",
+        "description": "Text of Sync error overlay",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "app/components/loading/SystemTimeErrorOverlay.js",
+        "id": "systemTime.error.overlayText",
+        "start": {
+          "column": 15,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!See problem solutions",
+        "description": "Button label of Sync error overlay",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "app/components/loading/SystemTimeErrorOverlay.js",
+        "id": "systemTime.error.overlayButtonLabel",
+        "start": {
+          "column": 15,
+          "line": 23
+        }
+      }
+    ],
+    "path": "app/components/loading/SystemTimeErrorOverlay.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Update and restart",
         "description": "Label \"Update and restart\" on the Cardano node update notification.",
         "end": {
@@ -447,13 +494,27 @@
         "description": "Label for the \"I agree with terms of use\" checkbox.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "app/components/profile/terms-of-use/TermsOfUseForm.js",
         "id": "profile.termsOfUse.checkboxLabel",
         "start": {
           "column": 17,
-          "line": 15
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand that the terms of use are only available in English and agree to the terms of use",
+        "description": "Label for the \"I agree with terms of use\" checkbox when terms of use are not translated.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "app/components/profile/terms-of-use/TermsOfUseForm.js",
+        "id": "profile.termsOfUse.checkboxLabelWithDisclaimer",
+        "start": {
+          "column": 31,
+          "line": 21
         }
       },
       {
@@ -461,13 +522,13 @@
         "description": "Label for the \"Terms of use\" form submit button.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 30
         },
         "file": "app/components/profile/terms-of-use/TermsOfUseForm.js",
         "id": "profile.termsOfUse.submitLabel",
         "start": {
           "column": 15,
-          "line": 20
+          "line": 26
         }
       }
     ],
@@ -762,13 +823,13 @@
         "description": "About Window \"title\"",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 17
         },
         "file": "app/components/static/About.js",
         "id": "window.about.title",
         "start": {
           "column": 20,
-          "line": 11
+          "line": 13
         }
       },
       {
@@ -776,13 +837,13 @@
         "description": "About \"title\"",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 22
         },
         "file": "app/components/static/About.js",
         "id": "static.about.title",
         "start": {
           "column": 14,
-          "line": 16
+          "line": 18
         }
       },
       {
@@ -790,13 +851,13 @@
         "description": "Label for \"App Release Version\"",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 27
         },
         "file": "app/components/static/About.js",
         "id": "static.about.release.version",
         "start": {
           "column": 23,
-          "line": 21
+          "line": 23
         }
       },
       {
@@ -804,13 +865,13 @@
         "description": "About page daedalus team headline",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 32
         },
         "file": "app/components/static/About.js",
         "id": "static.about.content.daedalus.headline",
         "start": {
           "column": 32,
-          "line": 26
+          "line": 28
         }
       },
       {
@@ -818,27 +879,41 @@
         "description": "About page cardano team headline",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 37
         },
         "file": "app/components/static/About.js",
         "id": "static.about.content.cardano.headline",
         "start": {
           "column": 31,
-          "line": 31
+          "line": 33
         }
       },
       {
-        "defaultMessage": "!!!Alexander Rukin, Charles Hoskinson, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Tomislav Horaček",
+        "defaultMessage": "!!!Mantis Team:",
+        "description": "About page mantis team headline",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "app/components/static/About.js",
+        "id": "static.about.content.mantis.headline",
+        "start": {
+          "column": 30,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Alexander Rukin, Charles Hoskinson, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Tomislav Horaček, Stefan Malzner",
         "description": "About page daedalus team members",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 47
         },
         "file": "app/components/static/About.js",
         "id": "static.about.content.daedalus.members",
         "start": {
           "column": 31,
-          "line": 36
+          "line": 43
         }
       },
       {
@@ -846,13 +921,27 @@
         "description": "About page cardano team members",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 52
         },
         "file": "app/components/static/About.js",
         "id": "static.about.content.cardano.members",
         "start": {
           "column": 30,
-          "line": 41
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Adam Smolarek, Alan McSherry, Alan Verbner, Alejandro Garcia, Charles Hoskinson, Domen Kožar, Eileen Fitzgerald, Hiroto Shioi, Jane Wild, Jan Ziniewicz, Javier Diaz, Jeremy Wood, Laurie Wang, Łukasz Gąsior, Konrad Staniec, Michael Bishop, Mirko Alić, Nicolás Tallar, Radek Tkaczyk, Serge Kosyrev",
+        "description": "About page mantis team members",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "app/components/static/About.js",
+        "id": "static.about.content.mantis.members",
+        "start": {
+          "column": 29,
+          "line": 53
         }
       },
       {
@@ -860,13 +949,13 @@
         "description": "About \"copyright\"",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 62
         },
         "file": "app/components/static/About.js",
         "id": "static.about.copyright",
         "start": {
           "column": 18,
-          "line": 46
+          "line": 58
         }
       },
       {
@@ -874,13 +963,13 @@
         "description": "About page license name",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 67
         },
         "file": "app/components/static/About.js",
         "id": "static.about.license",
         "start": {
           "column": 15,
-          "line": 51
+          "line": 63
         }
       }
     ],
