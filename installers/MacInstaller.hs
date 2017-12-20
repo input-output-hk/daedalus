@@ -16,7 +16,6 @@ import           Turtle.Line          (unsafeTextToLine)
 
 import           Launcher
 import           RewriteLibs          (chain)
-import           System.Posix.Files   (rename)
 
 main :: IO ()
 main = do
@@ -87,7 +86,7 @@ main = do
   run "chmod" ["+x", T.pack (dir <> "/Daedalus")]
 
   if api == "etc" then
-    rename "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app" "../release/darwin-x64/Daedalus-darwin-x64/DaedalusMantis.app"
+    renameDirectory "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app" "../release/darwin-x64/Daedalus-darwin-x64/DaedalusMantis.app"
   else
     pure ()
 
