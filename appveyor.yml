@@ -11,6 +11,7 @@ environment:
     secure: 9tjYxdz1fqibx1WOrP5yn32iwbEXeYx+Btb5QJqHvMO4Ng2/yUtPi00/ZMXihFWV
   # Avoid long paths on Windows
   STACK_ROOT: "c:\\sr"
+  API: "etc"
 
 build: off
 
@@ -31,5 +32,7 @@ artifacts:
     type: zip
   - path: installers\daedalus-win64-*-installer.exe
     name: Daedalus Win64 Installer
+  - path: installers\daedalus-win64-*-installer-with-chain.exe
+    name: Daedalus Win64 Installer with auto-chain download
   - path: node_modules\daedalus-client-api\build-id
     name: cardano-sl-build-id

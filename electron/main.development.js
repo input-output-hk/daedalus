@@ -65,7 +65,7 @@ const mantisPath = process.env.MANTIS_PATH || null;
 const daedalusVersion = process.env.DAEDALUS_VERSION || 'dev';
 
 if (isEtcApi && mantisCmd && mantisPath) {
-  const { spawn } = require('child_process');
+  const { spawn, spawnSync } = require('child_process');
   const psTree = require('ps-tree');
 
   // Start Mantis
@@ -74,12 +74,22 @@ if (isEtcApi && mantisCmd && mantisPath) {
 
   // Stop Mantis (on app quit)
   app.on('will-quit', () => {
-    Log.info('Stopping Mantis...');
-    psTree(mantis.pid, (err, children) => {
-      // Kill all Mantis child processes
-      spawn('kill', ['-9'].concat(children.map((p) => (p.PID))));
-    });
-    spawn('kill', ['-9', mantis.pid]); // Kill main Mantis process
+    Log.info('Stopping Mantis(PID ' + mantis.pid + ')...');
+    if (process.platform === 'win32') {
+      Log.info('with taskkill');
+      spawnSync('taskkill', ['/F', '/T', '/PID', mantis.pid], { detached: true }); // Kill main Mantis process
+      Log.info('done');
+    } else {
+      Log.info('with process.kill');
+      psTree(mantis.pid, (err, children) => {
+        // Kill all Mantis child processes
+        children.forEach((proc) => {
+          Log.info('and child ' + proc.PID);
+          process.kill(proc.PID);
+        });
+      });
+      process.kill(mantis.pid); // Kill main Mantis process
+    }
   });
 }
 

@@ -16,56 +16,90 @@ import           Turtle.Line          (unsafeTextToLine)
 
 import           Launcher
 import           RewriteLibs          (chain)
-
+import           System.Posix.Files   (rename)
 
 main :: IO ()
 main = do
   version <- fromMaybe "dev" <$> lookupEnv "DAEDALUS_VERSION"
+  api <- fromMaybe "cardano" <$> lookupEnv "API"
+  let
+    appNameLowercase = if api == "etc" then "daedalusmantis" else "daedalus"
+    appName = if api == "etc" then "DaedalusMantis" else "Daedalus"
 
   let appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
       dir     = appRoot <> "/Contents/MacOS"
       -- resDir  = appRoot <> "/Contents/Resources"
-      pkg     = "dist/Daedalus-installer-" <> version <> ".pkg"
+  let
+    pkg = case api of
+      "cardano" -> "dist/Daedalus-installer-" <> version <> ".pkg"
+      "etc" -> "dist/Daedalus-mantis-installer-" <> version <> ".pkg"
   createDirectoryIfMissing False "dist"
 
   echo "Creating icons ..."
   procs "iconutil" ["--convert", "icns", "--output", T.pack dir <> "/../Resources/electron.icns", "icons/electron.iconset"] mempty
 
   echo "Preparing files ..."
-  copyFile "cardano-launcher" (dir <> "/cardano-launcher")
-  copyFile "cardano-node" (dir <> "/cardano-node")
-  copyFile "wallet-topology.yaml" (dir <> "/wallet-topology.yaml")
-  copyFile "configuration.yaml" (dir <> "/configuration.yaml")
-  genesisFiles <- glob "*genesis*.json"
-  procs "cp" (fmap T.pack (genesisFiles <> [dir])) mempty
-  copyFile "log-config-prod.yaml" (dir <> "/log-config-prod.yaml")
-  copyFile "build-certificates-unix.sh" (dir <> "/build-certificates-unix.sh")
-  copyFile "ca.conf"     (dir <> "/ca.conf")
-  copyFile "server.conf" (dir <> "/server.conf")
-  copyFile "client.conf" (dir <> "/client.conf")
+  case api of
+    "cardano" -> do
+      copyFile "cardano-launcher" (dir <> "/cardano-launcher")
+      copyFile "cardano-node" (dir <> "/cardano-node")
+      copyFile "wallet-topology.yaml" (dir <> "/wallet-topology.yaml")
+      copyFile "configuration.yaml" (dir <> "/configuration.yaml")
+      genesisFiles <- glob "*genesis*.json"
+      procs "cp" (fmap T.pack (genesisFiles <> [dir])) mempty
+      copyFile "log-config-prod.yaml" (dir <> "/log-config-prod.yaml")
+      copyFile "build-certificates-unix.sh" (dir <> "/build-certificates-unix.sh")
+      copyFile "ca.conf"     (dir <> "/ca.conf")
+      copyFile "server.conf" (dir <> "/server.conf")
+      copyFile "client.conf" (dir <> "/client.conf")
 
-  -- Rewrite libs paths and bundle them
-  _ <- chain dir $ fmap T.pack [dir <> "/cardano-launcher", dir <> "/cardano-node"]
+      -- Rewrite libs paths and bundle them
+      _ <- chain dir $ fmap T.pack [dir <> "/cardano-launcher", dir <> "/cardano-node"]
+      pure ()
+    "etc" -> do
+      copyFile "build-certificates-unix-mantis.sh" (dir <> "/build-certificates-unix.sh")
+      pure ()
 
   -- Prepare launcher
   de <- doesFileExist (dir <> "/Frontend")
   unless de $ renameFile (dir <> "/Daedalus") (dir <> "/Frontend")
   run "chmod" ["+x", T.pack (dir <> "/Frontend")]
-  writeFile (dir <> "/Daedalus") $ unlines
-    [ "#!/usr/bin/env bash"
-    , "cd \"$(dirname $0)\""
-    , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Secrets-1.0\""
-    , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Logs/pub\""
-    , doLauncher
-    ]
+
+  case api of
+    "cardano" -> do
+      writeFile (dir <> "/Daedalus") $ unlines
+        [ "#!/usr/bin/env bash"
+        , "cd \"$(dirname $0)\""
+        , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Secrets-1.0\""
+        , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Logs/pub\""
+        , doLauncher
+        ]
+    "etc" -> do
+      writeFile (dir <> "/Daedalus") $ unlines
+        [ "#!/usr/bin/env bash"
+        , "cd \"$(dirname $0)\""
+        , "export API=etc"
+        , "export MANTIS_PATH=../Resources/app/mantis.app/Contents/"
+        , "export MANTIS_CMD=MacOS/mantis"
+        , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Logs/\""
+        , "./Frontend"
+        ]
   run "chmod" ["+x", T.pack (dir <> "/Daedalus")]
+
+  if api == "etc" then
+    rename "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app" "../release/darwin-x64/Daedalus-darwin-x64/DaedalusMantis.app"
+  else
+    pure ()
+
+  let scriptsDir = if api == "etc" then "data/scripts-mantis" else "data/scripts"
 
   let pkgargs =
        [ "--identifier"
-       , "org.daedalus.pkg"
-       , "--scripts", "data/scripts"
+       , "org." <> appNameLowercase <> ".pkg"
+       -- data/scripts/postinstall is responsible for running build-certificates
+       , "--scripts", scriptsDir
        , "--component"
-       , "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
+       , "../release/darwin-x64/Daedalus-darwin-x64/" <> appName <> ".app"
        , "--install-location"
        , "/Applications"
        , "dist/temp.pkg"
