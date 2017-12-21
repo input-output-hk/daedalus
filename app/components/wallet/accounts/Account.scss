@@ -1,0 +1,83 @@
+$dot-colors: #f2cc8f #6be54c #0061ac #ed6a5e #8b9474 #c1cad6 #c29979 #66c7f4 #f1ac76 #a8c256 #8332ac #63c7b2 #734b5e #edf060 #10bb01 #6c6ea0 #c1cc99 #c43835 #aa4586 #2d2c2b #ff582c #00e7d7 #209bab #7c616c #afdeaf #b3f096 #ffaf87 #ff1053 #c0904e #7286eb #ffe38c #545987 #377771 #3340d3 #a6979c #7798ab #a5a9ac #83781b #1d1d52 #8a8d91 #9583c7 #a04050 #51a358 #a23b72 #d3c0d2 #a7bfbb #79b095 #80ced7 #ffcc00 #f0803c #a4778b #e665b3 #eca010 #e086d3 #ff8e72;
+
+.component {
+  background-color: var(--theme-accounts-list-background-color);
+  background-blend-mode: lighten;
+  border: solid 1px var(--theme-accounts-list-border-color);
+  border-radius: 4px;
+  box-sizing: border-box;
+  cursor: pointer;
+  margin-bottom: 20px;
+  padding: 14px 58px;
+  position: relative;
+}
+
+.name,
+.amount {
+  color: var(--theme-accounts-list-text-color);
+  font-size: 16px;
+  height: 22px;
+  line-height: 1.38;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.name {
+  font-family: var(--font-semibold);
+}
+
+.amount {
+  font-family: var(--font-light);
+  margin-top: 4px;
+}
+
+.currencySymbolSmallest {
+  display: inline-block;
+  margin-left: 4px;
+  & > svg {
+    height: 11px;
+    width: 10px;
+    & > g > g {
+      stroke: var(--theme-accounts-list-currency-icon-color);
+    }
+  }
+}
+
+.dot,
+.arrow {
+  display: block;
+  position: absolute;
+  top: 50%;
+}
+
+.dot {
+  background: #f6ac20;
+  border-radius: 50%;
+  height: 8px;
+  left: 30px;
+  margin-top: -4px;
+  width: 8px;
+
+  @each $color in $dot-colors {
+    $i: index($dot-colors, $color);
+    &.color-#{$i} {
+      background: $color;
+    }
+  }
+}
+
+.arrow {
+  height: 12px;
+  margin-top: -6px;
+  right: 30px;
+  width: 7px;
+  & > svg {
+    display: block;
+    height: inherit;
+    width: inherit;
+    & > path {
+      fill: var(--theme-accounts-list-arrow-icon-color);
+    }
+  }
+}

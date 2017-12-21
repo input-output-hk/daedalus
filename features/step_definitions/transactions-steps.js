@@ -7,7 +7,7 @@ Given(/^I made the following transactions with my wallet:$/, async function (tab
     title: t.title,
     date: t.date || null,
     walletId: this.wallet.id,
-    sender: this.wallet.address,
+    sender: this.wallet.address, // TODO: this is obsolete and should be replaced by accountId
     receiver: faker.finance.bitcoinAddress(),
     amount: parseFloat(faker.finance.amount(), 10),
   }));

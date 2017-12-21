@@ -8,6 +8,7 @@ Changelog
 
 - Start and stop Mantis Client from Daedalus main process ([PR 568](https://github.com/input-output-hk/daedalus/pull/568))
 - Add ADA and Mantis logo to loader screens ([PR 584](https://github.com/input-output-hk/daedalus/pull/584))
+- Account list on the summary page ([PR 615](https://github.com/input-output-hk/daedalus/pull/615))
 
 ### Fixes
 

@@ -5,7 +5,8 @@ import TransactionsStore from './AdaTransactionsStore';
 import AdaRedemptionStore from './AdaRedemptionStore';
 import NodeUpdateStore from './NodeUpdateStore';
 import AdaWalletSettingsStore from './AdaWalletSettingsStore';
-import AddressesStore from './AddressesStore';
+import AdaAddressesStore from './AdaAddressesStore';
+import AdaAccountsStore from './AdaAccountsStore';
 
 export const adaStoreClasses = {
   wallets: AdaWalletsStore,
@@ -13,7 +14,8 @@ export const adaStoreClasses = {
   adaRedemption: AdaRedemptionStore,
   nodeUpdate: NodeUpdateStore,
   walletSettings: AdaWalletSettingsStore,
-  addresses: AddressesStore,
+  addresses: AdaAddressesStore,
+  accounts: AdaAccountsStore,
 };
 
 export type AdaStoresMap = {
@@ -22,7 +24,8 @@ export type AdaStoresMap = {
   adaRedemption: AdaRedemptionStore,
   nodeUpdate: NodeUpdateStore,
   walletSettings: AdaWalletSettingsStore,
-  addresses: AddressesStore,
+  addresses: AdaAddressesStore,
+  accounts: AdaAccountsStore,
 };
 
 const adaStores = observable({
@@ -31,7 +34,8 @@ const adaStores = observable({
   adaRedemption: null,
   nodeUpdate: null,
   walletSettings: null,
-  addresses: null
+  addresses: null,
+  accounts: null,
 });
 
 // Set up and return the stores and reset all stores to defaults

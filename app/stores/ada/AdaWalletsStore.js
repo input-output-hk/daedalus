@@ -87,6 +87,14 @@ export default class AdaWalletsStore extends WalletStore {
         }));
         this.stores.ada.addresses._refreshAddresses();
       });
+      runInAction('refresh account data', () => {
+        const walletIds = result.map((wallet: Wallet) => wallet.id);
+        this.stores.ada.accounts.accountsRequests = walletIds.map(walletId => ({
+          walletId,
+          allRequest: this.stores.ada.accounts._getAccountsAllRequest(walletId),
+        }));
+        this.stores.ada.accounts._refreshAccounts();
+      });
       runInAction('refresh transaction data', () => {
         const walletIds = result.map((wallet: Wallet) => wallet.id);
         this.stores.ada.transactions.transactionsRequests = walletIds.map(walletId => ({

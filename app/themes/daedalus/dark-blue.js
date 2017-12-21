@@ -193,6 +193,13 @@ export default {
   '--theme-topbar-wallet-info-color': '#e9f4fe',
   '--theme-topbar-layout-body-background-color': '#0b1926',
 
+  '--theme-accounts-list-headline-color': '#7a8691',
+  '--theme-accounts-list-background-color': '#263345',
+  '--theme-accounts-list-border-color': '#263345',
+  '--theme-accounts-list-text-color': '#e9f4fe',
+  '--theme-accounts-list-currency-icon-color': '#e9f4fe',
+  '--theme-accounts-list-arrow-icon-color': '#e9f4fe',
+
   '--theme-transactions-list-background-color': '#263345',
   '--theme-transactions-list-border-color': '#263345',
   '--theme-transactions-list-group-date-color': '#7a8691',

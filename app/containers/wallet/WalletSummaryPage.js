@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import WalletAccountsList from '../../components/wallet/accounts/WalletAccountsList';
 import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
 import WalletSummary from '../../components/wallet/summary/WalletSummary';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
@@ -30,7 +31,7 @@ export default class WalletSummaryPage extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { wallets, transactions } = this.props.stores.ada;
+    const { wallets, transactions, accounts } = this.props.stores.ada;
     const {
       hasAny,
       totalAvailable,
@@ -41,6 +42,8 @@ export default class WalletSummaryPage extends Component<Props> {
     const wallet = wallets.active;
     // Guard against potential null values
     if (!wallet) throw new Error('Active wallet required for WalletSummaryPage.');
+
+    const walletAccounts = accounts.all;
 
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
@@ -69,6 +72,10 @@ export default class WalletSummaryPage extends Component<Props> {
           numberOfTransactions={totalAvailable}
           pendingAmount={unconfirmedAmount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
+        />
+        <WalletAccountsList
+          accounts={walletAccounts}
+          walletId={wallet.id}
         />
         {walletTransactions}
       </VerticalFlexContainer>

@@ -8,6 +8,7 @@ import { unixTimestampToDate } from './lib/utils';
 import Wallet from '../../domain/Wallet';
 import WalletTransaction, { transactionTypes } from '../../domain/WalletTransaction';
 import WalletAddress from '../../domain/WalletAddress';
+import WalletAccount from '../../domain/WalletAccount';
 import { isValidMnemonic } from '../../../lib/decrypt';
 import { isValidRedemptionKey, isValidPaperVendRedemptionKey } from '../../../lib/redemption-key-validation';
 import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
@@ -43,6 +44,7 @@ import type {
   AdaLocalTimeDifference,
   AdaSyncProgressResponse,
   AdaAddress,
+  AdaAccount,
   AdaAccounts,
   AdaTransaction,
   AdaTransactionFee,
@@ -96,6 +98,10 @@ import {
 const ca = remote.getGlobal('ca');
 
 // ADA specific Request / Response params
+export type GetAccountsResponse = Array<WalletAccount>;
+export type GetAccountsRequest = {
+  walletId: string,
+};
 export type GetAddressesResponse = {
   accountId: ?string,
   addresses: Array<WalletAddress>,
@@ -195,6 +201,19 @@ export default class AdaApi {
       return response.map(data => _createWalletFromServerData(data));
     } catch (error) {
       Logger.error('AdaApi::getWallets error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async getAccounts(request: GetAccountsRequest): Promise<GetAccountsResponse> {
+    Logger.debug('AdaApi::getAccounts called: ' + stringifyData(request));
+    const { walletId } = request;
+    try {
+      const response: AdaAccounts = await getAdaWalletAccounts({ ca, walletId });
+      Logger.debug('AdaApi::getAccounts success: ' + stringifyData(response));
+      return response.map(data => _createAccountFromServerData(data));
+    } catch (error) {
+      Logger.error('AdaApi::getAccounts error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
@@ -713,6 +732,17 @@ const _createAddressFromServerData = action(
       id: data.cadId,
       amount: new BigNumber(data.cadAmount.getCCoin).dividedBy(LOVELACES_PER_ADA),
       isUsed: data.cadIsUsed,
+    })
+  )
+);
+
+const _createAccountFromServerData = action(
+  'AdaApi::_createAccountFromServerData', (data: AdaAccount) => (
+    new WalletAccount({
+      id: data.caId,
+      name: data.caMeta.caName,
+      amount: new BigNumber(data.caAmount.getCCoin).dividedBy(LOVELACES_PER_ADA),
+      addresses: data.caAddresses.map(addressData => _createAddressFromServerData(addressData)),
     })
   )
 );

@@ -1,0 +1,25 @@
+.component {
+  margin-bottom: -20px;
+  padding: 20px 20px 0;
+}
+
+.headline {
+  color: var(--theme-accounts-list-headline-color);
+  display: flex;
+  font-family: var(--font-regular);
+  font-size: 16px;
+  justify-content: space-between;
+  margin: 0 20px 10px;
+  opacity: 0.5;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  min-height: 96px;
+
+  .item {
+    width: calc(50% - 10px);
+  }
+}

@@ -28,8 +28,8 @@ export const transactionTypes: {
 
 export default class WalletTransaction {
 
-  @observable id: string = '';
-  @observable type: TransactionType;
+  id: string = '';
+  type: TransactionType;
   @observable title: string = '';
   @observable amount: BigNumber;
   @observable date: Date;
