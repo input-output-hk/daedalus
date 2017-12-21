@@ -1,5 +1,5 @@
 // @flow
-import { observable, computed } from 'mobx';
+import { action, observable, computed, toJS } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment/moment';
 import { ipcRenderer } from 'electron';
@@ -8,7 +8,12 @@ import Request from './lib/LocalizedRequest';
 import environment from '../environment';
 import { THEMES } from '../themes/index';
 import { ROUTES } from '../routes-config';
+import { GET_LOGS } from '../../electron/ipc-api/get-logs';
+import { COMPRESS_LOGS } from '../../electron/ipc-api/compress-logs';
+import { DELETE_COMPRESSED_LOGS } from '../../electron/ipc-api/delete-compressed-logs';
+import LocalizableError from '../i18n/LocalizableError';
 import globalMessages from '../i18n/global-messages';
+import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 
 export default class SettingsStore extends Store {
 
@@ -39,6 +44,14 @@ export default class SettingsStore extends Store {
   @observable setSendLogsChoiceRequest: Request = new Request(this.api.localStorage.setSendLogsChoice);
   @observable getThemeRequest: Request<string> = new Request(this.api.localStorage.getUserTheme);
   @observable setThemeRequest: Request<string> = new Request(this.api.localStorage.setUserTheme);
+  @observable sendSupportRequest: Request<any> = new Request(
+    // TODO - faked api caller, just for ada for now
+    this.api.ada.sendSupportRequest
+  );
+  @observable error: ?LocalizableError = null;
+  @observable logFiles: Object = {};
+  @observable compressedLogsPath: ?string = null;
+  @observable isCompressing: boolean = false;
   /* eslint-enable max-len */
 
   setup() {
@@ -46,6 +59,12 @@ export default class SettingsStore extends Store {
     this.actions.profile.setSendLogsChoice.listen(this._setSendLogsChoice);
     this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
     this.actions.profile.updateTheme.listen(this._updateTheme);
+    this.actions.profile.getLogs.listen(this._getLogs);
+    this.actions.profile.compressLogs.listen(this._compressLogs);
+    this.actions.profile.sendSupportRequest.listen(this._sendSupportRequest);
+    ipcRenderer.on(GET_LOGS.SUCCESS, this._onGetLogsSuccess);
+    ipcRenderer.on(COMPRESS_LOGS.SUCCESS, this._onCompressLogsSuccess);
+    ipcRenderer.on(COMPRESS_LOGS.ERROR, this._onCompressLogsError);
     this.registerReactions([
       this._setBigNumberFormat,
       this._updateMomentJsLocaleAfterLocaleChange,
@@ -57,6 +76,13 @@ export default class SettingsStore extends Store {
     ]);
     this._getTermsOfUseAcceptance();
     this._sendLogsChoiceToMainProcess();
+  }
+
+  teardown() {
+    super.teardown();
+    ipcRenderer.removeAllListeners(GET_LOGS.SUCCESS);
+    ipcRenderer.removeAllListeners(COMPRESS_LOGS.SUCCESS);
+    ipcRenderer.removeAllListeners(COMPRESS_LOGS.ERROR);
   }
 
   _setBigNumberFormat = () => {
@@ -195,4 +221,54 @@ export default class SettingsStore extends Store {
     this.currentLocale; // eslint-disable-line
     ipcRenderer.send('reload-about-window');
   };
+
+  _getLogs = () => {
+    ipcRenderer.send(GET_LOGS.REQUEST);
+  };
+
+  _onGetLogsSuccess = action((event, res) => {
+    this.logFiles = res;
+  });
+
+  _compressLogs = action(({ logs }) => {
+    this.isCompressing = true;
+    ipcRenderer.send(COMPRESS_LOGS.REQUEST, toJS(logs));
+  });
+
+  _onCompressLogsSuccess = action((event, res) => {
+    this.isCompressing = false;
+    this.compressedLogsPath = res.path;
+  });
+
+  _onCompressLogsError = action(() => {
+    this.error = new WalletSupportRequestLogsCompressError();
+  });
+
+  _sendSupportRequest = action(({ email, subject, problem, filePath } : {
+    email: string,
+    subject: ?string,
+    problem: ?string,
+    filePath: ?string,
+  }) => {
+    this.sendSupportRequest.execute({
+      email, subject, problem, filePath,
+    })
+      .then(action((response: any) => {
+        // Trigger ipc renderer to delete compressed temp files
+        if (response.filePath) {
+          ipcRenderer.send(DELETE_COMPRESSED_LOGS.REQUEST, response.filePath);
+        }
+        this._reset();
+        this.actions.dialogs.closeActiveDialog.trigger();
+      }))
+      .catch(action((error) => {
+        this.error = error;
+      }));
+  });
+
+  @action _reset = () => {
+    this.error = null;
+    this.compressedLogsPath = null;
+  };
+
 }

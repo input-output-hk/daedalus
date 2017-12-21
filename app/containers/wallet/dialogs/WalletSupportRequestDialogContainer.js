@@ -9,20 +9,38 @@ export default class WalletSupportRequestDialogContainer extends Component<Injec
 
   static defaultProps = { actions: null, stores: null };
 
+  onSubmit = (values: { email: string, subject: ?string, problem: ?string, filePath: ?string }) => {
+    this.props.actions.profile.sendSupportRequest.trigger(values);
+  };
+
   render() {
-    const { actions } = this.props;
+    const { actions, stores } = this.props;
+    const { getLogs, compressLogs } = actions.profile;
+    const {
+      logFiles,
+      compressedLogsPath,
+      isCompressing,
+      sendSupportRequest,
+      error,
+    } = stores.profile;
 
     return (
       <WalletSupportRequestDialog
+        logFiles={logFiles}
+        compressedLogsPath={compressedLogsPath}
+        isCompressing={isCompressing}
+        isSubmitting={sendSupportRequest.isExecuting}
+        error={error}
+        onSubmit={this.onSubmit}
         onCancel={() => {
           actions.dialogs.closeActiveDialog.trigger();
         }}
-        onSave={() => {
-          // TODO - implement api call to send support request
-          actions.dialogs.closeActiveDialog.trigger();
+        onGetLogs={() => {
+          getLogs.trigger();
         }}
-        isSubmitting={false}
-        error={null}
+        onCompressLogs={(logs) => {
+          compressLogs.trigger({ logs });
+        }}
       />
     );
   }

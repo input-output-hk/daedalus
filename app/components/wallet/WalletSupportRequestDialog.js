@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import { map, get } from 'lodash';
 import { observer } from 'mobx-react';
 import { isEmail, isEmpty } from 'validator';
 import classnames from 'classnames';
@@ -71,14 +72,20 @@ const messages = defineMessages({
 });
 
 type Props = {
+  logFiles: Object,
+  compressedLogsPath: ?string,
   onCancel: Function,
-  onSave: Function,
+  onSubmit: Function,
+  onGetLogs: Function,
+  onCompressLogs: Function,
   isSubmitting: boolean,
+  isCompressing: boolean,
   error: ?LocalizableError,
 };
 
 type State = {
-  attachLogs: boolean,
+  showLogs: boolean,
+  canLoadLogs: boolean,
 };
 
 @observer
@@ -89,8 +96,17 @@ export default class WalletSupportRequestDialog extends Component<Props, State> 
   };
 
   state = {
-    attachLogs: false,
+    showLogs: false,
+    canLoadLogs: true,
   };
+
+  componentWillReceiveProps(nextProps: Object) {
+    const commpressionPathChanged = this.props.compressedLogsPath !== nextProps.compressedLogsPath;
+    if (nextProps.compressedLogsPath && commpressionPathChanged) {
+      // proceed to submit when ipc rendered successfully return compressed file path
+      this.submit(nextProps.compressedLogsPath);
+    }
+  }
 
   form = new ReactToolboxMobxForm({
     fields: {
@@ -138,38 +154,58 @@ export default class WalletSupportRequestDialog extends Component<Props, State> 
     },
   });
 
-  submit = () => {
+  submit = (filePath: ?string = null) => {
     this.form.submit({
       onSuccess: (form) => {
-        const { attachLogs } = this.state;
+        const { logFiles } = this.props;
+        const rootLogs = get(logFiles, ['rootLogs', 'files']);
+        const pubLogs = get(logFiles, ['pubLogs', 'files']);
+        const logsExists = rootLogs.length || pubLogs.length;
+
         const { email, subject, problem } = form.values();
         const data = {
-          email, subject, problem, attachLogs,
+          email, subject, problem, filePath,
         };
-        this.props.onSave(data);
+
+        if (!logFiles || !this.state.showLogs || filePath || (logFiles && !logsExists)) {
+          // regular submit
+          this.props.onSubmit(data);
+        } else {
+          // submit request with commpressed logs file
+          this.props.onCompressLogs(this.props.logFiles);
+        }
       },
       onError: () => {},
     });
   };
 
   handleLogsSwitchToggle = (value: boolean) => {
-    this.setState({ attachLogs: value });
+    // prevent multiple logs loading on same dialog, re-enable on open/close dialog
+    if (this.state.canLoadLogs) {
+      this.props.onGetLogs();
+      this.setState({ showLogs: value, canLoadLogs: false });
+    } else {
+      this.setState({ showLogs: value });
+    }
   };
 
   render() {
     const { intl } = this.context;
+    const { showLogs } = this.state;
     const { form } = this;
-    const { onCancel, isSubmitting, error } = this.props;
-    const { attachLogs } = this.state;
+    const {
+      onCancel, isSubmitting, isCompressing,
+      logFiles, error,
+    } = this.props;
 
     const attachedLogsClasses = classnames([
       styles.attachedLogs,
-      attachLogs ? styles.show : null,
+      (showLogs && logFiles) ? styles.show : null,
     ]);
 
     const submitButtonClasses = classnames([
       'submitButton',
-      isSubmitting ? styles.isSubmitting : null,
+      (isSubmitting || isCompressing) ? styles.isSubmitting : null,
     ]);
 
     const emailField = form.$('email');
@@ -182,7 +218,7 @@ export default class WalletSupportRequestDialog extends Component<Props, State> 
         label: this.context.intl.formatMessage(messages.submitButtonLabel),
         primary: true,
         disabled: isSubmitting,
-        onClick: this.submit,
+        onClick: this.submit.bind(this, null),
       },
     ];
 
@@ -225,7 +261,7 @@ export default class WalletSupportRequestDialog extends Component<Props, State> 
           />
         </div>
 
-        <div className={styles.attachLogs}>
+        <div className={styles.logsWrapper}>
           <div className={styles.logsSwitch}>
             <div className={styles.logsSwitchlabel}>
               {intl.formatMessage(messages.logsSwitchLabel)}
@@ -234,15 +270,22 @@ export default class WalletSupportRequestDialog extends Component<Props, State> 
             <Checkbox
               onChange={this.handleLogsSwitchToggle}
               label={intl.formatMessage(messages.logsSwitchPlaceholder)}
-              checked={attachLogs}
+              checked={showLogs}
               skin={<SimpleSwitchSkin />}
             />
           </div>
 
           <div className={attachedLogsClasses}>
-            {/* TODO - get logs from disc */}
-            <p>/Users/darkomijic/Library/Application Support/Daedalus/Logs/Daedalus.log</p>
-            <p>/Users/darkomijic/Library/Application Support/Daedalus/Logs/Daedalus.log</p>
+            {map(logFiles, (log, key) => (
+              log.files.length > 0 && (
+                <div key={key}>
+                  <p className={styles.logPath}>{log.path}</p>
+                  {map(log.files, (fileName) => (
+                    <p className={styles.logFileName} key={fileName}>{fileName}</p>
+                  ))}
+                </div>
+              )
+            ))}
           </div>
         </div>
 

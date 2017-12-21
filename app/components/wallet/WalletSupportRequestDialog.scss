@@ -8,7 +8,7 @@
   margin-bottom: 20px;
 }
 
-.attachLogs {
+.logsWrapper {
   .logsSwitch {
     border-top: 1px solid var(--theme-separation-border-color);
     margin-top: 30px;
@@ -49,8 +49,16 @@
       font-family: var(--font-regular);
       font-style: italic;
       line-height: 1.38;
-      margin-top: 16px;
       opacity: 0.7;
+
+      &.logPath {
+        font-weight: 600;
+        margin: 16px 0;
+      }
+
+      &.logFileName {
+        margin-left: 12px;
+      }
     }
   }
 }
