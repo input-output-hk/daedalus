@@ -17,13 +17,52 @@ import           Turtle.Line          (unsafeTextToLine)
 import           Launcher
 import           RewriteLibs          (chain)
 
+data InstallerConfig = InstallerConfig {
+    icApi :: String
+  , appNameLowercase :: T.Text
+  , appName :: T.Text
+  , pkg :: T.Text
+  , scriptsDir :: T.Text
+  , predownloadChain :: Bool
+}
+
 main :: IO ()
 main = do
-  makeInstaller True
-  makeInstaller False
+  api <- fromMaybe "cardano" <$> lookupEnv "API"
+  version <- fromMaybe "dev" <$> lookupEnv "DAEDALUS_VERSION"
+  let
+    cfg :: InstallerConfig
+    cfg = InstallerConfig api undefined undefined undefined undefined False
+  case api of
+    "cardano" -> do
+      let
+        cfg' = cfg {
+            appNameLowercase = "daedalus"
+          , appName = "Daedalus"
+          , pkg = "dist/Daedalus-installer-" <> T.pack version <> ".pkg"
+          , scriptsDir = "data/scripts"
+        }
+      makeInstaller cfg'
+    "etc" -> do
+      let
+        cfg' = cfg {
+            appNameLowercase = "daedalusmantis"
+          , appName = "DaedalusMantis"
+          , scriptsDir = "data/scripts-mantis"
+        }
+        cfgtrue = cfg' {
+            pkg = "dist/Daedalus-mantis-bootstrap-installer-" <> T.pack version <> ".pkg"
+          , predownloadChain = True
+        }
+        cfgfalse = cfg' {
+            pkg = "dist/Daedalus-mantis-installer-" <> T.pack version <> ".pkg"
+          , predownloadChain = False
+        }
+      makeInstaller cfgtrue
+      makeInstaller cfgfalse
 
-makeInstaller :: Bool -> IO ()
-makeInstaller predownloadChain = do
+makeInstaller :: InstallerConfig -> IO ()
+makeInstaller cfg = do
   -- TODO, pass this in
   let
     bootstrap_url :: String
@@ -33,28 +72,17 @@ makeInstaller predownloadChain = do
     -- how much space the chain will take in gig
     bootstrap_size :: Int
     bootstrap_size = 33
-  version <- fromMaybe "dev" <$> lookupEnv "DAEDALUS_VERSION"
-  api <- fromMaybe "cardano" <$> lookupEnv "API"
-  let
-    appNameLowercase = if api == "etc" then "daedalusmantis" else "daedalus"
-    appName = if api == "etc" then "DaedalusMantis" else "Daedalus"
 
   let appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
       dir     = appRoot <> "/Contents/MacOS"
       -- resDir  = appRoot <> "/Contents/Resources"
-  let
-    pkg = case api of
-      "cardano" -> "dist/Daedalus-installer-" <> version <> ".pkg"
-      "etc" -> case predownloadChain of
-        True -> "dist/Daedalus-mantis-bootstrap-installer-" <> version <> ".pkg"
-        False -> "dist/Daedalus-mantis-installer-" <> version <> ".pkg"
   createDirectoryIfMissing False "dist"
 
   echo "Creating icons ..."
   procs "iconutil" ["--convert", "icns", "--output", T.pack dir <> "/../Resources/electron.icns", "icons/electron.iconset"] mempty
 
   echo "Preparing files ..."
-  case api of
+  case icApi cfg of
     "cardano" -> do
       copyFile "cardano-launcher" (dir <> "/cardano-launcher")
       copyFile "cardano-node" (dir <> "/cardano-node")
@@ -80,7 +108,7 @@ makeInstaller predownloadChain = do
   unless de $ renameFile (dir <> "/Daedalus") (dir <> "/Frontend")
   run "chmod" ["+x", T.pack (dir <> "/Frontend")]
 
-  case api of
+  case icApi cfg of
     "cardano" -> do
       writeFile (dir <> "/Daedalus") $ unlines
         [ "#!/usr/bin/env bash"
@@ -106,20 +134,21 @@ makeInstaller predownloadChain = do
       run "chmod" [ "+x", T.pack (dir <> "/bootstrap.sh") ]
   run "chmod" ["+x", T.pack (dir <> "/Daedalus")]
 
-  if api == "etc" then
+  if icApi cfg == "etc" then
     renameDirectory "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app" "../release/darwin-x64/Daedalus-darwin-x64/DaedalusMantis.app"
   else
     pure ()
 
-  let scriptsDir = if api == "etc" then "data/scripts-mantis" else "data/scripts"
 
-  let pkgargs =
+  let
+    pkgargs :: [ T.Text ]
+    pkgargs =
        [ "--identifier"
-       , "org." <> appNameLowercase <> ".pkg"
+       , "org." <> appNameLowercase cfg <> ".pkg"
        -- data/scripts/postinstall is responsible for running build-certificates
-       , "--scripts", scriptsDir
+       , "--scripts", scriptsDir cfg
        , "--component"
-       , "../release/darwin-x64/Daedalus-darwin-x64/" <> appName <> ".app"
+       , "../release/darwin-x64/Daedalus-darwin-x64/" <> appName cfg <> ".app"
        , "--install-location"
        , "/Applications"
        , "dist/temp.pkg"
@@ -144,15 +173,15 @@ makeInstaller predownloadChain = do
     unless (exitcode == ExitSuccess) $ error "Signing failed"
     run "security" ["set-key-partition-list", "-S", "apple-tool:,apple:", "-s", "-k", "travis", "macos-build.keychain"]
     run "security" ["unlock-keychain", "-p", "travis", "macos-build.keychain"]
-    shells ("productsign --sign \"Developer ID Installer: Input Output HK Limited (89TW38X994)\" --keychain macos-build.keychain dist/temp2.pkg " <> T.pack pkg) mempty
+    shells ("productsign --sign \"Developer ID Installer: Input Output HK Limited (89TW38X994)\" --keychain macos-build.keychain dist/temp2.pkg " <> pkg cfg) mempty
   else do
     echo "Pull request, not signing the installer."
-    run "cp" ["dist/temp2.pkg", T.pack pkg]
+    run "cp" ["dist/temp2.pkg", pkg cfg ]
 
   run "rm" ["dist/temp.pkg"]
   run "rm" ["dist/temp2.pkg"]
 
-  echo $ "Generated " <> unsafeTextToLine (T.pack pkg)
+  echo $ "Generated " <> unsafeTextToLine (pkg cfg)
 
 doLauncher :: String
 doLauncher = "./cardano-launcher " <> launcherArgs Launcher

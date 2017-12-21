@@ -7,6 +7,7 @@
 
 set -e
 set -x
+set -o pipefail
 
 usage() {
     test -z "$1" || { echo "ERROR: $*" >&2; echo >&2; }
