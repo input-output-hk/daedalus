@@ -10,7 +10,7 @@ import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import resolver from '../../utils/imports';
 
-const formattedWalletAmount = resolver('utils/imports');
+const { formattedWalletAmount } = resolver('utils/formatters');
 
 export const messages = defineMessages({
   noTransactions: {

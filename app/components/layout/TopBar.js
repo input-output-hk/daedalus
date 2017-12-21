@@ -17,7 +17,7 @@ type Props = {
   activeWallet?: ?Wallet,
   currentRoute: string,
   showSubMenus?: ?boolean,
-  formattedWalletAmount: Function,
+  formattedWalletAmount?: Function,
 };
 
 @observer
@@ -35,7 +35,7 @@ export default class TopBar extends Component<Props> {
       showWalletInfo ? styles.withWallet : styles.withoutWallet,
     ]);
 
-    const topBarTitle = walletRoutesMatch && activeWallet != null ? (
+    const topBarTitle = walletRoutesMatch && activeWallet != null && formattedWalletAmount ? (
       <div className={styles.walletInfo}>
         <div className={styles.walletName}>{activeWallet.name}</div>
         <div className={styles.walletAmount}>

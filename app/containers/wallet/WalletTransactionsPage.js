@@ -9,7 +9,7 @@ import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer
 import type { InjectedProps } from '../../types/injectedPropsType';
 import resolver from '../../utils/imports';
 
-const formattedWalletAmount = resolver('utils/imports');
+const { formattedWalletAmount } = resolver('utils/formatters');
 
 export const messages = defineMessages({
   noTransactions: {

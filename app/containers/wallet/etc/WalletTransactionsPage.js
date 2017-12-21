@@ -10,7 +10,7 @@ import type { InjectedProps } from '../../../types/injectedPropsType';
 import { messages } from '../WalletTransactionsPage';
 import resolver from '../../../utils/imports';
 
-const formattedWalletAmount = resolver('utils/imports');
+const { formattedWalletAmount } = resolver('utils/formatters');
 
 type Props = InjectedProps;
 

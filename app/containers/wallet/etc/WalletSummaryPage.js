@@ -11,7 +11,7 @@ import WalletTransactionsList from '../../../components/wallet/transactions/Wall
 import { messages } from '../WalletSummaryPage';
 import resolver from '../../../utils/imports';
 
-const formattedWalletAmount = resolver('utils/imports');
+const { formattedWalletAmount } = resolver('utils/formatters');
 
 type Props = InjectedProps;
 
