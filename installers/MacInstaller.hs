@@ -20,10 +20,10 @@ import           RewriteLibs          (chain)
 data InstallerConfig = InstallerConfig {
     icApi :: String
   , appNameLowercase :: T.Text
-  , appName :: T.Text
   , pkg :: T.Text
   , scriptsDir :: T.Text
   , predownloadChain :: Bool
+  , appRoot :: String
 }
 
 main :: IO ()
@@ -32,23 +32,24 @@ main = do
   version <- fromMaybe "dev" <$> lookupEnv "DAEDALUS_VERSION"
   let
     cfg :: InstallerConfig
-    cfg = InstallerConfig api undefined undefined undefined undefined False
+    cfg = InstallerConfig api undefined undefined undefined False undefined
   case api of
     "cardano" -> do
       let
         cfg' = cfg {
             appNameLowercase = "daedalus"
-          , appName = "Daedalus"
           , pkg = "dist/Daedalus-installer-" <> T.pack version <> ".pkg"
           , scriptsDir = "data/scripts"
+          , appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
         }
       makeInstaller cfg'
     "etc" -> do
+      renameDirectory "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app" "../release/darwin-x64/Daedalus-darwin-x64/DaedalusMantis.app"
       let
         cfg' = cfg {
             appNameLowercase = "daedalusmantis"
-          , appName = "DaedalusMantis"
           , scriptsDir = "data/scripts-mantis"
+          , appRoot = "../release/darwin-x64/Daedalus-darwin-x64/DaedalusMantis.app"
         }
         cfgtrue = cfg' {
             pkg = "dist/Daedalus-mantis-bootstrap-installer-" <> T.pack version <> ".pkg"
@@ -58,7 +59,9 @@ main = do
             pkg = "dist/Daedalus-mantis-installer-" <> T.pack version <> ".pkg"
           , predownloadChain = False
         }
+      echo "pass one"
       makeInstaller cfgtrue
+      echo "pass two"
       makeInstaller cfgfalse
 
 makeInstaller :: InstallerConfig -> IO ()
@@ -73,8 +76,7 @@ makeInstaller cfg = do
     bootstrap_size :: Int
     bootstrap_size = 33
 
-  let appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
-      dir     = appRoot <> "/Contents/MacOS"
+  let dir     = appRoot cfg <> "/Contents/MacOS"
       -- resDir  = appRoot <> "/Contents/Resources"
   createDirectoryIfMissing False "dist"
 
@@ -134,10 +136,6 @@ makeInstaller cfg = do
       run "chmod" [ "+x", T.pack (dir <> "/bootstrap.sh") ]
   run "chmod" ["+x", T.pack (dir <> "/Daedalus")]
 
-  if icApi cfg == "etc" then
-    renameDirectory "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app" "../release/darwin-x64/Daedalus-darwin-x64/DaedalusMantis.app"
-  else
-    pure ()
 
 
   let
@@ -148,7 +146,7 @@ makeInstaller cfg = do
        -- data/scripts/postinstall is responsible for running build-certificates
        , "--scripts", scriptsDir cfg
        , "--component"
-       , "../release/darwin-x64/Daedalus-darwin-x64/" <> appName cfg <> ".app"
+       , T.pack $ appRoot cfg
        , "--install-location"
        , "/Applications"
        , "dist/temp.pkg"
