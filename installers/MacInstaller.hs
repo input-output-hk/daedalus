@@ -19,6 +19,20 @@ import           RewriteLibs          (chain)
 
 main :: IO ()
 main = do
+  makeInstaller True
+  makeInstaller False
+
+makeInstaller :: Bool -> IO ()
+makeInstaller predownloadChain = do
+  -- TODO, pass this in
+  let
+    bootstrap_url :: String
+    bootstrap_url = "https://s3-eu-west-1.amazonaws.com/iohk.mantis.bootstrap/mantis-boot-classic-18DEC.zip"
+    bootstrap_hash :: String
+    bootstrap_hash = "7e210991f10f9ddebd5d9fe42e98c59e"
+    -- how much space the chain will take in gig
+    bootstrap_size :: Int
+    bootstrap_size = 33
   version <- fromMaybe "dev" <$> lookupEnv "DAEDALUS_VERSION"
   api <- fromMaybe "cardano" <$> lookupEnv "API"
   let
@@ -31,7 +45,9 @@ main = do
   let
     pkg = case api of
       "cardano" -> "dist/Daedalus-installer-" <> version <> ".pkg"
-      "etc" -> "dist/Daedalus-mantis-installer-" <> version <> ".pkg"
+      "etc" -> case predownloadChain of
+        True -> "dist/Daedalus-mantis-bootstrap-installer-" <> version <> ".pkg"
+        False -> "dist/Daedalus-mantis-installer-" <> version <> ".pkg"
   createDirectoryIfMissing False "dist"
 
   echo "Creating icons ..."
@@ -83,6 +99,11 @@ main = do
         , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Logs/\""
         , "./Frontend"
         ]
+      writeFile (dir <> "/bootstrap.sh") $ unlines
+        [ "#!/bin/sh"
+        , "/Applications/DaedalusMantis.app/Contents/Resources/app/mantis.app/Contents/MacOS/mantis bootstrap " <> bootstrap_url <> " " <> bootstrap_hash <> " " <> show bootstrap_size
+        ]
+      run "chmod" [ "+x", T.pack (dir <> "/bootstrap.sh") ]
   run "chmod" ["+x", T.pack (dir <> "/Daedalus")]
 
   if api == "etc" then
@@ -134,7 +155,7 @@ main = do
   echo $ "Generated " <> unsafeTextToLine (T.pack pkg)
 
 doLauncher :: String
-doLauncher = "./cardano-launcher " <> (launcherArgs $ Launcher
+doLauncher = "./cardano-launcher " <> launcherArgs Launcher
   { nodePath = "./cardano-node"
   , walletPath = "./Frontend"
   , nodeLogPath = appdata <> "Logs/cardano-node.log"
@@ -147,7 +168,7 @@ doLauncher = "./cardano-launcher " <> (launcherArgs $ Launcher
         , updExec = "/usr/bin/open"
         , updArgs = ["-FW"]
         }
-  })
+  }
     where
       appdata = "$HOME/Library/Application Support/Daedalus/"
 
