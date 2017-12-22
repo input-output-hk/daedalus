@@ -26,10 +26,24 @@ data InstallerConfig = InstallerConfig {
   , appRoot :: String
 }
 
+setupKeychain :: IO ()
+setupKeychain = do
+  -- Sign the installer with a special macOS dance
+  run "security" ["create-keychain", "-p", "travis", "macos-build.keychain"]
+  run "security" ["default-keychain", "-s", "macos-build.keychain"]
+  exitcode <- shell "security import macos.p12 -P \"$CERT_PASS\" -k macos-build.keychain -T `which productsign`" mempty
+  unless (exitcode == ExitSuccess) $ error "Signing failed"
+  run "security" ["set-key-partition-list", "-S", "apple-tool:,apple:", "-s", "-k", "travis", "macos-build.keychain"]
+  run "security" ["unlock-keychain", "-p", "travis", "macos-build.keychain"]
+
 main :: IO ()
 main = do
   api <- fromMaybe "cardano" <$> lookupEnv "API"
   version <- fromMaybe "dev" <$> lookupEnv "DAEDALUS_VERSION"
+  isPullRequest <- fromMaybe "true" <$> lookupEnv "TRAVIS_PULL_REQUEST"
+  if isPullRequest == "false" then do
+    setupKeychain
+  else pure ()
   let
     cfg :: InstallerConfig
     cfg = InstallerConfig api undefined undefined undefined False undefined
@@ -164,13 +178,6 @@ makeInstaller cfg = do
 
   isPullRequest <- fromMaybe "true" <$> lookupEnv "TRAVIS_PULL_REQUEST"
   if isPullRequest == "false" then do
-    -- Sign the installer with a special macOS dance
-    run "security" ["create-keychain", "-p", "travis", "macos-build.keychain"]
-    run "security" ["default-keychain", "-s", "macos-build.keychain"]
-    exitcode <- shell "security import macos.p12 -P \"$CERT_PASS\" -k macos-build.keychain -T `which productsign`" mempty
-    unless (exitcode == ExitSuccess) $ error "Signing failed"
-    run "security" ["set-key-partition-list", "-S", "apple-tool:,apple:", "-s", "-k", "travis", "macos-build.keychain"]
-    run "security" ["unlock-keychain", "-p", "travis", "macos-build.keychain"]
     shells ("productsign --sign \"Developer ID Installer: Input Output HK Limited (89TW38X994)\" --keychain macos-build.keychain dist/temp2.pkg " <> pkg cfg) mempty
   else do
     echo "Pull request, not signing the installer."
