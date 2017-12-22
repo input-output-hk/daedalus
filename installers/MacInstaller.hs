@@ -58,7 +58,7 @@ main = do
         }
       makeInstaller cfg'
     "etc" -> do
-      renameDirectory "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app" "../release/darwin-x64/Daedalus-darwin-x64/DaedalusMantis.app"
+      --renameDirectory "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app" "../release/darwin-x64/Daedalus-darwin-x64/DaedalusMantis.app"
       let
         cfg' = cfg {
             appNameLowercase = "daedalusmantis"
