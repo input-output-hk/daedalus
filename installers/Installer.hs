@@ -1,5 +1,3 @@
-{-# LANGUAGE NoImplicitPrelude #-}
-
 import           Universum
 
 import           System.Info (arch, os)
