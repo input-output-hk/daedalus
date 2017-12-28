@@ -28,9 +28,9 @@ type Props = {
   transactions: Array<WalletTransaction>,
   isLoadingTransactions: boolean,
   hasMoreToLoad: boolean,
-  onLoadMore: Function,
   assuranceMode: AssuranceMode,
   walletId: string,
+  formattedWalletAmount: Function,
 };
 
 @observer
@@ -93,6 +93,7 @@ export default class WalletTransactionsList extends Component<Props> {
       hasMoreToLoad,
       assuranceMode,
       walletId,
+      formattedWalletAmount
     } = this.props;
 
     const transactionsGroups = this.groupTransactionsByDay(transactions);
@@ -114,6 +115,7 @@ export default class WalletTransactionsList extends Component<Props> {
                     isLastInList={transactionIndex === group.transactions.length - 1}
                     state={transaction.state}
                     assuranceLevel={transaction.getAssuranceLevelForMode(assuranceMode)}
+                    formattedWalletAmount={formattedWalletAmount}
                   />
                 </div>
               ))}

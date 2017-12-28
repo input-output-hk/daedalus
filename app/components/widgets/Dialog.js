@@ -4,8 +4,8 @@ import classnames from 'classnames';
 import type { Node } from 'react';
 import Modal from 'react-polymorph/lib/components/Modal';
 import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import SimpleModalSkin from 'react-polymorph/lib/skins/simple/ModalSkin';
+import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
+import SimpleModalSkin from 'react-polymorph/lib/skins/simple/raw/ModalSkin';
 import styles from './Dialog.scss';
 
 type Props = {
