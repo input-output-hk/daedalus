@@ -19,7 +19,7 @@ usage() {
     --fast-impure             Fast, impure, incremental build
     --build-id BUILD-NO       Identifier of the build; defaults to '0'
 
-    --travis-pr PR-ID         Travis pull request id we're building
+    --pr-id PR-ID             Pull request id we're building
     --nix-path NIX-PATH       NIX_PATH value
 
     --upload-s3               Upload the installer to S3
@@ -51,7 +51,7 @@ retry() {
 fast_impure=
 verbose=true
 build_id=0
-travis_pr=true
+pr_id=true
 upload_s3=
 test_install=
 
@@ -69,8 +69,8 @@ while test $# -ge 1
 do case "$1" in
            --fast-impure )                               fast_impure=true;;
            --build-id )       arg2nz "build identifier" $2;    build_id="$2"; shift;;
-           --travis-pr )      arg2nz "Travis pull request id" $2;
-                                                           travis_pr="$2"; shift;;
+           --pr-id )          arg2nz "Pull request id" $2;
+                                                               pr_id="$2"; shift;;
            --nix-path )       arg2nz "NIX_PATH value" $2;
                                                      export NIX_PATH="$2"; shift;;
            --upload-s3 )                                   upload_s3=t;;
@@ -121,10 +121,10 @@ test -d node_modules/daedalus-client-api/ -a -n "${fast_impure}" || {
 }
 
 test "$(find node_modules/ | wc -l)" -gt 100 -a -n "${fast_impure}" ||
-        nix-shell --run "npm install"
+        nix-shell --no-build-output --cores 0 --max-jobs 4 --run "npm install"
 
 test -d "release/darwin-x64/Daedalus-darwin-x64" -a -n "${fast_impure}" || {
-        nix-shell --run "npm run package -- --icon installers/icons/256x256.png"
+        nix-shell --no-build-output --cores 0 --max-jobs 4 --run "npm run package -- --icon installers/icons/256x256.png"
         echo "Size of Electron app is $(du -sh release)"
 }
 
@@ -133,21 +133,33 @@ test -n "$(which stack)"     -a -n "${fast_impure}" ||
                          tar xz --strip-components=1 -C ~/.local/bin"
 
 cd installers
-    if test "${travis_pr}" = "false" -a "${os}" != "linux" # No Linux keys yet.
-    then retry 5 nix-shell -p awscli --run "aws s3 cp --region eu-central-1 s3://iohk-private/${key} macos.p12"
-    fi
-    retry 5 $(nix-build -j 2)/bin/make-installer
-    mkdir -p dist
-    if test -n "${upload_s3}"
-    then
-            echo "$0: --upload-s3 passed, will upload the installer to S3";
-            retry 5 nix-shell -p awscli --run "aws s3 cp 'dist/Daedalus-installer-${DAEDALUS_VERSION}.pkg' s3://daedalus-internal/ --acl public-read"
-    fi
+    # if test "${pr_id}" = "false" -a "${OS_NAME}" != "linux" # No Linux keys yet.
+    # then retry 5 nix-shell -p awscli --no-build-output --cores 0 --max-jobs 4 --run "aws s3 cp --region eu-central-1 s3://iohk-private/${key} macos.p12"
+    # fi
+    echo "Prebuilding dependencies for cardano-installer, quietly.."
+    ## XXX: temporarily disable signing
+    export BUILDKITE_PULL_REQUEST=""
+    nix-shell --run true --no-build-output --cores 0 --max-jobs 4 default.nix ||
+        echo "Prebuild failed!"
+    echo "Building and running the cardano installer generator.."
+    $(nix-build -j 2)/bin/make-installer
+    echo "Uploading the installer package.."
+    cd dist
+    APP_NAME="csl-daedalus"
+    mkdir -p ${APP_NAME}
+    mv "Daedalus-installer-${DAEDALUS_VERSION}.pkg" ${APP_NAME}/"Daedalus-installer-${DAEDALUS_VERSION}.pkg"
+    buildkite-agent artifact upload ${APP_NAME}/Daedalus-installer-${DAEDALUS_VERSION}.pkg s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
+    cd ..
+    # if test -n "${upload_s3}"
+    # then
+    #         echo "$0: --upload-s3 passed, will upload the installer to S3";
+    #         retry 5 nix-shell -p awscli --run "aws s3 cp 'dist/Daedalus-installer-${DAEDALUS_VERSION}.pkg' s3://daedalus-internal/ --acl public-read"
+    # fi
     if test -n "${test_install}"
     then echo "$0:  --test-install passed, will test the installer for installability";
-         case ${os} in
-                 osx )   sudo installer -dumplog -verbose -target / -pkg "dist/Daedalus-installer-${DAEDALUS_VERSION}.pkg";;
-                 linux ) echo "WARNING: installation testing not implemented on Linux" >&2;; esac; fi
+         case ${OS_NAME} in
+                 darwin ) sudo installer -dumplog -verbose -target / -pkg "dist/Daedalus-installer-${DAEDALUS_VERSION}.pkg";;
+                 linux )  echo "WARNING: installation testing not implemented on Linux" >&2;; esac; fi
 cd ..
 
 ls -la installers/dist

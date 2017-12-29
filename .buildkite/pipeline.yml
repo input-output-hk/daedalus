@@ -1,0 +1,9 @@
+steps:
+  - label: 'daedalus-x86_64-darwin'
+    command: 'scripts/nix-shell.sh --run "scripts/build-installer-unix.sh $VERSION $CARDANO_SL_BRANCH  --build-id $BUILDKITE_BUILD_NUMBER --pr-id $BUILDKITE_PULL_REQUEST"'
+    env:
+      VERSION: 0.8.2
+      CARDANO_SL_BRANCH: devops-497-kite
+      NIX_SSL_CERT_FILE: /nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt
+    agents:
+      system: x86_64-darwin
