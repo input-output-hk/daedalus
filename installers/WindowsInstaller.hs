@@ -108,7 +108,7 @@ writeInstallerNSIS fullVersion predownloadChain = do
     bootstrap_hash = "7e210991f10f9ddebd5d9fe42e98c59e"
     -- how much space the chain will take in gig
     bootstrap_size :: Int
-    bootstrap_size = 33
+    bootstrap_size = 45
   let -- Where to produce the installer
     outputFile :: String
     outputFile = if predownloadChain then
