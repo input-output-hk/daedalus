@@ -16,10 +16,12 @@ import           Turtle.Line          (unsafeTextToLine)
 
 import           Launcher
 import           RewriteLibs          (chain)
+import           System.IO
 
 data InstallerConfig = InstallerConfig {
     icApi :: String
   , appNameLowercase :: T.Text
+  , appName :: String
   , pkg :: T.Text
   , scriptsDir :: T.Text
   , predownloadChain :: Bool
@@ -38,32 +40,33 @@ setupKeychain = do
 
 main :: IO ()
 main = do
+  hSetBuffering stdout NoBuffering
   api <- fromMaybe "cardano" <$> lookupEnv "API"
   version <- fromMaybe "dev" <$> lookupEnv "DAEDALUS_VERSION"
   isPullRequest <- fromMaybe "true" <$> lookupEnv "TRAVIS_PULL_REQUEST"
-  if isPullRequest == "false" then do
-    setupKeychain
+  if isPullRequest == "false" then setupKeychain
   else pure ()
   let
     cfg :: InstallerConfig
-    cfg = InstallerConfig api undefined undefined undefined False undefined
+    cfg = InstallerConfig api undefined undefined undefined undefined False undefined
   case api of
     "cardano" -> do
       let
         cfg' = cfg {
             appNameLowercase = "daedalus"
+          , appName = "Daedalus"
           , pkg = "dist/Daedalus-installer-" <> T.pack version <> ".pkg"
           , scriptsDir = "data/scripts"
           , appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
         }
       makeInstaller cfg'
     "etc" -> do
-      renameDirectory "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app" "../release/darwin-x64/Daedalus-darwin-x64/DaedalusMantis.app"
       let
         cfg' = cfg {
             appNameLowercase = "daedalusmantis"
+          , appName = "DaedalusMantis"
           , scriptsDir = "data/scripts-mantis"
-          , appRoot = "../release/darwin-x64/Daedalus-darwin-x64/DaedalusMantis.app"
+          , appRoot = "../release/darwin-x64/DaedalusMantis-darwin-x64/DaedalusMantis.app"
         }
         cfgtrue = cfg' {
             pkg = "dist/Daedalus-mantis-bootstrap-installer-" <> T.pack version <> ".pkg"
@@ -121,12 +124,12 @@ makeInstaller cfg = do
 
   -- Prepare launcher
   de <- doesFileExist (dir <> "/Frontend")
-  unless de $ renameFile (dir <> "/Daedalus") (dir <> "/Frontend")
+  unless de $ renameFile (dir <> "/" <> appName cfg) (dir <> "/Frontend")
   run "chmod" ["+x", T.pack (dir <> "/Frontend")]
 
   case icApi cfg of
     "cardano" -> do
-      writeFile (dir <> "/Daedalus") $ unlines
+      writeFile (dir <> "/" <> appName cfg) $ unlines
         [ "#!/usr/bin/env bash"
         , "cd \"$(dirname $0)\""
         , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Secrets-1.0\""
@@ -134,7 +137,7 @@ makeInstaller cfg = do
         , doLauncher
         ]
     "etc" -> do
-      writeFile (dir <> "/Daedalus") $ unlines
+      writeFile (dir <> "/" <> appName cfg) $ unlines
         [ "#!/usr/bin/env bash"
         , "cd \"$(dirname $0)\""
         , "export API=etc"
@@ -148,7 +151,7 @@ makeInstaller cfg = do
         , "/Applications/DaedalusMantis.app/Contents/Resources/app/mantis.app/Contents/MacOS/mantis bootstrap " <> bootstrap_url <> " " <> bootstrap_hash <> " " <> show bootstrap_size
         ]
       run "chmod" [ "+x", T.pack (dir <> "/bootstrap.sh") ]
-  run "chmod" ["+x", T.pack (dir <> "/Daedalus")]
+  run "chmod" ["+x", T.pack (dir <> "/" <> appName cfg)]
 
 
 

@@ -111,6 +111,7 @@ case "$API" in
       rm mantis.app.zip
     }
     INSTALLER_POSTFIX="-mantis"
+    NPM_ARGS="--name DaedalusMantis"
     ;;
   cardano)
     test -d node_modules/daedalus-client-api/ -a -n "${fast_impure}" || {
@@ -131,6 +132,7 @@ case "$API" in
         rm -f node_modules/daedalus-client-api/cardano-*
     }
     INSTALLER_POSTFIX=""
+    NPM_ARGS=""
     ;;
 esac
 
@@ -138,7 +140,7 @@ test "$(find node_modules/ | wc -l)" -gt 100 -a -n "${fast_impure}" ||
         nix-shell --run "npm install"
 
 test -d "release/darwin-x64/Daedalus-darwin-x64" -a -n "${fast_impure}" || {
-        nix-shell --run "npm run package -- --icon installers/icons/256x256.png"
+        nix-shell --run "npm run package -- ${NPM_ARGS} --icon installers/icons/256x256.png"
         echo "Size of Electron app is $(du -sh release)"
 }
 
