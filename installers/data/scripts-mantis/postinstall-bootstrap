@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+#
+# See /var/log/install.log to debug this
+
+src_pkg="$1"
+dst_root="$2"
+dst_mount="$3"
+sys_root="$4"
+
+# $INSTALLER_SECURE_TEMP is available
+
+./dockutil --add "${dst_root}/DaedalusMantis.app" --allhomes
+
+cd "${dst_root}/DaedalusMantis.app/Contents/MacOS/"
+
+bash ./build-certificates-unix.sh
+bash ./bootstrap.sh

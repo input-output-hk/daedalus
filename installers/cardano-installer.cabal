@@ -26,6 +26,7 @@ executable make-installer
                      , temporary
                      , megaparsec
                      , bytestring
+                     , system-filepath
 
   default-language:    Haskell2010
   ghc-options:         -threaded -rtsopts

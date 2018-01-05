@@ -11,19 +11,19 @@ import qualified Data.Text            as T
 import           System.Directory
 import           System.Environment   (lookupEnv)
 import           System.FilePath.Glob (glob)
-import           Turtle               (ExitCode (..), echo, procs, shell, shells)
+import           Turtle               (ExitCode (..), echo, procs, shell, shells, Managed, with, mktempdir, liftIO, fromString, (</>))
 import           Turtle.Line          (unsafeTextToLine)
 
 import           Launcher
 import           RewriteLibs          (chain)
 import           System.IO
+import           Filesystem.Path.CurrentOS (encodeString)
 
 data InstallerConfig = InstallerConfig {
     icApi :: String
   , appNameLowercase :: T.Text
   , appName :: String
   , pkg :: T.Text
-  , scriptsDir :: T.Text
   , predownloadChain :: Bool
   , appRoot :: String
 }
@@ -48,7 +48,10 @@ main = do
   else pure ()
   let
     cfg :: InstallerConfig
-    cfg = InstallerConfig api undefined undefined undefined undefined False undefined
+    cfg = InstallerConfig {
+          icApi = api
+        , predownloadChain = False
+      }
   case api of
     "cardano" -> do
       let
@@ -56,7 +59,6 @@ main = do
             appNameLowercase = "daedalus"
           , appName = "Daedalus"
           , pkg = "dist/Daedalus-installer-" <> T.pack version <> ".pkg"
-          , scriptsDir = "data/scripts"
           , appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
         }
       makeInstaller cfg'
@@ -65,7 +67,6 @@ main = do
         cfg' = cfg {
             appNameLowercase = "daedalusmantis"
           , appName = "DaedalusMantis"
-          , scriptsDir = "data/scripts-mantis"
           , appRoot = "../release/darwin-x64/DaedalusMantis-darwin-x64/DaedalusMantis.app"
         }
         cfgtrue = cfg' {
@@ -80,6 +81,20 @@ main = do
       makeInstaller cfgtrue
       echo "pass two"
       makeInstaller cfgfalse
+
+makeScriptsDir :: InstallerConfig -> Managed T.Text
+makeScriptsDir cfg = do
+  case icApi cfg of
+    "cardano" -> pure "data/scripts"
+    "etc" -> do
+      tempdir <- mktempdir "/tmp" "scripts"
+      liftIO $ do
+        copyFile "data/scripts/dockutil" (encodeString $ tempdir </> "dockutil")
+        if predownloadChain cfg then
+          copyFile "data/scripts-mantis/postinstall-bootstrap" (encodeString $ tempdir </> "postinstall")
+        else
+          copyFile "data/scripts-mantis/postinstall" (encodeString $ tempdir </> "postinstall")
+      pure $ T.pack $ encodeString tempdir
 
 makeInstaller :: InstallerConfig -> IO ()
 makeInstaller cfg = do
@@ -153,22 +168,22 @@ makeInstaller cfg = do
       run "chmod" [ "+x", T.pack (dir <> "/bootstrap.sh") ]
   run "chmod" ["+x", T.pack (dir <> "/" <> appName cfg)]
 
-
-
-  let
-    pkgargs :: [ T.Text ]
-    pkgargs =
-       [ "--identifier"
-       , "org." <> appNameLowercase cfg <> ".pkg"
-       -- data/scripts/postinstall is responsible for running build-certificates
-       , "--scripts", scriptsDir cfg
-       , "--component"
-       , T.pack $ appRoot cfg
-       , "--install-location"
-       , "/Applications"
-       , "dist/temp.pkg"
-       ]
-  run "pkgbuild" pkgargs
+  with (makeScriptsDir cfg) $ \scriptsDir -> do
+    let
+      pkgargs :: [ T.Text ]
+      pkgargs =
+         [ "--identifier"
+         , "org." <> appNameLowercase cfg <> ".pkg"
+         -- data/scripts/postinstall is responsible for running build-certificates
+         , "--scripts", scriptsDir
+         , "--component"
+         , T.pack $ appRoot cfg
+         , "--install-location"
+         , "/Applications"
+         , "dist/temp.pkg"
+         ]
+    run "ls" [ "-ltrh", scriptsDir ]
+    run "pkgbuild" pkgargs
 
   let productargs =
        [ "--product"
@@ -180,7 +195,7 @@ makeInstaller cfg = do
   run "productbuild" productargs
 
   isPullRequest <- fromMaybe "true" <$> lookupEnv "TRAVIS_PULL_REQUEST"
-  if isPullRequest == "false" then do
+  if isPullRequest == "false" then
     shells ("productsign --sign \"Developer ID Installer: Input Output HK Limited (89TW38X994)\" --keychain macos-build.keychain dist/temp2.pkg " <> pkg cfg) mempty
   else do
     echo "Pull request, not signing the installer."
