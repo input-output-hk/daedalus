@@ -2,10 +2,11 @@ import { Application } from 'spectron';
 import { defineSupportCode } from 'cucumber';
 import electronPath from 'electron';
 import path from 'path';
+import environment from '../../source/common/environment';
 
 const context = {};
-
 const DEFAULT_TIMEOUT = 20000;
+const isHot = process.env.HOT === '1';
 
 defineSupportCode(({ AfterAll, BeforeAll, Before, setDefaultTimeout }) => {
   // The cucumber timeout should be high (and never reached in best case)
@@ -17,7 +18,7 @@ defineSupportCode(({ AfterAll, BeforeAll, Before, setDefaultTimeout }) => {
   BeforeAll({ timeout: 5 * 60 * 1000 }, async () => {
     const app = new Application({
       path: electronPath,
-      args: ['./electron/main.testing'],
+      args: ['./dist/main/main.js'],
       env: {
         HOT: process.env.HOT,
         NODE_ENV: 'test'
@@ -66,8 +67,11 @@ defineSupportCode(({ AfterAll, BeforeAll, Before, setDefaultTimeout }) => {
       resetBackend();
     });
 
+    const url = isHot
+      ? `http://localhost:${environment.ELECTRON_WEBPACK_WDS_PORT}`
+      : `file://${path.resolve(__dirname, '../../dist/renderer')}/index.html?test=true`;
     // Load fresh root url with test environment for each test case
-    await this.client.url('file://' + path.join(__dirname, '../../app/index.html?test=true'));
+    await this.client.url(url);
 
     // Ensure that frontend is synced and ready before test case
     await this.client.executeAsync((done) => {

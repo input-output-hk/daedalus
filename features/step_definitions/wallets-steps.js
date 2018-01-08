@@ -13,7 +13,7 @@ import {
   waitUntilUrlEquals,
   navigateTo,
 } from '../support/helpers/route-helpers';
-import { DECIMAL_PLACES_IN_ADA } from '../../app/config/numbersConfig';
+import { DECIMAL_PLACES_IN_ADA } from '../../source/renderer/app/config/numbersConfig';
 import sidebar from '../support/helpers/sidebar-helpers';
 import addWalletDialog from '../support/helpers/dialogs/add-wallet-dialog-helpers';
 import importWalletDialog from '../support/helpers/dialogs/import-wallet-dialog-helpers';
