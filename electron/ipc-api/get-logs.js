@@ -15,7 +15,6 @@ export const GET_LOGS = {
 export default () => {
   ipcMain.on(GET_LOGS.REQUEST, (event) => {
     const sender = event.sender;
-
     const runtimeFolderPath = getRuntimeFolderPath(process.platform, process.env, APP_NAME);
     const rootLogFolderPath = path.join(runtimeFolderPath, 'Logs');
     const pubLogsFolderPath = path.join(runtimeFolderPath, 'Logs', 'pub');

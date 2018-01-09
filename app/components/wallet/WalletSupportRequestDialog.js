@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { map, get } from 'lodash';
+import { map, get, isEqual } from 'lodash';
 import { observer } from 'mobx-react';
 import { isEmail, isEmpty } from 'validator';
 import classnames from 'classnames';
@@ -73,7 +73,7 @@ const messages = defineMessages({
 
 type Props = {
   logFiles: Object,
-  compressedLogsPath: ?string,
+  compressedLogsFiles: Array<string>,
   onCancel: Function,
   onSubmit: Function,
   onGetLogs: Function,
@@ -101,10 +101,15 @@ export default class WalletSupportRequestDialog extends Component<Props, State> 
   };
 
   componentWillReceiveProps(nextProps: Object) {
-    const commpressionPathChanged = this.props.compressedLogsPath !== nextProps.compressedLogsPath;
-    if (nextProps.compressedLogsPath && commpressionPathChanged) {
-      // proceed to submit when ipc rendered successfully return compressed file path
-      this.submit(nextProps.compressedLogsPath);
+    const commpressionFilesChanged = !isEqual(
+      this.props.compressedLogsFiles, nextProps.compressedLogsFiles
+    );
+    // eslint-disable-next-line max-len
+    const commpressedFilesExists = nextProps.compressedLogsFiles && nextProps.compressedLogsFiles.length;
+
+    if (commpressedFilesExists && commpressionFilesChanged) {
+      // proceed to submit when ipc rendered successfully return compressed files
+      this.submit(nextProps.compressedLogsFiles);
     }
   }
 
@@ -154,20 +159,21 @@ export default class WalletSupportRequestDialog extends Component<Props, State> 
     },
   });
 
-  submit = (filePath: ?string = null) => {
+  submit = (files: ?Array<string>) => {
     this.form.submit({
       onSuccess: (form) => {
         const { logFiles } = this.props;
         const rootLogs = get(logFiles, ['rootLogs', 'files']);
         const pubLogs = get(logFiles, ['pubLogs', 'files']);
-        const logsExists = rootLogs.length || pubLogs.length;
+        const logsExists = (rootLogs && rootLogs.length) || (pubLogs && pubLogs.length);
 
         const { email, subject, problem } = form.values();
         const data = {
-          email, subject, problem, filePath,
+          email, subject, problem, files,
         };
 
-        if (!logFiles || !this.state.showLogs || filePath || (logFiles && !logsExists)) {
+        // eslint-disable-next-line max-len
+        if (!logFiles || !this.state.showLogs || (files && files.length) || (logFiles && !logsExists)) {
           // regular submit
           this.props.onSubmit(data);
         } else {

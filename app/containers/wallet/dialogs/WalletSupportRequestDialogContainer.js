@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import { toJS } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import WalletSupportRequestDialog from '../../../components/wallet/WalletSupportRequestDialog';
 import type { InjectedProps } from '../../../types/injectedPropsType';
@@ -9,7 +10,9 @@ export default class WalletSupportRequestDialogContainer extends Component<Injec
 
   static defaultProps = { actions: null, stores: null };
 
-  onSubmit = (values: { email: string, subject: ?string, problem: ?string, filePath: ?string }) => {
+  onSubmit = (values: {
+    email: string, subject: ?string, problem: ?string, files: Array<string>
+  }) => {
     this.props.actions.profile.sendSupportRequest.trigger(values);
   };
 
@@ -18,7 +21,7 @@ export default class WalletSupportRequestDialogContainer extends Component<Injec
     const { getLogs, compressLogs } = actions.profile;
     const {
       logFiles,
-      compressedLogsPath,
+      compressedLogsFiles,
       isCompressing,
       sendSupportRequest,
       error,
@@ -27,7 +30,7 @@ export default class WalletSupportRequestDialogContainer extends Component<Injec
     return (
       <WalletSupportRequestDialog
         logFiles={logFiles}
-        compressedLogsPath={compressedLogsPath}
+        compressedLogsFiles={toJS(compressedLogsFiles)}
         isCompressing={isCompressing}
         isSubmitting={sendSupportRequest.isExecuting}
         error={error}

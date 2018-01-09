@@ -1,5 +1,6 @@
 // @flow
 import { action, observable, computed, toJS } from 'mobx';
+import { concat } from 'lodash';
 import BigNumber from 'bignumber.js';
 import moment from 'moment/moment';
 import { ipcRenderer } from 'electron';
@@ -50,7 +51,8 @@ export default class SettingsStore extends Store {
   );
   @observable error: ?LocalizableError = null;
   @observable logFiles: Object = {};
-  @observable compressedLogsPath: ?string = null;
+  @observable compressedLogsOriginal: ?string;
+  @observable compressedLogsFiles: Array<string>;
   @observable isCompressing: boolean = false;
   /* eslint-enable max-len */
 
@@ -237,26 +239,35 @@ export default class SettingsStore extends Store {
 
   _onCompressLogsSuccess = action((event, res) => {
     this.isCompressing = false;
-    this.compressedLogsPath = res.path;
+    this.compressedLogsOriginal = res.originalFile;
+    this.compressedLogsFiles = res.files;
   });
 
   _onCompressLogsError = action(() => {
     this.error = new WalletSupportRequestLogsCompressError();
   });
 
-  _sendSupportRequest = action(({ email, subject, problem, filePath } : {
+  _sendSupportRequest = action(({ email, subject, problem, files } : {
     email: string,
     subject: ?string,
     problem: ?string,
-    filePath: ?string,
+    files: Array<string>,
   }) => {
     this.sendSupportRequest.execute({
-      email, subject, problem, filePath,
+      email, subject, problem, files,
     })
       .then(action((response: any) => {
-        // Trigger ipc renderer to delete compressed temp files
-        if (response.filePath) {
-          ipcRenderer.send(DELETE_COMPRESSED_LOGS.REQUEST, response.filePath);
+        // Trigger ipc renderer to delete compressed temp files if exists
+        if (response.files) {
+          let filesToDelete;
+          if (response.files.length > 1) {
+            // if files are splitted then also include original file to delete
+            filesToDelete = concat(response.files, this.compressedLogsOriginal);
+          } else {
+            filesToDelete = response.files;
+          }
+
+          ipcRenderer.send(DELETE_COMPRESSED_LOGS.REQUEST, filesToDelete);
         }
         this._reset();
         this.actions.dialogs.closeActiveDialog.trigger();
@@ -268,7 +279,8 @@ export default class SettingsStore extends Store {
 
   @action _reset = () => {
     this.error = null;
-    this.compressedLogsPath = null;
+    this.compressedLogsFiles = [];
+    this.compressedLogsOriginal = null;
   };
 
 }

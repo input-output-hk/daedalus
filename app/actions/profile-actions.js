@@ -9,7 +9,7 @@ export default class ProfileActions {
   getLogs: Action<any> = new Action();
   setSendLogsChoice: Action<{ sendLogs: boolean }> = new Action();
   sendSupportRequest: Action<{
-    email: string, subject: ?string, problem: ?string, filePath: ?string
+    email: string, subject: ?string, problem: ?string, files: Array<string>,
   }> = new Action();
   updateLocale: Action<{ locale: string }> = new Action();
   updateTheme: Action<{ theme: string }> = new Action();

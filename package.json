@@ -151,6 +151,7 @@
     "route-parser": "0.0.5",
     "safe-buffer": "5.1.1",
     "source-map-support": "0.4.14",
+    "split-file": "2.1.0",
     "unorm": "1.4.1",
     "validator": "6.3.0",
     "web3": "1.0.0-beta.24",

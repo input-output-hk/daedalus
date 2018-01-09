@@ -3,6 +3,7 @@ import fs from 'fs';
 import archiver from 'archiver';
 import Log from 'electron-log';
 import path from 'path';
+import splitFile from 'split-file';
 import getRuntimeFolderPath from '../lib/getRuntimeFolderPath';
 
 const APP_NAME = 'Daedalus';
@@ -11,6 +12,7 @@ const CHANNEL_NAME = 'compress-logs';
 export const COMPRESS_LOGS = {
   REQUEST: CHANNEL_NAME,
   SUCCESS: `${CHANNEL_NAME}-success`,
+  MAX_SIZE: 7340032, // 7mb in bytes
 };
 
 export default () => {
@@ -20,35 +22,62 @@ export default () => {
     const destination = path.join(runtimeFolderPath, 'Logs');
     const compressedFileName = 'logs.zip';
 
-    const output = fs.createWriteStream(path.join(destination, compressedFileName));
+    const outputPath = path.join(destination, compressedFileName);
+    const output = fs.createWriteStream(outputPath);
     const archive = archiver('zip', {
       zlib: { level: 9 } // Sets the compression level.
     });
 
     output.on('close', () => {
-      Log.info(archive.pointer() + ' total bytes');
-      Log.info('archiver has been finalized and the output file descriptor has closed.');
-    });
+      const archiveSize = archive.pointer();
 
-    output.on('end', () => {
-      Log.info('Data has been drained');
+      if (archiveSize > COMPRESS_LOGS.MAX_SIZE) {
+        // split archive - one part can have max 7mb
+        splitFile.splitFileBySize(outputPath, COMPRESS_LOGS.MAX_SIZE)
+          .then((files) => {
+            Log.info('Split files');
+            // response on success compression
+            return sender.send(COMPRESS_LOGS.SUCCESS, {
+              files, // array of zip parts
+              originalFile: outputPath,
+              archive,
+              message: 'Logs compressed successfully',
+              success: true,
+              warnings: 0,
+            });
+          })
+          .catch((err) => {
+            Log.error('error: ', err);
+            return sender.send(COMPRESS_LOGS.ERROR);
+          });
+      } else {
+        Log.info('archiver has been finalized and the output file descriptor has closed.');
+        // response on success compression
+        return sender.send(COMPRESS_LOGS.SUCCESS, {
+          files: [outputPath],
+          originalFile: outputPath,
+          archive,
+          message: 'Logs compressed successfully',
+          success: true,
+          warnings: 0,
+        });
+      }
     });
 
     archive.on('error', (err) => {
       Log.error('error: ', err);
-      throw err;
+      return sender.send(COMPRESS_LOGS.ERROR);
     });
-
-    archive.pipe(output);
 
     // if there are no logs in logs folder (both root and pub) then
     // return success response but with warning and corresponding message
     // validation must be performed before compress ( e.g. in get-logs)
-    if (!logs.rootLogs.files.length && !logs.pubLogs.files.length) {
+    const noRootLogs = !logs.rootLogs || !logs.rootLogs.files || !logs.rootLogs.files.length;
+    const noPubLogs = !logs.pubLogs || !logs.pubLogs.files || !logs.pubLogs.files.length;
+    if (noRootLogs && noPubLogs) {
       Log.warn('No files to compress, proceed with empty path');
-
       return sender.send(COMPRESS_LOGS.SUCCESS, {
-        path: null,
+        files: [],
         archive: null,
         message: 'No files to compress',
         success: true,
@@ -66,21 +95,13 @@ export default () => {
 
     // compress folder with files (e.g. pub folder)
     archive.directory(`${logs.pubLogs.path}/`, 'pub');
-    archive.finalize((err, bytes) => {
+    archive.finalize((err) => {
       if (err) {
         Log.error('error: ', err);
-        throw err;
+        return sender.send(COMPRESS_LOGS.ERROR);
       }
-      Log.info(bytes + ' total bytes');
     });
 
-    // response on success compression
-    return sender.send(COMPRESS_LOGS.SUCCESS, {
-      path: `${destination}/${compressedFileName}`,
-      archive,
-      message: 'Logs compressed successfully',
-      success: true,
-      warnings: 0,
-    });
+    archive.pipe(output);
   });
 };
