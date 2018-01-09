@@ -9,6 +9,8 @@ import type {
 
 // ========== LOGGING =========
 
+let LOCAL_TIME_DIFFERENCE = 0;
+
 const stringifyData = (data) => JSON.stringify(data, null, 2);
 
 export default (api: AdaApi) => {
@@ -24,7 +26,7 @@ export default (api: AdaApi) => {
     return { amount: new BigNumber(1000) };
   };
 
-  api.redeemPaperVendedAda = async (request: RedeemPaperVendedAdaRequest) => {
+  api.redeemPaperVendedAda = async(request: RedeemPaperVendedAdaRequest) => {
     Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) called: ' + stringifyData(request));
     const { shieldedRedemptionKey, mnemonics } = request;
     const isValidKey = await api.isValidPaperVendRedemptionKey(shieldedRedemptionKey);
@@ -35,5 +37,13 @@ export default (api: AdaApi) => {
       throw new RedeemAdaError();
     }
     return { amount: new BigNumber(1000) };
+  };
+
+  api.getLocalTimeDifference = async () => (
+    Promise.resolve(LOCAL_TIME_DIFFERENCE)
+  );
+
+  api.setLocalTimeDifference = async (timeDifference) => {
+    LOCAL_TIME_DIFFERENCE = timeDifference;
   };
 };

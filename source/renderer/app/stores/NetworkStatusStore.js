@@ -4,7 +4,7 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
 import { Logger } from '../utils/logging';
-import type { GetSyncProgressResponse } from '../api/common';
+import type { GetSyncProgressResponse, GetLocalTimeDifferenceResponse } from '../api/common';
 import environment from '../environment';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
@@ -13,6 +13,7 @@ let cachedDifficulties = null;
 // Maximum number of out-of-sync blocks above which we consider to be out-of-sync
 const OUT_OF_SYNC_BLOCKS_LIMIT = 10;
 const SYNC_PROGRESS_INTERVAL = 2000;
+const TIME_DIFF_POLL_INTERVAL = 2000;
 
 const STARTUP_STAGES = {
   CONNECTING: 0,
@@ -26,14 +27,20 @@ export default class NetworkStatusStore extends Store {
   _startTime = Date.now();
   _startupStage = STARTUP_STAGES.CONNECTING;
 
+  ALLOWED_TIME_DIFFERENCE = 0;
+
   @observable isConnected = false;
   @observable hasBeenConnected = false;
   @observable localDifficulty = 0;
   @observable networkDifficulty = 0;
   @observable isLoadingWallets = true;
+  @observable localTimeDifference = this.ALLOWED_TIME_DIFFERENCE;
   @observable syncProgressRequest: Request<GetSyncProgressResponse> = new Request(
     // Use the sync progress for target API
     this.api[environment.API].getSyncProgress
+  );
+  @observable localTimeDifferenceRequest: Request<GetLocalTimeDifferenceResponse> = new Request(
+    this.api.ada.getLocalTimeDifference
   );
   @observable _localDifficultyStartedWith = null;
 
@@ -46,8 +53,10 @@ export default class NetworkStatusStore extends Store {
     this.registerReactions([
       this._redirectToWalletAfterSync,
       this._redirectToLoadingWhenDisconnected,
+      this._redirectToSyncingWhenLocalTimeDifferent,
     ]);
     this._pollSyncProgress();
+    if (environment.isAdaApi()) this._pollLocalTimeDifference();
   }
 
   teardown() {
@@ -115,6 +124,14 @@ export default class NetworkStatusStore extends Store {
     return 0;
   }
 
+  @computed get isSystemTimeCorrect(): boolean {
+    if (!environment.isAdaApi()) return true;
+    return (
+      this.localTimeDifferenceRequest.wasExecuted &&
+      this.localTimeDifferenceRequest.result <= this.ALLOWED_TIME_DIFFERENCE
+    );
+  }
+
   @computed get isSyncing(): boolean {
     return !this.isConnecting && this.hasBlockSyncingStarted && !this.isSynced;
   }
@@ -123,7 +140,16 @@ export default class NetworkStatusStore extends Store {
     return (
       !this.isConnecting &&
       this.hasBlockSyncingStarted &&
-      this.relativeSyncBlocksDifference <= OUT_OF_SYNC_BLOCKS_LIMIT
+      this.relativeSyncBlocksDifference <= OUT_OF_SYNC_BLOCKS_LIMIT &&
+      this.isSystemTimeCorrect
+    );
+  }
+
+  @computed get isSetupPage(): boolean {
+    return (
+      this.stores.app.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
+      this.stores.app.currentRoute === ROUTES.PROFILE.TERMS_OF_USE ||
+      this.stores.app.currentRoute === ROUTES.PROFILE.SEND_LOGS
     );
   }
 
@@ -157,6 +183,20 @@ export default class NetworkStatusStore extends Store {
       Logger.debug('Connection Lost. Reconnecting...');
     }
   };
+
+  @action _updateLocalTimeDifference = async () => {
+    try {
+      const response = await this.localTimeDifferenceRequest.execute().promise;
+      runInAction('update time difference', () => (this.localTimeDifference = response));
+    } catch (error) {
+      runInAction('update time difference', () => (this.localTimeDifference = this.ALLOWED_TIME_DIFFERENCE + 1));
+    }
+  }
+
+  _pollLocalTimeDifference() {
+    setInterval(this._updateLocalTimeDifference, TIME_DIFF_POLL_INTERVAL);
+    this._updateLocalTimeDifference();
+  }
 
   _pollSyncProgress() {
     setInterval(this._updateSyncProgress, SYNC_PROGRESS_INTERVAL);
@@ -194,6 +234,17 @@ export default class NetworkStatusStore extends Store {
   _redirectToLoadingWhenDisconnected = () => {
     if (this.stores.app.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION) return;
     if (!this.isConnected) {
+      this._updateSyncProgress();
+      this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
+    }
+  };
+
+  _redirectToSyncingWhenLocalTimeDifferent = () => {
+    if (
+      this.localTimeDifference > this.ALLOWED_TIME_DIFFERENCE &&
+      !this.isSynced &&
+      !this.isSetupPage
+    ) {
       this._updateSyncProgress();
       this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
     }

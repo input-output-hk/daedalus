@@ -231,7 +231,7 @@ export default class Transaction extends Component<Props, State> {
               <h2>
                 {intl.formatMessage(messages[
                   environment.isEtcApi() ? 'fromAddress' : 'fromAddresses'
-                ])}
+                  ])}
               </h2>
               {data.addresses.from.map((address, addressIndex) => (
                 <span key={`${data.id}-from-${address}-${addressIndex}`} className={styles.address}>{address}</span>
@@ -239,7 +239,7 @@ export default class Transaction extends Component<Props, State> {
               <h2>
                 {intl.formatMessage(messages[
                   environment.isEtcApi() ? 'toAddress' : 'toAddresses'
-                ])}
+                  ])}
               </h2>
               {data.addresses.to.map((address, addressIndex) => (
                 <span key={`${data.id}-to-${address}-${addressIndex}`} className={styles.address}>{address}</span>

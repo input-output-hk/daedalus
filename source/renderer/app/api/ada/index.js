@@ -37,8 +37,10 @@ import { applyAdaUpdate } from './applyAdaUpdate';
 import { adaTestReset } from './adaTestReset';
 import { getAdaHistoryByWallet } from './getAdaHistoryByWallet';
 import { getAdaAccountRecoveryPhrase } from './getAdaAccountRecoveryPhrase';
+import { getAdaLocalTimeDifference } from './getAdaLocalTimeDifference';
 
 import type {
+  AdaLocalTimeDifference,
   AdaSyncProgressResponse,
   AdaAddress,
   AdaAccounts,
@@ -56,6 +58,7 @@ import type {
   CreateTransactionResponse,
   DeleteWalletRequest,
   DeleteWalletResponse,
+  GetLocalTimeDifferenceResponse,
   GetSyncProgressResponse,
   GetTransactionsRequest,
   GetTransactionsResponse,
@@ -672,6 +675,18 @@ export default class AdaApi {
       return response;
     } catch (error) {
       Logger.error('AdaApi::testReset error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async getLocalTimeDifference(): Promise<GetLocalTimeDifferenceResponse> {
+    Logger.debug('AdaApi::getLocalTimeDifference called');
+    try {
+      const response: AdaLocalTimeDifference = await getAdaLocalTimeDifference({ ca });
+      Logger.debug('AdaApi::getLocalTimeDifference success: ' + stringifyData(response));
+      return response;
+    } catch (error) {
+      Logger.error('AdaApi::getLocalTimeDifference error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }

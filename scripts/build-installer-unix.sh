@@ -59,8 +59,8 @@ daedalus_version="$1"; arg2nz "daedalus version" $1; shift
 cardano_branch="$(printf '%s' "$1" | tr '/' '-')"; arg2nz "Cardano SL branch to build Daedalus with" $1; shift
 
 case "$(uname -s)" in
-        Darwin ) os=osx;   key=macos-3.p12;;
-        Linux )  os=linux; key=linux.p12;;
+        Darwin ) OS_NAME=darwin; os=osx;   key=macos-3.p12;;
+        Linux )  OS_NAME=linux;  os=linux; key=linux.p12;;
         * )     usage "Unsupported OS: $(uname -s)";;
 esac
 
@@ -97,13 +97,18 @@ export PATH=$HOME/.local/bin:$PATH
 export DAEDALUS_VERSION=${daedalus_version}.${build_id}
 if [ -n "${NIX_SSL_CERT_FILE-}" ]; then export SSL_CERT_FILE=$NIX_SSL_CERT_FILE; fi
 
+CARDANO_BUILD_UID="${OS_NAME}-${cardano_branch//\//-}"
+ARTIFACT_BUCKET=ci-output-sink        # ex- cardano-sl-travis
+CARDANO_ARTIFACT=cardano-binaries     # ex- daedalus-bridge
+CARDANO_ARTIFACT_FULL_NAME=${CARDANO_ARTIFACT}-${CARDANO_BUILD_UID}
+
 test -d node_modules/daedalus-client-api/ -a -n "${fast_impure}" || {
-        retry 5 curl -o daedalus-bridge.tar.xz \
-              "https://s3.eu-central-1.amazonaws.com/cardano-sl-travis/daedalus-bridge-${os}-${cardano_branch}.tar.xz"
+        retry 5 curl -o ${CARDANO_ARTIFACT_FULL_NAME}.tar.xz \
+              "https://s3.eu-west-1.amazonaws.com/${ARTIFACT_BUCKET}/cardano-sl/${CARDANO_ARTIFACT_FULL_NAME}.tar.xz"
         mkdir -p node_modules/daedalus-client-api/
-        du -sh  daedalus-bridge.tar.xz
-        tar xJf daedalus-bridge.tar.xz --strip-components=1 -C node_modules/daedalus-client-api/
-        rm      daedalus-bridge.tar.xz
+        du -sh  ${CARDANO_ARTIFACT_FULL_NAME}.tar.xz
+        tar xJf ${CARDANO_ARTIFACT_FULL_NAME}.tar.xz --strip-components=1 -C node_modules/daedalus-client-api/
+        rm      ${CARDANO_ARTIFACT_FULL_NAME}.tar.xz
         echo "cardano-sl build id is $(cat node_modules/daedalus-client-api/build-id)"
         if [ -f node_modules/daedalus-client-api/commit-id ]; then echo "cardano-sl revision is $(cat node_modules/daedalus-client-api/commit-id)"; fi
         if [ -f node_modules/daedalus-client-api/ci-url ]; then echo "cardano-sl ci-url is $(cat node_modules/daedalus-client-api/ci-url)"; fi

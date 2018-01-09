@@ -28,7 +28,6 @@ type Props = {
   transactions: Array<WalletTransaction>,
   isLoadingTransactions: boolean,
   hasMoreToLoad: boolean,
-  onLoadMore: Function,
   assuranceMode: AssuranceMode,
   walletId: string,
   formattedWalletAmount: Function,
@@ -62,9 +61,6 @@ export default class WalletTransactionsList extends Component<Props> {
         groups.push(group);
       }
       group.transactions.push(transaction);
-    }
-    for (const group of groups) {
-      group.transactions.sort((a, b) => b.date.getTime() - a.date.getTime());
     }
     return groups.sort(
       (a, b) => b.transactions[0].date.getTime() - a.transactions[0].date.getTime()
