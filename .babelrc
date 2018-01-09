@@ -5,7 +5,6 @@
     "react"
   ],
   "plugins": [
-    "react-hot-loader/babel",
     "add-module-exports",
     "transform-decorators-legacy",
     "lodash",

@@ -1,5 +1,4 @@
 // @flow
-import { hot } from 'react-hot-loader';
 import React, { Component } from 'react';
 import { Provider, observer } from 'mobx-react';
 import { ThemeProvider } from 'react-css-themr';
@@ -15,7 +14,7 @@ import type { ActionsMap } from './actions/index';
 import ThemeManager from './ThemeManager';
 
 @observer
-class App extends Component<{
+export default class App extends Component<{
   stores: StoresMap,
   actions: ActionsMap,
   history: Object,
@@ -44,5 +43,3 @@ class App extends Component<{
     );
   }
 }
-
-export default hot(module)(App);
