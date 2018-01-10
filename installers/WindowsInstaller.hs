@@ -175,8 +175,8 @@ writeInstallerNSIS fullVersion = do
     launcherScript :: [Text]
     launcherScript =
         [ "@echo off"
-        , "SET DAEDALUS_DIR=%~dp0"
-        , "start /D \"%DAEDALUS_DIR%\" cardano-launcher.exe -c $INSTDIR\\launcher-config.yaml"
+        , "set DAEDALUS_DIR=%~dp0"
+        , "start \"Daedalus\" /D \"%DAEDALUS_DIR%\" cardano-launcher.exe -c \"%DAEDALUS_DIR%\\launcher-config.yaml\""
         ]
 
 main :: IO ()
