@@ -4,7 +4,7 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
+import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import ReactToolboxMobxForm from '../../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../../i18n/global-messages';
