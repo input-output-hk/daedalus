@@ -31,7 +31,7 @@ set DLLS_URL=https://s3.eu-central-1.amazonaws.com/daedalus-ci-binaries/DLLs.zip
 @echo ..with LibreSSL version:    %LIBRESSL_VERSION%
 @echo .
 
-@if not [%SKIP_TO_INSTALLER%]==[] (@echo WARNING: SKIP_TO_INSTALLER set, skipping to frontend packaging       
+@if not [%SKIP_TO_INSTALLER%]==[] (@echo WARNING: SKIP_TO_INSTALLER set, skipping to frontend packaging
     pushd installers & goto :build_installer)
 @if not [%SKIP_TO_FRONTEND%]==[]   (@echo WARNING: SKIP_TO_FRONTEND set, skipping directly to installer rebuild
     pushd installers & goto :build_frontend)
@@ -68,54 +68,7 @@ call npm install
 @if %errorlevel% neq 0 (@echo FAILED: npm install
     exit /b 1)
 
-@if %API% == etc (
-  @echo downloading mantis
-  curl --location https://s3-eu-west-1.amazonaws.com/iohk.mantis.installer/daedalus-rc1/windows/mantis-daedalus-rc1-win.zip -o mantis.zip
-  @if %errorlevel% neq 0 (@echo FAILED: couldn't obtain the mantis package
-      exit /b 1)
-  7z x mantis.zip -y
-  move mantis\ installers\
-  del mantis.zip
-) else (
-  @echo Obtaining Cardano from branch %CARDANO_BRANCH%
-  rmdir /s/q node_modules\daedalus-client-api 2>nul
-  mkdir      node_modules\daedalus-client-api
-
-  pushd node_modules\daedalus-client-api
-    del /f CardanoSL.zip 2>nul
-    ..\..\curl --location %CARDANO_URL% -o CardanoSL.zip
-    if %errorlevel% neq 0 (
-      @echo FAILED: couldn't obtain the cardano-sl package
-      popd & exit /b 1
-    )
-    for /F "usebackq" %%A in ('CardanoSL.zip') do set size=%%~zA
-    echo size is %size%
-    if %size% lss %MIN_CARDANO_BYTES% (
-      @echo FAILED: CardanoSL.zip is too small: threshold=%MIN_CARDANO_BYTES%, actual=%size% bytes
-      popd & exit /b 1
-    )
-
-    7z x CardanoSL.zip -y
-    @if %errorlevel% neq 0 (
-      @echo FAILED: 7z x CardanoSL.zip -y
-      popd & exit /b 1
-    )
-    del CardanoSL.zip
-  popd
-  @echo cardano-sl build-id:
-  type node_modules\daedalus-client-api\build-id
-  @echo cardano-sl commit-id:
-  type node_modules\daedalus-client-api\commit-id
-  @echo cardano-sl ci-url:
-  type node_modules\daedalus-client-api\ci-url
-
-  move   node_modules\daedalus-client-api\log-config-prod.yaml installers\log-config-prod.yaml
-  move   node_modules\daedalus-client-api\cardano-node.exe     installers\
-  move   node_modules\daedalus-client-api\cardano-launcher.exe installers\
-  move   node_modules\daedalus-client-api\configuration.yaml installers\
-  move   node_modules\daedalus-client-api\*genesis*.json installers\
-  del /f node_modules\daedalus-client-api\*.exe
-)
+@if %API% == etc (block1.bat) else (block2.bat)
 pwd
 
 :build_frontend
