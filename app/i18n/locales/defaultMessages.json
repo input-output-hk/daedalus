@@ -241,7 +241,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Daedalus Sync Error",
+        "defaultMessage": "!!!Unable to sync - incorrect time",
         "description": "Title of Sync error overlay",
         "end": {
           "column": 3,
@@ -255,7 +255,7 @@
         }
       },
       {
-        "defaultMessage": "!!!ATTENTION: Time of your machine is different from global time. You are 2 hours 12 minutes 54 seconds behind. You need to fix issue, because you are gonna be unable to sync system!",
+        "defaultMessage": "!!!Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. You are 2 hours 12 minutes 54 seconds behind.<br>To synchronize the time and fix this issue, please visit the FAQ section of Daedalus website (daedaluswallet.io/faq).",
         "description": "Text of Sync error overlay",
         "end": {
           "column": 3,
@@ -2683,13 +2683,13 @@
         "description": "Transaction type shown for credit card payments.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 21
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.card",
         "start": {
           "column": 8,
-          "line": 20
+          "line": 17
         }
       },
       {
@@ -2697,13 +2697,13 @@
         "description": "Transaction type shown for {currency} transactions.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 26
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type",
         "start": {
           "column": 8,
-          "line": 25
+          "line": 22
         }
       },
       {
@@ -2711,13 +2711,13 @@
         "description": "Transaction type shown for money exchanges between currencies.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 31
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.exchange",
         "start": {
           "column": 12,
-          "line": 30
+          "line": 27
         }
       },
       {
@@ -2725,13 +2725,13 @@
         "description": "Transaction assurance level.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 36
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel",
         "start": {
           "column": 18,
-          "line": 35
+          "line": 32
         }
       },
       {
@@ -2739,13 +2739,13 @@
         "description": "Transaction confirmations.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 41
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.confirmations",
         "start": {
           "column": 17,
-          "line": 40
+          "line": 37
         }
       },
       {
@@ -2753,13 +2753,13 @@
         "description": "Transaction ID.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 46
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionId",
         "start": {
           "column": 17,
-          "line": 45
+          "line": 42
         }
       },
       {
@@ -2767,13 +2767,13 @@
         "description": "Conversion rate.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 51
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.conversion.rate",
         "start": {
           "column": 18,
-          "line": 50
+          "line": 47
         }
       },
       {
@@ -2781,13 +2781,13 @@
         "description": "Label \"{currency} sent\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 56
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.sent",
         "start": {
           "column": 8,
-          "line": 55
+          "line": 52
         }
       },
       {
@@ -2795,13 +2795,13 @@
         "description": "Label \"{currency} received\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 61
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.received",
         "start": {
           "column": 12,
-          "line": 60
+          "line": 57
         }
       },
       {
@@ -2809,13 +2809,13 @@
         "description": "From address",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 66
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.from",
         "start": {
           "column": 15,
-          "line": 65
+          "line": 62
         }
       },
       {
@@ -2823,13 +2823,13 @@
         "description": "From addresses",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 71
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.from",
         "start": {
           "column": 17,
-          "line": 70
+          "line": 67
         }
       },
       {
@@ -2837,13 +2837,13 @@
         "description": "To address",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 76
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.to",
         "start": {
           "column": 13,
-          "line": 75
+          "line": 72
         }
       },
       {
@@ -2851,13 +2851,13 @@
         "description": "To addresses",
         "end": {
           "column": 3,
-          "line": 84
+          "line": 81
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.to",
         "start": {
           "column": 15,
-          "line": 80
+          "line": 77
         }
       },
       {
@@ -2865,13 +2865,13 @@
         "description": "Transaction amount.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 86
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionAmount",
         "start": {
           "column": 21,
-          "line": 85
+          "line": 82
         }
       },
       {
@@ -2879,13 +2879,13 @@
         "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 94
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.low",
         "start": {
           "column": 25,
-          "line": 93
+          "line": 90
         }
       },
       {
@@ -2893,13 +2893,13 @@
         "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
-          "line": 102
+          "line": 99
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
           "column": 28,
-          "line": 98
+          "line": 95
         }
       },
       {
@@ -2907,13 +2907,13 @@
         "description": "Transaction assurance level \"high\".",
         "end": {
           "column": 3,
-          "line": 107
+          "line": 104
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.high",
         "start": {
           "column": 26,
-          "line": 103
+          "line": 100
         }
       },
       {
@@ -2921,13 +2921,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 112
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 111
+          "line": 108
         }
       },
       {
@@ -2935,13 +2935,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 120
+          "line": 117
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.failed",
         "start": {
           "column": 30,
-          "line": 116
+          "line": 113
         }
       }
     ],
@@ -4154,13 +4154,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 20
         },
         "file": "app/containers/wallet/WalletSummaryPage.js",
         "id": "wallet.summary.no.transactions",
         "start": {
           "column": 18,
-          "line": 13
+          "line": 16
         }
       }
     ],
@@ -4173,13 +4173,13 @@
         "description": "Message shown when wallet has no transactions yet.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 19
         },
         "file": "app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions",
         "start": {
           "column": 18,
-          "line": 12
+          "line": 15
         }
       },
       {
@@ -4187,13 +4187,13 @@
         "description": "Message shown when wallet transaction search returns zero results.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 24
         },
         "file": "app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions.found",
         "start": {
           "column": 23,
-          "line": 17
+          "line": 20
         }
       }
     ],

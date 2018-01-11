@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import humanizeDuration from 'humanize-duration';
 import SvgInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 // import Button from 'react-polymorph/lib/components/Button';
 // import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
 import attentionIcon from '../../assets/images/attention-big-light.inline.svg';
@@ -12,12 +12,12 @@ import styles from './SystemTimeErrorOverlay.scss';
 const messages = defineMessages({
   overlayTitle: {
     id: 'systemTime.error.overlayTitle',
-    defaultMessage: '!!!Daedalus Sync Error',
+    defaultMessage: '!!!Unable to sync - incorrect time',
     description: 'Title of Sync error overlay'
   },
   overlayText: {
     id: 'systemTime.error.overlayText',
-    defaultMessage: '!!!ATTENTION: Time of your machine is different from global time. You are 2 hours 12 minutes 54 seconds behind. You need to fix issue, because you are gonna be unable to sync system!',
+    defaultMessage: '!!!Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. You are 2 hours 12 minutes 54 seconds behind.<br>To synchronize the time and fix this issue, please visit the FAQ section of Daedalus website (daedaluswallet.io/faq).',
     description: 'Text of Sync error overlay'
   },
   buttonLabel: {
@@ -73,7 +73,7 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
 
         <h1>{intl.formatMessage(messages.overlayTitle)}</h1>
 
-        <p>{intl.formatMessage(messages.overlayText, { behindTime })}</p>
+        <p><FormattedHTMLMessage {...messages.overlayText} values={{ behindTime }} /></p>
 
         {/* <Button
           label={intl.formatMessage(messages.buttonLabel)}
