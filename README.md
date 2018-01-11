@@ -80,7 +80,7 @@ Build with:
 $ brew install haskell-stack # OR curl -ssl https://get.haskellstack.org/ | sh
 $ stack setup
 $ stack install cpphs
-$ brew install rocksdb
+$ brew install rocksdb # OR sudo apt-get install librocksdb-dev
 $ git clone git@github.com:input-output-hk/cardano-sl.git
 $ cd cardano-sl/
 $ ./scripts/build/cardano-sl.sh
