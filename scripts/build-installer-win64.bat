@@ -68,7 +68,7 @@ call npm install
 @if %errorlevel% neq 0 (@echo FAILED: npm install
     exit /b 1)
 
-@if %API% == etc (block1.bat) else (block2.bat)
+@if %API% == etc (call scripts\build-installer-win64-mantis.bat) else (call scripts\build-installer-win64-cardano.bat)
 pwd
 
 :build_frontend
@@ -78,6 +78,7 @@ call npm run package -- --icon installers/icons/64x64
 	exit /b 1)
 
 pushd installers
+    dir
     del /f LibreSSL.zip 2>nul
     @echo Obtaining LibreSSL %LIBRESSL_VERSION%
     ..\curl %LIBRESSL_URL% -o LibreSSL.zip
