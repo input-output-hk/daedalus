@@ -1,10 +1,8 @@
 import { ipcMain } from 'electron';
 import fs from 'fs';
-import Log from 'electron-log';
 import path from 'path';
-import getRuntimeFolderPath from '../lib/getRuntimeFolderPath';
+import { APP_NAME, appLogsFolderPath } from '../config';
 
-const APP_NAME = 'Daedalus';
 const CHANNEL_NAME = 'get-logs';
 
 export const GET_LOGS = {
@@ -15,9 +13,7 @@ export const GET_LOGS = {
 export default () => {
   ipcMain.on(GET_LOGS.REQUEST, (event) => {
     const sender = event.sender;
-    const runtimeFolderPath = getRuntimeFolderPath(process.platform, process.env, APP_NAME);
-    const rootLogFolderPath = path.join(runtimeFolderPath, 'Logs');
-    const pubLogsFolderPath = path.join(runtimeFolderPath, 'Logs', 'pub');
+    const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
 
     // check if pub folder exists and create array of file names
     const pubLogFiles = [];
@@ -33,15 +29,15 @@ export default () => {
 
     // declare root logs, check which exists and create array of paths
     const rootLogFiles = [];
-    const mainLogs = ['Daedalus.log', 'Daedalus.old.log'];
+    const mainLogs = [`${APP_NAME}.log`, `${APP_NAME}.old.log`];
     for (let i = 0; i < mainLogs.length; i++) {
-      if (fs.existsSync(path.join(rootLogFolderPath, mainLogs[i]))) {
+      if (fs.existsSync(path.join(appLogsFolderPath, mainLogs[i]))) {
         rootLogFiles.push(mainLogs[i]);
       }
     }
 
     const rootLogs = {
-      path: rootLogFolderPath,
+      path: appLogsFolderPath,
       files: rootLogFiles,
     };
 
@@ -54,8 +50,6 @@ export default () => {
       rootLogs,
       pubLogs,
     };
-
-    Log.info('get logs success');
 
     return sender.send(GET_LOGS.SUCCESS, logs);
   });

@@ -101,13 +101,12 @@ export default class WalletSupportRequestDialog extends Component<Props, State> 
   };
 
   componentWillReceiveProps(nextProps: Object) {
+    const commpressedFilesExist = get(nextProps, 'compressedLogsFiles', []).length > 0;
     const commpressionFilesChanged = !isEqual(
       this.props.compressedLogsFiles, nextProps.compressedLogsFiles
     );
-    // eslint-disable-next-line max-len
-    const commpressedFilesExists = nextProps.compressedLogsFiles && nextProps.compressedLogsFiles.length;
 
-    if (commpressedFilesExists && commpressionFilesChanged) {
+    if (commpressedFilesExist && commpressionFilesChanged) {
       // proceed to submit when ipc rendered successfully return compressed files
       this.submit(nextProps.compressedLogsFiles);
     }
@@ -159,26 +158,28 @@ export default class WalletSupportRequestDialog extends Component<Props, State> 
     },
   });
 
-  submit = (files: ?Array<string>) => {
+  submit = (compressedLogs: ?Array<string>) => {
     this.form.submit({
       onSuccess: (form) => {
         const { logFiles } = this.props;
-        const rootLogs = get(logFiles, ['rootLogs', 'files']);
-        const pubLogs = get(logFiles, ['pubLogs', 'files']);
-        const logsExists = (rootLogs && rootLogs.length) || (pubLogs && pubLogs.length);
+
+        const rootLogs = get(logFiles, ['rootLogs', 'files'], []).length > 0;
+        const pubLogs = get(logFiles, ['pubLogs', 'files'], []).length > 0;
+
+        const logsExist = rootLogs || pubLogs;
+        const compressedLogsExist = compressedLogs && compressedLogs.length > 0;
 
         const { email, subject, problem } = form.values();
         const data = {
-          email, subject, problem, files,
+          email, subject, problem, files: compressedLogs,
         };
 
-        // eslint-disable-next-line max-len
-        if (!logFiles || !this.state.showLogs || (files && files.length) || (logFiles && !logsExists)) {
+        if (this.state.showLogs && logsExist && !compressedLogsExist) {
+          // submit request with commpressed logs files
+          this.props.onCompressLogs(this.props.logFiles);
+        } else {
           // regular submit
           this.props.onSubmit(data);
-        } else {
-          // submit request with commpressed logs file
-          this.props.onCompressLogs(this.props.logFiles);
         }
       },
       onError: () => {},

@@ -251,31 +251,36 @@ export default class SettingsStore extends Store {
     email: string,
     subject: ?string,
     problem: ?string,
-    files: Array<string>,
+    files: ?Array<string>,
   }) => {
     this.sendSupportRequest.execute({
       email, subject, problem, files,
     })
-      .then(action((response: any) => {
-        // Trigger ipc renderer to delete compressed temp files if exists
-        if (response.files) {
-          let filesToDelete;
-          if (response.files.length > 1) {
-            // if files are splitted then also include original file to delete
-            filesToDelete = concat(response.files, this.compressedLogsOriginal);
-          } else {
-            filesToDelete = response.files;
-          }
-
-          ipcRenderer.send(DELETE_COMPRESSED_LOGS.REQUEST, filesToDelete);
-        }
+      .then(action(() => {
+        this._deleteCompressedFiles(files);
         this._reset();
         this.actions.dialogs.closeActiveDialog.trigger();
       }))
       .catch(action((error) => {
+        this._deleteCompressedFiles(files);
+        this._reset();
         this.error = error;
       }));
   });
+
+  _deleteCompressedFiles = action((files) => {
+    // Trigger ipc renderer to delete compressed temp files if exists
+    if (files) {
+      let filesToDelete;
+      if (files.length > 1) {
+        // if files are splitted then also include original file to delete
+        filesToDelete = concat(files, this.compressedLogsOriginal);
+      } else {
+        filesToDelete = files;
+      }
+      ipcRenderer.send(DELETE_COMPRESSED_LOGS.REQUEST, filesToDelete);
+    }
+  })
 
   @action _reset = () => {
     this.error = null;

@@ -1,7 +1,7 @@
 import { ipcMain } from 'electron';
 import { map } from 'lodash';
 import fs from 'fs';
-import Log from 'electron-log';
+import { Logger, stringifyError } from '../../app/utils/logging';
 
 const CHANNEL_NAME = 'delete-compressed-logs';
 
@@ -14,15 +14,15 @@ export default () => {
   ipcMain.on(DELETE_COMPRESSED_LOGS.REQUEST, (event, files) => {
     const sender = event.sender;
     try {
-      Log.info('Start deleting files');
+      Logger.info('DELETE_COMPRESSED_LOGS started');
       map(files, (file) => {
         fs.unlinkSync(file);
       });
-      Log.warn('* files successfully deleted *');
-      return sender.send(DELETE_COMPRESSED_LOGS.SUCCESS, 'Compressed files successfully removed');
+      Logger.info('DELETE_COMPRESSED_LOGS.SUCCESS');
+      return sender.send(DELETE_COMPRESSED_LOGS.SUCCESS);
     } catch (error) {
-      Log.error('* file delete error! * ', error);
-      return sender.send(DELETE_COMPRESSED_LOGS.ERROR, 'Erroor occured while try to delete compressed files');
+      Logger.error('DELETE_COMPRESSED_LOGS.ERROR: ' + stringifyError(error));
+      return sender.send(DELETE_COMPRESSED_LOGS.ERROR, error);
     }
   });
 };
