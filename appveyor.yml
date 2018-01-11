@@ -11,7 +11,9 @@ environment:
     secure: 9tjYxdz1fqibx1WOrP5yn32iwbEXeYx+Btb5QJqHvMO4Ng2/yUtPi00/ZMXihFWV
   # Avoid long paths on Windows
   STACK_ROOT: "c:\\sr"
-  API: "etc"
+  matrix:
+    - API: "etc"
+    - API: "cardano"
 
 build: off
 

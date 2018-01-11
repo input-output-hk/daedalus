@@ -16,8 +16,19 @@ import           Launcher
 
 import qualified Data.ByteString.Lazy as LBS
 
-launcherScript :: [String]
-launcherScript =
+data InstallerConfig = InstallerConfig {
+    icApi :: String
+  , appName :: String
+  , predownloadChain :: Bool
+  , camelCasedName :: String
+  , spacedName :: String
+}
+
+launcherScript :: InstallerConfig -> [ String ]
+launcherScript cfg = if icApi cfg == "etc" then mantisLauncherScript else cardanoLauncherScript
+
+mantisLauncherScript :: [String]
+mantisLauncherScript =
   [ "@echo off"
   , "set DAEDALUS_DIR=%~dp0"
   , "set API=etc"
@@ -25,6 +36,27 @@ launcherScript =
   , "set MANTIS_CMD=mantis.exe"
   , "start Daedalus.exe"
   ]
+
+cardanoLauncherScript :: [ String ]
+cardanoLauncherScript =
+  [ "@echo off"
+  , "SET DAEDALUS_DIR=%~dp0"
+  , "start /D \"%DAEDALUS_DIR%\" cardano-launcher.exe " <> args
+  ]
+  where
+    args = launcherArgs Launcher
+      { nodePath = "%DAEDALUS_DIR%\\cardano-node.exe"
+      , nodeLogPath = "%APPDATA%\\Daedalus\\Logs\\cardano-node.log"
+      , walletPath = "%DAEDALUS_DIR%\\Daedalus.exe"
+      , launcherLogPath = "%APPDATA%\\Daedalus\\Logs\\pub"
+      , windowsInstallerPath = Just "%APPDATA%\\Daedalus\\Installer.bat"
+      , updater =
+          SelfUnpacking
+            { updArchivePath = "%APPDATA%\\Daedalus\\Installer.exe"
+            , updArgs = []
+            }
+      , runtimePath = "%APPDATA%\\Daedalus\\"
+      }
 
 daedalusShortcut :: [Attrib]
 daedalusShortcut =
@@ -40,25 +72,27 @@ bootstrapScript bootstrap_url bootstrap_hash bootstrap_size =
   ]
 
 -- See INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
-writeUninstallerNSIS :: String -> IO ()
-writeUninstallerNSIS fullVersion = do
+writeUninstallerNSIS :: InstallerConfig -> String -> IO ()
+writeUninstallerNSIS cfg fullVersion = do
   tempDir <- fmap fromJust $ lookupEnv "TEMP"
   writeFile "uninstaller.nsi" $ nsis $ do
     _ <- constantStr "Version" (str fullVersion)
-    name "Daedalus(Mantis) Uninstaller $Version"
+    name (fromString $ appName cfg <> " Uninstaller $Version")
     outFile . str $ tempDir <> "\\tempinstaller.exe"
     unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
     unsafeInjectGlobal "SetCompress off"
+    constantStr "camelCasedName" (fromString $ camelCasedName cfg)
+    constantStr "spacedName" (fromString $ spacedName cfg)
     _ <- section "" [Required] $ do
       unsafeInject $ "WriteUninstaller \"" <> tempDir <> "\\uninstall.exe\""
 
     uninstall $ do
       -- Remove registry keys
-      deleteRegKey HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis"
-      deleteRegKey HKLM "Software/DaedalusMantis"
+      deleteRegKey HKLM (fromString $ "Software/Microsoft/Windows/CurrentVersion/Uninstall/" <> camelCasedName cfg)
+      deleteRegKey HKLM (fromString $ "Software/" <> camelCasedName cfg)
       rmdir [Recursive,RebootOK] "$INSTDIR"
-      delete [] "$SMPROGRAMS/Daedalus Mantis/*.*"
-      delete [] "$DESKTOP\\Daedalus Mantis.lnk"
+      delete [] "$SMPROGRAMS/$spacedName/*.*"
+      delete [] "$DESKTOP\\$spacedName.lnk"
       mapM_ unsafeInject
         [ "liteFirewall::RemoveRule \"$INSTDIR\\cardano-node.exe\" \"Cardano Node\""
         , "Pop $0"
@@ -97,8 +131,8 @@ parseVersion ver =
     v@[_, _, _, _] -> map unpack v
     _              -> ["0", "0", "0", "0"]
 
-writeInstallerNSIS :: String -> Bool -> IO String
-writeInstallerNSIS fullVersion predownloadChain = do
+writeInstallerNSIS :: InstallerConfig -> String -> IO String
+writeInstallerNSIS cfg fullVersion = do
   tempDir <- fmap fromJust $ lookupEnv "TEMP"
   let viProductVersion = L.intercalate "." $ parseVersion fullVersion
   let
@@ -111,17 +145,17 @@ writeInstallerNSIS fullVersion predownloadChain = do
     bootstrap_size = 33
   let -- Where to produce the installer
     outputFile :: String
-    outputFile = if predownloadChain then
+    outputFile = if predownloadChain cfg then
         "daedalus-win64-" <> fullVersion <> "-installer-with-chain.exe"
       else
         "daedalus-win64-" <> fullVersion <> "-installer.exe"
     backendPath :: String
-    backendPath = if False then "$INSTDIR\\cardano-node.exe" else "$INSTDIR\\resources\\app\\mantis\\mantis.exe"
-    backendName = if False then "Cardano Node" else "Mantis Node"
+    backendPath = if icApi cfg == "cardano" then "$INSTDIR\\cardano-node.exe" else "$INSTDIR\\resources\\app\\mantis\\mantis.exe"
+    backendName = if icApi cfg == "cardano" then "Cardano Node" else "Mantis Node"
   echo $ unsafeTextToLine $ pack $ "VIProductVersion: " <> viProductVersion
   writeFile "daedalus.nsi" $ nsis $ do
     _ <- constantStr "Version" (str fullVersion)
-    if True then do
+    if icApi cfg == "etc" then do
       constantStr "bootstrapUrl" $ fromString bootstrap_url
       constantStr "backendPath" $ fromString backendPath
       constantStr "bootstrapHash" $ fromString bootstrap_hash
@@ -129,7 +163,12 @@ writeInstallerNSIS fullVersion predownloadChain = do
       pure ()
     else
       pure ()
-    name "Daedalus (with Mantis $Version)"                  -- The name of the installer
+    constantStr "camelCasedName" (fromString $ camelCasedName cfg)
+    constantStr "spacedName" (fromString $ spacedName cfg)
+    if icApi cfg == "etc" then
+      name "Daedalus (with Mantis $Version)"                  -- The name of the installer
+    else
+      name "Daedalus ($Version)"
     outFile $ fromString outputFile
     unsafeInjectGlobal "!define MUI_ICON \"icons\\64x64.ico\""
     unsafeInjectGlobal "!define MUI_HEADERIMAGE"
@@ -141,25 +180,24 @@ writeInstallerNSIS fullVersion predownloadChain = do
     requestExecutionLevel Highest
     unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
 
-    installDir "$PROGRAMFILES64\\Daedalus Mantis"                   -- Default installation directory...
-    installDirRegKey HKLM "Software/DaedalusMantis" "Install_Dir"  -- ...except when already installed.
+    installDir "$PROGRAMFILES64\\$spacedName"                   -- Default installation directory...
+    installDirRegKey HKLM (fromString $ "Software/" <> camelCasedName cfg) "Install_Dir"  -- ...except when already installed.
 
     page Directory                   -- Pick where to install
-    _ <- constant "INSTALLEDAT" $ readRegStr HKLM "Software/DaedalusMantis" "Install_Dir"
+    _ <- constant "INSTALLEDAT" $ readRegStr HKLM (fromString $ "Software/" <> camelCasedName cfg) "Install_Dir"
     onPagePre Directory (iff_ (strLength "$INSTALLEDAT" %/= 0) $ abort "")
 
     page InstFiles                   -- Give a progress bar while installing
 
     _ <- section "" [Required] $ do
         setOutPath "$INSTDIR"        -- Where to install files in this section
-        writeRegStr HKLM "Software/DaedalusMantis" "Install_Dir" "$INSTDIR" -- Used by launcher batch script
-        createDirectory "$APPDATA\\DaedalusMantis\\Secrets-1.0"
-        createDirectory "$APPDATA\\DaedalusMantis\\Logs"
-        createDirectory "$APPDATA\\DaedalusMantis\\Logs\\pub"
-        createShortcut "$DESKTOP\\Daedalus Mantis.lnk" daedalusShortcut
+        writeRegStr HKLM ( fromString $ "Software/" <> camelCasedName cfg) "Install_Dir" "$INSTDIR" -- Used by launcher batch script
+        createDirectory "$APPDATA\\$camelCasedName\\Secrets-1.0"
+        createDirectory "$APPDATA\\$camelCasedName\\Logs"
+        createDirectory "$APPDATA\\$camelCasedName\\Logs\\pub"
+        createShortcut "$DESKTOP\\$spacedName.lnk" daedalusShortcut
         file [] "version.txt"
-        file [] "build-certificates-win64-mantis.bat"
-        writeFileLines "$INSTDIR\\daedalus.bat" (map str launcherScript)
+        writeFileLines "$INSTDIR\\daedalus.bat" (map str $ launcherScript cfg)
         file [Recursive] "dlls\\"
         file [Recursive] "libressl\\"
         file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
@@ -170,32 +208,50 @@ writeInstallerNSIS fullVersion predownloadChain = do
           , "DetailPrint \"liteFirewall::AddRule: $0\""
           ]
 
-        execWait "build-certificates-win64-mantis.bat \"$INSTDIR\" >\"%APPDATA%\\DaedalusMantis\\Logs\\build-certificates.log\" 2>&1"
-        writeFileLines "$INSTDIR\\bootstrap.bat" (map str $ bootstrapScript bootstrap_url bootstrap_hash bootstrap_size)
-        if predownloadChain then
-          execWait "$INSTDIR\\bootstrap.bat"
-        else
-          pure ()
+        case icApi cfg of
+          "etc" -> do
+            file [] "build-certificates-win64-mantis.bat"
+            execWait "build-certificates-win64-mantis.bat \"$INSTDIR\" >\"%APPDATA%\\$camelCasedName\\Logs\\build-certificates.log\" 2>&1"
+            writeFileLines "$INSTDIR\\bootstrap.bat" (map str $ bootstrapScript bootstrap_url bootstrap_hash bootstrap_size)
+            if predownloadChain cfg then
+              execWait "$INSTDIR\\bootstrap.bat"
+            else
+              pure ()
+          "cardano" -> do
+            file [] "build-certificates-win64.bat"
+            file [] "ca.conf"
+            file [] "server.conf"
+            file [] "client.conf"
+            file [] "wallet-topology.yaml"
+            file [] "configuration.yaml"
+            file [] "*genesis*.json"
+            file [] "cardano-node.exe"
+            file [] "cardano-launcher.exe"
+            file [] "log-config-prod.yaml"
+            execWait "build-certificates-win64.bat \"$INSTDIR\" >\"%APPDATA%\\Daedalus\\Logs\\build-certificates.log\" 2>&1"
 
         -- Uninstaller
-        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "InstallLocation" "$INSTDIR"
-        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "Publisher" "Input Output HK"
-        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "ProductVersion" (str fullVersion)
-        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "VersionMajor" (str . (!! 0). parseVersion $ fullVersion)
-        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "VersionMinor" (str . (!! 1). parseVersion $ fullVersion)
-        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "DisplayName" "Daedalus Mantis"
-        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "DisplayVersion" (str fullVersion)
-        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "UninstallString" "\"$INSTDIR/uninstall.exe\""
-        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "QuietUninstallString" "\"$INSTDIR/uninstall.exe\" /S"
-        writeRegDWORD HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "NoModify" 1
-        writeRegDWORD HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "NoRepair" 1
+        do
+          let
+            commonDirectory = fromString $ "Software/Microsoft/Windows/CurrentVersion/Uninstall/" <> camelCasedName cfg
+          writeRegStr HKLM commonDirectory "InstallLocation" "$INSTDIR"
+          writeRegStr HKLM commonDirectory "Publisher" "Input Output HK"
+          writeRegStr HKLM commonDirectory "ProductVersion" (str fullVersion)
+          writeRegStr HKLM commonDirectory "VersionMajor" (str . (!! 0). parseVersion $ fullVersion)
+          writeRegStr HKLM commonDirectory "VersionMinor" (str . (!! 1). parseVersion $ fullVersion)
+          writeRegStr HKLM commonDirectory "DisplayName" "$spacedName"
+          writeRegStr HKLM commonDirectory "DisplayVersion" (str fullVersion)
+          writeRegStr HKLM commonDirectory "UninstallString" "\"$INSTDIR/uninstall.exe\""
+          writeRegStr HKLM commonDirectory "QuietUninstallString" "\"$INSTDIR/uninstall.exe\" /S"
+          writeRegDWORD HKLM commonDirectory "NoModify" 1
+          writeRegDWORD HKLM commonDirectory "NoRepair" 1
         file [] (str $ tempDir <> "\\uninstall.exe")
 
     _ <- section "Start Menu Shortcuts" [] $ do
-        createDirectory "$SMPROGRAMS/Daedalus Mantis"
-        createShortcut "$SMPROGRAMS/Daedalus Mantis/Uninstall Daedalus.lnk"
+        createDirectory "$SMPROGRAMS/$spacedName"
+        createShortcut "$SMPROGRAMS/$spacedName/Uninstall $spacedName.lnk"
           [Target "$INSTDIR/uninstall.exe", IconFile "$INSTDIR/uninstall.exe", IconIndex 0]
-        createShortcut "$SMPROGRAMS/Daedalus Mantis/Daedalus.lnk" daedalusShortcut
+        createShortcut "$SMPROGRAMS/$spacedName/Daedalus.lnk" daedalusShortcut
     return ()
   temp <- LBS.readFile "daedalus.nsi"
   LBS.putStrLn temp
@@ -203,24 +259,53 @@ writeInstallerNSIS fullVersion predownloadChain = do
 
 main :: IO ()
 main = do
-  makeInstaller True
-  makeInstaller False
+  api <- fromMaybe "cardano" <$> lookupEnv "API"
+  case api of
+    "cardano" -> do
+      let
+        cfg = InstallerConfig {
+            icApi = "cardano"
+          , appName = "Daedalus"
+          , camelCasedName = "Daedalus"
+          , spacedName = "Daedalus"
+          , predownloadChain = False
+        }
+      makeInstaller cfg
+    "etc" -> do
+      let
+        cfg = InstallerConfig {
+            icApi = "etc"
+          , appName = "Daedalus(Mantis)"
+          , camelCasedName = "DaedalusMantis"
+          , spacedName = "Daedalus Mantis"
+          , predownloadChain = False
+        }
+      makeInstaller (cfg { predownloadChain = True})
+      makeInstaller (cfg { predownloadChain = False})
 
-makeInstaller :: Bool -> IO ()
-makeInstaller predownloadChain = do
+makeInstaller :: InstallerConfig -> IO ()
+makeInstaller cfg = do
   echo "Writing version.txt"
   version <- fmap (fromMaybe "dev") $ lookupEnv "APPVEYOR_BUILD_VERSION"
   let fullVersion = version <> ".0"
   writeFile "version.txt" fullVersion
 
-  --signFile "cardano-node.exe"
+  case icApi cfg of
+    "cardano" -> do
+      echo "Adding permissions manifest to cardano-launcher.exe"
+      procs "C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\mt.exe" ["-manifest", "cardano-launcher.exe.manifest", "-outputresource:cardano-launcher.exe;#1"] mempty
+      signFile "cardano-node.exe"
+      signFile "cardano-launcher.exe"
+    "etc" -> do
+      -- TODO, sign mantis binaries?
+      pure ()
 
   echo "Writing uninstaller.nsi"
-  writeUninstallerNSIS fullVersion
+  writeUninstallerNSIS cfg fullVersion
   signUninstaller
 
   echo "Writing daedalus.nsi"
-  outputFile <- writeInstallerNSIS fullVersion predownloadChain
+  outputFile <- writeInstallerNSIS cfg fullVersion
 
   echo $ "Generating NSIS installer " <> fromString outputFile
   procs "C:\\Program Files (x86)\\NSIS\\makensis" ["daedalus.nsi"] mempty
