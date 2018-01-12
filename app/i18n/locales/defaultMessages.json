@@ -184,13 +184,13 @@
         "description": "Message \"Connecting to network\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 23
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.connectingToNetworkMessage",
         "start": {
           "column": 14,
-          "line": 15
+          "line": 19
         }
       },
       {
@@ -198,13 +198,13 @@
         "description": "Message \"Connected - waiting for block syncing to start\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 28
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.waitingForSyncToStart",
         "start": {
           "column": 25,
-          "line": 20
+          "line": 24
         }
       },
       {
@@ -212,13 +212,13 @@
         "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 33
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 25
+          "line": 29
         }
       },
       {
@@ -226,13 +226,55 @@
         "description": "Message \"Syncing blocks\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 38
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.syncingBlocksMessage",
         "start": {
           "column": 11,
-          "line": 30
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!Having trouble connecting to network?",
+        "description": "Report connecting issue text on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "app/components/loading/Loading.js",
+        "id": "loading.screen.reportIssue.connecting.text",
+        "start": {
+          "column": 29,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!Having trouble syncing?",
+        "description": "Report syncing issue text on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "app/components/loading/Loading.js",
+        "id": "loading.screen.reportIssue.syncing.text",
+        "start": {
+          "column": 26,
+          "line": 44
+        }
+      },
+      {
+        "defaultMessage": "!!!Report an issue",
+        "description": "Report an issue button label on the loading .",
+        "end": {
+          "column": 3,
+          "line": 53
+        },
+        "file": "app/components/loading/Loading.js",
+        "id": "loading.screen.reportIssue.buttonLabel",
+        "start": {
+          "column": 26,
+          "line": 49
         }
       }
     ],
@@ -4261,13 +4303,13 @@
         "description": "Message \"Loading wallet data\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 19
         },
         "file": "app/containers/LoadingPage.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
-          "line": 12
+          "line": 15
         }
       }
     ],

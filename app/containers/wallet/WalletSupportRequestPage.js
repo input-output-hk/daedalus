@@ -15,7 +15,6 @@ export default class WalletSupportRequestPage extends Component<Props> {
   render() {
     const { uiDialogs } = this.props.stores;
     let activeDialog = null;
-
     if (uiDialogs.isOpen(WalletSupportRequestDialog)) {
       activeDialog = <WalletSupportRequestDialogContainer />;
     }

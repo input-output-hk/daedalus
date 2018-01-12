@@ -209,6 +209,8 @@ export default class NetworkStatusStore extends Store {
     if (this._startupStage === STARTUP_STAGES.SYNCING && this.isSynced) {
       Logger.info(`========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`);
       this._startupStage = STARTUP_STAGES.LOADING;
+      // close reportIssue dialog if is opened and app synced in meanwhile
+      this.actions.dialogs.closeActiveDialog.trigger();
     }
     // TODO: introduce smarter way to bootsrap initial screens
     if (this.isConnected && this.isSynced && wallets.hasLoadedWallets) {

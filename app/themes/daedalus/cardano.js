@@ -255,7 +255,13 @@ export default {
 
   '--theme-connecting-background-color': '#202225',
   '--theme-connecting-text-color': '#fff',
+  '--theme-connecting-report-issue-background-color': 'rgba(250, 251, 252, 0.05)',
+  '--theme-connecting-report-issue-text-color': '#fafbfc',
+
+  '--theme-syncing-background-color': '#fafbfc',
   '--theme-syncing-text-color': '#5e6066',
+  '--theme-syncing-report-issue-background-color': 'rgba(94, 96, 102, 0.05)',
+  '--theme-syncing-report-issue-text-color': '#5e6066',
 
   '--theme-error-color': '#ea4c5b',
 
@@ -264,6 +270,7 @@ export default {
   '--theme-label-button-color': '#5e6066',
 
   '--theme-loading-background-color': '#ebeff2',
+  '--theme-loading-report-issue-button-background-color': '#445b7c',
 
   '--theme-mnemonic-background-color': '#f0f3f5',
   '--theme-mnemonic-background-color-hover': '#f3f5f7',
