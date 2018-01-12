@@ -16,7 +16,7 @@ import           Development.NSIS (Attrib (IconFile, IconIndex, OName, RebootOK,
                                    name, nsis, onPagePre, outFile, page, readRegStr,
                                    requestExecutionLevel, rmdir, section, setOutPath, str,
                                    strLength, uninstall, unsafeInject, unsafeInjectGlobal,
-                                   writeFileLines, writeRegDWORD, writeRegStr, (%/=))
+                                   writeRegDWORD, writeRegStr, (%/=))
 import           Prelude ((!!))
 import           System.Directory (doesFileExist)
 import           System.Environment (lookupEnv)
@@ -27,7 +27,7 @@ import           Turtle.Line (unsafeTextToLine)
 
 daedalusShortcut :: [Attrib]
 daedalusShortcut =
-        [ Target "$INSTDIR\\daedalus.bat"
+        [ Target "$INSTDIR\\cardano-launcher.exe"
         , IconFile "$INSTDIR\\Daedalus.exe"
         , StartOptions "SW_SHOWMINIMIZED"
         , IconIndex 0
@@ -138,7 +138,6 @@ writeInstallerNSIS fullVersion = do
                 file [] "configuration.yaml"
                 file [] "*genesis*.json"
                 file [OName (str "launcher-config.yaml")] "launcher-config-windows.yaml"
-                writeFileLines "$INSTDIR\\daedalus.bat" (map (str . toString) launcherScript)
                 file [Recursive] "dlls\\"
                 file [Recursive] "libressl\\"
                 file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
@@ -171,13 +170,6 @@ writeInstallerNSIS fullVersion = do
                     [Target "$INSTDIR/uninstall.exe", IconFile "$INSTDIR/uninstall.exe", IconIndex 0]
                 createShortcut "$SMPROGRAMS/Daedalus/Daedalus.lnk" daedalusShortcut
         return ()
-  where
-    launcherScript :: [Text]
-    launcherScript =
-        [ "@echo off"
-        , "set DAEDALUS_DIR=%~dp0"
-        , "start \"Daedalus\" /D \"%DAEDALUS_DIR%\" cardano-launcher.exe --daedalus-dir \"%DAEDALUS_DIR%\" -c \"%DAEDALUS_DIR%\\launcher-config.yaml\""
-        ]
 
 main :: IO ()
 main = do
