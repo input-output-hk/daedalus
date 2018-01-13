@@ -9,8 +9,9 @@ sys_root="$4"
 
 # $INSTALLER_SECURE_TEMP is available
 
-./dockutil --add "${dst_root}/Daedalus.app" --allhomes
+./dockutil --add "${dst_root}/DaedalusMantis.app" --allhomes
 
-cd "${dst_root}/Daedalus.app/Contents/MacOS/"
+cd "${dst_root}/DaedalusMantis.app/Contents/MacOS/"
 
 bash ./build-certificates-unix.sh
+bash ./bootstrap.sh

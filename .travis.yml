@@ -3,7 +3,12 @@ sudo: false
 matrix:
   include:
   - os: linux
+    env: API=cardano
   - os: osx
+    env: API=etc
+    osx_image: xcode8.3
+  - os: osx
+    env: API=cardano
     osx_image: xcode8.3
 env:
   global:
@@ -27,6 +32,7 @@ script:
      --build-id       "$TRAVIS_BUILD_NUMBER"
      --travis-pr      "$TRAVIS_PULL_REQUEST"
      --nix-path       "$NIX_PATH"
+     --api            "$API"
 notifications:
   slack:
     secure: hfzreJ033RxFI2UYtcGJ+MFgQX08UyUnQwhb8X8CuVuIZXDWhxz9JLMEUuL6QqogtffbiqfqIhyDwZ0PsE3aEJaHQAQ7lxJkMjZFU/o+CYvHBQy+WYCa/sFM0C8cEXn3Wb/LmhjvtKAgF302tnD5PAPglZTGtCJHpihKG/Wc+YwF2aFSon0DqoMtVmwVPvhD/WlAHyszARsE9C7jH7jN43gwupAmwj7QLH+kd96HKrrc2ItgMS0f5ucFnpM900c9LwhE5StxVdgTXLnogWQKcd1f4DwTNoXfS3Dy6VJkKj049VScvavcFcVPBL9xU62SMMy/eS/yRcHZkxJehUi16aoir2GXNZOKjQVQ85zEQofQgkR+b4roJJmtWJuCoyE0nptoHgDi4BlLwFuC1g7pkngtLvo3BrG3IjhV+s7QuhxFA9aA8MBQDTRBQNeZdU2I/iwJaYsggGQ2JYA/B2AE4C0sentbegGumsY4fah6HVQGOOZoCl3k9fmMDS42/D55kdteRAQBZBlixLHMXTsMf90jcJJGi/vkzVEnhby63RdTRNDW6MBA6RgvUIpI0VQgAIEM8LFHMNeHMYLoj++NnSI3gCrX8zi8nrnCUJmpCQ89WLDRbVy3rFltgcd7ds8SlRxMtSXCO9lulq/Q6Gk65mRhuq/My0FqBbT+DQUBg04=
