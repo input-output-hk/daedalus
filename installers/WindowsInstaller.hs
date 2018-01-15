@@ -1,7 +1,8 @@
 module WindowsInstaller where
 
-import           Control.Monad      (unless)
+import           Control.Monad      (unless, forM_)
 import qualified Data.List          as L
+import qualified Data.List.Split    as L
 import           Data.Maybe         (fromJust, fromMaybe)
 import           Data.Monoid        ((<>))
 import           Data.Text          (pack, split, unpack)
@@ -100,11 +101,19 @@ parseVersion ver =
     v@[_, _, _, _] -> map unpack v
     _              -> ["0", "0", "0", "0"]
 
+fileSubstString :: String -> String -> FilePath -> FilePath -> IO ()
+fileSubstString from to src dst =
+  writeFile dst =<< L.intercalate to . L.splitOn from <$> readFile src
+
 writeInstallerNSIS :: String -> IO ()
 writeInstallerNSIS fullVersion = do
   tempDir <- fmap fromJust $ lookupEnv "TEMP"
   let viProductVersion = L.intercalate "." $ parseVersion fullVersion
   echo $ unsafeTextToLine $ pack $ "VIProductVersion: " <> viProductVersion
+
+  forM_ ["ca.conf", "server.conf", "client.conf"] $
+    \f-> fileSubstString "OPENSSL_MD" "sha256" f (f <> ".windows")
+
   writeFile "daedalus.nsi" $ nsis $ do
     _ <- constantStr "Version" (str fullVersion)
     name "Daedalus ($Version)"                  -- The name of the installer
@@ -140,9 +149,9 @@ writeInstallerNSIS fullVersion = do
         file [] "log-config-prod.yaml"
         file [] "version.txt"
         file [] "build-certificates-win64.bat"
-        file [] "ca.conf"
-        file [] "server.conf"
-        file [] "client.conf"
+        file [] "ca.conf.windows"
+        file [] "server.conf.windows"
+        file [] "client.conf.windows"
         file [] "wallet-topology.yaml"
         file [] "configuration.yaml"
         file [] "*genesis*.json"
