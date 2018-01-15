@@ -6,6 +6,9 @@ import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
 import type { InjectedProps } from '../types/injectedPropsType';
 import environment from '../environment';
+import resolver from '../utils/imports';
+
+const { formattedWalletAmount } = resolver('utils/formatters');
 
 type Props = InjectedProps;
 
@@ -29,6 +32,7 @@ export default class TopBarContainer extends Component<Props> {
         activeWallet={stores[environment.API].wallets.active}
         currentRoute={app.currentRoute}
         showSubMenus={sidebar.isShowingSubMenus}
+        formattedWalletAmount={formattedWalletAmount}
       >
         {testnetLabel}
         <NodeSyncStatusIcon

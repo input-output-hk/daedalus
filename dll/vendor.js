@@ -12,6 +12,7 @@ require("classnames");
 // require("electron-log");
 // require("electron-storage");
 require("es6-error");
+require("humanize-duration");
 require("lodash");
 require("mobx");
 require("mobx-react");

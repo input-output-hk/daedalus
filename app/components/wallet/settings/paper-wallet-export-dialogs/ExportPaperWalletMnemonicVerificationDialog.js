@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import TextArea from 'react-polymorph/lib/components/TextArea';
-import SimpleTextAreaSkin from 'react-polymorph/lib/skins/simple/TextAreaSkin';
+import SimpleTextAreaSkin from 'react-polymorph/lib/skins/simple/raw/TextAreaSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';

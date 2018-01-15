@@ -4,8 +4,8 @@ import SvgInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
+import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
 import LoadingSpinner from '../widgets/LoadingSpinner';
-import daedalusLogoWhite from '../../assets/images/daedalus-logo-loading-white.inline.svg';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import styles from './Loading.scss';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
@@ -36,7 +36,7 @@ const messages = defineMessages({
 
 type Props = {
   currencyIcon: string,
-  currencyIconWhite: string,
+  apiIcon: string,
   isConnecting: boolean,
   hasBeenConnected: boolean,
   hasBlockSyncingStarted: boolean,
@@ -46,6 +46,9 @@ type Props = {
   loadingDataForNextScreenMessage: ReactIntlMessage,
   hasLoadedCurrentLocale: boolean,
   hasLoadedCurrentTheme: boolean,
+  localTimeDifference: number,
+  allowedTimeDifference: number,
+  currentLocale: string,
 };
 
 @observer
@@ -58,10 +61,22 @@ export default class Loading extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      currencyIcon, currencyIconWhite, isConnecting, isSyncing, syncPercentage,
-      isLoadingDataForNextScreen, loadingDataForNextScreenMessage, hasBeenConnected,
-      hasBlockSyncingStarted, hasLoadedCurrentLocale, hasLoadedCurrentTheme,
+      currencyIcon,
+      apiIcon,
+      isConnecting,
+      isSyncing,
+      syncPercentage,
+      isLoadingDataForNextScreen,
+      loadingDataForNextScreenMessage,
+      hasBeenConnected,
+      hasBlockSyncingStarted,
+      hasLoadedCurrentLocale,
+      hasLoadedCurrentTheme,
+      localTimeDifference,
+      allowedTimeDifference,
+      currentLocale,
     } = this.props;
+
     const componentStyles = classNames([
       styles.component,
       hasLoadedCurrentTheme ? null : styles['is-loading-theme'],
@@ -76,15 +91,24 @@ export default class Loading extends Component<Props> {
       styles[`${environment.API}-logo`],
       isConnecting ? styles.connectingLogo : styles.syncingLogo,
     ]);
+    const apiLogoStyles = classNames([
+      styles[`${environment.API}-apiLogo`],
+      isConnecting ? styles.connectingLogo : styles.syncingLogo,
+    ]);
 
-    const daedalusLoadingLogo = isConnecting ? daedalusLogoWhite : daedalusLogo;
-    const currencyLoadingLogo = isConnecting ? currencyIconWhite : currencyIcon;
+    const daedalusLoadingLogo = daedalusLogo;
+    const currencyLoadingLogo = currencyIcon;
+    const apiLoadingLogo = apiIcon;
+
     const connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
 
     return (
       <div className={componentStyles}>
-        <SvgInline svg={currencyLoadingLogo} className={currencyLogoStyles} />
-        <SvgInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
+        <div className={styles.logos}>
+          <SvgInline svg={currencyLoadingLogo} className={currencyLogoStyles} />
+          <SvgInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
+          <SvgInline svg={apiLoadingLogo} className={apiLogoStyles} />
+        </div>
         {hasLoadedCurrentLocale && (
           <div>
             {isConnecting && !hasBlockSyncingStarted && (
@@ -102,10 +126,18 @@ export default class Loading extends Component<Props> {
               </div>
             )}
             {isSyncing && (
-              <div className={styles.syncing}>
-                <h1 className={styles.headline}>
-                  {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
-                </h1>
+              <div className="syncingWrapper">
+                <div className={styles.syncing}>
+                  <h1 className={styles.headline}>
+                    {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
+                  </h1>
+                </div>
+                {(localTimeDifference > allowedTimeDifference) && (
+                  <SystemTimeErrorOverlay
+                    localTimeDifference={localTimeDifference}
+                    currentLocale={currentLocale}
+                  />
+                )}
               </div>
             )}
             {!isSyncing && !isConnecting && isLoadingDataForNextScreen && (
@@ -121,4 +153,5 @@ export default class Loading extends Component<Props> {
       </div>
     );
   }
+
 }
