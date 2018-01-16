@@ -50,6 +50,7 @@ const DEFAULT_OPTS = {
     '^/release($|/)',
     '^/electron/main.development.js',
     '^/installers',
+    '/electron-packager($|/)'
   ]
   .concat(devDeps)
   .concat(depsExternal)
