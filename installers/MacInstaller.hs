@@ -12,7 +12,8 @@ import           Control.Monad (unless)
 import           Data.Maybe (fromMaybe)
 import           Data.Monoid ((<>))
 import qualified Data.Text as T
-import           System.Directory (copyFile, createDirectoryIfMissing, doesFileExist, renameFile)
+import           System.Directory (copyFile, createDirectoryIfMissing, doesFileExist, renameFile,
+                                   (</>))
 import           System.Environment (lookupEnv)
 import           System.FilePath.Glob (glob)
 import           Turtle (ExitCode (..), echo, procs, shell, shells)
@@ -47,8 +48,8 @@ main = do
     copyFile "server.conf" (dir <> "/server.conf")
     copyFile "client.conf" (dir <> "/client.conf")
 
-    let launcherConfigPath = dir <> "/launcher-config.yaml"
-    copyFile "launcher-config-mac.yaml" launcherConfigPath
+    let launcherConfigFileName = "launcher-config.yaml"
+    copyFile "launcher-config-mac.yaml" (dir </> launcherConfigFileName)
 
     -- Rewrite libs paths and bundle them
     _ <- chain dir $ fmap T.pack [dir <> "/cardano-launcher", dir <> "/cardano-node"]
@@ -62,7 +63,7 @@ main = do
         , "cd \"$(dirname $0)\""
         , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Secrets-1.0\""
         , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Logs/pub\""
-        , "./cardano-launcher -c " <> toText launcherConfigPath
+        , "./cardano-launcher -c " <> toText launcherConfigFileName
         ]
     run "chmod" ["+x", T.pack (dir <> "/Daedalus")]
 
