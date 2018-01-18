@@ -62,7 +62,7 @@ main = do
         , "cd \"$(dirname $0)\""
         , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Secrets-1.0\""
         , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Logs/pub\""
-        , "./cardano-launcher -c " <> toText launcherConfigFileName
+        , "./cardano-launcher"
         ]
     run "chmod" ["+x", toText (dir </> "Daedalus")]
 
