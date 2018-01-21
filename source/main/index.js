@@ -12,7 +12,7 @@ setupLogging();
 
 Log.info(`========== Daedalus is starting at ${new Date()} ==========`);
 Log.info(`!!! Daedalus is running on ${os.platform()} version ${os.release()}
-            with CPU: ${JSON.stringify(os.cpus(), null, 2)} with 
+            with CPU: ${JSON.stringify(os.cpus(), null, 2)} with
             ${JSON.stringify(os.totalmem(), null, 2)} total RAM !!!`);
 
 // Global references to windows to prevent them from being garbage collected

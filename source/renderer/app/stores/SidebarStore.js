@@ -4,7 +4,7 @@ import Store from './lib/Store';
 import resolver from '../utils/imports';
 import { ROUTES } from '../routes-config';
 import { matchRoute } from '../utils/routing';
-import environment from '../environment';
+import environment from '../../../common/environment';
 
 const sidebarConfig = resolver('config/sidebarConfig');
 const { formattedWalletAmount } = resolver('utils/formatters');

@@ -11,7 +11,7 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './DeleteWalletConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
-import environment from '../../../environment';
+import environment from '../../../../../common/environment';
 
 const messages = defineMessages({
   dialogTitle: {

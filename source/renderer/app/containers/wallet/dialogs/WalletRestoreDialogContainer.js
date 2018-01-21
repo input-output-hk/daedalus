@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletRestoreDialog from '../../../components/wallet/WalletRestoreDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
-import environment from '../../../environment';
+import environment from '../../../../../common/environment';
 import validWords from '../../../../../common/valid-words.en';
 
 type Props = InjectedDialogContainerProps;

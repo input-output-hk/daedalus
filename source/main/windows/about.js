@@ -41,7 +41,7 @@ export const createAboutWindow = () => {
   });
 
   const port = environment.ELECTRON_WEBPACK_WDS_PORT;
-  const aboutParams = `?window=about${environment.isTest ? '&test=true' : ''}`;
+  const aboutParams = '?window=about';
 
   // Load the url for the window
   // points to `webpack-dev-server` in development
@@ -66,7 +66,7 @@ export const createAboutWindow = () => {
   window.webContents.on('context-menu', (e, props) => {
     const contextMenuOptions = [];
 
-    if (environment.isDev() || environment.isTest) {
+    if (environment.isDev() || environment.isTest()) {
       const { x, y } = props;
       contextMenuOptions.push({
         label: 'Inspect element',

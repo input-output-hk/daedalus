@@ -11,7 +11,7 @@ import createIcon from '../../assets/images/create-ic.inline.svg';
 import importIcon from '../../assets/images/import-ic.inline.svg';
 import joinSharedIcon from '../../assets/images/join-shared-ic.inline.svg';
 import restoreIcon from '../../assets/images/restore-ic.inline.svg';
-import environment from '../../environment';
+import environment from '../../../../common/environment';
 
 const messages = defineMessages({
   title: {

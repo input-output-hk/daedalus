@@ -1,7 +1,7 @@
 // @flow
 import Store from 'electron-store';
 import type { AssuranceModeOption } from '../../types/transactionAssuranceTypes';
-import environment from '../../environment';
+import environment from '../../../../common/environment';
 
 const store = new Store();
 

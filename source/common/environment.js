@@ -6,7 +6,7 @@ const environment = Object.assign({
   NETWORK: process.env.NETWORK,
   API: process.env.API || 'ada',
   MOBX_DEV_TOOLS: process.env.MOBX_DEV_TOOLS,
-  current: process.env.NODE_ENV,
+  current: process.env.ELECTRON_WEBPACK_APP_NODE_ENV || process.env.NODE_ENV,
   isDev: () => environment.current === environment.DEVELOPMENT,
   isTest: () => environment.current === environment.TEST,
   isProduction: () => environment.current === environment.PRODUCTION,

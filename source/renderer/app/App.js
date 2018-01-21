@@ -7,7 +7,7 @@ import { Router } from 'react-router';
 import { IntlProvider } from 'react-intl';
 import { Routes } from './Routes';
 import { daedalusTheme } from './themes/daedalus';
-import environment from './environment';
+import environment from '../../common/environment';
 import translations from './i18n/translations';
 import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';

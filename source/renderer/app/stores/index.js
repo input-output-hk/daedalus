@@ -12,7 +12,7 @@ import setupAdaStores from './ada/index';
 import setupEtcStores from './etc/index';
 import type { AdaStoresMap } from './ada/index';
 import type { EtcStoresMap } from './etc/index';
-import environment from '../environment';
+import environment from '../../../common/environment';
 
 export const storeClasses = {
   profile: ProfileStore,

@@ -21,7 +21,8 @@ defineSupportCode(({ AfterAll, BeforeAll, Before, setDefaultTimeout }) => {
       args: ['./dist/main/main.js'],
       env: {
         HOT: process.env.HOT,
-        NODE_ENV: 'test'
+        NODE_ENV: environment.TEST,
+        ELECTRON_WEBPACK_APP_NODE_ENV: environment.TEST, // runtime environment
       },
       waitTimeout: DEFAULT_TIMEOUT
     });
@@ -69,7 +70,7 @@ defineSupportCode(({ AfterAll, BeforeAll, Before, setDefaultTimeout }) => {
 
     const url = isHot
       ? `http://localhost:${environment.ELECTRON_WEBPACK_WDS_PORT}`
-      : `file://${path.resolve(__dirname, '../../dist/renderer')}/index.html?test=true`;
+      : `file://${path.resolve(__dirname, '../../dist/renderer')}/index.html`;
     // Load fresh root url with test environment for each test case
     await this.client.url(url);
 

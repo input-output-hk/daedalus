@@ -12,7 +12,7 @@ import WalletBackupDialogContainer from '../wallet/dialogs/WalletBackupDialogCon
 import WalletCreateDialogContainer from '../wallet/dialogs/WalletCreateDialogContainer';
 import WalletAddDialogContainer from '../wallet/dialogs/WalletAddDialogContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import environment from '../../environment';
+import environment from '../../../../common/environment';
 
 type Props = InjectedProps;
 

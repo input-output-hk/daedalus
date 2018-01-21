@@ -6,7 +6,7 @@ import WalletCreateDialog from '../../../components/wallet/WalletCreateDialog';
 import WalletRestoreDialog from '../../../components/wallet/WalletRestoreDialog';
 import WalletFileImportDialog from '../../../components/wallet/file-import/WalletFileImportDialog';
 import type { InjectedProps } from '../../../types/injectedPropsType';
-import environment from '../../../environment';
+import environment from '../../../../../common/environment';
 
 type Props = InjectedProps
 

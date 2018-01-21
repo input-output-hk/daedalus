@@ -5,7 +5,7 @@ import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
 import { Logger } from '../utils/logging';
 import type { GetSyncProgressResponse, GetLocalTimeDifferenceResponse } from '../api/common';
-import environment from '../environment';
+import environment from '../../../common/environment';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedDifficulties = null;

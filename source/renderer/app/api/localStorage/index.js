@@ -1,5 +1,5 @@
 import Store from 'electron-store';
-import environment from '../../environment';
+import environment from '../../../../common/environment';
 
 const store = new Store();
 

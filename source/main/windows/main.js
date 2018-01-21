@@ -22,11 +22,13 @@ export const createMainWindow = () => {
     window.setSize(width, height, animate);
   });
 
+  const port = environment.ELECTRON_WEBPACK_WDS_PORT;
+
   // Set url for the window
   // points to `webpack-dev-server` in development
   // points to `index.html` in production
   const url = environment.isDev()
-    ? `http://localhost:${environment.ELECTRON_WEBPACK_WDS_PORT}`
+    ? `http://localhost:${port}`
     : `file://${path.resolve(__dirname, '../renderer')}/index.html`;
 
   if (environment.isDev()) {

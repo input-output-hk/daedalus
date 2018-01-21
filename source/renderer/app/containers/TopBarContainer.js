@@ -5,7 +5,7 @@ import TopBar from '../components/layout/TopBar';
 import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
 import type { InjectedProps } from '../types/injectedPropsType';
-import environment from '../environment';
+import environment from '../../../common/environment';
 import resolver from '../utils/imports';
 
 const { formattedWalletAmount } = resolver('utils/formatters');

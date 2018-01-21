@@ -8,7 +8,7 @@ import { buildRoute, matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
 import WalletAddDialog from '../components/wallet/WalletAddDialog';
 import type { GetWalletRecoveryPhraseResponse } from '../api/common';
-import environment from '../environment';
+import environment from '../../../common/environment';
 
 /**
  * The base wallet store that contains the shared logic

@@ -7,7 +7,7 @@ import styles from './About.scss';
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import cardanoIcon from '../../assets/images/cardano-logo.inline.svg';
 import mantisIcon from '../../assets/images/mantis-logo.inline.svg';
-import environment from '../../environment';
+import environment from '../../../../common/environment';
 
 const messages = defineMessages({
   aboutWindowTitle: {

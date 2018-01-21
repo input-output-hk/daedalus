@@ -5,7 +5,7 @@ import moment from 'moment/moment';
 import { ipcRenderer } from 'electron';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import environment from '../environment';
+import environment from '../../../common/environment';
 import { THEMES } from '../themes/index';
 import { ROUTES } from '../routes-config';
 import globalMessages from '../i18n/global-messages';

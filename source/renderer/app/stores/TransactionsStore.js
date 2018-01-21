@@ -5,7 +5,7 @@ import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
 import WalletTransaction from '../domain/WalletTransaction';
 import type { GetTransactionsResponse } from '../api/common';
-import environment from '../environment';
+import environment from '../../../common/environment';
 
 export type TransactionSearchOptionsStruct = {
   searchTerm: string,

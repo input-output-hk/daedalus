@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import ChangeWalletPasswordDialog from '../../../components/wallet/settings/ChangeWalletPasswordDialog';
 import type { InjectedProps } from '../../../types/injectedPropsType';
-import environment from '../../../environment';
+import environment from '../../../../../common/environment';
 
 @inject('actions', 'stores') @observer
 export default class ChangeWalletPasswordDialogContainer extends Component<InjectedProps> {

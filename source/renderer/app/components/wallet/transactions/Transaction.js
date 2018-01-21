@@ -11,7 +11,7 @@ import WalletTransaction, { transactionStates, transactionTypes } from '../../..
 import { assuranceLevels } from '../../../config/transactionAssuranceConfig';
 import { environmentSpecificMessages } from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../domain/WalletTransaction';
-import environment from '../../../environment';
+import environment from '../../../../../common/environment';
 
 const messages = defineMessages({
   card: {

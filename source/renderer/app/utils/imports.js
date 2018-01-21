@@ -1,5 +1,5 @@
 // @flow
-import environment from '../environment';
+import environment from '../../../common/environment';
 
 // resolver loads files relative to '/app/' directory
 const resolver = (path: string) => {

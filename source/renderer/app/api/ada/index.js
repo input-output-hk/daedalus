@@ -12,7 +12,7 @@ import { isValidMnemonic } from '../../../../common/decrypt';
 import { isValidRedemptionKey, isValidPaperVendRedemptionKey } from '../../../../common/redemption-key-validation';
 import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
 import { getAdaSyncProgress } from './getAdaSyncProgress';
-import environment from '../../environment';
+import environment from '../../../../common/environment';
 import patchAdaApi from './mocks/patchAdaApi';
 
 import { getAdaWallets } from './getAdaWallets';

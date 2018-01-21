@@ -7,7 +7,7 @@
       if (process.env.HOT !== '1') {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = '../dist/style.css';
+        link.href = '../dist/renderer/style.css';
         document.write(link.outerHTML);
       }
     </script>
@@ -19,16 +19,9 @@
         const bundle = document.createElement('script');
         const isHotMode = process.env.HOT === '1';
 
-        // load dll.vendor.js in dev mode
-        if (isHotMode) {
-          const dll = document.createElement('script');
-          dll.src = "../dll/dll.vendor.js";
-          document.write(dll.outerHTML);
-        }
-
         // load bundle.js
         const port = process.env.PORT || 4000;
-        bundle.src = (isHotMode) ? `http://localhost:${port}/dist/bundle.js` : '../dist/bundle.js';
+        bundle.src = (isHotMode) ? `http://localhost:${port}/dist/renderer/renderer.js` : '../dist/renderer/renderer.js';
         document.write(bundle.outerHTML);
       }
     </script>

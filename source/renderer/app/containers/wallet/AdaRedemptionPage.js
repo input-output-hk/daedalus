@@ -7,7 +7,7 @@ import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import { AdaRedemptionCertificateParseError } from '../../i18n/errors';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import validWords from '../../../../common/valid-words.en';
-import environment from '../../environment';
+import environment from '../../../../common/environment';
 
 type Props = InjectedProps;
 

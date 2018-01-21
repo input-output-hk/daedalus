@@ -11,7 +11,7 @@ import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
 import { hashHistory } from 'react-router';
 import App from './App';
 import About from './About';
-import environment from './environment';
+import environment from '../../common/environment';
 import setupStores from './stores';
 import actions from './actions';
 import utils from './utils';
@@ -27,10 +27,7 @@ useStrict(true);
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([en, de, hr, ja]);
 
-// Use test env if the 'test' url param is set to 'true'
-const isInjectedTestEnv = getUrlParameterByName('test') === 'true';
 const isAboutWindow = getUrlParameterByName('window') === 'about';
-if (isInjectedTestEnv) environment.current = environment.TEST;
 
 const initializeDaedalus = () => {
   const api = setupApi();

@@ -10,7 +10,7 @@ import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSki
 import LocalizableError from '../../../i18n/LocalizableError';
 import TermsOfUseText from './TermsOfUseText';
 import styles from './TermsOfUseForm.scss';
-import environment from '../../../environment';
+import environment from '../../../../../common/environment';
 
 const messages = defineMessages({
   checkboxLabel: {

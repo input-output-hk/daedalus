@@ -9,7 +9,7 @@ import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import styles from './Loading.scss';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
-import environment from '../../environment';
+import environment from '../../../../common/environment';
 
 const messages = defineMessages({
   connecting: {
