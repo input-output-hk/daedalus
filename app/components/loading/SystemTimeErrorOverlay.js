@@ -4,8 +4,8 @@ import humanizeDuration from 'humanize-duration';
 import SvgInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-// import Button from 'react-polymorph/lib/components/Button';
-// import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
+import Button from 'react-polymorph/lib/components/Button';
+import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
 import attentionIcon from '../../assets/images/attention-big-light.inline.svg';
 import styles from './SystemTimeErrorOverlay.scss';
 
@@ -25,11 +25,17 @@ const messages = defineMessages({
     defaultMessage: '!!!See problem solutions',
     description: 'Button label of Sync error overlay'
   },
+  problemSolutionLink: {
+    id: 'global.problemSolutionLink',
+    defaultMessage: 'daedaluswallet.io/faq',
+    description: 'Link to problem solution'
+  },
 });
 
 type Props = {
   localTimeDifference: number,
   currentLocale?: string,
+  onProblemSolutionClick: Function,
 };
 
 @observer
@@ -42,6 +48,7 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { localTimeDifference, currentLocale } = this.props;
+    const problemSolutionLink = intl.formatMessage(messages.problemSolutionLink);
 
     let humanizedDurationLanguage;
     switch (currentLocale) {
@@ -73,15 +80,24 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
 
         <h1>{intl.formatMessage(messages.overlayTitle)}</h1>
 
-        <p><FormattedHTMLMessage {...messages.overlayText} values={{ behindTime }} /></p>
+        <p>
+          <FormattedHTMLMessage
+            {...messages.overlayText}
+            values={{ behindTime, problemSolutionLink }}
+          />
+        </p>
 
-        {/* <Button
+        <Button
           label={intl.formatMessage(messages.buttonLabel)}
           skin={<SimpleButtonSkin />}
-        /> */}
+          onClick={this.onProblemSolutionClick.bind(this, problemSolutionLink)}
+        />
 
       </div>
     );
   }
 
+  onProblemSolutionClick = (link: string) => {
+    this.props.onProblemSolutionClick(link);
+  }
 }

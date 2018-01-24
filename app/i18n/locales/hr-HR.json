@@ -43,6 +43,7 @@
   "global.language.japanese": "japanski",
   "global.language.korean": "korejski",
   "global.passwordInstructions": "!!!Note that password needs to be at least 7 characters long, and have at least 1 uppercase, 1 lowercase letter and 1 number.",
+  "global.problemSolutionLink": "daedaluswallet.io/faq",
   "global.spendingPasswordLabel": "!!!Spending Password",
   "global.spendingPasswordPlaceholder": "!!!Password",
   "global.unit.ada": "ada",
