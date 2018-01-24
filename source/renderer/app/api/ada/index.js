@@ -518,6 +518,13 @@ export default class AdaApi {
     }
   }
 
+  // TODO - faked response
+  async sendSupportRequest(
+    request: any
+  ): Promise<any> {
+    return Promise.resolve(request);
+  }
+
   async nextUpdate(): Promise<NextUpdateResponse> {
     Logger.debug('AdaApi::nextUpdate called');
     let nextUpdate = null;

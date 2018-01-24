@@ -28,10 +28,10 @@
       background: var(--theme-button-primary-background-color);
       color: var(--theme-button-primary-text-color);
       &:hover {
-        background: var(--theme-button-primary-background-color-hover);
+        background: var(--theme-button-primary-background-color-hover) !important;
       }
       &:active {
-        background: var(--theme-button-primary-background-color-active);
+        background: var(--theme-button-primary-background-color-active) !important;
       }
     }
   }
