@@ -1,5 +1,5 @@
 { mkDerivation, base, directory, filepath, Glob, megaparsec, nsis
-, stdenv, temporary, text, turtle
+, split, stdenv, temporary, text, turtle
 }:
 mkDerivation {
   pname = "cardano-installer";
@@ -8,7 +8,7 @@ mkDerivation {
   isLibrary = false;
   isExecutable = true;
   executableHaskellDepends = [
-    base directory filepath Glob megaparsec nsis temporary text turtle
+    base directory filepath Glob megaparsec nsis split temporary text turtle
   ];
   description = "Cardano Installer";
   license = stdenv.lib.licenses.mit;
