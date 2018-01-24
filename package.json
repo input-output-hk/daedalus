@@ -5,6 +5,7 @@
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
+    "build": "gulp build",
     "start": "gulp start-dev",
     "dev": "gulp dev",
     "test": "gulp test",
@@ -29,6 +30,7 @@
     "@storybook/addon-actions": "3.2.18",
     "@storybook/react": "3.2.18",
     "asar": "0.14.0",
+    "autodll-webpack-plugin": "^0.3.8",
     "babel-cli": "^6.26.0",
     "babel-core": "6.26.0",
     "babel-eslint": "8.0.3",
@@ -46,6 +48,7 @@
     "babel-preset-react": "6.24.1",
     "babel-preset-react-optimize": "1.0.1",
     "babel-register": "6.26.0",
+    "browser-sync": "^2.23.5",
     "chai": "4.1.2",
     "concurrently": "3.5.1",
     "cross-env": "5.1.1",

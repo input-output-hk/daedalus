@@ -1,5 +1,7 @@
 const path = require('path');
+const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const AutoDllPlugin = require('autodll-webpack-plugin');
 
 module.exports = {
   devtool: 'source-map',
@@ -63,6 +65,49 @@ module.exports = {
   },
   plugins: [
     // Set the ExtractTextPlugin output filename
-    new ExtractTextPlugin('styles.css', { allChunks: true })
+    new ExtractTextPlugin('styles.css', { allChunks: true }),
+    new webpack.DefinePlugin({
+      'process.env.API': JSON.stringify(process.env.API || 'ada'),
+      'process.env.NETWORK': JSON.stringify(process.env.NETWORK || 'development'),
+      'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
+      'process.env.DAEDALUS_VERSION': JSON.stringify(process.env.DAEDALUS_VERSION || 'dev')
+    }),
+    new AutoDllPlugin({
+      filename: 'vendor.dll.js',
+      entry: {
+        vendor: [
+          'aes-js',
+          'bignumber.js',
+          'bip39',
+          'blakejs',
+          'bs58',
+          'classnames',
+          'es6-error',
+          'humanize-duration',
+          'lodash',
+          'mobx',
+          'mobx-react',
+          'mobx-react-form',
+          'mobx-react-router',
+          'moment',
+          'pbkdf2',
+          'qrcode.react',
+          'react',
+          'react-addons-css-transition-group',
+          'react-copy-to-clipboard',
+          'react-css-themr',
+          'react-dom',
+          'react-dropzone',
+          'react-number-format',
+          'react-router',
+          'react-svg-inline',
+          'recharts',
+          'route-parser',
+          'safe-buffer',
+          'unorm',
+          'validator'
+        ]
+      }
+    })
   ]
 };

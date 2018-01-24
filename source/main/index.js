@@ -29,7 +29,7 @@ app.on('ready', () => {
   aboutWindow = createAboutWindow();
   mainWindow = createMainWindow();
 
-  if (process.env === 'development') {
+  if (process.env.NODE_ENV === 'development') {
     // Connect to server which controls restarts / reloads
     client.create(aboutWindow);
     client.create(mainWindow);
