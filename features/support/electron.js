@@ -22,7 +22,7 @@ defineSupportCode(({ AfterAll, BeforeAll, Before, setDefaultTimeout }) => {
       env: {
         HOT: process.env.HOT,
         NODE_ENV: environment.TEST,
-        ELECTRON_WEBPACK_APP_NODE_ENV: environment.TEST, // runtime environment
+        ELECTRON_WEBPACK_RUNTIME_ENV: environment.TEST,
       },
       waitTimeout: DEFAULT_TIMEOUT
     });
