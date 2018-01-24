@@ -26,6 +26,7 @@ executable make-installer
                      , temporary
                      , text
                      , turtle
+                     , split
                      , universum
                      , yaml
 

@@ -8,7 +8,8 @@ import           Control.Monad (unless)
 import qualified Data.List as L
 import           Data.Maybe (fromJust, fromMaybe)
 import           Data.Monoid ((<>))
-import           Data.Text (pack, split, unpack)
+import qualified Data.Text as T
+import qualified Data.Text.IO as TIO
 import           Development.NSIS (Attrib (IconFile, IconIndex, OName, RebootOK, Recursive, Required, StartOptions, Target),
                                    HKEY (HKLM), Level (Highest), Page (Directory, InstFiles), abort,
                                    constant, constantStr, createDirectory, createShortcut, delete,
@@ -75,27 +76,35 @@ signFile filename = do
     if exists then do
         maybePass <- lookupEnv "CERT_PASS"
         case maybePass of
-            Nothing -> echo . unsafeTextToLine . pack $ "Skipping signing " <> filename <> " due to lack of password"
+            Nothing -> echo . unsafeTextToLine . toText $ "Skipping signing " <> filename <> " due to lack of password"
             Just pass -> do
-                echo . unsafeTextToLine . pack $ "Signing " <> filename
+                echo . unsafeTextToLine . toText $ "Signing " <> filename
                 -- TODO: Double sign a file, SHA1 for vista/xp and SHA2 for windows 8 and on
-                --procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\iohk-windows-certificate.p12", "/p", pack pass, "/t", "http://timestamp.comodoca.com", "/v", pack filename] mempty
-                exitcode <- proc "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\iohk-windows-certificate.p12", "/p", pack pass, "/fd", "sha256", "/tr", "http://timestamp.comodoca.com/?td=sha256", "/td", "sha256", "/v", pack filename] mempty
+                --procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\iohk-windows-certificate.p12", "/p", toText pass, "/t", "http://timestamp.comodoca.com", "/v", toText filename] mempty
+                exitcode <- proc "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\iohk-windows-certificate.p12", "/p", toText pass, "/fd", "sha256", "/tr", "http://timestamp.comodoca.com/?td=sha256", "/td", "sha256", "/v", toText filename] mempty
                 unless (exitcode == ExitSuccess) $ error "Signing failed"
     else
         error $ "Unable to sign missing file '" <> (toText filename) <> "''"
 
 parseVersion :: String -> [String]
 parseVersion ver =
-    case split (== '.') (pack ver) of
-        v@[_, _, _, _] -> map unpack v
+    case T.split (== '.') (toText ver) of
+        v@[_, _, _, _] -> map toString v
         _              -> ["0", "0", "0", "0"]
+
+fileSubstString :: Text -> Text -> FilePath -> FilePath -> IO ()
+fileSubstString from to src dst =
+    TIO.writeFile dst =<< T.replace from to <$> TIO.readFile src
 
 writeInstallerNSIS :: String -> IO ()
 writeInstallerNSIS fullVersion = do
     tempDir <- fmap fromJust $ lookupEnv "TEMP"
     let viProductVersion = L.intercalate "." $ parseVersion fullVersion
-    echo $ unsafeTextToLine $ pack $ "VIProductVersion: " <> viProductVersion
+    echo $ unsafeTextToLine $ toText $ "VIProductVersion: " <> viProductVersion
+
+    forM_ ["ca.conf", "server.conf", "client.conf"] $
+        \f-> fileSubstString "OPENSSL_MD" "sha256" f (f <> ".windows")
+
     writeFile "daedalus.nsi" $ nsis $ do
         _ <- constantStr "Version" (str fullVersion)
         name "Daedalus ($Version)"                  -- The name of the installer
@@ -131,9 +140,9 @@ writeInstallerNSIS fullVersion = do
                 file [] "log-config-prod.yaml"
                 file [] "version.txt"
                 file [] "build-certificates-win64.bat"
-                file [] "ca.conf"
-                file [] "server.conf"
-                file [] "client.conf"
+                file [] "ca.conf.windows"
+                file [] "server.conf.windows"
+                file [] "client.conf.windows"
                 file [] "wallet-topology.yaml"
                 file [] "configuration.yaml"
                 file [] "*genesis*.json"
@@ -152,7 +161,7 @@ writeInstallerNSIS fullVersion = do
 
                 -- Uninstaller
                 writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "InstallLocation" "$INSTDIR\\Daedalus"
-                writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "Publisher" "Eureka Solutions LLC"
+                writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "Publisher" "IOHK"
                 writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "ProductVersion" (str fullVersion)
                 writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "VersionMajor" (str . (!! 0). parseVersion $ fullVersion)
                 writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "VersionMinor" (str . (!! 1). parseVersion $ fullVersion)
