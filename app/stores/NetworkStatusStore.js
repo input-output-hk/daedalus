@@ -190,7 +190,7 @@ export default class NetworkStatusStore extends Store {
         const response = await this.localTimeDifferenceRequest.execute().promise;
         runInAction('update time difference', () => (this.localTimeDifference = response));
       } catch (error) {
-        runInAction('update time difference', () => (this.localTimeDifference = this.ALLOWED_TIME_DIFFERENCE + 1));
+        runInAction('update time difference', () => (this.localTimeDifference = 0));
       }
     }
   }
