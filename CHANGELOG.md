@@ -23,6 +23,7 @@ Changelog
 - Update DLL package and cleanup translation files ([PR 566](https://github.com/input-output-hk/daedalus/pull/566))
 - Replace electron-json-storage with electron-storage ([PR 579](https://github.com/input-output-hk/daedalus/pull/579))
 - Update terms of use for ETC version ([PR 606](https://github.com/input-output-hk/daedalus/pull/606))
+- Update about dialog content ([PR 679](https://github.com/input-output-hk/daedalus/pull/679))
 
 ## 0.8.3
 =======

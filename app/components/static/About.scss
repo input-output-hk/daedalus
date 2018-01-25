@@ -22,7 +22,10 @@
 
     .daedalusTitleVersion {
       color: var(--theme-about-window-title-varsion-color);
+      display: flex;
       flex: 1;
+      flex-direction: column;
+      justify-content: center;
       margin-left: 30px;
 
       .daedalusTitle {
@@ -32,14 +35,28 @@
         line-height: 1.33;
         text-transform: uppercase;
         -webkit-text-stroke: 0.5px var(--theme-about-window-title-stroke-color);
+
+        .daedalusVersion {
+          font-family: var(--font-regular);
+          font-size: 14px;
+          font-weight: 300;
+          letter-spacing: 0;
+          line-height: 1.38;
+          -webkit-text-stroke: 0;
+        }
       }
 
-      .daedalusVersion {
+      .daedalusBuildInfo {
         font-family: var(--font-regular);
-        font-size: 16px;
+        font-size: 12px;
         font-weight: 300;
-        line-height: 1.38;
-        margin-top: 4px;
+        line-height: 1.25;
+        margin-top: 6px;
+
+        strong {
+          font-family: var(--font-semibold);
+          letter-spacing: 0.25px;
+        }
       }
     }
 

@@ -119,7 +119,7 @@
   "static.about.content.mantis.members": "Adam Smolarek, Alan McSherry, Alan Verbner, Alejandro Garcia, Charles Hoskinson, Domen Kožar, Eileen Fitzgerald, Hiroto Shioi, Jane Wild, Jan Ziniewicz, Javier Diaz, Jeremy Wood, Laurie Wang, Łukasz Gąsior, Konrad Staniec, Michael Bishop, Mirko Alić, Nicolás Tallar, Radek Tkaczyk, Serge Kosyrev",
   "static.about.copyright": "Input Output HK Limited. Licensed under",
   "static.about.license": "MIT licence",
-  "static.about.release.version": "0.8.3",
+  "static.about.release.version": "0.8.4",
   "static.about.title": "ダイダロス",
   "systemTime.error.overlayButtonLabel": "この問題の解決策を確認する",
   "systemTime.error.overlayText": "注意: お使いのマシンの時刻が標準時刻と一致していません。マシンの方が{behindTime}遅れています。システムに同期するには時刻の同期を行なってください。",
