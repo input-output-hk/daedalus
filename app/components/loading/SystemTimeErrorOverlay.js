@@ -3,33 +3,34 @@ import React, { Component } from 'react';
 import humanizeDuration from 'humanize-duration';
 import SvgInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
-// import Button from 'react-polymorph/lib/components/Button';
-// import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import Button from 'react-polymorph/lib/components/Button';
+import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
 import attentionIcon from '../../assets/images/attention-big-light.inline.svg';
 import styles from './SystemTimeErrorOverlay.scss';
 
 const messages = defineMessages({
   overlayTitle: {
     id: 'systemTime.error.overlayTitle',
-    defaultMessage: '!!!Daedalus Sync Error',
+    defaultMessage: '!!!Unable to sync - incorrect time',
     description: 'Title of Sync error overlay'
   },
   overlayText: {
     id: 'systemTime.error.overlayText',
-    defaultMessage: '!!!ATTENTION: Time of your machine is different from global time. You are 2 hours 12 minutes 54 seconds behind. You need to fix issue, because you are gonna be unable to sync system!',
+    defaultMessage: '!!!Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. You are 2 hours 12 minutes 54 seconds behind.<br>To synchronize the time and fix this issue, please visit the FAQ section of Daedalus website:',
     description: 'Text of Sync error overlay'
   },
-  buttonLabel: {
-    id: 'systemTime.error.overlayButtonLabel',
-    defaultMessage: '!!!See problem solutions',
-    description: 'Button label of Sync error overlay'
+  problemSolutionLink: {
+    id: 'systemTime.error.problemSolutionLink',
+    defaultMessage: '!!!daedaluswallet.io/faq',
+    description: 'Link to Daedalus website FAQ page'
   },
 });
 
 type Props = {
   localTimeDifference: number,
   currentLocale?: string,
+  onProblemSolutionClick: Function,
 };
 
 @observer
@@ -42,6 +43,7 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { localTimeDifference, currentLocale } = this.props;
+    const problemSolutionLink = intl.formatMessage(messages.problemSolutionLink);
 
     let humanizedDurationLanguage;
     switch (currentLocale) {
@@ -73,15 +75,19 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
 
         <h1>{intl.formatMessage(messages.overlayTitle)}</h1>
 
-        <p>{intl.formatMessage(messages.overlayText, { behindTime })}</p>
+        <p><FormattedHTMLMessage {...messages.overlayText} values={{ behindTime }} /></p>
 
-        {/* <Button
-          label={intl.formatMessage(messages.buttonLabel)}
+        <Button
+          label={problemSolutionLink}
           skin={<SimpleButtonSkin />}
-        /> */}
+          onClick={this.onProblemSolutionClick.bind(this, problemSolutionLink)}
+        />
 
       </div>
     );
   }
 
+  onProblemSolutionClick = (link: string) => {
+    this.props.onProblemSolutionClick(link);
+  }
 }

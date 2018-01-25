@@ -49,6 +49,7 @@ type Props = {
   localTimeDifference: number,
   allowedTimeDifference: number,
   currentLocale: string,
+  onProblemSolutionClick: Function,
 };
 
 @observer
@@ -75,6 +76,7 @@ export default class Loading extends Component<Props> {
       localTimeDifference,
       allowedTimeDifference,
       currentLocale,
+      onProblemSolutionClick
     } = this.props;
 
     const componentStyles = classNames([
@@ -136,6 +138,7 @@ export default class Loading extends Component<Props> {
                   <SystemTimeErrorOverlay
                     localTimeDifference={localTimeDifference}
                     currentLocale={currentLocale}
+                    onProblemSolutionClick={onProblemSolutionClick}
                   />
                 )}
               </div>
