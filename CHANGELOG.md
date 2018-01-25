@@ -36,6 +36,7 @@ Changelog
 ### Fixes
 
 - Improved messages for update notifications ([PR 526](https://github.com/input-output-hk/daedalus/pull/526))
+- Time of your machine is different from global time. You are 0 seconds behind. ([PR 677](https://github.com/input-output-hk/daedalus/pull/677))
 
 ## 0.8.2
 =======
