@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, shell, ipcMain, crashReporter, globalShortcut } from 'electron';
+import { app, BrowserWindow, Menu, shell, ipcMain, globalShortcut } from 'electron';
 import os from 'os';
 import path from 'path';
 import fs from 'fs';
@@ -12,8 +12,13 @@ import { daedalusLogger } from './lib/remoteLog';
 const APP_NAME = 'Daedalus';
 // Configure default logger levels for console and file outputs
 const runtimeFolderPath = getRuntimeFolderPath(process.platform, process.env, APP_NAME);
-const appLogFolderPath = path.join(runtimeFolderPath, 'Logs');
+const appLogFolderPath = path.join(runtimeFolderPath, 'Logs', 'pub');
 const logFilePath = path.join(appLogFolderPath, APP_NAME + '.log');
+
+if (!fs.existsSync(appLogFolderPath)){
+  fs.mkdirSync(appLogFolderPath);
+}
+
 Log.transports.console.level = 'warn';
 Log.transports.file.level = 'debug';
 Log.transports.file.file = logFilePath;
@@ -32,17 +37,6 @@ try {
 } catch (error) {
   Log.error('Error setting up log logging to remote server', error);
 }
-
-// Configure & start crash reporter
-app.setPath('temp', appLogFolderPath);
-
-// TODO: Update when endpoint is ready (crash reports are only saved locally for now)
-crashReporter.start({
-  companyName: 'IOHK',
-  productName: APP_NAME,
-  submitURL: '',
-  uploadToServer: false
-});
 
 Log.info(`========== Daedalus is starting at ${new Date()} ==========`);
 Log.info(`!!! Daedalus is running on ${os.platform()} version ${os.release()}
