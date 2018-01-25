@@ -21,9 +21,9 @@ const messages = defineMessages({
     description: 'Text of Sync error overlay'
   },
   problemSolutionLink: {
-    id: 'global.problemSolutionLink',
-    defaultMessage: 'daedaluswallet.io/faq',
-    description: 'Link to problem solution'
+    id: 'systemTime.error.problemSolutionLink',
+    defaultMessage: '!!!daedaluswallet.io/faq',
+    description: 'Link to Daedalus website FAQ page'
   },
 });
 
