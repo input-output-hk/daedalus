@@ -9,15 +9,15 @@ import ipcApi from './ipc-api';
 import getRuntimeFolderPath from './lib/getRuntimeFolderPath';
 import { daedalusLogger } from './lib/remoteLog';
 
+import ensureDirectoryExists from './lib/ensureDirectoryExists';
+
 const APP_NAME = 'Daedalus';
 // Configure default logger levels for console and file outputs
 const runtimeFolderPath = getRuntimeFolderPath(process.platform, process.env, APP_NAME);
 const appLogFolderPath = path.join(runtimeFolderPath, 'Logs', 'pub');
 const logFilePath = path.join(appLogFolderPath, APP_NAME + '.log');
 
-if (!fs.existsSync(appLogFolderPath)){
-  fs.mkdirSync(appLogFolderPath);
-}
+ensureDirectoryExists(appLogFolderPath);
 
 Log.transports.console.level = 'warn';
 Log.transports.file.level = 'debug';
