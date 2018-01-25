@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { defineMessages } from 'react-intl';
+import { shell } from 'electron';
 import CenteredLayout from '../components/layout/CenteredLayout';
 import Loading from '../components/loading/Loading';
 import type { StoresMap } from '../stores/index';
@@ -46,9 +47,13 @@ export default class LoadingPage extends Component<Props> {
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           currentLocale={currentLocale}
+          onProblemSolutionClick={this.handleProblemSolutionClick}
         />
       </CenteredLayout>
     );
   }
 
+  handleProblemSolutionClick = (link: string) => {
+    shell.openExternal(`https://${link}`);
+  }
 }
