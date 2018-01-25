@@ -17,6 +17,7 @@ Changelog
 - Remove transactions sorting ([PR 587](https://github.com/input-output-hk/daedalus/pull/587))
 - Improve ETC transaction amount validation ([PR 590](https://github.com/input-output-hk/daedalus/pull/590))
 - Fixed storybook and resolver issues ([PR 617](https://github.com/input-output-hk/daedalus/pull/617))
+- Time of your machine is different from global time. You are 0 seconds behind. ([PR 678](https://github.com/input-output-hk/daedalus/pull/678))
 
 ### Chores
 
@@ -36,7 +37,6 @@ Changelog
 ### Fixes
 
 - Improved messages for update notifications ([PR 526](https://github.com/input-output-hk/daedalus/pull/526))
-- Time of your machine is different from global time. You are 0 seconds behind. ([PR 677](https://github.com/input-output-hk/daedalus/pull/677))
 
 ## 0.8.2
 =======
