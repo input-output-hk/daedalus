@@ -28,6 +28,7 @@ Changelog
 - Update Electron to version 1.7.11 which resolves security issues ([PR 677](https://github.com/input-output-hk/daedalus/pull/677))
 - Document Cardano SL build ([PR 654](https://github.com/input-output-hk/daedalus/pull/654))
 - Ada redemption tests modified to run in mainnet mode ([PR 681](https://github.com/input-output-hk/daedalus/pull/681))
+- Log file moved to public folder and Electron crash reporter removed ([PR 682](https://github.com/input-output-hk/daedalus/pull/682))
 
 ## 0.8.3
 =======
