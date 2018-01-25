@@ -4,7 +4,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const AutoDllPlugin = require('autodll-webpack-plugin');
 
 module.exports = {
-  devtool: 'source-map',
+  devtool: 'cheap-source-map',
   entry: './source/renderer/index.js',
   output: {
     path: path.join(__dirname, './dist/renderer'),
@@ -17,7 +17,7 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?$/,
-        exclude: /(node_modules|bower_components)/,
+        include: /source/,
         use: {
           loader: 'babel-loader',
           options: {

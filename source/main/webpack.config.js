@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  devtool: 'source-map',
+  devtool: 'cheap-source-map',
   entry: './source/main/index.js',
   output: {
     path: path.join(__dirname, './dist/main'),
@@ -26,7 +26,7 @@ module.exports = {
     rules: [
       {
         test: /\.jsx?$/,
-        exclude: /(node_modules|bower_components)/,
+        include: /source/,
         use: {
           loader: 'babel-loader',
           options: {
