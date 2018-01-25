@@ -7,6 +7,7 @@ import { createMainWindow } from './windows/main';
 import { createAboutWindow } from './windows/about';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
+import { client } from 'electron-connect';
 
 setupLogging();
 
@@ -27,6 +28,12 @@ app.on('ready', () => {
   setupTls();
   aboutWindow = createAboutWindow();
   mainWindow = createMainWindow();
+
+  if (process.env === 'development') {
+    // Connect to server which controls restarts / reloads
+    client.create(aboutWindow);
+    client.create(mainWindow);
+  }
 
   // Build app menus
   let menu;

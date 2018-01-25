@@ -1,9 +1,16 @@
+const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-const isProduction = process.env === 'production';
-const cssHotLoader = isProduction ? [] : ['css-hot-loader'];
-
 module.exports = {
+  devtool: 'source-map',
+  entry: './source/renderer/index.js',
+  output: {
+    path: path.join(__dirname, './dist/renderer'),
+    filename: 'index.js'
+  },
+  // https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works
+  target: 'electron-renderer',
+  cache: true,
   module: {
     rules: [
       {
@@ -18,7 +25,7 @@ module.exports = {
       },
       {
         test: /\.scss/,
-        use: cssHotLoader.concat(ExtractTextPlugin.extract({
+        use: ExtractTextPlugin.extract({
           use: [
             {
               loader: 'css-loader',
@@ -32,7 +39,7 @@ module.exports = {
             { loader: 'sass-loader', options: { sourceMap: true } }
           ],
           fallback: 'style-loader'
-        }))
+        })
       },
       {
         test: /\.inline\.svg$/,
@@ -54,4 +61,8 @@ module.exports = {
       },
     ]
   },
+  plugins: [
+    // Set the ExtractTextPlugin output filename
+    new ExtractTextPlugin('styles.css', { allChunks: true })
+  ]
 };
