@@ -123,7 +123,7 @@
   "static.about.release.version": "0.8.3",
   "static.about.title": "ダイダロス",
   "systemTime.error.overlayButtonLabel": "この問題の解決策を確認する",
-  "systemTime.error.overlayText": "注意：お使いのマシンの時刻が標準時刻と一致していないために、ダイダロスは同期することができません。 あなたのマシンは {behindTime} 遅れています。この問題を解決するには、DaedalusのウェブサイトのFAQセクションをご覧ください ({problemSolutionLink}).",
+  "systemTime.error.overlayText": "注意：お使いのマシンの時刻が標準時刻と一致していないために、ダイダロスは同期することができません。 あなたのマシンは {behindTime} 遅れています。この問題を解決するには、DaedalusのウェブサイトのFAQセクションをご覧ください:",
   "systemTime.error.overlayTitle": "同期できません - 時刻の不一致",
   "test.environment.testnetLabel": "リリース候補版",
   "wallet.add.dialog.create.description": "ウォレット新規作成",

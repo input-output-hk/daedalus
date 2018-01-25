@@ -17,13 +17,8 @@ const messages = defineMessages({
   },
   overlayText: {
     id: 'systemTime.error.overlayText',
-    defaultMessage: '!!!Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. You are 2 hours 12 minutes 54 seconds behind.<br>To synchronize the time and fix this issue, please visit the FAQ section of Daedalus website (daedaluswallet.io/faq).',
+    defaultMessage: '!!!Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. You are 2 hours 12 minutes 54 seconds behind.<br>To synchronize the time and fix this issue, please visit the FAQ section of Daedalus website:',
     description: 'Text of Sync error overlay'
-  },
-  buttonLabel: {
-    id: 'systemTime.error.overlayButtonLabel',
-    defaultMessage: '!!!See problem solutions',
-    description: 'Button label of Sync error overlay'
   },
   problemSolutionLink: {
     id: 'global.problemSolutionLink',
@@ -80,15 +75,10 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
 
         <h1>{intl.formatMessage(messages.overlayTitle)}</h1>
 
-        <p>
-          <FormattedHTMLMessage
-            {...messages.overlayText}
-            values={{ behindTime, problemSolutionLink }}
-          />
-        </p>
+        <p><FormattedHTMLMessage {...messages.overlayText} values={{ behindTime }} /></p>
 
         <Button
-          label={intl.formatMessage(messages.buttonLabel)}
+          label={problemSolutionLink}
           skin={<SimpleButtonSkin />}
           onClick={this.onProblemSolutionClick.bind(this, problemSolutionLink)}
         />
