@@ -67,7 +67,7 @@ const messages = defineMessages({
   },
   aboutBuildInfo: {
     id: 'static.about.buildInfo',
-    defaultMessage: '!!!MacOS build 3769, with Cardano 1.0.3',
+    defaultMessage: '!!!MacOS build 3769, with Cardano 1.0.4',
     description: 'About page build information',
   },
 });
