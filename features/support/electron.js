@@ -88,8 +88,9 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
   // eslint-disable-next-line prefer-arrow-callback
   After(async function ({ result }) {
     scenariosCount++;
-    console.log('RESULT', result);
-    await printMainProcessLogs();
+    if (result.status === 'failed') {
+      await printMainProcessLogs();
+    }
   });
 
   // eslint-disable-next-line prefer-arrow-callback
