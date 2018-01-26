@@ -69,7 +69,7 @@ launcherArgs Launcher{..} = unwords $
         "--logs-prefix", quote (runtimePath <> "Logs"),
         "--db-path", quote nodeDbPath,
         "--wallet-db-path", quote (runtimePath <> "Wallet-" <> version),
-        "--update-server", "https://s3.eu-central-1.amazonaws.com/update-system-testing/",
+        "--update-server", "https://update-awstest.iohkdev.io/",
         "--update-with-package",
         "--no-ntp",
         "--tlscert", quote (tlsBase <> "server" <> (pathSeparator : "server.crt")),
