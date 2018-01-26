@@ -31,7 +31,7 @@ app.on('ready', () => {
   mainWindow = createMainWindow();
 
   if (process.env.NODE_ENV === 'development') {
-    // Connect to server which controls restarts / reloads
+    // Connect to electron-connect server which restarts / reloads windows on file changes
     client.create(aboutWindow);
     client.create(mainWindow);
   }

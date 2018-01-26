@@ -17,6 +17,7 @@ const buildRenderer = (config, done) => gulp.src('source/renderer/index.js')
   .pipe(webpackStream(Object.assign({}, rendererWebpackConfig, config), webpack, done))
   .pipe(rendererOutputDestination);
 
+// Setup electron-connect server to start the app in development mode
 const electronServer = electronConnect.server.create({
   spawnOpt: {
     env: Object.assign({}, process.env, {
