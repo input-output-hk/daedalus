@@ -27,6 +27,7 @@ Changelog
 - Update terms of use for ETC version ([PR 606](https://github.com/input-output-hk/daedalus/pull/606))
 - Update Electron to version 1.7.11 which resolves security issues ([PR 677](https://github.com/input-output-hk/daedalus/pull/677))
 - Document Cardano SL build ([PR 654](https://github.com/input-output-hk/daedalus/pull/654))
+- Update about dialog content ([PR 680](https://github.com/input-output-hk/daedalus/pull/680))
 - Ada redemption tests modified to run in mainnet mode ([PR 681](https://github.com/input-output-hk/daedalus/pull/681))
 - Log file moved to public folder and Electron crash reporter removed ([PR 682](https://github.com/input-output-hk/daedalus/pull/682))
 
