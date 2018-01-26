@@ -1,5 +1,6 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
+import moment from 'moment';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
@@ -11,9 +12,10 @@ import environment from '../environment';
 let cachedDifficulties = null;
 
 // Maximum number of out-of-sync blocks above which we consider to be out-of-sync
-const OUT_OF_SYNC_BLOCKS_LIMIT = 10;
+const OUT_OF_SYNC_BLOCKS_LIMIT = 6;
 const SYNC_PROGRESS_INTERVAL = 2000;
 const TIME_DIFF_POLL_INTERVAL = 500;
+const ALLOWED_NETWORK_DIFFICULTY_STALL = 2 * 60 * 1000; // 2 minutes
 
 const STARTUP_STAGES = {
   CONNECTING: 0,
@@ -26,6 +28,7 @@ export default class NetworkStatusStore extends Store {
 
   _startTime = Date.now();
   _startupStage = STARTUP_STAGES.CONNECTING;
+  _lastNetworkDifficultyChange = 0;
 
   ALLOWED_TIME_DIFFERENCE = 15 * 1000000; // 15 seconds
 
@@ -157,7 +160,6 @@ export default class NetworkStatusStore extends Store {
     try {
       const difficulty = await this.syncProgressRequest.execute().promise;
       runInAction('update difficulties', () => {
-        this.isConnected = true;
         // We are connected, move on to syncing stage
         if (this._startupStage === STARTUP_STAGES.CONNECTING) {
           Logger.info(
@@ -171,9 +173,21 @@ export default class NetworkStatusStore extends Store {
           this._localDifficultyStartedWith = difficulty.localDifficulty;
           Logger.debug('Initial difficulty: ' + JSON.stringify(difficulty));
         }
-        // Update the local and network difficulties on each request
+        // Update the local difficulty on each request
         this.localDifficulty = difficulty.localDifficulty;
         Logger.debug('Local difficulty changed: ' + this.localDifficulty);
+        // Check if network difficulty is stalled (e.g. unchanged for more than 2 minutes)
+        // e.g. in case there is no Internet connection Api will send the last known value
+        if (this.networkDifficulty !== difficulty.networkDifficulty) {
+          this.isConnected = true;
+          this._lastNetworkDifficultyChange = Date.now();
+        } else {
+          const currentNetworkDifficultyStall = moment(Date.now()).diff(
+            moment(this._lastNetworkDifficultyChange)
+          );
+          this.isConnected = currentNetworkDifficultyStall <= ALLOWED_NETWORK_DIFFICULTY_STALL;
+        }
+        // Update the network difficulty on each request
         this.networkDifficulty = difficulty.networkDifficulty;
         Logger.debug('Network difficulty changed: ' + this.networkDifficulty);
       });

@@ -603,7 +603,6 @@ export default class AdaApi {
 
   getSyncProgress = async (): Promise<GetSyncProgressResponse> => {
     Logger.debug('AdaApi::syncProgress called');
-
     try {
       const response: AdaSyncProgressResponse = await getAdaSyncProgress({ ca });
       Logger.debug('AdaApi::syncProgress success: ' + stringifyData(response));
