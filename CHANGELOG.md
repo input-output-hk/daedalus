@@ -24,7 +24,7 @@ Changelog
 - Replace electron-json-storage with electron-storage ([PR 579](https://github.com/input-output-hk/daedalus/pull/579))
 - Update terms of use for ETC version ([PR 606](https://github.com/input-output-hk/daedalus/pull/606))
 - Update project dependencies and the webpack setup ([PR 579](https://github.com/input-output-hk/daedalus/pull/579))
-- Update about dialog content ([PR 685](https://github.com/input-output-hk/daedalus/pull/685))
+- Update about dialog content ([PR 686](https://github.com/input-output-hk/daedalus/pull/686))
 
 ## 0.8.3
 =======
