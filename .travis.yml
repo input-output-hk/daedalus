@@ -11,7 +11,7 @@ env:
     - NETWORK=mainnet
     - CARDANO_SL_BRANCH=master
       # NOTE: when bumping nixpkgs, also update default.nix
-    - NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/48ecdcf5980a6504cd3b884b121e29efb2fb83dc.tar.gz
+    - NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/ffea68a09cedab941d19f02c9041689ebc81192e.tar.gz
     # AWS access key
     - secure: "Gvw61r5B2Noo263owgZIAw8Jvl2IU1ZSCsKXbsW9lNjPeFWvoEWxHhmTURO25lIYm3iz5gEkx6AqRB3wRADfBAejizKtP1LHQMJJ8E1VvNUJLr+2pOSrR098k3yO8R5rdxFkzNnMLVbsUKTnpAA9kbCvj0AcnnUOAm0eDkjO/wCfU1Joz5pSVqxJ5xdQUd/hosMoeR/SurjdKYxwjLVNrlZe0IUejuPIPda92511hFpzbjZ4fxObcyPJwVCMgymn46ICSZ4K8WKyZfwkWvBMG6zFJLaaeAb8vxHBwqtpftURD6hiy4zL+94j2yJbyllWA0aeqAB9rVDOnJnyqxdfkeLa4SCte4DyRTyW4CicYHXlLPtdXY/Ek6rIHYuRcSF+S/zEFJj3/V7VZXRHrZGyc4Ua08Hr7bHfmHHtf9xhmayP+FOkrNmfVxzMHQjVc4W/+gD0gzzGGwk7J8wOzRtSwnKoGBGeRCvNXUtK3IwnecY+XD1qoeRL2Yil+8TxyWw0iMigHB+WoBPbloX6W1uIn67MAxvWKpdi8/h9lnC0c00wCW0ZIq9//OSvRWWBGzZ6I5zofzjNBetyIHDz+77k0pkVkdrqaF99wQRaDJBXGZ8DfBWv+XDRLpDPzy1tZwv3Ukh8Cg05f1HODCazT3jY0S7ZDCCcELwIg/0PapYU4Mc="
     # AWS secret key
