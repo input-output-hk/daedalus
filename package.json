@@ -74,7 +74,6 @@
     "flow-bin": "0.60.1",
     "gulp": "4.0.0",
     "gulp-shell": "0.6.5",
-    "gulp-webpack": "1.5.0",
     "html-loader": "0.5.1",
     "json-loader": "0.5.7",
     "markdown-loader": "2.0.1",
@@ -99,7 +98,7 @@
     "webpack": "3.6.0",
     "webpack-module-hot-accept": "1.0.5",
     "webpack-sources": "1.0.1",
-    "webpack-stream": "^4.0.0",
+    "webpack-stream": "4.0.0",
     "yargs": "10.0.3"
   },
   "dependencies": {
