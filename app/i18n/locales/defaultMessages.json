@@ -241,7 +241,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Daedalus Sync Error",
+        "defaultMessage": "!!!Unable to sync - incorrect time",
         "description": "Title of Sync error overlay",
         "end": {
           "column": 3,
@@ -255,7 +255,7 @@
         }
       },
       {
-        "defaultMessage": "!!!ATTENTION: Time of your machine is different from global time. You are 2 hours 12 minutes 54 seconds behind. You need to fix issue, because you are gonna be unable to sync system!",
+        "defaultMessage": "!!!Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. You are 2 hours 12 minutes 54 seconds behind.<br>To synchronize the time and fix this issue, please visit the FAQ section of Daedalus website:",
         "description": "Text of Sync error overlay",
         "end": {
           "column": 3,
@@ -269,16 +269,16 @@
         }
       },
       {
-        "defaultMessage": "!!!See problem solutions",
-        "description": "Button label of Sync error overlay",
+        "defaultMessage": "!!!daedaluswallet.io/faq",
+        "description": "Link to Daedalus website FAQ page",
         "end": {
           "column": 3,
           "line": 27
         },
         "file": "app/components/loading/SystemTimeErrorOverlay.js",
-        "id": "systemTime.error.overlayButtonLabel",
+        "id": "systemTime.error.problemSolutionLink",
         "start": {
-          "column": 15,
+          "column": 23,
           "line": 23
         }
       }
@@ -4130,13 +4130,13 @@
         "description": "Message \"Loading wallet data\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 17
         },
         "file": "app/containers/LoadingPage.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
-          "line": 12
+          "line": 13
         }
       }
     ],
