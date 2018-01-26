@@ -1,4 +1,6 @@
 // @flow
+import os from 'os';
+
 const environment = Object.assign({
   DEVELOPMENT: 'development',
   TEST: 'test',
@@ -13,6 +15,8 @@ const environment = Object.assign({
   isMainnet: () => environment.NETWORK === 'mainnet',
   isAdaApi: () => environment.API === 'ada',
   isEtcApi: () => environment.API === 'etc',
+  build: process.env.DAEDALUS_VERSION || 'dev',
+  platform: os.platform(),
 }, process.env);
 
 export default environment;
