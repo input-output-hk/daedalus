@@ -4,11 +4,45 @@
   height: 100%;
   transition: background-color 500ms;
   width: 100%;
+
+  .reportIssue {
+    position: fixed;
+    text-align: center;
+    width: 100%;
+
+    .reportIssueText {
+      font-family: var(--font-regular);
+      font-size: 18px;
+      line-height: 1.22;
+      margin-top: 24px;
+    }
+
+    .reportIssueButton {
+      background-color: var(--theme-loading-report-issue-button-background-color);
+      margin: 20px 0;
+    }
+  }
+
   &.is-loading-theme {
     background-color: transparent !important;
   }
   &.is-connecting {
     background-color: var(--theme-connecting-background-color);
+    .reportIssue {
+      background-color: var(--theme-connecting-report-issue-background-color);
+    }
+    .reportIssueText {
+      color: var(--theme-connecting-report-issue-text-color);
+    }
+  }
+  &.is-syncing {
+    background-color: var(--theme-syncing-background-color) !important;
+    .reportIssue {
+      background-color: var(--theme-syncing-report-issue-background-color);
+    }
+    .reportIssueText {
+      color: var(--theme-syncing-report-issue-text-color);;
+    }
   }
 }
 

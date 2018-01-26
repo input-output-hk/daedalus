@@ -19,11 +19,16 @@ export default class SidebarCategory extends Component<Props> {
     const componentStyles = classNames([
       styles.component,
       active ? styles.active : null,
-      className
+      className === 'supportRequest' ? styles.supportRequest : className
     ]);
+
+    const iconStyles = classNames([
+      className === 'supportRequest' ? styles.supportRequestIcon : styles.icon
+    ]);
+
     return (
       <button className={componentStyles} onClick={onClick}>
-        <SvgInline svg={icon} className={styles.icon} />
+        <SvgInline svg={icon} className={iconStyles} />
       </button>
     );
   }

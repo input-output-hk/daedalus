@@ -6,14 +6,11 @@ import Log from 'electron-log';
 import osxMenu from './menus/osx';
 import winLinuxMenu from './menus/win-linux';
 import ipcApi from './ipc-api';
-import getRuntimeFolderPath from './lib/getRuntimeFolderPath';
 import { daedalusLogger } from './lib/remoteLog';
+import { APP_NAME, appLogsFolderPath } from './config';
 
-const APP_NAME = 'Daedalus';
 // Configure default logger levels for console and file outputs
-const runtimeFolderPath = getRuntimeFolderPath(process.platform, process.env, APP_NAME);
-const appLogFolderPath = path.join(runtimeFolderPath, 'Logs');
-const logFilePath = path.join(appLogFolderPath, APP_NAME + '.log');
+const logFilePath = path.join(appLogsFolderPath, APP_NAME + '.log');
 Log.transports.console.level = 'warn';
 Log.transports.file.level = 'debug';
 Log.transports.file.file = logFilePath;
@@ -34,7 +31,7 @@ try {
 }
 
 // Configure & start crash reporter
-app.setPath('temp', appLogFolderPath);
+app.setPath('temp', appLogsFolderPath);
 
 // TODO: Update when endpoint is ready (crash reports are only saved locally for now)
 crashReporter.start({

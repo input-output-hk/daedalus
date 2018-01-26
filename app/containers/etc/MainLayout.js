@@ -5,6 +5,7 @@ import Sidebar from '../../components/sidebar/Sidebar';
 import TopBarContainer from '../TopBarContainer';
 import SidebarLayout from '../../components/layout/SidebarLayout';
 import WalletAddPage from '../wallet/WalletAddPage';
+import WalletSupportRequestPage from '../wallet/WalletSupportRequestPage';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import StatusMessagesNotification from '../../components/notifications/StatusMessagesNotification';
 
@@ -48,6 +49,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         }}
         isSynced
         openDialogAction={actions.dialogs.open.trigger}
+        isDialogOpen={stores.uiDialogs.isOpen}
       />
     );
 
@@ -64,7 +66,10 @@ export default class MainLayout extends Component<InjectedContainerProps> {
       <SidebarLayout
         sidebar={sidebarComponent}
         topbar={<TopBarContainer />}
-        contentDialog={<WalletAddPage />}
+        contentDialogs={[
+          <WalletSupportRequestPage key="WalletSupportRequestPage" />,
+          <WalletAddPage key="WalletAddPage" />
+        ]}
         notification={addStatusMessagesNotification}
       >
         {this.props.children}
