@@ -6,18 +6,15 @@ import Log from 'electron-log';
 import osxMenu from './menus/osx';
 import winLinuxMenu from './menus/win-linux';
 import ipcApi from './ipc-api';
-import getRuntimeFolderPath from './lib/getRuntimeFolderPath';
 import { daedalusLogger } from './lib/remoteLog';
+import { pubLogsFolderPath, APP_NAME } from './config';
 
 import ensureDirectoryExists from './lib/ensureDirectoryExists';
 
-const APP_NAME = 'Daedalus';
 // Configure default logger levels for console and file outputs
-const runtimeFolderPath = getRuntimeFolderPath(process.platform, process.env, APP_NAME);
-const appLogFolderPath = path.join(runtimeFolderPath, 'Logs', 'pub');
-const logFilePath = path.join(appLogFolderPath, APP_NAME + '.log');
+const logFilePath = path.join(pubLogsFolderPath, APP_NAME + '.log');
 
-ensureDirectoryExists(appLogFolderPath);
+ensureDirectoryExists(pubLogsFolderPath);
 
 Log.transports.console.level = 'warn';
 Log.transports.file.level = 'debug';

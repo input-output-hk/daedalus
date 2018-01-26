@@ -4,12 +4,18 @@ import SvgInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
+import Button from 'react-polymorph/lib/components/Button';
+import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
 import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import styles from './Loading.scss';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
 import environment from '../../environment';
+
+const REPORT_ISSUE_TIME_TRIGGER = 5 * 60; // 5 minutes
+let connectingInterval = null;
+let syncingInterval = null;
 
 const messages = defineMessages({
   connecting: {
@@ -32,7 +38,28 @@ const messages = defineMessages({
     defaultMessage: '!!!Syncing blocks',
     description: 'Message "Syncing blocks" on the loading screen.'
   },
+  reportConnectingIssueText: {
+    id: 'loading.screen.reportIssue.connecting.text',
+    defaultMessage: '!!!Having trouble connecting to network?',
+    description: 'Report connecting issue text on the loading screen.'
+  },
+  reportSyncingIssueText: {
+    id: 'loading.screen.reportIssue.syncing.text',
+    defaultMessage: '!!!Having trouble syncing?',
+    description: 'Report syncing issue text on the loading screen.'
+  },
+  reportIssueButtonLabel: {
+    id: 'loading.screen.reportIssue.buttonLabel',
+    defaultMessage: '!!!Report an issue',
+    description: 'Report an issue button label on the loading .'
+  }
 });
+
+type State = {
+  connectingTime: number,
+  syncingTime: number,
+  syncPercentage: string,
+};
 
 type Props = {
   currencyIcon: string,
@@ -49,11 +76,40 @@ type Props = {
   localTimeDifference: number,
   allowedTimeDifference: number,
   currentLocale: string,
+  handleReportIssue: Function,
   onProblemSolutionClick: Function,
 };
 
 @observer
-export default class Loading extends Component<Props> {
+export default class Loading extends Component<Props, State> {
+  constructor() {
+    super();
+    this.state = {
+      connectingTime: 0,
+      syncingTime: 0,
+      syncPercentage: '0',
+    };
+  }
+
+  componentWillMount() {
+    if (this.props.isConnecting) {
+      connectingInterval = setInterval(this.connectingTimer, 1000);
+    }
+
+    if (this.props.isSyncing) {
+      syncingInterval = setInterval(this.syncingTimer, 1000);
+    }
+  }
+
+  componentWillUnmount() {
+    if (connectingInterval) {
+      clearInterval(connectingInterval);
+    }
+
+    if (syncingInterval) {
+      clearInterval(syncingInterval);
+    }
+  }
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -76,8 +132,11 @@ export default class Loading extends Component<Props> {
       localTimeDifference,
       allowedTimeDifference,
       currentLocale,
-      onProblemSolutionClick
+      handleReportIssue,
+      onProblemSolutionClick,
     } = this.props;
+
+    const { connectingTime, syncingTime } = this.state;
 
     const componentStyles = classNames([
       styles.component,
@@ -104,8 +163,33 @@ export default class Loading extends Component<Props> {
 
     const connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
 
+    const canReportConnectingIssue = isConnecting && connectingTime >= REPORT_ISSUE_TIME_TRIGGER;
+    const canReportSyncingIssue = isSyncing && syncingTime >= REPORT_ISSUE_TIME_TRIGGER;
+    const showReportIssue = canReportConnectingIssue || canReportSyncingIssue;
+
+    const buttonClasses = classNames([
+      'primary',
+      styles.reportIssueButton,
+    ]);
+
     return (
       <div className={componentStyles}>
+        {showReportIssue && (
+          <div className={styles.reportIssue}>
+            <h1 className={styles.reportIssueText}>
+              {isConnecting ?
+                intl.formatMessage(messages.reportConnectingIssueText) :
+                intl.formatMessage(messages.reportSyncingIssueText)
+              }
+            </h1>
+            <Button
+              className={buttonClasses}
+              label={intl.formatMessage(messages.reportIssueButtonLabel)}
+              onClick={handleReportIssue}
+              skin={<SimpleButtonSkin />}
+            />
+          </div>
+        )}
         <div className={styles.logos}>
           <SvgInline svg={currencyLoadingLogo} className={currencyLogoStyles} />
           <SvgInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
@@ -157,4 +241,19 @@ export default class Loading extends Component<Props> {
     );
   }
 
+  connectingTimer = () => {
+    this.setState({ connectingTime: this.state.connectingTime + 1 });
+  };
+
+  syncingTimer = () => {
+    const syncPercentage = this.props.syncPercentage.toFixed(2);
+
+    if (syncPercentage <= this.state.syncPercentage) {
+      // syncPercentage not increased, increase syncing time
+      this.setState({ syncingTime: this.state.syncingTime + 1 });
+    } else {
+      // reset syncingTime and set new max percentage
+      this.setState({ syncingTime: 0, syncPercentage });
+    }
+  };
 }

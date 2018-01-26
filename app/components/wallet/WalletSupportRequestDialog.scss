@@ -1,0 +1,74 @@
+@import '../../themes/mixins/loading-spinner';
+@import '../../themes/mixins/error-message';
+@import '../../themes/mixins/place-form-field-error-below-input';
+
+.emailInput,
+.subjectInput,
+.problemTextarea {
+  margin-bottom: 20px;
+}
+
+.logsWrapper {
+  .logsSwitch {
+    border-top: 1px solid var(--theme-separation-border-color);
+    margin-top: 30px;
+    padding-top: 20px;
+
+    & > .logsSwitchlabel {
+      color: var(--theme-wallet-password-switch-label-color);
+      font-family: var(--font-semibold);
+      font-size: 16px;
+      line-height: 1.38;
+      margin-bottom: 10px;
+    }
+
+    :global {
+      .SimpleSwitch_root {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .attachedLogs {
+    margin-right: 80px;
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: all 400ms ease;
+    word-break: break-all;
+
+    &.show {
+      max-height: 500px;
+      opacity: 1;
+    }
+
+    @include place-form-field-error-below-input;
+
+    p {
+      color: var(--theme-instructions-text-color);
+      font-family: var(--font-regular);
+      font-style: italic;
+      line-height: 1.38;
+      opacity: 0.7;
+
+      &.logPath {
+        font-weight: 600;
+        margin: 16px 0;
+      }
+
+      &.logFileName {
+        margin-left: 12px;
+      }
+    }
+  }
+}
+
+.error {
+  @include error-message;
+  margin-top: 30px;
+  text-align: center;
+}
+
+.isSubmitting {
+  @include loading-spinner("../../assets/images/spinner-light.svg");
+}

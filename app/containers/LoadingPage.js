@@ -5,9 +5,11 @@ import { defineMessages } from 'react-intl';
 import { shell } from 'electron';
 import CenteredLayout from '../components/layout/CenteredLayout';
 import Loading from '../components/loading/Loading';
-import type { StoresMap } from '../stores/index';
+import WalletSupportRequestDialog from '../components/wallet/WalletSupportRequestDialog';
+import WalletSupportRequestPage from '../containers/wallet/WalletSupportRequestPage';
 import adaLogo from '../assets/images/ada-logo.inline.svg';
 import cardanoLogo from '../assets/images/cardano-logo.inline.svg';
+import type { InjectedProps } from '../types/injectedPropsType';
 
 export const messages = defineMessages({
   loadingWalletData: {
@@ -17,10 +19,8 @@ export const messages = defineMessages({
   },
 });
 
-type Props = { stores: StoresMap };
-
-@inject(['stores']) @observer
-export default class LoadingPage extends Component<Props> {
+@inject('stores', 'actions') @observer
+export default class LoadingPage extends Component<InjectedProps> {
 
   render() {
     const { stores } = this.props;
@@ -47,10 +47,18 @@ export default class LoadingPage extends Component<Props> {
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           currentLocale={currentLocale}
+          handleReportIssue={this.handleReportIssue}
           onProblemSolutionClick={this.handleProblemSolutionClick}
         />
+        <WalletSupportRequestPage />
       </CenteredLayout>
     );
+  }
+
+  handleReportIssue = () => {
+    this.props.actions.dialogs.open.trigger({
+      dialog: WalletSupportRequestDialog
+    });
   }
 
   handleProblemSolutionClick = (link: string) => {

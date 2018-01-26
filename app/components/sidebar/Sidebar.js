@@ -7,6 +7,8 @@ import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
+import WalletSupportRequestDialog from '../../components/wallet/WalletSupportRequestDialog';
+import supportIcon from '../../assets/images/sidebar/bug-report-ic.inline.svg';
 import type { SidebarWalletType } from '../../stores/SidebarStore';
 
 type Props = {
@@ -28,6 +30,7 @@ type Props = {
   onCategoryClicked: Function,
   isShowingSubMenus: boolean,
   openDialogAction: Function,
+  isDialogOpen: Function,
 };
 
 @observer
@@ -41,7 +44,7 @@ export default class Sidebar extends Component<Props> {
     const {
       menus, categories, activeSidebarCategory,
       isShowingSubMenus, onCategoryClicked,
-      openDialogAction,
+      openDialogAction, isDialogOpen,
     } = this.props;
     let subMenu = null;
 
@@ -80,10 +83,23 @@ export default class Sidebar extends Component<Props> {
               />
             );
           })}
+
+          <SidebarCategory
+            className="supportRequest"
+            icon={supportIcon}
+            active={isDialogOpen(WalletSupportRequestDialog)}
+            onClick={this.handleSupportRequestClick}
+          />
+
         </div>
         {subMenu}
       </div>
     );
   }
 
+  handleSupportRequestClick = () => {
+    this.props.openDialogAction({
+      dialog: WalletSupportRequestDialog
+    });
+  }
 }
