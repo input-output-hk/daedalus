@@ -54,7 +54,7 @@
     "cucumber": "3.1.0",
     "del": "3.0.0",
     "devtron": "1.4.0",
-    "electron": "^1.7.9",
+    "electron": "1.7.9",
     "electron-packager": "10.1.0",
     "electron-rebuild": "1.6.0",
     "electron-webpack": "1.11.0",
