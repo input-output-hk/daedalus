@@ -30,8 +30,8 @@
 .icon {
   margin-right: 10px;
   & > svg {
-    max-height: 19px;
-    max-width: 19px;
+    height: 19px;
+    width: 19px;
   }
 
   @media (max-width: 950px) {

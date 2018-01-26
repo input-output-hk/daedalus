@@ -1,5 +1,6 @@
 // @flow
-import { observable, computed } from 'mobx';
+import { action, observable, computed, toJS } from 'mobx';
+import { concat } from 'lodash';
 import BigNumber from 'bignumber.js';
 import moment from 'moment/moment';
 import { ipcRenderer } from 'electron';
@@ -8,7 +9,12 @@ import Request from './lib/LocalizedRequest';
 import environment from '../../../common/environment';
 import { THEMES } from '../themes/index';
 import { ROUTES } from '../routes-config';
+import { GET_LOGS } from '../../../main/ipc-api/get-logs';
+import { COMPRESS_LOGS } from '../../../main/ipc-api/compress-logs';
+import { DELETE_COMPRESSED_LOGS } from '../../../main/ipc-api/delete-compressed-logs';
+import LocalizableError from '../i18n/LocalizableError';
 import globalMessages from '../i18n/global-messages';
+import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 
 export default class SettingsStore extends Store {
 
@@ -39,6 +45,15 @@ export default class SettingsStore extends Store {
   @observable setSendLogsChoiceRequest: Request = new Request(this.api.localStorage.setSendLogsChoice);
   @observable getThemeRequest: Request<string> = new Request(this.api.localStorage.getUserTheme);
   @observable setThemeRequest: Request<string> = new Request(this.api.localStorage.setUserTheme);
+  @observable sendSupportRequest: Request<any> = new Request(
+    // TODO - faked api caller, just for ada for now
+    this.api.ada.sendSupportRequest
+  );
+  @observable error: ?LocalizableError = null;
+  @observable logFiles: Object = {};
+  @observable compressedLogsOriginal: ?string;
+  @observable compressedLogsFiles: Array<string>;
+  @observable isCompressing: boolean = false;
   /* eslint-enable max-len */
 
   setup() {
@@ -46,6 +61,12 @@ export default class SettingsStore extends Store {
     this.actions.profile.setSendLogsChoice.listen(this._setSendLogsChoice);
     this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
     this.actions.profile.updateTheme.listen(this._updateTheme);
+    this.actions.profile.getLogs.listen(this._getLogs);
+    this.actions.profile.compressLogs.listen(this._compressLogs);
+    this.actions.profile.sendSupportRequest.listen(this._sendSupportRequest);
+    ipcRenderer.on(GET_LOGS.SUCCESS, this._onGetLogsSuccess);
+    ipcRenderer.on(COMPRESS_LOGS.SUCCESS, this._onCompressLogsSuccess);
+    ipcRenderer.on(COMPRESS_LOGS.ERROR, this._onCompressLogsError);
     this.registerReactions([
       this._setBigNumberFormat,
       this._updateMomentJsLocaleAfterLocaleChange,
@@ -57,6 +78,13 @@ export default class SettingsStore extends Store {
     ]);
     this._getTermsOfUseAcceptance();
     this._sendLogsChoiceToMainProcess();
+  }
+
+  teardown() {
+    super.teardown();
+    ipcRenderer.removeAllListeners(GET_LOGS.SUCCESS);
+    ipcRenderer.removeAllListeners(COMPRESS_LOGS.SUCCESS);
+    ipcRenderer.removeAllListeners(COMPRESS_LOGS.ERROR);
   }
 
   _setBigNumberFormat = () => {
@@ -195,4 +223,69 @@ export default class SettingsStore extends Store {
     this.currentLocale; // eslint-disable-line
     ipcRenderer.send('reload-about-window');
   };
+
+  _getLogs = () => {
+    ipcRenderer.send(GET_LOGS.REQUEST);
+  };
+
+  _onGetLogsSuccess = action((event, res) => {
+    this.logFiles = res;
+  });
+
+  _compressLogs = action(({ logs }) => {
+    this.isCompressing = true;
+    ipcRenderer.send(COMPRESS_LOGS.REQUEST, toJS(logs));
+  });
+
+  _onCompressLogsSuccess = action((event, res) => {
+    this.isCompressing = false;
+    this.compressedLogsOriginal = res.originalFile;
+    this.compressedLogsFiles = res.files;
+  });
+
+  _onCompressLogsError = action(() => {
+    this.error = new WalletSupportRequestLogsCompressError();
+  });
+
+  _sendSupportRequest = action(({ email, subject, problem, files } : {
+    email: string,
+    subject: ?string,
+    problem: ?string,
+    files: ?Array<string>,
+  }) => {
+    this.sendSupportRequest.execute({
+      email, subject, problem, files,
+    })
+      .then(action(() => {
+        this._deleteCompressedFiles(files);
+        this._reset();
+        this.actions.dialogs.closeActiveDialog.trigger();
+      }))
+      .catch(action((error) => {
+        this._deleteCompressedFiles(files);
+        this._reset();
+        this.error = error;
+      }));
+  });
+
+  _deleteCompressedFiles = action((files) => {
+    // Trigger ipc renderer to delete compressed temp files if exists
+    if (files) {
+      let filesToDelete;
+      if (files.length > 1) {
+        // if files are splitted then also include original file to delete
+        filesToDelete = concat(files, this.compressedLogsOriginal);
+      } else {
+        filesToDelete = files;
+      }
+      ipcRenderer.send(DELETE_COMPRESSED_LOGS.REQUEST, filesToDelete);
+    }
+  })
+
+  @action _reset = () => {
+    this.error = null;
+    this.compressedLogsFiles = [];
+    this.compressedLogsOriginal = null;
+  };
+
 }
