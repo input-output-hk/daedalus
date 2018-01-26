@@ -1,17 +1,18 @@
 import os from 'os';
 import { app, globalShortcut, Menu } from 'electron';
 import Log from 'electron-log';
+import { client } from 'electron-connect';
 import { setupLogging } from './utils/setupLogging';
 import { setupTls } from './utils/setupTls';
 import { createMainWindow } from './windows/main';
 import { createAboutWindow } from './windows/about';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
-import { client } from 'electron-connect';
 
 setupLogging();
 
 Log.info(`========== Daedalus is starting at ${new Date()} ==========`);
+
 Log.info(`!!! Daedalus is running on ${os.platform()} version ${os.release()}
             with CPU: ${JSON.stringify(os.cpus(), null, 2)} with
             ${JSON.stringify(os.totalmem(), null, 2)} total RAM !!!`);

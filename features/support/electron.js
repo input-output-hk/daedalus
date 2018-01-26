@@ -1,7 +1,6 @@
 import { Application } from 'spectron';
 import { defineSupportCode } from 'cucumber';
 import electronPath from 'electron';
-import path from 'path';
 import environment from '../../source/common/environment';
 
 const context = {};
@@ -68,7 +67,7 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
       resetBackend();
     });
 
-    const url = `file://${__dirname}../../dist/renderer/index.html`;
+    const url = `file://${__dirname}/../../dist/renderer/index.html`;
 
     // Load fresh root url with test environment for each test case
     await this.client.url(url);
@@ -86,13 +85,14 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
     });
   });
 
+  // eslint-disable-next-line prefer-arrow-callback
   After(async function ({ result }) {
     scenariosCount++;
     console.log('RESULT', result);
     await printMainProcessLogs();
   });
 
-  // And tear it down after all features
+  // eslint-disable-next-line prefer-arrow-callback
   AfterAll(async function () {
     if (scenariosCount === 0) {
       await printMainProcessLogs();
