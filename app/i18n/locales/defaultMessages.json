@@ -823,13 +823,13 @@
         "description": "About Window \"title\"",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "app/components/static/About.js",
         "id": "window.about.title",
         "start": {
           "column": 20,
-          "line": 13
+          "line": 14
         }
       },
       {
@@ -837,13 +837,13 @@
         "description": "About \"title\"",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "app/components/static/About.js",
         "id": "static.about.title",
         "start": {
           "column": 14,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -851,13 +851,13 @@
         "description": "Label for \"App Release Version\"",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "app/components/static/About.js",
         "id": "static.about.release.version",
         "start": {
           "column": 23,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -865,13 +865,13 @@
         "description": "About page daedalus team headline",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "app/components/static/About.js",
         "id": "static.about.content.daedalus.headline",
         "start": {
           "column": 32,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -879,13 +879,13 @@
         "description": "About page cardano team headline",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "app/components/static/About.js",
         "id": "static.about.content.cardano.headline",
         "start": {
           "column": 31,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -893,13 +893,13 @@
         "description": "About page mantis team headline",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "app/components/static/About.js",
         "id": "static.about.content.mantis.headline",
         "start": {
           "column": 30,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -907,13 +907,13 @@
         "description": "About page daedalus team members",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 48
         },
         "file": "app/components/static/About.js",
         "id": "static.about.content.daedalus.members",
         "start": {
           "column": 31,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -921,13 +921,13 @@
         "description": "About page cardano team members",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 53
         },
         "file": "app/components/static/About.js",
         "id": "static.about.content.cardano.members",
         "start": {
           "column": 30,
-          "line": 48
+          "line": 49
         }
       },
       {
@@ -935,13 +935,13 @@
         "description": "About page mantis team members",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 58
         },
         "file": "app/components/static/About.js",
         "id": "static.about.content.mantis.members",
         "start": {
           "column": 29,
-          "line": 53
+          "line": 54
         }
       },
       {
@@ -949,13 +949,13 @@
         "description": "About \"copyright\"",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 63
         },
         "file": "app/components/static/About.js",
         "id": "static.about.copyright",
         "start": {
           "column": 18,
-          "line": 58
+          "line": 59
         }
       },
       {
@@ -963,13 +963,13 @@
         "description": "About page license name",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 68
         },
         "file": "app/components/static/About.js",
         "id": "static.about.license",
         "start": {
           "column": 15,
-          "line": 63
+          "line": 64
         }
       },
       {
@@ -977,13 +977,13 @@
         "description": "About page build information",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 73
         },
         "file": "app/components/static/About.js",
         "id": "static.about.buildInfo",
         "start": {
           "column": 18,
-          "line": 68
+          "line": 69
         }
       }
     ],
@@ -4608,17 +4608,73 @@
         }
       },
       {
-        "defaultMessage": "!!!Etc",
-        "description": "Name for \"Ada\" unit.",
+        "defaultMessage": "!!!Cardano",
+        "description": "Name for \"Cardano\" client.",
         "end": {
           "column": 5,
-          "line": 154
+          "line": 152
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "environment.apiName.cardano",
+        "start": {
+          "column": 13,
+          "line": 148
+        }
+      },
+      {
+        "defaultMessage": "!!!1.0.4",
+        "description": "Version of \"Cardano\" client.",
+        "end": {
+          "column": 5,
+          "line": 157
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "environment.apiVersion.cardano",
+        "start": {
+          "column": 16,
+          "line": 153
+        }
+      },
+      {
+        "defaultMessage": "!!!Etc",
+        "description": "Name for \"Etc\" unit.",
+        "end": {
+          "column": 5,
+          "line": 164
         },
         "file": "app/i18n/global-messages.js",
         "id": "environment.currency.etc",
         "start": {
           "column": 14,
-          "line": 150
+          "line": 160
+        }
+      },
+      {
+        "defaultMessage": "!!!Mantis",
+        "description": "Name for \"Mantis\" client.",
+        "end": {
+          "column": 5,
+          "line": 169
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "environment.apiName.mantis",
+        "start": {
+          "column": 13,
+          "line": 165
+        }
+      },
+      {
+        "defaultMessage": "!!!1.0 rc1",
+        "description": "Version of \"Mantis\" client.",
+        "end": {
+          "column": 5,
+          "line": 174
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "environment.apiVersion.mantis",
+        "start": {
+          "column": 16,
+          "line": 170
         }
       }
     ],

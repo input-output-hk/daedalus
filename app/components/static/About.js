@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import SvgInline from 'react-svg-inline';
 import { ipcRenderer } from 'electron';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { environmentSpecificMessages } from '../../i18n/global-messages';
 import styles from './About.scss';
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import cardanoIcon from '../../assets/images/cardano-logo.inline.svg';
@@ -85,16 +86,6 @@ export default class About extends Component<any> {
   render() {
     const { intl } = this.context;
 
-    const apiHeadline = environment.isAdaApi()
-      ? intl.formatMessage(messages.aboutContentCardanoHeadline)
-      : intl.formatMessage(messages.aboutContentMantisHeadline);
-
-    const apiMembers = environment.isAdaApi()
-      ? intl.formatMessage(messages.aboutContentCardanoMembers)
-      : intl.formatMessage(messages.aboutContentMantisMembers);
-
-    const apiIcon = environment.isAdaApi() ? cardanoIcon : mantisIcon;
-
     let platform;
     switch (environment.platform) {
       case 'darwin':
@@ -109,9 +100,19 @@ export default class About extends Component<any> {
       default:
         platform = '';
     }
+
     const build = environment.build;
-    const apiName = environment.isAdaApi() ? 'Cardano' : 'Mantis';
-    const apiVersion = environment.isAdaApi() ? '1.0.4' : '1.0 rc1';
+    const apiName = intl.formatMessage(environmentSpecificMessages[environment.API].apiName);
+    const apiVersion = intl.formatMessage(environmentSpecificMessages[environment.API].apiVersion);
+    const apiIcon = environment.isAdaApi() ? cardanoIcon : mantisIcon;
+
+    const apiHeadline = environment.isAdaApi()
+      ? intl.formatMessage(messages.aboutContentCardanoHeadline)
+      : intl.formatMessage(messages.aboutContentMantisHeadline);
+
+    const apiMembers = environment.isAdaApi()
+      ? intl.formatMessage(messages.aboutContentCardanoMembers)
+      : intl.formatMessage(messages.aboutContentMantisMembers);
 
     return (
       <div className={styles.container}>
