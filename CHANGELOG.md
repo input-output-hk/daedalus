@@ -24,6 +24,10 @@ Changelog
 - Replace electron-json-storage with electron-storage ([PR 579](https://github.com/input-output-hk/daedalus/pull/579))
 - Update terms of use for ETC version ([PR 606](https://github.com/input-output-hk/daedalus/pull/606))
 - Update project dependencies and the webpack setup ([PR 579](https://github.com/input-output-hk/daedalus/pull/579))
+- Log file moved to public folder and Electron crash reporter removed ([PR 683](https://github.com/input-output-hk/daedalus/pull/683))
+- Ada redemption tests modified to run in mainnet mode ([PR 687](https://github.com/input-output-hk/daedalus/pull/687))
+- Update Electron to version 1.7.11 which resolves security issues ([PR 684](https://github.com/input-output-hk/daedalus/pull/684))
+- Update about dialog content ([PR 686](https://github.com/input-output-hk/daedalus/pull/686))
 
 ## 0.8.3
 =======
