@@ -2,7 +2,8 @@
 import React, { Component } from 'react';
 import SvgInline from 'react-svg-inline';
 import { ipcRenderer } from 'electron';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { environmentSpecificMessages } from '../../i18n/global-messages';
 import styles from './About.scss';
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import cardanoIcon from '../../assets/images/cardano-logo.inline.svg';
@@ -65,6 +66,11 @@ const messages = defineMessages({
     defaultMessage: '!!!MIT licence',
     description: 'About page license name',
   },
+  aboutBuildInfo: {
+    id: 'static.about.buildInfo',
+    defaultMessage: '!!!MacOS build 3769, with Cardano 1.0.4',
+    description: 'About page build information',
+  },
 });
 
 export default class About extends Component<any> {
@@ -80,6 +86,26 @@ export default class About extends Component<any> {
   render() {
     const { intl } = this.context;
 
+    let platform;
+    switch (environment.platform) {
+      case 'darwin':
+        platform = 'macOS';
+        break;
+      case 'win32':
+        platform = 'Windows';
+        break;
+      case 'linux':
+        platform = 'Linux';
+        break;
+      default:
+        platform = '';
+    }
+
+    const build = environment.build;
+    const apiName = intl.formatMessage(environmentSpecificMessages[environment.API].apiName);
+    const apiVersion = intl.formatMessage(environmentSpecificMessages[environment.API].apiVersion);
+    const apiIcon = environment.isAdaApi() ? cardanoIcon : mantisIcon;
+
     const apiHeadline = environment.isAdaApi()
       ? intl.formatMessage(messages.aboutContentCardanoHeadline)
       : intl.formatMessage(messages.aboutContentMantisHeadline);
@@ -87,8 +113,6 @@ export default class About extends Component<any> {
     const apiMembers = environment.isAdaApi()
       ? intl.formatMessage(messages.aboutContentCardanoMembers)
       : intl.formatMessage(messages.aboutContentMantisMembers);
-
-    const apiIcon = environment.isAdaApi() ? cardanoIcon : mantisIcon;
 
     return (
       <div className={styles.container}>
@@ -100,9 +124,15 @@ export default class About extends Component<any> {
           <div className={styles.daedalusTitleVersion}>
             <div className={styles.daedalusTitle}>
               {intl.formatMessage(messages.aboutTitle)}
+              <span className={styles.daedalusVersion}>
+                {intl.formatMessage(messages.aboutReleaseVersion)}
+              </span>
             </div>
-            <div className={styles.daedalusVersion}>
-              {intl.formatMessage(messages.aboutReleaseVersion)}
+            <div className={styles.daedalusBuildInfo}>
+              <FormattedHTMLMessage
+                {...messages.aboutBuildInfo}
+                values={{ platform, build, apiName, apiVersion }}
+              />
             </div>
           </div>
 
