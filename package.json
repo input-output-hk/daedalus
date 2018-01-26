@@ -111,6 +111,7 @@
     "es6-error": "4.0.2",
     "humanize-duration": "3.12.0",
     "lodash": "4.17.4",
+    "mkdirp": "0.5.1",
     "mobx": "3.1.7",
     "mobx-react": "4.3.5",
     "mobx-react-form": "1.32.2",
