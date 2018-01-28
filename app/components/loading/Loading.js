@@ -102,9 +102,14 @@ export default class Loading extends Component<Props> {
     const currencyLoadingLogo = currencyIcon;
     const apiLoadingLogo = apiIcon;
 
-    const connectingMessage = hasBeenConnected ? messages.reconnecting : (
-      hasBlockSyncingStarted ? messages.waitingForSyncToStart : messages.connecting
-    );
+    let connectingMessage;
+    if (hasBeenConnected) {
+      connectingMessage = messages.reconnecting;
+    } else {
+      connectingMessage = (
+        hasBlockSyncingStarted ? messages.waitingForSyncToStart : messages.connecting
+      );
+    }
 
     return (
       <div className={componentStyles}>
