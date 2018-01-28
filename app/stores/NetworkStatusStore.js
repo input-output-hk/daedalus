@@ -179,35 +179,42 @@ export default class NetworkStatusStore extends Store {
         // Check if network difficulty is stalled (e.g. unchanged for more than 2 minutes)
         // e.g. in case there is no Internet connection Api will send the last known value
         if (this.networkDifficulty !== difficulty.networkDifficulty) {
-          this.isConnected = true;
+          if (!this.isConnected) this.isConnected = true;
           this._lastNetworkDifficultyChange = Date.now();
-        } else {
+        } else if (this.isConnected) {
           const currentNetworkDifficultyStall = moment(Date.now()).diff(
             moment(this._lastNetworkDifficultyChange)
           );
-          this.isConnected = currentNetworkDifficultyStall <= ALLOWED_NETWORK_DIFFICULTY_STALL;
+          if (currentNetworkDifficultyStall > ALLOWED_NETWORK_DIFFICULTY_STALL) {
+            this.isConnected = false;
+            if (!this.hasBeenConnected) this.hasBeenConnected = true;
+          }
         }
         // Update the network difficulty on each request
         this.networkDifficulty = difficulty.networkDifficulty;
-        Logger.debug('Network difficulty changed: ' + this.networkDifficulty);
       });
+      Logger.debug('Network difficulty changed: ' + this.networkDifficulty);
     } catch (error) {
       // If the sync progress request fails, switch to disconnected state
-      runInAction('update connected status', () => (this.isConnected = false));
+      runInAction('update connected status', () => {
+        if (this.isConnected) {
+          this.isConnected = false;
+          if (!this.hasBeenConnected) this.hasBeenConnected = true;
+        }
+      });
       Logger.debug('Connection Lost. Reconnecting...');
     }
   };
 
   @action _updateLocalTimeDifference = async () => {
-    if (this.isConnected) {
-      try {
-        const response = await this.localTimeDifferenceRequest.execute().promise;
-        runInAction('update time difference', () => (this.localTimeDifference = response));
-      } catch (error) {
-        runInAction('update time difference', () => (this.localTimeDifference = 0));
-      }
+    if (!this.isConnected) return;
+    try {
+      const response = await this.localTimeDifferenceRequest.execute().promise;
+      runInAction('update time difference', () => (this.localTimeDifference = response));
+    } catch (error) {
+      runInAction('update time difference', () => (this.localTimeDifference = 0));
     }
-  }
+  };
 
   _pollLocalTimeDifference() {
     setInterval(this._updateLocalTimeDifference, TIME_DIFF_POLL_INTERVAL);
@@ -232,7 +239,7 @@ export default class NetworkStatusStore extends Store {
         Logger.info(`========== Loaded after ${this._getStartupTimeDelta()} milliseconds ==========`);
         this._startupStage = STARTUP_STAGES.RUNNING;
       }
-      runInAction('NetworkStatusStore::_redirectToWalletAfterSync', () => { this.isLoadingWallets = false; });
+      runInAction('NetworkStatusStore::_redirectToWalletAfterSync', () => (this.isLoadingWallets = false));
       if (app.currentRoute === ROUTES.ROOT) {
         if (wallets.first) {
           this.actions.router.goToRoute.trigger({
