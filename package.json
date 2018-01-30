@@ -29,7 +29,7 @@
     "@storybook/addon-actions": "3.2.18",
     "@storybook/react": "3.2.18",
     "asar": "0.14.0",
-    "autodll-webpack-plugin": "^0.3.8",
+    "autodll-webpack-plugin": "0.3.8",
     "babel-cli": "6.26.0",
     "babel-core": "6.26.0",
     "babel-eslint": "8.0.3",
