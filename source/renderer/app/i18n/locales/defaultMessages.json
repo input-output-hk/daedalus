@@ -241,7 +241,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Daedalus Sync Error",
+        "defaultMessage": "!!!Unable to sync - incorrect time",
         "description": "Title of Sync error overlay",
         "end": {
           "column": 3,
@@ -255,7 +255,7 @@
         }
       },
       {
-        "defaultMessage": "!!!ATTENTION: Time of your machine is different from global time. You are 2 hours 12 minutes 54 seconds behind. You need to fix issue, because you are gonna be unable to sync system!",
+        "defaultMessage": "!!!Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. You are 2 hours 12 minutes 54 seconds behind.<br>To synchronize the time and fix this issue, please visit the FAQ section of Daedalus website:",
         "description": "Text of Sync error overlay",
         "end": {
           "column": 3,
@@ -269,16 +269,16 @@
         }
       },
       {
-        "defaultMessage": "!!!See problem solutions",
-        "description": "Button label of Sync error overlay",
+        "defaultMessage": "!!!daedaluswallet.io/faq",
+        "description": "Link to Daedalus website FAQ page",
         "end": {
           "column": 3,
           "line": 27
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
-        "id": "systemTime.error.overlayButtonLabel",
+        "id": "systemTime.error.problemSolutionLink",
         "start": {
-          "column": 15,
+          "column": 23,
           "line": 23
         }
       }
@@ -3989,151 +3989,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Support request",
-        "description": "Title for the \"Settings support\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "source/renderer/app/components/wallet/WalletSupportRequestDialog.js",
-        "id": "wallet.supportRequest.dialog.title",
-        "start": {
-          "column": 9,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!Your e-mail",
-        "description": "Label for the \"Email\" input on the wallet settings support dialog.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/wallet/WalletSupportRequestDialog.js",
-        "id": "wallet.supportRequest.dialog.emailLabel",
-        "start": {
-          "column": 14,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter your e-mail here, so we can answer you",
-        "description": "Placeholder for the \"Email\" input on the wallet settings support dialog.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/wallet/WalletSupportRequestDialog.js",
-        "id": "wallet.supportRequest.dialog.emailPlaceholder",
-        "start": {
-          "column": 20,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!Subject",
-        "description": "Label for the \"Subject\" input on the wallet settings support dialog.",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "source/renderer/app/components/wallet/WalletSupportRequestDialog.js",
-        "id": "wallet.supportRequest.dialog.subjectLabel",
-        "start": {
-          "column": 16,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter subject of your problem",
-        "description": "Placeholder for the \"Subject\" input on the wallet settings support dialog.",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "source/renderer/app/components/wallet/WalletSupportRequestDialog.js",
-        "id": "wallet.supportRequest.dialog.subjectPlaceholder",
-        "start": {
-          "column": 22,
-          "line": 42
-        }
-      },
-      {
-        "defaultMessage": "!!!Problem",
-        "description": "Label for the \"Problem\" text area on the wallet settings support dialog.",
-        "end": {
-          "column": 3,
-          "line": 51
-        },
-        "file": "source/renderer/app/components/wallet/WalletSupportRequestDialog.js",
-        "id": "wallet.supportRequest.dialog.problemLabel",
-        "start": {
-          "column": 16,
-          "line": 47
-        }
-      },
-      {
-        "defaultMessage": "!!!Describe steps which got you to problem",
-        "description": "Placeholder for the \"Problem\" text area on the wallet settings support dialog.",
-        "end": {
-          "column": 3,
-          "line": 56
-        },
-        "file": "source/renderer/app/components/wallet/WalletSupportRequestDialog.js",
-        "id": "wallet.supportRequest.dialog.problemPlaceholder",
-        "start": {
-          "column": 22,
-          "line": 52
-        }
-      },
-      {
-        "defaultMessage": "!!!Attach logs",
-        "description": "Label for the \"Attach logs\" switch on the wallet settings support dialog.",
-        "end": {
-          "column": 3,
-          "line": 61
-        },
-        "file": "source/renderer/app/components/wallet/WalletSupportRequestDialog.js",
-        "id": "wallet.supportRequest.dialog.logsSwitchLabel",
-        "start": {
-          "column": 19,
-          "line": 57
-        }
-      },
-      {
-        "defaultMessage": "!!!Logs will help to find out problem you are describing",
-        "description": "Text for the \"Attach logs\" switch on the wallet settings support dialog.",
-        "end": {
-          "column": 3,
-          "line": 66
-        },
-        "file": "source/renderer/app/components/wallet/WalletSupportRequestDialog.js",
-        "id": "wallet.supportRequest.dialog.logsSwitchPlaceholder",
-        "start": {
-          "column": 25,
-          "line": 62
-        }
-      },
-      {
-        "defaultMessage": "!!!Send request",
-        "description": "Label for the \"Send request\" button on the wallet settings support dialog.",
-        "end": {
-          "column": 3,
-          "line": 71
-        },
-        "file": "source/renderer/app/components/wallet/WalletSupportRequestDialog.js",
-        "id": "wallet.supportRequest.dialog.button.label",
-        "start": {
-          "column": 21,
-          "line": 67
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/WalletSupportRequestDialog.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Drop file here",
         "description": "Label \"Drop file here\" on the file upload widget.",
         "end": {
@@ -4275,13 +4130,13 @@
         "description": "Message \"Loading wallet data\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 17
         },
         "file": "source/renderer/app/containers/LoadingPage.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
-          "line": 12
+          "line": 13
         }
       }
     ],
