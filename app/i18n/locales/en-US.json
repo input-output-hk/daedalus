@@ -21,7 +21,7 @@
   "cardano.node.update.notification.titleWithoutVersion": "Daedalus and Cardano node update is available",
   "environment.apiName.cardano": "Cardano",
   "environment.apiName.mantis": "Mantis",
-  "environment.apiVersion.cardano": "1.0.4",
+  "environment.apiVersion.cardano": "1.1.0",
   "environment.apiVersion.mantis": "1.0 rc1",
   "environment.currency.ada": "ADA",
   "environment.currency.etc": "ETC",

@@ -21,7 +21,7 @@
   "cardano.node.update.notification.titleWithoutVersion": "ダイダロス、カルダノノードの更新プログラムが入手可能です。",
   "environment.apiName.cardano": "カルダノ",
   "environment.apiName.mantis": "マンティス",
-  "environment.apiVersion.cardano": "1.0.4",
+  "environment.apiVersion.cardano": "1.1.0",
   "environment.apiVersion.mantis": "1.0 rc1",
   "environment.currency.ada": "ADA",
   "environment.currency.etc": "ETC",
