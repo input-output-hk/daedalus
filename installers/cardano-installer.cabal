@@ -15,19 +15,72 @@ executable make-installer
   other-modules:       MacInstaller
                      , WindowsInstaller
                      , RewriteLibs
-  build-depends:       Glob
-                     , aeson
-                     , base
+  build-depends:       base
+                     , directory
+                     , filepath
+                     , Glob
+                     , megaparsec
+                     , nsis
+                     , split
+                     , system-filepath
+                     , temporary
+                     , temporary
+                     , text
+                     , turtle
+                     , universum
+
+  default-language:    Haskell2010
+  ghc-options:         -threaded -rtsopts
+                       -Wall
+                       -fno-warn-orphans
+                       -with-rtsopts=-N
+                       -O2
+
+  default-extensions: NoImplicitPrelude
+                      OverloadedStrings
+
+executable load-certificate
+  main-is:             load-certificate.hs
+  other-modules:       MacInstaller
+  build-depends:       base
                      , bytestring
                      , directory
                      , filepath
+                     , Glob
+                     , megaparsec
+                     , optparse-applicative
+                     , split
+                     , system-filepath
+                     , text
+                     , turtle
+                     , universum
+                     , yaml
+
+  default-language:    Haskell2010
+  ghc-options:         -threaded -rtsopts
+                       -Wall
+                       -fno-warn-orphans
+                       -with-rtsopts=-N
+                       -O2
+
+  default-extensions: NoImplicitPrelude
+                      OverloadedStrings
+
+test-suite cardano-installer-test
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test .
+  main-is:             Spec.hs
+  other-modules:       MacInstaller
+                     , SigningSpec
+  build-depends:       base
+                     , hspec
+                     , bytestring
+                     , directory
+                     , filepath
+                     , Glob
+                     , managed
                      , megaparsec
                      , system-filepath
-                     , temporary
-                     , text
-                     , Glob
-                     , nsis
-                     , temporary
                      , text
                      , turtle
                      , split
