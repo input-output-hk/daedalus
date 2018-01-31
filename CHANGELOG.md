@@ -6,6 +6,16 @@ Changelog
 
 ### Features
 
+### Fixes
+
+### Chores
+
+## 0.9.0
+=======
+
+### Features
+
+- Do not block the UI while wallet is being restored/imported ([PR 457](https://github.com/input-output-hk/daedalus/pull/457))
 - Start and stop Mantis Client from Daedalus main process ([PR 568](https://github.com/input-output-hk/daedalus/pull/568))
 - Add ADA and Mantis logo to loader screens ([PR 584](https://github.com/input-output-hk/daedalus/pull/584))
 
@@ -33,12 +43,9 @@ Changelog
 - Ada redemption tests modified to run in mainnet mode ([PR 681](https://github.com/input-output-hk/daedalus/pull/681))
 - Log file moved to public folder and Electron crash reporter removed ([PR 682](https://github.com/input-output-hk/daedalus/pull/682))
 
+
 ## 0.8.3
 =======
-
-### Features
-
-- Do not block the UI while wallet is being restored/imported ([PR 457](https://github.com/input-output-hk/daedalus/pull/457))
 
 ### Fixes
 
