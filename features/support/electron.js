@@ -97,7 +97,7 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
   AfterAll(async function () {
     if (scenariosCount === 0) {
       await printMainProcessLogs();
-      return context.app.stop();
     }
+    return context.app.stop();
   });
 });
