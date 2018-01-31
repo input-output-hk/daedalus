@@ -46,7 +46,7 @@ gulp.task('test', gulp.series('build', 'cucumber'));
 
 gulp.task('test-watch', gulp.series('build-watch', 'cucumber-watch'));
 
-gulp.task('purge-translations', shell.task('rm -rf ./translations/messages/app'));
+gulp.task('purge-translations', shell.task('rimraf ./translations/messages/app'));
 
 gulp.task('electron:restart', (done) => {
   electronServer.restart();
