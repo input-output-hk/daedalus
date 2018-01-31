@@ -1,5 +1,5 @@
 import path from 'path';
-import { app, BrowserWindow, globalShortcut, ipcMain, Menu } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu } from 'electron';
 import environment from '../../common/environment';
 import ipcApi from '../ipc-api';
 
@@ -22,15 +22,6 @@ export const createMainWindow = () => {
     window.setSize(width, height, animate);
   });
 
-  const port = environment.ELECTRON_WEBPACK_WDS_PORT;
-
-  // Set url for the window
-  // points to `webpack-dev-server` in development
-  // points to `index.html` in production
-  const url = environment.isDev()
-    ? `http://localhost:${port}`
-    : `file://${path.resolve(__dirname, '../renderer')}/index.html`;
-
   if (environment.isDev()) {
     window.webContents.openDevTools();
     if (!environment.isTest()) {
@@ -44,7 +35,7 @@ export const createMainWindow = () => {
     }
   }
 
-  window.loadURL(url);
+  window.loadURL(`file://${__dirname}/../renderer/index.html`);
   window.on('page-title-updated', event => { event.preventDefault(); });
   window.setTitle(`Daedalus (${environment.DAEDALUS_VERSION || 'dev'})`);
 

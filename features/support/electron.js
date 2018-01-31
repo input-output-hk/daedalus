@@ -1,14 +1,23 @@
 import { Application } from 'spectron';
 import { defineSupportCode } from 'cucumber';
 import electronPath from 'electron';
-import path from 'path';
 import environment from '../../source/common/environment';
 
 const context = {};
 const DEFAULT_TIMEOUT = 20000;
-const isHot = process.env.HOT === '1';
+let scenariosCount = 0;
 
-defineSupportCode(({ AfterAll, BeforeAll, Before, setDefaultTimeout }) => {
+const printMainProcessLogs = () => (
+  context.app.client.getMainProcessLogs()
+    .then((logs) => {
+      console.log('========= DAEDALUS LOGS =========');
+      logs.forEach((log) => console.log(log));
+      console.log('=================================');
+      return true;
+    })
+);
+
+defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) => {
   // The cucumber timeout should be high (and never reached in best case)
   // because the errors thrown by webdriver.io timeouts are more descriptive
   // and helpful than "this step timed out after 5 seconds" messages
@@ -18,25 +27,15 @@ defineSupportCode(({ AfterAll, BeforeAll, Before, setDefaultTimeout }) => {
   BeforeAll({ timeout: 5 * 60 * 1000 }, async () => {
     const app = new Application({
       path: electronPath,
-      args: ['./dist/main/main.js'],
+      args: ['./dist/main/index.js'],
       env: {
-        HOT: process.env.HOT,
         NODE_ENV: environment.TEST,
-        ELECTRON_WEBPACK_RUNTIME_ENV: environment.TEST,
       },
       waitTimeout: DEFAULT_TIMEOUT
     });
     await app.start();
     await app.client.waitUntilWindowLoaded();
     context.app = app;
-  });
-
-  // And tear it down after all features
-  AfterAll(() => {
-    // Since we can have multiple instances of Daedalus running,
-    // it is easier to keep them open after running tests locally.
-    // TODO: this must be improved for CI testing though (i guess).
-    // return context.app.stop();
   });
 
   // Make the electron app accessible in each scenario context
@@ -68,9 +67,8 @@ defineSupportCode(({ AfterAll, BeforeAll, Before, setDefaultTimeout }) => {
       resetBackend();
     });
 
-    const url = isHot
-      ? `http://localhost:${environment.ELECTRON_WEBPACK_WDS_PORT}`
-      : `file://${path.resolve(__dirname, '../../dist/renderer')}/index.html`;
+    const url = `file://${__dirname}/../../dist/renderer/index.html`;
+
     // Load fresh root url with test environment for each test case
     await this.client.url(url);
 
@@ -85,5 +83,21 @@ defineSupportCode(({ AfterAll, BeforeAll, Before, setDefaultTimeout }) => {
       };
       waitUntilSyncedAndReady();
     });
+  });
+
+  // eslint-disable-next-line prefer-arrow-callback
+  After(async function ({ result }) {
+    scenariosCount++;
+    if (result.status === 'failed') {
+      await printMainProcessLogs();
+    }
+  });
+
+  // eslint-disable-next-line prefer-arrow-callback
+  AfterAll(async function () {
+    if (scenariosCount === 0) {
+      await printMainProcessLogs();
+      return context.app.stop();
+    }
   });
 });

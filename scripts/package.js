@@ -36,16 +36,15 @@ const DEFAULT_OPTS = {
   asar: shouldUseAsar,
   ignore: [
     '^/features($|/)',
-    '^/stories($|/)',
+    '^/storybook($|/)',
     '^/flow($|/)',
-    '^/screenshots($|/)',
-    '^/dll($|/)',
     '^/release($|/)',
     '^/installers',
+    '^/translations',
   ].concat(devDeps),
 };
 
-const icon = argv.icon || argv.i || 'app/app';
+const icon = argv.icon || argv.i || 'installers/icons/256x256';
 if (icon) DEFAULT_OPTS.icon = icon;
 
 const version = argv.version || argv.v;

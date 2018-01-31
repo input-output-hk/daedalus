@@ -29,6 +29,7 @@ Changelog
 - Ada redemption tests modified to run in mainnet mode ([PR 687](https://github.com/input-output-hk/daedalus/pull/687))
 - Update Electron to version 1.7.11 which resolves security issues ([PR 684](https://github.com/input-output-hk/daedalus/pull/684))
 - Update about dialog content ([PR 686](https://github.com/input-output-hk/daedalus/pull/686))
+- Improve build system ([PR 692](https://github.com/input-output-hk/daedalus/pull/692))
 
 ## 0.8.3
 =======

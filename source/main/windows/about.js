@@ -40,15 +40,10 @@ export const createAboutWindow = () => {
     }
   });
 
-  const port = environment.ELECTRON_WEBPACK_WDS_PORT;
-  const aboutParams = '?window=about';
-
   // Load the url for the window
   // points to `webpack-dev-server` in development
   // points to `index.html` in production
-  window.loadURL(environment.isDev()
-    ? `http://localhost:${port}${aboutParams}`
-    : `file://${path.resolve(__dirname, '../renderer')}/index.html${aboutParams}`);
+  window.loadURL(`file://${__dirname}/../renderer/index.html?window=about`);
 
   // Prevent native window title changes (we are handling these via IPC)
   window.on('page-title-updated', event => { event.preventDefault(); });

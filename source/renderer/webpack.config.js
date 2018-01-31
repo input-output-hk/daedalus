@@ -1,14 +1,23 @@
+const path = require('path');
+const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
-
-const isProduction = process.env === 'production';
-const cssHotLoader = isProduction ? [] : ['css-hot-loader'];
+const AutoDllPlugin = require('autodll-webpack-plugin');
 
 module.exports = {
+  devtool: 'cheap-source-map',
+  entry: './source/renderer/index.js',
+  output: {
+    path: path.join(__dirname, './dist/renderer'),
+    filename: 'index.js'
+  },
+  // https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works
+  target: 'electron-renderer',
+  cache: true,
   module: {
     rules: [
       {
         test: /\.jsx?$/,
-        exclude: /(node_modules|bower_components)/,
+        include: /source/,
         use: {
           loader: 'babel-loader',
           options: {
@@ -18,7 +27,7 @@ module.exports = {
       },
       {
         test: /\.scss/,
-        use: cssHotLoader.concat(ExtractTextPlugin.extract({
+        use: ExtractTextPlugin.extract({
           use: [
             {
               loader: 'css-loader',
@@ -32,7 +41,7 @@ module.exports = {
             { loader: 'sass-loader', options: { sourceMap: true } }
           ],
           fallback: 'style-loader'
-        }))
+        })
       },
       {
         test: /\.inline\.svg$/,
@@ -54,4 +63,51 @@ module.exports = {
       },
     ]
   },
+  plugins: [
+    // Set the ExtractTextPlugin output filename
+    new ExtractTextPlugin('styles.css', { allChunks: true }),
+    new webpack.DefinePlugin({
+      'process.env.API': JSON.stringify(process.env.API || 'ada'),
+      'process.env.NETWORK': JSON.stringify(process.env.NETWORK || 'development'),
+      'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
+      'process.env.DAEDALUS_VERSION': JSON.stringify(process.env.DAEDALUS_VERSION || 'dev')
+    }),
+    new AutoDllPlugin({
+      filename: 'vendor.dll.js',
+      entry: {
+        vendor: [
+          'aes-js',
+          'bignumber.js',
+          'bip39',
+          'blakejs',
+          'bs58',
+          'classnames',
+          'es6-error',
+          'humanize-duration',
+          'lodash',
+          'mobx',
+          'mobx-react',
+          'mobx-react-form',
+          'mobx-react-router',
+          'moment',
+          'pbkdf2',
+          'qrcode.react',
+          'react',
+          'react-addons-css-transition-group',
+          'react-copy-to-clipboard',
+          'react-css-themr',
+          'react-dom',
+          'react-dropzone',
+          'react-number-format',
+          'react-router',
+          'react-svg-inline',
+          'recharts',
+          'route-parser',
+          'safe-buffer',
+          'unorm',
+          'validator'
+        ]
+      }
+    })
+  ]
 };
