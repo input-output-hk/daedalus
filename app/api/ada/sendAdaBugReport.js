@@ -2,9 +2,8 @@
 import moment from 'moment';
 import { request } from './lib/reportRequest';
 import environment from '../../environment';
-import { APP_NAME } from '../../../electron/config';
 
-export type SendAdaSupportRequestParams = {
+export type SendAdaBugReportRequestParams = {
   requestFormData: {
     email: string,
     subject: string,
@@ -13,8 +12,8 @@ export type SendAdaSupportRequestParams = {
   },
 };
 
-export const sendAdaSupportRequest = (
-  { requestFormData }: SendAdaSupportRequestParams
+export const sendAdaBugReport = (
+  { requestFormData }: SendAdaBugReportRequestParams
 ): Promise<{}> => {
   const { email, subject, problem, logs } = requestFormData;
 
@@ -38,20 +37,16 @@ export const sendAdaSupportRequest = (
     method: 'POST',
     path: '/report',
     port: 8000,
-    headers : {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    }
-  },
-  {
-    application: 'cardano-node', // if is set to Daedalus then error appears with message that application needs to be in cardano-node
+  }, {
+    application: 'cardano-node',
     version: '0.0.1',
     build: environment.build,
     os: platform,
     logs,
-    date: moment().format('YYYY-MM-DDTH:m:s'),
+    date: moment().format('YYYY-MM-DDTHH:mm:ss'),
     magic: 2000000000,
     type: {
-      type : 'customreport',
+      type: 'customreport',
       email,
       subject,
       problem,

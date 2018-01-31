@@ -2,18 +2,18 @@
 import React, { Component } from 'react';
 import { toJS } from 'mobx';
 import { observer, inject } from 'mobx-react';
-import WalletSupportRequestDialog from '../../../components/wallet/WalletSupportRequestDialog';
+import WalletBugReportDialog from '../../../components/wallet/WalletBugReportDialog';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
-export default class WalletSupportRequestDialogContainer extends Component<InjectedProps> {
+export default class WalletBugReportDialogContainer extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
 
   onSubmit = (values: {
     email: string, subject: ?string, problem: ?string, files: Array<string>
   }) => {
-    this.props.actions.profile.sendSupportRequest.trigger(values);
+    this.props.actions.profile.sendBugReport.trigger(values);
   };
 
   render() {
@@ -23,16 +23,16 @@ export default class WalletSupportRequestDialogContainer extends Component<Injec
       logFiles,
       compressedLogsFiles,
       isCompressing,
-      sendSupportRequest,
+      sendBugReport,
       error,
     } = stores.profile;
 
     return (
-      <WalletSupportRequestDialog
+      <WalletBugReportDialog
         logFiles={logFiles}
         compressedLogsFiles={toJS(compressedLogsFiles)}
         isCompressing={isCompressing}
-        isSubmitting={sendSupportRequest.isExecuting}
+        isSubmitting={sendBugReport.isExecuting}
         error={error}
         onSubmit={this.onSubmit}
         onCancel={() => {

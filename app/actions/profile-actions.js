@@ -9,7 +9,7 @@ export default class ProfileActions {
   compressLogs: Action<{ logs: Object }> = new Action();
   getLogs: Action<any> = new Action();
   setSendLogsChoice: Action<{ sendLogs: boolean }> = new Action();
-  sendSupportRequest: Action<{
+  sendBugReport: Action<{
     email: string, subject: ?string, problem: ?string, files: Array<string>,
   }> = new Action();
   updateLocale: Action<{ locale: string }> = new Action();

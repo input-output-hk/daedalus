@@ -16,7 +16,7 @@ import DialogCloseButton from '../widgets/DialogCloseButton';
 import Dialog from '../widgets/Dialog';
 import { InvalidEmailError, FieldRequiredError } from '../../i18n/errors';
 import LocalizableError from '../../i18n/LocalizableError';
-import styles from './WalletSupportRequestDialog.scss';
+import styles from './WalletBugReportDialog.scss';
 
 const messages = defineMessages({
   title: {
@@ -89,7 +89,7 @@ type State = {
 };
 
 @observer
-export default class WalletSupportRequestDialog extends Component<Props, State> {
+export default class WalletBugReportDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

@@ -45,9 +45,9 @@ export default class SettingsStore extends Store {
   @observable setSendLogsChoiceRequest: Request = new Request(this.api.localStorage.setSendLogsChoice);
   @observable getThemeRequest: Request<string> = new Request(this.api.localStorage.getUserTheme);
   @observable setThemeRequest: Request<string> = new Request(this.api.localStorage.setUserTheme);
-  @observable sendSupportRequest: Request<any> = new Request(
+  @observable sendBugReport: Request<any> = new Request(
     // TODO - faked api caller, just for ada for now
-    this.api.ada.sendSupportRequest
+    this.api.ada.sendBugReport
   );
   @observable error: ?LocalizableError = null;
   @observable logFiles: Object = {};
@@ -63,7 +63,7 @@ export default class SettingsStore extends Store {
     this.actions.profile.updateTheme.listen(this._updateTheme);
     this.actions.profile.getLogs.listen(this._getLogs);
     this.actions.profile.compressLogs.listen(this._compressLogs);
-    this.actions.profile.sendSupportRequest.listen(this._sendSupportRequest);
+    this.actions.profile.sendBugReport.listen(this._sendBugReport);
     ipcRenderer.on(GET_LOGS.SUCCESS, this._onGetLogsSuccess);
     ipcRenderer.on(COMPRESS_LOGS.SUCCESS, this._onCompressLogsSuccess);
     ipcRenderer.on(COMPRESS_LOGS.ERROR, this._onCompressLogsError);
@@ -247,13 +247,13 @@ export default class SettingsStore extends Store {
     this.error = new WalletSupportRequestLogsCompressError();
   });
 
-  _sendSupportRequest = action(({ email, subject, problem, logs } : {
+  _sendBugReport = action(({ email, subject, problem, logs } : {
     email: string,
     subject: ?string,
     problem: ?string,
     logs: ?Array<string>,
   }) => {
-    this.sendSupportRequest.execute({
+    this.sendBugReport.execute({
       email, subject, problem, logs,
     })
       .then(action(() => {

@@ -7,7 +7,7 @@ import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
-import WalletSupportRequestDialog from '../../components/wallet/WalletSupportRequestDialog';
+import WalletBugReportDialog from '../../components/wallet/WalletBugReportDialog';
 import supportIcon from '../../assets/images/sidebar/bug-report-ic.inline.svg';
 import type { SidebarWalletType } from '../../stores/SidebarStore';
 
@@ -87,7 +87,7 @@ export default class Sidebar extends Component<Props> {
           <SidebarCategory
             className="supportRequest"
             icon={supportIcon}
-            active={isDialogOpen(WalletSupportRequestDialog)}
+            active={isDialogOpen(WalletBugReportDialog)}
             onClick={this.handleSupportRequestClick}
           />
 
@@ -99,7 +99,7 @@ export default class Sidebar extends Component<Props> {
 
   handleSupportRequestClick = () => {
     this.props.openDialogAction({
-      dialog: WalletSupportRequestDialog
+      dialog: WalletBugReportDialog
     });
   }
 }

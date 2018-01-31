@@ -1,5 +1,6 @@
 import http from 'http';
-import querystring from 'querystring';
+import FormData from 'form-data/lib/form_data';
+import fs from 'fs';
 
 export type RequestOptions = {
   hostname: string,
@@ -28,30 +29,43 @@ export type RequestPayload = {
 };
 
 function typedHttpRequest<Response>(
-  httpOptions: RequestOptions, RequestPayload?: RequestPayload
+  httpOptions: RequestOptions, requestPayload?: RequestPayload
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
-    const requestOptions: RequestOptions = Object.assign({}, httpOptions);
-    const requestPayload: RequestPayload = Object.assign({}, RequestPayload);
+    const options: RequestOptions = Object.assign({}, httpOptions);
+    const payload: RequestPayload = Object.assign({}, requestPayload);
 
-    const stringifiedPayload = JSON.stringify(requestPayload);
-    const payload = 'payload='+stringifiedPayload;
+    // Prepare multipart/form-data
+    const formData = new FormData();
+    formData.append('payload', JSON.stringify(payload));
 
-    const httpRequest = http.request(requestOptions);
+    const logs = payload.logs;
+    if (logs) {
+      logs.map(log => {
+        console.debug(log);
+        payload.logs = ['logs.zip'];
+        formData.append('logs.zip', fs.createReadStream(log));
+      });
+    }
 
-    httpRequest.write(payload);
+    options.headers = formData.getHeaders();
+    const httpRequest = http.request(options);
+
+    // Attach form-data to the request
+    formData.pipe(httpRequest);
 
     httpRequest.on('response', (response) => {
       console.debug('response', response);
-      response.on('response.data', (chunk) => {
-        console.debug('data', chunk);
+      response.on('data', (chunk) => {
+        console.debug('response.data', chunk);
       });
-      response.on('response.error', (error) => {
-        console.debug('error', error);
+      response.on('error', (error) => {
+        console.debug('response.error', error);
         reject(error);
       });
-      response.on('response.end', () => {
-        console.debug('end');
+      response.on('end', () => {
+        console.debug('response.end');
+        resolve();
       });
     });
     httpRequest.on('error', (error) => reject(error));

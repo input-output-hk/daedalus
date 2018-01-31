@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { shell } from 'electron';
 import CenteredLayout from '../../components/layout/CenteredLayout';
-import WalletSupportRequestDialog from '../../components/wallet/WalletSupportRequestDialog';
+import WalletBugReportDialog from '../../components/wallet/WalletBugReportDialog';
 import WalletSupportRequestPage from '../../containers/wallet/WalletSupportRequestPage';
 import Loading from '../../components/loading/Loading';
 import etcLogo from '../../assets/images/etc-logo.inline.svg';
@@ -49,7 +49,7 @@ export default class LoadingPage extends Component<InjectedProps> {
 
   handleReportIssue = () => {
     this.props.actions.dialogs.open.trigger({
-      dialog: WalletSupportRequestDialog
+      dialog: WalletBugReportDialog
     });
   }
 

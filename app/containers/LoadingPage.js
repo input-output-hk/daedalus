@@ -5,7 +5,7 @@ import { defineMessages } from 'react-intl';
 import { shell } from 'electron';
 import CenteredLayout from '../components/layout/CenteredLayout';
 import Loading from '../components/loading/Loading';
-import WalletSupportRequestDialog from '../components/wallet/WalletSupportRequestDialog';
+import WalletBugReportDialog from '../components/wallet/WalletBugReportDialog';
 import WalletSupportRequestPage from '../containers/wallet/WalletSupportRequestPage';
 import adaLogo from '../assets/images/ada-logo.inline.svg';
 import cardanoLogo from '../assets/images/cardano-logo.inline.svg';
@@ -57,7 +57,7 @@ export default class LoadingPage extends Component<InjectedProps> {
 
   handleReportIssue = () => {
     this.props.actions.dialogs.open.trigger({
-      dialog: WalletSupportRequestDialog
+      dialog: WalletBugReportDialog
     });
   }
 

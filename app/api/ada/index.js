@@ -38,7 +38,7 @@ import { adaTestReset } from './adaTestReset';
 import { getAdaHistoryByWallet } from './getAdaHistoryByWallet';
 import { getAdaAccountRecoveryPhrase } from './getAdaAccountRecoveryPhrase';
 import { getAdaLocalTimeDifference } from './getAdaLocalTimeDifference';
-import { sendAdaSupportRequest } from './sendAdaSupportRequest';
+import { sendAdaBugReport } from './sendAdaBugReport';
 
 import type {
   AdaLocalTimeDifference,
@@ -163,6 +163,8 @@ export type ExportWalletToFileRequest = {
   password: ?string
 };
 export type ExportWalletToFileResponse = [];
+export type SendBugReportRequest = any;
+export type SendBugReportResponse = any;
 // const notYetImplemented = () => new Promise((_, reject) => {
 //   reject(new ApiMethodNotYetImplementedError());
 // });
@@ -519,17 +521,14 @@ export default class AdaApi {
     }
   }
 
-  async sendSupportRequest(request: any): Promise<any> {
-    console.debug('CALL Api - request: ', request);
-    Logger.debug('AdaApi::sendSupportRequest called: ' + stringifyData(request));
+  async sendBugReport(request: SendBugReportRequest): Promise<SendBugReportResponse> {
+    Logger.debug('AdaApi::sendBugReport called: ' + stringifyData(request));
     try {
-      const response = await sendAdaSupportRequest({ requestFormData: request });
-      console.debug('AdaApi::sendSupportRequest success:', response);
-      Logger.debug('AdaApi::sendSupportRequest success: ' + stringifyData(response));
+      await sendAdaBugReport({ requestFormData: request });
+      Logger.debug('AdaApi::sendBugReport success');
       return true;
     } catch (error) {
-      console.debug('Api ERROR::', error);
-      Logger.error('AdaApi::sendSupportRequest error: ' + stringifyError(error));
+      Logger.error('AdaApi::sendBugReport error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
