@@ -38,6 +38,7 @@ import { adaTestReset } from './adaTestReset';
 import { getAdaHistoryByWallet } from './getAdaHistoryByWallet';
 import { getAdaAccountRecoveryPhrase } from './getAdaAccountRecoveryPhrase';
 import { getAdaLocalTimeDifference } from './getAdaLocalTimeDifference';
+import { sendAdaSupportRequest } from './sendAdaSupportRequest';
 
 import type {
   AdaLocalTimeDifference,
@@ -518,11 +519,19 @@ export default class AdaApi {
     }
   }
 
-  // TODO - faked response
-  async sendSupportRequest(
-    request: any
-  ): Promise<any> {
-    return Promise.resolve(request);
+  async sendSupportRequest(request: any): Promise<any> {
+    console.debug('CALL Api - request: ', request);
+    Logger.debug('AdaApi::sendSupportRequest called: ' + stringifyData(request));
+    try {
+      const response = await sendAdaSupportRequest({ requestFormData: request });
+      console.debug('AdaApi::sendSupportRequest success:', response);
+      Logger.debug('AdaApi::sendSupportRequest success: ' + stringifyData(response));
+      return true;
+    } catch (error) {
+      console.debug('Api ERROR::', error);
+      Logger.error('AdaApi::sendSupportRequest error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
   }
 
   async nextUpdate(): Promise<NextUpdateResponse> {

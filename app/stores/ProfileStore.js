@@ -247,22 +247,22 @@ export default class SettingsStore extends Store {
     this.error = new WalletSupportRequestLogsCompressError();
   });
 
-  _sendSupportRequest = action(({ email, subject, problem, files } : {
+  _sendSupportRequest = action(({ email, subject, problem, logs } : {
     email: string,
     subject: ?string,
     problem: ?string,
-    files: ?Array<string>,
+    logs: ?Array<string>,
   }) => {
     this.sendSupportRequest.execute({
-      email, subject, problem, files,
+      email, subject, problem, logs,
     })
       .then(action(() => {
-        this._deleteCompressedFiles(files);
+        this._deleteCompressedFiles(logs);
         this._reset();
         this.actions.dialogs.closeActiveDialog.trigger();
       }))
       .catch(action((error) => {
-        this._deleteCompressedFiles(files);
+        this._deleteCompressedFiles(logs);
         this._reset();
         this.error = error;
       }));

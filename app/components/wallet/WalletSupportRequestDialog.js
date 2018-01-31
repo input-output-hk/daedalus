@@ -167,7 +167,7 @@ export default class WalletSupportRequestDialog extends Component<Props, State> 
 
         const { email, subject, problem } = form.values();
         const data = {
-          email, subject, problem, files: compressedLogs,
+          email, subject, problem, logs: compressedLogs,
         };
 
         if (this.state.showLogs && logsExist && !compressedLogsExist) {
