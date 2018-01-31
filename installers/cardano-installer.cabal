@@ -22,6 +22,10 @@ executable make-installer
                      , directory
                      , filepath
                      , megaparsec
+                     , system-filepath
+                     , temporary
+                     , text
+                     , Glob
                      , nsis
                      , temporary
                      , text
