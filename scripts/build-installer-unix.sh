@@ -3,7 +3,6 @@
 #   0. 'git'
 #   1. 'curl'
 #   2. 'nix-shell'
-#   3. 'stack'
 
 set -e
 
@@ -128,40 +127,50 @@ test -d "release/darwin-x64/Daedalus-darwin-x64" -a -n "${fast_impure}" || {
         echo "Size of Electron app is $(du -sh release)"
 }
 
-test -n "$(which stack)"     -a -n "${fast_impure}" ||
-        retry 5 bash -c "curl -L https://www.stackage.org/stack/${os}-x86_64 | \
-                         tar xz --strip-components=1 -C ~/.local/bin"
-
 cd installers
-    # if test "${pr_id}" = "false" -a "${OS_NAME}" != "linux" # No Linux keys yet.
-    # then retry 5 nix-shell -p awscli --no-build-output --cores 0 --max-jobs 4 --run "aws s3 cp --region eu-central-1 s3://iohk-private/${key} macos.p12"
-    # fi
     echo "Prebuilding dependencies for cardano-installer, quietly.."
-    ## XXX: temporarily disable signing
-    export BUILDKITE_PULL_REQUEST=""
     nix-shell --run true --no-build-output --cores 0 --max-jobs 4 default.nix ||
         echo "Prebuild failed!"
-    echo "Building and running the cardano installer generator.."
-    $(nix-build -j 2)/bin/make-installer
-    echo "Uploading the installer package.."
-    cd dist
-    APP_NAME="csl-daedalus"
-    mkdir -p ${APP_NAME}
-    mv "Daedalus-installer-${DAEDALUS_VERSION}.pkg" ${APP_NAME}/"Daedalus-installer-${DAEDALUS_VERSION}.pkg"
-    buildkite-agent artifact upload ${APP_NAME}/Daedalus-installer-${DAEDALUS_VERSION}.pkg s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
-    cd ..
-    # if test -n "${upload_s3}"
-    # then
-    #         echo "$0: --upload-s3 passed, will upload the installer to S3";
-    #         retry 5 nix-shell -p awscli --run "aws s3 cp 'dist/Daedalus-installer-${DAEDALUS_VERSION}.pkg' s3://daedalus-internal/ --acl public-read"
-    # fi
+    echo "Building the cardano installer generator.."
+    INSTALLER=$(nix-build -j 2 --no-out-link)
+
+    # For Travis MacOSX non-PR builds only
+    if test "${pr_id}" = "false" -a -n "${TRAVIS_JOB_ID:-}" -a "${OS_NAME}" != "linux"
+    then
+        echo "Downloading and importing signing certificate.."
+        retry 5 nix-shell -p awscli --no-build-output --cores 0 --max-jobs 4 --run "aws s3 cp --region eu-central-1 s3://iohk-private/${key} macos.p12 || true"
+        $INSTALLER/bin/load-certificate -f macos.p12
+    fi
+
+    echo "Generating the installer.."
+    $INSTALLER/bin/make-installer
+
+    if test -d dist; then
+        echo "Uploading the installer package.."
+        cd dist
+        APP_NAME="csl-daedalus"
+        INSTALLER_PKG="${APP_NAME}/Daedalus-installer-${DAEDALUS_VERSION}.pkg"
+        mkdir -p ${APP_NAME}
+        mv "Daedalus-installer-${DAEDALUS_VERSION}.pkg" "${INSTALLER_PKG}"
+
+        if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
+            buildkite-agent artifact upload "${INSTALLER_PKG}" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
+        elif test -n "${TRAVIS_JOB_ID:-}" -a -n "${upload_s3}"
+        then
+            echo "$0: --upload-s3 passed, will upload the installer to S3";
+            retry 5 nix-shell -p awscli --run "aws s3 cp '${INSTALLER_PKG}' s3://daedalus-internal/ --acl public-read"
+        fi
+        cd ..
+    else
+        echo "Installer was not made."
+        mkdir -p dist
+    fi
+
     if test -n "${test_install}"
     then echo "$0:  --test-install passed, will test the installer for installability";
          case ${OS_NAME} in
                  darwin ) sudo installer -dumplog -verbose -target / -pkg "dist/Daedalus-installer-${DAEDALUS_VERSION}.pkg";;
                  linux )  echo "WARNING: installation testing not implemented on Linux" >&2;; esac; fi
 cd ..
-
-ls -la installers/dist
 
 exit 0
