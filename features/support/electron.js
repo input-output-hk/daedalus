@@ -10,7 +10,7 @@ let scenariosCount = 0;
 const printMainProcessLogs = () => (
   context.app.client.getMainProcessLogs()
     .then((logs) => {
-      console.log('======= MAIN PROCESS LOGS =======');
+      console.log('========= DAEDALUS LOGS =========');
       logs.forEach((log) => console.log(log));
       console.log('=================================');
       return true;

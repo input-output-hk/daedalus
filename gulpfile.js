@@ -18,13 +18,15 @@ const buildRenderer = (config, done) => gulp.src('source/renderer/index.js')
   .pipe(rendererOutputDestination);
 
 // Setup electron-connect server to start the app in development mode
-const electronServer = electronConnect.server.create({
-  spawnOpt: {
-    env: Object.assign({}, process.env, {
-      NODE_ENV: 'development'
-    })
-  }
-});
+let electronServer;
+
+const createElectronServer = (env) => {
+  electronServer = electronConnect.server.create({
+    spawnOpt: {
+      env: Object.assign({}, process.env, env)
+    }
+  });
+};
 
 gulp.task('build-main', (done) => buildMain({}, done));
 
@@ -59,6 +61,7 @@ gulp.task('electron:reload', (done) => {
 });
 
 gulp.task('start-dev', () => {
+  createElectronServer({ NODE_ENV: 'development' });
   electronServer.start();
   gulp.watch('dist/main/index.js', gulp.series('electron:restart'));
   gulp.watch('dist/renderer/*', gulp.series('electron:reload'));
