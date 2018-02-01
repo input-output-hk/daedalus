@@ -183,7 +183,6 @@ signingConfig = SigningConfig
 
 -- | Add our certificate to a new keychain.
 -- Uses the CERT_PASS environment variable to decrypt certificate.
--- TODO: DEVOPS-643 Run the keychain setup separately
 setupKeyChain :: SigningConfig -> IO ()
 setupKeyChain cfg@SigningConfig{..} = do
   password <- lookupEnv "CERT_PASS"
