@@ -18,6 +18,7 @@ Changelog
 - Improve ETC transaction amount validation ([PR 590](https://github.com/input-output-hk/daedalus/pull/590))
 - Fixed storybook and resolver issues ([PR 617](https://github.com/input-output-hk/daedalus/pull/617))
 - Updated copy for the sync error screen ([PR 688](https://github.com/input-output-hk/daedalus/pull/688))
+- Detect when wallet is disconnected ([PR 689](https://github.com/input-output-hk/daedalus/pull/689))
 
 ### Chores
 
