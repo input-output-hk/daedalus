@@ -9,7 +9,7 @@ nodeArgs:
 - --wallet-db-path
 - ! '%APPDATA%\Daedalus\Wallet-1.0'
 - --update-server
-- http://update.cardano-mainnet.iohk.io
+- https://update-awstest.iohkdev.io
 - --update-with-package
 - --no-ntp
 - --tlscert
@@ -33,11 +33,11 @@ updateArchive: null
 updateWindowsRunner: ! '%APPDATA%\Daedalus\Installer.bat'
 
 nodeTimeoutSec: 30
-reportServer: http://report-server.cardano-mainnet.iohk.io:8080
+reportServer: http://report-server.awstest.iohkdev:8080
 launcherLogsPrefix: ! '%APPDATA%\Daedalus\Logs\pub'
 
 configuration:
   filePath: configuration.yaml
-  key: mainnet_wallet_win64
+  key: mainnet_dryrun_wallet_win64
   systemStart: null
   seed: null
