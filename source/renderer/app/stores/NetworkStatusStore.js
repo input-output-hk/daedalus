@@ -13,7 +13,7 @@ let cachedDifficulties = null;
 // Maximum number of out-of-sync blocks above which we consider to be out-of-sync
 const OUT_OF_SYNC_BLOCKS_LIMIT = 10;
 const SYNC_PROGRESS_INTERVAL = 2000;
-const TIME_DIFF_POLL_INTERVAL = 2000;
+const TIME_DIFF_POLL_INTERVAL = 500;
 
 const STARTUP_STAGES = {
   CONNECTING: 0,
@@ -27,14 +27,14 @@ export default class NetworkStatusStore extends Store {
   _startTime = Date.now();
   _startupStage = STARTUP_STAGES.CONNECTING;
 
-  ALLOWED_TIME_DIFFERENCE = 0;
+  ALLOWED_TIME_DIFFERENCE = 15 * 1000000; // 15 seconds;
 
   @observable isConnected = false;
   @observable hasBeenConnected = false;
   @observable localDifficulty = 0;
   @observable networkDifficulty = 0;
   @observable isLoadingWallets = true;
-  @observable localTimeDifference = this.ALLOWED_TIME_DIFFERENCE;
+  @observable localTimeDifference = 0;
   @observable syncProgressRequest: Request<GetSyncProgressResponse> = new Request(
     // Use the sync progress for target API
     this.api[environment.API].getSyncProgress
@@ -185,13 +185,15 @@ export default class NetworkStatusStore extends Store {
   };
 
   @action _updateLocalTimeDifference = async () => {
-    try {
-      const response = await this.localTimeDifferenceRequest.execute().promise;
-      runInAction('update time difference', () => (this.localTimeDifference = response));
-    } catch (error) {
-      runInAction('update time difference', () => (this.localTimeDifference = this.ALLOWED_TIME_DIFFERENCE + 1));
+    if (this.isConnected) {
+      try {
+        const response = await this.localTimeDifferenceRequest.execute().promise;
+        runInAction('update time difference', () => (this.localTimeDifference = response));
+      } catch (error) {
+        runInAction('update time difference', () => (this.localTimeDifference = 0));
+      }
     }
-  }
+  };
 
   _pollLocalTimeDifference() {
     setInterval(this._updateLocalTimeDifference, TIME_DIFF_POLL_INTERVAL);
