@@ -3,7 +3,7 @@ import fs from 'fs';
 import archiver from 'archiver';
 import path from 'path';
 import splitFile from 'split-file';
-import { get } from 'lodash';
+import { map } from 'lodash';
 import { appLogsFolderPath } from '../config';
 import { Logger, stringifyError } from '../../app/utils/logging';
 
@@ -26,39 +26,36 @@ export default () => {
       zlib: { level: 9 } // Sets the compression level
     });
 
+    const handleSuccessResponse = (files) => {
+      const response = {
+        files,
+        path: appLogsFolderPath,
+        originalFile: outputPath,
+      };
+      // response on compression success
+      Logger.info('COMPRESS_LOGS.SUCCESS');
+      return sender.send(COMPRESS_LOGS.SUCCESS, response);
+    };
+
     output.on('close', () => {
       const archiveSize = archive.pointer();
+      const fileNames = [];
 
       if (archiveSize > COMPRESS_LOGS.MAX_SIZE) {
         // split archive - one part can have max 7mb
         splitFile.splitFileBySize(outputPath, COMPRESS_LOGS.MAX_SIZE)
           .then((files) => {
-            // response on compression success
-            Logger.info('COMPRESS_LOGS.SUCCESS');
-            return sender.send(COMPRESS_LOGS.SUCCESS, {
-              files, // array of zip parts
-              originalFile: outputPath,
-              archive,
-              message: 'Logs compressed successfully',
-              success: true,
-              warnings: 0,
+            map(files, (file) => {
+              fileNames.push(file.replace(appLogsFolderPath + '/', ''));
             });
+            return handleSuccessResponse(fileNames);
           })
           .catch((err) => {
             Logger.error('COMPRESS_LOGS.ERROR: ' + stringifyError(err));
             return sender.send(COMPRESS_LOGS.ERROR, err);
           });
       } else {
-        Logger.info('COMPRESS_LOGS.SUCCESS');
-        // response on compression success
-        return sender.send(COMPRESS_LOGS.SUCCESS, {
-          files: [outputPath],
-          originalFile: outputPath,
-          archive,
-          message: 'Logs compressed successfully',
-          success: true,
-          warnings: 0,
-        });
+        handleSuccessResponse([compressedFileName]);
       }
     });
 
@@ -67,23 +64,9 @@ export default () => {
       return sender.send(COMPRESS_LOGS.ERROR, err);
     });
 
-    // if there are no logs in logs folder then
-    // return success response but with warning and corresponding message
-    const logsExist = get(logs, ['files'], []).length > 0;
-    if (!logsExist) {
-      Logger.warn('COMPRESS_LOGS.SUCCESS: No files to compress');
-      return sender.send(COMPRESS_LOGS.SUCCESS, {
-        files: [],
-        archive: null,
-        message: 'No files to compress',
-        success: true,
-        warnings: 1,
-      });
-    }
-
     Logger.info('COMPRESS_LOGS started');
 
-    // compress pub folder files
+    // compress pub files from 'pub' folder
     archive.directory(`${logs.path}/`, 'pub');
     archive.finalize((err) => {
       if (err) {

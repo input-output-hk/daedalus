@@ -11,12 +11,13 @@ import TextArea from 'react-polymorph/lib/components/TextArea';
 import SimpleTextAreaSkin from 'react-polymorph/lib/skins/simple/raw/TextAreaSkin';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/raw/SwitchSkin';
-import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
-import DialogCloseButton from '../widgets/DialogCloseButton';
-import Dialog from '../widgets/Dialog';
-import { InvalidEmailError, FieldRequiredError } from '../../i18n/errors';
-import LocalizableError from '../../i18n/LocalizableError';
-import styles from './WalletBugReportDialog.scss';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import DialogCloseButton from '../../widgets/DialogCloseButton';
+import Dialog from '../../widgets/Dialog';
+import { InvalidEmailError, FieldRequiredError } from '../../../i18n/errors';
+import LocalizableError from '../../../i18n/LocalizableError';
+import styles from './BugReportDialog.scss';
+import type { LogFiles, CompressedLogs } from '../../../types/LogTypes';
 
 const messages = defineMessages({
   title: {
@@ -72,8 +73,8 @@ const messages = defineMessages({
 });
 
 type Props = {
-  logFiles: Object,
-  compressedLogsFiles: Array<string>,
+  logFiles: LogFiles,
+  compressedLogs: CompressedLogs,
   onCancel: Function,
   onSubmit: Function,
   onGetLogs: Function,
@@ -89,7 +90,7 @@ type State = {
 };
 
 @observer
-export default class WalletBugReportDialog extends Component<Props, State> {
+export default class BugReportDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -101,14 +102,14 @@ export default class WalletBugReportDialog extends Component<Props, State> {
   };
 
   componentWillReceiveProps(nextProps: Object) {
-    const commpressedFilesExist = get(nextProps, 'compressedLogsFiles', []).length > 0;
+    const commpressedFilesExist = get(nextProps, ['compressedLogs', 'files'], []).length > 0;
     const commpressionFilesChanged = !isEqual(
-      this.props.compressedLogsFiles, nextProps.compressedLogsFiles
+      this.props.compressedLogs, nextProps.compressedLogs
     );
 
     if (commpressedFilesExist && commpressionFilesChanged) {
       // proceed to submit when ipc rendered successfully return compressed files
-      this.submit(nextProps.compressedLogsFiles);
+      this.submit(nextProps.compressedLogs);
     }
   }
 
@@ -158,12 +159,12 @@ export default class WalletBugReportDialog extends Component<Props, State> {
     },
   });
 
-  submit = (compressedLogs: ?Array<string>) => {
+  submit = (compressedLogs: ?CompressedLogs) => {
     this.form.submit({
       onSuccess: (form) => {
         const { logFiles } = this.props;
         const logsExist = get(logFiles, ['files'], []).length > 0;
-        const compressedLogsExist = compressedLogs && compressedLogs.length > 0;
+        const compressedLogsExist = get(compressedLogs, 'files', []).length > 0;
 
         const { email, subject, problem } = form.values();
         const data = {
@@ -202,6 +203,8 @@ export default class WalletBugReportDialog extends Component<Props, State> {
     } = this.props;
 
     const logsExist = get(logFiles, ['files'], []).length > 0;
+    const logsPath = get(logFiles, 'path');
+    const fileNames = get(logFiles, 'files');
 
     const attachedLogsClasses = classnames([
       styles.attachedLogs,
@@ -282,8 +285,8 @@ export default class WalletBugReportDialog extends Component<Props, State> {
 
           {logsExist && (
             <div className={attachedLogsClasses}>
-              <p className={styles.logPath}>{logFiles.path}</p>
-              {map(logFiles.files, (fileName) => (
+              <p className={styles.logPath}>{logsPath}</p>
+              {map(fileNames, (fileName) => (
                 <p className={styles.logFileName} key={fileName}>{fileName}</p>
               ))}
             </div>

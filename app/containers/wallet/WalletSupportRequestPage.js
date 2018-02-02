@@ -1,8 +1,8 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import WalletBugReportDialog from '../../components/wallet/WalletBugReportDialog';
-import WalletBugReportDialogContainer from '../wallet/dialogs/WalletBugReportDialogContainer';
+import BugReportDialog from '../../components/profile/bug-report/BugReportDialog';
+import BugReportDialogContainer from '../profile/dialogs/BugReportDialogContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
@@ -13,8 +13,8 @@ export default class WalletSupportRequestPage extends Component<InjectedProps> {
   render() {
     const { uiDialogs } = this.props.stores;
     let activeDialog = null;
-    if (uiDialogs.isOpen(WalletBugReportDialog)) {
-      activeDialog = <WalletBugReportDialogContainer />;
+    if (uiDialogs.isOpen(BugReportDialog)) {
+      activeDialog = <BugReportDialogContainer />;
     }
 
     return activeDialog;

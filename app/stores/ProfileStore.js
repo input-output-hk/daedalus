@@ -1,9 +1,10 @@
 // @flow
-import { action, observable, computed, toJS } from 'mobx';
-import { concat } from 'lodash';
+import { action, observable, computed } from 'mobx';
+import { concat, get, map } from 'lodash';
 import BigNumber from 'bignumber.js';
 import moment from 'moment/moment';
 import { ipcRenderer } from 'electron';
+import path from 'path';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import environment from '../environment';
@@ -15,6 +16,7 @@ import { DELETE_COMPRESSED_LOGS } from '../../electron/ipc-api/delete-compressed
 import LocalizableError from '../i18n/LocalizableError';
 import globalMessages from '../i18n/global-messages';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
+import type { LogFiles, CompressedLogs } from '../types/LogTypes';
 
 export default class SettingsStore extends Store {
 
@@ -50,9 +52,8 @@ export default class SettingsStore extends Store {
     this.api.ada.sendBugReport
   );
   @observable error: ?LocalizableError = null;
-  @observable logFiles: Object = {};
-  @observable compressedLogsOriginal: ?string;
-  @observable compressedLogsFiles: Array<string>;
+  @observable logFiles: LogFiles = {};
+  @observable compressedLogs: CompressedLogs = {};
   @observable isCompressing: boolean = false;
   /* eslint-enable max-len */
 
@@ -234,13 +235,12 @@ export default class SettingsStore extends Store {
 
   _compressLogs = action(({ logs }) => {
     this.isCompressing = true;
-    ipcRenderer.send(COMPRESS_LOGS.REQUEST, toJS(logs));
+    ipcRenderer.send(COMPRESS_LOGS.REQUEST, logs);
   });
 
   _onCompressLogsSuccess = action((event, res) => {
     this.isCompressing = false;
-    this.compressedLogsOriginal = res.originalFile;
-    this.compressedLogsFiles = res.files;
+    this.compressedLogs = res;
   });
 
   _onCompressLogsError = action(() => {
@@ -268,13 +268,22 @@ export default class SettingsStore extends Store {
       }));
   });
 
-  _deleteCompressedFiles = action((files) => {
+  _deleteCompressedFiles = action((logs) => {
     // Trigger ipc renderer to delete compressed temp files if exists
-    if (files) {
+    if (logs) {
       let filesToDelete;
-      if (files.length > 1) {
+      const fileNames = logs.files;
+      const compressedLogsOriginalFile = get(this.compressedLogs, 'originalFile');
+
+      const files = [];
+      map(fileNames, (fileName) => {
+        const file = path.join(logs.path, fileName);
+        files.push(file);
+      });
+
+      if (files.length > 1 && compressedLogsOriginalFile) {
         // if files are splitted then also include original file to delete
-        filesToDelete = concat(files, this.compressedLogsOriginal);
+        filesToDelete = concat(files, compressedLogsOriginalFile);
       } else {
         filesToDelete = files;
       }
@@ -284,8 +293,7 @@ export default class SettingsStore extends Store {
 
   @action _reset = () => {
     this.error = null;
-    this.compressedLogsFiles = [];
-    this.compressedLogsOriginal = null;
+    this.compressedLogs = {};
   };
 
 }

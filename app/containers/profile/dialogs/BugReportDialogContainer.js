@@ -1,12 +1,13 @@
 // @flow
 import React, { Component } from 'react';
 import { toJS } from 'mobx';
+import { get } from 'lodash';
 import { observer, inject } from 'mobx-react';
-import WalletBugReportDialog from '../../../components/wallet/WalletBugReportDialog';
+import BugReportDialog from '../../../components/profile/bug-report/BugReportDialog';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
-export default class WalletBugReportDialogContainer extends Component<InjectedProps> {
+export default class BugReportDialogContainer extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
 
@@ -21,16 +22,21 @@ export default class WalletBugReportDialogContainer extends Component<InjectedPr
     const { getLogs, compressLogs } = actions.profile;
     const {
       logFiles,
-      compressedLogsFiles,
+      compressedLogs,
       isCompressing,
       sendBugReport,
       error,
     } = stores.profile;
 
+    const rawCompressedLogs = {
+      files: toJS(get(compressedLogs, 'files', [])), // transform MobX array to JS array
+      path: get(compressedLogs, 'path'),
+    };
+
     return (
-      <WalletBugReportDialog
+      <BugReportDialog
         logFiles={logFiles}
-        compressedLogsFiles={toJS(compressedLogsFiles)}
+        compressedLogs={rawCompressedLogs}
         isCompressing={isCompressing}
         isSubmitting={sendBugReport.isExecuting}
         error={error}

@@ -1,6 +1,8 @@
 import http from 'http';
 import FormData from 'form-data/lib/form_data';
 import fs from 'fs';
+import path from 'path';
+import { map, get } from 'lodash';
 
 export type RequestOptions = {
   hostname: string,
@@ -34,17 +36,17 @@ function typedHttpRequest<Response>(
   return new Promise((resolve, reject) => {
     const options: RequestOptions = Object.assign({}, httpOptions);
     const payload: RequestPayload = Object.assign({}, requestPayload);
-
     // Prepare multipart/form-data
     const formData = new FormData();
     formData.append('payload', JSON.stringify(payload));
-
     const logs = payload.logs;
     if (logs) {
-      logs.map(log => {
-        console.debug(log);
-        payload.logs = ['logs.zip'];
-        formData.append('logs.zip', fs.createReadStream(log));
+      const logsPath = get(logs, ['path']);
+      const logsFileNames = get(logs, ['files']);
+
+      map(logsFileNames, (fileName) => {
+        const stream = fs.createReadStream(path.join(logsPath, fileName));
+        formData.append(fileName, stream);
       });
     }
 
@@ -69,7 +71,6 @@ function typedHttpRequest<Response>(
       });
     });
     httpRequest.on('error', (error) => reject(error));
-    httpRequest.end();
   });
 }
 
