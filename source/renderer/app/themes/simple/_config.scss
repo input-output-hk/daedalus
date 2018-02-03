@@ -9,6 +9,18 @@ $theme-font-medium: var(--font-medium);
 $theme-font-regular: var(--font-regular);
 $theme-font-bold: var(--font-bold);
 
+// INPUT
+
+$input-bg-color: var(--theme-input-background-color);
+$input-border: 1px solid var(--theme-input-border-color);
+$input-border-focus-color: 1px solid var(--theme-input-focus-border-color);
+$input-color: var(--theme-input-text-color);
+$input-disabled-color: var(--theme-input-placeholder-color);
+$input-placeholder-color: var(--theme-input-placeholder-color);
+$input-errored-border-color: 1px solid var(--theme-input-error-color);
+
+// AUTOCOMPLETE
+
 $autocomplete-bg-color: var(--theme-autocomplete-bg-color);
 $autocomplete-border: var(--theme-autocomplete-border);
 $autocomplete-border-focus-color: var(--theme-autocomplete-border-focus-color);
