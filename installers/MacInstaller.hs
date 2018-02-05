@@ -78,6 +78,7 @@ main = do
       run "cp" [toText tempInstaller, pkg cfg]
     else do
       signInstaller signingConfig (toText tempInstaller) (pkg cfg)
+      checkSignature (pkg cfg)
 
   run "rm" [toText tempInstaller]
   echo $ "Generated " <> unsafeTextToLine (pkg cfg)
@@ -230,6 +231,11 @@ withUnlockedKeyChain SigningConfig{..} = bracket_ unlock lock
     unlock = run "security" ["unlock-keychain", "-p", signingKeyChainPassword, signingKeyChain]
     lock = run "security" ["lock-keychain", signingKeyChain]
 
+-- | Use pkgutil to verify that signing worked.
+checkSignature :: T.Text -> IO ()
+checkSignature pkg = run "pkgutil" ["--check-signature", pkg]
+
+-- | Print the command then run it.
 run :: T.Text -> [T.Text] -> IO ()
 run cmd args = do
     echoCmd cmd args
