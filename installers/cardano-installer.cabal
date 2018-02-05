@@ -65,33 +65,3 @@ executable load-certificate
 
   default-extensions: NoImplicitPrelude
                       OverloadedStrings
-
-test-suite cardano-installer-test
-  type:                exitcode-stdio-1.0
-  hs-source-dirs:      test .
-  main-is:             Spec.hs
-  other-modules:       MacInstaller
-                     , SigningSpec
-  build-depends:       base
-                     , hspec
-                     , bytestring
-                     , directory
-                     , filepath
-                     , Glob
-                     , managed
-                     , megaparsec
-                     , system-filepath
-                     , text
-                     , turtle
-                     , split
-                     , universum
-                     , yaml
-
-  default-language:    Haskell2010
-  ghc-options:         -threaded -rtsopts
-                       -Wall
-                       -fno-warn-orphans
-                       -with-rtsopts=-N
-                       -O2
-  default-extensions: NoImplicitPrelude
-                      OverloadedStrings
