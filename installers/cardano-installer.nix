@@ -1,4 +1,4 @@
-{ mkDerivation, base, bytestring, directory, filepath, Glob, hspec
+{ mkDerivation, base, bytestring, directory, filepath, Glob
 , megaparsec, nsis, optparse-applicative, split, stdenv
 , system-filepath, temporary, text, turtle, universum, yaml
 }:
@@ -12,10 +12,6 @@ mkDerivation {
     base bytestring directory filepath Glob megaparsec nsis
     optparse-applicative split system-filepath temporary text turtle
     universum yaml
-  ];
-  testHaskellDepends = [
-    base bytestring directory filepath Glob hspec megaparsec split
-    system-filepath text turtle universum yaml
   ];
   description = "Cardano Installer";
   license = stdenv.lib.licenses.mit;
