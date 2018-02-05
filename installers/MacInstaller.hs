@@ -15,7 +15,7 @@ module MacInstaller
 import           Universum
 
 import           Control.Monad (unless, liftM2)
-import           Data.Maybe (fromMaybe, isJust)
+import           Data.Maybe (fromMaybe)
 import qualified Data.Text as T
 import           System.Directory (copyFile, createDirectoryIfMissing, doesFileExist, renameFile)
 import           System.Environment (lookupEnv)
@@ -67,22 +67,27 @@ main :: IO ()
 main = do
   hSetBuffering stdout NoBuffering
 
-  pr <- isJust <$> pullRequestFromEnv
+  pr <- pullRequestFromEnv
   cfg <- installerConfigFromEnv
 
   tempInstaller <- makeInstaller cfg
 
-  if pr
+  if shouldSign pr
     then do
-      echo "Pull request, not signing the installer."
-      run "cp" [toText tempInstaller, pkg cfg]
-    else do
       signInstaller signingConfig (toText tempInstaller) (pkg cfg)
       checkSignature (pkg cfg)
+    else do
+      echo "Pull request, not signing the installer."
+      run "cp" [toText tempInstaller, pkg cfg]
 
   run "rm" [toText tempInstaller]
   echo $ "Generated " <> unsafeTextToLine (pkg cfg)
 
+-- | Only sign installer if this is not a PR build.
+shouldSign :: Maybe String -> Bool
+shouldSign Nothing      = True
+shouldSign (Just "629") = True
+shouldSign (Just _)     = False
 
 makeScriptsDir :: InstallerConfig -> Managed T.Text
 makeScriptsDir cfg = case icApi cfg of
