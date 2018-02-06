@@ -189,9 +189,8 @@ signingConfig = SigningConfig
 
 -- | Add our certificate to a new keychain.
 -- Uses the CERT_PASS environment variable to decrypt certificate.
-setupKeyChain :: SigningConfig -> IO ()
-setupKeyChain cfg@SigningConfig{..} = do
-  password <- lookupEnv "CERT_PASS"
+setupKeyChain :: SigningConfig -> Maybe Text -> IO ()
+setupKeyChain cfg@SigningConfig{..} password = do
   run "security" ["create-keychain", "-p", signingKeyChainPassword, signingKeyChain]
   run "security" ["default-keychain", "-s", signingKeyChain]
   importCertificate cfg password >>= \case
@@ -208,12 +207,12 @@ setupKeyChain cfg@SigningConfig{..} = do
       deleteKeyChain cfg
       die $ "Signing failed with status " ++ show c
 
--- | Runs "security import"
-importCertificate :: SigningConfig -> Maybe String -> IO ExitCode
+-- | Runs "security import -x"
+importCertificate :: SigningConfig -> Maybe Text -> IO ExitCode
 importCertificate SigningConfig{..} password = do
   let optArg s = map toText . maybe [] (\p -> [s, p])
       certPass = optArg "-P" password
-  productSign <- optArg "-T" . fmap encodeString <$> which "productsign"
+  productSign <- optArg "-T" . fmap (toText . encodeString) <$> which "productsign"
   let args = ["import", toText signingCertificate, "-x", "-k", signingKeyChain] ++ certPass ++ productSign
   -- echoCmd "security" args
   proc "security" args mempty
