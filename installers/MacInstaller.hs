@@ -214,7 +214,7 @@ importCertificate SigningConfig{..} password = do
   let optArg s = map toText . maybe [] (\p -> [s, p])
       certPass = optArg "-P" password
   productSign <- optArg "-T" . fmap encodeString <$> which "productsign"
-  let args = ["import", toText signingCertificate, "-k", signingKeyChain] ++ certPass ++ productSign
+  let args = ["import", toText signingCertificate, "-x", "-k", signingKeyChain] ++ certPass ++ productSign
   -- echoCmd "security" args
   proc "security" args mempty
 
