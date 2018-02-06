@@ -67,6 +67,8 @@ import type {
   GetWalletsResponse,
   RestoreWalletRequest,
   RestoreWalletResponse,
+  SendBugReportRequest,
+  SendBugReportResponse,
   UpdateWalletResponse,
   UpdateWalletPasswordRequest,
   UpdateWalletPasswordResponse,
@@ -163,8 +165,6 @@ export type ExportWalletToFileRequest = {
   password: ?string
 };
 export type ExportWalletToFileResponse = [];
-export type SendBugReportRequest = any;
-export type SendBugReportResponse = any;
 // const notYetImplemented = () => new Promise((_, reject) => {
 //   reject(new ApiMethodNotYetImplementedError());
 // });
@@ -524,7 +524,7 @@ export default class AdaApi {
   async sendBugReport(request: SendBugReportRequest): Promise<SendBugReportResponse> {
     Logger.debug('AdaApi::sendBugReport called: ' + stringifyData(request));
     try {
-      await sendAdaBugReport({ requestFormData: request });
+      await sendAdaBugReport({ requestFormData: request, application: 'cardano-node' });
       Logger.debug('AdaApi::sendBugReport success');
       return true;
     } catch (error) {

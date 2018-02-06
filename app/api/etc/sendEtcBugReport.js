@@ -3,7 +3,7 @@ import moment from 'moment';
 import { request } from '../lib/reportRequest';
 import environment from '../../environment';
 
-export type SendAdaBugReportRequestParams = {
+export type SendEtcBugReportRequestParams = {
   requestFormData: {
     email: string,
     subject: string,
@@ -13,8 +13,8 @@ export type SendAdaBugReportRequestParams = {
   application: string,
 };
 
-export const sendAdaBugReport = (
-  { requestFormData, application }: SendAdaBugReportRequestParams
+export const sendEtcBugReport = (
+  { requestFormData, application }: SendEtcBugReportRequestParams
 ): Promise<{}> => {
   const { email, subject, problem, logs } = requestFormData;
   let platform;

@@ -47,10 +47,7 @@ export default class SettingsStore extends Store {
   @observable setSendLogsChoiceRequest: Request = new Request(this.api.localStorage.setSendLogsChoice);
   @observable getThemeRequest: Request<string> = new Request(this.api.localStorage.getUserTheme);
   @observable setThemeRequest: Request<string> = new Request(this.api.localStorage.setUserTheme);
-  @observable sendBugReport: Request<any> = new Request(
-    // TODO - faked api caller, just for ada for now
-    this.api.ada.sendBugReport
-  );
+  @observable sendBugReport: Request<any> = new Request(this.api[environment.API].sendBugReport);
   @observable error: ?LocalizableError = null;
   @observable logFiles: LogFiles = {};
   @observable compressedLogs: CompressedLogs = {};

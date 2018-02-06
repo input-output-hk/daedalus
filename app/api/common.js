@@ -95,3 +95,11 @@ export type GetTransactionsResponse = {
   transactions: Array<WalletTransaction>,
   total: number,
 };
+
+export type SendBugReportRequest = {
+  email: string,
+  subject: string,
+  problem: string,
+  logs: Array<string>,
+};
+export type SendBugReportResponse = any;
