@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Provider, observer } from 'mobx-react';
 import { ThemeProvider } from 'react-css-themr';
 import DevTools from 'mobx-react-devtools';
@@ -27,7 +27,7 @@ export default class App extends Component<{
     const theme = require(`./themes/daedalus/${currentTheme}.js`); // eslint-disable-line
 
     return (
-      <div>
+      <Fragment>
         <ThemeManager variables={theme} />
         <Provider stores={stores} actions={actions}>
           <ThemeProvider theme={daedalusTheme}>
@@ -39,7 +39,7 @@ export default class App extends Component<{
             </IntlProvider>
           </ThemeProvider>
         </Provider>
-      </div>
+      </Fragment>
     );
   }
 }

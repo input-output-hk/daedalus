@@ -4,7 +4,7 @@ import closeCross from '../../assets/images/close-cross.inline.svg';
 import styles from './DialogCloseButton.scss';
 
 type Props = {
-  onClose: Function,
+  onClose?: Function,
   icon?: string,
 };
 
@@ -13,7 +13,7 @@ export default class DialogCloseButton extends Component<Props> {
   render() {
     const { onClose, icon } = this.props;
     return (
-      <button onClick={onClose} className={styles.component}>
+      <button onClick={onClose || (() => {})} className={styles.component}>
         <SvgInline svg={icon || closeCross} />
       </button>
     );
