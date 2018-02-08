@@ -18,6 +18,7 @@ ensureDirectoryExists(pubLogsFolderPath);
 
 Log.transports.console.level = 'warn';
 Log.transports.file.level = 'debug';
+Log.transports.file.maxSize = 20 * 1024 * 1024;
 Log.transports.file.file = logFilePath;
 // TODO: depends on launcher script current directory, move this to getRuntimeFolderPath location
 // const caProductionPath = path.join(runtimeFolderPath, 'CA', 'tls', 'ca', 'ca.crt');

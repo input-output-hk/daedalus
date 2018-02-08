@@ -1,5 +1,5 @@
 // @flow
-import { action, observable, computed } from 'mobx';
+import { action, observable, computed, toJS } from 'mobx';
 import { concat, get, map } from 'lodash';
 import BigNumber from 'bignumber.js';
 import moment from 'moment/moment';
@@ -232,7 +232,7 @@ export default class SettingsStore extends Store {
 
   _compressLogs = action(({ logs }) => {
     this.isCompressing = true;
-    ipcRenderer.send(COMPRESS_LOGS.REQUEST, logs);
+    ipcRenderer.send(COMPRESS_LOGS.REQUEST, toJS(logs));
   });
 
   _onCompressLogsSuccess = action((event, res) => {
