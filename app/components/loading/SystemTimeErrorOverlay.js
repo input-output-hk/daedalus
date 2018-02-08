@@ -59,6 +59,9 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
       case 'de-DE':
         humanizedDurationLanguage = 'de';
         break;
+      case 'es-ES':
+        humanizedDurationLanguage = 'es';
+        break;
       default:
         humanizedDurationLanguage = 'en';
     }
