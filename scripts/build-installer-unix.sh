@@ -145,20 +145,21 @@ cd installers
     echo "Generating the installer.."
     $INSTALLER/bin/make-installer
 
-    if test -d dist; then
+    INSTALLER_PKG="Daedalus-installer-${DAEDALUS_VERSION}.pkg"
+
+    if test -d dist -a -f "dist/${INSTALLER_PKG}"; then
         echo "Uploading the installer package.."
         cd dist
         APP_NAME="csl-daedalus"
-        INSTALLER_PKG="${APP_NAME}/Daedalus-installer-${DAEDALUS_VERSION}.pkg"
         mkdir -p ${APP_NAME}
-        mv "Daedalus-installer-${DAEDALUS_VERSION}.pkg" "${INSTALLER_PKG}"
+        mv "${INSTALLER_PKG}" "${APP_NAME}/${INSTALLER_PKG}"
 
         if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
-            buildkite-agent artifact upload "${INSTALLER_PKG}" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
+            buildkite-agent artifact upload "${APP_NAME}/${INSTALLER_PKG}" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
         elif test -n "${TRAVIS_JOB_ID:-}" -a -n "${upload_s3}"
         then
             echo "$0: --upload-s3 passed, will upload the installer to S3";
-            retry 5 nix-shell -p awscli --run "aws s3 cp '${INSTALLER_PKG}' s3://daedalus-internal/ --acl public-read"
+            retry 5 nix-shell -p awscli --run "aws s3 cp '${APP_NAME}/${INSTALLER_PKG}' s3://daedalus-internal/ --acl public-read"
         fi
         cd ..
     else
