@@ -49,6 +49,9 @@ pullRequestFromEnv = liftM2 (<|>) (getPR "BUILDKITE_PULL_REQUEST") (getPR "TRAVI
     interpret (Just "false") = Nothing
     interpret (Just num)     = Just num
 
+travisJobIdFromEnv :: IO (Maybe String)
+travisJobIdFromEnv = lookupEnv "TRAVIS_JOB_ID"
+
 installerConfigFromEnv :: IO InstallerConfig
 installerConfigFromEnv = mkEnv <$> envAPI <*> envVersion
   where
@@ -67,12 +70,11 @@ main :: IO ()
 main = do
   hSetBuffering stdout NoBuffering
 
-  pr <- pullRequestFromEnv
   cfg <- installerConfigFromEnv
-
   tempInstaller <- makeInstaller cfg
+  shouldSign <- shouldSignDecision
 
-  if shouldSign pr
+  if shouldSign
     then do
       signInstaller signingConfig (toText tempInstaller) (pkg cfg)
       checkSignature (pkg cfg)
@@ -83,11 +85,13 @@ main = do
   run "rm" [toText tempInstaller]
   echo $ "Generated " <> unsafeTextToLine (pkg cfg)
 
--- | Only sign installer if this is not a PR build.
-shouldSign :: Maybe String -> Bool
-shouldSign Nothing      = True
-shouldSign (Just "629") = True
-shouldSign (Just _)     = False
+-- | Only sign installer if this is not a PR build and we aren't on
+-- Travis CI.
+shouldSignDecision :: IO Bool
+shouldSignDecision = do
+  pr <- pullRequestFromEnv
+  isTravis <- isJust <$> travisJobIdFromEnv
+  return $ (pr == Nothing || pr == Just "629") && not isTravis
 
 makeScriptsDir :: InstallerConfig -> Managed T.Text
 makeScriptsDir cfg = case icApi cfg of
