@@ -161,7 +161,14 @@ export default class Loading extends Component<Props, State> {
     const currencyLoadingLogo = currencyIcon;
     const apiLoadingLogo = apiIcon;
 
-    const connectingMessage = hasBeenConnected ? messages.reconnecting : messages.connecting;
+    let connectingMessage;
+    if (hasBeenConnected) {
+      connectingMessage = messages.reconnecting;
+    } else {
+      connectingMessage = (
+        hasBlockSyncingStarted ? messages.waitingForSyncToStart : messages.connecting
+      );
+    }
 
     const canReportConnectingIssue = isConnecting && connectingTime >= REPORT_ISSUE_TIME_TRIGGER;
     const canReportSyncingIssue = isSyncing && syncingTime >= REPORT_ISSUE_TIME_TRIGGER;
@@ -197,17 +204,10 @@ export default class Loading extends Component<Props, State> {
         </div>
         {hasLoadedCurrentLocale && (
           <div>
-            {isConnecting && !hasBlockSyncingStarted && (
+            {isConnecting && (
               <div className={styles.connecting}>
                 <h1 className={styles.headline}>
                   {intl.formatMessage(connectingMessage)}
-                </h1>
-              </div>
-            )}
-            {isConnecting && hasBlockSyncingStarted && (
-              <div className={styles.connecting}>
-                <h1 className={styles.headline}>
-                  {intl.formatMessage(messages.waitingForSyncToStart)}
                 </h1>
               </div>
             )}

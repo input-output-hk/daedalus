@@ -20,6 +20,7 @@ Changelog
 - Time of your machine is different from global time. You are 0 seconds behind. ([PR 678](https://github.com/input-output-hk/daedalus/pull/678))
 - Updated copy for the sync error screen ([PR 657](https://github.com/input-output-hk/daedalus/pull/657))
 - Detect when wallet is disconnected ([PR 689](https://github.com/input-output-hk/daedalus/pull/689))
+- Improve connecting/reconnecting messages on Loading screen ([PR 696](https://github.com/input-output-hk/daedalus/pull/696))
 - Send bug reports with logs from Daedalus ([PR 691](https://github.com/input-output-hk/daedalus/pull/691))
 
 ### Chores
