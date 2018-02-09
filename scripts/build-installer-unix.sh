@@ -57,6 +57,13 @@ test_install=
 daedalus_version="$1"; arg2nz "daedalus version" $1; shift
 cardano_branch="$(printf '%s' "$1" | tr '/' '-')"; arg2nz "Cardano SL branch to build Daedalus with" $1; shift
 
+# Parallel build options for Buildkite agents only
+if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
+    nix_shell="nix-shell --no-build-output --cores 0 --max-jobs 4"
+else
+    nix_shell="nix-shell --no-build-output"
+fi
+
 case "$(uname -s)" in
         Darwin ) OS_NAME=darwin; os=osx;   key=macos-3.p12;;
         Linux )  OS_NAME=linux;  os=linux; key=linux.p12;;
@@ -120,17 +127,16 @@ test -d node_modules/daedalus-client-api/ -a -n "${fast_impure}" || {
 }
 
 test "$(find node_modules/ | wc -l)" -gt 100 -a -n "${fast_impure}" ||
-        nix-shell --no-build-output --cores 0 --max-jobs 4 --run "npm install"
+        $nix_shell --run "npm install"
 
 test -d "release/darwin-x64/Daedalus-darwin-x64" -a -n "${fast_impure}" || {
-        nix-shell --no-build-output --cores 0 --max-jobs 4 --run "npm run package -- --icon installers/icons/256x256.png"
+        $nix_shell --run "npm run package -- --icon installers/icons/256x256.png"
         echo "Size of Electron app is $(du -sh release)"
 }
 
 cd installers
     echo "Prebuilding dependencies for cardano-installer, quietly.."
-    nix-shell --run true --no-build-output --cores 0 --max-jobs 4 default.nix ||
-        echo "Prebuild failed!"
+    $nix_shell default.nix --run true || echo "Prebuild failed!"
     echo "Building the cardano installer generator.."
     INSTALLER=$(nix-build -j 2 --no-out-link)
 
@@ -138,7 +144,7 @@ cd installers
     if test "${pr_id}" = "false" -a -n "${TRAVIS_JOB_ID:-}" -a "${OS_NAME}" != "linux"
     then
         echo "Downloading and importing signing certificate.."
-        retry 5 nix-shell -p awscli --no-build-output --cores 0 --max-jobs 4 --run "aws s3 cp --region eu-central-1 s3://iohk-private/${key} macos.p12 || true"
+        retry 5 $nix_shell -p awscli --run "aws s3 cp --region eu-central-1 s3://iohk-private/${key} macos.p12 || true"
         $INSTALLER/bin/load-certificate -f macos.p12
     fi
 
@@ -159,7 +165,7 @@ cd installers
         elif test -n "${TRAVIS_JOB_ID:-}" -a -n "${upload_s3}"
         then
             echo "$0: --upload-s3 passed, will upload the installer to S3";
-            retry 5 nix-shell -p awscli --run "aws s3 cp '${APP_NAME}/${INSTALLER_PKG}' s3://daedalus-internal/ --acl public-read"
+            retry 5 $nix_shell -p awscli --run "aws s3 cp '${APP_NAME}/${INSTALLER_PKG}' s3://daedalus-internal/ --acl public-read"
         fi
         cd ..
     else
