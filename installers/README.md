@@ -9,7 +9,8 @@ or `..\appveyor.yaml` (Windows).
 
 Before signing the Mac installer, the keychain needs to be set up. Do this by running:
 
-    CERT_PASS=mysecret load-certificate -f macos.p12
+    load-certificate -f macos.p12
 
-The certificate is required to be in PKCS#12 format, and the
-certificate password is in the `CERT_PASS` environment variable.
+The certificate is required to be in PKCS#12 format. It will prompt
+for a certificate decryption password, or you can put this in the
+`CERT_PASS` environment variable.
