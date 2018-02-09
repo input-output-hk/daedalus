@@ -254,8 +254,8 @@ export default {
   '--theme-block-generation-info-color': '#5e6066',
 
   '--theme-report-issue-button-background-color': '#445b7c',
-  '--theme-report-issue-button-background-color-hover': '#2f496e',
-  '--theme-report-issue-button-background-color-active': '#1e304a',
+  '--theme-report-issue-button-background-color-hover': '#697b96',
+  '--theme-report-issue-button-background-color-active': '#364863',
   '--theme-report-issue-connecting-background-color': 'rgba(250, 251, 252, 0.05)',
   '--theme-report-issue-connecting-text-color': '#fafbfc',
   '--theme-report-issue-syncing-background-color': 'rgba(94, 96, 102, 0.05)',
