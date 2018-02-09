@@ -140,14 +140,6 @@ cd installers
     echo "Building the cardano installer generator.."
     INSTALLER=$(nix-build -j 2 --no-out-link)
 
-    # For Travis MacOSX non-PR builds only
-    if test "${pr_id}" = "false" -a -n "${TRAVIS_JOB_ID:-}" -a "${OS_NAME}" != "linux"
-    then
-        echo "Downloading and importing signing certificate.."
-        retry 5 $nix_shell -p awscli --run "aws s3 cp --region eu-central-1 s3://iohk-private/${key} macos.p12 || true"
-        $INSTALLER/bin/load-certificate -f macos.p12
-    fi
-
     echo "Generating the installer.."
     $INSTALLER/bin/make-installer
 
