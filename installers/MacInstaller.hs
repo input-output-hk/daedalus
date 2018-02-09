@@ -3,9 +3,9 @@ module MacInstaller
     ( main
     , SigningConfig(..)
     , signingConfig
-    , setupKeyChain
-    , deleteKeyChain
     , signInstaller
+    , importCertificate
+    , deleteCertificate
     ) where
 
 ---
@@ -174,66 +174,42 @@ writeLauncherFile dir _ = do
 
 data SigningConfig = SigningConfig
   { signingIdentity         :: T.Text
-  , signingCertificate      :: FilePath
-  , signingKeyChain         :: T.Text
-  , signingKeyChainPassword :: T.Text
+  , signingKeyChain         :: Maybe T.Text
+  , signingKeyChainPassword :: Maybe T.Text
   } deriving (Show, Eq)
 
 signingConfig :: SigningConfig
 signingConfig = SigningConfig
-  { signingIdentity = "Input Output HK Limited (89TW38X994)"
-  , signingCertificate = "macos.p12"
-  , signingKeyChain = "macos-build.keychain"
-  , signingKeyChainPassword = "ci"
+  { signingIdentity = "Developer ID Installer: Input Output HK Limited (89TW38X994)"
+  , signingKeyChain = Nothing
+  , signingKeyChainPassword = Nothing
   }
 
--- | Add our certificate to a new keychain.
--- Uses the CERT_PASS environment variable to decrypt certificate.
-setupKeyChain :: SigningConfig -> Maybe Text -> IO ()
-setupKeyChain cfg@SigningConfig{..} password = do
-  run "security" ["create-keychain", "-p", signingKeyChainPassword, signingKeyChain]
-  run "security" ["default-keychain", "-s", signingKeyChain]
-  importCertificate cfg password >>= \case
-    ExitSuccess -> do
-      -- avoids modal dialogue popping up on sierra
-      let sierraFix = ["set-key-partition-list", "-S", "apple-tool:,apple:", "-s", "-k", signingKeyChainPassword, signingKeyChain]
-      echoCmd "security" sierraFix
-      void $ proc "security" sierraFix mempty
-      -- disables unlock timeout
-      run "security" ["set-keychain-settings", signingKeyChain]
-      -- for informational purposes
-      run "security" ["show-keychain-info", signingKeyChain]
-    ExitFailure c -> do
-      deleteKeyChain cfg
-      die $ "Signing failed with status " ++ show c
-
 -- | Runs "security import -x"
-importCertificate :: SigningConfig -> Maybe Text -> IO ExitCode
-importCertificate SigningConfig{..} password = do
+importCertificate :: SigningConfig -> FilePath -> Maybe Text -> IO ExitCode
+importCertificate SigningConfig{..} cert password = do
   let optArg s = map toText . maybe [] (\p -> [s, p])
       certPass = optArg "-P" password
+      keyChain = optArg "-k" signingKeyChain
   productSign <- optArg "-T" . fmap (toText . encodeString) <$> which "productsign"
-  let args = ["import", toText signingCertificate, "-x", "-k", signingKeyChain] ++ certPass ++ productSign
+  let args = ["import", toText cert, "-x"] ++ keyChain ++ certPass ++ productSign
   -- echoCmd "security" args
   proc "security" args mempty
 
--- | Remove our certificate's keychain from store.
-deleteKeyChain :: SigningConfig -> IO ()
-deleteKeyChain SigningConfig{..} = void $ proc "security" ["delete-keychain", signingKeyChain] mempty
+--- | Remove our certificate from the keychain
+deleteCertificate :: SigningConfig -> IO ExitCode
+deleteCertificate SigningConfig{..} = proc "security" args mempty
+  where
+    args = ["delete-certificate", "-c", signingIdentity] ++ keychain
+    keychain = maybe [] pure signingKeyChain
 
+-- | Creates a new installer package with signature added.
 signInstaller :: SigningConfig -> T.Text -> T.Text -> IO ()
-signInstaller cfg@SigningConfig{..} src dst = withUnlockedKeyChain cfg $ sign
+signInstaller SigningConfig{..} src dst =
+  procs "productsign" (sign ++ keychain ++ [ toText src, toText dst ]) mempty
   where
-    sign = procs "productsign" [ "--sign", "Developer ID Installer: " <> signingIdentity
-                               , "--keychain", signingKeyChain
-                               , toText src, toText dst ] mempty
-
--- | Unlock the keychain, perform an action, lock keychain.
-withUnlockedKeyChain :: SigningConfig -> IO a -> IO a
-withUnlockedKeyChain SigningConfig{..} = bracket_ unlock lock
-  where
-    unlock = run "security" ["unlock-keychain", "-p", signingKeyChainPassword, signingKeyChain]
-    lock = run "security" ["lock-keychain", signingKeyChain]
+    sign = [ "--sign", signingIdentity ]
+    keychain = maybe [] (\k -> [ "--keychain", k]) signingKeyChain
 
 -- | Use pkgutil to verify that signing worked.
 checkSignature :: T.Text -> IO ()
