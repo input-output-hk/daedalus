@@ -59,7 +59,7 @@ export default class NetworkStatusStore extends Store {
       this._redirectToWalletAfterSync,
       this._redirectToLoadingWhenDisconnected,
       this._redirectToSyncingWhenLocalTimeDifferent,
-      this._setupTimeDifferencePolling,
+      this._pollTimeDifferenceWhenConnected,
     ]);
     this._pollSyncProgress();
   }
@@ -286,7 +286,7 @@ export default class NetworkStatusStore extends Store {
     return Date.now() - this._startTime;
   }
 
-  _setupTimeDifferencePolling = () => {
+  _pollTimeDifferenceWhenConnected = () => {
     if (!environment.isAdaApi()) return;
     if (this.isConnected) {
       this._pollLocalTimeDifference();
