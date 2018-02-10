@@ -8,6 +8,9 @@ import WalletNoTransactions from '../../components/wallet/transactions/WalletNoT
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import resolver from '../../utils/imports';
+
+const { formattedWalletAmount } = resolver('utils/formatters');
 
 export const messages = defineMessages({
   noTransactions: {
@@ -52,9 +55,9 @@ export default class WalletSummaryPage extends Component<Props> {
           transactions={recent}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           hasMoreToLoad={false}
-          onLoadMore={() => {}}
           assuranceMode={wallet.assuranceMode}
           walletId={wallet.id}
+          formattedWalletAmount={formattedWalletAmount}
         />
       );
     } else if (!hasAny) {

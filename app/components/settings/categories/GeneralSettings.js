@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import Select from 'react-polymorph/lib/components/Select';
-import SelectSkin from 'react-polymorph/lib/skins/simple/SelectSkin';
+import SelectSkin from 'react-polymorph/lib/skins/simple/raw/SelectSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import LocalizableError from '../../../i18n/LocalizableError';

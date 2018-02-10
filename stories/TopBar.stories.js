@@ -5,9 +5,10 @@ import SidebarLayout from '../app/components/layout/SidebarLayout';
 import TopBar from '../app/components/layout/TopBar';
 import NodeSyncStatusIcon from '../app/components/widgets/NodeSyncStatusIcon';
 import WalletTestEnvironmentLabel from '../app/components/widgets/WalletTestEnvironmentLabel';
+import { formattedWalletAmount } from '../app/utils/ada/formatters';
 
 const topBarTestEnv = (
-  <TopBar>
+  <TopBar formattedWalletAmount={formattedWalletAmount}>
     <WalletTestEnvironmentLabel version={0.5} />
     <NodeSyncStatusIcon
       networkStatus={{
@@ -20,7 +21,7 @@ const topBarTestEnv = (
 );
 
 const topBarProductionEnv = (
-  <TopBar>
+  <TopBar formattedWalletAmount={formattedWalletAmount}>
     <NodeSyncStatusIcon
       networkStatus={{
         isSynced: true,

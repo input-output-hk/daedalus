@@ -13,5 +13,5 @@ module.exports = {
   sassLoader: devConfig.sassLoader,
   plugins: [
     new HappyPack({ loaders: ['babel-loader'] }),
-  ]
+  ],
 };
