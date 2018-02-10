@@ -221,7 +221,9 @@ export default class NetworkStatusStore extends Store {
   _pollLocalTimeDifference() {
     Logger.debug('Started polling local time difference');
     if (this._timeDifferencePollInterval) clearInterval(this._timeDifferencePollInterval);
-    this._timeDifferencePollInterval = setInterval(this._updateLocalTimeDifference, TIME_DIFF_POLL_INTERVAL);
+    this._timeDifferencePollInterval = setInterval(
+      this._updateLocalTimeDifference, TIME_DIFF_POLL_INTERVAL
+    );
     this._updateLocalTimeDifference();
   }
 
