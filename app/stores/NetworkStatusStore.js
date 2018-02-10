@@ -14,7 +14,7 @@ let cachedDifficulties = null;
 // Maximum number of out-of-sync blocks above which we consider to be out-of-sync
 const OUT_OF_SYNC_BLOCKS_LIMIT = 6;
 const SYNC_PROGRESS_INTERVAL = 2000;
-const TIME_DIFF_POLL_INTERVAL = 500;
+const TIME_DIFF_POLL_INTERVAL = 60 * 60 * 1000; // 60 minutes
 const ALLOWED_NETWORK_DIFFICULTY_STALL = 2 * 60 * 1000; // 2 minutes
 
 const STARTUP_STAGES = {
@@ -47,6 +47,8 @@ export default class NetworkStatusStore extends Store {
   );
   @observable _localDifficultyStartedWith = null;
 
+  _timeDifferenceTimerInterval: ?number = null;
+
   @action initialize() {
     super.initialize();
     if (cachedDifficulties !== null) Object.assign(this, cachedDifficulties);
@@ -57,9 +59,9 @@ export default class NetworkStatusStore extends Store {
       this._redirectToWalletAfterSync,
       this._redirectToLoadingWhenDisconnected,
       this._redirectToSyncingWhenLocalTimeDifferent,
+      this._setupTimeDifferencePolling,
     ]);
     this._pollSyncProgress();
-    if (environment.isAdaApi()) this._pollLocalTimeDifference();
   }
 
   teardown() {
@@ -217,8 +219,15 @@ export default class NetworkStatusStore extends Store {
   };
 
   _pollLocalTimeDifference() {
-    setInterval(this._updateLocalTimeDifference, TIME_DIFF_POLL_INTERVAL);
+    Logger.debug('Started polling local time difference');
+    if (this._timeDifferenceTimerInterval) clearInterval(this._timeDifferenceTimerInterval);
+    this._timeDifferenceTimerInterval = setInterval(this._updateLocalTimeDifference, TIME_DIFF_POLL_INTERVAL);
     this._updateLocalTimeDifference();
+  }
+
+  _stopPollingLocalTimeDifference() {
+    Logger.debug('Stopped polling local time difference');
+    if (this._timeDifferenceTimerInterval) clearInterval(this._timeDifferenceTimerInterval);
   }
 
   _pollSyncProgress() {
@@ -276,5 +285,14 @@ export default class NetworkStatusStore extends Store {
   _getStartupTimeDelta() {
     return Date.now() - this._startTime;
   }
+
+  _setupTimeDifferencePolling = () => {
+    if (!environment.isAdaApi()) return;
+    if (this.isConnected) {
+      this._pollLocalTimeDifference();
+    } else {
+      this._stopPollingLocalTimeDifference();
+    }
+  };
 
 }
