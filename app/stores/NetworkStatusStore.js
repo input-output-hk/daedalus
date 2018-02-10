@@ -47,7 +47,7 @@ export default class NetworkStatusStore extends Store {
   );
   @observable _localDifficultyStartedWith = null;
 
-  _timeDifferenceTimerInterval: ?number = null;
+  _timeDifferencePollInterval: ?number = null;
 
   @action initialize() {
     super.initialize();
@@ -220,14 +220,14 @@ export default class NetworkStatusStore extends Store {
 
   _pollLocalTimeDifference() {
     Logger.debug('Started polling local time difference');
-    if (this._timeDifferenceTimerInterval) clearInterval(this._timeDifferenceTimerInterval);
-    this._timeDifferenceTimerInterval = setInterval(this._updateLocalTimeDifference, TIME_DIFF_POLL_INTERVAL);
+    if (this._timeDifferencePollInterval) clearInterval(this._timeDifferencePollInterval);
+    this._timeDifferencePollInterval = setInterval(this._updateLocalTimeDifference, TIME_DIFF_POLL_INTERVAL);
     this._updateLocalTimeDifference();
   }
 
   _stopPollingLocalTimeDifference() {
     Logger.debug('Stopped polling local time difference');
-    if (this._timeDifferenceTimerInterval) clearInterval(this._timeDifferenceTimerInterval);
+    if (this._timeDifferencePollInterval) clearInterval(this._timeDifferencePollInterval);
   }
 
   _pollSyncProgress() {
