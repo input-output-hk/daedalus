@@ -53,15 +53,11 @@ function typedHttpRequest<Response>(
       if (response.statusCode !== 200) {
         return reject();
       }
-      response.on('data', (chunk) => {
-        console.debug('response.data', chunk);
-      });
+      response.on('data', () => {});
       response.on('error', (error) => {
-        console.debug('response.error', error);
         reject(error);
       });
       response.on('end', () => {
-        console.debug('response.end');
         resolve();
       });
     });
