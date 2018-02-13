@@ -296,7 +296,7 @@ export default class BugReportDialog extends Component<Props, State> {
 
     return (
       <Dialog
-        className="supportRequestDialog"
+        className={styles.dialog}
         title={intl.formatMessage(messages.title)}
         actions={!error ? actions : alternativeActions}
         closeOnOverlayClick
