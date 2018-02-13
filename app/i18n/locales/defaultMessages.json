@@ -173,6 +173,20 @@
           "column": 30,
           "line": 16
         }
+      },
+      {
+        "defaultMessage": "!!!There was a problem sending the support request.",
+        "description": "\"There was a problem sending the support request.\" error message",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "app/api/common.js",
+        "id": "api.errors.ReportRequestError",
+        "start": {
+          "column": 22,
+          "line": 21
+        }
       }
     ],
     "path": "app/api/common.json"
@@ -434,6 +448,263 @@
       }
     ],
     "path": "app/components/notifications/StatusMessagesNotification.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Support request",
+        "description": "Title for the \"Settings support\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.title",
+        "start": {
+          "column": 9,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Your e-mail",
+        "description": "Label for the \"Email\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.emailLabel",
+        "start": {
+          "column": 14,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter your e-mail here, so we can answer you",
+        "description": "Placeholder for the \"Email\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.emailPlaceholder",
+        "start": {
+          "column": 20,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Subject",
+        "description": "Label for the \"Subject\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.subjectLabel",
+        "start": {
+          "column": 16,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter subject of your problem",
+        "description": "Placeholder for the \"Subject\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.subjectPlaceholder",
+        "start": {
+          "column": 22,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Problem",
+        "description": "Label for the \"Problem\" text area on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.problemLabel",
+        "start": {
+          "column": 16,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Describe steps which got you to problem",
+        "description": "Placeholder for the \"Problem\" text area on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.problemPlaceholder",
+        "start": {
+          "column": 22,
+          "line": 53
+        }
+      },
+      {
+        "defaultMessage": "!!!Attach logs",
+        "description": "Label for the \"Attach logs\" switch on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 62
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.logsSwitchLabel",
+        "start": {
+          "column": 19,
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!Logs will help to find out problem you are describing",
+        "description": "Text for the \"Attach logs\" switch on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.logsSwitchPlaceholder",
+        "start": {
+          "column": 25,
+          "line": 63
+        }
+      },
+      {
+        "defaultMessage": "!!!Send request",
+        "description": "Label for the \"Send request\" button on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 72
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.button.label",
+        "start": {
+          "column": 21,
+          "line": 68
+        }
+      },
+      {
+        "defaultMessage": "!!!Alternatively, to help the development team investigate the issue you are experiencing,\n    you can send your support request manually. You should first download your logs.\n    Please take the following steps to submit your support request:",
+        "description": "Bug report dialog alternative description text.",
+        "end": {
+          "column": 3,
+          "line": 79
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.description",
+        "start": {
+          "column": 26,
+          "line": 73
+        }
+      },
+      {
+        "defaultMessage": "!!!There was a problem sending the support request.",
+        "description": "Bug report dialog alternative error message.",
+        "end": {
+          "column": 3,
+          "line": 84
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.errorMessage",
+        "start": {
+          "column": 27,
+          "line": 80
+        }
+      },
+      {
+        "defaultMessage": "!!!Click the Download logs button to retrieve your archived logs, and save the file on your desktop.",
+        "description": "Bug report dialog alternative instructions step one.",
+        "end": {
+          "column": 3,
+          "line": 89
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.instructions.step1",
+        "start": {
+          "column": 32,
+          "line": 85
+        }
+      },
+      {
+        "defaultMessage": "!!!Click the Submit manually button, which will take you to the issue-reporting page on the Daedalus website.",
+        "description": "Bug report dialog alternative instructions step two.",
+        "end": {
+          "column": 3,
+          "line": 94
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.instructions.step2",
+        "start": {
+          "column": 32,
+          "line": 90
+        }
+      },
+      {
+        "defaultMessage": "!!!Attach the logs to your support request, fill in your details, and submit the form.",
+        "description": "Bug report dialog alternative instructions step three.",
+        "end": {
+          "column": 3,
+          "line": 99
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.instructions.step3",
+        "start": {
+          "column": 32,
+          "line": 95
+        }
+      },
+      {
+        "defaultMessage": "!!!Submit manually",
+        "description": "Label for the \"Submit manually\" button on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 104
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.submitManually.button.label",
+        "start": {
+          "column": 29,
+          "line": 100
+        }
+      },
+      {
+        "defaultMessage": "!!!daedaluswallet.io/problem",
+        "description": "Link to Daedalus website \"Problem\" page",
+        "end": {
+          "column": 3,
+          "line": 109
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.submitManually.link",
+        "start": {
+          "column": 22,
+          "line": 105
+        }
+      },
+      {
+        "defaultMessage": "!!!Download",
+        "description": "Label for the \"Download\" button on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 114
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.download.button.label",
+        "start": {
+          "column": 23,
+          "line": 110
+        }
+      }
+    ],
+    "path": "app/components/profile/bug-report/BugReportDialog.json"
   },
   {
     "descriptors": [
@@ -4027,151 +4298,6 @@
       }
     ],
     "path": "app/components/wallet/WalletSettings.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Support request",
-        "description": "Title for the \"Settings support\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "app/components/wallet/WalletBugReportDialog.js",
-        "id": "wallet.supportRequest.dialog.title",
-        "start": {
-          "column": 9,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!Your e-mail",
-        "description": "Label for the \"Email\" input on the wallet settings support dialog.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "app/components/wallet/WalletBugReportDialog.js",
-        "id": "wallet.supportRequest.dialog.emailLabel",
-        "start": {
-          "column": 14,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter your e-mail here, so we can answer you",
-        "description": "Placeholder for the \"Email\" input on the wallet settings support dialog.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "app/components/wallet/WalletBugReportDialog.js",
-        "id": "wallet.supportRequest.dialog.emailPlaceholder",
-        "start": {
-          "column": 20,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!Subject",
-        "description": "Label for the \"Subject\" input on the wallet settings support dialog.",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "app/components/wallet/WalletBugReportDialog.js",
-        "id": "wallet.supportRequest.dialog.subjectLabel",
-        "start": {
-          "column": 16,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter subject of your problem",
-        "description": "Placeholder for the \"Subject\" input on the wallet settings support dialog.",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "app/components/wallet/WalletBugReportDialog.js",
-        "id": "wallet.supportRequest.dialog.subjectPlaceholder",
-        "start": {
-          "column": 22,
-          "line": 42
-        }
-      },
-      {
-        "defaultMessage": "!!!Problem",
-        "description": "Label for the \"Problem\" text area on the wallet settings support dialog.",
-        "end": {
-          "column": 3,
-          "line": 51
-        },
-        "file": "app/components/wallet/WalletBugReportDialog.js",
-        "id": "wallet.supportRequest.dialog.problemLabel",
-        "start": {
-          "column": 16,
-          "line": 47
-        }
-      },
-      {
-        "defaultMessage": "!!!Describe steps which got you to problem",
-        "description": "Placeholder for the \"Problem\" text area on the wallet settings support dialog.",
-        "end": {
-          "column": 3,
-          "line": 56
-        },
-        "file": "app/components/wallet/WalletBugReportDialog.js",
-        "id": "wallet.supportRequest.dialog.problemPlaceholder",
-        "start": {
-          "column": 22,
-          "line": 52
-        }
-      },
-      {
-        "defaultMessage": "!!!Attach logs",
-        "description": "Label for the \"Attach logs\" switch on the wallet settings support dialog.",
-        "end": {
-          "column": 3,
-          "line": 61
-        },
-        "file": "app/components/wallet/WalletBugReportDialog.js",
-        "id": "wallet.supportRequest.dialog.logsSwitchLabel",
-        "start": {
-          "column": 19,
-          "line": 57
-        }
-      },
-      {
-        "defaultMessage": "!!!Logs will help to find out problem you are describing",
-        "description": "Text for the \"Attach logs\" switch on the wallet settings support dialog.",
-        "end": {
-          "column": 3,
-          "line": 66
-        },
-        "file": "app/components/wallet/WalletBugReportDialog.js",
-        "id": "wallet.supportRequest.dialog.logsSwitchPlaceholder",
-        "start": {
-          "column": 25,
-          "line": 62
-        }
-      },
-      {
-        "defaultMessage": "!!!Send request",
-        "description": "Label for the \"Send request\" button on the wallet settings support dialog.",
-        "end": {
-          "column": 3,
-          "line": 71
-        },
-        "file": "app/components/wallet/WalletBugReportDialog.js",
-        "id": "wallet.supportRequest.dialog.button.label",
-        "start": {
-          "column": 21,
-          "line": 67
-        }
-      }
-    ],
-    "path": "app/components/wallet/WalletBugReportDialog.json"
   },
   {
     "descriptors": [

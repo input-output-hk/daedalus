@@ -1,5 +1,4 @@
 import { ipcMain } from 'electron';
-import { map } from 'lodash';
 import fs from 'fs';
 import { Logger, stringifyError } from '../../app/utils/logging';
 
@@ -11,13 +10,10 @@ export const DELETE_COMPRESSED_LOGS = {
 };
 
 export default () => {
-  ipcMain.on(DELETE_COMPRESSED_LOGS.REQUEST, (event, files) => {
+  ipcMain.on(DELETE_COMPRESSED_LOGS.REQUEST, (event, file) => {
     const sender = event.sender;
     try {
-      Logger.info('DELETE_COMPRESSED_LOGS started');
-      map(files, (file) => {
-        fs.unlinkSync(file);
-      });
+      fs.unlinkSync(file);
       Logger.info('DELETE_COMPRESSED_LOGS.SUCCESS');
       return sender.send(DELETE_COMPRESSED_LOGS.SUCCESS);
     } catch (error) {

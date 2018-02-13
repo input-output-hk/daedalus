@@ -8,7 +8,7 @@ export type SendEtcBugReportRequestParams = {
     email: string,
     subject: string,
     problem: string,
-    logs: Array<string>,
+    compressedLog: string,
   },
   application: string,
 };
@@ -16,7 +16,7 @@ export type SendEtcBugReportRequestParams = {
 export const sendEtcBugReport = (
   { requestFormData, application }: SendEtcBugReportRequestParams
 ): Promise<{}> => {
-  const { email, subject, problem, logs } = requestFormData;
+  const { email, subject, problem, compressedLog } = requestFormData;
   let platform;
   switch (environment.platform) {
     case 'darwin':
@@ -42,7 +42,7 @@ export const sendEtcBugReport = (
     version: '0.0.1',
     build: environment.build,
     os: platform,
-    logs,
+    compressedLog,
     date: moment().format('YYYY-MM-DDTHH:mm:ss'),
     magic: 2000000000,
     type: {

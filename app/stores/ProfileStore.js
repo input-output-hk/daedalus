@@ -1,22 +1,22 @@
 // @flow
 import { action, observable, computed, toJS } from 'mobx';
-import { concat, get, map } from 'lodash';
+import { size } from 'lodash';
 import BigNumber from 'bignumber.js';
 import moment from 'moment/moment';
 import { ipcRenderer } from 'electron';
-import path from 'path';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import environment from '../environment';
 import { THEMES } from '../themes/index';
 import { ROUTES } from '../routes-config';
 import { GET_LOGS } from '../../electron/ipc-api/get-logs';
+import { DOWNLOAD_LOGS } from '../../electron/ipc-api/download-logs';
 import { COMPRESS_LOGS } from '../../electron/ipc-api/compress-logs';
 import { DELETE_COMPRESSED_LOGS } from '../../electron/ipc-api/delete-compressed-logs';
 import LocalizableError from '../i18n/LocalizableError';
 import globalMessages from '../i18n/global-messages';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
-import type { LogFiles, CompressedLogs } from '../types/LogTypes';
+import type { LogFiles, CompressedFileDownload } from '../types/LogTypes';
 
 export default class SettingsStore extends Store {
 
@@ -50,8 +50,9 @@ export default class SettingsStore extends Store {
   @observable sendBugReport: Request<any> = new Request(this.api[environment.API].sendBugReport);
   @observable error: ?LocalizableError = null;
   @observable logFiles: LogFiles = {};
-  @observable compressedLogs: CompressedLogs = {};
+  @observable compressedLog: ?string = null;
   @observable isCompressing: boolean = false;
+  @observable compressedFileDownload: CompressedFileDownload = {};
   /* eslint-enable max-len */
 
   setup() {
@@ -60,9 +61,12 @@ export default class SettingsStore extends Store {
     this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
     this.actions.profile.updateTheme.listen(this._updateTheme);
     this.actions.profile.getLogs.listen(this._getLogs);
+    this.actions.profile.resetBugReportDialog.listen(this._resetBugReportDialog);
+    this.actions.profile.downloadLogs.listen(this._downloadLogs);
     this.actions.profile.compressLogs.listen(this._compressLogs);
     this.actions.profile.sendBugReport.listen(this._sendBugReport);
     ipcRenderer.on(GET_LOGS.SUCCESS, this._onGetLogsSuccess);
+    ipcRenderer.on(DOWNLOAD_LOGS.SUCCESS, this._onDownloadLogsSuccess);
     ipcRenderer.on(COMPRESS_LOGS.SUCCESS, this._onCompressLogsSuccess);
     ipcRenderer.on(COMPRESS_LOGS.ERROR, this._onCompressLogsError);
     this.registerReactions([
@@ -81,6 +85,7 @@ export default class SettingsStore extends Store {
   teardown() {
     super.teardown();
     ipcRenderer.removeAllListeners(GET_LOGS.SUCCESS);
+    ipcRenderer.removeAllListeners(DOWNLOAD_LOGS.SUCCESS);
     ipcRenderer.removeAllListeners(COMPRESS_LOGS.SUCCESS);
     ipcRenderer.removeAllListeners(COMPRESS_LOGS.ERROR);
   }
@@ -226,8 +231,39 @@ export default class SettingsStore extends Store {
     ipcRenderer.send(GET_LOGS.REQUEST);
   };
 
+  _resetBugReportDialog = () => {
+    // if logs are compressed then perform delete on dialog close
+    if (size(this.compressedLog) > 0) {
+      this._deleteCompressedFiles(this.compressedLog);
+    }
+    this._reset();
+    this.actions.dialogs.closeActiveDialog.trigger();
+  }
+
+  _downloadLogs = action(({ destination }) => {
+    this.compressedFileDownload = {
+      inProgress: true,
+      destination,
+    };
+
+    // logs allready compressed, download
+    if (this.compressedLog) {
+      ipcRenderer.send(DOWNLOAD_LOGS.REQUEST, this.compressedLog, destination);
+    } else {
+      // start proccess getLogs -> compressLogs -> downloadLogs (again)
+      this._getLogs();
+    }
+  });
+
   _onGetLogsSuccess = action((event, res) => {
     this.logFiles = res;
+    if (this.compressedFileDownload.inProgress) {
+      this._compressLogs({ logs: res });
+    }
+  });
+
+  _onDownloadLogsSuccess = action(() => {
+    this.compressedFileDownload = {};
   });
 
   _compressLogs = action(({ logs }) => {
@@ -237,60 +273,46 @@ export default class SettingsStore extends Store {
 
   _onCompressLogsSuccess = action((event, res) => {
     this.isCompressing = false;
-    this.compressedLogs = res;
+    this.compressedLog = res;
+    if (this.compressedFileDownload.inProgress) {
+      this._downloadLogs({ destination: this.compressedFileDownload.destination });
+    }
   });
 
   _onCompressLogsError = action(() => {
     this.error = new WalletSupportRequestLogsCompressError();
   });
 
-  _sendBugReport = action(({ email, subject, problem, logs } : {
+  _sendBugReport = action(({ email, subject, problem, compressedLog } : {
     email: string,
     subject: ?string,
     problem: ?string,
-    logs: ?Array<string>,
+    compressedLog: ?string,
   }) => {
     this.sendBugReport.execute({
-      email, subject, problem, logs,
+      email, subject, problem, compressedLog,
     })
       .then(action(() => {
-        this._deleteCompressedFiles(logs);
+        this._deleteCompressedFiles();
         this._reset();
         this.actions.dialogs.closeActiveDialog.trigger();
       }))
       .catch(action((error) => {
-        this._deleteCompressedFiles(logs);
-        this._reset();
         this.error = error;
       }));
   });
 
-  _deleteCompressedFiles = action((logs) => {
+  _deleteCompressedFiles = action(() => {
     // Trigger ipc renderer to delete compressed temp files if exists
-    if (logs) {
-      let filesToDelete;
-      const fileNames = logs.files;
-      const compressedLogsOriginalFile = get(this.compressedLogs, 'originalFile');
-
-      const files = [];
-      map(fileNames, (fileName) => {
-        const file = path.join(logs.path, fileName);
-        files.push(file);
-      });
-
-      if (files.length > 1 && compressedLogsOriginalFile) {
-        // if files are splitted then also include original file to delete
-        filesToDelete = concat(files, compressedLogsOriginalFile);
-      } else {
-        filesToDelete = files;
-      }
-      ipcRenderer.send(DELETE_COMPRESSED_LOGS.REQUEST, filesToDelete);
+    if (this.compressedLog) {
+      ipcRenderer.send(DELETE_COMPRESSED_LOGS.REQUEST, this.compressedLog);
     }
   })
 
   @action _reset = () => {
     this.error = null;
-    this.compressedLogs = {};
+    this.compressedLog = null;
+    this.compressedFileDownload = {};
   };
 
 }

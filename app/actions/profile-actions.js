@@ -8,9 +8,11 @@ export default class ProfileActions {
 
   compressLogs: Action<{ logs: Object }> = new Action();
   getLogs: Action<any> = new Action();
+  downloadLogs: Action<{ destination: string }> = new Action();
+  resetBugReportDialog: Action<any> = new Action();
   setSendLogsChoice: Action<{ sendLogs: boolean }> = new Action();
   sendBugReport: Action<{
-    email: string, subject: ?string, problem: ?string, files: Array<string>,
+    email: string, subject: ?string, problem: ?string, compressedLog: ?string,
   }> = new Action();
   updateLocale: Action<{ locale: string }> = new Action();
   updateTheme: Action<{ theme: string }> = new Action();

@@ -1,13 +1,10 @@
 import http from 'http';
 import FormData from 'form-data/lib/form_data';
 import fs from 'fs';
-import path from 'path';
-import { map, get } from 'lodash';
 
 export type RequestOptions = {
   hostname: string,
   method: string,
-  path: string,
   port: number,
   headers?: {
     'Content-Type': string,
@@ -39,15 +36,11 @@ function typedHttpRequest<Response>(
     // Prepare multipart/form-data
     const formData = new FormData();
     formData.append('payload', JSON.stringify(payload));
-    const logs = payload.logs;
-    if (logs) {
-      const logsPath = get(logs, ['path']);
-      const logsFileNames = get(logs, ['files']);
 
-      map(logsFileNames, (fileName) => {
-        const stream = fs.createReadStream(path.join(logsPath, fileName));
-        formData.append(fileName, stream);
-      });
+    // prepare file stream (attachment)
+    if (payload.compressedLog) {
+      const stream = fs.createReadStream(payload.compressedLog);
+      formData.append('logs.zip', stream);
     }
 
     options.headers = formData.getHeaders();
@@ -57,7 +50,9 @@ function typedHttpRequest<Response>(
     formData.pipe(httpRequest);
 
     httpRequest.on('response', (response) => {
-      console.debug('response', response);
+      if (response.statusCode !== 200) {
+        return reject();
+      }
       response.on('data', (chunk) => {
         console.debug('response.data', chunk);
       });

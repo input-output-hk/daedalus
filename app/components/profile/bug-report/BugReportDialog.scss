@@ -8,6 +8,27 @@
   margin-bottom: 20px;
 }
 
+.bugReportAlternativeText {
+  margin-top: 14px;
+  ol {
+    list-style: decimal;
+    margin-left: 20px;
+    margin-top: 14px;
+  }
+
+  p, li {
+    font-family: var(--font-light);
+    font-size: 16px;
+    font-weight: 300;
+    line-height: 1.38;
+    margin-bottom: 6px;
+    color: #5e6066;
+    strong {
+      font-weight: 500;
+    }
+  }
+}
+
 .logsWrapper {
   .logsSwitch {
     border-top: 1px solid var(--theme-separation-border-color);
@@ -65,8 +86,8 @@
 
 .error {
   @include error-message;
-  margin-top: 30px;
-  text-align: center;
+  font-family: var(--font-medium);
+  text-align: left;
 }
 
 .isSubmitting {

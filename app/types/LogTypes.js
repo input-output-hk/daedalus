@@ -8,4 +8,9 @@ export type CompressedLogs = {
   files: Array<string>,
   path: string,
   originalFile: string,
-} | {}
+} | {};
+
+export type CompressedFileDownload = {
+  inProgress?: boolean,
+  destination?: string,
+};

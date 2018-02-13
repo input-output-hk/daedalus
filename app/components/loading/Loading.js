@@ -181,7 +181,7 @@ export default class Loading extends Component<Props, State> {
 
     return (
       <div className={componentStyles}>
-        {showReportIssue && (
+        {!showReportIssue && (
           <div className={styles.reportIssue}>
             <h1 className={styles.reportIssueText}>
               {isConnecting ?

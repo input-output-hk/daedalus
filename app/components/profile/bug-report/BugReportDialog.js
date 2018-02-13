@@ -1,10 +1,10 @@
 // @flow
 import React, { Component } from 'react';
-import { map, get, isEqual } from 'lodash';
+import { map, get } from 'lodash';
 import { observer } from 'mobx-react';
 import { isEmail, isEmpty } from 'validator';
 import classnames from 'classnames';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
 import TextArea from 'react-polymorph/lib/components/TextArea';
@@ -17,70 +17,115 @@ import Dialog from '../../widgets/Dialog';
 import { InvalidEmailError, FieldRequiredError } from '../../../i18n/errors';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './BugReportDialog.scss';
-import type { LogFiles, CompressedLogs } from '../../../types/LogTypes';
+import type { LogFiles } from '../../../types/LogTypes';
 
 const messages = defineMessages({
   title: {
-    id: 'wallet.supportRequest.dialog.title',
+    id: 'bugReport.dialog.title',
     defaultMessage: '!!!Support request',
     description: 'Title for the "Settings support" dialog.',
   },
   emailLabel: {
-    id: 'wallet.supportRequest.dialog.emailLabel',
+    id: 'bugReport.dialog.emailLabel',
     defaultMessage: '!!!Your e-mail',
     description: 'Label for the "Email" input on the wallet settings support dialog.',
   },
   emailPlaceholder: {
-    id: 'wallet.supportRequest.dialog.emailPlaceholder',
+    id: 'bugReport.dialog.emailPlaceholder',
     defaultMessage: '!!!Enter your e-mail here, so we can answer you',
     description: 'Placeholder for the "Email" input on the wallet settings support dialog.',
   },
   subjectLabel: {
-    id: 'wallet.supportRequest.dialog.subjectLabel',
+    id: 'bugReport.dialog.subjectLabel',
     defaultMessage: '!!!Subject',
     description: 'Label for the "Subject" input on the wallet settings support dialog.',
   },
   subjectPlaceholder: {
-    id: 'wallet.supportRequest.dialog.subjectPlaceholder',
+    id: 'bugReport.dialog.subjectPlaceholder',
     defaultMessage: '!!!Enter subject of your problem',
     description: 'Placeholder for the "Subject" input on the wallet settings support dialog.',
   },
   problemLabel: {
-    id: 'wallet.supportRequest.dialog.problemLabel',
+    id: 'bugReport.dialog.problemLabel',
     defaultMessage: '!!!Problem',
     description: 'Label for the "Problem" text area on the wallet settings support dialog.',
   },
   problemPlaceholder: {
-    id: 'wallet.supportRequest.dialog.problemPlaceholder',
+    id: 'bugReport.dialog.problemPlaceholder',
     defaultMessage: '!!!Describe steps which got you to problem',
     description: 'Placeholder for the "Problem" text area on the wallet settings support dialog.',
   },
   logsSwitchLabel: {
-    id: 'wallet.supportRequest.dialog.logsSwitchLabel',
+    id: 'bugReport.dialog.logsSwitchLabel',
     defaultMessage: '!!!Attach logs',
     description: 'Label for the "Attach logs" switch on the wallet settings support dialog.',
   },
   logsSwitchPlaceholder: {
-    id: 'wallet.supportRequest.dialog.logsSwitchPlaceholder',
+    id: 'bugReport.dialog.logsSwitchPlaceholder',
     defaultMessage: '!!!Logs will help to find out problem you are describing',
     description: 'Text for the "Attach logs" switch on the wallet settings support dialog.',
   },
   submitButtonLabel: {
-    id: 'wallet.supportRequest.dialog.button.label',
+    id: 'bugReport.dialog.button.label',
     defaultMessage: '!!!Send request',
     description: 'Label for the "Send request" button on the wallet settings support dialog.'
+  },
+  alternativeDescription: {
+    id: 'bugReport.dialog.alternative.description',
+    defaultMessage: `!!!Alternatively, to help the development team investigate the issue you are experiencing,
+    you can send your support request manually. You should first download your logs.
+    Please take the following steps to submit your support request:`,
+    description: 'Bug report dialog alternative description text.'
+  },
+  alternativeErrorMessage: {
+    id: 'bugReport.dialog.alternative.errorMessage',
+    defaultMessage: '!!!There was a problem sending the support request.',
+    description: 'Bug report dialog alternative error message.'
+  },
+  alternativeInstructionsStep1: {
+    id: 'bugReport.dialog.alternative.instructions.step1',
+    defaultMessage: '!!!Click the Download logs button to retrieve your archived logs, and save the file on your desktop.',
+    description: 'Bug report dialog alternative instructions step one.'
+  },
+  alternativeInstructionsStep2: {
+    id: 'bugReport.dialog.alternative.instructions.step2',
+    defaultMessage: '!!!Click the Submit manually button, which will take you to the issue-reporting page on the Daedalus website.',
+    description: 'Bug report dialog alternative instructions step two.'
+  },
+  alternativeInstructionsStep3: {
+    id: 'bugReport.dialog.alternative.instructions.step3',
+    defaultMessage: '!!!Attach the logs to your support request, fill in your details, and submit the form.',
+    description: 'Bug report dialog alternative instructions step three.'
+  },
+  submitManuallyButtonLabel: {
+    id: 'bugReport.dialog.alternative.submitManually.button.label',
+    defaultMessage: '!!!Submit manually',
+    description: 'Label for the "Submit manually" button on the wallet settings support dialog.'
+  },
+  submitManuallyLink: {
+    id: 'bugReport.dialog.alternative.submitManually.link',
+    defaultMessage: '!!!daedaluswallet.io/problem',
+    description: 'Link to Daedalus website "Problem" page'
+  },
+  downloadButtonLabel: {
+    id: 'bugReport.dialog.alternative.download.button.label',
+    defaultMessage: '!!!Download',
+    description: 'Label for the "Download" button on the wallet settings support dialog.'
   },
 });
 
 type Props = {
   logFiles: LogFiles,
-  compressedLogs: CompressedLogs,
+  compressedLog: ?string,
   onCancel: Function,
   onSubmit: Function,
+  onSubmitManually: Function,
+  onDownload: Function,
   onGetLogs: Function,
   onCompressLogs: Function,
   isSubmitting: boolean,
   isCompressing: boolean,
+  isDownloading?: boolean,
   error: ?LocalizableError,
 };
 
@@ -102,14 +147,11 @@ export default class BugReportDialog extends Component<Props, State> {
   };
 
   componentWillReceiveProps(nextProps: Object) {
-    const commpressedFilesExist = get(nextProps, ['compressedLogs', 'files'], []).length > 0;
-    const commpressionFilesChanged = !isEqual(
-      this.props.compressedLogs, nextProps.compressedLogs
-    );
+    const commpressionFilesChanged = this.props.compressedLog !== nextProps.compressedLog;
 
-    if (commpressedFilesExist && commpressionFilesChanged) {
+    if (nextProps.compressedLog && commpressionFilesChanged && !nextProps.isDownloading) {
       // proceed to submit when ipc rendered successfully return compressed files
-      this.submit(nextProps.compressedLogs);
+      this.submit(nextProps.compressedLog);
     }
   }
 
@@ -159,19 +201,18 @@ export default class BugReportDialog extends Component<Props, State> {
     },
   });
 
-  submit = (compressedLogs: ?CompressedLogs) => {
+  submit = (compressedLog: ?string) => {
     this.form.submit({
       onSuccess: (form) => {
         const { logFiles } = this.props;
         const logsExist = get(logFiles, ['files'], []).length > 0;
-        const compressedLogsExist = get(compressedLogs, 'files', []).length > 0;
 
         const { email, subject, problem } = form.values();
         const data = {
-          email, subject, problem, logs: compressedLogs,
+          email, subject, problem, compressedLog
         };
 
-        if (this.state.showLogs && logsExist && !compressedLogsExist) {
+        if (this.state.showLogs && logsExist && !compressedLog) {
           // submit request with commpressed logs files
           this.props.onCompressLogs(this.props.logFiles);
         } else {
@@ -199,8 +240,10 @@ export default class BugReportDialog extends Component<Props, State> {
     const { form } = this;
     const {
       onCancel, isSubmitting, isCompressing,
-      logFiles, error,
+      logFiles, error, onDownload, isDownloading,
     } = this.props;
+
+    const submitManuallyLink = intl.formatMessage(messages.submitManuallyLink);
 
     const logsExist = get(logFiles, ['files'], []).length > 0;
     const logsPath = get(logFiles, 'path');
@@ -214,6 +257,11 @@ export default class BugReportDialog extends Component<Props, State> {
     const submitButtonClasses = classnames([
       'submitButton',
       (isSubmitting || isCompressing) ? styles.isSubmitting : null,
+    ]);
+
+    const downloadButtonClasses = classnames([
+      'downloadButton',
+      isDownloading ? styles.isSubmitting : null,
     ]);
 
     const emailField = form.$('email');
@@ -230,73 +278,106 @@ export default class BugReportDialog extends Component<Props, State> {
       },
     ];
 
+    const alternativeActions = [
+      {
+        className: downloadButtonClasses,
+        label: this.context.intl.formatMessage(messages.downloadButtonLabel),
+        primary: true,
+        disabled: isDownloading,
+        onClick: onDownload.bind(this),
+      },
+      {
+        className: 'submitManuallyButton',
+        label: this.context.intl.formatMessage(messages.submitManuallyButtonLabel),
+        primary: true,
+        onClick: this.onSubmitManually.bind(this, submitManuallyLink),
+      },
+    ];
+
     return (
       <Dialog
         className="supportRequestDialog"
         title={intl.formatMessage(messages.title)}
-        actions={actions}
+        actions={!error ? actions : alternativeActions}
         closeOnOverlayClick
         onClose={onCancel}
         closeButton={<DialogCloseButton onClose={onCancel} />}
       >
-
-        <div className={styles.emailInput}>
-          <Input
-            className="email"
-            {...emailField.bind()}
-            error={emailField.error}
-            skin={<SimpleInputSkin />}
-          />
-        </div>
-
-        <div className={styles.subjectInput}>
-          <Input
-            className="subject"
-            {...subjectField.bind()}
-            error={subjectField.error}
-            skin={<SimpleInputSkin />}
-          />
-        </div>
-
-        <div className={styles.problemTextarea}>
-          <TextArea
-            className="problemDescription"
-            autoResize={false}
-            rows={3}
-            {...problemField.bind()}
-            error={problemField.error}
-            skin={<SimpleTextAreaSkin />}
-          />
-        </div>
-
-        <div className={styles.logsWrapper}>
-          <div className={styles.logsSwitch}>
-            <div className={styles.logsSwitchlabel}>
-              {intl.formatMessage(messages.logsSwitchLabel)}
+        {error ? (
+          <div>
+            <p className={styles.error}>{intl.formatMessage(messages.alternativeErrorMessage)}</p>
+            <div className={styles.bugReportAlternativeText}>
+              <p><FormattedHTMLMessage {...messages.alternativeDescription} /></p>
+              <ol>
+                <li><FormattedHTMLMessage {...messages.alternativeInstructionsStep1} /></li>
+                <li><FormattedHTMLMessage {...messages.alternativeInstructionsStep2} /></li>
+                <li><FormattedHTMLMessage {...messages.alternativeInstructionsStep3} /></li>
+              </ol>
             </div>
-
-            <Checkbox
-              onChange={this.handleLogsSwitchToggle}
-              label={intl.formatMessage(messages.logsSwitchPlaceholder)}
-              checked={showLogs}
-              skin={<SimpleSwitchSkin />}
-            />
           </div>
+          ) : (
+            <div>
+              <div className={styles.emailInput}>
+                <Input
+                  className="email"
+                  {...emailField.bind()}
+                  error={emailField.error}
+                  skin={<SimpleInputSkin />}
+                />
+              </div>
 
-          {logsExist && (
-            <div className={attachedLogsClasses}>
-              <p className={styles.logPath}>{logsPath}</p>
-              {map(fileNames, (fileName) => (
-                <p className={styles.logFileName} key={fileName}>{fileName}</p>
-              ))}
+              <div className={styles.subjectInput}>
+                <Input
+                  className="subject"
+                  {...subjectField.bind()}
+                  error={subjectField.error}
+                  skin={<SimpleInputSkin />}
+                />
+              </div>
+
+              <div className={styles.problemTextarea}>
+                <TextArea
+                  className="problemDescription"
+                  autoResize={false}
+                  rows={3}
+                  {...problemField.bind()}
+                  error={problemField.error}
+                  skin={<SimpleTextAreaSkin />}
+                />
+              </div>
+
+              <div className={styles.logsWrapper}>
+                <div className={styles.logsSwitch}>
+                  <div className={styles.logsSwitchlabel}>
+                    {intl.formatMessage(messages.logsSwitchLabel)}
+                  </div>
+
+                  <Checkbox
+                    onChange={this.handleLogsSwitchToggle}
+                    label={intl.formatMessage(messages.logsSwitchPlaceholder)}
+                    checked={showLogs}
+                    skin={<SimpleSwitchSkin />}
+                  />
+                </div>
+
+                {logsExist && (
+                  <div className={attachedLogsClasses}>
+                    <p className={styles.logPath}>{logsPath}</p>
+                    {map(fileNames, (fileName) => (
+                      <p className={styles.logFileName} key={fileName}>{fileName}</p>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-          )}
-        </div>
-
-        {error ? <p className={styles.error}>{intl.formatMessage(error)}</p> : null}
+          )
+        }
 
       </Dialog>
     );
   }
 
+  onSubmitManually = (link: string) => {
+    this.props.onSubmitManually(link);
+  }
 }

@@ -78,6 +78,7 @@ import {
   GenericApiError,
   IncorrectWalletPasswordError,
   WalletAlreadyRestoredError,
+  ReportRequestError,
 } from '../common';
 
 import {
@@ -529,7 +530,7 @@ export default class AdaApi {
       return true;
     } catch (error) {
       Logger.error('AdaApi::sendBugReport error: ' + stringifyError(error));
-      throw new GenericApiError();
+      throw new ReportRequestError();
     }
   }
 
