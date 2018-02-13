@@ -85,13 +85,11 @@ main = do
   run "rm" [toText tempInstaller]
   echo $ "Generated " <> unsafeTextToLine (pkg cfg)
 
--- | Only sign installer if this is not a PR build and we aren't on
--- Travis CI.
+-- | Only sign installer if this is not a normal PR build.
 shouldSignDecision :: IO Bool
 shouldSignDecision = do
   pr <- pullRequestFromEnv
-  isTravis <- isJust <$> travisJobIdFromEnv
-  return $ (pr == Nothing || pr == Just "629") && not isTravis
+  pure (pr == Nothing || pr == Just "629")
 
 makeScriptsDir :: InstallerConfig -> Managed T.Text
 makeScriptsDir cfg = case icApi cfg of
