@@ -1,0 +1,72 @@
+.component {
+  align-items: center;
+  background-color: var(--theme-system-error-overlay-background-color);
+  bottom: 0;
+  box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25);
+  color: var(--theme-system-error-overlay-text-color);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  left: 0;
+  padding: 50px;
+  position: absolute;
+  right: 0;
+  text-align: center;
+  top: 0;
+
+  .icon {
+    margin-bottom: 36px;
+    object-fit: contain;
+    & > svg {
+      height: 110px;
+      width: 110px;
+      path {
+        fill: var(--theme-system-error-overlay-attention-icon-color);
+      }
+      path:nth-child(1) {
+        opacity: 0.2;
+      }
+      path:nth-child(2) {
+        opacity: 0.6;
+      }
+    }
+  }
+
+  h1, p, button {
+    font-family: var(--font-regular);
+  }
+
+  h1 {
+    font-size: 20px;
+    line-height: 1.2;
+    margin-bottom: 8.5px;
+  }
+
+  p {
+    font-size: 16px;
+    line-height: 1.38;
+    margin-bottom: 30px;
+    opacity: 0.8;
+  }
+
+  button {
+    background-color: var(--theme-system-error-overlay-button-background-color);
+    border: solid 1px var(--theme-system-error-overlay-button-border-color);
+    border-radius: 5px;
+    color: var(--theme-system-error-overlay-button-text-color);
+    cursor: pointer;
+    font-size: 14px;
+    height: 50px;
+    letter-spacing: 1px;
+    min-height: 50px;
+    transition: box-shadow 0.2s cubic-bezier(0.4, 0, 1, 1), background-color 0.2s cubic-bezier(0.4, 0, 0.2, 1), color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    width: 360px;
+
+    &:not(.disabled) {
+      &:hover {
+        background-color: var(--theme-system-error-overlay-button-background-color-hover);
+        color: var(--theme-system-error-overlay-button-text-color-hover);
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import DialogBackButton from '../../../widgets/DialogBackButton';

@@ -82,7 +82,10 @@ export default class SettingsStore extends Store {
   @computed get currentTheme(): string {
     const { result } = this.getThemeRequest.execute();
     if (this.isCurrentThemeSet) return result;
-    return environment.isMainnet() ? THEMES.DARK_BLUE : THEMES.LIGHT_BLUE; // default
+    if (environment.isAdaApi()) {
+      return environment.isMainnet() ? THEMES.DARK_BLUE : THEMES.LIGHT_BLUE; // defaults
+    }
+    return THEMES.LIGHT_BLUE; // default for ETC
   }
 
   @computed get isCurrentThemeSet(): boolean {
@@ -95,7 +98,7 @@ export default class SettingsStore extends Store {
 
   @computed get termsOfUse(): string {
     const network = environment.isMainnet() ? 'mainnet' : 'other';
-    return require(`../i18n/locales/terms-of-use/${network}/${this.currentLocale}.md`);
+    return require(`../i18n/locales/terms-of-use/${environment.API}/${network}/${this.currentLocale}.md`);
   }
 
   @computed get hasLoadedTermsOfUseAcceptance(): boolean {

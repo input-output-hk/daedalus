@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
-import InputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
+import InputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
 import styles from './AmountInputSkinEtc.scss';
 import { formattedAmountWithoutTrailingZeros } from '../../../../utils/formatters';
 import { messages } from '../AmountInputSkin';

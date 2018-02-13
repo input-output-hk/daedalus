@@ -12,9 +12,6 @@ import { assuranceLevels } from '../../../config/transactionAssuranceConfig';
 import { environmentSpecificMessages } from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../domain/WalletTransaction';
 import environment from '../../../environment';
-import resolver from '../../../utils/imports';
-
-const { formattedWalletAmount } = resolver('utils/formatters');
 
 const messages = defineMessages({
   card: {
@@ -125,6 +122,7 @@ type Props = {
   state: TransactionState,
   assuranceLevel: string,
   isLastInList: boolean,
+  formattedWalletAmount: Function,
 };
 
 type State = {
@@ -147,7 +145,7 @@ export default class Transaction extends Component<Props, State> {
 
   render() {
     const data = this.props.data;
-    const { isLastInList, state, assuranceLevel } = this.props;
+    const { isLastInList, state, assuranceLevel, formattedWalletAmount } = this.props;
     const { isExpanded } = this.state;
     const { intl } = this.context;
     const isFailedTransaction = state === transactionStates.FAILED;

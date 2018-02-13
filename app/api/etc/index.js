@@ -31,7 +31,6 @@ import { getEtcTransactions } from './getEtcTransactions';
 import { getEtcBlockNumber } from './getEtcBlockNumber';
 import { isValidMnemonic } from '../../../lib/decrypt';
 
-import type { TransactionType } from '../../domain/WalletTransaction';
 import type {
   GetSyncProgressResponse, GetWalletRecoveryPhraseResponse,
   GetTransactionsRequest, GetTransactionsResponse, GetWalletsResponse,
@@ -159,27 +158,21 @@ export default class EtcApi {
     try {
       const walletId = request.walletId;
       const mostRecentBlockNumber: EtcBlockNumber = await getEtcBlockNumber({ ca });
-      const transactions: EtcTransactions = await getEtcTransactions({
+      const response: EtcTransactions = await getEtcTransactions({
         ca,
         walletId,
         fromBlock: Math.max(mostRecentBlockNumber - 10000, 0),
         toBlock: mostRecentBlockNumber,
       });
-      Logger.debug('EtcApi::getTransactions success: ' + stringifyData(transactions));
-      const receivedTxs = await Promise.all(
-        transactions.received.map(async (tx: EtcTransaction) => (
-          _createWalletTransactionFromServerData(transactionTypes.INCOME, tx)
+      Logger.debug('EtcApi::getTransactions success: ' + stringifyData(response));
+      const transactions = await Promise.all(
+        response.transactions.map(async (txData: EtcTransaction) => (
+          _createWalletTransactionFromServerData(txData)
         ))
       );
-      const sentTxs = await Promise.all(
-        transactions.sent.map(async (tx: EtcTransaction) => (
-          _createWalletTransactionFromServerData(transactionTypes.EXPEND, tx)
-        ))
-      );
-      const allTxs = receivedTxs.concat(sentTxs);
       return {
-        transactions: allTxs,
-        total: allTxs.length,
+        transactions,
+        total: transactions.length,
       };
     } catch (error) {
       Logger.error('EtcApi::getTransactions error: ' + stringifyError(error));
@@ -224,7 +217,7 @@ export default class EtcApi {
       Logger.error('EtcApi::createWallet error: ' + stringifyError(error));
       throw new GenericApiError();
     }
-  }
+  };
 
   getWalletRecoveryPhrase(): Promise<GetWalletRecoveryPhraseResponse> {
     Logger.debug('EtcApi::getWalletRecoveryPhrase called');
@@ -245,8 +238,12 @@ export default class EtcApi {
     try {
       const senderAccount = params.from;
       const { from, to, value, password } = params;
+      const gasPrice = ETC_DEFAULT_GAS_PRICE;
+      const gas = quantityToBigNumber(
+        await getEtcEstimatedGas({ ca, from, to, value, gasPrice })
+      );
       const txHash: EtcTxHash = await sendEtcTransaction({
-        ca, from, to, value, password, gasPrice: ETC_DEFAULT_GAS_PRICE,
+        ca, from, to, value, password, gasPrice, gas,
       });
       Logger.debug('EtcApi::createTransaction success: ' + stringifyData(txHash));
       return _createTransaction(senderAccount, txHash);
@@ -328,7 +325,7 @@ export default class EtcApi {
       }
       throw new GenericApiError();
     }
-  }
+  };
 
   isValidMnemonic(mnemonic: string): Promise<boolean> {
     return isValidMnemonic(mnemonic, 12);
@@ -372,16 +369,16 @@ export default class EtcApi {
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
 
 const _createWalletTransactionFromServerData = async (
-  type: TransactionType, txData: EtcTransaction
+  txData: EtcTransaction,
 ): Promise<WalletTransaction> => {
-  const { hash, blockHash, value, from, to, pending, } = txData;
+  const { hash, blockHash, value, from, to, pending, isOutgoing, } = txData;
   const txBlock: ?EtcBlock = blockHash ? await getEtcBlockByHash({
     ca, blockHash,
   }) : null;
   const blockDate = txBlock ? unixTimestampToDate(txBlock.timestamp) : new Date();
   return new WalletTransaction({
     id: hash,
-    type,
+    type: isOutgoing ? transactionTypes.EXPEND : transactionTypes.INCOME,
     title: '',
     description: '',
     amount: quantityToBigNumber(value).dividedBy(WEI_PER_ETC),
@@ -399,6 +396,6 @@ const _createTransaction = async (senderAccount: EtcWalletId, txHash: EtcTxHash)
   const txData: EtcTransaction = await getEtcTransactionByHash({
     ca, txHash,
   });
-  const type = senderAccount === txData.from ? transactionTypes.EXPEND : transactionTypes.INCOME;
-  return _createWalletTransactionFromServerData(type, txData);
+  txData.isOutgoing = senderAccount === txData.from;
+  return _createWalletTransactionFromServerData(txData);
 };

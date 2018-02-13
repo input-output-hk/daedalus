@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 
 export type EtcAccountPassphrase = string;
 export type EtcWalletId = string;
-export type EtcWalletBalance = string;
+export type EtcWalletBalance = BigNumber;
 export type EtcBlockNumber = number;
 export type EtcGas = string;
 export type EtcGasPrice = BigNumber;
@@ -36,9 +36,9 @@ export type EtcTransaction = {
   gas: EtcGas,
   input: string,
   pending: boolean,
+  isOutgoing: boolean,
 };
 
 export type EtcTransactions = {
-  received: Array<EtcTransaction>,
-  sent: Array<EtcTransaction>,
+  transactions: Array<EtcTransaction>,
 };

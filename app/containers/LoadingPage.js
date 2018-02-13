@@ -5,8 +5,8 @@ import { defineMessages } from 'react-intl';
 import CenteredLayout from '../components/layout/CenteredLayout';
 import Loading from '../components/loading/Loading';
 import type { StoresMap } from '../stores/index';
+import adaLogo from '../assets/images/ada-logo.inline.svg';
 import cardanoLogo from '../assets/images/cardano-logo.inline.svg';
-import cardanoLogoWhite from '../assets/images/cardano-logo-white.inline.svg';
 
 export const messages = defineMessages({
   loadingWalletData: {
@@ -25,15 +25,18 @@ export default class LoadingPage extends Component<Props> {
     const { stores } = this.props;
     const {
       isConnecting, isSyncing, syncPercentage, isLoadingWallets,
-      hasBeenConnected, hasBlockSyncingStarted,
+      hasBeenConnected, hasBlockSyncingStarted, localTimeDifference,
+      ALLOWED_TIME_DIFFERENCE,
     } = stores.networkStatus;
-    const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = stores.profile;
+    const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     return (
       <CenteredLayout>
         <Loading
-          currencyIcon={cardanoLogo}
-          currencyIconWhite={cardanoLogoWhite}
+          currencyIcon={adaLogo}
+          apiIcon={cardanoLogo}
           isSyncing={isSyncing}
+          localTimeDifference={localTimeDifference}
+          allowedTimeDifference={ALLOWED_TIME_DIFFERENCE}
           isConnecting={isConnecting}
           syncPercentage={syncPercentage}
           isLoadingDataForNextScreen={isLoadingWallets}
@@ -42,6 +45,7 @@ export default class LoadingPage extends Component<Props> {
           hasBlockSyncingStarted={hasBlockSyncingStarted}
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
+          currentLocale={currentLocale}
         />
       </CenteredLayout>
     );
