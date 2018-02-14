@@ -5,7 +5,7 @@ module Main where
 import Universum
 import Options.Applicative
 import qualified System.IO as IO
-import Turtle (readline, need, lineToText, Line, ExitCode(..), proc, procs)
+import Turtle (readline, need, lineToText, Line, ExitCode(..))
 import qualified Data.Text as T
 
 import MacInstaller hiding (main)
@@ -42,7 +42,7 @@ parseAction = parseLoad <|> parseDelete
         <> help "Remove certificate from store, and keychain if specified." )
 
 main :: IO ()
-main = exitWith =<< run =<< execParser opts
+main = exitWith =<< go =<< execParser opts
   where
     opts = info (parseCommand <**> helper)
       ( fullDesc
@@ -52,15 +52,20 @@ main = exitWith =<< run =<< execParser opts
 systemKeyChain :: Text
 systemKeyChain = "/Library/Keychains/System.keychain"
 
-run :: Command -> IO ExitCode
-run (Command kc (LoadCertificate f)) = do
-  maybe (pure ()) (setupKeychain "travis") kc
-  getPassword >>= importCertificate cfg' f
-    where cfg' = signingConfig { signingKeyChain = Just (fromMaybe systemKeyChain kc) }
-run (Command kc DeleteCertificate) = do
-  res <- deleteCertificate signingConfig
-  maybe (pure ()) deleteKeychain kc
+go :: Command -> IO ExitCode
+go (Command kc (LoadCertificate f)) = do
+  doMaybe (setupKeychain "travis") kc
+  let cfg' = signingConfig { signingKeyChain = Just (fromMaybe systemKeyChain kc) }
+  res <- getPassword >>= importCertificate cfg' f
+  doMaybe (preventPasswordPrompts "travis") kc
   pure res
+go (Command kc DeleteCertificate) = do
+  res <- deleteCertificate signingConfig
+  doMaybe deleteKeychain kc
+  pure res
+
+doMaybe :: (a -> IO ()) -> Maybe a -> IO ()
+doMaybe = maybe (pure ())
 
 getPassword :: IO (Maybe Text)
 getPassword = need "CERT_PASS" >>= \case
@@ -93,17 +98,24 @@ getSecret = bracket open close (\_ -> readline)
 -- | Create a new keychain for non-interactive signing.
 setupKeychain :: Text -> Text -> IO ()
 setupKeychain password keychain = do
-  procs "security" ["create-keychain", "-p", password, keychain] mempty
-  procs "security" ["default-keychain", "-s", keychain] mempty
-  -- avoids modal dialogue popping up on sierra
-  let sierraFix = ["set-key-partition-list", "-S", "apple-tool:,apple:", "-s", "-k", password, keychain]
-  void $ proc "security" sierraFix mempty
+  run "security" ["create-keychain", "-p", password, keychain]
+  run "security" ["default-keychain", "-s", keychain]
   -- disables unlock timeout
-  procs "security" ["set-keychain-settings", keychain] mempty
-  procs "security" ["unlock-keychain", "-p", password, keychain] mempty
+  run "security" ["set-keychain-settings", keychain]
+  run "security" ["unlock-keychain", "-p", password, keychain]
   -- for informational purposes
-  procs "security" ["show-keychain-info", keychain] mempty
+  run "security" ["show-keychain-info", keychain]
 
 -- | Remove our certificate's keychain from store.
 deleteKeychain :: Text -> IO ()
-deleteKeychain keychain = void $ proc "security" ["delete-keychain", keychain] mempty
+deleteKeychain keychain = void $ run' "security" ["delete-keychain", keychain]
+
+-- | Sets the "partition list" of all keys which can sign. Not sure
+-- what this means exactly but it prevents a modal password dialogue
+-- popping up on sierra.
+preventPasswordPrompts :: Text -- ^ Keychain password
+                       -> Text -- ^ Specific keychain
+                       -> IO ()
+preventPasswordPrompts password keychain = void $ run' "security" args
+  where args = [ "set-key-partition-list", "-S", "apple-tool:,apple:", "-s"
+               , "-k", password, keychain ]

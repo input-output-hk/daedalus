@@ -6,6 +6,8 @@ module MacInstaller
     , signInstaller
     , importCertificate
     , deleteCertificate
+    , run
+    , run'
     ) where
 
 ---
@@ -200,7 +202,7 @@ importCertificate SigningConfig{..} cert password = do
 
 --- | Remove our certificate from the keychain
 deleteCertificate :: SigningConfig -> IO ExitCode
-deleteCertificate SigningConfig{..} = proc "security" args mempty
+deleteCertificate SigningConfig{..} = run' "security" args
   where
     args = ["delete-certificate", "-c", signingIdentity] ++ keychain
     keychain = maybe [] pure signingKeyChain
@@ -208,7 +210,7 @@ deleteCertificate SigningConfig{..} = proc "security" args mempty
 -- | Creates a new installer package with signature added.
 signInstaller :: SigningConfig -> T.Text -> T.Text -> IO ()
 signInstaller SigningConfig{..} src dst =
-  procs "productsign" (sign ++ keychain ++ [ toText src, toText dst ]) mempty
+  run "productsign" $ sign ++ keychain ++ [ src, dst ]
   where
     sign = [ "--sign", signingIdentity ]
     keychain = maybe [] (\k -> [ "--keychain", k]) signingKeyChain
@@ -217,11 +219,18 @@ signInstaller SigningConfig{..} src dst =
 checkSignature :: T.Text -> IO ()
 checkSignature pkg = run "pkgutil" ["--check-signature", pkg]
 
--- | Print the command then run it.
+-- | Print the command then run it. Raises an exception on exit
+-- failure.
 run :: T.Text -> [T.Text] -> IO ()
 run cmd args = do
     echoCmd cmd args
     procs cmd args mempty
+
+-- | Print the command then run it.
+run' :: T.Text -> [T.Text] -> IO ExitCode
+run' cmd args = do
+    echoCmd cmd args
+    proc cmd args mempty
 
 echoCmd :: T.Text -> [T.Text] -> IO ()
 echoCmd cmd args = echo . unsafeTextToLine $ T.intercalate " " (cmd : args)
