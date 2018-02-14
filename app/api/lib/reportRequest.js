@@ -44,11 +44,8 @@ function typedHttpRequest<Response>(
     }
 
     options.headers = formData.getHeaders();
+
     const httpRequest = http.request(options);
-
-    // Attach form-data to the request
-    formData.pipe(httpRequest);
-
     httpRequest.on('response', (response) => {
       if (response.statusCode !== 200) {
         return reject();
@@ -62,6 +59,9 @@ function typedHttpRequest<Response>(
       });
     });
     httpRequest.on('error', (error) => reject(error));
+
+    // Attach form-data and trigger the request
+    formData.pipe(httpRequest);
   });
 }
 
