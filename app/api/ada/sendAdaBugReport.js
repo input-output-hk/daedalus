@@ -1,5 +1,6 @@
 // @flow
 import moment from 'moment';
+import url from 'url';
 import { request } from '../lib/reportRequest';
 import environment from '../../environment';
 
@@ -17,6 +18,8 @@ export const sendAdaBugReport = (
   { requestFormData, application }: SendAdaBugReportRequestParams
 ): Promise<{}> => {
   const { email, subject, problem, compressedLog } = requestFormData;
+  const reportUrl = url.parse(environment.REPORT_URL);
+
   let platform;
   switch (environment.platform) {
     case 'darwin':
@@ -33,10 +36,10 @@ export const sendAdaBugReport = (
   }
 
   return request({
-    hostname: 'localhost',
+    hostname: reportUrl.hostname,
     method: 'POST',
     path: '/report',
-    port: 8000,
+    port: reportUrl.port,
   }, {
     application,
     version: '0.0.1',
