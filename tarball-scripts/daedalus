@@ -1,0 +1,12 @@
+#!/bin/sh
+
+export APPROOT=$(dirname "${BASH_SOURCE[0]}")
+
+$APPROOT/check-install
+
+export LD_DEBUG=files
+export LIBGL_ALWAYS_SOFTWARE=1
+export LIBGL_DEBUG=verbose
+export LIBGL_DRIVERS_PATH=$APPROOT/lib/dri/
+
+$APPROOT/bin/electron --enable-logging --v=1 --trace-to-console=all /nix/store/aaq4jv4a6b1dac09n1rjsf0j6qvqwnkj-daedalus-app --disable-gpu "$@"

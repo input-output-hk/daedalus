@@ -1,7 +1,4 @@
-with import (import ./fetchNixpkgs.nix {
-  rev = "3eccd0b11d1";
-  sha256 = "1z5zp60dlr61748nlcjlka94v02misn0z3d6gb44k7c8gbi7kkmi";
-}) { config = {}; };
+{ stdenv, runCommand, writeText, writeScriptBin, fetchurl, fetchFromGitHub, openssl, xar, cpio, electron }:
 let
   master_config = {
     daedalus_build_number = "3619";
@@ -13,17 +10,17 @@ let
     url = "http://s3.eu-central-1.amazonaws.com/daedalus-travis/Daedalus-installer-1.0.${master_config.daedalus_build_number}.pkg";
     sha256 = master_config.daedalus_hash;
   };
-  rawapp = pkgs.runCommand "daedalus-app" { buildInputs = with pkgs; [ xar cpio ]; } ''
+  rawapp = runCommand "daedalus-app" { buildInputs = [ xar cpio ]; } ''
     xar -xf ${darwinPackage}
     cat $NIX_BUILD_TOP/temp.pkg/Payload | gunzip | cpio -i
     cp -vir Daedalus.app/Contents/Resources/app/ $out
   '';
-  daedalus_frontend = pkgs.writeScriptBin "daedalus" ''
-    #!${pkgs.stdenv.shell}
+  daedalus_frontend = writeScriptBin "daedalus" ''
+    #!${stdenv.shell}
     cd ~/.daedalus/
-    exec ${pkgs.electron}/bin/electron ${rawapp}
+    exec ${electron}/bin/electron ${rawapp}
   '';
-  cardanoSrc = pkgs.fetchFromGitHub {
+  cardanoSrc = fetchFromGitHub {
     owner = "input-output-hk";
     repo = "cardano-sl";
     rev = master_config.cardano_rev;
@@ -40,7 +37,7 @@ let
     cp -vi ${cardanoPkgs.cardano-sl.src + "/../log-config-prod.yaml"} log-config-prod.yaml
     cp -vi ${topologyFile} topology.yaml
   '';
-  topologyFile = pkgs.writeText "topology.yaml" ''
+  topologyFile = writeText "topology.yaml" ''
     wallet:
       relays:
         [
@@ -82,4 +79,6 @@ let
       -n --wallet-address -n 127.0.0.1:8090 \
       -n --topology -n ${configFiles}/topology.yaml
   '';
-in daedalus
+in {
+  inherit daedalus rawapp;
+}
