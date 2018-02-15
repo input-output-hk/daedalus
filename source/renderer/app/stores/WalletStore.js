@@ -206,9 +206,10 @@ export default class WalletsStore extends Store {
     });
   };
 
-  _pollRefresh = async () => (
-    this.stores.networkStatus.isSynced && await this.refreshWalletsData()
-  );
+  _pollRefresh = async () => {
+    const { isSynced, isSystemTimeCorrect } = this.stores.networkStatus;
+    return isSynced && isSystemTimeCorrect && await this.refreshWalletsData();
+  };
 
   _toggleAddWalletDialogOnWalletsLoaded = () => {
     // Register mobx observers for active import and restore in order to trigger reaction on change

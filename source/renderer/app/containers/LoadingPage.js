@@ -25,9 +25,8 @@ export default class LoadingPage extends Component<Props> {
   render() {
     const { stores } = this.props;
     const {
-      isConnecting, isSyncing, syncPercentage, isLoadingWallets,
-      hasBeenConnected, hasBlockSyncingStarted, localTimeDifference,
-      ALLOWED_TIME_DIFFERENCE,
+      isConnecting, isSyncing, isSynced, syncPercentage, hasBeenConnected,
+      hasBlockSyncingStarted, localTimeDifference, ALLOWED_TIME_DIFFERENCE,
     } = stores.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     return (
@@ -40,7 +39,7 @@ export default class LoadingPage extends Component<Props> {
           allowedTimeDifference={ALLOWED_TIME_DIFFERENCE}
           isConnecting={isConnecting}
           syncPercentage={syncPercentage}
-          isLoadingDataForNextScreen={isLoadingWallets}
+          isLoadingDataForNextScreen={!isSyncing || isSynced}
           loadingDataForNextScreenMessage={messages.loadingWalletData}
           hasBeenConnected={hasBeenConnected}
           hasBlockSyncingStarted={hasBlockSyncingStarted}

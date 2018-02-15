@@ -120,6 +120,15 @@ export default class SettingsStore extends Store {
     return this.getSendLogsChoiceRequest.wasExecuted;
   }
 
+  @computed get isSetupPage(): boolean {
+    const { currentRoute } = this.stores.app;
+    return (
+      currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
+      currentRoute === ROUTES.PROFILE.TERMS_OF_USE ||
+      currentRoute === ROUTES.PROFILE.SEND_LOGS
+    );
+  }
+
   _updateLocale = async ({ locale }: { locale: string }) => {
     await this.setProfileLocaleRequest.execute(locale);
     await this.getProfileLocaleRequest.execute();

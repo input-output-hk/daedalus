@@ -101,6 +101,7 @@ export default class Loading extends Component<Props> {
     const daedalusLoadingLogo = daedalusLogo;
     const currencyLoadingLogo = currencyIcon;
     const apiLoadingLogo = apiIcon;
+    const isSystemTimeOff = localTimeDifference > allowedTimeDifference;
 
     let connectingMessage;
     if (hasBeenConnected) {
@@ -128,27 +129,29 @@ export default class Loading extends Component<Props> {
               </div>
             )}
             {isSyncing && (
-              <div className="syncingWrapper">
-                <div className={styles.syncing}>
-                  <h1 className={styles.headline}>
-                    {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
-                  </h1>
-                </div>
-                {(localTimeDifference > allowedTimeDifference) && (
-                  <SystemTimeErrorOverlay
-                    localTimeDifference={localTimeDifference}
-                    currentLocale={currentLocale}
-                    onProblemSolutionClick={onProblemSolutionClick}
-                  />
-                )}
+              <div className={styles.syncing}>
+                <h1 className={styles.headline}>
+                  {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
+                </h1>
               </div>
+            )}
+            {isSystemTimeOff && (
+              <SystemTimeErrorOverlay
+                localTimeDifference={localTimeDifference}
+                currentLocale={currentLocale}
+                onProblemSolutionClick={onProblemSolutionClick}
+              />
             )}
             {!isSyncing && !isConnecting && isLoadingDataForNextScreen && (
               <div className={styles.syncing}>
-                <h1 className={styles.headline}>
-                  {intl.formatMessage(loadingDataForNextScreenMessage)}
-                </h1>
-                <LoadingSpinner />
+                {!isSystemTimeOff && (
+                  <div>
+                    <h1 className={styles.headline}>
+                      {intl.formatMessage(loadingDataForNextScreenMessage)}
+                    </h1>
+                    <LoadingSpinner />
+                  </div>
+                )}
               </div>
             )}
           </div>
