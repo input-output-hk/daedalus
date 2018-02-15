@@ -1,0 +1,32 @@
+#!/bin/sh
+
+set -x
+
+export APPROOT=$(realpath $(dirname "${BASH_SOURCE[0]}"))
+
+function fixbin {
+  $APPROOT/bin/patchelf --set-interpreter $APPROOT/lib/ld-linux-x86-64.so.2 --set-rpath $APPROOT/lib "$@"
+}
+function fixlib {
+  $APPROOT/bin/patchelf --set-rpath $APPROOT/lib:$APPROOT/lib/dri "$@"
+}
+function reinstall {
+  fixbin $APPROOT/bin/electron
+  for x in $APPROOT/lib/*.so* $APPROOT/lib/dri/*.so; do
+    if [[ ! "$x" == */ld-linux-x86-64.so.2 ]]; then
+      if [ -f "$x" ]; then
+        fixlib $x
+      fi
+    fi
+  done
+  echo $APPROOT > $APPROOT/install-location
+}
+
+if [ ! -f $APPROOT/install-location ]; then
+  reinstall
+else
+  LOC=$(cat $APPROOT/install-location)
+  if [ ! "$LOC" == "$APPROOT" ]; then
+    reinstall
+  fi
+fi
