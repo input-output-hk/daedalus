@@ -1,10 +1,10 @@
-{ runCommandCC, daedalus_internal, electron, nukeReferences, xlibs, static_patchelf, mesa_noglu, libudev, nss }:
+{ runCommandCC, daedalus_internal, electron, nukeReferences, xlibs, static_patchelf, libudev, nss }:
 
 runCommandCC "daedalus-tarball" {
   buildInputs = [ nukeReferences ];
   allowedReferences = [ "out" ];
 } ''
-  mkdir -p $out/{bin,lib/dri}
+  mkdir -p $out/{bin,lib}
   cp ${./tarball-scripts/daedalus} $out/daedalus
   cp ${./tarball-scripts/check-install} $out/check-install
 
@@ -12,8 +12,6 @@ runCommandCC "daedalus-tarball" {
   cp ${static_patchelf}/bin/patchelf $out/bin/
   cp -L ${libudev.lib}/lib/libudev.so.1 $out/lib/
   cp -L ${nss}/lib/{libsoftokn3.so,libfreeblpriv3.so} $out/lib/
-
-  cp -r ${mesa_noglu.drivers}/lib/dri/ $out/lib/
 
   for file in icudtl.dat snapshot_blob.bin natives_blob.bin locales content_resources_200_percent.pak pdf_viewer_resources.pak blink_image_resources_200_percent.pak views_resources_200_percent.pak resources content_shell.pak ui_resources_200_percent.pak; do
     cp -r ${electron}/lib/electron/$file $out/bin/
