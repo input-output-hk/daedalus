@@ -4,9 +4,9 @@ environment:
   nodejs_version: "6"
   NETWORK: "mainnet"
   AWS_ACCESS_KEY_ID:
-    secure: NoU3qXx0B+48v7PY3RzHrBrSqd4x/3dcJv8WwUzCNyE=
+    secure: OJTyvhi9DM4WzXkurTryP6CxiHcklNxjuHdVxc+D85E=
   AWS_SECRET_ACCESS_KEY:
-    secure: TIIz2Xtcn63BxDJ9h+2Uj73vJrfmImtlZHh0y2YxGIpwu3eRV9OA+1jhDiG2zPch
+    secure: hlqRod4ZR7cIPZWfLZbn2feAKbTWSAj5oNTqa7zXpSqQmNPCiAzieyVZ80/Mx5cU
   CERT_PASS:
     secure: 9tjYxdz1fqibx1WOrP5yn32iwbEXeYx+Btb5QJqHvMO4Ng2/yUtPi00/ZMXihFWV
   # Avoid long paths on Windows
