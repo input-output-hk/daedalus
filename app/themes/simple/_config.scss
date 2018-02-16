@@ -13,12 +13,12 @@ $theme-font-bold: var(--font-bold);
 
 $input-bg-color: var(--theme-input-background-color);
 $input-border: 1px solid var(--theme-input-border-color);
-$input-border-focus-color: 1px solid var(--theme-input-focus-border-color);
+$input-border-focus-color: var(--theme-input-focus-border-color);
 $input-color: var(--theme-input-text-color);
 $input-disabled-bg-color: var(--theme-input-disabled-background-color);
 $input-disabled-color: var(--theme-input-placeholder-color);
 $input-placeholder-color: var(--theme-input-placeholder-color);
-$input-errored-border-color: 1px solid var(--theme-input-error-color);
+$input-errored-border-color: var(--theme-input-error-color);
 
 // AUTOCOMPLETE
 
