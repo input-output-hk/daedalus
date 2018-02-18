@@ -22,7 +22,6 @@ nodeArgs:
 - ./wallet-topology.yaml
 nodeDbPath: $HOME/Library/Application Support/Daedalus/DB-1.0
 nodeLogConfig: log-config-prod.yaml
-nodeLogPath: $HOME/Library/Application Support/Daedalus/Logs/cardano-node.log
 
 walletPath: ./Frontend
 walletArgs: []

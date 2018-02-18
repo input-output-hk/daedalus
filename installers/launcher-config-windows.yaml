@@ -22,7 +22,6 @@ nodeArgs:
 - wallet-topology.yaml
 nodeDbPath: ! '%APPDATA%\Daedalus\DB-1.0'
 nodeLogConfig: log-config-prod.yaml
-nodeLogPath: ! '%APPDATA%\Daedalus\Logs\cardano-node.log'
 
 walletPath: ! '%DAEDALUS_DIR%\Daedalus.exe'
 walletArgs: []
