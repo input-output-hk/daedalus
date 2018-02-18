@@ -72,6 +72,7 @@ launcherArgs Launcher{..} = unwords $
         "--update-server", "http://update.cardano-mainnet.iohk.io",
         "--update-with-package",
         "--no-ntp",
+        "--block-storage-mirror", "http://127.0.0.1:8068",
         "--tlscert", quote (tlsBase <> "server" <> (pathSeparator : "server.crt")),
         "--tlskey",  quote (tlsBase <> "server" <> (pathSeparator : "server.key")),
         "--tlsca",   quote (tlsBase <> "ca"     <> (pathSeparator : "ca.crt"))
