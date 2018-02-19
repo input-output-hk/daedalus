@@ -16,7 +16,7 @@ $ npm link daedalus-client-api
 5. Launch the backend (cardano-sl) in production/staging mode:
 ```
 $ cd cardano-sl/
-$ ./scripts/launch/staging.sh
+$ ./scripts/launch/connect-to-cluster/mainnet-staging.sh
 ```
 6. Run Deadalus frontend in hot-server mode:
 ```
