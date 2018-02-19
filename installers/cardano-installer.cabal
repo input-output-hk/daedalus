@@ -15,18 +15,44 @@ executable make-installer
   other-modules:       MacInstaller
                      , WindowsInstaller
                      , RewriteLibs
-  build-depends:       Glob
-                     , aeson
-                     , base
-                     , bytestring
+  build-depends:       base
                      , directory
                      , filepath
+                     , Glob
                      , megaparsec
                      , nsis
+                     , split
+                     , system-filepath
+                     , temporary
                      , temporary
                      , text
                      , turtle
+                     , universum
+
+  default-language:    Haskell2010
+  ghc-options:         -threaded -rtsopts
+                       -Wall
+                       -fno-warn-orphans
+                       -with-rtsopts=-N
+                       -O2
+
+  default-extensions: NoImplicitPrelude
+                      OverloadedStrings
+
+executable load-certificate
+  main-is:             load-certificate.hs
+  other-modules:       MacInstaller
+  build-depends:       base
+                     , bytestring
+                     , directory
+                     , filepath
+                     , Glob
+                     , megaparsec
+                     , optparse-applicative
                      , split
+                     , system-filepath
+                     , text
+                     , turtle
                      , universum
                      , yaml
 
@@ -36,5 +62,6 @@ executable make-installer
                        -fno-warn-orphans
                        -with-rtsopts=-N
                        -O2
+
   default-extensions: NoImplicitPrelude
                       OverloadedStrings

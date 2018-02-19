@@ -25,7 +25,7 @@ script:
 - nix-env -iA nixpkgs.bashInteractive
 - scripts/build-installer-unix.sh "$VERSION" "$CARDANO_SL_BRANCH"
      --build-id       "$TRAVIS_BUILD_NUMBER"
-     --travis-pr      "$TRAVIS_PULL_REQUEST"
+     --pr-id          "$TRAVIS_PULL_REQUEST"
      --nix-path       "$NIX_PATH"
 notifications:
   slack:

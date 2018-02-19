@@ -3,7 +3,6 @@
 #   0. 'git'
 #   1. 'curl'
 #   2. 'nix-shell'
-#   3. 'stack'
 
 set -e
 
@@ -19,7 +18,7 @@ usage() {
     --fast-impure             Fast, impure, incremental build
     --build-id BUILD-NO       Identifier of the build; defaults to '0'
 
-    --travis-pr PR-ID         Travis pull request id we're building
+    --pr-id PR-ID             Pull request id we're building
     --nix-path NIX-PATH       NIX_PATH value
 
     --upload-s3               Upload the installer to S3
@@ -51,12 +50,19 @@ retry() {
 fast_impure=
 verbose=true
 build_id=0
-travis_pr=true
+pr_id=true
 upload_s3=
 test_install=
 
 daedalus_version="$1"; arg2nz "daedalus version" $1; shift
 cardano_branch="$(printf '%s' "$1" | tr '/' '-')"; arg2nz "Cardano SL branch to build Daedalus with" $1; shift
+
+# Parallel build options for Buildkite agents only
+if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
+    nix_shell="nix-shell --no-build-output --cores 0 --max-jobs 4"
+else
+    nix_shell="nix-shell --no-build-output"
+fi
 
 case "$(uname -s)" in
         Darwin ) OS_NAME=darwin; os=osx;   key=macos-3.p12;;
@@ -69,8 +75,8 @@ while test $# -ge 1
 do case "$1" in
            --fast-impure )                               fast_impure=true;;
            --build-id )       arg2nz "build identifier" $2;    build_id="$2"; shift;;
-           --travis-pr )      arg2nz "Travis pull request id" $2;
-                                                           travis_pr="$2"; shift;;
+           --pr-id )          arg2nz "Pull request id" $2;
+                                                               pr_id="$2"; shift;;
            --nix-path )       arg2nz "NIX_PATH value" $2;
                                                      export NIX_PATH="$2"; shift;;
            --upload-s3 )                                   upload_s3=t;;
@@ -121,35 +127,57 @@ test -d node_modules/daedalus-client-api/ -a -n "${fast_impure}" || {
 }
 
 test "$(find node_modules/ | wc -l)" -gt 100 -a -n "${fast_impure}" ||
-        nix-shell --run "npm install"
+        $nix_shell --run "npm install"
 
 test -d "release/darwin-x64/Daedalus-darwin-x64" -a -n "${fast_impure}" || {
-        nix-shell --run "npm run package -- --icon installers/icons/256x256.png"
+        $nix_shell --run "npm run package -- --icon installers/icons/256x256.png"
         echo "Size of Electron app is $(du -sh release)"
 }
 
-test -n "$(which stack)"     -a -n "${fast_impure}" ||
-        retry 5 bash -c "curl -L https://www.stackage.org/stack/${os}-x86_64 | \
-                         tar xz --strip-components=1 -C ~/.local/bin"
-
 cd installers
-    if test "${travis_pr}" = "false" -a "${os}" != "linux" # No Linux keys yet.
-    then retry 5 nix-shell -p awscli --run "aws s3 cp --region eu-central-1 s3://iohk-private/${key} macos.p12"
-    fi
-    retry 5 $(nix-build -j 2)/bin/make-installer
-    mkdir -p dist
-    if test -n "${upload_s3}"
+    echo "Prebuilding dependencies for cardano-installer, quietly.."
+    $nix_shell default.nix --run true || echo "Prebuild failed!"
+    echo "Building the cardano installer generator.."
+    INSTALLER=$(nix-build -j 2 --no-out-link)
+
+    # For Travis MacOSX non-PR builds only
+    if test \( "${pr_id}" = "false" -o "${pr_id}" = "629" \) -a -n "${TRAVIS_JOB_ID:-}" -a "${OS_NAME}" != "linux"
     then
-            echo "$0: --upload-s3 passed, will upload the installer to S3";
-            retry 5 nix-shell -p awscli --run "aws s3 cp 'dist/Daedalus-installer-${DAEDALUS_VERSION}.pkg' s3://daedalus-internal/ --acl public-read"
+        echo "Downloading and importing signing certificate.."
+        retry 5 $nix_shell -p awscli --run "aws s3 cp --region eu-central-1 s3://iohk-private/${key} macos.p12 || true"
+        $INSTALLER/bin/load-certificate -k macos-build.keychain -f macos.p12
     fi
+
+    echo "Generating the installer.."
+    $INSTALLER/bin/make-installer
+
+    INSTALLER_PKG="Daedalus-installer-${DAEDALUS_VERSION}.pkg"
+
+    if test -d dist -a -f "dist/${INSTALLER_PKG}"; then
+        echo "Uploading the installer package.."
+        cd dist
+        APP_NAME="csl-daedalus"
+        mkdir -p ${APP_NAME}
+        mv "${INSTALLER_PKG}" "${APP_NAME}/${INSTALLER_PKG}"
+
+        if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
+            buildkite-agent artifact upload "${APP_NAME}/${INSTALLER_PKG}" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
+        elif test -n "${TRAVIS_JOB_ID:-}" -a -n "${upload_s3}"
+        then
+            echo "$0: --upload-s3 passed, will upload the installer to S3";
+            retry 5 $nix_shell -p awscli --run "aws s3 cp '${APP_NAME}/${INSTALLER_PKG}' s3://daedalus-internal/ --acl public-read"
+        fi
+        cd ..
+    else
+        echo "Installer was not made."
+        mkdir -p dist
+    fi
+
     if test -n "${test_install}"
     then echo "$0:  --test-install passed, will test the installer for installability";
-         case ${os} in
-                 osx )   sudo installer -dumplog -verbose -target / -pkg "dist/Daedalus-installer-${DAEDALUS_VERSION}.pkg";;
-                 linux ) echo "WARNING: installation testing not implemented on Linux" >&2;; esac; fi
+         case ${OS_NAME} in
+                 darwin ) sudo installer -dumplog -verbose -target / -pkg "dist/Daedalus-installer-${DAEDALUS_VERSION}.pkg";;
+                 linux )  echo "WARNING: installation testing not implemented on Linux" >&2;; esac; fi
 cd ..
-
-ls -la installers/dist
 
 exit 0
