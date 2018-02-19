@@ -1,8 +1,9 @@
 import { Given, Then } from 'cucumber';
 
 Given(/^I set wrong local time difference$/, async function () {
-  await this.client.execute(timeDifference => {
-    daedalus.api.ada.setLocalTimeDifference(timeDifference);
+  await this.client.executeAsync(timeDifference => {
+    return daedalus.api.ada.setLocalTimeDifference(timeDifference)
+      .then(() => daedalus.stores.networkStatus._updateLocalTimeDifference());
   }, 1511823600000);
 });
 
