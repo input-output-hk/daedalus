@@ -152,11 +152,11 @@ cd installers
     $INSTALLER/bin/make-installer
 
     INSTALLER_PKG="Daedalus-installer-${DAEDALUS_VERSION}.pkg"
+    APP_NAME="csl-daedalus"
 
     if test -d dist -a -f "dist/${INSTALLER_PKG}"; then
         echo "Uploading the installer package.."
         cd dist
-        APP_NAME="csl-daedalus"
         mkdir -p ${APP_NAME}
         mv "${INSTALLER_PKG}" "${APP_NAME}/${INSTALLER_PKG}"
 
@@ -170,7 +170,7 @@ cd installers
         cd ..
     else
         echo "Installer was not made."
-        mkdir -p dist
+        mkdir -p dist/${APP_NAME}
     fi
 
     if test -n "${test_install}"
