@@ -9,18 +9,5 @@ let
   packages = self: {
     daedalus = self.callPackage ./linux.nix {};
     bundle = self.callPackage ./nix-bundle.nix {};
-    bundle2 = (import ../nix-bundle { nixpkgs = pkgs; }).nix-bootstrap {
-      target = "${self.example}";
-      run = "/bin/example";
-    };
-    example = pkgs.writeScriptBin "example" ''
-      #!${pkgs.stdenv.shell}
-      echo original '$PATH' was '"'$PATH'"'
-      export PATH=${pkgs.lib.concatMapStringsSep ":" (x: "${x}/bin/") (with pkgs; [ coreutils utillinux procps ])}
-      mount
-      pwd
-      env
-      ls -l / /home
-    '';
   };
 in pkgs.lib.makeScope pkgs.newScope packages
