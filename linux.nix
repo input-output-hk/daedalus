@@ -53,20 +53,6 @@ let
   daedalus = writeScriptBin "daedalus" ''
     #!${stdenv.shell}
     set -x
-    set
-    export PATH=${coreutils}/bin:${utillinux}/bin:${procps}/bin
-    env
-    pwd
-    mount
-    cat /proc/mounts
-    mkdir /proc2
-    mount -t proc proc /proc2
-    mount
-    cat /proc/mounts
-    export HOME=/home/clever/
-    export DISPLAY=:0.0
-    ls -ltrh /home /home/clever /home/clever/.daedalus
-    exit 0
     mkdir -p ~/.daedalus/Secrets-${version}/
     if [ ! -d ~/.daedalus/tls ]; then
       mkdir -p ~/.daedalus/tls/{server,ca}
