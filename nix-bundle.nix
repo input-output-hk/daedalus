@@ -13,8 +13,9 @@ let
   export PATH=${coreutils}/bin:${utillinux}/bin:${procps}/bin
 
   mkdir /etc/
-  cp /host-etc/machine-id /etc/machine-id
-  cp /host-etc/resolv.conf /etc/resolv.conf
+  for x in machine-id resolv.conf hosts nsswitch.conf; do
+    cp /host-etc/$x /etc/$x
+  done
   ln -sv ${pkgs.iana-etc}/etc/protocols /etc/protocols
   ln -sv ${pkgs.iana-etc}/etc/services /etc/services
 
