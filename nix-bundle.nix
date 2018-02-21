@@ -1,4 +1,4 @@
-{ pkgs, daedalus, nix-bundle, coreutils, utillinux, procps, lib, gnutar, xz, pv }:
+{ pkgs, daedalus, nix-bundle, coreutils, utillinux, procps, lib, gnutar, xz, pv, gnused }:
 
 let
   bundle = import (pkgs.fetchFromGitHub {
@@ -45,11 +45,18 @@ let
       }
     ];
   };
+  desktopItem = pkgs.makeDesktopItem {
+    name = "Daedalus";
+    exec = "INSERT_PATH_HERE";
+    desktopName = "Daedalus";
+    genericName = "Crypto-Currency Wallet";
+    categories = "Application;Network;";
+  };
   installer = pkgs.writeScriptBin "daedalus-installer" ''
     #!${pkgs.stdenv.shell}
 
     set -e
-    export PATH=${lib.concatMapStringsSep ":" (x: "${x}/bin") [ coreutils gnutar xz pv ]}
+    export PATH=${lib.makeBinPath [ coreutils gnutar xz pv gnused ]}
 
     test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
     export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
@@ -61,7 +68,7 @@ let
       rm -rf "''${DAEDALUS_DIR}/unpack"
     fi
 
-    mkdir -pv "''${DAEDALUS_DIR}/unpack"
+    mkdir -pv "''${DAEDALUS_DIR}/unpack" "''${HOME}/bin/"
 
     pv ${daedalusPackage}/tarball/daedalusPackage.tar.xz | tar -C "''${DAEDALUS_DIR}/unpack" -xJ
 
@@ -74,6 +81,9 @@ let
       mv "''${DAEDALUS_DIR}/installation" "''${DAEDALUS_DIR}/garbage"
     fi
     mv "''${DAEDALUS_DIR}/unpack" "''${DAEDALUS_DIR}/installation"
+    rm ~/bin/daedalus || true
+    ln -sf "''${DAEDALUS_DIR}/installation/namespaceHelper" ~/bin/daedalus
+    cat ${desktopItem}/share/applications/Daedalus.desktop | sed -e "s+INSERT_PATH_HERE+''${DAEDALUS_DIR}/installation/namespaceHelper+g" > "''${XDG_DATA_HOME}/applications/Daedalus.desktop"
 
     if [ -d "''${DAEDALUS_DIR}/garbage" ]; then
       echo cleaning up old version...
