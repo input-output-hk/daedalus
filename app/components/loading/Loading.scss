@@ -4,11 +4,56 @@
   height: 100%;
   transition: background-color 500ms;
   width: 100%;
+
+  .reportIssue {
+    position: fixed;
+    text-align: center;
+    width: 100%;
+
+    .reportIssueText {
+      font-family: var(--font-regular);
+      font-size: 18px;
+      line-height: 1.22;
+      margin-top: 24px;
+    }
+
+    .reportIssueButton {
+      background-color: var(--theme-report-issue-button-background-color);
+      margin: 20px 0;
+      width: 240px;
+
+      &:hover {
+        background-color: var(--theme-report-issue-button-background-color-hover) !important;
+      }
+      &:active {
+        background-color: var(--theme-report-issue-button-background-color-active) !important;
+      }
+
+    }
+  }
+
   &.is-loading-theme {
     background-color: transparent !important;
   }
   &.is-connecting {
     background-color: var(--theme-connecting-background-color);
+
+    .reportIssue {
+      background-color: var(--theme-report-issue-connecting-background-color);
+    }
+    .reportIssueText {
+      color: var(--theme-report-issue-connecting-text-color);
+    }
+  }
+  &.is-syncing {
+    background-color: var(--theme-syncing-background-color);
+
+    .reportIssue {
+      background-color: var(--theme-report-issue-syncing-background-color);
+    }
+    .reportIssueText {
+      color: var(--theme-report-issue-syncing-text-color);
+    }
   }
 }
 

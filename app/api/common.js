@@ -18,6 +18,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Wallet you are trying to restore already exists.',
     description: '"Wallet you are trying to restore already exists." error message.'
   },
+  reportRequestError: {
+    id: 'api.errors.ReportRequestError',
+    defaultMessage: '!!!There was a problem sending the support request.',
+    description: '"There was a problem sending the support request." error message'
+  },
 });
 
 export class GenericApiError extends LocalizableError {
@@ -43,6 +48,15 @@ export class WalletAlreadyRestoredError extends LocalizableError {
     super({
       id: messages.walletAlreadyRestoredError.id,
       defaultMessage: messages.walletAlreadyRestoredError.defaultMessage,
+    });
+  }
+}
+
+export class ReportRequestError extends LocalizableError {
+  constructor() {
+    super({
+      id: messages.reportRequestError.id,
+      defaultMessage: messages.reportRequestError.defaultMessage,
     });
   }
 }
@@ -95,3 +109,11 @@ export type GetTransactionsResponse = {
   transactions: Array<WalletTransaction>,
   total: number,
 };
+
+export type SendBugReportRequest = {
+  email: string,
+  subject: string,
+  problem: string,
+  logs: Array<string>,
+};
+export type SendBugReportResponse = any;

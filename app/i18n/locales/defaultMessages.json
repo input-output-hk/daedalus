@@ -173,6 +173,20 @@
           "column": 30,
           "line": 16
         }
+      },
+      {
+        "defaultMessage": "!!!There was a problem sending the support request.",
+        "description": "\"There was a problem sending the support request.\" error message",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "app/api/common.js",
+        "id": "api.errors.ReportRequestError",
+        "start": {
+          "column": 22,
+          "line": 21
+        }
       }
     ],
     "path": "app/api/common.json"
@@ -184,13 +198,13 @@
         "description": "Message \"Connecting to network\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 25
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.connectingToNetworkMessage",
         "start": {
           "column": 14,
-          "line": 15
+          "line": 21
         }
       },
       {
@@ -198,13 +212,13 @@
         "description": "Message \"Connected - waiting for block syncing to start\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 30
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.waitingForSyncToStart",
         "start": {
           "column": 25,
-          "line": 20
+          "line": 26
         }
       },
       {
@@ -212,13 +226,13 @@
         "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 35
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 25
+          "line": 31
         }
       },
       {
@@ -226,13 +240,55 @@
         "description": "Message \"Syncing blocks\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 40
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.syncingBlocksMessage",
         "start": {
           "column": 11,
-          "line": 30
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!Having trouble connecting to network?",
+        "description": "Report connecting issue text on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "app/components/loading/Loading.js",
+        "id": "loading.screen.reportIssue.connecting.text",
+        "start": {
+          "column": 29,
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!Having trouble syncing?",
+        "description": "Report syncing issue text on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 50
+        },
+        "file": "app/components/loading/Loading.js",
+        "id": "loading.screen.reportIssue.syncing.text",
+        "start": {
+          "column": 26,
+          "line": 46
+        }
+      },
+      {
+        "defaultMessage": "!!!Report an issue",
+        "description": "Report an issue button label on the loading .",
+        "end": {
+          "column": 3,
+          "line": 55
+        },
+        "file": "app/components/loading/Loading.js",
+        "id": "loading.screen.reportIssue.buttonLabel",
+        "start": {
+          "column": 26,
+          "line": 51
         }
       }
     ],
@@ -392,6 +448,263 @@
       }
     ],
     "path": "app/components/notifications/StatusMessagesNotification.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Support request",
+        "description": "Title for the \"Settings support\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.title",
+        "start": {
+          "column": 9,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Your e-mail",
+        "description": "Label for the \"Email\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.emailLabel",
+        "start": {
+          "column": 14,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter your e-mail here, so we can answer you",
+        "description": "Placeholder for the \"Email\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.emailPlaceholder",
+        "start": {
+          "column": 20,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Subject",
+        "description": "Label for the \"Subject\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.subjectLabel",
+        "start": {
+          "column": 16,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter subject of your problem",
+        "description": "Placeholder for the \"Subject\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.subjectPlaceholder",
+        "start": {
+          "column": 22,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Problem",
+        "description": "Label for the \"Problem\" text area on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.problemLabel",
+        "start": {
+          "column": 16,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Describe steps which got you to problem",
+        "description": "Placeholder for the \"Problem\" text area on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.problemPlaceholder",
+        "start": {
+          "column": 22,
+          "line": 53
+        }
+      },
+      {
+        "defaultMessage": "!!!Attach logs",
+        "description": "Label for the \"Attach logs\" switch on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 62
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.logsSwitchLabel",
+        "start": {
+          "column": 19,
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!Logs will help to find out problem you are describing",
+        "description": "Text for the \"Attach logs\" switch on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.logsSwitchPlaceholder",
+        "start": {
+          "column": 25,
+          "line": 63
+        }
+      },
+      {
+        "defaultMessage": "!!!Send request",
+        "description": "Label for the \"Send request\" button on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 72
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.button.label",
+        "start": {
+          "column": 21,
+          "line": 68
+        }
+      },
+      {
+        "defaultMessage": "!!!Alternatively, to help the development team investigate the issue you are experiencing,\n    you can send your support request manually. You should first download your logs.\n    Please take the following steps to submit your support request:",
+        "description": "Bug report dialog alternative description text.",
+        "end": {
+          "column": 3,
+          "line": 79
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.description",
+        "start": {
+          "column": 26,
+          "line": 73
+        }
+      },
+      {
+        "defaultMessage": "!!!There was a problem sending the support request.",
+        "description": "Bug report dialog alternative error message.",
+        "end": {
+          "column": 3,
+          "line": 84
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.errorMessage",
+        "start": {
+          "column": 27,
+          "line": 80
+        }
+      },
+      {
+        "defaultMessage": "!!!Click the Download logs button to retrieve your archived logs, and save the file on your desktop.",
+        "description": "Bug report dialog alternative instructions step one.",
+        "end": {
+          "column": 3,
+          "line": 89
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.instructions.step1",
+        "start": {
+          "column": 32,
+          "line": 85
+        }
+      },
+      {
+        "defaultMessage": "!!!Click the Submit manually button, which will take you to the issue-reporting page on the Daedalus website.",
+        "description": "Bug report dialog alternative instructions step two.",
+        "end": {
+          "column": 3,
+          "line": 94
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.instructions.step2",
+        "start": {
+          "column": 32,
+          "line": 90
+        }
+      },
+      {
+        "defaultMessage": "!!!Attach the logs to your support request, fill in your details, and submit the form.",
+        "description": "Bug report dialog alternative instructions step three.",
+        "end": {
+          "column": 3,
+          "line": 99
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.instructions.step3",
+        "start": {
+          "column": 32,
+          "line": 95
+        }
+      },
+      {
+        "defaultMessage": "!!!Submit manually",
+        "description": "Label for the \"Submit manually\" button on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 104
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.submitManually.button.label",
+        "start": {
+          "column": 29,
+          "line": 100
+        }
+      },
+      {
+        "defaultMessage": "!!!daedaluswallet.io/problem",
+        "description": "Link to Daedalus website \"Problem\" page",
+        "end": {
+          "column": 3,
+          "line": 109
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.submitManually.link",
+        "start": {
+          "column": 22,
+          "line": 105
+        }
+      },
+      {
+        "defaultMessage": "!!!Download",
+        "description": "Label for the \"Download\" button on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 114
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.download.button.label",
+        "start": {
+          "column": 23,
+          "line": 110
+        }
+      }
+    ],
+    "path": "app/components/profile/bug-report/BugReportDialog.json"
   },
   {
     "descriptors": [
@@ -4130,13 +4443,13 @@
         "description": "Message \"Loading wallet data\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 19
         },
         "file": "app/containers/LoadingPage.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
-          "line": 13
+          "line": 15
         }
       }
     ],
