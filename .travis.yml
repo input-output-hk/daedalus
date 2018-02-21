@@ -7,11 +7,11 @@ matrix:
     osx_image: xcode8.3
 env:
   global:
-    - VERSION=1.0
+    - VERSION=1.1
     - NETWORK=mainnet
-    - CARDANO_SL_BRANCH=master
+    - CARDANO_SL_BRANCH=release/1.1.0
       # NOTE: when bumping nixpkgs, also update default.nix
-    - NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/48ecdcf5980a6504cd3b884b121e29efb2fb83dc.tar.gz
+    - NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/fb235c98d839ae37a639695ad088d19ef8382608.tar.gz
     # AWS access key
     - secure: "Gvw61r5B2Noo263owgZIAw8Jvl2IU1ZSCsKXbsW9lNjPeFWvoEWxHhmTURO25lIYm3iz5gEkx6AqRB3wRADfBAejizKtP1LHQMJJ8E1VvNUJLr+2pOSrR098k3yO8R5rdxFkzNnMLVbsUKTnpAA9kbCvj0AcnnUOAm0eDkjO/wCfU1Joz5pSVqxJ5xdQUd/hosMoeR/SurjdKYxwjLVNrlZe0IUejuPIPda92511hFpzbjZ4fxObcyPJwVCMgymn46ICSZ4K8WKyZfwkWvBMG6zFJLaaeAb8vxHBwqtpftURD6hiy4zL+94j2yJbyllWA0aeqAB9rVDOnJnyqxdfkeLa4SCte4DyRTyW4CicYHXlLPtdXY/Ek6rIHYuRcSF+S/zEFJj3/V7VZXRHrZGyc4Ua08Hr7bHfmHHtf9xhmayP+FOkrNmfVxzMHQjVc4W/+gD0gzzGGwk7J8wOzRtSwnKoGBGeRCvNXUtK3IwnecY+XD1qoeRL2Yil+8TxyWw0iMigHB+WoBPbloX6W1uIn67MAxvWKpdi8/h9lnC0c00wCW0ZIq9//OSvRWWBGzZ6I5zofzjNBetyIHDz+77k0pkVkdrqaF99wQRaDJBXGZ8DfBWv+XDRLpDPzy1tZwv3Ukh8Cg05f1HODCazT3jY0S7ZDCCcELwIg/0PapYU4Mc="
     # AWS secret key
@@ -25,7 +25,7 @@ script:
 - nix-env -iA nixpkgs.bashInteractive
 - scripts/build-installer-unix.sh "$VERSION" "$CARDANO_SL_BRANCH"
      --build-id       "$TRAVIS_BUILD_NUMBER"
-     --travis-pr      "$TRAVIS_PULL_REQUEST"
+     --pr-id          "$TRAVIS_PULL_REQUEST"
      --nix-path       "$NIX_PATH"
 notifications:
   slack:
@@ -37,7 +37,7 @@ deploy:
     secure: KL0IpBTLy54CC6w48E7t19uEME1lcdWLZ1RP0qz7jm9A0J58RnBn4VqQL86vXZZZF3L6s4BM5bsD+mOXQ88ePzL4UNL0swJijFI4jh1cv5RsOpoFJc5ULxQWm/ybGqKt2I9kF0TRwI23ilKkxz531cRBmoIbKSDEbDr8Tn7n1gU9ubhAJTI0/Gy1jnrVwQejoZMTEpJJcti1o046wJd0GEJpA88dXPjvi3WXMBcQ1acRxd5tkEjLooScD7CijdUgHTGZC/HvRLY+6SdI8pHaB8/yhli87MBODqpdMstV9zPZI2bJiUDPNaFL+goGA1+4CQnmfyBNfHijDnuBMNTUcj00WHCMJcuLcXM42fli6gO2iivNEe8pz+3Jvz3142hJL8seHm9//QDsGZg7HUYYiPGbDSmug8knh9Zsk8QZUtxlXBNvQqZe2Q289cGzW9Hoo+tNgCvpaUWkBNe/XUXTI2HoE5XkrziRwyVLaXj5Yz7ncjMkwIljrLCxuDS3dT53lwxK7NkLmWovp8r0gL/8szoqTMdKLPNQXOa9dknlW9L905PKOjON1F5SCHc0JKREnQQFNrbx4X1bjVa++Fv6Ix42XBvn7h2MT3NorjSlvyKwBTUeQf5bYD6603Q9YCqsZgEnG0uB3yWvgFXQ0PKH/5htjBwWWQJ4PxLe+mhZ9Jw=
   bucket: daedalus-travis
   region: eu-central-1
-  local_dir: installers/dist
+  local_dir: installers/dist/csl-daedalus
   skip_cleanup: true
   acl: public_read
   on:
