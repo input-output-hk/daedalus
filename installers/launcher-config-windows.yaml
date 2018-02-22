@@ -33,7 +33,7 @@ updateArchive: null
 updateWindowsRunner: ! '%APPDATA%\Daedalus\Installer.bat'
 
 nodeTimeoutSec: 30
-reportServer: http://report-server.awstest.iohkdev:8080
+reportServer: http://report-server.awstest.iohkdev.io:8080
 launcherLogsPrefix: ! '%APPDATA%\Daedalus\Logs\pub'
 
 configuration:
