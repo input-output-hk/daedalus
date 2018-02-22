@@ -128,6 +128,10 @@ pushd installers
     @if %errorlevel% neq 0 (@echo FAILED: stack setup --no-reinstall
 	exit /b 1)
 
+:install_dhall
+    call ..\scripts\appveyor-retry call stack install dhall
+    call ..\scripts\appveyor-retry call stack install dhall-to-yaml
+
 :build_installer
     call ..\scripts\appveyor-retry call stack --no-terminal build -j 2 --exec make-installer
     @if %errorlevel% equ 0 goto :built
