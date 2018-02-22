@@ -40,6 +40,10 @@ import { getAdaAccountRecoveryPhrase } from './getAdaAccountRecoveryPhrase';
 import { getAdaLocalTimeDifference } from './getAdaLocalTimeDifference';
 import { sendAdaBugReport } from './sendAdaBugReport';
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 import type {
   AdaLocalTimeDifference,
   AdaSyncProgressResponse,
@@ -602,7 +606,9 @@ export default class AdaApi {
     Logger.debug('AdaApi::applyUpdate called');
     try {
       const response: Promise<any> = await applyAdaUpdate({ ca });
-      Logger.debug('AdaApi::applyUpdate success: ' + stringifyData(response));
+      Logger.debug('AdaApi::applyUpdate success0: ' + stringifyData(response));
+      await sleep(110000);
+      Logger.debug('AdaApi::applyUpdate success1: ' + stringifyData(response));
       ipcRenderer.send('kill-process');
     } catch (error) {
       Logger.error('AdaApi::applyUpdate error: ' + stringifyError(error));
