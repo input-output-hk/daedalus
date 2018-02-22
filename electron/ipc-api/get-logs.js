@@ -47,7 +47,7 @@ export default () => {
       for (let i = 0; i < files.length; i++) {
         const currentFile = path.join(pubLogsFolderPath, files[i]);
         if (fs.statSync(currentFile).isFile()) {
-          const fileName = currentFile.replace(pubLogsFolderPath + '/', '');
+          const fileName = path.basename(currentFile);
           const isFileAllowed = includes(ALLOWED_LOGS, fileName);
           if (isFileAllowed) {
             logFiles.push(fileName);
