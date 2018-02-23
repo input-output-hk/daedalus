@@ -4,7 +4,12 @@ with (import (fetchTarball https://github.com/NixOS/nixpkgs/archive/fb235c98d839
 stdenv.mkDerivation {
   name = "daedalus";
 
-  buildInputs = [git python27 curl electron nodejs-6_x nodePackages.node-gyp nodePackages.node-pre-gyp ];
+  buildInputs = [
+    nix bash binutils coreutils curl
+    git python27 curl electron nodejs-6_x
+    nodePackages.node-gyp nodePackages.node-pre-gyp
+    gnumake
+  ];
 
   src = null;
 
