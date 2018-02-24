@@ -1,5 +1,5 @@
 { stdenv, runCommand, writeText, writeScriptBin, fetchurl, fetchFromGitHub, openssl, xar, cpio, electron,
-coreutils, utillinux, procps }:
+coreutils, utillinux, procps, cluster ? "mainnet" }:
 
 let
   master_config = {
@@ -19,7 +19,12 @@ let
   '';
   daedalus_frontend = writeScriptBin "daedalus" ''
     #!${stdenv.shell}
-    cd ~/.daedalus/
+
+    test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
+    export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
+
+    cd "''${DAEDALUS_DIR}/${cluster}/"
+
     exec ${electron}/bin/electron ${rawapp}
   '';
   cardanoSrc = fetchFromGitHub {
@@ -39,7 +44,8 @@ let
     cp -vi ${cardanoPkgs.cardano-sl.src + "/../log-config-prod.yaml"} log-config-prod.yaml
     cp -vi ${topologyFile} topology.yaml
   '';
-  topologyFile = writeText "topology.yaml" ''
+  topologyFile = topologies.${cluster};
+  topologies.mainnet = writeText "topology.yaml" ''
     wallet:
       relays:
         [
@@ -53,30 +59,38 @@ let
   daedalus = writeScriptBin "daedalus" ''
     #!${stdenv.shell}
     set -x
-    mkdir -p ~/.daedalus/Secrets-${version}/
-    if [ ! -d ~/.daedalus/tls ]; then
-      mkdir -p ~/.daedalus/tls/{server,ca}
-      ${openssl}/bin/openssl req -x509 -newkey rsa:2048 -keyout ~/.daedalus/tls/server/server.key -out ~/.daedalus/tls/server/server.crt -days 3650 -nodes -subj "/CN=localhost"
-      cp ~/.daedalus/tls/server/server.crt ~/.daedalus/tls/ca/ca.crt
+    set -e
+
+    test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
+    export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
+    ls -lh $DAEDALUS_DIR
+
+    mkdir -p "''${DAEDALUS_DIR}/${cluster}/"{logs/pub,Secrets}
+    cd "''${DAEDALUS_DIR}/${cluster}/"
+
+    if [ ! -d tls ]; then
+      mkdir -p tls/{server,ca}
+      ${openssl}/bin/openssl req -x509 -newkey rsa:2048 -keyout tls/server/server.key -out tls/server/server.crt -days 3650 -nodes -subj "/CN=localhost"
+      cp tls/server/server.crt tls/ca/ca.crt
     fi
     exec ${cardanoPkgs.cardano-sl-tools}/bin/cardano-launcher --node ${cardanoPkgs.cardano-sl-wallet}/bin/cardano-node \
-      --node-log-path ~/.daedalus/logs/cardano-node.log \
-      --db-path ~/.daedalus/LDB-${version}/ \
+      --node-log-path logs/cardano-node.log \
+      --db-path LDB/ \
       --wallet ${daedalus_frontend}/bin/daedalus \
-      --launcher-logs-prefix ~/.daedalus/logs/pub/ \
+      --launcher-logs-prefix logs/pub/ \
       --node-timeout 30 \
-      --updater notsupported \
+      --updater /not-supported \
       --configuration-file ${configFiles}/configuration.yaml \
       --configuration-key mainnet_wallet_macos64 \
       -n --report-server -n http://report-server.cardano-mainnet.iohk.io:8080 \
       -n --log-config -n ${configFiles}/log-config-prod.yaml \
-      -n --keyfile -n ~/.daedalus/Secrets-${version}/secret.key \
-      -n --db-path -n ~/.daedalus/DB-${version}/ \
-      -n --wallet-db-path -n ~/.daedalus/Wallet-${version}/ \
+      -n --keyfile -n Secrets/secret.key \
+      -n --db-path -n DB/ \
+      -n --wallet-db-path -n Wallet/ \
       -n --no-ntp \
-      -n --tlscert -n ~/.daedalus/tls/server/server.crt \
-      -n --tlskey -n ~/.daedalus/tls/server/server.key \
-      -n --tlsca -n ~/.daedalus/tls/ca/ca.crt \
+      -n --tlscert -n tls/server/server.crt \
+      -n --tlskey -n tls/server/server.key \
+      -n --tlsca -n tls/ca/ca.crt \
       -n --configuration-file -n ${configFiles}/configuration.yaml \
       -n --configuration-key -n mainnet_wallet_macos64 \
       -n --wallet-address -n 127.0.0.1:8090 \

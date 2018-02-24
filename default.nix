@@ -1,16 +1,13 @@
-with (import (fetchTarball https://github.com/NixOS/nixpkgs/archive/fb235c98d839ae37a639695ad088d19ef8382608.tar.gz) {});
-# NOTE: when bumping nixpkgs, also update nixpkgs-src.json and .travis.yml
-
-stdenv.mkDerivation {
-  name = "daedalus";
-
-  buildInputs = [
-    nix bash binutils coreutils curl gnutar
-    git python27 curl electron nodejs-6_x
-    nodePackages.node-gyp nodePackages.node-pre-gyp
-    gnumake
-  ];
-
-  src = null;
-
-}
+let
+  pkgs = import (import ./fetchNixpkgs.nix {
+    rev = "c831224528cd6bfd49bfc2c18b9c5d9015651077";
+    sha256 = "1idygi6x10wilrmj4w1djby8qi8zphxbp1zkzn4lmwhzfhgx2qnz";
+  }) {
+    config = {};
+    overlays = [];
+  };
+  packages = self: {
+    daedalus = self.callPackage ./linux.nix {};
+    bundle = self.callPackage ./nix-bundle.nix {};
+  };
+in pkgs.lib.makeScope pkgs.newScope packages
