@@ -1,14 +1,7 @@
 { pkgs, daedalus, nix-bundle, coreutils, utillinux, procps, lib, gnutar, xz, pv, gnused, bash, bashInteractive, iana-etc, strace, bzip2,
-  writeScriptBin, fetchFromGitHub, stdenv, makeDesktopItem }:
+writeScriptBin, fetchFromGitHub, stdenv, makeDesktopItem }:
 
 let
-  bundle = import (fetchFromGitHub {
-    owner = "input-output-hk";
-    repo = "nix-bundle";
-    rev = "630e89d1d16083";
-    sha256 = "1s9vzlsfxd2ym8jzv2p64j6jlwr9cmir45mb12yzzjr4dc91xk8x";
-  }) { nixpkgs = pkgs; };
-
   wrapper = writeScriptBin "daedalus-wrapper" ''
     #!${stdenv.shell}
 
@@ -41,9 +34,9 @@ let
     cat /etc/hosts > etc/hosts
     cat /etc/nsswitch.conf > etc/nsswitch.conf
 
-    exec .${bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -m /home:/home -m /etc:/host-etc -p DISPLAY -p HOME -p XAUTHORITY -- ${wrapper}/bin/daedalus-wrapper
+    exec .${nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -m /home:/home -m /etc:/host-etc -p DISPLAY -p HOME -p XAUTHORITY -- ${wrapper}/bin/daedalus-wrapper
   '';
-  foo = bundle.nix-bootstrap {
+  foo = nix-bundle.nix-bootstrap {
     target = "${wrapper}";
     run = "/bin/daedalus-wrapper";
     nixUserChrootFlags = "-c -m /home:/home -m /etc:/host-etc -p DISPLAY -p HOME -p XAUTHORITY";
@@ -111,7 +104,7 @@ let
 
     echo installation finished, daedalus is now in "''${DAEDALUS_DIR}/installation"
   '';
-  installerBundle = bundle.nix-bootstrap {
+  installerBundle = nix-bundle.nix-bootstrap {
     target = "${installer}";
     run = "/bin/daedalus-installer";
     nixUserChrootFlags = "-c -m /home:/home -p HOME";
