@@ -1,5 +1,5 @@
-with import ./.;
+with import ./. {};
 {
-  inherit daedalus;
+  inherit daedalus tarballInstaller;
   installerBundle = bundle.installerBundle;
 }

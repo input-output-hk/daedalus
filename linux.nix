@@ -1,22 +1,8 @@
-{ stdenv, runCommand, writeText, writeScriptBin, fetchurl, fetchFromGitHub, openssl, xar, cpio, electron,
-coreutils, utillinux, procps, cluster ? "mainnet" }:
+{ stdenv, runCommand, writeText, writeScriptBin, fetchurl, fetchFromGitHub, openssl, electron,
+coreutils, utillinux, procps, cluster,
+rawapp, master_config, cardanoPkgs, configFiles }:
 
 let
-  master_config = {
-    daedalus_build_number = "3619";
-    cardano_rev = "0c1fab91";
-    daedalus_hash = "0w0pz93yz380xrizlsbzm9wisnf99s6z2jq0ph9xqap9cpjlyr7x";
-    cardano_hash = "1z2yjkm0qwhf588qnxcbz2d5mxvhqdxawwl8dczfnl47rb48jm52";
-  };
-  darwinPackage = fetchurl {
-    url = "http://s3.eu-central-1.amazonaws.com/daedalus-travis/Daedalus-installer-1.0.${master_config.daedalus_build_number}.pkg";
-    sha256 = master_config.daedalus_hash;
-  };
-  rawapp = runCommand "daedalus-app" { buildInputs = [ xar cpio ]; } ''
-    xar -xf ${darwinPackage}
-    cat $NIX_BUILD_TOP/temp.pkg/Payload | gunzip | cpio -i
-    cp -vir Daedalus.app/Contents/Resources/app/ $out
-  '';
   daedalus_frontend = writeScriptBin "daedalus" ''
     #!${stdenv.shell}
 
@@ -26,35 +12,6 @@ let
     cd "''${DAEDALUS_DIR}/${cluster}/"
 
     exec ${electron}/bin/electron ${rawapp}
-  '';
-  cardanoSrc = fetchFromGitHub {
-    owner = "input-output-hk";
-    repo = "cardano-sl";
-    rev = master_config.cardano_rev;
-    sha256 = master_config.cardano_hash;
-  };
-  cardanoPkgs = import cardanoSrc { gitrev = cardanoSrc.rev; };
-  version = "1.0";
-  configFiles = runCommand "cardano-config" {} ''
-    mkdir -pv $out
-    cd $out
-    cp -vi ${cardanoPkgs.cardano-sl.src + "/configuration.yaml"} configuration.yaml
-    cp -vi ${cardanoPkgs.cardano-sl.src + "/mainnet-genesis-dryrun-with-stakeholders.json"} mainnet-genesis-dryrun-with-stakeholders.json
-    cp -vi ${cardanoPkgs.cardano-sl.src + "/mainnet-genesis.json"} mainnet-genesis.json
-    cp -vi ${cardanoPkgs.cardano-sl.src + "/../log-config-prod.yaml"} log-config-prod.yaml
-    cp -vi ${topologyFile} topology.yaml
-  '';
-  topologyFile = topologies.${cluster};
-  topologies.mainnet = writeText "topology.yaml" ''
-    wallet:
-      relays:
-        [
-          [
-            { host: relays.cardano-mainnet.iohk.io }
-          ]
-        ]
-      valency: 1
-      fallbacks: 7
   '';
   daedalus = writeScriptBin "daedalus" ''
     #!${stdenv.shell}
