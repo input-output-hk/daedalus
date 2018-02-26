@@ -11,6 +11,6 @@ steps:
     command: 'scripts/nix-shell.sh --run "scripts/build-installer-unix.sh $VERSION $CARDANO_SL_BRANCH  --build-id $BUILDKITE_BUILD_NUMBER --pr-id $BUILDKITE_PULL_REQUEST"'
     env:
       VERSION: 1.1.0
-      CARDANO_SL_BRANCH: release/1.1.0
+      CARDANO_SL_BRANCH: volhovm/csl2305-reporting-permissions
     agents:
       system: x86_64-linux
