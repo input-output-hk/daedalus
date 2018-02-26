@@ -1,6 +1,6 @@
-OS=%1
-CLUSTER=%2
-CONFIG=%3
+set OS=%1
+set CLUSTER=%2
+set CONFIG=%3
 
 @      if %CLUSTER% eq mainnet ( @true
 ) else if %CLUSTER% eq staging ( @true

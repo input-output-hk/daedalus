@@ -2,9 +2,7 @@ flags: {}
 
 extra-package-dbs: []
 
-packages:
-  - location: .
-
+allow-newer: true
 resolver: lts-9.1
 
 nix:
@@ -12,3 +10,13 @@ nix:
 
 extra-deps:
   - universum-0.8.0
+  - dhall-1.10.0
+  #   allow-newer: true
+
+packages:
+  - location: .
+
+  - location:
+      git: https://github.com/deepfire/dhall-json
+      commit: 2a2b4510f8406e9982c067bc8d8a8f1ba9c14481
+    extra-dep: true
