@@ -21,6 +21,7 @@ Changelog
 - Updated copy for the sync error screen ([PR 688](https://github.com/input-output-hk/daedalus/pull/688))
 - Detect when wallet is disconnected ([PR 689](https://github.com/input-output-hk/daedalus/pull/689))
 - Improve connecting/reconnecting messages on Loading screen ([PR 696](https://github.com/input-output-hk/daedalus/pull/696))
+- Poll local time difference every 1 hour, only when connected ([PR 719](https://github.com/input-output-hk/daedalus/pull/719))
 
 ### Chores
 
