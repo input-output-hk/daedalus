@@ -21,6 +21,7 @@ Changelog
 - Updated copy for the sync error screen ([PR 688](https://github.com/input-output-hk/daedalus/pull/688))
 - Detect when wallet is disconnected ([PR 689](https://github.com/input-output-hk/daedalus/pull/689))
 - Improve connecting/reconnecting messages on Loading screen ([PR 696](https://github.com/input-output-hk/daedalus/pull/696))
+- Fixed minor UI issue on receive screen when generating wallet addresses with spending password ([PR 738](https://github.com/input-output-hk/daedalus/pull/738))
 
 ### Chores
 
