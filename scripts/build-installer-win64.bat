@@ -33,123 +33,126 @@ set DLLS_URL=https://s3.eu-central-1.amazonaws.com/daedalus-ci-binaries/DLLs.zip
 @if not [%SKIP_TO_FRONTEND%]==[]   (@echo WARNING: SKIP_TO_FRONTEND set, skipping directly to installer rebuild
     pushd installers & goto :build_frontend)
 
-rem @echo Obtaining curl
-rem powershell -Command "try { Import-Module BitsTransfer; Start-BitsTransfer -Source '%CURL_URL%' -Destination 'curl.7z'; } catch { exit 1; }"
-rem @if %errorlevel% neq 0 (@echo FAILED: couldn't obtain curl from %CURL_URL% using BITS
-rem 	popd & exit /b 1)
-rem del /f curl.exe curl-ca-bundle.crt libcurl.dll
-rem 7z e curl.7z %CURL_BIN%\curl.exe %CURL_BIN%\curl-ca-bundle.crt %CURL_BIN%\libcurl.dll
-rem @if %errorlevel% neq 0 (@echo FAILED: couldn't extract curl from downloaded archive
-rem 	popd & exit /b 1)
+@echo Obtaining curl
+powershell -Command "try { Import-Module BitsTransfer; Start-BitsTransfer -Source '%CURL_URL%' -Destination 'curl.7z'; } catch { exit 1; }"
+@if %errorlevel% neq 0 (@echo FAILED: couldn't obtain curl from %CURL_URL% using BITS
+	popd & exit /b 1)
+del /f curl.exe curl-ca-bundle.crt libcurl.dll
+7z e curl.7z %CURL_BIN%\curl.exe %CURL_BIN%\curl-ca-bundle.crt %CURL_BIN%\libcurl.dll
+@if %errorlevel% neq 0 (@echo FAILED: couldn't extract curl from downloaded archive
+	popd & exit /b 1)
 
-rem @echo Obtaining NSIS %NSISVER% with 8k-string patch
-rem del /f nsis-setup.exe nsis-strlen_8192.zip
-rem curl -o nsis-setup.exe       --location %NSIS_URL%
-rem @if %errorlevel% neq 0 (@echo FAILED: curl -o nsis-setup.exe       --location %NSIS_URL%
-rem     exit /b 1)
+@echo Obtaining NSIS %NSISVER% with 8k-string patch
+del /f nsis-setup.exe nsis-strlen_8192.zip
+curl -o nsis-setup.exe       --location %NSIS_URL%
+@if %errorlevel% neq 0 (@echo FAILED: curl -o nsis-setup.exe       --location %NSIS_URL%
+    exit /b 1)
 
-rem curl -o nsis-strlen_8192.zip --location %NSIS_PATCH_URL%
-rem @if %errorlevel% neq 0 (@echo FAILED: curl -o nsis-strlen_8192.zip --location %NSIS_PATCH_URL%
-rem     exit /b 1)
+curl -o nsis-strlen_8192.zip --location %NSIS_PATCH_URL%
+@if %errorlevel% neq 0 (@echo FAILED: curl -o nsis-strlen_8192.zip --location %NSIS_PATCH_URL%
+    exit /b 1)
 
-rem nsis-setup.exe /S /SD
-rem @if %errorlevel% neq 0 (@echo FAILED: nsis-setup.exe /S /SD
-rem     exit /b 1)
+nsis-setup.exe /S /SD
+@if %errorlevel% neq 0 (@echo FAILED: nsis-setup.exe /S /SD
+    exit /b 1)
 
-rem 7z    x nsis-strlen_8192.zip -o"c:\Program Files (x86)\NSIS" -aoa -r
-rem @if %errorlevel% neq 0 (@echo FAILED: 7z    x nsis-strlen_8192.zip -o"c:\Program Files (x86)\NSIS" -aoa -r
-rem     exit /b 1)
+7z    x nsis-strlen_8192.zip -o"c:\Program Files (x86)\NSIS" -aoa -r
+@if %errorlevel% neq 0 (@echo FAILED: 7z    x nsis-strlen_8192.zip -o"c:\Program Files (x86)\NSIS" -aoa -r
+    exit /b 1)
 
-rem @echo Installing NPM
-rem call npm install
-rem @if %errorlevel% neq 0 (@echo FAILED: npm install
-rem     exit /b 1)
+@echo Installing NPM
+call npm install
+@if %errorlevel% neq 0 (@echo FAILED: npm install
+    exit /b 1)
 
-rem @echo Obtaining Cardano from branch %CARDANO_BRANCH%
-rem rmdir /s/q node_modules\daedalus-client-api 2>nul
-rem mkdir      node_modules\daedalus-client-api
+@echo Obtaining Cardano from branch %CARDANO_BRANCH%
+rmdir /s/q node_modules\daedalus-client-api 2>nul
+mkdir      node_modules\daedalus-client-api
 
-rem pushd node_modules\daedalus-client-api
-rem     del /f CardanoSL.zip 2>nul
-rem     ..\..\curl --location %CARDANO_URL% -o CardanoSL.zip
-rem     @if %errorlevel% neq 0 (@echo FAILED: couldn't obtain the cardano-sl package
-rem 	popd & exit /b 1)
-rem     @for /F "usebackq" %%A in ('CardanoSL.zip') do set size=%%~zA
-rem     if %size% lss %MIN_CARDANO_BYTES% (@echo FAILED: CardanoSL.zip is too small: threshold=%MIN_CARDANO_BYTES%, actual=%size% bytes
-rem         popd & exit /b 1)
+pushd node_modules\daedalus-client-api
+    del /f CardanoSL.zip 2>nul
+    ..\..\curl --location %CARDANO_URL% -o CardanoSL.zip
+    @if %errorlevel% neq 0 (@echo FAILED: couldn't obtain the cardano-sl package
+	popd & exit /b 1)
+    @for /F "usebackq" %%A in ('CardanoSL.zip') do set size=%%~zA
+    if %size% lss %MIN_CARDANO_BYTES% (@echo FAILED: CardanoSL.zip is too small: threshold=%MIN_CARDANO_BYTES%, actual=%size% bytes
+        popd & exit /b 1)
 
-rem     7z x CardanoSL.zip -y
-rem     @if %errorlevel% neq 0 (@echo FAILED: 7z x CardanoSL.zip -y
-rem 	popd & exit /b 1)
-rem     del CardanoSL.zip
-rem popd
+    7z x CardanoSL.zip -y
+    @if %errorlevel% neq 0 (@echo FAILED: 7z x CardanoSL.zip -y
+	popd & exit /b 1)
+    del CardanoSL.zip
+popd
 
-rem @echo cardano-sl build-id:
-rem type node_modules\daedalus-client-api\build-id
-rem @echo cardano-sl commit-id:
-rem type node_modules\daedalus-client-api\commit-id
-rem @echo cardano-sl ci-url:
-rem type node_modules\daedalus-client-api\ci-url
+@echo cardano-sl build-id:
+type node_modules\daedalus-client-api\build-id
+@echo cardano-sl commit-id:
+type node_modules\daedalus-client-api\commit-id
+@echo cardano-sl ci-url:
+type node_modules\daedalus-client-api\ci-url
 
-rem move   node_modules\daedalus-client-api\log-config-prod.yaml installers\log-config-prod.yaml
-rem move   node_modules\daedalus-client-api\cardano-node.exe     installers\
-rem move   node_modules\daedalus-client-api\cardano-launcher.exe installers\
-rem move   node_modules\daedalus-client-api\configuration.yaml installers\
-rem move   node_modules\daedalus-client-api\*genesis*.json installers\
-rem del /f node_modules\daedalus-client-api\*.exe
+move   node_modules\daedalus-client-api\log-config-prod.yaml installers\log-config-prod.yaml
+move   node_modules\daedalus-client-api\cardano-node.exe     installers\
+move   node_modules\daedalus-client-api\cardano-launcher.exe installers\
+move   node_modules\daedalus-client-api\configuration.yaml installers\
+move   node_modules\daedalus-client-api\*genesis*.json installers\
+del /f node_modules\daedalus-client-api\*.exe
 
-rem :build_frontend
-rem @echo Packaging frontend
-rem call npm run package -- --icon installers/icons/64x64
-rem @if %errorlevel% neq 0 (@echo FAILED: Failed to package the frontend
-rem 	exit /b 1)
+:build_frontend
+@echo Packaging frontend
+call npm run package -- --icon installers/icons/64x64
+@if %errorlevel% neq 0 (@echo FAILED: Failed to package the frontend
+	exit /b 1)
 
 pushd installers
-    rem del /f LibreSSL.zip 2>nul
-    rem @echo Obtaining LibreSSL %LIBRESSL_VERSION%
-    rem ..\curl %LIBRESSL_URL% -o LibreSSL.zip
-    rem @if %errorlevel% neq 0 (@echo FAILED: LibreSSL couldn't be obtained
-    rem     popd & exit /b 1)
-    rem 7z x LibreSSL.zip
-    rem @if %errorlevel% neq 0 (@echo FAILED: LibreSSL couldn't be extracted from downloaded archive
-    rem     popd & exit /b 1)
-    rem del LibreSSL.zip
-    rem rmdir /s/q libressl
-    rem move libressl-%LIBRESSL_VERSION%-windows libressl
+    del /f LibreSSL.zip 2>nul
+    @echo Obtaining LibreSSL %LIBRESSL_VERSION%
+    ..\curl %LIBRESSL_URL% -o LibreSSL.zip
+    @if %errorlevel% neq 0 (@echo FAILED: LibreSSL couldn't be obtained
+        popd & exit /b 1)
+    7z x LibreSSL.zip
+    @if %errorlevel% neq 0 (@echo FAILED: LibreSSL couldn't be extracted from downloaded archive
+        popd & exit /b 1)
+    del LibreSSL.zip
+    rmdir /s/q libressl
+    move libressl-%LIBRESSL_VERSION%-windows libressl
 
-    rem @echo Installing stack
-    rem ..\curl --location http://www.stackage.org/stack/windows-x86_64 -o stack.zip
-    rem @if %errorlevel% neq 0 (@echo FAILED: stack couldn't be obtained
-    rem     popd & exit /b 1)
-    rem del /f stack.exe 2>nul
-    rem 7z x stack.zip stack.exe
-    rem @if %errorlevel% neq 0 (@echo FAILED: couldn't extract stack from the distribution package
-    rem     exit /b 1)
-    rem del stack.zip
+    @echo Installing stack
+    ..\curl --location http://www.stackage.org/stack/windows-x86_64 -o stack.zip
+    @if %errorlevel% neq 0 (@echo FAILED: stack couldn't be obtained
+        popd & exit /b 1)
+    del /f stack.exe 2>nul
+    7z x stack.zip stack.exe
+    @if %errorlevel% neq 0 (@echo FAILED: couldn't extract stack from the distribution package
+        exit /b 1)
+    del stack.zip
 
-    rem @echo Copying DLLs
-    rem @rem TODO: get rocksdb from rocksdb-haskell
-    rem rmdir /s/q DLLs 2>nul
-    rem mkdir      DLLs
-    rem pushd      DLLs
-    rem     ..\..\curl --location %DLLS_URL% -o DLLs.zip
-    rem     @if %errorlevel% neq 0 (@echo FAILED: couldn't obtain CardanoSL DLL package
-    rem     	exit /b 1)
-    rem     7z x DLLs.zip
-    rem     @if %errorlevel% neq 0 (@echo FAILED: 7z x DLLs.zip
-    rem     	popd & popd & exit /b 1)
-    rem     del DLLs.zip
-    rem popd
+    @echo Copying DLLs
+    @rem TODO: get rocksdb from rocksdb-haskell
+    rmdir /s/q DLLs 2>nul
+    mkdir      DLLs
+    pushd      DLLs
+        ..\..\curl --location %DLLS_URL% -o DLLs.zip
+        @if %errorlevel% neq 0 (@echo FAILED: couldn't obtain CardanoSL DLL package
+        	exit /b 1)
+        7z x DLLs.zip
+        @if %errorlevel% neq 0 (@echo FAILED: 7z x DLLs.zip
+        	popd & popd & exit /b 1)
+        del DLLs.zip
+    popd
 
     @echo Building the installer
     stack setup --no-reinstall
     @if %errorlevel% neq 0 (@echo FAILED: stack setup --no-reinstall
 	exit /b 1)
+    FOR /F "tokens=* USEBACKQ" %%F IN (`stack path --local-bin`) DO (
+        SET PATHEXTN=%%F)
+    set PATH=%PATH%;%PATHEXTN%
 
 :install_dhall
     call ..\scripts\appveyor-retry call stack install dhall dhall-json
     @if %errorlevel% equ 0 goto :generate_config
-    @echo FATAL: persistent failure while installing dhall
+    @echo FATAL: persistent failure while installing dhall/dhall-json
     exit /b 1
 :generate_config
     set OS=win64
@@ -158,7 +161,7 @@ pushd installers
     call emit-config-windows.bat %OS% %CLUSTER% launcher
     call emit-config-windows.bat %OS% %CLUSTER% wallet-topology
     @if %errorlevel% equ 0 (popd & goto :build_installer)
-    @echo FATAL: persistent failure while installing dhall-json
+    @echo FATAL: persistent failure while generating configuration
     
 
 :build_installer
