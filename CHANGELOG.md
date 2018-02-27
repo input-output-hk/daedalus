@@ -21,6 +21,7 @@ Changelog
 - Updated copy for the sync error screen ([PR 688](https://github.com/input-output-hk/daedalus/pull/688))
 - Detect when wallet is disconnected ([PR 689](https://github.com/input-output-hk/daedalus/pull/689))
 - Improve connecting/reconnecting messages on Loading screen ([PR 696](https://github.com/input-output-hk/daedalus/pull/696))
+- Fixed `Time sync error notification` not showing up in case blocks syncing has not started ([PR 752](https://github.com/input-output-hk/daedalus/pull/752))
 
 ### Chores
 

@@ -128,19 +128,10 @@ export default class Loading extends Component<Props> {
               </div>
             )}
             {isSyncing && (
-              <div className="syncingWrapper">
-                <div className={styles.syncing}>
-                  <h1 className={styles.headline}>
-                    {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
-                  </h1>
-                </div>
-                {(localTimeDifference > allowedTimeDifference) && (
-                  <SystemTimeErrorOverlay
-                    localTimeDifference={localTimeDifference}
-                    currentLocale={currentLocale}
-                    onProblemSolutionClick={onProblemSolutionClick}
-                  />
-                )}
+              <div className={styles.syncing}>
+                <h1 className={styles.headline}>
+                  {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
+                </h1>
               </div>
             )}
             {!isSyncing && !isConnecting && isLoadingDataForNextScreen && (
@@ -150,6 +141,13 @@ export default class Loading extends Component<Props> {
                 </h1>
                 <LoadingSpinner />
               </div>
+            )}
+            {(localTimeDifference > allowedTimeDifference) && (
+              <SystemTimeErrorOverlay
+                localTimeDifference={localTimeDifference}
+                currentLocale={currentLocale}
+                onProblemSolutionClick={onProblemSolutionClick}
+              />
             )}
           </div>
         )}
