@@ -38,6 +38,7 @@ data InstallerConfig = InstallerConfig {
   , pkg :: T.Text
   , predownloadChain :: Bool
   , appRoot :: String
+  , clusterName :: String
 }
 
 -- In Buildkite (as in Travis), the environment variable is set to the
@@ -55,17 +56,19 @@ buildkiteJobIdFromEnv :: IO (Maybe String)
 buildkiteJobIdFromEnv = lookupEnv "BUILDKITE_JOB_ID"
 
 installerConfigFromEnv :: IO InstallerConfig
-installerConfigFromEnv = mkEnv <$> envAPI <*> envVersion
+installerConfigFromEnv = mkEnv <$> envAPI <*> envVersion <*> envCluster
   where
     envAPI = fromMaybe "cardano" <$> lookupEnv "API"
     envVersion = fromMaybe "dev" <$> lookupEnv "DAEDALUS_VERSION"
-    mkEnv "cardano" ver = InstallerConfig
+    envCluster = fromMaybe "mainnet" <$> lookupEnv "DAEDALUS_CLUSTER"
+    mkEnv "cardano" ver clusterName = InstallerConfig
       { icApi = "cardano"
       , predownloadChain = False
       , appNameLowercase = "daedalus"
       , appName = "Daedalus"
-      , pkg = "dist/Daedalus-installer-" <> T.pack ver <> ".pkg"
+      , pkg = "dist/Daedalus-installer-" <> T.pack ver <> "-" <> T.pack clusterName <> ".pkg"
       , appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
+      , clusterName = clusterName
       }
 
 main :: IO ()

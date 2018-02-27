@@ -2,7 +2,7 @@ rem DEPENDENCIES:
 rem   1. Node.js ('npm' binary in PATH)
 rem   2. 7zip    ('7z'  binary in PATH)
 rem
-rem   installer dev mode:  set SKIP_TO_FRONTEND/SKIP_TO_INSTALLER
+rem   installer dev mode:  set SKIP_TOOLS/SKIP_NODE/SKIP_CARDANO_FETCH/SKIP_STACK/SKIP_LIBS/SKIP_TO_FRONTEND/SKIP_TO_INSTALLER
 
 set CLUSTERS="mainnet staging"
 
@@ -13,10 +13,10 @@ set CARDANO_BRANCH_DEFAULT=release/1.1.0
 set DAEDALUS_VERSION_DEFAULT=local-dev-build-%CARDANO_BRANCH_DEFAULT%
 
 set DAEDALUS_VERSION=%1
-@if [%DAEDALUS_VERSION%]==[] (@echo WARNING: DAEDALUS_VERSION [argument #1] was not provided, defaulting to %DAEDALUS_VERSION_DEFAULT%
+@if [%DAEDALUS_VERSION%]==[] (@echo WARNING: DAEDALUS_VERSION [argument #1] wasnt provided, defaulting to %DAEDALUS_VERSION_DEFAULT%
     set DAEDALUS_VERSION=%DAEDALUS_VERSION_DEFAULT%);
 set CARDANO_BRANCH=%2
-@if [%CARDANO_BRANCH%]==[]   (@echo WARNING: CARDANO_BRANCH [argument #2] was not provided, defaulting to %CARDANO_BRANCH_DEFAULT%
+@if [%CARDANO_BRANCH%]==[]   (@echo WARNING: CARDANO_BRANCH [argument #2] wasnt provided, defaulting to %CARDANO_BRANCH_DEFAULT%
     set CARDANO_BRANCH=%CARDANO_BRANCH_DEFAULT%);
 
 set CURL_URL=https://bintray.com/artifact/download/vszakats/generic/curl-%CURL_VERSION%-win64-mingw.7z
@@ -30,12 +30,18 @@ set DLLS_URL=https://s3.eu-central-1.amazonaws.com/daedalus-ci-binaries/DLLs.zip
 @echo ..with LibreSSL version:    %LIBRESSL_VERSION%
 @echo .
 
-@if not [%SKIP_TO_INSTALLER%]==[] (@echo WARNING: SKIP_TO_INSTALLER set, skipping to frontend packaging
-    pushd installers & goto :build_installer)
-@if not [%SKIP_TO_FRONTEND%]==[]   (@echo WARNING: SKIP_TO_FRONTEND set, skipping directly to installer rebuild
+@if not [%SKIP_TO_INSTALLER%]==[] (@echo WARNING: SKIP_TO_INSTALLER active, skipping to frontend packaging
+    pushd installers & goto :build_installers)
+@if not [%SKIP_TO_FRONTEND%]==[]   (@echo WARNING: SKIP_TO_FRONTEND active, skipping directly to installer rebuild
     pushd installers & goto :build_frontend)
 
-@echo Obtaining curl
+@if not [%SKIP_TOOLS%]==[] (@echo WARNING: SKIP_TOOLS active, skipping installing tools
+    goto :after_tools)
+@echo ##############################################################################
+@echo ###
+@echo ### Installing tools:  curl, NSIS, 7z
+@echo ###
+@echo ##############################################################################
 powershell -Command "try { Import-Module BitsTransfer; Start-BitsTransfer -Source '%CURL_URL%' -Destination 'curl.7z'; } catch { exit 1; }"
 @if %errorlevel% neq 0 (@echo FAILED: couldn't obtain curl from %CURL_URL% using BITS
 	popd & exit /b 1)
@@ -61,13 +67,27 @@ nsis-setup.exe /S /SD
 7z    x nsis-strlen_8192.zip -o"c:\Program Files (x86)\NSIS" -aoa -r
 @if %errorlevel% neq 0 (@echo FAILED: 7z    x nsis-strlen_8192.zip -o"c:\Program Files (x86)\NSIS" -aoa -r
     exit /b 1)
+:after_tools
 
-@echo Installing NPM
+@if not [%SKIP_NODE%]==[] (@echo WARNING: SKIP_NODE active, skipping Node dependencies
+    goto :after_node)
+@echo ##############################################################################
+@echo ###
+@echo ### Installing Node dependencies
+@echo ###
+@echo ##############################################################################
 call npm install
 @if %errorlevel% neq 0 (@echo FAILED: npm install
     exit /b 1)
+:after_node
 
-@echo Obtaining Cardano from branch %CARDANO_BRANCH%
+@if not [%SKIP_CARDANO_FETCH%]==[] (@echo "WARNING: SKIP_CARDANO_FETCH set, not re-fetching Cardano"
+    goto :after_cardano_fetch)
+@echo ##############################################################################
+@echo ###
+@echo ### Obtaining Cardano from branch %CARDANO_BRANCH%
+@echo ###
+@echo ##############################################################################
 rmdir /s/q node_modules\daedalus-client-api 2>nul
 mkdir      node_modules\daedalus-client-api
 
@@ -79,19 +99,25 @@ pushd node_modules\daedalus-client-api
     @for /F "usebackq" %%A in ('CardanoSL.zip') do set size=%%~zA
     if %size% lss %MIN_CARDANO_BYTES% (@echo FAILED: CardanoSL.zip is too small: threshold=%MIN_CARDANO_BYTES%, actual=%size% bytes
         popd & exit /b 1)
+popd
+:after_cardano_fetch
 
+pushd node_modules\daedalus-client-api
     7z x CardanoSL.zip -y
     @if %errorlevel% neq 0 (@echo FAILED: 7z x CardanoSL.zip -y
 	popd & exit /b 1)
-    del CardanoSL.zip
 popd
 
-@echo cardano-sl build-id:
-type node_modules\daedalus-client-api\build-id
-@echo cardano-sl commit-id:
-type node_modules\daedalus-client-api\commit-id
-@echo cardano-sl ci-url:
-type node_modules\daedalus-client-api\ci-url
+@echo ##############################################################################
+@echo ###
+@echo ### cardano-sl build-id:
+@type node_modules\daedalus-client-api\build-id
+@echo ### cardano-sl commit-id:
+@type node_modules\daedalus-client-api\commit-id
+@echo ### cardano-sl ci-url:
+@type node_modules\daedalus-client-api\ci-url
+@echo ###
+@echo ##############################################################################
 
 move   node_modules\daedalus-client-api\log-config-prod.yaml installers\log-config-prod.yaml
 move   node_modules\daedalus-client-api\cardano-node.exe     installers\
@@ -100,13 +126,14 @@ move   node_modules\daedalus-client-api\configuration.yaml installers\
 move   node_modules\daedalus-client-api\*genesis*.json installers\
 del /f node_modules\daedalus-client-api\*.exe
 
-:build_frontend
-@echo Packaging frontend
-call npm run package -- --icon installers/icons/64x64
-@if %errorlevel% neq 0 (@echo FAILED: Failed to package the frontend
-	exit /b 1)
-
+@echo ##############################################################################
+@echo ###
+@echo ### Preparing installer generator
+@echo ###
+@echo ##############################################################################
 pushd installers
+    @if not [%SKIP_LIBS%]==[] (@echo WARNING: SKIP_LIBS active, skipping lib installation
+        goto :after_libs)
     del /f LibreSSL.zip 2>nul
     @echo Obtaining LibreSSL %LIBRESSL_VERSION%
     ..\curl %LIBRESSL_URL% -o LibreSSL.zip
@@ -118,16 +145,6 @@ pushd installers
     del LibreSSL.zip
     rmdir /s/q libressl
     move libressl-%LIBRESSL_VERSION%-windows libressl
-
-    @echo Installing stack
-    ..\curl --location http://www.stackage.org/stack/windows-x86_64 -o stack.zip
-    @if %errorlevel% neq 0 (@echo FAILED: stack couldn't be obtained
-        popd & exit /b 1)
-    del /f stack.exe 2>nul
-    7z x stack.zip stack.exe
-    @if %errorlevel% neq 0 (@echo FAILED: couldn't extract stack from the distribution package
-        exit /b 1)
-    del stack.zip
 
     @echo Copying DLLs
     @rem TODO: get rocksdb from rocksdb-haskell
@@ -142,24 +159,46 @@ pushd installers
         	popd & popd & exit /b 1)
         del DLLs.zip
     popd
+:after_libs
 
-    @echo Building the installer
-    stack setup --no-reinstall
-    @if %errorlevel% neq 0 (@echo FAILED: stack setup --no-reinstall
-	popd & exit /b 1)
+    @if not [%SKIP_STACK%]==[] (@echo "WARNING: SKIP_STACK active, skipping stack setup"
+        goto :after_stack)
+    @echo ##############################################################################
+    @echo ###
+    @echo ### Installing stack
+    @echo ###
+    @echo ##############################################################################
+    ..\curl --location http://www.stackage.org/stack/windows-x86_64 -o stack.zip
+    @if %errorlevel% neq 0 (@echo FAILED: stack couldn't be obtained
+        popd & exit /b 1)
+    del /f stack.exe 2>nul
+    7z x stack.zip stack.exe
+    @if %errorlevel% neq 0 (@echo FAILED: couldn't extract stack from the distribution package
+        exit /b 1)
+    del stack.zip
+
+    stack setup --no-reinstall >/nul
+:after_stack
+
     FOR /F "tokens=* USEBACKQ" %%F IN (`stack path --local-bin`) DO (
         SET PATHEXTN=%%F)
     set PATH=%PATH%;%PATHEXTN%
 
-:build_installer
+    @echo ##############################################################################
+    @echo ###
+    @echo ### Building installer generator
+    @echo ###
+    @echo ##############################################################################
+
     call ..\scripts\appveyor-retry call stack install dhall dhall-json
     @if %errorlevel% neq 0 (@echo FATAL: persistent failure while installing dhall/dhall-json
         popd & exit /b 1)
-
-rem     @echo FATAL: persistent failure while building installer with:  call stack --no-terminal build -j 2 --exec make-installer
-rem     exit /b 1
-:built
-@echo SUCCESS: call stack --no-terminal build -j 2 --exec make-installer
 popd
 
-@dir /b/s installers\daedalus*
+:build_installers
+
+@echo on
+FOR %%C IN (%CLUSTERS:"=%) DO call scripts\build-single-installer-win64.bat %%C
+
+@echo SUCCESS
+

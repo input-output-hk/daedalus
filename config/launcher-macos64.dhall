@@ -1,8 +1,9 @@
 \(perCluster: { keyType : Text, relays : Text, reportServer : Text, updateServer : Text })
 ->
-{ key      = "mainnet_${perCluster.keyType}_wallet_macos64"
-, specific =
-  { nodePath            = "./cardano-node"
+{ key      = "mainnet_${perCluster.keyType}wallet_macos64"
+, pass     =
+  { reportServer        = perCluster.reportServer
+  , nodePath            = "./cardano-node"
   , nodeDbPath          = "$HOME/Library/Application Support/Daedalus/DB-1.0"
   , nodeLogPath         = "$HOME/Library/Application Support/Daedalus/Logs/cardano-node.log"
   , nodeArgs =

@@ -1,6 +1,7 @@
 \(os :
   { key      : Text
-  , specific : { nodePath            : Text
+  , pass     : { reportServer        : Text
+               , nodePath            : Text
                , nodeDbPath          : Text
                , nodeLogPath         : Text
                , nodeArgs            : List Text
@@ -21,4 +22,4 @@
 , nodeLogConfig  = "log-config-prod.yaml"
 , nodeTimeoutSec = 30
 , walletArgs     = [] : List Text
-} // os.specific
+} // os.pass

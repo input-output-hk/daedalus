@@ -96,8 +96,8 @@ fileSubstString :: Text -> Text -> FilePath -> FilePath -> IO ()
 fileSubstString from to src dst =
     TIO.writeFile dst =<< T.replace from to <$> TIO.readFile src
 
-writeInstallerNSIS :: String -> IO ()
-writeInstallerNSIS fullVersion = do
+writeInstallerNSIS :: String -> String -> IO ()
+writeInstallerNSIS fullVersion clusterName = do
     tempDir <- fmap fromJust $ lookupEnv "TEMP"
     let viProductVersion = L.intercalate "." $ parseVersion fullVersion
     echo $ unsafeTextToLine $ toText $ "VIProductVersion: " <> viProductVersion
@@ -107,8 +107,9 @@ writeInstallerNSIS fullVersion = do
 
     writeFile "daedalus.nsi" $ nsis $ do
         _ <- constantStr "Version" (str fullVersion)
+        _ <- constantStr "Cluster" (str clusterName)
         name "Daedalus ($Version)"                  -- The name of the installer
-        outFile "daedalus-win64-$Version-installer.exe"           -- Where to produce the installer
+        outFile "daedalus-win64-$Version-$Cluster-installer.exe"           -- Where to produce the installer
         unsafeInjectGlobal $ "!define MUI_ICON \"icons\\64x64.ico\""
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE"
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_BITMAP \"icons\\installBanner.bmp\""
@@ -183,8 +184,10 @@ writeInstallerNSIS fullVersion = do
 main :: IO ()
 main = do
     echo "Writing version.txt"
-    version <- fmap (fromMaybe "dev") $ lookupEnv "APPVEYOR_BUILD_VERSION"
+    version <- fromMaybe "dev"     <$> lookupEnv "APPVEYOR_BUILD_VERSION"
+    cluster <- fromMaybe "mainnet" <$> lookupEnv "DAEDALUS_CLUSTER"
     let fullVersion = version <> ".0"
+        fullName    = "daedalus-win64-" <> fullVersion <> "-" <> cluster <> "-installer.exe"
     writeFile "version.txt" fullVersion
 
     echo "Adding permissions manifest to cardano-launcher.exe"
@@ -198,8 +201,8 @@ main = do
     signUninstaller
 
     echo "Writing daedalus.nsi"
-    writeInstallerNSIS fullVersion
+    writeInstallerNSIS fullVersion cluster
 
-    echo "Generating NSIS installer daedalus-win64-installer.exe"
+    echo "Generating NSIS installer"
     procs "C:\\Program Files (x86)\\NSIS\\makensis" ["daedalus.nsi"] mempty
-    signFile ("daedalus-win64-" <> fullVersion <> "-installer.exe")
+    signFile fullName

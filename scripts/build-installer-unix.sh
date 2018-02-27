@@ -6,6 +6,8 @@
 
 set -e
 
+CLUSTERS="mainnet staging"
+
 usage() {
     test -z "$1" || { echo "ERROR: $*" >&2; echo >&2; }
     cat >&2 <<EOF
@@ -15,6 +17,8 @@ usage() {
   Build a Daedalus installer.
 
   Options:
+    --clusters "[CLUSTER-NAME...]"
+                              Build installers for CLUSTERS.  Defaults to "mainnet staging"
     --fast-impure             Fast, impure, incremental build
     --build-id BUILD-NO       Identifier of the build; defaults to '0'
 
@@ -26,7 +30,7 @@ usage() {
 
     --verbose                 Verbose operation
     --quiet                   Disable verbose operation
-    
+
 EOF
     test -z "$1" || exit 1
 }
@@ -72,8 +76,9 @@ esac
 set -u ## Undefined variable firewall enabled
 while test $# -ge 1
 do case "$1" in
+           --clusters )                                     CLUSTERS="$2"; shift;;
            --fast-impure )                               fast_impure=true;;
-           --build-id )       arg2nz "build identifier" $2;    build_id="$2"; shift;;
+           --build-id )       arg2nz "build identifier" $2; build_id="$2"; shift;;
            --pr-id )          arg2nz "Pull request id" $2;
                                                                pr_id="$2"; shift;;
            --nix-path )       arg2nz "NIX_PATH value" $2;
@@ -127,44 +132,73 @@ test -d node_modules/daedalus-client-api/ -a -n "${fast_impure}" || {
 test "$(find node_modules/ | wc -l)" -gt 100 -a -n "${fast_impure}" ||
         $nix_shell --run "npm install"
 
-test -d "release/darwin-x64/Daedalus-darwin-x64" -a -n "${fast_impure}" || {
-        $nix_shell --run "npm run package -- --icon installers/icons/256x256.png"
-        echo "Size of Electron app is $(du -sh release)"
-}
-
 cd installers
     echo "Prebuilding dependencies for cardano-installer, quietly.."
     $nix_shell default.nix --run true || echo "Prebuild failed!"
     echo "Building the cardano installer generator.."
     INSTALLER=$(nix-build -j 2 --no-out-link)
 
-    echo "Generating the installer.."
-    $INSTALLER/bin/make-installer
-
-    INSTALLER_PKG="Daedalus-installer-${DAEDALUS_VERSION}.pkg"
-    APP_NAME="csl-daedalus"
-
-    if test -d dist -a -f "dist/${INSTALLER_PKG}"; then
-        echo "Uploading the installer package.."
-        cd dist
-        mkdir -p ${APP_NAME}
-        mv "${INSTALLER_PKG}" "${APP_NAME}/${INSTALLER_PKG}"
-
-        if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
-            export PATH=${BUILDKITE_BIN_PATH:-}:$PATH
-            buildkite-agent artifact upload "${APP_NAME}/${INSTALLER_PKG}" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
-        fi
-        cd ..
-    else
-        echo "Installer was not made."
-        mkdir -p dist/${APP_NAME}
+    # For Travis MacOSX non-PR builds only
+    if test "${pr_id}" = "false" -a -n "${TRAVIS_JOB_ID:-}" -a "${OS_NAME}" != "linux"
+    then
+        echo "Downloading and importing signing certificate.."
+        retry 5 $nix_shell -p awscli --run "aws s3 cp --region eu-central-1 s3://iohk-private/${key} macos.p12 || true"
+        $INSTALLER/bin/load-certificate -k macos-build.keychain -f macos.p12
     fi
 
-    if test -n "${test_install}"
-    then echo "$0:  --test-install passed, will test the installer for installability";
-         case ${OS_NAME} in
-                 darwin ) sudo installer -dumplog -verbose -target / -pkg "dist/Daedalus-installer-${DAEDALUS_VERSION}.pkg";;
-                 linux )  echo "WARNING: installation testing not implemented on Linux" >&2;; esac; fi
+    case ${OS_NAME} in
+            darwin ) OS=macos64;;
+            linux )  OS=linux;;esac
+    for cluster in ${CLUSTERS}
+    do
+          pushd ../config
+          nix-shell -p dhall-json --run \
+                    "bash -c \"echo \\\"./launcher.dhall (./launcher-${OS}.dhall  ./${CLUSTER}.dhall)\\\" | dhall-to-yaml\" > ../installers/launcher-config.yaml;\
+                     bash -c \"echo \\\"./topology.dhall                          ./${CLUSTER}.dhall \\\" | dhall-to-yaml\" > ../installers/wallet-topology.yaml"
+          popd
+
+          test -d "release/darwin-x64/Daedalus-darwin-x64" -a -n "${fast_impure}" || {
+                  pushd ..
+                  $nix_shell --run "npm run package -- --icon installers/icons/256x256.png"
+                  echo "Size of Electron app is $(du -sh release)"
+                  popd
+          }
+
+          echo "Generating installer for cluster ${cluster}.."
+          export DAEDALUS_CLUSTER=${cluster}
+          $INSTALLER/bin/make-installer
+
+          INSTALLER_PKG="Daedalus-installer-${DAEDALUS_VERSION}-${cluster}.pkg"
+          APP_NAME="csl-daedalus"
+
+          if test -d dist -a -f "dist/${INSTALLER_PKG}"
+          then
+                  echo "Uploading the installer package.."
+                  cd dist
+                  mkdir -p ${APP_NAME}
+                  mv "${INSTALLER_PKG}" "${APP_NAME}/${INSTALLER_PKG}"
+
+                  if [ -n "${BUILDKITE_JOB_ID:-}" ]
+                  then
+                          export PATH=${BUILDKITE_BIN_PATH:-}:$PATH
+                          buildkite-agent artifact upload "${APP_NAME}/${INSTALLER_PKG}" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
+                  elif test -n "${TRAVIS_JOB_ID:-}" -a -n "${upload_s3}"
+                  then
+                          echo "$0: --upload-s3 passed, will upload the installer to S3";
+                          retry 5 $nix_shell -p awscli --run "aws s3 cp '${APP_NAME}/${INSTALLER_PKG}' s3://daedalus-internal/ --acl public-read"
+                  fi
+                  cd ..
+          else
+                  echo "Installer was not made."
+                  mkdir -p dist/${APP_NAME}
+          fi
+
+          if test -n "${test_install}"
+          then echo "$0:  --test-install passed, will test the installer for installability";
+               case ${OS_NAME} in
+                       darwin ) sudo installer -dumplog -verbose -target / -pkg "dist/Daedalus-installer-${DAEDALUS_VERSION}.pkg";;
+                       linux )  echo "WARNING: installation testing not implemented on Linux" >&2;; esac; fi
+    done
 cd ..
 
 exit 0
