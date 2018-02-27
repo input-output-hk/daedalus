@@ -1,6 +1,8 @@
-\(perCluster: { keyType : Text, reportServer : Text, updateServer : Text })
+\(perCluster: { keyType : Text, relays : Text, reportServer : Text, updateServer : Text })
 ->
-{   nodePath            = "%DAEDALUS_DIR%/cardano-node.exe"
+{ key      = "mainnet_${perCluster.keyType}_wallet_win64"
+, specific =
+  { nodePath            = "%DAEDALUS_DIR%/cardano-node.exe"
   , nodeDbPath          = "%APPDATA%/Daedalus/DB-1.0"
   , nodeLogPath         = "%APPDATA%/Daedalus/Logs/cardano-node.log"
   , nodeArgs =
@@ -33,4 +35,5 @@
   , updateWindowsRunner = ["%APPDATA%/Daedalus/Installer.bat"] : Optional Text
 
   , launcherLogsPrefix  = "%APPDATA%/Daedalus/Logs/pub"
+  }
 }

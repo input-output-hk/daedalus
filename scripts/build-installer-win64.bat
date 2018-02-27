@@ -4,6 +4,8 @@ rem   2. 7zip    ('7z'  binary in PATH)
 rem
 rem   installer dev mode:  set SKIP_TO_FRONTEND/SKIP_TO_INSTALLER
 
+set CLUSTERS="mainnet staging"
+
 set MIN_CARDANO_BYTES=20000000
 set LIBRESSL_VERSION=2.5.3
 set CURL_VERSION=7.54.0
@@ -28,7 +30,7 @@ set DLLS_URL=https://s3.eu-central-1.amazonaws.com/daedalus-ci-binaries/DLLs.zip
 @echo ..with LibreSSL version:    %LIBRESSL_VERSION%
 @echo .
 
-@if not [%SKIP_TO_INSTALLER%]==[] (@echo WARNING: SKIP_TO_INSTALLER set, skipping to frontend packaging       
+@if not [%SKIP_TO_INSTALLER%]==[] (@echo WARNING: SKIP_TO_INSTALLER set, skipping to frontend packaging
     pushd installers & goto :build_installer)
 @if not [%SKIP_TO_FRONTEND%]==[]   (@echo WARNING: SKIP_TO_FRONTEND set, skipping directly to installer rebuild
     pushd installers & goto :build_frontend)
@@ -144,29 +146,15 @@ pushd installers
     @echo Building the installer
     stack setup --no-reinstall
     @if %errorlevel% neq 0 (@echo FAILED: stack setup --no-reinstall
-	exit /b 1)
+	popd & exit /b 1)
     FOR /F "tokens=* USEBACKQ" %%F IN (`stack path --local-bin`) DO (
         SET PATHEXTN=%%F)
     set PATH=%PATH%;%PATHEXTN%
 
-:install_dhall
-    call ..\scripts\appveyor-retry call stack install dhall dhall-json
-    @if %errorlevel% equ 0 goto :generate_config
-    @echo FATAL: persistent failure while installing dhall/dhall-json
-    exit /b 1
-:generate_config
-    set OS=win64
-    set CLUSTER=staging
-    pushd ..\config
-    call emit-config-windows.bat %OS% %CLUSTER% launcher
-    call emit-config-windows.bat %OS% %CLUSTER% wallet-topology
-    @if %errorlevel% equ 0 (popd & goto :build_installer)
-    @echo FATAL: persistent failure while generating configuration
-    
-
 :build_installer
-rem     call ..\scripts\appveyor-retry call stack --no-terminal build -j 2 --exec make-installer
-rem     @if %errorlevel% equ 0 goto :built
+    call ..\scripts\appveyor-retry call stack install dhall dhall-json
+    @if %errorlevel% neq 0 (@echo FATAL: persistent failure while installing dhall/dhall-json
+        popd & exit /b 1)
 
 rem     @echo FATAL: persistent failure while building installer with:  call stack --no-terminal build -j 2 --exec make-installer
 rem     exit /b 1

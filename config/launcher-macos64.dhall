@@ -1,6 +1,8 @@
-\(perCluster: { keyType : Text, reportServer : Text, updateServer : Text })
+\(perCluster: { keyType : Text, relays : Text, reportServer : Text, updateServer : Text })
 ->
-{   nodePath            = "./cardano-node"
+{ key      = "mainnet_${perCluster.keyType}_wallet_macos64"
+, specific =
+  { nodePath            = "./cardano-node"
   , nodeDbPath          = "$HOME/Library/Application Support/Daedalus/DB-1.0"
   , nodeLogPath         = "$HOME/Library/Application Support/Daedalus/Logs/cardano-node.log"
   , nodeArgs =
@@ -33,4 +35,5 @@
   , updateWindowsRunner = [] : Optional Text
 
   , launcherLogsPrefix  = "$HOME/Library/Application Support/Daedalus/Logs/pub/"
+  }
 }
