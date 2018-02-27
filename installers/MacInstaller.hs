@@ -111,7 +111,6 @@ makeInstaller cfg = do
       copyFile "client.conf" (dir </> "client.conf")
 
       let launcherConfigFileName = "launcher-config.yaml"
-      copyFile "launcher-config-mac.yaml" (dir </> launcherConfigFileName)
 
       -- Rewrite libs paths and bundle them
       _ <- chain dir $ fmap toText [dir </> "cardano-launcher", dir </> "cardano-node"]

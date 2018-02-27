@@ -146,7 +146,7 @@ writeInstallerNSIS fullVersion = do
                 file [] "wallet-topology.yaml"
                 file [] "configuration.yaml"
                 file [] "*genesis*.json"
-                file [OName (str "launcher-config.yaml")] "launcher-config-windows.yaml"
+                file [] "launcher-config.yaml"
                 file [Recursive] "dlls\\"
                 file [Recursive] "libressl\\"
                 file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
