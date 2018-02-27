@@ -38,6 +38,7 @@ import { adaTestReset } from './adaTestReset';
 import { getAdaHistoryByWallet } from './getAdaHistoryByWallet';
 import { getAdaAccountRecoveryPhrase } from './getAdaAccountRecoveryPhrase';
 import { getAdaLocalTimeDifference } from './getAdaLocalTimeDifference';
+import { sendAdaBugReport } from './sendAdaBugReport';
 
 import type {
   AdaLocalTimeDifference,
@@ -66,6 +67,8 @@ import type {
   GetWalletsResponse,
   RestoreWalletRequest,
   RestoreWalletResponse,
+  SendBugReportRequest,
+  SendBugReportResponse,
   UpdateWalletResponse,
   UpdateWalletPasswordRequest,
   UpdateWalletPasswordResponse,
@@ -75,6 +78,7 @@ import {
   GenericApiError,
   IncorrectWalletPasswordError,
   WalletAlreadyRestoredError,
+  ReportRequestError,
 } from '../common';
 
 import {
@@ -515,6 +519,18 @@ export default class AdaApi {
         throw new IncorrectWalletPasswordError();
       }
       throw new RedeemAdaError();
+    }
+  }
+
+  async sendBugReport(request: SendBugReportRequest): Promise<SendBugReportResponse> {
+    Logger.debug('AdaApi::sendBugReport called: ' + stringifyData(request));
+    try {
+      await sendAdaBugReport({ requestFormData: request, application: 'cardano-node' });
+      Logger.debug('AdaApi::sendBugReport success');
+      return true;
+    } catch (error) {
+      Logger.error('AdaApi::sendBugReport error: ' + stringifyError(error));
+      throw new ReportRequestError();
     }
   }
 
