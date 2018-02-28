@@ -153,8 +153,8 @@ cd installers
     do
           pushd ../config
           nix-shell -p dhall-json --run \
-                    "bash -c \"echo \\\"./launcher.dhall (./launcher-${OS}.dhall  ./${CLUSTER}.dhall)\\\" | dhall-to-yaml\" > ../installers/launcher-config.yaml;\
-                     bash -c \"echo \\\"./topology.dhall                          ./${CLUSTER}.dhall \\\" | dhall-to-yaml\" > ../installers/wallet-topology.yaml"
+                    "bash -c \"echo \\\"./launcher.dhall (./launcher-${OS}.dhall  ./${cluster}.dhall)\\\" | dhall-to-yaml\" > ../installers/launcher-config.yaml;\
+                     bash -c \"echo \\\"./topology.dhall                          ./${cluster}.dhall \\\" | dhall-to-yaml\" > ../installers/wallet-topology.yaml"
           popd
 
           test -d "release/darwin-x64/Daedalus-darwin-x64" -a -n "${fast_impure}" || {

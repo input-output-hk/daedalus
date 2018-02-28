@@ -1,17 +1,19 @@
 \(perCluster: { keyType : Text, relays : Text, reportServer : Text, updateServer : Text })
 ->
-{ key        = "mainnet_${perCluster.keyType}wallet_win64"
-, nodeArgsOS =
-    [ "--update-latest-path"
-    , "%APPDATA%\\Daedalus\\Installer.exe"
-    , "--keyfile"
+{ key          = "mainnet_${perCluster.keyType}wallet_win64"
+, nodeArgsOS   =
+    [ "--keyfile"
     , "%APPDATA%\\Daedalus\\Secrets-1.0\\secret.key"
     , "--logs-prefix"
     , "%APPDATA%\\Daedalus\\Logs"
+    , "--update-latest-path"
+    , "%APPDATA%\\Daedalus\\Installer.exe"
+    , "--update-server"
+    , perCluster.updateServer
     , "--wallet-db-path"
     , "%APPDATA%\\Daedalus\\Wallet-1.0"
     ]
-, pass     =
+, pass =
   { reportServer        = perCluster.reportServer
   , nodePath            = "%DAEDALUS_DIR%\\cardano-node.exe"
   , nodeDbPath          = "%APPDATA%\\Daedalus\\DB-1.0"

@@ -6,7 +6,6 @@
     , nodePath            : Text
     , nodeDbPath          : Text
     , nodeLogPath         : Text
-    , nodeArgs            : List Text
     , walletPath          : Text
     , updaterPath         : Text
     , updaterArgs         : List Text
@@ -25,17 +24,15 @@
 , nodeTimeoutSec = 30
 , walletArgs     = [] : List Text
 , nodeArgs =
-    [ "--update-with-package"
-    , "--no-ntp"
+    [ "--no-ntp"
+    , "--tlsca"
+    , "tls/ca/ca.crt"
     , "--tlscert"
-    , "--update-server"
-    , perCluster.updateServer
     , "tls/server/server.crt"
     , "--tlskey"
     , "tls/server/server.key"
-    , "--tlsca"
-    , "tls/ca/ca.crt"
     , "--topology"
     , "wallet-topology.yaml"
+    , "--update-with-package"
     ] # os.nodeArgsOS
 } // os.pass
