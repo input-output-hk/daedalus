@@ -1,32 +1,21 @@
 \(perCluster: { keyType : Text, relays : Text, reportServer : Text, updateServer : Text })
 ->
-{ key      = "mainnet_${perCluster.keyType}wallet_macos64"
+{ key        = "mainnet_${perCluster.keyType}wallet_macos64"
+, nodeArgsOS =
+    [ "--update-latest-path"
+    , "$HOME/Library/Application Support/Daedalus/installer.pkg"
+    , "--keyfile"
+    , "$HOME/Library/Application Support/Daedalus/Secrets-1.0/secret.key"
+    , "--logs-prefix"
+    , "$HOME/Library/Application Support/Daedalus/Logs"
+    , "--wallet-db-path"
+    , "$HOME/Library/Application Support/Daedalus/Wallet-1.0"
+    ]
 , pass     =
   { reportServer        = perCluster.reportServer
   , nodePath            = "./cardano-node"
   , nodeDbPath          = "$HOME/Library/Application Support/Daedalus/DB-1.0"
   , nodeLogPath         = "$HOME/Library/Application Support/Daedalus/Logs/cardano-node.log"
-  , nodeArgs =
-      [ "--update-latest-path"
-      , "$HOME/Library/Application Support/Daedalus/installer.pkg"
-      , "--keyfile"
-      , "$HOME/Library/Application Support/Daedalus/Secrets-1.0/secret.key"
-      , "--logs-prefix"
-      , "$HOME/Library/Application Support/Daedalus/Logs"
-      , "--wallet-db-path"
-      , "$HOME/Library/Application Support/Daedalus/Wallet-1.0"
-      , "--update-server"
-      , perCluster.updateServer
-      , "--update-with-package"
-      , "--no-ntp"
-      , "--tlscert"
-      , "./tls/server/server.crt"
-      , "--tlskey"
-      , "./tls/server/server.key"
-      , "--tlsca"
-      , "./tls/ca/ca.crt"
-      , "--topology"
-      , "./wallet-topology.yaml" ]
 
   , walletPath          = "./Frontend"
 
