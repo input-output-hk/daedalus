@@ -20,12 +20,19 @@ const buildRenderer = (config, done) => gulp.src('source/renderer/index.js')
 // Setup electron-connect server to start the app in development mode
 let electronServer;
 
-const createElectronServer = (env) => {
+const createElectronServer = (env, args = []) => {
   electronServer = electronConnect.server.create({
     spawnOpt: {
-      env: Object.assign({}, process.env, env)
+      env: Object.assign({}, process.env, env),
+      args,
     }
   });
+};
+
+const startElectron = () => {
+  electronServer.start();
+  gulp.watch('dist/main/index.js', gulp.series('electron:restart'));
+  gulp.watch('dist/renderer/*', gulp.series('electron:reload'));
 };
 
 gulp.task('build-main', (done) => buildMain({}, done));
@@ -50,6 +57,8 @@ gulp.task('test-watch', gulp.series('build-watch', 'cucumber-watch'));
 
 gulp.task('purge-translations', shell.task('rimraf ./translations/messages/app'));
 
+gulp.task('electron-inspector', shell.task('npm run electron-inspector'));
+
 gulp.task('electron:restart', (done) => {
   electronServer.restart();
   done();
@@ -62,11 +71,17 @@ gulp.task('electron:reload', (done) => {
 
 gulp.task('start-dev', () => {
   createElectronServer({ NODE_ENV: 'development' });
-  electronServer.start();
-  gulp.watch('dist/main/index.js', gulp.series('electron:restart'));
-  gulp.watch('dist/renderer/*', gulp.series('electron:reload'));
+  startElectron();
+});
+
+gulp.task('start-debug', () => {
+  createElectronServer({ NODE_ENV: 'development' }, ['--inspect', '--inspect-brk']);
+  startElectron();
+
 });
 
 gulp.task('start', shell.task('cross-env NODE_ENV=production electron ./'));
 
 gulp.task('dev', gulp.series('purge-translations', 'build-watch', 'start-dev'));
+
+gulp.task('debug', gulp.series('purge-translations', 'build-watch', 'start-debug', 'electron-inspector'));

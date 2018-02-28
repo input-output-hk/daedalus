@@ -24,6 +24,7 @@ export default class SidebarLayout extends Component<Props> {
       children, sidebar, topbar,
       notification, contentDialogs,
     } = this.props;
+
     return (
       <div className={styles.component}>
         <div className={styles.sidebar}>

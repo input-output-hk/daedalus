@@ -112,6 +112,7 @@ export default class WalletReceive extends Component<Props, State> {
   }, {
     options: {
       validationDebounceWait: 0, // Disable debounce to avoid error state after clearing
+      validateOnChange: true,
       showErrorsOnClear: false,
     },
   });

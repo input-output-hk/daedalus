@@ -55,7 +55,6 @@ export default class WalletSummaryPage extends Component<Props> {
           transactions={recent}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           hasMoreToLoad={false}
-          onLoadMore={() => {}}
           assuranceMode={wallet.assuranceMode}
           walletId={wallet.id}
           formattedWalletAmount={formattedWalletAmount}
