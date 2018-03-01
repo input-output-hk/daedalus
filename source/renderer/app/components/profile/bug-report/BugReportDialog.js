@@ -317,6 +317,8 @@ export default class BugReportDialog extends Component<Props, State> {
           </div>
         ) : (
           <div>
+            <h1>TESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTEST</h1>
+
             <div className={styles.emailInput}>
               <Input
                 className="email"
@@ -336,14 +338,14 @@ export default class BugReportDialog extends Component<Props, State> {
             </div>
 
             <div className={styles.problemTextarea}>
-                <TextArea
-                  className="problemDescription"
-                  autoResize={false}
-                  rows={3}
-                  {...problemField.bind()}
-                  error={problemField.error}
-                  skin={<SimpleTextAreaSkin />}
-                />
+              <TextArea
+                className="problemDescription"
+                autoResize={false}
+                rows={3}
+                {...problemField.bind()}
+                error={problemField.error}
+                skin={<SimpleTextAreaSkin />}
+              />
             </div>
 
             <div className={styles.logsWrapper}>
