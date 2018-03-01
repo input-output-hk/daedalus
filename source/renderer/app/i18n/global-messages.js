@@ -173,15 +173,5 @@ export const environmentSpecificMessages = {
       defaultMessage: '!!!1.0 rc1',
       description: 'Version of "Mantis" client.'
     },
-    apiName: {
-      id: 'environment.apiName.mantis',
-      defaultMessage: '!!!Mantis',
-      description: 'Name for "Mantis" client.'
-    },
-    apiVersion: {
-      id: 'environment.apiVersion.mantis',
-      defaultMessage: '!!!1.0 rc1',
-      description: 'Version of "Mantis" client.'
-    },
   }),
 };

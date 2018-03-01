@@ -37,7 +37,7 @@ module.exports = {
         test: /\.(woff2?|eot|ttf|otf|png|jpe?g|gif|svg)(\?.*)?$/,
         exclude: /\.inline\.svg$/,
         use: {
-          loader: "url-loader",
+          loader: 'url-loader',
         }
       },
       {

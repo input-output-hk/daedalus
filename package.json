@@ -17,7 +17,7 @@
     "cleanup": "mop -v",
     "cucumber": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 cucumber-js --compiler js:babel-register --format 'progress-bar' --format-options '{\"snippetInterface\": \"synchronous\"}' --tags 'not @skip'",
     "cucumber-watch": "npm run cucumber -- --tags @watch",
-    "lint": "eslint --format=node_modules/eslint-formatter-pretty app electron features *.js",
+    "lint": "eslint --format=node_modules/eslint-formatter-pretty source features *.js",
     "flow-test": "flow; test $? -eq 0 -o $? -eq 2",
     "purge-translations": "rm -rf ./translations/messages",
     "manage-translations": "node ./translations/translation-runner.js",
