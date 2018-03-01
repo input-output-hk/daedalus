@@ -1,9 +1,13 @@
-\(os :
-  { key        : Text
-  , nodeArgsOS : List Text
-  , pass :
+\(cluster :
+  { key          : Text
+  , nodeArgsOS   : List Text
+  , relays       : Text
+  , updateServer : Text
+  , passCluster  :
     { reportServer        : Text
-    , nodePath            : Text
+    }
+  , passOS :
+    { nodePath            : Text
     , nodeDbPath          : Text
     , nodeLogPath         : Text
     , walletPath          : Text
@@ -16,7 +20,7 @@
 ->
 { configuration  =
     { filePath     = "configuration.yaml"
-    , key          = os.key
+    , key          = cluster.key
     , systemStart  = [] : Optional Integer
     , seed         = [] : Optional Integer
     }
@@ -33,6 +37,9 @@
     , "tls/server/server.key"
     , "--topology"
     , "wallet-topology.yaml"
+    , "--update-server"
+    , cluster.updateServer
     , "--update-with-package"
-    ] # os.nodeArgsOS
-} // os.pass
+    ] # cluster.nodeArgsOS
+} // cluster.passCluster
+  // cluster.passOS

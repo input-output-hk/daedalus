@@ -1,6 +1,4 @@
-\(perCluster: { keyType : Text, relays : Text, reportServer : Text, updateServer : Text })
-->
-{ key        = "mainnet_${perCluster.keyType}wallet_linux"
+{ name       = "linux"
 , nodeArgsOS =
     -- XXX: deal with XDG_DATA_HOME generalisation
     [ "--keyfile"
@@ -9,14 +7,11 @@
     , "$HOME/.local/share/Daedalus/Logs"
     , "--update-latest-path"
     , "$HOME/.local/share/Daedalus/installer.pkg"
-    , "--update-server"
-    , perCluster.updateServer
     , "--wallet-db-path"
     , "$HOME/.local/share/Daedalus/Wallet-1.0"
     ]
-, pass =
-  { reportServer        = perCluster.reportServer
-  , nodePath            = "./cardano-node"
+, passOS =
+  { nodePath            = "./cardano-node"
   , nodeDbPath          = "$HOME/.local/share/Daedalus/DB-1.0"
   , nodeLogPath         = "$HOME/.local/share/Daedalus/Logs/cardano-node.log"
 
