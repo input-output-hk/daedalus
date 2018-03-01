@@ -370,14 +370,12 @@ export default class BugReportDialog extends Component<Props, State> {
               )}
             </div>
           </div>
-        )
-        }
-
+        )}
       </Dialog>
     );
   }
 
   onSubmitManually = (link: string) => {
     this.props.onSubmitManually(link);
-  }
+  };
 }
