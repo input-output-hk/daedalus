@@ -317,8 +317,6 @@ export default class BugReportDialog extends Component<Props, State> {
           </div>
         ) : (
           <div>
-            <h1>TESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTESTTEST</h1>
-
             <div className={styles.emailInput}>
               <Input
                 className="email"
