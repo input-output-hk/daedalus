@@ -1,22 +1,25 @@
+-- XXX: deal with XDG_DATA_HOME generalisation -- pass dataDir as an argument?
+let dataDir = "$HOME/.local/share/Daedalus/"
+in
 { name       = "linux"
-, nodeArgsOS =        -- XXX: deal with XDG_DATA_HOME generalisation
-  { keyfile          = "$HOME/.local/share/Daedalus/Secrets-1.0/secret.key"
-  , logsPrefix       = "$HOME/.local/share/Daedalus/Logs"
-  , updateLatestPath = "$HOME/.local/share/Daedalus/FIXME"
-  , walletDBPath     = "$HOME/.local/share/Daedalus/Wallet-1.0"
+, nodeArgsOS =
+  { keyfile          = dataDir ++ "Secrets-1.0/secret.key"
+  , logsPrefix       = dataDir ++ "Logs"
+  , updateLatestPath = dataDir ++ "FIXME"
+  , walletDBPath     = dataDir ++ "Wallet-1.0"
   }
 , passOS     =
   { nodePath            = "./cardano-node"
-  , nodeDbPath          = "$HOME/.local/share/Daedalus/DB-1.0"
-  , nodeLogPath         = "$HOME/.local/share/Daedalus/Logs/cardano-node.log"
+  , nodeDbPath          = dataDir ++ "DB-1.0"
+  , nodeLogPath         = dataDir ++ "Logs/cardano-node.log"
 
   , walletPath          = "FIXME"
 
   , updaterPath         = "FIXME"
   , updaterArgs         = ["FIXME"]
-  , updateArchive       = ["$HOME/.local/share/Daedalus/FIXME"] : Optional Text
+  , updateArchive       = [dataDir ++ "FIXME"] : Optional Text
   , updateWindowsRunner = [] : Optional Text
 
-  , launcherLogsPrefix  = "$HOME/.local/share/Daedalus/Logs/pub/"
+  , launcherLogsPrefix  = dataDir ++ "Logs/pub/"
   }
 }
