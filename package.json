@@ -146,7 +146,7 @@
     "split-file": "2.1.0",
     "unorm": "1.4.1",
     "validator": "9.1.2",
-    "web3": "1.0.0-beta.26",
+    "web3": "1.0.0-beta.30",
     "winston": "2.4.0",
     "winston-papertrail": "1.0.5"
   },
