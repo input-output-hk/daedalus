@@ -17,8 +17,10 @@ module MacInstaller
 import           Universum
 
 import           Control.Monad (unless)
+import           Data.Char
 import           Data.Maybe (fromMaybe)
 import qualified Data.Text as T
+import           Prelude (read)
 import           System.Directory (copyFile, createDirectoryIfMissing, doesFileExist, renameFile)
 import           System.Environment (lookupEnv)
 import           System.FilePath ((</>), FilePath)
@@ -30,6 +32,8 @@ import           Turtle.Line (unsafeTextToLine)
 import           RewriteLibs (chain)
 
 import           System.IO (hSetBuffering, BufferMode(NoBuffering))
+
+import           Config
 
 data InstallerConfig = InstallerConfig {
     icApi :: String
@@ -76,6 +80,20 @@ main = do
   hSetBuffering stdout NoBuffering
 
   cfg <- installerConfigFromEnv
+
+  let capitalize :: String -> String
+      capitalize [] = []
+      capitalize (x:xs) = [Data.Char.toUpper x] <> xs
+      cluster'    = fromMaybe (error "Unrecognised cluster name in DAEDALUS_CLUSTER: should be one of:  mainnet staging") $ read $ capitalize $ clusterName cfg
+
+  echo "Generating configuration file:  launcher-config.yaml"
+  generateConfig (Request Macos64 cluster' Launcher) "launcher-config.yaml"
+  echo "Generating configuration file:  wallet-topology.yaml"
+  generateConfig (Request Macos64 cluster' Topology) "wallet-topology.yaml"
+
+  echo "Packaging frontend"
+  procs "npm" ["run", "package", "--", "--icon", "installers/icons/256x256"] mempty
+
   tempInstaller <- makeInstaller cfg
 
   signInstaller signingConfig (toText tempInstaller) (pkg cfg)

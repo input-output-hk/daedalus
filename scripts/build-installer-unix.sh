@@ -151,19 +151,6 @@ cd installers
             linux )  OS=linux;;esac
     for cluster in ${CLUSTERS}
     do
-          pushd ../config
-          nix-shell -p dhall-json --run \
-                    "bash -c \"echo \\\"./launcher.dhall (./${cluster}.dhall ./${OS}.dhall) ./${OS}.dhall\\\" | dhall-to-yaml\" > ../installers/launcher-config.yaml;\
-                     bash -c \"echo \\\"./topology.dhall (./${cluster}.dhall ./${OS}.dhall)\\\"               | dhall-to-yaml\" > ../installers/wallet-topology.yaml"
-          popd
-
-          test -d "release/darwin-x64/Daedalus-darwin-x64" -a -n "${fast_impure}" || {
-                  pushd ..
-                  $nix_shell --run "npm run package -- --icon installers/icons/256x256.png"
-                  echo "Size of Electron app is $(du -sh release)"
-                  popd
-          }
-
           echo "Generating installer for cluster ${cluster}.."
           export DAEDALUS_CLUSTER=${cluster}
           $INSTALLER/bin/make-installer

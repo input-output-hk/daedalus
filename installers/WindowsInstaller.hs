@@ -5,12 +5,13 @@ module WindowsInstaller
 import           Universum hiding (pass, writeFile)
 
 import           Control.Monad (unless)
+import qualified Data.Char
 import qualified Data.List as L
 import           Data.Maybe (fromJust, fromMaybe)
 import           Data.Monoid ((<>))
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
-import           Development.NSIS (Attrib (IconFile, IconIndex, OName, RebootOK, Recursive, Required, StartOptions, Target),
+import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recursive, Required, StartOptions, Target),
                                    HKEY (HKLM), Level (Highest), Page (Directory, InstFiles), abort,
                                    constant, constantStr, createDirectory, createShortcut, delete,
                                    deleteRegKey, execWait, file, iff_, installDir, installDirRegKey,
@@ -18,13 +19,14 @@ import           Development.NSIS (Attrib (IconFile, IconIndex, OName, RebootOK,
                                    requestExecutionLevel, rmdir, section, setOutPath, str,
                                    strLength, uninstall, unsafeInject, unsafeInjectGlobal,
                                    writeRegDWORD, writeRegStr, (%/=))
-import           Prelude ((!!))
+import           Prelude ((!!), read)
 import           System.Directory (doesFileExist)
 import           System.Environment (lookupEnv)
 import           System.IO (writeFile)
 import           Turtle (ExitCode (..), echo, proc, procs)
 import           Turtle.Line (unsafeTextToLine)
 
+import           Config
 
 daedalusShortcut :: [Attrib]
 daedalusShortcut =
@@ -189,6 +191,19 @@ main = do
     let fullVersion = version <> ".0"
         fullName    = "daedalus-win64-" <> fullVersion <> "-" <> cluster <> "-installer.exe"
     writeFile "version.txt" fullVersion
+
+    let capitalize :: String -> String
+        capitalize [] = []
+        capitalize (x:xs) = [Data.Char.toUpper x] <> xs
+        cluster'    = fromMaybe (error "Unrecognised cluster name in DAEDALUS_CLUSTER: should be one of:  mainnet staging") $ read $ capitalize cluster
+
+    echo "Generating configuration file:  launcher-config.yaml"
+    generateConfig (Request Win64 cluster' Launcher) "launcher-config.yaml"
+    echo "Generating configuration file:  wallet-topology.yaml"
+    generateConfig (Request Win64 cluster' Topology) "wallet-topology.yaml"
+
+    echo "Packaging frontend"
+    procs "npm" ["run", "package", "--", "--icon", "installers/icons/64x64"] mempty
 
     echo "Adding permissions manifest to cardano-launcher.exe"
     procs "C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\mt.exe" ["-manifest", "cardano-launcher.exe.manifest", "-outputresource:cardano-launcher.exe;#1"] mempty

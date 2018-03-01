@@ -198,7 +198,12 @@ popd
 :build_installers
 
 @echo on
-FOR %%C IN (%CLUSTERS:"=%) DO call scripts\build-single-installer-win64.bat %%C
+FOR %%C IN (%CLUSTERS:"=%) DO (
+  set DAEDALUS_CLUSTER=%%C
+  call ..\scripts\appveyor-retry call stack --no-terminal build -j 2 --exec make-installer
+    @if %errorlevel% equ 0 goto after_makeinst
+    @echo FATAL: persistent failure while building installer with:  call stack --no-terminal build -j 2 --exec make-installer
+)
 
 @echo SUCCESS
 
