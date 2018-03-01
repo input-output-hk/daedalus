@@ -1,15 +1,11 @@
 { name       = "macos64"
 , nodeArgsOS =
-    [ "--keyfile"
-    , "$HOME/Library/Application Support/Daedalus/Secrets-1.0/secret.key"
-    , "--logs-prefix"
-    , "$HOME/Library/Application Support/Daedalus/Logs"
-    , "--update-latest-path"
-    , "$HOME/Library/Application Support/Daedalus/installer.pkg"
-    , "--wallet-db-path"
-    , "$HOME/Library/Application Support/Daedalus/Wallet-1.0"
-    ]
-, passOS =
+  { keyfile          = "$HOME/Library/Application Support/Daedalus/Secrets-1.0/secret.key"
+  , logsPrefix       = "$HOME/Library/Application Support/Daedalus/Logs"
+  , updateLatestPath = "$HOME/Library/Application Support/Daedalus/installer.pkg"
+  , walletDBPath     = "$HOME/Library/Application Support/Daedalus/Wallet-1.0"
+  }
+, passOS     =
   { nodePath            = "./cardano-node"
   , nodeDbPath          = "$HOME/Library/Application Support/Daedalus/DB-1.0"
   , nodeLogPath         = "$HOME/Library/Application Support/Daedalus/Logs/cardano-node.log"

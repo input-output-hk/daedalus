@@ -1,6 +1,11 @@
 \(os :
   { name       : Text
-  , nodeArgsOS : List Text
+  , nodeArgsOS :
+    { keyfile          : Text
+    , logsPrefix       : Text
+    , updateLatestPath : Text
+    , walletDBPath     : Text
+    }
   , passOS     :
     { nodePath            : Text
     , nodeDbPath          : Text

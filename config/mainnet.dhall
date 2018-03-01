@@ -1,6 +1,11 @@
 \(os :
-  { name       : Text
-  , nodeArgsOS : List Text
+  { name             : Text
+  , nodeArgsOS :
+    { keyfile          : Text
+    , logsPrefix       : Text
+    , updateLatestPath : Text
+    , walletDBPath     : Text
+    }
   , passOS     :
     { nodePath            : Text
     , nodeDbPath          : Text
@@ -13,12 +18,12 @@
     , launcherLogsPrefix  : Text
   }})
 ->
-{ key          = "mainnet_wallet_${os.name}"
-, nodeArgsOS   = os.nodeArgsOS
-, relays       = "relays.cardano-mainnet.iohk.io"
-, updateServer = "http://update.cardano-mainnet.iohk.io"
-, passOS       = os.passOS
-, passCluster  =
+{ key              = "mainnet_wallet_${os.name}"
+, nodeArgsOS       = os.nodeArgsOS
+, relays           = "relays.cardano-mainnet.iohk.io"
+, updateServer     = "http://update.cardano-mainnet.iohk.io"
+, passOS           = os.passOS
+, passCluster      =
     { reportServer = "http://report-server.cardano-mainnet.iohk.io:8080"
     }
 }

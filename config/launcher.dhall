@@ -1,6 +1,11 @@
 \(cluster :
   { key          : Text
-  , nodeArgsOS   : List Text
+  , nodeArgsOS   :
+    { keyfile          : Text
+    , logsPrefix       : Text
+    , updateLatestPath : Text
+    , walletDBPath     : Text
+    }
   , relays       : Text
   , updateServer : Text
   , passCluster  :
@@ -29,17 +34,16 @@
 , walletArgs     = [] : List Text
 , nodeArgs =
     [ "--no-ntp"
-    , "--tlsca"
-    , "tls/ca/ca.crt"
-    , "--tlscert"
-    , "tls/server/server.crt"
-    , "--tlskey"
-    , "tls/server/server.key"
-    , "--topology"
-    , "wallet-topology.yaml"
-    , "--update-server"
-    , cluster.updateServer
-    , "--update-with-package"
-    ] # cluster.nodeArgsOS
+    , "--tlsca",               "tls/ca/ca.crt"
+    , "--tlscert",             "tls/server/server.crt"
+    , "--tlskey",              "tls/server/server.key"
+    , "--topology",            "wallet-topology.yaml"
+    , "--update-server",       cluster.updateServer
+    , "--update-with-package", cluster.nodeArgsOS.updateLatestPath
+    , "--keyfile",             cluster.nodeArgsOS.keyfile
+    , "--logs-prefix",         cluster.nodeArgsOS.logsPrefix
+    , "--wallet-db-path",      cluster.nodeArgsOS.walletDBPath
+    , "--update-latest-path"
+    ]
 } // cluster.passCluster
   // cluster.passOS
