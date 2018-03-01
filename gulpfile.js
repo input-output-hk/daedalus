@@ -52,7 +52,7 @@ gulp.task('build-renderer-watch', (done) => buildRenderer({ watch: true }, done)
 
 gulp.task('build', gulp.series('build-main', 'build-renderer'));
 
-gulp.task('build-watch', gulp.series('build-renderer-html', 'build-main-watch', 'build-renderer-watch'));
+gulp.task('build-watch', gulp.series('build-main-watch', 'build-renderer-watch', 'build-renderer-html'));
 
 gulp.task('cucumber', shell.task('npm run cucumber --'));
 
