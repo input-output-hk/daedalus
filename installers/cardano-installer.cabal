@@ -15,7 +15,11 @@ executable make-installer
   other-modules:       MacInstaller
                      , WindowsInstaller
                      , RewriteLibs
+
   build-depends:       base
+                     , bytestring
+                     , dhall
+                     , dhall-json
                      , directory
                      , filepath
                      , Glob
@@ -26,8 +30,10 @@ executable make-installer
                      , temporary
                      , temporary
                      , text
+                     , trifecta
                      , turtle
                      , universum
+                     , yaml
 
   default-language:    Haskell2010
   ghc-options:         -threaded -rtsopts
