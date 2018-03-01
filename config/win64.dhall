@@ -1,13 +1,13 @@
 let dataDir = "%APPDATA%\\Daedalus\\"
 in
-{ name             = "win64"
-, nodeArgsOS =
+{ name      = "win64"
+, nodeArgs  =
   { keyfile          = dataDir ++ "Secrets-1.0\\secret.key"
   , logsPrefix       = dataDir ++ "Logs"
   , updateLatestPath = dataDir ++ "Installer.exe"
   , walletDBPath     = dataDir ++ "Wallet-1.0"
   }
-, passOS =
+, pass      =
   { nodePath            = "%DAEDALUS_DIR%\\cardano-node.exe"
   , nodeDbPath          = dataDir ++ "DB-1.0"
   , nodeLogPath         = dataDir ++ "Logs\\cardano-node.log"

@@ -8,8 +8,8 @@ set CLUSTER=%1
 @echo ##############################################################################
 
 pushd config
-    set LAUNCHER="./launcher.dhall ( ./launcher-%OS%.dhall ./%CLUSTER%.dhall ) "
-    set TOPOLOGY="./topology.dhall                         ./%CLUSTER%.dhall"
+    set LAUNCHER="./launcher.dhall ( ./%CLUSTER%.dhall ./%OS%.dhall ) ./%OS%.dhall"
+    set TOPOLOGY="./topology.dhall ( ./%CLUSTER%.dhall ./%OS%.dhall ) "
     @echo ##############################################################################
     @echo ###
     @echo ### Generating configs:  %CLUSTER%

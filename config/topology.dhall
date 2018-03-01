@@ -1,7 +1,6 @@
-\(f : { keyType : Text, relays : Text, reportServer : Text, updateServer : Text })
-->
+\(cluster : ./cluster.type) ->
 { wallet = {
-      relays    = [[{ host = f.relays }]]
+      relays    = [[{ host = cluster.relays }]]
     , valency   = 1
     , fallbacks = 7
   }

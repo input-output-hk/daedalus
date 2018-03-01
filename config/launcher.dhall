@@ -1,28 +1,5 @@
-\(cluster :
-  { key          : Text
-  , nodeArgsOS   :
-    { keyfile          : Text
-    , logsPrefix       : Text
-    , updateLatestPath : Text
-    , walletDBPath     : Text
-    }
-  , relays       : Text
-  , updateServer : Text
-  , passCluster  :
-    { reportServer        : Text
-    }
-  , passOS :
-    { nodePath            : Text
-    , nodeDbPath          : Text
-    , nodeLogPath         : Text
-    , walletPath          : Text
-    , updaterPath         : Text
-    , updaterArgs         : List Text
-    , updateArchive       : Optional Text
-    , updateWindowsRunner : Optional Text
-    , launcherLogsPrefix  : Text
-  }})
-->
+\(cluster : ./cluster.type) ->
+\(os      : ./os.type)      ->
 { configuration  =
     { filePath     = "configuration.yaml"
     , key          = cluster.key
@@ -31,6 +8,7 @@
     }
 , nodeLogConfig  = "log-config-prod.yaml"
 , nodeTimeoutSec = 30
+, reportServer   = cluster.reportServer
 , walletArgs     = [] : List Text
 , nodeArgs =
     [ "--no-ntp"
@@ -39,11 +17,10 @@
     , "--tlskey",              "tls/server/server.key"
     , "--topology",            "wallet-topology.yaml"
     , "--update-server",       cluster.updateServer
-    , "--update-with-package", cluster.nodeArgsOS.updateLatestPath
-    , "--keyfile",             cluster.nodeArgsOS.keyfile
-    , "--logs-prefix",         cluster.nodeArgsOS.logsPrefix
-    , "--wallet-db-path",      cluster.nodeArgsOS.walletDBPath
+    , "--update-with-package", os.nodeArgs.updateLatestPath
+    , "--keyfile",             os.nodeArgs.keyfile
+    , "--logs-prefix",         os.nodeArgs.logsPrefix
+    , "--wallet-db-path",      os.nodeArgs.walletDBPath
     , "--update-latest-path"
     ]
-} // cluster.passCluster
-  // cluster.passOS
+} // os.pass

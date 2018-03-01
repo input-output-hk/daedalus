@@ -1,13 +1,13 @@
 let dataDir = "$HOME/Library/Application Support/Daedalus/"
 in
 { name       = "macos64"
-, nodeArgsOS =
+, nodeArgs   =
   { keyfile          = dataDir ++ "Secrets-1.0/secret.key"
   , logsPrefix       = dataDir ++ "Logs"
   , updateLatestPath = dataDir ++ "installer.pkg"
   , walletDBPath     = dataDir ++ "Wallet-1.0"
   }
-, passOS     =
+, pass       =
   { nodePath            = "./cardano-node"
   , nodeDbPath          = dataDir ++ "DB-1.0"
   , nodeLogPath         = dataDir ++ "Logs/cardano-node.log"
