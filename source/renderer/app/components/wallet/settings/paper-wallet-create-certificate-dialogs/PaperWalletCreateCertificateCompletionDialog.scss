@@ -1,0 +1,38 @@
+.securingPasswordContentWrapper {
+  color: var(--theme-instructions-text-color);
+
+  .subtitle,
+  .linkInstructions {
+    line-height: 1.38;
+    font-family: var(--font-light);
+  }
+
+  .content {
+    margin-top: 20px;
+    border-top: 1px solid #dfe4e8;
+
+    .linkInstructions{
+      margin-top: 20px;
+    }
+
+    .cardanoExplorerLinkWrapper {
+      background-color: rgba(68, 91, 124, 0.05);;
+      border-radius: 2px;
+      font-family: var(--font-medium);
+      font-size: 16px;
+      line-height: 1.38;
+      margin-top: 10px;
+      min-height: 50px;
+      padding: 14px 20px;
+      text-align: center;
+
+      a {
+        color: #5e6066;
+        font-family: var(--font-regular);
+        font-size: 16px;
+        line-height: 1.38;
+        word-wrap: break-word;
+      }
+    }
+  }
+}
