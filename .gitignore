@@ -4,13 +4,13 @@ logs
 
 # Runtime data
 pids
+*.exe
 *.pid
 *.seed
 *curl*
-installers/*.exe
+log-config-prod.yaml
 installers/*.nsi
 installers/version.txt
-installers/log-config-prod.yaml
 installers/runtempinstaller.bat
 scripts/nsis-*
 
@@ -58,3 +58,8 @@ main.js.map
 
 # Generated translation files
 translations/messages
+
+# Git data
+build-id
+ci-url
+commit-id
