@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
 import Dialog from '../../../widgets/Dialog';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import DialogBackButton from '../../../widgets/DialogBackButton';
@@ -74,10 +72,14 @@ export default class PaperWalletCreateCertificateCompletionDialog extends Compon
           <p className={styles.subtitle}>{intl.formatMessage(messages.subtitle)}</p>
           <div className={styles.content}>
 
-            <p className={styles.linkInstructions}>{intl.formatMessage(messages.linkInstructions)}</p>
+            <p className={styles.linkInstructions}>
+              {intl.formatMessage(messages.linkInstructions)}
+            </p>
 
             <div className={styles.cardanoExplorerLinkWrapper}>
-              <a href="#">https://cardanoexplorer.com/address/DdzFFzCqrht3AggeFyqhiikmB3KRKjwnk6tfWSPQ8V229GbhCjuy9USHVWMVFa5oPcMrSqGtH1wf2sGqpabnwdGD2MBR6gKjkvhLjsmZ</a>
+              <a href="https://cardanoexplorer.com/address/DdzFFzCqrht3AggeFyqhiikmB3KRKjwnk6tfWSPQ8V229GbhCjuy9USHVWMVFa5oPcMrSqGtH1wf2sGqpabnwdGD2MBR6gKjkvhLjsmZ">
+                https://cardanoexplorer.com/address/DdzFFzCqrht3AggeFyqhiikmB3KRKjwnk6tfWSPQ8V229GbhCjuy9USHVWMVFa5oPcMrSqGtH1wf2sGqpabnwdGD2MBR6gKjkvhLjsmZ
+              </a>
             </div>
 
           </div>

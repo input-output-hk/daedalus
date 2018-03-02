@@ -29,15 +29,15 @@ const messages = defineMessages({
     defaultMessage: '!!!The password can optionally be written on the certificate or kept securely in other location. Here is the placeholder on the certificate intended for your password.',
     description: '"Paper wallet create certificate securyng password dialog" second info label.'
   },
-  passwordStoringConfirmation: {
-    id: 'paper.wallet.create.certificate.securyng password.dialog.passwordStoringConfirmation',
+  securingPasswordConfirmation: {
+    id: 'paper.wallet.create.certificate.securyng password.dialog.securingPasswordConfirmation',
     defaultMessage: '!!!I understand that I can not use my certificate without the password and I have stored it safely.',
-    description: '"Paper wallet create certificate securyng password dialog" password stored confirmation.'
+    description: '"Paper wallet create certificate securyng password dialog" secure password confirmation.'
   }
 });
 
 type State = {
-  passwordStoringConfirmed: boolean,
+  securePasswordConfirmed: boolean,
 };
 
 type Props = {
@@ -47,6 +47,7 @@ type Props = {
 };
 
 @observer
+// eslint-disable-next-line
 export default class PaperWalletCreateCertificateSecuringPasswordDialog extends Component<Props, State> {
 
   static contextTypes = {
@@ -54,13 +55,13 @@ export default class PaperWalletCreateCertificateSecuringPasswordDialog extends 
   };
 
   state = {
-    passwordStoringConfirmed: false
+    securePasswordConfirmed: false
   }
 
   render() {
     const { intl } = this.context;
     const { onClose, onBack, onContinue } = this.props;
-    const { passwordStoringConfirmed } = this.state;
+    const { securePasswordConfirmed } = this.state;
 
     const dialogClasses = classnames([
       styles.component,
@@ -71,7 +72,7 @@ export default class PaperWalletCreateCertificateSecuringPasswordDialog extends 
       {
         label: intl.formatMessage(globalMessages.dialogButtonContinueLabel),
         primary: true,
-        disabled: !passwordStoringConfirmed,
+        disabled: !securePasswordConfirmed,
         onClick: onContinue,
       }
     ];
@@ -103,10 +104,10 @@ export default class PaperWalletCreateCertificateSecuringPasswordDialog extends 
             </div>
 
             <Checkbox
-              className={styles.passwordStoringConfirmation}
-              label={intl.formatMessage(messages.passwordStoringConfirmation)}
-              onChange={this.onPasswordStoringConfirmationChange.bind(this)}
-              checked={passwordStoringConfirmed}
+              className={styles.securingPasswordConfirmation}
+              label={intl.formatMessage(messages.securingPasswordConfirmation)}
+              onChange={this.onSecurePasswordConfirmationChange.bind(this)}
+              checked={securePasswordConfirmed}
               skin={<SimpleCheckboxSkin />}
             />
           </div>
@@ -116,7 +117,7 @@ export default class PaperWalletCreateCertificateSecuringPasswordDialog extends 
     );
   }
 
-  onPasswordStoringConfirmationChange = () => {
-    this.setState({ passwordStoringConfirmed: !this.state.passwordStoringConfirmed })
+  onSecurePasswordConfirmationChange = () => {
+    this.setState({ securePasswordConfirmed: !this.state.securePasswordConfirmed });
   }
 }

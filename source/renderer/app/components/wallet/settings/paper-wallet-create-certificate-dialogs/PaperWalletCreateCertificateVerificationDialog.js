@@ -69,7 +69,7 @@ const messages = defineMessages({
     defaultMessage: '!!!I understand that the created wallet will not be stored in Daedalus after this step.',
     description: '"Paper wallet create certificate verification dialog" storing understandance confirmation.'
   },
-   recoveringUnderstandanceLabel: {
+  recoveringUnderstandanceLabel: {
     id: 'paper.wallet.create.certificate.verification.dialog.recoveringUnderstandanceConfirmationLabel',
     defaultMessage: '!!!I understand that my wallet can only be recovered using my paper wallet certificate and the password I have chosen.',
     description: '"Paper wallet create certificate verification dialog" recovering understandance confirmation.'
@@ -93,6 +93,7 @@ type Props = {
 };
 
 @observer
+// eslint-disable-next-line
 export default class PaperWalletCreateCertificateVerificationDialog extends Component<Props, State> {
 
   static contextTypes = {
@@ -125,12 +126,12 @@ export default class PaperWalletCreateCertificateVerificationDialog extends Comp
         label: this.context.intl.formatMessage(messages.passwordLabel),
         placeholder: this.context.intl.formatMessage(messages.passwordHint),
         value: '',
-        validators: [({ field, form }) => {
-          return [
+        validators: [({ field }) => (
+          [
             isValidWalletPassword(field.value),
             this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
-          ];
-        }]
+          ]
+        )]
       },
     },
   }, {
@@ -162,7 +163,6 @@ export default class PaperWalletCreateCertificateVerificationDialog extends Comp
       suggestedMnemonics,
       onClose,
       onBack,
-      onContinue,
       onClear,
     } = this.props;
     const {
@@ -257,7 +257,9 @@ export default class PaperWalletCreateCertificateVerificationDialog extends Comp
   }
 
   onStoringConfirmationChange = () => {
-    this.setState({ storingUnderstandanceConfirmed: !this.state.storingUnderstandanceConfirmed });
+    this.setState({
+      storingUnderstandanceConfirmed: !this.state.storingUnderstandanceConfirmed
+    });
   };
 
   onTogglePasswordVisibility = () => {
@@ -265,6 +267,8 @@ export default class PaperWalletCreateCertificateVerificationDialog extends Comp
   };
 
   onRecoveringConfirmationChange = () => {
-    this.setState({ recoveringUnderstandanceConfirmed: !this.state.recoveringUnderstandanceConfirmed });
+    this.setState({
+      recoveringUnderstandanceConfirmed: !this.state.recoveringUnderstandanceConfirmed
+    });
   };
 }

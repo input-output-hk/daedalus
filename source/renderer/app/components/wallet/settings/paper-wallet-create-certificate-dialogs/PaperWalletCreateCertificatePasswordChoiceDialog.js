@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import SvgInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
-import { isEmpty } from 'validator';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Input from 'react-polymorph/lib/components/Input';
@@ -62,6 +61,12 @@ const messages = defineMessages({
   },
 });
 
+type State = {
+  keepPasswordSecuredConfirmation: boolean,
+  showPassword: boolean,
+  showRepeatPassword: boolean,
+};
+
 type Props = {
   onContinue: Function,
   onClose: Function,
@@ -69,7 +74,8 @@ type Props = {
 };
 
 @observer
-export default class PaperWalletCreateCertificatePasswordChoiceDialog extends Component<Props> {
+// eslint-disable-next-line
+export default class PaperWalletCreateCertificatePasswordChoiceDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,

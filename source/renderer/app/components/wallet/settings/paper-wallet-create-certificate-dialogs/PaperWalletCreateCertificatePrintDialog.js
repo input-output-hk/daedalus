@@ -17,10 +17,15 @@ const messages = defineMessages({
     defaultMessage: '!!!Certificate generation complete',
     description: 'Headline for the "Paper wallet create certificate print dialog".'
   },
+  subtitle: {
+    id: 'paper.wallet.create.certificate.print.dialog.subtitle',
+    defaultMessage: '!!!Check your paper wallet certificate and verify that everything is correctly printed and readable. You can try scanning QR codes with QR scanner application on your mobile phone.',
+    description: '"Paper wallet create certificate print dialog" subtitle.'
+  },
   printConfirmationLabel: {
     id: 'paper.wallet.create.certificate.print.dialog.printConfirmation',
     defaultMessage: '!!!Yes, paper wallet certificate successfully printed and everything is readable and scannable.',
-    description: '"Paper wallet create certificate password choice dialog" print confirmation.'
+    description: '"Paper wallet create certificate print dialog" confirmation.'
   },
 });
 
@@ -77,7 +82,7 @@ export default class PaperWalletCreateCertificatePrintDialog extends Component<P
       >
 
         <div className={styles.printContentWrapper}>
-          <p className={styles.subtitle}>Check your paper wallet certificate and verify that everything is correctly printed and readable. You can try scanning QR codes with QR scanner application on your mobile phone.</p>
+          <p className={styles.subtitle}>{intl.formatMessage(messages.subtitle)}</p>
           <div className={styles.content}>
             <Checkbox
               className={styles.checkbox}

@@ -33,18 +33,16 @@ type Props = {
 };
 
 @observer
+// eslint-disable-next-line
 export default class PaperWalletCreateCertificateTemplateChoiceDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      selectedTemplate: null,
-    }
-  };
+  state = {
+    selectedTemplate: '',
+  }
 
   render() {
     const { intl } = this.context;
@@ -73,23 +71,23 @@ export default class PaperWalletCreateCertificateTemplateChoiceDialog extends Co
     const templateBrownClasses = classnames([
       selectedTemplate === 'Brown' ? styles.active : styles.inactive,
       styles.templateWrapper,
-    ])
+    ]);
     const templateGreenClasses = classnames([
       selectedTemplate === 'Green' ? styles.active : styles.inactive,
       styles.templateWrapper,
-    ])
+    ]);
     const templateRedClasses = classnames([
       selectedTemplate === 'Red' ? styles.active : styles.inactive,
       styles.templateWrapper,
-    ])
+    ]);
     const templateVioletClasses = classnames([
       selectedTemplate === 'Violet' ? styles.active : styles.inactive,
       styles.templateWrapper,
-    ])
+    ]);
     const templateYellowClasses = classnames([
       selectedTemplate === 'Yellow' ? styles.active : styles.inactive,
       styles.templateWrapper,
-    ])
+    ]);
 
     return (
       <Dialog
@@ -103,55 +101,78 @@ export default class PaperWalletCreateCertificateTemplateChoiceDialog extends Co
       >
 
         <div className={styles.templateChoiceContentWrapper}>
-          <div className={styles.row}>
 
-            <div className={templateBlueClasses} onClick={this.onSelectTemplate.bind(this, 'Blue')}>
+          <div className={styles.row}>
+            <div
+              className={templateBlueClasses}
+              role="presentation"
+              onClick={this.onSelectTemplate.bind(this, 'Blue')}
+              aria-hidden
+            >
               <img src={templateImage} role="presentation" />
-              <div className={styles.templateTitle}>
-                Blue
-              </div>
+              <div className={styles.templateTitle}>Blue</div>
             </div>
-            <div className={templateBrownClasses} onClick={this.onSelectTemplate.bind(this, 'Brown')}>
+
+            <div
+              className={templateBrownClasses}
+              role="presentation"
+              onClick={this.onSelectTemplate.bind(this, 'Brown')}
+              aria-hidden
+            >
               <img src={templateImage} role="presentation" />
-              <div className={styles.templateTitle}>
-                Brown
-              </div>
+              <div className={styles.templateTitle}>Brown</div>
             </div>
-            <div className={templateGreenClasses} onClick={this.onSelectTemplate.bind(this, 'Green')}>
+
+            <div
+              className={templateGreenClasses}
+              role="presentation"
+              onClick={this.onSelectTemplate.bind(this, 'Green')}
+              aria-hidden
+            >
               <img src={templateImage} role="presentation" />
-              <div className={styles.templateTitle}>
-                Green
-              </div>
+              <div className={styles.templateTitle}>Green</div>
             </div>
           </div>
 
-          <div className={styles.row}>
-            <div className={templateRedClasses} onClick={this.onSelectTemplate.bind(this, 'Red')}>
+          <div className={classnames([styles.row, styles.nthRow])}>
+            <div
+              className={templateRedClasses}
+              role="presentation"
+              onClick={this.onSelectTemplate.bind(this, 'Red')}
+              aria-hidden
+            >
               <img src={templateImage} role="presentation" />
-              <div className={styles.templateTitle}>
-                Red
-              </div>
+              <div className={styles.templateTitle}>Red</div>
             </div>
-            <div className={templateVioletClasses} onClick={this.onSelectTemplate.bind(this, 'Violet')}>
+
+            <div
+              className={templateVioletClasses}
+              role="presentation"
+              onClick={this.onSelectTemplate.bind(this, 'Violet')}
+              aria-hidden
+            >
               <img src={templateImage} role="presentation" />
-              <div className={styles.templateTitle}>
-                Violet
-              </div>
+              <div className={styles.templateTitle}>Violet</div>
             </div>
-            <div className={templateYellowClasses} onClick={this.onSelectTemplate.bind(this, 'Yellow')}>
+
+            <div
+              className={templateYellowClasses}
+              role="presentation"
+              onClick={this.onSelectTemplate.bind(this, 'Yellow')}
+              aria-hidden
+            >
               <img src={templateImage} role="presentation" />
-              <div className={styles.templateTitle}>
-                Yellow
-              </div>
+              <div className={styles.templateTitle}>Yellow</div>
             </div>
           </div>
+
         </div>
 
       </Dialog>
     );
   }
 
-  onSelectTemplate = (templateName) => {
+  onSelectTemplate = (templateName: string) => {
     this.setState({ selectedTemplate: templateName });
   }
 }

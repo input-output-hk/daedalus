@@ -73,7 +73,7 @@ export default class PaperWalletCreateCertificateInstructionsDialog extends Comp
 
     const actions = [
       {
-        label:intl.formatMessage(globalMessages.dialogButtonContinueLabel),
+        label: intl.formatMessage(globalMessages.dialogButtonContinueLabel),
         primary: true,
         onClick: onContinue,
       }
