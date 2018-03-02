@@ -39,7 +39,7 @@ set DLLS_URL=https://s3.eu-central-1.amazonaws.com/daedalus-ci-binaries/DLLs.zip
     goto :after_tools)
 @echo ##############################################################################
 @echo ###
-@echo ### Installing tools:  curl, NSIS, 7z
+@echo ### Installing tools:  curl, 7z
 @echo ###
 @echo ##############################################################################
 powershell -Command "try { Import-Module BitsTransfer; Start-BitsTransfer -Source '%CURL_URL%' -Destination 'curl.7z'; } catch { exit 1; }"
@@ -49,25 +49,6 @@ del /f curl.exe curl-ca-bundle.crt libcurl.dll
 7z e curl.7z %CURL_BIN%\curl.exe %CURL_BIN%\curl-ca-bundle.crt %CURL_BIN%\libcurl.dll
 @if %errorlevel% neq 0 (@echo FAILED: couldn't extract curl from downloaded archive
 	popd & exit /b 1)
-
-@echo Obtaining NSIS %NSISVER% with 8k-string patch
-del /f nsis-setup.exe nsis-strlen_8192.zip
-curl -o nsis-setup.exe       --location %NSIS_URL%
-@if %errorlevel% neq 0 (@echo FAILED: curl -o nsis-setup.exe       --location %NSIS_URL%
-    exit /b 1)
-
-curl -o nsis-strlen_8192.zip --location %NSIS_PATCH_URL%
-@if %errorlevel% neq 0 (@echo FAILED: curl -o nsis-strlen_8192.zip --location %NSIS_PATCH_URL%
-    exit /b 1)
-
-nsis-setup.exe /S /SD
-@if %errorlevel% neq 0 (@echo FAILED: nsis-setup.exe /S /SD
-    exit /b 1)
-
-7z    x nsis-strlen_8192.zip -o"c:\Program Files (x86)\NSIS" -aoa -r
-@if %errorlevel% neq 0 (@echo FAILED: 7z    x nsis-strlen_8192.zip -o"c:\Program Files (x86)\NSIS" -aoa -r
-    exit /b 1)
-:after_tools
 
 @if not [%SKIP_NODE%]==[] (@echo WARNING: SKIP_NODE active, skipping Node dependencies
     goto :after_node)
