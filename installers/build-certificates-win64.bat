@@ -16,9 +16,9 @@ set OUTDIR=%1
 @echo [1/10] Creating database in %OUTDIR%
 rmdir /s /q          %OUTDIR%\tls\ca %OUTDIR%\tls\server 2>nul
 mkdir                %OUTDIR%
-copy  /y ca.conf     %OUTDIR%
-copy  /y client.conf %OUTDIR%
-copy  /y server.conf %OUTDIR%
+copy  /y ca.conf.windows     %OUTDIR%\ca.conf
+copy  /y client.conf.windows %OUTDIR%\client.conf
+copy  /y server.conf.windows %OUTDIR%\server.conf
 xcopy /y /s /e  x86  %OUTDIR%\x86
 xcopy /y /s /e  x64  %OUTDIR%\x64
 cd                   %OUTDIR%
@@ -28,15 +28,6 @@ copy nul  tls\ca\db\ca.db
 copy nul  tls\ca\db\ca.db.attr
 echo 01 > tls\ca\db\ca.crt.srl
 @echo ============================================================================
-
-echo [2/10] Choosing OpenSSL message digest
-set MD=sha256
-echo Elected message digest '%MD%'
-echo Updating: ca.conf client.conf server.conf
-powershell -Command "(gc ca.conf)     -replace 'OPENSSL_MD', '%MD%' | Out-File -encoding ASCII ca.conf"
-powershell -Command "(gc client.conf) -replace 'OPENSSL_MD', '%MD%' | Out-File -encoding ASCII client.conf"
-powershell -Command "(gc server.conf) -replace 'OPENSSL_MD', '%MD%' | Out-File -encoding ASCII server.conf"
-echo ============================================================================
 
 @echo [3/10] Generating install-time-only use password for the CA key
 @echo %RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM%%RANDOM% > tls\secret

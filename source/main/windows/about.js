@@ -1,4 +1,3 @@
-import path from 'path';
 import { app, BrowserWindow, ipcMain, Menu, shell } from 'electron';
 import environment from '../../common/environment';
 
