@@ -10,6 +10,7 @@
     }
 
     .SimpleInput_disabled {
+      background: none;
       & .SimpleInput_input {
         background-color: var(--theme-input-background-color);
         border-color: var(--theme-input-border-color);

@@ -3,35 +3,6 @@
 @import "~react-polymorph/lib/themes/simple/SimpleInput";
 // Css module overrides go here …
 
-.root {
-  background-color: inherit;
-  & > .input {
-    background-color: var(--theme-input-background-color);
-    border: 1px solid var(--theme-input-border-color);
-
-    &:focus {
-      border: 1px solid var(--theme-input-focus-border-color);
-    }
-
-    &:not([disabled]) {
-      color: var(--theme-input-text-color);
-    }
-
-    &[disabled] {
-      color: var(--theme-input-placeholder-color);
-    }
-
-    &::-webkit-input-placeholder {
-      color: var(--theme-input-placeholder-color);
-    }
-
-  }
-
-  & > .errored {
-    border: 1px solid var(--theme-input-error-color);
-  }
-}
-
 :global {
   .AmountInputSkin_total, .AmountInputSkin_fees {
     color: var(--theme-input-right-floating-text-color);

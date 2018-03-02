@@ -4,7 +4,7 @@ rem   2. 7zip    ('7z'  binary in PATH)
 rem
 rem   installer dev mode:  set SKIP_TO_FRONTEND/SKIP_TO_INSTALLER
 
-set MIN_CARDANO_BYTES=50000000
+set MIN_CARDANO_BYTES=20000000
 set LIBRESSL_VERSION=2.5.3
 set CURL_VERSION=7.54.0
 set CARDANO_BRANCH_DEFAULT=cardano-sl-1.0

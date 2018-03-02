@@ -44,7 +44,7 @@ export default class Sidebar extends Component<Props> {
     const {
       menus, categories, activeSidebarCategory,
       isShowingSubMenus, onCategoryClicked,
-      openDialogAction, isDialogOpen
+      openDialogAction, isDialogOpen,
     } = this.props;
     let subMenu = null;
 

@@ -8,6 +8,9 @@ import { createMainWindow } from './windows/main';
 import { createAboutWindow } from './windows/about';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
+import { installChromeExtensions } from './utils/installChromeExtensions';
+
+const isDev = process.env.NODE_ENV === 'development';
 
 setupLogging();
 
@@ -25,12 +28,13 @@ const openAbout = () => {
   if (aboutWindow) aboutWindow.show(); // show also focuses the window
 };
 
-app.on('ready', () => {
+app.on('ready', async () => {
   setupTls();
+  await installChromeExtensions(isDev);
   aboutWindow = createAboutWindow();
   mainWindow = createMainWindow();
 
-  if (process.env.NODE_ENV === 'development') {
+  if (isDev) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
     client.create(aboutWindow);
     client.create(mainWindow);

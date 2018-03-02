@@ -336,14 +336,14 @@ export default class BugReportDialog extends Component<Props, State> {
             </div>
 
             <div className={styles.problemTextarea}>
-                <TextArea
-                  className="problemDescription"
-                  autoResize={false}
-                  rows={3}
-                  {...problemField.bind()}
-                  error={problemField.error}
-                  skin={<SimpleTextAreaSkin />}
-                />
+              <TextArea
+                className="problemDescription"
+                autoResize={false}
+                rows={3}
+                {...problemField.bind()}
+                error={problemField.error}
+                skin={<SimpleTextAreaSkin />}
+              />
             </div>
 
             <div className={styles.logsWrapper}>
@@ -370,14 +370,12 @@ export default class BugReportDialog extends Component<Props, State> {
               )}
             </div>
           </div>
-        )
-        }
-
+        )}
       </Dialog>
     );
   }
 
   onSubmitManually = (link: string) => {
     this.props.onSubmitManually(link);
-  }
+  };
 }
