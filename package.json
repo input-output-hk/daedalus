@@ -74,7 +74,7 @@
     "faker": "4.1.0",
     "fbjs-scripts": "0.8.1",
     "file-loader": "1.1.5",
-    "flow-bin": "0.60.1",
+    "flow-bin": "0.66.0",
     "gulp": "4.0.0",
     "gulp-shell": "0.6.5",
     "html-loader": "0.5.1",
