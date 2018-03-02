@@ -27,8 +27,8 @@ export default class NetworkStatusStore extends Store {
   _startTime = Date.now();
   _startupStage = STARTUP_STAGES.CONNECTING;
   _lastNetworkDifficultyChange = 0;
-  _syncProgressPollInterval = null;
-  _updateLocalTimeDifferencePollInterval = null;
+  _syncProgressPollInterval: ?number = null;
+  _updateLocalTimeDifferencePollInterval: ?number = null;
 
   ALLOWED_TIME_DIFFERENCE = 15 * 1000000; // 15 seconds
 
@@ -46,8 +46,6 @@ export default class NetworkStatusStore extends Store {
   );
   @observable _localDifficultyStartedWith = null;
 
-  _timeDifferencePollInterval: ?number = null;
-
   @action initialize() {
     super.initialize();
     if (cachedState !== null) Object.assign(this, cachedState);
@@ -56,6 +54,7 @@ export default class NetworkStatusStore extends Store {
   async setup() {
     this.registerReactions([
       this._updateSyncProgressWhenDisconnected,
+      this._updateLocalTimeDifferenceWhenConnected,
     ]);
 
     // Setup polling intervals
@@ -224,6 +223,10 @@ export default class NetworkStatusStore extends Store {
       runInAction('update time difference', () => (this.localTimeDifference = 0));
     }
   };
+
+  _updateLocalTimeDifferenceWhenConnected = async () => {
+    if (this.isConnected) await this._updateLocalTimeDifference();
+  }
 
   _updateSyncProgressWhenDisconnected = async () => {
     if (!this.isConnected) await this._updateSyncProgress();
