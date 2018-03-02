@@ -1,5 +1,0 @@
-wallet:
-  fallbacks: 7
-  valency: 1
-  relays:
-  - - host: relays.awstest.iohkdev.io
