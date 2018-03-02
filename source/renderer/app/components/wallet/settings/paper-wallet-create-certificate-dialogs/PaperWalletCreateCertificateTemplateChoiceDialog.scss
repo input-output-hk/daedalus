@@ -1,0 +1,41 @@
+.templateChoiceContentWrapper {
+  .row {
+    display: flex;
+    justify-content: space-between;
+    margin: 0 -20px;
+  }
+
+  :nth-child(2) {
+    margin-top: 24px;
+  }
+  .templateWrapper {
+    margin: 0 20px;
+
+    &.active {
+      opacity: 1;
+    }
+
+    &.inactive {
+      opacity: 0.3;
+    }
+
+    &:hover {
+      cursor: pointer;
+      opacity: 1;
+    }
+
+    .templateTitle {
+      color: #5e6066;
+      font-family: var(--font-regular);
+      font-size: 16px;
+      line-height: 1.38;
+      margin-top: 11px;
+      text-align: center;
+    }
+
+  }
+
+  img {
+    width: 100%;
+  }
+}

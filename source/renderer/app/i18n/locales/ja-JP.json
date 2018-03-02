@@ -46,6 +46,7 @@
   "environment.currency.etc": "ETC",
   "global.assuranceLevel.normal": "普通",
   "global.assuranceLevel.strict": "厳重",
+  "global.dialog.button.continueLabel": "次",
   "global.errors.AdaRedemptionCertificateParseError": "指定されたファイルからはADA還元キーを解析することができませんでした。",
   "global.errors.AdaRedemptionEncryptedCertificateParseError": "ADA還元キーを解析することができませんでした。パスフレーズを再度確認してください。",
   "global.errors.fieldIsRequired": "このフィールドは必須です。",

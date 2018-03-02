@@ -1,0 +1,30 @@
+.instructionsContentWrapper {
+  color: var(--theme-instructions-text-color);
+  font-family: var(--font-light);
+
+  .subtitle {
+    line-height: 1.38;
+  }
+
+  .instructionsList {
+    border-top: 1px solid #dfe4e8;
+    margin-top: 20px;
+
+    .instructionsListLabel {
+      font-weight: 500;
+      font-family: var(--font-medium);
+      margin-top: 20px;
+    }
+
+    ul {
+      list-style: initial;
+      margin: 11px 0 0 20px;
+    }
+
+    li {
+      line-height: 1.38;
+      margin-bottom: 6px;
+    }
+
+  }
+}
