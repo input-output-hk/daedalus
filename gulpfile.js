@@ -39,20 +39,17 @@ gulp.task('build-main', (done) => buildMain({}, done));
 
 gulp.task('build-main-watch', (done) => buildMain({ watch: true }, done));
 
-gulp.task('build-renderer-html', () => (
-  gulp.src('source/renderer/index.html')
-    .pipe(rendererOutputDestination)
-));
+gulp.task('build-renderer-html', shell.task('mkdir -p ./dist/renderer/ && cp ./source/renderer/index.html ./dist/renderer/index.html'));
 
 gulp.task('build-renderer-assets', (done) => buildRenderer({}, done));
 
-gulp.task('build-renderer', gulp.series('build-renderer-html', 'build-renderer-assets'));
+gulp.task('build-renderer', gulp.parallel('build-renderer-html', 'build-renderer-assets'));
 
 gulp.task('build-renderer-watch', (done) => buildRenderer({ watch: true }, done));
 
-gulp.task('build', gulp.series('build-main', 'build-renderer'));
+gulp.task('build', gulp.parallel('build-renderer-html', 'build-main', 'build-renderer'));
 
-gulp.task('build-watch', gulp.series('build-main-watch', 'build-renderer-watch', 'build-renderer-html'));
+gulp.task('build-watch', gulp.parallel('build-renderer-html', 'build-main-watch', 'build-renderer-watch'));
 
 gulp.task('cucumber', shell.task('npm run cucumber --'));
 
@@ -84,7 +81,6 @@ gulp.task('start-dev', () => {
 gulp.task('start-debug', () => {
   createElectronServer({ NODE_ENV: 'development' }, ['--inspect', '--inspect-brk']);
   startElectron();
-
 });
 
 gulp.task('start', shell.task('cross-env NODE_ENV=production electron ./'));
