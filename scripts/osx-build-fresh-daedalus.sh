@@ -4,7 +4,7 @@
 #   2. 'nix-shell'
 #   3. 'stack'
 
-DEFAULT_DAEDALUS_BRANCH=cardano-sl-0.4
+DEFAULT_DAEDALUS_BRANCH=master
 
 DAEDALUS_BRANCH=${1:-${DEFAULT_DAEDALUS_BRANCH}}
 GITHUB_USER=${2:-input-output-hk}
