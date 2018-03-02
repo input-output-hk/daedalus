@@ -87,9 +87,9 @@ main = do
       cluster'    = fromMaybe (error "Unrecognised cluster name in DAEDALUS_CLUSTER: should be one of:  mainnet staging") $ read $ capitalize $ clusterName cfg
 
   echo "Generating configuration file:  launcher-config.yaml"
-  generateConfig (Request Macos64 cluster' Launcher) "launcher-config.yaml"
+  generateConfig (Request Macos64 cluster' Launcher) "../config" "launcher-config.yaml"
   echo "Generating configuration file:  wallet-topology.yaml"
-  generateConfig (Request Macos64 cluster' Topology) "wallet-topology.yaml"
+  generateConfig (Request Macos64 cluster' Topology) "../config" "wallet-topology.yaml"
 
   echo "Packaging frontend"
   procs "npm" ["run", "package", "--", "--icon", "installers/icons/256x256"] mempty

@@ -1,4 +1,5 @@
 wallet:
-  relays: [[{"host": "relays.cardano-mainnet.iohk.io"}]]
-  valency: 1
   fallbacks: 7
+  valency: 1
+  relays:
+  - - host: relays.awstest.iohkdev.io

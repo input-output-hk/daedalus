@@ -196,13 +196,14 @@ pushd installers
 popd
 
 :build_installers
-
+cd installers
 @echo on
 FOR %%C IN (%CLUSTERS:"=%) DO (
   set DAEDALUS_CLUSTER=%%C
   call ..\scripts\appveyor-retry call stack --no-terminal build -j 2 --exec make-installer
-    @if %errorlevel% equ 0 goto after_makeinst
+  @if %errorlevel% neq 0 (
     @echo FATAL: persistent failure while building installer with:  call stack --no-terminal build -j 2 --exec make-installer
+    @exit /b 1)
 )
 
 @echo SUCCESS

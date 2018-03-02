@@ -23,6 +23,7 @@ import           Prelude ((!!), read)
 import           System.Directory (doesFileExist)
 import           System.Environment (lookupEnv)
 import           System.IO (writeFile)
+import           Text.Read (readMaybe)
 import           Turtle (ExitCode (..), echo, proc, procs)
 import           Turtle.Line (unsafeTextToLine)
 
@@ -195,12 +196,13 @@ main = do
     let capitalize :: String -> String
         capitalize [] = []
         capitalize (x:xs) = [Data.Char.toUpper x] <> xs
-        cluster'    = fromMaybe (error "Unrecognised cluster name in DAEDALUS_CLUSTER: should be one of:  mainnet staging") $ read $ capitalize cluster
+        cluster' :: Cluster
+        cluster' = fromMaybe (error $ "Unrecognised cluster name in DAEDALUS_CLUSTER ("<>T.pack cluster<>"): should be one of:  mainnet staging") $ readMaybe $ capitalize cluster
 
     echo "Generating configuration file:  launcher-config.yaml"
-    generateConfig (Request Win64 cluster' Launcher) "launcher-config.yaml"
+    generateConfig (Request Win64 cluster' Launcher) "../config" "launcher-config.yaml"
     echo "Generating configuration file:  wallet-topology.yaml"
-    generateConfig (Request Win64 cluster' Topology) "wallet-topology.yaml"
+    generateConfig (Request Win64 cluster' Topology) "../config" "wallet-topology.yaml"
 
     echo "Packaging frontend"
     procs "npm" ["run", "package", "--", "--icon", "installers/icons/64x64"] mempty

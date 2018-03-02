@@ -54,17 +54,17 @@ data Request
 lshow :: Show a => a -> Text
 lshow = Data.Text.Lazy.pack . fmap Data.Char.toLower . show
 
-dhallTopExpr :: Config -> OS -> Cluster -> Text
-dhallTopExpr Launcher os cluster = "./launcher.dhall ( ./" <> lshow cluster <> ".dhall ./" <> lshow os <> ".dhall ) ./" <> lshow os <> ".dhall"
-dhallTopExpr Topology os cluster = "./topology.dhall ( ./" <> lshow cluster <> ".dhall ./" <> lshow os <> ".dhall )"
+dhallTopExpr :: Text -> Config -> OS -> Cluster -> Text
+dhallTopExpr path Launcher os cluster = path <> "/launcher.dhall ( "<>path<>"/" <> lshow cluster <> ".dhall "<>path<>"/" <> lshow os <> ".dhall ) "<>path<>"/" <> lshow os <> ".dhall"
+dhallTopExpr path Topology os cluster = path <> "/topology.dhall ( "<>path<>"/" <> lshow cluster <> ".dhall "<>path<>"/" <> lshow os <> ".dhall )"
 
-generateConfig :: Request -> FilePath -> IO ()
-generateConfig Request{..} outFile = handle $ do
+generateConfig :: Request -> FilePath -> FilePath -> IO ()
+generateConfig Request{..} configRoot outFile = handle $ do
   GHC.IO.Encoding.setLocaleEncoding GHC.IO.Encoding.utf8
 
   Dhall.detailed $ do
-    let inText = dhallTopExpr rConfig rOS rCluster
-
+    let inText = dhallTopExpr (Data.Text.Lazy.pack configRoot) rConfig rOS rCluster
+    print inText
     expr <- case Dhall.Parser.exprFromText (Directed "(stdin)" 0 0 0 0) inText of
               Left  err  -> Control.Exception.throwIO err
               Right expr -> return expr
