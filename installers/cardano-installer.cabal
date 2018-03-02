@@ -50,6 +50,8 @@ executable load-certificate
   other-modules:       MacInstaller
   build-depends:       base
                      , bytestring
+                     , dhall
+                     , dhall-json
                      , directory
                      , filepath
                      , Glob
@@ -58,6 +60,7 @@ executable load-certificate
                      , split
                      , system-filepath
                      , text
+                     , trifecta
                      , turtle
                      , universum
                      , yaml
