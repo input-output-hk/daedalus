@@ -14,7 +14,7 @@ let cachedDifficulties = null;
 // Maximum number of out-of-sync blocks above which we consider to be out-of-sync
 const OUT_OF_SYNC_BLOCKS_LIMIT = 6;
 const SYNC_PROGRESS_INTERVAL = 2000;
-const TIME_DIFF_POLL_INTERVAL = 500;
+const TIME_DIFF_POLL_INTERVAL = 60 * 60 * 1000; // 60 minutes
 const ALLOWED_NETWORK_DIFFICULTY_STALL = 2 * 60 * 1000; // 2 minutes
 
 const STARTUP_STAGES = {
@@ -30,7 +30,7 @@ export default class NetworkStatusStore extends Store {
   _startupStage = STARTUP_STAGES.CONNECTING;
   _lastNetworkDifficultyChange = 0;
 
-  ALLOWED_TIME_DIFFERENCE = 15 * 1000000; // 15 seconds;
+  ALLOWED_TIME_DIFFERENCE = 15 * 1000000; // 15 seconds
 
   @observable isConnected = false;
   @observable hasBeenConnected = false;
@@ -47,6 +47,8 @@ export default class NetworkStatusStore extends Store {
   );
   @observable _localDifficultyStartedWith = null;
 
+  _timeDifferencePollInterval: ?number = null;
+
   @action initialize() {
     super.initialize();
     if (cachedDifficulties !== null) Object.assign(this, cachedDifficulties);
@@ -57,9 +59,9 @@ export default class NetworkStatusStore extends Store {
       this._redirectToWalletAfterSync,
       this._redirectToLoadingWhenDisconnected,
       this._redirectToSyncingWhenLocalTimeDifferent,
+      this._pollTimeDifferenceWhenConnected,
     ]);
     this._pollSyncProgress();
-    if (environment.isAdaApi()) this._pollLocalTimeDifference();
   }
 
   teardown() {
@@ -190,6 +192,7 @@ export default class NetworkStatusStore extends Store {
             if (!this.hasBeenConnected) this.hasBeenConnected = true;
           }
         }
+        // Update the network difficulty on each request
         this.networkDifficulty = difficulty.networkDifficulty;
       });
       Logger.debug('Network difficulty changed: ' + this.networkDifficulty);
@@ -216,8 +219,17 @@ export default class NetworkStatusStore extends Store {
   };
 
   _pollLocalTimeDifference() {
-    setInterval(this._updateLocalTimeDifference, TIME_DIFF_POLL_INTERVAL);
+    Logger.debug('Started polling local time difference');
+    if (this._timeDifferencePollInterval) clearInterval(this._timeDifferencePollInterval);
+    this._timeDifferencePollInterval = setInterval(
+      this._updateLocalTimeDifference, TIME_DIFF_POLL_INTERVAL
+    );
     this._updateLocalTimeDifference();
+  }
+
+  _stopPollingLocalTimeDifference() {
+    Logger.debug('Stopped polling local time difference');
+    if (this._timeDifferencePollInterval) clearInterval(this._timeDifferencePollInterval);
   }
 
   _pollSyncProgress() {
@@ -231,6 +243,8 @@ export default class NetworkStatusStore extends Store {
     if (this._startupStage === STARTUP_STAGES.SYNCING && this.isSynced) {
       Logger.info(`========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`);
       this._startupStage = STARTUP_STAGES.LOADING;
+      // close reportIssue dialog if is opened and app synced in meanwhile
+      this.actions.dialogs.closeActiveDialog.trigger();
     }
     // TODO: introduce smarter way to bootsrap initial screens
     if (this.isConnected && this.isSynced && wallets.hasLoadedWallets) {
@@ -275,5 +289,14 @@ export default class NetworkStatusStore extends Store {
   _getStartupTimeDelta() {
     return Date.now() - this._startTime;
   }
+
+  _pollTimeDifferenceWhenConnected = () => {
+    if (!environment.isAdaApi()) return;
+    if (this.isConnected) {
+      this._pollLocalTimeDifference();
+    } else {
+      this._stopPollingLocalTimeDifference();
+    }
+  };
 
 }

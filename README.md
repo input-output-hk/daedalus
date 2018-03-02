@@ -1,4 +1,4 @@
-# daedalus
+# Daedalus
 
 Daedalus - cryptocurrency wallet
 
@@ -70,15 +70,35 @@ $ npm run start-hot
 *Note: requires a node version >= 4 and an npm version >= 3. This project
 defaults to 6.x*
 
-### Development - with Cardano Wallet (daedalus-bridge)
+### Development - with Cardano Wallet
 
-Build and run daedalus-bridge [using instructions in the repo](https://github.com/input-output-hk/pos-haskell-prototype/tree/master/daedalus)
+Build and run [Cardano SL](https://github.com/input-output-hk/cardano-sl)
 
-Symlink the npm package in the subfolder `pos-haskell-prototype/daedalus`:
-* `npm link` (inside the daedalus sub folder of the Cardano client)
-* `npm link daedalus-client-api` (inside this daedalus frontend app)
+Build with:
 
-Run with `npm run dev`
+```bash
+$ brew install haskell-stack # OR curl -ssl https://get.haskellstack.org/ | sh
+$ stack setup
+$ stack install cpphs
+$ brew install xz # OR sudo apt-get install xz-utils
+$ brew install rocksdb # OR sudo apt-get install librocksdb-dev
+$ git clone git@github.com:input-output-hk/cardano-sl.git
+$ cd cardano-sl/
+$ ./scripts/build/cardano-sl.sh
+```
+
+Run with:
+
+```bash
+$ tmux new-session -s cardano
+$ ./scripts/launch/demo-with-wallet-api.sh
+```
+
+Stop with:
+
+```bash
+$ tmux kill-session -t cardano
+```
 
 ### Development - network options
 
@@ -100,7 +120,7 @@ instead of dev with webpack hot-reload server (which is slow).
 Execute this once before running the tests (which creates the `dist/bundle.js`):
 ```bash
 $ npm run build
-``` 
+```
 
 After that, execute this to run the tests:
 

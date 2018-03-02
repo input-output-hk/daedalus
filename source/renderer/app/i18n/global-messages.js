@@ -161,7 +161,7 @@ export const environmentSpecificMessages = {
     currency: {
       id: 'environment.currency.etc',
       defaultMessage: '!!!Etc',
-      description: 'Name for "Ada" unit.'
+      description: 'Name for "Etc" unit.'
     },
     apiName: {
       id: 'environment.apiName.mantis',
