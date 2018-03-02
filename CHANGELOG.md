@@ -6,6 +6,8 @@ Changelog
 
 ### Features
 
+- Improved the loading UX ([PR 723](https://github.com/input-output-hk/daedalus/pull/723))
+
 ### Fixes
 
 ### Chores
