@@ -83,9 +83,9 @@ main = do
   let cluster' = readClusterName $ clusterName cfg
 
   echo "Generating configuration file:  launcher-config.yaml"
-  generateConfig (Request Macos64 cluster' Launcher) "../config" "launcher-config.yaml"
+  generateConfig (Request Macos64 cluster' Launcher) "dhall" "launcher-config.yaml"
   echo "Generating configuration file:  wallet-topology.yaml"
-  generateConfig (Request Macos64 cluster' Topology) "../config" "wallet-topology.yaml"
+  generateConfig (Request Macos64 cluster' Topology) "dhall" "wallet-topology.yaml"
 
   echo "Packaging frontend"
   procs "npm" ["run", "package", "--", "--icon", "installers/icons/256x256"] mempty

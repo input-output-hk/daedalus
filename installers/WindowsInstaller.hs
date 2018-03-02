@@ -196,9 +196,9 @@ main = do
     let cluster' = readClusterName cluster
 
     echo "Generating configuration file:  launcher-config.yaml"
-    generateConfig (Request Win64 cluster' Launcher) "../config" "launcher-config.yaml"
+    generateConfig (Request Win64 cluster' Launcher) "dhall" "launcher-config.yaml"
     echo "Generating configuration file:  wallet-topology.yaml"
-    generateConfig (Request Win64 cluster' Topology) "../config" "wallet-topology.yaml"
+    generateConfig (Request Win64 cluster' Topology) "dhall" "wallet-topology.yaml"
 
     echo "Packaging frontend"
     procs "npm" ["run", "package", "--", "--icon", "installers/icons/64x64"] mempty
