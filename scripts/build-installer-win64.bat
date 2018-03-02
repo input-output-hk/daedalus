@@ -49,6 +49,7 @@ del /f curl.exe curl-ca-bundle.crt libcurl.dll
 7z e curl.7z %CURL_BIN%\curl.exe %CURL_BIN%\curl-ca-bundle.crt %CURL_BIN%\libcurl.dll
 @if %errorlevel% neq 0 (@echo FAILED: couldn't extract curl from downloaded archive
 	popd & exit /b 1)
+:after_tools
 
 @if not [%SKIP_NODE%]==[] (@echo WARNING: SKIP_NODE active, skipping Node dependencies
     goto :after_node)

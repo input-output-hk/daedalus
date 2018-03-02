@@ -10,6 +10,7 @@ import qualified Control.Exception
 
 import qualified Data.Char
 import qualified Data.ByteString
+import           Data.Maybe
 import           Data.Semigroup
 import           Data.Text.Lazy
 import qualified Data.Yaml
@@ -25,6 +26,7 @@ import qualified GHC.IO.Encoding
 import qualified System.IO
 import qualified System.Exit
 
+import           Text.Read (readMaybe)
 import           Text.Trifecta.Delta (Delta(..))
 
 import Prelude
