@@ -40,7 +40,7 @@ storiesOf('TopBar', module)
     </StoryDecorator>
   ))
 
-   // ====== Stories ======
+  // ====== Stories ======
 
   .add('Test Environment label', () => (
     <SidebarLayout

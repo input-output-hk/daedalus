@@ -8,7 +8,7 @@
           "column": 3,
           "line": 9
         },
-        "file": "source/renderer/app/api/ada/errors.js",
+        "file": "app/api/ada/errors.js",
         "id": "api.errors.ApiMethodNotYetImplementedError",
         "start": {
           "column": 35,
@@ -22,7 +22,7 @@
           "column": 3,
           "line": 14
         },
-        "file": "source/renderer/app/api/ada/errors.js",
+        "file": "app/api/ada/errors.js",
         "id": "api.errors.WalletAlreadyImportedError",
         "start": {
           "column": 30,
@@ -36,7 +36,7 @@
           "column": 3,
           "line": 19
         },
-        "file": "source/renderer/app/api/ada/errors.js",
+        "file": "app/api/ada/errors.js",
         "id": "api.errors.RedeemAdaError",
         "start": {
           "column": 18,
@@ -50,7 +50,7 @@
           "column": 3,
           "line": 24
         },
-        "file": "source/renderer/app/api/ada/errors.js",
+        "file": "app/api/ada/errors.js",
         "id": "api.errors.WalletFileImportError",
         "start": {
           "column": 25,
@@ -64,7 +64,7 @@
           "column": 3,
           "line": 29
         },
-        "file": "source/renderer/app/api/ada/errors.js",
+        "file": "app/api/ada/errors.js",
         "id": "api.errors.NotEnoughMoneyToSendError",
         "start": {
           "column": 29,
@@ -78,7 +78,7 @@
           "column": 3,
           "line": 34
         },
-        "file": "source/renderer/app/api/ada/errors.js",
+        "file": "app/api/ada/errors.js",
         "id": "api.errors.NotAllowedToSendMoneyToSameAddressError",
         "start": {
           "column": 43,
@@ -92,7 +92,7 @@
           "column": 3,
           "line": 39
         },
-        "file": "source/renderer/app/api/ada/errors.js",
+        "file": "app/api/ada/errors.js",
         "id": "api.errors.NotAllowedToSendMoneyToRedeemAddressError",
         "start": {
           "column": 45,
@@ -106,7 +106,7 @@
           "column": 3,
           "line": 44
         },
-        "file": "source/renderer/app/api/ada/errors.js",
+        "file": "app/api/ada/errors.js",
         "id": "api.errors.AllFundsAlreadyAtReceiverAddressError",
         "start": {
           "column": 41,
@@ -120,7 +120,7 @@
           "column": 3,
           "line": 49
         },
-        "file": "source/renderer/app/api/ada/errors.js",
+        "file": "app/api/ada/errors.js",
         "id": "api.errors.NotEnoughFundsForTransactionFeesError",
         "start": {
           "column": 41,
@@ -128,7 +128,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/api/ada/errors.json"
+    "path": "app/api/ada/errors.json"
   },
   {
     "descriptors": [
@@ -139,7 +139,7 @@
           "column": 3,
           "line": 10
         },
-        "file": "source/renderer/app/api/common.js",
+        "file": "app/api/common.js",
         "id": "api.errors.GenericApiError",
         "start": {
           "column": 19,
@@ -153,7 +153,7 @@
           "column": 3,
           "line": 15
         },
-        "file": "source/renderer/app/api/common.js",
+        "file": "app/api/common.js",
         "id": "api.errors.IncorrectPasswordError",
         "start": {
           "column": 32,
@@ -167,15 +167,29 @@
           "column": 3,
           "line": 20
         },
-        "file": "source/renderer/app/api/common.js",
+        "file": "app/api/common.js",
         "id": "api.errors.WalletAlreadyRestoredError",
         "start": {
           "column": 30,
           "line": 16
         }
+      },
+      {
+        "defaultMessage": "!!!There was a problem sending the support request.",
+        "description": "\"There was a problem sending the support request.\" error message",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "app/api/common.js",
+        "id": "api.errors.ReportRequestError",
+        "start": {
+          "column": 22,
+          "line": 21
+        }
       }
     ],
-    "path": "source/renderer/app/api/common.json"
+    "path": "app/api/common.json"
   },
   {
     "descriptors": [
@@ -184,13 +198,13 @@
         "description": "Message \"Connecting to network\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 25
         },
-        "file": "source/renderer/app/components/loading/Loading.js",
+        "file": "app/components/loading/Loading.js",
         "id": "loading.screen.connectingToNetworkMessage",
         "start": {
           "column": 14,
-          "line": 15
+          "line": 21
         }
       },
       {
@@ -198,13 +212,13 @@
         "description": "Message \"Connected - waiting for block syncing to start\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 30
         },
-        "file": "source/renderer/app/components/loading/Loading.js",
+        "file": "app/components/loading/Loading.js",
         "id": "loading.screen.waitingForSyncToStart",
         "start": {
           "column": 25,
-          "line": 20
+          "line": 26
         }
       },
       {
@@ -212,13 +226,13 @@
         "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 35
         },
-        "file": "source/renderer/app/components/loading/Loading.js",
+        "file": "app/components/loading/Loading.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 25
+          "line": 31
         }
       },
       {
@@ -226,17 +240,59 @@
         "description": "Message \"Syncing blocks\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 40
         },
-        "file": "source/renderer/app/components/loading/Loading.js",
+        "file": "app/components/loading/Loading.js",
         "id": "loading.screen.syncingBlocksMessage",
         "start": {
           "column": 11,
-          "line": 30
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!Having trouble connecting to network?",
+        "description": "Report connecting issue text on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "app/components/loading/Loading.js",
+        "id": "loading.screen.reportIssue.connecting.text",
+        "start": {
+          "column": 29,
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!Having trouble syncing?",
+        "description": "Report syncing issue text on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 50
+        },
+        "file": "app/components/loading/Loading.js",
+        "id": "loading.screen.reportIssue.syncing.text",
+        "start": {
+          "column": 26,
+          "line": 46
+        }
+      },
+      {
+        "defaultMessage": "!!!Report an issue",
+        "description": "Report an issue button label on the loading .",
+        "end": {
+          "column": 3,
+          "line": 55
+        },
+        "file": "app/components/loading/Loading.js",
+        "id": "loading.screen.reportIssue.buttonLabel",
+        "start": {
+          "column": 26,
+          "line": 51
         }
       }
     ],
-    "path": "source/renderer/app/components/loading/Loading.json"
+    "path": "app/components/loading/Loading.json"
   },
   {
     "descriptors": [
@@ -247,7 +303,7 @@
           "column": 3,
           "line": 17
         },
-        "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
+        "file": "app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.overlayTitle",
         "start": {
           "column": 16,
@@ -261,7 +317,7 @@
           "column": 3,
           "line": 22
         },
-        "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
+        "file": "app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.overlayText",
         "start": {
           "column": 15,
@@ -275,7 +331,7 @@
           "column": 3,
           "line": 27
         },
-        "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
+        "file": "app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.problemSolutionLink",
         "start": {
           "column": 23,
@@ -283,7 +339,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/loading/SystemTimeErrorOverlay.json"
+    "path": "app/components/loading/SystemTimeErrorOverlay.json"
   },
   {
     "descriptors": [
@@ -294,7 +350,7 @@
           "column": 3,
           "line": 17
         },
-        "file": "source/renderer/app/components/notifications/NodeUpdateNotification.js",
+        "file": "app/components/notifications/NodeUpdateNotification.js",
         "id": "cardano.node.update.notification.accept.button.label",
         "start": {
           "column": 15,
@@ -308,7 +364,7 @@
           "column": 3,
           "line": 22
         },
-        "file": "source/renderer/app/components/notifications/NodeUpdateNotification.js",
+        "file": "app/components/notifications/NodeUpdateNotification.js",
         "id": "cardano.node.update.notification.postpone.button.label",
         "start": {
           "column": 13,
@@ -322,7 +378,7 @@
           "column": 3,
           "line": 27
         },
-        "file": "source/renderer/app/components/notifications/NodeUpdateNotification.js",
+        "file": "app/components/notifications/NodeUpdateNotification.js",
         "id": "cardano.node.update.notification.titleWithVersion",
         "start": {
           "column": 20,
@@ -336,7 +392,7 @@
           "column": 3,
           "line": 32
         },
-        "file": "source/renderer/app/components/notifications/NodeUpdateNotification.js",
+        "file": "app/components/notifications/NodeUpdateNotification.js",
         "id": "cardano.node.update.notification.titleWithoutVersion",
         "start": {
           "column": 23,
@@ -350,7 +406,7 @@
           "column": 3,
           "line": 37
         },
-        "file": "source/renderer/app/components/notifications/NodeUpdateNotification.js",
+        "file": "app/components/notifications/NodeUpdateNotification.js",
         "id": "cardano.node.update.notification.message",
         "start": {
           "column": 17,
@@ -358,7 +414,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/notifications/NodeUpdateNotification.json"
+    "path": "app/components/notifications/NodeUpdateNotification.json"
   },
   {
     "descriptors": [
@@ -369,7 +425,7 @@
           "column": 3,
           "line": 15
         },
-        "file": "source/renderer/app/components/notifications/StatusMessagesNotification.js",
+        "file": "app/components/notifications/StatusMessagesNotification.js",
         "id": "wallet.statusMessages.activeImport",
         "start": {
           "column": 23,
@@ -383,7 +439,7 @@
           "column": 3,
           "line": 20
         },
-        "file": "source/renderer/app/components/notifications/StatusMessagesNotification.js",
+        "file": "app/components/notifications/StatusMessagesNotification.js",
         "id": "wallet.statusMessages.activeRestore",
         "start": {
           "column": 24,
@@ -391,7 +447,264 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/notifications/StatusMessagesNotification.json"
+    "path": "app/components/notifications/StatusMessagesNotification.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Support request",
+        "description": "Title for the \"Settings support\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.title",
+        "start": {
+          "column": 9,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Your e-mail",
+        "description": "Label for the \"Email\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.emailLabel",
+        "start": {
+          "column": 14,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter your e-mail here, so we can answer you",
+        "description": "Placeholder for the \"Email\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.emailPlaceholder",
+        "start": {
+          "column": 20,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Subject",
+        "description": "Label for the \"Subject\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.subjectLabel",
+        "start": {
+          "column": 16,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter subject of your problem",
+        "description": "Placeholder for the \"Subject\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.subjectPlaceholder",
+        "start": {
+          "column": 22,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Problem",
+        "description": "Label for the \"Problem\" text area on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.problemLabel",
+        "start": {
+          "column": 16,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Describe steps which got you to problem",
+        "description": "Placeholder for the \"Problem\" text area on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.problemPlaceholder",
+        "start": {
+          "column": 22,
+          "line": 53
+        }
+      },
+      {
+        "defaultMessage": "!!!Attach logs",
+        "description": "Label for the \"Attach logs\" switch on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 62
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.logsSwitchLabel",
+        "start": {
+          "column": 19,
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!Logs will help to find out problem you are describing",
+        "description": "Text for the \"Attach logs\" switch on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.logsSwitchPlaceholder",
+        "start": {
+          "column": 25,
+          "line": 63
+        }
+      },
+      {
+        "defaultMessage": "!!!Send request",
+        "description": "Label for the \"Send request\" button on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 72
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.button.label",
+        "start": {
+          "column": 21,
+          "line": 68
+        }
+      },
+      {
+        "defaultMessage": "!!!Alternatively, to help the development team investigate the issue you are experiencing,\n    you can send your support request manually. You should first download your logs.\n    Please take the following steps to submit your support request:",
+        "description": "Bug report dialog alternative description text.",
+        "end": {
+          "column": 3,
+          "line": 79
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.description",
+        "start": {
+          "column": 26,
+          "line": 73
+        }
+      },
+      {
+        "defaultMessage": "!!!There was a problem sending the support request.",
+        "description": "Bug report dialog alternative error message.",
+        "end": {
+          "column": 3,
+          "line": 84
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.errorMessage",
+        "start": {
+          "column": 27,
+          "line": 80
+        }
+      },
+      {
+        "defaultMessage": "!!!Click the Download logs button to retrieve your archived logs, and save the file on your desktop.",
+        "description": "Bug report dialog alternative instructions step one.",
+        "end": {
+          "column": 3,
+          "line": 89
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.instructions.step1",
+        "start": {
+          "column": 32,
+          "line": 85
+        }
+      },
+      {
+        "defaultMessage": "!!!Click the Submit manually button, which will take you to the issue-reporting page on the Daedalus website.",
+        "description": "Bug report dialog alternative instructions step two.",
+        "end": {
+          "column": 3,
+          "line": 94
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.instructions.step2",
+        "start": {
+          "column": 32,
+          "line": 90
+        }
+      },
+      {
+        "defaultMessage": "!!!Attach the logs to your support request, fill in your details, and submit the form.",
+        "description": "Bug report dialog alternative instructions step three.",
+        "end": {
+          "column": 3,
+          "line": 99
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.instructions.step3",
+        "start": {
+          "column": 32,
+          "line": 95
+        }
+      },
+      {
+        "defaultMessage": "!!!Submit manually",
+        "description": "Label for the \"Submit manually\" button on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 104
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.submitManually.button.label",
+        "start": {
+          "column": 29,
+          "line": 100
+        }
+      },
+      {
+        "defaultMessage": "!!!daedaluswallet.io/problem",
+        "description": "Link to Daedalus website \"Problem\" page",
+        "end": {
+          "column": 3,
+          "line": 109
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.submitManually.link",
+        "start": {
+          "column": 22,
+          "line": 105
+        }
+      },
+      {
+        "defaultMessage": "!!!Download",
+        "description": "Label for the \"Download\" button on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 114
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.download.button.label",
+        "start": {
+          "column": 23,
+          "line": 110
+        }
+      }
+    ],
+    "path": "app/components/profile/bug-report/BugReportDialog.json"
   },
   {
     "descriptors": [
@@ -402,7 +715,7 @@
           "column": 3,
           "line": 20
         },
-        "file": "source/renderer/app/components/profile/language-selection/LanguageSelectionForm.js",
+        "file": "app/components/profile/language-selection/LanguageSelectionForm.js",
         "id": "profile.languageSelect.form.languageSelectLabel",
         "start": {
           "column": 23,
@@ -416,7 +729,7 @@
           "column": 3,
           "line": 25
         },
-        "file": "source/renderer/app/components/profile/language-selection/LanguageSelectionForm.js",
+        "file": "app/components/profile/language-selection/LanguageSelectionForm.js",
         "id": "profile.languageSelect.form.submitLabel",
         "start": {
           "column": 15,
@@ -424,7 +737,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/profile/language-selection/LanguageSelectionForm.json"
+    "path": "app/components/profile/language-selection/LanguageSelectionForm.json"
   },
   {
     "descriptors": [
@@ -435,7 +748,7 @@
           "column": 3,
           "line": 16
         },
-        "file": "source/renderer/app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
+        "file": "app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
         "id": "profile.sendLogsChoice.form.continueButtonLabel",
         "start": {
           "column": 23,
@@ -449,7 +762,7 @@
           "column": 3,
           "line": 21
         },
-        "file": "source/renderer/app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
+        "file": "app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
         "id": "profile.sendLogsChoice.form.declineButtonLabel",
         "start": {
           "column": 22,
@@ -463,7 +776,7 @@
           "column": 3,
           "line": 26
         },
-        "file": "source/renderer/app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
+        "file": "app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
         "id": "profile.sendLogsChoice.form.contentLabel",
         "start": {
           "column": 16,
@@ -477,7 +790,7 @@
           "column": 3,
           "line": 31
         },
-        "file": "source/renderer/app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
+        "file": "app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
         "id": "profile.sendLogsChoice.form.contentText",
         "start": {
           "column": 15,
@@ -485,7 +798,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/profile/send-logs-choice-form/SendLogsChoiceForm.json"
+    "path": "app/components/profile/send-logs-choice-form/SendLogsChoiceForm.json"
   },
   {
     "descriptors": [
@@ -496,7 +809,7 @@
           "column": 3,
           "line": 20
         },
-        "file": "source/renderer/app/components/profile/terms-of-use/TermsOfUseForm.js",
+        "file": "app/components/profile/terms-of-use/TermsOfUseForm.js",
         "id": "profile.termsOfUse.checkboxLabel",
         "start": {
           "column": 17,
@@ -510,7 +823,7 @@
           "column": 3,
           "line": 25
         },
-        "file": "source/renderer/app/components/profile/terms-of-use/TermsOfUseForm.js",
+        "file": "app/components/profile/terms-of-use/TermsOfUseForm.js",
         "id": "profile.termsOfUse.checkboxLabelWithDisclaimer",
         "start": {
           "column": 31,
@@ -524,7 +837,7 @@
           "column": 3,
           "line": 30
         },
-        "file": "source/renderer/app/components/profile/terms-of-use/TermsOfUseForm.js",
+        "file": "app/components/profile/terms-of-use/TermsOfUseForm.js",
         "id": "profile.termsOfUse.submitLabel",
         "start": {
           "column": 15,
@@ -532,7 +845,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/profile/terms-of-use/TermsOfUseForm.json"
+    "path": "app/components/profile/terms-of-use/TermsOfUseForm.json"
   },
   {
     "descriptors": [
@@ -543,7 +856,7 @@
           "column": 3,
           "line": 17
         },
-        "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
+        "file": "app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeLabel",
         "start": {
           "column": 14,
@@ -557,7 +870,7 @@
           "column": 3,
           "line": 22
         },
-        "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
+        "file": "app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.lightBlue",
         "start": {
           "column": 18,
@@ -571,7 +884,7 @@
           "column": 3,
           "line": 27
         },
-        "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
+        "file": "app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.cardano",
         "start": {
           "column": 16,
@@ -585,7 +898,7 @@
           "column": 3,
           "line": 32
         },
-        "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
+        "file": "app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.darkBlue",
         "start": {
           "column": 17,
@@ -593,7 +906,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/settings/categories/DisplaySettings.json"
+    "path": "app/components/settings/categories/DisplaySettings.json"
   },
   {
     "descriptors": [
@@ -604,7 +917,7 @@
           "column": 3,
           "line": 18
         },
-        "file": "source/renderer/app/components/settings/categories/GeneralSettings.js",
+        "file": "app/components/settings/categories/GeneralSettings.js",
         "id": "settings.general.languageSelect.label",
         "start": {
           "column": 23,
@@ -612,7 +925,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/settings/categories/GeneralSettings.json"
+    "path": "app/components/settings/categories/GeneralSettings.json"
   },
   {
     "descriptors": [
@@ -623,7 +936,7 @@
           "column": 3,
           "line": 15
         },
-        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
+        "file": "app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.sendLogs.switchLabel",
         "start": {
           "column": 19,
@@ -637,7 +950,7 @@
           "column": 3,
           "line": 20
         },
-        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
+        "file": "app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.sendLogs.switchPlaceholder",
         "start": {
           "column": 25,
@@ -645,7 +958,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/settings/categories/SupportSettings.json"
+    "path": "app/components/settings/categories/SupportSettings.json"
   },
   {
     "descriptors": [
@@ -656,7 +969,7 @@
           "column": 3,
           "line": 14
         },
-        "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
+        "file": "app/components/settings/menu/SettingsMenu.js",
         "id": "settings.menu.general.link.label",
         "start": {
           "column": 11,
@@ -670,7 +983,7 @@
           "column": 3,
           "line": 19
         },
-        "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
+        "file": "app/components/settings/menu/SettingsMenu.js",
         "id": "settings.menu.support.link.label",
         "start": {
           "column": 11,
@@ -684,7 +997,7 @@
           "column": 3,
           "line": 24
         },
-        "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
+        "file": "app/components/settings/menu/SettingsMenu.js",
         "id": "settings.menu.termsOfUse.link.label",
         "start": {
           "column": 14,
@@ -698,7 +1011,7 @@
           "column": 3,
           "line": 29
         },
-        "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
+        "file": "app/components/settings/menu/SettingsMenu.js",
         "id": "settings.menu.display.link.label",
         "start": {
           "column": 11,
@@ -706,7 +1019,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/settings/menu/SettingsMenu.json"
+    "path": "app/components/settings/menu/SettingsMenu.json"
   },
   {
     "descriptors": [
@@ -717,7 +1030,7 @@
           "column": 3,
           "line": 17
         },
-        "file": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.js",
+        "file": "app/components/sidebar/wallets/SidebarWalletsMenu.js",
         "id": "sidebar.wallets.addWallet",
         "start": {
           "column": 16,
@@ -725,7 +1038,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.json"
+    "path": "app/components/sidebar/wallets/SidebarWalletsMenu.json"
   },
   {
     "descriptors": [
@@ -736,7 +1049,7 @@
           "column": 3,
           "line": 16
         },
-        "file": "source/renderer/app/components/staking/StakingChartTooltip.js",
+        "file": "app/components/staking/StakingChartTooltip.js",
         "id": "staking.chart.tooltip.slot.label",
         "start": {
           "column": 8,
@@ -750,7 +1063,7 @@
           "column": 3,
           "line": 21
         },
-        "file": "source/renderer/app/components/staking/StakingChartTooltip.js",
+        "file": "app/components/staking/StakingChartTooltip.js",
         "id": "staking.chart.tooltip.transactions.label",
         "start": {
           "column": 16,
@@ -764,7 +1077,7 @@
           "column": 3,
           "line": 26
         },
-        "file": "source/renderer/app/components/staking/StakingChartTooltip.js",
+        "file": "app/components/staking/StakingChartTooltip.js",
         "id": "staking.chart.tooltip.mpc.phase.label",
         "start": {
           "column": 12,
@@ -778,7 +1091,7 @@
           "column": 3,
           "line": 31
         },
-        "file": "source/renderer/app/components/staking/StakingChartTooltip.js",
+        "file": "app/components/staking/StakingChartTooltip.js",
         "id": "staking.chart.tooltip.commitments.label",
         "start": {
           "column": 15,
@@ -792,7 +1105,7 @@
           "column": 3,
           "line": 36
         },
-        "file": "source/renderer/app/components/staking/StakingChartTooltip.js",
+        "file": "app/components/staking/StakingChartTooltip.js",
         "id": "staking.chart.tooltip.openings.label",
         "start": {
           "column": 12,
@@ -806,7 +1119,7 @@
           "column": 3,
           "line": 41
         },
-        "file": "source/renderer/app/components/staking/StakingChartTooltip.js",
+        "file": "app/components/staking/StakingChartTooltip.js",
         "id": "staking.chart.tooltip.shares.label",
         "start": {
           "column": 10,
@@ -814,7 +1127,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/staking/StakingChartTooltip.json"
+    "path": "app/components/staking/StakingChartTooltip.json"
   },
   {
     "descriptors": [
@@ -825,7 +1138,7 @@
           "column": 3,
           "line": 18
         },
-        "file": "source/renderer/app/components/static/About.js",
+        "file": "app/components/static/About.js",
         "id": "window.about.title",
         "start": {
           "column": 20,
@@ -839,7 +1152,7 @@
           "column": 3,
           "line": 23
         },
-        "file": "source/renderer/app/components/static/About.js",
+        "file": "app/components/static/About.js",
         "id": "static.about.title",
         "start": {
           "column": 14,
@@ -853,7 +1166,7 @@
           "column": 3,
           "line": 28
         },
-        "file": "source/renderer/app/components/static/About.js",
+        "file": "app/components/static/About.js",
         "id": "static.about.release.version",
         "start": {
           "column": 23,
@@ -867,7 +1180,7 @@
           "column": 3,
           "line": 33
         },
-        "file": "source/renderer/app/components/static/About.js",
+        "file": "app/components/static/About.js",
         "id": "static.about.content.daedalus.headline",
         "start": {
           "column": 32,
@@ -881,7 +1194,7 @@
           "column": 3,
           "line": 38
         },
-        "file": "source/renderer/app/components/static/About.js",
+        "file": "app/components/static/About.js",
         "id": "static.about.content.cardano.headline",
         "start": {
           "column": 31,
@@ -895,7 +1208,7 @@
           "column": 3,
           "line": 43
         },
-        "file": "source/renderer/app/components/static/About.js",
+        "file": "app/components/static/About.js",
         "id": "static.about.content.mantis.headline",
         "start": {
           "column": 30,
@@ -909,7 +1222,7 @@
           "column": 3,
           "line": 48
         },
-        "file": "source/renderer/app/components/static/About.js",
+        "file": "app/components/static/About.js",
         "id": "static.about.content.daedalus.members",
         "start": {
           "column": 31,
@@ -923,7 +1236,7 @@
           "column": 3,
           "line": 53
         },
-        "file": "source/renderer/app/components/static/About.js",
+        "file": "app/components/static/About.js",
         "id": "static.about.content.cardano.members",
         "start": {
           "column": 30,
@@ -937,7 +1250,7 @@
           "column": 3,
           "line": 58
         },
-        "file": "source/renderer/app/components/static/About.js",
+        "file": "app/components/static/About.js",
         "id": "static.about.content.mantis.members",
         "start": {
           "column": 29,
@@ -951,7 +1264,7 @@
           "column": 3,
           "line": 63
         },
-        "file": "source/renderer/app/components/static/About.js",
+        "file": "app/components/static/About.js",
         "id": "static.about.copyright",
         "start": {
           "column": 18,
@@ -965,7 +1278,7 @@
           "column": 3,
           "line": 68
         },
-        "file": "source/renderer/app/components/static/About.js",
+        "file": "app/components/static/About.js",
         "id": "static.about.license",
         "start": {
           "column": 15,
@@ -979,7 +1292,7 @@
           "column": 3,
           "line": 73
         },
-        "file": "source/renderer/app/components/static/About.js",
+        "file": "app/components/static/About.js",
         "id": "static.about.buildInfo",
         "start": {
           "column": 18,
@@ -987,7 +1300,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/static/About.json"
+    "path": "app/components/static/About.json"
   },
   {
     "descriptors": [
@@ -998,7 +1311,7 @@
           "column": 3,
           "line": 12
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionChoices.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionChoices.js",
         "id": "wallet.redeem.choices.tab.title.regularVended",
         "start": {
           "column": 19,
@@ -1012,7 +1325,7 @@
           "column": 3,
           "line": 17
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionChoices.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionChoices.js",
         "id": "wallet.redeem.choices.tab.title.forceVended",
         "start": {
           "column": 23,
@@ -1026,7 +1339,7 @@
           "column": 3,
           "line": 22
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionChoices.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionChoices.js",
         "id": "wallet.redeem.choices.tab.title.paperVended",
         "start": {
           "column": 23,
@@ -1034,7 +1347,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionChoices.json"
+    "path": "app/components/wallet/ada-redemption/AdaRedemptionChoices.json"
   },
   {
     "descriptors": [
@@ -1045,7 +1358,7 @@
           "column": 3,
           "line": 19
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionDisclaimer.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionDisclaimer.js",
         "id": "wallet.redeem.disclaimerOverlay.title",
         "start": {
           "column": 19,
@@ -1059,7 +1372,7 @@
           "column": 3,
           "line": 24
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionDisclaimer.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionDisclaimer.js",
         "id": "wallet.redeem.disclaimerOverlay.disclaimerText",
         "start": {
           "column": 18,
@@ -1073,7 +1386,7 @@
           "column": 3,
           "line": 29
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionDisclaimer.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionDisclaimer.js",
         "id": "wallet.redeem.disclaimerOverlay.checkboxLabel",
         "start": {
           "column": 17,
@@ -1087,7 +1400,7 @@
           "column": 3,
           "line": 34
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionDisclaimer.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionDisclaimer.js",
         "id": "wallet.redeem.disclaimerOverlay.submitLabel",
         "start": {
           "column": 15,
@@ -1095,7 +1408,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionDisclaimer.json"
+    "path": "app/components/wallet/ada-redemption/AdaRedemptionDisclaimer.json"
   },
   {
     "descriptors": [
@@ -1106,7 +1419,7 @@
           "column": 3,
           "line": 31
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.headline",
         "start": {
           "column": 12,
@@ -1120,7 +1433,7 @@
           "column": 3,
           "line": 41
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.instructions.regular",
         "start": {
           "column": 23,
@@ -1134,7 +1447,7 @@
           "column": 3,
           "line": 50
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.instructions.forceVended",
         "start": {
           "column": 27,
@@ -1148,7 +1461,7 @@
           "column": 3,
           "line": 56
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.instructions.paperVended",
         "start": {
           "column": 27,
@@ -1162,7 +1475,7 @@
           "column": 3,
           "line": 61
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.certificateLabel",
         "start": {
           "column": 20,
@@ -1176,7 +1489,7 @@
           "column": 3,
           "line": 66
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.certificateHint",
         "start": {
           "column": 19,
@@ -1190,7 +1503,7 @@
           "column": 3,
           "line": 71
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.walletSelectLabel",
         "start": {
           "column": 21,
@@ -1204,7 +1517,7 @@
           "column": 3,
           "line": 76
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.passphraseLabel",
         "start": {
           "column": 19,
@@ -1218,7 +1531,7 @@
           "column": 3,
           "line": 81
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.passphraseHint",
         "start": {
           "column": 18,
@@ -1232,7 +1545,7 @@
           "column": 3,
           "line": 86
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.passphrase.input.noResults",
         "start": {
           "column": 23,
@@ -1246,7 +1559,7 @@
           "column": 3,
           "line": 91
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.redemptionKeyLabel",
         "start": {
           "column": 22,
@@ -1260,7 +1573,7 @@
           "column": 3,
           "line": 96
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.shieldedRedemptionKeyLabel",
         "start": {
           "column": 30,
@@ -1274,7 +1587,7 @@
           "column": 3,
           "line": 101
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.redemptionCodeError",
         "start": {
           "column": 22,
@@ -1288,7 +1601,7 @@
           "column": 3,
           "line": 106
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.shieldedRedemptionCodeError",
         "start": {
           "column": 30,
@@ -1302,7 +1615,7 @@
           "column": 3,
           "line": 111
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.redemptionCodeHint",
         "start": {
           "column": 21,
@@ -1316,7 +1629,7 @@
           "column": 3,
           "line": 116
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.shieldedRedemptionKeyHint",
         "start": {
           "column": 29,
@@ -1330,7 +1643,7 @@
           "column": 3,
           "line": 121
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.submitLabel",
         "start": {
           "column": 15,
@@ -1344,7 +1657,7 @@
           "column": 3,
           "line": 126
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.emailLabel",
         "start": {
           "column": 14,
@@ -1358,7 +1671,7 @@
           "column": 3,
           "line": 131
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.emailHint",
         "start": {
           "column": 13,
@@ -1372,7 +1685,7 @@
           "column": 3,
           "line": 136
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.adaPasscodeLabel",
         "start": {
           "column": 20,
@@ -1386,7 +1699,7 @@
           "column": 3,
           "line": 141
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.adaPasscodeHint",
         "start": {
           "column": 19,
@@ -1400,7 +1713,7 @@
           "column": 3,
           "line": 146
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.adaAmountLabel",
         "start": {
           "column": 18,
@@ -1414,7 +1727,7 @@
           "column": 3,
           "line": 151
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.adaAmountHint",
         "start": {
           "column": 17,
@@ -1428,7 +1741,7 @@
           "column": 3,
           "line": 156
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.walletPasswordPlaceholder",
         "start": {
           "column": 29,
@@ -1442,7 +1755,7 @@
           "column": 3,
           "line": 161
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.walletPasswordLabel",
         "start": {
           "column": 23,
@@ -1450,7 +1763,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.json"
+    "path": "app/components/wallet/ada-redemption/AdaRedemptionForm.json"
   },
   {
     "descriptors": [
@@ -1461,7 +1774,7 @@
           "column": 3,
           "line": 18
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionSuccessOverlay.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionSuccessOverlay.js",
         "id": "wallet.redeem.success.overlay.headline",
         "start": {
           "column": 12,
@@ -1475,7 +1788,7 @@
           "column": 3,
           "line": 23
         },
-        "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionSuccessOverlay.js",
+        "file": "app/components/wallet/ada-redemption/AdaRedemptionSuccessOverlay.js",
         "id": "wallet.redeem.success.overlay.confirmButton",
         "start": {
           "column": 17,
@@ -1483,7 +1796,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionSuccessOverlay.json"
+    "path": "app/components/wallet/ada-redemption/AdaRedemptionSuccessOverlay.json"
   },
   {
     "descriptors": [
@@ -1494,7 +1807,7 @@
           "column": 3,
           "line": 21
         },
-        "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
+        "file": "app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions",
         "start": {
           "column": 30,
@@ -1508,7 +1821,7 @@
           "column": 3,
           "line": 26
         },
-        "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
+        "file": "app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog..button.labelContinue",
         "start": {
           "column": 23,
@@ -1522,7 +1835,7 @@
           "column": 3,
           "line": 31
         },
-        "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
+        "file": "app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog.checkbox.label.nobodyWatching",
         "start": {
           "column": 22,
@@ -1530,7 +1843,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.json"
+    "path": "app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.json"
   },
   {
     "descriptors": [
@@ -1541,7 +1854,7 @@
           "column": 3,
           "line": 19
         },
-        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog.js",
+        "file": "app/components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog.js",
         "id": "wallet.backup.recovery.phrase.display.dialog.backup.instructions",
         "start": {
           "column": 22,
@@ -1555,7 +1868,7 @@
           "column": 3,
           "line": 24
         },
-        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog.js",
+        "file": "app/components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog.js",
         "id": "wallet.backup.recovery.phrase.display.dialog.button.label.iHaveWrittenItDown",
         "start": {
           "column": 33,
@@ -1563,7 +1876,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog.json"
+    "path": "app/components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog.json"
   },
   {
     "descriptors": [
@@ -1574,7 +1887,7 @@
           "column": 3,
           "line": 22
         },
-        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "file": "app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.verification.instructions",
         "start": {
           "column": 28,
@@ -1588,7 +1901,7 @@
           "column": 3,
           "line": 27
         },
-        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "file": "app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.recovery.phrase.show.entry.dialog.button.labelConfirm",
         "start": {
           "column": 22,
@@ -1602,7 +1915,7 @@
           "column": 3,
           "line": 32
         },
-        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "file": "app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.recovery.phrase.show.entry.dialog.button.labelClear",
         "start": {
           "column": 20,
@@ -1616,7 +1929,7 @@
           "column": 3,
           "line": 37
         },
-        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "file": "app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.device",
         "start": {
           "column": 14,
@@ -1630,7 +1943,7 @@
           "column": 3,
           "line": 43
         },
-        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "file": "app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery",
         "start": {
           "column": 16,
@@ -1638,7 +1951,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.json"
+    "path": "app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.json"
   },
   {
     "descriptors": [
@@ -1649,7 +1962,7 @@
           "column": 3,
           "line": 17
         },
-        "file": "source/renderer/app/components/wallet/etc/WalletReceive.js",
+        "file": "app/components/wallet/etc/WalletReceive.js",
         "id": "wallet.receive.page.etc.walletAddressLabel",
         "start": {
           "column": 22,
@@ -1663,7 +1976,7 @@
           "column": 3,
           "line": 22
         },
-        "file": "source/renderer/app/components/wallet/etc/WalletReceive.js",
+        "file": "app/components/wallet/etc/WalletReceive.js",
         "id": "wallet.receive.page.etc.walletReceiveInstructions",
         "start": {
           "column": 29,
@@ -1671,7 +1984,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/etc/WalletReceive.json"
+    "path": "app/components/wallet/etc/WalletReceive.json"
   },
   {
     "descriptors": [
@@ -1682,7 +1995,7 @@
           "column": 3,
           "line": 24
         },
-        "file": "source/renderer/app/components/wallet/file-import/WalletFileImportDialog.js",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
         "id": "wallet.file.import.dialog.headline",
         "start": {
           "column": 12,
@@ -1696,7 +2009,7 @@
           "column": 3,
           "line": 29
         },
-        "file": "source/renderer/app/components/wallet/file-import/WalletFileImportDialog.js",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
         "id": "wallet.file.import.dialog.walletFileLabel",
         "start": {
           "column": 19,
@@ -1710,7 +2023,7 @@
           "column": 3,
           "line": 34
         },
-        "file": "source/renderer/app/components/wallet/file-import/WalletFileImportDialog.js",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
         "id": "wallet.file.import.dialog.walletFileHint",
         "start": {
           "column": 18,
@@ -1724,7 +2037,7 @@
           "column": 3,
           "line": 39
         },
-        "file": "source/renderer/app/components/wallet/file-import/WalletFileImportDialog.js",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
         "id": "wallet.file.import.dialog.wallet.name.input.label",
         "start": {
           "column": 24,
@@ -1738,7 +2051,7 @@
           "column": 3,
           "line": 44
         },
-        "file": "source/renderer/app/components/wallet/file-import/WalletFileImportDialog.js",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
         "id": "wallet.file.import.dialog.wallet.name.input.hint",
         "start": {
           "column": 23,
@@ -1752,7 +2065,7 @@
           "column": 3,
           "line": 49
         },
-        "file": "source/renderer/app/components/wallet/file-import/WalletFileImportDialog.js",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
         "id": "wallet.file.import.dialog.submitLabel",
         "start": {
           "column": 15,
@@ -1766,7 +2079,7 @@
           "column": 3,
           "line": 54
         },
-        "file": "source/renderer/app/components/wallet/file-import/WalletFileImportDialog.js",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
         "id": "wallet.file.import.dialog.passwordSwitchPlaceholder",
         "start": {
           "column": 29,
@@ -1780,7 +2093,7 @@
           "column": 3,
           "line": 59
         },
-        "file": "source/renderer/app/components/wallet/file-import/WalletFileImportDialog.js",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
         "id": "wallet.file.import.dialog.passwordSwitchLabel",
         "start": {
           "column": 23,
@@ -1794,7 +2107,7 @@
           "column": 3,
           "line": 64
         },
-        "file": "source/renderer/app/components/wallet/file-import/WalletFileImportDialog.js",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
         "id": "wallet.file.import.dialog.walletPasswordLabel",
         "start": {
           "column": 23,
@@ -1808,7 +2121,7 @@
           "column": 3,
           "line": 69
         },
-        "file": "source/renderer/app/components/wallet/file-import/WalletFileImportDialog.js",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
         "id": "wallet.file.import.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
@@ -1822,7 +2135,7 @@
           "column": 3,
           "line": 74
         },
-        "file": "source/renderer/app/components/wallet/file-import/WalletFileImportDialog.js",
+        "file": "app/components/wallet/file-import/WalletFileImportDialog.js",
         "id": "wallet.file.import.dialog.passwordFieldPlaceholder",
         "start": {
           "column": 28,
@@ -1830,7 +2143,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/file-import/WalletFileImportDialog.json"
+    "path": "app/components/wallet/file-import/WalletFileImportDialog.json"
   },
   {
     "descriptors": [
@@ -1841,7 +2154,7 @@
           "column": 3,
           "line": 18
         },
-        "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
+        "file": "app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.summary",
         "start": {
           "column": 11,
@@ -1855,7 +2168,7 @@
           "column": 3,
           "line": 23
         },
-        "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
+        "file": "app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.send",
         "start": {
           "column": 8,
@@ -1869,7 +2182,7 @@
           "column": 3,
           "line": 28
         },
-        "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
+        "file": "app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.receive",
         "start": {
           "column": 11,
@@ -1883,7 +2196,7 @@
           "column": 3,
           "line": 33
         },
-        "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
+        "file": "app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.transactions",
         "start": {
           "column": 16,
@@ -1897,7 +2210,7 @@
           "column": 3,
           "line": 38
         },
-        "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
+        "file": "app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.settings",
         "start": {
           "column": 12,
@@ -1905,7 +2218,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/navigation/WalletNavigation.json"
+    "path": "app/components/wallet/navigation/WalletNavigation.json"
   },
   {
     "descriptors": [
@@ -1916,7 +2229,7 @@
           "column": 3,
           "line": 25
         },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
+        "file": "app/components/wallet/PaperWalletImportDialog.js",
         "id": "paper.wallet.import.dialog.title.label",
         "start": {
           "column": 9,
@@ -1930,7 +2243,7 @@
           "column": 3,
           "line": 30
         },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
+        "file": "app/components/wallet/PaperWalletImportDialog.js",
         "id": "paper.wallet.import.dialog.wallet.privateKey.input.label",
         "start": {
           "column": 24,
@@ -1944,7 +2257,7 @@
           "column": 3,
           "line": 35
         },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
+        "file": "app/components/wallet/PaperWalletImportDialog.js",
         "id": "paper.wallet.import.dialog.wallet.privateKey.input.hint",
         "start": {
           "column": 23,
@@ -1958,7 +2271,7 @@
           "column": 3,
           "line": 40
         },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
+        "file": "app/components/wallet/PaperWalletImportDialog.js",
         "id": "paper.wallet.import.dialog.mnemonic.phrase.input.label",
         "start": {
           "column": 28,
@@ -1972,7 +2285,7 @@
           "column": 3,
           "line": 45
         },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
+        "file": "app/components/wallet/PaperWalletImportDialog.js",
         "id": "paper.wallet.import.dialog.mnemonic.phrase.input.hint",
         "start": {
           "column": 27,
@@ -1986,7 +2299,7 @@
           "column": 3,
           "line": 50
         },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
+        "file": "app/components/wallet/PaperWalletImportDialog.js",
         "id": "paper.wallet.import.dialog.wallet.name.input.label",
         "start": {
           "column": 24,
@@ -2000,7 +2313,7 @@
           "column": 3,
           "line": 55
         },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
+        "file": "app/components/wallet/PaperWalletImportDialog.js",
         "id": "paper.wallet.import.dialog.wallet.name.input.hint",
         "start": {
           "column": 23,
@@ -2014,7 +2327,7 @@
           "column": 3,
           "line": 60
         },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
+        "file": "app/components/wallet/PaperWalletImportDialog.js",
         "id": "paper.wallet.import.dialog.import.wallet.button.label",
         "start": {
           "column": 21,
@@ -2028,7 +2341,7 @@
           "column": 3,
           "line": 65
         },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
+        "file": "app/components/wallet/PaperWalletImportDialog.js",
         "id": "paper.wallet.import.dialog.form.errors.invalidMnemonicPhrase",
         "start": {
           "column": 25,
@@ -2042,7 +2355,7 @@
           "column": 3,
           "line": 70
         },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
+        "file": "app/components/wallet/PaperWalletImportDialog.js",
         "id": "paper.wallet.import.dialog.form.errors.invalidPrivateKey",
         "start": {
           "column": 21,
@@ -2056,7 +2369,7 @@
           "column": 3,
           "line": 75
         },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
+        "file": "app/components/wallet/PaperWalletImportDialog.js",
         "id": "paper.wallet.import.dialog.passwordSwitchLabel",
         "start": {
           "column": 23,
@@ -2070,7 +2383,7 @@
           "column": 3,
           "line": 80
         },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
+        "file": "app/components/wallet/PaperWalletImportDialog.js",
         "id": "paper.wallet.import.dialog.passwordSwitchPlaceholder",
         "start": {
           "column": 29,
@@ -2084,7 +2397,7 @@
           "column": 3,
           "line": 85
         },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
+        "file": "app/components/wallet/PaperWalletImportDialog.js",
         "id": "paper.wallet.import.dialog.walletPasswordLabel",
         "start": {
           "column": 23,
@@ -2098,7 +2411,7 @@
           "column": 3,
           "line": 90
         },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
+        "file": "app/components/wallet/PaperWalletImportDialog.js",
         "id": "paper.wallet.import.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
@@ -2112,7 +2425,7 @@
           "column": 3,
           "line": 95
         },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
+        "file": "app/components/wallet/PaperWalletImportDialog.js",
         "id": "paper.wallet.import.dialog.passwordFieldPlaceholder",
         "start": {
           "column": 28,
@@ -2120,7 +2433,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/PaperWalletImportDialog.json"
+    "path": "app/components/wallet/PaperWalletImportDialog.json"
   },
   {
     "descriptors": [
@@ -2131,7 +2444,7 @@
           "column": 3,
           "line": 23
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.title.setPassword",
         "start": {
           "column": 26,
@@ -2145,7 +2458,7 @@
           "column": 3,
           "line": 28
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.title.changePassword",
         "start": {
           "column": 29,
@@ -2159,7 +2472,7 @@
           "column": 3,
           "line": 33
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.walletPasswordLabel",
         "start": {
           "column": 23,
@@ -2173,7 +2486,7 @@
           "column": 3,
           "line": 38
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.currentPasswordLabel",
         "start": {
           "column": 24,
@@ -2187,7 +2500,7 @@
           "column": 3,
           "line": 43
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.newPasswordLabel",
         "start": {
           "column": 20,
@@ -2201,7 +2514,7 @@
           "column": 3,
           "line": 48
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
@@ -2215,7 +2528,7 @@
           "column": 3,
           "line": 53
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.currentPasswordFieldPlaceholder",
         "start": {
           "column": 35,
@@ -2229,7 +2542,7 @@
           "column": 3,
           "line": 58
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.newPasswordFieldPlaceholder",
         "start": {
           "column": 31,
@@ -2243,7 +2556,7 @@
           "column": 3,
           "line": 63
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.repeatPasswordFieldPlaceholder",
         "start": {
           "column": 34,
@@ -2257,7 +2570,7 @@
           "column": 3,
           "line": 68
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.passwordSwitchLabel",
         "start": {
           "column": 23,
@@ -2271,7 +2584,7 @@
           "column": 3,
           "line": 73
         },
-        "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
+        "file": "app/components/wallet/settings/ChangeWalletPasswordDialog.js",
         "id": "wallet.settings.changePassword.dialog.passwordSwitchPlaceholder",
         "start": {
           "column": 29,
@@ -2279,7 +2592,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.json"
+    "path": "app/components/wallet/settings/ChangeWalletPasswordDialog.json"
   },
   {
     "descriptors": [
@@ -2290,7 +2603,7 @@
           "column": 3,
           "line": 10
         },
-        "file": "source/renderer/app/components/wallet/settings/DeleteWalletButton.js",
+        "file": "app/components/wallet/settings/DeleteWalletButton.js",
         "id": "wallet.settings.deleteWalletButtonLabel",
         "start": {
           "column": 9,
@@ -2298,7 +2611,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/settings/DeleteWalletButton.json"
+    "path": "app/components/wallet/settings/DeleteWalletButton.json"
   },
   {
     "descriptors": [
@@ -2307,13 +2620,13 @@
         "description": "Title for the \"Delete wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
-        "file": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
+        "file": "app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.title",
         "start": {
           "column": 15,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -2321,13 +2634,13 @@
         "description": "Label for the \"Delete (x)\" button in the delete wallet dialog.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
-        "file": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
+        "file": "app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -2335,13 +2648,13 @@
         "description": "Question if the user really wants to delete the wallet.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
-        "file": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
+        "file": "app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.wantToDeleteWalletQuestion",
         "start": {
           "column": 30,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -2349,13 +2662,13 @@
         "description": "Notice to confirm if the user has made a backup of his wallet",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
-        "file": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
+        "file": "app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.confirmBackupNotice",
         "start": {
           "column": 23,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -2363,17 +2676,17 @@
         "description": "Instruction for recovery word on delete wallet dialog",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 42
         },
-        "file": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
+        "file": "app/components/wallet/settings/DeleteWalletConfirmationDialog.js",
         "id": "wallet.settings.delete.dialog.enterRecoveryWordLabel",
         "start": {
           "column": 26,
-          "line": 37
+          "line": 38
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog.json"
+    "path": "app/components/wallet/settings/DeleteWalletConfirmationDialog.json"
   },
   {
     "descriptors": [
@@ -2384,7 +2697,7 @@
           "column": 3,
           "line": 20
         },
-        "file": "source/renderer/app/components/wallet/settings/export-to-file/WalletExportToFileDialog.js",
+        "file": "app/components/wallet/settings/export-to-file/WalletExportToFileDialog.js",
         "id": "wallet.exportToFile.dialog.headline",
         "start": {
           "column": 12,
@@ -2398,7 +2711,7 @@
           "column": 3,
           "line": 25
         },
-        "file": "source/renderer/app/components/wallet/settings/export-to-file/WalletExportToFileDialog.js",
+        "file": "app/components/wallet/settings/export-to-file/WalletExportToFileDialog.js",
         "id": "wallet.exportToFile.dialog.introduction",
         "start": {
           "column": 16,
@@ -2412,7 +2725,7 @@
           "column": 3,
           "line": 30
         },
-        "file": "source/renderer/app/components/wallet/settings/export-to-file/WalletExportToFileDialog.js",
+        "file": "app/components/wallet/settings/export-to-file/WalletExportToFileDialog.js",
         "id": "wallet.exportToFile.dialog.submit.label",
         "start": {
           "column": 21,
@@ -2420,7 +2733,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/settings/export-to-file/WalletExportToFileDialog.json"
+    "path": "app/components/wallet/settings/export-to-file/WalletExportToFileDialog.json"
   },
   {
     "descriptors": [
@@ -2431,7 +2744,7 @@
           "column": 3,
           "line": 16
         },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletCertificateDialog.js",
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletCertificateDialog.js",
         "id": "paper.wallet.export.dialog.certificate.dialog.headline",
         "start": {
           "column": 12,
@@ -2445,7 +2758,7 @@
           "column": 3,
           "line": 21
         },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletCertificateDialog.js",
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletCertificateDialog.js",
         "id": "paper.wallet.export.dialog.certificate.button.finishLabel",
         "start": {
           "column": 15,
@@ -2453,7 +2766,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletCertificateDialog.json"
+    "path": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletCertificateDialog.json"
   },
   {
     "descriptors": [
@@ -2464,7 +2777,7 @@
           "column": 3,
           "line": 19
         },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog.js",
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog.js",
         "id": "paper.wallet.export.dialog.mnemonic.headline",
         "start": {
           "column": 12,
@@ -2478,7 +2791,7 @@
           "column": 3,
           "line": 24
         },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog.js",
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog.js",
         "id": "paper.wallet.export.dialog.mnemonic.button.continueLabel",
         "start": {
           "column": 17,
@@ -2492,7 +2805,7 @@
           "column": 3,
           "line": 29
         },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog.js",
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog.js",
         "id": "paper.wallet.export.dialog.mnemonic.confirmPhraseWrittenNotice",
         "start": {
           "column": 30,
@@ -2500,7 +2813,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog.json"
+    "path": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog.json"
   },
   {
     "descriptors": [
@@ -2511,7 +2824,7 @@
           "column": 3,
           "line": 21
         },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
         "id": "paper.wallet.export.dialog.mnemonic.verification.headline",
         "start": {
           "column": 12,
@@ -2525,7 +2838,7 @@
           "column": 3,
           "line": 26
         },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
         "id": "paper.wallet.export.dialog.mnemonic.verification.button.continueLabel",
         "start": {
           "column": 17,
@@ -2539,7 +2852,7 @@
           "column": 3,
           "line": 31
         },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
         "id": "paper.wallet.export.dialog.mnemonic.verification.recovery.phrase.input.label",
         "start": {
           "column": 34,
@@ -2553,7 +2866,7 @@
           "column": 3,
           "line": 36
         },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
         "id": "paper.wallet.export.dialog.mnemonic.verification.recovery.phrase.input.hint",
         "start": {
           "column": 33,
@@ -2567,7 +2880,7 @@
           "column": 3,
           "line": 41
         },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
         "id": "paper.wallet.export.dialog.mnemonic.verification.form.errors.invalidRecoveryPhrase",
         "start": {
           "column": 19,
@@ -2575,7 +2888,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.json"
+    "path": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.json"
   },
   {
     "descriptors": [
@@ -2586,7 +2899,7 @@
           "column": 3,
           "line": 18
         },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog.js",
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog.js",
         "id": "paper.wallet.export.dialog.printerCheck.headline",
         "start": {
           "column": 12,
@@ -2600,7 +2913,7 @@
           "column": 3,
           "line": 23
         },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog.js",
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog.js",
         "id": "paper.wallet.export.dialog.button.continueLabel",
         "start": {
           "column": 17,
@@ -2614,7 +2927,7 @@
           "column": 3,
           "line": 28
         },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog.js",
+        "file": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog.js",
         "id": "paper.wallet.export.dialog.printerCheck.confirmPrinterCopyNotice",
         "start": {
           "column": 28,
@@ -2622,7 +2935,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog.json"
+    "path": "app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog.json"
   },
   {
     "descriptors": [
@@ -2633,7 +2946,7 @@
           "column": 3,
           "line": 12
         },
-        "file": "source/renderer/app/components/wallet/skins/AmountInputSkin.js",
+        "file": "app/components/wallet/skins/AmountInputSkin.js",
         "id": "wallet.amountInput.feesLabel",
         "start": {
           "column": 13,
@@ -2641,7 +2954,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/skins/AmountInputSkin.json"
+    "path": "app/components/wallet/skins/AmountInputSkin.json"
   },
   {
     "descriptors": [
@@ -2652,7 +2965,7 @@
           "column": 3,
           "line": 18
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
+        "file": "app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.pendingOutgoingConfirmationLabel",
         "start": {
           "column": 36,
@@ -2666,7 +2979,7 @@
           "column": 3,
           "line": 23
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
+        "file": "app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.pendingIncomingConfirmationLabel",
         "start": {
           "column": 36,
@@ -2680,7 +2993,7 @@
           "column": 3,
           "line": 28
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
+        "file": "app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.transactionsLabel",
         "start": {
           "column": 21,
@@ -2688,7 +3001,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/summary/WalletSummary.json"
+    "path": "app/components/wallet/summary/WalletSummary.json"
   },
   {
     "descriptors": [
@@ -2699,7 +3012,7 @@
           "column": 3,
           "line": 21
         },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.card",
         "start": {
           "column": 8,
@@ -2713,7 +3026,7 @@
           "column": 3,
           "line": 26
         },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type",
         "start": {
           "column": 8,
@@ -2727,7 +3040,7 @@
           "column": 3,
           "line": 31
         },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.exchange",
         "start": {
           "column": 12,
@@ -2741,7 +3054,7 @@
           "column": 3,
           "line": 36
         },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel",
         "start": {
           "column": 18,
@@ -2755,7 +3068,7 @@
           "column": 3,
           "line": 41
         },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.confirmations",
         "start": {
           "column": 17,
@@ -2769,7 +3082,7 @@
           "column": 3,
           "line": 46
         },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionId",
         "start": {
           "column": 17,
@@ -2783,7 +3096,7 @@
           "column": 3,
           "line": 51
         },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.conversion.rate",
         "start": {
           "column": 18,
@@ -2797,7 +3110,7 @@
           "column": 3,
           "line": 56
         },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.sent",
         "start": {
           "column": 8,
@@ -2811,7 +3124,7 @@
           "column": 3,
           "line": 61
         },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.received",
         "start": {
           "column": 12,
@@ -2825,7 +3138,7 @@
           "column": 3,
           "line": 66
         },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.from",
         "start": {
           "column": 15,
@@ -2839,7 +3152,7 @@
           "column": 3,
           "line": 71
         },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.from",
         "start": {
           "column": 17,
@@ -2853,7 +3166,7 @@
           "column": 3,
           "line": 76
         },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.to",
         "start": {
           "column": 13,
@@ -2867,7 +3180,7 @@
           "column": 3,
           "line": 81
         },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.to",
         "start": {
           "column": 15,
@@ -2881,7 +3194,7 @@
           "column": 3,
           "line": 86
         },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionAmount",
         "start": {
           "column": 21,
@@ -2895,7 +3208,7 @@
           "column": 3,
           "line": 94
         },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.low",
         "start": {
           "column": 25,
@@ -2909,7 +3222,7 @@
           "column": 3,
           "line": 99
         },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
           "column": 28,
@@ -2923,7 +3236,7 @@
           "column": 3,
           "line": 104
         },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.high",
         "start": {
           "column": 26,
@@ -2937,7 +3250,7 @@
           "column": 3,
           "line": 112
         },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
@@ -2951,7 +3264,7 @@
           "column": 3,
           "line": 117
         },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.failed",
         "start": {
           "column": 30,
@@ -2959,7 +3272,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/transactions/Transaction.json"
+    "path": "app/components/wallet/transactions/Transaction.json"
   },
   {
     "descriptors": [
@@ -2970,7 +3283,7 @@
           "column": 3,
           "line": 17
         },
-        "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
+        "file": "app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.todayLabel",
         "start": {
           "column": 9,
@@ -2984,7 +3297,7 @@
           "column": 3,
           "line": 22
         },
-        "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
+        "file": "app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.yesterdayLabel",
         "start": {
           "column": 13,
@@ -2992,7 +3305,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.json"
+    "path": "app/components/wallet/transactions/WalletTransactionsList.json"
   },
   {
     "descriptors": [
@@ -3003,7 +3316,7 @@
           "column": 3,
           "line": 13
         },
-        "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsSearch.js",
+        "file": "app/components/wallet/transactions/WalletTransactionsSearch.js",
         "id": "wallet.transactions.search.hint",
         "start": {
           "column": 14,
@@ -3011,7 +3324,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/transactions/WalletTransactionsSearch.json"
+    "path": "app/components/wallet/transactions/WalletTransactionsSearch.json"
   },
   {
     "descriptors": [
@@ -3022,7 +3335,7 @@
           "column": 3,
           "line": 21
         },
-        "file": "source/renderer/app/components/wallet/WalletAddDialog.js",
+        "file": "app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.title.label",
         "start": {
           "column": 9,
@@ -3036,7 +3349,7 @@
           "column": 3,
           "line": 26
         },
-        "file": "source/renderer/app/components/wallet/WalletAddDialog.js",
+        "file": "app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.create.label",
         "start": {
           "column": 15,
@@ -3050,7 +3363,7 @@
           "column": 3,
           "line": 31
         },
-        "file": "source/renderer/app/components/wallet/WalletAddDialog.js",
+        "file": "app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.create.description",
         "start": {
           "column": 21,
@@ -3064,7 +3377,7 @@
           "column": 3,
           "line": 36
         },
-        "file": "source/renderer/app/components/wallet/WalletAddDialog.js",
+        "file": "app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.join.label",
         "start": {
           "column": 13,
@@ -3078,7 +3391,7 @@
           "column": 3,
           "line": 41
         },
-        "file": "source/renderer/app/components/wallet/WalletAddDialog.js",
+        "file": "app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.join.description",
         "start": {
           "column": 19,
@@ -3092,7 +3405,7 @@
           "column": 3,
           "line": 46
         },
-        "file": "source/renderer/app/components/wallet/WalletAddDialog.js",
+        "file": "app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.restore.label",
         "start": {
           "column": 16,
@@ -3106,7 +3419,7 @@
           "column": 3,
           "line": 51
         },
-        "file": "source/renderer/app/components/wallet/WalletAddDialog.js",
+        "file": "app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.restore.description",
         "start": {
           "column": 22,
@@ -3120,7 +3433,7 @@
           "column": 3,
           "line": 56
         },
-        "file": "source/renderer/app/components/wallet/WalletAddDialog.js",
+        "file": "app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.import.label",
         "start": {
           "column": 15,
@@ -3134,7 +3447,7 @@
           "column": 3,
           "line": 61
         },
-        "file": "source/renderer/app/components/wallet/WalletAddDialog.js",
+        "file": "app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.import.description",
         "start": {
           "column": 21,
@@ -3142,7 +3455,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/WalletAddDialog.json"
+    "path": "app/components/wallet/WalletAddDialog.json"
   },
   {
     "descriptors": [
@@ -3153,7 +3466,7 @@
           "column": 3,
           "line": 22
         },
-        "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
+        "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.title",
         "start": {
           "column": 15,
@@ -3167,7 +3480,7 @@
           "column": 3,
           "line": 27
         },
-        "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
+        "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.name.label",
         "start": {
           "column": 14,
@@ -3181,7 +3494,7 @@
           "column": 3,
           "line": 32
         },
-        "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
+        "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.walletNameHint",
         "start": {
           "column": 18,
@@ -3195,7 +3508,7 @@
           "column": 3,
           "line": 37
         },
-        "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
+        "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.create.personal.wallet.button.label",
         "start": {
           "column": 24,
@@ -3209,7 +3522,7 @@
           "column": 3,
           "line": 42
         },
-        "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
+        "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.passwordSwitchPlaceholder",
         "start": {
           "column": 29,
@@ -3223,7 +3536,7 @@
           "column": 3,
           "line": 47
         },
-        "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
+        "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.passwordSwitchLabel",
         "start": {
           "column": 23,
@@ -3237,7 +3550,7 @@
           "column": 3,
           "line": 52
         },
-        "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
+        "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.walletPasswordLabel",
         "start": {
           "column": 23,
@@ -3251,7 +3564,7 @@
           "column": 3,
           "line": 57
         },
-        "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
+        "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
@@ -3265,7 +3578,7 @@
           "column": 3,
           "line": 62
         },
-        "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
+        "file": "app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.passwordFieldPlaceholder",
         "start": {
           "column": 28,
@@ -3273,7 +3586,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/WalletCreateDialog.json"
+    "path": "app/components/wallet/WalletCreateDialog.json"
   },
   {
     "descriptors": [
@@ -3284,7 +3597,7 @@
           "column": 3,
           "line": 26
         },
-        "file": "source/renderer/app/components/wallet/WalletReceive.js",
+        "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.walletAddressLabel",
         "start": {
           "column": 22,
@@ -3298,7 +3611,7 @@
           "column": 3,
           "line": 31
         },
-        "file": "source/renderer/app/components/wallet/WalletReceive.js",
+        "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.walletReceiveInstructions",
         "start": {
           "column": 29,
@@ -3312,7 +3625,7 @@
           "column": 3,
           "line": 36
         },
-        "file": "source/renderer/app/components/wallet/WalletReceive.js",
+        "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.generateNewAddressButtonLabel",
         "start": {
           "column": 33,
@@ -3326,7 +3639,7 @@
           "column": 3,
           "line": 41
         },
-        "file": "source/renderer/app/components/wallet/WalletReceive.js",
+        "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.generatedAddressesSectionTitle",
         "start": {
           "column": 34,
@@ -3340,7 +3653,7 @@
           "column": 3,
           "line": 46
         },
-        "file": "source/renderer/app/components/wallet/WalletReceive.js",
+        "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.hideUsedLabel",
         "start": {
           "column": 17,
@@ -3354,7 +3667,7 @@
           "column": 3,
           "line": 51
         },
-        "file": "source/renderer/app/components/wallet/WalletReceive.js",
+        "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.showUsedLabel",
         "start": {
           "column": 17,
@@ -3368,7 +3681,7 @@
           "column": 3,
           "line": 56
         },
-        "file": "source/renderer/app/components/wallet/WalletReceive.js",
+        "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
@@ -3382,7 +3695,7 @@
           "column": 3,
           "line": 61
         },
-        "file": "source/renderer/app/components/wallet/WalletReceive.js",
+        "file": "app/components/wallet/WalletReceive.js",
         "id": "wallet.receive.page.copyAddressLabel",
         "start": {
           "column": 20,
@@ -3390,7 +3703,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/WalletReceive.json"
+    "path": "app/components/wallet/WalletReceive.json"
   },
   {
     "descriptors": [
@@ -3401,7 +3714,7 @@
           "column": 3,
           "line": 26
         },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.title.label",
         "start": {
           "column": 9,
@@ -3415,7 +3728,7 @@
           "column": 3,
           "line": 31
         },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.wallet.name.input.label",
         "start": {
           "column": 24,
@@ -3429,7 +3742,7 @@
           "column": 3,
           "line": 36
         },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.wallet.name.input.hint",
         "start": {
           "column": 23,
@@ -3443,7 +3756,7 @@
           "column": 3,
           "line": 41
         },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.input.label",
         "start": {
           "column": 28,
@@ -3457,7 +3770,7 @@
           "column": 3,
           "line": 46
         },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.input.hint",
         "start": {
           "column": 27,
@@ -3471,7 +3784,7 @@
           "column": 3,
           "line": 51
         },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.input.noResults",
         "start": {
           "column": 27,
@@ -3485,7 +3798,7 @@
           "column": 3,
           "line": 56
         },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.restore.wallet.button.label",
         "start": {
           "column": 21,
@@ -3499,7 +3812,7 @@
           "column": 3,
           "line": 61
         },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.form.errors.invalidRecoveryPhrase",
         "start": {
           "column": 25,
@@ -3513,7 +3826,7 @@
           "column": 3,
           "line": 66
         },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.passwordSwitchPlaceholder",
         "start": {
           "column": 29,
@@ -3527,7 +3840,7 @@
           "column": 3,
           "line": 71
         },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.passwordSwitchLabel",
         "start": {
           "column": 23,
@@ -3541,7 +3854,7 @@
           "column": 3,
           "line": 76
         },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.walletPasswordLabel",
         "start": {
           "column": 23,
@@ -3555,7 +3868,7 @@
           "column": 3,
           "line": 81
         },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
@@ -3569,7 +3882,7 @@
           "column": 3,
           "line": 86
         },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "file": "app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.passwordFieldPlaceholder",
         "start": {
           "column": 28,
@@ -3577,7 +3890,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/WalletRestoreDialog.json"
+    "path": "app/components/wallet/WalletRestoreDialog.json"
   },
   {
     "descriptors": [
@@ -3588,7 +3901,7 @@
           "column": 3,
           "line": 20
         },
-        "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
+        "file": "app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.title",
         "start": {
           "column": 15,
@@ -3602,7 +3915,7 @@
           "column": 3,
           "line": 25
         },
-        "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
+        "file": "app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.walletPasswordLabel",
         "start": {
           "column": 23,
@@ -3616,7 +3929,7 @@
           "column": 3,
           "line": 30
         },
-        "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
+        "file": "app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.addressToLabel",
         "start": {
           "column": 18,
@@ -3630,7 +3943,7 @@
           "column": 3,
           "line": 35
         },
-        "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
+        "file": "app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.amountLabel",
         "start": {
           "column": 15,
@@ -3644,7 +3957,7 @@
           "column": 3,
           "line": 40
         },
-        "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
+        "file": "app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.feesLabel",
         "start": {
           "column": 13,
@@ -3658,7 +3971,7 @@
           "column": 3,
           "line": 45
         },
-        "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
+        "file": "app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.totalLabel",
         "start": {
           "column": 14,
@@ -3672,7 +3985,7 @@
           "column": 3,
           "line": 50
         },
-        "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
+        "file": "app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.walletPasswordFieldPlaceholder",
         "start": {
           "column": 34,
@@ -3686,7 +3999,7 @@
           "column": 3,
           "line": 55
         },
-        "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
+        "file": "app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.submit",
         "start": {
           "column": 19,
@@ -3700,7 +4013,7 @@
           "column": 3,
           "line": 60
         },
-        "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
+        "file": "app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.back",
         "start": {
           "column": 19,
@@ -3708,7 +4021,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.json"
+    "path": "app/components/wallet/WalletSendConfirmationDialog.json"
   },
   {
     "descriptors": [
@@ -3719,7 +4032,7 @@
           "column": 3,
           "line": 26
         },
-        "file": "source/renderer/app/components/wallet/WalletSendForm.js",
+        "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.title.label",
         "start": {
           "column": 14,
@@ -3733,7 +4046,7 @@
           "column": 3,
           "line": 31
         },
-        "file": "source/renderer/app/components/wallet/WalletSendForm.js",
+        "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.title.hint",
         "start": {
           "column": 13,
@@ -3747,7 +4060,7 @@
           "column": 3,
           "line": 36
         },
-        "file": "source/renderer/app/components/wallet/WalletSendForm.js",
+        "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.receiver.label",
         "start": {
           "column": 17,
@@ -3761,7 +4074,7 @@
           "column": 3,
           "line": 41
         },
-        "file": "source/renderer/app/components/wallet/WalletSendForm.js",
+        "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.receiver.hint",
         "start": {
           "column": 16,
@@ -3775,7 +4088,7 @@
           "column": 3,
           "line": 46
         },
-        "file": "source/renderer/app/components/wallet/WalletSendForm.js",
+        "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.amount.label",
         "start": {
           "column": 15,
@@ -3789,7 +4102,7 @@
           "column": 3,
           "line": 51
         },
-        "file": "source/renderer/app/components/wallet/WalletSendForm.js",
+        "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.amount.equalsAda",
         "start": {
           "column": 17,
@@ -3803,7 +4116,7 @@
           "column": 3,
           "line": 56
         },
-        "file": "source/renderer/app/components/wallet/WalletSendForm.js",
+        "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.description.label",
         "start": {
           "column": 20,
@@ -3817,7 +4130,7 @@
           "column": 3,
           "line": 61
         },
-        "file": "source/renderer/app/components/wallet/WalletSendForm.js",
+        "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.description.hint",
         "start": {
           "column": 19,
@@ -3831,7 +4144,7 @@
           "column": 3,
           "line": 66
         },
-        "file": "source/renderer/app/components/wallet/WalletSendForm.js",
+        "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.next",
         "start": {
           "column": 19,
@@ -3845,7 +4158,7 @@
           "column": 3,
           "line": 71
         },
-        "file": "source/renderer/app/components/wallet/WalletSendForm.js",
+        "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.errors.invalidAddress",
         "start": {
           "column": 18,
@@ -3859,7 +4172,7 @@
           "column": 3,
           "line": 76
         },
-        "file": "source/renderer/app/components/wallet/WalletSendForm.js",
+        "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.errors.invalidAmount",
         "start": {
           "column": 17,
@@ -3873,7 +4186,7 @@
           "column": 3,
           "line": 81
         },
-        "file": "source/renderer/app/components/wallet/WalletSendForm.js",
+        "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.errors.invalidTitle",
         "start": {
           "column": 16,
@@ -3887,7 +4200,7 @@
           "column": 3,
           "line": 86
         },
-        "file": "source/renderer/app/components/wallet/WalletSendForm.js",
+        "file": "app/components/wallet/WalletSendForm.js",
         "id": "wallet.send.form.transactionFeeError",
         "start": {
           "column": 23,
@@ -3895,7 +4208,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/WalletSendForm.json"
+    "path": "app/components/wallet/WalletSendForm.json"
   },
   {
     "descriptors": [
@@ -3906,7 +4219,7 @@
           "column": 3,
           "line": 38
         },
-        "file": "source/renderer/app/components/wallet/WalletSettings.js",
+        "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.name.label",
         "start": {
           "column": 8,
@@ -3920,7 +4233,7 @@
           "column": 3,
           "line": 43
         },
-        "file": "source/renderer/app/components/wallet/WalletSettings.js",
+        "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.assurance",
         "start": {
           "column": 23,
@@ -3934,7 +4247,7 @@
           "column": 3,
           "line": 48
         },
-        "file": "source/renderer/app/components/wallet/WalletSettings.js",
+        "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
@@ -3948,7 +4261,7 @@
           "column": 3,
           "line": 53
         },
-        "file": "source/renderer/app/components/wallet/WalletSettings.js",
+        "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
@@ -3962,7 +4275,7 @@
           "column": 3,
           "line": 58
         },
-        "file": "source/renderer/app/components/wallet/WalletSettings.js",
+        "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.passwordNotSet",
         "start": {
           "column": 18,
@@ -3976,7 +4289,7 @@
           "column": 3,
           "line": 63
         },
-        "file": "source/renderer/app/components/wallet/WalletSettings.js",
+        "file": "app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.exportWalletButtonLabel",
         "start": {
           "column": 21,
@@ -3984,7 +4297,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/WalletSettings.json"
+    "path": "app/components/wallet/WalletSettings.json"
   },
   {
     "descriptors": [
@@ -3995,7 +4308,7 @@
           "column": 3,
           "line": 12
         },
-        "file": "source/renderer/app/components/widgets/forms/ImageUploadWidget.js",
+        "file": "app/components/widgets/forms/ImageUploadWidget.js",
         "id": "ImageUploadWidget.dropFileHint",
         "start": {
           "column": 16,
@@ -4009,7 +4322,7 @@
           "column": 3,
           "line": 17
         },
-        "file": "source/renderer/app/components/widgets/forms/ImageUploadWidget.js",
+        "file": "app/components/widgets/forms/ImageUploadWidget.js",
         "id": "ImageUploadWidget.clickToUploadLabel",
         "start": {
           "column": 19,
@@ -4017,7 +4330,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/widgets/forms/ImageUploadWidget.json"
+    "path": "app/components/widgets/forms/ImageUploadWidget.json"
   },
   {
     "descriptors": [
@@ -4028,7 +4341,7 @@
           "column": 3,
           "line": 15
         },
-        "file": "source/renderer/app/components/widgets/forms/InlineEditingDropdown.js",
+        "file": "app/components/widgets/forms/InlineEditingDropdown.js",
         "id": "inline.editing.dropdown.changesSaved",
         "start": {
           "column": 16,
@@ -4036,7 +4349,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/widgets/forms/InlineEditingDropdown.json"
+    "path": "app/components/widgets/forms/InlineEditingDropdown.json"
   },
   {
     "descriptors": [
@@ -4047,7 +4360,7 @@
           "column": 3,
           "line": 16
         },
-        "file": "source/renderer/app/components/widgets/forms/InlineEditingInput.js",
+        "file": "app/components/widgets/forms/InlineEditingInput.js",
         "id": "inline.editing.input.change.label",
         "start": {
           "column": 10,
@@ -4061,7 +4374,7 @@
           "column": 3,
           "line": 21
         },
-        "file": "source/renderer/app/components/widgets/forms/InlineEditingInput.js",
+        "file": "app/components/widgets/forms/InlineEditingInput.js",
         "id": "inline.editing.input.cancel.label",
         "start": {
           "column": 10,
@@ -4075,7 +4388,7 @@
           "column": 3,
           "line": 26
         },
-        "file": "source/renderer/app/components/widgets/forms/InlineEditingInput.js",
+        "file": "app/components/widgets/forms/InlineEditingInput.js",
         "id": "inline.editing.input.changesSaved",
         "start": {
           "column": 16,
@@ -4083,7 +4396,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/widgets/forms/InlineEditingInput.json"
+    "path": "app/components/widgets/forms/InlineEditingInput.json"
   },
   {
     "descriptors": [
@@ -4094,7 +4407,7 @@
           "column": 3,
           "line": 13
         },
-        "file": "source/renderer/app/components/widgets/NodeSyncStatusIcon.js",
+        "file": "app/components/widgets/NodeSyncStatusIcon.js",
         "id": "cardano.node.sync.status.blocksSynced",
         "start": {
           "column": 16,
@@ -4102,7 +4415,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/widgets/NodeSyncStatusIcon.json"
+    "path": "app/components/widgets/NodeSyncStatusIcon.json"
   },
   {
     "descriptors": [
@@ -4113,7 +4426,7 @@
           "column": 3,
           "line": 10
         },
-        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
+        "file": "app/components/widgets/WalletTestEnvironmentLabel.js",
         "id": "test.environment.testnetLabel",
         "start": {
           "column": 16,
@@ -4121,7 +4434,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.json"
+    "path": "app/components/widgets/WalletTestEnvironmentLabel.json"
   },
   {
     "descriptors": [
@@ -4130,17 +4443,17 @@
         "description": "Message \"Loading wallet data\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 19
         },
-        "file": "source/renderer/app/containers/LoadingPage.js",
+        "file": "app/containers/LoadingPage.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
-          "line": 13
+          "line": 15
         }
       }
     ],
-    "path": "source/renderer/app/containers/LoadingPage.json"
+    "path": "app/containers/LoadingPage.json"
   },
   {
     "descriptors": [
@@ -4151,7 +4464,7 @@
           "column": 3,
           "line": 18
         },
-        "file": "source/renderer/app/containers/wallet/WalletReceivePage.js",
+        "file": "app/containers/wallet/WalletReceivePage.js",
         "id": "wallet.receive.page.addressCopyNotificationMessage",
         "start": {
           "column": 11,
@@ -4159,7 +4472,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/containers/wallet/WalletReceivePage.json"
+    "path": "app/containers/wallet/WalletReceivePage.json"
   },
   {
     "descriptors": [
@@ -4170,7 +4483,7 @@
           "column": 3,
           "line": 20
         },
-        "file": "source/renderer/app/containers/wallet/WalletSummaryPage.js",
+        "file": "app/containers/wallet/WalletSummaryPage.js",
         "id": "wallet.summary.no.transactions",
         "start": {
           "column": 18,
@@ -4178,7 +4491,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/containers/wallet/WalletSummaryPage.json"
+    "path": "app/containers/wallet/WalletSummaryPage.json"
   },
   {
     "descriptors": [
@@ -4189,7 +4502,7 @@
           "column": 3,
           "line": 19
         },
-        "file": "source/renderer/app/containers/wallet/WalletTransactionsPage.js",
+        "file": "app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions",
         "start": {
           "column": 18,
@@ -4203,7 +4516,7 @@
           "column": 3,
           "line": 24
         },
-        "file": "source/renderer/app/containers/wallet/WalletTransactionsPage.js",
+        "file": "app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions.found",
         "start": {
           "column": 23,
@@ -4211,7 +4524,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/containers/wallet/WalletTransactionsPage.json"
+    "path": "app/containers/wallet/WalletTransactionsPage.json"
   },
   {
     "descriptors": [
@@ -4222,7 +4535,7 @@
           "column": 3,
           "line": 8
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.errors.fieldIsRequired",
         "start": {
           "column": 19,
@@ -4236,7 +4549,7 @@
           "column": 3,
           "line": 13
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.errors.invalidMnemonic",
         "start": {
           "column": 19,
@@ -4250,7 +4563,7 @@
           "column": 3,
           "line": 18
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.errors.invalidEmail",
         "start": {
           "column": 16,
@@ -4264,7 +4577,7 @@
           "column": 3,
           "line": 23
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.errors.AdaRedemptionCertificateParseError",
         "start": {
           "column": 35,
@@ -4278,7 +4591,7 @@
           "column": 3,
           "line": 28
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.errors.AdaRedemptionEncryptedCertificateParseError",
         "start": {
           "column": 44,
@@ -4292,7 +4605,7 @@
           "column": 3,
           "line": 33
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.errors.invalidWalletName",
         "start": {
           "column": 21,
@@ -4306,7 +4619,7 @@
           "column": 3,
           "line": 38
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.errors.invalidWalletPassword",
         "start": {
           "column": 25,
@@ -4320,7 +4633,7 @@
           "column": 3,
           "line": 43
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.errors.invalidRepeatPassword",
         "start": {
           "column": 25,
@@ -4334,7 +4647,7 @@
           "column": 3,
           "line": 48
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.passwordInstructions",
         "start": {
           "column": 24,
@@ -4348,7 +4661,7 @@
           "column": 3,
           "line": 53
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.labels.cancel",
         "start": {
           "column": 10,
@@ -4362,7 +4675,7 @@
           "column": 3,
           "line": 58
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.labels.change",
         "start": {
           "column": 10,
@@ -4376,7 +4689,7 @@
           "column": 3,
           "line": 63
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.labels.create",
         "start": {
           "column": 10,
@@ -4390,7 +4703,7 @@
           "column": 3,
           "line": 68
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.labels.remove",
         "start": {
           "column": 10,
@@ -4404,7 +4717,7 @@
           "column": 3,
           "line": 73
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.labels.save",
         "start": {
           "column": 8,
@@ -4418,7 +4731,7 @@
           "column": 3,
           "line": 78
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.language.english",
         "start": {
           "column": 19,
@@ -4432,7 +4745,7 @@
           "column": 3,
           "line": 83
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.language.japanese",
         "start": {
           "column": 20,
@@ -4446,7 +4759,7 @@
           "column": 3,
           "line": 88
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.language.chinese",
         "start": {
           "column": 19,
@@ -4460,7 +4773,7 @@
           "column": 3,
           "line": 93
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.language.korean",
         "start": {
           "column": 18,
@@ -4474,7 +4787,7 @@
           "column": 3,
           "line": 98
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.language.german",
         "start": {
           "column": 18,
@@ -4488,7 +4801,7 @@
           "column": 3,
           "line": 103
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.language.croatian",
         "start": {
           "column": 20,
@@ -4502,7 +4815,7 @@
           "column": 3,
           "line": 108
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.assuranceLevel.normal",
         "start": {
           "column": 24,
@@ -4516,7 +4829,7 @@
           "column": 3,
           "line": 113
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.assuranceLevel.strict",
         "start": {
           "column": 24,
@@ -4530,7 +4843,7 @@
           "column": 3,
           "line": 118
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.unit.ada",
         "start": {
           "column": 11,
@@ -4544,7 +4857,7 @@
           "column": 3,
           "line": 123
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.unit.etc",
         "start": {
           "column": 11,
@@ -4558,7 +4871,7 @@
           "column": 3,
           "line": 128
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "wallet.backup.recovery.phrase.dialog.title",
         "start": {
           "column": 29,
@@ -4572,7 +4885,7 @@
           "column": 3,
           "line": 133
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.spendingPasswordLabel",
         "start": {
           "column": 25,
@@ -4586,7 +4899,7 @@
           "column": 3,
           "line": 138
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "global.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
@@ -4600,7 +4913,7 @@
           "column": 5,
           "line": 147
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "environment.currency.ada",
         "start": {
           "column": 14,
@@ -4614,7 +4927,7 @@
           "column": 5,
           "line": 152
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "environment.apiName.cardano",
         "start": {
           "column": 13,
@@ -4628,7 +4941,7 @@
           "column": 5,
           "line": 157
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "environment.apiVersion.cardano",
         "start": {
           "column": 16,
@@ -4637,16 +4950,16 @@
       },
       {
         "defaultMessage": "!!!Etc",
-        "description": "Name for \"Ada\" unit.",
+        "description": "Name for \"Etc\" unit.",
         "end": {
           "column": 5,
-          "line": 165
+          "line": 164
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "environment.currency.etc",
         "start": {
           "column": 14,
-          "line": 161
+          "line": 160
         }
       },
       {
@@ -4654,13 +4967,13 @@
         "description": "Name for \"Mantis\" client.",
         "end": {
           "column": 5,
-          "line": 170
+          "line": 169
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "environment.apiName.mantis",
         "start": {
           "column": 13,
-          "line": 166
+          "line": 165
         }
       },
       {
@@ -4668,16 +4981,16 @@
         "description": "Version of \"Mantis\" client.",
         "end": {
           "column": 5,
-          "line": 175
+          "line": 174
         },
-        "file": "source/renderer/app/i18n/global-messages.js",
+        "file": "app/i18n/global-messages.js",
         "id": "environment.apiVersion.mantis",
         "start": {
           "column": 16,
-          "line": 171
+          "line": 170
         }
       }
     ],
-    "path": "source/renderer/app/i18n/global-messages.json"
+    "path": "app/i18n/global-messages.json"
   }
 ]

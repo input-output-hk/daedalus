@@ -13,7 +13,7 @@ let cachedState = null;
 // Maximum number of out-of-sync blocks above which we consider to be out-of-sync
 const OUT_OF_SYNC_BLOCKS_LIMIT = 6;
 const SYNC_PROGRESS_INTERVAL = 2000;
-const TIME_DIFF_POLL_INTERVAL = 500;
+const TIME_DIFF_POLL_INTERVAL = 60 * 60 * 1000; // 60 minutes
 const ALLOWED_NETWORK_DIFFICULTY_STALL = 2 * 60 * 1000; // 2 minutes
 
 const STARTUP_STAGES = {
@@ -30,7 +30,7 @@ export default class NetworkStatusStore extends Store {
   _syncProgressPollInterval = null;
   _updateLocalTimeDifferencePollInterval = null;
 
-  ALLOWED_TIME_DIFFERENCE = 15 * 1000000; // 15 seconds;
+  ALLOWED_TIME_DIFFERENCE = 15 * 1000000; // 15 seconds
 
   @observable isConnected = false;
   @observable hasBeenConnected = false;
@@ -45,6 +45,8 @@ export default class NetworkStatusStore extends Store {
     this.api.ada.getLocalTimeDifference
   );
   @observable _localDifficultyStartedWith = null;
+
+  _timeDifferencePollInterval: ?number = null;
 
   @action initialize() {
     super.initialize();
@@ -191,6 +193,7 @@ export default class NetworkStatusStore extends Store {
             if (!this.hasBeenConnected) this.hasBeenConnected = true;
           }
         }
+        // Update the network difficulty on each request
         this.networkDifficulty = difficulty.networkDifficulty;
       });
       Logger.debug('Network difficulty changed: ' + this.networkDifficulty);

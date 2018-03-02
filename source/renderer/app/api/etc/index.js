@@ -30,6 +30,7 @@ import { getEtcEstimatedGas } from './getEtcEstimatedGas';
 import { getEtcTransactions } from './getEtcTransactions';
 import { getEtcBlockNumber } from './getEtcBlockNumber';
 import { isValidMnemonic } from '../../../../common/decrypt';
+import { sendEtcBugReport } from './sendEtcBugReport';
 
 import type {
   GetSyncProgressResponse, GetWalletRecoveryPhraseResponse,
@@ -38,7 +39,8 @@ import type {
   UpdateWalletPasswordRequest, UpdateWalletPasswordResponse,
   DeleteWalletRequest, DeleteWalletResponse,
   RestoreWalletRequest, RestoreWalletResponse,
-  CreateTransactionResponse
+  CreateTransactionResponse, SendBugReportRequest,
+  SendBugReportResponse,
 } from '../common';
 import type {
   EtcSyncProgress, EtcAccounts, EtcWalletBalance,
@@ -348,6 +350,18 @@ export default class EtcApi {
       return quantityToBigNumber(estimatedGas).times(request.gasPrice).dividedBy(WEI_PER_ETC);
     } catch (error) {
       Logger.error('EtcApi::getEstimatedGasPriceResponse error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async sendBugReport(request: SendBugReportRequest): Promise<SendBugReportResponse> {
+    Logger.debug('EtcApi::sendBugReport called: ' + stringifyData(request));
+    try {
+      await sendEtcBugReport({ requestFormData: request, application: 'mantis-node' });
+      Logger.debug('EtcApi::sendBugReport success');
+      return true;
+    } catch (error) {
+      Logger.error('EtcApi::sendBugReport error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }

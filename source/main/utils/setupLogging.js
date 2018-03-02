@@ -1,21 +1,17 @@
 import path from 'path';
 import { ipcMain } from 'electron';
 import Log from 'electron-log';
-import getRuntimeFolderPath from './getRuntimeFolderPath';
 import { daedalusLogger } from './remoteLog';
 import ensureDirectoryExists from './ensureDirectoryExists';
+import { pubLogsFolderPath, APP_NAME } from '../config';
 
 export const setupLogging = () => {
-  const APP_NAME = 'Daedalus';
-  // Configure default logger levels for console and file outputs
-  const runtimeFolderPath = getRuntimeFolderPath(process.platform, process.env, APP_NAME);
-  const appLogFolderPath = path.join(runtimeFolderPath, 'Logs', 'pub');
-  const logFilePath = path.join(appLogFolderPath, APP_NAME + '.log');
-
-  ensureDirectoryExists(appLogFolderPath);
+  const logFilePath = path.join(pubLogsFolderPath, APP_NAME + '.log');
+  ensureDirectoryExists(pubLogsFolderPath);
 
   Log.transports.console.level = 'warn';
   Log.transports.file.level = 'debug';
+  Log.transports.file.maxSize = 20 * 1024 * 1024;
   Log.transports.file.file = logFilePath;
 
   try {
