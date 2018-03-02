@@ -3,6 +3,7 @@ module Config
   ( generateConfig
   , Request(..)
   , OS(..), Cluster(..), Config(..)
+  , readClusterName
   ) where
 
 import qualified Control.Exception
@@ -50,6 +51,13 @@ data Request
   , rCluster :: Cluster
   , rConfig  :: Config
   } deriving (Eq, Show)
+
+readClusterName :: String -> Cluster
+readClusterName name = fromMaybe (error $ "Unrecognised cluster name "<>name<>": should be one of:  mainnet staging") $
+                       readMaybe $ capitalize name
+  where capitalize :: String -> String
+        capitalize [] = []
+        capitalize (x:xs) = [Data.Char.toUpper x] <> xs
 
 lshow :: Show a => a -> Text
 lshow = Data.Text.Lazy.pack . fmap Data.Char.toLower . show

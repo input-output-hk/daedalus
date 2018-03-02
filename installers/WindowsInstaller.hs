@@ -193,11 +193,7 @@ main = do
         fullName    = "daedalus-win64-" <> fullVersion <> "-" <> cluster <> "-installer.exe"
     writeFile "version.txt" fullVersion
 
-    let capitalize :: String -> String
-        capitalize [] = []
-        capitalize (x:xs) = [Data.Char.toUpper x] <> xs
-        cluster' :: Cluster
-        cluster' = fromMaybe (error $ "Unrecognised cluster name in DAEDALUS_CLUSTER ("<>T.pack cluster<>"): should be one of:  mainnet staging") $ readMaybe $ capitalize cluster
+    let cluster' = readClusterName cluster
 
     echo "Generating configuration file:  launcher-config.yaml"
     generateConfig (Request Win64 cluster' Launcher) "../config" "launcher-config.yaml"

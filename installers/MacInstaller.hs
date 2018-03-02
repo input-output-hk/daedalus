@@ -80,11 +80,7 @@ main = do
   hSetBuffering stdout NoBuffering
 
   cfg <- installerConfigFromEnv
-
-  let capitalize :: String -> String
-      capitalize [] = []
-      capitalize (x:xs) = [Data.Char.toUpper x] <> xs
-      cluster'    = fromMaybe (error "Unrecognised cluster name in DAEDALUS_CLUSTER: should be one of:  mainnet staging") $ read $ capitalize $ clusterName cfg
+  let cluster' = readClusterName $ clusterName cfg
 
   echo "Generating configuration file:  launcher-config.yaml"
   generateConfig (Request Macos64 cluster' Launcher) "../config" "launcher-config.yaml"
