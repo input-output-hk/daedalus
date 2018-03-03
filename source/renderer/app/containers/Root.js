@@ -23,7 +23,8 @@ export default class Root extends Component<Props> {
     if (
       !networkStatus.isSynced ||
       !wallets.hasLoadedWallets ||
-      !networkStatus.isSystemTimeCorrect) {
+      !networkStatus.isSystemTimeCorrect
+    ) {
       return <LoadingPage />;
     } else if (!wallets.hasAnyWallets) {
       return <NoWalletsPage />;

@@ -220,13 +220,6 @@ export default class Loading extends Component<Props, State> {
                 </h1>
               </div>
             )}
-            {isSystemTimeOff && (
-              <SystemTimeErrorOverlay
-                localTimeDifference={localTimeDifference}
-                currentLocale={currentLocale}
-                onProblemSolutionClick={onProblemSolutionClick}
-              />
-            )}
             {!isSyncing && !isConnecting && isLoadingDataForNextScreen && (
               <div className={styles.syncing}>
                 {!isSystemTimeOff && (
@@ -239,7 +232,7 @@ export default class Loading extends Component<Props, State> {
                 )}
               </div>
             )}
-            {(localTimeDifference > allowedTimeDifference) && (
+            {isSystemTimeOff && (
               <SystemTimeErrorOverlay
                 localTimeDifference={localTimeDifference}
                 currentLocale={currentLocale}
