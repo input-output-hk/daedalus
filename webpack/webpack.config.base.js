@@ -5,6 +5,9 @@
 const path = require('path');
 const validate = require('webpack-validator');
 const webpack = require('webpack');
+const yamljs = require("yamljs");
+
+const reportUrl = yamljs.parseFile("installers/launcher-config-windows.yaml").reportServer;
 
 module.exports = validate({
   cache: true,
@@ -54,7 +57,8 @@ module.exports = validate({
       'process.env.API': JSON.stringify(process.env.API || 'ada'),
       'process.env.NETWORK': JSON.stringify(process.env.NETWORK || 'development'),
       'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
-      'process.env.DAEDALUS_VERSION': JSON.stringify(process.env.DAEDALUS_VERSION || 'dev')
+      'process.env.DAEDALUS_VERSION': JSON.stringify(process.env.DAEDALUS_VERSION || 'dev'),
+      'process.env.REPORT_URL': JSON.stringify(reportUrl)
     }),
   ],
 

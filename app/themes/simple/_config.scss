@@ -9,7 +9,18 @@ $theme-font-medium: var(--font-medium);
 $theme-font-regular: var(--font-regular);
 $theme-font-bold: var(--font-bold);
 
-@import "~react-polymorph/lib/themes/simple/_theme";
+// INPUT
+
+$input-bg-color: var(--theme-input-background-color);
+$input-border: 1px solid var(--theme-input-border-color);
+$input-border-focus-color: var(--theme-input-focus-border-color);
+$input-color: var(--theme-input-text-color);
+$input-disabled-bg-color: var(--theme-input-disabled-background-color);
+$input-disabled-color: var(--theme-input-placeholder-color);
+$input-placeholder-color: var(--theme-input-placeholder-color);
+$input-errored-border-color: var(--theme-input-error-color);
+
+// AUTOCOMPLETE
 
 $autocomplete-bg-color: var(--theme-autocomplete-bg-color);
 $autocomplete-border: var(--theme-autocomplete-border);
@@ -20,23 +31,40 @@ $autocomplete-selected-word-text-color: var(--theme-autocomplete-selected-word-t
 $autocomplete-selected-word-box-background-color: var(--theme-autocomplete-selected-word-box-background-color);
 $autocomplete-selected-words-font-family: $theme-font-regular;
 
+// MODAL
+
 $modal-overlay-color: var(--theme-modal-overlay-background-color);
 $modal-bg: var(--theme-modal-background-color);
+
+// SELECT
 
 $select-arrow-color: var(--theme-select-arrow-color);
 $select-arrow-focus-color: var(--theme-select-arrow-color-open);
 $select-input-border-focus-color: var(--theme-input-focus-border-color);
 
-$option-bg-color: var(--theme-select-background-color);
-$option-font-color: var(--theme-select-option-text-color);
-$option-highlight-color: var(--theme-select-option-highlight-color);
+// OPTIONS
+
 $options-border-color: var(--theme-select-options-border-color);
 $options-shadow: var(--theme-select-options-shadow);
+$option-bg-color: var(--theme-select-background-color);
+$option-font-color: var(--theme-select-option-text-color);
+$option-border-color: var(--theme-select-options-border-color);
+$option-highlight-color: var(--theme-select-option-highlight-color);
+
+// BUBBLE
+
+$bubble-bg-color: var(--theme-select-background-color);
+$bubble-border-color: var(--theme-select-options-border-color);
+$bubble-border-radius: 2px;
+
+// SWITCH
 
 $switch-on-accent-color: var(--theme-switch-background-color-checked);
 $switch-off-accent-color: var(--theme-switch-background-color-checked);
 $switch-thumb-accent-color: var(--theme-switch-thumb-color-checked);
 $switch-label-color: var(--theme-switch-label-color);
+
+// TEXTAREA
 
 $textarea-color: var(--theme-input-text-color);
 $textarea-placeholder-color: var(--theme-input-placeholder-color);
@@ -46,3 +74,5 @@ $textarea-disabled-border-color: #cfcfcf !default;
 $textarea-disabled-bg-color: var(--theme-input-disabled-background-color);
 $textarea-bg-color: var(--theme-input-background-color);
 $textarea-error-color: var(--theme-input-error-color);
+
+@import "~react-polymorph/lib/themes/simple/_theme";

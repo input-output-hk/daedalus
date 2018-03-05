@@ -3,18 +3,16 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { shell } from 'electron';
 import CenteredLayout from '../../components/layout/CenteredLayout';
+import BugReportDialog from '../../components/profile/bug-report/BugReportDialog';
+import WalletSupportRequestPage from '../../containers/wallet/WalletSupportRequestPage';
 import Loading from '../../components/loading/Loading';
-import type { StoresMap } from '../../stores/index';
 import etcLogo from '../../assets/images/etc-logo.inline.svg';
 import mantisLogo from '../../assets/images/mantis-logo.inline.svg';
 import { messages } from '../LoadingPage';
+import type { InjectedProps } from '../../types/injectedPropsType';
 
-type Props = {
-  stores: StoresMap,
-};
-
-@inject(['stores']) @observer
-export default class LoadingPage extends Component<Props> {
+@inject('stores', 'actions') @observer
+export default class LoadingPage extends Component<InjectedProps> {
 
   render() {
     const { stores } = this.props;
@@ -41,10 +39,18 @@ export default class LoadingPage extends Component<Props> {
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           currentLocale={currentLocale}
+          handleReportIssue={this.handleReportIssue}
           onProblemSolutionClick={this.handleProblemSolutionClick}
         />
+        <WalletSupportRequestPage />
       </CenteredLayout>
     );
+  }
+
+  handleReportIssue = () => {
+    this.props.actions.dialogs.open.trigger({
+      dialog: BugReportDialog
+    });
   }
 
   handleProblemSolutionClick = (link: string) => {
