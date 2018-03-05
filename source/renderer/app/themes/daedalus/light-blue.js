@@ -139,6 +139,11 @@ export default {
 
   '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',
 
+  '--theme-paper-wallet-create-certificate-dialog-divider-line-color': '#dfe4e8',
+  '--theme-paper-wallet-create-certificate-dialog-recovery-phrase-background-color': 'rgba(68, 91, 124, 0.05)',
+  '--theme-paper-wallet-create-certificate-dialog-explorer-link-color': '#5e6066',
+  '--theme-paper-wallet-create-certificate-dialog-explorer-link-background-color': 'rgba(68, 91, 124, 0.05)',
+
   '--theme-settings-body-background-color': '#ebeff2',
   '--theme-settings-pane-background-color': '#fafbfc',
   '--theme-settings-pane-border': '1px solid #c6cdd6',

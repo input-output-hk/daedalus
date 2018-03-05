@@ -8,7 +8,7 @@ import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSki
 import Dialog from '../../../widgets/Dialog';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import DialogBackButton from '../../../widgets/DialogBackButton';
-import paperWalletImage from '../../../../assets/images/paper-wallet.png';
+import paperWalletImage from '../../../../assets/images/paper-wallet-certificate/certificate.png';
 import globalMessages from '../../../../i18n/global-messages';
 
 import styles from './PaperWalletCreateCertificateSecuringPasswordDialog.scss';

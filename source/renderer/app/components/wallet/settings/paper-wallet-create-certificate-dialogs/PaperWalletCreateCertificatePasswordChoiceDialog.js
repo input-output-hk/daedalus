@@ -17,6 +17,7 @@ import globalMessages from '../../../../i18n/global-messages';
 import styles from './PaperWalletCreateCertificatePasswordChoiceDialog.scss';
 
 import showPasswordIcon from '../../../../assets/images/show-pass-ic.inline.svg';
+import hidePasswordIcon from '../../../../assets/images/hide-pass-ic.inline.svg';
 
 const messages = defineMessages({
   headline: {
@@ -191,7 +192,7 @@ export default class PaperWalletCreateCertificatePasswordChoiceDialog extends Co
                   skin={<SimpleInputSkin />}
                 />
                 <SvgInline
-                  svg={showPasswordIcon}
+                  svg={showPassword ? hidePasswordIcon : showPasswordIcon}
                   className={styles.passwordVisibilityToggler}
                   onClick={this.onTogglePasswordVisibility.bind(this)}
                 />
@@ -206,7 +207,7 @@ export default class PaperWalletCreateCertificatePasswordChoiceDialog extends Co
                   skin={<SimpleInputSkin />}
                 />
                 <SvgInline
-                  svg={showPasswordIcon}
+                  svg={showRepeatPassword ? hidePasswordIcon : showPasswordIcon}
                   className={styles.passwordVisibilityToggler}
                   onClick={this.onShowRepeatPassword.bind(this)}
                 />

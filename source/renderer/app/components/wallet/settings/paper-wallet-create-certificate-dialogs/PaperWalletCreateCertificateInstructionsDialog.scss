@@ -7,7 +7,7 @@
   }
 
   .instructionsList {
-    border-top: 1px solid #dfe4e8;
+    border-top: 1px solid var(--theme-paper-wallet-create-certificate-dialog-divider-line-color);
     margin-top: 20px;
 
     .instructionsListLabel {

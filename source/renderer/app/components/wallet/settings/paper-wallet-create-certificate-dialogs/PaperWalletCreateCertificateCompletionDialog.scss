@@ -9,17 +9,16 @@
 
   .content {
     margin-top: 20px;
-    border-top: 1px solid #dfe4e8;
+    border-top: 1px solid var(--theme-paper-wallet-create-certificate-dialog-divider-line-color);
 
     .linkInstructions{
       margin-top: 20px;
     }
 
     .cardanoExplorerLinkWrapper {
-      background-color: rgba(68, 91, 124, 0.05);;
+      background-color: var(--theme-paper-wallet-create-certificate-dialog-explorer-link-background-color);
       border-radius: 2px;
-      font-family: var(--font-medium);
-      font-size: 16px;
+      font-family: var(--font-regular);
       line-height: 1.38;
       margin-top: 10px;
       min-height: 50px;
@@ -27,10 +26,7 @@
       text-align: center;
 
       a {
-        color: #5e6066;
-        font-family: var(--font-regular);
-        font-size: 16px;
-        line-height: 1.38;
+        color: var(--theme-paper-wallet-create-certificate-dialog-explorer-link-color);
         word-wrap: break-word;
       }
     }

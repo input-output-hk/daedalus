@@ -7,7 +7,12 @@ import Dialog from '../../../widgets/Dialog';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import DialogBackButton from '../../../widgets/DialogBackButton';
 import styles from './PaperWalletCreateCertificateTemplateChoiceDialog.scss';
-import templateImage from '../../../../assets/images/paper-wallet-template-mock.png';
+import blueTemplateImage from '../../../../assets/images/paper-wallet-certificate/template-blue.png';
+import brownTemplateImage from '../../../../assets/images/paper-wallet-certificate/template-brown.png';
+import greenTemplateImage from '../../../../assets/images/paper-wallet-certificate/template-green.png';
+import redTemplateImage from '../../../../assets/images/paper-wallet-certificate/template-red.png';
+import violetTemplateImage from '../../../../assets/images/paper-wallet-certificate/template-violet.png';
+import yellowTemplateImage from '../../../../assets/images/paper-wallet-certificate/template-yellow.png';
 
 const messages = defineMessages({
   headline: {
@@ -109,7 +114,7 @@ export default class PaperWalletCreateCertificateTemplateChoiceDialog extends Co
               onClick={this.onSelectTemplate.bind(this, 'Blue')}
               aria-hidden
             >
-              <img src={templateImage} role="presentation" />
+              <img src={blueTemplateImage} role="presentation" />
               <div className={styles.templateTitle}>Blue</div>
             </div>
 
@@ -119,7 +124,7 @@ export default class PaperWalletCreateCertificateTemplateChoiceDialog extends Co
               onClick={this.onSelectTemplate.bind(this, 'Brown')}
               aria-hidden
             >
-              <img src={templateImage} role="presentation" />
+              <img src={brownTemplateImage} role="presentation" />
               <div className={styles.templateTitle}>Brown</div>
             </div>
 
@@ -129,7 +134,7 @@ export default class PaperWalletCreateCertificateTemplateChoiceDialog extends Co
               onClick={this.onSelectTemplate.bind(this, 'Green')}
               aria-hidden
             >
-              <img src={templateImage} role="presentation" />
+              <img src={greenTemplateImage} role="presentation" />
               <div className={styles.templateTitle}>Green</div>
             </div>
           </div>
@@ -141,7 +146,7 @@ export default class PaperWalletCreateCertificateTemplateChoiceDialog extends Co
               onClick={this.onSelectTemplate.bind(this, 'Red')}
               aria-hidden
             >
-              <img src={templateImage} role="presentation" />
+              <img src={redTemplateImage} role="presentation" />
               <div className={styles.templateTitle}>Red</div>
             </div>
 
@@ -151,7 +156,7 @@ export default class PaperWalletCreateCertificateTemplateChoiceDialog extends Co
               onClick={this.onSelectTemplate.bind(this, 'Violet')}
               aria-hidden
             >
-              <img src={templateImage} role="presentation" />
+              <img src={violetTemplateImage} role="presentation" />
               <div className={styles.templateTitle}>Violet</div>
             </div>
 
@@ -161,7 +166,7 @@ export default class PaperWalletCreateCertificateTemplateChoiceDialog extends Co
               onClick={this.onSelectTemplate.bind(this, 'Yellow')}
               aria-hidden
             >
-              <img src={templateImage} role="presentation" />
+              <img src={yellowTemplateImage} role="presentation" />
               <div className={styles.templateTitle}>Yellow</div>
             </div>
           </div>

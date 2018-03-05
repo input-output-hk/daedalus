@@ -20,6 +20,7 @@ import { isValidWalletPassword } from '../../../../utils/validations';
 import { InvalidMnemonicError } from '../../../../i18n/errors';
 import globalMessages from '../../../../i18n/global-messages';
 import showPasswordIcon from '../../../../assets/images/show-pass-ic.inline.svg';
+import hidePasswordIcon from '../../../../assets/images/hide-pass-ic.inline.svg';
 
 import styles from './PaperWalletCreateCertificateVerificationDialog.scss';
 
@@ -228,7 +229,7 @@ export default class PaperWalletCreateCertificateVerificationDialog extends Comp
                 skin={<SimpleInputSkin />}
               />
               <SvgInline
-                svg={showPasswordIcon}
+                svg={showPassword ? hidePasswordIcon : showPasswordIcon}
                 className={styles.passwordVisibilityToggler}
                 onClick={this.onTogglePasswordVisibility.bind(this)}
               />

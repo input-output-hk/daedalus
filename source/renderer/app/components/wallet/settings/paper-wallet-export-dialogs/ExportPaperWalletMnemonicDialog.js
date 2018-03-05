@@ -9,7 +9,7 @@ import DialogCloseButton from '../../../widgets/DialogCloseButton';
 import DialogBackButton from '../../../widgets/DialogBackButton';
 import Dialog from '../../../widgets/Dialog';
 import styles from './ExportPaperWalletMnemonicDialog.scss';
-import paperWalletImage from '../../../../assets/images/paper-wallet.png';
+import paperWalletImage from '../../../../assets/images/paper-wallet-certificate/certificate.png';
 
 const messages = defineMessages({
   headline: {
