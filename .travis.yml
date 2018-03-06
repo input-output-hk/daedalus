@@ -9,7 +9,7 @@ env:
   global:
     - VERSION=1.1.0
     - NETWORK=mainnet
-    - CARDANO_SL_BRANCH=release/1.1.0
+    - CARDANO_SL_BRANCH=devops-646-staging-application-version
       # NOTE: when bumping nixpkgs, also update default.nix
     - NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/fb235c98d839ae37a639695ad088d19ef8382608.tar.gz
     # AWS access key
