@@ -7,7 +7,7 @@ matrix:
     osx_image: xcode8.3
 env:
   global:
-    - VERSION=1.1
+    - VERSION=1.1.0
     - NETWORK=mainnet
     - CARDANO_SL_BRANCH=release/1.1.0
       # NOTE: when bumping nixpkgs, also update default.nix
