@@ -53,6 +53,7 @@ executable load-certificate
   other-modules:       MacInstaller
   build-depends:       base
                      , bytestring
+                     , containers
                      , dhall
                      , dhall-json
                      , directory
@@ -60,6 +61,7 @@ executable load-certificate
                      , Glob
                      , megaparsec
                      , optparse-applicative
+                     , optional-args
                      , split
                      , system-filepath
                      , text

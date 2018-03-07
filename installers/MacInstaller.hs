@@ -1,4 +1,4 @@
-{-# LANGUAGE RecordWildCards, LambdaCase #-}
+{-# LANGUAGE NoImplicitPrelude, RecordWildCards, LambdaCase #-}
 module MacInstaller
     ( main
     , SigningConfig(..)
@@ -17,16 +17,15 @@ module MacInstaller
 import           Universum
 
 import           Control.Monad (unless)
-import           Data.Char
 import           Data.Maybe (fromMaybe)
+import           Data.Text (Text, pack, unpack)
 import qualified Data.Text as T
-import           Prelude (read)
 import           System.Directory (copyFile, createDirectoryIfMissing, doesFileExist, renameFile)
-import           System.Environment (lookupEnv)
 import           System.FilePath ((</>), FilePath)
 import           System.FilePath.Glob (glob)
 import           Filesystem.Path.CurrentOS (encodeString)
-import           Turtle (ExitCode (..), echo, proc, procs, which, Managed, with)
+import           Text.Printf (printf)
+import           Turtle (ExitCode (..), echo, proc, procs, shells, which, Managed, with)
 import           Turtle.Line (unsafeTextToLine)
 
 import           RewriteLibs (chain)
@@ -38,86 +37,50 @@ import           Types
 
 
 
-data InstallerConfig = InstallerConfig {
-    icApi :: String
-  , appNameLowercase :: T.Text
-  , appName :: String
-  , pkg :: T.Text
-  , predownloadChain :: Bool
-  , appRoot :: String
-  , clusterName :: String
-}
-
--- In Buildkite (as in Travis), the environment variable is set to the
--- pull request number if the current job is a pull request build, or
--- "false" if it’s not.
-pullRequestFromEnv :: IO (Maybe String)
-pullRequestFromEnv = interpret <$> lookupEnv "BUILDKITE_PULL_REQUEST"
-  where
-    interpret Nothing        = Nothing
-    interpret (Just "false") = Nothing
-    interpret (Just num)     = Just num
-
--- Internal UUID Buildkite uses for this job.
-buildkiteJobIdFromEnv :: IO (Maybe String)
-buildkiteJobIdFromEnv = lookupEnv "BUILDKITE_JOB_ID"
-
-installerConfigFromEnv :: IO InstallerConfig
-installerConfigFromEnv = mkEnv <$> envAPI <*> envVersion <*> envCluster
-  where
-    envAPI = fromMaybe "cardano" <$> lookupEnv "API"
-    envVersion = fromMaybe "dev" <$> lookupEnv "DAEDALUS_VERSION"
-    envCluster = fromMaybe "mainnet" <$> lookupEnv "DAEDALUS_CLUSTER"
-    mkEnv "cardano" ver clusterName = InstallerConfig
-      { icApi = "cardano"
-      , predownloadChain = False
-      , appNameLowercase = "daedalus"
-      , appName = "Daedalus"
-      , pkg = "dist/Daedalus-installer-" <> T.pack ver <> "-" <> T.pack clusterName <> ".pkg"
-      , appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
-      , clusterName = clusterName
-      }
-
-main :: IO ()
-main = do
+main :: Options -> IO ()
+main opts@Options{..} = do
   hSetBuffering stdout NoBuffering
 
-  cfg <- installerConfigFromEnv
-  let cluster' = readClusterName $ clusterName cfg
+  let appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
 
   echo "Generating configuration file:  launcher-config.yaml"
-  generateConfig (Request Macos64 cluster' Launcher) "./dhall" "launcher-config.yaml"
+  generateConfig (Request Macos64 oCluster Launcher) "./dhall" "launcher-config.yaml"
   echo "Generating configuration file:  wallet-topology.yaml"
-  generateConfig (Request Macos64 cluster' Topology) "./dhall" "wallet-topology.yaml"
+  generateConfig (Request Macos64 oCluster Topology) "./dhall" "wallet-topology.yaml"
 
   echo "Packaging frontend"
   procs "npm" ["run", "package", "--", "--icon", "installers/icons/256x256"] mempty
 
-  tempInstaller <- makeInstaller cfg
+  tempInstaller <- makeInstaller opts appRoot
 
-  signInstaller signingConfig (toText tempInstaller) (pkg cfg)
-  checkSignature (pkg cfg)
+  signInstaller signingConfig (toText tempInstaller) oOutput
+  checkSignature oOutput
 
   run "rm" [toText tempInstaller]
-  echo $ "Generated " <> unsafeTextToLine (pkg cfg)
+  echo $ "Generated " <> unsafeTextToLine oOutput
 
-makeScriptsDir :: InstallerConfig -> Managed T.Text
-makeScriptsDir cfg = case icApi cfg of
-  "cardano" -> pure "data/scripts"
-  "etc" -> pure "[DEVOPS-533]"
+  when (oTestInstaller == TestInstaller) $ do
+    echo $ "--test-installer passed, will test the installer for installability"
+    shells (T.pack $ printf "sudo installer -dumplog -verbose -target / -pkg \"%s\"" oOutput) empty
 
-makeInstaller :: InstallerConfig -> IO FilePath
-makeInstaller cfg = do
-  let dir     = appRoot cfg </> "Contents/MacOS"
-      resDir  = appRoot cfg </> "Contents/Resources"
+makeScriptsDir :: Options -> Managed T.Text
+makeScriptsDir Options{..} = case oAPI of
+  Cardano -> pure "data/scripts"
+  ETC     -> pure "[DEVOPS-533]"
+
+makeInstaller :: Options -> FilePath -> IO FilePath
+makeInstaller opts@Options{..} appRoot = do
+  let dir     = appRoot </> "Contents/MacOS"
+      resDir  = appRoot </> "Contents/Resources"
+
   createDirectoryIfMissing False "dist"
 
   echo "Creating icons ..."
   procs "iconutil" ["--convert", "icns", "--output", toText (resDir </> "electron.icns"), "icons/electron.iconset"] mempty
 
   echo "Preparing files ..."
-  case icApi cfg of
-    "cardano" -> do
+  case oAPI of
+    Cardano -> do
       copyFile "cardano-launcher" (dir </> "cardano-launcher")
       copyFile "cardano-node" (dir </> "cardano-node")
       copyFile "wallet-topology.yaml" (dir </> "wallet-topology.yaml")
@@ -141,18 +104,18 @@ makeInstaller cfg = do
   de <- doesFileExist (dir </> "Frontend")
   unless de $ renameFile (dir </> "Daedalus") (dir </> "Frontend")
   run "chmod" ["+x", toText (dir </> "Frontend")]
-  writeLauncherFile dir cfg
+  writeLauncherFile dir
 
-  with (makeScriptsDir cfg) $ \scriptsDir -> do
+  with (makeScriptsDir opts) $ \scriptsDir -> do
     let
       pkgargs :: [ T.Text ]
       pkgargs =
            [ "--identifier"
-           , "org." <> appNameLowercase cfg <> ".pkg"
+           , "org.daedalus.pkg"
            -- data/scripts/postinstall is responsible for running build-certificates
            , "--scripts", scriptsDir
            , "--component"
-           , T.pack $ appRoot cfg
+           , T.pack appRoot
            , "--install-location"
            , "/Applications"
            , "dist/temp.pkg"
@@ -168,8 +131,8 @@ makeInstaller cfg = do
   run "rm" ["dist/temp.pkg"]
   pure "dist/temp2.pkg"
 
-writeLauncherFile :: FilePath -> InstallerConfig -> IO FilePath
-writeLauncherFile dir _ = do
+writeLauncherFile :: FilePath -> IO FilePath
+writeLauncherFile dir = do
   writeFile path $ unlines contents
   run "chmod" ["+x", toText path]
   pure path

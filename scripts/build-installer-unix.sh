@@ -22,11 +22,11 @@ usage() {
     --fast-impure             Fast, impure, incremental build
     --build-id BUILD-NO       Identifier of the build; defaults to '0'
 
-    --pr-id PR-ID             Pull request id we're building
+    --pull-request PR-ID      Pull request id we're building
     --nix-path NIX-PATH       NIX_PATH value
 
     --upload-s3               Upload the installer to S3
-    --test-install            Test the installer for installability
+    --test-installer          Test the installer for installability
 
     --verbose                 Verbose operation
     --quiet                   Disable verbose operation
@@ -54,8 +54,8 @@ retry() {
 fast_impure=
 verbose=true
 build_id=0
-pr_id=true
-test_install=
+pull_request=
+test_installer=
 
 daedalus_version="$1"; arg2nz "daedalus version" $1; shift
 cardano_branch="$(printf '%s' "$1" | tr '/' '-')"; arg2nz "Cardano SL branch to build Daedalus with" $1; shift
@@ -79,11 +79,11 @@ do case "$1" in
            --clusters )                                     CLUSTERS="$2"; shift;;
            --fast-impure )                               fast_impure=true;;
            --build-id )       arg2nz "build identifier" $2; build_id="$2"; shift;;
-           --pr-id )          arg2nz "Pull request id" $2;
-                                                               pr_id="$2"; shift;;
+           --pull-request )   arg2nz "Pull request id" $2;
+                                                        pull_request="--pull-request $2"; shift;;
            --nix-path )       arg2nz "NIX_PATH value" $2;
                                                      export NIX_PATH="$2"; shift;;
-           --test-install )                             test_install=t;;
+           --test-installer )                         test_installer="--test-installer";;
 
            ###
            --verbose )        echo "$0: --verbose passed, enabling verbose operation"
@@ -138,14 +138,6 @@ cd installers
     echo "Building the cardano installer generator.."
     INSTALLER=$(nix-build -j 2 --no-out-link)
 
-    # For Travis MacOSX non-PR builds only
-    if test "${pr_id}" = "false" -a -n "${TRAVIS_JOB_ID:-}" -a "${OS_NAME}" != "linux"
-    then
-        echo "Downloading and importing signing certificate.."
-        retry 5 $nix_shell -p awscli --run "aws s3 cp --region eu-central-1 s3://iohk-private/${key} macos.p12 || true"
-        $INSTALLER/bin/load-certificate -k macos-build.keychain -f macos.p12
-    fi
-
     case ${OS_NAME} in
             darwin ) OS=macos64;;
             linux )  OS=linux;;esac
@@ -153,9 +145,14 @@ cd installers
     do
           echo "Generating installer for cluster ${cluster}.."
           export DAEDALUS_CLUSTER=${cluster}
-          $INSTALLER/bin/make-installer
+          local     INSTALLER_PKG="Daedalus-installer-${DAEDALUS_VERSION}-${cluster}.pkg"
+          $INSTALLER/bin/make-installer ${pull_request} ${test_installer}                 \
+                                        ${API:+--api ${API}                               \
+                                        --build-job        "${BUILDKITE_JOB_ID}"          \
+                                        --cluster          "${cluster}"                   \
+                                        --daedalus-version "${DAEDALUS_VERSION}"          \
+                                        --output           "${INSTALLER_PKG}"
 
-          INSTALLER_PKG="Daedalus-installer-${DAEDALUS_VERSION}-${cluster}.pkg"
           APP_NAME="csl-daedalus"
 
           if test -d dist -a -f "dist/${INSTALLER_PKG}"
@@ -169,22 +166,12 @@ cd installers
                   then
                           export PATH=${BUILDKITE_BIN_PATH:-}:$PATH
                           buildkite-agent artifact upload "${APP_NAME}/${INSTALLER_PKG}" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
-                  elif test -n "${TRAVIS_JOB_ID:-}" -a -n "${upload_s3}"
-                  then
-                          echo "$0: --upload-s3 passed, will upload the installer to S3";
-                          retry 5 $nix_shell -p awscli --run "aws s3 cp '${APP_NAME}/${INSTALLER_PKG}' s3://daedalus-internal/ --acl public-read"
                   fi
                   cd ..
           else
                   echo "Installer was not made."
                   mkdir -p dist/${APP_NAME}
           fi
-
-          if test -n "${test_install}"
-          then echo "$0:  --test-install passed, will test the installer for installability";
-               case ${OS_NAME} in
-                       darwin ) sudo installer -dumplog -verbose -target / -pkg "dist/Daedalus-installer-${DAEDALUS_VERSION}.pkg";;
-                       linux )  echo "WARNING: installation testing not implemented on Linux" >&2;; esac; fi
     done
 cd ..
 

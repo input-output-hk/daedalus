@@ -5,10 +5,11 @@ module Config
   ( generateConfig
   , Request(..)
   , OS(..), Cluster(..), Config(..)
-  , readClusterName
   , Flag(..), flag
   , optReadLower, argReadLower
   , Options(..), optionsParser
+  -- Re-export Turtle:
+  , options
   ) where
 
 import qualified Control.Exception
@@ -66,32 +67,36 @@ argReadLower :: (Bounded a, Enum a, Read a, Show a) => ArgName -> Optional HelpM
 argReadLower = arg (diagReadCaseInsensitive . unpack)
 
 data Options = Options
-  { oAPI           :: Text
-  , oAppveyorBuild :: Text
-  , oCertPass      :: Text
+  { oAPI           :: API
+  , oBuildJob      :: Maybe BuildJob
+  , oCertPass      :: Maybe Text
   , oCluster       :: Cluster
   , oDaedalusVer   :: Version
+  , oOutput        :: Text
+  , oPullReq       :: Maybe PullReq
   , oTestInstaller :: TestInstaller
+  , oCI            :: CI
   }
 
 optionsParser :: Parser Options
 optionsParser = Options
-  <$>              optText "api"                 'a' "Backend API:  cardano or ..."
-  <*>              optText "appveyor-build"      'b' "AppVeyor build ID"
-  <*>              optText "cert-pass"           'p' "Certificate password"
+  <$> (fromMaybe Cardano <$> (optional $
+                optReadLower "api"                 'a' "Backend API:  cardano or etc"))
+  <*> (optional   $
+      (BuildJob  <$> optText "build-job"           'b' "CI Build Job/ID"))
+  <*> (optional   $
+                     optText "cert-pass"           'p' "Certificate password")
   <*> (fromMaybe Mainnet <$> (optional $
-              optReadLower "cluster"             'c' "Cluster the resulting installer will target:  mainnet or staging"))
-  <*> (Version <$> optText "daedalus-version"    'v' "Daedalus version string")
-  <*> flag TestInstaller   "test-installer"      't' "Test installers after building"
+                optReadLower "cluster"             'c' "Cluster the resulting installer will target:  mainnet or staging"))
+  <*> (fromMaybe "dev"   <$> (optional $
+      (Version   <$> optText "daedalus-version"    'v' "Daedalus version string")))
+  <*>                optText "output"              'o' "Installer output file"
+  <*> (optional   $
+      (PullReq   <$> optText "pull-request"        'r' "Pull request #"))
+  <*> flag TestInstaller     "test-installer"      't' "Test installers after building"
+  <*> pure Buildkite -- NOTE: this is filled in by auto-detection
 
 
-
-readClusterName :: String -> Cluster
-readClusterName name = fromMaybe (error $ "Unrecognised cluster name "<>name<>": should be one of:  mainnet staging") $
-                       readMaybe $ capitalize name
-  where capitalize :: String -> String
-        capitalize [] = []
-        capitalize (x:xs) = [Data.Char.toUpper x] <> xs
 
 lshow :: Show a => a -> Text
 lshow = pack . fmap Data.Char.toLower . show
@@ -119,8 +124,8 @@ generateConfig Request{..} configRoot outFile = handle $ do
     json <- case Dhall.JSON.dhallToJSON expr' of
               Left err  -> Control.Exception.throwIO err
               Right json -> return json
-    
-    Data.ByteString.writeFile outFile (Data.Yaml.encode json) 
+
+    Data.ByteString.writeFile outFile (Data.Yaml.encode json)
 
 handle :: IO a -> IO a
 handle = Control.Exception.handle handler

@@ -1,3 +1,4 @@
+{-# LANGUAGE RecordWildCards #-}
 module WindowsInstaller
     ( main
     ) where
@@ -8,6 +9,7 @@ import           Control.Monad (unless)
 import qualified Data.List as L
 import           Data.Maybe (fromJust, fromMaybe)
 import           Data.Monoid ((<>))
+import           Data.Text (Text, pack, unpack)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recursive, Required, StartOptions, Target),
@@ -39,11 +41,11 @@ daedalusShortcut =
         ]
 
 -- See INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
-writeUninstallerNSIS :: String -> IO ()
-writeUninstallerNSIS fullVersion = do
+writeUninstallerNSIS :: Version -> IO ()
+writeUninstallerNSIS (Version fullVersion) = do
     tempDir <- fmap fromJust $ lookupEnv "TEMP"
     writeFile "uninstaller.nsi" $ nsis $ do
-        _ <- constantStr "Version" (str fullVersion)
+        _ <- constantStr "Version" (str $ unpack fullVersion)
         name "Daedalus Uninstaller $Version"
         outFile . str $ tempDir <> "\\tempinstaller.exe"
         unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
@@ -66,20 +68,19 @@ writeUninstallerNSIS fullVersion = do
             -- Note: we leave user data alone
 
 -- See non-INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
-signUninstaller :: IO ()
-signUninstaller = do
+signUninstaller :: Options -> IO ()
+signUninstaller opts = do
     procs "C:\\Program Files (x86)\\NSIS\\makensis" ["uninstaller.nsi"] mempty
     tempDir <- fmap fromJust $ lookupEnv "TEMP"
     writeFile "runtempinstaller.bat" $ tempDir <> "\\tempinstaller.exe /S"
     _ <- proc "runtempinstaller.bat" [] mempty
-    signFile (tempDir <> "\\uninstall.exe")
+    signFile opts (tempDir <> "\\uninstall.exe")
 
-signFile :: FilePath -> IO ()
-signFile filename = do
+signFile :: Options -> FilePath -> IO ()
+signFile Options{..} filename = do
     exists <- doesFileExist filename
     if exists then do
-        maybePass <- lookupEnv "CERT_PASS"
-        case maybePass of
+        case oCertPass of
             Nothing -> echo . unsafeTextToLine . toText $ "Skipping signing " <> filename <> " due to lack of password"
             Just pass -> do
                 echo . unsafeTextToLine . toText $ "Signing " <> filename
@@ -90,7 +91,7 @@ signFile filename = do
     else
         error $ "Unable to sign missing file '" <> (toText filename) <> "''"
 
-parseVersion :: String -> [String]
+parseVersion :: Text -> [String]
 parseVersion ver =
     case T.split (== '.') (toText ver) of
         v@[_, _, _, _] -> map toString v
@@ -100,10 +101,11 @@ fileSubstString :: Text -> Text -> FilePath -> FilePath -> IO ()
 fileSubstString from to src dst =
     TIO.writeFile dst =<< T.replace from to <$> TIO.readFile src
 
-writeInstallerNSIS :: String -> String -> IO ()
-writeInstallerNSIS fullVersion clusterName = do
+writeInstallerNSIS :: Version -> Cluster -> IO ()
+writeInstallerNSIS (Version fullVersion') clusterName = do
     tempDir <- fmap fromJust $ lookupEnv "TEMP"
-    let viProductVersion = L.intercalate "." $ parseVersion fullVersion
+    let fullVersion = unpack fullVersion'
+        viProductVersion = L.intercalate "." $ parseVersion fullVersion'
     echo $ unsafeTextToLine $ toText $ "VIProductVersion: " <> viProductVersion
 
     forM_ ["ca.conf", "server.conf", "client.conf"] $
@@ -111,7 +113,7 @@ writeInstallerNSIS fullVersion clusterName = do
 
     writeFile "daedalus.nsi" $ nsis $ do
         _ <- constantStr "Version" (str fullVersion)
-        _ <- constantStr "Cluster" (str clusterName)
+        _ <- constantStr "Cluster" (str $ unpack $ lowerShowT clusterName)
         name "Daedalus ($Version)"                  -- The name of the installer
         outFile "daedalus-win64-$Version-$Cluster-installer.exe"           -- Where to produce the installer
         unsafeInjectGlobal $ "!define MUI_ICON \"icons\\64x64.ico\""
@@ -168,8 +170,8 @@ writeInstallerNSIS fullVersion clusterName = do
                 writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "InstallLocation" "$INSTDIR\\Daedalus"
                 writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "Publisher" "IOHK"
                 writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "ProductVersion" (str fullVersion)
-                writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "VersionMajor" (str . (!! 0). parseVersion $ fullVersion)
-                writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "VersionMinor" (str . (!! 1). parseVersion $ fullVersion)
+                writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "VersionMajor" (str . (!! 0). parseVersion $ fullVersion')
+                writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "VersionMinor" (str . (!! 1). parseVersion $ fullVersion')
                 writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "DisplayName" "Daedalus"
                 writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "DisplayVersion" (str fullVersion)
                 writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "UninstallString" "\"$INSTDIR/uninstall.exe\""
@@ -185,21 +187,17 @@ writeInstallerNSIS fullVersion clusterName = do
                 createShortcut "$SMPROGRAMS/Daedalus/Daedalus.lnk" daedalusShortcut
         return ()
 
-main :: IO ()
-main = do
+main :: Options -> IO ()
+main opts@Options{..}  = do
     echo "Writing version.txt"
-    version <- fromMaybe "dev"     <$> lookupEnv "APPVEYOR_BUILD_VERSION"
-    cluster <- fromMaybe "mainnet" <$> lookupEnv "DAEDALUS_CLUSTER"
-    let fullVersion = version <> ".0"
-        fullName    = "daedalus-win64-" <> fullVersion <> "-" <> cluster <> "-installer.exe"
-    writeFile "version.txt" fullVersion
-
-    let cluster' = readClusterName cluster
+    let fullVersion = Version $ fromVer oDaedalusVer <> ".0"
+        fullName    = "daedalus-win64-" <> fromVer fullVersion <> "-" <> lowerShowT oCluster <> "-installer.exe"
+    TIO.writeFile "version.txt" $ fromVer fullVersion
 
     echo "Generating configuration file:  launcher-config.yaml"
-    generateConfig (Request Win64 cluster' Launcher) "./dhall" "launcher-config.yaml"
+    generateConfig (Request Win64 oCluster Launcher) "./dhall" "launcher-config.yaml"
     echo "Generating configuration file:  wallet-topology.yaml"
-    generateConfig (Request Win64 cluster' Topology) "./dhall" "wallet-topology.yaml"
+    generateConfig (Request Win64 oCluster Topology) "./dhall" "wallet-topology.yaml"
 
     echo "Packaging frontend"
     shells "npm run package -- --icon installers/icons/64x64" mempty
@@ -207,16 +205,16 @@ main = do
     echo "Adding permissions manifest to cardano-launcher.exe"
     procs "C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\mt.exe" ["-manifest", "cardano-launcher.exe.manifest", "-outputresource:cardano-launcher.exe;#1"] mempty
 
-    signFile "cardano-launcher.exe"
-    signFile "cardano-node.exe"
+    signFile opts "cardano-launcher.exe"
+    signFile opts "cardano-node.exe"
 
     echo "Writing uninstaller.nsi"
     writeUninstallerNSIS fullVersion
-    signUninstaller
+    signUninstaller opts
 
     echo "Writing daedalus.nsi"
-    writeInstallerNSIS fullVersion cluster
+    writeInstallerNSIS fullVersion oCluster
 
     echo "Generating NSIS installer"
     procs "C:\\Program Files (x86)\\NSIS\\makensis" ["daedalus.nsi"] mempty
-    signFile fullName
+    signFile opts $ unpack fullName

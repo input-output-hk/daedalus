@@ -2,6 +2,7 @@
 , filepath, Glob, megaparsec, nsis, optparse-applicative, split
 , stdenv, system-filepath, temporary, text, trifecta, turtle
 , universum, yaml
+, cabal-install
 }:
 mkDerivation {
   pname = "cardano-installer";
@@ -13,6 +14,7 @@ mkDerivation {
     base bytestring dhall dhall-json directory filepath Glob megaparsec
     nsis optparse-applicative split system-filepath temporary text
     trifecta turtle universum yaml
+    cabal-install
   ];
   description = "Cardano Installer";
   license = stdenv.lib.licenses.mit;
