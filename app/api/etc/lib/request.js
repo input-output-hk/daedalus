@@ -33,14 +33,19 @@ function typedRequest<Response>(
       response.on('error', (error) => reject(error));
       // Resolve JSON results and handle weird backend behavior
       response.on('end', () => {
-        const parsedBody = JSON.parse(body);
-        if (parsedBody.result != null) {
-          resolve(parsedBody.result);
-        } else if (parsedBody.error) {
-          reject(new Error(parsedBody.error.message));
-        } else {
-          // TODO: investigate if that can happen! (no Right or Left in a response)
-          reject(new Error('Unknown response from backend.'));
+        try {
+          const parsedBody = JSON.parse(body);
+          if (parsedBody.result != null) {
+            resolve(parsedBody.result);
+          } else if (parsedBody.error) {
+            reject(new Error(parsedBody.error.message));
+          } else {
+            // TODO: investigate if that can happen! (no Right or Left in a response)
+            reject(new Error('Unknown response from backend.'));
+          }
+        } catch (error) {
+          // Handle internal server errors (e.g. HTTP 500 - 'Something went wrong')
+          reject(new Error(error));
         }
       });
     });

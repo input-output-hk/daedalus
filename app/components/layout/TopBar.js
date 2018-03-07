@@ -8,11 +8,8 @@ import Wallet from '../../domain/Wallet';
 import menuIconOpened from '../../assets/images/menu-opened-ic.inline.svg';
 import menuIconClosed from '../../assets/images/menu-ic.inline.svg';
 import styles from './TopBar.scss';
-import resolver from '../../utils/imports';
 import { matchRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
-
-const { formattedWalletAmount } = resolver('utils/formatters');
 
 type Props = {
   onToggleSidebar?: ?Function,
@@ -20,13 +17,17 @@ type Props = {
   activeWallet?: ?Wallet,
   currentRoute: string,
   showSubMenus?: ?boolean,
+  formattedWalletAmount?: Function,
 };
 
 @observer
 export default class TopBar extends Component<Props> {
 
   render() {
-    const { onToggleSidebar, activeWallet, currentRoute, showSubMenus } = this.props;
+    const {
+      onToggleSidebar, activeWallet, currentRoute,
+      showSubMenus, formattedWalletAmount
+    } = this.props;
     const walletRoutesMatch = matchRoute(`${ROUTES.WALLETS.ROOT}/:id(*page)`, currentRoute);
     const showWalletInfo = walletRoutesMatch && activeWallet != null;
     const topBarStyles = classNames([
@@ -34,7 +35,7 @@ export default class TopBar extends Component<Props> {
       showWalletInfo ? styles.withWallet : styles.withoutWallet,
     ]);
 
-    const topBarTitle = walletRoutesMatch && activeWallet != null ? (
+    const topBarTitle = walletRoutesMatch && activeWallet != null && formattedWalletAmount ? (
       <div className={styles.walletInfo}>
         <div className={styles.walletName}>{activeWallet.name}</div>
         <div className={styles.walletAmount}>

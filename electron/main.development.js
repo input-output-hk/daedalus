@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, shell, ipcMain, crashReporter, globalShortcut } from 'electron';
+import { app, BrowserWindow, Menu, shell, ipcMain, globalShortcut } from 'electron';
 import os from 'os';
 import path from 'path';
 import fs from 'fs';
@@ -6,16 +6,19 @@ import Log from 'electron-log';
 import osxMenu from './menus/osx';
 import winLinuxMenu from './menus/win-linux';
 import ipcApi from './ipc-api';
-import getRuntimeFolderPath from './lib/getRuntimeFolderPath';
 import { daedalusLogger } from './lib/remoteLog';
+import { pubLogsFolderPath, APP_NAME } from './config';
 
-const APP_NAME = 'Daedalus';
+import ensureDirectoryExists from './lib/ensureDirectoryExists';
+
 // Configure default logger levels for console and file outputs
-const runtimeFolderPath = getRuntimeFolderPath(process.platform, process.env, APP_NAME);
-const appLogFolderPath = path.join(runtimeFolderPath, 'Logs');
-const logFilePath = path.join(appLogFolderPath, APP_NAME + '.log');
+const logFilePath = path.join(pubLogsFolderPath, APP_NAME + '.log');
+
+ensureDirectoryExists(pubLogsFolderPath);
+
 Log.transports.console.level = 'warn';
 Log.transports.file.level = 'debug';
+Log.transports.file.maxSize = 20 * 1024 * 1024;
 Log.transports.file.file = logFilePath;
 // TODO: depends on launcher script current directory, move this to getRuntimeFolderPath location
 // const caProductionPath = path.join(runtimeFolderPath, 'CA', 'tls', 'ca', 'ca.crt');
@@ -33,17 +36,6 @@ try {
   Log.error('Error setting up log logging to remote server', error);
 }
 
-// Configure & start crash reporter
-app.setPath('temp', appLogFolderPath);
-
-// TODO: Update when endpoint is ready (crash reports are only saved locally for now)
-crashReporter.start({
-  companyName: 'IOHK',
-  productName: APP_NAME,
-  submitURL: '',
-  uploadToServer: false
-});
-
 Log.info(`========== Daedalus is starting at ${new Date()} ==========`);
 Log.info(`!!! Daedalus is running on ${os.platform()} version ${os.release()}
 with CPU: ${JSON.stringify(os.cpus(), null, 2)} with ${JSON.stringify(os.totalmem(), null, 2)} total RAM !!!`);
@@ -56,7 +48,32 @@ let terminateAboutWindow = false;
 const isDev = process.env.NODE_ENV === 'development';
 const isProd = process.env.NODE_ENV === 'production';
 const isTest = process.env.NODE_ENV === 'test';
+
+const isEtcApi = process.env.API === 'etc';
+const mantisCmd = process.env.MANTIS_CMD || null;
+const mantisArgs = process.env.MANTIS_ARGS || '';
+const mantisPath = process.env.MANTIS_PATH || null;
+
 const daedalusVersion = process.env.DAEDALUS_VERSION || 'dev';
+
+if (isEtcApi && mantisCmd && mantisPath) {
+  const { spawn } = require('child_process');
+  const psTree = require('ps-tree');
+
+  // Start Mantis
+  Log.info('Starting Mantis...');
+  const mantis = spawn(mantisCmd, [mantisArgs], { cwd: mantisPath, detached: true, shell: true });
+
+  // Stop Mantis (on app quit)
+  app.on('will-quit', () => {
+    Log.info('Stopping Mantis...');
+    psTree(mantis.pid, (err, children) => {
+      // Kill all Mantis child processes
+      spawn('kill', ['-9'].concat(children.map((p) => (p.PID))));
+    });
+    spawn('kill', ['-9', mantis.pid]); // Kill main Mantis process
+  });
+}
 
 if (isDev) {
   require('electron-debug')(); // eslint-disable-line global-require

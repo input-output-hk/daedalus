@@ -1,0 +1,17 @@
+steps:
+  - label: 'daedalus-x86_64-darwin'
+    command: 'scripts/nix-shell.sh --run "scripts/build-installer-unix.sh $VERSION $CARDANO_SL_BRANCH  --build-id $BUILDKITE_BUILD_NUMBER --pr-id $BUILDKITE_PULL_REQUEST"'
+    env:
+      VERSION: 1.1.0
+      CARDANO_SL_BRANCH: release/1.1.0
+      NIX_SSL_CERT_FILE: /nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt
+      NETWORK: mainnet
+    agents:
+      system: x86_64-darwin
+  - label: 'daedalus-x86_64-linux'
+    command: 'scripts/nix-shell.sh --run "scripts/build-installer-unix.sh $VERSION $CARDANO_SL_BRANCH  --build-id $BUILDKITE_BUILD_NUMBER --pr-id $BUILDKITE_PULL_REQUEST"'
+    env:
+      VERSION: 1.1.0
+      CARDANO_SL_BRANCH: release/1.1.0
+    agents:
+      system: x86_64-linux

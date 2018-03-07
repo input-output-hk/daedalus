@@ -1,14 +1,14 @@
-version: 1.0.{build}
+version: 1.1.{build}
 
 environment:
   nodejs_version: "6"
   NETWORK: "mainnet"
   AWS_ACCESS_KEY_ID:
-    secure: NoU3qXx0B+48v7PY3RzHrBrSqd4x/3dcJv8WwUzCNyE=
+    secure: O0+bBTm/Ud3pxP8nvC3ZuDSkmmlr+b8hVluqpRdJGBg=
   AWS_SECRET_ACCESS_KEY:
-    secure: TIIz2Xtcn63BxDJ9h+2Uj73vJrfmImtlZHh0y2YxGIpwu3eRV9OA+1jhDiG2zPch
+    secure: DbpP02aDGoC3Tdsi3+ONm8ov0nuXzEF/Yi453SBKj38qjROzvPXo6qW44bYiKBf4
   CERT_PASS:
-    secure: 9tjYxdz1fqibx1WOrP5yn32iwbEXeYx+Btb5QJqHvMO4Ng2/yUtPi00/ZMXihFWV
+    secure: gchmzr5STsO4Iosx5ZSCED5UfNP8cn26LDw3NSpxPxkCgCTnVcOXjbbvTtAMJYXP
   # Avoid long paths on Windows
   STACK_ROOT: "c:\\sr"
 
@@ -20,10 +20,10 @@ cache:
 
 install:
   - ps: Install-Product node $env:nodejs_version x64
-  - IF NOT DEFINED APPVEYOR_PULL_REQUEST_NUMBER aws s3 cp --region eu-central-1 s3://iohk-private/iohk-windows-certificate-2.p12 C:/iohk-windows-certificate.p12
+  - IF NOT DEFINED APPVEYOR_PULL_REQUEST_NUMBER aws s3 cp --region eu-central-1 s3://iohk-private-2/iohk-windows-certificate-3.p12 C:/iohk-windows-certificate.p12
 
 test_script:
-  - scripts\build-installer-win64.bat %APPVEYOR_BUILD_VERSION% master
+  - scripts\build-installer-win64.bat %APPVEYOR_BUILD_VERSION% release/1.1.0
 
 artifacts:
   - path: release\win32-x64\Daedalus-win32-x64
@@ -33,3 +33,15 @@ artifacts:
     name: Daedalus Win64 Installer
   - path: node_modules\daedalus-client-api\build-id
     name: cardano-sl-build-id
+
+deploy:
+  provider: S3
+  access_key_id:
+    secure: IEky6PsMzHaKHNBMxR8tQaQI8X7qWRB9+HuEroTVRBk=
+  secret_access_key:
+    secure: cqjzG96hWB1x3JDbVSbF9E+aJ5jKvIGacJRUDWATHaTOYfSt6Rvive/NrF4lKBIm
+  bucket: appveyor-ci-deploy
+  region: ap-northeast-1
+  folder:
+  artifact: Daedalus Win64 Installer
+  set_public: true

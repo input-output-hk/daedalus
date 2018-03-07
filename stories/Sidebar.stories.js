@@ -3,12 +3,21 @@ import { observable, runInAction } from 'mobx';
 import { storiesOf, action } from '@kadira/storybook';
 import StoryDecorator from './support/StoryDecorator';
 import Sidebar from '../app/components/sidebar/Sidebar';
+import walletsIcon from '../app/assets/images/sidebar/wallet-ic.inline.svg';
+import settingsIcon from '../app/assets/images/sidebar/settings-ic.inline.svg';
 
-const SIDEBAR_CATEGORIES = {
-  WALLETS: '/wallets',
-  ADA_REDEMPTION: '/ada-redemption',
-  SETTINGS: '/settings',
-};
+const SIDEBAR_CATEGORIES = [
+  {
+    name: 'WALLETS',
+    route: '/wallets',
+    icon: walletsIcon,
+  },
+  {
+    name: 'SETTINGS',
+    route: '/settings',
+    icon: settingsIcon,
+  }
+];
 
 const sidebarMenus = observable({
   wallets: {
@@ -47,7 +56,7 @@ storiesOf('Sidebar', module)
   .add('wallets category', () => (
     <Sidebar
       categories={SIDEBAR_CATEGORIES}
-      activeSidebarCategory={SIDEBAR_CATEGORIES.WALLETS}
+      activeSidebarCategory={SIDEBAR_CATEGORIES[0].route}
       onCategoryClicked={action('onCategoryClicked')}
     />
   ))
@@ -55,17 +64,9 @@ storiesOf('Sidebar', module)
   .add('wallets / sub', () => (
     <Sidebar
       categories={SIDEBAR_CATEGORIES}
-      activeSidebarCategory={SIDEBAR_CATEGORIES.WALLETS}
+      activeSidebarCategory={SIDEBAR_CATEGORIES[0].route}
       menus={sidebarMenus}
       onCategoryClicked={action('onCategoryClicked')}
       isShowingSubMenus
-    />
-  ))
-
-  .add('hidden', () => (
-    <Sidebar
-      categories={SIDEBAR_CATEGORIES}
-      route=""
-      hidden
     />
   ));

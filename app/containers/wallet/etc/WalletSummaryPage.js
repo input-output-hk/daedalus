@@ -9,6 +9,9 @@ import { DECIMAL_PLACES_IN_ETC } from '../../../config/numbersConfig';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import WalletTransactionsList from '../../../components/wallet/transactions/WalletTransactionsList';
 import { messages } from '../WalletSummaryPage';
+import resolver from '../../../utils/imports';
+
+const { formattedWalletAmount } = resolver('utils/formatters');
 
 type Props = InjectedProps;
 
@@ -44,9 +47,9 @@ export default class WalletSummaryPage extends Component<Props> {
           transactions={recent}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           hasMoreToLoad={false}
-          onLoadMore={() => {}}
           assuranceMode={wallet.assuranceMode}
           walletId={wallet.id}
+          formattedWalletAmount={formattedWalletAmount}
         />
       );
     } else if (!hasAny) {

@@ -1,4 +1,4 @@
-with (import (fetchTarball https://github.com/NixOS/nixpkgs/archive/48ecdcf5980a6504cd3b884b121e29efb2fb83dc.tar.gz) { config = {}; }); 
+with (import (fetchTarball https://github.com/NixOS/nixpkgs/archive/56ebd9129956339ab98ba2f40cb233df0735f5a1.tar.gz) { config = {}; });
 
 with haskell.lib;
 

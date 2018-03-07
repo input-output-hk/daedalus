@@ -173,6 +173,20 @@
           "column": 30,
           "line": 16
         }
+      },
+      {
+        "defaultMessage": "!!!There was a problem sending the support request.",
+        "description": "\"There was a problem sending the support request.\" error message",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "app/api/common.js",
+        "id": "api.errors.ReportRequestError",
+        "start": {
+          "column": 22,
+          "line": 21
+        }
       }
     ],
     "path": "app/api/common.json"
@@ -184,13 +198,13 @@
         "description": "Message \"Connecting to network\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 25
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.connectingToNetworkMessage",
         "start": {
           "column": 14,
-          "line": 15
+          "line": 21
         }
       },
       {
@@ -198,13 +212,13 @@
         "description": "Message \"Connected - waiting for block syncing to start\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 30
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.waitingForSyncToStart",
         "start": {
           "column": 25,
-          "line": 20
+          "line": 26
         }
       },
       {
@@ -212,13 +226,13 @@
         "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 35
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 25
+          "line": 31
         }
       },
       {
@@ -226,17 +240,106 @@
         "description": "Message \"Syncing blocks\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 40
         },
         "file": "app/components/loading/Loading.js",
         "id": "loading.screen.syncingBlocksMessage",
         "start": {
           "column": 11,
-          "line": 30
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!Having trouble connecting to network?",
+        "description": "Report connecting issue text on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "app/components/loading/Loading.js",
+        "id": "loading.screen.reportIssue.connecting.text",
+        "start": {
+          "column": 29,
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!Having trouble syncing?",
+        "description": "Report syncing issue text on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 50
+        },
+        "file": "app/components/loading/Loading.js",
+        "id": "loading.screen.reportIssue.syncing.text",
+        "start": {
+          "column": 26,
+          "line": 46
+        }
+      },
+      {
+        "defaultMessage": "!!!Report an issue",
+        "description": "Report an issue button label on the loading .",
+        "end": {
+          "column": 3,
+          "line": 55
+        },
+        "file": "app/components/loading/Loading.js",
+        "id": "loading.screen.reportIssue.buttonLabel",
+        "start": {
+          "column": 26,
+          "line": 51
         }
       }
     ],
     "path": "app/components/loading/Loading.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Unable to sync - incorrect time",
+        "description": "Title of Sync error overlay",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "app/components/loading/SystemTimeErrorOverlay.js",
+        "id": "systemTime.error.overlayTitle",
+        "start": {
+          "column": 16,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. You are 2 hours 12 minutes 54 seconds behind.<br>To synchronize the time and fix this issue, please visit the FAQ section of Daedalus website:",
+        "description": "Text of Sync error overlay",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "app/components/loading/SystemTimeErrorOverlay.js",
+        "id": "systemTime.error.overlayText",
+        "start": {
+          "column": 15,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!daedaluswallet.io/faq",
+        "description": "Link to Daedalus website FAQ page",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "app/components/loading/SystemTimeErrorOverlay.js",
+        "id": "systemTime.error.problemSolutionLink",
+        "start": {
+          "column": 23,
+          "line": 23
+        }
+      }
+    ],
+    "path": "app/components/loading/SystemTimeErrorOverlay.json"
   },
   {
     "descriptors": [
@@ -349,6 +452,263 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Support request",
+        "description": "Title for the \"Settings support\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.title",
+        "start": {
+          "column": 9,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Your e-mail",
+        "description": "Label for the \"Email\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.emailLabel",
+        "start": {
+          "column": 14,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter your e-mail here, so we can answer you",
+        "description": "Placeholder for the \"Email\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.emailPlaceholder",
+        "start": {
+          "column": 20,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Subject",
+        "description": "Label for the \"Subject\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.subjectLabel",
+        "start": {
+          "column": 16,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter subject of your problem",
+        "description": "Placeholder for the \"Subject\" input on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.subjectPlaceholder",
+        "start": {
+          "column": 22,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Problem",
+        "description": "Label for the \"Problem\" text area on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.problemLabel",
+        "start": {
+          "column": 16,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Describe steps which got you to problem",
+        "description": "Placeholder for the \"Problem\" text area on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.problemPlaceholder",
+        "start": {
+          "column": 22,
+          "line": 53
+        }
+      },
+      {
+        "defaultMessage": "!!!Attach logs",
+        "description": "Label for the \"Attach logs\" switch on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 62
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.logsSwitchLabel",
+        "start": {
+          "column": 19,
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!Logs will help to find out problem you are describing",
+        "description": "Text for the \"Attach logs\" switch on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.logsSwitchPlaceholder",
+        "start": {
+          "column": 25,
+          "line": 63
+        }
+      },
+      {
+        "defaultMessage": "!!!Send request",
+        "description": "Label for the \"Send request\" button on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 72
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.button.label",
+        "start": {
+          "column": 21,
+          "line": 68
+        }
+      },
+      {
+        "defaultMessage": "!!!Alternatively, to help the development team investigate the issue you are experiencing,\n    you can send your support request manually. You should first download your logs.\n    Please take the following steps to submit your support request:",
+        "description": "Bug report dialog alternative description text.",
+        "end": {
+          "column": 3,
+          "line": 79
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.description",
+        "start": {
+          "column": 26,
+          "line": 73
+        }
+      },
+      {
+        "defaultMessage": "!!!There was a problem sending the support request.",
+        "description": "Bug report dialog alternative error message.",
+        "end": {
+          "column": 3,
+          "line": 84
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.errorMessage",
+        "start": {
+          "column": 27,
+          "line": 80
+        }
+      },
+      {
+        "defaultMessage": "!!!Click the Download logs button to retrieve your archived logs, and save the file on your desktop.",
+        "description": "Bug report dialog alternative instructions step one.",
+        "end": {
+          "column": 3,
+          "line": 89
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.instructions.step1",
+        "start": {
+          "column": 32,
+          "line": 85
+        }
+      },
+      {
+        "defaultMessage": "!!!Click the Submit manually button, which will take you to the issue-reporting page on the Daedalus website.",
+        "description": "Bug report dialog alternative instructions step two.",
+        "end": {
+          "column": 3,
+          "line": 94
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.instructions.step2",
+        "start": {
+          "column": 32,
+          "line": 90
+        }
+      },
+      {
+        "defaultMessage": "!!!Attach the logs to your support request, fill in your details, and submit the form.",
+        "description": "Bug report dialog alternative instructions step three.",
+        "end": {
+          "column": 3,
+          "line": 99
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.instructions.step3",
+        "start": {
+          "column": 32,
+          "line": 95
+        }
+      },
+      {
+        "defaultMessage": "!!!Submit manually",
+        "description": "Label for the \"Submit manually\" button on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 104
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.submitManually.button.label",
+        "start": {
+          "column": 29,
+          "line": 100
+        }
+      },
+      {
+        "defaultMessage": "!!!daedaluswallet.io/problem",
+        "description": "Link to Daedalus website \"Problem\" page",
+        "end": {
+          "column": 3,
+          "line": 109
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.submitManually.link",
+        "start": {
+          "column": 22,
+          "line": 105
+        }
+      },
+      {
+        "defaultMessage": "!!!Download",
+        "description": "Label for the \"Download\" button on the wallet settings support dialog.",
+        "end": {
+          "column": 3,
+          "line": 114
+        },
+        "file": "app/components/profile/bug-report/BugReportDialog.js",
+        "id": "bugReport.dialog.alternative.download.button.label",
+        "start": {
+          "column": 23,
+          "line": 110
+        }
+      }
+    ],
+    "path": "app/components/profile/bug-report/BugReportDialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Select your language",
         "description": "Label for the language select.",
         "end": {
@@ -447,13 +807,27 @@
         "description": "Label for the \"I agree with terms of use\" checkbox.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "app/components/profile/terms-of-use/TermsOfUseForm.js",
         "id": "profile.termsOfUse.checkboxLabel",
         "start": {
           "column": 17,
-          "line": 15
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand that the terms of use are only available in English and agree to the terms of use",
+        "description": "Label for the \"I agree with terms of use\" checkbox when terms of use are not translated.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "app/components/profile/terms-of-use/TermsOfUseForm.js",
+        "id": "profile.termsOfUse.checkboxLabelWithDisclaimer",
+        "start": {
+          "column": 31,
+          "line": 21
         }
       },
       {
@@ -461,13 +835,13 @@
         "description": "Label for the \"Terms of use\" form submit button.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 30
         },
         "file": "app/components/profile/terms-of-use/TermsOfUseForm.js",
         "id": "profile.termsOfUse.submitLabel",
         "start": {
           "column": 15,
-          "line": 20
+          "line": 26
         }
       }
     ],
@@ -762,13 +1136,13 @@
         "description": "About Window \"title\"",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 18
         },
         "file": "app/components/static/About.js",
         "id": "window.about.title",
         "start": {
           "column": 20,
-          "line": 11
+          "line": 14
         }
       },
       {
@@ -776,13 +1150,13 @@
         "description": "About \"title\"",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 23
         },
         "file": "app/components/static/About.js",
         "id": "static.about.title",
         "start": {
           "column": 14,
-          "line": 16
+          "line": 19
         }
       },
       {
@@ -790,13 +1164,13 @@
         "description": "Label for \"App Release Version\"",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 28
         },
         "file": "app/components/static/About.js",
         "id": "static.about.release.version",
         "start": {
           "column": 23,
-          "line": 21
+          "line": 24
         }
       },
       {
@@ -804,13 +1178,13 @@
         "description": "About page daedalus team headline",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 33
         },
         "file": "app/components/static/About.js",
         "id": "static.about.content.daedalus.headline",
         "start": {
           "column": 32,
-          "line": 26
+          "line": 29
         }
       },
       {
@@ -818,27 +1192,41 @@
         "description": "About page cardano team headline",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 38
         },
         "file": "app/components/static/About.js",
         "id": "static.about.content.cardano.headline",
         "start": {
           "column": 31,
-          "line": 31
+          "line": 34
         }
       },
       {
-        "defaultMessage": "!!!Alexander Rukin, Charles Hoskinson, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Tomislav Horaček",
+        "defaultMessage": "!!!Mantis Team:",
+        "description": "About page mantis team headline",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "app/components/static/About.js",
+        "id": "static.about.content.mantis.headline",
+        "start": {
+          "column": 30,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!Alexander Rukin, Charles Hoskinson, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Tomislav Horaček, Stefan Malzner",
         "description": "About page daedalus team members",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 48
         },
         "file": "app/components/static/About.js",
         "id": "static.about.content.daedalus.members",
         "start": {
           "column": 31,
-          "line": 36
+          "line": 44
         }
       },
       {
@@ -846,13 +1234,27 @@
         "description": "About page cardano team members",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 53
         },
         "file": "app/components/static/About.js",
         "id": "static.about.content.cardano.members",
         "start": {
           "column": 30,
-          "line": 41
+          "line": 49
+        }
+      },
+      {
+        "defaultMessage": "!!!Adam Smolarek, Alan McSherry, Alan Verbner, Alejandro Garcia, Charles Hoskinson, Domen Kožar, Eileen Fitzgerald, Hiroto Shioi, Jane Wild, Jan Ziniewicz, Javier Diaz, Jeremy Wood, Laurie Wang, Łukasz Gąsior, Konrad Staniec, Michael Bishop, Mirko Alić, Nicolás Tallar, Radek Tkaczyk, Serge Kosyrev",
+        "description": "About page mantis team members",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "app/components/static/About.js",
+        "id": "static.about.content.mantis.members",
+        "start": {
+          "column": 29,
+          "line": 54
         }
       },
       {
@@ -860,13 +1262,13 @@
         "description": "About \"copyright\"",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 63
         },
         "file": "app/components/static/About.js",
         "id": "static.about.copyright",
         "start": {
           "column": 18,
-          "line": 46
+          "line": 59
         }
       },
       {
@@ -874,13 +1276,27 @@
         "description": "About page license name",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 68
         },
         "file": "app/components/static/About.js",
         "id": "static.about.license",
         "start": {
           "column": 15,
-          "line": 51
+          "line": 64
+        }
+      },
+      {
+        "defaultMessage": "!!!MacOS build 3769, with Cardano 1.0.4",
+        "description": "About page build information",
+        "end": {
+          "column": 3,
+          "line": 73
+        },
+        "file": "app/components/static/About.js",
+        "id": "static.about.buildInfo",
+        "start": {
+          "column": 18,
+          "line": 69
         }
       }
     ],
@@ -2594,13 +3010,13 @@
         "description": "Transaction type shown for credit card payments.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 21
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.card",
         "start": {
           "column": 8,
-          "line": 20
+          "line": 17
         }
       },
       {
@@ -2608,13 +3024,13 @@
         "description": "Transaction type shown for {currency} transactions.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 26
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type",
         "start": {
           "column": 8,
-          "line": 25
+          "line": 22
         }
       },
       {
@@ -2622,13 +3038,13 @@
         "description": "Transaction type shown for money exchanges between currencies.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 31
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.exchange",
         "start": {
           "column": 12,
-          "line": 30
+          "line": 27
         }
       },
       {
@@ -2636,13 +3052,13 @@
         "description": "Transaction assurance level.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 36
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel",
         "start": {
           "column": 18,
-          "line": 35
+          "line": 32
         }
       },
       {
@@ -2650,13 +3066,13 @@
         "description": "Transaction confirmations.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 41
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.confirmations",
         "start": {
           "column": 17,
-          "line": 40
+          "line": 37
         }
       },
       {
@@ -2664,13 +3080,13 @@
         "description": "Transaction ID.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 46
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionId",
         "start": {
           "column": 17,
-          "line": 45
+          "line": 42
         }
       },
       {
@@ -2678,13 +3094,13 @@
         "description": "Conversion rate.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 51
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.conversion.rate",
         "start": {
           "column": 18,
-          "line": 50
+          "line": 47
         }
       },
       {
@@ -2692,13 +3108,13 @@
         "description": "Label \"{currency} sent\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 56
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.sent",
         "start": {
           "column": 8,
-          "line": 55
+          "line": 52
         }
       },
       {
@@ -2706,13 +3122,13 @@
         "description": "Label \"{currency} received\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 61
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.received",
         "start": {
           "column": 12,
-          "line": 60
+          "line": 57
         }
       },
       {
@@ -2720,13 +3136,13 @@
         "description": "From address",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 66
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.from",
         "start": {
           "column": 15,
-          "line": 65
+          "line": 62
         }
       },
       {
@@ -2734,13 +3150,13 @@
         "description": "From addresses",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 71
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.from",
         "start": {
           "column": 17,
-          "line": 70
+          "line": 67
         }
       },
       {
@@ -2748,13 +3164,13 @@
         "description": "To address",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 76
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.to",
         "start": {
           "column": 13,
-          "line": 75
+          "line": 72
         }
       },
       {
@@ -2762,13 +3178,13 @@
         "description": "To addresses",
         "end": {
           "column": 3,
-          "line": 84
+          "line": 81
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.to",
         "start": {
           "column": 15,
-          "line": 80
+          "line": 77
         }
       },
       {
@@ -2776,13 +3192,13 @@
         "description": "Transaction amount.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 86
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionAmount",
         "start": {
           "column": 21,
-          "line": 85
+          "line": 82
         }
       },
       {
@@ -2790,13 +3206,13 @@
         "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 94
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.low",
         "start": {
           "column": 25,
-          "line": 93
+          "line": 90
         }
       },
       {
@@ -2804,13 +3220,13 @@
         "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
-          "line": 102
+          "line": 99
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
           "column": 28,
-          "line": 98
+          "line": 95
         }
       },
       {
@@ -2818,13 +3234,13 @@
         "description": "Transaction assurance level \"high\".",
         "end": {
           "column": 3,
-          "line": 107
+          "line": 104
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.high",
         "start": {
           "column": 26,
-          "line": 103
+          "line": 100
         }
       },
       {
@@ -2832,13 +3248,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 112
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 111
+          "line": 108
         }
       },
       {
@@ -2846,13 +3262,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 120
+          "line": 117
         },
         "file": "app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.failed",
         "start": {
           "column": 30,
-          "line": 116
+          "line": 113
         }
       }
     ],
@@ -4027,13 +4443,13 @@
         "description": "Message \"Loading wallet data\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 19
         },
         "file": "app/containers/LoadingPage.js",
         "id": "loading.screen.loadingWalletData",
         "start": {
           "column": 21,
-          "line": 12
+          "line": 15
         }
       }
     ],
@@ -4065,13 +4481,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 20
         },
         "file": "app/containers/wallet/WalletSummaryPage.js",
         "id": "wallet.summary.no.transactions",
         "start": {
           "column": 18,
-          "line": 13
+          "line": 16
         }
       }
     ],
@@ -4084,13 +4500,13 @@
         "description": "Message shown when wallet has no transactions yet.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 19
         },
         "file": "app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions",
         "start": {
           "column": 18,
-          "line": 12
+          "line": 15
         }
       },
       {
@@ -4098,13 +4514,13 @@
         "description": "Message shown when wallet transaction search returns zero results.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 24
         },
         "file": "app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions.found",
         "start": {
           "column": 23,
-          "line": 17
+          "line": 20
         }
       }
     ],
@@ -4505,17 +4921,73 @@
         }
       },
       {
-        "defaultMessage": "!!!Etc",
-        "description": "Name for \"Ada\" unit.",
+        "defaultMessage": "!!!Cardano",
+        "description": "Name for \"Cardano\" client.",
         "end": {
           "column": 5,
-          "line": 154
+          "line": 152
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "environment.apiName.cardano",
+        "start": {
+          "column": 13,
+          "line": 148
+        }
+      },
+      {
+        "defaultMessage": "!!!1.0.4",
+        "description": "Version of \"Cardano\" client.",
+        "end": {
+          "column": 5,
+          "line": 157
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "environment.apiVersion.cardano",
+        "start": {
+          "column": 16,
+          "line": 153
+        }
+      },
+      {
+        "defaultMessage": "!!!Etc",
+        "description": "Name for \"Etc\" unit.",
+        "end": {
+          "column": 5,
+          "line": 164
         },
         "file": "app/i18n/global-messages.js",
         "id": "environment.currency.etc",
         "start": {
           "column": 14,
-          "line": 150
+          "line": 160
+        }
+      },
+      {
+        "defaultMessage": "!!!Mantis",
+        "description": "Name for \"Mantis\" client.",
+        "end": {
+          "column": 5,
+          "line": 169
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "environment.apiName.mantis",
+        "start": {
+          "column": 13,
+          "line": 165
+        }
+      },
+      {
+        "defaultMessage": "!!!1.0 rc1",
+        "description": "Version of \"Mantis\" client.",
+        "end": {
+          "column": 5,
+          "line": 174
+        },
+        "file": "app/i18n/global-messages.js",
+        "id": "environment.apiVersion.mantis",
+        "start": {
+          "column": 16,
+          "line": 170
         }
       }
     ],

@@ -11,16 +11,18 @@ export type SendEtcTransactionParams = {
   value: BigNumber,
   password: string,
   gasPrice: BigNumber,
+  gas: BigNumber,
 };
 
 export const sendEtcTransaction = (
-  { ca, from, to, value, password, gasPrice }: SendEtcTransactionParams
+  { ca, from, to, value, password, gasPrice, gas }: SendEtcTransactionParams
 ): Promise<EtcTxHash> => {
   const txParams = {
     from,
     to,
     value: value.toString(16),
     gasPrice: gasPrice.toString(16),
+    gas: gas.toString(16),
   };
   return (
     request({

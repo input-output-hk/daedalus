@@ -5,7 +5,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
 import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
 import styles from './NodeUpdateNotification.scss';
 import arrowIcon from '../../assets/images/arrow.inline.svg';
 

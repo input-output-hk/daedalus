@@ -145,12 +145,32 @@ export const environmentSpecificMessages = {
       defaultMessage: '!!!Ada',
       description: 'Name for "Ada" unit.'
     },
+    apiName: {
+      id: 'environment.apiName.cardano',
+      defaultMessage: '!!!Cardano',
+      description: 'Name for "Cardano" client.'
+    },
+    apiVersion: {
+      id: 'environment.apiVersion.cardano',
+      defaultMessage: '!!!1.0.4',
+      description: 'Version of "Cardano" client.'
+    },
   }),
   etc: defineMessages({
     currency: {
       id: 'environment.currency.etc',
       defaultMessage: '!!!Etc',
-      description: 'Name for "Ada" unit.'
+      description: 'Name for "Etc" unit.'
+    },
+    apiName: {
+      id: 'environment.apiName.mantis',
+      defaultMessage: '!!!Mantis',
+      description: 'Name for "Mantis" client.'
+    },
+    apiVersion: {
+      id: 'environment.apiVersion.mantis',
+      defaultMessage: '!!!1.0 rc1',
+      description: 'Version of "Mantis" client.'
     },
   }),
 };
