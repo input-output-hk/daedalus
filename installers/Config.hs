@@ -33,13 +33,10 @@ import qualified Dhall.TypeCheck
 
 import qualified GHC.IO.Encoding
 
-import           Options.Applicative.Builder         (strOption, long, short, metavar)
-
 import qualified System.IO
 import qualified System.Exit
 
 import           Text.Printf                         (printf)
-import           Text.Read                           (readMaybe)
 import           Text.Trifecta.Delta                 (Delta(..))
 import           Turtle                              (optional)
 import           Turtle.Options

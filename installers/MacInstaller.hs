@@ -17,8 +17,7 @@ module MacInstaller
 import           Universum
 
 import           Control.Monad (unless)
-import           Data.Maybe (fromMaybe)
-import           Data.Text (Text, pack, unpack)
+import           Data.Text (Text)
 import qualified Data.Text as T
 import           System.Directory (copyFile, createDirectoryIfMissing, doesFileExist, renameFile)
 import           System.FilePath ((</>), FilePath)
@@ -92,8 +91,6 @@ makeInstaller opts@Options{..} appRoot = do
       copyFile "ca.conf"     (dir </> "ca.conf")
       copyFile "server.conf" (dir </> "server.conf")
       copyFile "client.conf" (dir </> "client.conf")
-
-      let launcherConfigFileName = "launcher-config.yaml"
 
       -- Rewrite libs paths and bundle them
       _ <- chain dir $ fmap toText [dir </> "cardano-launcher", dir </> "cardano-node"]

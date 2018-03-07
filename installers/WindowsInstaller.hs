@@ -7,9 +7,9 @@ import           Universum hiding (pass, writeFile)
 
 import           Control.Monad (unless)
 import qualified Data.List as L
-import           Data.Maybe (fromJust, fromMaybe)
+import           Data.Maybe (fromJust)
 import           Data.Monoid ((<>))
-import           Data.Text (Text, pack, unpack)
+import           Data.Text (Text, unpack)
 import qualified Data.Text as T
 import qualified Data.Text.IO as TIO
 import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recursive, Required, StartOptions, Target),

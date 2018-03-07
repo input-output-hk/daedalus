@@ -75,10 +75,10 @@ getPassword = need "CERT_PASS" >>= \case
     fmap (>>= lineMaybe) getSecret
 
 lineMaybe :: Line -> Maybe Text
-lineMaybe = nonEmpty . lineToText
+lineMaybe = nonempty . lineToText
   where
-    nonEmpty "" = Nothing
-    nonEmpty l = Just l
+    nonempty "" = Nothing
+    nonempty l = Just l
 
 getSecret :: IO (Maybe Line)
 getSecret = bracket open close (\_ -> readline)
