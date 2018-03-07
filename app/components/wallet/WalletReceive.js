@@ -7,9 +7,9 @@ import classnames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
 import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
 import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/InputSkin';
+import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
@@ -111,8 +111,9 @@ export default class WalletReceive extends Component<Props, State> {
     },
   }, {
     options: {
+      validationDebounceWait: 0, // Disable debounce to avoid error state after clearing
       validateOnChange: true,
-      validationDebounceWait: 250,
+      showErrorsOnClear: false,
     },
   });
 
@@ -123,13 +124,7 @@ export default class WalletReceive extends Component<Props, State> {
         const { spendingPassword } = form.values();
         const password = walletHasPassword ? spendingPassword : null;
         this.props.onGenerateAddress(password);
-
-        // We need to disable on-change validation before reseting the form in order to
-        // avoid debounced validation being called straight after the form is reset
-        form.state.options.set({ validateOnChange: false });
-        form.reset();
-        form.showErrors(false);
-        form.state.options.set({ validateOnChange: true });
+        form.clear();
       },
       onError: () => {}
     });

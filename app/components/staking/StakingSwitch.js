@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
+import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/raw/SwitchSkin';
 import styles from './StakingSwitch.scss';
 
 type Props = {

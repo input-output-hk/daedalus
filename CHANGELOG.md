@@ -10,12 +10,48 @@ Changelog
 
 ### Chores
 
-## 0.8.3
+## 0.9.0
 =======
 
 ### Features
 
 - Do not block the UI while wallet is being restored/imported ([PR 457](https://github.com/input-output-hk/daedalus/pull/457))
+- Start and stop Mantis Client from Daedalus main process ([PR 568](https://github.com/input-output-hk/daedalus/pull/568))
+- Add ADA and Mantis logo to loader screens ([PR 584](https://github.com/input-output-hk/daedalus/pull/584))
+
+### Fixes
+
+- Fixed about dialog for ETC build ([PR 586](https://github.com/input-output-hk/daedalus/pull/586))
+- Made `Light Blue` theme the default for ETC build ([PR 586](https://github.com/input-output-hk/daedalus/pull/586))
+- Fixed a bug related to gas limit when sending transactions ([PR 586](https://github.com/input-output-hk/daedalus/pull/586))
+- Remove transactions sorting ([PR 587](https://github.com/input-output-hk/daedalus/pull/587))
+- Improve ETC transaction amount validation ([PR 590](https://github.com/input-output-hk/daedalus/pull/590))
+- Fixed storybook and resolver issues ([PR 617](https://github.com/input-output-hk/daedalus/pull/617))
+- Time of your machine is different from global time. You are 0 seconds behind. ([PR 678](https://github.com/input-output-hk/daedalus/pull/678))
+- Updated copy for the sync error screen ([PR 657](https://github.com/input-output-hk/daedalus/pull/657))
+- Detect when wallet is disconnected ([PR 689](https://github.com/input-output-hk/daedalus/pull/689))
+- Improve connecting/reconnecting messages on Loading screen ([PR 696](https://github.com/input-output-hk/daedalus/pull/696))
+- Send bug reports with logs from Daedalus ([PR 691](https://github.com/input-output-hk/daedalus/pull/691))
+- Poll local time difference every 1 hour, only when connected ([PR 719](https://github.com/input-output-hk/daedalus/pull/719))
+- Fixed various styling issues and updated to react-polymorph 0.6.2 ([PR 726](https://github.com/input-output-hk/daedalus/pull/726))
+- Fixed async restore/import dialogs logic ([PR 735](https://github.com/input-output-hk/daedalus/pull/735))
+- Fixed minor UI issue on receive screen when generating wallet addresses with spending password ([PR 738](https://github.com/input-output-hk/daedalus/pull/738))
+- Fixed `Time sync error notification` not showing up in case blocks syncing has not started ([PR 752](https://github.com/input-output-hk/daedalus/pull/752))
+
+### Chores
+
+- Update DLL package and cleanup translation files ([PR 566](https://github.com/input-output-hk/daedalus/pull/566))
+- Replace electron-json-storage with electron-storage ([PR 579](https://github.com/input-output-hk/daedalus/pull/579))
+- Update terms of use for ETC version ([PR 606](https://github.com/input-output-hk/daedalus/pull/606))
+- Update Electron to version 1.7.11 which resolves security issues ([PR 677](https://github.com/input-output-hk/daedalus/pull/677))
+- Document Cardano SL build ([PR 654](https://github.com/input-output-hk/daedalus/pull/654))
+- Update about dialog content ([PR 680](https://github.com/input-output-hk/daedalus/pull/680))
+- Ada redemption tests modified to run in mainnet mode ([PR 681](https://github.com/input-output-hk/daedalus/pull/681))
+- Log file moved to public folder and Electron crash reporter removed ([PR 682](https://github.com/input-output-hk/daedalus/pull/682))
+
+
+## 0.8.3
+=======
 
 ### Fixes
 
@@ -28,6 +64,7 @@ Changelog
 
 - Postpone Update Api call integration ([PR 485](https://github.com/input-output-hk/daedalus/pull/485))
 - Wallet restore recovery phrase textarea replaced with React-Polymorph Autocomplete ([PR 516](https://github.com/input-output-hk/daedalus/pull/516))
+- Instructions for setting up NTP on Daedalus website ([PR 531](https://github.com/input-output-hk/daedalus/pull/531))
 
 ### Fixes
 

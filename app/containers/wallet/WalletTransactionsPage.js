@@ -7,6 +7,9 @@ import WalletTransactionsList from '../../components/wallet/transactions/WalletT
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import resolver from '../../utils/imports';
+
+const { formattedWalletAmount } = resolver('utils/formatters');
 
 export const messages = defineMessages({
   noTransactions: {
@@ -79,6 +82,7 @@ export default class WalletTransactionsPage extends Component<Props> {
           onLoadMore={actions.ada.transactions.loadMoreTransactions.trigger}
           assuranceMode={activeWallet.assuranceMode}
           walletId={activeWallet.id}
+          formattedWalletAmount={formattedWalletAmount}
         />
       );
     } else if (wasSearched && !hasAny) {

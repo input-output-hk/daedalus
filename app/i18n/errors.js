@@ -44,3 +44,12 @@ export class FieldRequiredError extends LocalizableError {
     });
   }
 }
+
+export class WalletSupportRequestLogsCompressError extends LocalizableError {
+  constructor() {
+    super({
+      id: 'global.errors.WalletSupportRequestLogsCompressError',
+      defaultMessage: '!!!Compressing logs failed, please try again.',
+    });
+  }
+}

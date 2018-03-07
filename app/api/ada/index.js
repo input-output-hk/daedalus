@@ -37,8 +37,11 @@ import { applyAdaUpdate } from './applyAdaUpdate';
 import { adaTestReset } from './adaTestReset';
 import { getAdaHistoryByWallet } from './getAdaHistoryByWallet';
 import { getAdaAccountRecoveryPhrase } from './getAdaAccountRecoveryPhrase';
+import { getAdaLocalTimeDifference } from './getAdaLocalTimeDifference';
+import { sendAdaBugReport } from './sendAdaBugReport';
 
 import type {
+  AdaLocalTimeDifference,
   AdaSyncProgressResponse,
   AdaAddress,
   AdaAccounts,
@@ -56,6 +59,7 @@ import type {
   CreateTransactionResponse,
   DeleteWalletRequest,
   DeleteWalletResponse,
+  GetLocalTimeDifferenceResponse,
   GetSyncProgressResponse,
   GetTransactionsRequest,
   GetTransactionsResponse,
@@ -63,6 +67,8 @@ import type {
   GetWalletsResponse,
   RestoreWalletRequest,
   RestoreWalletResponse,
+  SendBugReportRequest,
+  SendBugReportResponse,
   UpdateWalletResponse,
   UpdateWalletPasswordRequest,
   UpdateWalletPasswordResponse,
@@ -72,6 +78,7 @@ import {
   GenericApiError,
   IncorrectWalletPasswordError,
   WalletAlreadyRestoredError,
+  ReportRequestError,
 } from '../common';
 
 import {
@@ -515,6 +522,18 @@ export default class AdaApi {
     }
   }
 
+  async sendBugReport(request: SendBugReportRequest): Promise<SendBugReportResponse> {
+    Logger.debug('AdaApi::sendBugReport called: ' + stringifyData(request));
+    try {
+      await sendAdaBugReport({ requestFormData: request, application: 'cardano-node' });
+      Logger.debug('AdaApi::sendBugReport success');
+      return true;
+    } catch (error) {
+      Logger.error('AdaApi::sendBugReport error: ' + stringifyError(error));
+      throw new ReportRequestError();
+    }
+  }
+
   async nextUpdate(): Promise<NextUpdateResponse> {
     Logger.debug('AdaApi::nextUpdate called');
     let nextUpdate = null;
@@ -593,7 +612,6 @@ export default class AdaApi {
 
   getSyncProgress = async (): Promise<GetSyncProgressResponse> => {
     Logger.debug('AdaApi::syncProgress called');
-
     try {
       const response: AdaSyncProgressResponse = await getAdaSyncProgress({ ca });
       Logger.debug('AdaApi::syncProgress success: ' + stringifyData(response));
@@ -672,6 +690,18 @@ export default class AdaApi {
       return response;
     } catch (error) {
       Logger.error('AdaApi::testReset error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  async getLocalTimeDifference(): Promise<GetLocalTimeDifferenceResponse> {
+    Logger.debug('AdaApi::getLocalTimeDifference called');
+    try {
+      const response: AdaLocalTimeDifference = await getAdaLocalTimeDifference({ ca });
+      Logger.debug('AdaApi::getLocalTimeDifference success: ' + stringifyData(response));
+      return response;
+    } catch (error) {
+      Logger.error('AdaApi::getLocalTimeDifference error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }

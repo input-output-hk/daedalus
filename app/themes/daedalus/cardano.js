@@ -176,6 +176,15 @@ export default {
   '--theme-switch-thumb-color-checked': '#fff',
   '--theme-switch-label-color': '#5e6066',
 
+  '--theme-system-error-overlay-attention-icon-color': '#fafbfc',
+  '--theme-system-error-overlay-background-color': 'rgba(171, 23, 0, 0.94)',
+  '--theme-system-error-overlay-button-background-color': '#ab1700',
+  '--theme-system-error-overlay-button-background-color-hover': '#fafbfc',
+  '--theme-system-error-overlay-button-border-color': '#fafbfc',
+  '--theme-system-error-overlay-button-text-color': '#fafbfc',
+  '--theme-system-error-overlay-button-text-color-hover': '#ab1700',
+  '--theme-system-error-overlay-text-color': '#fafbfc',
+
   '--theme-test-environment-label-background-color': '#ab1700',
   '--theme-test-environment-label-text-color': '#fafbfc',
 
@@ -244,8 +253,18 @@ export default {
 
   '--theme-block-generation-info-color': '#5e6066',
 
+  '--theme-report-issue-button-background-color': '#2cbb69',
+  '--theme-report-issue-button-background-color-hover': '#56c887',
+  '--theme-report-issue-button-background-color-active': '#239554',
+  '--theme-report-issue-connecting-background-color': 'rgba(250, 251, 252, 0.05)',
+  '--theme-report-issue-connecting-text-color': '#fafbfc',
+  '--theme-report-issue-syncing-background-color': 'rgba(94, 96, 102, 0.05)',
+  '--theme-report-issue-syncing-text-color': '#5e6066',
+
   '--theme-connecting-background-color': '#202225',
   '--theme-connecting-text-color': '#fff',
+
+  '--theme-syncing-background-color': '#fafbfc',
   '--theme-syncing-text-color': '#5e6066',
 
   '--theme-error-color': '#ea4c5b',
@@ -254,7 +273,7 @@ export default {
 
   '--theme-label-button-color': '#5e6066',
 
-  '--theme-loading-background-color': '#ebeff2',
+  '--theme-loading-background-color': '#fafbfc',
 
   '--theme-mnemonic-background-color': '#f0f3f5',
   '--theme-mnemonic-background-color-hover': '#f3f5f7',

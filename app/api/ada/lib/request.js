@@ -72,20 +72,25 @@ function typedRequest<Response>(
       // Resolve JSON results and handle weird backend behavior
       // of "Left" (for errors) and "Right" (for success) properties
       response.on('end', () => {
-        const parsedBody = JSON.parse(body);
-        if (has(parsedBody, 'Right')) {
-          // "Right" means 200 ok (success) -> also handle if Right: false (boolean response)
-          resolve(parsedBody.Right);
-        } else if (has(parsedBody, 'Left')) {
-          // "Left" means error case -> return error with contents (exception on nextUpdate)
-          if (parsedBody.Left.contents) {
-            reject(new Error(parsedBody.Left.contents));
+        try {
+          const parsedBody = JSON.parse(body);
+          if (has(parsedBody, 'Right')) {
+            // "Right" means 200 ok (success) -> also handle if Right: false (boolean response)
+            resolve(parsedBody.Right);
+          } else if (has(parsedBody, 'Left')) {
+            // "Left" means error case -> return error with contents (exception on nextUpdate)
+            if (parsedBody.Left.contents) {
+              reject(new Error(parsedBody.Left.contents));
+            } else {
+              reject(new Error('Unknown response from backend.'));
+            }
           } else {
+            // TODO: investigate if that can happen! (no Right or Left in a response)
             reject(new Error('Unknown response from backend.'));
           }
-        } else {
-          // TODO: investigate if that can happen! (no Right or Left in a response)
-          reject(new Error('Unknown response from backend.'));
+        } catch (error) {
+          // Handle internal server errors (e.g. HTTP 500 - 'Something went wrong')
+          reject(new Error(error));
         }
       });
     });
