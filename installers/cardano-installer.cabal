@@ -18,6 +18,7 @@ executable make-installer
 
   build-depends:       base
                      , bytestring
+                     , containers
                      , dhall
                      , dhall-json
                      , directory
@@ -25,6 +26,8 @@ executable make-installer
                      , Glob
                      , megaparsec
                      , nsis
+                     , optparse-applicative
+                     , optional-args
                      , split
                      , system-filepath
                      , temporary

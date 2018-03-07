@@ -34,6 +34,9 @@ import           RewriteLibs (chain)
 import           System.IO (hSetBuffering, BufferMode(NoBuffering))
 
 import           Config
+import           Types
+
+
 
 data InstallerConfig = InstallerConfig {
     icApi :: String

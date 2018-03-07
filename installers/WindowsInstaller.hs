@@ -26,6 +26,9 @@ import           Turtle (ExitCode (..), echo, proc, procs, shells)
 import           Turtle.Line (unsafeTextToLine)
 
 import           Config
+import           Types
+
+
 
 daedalusShortcut :: [Attrib]
 daedalusShortcut =
