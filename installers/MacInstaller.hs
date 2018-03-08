@@ -48,7 +48,7 @@ main opts@Options{..} = do
   generateConfig (Request Macos64 oCluster Topology) "./dhall" "wallet-topology.yaml"
 
   echo "Packaging frontend"
-  procs "npm" ["run", "package", "--", "--icon", "installers/icons/256x256"] mempty
+  shells "npm run package -- --icon installers/icons/256x256" mempty
 
   tempInstaller <- makeInstaller opts appRoot
 

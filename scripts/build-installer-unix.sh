@@ -145,10 +145,10 @@ cd installers
     do
           echo "Generating installer for cluster ${cluster}.."
           export DAEDALUS_CLUSTER=${cluster}
-          local     INSTALLER_PKG="Daedalus-installer-${DAEDALUS_VERSION}-${cluster}.pkg"
+                    INSTALLER_PKG="Daedalus-installer-${DAEDALUS_VERSION}-${cluster}.pkg"
           $INSTALLER/bin/make-installer ${pull_request} ${test_installer}                 \
-                                        ${API:+--api ${API}                               \
-                                        --build-job        "${BUILDKITE_JOB_ID}"          \
+                                        ${API:+--api $API}                                \
+                                        --build-job        "${BUILDKITE_BUILD_NUMBER}"    \
                                         --cluster          "${cluster}"                   \
                                         --daedalus-version "${DAEDALUS_VERSION}"          \
                                         --output           "${INSTALLER_PKG}"

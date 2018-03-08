@@ -60,7 +60,7 @@ lowerShowT = toLower . Universum.show
 
 
 
-data TestInstaller   = TestInstaller   | NoInstallerTest   deriving (Bounded, Eq, Ord, Show); instance Flag TestInstaller
+data TestInstaller   = TestInstaller   | NoInstallerTest   deriving (Bounded, Eq, Show); instance Flag TestInstaller
 
 newtype BuildJob     = BuildJob     { fromBuildJob     :: Text } deriving (Eq, IsString, Show)
 newtype PullReq      = PullReq      { fromPullReq      :: Text } deriving (Eq, IsString, Show)

@@ -1,6 +1,6 @@
 steps:
   - label: 'daedalus-x86_64-darwin'
-    command: 'scripts/nix-shell.sh --run "scripts/build-installer-unix.sh $VERSION $CARDANO_SL_BRANCH  --build-id $BUILDKITE_BUILD_NUMBER --pr-id $BUILDKITE_PULL_REQUEST"'
+    command: 'scripts/nix-shell.sh --run "scripts/build-installer-unix.sh $VERSION $CARDANO_SL_BRANCH  --build-id $BUILDKITE_BUILD_NUMBER --pull-request $BUILDKITE_PULL_REQUEST"'
     env:
       VERSION: 1.1.0
       CARDANO_SL_BRANCH: release/1.1.0
@@ -9,7 +9,7 @@ steps:
     agents:
       system: x86_64-darwin
   - label: 'daedalus-x86_64-linux'
-    command: 'scripts/nix-shell.sh --run "scripts/build-installer-unix.sh $VERSION $CARDANO_SL_BRANCH  --build-id $BUILDKITE_BUILD_NUMBER --pr-id $BUILDKITE_PULL_REQUEST"'
+    command: 'scripts/nix-shell.sh --run "scripts/build-installer-unix.sh $VERSION $CARDANO_SL_BRANCH  --build-id $BUILDKITE_BUILD_NUMBER --pull-request $BUILDKITE_PULL_REQUEST"'
     env:
       VERSION: 1.1.0
       CARDANO_SL_BRANCH: release/1.1.0

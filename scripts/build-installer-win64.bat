@@ -183,9 +183,11 @@ cd installers
 FOR %%C IN (%CLUSTERS:"=%) DO (
   set DAEDALUS_CLUSTER=%%C
   set XARGS="--build-job %APPVEYOR_BUILD_NUMBER% --cluster %%C --daedalus-version %DAEDALUS_VERSION%"
-  IF DEFINED API                          set XARGS="%XARGS:"=% --api %API%"
-  IF DEFINED APPVEYOR_PULL_REQUEST_NUMBER set XARGS="%XARGS:"=% --pull-request %APPVEYOR_PULL_REQUEST_NUMBER%"
-  IF DEFINED CERT_PASS                    set XARGS="%XARGS:"=% --cert-pass %CERT_PASS%"
+  IF DEFINED API                          ( set XARGS="%XARGS:"=% --api %API%" )
+  IF DEFINED APPVEYOR_PULL_REQUEST_NUMBER ( set XARGS="%XARGS:"=% --pull-request %APPVEYOR_PULL_REQUEST_NUMBER%" )
+  IF DEFINED CERT_PASS                    ( set XARGS="%XARGS:"=% --cert-pass %CERT_PASS%" )
+  echo XARGS0=%XARGS%
+  echo XARGS1=%XARGS:"=%
   call ..\scripts\appveyor-retry call stack --no-terminal build -j 2 --exec make-installer %XARGS:"=%
   @if %errorlevel% neq 0 (
     @echo FATAL: persistent failure while building installer with:  call stack --no-terminal build -j 2 --exec make-installer
