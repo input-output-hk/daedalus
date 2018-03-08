@@ -1,12 +1,6 @@
 { cluster ? "mainnet" }:
 let
-  pkgs = import (import ./fetchNixpkgs.nix {
-    rev = "c831224528cd6bfd49bfc2c18b9c5d9015651077";
-    sha256 = "1idygi6x10wilrmj4w1djby8qi8zphxbp1zkzn4lmwhzfhgx2qnz";
-  }) {
-    config = {};
-    overlays = [];
-  };
+  pkgs = import (import ./fetchNixpkgs.nix (builtins.fromJSON (builtins.readFile ./nixpkgs-src.json))) { config = {}; overlays = []; };
   packages = self: {
     master_config = {
       daedalus_build_number = "3619";
