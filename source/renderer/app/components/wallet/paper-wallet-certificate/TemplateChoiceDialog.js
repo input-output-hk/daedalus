@@ -3,16 +3,14 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
-import Dialog from '../../../widgets/Dialog';
-import DialogCloseButton from '../../../widgets/DialogCloseButton';
-import DialogBackButton from '../../../widgets/DialogBackButton';
-import styles from './PaperWalletCreateCertificateTemplateChoiceDialog.scss';
-import blueTemplateImage from '../../../../assets/images/paper-wallet-certificate/template-blue.png';
-import brownTemplateImage from '../../../../assets/images/paper-wallet-certificate/template-brown.png';
-import greenTemplateImage from '../../../../assets/images/paper-wallet-certificate/template-green.png';
-import redTemplateImage from '../../../../assets/images/paper-wallet-certificate/template-red.png';
-import violetTemplateImage from '../../../../assets/images/paper-wallet-certificate/template-violet.png';
-import yellowTemplateImage from '../../../../assets/images/paper-wallet-certificate/template-yellow.png';
+import Dialog from '../../widgets/Dialog';
+import styles from './TemplateChoiceDialog.scss';
+import blueTemplateImage from '../../../assets/images/paper-wallet-certificate/template-blue.png';
+import brownTemplateImage from '../../../assets/images/paper-wallet-certificate/template-brown.png';
+import greenTemplateImage from '../../../assets/images/paper-wallet-certificate/template-green.png';
+import redTemplateImage from '../../../assets/images/paper-wallet-certificate/template-red.png';
+import violetTemplateImage from '../../../assets/images/paper-wallet-certificate/template-violet.png';
+import yellowTemplateImage from '../../../assets/images/paper-wallet-certificate/template-yellow.png';
 
 const messages = defineMessages({
   headline: {
@@ -21,42 +19,39 @@ const messages = defineMessages({
     description: 'Headline for "Paper wallet certificate create template choice dialog".'
   },
   printButtonLabe: {
-    id: 'paper.wallet.create.certificate.templateChoice.dialog.button.printButtonLabe',
+    id: 'paper.wallet.create.certificate.templateChoice.dialog.button.printButtonLabel',
     defaultMessage: '!!!Print',
     description: '"Paper wallet create certificate template choice dialog" print button label.'
   },
 });
 
 type State = {
-  selectedTemplate: string,
+  selectedTemplate: ?string,
 }
 
 type Props = {
-  onContinue: Function,
-  onClose: Function,
-  onBack: Function,
+  onPrint: Function,
 };
 
 @observer
 // eslint-disable-next-line
-export default class PaperWalletCreateCertificateTemplateChoiceDialog extends Component<Props, State> {
+export default class TemplateChoiceDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   state = {
-    selectedTemplate: '',
+    selectedTemplate: null,
   }
 
   render() {
     const { intl } = this.context;
-    const { onClose, onBack, onContinue } = this.props;
     const { selectedTemplate } = this.state;
 
     const dialogClasses = classnames([
       styles.component,
-      'PaperWalletCreateCertificateTemplateChoiceDialog',
+      'templateChoiceDialog',
     ]);
 
     const actions = [
@@ -64,7 +59,7 @@ export default class PaperWalletCreateCertificateTemplateChoiceDialog extends Co
         label: intl.formatMessage(messages.printButtonLabe),
         primary: true,
         disabled: !selectedTemplate,
-        onClick: onContinue,
+        onClick: this.handleContinue.bind(this),
       }
     ];
 
@@ -99,10 +94,6 @@ export default class PaperWalletCreateCertificateTemplateChoiceDialog extends Co
         className={dialogClasses}
         title={intl.formatMessage(messages.headline)}
         actions={actions}
-        closeOnOverlayClick
-        onClose={onClose}
-        closeButton={<DialogCloseButton onClose={onClose} />}
-        backButton={<DialogBackButton onBack={onBack} />}
       >
 
         <div className={styles.templateChoiceContentWrapper}>
@@ -179,5 +170,9 @@ export default class PaperWalletCreateCertificateTemplateChoiceDialog extends Co
 
   onSelectTemplate = (templateName: string) => {
     this.setState({ selectedTemplate: templateName });
+  }
+
+  handleContinue = () => {
+    this.props.onPrint({ selectedTemplate: this.state.selectedTemplate });
   }
 }

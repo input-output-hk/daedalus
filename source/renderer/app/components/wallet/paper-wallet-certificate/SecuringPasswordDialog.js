@@ -5,13 +5,11 @@ import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
-import Dialog from '../../../widgets/Dialog';
-import DialogCloseButton from '../../../widgets/DialogCloseButton';
-import DialogBackButton from '../../../widgets/DialogBackButton';
-import paperWalletImage from '../../../../assets/images/paper-wallet-certificate/certificate.png';
-import globalMessages from '../../../../i18n/global-messages';
+import Dialog from '../../widgets/Dialog';
+import paperWalletImage from '../../../assets/images/paper-wallet-certificate/certificate.png';
+import globalMessages from '../../../i18n/global-messages';
 
-import styles from './PaperWalletCreateCertificateSecuringPasswordDialog.scss';
+import styles from './SecuringPasswordDialog.scss';
 
 const messages = defineMessages({
   headline: {
@@ -41,14 +39,13 @@ type State = {
 };
 
 type Props = {
+  walletCertificatePassword: string,
   onContinue: Function,
-  onClose: Function,
-  onBack: Function,
 };
 
 @observer
 // eslint-disable-next-line
-export default class PaperWalletCreateCertificateSecuringPasswordDialog extends Component<Props, State> {
+export default class SecuringPasswordDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -60,12 +57,12 @@ export default class PaperWalletCreateCertificateSecuringPasswordDialog extends 
 
   render() {
     const { intl } = this.context;
-    const { onClose, onBack, onContinue } = this.props;
     const { securePasswordConfirmed } = this.state;
+    const { walletCertificatePassword, onContinue } = this.props;
 
     const dialogClasses = classnames([
       styles.component,
-      'PaperWalletCreateCertificateSecuringPasswordDialog',
+      'SecuringPasswordDialog',
     ]);
 
     const actions = [
@@ -82,10 +79,6 @@ export default class PaperWalletCreateCertificateSecuringPasswordDialog extends 
         className={dialogClasses}
         title={intl.formatMessage(messages.headline)}
         actions={actions}
-        closeOnOverlayClick
-        onClose={onClose}
-        closeButton={<DialogCloseButton onClose={onClose} />}
-        backButton={<DialogBackButton onBack={onBack} />}
       >
 
         <div className={styles.securingPasswordContentWrapper}>
@@ -96,7 +89,7 @@ export default class PaperWalletCreateCertificateSecuringPasswordDialog extends 
           <div className={styles.content}>
 
             <div className={styles.recoveryPhrase}>
-              flugenheimer
+              { walletCertificatePassword }
             </div>
 
             <div className={styles.paperWalletImageWrapper}>

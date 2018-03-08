@@ -1,28 +1,24 @@
 // @flow
 import React, { Component } from 'react';
-import { join } from 'lodash';
+import { join, isEqual } from 'lodash';
 import SvgInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { defineMessages, intlShape } from 'react-intl';
-import { isEmpty } from 'validator';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Autocomplete from 'react-polymorph/lib/components/Autocomplete';
 import SimpleAutocompleteSkin from 'react-polymorph/lib/skins/simple/raw/AutocompleteSkin';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
-import Dialog from '../../../widgets/Dialog';
-import DialogCloseButton from '../../../widgets/DialogCloseButton';
-import DialogBackButton from '../../../widgets/DialogBackButton';
-import ReactToolboxMobxForm from '../../../../utils/ReactToolboxMobxForm';
-import { isValidWalletPassword } from '../../../../utils/validations';
-import { InvalidMnemonicError } from '../../../../i18n/errors';
-import globalMessages from '../../../../i18n/global-messages';
-import showPasswordIcon from '../../../../assets/images/show-pass-ic.inline.svg';
-import hidePasswordIcon from '../../../../assets/images/hide-pass-ic.inline.svg';
+import Dialog from '../../widgets/Dialog';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import { InvalidMnemonicError } from '../../../i18n/errors';
+import globalMessages from '../../../i18n/global-messages';
+import showPasswordIcon from '../../../assets/images/show-pass-ic.inline.svg';
+import hidePasswordIcon from '../../../assets/images/hide-pass-ic.inline.svg';
 
-import styles from './PaperWalletCreateCertificateVerificationDialog.scss';
+import styles from './VerificationDialog.scss';
 
 const messages = defineMessages({
   headline: {
@@ -75,36 +71,45 @@ const messages = defineMessages({
     defaultMessage: '!!!I understand that my wallet can only be recovered using my paper wallet certificate and the password I have chosen.',
     description: '"Paper wallet create certificate verification dialog" recovering understandance confirmation.'
   },
+  errorMessage: {
+    id: 'paper.wallet.create.certificate.verification.dialog.errorMessage',
+    defaultMessage: `!!!Invalid password or shielded recovery phrase / password combination.<br/>
+      Make sure you enter the shielded recovery phrase and the password from the certificate.
+      Your certificate should not be used without passing this validation step.`,
+    description: '"Paper wallet create certificate verification dialog" error message when password or recovery phrase are invalid.',
+  }
 });
 
 type State = {
-  storingUnderstandanceConfirmed: boolean,
-  recoveringUnderstandanceConfirmed: boolean,
+  storingConfirmed: boolean,
+  recoveringConfirmed: boolean,
   showPassword: boolean,
+  isPasswordValid: boolean,
+  isRecoveryPhraseValid: boolean,
 };
 
 type Props = {
+  walletCertificatePassword: string,
+  walletCertificateRecoveryPhrase: string,
+  error: boolean,
   suggestedMnemonics: Array<string>,
-  onPassPhraseChanged: Function,
-  mnemonicValidator: Function,
   onContinue: Function,
-  onClear: Function,
-  onClose: Function,
-  onBack: Function,
 };
 
 @observer
 // eslint-disable-next-line
-export default class PaperWalletCreateCertificateVerificationDialog extends Component<Props, State> {
+export default class VerificationDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   state = {
-    storingUnderstandanceConfirmed: false,
-    recoveringUnderstandanceConfirmed: false,
+    storingConfirmed: false,
+    recoveringConfirmed: false,
     showPassword: false,
+    isPasswordValid: false,
+    isRecoveryPhraseValid: false,
   }
 
   form = new ReactToolboxMobxForm({
@@ -114,10 +119,23 @@ export default class PaperWalletCreateCertificateVerificationDialog extends Comp
         placeholder: this.context.intl.formatMessage(messages.recoveryPhraseHint),
         value: '',
         validators: [({ field }) => {
-          const passPhrase = join(field.value, ' ');
-          if (!isEmpty(passPhrase)) this.props.onPassPhraseChanged(passPhrase);
+          const { walletCertificateRecoveryPhrase } = this.props;
+          const {
+            storingConfirmed,
+            recoveringConfirmed,
+          } = this.state;
+
+          const value = join(field.value, ' ');
+          if (value === '') return [false, this.context.intl.formatMessage(globalMessages.fieldIsRequired)];
+          const isRecoveryPhraseValid = isEqual(walletCertificateRecoveryPhrase, field.value);
+          this.setState({
+            isRecoveryPhraseValid,
+            // uncheck confirmation boxes if recovery phrase is not valid and mark as disabled
+            storingConfirmed: isRecoveryPhraseValid ? storingConfirmed : false,
+            recoveringConfirmed: isRecoveryPhraseValid ? recoveringConfirmed : false,
+          });
           return [
-            this.props.mnemonicValidator(passPhrase),
+            isRecoveryPhraseValid,
             this.context.intl.formatMessage(new InvalidMnemonicError())
           ];
 
@@ -127,12 +145,25 @@ export default class PaperWalletCreateCertificateVerificationDialog extends Comp
         label: this.context.intl.formatMessage(messages.passwordLabel),
         placeholder: this.context.intl.formatMessage(messages.passwordHint),
         value: '',
-        validators: [({ field }) => (
-          [
-            isValidWalletPassword(field.value),
+        validators: [({ field }) => {
+          const {
+            storingConfirmed,
+            recoveringConfirmed,
+          } = this.state;
+
+          if (field.value === '') return [false, this.context.intl.formatMessage(globalMessages.fieldIsRequired)];
+          const isPasswordValid = this.props.walletCertificatePassword === field.value;
+          this.setState({
+            isPasswordValid,
+            // uncheck confirmation boxes if password is not valid and mark as disabled
+            storingConfirmed: isPasswordValid ? storingConfirmed : false,
+            recoveringConfirmed: isPasswordValid ? recoveringConfirmed : false,
+          });
+          return ([
+            isPasswordValid,
             this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
-          ]
-        )]
+          ]);
+        }]
       },
     },
   }, {
@@ -157,38 +188,47 @@ export default class PaperWalletCreateCertificateVerificationDialog extends Comp
     });
   };
 
+  resetForm = () => {
+    const { form } = this;
+    form.$('password').reset();
+    form.$('recoveryPhrase').reset();
+    this.setState({
+      storingConfirmed: false,
+      recoveringConfirmed: false,
+    });
+  }
+
   render() {
     const { intl } = this.context;
-    const { form } = this;
-    const {
-      suggestedMnemonics,
-      onClose,
-      onBack,
-      onClear,
-    } = this.props;
+    const { form, resetForm } = this;
+    const { suggestedMnemonics, error } = this.props;
     const {
       showPassword,
-      storingUnderstandanceConfirmed,
-      recoveringUnderstandanceConfirmed,
+      storingConfirmed,
+      recoveringConfirmed,
+      isPasswordValid,
+      isRecoveryPhraseValid,
     } = this.state;
+
+    console.debug('state: ', this.state);
 
     const passwordField = form.$('password');
     const recoveryPhraseField = form.$('recoveryPhrase');
 
     const dialogClasses = classnames([
-      styles.component,
-      'PaperWalletCreateCertificateVerificationDialog',
+      styles.dialog,
+      'verificationDialog',
     ]);
 
     const actions = [
       {
         label: intl.formatMessage(messages.clearButtonLabel),
-        onClick: onClear,
+        onClick: resetForm.bind(this),
       },
       {
         label: intl.formatMessage(globalMessages.dialogButtonContinueLabel),
         primary: true,
-        disabled: !storingUnderstandanceConfirmed || !recoveringUnderstandanceConfirmed,
+        disabled: !storingConfirmed || !recoveringConfirmed,
         onClick: this.submit.bind(this),
       },
     ];
@@ -198,10 +238,6 @@ export default class PaperWalletCreateCertificateVerificationDialog extends Comp
         className={dialogClasses}
         title={intl.formatMessage(messages.headline)}
         actions={actions}
-        closeOnOverlayClick
-        onClose={onClose}
-        closeButton={<DialogCloseButton onClose={onClose} />}
-        backButton={<DialogBackButton onBack={onBack} />}
       >
 
         <div className={styles.verificationContentWrapper}>
@@ -209,10 +245,9 @@ export default class PaperWalletCreateCertificateVerificationDialog extends Comp
           <div className={styles.content}>
 
             <Autocomplete
-              label={intl.formatMessage(messages.recoveryPhraseLabel)}
               className={styles.recoveryPhrase}
               options={suggestedMnemonics}
-              maxSelections={9}
+              maxSelections={15}
               {...recoveryPhraseField.bind()}
               error={recoveryPhraseField.error}
               maxVisibleOptions={5}
@@ -239,7 +274,8 @@ export default class PaperWalletCreateCertificateVerificationDialog extends Comp
               className={styles.checkbox}
               label={intl.formatMessage(messages.storingUnderstandanceLabel)}
               onChange={this.onStoringConfirmationChange.bind(this)}
-              checked={storingUnderstandanceConfirmed}
+              checked={storingConfirmed}
+              disabled={!isPasswordValid || !isRecoveryPhraseValid}
               skin={<SimpleCheckboxSkin />}
             />
 
@@ -247,19 +283,24 @@ export default class PaperWalletCreateCertificateVerificationDialog extends Comp
               className={styles.checkbox}
               label={intl.formatMessage(messages.recoveringUnderstandanceLabel)}
               onChange={this.onRecoveringConfirmationChange.bind(this)}
-              checked={recoveringUnderstandanceConfirmed}
+              checked={recoveringConfirmed}
+              disabled={!isPasswordValid || !isRecoveryPhraseValid}
               skin={<SimpleCheckboxSkin />}
             />
           </div>
         </div>
-
+        {error ?
+          <p className={styles.error}>
+            <FormattedHTMLMessage {...messages.errorMessage} />
+          </p> : null
+        }
       </Dialog>
     );
   }
 
   onStoringConfirmationChange = () => {
     this.setState({
-      storingUnderstandanceConfirmed: !this.state.storingUnderstandanceConfirmed
+      storingConfirmed: !this.state.storingConfirmed
     });
   };
 
@@ -269,7 +310,7 @@ export default class PaperWalletCreateCertificateVerificationDialog extends Comp
 
   onRecoveringConfirmationChange = () => {
     this.setState({
-      recoveringUnderstandanceConfirmed: !this.state.recoveringUnderstandanceConfirmed
+      recoveringConfirmed: !this.state.recoveringConfirmed
     });
   };
 }

@@ -5,11 +5,9 @@ import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
-import Dialog from '../../../widgets/Dialog';
-import DialogCloseButton from '../../../widgets/DialogCloseButton';
-import DialogBackButton from '../../../widgets/DialogBackButton';
-import globalMessages from '../../../../i18n/global-messages';
-import styles from './PaperWalletCreateCertificatePrintDialog.scss';
+import Dialog from '../../widgets/Dialog';
+import globalMessages from '../../../i18n/global-messages';
+import styles from './PrintDialog.scss';
 
 const messages = defineMessages({
   headline: {
@@ -36,12 +34,10 @@ type State = {
 
 type Props = {
   onContinue: Function,
-  onClose: Function,
-  onBack: Function,
 };
 
 @observer
-export default class PaperWalletCreateCertificatePrintDialog extends Component<Props, State> {
+export default class PrintDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -53,12 +49,12 @@ export default class PaperWalletCreateCertificatePrintDialog extends Component<P
 
   render() {
     const { intl } = this.context;
-    const { onClose, onBack, onContinue } = this.props;
+    const { onContinue } = this.props;
     const { isPrintedCorrectly } = this.state;
 
     const dialogClasses = classnames([
       styles.component,
-      'PaperWalletCreateCertificatePrintDialog',
+      'printDialog',
     ]);
 
     const actions = [
@@ -75,10 +71,6 @@ export default class PaperWalletCreateCertificatePrintDialog extends Component<P
         className={dialogClasses}
         title={intl.formatMessage(messages.headline)}
         actions={actions}
-        closeOnOverlayClick
-        onClose={onClose}
-        closeButton={<DialogCloseButton onClose={onClose} />}
-        backButton={<DialogBackButton onBack={onBack} />}
       >
 
         <div className={styles.printContentWrapper}>

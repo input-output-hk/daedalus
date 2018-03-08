@@ -37,6 +37,7 @@ import { applyAdaUpdate } from './applyAdaUpdate';
 import { adaTestReset } from './adaTestReset';
 import { getAdaHistoryByWallet } from './getAdaHistoryByWallet';
 import { getAdaAccountRecoveryPhrase } from './getAdaAccountRecoveryPhrase';
+import { getAdaWalletCertificateRecoveryPhrase } from './getAdaWalletCertificateRecoveryPhrase';
 import { getAdaLocalTimeDifference } from './getAdaLocalTimeDifference';
 import { sendAdaBugReport } from './sendAdaBugReport';
 
@@ -64,6 +65,7 @@ import type {
   GetTransactionsRequest,
   GetTransactionsResponse,
   GetWalletRecoveryPhraseResponse,
+  GetWalletCertificateRecoveryPhraseResponse,
   GetWalletsResponse,
   RestoreWalletRequest,
   RestoreWalletResponse,
@@ -384,6 +386,20 @@ export default class AdaApi {
       return response;
     } catch (error) {
       Logger.error('AdaApi::getWalletRecoveryPhrase error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  getWalletCertificateRecoveryPhrase(): Promise<GetWalletCertificateRecoveryPhraseResponse> {
+    Logger.debug('AdaApi::getWalletCertificateRecoveryPhrase called');
+    try {
+      const response: Promise<AdaWalletRecoveryPhraseResponse> = new Promise(
+        (resolve) => resolve(getAdaWalletCertificateRecoveryPhrase())
+      );
+      Logger.debug('AdaApi::getWalletCertificateRecoveryPhrase success');
+      return response;
+    } catch (error) {
+      Logger.error('AdaApi::getWalletCertificateRecoveryPhrase error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }

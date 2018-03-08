@@ -80,6 +80,7 @@ export default class Sidebar extends Component<Props> {
                 icon={category.icon}
                 active={activeSidebarCategory === category.route}
                 onClick={() => onCategoryClicked(category.route)}
+                openDialogAction={this.props.openDialogAction}
               />
             );
           })}

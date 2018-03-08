@@ -3,12 +3,11 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
-import Dialog from '../../../widgets/Dialog';
-import DialogCloseButton from '../../../widgets/DialogCloseButton';
-import DialogBackButton from '../../../widgets/DialogBackButton';
-import globalMessages from '../../../../i18n/global-messages';
+import Dialog from '../../widgets/Dialog';
 
-import styles from './PaperWalletCreateCertificateCompletionDialog.scss';
+import styles from './CompletionDialog.scss';
+
+const shell = require('electron').shell;
 
 const messages = defineMessages({
   headline: {
@@ -26,16 +25,20 @@ const messages = defineMessages({
     defaultMessage: '!!!You can use this link to opent the address in Cardano Explorer, save it in your browser bookmarks and share it with others to receive funds:',
     description: 'Headline for the "Paper wallet create certificate completion dialog" link instructions.'
   },
+  finishButtonLabel: {
+    id: 'paper.wallet.create.certificate.completion.dialog.finishButtonLabel',
+    defaultMessage: '!!!Finish',
+    description: '"Paper wallet create certificate completion dialog" finish button label.'
+  },
 });
 
 type Props = {
-  onContinue: Function,
-  onClose: Function,
-  onBack: Function,
+  walletCertificateAddress: string,
+  onFinish: Function,
 };
 
 @observer
-export default class PaperWalletCreateCertificateCompletionDialog extends Component<Props> {
+export default class CompletionDialog extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -43,29 +46,27 @@ export default class PaperWalletCreateCertificateCompletionDialog extends Compon
 
   render() {
     const { intl } = this.context;
-    const { onClose, onBack, onContinue } = this.props;
+    const { onFinish, walletCertificateAddress } = this.props;
     const dialogClasses = classnames([
       styles.component,
-      'PaperWalletCreateCertificateCompletionDialog',
+      'completionDialog',
     ]);
 
     const actions = [
       {
-        label: intl.formatMessage(globalMessages.dialogButtonContinueLabel),
+        label: intl.formatMessage(messages.finishButtonLabel),
         primary: true,
-        onClick: onContinue,
+        onClick: onFinish,
       }
     ];
+
+    const cardanoExplorerLink = `https://cardanoexplorer.com/address/${walletCertificateAddress}`;
 
     return (
       <Dialog
         className={dialogClasses}
         title={intl.formatMessage(messages.headline)}
         actions={actions}
-        closeOnOverlayClick
-        onClose={onClose}
-        closeButton={<DialogCloseButton onClose={onClose} />}
-        backButton={<DialogBackButton onBack={onBack} />}
       >
 
         <div className={styles.securingPasswordContentWrapper}>
@@ -77,8 +78,11 @@ export default class PaperWalletCreateCertificateCompletionDialog extends Compon
             </p>
 
             <div className={styles.cardanoExplorerLinkWrapper}>
-              <a href="https://cardanoexplorer.com/address/DdzFFzCqrht3AggeFyqhiikmB3KRKjwnk6tfWSPQ8V229GbhCjuy9USHVWMVFa5oPcMrSqGtH1wf2sGqpabnwdGD2MBR6gKjkvhLjsmZ">
-                https://cardanoexplorer.com/address/DdzFFzCqrht3AggeFyqhiikmB3KRKjwnk6tfWSPQ8V229GbhCjuy9USHVWMVFa5oPcMrSqGtH1wf2sGqpabnwdGD2MBR6gKjkvhLjsmZ
+              <a
+                href={cardanoExplorerLink}
+                onClick={this.openCardanoExplorer.bind(this, cardanoExplorerLink)}
+              >
+                {cardanoExplorerLink}
               </a>
             </div>
 
@@ -89,4 +93,8 @@ export default class PaperWalletCreateCertificateCompletionDialog extends Compon
     );
   }
 
+  openCardanoExplorer = (link: string, e: Object) => {
+    e.preventDefault();
+    shell.openExternal(link);
+  };
 }

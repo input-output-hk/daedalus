@@ -8,16 +8,16 @@ import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
-import Dialog from '../../../widgets/Dialog';
-import DialogCloseButton from '../../../widgets/DialogCloseButton';
-import DialogBackButton from '../../../widgets/DialogBackButton';
-import ReactToolboxMobxForm from '../../../../utils/ReactToolboxMobxForm';
-import { isValidWalletPassword, isValidRepeatPassword } from '../../../../utils/validations';
-import globalMessages from '../../../../i18n/global-messages';
-import styles from './PaperWalletCreateCertificatePasswordChoiceDialog.scss';
+import Dialog from '../../widgets/Dialog';
+import DialogCloseButton from '../../widgets/DialogCloseButton';
+import DialogBackButton from '../../widgets/DialogBackButton';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import { isValidWalletPassword, isValidRepeatPassword } from '../../../utils/validations';
+import globalMessages from '../../../i18n/global-messages';
+import styles from './PasswordChoiceDialog.scss';
 
-import showPasswordIcon from '../../../../assets/images/show-pass-ic.inline.svg';
-import hidePasswordIcon from '../../../../assets/images/hide-pass-ic.inline.svg';
+import showPasswordIcon from '../../../assets/images/show-pass-ic.inline.svg';
+import hidePasswordIcon from '../../../assets/images/hide-pass-ic.inline.svg';
 
 const messages = defineMessages({
   headline: {
@@ -60,6 +60,11 @@ const messages = defineMessages({
     defaultMessage: '!!!I understand the importance of the password and I will keep it secure.',
     description: '"Paper wallet create certificate password choice dialog" password keep confirmation.'
   },
+  printButtonLabe: {
+    id: 'paper.wallet.create.certificate.passwordChoice.dialog.button.printLabel',
+    defaultMessage: '!!!Print',
+    description: '"Paper wallet create certificate password choice dialog" print button label.'
+  },
 });
 
 type State = {
@@ -69,6 +74,7 @@ type State = {
 };
 
 type Props = {
+  inProgress: boolean,
   onContinue: Function,
   onClose: Function,
   onBack: Function,
@@ -76,7 +82,7 @@ type Props = {
 
 @observer
 // eslint-disable-next-line
-export default class PaperWalletCreateCertificatePasswordChoiceDialog extends Component<Props, State> {
+export default class PasswordChoiceDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -140,7 +146,7 @@ export default class PaperWalletCreateCertificatePasswordChoiceDialog extends Co
   render() {
     const { intl } = this.context;
     const { form } = this;
-    const { onClose, onBack } = this.props;
+    const { onClose, onBack, inProgress } = this.props;
     const {
       keepPasswordSecuredConfirmation, showPassword, showRepeatPassword
     } = this.state;
@@ -150,14 +156,21 @@ export default class PaperWalletCreateCertificatePasswordChoiceDialog extends Co
 
     const dialogClasses = classnames([
       styles.component,
-      'PaperWalletCreateCertificatePasswordChoiceDialog',
+      'passwordChoiceDialog',
+    ]);
+
+
+    const confirmButtonClasses = classnames([
+      'confirmButton',
+      inProgress ? styles.submitButtonSpinning : null,
     ]);
 
     const actions = [
       {
-        label: intl.formatMessage(globalMessages.dialogButtonContinueLabel),
+        label: intl.formatMessage(messages.printButtonLabe),
         primary: true,
-        disabled: !keepPasswordSecuredConfirmation,
+        disabled: !keepPasswordSecuredConfirmation || inProgress,
+        className: confirmButtonClasses,
         onClick: this.submit.bind(this),
       }
     ];

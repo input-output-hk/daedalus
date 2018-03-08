@@ -2,15 +2,15 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import StoryDecorator from './support/StoryDecorator';
-import PaperWalletCreateCertificateInstructionsDialog from '../../source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateInstructionsDialog';
-import PaperWalletCreateCertificatePasswordChoiceDialog from '../../source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificatePasswordChoiceDialog';
-import PaperWalletCreateCertificateTemplateChoiceDialog from '../../source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateTemplateChoiceDialog';
-import PaperWalletCreateCertificatePrintDialog from '../../source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificatePrintDialog';
-import PaperWalletCreateCertificateSecuringPasswordDialog from '../../source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateSecuringPasswordDialog';
-import PaperWalletCreateCertificateVerificationDialog from '../../source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateVerificationDialog';
-import PaperWalletCreateCertificateCompletionDialog from '../../source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateCompletionDialog';
+import InstructionsDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog';
+import PasswordChoiceDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/PasswordChoiceDialog';
+import TemplateChoiceDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/TemplateChoiceDialog';
+import PrintDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/PrintDialog';
+import SecuringPasswordDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/SecuringPasswordDialog';
+import VerificationDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog';
+// import CompletionDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog';
 
-const OPTIONS = ['append', 'home', 'cat', 'dog', 'fish', 'hide', 'hover', 'duck', 'category', 'join', 'paper', 'box', 'tab'];
+const OPTIONS = ['nice', 'thrive', 'crystal', 'trumpet', 'maple', 'peanut', 'grace', 'wagon', 'hedgehog', 'oven', 'industry', 'wild', 'retreat', 'nut', 'need'];
 
 storiesOf('PaperWallets', module)
 
@@ -24,7 +24,7 @@ storiesOf('PaperWallets', module)
 
   .add('Instructions', () => (
     <div>
-      <PaperWalletCreateCertificateInstructionsDialog
+      <InstructionsDialog
         onClose={action('onClose')}
         onContinue={action('onContinue')}
       />
@@ -33,7 +33,7 @@ storiesOf('PaperWallets', module)
 
   .add('Password choice', () => (
     <div>
-      <PaperWalletCreateCertificatePasswordChoiceDialog
+      <PasswordChoiceDialog
         onClose={action('onClose')}
         onBack={action('onBack')}
         onContinue={action('onContinue')}
@@ -43,19 +43,15 @@ storiesOf('PaperWallets', module)
 
   .add('Template choice', () => (
     <div>
-      <PaperWalletCreateCertificateTemplateChoiceDialog
-        onClose={action('onClose')}
-        onBack={action('onBack')}
-        onContinue={action('onContinue')}
+      <TemplateChoiceDialog
+        onPrint={action('onPrint')}
       />
     </div>
   ))
 
   .add('Printing the certificate', () => (
     <div>
-      <PaperWalletCreateCertificatePrintDialog
-        onClose={action('onClose')}
-        onBack={action('onBack')}
+      <PrintDialog
         onContinue={action('onContinue')}
       />
     </div>
@@ -63,9 +59,8 @@ storiesOf('PaperWallets', module)
 
   .add('Securing the password', () => (
     <div>
-      <PaperWalletCreateCertificateSecuringPasswordDialog
-        onClose={action('onClose')}
-        onBack={action('onBack')}
+      <SecuringPasswordDialog
+        walletCertificatePassword="flugenheimer"
         onContinue={action('onContinue')}
       />
     </div>
@@ -73,25 +68,24 @@ storiesOf('PaperWallets', module)
 
   .add('Shielded recovery phrase and password verification', () => (
     <div>
-      <PaperWalletCreateCertificateVerificationDialog
+      <VerificationDialog
+        walletCertificatePassword="flugenheimer"
+        walletCertificateRecoveryPhrase={OPTIONS}
         suggestedMnemonics={OPTIONS}
-        mnemonicValidator={() => {}}
-        onPassPhraseChanged={() => {}}
-        onClose={action('onClose')}
-        onBack={action('onBack')}
         onContinue={action('onContinue')}
         onClear={action('onClear')}
       />
     </div>
-  ))
-
-  .add('Completion and link to the address in Cardano Explorer', () => (
-    <div>
-      <PaperWalletCreateCertificateCompletionDialog
-        onClose={action('onClose')}
-        onBack={action('onBack')}
-        onContinue={action('onContinue')}
-      />
-    </div>
   ));
+
+  // Commented due to 'fs' error
+  // .add('Completion and link to the address in Cardano Explorer', () => (
+  //   <div>
+  //     <CompletionDialog
+  //       onClose={action('onClose')}
+  //       onBack={action('onBack')}
+  //       onContinue={action('onContinue')}
+  //     />
+  //   </div>
+  // ));
 

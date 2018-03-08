@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
-import Dialog from '../../../widgets/Dialog';
-import DialogCloseButton from '../../../widgets/DialogCloseButton';
-import globalMessages from '../../../../i18n/global-messages';
-import styles from './PaperWalletCreateCertificateInstructionsDialog.scss';
+import Dialog from '../../widgets/Dialog';
+import DialogCloseButton from '../../widgets/DialogCloseButton';
+import globalMessages from '../../../i18n/global-messages';
+import styles from './InstructionsDialog.scss';
 
 const messages = defineMessages({
   headline: {
@@ -57,7 +57,7 @@ type Props = {
 };
 
 @observer
-export default class PaperWalletCreateCertificateInstructionsDialog extends Component<Props> {
+export default class InstructionsDialog extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -68,7 +68,7 @@ export default class PaperWalletCreateCertificateInstructionsDialog extends Comp
     const { onClose, onContinue } = this.props;
     const dialogClasses = classnames([
       styles.component,
-      'PaperWalletCreateCertificateInstructionsDialog',
+      'instructionsDialog',
     ]);
 
     const actions = [
