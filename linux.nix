@@ -20,7 +20,6 @@ let
 
     test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
     export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
-    ls -lh $DAEDALUS_DIR
 
     mkdir -p "''${DAEDALUS_DIR}/${cluster}/"{logs/pub,Secrets}
     cd "''${DAEDALUS_DIR}/${cluster}/"
