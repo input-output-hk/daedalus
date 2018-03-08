@@ -27,6 +27,7 @@ let
       rev = "630e89d1d16083";
       sha256 = "1s9vzlsfxd2ym8jzv2p64j6jlwr9cmir45mb12yzzjr4dc91xk8x";
     }) { nixpkgs = pkgs; };
+    newBundle = (import ./nix-installer.nix { installedPackages = [ self.daedalus ]; }).installerBundle;
     configFiles = with self; pkgs.runCommand "cardano-config" {} ''
       mkdir -pv $out
       cd $out
