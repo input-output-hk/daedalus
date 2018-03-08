@@ -23,6 +23,7 @@ export default class SettingsStore extends Store {
   LANGUAGE_OPTIONS = [
     { value: 'en-US', label: globalMessages.languageEnglish },
     { value: 'ja-JP', label: globalMessages.languageJapanese },
+    { value: 'it-IT', label: globalMessages.languageItalian },
     // { value: 'zh-CN', label: globalMessages.languageChinese },
     // { value: 'ko-KR', label: globalMessages.languageKorean },
     // { value: 'de-DE', label: globalMessages.languageGerman },
