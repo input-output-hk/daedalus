@@ -31,7 +31,7 @@ let
       --configuration-file $configFiles/configuration.yaml \
       --configuration-key mainnet_wallet_macos64 \
       -n --report-server -n http://report-server.cardano-mainnet.iohk.io:8080 \
-      -n --log-config -n $configFiles/log-config-prod.yaml \
+      -n --log-config -n $configFiles/daedalus.yaml \
       -n --keyfile -n Secrets/secret.key \
       -n --db-path -n DB/ \
       -n --wallet-db-path -n Wallet/ \

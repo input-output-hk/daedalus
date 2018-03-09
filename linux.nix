@@ -13,6 +13,39 @@ let
 
     exec ${electron}/bin/electron ${rawapp}
   '';
+  launcherConfig = writeText "launcher-config.json" (builtins.toJSON {
+    nodePath = "${cardanoPkgs.cardano-sl-wallet}/bin/cardano-node";
+    nodeArgs = [
+      "--update-latest-path" "$HOME/.local/share/Daedalus/mainnet/installer.sh"
+      "--keyfile" "Secrets/secret.key"
+      "--wallet-db-path" "Wallet/"
+      "--update-server" "https://update-cardano-mainnet.iohk.io"
+      "--update-with-package"
+      "--no-ntp"
+      "--tlscert" "tls/server/server.crt"
+      "--tlskey" "tls/server/server.key"
+      "--tlsca" "tls/ca/ca.crt"
+      "--topology" "${configFiles}/topology.yaml"
+      "--wallet-address" "127.0.0.1:8090"
+    ];
+    nodeDbPath = "DB/";
+    nodeLogConfig = "${configFiles}/daedalus.yaml";
+    nodeLogPath = "$HOME/.local/share/Daedalus/mainnet/logs/cardano-node.log";
+    reportServer = "http://report-server.cardano-mainnet.iohk.io:8080";
+    configuration = {
+      filePath = "${configFiles}/configuration.yaml";
+      key = "mainnet_wallet_macos64";
+      systemStart = null;
+      seed = null;
+    };
+    updaterPath = "/bin/update-runner";
+    updateArchive = "$HOME/.local/share/Daedalus/mainnet/installer.sh";
+    updateWindowsRunner = null;
+    nodeTimeoutSec = 30;
+    launcherLogsPrefix = "$HOME/.local/share/Daedalus/mainnet/logs/";
+    walletPath = "${daedalus_frontend}/bin/daedalus";
+    walletArgs = [];
+  });
   daedalus = writeScriptBin "daedalus" ''
     #!${stdenv.shell}
     set -x
@@ -29,27 +62,7 @@ let
       ${openssl}/bin/openssl req -x509 -newkey rsa:2048 -keyout tls/server/server.key -out tls/server/server.crt -days 3650 -nodes -subj "/CN=localhost"
       cp tls/server/server.crt tls/ca/ca.crt
     fi
-    exec ${cardanoPkgs.cardano-sl-tools}/bin/cardano-launcher --node ${cardanoPkgs.cardano-sl-wallet}/bin/cardano-node \
-      --node-log-path logs/cardano-node.log \
-      --db-path LDB/ \
-      --wallet ${daedalus_frontend}/bin/daedalus \
-      --launcher-logs-prefix logs/pub/ \
-      --node-timeout 30 \
-      --updater /not-supported \
-      --configuration-file ${configFiles}/configuration.yaml \
-      --configuration-key mainnet_wallet_macos64 \
-      -n --report-server -n http://report-server.cardano-mainnet.iohk.io:8080 \
-      -n --log-config -n ${configFiles}/log-config-prod.yaml \
-      -n --keyfile -n Secrets/secret.key \
-      -n --db-path -n DB/ \
-      -n --wallet-db-path -n Wallet/ \
-      -n --no-ntp \
-      -n --tlscert -n tls/server/server.crt \
-      -n --tlskey -n tls/server/server.key \
-      -n --tlsca -n tls/ca/ca.crt \
-      -n --configuration-file -n ${configFiles}/configuration.yaml \
-      -n --configuration-key -n mainnet_wallet_macos64 \
-      -n --wallet-address -n 127.0.0.1:8090 \
-      -n --topology -n ${configFiles}/topology.yaml
+    exec ${cardanoPkgs.cardano-sl-tools}/bin/cardano-launcher \
+      --config ${launcherConfig}
   '';
 in daedalus
