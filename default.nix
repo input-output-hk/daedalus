@@ -2,6 +2,7 @@
 let
   pkgs = import (import ./fetchNixpkgs.nix (builtins.fromJSON (builtins.readFile ./nixpkgs-src.json))) { config = {}; overlays = []; };
   packages = self: {
+    inherit pkgs;
     master_config = {
       daedalus_darwin_url = "https://update-cardano-mainnet.iohk.io/Daedalus-installer-1.1.0.408.pkg";
       cardano_rev = "eef095";
