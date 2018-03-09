@@ -9,7 +9,7 @@ nodeArgs:
 - --wallet-db-path
 - ! '%APPDATA%\Daedalus\Wallet-1.0'
 - --update-server
-- http://update.cardano-mainnet.iohk.io
+- https://update-cardano-mainnet.iohk.io
 - --update-with-package
 - --no-ntp
 - --tlscert
