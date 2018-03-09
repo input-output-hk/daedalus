@@ -126,6 +126,7 @@
     "moment": "2.19.3",
     "pbkdf2": "3.0.14",
     "pdf.js-extract": "0.0.5",
+    "pdfmake": "0.1.36",
     "prop-types": "15.6.1",
     "qrcode.react": "0.6.1",
     "react": "15.6.2",

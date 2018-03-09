@@ -8,6 +8,7 @@ import { matchRoute, buildRoute } from '../../utils/routing';
 import Request from '.././lib/LocalizedRequest';
 import { ROUTES } from '../../routes-config';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
+import { downloadPaperWalletCertificate } from '../../utils/pdf';
 import type { walletExportTypeChoices } from '../../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../../actions/ada/wallets-actions';
 import type { ImportWalletFromFileResponse } from '../../api/ada/index';
@@ -207,6 +208,7 @@ export default class AdaWalletsStore extends WalletStore {
   _generateCertificate = async (params: {
     password: string,
     repeatPassword: string,
+    intl: Object,
   }) => {
     try {
       // Stop poller
@@ -252,16 +254,14 @@ export default class AdaWalletsStore extends WalletStore {
       }
 
       // Set wallet certificate address
+      let walletAddress;
       if (walletAddresses) {
-        const walletAddress = get(walletAddresses, ['addresses', '0', 'id'], null);
+        walletAddress = get(walletAddresses, ['addresses', '0', 'id'], null);
         this.walletCertificateAddress = walletAddress;
       }
 
-      // Reset progress
-      this._updateCertificateCreationState(false);
-
-      // Update certificate generator step
-      this._updateCertificateStep();
+      // download pdf certificate
+      this._downloadCertificate(walletAddress, walletCertificateRecoveryPhrase, params.intl);
 
       // Now poller can continue with work
       this.actions.networkStatus.restartPoller.trigger();
@@ -269,6 +269,25 @@ export default class AdaWalletsStore extends WalletStore {
       throw error;
     }
   };
+
+  _downloadCertificate = action((address: string, recoveryPhrase: Array<string>, intl: Object) => {
+    setTimeout(() => { // Timeout is used to allow enought time for button text re-rendering
+      downloadPaperWalletCertificate({
+        address: address,
+        mnemonics: recoveryPhrase,
+        intl,
+        callback: (e) => {
+          // Reset progress
+          this._updateCertificateCreationState(false);
+          // Update certificate generator step
+          this._updateCertificateStep();
+        },
+      });
+    }, 100);
+  });
+
+
+
 
   _updateCertificateCreationState = action((state: boolean) => {
     this.generatingCertificateInProgress = state;

@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import { intlShape } from 'react-intl';
 import { observer, inject } from 'mobx-react';
 import PasswordChoiceDialog from '../../../../components/wallet/paper-wallet-certificate/PasswordChoiceDialog';
 import type { StoresMap } from '../../../../stores/index';
@@ -14,11 +15,20 @@ type Props = {
 
 @inject('stores', 'actions') @observer
 export default class PasswordChoiceDialogContainer extends Component<Props> {
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
 
   static defaultProps = { actions: null, stores: null };
 
   onContinue = (values: { password: string, repeatPassword: string }) => {
-    this.props.actions.ada.wallets.generateCertificate.trigger(values);
+    this.context.intl
+    const data = {
+      ...values,
+      intl: this.context.intl,
+    }
+    console.info('DATA: ', data);
+    this.props.actions.ada.wallets.generateCertificate.trigger(data);
   };
 
   render() {

@@ -22,7 +22,7 @@ const messages = defineMessages({
   },
   linkInstructions: {
     id: 'paper.wallet.create.certificate.completion.dialog.linkInstructions',
-    defaultMessage: '!!!You can use this link to opent the address in Cardano Explorer, save it in your browser bookmarks and share it with others to receive funds:',
+    defaultMessage: '!!!You can use this link to open the address in Cardano Explorer, save it in your browser bookmarks and share it with others to receive funds:',
     description: 'Headline for the "Paper wallet create certificate completion dialog" link instructions.'
   },
   finishButtonLabel: {
