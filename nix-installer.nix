@@ -18,9 +18,7 @@ let
     rev = "16551f54c94f2b551ebaf00a7bd0245dc3b0b9e4";
     sha256 = "0kd13v4xl4imwb3141pnn0lqx0xfcmgnwd026c10kmvjhm848pwx";
   };
-  nixFix = (import ./nix/release.nix {
-    nixpkgs = pkgs.path;
-  }).build.x86_64-linux;
+  nixFix = pkgs.nixUnstable.overrideDerivation (drv: { src = nixSrc; });
   utils = pkgs.writeText "utils.sh" ''
     function rmrf {
       chmod -R +w "$*" || true
