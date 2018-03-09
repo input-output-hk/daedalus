@@ -2,7 +2,7 @@
 
 let
   darwinPackage = fetchurl {
-    url = "http://s3.eu-central-1.amazonaws.com/daedalus-travis/Daedalus-installer-1.0.${master_config.daedalus_build_number}.pkg";
+    url = master_config.daedalus_darwin_url;
     sha256 = master_config.daedalus_hash;
   };
 in runCommand "daedalus-app" { buildInputs = [ xar cpio ]; } ''

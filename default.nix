@@ -3,10 +3,10 @@ let
   pkgs = import (import ./fetchNixpkgs.nix (builtins.fromJSON (builtins.readFile ./nixpkgs-src.json))) { config = {}; overlays = []; };
   packages = self: {
     master_config = {
-      daedalus_build_number = "3619";
-      cardano_rev = "0c1fab91";
-      daedalus_hash = "0w0pz93yz380xrizlsbzm9wisnf99s6z2jq0ph9xqap9cpjlyr7x";
-      cardano_hash = "1z2yjkm0qwhf588qnxcbz2d5mxvhqdxawwl8dczfnl47rb48jm52";
+      daedalus_darwin_url = "https://update-cardano-mainnet.iohk.io/Daedalus-installer-1.1.0.408.pkg";
+      cardano_rev = "eef095";
+      daedalus_hash = "1b0iy6c5nlsa2n2ylcc2kfm8ykkmdp6ncnx4lwwvc6f0662cf175";
+      cardano_hash = "151qjqswrcscr2afsc6am4figw09hyxr80nd3dv3c35dvp2xx4rp";
     };
     inherit cluster;
     cardanoSrc = pkgs.fetchFromGitHub {
@@ -27,14 +27,14 @@ let
       rev = "630e89d1d16083";
       sha256 = "1s9vzlsfxd2ym8jzv2p64j6jlwr9cmir45mb12yzzjr4dc91xk8x";
     }) { nixpkgs = pkgs; };
-    newBundle = (import ./nix-installer.nix { installedPackages = [ self.daedalus ]; }).installerBundle;
+    newBundle = (import ./nix-installer.nix { installedPackages = [ self.daedalus pkgs.strace ]; }).installerBundle;
     configFiles = with self; pkgs.runCommand "cardano-config" {} ''
       mkdir -pv $out
       cd $out
       cp -vi ${cardanoPkgs.cardano-sl.src + "/configuration.yaml"} configuration.yaml
       cp -vi ${cardanoPkgs.cardano-sl.src + "/mainnet-genesis-dryrun-with-stakeholders.json"} mainnet-genesis-dryrun-with-stakeholders.json
       cp -vi ${cardanoPkgs.cardano-sl.src + "/mainnet-genesis.json"} mainnet-genesis.json
-      cp -vi ${cardanoPkgs.cardano-sl.src + "/../log-config-prod.yaml"} log-config-prod.yaml
+      cp -vi ${cardanoPkgs.cardano-sl.src + "/../log-configs/daedalus.yaml"} daedalus.yaml
       cp -vi ${topologyFile} topology.yaml
     '';
     topologyFile = self.topologies.${cluster};
