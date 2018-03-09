@@ -39,7 +39,7 @@ gulp.task('build-main', (done) => buildMain({}, done));
 
 gulp.task('build-main-watch', (done) => buildMain({ watch: true }, done));
 
-gulp.task('build-renderer-html', shell.task('mkdir -p ./dist/renderer/ && cp ./source/renderer/index.html ./dist/renderer/index.html'));
+gulp.task('build-renderer-html', () => gulp.src('source/renderer/index.html').pipe(gulp.dest('dist/renderer/')));
 
 gulp.task('build-renderer-assets', (done) => buildRenderer({}, done));
 
