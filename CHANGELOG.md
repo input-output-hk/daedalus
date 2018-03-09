@@ -10,6 +10,8 @@ Changelog
 
 ### Chores
 
+- Improve build system ([PR 692](https://github.com/input-output-hk/daedalus/pull/692))
+
 ## 0.9.0
 =======
 
@@ -48,7 +50,6 @@ Changelog
 - Update about dialog content ([PR 680](https://github.com/input-output-hk/daedalus/pull/680))
 - Ada redemption tests modified to run in mainnet mode ([PR 681](https://github.com/input-output-hk/daedalus/pull/681))
 - Log file moved to public folder and Electron crash reporter removed ([PR 682](https://github.com/input-output-hk/daedalus/pull/682))
-- Improve build system ([PR 692](https://github.com/input-output-hk/daedalus/pull/692))
 
 ## 0.8.3
 =======

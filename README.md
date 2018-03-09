@@ -1,4 +1,11 @@
 # Daedalus
+<<<<<<< HEAD
+=======
+
+[![Build status](https://badge.buildkite.com/e173494257519752d79bb52c7859df6277c6d759b217b68384.svg?branch=master)](https://buildkite.com/input-output-hk/daedalus)
+[![Windows build status](https://ci.appveyor.com/api/projects/status/github/input-output-hk/daedalus?branch=master&svg=true)](https://ci.appveyor.com/project/input-output/daedalus)
+[![Release](https://img.shields.io/github/release/input-output-hk/daedalus.svg)](https://github.com/input-output-hk/daedalus/releases)
+>>>>>>> develop
 
 Daedalus - cryptocurrency wallet
 
@@ -71,6 +78,7 @@ $ npm run start-hot
 defaults to 6.x*
 
 ### Development - with Cardano Wallet
+<<<<<<< HEAD
 
 Build and run [Cardano SL](https://github.com/input-output-hk/cardano-sl)
 
@@ -97,6 +105,34 @@ $ ./scripts/launch/demo-with-wallet-api.sh
 Stop with:
 
 ```bash
+=======
+
+Build and run [Cardano SL](https://github.com/input-output-hk/cardano-sl)
+
+Build with:
+
+```bash
+$ brew install haskell-stack # OR curl -ssl https://get.haskellstack.org/ | sh
+$ stack setup
+$ stack install cpphs
+$ brew install xz # OR sudo apt-get install xz-utils
+$ brew install rocksdb # OR sudo apt-get install librocksdb-dev
+$ git clone git@github.com:input-output-hk/cardano-sl.git
+$ cd cardano-sl/
+$ ./scripts/build/cardano-sl.sh
+```
+
+Run with:
+
+```bash
+$ tmux new-session -s cardano
+$ ./scripts/launch/demo-with-wallet-api.sh
+```
+
+Stop with:
+
+```bash
+>>>>>>> develop
 $ tmux kill-session -t cardano
 ```
 
