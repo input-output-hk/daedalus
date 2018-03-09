@@ -210,8 +210,6 @@ export default class VerificationDialog extends Component<Props, State> {
       isRecoveryPhraseValid,
     } = this.state;
 
-    console.debug('state: ', this.state);
-
     const passwordField = form.$('password');
     const recoveryPhraseField = form.$('recoveryPhrase');
 

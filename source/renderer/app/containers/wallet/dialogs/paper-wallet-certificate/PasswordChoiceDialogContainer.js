@@ -27,7 +27,6 @@ export default class PasswordChoiceDialogContainer extends Component<Props> {
       ...values,
       intl: this.context.intl,
     }
-    console.info('DATA: ', data);
     this.props.actions.ada.wallets.generateCertificate.trigger(data);
   };
 
