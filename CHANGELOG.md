@@ -8,6 +8,8 @@ Changelog
 
 ### Fixes
 
+- Updated moment.js dependency to the latest version which fixes ReDOS vulnerability ([PR 782](https://github.com/input-output-hk/daedalus/pull/782))
+
 ### Chores
 
 ## 0.9.0
