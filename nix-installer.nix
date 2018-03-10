@@ -116,7 +116,8 @@ let
     NIX_REMOTE=local?root=$UNPACK nix-store --load-db < $UNPACK/nix-path-registration
     pwd
     NIX_REMOTE=local?root=$UNPACK nix-store --verify --check-contents -v
-    NIX_REMOTE=local?root=$UNPACK nix copy-sigs --all -s http://cache.nixos.org/
+    # turn back on some time later?
+    # NIX_REMOTE=local?root=$UNPACK nix copy-sigs --all -s http://cache.nixos.org/
 
     export NIX_REMOTE=local?root=$DIR
     nix copy --no-check-sigs --from local?root=$UNPACK ${builtins.unsafeDiscardStringContext firstGeneration}
