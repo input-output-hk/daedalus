@@ -3,6 +3,9 @@ coreutils, utillinux, procps, cluster,
 rawapp, master_config, cardanoPkgs, configFiles }:
 
 let
+  # closure size TODO list
+  # openssl depends on perl
+  # electron depends on cups, which depends on avahi
   daedalus_frontend = writeScriptBin "daedalus" ''
     #!${stdenv.shell}
 
@@ -13,8 +16,17 @@ let
 
     exec ${electron}/bin/electron ${rawapp}
   '';
+  cardanoProgs = runCommand "cardano" {} ''
+    mkdir -pv $out/bin/
+    cp ${cardanoPkgs.cardano-sl-wallet}/bin/cardano-node $out/bin/
+    cp ${cardanoPkgs.cardano-sl-tools}/bin/cardano-launcher $out/bin/
+  '';
+  slimOpenssl = runCommand "openssl" {} ''
+    mkdir -pv $out/bin/
+    cp ${openssl}/bin/openssl $out/bin/
+  '';
   launcherConfig = writeText "launcher-config.json" (builtins.toJSON {
-    nodePath = "${cardanoPkgs.cardano-sl-wallet}/bin/cardano-node";
+    nodePath = "${cardanoProgs}/bin/cardano-node";
     nodeArgs = [
       "--update-latest-path" "$HOME/.local/share/Daedalus/mainnet/installer.sh"
       "--keyfile" "Secrets/secret.key"
@@ -59,10 +71,10 @@ let
 
     if [ ! -d tls ]; then
       mkdir -p tls/{server,ca}
-      ${openssl}/bin/openssl req -x509 -newkey rsa:2048 -keyout tls/server/server.key -out tls/server/server.crt -days 3650 -nodes -subj "/CN=localhost"
+      ${slimOpenssl}/bin/openssl req -x509 -newkey rsa:2048 -keyout tls/server/server.key -out tls/server/server.crt -days 3650 -nodes -subj "/CN=localhost"
       cp tls/server/server.crt tls/ca/ca.crt
     fi
-    exec ${cardanoPkgs.cardano-sl-tools}/bin/cardano-launcher \
+    exec ${cardanoProgs}/bin/cardano-launcher \
       --config ${launcherConfig}
   '';
 in daedalus
