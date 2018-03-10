@@ -69,12 +69,19 @@ let
   enter2 = pkgs.writeScriptBin "enter-phase2" ''
     #!${pkgs.stdenv.shell}
 
+    set -ex
+
     export PATH=/nix/var/nix/profiles/profile/bin
     export PS1='\[\033]2;\h:\u:\w\007\]\n\[\033[1;32m\][\u@\h:\w] (namespaced) \$\[\033[0m\] '
     ln -svf /nix/var/nix/profiles/profile/bin/ /bin
     ln -svf ${pkgs.iana-etc}/etc/protocols /etc/protocols
     ln -svf ${pkgs.iana-etc}/etc/services /etc/services
-    exec bash
+
+    if [ -z "$@" ]; then
+      exec bash
+    else
+      exec "$@"
+    fi
   '';
   installer = with pkgs; writeScriptBin "installer" ''
     #!${stdenv.shell}
@@ -113,10 +120,24 @@ let
 
   firstGeneration = with pkgs; buildEnv {
     name = "profile";
-    paths = [ nixFix bashInteractive enter coreutils enter2 procps updater utillinux gnused gnutar bzip2 xz ] ++ installedPackages;
+    paths = [
+      nixFix
+      bashInteractive
+      enter
+      coreutils
+      enter2
+      procps
+      updater
+      utillinux
+      gnused
+      gnutar
+      bzip2
+      xz
+      which # used by post-install
+    ] ++ installedPackages;
   };
   tarball = pkgs.callPackage (pkgs.path + "/nixos/lib/make-system-tarball.nix") {
-    fileName = "tarball";
+    fileName = "tarball"; # dont rename
     contents = [];
     storeContents = [
       {
