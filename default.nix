@@ -41,7 +41,7 @@ let
       #!/usr/bin/env bash
 
       set -ex
-      cd ~/nix-install/
+      cd ~/daedalus-install/
       mkdir -p etc
       cat /etc/hosts > etc/hosts
       cat /etc/nsswitch.conf > etc/nsswitch.conf
@@ -54,14 +54,18 @@ let
       test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
       export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus/mainnet"
       cp -f ${self.iconPath} $DAEDALUS_DIR/icon.png
-      cp -Lf $(realpath $(which namespaceHelper)) $DAEDALUS_DIR/namespaceHelper
+      cp -Lf ${self.namespaceHelper}/bin/namespaceHelper $DAEDALUS_DIR/namespaceHelper
 
       cat ${self.desktopItem}/share/applications/Daedalus.desktop | sed \
         -e "s+INSERT_PATH_HERE+''${DAEDALUS_DIR}/namespaceHelper+g" \
         -e "s+INSERT_ICON_PATH_HERE+''${DAEDALUS_DIR}/icon.png+g" \
         > "''${XDG_DATA_HOME}/applications/Daedalus.desktop"
     '';
-    newBundle = (import ./nix-installer.nix { installedPackages = [ self.daedalus self.postInstall self.namespaceHelper ]; }).installerBundle;
+    newBundle = (import ./nix-installer.nix {
+      installationSlug = "daedalus-install";
+      installedPackages = [ self.daedalus self.postInstall self.namespaceHelper ];
+      postInstall = self.postInstall;
+    }).installerBundle;
     configFiles = with self; pkgs.runCommand "cardano-config" {} ''
       mkdir -pv $out
       cd $out

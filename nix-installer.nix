@@ -1,4 +1,4 @@
-{ installationSlug ? "nix-install", installedPackages }:
+{ installationSlug ? "nix-install", installedPackages, postInstall ? null }:
 let
   pkgs = import (import ./fetchNixpkgs.nix (builtins.fromJSON (builtins.readFile ./nixpkgs-src.json))) { config = {}; overlays = []; };
   nix-bundle = import (pkgs.fetchFromGitHub {
@@ -32,6 +32,11 @@ let
 
     set -x
     set -e
+
+    if [ ! -e "$1" ]; then
+      echo "update file not found"
+      return -1
+    fi
     pwd
     id
     UNPACK=$(mktemp -d)
@@ -50,6 +55,8 @@ let
     export NIX_PROFILE=$DIR/nix/var/nix/profiles/profile
     nix-env --set $(readlink $UNPACK2/firstGeneration)
     rmrf $UNPACK2
+
+    post-install || true
   '';
   enter = pkgs.writeScriptBin "enter-chroot" ''
     #!/usr/bin/env bash
@@ -94,7 +101,7 @@ let
     set -e
     set -x
 
-    export PATH=${lib.makeBinPath [ coreutils pv xz gnutar nixFix strace ]}
+    export PATH=${lib.makeBinPath [ coreutils pv xz gnutar nixFix strace gnused which ]}
     export DIR=$HOME/${installationSlug}
 
     echo inside installer
@@ -116,6 +123,10 @@ let
     rmrf $UNPACK
     export NIX_PROFILE=$DIR/nix/var/nix/profiles/profile
     nix-env --set ${builtins.unsafeDiscardStringContext firstGeneration}
+
+    ${if postInstall == null then "" else ''
+    exec ${postInstall}/bin/post-install
+    ''}
   '';
 
   firstGeneration = with pkgs; buildEnv {
