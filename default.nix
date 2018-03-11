@@ -16,7 +16,21 @@ let
       rev = self.master_config.cardano_rev;
       sha256 = self.master_config.cardano_hash;
     };
-    cardanoPkgs = import self.cardanoSrc { gitrev = self.cardanoSrc.rev; };
+    cardanoPkgs = import self.cardanoSrc {
+      gitrev = self.cardanoSrc.rev;
+      config = {
+        packageOverrides = pkgs: {
+          rocksdb = pkgs.rocksdb.overrideDerivation (drv: {
+            outputs = [ "dev" "out" "static" ];
+            postInstall = ''
+              ${drv.postInstall}
+              mkdir -pv $static/lib/
+              mv -vi $out/lib/librocksdb.a $static/lib/
+            '';
+          });
+        };
+      };
+    };
     daedalus = self.callPackage ./linux.nix {};
     bundle = self.callPackage ./nix-bundle.nix {};
     rawapp = self.callPackage ./rawapp.nix {};
