@@ -32,10 +32,7 @@ let
       };
     };
     daedalus = self.callPackage ./linux.nix {};
-    bundle = self.callPackage ./nix-bundle.nix {};
     rawapp = self.callPackage ./rawapp.nix {};
-    tarball = self.callPackage ./tarball.nix {};
-    tarballInstaller = self.callPackage ./tarball-installer.nix {};
     nix-bundle = import (pkgs.fetchFromGitHub {
       owner = "input-output-hk";
       repo = "nix-bundle";
@@ -81,26 +78,5 @@ let
       installedPackages = [ self.daedalus self.postInstall self.namespaceHelper ];
       postInstall = self.postInstall;
     }).installerBundle;
-    configFiles = with self; pkgs.runCommand "cardano-config" {} ''
-      mkdir -pv $out
-      cd $out
-      cp -vi ${cardanoPkgs.cardano-sl.src + "/configuration.yaml"} configuration.yaml
-      cp -vi ${cardanoPkgs.cardano-sl.src + "/mainnet-genesis-dryrun-with-stakeholders.json"} mainnet-genesis-dryrun-with-stakeholders.json
-      cp -vi ${cardanoPkgs.cardano-sl.src + "/mainnet-genesis.json"} mainnet-genesis.json
-      cp -vi ${cardanoPkgs.cardano-sl.src + "/../log-configs/daedalus.yaml"} daedalus.yaml
-      cp -vi ${topologyFile} topology.yaml
-    '';
-    topologyFile = self.topologies.${cluster};
-    topologies.mainnet = pkgs.writeText "topology.yaml" ''
-      wallet:
-        relays:
-          [
-            [
-              { host: relays.cardano-mainnet.iohk.io }
-            ]
-          ]
-        valency: 1
-        fallbacks: 7
-    '';
   };
 in pkgs.lib.makeScope pkgs.newScope packages

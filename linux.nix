@@ -1,6 +1,6 @@
 { stdenv, runCommand, writeText, writeScriptBin, fetchurl, fetchFromGitHub, openssl, electron,
 coreutils, utillinux, procps, cluster,
-rawapp, master_config, cardanoPkgs, configFiles }:
+rawapp, master_config, cardanoPkgs }:
 
 let
   # closure size TODO list
@@ -25,6 +25,48 @@ let
     mkdir -pv $out/bin/
     cp ${openssl}/bin/openssl $out/bin/
   '';
+  configFiles = runCommand "cardano-config" {} ''
+    mkdir -pv $out
+    cd $out
+    cp -vi ${cardanoPkgs.cardano-sl.src + "/configuration.yaml"} configuration.yaml
+    cp -vi ${cardanoPkgs.cardano-sl.src + "/mainnet-genesis-dryrun-with-stakeholders.json"} mainnet-genesis-dryrun-with-stakeholders.json
+    cp -vi ${cardanoPkgs.cardano-sl.src + "/mainnet-genesis.json"} mainnet-genesis.json
+    cp -vi ${cardanoPkgs.cardano-sl.src + "/../log-configs/daedalus.yaml"} daedalus.yaml
+    cp -vi ${topologies.${cluster}} topology.yaml
+  '';
+  topologies = {
+    # TODO DEVOPS-690 integration
+    mainnet = writeText "topology.yaml" ''
+      wallet:
+        relays:
+          [
+            [
+              { host: relays.cardano-mainnet.iohk.io }
+            ]
+          ]
+        valency: 1
+        fallbacks: 7
+    '';
+    staging = writeText "topology.yaml" ''
+      wallet:
+        relays:
+          [
+            [
+              { host: relays.awstest.iohkdev.io }
+            ]
+          ]
+        valency: 1
+        fallbacks: 7
+    '';
+  };
+  perClusterConfig = {
+    mainnet = {
+      key = "mainnet_wallet_macos64";
+    };
+    staging = {
+      key = "mainnet_dryrun_macos64";
+    };
+  };
   launcherConfig = writeText "launcher-config.json" (builtins.toJSON {
     nodePath = "${cardanoProgs}/bin/cardano-node";
     nodeArgs = [
@@ -46,7 +88,7 @@ let
     reportServer = "http://report-server.cardano-mainnet.iohk.io:8080";
     configuration = {
       filePath = "${configFiles}/configuration.yaml";
-      key = "mainnet_wallet_macos64";
+      key = perClusterConfig.${cluster};
       systemStart = null;
       seed = null;
     };
