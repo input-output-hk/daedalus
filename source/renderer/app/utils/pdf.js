@@ -5,7 +5,6 @@ import { defineMessages } from 'react-intl';
 import paperWalletPage1 from '../assets/pdf/paper-wallet-certificate-page-1.png';
 import paperWalletPage2 from '../assets/pdf/paper-wallet-certificate-page-2.png';
 import environment from '../../../common/environment';
-import { environmentSpecificMessages } from '../i18n/global-messages';
 
 const messages = defineMessages({
   walletAddressLabel: {
@@ -58,6 +57,7 @@ const writeRotatedText = ({ text, width, height }) => {
 type DownloadPaperWalletCertificateParams = {
   address: string,
   mnemonics: Array<string>,
+  intl: Object,
   callback?: Function,
 };
 
@@ -79,7 +79,11 @@ export const downloadPaperWalletCertificate = (
         height: 841.89,
       },
       { // Wallet address
-        image: writeRotatedText({ text: intl.formatMessage(messages.walletAddressLabel), width: 500, height: 10 }),
+        image: writeRotatedText({
+          text: intl.formatMessage(messages.walletAddressLabel),
+          width: 500,
+          height: 10,
+        }),
         fit: [500, 10],
         alignment: 'center',
         absolutePosition: { x: 0, y: 620 },
@@ -105,7 +109,11 @@ export const downloadPaperWalletCertificate = (
         absolutePosition: { x: 0, y: 515 },
       },
       { // Daedalus version and build
-        image: writeRotatedText({ text: `Daedalus ${intl.formatMessage(messages.releaseVersion)}#${environment.build}`, width: 100, height: 8 }),
+        image: writeRotatedText({
+          text: `Daedalus ${intl.formatMessage(messages.releaseVersion)}#${environment.build}`,
+          width: 100,
+          height: 8,
+        }),
         fit: [100, 8],
         absolutePosition: { x: 343, y: 493 },
       },
@@ -118,7 +126,11 @@ export const downloadPaperWalletCertificate = (
         pageBreak: 'before',
       },
       { // Shielded recovery phrase
-        image: writeRotatedText({ text: intl.formatMessage(messages.shieldedRecoveryPhraseLabel), width: 500, height: 10 }),
+        image: writeRotatedText({
+          text: intl.formatMessage(messages.shieldedRecoveryPhraseLabel),
+          width: 500,
+          height: 10,
+        }),
         fit: [500, 10],
         alignment: 'center',
         absolutePosition: { x: 0, y: 270 },
@@ -199,7 +211,11 @@ export const downloadPaperWalletCertificate = (
         absolutePosition: { x: 175, y: 215 },
       },
       { // Password
-        image: writeRotatedText({ text: intl.formatMessage(messages.passwordLabel), width: 500, height: 10 }),
+        image: writeRotatedText({
+          text: intl.formatMessage(messages.passwordLabel),
+          width: 500,
+          height: 10,
+        }),
         fit: [500, 10],
         alignment: 'center',
         absolutePosition: { x: 0, y: 180 },

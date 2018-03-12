@@ -1,8 +1,14 @@
 // @flow
 import type { AdaWalletCertificateRecoveryPhraseResponse } from './types';
-import { generate15WordMnemonic } from '../../utils/crypto';
+import { scramblePaperWalletMnemonic } from '../../utils/crypto';
 
-// eslint-disable-next-line
-export const getAdaWalletCertificateRecoveryPhrase = (): AdaWalletCertificateRecoveryPhraseResponse => (
-  generate15WordMnemonic()
+export type GetAdaWalletCertificateRecoveryPhraseParams = {
+  passphrase: string,
+  input: string,
+};
+
+export const getAdaWalletCertificateRecoveryPhrase = (
+  { passphrase, input }: GetAdaWalletCertificateRecoveryPhraseParams
+): AdaWalletCertificateRecoveryPhraseResponse => (
+  scramblePaperWalletMnemonic(passphrase, input)
 );

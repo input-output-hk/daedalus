@@ -211,7 +211,7 @@ export default class AdaWalletsStore extends WalletStore {
     intl: Object,
   }) => {
     try {
-      // Stop poller
+      // Stop polling
       this.actions.networkStatus.stopPoller.trigger();
 
       // Set inProgress state to show spinner if is needed
@@ -225,9 +225,12 @@ export default class AdaWalletsStore extends WalletStore {
       // Save entered password
       this.walletCertificatePassword = params.password;
 
-      // Generate 15-word mnemonic using crypto library
+      // Generate paper wallet scrambled mnemonic
       const walletCertificateRecoveryPhrase: ?GetWalletCertificateRecoveryPhraseResponse = await (
-        this.getWalletCertificateRecoveryPhraseRequest.execute().promise
+        this.getWalletCertificateRecoveryPhraseRequest.execute({
+          passphrase: params.password,
+          input: recoveryPhrase.join(' '),
+        }).promise
       );
       this.walletCertificateRecoveryPhrase = walletCertificateRecoveryPhrase;
 
@@ -263,9 +266,13 @@ export default class AdaWalletsStore extends WalletStore {
       // download pdf certificate
       this._downloadCertificate(walletAddress, walletCertificateRecoveryPhrase, params.intl);
 
-      // Now poller can continue with work
+      // Resume polling
       this.actions.networkStatus.restartPoller.trigger();
     } catch (error) {
+      // TODO: delete wallet if it was created in try section
+
+      // Resume polling
+      this.actions.networkStatus.restartPoller.trigger();
       throw error;
     }
   };
@@ -273,10 +280,10 @@ export default class AdaWalletsStore extends WalletStore {
   _downloadCertificate = action((address: string, recoveryPhrase: Array<string>, intl: Object) => {
     setTimeout(() => { // Timeout is used to allow enought time for button text re-rendering
       downloadPaperWalletCertificate({
-        address: address,
+        address,
         mnemonics: recoveryPhrase,
         intl,
-        callback: (e) => {
+        callback: () => {
           // Reset progress
           this._updateCertificateCreationState(false);
           // Update certificate generator step
@@ -285,9 +292,6 @@ export default class AdaWalletsStore extends WalletStore {
       });
     }, 100);
   });
-
-
-
 
   _updateCertificateCreationState = action((state: boolean) => {
     this.generatingCertificateInProgress = state;

@@ -18,7 +18,8 @@ export default class WalletsActions {
   deleteWallet: Action<{ walletId: string }> = new Action();
   sendMoney: Action<{ receiver: string, amount: string, password: ?string }> = new Action();
   chooseWalletExportType: Action<{ walletExportType: walletExportTypeChoices }> = new Action();
-  generateCertificate: Action<{ password: string, repeatPassword: string }> = new Action();
+  // eslint-disable-next-line max-len
+  generateCertificate: Action<{ password: string, repeatPassword: string, intl: Object }> = new Action();
   verifyCertificate: Action<{ recoveryPhrase: Array<string>, password: string }> = new Action();
   updateCertificateStep: Action<any> = new Action();
   closeCertificateGeneration: Action<any> = new Action();

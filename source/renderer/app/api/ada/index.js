@@ -168,6 +168,11 @@ export type ExportWalletToFileRequest = {
   password: ?string
 };
 export type ExportWalletToFileResponse = [];
+export type GetWalletCertificateRecoveryPhraseRequest = {
+  passphrase: string,
+  input: string,
+};
+
 // const notYetImplemented = () => new Promise((_, reject) => {
 //   reject(new ApiMethodNotYetImplementedError());
 // });
@@ -390,11 +395,14 @@ export default class AdaApi {
     }
   }
 
-  getWalletCertificateRecoveryPhrase(): Promise<GetWalletCertificateRecoveryPhraseResponse> {
+  getWalletCertificateRecoveryPhrase(
+    request: GetWalletCertificateRecoveryPhraseRequest
+  ): Promise<GetWalletCertificateRecoveryPhraseResponse> {
     Logger.debug('AdaApi::getWalletCertificateRecoveryPhrase called');
+    const { passphrase, input } = request;
     try {
       const response: Promise<AdaWalletRecoveryPhraseResponse> = new Promise(
-        (resolve) => resolve(getAdaWalletCertificateRecoveryPhrase())
+        (resolve) => resolve(getAdaWalletCertificateRecoveryPhrase({ passphrase, input }))
       );
       Logger.debug('AdaApi::getWalletCertificateRecoveryPhrase success');
       return response;

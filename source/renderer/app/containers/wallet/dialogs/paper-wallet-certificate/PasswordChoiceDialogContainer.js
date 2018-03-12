@@ -22,11 +22,8 @@ export default class PasswordChoiceDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   onContinue = (values: { password: string, repeatPassword: string }) => {
-    this.context.intl
-    const data = {
-      ...values,
-      intl: this.context.intl,
-    }
+    const { intl } = this.context;
+    const data = { ...values, intl };
     this.props.actions.ada.wallets.generateCertificate.trigger(data);
   };
 

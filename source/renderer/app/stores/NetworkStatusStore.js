@@ -247,7 +247,7 @@ export default class NetworkStatusStore extends Store {
   };
 
   _restartPoller = () => {
-    this._pollSyncProgress();
+    if (!this._updateSyncProgressPollInterval) this._pollSyncProgress();
   };
 
   _redirectToWalletAfterSync = () => {
