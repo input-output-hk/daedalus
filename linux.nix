@@ -64,13 +64,13 @@ let
       key = "mainnet_wallet_macos64";
     };
     staging = {
-      key = "mainnet_dryrun_macos64";
+      key = "mainnet_dryrun_wallet_macos64";
     };
   };
   launcherConfig = writeText "launcher-config.json" (builtins.toJSON {
     nodePath = "${cardanoProgs}/bin/cardano-node";
     nodeArgs = [
-      "--update-latest-path" "$HOME/.local/share/Daedalus/mainnet/installer.sh"
+      "--update-latest-path" "$HOME/.local/share/Daedalus/${cluster}/installer.sh"
       "--keyfile" "Secrets/secret.key"
       "--wallet-db-path" "Wallet/"
       "--update-server" "https://update-cardano-mainnet.iohk.io"
@@ -84,19 +84,19 @@ let
     ];
     nodeDbPath = "DB/";
     nodeLogConfig = "${configFiles}/daedalus.yaml";
-    nodeLogPath = "$HOME/.local/share/Daedalus/mainnet/logs/cardano-node.log";
+    nodeLogPath = "$HOME/.local/share/Daedalus/${cluster}/logs/cardano-node.log";
     reportServer = "http://report-server.cardano-mainnet.iohk.io:8080";
     configuration = {
       filePath = "${configFiles}/configuration.yaml";
-      key = perClusterConfig.${cluster};
+      key = perClusterConfig.${cluster}.key;
       systemStart = null;
       seed = null;
     };
     updaterPath = "/bin/update-runner";
-    updateArchive = "$HOME/.local/share/Daedalus/mainnet/installer.sh";
+    updateArchive = "$HOME/.local/share/Daedalus/${cluster}/installer.sh";
     updateWindowsRunner = null;
     nodeTimeoutSec = 30;
-    launcherLogsPrefix = "$HOME/.local/share/Daedalus/mainnet/logs/";
+    launcherLogsPrefix = "$HOME/.local/share/Daedalus/${cluster}/logs/";
     walletPath = "${daedalus_frontend}/bin/daedalus";
     walletArgs = [];
   });
