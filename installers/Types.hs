@@ -4,6 +4,7 @@ where
 
 import           Data.Text                           (Text, pack, toLower)
 import           Data.String                         (IsString)
+import qualified Universum
 import           Prelude
 
 
@@ -55,7 +56,7 @@ class (Bounded a, Eq a) => Flag a where
   opposite = fromBool . not . toBool
 
 lowerShowT :: Show a => a -> Text
-lowerShowT = toLower . pack . show
+lowerShowT = toLower . Universum.show
 
 
 

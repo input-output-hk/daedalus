@@ -1,4 +1,5 @@
 {-# LANGUAGE LambdaCase          #-}
+{-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE RecordWildCards     #-}
 module Config
@@ -108,7 +109,6 @@ generateConfig Request{..} configRoot outFile = handle $ do
 
   Dhall.detailed $ do
     let inText = LT.fromStrict $ dhallTopExpr (pack configRoot) rConfig rOS rCluster
-    print inText
     expr <- case Dhall.Parser.exprFromText (Directed "(stdin)" 0 0 0 0) inText of
               Left  err  -> Control.Exception.throwIO err
               Right expr -> return expr
@@ -124,6 +124,7 @@ generateConfig Request{..} configRoot outFile = handle $ do
 
     Data.ByteString.writeFile outFile (Data.Yaml.encode json)
 
+-- | Generic error handler: be it encoding/decoding, file IO, parsing or type-checking.
 handle :: IO a -> IO a
 handle = Control.Exception.handle handler
   where
