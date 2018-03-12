@@ -30,8 +30,7 @@ let
 
     source ${utils}
 
-    set -x
-    set -e
+    set -xe
 
     if [ ! -e "$1" ]; then
       echo "update file not found"
@@ -61,8 +60,7 @@ let
   enter = pkgs.writeScriptBin "enter-chroot" ''
     #!/usr/bin/env bash
 
-    set -x
-    set -e
+    set -xe
 
     cd $HOME/${installationSlug}
     mkdir -p etc
