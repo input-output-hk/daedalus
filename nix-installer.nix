@@ -34,7 +34,7 @@ let
 
     if [ ! -e "$1" ]; then
       echo "update file not found"
-      return -1
+      exit -1
     fi
     pwd
     id

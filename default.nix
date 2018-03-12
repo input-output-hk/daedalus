@@ -62,8 +62,11 @@ let
     '';
     postInstall = pkgs.writeScriptBin "post-install" ''
       #!${pkgs.stdenv.shell}
+
+      set -ex
+
       test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
-      export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus/mainnet"
+      export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus/${cluster}"
       mkdir -pv $DAEDALUS_DIR
       cp -f ${self.iconPath} $DAEDALUS_DIR/icon.png
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper $DAEDALUS_DIR/namespaceHelper
