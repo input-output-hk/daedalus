@@ -10,7 +10,7 @@ module RewriteLibs
 
 import           Universum hiding (isPrefixOf)
 
-import           Data.List (last)
+import           Data.List (last, notElem)
 import           Data.Text (isPrefixOf, isSuffixOf, splitOn)
 import           System.Directory (copyFile, getPermissions, setOwnerWritable, setPermissions)
 import           Text.Megaparsec (anyChar, eof, eol, manyTill, parse, someTill, spaceChar)
