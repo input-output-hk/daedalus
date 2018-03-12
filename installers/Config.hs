@@ -2,11 +2,13 @@
 {-# LANGUAGE NoImplicitPrelude   #-}
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE RecordWildCards     #-}
+
+{-# LANGUAGE TypeOperators     #-}
+{-# LANGUAGE DataKinds         #-}
 module Config
   ( generateConfig
   , Request(..)
   , OS(..), Cluster(..), Config(..)
-  , Flag(..), flag
   , optReadLower, argReadLower
   , Options(..), optionsParser
   -- Re-export Turtle:
@@ -23,14 +25,10 @@ import           Data.Maybe
 import           Data.Optional                       (Optional)
 import           Data.Semigroup
 import           Data.Text                           (Text, pack, unpack)
-import qualified Data.Text.Lazy                   as LT
 import qualified Data.Yaml
 
 import qualified Dhall
-import qualified Dhall.Import
 import qualified Dhall.JSON
-import qualified Dhall.Parser
-import qualified Dhall.TypeCheck
 
 import qualified GHC.IO.Encoding
 
@@ -38,7 +36,6 @@ import qualified System.IO
 import qualified System.Exit
 
 import           Text.Printf                         (printf)
-import           Text.Trifecta.Delta                 (Delta(..))
 import           Turtle                              (optional)
 import           Turtle.Options
 
@@ -47,11 +44,14 @@ import           Types
 
 
 
-flag :: Flag a => a -> ArgName -> Char -> Optional HelpMessage -> Parser a
-flag effect long ch help = (\case
-                               True  -> effect
-                               False -> opposite effect) <$> switch long ch help
-
+-- | Enum-instanced sum types as case-insensitive option values.
+--
+-- λ> data Foo = Bar | Baz deriving (Show, Enum, Bounded)
+-- λ> let x = enumFromTo minBound maxBound :: [Foo]
+-- λ> x
+-- [Bar,Baz]
+-- λ> fmap ((fmap toLower) . show) x
+-- ["bar","baz"]
 diagReadCaseInsensitive :: (Bounded a, Enum a, Read a, Show a) => String -> Maybe a
 diagReadCaseInsensitive str = diagRead $ Data.Char.toLower <$> str
   where mapping    = Map.fromList [ (Data.Char.toLower <$> show x, x) | x <- enumFromTo minBound maxBound ]
@@ -69,6 +69,7 @@ data Options = Options
   , oBuildJob      :: Maybe BuildJob
   , oCertPass      :: Maybe Text
   , oCluster       :: Cluster
+  , oAppName       :: AppName
   , oDaedalusVer   :: Version
   , oOutput        :: Text
   , oPullReq       :: Maybe PullReq
@@ -79,50 +80,37 @@ data Options = Options
 optionsParser :: Parser Options
 optionsParser = Options
   <$> (fromMaybe Cardano <$> (optional $
-                optReadLower "api"                 'a' "Backend API:  cardano or etc"))
-  <*> (optional   $
-      (BuildJob  <$> optText "build-job"           'b' "CI Build Job/ID"))
-  <*> (optional   $
-                     optText "cert-pass"           'p' "Certificate password")
-  <*> (fromMaybe Mainnet <$> (optional $
-                optReadLower "cluster"             'c' "Cluster the resulting installer will target:  mainnet or staging"))
+                   optReadLower "api"                 'a' "Backend API:  cardano or etc"))
+  <*> (optional      $
+      (BuildJob     <$> optText "build-job"           'b' "CI Build Job/ID"))
+  <*> (optional      $
+                        optText "cert-pass"           'p' "Certificate password")
+  <*> (fromMaybe Mainnet    <$> (optional $
+                   optReadLower "cluster"             'c' "Cluster the resulting installer will target:  mainnet or staging"))
+  <*> (fromMaybe "daedalus" <$> (optional $
+      (AppName      <$> optText "appname"             'n' "Application name:  daedalus or..")))
   <*> (fromMaybe "dev"   <$> (optional $
-      (Version   <$> optText "daedalus-version"    'v' "Daedalus version string")))
-  <*>                optText "output"              'o' "Installer output file"
+      (Version      <$> optText "daedalus-version"    'v' "Daedalus version string")))
+  <*>                   optText "output"              'o' "Installer output file"
   <*> (optional   $
-      (PullReq   <$> optText "pull-request"        'r' "Pull request #"))
-  <*> flag TestInstaller     "test-installer"      't' "Test installers after building"
+      (PullReq      <$> optText "pull-request"        'r' "Pull request #"))
+  <*> (testInstaller <$> switch "test-installer"      't' "Test installers after building")
   <*> pure Buildkite -- NOTE: this is filled in by auto-detection
 
 
 
-lshow :: Show a => a -> Text
-lshow = pack . fmap Data.Char.toLower . show
-
 dhallTopExpr :: Text -> Config -> OS -> Cluster -> Text
-dhallTopExpr path Launcher os cluster = path <> "/launcher.dhall ( "<>path<>"/" <> lshow cluster <> ".dhall "<>path<>"/" <> lshow os <> ".dhall ) "<>path<>"/" <> lshow os <> ".dhall"
-dhallTopExpr path Topology os cluster = path <> "/topology.dhall ( "<>path<>"/" <> lshow cluster <> ".dhall "<>path<>"/" <> lshow os <> ".dhall )"
+dhallTopExpr path Launcher os cluster = path <> "/launcher.dhall ( "<>path<>"/" <> lshowText cluster <> ".dhall "<>path<>"/" <> lshowText os <> ".dhall ) "<>path<>"/" <> lshowText os <> ".dhall"
+dhallTopExpr path Topology os cluster = path <> "/topology.dhall ( "<>path<>"/" <> lshowText cluster <> ".dhall "<>path<>"/" <> lshowText os <> ".dhall )"
 
 generateConfig :: Request -> FilePath -> FilePath -> IO ()
 generateConfig Request{..} configRoot outFile = handle $ do
   GHC.IO.Encoding.setLocaleEncoding GHC.IO.Encoding.utf8
 
-  Dhall.detailed $ do
-    let inText = LT.fromStrict $ dhallTopExpr (pack configRoot) rConfig rOS rCluster
-    expr <- case Dhall.Parser.exprFromText (Directed "(stdin)" 0 0 0 0) inText of
-              Left  err  -> Control.Exception.throwIO err
-              Right expr -> return expr
+  let inText = dhallTopExpr (pack configRoot) rConfig rOS rCluster
 
-    expr' <- Dhall.Import.load expr
-    case Dhall.TypeCheck.typeOf expr' of
-      Left  err -> Control.Exception.throwIO err
-      Right _   -> return ()
-
-    json <- case Dhall.JSON.dhallToJSON expr' of
-              Left err  -> Control.Exception.throwIO err
-              Right json -> return json
-
-    Data.ByteString.writeFile outFile (Data.Yaml.encode json)
+  Data.ByteString.writeFile outFile =<<
+    Data.Yaml.encode <$> Dhall.detailed (Dhall.JSON.codeToValue "(stdin)" inText)
 
 -- | Generic error handler: be it encoding/decoding, file IO, parsing or type-checking.
 handle :: IO a -> IO a

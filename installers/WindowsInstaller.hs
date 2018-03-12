@@ -113,7 +113,7 @@ writeInstallerNSIS (Version fullVersion') clusterName = do
 
     writeFile "daedalus.nsi" $ nsis $ do
         _ <- constantStr "Version" (str fullVersion)
-        _ <- constantStr "Cluster" (str $ unpack $ lowerShowT clusterName)
+        _ <- constantStr "Cluster" (str $ unpack $ lshowText clusterName)
         name "Daedalus ($Version)"                  -- The name of the installer
         outFile "daedalus-win64-$Version-$Cluster-installer.exe"           -- Where to produce the installer
         unsafeInjectGlobal $ "!define MUI_ICON \"icons\\64x64.ico\""
@@ -191,7 +191,7 @@ main :: Options -> IO ()
 main opts@Options{..}  = do
     echo "Writing version.txt"
     let fullVersion = Version $ fromVer oDaedalusVer <> ".0"
-        fullName    = "daedalus-win64-" <> fromVer fullVersion <> "-" <> lowerShowT oCluster <> "-installer.exe"
+        fullName    = "daedalus-win64-" <> fromVer fullVersion <> "-" <> lshowText oCluster <> "-installer.exe"
     TIO.writeFile "version.txt" $ fromVer fullVersion
 
     echo "Generating configuration file:  launcher-config.yaml"

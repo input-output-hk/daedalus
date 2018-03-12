@@ -1,4 +1,6 @@
-{-# LANGUAGE NoImplicitPrelude, RecordWildCards, LambdaCase #-}
+{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE RecordWildCards #-}
 module MacInstaller
     ( main
     , SigningConfig(..)
@@ -108,7 +110,7 @@ makeInstaller opts@Options{..} appRoot = do
       pkgargs :: [ T.Text ]
       pkgargs =
            [ "--identifier"
-           , "org.daedalus.pkg"
+           , "org."<> fromAppName oAppName <>".pkg"
            -- data/scripts/postinstall is responsible for running build-certificates
            , "--scripts", scriptsDir
            , "--component"

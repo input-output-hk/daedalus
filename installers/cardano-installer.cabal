@@ -27,6 +27,7 @@ executable make-installer
                      , megaparsec
                      , nsis
                      , optparse-applicative
+                     , optparse-generic
                      , optional-args
                      , split
                      , system-filepath
