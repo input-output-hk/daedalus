@@ -1,7 +1,21 @@
-with (import (fetchTarball https://github.com/NixOS/nixpkgs/archive/fb235c98d839ae37a639695ad088d19ef8382608.tar.gz) {});
-# NOTE: when bumping nixpkgs, also update nixpkgs-src.json
+let
+  localLib = import ./lib.nix;
+in
+{ system ? builtins.currentSystem
+, config ? {}
+, pkgs ? (import (localLib.fetchNixPkgs) { inherit system config; })
+}:
 
-stdenv.mkDerivation {
+with pkgs;
+
+let
+  # we allow on purpose for cardano-sl to have it's own nixpkgs to avoid rebuilds
+  cardano-sl-src = builtins.fromJSON (builtins.readFile ./cardano-sl-src.json);
+  cardano-sl-pkgs = import (pkgs.fetchgit cardano-sl-src) {
+    gitrev = cardano-sl-src.rev;
+  };
+
+in stdenv.mkDerivation {
   name = "daedalus";
 
   buildInputs = [
