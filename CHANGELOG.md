@@ -5,6 +5,7 @@ Changelog
 =======
 
 ### Features
+- Paper wallets certificate generation ([PR 779](https://github.com/input-output-hk/daedalus/pull/779))
 
 ### Fixes
 
@@ -18,7 +19,6 @@ Changelog
 - Do not block the UI while wallet is being restored/imported ([PR 457](https://github.com/input-output-hk/daedalus/pull/457))
 - Start and stop Mantis Client from Daedalus main process ([PR 568](https://github.com/input-output-hk/daedalus/pull/568))
 - Add ADA and Mantis logo to loader screens ([PR 584](https://github.com/input-output-hk/daedalus/pull/584))
-- Paper wallets certificate generation ui and api integration ([PR 774](https://github.com/input-output-hk/daedalus/pull/774))
 
 ### Fixes
 
