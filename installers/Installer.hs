@@ -16,14 +16,14 @@ import qualified Config
 detectCI :: IO CI
 detectCI = do
   mappveryor <- lookupEnv "APPVEYOR_BUILD_VERSION"
-  mbuildkite <- lookupEnv "BUILDKITE_BUILD_JOB"
+  mbuildkite <- lookupEnv "BUILDKITE_BUILD_NUMBER"
   mtravis    <- lookupEnv "TRAVIS_BUILD_JOB"
   pure $ case (mappveryor, mbuildkite, mtravis) of
            (Nothing, Nothing, Nothing) -> Manual
            (Just _,  Nothing, Nothing) -> Appveyor
            (Nothing, Just _,  Nothing) -> Buildkite
            (Nothing, Nothing, Just _)  -> Travis
-           _              -> error "Conflicting CI environments: more than one of APPVEYOR_BUILD_VERSION, BUILDKITE_BUILD_JOB and TRAVIS_BUILD_JOB set!"
+           _              -> error "Conflicting CI environments: more than one of APPVEYOR_BUILD_VERSION, BUILDKITE_BUILD_NUMBER and TRAVIS_BUILD_JOB set!"
 
 main :: IO ()
 main = do

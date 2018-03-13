@@ -146,19 +146,20 @@ cd installers
           echo "Generating installer for cluster ${cluster}.."
           export DAEDALUS_CLUSTER=${cluster}
                     INSTALLER_PKG="Daedalus-installer-${DAEDALUS_VERSION}-${cluster}.pkg"
-          $INSTALLER/bin/make-installer ${pull_request} ${test_installer}                 \
-                                        ${API:+--api $API}                                \
-                                        --build-job        "${BUILDKITE_BUILD_NUMBER}"    \
-                                        --cluster          "${cluster}"                   \
-                                        --daedalus-version "${DAEDALUS_VERSION}"          \
-                                        --output           "${INSTALLER_PKG}"
+
+          INSTALLER_CMD="$INSTALLER/bin/make-installer ${pull_request} ${test_installer}"
+          INSTALLER_CMD+="  ${API:+--api $API}"
+          INSTALLER_CMD+="  --build-job        ${BUILDKITE_BUILD_NUMBER}"
+          INSTALLER_CMD+="  --cluster          ${cluster}"
+          INSTALLER_CMD+="  --daedalus-version ${DAEDALUS_VERSION}"
+          INSTALLER_CMD+="  --output           ${INSTALLER_PKG}"
+          $nix_shell --run "${INSTALLER_CMD}"
 
           APP_NAME="csl-daedalus"
 
-          if test -d dist -a -f "dist/${INSTALLER_PKG}"
+          if test -f "${INSTALLER_PKG}"
           then
                   echo "Uploading the installer package.."
-                  cd dist
                   mkdir -p ${APP_NAME}
                   mv "${INSTALLER_PKG}" "${APP_NAME}/${INSTALLER_PKG}"
 
@@ -167,10 +168,8 @@ cd installers
                           export PATH=${BUILDKITE_BIN_PATH:-}:$PATH
                           buildkite-agent artifact upload "${APP_NAME}/${INSTALLER_PKG}" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
                   fi
-                  cd ..
           else
                   echo "Installer was not made."
-                  mkdir -p dist/${APP_NAME}
           fi
     done
 cd ..
