@@ -25,6 +25,10 @@ in stdenv.mkDerivation {
     gnumake
   ];
 
+  passthru = {
+    inherit (cardano-sl-pkgs) daedalus-bridge;
+  };
+
   src = null;
 
 }

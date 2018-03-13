@@ -22,11 +22,12 @@ import           Control.Monad (unless)
 import           Data.Text (Text)
 import qualified Data.Text as T
 import           System.Directory (copyFile, createDirectoryIfMissing, doesFileExist, renameFile)
+import           System.Environment (lookupEnv)
 import           System.FilePath ((</>), FilePath)
 import           System.FilePath.Glob (glob)
-import           Filesystem.Path.CurrentOS (encodeString)
+import           Filesystem.Path.CurrentOS (encodeString, decodeString)
 import           Text.Printf (printf)
-import           Turtle (ExitCode (..), echo, proc, procs, shells, which, Managed, with)
+import           Turtle (ExitCode (..), echo, proc, procs, shells, which, Managed, with, chmod, writable)
 import           Turtle.Line (unsafeTextToLine)
 
 import           RewriteLibs (chain)
@@ -82,19 +83,29 @@ makeInstaller opts@Options{..} appRoot = do
   echo "Preparing files ..."
   case oAPI of
     Cardano -> do
+      -- fixme: when DEVOPS-690 adds option parsing, use a
+      -- command-line argument instead of DAEDALUS_BRIDGE var.
+      -- fixme: use Filesystem.Path and Turtle.Prelude functions
+      Just bridge <- lookupEnv "DAEDALUS_BRIDGE"
+
       -- Executables
-      copyFile "cardano-launcher" (dir </> "cardano-launcher")
-      copyFile "cardano-node" (dir </> "cardano-node")
+      forM ["cardano-launcher", "cardano-node"] $ \f -> do
+        copyFile (bridge </> "bin" </> f) (dir </> f)
+        chmod writable (decodeString $ dir </> f)
 
-      -- Config files
-      copyFile "configuration.yaml"   (dir </> "configuration.yaml")
-      copyFile "launcher-config.yaml" (dir </> "launcher-config.yaml")
-      copyFile "log-config-prod.yaml" (dir </> "log-config-prod.yaml")
-      copyFile "wallet-topology.yaml" (dir </> "wallet-topology.yaml")
+      -- Config files (from daedalus-bridge)
+      copyFile (bridge </> "config/configuration.yaml") (dir </> "configuration.yaml")
+      genesisFiles <- glob (bridge </> "config/*genesis*.json")
+      procs "cp" (fmap toText (genesisFiles <> [dir])) mempty
+      copyFile (bridge </> "config/log-config-prod.yaml") (dir </> "log-config-prod.yaml")
 
-      -- Genesis
+      -- Genesis (from daedalus-bridge)
       genesisFiles <- glob "*genesis*.json"
       procs "cp" (fmap toText (genesisFiles <> [dir])) mempty
+
+      -- Config yaml (generated from dhall files)
+      copyFile "launcher-config.yaml" (dir </> "launcher-config.yaml")
+      copyFile "wallet-topology.yaml" (dir </> "wallet-topology.yaml")
 
       -- SSL
       copyFile "build-certificates-unix.sh" (dir </> "build-certificates-unix.sh")
