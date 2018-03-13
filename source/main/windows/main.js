@@ -2,13 +2,16 @@ import path from 'path';
 import { app, BrowserWindow, ipcMain, Menu } from 'electron';
 import environment from '../../common/environment';
 import ipcApi from '../ipc-api';
+import { runtimeFolderPath } from './config';
 
 export const createMainWindow = () => {
+  const iconPath = runtimeFolderPath + "/icon.png";
   // Construct new BrowserWindow
   const window = new BrowserWindow({
     show: false,
     width: 1150,
-    height: 870
+    height: 870,
+    icon: iconPath,
   });
 
   window.setMinimumSize(900, 600);

@@ -1,5 +1,4 @@
 with import (import ./fetchNixpkgs.nix (builtins.fromJSON (builtins.readFile ./nixpkgs-src.json))) {};
-# NOTE: when bumping nixpkgs, also update nixpkgs-src.json and .travis.yml
 
 stdenv.mkDerivation {
   name = "daedalus";
