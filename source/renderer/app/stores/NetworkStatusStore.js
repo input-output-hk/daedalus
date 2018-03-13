@@ -49,6 +49,7 @@ export default class NetworkStatusStore extends Store {
 
   _timeDifferencePollInterval: ?number = null;
   _updateSyncProgressPollInterval: ?number = null;
+  _pollerBlocked: ?boolean = false;
 
   @action initialize() {
     super.initialize();
@@ -162,6 +163,9 @@ export default class NetworkStatusStore extends Store {
   }
 
   @action _updateSyncProgress = async () => {
+    // if cycle is not finished poller will try to poll no matter if interval is stoped
+    // to avoid that on slower machines _pollerBlocked flag is introduced
+    if (this._pollerBlocked) return;
     try {
       const difficulty = await this.syncProgressRequest.execute().promise;
       runInAction('update difficulties', () => {
@@ -242,12 +246,17 @@ export default class NetworkStatusStore extends Store {
     this._updateSyncProgress();
   }
 
+  // reset poll interval and block polling to avoid waiting last started interval to finish
   _stopPoller = () => {
+    this._pollerBlocked = true;
     if (this._updateSyncProgressPollInterval) clearInterval(this._updateSyncProgressPollInterval);
   };
 
+  // reset poll interval and poller flag
   _restartPoller = () => {
-    if (!this._updateSyncProgressPollInterval) this._pollSyncProgress();
+    this._pollerBlocked = false;
+    // restart if exists, start new if not exists
+    this._pollSyncProgress();
   };
 
   _redirectToWalletAfterSync = () => {

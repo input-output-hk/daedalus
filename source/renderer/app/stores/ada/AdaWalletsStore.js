@@ -62,6 +62,9 @@ export default class AdaWalletsStore extends WalletStore {
     wallets.finishCertificate.listen(this._finishCertificate);
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishCreation);
+    this.registerReactions([
+      this._restartPoller,
+    ]);
   }
 
   _sendMoney = async (transactionDetails: {
@@ -271,14 +274,10 @@ export default class AdaWalletsStore extends WalletStore {
         params.intl,
         params.filePath,
       );
-
-      // Resume polling
-      this.actions.networkStatus.restartPoller.trigger();
     } catch (error) {
-      // TODO: delete wallet if it was created in try section
-
-      // Resume polling
-      this.actions.networkStatus.restartPoller.trigger();
+      if (wallet) {
+        await this.deleteWalletRequest.execute({ walletId: wallet.id });
+      }
       throw error;
     }
   };
@@ -361,6 +360,15 @@ export default class AdaWalletsStore extends WalletStore {
     this.generatingCertificateInProgress = false;
     this.certificateTemplate = false;
     this.certificateStep = null;
+  };
+
+  // =================== REACTIONS ==================== //
+
+  // reac on Delete Wallet and if deletion is done, reset poller
+  _restartPoller = () => {
+    if (this.deleteWalletRequest.wasExecuted) {
+      this.actions.networkStatus.restartPoller.trigger();
+    }
   };
 
   // =================== PRIVATE API ==================== //
