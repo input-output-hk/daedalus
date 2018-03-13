@@ -209,6 +209,7 @@ export default class AdaWalletsStore extends WalletStore {
     password: string,
     repeatPassword: string,
     intl: Object,
+    filePath: string,
   }) => {
     try {
       // Stop polling
@@ -264,7 +265,12 @@ export default class AdaWalletsStore extends WalletStore {
       }
 
       // download pdf certificate
-      this._downloadCertificate(walletAddress, walletCertificateRecoveryPhrase, params.intl);
+      this._downloadCertificate(
+        walletAddress,
+        walletCertificateRecoveryPhrase,
+        params.intl,
+        params.filePath,
+      );
 
       // Resume polling
       this.actions.networkStatus.restartPoller.trigger();
@@ -277,17 +283,27 @@ export default class AdaWalletsStore extends WalletStore {
     }
   };
 
-  _downloadCertificate = action((address: string, recoveryPhrase: Array<string>, intl: Object) => {
+  _downloadCertificate = action((
+    address: string,
+    recoveryPhrase: Array<string>,
+    intl: Object,
+    filePath: string,
+  ) => {
     setTimeout(() => { // Timeout is used to allow enought time for button text re-rendering
       downloadPaperWalletCertificate({
         address,
         mnemonics: recoveryPhrase,
         intl,
-        callback: () => {
+        filePath,
+        onSuccess: () => {
           // Reset progress
           this._updateCertificateCreationState(false);
           // Update certificate generator step
           this._updateCertificateStep();
+        },
+        onError: () => {
+          // Reset progress
+          this._updateCertificateCreationState(false);
         },
       });
     }, 100);

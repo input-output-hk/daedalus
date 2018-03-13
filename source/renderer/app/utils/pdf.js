@@ -2,6 +2,7 @@
 import * as pdfMake from 'pdfmake/build/pdfmake';
 import * as pdfFonts from 'pdfmake/build/vfs_fonts';
 import { defineMessages } from 'react-intl';
+import fs from 'fs';
 import paperWalletPage1 from '../assets/pdf/paper-wallet-certificate-page-1.png';
 import paperWalletPage2 from '../assets/pdf/paper-wallet-certificate-page-2.png';
 import environment from '../../../common/environment';
@@ -56,13 +57,15 @@ const writeRotatedText = ({ text, width, height }) => {
 
 type DownloadPaperWalletCertificateParams = {
   address: string,
+  filePath: string,
   mnemonics: Array<string>,
   intl: Object,
-  callback?: Function,
+  onSuccess?: Function,
+  onError?: Function,
 };
 
 export const downloadPaperWalletCertificate = (
-  { address, mnemonics, intl, callback }: DownloadPaperWalletCertificateParams
+  { address, mnemonics, intl, onSuccess, onError, filePath }: DownloadPaperWalletCertificateParams
 ) => {
   // Since there is no auto-wrapping we need to split wallet address into 2 lines manually
   const middleIndex = Math.round(address.length / 2);
@@ -225,7 +228,14 @@ export const downloadPaperWalletCertificate = (
     pageSize: 'A4',
   };
 
-  pdfMake.createPdf(docDefinition).download('paper-wallet-certificate.pdf', () => {
-    if (callback) callback();
+  // create file stream from buffer and save to provided path
+  pdfMake.createPdf(docDefinition).getBuffer((buffer) => {
+    try {
+      fs.writeFileSync(filePath, buffer);
+      if (onSuccess) onSuccess();
+    } catch (e) {
+      if (onError) onError(e);
+      throw e;
+    }
   });
 };
