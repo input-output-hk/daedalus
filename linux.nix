@@ -81,10 +81,11 @@ let
       "--tlsca" "tls/ca/ca.crt"
       "--topology" "${configFiles}/topology.yaml"
       "--wallet-address" "127.0.0.1:8090"
+      "--logs-prefix" "Logs"
     ];
     nodeDbPath = "DB/";
     nodeLogConfig = "${configFiles}/daedalus.yaml";
-    nodeLogPath = "$HOME/.local/share/Daedalus/${cluster}/logs/cardano-node.log";
+    nodeLogPath = "$HOME/.local/share/Daedalus/${cluster}/Logs/cardano-node.log";
     reportServer = "http://report-server.cardano-mainnet.iohk.io:8080";
     configuration = {
       filePath = "${configFiles}/configuration.yaml";
@@ -96,19 +97,20 @@ let
     updateArchive = "$HOME/.local/share/Daedalus/${cluster}/installer.sh";
     updateWindowsRunner = null;
     nodeTimeoutSec = 30;
-    launcherLogsPrefix = "$HOME/.local/share/Daedalus/${cluster}/logs/";
+    launcherLogsPrefix = "$HOME/.local/share/Daedalus/${cluster}/Logs/";
     walletPath = "${daedalus_frontend}/bin/daedalus";
     walletArgs = [];
   });
   daedalus = writeScriptBin "daedalus" ''
     #!${stdenv.shell}
-    set -x
-    set -e
+
+    set -xe
 
     test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
+    export CLUSTER=${cluster}
     export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
 
-    mkdir -p "''${DAEDALUS_DIR}/${cluster}/"{logs/pub,Secrets}
+    mkdir -p "''${DAEDALUS_DIR}/${cluster}/"{Logs/pub,Secrets}
     cd "''${DAEDALUS_DIR}/${cluster}/"
 
     if [ ! -d tls ]; then

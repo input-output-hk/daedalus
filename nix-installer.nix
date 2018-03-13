@@ -90,16 +90,26 @@ let
   '';
   installer = with pkgs; writeScriptBin "installer" ''
     #!${stdenv.shell}
+
+    set -ex
+
     TARPATH=${tarball}/tarball/tarball.tar.xz
 
-    if [ -z $SOURCING ]; then return; fi
+    if [ ! -z $SOURCING ]; then return; fi
 
     source ${utils}
 
-    set -e
-    set -x
+    exitHandler() {
+      exitCode="$?"
+      if [ ! -z $UNPACK ]; then
+        rmrf $UNPACK
+      fi
+      exit "$exitCode"
+    }
 
-    export PATH=${lib.makeBinPath [ coreutils pv xz gnutar nixFix strace gnused which ]}
+    trap "exitHandler" EXIT
+
+    export PATH=${lib.makeBinPath [ coreutils pv xz gnutar nixFix gnused which ]}
     export DIR=$HOME/${installationSlug}
 
     echo inside installer
@@ -120,6 +130,7 @@ let
     export NIX_REMOTE=local?root=$DIR
     nix copy --no-check-sigs --from local?root=$UNPACK ${builtins.unsafeDiscardStringContext firstGeneration}
     rmrf $UNPACK
+    unset UNPACK
     export NIX_PROFILE=$DIR/nix/var/nix/profiles/profile
     nix-env --set ${builtins.unsafeDiscardStringContext firstGeneration}
 
