@@ -163,6 +163,7 @@ cd installers
         if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
             export PATH=${BUILDKITE_BIN_PATH:-}:$PATH
             buildkite-agent artifact upload "${APP_NAME}/${INSTALLER_PKG}" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
+            rm "${APP_NAME}/${INSTALLER_PKG}"
         elif test -n "${TRAVIS_JOB_ID:-}" -a -n "${upload_s3}"
         then
             echo "$0: --upload-s3 passed, will upload the installer to S3";
