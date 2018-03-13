@@ -103,7 +103,7 @@ makeInstaller :: InstallerConfig -> IO FilePath
 makeInstaller cfg = do
   let dir     = appRoot cfg </> "Contents/MacOS"
       resDir  = appRoot cfg </> "Contents/Resources"
-  createDirectoryIfMissing False "dist"
+  mapM_ (createDirectoryIfMissing True) ["dist", dir, resDir]
 
   echo "Creating icons ..."
   procs "iconutil" ["--convert", "icns", "--output", toText (resDir </> "electron.icns"), "icons/electron.iconset"] mempty
