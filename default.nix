@@ -1,15 +1,19 @@
-{ cluster ? "mainnet" }:
 let
-  pkgs = import (import ./fetchNixpkgs.nix (builtins.fromJSON (builtins.readFile ./nixpkgs-src.json))) { config = {}; overlays = []; };
-  packages = self: {
-    inherit pkgs;
+  defaults = {
     master_config = {
-      daedalus_darwin_url = "https://update-cardano-mainnet.iohk.io/Daedalus-installer-1.1.0.408.pkg";
+      daedalus_darwin_url = "https://ci-output-sink.s3.amazonaws.com/csl-daedalus/Daedalus-installer-1.1.0.506.pkg";
+      daedalus_hash = "08m2hh5b6zcji2q5g2nl3g6zvdg6v1fd8ld69r50q5jzlql1jhp9";
+      # TODO DEVOPS-673
       cardano_rev = "eef095";
-      daedalus_hash = "1b0iy6c5nlsa2n2ylcc2kfm8ykkmdp6ncnx4lwwvc6f0662cf175";
       cardano_hash = "151qjqswrcscr2afsc6am4figw09hyxr80nd3dv3c35dvp2xx4rp";
     };
-    inherit cluster;
+    pkgs = import (import ./fetchNixpkgs.nix (builtins.fromJSON (builtins.readFile ./nixpkgs-src.json))) { config = {}; overlays = []; };
+  };
+in { cluster ? "mainnet", master_config ? defaults.master_config, pkgs ? defaults.pkgs }:
+let
+  installPath = ".daedalus";
+  packages = self: {
+    inherit cluster master_config pkgs;
     cardanoSrc = pkgs.fetchFromGitHub {
       owner = "input-output-hk";
       repo = "cardano-sl";
@@ -31,10 +35,10 @@ let
         };
       };
     };
-    daedalus = self.callPackage ./linux.nix {};
-    rawapp = self.callPackage ./rawapp.nix {};
+    daedalus = self.callPackage ./installers/nix/linux.nix {};
+    rawapp = self.callPackage ./installers/nix/rawapp.nix {};
     nix-bundle = import (pkgs.fetchFromGitHub {
-      owner = "input-output-hk";
+      owner = "matthewbauer";
       repo = "nix-bundle";
       rev = "630e89d1d16083";
       sha256 = "1s9vzlsfxd2ym8jzv2p64j6jlwr9cmir45mb12yzzjr4dc91xk8x";
@@ -52,7 +56,8 @@ let
       #!/usr/bin/env bash
 
       set -ex
-      cd ~/daedalus-install/
+
+      cd ~/${installPath}/
       mkdir -p etc
       cat /etc/hosts > etc/hosts
       cat /etc/nsswitch.conf > etc/nsswitch.conf
@@ -60,14 +65,23 @@ let
       cat /etc/resolv.conf > etc/resolv.conf
       exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -- /nix/var/nix/profiles/profile/bin/enter-phase2 daedalus
     '';
+    versionInfo = builtins.toFile "versioninfo.json" (builtins.toJSON self.master_config);
     postInstall = pkgs.writeScriptBin "post-install" ''
       #!${pkgs.stdenv.shell}
 
       set -ex
 
+
       test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
       export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus/${cluster}"
-      mkdir -pv $DAEDALUS_DIR
+      mkdir -pv $DAEDALUS_DIR/Logs/pub
+
+      exec 2>&1 > $DAEDALUS_DIR/Logs/pub/post-install.log
+
+      echo "in post-install hook"
+      cat ${self.versionInfo}
+      echo
+
       cp -f ${self.iconPath} $DAEDALUS_DIR/icon.png
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper $DAEDALUS_DIR/namespaceHelper
 
@@ -76,10 +90,11 @@ let
         -e "s+INSERT_ICON_PATH_HERE+''${DAEDALUS_DIR}/icon.png+g" \
         > "''${XDG_DATA_HOME}/applications/Daedalus.desktop"
     '';
-    newBundle = (import ./nix-installer.nix {
-      installationSlug = "daedalus-install";
+    newBundle = (import ./installers/nix/nix-installer.nix {
+      installationSlug = installPath;
       installedPackages = [ self.daedalus self.postInstall self.namespaceHelper ];
       postInstall = self.postInstall;
+      nix-bundle = self.nix-bundle;
     }).installerBundle;
   };
 in pkgs.lib.makeScope pkgs.newScope packages

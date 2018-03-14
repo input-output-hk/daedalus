@@ -4,7 +4,6 @@ rawapp, master_config, cardanoPkgs }:
 
 let
   # closure size TODO list
-  # openssl depends on perl
   # electron depends on cups, which depends on avahi
   daedalus_frontend = writeScriptBin "daedalus" ''
     #!${stdenv.shell}
