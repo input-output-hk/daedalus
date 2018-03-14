@@ -67,6 +67,7 @@ argReadLower = arg (diagReadCaseInsensitive . unpack)
 data Options = Options
   { oAPI           :: API
   , oBuildJob      :: Maybe BuildJob
+  , oCertSignReq   :: SigningRequested
   , oCertPass      :: Maybe Text
   , oCluster       :: Cluster
   , oAppName       :: AppName
@@ -83,6 +84,8 @@ optionsParser = Options
                    optReadLower "api"                 'a' "Backend API:  cardano or etc"))
   <*> (optional      $
       (BuildJob     <$> optText "build-job"           'b' "CI Build Job/ID"))
+  <*> (signingRequested
+                    <$> switch  "sign"                's' "Sign the installer.  Requres --cert-pass")
   <*> (optional      $
                         optText "cert-pass"           'p' "Certificate password")
   <*> (fromMaybe Mainnet    <$> (optional $
@@ -94,7 +97,8 @@ optionsParser = Options
   <*>                   optText "output"              'o' "Installer output file"
   <*> (optional   $
       (PullReq      <$> optText "pull-request"        'r' "Pull request #"))
-  <*> (testInstaller <$> switch "test-installer"      't' "Test installers after building")
+  <*> (testInstaller
+                    <$> switch  "test-installer"      't' "Test installers after building")
   <*> pure Buildkite -- NOTE: this is filled in by auto-detection
 
 

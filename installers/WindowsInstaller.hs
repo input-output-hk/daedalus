@@ -80,14 +80,14 @@ signFile :: Options -> FilePath -> IO ()
 signFile Options{..} filename = do
     exists <- doesFileExist filename
     if exists then do
-        case oCertPass of
-            Nothing -> echo . unsafeTextToLine . toText $ "Skipping signing " <> filename <> " due to lack of password"
-            Just pass -> do
+        case (oCertSignReq, oCertPass) of
+            (SigningRequested, Just pass) -> do
                 echo . unsafeTextToLine . toText $ "Signing " <> filename
                 -- TODO: Double sign a file, SHA1 for vista/xp and SHA2 for windows 8 and on
                 --procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\iohk-windows-certificate.p12", "/p", toText pass, "/t", "http://timestamp.comodoca.com", "/v", toText filename] mempty
                 exitcode <- proc "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\iohk-windows-certificate.p12", "/p", toText pass, "/fd", "sha256", "/tr", "http://timestamp.comodoca.com/?td=sha256", "/td", "sha256", "/v", toText filename] mempty
                 unless (exitcode == ExitSuccess) $ error "Signing failed"
+            _ -> echo . unsafeTextToLine . toText $ "Skipping signing " <> filename <> " due to lack of one of --sign / --cert-pass"
     else
         error $ "Unable to sign missing file '" <> (toText filename) <> "''"
 

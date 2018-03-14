@@ -172,27 +172,26 @@ pushd installers
     @echo ###
     @echo ##############################################################################
 
-    call ..\scripts\appveyor-retry call stack install dhall dhall-json
+    call ..\scripts\appveyor-retry stack install dhall dhall-json
     @if %errorlevel% neq 0 (@echo FATAL: persistent failure while installing dhall/dhall-json
         popd & exit /b 1)
-popd
+    call ..\scripts\appveyor-retry stack --no-terminal -j 2 install cardano-installer
+    @if %errorlevel% neq 0 (@echo FATAL: persistent failure while installing cardano-installer
+        popd & exit /b 1)
 
 :build_installers
-cd installers
-@echo on
-if not defined APPVEYOR_BUILD_NUMBER ( set APPVEYOR_BUILD_NUMBER=0 )
+
+if NOT DEFINED APPVEYOR_BUILD_NUMBER        ( set APPVEYOR_BUILD_NUMBER=0 )
+set XARGS="--build-job %APPVEYOR_BUILD_NUMBER% -v %DAEDALUS_VERSION%"
+IF     DEFINED API                          ( set XARGS="%XARGS:"=% --api %API%" )
+IF     DEFINED APPVEYOR_PULL_REQUEST_NUMBER ( set XARGS="%XARGS:"=% --pull-request %APPVEYOR_PULL_REQUEST_NUMBER%" )
+IF     DEFINED CERT_PASS                    ( set XARGS="%XARGS:"=% --sign" )
+
 FOR %%C IN (%CLUSTERS:"=%) DO (
-  @echo inside loop
   set DAEDALUS_CLUSTER=%%C
-  set XARGS="--build-job %APPVEYOR_BUILD_NUMBER% --cluster %%C --daedalus-version %DAEDALUS_VERSION%"
-  IF DEFINED API                          ( set XARGS="%XARGS:"=% --api %API%" )
-  IF DEFINED APPVEYOR_PULL_REQUEST_NUMBER ( set XARGS="%XARGS:"=% --pull-request %APPVEYOR_PULL_REQUEST_NUMBER%" )
-  IF DEFINED CERT_PASS                    ( set XARGS="%XARGS:"=% --cert-pass %CERT_PASS%" )
-  echo XARGS0=%XARGS%
-  call ..\scripts\appveyor-retry stack --no-terminal build -j 2 --exec make-installer -- %XARGS:"=%
-  rem @if %errorlevel% neq 0 ( @echo FATAL: persistent failure while building installer
-  rem                          popd & exit /b 1)
+  make-installer %XARGS:"=% -c %%C -o daedalus-win64-%DAEDALUS_VERSION%-%%C-installer.exe -p "%CERT_PASS%"
+  @if %errorlevel% neq 0 ( @echo FATAL: persistent failure while building installer
+                           popd & exit /b 1)
 )
 
 @echo SUCCESS
-

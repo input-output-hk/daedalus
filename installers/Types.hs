@@ -1,3 +1,4 @@
+{-# OPTIONS_GHC -Wno-missing-signatures #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE LambdaCase #-}
 module Types
@@ -15,6 +16,7 @@ module Types
   , Version(..)
 
   -- * Flags
+  , SigningRequested(..), signingRequested
   , TestInstaller(..), testInstaller
 
   -- * Misc
@@ -71,10 +73,13 @@ newtype Version      = Version      { fromVer          :: Text } deriving (Eq, I
 
 
 
-data TestInstaller   = DontTestInstaller       | TestInstaller       deriving (Eq, Show)
-testInstaller :: Bool -> TestInstaller
-testInstaller True  = TestInstaller
-testInstaller False = DontTestInstaller
+data SigningRequested   = SigningNotRequested       | SigningRequested       deriving (Eq, Show)
+signingRequested True   =                             SigningRequested
+signingRequested False  = SigningNotRequested
+
+data TestInstaller      = DontTestInstaller         | TestInstaller          deriving (Eq, Show)
+testInstaller    True   =                             TestInstaller
+testInstaller    False  = DontTestInstaller
 
 
 
