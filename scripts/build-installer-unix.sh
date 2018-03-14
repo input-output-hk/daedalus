@@ -130,7 +130,7 @@ test "$(find node_modules/ | wc -l)" -gt 100 -a -n "${fast_impure}" ||
         $nix_shell --run "npm install"
 
 test -d "release/darwin-x64/Daedalus-darwin-x64" -a -n "${fast_impure}" || {
-        $nix_shell --run "npm run package -- --icon installers/icons/256x256.png"
+        $nix_shell --run "npm run package"
         echo "Size of Electron app is $(du -sh release)"
 }
 
