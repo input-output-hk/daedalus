@@ -7,7 +7,7 @@ import osxMenu from './menus/osx';
 import winLinuxMenu from './menus/win-linux';
 import ipcApi from './ipc-api';
 import { daedalusLogger } from './lib/remoteLog';
-import { pubLogsFolderPath, APP_NAME } from './config';
+import { runtimeFolderPath, pubLogsFolderPath, APP_NAME } from './config';
 
 import ensureDirectoryExists from './lib/ensureDirectoryExists';
 
@@ -195,10 +195,12 @@ app.on('ready', async () => {
     }
   });
 
+  const iconPath = runtimeFolderPath + "/icon.png";
   mainWindow = new BrowserWindow({
     show: false,
     width: 1150,
-    height: 870
+    height: 870,
+    icon: iconPath,
   });
 
   mainWindow.setMinimumSize(900, 600);
