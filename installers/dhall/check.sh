@@ -2,9 +2,10 @@
 
 set -e
 
-CLUSTERS="mainnet staging"
+CLUSTERS="$(cat $(dirname $0)/../../installer-clusters.cfg | xargs echo -n)"
 OSES="linux macos64 win64"
 
+cd $(dirname $0)
 for os in ${OSES}
 do for cluster in ${CLUSTERS}
    do echo "checking ${cluster}-${os}"

@@ -6,7 +6,7 @@
 
 set -e
 
-CLUSTERS="mainnet staging"
+CLUSTERS="$(cat $(dirname $0)/../installer-clusters.cfg | xargs echo -n)"
 
 usage() {
     test -z "$1" || { echo "ERROR: $*" >&2; echo >&2; }

@@ -4,7 +4,7 @@ rem   2. 7zip    ('7z'  binary in PATH)
 rem
 rem   installer dev mode:  set SKIP_TOOLS/SKIP_NODE/SKIP_CARDANO_FETCH/SKIP_STACK/SKIP_LIBS/SKIP_TO_FRONTEND/SKIP_TO_INSTALLER
 
-set CLUSTERS="mainnet staging"
+set /p CLUSTERS=<installer-clusters.cfg
 
 set MIN_CARDANO_BYTES=20000000
 set LIBRESSL_VERSION=2.5.3
@@ -188,7 +188,12 @@ IF     DEFINED APPVEYOR_PULL_REQUEST_NUMBER ( set XARGS="%XARGS:"=% --pull-reque
 IF     DEFINED CERT_PASS                    ( set XARGS="%XARGS:"=% --sign" )
 
 FOR %%C IN (%CLUSTERS:"=%) DO (
-  set DAEDALUS_CLUSTER=%%C
+  @echo ##############################################################################
+  @echo ###
+  @echo ### Building fo-r cluster %%C
+  @echo ###
+  @echo ##############################################################################
+
   make-installer %XARGS:"=% -c %%C -o daedalus-win64-%DAEDALUS_VERSION%-%%C-installer.exe -p "%CERT_PASS%"
   @if %errorlevel% neq 0 ( @echo FATAL: persistent failure while building installer
                            popd & exit /b 1)
