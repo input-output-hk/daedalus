@@ -104,7 +104,7 @@ function pack(plat, arch, cb) {
   const iconObj = {
     icon: DEFAULT_OPTS.icon + (() => {
       let extension = '.png';
-      if (plat === 'darwin') extension = '.icns';
+      if (plat === 'darwin') extension = '.iconset';
       if (plat === 'win32') extension = '.ico';
 
       return extension;
