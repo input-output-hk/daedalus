@@ -6,6 +6,12 @@ rem   installer dev mode:  set SKIP_TOOLS/SKIP_NODE/SKIP_CARDANO_FETCH/SKIP_STAC
 
 set /p CLUSTERS=<installer-clusters.cfg
 
+@echo ##############################################################################
+@echo ###
+@echo ### Will build clusters:  %CLUSTERS%
+@echo ###
+@echo ##############################################################################
+
 set MIN_CARDANO_BYTES=20000000
 set LIBRESSL_VERSION=2.5.3
 set CURL_VERSION=7.54.0

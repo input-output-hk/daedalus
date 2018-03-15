@@ -17,10 +17,10 @@
     , "--tlskey",              "tls/server/server.key"
     , "--topology",            "wallet-topology.yaml"
     , "--update-server",       cluster.updateServer
-    , "--update-with-package", os.nodeArgs.updateLatestPath
     , "--keyfile",             os.nodeArgs.keyfile
     , "--logs-prefix",         os.nodeArgs.logsPrefix
     , "--wallet-db-path",      os.nodeArgs.walletDBPath
-    , "--update-latest-path"
+    , "--update-latest-path",  os.nodeArgs.updateLatestPath
+    , "--update-with-package"
     ]
 } // os.pass
