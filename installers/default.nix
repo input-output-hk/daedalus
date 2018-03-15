@@ -14,6 +14,7 @@ let
     overrides = self: super: {
       dhall-json = self.callPackage ./dhall-json.nix {};
       dhall = doJailbreak (self.callPackage ./dhall-haskell.nix {});
+      github = self.callPackage ./github.nix {};
     };
   };
 
