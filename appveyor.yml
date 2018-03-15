@@ -4,9 +4,9 @@ environment:
   nodejs_version: "8"
   NETWORK: "mainnet"
   AWS_ACCESS_KEY_ID:
-    secure: OJTyvhi9DM4WzXkurTryP6CxiHcklNxjuHdVxc+D85E=
+    secure: O0+bBTm/Ud3pxP8nvC3ZuDSkmmlr+b8hVluqpRdJGBg=
   AWS_SECRET_ACCESS_KEY:
-    secure: hlqRod4ZR7cIPZWfLZbn2feAKbTWSAj5oNTqa7zXpSqQmNPCiAzieyVZ80/Mx5cU
+    secure: DbpP02aDGoC3Tdsi3+ONm8ov0nuXzEF/Yi453SBKj38qjROzvPXo6qW44bYiKBf4
   CERT_PASS:
     secure: 9tjYxdz1fqibx1WOrP5yn32iwbEXeYx+Btb5QJqHvMO4Ng2/yUtPi00/ZMXihFWV
   # Avoid long paths on Windows
@@ -37,9 +37,9 @@ artifacts:
 deploy:
   provider: S3
   access_key_id:
-    secure: /69rk6yrPP5oss0svxSafnSCR+9tpkKFsLsRblCmTdA=
+    secure: IEky6PsMzHaKHNBMxR8tQaQI8X7qWRB9+HuEroTVRBk=
   secret_access_key:
-    secure: MY/DQyFIE9VjXVlxqjaZT/EUueKYC6awjOKml9JMgzFDEMKUgswFOBkj2MouXMkl
+    secure: cqjzG96hWB1x3JDbVSbF9E+aJ5jKvIGacJRUDWATHaTOYfSt6Rvive/NrF4lKBIm
   bucket: appveyor-ci-deploy
   region: ap-northeast-1
   folder:

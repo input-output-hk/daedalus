@@ -44,7 +44,7 @@ const DEFAULT_OPTS = {
   ].concat(devDeps),
 };
 
-const icon = argv.icon || argv.i || 'installers/icons/256x256';
+const icon = argv.icon || argv.i || 'installers/icons/electron';
 if (icon) DEFAULT_OPTS.icon = icon;
 
 const version = argv.version || argv.v;

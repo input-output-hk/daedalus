@@ -103,7 +103,7 @@ makeInstaller :: InstallerConfig -> IO FilePath
 makeInstaller cfg = do
   let dir     = appRoot cfg </> "Contents/MacOS"
       resDir  = appRoot cfg </> "Contents/Resources"
-  createDirectoryIfMissing False "dist"
+  mapM_ (createDirectoryIfMissing True) ["dist", dir, resDir]
 
   echo "Creating icons ..."
   procs "iconutil" ["--convert", "icns", "--output", toText (resDir </> "electron.icns"), "icons/electron.iconset"] mempty
@@ -132,9 +132,6 @@ makeInstaller cfg = do
     _ -> pure () -- DEVOPS-533
 
   -- Prepare launcher
-  de <- doesFileExist (dir </> "Frontend")
-  unless de $ renameFile (dir </> "Daedalus") (dir </> "Frontend")
-  run "chmod" ["+x", toText (dir </> "Frontend")]
   writeLauncherFile dir cfg
 
   with (makeScriptsDir cfg) $ \scriptsDir -> do
