@@ -5,7 +5,7 @@
 , cabal-install, nodejs, nix
 }:
 mkDerivation {
-  pname = "cardano-installer";
+  pname = "daedalus-installer";
   version = "0.1.0.0";
   src = ./.;
   isLibrary = false;
@@ -16,6 +16,6 @@ mkDerivation {
     trifecta turtle universum yaml
     cabal-install nodejs nix
   ];
-  description = "Cardano Installer";
+  description = "Daedalus Installer Builder";
   license = stdenv.lib.licenses.mit;
 }

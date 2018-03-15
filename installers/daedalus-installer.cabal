@@ -1,6 +1,6 @@
-name:                cardano-installer
+name:                daedalus-installer
 version:             0.1.0.0
-synopsis:            Cardano Installer
+synopsis:            Daedalus Installer Builder
 description:         Please see README.md
 license:             MIT
 author:              Serokell
