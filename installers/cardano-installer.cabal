@@ -34,7 +34,6 @@ executable make-installer
                      , temporary
                      , temporary
                      , text
-                     , trifecta
                      , turtle
                      , universum
                      , yaml
@@ -66,7 +65,6 @@ executable load-certificate
                      , split
                      , system-filepath
                      , text
-                     , trifecta
                      , turtle
                      , universum
                      , yaml

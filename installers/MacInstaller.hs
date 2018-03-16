@@ -82,13 +82,21 @@ makeInstaller opts@Options{..} appRoot = do
   echo "Preparing files ..."
   case oAPI of
     Cardano -> do
+      -- Executables
       copyFile "cardano-launcher" (dir </> "cardano-launcher")
       copyFile "cardano-node" (dir </> "cardano-node")
+
+      -- Config files
+      copyFile "configuration.yaml"   (dir </> "configuration.yaml")
+      copyFile "launcher-config.yaml" (dir </> "launcher-config.yaml")
+      copyFile "log-config-prod.yaml" (dir </> "log-config-prod.yaml")
       copyFile "wallet-topology.yaml" (dir </> "wallet-topology.yaml")
-      copyFile "configuration.yaml" (dir </> "configuration.yaml")
+
+      -- Genesis
       genesisFiles <- glob "*genesis*.json"
       procs "cp" (fmap toText (genesisFiles <> [dir])) mempty
-      copyFile "log-config-prod.yaml" (dir </> "log-config-prod.yaml")
+
+      -- SSL
       copyFile "build-certificates-unix.sh" (dir </> "build-certificates-unix.sh")
       copyFile "ca.conf"     (dir </> "ca.conf")
       copyFile "server.conf" (dir </> "server.conf")
