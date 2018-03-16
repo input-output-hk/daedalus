@@ -8,6 +8,8 @@ Changelog
 
 ### Fixes
 
+- Remove 5 transactions limit from transactions screen ([PR 778](https://github.com/input-output-hk/daedalus/pull/778))
+
 ### Chores
 
 - Improve build system ([PR 692](https://github.com/input-output-hk/daedalus/pull/692))
