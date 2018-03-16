@@ -4,8 +4,6 @@ nodeArgs:
 - ! '%APPDATA%\Daedalus\Installer.exe'
 - --keyfile
 - ! '%APPDATA%\Daedalus\Secrets-1.0\secret.key'
-- --logs-prefix
-- ! '%APPDATA%\Daedalus\Logs'
 - --wallet-db-path
 - ! '%APPDATA%\Daedalus\Wallet-1.0'
 - --update-server
@@ -34,7 +32,7 @@ updateWindowsRunner: ! '%APPDATA%\Daedalus\Installer.bat'
 
 nodeTimeoutSec: 30
 reportServer: http://report-server.cardano-mainnet.iohk.io:8080
-launcherLogsPrefix: ! '%APPDATA%\Daedalus\Logs\pub'
+logsPrefix: ! '%APPDATA%\Daedalus\Logs'
 
 configuration:
   filePath: configuration.yaml
