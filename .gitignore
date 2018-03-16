@@ -56,6 +56,7 @@ release
 
 # Generated translation files
 translations/messages
+translations/reports
 
 # Webpack
 .cache

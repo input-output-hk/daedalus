@@ -4022,7 +4022,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Restore using backup-recovery phrase or paper wallet certificate.",
+        "defaultMessage": "!!!Restore wallet from backup",
         "description": "Description for the \"Restore\" button on the wallet add dialog.",
         "end": {
           "column": 3,
@@ -4496,90 +4496,6 @@
         "start": {
           "column": 28,
           "line": 82
-        }
-      },
-      {
-        "defaultMessage": "!!!Backup recovery phrase",
-        "description": "Tab title \"Backup recovery phrase\" in the wallet restore dialog.",
-        "end": {
-          "column": 3,
-          "line": 91
-        },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
-        "id": "wallet.restore.dialog.tab.title.recoveryPhrase",
-        "start": {
-          "column": 26,
-          "line": 87
-        }
-      },
-      {
-        "defaultMessage": "!!!Paper wallet certificate",
-        "description": "Tab title \"Paper wallet certificate\" in the wallet restore dialog.",
-        "end": {
-          "column": 3,
-          "line": 96
-        },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
-        "id": "wallet.restore.dialog.tab.title.certificate",
-        "start": {
-          "column": 23,
-          "line": 92
-        }
-      },
-      {
-        "defaultMessage": "!!!Shielded recovery phrase",
-        "description": "Label for the shielded recovery phrase input on the wallet restore dialog.",
-        "end": {
-          "column": 3,
-          "line": 101
-        },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
-        "id": "wallet.restore.dialog.shielded.recovery.phrase.input.label",
-        "start": {
-          "column": 36,
-          "line": 97
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter shielded recovery phrase",
-        "description": "Hint \"Enter shielded recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
-        "end": {
-          "column": 3,
-          "line": 106
-        },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
-        "id": "wallet.restore.dialog.shielded.recovery.phrase.input.hint",
-        "start": {
-          "column": 35,
-          "line": 102
-        }
-      },
-      {
-        "defaultMessage": "!!!Paper wallet certificate password",
-        "description": "Label for the paper wallet certificate password on the wallet restore dialog.",
-        "end": {
-          "column": 3,
-          "line": 111
-        },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
-        "id": "wallet.restore.dialog.wallet.certificate.password.label",
-        "start": {
-          "column": 28,
-          "line": 107
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter paper wallet certificate password",
-        "description": "Hint for the paper wallet certificate password field on the wallet restore dialog.",
-        "end": {
-          "column": 3,
-          "line": 116
-        },
-        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
-        "id": "wallet.restore.dialog.wallet.certificate.password.hint",
-        "start": {
-          "column": 27,
-          "line": 112
         }
       }
     ],
@@ -5707,13 +5623,13 @@
         "description": "Paper wallet pdf \"Wallet address\" label.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 17
         },
         "file": "source/renderer/app/utils/pdf.js",
         "id": "paper.wallet.pdf.walletAddress.label",
         "start": {
           "column": 22,
-          "line": 11
+          "line": 13
         }
       },
       {
@@ -5721,13 +5637,13 @@
         "description": "Paper wallet pdf \"Shielded recovery phrase\" label.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 22
         },
         "file": "source/renderer/app/utils/pdf.js",
         "id": "paper.wallet.pdf.shieldedRecoveryPhrase.label",
         "start": {
           "column": 31,
-          "line": 16
+          "line": 18
         }
       },
       {
@@ -5735,13 +5651,13 @@
         "description": "Paper wallet pdf \"Password\" label.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 27
         },
         "file": "source/renderer/app/utils/pdf.js",
         "id": "paper.wallet.pdf.password.label",
         "start": {
           "column": 17,
-          "line": 21
+          "line": 23
         }
       },
       {
@@ -5749,13 +5665,13 @@
         "description": "Label for \"App Release Version\"",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 32
         },
         "file": "source/renderer/app/utils/pdf.js",
         "id": "paper.wallet.pdf.release.version",
         "start": {
           "column": 18,
-          "line": 26
+          "line": 28
         }
       }
     ],

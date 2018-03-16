@@ -44,7 +44,7 @@ const DEFAULT_OPTS = {
   ].concat(devDeps),
 };
 
-const icon = argv.icon || argv.i || 'installers/icons/256x256';
+const icon = argv.icon || argv.i || 'installers/icons/electron';
 if (icon) DEFAULT_OPTS.icon = icon;
 
 const version = argv.version || argv.v;
@@ -104,7 +104,7 @@ function pack(plat, arch, cb) {
   const iconObj = {
     icon: DEFAULT_OPTS.icon + (() => {
       let extension = '.png';
-      if (plat === 'darwin') extension = '.icns';
+      if (plat === 'darwin') extension = '.iconset';
       if (plat === 'win32') extension = '.ico';
 
       return extension;

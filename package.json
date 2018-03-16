@@ -19,7 +19,6 @@
     "cucumber-watch": "npm run cucumber -- --tags @watch",
     "lint": "eslint --format=node_modules/eslint-formatter-pretty source features *.js",
     "flow-test": "flow; test $? -eq 0 -o $? -eq 2",
-    "purge-translations": "rm -rf ./translations/messages",
     "manage-translations": "node ./translations/translation-runner.js",
     "storybook": "start-storybook -p 6006 -c storybook",
     "build-storybook": "build-storybook"
@@ -124,7 +123,7 @@
     "mobx-react": "4.3.5",
     "mobx-react-form": "1.32.2",
     "mobx-react-router": "3.1.2",
-    "moment": "2.19.3",
+    "moment": "2.21.0",
     "pbkdf2": "3.0.14",
     "pdf.js-extract": "0.0.5",
     "pdfkit": "^0.8.3",

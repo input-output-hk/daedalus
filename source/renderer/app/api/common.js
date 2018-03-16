@@ -117,5 +117,4 @@ export type SendBugReportRequest = {
   problem: string,
   logs: Array<string>,
 };
-
 export type SendBugReportResponse = any;
