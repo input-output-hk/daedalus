@@ -65,7 +65,7 @@ module.exports = {
       {
         test: /(pdfkit|linebreak|fontkit|unicode|brotli|png-js).*\.js$/,
         use: {
-          loader: "transform-loader?brfs"
+          loader: 'transform-loader?brfs',
         }
       }
     ]
