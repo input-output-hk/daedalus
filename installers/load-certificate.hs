@@ -54,10 +54,10 @@ systemKeyChain = "/Library/Keychains/System.keychain"
 
 go :: Command -> IO ExitCode
 go (Command kc (LoadCertificate f)) = do
-  doMaybe (setupKeychain "travis") kc
+  doMaybe (setupKeychain "ci") kc
   let cfg' = signingConfig { signingKeyChain = Just (fromMaybe systemKeyChain kc) }
   res <- getPassword >>= importCertificate cfg' f
-  doMaybe (preventPasswordPrompts "travis") kc
+  doMaybe (preventPasswordPrompts "ci") kc
   pure res
 go (Command kc DeleteCertificate) = do
   res <- deleteCertificate signingConfig
