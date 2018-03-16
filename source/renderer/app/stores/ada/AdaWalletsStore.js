@@ -64,9 +64,6 @@ export default class AdaWalletsStore extends WalletStore {
     wallets.finishCertificate.listen(this._finishCertificate);
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishCreation);
-    this.registerReactions([
-      this._restartPoller,
-    ]);
   }
 
   _sendMoney = async (transactionDetails: {
@@ -305,6 +302,8 @@ export default class AdaWalletsStore extends WalletStore {
       );
     } catch (error) {
       throw error;
+    } finally {
+      this.actions.networkStatus.restartPoller.trigger();
     }
   };
 
@@ -355,28 +354,28 @@ export default class AdaWalletsStore extends WalletStore {
       this.walletCertificateHasError = false;
       this._updateCertificateStep();
     }
-  }
+  };
 
   @action _setCertificateTemplate = (params: {
     selectedTemplate: string,
   }) => {
     this.certificateTemplate = params.selectedTemplate;
     this._updateCertificateStep();
-  }
+  };
 
   @action _finishCertificate = () => {
     this._closeCertificateGeneration();
-  }
+  };
 
   @action _updateCertificateStep = (isBack: boolean = false) => {
     const currrentCertificateStep = this.certificateStep || 0;
     this.certificateStep = isBack ? currrentCertificateStep - 1 : currrentCertificateStep + 1;
-  }
+  };
 
   @action _closeCertificateGeneration = () => {
     this.actions.dialogs.closeActiveDialog.trigger();
     this._resetCertificateData();
-  }
+  };
 
   @action _resetCertificateData = () => {
     this.walletCertificatePassword = null;
@@ -386,15 +385,6 @@ export default class AdaWalletsStore extends WalletStore {
     this.generatingCertificateInProgress = false;
     this.certificateTemplate = false;
     this.certificateStep = null;
-  };
-
-  // =================== REACTIONS ==================== //
-
-  // reac on Delete Wallet and if deletion is done, reset poller
-  _restartPoller = () => {
-    if (this.deleteWalletRequest.wasExecuted) {
-      this.actions.networkStatus.restartPoller.trigger();
-    }
   };
 
   // =================== PRIVATE API ==================== //

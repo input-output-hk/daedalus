@@ -20,6 +20,4 @@ export NIX_REMOTE=daemon
 export NIX_PATH="nixpkgs=$(${NIX_BUILD} fetch-nixpkgs.nix -o nixpkgs)"
 export NIX_BUILD_SHELL
 
-exec ${NIX_SHELL} default.nix \
-     --arg pkgs 'import <nixpkgs> {}' \
-     "$@"
+${NIX_SHELL} -p nix bash binutils coreutils curl "$@"

@@ -5707,13 +5707,13 @@
         "description": "Paper wallet pdf \"Wallet address\" label.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 17
         },
         "file": "source/renderer/app/utils/pdf.js",
         "id": "paper.wallet.pdf.walletAddress.label",
         "start": {
           "column": 22,
-          "line": 11
+          "line": 13
         }
       },
       {
@@ -5721,13 +5721,13 @@
         "description": "Paper wallet pdf \"Shielded recovery phrase\" label.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 22
         },
         "file": "source/renderer/app/utils/pdf.js",
         "id": "paper.wallet.pdf.shieldedRecoveryPhrase.label",
         "start": {
           "column": 31,
-          "line": 16
+          "line": 18
         }
       },
       {
@@ -5735,13 +5735,13 @@
         "description": "Paper wallet pdf \"Password\" label.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 27
         },
         "file": "source/renderer/app/utils/pdf.js",
         "id": "paper.wallet.pdf.password.label",
         "start": {
           "column": 17,
-          "line": 21
+          "line": 23
         }
       },
       {
@@ -5749,13 +5749,13 @@
         "description": "Label for \"App Release Version\"",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 32
         },
         "file": "source/renderer/app/utils/pdf.js",
         "id": "paper.wallet.pdf.release.version",
         "start": {
           "column": 18,
-          "line": 26
+          "line": 28
         }
       }
     ],

@@ -18,7 +18,7 @@ const messages = defineMessages({
     defaultMessage: '!!!Select color',
     description: 'Headline for "Paper wallet certificate create template choice dialog".'
   },
-  printButtonLabe: {
+  printButtonLabel: {
     id: 'paper.wallet.create.certificate.templateChoice.dialog.button.printButtonLabel',
     defaultMessage: '!!!Print',
     description: '"Paper wallet create certificate template choice dialog" print button label.'
@@ -56,7 +56,7 @@ export default class TemplateChoiceDialog extends Component<Props, State> {
 
     const actions = [
       {
-        label: intl.formatMessage(messages.printButtonLabe),
+        label: intl.formatMessage(messages.printButtonLabel),
         primary: true,
         disabled: !selectedTemplate,
         onClick: this.handleContinue.bind(this),

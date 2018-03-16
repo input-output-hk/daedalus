@@ -19,10 +19,7 @@ set CARDANO_BRANCH=%2
 
 set CURL_URL=https://bintray.com/artifact/download/vszakats/generic/curl-%CURL_VERSION%-win64-mingw.7z
 set CURL_BIN=curl-%CURL_VERSION%-win64-mingw\bin
-set NSISVER=3.02.1
-set NSIS_URL=https://downloads.sourceforge.net/project/nsis/NSIS%%203/%NSISVER%/nsis-%NSISVER%-setup.exe
-set NSIS_PATCH_URL=https://downloads.sourceforge.net/project/nsis/NSIS%%203/%NSISVER%/nsis-%NSISVER%-strlen_8192.zip
-set CARDANO_URL=https://ci.appveyor.com/api/projects/jagajaga/cardano-sl/artifacts/CardanoSL.zip?branch=%CARDANO_BRANCH%
+set CARDANO_URL=https://ci.appveyor.com/api/projects/input-output/cardano-sl/artifacts/CardanoSL.zip?branch=%CARDANO_BRANCH%
 set LIBRESSL_URL=https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-%LIBRESSL_VERSION%-windows.zip
 set DLLS_URL=https://s3.eu-central-1.amazonaws.com/daedalus-ci-binaries/DLLs.zip
 
@@ -44,24 +41,6 @@ del /f curl.exe curl-ca-bundle.crt libcurl.dll
 7z e curl.7z %CURL_BIN%\curl.exe %CURL_BIN%\curl-ca-bundle.crt %CURL_BIN%\libcurl.dll
 @if %errorlevel% neq 0 (@echo FAILED: couldn't extract curl from downloaded archive
 	popd & exit /b 1)
-
-@echo Obtaining NSIS %NSISVER% with 8k-string patch
-del /f nsis-setup.exe nsis-strlen_8192.zip
-curl -o nsis-setup.exe       --location %NSIS_URL%
-@if %errorlevel% neq 0 (@echo FAILED: curl -o nsis-setup.exe       --location %NSIS_URL%
-    exit /b 1)
-
-curl -o nsis-strlen_8192.zip --location %NSIS_PATCH_URL%
-@if %errorlevel% neq 0 (@echo FAILED: curl -o nsis-strlen_8192.zip --location %NSIS_PATCH_URL%
-    exit /b 1)
-
-nsis-setup.exe /S /SD
-@if %errorlevel% neq 0 (@echo FAILED: nsis-setup.exe /S /SD
-    exit /b 1)
-
-7z    x nsis-strlen_8192.zip -o"c:\Program Files (x86)\NSIS" -aoa -r
-@if %errorlevel% neq 0 (@echo FAILED: 7z    x nsis-strlen_8192.zip -o"c:\Program Files (x86)\NSIS" -aoa -r
-    exit /b 1)
 
 @echo Installing NPM
 call npm install

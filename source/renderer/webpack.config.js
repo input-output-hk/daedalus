@@ -22,10 +22,8 @@ module.exports = {
         test: /\.jsx?$/,
         include: /source/,
         use: {
-          loader: 'babel-loader',
-          options: {
-            cacheDirectory: true,
-          }
+          loader: 'babel-loader?cacheDirectory&cacheIdentifier='+ Math.random(),
+          // Fix for https://github.com/yahoo/babel-plugin-react-intl/issues/47 ^^
         },
       },
       {
@@ -64,6 +62,12 @@ module.exports = {
           { loader: 'markdown-loader?gfm=false' },
         ]
       },
+      {
+        test: /(pdfkit|linebreak|fontkit|unicode|brotli|png-js).*\.js$/,
+        use: {
+          loader: "transform-loader?brfs"
+        }
+      }
     ]
   },
   plugins: [
