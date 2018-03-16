@@ -22,10 +22,7 @@ module.exports = {
         test: /\.jsx?$/,
         include: /source/,
         use: {
-          loader: 'babel-loader',
-          options: {
-            cacheDirectory: true,
-          }
+          loader: 'babel-loader?cacheDirectory&cacheIdentifier='+ Math.random(),
         },
       },
       {
