@@ -1,19 +1,17 @@
 let
   defaults = {
     master_config = {
-      daedalus_darwin_url = "https://ci-output-sink.s3.amazonaws.com/csl-daedalus/Daedalus-installer-1.1.0.506.pkg";
-      daedalus_hash = "08m2hh5b6zcji2q5g2nl3g6zvdg6v1fd8ld69r50q5jzlql1jhp9";
       # TODO DEVOPS-673
       cardano_rev = "eef095";
       cardano_hash = "151qjqswrcscr2afsc6am4figw09hyxr80nd3dv3c35dvp2xx4rp";
     };
     pkgs = import (import ./fetchNixpkgs.nix (builtins.fromJSON (builtins.readFile ./nixpkgs-src.json))) { config = {}; overlays = []; };
   };
-in { cluster ? "mainnet", master_config ? defaults.master_config, pkgs ? defaults.pkgs }:
+in { cluster ? "mainnet", master_config ? defaults.master_config, pkgs ? defaults.pkgs, buildNr ? "nix" }:
 let
   installPath = ".daedalus";
   packages = self: {
-    inherit cluster master_config pkgs;
+    inherit cluster master_config pkgs buildNr;
     cardanoSrc = pkgs.fetchFromGitHub {
       owner = "input-output-hk";
       repo = "cardano-sl";
@@ -36,7 +34,7 @@ let
       };
     };
     daedalus = self.callPackage ./installers/nix/linux.nix {};
-    rawapp = import ./yarn2nix.nix;
+    rawapp = self.callPackage ./yarn2nix.nix { api = "ada"; };
     nix-bundle = import (pkgs.fetchFromGitHub {
       owner = "matthewbauer";
       repo = "nix-bundle";

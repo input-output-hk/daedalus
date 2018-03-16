@@ -1,23 +1,24 @@
+{ pkgs, nodejs-8_x, python, api, buildNr, cluster, nukeReferences }:
 let
-  # NOTE: when bumping nixpkgs, also update nixpkgs-src.json and .travis.yml
-  pkgs = import (fetchTarball https://github.com/nixos/nixpkgs/archive/fda4b93cd4fd3775408117c380aab0f33737d30f.tar.gz) {};
-  nodejs = pkgs.nodejs-8_x;
+  nodejs = nodejs-8_x;
+  yarn2nix = import (fetchTarball https://github.com/moretea/yarn2nix/archive/v1.0.0.tar.gz) { inherit pkgs nodejs; };
+  networkMap = {
+    mainnet = "mainnet";
+    staging = "testnet";
+  };
 in
-
-with (import (fetchTarball https://github.com/moretea/yarn2nix/archive/v1.0.0.tar.gz) { inherit pkgs nodejs; });
-
-pkgs.callPackage (
-{ stdenv, python }:
-mkYarnPackage {
+yarn2nix.mkYarnPackage {
   name = "daedalus";
   src = builtins.fetchGit ./.;
-  API = "ada";
-  NETWORK = "mainnet";
-  DAEDALUS_VERSION = "1.1.0.nix";
+  API = api;
+  NETWORK = networkMap.${cluster};
+  DAEDALUS_VERSION = "1.1.0.${buildNr}";
   installPhase = ''
     npm run build
     mkdir -p $out/bin $out/share/daedalus
     cp -R dist/* $out/share/daedalus
+    ${nukeReferences}/bin/nuke-refs $out/share/daedalus/main/index.js.map
+    ${nukeReferences}/bin/nuke-refs $out/share/daedalus/renderer/index.js.map
   '';
   yarnPreBuild = ''
     mkdir -p $HOME/.node-gyp/${nodejs.version}
@@ -32,4 +33,4 @@ mkYarnPackage {
       '';
     };
   };
-}) { }
+}
