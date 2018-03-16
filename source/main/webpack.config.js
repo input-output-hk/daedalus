@@ -1,4 +1,8 @@
 const path = require('path');
+const webpack = require('webpack');
+const yamljs = require('yamljs');
+
+const reportUrl = yamljs.parseFile('installers/launcher-config-windows.yaml').reportServer;
 
 module.exports = {
   devtool: 'cheap-source-map',
@@ -22,6 +26,15 @@ module.exports = {
     __dirname: false,
     __filename: false
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.API': JSON.stringify(process.env.API || 'ada'),
+      'process.env.NETWORK': JSON.stringify(process.env.NETWORK || 'development'),
+      'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
+      'process.env.DAEDALUS_VERSION': JSON.stringify(process.env.DAEDALUS_VERSION || 'dev'),
+      'process.env.REPORT_URL': JSON.stringify(reportUrl)
+    }),
+  ],
   module: {
     rules: [
       {

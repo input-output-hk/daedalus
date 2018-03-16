@@ -13,7 +13,7 @@ let
 
     cd "''${DAEDALUS_DIR}/${cluster}/"
 
-    exec ${electron}/bin/electron ${rawapp}
+    exec ${electron}/bin/electron ${rawapp}/share/daedalus/main/
   '';
   cardanoProgs = runCommand "cardano" {} ''
     mkdir -pv $out/bin/

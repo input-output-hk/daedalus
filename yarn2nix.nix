@@ -10,7 +10,10 @@ pkgs.callPackage (
 { stdenv, python }:
 mkYarnPackage {
   name = "daedalus";
-  src = stdenv.lib.cleanSource ./.;
+  src = builtins.fetchGit ./.;
+  API = "ada";
+  NETWORK = "mainnet";
+  DAEDALUS_VERSION = "1.1.0.nix";
   installPhase = ''
     npm run build
     mkdir -p $out/bin $out/share/daedalus

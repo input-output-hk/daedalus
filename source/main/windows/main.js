@@ -2,7 +2,7 @@ import path from 'path';
 import { app, BrowserWindow, ipcMain, Menu } from 'electron';
 import environment from '../../common/environment';
 import ipcApi from '../ipc-api';
-import { runtimeFolderPath } from './config';
+import { runtimeFolderPath } from '../config';
 
 export const createMainWindow = () => {
   const iconPath = runtimeFolderPath + "/icon.png";
@@ -40,7 +40,7 @@ export const createMainWindow = () => {
 
   window.loadURL(`file://${__dirname}/../renderer/index.html`);
   window.on('page-title-updated', event => { event.preventDefault(); });
-  window.setTitle(`Daedalus (${environment.DAEDALUS_VERSION || 'dev'})`);
+  window.setTitle(`Daedalus (${environment.build})`);
 
   window.webContents.on('context-menu', (e, props) => {
     const contextMenuOptions = [

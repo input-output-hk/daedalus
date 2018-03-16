@@ -36,7 +36,7 @@ let
       };
     };
     daedalus = self.callPackage ./installers/nix/linux.nix {};
-    rawapp = self.callPackage ./installers/nix/rawapp.nix {};
+    rawapp = import ./yarn2nix.nix;
     nix-bundle = import (pkgs.fetchFromGitHub {
       owner = "matthewbauer";
       repo = "nix-bundle";
