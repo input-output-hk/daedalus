@@ -60,7 +60,7 @@ const messages = defineMessages({
     defaultMessage: '!!!I understand the importance of the password and I will keep it secure.',
     description: '"Paper wallet create certificate password choice dialog" password keep confirmation.'
   },
-  printButtonLabe: {
+  printButtonLabel: {
     id: 'paper.wallet.create.certificate.passwordChoice.dialog.button.printLabel',
     defaultMessage: '!!!Print',
     description: '"Paper wallet create certificate password choice dialog" print button label.'
@@ -167,7 +167,7 @@ export default class PasswordChoiceDialog extends Component<Props, State> {
 
     const actions = [
       {
-        label: intl.formatMessage(messages.printButtonLabe),
+        label: intl.formatMessage(messages.printButtonLabel),
         primary: true,
         disabled: !keepPasswordSecuredConfirmation || inProgress,
         className: confirmButtonClasses,
