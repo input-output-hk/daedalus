@@ -126,14 +126,6 @@ test -d node_modules/daedalus-client-api/ -a -n "${fast_impure}" || {
         rm -f node_modules/daedalus-client-api/cardano-*
 }
 
-test "$(find node_modules/ | wc -l)" -gt 100 -a -n "${fast_impure}" ||
-        $nix_shell --run "npm install"
-
-test -d "release/darwin-x64/Daedalus-darwin-x64" -a -n "${fast_impure}" || {
-        $nix_shell --run "npm run package -- --icon installers/icons/256x256.png"
-        echo "Size of Electron app is $(du -sh release)"
-}
-
 cd installers
     echo "Prebuilding dependencies for cardano-installer, quietly.."
     $nix_shell default.nix --run true || echo "Prebuild failed!"
@@ -149,7 +141,7 @@ cd installers
     fi
 
     echo "Generating the installer.."
-    $INSTALLER/bin/make-installer
+    $nix_shell ../default.nix --run "$INSTALLER/bin/make-installer"
 
     INSTALLER_PKG="Daedalus-installer-${DAEDALUS_VERSION}.pkg"
     APP_NAME="csl-daedalus"
