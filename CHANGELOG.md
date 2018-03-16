@@ -9,6 +9,7 @@ Changelog
 ### Fixes
 
 - Remove 5 transactions limit from transactions screen ([PR 778](https://github.com/input-output-hk/daedalus/pull/778))
+- Updated moment.js dependency to the latest version which fixes ReDOS vulnerability ([PR 782](https://github.com/input-output-hk/daedalus/pull/782))
 
 ### Chores
 
