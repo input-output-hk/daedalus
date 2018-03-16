@@ -13,13 +13,12 @@ Daedalus - cryptocurrency wallet
 Platform-specific build scripts facilitate building Daedalus the way it is built
 by the IOHK CI:
 
-   - `scripts/build-installer-unix.sh     <DAEDALUS-VERSION> <CARDANO-BRANCH> [OPTIONS..]`
+   - `scripts/build-installer-unix.sh     <DAEDALUS-VERSION> [OPTIONS..]`
       - where OS is either `linux` or `osx`
-      - facilitates installer upload to S3 via `--upload-s3`
-   - `scripts/build-installer-windows.bat <DAEDALUS-VERSION> <CARDANO-BRANCH>`
+   - `scripts/build-installer-windows.bat <DAEDALUS-VERSION>`
 
 The result can be found at:
-   - on OS X:    `${BUILD}/installers/dist/Daedalus-installer-*.pkg`
+   - on OS X:    `${BUILD}/installers/dist/csl-daedalus/Daedalus-installer-*.pkg`
    - on WIndows: `${BUILD}/installers/daedalus-*-installer.exe`
 
 ### One-click build-fresh-daedalus scripts
