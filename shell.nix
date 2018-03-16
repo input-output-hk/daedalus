@@ -5,11 +5,8 @@ stdenv.mkDerivation {
 
   buildInputs = [
     nix bash binutils coreutils curl gnutar
-    git python27 curl electron nodejs-6_x
+    git python27 curl electron nodejs-8_x
     nodePackages.node-gyp nodePackages.node-pre-gyp
     gnumake
   ];
-
-  src = null;
-
 }
