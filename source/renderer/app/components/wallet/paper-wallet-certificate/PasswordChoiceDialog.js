@@ -81,7 +81,6 @@ type Props = {
 };
 
 @observer
-// eslint-disable-next-line
 export default class PasswordChoiceDialog extends Component<Props, State> {
 
   static contextTypes = {
@@ -92,7 +91,7 @@ export default class PasswordChoiceDialog extends Component<Props, State> {
     keepPasswordSecuredConfirmation: false,
     showPassword: false,
     showRepeatPassword: false,
-  }
+  };
 
   form = new ReactToolboxMobxForm({
     fields: {
@@ -158,7 +157,6 @@ export default class PasswordChoiceDialog extends Component<Props, State> {
       styles.component,
       'passwordChoiceDialog',
     ]);
-
 
     const confirmButtonClasses = classnames([
       'confirmButton',
@@ -253,5 +251,4 @@ export default class PasswordChoiceDialog extends Component<Props, State> {
   onShowRepeatPassword = () => {
     this.setState({ showRepeatPassword: !this.state.showRepeatPassword });
   };
-
 }

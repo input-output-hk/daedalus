@@ -145,6 +145,8 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     activeChoice: 'regular', // regular | certificate
   };
 
+  recoveryPhraseAutocomplete: Autocomplete;
+
   form = new ReactToolboxMobxForm({
     fields: {
       walletName: {
@@ -259,6 +261,10 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     form.each((field) => { field.debouncedValidation.cancel(); });
     form.reset();
     form.showErrors(false);
+
+    // Autocomplete has to be reset manually
+    // this.recoveryPhraseAutocomplete.clear();
+    // TODO: uncomment previous line after React-Polymorph update
   };
 
   render() {
@@ -337,6 +343,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
         <Autocomplete
           {...recoveryPhraseField.bind()}
+          ref={(autocomplete) => { this.recoveryPhraseAutocomplete = autocomplete; }}
           label={activeChoice === 'regular' ? intl.formatMessage(messages.recoveryPhraseInputLabel) : intl.formatMessage(messages.shieldedRecoveryPhraseInputLabel)}
           placeholder={(activeChoice === 'regular') ? intl.formatMessage(messages.recoveryPhraseInputHint) : intl.formatMessage(messages.shieldedRecoveryPhraseInputHint)}
           options={suggestedMnemonics}

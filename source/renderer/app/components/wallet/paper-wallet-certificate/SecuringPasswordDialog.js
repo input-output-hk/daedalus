@@ -8,7 +8,6 @@ import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSki
 import Dialog from '../../widgets/Dialog';
 import paperWalletImage from '../../../assets/images/paper-wallet-certificate/certificate.png';
 import globalMessages from '../../../i18n/global-messages';
-
 import styles from './SecuringPasswordDialog.scss';
 
 const messages = defineMessages({
@@ -44,7 +43,6 @@ type Props = {
 };
 
 @observer
-// eslint-disable-next-line
 export default class SecuringPasswordDialog extends Component<Props, State> {
 
   static contextTypes = {
@@ -53,7 +51,7 @@ export default class SecuringPasswordDialog extends Component<Props, State> {
 
   state = {
     securePasswordConfirmed: false
-  }
+  };
 
   render() {
     const { intl } = this.context;
@@ -112,5 +110,5 @@ export default class SecuringPasswordDialog extends Component<Props, State> {
 
   onSecurePasswordConfirmationChange = () => {
     this.setState({ securePasswordConfirmed: !this.state.securePasswordConfirmed });
-  }
+  };
 }

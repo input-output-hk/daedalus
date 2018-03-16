@@ -204,7 +204,7 @@
   "wallet.add.dialog.import.label": "Import",
   "wallet.add.dialog.join.description": "Join a shared wallet with up to 5 people",
   "wallet.add.dialog.join.label": "Join",
-  "wallet.add.dialog.restore.description": "Restore using backup-recovery phrase or paper wallet certificate.",
+  "wallet.add.dialog.restore.description": "Restore using backup-recovery phrase or paper wallet certificate",
   "wallet.add.dialog.restore.label": "Restore",
   "wallet.add.dialog.title.label": "Add wallet",
   "wallet.amountInput.feesLabel": "+ {amount} of fees",

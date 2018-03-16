@@ -4,7 +4,6 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import Dialog from '../../widgets/Dialog';
-
 import styles from './CompletionDialog.scss';
 
 const shell = require('electron').shell;

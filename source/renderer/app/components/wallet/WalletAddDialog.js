@@ -46,7 +46,7 @@ const messages = defineMessages({
   },
   restoreDescription: {
     id: 'wallet.add.dialog.restore.description',
-    defaultMessage: '!!!Restore using backup-recovery phrase or paper wallet certificate.',
+    defaultMessage: '!!!Restore using backup-recovery phrase or paper wallet certificate',
     description: 'Description for the "Restore" button on the wallet add dialog.'
   },
   importLabel: {

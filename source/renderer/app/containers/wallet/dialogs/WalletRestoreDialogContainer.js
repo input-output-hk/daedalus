@@ -32,12 +32,12 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
 
   render() {
     const wallets = this._getWalletsStore();
-    const { restoreRequest } = wallets;
+    const { restoreRequest, isValidMnemonic, isValidCertificateMnemonic } = wallets;
 
     return (
       <WalletRestoreDialog
-        mnemonicValidator={mnemonic => wallets.isValidMnemonic(mnemonic)}
-        certificateMnemonicValidator={mnemonic => wallets.isValidCertificateMnemonic(mnemonic)}
+        mnemonicValidator={mnemonic => isValidMnemonic(mnemonic)}
+        certificateMnemonicValidator={mnemonic => isValidCertificateMnemonic(mnemonic)}
         suggestedMnemonics={validWords}
         isSubmitting={restoreRequest.isExecuting}
         onSubmit={this.onSubmit}

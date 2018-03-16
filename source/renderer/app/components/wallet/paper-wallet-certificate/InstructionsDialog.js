@@ -111,5 +111,4 @@ export default class InstructionsDialog extends Component<Props> {
       </Dialog>
     );
   }
-
 }
