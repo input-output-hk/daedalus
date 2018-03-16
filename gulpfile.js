@@ -59,7 +59,7 @@ gulp.task('test', gulp.series('build', 'cucumber'));
 
 gulp.task('test-watch', gulp.series('build-watch', 'cucumber-watch'));
 
-gulp.task('purge-translations', shell.task('rimraf ./translations/messages/app'));
+gulp.task('purge-translations', shell.task('rimraf ./translations/messages/source'));
 
 gulp.task('electron-inspector', shell.task('npm run electron-inspector'));
 
