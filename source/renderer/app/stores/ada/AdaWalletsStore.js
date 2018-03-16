@@ -16,6 +16,7 @@ import type {
   CreateTransactionResponse, CreateWalletResponse, DeleteWalletResponse,
   GetWalletsResponse, RestoreWalletResponse,
   GetWalletRecoveryPhraseResponse, GetWalletCertificateRecoveryPhraseResponse,
+  GetWalletRecoveryPhraseFromCertificateResponse,
 } from '../../api/common';
 
 export default class AdaWalletsStore extends WalletStore {
@@ -30,6 +31,7 @@ export default class AdaWalletsStore extends WalletStore {
   @observable sendMoneyRequest: Request<CreateTransactionResponse> = new Request(this.api.ada.createTransaction);
   @observable getWalletRecoveryPhraseRequest: Request<GetWalletRecoveryPhraseResponse> = new Request(this.api.ada.getWalletRecoveryPhrase);
   @observable getWalletCertificateRecoveryPhraseRequest: Request<GetWalletCertificateRecoveryPhraseResponse> = new Request(this.api.ada.getWalletCertificateRecoveryPhrase);
+  @observable getWalletRecoveryPhraseFromCertificateRequest: Request<GetWalletRecoveryPhraseFromCertificateResponse> = new Request(this.api.ada.getWalletRecoveryPhraseFromCertificate);
   @observable restoreRequest: Request<RestoreWalletResponse> = new Request(this.api.ada.restoreWallet);
   /* eslint-enable max-len */
 
@@ -90,6 +92,10 @@ export default class AdaWalletsStore extends WalletStore {
 
   isValidMnemonic = (mnemonic: string) => this.api.ada.isValidMnemonic(mnemonic);
 
+  isValidCertificateMnemonic = (
+    mnemonic: string,
+  ) => this.api.ada.isValidCertificateMnemonic(mnemonic);
+
   // TODO - call endpoint to check if private key is valid
   isValidPrivateKey = () => { return true; }; // eslint-disable-line
 
@@ -130,7 +136,30 @@ export default class AdaWalletsStore extends WalletStore {
     recoveryPhrase: string,
     walletName: string,
     walletPassword: ?string,
+    type: string,
+    certificatePassword?: string,
   }) => {
+    const data = {
+      recoveryPhrase: params.recoveryPhrase,
+      walletName: params.walletName,
+      walletPassword: params.walletPassword,
+    };
+
+    if (params.type === 'certificate') {
+      // Unscramble 15-word wallet certificate mnemonic to 12-word mnemonic
+      const unscrambledRecoveryPhrase: ?GetWalletCertificateRecoveryPhraseResponse = await (
+        this.getWalletRecoveryPhraseFromCertificateRequest.execute({
+          passphrase: params.certificatePassword,
+          scrambledInput: params.recoveryPhrase,
+        }).promise
+      );
+      if (unscrambledRecoveryPhrase) {
+        data.recoveryPhrase = unscrambledRecoveryPhrase;
+      } else {
+        throw new Error('Invalid mnemonic');
+      }
+    }
+
     this.restoreRequest.reset();
     this._setIsRestoreActive(true);
     // Hide restore wallet dialog some time after restore has been started
@@ -140,7 +169,7 @@ export default class AdaWalletsStore extends WalletStore {
       if (!this.restoreRequest.isError) this._toggleAddWalletDialogOnActiveRestoreOrImport();
     }, this.WAIT_FOR_SERVER_ERROR_TIME);
 
-    const restoredWallet = await this.restoreRequest.execute(params).promise;
+    const restoredWallet = await this.restoreRequest.execute(data).promise;
     setTimeout(() => {
       this._setIsRestoreActive(false);
       this.actions.dialogs.closeActiveDialog.trigger();
@@ -275,9 +304,6 @@ export default class AdaWalletsStore extends WalletStore {
         params.filePath,
       );
     } catch (error) {
-      if (wallet) {
-        await this.deleteWalletRequest.execute({ walletId: wallet.id });
-      }
       throw error;
     }
   };

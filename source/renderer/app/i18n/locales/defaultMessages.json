@@ -2522,7 +2522,7 @@
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/PasswordChoiceDialog.js",
         "id": "paper.wallet.create.certificate.passwordChoice.dialog.button.printLabel",
         "start": {
-          "column": 19,
+          "column": 20,
           "line": 63
         }
       }
@@ -2663,7 +2663,7 @@
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/TemplateChoiceDialog.js",
         "id": "paper.wallet.create.certificate.templateChoice.dialog.button.printButtonLabel",
         "start": {
-          "column": 19,
+          "column": 20,
           "line": 21
         }
       }
@@ -3347,1140 +3347,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Paper wallet certificate",
-        "description": "Headline for the \"Paper wallet create certificate completion dialog\" headline.",
-        "end": {
-          "column": 3,
-          "line": 18
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateCompletionDialog.js",
-        "id": "paper.wallet.create.certificate.completion.dialog.headline",
-        "start": {
-          "column": 12,
-          "line": 14
-        }
-      },
-      {
-        "defaultMessage": "!!!Now you can fold your paper wallet certificate and glue together all the parts. Keep certificate safe. To import wallet back crop glued certificate’s edges to reach inner part.",
-        "description": "Headline for the \"Paper wallet create certificate completion dialog\" subtitle.",
-        "end": {
-          "column": 3,
-          "line": 23
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateCompletionDialog.js",
-        "id": "paper.wallet.create.certificate.completion.dialog.subtitle",
-        "start": {
-          "column": 12,
-          "line": 19
-        }
-      },
-      {
-        "defaultMessage": "!!!You can use this link to opent the address in Cardano Explorer, save it in your browser bookmarks and share it with others to receive funds:",
-        "description": "Headline for the \"Paper wallet create certificate completion dialog\" link instructions.",
-        "end": {
-          "column": 3,
-          "line": 28
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateCompletionDialog.js",
-        "id": "paper.wallet.create.certificate.completion.dialog.linkInstructions",
-        "start": {
-          "column": 20,
-          "line": 24
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateCompletionDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Create a paper wallet certificate",
-        "description": "Headline for the \"Paper wallet create certificate instructions dialog\".",
-        "end": {
-          "column": 3,
-          "line": 16
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateInstructionsDialog.js",
-        "id": "paper.wallet.create.certificate.instructions.dialog.headline",
-        "start": {
-          "column": 12,
-          "line": 12
-        }
-      },
-      {
-        "defaultMessage": "!!!Create a paper wallet certificate for offline storage of funds.",
-        "description": "Subtitle for the \"Paper wallet create certificate instructions dialog\".",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateInstructionsDialog.js",
-        "id": "paper.wallet.create.certificate.instructions.dialog.subtitle",
-        "start": {
-          "column": 12,
-          "line": 17
-        }
-      },
-      {
-        "defaultMessage": "!!!Instructions:",
-        "description": "Instructions list label for the \"Paper wallet create certificate instructions dialog\".",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateInstructionsDialog.js",
-        "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.label",
-        "start": {
-          "column": 25,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!A printed certificate will include shielded recovery phrase in the form of 15 mnemonic words.",
-        "description": "Wallet certificate create instructions dialog definition 1.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateInstructionsDialog.js",
-        "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition1",
-        "start": {
-          "column": 31,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!To restore your wallet at the later time, you will need a recovery phrase from your certificate and a password which will be chosen at the following step.",
-        "description": "Wallet certificate create instructions dialog definition 2.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateInstructionsDialog.js",
-        "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition2",
-        "start": {
-          "column": 31,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!You will be able to send funds to your wallet using the address from the certificate.",
-        "description": "Wallet certificate create instructions dialog definition 3.",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateInstructionsDialog.js",
-        "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition3",
-        "start": {
-          "column": 31,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!Created wallet will not be kept in Daedalus. You will be able to check the balance on the address from the certificate using Cardano Explorer.",
-        "description": "Wallet certificate create instructions dialog definition 4.",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateInstructionsDialog.js",
-        "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition4",
-        "start": {
-          "column": 31,
-          "line": 42
-        }
-      },
-      {
-        "defaultMessage": "!!!Store your certificate and password in a safe place. It is best not to keep them together.",
-        "description": "Wallet certificate create instructions dialog definition 5.",
-        "end": {
-          "column": 3,
-          "line": 51
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateInstructionsDialog.js",
-        "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition5",
-        "start": {
-          "column": 31,
-          "line": 47
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateInstructionsDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Choose your password",
-        "description": "Headline for the \"Paper wallet create certificate password choice dialog\".",
-        "end": {
-          "column": 3,
-          "line": 27
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificatePasswordChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.passwordChoice.dialog.headline",
-        "start": {
-          "column": 12,
-          "line": 23
-        }
-      },
-      {
-        "defaultMessage": "!!!A password you chose will be used to shield your recovery prase on the certificate. You will not be able to restore your wallet without this password.",
-        "description": "\"Paper wallet create certificate password choice dialog\" subtitle.",
-        "end": {
-          "column": 3,
-          "line": 32
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificatePasswordChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.passwordChoice.dialog.subtitle",
-        "start": {
-          "column": 12,
-          "line": 28
-        }
-      },
-      {
-        "defaultMessage": "!!!Note that password needs to be at least <strong>7 characters long</strong>, and have at least <strong>1 uppercase character</strong>, <strong>1 lowercase character</strong> and <strong>1 number</strong>.",
-        "description": "\"Paper wallet create certificate password choice dialog\" password complexity text.",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificatePasswordChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.passwordChoice.dialog.password.ComplexityText",
-        "start": {
-          "column": 26,
-          "line": 33
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter password",
-        "description": "\"Paper wallet create certificate password choice dialog\" password label.",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificatePasswordChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.passwordChoice.dialog.password.label",
-        "start": {
-          "column": 17,
-          "line": 38
-        }
-      },
-      {
-        "defaultMessage": "!!!Type password",
-        "description": "\"Paper wallet create certificate password choice dialog\" password hint.",
-        "end": {
-          "column": 3,
-          "line": 47
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificatePasswordChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.passwordChoice.dialog.password.hint",
-        "start": {
-          "column": 16,
-          "line": 43
-        }
-      },
-      {
-        "defaultMessage": "!!!Repeat password",
-        "description": "\"Paper wallet create certificate password choice dialog\" repeat password label.",
-        "end": {
-          "column": 3,
-          "line": 52
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificatePasswordChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.passwordChoice.dialog.repeatPassword.label",
-        "start": {
-          "column": 23,
-          "line": 48
-        }
-      },
-      {
-        "defaultMessage": "!!!Repeat password",
-        "description": "\"Paper wallet create certificate password choice dialog\" repeat password hint.",
-        "end": {
-          "column": 3,
-          "line": 57
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificatePasswordChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.passwordChoice.dialog.repeatPassword.hint",
-        "start": {
-          "column": 22,
-          "line": 53
-        }
-      },
-      {
-        "defaultMessage": "!!!I understand the importance of the password and I will keep it secure.",
-        "description": "\"Paper wallet create certificate password choice dialog\" password keep confirmation.",
-        "end": {
-          "column": 3,
-          "line": 62
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificatePasswordChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.passwordChoice.dialog.password.keepConfirmation",
-        "start": {
-          "column": 40,
-          "line": 58
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificatePasswordChoiceDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Certificate generation complete",
-        "description": "Headline for the \"Paper wallet create certificate print dialog\".",
-        "end": {
-          "column": 3,
-          "line": 19
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificatePrintDialog.js",
-        "id": "paper.wallet.create.certificate.print.dialog.headline",
-        "start": {
-          "column": 12,
-          "line": 15
-        }
-      },
-      {
-        "defaultMessage": "!!!Check your paper wallet certificate and verify that everything is correctly printed and readable. You can try scanning QR codes with QR scanner application on your mobile phone.",
-        "description": "\"Paper wallet create certificate print dialog\" subtitle.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificatePrintDialog.js",
-        "id": "paper.wallet.create.certificate.print.dialog.subtitle",
-        "start": {
-          "column": 12,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!Yes, paper wallet certificate successfully printed and everything is readable and scannable.",
-        "description": "\"Paper wallet create certificate print dialog\" confirmation.",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificatePrintDialog.js",
-        "id": "paper.wallet.create.certificate.print.dialog.printConfirmation",
-        "start": {
-          "column": 26,
-          "line": 25
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificatePrintDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Certificate password",
-        "description": "Headline for the \"Paper wallet create certificate securyng password dialog\".",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateSecuringPasswordDialog.js",
-        "id": "paper.wallet.create.certificate.securyng password.dialog.headline",
-        "start": {
-          "column": 12,
-          "line": 17
-        }
-      },
-      {
-        "defaultMessage": "!!!To restore your wallet you will need shielded recovery phrase from the certificate and the password.",
-        "description": "\"Paper wallet create certificate securyng password dialog\" first info label.",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateSecuringPasswordDialog.js",
-        "id": "paper.wallet.create.certificate.securyng password.dialog.infoLabel1",
-        "start": {
-          "column": 14,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!The password can optionally be written on the certificate or kept securely in other location. Here is the placeholder on the certificate intended for your password.",
-        "description": "\"Paper wallet create certificate securyng password dialog\" second info label.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateSecuringPasswordDialog.js",
-        "id": "paper.wallet.create.certificate.securyng password.dialog.infoLabel2",
-        "start": {
-          "column": 14,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!I understand that I can not use my certificate without the password and I have stored it safely.",
-        "description": "\"Paper wallet create certificate securyng password dialog\" secure password confirmation.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateSecuringPasswordDialog.js",
-        "id": "paper.wallet.create.certificate.securyng password.dialog.securingPasswordConfirmation",
-        "start": {
-          "column": 32,
-          "line": 32
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateSecuringPasswordDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Select color",
-        "description": "Headline for \"Paper wallet certificate create template choice dialog\".",
-        "end": {
-          "column": 3,
-          "line": 22
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateTemplateChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.templateChoice.dialog.headline",
-        "start": {
-          "column": 12,
-          "line": 18
-        }
-      },
-      {
-        "defaultMessage": "!!!Print",
-        "description": "\"Paper wallet create certificate template choice dialog\" print button label.",
-        "end": {
-          "column": 3,
-          "line": 27
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateTemplateChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.templateChoice.dialog.button.printButtonLabe",
-        "start": {
-          "column": 19,
-          "line": 23
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateTemplateChoiceDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Verify certificate",
-        "description": "Headline for the \"Paper wallet create certificate verification dialog\".",
-        "end": {
-          "column": 3,
-          "line": 32
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.headline",
-        "start": {
-          "column": 12,
-          "line": 28
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter your shielded recovery phrase and your password to verify your paper wallet certificate.",
-        "description": "\"Paper wallet create certificate verification dialog\" subtitle.",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.subtitle",
-        "start": {
-          "column": 12,
-          "line": 33
-        }
-      },
-      {
-        "defaultMessage": "!!!Shielded recovery phrase",
-        "description": "\"Paper wallet create certificate verification dialog\" recovery phrase label.",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.label",
-        "start": {
-          "column": 23,
-          "line": 38
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter recovery phrase",
-        "description": "\"Paper wallet create certificate verification dialog\" recovery phrase hint.",
-        "end": {
-          "column": 3,
-          "line": 47
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.hint",
-        "start": {
-          "column": 22,
-          "line": 43
-        }
-      },
-      {
-        "defaultMessage": "!!!No results",
-        "description": "\"Paper wallet create certificate verification dialog\" recovery phrase no results label.",
-        "end": {
-          "column": 3,
-          "line": 52
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.noResults",
-        "start": {
-          "column": 27,
-          "line": 48
-        }
-      },
-      {
-        "defaultMessage": "!!!Password",
-        "description": "\"Paper wallet create certificate verification dialog\" password label.",
-        "end": {
-          "column": 3,
-          "line": 57
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.password.label",
-        "start": {
-          "column": 17,
-          "line": 53
-        }
-      },
-      {
-        "defaultMessage": "!!!Type password",
-        "description": "\"Paper wallet create certificate verification dialog\" password hint.",
-        "end": {
-          "column": 3,
-          "line": 62
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.password.hint",
-        "start": {
-          "column": 16,
-          "line": 58
-        }
-      },
-      {
-        "defaultMessage": "!!!Clear",
-        "description": "\"Paper wallet create certificate verification dialog\" button clear label.",
-        "end": {
-          "column": 3,
-          "line": 67
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.button.clearLabel",
-        "start": {
-          "column": 20,
-          "line": 63
-        }
-      },
-      {
-        "defaultMessage": "!!!I understand that the created wallet will not be stored in Daedalus after this step.",
-        "description": "\"Paper wallet create certificate verification dialog\" storing understandance confirmation.",
-        "end": {
-          "column": 3,
-          "line": 72
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.storingUnderstandanceConfirmationLabel",
-        "start": {
-          "column": 30,
-          "line": 68
-        }
-      },
-      {
-        "defaultMessage": "!!!I understand that my wallet can only be recovered using my paper wallet certificate and the password I have chosen.",
-        "description": "\"Paper wallet create certificate verification dialog\" recovering understandance confirmation.",
-        "end": {
-          "column": 3,
-          "line": 77
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.recoveringUnderstandanceConfirmationLabel",
-        "start": {
-          "column": 33,
-          "line": 73
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs/PaperWalletCreateCertificateVerificationDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Paper wallet certificate",
-        "description": "Headline for the \"Paper wallet create certificate completion dialog\" headline.",
-        "end": {
-          "column": 3,
-          "line": 18
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateCompletionDialog.js",
-        "id": "paper.wallet.create.certificate.completion.dialog.headline",
-        "start": {
-          "column": 12,
-          "line": 14
-        }
-      },
-      {
-        "defaultMessage": "!!!Now you can fold your paper wallet certificate and glue together all the parts. Keep certificate safe. To import wallet back crop glued certificate’s edges to reach inner part.",
-        "description": "Headline for the \"Paper wallet create certificate completion dialog\" subtitle.",
-        "end": {
-          "column": 3,
-          "line": 23
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateCompletionDialog.js",
-        "id": "paper.wallet.create.certificate.completion.dialog.subtitle",
-        "start": {
-          "column": 12,
-          "line": 19
-        }
-      },
-      {
-        "defaultMessage": "!!!You can use this link to opent the address in Cardano Explorer, save it in your browser bookmarks and share it with others to receive funds:",
-        "description": "Headline for the \"Paper wallet create certificate completion dialog\" link instructions.",
-        "end": {
-          "column": 3,
-          "line": 28
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateCompletionDialog.js",
-        "id": "paper.wallet.create.certificate.completion.dialog.linkInstructions",
-        "start": {
-          "column": 20,
-          "line": 24
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateCompletionDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Create a paper wallet certificate",
-        "description": "Headline for the \"Paper wallet create certificate instructions dialog\".",
-        "end": {
-          "column": 3,
-          "line": 16
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateInstructionsDialog.js",
-        "id": "paper.wallet.create.certificate.instructions.dialog.headline",
-        "start": {
-          "column": 12,
-          "line": 12
-        }
-      },
-      {
-        "defaultMessage": "!!!Create a paper wallet certificate for offline storage of funds.",
-        "description": "Subtitle for the \"Paper wallet create certificate instructions dialog\".",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateInstructionsDialog.js",
-        "id": "paper.wallet.create.certificate.instructions.dialog.subtitle",
-        "start": {
-          "column": 12,
-          "line": 17
-        }
-      },
-      {
-        "defaultMessage": "!!!Instructions:",
-        "description": "Instructions list label for the \"Paper wallet create certificate instructions dialog\".",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateInstructionsDialog.js",
-        "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.label",
-        "start": {
-          "column": 25,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!A printed certificate will include shielded recovery phrase in the form of 15 mnemonic words.",
-        "description": "Wallet certificate create instructions dialog definition 1.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateInstructionsDialog.js",
-        "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition1",
-        "start": {
-          "column": 31,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!To restore your wallet at the later time, you will need a recovery phrase from your certificate and a password which will be chosen at the following step.",
-        "description": "Wallet certificate create instructions dialog definition 2.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateInstructionsDialog.js",
-        "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition2",
-        "start": {
-          "column": 31,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!You will be able to send funds to your wallet using the address from the certificate.",
-        "description": "Wallet certificate create instructions dialog definition 3.",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateInstructionsDialog.js",
-        "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition3",
-        "start": {
-          "column": 31,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!Created wallet will not be kept in Daedalus. You will be able to check the balance on the address from the certificate using Cardano Explorer.",
-        "description": "Wallet certificate create instructions dialog definition 4.",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateInstructionsDialog.js",
-        "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition4",
-        "start": {
-          "column": 31,
-          "line": 42
-        }
-      },
-      {
-        "defaultMessage": "!!!Store your certificate and password in a safe place. It is best not to keep them together.",
-        "description": "Wallet certificate create instructions dialog definition 5.",
-        "end": {
-          "column": 3,
-          "line": 51
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateInstructionsDialog.js",
-        "id": "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition5",
-        "start": {
-          "column": 31,
-          "line": 47
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateInstructionsDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Choose your password",
-        "description": "Headline for the \"Paper wallet create certificate password choice dialog\".",
-        "end": {
-          "column": 3,
-          "line": 27
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificatePasswordChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.passwordChoice.dialog.headline",
-        "start": {
-          "column": 12,
-          "line": 23
-        }
-      },
-      {
-        "defaultMessage": "!!!A password you chose will be used to shield your recovery prase on the certificate. You will not be able to restore your wallet without this password.",
-        "description": "\"Paper wallet create certificate password choice dialog\" subtitle.",
-        "end": {
-          "column": 3,
-          "line": 32
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificatePasswordChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.passwordChoice.dialog.subtitle",
-        "start": {
-          "column": 12,
-          "line": 28
-        }
-      },
-      {
-        "defaultMessage": "!!!Note that password needs to be at least <strong>7 characters long</strong>, and have at least <strong>1 uppercase character</strong>, <strong>1 lowercase character</strong> and <strong>1 number</strong>.",
-        "description": "\"Paper wallet create certificate password choice dialog\" password complexity text.",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificatePasswordChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.passwordChoice.dialog.password.ComplexityText",
-        "start": {
-          "column": 26,
-          "line": 33
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter password",
-        "description": "\"Paper wallet create certificate password choice dialog\" password label.",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificatePasswordChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.passwordChoice.dialog.password.label",
-        "start": {
-          "column": 17,
-          "line": 38
-        }
-      },
-      {
-        "defaultMessage": "!!!Type password",
-        "description": "\"Paper wallet create certificate password choice dialog\" password hint.",
-        "end": {
-          "column": 3,
-          "line": 47
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificatePasswordChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.passwordChoice.dialog.password.hint",
-        "start": {
-          "column": 16,
-          "line": 43
-        }
-      },
-      {
-        "defaultMessage": "!!!Repeat password",
-        "description": "\"Paper wallet create certificate password choice dialog\" repeat password label.",
-        "end": {
-          "column": 3,
-          "line": 52
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificatePasswordChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.passwordChoice.dialog.repeatPassword.label",
-        "start": {
-          "column": 23,
-          "line": 48
-        }
-      },
-      {
-        "defaultMessage": "!!!Repeat password",
-        "description": "\"Paper wallet create certificate password choice dialog\" repeat password hint.",
-        "end": {
-          "column": 3,
-          "line": 57
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificatePasswordChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.passwordChoice.dialog.repeatPassword.hint",
-        "start": {
-          "column": 22,
-          "line": 53
-        }
-      },
-      {
-        "defaultMessage": "!!!I understand the importance of the password and I will keep it secure.",
-        "description": "\"Paper wallet create certificate password choice dialog\" password keep confirmation.",
-        "end": {
-          "column": 3,
-          "line": 62
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificatePasswordChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.passwordChoice.dialog.password.keepConfirmation",
-        "start": {
-          "column": 40,
-          "line": 58
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificatePasswordChoiceDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Certificate generation complete",
-        "description": "Headline for the \"Paper wallet create certificate print dialog\".",
-        "end": {
-          "column": 3,
-          "line": 19
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificatePrintDialog.js",
-        "id": "paper.wallet.create.certificate.print.dialog.headline",
-        "start": {
-          "column": 12,
-          "line": 15
-        }
-      },
-      {
-        "defaultMessage": "!!!Check your paper wallet certificate and verify that everything is correctly printed and readable. You can try scanning QR codes with QR scanner application on your mobile phone.",
-        "description": "\"Paper wallet create certificate print dialog\" subtitle.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificatePrintDialog.js",
-        "id": "paper.wallet.create.certificate.print.dialog.subtitle",
-        "start": {
-          "column": 12,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!Yes, paper wallet certificate successfully printed and everything is readable and scannable.",
-        "description": "\"Paper wallet create certificate print dialog\" confirmation.",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificatePrintDialog.js",
-        "id": "paper.wallet.create.certificate.print.dialog.printConfirmation",
-        "start": {
-          "column": 26,
-          "line": 25
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificatePrintDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Certificate password",
-        "description": "Headline for the \"Paper wallet create certificate securyng password dialog\".",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateSecuringPasswordDialog.js",
-        "id": "paper.wallet.create.certificate.securyng password.dialog.headline",
-        "start": {
-          "column": 12,
-          "line": 17
-        }
-      },
-      {
-        "defaultMessage": "!!!To restore your wallet you will need shielded recovery phrase from the certificate and the password.",
-        "description": "\"Paper wallet create certificate securyng password dialog\" first info label.",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateSecuringPasswordDialog.js",
-        "id": "paper.wallet.create.certificate.securyng password.dialog.infoLabel1",
-        "start": {
-          "column": 14,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!The password can optionally be written on the certificate or kept securely in other location. Here is the placeholder on the certificate intended for your password.",
-        "description": "\"Paper wallet create certificate securyng password dialog\" second info label.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateSecuringPasswordDialog.js",
-        "id": "paper.wallet.create.certificate.securyng password.dialog.infoLabel2",
-        "start": {
-          "column": 14,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!I understand that I can not use my certificate without the password and I have stored it safely.",
-        "description": "\"Paper wallet create certificate securyng password dialog\" secure password confirmation.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateSecuringPasswordDialog.js",
-        "id": "paper.wallet.create.certificate.securyng password.dialog.securingPasswordConfirmation",
-        "start": {
-          "column": 32,
-          "line": 32
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateSecuringPasswordDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Select color",
-        "description": "Headline for \"Paper wallet certificate create template choice dialog\".",
-        "end": {
-          "column": 3,
-          "line": 22
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateTemplateChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.templateChoice.dialog.headline",
-        "start": {
-          "column": 12,
-          "line": 18
-        }
-      },
-      {
-        "defaultMessage": "!!!Print",
-        "description": "\"Paper wallet create certificate template choice dialog\" print button label.",
-        "end": {
-          "column": 3,
-          "line": 27
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateTemplateChoiceDialog.js",
-        "id": "paper.wallet.create.certificate.templateChoice.dialog.button.printButtonLabe",
-        "start": {
-          "column": 19,
-          "line": 23
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateTemplateChoiceDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Verify certificate",
-        "description": "Headline for the \"Paper wallet create certificate verification dialog\".",
-        "end": {
-          "column": 3,
-          "line": 32
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.headline",
-        "start": {
-          "column": 12,
-          "line": 28
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter your shielded recovery phrase and your password to verify your paper wallet certificate.",
-        "description": "\"Paper wallet create certificate verification dialog\" subtitle.",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.subtitle",
-        "start": {
-          "column": 12,
-          "line": 33
-        }
-      },
-      {
-        "defaultMessage": "!!!Shielded recovery phrase",
-        "description": "\"Paper wallet create certificate verification dialog\" recovery phrase label.",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.label",
-        "start": {
-          "column": 23,
-          "line": 38
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter recovery phrase",
-        "description": "\"Paper wallet create certificate verification dialog\" recovery phrase hint.",
-        "end": {
-          "column": 3,
-          "line": 47
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.hint",
-        "start": {
-          "column": 22,
-          "line": 43
-        }
-      },
-      {
-        "defaultMessage": "!!!No results",
-        "description": "\"Paper wallet create certificate verification dialog\" recovery phrase no results label.",
-        "end": {
-          "column": 3,
-          "line": 52
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.noResults",
-        "start": {
-          "column": 27,
-          "line": 48
-        }
-      },
-      {
-        "defaultMessage": "!!!Password",
-        "description": "\"Paper wallet create certificate verification dialog\" password label.",
-        "end": {
-          "column": 3,
-          "line": 57
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.password.label",
-        "start": {
-          "column": 17,
-          "line": 53
-        }
-      },
-      {
-        "defaultMessage": "!!!Type password",
-        "description": "\"Paper wallet create certificate verification dialog\" password hint.",
-        "end": {
-          "column": 3,
-          "line": 62
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.password.hint",
-        "start": {
-          "column": 16,
-          "line": 58
-        }
-      },
-      {
-        "defaultMessage": "!!!Clear",
-        "description": "\"Paper wallet create certificate verification dialog\" button clear label.",
-        "end": {
-          "column": 3,
-          "line": 67
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.button.clearLabel",
-        "start": {
-          "column": 20,
-          "line": 63
-        }
-      },
-      {
-        "defaultMessage": "!!!I understand that the created wallet will not be stored in Daedalus after this step.",
-        "description": "\"Paper wallet create certificate verification dialog\" storing understandance confirmation.",
-        "end": {
-          "column": 3,
-          "line": 72
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.storingUnderstandanceConfirmationLabel",
-        "start": {
-          "column": 30,
-          "line": 68
-        }
-      },
-      {
-        "defaultMessage": "!!!I understand that my wallet can only be recovered using my paper wallet certificate and the password I have chosen.",
-        "description": "\"Paper wallet create certificate verification dialog\" recovering understandance confirmation.",
-        "end": {
-          "column": 3,
-          "line": 77
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateVerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.recoveringUnderstandanceConfirmationLabel",
-        "start": {
-          "column": 33,
-          "line": 73
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-create-certificate-dialogs2/PaperWalletCreateCertificateVerificationDialog.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Paper certificate",
         "description": "headline for \" for paper wallet mnemonic certificate dialog.",
         "end": {
@@ -5156,7 +4022,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Restore wallet from backup",
+        "defaultMessage": "!!!Restore using backup-recovery phrase or paper wallet certificate.",
         "description": "Description for the \"Restore\" button on the wallet add dialog.",
         "end": {
           "column": 3,
@@ -5630,6 +4496,90 @@
         "start": {
           "column": 28,
           "line": 82
+        }
+      },
+      {
+        "defaultMessage": "!!!Backup recovery phrase",
+        "description": "Tab title \"Backup recovery phrase\" in the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 91
+        },
+        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.tab.title.recoveryPhrase",
+        "start": {
+          "column": 26,
+          "line": 87
+        }
+      },
+      {
+        "defaultMessage": "!!!Paper wallet certificate",
+        "description": "Tab title \"Paper wallet certificate\" in the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 96
+        },
+        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.tab.title.certificate",
+        "start": {
+          "column": 23,
+          "line": 92
+        }
+      },
+      {
+        "defaultMessage": "!!!Shielded recovery phrase",
+        "description": "Label for the shielded recovery phrase input on the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 101
+        },
+        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.shielded.recovery.phrase.input.label",
+        "start": {
+          "column": 36,
+          "line": 97
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter shielded recovery phrase",
+        "description": "Hint \"Enter shielded recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 106
+        },
+        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.shielded.recovery.phrase.input.hint",
+        "start": {
+          "column": 35,
+          "line": 102
+        }
+      },
+      {
+        "defaultMessage": "!!!Paper wallet certificate password",
+        "description": "Label for the paper wallet certificate password on the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 111
+        },
+        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.wallet.certificate.password.label",
+        "start": {
+          "column": 28,
+          "line": 107
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter paper wallet certificate password",
+        "description": "Hint for the paper wallet certificate password field on the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 116
+        },
+        "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.wallet.certificate.password.hint",
+        "start": {
+          "column": 27,
+          "line": 112
         }
       }
     ],
@@ -6657,7 +5607,7 @@
           "line": 143
         },
         "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.dialog.button.continueLabel",
+        "id": "global.dialog.button.continue",
         "start": {
           "column": 29,
           "line": 139

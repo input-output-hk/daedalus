@@ -18,5 +18,5 @@ export const unscramblePaperWalletMnemonic = (
   passphrase: string, scrambledInput: string
 ) => {
   const input = CardanoCrypto.PaperWallet.unscrambleStrings(passphrase, scrambledInput);
-  return input.split(' ');
+  return input;
 };

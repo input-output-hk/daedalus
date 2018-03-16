@@ -137,7 +137,7 @@ export default defineMessages({
     description: 'Placeholder for the "Password" inputs in the create wallet dialog.',
   },
   dialogButtonContinueLabel: {
-    id: 'global.dialog.button.continueLabel',
+    id: 'global.dialog.button.continue',
     defaultMessage: '!!!Continue',
     description: 'Label "Continue" in dialogs.'
   },

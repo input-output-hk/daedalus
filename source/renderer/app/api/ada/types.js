@@ -5,6 +5,7 @@ export type AdaAssurance = 'CWANormal' | 'CWAStrict';
 export type AdaTransactionCondition = 'CPtxApplying' | 'CPtxInBlocks' | 'CPtxWontApply' | 'CPtxNotTracked';
 export type AdaWalletRecoveryPhraseResponse = Array<string>;
 export type AdaWalletCertificateRecoveryPhraseResponse = Array<string>;
+export type AdaWalletRecoveryPhraseFromCertificateResponse = Array<string>;
 
 export type AdaSyncProgressResponse = {
   _spLocalCD: {
