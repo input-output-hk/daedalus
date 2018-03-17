@@ -33,4 +33,7 @@ yarn2nix.mkYarnPackage {
       '';
     };
   };
+  # work around some purity problems in nix
+  yarnLock = ./yarn.lock;
+  packageJSON = ./package.json;
 }
