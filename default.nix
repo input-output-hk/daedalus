@@ -7,11 +7,11 @@ let
     };
     pkgs = import (import ./fetchNixpkgs.nix (builtins.fromJSON (builtins.readFile ./nixpkgs-src.json))) { config = {}; overlays = []; };
   };
-in { cluster ? "mainnet", master_config ? defaults.master_config, pkgs ? defaults.pkgs, buildNr ? "nix" }:
+in { cluster ? "mainnet", master_config ? defaults.master_config, pkgs ? defaults.pkgs, version ? "versionNotSet" }:
 let
   installPath = ".daedalus";
   packages = self: {
-    inherit cluster master_config pkgs buildNr;
+    inherit cluster master_config pkgs version;
     cardanoSrc = pkgs.fetchFromGitHub {
       owner = "input-output-hk";
       repo = "cardano-sl";
