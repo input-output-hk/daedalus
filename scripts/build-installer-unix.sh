@@ -141,7 +141,7 @@ cd installers
     fi
 
     echo "Generating the installer.."
-    $nix_shell ../default.nix --run "$INSTALLER/bin/make-installer"
+    $nix_shell ../shell.nix --run "$INSTALLER/bin/make-installer"
 
     INSTALLER_PKG="Daedalus-installer-${DAEDALUS_VERSION}.pkg"
     APP_NAME="csl-daedalus"
