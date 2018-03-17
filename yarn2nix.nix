@@ -1,4 +1,4 @@
-{ pkgs, nodejs-8_x, python, api, buildNr, cluster, nukeReferences }:
+{ lib, pkgs, nodejs-8_x, python, api, buildNr, cluster, nukeReferences }:
 let
   nodejs = nodejs-8_x;
   yarn2nix = import (fetchTarball https://github.com/moretea/yarn2nix/archive/v1.0.0.tar.gz) { inherit pkgs nodejs; };
@@ -9,7 +9,7 @@ let
 in
 yarn2nix.mkYarnPackage {
   name = "daedalus";
-  src = builtins.fetchGit ./.;
+  src = if builtins ? fetchGit then builtins.fetchGit ./. else lib.cleanSource ./.;
   API = api;
   NETWORK = networkMap.${cluster};
   DAEDALUS_VERSION = "1.1.0.${buildNr}";
