@@ -103,12 +103,12 @@ makeScriptsDir cfg = case icApi cfg of
 npmPackage :: InstallerConfig -> Shell ()
 npmPackage cfg = do
   mktree "release"
-  echo "Installing nodejs dependencies..."
+  echo "~~~ Installing nodejs dependencies..."
   procs "npm" ["install"] empty
-  echo "Running electron packager script..."
+  echo "~~~ Running electron packager script..."
   procs "npm" ["run", "package"] empty
   size <- inproc "du" ["-sh", "release"] empty
-  printf ("Size of Electron app is " % l) size
+  printf ("Size of Electron app is " % l % "\n") size
 
 withDir :: P.FilePath -> IO a -> IO a
 withDir d = bracket (pwd >>= \old -> (cd d >> pure old)) cd . const
@@ -125,7 +125,7 @@ makeInstaller cfg = do
 
   withDir ".." . sh $ npmPackage cfg
 
-  echo "Preparing files ..."
+  echo "~~~ Preparing files ..."
   case icApi cfg of
     "cardano" -> do
       copyFile "cardano-launcher" (dir </> "cardano-launcher")
