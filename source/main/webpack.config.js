@@ -24,7 +24,7 @@ module.exports = {
    */
   node: {
     __dirname: false,
-    __filename: false
+    __filename: false,
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -32,7 +32,7 @@ module.exports = {
       'process.env.NETWORK': JSON.stringify(process.env.NETWORK || 'development'),
       'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
       'process.env.DAEDALUS_VERSION': JSON.stringify(process.env.DAEDALUS_VERSION || 'dev'),
-      'process.env.REPORT_URL': JSON.stringify(reportUrl)
+      'process.env.REPORT_URL': JSON.stringify(reportUrl),
     }),
   ],
   module: {

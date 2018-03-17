@@ -5,7 +5,8 @@ import ipcApi from '../ipc-api';
 import { runtimeFolderPath } from '../config';
 
 export const createMainWindow = () => {
-  const iconPath = runtimeFolderPath + "/icon.png";
+  const iconPath = runtimeFolderPath + '/icon.png';
+
   // Construct new BrowserWindow
   const window = new BrowserWindow({
     show: false,

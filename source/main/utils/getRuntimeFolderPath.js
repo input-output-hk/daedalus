@@ -9,9 +9,8 @@ export default (platform, env, appName) => {
       return path.join(env.APPDATA, appName);
     }
     case 'linux': {
-      var DAEDALUS_DIR = env.DAEDALUS_DIR;
-      var CLUSTER = env.CLUSTER;
-      if ((DAEDALUS_DIR != undefined) && (CLUSTER != undefined)) {
+      const { DAEDALUS_DIR, CLUSTER } = env;
+      if ((DAEDALUS_DIR !== undefined) && (CLUSTER !== undefined)) {
         return DAEDALUS_DIR + '/' + CLUSTER;
       }
       return path.join(env.HOME, '.config', appName);
