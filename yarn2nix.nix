@@ -1,7 +1,10 @@
-{ lib, pkgs, nodejs-8_x, python, api, cluster, nukeReferences, version }:
+{ lib, pkgs, nodejs-8_x, python, api, cluster, nukeReferences, version, fetchzip }:
 let
   nodejs = nodejs-8_x;
-  yarn2nix = import (fetchTarball https://github.com/moretea/yarn2nix/archive/v1.0.0.tar.gz) { inherit pkgs nodejs; };
+  yarn2nix = import (fetchzip {
+    url = "https://github.com/moretea/yarn2nix/archive/v1.0.0.tar.gz";
+    sha256 = "02bzr9j83i1064r1r34cn74z7ccb84qb5iaivwdplaykyyydl1k8";
+  }) { inherit pkgs nodejs; };
   networkMap = {
     mainnet = "mainnet";
     staging = "testnet";
