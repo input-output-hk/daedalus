@@ -5,6 +5,8 @@ set -ex
 VERSION=$1
 BUILDKITE_BUILD_NUMBER=$2
 
+rm -rf dist || true
+
 echo '~~~ Pre-building node_modules with nix'
 nix-build default.nix -A rawapp.deps -o node_modules.root -Q
 
