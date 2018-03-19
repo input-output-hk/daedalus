@@ -99,7 +99,7 @@ fi
 
 mkdir -p ~/.local/bin
 
-rm -rf dist release || true
+rm -rf dist release node_modules || true
 
 export PATH=$HOME/.local/bin:$PATH
 export DAEDALUS_VERSION=${daedalus_version}.${build_id}
