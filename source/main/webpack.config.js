@@ -33,6 +33,7 @@ module.exports = {
       'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
       'process.env.DAEDALUS_VERSION': JSON.stringify(process.env.DAEDALUS_VERSION || 'dev'),
       'process.env.REPORT_URL': JSON.stringify(reportUrl),
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'dev'),
     }),
   ],
   module: {
