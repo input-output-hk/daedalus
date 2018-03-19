@@ -99,6 +99,8 @@ fi
 
 mkdir -p ~/.local/bin
 
+rm -rf dist release || true
+
 export PATH=$HOME/.local/bin:$PATH
 export DAEDALUS_VERSION=${daedalus_version}.${build_id}
 if [ -n "${NIX_SSL_CERT_FILE-}" ]; then export SSL_CERT_FILE=$NIX_SSL_CERT_FILE; fi
