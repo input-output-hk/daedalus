@@ -13,6 +13,7 @@ yarn2nix.mkYarnPackage {
   API = api;
   NETWORK = networkMap.${cluster};
   DAEDALUS_VERSION = "${version}";
+  NODE_ENV = "production";
   installPhase = ''
     npm run build
     mkdir -p $out/bin $out/share/daedalus
