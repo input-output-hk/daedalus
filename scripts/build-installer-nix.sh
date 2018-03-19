@@ -5,6 +5,9 @@ set -ex
 VERSION=$1
 BUILDKITE_BUILD_NUMBER=$2
 
+echo '~~~ Pre-building node_modules with nix'
+nix-build default.nix -A rawapp.deps -o node_modules.root -Q
+
 echo '~~~ Building mainnet installer'
 nix-build release.nix -A mainnet.installer --argstr buildNr $BUILDKITE_BUILD_NUMBER --argstr version $VERSION
 if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
