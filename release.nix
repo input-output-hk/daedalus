@@ -1,0 +1,3 @@
+{
+  daedalus = import ./linux.nix;
+}
