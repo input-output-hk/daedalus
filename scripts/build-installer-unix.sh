@@ -109,7 +109,6 @@ CARDANO_BUILD_UID="${OS_NAME}-${cardano_branch//\//-}"
 ARTIFACT_BUCKET=ci-output-sink        # ex- cardano-sl-travis
 CARDANO_ARTIFACT=cardano-binaries     # ex- daedalus-bridge
 CARDANO_ARTIFACT_FULL_NAME=${CARDANO_ARTIFACT}-${CARDANO_BUILD_UID}
-export NODE_ENV=production
 
 test -d node_modules/daedalus-client-api/ -a -n "${fast_impure}" || {
         retry 5 curl -o ${CARDANO_ARTIFACT_FULL_NAME}.tar.xz \
