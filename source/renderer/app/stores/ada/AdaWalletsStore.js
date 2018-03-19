@@ -8,7 +8,7 @@ import { matchRoute, buildRoute } from '../../utils/routing';
 import Request from '.././lib/LocalizedRequest';
 import { ROUTES } from '../../routes-config';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
-import { downloadPaperWalletCertificate } from '../../utils/pdf';
+import { downloadPaperWalletCertificate } from '../../utils/paperWalletGenerator';
 import type { walletExportTypeChoices } from '../../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../../actions/ada/wallets-actions';
 import type { ImportWalletFromFileResponse } from '../../api/ada/index';
