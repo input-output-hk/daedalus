@@ -32,8 +32,6 @@ const messages = defineMessages({
   },
 });
 
-// TODO: WIP code, cleanup, rename labels, rename this file...
-
 type DownloadPaperWalletCertificateParams = {
   address: string,
   filePath: string,
@@ -46,19 +44,20 @@ type DownloadPaperWalletCertificateParams = {
 export const downloadPaperWalletCertificate = (
   { address, mnemonics, intl, onSuccess, onError, filePath }: DownloadPaperWalletCertificateParams
 ) => {
+  const daedalusInfo =
+    `Daedalus ${intl.formatMessage(messages.releaseVersion)}#${environment.build}`;
   const qrCodeImage = qr.imageSync(address, { type: 'png', size: 10, ec_level: 'H', margin: 0 });
-  const titleColor = '#3b5c9b';
-  const defautlColor = 'black';
+  const textColor = '#3b5c9b';
 
   const width = 595.28;
   const height = 841.98;
   const doc = new PDFDocument({
     size: [width, height],
     margins: {
-      top: 0,
       bottom: 0,
       left: 0,
       right: 0,
+      top: 0,
     },
     info: {
       Title: 'Daedalus - Paper wallet certificate',
@@ -66,38 +65,34 @@ export const downloadPaperWalletCertificate = (
     }
   });
 
+  /* eslint-disable max-len */
   // background images
   doc.image(paperWalletCertificateBg, 0, 4, { fit: [width, height] });
+
+  // first page
   SVGtoPDF(doc, paperWalletPage1, 0, 0, { precision: 10 });
-
-  // rotation of the document to print rotated content
   doc.rotate(180, { origin: [width / 2, height / 2] });
-
-  // page one content
-  doc.fontSize(10).fillColor(titleColor);
-  doc.text(intl.formatMessage(messages.walletAddressLabel), 0, 160, { width: 595, align: 'center' });
-  doc.fillColor(defautlColor);
+  doc.fillColor(textColor);
+  doc.fontSize(10).text(intl.formatMessage(messages.walletAddressLabel), 0, 160, { width: 595, align: 'center' });
   doc.image(qrCodeImage, (width / 2) - 80 / 2, 180, { fit: [80, 80] });
-  doc.text(address, (width - 250) / 2, 274, { width: 250, align: 'center' });
+  doc.fontSize(8).text(address, (width - 250) / 2, 274, { width: 250, align: 'center', lineGap: 2 });
 
-  // rotation of the document back to normal after the rotated content has been printed
+  // revert document rotation
   doc.rotate(-180, { origin: [width / 2, height / 2] });
 
   // second page
   doc.addPage();
-
-  // same deal as first page
   SVGtoPDF(doc, paperWalletPage2, 0, 0);
   doc.rotate(180, { origin: [width / 2, height / 2] });
-  doc.fillColor(titleColor);
-  doc.text(intl.formatMessage(messages.shieldedRecoveryPhraseLabel), 0, 550, { width: 595, align: 'center' });
-  doc.fillColor(defautlColor);
-  doc.fontSize(14).text(mnemonics.join('   '), (width - 250) / 2, 570, { width: 250, align: 'center' });
-  doc.fontSize(10).fillColor(titleColor);
-  doc.text(intl.formatMessage(messages.passwordLabel), 0, 655, { width: 595, align: 'center' });
-  doc.fontSize(8).fillColor(defautlColor);
-  doc.text(`Daedalus ${intl.formatMessage(messages.releaseVersion)}#${environment.build}`, 0, 695, { width: 595, align: 'center' });
+  doc.fillColor(textColor);
+  doc.fontSize(10).text(intl.formatMessage(messages.shieldedRecoveryPhraseLabel), 0, 550, { width: 595, align: 'center' });
+  doc.fontSize(8).text(mnemonics.slice(0, 5).join('          '), (width - 250) / 2, 575, { width: 250, align: 'center' });
+  doc.fontSize(8).text(mnemonics.slice(5, 10).join('          '), (width - 250) / 2, 593, { width: 250, align: 'center' });
+  doc.fontSize(8).text(mnemonics.slice(10, 15).join('          '), (width - 250) / 2, 611, { width: 250, align: 'center' });
+  doc.fontSize(10).text(intl.formatMessage(messages.passwordLabel), 0, 650, { width: 595, align: 'center' });
+  doc.fontSize(7).text(daedalusInfo, (width - 270) / 2, 705, { width: 270, align: 'left' });
   doc.rotate(-180, { origin: [width / 2, height / 2] });
+  /* eslint-disable max-len */
 
   try {
     doc.pipe(fs.createWriteStream(filePath));
@@ -107,5 +102,4 @@ export const downloadPaperWalletCertificate = (
     if (onError) onError(e);
     throw e;
   }
-
 };
