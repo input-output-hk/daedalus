@@ -11,8 +11,8 @@ let
   };
 in
 yarn2nix.mkYarnPackage {
-  name = "daedalus";
-  src = if builtins ? fetchGit then builtins.fetchGit ./. else lib.cleanSource ./.;
+  name = "daedalus-js";
+  src = if 0 <= builtins.compareVersions builtins.nixVersion "1.12" then builtins.fetchGit ./. else lib.cleanSource ./.;
   API = api;
   NETWORK = networkMap.${cluster};
   DAEDALUS_VERSION = "${version}";
