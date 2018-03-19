@@ -195,8 +195,7 @@ export default class VerificationDialog extends Component<Props, State> {
     form.showErrors(false);
 
     // Autocomplete has to be reset manually
-    // this.recoveryPhraseAutocomplete.clear();
-    // TODO: uncomment previous line after React-Polymorph update
+    this.recoveryPhraseAutocomplete.clear();
 
     this.setState({
       storingConfirmed: false,
