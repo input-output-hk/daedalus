@@ -15,20 +15,5 @@ let
     gitrev = cardano-sl-src.rev;
   };
 
-in stdenv.mkDerivation {
-  name = "daedalus";
-
-  buildInputs = [
-    nix bash binutils coreutils curl gnutar
-    git python27 curl electron nodejs-6_x
-    nodePackages.node-gyp nodePackages.node-pre-gyp
-    gnumake
-  ];
-
-  passthru = {
-    inherit (cardano-sl-pkgs) daedalus-bridge;
-  };
-
-  src = null;
-
-}
+in
+  cardano-sl-pkgs

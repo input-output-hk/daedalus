@@ -108,7 +108,7 @@ if [ -n "${NIX_SSL_CERT_FILE-}" ]; then export SSL_CERT_FILE=$NIX_SSL_CERT_FILE;
 ARTIFACT_BUCKET=ci-output-sink
 
 # Build/get cardano bridge which is used by make-installer
-export DAEDALUS_BRIDGE=$(nix-build --no-out-link default.nix -A daedalus-bridge)
+export DAEDALUS_BRIDGE=$(nix-build --no-out-link cardano-sl.nix -A daedalus-bridge)
 # Note: Printing build-id is required for the iohk-ops find-installers
 # script which searches in buildkite logs.
 if [ -f $DAEDALUS_BRIDGE/build-id ]; then echo "cardano-sl build id is $(cat $DAEDALUS_BRIDGE/build-id)"; fi
