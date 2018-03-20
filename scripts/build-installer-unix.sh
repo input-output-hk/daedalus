@@ -51,7 +51,6 @@ fast_impure=
 verbose=true
 build_id=0
 pr_id=true
-upload_s3=
 test_install=
 
 daedalus_version="$1"; arg2nz "daedalus version" $1; shift
@@ -79,7 +78,6 @@ do case "$1" in
                                                                pr_id="$2"; shift;;
            --nix-path )       arg2nz "NIX_PATH value" $2;
                                                      export NIX_PATH="$2"; shift;;
-           --upload-s3 )                                   upload_s3=t;;
            --test-install )                             test_install=t;;
 
            ###
@@ -134,14 +132,6 @@ cd installers
     echo '~~~ Building the cardano installer generator..'
     INSTALLER=$(nix-build -j 2 --no-out-link)
 
-    # For Travis MacOSX non-PR builds only
-    if test "${pr_id}" = "false" -a -n "${TRAVIS_JOB_ID:-}" -a "${OS_NAME}" != "linux"
-    then
-        echo "Downloading and importing signing certificate.."
-        retry 5 $nix_shell -p awscli --run "aws s3 cp --region eu-central-1 s3://iohk-private/${key} macos.p12 || true"
-        $INSTALLER/bin/load-certificate -k macos-build.keychain -f macos.p12
-    fi
-
     echo '~~~ Generating the installer..'
     $nix_shell ../shell.nix --run "$INSTALLER/bin/make-installer"
 
@@ -158,10 +148,6 @@ cd installers
             export PATH=${BUILDKITE_BIN_PATH:-}:$PATH
             buildkite-agent artifact upload "${APP_NAME}/${INSTALLER_PKG}" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
             rm "${APP_NAME}/${INSTALLER_PKG}"
-        elif test -n "${TRAVIS_JOB_ID:-}" -a -n "${upload_s3}"
-        then
-            echo "$0: --upload-s3 passed, will upload the installer to S3";
-            retry 5 $nix_shell -p awscli --run "aws s3 cp '${APP_NAME}/${INSTALLER_PKG}' s3://daedalus-internal/ --acl public-read"
         fi
         cd ..
     else

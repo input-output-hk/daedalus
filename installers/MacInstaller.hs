@@ -16,7 +16,7 @@ module MacInstaller
 
 import           Universum
 
-import           Control.Monad (unless, liftM2)
+import           Control.Monad (unless)
 import           Data.Maybe (fromMaybe)
 import qualified Data.Text as T
 import           System.Directory (copyFile, createDirectoryIfMissing, doesFileExist, renameFile)
@@ -41,19 +41,19 @@ data InstallerConfig = InstallerConfig {
   , appRoot :: String
 }
 
--- In both Travis and Buildkite, the environment variable is set to
--- the pull request number if the current job is a pull request build,
--- or "false" if it’s not.
+-- In Buildkite (as in Travis), the environment variable is set to the
+-- pull request number if the current job is a pull request build, or
+-- "false" if it’s not.
 pullRequestFromEnv :: IO (Maybe String)
-pullRequestFromEnv = liftM2 (<|>) (getPR "BUILDKITE_PULL_REQUEST") (getPR "TRAVIS_PULL_REQUEST")
+pullRequestFromEnv = interpret <$> lookupEnv "BUILDKITE_PULL_REQUEST"
   where
-    getPR = fmap interpret . lookupEnv
     interpret Nothing        = Nothing
     interpret (Just "false") = Nothing
     interpret (Just num)     = Just num
 
-travisJobIdFromEnv :: IO (Maybe String)
-travisJobIdFromEnv = lookupEnv "TRAVIS_JOB_ID"
+-- Internal UUID Buildkite uses for this job.
+buildkiteJobIdFromEnv :: IO (Maybe String)
+buildkiteJobIdFromEnv = lookupEnv "BUILDKITE_JOB_ID"
 
 installerConfigFromEnv :: IO InstallerConfig
 installerConfigFromEnv = mkEnv <$> envAPI <*> envVersion
@@ -75,25 +75,12 @@ main = do
 
   cfg <- installerConfigFromEnv
   tempInstaller <- makeInstaller cfg
-  shouldSign <- shouldSignDecision
 
-  if shouldSign
-    then do
-      signInstaller signingConfig (toText tempInstaller) (pkg cfg)
-      checkSignature (pkg cfg)
-    else do
-      echo "Pull request, not signing the installer."
-      run "cp" [toText tempInstaller, pkg cfg]
+  signInstaller signingConfig (toText tempInstaller) (pkg cfg)
+  checkSignature (pkg cfg)
 
   run "rm" [toText tempInstaller]
   echo $ "Generated " <> unsafeTextToLine (pkg cfg)
-
--- | When on travis, only sign installer if for non-PR builds.
-shouldSignDecision :: IO Bool
-shouldSignDecision = do
-  pr <- pullRequestFromEnv
-  isTravis <- isJust <$> travisJobIdFromEnv
-  pure (not isTravis || pr == Nothing)
 
 makeScriptsDir :: InstallerConfig -> Managed T.Text
 makeScriptsDir cfg = case icApi cfg of
