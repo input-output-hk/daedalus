@@ -185,6 +185,10 @@ writeInstallerNSIS (Version fullVersion') clusterName = do
                 createShortcut "$SMPROGRAMS/Daedalus/Daedalus.lnk" daedalusShortcut
         return ()
 
+packageFrontend :: IO ()
+packageFrontend =
+    shells "npm run package -- --icon installers/icons/64x64" mempty
+
 main :: Options -> IO ()
 main opts@Options{..}  = do
     echo "Writing version.txt"
@@ -193,12 +197,12 @@ main opts@Options{..}  = do
     TIO.writeFile "version.txt" $ fromVer fullVersion
 
     echo "Generating configuration file:  launcher-config.yaml"
-    generateConfig (Request Win64 oCluster Launcher) "./dhall" "launcher-config.yaml"
+    generateConfig (ConfigRequest Win64 oCluster Launcher) "./dhall" "launcher-config.yaml"
     echo "Generating configuration file:  wallet-topology.yaml"
-    generateConfig (Request Win64 oCluster Topology) "./dhall" "wallet-topology.yaml"
+    generateConfig (ConfigRequest Win64 oCluster Topology) "./dhall" "wallet-topology.yaml"
 
     echo "Packaging frontend"
-    shells "npm run package -- --icon installers/icons/64x64" mempty
+    packageFrontend
 
     echo "Adding permissions manifest to cardano-launcher.exe"
     procs "C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\mt.exe" ["-manifest", "cardano-launcher.exe.manifest", "-outputresource:cardano-launcher.exe;#1"] mempty

@@ -7,7 +7,7 @@
 {-# LANGUAGE DataKinds         #-}
 module Config
   ( generateConfig
-  , Request(..)
+  , ConfigRequest(..)
   , OS(..), Cluster(..), Config(..)
   , optReadLower, argReadLower
   , Options(..), optionsParser
@@ -101,8 +101,8 @@ dhallTopExpr :: Text -> Config -> OS -> Cluster -> Text
 dhallTopExpr path Launcher os cluster = path <> "/launcher.dhall ( "<>path<>"/" <> lshowText cluster <> ".dhall "<>path<>"/" <> lshowText os <> ".dhall ) "<>path<>"/" <> lshowText os <> ".dhall"
 dhallTopExpr path Topology os cluster = path <> "/topology.dhall ( "<>path<>"/" <> lshowText cluster <> ".dhall "<>path<>"/" <> lshowText os <> ".dhall )"
 
-generateConfig :: Request -> FilePath -> FilePath -> IO ()
-generateConfig Request{..} configRoot outFile = handle $ do
+generateConfig :: ConfigRequest -> FilePath -> FilePath -> IO ()
+generateConfig ConfigRequest{..} configRoot outFile = handle $ do
   GHC.setLocaleEncoding GHC.utf8
 
   let inText = dhallTopExpr (pack configRoot) rConfig rOS rCluster

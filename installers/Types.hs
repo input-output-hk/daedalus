@@ -8,7 +8,7 @@ module Types
   , Cluster(..)
   , Config(..)
   , CI(..)
-  , Request(..)
+  , ConfigRequest(..)
 
   , AppName(..)
   , BuildJob(..)
@@ -16,7 +16,6 @@ module Types
   , Version(..)
 
   -- * Flags
-  , SigningRequested(..), signingRequested
   , TestInstaller(..), testInstaller
 
   -- * Misc
@@ -59,8 +58,8 @@ data CI
   | Manual
   deriving (Bounded, Enum, Eq, Read, Show)
 
-data Request
-  = Request
+-- | What runtime config file to generate.
+data ConfigRequest = ConfigRequest
   { rOS      :: OS
   , rCluster :: Cluster
   , rConfig  :: Config
@@ -72,10 +71,6 @@ newtype PullReq      = PullReq      { fromPullReq      :: Text } deriving (Eq, I
 newtype Version      = Version      { fromVer          :: Text } deriving (Eq, IsString, Show)
 
 
-
-data SigningRequested   = SigningNotRequested       | SigningRequested       deriving (Eq, Show)
-signingRequested True   =                             SigningRequested
-signingRequested False  = SigningNotRequested
 
 data TestInstaller      = DontTestInstaller         | TestInstaller          deriving (Eq, Show)
 testInstaller    True   =                             TestInstaller

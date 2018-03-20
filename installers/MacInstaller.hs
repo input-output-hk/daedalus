@@ -45,9 +45,9 @@ main opts@Options{..} = do
   let appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
 
   echo "Generating configuration file:  launcher-config.yaml"
-  generateConfig (Request Macos64 oCluster Launcher) "./dhall" "launcher-config.yaml"
+  generateConfig (ConfigRequest Macos64 oCluster Launcher) "./dhall" "launcher-config.yaml"
   echo "Generating configuration file:  wallet-topology.yaml"
-  generateConfig (Request Macos64 oCluster Topology) "./dhall" "wallet-topology.yaml"
+  generateConfig (ConfigRequest Macos64 oCluster Topology) "./dhall" "wallet-topology.yaml"
 
   echo "Packaging frontend"
   shells "npm run package -- --icon installers/icons/256x256" mempty

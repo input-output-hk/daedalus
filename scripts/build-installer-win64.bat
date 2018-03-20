@@ -203,5 +203,3 @@ FOR %%C IN (%CLUSTERS:"=%) DO (
   @if %errorlevel% neq 0 ( @echo FATAL: persistent failure while building installer
                            popd & exit /b 1)
 )
-
-@echo SUCCESS
