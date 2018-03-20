@@ -15,31 +15,31 @@ module Config
   , options
   ) where
 
-import qualified Control.Exception
+import qualified Control.Exception                as Ex
 
 import qualified Data.Char
-import qualified Data.ByteString
+import           Data.ByteString                     (writeFile)
 import qualified Data.List                        as L
 import qualified Data.Map                         as Map
 import           Data.Maybe
 import           Data.Optional                       (Optional)
 import           Data.Semigroup
 import           Data.Text                           (Text, pack, unpack)
-import qualified Data.Yaml
+import qualified Data.Yaml                        as YAML
 
-import qualified Dhall
-import qualified Dhall.JSON
+import qualified Dhall                            as Dhall
+import qualified Dhall.JSON                       as Dhall
 
-import qualified GHC.IO.Encoding
+import qualified GHC.IO.Encoding                  as GHC
 
-import qualified System.IO
-import qualified System.Exit
+import qualified System.IO                        as Sys
+import qualified System.Exit                      as Sys
 
 import           Text.Printf                         (printf)
 import           Turtle                              (optional)
 import           Turtle.Options
 
-import           Prelude
+import           Prelude                     hiding (writeFile)
 import           Types
 
 
@@ -103,19 +103,19 @@ dhallTopExpr path Topology os cluster = path <> "/topology.dhall ( "<>path<>"/" 
 
 generateConfig :: Request -> FilePath -> FilePath -> IO ()
 generateConfig Request{..} configRoot outFile = handle $ do
-  GHC.IO.Encoding.setLocaleEncoding GHC.IO.Encoding.utf8
+  GHC.setLocaleEncoding GHC.utf8
 
   let inText = dhallTopExpr (pack configRoot) rConfig rOS rCluster
 
-  Data.ByteString.writeFile outFile =<<
-    Data.Yaml.encode <$> Dhall.detailed (Dhall.JSON.codeToValue "(stdin)" inText)
+  writeFile outFile =<<
+    YAML.encode <$> Dhall.detailed (Dhall.codeToValue "(stdin)" inText)
 
 -- | Generic error handler: be it encoding/decoding, file IO, parsing or type-checking.
 handle :: IO a -> IO a
-handle = Control.Exception.handle handler
+handle = Ex.handle handler
   where
-    handler :: Control.Exception.SomeException -> IO a
+    handler :: Ex.SomeException -> IO a
     handler e = do
-        System.IO.hPutStrLn System.IO.stderr ""
-        System.IO.hPrint    System.IO.stderr e
-        System.Exit.exitFailure
+        Sys.hPutStrLn Sys.stderr ""
+        Sys.hPrint    Sys.stderr e
+        Sys.exitFailure
