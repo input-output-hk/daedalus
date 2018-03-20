@@ -103,7 +103,7 @@
   "paper.wallet.create.certificate.passwordChoice.dialog.password.label": "!!!Enter password",
   "paper.wallet.create.certificate.passwordChoice.dialog.repeatPassword.hint": "!!!Repeat password",
   "paper.wallet.create.certificate.passwordChoice.dialog.repeatPassword.label": "!!!Repeat password",
-  "paper.wallet.create.certificate.passwordChoice.dialog.subtitle": "!!!A password you chose will be used to shield your recovery prase on the certificate. You will not be able to restore your wallet without this password.",
+  "paper.wallet.create.certificate.passwordChoice.dialog.subtitle": "!!!A password you chose will be used to shield your recovery phrase on the certificate. You will not be able to restore your wallet without this password.",
   "paper.wallet.create.certificate.print.dialog.headline": "!!!Certificate generation complete",
   "paper.wallet.create.certificate.print.dialog.printConfirmation": "!!!Yes, paper wallet certificate successfully printed and everything is readable and scannable.",
   "paper.wallet.create.certificate.print.dialog.subtitle": "!!!Check your paper wallet certificate and verify that everything is correctly printed and readable. You can try scanning QR codes with QR scanner application on your mobile phone.",
