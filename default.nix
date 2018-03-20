@@ -82,6 +82,9 @@ let
 
       cp -f ${self.iconPath} $DAEDALUS_DIR/icon.png
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper $DAEDALUS_DIR/namespaceHelper
+      mkdir -pv ~/.local/bin/daedalus ~/bin
+      cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus
+      cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/bin/
 
       cat ${self.desktopItem}/share/applications/Daedalus.desktop | sed \
         -e "s+INSERT_PATH_HERE+''${DAEDALUS_DIR}/namespaceHelper+g" \

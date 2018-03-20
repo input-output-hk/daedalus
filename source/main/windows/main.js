@@ -5,15 +5,16 @@ import ipcApi from '../ipc-api';
 import { runtimeFolderPath } from '../config';
 
 export const createMainWindow = () => {
-  const iconPath = runtimeFolderPath + '/icon.png';
+  const iconPath = path.join(runtimeFolderPath, '/icon.png');
 
-  // Construct new BrowserWindow
-  const window = new BrowserWindow({
+  var params = {
     show: false,
     width: 1150,
     height: 870,
-    icon: iconPath,
-  });
+  };
+  if (process.platform == "linux") params.icon = iconPath;
+  // Construct new BrowserWindow
+  const window = new BrowserWindow(params);
 
   window.setMinimumSize(900, 600);
 
