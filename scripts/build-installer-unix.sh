@@ -99,6 +99,8 @@ fi
 
 mkdir -p ~/.local/bin
 
+rm -rf dist release node_modules || true
+
 export PATH=$HOME/.local/bin:$PATH
 export DAEDALUS_VERSION=${daedalus_version}.${build_id}
 if [ -n "${NIX_SSL_CERT_FILE-}" ]; then export SSL_CERT_FILE=$NIX_SSL_CERT_FILE; fi
@@ -127,9 +129,9 @@ test -d node_modules/daedalus-client-api/ -a -n "${fast_impure}" || {
 }
 
 cd installers
-    echo "Prebuilding dependencies for cardano-installer, quietly.."
+    echo '~~~ Prebuilding dependencies for cardano-installer, quietly..'
     $nix_shell default.nix --run true || echo "Prebuild failed!"
-    echo "Building the cardano installer generator.."
+    echo '~~~ Building the cardano installer generator..'
     INSTALLER=$(nix-build -j 2 --no-out-link)
 
     # For Travis MacOSX non-PR builds only
@@ -140,14 +142,14 @@ cd installers
         $INSTALLER/bin/load-certificate -k macos-build.keychain -f macos.p12
     fi
 
-    echo "Generating the installer.."
-    $nix_shell ../default.nix --run "$INSTALLER/bin/make-installer"
+    echo '~~~ Generating the installer..'
+    $nix_shell ../shell.nix --run "$INSTALLER/bin/make-installer"
 
     INSTALLER_PKG="Daedalus-installer-${DAEDALUS_VERSION}.pkg"
     APP_NAME="csl-daedalus"
 
     if test -d dist -a -f "dist/${INSTALLER_PKG}"; then
-        echo "Uploading the installer package.."
+        echo '~~~ Uploading the installer package..'
         cd dist
         mkdir -p ${APP_NAME}
         mv "${INSTALLER_PKG}" "${APP_NAME}/${INSTALLER_PKG}"
@@ -155,6 +157,7 @@ cd installers
         if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
             export PATH=${BUILDKITE_BIN_PATH:-}:$PATH
             buildkite-agent artifact upload "${APP_NAME}/${INSTALLER_PKG}" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
+            rm "${APP_NAME}/${INSTALLER_PKG}"
         elif test -n "${TRAVIS_JOB_ID:-}" -a -n "${upload_s3}"
         then
             echo "$0: --upload-s3 passed, will upload the installer to S3";
