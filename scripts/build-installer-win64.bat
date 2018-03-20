@@ -81,6 +81,7 @@ move   node_modules\daedalus-client-api\*genesis*.json installers\
 del /f node_modules\daedalus-client-api\*.exe
 
 :build_frontend
+set NODE_ENV=production
 @echo Packaging frontend
 call npm run package -- --icon installers/icons/64x64
 @if %errorlevel% neq 0 (@echo FAILED: Failed to package the frontend

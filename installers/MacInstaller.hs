@@ -20,12 +20,12 @@ import           Control.Monad (unless, liftM2)
 import           Data.Maybe (fromMaybe)
 import qualified Data.Text as T
 import           System.Directory (copyFile, createDirectoryIfMissing, doesFileExist, renameFile)
-import           System.Environment (lookupEnv)
-import           System.FilePath ((</>), (<.>), FilePath)
+import           System.Environment (lookupEnv, setEnv)
+import           System.FilePath ((</>), FilePath)
 import           System.FilePath.Glob (glob)
-import           Filesystem.Path.CurrentOS (encodeString, decodeString)
+import           Filesystem.Path.CurrentOS (encodeString)
 import qualified Filesystem.Path as P
-import           Turtle (Shell, ExitCode (..), echo, proc, procs, inproc, which, Managed, with, printf, format, (%), fp, l, pwd, cd, sh, mktree)
+import           Turtle (Shell, ExitCode (..), echo, proc, procs, inproc, which, Managed, with, printf, format, (%), l, pwd, cd, sh, mktree)
 import           Turtle.Line (unsafeTextToLine)
 
 import           RewriteLibs (chain)
@@ -101,14 +101,15 @@ makeScriptsDir cfg = case icApi cfg of
   "etc" -> pure "[DEVOPS-533]"
 
 npmPackage :: InstallerConfig -> Shell ()
-npmPackage cfg = do
+npmPackage _ = do
   mktree "release"
-  echo "Installing nodejs dependencies..."
+  echo "~~~ Installing nodejs dependencies..."
   procs "npm" ["install"] empty
-  echo "Running electron packager script..."
+  liftIO $ setEnv "NODE_ENV" "production"
+  echo "~~~ Running electron packager script..."
   procs "npm" ["run", "package"] empty
   size <- inproc "du" ["-sh", "release"] empty
-  printf ("Size of Electron app is " % l) size
+  printf ("Size of Electron app is " % l % "\n") size
 
 withDir :: P.FilePath -> IO a -> IO a
 withDir d = bracket (pwd >>= \old -> (cd d >> pure old)) cd . const
@@ -125,7 +126,7 @@ makeInstaller cfg = do
 
   withDir ".." . sh $ npmPackage cfg
 
-  echo "Preparing files ..."
+  echo "~~~ Preparing files ..."
   case icApi cfg of
     "cardano" -> do
       copyFile "cardano-launcher" (dir </> "cardano-launcher")
