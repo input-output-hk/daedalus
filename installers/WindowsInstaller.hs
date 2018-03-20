@@ -79,15 +79,18 @@ signUninstaller opts = do
 signFile :: Options -> FilePath -> IO ()
 signFile Options{..} filename = do
     exists   <- doesFileExist filename
-    certPass <- fromMaybe "" <$> lookupEnv "CERT_PASS"
-    if exists then do
+    mCertPass <- lookupEnv "CERT_PASS"
+    case (exists, mCertPass) of
+      (True, Just certPass) -> do
         echo . unsafeTextToLine . toText $ "Signing " <> filename
         -- TODO: Double sign a file, SHA1 for vista/xp and SHA2 for windows 8 and on
         -- procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\iohk-windows-certificate.p12", "/p", toText pass, "/t", "http://timestamp.comodoca.com", "/v", toText filename] mempty
         exitcode <- proc "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\iohk-windows-certificate.p12", "/p", toText certPass, "/fd", "sha256", "/tr", "http://timestamp.comodoca.com/?td=sha256", "/td", "sha256", "/v", toText filename] mempty
         unless (exitcode == ExitSuccess) $ error "Signing failed"
-    else
+      (False, _) ->
         error $ "Unable to sign missing file '" <> (toText filename) <> "''"
+      (_, Nothing) ->
+        echo "Not signing: CERT_PASS not specified."
 
 parseVersion :: Text -> [String]
 parseVersion ver =
