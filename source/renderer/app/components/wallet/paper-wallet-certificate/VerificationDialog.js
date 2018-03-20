@@ -17,7 +17,6 @@ import { InvalidMnemonicError } from '../../../i18n/errors';
 import globalMessages from '../../../i18n/global-messages';
 import showPasswordIcon from '../../../assets/images/show-pass-ic.inline.svg';
 import hidePasswordIcon from '../../../assets/images/hide-pass-ic.inline.svg';
-
 import styles from './VerificationDialog.scss';
 
 const messages = defineMessages({
@@ -97,7 +96,6 @@ type Props = {
 };
 
 @observer
-// eslint-disable-next-line
 export default class VerificationDialog extends Component<Props, State> {
 
   static contextTypes = {
@@ -110,7 +108,9 @@ export default class VerificationDialog extends Component<Props, State> {
     showPassword: false,
     isPasswordValid: false,
     isRecoveryPhraseValid: false,
-  }
+  };
+
+  recoveryPhraseAutocomplete: Autocomplete;
 
   form = new ReactToolboxMobxForm({
     fields: {
@@ -130,7 +130,7 @@ export default class VerificationDialog extends Component<Props, State> {
           const isRecoveryPhraseValid = isEqual(walletCertificateRecoveryPhrase, field.value);
           this.setState({
             isRecoveryPhraseValid,
-            // uncheck confirmation boxes if recovery phrase is not valid and mark as disabled
+            // disabled and uncheck confirmation checkboxes if recovery phrase is not valid
             storingConfirmed: isRecoveryPhraseValid ? storingConfirmed : false,
             recoveringConfirmed: isRecoveryPhraseValid ? recoveringConfirmed : false,
           });
@@ -138,7 +138,6 @@ export default class VerificationDialog extends Component<Props, State> {
             isRecoveryPhraseValid,
             this.context.intl.formatMessage(new InvalidMnemonicError())
           ];
-
         }],
       },
       password: {
@@ -155,7 +154,7 @@ export default class VerificationDialog extends Component<Props, State> {
           const isPasswordValid = this.props.walletCertificatePassword === field.value;
           this.setState({
             isPasswordValid,
-            // uncheck confirmation boxes if password is not valid and mark as disabled
+            // disabled and uncheck confirmation checkboxes if recovery phrase is not valid
             storingConfirmed: isPasswordValid ? storingConfirmed : false,
             recoveringConfirmed: isPasswordValid ? recoveringConfirmed : false,
           });
@@ -190,13 +189,19 @@ export default class VerificationDialog extends Component<Props, State> {
 
   resetForm = () => {
     const { form } = this;
-    form.$('password').reset();
-    form.$('recoveryPhrase').reset();
+    // Cancel all debounced field validations
+    form.each((field) => { field.debouncedValidation.cancel(); });
+    form.reset();
+    form.showErrors(false);
+
+    // Autocomplete has to be reset manually
+    this.recoveryPhraseAutocomplete.clear();
+
     this.setState({
       storingConfirmed: false,
       recoveringConfirmed: false,
     });
-  }
+  };
 
   render() {
     const { intl } = this.context;
@@ -246,6 +251,7 @@ export default class VerificationDialog extends Component<Props, State> {
               className={styles.recoveryPhrase}
               options={suggestedMnemonics}
               maxSelections={15}
+              ref={(autocomplete) => { this.recoveryPhraseAutocomplete = autocomplete; }}
               {...recoveryPhraseField.bind()}
               error={recoveryPhraseField.error}
               maxVisibleOptions={5}
@@ -298,7 +304,7 @@ export default class VerificationDialog extends Component<Props, State> {
 
   onStoringConfirmationChange = () => {
     this.setState({
-      storingConfirmed: !this.state.storingConfirmed
+      storingConfirmed: !this.state.storingConfirmed,
     });
   };
 
@@ -308,7 +314,7 @@ export default class VerificationDialog extends Component<Props, State> {
 
   onRecoveringConfirmationChange = () => {
     this.setState({
-      recoveringConfirmed: !this.state.recoveringConfirmed
+      recoveringConfirmed: !this.state.recoveringConfirmed,
     });
   };
 }

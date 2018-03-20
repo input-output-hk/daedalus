@@ -387,8 +387,8 @@ export default class AdaApi {
     return isValidMnemonic(mnemonic, 9);
   }
 
-  isValidCertificateMnemonic(mnemonic: string): Promise<boolean> {
-    return isValidMnemonic(mnemonic, 15);
+  isValidCertificateMnemonic(mnemonic: string): boolean {
+    return mnemonic.split(' ').length === 15;
   }
 
   getWalletRecoveryPhrase(): Promise<GetWalletRecoveryPhraseResponse> {

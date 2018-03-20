@@ -27,7 +27,6 @@ const messages = defineMessages({
   },
 });
 
-
 type State = {
   isPrintedCorrectly: boolean,
 };
@@ -45,7 +44,7 @@ export default class PrintDialog extends Component<Props, State> {
 
   state = {
     isPrintedCorrectly: false,
-  }
+  };
 
   render() {
     const { intl } = this.context;
@@ -92,5 +91,5 @@ export default class PrintDialog extends Component<Props, State> {
 
   onConfirmCorrectPrinting = () => {
     this.setState({ isPrintedCorrectly: !this.state.isPrintedCorrectly });
-  }
+  };
 }

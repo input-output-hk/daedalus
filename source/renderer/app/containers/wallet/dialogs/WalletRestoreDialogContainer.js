@@ -32,7 +32,7 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
 
   render() {
     const wallets = this._getWalletsStore();
-    const { restoreRequest } = wallets;
+    const { restoreRequest, isValidMnemonic, isValidCertificateMnemonic } = wallets;
 
     return (
       <WalletRestoreDialog
