@@ -79,7 +79,7 @@ signUninstaller opts = do
 signFile :: Options -> FilePath -> IO ()
 signFile Options{..} filename = do
     exists   <- doesFileExist filename
-    certPass <- fromMaybe "" <$> lookupEnv "TEMP"
+    certPass <- fromMaybe "" <$> lookupEnv "CERT_PASS"
     if exists then do
         echo . unsafeTextToLine . toText $ "Signing " <> filename
         -- TODO: Double sign a file, SHA1 for vista/xp and SHA2 for windows 8 and on
