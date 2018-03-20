@@ -21,10 +21,11 @@ import           Data.Maybe (fromMaybe)
 import qualified Data.Text as T
 import           System.Directory (copyFile, createDirectoryIfMissing, doesFileExist, renameFile)
 import           System.Environment (lookupEnv)
-import           System.FilePath ((</>), FilePath)
+import           System.FilePath ((</>), (<.>), FilePath)
 import           System.FilePath.Glob (glob)
-import           Filesystem.Path.CurrentOS (encodeString)
-import           Turtle (ExitCode (..), echo, proc, procs, which, Managed, with)
+import           Filesystem.Path.CurrentOS (encodeString, decodeString)
+import qualified Filesystem.Path as P
+import           Turtle (Shell, ExitCode (..), echo, proc, procs, inproc, which, Managed, with, printf, format, (%), fp, l, pwd, cd, sh, mktree)
 import           Turtle.Line (unsafeTextToLine)
 
 import           RewriteLibs (chain)
@@ -99,6 +100,19 @@ makeScriptsDir cfg = case icApi cfg of
   "cardano" -> pure "data/scripts"
   "etc" -> pure "[DEVOPS-533]"
 
+npmPackage :: InstallerConfig -> Shell ()
+npmPackage cfg = do
+  mktree "release"
+  echo "Installing nodejs dependencies..."
+  procs "npm" ["install"] empty
+  echo "Running electron packager script..."
+  procs "npm" ["run", "package"] empty
+  size <- inproc "du" ["-sh", "release"] empty
+  printf ("Size of Electron app is " % l) size
+
+withDir :: P.FilePath -> IO a -> IO a
+withDir d = bracket (pwd >>= \old -> (cd d >> pure old)) cd . const
+
 makeInstaller :: InstallerConfig -> IO FilePath
 makeInstaller cfg = do
   let dir     = appRoot cfg </> "Contents/MacOS"
@@ -106,7 +120,10 @@ makeInstaller cfg = do
   createDirectoryIfMissing False "dist"
 
   echo "Creating icons ..."
-  procs "iconutil" ["--convert", "icns", "--output", toText (resDir </> "electron.icns"), "icons/electron.iconset"] mempty
+  procs "iconutil" ["--convert", "icns", "--output", "icons/electron.icns"
+                   , "icons/electron.iconset"] mempty
+
+  withDir ".." . sh $ npmPackage cfg
 
   echo "Preparing files ..."
   case icApi cfg of
