@@ -7,7 +7,7 @@ import           Universum hiding (pass, writeFile)
 
 import           Control.Monad (unless)
 import qualified Data.List as L
-import           Data.Maybe (fromJust)
+import           Data.Maybe (fromJust, fromMaybe)
 import           Data.Monoid ((<>))
 import           Data.Text (Text, unpack)
 import qualified Data.Text as T
@@ -78,16 +78,14 @@ signUninstaller opts = do
 
 signFile :: Options -> FilePath -> IO ()
 signFile Options{..} filename = do
-    exists <- doesFileExist filename
+    exists   <- doesFileExist filename
+    certPass <- fromMaybe "" <$> lookupEnv "TEMP"
     if exists then do
-        case (oCertSignReq, oCertPass) of
-            (SigningRequested, Just pass) -> do
-                echo . unsafeTextToLine . toText $ "Signing " <> filename
-                -- TODO: Double sign a file, SHA1 for vista/xp and SHA2 for windows 8 and on
-                --procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\iohk-windows-certificate.p12", "/p", toText pass, "/t", "http://timestamp.comodoca.com", "/v", toText filename] mempty
-                exitcode <- proc "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\iohk-windows-certificate.p12", "/p", toText pass, "/fd", "sha256", "/tr", "http://timestamp.comodoca.com/?td=sha256", "/td", "sha256", "/v", toText filename] mempty
-                unless (exitcode == ExitSuccess) $ error "Signing failed"
-            _ -> echo . unsafeTextToLine . toText $ "Skipping signing " <> filename <> " due to lack of one of --sign / --cert-pass"
+        echo . unsafeTextToLine . toText $ "Signing " <> filename
+        -- TODO: Double sign a file, SHA1 for vista/xp and SHA2 for windows 8 and on
+        -- procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\iohk-windows-certificate.p12", "/p", toText pass, "/t", "http://timestamp.comodoca.com", "/v", toText filename] mempty
+        exitcode <- proc "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\iohk-windows-certificate.p12", "/p", toText certPass, "/fd", "sha256", "/tr", "http://timestamp.comodoca.com/?td=sha256", "/td", "sha256", "/v", toText filename] mempty
+        unless (exitcode == ExitSuccess) $ error "Signing failed"
     else
         error $ "Unable to sign missing file '" <> (toText filename) <> "''"
 

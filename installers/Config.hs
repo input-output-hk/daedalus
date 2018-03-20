@@ -67,8 +67,6 @@ argReadLower = arg (diagReadCaseInsensitive . unpack)
 data Options = Options
   { oAPI           :: API
   , oBuildJob      :: Maybe BuildJob
-  , oCertSignReq   :: SigningRequested
-  , oCertPass      :: Maybe Text
   , oCluster       :: Cluster
   , oAppName       :: AppName
   , oDaedalusVer   :: Version
@@ -84,10 +82,6 @@ optionsParser = Options
                    optReadLower "api"                 'a' "Backend API:  cardano or etc"))
   <*> (optional      $
       (BuildJob     <$> optText "build-job"           'b' "CI Build Job/ID"))
-  <*> (signingRequested
-                    <$> switch  "sign"                's' "Sign the installer.  Requres --cert-pass")
-  <*> (optional      $
-                        optText "cert-pass"           'p' "Certificate password")
   <*> (fromMaybe Mainnet    <$> (optional $
                    optReadLower "cluster"             'c' "Cluster the resulting installer will target:  mainnet or staging"))
   <*> (fromMaybe "daedalus" <$> (optional $

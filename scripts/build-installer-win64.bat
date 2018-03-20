@@ -191,7 +191,6 @@ if NOT DEFINED APPVEYOR_BUILD_NUMBER        ( set APPVEYOR_BUILD_NUMBER=0 )
 set XARGS="--build-job %APPVEYOR_BUILD_NUMBER% -v %DAEDALUS_VERSION%"
 IF     DEFINED API                          ( set XARGS="%XARGS:"=% --api %API%" )
 IF     DEFINED APPVEYOR_PULL_REQUEST_NUMBER ( set XARGS="%XARGS:"=% --pull-request %APPVEYOR_PULL_REQUEST_NUMBER%" )
-IF     DEFINED CERT_PASS                    ( set XARGS="%XARGS:"=% --sign" )
 
 FOR %%C IN (%CLUSTERS:"=%) DO (
   @echo ##############################################################################
@@ -200,7 +199,7 @@ FOR %%C IN (%CLUSTERS:"=%) DO (
   @echo ###
   @echo ##############################################################################
 
-  make-installer %XARGS:"=% -c %%C -o daedalus-win64-%DAEDALUS_VERSION%-%%C-installer.exe -p "%CERT_PASS%"
+  make-installer %XARGS:"=% -c %%C -o daedalus-win64-%DAEDALUS_VERSION%-%%C-installer.exe
   @if %errorlevel% neq 0 ( @echo FATAL: persistent failure while building installer
                            popd & exit /b 1)
 )
