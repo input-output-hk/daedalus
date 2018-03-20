@@ -2415,7 +2415,7 @@
         }
       },
       {
-        "defaultMessage": "!!!A password you chose will be used to shield your recovery prase on the certificate. You will not be able to restore your wallet without this password.",
+        "defaultMessage": "!!!A password you chose will be used to shield your recovery phrase on the certificate. You will not be able to restore your wallet without this password.",
         "description": "\"Paper wallet create certificate password choice dialog\" subtitle.",
         "end": {
           "column": 3,
@@ -5625,7 +5625,7 @@
           "column": 3,
           "line": 17
         },
-        "file": "source/renderer/app/utils/pdf.js",
+        "file": "source/renderer/app/utils/paperWalletGenerator.js",
         "id": "paper.wallet.pdf.walletAddress.label",
         "start": {
           "column": 22,
@@ -5639,7 +5639,7 @@
           "column": 3,
           "line": 22
         },
-        "file": "source/renderer/app/utils/pdf.js",
+        "file": "source/renderer/app/utils/paperWalletGenerator.js",
         "id": "paper.wallet.pdf.shieldedRecoveryPhrase.label",
         "start": {
           "column": 31,
@@ -5653,7 +5653,7 @@
           "column": 3,
           "line": 27
         },
-        "file": "source/renderer/app/utils/pdf.js",
+        "file": "source/renderer/app/utils/paperWalletGenerator.js",
         "id": "paper.wallet.pdf.password.label",
         "start": {
           "column": 17,
@@ -5667,7 +5667,7 @@
           "column": 3,
           "line": 32
         },
-        "file": "source/renderer/app/utils/pdf.js",
+        "file": "source/renderer/app/utils/paperWalletGenerator.js",
         "id": "paper.wallet.pdf.release.version",
         "start": {
           "column": 18,
@@ -5675,6 +5675,6 @@
         }
       }
     ],
-    "path": "source/renderer/app/utils/pdf.json"
+    "path": "source/renderer/app/utils/paperWalletGenerator.json"
   }
 ]

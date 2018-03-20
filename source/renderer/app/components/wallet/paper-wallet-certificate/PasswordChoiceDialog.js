@@ -27,7 +27,7 @@ const messages = defineMessages({
   },
   subtitle: {
     id: 'paper.wallet.create.certificate.passwordChoice.dialog.subtitle',
-    defaultMessage: '!!!A password you chose will be used to shield your recovery prase on the certificate. You will not be able to restore your wallet without this password.',
+    defaultMessage: '!!!A password you chose will be used to shield your recovery phrase on the certificate. You will not be able to restore your wallet without this password.',
     description: '"Paper wallet create certificate password choice dialog" subtitle.'
   },
   passwordComplexityText: {
