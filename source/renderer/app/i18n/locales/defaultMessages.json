@@ -4023,16 +4023,30 @@
       },
       {
         "defaultMessage": "!!!Restore using backup-recovery phrase or paper wallet certificate.",
-        "description": "Description for the \"Restore\" button on the wallet add dialog.",
+        "description": "Description for the \"Restore\" button with paper wallet certificate on the wallet add dialog.",
         "end": {
           "column": 3,
           "line": 51
         },
         "file": "source/renderer/app/components/wallet/WalletAddDialog.js",
-        "id": "wallet.add.dialog.restore.description",
+        "id": "wallet.add.dialog.restore.withCertificate.description",
         "start": {
-          "column": 22,
+          "column": 37,
           "line": 47
+        }
+      },
+      {
+        "defaultMessage": "!!!Restore wallet from backup",
+        "description": "Description for the \"Restore\" button without paper wallet certificate on the wallet add dialog.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "source/renderer/app/components/wallet/WalletAddDialog.js",
+        "id": "wallet.add.dialog.restore.withoutCertificate.description",
+        "start": {
+          "column": 40,
+          "line": 52
         }
       },
       {
@@ -4040,13 +4054,13 @@
         "description": "Label for the \"Import\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 61
         },
         "file": "source/renderer/app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.import.label",
         "start": {
           "column": 15,
-          "line": 52
+          "line": 57
         }
       },
       {
@@ -4054,13 +4068,13 @@
         "description": "Description for the \"Import\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 66
         },
         "file": "source/renderer/app/components/wallet/WalletAddDialog.js",
         "id": "wallet.add.dialog.import.description",
         "start": {
           "column": 21,
-          "line": 57
+          "line": 62
         }
       }
     ],
@@ -5709,7 +5723,7 @@
           "column": 3,
           "line": 17
         },
-        "file": "source/renderer/app/utils/pdf.js",
+        "file": "source/renderer/app/utils/paperWalletGenerator.js",
         "id": "paper.wallet.pdf.walletAddress.label",
         "start": {
           "column": 22,
@@ -5723,7 +5737,7 @@
           "column": 3,
           "line": 22
         },
-        "file": "source/renderer/app/utils/pdf.js",
+        "file": "source/renderer/app/utils/paperWalletGenerator.js",
         "id": "paper.wallet.pdf.shieldedRecoveryPhrase.label",
         "start": {
           "column": 31,
@@ -5737,7 +5751,7 @@
           "column": 3,
           "line": 27
         },
-        "file": "source/renderer/app/utils/pdf.js",
+        "file": "source/renderer/app/utils/paperWalletGenerator.js",
         "id": "paper.wallet.pdf.password.label",
         "start": {
           "column": 17,
@@ -5751,7 +5765,7 @@
           "column": 3,
           "line": 32
         },
-        "file": "source/renderer/app/utils/pdf.js",
+        "file": "source/renderer/app/utils/paperWalletGenerator.js",
         "id": "paper.wallet.pdf.release.version",
         "start": {
           "column": 18,
@@ -5759,6 +5773,6 @@
         }
       }
     ],
-    "path": "source/renderer/app/utils/pdf.json"
+    "path": "source/renderer/app/utils/paperWalletGenerator.json"
   }
 ]

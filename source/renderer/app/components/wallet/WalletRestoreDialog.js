@@ -256,11 +256,18 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const { form } = this;
-    const { suggestedMnemonics, isSubmitting, error, onCancel } = this.props;
+    const {
+      suggestedMnemonics,
+      showCertificateRestore,
+      isSubmitting,
+      error,
+      onCancel,
+    } = this.props;
     const { createPassword, activeChoice } = this.state;
 
     const dialogClasses = classnames([
       styles.component,
+      showCertificateRestore ? styles.dialogWithCertificateRestore : null,
       'WalletRestoreDialog',
     ]);
 
@@ -304,21 +311,22 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         onClose={onCancel}
         closeButton={<DialogCloseButton />}
       >
-
-        <div className={styles.restoreTypeChoice}>
-          <button
-            className={activeChoice === 'regular' ? styles.activeButton : ''}
-            onClick={this.onSelectChoice.bind(this, 'regular')}
-          >
-            {intl.formatMessage(messages.recoveryPhraseTabTitle)}
-          </button>
-          <button
-            className={activeChoice === 'certificate' ? styles.activeButton : ''}
-            onClick={this.onSelectChoice.bind(this, 'certificate')}
-          >
-            {intl.formatMessage(messages.certificateTabTitle)}
-          </button>
-        </div>
+        {showCertificateRestore &&
+          <div className={styles.restoreTypeChoice}>
+            <button
+              className={activeChoice === 'regular' ? styles.activeButton : ''}
+              onClick={this.onSelectChoice.bind(this, 'regular')}
+            >
+              {intl.formatMessage(messages.recoveryPhraseTabTitle)}
+            </button>
+            <button
+              className={activeChoice === 'certificate' ? styles.activeButton : ''}
+              onClick={this.onSelectChoice.bind(this, 'certificate')}
+            >
+              {intl.formatMessage(messages.certificateTabTitle)}
+            </button>
+          </div>
+        }
 
         <Input
           className={walletNameFieldClasses}

@@ -38,6 +38,7 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
       <WalletRestoreDialog
         mnemonicValidator={mnemonic => wallets.isValidMnemonic(mnemonic)}
         certificateMnemonicValidator={mnemonic => wallets.isValidCertificateMnemonic(mnemonic)}
+        showCertificateRestore={environment.isAdaApi()}
         suggestedMnemonics={validWords}
         isSubmitting={restoreRequest.isExecuting}
         onSubmit={this.onSubmit}
