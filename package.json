@@ -6,7 +6,8 @@
   "main": "./dist/main/index.js",
   "scripts": {
     "build": "gulp build",
-    "start": "gulp start-dev",
+    "start": "gulp start",
+    "start-watch": "gulp start-watch",
     "dev": "gulp dev",
     "test": "gulp test",
     "test-watch": "gulp test-watch",
@@ -89,7 +90,7 @@
     "react-intl-translations-manager": "5.0.1",
     "resolve-url": "0.2.1",
     "sass-loader": "6.0.6",
-    "spectron": "3.7.2",
+    "spectron": "3.8.0",
     "style-loader": "0.19.0",
     "svg-inline-loader": "0.8.0",
     "url-loader": "0.6.2",
