@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import SvgInline from 'react-svg-inline';
+import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import styles from './WalletNavButton.scss';
@@ -30,7 +30,7 @@ export default class WalletNavButton extends Component<Props> {
     return (
       <button className={componentClasses} onClick={onClick}>
         <div className={styles.container}>
-          <SvgInline svg={icon} className={iconClasses} />
+          <SVGInline svg={icon} className={iconClasses} />
           <span className={styles.label}>{this.props.label}</span>
         </div>
       </button>

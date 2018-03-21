@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import SvgInline from 'react-svg-inline';
+import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
@@ -207,7 +207,7 @@ export default class WalletReceive extends Component<Props, State> {
                   text={walletAddress}
                   onCopy={onCopyAddress.bind(this, walletAddress)}
                 >
-                  <SvgInline svg={iconCopy} className={styles.copyIconBig} />
+                  <SVGInline svg={iconCopy} className={styles.copyIconBig} />
                 </CopyToClipboard>
               </div>
 
@@ -252,7 +252,7 @@ export default class WalletReceive extends Component<Props, State> {
                       onCopy={onCopyAddress.bind(this, address.id)}
                     >
                       <span className={styles.copyAddress}>
-                        <SvgInline svg={iconCopy} className={styles.copyIcon} />
+                        <SVGInline svg={iconCopy} className={styles.copyIcon} />
                         <span>{intl.formatMessage(messages.copyAddressLabel)}</span>
                       </span>
                     </CopyToClipboard>

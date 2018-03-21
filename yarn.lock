@@ -8650,9 +8650,9 @@ react-style-proptype@^3.0.0:
   dependencies:
     prop-types "^15.5.4"
 
-react-svg-inline@2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/react-svg-inline/-/react-svg-inline-2.0.1.tgz#a8ce9d0c3cc4af8b8cc13cf3f71af1e07c7359e4"
+react-svg-inline@2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/react-svg-inline/-/react-svg-inline-2.1.0.tgz#1ee3a1a2b2ca0b3629822cddd5327a1125c0184f"
   dependencies:
     classnames "^2.2.1"
     prop-types "^15.5.8"

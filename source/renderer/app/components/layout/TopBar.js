@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import SvgInline from 'react-svg-inline';
+import SVGInline from 'react-svg-inline';
 import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
@@ -48,7 +48,7 @@ export default class TopBar extends Component<Props> {
     ) : null;
 
     const sidebarToggleIcon = (
-      <SvgInline
+      <SVGInline
         svg={showSubMenus ? menuIconOpened : menuIconClosed}
         className={styles.sidebarIcon}
       />

@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import humanizeDuration from 'humanize-duration';
-import SvgInline from 'react-svg-inline';
+import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Button from 'react-polymorph/lib/components/Button';
@@ -71,7 +71,7 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
     return (
       <div className={styles.component}>
 
-        <SvgInline svg={attentionIcon} className={styles.icon} />
+        <SVGInline svg={attentionIcon} className={styles.icon} />
 
         <p><FormattedHTMLMessage {...messages.overlayText} values={{ behindTime }} /></p>
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
-import SvgInline from 'react-svg-inline';
+import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
@@ -191,7 +191,7 @@ export default class Transaction extends Component<Props, State> {
                   // hide currency (we are showing symbol instead)
                   formattedWalletAmount(data.amount, false)
                 }
-                <SvgInline svg={symbol} className={styles.currencySymbol} />
+                <SVGInline svg={symbol} className={styles.currencySymbol} />
               </div>
             </div>
 
