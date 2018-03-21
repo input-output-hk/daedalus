@@ -4,13 +4,13 @@ import Log from 'electron-log';
 import { client } from 'electron-connect';
 import { setupLogging } from './utils/setupLogging';
 import { setupTls } from './utils/setupTls';
+import { makeEnvironmentGlobal } from './utils/makeEnvironmentGlobal';
 import { createMainWindow } from './windows/main';
 import { createAboutWindow } from './windows/about';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
 import { installChromeExtensions } from './utils/installChromeExtensions';
-
-const isDev = process.env.NODE_ENV === 'development';
+import environment from '../common/environment';
 
 setupLogging();
 
@@ -30,11 +30,12 @@ const openAbout = () => {
 
 app.on('ready', async () => {
   setupTls();
-  await installChromeExtensions(isDev);
+  makeEnvironmentGlobal(process.env);
+  await installChromeExtensions(environment.isDev());
   aboutWindow = createAboutWindow();
   mainWindow = createMainWindow();
 
-  if (isDev) {
+  if (environment.isDev()) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
     client.create(aboutWindow);
     client.create(mainWindow);
