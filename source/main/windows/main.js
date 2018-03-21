@@ -5,14 +5,15 @@ import ipcApi from '../ipc-api';
 import { runtimeFolderPath } from '../config';
 
 export const createMainWindow = () => {
-  var params = {
+  const params = {
     show: false,
     width: 1150,
     height: 870,
   };
+
   if (process.platform === 'linux') {
     params.icon = path.join(runtimeFolderPath, 'icon.png');
-  };
+  }
 
   // Construct new BrowserWindow
   const window = new BrowserWindow(params);
@@ -30,20 +31,18 @@ export const createMainWindow = () => {
 
   if (environment.isDev()) {
     window.webContents.openDevTools();
-    if (!environment.isTest()) {
-      // Focus the main window after dev tools opened
-      window.webContents.on('devtools-opened', () => {
+    // Focus the main window after dev tools opened
+    window.webContents.on('devtools-opened', () => {
+      window.focus();
+      setImmediate(() => {
         window.focus();
-        setImmediate(() => {
-          window.focus();
-        });
       });
-    }
+    });
   }
 
   window.loadURL(`file://${__dirname}/../renderer/index.html`);
   window.on('page-title-updated', event => { event.preventDefault(); });
-  window.setTitle(`Daedalus (${environment.build})`);
+  window.setTitle(`Daedalus (${environment.build}) ${environment.current}`);
 
   window.webContents.on('context-menu', (e, props) => {
     const contextMenuOptions = [

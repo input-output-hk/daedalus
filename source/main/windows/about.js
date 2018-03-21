@@ -1,9 +1,9 @@
+import path from 'path';
 import { app, BrowserWindow, ipcMain, Menu, shell } from 'electron';
 import environment from '../../common/environment';
+import { runtimeFolderPath } from '../config';
 
 export const createAboutWindow = () => {
-  const width = 640;
-  const height = 486;
   // Only really terminate about window when whole app is closed
   // otherwise keep it in the background so we can quickly reveal it
   let terminateAboutWindow = false;
@@ -11,13 +11,20 @@ export const createAboutWindow = () => {
     terminateAboutWindow = true;
   });
 
-  // Load About window but keep it hidden
-  const window = new BrowserWindow({
+  const width = 640;
+  const height = 486;
+  const params = {
     fullscreenable: false,
     show: false,
     width,
     height,
-  });
+  };
+  if (process.platform === 'linux') {
+    params.icon = path.join(runtimeFolderPath, 'icon.png');
+  }
+
+  // Load About window but keep it hidden
+  const window = new BrowserWindow(params);
 
   // Prevent resize about window
   window.setMinimumSize(width, height);
