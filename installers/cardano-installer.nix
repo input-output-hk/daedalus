@@ -1,6 +1,8 @@
-{ mkDerivation, base, bytestring, directory, filepath, Glob
-, megaparsec, nsis, optparse-applicative, split, stdenv
-, system-filepath, temporary, text, turtle, universum, yaml
+{ mkDerivation, base, bytestring, dhall, dhall-json, directory
+, filepath, Glob, megaparsec, nsis, optparse-applicative, split
+, stdenv, system-filepath, temporary, text, trifecta, turtle
+, universum, yaml
+, cabal-install, nodejs, nix
 }:
 mkDerivation {
   pname = "cardano-installer";
@@ -9,9 +11,10 @@ mkDerivation {
   isLibrary = false;
   isExecutable = true;
   executableHaskellDepends = [
-    base bytestring directory filepath Glob megaparsec nsis
-    optparse-applicative split system-filepath temporary text turtle
-    universum yaml
+    base bytestring dhall dhall-json directory filepath Glob megaparsec
+    nsis optparse-applicative split system-filepath temporary text
+    trifecta turtle universum yaml
+    cabal-install nodejs nix
   ];
   description = "Cardano Installer";
   license = stdenv.lib.licenses.mit;

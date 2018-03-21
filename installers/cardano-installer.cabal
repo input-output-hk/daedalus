@@ -15,12 +15,20 @@ executable make-installer
   other-modules:       MacInstaller
                      , WindowsInstaller
                      , RewriteLibs
+
   build-depends:       base
+                     , bytestring
+                     , containers
+                     , dhall
+                     , dhall-json
                      , directory
                      , filepath
                      , Glob
                      , megaparsec
                      , nsis
+                     , optparse-applicative
+                     , optparse-generic
+                     , optional-args
                      , split
                      , system-filepath
                      , temporary
@@ -28,10 +36,11 @@ executable make-installer
                      , text
                      , turtle
                      , universum
+                     , yaml
 
   default-language:    Haskell2010
   ghc-options:         -threaded -rtsopts
-                       -Wall
+                       -Wextra -Wno-unused-do-bind
                        -fno-warn-orphans
                        -with-rtsopts=-N
                        -O2
@@ -44,11 +53,15 @@ executable load-certificate
   other-modules:       MacInstaller
   build-depends:       base
                      , bytestring
+                     , containers
+                     , dhall
+                     , dhall-json
                      , directory
                      , filepath
                      , Glob
                      , megaparsec
                      , optparse-applicative
+                     , optional-args
                      , split
                      , system-filepath
                      , text
@@ -58,7 +71,7 @@ executable load-certificate
 
   default-language:    Haskell2010
   ghc-options:         -threaded -rtsopts
-                       -Wall
+                       -Wall -Wno-unused-do-bind
                        -fno-warn-orphans
                        -with-rtsopts=-N
                        -O2

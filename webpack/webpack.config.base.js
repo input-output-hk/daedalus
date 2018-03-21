@@ -7,7 +7,7 @@ const validate = require('webpack-validator');
 const webpack = require('webpack');
 const yamljs = require("yamljs");
 
-const reportUrl = yamljs.parseFile("installers/launcher-config-windows.yaml").reportServer;
+const reportUrl = yamljs.parseFile("installers/launcher-config.yaml").reportServer;
 
 module.exports = validate({
   cache: true,
