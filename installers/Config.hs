@@ -101,6 +101,18 @@ dhallTopExpr :: Text -> Config -> OS -> Cluster -> Text
 dhallTopExpr path Launcher os cluster = path <> "/launcher.dhall ( "<>path<>"/" <> lshowText cluster <> ".dhall "<>path<>"/" <> lshowText os <> ".dhall ) "<>path<>"/" <> lshowText os <> ".dhall"
 dhallTopExpr path Topology os cluster = path <> "/topology.dhall ( "<>path<>"/" <> lshowText cluster <> ".dhall "<>path<>"/" <> lshowText os <> ".dhall )"
 
+generateAllConfigs :: Text -> IO ()
+generateAllConfigs configRoot =
+  let oses     = enumFromTo minBound maxBound
+      clusters = enumFromTo minBound maxBound
+      configs  = enumFromTo minBound maxBound
+  in mapM (Dhall.detailed . Dhall.codeToValue "(stdin)")
+     [ dhallTopExpr configRoot cfg os cluster
+     | os      <- oses
+     , cluster <- clusters
+     , cfg     <- configs ]
+     >> pure ()
+
 generateConfig :: ConfigRequest -> FilePath -> FilePath -> IO ()
 generateConfig ConfigRequest{..} configRoot outFile = handle $ do
   GHC.setLocaleEncoding GHC.utf8

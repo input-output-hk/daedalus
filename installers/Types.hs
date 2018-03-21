@@ -39,7 +39,7 @@ data OS
   = Linux
   | Macos64
   | Win64
-  deriving (Eq, Show)
+  deriving (Bounded, Enum, Eq, Show)
 
 data Cluster
   = Mainnet
@@ -49,7 +49,7 @@ data Cluster
 data Config
   = Launcher
   | Topology
-  deriving (Eq, Show)
+  deriving (Bounded, Enum, Eq, Show)
 
 data CI
   = Appveyor
