@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import SvgInline from 'react-svg-inline';
+import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
@@ -199,9 +199,9 @@ export default class Loading extends Component<Props, State> {
           </div>
         )}
         <div className={styles.logos}>
-          <SvgInline svg={currencyLoadingLogo} className={currencyLogoStyles} />
-          <SvgInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
-          <SvgInline svg={apiLoadingLogo} className={apiLogoStyles} />
+          <SVGInline svg={currencyLoadingLogo} className={currencyLogoStyles} />
+          <SVGInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
+          <SVGInline svg={apiLoadingLogo} className={apiLogoStyles} />
         </div>
         {hasLoadedCurrentLocale && (
           <div>

@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import SvgInline from 'react-svg-inline';
+import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
@@ -71,7 +71,7 @@ export default class NodeUpdateNotification extends Component<Props> {
             onClick={onToggleExpanded}
             className={styles.toggleButton}
           >
-            <SvgInline svg={arrowIcon} className={arrowClasses} />
+            <SVGInline svg={arrowIcon} className={arrowClasses} />
           </button>
         </div>
         {isExpanded && (
