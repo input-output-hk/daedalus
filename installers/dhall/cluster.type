@@ -1,0 +1,5 @@
+{ key          : Text
+, relays       : Text
+, updateServer : Text
+, reportServer : Text
+}
