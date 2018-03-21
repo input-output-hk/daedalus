@@ -5,14 +5,14 @@ import ipcApi from '../ipc-api';
 import { runtimeFolderPath } from '../config';
 
 export const createMainWindow = () => {
-  var params = {
+  const params = {
     show: false,
     width: 1150,
     height: 870,
   };
   if (process.platform === 'linux') {
     params.icon = path.join(runtimeFolderPath, 'icon.png');
-  };
+  }
 
   // Construct new BrowserWindow
   const window = new BrowserWindow(params);
