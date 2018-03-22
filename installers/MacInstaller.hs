@@ -28,7 +28,6 @@ import           System.FilePath.Glob (glob)
 import           Filesystem.Path.CurrentOS (encodeString)
 import qualified Filesystem.Path as P
 import           Turtle (Shell, ExitCode (..), echo, proc, procs, inproc, which, Managed, with, printf, format, (%), l, pwd, cd, sh, mktree)
-import           Text.Printf (printf)
 import           Turtle.Line (unsafeTextToLine)
 
 import           RewriteLibs (chain)
@@ -51,9 +50,6 @@ main opts@Options{..} = do
   echo "Generating configuration file:  wallet-topology.yaml"
   generateConfig (ConfigRequest Macos64 oCluster Topology) "./dhall" "wallet-topology.yaml"
 
-  echo "Packaging frontend"
-  shells "npm run package -- --icon installers/icons/256x256" mempty
-
   tempInstaller <- makeInstaller opts appRoot
 
   signInstaller signingConfig (toText tempInstaller) oOutput
@@ -64,15 +60,15 @@ main opts@Options{..} = do
 
   when (oTestInstaller == TestInstaller) $ do
     echo $ "--test-installer passed, will test the installer for installability"
-    shells (T.pack $ printf "sudo installer -dumplog -verbose -target / -pkg \"%s\"" oOutput) empty
+    procs "sudo" ["installer", "-dumplog", "-verbose", "-target", "/", "-pkg", oOutput] empty
 
 makeScriptsDir :: Options -> Managed T.Text
 makeScriptsDir Options{..} = case oAPI of
   Cardano -> pure "data/scripts"
   ETC     -> pure "[DEVOPS-533]"
 
-npmPackage :: InstallerConfig -> Shell ()
-npmPackage _ = do
+npmPackage :: Shell ()
+npmPackage = do
   mktree "release"
   echo "~~~ Installing nodejs dependencies..."
   procs "npm" ["install"] empty
@@ -85,17 +81,17 @@ npmPackage _ = do
 withDir :: P.FilePath -> IO a -> IO a
 withDir d = bracket (pwd >>= \old -> (cd d >> pure old)) cd . const
 
-makeInstaller :: InstallerConfig -> IO FilePath
-makeInstaller cfg = do
-  let dir     = appRoot cfg </> "Contents/MacOS"
-      resDir  = appRoot cfg </> "Contents/Resources"
+makeInstaller :: Options -> FilePath -> IO FilePath
+makeInstaller opts@Options{..} appRoot = do
+  let dir     = appRoot </> "Contents/MacOS"
+      resDir  = appRoot </> "Contents/Resources"
   createDirectoryIfMissing False "dist"
 
   echo "Creating icons ..."
   procs "iconutil" ["--convert", "icns", "--output", "icons/electron.icns"
                    , "icons/electron.iconset"] mempty
 
-  withDir ".." . sh $ npmPackage cfg
+  withDir ".." . sh $ npmPackage
 
   echo "~~~ Preparing files ..."
   case oAPI of
