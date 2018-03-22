@@ -4,7 +4,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const AutoDllPlugin = require('autodll-webpack-plugin');
 const yamljs = require('yamljs');
 
-const reportUrl = yamljs.parseFile('installers/launcher-config-windows.yaml').reportServer;
+const reportUrl = yamljs.parseFile('installers/launcher-config.yaml').reportServer;
 
 module.exports = {
   devtool: 'cheap-source-map',
