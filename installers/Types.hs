@@ -3,8 +3,7 @@
 {-# LANGUAGE LambdaCase #-}
 module Types
   (  -- * Atomic types
-    API(..)
-  , OS(..)
+    OS(..)
   , Cluster(..)
   , Config(..)
   , CI(..)
@@ -29,11 +28,6 @@ import qualified Universum
 import           Prelude
 
 
-
-data API
-  = Cardano
-  | ETC
-  deriving (Bounded, Enum, Eq, Read, Show)
 
 data OS
   = Linux

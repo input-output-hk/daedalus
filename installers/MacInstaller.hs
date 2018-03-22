@@ -22,7 +22,6 @@ import           Control.Monad (unless)
 import           Data.Text (Text)
 import qualified Data.Text as T
 import           System.Directory (copyFile, createDirectoryIfMissing, doesFileExist, renameFile)
-import           System.Environment (lookupEnv)
 import           System.FilePath ((</>), FilePath)
 import           System.FilePath.Glob (glob)
 import           Filesystem.Path.CurrentOS (encodeString, decodeString)
@@ -66,9 +65,9 @@ main opts@Options{..} = do
     shells (T.pack $ printf "sudo installer -dumplog -verbose -target / -pkg \"%s\"" oOutput) empty
 
 makeScriptsDir :: Options -> Managed T.Text
-makeScriptsDir Options{..} = case oAPI of
-  Cardano -> pure "data/scripts"
-  ETC     -> pure "[DEVOPS-533]"
+makeScriptsDir Options{..} = case oBackend of
+  Cardano _ -> pure "data/scripts"
+  Mantis    -> pure "[DEVOPS-533]"
 
 makeInstaller :: Options -> FilePath -> IO FilePath
 makeInstaller opts@Options{..} appRoot = do
@@ -81,13 +80,8 @@ makeInstaller opts@Options{..} appRoot = do
   procs "iconutil" ["--convert", "icns", "--output", toText (resDir </> "electron.icns"), "icons/electron.iconset"] mempty
 
   echo "Preparing files ..."
-  case oAPI of
-    Cardano -> do
-      -- fixme: when DEVOPS-690 adds option parsing, use a
-      -- command-line argument instead of DAEDALUS_BRIDGE var.
-      -- fixme: use Filesystem.Path and Turtle.Prelude functions
-      Just bridge <- lookupEnv "DAEDALUS_BRIDGE"
-
+  case oBackend of
+    Cardano bridge -> do
       -- Executables
       forM ["cardano-launcher", "cardano-node"] $ \f -> do
         copyFile (bridge </> "bin" </> f) (dir </> f)
@@ -114,9 +108,9 @@ makeInstaller opts@Options{..} appRoot = do
       copyFile "client.conf" (dir </> "client.conf")
 
       -- Rewrite libs paths and bundle them
-      _ <- chain dir $ fmap toText [dir </> "cardano-launcher", dir </> "cardano-node"]
-      pure ()
-    _ -> pure () -- DEVOPS-533
+      void $ chain dir $ fmap toText [dir </> "cardano-launcher", dir </> "cardano-node"]
+
+    Mantis -> pure () -- DEVOPS-533
 
   -- Prepare launcher
   de <- doesFileExist (dir </> "Frontend")
