@@ -89,8 +89,6 @@ makeInstaller opts@Options{..} appRoot = do
 
       -- Config files (from daedalus-bridge)
       copyFile (bridge </> "config/configuration.yaml") (dir </> "configuration.yaml")
-      genesisFiles <- glob (bridge </> "config/*genesis*.json")
-      procs "cp" (fmap toText (genesisFiles <> [dir])) mempty
       copyFile (bridge </> "config/log-config-prod.yaml") (dir </> "log-config-prod.yaml")
 
       -- Genesis (from daedalus-bridge)
