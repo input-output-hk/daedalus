@@ -2,7 +2,10 @@ const path = require('path');
 const webpack = require('webpack');
 const yamljs = require('yamljs');
 
-const reportUrl = yamljs.parseFile('installers/launcher-config.yaml').reportServer;
+let reportUrl = '';
+try {
+  reportUrl = yamljs.parseFile('installers/launcher-config-windows.yaml').reportServer;
+} catch (e) {} // eslint-disable-line
 
 module.exports = {
   devtool: 'cheap-source-map',
@@ -33,6 +36,7 @@ module.exports = {
       'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
       'process.env.DAEDALUS_VERSION': JSON.stringify(process.env.DAEDALUS_VERSION || 'dev'),
       'process.env.REPORT_URL': JSON.stringify(reportUrl),
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development'),
     }),
   ],
   module: {
@@ -40,7 +44,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         include: /source/,
-        exclude: /renderer/,
+        exclude: /source\/renderer/,
         use: {
           loader: 'babel-loader',
         },

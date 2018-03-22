@@ -7,10 +7,10 @@ import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
 import etcSymbol from '../../../assets/images/etc-symbol.inline.svg';
-import WalletTransaction, { transactionStates, transactionTypes } from '../../../domain/WalletTransaction';
+import WalletTransaction, { transactionStates, transactionTypes } from '../../../domains/WalletTransaction';
 import { assuranceLevels } from '../../../config/transactionAssuranceConfig';
 import { environmentSpecificMessages } from '../../../i18n/global-messages';
-import type { TransactionState } from '../../../domain/WalletTransaction';
+import type { TransactionState } from '../../../domains/WalletTransaction';
 import environment from '../../../../../common/environment';
 
 const messages = defineMessages({

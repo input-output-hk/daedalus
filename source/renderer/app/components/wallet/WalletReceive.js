@@ -13,7 +13,7 @@ import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
-import WalletAddress from '../../domain/WalletAddress';
+import WalletAddress from '../../domains/WalletAddress';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletReceive.scss';

@@ -4,7 +4,7 @@ import SVGInline from 'react-svg-inline';
 import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
-import Wallet from '../../domain/Wallet';
+import Wallet from '../../domains/Wallet';
 import menuIconOpened from '../../assets/images/menu-opened-ic.inline.svg';
 import menuIconClosed from '../../assets/images/menu-ic.inline.svg';
 import styles from './TopBar.scss';

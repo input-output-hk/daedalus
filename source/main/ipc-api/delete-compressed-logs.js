@@ -1,6 +1,6 @@
 import { ipcMain } from 'electron';
 import fs from 'fs';
-import { Logger, stringifyError } from '../../renderer/app/utils/logging';
+import { Logger, stringifyError } from '../../common/logging';
 import { DELETE_COMPRESSED_LOGS } from '../../common/ipc-api';
 
 export default () => {
