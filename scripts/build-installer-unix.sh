@@ -155,7 +155,7 @@ cd installers
           INSTALLER_CMD+="  --cluster          ${cluster}"
           INSTALLER_CMD+="  --daedalus-version ${DAEDALUS_VERSION}"
           INSTALLER_CMD+="  --output           ${INSTALLER_PKG}"
-          $nix_shell --run "${INSTALLER_CMD}"
+          $nix_shell ../shell.nix --run "${INSTALLER_CMD}"
 
           APP_NAME="csl-daedalus"
 
