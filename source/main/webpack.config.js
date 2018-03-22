@@ -40,11 +40,9 @@ module.exports = {
       {
         test: /\.jsx?$/,
         include: /source/,
+        exclude: /renderer/,
         use: {
           loader: 'babel-loader',
-          options: {
-            cacheDirectory: true,
-          }
         },
       },
     ]

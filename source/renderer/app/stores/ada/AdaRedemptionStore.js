@@ -7,7 +7,7 @@ import Request from '../lib/LocalizedRequest';
 import { Logger } from '../../utils/logging';
 import { matchRoute } from '../../utils/routing';
 import WalletTransaction from '../../domain/WalletTransaction';
-import { PARSE_REDEMPTION_CODE } from '../../../../main/ipc-api/parse-redemption-code-from-pdf';
+import { PARSE_REDEMPTION_CODE } from '../../../../common/ipc-api';
 import {
   InvalidMnemonicError,
   AdaRedemptionCertificateParseError,

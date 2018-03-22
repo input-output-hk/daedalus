@@ -3,15 +3,7 @@ import { ipcMain } from 'electron';
 import fs from 'fs';
 import Log from 'electron-log';
 import { decryptRegularVend, decryptForceVend } from '../../common/decrypt';
-
-const CHANNEL_NAME = 'parse-redemption-code-from-pdf';
-
-export const PARSE_REDEMPTION_CODE = {
-  REQUEST: CHANNEL_NAME,
-  SUCCESS: `${CHANNEL_NAME}-success`,
-  ERROR: `${CHANNEL_NAME}-error`,
-  INVALID_CERTIFICATE_ERROR: 'invalid certificate',
-};
+import { PARSE_REDEMPTION_CODE } from '../../common/ipc-api';
 
 export default () => {
   ipcMain.on(PARSE_REDEMPTION_CODE.REQUEST, (event, filePath, decryptionKey, redemptionType) => {

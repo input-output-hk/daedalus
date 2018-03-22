@@ -21,6 +21,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         include: /source/,
+        exclude: /main/,
         use: {
           loader: 'babel-loader?cacheDirectory&cacheIdentifier=' + Math.random(),
           // Fix for https://github.com/yahoo/babel-plugin-react-intl/issues/47 ^^
