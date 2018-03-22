@@ -159,7 +159,7 @@ export default class PasswordChoiceDialog extends Component<Props, State> {
     ]);
 
     const confirmButtonClasses = classnames([
-      'confirmButton',
+      'printButton',
       inProgress ? styles.submitButtonSpinning : null,
     ]);
 

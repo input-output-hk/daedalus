@@ -126,6 +126,7 @@ type Props = {
   certificateMnemonicValidator: Function,
   error?: ?LocalizableError,
   suggestedMnemonics: Array<string>,
+  showCertificateRestore: boolean,
 };
 
 type State = {
@@ -315,6 +316,17 @@ export default class WalletRestoreDialog extends Component<Props, State> {
       },
     ];
 
+
+    const regularTabClasses = classnames([
+      'regularTab',
+      activeChoice === 'regular' ? styles.activeButton : '',
+    ]);
+
+    const certificateTabClasses = classnames([
+      'certificateTab',
+      activeChoice === 'certificate' ? styles.activeButton : '',
+    ]);
+
     return (
       <Dialog
         className={dialogClasses}
@@ -327,13 +339,13 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         {showCertificateRestore &&
           <div className={styles.restoreTypeChoice}>
             <button
-              className={activeChoice === 'regular' ? styles.activeButton : ''}
+              className={regularTabClasses}
               onClick={this.onSelectChoice.bind(this, 'regular')}
             >
               {intl.formatMessage(messages.recoveryPhraseTabTitle)}
             </button>
             <button
-              className={activeChoice === 'certificate' ? styles.activeButton : ''}
+              className={certificateTabClasses}
               onClick={this.onSelectChoice.bind(this, 'certificate')}
             >
               {intl.formatMessage(messages.certificateTabTitle)}

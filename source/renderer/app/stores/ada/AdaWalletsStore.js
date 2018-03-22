@@ -1,10 +1,11 @@
 // @flow
 import { observable, action, runInAction } from 'mobx';
-import { get, difference } from 'lodash';
+import { get } from 'lodash';
 import { encryptPassphrase } from '../../api/ada/lib/encryptPassphrase';
 import WalletStore from '../WalletStore';
 import Wallet from '../../domain/Wallet';
 import { matchRoute, buildRoute } from '../../utils/routing';
+import { i18nContext } from '../../utils/i18nContext';
 import Request from '.././lib/LocalizedRequest';
 import { ROUTES } from '../../routes-config';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
@@ -237,7 +238,6 @@ export default class AdaWalletsStore extends WalletStore {
   _generateCertificate = async (params: {
     password: string,
     repeatPassword: string,
-    intl: Object,
     filePath: string,
   }) => {
     try {
@@ -262,7 +262,9 @@ export default class AdaWalletsStore extends WalletStore {
           input: recoveryPhrase.join(' '),
         }).promise
       );
-      this.walletCertificateRecoveryPhrase = walletCertificateRecoveryPhrase;
+      this.walletCertificateRecoveryPhrase = walletCertificateRecoveryPhrase
+        ? walletCertificateRecoveryPhrase.join(' ')
+        : '';
 
       // Generate random spending password
       const spendingPassword = encryptPassphrase(`${params.password}-${Date.now()}`);
@@ -297,7 +299,6 @@ export default class AdaWalletsStore extends WalletStore {
       this._downloadCertificate(
         walletAddress,
         walletCertificateRecoveryPhrase,
-        params.intl,
         params.filePath,
       );
     } catch (error) {
@@ -310,10 +311,12 @@ export default class AdaWalletsStore extends WalletStore {
   _downloadCertificate = action((
     address: string,
     recoveryPhrase: Array<string>,
-    intl: Object,
     filePath: string,
   ) => {
     setTimeout(() => { // Timeout is used to allow enought time for button text re-rendering
+      const locale = this.stores.profile.currentLocale;
+      const intl = i18nContext(locale);
+
       downloadPaperWalletCertificate({
         address,
         mnemonics: recoveryPhrase,
@@ -342,13 +345,8 @@ export default class AdaWalletsStore extends WalletStore {
     password: string,
   }) => {
     const { recoveryPhrase, password } = params;
-
-    const recoveryPhraseMatch = difference(
-      this.walletCertificateRecoveryPhrase, recoveryPhrase
-    ).length === 0;
-
     const passwordMatch = this.walletCertificatePassword === password;
-    if (!recoveryPhraseMatch || !passwordMatch) {
+    if ((this.walletCertificateRecoveryPhrase !== recoveryPhrase.join(' ')) || !passwordMatch) {
       this.walletCertificateHasError = true;
     } else {
       this.walletCertificateHasError = false;

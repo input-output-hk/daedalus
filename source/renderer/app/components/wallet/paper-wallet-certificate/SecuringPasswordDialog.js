@@ -65,6 +65,7 @@ export default class SecuringPasswordDialog extends Component<Props, State> {
 
     const actions = [
       {
+        className: 'continueButton',
         label: intl.formatMessage(globalMessages.dialogButtonContinueLabel),
         primary: true,
         disabled: !securePasswordConfirmed,

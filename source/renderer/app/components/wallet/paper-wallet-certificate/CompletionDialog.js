@@ -53,6 +53,7 @@ export default class CompletionDialog extends Component<Props> {
 
     const actions = [
       {
+        className: 'finishButton',
         label: intl.formatMessage(messages.finishButtonLabel),
         primary: true,
         onClick: onFinish,

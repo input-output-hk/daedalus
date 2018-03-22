@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-import { toJS } from 'mobx';
 import { observer, inject } from 'mobx-react';
 import validWords from '../../../../../../common/valid-words.en';
 import VerificationDialog from '../../../../components/wallet/paper-wallet-certificate/VerificationDialog';
@@ -32,7 +31,7 @@ export default class VerificationDialogContainer extends Component<Props> {
     return (
       <VerificationDialog
         suggestedMnemonics={validWords}
-        walletCertificateRecoveryPhrase={toJS(walletCertificateRecoveryPhrase)}
+        walletCertificateRecoveryPhrase={walletCertificateRecoveryPhrase}
         walletCertificatePassword={walletCertificatePassword}
         onContinue={this.onContinue}
         error={walletCertificateHasError}

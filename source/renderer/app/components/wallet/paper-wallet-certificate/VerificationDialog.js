@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { join, isEqual } from 'lodash';
+import { join } from 'lodash';
 import SvgInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
@@ -127,7 +127,7 @@ export default class VerificationDialog extends Component<Props, State> {
 
           const value = join(field.value, ' ');
           if (value === '') return [false, this.context.intl.formatMessage(globalMessages.fieldIsRequired)];
-          const isRecoveryPhraseValid = isEqual(walletCertificateRecoveryPhrase, field.value);
+          const isRecoveryPhraseValid = walletCertificateRecoveryPhrase === value;
           this.setState({
             isRecoveryPhraseValid,
             // disabled and uncheck confirmation checkboxes if recovery phrase is not valid
@@ -223,12 +223,24 @@ export default class VerificationDialog extends Component<Props, State> {
       'verificationDialog',
     ]);
 
+    const storingUnderstandanceCheckboxClasses = classnames([
+      styles.checkbox,
+      'storingUnderstandance',
+    ]);
+
+    const recoveringUnderstandanceCheckboxClasses = classnames([
+      styles.checkbox,
+      'recoveringUnderstandance'
+    ]);
+
     const actions = [
       {
+        className: 'clearButton',
         label: intl.formatMessage(messages.clearButtonLabel),
         onClick: resetForm.bind(this),
       },
       {
+        className: 'continueButton',
         label: intl.formatMessage(globalMessages.dialogButtonContinueLabel),
         primary: true,
         disabled: !storingConfirmed || !recoveringConfirmed,
@@ -275,7 +287,7 @@ export default class VerificationDialog extends Component<Props, State> {
             </div>
 
             <Checkbox
-              className={styles.checkbox}
+              className={storingUnderstandanceCheckboxClasses}
               label={intl.formatMessage(messages.storingUnderstandanceLabel)}
               onChange={this.onStoringConfirmationChange.bind(this)}
               checked={storingConfirmed}
@@ -284,7 +296,7 @@ export default class VerificationDialog extends Component<Props, State> {
             />
 
             <Checkbox
-              className={styles.checkbox}
+              className={recoveringUnderstandanceCheckboxClasses}
               label={intl.formatMessage(messages.recoveringUnderstandanceLabel)}
               onChange={this.onRecoveringConfirmationChange.bind(this)}
               checked={recoveringConfirmed}

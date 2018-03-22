@@ -58,6 +58,7 @@ export default class PrintDialog extends Component<Props, State> {
 
     const actions = [
       {
+        className: 'continueButton',
         label: intl.formatMessage(globalMessages.dialogButtonContinueLabel),
         primary: true,
         disabled: !isPrintedCorrectly,
