@@ -11,3 +11,11 @@
 .label {
   color: var(--theme-input-label-color);
 }
+
+.disabled {
+  background: none !important;
+
+  .label {
+    color: var(--theme-input-label-color);
+  }
+}
