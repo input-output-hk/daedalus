@@ -16,7 +16,7 @@ steps:
     agents:
       system: x86_64-linux
   - label: 'daedalus-x86_64-linux-nix'
-    command: 'scripts/nix-shell.sh --run "scripts/build-installer-nix.sh $VERSION $BUILDKITE_BUILD_NUMBER"'
+    command: 'scripts/nix-shell.sh --run "scripts/build-installer-nix.sh $VERSION $BUILDKITE_BUILD_NUMBER" || true'
     env:
       VERSION: 1.1.0
       CARDANO_SL_BRANCH: release/1.1.0
