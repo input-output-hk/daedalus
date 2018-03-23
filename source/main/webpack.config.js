@@ -36,12 +36,12 @@ module.exports = {
       'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
       'process.env.DAEDALUS_VERSION': JSON.stringify(process.env.DAEDALUS_VERSION || 'dev'),
       'process.env.REPORT_URL': JSON.stringify(reportUrl),
-   }, process.env.NODE_ENV === 'production' ? {
-     // Only bake in NODE_ENV value for production build.
-     // This is so that the test suite based on the webpack build will
-     // choose the correct path to ca.crt (see setupTls.js).
-     'process.env.NODE_ENV': 'production',
-   } : {})),
+    }, process.env.NODE_ENV === 'production' ? {
+      // Only bake in NODE_ENV value for production build.
+      // This is so that the test suite based on the webpack build will
+      // choose the correct path to ca.crt (see setupTls.js).
+      'process.env.NODE_ENV': 'production',
+    } : {})),
   ],
   module: {
     rules: [
