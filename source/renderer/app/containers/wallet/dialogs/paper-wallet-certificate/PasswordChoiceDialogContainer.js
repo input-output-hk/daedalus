@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-import { intlShape } from 'react-intl';
 import { observer, inject } from 'mobx-react';
 import { remote } from 'electron';
 import PasswordChoiceDialog from '../../../../components/wallet/paper-wallet-certificate/PasswordChoiceDialog';
@@ -16,15 +15,9 @@ type Props = {
 
 @inject('stores', 'actions') @observer
 export default class PasswordChoiceDialogContainer extends Component<Props> {
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
-
   static defaultProps = { actions: null, stores: null };
 
   onContinue = (values: { password: string, repeatPassword: string }) => {
-    const { intl } = this.context;
-
     const filePath = remote.dialog.showSaveDialog({
       defaultPath: '~/paper-wallet-certificate.pdf',
       filters: [{
@@ -36,7 +29,7 @@ export default class PasswordChoiceDialogContainer extends Component<Props> {
     // if cancel button is clicked or path is empty
     if (!filePath) return;
 
-    const data = { ...values, intl, filePath };
+    const data = { ...values, filePath };
     this.props.actions.ada.wallets.generateCertificate.trigger(data);
   };
 

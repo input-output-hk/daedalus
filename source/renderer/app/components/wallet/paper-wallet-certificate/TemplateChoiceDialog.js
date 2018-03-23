@@ -27,14 +27,13 @@ const messages = defineMessages({
 
 type State = {
   selectedTemplate: ?string,
-}
+};
 
 type Props = {
   onPrint: Function,
 };
 
 @observer
-// eslint-disable-next-line
 export default class TemplateChoiceDialog extends Component<Props, State> {
 
   static contextTypes = {
@@ -43,7 +42,7 @@ export default class TemplateChoiceDialog extends Component<Props, State> {
 
   state = {
     selectedTemplate: null,
-  }
+  };
 
   render() {
     const { intl } = this.context;
@@ -56,6 +55,7 @@ export default class TemplateChoiceDialog extends Component<Props, State> {
 
     const actions = [
       {
+        className: 'printButton',
         label: intl.formatMessage(messages.printButtonLabel),
         primary: true,
         disabled: !selectedTemplate,
@@ -170,9 +170,9 @@ export default class TemplateChoiceDialog extends Component<Props, State> {
 
   onSelectTemplate = (templateName: string) => {
     this.setState({ selectedTemplate: templateName });
-  }
+  };
 
   handleContinue = () => {
     this.props.onPrint({ selectedTemplate: this.state.selectedTemplate });
-  }
+  };
 }

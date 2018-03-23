@@ -6,6 +6,8 @@ Changelog
 
 ### Features
 - Paper wallets certificate generation ([PR 779](https://github.com/input-output-hk/daedalus/pull/779))
+- Wallet restoration from a paper wallet certificate ([PR 794](https://github.com/input-output-hk/daedalus/pull/794))
+- Paper wallet certificate generation and wallet restoration from a paper wallet certificate acceptance tests ([PR 807](https://github.com/input-output-hk/daedalus/pull/807))
 
 ### Fixes
 

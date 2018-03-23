@@ -27,7 +27,6 @@ const messages = defineMessages({
   },
 });
 
-
 type State = {
   isPrintedCorrectly: boolean,
 };
@@ -45,7 +44,7 @@ export default class PrintDialog extends Component<Props, State> {
 
   state = {
     isPrintedCorrectly: false,
-  }
+  };
 
   render() {
     const { intl } = this.context;
@@ -59,6 +58,7 @@ export default class PrintDialog extends Component<Props, State> {
 
     const actions = [
       {
+        className: 'continueButton',
         label: intl.formatMessage(globalMessages.dialogButtonContinueLabel),
         primary: true,
         disabled: !isPrintedCorrectly,
@@ -92,5 +92,5 @@ export default class PrintDialog extends Component<Props, State> {
 
   onConfirmCorrectPrinting = () => {
     this.setState({ isPrintedCorrectly: !this.state.isPrintedCorrectly });
-  }
+  };
 }

@@ -73,6 +73,7 @@ export default class InstructionsDialog extends Component<Props> {
 
     const actions = [
       {
+        className: 'continueButton',
         label: intl.formatMessage(globalMessages.dialogButtonContinueLabel),
         primary: true,
         onClick: onContinue,
@@ -111,5 +112,4 @@ export default class InstructionsDialog extends Component<Props> {
       </Dialog>
     );
   }
-
 }

@@ -4,11 +4,11 @@ import { scramblePaperWalletMnemonic } from '../../utils/crypto';
 
 export type GetAdaWalletCertificateRecoveryPhraseParams = {
   passphrase: string,
-  input: string,
+  scrambledInput: string,
 };
 
 export const getAdaWalletCertificateRecoveryPhrase = (
-  { passphrase, input }: GetAdaWalletCertificateRecoveryPhraseParams
+  { passphrase, scrambledInput }: GetAdaWalletCertificateRecoveryPhraseParams
 ): AdaWalletCertificateRecoveryPhraseResponse => (
-  scramblePaperWalletMnemonic(passphrase, input)
+  scramblePaperWalletMnemonic(passphrase, scrambledInput)
 );

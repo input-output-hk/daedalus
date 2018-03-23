@@ -13,7 +13,13 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
 
-  onSubmit = (values: { recoveryPhrase: string, walletName: string, walletPassword: ?string }) => {
+  onSubmit = (values: {
+    recoveryPhrase: string,
+    walletName: string,
+    walletPassword: ?string,
+    type: string,
+    certificatePassword?: string,
+  }) => {
     this.props.actions[environment.API].wallets.restoreWallet.trigger(values);
   };
 
@@ -26,11 +32,13 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
 
   render() {
     const wallets = this._getWalletsStore();
-    const { restoreRequest } = wallets;
+    const { restoreRequest, isValidMnemonic, isValidCertificateMnemonic } = wallets;
 
     return (
       <WalletRestoreDialog
-        mnemonicValidator={mnemonic => wallets.isValidMnemonic(mnemonic)}
+        mnemonicValidator={mnemonic => isValidMnemonic(mnemonic)}
+        certificateMnemonicValidator={mnemonic => isValidCertificateMnemonic(mnemonic)}
+        showCertificateRestore={environment.isAdaApi()}
         suggestedMnemonics={validWords}
         isSubmitting={restoreRequest.isExecuting}
         onSubmit={this.onSubmit}

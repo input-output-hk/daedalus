@@ -4,7 +4,6 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import Dialog from '../../widgets/Dialog';
-
 import styles from './CompletionDialog.scss';
 
 const shell = require('electron').shell;
@@ -54,6 +53,7 @@ export default class CompletionDialog extends Component<Props> {
 
     const actions = [
       {
+        className: 'finishButton',
         label: intl.formatMessage(messages.finishButtonLabel),
         primary: true,
         onClick: onFinish,
