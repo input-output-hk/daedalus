@@ -36,6 +36,7 @@ const DEFAULT_OPTS = {
     /^\/storybook($|\/)/,
     /^\/tls($|\/)/,
     /^\/translations($|\/)/,
+    /^\/installers\/.*exe/,
   ]
 };
 
