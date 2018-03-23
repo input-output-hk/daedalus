@@ -35,6 +35,7 @@ const DEFAULT_OPTS = {
     /^\/scripts($|\/)/,
     /^\/source($|\/)/,
     /^\/storybook($|\/)/,
+    /^\/tls($|\/)/,
     /^\/translations($|\/)/,
   ]
 };
