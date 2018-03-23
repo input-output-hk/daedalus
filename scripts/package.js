@@ -26,14 +26,21 @@ const DEFAULT_OPTS = {
   name: appName,
   asar: shouldUseAsar,
   ignore: [
-    // Ignore anything but dist and tls folders
-    '^/(?!dist).*($|/)',
-    '^/(?!tls).*($|/)',
-  ],
+    /^\/.buildkite($|\/)/,
+    /^\/.storybook($|\/)/,
+    /^\/features($|\/)/,
+    /^\/flow($|\/)/,
+    /^\/installers($|\/)/,
+    /^\/node_modules($|\/)/,
+    /^\/scripts($|\/)/,
+    /^\/source($|\/)/,
+    /^\/storybook($|\/)/,
+    /^\/translations($|\/)/,
+  ]
 };
 
-const icon = argv.icon || argv.i || 'installers/icons/electron';
-if (icon) DEFAULT_OPTS.icon = icon;
+// const icon = argv.icon || argv.i || 'installers/icons/electron';
+// if (icon) DEFAULT_OPTS.icon = icon;
 
 const version = argv.version || argv.v;
 if (version) {
@@ -102,7 +109,7 @@ function pack(plat, arch, cb) {
   const opts = Object.assign({}, DEFAULT_OPTS, iconObj, {
     platform: plat,
     arch,
-    prune: true,
+    prune: false,
     'app-version': pkg.version || DEFAULT_OPTS.version,
     out: `release/${plat}-${arch}`
   });
