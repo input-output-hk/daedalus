@@ -24,7 +24,7 @@ import           Prelude ((!!))
 import           System.Directory (doesFileExist)
 import           System.Environment (lookupEnv)
 import           System.IO (writeFile)
-import           Turtle (ExitCode (..), echo, proc, procs, shells)
+import           Turtle (ExitCode (..), echo, proc, procs, shells, export)
 import           Turtle.Line (unsafeTextToLine)
 
 import           Config
@@ -189,7 +189,8 @@ writeInstallerNSIS (Version fullVersion') clusterName = do
         return ()
 
 packageFrontend :: IO ()
-packageFrontend =
+packageFrontend = do
+    export "NODE_ENV" "production"
     shells "npm run package -- --icon installers/icons/64x64" mempty
 
 main :: Options -> IO ()
