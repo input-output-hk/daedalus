@@ -29,6 +29,7 @@ const DEFAULT_OPTS = {
     // Ignore anything but dist and tls folders
     '^/(?!dist).*($|/)',
     '^/(?!tls).*($|/)',
+    '^/package.json',
   ],
 };
 
