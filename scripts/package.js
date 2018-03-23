@@ -17,15 +17,6 @@ const pkg = require('../package.json');
  */
 const argv = require('minimist')(process.argv.slice(2));
 
-/**
- * Do not package node modules from 'devDependencies'
- * and 'dependencies' that are set as external
- */
-const toNodePath = name => `/node_modules/${name}($|/)`;
-const devDeps = Object
-  .keys(pkg.devDependencies)
-  .map(toNodePath);
-
 const appName = argv.name || argv.n || pkg.productName;
 const shouldUseAsar = argv.asar || argv.a || false;
 const shouldBuildAll = argv.all || false;
@@ -35,13 +26,10 @@ const DEFAULT_OPTS = {
   name: appName,
   asar: shouldUseAsar,
   ignore: [
-    '^/features($|/)',
-    '^/storybook($|/)',
-    '^/flow($|/)',
-    '^/release($|/)',
-    '^/installers',
-    '^/translations',
-  ].concat(devDeps),
+    // Ignore anything but dist and tls folders
+    '^/(?!dist).*($|/)',
+    '^/(?!tls).*($|/)',
+  ],
 };
 
 const icon = argv.icon || argv.i || 'installers/icons/electron';
