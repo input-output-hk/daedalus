@@ -2,14 +2,20 @@ import path from 'path';
 import { app, BrowserWindow, ipcMain, Menu } from 'electron';
 import environment from '../../common/environment';
 import ipcApi from '../ipc-api';
+import { runtimeFolderPath } from '../config';
 
 export const createMainWindow = () => {
-  // Construct new BrowserWindow
-  const window = new BrowserWindow({
+  var params = {
     show: false,
     width: 1150,
-    height: 870
-  });
+    height: 870,
+  };
+  if (process.platform === 'linux') {
+    params.icon = path.join(runtimeFolderPath, 'icon.png');
+  };
+
+  // Construct new BrowserWindow
+  const window = new BrowserWindow(params);
 
   window.setMinimumSize(900, 600);
 
@@ -37,7 +43,7 @@ export const createMainWindow = () => {
 
   window.loadURL(`file://${__dirname}/../renderer/index.html`);
   window.on('page-title-updated', event => { event.preventDefault(); });
-  window.setTitle(`Daedalus (${environment.DAEDALUS_VERSION || 'dev'})`);
+  window.setTitle(`Daedalus (${environment.build})`);
 
   window.webContents.on('context-menu', (e, props) => {
     const contextMenuOptions = [
