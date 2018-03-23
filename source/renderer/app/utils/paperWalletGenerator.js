@@ -85,11 +85,10 @@ export const downloadPaperWalletCertificate = (
   SVGtoPDF(doc, paperWalletPage2, 0, 0);
   doc.rotate(180, { origin: [width / 2, height / 2] });
   doc.fillColor(textColor);
-  doc.fontSize(10).text(intl.formatMessage(messages.shieldedRecoveryPhraseLabel), 0, 550, { width: 595, align: 'center' });
-  doc.fontSize(8).text(mnemonics.slice(0, 5).join('          '), (width - 250) / 2, 575, { width: 250, align: 'center' });
-  doc.fontSize(8).text(mnemonics.slice(5, 10).join('          '), (width - 250) / 2, 593, { width: 250, align: 'center' });
-  doc.fontSize(8).text(mnemonics.slice(10, 15).join('          '), (width - 250) / 2, 611, { width: 250, align: 'center' });
-  doc.fontSize(10).text(intl.formatMessage(messages.passwordLabel), 0, 650, { width: 595, align: 'center' });
+  doc.fontSize(10).text(intl.formatMessage(messages.shieldedRecoveryPhraseLabel), 0, 540, { width: 595, align: 'center' });
+  doc.fontSize(8).text(mnemonics.slice(0, 5).join('          '), (width - 250) / 2, 565, { width: 250, align: 'center' });
+  doc.fontSize(8).text(mnemonics.slice(5, 10).join('          '), (width - 250) / 2, 583, { width: 250, align: 'center' });
+  doc.fontSize(8).text(mnemonics.slice(10, 15).join('          '), (width - 250) / 2, 601, { width: 250, align: 'center' });
   doc.fontSize(7).text(daedalusInfo, (width - 270) / 2, 705, { width: 270, align: 'left' });
   doc.rotate(-180, { origin: [width / 2, height / 2] });
   /* eslint-disable max-len */
