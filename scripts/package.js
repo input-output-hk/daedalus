@@ -30,7 +30,6 @@ const DEFAULT_OPTS = {
     /^\/.storybook($|\/)/,
     /^\/features($|\/)/,
     /^\/flow($|\/)/,
-    /^\/installers($|\/)/,
     /^\/node_modules($|\/)/,
     /^\/scripts($|\/)/,
     /^\/source($|\/)/,
