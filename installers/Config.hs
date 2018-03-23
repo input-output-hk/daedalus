@@ -8,7 +8,7 @@
 module Config
   ( generateConfig
   , ConfigRequest(..)
-  , OS(..), Cluster(..), Config(..)
+  , OS(..), Cluster(..), Config(..), Backend(..)
   , optReadLower, argReadLower
   , Options(..), optionsParser
   -- Re-export Turtle:
@@ -30,13 +30,14 @@ import qualified Data.Yaml                        as YAML
 import qualified Dhall                            as Dhall
 import qualified Dhall.JSON                       as Dhall
 
+import           Filesystem.Path.CurrentOS           (encodeString)
 import qualified GHC.IO.Encoding                  as GHC
 
 import qualified System.IO                        as Sys
 import qualified System.Exit                      as Sys
 
 import           Text.Printf                         (printf)
-import           Turtle                              (optional)
+import           Turtle                              (optional, (<|>))
 import           Turtle.Options
 
 import           Prelude                     hiding (writeFile)
@@ -64,22 +65,26 @@ optReadLower = opt (diagReadCaseInsensitive . unpack)
 argReadLower :: (Bounded a, Enum a, Read a, Show a) => ArgName -> Optional HelpMessage -> Parser a
 argReadLower = arg (diagReadCaseInsensitive . unpack)
 
+data Backend
+  = Cardano { cardanoDaedalusBridge :: FilePath }
+  | Mantis
+  deriving (Eq, Read, Show)
+
 data Options = Options
-  { oAPI           :: API
-  , oBuildJob      :: Maybe BuildJob
-  , oCluster       :: Cluster
-  , oAppName       :: AppName
-  , oDaedalusVer   :: Version
-  , oOutput        :: Text
-  , oPullReq       :: Maybe PullReq
-  , oTestInstaller :: TestInstaller
-  , oCI            :: CI
-  }
+  { oBackend        :: Backend
+  , oBuildJob       :: Maybe BuildJob
+  , oCluster        :: Cluster
+  , oAppName        :: AppName
+  , oDaedalusVer    :: Version
+  , oOutput         :: Text
+  , oPullReq        :: Maybe PullReq
+  , oTestInstaller  :: TestInstaller
+  , oCI             :: CI
+  } deriving Show
 
 optionsParser :: Parser Options
 optionsParser = Options
-  <$> (fromMaybe Cardano <$> (optional $
-                   optReadLower "api"                 'a' "Backend API:  cardano or etc"))
+  <$> backendOptionParser
   <*> (optional      $
       (BuildJob     <$> optText "build-job"           'b' "CI Build Job/ID"))
   <*> (fromMaybe Mainnet    <$> (optional $
@@ -94,6 +99,13 @@ optionsParser = Options
   <*> (testInstaller
                     <$> switch  "test-installer"      't' "Test installers after building")
   <*> pure Buildkite -- NOTE: this is filled in by auto-detection
+
+backendOptionParser :: Parser Backend
+backendOptionParser = cardano <|> mantis <|> pure (Cardano "")
+  where
+    cardano = Cardano . encodeString <$> optPath "cardano" 'C'
+      "Use Cardano backend with given Daedalus bridge path"
+    mantis = switch "mantis" 'M' "Use Mantis (ETC) backend" *> pure Mantis
 
 
 

@@ -24,9 +24,9 @@ import qualified Data.Text as T
 import           System.Directory (copyFile, createDirectoryIfMissing, doesFileExist, renameFile)
 import           System.FilePath ((</>), FilePath)
 import           System.FilePath.Glob (glob)
-import           Filesystem.Path.CurrentOS (encodeString)
+import           Filesystem.Path.CurrentOS (encodeString, decodeString)
 import           Text.Printf (printf)
-import           Turtle (ExitCode (..), echo, proc, procs, shells, which, Managed, with)
+import           Turtle (ExitCode (..), echo, proc, procs, shells, which, Managed, with, chmod, writable)
 import           Turtle.Line (unsafeTextToLine)
 
 import           RewriteLibs (chain)
@@ -65,9 +65,9 @@ main opts@Options{..} = do
     shells (T.pack $ printf "sudo installer -dumplog -verbose -target / -pkg \"%s\"" oOutput) empty
 
 makeScriptsDir :: Options -> Managed T.Text
-makeScriptsDir Options{..} = case oAPI of
-  Cardano -> pure "data/scripts"
-  ETC     -> pure "[DEVOPS-533]"
+makeScriptsDir Options{..} = case oBackend of
+  Cardano _ -> pure "data/scripts"
+  Mantis    -> pure "[DEVOPS-533]"
 
 makeInstaller :: Options -> FilePath -> IO FilePath
 makeInstaller opts@Options{..} appRoot = do
@@ -80,21 +80,24 @@ makeInstaller opts@Options{..} appRoot = do
   procs "iconutil" ["--convert", "icns", "--output", toText (resDir </> "electron.icns"), "icons/electron.iconset"] mempty
 
   echo "Preparing files ..."
-  case oAPI of
-    Cardano -> do
+  case oBackend of
+    Cardano bridge -> do
       -- Executables
-      copyFile "cardano-launcher" (dir </> "cardano-launcher")
-      copyFile "cardano-node" (dir </> "cardano-node")
+      forM ["cardano-launcher", "cardano-node"] $ \f -> do
+        copyFile (bridge </> "bin" </> f) (dir </> f)
+        chmod writable (decodeString $ dir </> f)
 
-      -- Config files
-      copyFile "configuration.yaml"   (dir </> "configuration.yaml")
-      copyFile "launcher-config.yaml" (dir </> "launcher-config.yaml")
-      copyFile "log-config-prod.yaml" (dir </> "log-config-prod.yaml")
-      copyFile "wallet-topology.yaml" (dir </> "wallet-topology.yaml")
+      -- Config files (from daedalus-bridge)
+      copyFile (bridge </> "config/configuration.yaml") (dir </> "configuration.yaml")
+      copyFile (bridge </> "config/log-config-prod.yaml") (dir </> "log-config-prod.yaml")
 
-      -- Genesis
+      -- Genesis (from daedalus-bridge)
       genesisFiles <- glob "*genesis*.json"
       procs "cp" (fmap toText (genesisFiles <> [dir])) mempty
+
+      -- Config yaml (generated from dhall files)
+      copyFile "launcher-config.yaml" (dir </> "launcher-config.yaml")
+      copyFile "wallet-topology.yaml" (dir </> "wallet-topology.yaml")
 
       -- SSL
       copyFile "build-certificates-unix.sh" (dir </> "build-certificates-unix.sh")
@@ -103,9 +106,9 @@ makeInstaller opts@Options{..} appRoot = do
       copyFile "client.conf" (dir </> "client.conf")
 
       -- Rewrite libs paths and bundle them
-      _ <- chain dir $ fmap toText [dir </> "cardano-launcher", dir </> "cardano-node"]
-      pure ()
-    _ -> pure () -- DEVOPS-533
+      void $ chain dir $ fmap toText [dir </> "cardano-launcher", dir </> "cardano-node"]
+
+    Mantis -> pure () -- DEVOPS-533
 
   -- Prepare launcher
   de <- doesFileExist (dir </> "Frontend")
