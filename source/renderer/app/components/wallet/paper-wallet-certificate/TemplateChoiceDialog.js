@@ -55,6 +55,7 @@ export default class TemplateChoiceDialog extends Component<Props, State> {
 
     const actions = [
       {
+        className: 'printButton',
         label: intl.formatMessage(messages.printButtonLabel),
         primary: true,
         disabled: !selectedTemplate,
