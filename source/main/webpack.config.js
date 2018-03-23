@@ -40,7 +40,7 @@ module.exports = {
       // Only bake in NODE_ENV value for production build.
       // This is so that the test suite based on the webpack build will
       // choose the correct path to ca.crt (see setupTls.js).
-      'process.env.NODE_ENV': 'production',
+      'process.env.NODE_ENV': '"production"',
     } : {})),
   ],
   module: {
