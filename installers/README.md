@@ -49,3 +49,17 @@ Before signing the Mac installer, the keychain needs to be set up. Do this by ru
 The certificate is required to be in PKCS#12 format. It will prompt
 for a certificate decryption password, or you can put this in the
 `CERT_PASS` environment variable.
+
+## Bumping cardano-sl version
+
+The cardano-sl node and configuration files used by the installer
+builder are available as the `daedalus-bridge` attribute of the
+top-level file [`cardano-sl.nix`](../cardano-sl.nix). To get/build the
+files, run:
+
+    nix-build cardano-sl.nix -A daedalus-bridge
+    ls result/
+
+To update the cardano-sl version, update the revision in
+[`cardano-sl-src.json`](../cardano-sl-src.json). This replaces the
+`CARDANO_SL_BRANCH` environment variable which was previously used.

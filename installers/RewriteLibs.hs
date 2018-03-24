@@ -44,7 +44,7 @@ chain dir args@(x:xs) = do
             -- parse again all libraries pointing to nix store that we haven't processed yet
             let libs = filter (isPrefixOf "/nix/store/") files
             filtered <- traverse (patchLib x dir) libs
-            chained <- chain dir (xs ++ (filter (\f -> notElem f args) $ catMaybes filtered))
+            chained <- chain dir (xs ++ (filter (\f -> not $ elem f args) $ catMaybes filtered))
             return $ x : chained
 chain _ [] = return []
 

@@ -1,6 +1,6 @@
-name:                cardano-installer
+name:                daedalus-installer
 version:             0.1.0.0
-synopsis:            Cardano Installer
+synopsis:            Daedalus Installer Builder
 description:         Please see README.md
 license:             MIT
 author:              Serokell
@@ -15,7 +15,7 @@ executable make-installer
   other-modules:       MacInstaller
                      , WindowsInstaller
                      , RewriteLibs
-
+                     , AppVeyor
   build-depends:       base
                      , bytestring
                      , containers
@@ -23,6 +23,7 @@ executable make-installer
                      , dhall-json
                      , directory
                      , filepath
+                     , github
                      , Glob
                      , megaparsec
                      , nsis
@@ -37,6 +38,13 @@ executable make-installer
                      , turtle
                      , universum
                      , yaml
+                     , wreq
+                     , lens-aeson
+                     , zip-archive
+                     , microlens
+                     , network-uri
+                     , bytestring
+                     , aeson
 
   default-language:    Haskell2010
   ghc-options:         -threaded -rtsopts
