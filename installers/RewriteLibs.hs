@@ -8,7 +8,7 @@ module RewriteLibs
     ( chain
     ) where
 
-import           Universum hiding (isPrefixOf, notElem)
+import           Universum hiding (isPrefixOf)
 
 import           Data.List (last, notElem)
 import           Data.Text (isPrefixOf, isSuffixOf, splitOn)

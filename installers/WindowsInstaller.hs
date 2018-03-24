@@ -26,7 +26,7 @@ import           System.Environment (lookupEnv)
 import           System.FilePath ((</>))
 import           System.IO (writeFile)
 import           Filesystem.Path.CurrentOS (decodeString)
-import           Turtle (ExitCode (..), echo, proc, procs, shells, testfile, stdout, input)
+import           Turtle (ExitCode (..), echo, proc, procs, shells, testfile, stdout, input, export)
 import           Turtle.Line (unsafeTextToLine)
 import           AppVeyor
 import qualified Codec.Archive.Zip    as Zip

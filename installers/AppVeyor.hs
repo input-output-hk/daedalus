@@ -15,7 +15,6 @@ import Network.Wreq
 import Data.Aeson.Lens
 import Lens.Micro
 import Turtle.Format (printf, (%), d, s, w, Format, makeFormat)
-import GHC.Generics
 
 -- | Gets CardanoSL.zip corresponding to the src json revision from AppVeyor CI
 downloadCardanoSL :: FilePath -> IO L8.ByteString

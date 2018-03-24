@@ -22,13 +22,12 @@ import           Control.Monad (unless)
 import           Data.Text (Text)
 import qualified Data.Text as T
 import           System.Directory (copyFile, createDirectoryIfMissing, doesFileExist, renameFile)
-import           System.Environment (lookupEnv, setEnv)
+import           System.Environment (setEnv)
 import           System.FilePath ((</>), FilePath)
 import           System.FilePath.Glob (glob)
 import           Filesystem.Path.CurrentOS (encodeString, decodeString)
 import qualified Filesystem.Path as P
-import           Turtle (Shell, ExitCode (..), echo, proc, procs, inproc, which, Managed, with, printf, format, (%), l, pwd, cd, sh, mktree)
-import           Text.Printf (printf)
+import           Turtle (Shell, ExitCode (..), echo, proc, procs, inproc, which, Managed, with, printf, (%), l, pwd, cd, sh, mktree, chmod, writable)
 import           Turtle.Line (unsafeTextToLine)
 
 import           RewriteLibs (chain)
