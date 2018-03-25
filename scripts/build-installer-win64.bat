@@ -12,27 +12,20 @@ set /p CLUSTERS=<installer-clusters.cfg
 @echo ###
 @echo ##############################################################################
 
-set MIN_CARDANO_BYTES=20000000
 set LIBRESSL_VERSION=2.5.3
 set CURL_VERSION=7.54.0
-set CARDANO_BRANCH_DEFAULT=release/1.1.0
-set DAEDALUS_VERSION_DEFAULT=local-dev-build-%CARDANO_BRANCH_DEFAULT%
+set DAEDALUS_VERSION_DEFAULT=local-dev-build
 
 set DAEDALUS_VERSION=%1
 @if [%DAEDALUS_VERSION%]==[] (@echo WARNING: DAEDALUS_VERSION [argument #1] wasnt provided, defaulting to %DAEDALUS_VERSION_DEFAULT%
     set DAEDALUS_VERSION=%DAEDALUS_VERSION_DEFAULT%);
-set CARDANO_BRANCH=%2
-@if [%CARDANO_BRANCH%]==[]   (@echo WARNING: CARDANO_BRANCH [argument #2] wasnt provided, defaulting to %CARDANO_BRANCH_DEFAULT%
-    set CARDANO_BRANCH=%CARDANO_BRANCH_DEFAULT%);
 
 set CURL_URL=https://bintray.com/artifact/download/vszakats/generic/curl-%CURL_VERSION%-win64-mingw.7z
 set CURL_BIN=curl-%CURL_VERSION%-win64-mingw\bin
-set CARDANO_URL=https://ci.appveyor.com/api/projects/input-output/cardano-sl/artifacts/CardanoSL.zip?branch=%CARDANO_BRANCH%
 set LIBRESSL_URL=https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-%LIBRESSL_VERSION%-windows.zip
 set DLLS_URL=https://s3.eu-central-1.amazonaws.com/daedalus-ci-binaries/DLLs.zip
 
 @echo Building Daedalus version:  %DAEDALUS_VERSION%
-@echo ..with Cardano branch:      %CARDANO_BRANCH%
 @echo ..with LibreSSL version:    %LIBRESSL_VERSION%
 @echo .
 
@@ -68,51 +61,6 @@ call npm install
 @if %errorlevel% neq 0 (@echo FAILED: npm install
     exit /b 1)
 :after_node
-
-@if not [%SKIP_CARDANO_FETCH%]==[] (@echo "WARNING: SKIP_CARDANO_FETCH set, not re-fetching Cardano"
-    goto :after_cardano_fetch)
-@echo ##############################################################################
-@echo ###
-@echo ### Obtaining Cardano from branch %CARDANO_BRANCH%
-@echo ###
-@echo ##############################################################################
-rmdir /s/q node_modules\daedalus-client-api 2>nul
-mkdir      node_modules\daedalus-client-api
-
-pushd node_modules\daedalus-client-api
-    del /f CardanoSL.zip 2>nul
-    ..\..\curl --location %CARDANO_URL% -o CardanoSL.zip
-    @if %errorlevel% neq 0 (@echo FAILED: couldn't obtain the cardano-sl package
-	popd & exit /b 1)
-    @for /F "usebackq" %%A in ('CardanoSL.zip') do set size=%%~zA
-    if %size% lss %MIN_CARDANO_BYTES% (@echo FAILED: CardanoSL.zip is too small: threshold=%MIN_CARDANO_BYTES%, actual=%size% bytes
-        popd & exit /b 1)
-popd
-:after_cardano_fetch
-
-pushd node_modules\daedalus-client-api
-    7z x CardanoSL.zip -y
-    @if %errorlevel% neq 0 (@echo FAILED: 7z x CardanoSL.zip -y
-	popd & exit /b 1)
-popd
-
-@echo ##############################################################################
-@echo ###
-@echo ### cardano-sl build-id:
-@type node_modules\daedalus-client-api\build-id
-@echo ### cardano-sl commit-id:
-@type node_modules\daedalus-client-api\commit-id
-@echo ### cardano-sl ci-url:
-@type node_modules\daedalus-client-api\ci-url
-@echo ###
-@echo ##############################################################################
-
-move   node_modules\daedalus-client-api\log-config-prod.yaml installers\log-config-prod.yaml
-move   node_modules\daedalus-client-api\cardano-node.exe     installers\
-move   node_modules\daedalus-client-api\cardano-launcher.exe installers\
-move   node_modules\daedalus-client-api\configuration.yaml installers\
-move   node_modules\daedalus-client-api\*genesis*.json installers\
-del /f node_modules\daedalus-client-api\*.exe
 
 @echo ##############################################################################
 @echo ###
@@ -181,15 +129,14 @@ pushd installers
     call ..\scripts\appveyor-retry stack install dhall dhall-json
     @if %errorlevel% neq 0 (@echo FATAL: persistent failure while installing dhall/dhall-json
         popd & exit /b 1)
-    call ..\scripts\appveyor-retry stack --no-terminal -j 2 install cardano-installer
-    @if %errorlevel% neq 0 (@echo FATAL: persistent failure while installing cardano-installer
+    call ..\scripts\appveyor-retry stack --no-terminal -j 2 install daedalus-installer
+    @if %errorlevel% neq 0 (@echo FATAL: persistent failure while installing daedalus-installer
         popd & exit /b 1)
 
 :build_installers
 
 if NOT DEFINED APPVEYOR_BUILD_NUMBER        ( set APPVEYOR_BUILD_NUMBER=0 )
 set XARGS="--build-job %APPVEYOR_BUILD_NUMBER% -v %DAEDALUS_VERSION%"
-IF     DEFINED API                          ( set XARGS="%XARGS:"=% --api %API%" )
 IF     DEFINED APPVEYOR_PULL_REQUEST_NUMBER ( set XARGS="%XARGS:"=% --pull-request %APPVEYOR_PULL_REQUEST_NUMBER%" )
 
 FOR %%C IN (%CLUSTERS:"=%) DO (

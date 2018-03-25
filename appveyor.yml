@@ -23,7 +23,7 @@ install:
   - IF NOT DEFINED APPVEYOR_PULL_REQUEST_NUMBER aws s3 cp --region eu-central-1 s3://iohk-private-2/iohk-windows-certificate-4.p12 C:/iohk-windows-certificate.p12
 
 test_script:
-  - scripts\build-installer-win64.bat %APPVEYOR_BUILD_VERSION% release/1.1.0
+  - scripts\build-installer-win64.bat %APPVEYOR_BUILD_VERSION%
 
 artifacts:
   - path: release\win32-x64\Daedalus-win32-x64

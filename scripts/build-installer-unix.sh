@@ -58,7 +58,6 @@ pull_request=
 test_installer=
 
 daedalus_version="$1"; arg2nz "daedalus version" $1; shift
-cardano_branch="$(printf '%s' "$1" | tr '/' '-')"; arg2nz "Cardano SL branch to build Daedalus with" $1; shift
 
 # Parallel build options for Buildkite agents only
 if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
@@ -108,28 +107,14 @@ export PATH=$HOME/.local/bin:$PATH
 export DAEDALUS_VERSION=${daedalus_version}.${build_id}
 if [ -n "${NIX_SSL_CERT_FILE-}" ]; then export SSL_CERT_FILE=$NIX_SSL_CERT_FILE; fi
 
-CARDANO_BUILD_UID="${OS_NAME}-${cardano_branch//\//-}"
-ARTIFACT_BUCKET=ci-output-sink        # ex- cardano-sl-travis
-CARDANO_ARTIFACT=cardano-binaries     # ex- daedalus-bridge
-CARDANO_ARTIFACT_FULL_NAME=${CARDANO_ARTIFACT}-${CARDANO_BUILD_UID}
+ARTIFACT_BUCKET=ci-output-sink
 
-test -d node_modules/daedalus-client-api/ -a -n "${fast_impure}" || {
-        retry 5 curl -o ${CARDANO_ARTIFACT_FULL_NAME}.tar.xz \
-              "https://s3.eu-west-1.amazonaws.com/${ARTIFACT_BUCKET}/cardano-sl/${CARDANO_ARTIFACT_FULL_NAME}.tar.xz"
-        mkdir -p node_modules/daedalus-client-api/
-        du -sh  ${CARDANO_ARTIFACT_FULL_NAME}.tar.xz
-        tar xJf ${CARDANO_ARTIFACT_FULL_NAME}.tar.xz --strip-components=1 -C node_modules/daedalus-client-api/
-        rm      ${CARDANO_ARTIFACT_FULL_NAME}.tar.xz
-        echo "cardano-sl build id is $(cat node_modules/daedalus-client-api/build-id)"
-        if [ -f node_modules/daedalus-client-api/commit-id ]; then echo "cardano-sl revision is $(cat node_modules/daedalus-client-api/commit-id)"; fi
-        if [ -f node_modules/daedalus-client-api/ci-url ]; then echo "cardano-sl ci-url is $(cat node_modules/daedalus-client-api/ci-url)"; fi
-        pushd node_modules/daedalus-client-api
-              mv log-config-prod.yaml cardano-node cardano-launcher configuration.yaml *genesis*.json ../../installers
-        popd
-        chmod +w installers/cardano-{node,launcher}
-        strip installers/cardano-{node,launcher}
-        rm -f node_modules/daedalus-client-api/cardano-*
-}
+# Build/get cardano bridge which is used by make-installer
+DAEDALUS_BRIDGE=$(nix-build --no-out-link cardano-sl.nix -A daedalus-bridge)
+# Note: Printing build-id is required for the iohk-ops find-installers
+# script which searches in buildkite logs.
+if [ -f $DAEDALUS_BRIDGE/build-id ]; then echo "cardano-sl build id is $(cat $DAEDALUS_BRIDGE/build-id)"; fi
+if [ -f $DAEDALUS_BRIDGE/commit-id ]; then echo "cardano-sl revision is $(cat $DAEDALUS_BRIDGE/commit-id)"; fi
 
 test "$(find node_modules/ | wc -l)" -gt 100 -a -n "${fast_impure}" ||
         $nix_shell --run "npm install"
@@ -150,7 +135,7 @@ cd installers
                     INSTALLER_PKG="Daedalus-installer-${DAEDALUS_VERSION}-${cluster}.pkg"
 
           INSTALLER_CMD="$INSTALLER/bin/make-installer ${pull_request} ${test_installer}"
-          INSTALLER_CMD+="  ${API:+--api $API}"
+          INSTALLER_CMD+="  --cardano          ${DAEDALUS_BRIDGE}"
           INSTALLER_CMD+="  --build-job        ${BUILDKITE_BUILD_NUMBER}"
           INSTALLER_CMD+="  --cluster          ${cluster}"
           INSTALLER_CMD+="  --daedalus-version ${DAEDALUS_VERSION}"
