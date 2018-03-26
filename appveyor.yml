@@ -15,7 +15,7 @@ environment:
 build: off
 
 cache:
-  - C:\sr -> installers/cardano-installer.cabal
+  - C:\sr -> installers/daedalus-installer.cabal
   - C:\sr -> installers/stack.yaml
 
 install:
