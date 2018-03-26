@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import QRCode from 'qrcode.react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import Dialog from '../../widgets/Dialog';
@@ -16,14 +17,31 @@ const messages = defineMessages({
   },
   subtitle: {
     id: 'paper.wallet.create.certificate.completion.dialog.subtitle',
-    defaultMessage: '!!!Now you can fold your paper wallet certificate and glue together all the parts. Keep certificate safe. To import wallet back crop glued certificate’s edges to reach inner part.',
+    defaultMessage: '!!!You may want to fold your paper wallet certificate and glue together the edges to store it securely. Please keep your certificate safe...',
     description: 'Headline for the "Paper wallet create certificate completion dialog" subtitle.'
   },
   linkInstructions: {
     id: 'paper.wallet.create.certificate.completion.dialog.linkInstructions',
-    defaultMessage: '!!!You can use this link to open the address in Cardano Explorer, save it in your browser bookmarks and share it with others to receive funds:',
+    defaultMessage: `!!!When you want to import your wallet back into Daedalus crop any glued edges of the certificate to open it.
+      To check your balance on the paper wallet at any time, you may use the link below. Copy or save it to your browser bookmarks to do this easily:`,
     description: 'Headline for the "Paper wallet create certificate completion dialog" link instructions.'
   },
+  addressInstructions: {
+    id: 'paper.wallet.create.certificate.completion.dialog.addressInstructions',
+    defaultMessage: '!!!To receive funds to your paper wallet simply share your wallet address with others.',
+    description: 'Headline for the "Paper wallet create certificate completion dialog" address instructions.'
+  },
+  cardanoLinkLabel: {
+    id: 'paper.wallet.create.certificate.completion.dialog.cardanoLinkLabel',
+    defaultMessage: '!!!Cardano explorer link',
+    description: '"Paper wallet create certificate completion dialog" cardano link label.'
+  },
+  addressLabel: {
+    id: 'paper.wallet.create.certificate.completion.dialog.addressLabel',
+    defaultMessage: '!!!Wallet address',
+    description: '"Paper wallet create certificate completion dialog" wallet address label.'
+  },
+
   finishButtonLabel: {
     id: 'paper.wallet.create.certificate.completion.dialog.finishButtonLabel',
     defaultMessage: '!!!Finish',
@@ -62,6 +80,12 @@ export default class CompletionDialog extends Component<Props> {
 
     const cardanoExplorerLink = `https://cardanoexplorer.com/address/${walletCertificateAddress}`;
 
+    // Get QRCode color value from active theme's CSS variable
+    const qrCodeBackgroundColor = document.documentElement ?
+      document.documentElement.style.getPropertyValue('--theme-receive-qr-code-background-color') : 'transparent';
+    const qrCodeForegroundColor = document.documentElement ?
+      document.documentElement.style.getPropertyValue('--theme-receive-qr-code-foreground-color') : '#000';
+
     return (
       <Dialog
         className={dialogClasses}
@@ -69,15 +93,15 @@ export default class CompletionDialog extends Component<Props> {
         actions={actions}
       >
 
-        <div className={styles.securingPasswordContentWrapper}>
+        <div className={styles.completionContentWrapper}>
           <p className={styles.subtitle}>{intl.formatMessage(messages.subtitle)}</p>
-          <div className={styles.content}>
 
-            <p className={styles.linkInstructions}>
-              {intl.formatMessage(messages.linkInstructions)}
-            </p>
+          <div className={styles.linkInstructionsWrapper}>
+            <p>{intl.formatMessage(messages.linkInstructions)}</p>
 
-            <div className={styles.cardanoExplorerLinkWrapper}>
+            <p className={styles.infoBoxLabel}>{intl.formatMessage(messages.cardanoLinkLabel)}</p>
+
+            <div className={styles.infoBox}>
               <a
                 href={cardanoExplorerLink}
                 onClick={this.openCardanoExplorer.bind(this, cardanoExplorerLink)}
@@ -85,8 +109,28 @@ export default class CompletionDialog extends Component<Props> {
                 {cardanoExplorerLink}
               </a>
             </div>
-
           </div>
+
+
+          <div className={styles.addressInstructionsWrapper}>
+            <p>{intl.formatMessage(messages.addressInstructions)}</p>
+
+            <p className={styles.infoBoxLabel}>{intl.formatMessage(messages.addressLabel)}</p>
+
+            <div className={styles.infoBox}>
+              {walletCertificateAddress}
+            </div>
+          </div>
+
+          <div className={styles.qrCode}>
+            <QRCode
+              value={walletCertificateAddress}
+              bgColor={qrCodeBackgroundColor}
+              fgColor={qrCodeForegroundColor}
+              size={160}
+            />
+          </div>
+
         </div>
 
       </Dialog>

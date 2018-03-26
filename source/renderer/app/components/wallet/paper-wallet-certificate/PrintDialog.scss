@@ -1,14 +1,18 @@
 .printContentWrapper {
   color: var(--theme-instructions-text-color);
 
-  .subtitle {
+  .subtitle,
+  .info {
     font-family: var(--font-light);
     line-height: 1.38;
+    margin-bottom: 20px;
+  }
+
+  .info {
+    font-weight: bold;
   }
 
   .content {
-    margin-top: 20px;
-
     .checkbox {
       margin-top: 20px;
     }

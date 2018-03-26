@@ -1,22 +1,17 @@
 // @flow
 import React, { Component } from 'react';
 import { join } from 'lodash';
-import SvgInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Autocomplete from 'react-polymorph/lib/components/Autocomplete';
 import SimpleAutocompleteSkin from 'react-polymorph/lib/skins/simple/raw/AutocompleteSkin';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
 import Dialog from '../../widgets/Dialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { InvalidMnemonicError } from '../../../i18n/errors';
 import globalMessages from '../../../i18n/global-messages';
-import showPasswordIcon from '../../../assets/images/show-pass-ic.inline.svg';
-import hidePasswordIcon from '../../../assets/images/hide-pass-ic.inline.svg';
 import styles from './VerificationDialog.scss';
 
 const messages = defineMessages({
@@ -27,12 +22,12 @@ const messages = defineMessages({
   },
   subtitle: {
     id: 'paper.wallet.create.certificate.verification.dialog.subtitle',
-    defaultMessage: '!!!Enter your shielded recovery phrase and your password to verify your paper wallet certificate.',
+    defaultMessage: '!!!Enter your paper wallet recovery phrase to verify your paper wallet certificate.',
     description: '"Paper wallet create certificate verification dialog" subtitle.'
   },
   recoveryPhraseLabel: {
     id: 'paper.wallet.create.certificate.verification.dialog.recoveryPhrase.label',
-    defaultMessage: '!!!Shielded recovery phrase',
+    defaultMessage: '!!!Paper wallet recovery phrase',
     description: '"Paper wallet create certificate verification dialog" recovery phrase label.'
   },
   recoveryPhraseHint: {
@@ -45,16 +40,6 @@ const messages = defineMessages({
     defaultMessage: '!!!No results',
     description: '"Paper wallet create certificate verification dialog" recovery phrase no results label.'
   },
-  passwordLabel: {
-    id: 'paper.wallet.create.certificate.verification.dialog.password.label',
-    defaultMessage: '!!!Password',
-    description: '"Paper wallet create certificate verification dialog" password label.'
-  },
-  passwordHint: {
-    id: 'paper.wallet.create.certificate.verification.dialog.password.hint',
-    defaultMessage: '!!!Type password',
-    description: '"Paper wallet create certificate verification dialog" password hint.'
-  },
   clearButtonLabel: {
     id: 'paper.wallet.create.certificate.verification.dialog.button.clearLabel',
     defaultMessage: '!!!Clear',
@@ -62,12 +47,12 @@ const messages = defineMessages({
   },
   storingUnderstandanceLabel: {
     id: 'paper.wallet.create.certificate.verification.dialog.storingUnderstandanceConfirmationLabel',
-    defaultMessage: '!!!I understand that the created wallet will not be stored in Daedalus after this step.',
+    defaultMessage: '!!!I understand that the paper wallet I create will not be stored in Daedalus.',
     description: '"Paper wallet create certificate verification dialog" storing understandance confirmation.'
   },
   recoveringUnderstandanceLabel: {
     id: 'paper.wallet.create.certificate.verification.dialog.recoveringUnderstandanceConfirmationLabel',
-    defaultMessage: '!!!I understand that my wallet can only be recovered using my paper wallet certificate and the password I have chosen.',
+    defaultMessage: '!!!I understand that my wallet can only be recovered using my paper wallet certificate.',
     description: '"Paper wallet create certificate verification dialog" recovering understandance confirmation.'
   },
   errorMessage: {
@@ -82,14 +67,12 @@ const messages = defineMessages({
 type State = {
   storingConfirmed: boolean,
   recoveringConfirmed: boolean,
-  showPassword: boolean,
-  isPasswordValid: boolean,
   isRecoveryPhraseValid: boolean,
 };
 
 type Props = {
-  walletCertificatePassword: string,
   walletCertificateRecoveryPhrase: string,
+  additionalMnemonicWords: string,
   error: boolean,
   suggestedMnemonics: Array<string>,
   onContinue: Function,
@@ -105,8 +88,6 @@ export default class VerificationDialog extends Component<Props, State> {
   state = {
     storingConfirmed: false,
     recoveringConfirmed: false,
-    showPassword: false,
-    isPasswordValid: false,
     isRecoveryPhraseValid: false,
   };
 
@@ -119,15 +100,16 @@ export default class VerificationDialog extends Component<Props, State> {
         placeholder: this.context.intl.formatMessage(messages.recoveryPhraseHint),
         value: '',
         validators: [({ field }) => {
-          const { walletCertificateRecoveryPhrase } = this.props;
+          const { walletCertificateRecoveryPhrase, additionalMnemonicWords } = this.props;
           const {
             storingConfirmed,
             recoveringConfirmed,
           } = this.state;
 
           const value = join(field.value, ' ');
+          const fullRecoveryPhrase = `${walletCertificateRecoveryPhrase} ${additionalMnemonicWords}`;
           if (value === '') return [false, this.context.intl.formatMessage(globalMessages.fieldIsRequired)];
-          const isRecoveryPhraseValid = walletCertificateRecoveryPhrase === value;
+          const isRecoveryPhraseValid = fullRecoveryPhrase === value;
           this.setState({
             isRecoveryPhraseValid,
             // disabled and uncheck confirmation checkboxes if recovery phrase is not valid
@@ -140,30 +122,6 @@ export default class VerificationDialog extends Component<Props, State> {
           ];
         }],
       },
-      password: {
-        label: this.context.intl.formatMessage(messages.passwordLabel),
-        placeholder: this.context.intl.formatMessage(messages.passwordHint),
-        value: '',
-        validators: [({ field }) => {
-          const {
-            storingConfirmed,
-            recoveringConfirmed,
-          } = this.state;
-
-          if (field.value === '') return [false, this.context.intl.formatMessage(globalMessages.fieldIsRequired)];
-          const isPasswordValid = this.props.walletCertificatePassword === field.value;
-          this.setState({
-            isPasswordValid,
-            // disabled and uncheck confirmation checkboxes if recovery phrase is not valid
-            storingConfirmed: isPasswordValid ? storingConfirmed : false,
-            recoveringConfirmed: isPasswordValid ? recoveringConfirmed : false,
-          });
-          return ([
-            isPasswordValid,
-            this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
-          ]);
-        }]
-      },
     },
   }, {
     options: {
@@ -175,13 +133,8 @@ export default class VerificationDialog extends Component<Props, State> {
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        const { recoveryPhrase, password } = form.values();
-        const data = {
-          recoveryPhrase,
-          password,
-        };
-
-        this.props.onContinue(data);
+        const { recoveryPhrase } = form.values();
+        this.props.onContinue({ recoveryPhrase });
       },
       onError: () => {},
     });
@@ -207,15 +160,8 @@ export default class VerificationDialog extends Component<Props, State> {
     const { intl } = this.context;
     const { form, resetForm } = this;
     const { suggestedMnemonics, error } = this.props;
-    const {
-      showPassword,
-      storingConfirmed,
-      recoveringConfirmed,
-      isPasswordValid,
-      isRecoveryPhraseValid,
-    } = this.state;
+    const { storingConfirmed, recoveringConfirmed, isRecoveryPhraseValid } = this.state;
 
-    const passwordField = form.$('password');
     const recoveryPhraseField = form.$('recoveryPhrase');
 
     const dialogClasses = classnames([
@@ -262,7 +208,7 @@ export default class VerificationDialog extends Component<Props, State> {
             <Autocomplete
               className={styles.recoveryPhrase}
               options={suggestedMnemonics}
-              maxSelections={15}
+              maxSelections={24}
               ref={(autocomplete) => { this.recoveryPhraseAutocomplete = autocomplete; }}
               {...recoveryPhraseField.bind()}
               error={recoveryPhraseField.error}
@@ -271,27 +217,12 @@ export default class VerificationDialog extends Component<Props, State> {
               skin={<SimpleAutocompleteSkin />}
             />
 
-            <div className={styles.password}>
-              <Input
-                className="password"
-                {...passwordField.bind()}
-                type={showPassword ? 'text' : 'password'}
-                error={passwordField.error}
-                skin={<SimpleInputSkin />}
-              />
-              <SvgInline
-                svg={showPassword ? hidePasswordIcon : showPasswordIcon}
-                className={styles.passwordVisibilityToggler}
-                onClick={this.onTogglePasswordVisibility.bind(this)}
-              />
-            </div>
-
             <Checkbox
               className={storingUnderstandanceCheckboxClasses}
               label={intl.formatMessage(messages.storingUnderstandanceLabel)}
               onChange={this.onStoringConfirmationChange.bind(this)}
               checked={storingConfirmed}
-              disabled={!isPasswordValid || !isRecoveryPhraseValid}
+              disabled={!isRecoveryPhraseValid}
               skin={<SimpleCheckboxSkin />}
             />
 
@@ -300,7 +231,7 @@ export default class VerificationDialog extends Component<Props, State> {
               label={intl.formatMessage(messages.recoveringUnderstandanceLabel)}
               onChange={this.onRecoveringConfirmationChange.bind(this)}
               checked={recoveringConfirmed}
-              disabled={!isPasswordValid || !isRecoveryPhraseValid}
+              disabled={!isRecoveryPhraseValid}
               skin={<SimpleCheckboxSkin />}
             />
           </div>
@@ -318,10 +249,6 @@ export default class VerificationDialog extends Component<Props, State> {
     this.setState({
       storingConfirmed: !this.state.storingConfirmed,
     });
-  };
-
-  onTogglePasswordVisibility = () => {
-    this.setState({ showPassword: !this.state.showPassword });
   };
 
   onRecoveringConfirmationChange = () => {

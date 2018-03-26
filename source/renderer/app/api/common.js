@@ -67,6 +67,7 @@ export type DeleteWalletResponse = boolean;
 export type GetLocalTimeDifferenceResponse = number;
 export type GetWalletsResponse = Array<Wallet>;
 export type GetWalletRecoveryPhraseResponse = Array<string>;
+export type GetWalletCertificateAdditionalMnemonicsResponse = Array<string>;
 export type GetWalletCertificateRecoveryPhraseResponse = Array<string>;
 export type GetWalletRecoveryPhraseFromCertificateResponse = Array<string>;
 export type RestoreWalletResponse = Wallet;

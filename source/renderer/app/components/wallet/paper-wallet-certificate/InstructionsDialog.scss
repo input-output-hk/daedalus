@@ -1,3 +1,4 @@
+@import '../../../themes/mixins/loading-spinner';
 .instructionsContentWrapper {
   color: var(--theme-instructions-text-color);
   font-family: var(--font-light);
@@ -7,9 +8,10 @@
   }
 
   .instructionsList {
-    border-top: 1px solid var(--theme-paper-wallet-create-certificate-dialog-divider-line-color);
+    border-top: 1px solid var(--theme-separation-border-color);
     margin-top: 20px;
 
+    a,
     .instructionsListLabel {
       font-weight: 500;
       font-family: var(--font-medium);
@@ -26,5 +28,12 @@
       margin-bottom: 6px;
     }
 
+    a {
+      color: var(--theme-paper-wallet-create-certificate-dialog-explorer-link-color);
+    }
+
   }
+}
+.submitButtonSpinning {
+  @include loading-spinner("../../../assets/images/spinner-light.svg");
 }

@@ -1,13 +1,13 @@
 // @flow
 import { observable, action, runInAction } from 'mobx';
-import { get } from 'lodash';
-import { encryptPassphrase } from '../../api/ada/lib/encryptPassphrase';
+import { get, chunk } from 'lodash';
 import WalletStore from '../WalletStore';
 import Wallet from '../../domain/Wallet';
 import { matchRoute, buildRoute } from '../../utils/routing';
 import { i18nContext } from '../../utils/i18nContext';
 import Request from '.././lib/LocalizedRequest';
 import { ROUTES } from '../../routes-config';
+import { mnemonicToSeedHex } from '../../api/ada/lib/utils';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
 import { downloadPaperWalletCertificate } from '../../utils/paperWalletGenerator';
 import type { walletExportTypeChoices } from '../../types/walletExportTypes';
@@ -17,7 +17,7 @@ import type {
   CreateTransactionResponse, CreateWalletResponse, DeleteWalletResponse,
   GetWalletsResponse, RestoreWalletResponse,
   GetWalletRecoveryPhraseResponse, GetWalletCertificateRecoveryPhraseResponse,
-  GetWalletRecoveryPhraseFromCertificateResponse,
+  GetWalletRecoveryPhraseFromCertificateResponse, GetWalletCertificateAdditionalMnemonicsResponse,
 } from '../../api/common';
 
 export default class AdaWalletsStore extends WalletStore {
@@ -31,6 +31,7 @@ export default class AdaWalletsStore extends WalletStore {
   @observable deleteWalletRequest: Request<DeleteWalletResponse> = new Request(this.api.ada.deleteWallet);
   @observable sendMoneyRequest: Request<CreateTransactionResponse> = new Request(this.api.ada.createTransaction);
   @observable getWalletRecoveryPhraseRequest: Request<GetWalletRecoveryPhraseResponse> = new Request(this.api.ada.getWalletRecoveryPhrase);
+  @observable getWalletCertificateAdditionalMnemonicsRequest: Request<GetWalletCertificateAdditionalMnemonicsResponse> = new Request(this.api.ada.getWalletCertificateAdditionalMnemonics);
   @observable getWalletCertificateRecoveryPhraseRequest: Request<GetWalletCertificateRecoveryPhraseResponse> = new Request(this.api.ada.getWalletCertificateRecoveryPhrase);
   @observable getWalletRecoveryPhraseFromCertificateRequest: Request<GetWalletRecoveryPhraseFromCertificateResponse> = new Request(this.api.ada.getWalletRecoveryPhraseFromCertificate);
   @observable restoreRequest: Request<RestoreWalletResponse> = new Request(this.api.ada.restoreWallet);
@@ -46,6 +47,7 @@ export default class AdaWalletsStore extends WalletStore {
   @observable generatingCertificateInProgress = false;
   @observable certificateStep = null;
   @observable certificateTemplate = null;
+  @observable additionalMnemonicWords = null;
 
   setup() {
     super.setup();
@@ -135,7 +137,6 @@ export default class AdaWalletsStore extends WalletStore {
     walletName: string,
     walletPassword: ?string,
     type: string,
-    certificatePassword?: string,
   }) => {
     const data = {
       recoveryPhrase: params.recoveryPhrase,
@@ -144,11 +145,20 @@ export default class AdaWalletsStore extends WalletStore {
     };
 
     if (params.type === 'certificate') {
+
+      // split recovery phrase to 15(scrambled mnemonics) + 9(mnemonics seed) mnemonics
+      const recoveryPhraseArray = params.recoveryPhrase.split(' ');
+      const chunked = chunk(recoveryPhraseArray, 15);
+      const scrambledInput = chunked[0]; // first 15 mnemonics
+      const certificatePassword = chunked[1]; // last 9 mnemonics
+
+      const spendingPassword = mnemonicToSeedHex(certificatePassword.join(' '));
+
       // Unscramble 15-word wallet certificate mnemonic to 12-word mnemonic
       const unscrambledRecoveryPhrase: ?GetWalletCertificateRecoveryPhraseResponse = await (
         this.getWalletRecoveryPhraseFromCertificateRequest.execute({
-          passphrase: params.certificatePassword,
-          scrambledInput: params.recoveryPhrase,
+          passphrase: spendingPassword,
+          scrambledInput: scrambledInput.join(' '),
         }).promise
       );
       if (unscrambledRecoveryPhrase) {
@@ -236,8 +246,6 @@ export default class AdaWalletsStore extends WalletStore {
   };
 
   _generateCertificate = async (params: {
-    password: string,
-    repeatPassword: string,
     filePath: string,
   }) => {
     try {
@@ -252,22 +260,26 @@ export default class AdaWalletsStore extends WalletStore {
         this.getWalletRecoveryPhraseRequest.execute().promise
       );
 
-      // Save entered password
-      this.walletCertificatePassword = params.password;
+      // Generate 9-words (additional) mnemonic
+      const additionalMnemonicWords: GetWalletCertificateAdditionalMnemonicsResponse = await (
+        this.getWalletCertificateAdditionalMnemonicsRequest.execute().promise
+      );
+      this.additionalMnemonicWords = additionalMnemonicWords.join(' ');
+
+      // Generate spending password from 9-word mnemonic and save to store
+      const spendingPassword = mnemonicToSeedHex(this.additionalMnemonicWords);
+      this.walletCertificatePassword = spendingPassword;
 
       // Generate paper wallet scrambled mnemonic
       const walletCertificateRecoveryPhrase: ?GetWalletCertificateRecoveryPhraseResponse = await (
         this.getWalletCertificateRecoveryPhraseRequest.execute({
-          passphrase: params.password,
+          passphrase: spendingPassword,
           input: recoveryPhrase.join(' '),
         }).promise
       );
       this.walletCertificateRecoveryPhrase = walletCertificateRecoveryPhrase
         ? walletCertificateRecoveryPhrase.join(' ')
         : '';
-
-      // Generate random spending password
-      const spendingPassword = encryptPassphrase(`${params.password}-${Date.now()}`);
 
       // Create temporary wallet
       const walletData = {
@@ -341,12 +353,16 @@ export default class AdaWalletsStore extends WalletStore {
   });
 
   @action _verifyCertificate = (params: {
-    recoveryPhrase: Array<string>,
-    password: string,
+    recoveryPhrase: Array<string>
   }) => {
-    const { recoveryPhrase, password } = params;
-    const passwordMatch = this.walletCertificatePassword === password;
-    if ((this.walletCertificateRecoveryPhrase !== recoveryPhrase.join(' ')) || !passwordMatch) {
+    const { recoveryPhrase } = params;
+
+    let fullRecoveryPhrase;
+    if (this.walletCertificateRecoveryPhrase && this.additionalMnemonicWords) {
+      fullRecoveryPhrase = `${this.walletCertificateRecoveryPhrase} ${this.additionalMnemonicWords}`;
+    }
+
+    if (!fullRecoveryPhrase || (fullRecoveryPhrase !== recoveryPhrase.join(' '))) {
       this.walletCertificateHasError = true;
     } else {
       this.walletCertificateHasError = false;

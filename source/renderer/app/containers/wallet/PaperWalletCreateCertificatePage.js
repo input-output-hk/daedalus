@@ -37,7 +37,6 @@ export default class PaperWalletCreateCertificatePage extends Component<Props, S
 
   CREATE_CERTIFICATE_DIALOGS = [
     'instructions',
-    'passwordChoice',
     'print',
     'securingPassword',
     'verification',

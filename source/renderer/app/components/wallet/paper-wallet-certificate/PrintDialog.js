@@ -12,23 +12,45 @@ import styles from './PrintDialog.scss';
 const messages = defineMessages({
   headline: {
     id: 'paper.wallet.create.certificate.print.dialog.headline',
-    defaultMessage: '!!!Certificate generation complete',
+    defaultMessage: '!!!Certificate printing complete',
     description: 'Headline for the "Paper wallet create certificate print dialog".'
   },
   subtitle: {
     id: 'paper.wallet.create.certificate.print.dialog.subtitle',
-    defaultMessage: '!!!Check your paper wallet certificate and verify that everything is correctly printed and readable. You can try scanning QR codes with QR scanner application on your mobile phone.',
+    defaultMessage: '!!!Check your paper wallet certificate and make sure everything is readable and correctly printed. You can test this by scanning the QR code with a QR scanner application on your mobile phone.',
     description: '"Paper wallet create certificate print dialog" subtitle.'
+  },
+  info: {
+    id: 'paper.wallet.create.certificate.print.dialog.info',
+    defaultMessage: '!!!Your certificate is not yet complete and does not contain all data needed to restore your wallet. In the next step, you will need to write down additional 9 words to your paper wallet recovery phrase.',
+    description: '"Paper wallet create certificate print dialog" info.'
   },
   printConfirmationLabel: {
     id: 'paper.wallet.create.certificate.print.dialog.printConfirmation',
     defaultMessage: '!!!Yes, paper wallet certificate successfully printed and everything is readable and scannable.',
     description: '"Paper wallet create certificate print dialog" confirmation.'
   },
+  certificatePrintedConfirmationLabel: {
+    id: 'paper.wallet.create.certificate.print.dialog.certificatePrintedConfirmation',
+    defaultMessage: '!!!Yes, the paper wallet certificate printed successfully.',
+    description: '"Paper wallet create certificate print dialog" certificate printed confirmation.'
+  },
+  certificateReadableConfirmationLabel: {
+    id: 'paper.wallet.create.certificate.print.dialog.certificateReadableConfirmation',
+    defaultMessage: '!!!Yes, first 15 words of the paper wallet recovery phrase are readable.',
+    description: '"Paper wallet create certificate print dialog" certificate readable confirmation.'
+  },
+  qrScannableConfirmationLabel: {
+    id: 'paper.wallet.create.certificate.print.dialog.qrScannableConfirmation',
+    defaultMessage: '!!!Yes, the QR code is scannable.',
+    description: '"Paper wallet create certificate print dialog" QR scannable confirmation.'
+  },
 });
 
 type State = {
   isPrintedCorrectly: boolean,
+  isReadable: boolean,
+  isScannable: boolean,
 };
 
 type Props = {
@@ -44,24 +66,47 @@ export default class PrintDialog extends Component<Props, State> {
 
   state = {
     isPrintedCorrectly: false,
+    isReadable: false,
+    isScannable: false,
   };
 
   render() {
     const { intl } = this.context;
     const { onContinue } = this.props;
-    const { isPrintedCorrectly } = this.state;
+    const {
+      isPrintedCorrectly,
+      isReadable,
+      isScannable,
+    } = this.state;
 
     const dialogClasses = classnames([
       styles.component,
       'printDialog',
     ]);
 
+    const certificatePrintedCheckboxClasses = classnames([
+      'printedCheckbox',
+      styles.checkbox,
+    ]);
+
+    const certificateReadableCheckboxClasses = classnames([
+      'readableCheckbox',
+      styles.checkbox,
+    ]);
+
+    const qrScannableCheckboxClasses = classnames([
+      'scannableCheckbox',
+      styles.checkbox,
+    ]);
+
+    const canSubmit = isPrintedCorrectly && isReadable && isScannable;
+
     const actions = [
       {
         className: 'continueButton',
         label: intl.formatMessage(globalMessages.dialogButtonContinueLabel),
         primary: true,
-        disabled: !isPrintedCorrectly,
+        disabled: !canSubmit,
         onClick: onContinue,
       }
     ];
@@ -75,12 +120,29 @@ export default class PrintDialog extends Component<Props, State> {
 
         <div className={styles.printContentWrapper}>
           <p className={styles.subtitle}>{intl.formatMessage(messages.subtitle)}</p>
+          <p className={styles.info}>{intl.formatMessage(messages.info)}</p>
           <div className={styles.content}>
             <Checkbox
-              className={styles.checkbox}
-              label={intl.formatMessage(messages.printConfirmationLabel)}
+              className={certificatePrintedCheckboxClasses}
+              label={intl.formatMessage(messages.certificatePrintedConfirmationLabel)}
               onChange={this.onConfirmCorrectPrinting.bind(this)}
               checked={isPrintedCorrectly}
+              skin={<SimpleCheckboxSkin />}
+            />
+
+            <Checkbox
+              className={certificateReadableCheckboxClasses}
+              label={intl.formatMessage(messages.certificateReadableConfirmationLabel)}
+              onChange={this.onConfirmReadable.bind(this)}
+              checked={isReadable}
+              skin={<SimpleCheckboxSkin />}
+            />
+
+            <Checkbox
+              className={qrScannableCheckboxClasses}
+              label={intl.formatMessage(messages.qrScannableConfirmationLabel)}
+              onChange={this.onConfirmScannable.bind(this)}
+              checked={isScannable}
               skin={<SimpleCheckboxSkin />}
             />
           </div>
@@ -92,5 +154,13 @@ export default class PrintDialog extends Component<Props, State> {
 
   onConfirmCorrectPrinting = () => {
     this.setState({ isPrintedCorrectly: !this.state.isPrintedCorrectly });
+  };
+
+  onConfirmReadable = () => {
+    this.setState({ isReadable: !this.state.isReadable });
+  };
+
+  onConfirmScannable = () => {
+    this.setState({ isScannable: !this.state.isScannable });
   };
 }

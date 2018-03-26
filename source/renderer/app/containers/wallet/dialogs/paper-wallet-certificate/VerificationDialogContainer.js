@@ -16,23 +16,23 @@ export default class VerificationDialogContainer extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
 
-  onContinue = (values: { recoveryPhrase: Array<string>, password: string }) => {
+  onContinue = (values: { recoveryPhrase: Array<string> }) => {
     this.props.actions.ada.wallets.verifyCertificate.trigger(values);
   };
 
   render() {
     const { wallets } = this.props.stores.ada;
     const {
-      walletCertificatePassword,
       walletCertificateRecoveryPhrase,
       walletCertificateHasError,
+      additionalMnemonicWords,
     } = wallets;
 
     return (
       <VerificationDialog
         suggestedMnemonics={validWords}
+        additionalMnemonicWords={additionalMnemonicWords}
         walletCertificateRecoveryPhrase={walletCertificateRecoveryPhrase}
-        walletCertificatePassword={walletCertificatePassword}
         onContinue={this.onContinue}
         error={walletCertificateHasError}
       />

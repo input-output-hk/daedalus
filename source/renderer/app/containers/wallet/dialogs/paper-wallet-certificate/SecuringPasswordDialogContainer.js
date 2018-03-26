@@ -23,14 +23,14 @@ export default class SecuringPasswordDialogContainer extends Component<Props> {
     const { stores } = this.props;
     const { wallets } = stores.ada;
     const {
-      walletCertificatePassword,
+      additionalMnemonicWords,
       walletCertificateAddress,
       walletCertificateRecoveryPhrase,
     } = wallets;
 
     return (
       <SecuringPasswordDialog
-        walletCertificatePassword={walletCertificatePassword}
+        additionalMnemonics={additionalMnemonicWords}
         walletCertificateAddress={walletCertificateAddress}
         walletCertificateRecoveryPhrase={walletCertificateRecoveryPhrase}
         onContinue={this.onContinue}

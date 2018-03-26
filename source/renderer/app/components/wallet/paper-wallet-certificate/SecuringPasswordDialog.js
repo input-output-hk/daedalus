@@ -13,22 +13,22 @@ import styles from './SecuringPasswordDialog.scss';
 const messages = defineMessages({
   headline: {
     id: 'paper.wallet.create.certificate.securyng password.dialog.headline',
-    defaultMessage: '!!!Certificate password',
+    defaultMessage: '!!!Complete your certificate',
     description: 'Headline for the "Paper wallet create certificate securyng password dialog".'
   },
   infoLabel1: {
     id: 'paper.wallet.create.certificate.securyng password.dialog.infoLabel1',
-    defaultMessage: '!!!To restore your wallet you will need shielded recovery phrase from the certificate and the password.',
+    defaultMessage: '!!!To complete your paper wallet certificate you will need to write the remaining 9 words of your paper wallet recovery phrase on your certificate.',
     description: '"Paper wallet create certificate securyng password dialog" first info label.'
   },
   infoLabel2: {
     id: 'paper.wallet.create.certificate.securyng password.dialog.infoLabel2',
     defaultMessage: '!!!The password can optionally be written on the certificate or kept securely in other location. Here is the placeholder on the certificate intended for your password.',
-    description: '"Paper wallet create certificate securyng password dialog" second info label.'
+    description: 'You may write the remaining words here.'
   },
   securingPasswordConfirmation: {
     id: 'paper.wallet.create.certificate.securyng password.dialog.securingPasswordConfirmation',
-    defaultMessage: '!!!I understand that I can not use my certificate without the password and I have stored it safely.',
+    defaultMessage: '!!!I have written the remaining 9 words to the certificate.',
     description: '"Paper wallet create certificate securyng password dialog" secure password confirmation.'
   }
 });
@@ -38,7 +38,7 @@ type State = {
 };
 
 type Props = {
-  walletCertificatePassword: string,
+  additionalMnemonics: string,
   onContinue: Function,
 };
 
@@ -56,7 +56,7 @@ export default class SecuringPasswordDialog extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const { securePasswordConfirmed } = this.state;
-    const { walletCertificatePassword, onContinue } = this.props;
+    const { additionalMnemonics, onContinue } = this.props;
 
     const dialogClasses = classnames([
       styles.component,
@@ -81,15 +81,14 @@ export default class SecuringPasswordDialog extends Component<Props, State> {
       >
 
         <div className={styles.securingPasswordContentWrapper}>
-          <div className={styles.subtitle}>
-            <p>{intl.formatMessage(messages.infoLabel1)}</p>
-            <p>{intl.formatMessage(messages.infoLabel2)}</p>
-          </div>
           <div className={styles.content}>
+            <p className={styles.infoLabel}>{intl.formatMessage(messages.infoLabel1)}</p>
 
             <div className={styles.recoveryPhrase}>
-              { walletCertificatePassword }
+              { additionalMnemonics }
             </div>
+
+            <p className={styles.infoLabel}>{intl.formatMessage(messages.infoLabel2)}</p>
 
             <div className={styles.paperWalletImageWrapper}>
               <img src={paperWalletImage} role="presentation" />

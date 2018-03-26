@@ -37,6 +37,7 @@ import { applyAdaUpdate } from './applyAdaUpdate';
 import { adaTestReset } from './adaTestReset';
 import { getAdaHistoryByWallet } from './getAdaHistoryByWallet';
 import { getAdaAccountRecoveryPhrase } from './getAdaAccountRecoveryPhrase';
+import { getAdaWalletCertificateAdditionalMnemonics } from './getAdaWalletCertificateAdditionalMnemonics';
 import { getAdaWalletCertificateRecoveryPhrase } from './getAdaWalletCertificateRecoveryPhrase';
 import { getAdaWalletRecoveryPhraseFromCertificate } from './getAdaWalletRecoveryPhraseFromCertificate';
 import { getAdaLocalTimeDifference } from './getAdaLocalTimeDifference';
@@ -53,6 +54,7 @@ import type {
   AdaWallet,
   AdaWallets,
   AdaWalletRecoveryPhraseResponse,
+  AdaWalletCertificateAdditionalMnemonicsResponse,
 } from './types';
 
 import type {
@@ -66,6 +68,7 @@ import type {
   GetTransactionsRequest,
   GetTransactionsResponse,
   GetWalletRecoveryPhraseResponse,
+  GetWalletCertificateAdditionalMnemonicsResponse,
   GetWalletCertificateRecoveryPhraseResponse,
   GetWalletRecoveryPhraseFromCertificateResponse,
   GetWalletsResponse,
@@ -401,6 +404,21 @@ export default class AdaApi {
       return response;
     } catch (error) {
       Logger.error('AdaApi::getWalletRecoveryPhrase error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  // eslint-disable-next-line
+  getWalletCertificateAdditionalMnemonics(): Promise<GetWalletCertificateAdditionalMnemonicsResponse> {
+    Logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics called');
+    try {
+      const response: Promise<AdaWalletCertificateAdditionalMnemonicsResponse> = new Promise(
+        (resolve) => resolve(getAdaWalletCertificateAdditionalMnemonics())
+      );
+      Logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics success');
+      return response;
+    } catch (error) {
+      Logger.error('AdaApi::getWalletCertificateAdditionalMnemonics error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }

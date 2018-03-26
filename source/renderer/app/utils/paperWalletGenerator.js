@@ -30,6 +30,16 @@ const messages = defineMessages({
     defaultMessage: '!!!0.8.2',
     description: 'Label for "App Release Version"',
   },
+  infoTitle: {
+    id: 'paper.wallet.pdf.info.title',
+    defaultMessage: '!!!Daedalus paper wallet certificate',
+    description: 'PDF title',
+  },
+  infoAuthor: {
+    id: 'paper.wallet.pdf.info.author',
+    defaultMessage: '!!!Daedalus wallet',
+    description: 'PDF author',
+  },
 });
 
 type DownloadPaperWalletCertificateParams = {
@@ -60,8 +70,8 @@ export const downloadPaperWalletCertificate = (
       top: 0,
     },
     info: {
-      Title: 'Daedalus - Paper wallet certificate',
-      Author: 'Daedalus wallet',
+      Title: intl.formatMessage(messages.infoTitle),
+      Author: intl.formatMessage(messages.infoAuthor),
     }
   });
 

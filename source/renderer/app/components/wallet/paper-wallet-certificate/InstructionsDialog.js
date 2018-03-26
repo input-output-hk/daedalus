@@ -5,8 +5,9 @@ import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
-import globalMessages from '../../../i18n/global-messages';
 import styles from './InstructionsDialog.scss';
+
+const shell = require('electron').shell;
 
 const messages = defineMessages({
   headline: {
@@ -26,35 +27,48 @@ const messages = defineMessages({
   },
   instructionsListDefinition1: {
     id: 'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition1',
-    defaultMessage: '!!!A printed certificate will include shielded recovery phrase in the form of 15 mnemonic words.',
+    defaultMessage: '!!!Your printed certificate will include your paper wallet recovery phrase of 24 words. Note that your paper wallet recovery phrase is different to the recovery phrases used for regular Daedalus wallet backups of 12 words.',
     description: 'Wallet certificate create instructions dialog definition 1.',
   },
   instructionsListDefinition2: {
     id: 'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition2',
-    defaultMessage: '!!!To restore your wallet at the later time, you will need a recovery phrase from your certificate and a password which will be chosen at the following step.',
+    defaultMessage: '!!!For security reasons, the last 9 words of your paper wallet recovery phrase will not be printed on the paper wallet certificate itself. You will need to write them on your certificate by hand in a moment.',
     description: 'Wallet certificate create instructions dialog definition 2.',
   },
   instructionsListDefinition3: {
     id: 'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition3',
-    defaultMessage: '!!!You will be able to send funds to your wallet using the address from the certificate.',
+    defaultMessage: '!!!Use the address on your certificate to send funds to your paper wallet.',
     description: 'Wallet certificate create instructions dialog definition 3.',
   },
   instructionsListDefinition4: {
     id: 'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition4',
-    defaultMessage: '!!!Created wallet will not be kept in Daedalus. You will be able to check the balance on the address from the certificate using Cardano Explorer.',
+    defaultMessage: '!!!Your paper wallet will be offline so will not be held on Daedalus. To check the balance of the wallet, input the address on the certificate into',
     description: 'Wallet certificate create instructions dialog definition 4.',
   },
   instructionsListDefinition5: {
     id: 'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition5',
-    defaultMessage: '!!!Store your certificate and password in a safe place. It is best not to keep them together.',
+    defaultMessage: '!!!Store your certificate containing your paper wallet recovery phrase in a safe place.',
     description: 'Wallet certificate create instructions dialog definition 5.',
+  },
+  cardanoExplorer: {
+    id: 'paper.wallet.create.certificate.instructions.dialog.cardanoExplorer',
+    defaultMessage: '!!!Cardano Explorer',
+    description: 'Wallet certificate create instructions dialog "Cardano Explorer" label'
+  },
+  printButtonLabel: {
+    id: 'paper.wallet.create.certificate.instructions.dialog.button.printLabel',
+    defaultMessage: '!!!Print',
+    description: '"Wallet certificate create instructions dialog" print button label.'
   },
 });
 
 type Props = {
-  onContinue: Function,
+  inProgress: boolean,
+  onPrint: Function,
   onClose: Function,
 };
+
+const CARDANO_EXPLORER_LINK = 'https://cardanoexplorer.com';
 
 @observer
 export default class InstructionsDialog extends Component<Props> {
@@ -65,18 +79,23 @@ export default class InstructionsDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, onContinue } = this.props;
+    const { onClose, onPrint, inProgress } = this.props;
     const dialogClasses = classnames([
       styles.component,
       'instructionsDialog',
     ]);
 
+    const printButtonClasses = classnames([
+      'printButton',
+      inProgress ? styles.submitButtonSpinning : null,
+    ]);
+
     const actions = [
       {
-        className: 'continueButton',
-        label: intl.formatMessage(globalMessages.dialogButtonContinueLabel),
+        className: printButtonClasses,
+        label: intl.formatMessage(messages.printButtonLabel),
         primary: true,
-        onClick: onContinue,
+        onClick: onPrint,
       }
     ];
 
@@ -102,7 +121,15 @@ export default class InstructionsDialog extends Component<Props> {
               <li>{intl.formatMessage(messages.instructionsListDefinition1)}</li>
               <li>{intl.formatMessage(messages.instructionsListDefinition2)}</li>
               <li>{intl.formatMessage(messages.instructionsListDefinition3)}</li>
-              <li>{intl.formatMessage(messages.instructionsListDefinition4)}</li>
+              <li>
+                {intl.formatMessage(messages.instructionsListDefinition4)}&nbsp;
+                <a
+                  href={CARDANO_EXPLORER_LINK}
+                  onClick={this.openCardanoExplorer.bind(this, CARDANO_EXPLORER_LINK)}
+                >
+                  {intl.formatMessage(messages.cardanoExplorer)}
+                </a>
+              </li>
               <li>{intl.formatMessage(messages.instructionsListDefinition5)}</li>
             </ul>
 
@@ -112,4 +139,9 @@ export default class InstructionsDialog extends Component<Props> {
       </Dialog>
     );
   }
+
+  openCardanoExplorer = (link: string, e: Object) => {
+    e.preventDefault();
+    shell.openExternal(link);
+  };
 }

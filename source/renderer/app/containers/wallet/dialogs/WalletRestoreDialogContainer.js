@@ -18,7 +18,6 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
     walletName: string,
     walletPassword: ?string,
     type: string,
-    certificatePassword?: string,
   }) => {
     this.props.actions[environment.API].wallets.restoreWallet.trigger(values);
   };
@@ -32,12 +31,11 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
 
   render() {
     const wallets = this._getWalletsStore();
-    const { restoreRequest, isValidMnemonic, isValidCertificateMnemonic } = wallets;
+    const { restoreRequest, isValidMnemonic } = wallets;
 
     return (
       <WalletRestoreDialog
         mnemonicValidator={mnemonic => isValidMnemonic(mnemonic)}
-        certificateMnemonicValidator={mnemonic => isValidCertificateMnemonic(mnemonic)}
         showCertificateRestore={environment.isAdaApi()}
         suggestedMnemonics={validWords}
         isSubmitting={restoreRequest.isExecuting}

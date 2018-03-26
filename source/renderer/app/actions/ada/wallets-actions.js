@@ -13,14 +13,14 @@ export type WalletImportFromFileParams = {
 export default class WalletsActions {
   createWallet: Action<{ name: string, password: ?string }> = new Action();
   // eslint-disable-next-line max-len
-  restoreWallet: Action<{recoveryPhrase: string, walletName: string, walletPassword: ?string, type: string, certificatePassword?: string }> = new Action();
+  restoreWallet: Action<{recoveryPhrase: string, walletName: string, walletPassword: ?string, type: string }> = new Action();
   importWalletFromFile: Action<WalletImportFromFileParams> = new Action();
   deleteWallet: Action<{ walletId: string }> = new Action();
   sendMoney: Action<{ receiver: string, amount: string, password: ?string }> = new Action();
   chooseWalletExportType: Action<{ walletExportType: walletExportTypeChoices }> = new Action();
   // eslint-disable-next-line max-len
-  generateCertificate: Action<{ password: string, repeatPassword: string, filePath: string }> = new Action();
-  verifyCertificate: Action<{ recoveryPhrase: Array<string>, password: string }> = new Action();
+  generateCertificate: Action<{ filePath: string }> = new Action();
+  verifyCertificate: Action<{ recoveryPhrase: Array<string> }> = new Action();
   updateCertificateStep: Action<any> = new Action();
   closeCertificateGeneration: Action<any> = new Action();
   setCertificateTemplate: Action<{ selectedTemplate: string }> = new Action();
