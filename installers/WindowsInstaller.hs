@@ -3,7 +3,7 @@ module WindowsInstaller
     ( main
     ) where
 
-import           Universum hiding (pass, writeFile, stdout)
+import           Universum hiding (pass, writeFile, stdout, (<>))
 
 import           Control.Monad (unless)
 import qualified Data.List as L

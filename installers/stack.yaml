@@ -3,7 +3,7 @@ flags: {}
 extra-package-dbs: []
 
 allow-newer: true
-resolver: lts-9.1
+resolver: lts-11.1
 
 nix:
     packages: [gmp,git]

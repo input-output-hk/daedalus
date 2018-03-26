@@ -8,13 +8,13 @@ module RewriteLibs
     ( chain
     ) where
 
-import           Universum hiding (isPrefixOf)
+import           Universum hiding (isPrefixOf, last)
 
-import           Data.List (last, notElem)
+import           Data.List (last)
 import           Data.Text (isPrefixOf, isSuffixOf, splitOn)
 import           System.Directory (copyFile, getPermissions, setOwnerWritable, setPermissions)
-import           Text.Megaparsec (anyChar, eof, eol, manyTill, parse, someTill, spaceChar)
-import           Text.Megaparsec.Text (Parser)
+import           Text.Megaparsec (Parsec, eof, manyTill, parse, someTill)
+import           Text.Megaparsec.Char (anyChar, eol, spaceChar)
 import           Turtle (procStrict, procs)
 
 
@@ -72,6 +72,8 @@ filename :: Text -> Text
 filename path = last $ splitOn "/" path
 
 -- otool parser
+
+type Parser = Parsec Void Text
 
 parseLibLine :: Parser Text
 parseLibLine = do
