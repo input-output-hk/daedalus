@@ -8,12 +8,6 @@ resolver: lts-11.1
 nix:
     packages: [gmp,git]
 
-extra-deps:
-  - universum-0.8.0
-  - microlens-0.4.8.1
-  - github-0.18
-  - zip-archive-0.3.1.1
-
 packages:
   - location: .
 
