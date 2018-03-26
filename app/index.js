@@ -7,6 +7,7 @@ import en from 'react-intl/locale-data/en';
 import de from 'react-intl/locale-data/de';
 import hr from 'react-intl/locale-data/hr';
 import ja from 'react-intl/locale-data/ja';
+import it from 'react-intl/locale-data/it';
 import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
 import { hashHistory } from 'react-router';
 import App from './App';
@@ -25,7 +26,7 @@ import { setupApi } from './api/index';
 useStrict(true);
 
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
-addLocaleData([en, de, hr, ja]);
+addLocaleData([en, de, hr, ja, it]);
 
 // Use test env if the 'test' url param is set to 'true'
 const isInjectedTestEnv = getUrlParameterByName('test') === 'true';
