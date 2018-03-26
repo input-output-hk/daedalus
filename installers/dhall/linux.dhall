@@ -1,25 +1,35 @@
--- XXX: deal with XDG_DATA_HOME generalisation -- pass dataDir as an argument?
+\(cluster : ./cluster.type)      ->
+\(inst    : ./installation.type) ->
 let dataDir = "$HOME/.local/share/Daedalus/"
+    -- XXX: deal with XDG_DATA_HOME being an actual variable -- pass dataDir as an argument?
+    --    ..or, maybe installation data is a better solution?
 in
-{ name      = "linux"
-, nodeArgs  =
-  { keyfile          = dataDir ++ "Secrets-1.0/secret.key"
-  , logsPrefix       = dataDir ++ "Logs"
-  , updateLatestPath = dataDir ++ "FIXME"
-  , walletDBPath     = dataDir ++ "Wallet-1.0"
+{ name      = "macos64"
+    -- XXX: this is an ugly workaround for the lack of a linux configuration key in configuration.yaml
+, configurationYaml  = "${inst.configFiles}/configuration.yaml"
+, nodeArgs           =
+  { keyfile          = "Secrets/secret.key"
+  , logsPrefix       = "Logs"
+  , topology         = "${inst.configFiles}/wallet-topology.yaml"
+  , updateLatestPath = "${dataDir}/${cluster.name}/installer.sh"
+  , walletDBPath     = "Wallet/"
   }
 , pass      =
-  { nodePath            = "./cardano-node"
-  , nodeDbPath          = dataDir ++ "DB-1.0"
-  , nodeLogPath         = dataDir ++ "Logs/cardano-node.log"
+  { nodePath            = "${inst.cardano}/bin/cardano-node"
+  , nodeDbPath          = "DB/"
+  , nodeLogConfig       = "${inst.configFiles}/daedalus.yaml"
+  , nodeLogPath         = "$HOME/.local/share/Daedalus/${cluster.name}/Logs/cardano-node.log"
 
-  , walletPath          = "FIXME"
+  , walletPath          = "${inst.daedalusFrontend}/bin/daedalus"
 
-  , updaterPath         = "FIXME"
-  , updaterArgs         = ["FIXME"]
-  , updateArchive       = [dataDir ++ "FIXME"] : Optional Text
+  , updaterPath         = "/bin/update-runner"
+  , updaterArgs         = [] : List Text
+  , updateArchive       = [ "${dataDir}/${cluster.name}/installer.sh" ] : Optional Text
   , updateWindowsRunner = [] : Optional Text
 
-  , launcherLogsPrefix  = dataDir ++ "Logs/pub/"
+  , launcherLogsPrefix  = "${dataDir}/${cluster.name}/Logs/"
   }
 }
+-- nodeArgs = [
+--   "--wallet-address" "127.0.0.1:8090"
+-- ];

@@ -1,24 +1,31 @@
+\(cluster : ./cluster.type)      ->
+\(inst    : ./installation.type) ->
 let dataDir = "%APPDATA%\\Daedalus\\"
+    --
+    --
 in
 { name      = "win64"
-, nodeArgs  =
-  { keyfile          = dataDir ++ "Secrets-1.0\\secret.key"
-  , logsPrefix       = dataDir ++ "Logs"
-  , updateLatestPath = dataDir ++ "Installer.exe"
-  , walletDBPath     = dataDir ++ "Wallet-1.0"
+, configurationYaml  = "configuration.yaml"
+, nodeArgs           =
+  { keyfile          = "${dataDir}\\Secrets-1.0\\secret.key"
+  , logsPrefix       = "${dataDir}\\Logs"
+  , topology         = "wallet-topology.yaml"
+  , updateLatestPath = "${dataDir}\\Installer.exe"
+  , walletDBPath     = "${dataDir}\\Wallet-1.0"
   }
 , pass      =
   { nodePath            = "%DAEDALUS_DIR%\\cardano-node.exe"
-  , nodeDbPath          = dataDir ++ "DB-1.0"
-  , nodeLogPath         = dataDir ++ "Logs\\cardano-node.log"
+  , nodeDbPath          = "${dataDir}\\DB-1.0"
+  , nodeLogConfig       = "log-config-prod.yaml"
+  , nodeLogPath         = "${dataDir}\\Logs\\cardano-node.log"
 
   , walletPath          = "%DAEDALUS_DIR%\\Daedalus.exe"
 
-  , updaterPath         = dataDir ++ "Installer.exe"
+  , updaterPath         = "${dataDir}\\Installer.exe"
   , updaterArgs         = [] : List Text
   , updateArchive       = [] : Optional Text
-  , updateWindowsRunner = [dataDir ++ "Installer.bat"] : Optional Text
+  , updateWindowsRunner = ["${dataDir}\\Installer.bat"] : Optional Text
 
-  , launcherLogsPrefix  = dataDir ++ "Logs\\pub"
+  , launcherLogsPrefix  = "${dataDir}\\Logs\\pub"
   }
 }
