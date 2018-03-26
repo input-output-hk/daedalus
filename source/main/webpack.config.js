@@ -4,7 +4,7 @@ const yamljs = require('yamljs');
 
 let reportUrl = '';
 try {
-  reportUrl = yamljs.parseFile('installers/launcher-config-windows.yaml').reportServer;
+  reportUrl = yamljs.parseFile('installers/launcher-config.yaml').reportServer;
 } catch (e) {} // eslint-disable-line
 
 module.exports = {
