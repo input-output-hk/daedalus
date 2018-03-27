@@ -59,6 +59,8 @@ export const downloadPaperWalletCertificate = (
   const qrCodeImage = qr.imageSync(address, { type: 'png', size: 10, ec_level: 'H', margin: 0 });
   const textColor = '#3b5c9b';
 
+  const printMnemonic = (index) => `${index + 1}. ${mnemonics[index]}`;
+
   const width = 595.28;
   const height = 841.98;
   const doc = new PDFDocument({
@@ -95,13 +97,28 @@ export const downloadPaperWalletCertificate = (
   SVGtoPDF(doc, paperWalletPage2, 0, 0);
   doc.rotate(180, { origin: [width / 2, height / 2] });
   doc.fillColor(textColor);
-  doc.fontSize(10).text(intl.formatMessage(messages.shieldedRecoveryPhraseLabel), 0, 540, { width: 595, align: 'center' });
-  doc.fontSize(8).text(mnemonics.slice(0, 5).join('          '), (width - 250) / 2, 565, { width: 250, align: 'center' });
-  doc.fontSize(8).text(mnemonics.slice(5, 10).join('          '), (width - 250) / 2, 583, { width: 250, align: 'center' });
-  doc.fontSize(8).text(mnemonics.slice(10, 15).join('          '), (width - 250) / 2, 601, { width: 250, align: 'center' });
+  doc.fontSize(10).text(intl.formatMessage(messages.shieldedRecoveryPhraseLabel), 0, 535, { width: 595, align: 'center' });
+
+  // mnemonics
+  doc.fontSize(8);
+  doc.text(printMnemonic(0), 170, 560);
+  doc.text(printMnemonic(1), 236, 560);
+  doc.text(printMnemonic(2), 302, 560);
+  doc.text(printMnemonic(3), 370, 560);
+
+  doc.text(printMnemonic(4), 170, 578);
+  doc.text(printMnemonic(5), 236, 578);
+  doc.text(printMnemonic(6), 302, 578);
+  doc.text(printMnemonic(7), 370, 578);
+
+  doc.text(printMnemonic(8), 170, 596);
+  doc.text(printMnemonic(9), 236, 596);
+  doc.text(printMnemonic(10), 302, 596);
+  doc.text(printMnemonic(11), 370, 596);
+
   doc.fontSize(7).text(daedalusInfo, (width - 270) / 2, 705, { width: 270, align: 'left' });
   doc.rotate(-180, { origin: [width / 2, height / 2] });
-  /* eslint-disable max-len */
+  /* eslint-enable max-len */
 
   try {
     doc.pipe(fs.createWriteStream(filePath));

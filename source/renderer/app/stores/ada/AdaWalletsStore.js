@@ -9,7 +9,7 @@ import Request from '.././lib/LocalizedRequest';
 import { ROUTES } from '../../routes-config';
 import { mnemonicToSeedHex } from '../../api/ada/lib/utils';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
-import { downloadPaperWalletCertificate } from '../../utils/paperWalletGenerator';
+import { downloadPaperWalletCertificate } from '../../utils/paperWalletPdfGenerator';
 import type { walletExportTypeChoices } from '../../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../../actions/ada/wallets-actions';
 import type { ImportWalletFromFileResponse } from '../../api/ada/index';
