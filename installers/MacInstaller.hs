@@ -106,7 +106,7 @@ makeInstaller opts@Options{..} appRoot = do
       copyFile (bridge </> "config/log-config-prod.yaml") (dir </> "log-config-prod.yaml")
 
       -- Genesis (from daedalus-bridge)
-      genesisFiles <- glob $ bridge </> "*genesis*.json"
+      genesisFiles <- glob $ bridge </> "config" </> "*genesis*.json"
       when (null genesisFiles) $
         error "Cardano package carries no genesis files."
       procs "cp" (fmap toText (genesisFiles <> [dir])) mempty
