@@ -9,6 +9,11 @@ sys_root="$4"
 
 ./dockutil --add "${dst_root}/Daedalus.app" --allhomes
 
+set -x
+ls ${dst_root}
+ls -l ${dst_root}/Daedalus.app
+ls -l ${dst_root}/Daedalus.app/Contents
+ls -l ${dst_root}/Daedalus.app/Contents/MacOS
 cd "${dst_root}/Daedalus.app/Contents/MacOS/"
 
 bash ./build-certificates-unix.sh

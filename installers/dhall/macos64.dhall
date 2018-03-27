@@ -1,5 +1,4 @@
 \(cluster : ./cluster.type)      ->
-\(inst    : ./installation.type) ->
 let dataDir = "$HOME/Library/Application Support/Daedalus/"
     --
     --

@@ -53,11 +53,9 @@ retry() {
 ###
 fast_impure=
 verbose=true
-build_id=0
+build_id="${BUILDKITE_BUILD_NUMBER:-0}"
 pull_request=
 test_installer=
-
-daedalus_version="$1"; arg2nz "daedalus version" $1; shift
 
 # Parallel build options for Buildkite agents only
 if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
@@ -99,9 +97,13 @@ if test -n "${verbose}"
 then set -x
 fi
 
+daedalus_version="${1:-dev}"
+
 mkdir -p ~/.local/bin
 
-rm -rf dist release node_modules || true
+if test -e "dist" -o -e "release" -o -e "node_modules"
+then sudo rm -rf dist release node_modules || true
+fi
 
 export PATH=$HOME/.local/bin:$PATH
 export DAEDALUS_VERSION=${daedalus_version}.${build_id}
@@ -133,7 +135,7 @@ cd installers
 
           INSTALLER_CMD="$INSTALLER/bin/make-installer ${pull_request} ${test_installer}"
           INSTALLER_CMD+="  --cardano          ${DAEDALUS_BRIDGE}"
-          INSTALLER_CMD+="  --build-job        ${BUILDKITE_BUILD_NUMBER}"
+          INSTALLER_CMD+="  --build-job        ${build_id}"
           INSTALLER_CMD+="  --cluster          ${cluster}"
           INSTALLER_CMD+="  --daedalus-version ${DAEDALUS_VERSION}"
           INSTALLER_CMD+="  --output           ${INSTALLER_PKG}"

@@ -1,15 +1,16 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE RecordWildCards #-}
+import           Data.Text
 import           Universum
 import           System.Environment                  (lookupEnv)
-import           System.Info                         (arch, os)
+import qualified System.Info                      as Sys
 
 import qualified MacInstaller                        (main)
 import qualified WindowsInstaller                    (main)
 
 import           Types
-import qualified Config
+import           Config
 
 
 
@@ -27,12 +28,24 @@ detectCI = do
 
 main :: IO ()
 main = do
-  options' <- Config.options "Daedalus installer generator" Config.optionsParser
-  options  <- (\ci -> options' { Config.oCI = ci }) <$> detectCI
+  let os = case Sys.os of
+             "linux"   -> Linux
+             "darwin"  -> Macos64
+             "mingw32" -> Win64
+             _         -> error ("Unsupported OS: " <> pack Sys.os)
 
-  putStrLn $ "Generating installer for " <>  os <> "-" <> arch
-  case os of
-    "linux"   -> putStrLn ("No installer yet" :: String)
-    "darwin"  ->     MacInstaller.main options
-    "mingw32" -> WindowsInstaller.main options
-    _         -> fail "No installer available for this platform."
+  (options', command) <- options "Daedalus installer generator" $
+    (,) <$> optionsParser os <*> commandParser
+  options <- (\ci -> options' { oCI = ci }) <$> detectCI
+
+  case command of
+    GenConfig{..}    ->
+      generateOSClusterConfigs cfDhallRoot cfOutdir options
+    CheckConfigs{..} ->
+      checkAllConfigs          cfDhallRoot
+    GenInstaller -> do
+      putStrLn $ "Generating installer for " <>  Sys.os <> "-" <> Sys.arch
+      case os of
+        Linux   -> putStrLn ("Use default.nix, please." :: String)
+        Macos64 ->     MacInstaller.main options
+        Win64   -> WindowsInstaller.main options

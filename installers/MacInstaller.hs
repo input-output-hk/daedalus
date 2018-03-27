@@ -1,5 +1,7 @@
+{-# LANGUAGE DataKinds #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 module MacInstaller
     ( main
@@ -24,8 +26,8 @@ import qualified Data.Text as T
 import           System.Directory (copyFile, createDirectoryIfMissing, doesFileExist, renameFile)
 import           System.FilePath ((</>), FilePath)
 import           System.FilePath.Glob (glob)
-import           Filesystem.Path.CurrentOS (encodeString)
-import qualified Filesystem.Path as P
+import qualified Filesystem.Path           as P
+import qualified Filesystem.Path.CurrentOS as P
 import           Turtle (Shell, ExitCode (..), echo, proc, procs, inproc, which, Managed, with, printf, (%), l, s, pwd, cd, sh, mktree, export)
 import           Turtle.Line (unsafeTextToLine)
 
@@ -44,22 +46,19 @@ main opts@Options{..} = do
 
   let appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
 
-  echo "Generating configuration file:  launcher-config.yaml"
-  generateConfig (ConfigRequest Macos64 oCluster Launcher) "./dhall" "launcher-config.yaml"
-  echo "Generating configuration file:  wallet-topology.yaml"
-  generateConfig (ConfigRequest Macos64 oCluster Topology) "./dhall" "wallet-topology.yaml"
+  generateOSClusterConfigs "./dhall" "." opts
 
   tempInstaller <- makeInstaller opts appRoot
 
-  signInstaller signingConfig (toText tempInstaller) oOutput
-  checkSignature oOutput
+  signInstaller signingConfig (toText tempInstaller) $ T.pack $ P.encodeString oOutput
+  checkSignature $ T.pack $ P.encodeString oOutput
 
   run "rm" [toText tempInstaller]
-  printf ("Generated "%s%"\n") oOutput
+  printf ("Generated "%s%"\n") $ T.pack $ P.encodeString oOutput
 
   when (oTestInstaller == TestInstaller) $ do
     echo $ "--test-installer passed, will test the installer for installability"
-    procs "sudo" ["installer", "-dumplog", "-verbose", "-target", "/", "-pkg", oOutput] empty
+    procs "sudo" ["installer", "-dumplog", "-verbose", "-target", "/", "-pkg", T.pack $ P.encodeString oOutput] empty
 
 makeScriptsDir :: Options -> Managed T.Text
 makeScriptsDir Options{..} = case oBackend of
@@ -83,7 +82,6 @@ withDir d = bracket (pwd >>= \old -> (cd d >> pure old)) cd . const
 makeInstaller :: Options -> FilePath -> IO FilePath
 makeInstaller opts@Options{..} appRoot = do
   let dir     = appRoot </> "Contents/MacOS"
-      resDir  = appRoot </> "Contents/Resources"
   createDirectoryIfMissing False "dist"
 
   echo "Creating icons ..."
@@ -97,15 +95,15 @@ makeInstaller opts@Options{..} appRoot = do
     Cardano bridge -> do
       -- Executables
       forM ["cardano-launcher", "cardano-node"] $ \f -> do
-        copyFile (bridge </> "bin" </> f) (dir </> f)
+        copyFile (P.encodeString bridge </> "bin" </> f) (dir </> f)
         procs "chmod" ["+w", toText $ dir </> f] empty
 
       -- Config files (from daedalus-bridge)
-      copyFile (bridge </> "config/configuration.yaml") (dir </> "configuration.yaml")
-      copyFile (bridge </> "config/log-config-prod.yaml") (dir </> "log-config-prod.yaml")
+      copyFile (P.encodeString bridge </> "config/configuration.yaml") (dir </> "configuration.yaml")
+      copyFile (P.encodeString bridge </> "config/log-config-prod.yaml") (dir </> "log-config-prod.yaml")
 
       -- Genesis (from daedalus-bridge)
-      genesisFiles <- glob $ bridge </> "config" </> "*genesis*.json"
+      genesisFiles <- glob $ P.encodeString bridge </> "config" </> "*genesis*.json"
       when (null genesisFiles) $
         error "Cardano package carries no genesis files."
       procs "cp" (fmap toText (genesisFiles <> [dir])) mempty
@@ -187,10 +185,10 @@ signingConfig = SigningConfig
 -- | Runs "security import -x"
 importCertificate :: SigningConfig -> FilePath -> Maybe Text -> IO ExitCode
 importCertificate SigningConfig{..} cert password = do
-  let optArg s = map toText . maybe [] (\p -> [s, p])
+  let optArg str = map toText . maybe [] (\p -> [str, p])
       certPass = optArg "-P" password
       keyChain = optArg "-k" signingKeyChain
-  productSign <- optArg "-T" . fmap (toText . encodeString) <$> which "productsign"
+  productSign <- optArg "-T" . fmap (toText . P.encodeString) <$> which "productsign"
   let args = ["import", toText cert, "-x"] ++ keyChain ++ certPass ++ productSign
   -- echoCmd "security" args
   proc "security" args mempty

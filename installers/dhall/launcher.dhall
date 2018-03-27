@@ -10,8 +10,7 @@
 , reportServer   = cluster.reportServer
 , walletArgs     = [] : List Text
 , nodeArgs =
-    [ "--no-ntp"
-    , "--tlsca",               "tls/ca/ca.crt"
+    [ "--tlsca",               "tls/ca/ca.crt"
     , "--tlscert",             "tls/server/server.crt"
     , "--tlskey",              "tls/server/server.key"
     , "--update-server",       cluster.updateServer

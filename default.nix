@@ -16,7 +16,10 @@ let
   packages = self: {
     inherit cluster pkgs version;
     inherit (cardanoPkgs) daedalus-bridge;
-    daedalus = self.callPackage ./installers/nix/linux.nix {};
+    ## TODO: move to installers/nix
+    daedalus-installer = self.callPackage ./installers/default.nix {};
+    inherit (self.callPackage ./installers/nix/linux.nix {})
+      daedalus daedalus-config;
     rawapp = self.callPackage ./yarn2nix.nix { api = "ada"; };
     nix-bundle = import (pkgs.fetchFromGitHub {
       owner = "matthewbauer";
