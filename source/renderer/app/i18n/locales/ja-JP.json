@@ -162,6 +162,7 @@
   "paper.wallet.pdf.info.author": "ダイダロスウォレット",
   "paper.wallet.pdf.info.title": "ダイダロス・ペーパーウォレット証明書",
   "paper.wallet.pdf.password.label": "!!!Password",
+  "paper.wallet.pdf.recoveryPhrase.label": "!!!Paper wallet recovery phrase",
   "paper.wallet.pdf.release.version": "!!!0.8.2",
   "paper.wallet.pdf.shieldedRecoveryPhrase.label": "!!!Shielded recovery phrase",
   "paper.wallet.pdf.walletAddress.label": "!!!Wallet address",

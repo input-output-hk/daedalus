@@ -15,10 +15,10 @@ const messages = defineMessages({
     defaultMessage: '!!!Wallet address',
     description: 'Paper wallet pdf "Wallet address" label.'
   },
-  shieldedRecoveryPhraseLabel: {
-    id: 'paper.wallet.pdf.shieldedRecoveryPhrase.label',
-    defaultMessage: '!!!Shielded recovery phrase',
-    description: 'Paper wallet pdf "Shielded recovery phrase" label.'
+  recoveryPhraseLabel: {
+    id: 'paper.wallet.pdf.recoveryPhrase.label',
+    defaultMessage: '!!!Paper wallet recovery phrase',
+    description: 'Paper wallet pdf "Paper wallet recovery phrase" label.'
   },
   passwordLabel: {
     id: 'paper.wallet.pdf.password.label',
@@ -97,7 +97,7 @@ export const downloadPaperWalletCertificate = (
   SVGtoPDF(doc, paperWalletPage2, 0, 0);
   doc.rotate(180, { origin: [width / 2, height / 2] });
   doc.fillColor(textColor);
-  doc.fontSize(10).text(intl.formatMessage(messages.shieldedRecoveryPhraseLabel), 0, 535, { width: 595, align: 'center' });
+  doc.fontSize(10).text(intl.formatMessage(messages.recoveryPhraseLabel), 0, 535, { width: 595, align: 'center' });
 
   // mnemonics
   doc.fontSize(8);
