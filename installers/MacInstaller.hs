@@ -22,11 +22,12 @@ import           Control.Monad (unless)
 import           Data.Text (Text)
 import qualified Data.Text as T
 import           System.Directory (copyFile, createDirectoryIfMissing, doesFileExist, renameFile)
+import           System.Environment (setEnv)
 import           System.FilePath ((</>), FilePath)
 import           System.FilePath.Glob (glob)
-import           Filesystem.Path.CurrentOS (encodeString, decodeString)
-import           Text.Printf (printf)
-import           Turtle (ExitCode (..), echo, proc, procs, shells, which, Managed, with, chmod, writable)
+import           Filesystem.Path.CurrentOS (encodeString)
+import qualified Filesystem.Path as P
+import           Turtle (Shell, ExitCode (..), echo, proc, procs, inproc, which, Managed, with, printf, (%), l, s, pwd, cd, sh, mktree)
 import           Turtle.Line (unsafeTextToLine)
 
 import           RewriteLibs (chain)
@@ -49,50 +50,65 @@ main opts@Options{..} = do
   echo "Generating configuration file:  wallet-topology.yaml"
   generateConfig (ConfigRequest Macos64 oCluster Topology) "./dhall" "wallet-topology.yaml"
 
-  echo "Packaging frontend"
-  shells "npm run package -- --icon installers/icons/256x256" mempty
-
   tempInstaller <- makeInstaller opts appRoot
 
   signInstaller signingConfig (toText tempInstaller) oOutput
   checkSignature oOutput
 
   run "rm" [toText tempInstaller]
-  echo $ "Generated " <> unsafeTextToLine oOutput
+  printf ("Generated "%s%"\n") oOutput
 
   when (oTestInstaller == TestInstaller) $ do
     echo $ "--test-installer passed, will test the installer for installability"
-    shells (T.pack $ printf "sudo installer -dumplog -verbose -target / -pkg \"%s\"" oOutput) empty
+    procs "sudo" ["installer", "-dumplog", "-verbose", "-target", "/", "-pkg", oOutput] empty
 
 makeScriptsDir :: Options -> Managed T.Text
 makeScriptsDir Options{..} = case oBackend of
   Cardano _ -> pure "data/scripts"
   Mantis    -> pure "[DEVOPS-533]"
 
+npmPackage :: Shell ()
+npmPackage = do
+  mktree "release"
+  echo "~~~ Installing nodejs dependencies..."
+  procs "npm" ["install"] empty
+  liftIO $ setEnv "NODE_ENV" "production"
+  echo "~~~ Running electron packager script..."
+  procs "npm" ["run", "package"] empty
+  size <- inproc "du" ["-sh", "release"] empty
+  printf ("Size of Electron app is " % l % "\n") size
+
+withDir :: P.FilePath -> IO a -> IO a
+withDir d = bracket (pwd >>= \old -> (cd d >> pure old)) cd . const
+
 makeInstaller :: Options -> FilePath -> IO FilePath
 makeInstaller opts@Options{..} appRoot = do
   let dir     = appRoot </> "Contents/MacOS"
       resDir  = appRoot </> "Contents/Resources"
-
   createDirectoryIfMissing False "dist"
 
   echo "Creating icons ..."
-  procs "iconutil" ["--convert", "icns", "--output", toText (resDir </> "electron.icns"), "icons/electron.iconset"] mempty
+  procs "iconutil" ["--convert", "icns", "--output", "icons/electron.icns"
+                   , "icons/electron.iconset"] mempty
 
-  echo "Preparing files ..."
+  withDir ".." . sh $ npmPackage
+
+  echo "~~~ Preparing files ..."
   case oBackend of
     Cardano bridge -> do
       -- Executables
       forM ["cardano-launcher", "cardano-node"] $ \f -> do
         copyFile (bridge </> "bin" </> f) (dir </> f)
-        chmod writable (decodeString $ dir </> f)
+        procs "chmod" ["+w", toText $ dir </> f] empty
 
       -- Config files (from daedalus-bridge)
       copyFile (bridge </> "config/configuration.yaml") (dir </> "configuration.yaml")
       copyFile (bridge </> "config/log-config-prod.yaml") (dir </> "log-config-prod.yaml")
 
       -- Genesis (from daedalus-bridge)
-      genesisFiles <- glob "*genesis*.json"
+      genesisFiles <- glob $ bridge </> "config" </> "*genesis*.json"
+      when (null genesisFiles) $
+        error "Cardano package carries no genesis files."
       procs "cp" (fmap toText (genesisFiles <> [dir])) mempty
 
       -- Config yaml (generated from dhall files)

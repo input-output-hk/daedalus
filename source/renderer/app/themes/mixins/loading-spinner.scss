@@ -1,0 +1,26 @@
+@keyframes :global(loading-spin) {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@mixin loading-spinner($iconPath) {
+  text-indent: -9999px;
+  &:after {
+    content: '';
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: calc(50% - 15px);
+    left: calc(50% - 15px);
+    background: url($iconPath) no-repeat center;
+    background-size: 30px;
+    :global {
+      animation: loading-spin 1.5s linear;
+      animation-iteration-count: infinite;
+    }
+  }
+}

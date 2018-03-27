@@ -1,5 +1,9 @@
 {
-  "presets": ["es2015", "stage-0", "react"],
+  "presets": [
+    "env",
+    "stage-0",
+    "react"
+  ],
   "plugins": [
     "add-module-exports",
     "transform-decorators-legacy",
@@ -18,14 +22,9 @@
     "production": {
       "presets": ["react-optimize"],
       "plugins": ["babel-plugin-dev-expression"]
-    },
-    "development": {
-      "presets": ["react-hmre"]
-    },
-    "test": {
-      "plugins": [
-        ["webpack-loaders", { "config": "./webpack/webpack.config.development.js", "verbose": false }]
-      ]
     }
-  }
+  },
+  "ignore": [
+    "node_modules"
+  ]
 }

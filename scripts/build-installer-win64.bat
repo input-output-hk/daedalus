@@ -126,9 +126,6 @@ pushd installers
     @echo ###
     @echo ##############################################################################
 
-    call ..\scripts\appveyor-retry stack install dhall dhall-json
-    @if %errorlevel% neq 0 (@echo FATAL: persistent failure while installing dhall/dhall-json
-        popd & exit /b 1)
     call ..\scripts\appveyor-retry stack --no-terminal -j 2 install daedalus-installer
     @if %errorlevel% neq 0 (@echo FATAL: persistent failure while installing daedalus-installer
         popd & exit /b 1)

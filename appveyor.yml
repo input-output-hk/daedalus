@@ -1,7 +1,7 @@
 version: 1.1.{build}
 
 environment:
-  nodejs_version: "6"
+  nodejs_version: "8"
   NETWORK: "mainnet"
   AWS_ACCESS_KEY_ID:
     secure: O0+bBTm/Ud3pxP8nvC3ZuDSkmmlr+b8hVluqpRdJGBg=
@@ -15,7 +15,7 @@ environment:
 build: off
 
 cache:
-  - C:\sr -> installers/cardano-installer.cabal
+  - C:\sr -> installers/daedalus-installer.cabal
   - C:\sr -> installers/stack.yaml
 
 install:

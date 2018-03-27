@@ -15,7 +15,6 @@ import Network.Wreq
 import Data.Aeson.Lens
 import Lens.Micro
 import Turtle.Format (printf, (%), d, s, w, Format, makeFormat)
-import GHC.Generics
 
 -- | Gets CardanoSL.zip corresponding to the src json revision from AppVeyor CI
 downloadCardanoSL :: FilePath -> IO L8.ByteString
@@ -54,7 +53,7 @@ appVeyorArtifacts = fmap concat . mapM artifactForJobId
 
 -- | Filter the artifact we are interested in.
 findAppVeyorArtifact :: Text -> [(Text, L8.ByteString)] -> Maybe L8.ByteString
-findAppVeyorArtifact name arts = head [bs | (name', bs) <- arts, name' == name]
+findAppVeyorArtifact name arts = safeHead [bs | (name', bs) <- arts, name' == name]
 
 -- | Downloads all artifacts for a job.
 -- Returns the filename and contents.
@@ -92,7 +91,7 @@ appVeyorURL src = fmap collect <$> statusFor' src >>= \case
   Right Nothing  -> throwM $ StatusMissingError src
   Left err       -> throwM $ GitHubStatusError src err
   where
-    collect = head . mapMaybe statusTargetUrl . filter isAppVeyor .
+    collect = safeHead . mapMaybe statusTargetUrl . filter isAppVeyor .
               toList . combinedStatusStatuses
     isAppVeyor st = statusContext st == Just "continuous-integration/appveyor/branch"
 

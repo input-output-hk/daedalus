@@ -1,0 +1,14 @@
+@import "_config";
+// Theme config overrides go here …
+@import "~react-polymorph/lib/themes/simple/SimpleInput";
+// Css module overrides go here …
+
+:global {
+  .AmountInputSkin_total, .AmountInputSkin_fees {
+    color: var(--theme-input-right-floating-text-color);
+  }
+}
+
+.disabled {
+  color: var(--theme-input-placeholder-color);
+}

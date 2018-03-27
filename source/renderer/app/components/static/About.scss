@@ -1,0 +1,110 @@
+.container {
+  background-color: var(--theme-about-window-background-color);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 30px 30px 20px;
+
+  .headerWrapper {
+    border-bottom: 1px solid var(--theme-about-window-header-bottom-border-color);
+    display: flex;
+    padding-bottom: 20px;
+
+    .daedalusIcon {
+      svg {
+        height: 58px;
+        width: 74px;
+        path {
+          fill: var(--theme-about-window-daedalus-icon-color);
+        }
+      }
+    }
+
+    .daedalusTitleVersion {
+      color: var(--theme-about-window-title-varsion-color);
+      display: flex;
+      flex: 1;
+      flex-direction: column;
+      justify-content: center;
+      margin-left: 30px;
+
+      .daedalusTitle {
+        font-family: 'Montserrat-Medium';
+        font-size: 24px;
+        letter-spacing: 6px;
+        line-height: 1.33;
+        text-transform: uppercase;
+        -webkit-text-stroke: 0.5px var(--theme-about-window-title-stroke-color);
+
+        .daedalusVersion {
+          font-family: var(--font-regular);
+          font-size: 14px;
+          font-weight: 300;
+          letter-spacing: 0;
+          line-height: 1.38;
+          -webkit-text-stroke: 0;
+        }
+      }
+
+      .daedalusBuildInfo {
+        font-family: var(--font-regular);
+        font-size: 12px;
+        font-weight: 300;
+        line-height: 1.25;
+        margin-top: 6px;
+
+        strong {
+          font-family: var(--font-semibold);
+          letter-spacing: 0.25px;
+        }
+      }
+    }
+
+    .apiIcon {
+      margin-top: 7.5px;
+      svg {
+        height: 43px;
+        width: 47px;
+        path {
+          fill: var(--theme-about-window-cardano-icon-color);
+        }
+      }
+    }
+  }
+
+  .contentText {
+    border-bottom: 1px solid var(--theme-about-window-content-bottom-border-color);
+    color: var(--theme-about-window-content-text-color);
+    flex: 1;
+    font-family: var(--font-regular);
+    font-size: 12px;
+    line-height: 1.25;
+    margin-top: 20px;
+    padding-bottom: 20px;
+
+    h2 {
+      font-family: var(--font-semibold);
+      margin-bottom: 3px;
+    }
+
+    .contentDaedalus {
+      margin-bottom: 12px;
+    }
+  }
+
+  .footerWrapper {
+    margin-top: 20px;
+
+    a,
+    .copyright {
+      color: var(--theme-about-window-copyright-color);
+      font-family: var(--font-regular);
+      font-size: 12px;
+      line-height: 1.25;
+    }
+
+    .copyright {
+      margin-top: 6px;
+    }
+  }
+}

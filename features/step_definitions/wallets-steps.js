@@ -13,7 +13,7 @@ import {
   waitUntilUrlEquals,
   navigateTo,
 } from '../support/helpers/route-helpers';
-import { DECIMAL_PLACES_IN_ADA } from '../../app/config/numbersConfig';
+import { DECIMAL_PLACES_IN_ADA } from '../../source/renderer/app/config/numbersConfig';
 import sidebar from '../support/helpers/sidebar-helpers';
 import addWalletDialog from '../support/helpers/dialogs/add-wallet-dialog-helpers';
 import importWalletDialog from '../support/helpers/dialogs/import-wallet-dialog-helpers';
@@ -50,16 +50,16 @@ Given(/^I have the following wallets:$/, async function (table) {
         password: wallet.password || null,
       })
     )))
-    .then(() => (
-      daedalus.stores.ada.wallets.walletsRequest.execute()
-        .then((storeWallets) => (
-          daedalus.stores.ada.wallets.refreshWalletsData()
-            .then(() => done(storeWallets))
-            .catch((error) => done(error))
-        ))
-        .catch((error) => done(error))
-    ))
-    .catch((error) => done(error.stack));
+      .then(() => (
+        daedalus.stores.ada.wallets.walletsRequest.execute()
+          .then((storeWallets) => (
+            daedalus.stores.ada.wallets.refreshWalletsData()
+              .then(() => done(storeWallets))
+              .catch((error) => done(error))
+          ))
+          .catch((error) => done(error))
+      ))
+      .catch((error) => done(error.stack));
   }, table.hashes());
   // Add or set the wallets for this scenario
   if (this.wallets != null) {

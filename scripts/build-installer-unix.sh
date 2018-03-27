@@ -101,6 +101,8 @@ fi
 
 mkdir -p ~/.local/bin
 
+rm -rf dist release node_modules || true
+
 export PATH=$HOME/.local/bin:$PATH
 export DAEDALUS_VERSION=${daedalus_version}.${build_id}
 if [ -n "${NIX_SSL_CERT_FILE-}" ]; then export SSL_CERT_FILE=$NIX_SSL_CERT_FILE; fi
@@ -118,9 +120,9 @@ test "$(find node_modules/ | wc -l)" -gt 100 -a -n "${fast_impure}" ||
         $nix_shell --run "npm install"
 
 cd installers
-    echo "Prebuilding dependencies for cardano-installer, quietly.."
+    echo '~~~ Prebuilding dependencies for cardano-installer, quietly..'
     $nix_shell default.nix --run true || echo "Prebuild failed!"
-    echo "Building the cardano installer generator.."
+    echo '~~~ Building the cardano installer generator..'
     INSTALLER=$(nix-build -j 2 --no-out-link)
 
     case ${OS_NAME} in
@@ -128,7 +130,7 @@ cd installers
             linux )  OS=linux;;esac
     for cluster in ${CLUSTERS}
     do
-          echo "Generating installer for cluster ${cluster}.."
+          echo "~~~ Generating installer for cluster ${cluster}.."
           export DAEDALUS_CLUSTER=${cluster}
                     INSTALLER_PKG="Daedalus-installer-${DAEDALUS_VERSION}-${cluster}.pkg"
 
@@ -144,7 +146,7 @@ cd installers
 
           if test -f "${INSTALLER_PKG}"
           then
-                  echo "Uploading the installer package.."
+                  echo "~~~ Uploading the installer package.."
                   mkdir -p ${APP_NAME}
                   mv "${INSTALLER_PKG}" "${APP_NAME}/${INSTALLER_PKG}"
 
@@ -152,6 +154,7 @@ cd installers
                   then
                           export PATH=${BUILDKITE_BIN_PATH:-}:$PATH
                           buildkite-agent artifact upload "${APP_NAME}/${INSTALLER_PKG}" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
+                          rm "${APP_NAME}/${INSTALLER_PKG}"
                   fi
           else
                   echo "Installer was not made."

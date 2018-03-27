@@ -3,7 +3,7 @@ module WindowsInstaller
     ( main
     ) where
 
-import           Universum hiding (pass, writeFile, stdout)
+import           Universum hiding (pass, writeFile, stdout, (<>))
 
 import           Control.Monad (unless)
 import qualified Data.List as L
@@ -26,7 +26,7 @@ import           System.Environment (lookupEnv)
 import           System.FilePath ((</>))
 import           System.IO (writeFile)
 import           Filesystem.Path.CurrentOS (decodeString)
-import           Turtle (ExitCode (..), echo, proc, procs, shells, testfile, stdout, input)
+import           Turtle (ExitCode (..), echo, proc, procs, shells, testfile, stdout, input, export)
 import           Turtle.Line (unsafeTextToLine)
 import           AppVeyor
 import qualified Codec.Archive.Zip    as Zip
@@ -193,7 +193,8 @@ writeInstallerNSIS (Version fullVersion') clusterName = do
         return ()
 
 packageFrontend :: IO ()
-packageFrontend =
+packageFrontend = do
+    export "NODE_ENV" "production"
     shells "npm run package -- --icon installers/icons/64x64" mempty
 
 main :: Options -> IO ()

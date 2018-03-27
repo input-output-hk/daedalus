@@ -16,6 +16,8 @@ executable make-installer
                      , WindowsInstaller
                      , RewriteLibs
                      , AppVeyor
+                     , Config
+                     , Types
   build-depends:       base
                      , bytestring
                      , containers
@@ -59,6 +61,9 @@ executable make-installer
 executable load-certificate
   main-is:             load-certificate.hs
   other-modules:       MacInstaller
+                     , Config
+                     , RewriteLibs
+                     , Types
   build-depends:       base
                      , bytestring
                      , containers

@@ -46,8 +46,6 @@ installers/libressl
 # App packaged
 dist
 release
-main.js
-main.js.map
 
 # Editors
 .idea
@@ -58,6 +56,10 @@ main.js.map
 
 # Generated translation files
 translations/messages
+translations/reports
+
+# Webpack
+.cache
 
 # Git data
 build-id

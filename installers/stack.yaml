@@ -3,16 +3,10 @@ flags: {}
 extra-package-dbs: []
 
 allow-newer: true
-resolver: lts-9.1
+resolver: lts-11.1
 
 nix:
     packages: [gmp,git]
-
-extra-deps:
-  - universum-0.8.0
-  - microlens-0.4.8.1
-  - github-0.18
-  - zip-archive-0.3.1.1
 
 packages:
   - location: .
@@ -20,8 +14,4 @@ packages:
   - location:
       git: https://github.com/dhall-lang/dhall-json
       commit: d6adaa265dcf8ab5899396b05d612b2d8092dca4
-    extra-dep: true
-  - location:
-      git: https://github.com/dhall-lang/dhall-haskell
-      commit: 4a085aa3d622886cf7dd96a1ad475ba914d5ab1f
     extra-dep: true
