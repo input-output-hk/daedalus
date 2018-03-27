@@ -10,9 +10,11 @@ export const setupLogging = () => {
   ensureDirectoryExists(pubLogsFolderPath);
 
   Log.transports.console.level = 'warn';
+  Log.transports.rendererConsole.level = 'warn';
   Log.transports.file.level = 'debug';
   Log.transports.file.maxSize = 20 * 1024 * 1024;
   Log.transports.file.file = logFilePath;
+  Log.transports.file.format = '[{y}-{m}-{d} {h}:{i}:{s}.{ms} {z}] [{level}] {text}';
 
   try {
     let sendLogsToRemoteServer;
