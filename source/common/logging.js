@@ -15,7 +15,7 @@ export const Logger = {
 
   error: (data: string) => {
     Log.error(data);
-    Logger.sendToRemote('error', data);
+    // Logger.sendToRemote('error', data);
   },
 
   warn: (data: string) => {
