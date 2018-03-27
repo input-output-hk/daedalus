@@ -1,7 +1,7 @@
 import { PDFExtract } from 'pdf.js-extract';
 import { ipcMain } from 'electron';
 import fs from 'fs';
-import Log from 'electron-log';
+import log from 'electron-log';
 import { decryptRegularVend, decryptForceVend } from '../../common/decrypt';
 import { PARSE_REDEMPTION_CODE } from '../../common/ipc-api';
 
@@ -23,7 +23,7 @@ export default () => {
         fs.writeFileSync(pdfPath, decryptedFile);
         isTemporaryDecryptedPdf = true;
       } catch (error) {
-        Log.warn('ERROR!', error);
+        log.warn('ERROR!', error);
         sender.send(PARSE_REDEMPTION_CODE.ERROR, error.message);
       }
     } else {
