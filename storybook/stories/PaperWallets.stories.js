@@ -1,6 +1,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
+import wordlist from 'bip39/wordlists/english';
 import StoryDecorator from './support/StoryDecorator';
 import InstructionsDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog';
 import PasswordChoiceDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/PasswordChoiceDialog';
@@ -9,8 +10,6 @@ import PrintDialog from '../../source/renderer/app/components/wallet/paper-walle
 import SecuringPasswordDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/SecuringPasswordDialog';
 import VerificationDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog';
 // import CompletionDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog';
-
-const OPTIONS = ['nice', 'thrive', 'crystal', 'trumpet', 'maple', 'peanut', 'grace', 'wagon', 'hedgehog', 'oven', 'industry', 'wild', 'retreat', 'nut', 'need'];
 
 storiesOf('PaperWallets', module)
 
@@ -70,8 +69,8 @@ storiesOf('PaperWallets', module)
     <div>
       <VerificationDialog
         walletCertificatePassword="flugenheimer"
-        walletCertificateRecoveryPhrase={OPTIONS}
-        suggestedMnemonics={OPTIONS}
+        walletCertificateRecoveryPhrase={wordlist}
+        suggestedMnemonics={wordlist}
         onContinue={action('onContinue')}
         onClear={action('onClear')}
       />
