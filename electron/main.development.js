@@ -228,8 +228,8 @@ app.on('ready', async () => {
 
   mainWindow.webContents.on('context-menu', (e, props) => {
     const contextMenuOptions = [
-      { label: 'Copy', accelerator: 'CmdOrCtrl+C', selector: 'copy:' },
-      { label: 'Paste', accelerator: 'CmdOrCtrl+V', selector: 'paste:' },
+      { label: 'Copy', accelerator: 'CmdOrCtrl+C', role: 'copy' },
+      { label: 'Paste', accelerator: 'CmdOrCtrl+V', role: 'paste' },
     ];
 
     if (isDev || isTest) {
