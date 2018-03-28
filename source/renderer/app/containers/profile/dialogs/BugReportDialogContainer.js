@@ -23,7 +23,7 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
     const destination = remote.dialog.showSaveDialog({
       defaultPath: 'logs.zip',
     });
-    this.props.actions.profile.downloadLogs.trigger({ destination });
+    if (destination) this.props.actions.profile.downloadLogs.trigger({ destination });
   };
 
   onSubmitManually = (link: string) => {
@@ -32,7 +32,7 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
 
   resetBugReportDialog = () => {
     this.props.actions.profile.resetBugReportDialog.trigger();
-  }
+  };
 
   render() {
     const { actions, stores } = this.props;
