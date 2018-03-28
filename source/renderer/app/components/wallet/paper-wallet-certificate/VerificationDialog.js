@@ -52,7 +52,7 @@ const messages = defineMessages({
   },
   recoveringUnderstandanceLabel: {
     id: 'paper.wallet.create.certificate.verification.dialog.recoveringUnderstandanceConfirmationLabel',
-    defaultMessage: '!!!I understand that my wallet can only be recovered using my paper wallet certificate.',
+    defaultMessage: '!!!I understand that my paper wallet can be recovered only by using my paper wallet certificate.',
     description: '"Paper wallet create certificate verification dialog" recovering understandance confirmation.'
   },
   errorMessage: {

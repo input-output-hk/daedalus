@@ -22,7 +22,7 @@ const messages = defineMessages({
   },
   info: {
     id: 'paper.wallet.create.certificate.print.dialog.info',
-    defaultMessage: '!!!Your certificate is not yet complete and does not contain all data needed to restore your wallet. In the next step, you will need to write down additional 9 words to your paper wallet recovery phrase.',
+    defaultMessage: '!!!Your certificate is not yet complete and does not contain all the data needed to restore your paper wallet. In the next step, you will need to write down an additional 9 words to your paper wallet recovery phrase.',
     description: '"Paper wallet create certificate print dialog" info.'
   },
   printConfirmationLabel: {

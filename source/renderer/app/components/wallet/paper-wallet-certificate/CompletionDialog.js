@@ -17,13 +17,13 @@ const messages = defineMessages({
   },
   subtitle: {
     id: 'paper.wallet.create.certificate.completion.dialog.subtitle',
-    defaultMessage: '!!!You may want to fold your paper wallet certificate and glue together the edges to store it securely. Please keep your certificate safe...',
+    defaultMessage: '!!!You may wish to fold your paper wallet certificate and glue together the edges to store it securely. Please keep your certificate safe.',
     description: 'Headline for the "Paper wallet create certificate completion dialog" subtitle.'
   },
   linkInstructions: {
     id: 'paper.wallet.create.certificate.completion.dialog.linkInstructions',
-    defaultMessage: `!!!When you want to import your wallet back into Daedalus crop any glued edges of the certificate to open it.
-      To check your balance on the paper wallet at any time, you may use the link below. Copy or save it to your browser bookmarks to do this easily:`,
+    defaultMessage: `!!!When you wish to import your wallet back into Daedalus crop any glued edges of the certificate to open it.
+      To check your balance on the paper wallet at any time, you may use the link below. Copy or save the URL to your browser bookmarks to do this easily`,
     description: 'Headline for the "Paper wallet create certificate completion dialog" link instructions.'
   },
   addressInstructions: {

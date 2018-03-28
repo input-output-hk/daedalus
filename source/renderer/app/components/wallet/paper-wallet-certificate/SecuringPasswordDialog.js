@@ -24,11 +24,11 @@ const messages = defineMessages({
   infoLabel2: {
     id: 'paper.wallet.create.certificate.securyng password.dialog.infoLabel2',
     defaultMessage: '!!!The password can optionally be written on the certificate or kept securely in other location. Here is the placeholder on the certificate intended for your password.',
-    description: 'You may write the remaining words here.'
+    description: 'You may write the remaining words here:'
   },
   securingPasswordConfirmation: {
     id: 'paper.wallet.create.certificate.securyng password.dialog.securingPasswordConfirmation',
-    defaultMessage: '!!!I have written the remaining 9 words to the certificate.',
+    defaultMessage: '!!!I have written the remaining 9 words on the certificate.',
     description: '"Paper wallet create certificate securyng password dialog" secure password confirmation.'
   }
 });

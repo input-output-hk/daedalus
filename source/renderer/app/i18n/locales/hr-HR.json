@@ -164,7 +164,6 @@
   "paper.wallet.pdf.password.label": "!!!Password",
   "paper.wallet.pdf.recoveryPhrase.label": "!!!Paper wallet recovery phrase",
   "paper.wallet.pdf.release.version": "!!!0.8.2",
-  "paper.wallet.pdf.shieldedRecoveryPhrase.label": "!!!Shielded recovery phrase",
   "paper.wallet.pdf.walletAddress.label": "!!!Wallet address",
   "profile.languageSelect.form.languageSelectLabel": "Odaberi jezik",
   "profile.languageSelect.form.submitLabel": "Nastavi",

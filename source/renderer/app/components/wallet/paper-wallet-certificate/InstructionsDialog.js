@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import styles from './InstructionsDialog.scss';
@@ -27,7 +27,7 @@ const messages = defineMessages({
   },
   instructionsListDefinition1: {
     id: 'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition1',
-    defaultMessage: '!!!Your printed certificate will include your paper wallet recovery phrase of 24 words. Note that your paper wallet recovery phrase is different to the recovery phrases used for regular Daedalus wallet backups of 12 words.',
+    defaultMessage: '!!!Your printed certificate will include your paper wallet recovery phrase of 24 words. Note that your paper wallet recovery phrase is different to the 12-words recovery phrases used to restore your regular Daedalus wallet.',
     description: 'Wallet certificate create instructions dialog definition 1.',
   },
   instructionsListDefinition2: {
@@ -42,7 +42,7 @@ const messages = defineMessages({
   },
   instructionsListDefinition4: {
     id: 'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition4',
-    defaultMessage: '!!!Your paper wallet will be offline so will not be held on Daedalus. To check the balance of the wallet, input the address on the certificate into',
+    defaultMessage: '!!!Your paper wallet will be offline so will not be held in Daedalus. To check the balance of the wallet, input the address on the certificate into',
     description: 'Wallet certificate create instructions dialog definition 4.',
   },
   instructionsListDefinition5: {
@@ -99,6 +99,15 @@ export default class InstructionsDialog extends Component<Props> {
       }
     ];
 
+    const cardanoExplorerLink = (
+      <a
+        href={CARDANO_EXPLORER_LINK}
+        onClick={this.openCardanoExplorer.bind(this, CARDANO_EXPLORER_LINK)}
+      >
+        {intl.formatMessage(messages.cardanoExplorer)}
+      </a>
+    );
+
     return (
       <Dialog
         className={dialogClasses}
@@ -122,13 +131,10 @@ export default class InstructionsDialog extends Component<Props> {
               <li>{intl.formatMessage(messages.instructionsListDefinition2)}</li>
               <li>{intl.formatMessage(messages.instructionsListDefinition3)}</li>
               <li>
-                {intl.formatMessage(messages.instructionsListDefinition4)}&nbsp;
-                <a
-                  href={CARDANO_EXPLORER_LINK}
-                  onClick={this.openCardanoExplorer.bind(this, CARDANO_EXPLORER_LINK)}
-                >
-                  {intl.formatMessage(messages.cardanoExplorer)}
-                </a>
+                <FormattedMessage
+                  {...messages.instructionsListDefinition4}
+                  values={{ link: cardanoExplorerLink }}
+                />
               </li>
               <li>{intl.formatMessage(messages.instructionsListDefinition5)}</li>
             </ul>

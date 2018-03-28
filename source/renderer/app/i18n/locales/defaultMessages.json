@@ -2237,7 +2237,7 @@
         }
       },
       {
-        "defaultMessage": "!!!You may want to fold your paper wallet certificate and glue together the edges to store it securely. Please keep your certificate safe...",
+        "defaultMessage": "!!!You may wish to fold your paper wallet certificate and glue together the edges to store it securely. Please keep your certificate safe.",
         "description": "Headline for the \"Paper wallet create certificate completion dialog\" subtitle.",
         "end": {
           "column": 3,
@@ -2251,7 +2251,7 @@
         }
       },
       {
-        "defaultMessage": "!!!When you want to import your wallet back into Daedalus crop any glued edges of the certificate to open it.\n      To check your balance on the paper wallet at any time, you may use the link below. Copy or save it to your browser bookmarks to do this easily:",
+        "defaultMessage": "!!!When you wish to import your wallet back into Daedalus crop any glued edges of the certificate to open it.\n      To check your balance on the paper wallet at any time, you may use the link below. Copy or save the URL to your browser bookmarks to do this easily",
         "description": "Headline for the \"Paper wallet create certificate completion dialog\" link instructions.",
         "end": {
           "column": 3,
@@ -2368,7 +2368,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Your printed certificate will include your paper wallet recovery phrase of 24 words. Note that your paper wallet recovery phrase is different to the recovery phrases used for regular Daedalus wallet backups of 12 words.",
+        "defaultMessage": "!!!Your printed certificate will include your paper wallet recovery phrase of 24 words. Note that your paper wallet recovery phrase is different to the 12-words recovery phrases used to restore your regular Daedalus wallet.",
         "description": "Wallet certificate create instructions dialog definition 1.",
         "end": {
           "column": 3,
@@ -2410,7 +2410,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Your paper wallet will be offline so will not be held on Daedalus. To check the balance of the wallet, input the address on the certificate into",
+        "defaultMessage": "!!!Your paper wallet will be offline so will not be held in Daedalus. To check the balance of the wallet, input the address on the certificate into",
         "description": "Wallet certificate create instructions dialog definition 4.",
         "end": {
           "column": 3,
@@ -2630,7 +2630,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Your certificate is not yet complete and does not contain all data needed to restore your wallet. In the next step, you will need to write down additional 9 words to your paper wallet recovery phrase.",
+        "defaultMessage": "!!!Your certificate is not yet complete and does not contain all the data needed to restore your paper wallet. In the next step, you will need to write down an additional 9 words to your paper wallet recovery phrase.",
         "description": "\"Paper wallet create certificate print dialog\" info.",
         "end": {
           "column": 3,
@@ -2734,7 +2734,7 @@
       },
       {
         "defaultMessage": "!!!The password can optionally be written on the certificate or kept securely in other location. Here is the placeholder on the certificate intended for your password.",
-        "description": "You may write the remaining words here.",
+        "description": "You may write the remaining words here:",
         "end": {
           "column": 3,
           "line": 28
@@ -2747,7 +2747,7 @@
         }
       },
       {
-        "defaultMessage": "!!!I have written the remaining 9 words to the certificate.",
+        "defaultMessage": "!!!I have written the remaining 9 words on the certificate.",
         "description": "\"Paper wallet create certificate securyng password dialog\" secure password confirmation.",
         "end": {
           "column": 3,
@@ -2897,7 +2897,7 @@
         }
       },
       {
-        "defaultMessage": "!!!I understand that my wallet can only be recovered using my paper wallet certificate.",
+        "defaultMessage": "!!!I understand that my paper wallet can be recovered only by using my paper wallet certificate.",
         "description": "\"Paper wallet create certificate verification dialog\" recovering understandance confirmation.",
         "end": {
           "column": 3,
@@ -5783,95 +5783,6 @@
       }
     ],
     "path": "source/renderer/app/i18n/global-messages.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Wallet address",
-        "description": "Paper wallet pdf \"Wallet address\" label.",
-        "end": {
-          "column": 3,
-          "line": 17
-        },
-        "file": "source/renderer/app/utils/paperWalletGenerator.js",
-        "id": "paper.wallet.pdf.walletAddress.label",
-        "start": {
-          "column": 22,
-          "line": 13
-        }
-      },
-      {
-        "defaultMessage": "!!!Shielded recovery phrase",
-        "description": "Paper wallet pdf \"Shielded recovery phrase\" label.",
-        "end": {
-          "column": 3,
-          "line": 22
-        },
-        "file": "source/renderer/app/utils/paperWalletGenerator.js",
-        "id": "paper.wallet.pdf.shieldedRecoveryPhrase.label",
-        "start": {
-          "column": 31,
-          "line": 18
-        }
-      },
-      {
-        "defaultMessage": "!!!Password",
-        "description": "Paper wallet pdf \"Password\" label.",
-        "end": {
-          "column": 3,
-          "line": 27
-        },
-        "file": "source/renderer/app/utils/paperWalletGenerator.js",
-        "id": "paper.wallet.pdf.password.label",
-        "start": {
-          "column": 17,
-          "line": 23
-        }
-      },
-      {
-        "defaultMessage": "!!!0.8.2",
-        "description": "Label for \"App Release Version\"",
-        "end": {
-          "column": 3,
-          "line": 32
-        },
-        "file": "source/renderer/app/utils/paperWalletGenerator.js",
-        "id": "paper.wallet.pdf.release.version",
-        "start": {
-          "column": 18,
-          "line": 28
-        }
-      },
-      {
-        "defaultMessage": "!!!Daedalus paper wallet certificate",
-        "description": "PDF title",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "source/renderer/app/utils/paperWalletGenerator.js",
-        "id": "paper.wallet.pdf.info.title",
-        "start": {
-          "column": 13,
-          "line": 33
-        }
-      },
-      {
-        "defaultMessage": "!!!Daedalus wallet",
-        "description": "PDF author",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "source/renderer/app/utils/paperWalletGenerator.js",
-        "id": "paper.wallet.pdf.info.author",
-        "start": {
-          "column": 14,
-          "line": 38
-        }
-      }
-    ],
-    "path": "source/renderer/app/utils/paperWalletGenerator.json"
   },
   {
     "descriptors": [
