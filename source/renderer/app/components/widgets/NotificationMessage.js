@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import type { Children } from 'react';
-import SvgInline from 'react-svg-inline';
+import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
 import styles from './NotificationMessage.scss';
 
@@ -23,7 +23,7 @@ export default class NotificationMessage extends Component<Props> {
     return (
       <div className={notificationMessageStyles}>
 
-        {icon && <SvgInline svg={icon} className={styles.icon} />}
+        {icon && <SVGInline svg={icon} className={styles.icon} />}
 
         <div className={styles.message}>
           {children}

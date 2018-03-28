@@ -4,7 +4,7 @@ import BigNumber from 'bignumber.js';
 import type { UnconfirmedAmount } from '../../types/unconfirmedAmountType';
 import { isValidAmountInLovelaces } from '../../utils/validations';
 import TransactionsStore from '../TransactionsStore';
-import { transactionTypes } from '../../domain/WalletTransaction';
+import { transactionTypes } from '../../domains/WalletTransaction';
 
 export default class AdaTransactionsStore extends TransactionsStore {
 

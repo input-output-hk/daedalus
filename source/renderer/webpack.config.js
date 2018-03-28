@@ -4,7 +4,10 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const AutoDllPlugin = require('autodll-webpack-plugin');
 const yamljs = require('yamljs');
 
-const reportUrl = yamljs.parseFile('installers/launcher-config-windows.yaml').reportServer;
+let reportUrl = '';
+try {
+  reportUrl = yamljs.parseFile('installers/launcher-config-windows.yaml').reportServer;
+} catch (e) {} // eslint-disable-line
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
@@ -21,6 +24,7 @@ module.exports = {
       {
         test: /\.jsx?$/,
         include: /source/,
+        exclude: /source\/main/,
         use: {
           loader: 'babel-loader?cacheDirectory&cacheIdentifier=' + Math.random(),
           // Fix for https://github.com/yahoo/babel-plugin-react-intl/issues/47 ^^
@@ -72,7 +76,7 @@ module.exports = {
       'process.env.NETWORK': JSON.stringify(process.env.NETWORK || 'development'),
       'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
       'process.env.DAEDALUS_VERSION': JSON.stringify(process.env.DAEDALUS_VERSION || 'dev'),
-      'process.env.REPORT_URL': JSON.stringify(reportUrl)
+      'process.env.REPORT_URL': JSON.stringify(reportUrl),
     }),
     new AutoDllPlugin({
       filename: 'vendor.dll.js',

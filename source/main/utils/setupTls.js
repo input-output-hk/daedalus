@@ -1,6 +1,6 @@
 import path from 'path';
 import fs from 'fs';
-import Log from 'electron-log';
+import log from 'electron-log';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -14,11 +14,11 @@ export const setupTls = () => {
   const pathToCertificate = isProd ? caProductionPath : path.join(process.cwd(), 'tls', 'ca.crt');
 
   try {
-    Log.info('Using certificates from: ' + pathToCertificate);
+    log.info('Using certificates from: ' + pathToCertificate);
     Object.assign(global, {
       ca: fs.readFileSync(pathToCertificate),
     });
   } catch (error) {
-    Log.error(`Error while loading ca.crt: ${error}`);
+    log.error(`Error while loading ca.crt: ${error}`);
   }
 };

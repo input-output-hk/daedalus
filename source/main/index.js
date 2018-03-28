@@ -1,22 +1,22 @@
 import os from 'os';
 import { app, globalShortcut, Menu } from 'electron';
-import Log from 'electron-log';
+import log from 'electron-log';
 import { client } from 'electron-connect';
 import { setupLogging } from './utils/setupLogging';
 import { setupTls } from './utils/setupTls';
+import { makeEnvironmentGlobal } from './utils/makeEnvironmentGlobal';
 import { createMainWindow } from './windows/main';
 import { createAboutWindow } from './windows/about';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
 import { installChromeExtensions } from './utils/installChromeExtensions';
-
-const isDev = process.env.NODE_ENV === 'development';
+import environment from '../common/environment';
 
 setupLogging();
 
-Log.info(`========== Daedalus is starting at ${new Date()} ==========`);
+log.info(`========== Daedalus is starting at ${new Date()} ==========`);
 
-Log.info(`!!! Daedalus is running on ${os.platform()} version ${os.release()}
+log.info(`!!! Daedalus is running on ${os.platform()} version ${os.release()}
             with CPU: ${JSON.stringify(os.cpus(), null, 2)} with
             ${JSON.stringify(os.totalmem(), null, 2)} total RAM !!!`);
 
@@ -30,11 +30,12 @@ const openAbout = () => {
 
 app.on('ready', async () => {
   setupTls();
-  await installChromeExtensions(isDev);
+  makeEnvironmentGlobal(process.env);
+  await installChromeExtensions(environment.isDev());
   aboutWindow = createAboutWindow();
   mainWindow = createMainWindow();
 
-  if (isDev) {
+  if (environment.isDev()) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
     client.create(aboutWindow);
     client.create(mainWindow);

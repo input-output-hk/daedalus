@@ -3,7 +3,7 @@ import { observable, computed, action, extendObservable } from 'mobx';
 import _ from 'lodash';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
-import WalletTransaction from '../domain/WalletTransaction';
+import WalletTransaction from '../domains/WalletTransaction';
 import type { GetTransactionsResponse } from '../api/common';
 import environment from '../../../common/environment';
 

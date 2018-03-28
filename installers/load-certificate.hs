@@ -54,10 +54,10 @@ systemKeyChain = "/Library/Keychains/System.keychain"
 
 go :: Command -> IO ExitCode
 go (Command kc (LoadCertificate f)) = do
-  doMaybe (setupKeychain "travis") kc
+  doMaybe (setupKeychain "ci") kc
   let cfg' = signingConfig { signingKeyChain = Just (fromMaybe systemKeyChain kc) }
   res <- getPassword >>= importCertificate cfg' f
-  doMaybe (preventPasswordPrompts "travis") kc
+  doMaybe (preventPasswordPrompts "ci") kc
   pure res
 go (Command kc DeleteCertificate) = do
   res <- deleteCertificate signingConfig
@@ -75,10 +75,10 @@ getPassword = need "CERT_PASS" >>= \case
     fmap (>>= lineMaybe) getSecret
 
 lineMaybe :: Line -> Maybe Text
-lineMaybe = nonEmpty . lineToText
+lineMaybe = nonempty . lineToText
   where
-    nonEmpty "" = Nothing
-    nonEmpty l = Just l
+    nonempty "" = Nothing
+    nonempty l = Just l
 
 getSecret :: IO (Maybe Line)
 getSecret = bracket open close (\_ -> readline)

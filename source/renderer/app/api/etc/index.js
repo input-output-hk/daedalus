@@ -3,7 +3,7 @@ import BigNumber from 'bignumber.js';
 import { remote } from 'electron';
 import { isAddress } from 'web3-utils/src/utils';
 import { getEtcSyncProgress } from './getEtcSyncProgress';
-import { Logger, stringifyData, stringifyError } from '../../utils/logging';
+import { Logger, stringifyData, stringifyError } from '../../../../common/logging';
 import {
   GenericApiError, IncorrectWalletPasswordError,
   WalletAlreadyRestoredError,
@@ -14,8 +14,8 @@ import {
   initEtcWalletsDummyData,
 } from './etcLocalStorage';
 import { ETC_DEFAULT_GAS_PRICE, WEI_PER_ETC } from '../../config/numbersConfig';
-import Wallet from '../../domain/Wallet';
-import WalletTransaction, { transactionStates, transactionTypes } from '../../domain/WalletTransaction';
+import Wallet from '../../domains/Wallet';
+import WalletTransaction, { transactionStates, transactionTypes } from '../../domains/WalletTransaction';
 
 import { getEtcAccounts } from './getEtcAccounts';
 import { getEtcAccountBalance } from './getEtcAccountBalance';

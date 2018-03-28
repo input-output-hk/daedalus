@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import SvgInline from 'react-svg-inline';
+import SVGInline from 'react-svg-inline';
 import { ipcRenderer } from 'electron';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { environmentSpecificMessages } from '../../i18n/global-messages';
@@ -119,7 +119,7 @@ export default class About extends Component<any> {
 
         <div className={styles.headerWrapper}>
 
-          <SvgInline svg={daedalusIcon} className={styles.daedalusIcon} />
+          <SVGInline svg={daedalusIcon} className={styles.daedalusIcon} />
 
           <div className={styles.daedalusTitleVersion}>
             <div className={styles.daedalusTitle}>
@@ -136,7 +136,7 @@ export default class About extends Component<any> {
             </div>
           </div>
 
-          <SvgInline svg={apiIcon} className={styles.apiIcon} />
+          <SVGInline svg={apiIcon} className={styles.apiIcon} />
         </div>
 
         <div className={styles.contentText}>

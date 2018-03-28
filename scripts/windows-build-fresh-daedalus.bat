@@ -3,7 +3,7 @@ rem   1. Node.js ('npm' binary in PATH)
 rem   2. 7zip    ('7z'  binary in PATH)
 rem   3. Git     ('git' binary in PATH)
 
-@set DEFAULT_DAEDALUS_BRANCH=cardano-sl-0.4
+@set DEFAULT_DAEDALUS_BRANCH=master
 
 set DAEDALUS_BRANCH=%1
 @if [%DAEDALUS_BRANCH%]==[] (set DAEDALUS_BRANCH=%DEFAULT_DAEDALUS_BRANCH%)
@@ -26,8 +26,5 @@ git clone %URL%
     @for /f %%a in ('git show-ref --hash HEAD') do set version=%%a
     @call "C:\Program Files (x86)\Microsoft Visual Studio 14.0\Common7\Tools\VsDevCmd.bat"
 
-    @rem NOTE: we're setting the CARDANO_BRANCH to DEFAULT_DAEDALUS_BRANCH:
-    @rem       1. there's no obvious better choice
-    @rem       2. this is intended as a workflow script sitting outside the repository, anyway
-    call scripts\build-installer-win64 %GITHUB_USER%-%DAEDALUS_BRANCH%-%version% %DEFAULT_DAEDALUS_BRANCH%
+    call scripts\build-installer-win64 %GITHUB_USER%-%DAEDALUS_BRANCH%-%version%
 @popd
