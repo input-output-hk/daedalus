@@ -10,6 +10,10 @@
     margin-bottom: 10px;
   }
 
+  h1:not(:first-child) {
+    padding-top: 10px;
+  }
+
   p {
     color: var(--theme-support-settings-text-color);
     font-family: var(--font-regular);

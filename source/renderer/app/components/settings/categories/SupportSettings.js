@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import styles from './SupportSettings.scss';
 
 const messages = defineMessages({
@@ -12,18 +12,33 @@ const messages = defineMessages({
   },
   faqContent: {
     id: 'settings.support.faq.content',
-    defaultMessage: 'If you are experiencing issues, please look at the <a href="https://daedaluswallet.io/faq/">FAQ on Daedalus website</a> for solutions to known issues.',
-    description: 'Content for the FAQ on the support settings page.',
+    defaultMessage: 'If you are experiencing issues, please look at the {faqLink} for solutions to known issues.',
+    description: 'Content for the "Frequently asked questions" section on the support settings page.',
+  },
+  faqLink: {
+    id: 'settings.support.faq.faqLink',
+    defaultMessage: 'FAQ on Daedalus website',
+    description: '"FAQ on Daedalus website" link in the FAQ section on the support settings page',
+  },
+  faqLinkUrl: {
+    id: 'settings.support.faq.faqLinkURL',
+    defaultMessage: 'https://daedaluswallet.io/faq/',
+    description: 'URL for the "FAQ on Daedalus website" link in the FAQ section on the support settings page',
   },
   reportProblemTitle: {
     id: 'settings.support.reportProblem.title',
-    defaultMessage: '!!!Reporting a problem',
+    defaultMessage: '!!!Report a problem',
     description: 'Title "Reporting a problem" on the support settings page.',
   },
   reportProblemContent: {
     id: 'settings.support.reportProblem.content',
-    defaultMessage: 'If the FAQ does not contain a solution for the issue you are experiencing, please use <a href="#">problem reporting feature</a> to report the issue you are experiencing.',
-    description: 'Content for the FAQ on the support settings page.',
+    defaultMessage: 'If the FAQ does not contain a solution for the issue you are experiencing, please use {supportRequestLink} feature to report the issue you are experiencing.',
+    description: 'Content for the "Report a problem" section on the support settings page.',
+  },
+  supportRequestLink: {
+    id: 'settings.support.reportProblem.link',
+    defaultMessage: 'Support request',
+    description: '"Support request" link in the "Report a problem" section on the support settings page.',
   },
   logsTitle: {
     id: 'settings.support.logs.title',
@@ -32,8 +47,13 @@ const messages = defineMessages({
   },
   logsContent: {
     id: 'settings.support.logs.content',
-    defaultMessage: 'If you want to inspect logs, you can <a href="#">download them here</a>. Logs do not contain any sensitive information, and it would be helpful to attach them to problem reports to help the team to investigate the issue you are experiencing. Logs can be attached automatically when using the bug reporting feature.',
-    description: 'Content for the FAQ on the support settings page.',
+    defaultMessage: 'If you want to inspect logs, you can {downloadLogsLink}. Logs do not contain any sensitive information, and it would be helpful to attach them to problem reports to help the team to investigate the issue you are experiencing. Logs can be attached automatically when using the bug reporting feature.',
+    description: 'Content for the "Logs" section on the support settings page.',
+  },
+  downloadLogsLink: {
+    id: 'settings.support.logs.downloadLogsLink',
+    defaultMessage: 'download them here',
+    description: '"download them here" link in the Logs section on the support settings page',
   },
 });
 
@@ -54,29 +74,41 @@ export default class SupportSettings extends Component<Props> {
     const { onExternalLinkClick, onSupportRequestClick, onDownloadLogs } = this.props;
     const { intl } = this.context;
 
+    const faqLink = <a
+      href={intl.formatMessage(messages.faqLinkUrl)}
+      onClick={event => onExternalLinkClick(event)}
+    >
+      {intl.formatMessage(messages.faqLink)}
+    </a>;
+
+    const supportRequestLink = <a
+      href="#"
+      onClick={event => onSupportRequestClick(event)}
+    >
+      {intl.formatMessage(messages.supportRequestLink)}
+    </a>;
+
+    const downloadLogsLink = <a
+      href="#"
+      onClick={event => onDownloadLogs(event)}
+    >
+      {intl.formatMessage(messages.downloadLogsLink)}
+    </a>;
+
     return (
       <div className={styles.component}>
 
         <h1>{intl.formatMessage(messages.faqTitle)}</h1>
 
-        <p
-          onClick={event => onExternalLinkClick(event)}
-          dangerouslySetInnerHTML={{ __html: intl.formatMessage(messages.faqContent) }}
-        />
+        <p><FormattedMessage {...messages.faqContent} values={{ faqLink }} /></p>
 
         <h1>{intl.formatMessage(messages.reportProblemTitle)}</h1>
 
-        <p
-          onClick={event => onSupportRequestClick(event)}
-          dangerouslySetInnerHTML={{ __html: intl.formatMessage(messages.reportProblemContent) }}
-        />
+        <p><FormattedMessage {...messages.reportProblemContent} values={{ supportRequestLink }} /></p>
 
         <h1>{intl.formatMessage(messages.logsTitle)}</h1>
 
-        <p
-          onClick={event => onDownloadLogs(event)}
-          dangerouslySetInnerHTML={{ __html: intl.formatMessage(messages.logsContent) }}
-        />
+        <p><FormattedMessage {...messages.logsContent} values={{ downloadLogsLink }} /></p>
 
       </div>
     );
