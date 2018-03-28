@@ -111,7 +111,6 @@ export default class CompletionDialog extends Component<Props> {
             </div>
           </div>
 
-
           <div className={styles.addressInstructionsWrapper}>
             <p>{intl.formatMessage(messages.addressInstructions)}</p>
 
