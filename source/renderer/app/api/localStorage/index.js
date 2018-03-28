@@ -70,25 +70,6 @@ export default class LocalStorageApi {
     } catch (error) {} // eslint-disable-line
   });
 
-  getSendLogsChoice = () => new Promise((resolve, reject) => {
-    try {
-      const sendLogs = store.get(storageKeys.SEND_LOGS_CHOICE);
-      if (typeof sendLogs === 'undefined') return resolve(null);
-      resolve(sendLogs);
-    } catch (error) {
-      return reject(error);
-    }
-  });
-
-  setSendLogsChoice = (sendLogs: boolean) => new Promise((resolve, reject) => {
-    try {
-      store.set(storageKeys.SEND_LOGS_CHOICE, sendLogs);
-      resolve();
-    } catch (error) {
-      return reject(error);
-    }
-  });
-
   unsetSendLogsChoice = () => new Promise((resolve) => {
     try {
       store.delete(storageKeys.SEND_LOGS_CHOICE);

@@ -8,8 +8,7 @@ Feature: Transactions Grouping
   Background:
     Given I have selected English language
     And I have accepted "Terms of use"
-    And I agree to send logs to remote server
-    And I have a wallet
+    And I have a wallet with funds
 
   Scenario: Transactions are Grouped by Date
     Given I made the following transactions with my wallet:
