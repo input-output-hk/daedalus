@@ -9,6 +9,7 @@ Changelog
 ### Fixes
 
 - Remove 5 transactions limit from transactions screen ([PR 778](https://github.com/input-output-hk/daedalus/pull/778))
+- Fix broken copy & paste context menu actions on Windows ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
 
 ### Chores
 
