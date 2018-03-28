@@ -5,6 +5,7 @@ Changelog
 =======
 
 ### Features
+- Instructions for accessing FAQ, reporting a problem and downloading logs on the support page in general settings ([PR 818](https://github.com/input-output-hk/daedalus/pull/818))
 
 ### Fixes
 
@@ -14,6 +15,7 @@ Changelog
 ### Chores
 
 - Improve build system ([PR 692](https://github.com/input-output-hk/daedalus/pull/692))
+- Remove sending logs to remote server feature ([PR 818](https://github.com/input-output-hk/daedalus/pull/818))
 
 ## 0.9.0
 =======
