@@ -210,11 +210,11 @@ export default class SettingsStore extends Store {
       destination,
     };
 
-    // logs allready compressed, download
+    // logs already compressed, download
     if (this.compressedLog) {
       ipcRenderer.send(DOWNLOAD_LOGS.REQUEST, this.compressedLog, destination);
     } else {
-      // start proccess getLogs -> compressLogs -> downloadLogs (again)
+      // start process getLogs -> compressLogs -> downloadLogs (again)
       this._getLogs();
     }
   });
