@@ -1,13 +1,7 @@
 import { ipcMain } from 'electron';
 import fs from 'fs';
-import { Logger, stringifyError } from '../../renderer/app/utils/logging';
-
-const CHANNEL_NAME = 'delete-compressed-logs';
-
-export const DELETE_COMPRESSED_LOGS = {
-  REQUEST: CHANNEL_NAME,
-  SUCCESS: `${CHANNEL_NAME}-success`,
-};
+import { Logger, stringifyError } from '../../common/logging';
+import { DELETE_COMPRESSED_LOGS } from '../../common/ipc-api';
 
 export default () => {
   ipcMain.on(DELETE_COMPRESSED_LOGS.REQUEST, (event, file) => {

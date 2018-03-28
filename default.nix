@@ -82,7 +82,7 @@ let
 
       cp -f ${self.iconPath} $DAEDALUS_DIR/icon.png
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper $DAEDALUS_DIR/namespaceHelper
-      mkdir -pv ~/.local/bin ~/bin
+      mkdir -pv ~/.local/bin ~/bin ''${XDG_DATA_HOME}/applications
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/bin/daedalus
 

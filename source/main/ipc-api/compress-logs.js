@@ -4,14 +4,8 @@ import archiver from 'archiver';
 import path from 'path';
 import { get } from 'lodash';
 import { appLogsFolderPath, pubLogsFolderPath } from '../config';
-import { Logger, stringifyError } from '../../renderer/app/utils/logging';
-
-const CHANNEL_NAME = 'compress-logs';
-
-export const COMPRESS_LOGS = {
-  REQUEST: CHANNEL_NAME,
-  SUCCESS: `${CHANNEL_NAME}-success`,
-};
+import { Logger, stringifyError } from '../../common/logging';
+import { COMPRESS_LOGS } from '../../common/ipc-api';
 
 export default () => {
   ipcMain.on(COMPRESS_LOGS.REQUEST, (event, logs) => {

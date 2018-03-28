@@ -2,7 +2,7 @@
 import { observable, action, runInAction } from 'mobx';
 import { get, chunk } from 'lodash';
 import WalletStore from '../WalletStore';
-import Wallet from '../../domain/Wallet';
+import Wallet from '../../domains/Wallet';
 import { matchRoute, buildRoute } from '../../utils/routing';
 import { i18nContext } from '../../utils/i18nContext';
 import Request from '.././lib/LocalizedRequest';

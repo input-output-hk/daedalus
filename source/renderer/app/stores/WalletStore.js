@@ -2,7 +2,7 @@
 import { observable, action, computed, runInAction, untracked } from 'mobx';
 import _ from 'lodash';
 import Store from './lib/Store';
-import Wallet from '../domain/Wallet';
+import Wallet from '../domains/Wallet';
 import Request from './lib/LocalizedRequest';
 import { buildRoute, matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';

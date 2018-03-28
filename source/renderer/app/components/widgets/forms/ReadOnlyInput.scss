@@ -3,18 +3,11 @@
   position: relative;
 
   :global {
-    .SimpleFormField_root {
-      .SimpleFormField_label {
-        color: var(--theme-input-label-color);
-      }
-    }
-
     .SimpleInput_disabled {
-      background: none;
       .SimpleInput_input {
         background-color: var(--theme-input-background-color);
         border-color: var(--theme-input-border-color);
-        color: var(--theme-input-text-color) !important;
+        color: var(--theme-input-text-color);
       }
     }
   }

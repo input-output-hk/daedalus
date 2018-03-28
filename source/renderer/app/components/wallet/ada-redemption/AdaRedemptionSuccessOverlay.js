@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import SvgInline from 'react-svg-inline';
+import SVGInline from 'react-svg-inline';
 import Button from 'react-polymorph/lib/components/Button';
 import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -41,7 +41,7 @@ export default class AdaRedemptionSuccessOverlay extends Component<Props> {
 
     return (
       <div className={styles.component}>
-        <SvgInline svg={successIcon} className={styles.icon} />
+        <SVGInline svg={successIcon} className={styles.icon} />
         <div className={styles.text}>
           <h1 className={styles.headline}>{intl.formatMessage(messages.headline)}</h1>
           <div className={styles.amount}>{amount} ADA</div>

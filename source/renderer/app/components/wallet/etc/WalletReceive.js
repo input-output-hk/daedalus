@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import SvgInline from 'react-svg-inline';
+import SVGInline from 'react-svg-inline';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
 import BorderedBox from '../../widgets/BorderedBox';
@@ -66,7 +66,7 @@ export default class WalletReceive extends Component<Props> {
                   text={walletAddress}
                   onCopy={onCopyAddress.bind(this, walletAddress)}
                 >
-                  <SvgInline svg={iconCopy} className={styles.copyIcon} />
+                  <SVGInline svg={iconCopy} className={styles.copyIcon} />
                 </CopyToClipboard>
               </div>
 

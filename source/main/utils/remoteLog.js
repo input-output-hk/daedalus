@@ -1,4 +1,4 @@
-import Log from 'electron-log';
+import log from 'electron-log';
 import winston from 'winston';
 
 // Requiring `winston-papertrail` will expose
@@ -12,14 +12,14 @@ const papertrailConfiguration = {
 
 const winstonPapertrailDaedalus = new winston.transports.Papertrail(
   Object.assign({}, papertrailConfiguration, {
-    program: 'Daedalus'
+    program: 'Daedalus',
   })
 );
 
 winstonPapertrailDaedalus.on('error', (error: Error) => {
-  Log.error('Error connecting to papertrail logging service for Daedalus', error);
+  log.error('Error connecting to papertrail logging service for Daedalus', error);
 });
 
 export const daedalusLogger = new winston.Logger({
-  transports: [winstonPapertrailDaedalus]
+  transports: [winstonPapertrailDaedalus],
 });

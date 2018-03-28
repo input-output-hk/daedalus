@@ -1,25 +1,25 @@
 // @flow
 import { ipcRenderer } from 'electron';
-import Log from 'electron-log';
+import log from 'electron-log';
 import moment from 'moment';
 
 export const Logger = {
 
   debug: (data: string) => {
-    Log.debug(data);
+    log.debug(data);
   },
 
   info: (data: string) => {
-    Log.info(data);
+    log.info(data);
   },
 
   error: (data: string) => {
-    Log.error(data);
+    log.error(data);
     Logger.sendToRemote('error', data);
   },
 
   warn: (data: string) => {
-    Log.info(data);
+    log.info(data);
   },
 
   sendToRemote: (type: string, data: string) => {

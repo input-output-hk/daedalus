@@ -1,12 +1,6 @@
 import { ipcMain } from 'electron';
 import fs from 'fs';
-
-const CHANNEL_NAME = 'download-logs';
-
-export const DOWNLOAD_LOGS = {
-  REQUEST: CHANNEL_NAME,
-  SUCCESS: `${CHANNEL_NAME}-success`,
-};
+import { DOWNLOAD_LOGS } from '../../common/ipc-api';
 
 export default () => {
   ipcMain.on(DOWNLOAD_LOGS.REQUEST, (event, source, destination) => {

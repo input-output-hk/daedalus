@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import SvgInline from 'react-svg-inline';
+import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import classNames from 'classnames';
 import InstructionsDialog from '../wallet/paper-wallet-certificate/InstructionsDialog';
@@ -30,7 +30,7 @@ export default class SidebarCategory extends Component<Props> {
 
     return (
       <button className={componentStyles} onClick={this.handleClick.bind(this, className)}>
-        <SvgInline svg={icon} className={iconStyles} />
+        <SVGInline svg={icon} className={iconStyles} />
       </button>
     );
   }

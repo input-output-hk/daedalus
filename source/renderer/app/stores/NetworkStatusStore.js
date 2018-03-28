@@ -4,7 +4,7 @@ import moment from 'moment';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
-import { Logger } from '../utils/logging';
+import { Logger } from '../../../common/logging';
 import type { GetSyncProgressResponse, GetLocalTimeDifferenceResponse } from '../api/common';
 import environment from '../../../common/environment';
 

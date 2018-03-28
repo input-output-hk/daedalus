@@ -103,7 +103,8 @@ export default {
   '--theme-input-remove-color-lighter': '#ec5d6b',
   '--theme-input-remove-color-lightest': '#fac8ce',
   '--theme-input-background-color': '#fafbfc',
-  '--theme-input-disabled-background-color': '#cfcfcf',
+  '--theme-input-disabled-background-color': 'rgba(94, 96, 102, 0.05)',
+  '--theme-input-disabled-border-color': 'rgba(94, 96, 102, 0.05)',
   '--theme-input-focus-border-color': '#5e6066',
 
   '--theme-main-body-background-color': '#ebeff2',

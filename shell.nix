@@ -1,4 +1,12 @@
-with import (import ./fetchNixpkgs.nix (builtins.fromJSON (builtins.readFile ./nixpkgs-src.json))) {};
+let
+  localLib = import ./lib.nix;
+in
+{ system ? builtins.currentSystem
+, config ? {}
+, pkgs ? (import (localLib.fetchNixPkgs) { inherit system config; })
+}:
+
+with pkgs;
 
 stdenv.mkDerivation {
   name = "daedalus";

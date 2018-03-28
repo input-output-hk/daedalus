@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import classNames from 'classnames';
-import SvgInline from 'react-svg-inline';
+import SVGInline from 'react-svg-inline';
 import expendIcon from '../../../assets/images/wallet-nav/send-ic.inline.svg';
 import incomeIcon from '../../../assets/images/wallet-nav/receive-ic.inline.svg';
 import exchangeIcon from '../../../assets/images/exchange-ic.inline.svg';
@@ -43,7 +43,7 @@ export default class TransactionTypeIcon extends Component<Props> {
 
     return (
       <div className={transactionTypeIconClasses}>
-        <SvgInline svg={icon} className={styles.transactionTypeIcon} />
+        <SVGInline svg={icon} className={styles.transactionTypeIcon} />
       </div>
     );
   }
