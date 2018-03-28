@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import SvgInline from 'react-svg-inline';
+import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
@@ -69,7 +69,7 @@ export default class AdaRedemptionDisclaimer extends Component<Props, State> {
     return (
       <div className={styles.component}>
 
-        <SvgInline svg={attentionIcon} className={styles.icon} />
+        <SVGInline svg={attentionIcon} className={styles.icon} />
 
         <h1>{intl.formatMessage(messages.disclaimerTitle)}</h1>
 

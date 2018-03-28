@@ -4,10 +4,10 @@ import { ipcRenderer } from 'electron';
 import { isString } from 'lodash';
 import Store from '../lib/Store';
 import Request from '../lib/LocalizedRequest';
-import { Logger } from '../../utils/logging';
+import { Logger } from '../../../../common/logging';
 import { matchRoute } from '../../utils/routing';
-import WalletTransaction from '../../domain/WalletTransaction';
-import { PARSE_REDEMPTION_CODE } from '../../../../main/ipc-api/parse-redemption-code-from-pdf';
+import WalletTransaction from '../../domains/WalletTransaction';
+import { PARSE_REDEMPTION_CODE } from '../../../../common/ipc-api';
 import {
   InvalidMnemonicError,
   AdaRedemptionCertificateParseError,
@@ -15,7 +15,7 @@ import {
 } from '../../i18n/errors';
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import LocalizableError from '../../i18n/LocalizableError';
-import Wallet from '../../domain/Wallet';
+import Wallet from '../../domains/Wallet';
 import { ROUTES } from '../../routes-config';
 import type { RedeemPaperVendedAdaResponse } from '../../api/ada/index';
 import type { RedemptionTypeChoices } from '../../types/redemptionTypes';

@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import SvgInline from 'react-svg-inline';
+import SVGInline from 'react-svg-inline';
 import Dropzone from 'react-dropzone';
 import { intlShape } from 'react-intl';
 import certificateNormalIcon from '../../../assets/images/cert-ic.inline.svg';
@@ -51,9 +51,9 @@ export default class AdaCertificateUploadWidget extends Component<Props> {
           {isCertificateSelected ? (
             <div className={styles.certificateUploaded}>
               <button className={styles.removeFileButton} onClick={onRemoveCertificate}>
-                <SvgInline svg={closeCrossIcon} className={styles.closeCrossIcon} />
+                <SVGInline svg={closeCrossIcon} className={styles.closeCrossIcon} />
               </button>
-              <SvgInline svg={certificateIcon} className={styles.certificateIcon} />
+              <SVGInline svg={certificateIcon} className={styles.certificateIcon} />
             </div>
           ) : (
             <Dropzone

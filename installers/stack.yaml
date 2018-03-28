@@ -2,13 +2,16 @@ flags: {}
 
 extra-package-dbs: []
 
-packages:
-  - location: .
-
-resolver: lts-9.1
+allow-newer: true
+resolver: lts-11.1
 
 nix:
     packages: [gmp,git]
 
-extra-deps:
-  - universum-0.8.0
+packages:
+  - location: .
+
+  - location:
+      git: https://github.com/dhall-lang/dhall-json
+      commit: d6adaa265dcf8ab5899396b05d612b2d8092dca4
+    extra-dep: true

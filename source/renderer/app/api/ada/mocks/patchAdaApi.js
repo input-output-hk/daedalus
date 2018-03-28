@@ -1,5 +1,5 @@
 import BigNumber from 'bignumber.js';
-import { Logger } from '../../../utils/logging';
+import { Logger } from '../../../../../common/logging';
 import { RedeemAdaError } from '../errors';
 import AdaApi from '../index';
 import type {

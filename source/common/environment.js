@@ -1,5 +1,6 @@
 // @flow
 import os from 'os';
+import { remote } from 'electron';
 
 const environment = Object.assign({
   DEVELOPMENT: 'development',
@@ -18,6 +19,6 @@ const environment = Object.assign({
   isEtcApi: () => environment.API === 'etc',
   build: process.env.DAEDALUS_VERSION || 'dev',
   platform: os.platform(),
-}, process.env);
+}, remote ? remote.getGlobal('env') : process.env);
 
 export default environment;

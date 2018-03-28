@@ -1,1 +1,9 @@
 .stack-work/
+
+configuration.yaml
+launcher-config.yaml
+wallet-topology.yaml
+
+*genesis*.json
+*.windows
+*.zip

@@ -3,8 +3,8 @@ import { includes } from 'lodash';
 import fs from 'fs';
 import path from 'path';
 import { pubLogsFolderPath } from '../config';
+import { GET_LOGS } from '../../common/ipc-api';
 
-const CHANNEL_NAME = 'get-logs';
 const ALLOWED_LOGS = [
   'Daedalus.log',
   'launcher',
@@ -30,11 +30,6 @@ const ALLOWED_LOGS = [
   'node.pub.18',
   'node.pub.19',
 ];
-
-export const GET_LOGS = {
-  REQUEST: CHANNEL_NAME,
-  SUCCESS: `${CHANNEL_NAME}-success`,
-};
 
 export default () => {
   ipcMain.on(GET_LOGS.REQUEST, (event) => {

@@ -4,13 +4,13 @@ logs
 
 # Runtime data
 pids
+*.exe
 *.pid
 *.seed
 *curl*
-installers/*.exe
+log-config-prod.yaml
 installers/*.nsi
 installers/version.txt
-installers/log-config-prod.yaml
 installers/runtempinstaller.bat
 scripts/nsis-*
 
@@ -60,3 +60,8 @@ translations/reports
 
 # Webpack
 .cache
+
+# Git data
+build-id
+ci-url
+commit-id

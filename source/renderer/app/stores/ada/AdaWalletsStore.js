@@ -1,7 +1,7 @@
 // @flow
 import { observable, action, runInAction } from 'mobx';
 import WalletStore from '../WalletStore';
-import Wallet from '../../domain/Wallet';
+import Wallet from '../../domains/Wallet';
 import { matchRoute, buildRoute } from '../../utils/routing';
 import Request from '.././lib/LocalizedRequest';
 import { ROUTES } from '../../routes-config';
