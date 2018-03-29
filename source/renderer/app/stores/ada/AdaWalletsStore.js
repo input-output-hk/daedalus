@@ -324,27 +324,25 @@ export default class AdaWalletsStore extends WalletStore {
     recoveryPhrase: Array<string>,
     filePath: string,
   ) => {
-    setTimeout(() => { // Timeout is used to allow enought time for button text re-rendering
-      const locale = this.stores.profile.currentLocale;
-      const intl = i18nContext(locale);
+    const locale = this.stores.profile.currentLocale;
+    const intl = i18nContext(locale);
 
-      downloadPaperWalletCertificate({
-        address,
-        mnemonics: recoveryPhrase,
-        intl,
-        filePath,
-        onSuccess: () => {
-          // Reset progress
-          this._updateCertificateCreationState(false);
-          // Update certificate generator step
-          this._updateCertificateStep();
-        },
-        onError: () => {
-          // Reset progress
-          this._updateCertificateCreationState(false);
-        },
-      });
-    }, 100);
+    downloadPaperWalletCertificate({
+      address,
+      mnemonics: recoveryPhrase,
+      intl,
+      filePath,
+      onSuccess: () => {
+        // Reset progress
+        this._updateCertificateCreationState(false);
+        // Update certificate generator step
+        this._updateCertificateStep();
+      },
+      onError: () => {
+        // Reset progress
+        this._updateCertificateCreationState(false);
+      },
+    });
   });
 
   _updateCertificateCreationState = action((state: boolean) => {
