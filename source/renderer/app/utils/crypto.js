@@ -1,5 +1,8 @@
 // @flow
 import bip39 from 'bip39';
+import { Buffer } from 'safe-buffer';
+import { pbkdf2Sync as pbkdf2 } from 'pbkdf2';
+import * as unorm from 'unorm';
 import CardanoCrypto from 'rust-cardano-crypto';
 import validWords from '../../../common/valid-words.en';
 
@@ -55,4 +58,11 @@ export const unscramblePaperWalletMnemonic = (
 ) => {
   const input = CardanoCrypto.PaperWallet.unscrambleStrings(passphrase, scrambledInput);
   return input;
+};
+
+export const mnemonicToSeedHex = (mnemonic: string, password: ?string) => {
+  const mnemonicBuffer = Buffer.from(unorm.nfkd(mnemonic), 'utf8');
+  const salt = 'mnemonic' + (unorm.nfkd(password) || '');
+  const saltBuffer = Buffer.from(salt, 'utf8');
+  return pbkdf2(mnemonicBuffer, saltBuffer, 2048, 32, 'sha512').toString('hex');
 };

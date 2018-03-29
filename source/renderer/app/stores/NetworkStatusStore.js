@@ -48,7 +48,7 @@ export default class NetworkStatusStore extends Store {
   @observable _localDifficultyStartedWith = null;
 
   _timeDifferencePollInterval: ?number = null;
-  _pollerBlocked: ?boolean = false;
+  _pollerBlocked = false;
 
   @action initialize() {
     super.initialize();
