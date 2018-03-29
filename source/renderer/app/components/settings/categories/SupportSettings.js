@@ -12,32 +12,32 @@ const messages = defineMessages({
   },
   faqContent: {
     id: 'settings.support.faq.content',
-    defaultMessage: 'If you are experiencing issues, please look at the {faqLink} for solutions to known issues.',
+    defaultMessage: '!!!If you are experiencing issues, please see the {faqLink} for guidance on known issues.',
     description: 'Content for the "Frequently asked questions" section on the support settings page.',
   },
   faqLink: {
     id: 'settings.support.faq.faqLink',
-    defaultMessage: 'FAQ on Daedalus website',
+    defaultMessage: '!!!FAQ on Daedalus website',
     description: '"FAQ on Daedalus website" link in the FAQ section on the support settings page',
   },
   faqLinkUrl: {
     id: 'settings.support.faq.faqLinkURL',
-    defaultMessage: 'https://daedaluswallet.io/faq/',
+    defaultMessage: '!!!https://daedaluswallet.io/faq/',
     description: 'URL for the "FAQ on Daedalus website" link in the FAQ section on the support settings page',
   },
   reportProblemTitle: {
     id: 'settings.support.reportProblem.title',
-    defaultMessage: '!!!Report a problem',
+    defaultMessage: '!!!Reporting a problem',
     description: 'Title "Reporting a problem" on the support settings page.',
   },
   reportProblemContent: {
     id: 'settings.support.reportProblem.content',
-    defaultMessage: 'If the FAQ does not contain a solution for the issue you are experiencing, please use {supportRequestLink} feature to report the issue you are experiencing.',
-    description: 'Content for the "Report a problem" section on the support settings page.',
+    defaultMessage: '!!!If the FAQ does not solve the issue you are experiencing, please use our {supportRequestLink} feature.',
+    description: 'Content for the "Reporting a problem" section on the support settings page.',
   },
   supportRequestLink: {
     id: 'settings.support.reportProblem.link',
-    defaultMessage: 'Support request',
+    defaultMessage: '!!!Support request',
     description: '"Support request" link in the "Report a problem" section on the support settings page.',
   },
   logsTitle: {
@@ -47,12 +47,12 @@ const messages = defineMessages({
   },
   logsContent: {
     id: 'settings.support.logs.content',
-    defaultMessage: 'If you want to inspect logs, you can {downloadLogsLink}. Logs do not contain any sensitive information, and it would be helpful to attach them to problem reports to help the team to investigate the issue you are experiencing. Logs can be attached automatically when using the bug reporting feature.',
+    defaultMessage: '!!!If you want to inspect logs, you can {downloadLogsLink}. Logs do not contain sensitive information, and it would be helpful to attach them to problem reports to help the team investigate the issue you are experiencing. Logs can be attached automatically when using the bug reporting feature.',
     description: 'Content for the "Logs" section on the support settings page.',
   },
   downloadLogsLink: {
     id: 'settings.support.logs.downloadLogsLink',
-    defaultMessage: 'download them here',
+    defaultMessage: '!!!download them here',
     description: '"download them here" link in the Logs section on the support settings page',
   },
 });
