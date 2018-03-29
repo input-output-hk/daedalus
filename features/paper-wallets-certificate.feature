@@ -4,7 +4,6 @@ Feature: Paper Wallets Certificate generation
     Given I have completed the basic setup
     And I have a wallet with funds
 
-  @watch
   Scenario: Paper wallets certificate success generation
     Given The sidebar shows the "wallets" category
     And I click on the "paper-wallet-create-certificate" category in the sidebar
@@ -63,7 +62,6 @@ Feature: Paper Wallets Certificate generation
     Then I should be on the "Restored CERTIFICATE wallet" wallet "receive" screen
     And I should see that address was used
 
-  @watch
   Scenario: Paper wallets certificate generation with wrong shielded recovery phrase
     Given The sidebar shows the "wallets" category
     And I click on the "paper-wallet-create-certificate" category in the sidebar

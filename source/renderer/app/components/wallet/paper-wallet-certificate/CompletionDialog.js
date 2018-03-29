@@ -102,12 +102,14 @@ export default class CompletionDialog extends Component<Props> {
             <p className={styles.infoBoxLabel}>{intl.formatMessage(messages.cardanoLinkLabel)}</p>
 
             <div className={styles.infoBox}>
-              <a
-                href={cardanoExplorerLink}
+              <span
+                className={styles.link}
                 onClick={this.openCardanoExplorer.bind(this, cardanoExplorerLink)}
+                role="link"
+                aria-hidden
               >
                 {cardanoExplorerLink}
-              </a>
+              </span>
             </div>
           </div>
 

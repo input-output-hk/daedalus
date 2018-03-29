@@ -7,7 +7,7 @@ import { matchRoute, buildRoute } from '../../utils/routing';
 import { i18nContext } from '../../utils/i18nContext';
 import Request from '.././lib/LocalizedRequest';
 import { ROUTES } from '../../routes-config';
-import { mnemonicToSeedHex } from '../../api/ada/lib/utils';
+import { mnemonicToSeedHex } from '../../utils/crypto';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
 import { downloadPaperWalletCertificate } from '../../utils/paperWalletPdfGenerator';
 import type { walletExportTypeChoices } from '../../types/walletExportTypes';

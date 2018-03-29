@@ -126,7 +126,7 @@ When(/^I see the "Paper Wallet Certificate" dialog$/, function () {
 });
 
 When(/^Cardano explorer link and wallet address should be valid$/, async function () {
-  const visibleCardanoExplorerLink = await this.client.getText('.CompletionDialog_linkInstructionsWrapper .CompletionDialog_infoBox a');
+  const visibleCardanoExplorerLink = await this.client.getText('.CompletionDialog_linkInstructionsWrapper .CompletionDialog_infoBox .CompletionDialog_link');
   const walletCertificateAddress = await this.client.execute(() => (
     daedalus.stores.ada.wallets.walletCertificateAddress
   ));

@@ -23,10 +23,10 @@
 
       .passwordVisibilityToggler {
         bottom: 15px;
-        position: absolute;
         height: 49px;
-        top: 32px;
+        position: absolute;
         right: 0;
+        top: 32px;
         width: 40px;
 
         &:hover {
@@ -45,7 +45,7 @@
 
         &:hover {
           cursor: pointer;
-        };
+        }
       }
 
       :global {
@@ -57,7 +57,6 @@
       .checkbox {
         margin-top: 20px;
       }
-
     }
   }
 
@@ -66,5 +65,4 @@
     text-align: center;
     margin-top: 27px;
   }
-
 }

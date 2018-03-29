@@ -1,6 +1,7 @@
 .completionContentWrapper {
   color: var(--theme-instructions-text-color);
   font-family: var(--font-light);
+
   p {
     line-height: 1.38;
   }
@@ -24,19 +25,22 @@
     border-radius: 2px;
     font-family: var(--font-regular);
     line-height: 1.38;
-    margin: 10px 0 20px 0;
+    margin: 10px 0 20px;
     min-height: 50px;
     padding: 14px 20px;
     text-align: center;
     word-wrap: break-word;
 
-    a {
+    .link {
       color: var(--theme-paper-wallet-create-certificate-dialog-explorer-link-color);
+      cursor: pointer;
+      text-decoration: underline;
     }
   }
 
   .qrCode {
     display: flex;
+
     canvas {
       border: 4px solid var(--theme-receive-qr-code-background-color);
       box-sizing: content-box;
