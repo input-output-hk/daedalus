@@ -98,7 +98,7 @@
   "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition3": "Use the address on your certificate to send funds to your paper wallet.",
   "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition4": "Your paper wallet will be offline so will not be held in Daedalus. To check the balance of the wallet, input the address on the certificate into {link}",
   "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition5": "Store your certificate containing your paper wallet recovery phrase in a safe place.",
-  "paper.wallet.create.certificate.instructions.dialog.instructionsList.label": "Instructions:",
+  "paper.wallet.create.certificate.instructions.dialog.instructionsList.label": "Instructions",
   "paper.wallet.create.certificate.instructions.dialog.subtitle": "Create a paper wallet certificate for offline storage of funds.",
   "paper.wallet.create.certificate.passwordChoice.dialog.button.printLabel": "Print",
   "paper.wallet.create.certificate.passwordChoice.dialog.headline": "Choose your password",
