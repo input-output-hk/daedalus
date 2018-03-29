@@ -12,11 +12,13 @@ Changelog
 ### Fixes
 
 - Updated moment.js dependency to the latest version which fixes ReDOS vulnerability ([PR 782](https://github.com/input-output-hk/daedalus/pull/782))
-- Remove 5 transactions limit from transactions screen ([PR 778](https://github.com/input-output-hk/daedalus/pull/778))
+- Fixed bug causing only 5 transactions to be shown on the transaction list screen ([PR 778](https://github.com/input-output-hk/daedalus/pull/778))
+- Fixed broken copy & paste context menu actions on Windows ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
 
 ### Chores
 
 - Improve build system ([PR 692](https://github.com/input-output-hk/daedalus/pull/692))
+- New Edit section in system menu with copy & paste and related actions ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
 
 ## 0.9.0
 =======
