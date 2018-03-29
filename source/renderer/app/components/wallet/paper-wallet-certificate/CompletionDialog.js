@@ -51,7 +51,7 @@ const messages = defineMessages({
 
 type Props = {
   walletCertificateAddress: string,
-  onFinish: Function,
+  onClose: Function,
 };
 
 @observer
@@ -63,7 +63,7 @@ export default class CompletionDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onFinish, walletCertificateAddress } = this.props;
+    const { onClose, walletCertificateAddress } = this.props;
     const dialogClasses = classnames([
       styles.component,
       'completionDialog',
@@ -74,7 +74,7 @@ export default class CompletionDialog extends Component<Props> {
         className: 'finishButton',
         label: intl.formatMessage(messages.finishButtonLabel),
         primary: true,
-        onClick: onFinish,
+        onClick: onClose,
       }
     ];
 

@@ -4,8 +4,6 @@ import { action } from '@storybook/addon-actions';
 import wordlist from 'bip39/wordlists/english';
 import StoryDecorator from './support/StoryDecorator';
 import InstructionsDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog';
-import PasswordChoiceDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/PasswordChoiceDialog';
-import TemplateChoiceDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/TemplateChoiceDialog';
 import PrintDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/PrintDialog';
 import SecuringPasswordDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/SecuringPasswordDialog';
 import VerificationDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog';
@@ -26,24 +24,6 @@ storiesOf('PaperWallets', module)
       <InstructionsDialog
         onClose={action('onClose')}
         onContinue={action('onContinue')}
-      />
-    </div>
-  ))
-
-  .add('Password choice', () => (
-    <div>
-      <PasswordChoiceDialog
-        onClose={action('onClose')}
-        onBack={action('onBack')}
-        onContinue={action('onContinue')}
-      />
-    </div>
-  ))
-
-  .add('Template choice', () => (
-    <div>
-      <TemplateChoiceDialog
-        onPrint={action('onPrint')}
       />
     </div>
   ))

@@ -3,18 +3,13 @@ import React, { Component } from 'react';
 import { remote } from 'electron';
 import { observer, inject } from 'mobx-react';
 import InstructionsDialog from '../../../../components/wallet/paper-wallet-certificate/InstructionsDialog';
-import type { ActionsMap } from '../../../../actions/index';
-import type { StoresMap } from '../../../../stores/index';
+import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 
-type Props = {
-  stores: any | StoresMap,
-  actions: any | ActionsMap,
-  onClose: Function,
-};
+type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions') @observer
 export default class InstructionsDialogContainer extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
+  static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
 
   onPrint = () => {
     const filePath = remote.dialog.showSaveDialog({

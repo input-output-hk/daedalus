@@ -26,7 +26,6 @@ export default class WalletsStore extends Store {
   @observable createWalletRequest: Request<any>;
   @observable deleteWalletRequest: Request<any>;
   @observable getWalletRecoveryPhraseRequest: Request<any>;
-  @observable getWalletCertificateRecoveryPhraseRequest: Request<any>;
   @observable restoreRequest: Request<any>;
   @observable isImportActive: boolean = false;
   @observable isRestoreActive: boolean = false;

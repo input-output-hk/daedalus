@@ -2,16 +2,13 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import PrintDialog from '../../../../components/wallet/paper-wallet-certificate/PrintDialog';
-import type { ActionsMap } from '../../../../actions/index';
+import type { InjectedProps } from '../../../../types/injectedPropsType';
 
-type Props = {
-  actions: any | ActionsMap,
-};
+type Props = InjectedProps;
 
 @inject('actions') @observer
 export default class PrintDialogContainer extends Component<Props> {
-
-  static defaultProps = { actions: null };
+  static defaultProps = { actions: null, stores: null };
 
   onContinue = () => {
     this.props.actions.ada.wallets.updateCertificateStep.trigger();

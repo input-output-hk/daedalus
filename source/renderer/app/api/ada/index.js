@@ -55,6 +55,11 @@ import type {
   AdaWallets,
   AdaWalletRecoveryPhraseResponse,
   AdaWalletCertificateAdditionalMnemonicsResponse,
+  AdaWalletCertificateRecoveryPhraseResponse,
+  AdaWalletRecoveryPhraseFromCertificateResponse,
+  GetWalletCertificateAdditionalMnemonicsResponse,
+  GetWalletCertificateRecoveryPhraseResponse,
+  GetWalletRecoveryPhraseFromCertificateResponse,
 } from './types';
 
 import type {
@@ -68,9 +73,6 @@ import type {
   GetTransactionsRequest,
   GetTransactionsResponse,
   GetWalletRecoveryPhraseResponse,
-  GetWalletCertificateAdditionalMnemonicsResponse,
-  GetWalletCertificateRecoveryPhraseResponse,
-  GetWalletRecoveryPhraseFromCertificateResponse,
   GetWalletsResponse,
   RestoreWalletRequest,
   RestoreWalletResponse,
@@ -429,7 +431,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::getWalletCertificateRecoveryPhrase called');
     const { passphrase, input } = request;
     try {
-      const response: Promise<AdaWalletRecoveryPhraseResponse> = new Promise(
+      const response: Promise<AdaWalletCertificateRecoveryPhraseResponse> = new Promise(
         (resolve) => resolve(getAdaWalletCertificateRecoveryPhrase({
           passphrase,
           scrambledInput: input,
@@ -449,7 +451,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate called');
     const { passphrase, scrambledInput } = request;
     try {
-      const response: Promise<AdaWalletRecoveryPhraseResponse> = new Promise(
+      const response: Promise<AdaWalletRecoveryPhraseFromCertificateResponse> = new Promise(
         (resolve) => resolve(getAdaWalletRecoveryPhraseFromCertificate({
           passphrase, scrambledInput,
         }))

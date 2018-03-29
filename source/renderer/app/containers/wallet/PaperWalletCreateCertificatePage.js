@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import InstructionsDialog from '../../components/wallet/paper-wallet-certificate/InstructionsDialog';
 import InstructionsDialogContainer from './dialogs/paper-wallet-certificate/InstructionsDialogContainer';
-import PasswordChoiceDialog from '../../components/wallet/paper-wallet-certificate/PasswordChoiceDialog';
-import PasswordChoiceDialogContainer from './dialogs/paper-wallet-certificate/PasswordChoiceDialogContainer';
 import PrintDialog from '../../components/wallet/paper-wallet-certificate/PrintDialog';
 import PrintDialogContainer from './dialogs/paper-wallet-certificate/PrintDialogContainer';
 import SecuringPasswordDialog from '../../components/wallet/paper-wallet-certificate/SecuringPasswordDialog';
@@ -60,16 +58,6 @@ export default class PaperWalletCreateCertificatePage extends Component<Props, S
       );
     }
 
-    if (uiDialogs.isOpen(PasswordChoiceDialog)) {
-      activeDialog = (
-        <PasswordChoiceDialogContainer
-          onContinue={this.onContinue}
-          onClose={this.onClose}
-          onBack={this.onBack}
-        />
-      );
-    }
-
     if (uiDialogs.isOpen(PrintDialog)) {
       activeDialog = (
         <PrintDialogContainer
@@ -97,7 +85,7 @@ export default class PaperWalletCreateCertificatePage extends Component<Props, S
     if (uiDialogs.isOpen(CompletionDialog)) {
       activeDialog = (
         <CompletionDialogContainer
-          onFinish={this.onClose}
+          onClose={this.onClose}
         />
       );
     }
@@ -129,11 +117,6 @@ export default class PaperWalletCreateCertificatePage extends Component<Props, S
       case 'instructions':
         this.props.actions.dialogs.open.trigger({
           dialog: InstructionsDialog,
-        });
-        break;
-      case 'passwordChoice':
-        this.props.actions.dialogs.open.trigger({
-          dialog: PasswordChoiceDialog,
         });
         break;
       case 'print':

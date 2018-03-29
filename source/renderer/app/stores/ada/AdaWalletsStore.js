@@ -16,9 +16,14 @@ import type { ImportWalletFromFileResponse } from '../../api/ada/index';
 import type {
   CreateTransactionResponse, CreateWalletResponse, DeleteWalletResponse,
   GetWalletsResponse, RestoreWalletResponse,
-  GetWalletRecoveryPhraseResponse, GetWalletCertificateRecoveryPhraseResponse,
-  GetWalletRecoveryPhraseFromCertificateResponse, GetWalletCertificateAdditionalMnemonicsResponse,
+  GetWalletRecoveryPhraseResponse,
 } from '../../api/common';
+
+import type {
+  GetWalletCertificateAdditionalMnemonicsResponse,
+  GetWalletCertificateRecoveryPhraseResponse,
+  GetWalletRecoveryPhraseFromCertificateResponse,
+} from '../../api/ada/types';
 
 export default class AdaWalletsStore extends WalletStore {
 
@@ -136,7 +141,7 @@ export default class AdaWalletsStore extends WalletStore {
     recoveryPhrase: string,
     walletName: string,
     walletPassword: ?string,
-    type: string,
+    type?: string,
   }) => {
     const data = {
       recoveryPhrase: params.recoveryPhrase,

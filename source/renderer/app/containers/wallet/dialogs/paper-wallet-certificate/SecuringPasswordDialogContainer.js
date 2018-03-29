@@ -2,17 +2,12 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import SecuringPasswordDialog from '../../../../components/wallet/paper-wallet-certificate/SecuringPasswordDialog';
-import type { StoresMap } from '../../../../stores/index';
-import type { ActionsMap } from '../../../../actions/index';
+import type { InjectedProps } from '../../../../types/injectedPropsType';
 
-type Props = {
-  stores: any | StoresMap,
-  actions: any | ActionsMap,
-};
+type Props = InjectedProps;
 
 @inject('stores', 'actions') @observer
 export default class SecuringPasswordDialogContainer extends Component<Props> {
-
   static defaultProps = { actions: null, stores: null };
 
   onContinue = () => {
@@ -20,8 +15,7 @@ export default class SecuringPasswordDialogContainer extends Component<Props> {
   };
 
   render() {
-    const { stores } = this.props;
-    const { wallets } = stores.ada;
+    const { wallets } = this.props.stores.ada;
     const {
       additionalMnemonicWords,
       walletCertificateAddress,

@@ -209,18 +209,23 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     this.form.submit({
       onSuccess: (form) => {
         const { createPassword } = this.state;
+        const { showCertificateRestore } = this.props;
         const {
           recoveryPhrase,
           walletName,
           walletPassword,
         } = form.values();
 
-        const walletData = {
+        const walletData: Object = {
           recoveryPhrase: join(recoveryPhrase, ' '),
           walletName,
           walletPassword: createPassword ? walletPassword : null,
-          type: this.state.activeChoice,
         };
+
+        if (showCertificateRestore) {
+          walletData.type = this.state.activeChoice;
+        }
+
         this.props.onSubmit(walletData);
       },
       onError: () => {}
