@@ -11,8 +11,8 @@ export const setupLogging = () => {
   const logFilePath = path.join(pubLogsFolderPath, APP_NAME + '.log');
   ensureDirectoryExists(pubLogsFolderPath);
 
-  log.transports.console.level = isTest ? 'warn' : false;
-  log.transports.rendererConsole.level = 'warn';
+  log.transports.console.level = isTest ? 'error' : false;
+  log.transports.rendererConsole.level = 'error';
   log.transports.file.level = 'debug';
   log.transports.file.maxSize = 20 * 1024 * 1024;
   log.transports.file.file = logFilePath;

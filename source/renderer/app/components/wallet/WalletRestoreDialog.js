@@ -151,7 +151,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         )],
       },
       recoveryPhrase: {
-        value: '',
+        value: [],
         validators: ({ field }) => {
           const value = join(field.value, ' ');
           if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
@@ -207,7 +207,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     this.form.submit({
       onSuccess: (form) => {
         const { createPassword } = this.state;
-        const { showCertificateRestore } = this.props;
+        const { showCertificateRestore, onSubmit } = this.props;
         const {
           recoveryPhrase,
           walletName,
@@ -224,7 +224,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           walletData.type = this.state.activeChoice;
         }
 
-        this.props.onSubmit(walletData);
+        onSubmit(walletData);
       },
       onError: () => {}
     });

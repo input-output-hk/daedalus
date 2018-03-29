@@ -158,7 +158,7 @@ export default class AdaWalletsStore extends WalletStore {
       const spendingPassword = mnemonicToSeedHex(certificatePassword.join(' '));
 
       // Unscramble 15-word wallet certificate mnemonic to 12-word mnemonic
-      const unscrambledRecoveryPhrase: ?GetWalletCertificateRecoveryPhraseResponse = await (
+      const unscrambledRecoveryPhrase: ?GetWalletRecoveryPhraseFromCertificateResponse = await (
         this.getWalletRecoveryPhraseFromCertificateRequest.execute({
           passphrase: spendingPassword,
           scrambledInput: scrambledInput.join(' '),
@@ -166,7 +166,7 @@ export default class AdaWalletsStore extends WalletStore {
       );
 
       if (unscrambledRecoveryPhrase) {
-        data.recoveryPhrase = unscrambledRecoveryPhrase;
+        data.recoveryPhrase = unscrambledRecoveryPhrase.join(' ');
       } else {
         throw new Error('Invalid mnemonic');
       }
@@ -282,8 +282,7 @@ export default class AdaWalletsStore extends WalletStore {
         }).promise
       );
       this.walletCertificateRecoveryPhrase = walletCertificateRecoveryPhrase
-        ? walletCertificateRecoveryPhrase.join(' ')
-        : '';
+        ? walletCertificateRecoveryPhrase.join(' ') : '';
 
       // Create temporary wallet
       const walletData = {

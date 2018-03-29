@@ -98,7 +98,7 @@ export default class VerificationDialog extends Component<Props, State> {
       recoveryPhrase: {
         label: this.context.intl.formatMessage(messages.recoveryPhraseLabel),
         placeholder: this.context.intl.formatMessage(messages.recoveryPhraseHint),
-        value: '',
+        value: [],
         validators: [({ field }) => {
           const { walletCertificateRecoveryPhrase, additionalMnemonicWords } = this.props;
           const {

@@ -209,7 +209,7 @@ export default class AdaRedemptionForm extends Component<Props> {
       passPhrase: {
         label: this.context.intl.formatMessage(messages.passphraseLabel),
         placeholder: this.context.intl.formatMessage(messages.passphraseHint),
-        value: '',
+        value: [],
         validators: [({ field }) => {
           // Don't validate No pass phrase needed when certificate is not encrypted
           if (!this.props.showPassPhraseWidget) return [true];

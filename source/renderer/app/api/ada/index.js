@@ -179,7 +179,7 @@ export type GetWalletCertificateRecoveryPhraseRequest = {
   passphrase: string,
   input: string,
 };
-export type GetWalletRecoveryPhraseFromCertifivateRequest = {
+export type GetWalletRecoveryPhraseFromCertificateRequest = {
   passphrase: string,
   scrambledInput: string,
 };
@@ -446,7 +446,7 @@ export default class AdaApi {
   }
 
   getWalletRecoveryPhraseFromCertificate(
-    request: GetWalletRecoveryPhraseFromCertifivateRequest
+    request: GetWalletRecoveryPhraseFromCertificateRequest
   ): Promise<GetWalletRecoveryPhraseFromCertificateResponse> {
     Logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate called');
     const { passphrase, scrambledInput } = request;
