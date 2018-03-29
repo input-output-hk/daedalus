@@ -22,7 +22,7 @@ const messages = defineMessages({
   },
   instructionsListLabel: {
     id: 'paper.wallet.create.certificate.instructions.dialog.instructionsList.label',
-    defaultMessage: '!!!Instructions:',
+    defaultMessage: '!!!Instructions',
     description: 'Instructions list label for the "Paper wallet create certificate instructions dialog".'
   },
   instructionsListDefinition1: {

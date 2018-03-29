@@ -2354,7 +2354,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Instructions:",
+        "defaultMessage": "!!!Instructions",
         "description": "Instructions list label for the \"Paper wallet create certificate instructions dialog\".",
         "end": {
           "column": 3,
