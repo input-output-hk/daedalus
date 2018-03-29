@@ -12,11 +12,16 @@
     border-top: 1px solid var(--theme-separation-border-color);
     margin-top: 20px;
 
-    a,
+    .link,
     .instructionsListLabel {
       font-weight: 500;
       font-family: var(--font-medium);
       margin-top: 20px;
+    }
+
+    .link {
+      cursor: pointer;
+      text-decoration: underline;
     }
 
     ul {

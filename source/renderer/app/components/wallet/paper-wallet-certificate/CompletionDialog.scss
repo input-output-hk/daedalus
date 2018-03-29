@@ -31,8 +31,10 @@
     text-align: center;
     word-wrap: break-word;
 
-    a {
+    .link {
       color: var(--theme-paper-wallet-create-certificate-dialog-explorer-link-color);
+      cursor: pointer;
+      text-decoration: underline;
     }
   }
 

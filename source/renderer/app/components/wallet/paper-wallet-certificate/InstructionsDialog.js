@@ -100,12 +100,12 @@ export default class InstructionsDialog extends Component<Props> {
     ];
 
     const cardanoExplorerLink = (
-      <a
-        href={CARDANO_EXPLORER_LINK}
-        onClick={this.openCardanoExplorer.bind(this, CARDANO_EXPLORER_LINK)}
+      <span
+        className={styles.link}
+        onClick={this.openCardanoExplorer}
       >
         {intl.formatMessage(messages.cardanoExplorer)}
-      </a>
+      </span>
     );
 
     return (
@@ -146,8 +146,7 @@ export default class InstructionsDialog extends Component<Props> {
     );
   }
 
-  openCardanoExplorer = (link: string, e: Object) => {
-    e.preventDefault();
-    shell.openExternal(link);
+  openCardanoExplorer = () => {
+    shell.openExternal(CARDANO_EXPLORER_LINK);
   };
 }

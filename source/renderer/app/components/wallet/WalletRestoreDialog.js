@@ -127,7 +127,7 @@ type State = {
 export default class WalletRestoreDialog extends Component<Props, State> {
 
   static contextTypes = {
-    intl: intlShape.isRequired
+    intl: intlShape.isRequired,
   };
 
   state = {
@@ -156,9 +156,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           const value = join(field.value, ' ');
           if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           return [
-            this.state.activeChoice === 'regular'
-              ? this.props.mnemonicValidator(value)
-              : field.value.length === 24,
+            this.isRegular() ? this.props.mnemonicValidator(value) : (field.value.length === 24),
             this.context.intl.formatMessage(messages.invalidRecoveryPhrase)
           ];
         },
@@ -284,12 +282,12 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
     const regularTabClasses = classnames([
       'regularTab',
-      activeChoice === 'regular' ? styles.activeButton : '',
+      this.isRegular() ? styles.activeButton : '',
     ]);
 
     const certificateTabClasses = classnames([
       'certificateTab',
-      activeChoice === 'certificate' ? styles.activeButton : '',
+      this.isCertificate() ? styles.activeButton : '',
     ]);
 
     return (
@@ -328,10 +326,10 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         <Autocomplete
           {...recoveryPhraseField.bind()}
           ref={(autocomplete) => { this.recoveryPhraseAutocomplete = autocomplete; }}
-          label={activeChoice === 'regular' ? intl.formatMessage(messages.recoveryPhraseInputLabel) : intl.formatMessage(messages.shieldedRecoveryPhraseInputLabel)}
-          placeholder={(activeChoice === 'regular') ? intl.formatMessage(messages.recoveryPhraseInputHint) : intl.formatMessage(messages.shieldedRecoveryPhraseInputHint)}
+          label={this.isRegular() ? intl.formatMessage(messages.recoveryPhraseInputLabel) : intl.formatMessage(messages.shieldedRecoveryPhraseInputLabel)}
+          placeholder={this.isRegular() ? intl.formatMessage(messages.recoveryPhraseInputHint) : intl.formatMessage(messages.shieldedRecoveryPhraseInputHint)}
           options={suggestedMnemonics}
-          maxSelections={activeChoice === 'certificate' ? 24 : 12}
+          maxSelections={this.isCertificate() ? 24 : 12}
           error={recoveryPhraseField.error}
           maxVisibleOptions={5}
           noResultsMessage={intl.formatMessage(messages.recoveryPhraseNoResults)}
@@ -375,6 +373,10 @@ export default class WalletRestoreDialog extends Component<Props, State> {
       </Dialog>
     );
   }
+
+  isRegular = () => (this.state.activeChoice === 'regular');
+
+  isCertificate = () => (this.state.activeChoice === 'certificate');
 
   onSelectChoice = (choice: string) => {
     this.setState({
