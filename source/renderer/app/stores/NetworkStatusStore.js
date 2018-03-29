@@ -162,7 +162,7 @@ export default class NetworkStatusStore extends Store {
   }
 
   @action _updateSyncProgress = async () => {
-    // Prevent polling if poller is bloced
+    // Prevent polling if poller is blocked
     if (this._pollerBlocked) return;
     try {
       const difficulty = await this.syncProgressRequest.execute().promise;

@@ -43,5 +43,5 @@ export default class SidebarCategory extends Component<Props> {
     } else {
       this.props.onClick();
     }
-  }
+  };
 }

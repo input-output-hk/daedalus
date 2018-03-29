@@ -145,13 +145,11 @@ export default class AdaWalletsStore extends WalletStore {
     };
 
     if (params.type === 'certificate') {
-
-      // split recovery phrase to 15(scrambled mnemonics) + 9(mnemonics seed) mnemonics
+      // split recovery phrase to 15 (scrambled mnemonics) + 9 (mnemonics seed) mnemonics
       const recoveryPhraseArray = params.recoveryPhrase.split(' ');
       const chunked = chunk(recoveryPhraseArray, 15);
       const scrambledInput = chunked[0]; // first 15 mnemonics
       const certificatePassword = chunked[1]; // last 9 mnemonics
-
       const spendingPassword = mnemonicToSeedHex(certificatePassword.join(' '));
 
       // Unscramble 15-word wallet certificate mnemonic to 12-word mnemonic
@@ -161,6 +159,7 @@ export default class AdaWalletsStore extends WalletStore {
           scrambledInput: scrambledInput.join(' '),
         }).promise
       );
+
       if (unscrambledRecoveryPhrase) {
         data.recoveryPhrase = unscrambledRecoveryPhrase;
       } else {

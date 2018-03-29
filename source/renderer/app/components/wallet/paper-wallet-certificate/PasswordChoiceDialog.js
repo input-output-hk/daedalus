@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import SvgInline from 'react-svg-inline';
+import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
@@ -202,7 +202,7 @@ export default class PasswordChoiceDialog extends Component<Props, State> {
                   error={passwordField.error}
                   skin={<SimpleInputSkin />}
                 />
-                <SvgInline
+                <SVGInline
                   svg={showPassword ? hidePasswordIcon : showPasswordIcon}
                   className={styles.passwordVisibilityToggler}
                   onClick={this.onTogglePasswordVisibility.bind(this)}
@@ -217,7 +217,7 @@ export default class PasswordChoiceDialog extends Component<Props, State> {
                   error={repeatPasswordField.error}
                   skin={<SimpleInputSkin />}
                 />
-                <SvgInline
+                <SVGInline
                   svg={showRepeatPassword ? hidePasswordIcon : showPasswordIcon}
                   className={styles.passwordVisibilityToggler}
                   onClick={this.onShowRepeatPassword.bind(this)}

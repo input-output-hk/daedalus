@@ -16,6 +16,7 @@ export default class PrintDialogContainer extends Component<Props> {
   onContinue = () => {
     this.props.actions.ada.wallets.updateCertificateStep.trigger();
   };
+
   render() {
     return (
       <PrintDialog

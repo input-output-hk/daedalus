@@ -91,7 +91,6 @@ export default class Sidebar extends Component<Props> {
             active={isDialogOpen(BugReportDialog)}
             onClick={this.handleSupportRequestClick}
           />
-
         </div>
         {subMenu}
       </div>

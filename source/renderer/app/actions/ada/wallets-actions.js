@@ -18,7 +18,6 @@ export default class WalletsActions {
   deleteWallet: Action<{ walletId: string }> = new Action();
   sendMoney: Action<{ receiver: string, amount: string, password: ?string }> = new Action();
   chooseWalletExportType: Action<{ walletExportType: walletExportTypeChoices }> = new Action();
-  // eslint-disable-next-line max-len
   generateCertificate: Action<{ filePath: string }> = new Action();
   verifyCertificate: Action<{ recoveryPhrase: Array<string> }> = new Action();
   updateCertificateStep: Action<any> = new Action();
