@@ -4,6 +4,7 @@ import SVGtoPDF from 'svg-to-pdfkit';
 import qr from 'qr-image';
 import { defineMessages } from 'react-intl';
 import fs from 'fs';
+import paperWalletFont from '../assets/pdf/paper-wallet-certificate-font.ttf';
 import paperWalletPage1 from '../assets/pdf/paper-wallet-certificate-page-1.inline.svg';
 import paperWalletPage2 from '../assets/pdf/paper-wallet-certificate-page-2.inline.svg';
 import paperWalletCertificateBg from '../assets/pdf/paper-wallet-certificate-background.png';
@@ -77,7 +78,13 @@ export const downloadPaperWalletCertificate = (
     }
   });
 
+  const fontBase64Data = /^data:.+;base64,(.*)$/.exec(paperWalletFont)[1];
+  const fontBuffer = Buffer.from(fontBase64Data, 'base64');
+
   /* eslint-disable max-len */
+  // font family
+  doc.font(fontBuffer);
+
   // background images
   doc.image(paperWalletCertificateBg, 0, 4, { fit: [width, height] });
 
