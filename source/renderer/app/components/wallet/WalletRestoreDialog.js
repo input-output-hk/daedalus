@@ -246,7 +246,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
       error,
       onCancel,
     } = this.props;
-    const { createPassword, activeChoice } = this.state;
+    const { createPassword } = this.state;
 
     const dialogClasses = classnames([
       styles.component,
@@ -326,8 +326,14 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         <Autocomplete
           {...recoveryPhraseField.bind()}
           ref={(autocomplete) => { this.recoveryPhraseAutocomplete = autocomplete; }}
-          label={this.isRegular() ? intl.formatMessage(messages.recoveryPhraseInputLabel) : intl.formatMessage(messages.shieldedRecoveryPhraseInputLabel)}
-          placeholder={this.isRegular() ? intl.formatMessage(messages.recoveryPhraseInputHint) : intl.formatMessage(messages.shieldedRecoveryPhraseInputHint)}
+          label={this.isRegular()
+            ? intl.formatMessage(messages.recoveryPhraseInputLabel)
+            : intl.formatMessage(messages.shieldedRecoveryPhraseInputLabel)
+          }
+          placeholder={this.isRegular()
+            ? intl.formatMessage(messages.recoveryPhraseInputHint)
+            : intl.formatMessage(messages.shieldedRecoveryPhraseInputHint)
+          }
           options={suggestedMnemonics}
           maxSelections={this.isCertificate() ? 24 : 12}
           error={recoveryPhraseField.error}

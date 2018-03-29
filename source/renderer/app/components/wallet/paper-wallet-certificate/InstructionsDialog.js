@@ -103,6 +103,8 @@ export default class InstructionsDialog extends Component<Props> {
       <span
         className={styles.link}
         onClick={this.openCardanoExplorer}
+        role="link"
+        aria-hidden
       >
         {intl.formatMessage(messages.cardanoExplorer)}
       </span>

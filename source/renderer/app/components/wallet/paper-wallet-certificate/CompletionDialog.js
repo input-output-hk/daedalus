@@ -105,6 +105,8 @@ export default class CompletionDialog extends Component<Props> {
               <span
                 className={styles.link}
                 onClick={this.openCardanoExplorer.bind(this, cardanoExplorerLink)}
+                role="link"
+                aria-hidden
               >
                 {cardanoExplorerLink}
               </span>
