@@ -1,17 +1,14 @@
 Changelog
 =========
 
-## vNEXT
+## 0.9.1
 =======
-
-### Features
 
 ### Fixes
 
 - Fixed bug causing only 5 transactions to be shown on the transaction list screen ([PR 778](https://github.com/input-output-hk/daedalus/pull/778))
 - Fixed broken copy & paste context menu actions on Windows ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
 
-### Chores
 
 ## 0.9.0
 =======
