@@ -410,7 +410,7 @@ export default class AdaApi {
     }
   }
 
-  // eslint-disable-next-line
+  // eslint-disable-next-line max-len
   getWalletCertificateAdditionalMnemonics(): Promise<GetWalletCertificateAdditionalMnemonicsResponse> {
     Logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics called');
     try {
