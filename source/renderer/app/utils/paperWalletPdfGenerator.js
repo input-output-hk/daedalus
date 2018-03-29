@@ -108,20 +108,23 @@ export const downloadPaperWalletCertificate = (
 
   // mnemonics
   doc.fontSize(8);
-  doc.text(printMnemonic(0), 170, 560);
-  doc.text(printMnemonic(1), 236, 560);
-  doc.text(printMnemonic(2), 302, 560);
-  doc.text(printMnemonic(3), 370, 560);
+  doc.text(printMnemonic(0), 168, 560);
+  doc.text(printMnemonic(1), 220, 560);
+  doc.text(printMnemonic(2), 272, 560);
+  doc.text(printMnemonic(3), 324, 560);
+  doc.text(printMnemonic(4), 376, 560);
 
-  doc.text(printMnemonic(4), 170, 578);
-  doc.text(printMnemonic(5), 236, 578);
-  doc.text(printMnemonic(6), 302, 578);
-  doc.text(printMnemonic(7), 370, 578);
+  doc.text(printMnemonic(5), 168, 581);
+  doc.text(printMnemonic(6), 220, 581);
+  doc.text(printMnemonic(7), 272, 581);
+  doc.text(printMnemonic(8), 324, 581);
+  doc.text(printMnemonic(9), 376, 581);
 
-  doc.text(printMnemonic(8), 170, 596);
-  doc.text(printMnemonic(9), 236, 596);
-  doc.text(printMnemonic(10), 302, 596);
-  doc.text(printMnemonic(11), 370, 596);
+  doc.text(printMnemonic(10), 168, 602);
+  doc.text(printMnemonic(11), 220, 602);
+  doc.text(printMnemonic(12), 272, 602);
+  doc.text(printMnemonic(13), 324, 602);
+  doc.text(printMnemonic(14), 376, 602);
 
   doc.fontSize(7).text(daedalusInfo, (width - 270) / 2, 705, { width: 270, align: 'left' });
   doc.rotate(-180, { origin: [width / 2, height / 2] });

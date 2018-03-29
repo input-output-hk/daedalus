@@ -283,7 +283,7 @@ export default class AdaWalletsStore extends WalletStore {
 
       // Create temporary wallet
       const walletData = {
-        name: 'Temp Certificate Wallet',
+        name: 'Paper Wallet',
         mnemonic: recoveryPhrase.join(' '),
         password: spendingPassword,
       };
