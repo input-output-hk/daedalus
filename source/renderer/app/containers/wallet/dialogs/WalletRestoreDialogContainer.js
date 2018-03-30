@@ -24,14 +24,28 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
 
   onCancel = () => {
     this.props.onClose();
+    this.resetRequests();
+  };
+
+  resetRequests = () => {
     // Restore request should be reset only in case restore is finished/errored
-    const { restoreRequest } = this._getWalletsStore();
-    if (!restoreRequest.isExecuting) restoreRequest.reset();
+    const wallets = this._getWalletsStore();
+    const { restoreRequest } = wallets;
+    if (!restoreRequest.isExecuting) {
+      restoreRequest.reset();
+      if (environment.isAdaApi()) {
+        wallets.getWalletRecoveryPhraseFromCertificateRequest.reset();
+      }
+    }
   };
 
   render() {
     const wallets = this._getWalletsStore();
     const { restoreRequest, isValidMnemonic } = wallets;
+
+    const error = environment.isAdaApi()
+      ? (restoreRequest.error || wallets.getWalletRecoveryPhraseFromCertificateRequest.error)
+      : restoreRequest.error;
 
     return (
       <WalletRestoreDialog
@@ -41,7 +55,8 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
         isSubmitting={restoreRequest.isExecuting}
         onSubmit={this.onSubmit}
         onCancel={this.onCancel}
-        error={restoreRequest.error}
+        onChoiceChange={environment.isAdaApi() ? this.resetRequests : null}
+        error={error}
       />
     );
   }

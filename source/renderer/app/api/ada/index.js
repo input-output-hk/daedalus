@@ -452,9 +452,16 @@ export default class AdaApi {
     const { passphrase, scrambledInput } = request;
     try {
       const response: Promise<AdaWalletRecoveryPhraseFromCertificateResponse> = new Promise(
-        (resolve) => resolve(getAdaWalletRecoveryPhraseFromCertificate({
-          passphrase, scrambledInput,
-        }))
+        (resolve, reject) => {
+          try {
+            return resolve(getAdaWalletRecoveryPhraseFromCertificate({
+              passphrase, scrambledInput,
+            }));
+          } catch (error) {
+            Logger.error('AdaApi::getWalletRecoveryPhraseFromCertificate error: ' + stringifyError(error));
+            return reject(new GenericApiError());
+          }
+        }
       );
       Logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate success');
       return response;

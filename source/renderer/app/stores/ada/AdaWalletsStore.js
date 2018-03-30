@@ -143,6 +143,9 @@ export default class AdaWalletsStore extends WalletStore {
     walletPassword: ?string,
     type?: string,
   }) => {
+    // reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
+    this.getWalletRecoveryPhraseFromCertificateRequest.reset();
+
     const data = {
       recoveryPhrase: params.recoveryPhrase,
       walletName: params.walletName,
@@ -158,18 +161,14 @@ export default class AdaWalletsStore extends WalletStore {
       const spendingPassword = mnemonicToSeedHex(certificatePassword.join(' '));
 
       // Unscramble 15-word wallet certificate mnemonic to 12-word mnemonic
-      const unscrambledRecoveryPhrase: ?GetWalletRecoveryPhraseFromCertificateResponse = await (
+      const unscrambledRecoveryPhrase: GetWalletRecoveryPhraseFromCertificateResponse = await (
         this.getWalletRecoveryPhraseFromCertificateRequest.execute({
           passphrase: spendingPassword,
           scrambledInput: scrambledInput.join(' '),
         }).promise
       );
-
-      if (unscrambledRecoveryPhrase) {
-        data.recoveryPhrase = unscrambledRecoveryPhrase.join(' ');
-      } else {
-        throw new Error('Invalid mnemonic');
-      }
+      data.recoveryPhrase = unscrambledRecoveryPhrase.join(' ');
+      this.getWalletRecoveryPhraseFromCertificateRequest.reset();
     }
 
     this.restoreRequest.reset();
@@ -275,14 +274,13 @@ export default class AdaWalletsStore extends WalletStore {
       this.walletCertificatePassword = spendingPassword;
 
       // Generate paper wallet scrambled mnemonic
-      const walletCertificateRecoveryPhrase: ?GetWalletCertificateRecoveryPhraseResponse = await (
+      const walletCertificateRecoveryPhrase: GetWalletCertificateRecoveryPhraseResponse = await (
         this.getWalletCertificateRecoveryPhraseRequest.execute({
           passphrase: spendingPassword,
           input: recoveryPhrase.join(' '),
         }).promise
       );
-      this.walletCertificateRecoveryPhrase = walletCertificateRecoveryPhrase
-        ? walletCertificateRecoveryPhrase.join(' ') : '';
+      this.walletCertificateRecoveryPhrase = walletCertificateRecoveryPhrase.join(' ');
 
       // Create temporary wallet
       const walletData = {

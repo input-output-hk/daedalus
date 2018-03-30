@@ -116,6 +116,7 @@ type Props = {
   error?: ?LocalizableError,
   suggestedMnemonics: Array<string>,
   showCertificateRestore: boolean,
+  onChoiceChange: ?Function,
 };
 
 type State = {
@@ -390,10 +391,14 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   isCertificate = () => (this.state.activeChoice === 'certificate');
 
   onSelectChoice = (choice: string) => {
-    this.setState({
-      activeChoice: choice,
-      createPassword: false,
-    });
-    this.resetForm();
+    const { isSubmitting, onChoiceChange } = this.props;
+    if (!isSubmitting) {
+      this.setState({
+        activeChoice: choice,
+        createPassword: false,
+      });
+      this.resetForm();
+      if (onChoiceChange) onChoiceChange();
+    }
   };
 }
