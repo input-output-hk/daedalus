@@ -9,6 +9,7 @@ import SimpleAutocompleteSkin from 'react-polymorph/lib/skins/simple/raw/Autocom
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
 import Dialog from '../../widgets/Dialog';
+import DialogCloseButton from '../../widgets/DialogCloseButton';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { InvalidMnemonicError } from '../../../i18n/errors';
 import globalMessages from '../../../i18n/global-messages';
@@ -76,6 +77,7 @@ type Props = {
   error: boolean,
   suggestedMnemonics: Array<string>,
   onContinue: Function,
+  onClose: Function,
 };
 
 @observer
@@ -159,7 +161,7 @@ export default class VerificationDialog extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const { form, resetForm } = this;
-    const { suggestedMnemonics, error } = this.props;
+    const { suggestedMnemonics, error, onClose } = this.props;
     const { storingConfirmed, recoveringConfirmed, isRecoveryPhraseValid } = this.state;
 
     const recoveryPhraseField = form.$('recoveryPhrase');
@@ -199,6 +201,8 @@ export default class VerificationDialog extends Component<Props, State> {
         className={dialogClasses}
         title={intl.formatMessage(messages.headline)}
         actions={actions}
+        onClose={onClose}
+        closeButton={<DialogCloseButton />}
       >
 
         <div className={styles.verificationContentWrapper}>

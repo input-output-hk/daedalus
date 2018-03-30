@@ -2326,6 +2326,67 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Are you sure?",
+        "description": "Headline for the \"Confirmation dialog\".",
+        "end": {
+          "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/wallet/paper-wallet-certificate/ConfirmationDialog.js",
+        "id": "paper.wallet.create.certificate.confirmation.dialog.headline",
+        "start": {
+          "column": 12,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Your certificate should not be used without passing verification steps.",
+        "description": "Content for the \"Confirmation dialog\".",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/wallet/paper-wallet-certificate/ConfirmationDialog.js",
+        "id": "paper.wallet.create.certificate.confirmation.dialog.content",
+        "start": {
+          "column": 11,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Cancel",
+        "description": "\"Confirmation dialog\" button cancel label.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/wallet/paper-wallet-certificate/ConfirmationDialog.js",
+        "id": "paper.wallet.create.certificate.confirmation.dialog.button.canceLabel",
+        "start": {
+          "column": 21,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Confirm",
+        "description": "\"Confirmation dialog\" button confirm label.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/wallet/paper-wallet-certificate/ConfirmationDialog.js",
+        "id": "paper.wallet.create.certificate.confirmation.dialog.button.confirmLabel",
+        "start": {
+          "column": 22,
+          "line": 25
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/paper-wallet-certificate/ConfirmationDialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Create a paper wallet certificate",
         "description": "Headline for the \"Paper wallet create certificate instructions dialog\".",
         "end": {
@@ -2475,13 +2536,13 @@
         "description": "Headline for the \"Paper wallet create certificate print dialog\".",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/PrintDialog.js",
         "id": "paper.wallet.create.certificate.print.dialog.headline",
         "start": {
           "column": 12,
-          "line": 13
+          "line": 14
         }
       },
       {
@@ -2489,13 +2550,13 @@
         "description": "\"Paper wallet create certificate print dialog\" subtitle.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/PrintDialog.js",
         "id": "paper.wallet.create.certificate.print.dialog.subtitle",
         "start": {
           "column": 12,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -2503,13 +2564,13 @@
         "description": "\"Paper wallet create certificate print dialog\" info.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/PrintDialog.js",
         "id": "paper.wallet.create.certificate.print.dialog.info",
         "start": {
           "column": 8,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -2517,13 +2578,13 @@
         "description": "\"Paper wallet create certificate print dialog\" confirmation.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/PrintDialog.js",
         "id": "paper.wallet.create.certificate.print.dialog.printConfirmation",
         "start": {
           "column": 26,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -2531,13 +2592,13 @@
         "description": "\"Paper wallet create certificate print dialog\" certificate printed confirmation.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/PrintDialog.js",
         "id": "paper.wallet.create.certificate.print.dialog.certificatePrintedConfirmation",
         "start": {
           "column": 39,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -2545,13 +2606,13 @@
         "description": "\"Paper wallet create certificate print dialog\" certificate readable confirmation.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/PrintDialog.js",
         "id": "paper.wallet.create.certificate.print.dialog.certificateReadableConfirmation",
         "start": {
           "column": 40,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -2559,13 +2620,13 @@
         "description": "\"Paper wallet create certificate print dialog\" QR scannable confirmation.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/PrintDialog.js",
         "id": "paper.wallet.create.certificate.print.dialog.qrScannableConfirmation",
         "start": {
           "column": 32,
-          "line": 43
+          "line": 44
         }
       }
     ],
@@ -2575,30 +2636,30 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Complete your certificate",
-        "description": "Headline for the \"Paper wallet create certificate securyng password dialog\".",
+        "description": "Headline for the \"Paper wallet create certificate securing password dialog\".",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/SecuringPasswordDialog.js",
-        "id": "paper.wallet.create.certificate.securyng password.dialog.headline",
+        "id": "paper.wallet.create.certificate.securingPassword.dialog.headline",
         "start": {
           "column": 12,
-          "line": 14
+          "line": 15
         }
       },
       {
         "defaultMessage": "!!!To complete your paper wallet certificate you will need to write the remaining 9 words of your paper wallet recovery phrase on your certificate.",
-        "description": "\"Paper wallet create certificate securyng password dialog\" first info label.",
+        "description": "\"Paper wallet create certificate securing password dialog\" first info label.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/SecuringPasswordDialog.js",
-        "id": "paper.wallet.create.certificate.securyng password.dialog.infoLabel1",
+        "id": "paper.wallet.create.certificate.securingPassword.dialog.infoLabel1",
         "start": {
           "column": 14,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -2606,27 +2667,27 @@
         "description": "You may write the remaining words here:",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/SecuringPasswordDialog.js",
-        "id": "paper.wallet.create.certificate.securyng password.dialog.infoLabel2",
+        "id": "paper.wallet.create.certificate.securingPassword.dialog.infoLabel2",
         "start": {
           "column": 14,
-          "line": 24
+          "line": 25
         }
       },
       {
         "defaultMessage": "!!!I have written the remaining 9 words on the certificate.",
-        "description": "\"Paper wallet create certificate securyng password dialog\" secure password confirmation.",
+        "description": "\"Paper wallet create certificate securing password dialog\" secure password confirmation.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/SecuringPasswordDialog.js",
-        "id": "paper.wallet.create.certificate.securyng password.dialog.securingPasswordConfirmation",
+        "id": "paper.wallet.create.certificate.securingPassword.dialog.securingPasswordConfirmation",
         "start": {
           "column": 32,
-          "line": 29
+          "line": 30
         }
       }
     ],
@@ -2639,13 +2700,13 @@
         "description": "Headline for the \"Paper wallet create certificate verification dialog\".",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.js",
         "id": "paper.wallet.create.certificate.verification.dialog.headline",
         "start": {
           "column": 12,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -2653,13 +2714,13 @@
         "description": "\"Paper wallet create certificate verification dialog\" subtitle.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.js",
         "id": "paper.wallet.create.certificate.verification.dialog.subtitle",
         "start": {
           "column": 12,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -2667,13 +2728,13 @@
         "description": "\"Paper wallet create certificate verification dialog\" recovery phrase label.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.js",
         "id": "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.label",
         "start": {
           "column": 23,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -2681,13 +2742,13 @@
         "description": "\"Paper wallet create certificate verification dialog\" recovery phrase hint.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.js",
         "id": "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.hint",
         "start": {
           "column": 22,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -2695,13 +2756,13 @@
         "description": "\"Paper wallet create certificate verification dialog\" recovery phrase no results label.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.js",
         "id": "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.noResults",
         "start": {
           "column": 27,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -2709,13 +2770,13 @@
         "description": "\"Paper wallet create certificate verification dialog\" button clear label.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.js",
         "id": "paper.wallet.create.certificate.verification.dialog.button.clearLabel",
         "start": {
           "column": 20,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -2723,13 +2784,13 @@
         "description": "\"Paper wallet create certificate verification dialog\" storing understandance confirmation.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 53
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.js",
         "id": "paper.wallet.create.certificate.verification.dialog.storingUnderstandanceConfirmationLabel",
         "start": {
           "column": 30,
-          "line": 48
+          "line": 49
         }
       },
       {
@@ -2737,13 +2798,13 @@
         "description": "\"Paper wallet create certificate verification dialog\" recovering understandance confirmation.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 58
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.js",
         "id": "paper.wallet.create.certificate.verification.dialog.recoveringUnderstandanceConfirmationLabel",
         "start": {
           "column": 33,
-          "line": 53
+          "line": 54
         }
       },
       {
@@ -2751,13 +2812,13 @@
         "description": "\"Paper wallet create certificate verification dialog\" error message when password or recovery phrase are invalid.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.js",
         "id": "paper.wallet.create.certificate.verification.dialog.errorMessage",
         "start": {
           "column": 16,
-          "line": 58
+          "line": 59
         }
       }
     ],

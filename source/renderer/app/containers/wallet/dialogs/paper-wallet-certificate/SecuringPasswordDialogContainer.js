@@ -2,13 +2,13 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import SecuringPasswordDialog from '../../../../components/wallet/paper-wallet-certificate/SecuringPasswordDialog';
-import type { InjectedProps } from '../../../../types/injectedPropsType';
+import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 
-type Props = InjectedProps;
+type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions') @observer
 export default class SecuringPasswordDialogContainer extends Component<Props> {
-  static defaultProps = { actions: null, stores: null };
+  static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
 
   onContinue = () => {
     this.props.actions.ada.wallets.updateCertificateStep.trigger();
@@ -28,6 +28,7 @@ export default class SecuringPasswordDialogContainer extends Component<Props> {
         walletCertificateAddress={walletCertificateAddress}
         walletCertificateRecoveryPhrase={walletCertificateRecoveryPhrase}
         onContinue={this.onContinue}
+        onClose={this.props.onClose}
       />
     );
   }

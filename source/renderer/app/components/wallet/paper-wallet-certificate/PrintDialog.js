@@ -6,6 +6,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
 import Dialog from '../../widgets/Dialog';
+import DialogCloseButton from '../../widgets/DialogCloseButton';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './PrintDialog.scss';
 
@@ -55,6 +56,7 @@ type State = {
 
 type Props = {
   onContinue: Function,
+  onClose: Function,
 };
 
 @observer
@@ -72,7 +74,7 @@ export default class PrintDialog extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { onContinue } = this.props;
+    const { onContinue, onClose } = this.props;
     const {
       isPrintedCorrectly,
       isReadable,
@@ -116,6 +118,8 @@ export default class PrintDialog extends Component<Props, State> {
         className={dialogClasses}
         title={intl.formatMessage(messages.headline)}
         actions={actions}
+        onClose={onClose}
+        closeButton={<DialogCloseButton />}
       >
 
         <div className={styles.printContentWrapper}>

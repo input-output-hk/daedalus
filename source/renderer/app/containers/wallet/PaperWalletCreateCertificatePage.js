@@ -11,12 +11,14 @@ import VerificationDialog from '../../components/wallet/paper-wallet-certificate
 import VerificationDialogContainer from './dialogs/paper-wallet-certificate/VerificationDialogContainer';
 import CompletionDialog from '../../components/wallet/paper-wallet-certificate/CompletionDialog';
 import CompletionDialogContainer from './dialogs/paper-wallet-certificate/CompletionDialogContainer';
+import ConfirmationDialog from '../../components/wallet/paper-wallet-certificate/ConfirmationDialog';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
 
 type State = {
   currentStep: ?number,
+  showConfirmationDialog: boolean,
 };
 
 @inject('actions', 'stores') @observer
@@ -31,8 +33,6 @@ export default class PaperWalletCreateCertificatePage extends Component<Props, S
     }
   }
 
-  static defaultProps = { actions: null, stores: null };
-
   CREATE_CERTIFICATE_DIALOGS = [
     'instructions',
     'print',
@@ -43,10 +43,12 @@ export default class PaperWalletCreateCertificatePage extends Component<Props, S
 
   state = {
     currentStep: 0,
+    showConfirmationDialog: false,
   }
 
   render() {
     const { uiDialogs } = this.props.stores;
+    const { showConfirmationDialog } = this.state;
     let activeDialog = null;
 
     if (uiDialogs.isOpen(InstructionsDialog)) {
@@ -62,6 +64,7 @@ export default class PaperWalletCreateCertificatePage extends Component<Props, S
       activeDialog = (
         <PrintDialogContainer
           onContinue={this.onContinue}
+          onClose={this.showConfirmationDialog}
         />
       );
     }
@@ -70,6 +73,7 @@ export default class PaperWalletCreateCertificatePage extends Component<Props, S
       activeDialog = (
         <SecuringPasswordDialogContainer
           onContinue={this.onContinue}
+          onClose={this.showConfirmationDialog}
         />
       );
     }
@@ -78,6 +82,7 @@ export default class PaperWalletCreateCertificatePage extends Component<Props, S
       activeDialog = (
         <VerificationDialogContainer
           onContinue={this.onContinue}
+          onClose={this.showConfirmationDialog}
         />
       );
     }
@@ -90,7 +95,17 @@ export default class PaperWalletCreateCertificatePage extends Component<Props, S
       );
     }
 
-    return activeDialog;
+    return (
+      <div>
+        {activeDialog}
+        {showConfirmationDialog && (
+          <ConfirmationDialog
+            onCancel={this.hideConfirmationDialog}
+            onConfirm={this.onClose}
+          />
+        )}
+      </div>
+    );
   }
 
   onContinue = (nextStep: number) => {
@@ -108,8 +123,19 @@ export default class PaperWalletCreateCertificatePage extends Component<Props, S
   };
 
   onClose = () => {
-    this.setState({ currentStep: 0 });
+    this.setState({
+      currentStep: 0,
+      showConfirmationDialog: false,
+    });
     this.props.actions.ada.wallets.closeCertificateGeneration.trigger();
+  };
+
+  showConfirmationDialog = () => {
+    this.setState({ showConfirmationDialog: true });
+  };
+
+  hideConfirmationDialog = () => {
+    this.setState({ showConfirmationDialog: false });
   };
 
   switchDialog = (dialog: string) => {

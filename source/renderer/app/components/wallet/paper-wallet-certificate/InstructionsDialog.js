@@ -117,7 +117,7 @@ export default class InstructionsDialog extends Component<Props> {
         actions={actions}
         closeOnOverlayClick
         onClose={onClose}
-        closeButton={<DialogCloseButton onClose={onClose} />}
+        closeButton={<DialogCloseButton />}
       >
 
         <div className={styles.instructionsContentWrapper}>

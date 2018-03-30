@@ -1,0 +1,28 @@
+.component {
+  color: var(--theme-instructions-text-color);
+  font-family: var(--font-light);
+  width: 440px;
+
+  p {
+    line-height: 1.38;
+  }
+
+  .confirmButton {
+    &[disabled] {
+      background: var(--theme-input-remove-color-lightest);
+      &:hover,
+      &:active {
+        background: var(--theme-input-remove-color-lightest);
+      }
+    }
+    &:not([disabled]) {
+      background: var(--theme-input-remove-color-light);
+      &:hover {
+        background: var(--theme-input-remove-color-lighter);
+      }
+      &:active {
+        background: var(--theme-input-remove-color-dark);
+      }
+    }
+  }
+}
