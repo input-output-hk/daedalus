@@ -18,6 +18,7 @@ Changelog
 - Improve build system ([PR 692](https://github.com/input-output-hk/daedalus/pull/692))
 - New Edit section in system menu with copy & paste and related actions ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
 - Remove sending logs to remote server feature ([PR 818](https://github.com/input-output-hk/daedalus/pull/818))
+- Updated main and acceptane tests readme files with new acceptance tests setup information ([PR 831](https://github.com/input-output-hk/daedalus/pull/831))
 
 ## 0.9.0
 =======
