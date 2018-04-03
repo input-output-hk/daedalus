@@ -127,9 +127,9 @@ export default {
   '--theme-node-update-accept-button-background-color': '#445b7c',
   '--theme-node-update-accept-button-background-color-hover': '#243e62',
   '--theme-node-update-accept-button-background-color-active': '#1e304a',
-  '--theme-node-update-deny-button-background-color': 'rgba(36, 63, 98, 0.3)',
-  '--theme-node-update-deny-button-background-color-hover': '#243e62',
-  '--theme-node-update-deny-button-background-color-active': '#1e304a',
+  '--theme-node-update-deny-button-background-color': 'rgba(68, 91, 124, 0.3)',
+  '--theme-node-update-deny-button-background-color-hover': 'rgba(36, 62, 98, 0.3)',
+  '--theme-node-update-deny-button-background-color-active': 'rgba(30, 48, 74, 0.3)',
   '--theme-node-update-button-text-color': '#fafbfc',
 
   '--theme-notification-message-background-color': 'rgba(36, 61, 98, 0.8)',
