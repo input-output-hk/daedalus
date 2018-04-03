@@ -15,7 +15,7 @@ export default {
 
   '--theme-input-hint-font': 'SFUIDisplay-Regular',
 
-  '--theme-scrollbar-thumb-background': '#e9f4fe',
+  '--theme-scrollbar-thumb-background': '#536370',
 
   '--theme-ada-redemption-headline-color': '#e9f4fe',
   '--theme-ada-redemption-instructions-color': '#e9f4fe',
