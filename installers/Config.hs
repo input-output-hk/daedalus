@@ -23,6 +23,7 @@ import qualified Data.ByteString                  as BS
 import qualified Data.Map                         as Map
 import           Data.Maybe
 import           Data.Optional                       (Optional)
+import           Data.Semigroup                      ((<>))
 import           Data.Text                           (Text, pack, unpack, intercalate, toLower)
 import qualified Data.Yaml                        as YAML
 
@@ -35,11 +36,12 @@ import qualified GHC.IO.Encoding                  as GHC
 import qualified System.IO                        as Sys
 import qualified System.Exit                      as Sys
 
-import           Turtle                              (optional, (<|>), (</>), (<.>), format, (%), s)
+import           Turtle                              (optional, (<|>), (</>), format, (%), s)
 import           Turtle.Options
 
 import           Prelude                      hiding (FilePath, unlines, writeFile)
 import           Types
+import           Debug.Trace
 
 
 
@@ -73,11 +75,11 @@ data Backend
 
 data Command
   = GenConfig
-    { cfDhallRoot   :: FilePath
+    { cfDhallRoot   :: Text
     , cfOutdir      :: FilePath
     }
   | CheckConfigs
-    { cfDhallRoot   :: FilePath
+    { cfDhallRoot   :: Text
     }
   | GenInstaller
   deriving (Eq, Show)
@@ -100,11 +102,11 @@ commandParser = (fromMaybe GenInstaller <$>) . optional $
   subcommandGroup "Subcommands:"
   [ ("config",        "Build configs for an OS / cluster  (see: --os, --cluster top-level options)",
       GenConfig
-      <$> (fromText <$> argText "INDIR"  "Directory containing Dhall config files")
+      <$> argText "INDIR"  "Directory containing Dhall config files"
       <*> (fromText <$> argText "OUTDIR" "Target directory for generated YAML config files"))
   , ("check-configs", "Verify all Dhall-defined config components",
       CheckConfigs
-      <$> (fromText <$> argText "DIR" "Directory containing Dhall config files"))
+      <$> argText "DIR" "Directory containing Dhall config files")
   , ("installer",  "Build an installer",
       pure GenInstaller)
   ]
@@ -139,25 +141,27 @@ backendOptionParser = cardano <|> mantis <|> pure (Cardano "")
 
 
 
-dhallTopExpr :: FilePath -> Config -> OS -> Cluster -> Text
+dhallTopExpr :: Text -> Config -> OS -> Cluster -> Text
 dhallTopExpr dhallRoot cfg os cluster
   | Launcher <- cfg = format (s%" "%s%" ("%s%" "%s%" )") (comp Launcher) (comp cluster) (comp os) (comp cluster)
   | Topology <- cfg = format (s%" "%s)                   (comp Topology) (comp cluster)
-  where comp x = pack . encodeString $ dhallRoot </> fromText (lshowText x) <.> "dhall"
+  where comp x = dhallRoot <>"/"<> lshowText x <>".dhall"
 
-forConfigValues :: FilePath -> OS -> Cluster -> (Config -> YAML.Value -> IO a) -> IO ()
+forConfigValues :: Text -> OS -> Cluster -> (Config -> YAML.Value -> IO a) -> IO ()
 forConfigValues dhallRoot os cluster action = do
-  sequence_ [ action cfg =<<
-              (handle $ Dhall.detailed $ Dhall.codeToValue "(stdin)" $ dhallTopExpr dhallRoot cfg os cluster)
+  sequence_ [ let topExpr = dhallTopExpr dhallRoot cfg os cluster
+              in action cfg =<<
+                 (handle $ Dhall.detailed $ Dhall.codeToValue "(stdin)" $
+                  (trace (unpack $ "Dhall top-level expression: " <> topExpr) topExpr))
             | cfg     <- enumFromTo minBound maxBound ]
 
-checkAllConfigs :: FilePath -> IO ()
+checkAllConfigs :: Text -> IO ()
 checkAllConfigs dhallRoot =
   sequence_ [ forConfigValues dhallRoot os cluster (\_ _ -> pure ())
             | os      <- enumFromTo minBound maxBound
             , cluster <- enumFromTo minBound maxBound ]
 
-generateOSClusterConfigs :: FilePath -> FilePath -> Options -> IO ()
+generateOSClusterConfigs :: Text -> FilePath -> Options -> IO ()
 generateOSClusterConfigs dhallRoot outDir Options{..} = forConfigValues dhallRoot oOS oCluster $
   \config val -> do
     GHC.setLocaleEncoding GHC.utf8
