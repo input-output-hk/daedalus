@@ -1,10 +1,10 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import { remote } from "electron";
+import { remote } from 'electron';
 import SupportSettings from '../../../components/settings/categories/SupportSettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
-import BugReportDialog from "../../../components/profile/bug-report/BugReportDialog";
+import BugReportDialog from '../../../components/profile/bug-report/BugReportDialog';
 
 const shell = require('electron').shell;
 
@@ -18,15 +18,13 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     if (event.target.href) shell.openExternal(event.target.href);
   };
 
-  handleSupportRequestClick = (event: MouseEvent) => {
-    event.preventDefault();
+  handleSupportRequestClick = () => {
     this.props.actions.dialogs.open.trigger({
-      dialog: BugReportDialog
+      dialog: BugReportDialog,
     });
   };
 
-  handleDownloadLogs = (event: MouseEvent) => {
-    event.preventDefault();
+  handleDownloadLogs = () => {
     const destination = remote.dialog.showSaveDialog({
       defaultPath: 'logs.zip',
     });

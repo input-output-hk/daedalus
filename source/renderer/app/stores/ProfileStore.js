@@ -69,7 +69,7 @@ export default class SettingsStore extends Store {
       this._reloadAboutWindowOnLocaleChange,
       this._redirectToLanguageSelectionIfNoLocaleSet,
       this._redirectToTermsOfUseScreenIfTermsNotAccepted,
-      this._redirectToMainUiAfterSetSendLogsChoice,
+      this._redirectToMainUiAfterTermsAreAccepted,
     ]);
     this._getTermsOfUseAcceptance();
   }
@@ -175,7 +175,7 @@ export default class SettingsStore extends Store {
 
   _isOnTermsOfUsePage = () => this.stores.app.currentRoute === ROUTES.PROFILE.TERMS_OF_USE;
 
-  _redirectToMainUiAfterSetSendLogsChoice = () => {
+  _redirectToMainUiAfterTermsAreAccepted = () => {
     if (this.areTermsOfUseAccepted && this._isOnTermsOfUsePage()) {
       this._redirectToRoot();
     }
@@ -214,7 +214,7 @@ export default class SettingsStore extends Store {
     if (this.compressedLog) {
       ipcRenderer.send(DOWNLOAD_LOGS.REQUEST, this.compressedLog, destination);
     } else {
-      // start process getLogs -> compressLogs -> downloadLogs (again)
+      // start process: getLogs -> compressLogs -> downloadLogs (again)
       this._getLogs();
     }
   });
@@ -267,7 +267,7 @@ export default class SettingsStore extends Store {
   });
 
   _deleteCompressedFiles = action(() => {
-    // Trigger ipc renderer to delete compressed temp files if exists
+    // trigger ipc renderer to delete compressed temp files if exists
     if (this.compressedLog) {
       ipcRenderer.send(DELETE_COMPRESSED_LOGS.REQUEST, this.compressedLog);
     }

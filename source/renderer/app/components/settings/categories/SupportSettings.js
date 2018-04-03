@@ -74,26 +74,26 @@ export default class SupportSettings extends Component<Props> {
     const { onExternalLinkClick, onSupportRequestClick, onDownloadLogs } = this.props;
     const { intl } = this.context;
 
-    const faqLink = <a
-      href={intl.formatMessage(messages.faqLinkUrl)}
-      onClick={event => onExternalLinkClick(event)}
-    >
-      {intl.formatMessage(messages.faqLink)}
-    </a>;
+    const faqLink = (
+      <a
+        href={intl.formatMessage(messages.faqLinkUrl)}
+        onClick={event => onExternalLinkClick(event)}
+      >
+        {intl.formatMessage(messages.faqLink)}
+      </a>
+    );
 
-    const supportRequestLink = <a
-      href="#"
-      onClick={event => onSupportRequestClick(event)}
-    >
-      {intl.formatMessage(messages.supportRequestLink)}
-    </a>;
+    const supportRequestLink = (
+      <button onClick={onSupportRequestClick}>
+        {intl.formatMessage(messages.supportRequestLink)}
+      </button>
+    );
 
-    const downloadLogsLink = <a
-      href="#"
-      onClick={event => onDownloadLogs(event)}
-    >
-      {intl.formatMessage(messages.downloadLogsLink)}
-    </a>;
+    const downloadLogsLink = (
+      <button onClick={onDownloadLogs}>
+        {intl.formatMessage(messages.downloadLogsLink)}
+      </button>
+    );
 
     return (
       <div className={styles.component}>
@@ -104,7 +104,9 @@ export default class SupportSettings extends Component<Props> {
 
         <h1>{intl.formatMessage(messages.reportProblemTitle)}</h1>
 
-        <p><FormattedMessage {...messages.reportProblemContent} values={{ supportRequestLink }} /></p>
+        <p>
+          <FormattedMessage {...messages.reportProblemContent} values={{ supportRequestLink }} />
+        </p>
 
         <h1>{intl.formatMessage(messages.logsTitle)}</h1>
 

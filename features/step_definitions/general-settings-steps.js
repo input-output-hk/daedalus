@@ -39,6 +39,6 @@ Then(/^I should see second theme as selected$/, async function () {
   await this.client.waitForVisible('.DisplaySettings_themesWrapper button:nth-child(2).DisplaySettings_active');
 });
 
-Then(/^I should see tha page with Frequency asked questions title$/, async function () {
+Then(/^I should see the page with Frequency asked questions title$/, async function () {
   return this.client.waitForVisible(await this.intl('settings.support.faq.title'), null, true);
 });

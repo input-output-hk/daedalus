@@ -39,4 +39,4 @@ Feature: General Settings
 
   Scenario: Change send-logs option in General Settings
     Given I am on the General Settings "support" screen
-    Then I should see tha page with Frequency asked questions title
+    Then I should see the page with Frequency asked questions title

@@ -14,17 +14,27 @@
     padding-top: 10px;
   }
 
+  a,
+  button,
   p {
     color: var(--theme-support-settings-text-color);
     font-family: var(--font-regular);
     font-size: 14px;
     line-height: 19px;
-    margin-bottom: 10px;
+  }
 
-    a {
-      color: var(--theme-support-settings-text-color);
-      text-decoration: underline;
-    }
+  a,
+  button {
+    text-decoration: underline;
+  }
+
+  button {
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
+
+  p {
+    margin-bottom: 10px;
   }
 }
 

@@ -7,7 +7,6 @@ const networkForLocalStorage = String(environment.NETWORK);
 const storageKeys = {
   USER_LOCALE: networkForLocalStorage + '-USER-LOCALE',
   TERMS_OF_USE_ACCEPTANCE: networkForLocalStorage + '-TERMS-OF-USE-ACCEPTANCE',
-  SEND_LOGS_CHOICE: networkForLocalStorage + '-SEND-LOGS-CHOICE',
   THEME: networkForLocalStorage + '-THEME'
 };
 
@@ -70,13 +69,6 @@ export default class LocalStorageApi {
     } catch (error) {} // eslint-disable-line
   });
 
-  unsetSendLogsChoice = () => new Promise((resolve) => {
-    try {
-      store.delete(storageKeys.SEND_LOGS_CHOICE);
-      resolve();
-    } catch (error) {} // eslint-disable-line
-  });
-
   getUserTheme = () => new Promise((resolve, reject) => {
     try {
       const theme = store.get(storageKeys.THEME);
@@ -104,9 +96,8 @@ export default class LocalStorageApi {
   });
 
   async reset() {
-    await this.unsetUserLocale(); // TODO: remove after saving locale to API is restored
+    await this.unsetUserLocale();
     await this.unsetTermsOfUseAcceptance();
-    await this.unsetSendLogsChoice();
     await this.unsetUserTheme();
   }
 

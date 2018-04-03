@@ -279,8 +279,6 @@ export default {
   '--theme-mnemonic-background-color': '#e6e9ee',
   '--theme-mnemonic-background-color-hover': '#eaecf1',
 
-  '--theme-send-logs-text-color': '#5e6066',
-
   '--theme-separation-border-color': '#dfe4e8',
 
   '--theme-support-settings-text-color': '#5e6066',
