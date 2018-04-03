@@ -19,11 +19,6 @@ When(/^I select second theme$/, async function () {
   await this.client.click('.DisplaySettings_themesWrapper > button:nth-child(2)');
 });
 
-When(/^I toggle switch to disable send-logs$/, async function () {
-  await this.client.waitForVisible('.SupportSettings_component .SimpleSwitch_switch');
-  await this.client.click('.SupportSettings_component .SimpleSwitch_checked');
-});
-
 When(/^I open General Settings language selection dropdown$/, async function () {
   await this.client.click('.GeneralSettings_component .SimpleInput_input');
 });
@@ -44,6 +39,6 @@ Then(/^I should see second theme as selected$/, async function () {
   await this.client.waitForVisible('.DisplaySettings_themesWrapper button:nth-child(2).DisplaySettings_active');
 });
 
-Then(/^I should not see send-logs switch checked anymore$/, async function () {
-  return this.client.waitForVisible('.SupportSettings_component .SimpleSwitch_checked', null, true);
+Then(/^I should see the page with Frequency asked questions title$/, async function () {
+  return this.client.waitForVisible(await this.intl('settings.support.faq.title'), null, true);
 });

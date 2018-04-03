@@ -1,16 +1,40 @@
 @import '../../../themes/mixins/error-message';
 
 .component {
-  & > .label {
+
+  h1 {
     color: var(--theme-support-settings-text-color);
     font-family: var(--font-semibold);
     font-size: 16px;
     line-height: 1.38;
     margin-bottom: 10px;
   }
+
+  h1:not(:first-child) {
+    padding-top: 10px;
+  }
+
+  a,
+  button,
+  p {
+    color: var(--theme-support-settings-text-color);
+    font-family: var(--font-regular);
+    font-size: 14px;
+    line-height: 19px;
+  }
+
+  a,
+  button {
+    text-decoration: underline;
+  }
+
+  button {
+    cursor: pointer;
+    letter-spacing: 1px;
+  }
+
+  p {
+    margin-bottom: 10px;
+  }
 }
 
-.error {
-  @include error-message;
-  text-align: center;
-}
