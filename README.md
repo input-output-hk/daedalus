@@ -96,7 +96,7 @@ $ tmux kill-session -t cardano
 
 ### Development - network options
 
-There are four different network options you can run Daedalus in: `mainnet`, `testnet` and `development` (default).
+There are three different network options you can run Daedalus in: `mainnet`, `testnet` and `development` (default).
 To set desired network option use `NETWORK` environment variable:
 
 ```bash
