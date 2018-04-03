@@ -122,7 +122,7 @@ export default {
   '--theme-node-update-background-color': '#536370',
   '--theme-node-update-title-color': '#e9f4fe',
   '--theme-node-update-message-color': '#e9f4fe',
-  '--theme-node-sync-info-message-background-color': '#fafbfc',
+  '--theme-node-sync-info-message-background-color': '#536370',
   '--theme-node-sync-info-message-text-color': '#e9f4fe',
   '--theme-node-update-accept-button-background-color': '#263345',
   '--theme-node-update-accept-button-background-color-hover': '#34465e',
