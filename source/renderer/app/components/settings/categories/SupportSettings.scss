@@ -1,6 +1,7 @@
 @import '../../../themes/mixins/error-message';
 
 .component {
+  padding-bottom: 10px;
 
   h1 {
     color: var(--theme-support-settings-text-color);
