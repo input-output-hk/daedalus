@@ -14,7 +14,7 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   onSubmit = (values: {
-    email: string, subject: ?string, problem: ?string, compressedLog: ?string
+    email: string, subject: string, problem: string, compressedLog: ?string
   }) => {
     this.props.actions.profile.sendBugReport.trigger(values);
   };

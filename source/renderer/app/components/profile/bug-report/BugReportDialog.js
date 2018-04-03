@@ -131,7 +131,6 @@ type Props = {
 
 type State = {
   showLogs: boolean,
-  canLoadLogs: boolean,
 };
 
 @observer
@@ -142,9 +141,12 @@ export default class BugReportDialog extends Component<Props, State> {
   };
 
   state = {
-    showLogs: false,
-    canLoadLogs: true,
+    showLogs: true,
   };
+
+  componentWillMount() {
+    this.props.onGetLogs();
+  }
 
   componentWillReceiveProps(nextProps: Object) {
     const commpressionFilesChanged = this.props.compressedLog !== nextProps.compressedLog;
@@ -225,13 +227,7 @@ export default class BugReportDialog extends Component<Props, State> {
   };
 
   handleLogsSwitchToggle = (value: boolean) => {
-    // prevent multiple logs loading on same dialog, re-enable on open/close dialog
-    if (this.state.canLoadLogs) {
-      this.props.onGetLogs();
-      this.setState({ showLogs: value, canLoadLogs: false });
-    } else {
-      this.setState({ showLogs: value });
-    }
+    this.setState({ showLogs: value });
   };
 
   render() {
