@@ -7,7 +7,6 @@ export const ROUTES = {
   PROFILE: {
     LANGUAGE_SELECTION: '/profile/language-selection',
     TERMS_OF_USE: '/profile/terms-of-use',
-    SEND_LOGS: '/profile/send-logs-choice',
   },
   WALLETS: {
     ROOT: '/wallets',

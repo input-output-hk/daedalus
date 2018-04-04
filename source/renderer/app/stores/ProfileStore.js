@@ -40,8 +40,6 @@ export default class SettingsStore extends Store {
   @observable setProfileLocaleRequest: Request<string> = new Request(this.api.localStorage.setUserLocale);
   @observable getTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.localStorage.getTermsOfUseAcceptance);
   @observable setTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.localStorage.setTermsOfUseAcceptance);
-  @observable getSendLogsChoiceRequest: Request<boolean> = new Request(this.api.localStorage.getSendLogsChoice);
-  @observable setSendLogsChoiceRequest: Request = new Request(this.api.localStorage.setSendLogsChoice);
   @observable getThemeRequest: Request<string> = new Request(this.api.localStorage.getUserTheme);
   @observable setThemeRequest: Request<string> = new Request(this.api.localStorage.setUserTheme);
   @observable sendBugReport: Request<any> = new Request(this.api[environment.API].sendBugReport);
@@ -54,7 +52,6 @@ export default class SettingsStore extends Store {
 
   setup() {
     this.actions.profile.updateLocale.listen(this._updateLocale);
-    this.actions.profile.setSendLogsChoice.listen(this._setSendLogsChoice);
     this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
     this.actions.profile.updateTheme.listen(this._updateTheme);
     this.actions.profile.getLogs.listen(this._getLogs);
@@ -72,11 +69,9 @@ export default class SettingsStore extends Store {
       this._reloadAboutWindowOnLocaleChange,
       this._redirectToLanguageSelectionIfNoLocaleSet,
       this._redirectToTermsOfUseScreenIfTermsNotAccepted,
-      this._redirectToSendLogsChoiceScreenIfSendLogsChoiceNotSet,
-      this._redirectToMainUiAfterSetSendLogsChoice,
+      this._redirectToMainUiAfterTermsAreAccepted,
     ]);
     this._getTermsOfUseAcceptance();
-    this._sendLogsChoiceToMainProcess();
   }
 
   teardown() {
@@ -140,14 +135,6 @@ export default class SettingsStore extends Store {
     return this.getTermsOfUseAcceptanceRequest.result === true;
   }
 
-  @computed get isSendLogsChoiceSet(): boolean {
-    return this.getSendLogsChoiceRequest.result !== null;
-  }
-
-  @computed get hasLoadedSendLogsChoice(): boolean {
-    return this.getSendLogsChoiceRequest.wasExecuted;
-  }
-
   _updateLocale = async ({ locale }: { locale: string }) => {
     await this.setProfileLocaleRequest.execute(locale);
     await this.getProfileLocaleRequest.execute();
@@ -171,18 +158,6 @@ export default class SettingsStore extends Store {
     this.getTermsOfUseAcceptanceRequest.execute();
   };
 
-  _getSendLogsChoice = async () => await this.getSendLogsChoiceRequest.execute().promise;
-
-  _setSendLogsChoice = async ({ sendLogs }: { sendLogs: boolean }) => {
-    await this.setSendLogsChoiceRequest.execute(sendLogs).promise;
-    await this._sendLogsChoiceToMainProcess();
-  };
-
-  _sendLogsChoiceToMainProcess = async () => {
-    const choice = await this._getSendLogsChoice();
-    ipcRenderer.send('send-logs-choice', choice);
-  };
-
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
     const { isConnected } = this.stores.networkStatus;
     if (isConnected && this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
@@ -198,18 +173,10 @@ export default class SettingsStore extends Store {
     }
   };
 
-  _redirectToSendLogsChoiceScreenIfSendLogsChoiceNotSet = () => {
-    const { isConnected } = this.stores.networkStatus;
-    if (isConnected && this.isCurrentLocaleSet && this.areTermsOfUseAccepted &&
-      this.hasLoadedSendLogsChoice && !this.isSendLogsChoiceSet) {
-      this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.SEND_LOGS });
-    }
-  };
+  _isOnTermsOfUsePage = () => this.stores.app.currentRoute === ROUTES.PROFILE.TERMS_OF_USE;
 
-  _isOnSendLogsChoicePage = () => this.stores.app.currentRoute === ROUTES.PROFILE.SEND_LOGS;
-
-  _redirectToMainUiAfterSetSendLogsChoice = () => {
-    if (this.isSendLogsChoiceSet && this._isOnSendLogsChoicePage()) {
+  _redirectToMainUiAfterTermsAreAccepted = () => {
+    if (this.areTermsOfUseAccepted && this._isOnTermsOfUsePage()) {
       this._redirectToRoot();
     }
   };
@@ -243,11 +210,11 @@ export default class SettingsStore extends Store {
       destination,
     };
 
-    // logs allready compressed, download
+    // logs already compressed, download
     if (this.compressedLog) {
       ipcRenderer.send(DOWNLOAD_LOGS.REQUEST, this.compressedLog, destination);
     } else {
-      // start proccess getLogs -> compressLogs -> downloadLogs (again)
+      // start process: getLogs -> compressLogs -> downloadLogs (again)
       this._getLogs();
     }
   });
@@ -300,7 +267,7 @@ export default class SettingsStore extends Store {
   });
 
   _deleteCompressedFiles = action(() => {
-    // Trigger ipc renderer to delete compressed temp files if exists
+    // trigger ipc renderer to delete compressed temp files if exists
     if (this.compressedLog) {
       ipcRenderer.send(DELETE_COMPRESSED_LOGS.REQUEST, this.compressedLog);
     }

@@ -9,7 +9,6 @@ export default class ProfileActions {
   getLogs: Action<any> = new Action();
   downloadLogs: Action<{ destination: string }> = new Action();
   resetBugReportDialog: Action<any> = new Action();
-  setSendLogsChoice: Action<{ sendLogs: boolean }> = new Action();
   sendBugReport: Action<{
     email: string, subject: ?string, problem: ?string, compressedLog: ?string,
   }> = new Action();

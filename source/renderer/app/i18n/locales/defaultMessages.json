@@ -742,67 +742,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Continue",
-        "description": "Label for the \"Send logs\" accept button",
-        "end": {
-          "column": 3,
-          "line": 16
-        },
-        "file": "source/renderer/app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
-        "id": "profile.sendLogsChoice.form.continueButtonLabel",
-        "start": {
-          "column": 23,
-          "line": 12
-        }
-      },
-      {
-        "defaultMessage": "!!!Dont't send",
-        "description": "Label for the \"Send logs\" decline button",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "source/renderer/app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
-        "id": "profile.sendLogsChoice.form.declineButtonLabel",
-        "start": {
-          "column": 22,
-          "line": 17
-        }
-      },
-      {
-        "defaultMessage": "!!!Send logs to the central server",
-        "description": "Label for the \"Send logs\" content",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "source/renderer/app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
-        "id": "profile.sendLogsChoice.form.contentLabel",
-        "start": {
-          "column": 16,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!Do you want to help diagnose issues by opting in to send logs to our central logging server? Logs will not include any sensitive data.",
-        "description": "Send logs content",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/profile/send-logs-choice-form/SendLogsChoiceForm.js",
-        "id": "profile.sendLogsChoice.form.contentText",
-        "start": {
-          "column": 15,
-          "line": 27
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/profile/send-logs-choice-form/SendLogsChoiceForm.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!I agree with terms of use",
         "description": "Label for the \"I agree with terms of use\" checkbox.",
         "end": {
@@ -930,31 +869,143 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Send logs to the central server",
-        "description": "Label for the \"Send logs\" switch on the support settings page.",
+        "defaultMessage": "!!!Frequently asked questions",
+        "description": "Title \"Frequently asked questions\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 12
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
-        "id": "settings.support.sendLogs.switchLabel",
+        "id": "settings.support.faq.title",
         "start": {
-          "column": 19,
-          "line": 11
+          "column": 12,
+          "line": 8
         }
       },
       {
-        "defaultMessage": "!!!Do you want to help diagnose issues by opting in to send logs to our central logging server? Logs will not include any sensitive data.",
-        "description": "Text for the \"Send logs\" switch on the support settings page.",
+        "defaultMessage": "!!!If you are experiencing issues, please see the {faqLink} for guidance on known issues.",
+        "description": "Content for the \"Frequently asked questions\" section on the support settings page.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 17
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
-        "id": "settings.support.sendLogs.switchPlaceholder",
+        "id": "settings.support.faq.content",
         "start": {
-          "column": 25,
-          "line": 16
+          "column": 14,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!FAQ on Daedalus website",
+        "description": "\"FAQ on Daedalus website\" link in the FAQ section on the support settings page",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.faq.faqLink",
+        "start": {
+          "column": 11,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!https://daedaluswallet.io/faq/",
+        "description": "URL for the \"FAQ on Daedalus website\" link in the FAQ section on the support settings page",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.faq.faqLinkURL",
+        "start": {
+          "column": 14,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Reporting a problem",
+        "description": "Title \"Reporting a problem\" on the support settings page.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.reportProblem.title",
+        "start": {
+          "column": 22,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!If the FAQ does not solve the issue you are experiencing, please use our {supportRequestLink} feature.",
+        "description": "Content for the \"Reporting a problem\" section on the support settings page.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.reportProblem.content",
+        "start": {
+          "column": 24,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Support request",
+        "description": "\"Support request\" link in the \"Report a problem\" section on the support settings page.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.reportProblem.link",
+        "start": {
+          "column": 22,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Logs",
+        "description": "Title \"Logs\" on the support settings page.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.logs.title",
+        "start": {
+          "column": 13,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!If you want to inspect logs, you can {downloadLogsLink}. Logs do not contain sensitive information, and it would be helpful to attach them to problem reports to help the team investigate the issue you are experiencing. Logs can be attached automatically when using the bug reporting feature.",
+        "description": "Content for the \"Logs\" section on the support settings page.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.logs.content",
+        "start": {
+          "column": 15,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!download them here",
+        "description": "\"download them here\" link in the Logs section on the support settings page",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
+        "id": "settings.support.logs.downloadLogsLink",
+        "start": {
+          "column": 20,
+          "line": 53
         }
       }
     ],
