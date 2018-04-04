@@ -109,7 +109,7 @@ let
     echo inside installer
     echo source $TARPATH
 
-    mkdir -pv $HOME/nix-install
+    mkdir -pv $HOME/${installationSlug}
 
     UNPACK=$(mktemp -d)
 
