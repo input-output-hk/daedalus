@@ -1,4 +1,4 @@
-export const winLinuxMenu = (app, window, openAbout) => (
+export default (app, window, openAbout) => (
   [{
     label: 'Daedalus',
     submenu: [{
