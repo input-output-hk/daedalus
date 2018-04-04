@@ -21,8 +21,8 @@ let
     nix-bundle = import (pkgs.fetchFromGitHub {
       owner = "matthewbauer";
       repo = "nix-bundle";
-      rev = "630e89d1d16083";
-      sha256 = "1s9vzlsfxd2ym8jzv2p64j6jlwr9cmir45mb12yzzjr4dc91xk8x";
+      rev = "496f2b524743da67717e4533745394575c6aab1f";
+      sha256 = "0p9hsrbc1b0i4aipwnl4vxjsayc5m865xhp8q139ggaxq7xd0lps";
     }) { nixpkgs = pkgs; };
     desktopItem = pkgs.makeDesktopItem {
       name = "Daedalus";
