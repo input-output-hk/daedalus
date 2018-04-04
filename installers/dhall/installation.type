@@ -1,4 +1,0 @@
-{ cardano              : Text
-, configFiles          : Text
-, daedalusFrontend     : Text
-}

@@ -70,9 +70,6 @@ data Backend
   | Mantis
   deriving (Eq, Show)
 
--- instance Read FilePath where
---   readPrec = fromText . pack <$> Read.lift (Read.munch1 $ const True)
-
 data Command
   = GenConfig
     { cfDhallRoot   :: Text
