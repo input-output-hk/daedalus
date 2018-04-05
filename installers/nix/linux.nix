@@ -1,6 +1,6 @@
 { stdenv, runCommand, writeText, writeScriptBin, fetchurl, fetchFromGitHub, openssl, electron,
 coreutils, utillinux, procps, cluster,
-rawapp, master_config, cardanoPkgs }:
+rawapp, daedalus-bridge }:
 
 let
   # closure size TODO list
@@ -15,11 +15,6 @@ let
 
     exec ${electron}/bin/electron ${rawapp}/share/daedalus/main/
   '';
-  cardanoProgs = runCommand "cardano" {} ''
-    mkdir -pv $out/bin/
-    cp ${cardanoPkgs.cardano-sl-wallet}/bin/cardano-node $out/bin/
-    cp ${cardanoPkgs.cardano-sl-tools}/bin/cardano-launcher $out/bin/
-  '';
   slimOpenssl = runCommand "openssl" {} ''
     mkdir -pv $out/bin/
     cp ${openssl}/bin/openssl $out/bin/
@@ -27,10 +22,10 @@ let
   configFiles = runCommand "cardano-config" {} ''
     mkdir -pv $out
     cd $out
-    cp -vi ${cardanoPkgs.cardano-sl.src + "/configuration.yaml"} configuration.yaml
-    cp -vi ${cardanoPkgs.cardano-sl.src + "/mainnet-genesis-dryrun-with-stakeholders.json"} mainnet-genesis-dryrun-with-stakeholders.json
-    cp -vi ${cardanoPkgs.cardano-sl.src + "/mainnet-genesis.json"} mainnet-genesis.json
-    cp -vi ${cardanoPkgs.cardano-sl.src + "/../log-configs/daedalus.yaml"} daedalus.yaml
+    cp -vi ${daedalus-bridge}/config/configuration.yaml configuration.yaml
+    cp -vi ${daedalus-bridge}/config/mainnet-genesis-dryrun-with-stakeholders.json mainnet-genesis-dryrun-with-stakeholders.json
+    cp -vi ${daedalus-bridge}/config/mainnet-genesis.json mainnet-genesis.json
+    cp -vi ${daedalus-bridge}/config/log-config-prod.yaml daedalus.yaml
     cp -vi ${topologies.${cluster}} topology.yaml
   '';
   topologies = {
@@ -67,7 +62,7 @@ let
     };
   };
   launcherConfig = writeText "launcher-config.json" (builtins.toJSON {
-    nodePath = "${cardanoProgs}/bin/cardano-node";
+    nodePath = "${daedalus-bridge}/bin/cardano-node";
     nodeArgs = [
       "--update-latest-path" "$HOME/.local/share/Daedalus/${cluster}/installer.sh"
       "--keyfile" "Secrets/secret.key"
@@ -117,7 +112,7 @@ let
       ${slimOpenssl}/bin/openssl req -x509 -newkey rsa:2048 -keyout tls/server/server.key -out tls/server/server.crt -days 3650 -nodes -subj "/CN=localhost"
       cp tls/server/server.crt tls/ca/ca.crt
     fi
-    exec ${cardanoProgs}/bin/cardano-launcher \
+    exec ${daedalus-bridge}/bin/cardano-launcher \
       --config ${launcherConfig}
   '';
 in daedalus

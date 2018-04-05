@@ -116,9 +116,6 @@ DAEDALUS_BRIDGE=$(nix-build --no-out-link cardano-sl.nix -A daedalus-bridge)
 if [ -f $DAEDALUS_BRIDGE/build-id ]; then echo "cardano-sl build id is $(cat $DAEDALUS_BRIDGE/build-id)"; fi
 if [ -f $DAEDALUS_BRIDGE/commit-id ]; then echo "cardano-sl revision is $(cat $DAEDALUS_BRIDGE/commit-id)"; fi
 
-test "$(find node_modules/ | wc -l)" -gt 100 -a -n "${fast_impure}" ||
-        $nix_shell --run "npm install"
-
 cd installers
     echo '~~~ Prebuilding dependencies for cardano-installer, quietly..'
     $nix_shell default.nix --run true || echo "Prebuild failed!"

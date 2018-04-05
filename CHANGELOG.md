@@ -8,17 +8,22 @@ Changelog
 - Paper wallets certificate generation ([PR 779](https://github.com/input-output-hk/daedalus/pull/779))
 - Wallet restoration from a paper wallet certificate ([PR 794](https://github.com/input-output-hk/daedalus/pull/794))
 - Paper wallet certificate generation and wallet restoration from a paper wallet certificate acceptance tests ([PR 807](https://github.com/input-output-hk/daedalus/pull/807))
+- Instructions for accessing FAQ, reporting a problem and downloading logs on the support page in general settings ([PR 818](https://github.com/input-output-hk/daedalus/pull/818))
 
 ### Fixes
 
 - Updated moment.js dependency to the latest version which fixes ReDOS vulnerability ([PR 782](https://github.com/input-output-hk/daedalus/pull/782))
 - Fixed bug causing only 5 transactions to be shown on the transaction list screen ([PR 778](https://github.com/input-output-hk/daedalus/pull/778))
 - Fixed broken copy & paste context menu actions on Windows ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
+- Fixed non-latin character in wallet name bug ([PR 839](https://github.com/input-output-hk/daedalus/pull/839))
 
 ### Chores
 
 - Improve build system ([PR 692](https://github.com/input-output-hk/daedalus/pull/692))
 - New Edit section in system menu with copy & paste and related actions ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
+- Remove sending logs to remote server feature ([PR 818](https://github.com/input-output-hk/daedalus/pull/818))
+- Updated main and acceptane tests readme files with new acceptance tests setup information ([PR 831](https://github.com/input-output-hk/daedalus/pull/831))
+- Use UTC time in Daedalus logs ([PR 833](https://github.com/input-output-hk/daedalus/pull/833))
 
 ## 0.9.0
 =======

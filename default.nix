@@ -1,45 +1,28 @@
 let
-  defaults = {
-    master_config = {
-      # TODO DEVOPS-673
-      cardano_rev = "eef095";
-      cardano_hash = "151qjqswrcscr2afsc6am4figw09hyxr80nd3dv3c35dvp2xx4rp";
-    };
-    pkgs = import (import ./fetchNixpkgs.nix (builtins.fromJSON (builtins.readFile ./nixpkgs-src.json))) { config = {}; overlays = []; };
-  };
-in { cluster ? "mainnet", master_config ? defaults.master_config, pkgs ? defaults.pkgs, version ? "versionNotSet" }:
+  localLib = import ./lib.nix;
+in
+{ system ? builtins.currentSystem
+, config ? {}
+, pkgs ? (import (localLib.fetchNixPkgs) { inherit system config; })
+, cluster ? "mainnet"
+, version ? "versionNotSet"
+}:
+
 let
   installPath = ".daedalus";
+  cardanoPkgs = import ./cardano-sl.nix {
+    inherit system config pkgs;
+  };
   packages = self: {
-    inherit cluster master_config pkgs version;
-    cardanoSrc = pkgs.fetchFromGitHub {
-      owner = "input-output-hk";
-      repo = "cardano-sl";
-      rev = self.master_config.cardano_rev;
-      sha256 = self.master_config.cardano_hash;
-    };
-    cardanoPkgs = import self.cardanoSrc {
-      gitrev = self.cardanoSrc.rev;
-      config = {
-        packageOverrides = pkgs: {
-          rocksdb = pkgs.rocksdb.overrideDerivation (drv: {
-            outputs = [ "dev" "out" "static" ];
-            postInstall = ''
-              ${drv.postInstall}
-              mkdir -pv $static/lib/
-              mv -vi $out/lib/librocksdb.a $static/lib/
-            '';
-          });
-        };
-      };
-    };
+    inherit cluster pkgs version;
+    inherit (cardanoPkgs) daedalus-bridge;
     daedalus = self.callPackage ./installers/nix/linux.nix {};
     rawapp = self.callPackage ./yarn2nix.nix { api = "ada"; };
     nix-bundle = import (pkgs.fetchFromGitHub {
       owner = "matthewbauer";
       repo = "nix-bundle";
-      rev = "630e89d1d16083";
-      sha256 = "1s9vzlsfxd2ym8jzv2p64j6jlwr9cmir45mb12yzzjr4dc91xk8x";
+      rev = "496f2b524743da67717e4533745394575c6aab1f";
+      sha256 = "0p9hsrbc1b0i4aipwnl4vxjsayc5m865xhp8q139ggaxq7xd0lps";
     }) { nixpkgs = pkgs; };
     desktopItem = pkgs.makeDesktopItem {
       name = "Daedalus";
@@ -63,7 +46,6 @@ let
       cat /etc/resolv.conf > etc/resolv.conf
       exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -- /nix/var/nix/profiles/profile/bin/enter-phase2 daedalus
     '';
-    versionInfo = builtins.toFile "versioninfo.json" (builtins.toJSON self.master_config);
     postInstall = pkgs.writeScriptBin "post-install" ''
       #!${pkgs.stdenv.shell}
 
@@ -77,8 +59,6 @@ let
       exec 2>&1 > $DAEDALUS_DIR/Logs/pub/post-install.log
 
       echo "in post-install hook"
-      cat ${self.versionInfo}
-      echo
 
       cp -f ${self.iconPath} $DAEDALUS_DIR/icon.png
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper $DAEDALUS_DIR/namespaceHelper

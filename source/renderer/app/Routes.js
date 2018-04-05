@@ -14,7 +14,6 @@ import GeneralSettingsPage from './containers/settings/categories/GeneralSetting
 import SupportSettingsPage from './containers/settings/categories/SupportSettingsPage';
 import TermsOfUseSettingsPage from './containers/settings/categories/TermsOfUseSettingsPage';
 import TermsOfUsePage from './containers/profile/TermsOfUsePage';
-import SendLogsChoicePage from './containers/profile/SendLogsChoicePage';
 import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
 import PaperWalletCreateCertificatePage from './containers/wallet/PaperWalletCreateCertificatePage';
 
@@ -32,7 +31,6 @@ export const Routes = (
     <Route path={ROUTES.ROOT} component={LoadingPage} />
     <Route path={ROUTES.PROFILE.LANGUAGE_SELECTION} component={LanguageSelectionPage} />
     <Route path={ROUTES.PROFILE.TERMS_OF_USE} component={TermsOfUsePage} />
-    <Route path={ROUTES.PROFILE.SEND_LOGS} component={SendLogsChoicePage} />
     {/* <Route path={ROUTES.STAKING} component={StakingPage} /> */}
     <Route path={ROUTES.ADA_REDEMPTION} component={AdaRedemptionPage} />
     <Route path={ROUTES.NO_WALLETS} component={NoWalletsPage} />

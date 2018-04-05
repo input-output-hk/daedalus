@@ -156,8 +156,7 @@ export default class NetworkStatusStore extends Store {
   @computed get isSetupPage(): boolean {
     return (
       this.stores.app.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
-      this.stores.app.currentRoute === ROUTES.PROFILE.TERMS_OF_USE ||
-      this.stores.app.currentRoute === ROUTES.PROFILE.SEND_LOGS
+      this.stores.app.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
     );
   }
 

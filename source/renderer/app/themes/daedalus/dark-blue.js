@@ -283,8 +283,6 @@ export default {
   '--theme-mnemonic-background-color': 'rgba(83, 99, 112, 0.3)',
   '--theme-mnemonic-background-color-hover': 'rgba(102, 122, 138, 0.3)',
 
-  '--theme-send-logs-text-color': '#e9f4fe',
-
   '--theme-separation-border-color': '#334152',
 
   '--theme-support-settings-text-color': '#e9f4fe',
