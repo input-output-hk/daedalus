@@ -128,8 +128,8 @@ export default {
   '--theme-node-update-accept-button-background-color-hover': '#2cbb69',
   '--theme-node-update-accept-button-background-color-active': '#239554',
   '--theme-node-update-deny-button-background-color': 'rgba(86, 200, 135, 0.3)',
-  '--theme-node-update-deny-button-background-color-hover': '#2cbb69',
-  '--theme-node-update-deny-button-background-color-active': '#239554',
+  '--theme-node-update-deny-button-background-color-hover': 'rgba(44, 187, 105, 0.3)',
+  '--theme-node-update-deny-button-background-color-active': 'rgba(35, 149, 84, 0.3)',
   '--theme-node-update-button-text-color': '#fafbfc',
 
   '--theme-notification-message-background-color': 'rgba(44, 187, 105, 0.8)',
