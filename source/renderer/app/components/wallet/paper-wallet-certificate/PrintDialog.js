@@ -13,7 +13,7 @@ import styles from './PrintDialog.scss';
 const messages = defineMessages({
   headline: {
     id: 'paper.wallet.create.certificate.print.dialog.headline',
-    defaultMessage: '!!!Certificate printing complete',
+    defaultMessage: '!!!Certificate printing complete?',
     description: 'Headline for the "Paper wallet create certificate print dialog".'
   },
   subtitle: {

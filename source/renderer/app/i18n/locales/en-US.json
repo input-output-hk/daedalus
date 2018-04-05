@@ -108,7 +108,7 @@
   "paper.wallet.create.certificate.instructions.dialog.subtitle": "Create a paper wallet certificate for offline storage of funds.",
   "paper.wallet.create.certificate.print.dialog.certificatePrintedConfirmation": "Yes, the paper wallet certificate printed successfully.",
   "paper.wallet.create.certificate.print.dialog.certificateReadableConfirmation": "Yes, first 15 words of the paper wallet recovery phrase are readable.",
-  "paper.wallet.create.certificate.print.dialog.headline": "Certificate printing complete",
+  "paper.wallet.create.certificate.print.dialog.headline": "Certificate printing complete?",
   "paper.wallet.create.certificate.print.dialog.info": "Your certificate is not yet complete and does not contain all the data needed to restore your paper wallet. In the next step, you will need to write down an additional 9 words to your paper wallet recovery phrase.",
   "paper.wallet.create.certificate.print.dialog.printConfirmation": "Yes, paper wallet certificate successfully printed and everything is readable and scannable.",
   "paper.wallet.create.certificate.print.dialog.qrScannableConfirmation": "Yes, the QR code is scannable.",
