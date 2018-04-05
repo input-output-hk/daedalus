@@ -4,9 +4,21 @@
   .verificationContentWrapper {
     color: var(--theme-instructions-text-color);
 
-    .subtitle {
+    .subtitle,
+    .instructions {
       font-family: var(--font-light);
       line-height: 1.38;
+
+      strong {
+        font-family: var(--font-medium);
+      }
+    }
+
+    .instructions {
+      padding-top: 10px;
+      strong {
+        font-family: var(--font-medium);
+      }
     }
 
     .content {

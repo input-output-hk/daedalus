@@ -26,6 +26,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Enter your paper wallet recovery phrase to verify your paper wallet certificate.',
     description: '"Paper wallet create certificate verification dialog" subtitle.'
   },
+  instructions: {
+    id: 'paper.wallet.create.certificate.verification.dialog.instructions',
+    defaultMessage: '!!!Make sure you enter all 24 words for the paper wallet recovery phrase, first 15 words printed on the certificate followed by the 9 words you wrote by hand',
+    description: '"Paper wallet create certificate verification dialog" subtitle.'
+  },
   recoveryPhraseLabel: {
     id: 'paper.wallet.create.certificate.verification.dialog.recoveryPhrase.label',
     defaultMessage: '!!!Paper wallet recovery phrase',
@@ -207,6 +212,11 @@ export default class VerificationDialog extends Component<Props, State> {
 
         <div className={styles.verificationContentWrapper}>
           <p className={styles.subtitle}>{intl.formatMessage(messages.subtitle)}</p>
+          <p className={styles.instructions}>
+            <strong>
+              {intl.formatMessage(messages.instructions)}
+            </strong>
+          </p>
           <div className={styles.content}>
 
             <Autocomplete
