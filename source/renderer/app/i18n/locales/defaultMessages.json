@@ -2513,31 +2513,45 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano Explorer",
-        "description": "Wallet certificate create instructions dialog \"Cardano Explorer\" label",
+        "defaultMessage": "!!!When you click “Save PDF file” you will be prompted to choose a location on your computer where the PDF file will be saved. After that open the saved PDF file and print it.",
+        "description": "Wallet certificate create instructions dialog - printing instructions.",
         "end": {
           "column": 3,
           "line": 57
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
-        "id": "paper.wallet.create.certificate.instructions.dialog.cardanoExplorer",
+        "id": "paper.wallet.create.certificate.instructions.dialog.printingInstructions",
         "start": {
-          "column": 19,
+          "column": 24,
           "line": 53
         }
       },
       {
-        "defaultMessage": "!!!Print",
-        "description": "\"Wallet certificate create instructions dialog\" print button label.",
+        "defaultMessage": "!!!Cardano Explorer",
+        "description": "Wallet certificate create instructions dialog \"Cardano Explorer\" label",
         "end": {
           "column": 3,
           "line": 62
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
+        "id": "paper.wallet.create.certificate.instructions.dialog.cardanoExplorer",
+        "start": {
+          "column": 19,
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!Save PDF file",
+        "description": "\"Wallet certificate create instructions dialog\" print button label.",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "source/renderer/app/components/wallet/paper-wallet-certificate/InstructionsDialog.js",
         "id": "paper.wallet.create.certificate.instructions.dialog.button.printLabel",
         "start": {
           "column": 20,
-          "line": 58
+          "line": 63
         }
       }
     ],

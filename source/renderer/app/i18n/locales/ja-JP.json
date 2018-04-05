@@ -104,6 +104,7 @@
   "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition4": "印刷されたペーパーウォレットはオフライン状態となるため、ダイダロスには保管されません。ウォレットの残高を確認するには{link}にてアドレス検索を行なってください。",
   "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition5": "ペーパーウォレット復元フレーズが記載されている証明書は大切に保管してください。",
   "paper.wallet.create.certificate.instructions.dialog.instructionsList.label": "取扱説明書",
+  "paper.wallet.create.certificate.instructions.dialog.printingInstructions": "!!!When you click “Save PDF file” you will be prompted to choose a location on your computer where the PDF file will be saved. After that open the saved PDF file and print it.",
   "paper.wallet.create.certificate.instructions.dialog.subtitle": "ペーパーウォレット証明書を発行することで資産をオフライン状態で保管することができます。",
   "paper.wallet.create.certificate.print.dialog.certificatePrintedConfirmation": "はい、ペーパーウォレット証明書は無事印刷されました。",
   "paper.wallet.create.certificate.print.dialog.certificateReadableConfirmation": "はい、ペーパーウォレット復元フレーズの最初の15の英単語を読み取ることができます。",

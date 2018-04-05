@@ -38,6 +38,18 @@
       color: var(--theme-paper-wallet-create-certificate-dialog-explorer-link-color);
     }
   }
+
+  .printingInstructions {
+    border-top: 1px solid var(--theme-separation-border-color);
+    margin-top: 20px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    line-height: 1.38;
+
+    strong {
+      font-family: var(--font-medium);
+    }
+  }
 }
 
 .submitButtonSpinning {

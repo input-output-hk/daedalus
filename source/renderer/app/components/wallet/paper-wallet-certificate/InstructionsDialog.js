@@ -50,6 +50,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Store your certificate containing your paper wallet recovery phrase in a safe place.',
     description: 'Wallet certificate create instructions dialog definition 5.',
   },
+  printingInstructions: {
+    id: 'paper.wallet.create.certificate.instructions.dialog.printingInstructions',
+    defaultMessage: '!!!When you click “Save PDF file” you will be prompted to choose a location on your computer where the PDF file will be saved. After that open the saved PDF file and print it.',
+    description: 'Wallet certificate create instructions dialog - printing instructions.',
+  },
   cardanoExplorer: {
     id: 'paper.wallet.create.certificate.instructions.dialog.cardanoExplorer',
     defaultMessage: '!!!Cardano Explorer',
@@ -57,7 +62,7 @@ const messages = defineMessages({
   },
   printButtonLabel: {
     id: 'paper.wallet.create.certificate.instructions.dialog.button.printLabel',
-    defaultMessage: '!!!Print',
+    defaultMessage: '!!!Save PDF file for printing',
     description: '"Wallet certificate create instructions dialog" print button label.'
   },
 });
@@ -142,6 +147,11 @@ export default class InstructionsDialog extends Component<Props> {
             </ul>
 
           </div>
+
+          <p className={styles.printingInstructions}>
+            <strong>{intl.formatMessage(messages.printingInstructions)}</strong>
+          </p>
+
         </div>
 
       </Dialog>
