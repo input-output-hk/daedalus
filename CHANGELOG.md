@@ -19,6 +19,7 @@ Changelog
 - Improve build system ([PR 692](https://github.com/input-output-hk/daedalus/pull/692))
 - New Edit section in system menu with copy & paste and related actions ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
 - Remove sending logs to remote server feature ([PR 818](https://github.com/input-output-hk/daedalus/pull/818))
+- Use UTC time in Daedalus logs ([PR 833](https://github.com/input-output-hk/daedalus/pull/833))
 
 ## 0.9.0
 =======
