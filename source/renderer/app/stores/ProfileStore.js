@@ -249,8 +249,8 @@ export default class SettingsStore extends Store {
 
   _sendBugReport = action(({ email, subject, problem, compressedLog } : {
     email: string,
-    subject: ?string,
-    problem: ?string,
+    subject: string,
+    problem: string,
     compressedLog: ?string,
   }) => {
     this.sendBugReport.execute({
