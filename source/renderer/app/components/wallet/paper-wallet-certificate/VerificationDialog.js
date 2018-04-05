@@ -61,6 +61,11 @@ const messages = defineMessages({
     defaultMessage: '!!!I understand that my paper wallet can be recovered only by using my paper wallet certificate.',
     description: '"Paper wallet create certificate verification dialog" recovering understandance confirmation.'
   },
+  recoveryPhraseIncomplete: {
+    id: 'paper.wallet.create.certificate.verification.dialog.recoveryPhrase.incomplete',
+    defaultMessage: '!!!Please enter all 24 words of the recovery phrase.',
+    description: '"Paper wallet create certificate verification dialog" error that is shown if not all 24 words have been entered yet.'
+  },
   errorMessage: {
     id: 'paper.wallet.create.certificate.verification.dialog.errorMessage',
     defaultMessage: `!!!Invalid password or shielded recovery phrase / password combination.<br/>
@@ -112,11 +117,14 @@ export default class VerificationDialog extends Component<Props, State> {
             storingConfirmed,
             recoveringConfirmed,
           } = this.state;
-
-          const value = join(field.value, ' ');
+          const enteredWordsArray = field.value;
+          // If user hasn't entered all 24 words of the recovery phrase yet
+          if (enteredWordsArray.length < 24) {
+            return [false, this.context.intl.formatMessage(messages.recoveryPhraseIncomplete)];
+          }
           const fullRecoveryPhrase = `${walletCertificateRecoveryPhrase} ${additionalMnemonicWords}`;
-          if (value === '') return [false, this.context.intl.formatMessage(globalMessages.fieldIsRequired)];
-          const isRecoveryPhraseValid = fullRecoveryPhrase === value;
+          const enteredRecoveryPhrase = join(enteredWordsArray, ' ');
+          const isRecoveryPhraseValid = fullRecoveryPhrase === enteredRecoveryPhrase;
           this.setState({
             isRecoveryPhraseValid,
             // disabled and uncheck confirmation checkboxes if recovery phrase is not valid

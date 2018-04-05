@@ -13,3 +13,14 @@ export const expectTextInSelector = async (client, { selector, text }) => {
   // We only compare the first result
   expect(textOnScreen[0]).to.equal(text);
 };
+
+export const waitUntilTextInSelector = async (client, { selector, text }) => {
+  return await client.waitUntil(async () => {
+    await client.waitForText(selector);
+    let textOnScreen = await client.getText(selector);
+    // The selector could exist multiple times in the DOM
+    if (typeof textOnScreen === 'string') textOnScreen = [textOnScreen];
+    // We only compare the first result
+    return textOnScreen[0] === text;
+  });
+};

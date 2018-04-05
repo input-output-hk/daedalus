@@ -2,6 +2,7 @@ import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import path from 'path';
 import { fillOutWalletSendForm } from '../support/helpers/wallets-helpers';
+import { waitUntilTextInSelector } from '../support/helpers/shared-helpers';
 
 const paperWalletCertificatePath = path.resolve(__dirname, '../support/paper_wallet_certificates/paper-wallet-certificate.pdf');
 
@@ -93,11 +94,10 @@ When(/^I fill out the send form:$/, async function (table) {
 
 When(/^I should see the following field error message:$/, async function (data) {
   const error = data.hashes()[0];
-  const errorSelector = '.VerificationDialog_recoveryPhrase .SimpleFormField_error';
-  await this.client.waitForText(errorSelector);
-  const errorsOnScreen = await this.client.getText(errorSelector);
-  const expectedError = await this.intl(error.message);
-  expect(errorsOnScreen).to.equal(expectedError);
+  await waitUntilTextInSelector(this.client, {
+    selector: '.VerificationDialog_recoveryPhrase .SimpleFormField_error',
+    text: await this.intl(error.message)
+  });
 });
 
 When(/^Verify certificate checkboxes should be disabled$/, async function () {

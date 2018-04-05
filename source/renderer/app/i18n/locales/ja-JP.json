@@ -123,6 +123,7 @@
   "paper.wallet.create.certificate.verification.dialog.instructions": "!!!Make sure you enter all 24 words for the paper wallet recovery phrase, first 15 words printed on the certificate followed by the 9 words you wrote by hand",
   "paper.wallet.create.certificate.verification.dialog.recoveringUnderstandanceConfirmationLabel": "私は自身のウォレットを復元する唯一の方法がペーパーウォレット証明書を利用することであることを理解しました。",
   "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.hint": "復元フレーズを入力してください",
+  "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.incomplete": "!!!Please enter all 24 words of the recovery phrase.",
   "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.label": "ペーパーウォレット復元フレーズ",
   "paper.wallet.create.certificate.verification.dialog.recoveryPhrase.noResults": "該当する単語は見つかりませんでした",
   "paper.wallet.create.certificate.verification.dialog.storingUnderstandanceConfirmationLabel": "私は作成したペーパーウォレットがダイダロスウォレットにて保管されないことを理解しました。",
