@@ -4,11 +4,18 @@ Changelog
 ## 0.9.1
 =======
 
+### Features
+
+- New Edit section in system menu with copy & paste and related actions ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
+
 ### Fixes
 
-- Fixed bug causing only 5 transactions to be shown on the transaction list screen ([PR 778](https://github.com/input-output-hk/daedalus/pull/778))
-- Fixed broken copy & paste context menu actions on Windows ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
-- Fixed non-latin character in wallet name bug ([PR 840](https://github.com/input-output-hk/daedalus/pull/840))
+- A presentation bug has been fixed that caused only five recent transactions to be shown on the transaction list, even though there were more than five transactions in the wallet. ([PR 778](https://github.com/input-output-hk/daedalus/pull/778))
+- An issue has been fixed that stopped copy and paste operations from working when initiated using the right-click context menu. ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
+- A "Couldn't pack log files" error that masked the real reason for the Cardano node crashing has been fixed.
+- On Windows, the desktop icon was not showing the Daedalus image; this has now been fixed. ([837](https://github.com/input-output-hk/daedalus/pull/837))
+- An error has been fixed that in some cases prevented users creating a wallet with a name containing non-latin characters, like Japanese Kanji or Chinese. ([PR 840](https://github.com/input-output-hk/daedalus/pull/840))
+
 
 ## 0.9.0
 =======
