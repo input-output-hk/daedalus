@@ -104,7 +104,7 @@
   "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition4": "Your paper wallet will be offline so will not be held in Daedalus. To check the balance of the wallet, input the address on the certificate into {link}",
   "paper.wallet.create.certificate.instructions.dialog.instructionsList.definition5": "Store your certificate containing your paper wallet recovery phrase in a safe place.",
   "paper.wallet.create.certificate.instructions.dialog.instructionsList.label": "Instructions",
-  "paper.wallet.create.certificate.instructions.dialog.printingInstructions": "When you click “Save PDF file” you will be prompted to choose a location on your computer where the PDF file will be saved. After that open the saved PDF file and print it.",
+  "paper.wallet.create.certificate.instructions.dialog.printingInstructions": "When you click “Save PDF file for printing” you will be prompted to choose a location on your computer where the PDF file will be saved. After that open the saved PDF file and print it.",
   "paper.wallet.create.certificate.instructions.dialog.subtitle": "Create a paper wallet certificate for offline storage of funds.",
   "paper.wallet.create.certificate.print.dialog.certificatePrintedConfirmation": "Yes, the paper wallet certificate printed successfully.",
   "paper.wallet.create.certificate.print.dialog.certificateReadableConfirmation": "Yes, first 15 words of the paper wallet recovery phrase are readable.",

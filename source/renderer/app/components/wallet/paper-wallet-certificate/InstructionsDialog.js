@@ -52,7 +52,7 @@ const messages = defineMessages({
   },
   printingInstructions: {
     id: 'paper.wallet.create.certificate.instructions.dialog.printingInstructions',
-    defaultMessage: '!!!When you click “Save PDF file” you will be prompted to choose a location on your computer where the PDF file will be saved. After that open the saved PDF file and print it.',
+    defaultMessage: '!!!When you click “Save PDF file for printing” you will be prompted to choose a location on your computer where the PDF file will be saved. After that open the saved PDF file and print it.',
     description: 'Wallet certificate create instructions dialog - printing instructions.',
   },
   cardanoExplorer: {
