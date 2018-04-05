@@ -54,7 +54,7 @@ function typedRequest<Response>(
       hasRequestBody = true;
       requestBody = JSON.stringify(rawBodyParams);
       options.headers = {
-        'Content-Length': requestBody.length,
+        'Content-Length': (new TextEncoder()).encode(requestBody).length,
         'Content-Type': 'application/json',
       };
     }
