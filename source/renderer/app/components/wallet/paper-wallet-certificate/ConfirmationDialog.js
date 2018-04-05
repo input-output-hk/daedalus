@@ -9,23 +9,28 @@ import styles from './ConfirmationDialog.scss';
 const messages = defineMessages({
   headline: {
     id: 'paper.wallet.create.certificate.confirmation.dialog.headline',
-    defaultMessage: '!!!Are you sure?',
-    description: 'Headline for the "Confirmation dialog".'
+    defaultMessage: '!!!Abort paper wallet certificate creation?',
+    description: 'Headline for the paper wallet certificate cancellation confirmation dialog.'
   },
-  content: {
-    id: 'paper.wallet.create.certificate.confirmation.dialog.content',
-    defaultMessage: '!!!Your certificate should not be used without passing verification steps.',
-    description: 'Content for the "Confirmation dialog".'
+  content1: {
+    id: 'paper.wallet.create.certificate.confirmation.dialog.contentPart1',
+    defaultMessage: '!!!At this point, your paper wallet certificate is not complete and verifications steps are not yet done.',
+    description: 'Content for the paper wallet certificate cancellation confirmation dialog.'
+  },
+  content2: {
+    id: 'paper.wallet.create.certificate.confirmation.dialog.contentPart2',
+    defaultMessage: '!!!At this point, your paper wallet certificate is not complete and verifications steps are not yet done.',
+    description: 'Content for the paper wallet certificate cancellation confirmation dialog.'
   },
   cancelButtonLabel: {
-    id: 'paper.wallet.create.certificate.confirmation.dialog.button.canceLabel',
-    defaultMessage: '!!!Cancel',
-    description: '"Confirmation dialog" button cancel label.'
+    id: 'paper.wallet.create.certificate.confirmation.dialog.button.backLabel',
+    defaultMessage: '!!!Back',
+    description: '"Cancel" button label for the paper wallet certificate cancellation confirmation dialog.'
   },
   confirmButtonLabel: {
-    id: 'paper.wallet.create.certificate.confirmation.dialog.button.confirmLabel',
-    defaultMessage: '!!!Confirm',
-    description: '"Confirmation dialog" button confirm label.'
+    id: 'paper.wallet.create.certificate.confirmation.dialog.button.abortLabel',
+    defaultMessage: '!!!Abort',
+    description: '"Abort" button label for the paper wallet certificate cancellation confirmation dialog.'
   },
 });
 
@@ -77,7 +82,8 @@ export default class ConfirmationDialog extends Component<Props> {
         closeOnOverlayClick={false}
         onClose={onCancel}
       >
-        <p>{intl.formatMessage(messages.content)}</p>
+        <p>{intl.formatMessage(messages.content1)}</p>
+        <p><strong>{intl.formatMessage(messages.content2)}</strong></p>
       </Dialog>
     );
   }

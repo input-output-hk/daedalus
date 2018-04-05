@@ -2326,8 +2326,8 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Are you sure?",
-        "description": "Headline for the \"Confirmation dialog\".",
+        "defaultMessage": "!!!Abort paper wallet certificate creation?",
+        "description": "Headline for the paper wallet certificate cancellation confirmation dialog.",
         "end": {
           "column": 3,
           "line": 14
@@ -2340,45 +2340,59 @@
         }
       },
       {
-        "defaultMessage": "!!!Your certificate should not be used without passing verification steps.",
-        "description": "Content for the \"Confirmation dialog\".",
+        "defaultMessage": "!!!At this point, your paper wallet certificate is not complete and verifications steps are not yet done.",
+        "description": "Content for the paper wallet certificate cancellation confirmation dialog.",
         "end": {
           "column": 3,
           "line": 19
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/ConfirmationDialog.js",
-        "id": "paper.wallet.create.certificate.confirmation.dialog.content",
+        "id": "paper.wallet.create.certificate.confirmation.dialog.contentPart1",
         "start": {
-          "column": 11,
+          "column": 12,
           "line": 15
         }
       },
       {
-        "defaultMessage": "!!!Cancel",
-        "description": "\"Confirmation dialog\" button cancel label.",
+        "defaultMessage": "!!!At this point, your paper wallet certificate is not complete and verifications steps are not yet done.",
+        "description": "Content for the paper wallet certificate cancellation confirmation dialog.",
         "end": {
           "column": 3,
           "line": 24
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/ConfirmationDialog.js",
-        "id": "paper.wallet.create.certificate.confirmation.dialog.button.canceLabel",
+        "id": "paper.wallet.create.certificate.confirmation.dialog.contentPart2",
         "start": {
-          "column": 21,
+          "column": 12,
           "line": 20
         }
       },
       {
-        "defaultMessage": "!!!Confirm",
-        "description": "\"Confirmation dialog\" button confirm label.",
+        "defaultMessage": "!!!Back",
+        "description": "\"Cancel\" button label for the paper wallet certificate cancellation confirmation dialog.",
         "end": {
           "column": 3,
           "line": 29
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/ConfirmationDialog.js",
-        "id": "paper.wallet.create.certificate.confirmation.dialog.button.confirmLabel",
+        "id": "paper.wallet.create.certificate.confirmation.dialog.button.backLabel",
+        "start": {
+          "column": 21,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Abort",
+        "description": "\"Abort\" button label for the paper wallet certificate cancellation confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/wallet/paper-wallet-certificate/ConfirmationDialog.js",
+        "id": "paper.wallet.create.certificate.confirmation.dialog.button.abortLabel",
         "start": {
           "column": 22,
-          "line": 25
+          "line": 30
         }
       }
     ],
