@@ -22,8 +22,10 @@ yarn2nix.mkYarnPackage {
     mkdir -p $out/bin $out/share/daedalus
     cp -R dist/* $out/share/daedalus
     ${nukeReferences}/bin/nuke-refs $out/share/daedalus/main/index.js.map
+    ${nukeReferences}/bin/nuke-refs $out/share/daedalus/main/0.index.js.map
     ${nukeReferences}/bin/nuke-refs $out/share/daedalus/renderer/index.js.map
   '';
+  allowedReferences = [];
   yarnPreBuild = ''
     mkdir -p $HOME/.node-gyp/${nodejs.version}
     echo 9 > $HOME/.node-gyp/${nodejs.version}/installVersion
