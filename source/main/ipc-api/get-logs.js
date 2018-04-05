@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron';
-import { includes } from 'lodash';
+import { includes, sortBy } from 'lodash';
 import fs from 'fs';
 import path from 'path';
 import { pubLogsFolderPath } from '../config';
@@ -53,7 +53,11 @@ export default () => {
 
     const logs = {
       path: pubLogsFolderPath,
-      files: logFiles,
+      files: sortBy(logFiles, (log) => {
+        // custom file sorting which enforces correct ordering (like in ALLOWED_LOGS)
+        const nameSegments = log.split('.');
+        return nameSegments.shift() + nameSegments.join('').length;
+      }),
     };
 
     return sender.send(GET_LOGS.SUCCESS, logs);
