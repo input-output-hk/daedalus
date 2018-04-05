@@ -150,7 +150,6 @@
   "static.about.content.mantis.members": "!!!Adam Smolarek, Alan McSherry, Alan Verbner, Alejandro Garcia, Charles Hoskinson, Domen Kožar, Eileen Fitzgerald, Hiroto Shioi, Jane Wild, Jan Ziniewicz, Javier Diaz, Jeremy Wood, Laurie Wang, Łukasz Gąsior, Konrad Staniec, Michael Bishop, Mirko Alić, Nicolás Tallar, Radek Tkaczyk, Serge Kosyrev",
   "static.about.copyright": "!!!2016–2017 IOHK. All rights reserved.",
   "static.about.license": "!!!MIT licence",
-  "static.about.release.version": "0.8.2",
   "static.about.title": "!!!Daedalus",
   "systemTime.error.overlayText": "!!!Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. You are {behindTime} behind.<br>To synchronize the time and fix this issue, please visit the FAQ section of Daedalus website (daedaluswallet.io/faq).",
   "systemTime.error.overlayTitle": "!!!Unable to sync - incorrect time",
