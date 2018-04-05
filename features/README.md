@@ -17,6 +17,4 @@ $ cd daedalus/
 $ npm run test
 ```
 
-There is a total of 60 different acceptance tests.  
-Whole test suite takes around 3,5 minutes to finish.  
 Once tests are complete you will get a summary of passed/failed tests in the Terminal window.
