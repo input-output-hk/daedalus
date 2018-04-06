@@ -56,7 +56,6 @@ import type {
   AdaWalletRecoveryPhraseResponse,
   AdaWalletCertificateAdditionalMnemonicsResponse,
   AdaWalletCertificateRecoveryPhraseResponse,
-  AdaWalletRecoveryPhraseFromCertificateResponse,
   GetWalletCertificateAdditionalMnemonicsResponse,
   GetWalletCertificateRecoveryPhraseResponse,
   GetWalletRecoveryPhraseFromCertificateResponse,
@@ -447,7 +446,7 @@ export default class AdaApi {
 
   getWalletRecoveryPhraseFromCertificate(
     request: GetWalletRecoveryPhraseFromCertificateRequest
-  ): Promise<AdaWalletRecoveryPhraseFromCertificateResponse> {
+  ): Promise<GetWalletRecoveryPhraseFromCertificateResponse> {
     Logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate called');
     const { passphrase, scrambledInput } = request;
     try {
