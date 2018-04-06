@@ -13,7 +13,7 @@ import styles from './PrintDialog.scss';
 const messages = defineMessages({
   headline: {
     id: 'paper.wallet.create.certificate.print.dialog.headline',
-    defaultMessage: '!!!Certificate printing complete?',
+    defaultMessage: '!!!Verify printed certificate',
     description: 'Headline for the "Paper wallet create certificate print dialog".'
   },
   subtitle: {
@@ -25,11 +25,6 @@ const messages = defineMessages({
     id: 'paper.wallet.create.certificate.print.dialog.info',
     defaultMessage: '!!!Your certificate is not yet complete and does not contain all the data needed to restore your paper wallet. In the next step, you will need to write down an additional 9 words to your paper wallet recovery phrase.',
     description: '"Paper wallet create certificate print dialog" info.'
-  },
-  printConfirmationLabel: {
-    id: 'paper.wallet.create.certificate.print.dialog.printConfirmation',
-    defaultMessage: '!!!Yes, paper wallet certificate successfully printed and everything is readable and scannable.',
-    description: '"Paper wallet create certificate print dialog" confirmation.'
   },
   certificatePrintedConfirmationLabel: {
     id: 'paper.wallet.create.certificate.print.dialog.certificatePrintedConfirmation',

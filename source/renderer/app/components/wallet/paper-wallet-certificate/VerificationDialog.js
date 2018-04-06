@@ -28,7 +28,8 @@ const messages = defineMessages({
   },
   instructions: {
     id: 'paper.wallet.create.certificate.verification.dialog.instructions',
-    defaultMessage: '!!!Make sure you enter all 24 words for the paper wallet recovery phrase, first 15 words printed on the certificate followed by the 9 words you wrote by hand',
+    defaultMessage: `!!!Make sure you enter all 24 words for the paper wallet recovery phrase,
+     first 15 words printed on the certificate followed by the 9 words you wrote by hand.`,
     description: '"Paper wallet create certificate verification dialog" subtitle.'
   },
   recoveryPhraseLabel: {
@@ -63,7 +64,7 @@ const messages = defineMessages({
   },
   recoveryPhraseIncomplete: {
     id: 'paper.wallet.create.certificate.verification.dialog.recoveryPhrase.incomplete',
-    defaultMessage: '!!!Please enter all 24 words of the recovery phrase.',
+    defaultMessage: '!!!Please enter all 24 words.',
     description: '"Paper wallet create certificate verification dialog" error that is shown if not all 24 words have been entered yet.'
   },
   errorMessage: {
