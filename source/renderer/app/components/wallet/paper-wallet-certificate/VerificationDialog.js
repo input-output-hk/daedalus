@@ -62,13 +62,6 @@ const messages = defineMessages({
     defaultMessage: '!!!I understand that my paper wallet can be recovered only by using my paper wallet certificate.',
     description: '"Paper wallet create certificate verification dialog" recovering understandance confirmation.'
   },
-  errorMessage: {
-    id: 'paper.wallet.create.certificate.verification.dialog.errorMessage',
-    defaultMessage: `!!!Invalid password or shielded recovery phrase / password combination.<br/>
-      Make sure you enter the shielded recovery phrase and the password from the certificate.
-      Your certificate should not be used without passing this validation step.`,
-    description: '"Paper wallet create certificate verification dialog" error message when password or recovery phrase are invalid.',
-  }
 });
 
 type State = {
@@ -80,7 +73,6 @@ type State = {
 type Props = {
   walletCertificateRecoveryPhrase: string,
   additionalMnemonicWords: string,
-  error: boolean,
   suggestedMnemonics: Array<string>,
   onContinue: Function,
   onClose: Function,
@@ -171,7 +163,7 @@ export default class VerificationDialog extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const { form, resetForm } = this;
-    const { suggestedMnemonics, error, onClose } = this.props;
+    const { suggestedMnemonics, onClose } = this.props;
     const { storingConfirmed, recoveringConfirmed, isRecoveryPhraseValid } = this.state;
 
     const recoveryPhraseField = form.$('recoveryPhrase');
@@ -255,11 +247,6 @@ export default class VerificationDialog extends Component<Props, State> {
             />
           </div>
         </div>
-        {error ?
-          <p className={styles.error}>
-            <FormattedHTMLMessage {...messages.errorMessage} />
-          </p> : null
-        }
       </Dialog>
     );
   }

@@ -118,7 +118,6 @@
   "paper.wallet.create.certificate.securingPassword.dialog.infoLabel2": "残りのフレーズは証明書のこの箇所に書き留めることができます。",
   "paper.wallet.create.certificate.securingPassword.dialog.securingPasswordConfirmation": "はい、残り9つのフレーズを証明書に書き留めました。",
   "paper.wallet.create.certificate.verification.dialog.button.clearLabel": "取消",
-  "paper.wallet.create.certificate.verification.dialog.errorMessage": "!!!Invalid password or shielded recovery phrase / password combination.<br/>\n      Make sure you enter the shielded recovery phrase and the password from the certificate.\n      Your certificate should not be used without passing this validation step.",
   "paper.wallet.create.certificate.verification.dialog.headline": "証明書の検証",
   "paper.wallet.create.certificate.verification.dialog.instructions": "ペーパーウォレット復元フレーズである24つの英単語すべてを入力してください。まず証明書に印刷されている15の英単語、その後に自身で書き留めた残り9つを入力してください。",
   "paper.wallet.create.certificate.verification.dialog.recoveringUnderstandanceConfirmationLabel": "私は自身のウォレットを復元する唯一の方法がペーパーウォレット証明書を利用することであることを理解しました。",

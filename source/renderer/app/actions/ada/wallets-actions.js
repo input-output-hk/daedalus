@@ -19,7 +19,6 @@ export default class WalletsActions {
   sendMoney: Action<{ receiver: string, amount: string, password: ?string }> = new Action();
   chooseWalletExportType: Action<{ walletExportType: walletExportTypeChoices }> = new Action();
   generateCertificate: Action<{ filePath: string }> = new Action();
-  verifyCertificate: Action<{ recoveryPhrase: Array<string> }> = new Action();
   updateCertificateStep: Action<any> = new Action();
   closeCertificateGeneration: Action<any> = new Action();
   setCertificateTemplate: Action<{ selectedTemplate: string }> = new Action();

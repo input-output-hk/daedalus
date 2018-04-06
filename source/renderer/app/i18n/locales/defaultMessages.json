@@ -2885,20 +2885,6 @@
           "column": 33,
           "line": 60
         }
-      },
-      {
-        "defaultMessage": "!!!Invalid password or shielded recovery phrase / password combination.<br/>\n      Make sure you enter the shielded recovery phrase and the password from the certificate.\n      Your certificate should not be used without passing this validation step.",
-        "description": "\"Paper wallet create certificate verification dialog\" error message when password or recovery phrase are invalid.",
-        "end": {
-          "column": 3,
-          "line": 71
-        },
-        "file": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.js",
-        "id": "paper.wallet.create.certificate.verification.dialog.errorMessage",
-        "start": {
-          "column": 16,
-          "line": 65
-        }
       }
     ],
     "path": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.json"

@@ -11,15 +11,14 @@ type Props = InjectedDialogContainerProps;
 export default class VerificationDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
 
-  onContinue = (values: { recoveryPhrase: Array<string> }) => {
-    this.props.actions.ada.wallets.verifyCertificate.trigger(values);
+  onContinue = () => {
+    this.props.actions.ada.wallets.updateCertificateStep.trigger();
   };
 
   render() {
     const { wallets } = this.props.stores.ada;
     const {
       walletCertificateRecoveryPhrase,
-      walletCertificateHasError,
       additionalMnemonicWords,
     } = wallets;
 
@@ -30,7 +29,6 @@ export default class VerificationDialogContainer extends Component<Props> {
         walletCertificateRecoveryPhrase={walletCertificateRecoveryPhrase}
         onContinue={this.onContinue}
         onClose={this.props.onClose}
-        error={walletCertificateHasError}
       />
     );
   }

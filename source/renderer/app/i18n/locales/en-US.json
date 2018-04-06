@@ -118,7 +118,6 @@
   "paper.wallet.create.certificate.securingPassword.dialog.infoLabel2": "You may write the remaining words here:",
   "paper.wallet.create.certificate.securingPassword.dialog.securingPasswordConfirmation": "I have written the remaining 9 words on the certificate.",
   "paper.wallet.create.certificate.verification.dialog.button.clearLabel": "Clear",
-  "paper.wallet.create.certificate.verification.dialog.errorMessage": "Invalid password or shielded recovery phrase / password combination.<br />Make sure you enter the shielded recovery phrase and the password from the certificate.<br />Your certificate should not be used without passing this verification step.",
   "paper.wallet.create.certificate.verification.dialog.headline": "Verify certificate",
   "paper.wallet.create.certificate.verification.dialog.instructions": "Make sure you enter all 24 words for the paper wallet recovery phrase, first 15 words printed on the certificate followed by the 9 words you wrote by hand.",
   "paper.wallet.create.certificate.verification.dialog.recoveringUnderstandanceConfirmationLabel": "I understand that my paper wallet can be recovered only by using my paper wallet certificate.",

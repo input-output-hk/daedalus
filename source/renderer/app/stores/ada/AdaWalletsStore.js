@@ -48,7 +48,6 @@ export default class AdaWalletsStore extends WalletStore {
   @observable walletCertificatePassword = null;
   @observable walletCertificateAddress = null;
   @observable walletCertificateRecoveryPhrase = null;
-  @observable walletCertificateHasError = false;
   @observable generatingCertificateInProgress = false;
   @observable certificateStep = null;
   @observable certificateTemplate = null;
@@ -65,7 +64,6 @@ export default class AdaWalletsStore extends WalletStore {
     wallets.importWalletFromFile.listen(this._importWalletFromFile);
     wallets.chooseWalletExportType.listen(this._chooseWalletExportType);
     wallets.generateCertificate.listen(this._generateCertificate);
-    wallets.verifyCertificate.listen(this._verifyCertificate);
     wallets.updateCertificateStep.listen(this._updateCertificateStep);
     wallets.closeCertificateGeneration.listen(this._closeCertificateGeneration);
     wallets.setCertificateTemplate.listen(this._setCertificateTemplate);
@@ -351,24 +349,6 @@ export default class AdaWalletsStore extends WalletStore {
     this.generatingCertificateInProgress = state;
   });
 
-  @action _verifyCertificate = (params: {
-    recoveryPhrase: Array<string>
-  }) => {
-    const { recoveryPhrase } = params;
-
-    let fullRecoveryPhrase;
-    if (this.walletCertificateRecoveryPhrase && this.additionalMnemonicWords) {
-      fullRecoveryPhrase = `${this.walletCertificateRecoveryPhrase} ${this.additionalMnemonicWords}`;
-    }
-
-    if (!fullRecoveryPhrase || (fullRecoveryPhrase !== recoveryPhrase.join(' '))) {
-      this.walletCertificateHasError = true;
-    } else {
-      this.walletCertificateHasError = false;
-      this._updateCertificateStep();
-    }
-  };
-
   @action _setCertificateTemplate = (params: {
     selectedTemplate: string,
   }) => {
@@ -394,7 +374,6 @@ export default class AdaWalletsStore extends WalletStore {
     this.walletCertificatePassword = null;
     this.walletCertificateAddress = null;
     this.walletCertificateRecoveryPhrase = null;
-    this.walletCertificateHasError = false;
     this.generatingCertificateInProgress = false;
     this.certificateTemplate = false;
     this.certificateStep = null;
