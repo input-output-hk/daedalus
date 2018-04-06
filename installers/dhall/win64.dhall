@@ -1,5 +1,5 @@
 \(cluster : ./cluster.type)      ->
-let dataDir = "%APPDATA%\\Daedalus\\"
+let dataDir = "''${APPDATA}\\Daedalus\\"
     --
     --
 in
@@ -13,12 +13,12 @@ in
   , walletDBPath     = "${dataDir}\\Wallet-1.0"
   }
 , pass      =
-  { nodePath            = "%DAEDALUS_DIR%\\cardano-node.exe"
+  { nodePath            = "''${DAEDALUS_DIR}\\cardano-node.exe"
   , nodeDbPath          = "${dataDir}\\DB-1.0"
   , nodeLogConfig       = "log-config-prod.yaml"
   , nodeLogPath         = "${dataDir}\\Logs\\cardano-node.log"
 
-  , walletPath          = "%DAEDALUS_DIR%\\Daedalus.exe"
+  , walletPath          = "''${DAEDALUS_DIR}\\Daedalus.exe"
 
   , updaterPath         = "${dataDir}\\Installer.exe"
   , updaterArgs         = [] : List Text
