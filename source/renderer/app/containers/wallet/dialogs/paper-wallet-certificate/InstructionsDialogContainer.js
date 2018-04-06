@@ -13,11 +13,11 @@ export default class InstructionsDialogContainer extends Component<Props> {
 
   onPrint = () => {
     const filePath = remote.dialog.showSaveDialog({
-      defaultPath: '~/paper-wallet-certificate.pdf',
+      defaultPath: 'paper-wallet-certificate.pdf',
       filters: [{
         name: 'paper-wallet-certificate',
-        extensions: ['pdf']
-      }]
+        extensions: ['pdf'],
+      }],
     });
 
     // if cancel button is clicked or path is empty
