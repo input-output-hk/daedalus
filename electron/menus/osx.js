@@ -16,29 +16,29 @@ export default (app, window, openAbout) => (
     submenu: [{
       label: 'Undo',
       accelerator: 'Command+Z',
-      selector: 'undo:'
+      role: 'undo'
     }, {
       label: 'Redo',
       accelerator: 'Shift+Command+Z',
-      selector: 'redo:'
+      role: 'redo'
     }, {
       type: 'separator'
     }, {
       label: 'Cut',
       accelerator: 'Command+X',
-      selector: 'cut:'
+      role: 'cut'
     }, {
       label: 'Copy',
       accelerator: 'Command+C',
-      selector: 'copy:'
+      role: 'copy'
     }, {
       label: 'Paste',
       accelerator: 'Command+V',
-      selector: 'paste:'
+      role: 'paste'
     }, {
       label: 'Select All',
       accelerator: 'Command+A',
-      selector: 'selectAll:'
+      role: 'selectall'
     }]
   }, {
     label: 'View',

@@ -59,6 +59,15 @@ Feature: Wallet Settings
     And I click outside "name" input field
     Then I should see new wallet name "first Edited"
 
+  Scenario: User renames Wallet to a name which includes non-latin characters
+    Given I am on the "first" wallet "settings" screen
+    And I click on "name" input field
+    And I enter new wallet name:
+    | name     |
+    | キュビズム |
+    And I click outside "name" input field
+    Then I should see new wallet name "キュビズム"
+
   Scenario: User changes Wallet assurance level
     Given I am on the "first" wallet "settings" screen
     And I open "Transaction assurance security level" selection dropdown
