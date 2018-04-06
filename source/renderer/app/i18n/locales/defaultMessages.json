@@ -137,13 +137,13 @@
         "description": "Generic error message.",
         "end": {
           "column": 3,
-          "line": 10
+          "line": 11
         },
         "file": "source/renderer/app/api/common.js",
         "id": "api.errors.GenericApiError",
         "start": {
           "column": 19,
-          "line": 6
+          "line": 7
         }
       },
       {
@@ -151,13 +151,13 @@
         "description": "\"Incorrect wallet password.\" error message.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 16
         },
         "file": "source/renderer/app/api/common.js",
         "id": "api.errors.IncorrectPasswordError",
         "start": {
           "column": 32,
-          "line": 11
+          "line": 12
         }
       },
       {
@@ -165,13 +165,13 @@
         "description": "\"Wallet you are trying to restore already exists.\" error message.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "source/renderer/app/api/common.js",
         "id": "api.errors.WalletAlreadyRestoredError",
         "start": {
           "column": 30,
-          "line": 16
+          "line": 17
         }
       },
       {
@@ -179,13 +179,13 @@
         "description": "\"There was a problem sending the support request.\" error message",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/api/common.js",
         "id": "api.errors.ReportRequestError",
         "start": {
           "column": 22,
-          "line": 21
+          "line": 22
         }
       }
     ],
@@ -2901,7 +2901,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Please enter all 24 words of the recovery phrase.",
+        "defaultMessage": "!!!Please enter all 24 words.",
         "description": "\"Paper wallet create certificate verification dialog\" error that is shown if not all 24 words have been entered yet.",
         "end": {
           "column": 3,
@@ -2930,221 +2930,6 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Paper wallet import",
-        "description": "Label \"Paper wallet import\" on the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 25
-        },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.title.label",
-        "start": {
-          "column": 9,
-          "line": 21
-        }
-      },
-      {
-        "defaultMessage": "!!!Private key",
-        "description": "Label for the wallet private key input on the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 30
-        },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.wallet.privateKey.input.label",
-        "start": {
-          "column": 24,
-          "line": 26
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter private key",
-        "description": "Hint \"Enter private key\" for the wallet private key input on the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 35
-        },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.wallet.privateKey.input.hint",
-        "start": {
-          "column": 23,
-          "line": 31
-        }
-      },
-      {
-        "defaultMessage": "!!!Mnemonic phrase",
-        "description": "Label for the mnemonic phrase input on the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 40
-        },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.mnemonic.phrase.input.label",
-        "start": {
-          "column": 28,
-          "line": 36
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter mnemonic phrase",
-        "description": "Hint \"Enter mnemonic phrase\" for the mnemonic phrase input on the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 45
-        },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.mnemonic.phrase.input.hint",
-        "start": {
-          "column": 27,
-          "line": 41
-        }
-      },
-      {
-        "defaultMessage": "!!!Wallet name",
-        "description": "Label for the wallet name input on the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 50
-        },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.wallet.name.input.label",
-        "start": {
-          "column": 24,
-          "line": 46
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter wallet name",
-        "description": "Hint \"Enter wallet name\" for the wallet name input on the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 55
-        },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.wallet.name.input.hint",
-        "start": {
-          "column": 23,
-          "line": 51
-        }
-      },
-      {
-        "defaultMessage": "!!!Import wallet",
-        "description": "Label for the \"Import wallet\" button on the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 60
-        },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.import.wallet.button.label",
-        "start": {
-          "column": 21,
-          "line": 56
-        }
-      },
-      {
-        "defaultMessage": "!!!Invalid mnemonic phrase",
-        "description": "Error message shown when invalid mnemonic phrase was entered.",
-        "end": {
-          "column": 3,
-          "line": 65
-        },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.form.errors.invalidMnemonicPhrase",
-        "start": {
-          "column": 25,
-          "line": 61
-        }
-      },
-      {
-        "defaultMessage": "!!!Invalid private key",
-        "description": "Error message shown when invalid private key was entered.",
-        "end": {
-          "column": 3,
-          "line": 70
-        },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.form.errors.invalidPrivateKey",
-        "start": {
-          "column": 21,
-          "line": 66
-        }
-      },
-      {
-        "defaultMessage": "!!!Password",
-        "description": "Label for the \"Activate to create password\" switch in the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 75
-        },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.passwordSwitchLabel",
-        "start": {
-          "column": 23,
-          "line": 71
-        }
-      },
-      {
-        "defaultMessage": "!!!Activate to create password",
-        "description": "Text for the \"Activate to create password\" switch in the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 80
-        },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.passwordSwitchPlaceholder",
-        "start": {
-          "column": 29,
-          "line": 76
-        }
-      },
-      {
-        "defaultMessage": "!!!Wallet password",
-        "description": "Label for the \"Wallet password\" input in the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 85
-        },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.walletPasswordLabel",
-        "start": {
-          "column": 23,
-          "line": 81
-        }
-      },
-      {
-        "defaultMessage": "!!!Repeat password",
-        "description": "Label for the \"Repeat password\" input in the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 90
-        },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.repeatPasswordLabel",
-        "start": {
-          "column": 23,
-          "line": 86
-        }
-      },
-      {
-        "defaultMessage": "!!!Password",
-        "description": "Placeholder for the \"Password\" inputs in the paper wallet import dialog.",
-        "end": {
-          "column": 3,
-          "line": 95
-        },
-        "file": "source/renderer/app/components/wallet/PaperWalletImportDialog.js",
-        "id": "paper.wallet.import.dialog.passwordFieldPlaceholder",
-        "start": {
-          "column": 28,
-          "line": 91
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/PaperWalletImportDialog.json"
   },
   {
     "descriptors": [
