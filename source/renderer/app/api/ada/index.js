@@ -87,7 +87,7 @@ import {
   GenericApiError,
   IncorrectWalletPasswordError,
   WalletAlreadyRestoredError,
-  ReportRequestError,
+  ReportRequestError, InvalidMnemonicError,
 } from '../common';
 
 import {
@@ -447,27 +447,16 @@ export default class AdaApi {
 
   getWalletRecoveryPhraseFromCertificate(
     request: GetWalletRecoveryPhraseFromCertificateRequest
-  ): Promise<GetWalletRecoveryPhraseFromCertificateResponse> {
+  ): Promise<AdaWalletRecoveryPhraseFromCertificateResponse> {
     Logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate called');
     const { passphrase, scrambledInput } = request;
     try {
-      const response: Promise<AdaWalletRecoveryPhraseFromCertificateResponse> = new Promise(
-        (resolve, reject) => {
-          try {
-            return resolve(getAdaWalletRecoveryPhraseFromCertificate({
-              passphrase, scrambledInput,
-            }));
-          } catch (error) {
-            Logger.error('AdaApi::getWalletRecoveryPhraseFromCertificate error: ' + stringifyError(error));
-            return reject(new GenericApiError());
-          }
-        }
-      );
+      const response = getAdaWalletRecoveryPhraseFromCertificate({ passphrase, scrambledInput });
       Logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate success');
-      return response;
+      return Promise.resolve(response);
     } catch (error) {
       Logger.error('AdaApi::getWalletRecoveryPhraseFromCertificate error: ' + stringifyError(error));
-      throw new GenericApiError();
+      return Promise.reject(new InvalidMnemonicError());
     }
   }
 
