@@ -28,7 +28,8 @@ const messages = defineMessages({
   },
   instructions: {
     id: 'paper.wallet.create.certificate.verification.dialog.instructions',
-    defaultMessage: '!!!Make sure you enter all 24 words for the paper wallet recovery phrase, first 15 words printed on the certificate followed by the 9 words you wrote by hand',
+    defaultMessage: `!!!Make sure you enter all 24 words for the paper wallet recovery phrase,
+     first 15 words printed on the certificate followed by the 9 words you wrote by hand.`,
     description: '"Paper wallet create certificate verification dialog" subtitle.'
   },
   recoveryPhraseLabel: {
@@ -60,11 +61,6 @@ const messages = defineMessages({
     id: 'paper.wallet.create.certificate.verification.dialog.recoveringUnderstandanceConfirmationLabel',
     defaultMessage: '!!!I understand that my paper wallet can be recovered only by using my paper wallet certificate.',
     description: '"Paper wallet create certificate verification dialog" recovering understandance confirmation.'
-  },
-  recoveryPhraseIncomplete: {
-    id: 'paper.wallet.create.certificate.verification.dialog.recoveryPhrase.incomplete',
-    defaultMessage: '!!!Please enter all 24 words.',
-    description: '"Paper wallet create certificate verification dialog" error that is shown if not all 24 words have been entered yet.'
   },
   errorMessage: {
     id: 'paper.wallet.create.certificate.verification.dialog.errorMessage',
@@ -112,15 +108,16 @@ export default class VerificationDialog extends Component<Props, State> {
         placeholder: this.context.intl.formatMessage(messages.recoveryPhraseHint),
         value: [],
         validators: [({ field }) => {
+          const { intl } = this.context;
           const { walletCertificateRecoveryPhrase, additionalMnemonicWords } = this.props;
           const {
             storingConfirmed,
             recoveringConfirmed,
           } = this.state;
           const enteredWordsArray = field.value;
-          // If user hasn't entered all 24 words of the recovery phrase yet
           if (enteredWordsArray.length < 24) {
-            return [false, this.context.intl.formatMessage(messages.recoveryPhraseIncomplete)];
+            // If user hasn't entered all words of the paper wallet recovery phrase yet
+            return [false, intl.formatMessage(globalMessages.incompleteMnemonic, { expected: 24 })];
           }
           const fullRecoveryPhrase = `${walletCertificateRecoveryPhrase} ${additionalMnemonicWords}`;
           const enteredRecoveryPhrase = join(enteredWordsArray, ' ');

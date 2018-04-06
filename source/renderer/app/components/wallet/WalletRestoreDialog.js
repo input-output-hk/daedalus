@@ -154,10 +154,22 @@ export default class WalletRestoreDialog extends Component<Props, State> {
       recoveryPhrase: {
         value: [],
         validators: ({ field }) => {
-          const value = join(field.value, ' ');
-          if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
+          const { intl } = this.context;
+          const enteredWords = field.value;
+          const wordCount = enteredWords.length;
+          const expectedWordCount = this.isRegular() ? 12 : 24;
+          const value = join(enteredWords, ' ');
+          // Regular mnemonics have 12 and paper wallet recovery needs 24 words
+          const isPhraseComplete = wordCount === expectedWordCount;
+          if (!isPhraseComplete) {
+            return [
+              false,
+              intl.formatMessage(globalMessages.incompleteMnemonic, { expected: expectedWordCount })
+            ];
+          }
           return [
-            this.isRegular() ? this.props.mnemonicValidator(value) : (field.value.length === 24),
+            // TODO: we should also validate paper wallets mnemonics here!
+            this.isRegular() ? this.props.mnemonicValidator(value) : true,
             this.context.intl.formatMessage(messages.invalidRecoveryPhrase)
           ];
         },
