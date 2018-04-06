@@ -8,6 +8,7 @@ import StatusMessagesNotification from '../components/notifications/StatusMessag
 import NodeUpdatePage from './notifications/NodeUpdatePage';
 import WalletAddPage from './wallet/WalletAddPage';
 import WalletSupportRequestPage from './wallet/WalletSupportRequestPage';
+import PaperWalletCreateCertificatePage from './wallet/PaperWalletCreateCertificatePage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 
 @inject('stores', 'actions') @observer
@@ -76,6 +77,10 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         notification={addStatusMessagesNotification || addNodeUpdateNotification}
         contentDialogs={[
           <WalletSupportRequestPage key="WalletSupportRequestPage" />,
+          <PaperWalletCreateCertificatePage
+            key="PaperWalletCreateCertificatePage"
+            certificateStep={this.props.stores.ada.wallets.certificateStep}
+          />,
           <WalletAddPage key="WalletAddPage" />
         ]}
       >

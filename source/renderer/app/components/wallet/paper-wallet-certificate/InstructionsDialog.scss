@@ -1,0 +1,57 @@
+@import '../../../themes/mixins/loading-spinner';
+
+.instructionsContentWrapper {
+  color: var(--theme-instructions-text-color);
+  font-family: var(--font-light);
+
+  .subtitle {
+    line-height: 1.38;
+  }
+
+  .instructionsList {
+    border-top: 1px solid var(--theme-separation-border-color);
+    margin-top: 20px;
+
+    .link,
+    .instructionsListLabel {
+      font-weight: 500;
+      font-family: var(--font-medium);
+      margin-top: 20px;
+    }
+
+    .link {
+      cursor: pointer;
+      text-decoration: underline;
+    }
+
+    ul {
+      list-style: initial;
+      margin: 11px 0 0 20px;
+    }
+
+    li {
+      line-height: 1.38;
+      margin-bottom: 6px;
+    }
+
+    a {
+      color: var(--theme-paper-wallet-create-certificate-dialog-explorer-link-color);
+    }
+  }
+
+  .printingInstructions {
+    border-top: 1px solid var(--theme-separation-border-color);
+    margin-top: 20px;
+    padding-bottom: 20px;
+    padding-top: 20px;
+    line-height: 1.38;
+
+    strong {
+      font-family: var(--font-medium);
+    }
+  }
+}
+
+.submitButtonSpinning {
+  @include loading-spinner("../../../assets/images/spinner-light.svg");
+}

@@ -1,11 +1,15 @@
 // @flow
 import { observable, action, runInAction } from 'mobx';
+import { get, chunk } from 'lodash';
 import WalletStore from '../WalletStore';
 import Wallet from '../../domains/Wallet';
 import { matchRoute, buildRoute } from '../../utils/routing';
+import { i18nContext } from '../../utils/i18nContext';
 import Request from '.././lib/LocalizedRequest';
 import { ROUTES } from '../../routes-config';
+import { mnemonicToSeedHex } from '../../utils/crypto';
 import WalletAddDialog from '../../components/wallet/WalletAddDialog';
+import { downloadPaperWalletCertificate } from '../../utils/paperWalletPdfGenerator';
 import type { walletExportTypeChoices } from '../../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../../actions/ada/wallets-actions';
 import type { ImportWalletFromFileResponse } from '../../api/ada/index';
@@ -15,6 +19,12 @@ import type {
   GetWalletRecoveryPhraseResponse,
 } from '../../api/common';
 
+import type {
+  GetWalletCertificateAdditionalMnemonicsResponse,
+  GetWalletCertificateRecoveryPhraseResponse,
+  GetWalletRecoveryPhraseFromCertificateResponse,
+} from '../../api/ada/types';
+
 export default class AdaWalletsStore extends WalletStore {
 
   // REQUESTS
@@ -22,14 +32,26 @@ export default class AdaWalletsStore extends WalletStore {
   @observable walletsRequest: Request<GetWalletsResponse> = new Request(this.api.ada.getWallets);
   @observable importFromFileRequest: Request<ImportWalletFromFileResponse> = new Request(this.api.ada.importWalletFromFile);
   @observable createWalletRequest: Request<CreateWalletResponse> = new Request(this.api.ada.createWallet);
+  @observable getWalletAddressesRequest: Request<any> = new Request(this.api.ada.getAddresses);
   @observable deleteWalletRequest: Request<DeleteWalletResponse> = new Request(this.api.ada.deleteWallet);
   @observable sendMoneyRequest: Request<CreateTransactionResponse> = new Request(this.api.ada.createTransaction);
   @observable getWalletRecoveryPhraseRequest: Request<GetWalletRecoveryPhraseResponse> = new Request(this.api.ada.getWalletRecoveryPhrase);
+  @observable getWalletCertificateAdditionalMnemonicsRequest: Request<GetWalletCertificateAdditionalMnemonicsResponse> = new Request(this.api.ada.getWalletCertificateAdditionalMnemonics);
+  @observable getWalletCertificateRecoveryPhraseRequest: Request<GetWalletCertificateRecoveryPhraseResponse> = new Request(this.api.ada.getWalletCertificateRecoveryPhrase);
+  @observable getWalletRecoveryPhraseFromCertificateRequest: Request<GetWalletRecoveryPhraseFromCertificateResponse> = new Request(this.api.ada.getWalletRecoveryPhraseFromCertificate);
   @observable restoreRequest: Request<RestoreWalletResponse> = new Request(this.api.ada.restoreWallet);
   /* eslint-enable max-len */
 
   @observable walletExportType: walletExportTypeChoices = 'paperWallet';
   @observable walletExportMnemonic = 'marine joke dry silk ticket thing sugar stereo aim';
+  @observable createPaperWalletCertificateStep = 0;
+  @observable walletCertificatePassword = null;
+  @observable walletCertificateAddress = null;
+  @observable walletCertificateRecoveryPhrase = null;
+  @observable generatingCertificateInProgress = false;
+  @observable certificateStep = null;
+  @observable certificateTemplate = null;
+  @observable additionalMnemonicWords = null;
 
   setup() {
     super.setup();
@@ -41,6 +63,11 @@ export default class AdaWalletsStore extends WalletStore {
     wallets.restoreWallet.listen(this._restoreWallet);
     wallets.importWalletFromFile.listen(this._importWalletFromFile);
     wallets.chooseWalletExportType.listen(this._chooseWalletExportType);
+    wallets.generateCertificate.listen(this._generateCertificate);
+    wallets.updateCertificateStep.listen(this._updateCertificateStep);
+    wallets.closeCertificateGeneration.listen(this._closeCertificateGeneration);
+    wallets.setCertificateTemplate.listen(this._setCertificateTemplate);
+    wallets.finishCertificate.listen(this._finishCertificate);
     router.goToRoute.listen(this._onRouteChange);
     walletBackup.finishWalletBackup.listen(this._finishCreation);
   }
@@ -67,6 +94,10 @@ export default class AdaWalletsStore extends WalletStore {
   isValidAddress = (address: string) => this.api.ada.isValidAddress(address);
 
   isValidMnemonic = (mnemonic: string) => this.api.ada.isValidMnemonic(mnemonic);
+
+  isValidCertificateMnemonic = (
+    mnemonic: string,
+  ) => this.api.ada.isValidCertificateMnemonic(mnemonic);
 
   // TODO - call endpoint to check if private key is valid
   isValidPrivateKey = () => { return true; }; // eslint-disable-line
@@ -108,7 +139,36 @@ export default class AdaWalletsStore extends WalletStore {
     recoveryPhrase: string,
     walletName: string,
     walletPassword: ?string,
+    type?: string,
   }) => {
+    // reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
+    this.getWalletRecoveryPhraseFromCertificateRequest.reset();
+
+    const data = {
+      recoveryPhrase: params.recoveryPhrase,
+      walletName: params.walletName,
+      walletPassword: params.walletPassword,
+    };
+
+    if (params.type === 'certificate') {
+      // split recovery phrase to 15 (scrambled mnemonics) + 9 (mnemonics seed) mnemonics
+      const recoveryPhraseArray = params.recoveryPhrase.split(' ');
+      const chunked = chunk(recoveryPhraseArray, 15);
+      const scrambledInput = chunked[0]; // first 15 mnemonics
+      const certificatePassword = chunked[1]; // last 9 mnemonics
+      const spendingPassword = mnemonicToSeedHex(certificatePassword.join(' '));
+
+      // Unscramble 15-word wallet certificate mnemonic to 12-word mnemonic
+      const unscrambledRecoveryPhrase: GetWalletRecoveryPhraseFromCertificateResponse = await (
+        this.getWalletRecoveryPhraseFromCertificateRequest.execute({
+          passphrase: spendingPassword,
+          scrambledInput: scrambledInput.join(' '),
+        }).promise
+      );
+      data.recoveryPhrase = unscrambledRecoveryPhrase.join(' ');
+      this.getWalletRecoveryPhraseFromCertificateRequest.reset();
+    }
+
     this.restoreRequest.reset();
     this._setIsRestoreActive(true);
     // Hide restore wallet dialog some time after restore has been started
@@ -118,7 +178,7 @@ export default class AdaWalletsStore extends WalletStore {
       if (!this.restoreRequest.isError) this._toggleAddWalletDialogOnActiveRestoreOrImport();
     }, this.WAIT_FOR_SERVER_ERROR_TIME);
 
-    const restoredWallet = await this.restoreRequest.execute(params).promise;
+    const restoredWallet = await this.restoreRequest.execute(data).promise;
     setTimeout(() => {
       this._setIsRestoreActive(false);
       this.actions.dialogs.closeActiveDialog.trigger();
@@ -184,6 +244,139 @@ export default class AdaWalletsStore extends WalletStore {
     if (this.walletExportType !== params.walletExportType) {
       this.walletExportType = params.walletExportType;
     }
+  };
+
+  _generateCertificate = async (params: {
+    filePath: string,
+  }) => {
+    try {
+      // Stop polling
+      this.actions.networkStatus.stopPoller.trigger();
+
+      // Set inProgress state to show spinner if is needed
+      this._updateCertificateCreationState(true);
+
+      // Genereate 12-word mnemonic
+      const recoveryPhrase: GetWalletRecoveryPhraseResponse = await (
+        this.getWalletRecoveryPhraseRequest.execute().promise
+      );
+
+      // Generate 9-words (additional) mnemonic
+      const additionalMnemonicWords: GetWalletCertificateAdditionalMnemonicsResponse = await (
+        this.getWalletCertificateAdditionalMnemonicsRequest.execute().promise
+      );
+      this.additionalMnemonicWords = additionalMnemonicWords.join(' ');
+
+      // Generate spending password from 9-word mnemonic and save to store
+      const spendingPassword = mnemonicToSeedHex(this.additionalMnemonicWords);
+      this.walletCertificatePassword = spendingPassword;
+
+      // Generate paper wallet scrambled mnemonic
+      const walletCertificateRecoveryPhrase: GetWalletCertificateRecoveryPhraseResponse = await (
+        this.getWalletCertificateRecoveryPhraseRequest.execute({
+          passphrase: spendingPassword,
+          input: recoveryPhrase.join(' '),
+        }).promise
+      );
+      this.walletCertificateRecoveryPhrase = walletCertificateRecoveryPhrase.join(' ');
+
+      // Create temporary wallet
+      const walletData = {
+        name: 'Paper Wallet',
+        mnemonic: recoveryPhrase.join(' '),
+        password: spendingPassword,
+      };
+      const wallet = await this.createWalletRequest.execute(walletData).promise;
+
+      // Get temporary wallet address
+      let walletAddresses;
+      if (wallet) {
+        walletAddresses = await this.getWalletAddressesRequest.execute({
+          walletId: wallet.id,
+        }).promise;
+
+        // delete temporary wallet
+        await this.deleteWalletRequest.execute({ walletId: wallet.id });
+      }
+
+      // Set wallet certificate address
+      let walletAddress;
+      if (walletAddresses) {
+        walletAddress = get(walletAddresses, ['addresses', '0', 'id'], null);
+        this.walletCertificateAddress = walletAddress;
+      }
+
+      // download pdf certificate
+      this._downloadCertificate(
+        walletAddress,
+        walletCertificateRecoveryPhrase,
+        params.filePath,
+      );
+    } catch (error) {
+      throw error;
+    } finally {
+      this.actions.networkStatus.restartPoller.trigger();
+    }
+  };
+
+  _downloadCertificate = action((
+    address: string,
+    recoveryPhrase: Array<string>,
+    filePath: string,
+  ) => {
+    const locale = this.stores.profile.currentLocale;
+    const intl = i18nContext(locale);
+
+    downloadPaperWalletCertificate({
+      address,
+      mnemonics: recoveryPhrase,
+      intl,
+      filePath,
+      onSuccess: () => {
+        // Reset progress
+        this._updateCertificateCreationState(false);
+        // Update certificate generator step
+        this._updateCertificateStep();
+      },
+      onError: () => {
+        // Reset progress
+        this._updateCertificateCreationState(false);
+      },
+    });
+  });
+
+  _updateCertificateCreationState = action((state: boolean) => {
+    this.generatingCertificateInProgress = state;
+  });
+
+  @action _setCertificateTemplate = (params: {
+    selectedTemplate: string,
+  }) => {
+    this.certificateTemplate = params.selectedTemplate;
+    this._updateCertificateStep();
+  };
+
+  @action _finishCertificate = () => {
+    this._closeCertificateGeneration();
+  };
+
+  @action _updateCertificateStep = (isBack: boolean = false) => {
+    const currrentCertificateStep = this.certificateStep || 0;
+    this.certificateStep = isBack ? currrentCertificateStep - 1 : currrentCertificateStep + 1;
+  };
+
+  @action _closeCertificateGeneration = () => {
+    this.actions.dialogs.closeActiveDialog.trigger();
+    this._resetCertificateData();
+  };
+
+  @action _resetCertificateData = () => {
+    this.walletCertificatePassword = null;
+    this.walletCertificateAddress = null;
+    this.walletCertificateRecoveryPhrase = null;
+    this.generatingCertificateInProgress = false;
+    this.certificateTemplate = false;
+    this.certificateStep = null;
   };
 
   // =================== PRIVATE API ==================== //

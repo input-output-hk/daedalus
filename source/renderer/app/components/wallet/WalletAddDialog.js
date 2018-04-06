@@ -44,10 +44,15 @@ const messages = defineMessages({
     defaultMessage: '!!!Restore',
     description: 'Label for the "Restore" button on the wallet add dialog.'
   },
-  restoreDescription: {
-    id: 'wallet.add.dialog.restore.description',
+  restoreWithCertificateDescription: {
+    id: 'wallet.add.dialog.restore.withCertificate.description',
+    defaultMessage: '!!!Restore using backup-recovery phrase or paper wallet certificate.',
+    description: 'Description for the "Restore" button with paper wallet certificate on the wallet add dialog.'
+  },
+  restoreWithoutCertificateDescription: {
+    id: 'wallet.add.dialog.restore.withoutCertificate.description',
     defaultMessage: '!!!Restore wallet from backup',
-    description: 'Description for the "Restore" button on the wallet add dialog.'
+    description: 'Description for the "Restore" button without paper wallet certificate on the wallet add dialog.'
   },
   importLabel: {
     id: 'wallet.add.dialog.import.label',
@@ -79,6 +84,11 @@ export default class WalletAddDialog extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { onCreate, onRestore, onCancel, canClose, onImportFile } = this.props;
+
+    const restoreButtonDescription = environment.isAdaApi()
+      ? messages.restoreWithCertificateDescription
+      : messages.restoreWithoutCertificateDescription;
+
     const dialogClasses = classnames([
       styles.component,
       'WalletAddDialog',
@@ -114,7 +124,7 @@ export default class WalletAddDialog extends Component<Props> {
               onClick={onRestore}
               icon={restoreIcon}
               label={intl.formatMessage(messages.restoreLabel)}
-              description={intl.formatMessage(messages.restoreDescription)}
+              description={intl.formatMessage(restoreButtonDescription)}
             />
             <BigButtonForDialogs
               className="importWalletButton"

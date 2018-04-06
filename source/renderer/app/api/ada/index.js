@@ -37,6 +37,9 @@ import { applyAdaUpdate } from './applyAdaUpdate';
 import { adaTestReset } from './adaTestReset';
 import { getAdaHistoryByWallet } from './getAdaHistoryByWallet';
 import { getAdaAccountRecoveryPhrase } from './getAdaAccountRecoveryPhrase';
+import { getAdaWalletCertificateAdditionalMnemonics } from './getAdaWalletCertificateAdditionalMnemonics';
+import { getAdaWalletCertificateRecoveryPhrase } from './getAdaWalletCertificateRecoveryPhrase';
+import { getAdaWalletRecoveryPhraseFromCertificate } from './getAdaWalletRecoveryPhraseFromCertificate';
 import { getAdaLocalTimeDifference } from './getAdaLocalTimeDifference';
 import { sendAdaBugReport } from './sendAdaBugReport';
 
@@ -51,6 +54,11 @@ import type {
   AdaWallet,
   AdaWallets,
   AdaWalletRecoveryPhraseResponse,
+  AdaWalletCertificateAdditionalMnemonicsResponse,
+  AdaWalletCertificateRecoveryPhraseResponse,
+  GetWalletCertificateAdditionalMnemonicsResponse,
+  GetWalletCertificateRecoveryPhraseResponse,
+  GetWalletRecoveryPhraseFromCertificateResponse,
 } from './types';
 
 import type {
@@ -78,7 +86,7 @@ import {
   GenericApiError,
   IncorrectWalletPasswordError,
   WalletAlreadyRestoredError,
-  ReportRequestError,
+  ReportRequestError, InvalidMnemonicError,
 } from '../common';
 
 import {
@@ -166,6 +174,15 @@ export type ExportWalletToFileRequest = {
   password: ?string
 };
 export type ExportWalletToFileResponse = [];
+export type GetWalletCertificateRecoveryPhraseRequest = {
+  passphrase: string,
+  input: string,
+};
+export type GetWalletRecoveryPhraseFromCertificateRequest = {
+  passphrase: string,
+  scrambledInput: string,
+};
+
 // const notYetImplemented = () => new Promise((_, reject) => {
 //   reject(new ApiMethodNotYetImplementedError());
 // });
@@ -374,6 +391,10 @@ export default class AdaApi {
     return isValidMnemonic(mnemonic, 9);
   }
 
+  isValidCertificateMnemonic(mnemonic: string): boolean {
+    return mnemonic.split(' ').length === 15;
+  }
+
   getWalletRecoveryPhrase(): Promise<GetWalletRecoveryPhraseResponse> {
     Logger.debug('AdaApi::getWalletRecoveryPhrase called');
     try {
@@ -385,6 +406,56 @@ export default class AdaApi {
     } catch (error) {
       Logger.error('AdaApi::getWalletRecoveryPhrase error: ' + stringifyError(error));
       throw new GenericApiError();
+    }
+  }
+
+  // eslint-disable-next-line max-len
+  getWalletCertificateAdditionalMnemonics(): Promise<GetWalletCertificateAdditionalMnemonicsResponse> {
+    Logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics called');
+    try {
+      const response: Promise<AdaWalletCertificateAdditionalMnemonicsResponse> = new Promise(
+        (resolve) => resolve(getAdaWalletCertificateAdditionalMnemonics())
+      );
+      Logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics success');
+      return response;
+    } catch (error) {
+      Logger.error('AdaApi::getWalletCertificateAdditionalMnemonics error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  getWalletCertificateRecoveryPhrase(
+    request: GetWalletCertificateRecoveryPhraseRequest
+  ): Promise<GetWalletCertificateRecoveryPhraseResponse> {
+    Logger.debug('AdaApi::getWalletCertificateRecoveryPhrase called');
+    const { passphrase, input } = request;
+    try {
+      const response: Promise<AdaWalletCertificateRecoveryPhraseResponse> = new Promise(
+        (resolve) => resolve(getAdaWalletCertificateRecoveryPhrase({
+          passphrase,
+          scrambledInput: input,
+        }))
+      );
+      Logger.debug('AdaApi::getWalletCertificateRecoveryPhrase success');
+      return response;
+    } catch (error) {
+      Logger.error('AdaApi::getWalletCertificateRecoveryPhrase error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
+  getWalletRecoveryPhraseFromCertificate(
+    request: GetWalletRecoveryPhraseFromCertificateRequest
+  ): Promise<GetWalletRecoveryPhraseFromCertificateResponse> {
+    Logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate called');
+    const { passphrase, scrambledInput } = request;
+    try {
+      const response = getAdaWalletRecoveryPhraseFromCertificate({ passphrase, scrambledInput });
+      Logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate success');
+      return Promise.resolve(response);
+    } catch (error) {
+      Logger.error('AdaApi::getWalletRecoveryPhraseFromCertificate error: ' + stringifyError(error));
+      return Promise.reject(new InvalidMnemonicError());
     }
   }
 

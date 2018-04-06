@@ -5,6 +5,10 @@ Changelog
 
 ### Features
 
+- Paper wallets certificate generation ([PR 779](https://github.com/input-output-hk/daedalus/pull/779))
+- Wallet restoration from a paper wallet certificate ([PR 794](https://github.com/input-output-hk/daedalus/pull/794))
+- Paper wallet certificate generation and wallet restoration from a paper wallet certificate acceptance tests ([PR 807](https://github.com/input-output-hk/daedalus/pull/807))
+- Instructions for accessing FAQ, reporting a problem and downloading logs on the support page in general settings ([PR 818](https://github.com/input-output-hk/daedalus/pull/818))
 - New Edit section in system menu with copy & paste and related actions ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
 
 ### Fixes

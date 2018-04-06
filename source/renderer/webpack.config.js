@@ -66,6 +66,12 @@ module.exports = {
           { loader: 'markdown-loader?gfm=false' },
         ]
       },
+      {
+        test: /(pdfkit|linebreak|fontkit|unicode|brotli|png-js).*\.js$/,
+        use: {
+          loader: 'transform-loader?brfs',
+        }
+      }
     ]
   },
   plugins: [

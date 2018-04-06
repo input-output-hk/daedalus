@@ -140,6 +140,10 @@ export default {
 
   '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',
 
+  '--theme-paper-wallet-create-certificate-dialog-recovery-phrase-background-color': 'rgba(233, 244, 254, 0.05)',
+  '--theme-paper-wallet-create-certificate-dialog-explorer-link-color': '#e9f4fe',
+  '--theme-paper-wallet-create-certificate-dialog-explorer-link-background-color': 'rgba(233, 244, 254, 0.05)',
+
   '--theme-settings-body-background-color': '#0b1926',
   '--theme-settings-pane-background-color': '#263345',
   '--theme-settings-pane-border': 'none',
@@ -286,4 +290,6 @@ export default {
   '--theme-terms-of-use-text-color': '#e9f4fe',
 
   '--theme-wallet-password-switch-label-color': '#e9f4fe',
+
+  '--theme-password-toggler-color': '#8793a1',
 };

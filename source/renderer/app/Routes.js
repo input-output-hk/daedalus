@@ -15,6 +15,7 @@ import SupportSettingsPage from './containers/settings/categories/SupportSetting
 import TermsOfUseSettingsPage from './containers/settings/categories/TermsOfUseSettingsPage';
 import TermsOfUsePage from './containers/profile/TermsOfUsePage';
 import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
+import PaperWalletCreateCertificatePage from './containers/wallet/PaperWalletCreateCertificatePage';
 
 // Dynamic container loading - resolver loads file relative to '/app/' directory
 const LoadingPage = resolver('containers/LoadingPage');
@@ -47,5 +48,9 @@ export const Routes = (
       <Route path="support" component={SupportSettingsPage} />
       <Route path="display" component={DisplaySettingsPage} />
     </Route>
+    <Route
+      path={ROUTES.PAPER_WALLET_CREATE_CERTIFICATE}
+      component={PaperWalletCreateCertificatePage}
+    />
   </div>
 );
