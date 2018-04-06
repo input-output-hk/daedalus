@@ -11,6 +11,10 @@ Given(/^I see the "Certificate Generation Instructions" dialog$/, function () {
 });
 
 When(/^I click on the print button$/, async function () {
+  /**
+   * Clicking the real button would open the system dialog which we cannot test
+   * easily. So we just skip that step and pretend the user picked a path
+   */
   const data = {
     filePath: paperWalletCertificatePath,
   };
@@ -34,10 +38,6 @@ When(/^I check all "Print Dialog" checkboxes$/, async function () {
   await this.waitAndClick('.printDialog .printedCheckbox');
   await this.waitAndClick('.printDialog .readableCheckbox');
   await this.waitAndClick('.printDialog .scannableCheckbox');
-});
-
-When(/^Continue button is no longer disabled$/, function () {
-  return this.client.waitForEnabled('.continueButton');
 });
 
 When(/^I see the "Securing Additional mnemonics" dialog$/, function () {

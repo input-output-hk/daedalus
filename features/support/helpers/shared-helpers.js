@@ -2,6 +2,7 @@ import { expect } from 'chai';
 
 export const waitAndClick = async (client, selector, ...waitArgs) => {
   await client.waitForVisible(selector, ...waitArgs);
+  await client.waitForEnabled(selector, ...waitArgs);
   return client.click(selector);
 };
 
