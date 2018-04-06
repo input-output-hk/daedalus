@@ -11,17 +11,14 @@ Feature: Paper Wallets Certificate generation
     And I click on the print button
     And I see the "Certificate Generation Complete" dialog
     And I check all "Print Dialog" checkboxes
-    And Continue button is no longer disabled
     And I click on the continue button
     And I see the "Securing Additional mnemonics" dialog
     And I click on "I have written the remaining 9 words to the certificate." checkbox
-    And Continue button is no longer disabled
     And I click on the continue button
     And I see the "Verify Certificate" dialog
     And I enter paper wallet recovery phrase
     And Verify certificate checkboxes are no longer disabled
     And I check all "Verify Certificate" checkboxes
-    And Continue button is no longer disabled
     And I click on the continue button
     And I see the "Paper Wallet Certificate" dialog
     And Cardano explorer link and wallet address should be valid
@@ -69,11 +66,9 @@ Feature: Paper Wallets Certificate generation
     And I click on the print button
     And I see the "Certificate Generation Complete" dialog
     And I check all "Print Dialog" checkboxes
-    And Continue button is no longer disabled
     And I click on the continue button
     And I see the "Securing Additional mnemonics" dialog
     And I click on "I have written the remaining 9 words to the certificate." checkbox
-    And Continue button is no longer disabled
     And I click on the continue button
     And I see the "Verify Certificate" dialog
     And I enter wrong paper wallet recovery phrase:
