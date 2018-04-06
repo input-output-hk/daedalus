@@ -15,9 +15,11 @@ export default class WalletExportToFileDialogContainer extends Component<Props> 
 
   onSubmit = (params: OnSubmitParams) => {
     const filePath = remote.dialog.showSaveDialog({
-      filters: [
-        { name: 'Json', extensions: ['json'] },
-      ]
+      defaultPath: 'wallet-export.json',
+      filters: [{
+        name: 'wallet-export',
+        extensions: ['json'],
+      }],
     });
     const { stores, actions } = this.props;
     const activeWallet = stores.ada.wallets.active;

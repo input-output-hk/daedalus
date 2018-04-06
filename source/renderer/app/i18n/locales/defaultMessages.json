@@ -3192,208 +3192,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Paper certificate",
-        "description": "headline for \" for paper wallet mnemonic certificate dialog.",
-        "end": {
-          "column": 3,
-          "line": 16
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletCertificateDialog.js",
-        "id": "paper.wallet.export.dialog.certificate.dialog.headline",
-        "start": {
-          "column": 12,
-          "line": 12
-        }
-      },
-      {
-        "defaultMessage": "!!!Finish",
-        "description": "Label \"Finish\" for paper wallet mnemonic certificate dialog.",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletCertificateDialog.js",
-        "id": "paper.wallet.export.dialog.certificate.button.finishLabel",
-        "start": {
-          "column": 15,
-          "line": 17
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletCertificateDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Mnemonic",
-        "description": "headline\" for paper wallet mnemonic dialog.",
-        "end": {
-          "column": 3,
-          "line": 19
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog.js",
-        "id": "paper.wallet.export.dialog.mnemonic.headline",
-        "start": {
-          "column": 12,
-          "line": 15
-        }
-      },
-      {
-        "defaultMessage": "!!!Continue",
-        "description": "Label \"Continue\" for paper wallet mnemonic dialog.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog.js",
-        "id": "paper.wallet.export.dialog.mnemonic.button.continueLabel",
-        "start": {
-          "column": 17,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!I understand all the importance of this phrase and wrote it my paper certificate.",
-        "description": "Notice to confirm that paper wallet recovery phrase is written to paper on paper wallet mnemonic dialog.",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog.js",
-        "id": "paper.wallet.export.dialog.mnemonic.confirmPhraseWrittenNotice",
-        "start": {
-          "column": 30,
-          "line": 25
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Verify mnemonic",
-        "description": "headline for mnemonic certificate verification dialog.",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
-        "id": "paper.wallet.export.dialog.mnemonic.verification.headline",
-        "start": {
-          "column": 12,
-          "line": 17
-        }
-      },
-      {
-        "defaultMessage": "!!!Continue",
-        "description": "Label \"Continue\" on mnemonic certificate verification dialog",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
-        "id": "paper.wallet.export.dialog.mnemonic.verification.button.continueLabel",
-        "start": {
-          "column": 17,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!Recovery phrase",
-        "description": "Label for the recovery phrase input on mnemonic certificate verification dialog.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
-        "id": "paper.wallet.export.dialog.mnemonic.verification.recovery.phrase.input.label",
-        "start": {
-          "column": 34,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!Enter recovery phrase",
-        "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the mnemonic certificate verification dialog.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
-        "id": "paper.wallet.export.dialog.mnemonic.verification.recovery.phrase.input.hint",
-        "start": {
-          "column": 33,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!Invalid recovery phrase",
-        "description": "Error message shown when invalid recovery phrase was entered on mnemonic certificate verification dialog.",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.js",
-        "id": "paper.wallet.export.dialog.mnemonic.verification.form.errors.invalidRecoveryPhrase",
-        "start": {
-          "column": 19,
-          "line": 37
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletMnemonicVerificationDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Check printer copy",
-        "description": "headline for \"Check printer copy\" in wallet check printer copy dialog.",
-        "end": {
-          "column": 3,
-          "line": 18
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog.js",
-        "id": "paper.wallet.export.dialog.printerCheck.headline",
-        "start": {
-          "column": 12,
-          "line": 14
-        }
-      },
-      {
-        "defaultMessage": "!!!Continue",
-        "description": "Label \"Continue\" on the dialog button for check printer copy in wallet check printer copy dialog.",
-        "end": {
-          "column": 3,
-          "line": 23
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog.js",
-        "id": "paper.wallet.export.dialog.button.continueLabel",
-        "start": {
-          "column": 17,
-          "line": 19
-        }
-      },
-      {
-        "defaultMessage": "!!!Yes, paper wallet is successfully printed and everything is readable and scannable.",
-        "description": "Notice to confirm if the paper wallet is correctly printed in wallet check printer copy dialog",
-        "end": {
-          "column": 3,
-          "line": 28
-        },
-        "file": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog.js",
-        "id": "paper.wallet.export.dialog.printerCheck.confirmPrinterCopyNotice",
-        "start": {
-          "column": 28,
-          "line": 24
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/settings/paper-wallet-export-dialogs/ExportPaperWalletPrinterCopyDialog.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!+ {amount} of fees",
         "description": "Label for the \"+ 12.042481 of fees\" message above amount input field.",
         "end": {
@@ -4741,13 +4539,13 @@
         "description": "Label for the \"Name\" text input on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 28
         },
         "file": "source/renderer/app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.name.label",
         "start": {
           "column": 8,
-          "line": 34
+          "line": 24
         }
       },
       {
@@ -4755,13 +4553,13 @@
         "description": "Label for the \"Transaction assurance security level\" dropdown.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 33
         },
         "file": "source/renderer/app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.assurance",
         "start": {
           "column": 23,
-          "line": 39
+          "line": 29
         }
       },
       {
@@ -4769,13 +4567,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
-          "line": 44
+          "line": 34
         }
       },
       {
@@ -4783,13 +4581,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 49
+          "line": 39
         }
       },
       {
@@ -4797,13 +4595,13 @@
         "description": "You still don't have password set message.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.passwordNotSet",
         "start": {
           "column": 18,
-          "line": 54
+          "line": 44
         }
       },
       {
@@ -4811,13 +4609,13 @@
         "description": "Label for the export button on wallet settings.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 53
         },
         "file": "source/renderer/app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.exportWalletButtonLabel",
         "start": {
           "column": 21,
-          "line": 59
+          "line": 49
         }
       }
     ],
