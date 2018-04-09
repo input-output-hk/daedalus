@@ -80,6 +80,8 @@ export default class SidebarStore extends Store {
     const currentRoute = this.stores.app.currentRoute;
     if (matchRoute(ROUTES.WALLETS.ROOT, currentRoute)) {
       this._showSubMenus();
+    } else if (matchRoute(ROUTES.NO_WALLETS, currentRoute)) {
+      this.isShowingSubMenus = false;
     }
   }
 
