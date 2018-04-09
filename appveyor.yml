@@ -9,6 +9,8 @@ environment:
     secure: DbpP02aDGoC3Tdsi3+ONm8ov0nuXzEF/Yi453SBKj38qjROzvPXo6qW44bYiKBf4
   CERT_PASS:
     secure: K+PY2zF/5qeJnnKhcCZaqLnVZuAXvuxCXosnzHdtje1C+BMLfAbCJZVt2wTMEyJT
+  GITHUB_OAUTH_TOKEN:
+    secure: DGcn22uSIJVzPP7A+kvZvOm4VOPkxShppsqOiAlj6PEYjg1u5A/RHx24lCp0zoHH
   # Avoid long paths on Windows
   STACK_ROOT: "c:\\sr"
 
