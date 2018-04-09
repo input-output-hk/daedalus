@@ -214,6 +214,7 @@ export default class AdaApi {
     try {
       const response: AdaV1Wallets = await getAdaWallets({ ca });
       Logger.debug('AdaApi::getWallets success: ' + stringifyData(response));
+      console.debug(response);
       return response.map(data => _createWalletFromServerV1Data(data));
     } catch (error) {
       Logger.error('AdaApi::getWallets error: ' + stringifyError(error));
@@ -848,14 +849,17 @@ const _createWalletFromServerV1Data = action(
     const {
       id, balance, name, assuranceLevel,
       hasSpendingPassword, spendingPasswordLastUpdate,
+      syncState,
     } = data;
+    const isRestoring = syncState.tag === 'restoring';
+    const restorationPercentage = get(syncState, 'data.percentage.quantity', 0);
     return new Wallet({
       id,
       amount: new BigNumber(balance).dividedBy(LOVELACES_PER_ADA),
-      name,
+      name: isRestoring ? `${name} (restoring: ${restorationPercentage}%)` : name,
       assurance: assuranceLevel === 'normal' ? 'CWANormal' : 'CWAStrict',
       hasPassword: hasSpendingPassword,
-      passwordUpdateDate: unixTimestampToDate(spendingPasswordLastUpdate),
+      passwordUpdateDate: new Date(spendingPasswordLastUpdate),
     });
   }
 );
