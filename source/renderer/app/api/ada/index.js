@@ -853,7 +853,7 @@ const _createWalletFromServerV1Data = action(
       id,
       amount: new BigNumber(balance).dividedBy(LOVELACES_PER_ADA),
       name,
-      assurance: assuranceLevel,
+      assurance: assuranceLevel === 'normal' ? 'CWANormal' : 'CWAStrict',
       hasPassword: hasSpendingPassword,
       passwordUpdateDate: unixTimestampToDate(spendingPasswordLastUpdate),
     });
