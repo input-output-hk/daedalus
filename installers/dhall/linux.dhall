@@ -29,6 +29,3 @@ in
   , launcherLogsPrefix  = "${dataDir}/${cluster.name}/Logs/"
   }
 }
--- nodeArgs = [
---   "--wallet-address" "127.0.0.1:8090"
--- ];

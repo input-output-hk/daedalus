@@ -20,6 +20,7 @@ module Config
 import qualified Control.Exception                as Ex
 
 import qualified Data.ByteString                  as BS
+import qualified Data.ByteString.Char8            as BS8
 import qualified Data.Map                         as Map
 import           Data.Maybe
 import           Data.Optional                       (Optional)
@@ -27,7 +28,6 @@ import           Data.Semigroup                      ((<>))
 import           Data.Text                           (Text, pack, unpack, intercalate, toLower)
 import qualified Data.Yaml                        as YAML
 
-import qualified Dhall                            as Dhall
 import qualified Dhall.JSON                       as Dhall
 
 import           Filesystem.Path.CurrentOS           (FilePath, fromText, encodeString, encodeString)
@@ -148,7 +148,7 @@ forConfigValues :: Text -> OS -> Cluster -> (Config -> YAML.Value -> IO a) -> IO
 forConfigValues dhallRoot os cluster action = do
   sequence_ [ let topExpr = dhallTopExpr dhallRoot cfg os cluster
               in action cfg =<<
-                 (handle $ Dhall.detailed $ Dhall.codeToValue "(stdin)" $
+                 (handle $ Dhall.codeToValue (BS8.pack $ unpack topExpr) $
                   (trace (unpack $ "Dhall top-level expression: " <> topExpr) topExpr))
             | cfg     <- enumFromTo minBound maxBound ]
 
@@ -159,10 +159,11 @@ checkAllConfigs dhallRoot =
             , cluster <- enumFromTo minBound maxBound ]
 
 generateOSClusterConfigs :: Text -> FilePath -> Options -> IO ()
-generateOSClusterConfigs dhallRoot outDir Options{..} = forConfigValues dhallRoot oOS oCluster $
-  \config val -> do
-    GHC.setLocaleEncoding GHC.utf8
-    BS.writeFile (encodeString $ outDir </> configFilename config) $ YAML.encode val
+generateOSClusterConfigs dhallRoot outDir Options{..} = do
+  GHC.setLocaleEncoding GHC.utf8
+  forConfigValues dhallRoot oOS oCluster $
+    \config val ->
+      BS.writeFile (encodeString $ outDir </> configFilename config) $ YAML.encode val
 
 -- | Generic error handler: be it encoding/decoding, file IO, parsing or type-checking.
 handle :: IO a -> IO a
