@@ -8,6 +8,7 @@ import WalletAddPage from '../wallet/WalletAddPage';
 import WalletSupportRequestPage from '../wallet/WalletSupportRequestPage';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import StatusMessagesNotification from '../../components/notifications/StatusMessagesNotification';
+import { ROUTES } from '../../routes-config';
 
 @inject('stores', 'actions') @observer
 export default class MainLayout extends Component<InjectedContainerProps> {
@@ -49,6 +50,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         }}
         isSynced
         openDialogAction={actions.dialogs.open.trigger}
+        onAddWallet={() => actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD })}
         isDialogOpen={stores.uiDialogs.isOpen}
       />
     );

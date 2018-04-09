@@ -34,6 +34,7 @@ export default class InstructionsDialogContainer extends Component<Props> {
         inProgress={wallets.generatingCertificateInProgress}
         onPrint={this.onPrint}
         onClose={this.props.onClose}
+        onOpenExternalLink={this.props.stores.app.openExternalLink}
       />
     );
   }

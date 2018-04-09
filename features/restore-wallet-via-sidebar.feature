@@ -9,8 +9,8 @@ Feature: Add Wallet via Sidebar
   Scenario: Successfully Restoring a Wallet
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
-    And I see the add wallet dialog
-    And I click on the restore wallet button in add wallet dialog
+    And I see the add wallet page
+    And I click on the restore wallet button on the add wallet page
     And I see the restore wallet dialog
     And I enter wallet name "Restored wallet" in restore wallet dialog
     And I enter recovery phrase in restore wallet dialog:
@@ -25,8 +25,8 @@ Feature: Add Wallet via Sidebar
   Scenario: Successfully Restoring a Wallet with spending password
     Given The sidebar shows the "wallets" category
     When I click on the add wallet button in the sidebar
-    And I see the add wallet dialog
-    And I click on the restore wallet button in add wallet dialog
+    And I see the add wallet page
+    And I click on the restore wallet button on the add wallet page
     And I see the restore wallet dialog
     And I enter wallet name "Restored wallet" in restore wallet dialog
     And I enter recovery phrase in restore wallet dialog:

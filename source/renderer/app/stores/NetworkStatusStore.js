@@ -273,7 +273,7 @@ export default class NetworkStatusStore extends Store {
             params: { id: wallets.first.id }
           });
         } else {
-          this.actions.router.goToRoute.trigger({ route: ROUTES.NO_WALLETS });
+          this.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });
         }
       }
       this.actions.networkStatus.isSyncedAndReady.trigger();

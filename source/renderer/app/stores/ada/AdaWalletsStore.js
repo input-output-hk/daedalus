@@ -8,7 +8,6 @@ import { i18nContext } from '../../utils/i18nContext';
 import Request from '.././lib/LocalizedRequest';
 import { ROUTES } from '../../routes-config';
 import { mnemonicToSeedHex } from '../../utils/crypto';
-import WalletAddDialog from '../../components/wallet/WalletAddDialog';
 import { downloadPaperWalletCertificate } from '../../utils/paperWalletPdfGenerator';
 import type { walletExportTypeChoices } from '../../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../../actions/ada/wallets-actions';
@@ -175,7 +174,6 @@ export default class AdaWalletsStore extends WalletStore {
     // ...or keep it open in case it has errored out (so that error message can be shown)
     setTimeout(() => {
       if (!this.restoreRequest.isExecuting) this._setIsRestoreActive(false);
-      if (!this.restoreRequest.isError) this._toggleAddWalletDialogOnActiveRestoreOrImport();
     }, this.WAIT_FOR_SERVER_ERROR_TIME);
 
     const restoredWallet = await this.restoreRequest.execute(data).promise;
@@ -186,6 +184,7 @@ export default class AdaWalletsStore extends WalletStore {
     if (!restoredWallet) throw new Error('Restored wallet was not received correctly');
     this.restoreRequest.reset();
     await this._patchWalletRequestWithNewWallet(restoredWallet);
+    this.goToWalletRoute(restoredWallet.id);
     this.refreshWalletsData();
   };
 
@@ -200,7 +199,6 @@ export default class AdaWalletsStore extends WalletStore {
     // ...or keep it open in case it has errored out (so that error message can be shown)
     setTimeout(() => {
       if (!this.importFromFileRequest.isExecuting) this._setIsImportActive(false);
-      if (!this.importFromFileRequest.isError) this._toggleAddWalletDialogOnActiveRestoreOrImport();
     }, this.WAIT_FOR_SERVER_ERROR_TIME);
 
     const { filePath, walletName, walletPassword } = params;
@@ -214,6 +212,7 @@ export default class AdaWalletsStore extends WalletStore {
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');
     this.importFromFileRequest.reset();
     await this._patchWalletRequestWithNewWallet(importedWallet);
+    this.goToWalletRoute(importedWallet.id);
     this.refreshWalletsData();
   };
 
@@ -377,19 +376,6 @@ export default class AdaWalletsStore extends WalletStore {
     this.generatingCertificateInProgress = false;
     this.certificateTemplate = false;
     this.certificateStep = null;
-  };
-
-  // =================== PRIVATE API ==================== //
-
-  _toggleAddWalletDialogOnActiveRestoreOrImport = () => {
-    // Once restore/import is under way we need to either:
-    // A) show the 'Add wallet' dialog (in case we don't have any wallets) or
-    // B) just close the active dialog and unblock the UI
-    if (this.hasLoadedWallets && !this.hasAnyWallets) {
-      this.actions.dialogs.open.trigger({ dialog: WalletAddDialog });
-    } else {
-      this.actions.dialogs.closeActiveDialog.trigger();
-    }
   };
 
 }

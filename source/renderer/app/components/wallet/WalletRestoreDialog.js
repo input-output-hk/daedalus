@@ -398,9 +398,13 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     );
   }
 
-  isRegular = () => (this.state.activeChoice === 'regular');
+  isRegular() {
+    return this.state.activeChoice === 'regular';
+  }
 
-  isCertificate = () => (this.state.activeChoice === 'certificate');
+  isCertificate() {
+    return this.state.activeChoice === 'certificate';
+  }
 
   onSelectChoice = (choice: string) => {
     const { isSubmitting, onChoiceChange } = this.props;

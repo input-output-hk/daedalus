@@ -2,8 +2,6 @@
 import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
 import resolver from '../utils/imports';
-import { ROUTES } from '../routes-config';
-import { matchRoute } from '../utils/routing';
 import environment from '../../../common/environment';
 
 const sidebarConfig = resolver('config/sidebarConfig');
@@ -18,12 +16,12 @@ export default class SidebarStore extends Store {
 
   setup() {
     const actions = this.actions.sidebar;
+    actions.showSubMenus.listen(this._showSubMenus);
     actions.toggleSubMenus.listen(this._toggleSubMenus);
     actions.activateSidebarCategory.listen(this._onActivateSidebarCategory);
     actions.walletSelected.listen(this._onWalletSelected);
     this.registerReactions([
       this._syncSidebarRouteWithRouter,
-      this._showSubMenusOnWalletsPageLoad,
     ]);
   }
 
@@ -37,10 +35,6 @@ export default class SidebarStore extends Store {
       isConnected: networkStatus.isConnected,
     }));
   }
-
-  @action _toggleSubMenus = () => {
-    this.isShowingSubMenus = !this.isShowingSubMenus;
-  };
 
   @action _onActivateSidebarCategory = (params: { category: string, showSubMenu?: boolean }) => {
     const { category, showSubMenu } = params;
@@ -68,6 +62,14 @@ export default class SidebarStore extends Store {
     this.isShowingSubMenus = true;
   };
 
+  @action _hideSubMenus = () => {
+    this.isShowingSubMenus = false;
+  };
+
+  @action _toggleSubMenus = () => {
+    this.isShowingSubMenus = !this.isShowingSubMenus;
+  };
+
   _syncSidebarRouteWithRouter = () => {
     const route = this.stores.app.currentRoute;
     this.CATEGORIES.forEach((category) => {
@@ -75,15 +77,6 @@ export default class SidebarStore extends Store {
       if (route.indexOf(category.route) === 0) this._setActivateSidebarCategory(category.route);
     });
   };
-
-  _showSubMenusOnWalletsPageLoad = () => {
-    const currentRoute = this.stores.app.currentRoute;
-    if (matchRoute(ROUTES.WALLETS.ROOT, currentRoute)) {
-      this._showSubMenus();
-    } else if (matchRoute(ROUTES.NO_WALLETS, currentRoute)) {
-      this.isShowingSubMenus = false;
-    }
-  }
 
 }
 

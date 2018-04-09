@@ -18,6 +18,7 @@ type Props = {
   currentRoute: string,
   showSubMenus?: ?boolean,
   formattedWalletAmount?: Function,
+  showSubMenuToggle: boolean
 };
 
 @observer
@@ -26,13 +27,13 @@ export default class TopBar extends Component<Props> {
   render() {
     const {
       onToggleSidebar, activeWallet, currentRoute,
-      showSubMenus, formattedWalletAmount
+      showSubMenus, formattedWalletAmount, showSubMenuToggle
     } = this.props;
     const walletRoutesMatch = matchRoute(`${ROUTES.WALLETS.ROOT}/:id(*page)`, currentRoute);
-    const showWalletInfo = walletRoutesMatch && activeWallet != null;
+    const isWalletPage = walletRoutesMatch && activeWallet != null;
     const topBarStyles = classNames([
       styles.topBar,
-      showWalletInfo ? styles.withWallet : styles.withoutWallet,
+      isWalletPage ? styles.withWallet : styles.withoutWallet,
     ]);
 
     const topBarTitle = walletRoutesMatch && activeWallet != null && formattedWalletAmount ? (
@@ -56,7 +57,7 @@ export default class TopBar extends Component<Props> {
 
     return (
       <header className={topBarStyles}>
-        {walletRoutesMatch && (
+        {showSubMenuToggle && (
           <button className={styles.leftIcon} onClick={onToggleSidebar}>
             {sidebarToggleIcon}
           </button>

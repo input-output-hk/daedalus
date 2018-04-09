@@ -38,8 +38,8 @@ Feature: Paper Wallets Certificate generation
       | title                   | amountWithoutFees |
       | wallet.transaction.sent | -0.000010         |
     And I click on the add wallet button in the sidebar
-    And I see the add wallet dialog
-    And I click on the restore wallet button in add wallet dialog
+    And I see the add wallet page
+    And I click on the restore wallet button on the add wallet page
     And I see the restore wallet dialog
     And I click "Paper wallet certificate" tab
     And I see "Restore wallet with certificate" form
