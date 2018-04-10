@@ -15,7 +15,7 @@ type Props = {
 @observer
 export default class SidebarCategory extends Component<Props> {
   render() {
-    const { icon, active, onClick, className } = this.props;
+    const { icon, active, className, onClick } = this.props;
     const componentStyles = classNames([
       styles.component,
       active ? styles.active : null,
@@ -32,5 +32,4 @@ export default class SidebarCategory extends Component<Props> {
       </button>
     );
   }
-
 }

@@ -13,3 +13,4 @@ import './WalletDeleteConfirmationDialog.stories';
 import './TopBar.stories';
 import './WalletTransactionsList.stories';
 import './WalletExportToFileDialog.stories';
+import './PaperWallets.stories';

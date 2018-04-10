@@ -8,7 +8,7 @@ import WalletTransactionsList from '../../source/renderer/app/components/wallet/
 import WalletTransaction, {
   transactionStates,
   transactionTypes
-} from '../../source/renderer/app/domain/WalletTransaction';
+} from '../../source/renderer/app/domains/WalletTransaction';
 import { formattedWalletAmount } from '../../source/renderer/app/utils/ada/formatters';
 
 const generateTransaction = (

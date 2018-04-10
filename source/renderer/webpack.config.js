@@ -10,7 +10,7 @@ try {
 } catch (e) {} // eslint-disable-line
 
 module.exports = {
-  devtool: 'cheap-source-map',
+  devtool: 'cheap-module-eval-source-map',
   entry: './source/renderer/index.js',
   output: {
     path: path.join(__dirname, './dist/renderer'),
@@ -66,6 +66,12 @@ module.exports = {
           { loader: 'markdown-loader?gfm=false' },
         ]
       },
+      {
+        test: /(pdfkit|linebreak|fontkit|unicode|brotli|png-js).*\.js$/,
+        use: {
+          loader: 'transform-loader?brfs',
+        }
+      }
     ]
   },
   plugins: [

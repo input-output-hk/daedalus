@@ -1,0 +1,80 @@
+@import '../../../themes/mixins/error-message';
+
+.dialog {
+  .verificationContentWrapper {
+    color: var(--theme-instructions-text-color);
+
+    .subtitle,
+    .instructions {
+      font-family: var(--font-light);
+      line-height: 1.38;
+
+      strong {
+        font-family: var(--font-medium);
+      }
+    }
+
+    .instructions {
+      padding-top: 10px;
+      strong {
+        font-family: var(--font-medium);
+      }
+    }
+
+    .content {
+      margin-top: 20px;
+
+      .recoveryPhrase {
+        margin-top: 20px;
+      }
+
+      .password {
+        margin-top: 20px;
+        position: relative;
+      }
+
+      .passwordVisibilityToggler {
+        bottom: 15px;
+        height: 49px;
+        position: absolute;
+        right: 0;
+        top: 32px;
+        width: 40px;
+
+        &:hover {
+          svg > path {
+            opacity: 1;
+          }
+        }
+
+        svg {
+          height: 19px;
+          left: 10px;
+          position: absolute;
+          top: 15px;
+          width: 19px;
+        }
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+
+      :global {
+        input {
+          padding-right: 40px;
+        }
+      }
+
+      .checkbox {
+        margin-top: 20px;
+      }
+    }
+  }
+
+  .error {
+    @include error-message;
+    text-align: center;
+    margin-top: 27px;
+  }
+}

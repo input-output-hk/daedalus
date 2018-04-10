@@ -1,5 +1,6 @@
 // @flow
 import { observable, computed } from 'mobx';
+import { shell } from 'electron';
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
@@ -14,6 +15,10 @@ export default class AppStore extends Store {
 
   @computed get currentRoute(): string {
     return this.stores.router.location.pathname;
+  }
+
+  openExternalLink(link: string): void {
+    shell.openExternal(link);
   }
 
   _updateRouteLocation = (options: { route: string, params: ?Object }) => {

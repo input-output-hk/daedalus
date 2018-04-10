@@ -209,7 +209,7 @@ export default class AdaRedemptionForm extends Component<Props> {
       passPhrase: {
         label: this.context.intl.formatMessage(messages.passphraseLabel),
         placeholder: this.context.intl.formatMessage(messages.passphraseHint),
-        value: '',
+        value: [],
         validators: [({ field }) => {
           // Don't validate No pass phrase needed when certificate is not encrypted
           if (!this.props.showPassPhraseWidget) return [true];
@@ -335,9 +335,9 @@ export default class AdaRedemptionForm extends Component<Props> {
 
   resetForm = () => {
     const { form } = this;
-    // We need to disable on-change validation before reseting the form in order to
-    // avoid debounced validation being called straight after the form is reset
-    form.state.options.set({ validateOnChange: false });
+
+    // Cancel all debounced field validations
+    form.each((field) => { field.debouncedValidation.cancel(); });
 
     // We can not user form.reset() call here as it would reset selected walletId
     // which is a bad UX since we are calling resetForm on certificate add/remove
@@ -349,10 +349,8 @@ export default class AdaRedemptionForm extends Component<Props> {
     form.$('passPhrase').reset();
     form.$('redemptionKey').reset();
     form.$('shieldedRedemptionKey').reset();
-    form.$('walletPassword').reset();
 
     form.showErrors(false);
-    form.state.options.set({ validateOnChange: true });
   };
 
   onWalletChange = (walletId: string) => {

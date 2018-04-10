@@ -15,7 +15,7 @@ import {
 } from '../support/helpers/route-helpers';
 import { DECIMAL_PLACES_IN_ADA } from '../../source/renderer/app/config/numbersConfig';
 import sidebar from '../support/helpers/sidebar-helpers';
-import addWalletDialog from '../support/helpers/dialogs/add-wallet-dialog-helpers';
+import addWalletPage from '../support/helpers/add-wallet-page-helpers';
 import importWalletDialog from '../support/helpers/dialogs/import-wallet-dialog-helpers';
 import i18n from '../support/helpers/i18n-helpers';
 import { waitForActiveImportNotification } from '../support/helpers/notifications-helpers';
@@ -74,8 +74,8 @@ Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function (walletN
   await navigateTo.call(this, `/wallets/${wallet.id}/${screen}`);
 });
 
-Given(/^I see the add wallet dialog$/, function () {
-  return addWalletDialog.waitForDialog(this.client);
+Given(/^I see the add wallet page/, function () {
+  return addWalletPage.waitForVisible(this.client);
 });
 
 Given(/^I see delete wallet dialog$/, function () {
@@ -101,12 +101,12 @@ Given(/^the active wallet is "([^"]*)"$/, function (walletName) {
   }, wallet.id);
 });
 
-When(/^I click on the create wallet button in add wallet dialog$/, function () {
-  return this.waitAndClick('.WalletAddDialog .createWalletButton');
+When(/^I click on the create wallet button on the add wallet page/, function () {
+  return this.waitAndClick('.WalletAdd .createWalletButton');
 });
 
-When(/^I click on the import wallet button in add wallet dialog$/, function () {
-  return addWalletDialog.clickImportButton(this.client);
+When(/^I click on the import wallet button on the add wallet page/, function () {
+  return addWalletPage.clickImportButton(this.client);
 });
 
 When(/^I see the import wallet dialog$/, function () {
@@ -147,8 +147,8 @@ When(/^I click on the "Generate new address" button$/, function () {
   return this.client.click('.generateAddressButton');
 });
 
-When(/^I click on the restore wallet button in add wallet dialog$/, function () {
-  return this.waitAndClick('.WalletAddDialog .restoreWalletButton');
+When(/^I click on the restore wallet button on the add wallet page$/, function () {
+  return this.waitAndClick('.WalletAdd .restoreWalletButton');
 });
 
 When(/^I click the wallet (.*) button$/, async function (buttonName) {
@@ -318,8 +318,8 @@ When(/^I submit the delete wallet dialog$/, function () {
 When(/^I try to import the wallet with funds again$/, async function () {
   await sidebar.activateCategory(this.client, { category: 'wallets' });
   await sidebar.clickAddWalletButton(this.client);
-  await addWalletDialog.waitForDialog(this.client);
-  await addWalletDialog.clickImportButton(this.client);
+  await addWalletPage.waitForVisible(this.client);
+  await addWalletPage.clickImportButton(this.client);
   await importWalletDialog.waitForDialog(this.client);
   await importWalletDialog.selectFile(this.client, { filePath: defaultWalletJSONFilePath });
   return importWalletDialog.clickImport(this.client);

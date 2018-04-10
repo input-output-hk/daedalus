@@ -146,7 +146,6 @@ writeInstallerNSIS (Version fullVersion') clusterName = do
                 createDirectory "$APPDATA\\Daedalus\\Secrets-1.0"
                 createDirectory "$APPDATA\\Daedalus\\Logs"
                 createDirectory "$APPDATA\\Daedalus\\Logs\\pub"
-                createShortcut "$DESKTOP\\Daedalus.lnk" daedalusShortcut
                 file [] "cardano-node.exe"
                 file [] "cardano-launcher.exe"
                 file [] "log-config-prod.yaml"
@@ -170,6 +169,8 @@ writeInstallerNSIS (Version fullVersion') clusterName = do
                     ]
 
                 execWait "build-certificates-win64.bat \"$INSTDIR\" >\"%APPDATA%\\Daedalus\\Logs\\build-certificates.log\" 2>&1"
+
+                createShortcut "$DESKTOP\\Daedalus.lnk" daedalusShortcut
 
                 -- Uninstaller
                 writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "InstallLocation" "$INSTDIR\\Daedalus"
