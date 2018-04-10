@@ -199,7 +199,7 @@ export default class AdaWalletsStore extends WalletStore {
     // ...or keep it open in case it has errored out (so that error message can be shown)
     setTimeout(() => {
       if (!this.importFromFileRequest.isExecuting) this._setIsImportActive(false);
-      if (!this.restoreRequest.isError) this.actions.dialogs.closeActiveDialog.trigger();
+      if (!this.importFromFileRequest.isError) this.actions.dialogs.closeActiveDialog.trigger();
     }, this.WAIT_FOR_SERVER_ERROR_TIME);
 
     const { filePath, walletName, walletPassword } = params;
