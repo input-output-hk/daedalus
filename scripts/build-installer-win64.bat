@@ -69,7 +69,7 @@ call npm install
     exit /b 1)
 
 @echo downloading mantis
-curl --location https://s3-eu-west-1.amazonaws.com/iohk.mantis.installer/daedalus-rc1/windows/mantis-1.1-rc1-win.zip -o mantis.zip
+curl --location https://s3-eu-west-1.amazonaws.com/iohk.mantis.installer/daedalus-rc1/windows/mantis-1.1-rc2-win.zip -o mantis.zip
 @if %errorlevel% neq 0 (@echo FAILED: couldn't obtain the mantis package
     exit /b 1)
 7z x mantis.zip -y

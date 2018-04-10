@@ -104,7 +104,7 @@ if [ -n "${NIX_SSL_CERT_FILE-}" ]; then export SSL_CERT_FILE=$NIX_SSL_CERT_FILE;
 case "$API" in
   etc)
     test -d mantis/ -a -n "${fast_impure}" || {
-      retry 5 curl -o mantis.app.zip https://s3-eu-west-1.amazonaws.com/iohk.mantis.installer/daedalus-rc1/macos/mantis-1.1-rc1-mac.zip
+      retry 5 curl -o mantis.app.zip https://s3-eu-west-1.amazonaws.com/iohk.mantis.installer/daedalus-rc1/macos/mantis-1.1-rc2-mac.zip
       unzip mantis.app.zip
       ls -ltrh mantis.app/
       rm mantis.app.zip
