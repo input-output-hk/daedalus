@@ -48,7 +48,6 @@ export default class NetworkStatusStore extends Store {
   @observable _localDifficultyStartedWith = null;
 
   _timeDifferencePollInterval: ?number = null;
-  _pollerBlocked = false;
 
   @action initialize() {
     super.initialize();
@@ -56,8 +55,6 @@ export default class NetworkStatusStore extends Store {
   }
 
   setup() {
-    this.actions.networkStatus.stopPoller.listen(this._stopPoller);
-    this.actions.networkStatus.restartPoller.listen(this._restartPoller);
     this.registerReactions([
       this._redirectToWalletAfterSync,
       this._redirectToLoadingWhenDisconnected,
@@ -161,8 +158,6 @@ export default class NetworkStatusStore extends Store {
   }
 
   @action _updateSyncProgress = async () => {
-    // Prevent polling if poller is blocked
-    if (this._pollerBlocked) return;
     try {
       const difficulty = await this.syncProgressRequest.execute().promise;
       runInAction('update difficulties', () => {
@@ -240,15 +235,6 @@ export default class NetworkStatusStore extends Store {
     setInterval(this._updateSyncProgress, SYNC_PROGRESS_INTERVAL);
     this._updateSyncProgress();
   }
-
-  // reset poll interval and block polling to avoid waiting last started interval to finish
-  _stopPoller = () => {
-    this._pollerBlocked = true;
-  };
-
-  _restartPoller = () => {
-    this._pollerBlocked = false;
-  };
 
   _redirectToWalletAfterSync = () => {
     const { app } = this.stores;

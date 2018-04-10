@@ -5,6 +5,4 @@ import Action from './lib/Action';
 
 export default class NetworkStatusActions {
   isSyncedAndReady: Action<any> = new Action();
-  stopPoller: Action<any> = new Action();
-  restartPoller: Action<any> = new Action();
 }

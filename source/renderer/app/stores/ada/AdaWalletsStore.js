@@ -52,6 +52,8 @@ export default class AdaWalletsStore extends WalletStore {
   @observable certificateTemplate = null;
   @observable additionalMnemonicWords = null;
 
+  _pollingBlocked = false;
+
   setup() {
     super.setup();
     const { router, walletBackup, ada } = this.actions;
@@ -102,6 +104,9 @@ export default class AdaWalletsStore extends WalletStore {
   isValidPrivateKey = () => { return true; }; // eslint-disable-line
 
   @action refreshWalletsData = async () => {
+    // Prevent wallets data refresh if polling is blocked
+    if (this._pollingBlocked) return;
+
     if (this.stores.networkStatus.isConnected) {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
@@ -245,12 +250,20 @@ export default class AdaWalletsStore extends WalletStore {
     }
   };
 
+  _pausePolling = () => {
+    this._pollingBlocked = true;
+  };
+
+  _resumePolling = () => {
+    this._pollingBlocked = false;
+  };
+
   _generateCertificate = async (params: {
     filePath: string,
   }) => {
     try {
-      // Stop polling
-      this.actions.networkStatus.stopPoller.trigger();
+      // Pause polling in order not to show Paper wallet in the UI
+      this._pausePolling();
 
       // Set inProgress state to show spinner if is needed
       this._updateCertificateCreationState(true);
@@ -314,7 +327,7 @@ export default class AdaWalletsStore extends WalletStore {
     } catch (error) {
       throw error;
     } finally {
-      this.actions.networkStatus.restartPoller.trigger();
+      this._resumePolling();
     }
   };
 
