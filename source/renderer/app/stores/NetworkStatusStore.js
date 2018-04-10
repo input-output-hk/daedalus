@@ -58,7 +58,7 @@ export default class NetworkStatusStore extends Store {
     this.registerReactions([
       this._redirectToWalletAfterSync,
       this._redirectToLoadingWhenDisconnected,
-      this._redirectToSyncingWhenLocalTimeDifferent,
+      this._redirectToSyncingWhenOutOfSync,
       this._pollTimeDifferenceWhenConnected,
     ]);
     this._pollSyncProgress();
@@ -274,12 +274,8 @@ export default class NetworkStatusStore extends Store {
     }
   };
 
-  _redirectToSyncingWhenLocalTimeDifferent = () => {
-    if (
-      this.localTimeDifference > this.ALLOWED_TIME_DIFFERENCE &&
-      !this.isSynced &&
-      !this.isSetupPage
-    ) {
+  _redirectToSyncingWhenOutOfSync = () => {
+    if (!this.isSynced && !this.isSetupPage) {
       this._updateSyncProgress();
       this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
     }
