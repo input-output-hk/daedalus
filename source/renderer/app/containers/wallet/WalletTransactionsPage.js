@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import { get } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
@@ -72,12 +73,13 @@ export default class WalletTransactionsPage extends Component<Props> {
     //     </div>
     //   );
     // }
-
-    if (searchRequest.isExecutingFirstTime || hasAny) {
+    const isSyncingTransactions = get(activeWallet, ['syncState', 'tag']) === 'restoring';
+    if (searchRequest.isExecutingFirstTime || hasAny || isSyncingTransactions) {
       walletTransactions = (
         <WalletTransactionsList
           transactions={filtered}
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
+          isSyncingTransactions={isSyncingTransactions}
           hasMoreToLoad={totalAvailable > searchLimit}
           onLoadMore={actions.ada.transactions.loadMoreTransactions.trigger}
           assuranceMode={activeWallet.assuranceMode}

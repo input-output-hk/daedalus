@@ -20,6 +20,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Yesterday',
     description: 'Label for the "Yesterday" label on the wallet summary page.',
   },
+  syncingTransactionsMessage: {
+    id: 'wallet.summary.page.syncingTransactionsMessage',
+    defaultMessage: '!!!Your transaction history in this wallet is being synced with the blockchain.',
+    description: 'Syncing transactions message on async wallet restore.',
+  },
 });
 
 const dateFormat = 'YYYY-MM-DD';
@@ -27,6 +32,7 @@ const dateFormat = 'YYYY-MM-DD';
 type Props = {
   transactions: Array<WalletTransaction>,
   isLoadingTransactions: boolean,
+  isSyncingTransactions?: boolean,
   hasMoreToLoad: boolean,
   assuranceMode: AssuranceMode,
   walletId: string,
@@ -93,8 +99,11 @@ export default class WalletTransactionsList extends Component<Props> {
       hasMoreToLoad,
       assuranceMode,
       walletId,
-      formattedWalletAmount
+      formattedWalletAmount,
+      isSyncingTransactions,
     } = this.props;
+
+    const { intl } = this.context;
 
     const transactionsGroups = this.groupTransactionsByDay(transactions);
 
@@ -102,8 +111,18 @@ export default class WalletTransactionsList extends Component<Props> {
       <LoadingSpinner ref={(component) => { this.loadingSpinner = component; }} />
     ) : null;
 
+    const syncingTransactionsSpinner = !isLoadingTransactions && isSyncingTransactions ? (
+      <div className={styles.syncingTransactionsWrapper}>
+        <LoadingSpinner />
+        <p className={styles.syncingTransactionsText}>
+          {intl.formatMessage(messages.syncingTransactionsMessage)}
+        </p>
+      </div>
+    ) : null;
+
     return (
       <div className={styles.component}>
+        {syncingTransactionsSpinner}
         {transactionsGroups.map((group, groupIndex) => (
           <div className={styles.group} key={walletId + '-' + groupIndex}>
             <div className={styles.groupDate}>{this.localizedDate(group.date)}</div>
