@@ -138,18 +138,16 @@ export default class NetworkStatusStore extends Store {
   }
 
   @computed get isSyncing(): boolean {
-    // return !this.isConnecting && this.hasBlockSyncingStarted && !this.isSynced;
-    return false;
+    return !this.isConnecting && this.hasBlockSyncingStarted && !this.isSynced;
   }
 
   @computed get isSynced(): boolean {
-    /* return (
+    return (
       !this.isConnecting &&
       this.hasBlockSyncingStarted &&
       this.relativeSyncBlocksDifference <= OUT_OF_SYNC_BLOCKS_LIMIT &&
       this.isSystemTimeCorrect
-    ); */
-    return true;
+    );
   }
 
   @computed get isSetupPage(): boolean {
