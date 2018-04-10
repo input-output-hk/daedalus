@@ -18,7 +18,6 @@ const messages = defineMessages({
 
 type Props = {
   currentLocale: string,
-  isRestoreActive: boolean,
   restoreProgress: number,
   restoreETA: number,
 };
@@ -32,13 +31,10 @@ export default class RestoreNotification extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const {
-      currentLocale, isRestoreActive,
-      restoreProgress, restoreETA,
-    } = this.props;
+    const { currentLocale, restoreProgress, restoreETA } = this.props;
 
-    const restoreMessageClasses = classnames([
-      styles.message,
+    const restoreNotificationClasses = classnames([
+      styles.component,
       'ActiveRestoreNotification',
     ]);
 
@@ -66,16 +62,12 @@ export default class RestoreNotification extends Component<Props> {
     });
 
     return (
-      <div className={styles.component}>
-        {isRestoreActive && (
-          <div className={restoreMessageClasses}>
-            <span className={styles.text}>
-              {intl.formatMessage(messages.activeRestoreMessage)}: {restoreProgress}%
-              ({estimatedCompletionTime})
-            </span>
-            <SVGInline svg={spinnerIcon} className={styles.icon} />
-          </div>
-        )}
+      <div className={restoreNotificationClasses}>
+        <span className={styles.text}>
+          {intl.formatMessage(messages.activeRestoreMessage)}: {restoreProgress}%
+          ({estimatedCompletionTime})
+        </span>
+        <SVGInline svg={spinnerIcon} className={styles.icon} />
       </div>
     );
   }
