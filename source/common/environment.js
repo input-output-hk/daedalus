@@ -1,6 +1,11 @@
 // @flow
 import os from 'os';
-import { remote } from 'electron';
+
+// Only require electron / remote if we are in a node.js environment
+let remote;
+if (module && module.require) {
+  remote = module.require('electron').remote;
+}
 
 const environment = Object.assign({
   DEVELOPMENT: 'development',

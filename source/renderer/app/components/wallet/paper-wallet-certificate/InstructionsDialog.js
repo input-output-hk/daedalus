@@ -7,8 +7,6 @@ import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import styles from './InstructionsDialog.scss';
 
-const shell = require('electron').shell;
-
 const messages = defineMessages({
   headline: {
     id: 'paper.wallet.create.certificate.instructions.dialog.headline',
@@ -71,6 +69,7 @@ type Props = {
   inProgress: boolean,
   onPrint: Function,
   onClose: Function,
+  onOpenExternalLink: Function,
 };
 
 const CARDANO_EXPLORER_LINK = 'https://cardanoexplorer.com';
@@ -84,7 +83,7 @@ export default class InstructionsDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, onPrint, inProgress } = this.props;
+    const { onClose, onPrint, inProgress, onOpenExternalLink } = this.props;
     const dialogClasses = classnames([
       styles.component,
       'instructionsDialog',
@@ -107,7 +106,7 @@ export default class InstructionsDialog extends Component<Props> {
     const cardanoExplorerLink = (
       <span
         className={styles.link}
-        onClick={this.openCardanoExplorer}
+        onClick={() => onOpenExternalLink(CARDANO_EXPLORER_LINK)}
         role="link"
         aria-hidden
       >
@@ -157,8 +156,4 @@ export default class InstructionsDialog extends Component<Props> {
       </Dialog>
     );
   }
-
-  openCardanoExplorer = () => {
-    shell.openExternal(CARDANO_EXPLORER_LINK);
-  };
 }

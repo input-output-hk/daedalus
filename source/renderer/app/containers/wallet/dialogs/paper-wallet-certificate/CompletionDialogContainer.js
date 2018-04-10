@@ -17,6 +17,7 @@ export default class CompletionDialogContainer extends Component<Props> {
       <CompletionDialog
         walletCertificateAddress={walletCertificateAddress}
         onClose={this.props.onClose}
+        onOpenExternalLink={this.props.stores.app.openExternalLink}
       />
     );
   }

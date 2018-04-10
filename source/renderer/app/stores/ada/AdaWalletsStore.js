@@ -8,7 +8,6 @@ import { i18nContext } from '../../utils/i18nContext';
 import Request from '.././lib/LocalizedRequest';
 import { ROUTES } from '../../routes-config';
 import { mnemonicToSeedHex } from '../../utils/crypto';
-import WalletAddDialog from '../../components/wallet/WalletAddDialog';
 import { downloadPaperWalletCertificate } from '../../utils/paperWalletPdfGenerator';
 import type { walletExportTypeChoices } from '../../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../../actions/ada/wallets-actions';
@@ -52,6 +51,8 @@ export default class AdaWalletsStore extends WalletStore {
   @observable certificateStep = null;
   @observable certificateTemplate = null;
   @observable additionalMnemonicWords = null;
+
+  _pollingBlocked = false;
 
   setup() {
     super.setup();
@@ -103,6 +104,9 @@ export default class AdaWalletsStore extends WalletStore {
   isValidPrivateKey = () => { return true; }; // eslint-disable-line
 
   @action refreshWalletsData = async () => {
+    // Prevent wallets data refresh if polling is blocked
+    if (this._pollingBlocked) return;
+
     if (this.stores.networkStatus.isConnected) {
       const result = await this.walletsRequest.execute().promise;
       if (!result) return;
@@ -175,7 +179,7 @@ export default class AdaWalletsStore extends WalletStore {
     // ...or keep it open in case it has errored out (so that error message can be shown)
     setTimeout(() => {
       if (!this.restoreRequest.isExecuting) this._setIsRestoreActive(false);
-      if (!this.restoreRequest.isError) this._toggleAddWalletDialogOnActiveRestoreOrImport();
+      if (!this.restoreRequest.isError) this.actions.dialogs.closeActiveDialog.trigger();
     }, this.WAIT_FOR_SERVER_ERROR_TIME);
 
     const restoredWallet = await this.restoreRequest.execute(data).promise;
@@ -200,7 +204,7 @@ export default class AdaWalletsStore extends WalletStore {
     // ...or keep it open in case it has errored out (so that error message can be shown)
     setTimeout(() => {
       if (!this.importFromFileRequest.isExecuting) this._setIsImportActive(false);
-      if (!this.importFromFileRequest.isError) this._toggleAddWalletDialogOnActiveRestoreOrImport();
+      if (!this.importFromFileRequest.isError) this.actions.dialogs.closeActiveDialog.trigger();
     }, this.WAIT_FOR_SERVER_ERROR_TIME);
 
     const { filePath, walletName, walletPassword } = params;
@@ -246,12 +250,20 @@ export default class AdaWalletsStore extends WalletStore {
     }
   };
 
+  _pausePolling = () => {
+    this._pollingBlocked = true;
+  };
+
+  _resumePolling = () => {
+    this._pollingBlocked = false;
+  };
+
   _generateCertificate = async (params: {
     filePath: string,
   }) => {
     try {
-      // Stop polling
-      this.actions.networkStatus.stopPoller.trigger();
+      // Pause polling in order not to show Paper wallet in the UI
+      this._pausePolling();
 
       // Set inProgress state to show spinner if is needed
       this._updateCertificateCreationState(true);
@@ -315,7 +327,7 @@ export default class AdaWalletsStore extends WalletStore {
     } catch (error) {
       throw error;
     } finally {
-      this.actions.networkStatus.restartPoller.trigger();
+      this._resumePolling();
     }
   };
 
@@ -377,19 +389,6 @@ export default class AdaWalletsStore extends WalletStore {
     this.generatingCertificateInProgress = false;
     this.certificateTemplate = false;
     this.certificateStep = null;
-  };
-
-  // =================== PRIVATE API ==================== //
-
-  _toggleAddWalletDialogOnActiveRestoreOrImport = () => {
-    // Once restore/import is under way we need to either:
-    // A) show the 'Add wallet' dialog (in case we don't have any wallets) or
-    // B) just close the active dialog and unblock the UI
-    if (this.hasLoadedWallets && !this.hasAnyWallets) {
-      this.actions.dialogs.open.trigger({ dialog: WalletAddDialog });
-    } else {
-      this.actions.dialogs.closeActiveDialog.trigger();
-    }
   };
 
 }

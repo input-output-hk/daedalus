@@ -3,7 +3,6 @@ export const ROUTES = {
   ROOT: '/',
   STAKING: '/staking',
   ADA_REDEMPTION: '/ada-redemption',
-  NO_WALLETS: '/no-wallets',
   PAPER_WALLET_CREATE_CERTIFICATE: '/paper-wallet/create-certificate',
   PROFILE: {
     LANGUAGE_SELECTION: '/profile/language-selection',
@@ -11,6 +10,7 @@ export const ROUTES = {
   },
   WALLETS: {
     ROOT: '/wallets',
+    ADD: '/wallets/add',
     PAGE: '/wallets/:id/:page',
     SUMMARY: '/wallets/:id/summary',
     TRANSACTIONS: '/wallets/:id/transactions',

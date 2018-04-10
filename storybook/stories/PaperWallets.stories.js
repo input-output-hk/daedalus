@@ -7,7 +7,7 @@ import InstructionsDialog from '../../source/renderer/app/components/wallet/pape
 import PrintDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/PrintDialog';
 import SecuringPasswordDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/SecuringPasswordDialog';
 import VerificationDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/VerificationDialog';
-// import CompletionDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog';
+import CompletionDialog from '../../source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog';
 
 storiesOf('PaperWallets', module)
 
@@ -22,6 +22,9 @@ storiesOf('PaperWallets', module)
   .add('Instructions', () => (
     <div>
       <InstructionsDialog
+        inProgress={false}
+        onOpenExternalLink={action('onOpenExternalLink')}
+        onPrint={action('onPrint')}
         onClose={action('onClose')}
         onContinue={action('onContinue')}
       />
@@ -31,6 +34,7 @@ storiesOf('PaperWallets', module)
   .add('Printing the certificate', () => (
     <div>
       <PrintDialog
+        onClose={action('onClose')}
         onContinue={action('onContinue')}
       />
     </div>
@@ -39,8 +43,10 @@ storiesOf('PaperWallets', module)
   .add('Securing the password', () => (
     <div>
       <SecuringPasswordDialog
+        additionalMnemonics={wordlist}
         walletCertificatePassword="flugenheimer"
         onContinue={action('onContinue')}
+        onClose={action('onClose')}
       />
     </div>
   ))
@@ -50,21 +56,24 @@ storiesOf('PaperWallets', module)
       <VerificationDialog
         walletCertificatePassword="flugenheimer"
         walletCertificateRecoveryPhrase={wordlist}
+        additionalMnemonicWords={wordlist}
         suggestedMnemonics={wordlist}
         onContinue={action('onContinue')}
         onClear={action('onClear')}
+        onClose={action('onClose')}
+      />
+    </div>
+  ))
+
+  .add('Completion and link to the address in Cardano Explorer', () => (
+    <div>
+      <CompletionDialog
+        walletCertificateAddress="WalletCertificateAddress"
+        onClose={action('onClose')}
+        onBack={action('onBack')}
+        onContinue={action('onContinue')}
+        onOpenExternalLink={action('onOpenExternalLink')}
       />
     </div>
   ));
-
-  // Commented due to 'fs' error
-  // .add('Completion and link to the address in Cardano Explorer', () => (
-  //   <div>
-  //     <CompletionDialog
-  //       onClose={action('onClose')}
-  //       onBack={action('onBack')}
-  //       onContinue={action('onContinue')}
-  //     />
-  //   </div>
-  // ));
 

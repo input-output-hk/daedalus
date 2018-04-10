@@ -7,8 +7,6 @@ import { defineMessages, intlShape } from 'react-intl';
 import Dialog from '../../widgets/Dialog';
 import styles from './CompletionDialog.scss';
 
-const shell = require('electron').shell;
-
 const messages = defineMessages({
   headline: {
     id: 'paper.wallet.create.certificate.completion.dialog.headline',
@@ -52,6 +50,7 @@ const messages = defineMessages({
 type Props = {
   walletCertificateAddress: string,
   onClose: Function,
+  onOpenExternalLink: Function,
 };
 
 @observer
@@ -63,7 +62,7 @@ export default class CompletionDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, walletCertificateAddress } = this.props;
+    const { onClose, walletCertificateAddress, onOpenExternalLink } = this.props;
     const dialogClasses = classnames([
       styles.component,
       'completionDialog',
@@ -104,7 +103,7 @@ export default class CompletionDialog extends Component<Props> {
             <div className={styles.infoBox}>
               <span
                 className={styles.link}
-                onClick={this.openCardanoExplorer.bind(this, cardanoExplorerLink)}
+                onClick={() => onOpenExternalLink(cardanoExplorerLink)}
                 role="link"
                 aria-hidden
               >
@@ -137,9 +136,4 @@ export default class CompletionDialog extends Component<Props> {
       </Dialog>
     );
   }
-
-  openCardanoExplorer = (link: string, e: Object) => {
-    e.preventDefault();
-    shell.openExternal(link);
-  };
 }

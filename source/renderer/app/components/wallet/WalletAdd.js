@@ -3,9 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
-import styles from './WalletAddDialog.scss';
-import Dialog from '../widgets/Dialog';
-import DialogCloseButton from '../widgets/DialogCloseButton';
+import styles from './WalletAdd.scss';
 import BigButtonForDialogs from '../widgets/BigButtonForDialogs';
 import createIcon from '../../assets/images/create-ic.inline.svg';
 import importIcon from '../../assets/images/import-ic.inline.svg';
@@ -69,38 +67,28 @@ const messages = defineMessages({
 type Props = {
   onCreate: Function,
   onRestore: Function,
-  onCancel: Function,
   onImportFile: Function,
-  canClose: boolean,
 };
 
 @observer
-export default class WalletAddDialog extends Component<Props> {
+export default class WalletAdd extends Component<Props> {
 
   static contextTypes = {
-    intl: intlShape.isRequired
+    intl: intlShape.isRequired,
   };
 
   render() {
     const { intl } = this.context;
-    const { onCreate, onRestore, onCancel, canClose, onImportFile } = this.props;
+    const { onCreate, onRestore, onImportFile } = this.props;
 
     const restoreButtonDescription = environment.isAdaApi()
       ? messages.restoreWithCertificateDescription
       : messages.restoreWithoutCertificateDescription;
 
-    const dialogClasses = classnames([
-      styles.component,
-      'WalletAddDialog',
-    ]);
+    const componentClasses = classnames([styles.component, 'WalletAdd']);
+
     return (
-      <Dialog
-        className={dialogClasses}
-        title={intl.formatMessage(messages.title)}
-        closeOnOverlayClick
-        onClose={canClose ? onCancel : null}
-        closeButton={canClose && <DialogCloseButton />}
-      >
+      <div className={componentClasses}>
         <div className={styles.buttonsContainer}>
           <div className={styles.firstRow}>
             <BigButtonForDialogs
@@ -138,7 +126,7 @@ export default class WalletAddDialog extends Component<Props> {
             />
           </div>
         </div>
-      </Dialog>
+      </div>
     );
   }
 

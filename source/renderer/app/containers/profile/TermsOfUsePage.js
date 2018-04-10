@@ -19,7 +19,7 @@ export default class TermsOfUsePage extends Component<InjectedProps> {
     const { setTermsOfUseAcceptanceRequest, termsOfUse } = this.props.stores.profile;
     const { currentRoute } = this.props.stores.app;
     const isSubmitting = setTermsOfUseAcceptanceRequest.isExecuting;
-    const topbar = <TopBar currentRoute={currentRoute} />;
+    const topbar = <TopBar currentRoute={currentRoute} showSubMenuToggle={false} />;
     return (
       <TopBarLayout
         topbar={topbar}
