@@ -138,10 +138,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
   recoveryPhraseAutocomplete: Autocomplete;
 
-  isRegular = () => (this.state.activeChoice === 'regular');
-
-  isCertificate = () => (this.state.activeChoice === 'certificate');
-
   form = new ReactToolboxMobxForm({
     fields: {
       walletName: {
@@ -400,6 +396,14 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
       </Dialog>
     );
+  }
+
+  isRegular() {
+    return this.state.activeChoice === 'regular';
+  }
+
+  isCertificate() {
+    return this.state.activeChoice === 'certificate';
   }
 
   onSelectChoice = (choice: string) => {

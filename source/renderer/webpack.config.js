@@ -10,7 +10,7 @@ try {
 } catch (e) {} // eslint-disable-line
 
 module.exports = {
-  devtool: 'cheap-source-map',
+  devtool: 'cheap-module-eval-source-map',
   entry: './source/renderer/index.js',
   output: {
     path: path.join(__dirname, './dist/renderer'),

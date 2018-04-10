@@ -1,0 +1,20 @@
+.component {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.buttonsContainer {
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+}
+
+.firstRow {
+  display: flex;
+}
+
+.secondRow {
+  display: flex;
+}

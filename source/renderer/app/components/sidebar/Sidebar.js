@@ -6,14 +6,13 @@ import classNames from 'classnames';
 import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
-import WalletAddDialog from '../../components/wallet/WalletAddDialog';
 import BugReportDialog from '../../components/profile/bug-report/BugReportDialog';
 import InstructionsDialog from '../wallet/paper-wallet-certificate/InstructionsDialog';
 import supportIcon from '../../assets/images/sidebar/bug-report-ic.inline.svg';
 import type { SidebarWalletType } from '../../stores/SidebarStore';
 
 type Props = {
-  menus: {
+  menus: ?{
     wallets: {
       items: Array<SidebarWalletType>,
       activeWalletId: ?string,
@@ -31,6 +30,7 @@ type Props = {
   onCategoryClicked: Function,
   isShowingSubMenus: boolean,
   openDialogAction: Function,
+  onAddWallet: Function,
   isDialogOpen: Function,
 };
 
@@ -44,7 +44,7 @@ export default class Sidebar extends Component<Props> {
   render() {
     const {
       menus, categories, activeSidebarCategory,
-      isShowingSubMenus, openDialogAction, isDialogOpen,
+      isShowingSubMenus, onAddWallet, isDialogOpen,
     } = this.props;
     let subMenu = null;
 
@@ -53,9 +53,7 @@ export default class Sidebar extends Component<Props> {
       subMenu = (
         <SidebarWalletsMenu
           wallets={menus.wallets.items}
-          onAddWallet={() => openDialogAction({
-            dialog: WalletAddDialog,
-          })}
+          onAddWallet={onAddWallet}
           onWalletItemClick={menus.wallets.actions.onWalletItemClick}
           isActiveWallet={id => id === menus.wallets.activeWalletId}
           visible={isShowingSubMenus}

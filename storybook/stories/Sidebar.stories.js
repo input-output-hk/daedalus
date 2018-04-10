@@ -50,7 +50,11 @@ storiesOf('Sidebar', module)
   .add('no category', () => (
     <Sidebar
       categories={SIDEBAR_CATEGORIES}
+      activeSidebarCategory={null}
       onCategoryClicked={action('onCategoryClicked')}
+      isDialogOpen={() => false}
+      onAddWallet={action('onAddWallet')}
+      openDialogAction={action('openDialog')}
     />
   ))
 
@@ -59,6 +63,9 @@ storiesOf('Sidebar', module)
       categories={SIDEBAR_CATEGORIES}
       activeSidebarCategory={SIDEBAR_CATEGORIES[0].route}
       onCategoryClicked={action('onCategoryClicked')}
+      isDialogOpen={() => false}
+      onAddWallet={action('onAddWallet')}
+      openDialogAction={action('openDialog')}
     />
   ))
 
@@ -69,5 +76,8 @@ storiesOf('Sidebar', module)
       menus={sidebarMenus}
       onCategoryClicked={action('onCategoryClicked')}
       isShowingSubMenus
+      isDialogOpen={() => false}
+      onAddWallet={action('onAddWallet')}
+      openDialogAction={action('openDialog')}
     />
   ));

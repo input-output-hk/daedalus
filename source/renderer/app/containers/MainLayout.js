@@ -6,10 +6,10 @@ import TopBarContainer from './TopBarContainer';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import StatusMessagesNotification from '../components/notifications/StatusMessagesNotification';
 import NodeUpdatePage from './notifications/NodeUpdatePage';
-import WalletAddPage from './wallet/WalletAddPage';
 import WalletSupportRequestPage from './wallet/WalletSupportRequestPage';
 import PaperWalletCreateCertificatePage from './wallet/PaperWalletCreateCertificatePage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
+import { ROUTES } from '../routes-config';
 
 @inject('stores', 'actions') @observer
 export default class MainLayout extends Component<InjectedContainerProps> {
@@ -31,7 +31,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     const isUpdatePostponed = this.props.stores.ada.nodeUpdate.isUpdatePostponed;
     const { isImportActive, isRestoreActive } = wallets;
 
-    const sidebarMenus = {
+    const sidebarMenus = sidebar.wallets.length > 0 ? {
       wallets: {
         items: sidebar.wallets,
         activeWalletId,
@@ -41,7 +41,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
           },
         }
       }
-    };
+    } : null;
     const sidebarComponent = (
       <Sidebar
         menus={sidebarMenus}
@@ -53,6 +53,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         }}
         isSynced
         openDialogAction={actions.dialogs.open.trigger}
+        onAddWallet={() => actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD })}
         isDialogOpen={stores.uiDialogs.isOpen}
       />
     );
@@ -81,7 +82,6 @@ export default class MainLayout extends Component<InjectedContainerProps> {
             key="PaperWalletCreateCertificatePage"
             certificateStep={this.props.stores.ada.wallets.certificateStep}
           />,
-          <WalletAddPage key="WalletAddPage" />
         ]}
       >
         {this.props.children}
