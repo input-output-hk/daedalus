@@ -1,6 +1,6 @@
 // @flow
 import { observable, action } from 'mobx';
-import _ from 'lodash';
+import { findIndex } from 'lodash';
 import WalletSettingsStore from '../WalletSettingsStore';
 import Request from '../lib/LocalizedRequest';
 import type { UpdateWalletPasswordResponse, UpdateWalletResponse } from '../../api/common';
@@ -39,9 +39,10 @@ export default class EtcWalletSettingsStore extends WalletSettingsStore {
     const wallet = await this.updateWalletRequest.execute(walletData).promise;
     if (!wallet) return;
     await this.stores.etc.wallets.walletsRequest.patch(result => {
-      const walletIndex = _.findIndex(result, { id });
+      const walletIndex = findIndex(result, { id });
       result[walletIndex] = wallet;
     });
+    this.updateWalletRequest.reset();
     this.stores.etc.wallets._setActiveWallet({ walletId: id });
   };
 

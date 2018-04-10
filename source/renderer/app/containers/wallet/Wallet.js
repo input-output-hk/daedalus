@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import { get } from 'lodash';
 import MainLayout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
@@ -35,19 +36,26 @@ export default class Wallet extends Component<Props> {
   };
 
   render() {
-    const { wallets, adaRedemption } = this.props.stores.ada;
-    const { actions } = this.props;
+    const { actions, stores } = this.props;
+    const { wallets, adaRedemption } = stores.ada;
     const { showAdaRedemptionSuccessMessage, amountRedeemed } = adaRedemption;
+    const { currentLocale } = stores.profile;
 
     if (!wallets.active) return <MainLayout><LoadingSpinner /></MainLayout>;
 
-    // TODO: replace with real restoration data
-    const isRestoreActive = false;
+    const isRestoreActive = get(wallets.active, 'syncState.tag') === 'restoring';
+    const restoreProgress = get(wallets.active, 'syncState.data.percentage.quantity', 0);
+    const restoreETA = get(wallets.active, 'syncState.data.estimatedCompletionTime.quantity', 0);
 
     return (
       <MainLayout>
         {isRestoreActive ? (
-          <RestoreNotification isRestoreActive={isRestoreActive} />
+          <RestoreNotification
+            currentLocale={currentLocale}
+            isRestoreActive={isRestoreActive}
+            restoreProgress={restoreProgress}
+            restoreETA={restoreETA}
+          />
         ) : null}
 
         <WalletWithNavigation

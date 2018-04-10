@@ -108,31 +108,33 @@ export type AdaLocalTimeDifference = number;
 
 export type AdaV1Assurance = 'normal' | 'strict';
 
+export type AdaV1WalletSyncState = {
+  data: ?{
+    estimatedCompletionTime: {
+      quantity: number,
+      unit: 'milliseconds',
+    },
+    percentage: {
+      quantity: number,
+      unit: 'percenage',
+    },
+    throughput: {
+      quantity: number,
+      unit: 'blocksPerSecond',
+    },
+  },
+  tag: 'restoring' | 'synced',
+};
+
 export type AdaV1Wallet = {
   assuranceLevel: AdaV1Assurance,
   balance: number,
-  createdAt: Date,
+  createdAt: string,
   hasSpendingPassword: boolean,
   id: string,
   name: string,
-  spendingPasswordLastUpdate: Date,
-  syncState: {
-    data: ?{
-      estimatedCompletionTime: {
-        quantity: number,
-        unit: 'milliseconds',
-      },
-      percentage: {
-        quantity: number,
-        unit: 'percenage',
-      },
-      throughput: {
-        quantity: number,
-        unit: 'blocksPerSecond',
-      },
-    },
-    tag: 'restoring' | 'synced',
-  },
+  spendingPasswordLastUpdate: string,
+  syncState: AdaV1WalletSyncState,
 };
 
 export type AdaV1Wallets = Array<AdaV1Wallet>;
