@@ -152,7 +152,11 @@ cd installers
                   if [ -n "${BUILDKITE_JOB_ID:-}" ]
                   then
                           export PATH=${BUILDKITE_BIN_PATH:-}:$PATH
-                          buildkite-agent artifact upload "${APP_NAME}/${INSTALLER_PKG}" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
+                          buildkite-agent artifact upload "${APP_NAME}/${INSTALLER_PKG}"    s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
+                          mv "launcher-config.yaml" "launcher-config-${cluster}.yaml"
+                          mv "wallet-topology.yaml" "wallet-topology-${cluster}.yaml"
+                          buildkite-agent artifact upload "launcher-config-${cluster}.yaml" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
+                          buildkite-agent artifact upload "wallet-topology-${cluster}.yaml" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
                           rm "${APP_NAME}/${INSTALLER_PKG}"
                   fi
           else

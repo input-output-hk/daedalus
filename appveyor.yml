@@ -33,6 +33,10 @@ artifacts:
     type: zip
   - path: installers\daedalus-win64-*-installer.exe
     name: Daedalus Win64 Installer
+  - path: installers\launcher-config-*.yaml
+    name: Cardano launcher configuration
+  - path: installers\wallet-topology-*.yaml
+    name: Wallet topology
   - path: node_modules\daedalus-client-api\build-id
     name: cardano-sl-build-id
 

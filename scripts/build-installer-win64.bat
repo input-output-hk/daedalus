@@ -144,6 +144,8 @@ FOR %%C IN (%CLUSTERS:"=%) DO (
   @echo ##############################################################################
 
   make-installer %XARGS:"=% -c %%C -o daedalus-win64-%DAEDALUS_VERSION%-%%C-installer.exe
+  copy  /y launcher-config.yaml launcher-config-%%C.yaml
+  copy  /y wallet-topology.yaml wallet-topology-%%C.yaml
   @if %errorlevel% neq 0 ( @echo FATAL: persistent failure while building installer
                            popd & exit /b 1)
 )
