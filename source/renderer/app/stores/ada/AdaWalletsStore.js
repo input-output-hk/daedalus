@@ -1,6 +1,6 @@
 // @flow
 import { observable, action, runInAction } from 'mobx';
-import { get, chunk } from 'lodash';
+import { get, chunk, find } from 'lodash';
 import WalletStore from '../WalletStore';
 import Wallet from '../../domains/Wallet';
 import { matchRoute, buildRoute } from '../../utils/routing';
@@ -132,7 +132,15 @@ export default class AdaWalletsStore extends WalletStore {
         }));
         this.stores.ada.transactions._refreshTransactionData();
       });
+      runInAction('refresh active wallet restore', () => {
+        const restoringWallet = typeof find(result, ['syncState.tag', 'restoring']) !== 'undefined';
+        this._setIsRestoreActive(restoringWallet);
+      });
     }
+  };
+
+  @action _setIsRestoreActive = (active: boolean) => {
+    this.isRestoreActive = active;
   };
 
   @action _restoreWallet = async (params: {

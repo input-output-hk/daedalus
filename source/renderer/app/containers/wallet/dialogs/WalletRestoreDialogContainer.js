@@ -41,7 +41,7 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
 
   render() {
     const wallets = this._getWalletsStore();
-    const { restoreRequest, isValidMnemonic } = wallets;
+    const { restoreRequest, isValidMnemonic, isRestoreActive } = wallets;
 
     const error = environment.isAdaApi()
       ? (restoreRequest.error || wallets.getWalletRecoveryPhraseFromCertificateRequest.error)
@@ -52,7 +52,7 @@ export default class WalletRestoreDialogContainer extends Component<Props> {
         mnemonicValidator={mnemonic => isValidMnemonic(mnemonic)}
         showCertificateRestore={environment.isAdaApi()}
         suggestedMnemonics={validWords}
-        isSubmitting={restoreRequest.isExecuting}
+        isSubmitting={restoreRequest.isExecuting || isRestoreActive}
         onSubmit={this.onSubmit}
         onCancel={this.onCancel}
         onChoiceChange={environment.isAdaApi() ? this.resetRequests : null}

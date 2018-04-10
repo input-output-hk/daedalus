@@ -24,11 +24,11 @@ export default class WalletFileImportDialogContainer extends Component<Props> {
 
   render() {
     const { wallets } = this.props.stores.ada;
-    const { importFromFileRequest } = wallets;
+    const { importFromFileRequest, isRestoreActive } = wallets;
 
     return (
       <WalletFileImportDialog
-        isSubmitting={importFromFileRequest.isExecuting}
+        isSubmitting={importFromFileRequest.isExecuting || isRestoreActive}
         onSubmit={this.onSubmit}
         onClose={this.onCancel}
         error={importFromFileRequest.error}
