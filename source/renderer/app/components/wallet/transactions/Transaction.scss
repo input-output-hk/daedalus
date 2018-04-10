@@ -151,6 +151,14 @@
       display: block;
       line-height: 19px;
     }
+
+    &.transactionId,
+    &.address {
+      &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+      }
+    }
   }
 }
 

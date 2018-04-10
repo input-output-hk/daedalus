@@ -26,7 +26,9 @@ export default class WalletSummaryPage extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { wallets, transactions } = this.props.stores.etc;
+    const { etc, app } = this.props.stores;
+    const { wallets, transactions } = etc;
+    const { openExternalLink } = app;
     const {
       hasAny,
       recent,
@@ -50,6 +52,7 @@ export default class WalletSummaryPage extends Component<Props> {
           assuranceMode={wallet.assuranceMode}
           walletId={wallet.id}
           formattedWalletAmount={formattedWalletAmount}
+          onOpenExternalLink={openExternalLink}
         />
       );
     } else if (!hasAny) {

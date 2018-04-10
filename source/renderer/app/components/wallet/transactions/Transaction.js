@@ -123,6 +123,7 @@ type Props = {
   assuranceLevel: string,
   isLastInList: boolean,
   formattedWalletAmount: Function,
+  onOpenExternalLink: Function,
 };
 
 type State = {
@@ -141,6 +142,12 @@ export default class Transaction extends Component<Props, State> {
 
   toggleDetails() {
     this.setState({ isExpanded: !this.state.isExpanded });
+  }
+
+  handleOpenCardanoExplorer(type, param, e) {
+    e.stopPropagation();
+    const cardanoExplorerLink = `https://cardanoexplorer.com/${type}/${param}`;
+    this.props.onOpenExternalLink(cardanoExplorerLink);
   }
 
   render() {
@@ -170,10 +177,10 @@ export default class Transaction extends Component<Props, State> {
     const symbol = environment.isAdaApi() ? adaSymbol : etcSymbol;
 
     return (
-      <div className={componentStyles}>
+      <div className={componentStyles} onClick={this.toggleDetails.bind(this)} role="presentation" aria-hidden>
 
         {/* ==== Clickable Header -> toggles details ==== */}
-        <div className={styles.toggler} onClick={this.toggleDetails.bind(this)} role="presentation" aria-hidden>
+        <div className={styles.toggler}>
           <TransactionTypeIcon
             iconType={isFailedTransaction ? transactionStates.FAILED : data.type}
           />
@@ -234,7 +241,15 @@ export default class Transaction extends Component<Props, State> {
                 ])}
               </h2>
               {data.addresses.from.map((address, addressIndex) => (
-                <span key={`${data.id}-from-${address}-${addressIndex}`} className={styles.address}>{address}</span>
+                <span
+                  role="presentation"
+                  aria-hidden
+                  key={`${data.id}-from-${address}-${addressIndex}`}
+                  className={styles.address}
+                  onClick={this.handleOpenCardanoExplorer.bind(this, 'address', address)}
+                >
+                  {address}
+                </span>
               ))}
               <h2>
                 {intl.formatMessage(messages[
@@ -242,7 +257,15 @@ export default class Transaction extends Component<Props, State> {
                 ])}
               </h2>
               {data.addresses.to.map((address, addressIndex) => (
-                <span key={`${data.id}-to-${address}-${addressIndex}`} className={styles.address}>{address}</span>
+                <span
+                  role="presentation"
+                  aria-hidden
+                  key={`${data.id}-to-${address}-${addressIndex}`}
+                  className={styles.address}
+                  onClick={this.handleOpenCardanoExplorer.bind(this, 'address', address)}
+                >
+                  {address}
+                </span>
               ))}
 
               {environment.isAdaApi() ? (
@@ -270,7 +293,14 @@ export default class Transaction extends Component<Props, State> {
               ) : null}
 
               <h2>{intl.formatMessage(messages.transactionId)}</h2>
-              <span>{data.id}</span>
+              <span
+                role="presentation"
+                aria-hidden
+                className={styles.transactionId}
+                onClick={this.handleOpenCardanoExplorer.bind(this, 'tx', data.id)}
+              >
+                {data.id}
+              </span>
             </div>
             {/*
             <div>

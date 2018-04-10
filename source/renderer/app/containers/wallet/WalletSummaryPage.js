@@ -33,7 +33,9 @@ export default class WalletSummaryPage extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { wallets, transactions } = this.props.stores.ada;
+    const { ada, app } = this.props.stores;
+    const { wallets, transactions } = ada;
+    const { openExternalLink } = app;
     const {
       hasAny,
       totalAvailable,
@@ -58,6 +60,7 @@ export default class WalletSummaryPage extends Component<Props> {
           assuranceMode={wallet.assuranceMode}
           walletId={wallet.id}
           formattedWalletAmount={formattedWalletAmount}
+          onOpenExternalLink={openExternalLink}
         />
       );
     } else if (!hasAny) {

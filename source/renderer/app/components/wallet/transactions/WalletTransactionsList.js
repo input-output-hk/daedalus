@@ -31,6 +31,7 @@ type Props = {
   assuranceMode: AssuranceMode,
   walletId: string,
   formattedWalletAmount: Function,
+  onOpenExternalLink: Function,
 };
 
 @observer
@@ -93,7 +94,8 @@ export default class WalletTransactionsList extends Component<Props> {
       hasMoreToLoad,
       assuranceMode,
       walletId,
-      formattedWalletAmount
+      formattedWalletAmount,
+      onOpenExternalLink,
     } = this.props;
 
     const transactionsGroups = this.groupTransactionsByDay(transactions);
@@ -116,6 +118,7 @@ export default class WalletTransactionsList extends Component<Props> {
                     state={transaction.state}
                     assuranceLevel={transaction.getAssuranceLevelForMode(assuranceMode)}
                     formattedWalletAmount={formattedWalletAmount}
+                    onOpenExternalLink={onOpenExternalLink}
                   />
                 </div>
               ))}
