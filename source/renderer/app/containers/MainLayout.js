@@ -4,7 +4,6 @@ import { observer, inject } from 'mobx-react';
 import Sidebar from '../components/sidebar/Sidebar';
 import TopBarContainer from './TopBarContainer';
 import SidebarLayout from '../components/layout/SidebarLayout';
-import StatusMessagesNotification from '../components/notifications/StatusMessagesNotification';
 import NodeUpdatePage from './notifications/NodeUpdatePage';
 import WalletSupportRequestPage from './wallet/WalletSupportRequestPage';
 import PaperWalletCreateCertificatePage from './wallet/PaperWalletCreateCertificatePage';
@@ -29,7 +28,6 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const isNodeUpdateAvailable = this.props.stores.ada.nodeUpdate.isUpdateAvailable;
     const isUpdatePostponed = this.props.stores.ada.nodeUpdate.isUpdatePostponed;
-    const { isRestoreActive } = wallets;
 
     const sidebarMenus = sidebar.wallets.length > 0 ? {
       wallets: {
@@ -62,17 +60,11 @@ export default class MainLayout extends Component<InjectedContainerProps> {
       isNodeUpdateAvailable && !isUpdatePostponed ? <NodeUpdatePage /> : null
     );
 
-    const addStatusMessagesNotification = (
-      isRestoreActive ? (
-        <StatusMessagesNotification isRestoreActive={isRestoreActive} />
-      ) : null
-    );
-
     return (
       <SidebarLayout
         sidebar={sidebarComponent}
         topbar={<TopBarContainer />}
-        notification={addStatusMessagesNotification || addNodeUpdateNotification}
+        notification={addNodeUpdateNotification}
         contentDialogs={[
           <WalletSupportRequestPage key="WalletSupportRequestPage" />,
           <PaperWalletCreateCertificatePage

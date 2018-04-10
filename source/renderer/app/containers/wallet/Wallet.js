@@ -5,6 +5,7 @@ import MainLayout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import AdaRedemptionSuccessOverlay from '../../components/wallet/ada-redemption/AdaRedemptionSuccessOverlay';
+import RestoreNotification from '../../components/notifications/RestoreNotification';
 import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
@@ -37,15 +38,25 @@ export default class Wallet extends Component<Props> {
     const { wallets, adaRedemption } = this.props.stores.ada;
     const { actions } = this.props;
     const { showAdaRedemptionSuccessMessage, amountRedeemed } = adaRedemption;
+
     if (!wallets.active) return <MainLayout><LoadingSpinner /></MainLayout>;
+
+    // TODO: replace with real restoration data
+    const isRestoreActive = false;
+
     return (
       <MainLayout>
+        {isRestoreActive ? (
+          <RestoreNotification isRestoreActive={isRestoreActive} />
+        ) : null}
+
         <WalletWithNavigation
           isActiveScreen={this.isActiveScreen}
           onWalletNavItemClick={this.handleWalletNavItemClick}
         >
           {this.props.children}
         </WalletWithNavigation>
+
         {showAdaRedemptionSuccessMessage ? (
           <AdaRedemptionSuccessOverlay
             amount={amountRedeemed}

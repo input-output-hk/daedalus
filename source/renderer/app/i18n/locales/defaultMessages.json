@@ -425,7 +425,7 @@
           "column": 3,
           "line": 15
         },
-        "file": "source/renderer/app/components/notifications/StatusMessagesNotification.js",
+        "file": "source/renderer/app/components/notifications/RestoreNotification.js",
         "id": "wallet.statusMessages.activeImport",
         "start": {
           "column": 23,
@@ -439,7 +439,7 @@
           "column": 3,
           "line": 20
         },
-        "file": "source/renderer/app/components/notifications/StatusMessagesNotification.js",
+        "file": "source/renderer/app/components/notifications/RestoreNotification.js",
         "id": "wallet.statusMessages.activeRestore",
         "start": {
           "column": 24,
@@ -447,7 +447,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/notifications/StatusMessagesNotification.json"
+    "path": "source/renderer/app/components/notifications/RestoreNotification.json"
   },
   {
     "descriptors": [

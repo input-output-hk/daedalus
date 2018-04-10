@@ -25,7 +25,6 @@ export default class WalletsStore extends Store {
   @observable deleteWalletRequest: Request<any>;
   @observable getWalletRecoveryPhraseRequest: Request<any>;
   @observable restoreRequest: Request<any>;
-  @observable isRestoreActive: boolean = false;
 
   _newWalletDetails: { name: string, mnemonic: string, password: ?string } = {
     name: '',
