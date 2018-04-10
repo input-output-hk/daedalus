@@ -22,7 +22,7 @@ const messages = defineMessages({
   },
   syncingTransactionsMessage: {
     id: 'wallet.summary.page.syncingTransactionsMessage',
-    defaultMessage: '!!!Your transaction history in this wallet is being synced with the blockchain.',
+    defaultMessage: '!!!Your transaction history for this wallet is being synced with the blockchain.',
     description: 'Syncing transactions message on async wallet restore.',
   },
 });
@@ -32,7 +32,7 @@ const dateFormat = 'YYYY-MM-DD';
 type Props = {
   transactions: Array<WalletTransaction>,
   isLoadingTransactions: boolean,
-  isSyncingTransactions?: boolean,
+  isRestoreActive?: boolean,
   hasMoreToLoad: boolean,
   assuranceMode: AssuranceMode,
   walletId: string,
@@ -100,7 +100,7 @@ export default class WalletTransactionsList extends Component<Props> {
       assuranceMode,
       walletId,
       formattedWalletAmount,
-      isSyncingTransactions,
+      isRestoreActive,
     } = this.props;
 
     const { intl } = this.context;
@@ -111,7 +111,7 @@ export default class WalletTransactionsList extends Component<Props> {
       <LoadingSpinner ref={(component) => { this.loadingSpinner = component; }} />
     ) : null;
 
-    const syncingTransactionsSpinner = !isLoadingTransactions && isSyncingTransactions ? (
+    const syncingTransactionsSpinner = !isLoadingTransactions && isRestoreActive ? (
       <div className={styles.syncingTransactionsWrapper}>
         <LoadingSpinner />
         <p className={styles.syncingTransactionsText}>

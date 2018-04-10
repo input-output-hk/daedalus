@@ -63,6 +63,8 @@ export default class WalletTransactionsPage extends Component<Props> {
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const noTransactionsFoundLabel = intl.formatMessage(messages.noTransactionsFound);
 
+    const isRestoreActive = get(activeWallet, 'syncState.tag') === 'restoring';
+
     // if (wasSearched || hasAny) {
     //   transactionSearch = (
     //     <div style={{ flexShrink: 0 }}>
@@ -73,13 +75,13 @@ export default class WalletTransactionsPage extends Component<Props> {
     //     </div>
     //   );
     // }
-    const isSyncingTransactions = get(activeWallet, ['syncState', 'tag']) === 'restoring';
-    if (searchRequest.isExecutingFirstTime || hasAny || isSyncingTransactions) {
+
+    if (searchRequest.isExecutingFirstTime || hasAny || isRestoreActive) {
       walletTransactions = (
         <WalletTransactionsList
           transactions={filtered}
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
-          isSyncingTransactions={isSyncingTransactions}
+          isRestoreActive={isRestoreActive}
           hasMoreToLoad={totalAvailable > searchLimit}
           onLoadMore={actions.ada.transactions.loadMoreTransactions.trigger}
           assuranceMode={activeWallet.assuranceMode}

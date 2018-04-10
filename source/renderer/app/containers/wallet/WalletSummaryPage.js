@@ -48,9 +48,10 @@ export default class WalletSummaryPage extends Component<Props> {
 
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
-    const isSyncingTransactions = get(wallet, ['syncState', 'tag']) === 'restoring';
 
-    if (recentTransactionsRequest.isExecutingFirstTime || hasAny || isSyncingTransactions) {
+    const isRestoreActive = get(wallet, 'syncState.tag') === 'restoring';
+
+    if (recentTransactionsRequest.isExecutingFirstTime || hasAny || isRestoreActive) {
       walletTransactions = (
         <WalletTransactionsList
           key={`WalletTransactionsList_${wallet.id}`}
@@ -59,7 +60,7 @@ export default class WalletSummaryPage extends Component<Props> {
           hasMoreToLoad={false}
           assuranceMode={wallet.assuranceMode}
           walletId={wallet.id}
-          isSyncingTransactions={isSyncingTransactions}
+          isRestoreActive={isRestoreActive}
           formattedWalletAmount={formattedWalletAmount}
         />
       );
