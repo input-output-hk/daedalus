@@ -1,6 +1,9 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
+import Button from 'react-polymorph/lib/components/Button';
+import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import styles from './WalletTransactionsList.scss';
@@ -20,6 +23,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Yesterday',
     description: 'Label for the "Yesterday" label on the wallet summary page.',
   },
+  showMoreTransactionsButtonLabel: {
+    id: 'wallet.summary.page.showMoreTransactionsButtonLabel',
+    defaultMessage: '!!!Show more transactions',
+    description: 'Label for the "Show more transactions" button on the wallet summary page.',
+  }
 });
 
 const dateFormat = 'YYYY-MM-DD';
@@ -32,6 +40,8 @@ type Props = {
   walletId: string,
   formattedWalletAmount: Function,
   onOpenExternalLink: Function,
+  showMoreTransactions?: boolean,
+  onShowMoreTransactions?: Function,
 };
 
 @observer
@@ -96,13 +106,21 @@ export default class WalletTransactionsList extends Component<Props> {
       walletId,
       formattedWalletAmount,
       onOpenExternalLink,
+      showMoreTransactions,
     } = this.props;
+
+    const { intl } = this.context;
 
     const transactionsGroups = this.groupTransactionsByDay(transactions);
 
     const loadingSpinner = isLoadingTransactions || hasMoreToLoad ? (
       <LoadingSpinner ref={(component) => { this.loadingSpinner = component; }} />
     ) : null;
+
+    const buttonClasses = classnames([
+      'primary',
+      styles.showMoreTransactionsButton,
+    ]);
 
     return (
       <div className={styles.component}>
@@ -125,9 +143,24 @@ export default class WalletTransactionsList extends Component<Props> {
             </div>
           </div>
         ))}
+
         {loadingSpinner}
+
+        {showMoreTransactions &&
+          <Button
+            className={buttonClasses}
+            label={intl.formatMessage(messages.showMoreTransactionsButtonLabel)}
+            onClick={this.onShowMoreTransactions.bind(this, walletId)}
+            skin={<SimpleButtonSkin />}
+          />
+        }
       </div>
     );
   }
 
+  onShowMoreTransactions = (walletId: string) => {
+    if (this.props.onShowMoreTransactions) {
+      this.props.onShowMoreTransactions(walletId);
+    }
+  }
 }
