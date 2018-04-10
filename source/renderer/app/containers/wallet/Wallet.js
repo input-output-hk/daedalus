@@ -52,7 +52,6 @@ export default class Wallet extends Component<Props> {
         {isRestoreActive ? (
           <RestoreNotification
             currentLocale={currentLocale}
-            isRestoreActive={isRestoreActive}
             restoreProgress={restoreProgress}
             restoreETA={restoreETA}
           />
