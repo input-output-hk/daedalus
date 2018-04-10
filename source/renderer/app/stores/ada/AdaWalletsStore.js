@@ -174,6 +174,7 @@ export default class AdaWalletsStore extends WalletStore {
     // ...or keep it open in case it has errored out (so that error message can be shown)
     setTimeout(() => {
       if (!this.restoreRequest.isExecuting) this._setIsRestoreActive(false);
+      if (!this.restoreRequest.isError) this.actions.dialogs.closeActiveDialog.trigger();
     }, this.WAIT_FOR_SERVER_ERROR_TIME);
 
     const restoredWallet = await this.restoreRequest.execute(data).promise;
@@ -184,7 +185,6 @@ export default class AdaWalletsStore extends WalletStore {
     if (!restoredWallet) throw new Error('Restored wallet was not received correctly');
     this.restoreRequest.reset();
     await this._patchWalletRequestWithNewWallet(restoredWallet);
-    this.goToWalletRoute(restoredWallet.id);
     this.refreshWalletsData();
   };
 
@@ -199,6 +199,7 @@ export default class AdaWalletsStore extends WalletStore {
     // ...or keep it open in case it has errored out (so that error message can be shown)
     setTimeout(() => {
       if (!this.importFromFileRequest.isExecuting) this._setIsImportActive(false);
+      if (!this.restoreRequest.isError) this.actions.dialogs.closeActiveDialog.trigger();
     }, this.WAIT_FOR_SERVER_ERROR_TIME);
 
     const { filePath, walletName, walletPassword } = params;
@@ -212,7 +213,6 @@ export default class AdaWalletsStore extends WalletStore {
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');
     this.importFromFileRequest.reset();
     await this._patchWalletRequestWithNewWallet(importedWallet);
-    this.goToWalletRoute(importedWallet.id);
     this.refreshWalletsData();
   };
 
