@@ -7,6 +7,7 @@ import Data.Aeson
 import GitHub hiding (URL)
 import GitHub.Endpoints.Repos.Statuses
 import qualified GitHub as GH
+import qualified Data.ByteString.Char8 as S8
 import qualified Data.ByteString.Lazy.Char8 as L8
 import qualified Data.Text as T
 import Network.URI
@@ -15,6 +16,7 @@ import Network.Wreq
 import Data.Aeson.Lens
 import Lens.Micro
 import Turtle.Format (printf, (%), d, s, w, Format, makeFormat)
+import System.Environment (lookupEnv)
 
 -- | Gets CardanoSL.zip corresponding to the src json revision from AppVeyor CI
 downloadCardanoSL :: FilePath -> IO L8.ByteString
@@ -96,7 +98,12 @@ appVeyorURL src = fmap collect <$> statusFor' src >>= \case
     isAppVeyor st = statusContext st == Just "continuous-integration/appveyor/branch"
 
 statusFor' :: CardanoSource -> IO (Either GH.Error GH.CombinedStatus)
-statusFor' CardanoSource{..} = statusFor noAuth srcOwner srcRepo srcRev
+statusFor' CardanoSource{..} = do
+  auth <- authFromEnv
+  statusFor auth srcOwner srcRepo srcRev
+
+authFromEnv :: IO GH.Auth
+authFromEnv = maybe noAuth (OAuth . S8.pack) <$> lookupEnv "GITHUB_OAUTH_TOKEN"
   where noAuth = BasicAuth "" ""
 
 data JobStatus = JobSuccess | JobFailed | JobRunning
