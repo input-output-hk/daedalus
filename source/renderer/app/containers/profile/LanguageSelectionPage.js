@@ -19,7 +19,7 @@ export default class LanguageSelectionPage extends Component<InjectedProps> {
     const { currentRoute } = this.props.stores.app;
     const { setProfileLocaleRequest, LANGUAGE_OPTIONS } = this.props.stores.profile;
     const isSubmitting = setProfileLocaleRequest.isExecuting;
-    const topbar = <TopBar currentRoute={currentRoute} />;
+    const topbar = <TopBar currentRoute={currentRoute} showSubMenuToggle={false} />;
     return (
       <TopBarLayout
         topbar={topbar}

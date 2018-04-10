@@ -74,7 +74,7 @@ type Props = {
 export default class WalletAdd extends Component<Props> {
 
   static contextTypes = {
-    intl: intlShape.isRequired
+    intl: intlShape.isRequired,
   };
 
   render() {
@@ -86,6 +86,7 @@ export default class WalletAdd extends Component<Props> {
       : messages.restoreWithoutCertificateDescription;
 
     const componentClasses = classnames([styles.component, 'WalletAdd']);
+
     return (
       <div className={componentClasses}>
         <div className={styles.buttonsContainer}>

@@ -18,7 +18,7 @@ type Props = {
   currentRoute: string,
   showSubMenus?: ?boolean,
   formattedWalletAmount?: Function,
-  showSubMenuToggle: boolean
+  showSubMenuToggle: boolean,
 };
 
 @observer
@@ -67,4 +67,5 @@ export default class TopBar extends Component<Props> {
       </header>
     );
   }
+
 }
