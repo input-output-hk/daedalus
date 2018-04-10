@@ -29,7 +29,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const isNodeUpdateAvailable = this.props.stores.ada.nodeUpdate.isUpdateAvailable;
     const isUpdatePostponed = this.props.stores.ada.nodeUpdate.isUpdatePostponed;
-    const { isImportActive, isRestoreActive } = wallets;
+    const { isRestoreActive } = wallets;
 
     const sidebarMenus = sidebar.wallets.length > 0 ? {
       wallets: {
@@ -63,11 +63,8 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     );
 
     const addStatusMessagesNotification = (
-      isImportActive || isRestoreActive ? (
-        <StatusMessagesNotification
-          isImportActive={isImportActive}
-          isRestoreActive={isRestoreActive}
-        />
+      isRestoreActive ? (
+        <StatusMessagesNotification isRestoreActive={isRestoreActive} />
       ) : null
     );
 

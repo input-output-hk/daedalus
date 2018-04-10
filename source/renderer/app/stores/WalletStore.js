@@ -17,7 +17,6 @@ import environment from '../../../common/environment';
 export default class WalletsStore extends Store {
 
   WALLET_REFRESH_INTERVAL = 5000;
-  WAIT_FOR_SERVER_ERROR_TIME = 2000;
   MIN_NOTIFICATION_TIME = 500;
 
   @observable active: ?Wallet = null;
@@ -26,7 +25,6 @@ export default class WalletsStore extends Store {
   @observable deleteWalletRequest: Request<any>;
   @observable getWalletRecoveryPhraseRequest: Request<any>;
   @observable restoreRequest: Request<any>;
-  @observable isImportActive: boolean = false;
   @observable isRestoreActive: boolean = false;
 
   _newWalletDetails: { name: string, mnemonic: string, password: ?string } = {

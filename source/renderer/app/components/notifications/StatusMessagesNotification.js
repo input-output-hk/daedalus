@@ -8,11 +8,6 @@ import spinnerIcon from '../../assets/images/spinner-dark.inline.svg';
 import styles from './StatusMessagesNotification.scss';
 
 const messages = defineMessages({
-  activeImportMessage: {
-    id: 'wallet.statusMessages.activeImport',
-    defaultMessage: '!!!Wallet import in progress',
-    description: 'Status message "Wallet import in progress" shown while wallet is being imported.'
-  },
   activeRestoreMessage: {
     id: 'wallet.statusMessages.activeRestore',
     defaultMessage: '!!!Wallet restore in progress',
@@ -21,7 +16,6 @@ const messages = defineMessages({
 });
 
 type Props = {
-  isImportActive: boolean,
   isRestoreActive: boolean,
 };
 
@@ -34,12 +28,7 @@ export default class StatusMessagesNotification extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { isImportActive, isRestoreActive } = this.props;
-
-    const importMessageClasses = classnames([
-      styles.message,
-      'ActiveImportNotification',
-    ]);
+    const { isRestoreActive } = this.props;
 
     const restoreMessageClasses = classnames([
       styles.message,
@@ -48,13 +37,6 @@ export default class StatusMessagesNotification extends Component<Props> {
 
     return (
       <div className={styles.component}>
-        {isImportActive && (
-          <div className={importMessageClasses}>
-            <span className={styles.text}>{intl.formatMessage(messages.activeImportMessage)}</span>
-            <SVGInline svg={spinnerIcon} className={styles.icon} />
-          </div>
-        )}
-
         {isRestoreActive && (
           <div className={restoreMessageClasses}>
             <span className={styles.text}>{intl.formatMessage(messages.activeRestoreMessage)}</span>
