@@ -16,6 +16,7 @@ Feature: Add Wallet via Sidebar
     And I enter recovery phrase in restore wallet dialog:
     | recoveryPhrase                                                            |
     | marriage glide need gold actress grant judge eager spawn plug sister whip |
+    And I toggle "Spending password" switch on the restore wallet dialog
     And I submit the restore wallet dialog
     Then I should see the restore status notification while restore is running
     And I should not see the restore wallet dialog anymore
@@ -32,7 +33,6 @@ Feature: Add Wallet via Sidebar
     And I enter recovery phrase in restore wallet dialog:
     | recoveryPhrase                                                            |
     | marriage glide need gold actress grant judge eager spawn plug sister whip |
-    And I toggle "Activate to create password" switch on the restore wallet dialog
     And I enter wallet password in restore wallet dialog:
     | password  | repeatedPassword |
     | Secret123 | Secret123        |
