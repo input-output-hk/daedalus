@@ -63,7 +63,7 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
         humanizedDurationLanguage = 'en';
     }
 
-    const behindTime = humanizeDuration(localTimeDifference / 1000, {
+    const timeOffset = humanizeDuration(localTimeDifference / 1000, {
       round: true, // round seconds to prevent e.g. 1 day 3 hours *11,56 seconds*
       language: humanizedDurationLanguage
     }).replace(/,/g, ''); // replace 1 day, 3 hours, 12 seconds* to clean period without comma
@@ -73,7 +73,7 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
 
         <SVGInline svg={attentionIcon} className={styles.icon} />
 
-        <p><FormattedHTMLMessage {...messages.overlayText} values={{ behindTime }} /></p>
+        <p><FormattedHTMLMessage {...messages.overlayText} values={{ timeOffset }} /></p>
 
         <Button
           label={problemSolutionLink}
