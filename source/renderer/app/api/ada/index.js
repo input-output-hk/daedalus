@@ -771,7 +771,7 @@ export default class AdaApi {
     try {
       const response: AdaLocalTimeDifference = await getAdaLocalTimeDifference({ ca });
       Logger.debug('AdaApi::getLocalTimeDifference success: ' + stringifyData(response));
-      return response;
+      return Math.abs(response); // time offset direction is irrelevant to the UI
     } catch (error) {
       Logger.error('AdaApi::getLocalTimeDifference error: ' + stringifyError(error));
       throw new GenericApiError();

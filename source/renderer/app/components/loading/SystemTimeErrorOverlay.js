@@ -17,7 +17,7 @@ const messages = defineMessages({
   },
   overlayText: {
     id: 'systemTime.error.overlayText',
-    defaultMessage: '!!!Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. You are 2 hours 12 minutes 54 seconds behind.<br>To synchronize the time and fix this issue, please visit the FAQ section of Daedalus website:',
+    defaultMessage: '!!!Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. Your time is off by 2 hours 12 minutes 54 seconds.<br>To synchronize the time and fix this issue, please visit the FAQ section of Daedalus website:',
     description: 'Text of Sync error overlay'
   },
   problemSolutionLink: {
@@ -63,7 +63,7 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
         humanizedDurationLanguage = 'en';
     }
 
-    const behindTime = humanizeDuration(localTimeDifference / 1000, {
+    const timeOffset = humanizeDuration(localTimeDifference / 1000, {
       round: true, // round seconds to prevent e.g. 1 day 3 hours *11,56 seconds*
       language: humanizedDurationLanguage,
     }).replace(/,/g, ''); // replace 1 day, 3 hours, 12 seconds* to clean period without comma
@@ -73,7 +73,7 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
 
         <SVGInline svg={attentionIcon} className={styles.icon} />
 
-        <p><FormattedHTMLMessage {...messages.overlayText} values={{ behindTime }} /></p>
+        <p><FormattedHTMLMessage {...messages.overlayText} values={{ timeOffset }} /></p>
 
         <Button
           label={problemSolutionLink}
