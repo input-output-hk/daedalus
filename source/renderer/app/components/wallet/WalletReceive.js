@@ -26,7 +26,7 @@ const messages = defineMessages({
   },
   walletReceiveInstructions: {
     id: 'wallet.receive.page.walletReceiveInstructions',
-    defaultMessage: '!!!Share this wallet address to receive payments. To protect your privacy, new addresses are generated automatically once you use them.',
+    defaultMessage: '!!!Share this wallet address to receive payments. To protect your privacy generate new addresses for receiving payments instead of reusing existing ones.',
     description: 'Wallet receive payments instructions on the wallet "Receive page"',
   },
   generateNewAddressButtonLabel: {
