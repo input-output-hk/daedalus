@@ -1,5 +1,6 @@
 // @flow
 import os from 'os';
+import { version } from '../../package.json';
 
 // Only require electron / remote if we are in a node.js environment
 let remote;
@@ -24,6 +25,7 @@ const environment = Object.assign({
   isEtcApi: () => environment.API === 'etc',
   build: process.env.DAEDALUS_VERSION || 'dev',
   platform: os.platform(),
+  version,
 }, remote ? remote.getGlobal('env') : process.env);
 
 export default environment;

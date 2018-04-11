@@ -77,7 +77,7 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
         className={dialogClasses}
         title={intl.formatMessage(globalMessages.recoveryPhraseDialogTitle)}
         actions={actions}
-        closeOnOverlayClick
+        closeOnOverlayClick={false}
         onClose={onCancelBackup}
         closeButton={<DialogCloseButton onClose={onCancelBackup} />}
       >

@@ -30,7 +30,7 @@ export default class WalletTransactionsPage extends Component<Props> {
   render() {
     const { intl } = this.context;
     const actions = this.props.actions;
-    const { transactions, wallets } = this.props.stores.etc;
+    const { wallets, transactions } = this.props.stores.etc;
     const activeWallet = wallets.active;
     const {
       searchOptions,
