@@ -120,11 +120,11 @@ export default class WalletTransactionsList extends Component<Props> {
 
     const transactionsGroups = this.groupTransactionsByDay(transactions);
 
-    const loadingSpinner = isLoadingTransactions || hasMoreToLoad ? (
+    const loadingSpinner = (isLoadingTransactions || hasMoreToLoad) && !isRestoreActive ? (
       <LoadingSpinner ref={(component) => { this.loadingSpinner = component; }} />
     ) : null;
 
-    const syncingTransactionsSpinner = !isLoadingTransactions && isRestoreActive ? (
+    const syncingTransactionsSpinner = isRestoreActive ? (
       <div className={styles.syncingTransactionsWrapper}>
         <LoadingSpinner />
         <p className={styles.syncingTransactionsText}>
