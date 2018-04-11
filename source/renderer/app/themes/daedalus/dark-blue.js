@@ -292,4 +292,6 @@ export default {
   '--theme-wallet-password-switch-label-color': '#e9f4fe',
 
   '--theme-password-toggler-color': '#8793a1',
+
+  '--theme-loading-spinner-color': '#e9f4fe',
 };

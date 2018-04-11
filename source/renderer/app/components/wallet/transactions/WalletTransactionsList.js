@@ -126,7 +126,7 @@ export default class WalletTransactionsList extends Component<Props> {
 
     const syncingTransactionsSpinner = isRestoreActive ? (
       <div className={styles.syncingTransactionsWrapper}>
-        <LoadingSpinner />
+        <LoadingSpinner big />
         <p className={styles.syncingTransactionsText}>
           {intl.formatMessage(messages.syncingTransactionsMessage)}
         </p>

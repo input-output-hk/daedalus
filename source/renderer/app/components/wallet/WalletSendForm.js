@@ -226,7 +226,7 @@ export default class WalletSendForm extends Component<Props, State> {
 
         {isRestoreActive ? (
           <div className={styles.syncingTransactionsWrapper}>
-            <LoadingSpinner />
+            <LoadingSpinner big />
             <p className={styles.syncingTransactionsText}>
               {intl.formatMessage(messages.syncingTransactionsMessage)}
             </p>

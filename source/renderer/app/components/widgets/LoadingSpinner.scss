@@ -1,9 +1,20 @@
 .component {
   margin: 20px auto;
-  width: 30px;
-  height: 30px;
-  background: url("../../assets/images/spinner-dark.svg") no-repeat center;
-  background-size: 30px;
+
+  &.big {
+    height: 44px;
+    width: 44px;
+  }
+
+  &.small {
+    height: 30px;
+    width: 30px;
+  }
+
+  .icon svg path {
+    fill: var(--theme-loading-spinner-color);
+  }
+
   :global {
     animation: loading-spin 1.5s linear;
     animation-iteration-count: infinite;
