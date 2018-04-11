@@ -25,6 +25,7 @@ Changelog
 - Remove sending logs to remote server feature ([PR 818](https://github.com/input-output-hk/daedalus/pull/818))
 - Updated main and acceptane tests readme files with new acceptance tests setup information ([PR 831](https://github.com/input-output-hk/daedalus/pull/831))
 - Use UTC time in Daedalus logs ([PR 833](https://github.com/input-output-hk/daedalus/pull/833))
+- Updated error message on the NTP time synchronisation error screen ([PR 851](https://github.com/input-output-hk/daedalus/pull/851))
 
 ## 0.9.1
 =======
