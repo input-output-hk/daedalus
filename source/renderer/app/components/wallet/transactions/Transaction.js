@@ -151,11 +151,17 @@ export default class Transaction extends Component<Props, State> {
   }
 
   render() {
-    const data = this.props.data;
-    const { isLastInList, state, assuranceLevel, formattedWalletAmount } = this.props;
+    const { data, isLastInList, state, assuranceLevel, formattedWalletAmount } = this.props;
     const { isExpanded } = this.state;
     const { intl } = this.context;
+
+    const hasConfirmations = data.numberOfConfirmations > 0;
     const isFailedTransaction = state === transactionStates.FAILED;
+    const isPendingTransaction = (state === transactionStates.PENDING) ||
+      ((state === transactionStates.OK) && !hasConfirmations);
+
+    // transaction state is mutated in order to capture zero-confirmations status as pending state
+    const transactionState = isPendingTransaction ? transactionStates.PENDING : state;
 
     const componentStyles = classNames([
       styles.component,
@@ -208,11 +214,11 @@ export default class Transaction extends Component<Props, State> {
                 , {moment(data.date).format('hh:mm:ss A')}
               </div>
 
-              {(state === transactionStates.OK) && (data.numberOfConfirmations > 0) ? (
+              {(transactionState === transactionStates.OK) ? (
                 <div className={styles[assuranceLevel]}>{status}</div>
               ) : (
-                <div className={styles[`${state}Label`]}>
-                  {intl.formatMessage(stateTranslations[state])}
+                <div className={styles[`${transactionState}Label`]}>
+                  {intl.formatMessage(stateTranslations[transactionState])}
                 </div>
               )}
             </div>
@@ -271,7 +277,7 @@ export default class Transaction extends Component<Props, State> {
               {environment.isAdaApi() ? (
                 <div className={styles.row}>
                   <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
-                  {state === transactionStates.OK ? (
+                  {(transactionState === transactionStates.OK) ? (
                     <span>
                       <span className={styles.assuranceLevel}>{status}</span>
                       . {data.numberOfConfirmations} {intl.formatMessage(messages.confirmations)}.
