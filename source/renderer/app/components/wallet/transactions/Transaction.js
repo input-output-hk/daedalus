@@ -130,7 +130,7 @@ type State = {
   isExpanded: boolean,
 };
 
-const ADA_EXPLORER_URI = 'https://cardanoexplorer.com';
+const ADA_EXPLORER_URL = 'https://cardanoexplorer.com';
 
 export default class Transaction extends Component<Props, State> {
 
@@ -149,7 +149,7 @@ export default class Transaction extends Component<Props, State> {
   handleOpenExplorer(type, param, e) {
     if (this.props.onOpenExternalLink && environment.isAdaApi()) {
       e.stopPropagation();
-      const link = `${ADA_EXPLORER_URI}/${type}/${param}`;
+      const link = `${ADA_EXPLORER_URL}/${type}/${param}`;
       this.props.onOpenExternalLink(link);
     }
   }
