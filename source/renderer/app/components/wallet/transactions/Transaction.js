@@ -123,12 +123,14 @@ type Props = {
   assuranceLevel: string,
   isLastInList: boolean,
   formattedWalletAmount: Function,
-  onOpenExternalLink: Function,
+  onOpenExternalLink: ?Function,
 };
 
 type State = {
   isExpanded: boolean,
 };
+
+const ADA_EXPLORER_URI = 'https://cardanoexplorer.com';
 
 export default class Transaction extends Component<Props, State> {
 
@@ -144,18 +146,27 @@ export default class Transaction extends Component<Props, State> {
     this.setState({ isExpanded: !this.state.isExpanded });
   }
 
-  handleOpenCardanoExplorer(type, param, e) {
-    e.stopPropagation();
-    const cardanoExplorerLink = `https://cardanoexplorer.com/${type}/${param}`;
-    this.props.onOpenExternalLink(cardanoExplorerLink);
+  handleOpenExplorer(type, param, e) {
+    if (this.props.onOpenExternalLink && environment.isAdaApi()) {
+      e.stopPropagation();
+      const link = `${ADA_EXPLORER_URI}/${type}/${param}`;
+      this.props.onOpenExternalLink(link);
+    }
   }
 
   render() {
-    const data = this.props.data;
-    const { isLastInList, state, assuranceLevel, formattedWalletAmount } = this.props;
+    const {
+      data,
+      isLastInList,
+      state,
+      assuranceLevel,
+      formattedWalletAmount,
+      onOpenExternalLink,
+    } = this.props;
     const { isExpanded } = this.state;
     const { intl } = this.context;
     const isFailedTransaction = state === transactionStates.FAILED;
+    const canOpenExplorer = onOpenExternalLink && environment.isAdaApi();
 
     const componentStyles = classNames([
       styles.component,
@@ -169,6 +180,7 @@ export default class Transaction extends Component<Props, State> {
 
     const detailsStyles = classNames([
       styles.details,
+      canOpenExplorer ? styles.clickable : null,
       isExpanded ? styles.expanded : styles.closed
     ]);
 
@@ -246,7 +258,7 @@ export default class Transaction extends Component<Props, State> {
                   aria-hidden
                   key={`${data.id}-from-${address}-${addressIndex}`}
                   className={styles.address}
-                  onClick={this.handleOpenCardanoExplorer.bind(this, 'address', address)}
+                  onClick={this.handleOpenExplorer.bind(this, 'address', address)}
                 >
                   {address}
                 </span>
@@ -262,7 +274,7 @@ export default class Transaction extends Component<Props, State> {
                   aria-hidden
                   key={`${data.id}-to-${address}-${addressIndex}`}
                   className={styles.address}
-                  onClick={this.handleOpenCardanoExplorer.bind(this, 'address', address)}
+                  onClick={this.handleOpenExplorer.bind(this, 'address', address)}
                 >
                   {address}
                 </span>
@@ -297,7 +309,7 @@ export default class Transaction extends Component<Props, State> {
                 role="presentation"
                 aria-hidden
                 className={styles.transactionId}
-                onClick={this.handleOpenCardanoExplorer.bind(this, 'tx', data.id)}
+                onClick={this.handleOpenExplorer.bind(this, 'tx', data.id)}
               >
                 {data.id}
               </span>

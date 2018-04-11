@@ -253,7 +253,9 @@ export default class WalletReceive extends Component<Props, State> {
                     >
                       <span className={styles.copyAddress}>
                         <SVGInline svg={iconCopy} className={styles.copyIcon} />
-                        <span>{intl.formatMessage(messages.copyAddressLabel)}</span>
+                        <span className={styles.copyAddressLabel}>
+                          {intl.formatMessage(messages.copyAddressLabel)}
+                        </span>
                       </span>
                     </CopyToClipboard>
                   </div>

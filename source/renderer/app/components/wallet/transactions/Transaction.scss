@@ -151,9 +151,11 @@
       display: block;
       line-height: 19px;
     }
+  }
 
-    &.transactionId,
-    &.address {
+  &.clickable {
+    .transactionId,
+    .address {
       &:hover {
         cursor: pointer;
         text-decoration: underline;
