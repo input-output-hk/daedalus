@@ -17,7 +17,7 @@ const messages = defineMessages({
   },
   walletReceiveInstructions: {
     id: 'wallet.receive.page.etc.walletReceiveInstructions',
-    defaultMessage: '!!!Share this wallet address to receive payments.',
+    defaultMessage: '!!!Share this wallet address to receive payments. To protect your privacy generate new addresses for receiving payments instead of reusing existing ones.',
     description: 'Wallet receive payments instructions on the ETC wallet "Receive page"',
   },
 });

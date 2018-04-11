@@ -39,9 +39,9 @@ type Props = {
   assuranceMode: AssuranceMode,
   walletId: string,
   formattedWalletAmount: Function,
-  onOpenExternalLink: Function,
   showMoreTransactionsButton?: boolean,
   onShowMoreTransactions?: Function,
+  onOpenExternalLink?: Function,
 };
 
 @observer

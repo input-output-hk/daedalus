@@ -205,11 +205,11 @@
           vertical-align: middle;
         }
 
-        span {
+        .copyAddressLabel {
           color: var(--theme-label-button-color);
           font-size: 14px;
           margin-left: 6px;
-          opacity: 0.65;
+          opacity: 0.5;
         }
       }
     }
@@ -217,11 +217,11 @@
 
   .usedWalletAddress {
     .addressId,
-    .addressActions .copyAddress img {
+    .addressActions .copyAddress .copyIcon {
       opacity: 0.4;
     }
 
-    .addressActions .copyAddress span {
+    .addressActions .copyAddress .copyAddressLabel {
       opacity: 0.2;
     }
   }
