@@ -7,7 +7,7 @@
 
 .label {
   @extend %base;
-  font-family: var(--font-semibold);
+  font-family: var(--font-medium);
   margin-bottom: 10px;
 }
 
@@ -42,7 +42,7 @@
   justify-content: center;
   .title {
     @extend %base;
-    font-family: var(--font-semibold);
+    font-family: var(--font-regular);
   }
 
   .subtitle {

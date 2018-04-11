@@ -42,7 +42,10 @@ export const createMainWindow = () => {
 
   window.loadURL(`file://${__dirname}/../renderer/index.html`);
   window.on('page-title-updated', event => { event.preventDefault(); });
-  window.setTitle(`Daedalus (${environment.build}) ${environment.current}`);
+
+  let title = `Daedalus (${environment.version}#${environment.build})`;
+  if (!environment.isProduction()) title += ` ${environment.current}`;
+  window.setTitle(title);
 
   window.webContents.on('context-menu', (e, props) => {
     const contextMenuOptions = [
