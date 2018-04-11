@@ -27,7 +27,7 @@ export default class LoadingPage extends Component<InjectedProps> {
     const {
       isConnecting, isSyncing, syncPercentage, isLoadingWallets,
       hasBeenConnected, hasBlockSyncingStarted, localTimeDifference,
-      ALLOWED_TIME_DIFFERENCE,
+      isSystemTimeCorrect,
     } = stores.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     return (
@@ -37,7 +37,7 @@ export default class LoadingPage extends Component<InjectedProps> {
           apiIcon={cardanoLogo}
           isSyncing={isSyncing}
           localTimeDifference={localTimeDifference}
-          allowedTimeDifference={ALLOWED_TIME_DIFFERENCE}
+          isSystemTimeCorrect={isSystemTimeCorrect}
           isConnecting={isConnecting}
           syncPercentage={syncPercentage}
           isLoadingDataForNextScreen={isLoadingWallets}

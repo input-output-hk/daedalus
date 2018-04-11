@@ -74,7 +74,7 @@ type Props = {
   hasLoadedCurrentLocale: boolean,
   hasLoadedCurrentTheme: boolean,
   localTimeDifference: number,
-  allowedTimeDifference: number,
+  isSystemTimeCorrect: boolean,
   currentLocale: string,
   handleReportIssue: Function,
   onProblemSolutionClick: Function,
@@ -131,7 +131,7 @@ export default class Loading extends Component<Props, State> {
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
       localTimeDifference,
-      allowedTimeDifference,
+      isSystemTimeCorrect,
       currentLocale,
       handleReportIssue,
       onProblemSolutionClick,
@@ -227,7 +227,7 @@ export default class Loading extends Component<Props, State> {
                 <LoadingSpinner />
               </div>
             )}
-            {(localTimeDifference > allowedTimeDifference) && (
+            {!isSystemTimeCorrect && (
               <SystemTimeErrorOverlay
                 localTimeDifference={localTimeDifference}
                 currentLocale={currentLocale}
