@@ -6,7 +6,6 @@ Feature: Send Money to Receiver
       | name   |
       | first  |
 
-  @watch
   Scenario: User Sends Money to Receiver
     Given I have a wallet with funds
     And I am on the "Genesis wallet" wallet "send" screen
@@ -26,7 +25,6 @@ Feature: Send Money to Receiver
       | balance  |
       | 0.000010 |
 
-  @watch
   Scenario: User Sends Money from wallet with spending password to Receiver
     Given I have a wallet with funds and password
     And I am on the "Genesis wallet" wallet "send" screen
@@ -47,7 +45,6 @@ Feature: Send Money to Receiver
       | balance  |
       | 0.000010 |
 
-  @watch
   Scenario: User Enters Wrong Receiver Address
     Given I am on the "first" wallet "send" screen
     When I fill out the wallet send form with:
@@ -57,7 +54,6 @@ Feature: Send Money to Receiver
       | message                                |
       | wallet.send.form.errors.invalidAddress |
 
-  @watch
   Scenario Outline: User Enters Wrong Amount
     Given I am on the "first" wallet "send" screen
     When I fill out the send form with a transaction to "first" wallet:
