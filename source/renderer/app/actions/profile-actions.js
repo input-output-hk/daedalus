@@ -10,7 +10,7 @@ export default class ProfileActions {
   downloadLogs: Action<{ destination: string }> = new Action();
   resetBugReportDialog: Action<any> = new Action();
   sendBugReport: Action<{
-    email: string, subject: ?string, problem: ?string, compressedLog: ?string,
+    email: string, subject: string, problem: string, compressedLog: ?string,
   }> = new Action();
   updateLocale: Action<{ locale: string }> = new Action();
   updateTheme: Action<{ theme: string }> = new Action();

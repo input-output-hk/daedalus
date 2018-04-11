@@ -152,6 +152,16 @@
       line-height: 19px;
     }
   }
+
+  &.clickable {
+    .transactionId,
+    .address {
+      &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+      }
+    }
+  }
 }
 
 .closed {

@@ -43,7 +43,9 @@ export default class WalletTransactionsPage extends Component<Props> {
   render() {
     const { intl } = this.context;
     const actions = this.props.actions;
-    const { transactions, wallets } = this.props.stores.ada;
+    const { ada, app } = this.props.stores;
+    const { wallets, transactions } = ada;
+    const { openExternalLink } = app;
     const activeWallet = wallets.active;
     const {
       searchOptions,
@@ -87,6 +89,7 @@ export default class WalletTransactionsPage extends Component<Props> {
           assuranceMode={activeWallet.assuranceMode}
           walletId={activeWallet.id}
           formattedWalletAmount={formattedWalletAmount}
+          onOpenExternalLink={openExternalLink}
         />
       );
     } else if (wasSearched && !hasAny) {
