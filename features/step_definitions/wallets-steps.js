@@ -18,7 +18,7 @@ import sidebar from '../support/helpers/sidebar-helpers';
 import addWalletPage from '../support/helpers/add-wallet-page-helpers';
 import importWalletDialog from '../support/helpers/dialogs/import-wallet-dialog-helpers';
 import i18n from '../support/helpers/i18n-helpers';
-import { waitForActiveImportNotification } from '../support/helpers/notifications-helpers';
+import { waitForActiveRestoreNotification } from '../support/helpers/notifications-helpers';
 
 const defaultWalletKeyFilePath = path.resolve(__dirname, '../support/default-wallet.key');
 const defaultWalletJSONFilePath = path.resolve(__dirname, '../support/default-wallet.json');
@@ -155,6 +155,10 @@ When(/^I click the wallet (.*) button$/, async function (buttonName) {
   const buttonSelector = `.WalletNavButton_component.${buttonName}`;
   await this.client.waitForVisible(buttonSelector);
   await this.client.click(buttonSelector);
+});
+
+When(/^I can see the send form$/, function () {
+  return this.client.waitForVisible('.WalletSendForm');
 });
 
 When(/^I fill out the wallet send form with:$/, function (table) {
@@ -347,20 +351,20 @@ Then(/^I should not see the restore wallet dialog anymore$/, function () {
   return this.client.waitForVisible('.WalletRestoreDialog', null, true);
 });
 
-Then(/^I should see the import status notification while import is running$/, async function () {
-  await waitForActiveImportNotification(this.client);
+Then(/^I should see the restore status notification while import is running$/, async function () {
+  await waitForActiveRestoreNotification(this.client);
 });
 
-Then(/^I should not see the import status notification once import is finished$/, async function () {
-  await waitForActiveImportNotification(this.client, { isHidden: true });
+Then(/^I should not see the restore status notification once import is finished$/, async function () {
+  await waitForActiveRestoreNotification(this.client, { isHidden: true });
 });
 
 Then(/^I should see the restore status notification while restore is running$/, async function () {
-  await this.client.waitForVisible('.ActiveRestoreNotification');
+  await waitForActiveRestoreNotification(this.client);
 });
 
 Then(/^I should not see the restore status notification once restore is finished$/, async function () {
-  await this.client.waitForVisible('.ActiveRestoreNotification', null, true);
+  await waitForActiveRestoreNotification(this.client, { isHidden: true });
 });
 
 Then(/^I should have newly created "([^"]*)" wallet loaded$/, async function (walletName) {
@@ -434,8 +438,4 @@ Then(/^I should see newly generated address as active address on the wallet rece
     const generatedAddress = await this.client.getText('.generatedAddress-1 .WalletReceive_addressId');
     return generatedAddress === activeAddress;
   });
-});
-
-Then(/^I should not see the import status notification anymore$/, async function () {
-  await waitForActiveImportNotification(this.client, { isHidden: true });
 });

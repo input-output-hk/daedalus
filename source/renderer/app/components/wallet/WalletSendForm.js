@@ -233,43 +233,43 @@ export default class WalletSendForm extends Component<Props, State> {
           </div>
         ) : (
           <BorderedBox>
+            <div className="WalletSendForm">
+              <div className={styles.receiverInput}>
+                <Input
+                  className="receiver"
+                  {...receiverField.bind()}
+                  error={receiverField.error}
+                  skin={<SimpleInputSkin />}
+                />
+              </div>
 
-            <div className={styles.receiverInput}>
-              <Input
-                className="receiver"
-                {...receiverField.bind()}
-                error={receiverField.error}
-                skin={<SimpleInputSkin />}
+              <div className={styles.amountInput}>
+                <NumericInput
+                  {...amountFieldProps}
+                  className="amount"
+                  label={intl.formatMessage(messages.amountLabel)}
+                  maxBeforeDot={currencyMaxIntegerDigits}
+                  maxAfterDot={currencyMaxFractionalDigits}
+                  error={transactionFeeError || amountField.error}
+                  // AmountInputSkin props
+                  currency={currencyUnit}
+                  fees={transactionFee.toFormat(currencyMaxFractionalDigits)}
+                  total={totalAmount.toFormat(currencyMaxFractionalDigits)}
+                  skin={<AmountInputSkin />}
+                />
+              </div>
+
+              <Button
+                className={buttonClasses}
+                label={intl.formatMessage(messages.nextButtonLabel)}
+                onMouseUp={() => openDialogAction({
+                  dialog: WalletSendConfirmationDialog,
+                })}
+                // Form can't be submitted in case transaction fees are not calculated
+                disabled={!isTransactionFeeCalculated}
+                skin={<SimpleButtonSkin />}
               />
             </div>
-
-            <div className={styles.amountInput}>
-              <NumericInput
-                {...amountFieldProps}
-                className="amount"
-                label={intl.formatMessage(messages.amountLabel)}
-                maxBeforeDot={currencyMaxIntegerDigits}
-                maxAfterDot={currencyMaxFractionalDigits}
-                error={transactionFeeError || amountField.error}
-                // AmountInputSkin props
-                currency={currencyUnit}
-                fees={transactionFee.toFormat(currencyMaxFractionalDigits)}
-                total={totalAmount.toFormat(currencyMaxFractionalDigits)}
-                skin={<AmountInputSkin />}
-              />
-            </div>
-
-            <Button
-              className={buttonClasses}
-              label={intl.formatMessage(messages.nextButtonLabel)}
-              onMouseUp={() => openDialogAction({
-                dialog: WalletSendConfirmationDialog,
-              })}
-              // Form can't be submitted in case transaction fees are not calculated
-              disabled={!isTransactionFeeCalculated}
-              skin={<SimpleButtonSkin />}
-            />
-
           </BorderedBox>
         )}
 
