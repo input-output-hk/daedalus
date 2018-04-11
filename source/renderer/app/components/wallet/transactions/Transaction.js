@@ -156,17 +156,19 @@ export default class Transaction extends Component<Props, State> {
 
   render() {
     const {
-      data,
-      isLastInList,
-      state,
-      assuranceLevel,
-      formattedWalletAmount,
-      onOpenExternalLink,
+      data, isLastInList, state, assuranceLevel,
+      formattedWalletAmount, onOpenExternalLink,
     } = this.props;
     const { isExpanded } = this.state;
     const { intl } = this.context;
+
+    const hasConfirmations = data.numberOfConfirmations > 0;
     const isFailedTransaction = state === transactionStates.FAILED;
-    const canOpenExplorer = onOpenExternalLink && environment.isAdaApi();
+    const isPendingTransaction = (state === transactionStates.PENDING) ||
+      ((state === transactionStates.OK) && !hasConfirmations);
+
+    // transaction state is mutated in order to capture zero-confirmations status as pending state
+    const transactionState = isPendingTransaction ? transactionStates.PENDING : state;
 
     const componentStyles = classNames([
       styles.component,
@@ -187,6 +189,8 @@ export default class Transaction extends Component<Props, State> {
     const status = intl.formatMessage(assuranceLevelTranslations[assuranceLevel]);
     const currency = intl.formatMessage(environmentSpecificMessages[environment.API].currency);
     const symbol = environment.isAdaApi() ? adaSymbol : etcSymbol;
+
+    const canOpenExplorer = onOpenExternalLink && environment.isAdaApi();
 
     return (
       <div
@@ -224,11 +228,11 @@ export default class Transaction extends Component<Props, State> {
                 , {moment(data.date).format('hh:mm:ss A')}
               </div>
 
-              {(state === transactionStates.OK) && (data.numberOfConfirmations > 0) ? (
+              {(transactionState === transactionStates.OK) ? (
                 <div className={styles[assuranceLevel]}>{status}</div>
               ) : (
-                <div className={styles[`${state}Label`]}>
-                  {intl.formatMessage(stateTranslations[state])}
+                <div className={styles[`${transactionState}Label`]}>
+                  {intl.formatMessage(stateTranslations[transactionState])}
                 </div>
               )}
             </div>
@@ -287,7 +291,7 @@ export default class Transaction extends Component<Props, State> {
               {environment.isAdaApi() ? (
                 <div className={styles.row}>
                   <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
-                  {state === transactionStates.OK ? (
+                  {(transactionState === transactionStates.OK) ? (
                     <span>
                       <span className={styles.assuranceLevel}>{status}</span>
                       . {data.numberOfConfirmations} {intl.formatMessage(messages.confirmations)}.

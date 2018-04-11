@@ -3519,13 +3519,13 @@
         "description": "Label for the \"Today\" label on the wallet summary page.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 20
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.todayLabel",
         "start": {
           "column": 9,
-          "line": 13
+          "line": 16
         }
       },
       {
@@ -3533,13 +3533,27 @@
         "description": "Label for the \"Yesterday\" label on the wallet summary page.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 25
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.yesterdayLabel",
         "start": {
           "column": 13,
-          "line": 18
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Show more transactions",
+        "description": "Label for the \"Show more transactions\" button on the wallet summary page.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
+        "id": "wallet.summary.page.showMoreTransactionsButtonLabel",
+        "start": {
+          "column": 35,
+          "line": 26
         }
       }
     ],
@@ -4789,13 +4803,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "source/renderer/app/containers/wallet/WalletSummaryPage.js",
         "id": "wallet.summary.no.transactions",
         "start": {
           "column": 18,
-          "line": 16
+          "line": 17
         }
       }
     ],
