@@ -173,7 +173,7 @@
   "static.about.copyright": "Input Output HK Limited. Licensed under",
   "static.about.license": "MIT licence",
   "static.about.title": "Daedalus",
-  "systemTime.error.overlayText": "Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. You are {behindTime} behind.<br>To synchronize the time and fix this issue, please visit the FAQ section of Daedalus website:",
+  "systemTime.error.overlayText": "Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. Your time is off by {timeOffset}.<br>To synchronize the time and fix this issue, please visit the FAQ section of Daedalus website:",
   "systemTime.error.overlayTitle": "Unable to sync - incorrect time",
   "systemTime.error.problemSolutionLink": "daedaluswallet.io/faq",
   "test.environment.testnetLabel": "Release candidate",
