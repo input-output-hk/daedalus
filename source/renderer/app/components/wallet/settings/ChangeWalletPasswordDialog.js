@@ -26,10 +26,10 @@ const messages = defineMessages({
     defaultMessage: '!!!Change password',
     description: 'Title for the "Change wallet password" dialog when there is already password set.',
   },
-  walletPasswordLabel: {
-    id: 'wallet.settings.changePassword.dialog.walletPasswordLabel',
-    defaultMessage: '!!!Wallet password',
-    description: 'Label for the "Wallet password" input in the change wallet password dialog.',
+  spendingPasswordLabel: {
+    id: 'wallet.settings.changePassword.dialog.spendingPasswordLabel',
+    defaultMessage: '!!!Spending password',
+    description: 'Label for the "Spending password" input in the change wallet password dialog.',
   },
   currentPasswordLabel: {
     id: 'wallet.settings.changePassword.dialog.currentPasswordLabel',
@@ -125,7 +125,7 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
       walletPassword: {
         type: 'password',
         label: this.context.intl.formatMessage(messages[
-          this.props.isWalletPasswordSet ? 'newPasswordLabel' : 'walletPasswordLabel'
+          this.props.isWalletPasswordSet ? 'newPasswordLabel' : 'spendingPasswordLabel'
         ]),
         placeholder: this.context.intl.formatMessage(messages.newPasswordFieldPlaceholder),
         value: '',

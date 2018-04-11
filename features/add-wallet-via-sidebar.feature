@@ -12,6 +12,7 @@ Feature: Add Wallet via Sidebar
     And I see the add wallet page
     And I click on the create wallet button on the add wallet page
     And I see the create wallet dialog
+    And I toggle "Spending password" switch on the create wallet dialog
     And I submit the create wallet dialog with the following inputs:
     | walletName |
     | New wallet |
@@ -35,7 +36,6 @@ Feature: Add Wallet via Sidebar
     And I see the add wallet page
     And I click on the create wallet button on the add wallet page
     And I see the create wallet dialog
-    And I toggle "Activate to create password" switch on the create wallet dialog
     And I submit the create wallet with spending password dialog with the following inputs:
     | walletName | password  | repeatedPassword |
     | New wallet | Secret123 | Secret123        |

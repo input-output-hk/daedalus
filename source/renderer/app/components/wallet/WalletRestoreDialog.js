@@ -61,7 +61,7 @@ const messages = defineMessages({
   },
   passwordSwitchPlaceholder: {
     id: 'wallet.restore.dialog.passwordSwitchPlaceholder',
-    defaultMessage: '!!!Keep your private keys safely encrypted by setting the spending password ',
+    defaultMessage: '!!!Keep your private keys safely encrypted by setting the spending password',
     description: 'Text for the "Spending password" switch in the wallet restore dialog.',
   },
   passwordSwitchLabel: {
@@ -132,7 +132,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   };
 
   state = {
-    createPassword: false,
+    createPassword: true,
     activeChoice: 'regular', // regular | certificate
   };
 
@@ -413,7 +413,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     if (!isSubmitting) {
       this.setState({
         activeChoice: choice,
-        createPassword: false,
+        createPassword: true,
       });
       this.resetForm();
       if (onChoiceChange) onChoiceChange();
