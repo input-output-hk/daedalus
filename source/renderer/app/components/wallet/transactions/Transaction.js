@@ -162,6 +162,8 @@ export default class Transaction extends Component<Props, State> {
     const { isExpanded } = this.state;
     const { intl } = this.context;
 
+    const canOpenExplorer = onOpenExternalLink && environment.isAdaApi();
+
     const hasConfirmations = data.numberOfConfirmations > 0;
     const isFailedTransaction = state === transactionStates.FAILED;
     const isPendingTransaction = (state === transactionStates.PENDING) ||
@@ -189,8 +191,6 @@ export default class Transaction extends Component<Props, State> {
     const status = intl.formatMessage(assuranceLevelTranslations[assuranceLevel]);
     const currency = intl.formatMessage(environmentSpecificMessages[environment.API].currency);
     const symbol = environment.isAdaApi() ? adaSymbol : etcSymbol;
-
-    const canOpenExplorer = onOpenExternalLink && environment.isAdaApi();
 
     return (
       <div
