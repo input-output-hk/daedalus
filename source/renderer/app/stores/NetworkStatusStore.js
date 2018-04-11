@@ -130,10 +130,7 @@ export default class NetworkStatusStore extends Store {
 
   @computed get isSystemTimeCorrect(): boolean {
     if (!environment.isAdaApi()) return true;
-    return (
-      this.localTimeDifferenceRequest.wasExecuted &&
-      this.localTimeDifferenceRequest.result <= ALLOWED_TIME_DIFFERENCE
-    );
+    return (this.localTimeDifference <= ALLOWED_TIME_DIFFERENCE);
   }
 
   @computed get isSyncing(): boolean {
