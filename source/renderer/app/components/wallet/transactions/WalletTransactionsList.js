@@ -40,7 +40,7 @@ type Props = {
   walletId: string,
   formattedWalletAmount: Function,
   onOpenExternalLink: Function,
-  showMoreTransactions?: boolean,
+  showMoreTransactionsButton?: boolean,
   onShowMoreTransactions?: Function,
 };
 
@@ -106,7 +106,7 @@ export default class WalletTransactionsList extends Component<Props> {
       walletId,
       formattedWalletAmount,
       onOpenExternalLink,
-      showMoreTransactions,
+      showMoreTransactionsButton,
     } = this.props;
 
     const { intl } = this.context;
@@ -146,7 +146,7 @@ export default class WalletTransactionsList extends Component<Props> {
 
         {loadingSpinner}
 
-        {showMoreTransactions &&
+        {showMoreTransactionsButton &&
           <Button
             className={buttonClasses}
             label={intl.formatMessage(messages.showMoreTransactionsButtonLabel)}
@@ -162,5 +162,5 @@ export default class WalletTransactionsList extends Component<Props> {
     if (this.props.onShowMoreTransactions) {
       this.props.onShowMoreTransactions(walletId);
     }
-  }
+  };
 }

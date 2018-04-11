@@ -61,7 +61,7 @@ export default class WalletSummaryPage extends Component<Props> {
           assuranceMode={wallet.assuranceMode}
           walletId={wallet.id}
           formattedWalletAmount={formattedWalletAmount}
-          showMoreTransactions={totalAvailable > 5}
+          showMoreTransactionsButton={totalAvailable > 5}
           onOpenExternalLink={openExternalLink}
           onShowMoreTransactions={this.handleShowMoreTransaction}
         />
@@ -89,5 +89,5 @@ export default class WalletSummaryPage extends Component<Props> {
       route: ROUTES.WALLETS.PAGE,
       params: { id: walletId, page: 'transactions' },
     });
-  }
+  };
 }

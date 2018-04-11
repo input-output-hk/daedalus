@@ -339,7 +339,7 @@
   "wallet.summary.no.transactions": "最近のトランザクションはありません",
   "wallet.summary.page.pendingIncomingConfirmationLabel": "保留中の入金確認",
   "wallet.summary.page.pendingOutgoingConfirmationLabel": "保留中の送金確認",
-  "wallet.summary.page.showMoreTransactionsButtonLabel": "!!!Show more transactions",
+  "wallet.summary.page.showMoreTransactionsButtonLabel": "もっと見る",
   "wallet.summary.page.todayLabel": "今日",
   "wallet.summary.page.transactionsLabel": "トランザクション数",
   "wallet.summary.page.yesterdayLabel": "昨日",
