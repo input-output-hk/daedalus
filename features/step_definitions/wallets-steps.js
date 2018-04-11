@@ -203,11 +203,11 @@ When(/^I submit the wallet send form$/, async function () {
   return this.client.click('.WalletSendConfirmationDialog_dialog .confirmButton');
 });
 
-When(/^I toggle "Activate to create password" switch on the create wallet dialog$/, function () {
+When(/^I toggle "Spending password" switch on the create wallet dialog$/, function () {
   return this.waitAndClick('.WalletCreateDialog .SimpleSwitch_switch');
 });
 
-When(/^I toggle "Activate to create password" switch on the restore wallet dialog$/, function () {
+When(/^I toggle "Spending password" switch on the restore wallet dialog$/, function () {
   return this.waitAndClick('.WalletRestoreDialog .SimpleSwitch_switch');
 });
 

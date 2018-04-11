@@ -37,17 +37,17 @@ const messages = defineMessages({
   },
   passwordSwitchPlaceholder: {
     id: 'wallet.create.dialog.passwordSwitchPlaceholder',
-    defaultMessage: '!!!Activate to create password',
+    defaultMessage: '!!!Keep your private keys safely encrypted by setting the spending password',
     description: 'Text for the "Activate to create password" switch in the create wallet dialog.',
   },
   passwordSwitchLabel: {
     id: 'wallet.create.dialog.passwordSwitchLabel',
-    defaultMessage: '!!!Password',
+    defaultMessage: '!!!Spending password',
     description: 'Label for the "Activate to create password" switch in the create wallet dialog.',
   },
   walletPasswordLabel: {
     id: 'wallet.create.dialog.walletPasswordLabel',
-    defaultMessage: '!!!Wallet password',
+    defaultMessage: '!!!Enter password',
     description: 'Label for the "Wallet password" input in the create wallet dialog.',
   },
   repeatPasswordLabel: {
@@ -81,7 +81,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
 
   state = {
     isSubmitting: false,
-    createPassword: false,
+    createPassword: true,
   };
 
   componentDidMount() {

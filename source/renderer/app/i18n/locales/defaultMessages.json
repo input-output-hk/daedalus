@@ -2906,16 +2906,16 @@
         }
       },
       {
-        "defaultMessage": "!!!Wallet password",
-        "description": "Label for the \"Wallet password\" input in the change wallet password dialog.",
+        "defaultMessage": "!!!Spending password",
+        "description": "Label for the \"Spending password\" input in the change wallet password dialog.",
         "end": {
           "column": 3,
           "line": 33
         },
         "file": "source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog.js",
-        "id": "wallet.settings.changePassword.dialog.walletPasswordLabel",
+        "id": "wallet.settings.changePassword.dialog.spendingPasswordLabel",
         "start": {
-          "column": 23,
+          "column": 25,
           "line": 29
         }
       },
@@ -3782,7 +3782,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Activate to create password",
+        "defaultMessage": "!!!Keep your private keys safely encrypted by setting the spending password",
         "description": "Text for the \"Activate to create password\" switch in the create wallet dialog.",
         "end": {
           "column": 3,
@@ -3796,7 +3796,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Password",
+        "defaultMessage": "!!!Spending password",
         "description": "Label for the \"Activate to create password\" switch in the create wallet dialog.",
         "end": {
           "column": 3,
@@ -3810,7 +3810,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Wallet password",
+        "defaultMessage": "!!!Enter password",
         "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
