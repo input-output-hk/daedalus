@@ -120,6 +120,11 @@ export default class Loading extends Component<Props, State> {
     }
   }
 
+  componentWillUnmount() {
+    this.resetConnectingTimer();
+    this.resetSyncingTimer();
+  }
+
   static contextTypes = {
     intl: intlShape.isRequired,
   };
