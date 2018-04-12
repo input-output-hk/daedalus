@@ -1,0 +1,13 @@
+.component {
+  background: var(--theme-progress-bar-background-color);
+  height: 2px;
+  position: relative;
+}
+
+.progress {
+  background: var(--theme-progress-bar-foreground-color);
+  bottom: 0;
+  left: 0;
+  position: absolute;
+  top: 0;
+}
