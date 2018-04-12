@@ -92,23 +92,27 @@ export default class Loading extends Component<Props, State> {
     };
   }
 
-  componentWillMount() {
-    if (this.props.isConnecting) {
+  componentWillReceiveProps(nextProps: Props) {
+    const trackConnecting = nextProps.isConnecting && !connectingInterval;
+    const stopConnectingTracker = this.props.isConnecting
+      && !nextProps.isConnecting
+      && connectingInterval;
+
+    const trackSyncing = nextProps.isSyncing && !syncingInterval;
+    const stopSyncingTracker = this.props.isSyncing
+      && !nextProps.isSyncing
+      && syncingInterval;
+
+    if (trackConnecting) {
       connectingInterval = setInterval(this.connectingTimer, 1000);
+    } else if (stopConnectingTracker) {
+      this.resetConnectingTimer();
     }
 
-    if (this.props.isSyncing) {
+    if (trackSyncing) {
       syncingInterval = setInterval(this.syncingTimer, 1000);
-    }
-  }
-
-  componentWillUnmount() {
-    if (connectingInterval) {
-      clearInterval(connectingInterval);
-    }
-
-    if (syncingInterval) {
-      clearInterval(syncingInterval);
+    } else if (stopSyncingTracker) {
+      this.resetSyncingTimer();
     }
   }
 
@@ -253,5 +257,21 @@ export default class Loading extends Component<Props, State> {
       // reset syncingTime and set new max percentage
       this.setState({ syncingTime: 0, syncPercentage });
     }
+  };
+
+  resetConnectingTimer = () => {
+    if (connectingInterval) {
+      clearInterval(connectingInterval);
+      connectingInterval = null;
+    }
+    this.setState({ connectingTime: 0 });
+  };
+
+  resetSyncingTimer = () => {
+    if (syncingInterval) {
+      clearInterval(syncingInterval);
+      syncingInterval = null;
+    }
+    this.setState({ syncingTime: 0 });
   };
 }
