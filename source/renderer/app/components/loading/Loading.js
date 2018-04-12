@@ -92,23 +92,31 @@ export default class Loading extends Component<Props, State> {
     };
   }
 
-  componentWillMount() {
-    if (this.props.isConnecting) {
+  componentWillReceiveProps(nextProps: Props) {
+    const startConnectingTimer = nextProps.isConnecting && (connectingInterval === null);
+    const stopConnectingTimer = (
+      this.props.isConnecting &&
+      !nextProps.isConnecting &&
+      (connectingInterval !== null)
+    );
+
+    if (startConnectingTimer) {
       connectingInterval = setInterval(this.connectingTimer, 1000);
+    } else if (stopConnectingTimer) {
+      this.resetConnectingTimer();
     }
 
-    if (this.props.isSyncing) {
+    const startSyncingTimer = nextProps.isSyncing && (syncingInterval === null);
+    const stopSyncingTimer = (
+      this.props.isSyncing &&
+      !nextProps.isSyncing &&
+      (syncingInterval !== null)
+    );
+
+    if (startSyncingTimer) {
       syncingInterval = setInterval(this.syncingTimer, 1000);
-    }
-  }
-
-  componentWillUnmount() {
-    if (connectingInterval) {
-      clearInterval(connectingInterval);
-    }
-
-    if (syncingInterval) {
-      clearInterval(syncingInterval);
+    } else if (stopSyncingTimer) {
+      this.resetSyncingTimer();
     }
   }
 
@@ -239,13 +247,21 @@ export default class Loading extends Component<Props, State> {
       </div>
     );
   }
+
   connectingTimer = () => {
     this.setState({ connectingTime: this.state.connectingTime + 1 });
   };
 
+  resetConnectingTimer = () => {
+    if (connectingInterval !== null) {
+      clearInterval(connectingInterval);
+      connectingInterval = null;
+    }
+    this.setState({ connectingTime: 0 });
+  };
+
   syncingTimer = () => {
     const syncPercentage = this.props.syncPercentage.toFixed(2);
-
     if (syncPercentage === this.state.syncPercentage) {
       // syncPercentage not increased, increase syncing time
       this.setState({ syncingTime: this.state.syncingTime + 1 });
@@ -253,5 +269,13 @@ export default class Loading extends Component<Props, State> {
       // reset syncingTime and set new max percentage
       this.setState({ syncingTime: 0, syncPercentage });
     }
+  };
+
+  resetSyncingTimer = () => {
+    if (syncingInterval !== null) {
+      clearInterval(syncingInterval);
+      syncingInterval = null;
+    }
+    this.setState({ syncingTime: 0 });
   };
 }
