@@ -132,7 +132,9 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
         validators: [({ field, form }) => {
           if (this.state.removePassword) return [true];
           const repeatPasswordField = form.$('repeatPassword');
-          if (repeatPasswordField.value.length > 0) repeatPasswordField.validate(form);
+          if (repeatPasswordField.value.length > 0) {
+            repeatPasswordField.validate({ showErrors: true });
+          }
           return [
             isValidWalletPassword(field.value),
             this.context.intl.formatMessage(globalMessages.invalidWalletPassword)

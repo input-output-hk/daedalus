@@ -28,10 +28,6 @@ $topBarHeight: 84px;
   z-index: 2;
 }
 
-.content {
-  height: 100%;
-}
-
 .contentWrapper {
   flex: 1;
   overflow-x: hidden;
@@ -41,4 +37,10 @@ $topBarHeight: 84px;
     height: 7px;
     display: block;
   }
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }

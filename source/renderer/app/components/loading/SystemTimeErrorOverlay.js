@@ -29,7 +29,7 @@ const messages = defineMessages({
 
 type Props = {
   localTimeDifference: number,
-  currentLocale?: string,
+  currentLocale: string,
   onProblemSolutionClick: Function,
 };
 
@@ -65,7 +65,7 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
 
     const timeOffset = humanizeDuration(localTimeDifference / 1000, {
       round: true, // round seconds to prevent e.g. 1 day 3 hours *11,56 seconds*
-      language: humanizedDurationLanguage
+      language: humanizedDurationLanguage,
     }).replace(/,/g, ''); // replace 1 day, 3 hours, 12 seconds* to clean period without comma
 
     return (

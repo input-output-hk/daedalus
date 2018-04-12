@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import { get } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
@@ -8,6 +9,7 @@ import WalletNoTransactions from '../../components/wallet/transactions/WalletNoT
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import resolver from '../../utils/imports';
+import { syncStateTags } from '../../domains/Wallet';
 
 const { formattedWalletAmount } = resolver('utils/formatters');
 
@@ -64,6 +66,8 @@ export default class WalletTransactionsPage extends Component<Props> {
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const noTransactionsFoundLabel = intl.formatMessage(messages.noTransactionsFound);
 
+    const isRestoreActive = get(activeWallet, 'syncState.tag') === syncStateTags.RESTORING;
+
     // if (wasSearched || hasAny) {
     //   transactionSearch = (
     //     <div style={{ flexShrink: 0 }}>
@@ -75,11 +79,12 @@ export default class WalletTransactionsPage extends Component<Props> {
     //   );
     // }
 
-    if (searchRequest.isExecutingFirstTime || hasAny) {
+    if (searchRequest.isExecutingFirstTime || hasAny || isRestoreActive) {
       walletTransactions = (
         <WalletTransactionsList
           transactions={filtered}
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
+          isRestoreActive={isRestoreActive}
           hasMoreToLoad={totalAvailable > searchLimit}
           onLoadMore={actions.ada.transactions.loadMoreTransactions.trigger}
           assuranceMode={activeWallet.assuranceMode}

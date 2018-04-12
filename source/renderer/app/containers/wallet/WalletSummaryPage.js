@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import { get } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
@@ -10,6 +11,7 @@ import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import resolver from '../../utils/imports';
+import { syncStateTags } from '../../domains/Wallet';
 
 const { formattedWalletAmount } = resolver('utils/formatters');
 
@@ -51,7 +53,9 @@ export default class WalletSummaryPage extends Component<Props> {
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
-    if (recentTransactionsRequest.isExecutingFirstTime || hasAny) {
+    const isRestoreActive = get(wallet, 'syncState.tag') === syncStateTags.RESTORING;
+
+    if (recentTransactionsRequest.isExecutingFirstTime || hasAny || isRestoreActive) {
       walletTransactions = (
         <WalletTransactionsList
           key={`WalletTransactionsList_${wallet.id}`}
@@ -60,6 +64,7 @@ export default class WalletSummaryPage extends Component<Props> {
           hasMoreToLoad={false}
           assuranceMode={wallet.assuranceMode}
           walletId={wallet.id}
+          isRestoreActive={isRestoreActive}
           formattedWalletAmount={formattedWalletAmount}
           showMoreTransactionsButton={totalAvailable > 5}
           onOpenExternalLink={openExternalLink}

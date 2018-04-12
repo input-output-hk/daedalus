@@ -12,6 +12,7 @@ import BigNumber from 'bignumber.js';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import AmountInputSkin from './skins/AmountInputSkin';
 import BorderedBox from '../widgets/BorderedBox';
+import LoadingSpinner from '../widgets/LoadingSpinner';
 import styles from './WalletSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
 import WalletSendConfirmationDialog from './WalletSendConfirmationDialog';
@@ -83,7 +84,12 @@ export const messages = defineMessages({
     id: 'wallet.send.form.transactionFeeError',
     defaultMessage: '!!!Not enough Ada for fees. Try sending a smaller amount.',
     description: '"Not enough Ada for fees. Try sending a smaller amount." error message',
-  }
+  },
+  syncingTransactionsMessage: {
+    id: 'wallet.send.form.syncingTransactionsMessage',
+    defaultMessage: '!!!This wallet is currently being synced with the blockchain. While synchronisation is in progress transacting is not possible and transaction history is not complete.',
+    description: 'Syncing transactions message shown during async wallet restore in the wallet send form.',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -97,6 +103,7 @@ type Props = {
   addressValidator: Function,
   openDialogAction: Function,
   isDialogOpen: Function,
+  isRestoreActive: boolean,
 };
 
 type State = {
@@ -200,7 +207,7 @@ export default class WalletSendForm extends Component<Props, State> {
     const { intl } = this.context;
     const {
       currencyUnit, currencyMaxIntegerDigits, currencyMaxFractionalDigits,
-      openDialogAction, isDialogOpen
+      openDialogAction, isDialogOpen, isRestoreActive,
     } = this.props;
     const { isTransactionFeeCalculated, transactionFee, transactionFeeError } = this.state;
     const amountField = form.$('amount');
@@ -217,45 +224,54 @@ export default class WalletSendForm extends Component<Props, State> {
     return (
       <div className={styles.component}>
 
-        <BorderedBox>
-
-          <div className={styles.receiverInput}>
-            <Input
-              className="receiver"
-              {...receiverField.bind()}
-              error={receiverField.error}
-              skin={<SimpleInputSkin />}
-            />
+        {isRestoreActive ? (
+          <div className={styles.syncingTransactionsWrapper}>
+            <LoadingSpinner big />
+            <p className={styles.syncingTransactionsText}>
+              {intl.formatMessage(messages.syncingTransactionsMessage)}
+            </p>
           </div>
+        ) : (
+          <BorderedBox>
+            <div className="WalletSendForm">
+              <div className={styles.receiverInput}>
+                <Input
+                  className="receiver"
+                  {...receiverField.bind()}
+                  error={receiverField.error}
+                  skin={<SimpleInputSkin />}
+                />
+              </div>
 
-          <div className={styles.amountInput}>
-            <NumericInput
-              {...amountFieldProps}
-              className="amount"
-              label={intl.formatMessage(messages.amountLabel)}
-              maxBeforeDot={currencyMaxIntegerDigits}
-              maxAfterDot={currencyMaxFractionalDigits}
-              error={transactionFeeError || amountField.error}
-              // AmountInputSkin props
-              currency={currencyUnit}
-              fees={transactionFee.toFormat(currencyMaxFractionalDigits)}
-              total={totalAmount.toFormat(currencyMaxFractionalDigits)}
-              skin={<AmountInputSkin />}
-            />
-          </div>
+              <div className={styles.amountInput}>
+                <NumericInput
+                  {...amountFieldProps}
+                  className="amount"
+                  label={intl.formatMessage(messages.amountLabel)}
+                  maxBeforeDot={currencyMaxIntegerDigits}
+                  maxAfterDot={currencyMaxFractionalDigits}
+                  error={transactionFeeError || amountField.error}
+                  // AmountInputSkin props
+                  currency={currencyUnit}
+                  fees={transactionFee.toFormat(currencyMaxFractionalDigits)}
+                  total={totalAmount.toFormat(currencyMaxFractionalDigits)}
+                  skin={<AmountInputSkin />}
+                />
+              </div>
 
-          <Button
-            className={buttonClasses}
-            label={intl.formatMessage(messages.nextButtonLabel)}
-            onMouseUp={() => openDialogAction({
-              dialog: WalletSendConfirmationDialog,
-            })}
-            // Form can't be submitted in case transaction fees are not calculated
-            disabled={!isTransactionFeeCalculated}
-            skin={<SimpleButtonSkin />}
-          />
-
-        </BorderedBox>
+              <Button
+                className={buttonClasses}
+                label={intl.formatMessage(messages.nextButtonLabel)}
+                onMouseUp={() => openDialogAction({
+                  dialog: WalletSendConfirmationDialog,
+                })}
+                // Form can't be submitted in case transaction fees are not calculated
+                disabled={!isTransactionFeeCalculated}
+                skin={<SimpleButtonSkin />}
+              />
+            </div>
+          </BorderedBox>
+        )}
 
         {isDialogOpen(WalletSendConfirmationDialog) ? (
           <WalletSendConfirmationDialogContainer

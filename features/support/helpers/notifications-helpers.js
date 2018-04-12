@@ -1,3 +1,3 @@
-export const waitForActiveImportNotification = (client, { isHidden } = {}) => (
-  client.waitForVisible('.ActiveImportNotification', null, isHidden)
+export const waitForActiveRestoreNotification = (client, { isHidden } = {}) => (
+  client.waitForVisible('.ActiveRestoreNotification', null, isHidden)
 );

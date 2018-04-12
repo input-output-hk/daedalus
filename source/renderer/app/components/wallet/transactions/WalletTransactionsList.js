@@ -27,7 +27,12 @@ const messages = defineMessages({
     id: 'wallet.summary.page.showMoreTransactionsButtonLabel',
     defaultMessage: '!!!Show more transactions',
     description: 'Label for the "Show more transactions" button on the wallet summary page.',
-  }
+  },
+  syncingTransactionsMessage: {
+    id: 'wallet.summary.page.syncingTransactionsMessage',
+    defaultMessage: '!!!Your transaction history for this wallet is being synced with the blockchain.',
+    description: 'Syncing transactions message on async wallet restore.',
+  },
 });
 
 const dateFormat = 'YYYY-MM-DD';
@@ -35,6 +40,7 @@ const dateFormat = 'YYYY-MM-DD';
 type Props = {
   transactions: Array<WalletTransaction>,
   isLoadingTransactions: boolean,
+  isRestoreActive?: boolean,
   hasMoreToLoad: boolean,
   assuranceMode: AssuranceMode,
   walletId: string,
@@ -107,14 +113,24 @@ export default class WalletTransactionsList extends Component<Props> {
       formattedWalletAmount,
       onOpenExternalLink,
       showMoreTransactionsButton,
+      isRestoreActive,
     } = this.props;
 
     const { intl } = this.context;
 
     const transactionsGroups = this.groupTransactionsByDay(transactions);
 
-    const loadingSpinner = isLoadingTransactions || hasMoreToLoad ? (
+    const loadingSpinner = (isLoadingTransactions || hasMoreToLoad) && !isRestoreActive ? (
       <LoadingSpinner ref={(component) => { this.loadingSpinner = component; }} />
+    ) : null;
+
+    const syncingTransactionsSpinner = isRestoreActive ? (
+      <div className={styles.syncingTransactionsWrapper}>
+        <LoadingSpinner big />
+        <p className={styles.syncingTransactionsText}>
+          {intl.formatMessage(messages.syncingTransactionsMessage)}
+        </p>
+      </div>
     ) : null;
 
     const buttonClasses = classnames([
@@ -124,6 +140,7 @@ export default class WalletTransactionsList extends Component<Props> {
 
     return (
       <div className={styles.component}>
+        {syncingTransactionsSpinner}
         {transactionsGroups.map((group, groupIndex) => (
           <div className={styles.group} key={walletId + '-' + groupIndex}>
             <div className={styles.groupDate}>{this.localizedDate(group.date)}</div>

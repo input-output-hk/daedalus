@@ -52,7 +52,8 @@ import type {
   AdaTransactionFee,
   AdaTransactions,
   AdaWallet,
-  AdaWallets,
+  AdaV1Wallet,
+  AdaV1Wallets,
   AdaWalletRecoveryPhraseResponse,
   AdaWalletCertificateAdditionalMnemonicsResponse,
   AdaWalletCertificateRecoveryPhraseResponse,
@@ -211,9 +212,9 @@ export default class AdaApi {
   async getWallets(): Promise<GetWalletsResponse> {
     Logger.debug('AdaApi::getWallets called');
     try {
-      const response: AdaWallets = await getAdaWallets({ ca });
+      const response: AdaV1Wallets = await getAdaWallets({ ca });
       Logger.debug('AdaApi::getWallets success: ' + stringifyData(response));
-      return response.map(data => _createWalletFromServerData(data));
+      return response.map(data => _createWalletFromServerV1Data(data));
     } catch (error) {
       Logger.error('AdaApi::getWallets error: ' + stringifyError(error));
       throw new GenericApiError();
@@ -836,5 +837,27 @@ const _createTransactionFeeFromServerData = action(
   'AdaApi::_createTransactionFeeFromServerData', (data: AdaTransactionFee) => {
     const coins = data.getCCoin;
     return new BigNumber(coins).dividedBy(LOVELACES_PER_ADA);
+  }
+);
+
+
+// ========== V1 API =========
+
+const _createWalletFromServerV1Data = action(
+  'AdaApi::_createWalletFromServerV1Data', (data: AdaV1Wallet) => {
+    const {
+      id, balance, name, assuranceLevel,
+      hasSpendingPassword, spendingPasswordLastUpdate,
+      syncState,
+    } = data;
+    return new Wallet({
+      id,
+      amount: new BigNumber(balance).dividedBy(LOVELACES_PER_ADA),
+      name,
+      assurance: assuranceLevel === 'normal' ? 'CWANormal' : 'CWAStrict',
+      hasPassword: hasSpendingPassword,
+      passwordUpdateDate: new Date(`${spendingPasswordLastUpdate}Z`),
+      syncState,
+    });
   }
 );
