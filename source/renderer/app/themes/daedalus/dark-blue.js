@@ -286,6 +286,7 @@ export default {
   '--theme-separation-border-color': '#334152',
 
   '--theme-support-settings-text-color': '#e9f4fe',
+  '--theme-support-settings-link-color': '#20b56b',
 
   '--theme-terms-of-use-text-color': '#e9f4fe',
 
