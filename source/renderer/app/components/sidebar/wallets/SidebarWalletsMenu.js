@@ -35,6 +35,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { wallets, onAddWallet, isActiveWallet, onWalletItemClick } = this.props;
+
     return (
       <SidebarSubMenu visible={this.props.visible}>
         <div className={styles.wallets}>
@@ -46,6 +47,8 @@ export default class SidebarWalletsMenu extends Component<Props> {
               onClick={() => onWalletItemClick(wallet.id)}
               key={wallet.id}
               className={`Wallet_${wallet.id}`}
+              isRestoreActive={wallet.isRestoreActive}
+              restoreProgress={wallet.restoreProgress}
             />
           ))}
         </div>

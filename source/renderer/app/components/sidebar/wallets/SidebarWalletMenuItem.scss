@@ -30,8 +30,19 @@
 .meta {
   display: flex;
   flex-direction: column;
+  position: relative;
   text-align: left;
   width: 100%;
+
+  :global {
+    .ProgressBar_component {
+      left: 0;
+      margin-top: 6.5px;
+      position: absolute;
+      right: 0;
+      top: 100%;
+    }
+  }
 }
 
 .title {
@@ -39,6 +50,7 @@
   font-family: var(--font-regular);
   font-size: 18px;
   line-height: 1.5em;
+  margin-top: -5.5px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

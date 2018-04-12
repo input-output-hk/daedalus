@@ -295,4 +295,7 @@ export default {
   '--theme-password-toggler-color': '#5e6066',
 
   '--theme-loading-spinner-color': '#5e6066',
+
+  '--theme-progress-bar-background-color': 'rgba(255, 255, 255, 0.3)',
+  '--theme-progress-bar-foreground-color': 'rgba(255, 255, 255, 0.7)',
 };
