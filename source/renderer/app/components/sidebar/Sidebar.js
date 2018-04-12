@@ -6,10 +6,10 @@ import classNames from 'classnames';
 import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
-import BugReportDialog from '../../components/profile/bug-report/BugReportDialog';
 import InstructionsDialog from '../wallet/paper-wallet-certificate/InstructionsDialog';
 import supportIcon from '../../assets/images/sidebar/bug-report-ic.inline.svg';
 import type { SidebarWalletType } from '../../stores/SidebarStore';
+import { ROUTES } from '../../routes-config';
 
 type Props = {
   menus: ?{
@@ -31,7 +31,7 @@ type Props = {
   isShowingSubMenus: boolean,
   openDialogAction: Function,
   onAddWallet: Function,
-  isDialogOpen: Function,
+  onSubmitSupportRequest: Function,
 };
 
 @observer
@@ -44,7 +44,7 @@ export default class Sidebar extends Component<Props> {
   render() {
     const {
       menus, categories, activeSidebarCategory,
-      isShowingSubMenus, onAddWallet, isDialogOpen,
+      isShowingSubMenus, onAddWallet, onSubmitSupportRequest,
     } = this.props;
     let subMenu = null;
 
@@ -77,7 +77,7 @@ export default class Sidebar extends Component<Props> {
                 className={categoryClassName}
                 icon={category.icon}
                 active={activeSidebarCategory === category.route}
-                onClick={() => this.handleClick(category.name, category.route)}
+                onClick={() => this.handleClick(category.route)}
               />
             );
           })}
@@ -85,8 +85,8 @@ export default class Sidebar extends Component<Props> {
           <SidebarCategory
             className="supportRequest"
             icon={supportIcon}
-            active={isDialogOpen(BugReportDialog)}
-            onClick={() => this.handleClick('BUG_REPORT')}
+            active={false}
+            onClick={onSubmitSupportRequest}
           />
         </div>
         {subMenu}
@@ -94,14 +94,10 @@ export default class Sidebar extends Component<Props> {
     );
   }
 
-  handleClick = (categoryName: string, categoryRoute?: string) => {
-    if (categoryName === 'PAPER_WALLET_CREATE_CERTIFICATE') {
+  handleClick = (categoryRoute: string) => {
+    if (categoryRoute === ROUTES.PAPER_WALLET_CREATE_CERTIFICATE) {
       this.props.openDialogAction({
-        dialog: InstructionsDialog
-      });
-    } else if (categoryName === 'BUG_REPORT') {
-      this.props.openDialogAction({
-        dialog: BugReportDialog
+        dialog: InstructionsDialog,
       });
     } else {
       this.props.onCategoryClicked(categoryRoute);

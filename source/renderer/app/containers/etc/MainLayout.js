@@ -48,7 +48,9 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         isSynced
         openDialogAction={actions.dialogs.open.trigger}
         onAddWallet={() => actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD })}
-        isDialogOpen={stores.uiDialogs.isOpen}
+        onSubmitSupportRequest={
+          () => actions.router.goToRoute.trigger({ route: ROUTES.SETTINGS.SUPPORT })
+        }
       />
     );
 
