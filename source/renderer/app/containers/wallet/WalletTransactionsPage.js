@@ -9,6 +9,7 @@ import WalletNoTransactions from '../../components/wallet/transactions/WalletNoT
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import resolver from '../../utils/imports';
+import { syncStateTags } from '../../domains/Wallet';
 
 const { formattedWalletAmount } = resolver('utils/formatters');
 
@@ -65,7 +66,7 @@ export default class WalletTransactionsPage extends Component<Props> {
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const noTransactionsFoundLabel = intl.formatMessage(messages.noTransactionsFound);
 
-    const isRestoreActive = get(activeWallet, 'syncState.tag') === 'restoring';
+    const isRestoreActive = get(activeWallet, 'syncState.tag') === syncStateTags.RESTORING;
 
     // if (wasSearched || hasAny) {
     //   transactionSearch = (

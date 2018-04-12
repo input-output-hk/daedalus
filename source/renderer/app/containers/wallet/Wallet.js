@@ -10,6 +10,7 @@ import RestoreNotification from '../../components/notifications/RestoreNotificat
 import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
+import { syncStateTags } from '../../domains/Wallet';
 
 type Props = InjectedContainerProps;
 
@@ -43,7 +44,7 @@ export default class Wallet extends Component<Props> {
 
     if (!wallets.active) return <MainLayout><LoadingSpinner /></MainLayout>;
 
-    const isRestoreActive = get(wallets.active, 'syncState.tag') === 'restoring';
+    const isRestoreActive = get(wallets.active, 'syncState.tag') === syncStateTags.RESTORING;
     const restoreProgress = get(wallets.active, 'syncState.data.percentage.quantity', 0);
     const restoreETA = get(wallets.active, 'syncState.data.estimatedCompletionTime.quantity', 0);
 

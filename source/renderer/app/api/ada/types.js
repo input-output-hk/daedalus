@@ -107,6 +107,7 @@ export type AdaLocalTimeDifference = number;
 // ========== V1 API =========
 
 export type AdaV1Assurance = 'normal' | 'strict';
+export type AdaV1WalletSyncStateTag = 'restoring' | 'synced';
 
 export type AdaV1WalletSyncState = {
   data: ?{
@@ -123,7 +124,7 @@ export type AdaV1WalletSyncState = {
       unit: 'blocksPerSecond',
     },
   },
-  tag: 'restoring' | 'synced',
+  tag: AdaV1WalletSyncStateTag,
 };
 
 export type AdaV1Wallet = {

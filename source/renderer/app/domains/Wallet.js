@@ -2,8 +2,14 @@
 import { observable, computed } from 'mobx';
 import BigNumber from 'bignumber.js';
 import type { AssuranceMode, AssuranceModeOption } from '../types/transactionAssuranceTypes';
-import type { AdaV1WalletSyncState } from '../api/ada/types';
+import type { AdaV1WalletSyncState, AdaV1WalletSyncStateTag } from '../api/ada/types';
 import { assuranceModes, assuranceModeOptions } from '../config/transactionAssuranceConfig';
+
+export const syncStateTags: {
+  RESTORING: AdaV1WalletSyncStateTag, SYNCED: AdaV1WalletSyncStateTag,
+} = {
+  RESTORING: 'restoring', SYNCED: 'synced',
+};
 
 export default class Wallet {
 

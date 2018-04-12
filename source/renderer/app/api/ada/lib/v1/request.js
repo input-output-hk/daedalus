@@ -69,8 +69,7 @@ function typedRequest<Response>(
       response.on('data', (chunk) => (body += chunk));
       // Reject errors
       response.on('error', (error) => reject(error));
-      // Resolve JSON results and handle weird backend behavior
-      // of "Left" (for errors) and "Right" (for success) properties
+      // Resolve JSON results and handle backend errors
       response.on('end', () => {
         try {
           const parsedBody = JSON.parse(body);
