@@ -186,6 +186,7 @@
   "wallet.add.dialog.restore.label": "復元",
   "wallet.add.dialog.restore.withCertificate.description": "復元フレーズもしくはペーパーウォレット証明書を用いて復元する",
   "wallet.add.dialog.restore.withoutCertificate.description": "バックアップからウォレットを復元",
+  "wallet.add.dialog.restoreNotificationMessage": "!!!Wallet restoration is currently in progress. Until it completes, it is not possible to restore or import new wallets.",
   "wallet.add.dialog.title.label": "ウォレットを追加",
   "wallet.amountInput.feesLabel": "+ {amount}の手数料",
   "wallet.backup.privacy.warning.dialog..button.labelContinue": "次",

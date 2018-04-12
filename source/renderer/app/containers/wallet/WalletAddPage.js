@@ -12,6 +12,7 @@ import WalletBackupDialogContainer from '../wallet/dialogs/WalletBackupDialogCon
 import WalletCreateDialogContainer from '../wallet/dialogs/WalletCreateDialogContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import resolver from '../../utils/imports';
+import environment from '../../../../common/environment';
 
 type Props = InjectedProps;
 const Layout = resolver('containers/MainLayout');
@@ -26,8 +27,10 @@ export default class WalletAddPage extends Component<Props> {
   };
 
   render() {
+    const wallets = this._getWalletsStore();
     const { actions, stores } = this.props;
     const { uiDialogs } = stores;
+    const { isRestoreActive } = wallets;
     let content = null;
 
     if (uiDialogs.isOpen(WalletCreateDialog)) {
@@ -44,10 +47,15 @@ export default class WalletAddPage extends Component<Props> {
           onCreate={() => actions.dialogs.open.trigger({ dialog: WalletCreateDialog })}
           onRestore={() => actions.dialogs.open.trigger({ dialog: WalletRestoreDialog })}
           onImportFile={() => actions.dialogs.open.trigger({ dialog: WalletFileImportDialog })}
+          isRestoreActive={isRestoreActive}
         />
       );
     }
     return <Layout>{content}</Layout>;
+  }
+
+  _getWalletsStore() {
+    return this.props.stores[environment.API].wallets;
   }
 
 }
