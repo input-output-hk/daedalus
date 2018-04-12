@@ -93,25 +93,29 @@ export default class Loading extends Component<Props, State> {
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    const trackConnecting = nextProps.isConnecting && !connectingInterval;
-    const stopConnectingTracker = this.props.isConnecting
-      && !nextProps.isConnecting
-      && connectingInterval;
+    const startConnectingTimer = nextProps.isConnecting && (connectingInterval === null);
+    const stopConnectingTimer = (
+      this.props.isConnecting &&
+      !nextProps.isConnecting &&
+      (connectingInterval !== null)
+    );
 
-    const trackSyncing = nextProps.isSyncing && !syncingInterval;
-    const stopSyncingTracker = this.props.isSyncing
-      && !nextProps.isSyncing
-      && syncingInterval;
-
-    if (trackConnecting) {
+    if (startConnectingTimer) {
       connectingInterval = setInterval(this.connectingTimer, 1000);
-    } else if (stopConnectingTracker) {
+    } else if (stopConnectingTimer) {
       this.resetConnectingTimer();
     }
 
-    if (trackSyncing) {
+    const startSyncingTimer = nextProps.isSyncing && (syncingInterval === null);
+    const stopSyncingTimer = (
+      this.props.isSyncing &&
+      !nextProps.isSyncing &&
+      (syncingInterval !== null)
+    );
+
+    if (startSyncingTimer) {
       syncingInterval = setInterval(this.syncingTimer, 1000);
-    } else if (stopSyncingTracker) {
+    } else if (stopSyncingTimer) {
       this.resetSyncingTimer();
     }
   }
@@ -243,13 +247,21 @@ export default class Loading extends Component<Props, State> {
       </div>
     );
   }
+
   connectingTimer = () => {
     this.setState({ connectingTime: this.state.connectingTime + 1 });
   };
 
+  resetConnectingTimer = () => {
+    if (connectingInterval !== null) {
+      clearInterval(connectingInterval);
+      connectingInterval = null;
+    }
+    this.setState({ connectingTime: 0 });
+  };
+
   syncingTimer = () => {
     const syncPercentage = this.props.syncPercentage.toFixed(2);
-
     if (syncPercentage === this.state.syncPercentage) {
       // syncPercentage not increased, increase syncing time
       this.setState({ syncingTime: this.state.syncingTime + 1 });
@@ -259,16 +271,8 @@ export default class Loading extends Component<Props, State> {
     }
   };
 
-  resetConnectingTimer = () => {
-    if (connectingInterval) {
-      clearInterval(connectingInterval);
-      connectingInterval = null;
-    }
-    this.setState({ connectingTime: 0 });
-  };
-
   resetSyncingTimer = () => {
-    if (syncingInterval) {
+    if (syncingInterval !== null) {
       clearInterval(syncingInterval);
       syncingInterval = null;
     }
