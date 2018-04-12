@@ -29,8 +29,6 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       className,
     ]);
 
-    console.debug(isRestoreActive, restoreProgress);
-
     return (
       <button className={componentStyles} onClick={onClick}>
         <span className={styles.meta}>
