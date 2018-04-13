@@ -88,6 +88,7 @@ makeInstaller opts@Options{..} appRoot = do
   procs "iconutil" ["--convert", "icns", "--output", "icons/electron.icns"
                    , "icons/electron.iconset"] mempty
 
+  copyFile "launcher-config.yaml" "../launcher-config.yaml"
   withDir ".." . sh $ npmPackage
 
   echo "~~~ Preparing files ..."

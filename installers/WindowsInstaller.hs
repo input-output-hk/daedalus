@@ -21,7 +21,7 @@ import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recurs
                                    strLength, uninstall, unsafeInject, unsafeInjectGlobal,
                                    writeRegDWORD, writeRegStr, (%/=))
 import           Prelude ((!!))
-import           System.Directory (doesFileExist)
+import           System.Directory (copyFile, doesFileExist)
 import           System.Environment (lookupEnv)
 import           System.FilePath ((</>))
 import           System.IO (writeFile)
@@ -206,6 +206,9 @@ main opts@Options{..}  = do
     TIO.writeFile "version.txt" $ fromVer fullVersion
 
     generateOSClusterConfigs "./dhall" "." opts
+
+    -- Copy the launcher config for webpack:
+    copyFile "launcher-config.yaml" "../launcher-config.yaml"
 
     echo "Packaging frontend"
     packageFrontend
