@@ -35,7 +35,7 @@ let
     UNPACK=$(mktemp -d)
     cd $UNPACK
     echo "$@"
-    "$1" --extract
+    bash "$1" --extract
     ls -ltrh dat/nix/store/*-tarball/tarball/tarball.tar.xz
     UNPACK2=$(mktemp -d)
     tar -C $UNPACK2 -xf dat/nix/store/*-tarball/tarball/tarball.tar.xz
@@ -63,7 +63,7 @@ let
     cat /etc/machine-id > etc/machine-id
     cat /etc/resolv.conf > etc/resolv.conf
 
-    exec .${nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -- /nix/var/nix/profiles/profile/bin/enter-phase2
+    exec .${nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -p TERM -- /nix/var/nix/profiles/profile/bin/enter-phase2
   '';
   enter2 = pkgs.writeScriptBin "enter-phase2" ''
     #!${pkgs.stdenv.shell}
@@ -73,8 +73,13 @@ let
     export PATH=/nix/var/nix/profiles/profile/bin
     export PS1='\[\033]2;\h:\u:\w\007\]\n\[\033[1;32m\][\u@\h:\w] (namespaced) \$\[\033[0m\] '
     ln -svf /nix/var/nix/profiles/profile/bin/ /bin
+    export PATH=/bin
     ln -svf ${pkgs.iana-etc}/etc/protocols /etc/protocols
     ln -svf ${pkgs.iana-etc}/etc/services /etc/services
+    mkdir -pv /etc/ssl/certs
+    ln -svf ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt /etc/ssl/certs/ca-certificates.crt
+    ln -svf ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt /etc/ssl/certs/ca-bundle.crt
+    unset NIX_SSL_CERT_FILE
 
     if [ -z "$@" ]; then
       exec bash
@@ -147,6 +152,7 @@ let
       gnused
       gnutar
       bzip2
+      gzip
       xz
       which # used by post-install
     ] ++ installedPackages;
