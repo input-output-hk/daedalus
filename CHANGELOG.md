@@ -16,6 +16,7 @@ Changelog
 - Fixed a bug related to gas limit when sending transactions ([PR 586](https://github.com/input-output-hk/daedalus/pull/586))
 - Remove transactions sorting ([PR 587](https://github.com/input-output-hk/daedalus/pull/587))
 - Improve ETC transaction amount validation ([PR 590](https://github.com/input-output-hk/daedalus/pull/590))
+- Fixed a bug related to rendering of transactions with duplicated ids ([PR 697](https://github.com/input-output-hk/daedalus/pull/697))
 
 ### Chores
 
