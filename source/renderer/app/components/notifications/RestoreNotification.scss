@@ -12,6 +12,9 @@
     height: 22px;
     line-height: 1.5;
     margin-right: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .icon {

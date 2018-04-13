@@ -141,6 +141,7 @@ export default class WalletTransactionsList extends Component<Props> {
     return (
       <div className={styles.component}>
         {syncingTransactionsSpinner}
+
         {transactionsGroups.map((group, groupIndex) => (
           <div className={styles.group} key={walletId + '-' + groupIndex}>
             <div className={styles.groupDate}>{this.localizedDate(group.date)}</div>

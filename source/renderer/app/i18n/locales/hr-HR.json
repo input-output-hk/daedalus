@@ -186,6 +186,7 @@
   "wallet.add.dialog.restore.label": "!!!Restore",
   "wallet.add.dialog.restore.withCertificate.description": "!!!Restore using backup-recovery phrase or paper wallet certificate.",
   "wallet.add.dialog.restore.withoutCertificate.description": "!!!Restore wallet from backup",
+  "wallet.add.dialog.restoreNotificationMessage": "!!!Wallet restoration is currently in progress. Until it completes, it is not possible to restore or import new wallets.",
   "wallet.add.dialog.title.label": "!!!Add wallet",
   "wallet.amountInput.feesLabel": "!!!+ {amount} of fees",
   "wallet.backup.privacy.warning.dialog..button.labelContinue": "!!!Continue",
