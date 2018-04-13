@@ -3,8 +3,7 @@ let dataDir = "\${HOME}/.local/share/Daedalus/"
     -- XXX: deal with XDG_DATA_HOME being an actual variable -- pass dataDir as an argument?
     --    ..or, maybe installation data is a better solution?
 in
-{ name      = "macos64"
-    -- XXX: this is an ugly workaround for the lack of a linux configuration key in configuration.yaml
+{ name      = "linux64"
 , configurationYaml  = "\${DAEDALUS_CONFIG}/configuration.yaml"
 , nodeArgs           =
   { keyfile          = "Secrets/secret.key"

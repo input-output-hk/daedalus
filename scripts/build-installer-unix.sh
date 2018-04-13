@@ -124,9 +124,6 @@ cd installers
     echo '~~~ Building the cardano installer generator..'
     INSTALLER=$(nix-build -j 2 --no-out-link)
 
-    case ${OS_NAME} in
-            darwin ) OS=macos64;;
-            linux )  OS=linux;;esac
     for cluster in ${CLUSTERS}
     do
           echo "~~~ Generating installer for cluster ${cluster}.."

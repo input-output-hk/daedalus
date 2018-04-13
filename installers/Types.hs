@@ -34,7 +34,7 @@ import           Prelude                      hiding (FilePath)
 
 
 data OS
-  = Linux
+  = Linux64
   | Macos64
   | Win64
   deriving (Bounded, Enum, Eq, Read, Show)

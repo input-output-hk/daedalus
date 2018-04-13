@@ -114,7 +114,7 @@ optionsParser detectedOS = Options
   <*> (optional      $
       (BuildJob     <$> optText "build-job"           'b' "CI Build Job/ID"))
   <*> (fromMaybe detectedOS <$> (optional $
-                   optReadLower "os"                  's' "OS, defaults to host OS.  One of:  linux macos64 win64"))
+                   optReadLower "os"                  's' "OS, defaults to host OS.  One of:  linux64 macos64 win64"))
   <*> (fromMaybe Mainnet    <$> (optional $
                    optReadLower "cluster"             'c' "Cluster the resulting installer will target:  mainnet or staging"))
   <*> (fromMaybe "daedalus" <$> (optional $

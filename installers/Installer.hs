@@ -29,7 +29,7 @@ detectCI = do
 main :: IO ()
 main = do
   let os = case Sys.os of
-             "linux"   -> Linux
+             "linux"   -> Linux64
              "darwin"  -> Macos64
              "mingw32" -> Win64
              _         -> error ("Unsupported OS: " <> pack Sys.os)
@@ -46,6 +46,6 @@ main = do
     GenInstaller -> do
       putStrLn $ "Generating installer for " <>  Sys.os <> "-" <> Sys.arch
       case os of
-        Linux   -> putStrLn ("Use default.nix, please." :: String)
+        Linux64 -> putStrLn ("Use default.nix, please." :: String)
         Macos64 ->     MacInstaller.main options
         Win64   -> WindowsInstaller.main options
