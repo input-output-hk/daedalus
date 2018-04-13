@@ -64,11 +64,11 @@ let
   launcherConfig = writeText "launcher-config.json" (builtins.toJSON {
     nodePath = "${daedalus-bridge}/bin/cardano-node";
     nodeArgs = [
-      "--update-latest-path" "$HOME/.local/share/Daedalus/${cluster}/installer.sh"
+      #"--update-latest-path" "$HOME/.local/share/Daedalus/${cluster}/installer.sh"
       "--keyfile" "Secrets/secret.key"
       "--wallet-db-path" "Wallet/"
-      "--update-server" "https://update-cardano-mainnet.iohk.io"
-      "--update-with-package"
+      #"--update-server" "https://update-cardano-mainnet.iohk.io"
+      #"--update-with-package"
       "--no-ntp"
       "--tlscert" "tls/server/server.crt"
       "--tlskey" "tls/server/server.key"
@@ -87,7 +87,8 @@ let
       systemStart = null;
       seed = null;
     };
-    updaterPath = "/bin/update-runner";
+    #updaterPath = "/bin/update-runner";
+    updaterPath = "/updates-off";
     updateArchive = "$HOME/.local/share/Daedalus/${cluster}/installer.sh";
     updateWindowsRunner = null;
     nodeTimeoutSec = 30;
