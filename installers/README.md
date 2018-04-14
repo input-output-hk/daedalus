@@ -16,7 +16,7 @@ configuration language, which are factored per OS and target cluster:
 The Dhall expressions that comprise the runtime configuration are thus composed from:
   - `launcher.dhall` -- top level expression defining the launcher configuration YAML file
   - `topology.dhall` -- top level expression defining the wallet topology YAML file
-  - `{linux,macos64,win64}.dhall`
+  - `{linux64,macos64,win64}.dhall`
   - `{mainnet,staging}.dhall`
 
 The set of clusters (currently `mainnet` and `staging`) that the build scripts

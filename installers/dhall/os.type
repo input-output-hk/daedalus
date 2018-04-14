@@ -1,13 +1,16 @@
 { name       : Text
-, nodeArgs   :
+, configurationYaml  : Text
+, nodeArgs           :
   { keyfile          : Text
   , logsPrefix       : Text
+  , topology         : Text
   , updateLatestPath : Text
   , walletDBPath     : Text
   }
 , pass :
   { nodePath            : Text
   , nodeDbPath          : Text
+  , nodeLogConfig       : Text
   , nodeLogPath         : Text
   , walletPath          : Text
   , updaterPath         : Text

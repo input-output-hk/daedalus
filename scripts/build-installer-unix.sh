@@ -53,11 +53,9 @@ retry() {
 ###
 fast_impure=
 verbose=true
-build_id=0
+build_id="${BUILDKITE_BUILD_NUMBER:-0}"
 pull_request=
 test_installer=
-
-daedalus_version="$1"; arg2nz "daedalus version" $1; shift
 
 # Parallel build options for Buildkite agents only
 if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
@@ -99,9 +97,13 @@ if test -n "${verbose}"
 then set -x
 fi
 
+daedalus_version="${1:-dev}"
+
 mkdir -p ~/.local/bin
 
-rm -rf dist release node_modules || true
+if test -e "dist" -o -e "release" -o -e "node_modules"
+then sudo rm -rf dist release node_modules || true
+fi
 
 export PATH=$HOME/.local/bin:$PATH
 export DAEDALUS_VERSION=${daedalus_version}.${build_id}
@@ -122,9 +124,6 @@ cd installers
     echo '~~~ Building the cardano installer generator..'
     INSTALLER=$(nix-build -j 2 --no-out-link)
 
-    case ${OS_NAME} in
-            darwin ) OS=macos64;;
-            linux )  OS=linux;;esac
     for cluster in ${CLUSTERS}
     do
           echo "~~~ Generating installer for cluster ${cluster}.."
@@ -133,7 +132,7 @@ cd installers
 
           INSTALLER_CMD="$INSTALLER/bin/make-installer ${pull_request} ${test_installer}"
           INSTALLER_CMD+="  --cardano          ${DAEDALUS_BRIDGE}"
-          INSTALLER_CMD+="  --build-job        ${BUILDKITE_BUILD_NUMBER}"
+          INSTALLER_CMD+="  --build-job        ${build_id}"
           INSTALLER_CMD+="  --cluster          ${cluster}"
           INSTALLER_CMD+="  --daedalus-version ${DAEDALUS_VERSION}"
           INSTALLER_CMD+="  --output           ${INSTALLER_PKG}"
@@ -150,7 +149,11 @@ cd installers
                   if [ -n "${BUILDKITE_JOB_ID:-}" ]
                   then
                           export PATH=${BUILDKITE_BIN_PATH:-}:$PATH
-                          buildkite-agent artifact upload "${APP_NAME}/${INSTALLER_PKG}" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
+                          buildkite-agent artifact upload "${APP_NAME}/${INSTALLER_PKG}"    s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
+                          mv "launcher-config.yaml" "launcher-config-${cluster}.macos64.yaml"
+                          mv "wallet-topology.yaml" "wallet-topology-${cluster}.macos64.yaml"
+                          buildkite-agent artifact upload "launcher-config-${cluster}.macos64.yaml" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
+                          buildkite-agent artifact upload "wallet-topology-${cluster}.macos64.yaml" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
                           rm "${APP_NAME}/${INSTALLER_PKG}"
                   fi
           else

@@ -21,7 +21,7 @@ import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recurs
                                    strLength, uninstall, unsafeInject, unsafeInjectGlobal,
                                    writeRegDWORD, writeRegStr, (%/=))
 import           Prelude ((!!))
-import           System.Directory (doesFileExist)
+import           System.Directory (copyFile, doesFileExist)
 import           System.Environment (lookupEnv)
 import           System.FilePath ((</>))
 import           System.IO (writeFile)
@@ -205,10 +205,10 @@ main opts@Options{..}  = do
         fullName    = "daedalus-win64-" <> fromVer fullVersion <> "-" <> lshowText oCluster <> "-installer.exe"
     TIO.writeFile "version.txt" $ fromVer fullVersion
 
-    echo "Generating configuration file:  launcher-config.yaml"
-    generateConfig (ConfigRequest Win64 oCluster Launcher) "./dhall" "launcher-config.yaml"
-    echo "Generating configuration file:  wallet-topology.yaml"
-    generateConfig (ConfigRequest Win64 oCluster Topology) "./dhall" "wallet-topology.yaml"
+    generateOSClusterConfigs "./dhall" "." opts
+
+    -- Copy the launcher config for webpack:
+    copyFile "launcher-config.yaml" "../launcher-config.yaml"
 
     echo "Packaging frontend"
     packageFrontend
