@@ -1,6 +1,8 @@
 { stdenv, runCommand, writeText, writeScriptBin, fetchurl, fetchFromGitHub, openssl, electron,
 coreutils, utillinux, procps, cluster,
-rawapp, daedalus-bridge, daedalus-installer }:
+rawapp, daedalus-bridge, daedalus-installer,
+sandboxed ? false
+}:
 
 let
   slimOpenssl = runCommand "openssl" {} ''
@@ -36,12 +38,15 @@ let
 
     set -xe
 
+    ${if sandboxed then ''
+    '' else ''
+      export PATH="${daedalus-frontend}/bin/:${daedalus-bridge}/bin:$PATH"
+    ''}
+
     test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
     export           CLUSTER=${cluster}
     export      DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
-    export   DAEDALUS_BRIDGE=${daedalus-bridge}
-    export   DAEDALUS_CONFIG=${daedalus-config}
-    export DAEDALUS_FRONTEND=${daedalus-frontend}
+    export   DAEDALUS_CONFIG=${if sandboxed then "/nix/var/nix/profiles/profile/etc" else daedalus-config}
 
     mkdir -p "''${DAEDALUS_DIR}/${cluster}/"{Logs/pub,Secrets}
     cd "''${DAEDALUS_DIR}/${cluster}/"
@@ -52,9 +57,13 @@ let
       cp tls/server/server.crt tls/ca/ca.crt
     fi
     exec ${daedalus-bridge}/bin/cardano-launcher \
-      --config ${daedalus-config}/launcher-config.yaml
+      --config ${if sandboxed then "/nix/var/nix/profiles/profile/etc/launcher-config.yaml" else "${daedalus-config}/launcher-config.yaml"}
   '';
-in {
-   inherit daedalus daedalus-config;
+  wrappedConfig = runCommand "launcher-config" {} ''
+    mkdir -pv $out/etc/
+    cp ${daedalus-config}/* $out/etc/
+  '';
+in daedalus // {
+  cfg = wrappedConfig;
+  inherit daedalus-frontend;
 }
-

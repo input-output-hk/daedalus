@@ -6,7 +6,7 @@
     , systemStart  = [] : Optional Integer
     , seed         = [] : Optional Integer
     }
-, nodeTimeoutSec = 30
+, nodeTimeoutSec = 60
 , reportServer   = cluster.reportServer
 , walletArgs     = [] : List Text
 , nodeArgs =
