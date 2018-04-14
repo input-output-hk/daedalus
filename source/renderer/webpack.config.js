@@ -5,9 +5,7 @@ const AutoDllPlugin = require('autodll-webpack-plugin');
 const yamljs = require('yamljs');
 
 let reportUrl = '';
-try {
-  reportUrl = yamljs.parseFile('installers/launcher-config-windows.yaml').reportServer;
-} catch (e) {} // eslint-disable-line
+reportUrl = yamljs.parseFile('launcher-config.yaml').reportServer;
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
