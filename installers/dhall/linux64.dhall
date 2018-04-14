@@ -11,13 +11,14 @@ in
   , walletDBPath     = "Wallet/"
   }
 , pass      =
-  { nodePath            = "\${DAEDALUS_BRIDGE}/bin/cardano-node"
+  { nodePath            = "cardano-node"
   , nodeDbPath          = "DB/"
   , nodeLogConfig       = "\${DAEDALUS_CONFIG}/daedalus.yaml"
   , nodeLogPath         = "${dataDir}/${cluster.name}/Logs/cardano-node.log"
 
-  , walletPath          = "\${DAEDALUS_FRONTEND}/bin/daedalus-frontend"
+  , walletPath          = "daedalus-frontend"
 
+  -- todo, find some way to disable updates when unsandboxed?
   , updaterPath         = "/bin/update-runner"
   , updaterArgs         = [] : List Text
   , updateArchive       = [ "${dataDir}/${cluster.name}/installer.sh" ] : Optional Text

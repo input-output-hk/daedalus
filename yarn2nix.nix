@@ -1,4 +1,4 @@
-{ lib, pkgs, nodejs-8_x, python, api, cluster, nukeReferences, version, fetchzip, daedalus-config }:
+{ lib, pkgs, nodejs-8_x, python, api, cluster, nukeReferences, version, fetchzip, daedalus }:
 let
   nodejs = nodejs-8_x;
   yarn2nix = import (fetchzip {
@@ -18,7 +18,7 @@ yarn2nix.mkYarnPackage {
   DAEDALUS_VERSION = "${version}";
   NODE_ENV = "production";
   installPhase = ''
-    cp -vi ${daedalus-config}/launcher-config.yaml ./launcher-config.yaml
+    cp -vi ${daedalus.cfg}/etc/launcher-config.yaml ./launcher-config.yaml
     npm run build
     mkdir -p $out/bin $out/share/daedalus
     cp -R dist/* $out/share/daedalus
