@@ -19,6 +19,7 @@ executable make-installer
                      , Config
                      , Types
   build-depends:       base
+                     , aeson
                      , bytestring
                      , containers
                      , dhall
@@ -64,6 +65,7 @@ executable load-certificate
                      , RewriteLibs
                      , Types
   build-depends:       base
+                     , aeson
                      , bytestring
                      , containers
                      , dhall

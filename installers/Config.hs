@@ -13,6 +13,7 @@ module Config
   , optReadLower, argReadLower
   , Options(..), optionsParser
   , Command(..), commandParser
+  , dfp
   -- Re-export Turtle:
   , options
   ) where
@@ -25,21 +26,22 @@ import qualified Data.Map                         as Map
 import           Data.Maybe
 import           Data.Optional                       (Optional)
 import           Data.Semigroup                      ((<>))
-import           Data.Text                           (Text, pack, unpack, intercalate, toLower)
+import           Data.Text                           (Text, unpack, pack, intercalate, toLower)
 import qualified Data.Yaml                        as YAML
 
 import qualified Dhall.JSON                       as Dhall
 
-import           Filesystem.Path.CurrentOS           (FilePath, fromText, encodeString, encodeString)
+import           Filesystem.Path                     (FilePath, (</>))
+import           Filesystem.Path.CurrentOS           (fromText, encodeString)
+import qualified Filesystem.Path.Rules            as FP
 import qualified GHC.IO.Encoding                  as GHC
 
 import qualified System.IO                        as Sys
 import qualified System.Exit                      as Sys
-
-import           Turtle                              (optional, (<|>), (</>), format, (%), s)
+import           Turtle                              (optional, (<|>), format, (%), s, Format, makeFormat)
 import           Turtle.Options
 
-import           Prelude                      hiding (FilePath, unlines, writeFile)
+import           Prelude                     hiding (FilePath, unlines, writeFile)
 import           Types
 import           Debug.Trace
 
@@ -87,8 +89,7 @@ data Options = Options
   , oOS             :: OS
   , oCluster        :: Cluster
   , oAppName        :: AppName
-  , oDaedalusVer    :: Version
-  , oOutput         :: FilePath
+  , oOutputDir      :: FilePath
   , oPullReq        :: Maybe PullReq
   , oTestInstaller  :: TestInstaller
   , oCI             :: CI
@@ -119,10 +120,7 @@ optionsParser detectedOS = Options
                    optReadLower "cluster"             'c' "Cluster the resulting installer will target:  mainnet or staging"))
   <*> (fromMaybe "daedalus" <$> (optional $
       (AppName      <$> optText "appname"             'n' "Application name:  daedalus or..")))
-  <*> (fromMaybe "dev"   <$> (optional $
-      (Version      <$> optText "daedalus-version"    'v' "Daedalus version string")))
-  <*> (fromMaybe (error "--output not specified for 'installer' subcommand") . (fromText <$>)
-       <$> (optional $  optText "output"              'o' "Installer output file"))
+  <*>                   optPath "out-dir"             'o' "Installer output directory"
   <*> (optional   $
       (PullReq      <$> optText "pull-request"        'r' "Pull request #"))
   <*> (testInstaller
@@ -137,6 +135,11 @@ backendOptionParser = cardano <|> mantis <|> pure (Cardano "")
     mantis = switch "mantis" 'M' "Use Mantis (ETC) backend" *> pure Mantis
 
 
+
+-- | Render a FilePath with POSIX-style forward slashes, which is the
+-- Dhall syntax.
+dfp :: Format r (FilePath -> r)
+dfp = makeFormat (\fpath -> either id id (FP.toText FP.posix fpath))
 
 dhallTopExpr :: Text -> Config -> OS -> Cluster -> Text
 dhallTopExpr dhallRoot cfg os cluster

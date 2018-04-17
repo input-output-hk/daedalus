@@ -18,22 +18,23 @@ module MacInstaller
 --- An overview of Mac .pkg internals:    http://www.peachpit.com/articles/article.aspx?p=605381&seqNum=2
 ---
 
-import           Universum
+import           Universum hiding (FilePath, toText, (<>))
 
 import           Control.Monad (unless)
+import           Control.Exception (handle)
 import           Data.Text (Text)
 import qualified Data.Text as T
-import           System.Directory (copyFile, createDirectoryIfMissing, doesFileExist, renameFile)
-import           System.FilePath ((</>), FilePath)
+
 import           System.FilePath.Glob (glob)
-import qualified Filesystem.Path           as P
-import qualified Filesystem.Path.CurrentOS as P
-import           Turtle (Shell, ExitCode (..), echo, proc, procs, inproc, which, Managed, with, printf, (%), l, s, pwd, cd, sh, mktree, export)
+import           Filesystem.Path.CurrentOS (encodeString)
+import           Filesystem.Path (FilePath, dropExtension, (</>), (<.>))
+import           Turtle hiding (stdout, prefix, e)
 import           Turtle.Line (unsafeTextToLine)
 
 import           RewriteLibs (chain)
 
 import           System.IO (hSetBuffering, BufferMode(NoBuffering))
+import           System.IO.Error (IOError, isDoesNotExistError)
 
 import           Config
 import           Types
@@ -44,26 +45,46 @@ main :: Options -> IO ()
 main opts@Options{..} = do
   hSetBuffering stdout NoBuffering
 
-  let appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
-
   generateOSClusterConfigs "./dhall" "." opts
+  cp "launcher-config.yaml" "../launcher-config.yaml"
 
-  tempInstaller <- makeInstaller opts appRoot
+  appRoot <- buildElectronApp
+  ver <- makeComponentRoot opts appRoot
+  daedalusVer <- getDaedalusVersion "../package.json"
 
-  signInstaller signingConfig (toText tempInstaller) $ T.pack $ P.encodeString oOutput
-  checkSignature $ T.pack $ P.encodeString oOutput
+  let pkg = packageFileName Macos64 oCluster daedalusVer ver oBuildJob
+      opkg = oOutputDir </> pkg
 
-  run "rm" [toText tempInstaller]
-  printf ("Generated "%s%"\n") $ T.pack $ P.encodeString oOutput
+  tempInstaller <- makeInstaller opts appRoot pkg
+
+  signInstaller signingConfig tempInstaller opkg
+  checkSignature opkg
+
+  run "rm" [tt tempInstaller]
+  printf ("Generated "%fp%"\n") opkg
 
   when (oTestInstaller == TestInstaller) $ do
     echo $ "--test-installer passed, will test the installer for installability"
-    procs "sudo" ["installer", "-dumplog", "-verbose", "-target", "/", "-pkg", T.pack $ P.encodeString oOutput] empty
+    procs "sudo" ["installer", "-dumplog", "-verbose", "-target", "/", "-pkg", tt opkg] empty
 
 makeScriptsDir :: Options -> Managed T.Text
 makeScriptsDir Options{..} = case oBackend of
   Cardano _ -> pure "data/scripts"
   Mantis    -> pure "[DEVOPS-533]"
+
+-- | Builds the electron app with "npm package" and returns its
+-- component root path.
+-- NB: If webpack scripts are changed then this function may need to
+-- be updated.
+buildElectronApp :: IO FilePath
+buildElectronApp = do
+  echo "Creating icons ..."
+  procs "iconutil" ["--convert", "icns", "--output", "icons/electron.icns"
+                   , "icons/electron.iconset"] mempty
+
+  withDir ".." . sh $ npmPackage
+
+  pure "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
 
 npmPackage :: Shell ()
 npmPackage = do
@@ -76,60 +97,60 @@ npmPackage = do
   size <- inproc "du" ["-sh", "release"] empty
   printf ("Size of Electron app is " % l % "\n") size
 
-withDir :: P.FilePath -> IO a -> IO a
-withDir d = bracket (pwd >>= \old -> (cd d >> pure old)) cd . const
-
-makeInstaller :: Options -> FilePath -> IO FilePath
-makeInstaller opts@Options{..} appRoot = do
+makeComponentRoot :: Options -> FilePath -> IO Text
+makeComponentRoot Options{..} appRoot = do
   let dir     = appRoot </> "Contents/MacOS"
-  createDirectoryIfMissing False "dist"
-
-  echo "Creating icons ..."
-  procs "iconutil" ["--convert", "icns", "--output", "icons/electron.icns"
-                   , "icons/electron.iconset"] mempty
-
-  copyFile "launcher-config.yaml" "../launcher-config.yaml"
-  withDir ".." . sh $ npmPackage
 
   echo "~~~ Preparing files ..."
-  case oBackend of
+  ver <- case oBackend of
     Cardano bridge -> do
       -- Executables
       forM ["cardano-launcher", "cardano-node"] $ \f -> do
-        copyFile (P.encodeString bridge </> "bin" </> f) (dir </> f)
-        procs "chmod" ["+w", toText $ dir </> f] empty
+        cp (bridge </> "bin" </> f) (dir </> f)
 
       -- Config files (from daedalus-bridge)
-      copyFile (P.encodeString bridge </> "config/configuration.yaml") (dir </> "configuration.yaml")
-      copyFile (P.encodeString bridge </> "config/log-config-prod.yaml") (dir </> "log-config-prod.yaml")
+      cp (bridge </> "config/configuration.yaml") (dir </> "configuration.yaml")
+      cp (bridge </> "config/log-config-prod.yaml") (dir </> "log-config-prod.yaml")
 
       -- Genesis (from daedalus-bridge)
-      genesisFiles <- glob $ P.encodeString bridge </> "config" </> "*genesis*.json"
+      genesisFiles <- glob . encodeString $ bridge </> "config" </> "*genesis*.json"
       when (null genesisFiles) $
         error "Cardano package carries no genesis files."
-      procs "cp" (fmap toText (genesisFiles <> [dir])) mempty
+      procs "cp" (map T.pack genesisFiles ++ [tt dir]) mempty
 
       -- Config yaml (generated from dhall files)
-      copyFile "launcher-config.yaml" (dir </> "launcher-config.yaml")
-      copyFile "wallet-topology.yaml" (dir </> "wallet-topology.yaml")
+      cp "launcher-config.yaml" (dir </> "launcher-config.yaml")
+      cp "wallet-topology.yaml" (dir </> "wallet-topology.yaml")
 
       -- SSL
-      copyFile "build-certificates-unix.sh" (dir </> "build-certificates-unix.sh")
-      copyFile "ca.conf"     (dir </> "ca.conf")
-      copyFile "server.conf" (dir </> "server.conf")
-      copyFile "client.conf" (dir </> "client.conf")
+      cp "build-certificates-unix.sh" (dir </> "build-certificates-unix.sh")
+      cp "ca.conf"     (dir </> "ca.conf")
+      cp "server.conf" (dir </> "server.conf")
+      cp "client.conf" (dir </> "client.conf")
+
+      procs "chmod" ["-R", "+w", tt dir] empty
 
       -- Rewrite libs paths and bundle them
-      void $ chain dir $ fmap toText [dir </> "cardano-launcher", dir </> "cardano-node"]
+      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-node"]
 
-    Mantis -> pure () -- DEVOPS-533
+      readCardanoVersionFile bridge
+
+    Mantis -> pure "mantis" -- DEVOPS-533
 
   -- Prepare launcher
-  de <- doesFileExist (dir </> "Frontend")
-  unless de $ renameFile (dir </> "Daedalus") (dir </> "Frontend")
-  run "chmod" ["+x", toText (dir </> "Frontend")]
+  de <- testdir (dir </> "Frontend")
+  unless de $ mv (dir </> "Daedalus") (dir </> "Frontend")
+  run "chmod" ["+x", tt (dir </> "Frontend")]
   writeLauncherFile dir
 
+  pure ver
+
+makeInstaller :: Options -> FilePath -> FilePath -> IO FilePath
+makeInstaller opts@Options{..} componentRoot pkg = do
+  let tempPkg1 = format fp (oOutputDir </> pkg)
+      tempPkg2 = oOutputDir </> (dropExtension pkg <.> "unsigned" <.> "pkg")
+
+  mktree oOutputDir
   with (makeScriptsDir opts) $ \scriptsDir -> do
     let
       pkgargs :: [ T.Text ]
@@ -139,26 +160,36 @@ makeInstaller opts@Options{..} appRoot = do
            -- data/scripts/postinstall is responsible for running build-certificates
            , "--scripts", scriptsDir
            , "--component"
-           , T.pack appRoot
+           , tt componentRoot
            , "--install-location"
            , "/Applications"
-           , "dist/temp.pkg"
+           , tempPkg1
            ]
     run "ls" [ "-ltrh", scriptsDir ]
     run "pkgbuild" pkgargs
 
   run "productbuild" [ "--product", "data/plist"
-                     , "--package", "dist/temp.pkg"
-                     , "dist/temp2.pkg"
+                     , "--package", tempPkg1
+                     , format fp tempPkg2
                      ]
 
-  run "rm" ["dist/temp.pkg"]
-  pure "dist/temp2.pkg"
+  run "rm" [tempPkg1]
+  pure tempPkg2
+
+-- | cardano-sl.daedalus-bridge should have a file containing its version.
+readCardanoVersionFile :: FilePath -> IO Text
+readCardanoVersionFile bridge = prefix <$> handle handler (readTextFile verFile)
+  where
+    verFile = bridge </> "version"
+    prefix = maybe "UNKNOWN" ("cardano-sl-" <>) . safeHead . T.lines
+    handler :: IOError -> IO Text
+    handler e | isDoesNotExistError e = pure ""
+              | otherwise = throwM e
 
 writeLauncherFile :: FilePath -> IO FilePath
 writeLauncherFile dir = do
-  writeFile path $ unlines contents
-  run "chmod" ["+x", toText path]
+  writeTextFile path $ T.unlines contents
+  run "chmod" ["+x", tt path]
   pure path
   where
     path = dir </> "Daedalus"
@@ -186,12 +217,11 @@ signingConfig = SigningConfig
 -- | Runs "security import -x"
 importCertificate :: SigningConfig -> FilePath -> Maybe Text -> IO ExitCode
 importCertificate SigningConfig{..} cert password = do
-  let optArg str = map toText . maybe [] (\p -> [str, p])
+  let optArg s = maybe [] (\p -> [s, p])
       certPass = optArg "-P" password
       keyChain = optArg "-k" signingKeyChain
-  productSign <- optArg "-T" . fmap (toText . P.encodeString) <$> which "productsign"
-  let args = ["import", toText cert, "-x"] ++ keyChain ++ certPass ++ productSign
-  -- echoCmd "security" args
+  productSign <- optArg "-T" . fmap tt <$> which "productsign"
+  let args = ["import", tt cert, "-x"] ++ keyChain ++ certPass ++ productSign
   proc "security" args mempty
 
 --- | Remove our certificate from the keychain
@@ -202,16 +232,16 @@ deleteCertificate SigningConfig{..} = run' "security" args
     keychain = maybe [] pure signingKeyChain
 
 -- | Creates a new installer package with signature added.
-signInstaller :: SigningConfig -> T.Text -> T.Text -> IO ()
+signInstaller :: SigningConfig -> FilePath -> FilePath -> IO ()
 signInstaller SigningConfig{..} src dst =
-  run "productsign" $ sign ++ keychain ++ [ src, dst ]
+  run "productsign" $ sign ++ keychain ++ map tt [src, dst]
   where
     sign = [ "--sign", signingIdentity ]
     keychain = maybe [] (\k -> [ "--keychain", k]) signingKeyChain
 
 -- | Use pkgutil to verify that signing worked.
-checkSignature :: T.Text -> IO ()
-checkSignature pkg = run "pkgutil" ["--check-signature", pkg]
+checkSignature :: FilePath -> IO ()
+checkSignature pkg = run "pkgutil" ["--check-signature", tt pkg]
 
 -- | Print the command then run it. Raises an exception on exit
 -- failure.
