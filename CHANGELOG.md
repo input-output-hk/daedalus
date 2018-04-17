@@ -5,6 +5,16 @@ Changelog
 
 ### Features
 
+### Fixes
+
+### Chores
+
+- Disabled text selection on static UI elements ([PR 868](https://github.com/input-output-hk/daedalus/pull/868))
+
+## 0.10.0
+
+### Features
+
 - Paper wallets certificate generation ([PR 779](https://github.com/input-output-hk/daedalus/pull/779))
 - Wallet restoration from a paper wallet certificate ([PR 794](https://github.com/input-output-hk/daedalus/pull/794))
 - Paper wallet certificate generation and wallet restoration from a paper wallet certificate acceptance tests ([PR 807](https://github.com/input-output-hk/daedalus/pull/807))
