@@ -29,8 +29,8 @@ const messages = defineMessages({
   },
   instructions: {
     id: 'paper.wallet.create.certificate.verification.dialog.instructions',
-    defaultMessage: `!!!Make sure you enter all 24 words for the paper wallet recovery phrase,
-     first 15 words printed on the certificate followed by the 9 words you wrote by hand.`,
+    defaultMessage: `!!!Make sure you enter all 27 words for the paper wallet recovery phrase,
+     first 18 words printed on the certificate followed by the 9 words you wrote by hand.`,
     description: '"Paper wallet create certificate verification dialog" subtitle.'
   },
   recoveryPhraseLabel: {

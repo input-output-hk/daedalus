@@ -33,7 +33,7 @@ const messages = defineMessages({
   },
   certificateReadableConfirmationLabel: {
     id: 'paper.wallet.create.certificate.print.dialog.certificateReadableConfirmation',
-    defaultMessage: '!!!Yes, first 15 words of the paper wallet recovery phrase are readable.',
+    defaultMessage: '!!!Yes, first 18 words of the paper wallet recovery phrase are readable.',
     description: '"Paper wallet create certificate print dialog" certificate readable confirmation.'
   },
   qrScannableConfirmationLabel: {
