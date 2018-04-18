@@ -22,7 +22,6 @@ usage() {
     --fast-impure             Fast, impure, incremental build
     --build-id BUILD-NO       Identifier of the build; defaults to '0'
 
-    --pull-request PR-ID      Pull request id we're building
     --nix-path NIX-PATH       NIX_PATH value
 
     --upload-s3               Upload the installer to S3
@@ -53,8 +52,7 @@ retry() {
 ###
 fast_impure=
 verbose=true
-build_id="${BUILDKITE_BUILD_NUMBER:-0}"
-pull_request=
+build_id=0
 test_installer=
 
 # Parallel build options for Buildkite agents only
@@ -76,8 +74,6 @@ do case "$1" in
            --clusters )                                     CLUSTERS="$2"; shift;;
            --fast-impure )                               fast_impure=true;;
            --build-id )       arg2nz "build identifier" $2; build_id="$2"; shift;;
-           --pull-request )   arg2nz "Pull request id" $2;
-                                                        pull_request="--pull-request $2"; shift;;
            --nix-path )       arg2nz "NIX_PATH value" $2;
                                                      export NIX_PATH="$2"; shift;;
            --test-installer )                         test_installer="--test-installer";;
@@ -126,7 +122,7 @@ cd installers
           APP_NAME="csl-daedalus"
           rm -rf ${APP_NAME}
 
-          INSTALLER_CMD="$INSTALLER/bin/make-installer ${pull_request} ${test_installer}"
+          INSTALLER_CMD="$INSTALLER/bin/make-installer ${test_installer}"
           INSTALLER_CMD+="  --cardano          ${DAEDALUS_BRIDGE}"
           INSTALLER_CMD+="  --build-job        ${build_id}"
           INSTALLER_CMD+="  --cluster          ${cluster}"

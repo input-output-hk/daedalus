@@ -129,7 +129,6 @@ pushd installers
 
 if NOT DEFINED APPVEYOR_BUILD_NUMBER        ( set APPVEYOR_BUILD_NUMBER=0 )
 set XARGS="--build-job %APPVEYOR_BUILD_NUMBER%"
-IF     DEFINED APPVEYOR_PULL_REQUEST_NUMBER ( set XARGS="%XARGS:"=% --pull-request %APPVEYOR_PULL_REQUEST_NUMBER%" )
 
 FOR %%C IN (%CLUSTERS:"=%) DO (
   @echo ##############################################################################

@@ -90,9 +90,7 @@ data Options = Options
   , oCluster        :: Cluster
   , oAppName        :: AppName
   , oOutputDir      :: FilePath
-  , oPullReq        :: Maybe PullReq
   , oTestInstaller  :: TestInstaller
-  , oCI             :: CI
   } deriving Show
 
 commandParser :: Parser Command
@@ -121,11 +119,8 @@ optionsParser detectedOS = Options
   <*> (fromMaybe "daedalus" <$> (optional $
       (AppName      <$> optText "appname"             'n' "Application name:  daedalus or..")))
   <*>                   optPath "out-dir"             'o' "Installer output directory"
-  <*> (optional   $
-      (PullReq      <$> optText "pull-request"        'r' "Pull request #"))
   <*> (testInstaller
                     <$> switch  "test-installer"      't' "Test installers after building")
-  <*> pure Buildkite -- NOTE: this is filled in by auto-detection
 
 backendOptionParser :: Parser Backend
 backendOptionParser = cardano <|> mantis <|> pure (Cardano "")

@@ -8,11 +8,10 @@ module Types
     OS(..)
   , Cluster(..)
   , Config(..), configFilename
-  , CI(..)
+  , ConfigRequest(..)
 
   , AppName(..)
   , BuildJob(..)
-  , PullReq(..)
   , Version(..)
 
   -- * Flags
@@ -63,16 +62,15 @@ configFilename :: Config -> FilePath
 configFilename Launcher = "launcher-config.yaml"
 configFilename Topology = "wallet-topology.yaml"
 
-data CI
-  = Appveyor
-  | Travis
-  | Buildkite
-  | Manual
-  deriving (Bounded, Enum, Eq, Read, Show)
+-- | What runtime config file to generate.
+data ConfigRequest = ConfigRequest
+  { rOS      :: OS
+  , rCluster :: Cluster
+  , rConfig  :: Config
+  } deriving (Eq, Show)
 
 newtype AppName      = AppName      { fromAppName      :: Text } deriving (Eq, IsString, Show)
 newtype BuildJob     = BuildJob     { fromBuildJob     :: Text } deriving (Eq, IsString, Show)
-newtype PullReq      = PullReq      { fromPullReq      :: Text } deriving (Eq, IsString, Show)
 newtype Version      = Version      { fromVer          :: Text } deriving (Eq, IsString, Show)
 
 
