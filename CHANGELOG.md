@@ -12,6 +12,7 @@ Changelog
 - Setting spending password to "ON" by default ([PR 856](https://github.com/input-output-hk/daedalus/pull/856))
 - Paper wallet certificate generation ([PR 779](https://github.com/input-output-hk/daedalus/pull/779))
 - Paper wallet certificate restoration ([PR 794](https://github.com/input-output-hk/daedalus/pull/794))
+- Update paper wallet certificate generation to use more random bits ([PR 871](https://github.com/input-output-hk/daedalus/pull/871))
 
 ### Fixes
 
