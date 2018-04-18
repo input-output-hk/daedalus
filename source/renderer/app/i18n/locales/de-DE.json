@@ -108,7 +108,7 @@
   "paper.wallet.create.certificate.instructions.dialog.printingInstructions": "!!!When you click “Save PDF file” you will be prompted to choose a location on your computer where the PDF file will be saved. After that open the saved PDF file and print it.",
   "paper.wallet.create.certificate.instructions.dialog.subtitle": "!!!Create a paper wallet certificate for offline storage of funds.",
   "paper.wallet.create.certificate.print.dialog.certificatePrintedConfirmation": "!!!Yes, the paper wallet certificate printed successfully.",
-  "paper.wallet.create.certificate.print.dialog.certificateReadableConfirmation": "!!!Yes, first 15 words of the paper wallet recovery phrase are readable.",
+  "paper.wallet.create.certificate.print.dialog.certificateReadableConfirmation": "!!!Yes, first 18 words of the paper wallet recovery phrase are readable.",
   "paper.wallet.create.certificate.print.dialog.headline": "!!!Certificate printing complete",
   "paper.wallet.create.certificate.print.dialog.info": "!!!Your certificate is not yet complete and does not contain all data needed to restore your wallet. In the next step, you will need to write down additional 9 words to your paper wallet recovery phrase.",
   "paper.wallet.create.certificate.print.dialog.qrScannableConfirmation": "!!!Yes, the QR code is scannable.",
