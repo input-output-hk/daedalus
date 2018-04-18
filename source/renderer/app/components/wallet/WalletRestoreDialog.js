@@ -356,7 +356,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
             : intl.formatMessage(messages.shieldedRecoveryPhraseInputHint)
           }
           options={suggestedMnemonics}
-          maxSelections={this.isCertificate() ? 24 : 12}
+          maxSelections={this.isCertificate() ? RECOVERY_PHRASE_WORD_COUNT : 12}
           error={recoveryPhraseField.error}
           maxVisibleOptions={5}
           noResultsMessage={intl.formatMessage(messages.recoveryPhraseNoResults)}
