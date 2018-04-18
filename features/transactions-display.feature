@@ -1,7 +1,9 @@
-Feature: Transactions on the Wallet Summary
+Feature: Display wallet transactions
 
-  The wallet summary screen displays the five most recent incoming
-  and outgoing transactions, sorted by creation date (newest first).
+  The wallet summary screen displays the five most recent transactions,
+  sorted by creation date (newest first). If there are more than five
+  transactions it shows a "show more transactions" button to redirect
+  to the wallet transactions screen where all are listed.
 
   Background:
     Given I have completed the basic setup
@@ -14,8 +16,11 @@ Feature: Transactions on the Wallet Summary
     When I am on the "TargetWallet" wallet "summary" screen
     Then I should not see any transactions
     And I should see the no recent transactions message
+    When I am on the "TargetWallet" wallet "transactions" screen
+    Then I should not see any transactions
+    And I should see the no recent transactions message
 
-  Scenario: The most recent transactions
+  Scenario: More than five transactions
     Given I have made the following transactions:
       | sender         | receiver      | amount |
       | Genesis wallet | TargetWallet  | 1      |
@@ -32,3 +37,13 @@ Feature: Transactions on the Wallet Summary
       | income | 4      |
       | income | 3      |
       | income | 2      |
+    When I click on the show more transactions button
+    Then I should be on the "TargetWallet" wallet "transactions" screen
+    Then I should see the following transactions:
+      | type   | amount |
+      | income | 6      |
+      | income | 5      |
+      | income | 4      |
+      | income | 3      |
+      | income | 2      |
+      | income | 1      |

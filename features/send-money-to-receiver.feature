@@ -18,7 +18,7 @@ Feature: Send Money to Receiver
     And I see send money confirmation dialog
     And I submit the wallet send form
     Then I should be on the "Genesis wallet" wallet "summary" screen
-    And I should see the following transactions:
+    And the latest transaction should show:
       | title                   | amountWithoutFees |
       | wallet.transaction.sent | -0.000010         |
     And the balance of "first" wallet should be:
@@ -38,7 +38,7 @@ Feature: Send Money to Receiver
     And I enter wallet spending password in confirmation dialog "Secret123"
     And I submit the wallet send form
     Then I should be on the "Genesis wallet" wallet "summary" screen
-    And I should see the following transactions:
+    And the latest transaction should show:
       | title                   | amountWithoutFees |
       | wallet.transaction.sent | -0.000010         |
     And the balance of "first" wallet should be:

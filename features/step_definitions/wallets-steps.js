@@ -404,6 +404,24 @@ Then(/^I should see the following error messages on the wallet send form:$/, asy
   }
 });
 
+// TODO: refactor this to a less hackish solution (fees cannot easily be calculated atm)
+Then(/^the latest transaction should show:$/, async function (table) {
+  const expectedData = table.hashes()[0];
+  await this.client.waitForVisible('.Transaction_title');
+  let transactionTitles = await this.client.getText('.Transaction_title');
+  transactionTitles = [].concat(transactionTitles);
+  const expectedTransactionTitle = await this.intl(expectedData.title, { currency: 'ADA' });
+  expect(expectedTransactionTitle).to.equal(transactionTitles[0]);
+  let transactionAmounts = await this.client.getText('.Transaction_amount');
+  transactionAmounts = [].concat(transactionAmounts);
+  // Transaction amount includes transaction fees so we need to
+  // substract them in order to get a match with expectedData.amountWithoutFees.
+  // NOTE: we use "add()" as this is outgoing transaction and amount is a negative value!
+  const transactionAmount = new BigNumber(transactionAmounts[0]);
+  const transactionAmountWithoutFees = transactionAmount.add(this.fees).toFormat(DECIMAL_PLACES_IN_ADA);
+  expect(expectedData.amountWithoutFees).to.equal(transactionAmountWithoutFees);
+});
+
 // Extended timeout is used for this step as it takes more than DEFAULT_TIMEOUT
 // for the receiver wallet's balance to be updated on the backend after creating transactions
 Then(/^the balance of "([^"]*)" wallet should be:$/, { timeout: 40000 }, async function (walletName, table) {

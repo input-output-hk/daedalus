@@ -34,7 +34,7 @@ Feature: Paper Wallets Certificate generation
     And I see send money confirmation dialog
     And I submit the wallet send form
     Then I should be on the "Genesis wallet" wallet "summary" screen
-    And I should see the following transactions:
+    And the latest transaction should show:
       | title                   | amountWithoutFees |
       | wallet.transaction.sent | -0.000010         |
     And I click on the add wallet button in the sidebar
