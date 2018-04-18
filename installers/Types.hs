@@ -19,7 +19,6 @@ module Types
 
   -- * Misc
   , lshowText
-  , errorT
   , tt
   , packageFileName
   , getDaedalusVersion
@@ -28,15 +27,13 @@ module Types
   )
 where
 
-import           Data.Text                           (Text, toLower, unpack)
+import           Universum                    hiding (FilePath)
+import           Data.Text                           (toLower)
 import           Data.String                         (IsString)
-import qualified Universum
-import           Prelude                      hiding (FilePath)
 import           Filesystem.Path
 import           Filesystem.Path.CurrentOS           (fromText, encodeString)
 import           Turtle                              (pwd, cd)
 import           Turtle.Format                       (format, fp)
-import           Data.Monoid                         ((<>))
 import           Data.Aeson                          (FromJSON(..), withObject, eitherDecode, (.:))
 import qualified Data.ByteString.Lazy.Char8       as L8
 
@@ -83,10 +80,6 @@ testInstaller    False  = DontTestInstaller
 
 lshowText :: Show a => a -> Text
 lshowText = toLower . Universum.show
-
-
-errorT :: Text -> a
-errorT = error . unpack
 
 tt :: FilePath -> Text
 tt = format fp
