@@ -107,24 +107,27 @@ export const downloadPaperWalletCertificate = (
   doc.fontSize(10).text(intl.formatMessage(messages.recoveryPhraseLabel), 0, 535, { width: 595, align: 'center' });
 
   // mnemonics
-  doc.fontSize(8);
+  doc.fontSize(7);
   doc.text(printMnemonic(0), 168, 560);
-  doc.text(printMnemonic(1), 220, 560);
-  doc.text(printMnemonic(2), 272, 560);
-  doc.text(printMnemonic(3), 324, 560);
-  doc.text(printMnemonic(4), 376, 560);
+  doc.text(printMnemonic(1), 212, 560);
+  doc.text(printMnemonic(2), 256, 560);
+  doc.text(printMnemonic(3), 300, 560);
+  doc.text(printMnemonic(4), 344, 560);
+  doc.text(printMnemonic(5), 388, 560);
 
-  doc.text(printMnemonic(5), 168, 581);
-  doc.text(printMnemonic(6), 220, 581);
-  doc.text(printMnemonic(7), 272, 581);
-  doc.text(printMnemonic(8), 324, 581);
-  doc.text(printMnemonic(9), 376, 581);
+  doc.text(printMnemonic(6), 168, 581);
+  doc.text(printMnemonic(7), 212, 581);
+  doc.text(printMnemonic(8), 256, 581);
+  doc.text(printMnemonic(9), 300, 581);
+  doc.text(printMnemonic(10), 344, 581);
+  doc.text(printMnemonic(11), 388, 581);
 
-  doc.text(printMnemonic(10), 168, 602);
-  doc.text(printMnemonic(11), 220, 602);
-  doc.text(printMnemonic(12), 272, 602);
-  doc.text(printMnemonic(13), 324, 602);
-  doc.text(printMnemonic(14), 376, 602);
+  doc.text(printMnemonic(12), 168, 602);
+  doc.text(printMnemonic(13), 212, 602);
+  doc.text(printMnemonic(14), 256, 602);
+  doc.text(printMnemonic(15), 300, 602);
+  doc.text(printMnemonic(16), 344, 602);
+  doc.text(printMnemonic(17), 388, 602);
 
   doc.fontSize(7).text(daedalusInfo, (width - 270) / 2, 705, { width: 270, align: 'left' });
   doc.rotate(-180, { origin: [width / 2, height / 2] });
