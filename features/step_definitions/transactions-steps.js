@@ -1,4 +1,4 @@
-import { Given, Then } from 'cucumber';
+import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import BigNumber from 'bignumber.js/bignumber';
 import { DECIMAL_PLACES_IN_ADA, LOVELACES_PER_ADA } from '../../source/renderer/app/config/numbersConfig';
@@ -69,7 +69,6 @@ Then(/^I should see the following transactions:$/, async function (table) {
   expect(expectedTxs).to.deep.equal(visibleTxs);
 });
 
-Then('I should see {int} transactions', async function (count) {
-  const txs = await getVisibleTextsForSelector(this.client, '.Transaction_component');
-  expect(txs.length).to.equal(count);
+When(/^I click on the show more transactions button$/, async function () {
+  await this.waitAndClick('.WalletTransactionsList_showMoreTransactionsButton');
 });
