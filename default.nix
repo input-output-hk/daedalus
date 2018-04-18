@@ -73,12 +73,20 @@ let
         -e "s+INSERT_ICON_PATH_HERE+''${DAEDALUS_DIR}/icon.png+g" \
         > "''${XDG_DATA_HOME}/applications/Daedalus.desktop"
     '';
+    preInstall = pkgs.writeText "pre-install" ''
+      if grep sse4 /proc/cpuinfo -q; then
+        echo 'SSE4 check pass'
+      else
+        echo "ERROR: your cpu lacks SSE4 support, cardano will not work"
+        exit 1
+      fi
+    '';
     newBundle = let
       daedalus' = self.daedalus.override { sandboxed = true; };
     in (import ./installers/nix/nix-installer.nix {
+      inherit (self) postInstall preInstall;
       installationSlug = installPath;
       installedPackages = [ daedalus' self.postInstall self.namespaceHelper daedalus'.cfg self.daedalus-bridge daedalus'.daedalus-frontend ];
-      postInstall = self.postInstall;
       nix-bundle = self.nix-bundle;
     }).installerBundle;
   };
