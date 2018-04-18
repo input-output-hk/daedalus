@@ -12,6 +12,8 @@ module MacInstaller
     , deleteCertificate
     , run
     , run'
+    , readCardanoVersionFile
+    , withDir
     ) where
 
 ---

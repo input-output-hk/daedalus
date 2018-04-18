@@ -1,5 +1,5 @@
 { mkDerivation, aeson, base, bytestring, containers, dhall
-, dhall-json, directory, filepath, github, Glob, lens-aeson
+, dhall-json, directory, filepath, github, Glob, hspec, lens-aeson
 , megaparsec, microlens, network-uri, nsis, optional-args
 , optparse-applicative, optparse-generic, split, stdenv
 , system-filepath, temporary, text, turtle, universum, wreq, yaml
@@ -17,6 +17,13 @@ mkDerivation {
     nsis optional-args optparse-applicative optparse-generic split
     system-filepath temporary text turtle universum wreq yaml
     zip-archive
+  ];
+  testHaskellDepends = [
+    aeson base bytestring containers dhall dhall-json directory
+    filepath github Glob hspec lens-aeson megaparsec microlens
+    network-uri nsis optional-args optparse-applicative
+    optparse-generic split system-filepath temporary text turtle
+    universum wreq yaml zip-archive
   ];
   description = "Daedalus Installer Builder";
   license = stdenv.lib.licenses.mit;

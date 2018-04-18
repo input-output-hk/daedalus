@@ -9,6 +9,7 @@
 module Config
   ( checkAllConfigs
   , generateOSClusterConfigs
+  , forConfigValues
   , OS(..), Cluster(..), Config(..), Backend(..)
   , optReadLower, argReadLower
   , Options(..), optionsParser
