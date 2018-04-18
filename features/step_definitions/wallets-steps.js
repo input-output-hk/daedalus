@@ -23,7 +23,7 @@ import { waitForActiveRestoreNotification } from '../support/helpers/notificatio
 const defaultWalletKeyFilePath = path.resolve(__dirname, '../support/default-wallet.key');
 const defaultWalletJSONFilePath = path.resolve(__dirname, '../support/default-wallet.json');
 
-Given(/^I have a wallet with funds$/, async function () {
+Given(/^I have a "Genesis wallet" with funds$/, async function () {
   await importWalletWithFunds(this.client, {
     keyFilePath: defaultWalletKeyFilePath,
     password: null,
@@ -32,7 +32,7 @@ Given(/^I have a wallet with funds$/, async function () {
   addOrSetWalletsForScenario.call(this, wallet);
 });
 
-Given(/^I have a wallet with funds and password$/, async function () {
+Given(/^I have a "Genesis wallet" with funds and password$/, async function () {
   await importWalletWithFunds(this.client, {
     keyFilePath: defaultWalletKeyFilePath,
     password: 'Secret123',
@@ -167,7 +167,7 @@ When(/^I fill out the wallet send form with:$/, function (table) {
 
 When(/^I fill out the send form with a transaction to "([^"]*)" wallet:$/, async function (walletName, table) {
   const values = table.hashes()[0];
-  const walletId = this.wallets.find((w) => w.name === walletName).id;
+  const walletId = getWalletByName.call(this, walletName).id;
   const walletAddress = await this.client.executeAsync((id, done) => {
     daedalus.api.ada.getAddresses({ walletId: id })
       .then((response) => (
@@ -402,23 +402,6 @@ Then(/^I should see the following error messages on the wallet send form:$/, asy
     const expectedError = await this.intl(errors[i].message);
     expect(errorsOnScreen[i]).to.equal(expectedError);
   }
-});
-
-Then(/^the latest transaction should show:$/, async function (table) {
-  const expectedData = table.hashes()[0];
-  await this.client.waitForVisible('.Transaction_title');
-  let transactionTitles = await this.client.getText('.Transaction_title');
-  transactionTitles = [].concat(transactionTitles);
-  const expectedTransactionTitle = await this.intl(expectedData.title, { currency: 'ADA' });
-  expect(expectedTransactionTitle).to.equal(transactionTitles[0]);
-  let transactionAmounts = await this.client.getText('.Transaction_amount');
-  transactionAmounts = [].concat(transactionAmounts);
-  // Transaction amount includes transaction fees so we need to
-  // substract them in order to get a match with expectedData.amountWithoutFees.
-  // NOTE: we use "add()" as this is outgoing transaction and amount is a negative value!
-  const transactionAmount = new BigNumber(transactionAmounts[0]);
-  const transactionAmountWithoutFees = transactionAmount.add(this.fees).toFormat(DECIMAL_PLACES_IN_ADA);
-  expect(expectedData.amountWithoutFees).to.equal(transactionAmountWithoutFees);
 });
 
 // Extended timeout is used for this step as it takes more than DEFAULT_TIMEOUT

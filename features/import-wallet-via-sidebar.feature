@@ -20,7 +20,7 @@ Feature: Import Wallet via Sidebar
     And I should have newly created "Genesis wallet" wallet loaded
 
   Scenario: Wallet Already Imported Error
-    Given I have a wallet with funds
+    Given I have a "Genesis wallet" with funds
     When I try to import the wallet with funds again
     Then I see the import wallet dialog with an error that the wallet already exists
 

@@ -2,7 +2,7 @@ Feature: Paper Wallets Certificate generation
 
   Background:
     Given I have completed the basic setup
-    And I have a wallet with funds
+    And I have a "Genesis wallet" with funds
 
   Scenario: Paper wallets certificate success generation
     Given The sidebar shows the "wallets" category
@@ -34,7 +34,7 @@ Feature: Paper Wallets Certificate generation
     And I see send money confirmation dialog
     And I submit the wallet send form
     Then I should be on the "Genesis wallet" wallet "summary" screen
-    And the latest transaction should show:
+    And I should see the following transactions:
       | title                   | amountWithoutFees |
       | wallet.transaction.sent | -0.000010         |
     And I click on the add wallet button in the sidebar

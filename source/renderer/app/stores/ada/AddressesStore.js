@@ -31,7 +31,7 @@ export default class AddressesStore extends Store {
   _createAddress = async (params: { walletId: string, password: ?string }) => {
     try {
       const { walletId, password } = params;
-      const accountId = this._getAccountIdByWalletId(walletId);
+      const accountId = await this.getAccountIdByWalletId(walletId);
       const address: ?CreateAddressResponse = await this.createAddressRequest.execute({
         accountId, password
       }).promise;
@@ -91,9 +91,14 @@ export default class AddressesStore extends Store {
     this.error = null;
   };
 
-  _getAccountIdByWalletId = (walletId: string): (?string) => {
-    const result = this._getAddressesAllRequest(walletId).result;
+  getAccountIdByWalletId = async (walletId: string): Promise<?string> => {
+    const result = await this._getAddressesAllRequest(walletId);
     return result ? result.accountId : null;
+  };
+
+  getAddressesByWalletId = async (walletId: string): Promise<Array<string>> => {
+    const result = await this._getAddressesAllRequest(walletId);
+    return result ? result.addresses : [];
   };
 
   _getAddressesAllRequest = (walletId: string): CachedRequest<GetAddressesResponse> => {

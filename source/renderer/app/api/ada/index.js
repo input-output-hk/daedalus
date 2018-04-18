@@ -126,7 +126,7 @@ export type CreateTransactionRequest = {
   sender: string,
   receiver: string,
   amount: string,
-  password: ?string,
+  password?: ?string,
 };
 export type UpdateWalletRequest = {
   walletId: string,

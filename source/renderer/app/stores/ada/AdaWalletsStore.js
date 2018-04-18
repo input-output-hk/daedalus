@@ -80,7 +80,7 @@ export default class AdaWalletsStore extends WalletStore {
   }) => {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
-    const accountId = this.stores.ada.addresses._getAccountIdByWalletId(wallet.id);
+    const accountId = await this.stores.ada.addresses.getAccountIdByWalletId(wallet.id);
     if (!accountId) throw new Error('Active account required before sending.');
     await this.sendMoneyRequest.execute({
       ...transactionDetails,
