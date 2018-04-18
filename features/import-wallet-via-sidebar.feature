@@ -14,10 +14,11 @@ Feature: Import Wallet via Sidebar
     And I see the import wallet dialog
     And I select a valid wallet import key file
     And I click on the import wallet button in import wallet dialog
-    Then I should see the restore status notification while import is running
-    And I should not see the import wallet dialog anymore
-    And I should not see the restore status notification once import is finished
+    Then I should not see the import wallet dialog anymore
     And I should have newly created "Genesis wallet" wallet loaded
+    And I should be on the "Genesis wallet" wallet "summary" screen
+    And I should see the restore status notification while import is running
+    And I should not see the restore status notification once import is finished
 
   Scenario: Wallet Already Imported Error
     Given I have a wallet with funds
@@ -39,6 +40,7 @@ Feature: Import Wallet via Sidebar
     | Secret123 | Secret123        |
     And I click on the import wallet button in import wallet dialog
     Then I should not see the import wallet dialog anymore
-    And I should see the import status notification while import is running
-    And I should not see the restore status notification once import is finished
     And I should have newly created "Genesis wallet" wallet loaded
+    And I should be on the "Genesis wallet" wallet "summary" screen
+    And I should see the restore status notification while import is running
+    And I should not see the restore status notification once import is finished

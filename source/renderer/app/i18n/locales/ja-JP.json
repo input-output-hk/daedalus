@@ -130,7 +130,6 @@
   "paper.wallet.pdf.info.title": "ダイダロス・ペーパーウォレット証明書",
   "paper.wallet.pdf.password.label": "パスワード",
   "paper.wallet.pdf.recoveryPhrase.label": "ペーパーウォレット復元フレーズ",
-  "paper.wallet.pdf.release.version": "0.9.0",
   "paper.wallet.pdf.walletAddress.label": "ウォレットアドレス",
   "profile.languageSelect.form.languageSelectLabel": "使用する言語を選択してください",
   "profile.languageSelect.form.submitLabel": "次",

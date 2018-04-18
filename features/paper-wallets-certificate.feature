@@ -47,16 +47,15 @@ Feature: Paper Wallets Certificate generation
     And I enter paper wallet recovery phrase
     And I toggle "Spending password" switch on the restore wallet with certificate dialog
     And I submit the restore wallet dialog
-    Then I should see the restore status notification while restore is running
-    And I should not see the restore wallet dialog anymore
-    And I should not see the restore status notification once restore is finished
+    Then I should not see the restore wallet dialog anymore
     And I should have newly created "Restored CERTIFICATE wallet" wallet loaded
-    When I click on the "Restored CERTIFICATE wallet" wallet in the sidebar
-    Then I should be on the "Restored CERTIFICATE wallet" wallet "summary" screen
+    And I should be on the "Restored CERTIFICATE wallet" wallet "summary" screen
     And the balance of "Restored CERTIFICATE wallet" wallet should be:
       | balance  |
       | 0.000010 |
-    And I click the wallet receive button
+    And I should see the restore status notification while restore is running
+    And I should not see the restore status notification once restore is finished
+    When I click the wallet receive button
     Then I should be on the "Restored CERTIFICATE wallet" wallet "receive" screen
     And I should see that address was used
 
@@ -73,8 +72,8 @@ Feature: Paper Wallets Certificate generation
     And I click on the continue button
     And I see the "Verify Certificate" dialog
     And I enter wrong paper wallet recovery phrase:
-      | recoveryPhrase                                                                                                                                  |
-      | worry pluck anchor recycle predict grow inner inside face face subway meat away once february family rug make hub violin riot around coast play |
+      | recoveryPhrase                                                                                                                                                  |
+      | worry pluck anchor recycle predict grow inner inside face face subway meat away once february family rug make hub violin riot around coast play pluck grow face |
     And I should see the following field error message:
       | message                       |
       | global.errors.invalidMnemonic |

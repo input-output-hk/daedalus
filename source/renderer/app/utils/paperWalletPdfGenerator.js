@@ -26,11 +26,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Password',
     description: 'Paper wallet pdf "Password" label.'
   },
-  releaseVersion: {
-    id: 'paper.wallet.pdf.release.version',
-    defaultMessage: '!!!0.8.2',
-    description: 'Label for "App Release Version"',
-  },
   infoTitle: {
     id: 'paper.wallet.pdf.info.title',
     defaultMessage: '!!!Daedalus paper wallet certificate',
@@ -55,8 +50,9 @@ type DownloadPaperWalletCertificateParams = {
 export const downloadPaperWalletCertificate = (
   { address, mnemonics, intl, onSuccess, onError, filePath }: DownloadPaperWalletCertificateParams
 ) => {
+  const { version, build } = environment;
   const daedalusInfo =
-    `Daedalus ${intl.formatMessage(messages.releaseVersion)}#${environment.build}`;
+    `Daedalus ${version}#${build}`;
   const qrCodeImage = qr.imageSync(address, { type: 'png', size: 10, ec_level: 'H', margin: 0 });
   const textColor = '#3b5c9b';
 
