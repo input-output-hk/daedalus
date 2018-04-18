@@ -16,6 +16,7 @@ import Dialog from '../widgets/Dialog';
 import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../utils/validations';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
+import { RECOVERY_PHRASE_WORD_COUNT } from '../../config/paperWalletsConfig';
 import styles from './WalletRestoreDialog.scss';
 
 const messages = defineMessages({
@@ -157,9 +158,9 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           const { intl } = this.context;
           const enteredWords = field.value;
           const wordCount = enteredWords.length;
-          const expectedWordCount = this.isRegular() ? 12 : 24;
+          const expectedWordCount = this.isRegular() ? 12 : RECOVERY_PHRASE_WORD_COUNT;
           const value = join(enteredWords, ' ');
-          // Regular mnemonics have 12 and paper wallet recovery needs 24 words
+          // Regular mnemonics have 12 and paper wallet recovery needs 27 words
           const isPhraseComplete = wordCount === expectedWordCount;
           if (!isPhraseComplete) {
             return [
