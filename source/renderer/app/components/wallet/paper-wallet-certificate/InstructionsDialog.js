@@ -25,7 +25,7 @@ const messages = defineMessages({
   },
   instructionsListDefinition1: {
     id: 'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition1',
-    defaultMessage: '!!!Your printed certificate will include your paper wallet recovery phrase of 24 words. Note that your paper wallet recovery phrase is different to the 12-words recovery phrases used to restore your regular Daedalus wallet.',
+    defaultMessage: '!!!Your printed certificate will include your paper wallet recovery phrase of 27 words. Note that your paper wallet recovery phrase is different to the 12-words recovery phrases used to restore your regular Daedalus wallet.',
     description: 'Wallet certificate create instructions dialog definition 1.',
   },
   instructionsListDefinition2: {

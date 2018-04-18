@@ -18,10 +18,11 @@ Feature: Add Wallet via Sidebar
     | marriage glide need gold actress grant judge eager spawn plug sister whip |
     And I toggle "Spending password" switch on the restore wallet dialog
     And I submit the restore wallet dialog
-    Then I should see the restore status notification while restore is running
-    And I should not see the restore wallet dialog anymore
-    And I should not see the restore status notification once restore is finished
+    Then I should not see the restore wallet dialog anymore
     And I should have newly created "Restored wallet" wallet loaded
+    And I should be on the "Restored wallet" wallet "summary" screen
+    And I should see the restore status notification while restore is running
+    And I should not see the restore status notification once restore is finished
 
   Scenario: Successfully Restoring a Wallet with spending password
     Given The sidebar shows the "wallets" category
@@ -37,7 +38,8 @@ Feature: Add Wallet via Sidebar
     | password  | repeatedPassword |
     | Secret123 | Secret123        |
     And I submit the restore wallet dialog
-    Then I should see the restore status notification while restore is running
-    And I should not see the restore wallet dialog anymore
-    And I should not see the restore status notification once restore is finished
+    Then I should not see the restore wallet dialog anymore
     And I should have newly created "Restored wallet" wallet loaded
+    And I should be on the "Restored wallet" wallet "summary" screen
+    And I should see the restore status notification while restore is running
+    And I should not see the restore status notification once restore is finished

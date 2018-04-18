@@ -47,7 +47,7 @@ export const generateMnemonic = (ms: ?number = 12) => {
 export const scramblePaperWalletMnemonic = (
   passphrase: string, input: string
 ) => {
-  const iv = new Uint8Array(4);
+  const iv = new Uint8Array(8);
   window.crypto.getRandomValues(iv);
   const scrambledInput = CardanoCrypto.PaperWallet.scrambleStrings(iv, passphrase, input);
   return scrambledInput.split(' ');
