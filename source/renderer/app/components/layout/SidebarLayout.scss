@@ -7,16 +7,19 @@ $topBarHeight: 84px;
 }
 
 .main {
+  box-shadow: -20px 0 80px 0 rgba(0, 0, 0, 0.25);
   width: 100%;
   height: 100%;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   position: relative;
+  // Show elements that overflow the main above the sidebar area
+  z-index: 20;
 }
 
 .sidebar {
-  flex: 0 0;
+  flex: 0;
   overflow: visible;
 }
 
@@ -25,7 +28,7 @@ $topBarHeight: 84px;
   height: $topBarHeight;
   flex-shrink: 0;
   // Show elements that overflow the topbar above the content area
-  z-index: 2;
+  z-index: 20;
 }
 
 .contentWrapper {
