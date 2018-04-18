@@ -5,11 +5,6 @@ Changelog
 
 ### Features
 
-- Paper wallets certificate generation ([PR 779](https://github.com/input-output-hk/daedalus/pull/779))
-- Wallet restoration from a paper wallet certificate ([PR 794](https://github.com/input-output-hk/daedalus/pull/794))
-- Paper wallet certificate generation and wallet restoration from a paper wallet certificate acceptance tests ([PR 807](https://github.com/input-output-hk/daedalus/pull/807))
-- Instructions for accessing FAQ, reporting a problem and downloading logs on the support page in general settings ([PR 818](https://github.com/input-output-hk/daedalus/pull/818))
-- New Edit section in system menu with copy & paste and related actions ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
 - Asynchronous wallet restoration ([PR 849](https://github.com/input-output-hk/daedalus/pull/849))
 - Added wallet restore indicator in the sidebar ([PR 862](https://github.com/input-output-hk/daedalus/pull/862))
 - Added Daedalus version in application title ([PR 826](https://github.com/input-output-hk/daedalus/pull/826))
@@ -27,10 +22,12 @@ Changelog
 - Fixed submit button flicker within the support request dialog ([PR 850](https://github.com/input-output-hk/daedalus/pull/850))
 - Fixed "Download logs" button bug where it would throw Javascript error in case user does not select destination directory for saving logs file ([PR 850](https://github.com/input-output-hk/daedalus/pull/850))
 - Updated moment.js dependency to the latest version which fixes ReDOS vulnerability ([PR 782](https://github.com/input-output-hk/daedalus/pull/782))
+- Updated Electron dependency to the latest version which fixes vulnerability issues ([PR 855](https://github.com/input-output-hk/daedalus/pull/855))
 
 ### Chores
 
 - Improved build system ([PR 692](https://github.com/input-output-hk/daedalus/pull/692))
+- Added instructions for accessing FAQ, reporting a problem and downloading logs on the support page in general settings ([PR 818](https://github.com/input-output-hk/daedalus/pull/818))
 - Removed sending logs to remote server feature ([PR 818](https://github.com/input-output-hk/daedalus/pull/818))
 - Improved support dialog by default switching the "Attach logs" switch to active ([PR 829](https://github.com/input-output-hk/daedalus/pull/829))
 - Improved support dialog logs list (logs are now alphabetically ordered) ([PR 828](https://github.com/input-output-hk/daedalus/pull/828))
@@ -55,7 +52,6 @@ Changelog
 =======
 
 ### Features
-- Instructions for accessing FAQ, reporting a problem and downloading logs on the support page in general settings ([PR 818](https://github.com/input-output-hk/daedalus/pull/818))
 - New Edit section in system menu with copy & paste and related actions ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
 
 ### Fixes
