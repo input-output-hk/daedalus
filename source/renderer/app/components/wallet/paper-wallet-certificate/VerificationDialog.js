@@ -222,7 +222,7 @@ export default class VerificationDialog extends Component<Props, State> {
             <Autocomplete
               className={styles.recoveryPhrase}
               options={suggestedMnemonics}
-              maxSelections={24}
+              maxSelections={RECOVERY_PHRASE_WORD_COUNT}
               ref={(autocomplete) => { this.recoveryPhraseAutocomplete = autocomplete; }}
               {...recoveryPhraseField.bind()}
               error={recoveryPhraseField.error}
