@@ -122,6 +122,7 @@ html, body, :global(#app), :global(#app) > [data-reactroot] {
   // is not yet defined correctly in our UI
   font-family: "Times New Roman", serif;
   -webkit-font-smoothing: antialiased;
+  user-select: none;
 }
 
 * {

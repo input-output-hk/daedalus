@@ -69,6 +69,7 @@
       font-family: var(--font-medium);
       line-height: 23px;
       margin-bottom: 6px;
+      user-select: auto;
       word-break: break-all;
     }
 
@@ -191,6 +192,7 @@
     .addressId {
       flex-grow: 1;
       margin-right: 32.5px;
+      user-select: auto;
     }
 
     .addressActions {

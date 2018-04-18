@@ -31,6 +31,7 @@
     line-height: 1.38;
     margin-top: 6px;
     opacity: 0.5;
+    user-select: auto;
     word-wrap: break-word;
   }
 
@@ -56,6 +57,7 @@
       color: var(--theme-send-confirmation-dialog-send-values-color);
       line-height: 1.38;
       margin-top: 6px;
+      user-select: auto;
       word-break: break-word;
     }
     .fees {
@@ -71,6 +73,7 @@
     color: var(--theme-send-confirmation-dialog-send-values-color);
     line-height: 1.38;
     margin-top: 6px;
+    user-select: auto;
     word-break: break-word;
   }
 
