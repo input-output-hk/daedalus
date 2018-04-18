@@ -1,16 +1,6 @@
 Changelog
 =========
 
-## vNEXT
-
-### Features
-
-### Fixes
-
-### Chores
-
-- Disabled text selection on static UI elements ([PR 868](https://github.com/input-output-hk/daedalus/pull/868))
-
 ## 0.10.0
 
 ### Features
@@ -20,32 +10,28 @@ Changelog
 - Paper wallet certificate generation and wallet restoration from a paper wallet certificate acceptance tests ([PR 807](https://github.com/input-output-hk/daedalus/pull/807))
 - Instructions for accessing FAQ, reporting a problem and downloading logs on the support page in general settings ([PR 818](https://github.com/input-output-hk/daedalus/pull/818))
 - New Edit section in system menu with copy & paste and related actions ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
+- Asynchronous wallet restoration ([PR 849](https://github.com/input-output-hk/daedalus/pull/849))
+- Added wallet restore indicator in the sidebar ([PR 862](https://github.com/input-output-hk/daedalus/pull/862))
 - Added Daedalus version in application title ([PR 826](https://github.com/input-output-hk/daedalus/pull/826))
 - Added "Show more transactions" button on the summary screen ([PR 848](https://github.com/input-output-hk/daedalus/pull/848))
 - Setting spending password to "ON" by default ([PR 856](https://github.com/input-output-hk/daedalus/pull/856))
-- Asynchronous wallet restoration ([PR 849](https://github.com/input-output-hk/daedalus/pull/849))
-- Added wallet restore indicator in the sidebar ([PR 862](https://github.com/input-output-hk/daedalus/pull/862))
+- Paper wallet certificate generation ([PR 779](https://github.com/input-output-hk/daedalus/pull/779))
+- Paper wallet certificate restoration ([PR 794](https://github.com/input-output-hk/daedalus/pull/794))
 
 ### Fixes
 
-- Updated moment.js dependency to the latest version which fixes ReDOS vulnerability ([PR 782](https://github.com/input-output-hk/daedalus/pull/782))
-- Fixed bug causing only 5 transactions to be shown on the transaction list screen ([PR 778](https://github.com/input-output-hk/daedalus/pull/778))
-- Fixed broken copy & paste context menu actions on Windows ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
-- Fixed non-latin character in wallet name bug ([PR 839](https://github.com/input-output-hk/daedalus/pull/839))
 - Fixed color of ADA logo color on the loading screen (logo was too transparent) ([PR 850](https://github.com/input-output-hk/daedalus/pull/850))
 - Fixed styling of "click to upload" text on Ada redemption screen (text was too bold) ([PR 850](https://github.com/input-output-hk/daedalus/pull/850))
 - Fixed node syncing state bubble background color in Dark blue theme ([PR 850](https://github.com/input-output-hk/daedalus/pull/850))
 - Fixed cropped log list within the support request dialog ([PR 850](https://github.com/input-output-hk/daedalus/pull/850))
 - Fixed submit button flicker within the support request dialog ([PR 850](https://github.com/input-output-hk/daedalus/pull/850))
 - Fixed "Download logs" button bug where it would throw Javascript error in case user does not select destination directory for saving logs file ([PR 850](https://github.com/input-output-hk/daedalus/pull/850))
+- Updated moment.js dependency to the latest version which fixes ReDOS vulnerability ([PR 782](https://github.com/input-output-hk/daedalus/pull/782))
 
 ### Chores
 
 - Improved build system ([PR 692](https://github.com/input-output-hk/daedalus/pull/692))
-- New Edit section in system menu with copy & paste and related actions ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
 - Removed sending logs to remote server feature ([PR 818](https://github.com/input-output-hk/daedalus/pull/818))
-- Updated main and acceptane tests readme files with new acceptance tests setup information ([PR 831](https://github.com/input-output-hk/daedalus/pull/831))
-- Use UTC time in Daedalus logs ([PR 833](https://github.com/input-output-hk/daedalus/pull/833))
 - Improved support dialog by default switching the "Attach logs" switch to active ([PR 829](https://github.com/input-output-hk/daedalus/pull/829))
 - Improved support dialog logs list (logs are now alphabetically ordered) ([PR 828](https://github.com/input-output-hk/daedalus/pull/828))
 - Improved manual bug report submission dialog text color in Dark blue theme ([PR 824](https://github.com/input-output-hk/daedalus/pull/824))
@@ -60,12 +46,17 @@ Changelog
 - Improved Loading screen timeouts logic ([PR 860](https://github.com/input-output-hk/daedalus/pull/860))
 - Updated sidebar bug icon action to open Settings Support page instead of Support Request dialog ([PR 858](https://github.com/input-output-hk/daedalus/pull/858))
 - Updated the way parallel restore/imports are explaned to the user by disabling the restore/import buttons on the Add wallet dialog and presenting a user friendly message ([PR 861](https://github.com/input-output-hk/daedalus/pull/861))
+- Updated main and acceptance tests readme files with new acceptance tests setup information ([PR 831](https://github.com/input-output-hk/daedalus/pull/831))
+- Paper wallet certificate generation and wallet restoration from a paper wallet certificate acceptance tests ([PR 807](https://github.com/input-output-hk/daedalus/pull/807))
+- Use UTC time in Daedalus logs ([PR 833](https://github.com/input-output-hk/daedalus/pull/833))
+- Disabled text selection on static UI elements ([PR 868](https://github.com/input-output-hk/daedalus/pull/868))
 
 ## 0.9.1
 =======
 
 ### Features
 - Instructions for accessing FAQ, reporting a problem and downloading logs on the support page in general settings ([PR 818](https://github.com/input-output-hk/daedalus/pull/818))
+- New Edit section in system menu with copy & paste and related actions ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
 
 ### Fixes
 

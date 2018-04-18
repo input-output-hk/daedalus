@@ -93,14 +93,13 @@ appVeyorURL src = fmap collect <$> statusFor' src >>= \case
   Right Nothing  -> throwM $ StatusMissingError src
   Left err       -> throwM $ GitHubStatusError src err
   where
-    collect = safeHead . mapMaybe statusTargetUrl . filter isAppVeyor .
-              toList . combinedStatusStatuses
+    collect = safeHead . mapMaybe statusTargetUrl . filter isAppVeyor . toList
     isAppVeyor st = statusContext st == Just "continuous-integration/appveyor/branch"
 
-statusFor' :: CardanoSource -> IO (Either GH.Error GH.CombinedStatus)
+statusFor' :: CardanoSource -> IO (Either GH.Error (Vector GH.Status))
 statusFor' CardanoSource{..} = do
   auth <- authFromEnv
-  statusFor auth srcOwner srcRepo srcRev
+  statusesFor auth srcOwner srcRepo srcRev
 
 authFromEnv :: IO GH.Auth
 authFromEnv = maybe noAuth (OAuth . S8.pack) <$> lookupEnv "GITHUB_OAUTH_TOKEN"
