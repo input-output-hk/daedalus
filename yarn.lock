@@ -9426,9 +9426,9 @@ run-async@^2.2.0:
   dependencies:
     is-promise "^2.1.0"
 
-rust-cardano-crypto@0.1.1:
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/rust-cardano-crypto/-/rust-cardano-crypto-0.1.1.tgz#741ca9b8b24b331fc48226d5743168b2f44276cf"
+rust-cardano-crypto@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/rust-cardano-crypto/-/rust-cardano-crypto-0.2.0.tgz#f665b0aa29b40a212f0c0814262bf4eca6d4f4fd"
   dependencies:
     iconv-lite "0.4.19"
     safe-buffer "5.1.1"

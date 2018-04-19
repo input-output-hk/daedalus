@@ -62,6 +62,7 @@
     opacity: 0;
     overflow: hidden;
     transition: all 400ms ease;
+    user-select: auto;
     word-break: break-all;
 
     &.show {
