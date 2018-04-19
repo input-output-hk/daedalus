@@ -12,13 +12,12 @@ Daedalus - cryptocurrency wallet
 Platform-specific build scripts facilitate building Daedalus the way it is built
 by the IOHK CI:
 
-   - `scripts/build-installer-unix.sh     <DAEDALUS-VERSION> [OPTIONS..]`
-      - where OS is either `linux` or `osx`
-   - `scripts/build-installer-windows.bat <DAEDALUS-VERSION>`
+   - `scripts/build-installer-unix.sh [OPTIONS..]`
+   - `scripts/build-installer-windows.bat`
 
 The result can be found at:
-   - on OS X:    `${BUILD}/installers/dist/csl-daedalus/Daedalus-installer-*.pkg`
-   - on WIndows: `${BUILD}/installers/daedalus-*-installer.exe`
+   - on OS X:    `${BUILD}/installers/csl-daedalus/daedalus-*.pkg`
+   - on WIndows: `${BUILD}/installers/daedalus-*.exe`
 
 ### One-click build-fresh-daedalus scripts
 

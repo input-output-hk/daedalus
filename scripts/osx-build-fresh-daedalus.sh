@@ -52,7 +52,5 @@ git clone ${URL}
 pushd daedalus
     git reset --hard origin/${DAEDALUS_BRANCH}
 
-    scripts/build-installer-unix.sh \
-            "${GITHUB_USER}-${DAEDALUS_BRANCH}-$(git show-ref --hash HEAD)" \
-            "$@"
+    scripts/build-installer-unix.sh "$@"
 popd
