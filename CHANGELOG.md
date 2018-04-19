@@ -48,6 +48,7 @@ Changelog
 - Paper wallet certificate generation and wallet restoration from a paper wallet certificate acceptance tests ([PR 807](https://github.com/input-output-hk/daedalus/pull/807))
 - Use UTC time in Daedalus logs ([PR 833](https://github.com/input-output-hk/daedalus/pull/833))
 - Disabled text selection on static UI elements ([PR 868](https://github.com/input-output-hk/daedalus/pull/868))
+- Updated Daedalus and Cardano team members on the about dialog ([PR 872](https://github.com/input-output-hk/daedalus/pull/872))
 
 ## 0.9.1
 =======
