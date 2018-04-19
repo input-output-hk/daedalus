@@ -10,7 +10,7 @@ environment:
   CERT_PASS:
     secure: K+PY2zF/5qeJnnKhcCZaqLnVZuAXvuxCXosnzHdtje1C+BMLfAbCJZVt2wTMEyJT
   GITHUB_OAUTH_TOKEN:
-    secure: DGcn22uSIJVzPP7A+kvZvOm4VOPkxShppsqOiAlj6PEYjg1u5A/RHx24lCp0zoHH
+    secure: prH84TwXLO2CGaiwmipj05AAndcR7bDDxTv9hL8adIpr2bNjrV7pN15JKVmsxISc
   # Avoid long paths on Windows
   STACK_ROOT: "c:\\sr"
 

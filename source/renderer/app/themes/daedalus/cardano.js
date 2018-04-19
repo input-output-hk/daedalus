@@ -151,7 +151,6 @@ export default {
   '--theme-settings-menu-box-border': '1px solid #c6cdd6',
   '--theme-settings-menu-item-text-color': '#5e6066',
   '--theme-settings-menu-item-text-color-active': '#5e6066',
-  '--theme-settings-menu-item-text-color-enabled-hover': '#5e6066',
   '--theme-settings-menu-item-text-color-disabled': '#b3b3b3',
   '--theme-settings-menu-item-background-color-active': '#edf0f3',
   '--theme-settings-menu-item-left-border-color-active': '#2cbb69',

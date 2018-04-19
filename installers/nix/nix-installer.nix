@@ -1,4 +1,4 @@
-{ installationSlug ? "nix-install", installedPackages, postInstall ? null, nix-bundle }:
+{ installationSlug ? "nix-install", installedPackages, postInstall ? null, nix-bundle, preInstall ? null }:
 let
   pkgs = import (import ../../fetchNixpkgs.nix (builtins.fromJSON (builtins.readFile ../../nixpkgs-src.json))) { config = {}; overlays = []; };
   installerBundle = nix-bundle.nix-bootstrap {
@@ -90,7 +90,7 @@ let
   installer = with pkgs; writeScriptBin "installer" ''
     #!${stdenv.shell}
 
-    set -ex
+    set -e
 
     TARPATH=${tarball}/tarball/tarball.tar.xz
 
@@ -108,8 +108,12 @@ let
 
     trap "exitHandler" EXIT
 
-    export PATH=${lib.makeBinPath [ coreutils pv xz gnutar nixFix gnused which ]}
+    export PATH=${lib.makeBinPath [ coreutils pv xz gnutar nixFix gnused which gnugrep ]}
     export DIR=$HOME/${installationSlug}
+
+    ${if preInstall == null then "" else ''
+      source ${preInstall}
+    ''}
 
     echo inside installer
     echo source $TARPATH
