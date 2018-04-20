@@ -12,7 +12,7 @@ export const createAboutWindow = () => {
   });
 
   const width = 640;
-  const height = 486;
+  const height = 520;
   const params = {
     fullscreenable: false,
     show: false,
