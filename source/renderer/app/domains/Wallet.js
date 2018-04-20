@@ -3,7 +3,8 @@ import { observable, computed } from 'mobx';
 import BigNumber from 'bignumber.js';
 import type { AssuranceMode, AssuranceModeOption } from '../types/transactionAssuranceTypes';
 import type { AdaV1WalletSyncState, AdaV1WalletSyncStateTag } from '../api/ada/types';
-import { assuranceModes, assuranceModeOptions } from '../config/transactionAssuranceConfig';
+import { assuranceModes} from '../types/transactionAssuranceTypes';
+import { assuranceModeOptions } from '../types/transactionAssuranceTypes';
 
 export const syncStateTags: {
   RESTORING: AdaV1WalletSyncStateTag, SYNCED: AdaV1WalletSyncStateTag,

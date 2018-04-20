@@ -1,6 +1,8 @@
 // @flow
 
 // ========= Response Types =========
+import type { AssuranceModeOption } from '../../types/transactionAssuranceTypes';
+
 export type AdaAssurance = 'CWANormal' | 'CWAStrict';
 export type AdaTransactionCondition = 'CPtxApplying' | 'CPtxInBlocks' | 'CPtxWontApply' | 'CPtxNotTracked';
 export type AdaWalletRecoveryPhraseResponse = Array<string>;
@@ -139,3 +141,9 @@ export type AdaV1Wallet = {
 };
 
 export type AdaV1Wallets = Array<AdaV1Wallet>;
+
+export const AdaV1AssuranceOptions: {
+  NORMAL: AdaV1Assurance, STRICT: AdaV1Assurance,
+} = {
+  NORMAL: 'normal', STRICT: 'strict',
+};

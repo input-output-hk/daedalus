@@ -8,10 +8,11 @@ import TransactionTypeIcon from './TransactionTypeIcon';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
 import etcSymbol from '../../../assets/images/etc-symbol.inline.svg';
 import WalletTransaction, { transactionStates, transactionTypes } from '../../../domains/WalletTransaction';
-import { assuranceLevels } from '../../../config/transactionAssuranceConfig';
+import { assuranceLevels } from '../../../types/transactionAssuranceTypes';
 import { environmentSpecificMessages } from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../domains/WalletTransaction';
 import environment from '../../../../../common/environment';
+import { ADA_EXPLORER_URL } from '../../../config/urlsConfig';
 
 const messages = defineMessages({
   card: {
@@ -129,8 +130,6 @@ type Props = {
 type State = {
   isExpanded: boolean,
 };
-
-const ADA_EXPLORER_URL = 'https://cardanoexplorer.com';
 
 export default class Transaction extends Component<Props, State> {
 
