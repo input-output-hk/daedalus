@@ -1,4 +1,4 @@
-{ version ? "1.1.0", buildNr ? "nix" }:
+{ version ? "1.2.0", buildNr ? "nix" }:
 let
   makeJobs = cluster: with import ./. { inherit cluster; version = "${version}.${buildNr}"; }; {
     inherit daedalus;
