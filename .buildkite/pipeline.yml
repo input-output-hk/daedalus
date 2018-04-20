@@ -2,7 +2,7 @@ steps:
   - label: 'daedalus-x86_64-darwin'
     command: 'scripts/nix-shell.sh --run "scripts/build-installer-unix.sh $VERSION --build-id $BUILDKITE_BUILD_NUMBER --pull-request $BUILDKITE_PULL_REQUEST"'
     env:
-      VERSION: 1.1.1
+      VERSION: 1.2.0
       NIX_SSL_CERT_FILE: /nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt
       NETWORK: mainnet
     agents:
@@ -10,12 +10,12 @@ steps:
   - label: 'daedalus-x86_64-linux'
     command: 'scripts/nix-shell.sh --run "scripts/build-installer-unix.sh $VERSION --build-id $BUILDKITE_BUILD_NUMBER --pull-request $BUILDKITE_PULL_REQUEST"'
     env:
-      VERSION: 1.1.0
+      VERSION: 1.2.0
     agents:
       system: x86_64-linux
   - label: 'daedalus-x86_64-linux-nix'
     command: 'scripts/nix-shell.sh --run "scripts/build-installer-nix.sh $VERSION $BUILDKITE_BUILD_NUMBER"'
     env:
-      VERSION: 1.1.1
+      VERSION: 1.2.0
     agents:
       system: x86_64-linux
