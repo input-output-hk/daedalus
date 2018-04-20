@@ -3,7 +3,6 @@ steps:
     command: 'scripts/nix-shell.sh --run "scripts/build-installer-unix.sh $VERSION --build-id $BUILDKITE_BUILD_NUMBER --pull-request $BUILDKITE_PULL_REQUEST"'
     env:
       VERSION: 1.1.1
-      CARDANO_SL_BRANCH: release/1.1.1
       NIX_SSL_CERT_FILE: /nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt
       NETWORK: mainnet
     agents:
@@ -18,6 +17,5 @@ steps:
     command: 'scripts/nix-shell.sh --run "scripts/build-installer-nix.sh $VERSION $BUILDKITE_BUILD_NUMBER"'
     env:
       VERSION: 1.1.1
-      CARDANO_SL_BRANCH: release/1.1.1
     agents:
       system: x86_64-linux
