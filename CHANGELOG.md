@@ -9,6 +9,8 @@ Changelog
 
 ### Chores
 
+- Refactored various magic numbers & strings into constants ([PR 881](https://github.com/input-output-hk/daedalus/pull/881))
+
 ## 0.10.0
 
 ### Features
