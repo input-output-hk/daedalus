@@ -44,7 +44,7 @@ export default class PaperWalletCreateCertificatePage extends Component<Props, S
   state = {
     currentStep: 0,
     showConfirmationDialog: false,
-  }
+  };
 
   render() {
     const { uiDialogs } = this.props.stores;

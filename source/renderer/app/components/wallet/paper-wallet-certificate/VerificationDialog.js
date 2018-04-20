@@ -14,6 +14,7 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { InvalidMnemonicError } from '../../../i18n/errors';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './VerificationDialog.scss';
+import { RECOVERY_PHRASE_WORD_COUNT } from '../../../config/paperWalletsConfig';
 
 const messages = defineMessages({
   headline: {
@@ -28,8 +29,8 @@ const messages = defineMessages({
   },
   instructions: {
     id: 'paper.wallet.create.certificate.verification.dialog.instructions',
-    defaultMessage: `!!!Make sure you enter all 24 words for the paper wallet recovery phrase,
-     first 15 words printed on the certificate followed by the 9 words you wrote by hand.`,
+    defaultMessage: `!!!Make sure you enter all 27 words for the paper wallet recovery phrase,
+     first 18 words printed on the certificate followed by the 9 words you wrote by hand.`,
     description: '"Paper wallet create certificate verification dialog" subtitle.'
   },
   recoveryPhraseLabel: {
@@ -107,9 +108,11 @@ export default class VerificationDialog extends Component<Props, State> {
             recoveringConfirmed,
           } = this.state;
           const enteredWordsArray = field.value;
-          if (enteredWordsArray.length < 24) {
+          if (enteredWordsArray.length < RECOVERY_PHRASE_WORD_COUNT) {
             // If user hasn't entered all words of the paper wallet recovery phrase yet
-            return [false, intl.formatMessage(globalMessages.incompleteMnemonic, { expected: 24 })];
+            return [false, intl.formatMessage(globalMessages.incompleteMnemonic, {
+              expected: RECOVERY_PHRASE_WORD_COUNT
+            })];
           }
           const fullRecoveryPhrase = `${walletCertificateRecoveryPhrase} ${additionalMnemonicWords}`;
           const enteredRecoveryPhrase = join(enteredWordsArray, ' ');
@@ -219,7 +222,7 @@ export default class VerificationDialog extends Component<Props, State> {
             <Autocomplete
               className={styles.recoveryPhrase}
               options={suggestedMnemonics}
-              maxSelections={24}
+              maxSelections={RECOVERY_PHRASE_WORD_COUNT}
               ref={(autocomplete) => { this.recoveryPhraseAutocomplete = autocomplete; }}
               {...recoveryPhraseField.bind()}
               error={recoveryPhraseField.error}

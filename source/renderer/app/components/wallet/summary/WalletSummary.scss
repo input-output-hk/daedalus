@@ -18,6 +18,7 @@
   letter-spacing: 0.5px;
   color: var(--theme-bordered-box-text-color);
   margin-bottom: 11px;
+  user-select: auto;
 }
 
 .walletAmount {
@@ -27,6 +28,7 @@
   color: var(--theme-bordered-box-text-color);
   margin-bottom: 11px;
   word-break: break-all;
+  user-select: auto;
 
   & > .decimal {
     font-family: var(--font-medium);
