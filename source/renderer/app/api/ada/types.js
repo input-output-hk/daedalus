@@ -1,8 +1,6 @@
 // @flow
 
 // ========= Response Types =========
-import type { AssuranceModeOption } from '../../types/transactionAssuranceTypes';
-
 export type AdaAssurance = 'CWANormal' | 'CWAStrict';
 export type AdaTransactionCondition = 'CPtxApplying' | 'CPtxInBlocks' | 'CPtxWontApply' | 'CPtxNotTracked';
 export type AdaWalletRecoveryPhraseResponse = Array<string>;

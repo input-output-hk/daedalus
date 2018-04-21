@@ -16,10 +16,9 @@ import Dialog from '../widgets/Dialog';
 import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../utils/validations';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
-import { PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../config/cryptoConfig';
-import styles from './WalletRestoreDialog.scss';
-import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../config/cryptoConfig';
+import { PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT, WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
+import styles from './WalletRestoreDialog.scss';
 
 const RESTORE_TYPES = {
   REGULAR: 'regular',
