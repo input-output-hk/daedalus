@@ -185,7 +185,7 @@ export default class WalletSendForm extends Component<Props, State> {
           const receiverValue = receiverField.value;
           const isReceiverValid = receiverField.isValid;
           if (isValid && isReceiverValid) {
-            this._calculateTransactionFee(receiverValue, amountValue);
+            await this._calculateTransactionFee(receiverValue, amountValue);
           } else {
             this._resetTransactionFee();
           }
@@ -213,7 +213,14 @@ export default class WalletSendForm extends Component<Props, State> {
     const receiverField = form.$('receiver');
     const receiverFieldProps = receiverField.bind();
     const amountFieldProps = amountField.bind();
-    const totalAmount = formattedAmountToBigNumber(amountFieldProps.value).add(transactionFee);
+    const amount = formattedAmountToBigNumber(amountFieldProps.value);
+
+    let fees = null;
+    let total = null;
+    if (isTransactionFeeCalculated) {
+      fees = transactionFee.toFormat(currencyMaxFractionalDigits);
+      total = amount.add(transactionFee).toFormat(currencyMaxFractionalDigits);
+    }
 
     const buttonClasses = classnames([
       'primary',
@@ -252,8 +259,8 @@ export default class WalletSendForm extends Component<Props, State> {
                   error={transactionFeeError || amountField.error}
                   // AmountInputSkin props
                   currency={currencyUnit}
-                  fees={transactionFee.toFormat(currencyMaxFractionalDigits)}
-                  total={totalAmount.toFormat(currencyMaxFractionalDigits)}
+                  fees={fees}
+                  total={total}
                   skin={<AmountInputSkin />}
                 />
               </div>
@@ -276,8 +283,8 @@ export default class WalletSendForm extends Component<Props, State> {
           <WalletSendConfirmationDialogContainer
             amount={amountFieldProps.value}
             receiver={receiverFieldProps.value}
-            totalAmount={totalAmount.toFormat(currencyMaxFractionalDigits)}
-            transactionFee={transactionFee.toFormat(currencyMaxFractionalDigits)}
+            totalAmount={total}
+            transactionFee={fees}
             amountToNaturalUnits={formattedAmountToNaturalUnits}
             currencyUnit={currencyUnit}
           />
@@ -299,7 +306,6 @@ export default class WalletSendForm extends Component<Props, State> {
 
   async _calculateTransactionFee(receiver: string, amountValue: string) {
     if (this._isSubmitting) return;
-    this._resetTransactionFee();
     const amount = formattedAmountToNaturalUnits(amountValue);
     try {
       const fee = await this.props.calculateTransactionFee(receiver, amount);
