@@ -101,6 +101,15 @@ import {
   WalletFileImportError,
 } from './errors';
 
+import {
+  ADA_CERTIFICATE_MNEMONIC_LENGHT,
+  ADA_REDEMPTION_PASSPHRASE_LENGHT,
+  WALLET_RECOVERY_PHRASE_WORD_COUNT
+} from '../../config/cryptoConfig';
+
+import { AdaV1AssuranceOptions } from './types';
+import { assuranceModeOptions } from '../../types/transactionAssuranceTypes';
+
 /**
  * The api layer that is used for all requests to the
  * cardano backend when working with the ADA coin.
@@ -377,7 +386,7 @@ export default class AdaApi {
   }
 
   isValidMnemonic(mnemonic: string): Promise<boolean> {
-    return isValidMnemonic(mnemonic, 12);
+    return isValidMnemonic(mnemonic, WALLET_RECOVERY_PHRASE_WORD_COUNT);
   }
 
   isValidRedemptionKey(mnemonic: string): Promise<boolean> {
@@ -389,11 +398,11 @@ export default class AdaApi {
   }
 
   isValidRedemptionMnemonic(mnemonic: string): Promise<boolean> {
-    return isValidMnemonic(mnemonic, 9);
+    return isValidMnemonic(mnemonic, ADA_REDEMPTION_PASSPHRASE_LENGHT);
   }
 
   isValidCertificateMnemonic(mnemonic: string): boolean {
-    return mnemonic.split(' ').length === 18;
+    return mnemonic.split(' ').length === ADA_CERTIFICATE_MNEMONIC_LENGHT;
   }
 
   getWalletRecoveryPhrase(): Promise<GetWalletRecoveryPhraseResponse> {
@@ -854,7 +863,9 @@ const _createWalletFromServerV1Data = action(
       id,
       amount: new BigNumber(balance).dividedBy(LOVELACES_PER_ADA),
       name,
-      assurance: assuranceLevel === 'normal' ? 'CWANormal' : 'CWAStrict',
+      assurance: (assuranceLevel === AdaV1AssuranceOptions.NORMAL ?
+        assuranceModeOptions.NORMAL : assuranceModeOptions.STRICT
+      ),
       hasPassword: hasSpendingPassword,
       passwordUpdateDate: new Date(`${spendingPasswordLastUpdate}Z`),
       syncState,

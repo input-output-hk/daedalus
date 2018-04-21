@@ -246,7 +246,7 @@ export default class AdaWalletsStore extends WalletStore {
       // Set inProgress state to show spinner if is needed
       this._updateCertificateCreationState(true);
 
-      // Genereate 12-word mnemonic
+      // Generate wallet recovery phrase
       const recoveryPhrase: GetWalletRecoveryPhraseResponse = await (
         this.getWalletRecoveryPhraseRequest.execute().promise
       );

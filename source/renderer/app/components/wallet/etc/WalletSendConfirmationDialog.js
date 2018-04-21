@@ -12,6 +12,7 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import styles from '../WalletSendConfirmationDialog.scss';
 import { formattedAmountWithoutTrailingZeros } from '../../../utils/formatters';
 import { messages } from '../WalletSendConfirmationDialog';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 
 type Props = {
   isWalletPasswordSet: boolean,
@@ -52,7 +53,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
   }, {
     options: {
       validateOnChange: true,
-      validationDebounceWait: 250,
+      validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
     },
   });
 
