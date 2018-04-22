@@ -272,7 +272,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   dialog: WalletSendConfirmationDialog,
                 })}
                 // Form can't be submitted in case transaction fees are not calculated
-                disabled={!isTransactionFeeCalculated}
+                disabled={!isTransactionFeeCalculated || transactionFeeError}
                 skin={<SimpleButtonSkin />}
               />
             </div>
