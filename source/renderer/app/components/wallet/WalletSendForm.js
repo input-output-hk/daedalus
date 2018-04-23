@@ -126,6 +126,13 @@ export default class WalletSendForm extends Component<Props, State> {
     transactionFeeError: null,
   };
 
+  // We need to track the fee calculation state in order to disable
+  // the "Submit" button as soon as either receiver or amount field changes.
+  // This is required as we are using debounced validation and we need to
+  // disable the "Submit" button as soon as the value changes and then wait for
+  // the validation to end in order to see if the button should be enabled or not.
+  _isCalculatingFee = false;
+
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
   // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
@@ -241,6 +248,10 @@ export default class WalletSendForm extends Component<Props, State> {
                   className="receiver"
                   {...receiverField.bind()}
                   error={receiverField.error}
+                  onChange={(value) => {
+                    this._isCalculatingFee = true;
+                    receiverField.onChange(value || '');
+                  }}
                   skin={<SimpleInputSkin />}
                 />
               </div>
@@ -253,6 +264,10 @@ export default class WalletSendForm extends Component<Props, State> {
                   maxBeforeDot={currencyMaxIntegerDigits}
                   maxAfterDot={currencyMaxFractionalDigits}
                   error={transactionFeeError || amountField.error}
+                  onChange={(value) => {
+                    this._isCalculatingFee = true;
+                    amountField.onChange(value || '');
+                  }}
                   // AmountInputSkin props
                   currency={currencyUnit}
                   fees={fees}
@@ -267,8 +282,7 @@ export default class WalletSendForm extends Component<Props, State> {
                 onMouseUp={() => openDialogAction({
                   dialog: WalletSendConfirmationDialog,
                 })}
-                // Form can't be submitted in case transaction fees are not calculated
-                disabled={!amountField.isDirty || !isTransactionFeeCalculated || transactionFeeError}
+                disabled={this._isCalculatingFee || !isTransactionFeeCalculated}
                 skin={<SimpleButtonSkin />}
               />
             </div>
@@ -305,6 +319,7 @@ export default class WalletSendForm extends Component<Props, State> {
     try {
       const fee = await this.props.calculateTransactionFee(receiver, amount);
       if (this._isMounted) {
+        this._isCalculatingFee = false;
         this.setState({
           isTransactionFeeCalculated: true,
           transactionFee: fee,
@@ -313,6 +328,7 @@ export default class WalletSendForm extends Component<Props, State> {
       }
     } catch (error) {
       if (this._isMounted) {
+        this._isCalculatingFee = false;
         this.setState({
           isTransactionFeeCalculated: false,
           transactionFee: new BigNumber(0),
