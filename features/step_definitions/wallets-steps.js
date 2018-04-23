@@ -18,7 +18,10 @@ import sidebar from '../support/helpers/sidebar-helpers';
 import addWalletPage from '../support/helpers/add-wallet-page-helpers';
 import importWalletDialog from '../support/helpers/dialogs/import-wallet-dialog-helpers';
 import i18n from '../support/helpers/i18n-helpers';
-import { waitForActiveRestoreNotification } from '../support/helpers/notifications-helpers';
+import {
+  isActiveWalletBeingRestored,
+  waitForActiveRestoreNotification
+} from '../support/helpers/notifications-helpers';
 
 const defaultWalletKeyFilePath = path.resolve(__dirname, '../support/default-wallet.key');
 const defaultWalletJSONFilePath = path.resolve(__dirname, '../support/default-wallet.json');
@@ -352,7 +355,10 @@ Then(/^I should not see the restore wallet dialog anymore$/, function () {
 });
 
 Then(/^I should see the restore status notification while import is running$/, async function () {
-  await waitForActiveRestoreNotification(this.client);
+  // Only check the rendered DOM if the restore is still in progress
+  if (await isActiveWalletBeingRestored(this.client)) {
+    await waitForActiveRestoreNotification(this.client);
+  }
 });
 
 Then(/^I should not see the restore status notification once import is finished$/, async function () {
@@ -360,7 +366,10 @@ Then(/^I should not see the restore status notification once import is finished$
 });
 
 Then(/^I should see the restore status notification while restore is running$/, async function () {
-  await waitForActiveRestoreNotification(this.client);
+  // Only check the rendered DOM if the restore is still in progress
+  if (await isActiveWalletBeingRestored(this.client)) {
+    await waitForActiveRestoreNotification(this.client);
+  }
 });
 
 Then(/^I should not see the restore status notification once restore is finished$/, async function () {
