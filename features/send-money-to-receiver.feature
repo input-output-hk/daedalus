@@ -7,7 +7,7 @@ Feature: Send Money to Receiver
       | first  |
 
   Scenario: User Sends Money to Receiver
-    Given I have a wallet with funds
+    Given I have a "Genesis wallet" with funds
     And I am on the "Genesis wallet" wallet "send" screen
     And I can see the send form
     When I fill out the send form with a transaction to "first" wallet:
@@ -26,7 +26,7 @@ Feature: Send Money to Receiver
       | 0.000010 |
 
   Scenario: User Sends Money from wallet with spending password to Receiver
-    Given I have a wallet with funds and password
+    Given I have a "Genesis wallet" with funds and password
     And I am on the "Genesis wallet" wallet "send" screen
     And I can see the send form
     When I fill out the send form with a transaction to "first" wallet:

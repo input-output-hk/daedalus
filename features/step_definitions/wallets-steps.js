@@ -23,7 +23,7 @@ import { waitForActiveRestoreNotification } from '../support/helpers/notificatio
 const defaultWalletKeyFilePath = path.resolve(__dirname, '../support/default-wallet.key');
 const defaultWalletJSONFilePath = path.resolve(__dirname, '../support/default-wallet.json');
 
-Given(/^I have a wallet with funds$/, async function () {
+Given(/^I have a "Genesis wallet" with funds$/, async function () {
   await importWalletWithFunds(this.client, {
     keyFilePath: defaultWalletKeyFilePath,
     password: null,
@@ -32,7 +32,7 @@ Given(/^I have a wallet with funds$/, async function () {
   addOrSetWalletsForScenario.call(this, wallet);
 });
 
-Given(/^I have a wallet with funds and password$/, async function () {
+Given(/^I have a "Genesis wallet" with funds and password$/, async function () {
   await importWalletWithFunds(this.client, {
     keyFilePath: defaultWalletKeyFilePath,
     password: 'Secret123',
@@ -167,7 +167,7 @@ When(/^I fill out the wallet send form with:$/, function (table) {
 
 When(/^I fill out the send form with a transaction to "([^"]*)" wallet:$/, async function (walletName, table) {
   const values = table.hashes()[0];
-  const walletId = this.wallets.find((w) => w.name === walletName).id;
+  const walletId = getWalletByName.call(this, walletName).id;
   const walletAddress = await this.client.executeAsync((id, done) => {
     daedalus.api.ada.getAddresses({ walletId: id })
       .then((response) => (
@@ -404,6 +404,7 @@ Then(/^I should see the following error messages on the wallet send form:$/, asy
   }
 });
 
+// TODO: refactor this to a less hackish solution (fees cannot easily be calculated atm)
 Then(/^the latest transaction should show:$/, async function (table) {
   const expectedData = table.hashes()[0];
   await this.client.waitForVisible('.Transaction_title');
