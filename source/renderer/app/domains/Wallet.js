@@ -14,7 +14,6 @@ export const syncStateTags: {
 export default class Wallet {
 
   id: string = '';
-  address: string = 'current address';
   @observable name: string = '';
   @observable amount: BigNumber;
   @observable assurance: AssuranceModeOption;

@@ -8,8 +8,8 @@ import { messages } from '../AmountInputSkin';
 
 type Props = {
   currency: string,
-  fees: BigNumber,
-  total: BigNumber,
+  fees: ?BigNumber,
+  total: ?BigNumber,
   error: boolean,
 };
 
@@ -23,8 +23,8 @@ export default class AmountInputSkin extends Component<Props> {
     const { error, fees, total, currency } = this.props;
     const { intl } = this.context;
 
-    const formattedFees = formattedAmountWithoutTrailingZeros(fees);
-    const formattedTotal = formattedAmountWithoutTrailingZeros(total);
+    const formattedFees = formattedAmountWithoutTrailingZeros(fees || '');
+    const formattedTotal = formattedAmountWithoutTrailingZeros(total || '');
 
     return (
       <div className={styles.root}>
@@ -35,7 +35,7 @@ export default class AmountInputSkin extends Component<Props> {
           </span>
         )}
         <span className={styles.total}>
-          = {formattedTotal} {currency}
+          {total && !error && `= ${formattedTotal} ${currency}`}
         </span>
       </div>
     );
