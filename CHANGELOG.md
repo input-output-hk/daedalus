@@ -10,6 +10,7 @@ Changelog
 ### Chores
 
 - Refactored various magic numbers & strings into constants ([PR 881](https://github.com/input-output-hk/daedalus/pull/881))
+- Added PR template with PR review checlist ([PR 882](https://github.com/input-output-hk/daedalus/pull/882))
 
 ## 0.10.0
 
