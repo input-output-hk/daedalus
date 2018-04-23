@@ -314,6 +314,8 @@ export default class WalletSendForm extends Component<Props, State> {
     } catch (error) {
       if (this._isMounted) {
         this.setState({
+          isTransactionFeeCalculated: false,
+          transactionFee: new BigNumber(0),
           transactionFeeError: this.context.intl.formatMessage(error)
         });
       }
