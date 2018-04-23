@@ -126,10 +126,6 @@ export default class WalletSendForm extends Component<Props, State> {
     transactionFeeError: null,
   };
 
-  // We need to track form submitting state in order to avoid calling
-  // calculate/reset transaction fee functions which causes them to flicker
-  _isSubmitting = false;
-
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
   // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
@@ -295,7 +291,7 @@ export default class WalletSendForm extends Component<Props, State> {
   }
 
   _resetTransactionFee() {
-    if (this._isMounted && !this._isSubmitting) {
+    if (this._isMounted) {
       this.setState({
         isTransactionFeeCalculated: false,
         transactionFee: new BigNumber(0),
@@ -305,7 +301,6 @@ export default class WalletSendForm extends Component<Props, State> {
   }
 
   async _calculateTransactionFee(receiver: string, amountValue: string) {
-    if (this._isSubmitting) return;
     const amount = formattedAmountToNaturalUnits(amountValue);
     try {
       const fee = await this.props.calculateTransactionFee(receiver, amount);
