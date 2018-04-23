@@ -7,6 +7,6 @@ export const isActiveWalletBeingRestored = async (client) => {
   return result.value;
 };
 
-export const waitForActiveRestoreNotification = (client, { isHidden } = {}) => {
-  return client.waitForVisible('.ActiveRestoreNotification', null, isHidden);
-};
+export const waitForActiveRestoreNotification = (client, { isHidden } = {}) => (
+  client.waitForVisible('.ActiveRestoreNotification', null, isHidden)
+);
