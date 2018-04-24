@@ -55,6 +55,9 @@ module.exports = {
         exclude: /\.inline\.svg$/,
         use: {
           loader: 'url-loader',
+          options: {
+            limit: '50000', // inline max 50kb
+          }
         }
       },
       {
@@ -84,6 +87,7 @@ module.exports = {
     }),
     new AutoDllPlugin({
       filename: 'vendor.dll.js',
+      context: path.join(__dirname, '..'),
       entry: {
         vendor: [
           'aes-js',
