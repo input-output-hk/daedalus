@@ -7,6 +7,8 @@ Changelog
 
 ### Fixes
 
+- Fixes huge build file sizes ([PR 886](https://github.com/input-output-hk/daedalus/pull/886))
+
 ### Chores
 
 - Refactored various magic numbers & strings into constants ([PR 881](https://github.com/input-output-hk/daedalus/pull/881))
