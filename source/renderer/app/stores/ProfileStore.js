@@ -207,8 +207,8 @@ export default class SettingsStore extends Store {
       destination,
     };
 
-    // logs already compressed, download
     if (this.compressedLog) {
+      // logs already compressed, trigger download
       ipcRenderer.send(DOWNLOAD_LOGS.REQUEST, this.compressedLog, destination);
     } else {
       // start process: getLogs -> compressLogs -> downloadLogs (again)
@@ -249,7 +249,7 @@ export default class SettingsStore extends Store {
     subject: string,
     problem: string,
     compressedLog: ?string,
-  }) =>  {
+  }) => {
     this.sendBugReport.execute({
       email, subject, problem, compressedLog,
     })
@@ -262,10 +262,9 @@ export default class SettingsStore extends Store {
   });
 
   _deleteCompressedFiles = action(() => {
-    // trigger ipc renderer to delete compressed temp files if exists
     if (this.compressedLog) {
-      ipcRenderer.send(DELETE_COMPRESSED_LOGS.REQUEST, this.compressedLog);
       this.compressedLog = null;
+      ipcRenderer.send(DELETE_COMPRESSED_LOGS.REQUEST, this.compressedLog);
     }
   });
 

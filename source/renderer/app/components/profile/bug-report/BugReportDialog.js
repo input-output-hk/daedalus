@@ -152,7 +152,6 @@ export default class BugReportDialog extends Component<Props, State> {
 
   componentWillReceiveProps(nextProps: Object) {
     const commpressionFilesChanged = this.props.compressedLog !== nextProps.compressedLog;
-
     if (nextProps.compressedLog && commpressionFilesChanged && !nextProps.isDownloading) {
       // proceed to submit when ipc rendered successfully return compressed files
       this.submit(nextProps.compressedLog);
