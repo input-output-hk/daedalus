@@ -201,13 +201,13 @@ export default class SettingsStore extends Store {
     this.actions.dialogs.closeActiveDialog.trigger();
   };
 
-  _downloadLogs = action(({ destination }) => {
+  _downloadLogs = action(({ destination, fresh }) => {
     this.compressedFileDownload = {
       inProgress: true,
       destination,
     };
 
-    if (this.compressedLog) {
+    if (this.compressedLog && fresh !== true) {
       // logs already compressed, trigger download
       ipcRenderer.send(DOWNLOAD_LOGS.REQUEST, this.compressedLog, destination);
     } else {
@@ -263,8 +263,8 @@ export default class SettingsStore extends Store {
 
   _deleteCompressedFiles = action(() => {
     if (this.compressedLog) {
-      this.compressedLog = null;
       ipcRenderer.send(DELETE_COMPRESSED_LOGS.REQUEST, this.compressedLog);
+      this.compressedLog = null;
     }
   });
 
