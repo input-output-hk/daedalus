@@ -179,7 +179,7 @@ export default class AdaRedemptionStore extends Store {
     runInAction(() => {
       this.walletId = walletId;
     });
-    const accountId = this.stores.ada.addresses._getAccountIdByWalletId(walletId);
+    const accountId = this.stores.ada.addresses.getAccountIdByWalletId(walletId);
     if (!accountId) throw new Error('Active account required before redeeming Ada.');
 
     this.redeemAdaRequest.execute({
@@ -199,31 +199,31 @@ export default class AdaRedemptionStore extends Store {
       }));
   };
 
-  _redeemPaperVendedAda = action(({ walletId, shieldedRedemptionKey, walletPassword } : {
+  _redeemPaperVendedAda = async ({ walletId, shieldedRedemptionKey, walletPassword } : {
     walletId: string,
     shieldedRedemptionKey: string,
     walletPassword: ?string,
   }) => {
     this.walletId = walletId;
-    const accountId = this.stores.ada.addresses._getAccountIdByWalletId(walletId);
+    const accountId = await this.stores.ada.addresses.getAccountIdByWalletId(walletId);
     if (!accountId) throw new Error('Active account required before redeeming Ada.');
-    this.redeemPaperVendedAdaRequest.execute({
-      shieldedRedemptionKey,
-      mnemonics: this.passPhrase,
-      accountId,
-      walletPassword,
-    })
-      .then(action((transaction: WalletTransaction) => {
-        this._reset();
-        this.actions.ada.adaRedemption.adaSuccessfullyRedeemed.trigger({
-          walletId,
-          amount: transaction.amount.toFormat(DECIMAL_PLACES_IN_ADA),
-        });
-      }))
-      .catch(action((error) => {
-        this.error = error;
-      }));
-  });
+
+    try {
+      const transaction = await this.redeemPaperVendedAdaRequest.execute({
+        shieldedRedemptionKey,
+        mnemonics: this.passPhrase,
+        accountId,
+        walletPassword,
+      });
+      this._reset();
+      this.actions.ada.adaRedemption.adaSuccessfullyRedeemed.trigger({
+        walletId,
+        amount: transaction.amount.toFormat(DECIMAL_PLACES_IN_ADA),
+      });
+    } catch (error) {
+      runInAction(() => this.error = error);
+    }
+  };
 
   _onAdaSuccessfullyRedeemed = action(({ walletId, amount }) => {
     Logger.debug('ADA successfully redeemed for wallet: ' + walletId);
