@@ -123,6 +123,7 @@ type Props = {
   onDownload: Function,
   onGetLogs: Function,
   onCompressLogs: Function,
+  onDeleteCompressedLogs: Function,
   isSubmitting: boolean,
   isCompressing: boolean,
   isDownloading?: boolean,
@@ -146,6 +147,7 @@ export default class BugReportDialog extends Component<Props, State> {
 
   componentWillMount() {
     this.props.onGetLogs();
+    this.props.onDeleteCompressedLogs();
   }
 
   componentWillReceiveProps(nextProps: Object) {
