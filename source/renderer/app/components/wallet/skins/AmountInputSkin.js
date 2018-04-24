@@ -14,8 +14,8 @@ export const messages = defineMessages({
 
 type Props = {
   currency: string,
-  fees: BigNumber,
-  total: BigNumber,
+  fees: ?BigNumber,
+  total: ?BigNumber,
   error: boolean,
 };
 
@@ -32,13 +32,13 @@ export default class AmountInputSkin extends Component<Props> {
     return (
       <div className={styles.root}>
         <InputSkin {...this.props} />
-        {!error && (
+        {fees && !error && (
           <span className={styles.fees}>
             {intl.formatMessage(messages.feesLabel, { amount: fees })}
           </span>
         )}
         <span className={styles.total}>
-          {!error && `= ${total} `}{currency}
+          {total && !error && `= ${total} `}{currency}
         </span>
       </div>
     );

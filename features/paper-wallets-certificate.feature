@@ -2,7 +2,7 @@ Feature: Paper Wallets Certificate generation
 
   Background:
     Given I have completed the basic setup
-    And I have a wallet with funds
+    And I have a "Genesis wallet" with funds
 
   Scenario: Paper wallets certificate success generation
     Given The sidebar shows the "wallets" category
