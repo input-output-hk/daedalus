@@ -23,7 +23,7 @@ function typedRequest<Response>(
     if (queryParams) requestBody = JSON.stringify(queryParams);
     options.headers = Object.assign(options.headers || {}, {
       'Content-Type': 'application/json',
-      'Content-Length': requestBody.length,
+      'Content-Length': Buffer.byteLength(requestBody),
     });
     const httpsRequest = https.request(options, (response) => {
       let body = '';
