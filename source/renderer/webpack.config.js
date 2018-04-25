@@ -2,6 +2,8 @@ const path = require('path');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const AutoDllPlugin = require('autodll-webpack-plugin');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+const lodash = require('lodash');
 const yamljs = require('yamljs');
 
 let reportUrl = '';
@@ -123,6 +125,15 @@ module.exports = {
           'validator'
         ]
       }
-    })
+    }),
+    new HardSourceWebpackPlugin({
+      configHash: (webpackConfig) => {
+        // Remove the `watch` flag to avoid different caches for static and incremental builds
+        return require('node-object-hash')({ sort: false }).hash(lodash.omit(webpackConfig, 'watch'));
+      },
+      environmentPaths: {
+        files: ['.babelrc', 'package-lock.json', 'yarn.lock'],
+      },
+    }),
   ]
 };

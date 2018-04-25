@@ -1,5 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin');
+const lodash = require('lodash');
 const yamljs = require('yamljs');
 
 let reportUrl = '';
@@ -8,6 +10,7 @@ reportUrl = yamljs.parseFile('launcher-config.yaml').reportServer;
 module.exports = {
   devtool: 'cheap-module-source-map',
   entry: './source/main/index.js',
+  devtool: 'cheap-module-eval-source-map',
   output: {
     path: path.join(__dirname, './dist/main'),
     filename: 'index.js'
@@ -27,6 +30,18 @@ module.exports = {
     __dirname: false,
     __filename: false,
   },
+  module: {
+    rules: [
+      {
+        test: /\.jsx?$/,
+        include: /source/,
+        exclude: /source\/renderer/,
+        use: {
+          loader: 'babel-loader',
+        },
+      },
+    ]
+  },
   plugins: [
     new webpack.DefinePlugin(Object.assign({
       'process.env.API': JSON.stringify(process.env.API || 'ada'),
@@ -40,17 +55,14 @@ module.exports = {
       // choose the correct path to ca.crt (see setupTls.js).
       'process.env.NODE_ENV': '"production"',
     } : {})),
-  ],
-  module: {
-    rules: [
-      {
-        test: /\.jsx?$/,
-        include: /source/,
-        exclude: /source\/renderer/,
-        use: {
-          loader: 'babel-loader',
-        },
+    new HardSourceWebpackPlugin({
+      configHash: (webpackConfig) => {
+        // Remove the `watch` flag to avoid different caches for static and incremental builds
+        return require('node-object-hash')({ sort: false }).hash(lodash.omit(webpackConfig, 'watch'));
       },
-    ]
-  },
+      environmentPaths: {
+        files: ['.babelrc', 'package-lock.json', 'yarn.lock'],
+      },
+    })
+  ],
 };
