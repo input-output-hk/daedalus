@@ -1,9 +1,8 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE DataKinds         #-}
+{-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
-
+{-# LANGUAGE RecordWildCards   #-}
 module MacInstaller
     ( main
     , SigningConfig(..)
@@ -21,23 +20,25 @@ module MacInstaller
 --- An overview of Mac .pkg internals:    http://www.peachpit.com/articles/article.aspx?p=605381&seqNum=2
 ---
 
-import           Universum hiding (FilePath, toText, (<>))
+import           Universum                 hiding (FilePath, toText, (<>))
 
-import           Control.Monad (unless)
-import           Control.Exception (handle)
-import           Data.Text (Text)
-import qualified Data.Text as T
+import           Control.Exception         (handle)
+import           Control.Monad             (unless)
+import           Data.Text                 (Text)
+import qualified Data.Text                 as T
 
-import           System.FilePath.Glob (glob)
+import           Filesystem.Path           (FilePath, dropExtension, (<.>),
+                                            (</>))
 import           Filesystem.Path.CurrentOS (encodeString)
-import           Filesystem.Path (FilePath, dropExtension, (</>), (<.>))
-import           Turtle hiding (stdout, prefix, e)
-import           Turtle.Line (unsafeTextToLine)
+import           System.FilePath.Glob      (glob)
+import           Turtle                    hiding (e, prefix, stdout)
+import           Turtle.Line               (unsafeTextToLine)
 
-import           RewriteLibs (chain)
+import           RewriteLibs               (chain)
 
-import           System.IO (hSetBuffering, BufferMode(NoBuffering))
-import           System.IO.Error (IOError, isDoesNotExistError)
+import           System.IO                 (BufferMode (NoBuffering),
+                                            hSetBuffering)
+import           System.IO.Error           (IOError, isDoesNotExistError)
 
 import           Config
 import           Types
