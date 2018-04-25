@@ -124,6 +124,7 @@ type Props = {
   onDownload: Function,
   onGetLogs: Function,
   onCompressLogs: Function,
+  onDeleteCompressedLogs: Function,
   isSubmitting: boolean,
   isCompressing: boolean,
   isDownloading?: boolean,
@@ -147,11 +148,11 @@ export default class BugReportDialog extends Component<Props, State> {
 
   componentWillMount() {
     this.props.onGetLogs();
+    this.props.onDeleteCompressedLogs();
   }
 
   componentWillReceiveProps(nextProps: Object) {
     const commpressionFilesChanged = this.props.compressedLog !== nextProps.compressedLog;
-
     if (nextProps.compressedLog && commpressionFilesChanged && !nextProps.isDownloading) {
       // proceed to submit when ipc rendered successfully return compressed files
       this.submit(nextProps.compressedLog);

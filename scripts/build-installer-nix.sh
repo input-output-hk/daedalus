@@ -13,7 +13,7 @@ nix-build default.nix -A rawapp.deps -o node_modules.root -Q
 echo '~~~ Building mainnet installer'
 nix-build release.nix -A mainnet.installer --argstr buildNr $BUILDKITE_BUILD_NUMBER --argstr version $VERSION
 if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
-  buildkite-agent artifact upload result/Daedalus*installer*.bin --job $BUILDKITE_JOB_ID
+  buildkite-agent artifact upload result/daedalus*.bin --job $BUILDKITE_JOB_ID
   daedalus_config=$(nix-build -A daedalus.cfg --no-out-link                           ./default.nix)
   for cf in launcher-config wallet-topology
   do cp ${daedalus_config}/etc/$cf.yaml  $cf-mainnet.linux.yaml
@@ -24,7 +24,7 @@ fi
 echo '~~~ Building staging installer'
 nix-build release.nix -A staging.installer --argstr buildNr $BUILDKITE_BUILD_NUMBER --argstr version $VERSION
 if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
-  buildkite-agent artifact upload result/Daedalus*installer*.bin --job $BUILDKITE_JOB_ID
+  buildkite-agent artifact upload result/daedalus*.bin --job $BUILDKITE_JOB_ID
   daedalus_config=$(nix-build -A daedalus.cfg --no-out-link --argstr cluster staging ./default.nix)
   for cf in launcher-config wallet-topology
   do cp ${daedalus_config}/etc/$cf.yaml  $cf-staging.linux.yaml

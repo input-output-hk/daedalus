@@ -120,7 +120,7 @@ writeInstallerNSIS (Version fullVersion') clusterName = do
         _ <- constantStr "Version" (str fullVersion)
         _ <- constantStr "Cluster" (str $ unpack $ lshowText clusterName)
         name "Daedalus ($Version)"                  -- The name of the installer
-        outFile "daedalus-win64-$Version-$Cluster-installer.exe"           -- Where to produce the installer
+        outFile "daedalus-0.10.0-cardano-sl-$Version-$Cluster-windows.exe"           -- Where to produce the installer
         unsafeInjectGlobal $ "!define MUI_ICON \"icons\\64x64.ico\""
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE"
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_BITMAP \"icons\\installBanner.bmp\""
