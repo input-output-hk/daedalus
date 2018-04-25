@@ -37,8 +37,6 @@ artifacts:
     name: Cardano launcher configuration
   - path: installers\wallet-topology-*.yaml
     name: Wallet topology
-  - path: node_modules\daedalus-client-api\build-id
-    name: cardano-sl-build-id
 
 deploy:
   provider: S3
