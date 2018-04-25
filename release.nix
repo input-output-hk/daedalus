@@ -1,11 +1,11 @@
-{ version ? "1.1.0", buildNr ? "nix" }:
+{ version ? "1.2.0", buildNr ? "nix" }:
 let
   makeJobs = cluster: with import ./. { inherit cluster; version = "${version}.${buildNr}"; }; {
     inherit daedalus;
     installer = wrappedBundle newBundle pkgs cluster;
   };
   wrappedBundle = newBundle: pkgs: cluster: let
-    fn = "Daedalus-${cluster}-installer-${version}.${buildNr}.bin";
+    fn = "daedalus-0.10.0-cardano-sl-${version}.${buildNr}-${cluster}-linux.bin";
   in pkgs.runCommand "daedaus-installer" {} ''
     mkdir -pv $out/nix-support
     cp ${newBundle} $out/${fn}

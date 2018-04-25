@@ -1,4 +1,4 @@
-version: 1.1.{build}
+version: 1.2.0.{build}
 
 environment:
   nodejs_version: "8"
@@ -31,7 +31,7 @@ artifacts:
   - path: release\win32-x64\Daedalus-win32-x64
     name: Daedalus Electron application
     type: zip
-  - path: installers\daedalus-win64-*-installer.exe
+  - path: installers\daedalus-*.exe
     name: Daedalus Win64 Installer
   - path: installers\launcher-config-*.yaml
     name: Cardano launcher configuration

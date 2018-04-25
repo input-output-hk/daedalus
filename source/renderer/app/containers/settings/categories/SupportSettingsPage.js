@@ -28,7 +28,7 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     const destination = remote.dialog.showSaveDialog({
       defaultPath: 'logs.zip',
     });
-    if (destination) this.props.actions.profile.downloadLogs.trigger({ destination });
+    if (destination) this.props.actions.profile.downloadLogs.trigger({ destination, fresh: true });
   };
 
   render() {
