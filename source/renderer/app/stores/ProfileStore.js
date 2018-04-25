@@ -1,6 +1,5 @@
 // @flow
 import { action, observable, computed, toJS } from 'mobx';
-import { size } from 'lodash';
 import BigNumber from 'bignumber.js';
 import moment from 'moment/moment';
 import { ipcRenderer } from 'electron';
@@ -58,6 +57,7 @@ export default class SettingsStore extends Store {
     this.actions.profile.resetBugReportDialog.listen(this._resetBugReportDialog);
     this.actions.profile.downloadLogs.listen(this._downloadLogs);
     this.actions.profile.compressLogs.listen(this._compressLogs);
+    this.actions.profile.deleteCompressedLogs.listen(this._deleteCompressedFiles);
     this.actions.profile.sendBugReport.listen(this._sendBugReport);
     ipcRenderer.on(GET_LOGS.SUCCESS, this._onGetLogsSuccess);
     ipcRenderer.on(DOWNLOAD_LOGS.SUCCESS, this._onDownloadLogsSuccess);
@@ -196,22 +196,19 @@ export default class SettingsStore extends Store {
   };
 
   _resetBugReportDialog = () => {
-    // if logs are compressed then perform delete on dialog close
-    if (size(this.compressedLog) > 0) {
-      this._deleteCompressedFiles(this.compressedLog);
-    }
+    this._deleteCompressedFiles();
     this._reset();
     this.actions.dialogs.closeActiveDialog.trigger();
   };
 
-  _downloadLogs = action(({ destination }) => {
+  _downloadLogs = action(({ destination, fresh }) => {
     this.compressedFileDownload = {
       inProgress: true,
       destination,
     };
 
-    // logs already compressed, download
-    if (this.compressedLog) {
+    if (this.compressedLog && fresh !== true) {
+      // logs already compressed, trigger download
       ipcRenderer.send(DOWNLOAD_LOGS.REQUEST, this.compressedLog, destination);
     } else {
       // start process: getLogs -> compressLogs -> downloadLogs (again)
@@ -257,9 +254,7 @@ export default class SettingsStore extends Store {
       email, subject, problem, compressedLog,
     })
       .then(action(() => {
-        this._deleteCompressedFiles();
-        this._reset();
-        this.actions.dialogs.closeActiveDialog.trigger();
+        this._resetBugReportDialog();
       }))
       .catch(action((error) => {
         this.error = error;
@@ -267,9 +262,9 @@ export default class SettingsStore extends Store {
   });
 
   _deleteCompressedFiles = action(() => {
-    // trigger ipc renderer to delete compressed temp files if exists
     if (this.compressedLog) {
       ipcRenderer.send(DELETE_COMPRESSED_LOGS.REQUEST, this.compressedLog);
+      this.compressedLog = null;
     }
   });
 

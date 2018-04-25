@@ -36,7 +36,7 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
 
   render() {
     const { actions, stores } = this.props;
-    const { getLogs, compressLogs } = actions.profile;
+    const { getLogs, compressLogs, deleteCompressedLogs } = actions.profile;
     const {
       logFiles,
       compressedLog,
@@ -63,6 +63,9 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
         }}
         onCompressLogs={(logs) => {
           compressLogs.trigger({ logs });
+        }}
+        onDeleteCompressedLogs={() => {
+          deleteCompressedLogs.trigger();
         }}
       />
     );
