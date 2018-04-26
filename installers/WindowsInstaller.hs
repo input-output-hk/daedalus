@@ -202,7 +202,7 @@ main :: Options -> IO ()
 main opts@Options{..}  = do
     echo "Writing version.txt"
     let fullVersion = Version $ fromVer oDaedalusVer <> ".0"
-        fullName    = "daedalus-win64-" <> fromVer fullVersion <> "-" <> lshowText oCluster <> "-installer.exe"
+        fullName    = "daedalus-0.10.0-cardano-sl-" <> (fromVer fullVersion) <> "-" <> (lshowText oCluster) <> "-windows.exe"
     TIO.writeFile "version.txt" $ fromVer fullVersion
 
     generateOSClusterConfigs "./dhall" "." opts

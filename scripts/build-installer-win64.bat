@@ -144,8 +144,8 @@ FOR %%C IN (%CLUSTERS:"=%) DO (
   @echo ##############################################################################
 
   make-installer %XARGS:"=% -c %%C -o daedalus-0.10.0-cardano-sl-%DAEDALUS_VERSION%-%%C-windows.exe
+  @if %errorlevel% neq 0 ( @echo FATAL: failed to build installer
+                           popd & exit /b 1)
   copy  /y launcher-config.yaml launcher-config-%%C.win64.yaml
   copy  /y wallet-topology.yaml wallet-topology-%%C.win64.yaml
-  @if %errorlevel% neq 0 ( @echo FATAL: persistent failure while building installer
-                           popd & exit /b 1)
 )
