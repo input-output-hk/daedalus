@@ -146,8 +146,8 @@ makeComponentRoot Options{..} appRoot darwinConfig@DarwinConfig{..} = do
   echo "~~~ Preparing files ..."
   ver <- case oBackend of
     Cardano bridge -> do
-      -- Executables
-      forM ["cardano-launcher", "cardano-node"] $ \f -> do
+      -- Executables (from daedalus-bridge)
+      forM ["cardano-launcher", "cardano-node", "cardano-x509-certificates"] $ \f ->
         cp (bridge </> "bin" </> f) (dir </> f)
 
       -- Config files (from daedalus-bridge)
