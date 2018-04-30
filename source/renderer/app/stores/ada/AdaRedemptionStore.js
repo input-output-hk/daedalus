@@ -179,7 +179,7 @@ export default class AdaRedemptionStore extends Store {
     runInAction(() => {
       this.walletId = walletId;
     });
-    const accountId = this.stores.ada.addresses.getAccountIdByWalletId(walletId);
+    const accountId = await this.stores.ada.addresses.getAccountIdByWalletId(walletId);
     if (!accountId) throw new Error('Active account required before redeeming Ada.');
 
     this.redeemAdaRequest.execute({

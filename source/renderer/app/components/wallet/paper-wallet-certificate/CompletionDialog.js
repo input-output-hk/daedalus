@@ -127,7 +127,7 @@ export default class CompletionDialog extends Component<Props> {
               value={walletCertificateAddress}
               bgColor={qrCodeBackgroundColor}
               fgColor={qrCodeForegroundColor}
-              size={160}
+              size={152}
             />
           </div>
 

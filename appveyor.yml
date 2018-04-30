@@ -1,5 +1,3 @@
-version: 1.1.{build}
-
 environment:
   nodejs_version: "8"
   NETWORK: "mainnet"
@@ -31,14 +29,12 @@ artifacts:
   - path: release\win32-x64\Daedalus-win32-x64
     name: Daedalus Electron application
     type: zip
-  - path: installers\daedalus-win64-*-installer.exe
+  - path: installers\daedalus-*.exe
     name: Daedalus Win64 Installer
   - path: installers\launcher-config-*.yaml
     name: Cardano launcher configuration
   - path: installers\wallet-topology-*.yaml
     name: Wallet topology
-  - path: node_modules\daedalus-client-api\build-id
-    name: cardano-sl-build-id
 
 deploy:
   provider: S3

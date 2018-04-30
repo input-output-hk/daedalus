@@ -1,12 +1,18 @@
-{ version ? "1.1.0", buildNr ? "nix" }:
+{ system ? builtins.currentSystem
+, buildNr ? null
+}:
 let
-  makeJobs = cluster: with import ./. { inherit cluster; version = "${version}.${buildNr}"; }; {
+  suffix = if buildNr == null then "" else "-${toString buildNr}";
+  version = (builtins.fromJSON (builtins.readFile (./. + "/package.json"))).version;
+
+  makeJobs = cluster: with import ./. { inherit cluster system; version = "${version}${suffix}"; }; {
     inherit daedalus;
-    installer = wrappedBundle newBundle pkgs cluster;
+    installer = wrappedBundle newBundle pkgs cluster daedalus-bridge.version;
   };
-  wrappedBundle = newBundle: pkgs: cluster: let
-    fn = "Daedalus-${cluster}-installer-${version}.${buildNr}.bin";
-  in pkgs.runCommand "daedaus-installer" {} ''
+  wrappedBundle = newBundle: pkgs: cluster: cardanoVersion: let
+    backend = "cardano-sl-${cardanoVersion}";
+    fn = "daedalus-${version}-${backend}-${cluster}-${system}${suffix}.bin";
+  in pkgs.runCommand fn {} ''
     mkdir -pv $out/nix-support
     cp ${newBundle} $out/${fn}
     echo "file binary-dist $out/${fn}" >> $out/nix-support/hydra-build-products
