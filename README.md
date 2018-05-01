@@ -25,8 +25,7 @@ The result can be found at `installers/csl-daedalus/daedalus-*.pkg`.
 
 # Pure Nix installer build
 
-This will use nix to build a Linux installer. Using the [IOHK binary
-cache][cache] will speed things up.
+This will use nix to build a Linux installer. Using the [IOHK binary cache][cache] will speed things up.
 
     nix build -f ./release.nix mainnet.installer
 
