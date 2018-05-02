@@ -1,5 +1,5 @@
 \(cluster : ./cluster.type)      ->
-let dataDir = "\${APPDATA}\\Daedalus\\"
+let dataDir = "\${APPDATA}\\Daedalus\\${cluster.name}\\"
     --
     --
 in

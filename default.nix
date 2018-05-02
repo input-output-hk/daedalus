@@ -92,6 +92,7 @@ let
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper $DAEDALUS_DIR/namespaceHelper
       mkdir -pv ~/.local/bin ''${XDG_DATA_HOME}/applications
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus
+      cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus-${cluster}
 
       cat ${self.desktopItem}/share/applications/Daedalus.desktop | sed \
         -e "s+INSERT_PATH_HERE+''${DAEDALUS_DIR}/namespaceHelper+g" \
@@ -109,7 +110,7 @@ let
     newBundle = let
       daedalus' = self.daedalus.override { sandboxed = true; };
     in (import ./installers/nix/nix-installer.nix {
-      inherit (self) postInstall preInstall;
+      inherit (self) postInstall preInstall cluster;
       installationSlug = installPath;
       installedPackages = [ daedalus' self.postInstall self.namespaceHelper daedalus'.cfg self.daedalus-bridge daedalus'.daedalus-frontend ];
       nix-bundle = self.nix-bundle;

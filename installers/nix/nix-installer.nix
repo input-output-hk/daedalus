@@ -1,4 +1,6 @@
-{ installationSlug ? "nix-install", installedPackages, postInstall ? null, nix-bundle, preInstall ? null }:
+{ installationSlug ? "nix-install", installedPackages
+, postInstall ? null, nix-bundle, preInstall ? null
+, cluster }:
 let
   pkgs = import (import ../../fetchNixpkgs.nix (builtins.fromJSON (builtins.readFile ../../nixpkgs-src.json))) { config = {}; overlays = []; };
   installerBundle = nix-bundle.nix-bootstrap {
@@ -45,8 +47,9 @@ let
     NIX_REMOTE=local?root=$UNPACK2 nix-store --load-db < $UNPACK2/nix-path-registration
     NIX_REMOTE=local?root=$UNPACK2 nix-store --verify --check-contents
     nix copy --no-check-sigs --from local?root=$UNPACK2 $(readlink $UNPACK2/firstGeneration)
-    export NIX_PROFILE=$DIR/nix/var/nix/profiles/profile
+    export NIX_PROFILE=/nix/var/nix/profiles/profile
     nix-env --set $(readlink $UNPACK2/firstGeneration)
+    nix-env -p /nix/var/nix/profiles/profile-${cluster} --set $(readlink $UNPACK2/firstGeneration)
     rmrf $UNPACK2
 
     post-install || true
@@ -136,6 +139,7 @@ let
     unset UNPACK
     export NIX_PROFILE=$DIR/nix/var/nix/profiles/profile
     nix-env --set ${builtins.unsafeDiscardStringContext firstGeneration}
+    nix-env -p $DIR/nix/var/nix/profiles/profile-${cluster} --set ${builtins.unsafeDiscardStringContext firstGeneration}
 
     ${if postInstall == null then "" else ''
     exec ${postInstall}/bin/post-install

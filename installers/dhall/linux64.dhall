@@ -1,5 +1,5 @@
 \(cluster : ./cluster.type)      ->
-let dataDir = "\${XDG_DATA_HOME}/Daedalus/"
+let dataDir = "\${XDG_DATA_HOME}/Daedalus/${cluster.name}/"
 in
 { name      = "linux64"
 , configurationYaml  = "\${DAEDALUS_CONFIG}/configuration.yaml"
@@ -7,14 +7,14 @@ in
   { keyfile          = "Secrets/secret.key"
   , logsPrefix       = "Logs"
   , topology         = "\${DAEDALUS_CONFIG}/wallet-topology.yaml"
-  , updateLatestPath = "${dataDir}/${cluster.name}/installer.sh"
+  , updateLatestPath = "${dataDir}/installer.sh"
   , walletDBPath     = "Wallet/"
   }
 , pass      =
   { nodePath            = "cardano-node"
   , nodeDbPath          = "DB/"
   , nodeLogConfig       = "\${DAEDALUS_CONFIG}/daedalus.yaml"
-  , nodeLogPath         = "${dataDir}/${cluster.name}/Logs/cardano-node.log"
+  , nodeLogPath         = "${dataDir}/Logs/cardano-node.log"
 
   , walletPath          = "daedalus-frontend"
   , walletLogging       = False
@@ -22,9 +22,9 @@ in
   -- todo, find some way to disable updates when unsandboxed?
   , updaterPath         = "/bin/update-runner"
   , updaterArgs         = [] : List Text
-  , updateArchive       = [ "${dataDir}/${cluster.name}/installer.sh" ] : Optional Text
+  , updateArchive       = [ "${dataDir}/installer.sh" ] : Optional Text
   , updateWindowsRunner = [] : Optional Text
 
-  , launcherLogsPrefix  = "${dataDir}/${cluster.name}/Logs/"
+  , launcherLogsPrefix  = "${dataDir}/Logs/"
   }
 }
