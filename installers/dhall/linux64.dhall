@@ -17,6 +17,7 @@ in
   , nodeLogPath         = "${dataDir}/${cluster.name}/Logs/cardano-node.log"
 
   , walletPath          = "daedalus-frontend"
+  , walletLogging       = False
 
   -- todo, find some way to disable updates when unsandboxed?
   , updaterPath         = "/bin/update-runner"
