@@ -1,4 +1,4 @@
-<sub><sup>Author: [Nikola Glumac](https://github.com/nikolaglumac)<br/>Status: Active</sup></sub>
+<sub>Author: [Nikola Glumac](https://github.com/nikolaglumac)<br/>Status: Active</sub>
 
 # Daedalus
 [![Build status](https://badge.buildkite.com/e173494257519752d79bb52c7859df6277c6d759b217b68384.svg?branch=master)](https://buildkite.com/input-output-hk/daedalus)
