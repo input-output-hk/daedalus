@@ -1,3 +1,5 @@
+<sub><sup>Author: [Nikola Glumac](https://github.com/nikolaglumac)<br/>Status: Active</sup></sub>
+
 # Running Daedalus acceptance tests
 
 
