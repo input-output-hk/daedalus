@@ -1,5 +1,6 @@
 { name       : Text
 , configurationYaml  : Text
+, installDirectory   : Text
 , nodeArgs           :
   { keyfile          : Text
   , logsPrefix       : Text

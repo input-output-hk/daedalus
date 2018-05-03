@@ -128,18 +128,6 @@ pushd installers
 :build_installers
 
 if NOT DEFINED APPVEYOR_BUILD_NUMBER        ( set APPVEYOR_BUILD_NUMBER=0 )
-set XARGS="--build-job %APPVEYOR_BUILD_NUMBER%"
-
-FOR %%C IN (%CLUSTERS:"=%) DO (
-  @echo ##############################################################################
-  @echo ###
-  @echo ### Building fo-r cluster %%C
-  @echo ###
-  @echo ##############################################################################
-
-  make-installer %XARGS:"=% -c %%C --out-dir ."
-  @if %errorlevel% neq 0 ( @echo FATAL: failed to build installer
-                           popd & exit /b 1)
-  copy  /y launcher-config.yaml launcher-config-%%C.win64.yaml
-  copy  /y wallet-topology.yaml wallet-topology-%%C.win64.yaml
-)
+make-installer --out-dir . appveyor
+@if %errorlevel% neq 0 ( @echo FATAL: failed to build installer
+                         popd & exit /b 1)

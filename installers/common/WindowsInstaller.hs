@@ -1,6 +1,8 @@
 {-# LANGUAGE RecordWildCards, LambdaCase #-}
+{-# LANGUAGE OverloadedStrings   #-}
 module WindowsInstaller
     ( main
+    , writeInstallerNSIS
     ) where
 
 import           Universum hiding (pass, writeFile, stdout, FilePath, die)
@@ -19,7 +21,7 @@ import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recurs
                                    strLength, uninstall, unsafeInject, unsafeInjectGlobal,
                                    writeRegDWORD, writeRegStr, (%/=))
 import           Prelude ((!!))
-import           System.IO (writeFile)
+import qualified System.IO as IO
 import           Filesystem.Path (FilePath, (</>), (<.>))
 import           Filesystem.Path.CurrentOS (encodeString, fromText)
 import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, stdout, input, export, sed, strict, format, printf, fp, w, (%), need, writeTextFile, die)
@@ -41,12 +43,13 @@ daedalusShortcut =
         ]
 
 -- See INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
-writeUninstallerNSIS :: Version -> IO ()
-writeUninstallerNSIS (Version fullVersion) = do
+writeUninstallerNSIS :: Version -> InstallerConfig -> IO ()
+writeUninstallerNSIS (Version fullVersion) installerConfig = do
     tempDir <- getTempDir
-    writeFile "uninstaller.nsi" $ nsis $ do
+    IO.writeFile "uninstaller.nsi" $ nsis $ do
         _ <- constantStr "Version" (str $ unpack fullVersion)
-        name "Daedalus Uninstaller $Version"
+        _ <- constantStr "InstallDir" (str $ unpack $ installDirectory installerConfig)
+        name "$InstallDir Uninstaller $Version"
         outFile . str . encodeString $ tempDir </> "tempinstaller.exe"
         unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
         unsafeInjectGlobal "SetCompress off"
@@ -55,11 +58,11 @@ writeUninstallerNSIS (Version fullVersion) = do
 
         uninstall $ do
             -- Remove registry keys
-            deleteRegKey HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus"
-            deleteRegKey HKLM "Software/Daedalus"
+            deleteRegKey HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/$InstallDir"
+            deleteRegKey HKLM "Software/$InstallDir"
             rmdir [Recursive,RebootOK] "$INSTDIR"
-            delete [] "$SMPROGRAMS/Daedalus/*.*"
-            delete [] "$DESKTOP\\Daedalus.lnk"
+            delete [] "$SMPROGRAMS/$InstallDir/*.*"
+            delete [] "$DESKTOP\\$InstallDir.lnk"
             mapM_ unsafeInject
                 [ "liteFirewall::RemoveRule \"$INSTDIR\\cardano-node.exe\" \"Cardano Node\""
                 , "Pop $0"
@@ -102,8 +105,8 @@ fileSubstString :: Text -> Text -> FilePath -> FilePath -> IO ()
 fileSubstString from to src dst =
     TIO.writeFile (encodeString dst) =<< T.replace from to <$> TIO.readFile (encodeString src)
 
-writeInstallerNSIS :: FilePath -> Version -> Cluster -> IO ()
-writeInstallerNSIS outName (Version fullVersion') clusterName = do
+writeInstallerNSIS :: FilePath -> Version -> InstallerConfig -> Cluster -> IO ()
+writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = do
     tempDir <- getTempDir
     let fullVersion = unpack fullVersion'
         viProductVersion = L.intercalate "." $ parseVersion fullVersion'
@@ -112,10 +115,11 @@ writeInstallerNSIS outName (Version fullVersion') clusterName = do
     forM_ ["ca.conf", "server.conf", "client.conf"] $
         \f-> fileSubstString "OPENSSL_MD" "sha256" f (f <.> "windows")
 
-    writeFile "daedalus.nsi" $ nsis $ do
+    IO.writeFile "daedalus.nsi" $ nsis $ do
         _ <- constantStr "Version" (str fullVersion)
         _ <- constantStr "Cluster" (str $ unpack $ lshowText clusterName)
-        name "Daedalus ($Version)"                  -- The name of the installer
+        _ <- constantStr "InstallDir" (str $ unpack $ installDirectory installerConfig)
+        name "$InstallDir ($Version)"                  -- The name of the installer
         outFile $ str $ encodeString outName        -- Where to produce the installer
         unsafeInjectGlobal $ "!define MUI_ICON \"icons\\64x64.ico\""
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE"
@@ -127,21 +131,21 @@ writeInstallerNSIS outName (Version fullVersion') clusterName = do
         requestExecutionLevel Highest
         unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
 
-        installDir "$PROGRAMFILES64\\Daedalus"                   -- Default installation directory...
-        installDirRegKey HKLM "Software/Daedalus" "Install_Dir"  -- ...except when already installed.
+        installDir "$PROGRAMFILES64\\$InstallDir"                   -- Default installation directory...
+        installDirRegKey HKLM "Software/$InstallDir" "Install_Dir"  -- ...except when already installed.
 
         page Directory                   -- Pick where to install
-        _ <- constant "INSTALLEDAT" $ readRegStr HKLM "Software/Daedalus" "Install_Dir"
+        _ <- constant "INSTALLEDAT" $ readRegStr HKLM "Software/$InstallDir" "Install_Dir"
         onPagePre Directory (iff_ (strLength "$INSTALLEDAT" %/= 0) $ abort "")
 
         page InstFiles                   -- Give a progress bar while installing
 
         _ <- section "" [Required] $ do
                 setOutPath "$INSTDIR"        -- Where to install files in this section
-                writeRegStr HKLM "Software/Daedalus" "Install_Dir" "$INSTDIR" -- Used by launcher batch script
-                createDirectory "$APPDATA\\Daedalus\\Secrets-1.0"
-                createDirectory "$APPDATA\\Daedalus\\Logs"
-                createDirectory "$APPDATA\\Daedalus\\Logs\\pub"
+                writeRegStr HKLM "Software/$InstallDir" "Install_Dir" "$INSTDIR" -- Used by launcher batch script
+                createDirectory "$APPDATA\\$InstallDir\\Secrets-1.0"
+                createDirectory "$APPDATA\\$InstallDir\\Logs"
+                createDirectory "$APPDATA\\$InstallDir\\Logs\\pub"
                 file [] "cardano-node.exe"
                 file [] "cardano-launcher.exe"
                 file [] "log-config-prod.yaml"
@@ -163,29 +167,32 @@ writeInstallerNSIS outName (Version fullVersion') clusterName = do
                     , "DetailPrint \"liteFirewall::AddRule: $0\""
                     ]
 
-                execWait "build-certificates-win64.bat \"$INSTDIR\" >\"%APPDATA%\\Daedalus\\Logs\\build-certificates.log\" 2>&1"
+                execWait "build-certificates-win64.bat \"$INSTDIR\" >\"%APPDATA%\\$InstallDir\\Logs\\build-certificates.log\" 2>&1"
 
-                createShortcut "$DESKTOP\\Daedalus.lnk" daedalusShortcut
+                createShortcut "$DESKTOP\\$InstallDir.lnk" daedalusShortcut
 
                 -- Uninstaller
-                writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "InstallLocation" "$INSTDIR\\Daedalus"
-                writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "Publisher" "IOHK"
-                writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "ProductVersion" (str fullVersion)
-                writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "VersionMajor" (str . (!! 0). parseVersion $ fullVersion')
-                writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "VersionMinor" (str . (!! 1). parseVersion $ fullVersion')
-                writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "DisplayName" "Daedalus"
-                writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "DisplayVersion" (str fullVersion)
-                writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "UninstallString" "\"$INSTDIR/uninstall.exe\""
-                writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "QuietUninstallString" "\"$INSTDIR/uninstall.exe\" /S"
-                writeRegDWORD HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "NoModify" 1
-                writeRegDWORD HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/Daedalus" "NoRepair" 1
+                let
+                    uninstallKey = "Software/Microsoft/Windows/CurrentVersion/Uninstall/$InstallDir"
+                do
+                    writeRegStr HKLM uninstallKey "InstallLocation" "$INSTDIR"
+                    writeRegStr HKLM uninstallKey "Publisher" "IOHK"
+                    writeRegStr HKLM uninstallKey "ProductVersion" (str fullVersion)
+                    writeRegStr HKLM uninstallKey "VersionMajor" (str . (!! 0). parseVersion $ fullVersion')
+                    writeRegStr HKLM uninstallKey "VersionMinor" (str . (!! 1). parseVersion $ fullVersion')
+                    writeRegStr HKLM uninstallKey "DisplayName" "$InstallDir"
+                    writeRegStr HKLM uninstallKey "DisplayVersion" (str fullVersion)
+                    writeRegStr HKLM uninstallKey "UninstallString" "\"$INSTDIR/uninstall.exe\""
+                    writeRegStr HKLM uninstallKey "QuietUninstallString" "\"$INSTDIR/uninstall.exe\" /S"
+                    writeRegDWORD HKLM uninstallKey "NoModify" 1
+                    writeRegDWORD HKLM uninstallKey "NoRepair" 1
                 file [] $ (str . encodeString $ tempDir </> "uninstall.exe")
 
         _ <- section "Start Menu Shortcuts" [] $ do
-                createDirectory "$SMPROGRAMS/Daedalus"
-                createShortcut "$SMPROGRAMS/Daedalus/Uninstall Daedalus.lnk"
+                createDirectory "$SMPROGRAMS/$InstallDir"
+                createShortcut "$SMPROGRAMS/$InstallDir/Uninstall $InstallDir.lnk"
                     [Target "$INSTDIR/uninstall.exe", IconFile "$INSTDIR/uninstall.exe", IconIndex 0]
-                createShortcut "$SMPROGRAMS/Daedalus/Daedalus.lnk" daedalusShortcut
+                createShortcut "$SMPROGRAMS/$InstallDir/$InstallDir.lnk" daedalusShortcut
         return ()
 
 packageFrontend :: IO ()
@@ -209,6 +216,8 @@ main opts@Options{..}  = do
     let fullName = packageFileName Win64 oCluster fullVersion cardanoVersion oBuildJob
 
     printf ("Building: "%fp%"\n") fullName
+    
+    installerConfig <- getInstallerConfig "./dhall" Win64 oCluster
 
     echo "Adding permissions manifest to cardano-launcher.exe"
     procs "C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\mt.exe" ["-manifest", "cardano-launcher.exe.manifest", "-outputresource:cardano-launcher.exe;#1"] mempty
@@ -217,14 +226,18 @@ main opts@Options{..}  = do
     signFile opts "cardano-node.exe"
 
     echo "Writing uninstaller.nsi"
-    writeUninstallerNSIS fullVersion
+    writeUninstallerNSIS fullVersion installerConfig
     signUninstaller opts
 
     echo "Writing daedalus.nsi"
-    writeInstallerNSIS fullName fullVersion oCluster
+    writeInstallerNSIS fullName fullVersion installerConfig oCluster
+
+    rawnsi <- readFile "daedalus.nsi"
+    putStr rawnsi
+    IO.hFlush IO.stdout
 
     echo "Generating NSIS installer"
-    procs "C:\\Program Files (x86)\\NSIS\\makensis" ["daedalus.nsi"] mempty
+    procs "C:\\Program Files (x86)\\NSIS\\makensis" ["daedalus.nsi", "-V4"] mempty
     signFile opts fullName
 
 -- | Download and extract the cardano-sl windows build.

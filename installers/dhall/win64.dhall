@@ -5,6 +5,7 @@ let dataDir = "\${APPDATA}\\Daedalus\\${cluster.name}\\"
 in
 { name      = "win64"
 , configurationYaml  = "configuration.yaml"
+, installDirectory   = "Daedalus${cluster.installDirectorySuffix}"
 , nodeArgs           =
   { keyfile          = "${dataDir}\\Secrets-1.0\\secret.key"
   , logsPrefix       = "${dataDir}\\Logs"

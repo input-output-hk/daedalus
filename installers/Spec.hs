@@ -5,7 +5,7 @@ import Universum hiding (FilePath, fold)
 import Test.Hspec
 import qualified Data.Text as T
 import Filesystem.Path (FilePath, (</>))
-import Filesystem.Path.CurrentOS (fromText, encodeString, decodeString)
+import Filesystem.Path.CurrentOS (fromText, decodeString)
 import System.IO.Temp (getCanonicalTemporaryDirectory)
 import Turtle (mktempdir, inproc, strict, ls, fold, writeTextFile, mktree, mkdir, cptree, cp, format)
 import Control.Monad.Managed (MonadManaged, runManaged)

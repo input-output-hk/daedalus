@@ -3,6 +3,9 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE DeriveGeneric #-}
+
 module Types
   (  -- * Atomic types
     OS(..)
@@ -25,6 +28,7 @@ module Types
   , packageVersion
   , clusterNetwork
   , withDir
+  , InstallerConfig(..)
   )
 where
 
@@ -37,6 +41,7 @@ import           Turtle                              (pwd, cd)
 import           Turtle.Format                       (format, fp)
 import           Data.Aeson                          (FromJSON(..), withObject, eitherDecode, (.:))
 import qualified Data.ByteString.Lazy.Char8       as L8
+import qualified Dhall as Dhall
 
 
 
@@ -123,3 +128,6 @@ packageVersion json = case eitherDecode json of
 -- | More or less the same as pushd function in newer Turtle
 withDir :: FilePath -> IO a -> IO a
 withDir path = bracket (pwd >>= \old -> (cd path >> pure old)) cd . const
+
+data InstallerConfig = InstallerConfig { installDirectory :: Text } deriving (Generic, Show)
+instance Dhall.Interpret InstallerConfig

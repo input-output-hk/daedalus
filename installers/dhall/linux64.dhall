@@ -3,6 +3,7 @@ let dataDir = "\${XDG_DATA_HOME}/Daedalus/${cluster.name}/"
 in
 { name      = "linux64"
 , configurationYaml  = "\${DAEDALUS_CONFIG}/configuration.yaml"
+, installDirectory   = ""
 , nodeArgs           =
   { keyfile          = "Secrets/secret.key"
   , logsPrefix       = "Logs"

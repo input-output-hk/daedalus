@@ -3,4 +3,5 @@
 , relays       : Text
 , updateServer : Text
 , reportServer : Text
+, installDirectorySuffix : Text
 }
