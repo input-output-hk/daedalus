@@ -1,5 +1,3 @@
-version: 1.2.0.{build}
-
 environment:
   nodejs_version: "8"
   NETWORK: "mainnet"

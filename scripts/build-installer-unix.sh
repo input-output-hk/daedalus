@@ -12,7 +12,7 @@ usage() {
     test -z "$1" || { echo "ERROR: $*" >&2; echo >&2; }
     cat >&2 <<EOF
   Usage:
-    $0 DAEDALUS-VERSION CARDANO-BRANCH OPTIONS*
+    $0 OPTIONS*
 
   Build a Daedalus installer.
 
@@ -22,7 +22,6 @@ usage() {
     --fast-impure             Fast, impure, incremental build
     --build-id BUILD-NO       Identifier of the build; defaults to '0'
 
-    --pull-request PR-ID      Pull request id we're building
     --nix-path NIX-PATH       NIX_PATH value
 
     --upload-s3               Upload the installer to S3
@@ -53,8 +52,7 @@ retry() {
 ###
 fast_impure=
 verbose=true
-build_id="${BUILDKITE_BUILD_NUMBER:-0}"
-pull_request=
+build_id=0
 test_installer=
 
 # Parallel build options for Buildkite agents only
@@ -76,8 +74,6 @@ do case "$1" in
            --clusters )                                     CLUSTERS="$2"; shift;;
            --fast-impure )                               fast_impure=true;;
            --build-id )       arg2nz "build identifier" $2; build_id="$2"; shift;;
-           --pull-request )   arg2nz "Pull request id" $2;
-                                                        pull_request="--pull-request $2"; shift;;
            --nix-path )       arg2nz "NIX_PATH value" $2;
                                                      export NIX_PATH="$2"; shift;;
            --test-installer )                         test_installer="--test-installer";;
@@ -106,17 +102,12 @@ then sudo rm -rf dist release node_modules || true
 fi
 
 export PATH=$HOME/.local/bin:$PATH
-export DAEDALUS_VERSION=${daedalus_version}.${build_id}
 if [ -n "${NIX_SSL_CERT_FILE-}" ]; then export SSL_CERT_FILE=$NIX_SSL_CERT_FILE; fi
 
 ARTIFACT_BUCKET=ci-output-sink
 
 # Build/get cardano bridge which is used by make-installer
 DAEDALUS_BRIDGE=$(nix-build --no-out-link cardano-sl.nix -A daedalus-bridge)
-# Note: Printing build-id is required for the iohk-ops find-installers
-# script which searches in buildkite logs.
-if [ -f $DAEDALUS_BRIDGE/build-id ]; then echo "cardano-sl build id is $(cat $DAEDALUS_BRIDGE/build-id)"; fi
-if [ -f $DAEDALUS_BRIDGE/commit-id ]; then echo "cardano-sl revision is $(cat $DAEDALUS_BRIDGE/commit-id)"; fi
 
 cd installers
     echo '~~~ Prebuilding dependencies for cardano-installer, quietly..'
@@ -127,34 +118,28 @@ cd installers
     for cluster in ${CLUSTERS}
     do
           echo "~~~ Generating installer for cluster ${cluster}.."
-          export DAEDALUS_CLUSTER=${cluster}
-                    INSTALLER_PKG="daedalus-0.10.0-cardano-sl-${DAEDALUS_VERSION}-${cluster}-macos.pkg"
+          DAEDALUS_CLUSTER=${cluster}
+          APP_NAME="csl-daedalus"
+          rm -rf ${APP_NAME}
 
-          INSTALLER_CMD="$INSTALLER/bin/make-installer ${pull_request} ${test_installer}"
+          INSTALLER_CMD="$INSTALLER/bin/make-installer ${test_installer}"
           INSTALLER_CMD+="  --cardano          ${DAEDALUS_BRIDGE}"
           INSTALLER_CMD+="  --build-job        ${build_id}"
           INSTALLER_CMD+="  --cluster          ${cluster}"
-          INSTALLER_CMD+="  --daedalus-version ${DAEDALUS_VERSION}"
-          INSTALLER_CMD+="  --output           ${INSTALLER_PKG}"
+          INSTALLER_CMD+="  --out-dir          ${APP_NAME}"
           $nix_shell ../shell.nix --run "${INSTALLER_CMD}"
 
-          APP_NAME="csl-daedalus"
-
-          if test -f "${INSTALLER_PKG}"
-          then
-                  echo "~~~ Uploading the installer package.."
-                  mkdir -p ${APP_NAME}
-                  mv "${INSTALLER_PKG}" "${APP_NAME}/${INSTALLER_PKG}"
-
+          if [ -d ${APP_NAME} ]; then
                   if [ -n "${BUILDKITE_JOB_ID:-}" ]
                   then
+                          echo "~~~ Uploading the installer package.."
                           export PATH=${BUILDKITE_BIN_PATH:-}:$PATH
-                          buildkite-agent artifact upload "${APP_NAME}/${INSTALLER_PKG}"    s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
+                          buildkite-agent artifact upload "${APP_NAME}/*" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
                           mv "launcher-config.yaml" "launcher-config-${cluster}.macos64.yaml"
                           mv "wallet-topology.yaml" "wallet-topology-${cluster}.macos64.yaml"
                           buildkite-agent artifact upload "launcher-config-${cluster}.macos64.yaml" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
                           buildkite-agent artifact upload "wallet-topology-${cluster}.macos64.yaml" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
-                          rm "${APP_NAME}/${INSTALLER_PKG}"
+                          rm -rf "${APP_NAME}"
                   fi
           else
                   echo "Installer was not made."
