@@ -24,16 +24,30 @@ import           Prelude ((!!))
 import qualified System.IO as IO
 import           Filesystem.Path (FilePath, (</>), (<.>))
 import           Filesystem.Path.CurrentOS (encodeString, fromText)
-import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, stdout, input, export, sed, strict, format, printf, fp, w, (%), need, writeTextFile, die)
-import           Turtle.Pattern (text, plus, noneOf, star, dot)
-import           AppVeyor
-import qualified Codec.Archive.Zip    as Zip
+import           Filesystem.Path.CurrentOS (decodeString)
+import           Prelude                   ((!!))
+import           Prelude                   ((!!))
+import           System.Directory          (copyFile, doesFileExist)
+import           System.Environment        (lookupEnv)
+import           System.FilePath           ((</>))
+import           System.IO                 (writeFile)
+import           System.IO                 (writeFile)
+import           Turtle                    (ExitCode (..), Line, Shell, die,
+                                            echo, export, format, fp, inproc,
+                                            input, need, printf, proc, procs,
+                                            sed, shells, stdout, strict,
+                                            testfile, w, writeTextFile, (%))
+import           Turtle                    (ExitCode (..), echo, export, input,
+                                            proc, procs, shells, stdout,
+                                            testfile)
+import           Turtle.Line               (unsafeTextToLine)
+import           Turtle.Pattern            (dot, noneOf, plus, star, text)
 
 import           Config
 import           Types
 import           Util
 
-
+
 
 daedalusShortcut :: [Attrib]
 daedalusShortcut =
@@ -153,10 +167,7 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                 file [] "cardano-launcher.exe"
                 file [] "cardano-x509-certificates.exe"
                 file [] "log-config-prod.yaml"
-                file [] "build-certificates-win64.bat"
-                file [] "ca.conf.windows"
-                file [] "server.conf.windows"
-                file [] "client.conf.windows"
+                file [] "version.txt"
                 file [] "wallet-topology.yaml"
                 file [] "configuration.yaml"
                 file [] "*genesis*.json"
