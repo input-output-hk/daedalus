@@ -1,11 +1,12 @@
 \(cluster : ./cluster.type)      ->
-let dataDir = "\${APPDATA}\\Daedalus\\${cluster.name}\\"
+   let installDir = "Daedalus${cluster.installDirectorySuffix}"
+in let dataDir = "\${APPDATA}\\${installDir}\\"
     --
     --
 in
 { name      = "win64"
 , configurationYaml  = "configuration.yaml"
-, installDirectory   = "Daedalus${cluster.installDirectorySuffix}"
+, installDirectory   = installDir
 , nodeArgs           =
   { keyfile          = "${dataDir}\\Secrets-1.0\\secret.key"
   , logsPrefix       = "${dataDir}\\Logs"
