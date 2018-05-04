@@ -12,16 +12,19 @@ import Control.Monad.Managed (MonadManaged, runManaged)
 import Data.Aeson.Types (Value)
 import Data.Aeson.Lens
 import qualified Control.Foldl as Fold
+import           System.Directory
 
 import Config
 import Types
 import qualified MacInstaller as Mac
+import Util
 
 main :: IO ()
 main = hspec $ do
   describe "Utility functions" utilSpec
   describe "MacInstaller build" macBuildSpec
   describe "Config generation" configSpec
+  describe "recursive directory deletion" deleteSpec
 
 macBuildSpec :: Spec
 macBuildSpec = do
@@ -83,6 +86,27 @@ configSpec = do
       dhallTest Win64 Staging Launcher "./dhall" $ \val -> do
         val^.key "reportServer"._String `shouldSatisfy` (T.isInfixOf "iohkdev.io")
         val^.key "configuration".key "key"._String `shouldBe` "mainnet_dryrun_wallet_win64"
+
+deleteSpec :: Spec
+deleteSpec = do
+  describe "deleting a path over 256 chars long" $ do
+    it "it" $ do
+      let
+        name = replicate 16 'a'
+        goMake :: Int -> IO ()
+        goMake 0 = pure ()
+        goMake n = do
+          createDirectory name
+          withCurrentDirectory name (goMake $ n-1)
+      precheck <- doesDirectoryExist name
+      if precheck then
+        windowsRemoveDirectoryRecursive name
+      else pure ()
+      goMake 32
+      let
+        file = (intercalate "/" (replicate 32 name)) <> "/filename"
+      writeFile file "body"
+      windowsRemoveDirectoryRecursive name
 
 type Yuck = Value -> IO ()
 

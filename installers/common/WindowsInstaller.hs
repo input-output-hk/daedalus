@@ -28,10 +28,10 @@ import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, 
 import           Turtle.Pattern (text, plus, noneOf, star, dot)
 import           AppVeyor
 import qualified Codec.Archive.Zip    as Zip
-import           System.Directory (removeDirectoryRecursive)
 
 import           Config
 import           Types
+import           Util
 
 
 
@@ -237,7 +237,7 @@ main opts@Options{..}  = do
     putStr rawnsi
     IO.hFlush IO.stdout
 
-    removeDirectoryRecursive "../release/win32-x64/Daedalus-win32-x64/resources/app/installers/.stack-work"
+    windowsRemoveDirectoryRecursive "../release/win32-x64/Daedalus-win32-x64/resources/app/installers/.stack-work"
 
     echo "Generating NSIS installer"
     procs "C:\\Program Files (x86)\\NSIS\\makensis" ["daedalus.nsi", "-V4"] mempty
