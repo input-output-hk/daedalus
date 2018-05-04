@@ -4,7 +4,7 @@ let dataDir = "\${HOME}/Library/Application Support/Daedalus/${cluster.name}/"
     --
 in
 { name      = "macos64"
-, installDirectory = ""
+, installDirectory = "Daedalus${cluster.installDirectorySuffix}"
 , configurationYaml  = "configuration.yaml"
 , nodeArgs           =
   { keyfile          = "${dataDir}/Secrets-1.0/secret.key"

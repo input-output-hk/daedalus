@@ -50,6 +50,8 @@ main opts@Options{..} = do
   generateOSClusterConfigs "./dhall" "." opts
   cp "launcher-config.yaml" "../launcher-config.yaml"
 
+  installerConfig <- getInstallerConfig "./dhall" Macos64 oCluster
+
   appRoot <- buildElectronApp
   ver <- makeComponentRoot opts appRoot
   daedalusVer <- getDaedalusVersion "../package.json"
@@ -57,7 +59,7 @@ main opts@Options{..} = do
   let pkg = packageFileName Macos64 oCluster daedalusVer ver oBuildJob
       opkg = oOutputDir </> pkg
 
-  tempInstaller <- makeInstaller opts appRoot pkg
+  tempInstaller <- makeInstaller opts installerConfig appRoot pkg
 
   signInstaller signingConfig tempInstaller opkg
   checkSignature opkg
@@ -147,8 +149,8 @@ makeComponentRoot Options{..} appRoot = do
 
   pure ver
 
-makeInstaller :: Options -> FilePath -> FilePath -> IO FilePath
-makeInstaller opts@Options{..} componentRoot pkg = do
+makeInstaller :: Options -> InstallerConfig -> FilePath -> FilePath -> IO FilePath
+makeInstaller opts@Options{..} InstallerConfig{..} componentRoot pkg = do
   let tempPkg1 = format fp (oOutputDir </> pkg)
       tempPkg2 = oOutputDir </> (dropExtension pkg <.> "unsigned" <.> "pkg")
 
@@ -158,7 +160,7 @@ makeInstaller opts@Options{..} componentRoot pkg = do
       pkgargs :: [ T.Text ]
       pkgargs =
            [ "--identifier"
-           , "org."<> fromAppName oAppName <>".pkg"
+           , "org."<> installDirectory <>".pkg"
            -- data/scripts/postinstall is responsible for running build-certificates
            , "--scripts", scriptsDir
            , "--component"
