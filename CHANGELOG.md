@@ -7,6 +7,8 @@ Changelog
 
 ### Fixes
 
+- Fixed text wrapping within wallet navigation tabs ([PR 911](https://github.com/input-output-hk/daedalus/pull/911))
+
 ### Chores
 
 - Added PR template with PR review checlist ([PR 882](https://github.com/input-output-hk/daedalus/pull/882))
