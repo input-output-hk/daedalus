@@ -7,6 +7,8 @@ Changelog
 
 ### Fixes
 
+- Disabled dragging of static UI images elements ([PR 910](https://github.com/input-output-hk/daedalus/pull/910))
+
 ### Chores
 
 - Added PR template with PR review checlist ([PR 882](https://github.com/input-output-hk/daedalus/pull/882))
