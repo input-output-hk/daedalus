@@ -4,6 +4,7 @@ import log from 'electron-log';
 import { client } from 'electron-connect';
 import { setupLogging } from './utils/setupLogging';
 import { setupTls } from './utils/setupTls';
+import { setupCardano } from './utils/ada.js';
 import { makeEnvironmentGlobal } from './utils/makeEnvironmentGlobal';
 import { createMainWindow } from './windows/main';
 import { createAboutWindow } from './windows/about';
@@ -30,6 +31,7 @@ const openAbout = () => {
 
 app.on('ready', async () => {
   setupTls();
+  setupCardano();
   makeEnvironmentGlobal(process.env);
   await installChromeExtensions(environment.isDev());
   aboutWindow = createAboutWindow();
