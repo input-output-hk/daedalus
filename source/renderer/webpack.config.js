@@ -54,9 +54,10 @@ module.exports = {
         test: /\.(woff2?|eot|ttf|otf|png|jpe?g|gif|svg)(\?.*)?$/,
         exclude: /\.inline\.svg$/,
         use: {
-          loader: 'url-loader',
+          loader: 'file-loader',
           options: {
-            limit: '50000', // inline max 50kb
+            name: '[name]-[hash].[ext]',
+            outputPath: 'assets/'
           }
         }
       },
