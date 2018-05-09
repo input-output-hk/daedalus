@@ -8,6 +8,7 @@ Changelog
 ### Fixes
 
 - Fixes huge build file sizes ([PR 886](https://github.com/input-output-hk/daedalus/pull/886))
+- Disabled dragging of static UI images elements ([PR 910](https://github.com/input-output-hk/daedalus/pull/910))
 
 ### Chores
 
