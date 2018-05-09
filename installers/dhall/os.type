@@ -13,6 +13,7 @@
   , nodeLogConfig       : Text
   , nodeLogPath         : Text
   , walletPath          : Text
+  , walletLogging       : Bool
   , updaterPath         : Text
   , updaterArgs         : List Text
   , updateArchive       : Optional Text
