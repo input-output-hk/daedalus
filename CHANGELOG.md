@@ -7,6 +7,7 @@ Changelog
 
 ### Fixes
 
+- Fixed text wrapping within wallet navigation tabs ([PR 911](https://github.com/input-output-hk/daedalus/pull/911))
 - Disabled dragging of static UI images elements ([PR 910](https://github.com/input-output-hk/daedalus/pull/910))
 
 ### Chores
