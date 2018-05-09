@@ -6,6 +6,7 @@ import getLogsApi from './get-logs';
 import parseRedemptionCodeApi from './parse-redemption-code-from-pdf';
 import resizeWindowApi from './resize-window';
 import killProcess from './kill-process';
+import loadAsset from './load-asset';
 
 export default (params: any) => {
   compressLogsApi();
@@ -15,4 +16,5 @@ export default (params: any) => {
   parseRedemptionCodeApi();
   resizeWindowApi(params);
   killProcess();
+  loadAsset();
 };
