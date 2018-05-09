@@ -1,5 +1,6 @@
 // @flow
 import https from 'https';
+import { getContentLength } from '../../lib/utils';
 
 export type RequestOptions = {
   hostname: string,
@@ -23,7 +24,7 @@ function typedRequest<Response>(
     if (queryParams) requestBody = JSON.stringify(queryParams);
     options.headers = Object.assign(options.headers || {}, {
       'Content-Type': 'application/json',
-      'Content-Length': requestBody.length,
+      'Content-Length': getContentLength(requestBody),
     });
     const httpsRequest = https.request(options, (response) => {
       let body = '';
