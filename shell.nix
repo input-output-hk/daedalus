@@ -5,14 +5,25 @@ in
 , config ? {}
 , pkgs ? (import (localLib.fetchNixPkgs) { inherit system config; })
 , cluster ? "staging"
+, autoStartBackend ? false
 }:
 
 with pkgs;
 
 let
   daedalusPkgs = import ./. { inherit cluster; };
-in stdenv.mkDerivation {
+in stdenv.mkDerivation ({
   name = "daedalus";
+
+  buildInputs = [
+    nix bash binutils coreutils curl gnutar
+    git python27 curl electron nodejs-8_x
+    nodePackages.node-gyp nodePackages.node-pre-gyp
+    gnumake yarn
+  ] ++ (lib.optionals autoStartBackend [
+    daedalusPkgs.daedalus-bridge
+  ]);
+} // lib.optionalAttrs autoStartBackend {
   LAUNCHER_CONFIG = "${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml";
   DAEDALUS_CONFIG = "${daedalusPkgs.daedalus.cfg}/etc/";
   shellHook = ''
@@ -22,12 +33,4 @@ in stdenv.mkDerivation {
     done
     mkdir -p Secrets
   '';
-
-  buildInputs = [
-    nix bash binutils coreutils curl gnutar
-    git python27 curl electron nodejs-8_x
-    nodePackages.node-gyp nodePackages.node-pre-gyp
-    gnumake yarn
-    daedalusPkgs.daedalus-bridge
-  ];
-}
+})
