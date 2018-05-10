@@ -41,7 +41,7 @@ export const setupCardano = () => {
     // TODO, tell daedalus to use port 8090
     return;
   }
-  var logfile = createWriteStream("cardano-node.log", { flags: "a" });
+  var logfile = createWriteStream(launcherConfig.logsPrefix + "/cardano-node.log", { flags: "a" });
   logfile.on("open", function () {
     log.info("IPC:cardano logfile opened");
     var extraArgs = [];
