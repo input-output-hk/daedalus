@@ -16,8 +16,10 @@ in stdenv.mkDerivation {
   LAUNCHER_CONFIG = "${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml";
   DAEDALUS_CONFIG = "${daedalusPkgs.daedalus.cfg}/etc/";
   shellHook = ''
-    rm cardano-node
-    ln -sv $(type -P cardano-node)
+    ln -svf $(type -P cardano-node)
+    for x in wallet-topology.yaml configuration.yaml mainnet-genesis-dryrun-with-stakeholders.json ; do
+        ln -svf ${daedalusPkgs.daedalus.cfg}/etc/$x
+    done
     mkdir -p Secrets
   '';
 
