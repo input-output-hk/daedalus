@@ -5,10 +5,9 @@ import Request from '../lib/LocalizedRequest';
 import type {
   NextUpdateResponse, PostponeUpdateResponse, ApplyUpdateResponse
 } from '../../api/ada/index';
+import { NODE_UPDATE_POLL_INTERVAL } from '../../config/timingConfig';
 
 export default class NodeUpdateStore extends Store {
-
-  NODE_UPDATE_POLL_INTERVAL = 5000;
 
   @observable isUpdateAvailable = false;
   @observable isUpdatePostponed = false;
@@ -28,7 +27,7 @@ export default class NodeUpdateStore extends Store {
     actions.acceptNodeUpdate.listen(this._acceptNodeUpdate);
     actions.postponeNodeUpdate.listen(this._postponeNodeUpdate);
     actions.toggleNodeUpdateNotificationExpanded.listen(this._toggleNotificationExpanded);
-    setInterval(this.refreshNextUpdate, this.NODE_UPDATE_POLL_INTERVAL);
+    setInterval(this.refreshNextUpdate, NODE_UPDATE_POLL_INTERVAL);
   }
 
   @action refreshNextUpdate = () => {

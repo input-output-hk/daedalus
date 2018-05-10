@@ -19,10 +19,11 @@ import Wallet from '../../domains/Wallet';
 import { ROUTES } from '../../routes-config';
 import type { RedeemPaperVendedAdaResponse } from '../../api/ada/index';
 import type { RedemptionTypeChoices } from '../../types/redemptionTypes';
+import { ADA_REDEMPTION_TYPES } from '../../types/redemptionTypes';
 
 export default class AdaRedemptionStore extends Store {
 
-  @observable redemptionType: RedemptionTypeChoices = 'regular';
+  @observable redemptionType: RedemptionTypeChoices = ADA_REDEMPTION_TYPES.REGULAR;
   @observable certificate: ?File = null;
   @observable isCertificateEncrypted = false;
   @observable passPhrase: ?string = null;
@@ -129,23 +130,23 @@ export default class AdaRedemptionStore extends Store {
   });
 
   _parseCodeFromCertificate() {
-    if (this.redemptionType === 'regular') {
+    if (this.redemptionType === ADA_REDEMPTION_TYPES.REGULAR) {
       if (!this.passPhrase && this.isCertificateEncrypted) return;
     }
-    if (this.redemptionType === 'forceVended') {
+    if (this.redemptionType === ADA_REDEMPTION_TYPES.FORCE_VENDED) {
       if ((!this.email || !this.adaAmount || !this.adaPasscode) && this.isCertificateEncrypted) {
         return;
       }
     }
-    if (this.redemptionType === 'paperVended') return;
+    if (this.redemptionType === ADA_REDEMPTION_TYPES.PAPER_VENDED) return;
     if (this.certificate == null) throw new Error('Certificate File is required for parsing.');
     const path = this.certificate.path; // eslint-disable-line
     Logger.debug('Parsing ADA Redemption code from certificate: ' + path);
     let decryptionKey = null;
-    if (this.redemptionType === 'regular' && this.isCertificateEncrypted) {
+    if (this.redemptionType === ADA_REDEMPTION_TYPES.REGULAR && this.isCertificateEncrypted) {
       decryptionKey = this.passPhrase;
     }
-    if (this.redemptionType === 'forceVended' && this.isCertificateEncrypted) {
+    if (this.redemptionType === ADA_REDEMPTION_TYPES.FORCE_VENDED && this.isCertificateEncrypted) {
       decryptionKey = [this.email, this.adaPasscode, this.adaAmount];
     }
     ipcRenderer.send(PARSE_REDEMPTION_CODE.REQUEST, path, decryptionKey, this.redemptionType);
@@ -178,7 +179,7 @@ export default class AdaRedemptionStore extends Store {
     runInAction(() => {
       this.walletId = walletId;
     });
-    const accountId = this.stores.ada.addresses._getAccountIdByWalletId(walletId);
+    const accountId = await this.stores.ada.addresses.getAccountIdByWalletId(walletId);
     if (!accountId) throw new Error('Active account required before redeeming Ada.');
 
     this.redeemAdaRequest.execute({
@@ -198,31 +199,31 @@ export default class AdaRedemptionStore extends Store {
       }));
   };
 
-  _redeemPaperVendedAda = action(({ walletId, shieldedRedemptionKey, walletPassword } : {
+  _redeemPaperVendedAda = async ({ walletId, shieldedRedemptionKey, walletPassword } : {
     walletId: string,
     shieldedRedemptionKey: string,
     walletPassword: ?string,
   }) => {
     this.walletId = walletId;
-    const accountId = this.stores.ada.addresses._getAccountIdByWalletId(walletId);
+    const accountId = await this.stores.ada.addresses.getAccountIdByWalletId(walletId);
     if (!accountId) throw new Error('Active account required before redeeming Ada.');
-    this.redeemPaperVendedAdaRequest.execute({
-      shieldedRedemptionKey,
-      mnemonics: this.passPhrase,
-      accountId,
-      walletPassword,
-    })
-      .then(action((transaction: WalletTransaction) => {
-        this._reset();
-        this.actions.ada.adaRedemption.adaSuccessfullyRedeemed.trigger({
-          walletId,
-          amount: transaction.amount.toFormat(DECIMAL_PLACES_IN_ADA),
-        });
-      }))
-      .catch(action((error) => {
-        this.error = error;
-      }));
-  });
+
+    try {
+      const transaction = await this.redeemPaperVendedAdaRequest.execute({
+        shieldedRedemptionKey,
+        mnemonics: this.passPhrase,
+        accountId,
+        walletPassword,
+      });
+      this._reset();
+      this.actions.ada.adaRedemption.adaSuccessfullyRedeemed.trigger({
+        walletId,
+        amount: transaction.amount.toFormat(DECIMAL_PLACES_IN_ADA),
+      });
+    } catch (error) {
+      runInAction(() => this.error = error);
+    }
+  };
 
   _onAdaSuccessfullyRedeemed = action(({ walletId, amount }) => {
     Logger.debug('ADA successfully redeemed for wallet: ' + walletId);
@@ -241,7 +242,7 @@ export default class AdaRedemptionStore extends Store {
     const currentRoute = this.stores.app.currentRoute;
     const match = matchRoute(ROUTES.ADA_REDEMPTION, currentRoute);
     if (match) this._reset();
-  }
+  };
 
   _onRemoveCertificate = action(() => {
     this.error = null;
@@ -258,7 +259,7 @@ export default class AdaRedemptionStore extends Store {
     this.certificate = null;
     this.isCertificateEncrypted = false;
     this.walletId = null;
-    this.redemptionType = 'regular';
+    this.redemptionType = ADA_REDEMPTION_TYPES.REGULAR;
     this.redemptionCode = '';
     this.shieldedRedemptionKey = null;
     this.passPhrase = null;

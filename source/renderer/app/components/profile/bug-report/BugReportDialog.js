@@ -18,6 +18,7 @@ import { InvalidEmailError, FieldRequiredError } from '../../../i18n/errors';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './BugReportDialog.scss';
 import type { LogFiles } from '../../../types/LogTypes';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 
 const messages = defineMessages({
   title: {
@@ -200,7 +201,7 @@ export default class BugReportDialog extends Component<Props, State> {
   }, {
     options: {
       validateOnChange: true,
-      validationDebounceWait: 250,
+      validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
     },
   });
 

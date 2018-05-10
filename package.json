@@ -156,6 +156,6 @@
   },
   "devEngines": {
     "node": "8.x",
-    "npm": "5.x"
+    "npm": "5.x || 6.x"
   }
 }

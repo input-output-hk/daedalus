@@ -7,6 +7,7 @@ import incomeIcon from '../../../assets/images/wallet-nav/receive-ic.inline.svg'
 import exchangeIcon from '../../../assets/images/exchange-ic.inline.svg';
 import failedIcon from '../../../assets/images/wallet-nav/deny-ic.inline.svg';
 import styles from './TransactionTypeIcon.scss';
+import { transactionStates, transactionTypes } from '../../../domains/WalletTransaction';
 
 type Props = {
   iconType: string,
@@ -24,16 +25,16 @@ export default class TransactionTypeIcon extends Component<Props> {
 
     let icon;
     switch (iconType) {
-      case 'expend':
+      case transactionTypes.EXPEND:
         icon = expendIcon;
         break;
-      case 'income':
+      case transactionTypes.INCOME:
         icon = incomeIcon;
         break;
-      case 'exchange':
+      case transactionTypes.EXCHANGE:
         icon = exchangeIcon;
         break;
-      case 'failed':
+      case transactionStates.FAILED:
         icon = failedIcon;
         break;
       default:

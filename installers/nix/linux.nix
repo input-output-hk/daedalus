@@ -19,7 +19,7 @@ let
     cp -vi ${daedalus-bridge}/config/mainnet-genesis-dryrun-with-stakeholders.json mainnet-genesis-dryrun-with-stakeholders.json
     cp -vi ${daedalus-bridge}/config/mainnet-genesis.json mainnet-genesis.json
     cp -vi ${daedalus-bridge}/config/log-config-prod.yaml daedalus.yaml
-    ${daedalus-installer}/bin/make-installer --cluster ${cluster} config "${daedalus-installer.src}/dhall" "."
+    ${daedalus-installer}/bin/make-installer --out-dir "." --cluster ${cluster} config "${daedalus-installer.src}/dhall" "."
   '';
   # closure size TODO list
   # electron depends on cups, which depends on avahi
