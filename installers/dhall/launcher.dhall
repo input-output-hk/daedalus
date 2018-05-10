@@ -10,10 +10,12 @@
 , reportServer   = cluster.reportServer
 , walletArgs     = [] : List Text
 , logsPrefix     = os.nodeArgs.logsPrefix
+, tlsPath        = os.nodeArgs.tlsPath
+, x509ToolPath   = os.x509ToolPath
 , nodeArgs =
-    [ "--tlsca",               "tls/ca/ca.crt"
-    , "--tlscert",             "tls/server/server.crt"
-    , "--tlskey",              "tls/server/server.key"
+    [ "--tlsca",               "${os.nodeArgs.tlsPath}/ca/ca.crt"
+    , "--tlscert",             "${os.nodeArgs.tlsPath}/server/server.crt"
+    , "--tlskey",              "${os.nodeArgs.tlsPath}/server/server.key"
     , "--update-server",       cluster.updateServer
     , "--keyfile",             os.nodeArgs.keyfile
     , "--topology",            os.nodeArgs.topology

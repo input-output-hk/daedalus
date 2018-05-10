@@ -2,12 +2,14 @@
 , configurationYaml  : Text
 , installDirectory   : Text
 , macPackageName     : Text
+, x509ToolPath       : Text
 , nodeArgs           :
   { keyfile          : Text
   , logsPrefix       : Text
   , topology         : Text
   , updateLatestPath : Text
   , walletDBPath     : Text
+  , tlsPath          : Text
   }
 , pass :
   { nodePath            : Text
