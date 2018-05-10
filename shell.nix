@@ -16,6 +16,8 @@ in stdenv.mkDerivation {
   LAUNCHER_CONFIG = "${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml";
   DAEDALUS_CONFIG = "${daedalusPkgs.daedalus.cfg}/etc/";
   shellHook = ''
+    rm cardano-node
+    ln -sv $(type -P cardano-node)
     mkdir -p Secrets
   '';
 

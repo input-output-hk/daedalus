@@ -1,8 +1,11 @@
 import { spawn } from 'child_process';
-import { createWriteStream } from 'fs';
+import { createWriteStream, readFileSync } from 'fs';
 import log from 'electron-log';
 import { app } from 'electron';
 const yamljs = require('yamljs');
+
+// debug, remove later
+const {dialog} = require('electron')
 
 /*
   * todo:
@@ -19,7 +22,20 @@ export const setupCardano = () => {
     // TODO, tell daedalus to use port 8090
     return;
   }
-  const launcherConfig = yamljs.parseFile(process.env.LAUNCHER_CONFIG);
+  var inputYaml = readFileSync(process.env.LAUNCHER_CONFIG, "utf8");
+  if (process.env.XDG_DATA_HOME === undefined) {
+    process.env.XDG_DATA_HOME = process.env.HOME + "/.local/share/";
+  }
+  var finalYaml = inputYaml.replace(/\${([^}]+)}/g,
+    function (a,b,c,d) {
+      var res = process.env[b];
+      if (res === undefined) {
+        console.log("warning var undefined:", b);
+        return "";
+      }
+      return res;
+    });
+  const launcherConfig = yamljs.parse(finalYaml);
   if (!launcherConfig.frontendOnlyMode) {
     log.info("IPC: launcher config says node is started by the launcher");
     // TODO, tell daedalus to use port 8090
@@ -41,11 +57,11 @@ export const setupCardano = () => {
       , launcherConfig.nodeArgs.concat(extraArgs)
       , {
         stdio: [ "inherit", logfile, logfile, "ipc" ]
-        , shell: true
       });
 
     subprocess.on("message", function (msg) {
       log.info("IPC:got reply",JSON.stringify(msg));
+      dialog.showErrorBox("got IPC", JSON.stringify(msg));
     });
     subprocess.on("close", function(code, signal) {
       log.info("IPC:all stdio to child has been closed", code, signal);
