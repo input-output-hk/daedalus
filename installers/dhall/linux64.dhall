@@ -1,5 +1,4 @@
 \(cluster : ./cluster.type)      ->
-<<<<<<< HEAD
 let dataDir = "\${XDG_DATA_HOME}/Daedalus/${cluster.name}/"
 in
 { name      = "linux64"
@@ -8,16 +7,16 @@ in
 , macPackageName     = "unused"
 , x509ToolPath       = "cardano-x509-certificates"
 , nodeArgs           =
-  { keyfile          = "Secrets/secret.key"
-  , logsPrefix       = "Logs"
+  { keyfile          = "${dataDir}/${cluster.name}/Secrets/secret.key"
+  , logsPrefix       = "${dataDir}/${cluster.name}/Logs"
   , topology         = "\${DAEDALUS_CONFIG}/wallet-topology.yaml"
   , updateLatestPath = "${dataDir}/installer.sh"
-  , walletDBPath     = "Wallet/"
+  , walletDBPath     = "${dataDir}/Wallet/"
   , tlsPath          = "${dataDir}/tls"
   }
 , pass      =
   { nodePath            = "cardano-node"
-  , nodeDbPath          = "DB/"
+  , nodeDbPath          = "${dataDir}/${cluster.name}/DB/"
   , nodeLogConfig       = "\${DAEDALUS_CONFIG}/daedalus.yaml"
   , nodeLogPath         = "${dataDir}/Logs/cardano-node.log"
 
