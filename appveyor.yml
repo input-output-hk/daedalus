@@ -1,3 +1,5 @@
+version: "{build}"
+
 environment:
   nodejs_version: "8"
   NETWORK: "mainnet"
