@@ -62,6 +62,12 @@ export const setupCardano = () => {
     subprocess.on("message", function (msg) {
       log.info("IPC:got reply",JSON.stringify(msg));
       dialog.showErrorBox("got IPC", JSON.stringify(msg));
+      if (msg.Started) {
+        log.info("IPC: backend started, CA updated");
+        Object.assign(global, {
+          ca: readFileSync(launcherConfig.tlsPath + "/ca/ca.crt"),
+        });
+      }
     });
     subprocess.on("close", function(code, signal) {
       log.info("IPC:all stdio to child has been closed", code, signal);
