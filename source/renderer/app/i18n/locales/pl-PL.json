@@ -22,7 +22,7 @@
   "bugReport.dialog.alternative.instructions.step3": "Attach the logs to your support request, fill in your details, and submit the form.",
   "bugReport.dialog.alternative.submitManually.button.label": "Wyślij ręcznie",
   "bugReport.dialog.alternative.submitManually.link": "daedaluswallet.io/problem",
-  "bugReport.dialog.button.label": "Wyślij zgłoszenie",
+  "bugReport.dialog.button.label": "Zgłoś błąd",
   "bugReport.dialog.emailLabel": "Twój e-mail",
   "bugReport.dialog.emailPlaceholder": "Zamieść tutaj swój e-mail, byśmy mogli Ci odpowiedzieć.",
   "bugReport.dialog.logsSwitchLabel": "Zamieść rejestr zdarzeń",
