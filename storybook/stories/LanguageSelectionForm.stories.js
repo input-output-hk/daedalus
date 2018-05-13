@@ -11,6 +11,7 @@ const LANGUAGES = [
   { value: 'ko-KR', label: globalMessages.languageKorean },
   { value: 'de-DE', label: globalMessages.languageGerman },
   { value: 'hr-HR', label: globalMessages.languageCroatian },
+  { value: 'pl-PL', label: globalMessages.languagePolish },
 ];
 
 storiesOf('LanguageSelectionForm', module)

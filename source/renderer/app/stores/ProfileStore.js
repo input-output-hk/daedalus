@@ -22,6 +22,7 @@ export default class SettingsStore extends Store {
     // { value: 'zh-CN', label: globalMessages.languageChinese },
     // { value: 'ko-KR', label: globalMessages.languageKorean },
     // { value: 'de-DE', label: globalMessages.languageGerman },
+    // { value: 'pl-PL', label: globalMessages.languagePolish },
     // { value: 'hr-HR', label: globalMessages.languageCroatian },
   ];
 
