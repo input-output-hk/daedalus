@@ -10,7 +10,6 @@ reportUrl = yamljs.parseFile('launcher-config.yaml').reportServer;
 module.exports = {
   devtool: 'cheap-module-source-map',
   entry: './source/main/index.js',
-  devtool: 'cheap-module-eval-source-map',
   output: {
     path: path.join(__dirname, './dist/main'),
     filename: 'index.js'
@@ -56,10 +55,10 @@ module.exports = {
       'process.env.NODE_ENV': '"production"',
     } : {})),
     new HardSourceWebpackPlugin({
-      configHash: (webpackConfig) => {
+      configHash: (webpackConfig) => (
         // Remove the `watch` flag to avoid different caches for static and incremental builds
-        return require('node-object-hash')({ sort: false }).hash(lodash.omit(webpackConfig, 'watch'));
-      },
+        require('node-object-hash')({ sort: false }).hash(lodash.omit(webpackConfig, 'watch'))
+      ),
       environmentPaths: {
         files: ['.babelrc', 'package-lock.json', 'yarn.lock'],
       },

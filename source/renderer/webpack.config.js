@@ -126,10 +126,10 @@ module.exports = {
       }
     }),
     new HardSourceWebpackPlugin({
-      configHash: (webpackConfig) => {
+      configHash: (webpackConfig) => (
         // Remove the `watch` flag to avoid different caches for static and incremental builds
-        return require('node-object-hash')({ sort: false }).hash(lodash.omit(webpackConfig, 'watch'));
-      },
+        require('node-object-hash')({ sort: false }).hash(lodash.omit(webpackConfig, 'watch'))
+      ),
       environmentPaths: {
         files: ['.babelrc', 'package-lock.json', 'yarn.lock'],
       },
