@@ -31,11 +31,11 @@ const openAbout = () => {
 
 app.on('ready', async () => {
   setupTls();
-  setupCardano();
   makeEnvironmentGlobal(process.env);
   await installChromeExtensions(environment.isDev());
   aboutWindow = createAboutWindow();
   mainWindow = createMainWindow();
+  setupCardano(mainWindow);
 
   if (environment.isDev()) {
     // Connect to electron-connect server which restarts / reloads windows on file changes

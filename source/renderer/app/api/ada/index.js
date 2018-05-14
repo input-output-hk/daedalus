@@ -43,6 +43,12 @@ import { getAdaWalletRecoveryPhraseFromCertificate } from './getAdaWalletRecover
 import { getAdaLocalTimeDifference } from './getAdaLocalTimeDifference';
 import { sendAdaBugReport } from './sendAdaBugReport';
 
+/**
+ * The api layer that is used for all requests to the
+ * cardano backend when working with the ADA coin.
+ */
+import { apiParams } from './backend';
+
 import type {
   AdaLocalTimeDifference,
   AdaSyncProgressResponse,
@@ -110,12 +116,6 @@ import {
 import { AdaV1AssuranceOptions } from './types';
 import { assuranceModeOptions } from '../../types/transactionAssuranceTypes';
 
-/**
- * The api layer that is used for all requests to the
- * cardano backend when working with the ADA coin.
- */
-
-const ca = remote.getGlobal('ca');
 
 // ADA specific Request / Response params
 export type GetAddressesResponse = {
@@ -221,7 +221,7 @@ export default class AdaApi {
   async getWallets(): Promise<GetWalletsResponse> {
     Logger.debug('AdaApi::getWallets called');
     try {
-      const response: AdaV1Wallets = await getAdaWallets({ ca });
+      const response: AdaV1Wallets = await getAdaWallets({ ca: apiParams.ca, port: apiParams.port });
       Logger.debug('AdaApi::getWallets success: ' + stringifyData(response));
       return response.map(data => _createWalletFromServerV1Data(data));
     } catch (error) {
@@ -234,7 +234,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::getAddresses called: ' + stringifyData(request));
     const { walletId } = request;
     try {
-      const response: AdaAccounts = await getAdaWalletAccounts({ ca, walletId });
+      const response: AdaAccounts = await getAdaWalletAccounts({ ca: apiParams.ca, port: apiParams.port, walletId });
       Logger.debug('AdaApi::getAddresses success: ' + stringifyData(response));
       if (!response.length) {
         return new Promise((resolve) => resolve({ accountId: null, addresses: [] }));
@@ -258,7 +258,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::searchHistory called: ' + stringifyData(request));
     const { walletId, skip, limit } = request;
     try {
-      const history: AdaTransactions = await getAdaHistoryByWallet({ ca, walletId, skip, limit });
+      const history: AdaTransactions = await getAdaHistoryByWallet({ ca: apiParams.ca, port:apiParams.port, walletId, skip, limit });
       Logger.debug('AdaApi::searchHistory success: ' + stringifyData(history));
       return new Promise((resolve) => resolve({
         transactions: history[0].map(data => _createTransactionFromServerData(data)),
@@ -620,7 +620,7 @@ export default class AdaApi {
     let nextUpdate = null;
     try {
       // TODO: add flow type definitions for nextUpdate response
-      const response: Promise<any> = await nextAdaUpdate({ ca });
+      const response: Promise<any> = await nextAdaUpdate({ ca: apiParams.ca, port: apiParams.port });
       Logger.debug('AdaApi::nextUpdate success: ' + stringifyData(response));
       if (response && response.cuiSoftwareVersion) {
         nextUpdate = {
@@ -692,9 +692,13 @@ export default class AdaApi {
   }
 
   getSyncProgress = async (): Promise<GetSyncProgressResponse> => {
+    if (apiParams.port === 8090) {
+      console.log("wrong port",(new Error()).stack);
+      return;
+    }
     Logger.debug('AdaApi::syncProgress called');
     try {
-      const response: AdaSyncProgressResponse = await getAdaSyncProgress({ ca });
+      const response: AdaSyncProgressResponse = await getAdaSyncProgress({ ca: apiParams.ca, port: apiParams.port });
       Logger.debug('AdaApi::syncProgress success: ' + stringifyData(response));
       const localDifficulty = response._spLocalCD.getChainDifficulty.getBlockCount;
       // In some cases we dont get network difficulty & we need to wait for it from the notify API
@@ -778,7 +782,7 @@ export default class AdaApi {
   async getLocalTimeDifference(): Promise<GetLocalTimeDifferenceResponse> {
     Logger.debug('AdaApi::getLocalTimeDifference called');
     try {
-      const response: AdaLocalTimeDifference = await getAdaLocalTimeDifference({ ca });
+      const response: AdaLocalTimeDifference = await getAdaLocalTimeDifference({ ca: apiParams.ca, port: apiParams.port });
       Logger.debug('AdaApi::getLocalTimeDifference success: ' + stringifyData(response));
       return Math.abs(response); // time offset direction is irrelevant to the UI
     } catch (error) {
