@@ -4,16 +4,17 @@ import { request } from './lib/v1/request';
 
 export type GetAdaWalletParams = {
   ca: string,
+  port: number,
 };
 
 export const getAdaWallets = (
-  { ca }: GetAdaWalletParams
+  { ca, port }: GetAdaWalletParams
 ): Promise<AdaV1Wallets> => (
   request({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/v1/wallets',
-    port: 8090,
+    port,
     ca,
   })
 );

@@ -4,16 +4,17 @@ import { request } from './lib/request';
 
 export type GetAdaLocalTimeDifferenceParams = {
   ca: string,
+  port: number,
 };
 
 export const getAdaLocalTimeDifference = (
-  { ca }: GetAdaLocalTimeDifferenceParams
+  { ca, port }: GetAdaLocalTimeDifferenceParams
 ): Promise<AdaLocalTimeDifference> => (
   request({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/settings/time/difference',
-    port: 8090,
+    port,
     ca,
   })
 );

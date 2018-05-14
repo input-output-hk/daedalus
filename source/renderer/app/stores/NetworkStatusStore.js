@@ -228,7 +228,9 @@ export default class NetworkStatusStore extends Store {
   }
 
   _pollSyncProgress() {
-    setInterval(this._updateSyncProgress, SYNC_PROGRESS_INTERVAL);
+    console.log("setting interval");
+    var id = setInterval(this._updateSyncProgress, SYNC_PROGRESS_INTERVAL);
+    console.log("its id is", id);
     this._updateSyncProgress();
   }
 

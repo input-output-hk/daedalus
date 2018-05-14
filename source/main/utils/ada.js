@@ -3,9 +3,13 @@ import { createWriteStream, readFileSync } from 'fs';
 import log from 'electron-log';
 import { app } from 'electron';
 const yamljs = require('yamljs');
+import { ipcMain } from 'electron';
+import { UPDATE_API } from '../../common/ipc-api';
 
 // debug, remove later
 const {dialog} = require('electron')
+
+var port = 8090;
 
 /*
   * todo:
@@ -16,7 +20,13 @@ const {dialog} = require('electron')
   * optional?:
   * call subprocess.disconnect() when the user tries to close daedalus, then wait for the child to die, and show a "shutting down..." status, after a timeout, kill the child
   */
-export const setupCardano = () => {
+export const setupCardano = function setupCardano (mainWindow) {
+  function resendApiInfo() {
+    mainWindow.send(UPDATE_API.REQUEST, {
+      ca: global.ca,
+      port: port
+    });
+  };
   if (!process.env.LAUNCHER_CONFIG) {
     log.info("IPC: launcher config not found, assuming cardano is ran externally");
     // TODO, tell daedalus to use port 8090
@@ -67,7 +77,10 @@ export const setupCardano = () => {
         Object.assign(global, {
           ca: readFileSync(launcherConfig.tlsPath + "/ca/ca.crt"),
         });
-      }
+      } else if (msg.ReplyPort) {
+        port = msg.ReplyPort;
+        resendApiInfo();
+      };
     });
     subprocess.on("close", function(code, signal) {
       log.info("IPC:all stdio to child has been closed", code, signal);
