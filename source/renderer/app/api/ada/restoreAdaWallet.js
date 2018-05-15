@@ -4,18 +4,19 @@ import { request } from './lib/request';
 
 export type RestoreAdaWalletParams = {
   ca: string,
+  port: number,
   walletPassword: ?string,
   walletInitData: AdaWalletInitData
 };
 
 export const restoreAdaWallet = (
-  { ca, walletPassword, walletInitData }: RestoreAdaWalletParams
+  { ca, port, walletPassword, walletInitData }: RestoreAdaWalletParams
 ): Promise<AdaWallet> => (
   request({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/wallets/restore',
-    port: 8090,
+    port,
     ca,
   }, { passphrase: walletPassword }, walletInitData)
 );
