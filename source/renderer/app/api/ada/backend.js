@@ -2,7 +2,7 @@ import { ipcRenderer, remote } from 'electron';
 import { UPDATE_API } from '../../../../common/ipc-api';
 
 const originalCa = remote.getGlobal('ca');
-const params = {
+var params = {
   ca: originalCa,
   port: 8090
 };
@@ -12,4 +12,5 @@ ipcRenderer.on(UPDATE_API.REQUEST, (event, paramsIn) => {
   params.port = paramsIn.port;
 });
 
-export const apiParams = params;
+export var apiParams = params;
+

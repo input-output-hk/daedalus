@@ -286,7 +286,7 @@ export default class AdaApi {
           bpToList: split(mnemonic), // array of mnemonic words
         }
       };
-      const wallet: AdaWallet = await newAdaWallet({ ca, password, walletInitData });
+      const wallet: AdaWallet = await newAdaWallet({ ca: apiParams.ca, port: apiParams.port, password, walletInitData });
       Logger.debug('AdaApi::createWallet success');
       return _createWalletFromServerData(wallet);
     } catch (error) {
@@ -488,7 +488,7 @@ export default class AdaApi {
 
     try {
       const wallet: AdaWallet = await restoreAdaWallet(
-        { ca, walletPassword, walletInitData }
+        { ca: apiParams.ca, port: apiParams.port, walletPassword, walletInitData }
       );
       Logger.debug('AdaApi::restoreWallet success');
       return _createWalletFromServerData(wallet);
@@ -693,8 +693,7 @@ export default class AdaApi {
 
   getSyncProgress = async (): Promise<GetSyncProgressResponse> => {
     if (apiParams.port === 8090) {
-      console.log("wrong port",(new Error()).stack);
-      return;
+      Logger.info('AdaApi::syncProgress info: using default port!')
     }
     Logger.debug('AdaApi::syncProgress called');
     try {
