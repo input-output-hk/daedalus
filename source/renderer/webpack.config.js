@@ -9,6 +9,9 @@ const yamljs = require('yamljs');
 let reportUrl = '';
 reportUrl = yamljs.parseFile('launcher-config.yaml').reportServer;
 
+// Process env flags from buildkite and appveyor
+const isCi = process.env.CI === 'True' || process.env.CI === 'true';
+
 module.exports = {
   devtool: 'cheap-module-source-map',
   entry: './source/renderer/index.js',
@@ -126,7 +129,7 @@ module.exports = {
       }
     }),
     // Dont use caching for CI builds!
-    !process.env.CI && (
+    !isCi && (
       new HardSourceWebpackPlugin({
         configHash: (webpackConfig) => (
           // Remove the `watch` flag to avoid different caches for static and incremental builds
