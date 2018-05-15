@@ -14,6 +14,7 @@ yarn2nix.mkYarnPackage {
   name = "daedalus-js";
   src = if 0 <= builtins.compareVersions builtins.nixVersion "1.12" then builtins.fetchGit ./. else lib.cleanSource ./.;
   API = api;
+  CI = "nix";
   NETWORK = networkMap.${cluster};
   DAEDALUS_VERSION = "${version}";
   NODE_ENV = "production";
