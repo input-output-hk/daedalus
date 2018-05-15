@@ -3,6 +3,7 @@ import { request } from './lib/request';
 
 export type DeleteAdaWalletParams = {
   ca: string,
+  port: number,
   walletId: string,
 };
 
@@ -13,7 +14,7 @@ export const deleteAdaWallet = (
     hostname: 'localhost',
     method: 'DELETE',
     path: `/api/wallets/${walletId}`,
-    port: 8090,
+    port,
     ca,
   })
 );

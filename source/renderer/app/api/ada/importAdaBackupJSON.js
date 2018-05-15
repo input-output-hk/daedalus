@@ -4,6 +4,7 @@ import { request } from './lib/request';
 
 export type ImportAdaBackupJSONParams = {
   ca: string,
+  port: number,
   filePath: string,
 };
 
@@ -14,7 +15,7 @@ export const importAdaBackupJSON = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/backup/import',
-    port: 8090,
+    port,
     ca,
   }, {}, filePath)
 );

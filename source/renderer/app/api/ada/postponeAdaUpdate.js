@@ -3,6 +3,7 @@ import { request } from './lib/request';
 
 export type PostponeAdaUpdateParams = {
   ca: string,
+  port: number,
 };
 
 export const postponeAdaUpdate = (
@@ -12,7 +13,7 @@ export const postponeAdaUpdate = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/update/postpone',
-    port: 8090,
+    port,
     ca,
   })
 );

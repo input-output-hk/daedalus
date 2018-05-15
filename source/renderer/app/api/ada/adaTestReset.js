@@ -3,16 +3,17 @@ import { request } from './lib/request';
 
 export type AdaTestResetParams = {
   ca: string,
+  port: number,
 };
 
 export const adaTestReset = (
-  { ca }: AdaTestResetParams
+  { ca, port }: AdaTestResetParams
 ): Promise<void> => (
   request({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/test/reset',
-    port: 8090,
+    port,
     ca,
   })
 );

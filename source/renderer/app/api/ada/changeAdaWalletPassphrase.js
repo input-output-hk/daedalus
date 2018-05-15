@@ -5,13 +5,14 @@ import { encryptPassphrase } from './lib/encryptPassphrase';
 
 export type ChangeAdaWalletPassphraseParams = {
   ca: string,
+  port: number,
   walletId: string,
   oldPassword: ?string,
   newPassword: ?string,
 };
 
 export const changeAdaWalletPassphrase = (
-  { ca, walletId, oldPassword, newPassword }: ChangeAdaWalletPassphraseParams
+  { ca, port, walletId, oldPassword, newPassword }: ChangeAdaWalletPassphraseParams
 ): Promise<AdaWallet> => {
   const encryptedOldPassphrase = oldPassword ? encryptPassphrase(oldPassword) : null;
   const encryptedNewPassphrase = newPassword ? encryptPassphrase(newPassword) : null;
@@ -19,7 +20,7 @@ export const changeAdaWalletPassphrase = (
     hostname: 'localhost',
     method: 'POST',
     path: `/api/wallets/password/${walletId}`,
-    port: 8090,
+    port,
     ca,
   }, { old: encryptedOldPassphrase, new: encryptedNewPassphrase });
 };

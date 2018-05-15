@@ -4,6 +4,7 @@ import { request } from './lib/request';
 
 export type GetAdaAccountsParams = {
   ca: string,
+  port: number,
 };
 
 export const getAdaAccounts = (
@@ -13,7 +14,7 @@ export const getAdaAccounts = (
     hostname: 'localhost',
     method: 'GET',
     path: '/api/accounts',
-    port: 8090,
+    port,
     ca,
   })
 );

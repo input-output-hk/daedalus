@@ -4,6 +4,7 @@ import { request } from './lib/request';
 
 export type RedeemAdaParams = {
   ca: string,
+  port: number,
   walletPassword: ?string,
   walletRedeemData: {
     crWalletId: string,
@@ -12,13 +13,13 @@ export type RedeemAdaParams = {
 };
 
 export const redeemAda = (
-  { ca, walletPassword, walletRedeemData }: RedeemAdaParams
+  { ca, port, walletPassword, walletRedeemData }: RedeemAdaParams
 ): Promise<AdaTransaction> => (
   request({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/redemptions/ada',
-    port: 8090,
+    port,
     ca,
   }, { passphrase: walletPassword }, walletRedeemData)
 );
