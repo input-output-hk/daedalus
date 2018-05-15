@@ -3,16 +3,17 @@ import { request } from './lib/request';
 
 export type ApplyAdaUpdateParams = {
   ca: string,
+  port: number,
 };
 
 export const applyAdaUpdate = (
-  { ca }: ApplyAdaUpdateParams
+  { ca, port }: ApplyAdaUpdateParams
 ): Promise<any> => (
   request({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/update/apply',
-    port: 8090,
+    port,
     ca,
   })
 );
