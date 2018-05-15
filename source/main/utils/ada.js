@@ -71,7 +71,6 @@ export const setupCardano = function setupCardano (mainWindow) {
 
     subprocess.on("message", function (msg) {
       log.info("IPC:got reply",JSON.stringify(msg));
-      dialog.showErrorBox("got IPC", JSON.stringify(msg));
       if (msg.Started) {
         log.info("IPC: backend started, CA updated");
         Object.assign(global, {
@@ -92,7 +91,9 @@ export const setupCardano = function setupCardano (mainWindow) {
       log.info("IPC:error:", err);
     });
     subprocess.on("exit", function (code, signal) {
+      dialog.showErrorBox("Backend Cardano node crashed! Exiting!", JSON.stringify({code, signal}));
       log.info("IPC:child exited", code, signal);
+      app.quit()
     });
 
     subprocess.send({ QueryPort:[]});
