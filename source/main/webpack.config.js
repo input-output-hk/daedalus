@@ -7,6 +7,9 @@ const yamljs = require('yamljs');
 let reportUrl = '';
 reportUrl = yamljs.parseFile('launcher-config.yaml').reportServer;
 
+// Process env flags from buildkite and appveyor
+const isCi = process.env.CI && process.env.CI !== '';
+
 module.exports = {
   devtool: 'cheap-module-source-map',
   entry: './source/main/index.js',
@@ -54,14 +57,16 @@ module.exports = {
       // choose the correct path to ca.crt (see setupTls.js).
       'process.env.NODE_ENV': '"production"',
     } : {})),
-    new HardSourceWebpackPlugin({
-      configHash: (webpackConfig) => (
-        // Remove the `watch` flag to avoid different caches for static and incremental builds
-        require('node-object-hash')({ sort: false }).hash(lodash.omit(webpackConfig, 'watch'))
-      ),
-      environmentPaths: {
-        files: ['.babelrc', 'package-lock.json', 'yarn.lock'],
-      },
-    })
-  ],
+    !isCi && (
+      new HardSourceWebpackPlugin({
+        configHash: (webpackConfig) => (
+          // Remove the `watch` flag to avoid different caches for static and incremental builds
+          require('node-object-hash')({ sort: false }).hash(lodash.omit(webpackConfig, 'watch'))
+        ),
+        environmentPaths: {
+          files: ['.babelrc', 'package-lock.json', 'yarn.lock'],
+        },
+      })
+    )
+  ].filter(Boolean),
 };

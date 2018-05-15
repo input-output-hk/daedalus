@@ -10,7 +10,7 @@ let reportUrl = '';
 reportUrl = yamljs.parseFile('launcher-config.yaml').reportServer;
 
 // Process env flags from buildkite and appveyor
-const isCi = process.env.CI || process.env.CI !== '';
+const isCi = process.env.CI && process.env.CI !== '';
 
 module.exports = {
   devtool: 'cheap-module-source-map',
@@ -140,5 +140,5 @@ module.exports = {
         },
       })
     )
-  ]
+  ].filter(Boolean)
 };
