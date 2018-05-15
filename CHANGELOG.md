@@ -18,6 +18,7 @@ Changelog
 - Fixed wallet restoration and import fragile acceptance tests steps definitions ([PR 885](https://github.com/input-output-hk/daedalus/pull/885))
 - Improved request body length calculation ([PR 892](https://github.com/input-output-hk/daedalus/pull/892))
 - Added "Author" and "Status" information to all Daedalus README files ([PR 901](https://github.com/input-output-hk/daedalus/pull/901))
+- Log expected errors as debug messages only ([PR 916](https://github.com/input-output-hk/daedalus/pull/916))
 
 ## 0.10.0
 
