@@ -33,7 +33,9 @@ export const DOWNLOAD_LOGS = {
   SUCCESS: `${DOWNLOAD_LOGS_CHANNEL}-success`,
   ERROR: `${DOWNLOAD_LOGS_CHANNEL}-error`,
 };
-const UPDATE_API_CHANNEL = "update-api";
+const UPDATE_API_CHANNEL = 'update-api';
+const CLIENT_REQ_API_CHANNEL = 'client-req-api';
 export const UPDATE_API = {
-  REQUEST: UPDATE_API_CHANNEL
+  REQUEST: UPDATE_API_CHANNEL,
+  CLIENT_REQUEST: CLIENT_REQ_API_CHANNEL
 };

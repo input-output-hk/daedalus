@@ -8,7 +8,7 @@ export type GetAdaAccountsParams = {
 };
 
 export const getAdaAccounts = (
-  { ca }: GetAdaAccountsParams
+  { ca, port }: GetAdaAccountsParams
 ): Promise<AdaAccounts> => (
   request({
     hostname: 'localhost',
