@@ -7,7 +7,7 @@ export type PostponeAdaUpdateParams = {
 };
 
 export const postponeAdaUpdate = (
-  { ca }: PostponeAdaUpdateParams
+  { ca, port }: PostponeAdaUpdateParams
 ): Promise<any> => (
   request({
     hostname: 'localhost',

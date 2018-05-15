@@ -9,7 +9,7 @@ export type ImportAdaBackupJSONParams = {
 };
 
 export const importAdaBackupJSON = (
-  { ca, filePath }: ImportAdaBackupJSONParams,
+  { ca, port, filePath }: ImportAdaBackupJSONParams,
 ): Promise<AdaWallet> => (
   request({
     hostname: 'localhost',

@@ -11,7 +11,7 @@ export type GetAdaHistoryByAccountParams = {
 };
 
 export const getAdaHistoryByAccount = (
-  { ca, accountId, skip, limit }: GetAdaHistoryByAccountParams
+  { ca, port, accountId, skip, limit }: GetAdaHistoryByAccountParams
 ): Promise<AdaTransactions> => (
   request({
     hostname: 'localhost',
