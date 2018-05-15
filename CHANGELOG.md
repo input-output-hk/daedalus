@@ -20,6 +20,7 @@ Changelog
 - Improved request body length calculation ([PR 892](https://github.com/input-output-hk/daedalus/pull/892))
 - Added "Author" and "Status" information to all Daedalus README files ([PR 901](https://github.com/input-output-hk/daedalus/pull/901))
 - Improves re-build times with caching ([PR 915](https://github.com/input-output-hk/daedalus/pull/915))
+- Log expected errors as debug messages only ([PR 916](https://github.com/input-output-hk/daedalus/pull/916))
 
 ## 0.10.0
 
