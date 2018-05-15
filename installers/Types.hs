@@ -23,6 +23,7 @@ module Types
   , packageFileName
   , getDaedalusVersion
   , packageVersion
+  , clusterNetwork
   , withDir
   )
 where
@@ -85,6 +86,12 @@ tt :: FilePath -> Text
 tt = format fp
 
 
+
+-- | Value of the NETWORK variable used by the npm build.
+-- See also: the networkMap variable in yarn2nix.nix.
+clusterNetwork :: Cluster -> Text
+clusterNetwork Mainnet = "mainnet"
+clusterNetwork Staging = "testnet"
 
 packageFileName :: OS -> Cluster -> Version -> Text -> Maybe BuildJob -> FilePath
 packageFileName os cluster ver backend build = fromText (mconcat name) <.> ext

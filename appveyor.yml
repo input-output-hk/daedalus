@@ -2,7 +2,6 @@ version: "{build}"
 
 environment:
   nodejs_version: "8"
-  NETWORK: "mainnet"
   AWS_ACCESS_KEY_ID:
     secure: O0+bBTm/Ud3pxP8nvC3ZuDSkmmlr+b8hVluqpRdJGBg=
   AWS_SECRET_ACCESS_KEY:

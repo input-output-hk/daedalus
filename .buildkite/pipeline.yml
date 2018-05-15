@@ -3,7 +3,6 @@ steps:
     command: 'scripts/nix-shell.sh --run "scripts/build-installer-unix.sh --build-id $BUILDKITE_BUILD_NUMBER"'
     env:
       NIX_SSL_CERT_FILE: /nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt
-      NETWORK: mainnet
     agents:
       system: x86_64-darwin
   - label: 'daedalus-x86_64-linux'
