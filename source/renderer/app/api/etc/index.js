@@ -104,7 +104,7 @@ export default class EtcApi {
         networkDifficulty: response ? parseInt(response.highestBlock, 16) : 100,
       };
     } catch (error) {
-      Logger.error('EtcApi::getSyncProgress error: ' + stringifyError(error));
+      Logger.debug('EtcApi::getSyncProgress error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   }
@@ -177,7 +177,7 @@ export default class EtcApi {
         total: transactions.length,
       };
     } catch (error) {
-      Logger.error('EtcApi::getTransactions error: ' + stringifyError(error));
+      Logger.debug('EtcApi::getTransactions error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   };
@@ -250,7 +250,7 @@ export default class EtcApi {
       Logger.debug('EtcApi::createTransaction success: ' + stringifyData(txHash));
       return _createTransaction(senderAccount, txHash);
     } catch (error) {
-      Logger.error('EtcApi::createTransaction error: ' + stringifyError(error));
+      Logger.debug('EtcApi::createTransaction error: ' + stringifyError(error));
       if (error.message.includes('Could not decrypt key with given passphrase')) {
         throw new IncorrectWalletPasswordError();
       }
@@ -290,7 +290,7 @@ export default class EtcApi {
       });
       return true;
     } catch (error) {
-      Logger.error('EtcApi::updateWalletPassword error: ' + stringifyError(error));
+      Logger.debug('EtcApi::updateWalletPassword error: ' + stringifyError(error));
       if (error.message.includes('Could not decrypt key with given passphrase')) {
         throw new IncorrectWalletPasswordError();
       }
@@ -321,7 +321,7 @@ export default class EtcApi {
       Logger.debug('EtcApi::restoreWallet success: ' + stringifyData(wallet));
       return wallet;
     } catch (error) {
-      Logger.error('EtcApi::restoreWallet error: ' + stringifyError(error));
+      Logger.debug('EtcApi::restoreWallet error: ' + stringifyError(error));
       if (error.message.includes('account already exists')) {
         throw new WalletAlreadyRestoredError();
       }

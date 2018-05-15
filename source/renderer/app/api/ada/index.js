@@ -321,7 +321,7 @@ export default class AdaApi {
       Logger.debug('AdaApi::createTransaction success: ' + stringifyData(response));
       return _createTransactionFromServerData(response);
     } catch (error) {
-      Logger.error('AdaApi::createTransaction error: ' + stringifyError(error));
+      Logger.debug('AdaApi::createTransaction error: ' + stringifyError(error));
       // eslint-disable-next-line max-len
       if (error.message.includes('It\'s not allowed to send money to the same address you are sending from')) {
         throw new NotAllowedToSendMoneyToSameAddressError();
@@ -351,7 +351,7 @@ export default class AdaApi {
       Logger.debug('AdaApi::calculateTransactionFee success: ' + stringifyData(response));
       return _createTransactionFeeFromServerData(response);
     } catch (error) {
-      Logger.error('AdaApi::calculateTransactionFee error: ' + stringifyError(error));
+      Logger.debug('AdaApi::calculateTransactionFee error: ' + stringifyError(error));
       // eslint-disable-next-line max-len
       if (error.message.includes('not enough money on addresses which are not included in output addresses set')) {
         throw new AllFundsAlreadyAtReceiverAddressError();
@@ -373,7 +373,7 @@ export default class AdaApi {
       Logger.debug('AdaApi::createAddress success: ' + stringifyData(response));
       return _createAddressFromServerData(response);
     } catch (error) {
-      Logger.error('AdaApi::createAddress error: ' + stringifyError(error));
+      Logger.debug('AdaApi::createAddress error: ' + stringifyError(error));
       if (error.message.includes('Passphrase doesn\'t match')) {
         throw new IncorrectWalletPasswordError();
       }
@@ -464,7 +464,7 @@ export default class AdaApi {
       Logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate success');
       return Promise.resolve(response);
     } catch (error) {
-      Logger.error('AdaApi::getWalletRecoveryPhraseFromCertificate error: ' + stringifyError(error));
+      Logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate error: ' + stringifyError(error));
       return Promise.reject(new InvalidMnemonicError());
     }
   }
@@ -493,7 +493,7 @@ export default class AdaApi {
       Logger.debug('AdaApi::restoreWallet success');
       return _createWalletFromServerData(wallet);
     } catch (error) {
-      Logger.error('AdaApi::restoreWallet error: ' + stringifyError(error));
+      Logger.debug('AdaApi::restoreWallet error: ' + stringifyError(error));
       // TODO: backend will return something different here, if multiple wallets
       // are restored from the key and if there are duplicate wallets we will get
       // some kind of error and present the user with message that some wallets
@@ -519,7 +519,7 @@ export default class AdaApi {
       Logger.debug('AdaApi::importWalletFromKey success');
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
-      Logger.error('AdaApi::importWalletFromKey error: ' + stringifyError(error));
+      Logger.debug('AdaApi::importWalletFromKey error: ' + stringifyError(error));
       if (error.message.includes('already exists')) {
         throw new WalletAlreadyImportedError();
       }
@@ -542,7 +542,7 @@ export default class AdaApi {
       Logger.debug('AdaApi::importWalletFromFile success');
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
-      Logger.error('AdaApi::importWalletFromFile error: ' + stringifyError(error));
+      Logger.debug('AdaApi::importWalletFromFile error: ' + stringifyError(error));
       if (error.message.includes('already exists')) {
         throw new WalletAlreadyImportedError();
       }
@@ -566,7 +566,7 @@ export default class AdaApi {
       Logger.debug('AdaApi::redeemAda success');
       return _createTransactionFromServerData(response);
     } catch (error) {
-      Logger.error('AdaApi::redeemAda error: ' + stringifyError(error));
+      Logger.debug('AdaApi::redeemAda error: ' + stringifyError(error));
       if (error.message.includes('Passphrase doesn\'t match')) {
         throw new IncorrectWalletPasswordError();
       }
@@ -595,7 +595,7 @@ export default class AdaApi {
       Logger.debug('AdaApi::redeemAdaPaperVend success');
       return _createTransactionFromServerData(response);
     } catch (error) {
-      Logger.error('AdaApi::redeemAdaPaperVend error: ' + stringifyError(error));
+      Logger.debug('AdaApi::redeemAdaPaperVend error: ' + stringifyError(error));
       if (error.message.includes('Passphrase doesn\'t match')) {
         throw new IncorrectWalletPasswordError();
       }
@@ -704,7 +704,7 @@ export default class AdaApi {
       }
       return { localDifficulty, networkDifficulty };
     } catch (error) {
-      Logger.error('AdaApi::syncProgress error: ' + stringifyError(error));
+      Logger.debug('AdaApi::syncProgress error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   };
@@ -740,7 +740,7 @@ export default class AdaApi {
       Logger.debug('AdaApi::updateWalletPassword success');
       return true;
     } catch (error) {
-      Logger.error('AdaApi::updateWalletPassword error: ' + stringifyError(error));
+      Logger.debug('AdaApi::updateWalletPassword error: ' + stringifyError(error));
       if (error.message.includes('Invalid old passphrase given')) {
         throw new IncorrectWalletPasswordError();
       }
