@@ -125,14 +125,17 @@ module.exports = {
         ]
       }
     }),
-    new HardSourceWebpackPlugin({
-      configHash: (webpackConfig) => (
-        // Remove the `watch` flag to avoid different caches for static and incremental builds
-        require('node-object-hash')({ sort: false }).hash(lodash.omit(webpackConfig, 'watch'))
-      ),
-      environmentPaths: {
-        files: ['.babelrc', 'package-lock.json', 'yarn.lock'],
-      },
-    }),
+    // Dont use caching for CI builds!
+    !process.env.CI && (
+      new HardSourceWebpackPlugin({
+        configHash: (webpackConfig) => (
+          // Remove the `watch` flag to avoid different caches for static and incremental builds
+          require('node-object-hash')({ sort: false }).hash(lodash.omit(webpackConfig, 'watch'))
+        ),
+        environmentPaths: {
+          files: ['.babelrc', 'package-lock.json', 'yarn.lock'],
+        },
+      })
+    )
   ]
 };
