@@ -8,7 +8,7 @@ export type DeleteAdaWalletParams = {
 };
 
 export const deleteAdaWallet = (
-  { ca, walletId }: DeleteAdaWalletParams
+  { ca, port, walletId }: DeleteAdaWalletParams
 ): Promise<[]> => (
   request({
     hostname: 'localhost',
