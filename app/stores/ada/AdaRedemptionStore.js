@@ -98,9 +98,10 @@ export default class AdaRedemptionStore extends Store {
   _setCertificate = action(({ certificate }) => {
     this.certificate = certificate;
     this.isCertificateEncrypted = certificate.type !== 'application/pdf';
-    if (this.isCertificateEncrypted && !this.passPhrase) {
+    if (this.isCertificateEncrypted && (!this.passPhrase || !this.decryptionKey)) {
       this.redemptionCode = '';
       this.passPhrase = null;
+      this.decryptionKey = null;
       return; // We cannot decrypt it yet!
     }
     this._parseCodeFromCertificate();
@@ -136,7 +137,7 @@ export default class AdaRedemptionStore extends Store {
   });
 
   _parseCodeFromCertificate() {
-    if (this.redemptionType === 'regular') {
+    if (this.redemptionType === 'regular' || this.redemptionType === 'recoveryRegular') {
       if (!this.passPhrase && this.isCertificateEncrypted) return;
     }
     if (this.redemptionType === 'forceVended') {
@@ -144,11 +145,8 @@ export default class AdaRedemptionStore extends Store {
         return;
       }
     }
-    if (this.redemptionType === 'recoveryRegular') {
-      if (!this.decryptionKey && this.isCertificateEncrypted) return;
-    }
     if (this.redemptionType === 'recoveryForceVended') {
-      if (!this.passPhrase && this.isCertificateEncrypted) return;
+      if (!this.decryptionKey && this.isCertificateEncrypted) return;
     }
     if (this.redemptionType === 'paperVended') return;
     if (this.certificate == null) throw new Error('Certificate File is required for parsing.');
@@ -156,7 +154,7 @@ export default class AdaRedemptionStore extends Store {
     Logger.debug('Parsing ADA Redemption code from certificate: ' + path);
     let decryptionKey = null;
     if (
-      (this.redemptionType === 'regular' || this.redemptionType === 'recoveryForceVended') &&
+      (this.redemptionType === 'regular' || this.redemptionType === 'recoveryRegular') &&
       this.isCertificateEncrypted
     ) {
       decryptionKey = this.passPhrase;
@@ -164,7 +162,7 @@ export default class AdaRedemptionStore extends Store {
     if (this.redemptionType === 'forceVended' && this.isCertificateEncrypted) {
       decryptionKey = [this.email, this.adaPasscode, this.adaAmount];
     }
-    if (this.redemptionType === 'recoveryRegular' && this.isCertificateEncrypted) {
+    if (this.redemptionType === 'recoveryForceVended' && this.isCertificateEncrypted) {
       decryptionKey = this.decryptionKey;
     }
     ipcRenderer.send(PARSE_REDEMPTION_CODE.REQUEST, path, decryptionKey, this.redemptionType);
@@ -188,6 +186,7 @@ export default class AdaRedemptionStore extends Store {
     }
     this.redemptionCode = '';
     this.passPhrase = null;
+    this.decryptionKey = null;
   });
 
   _redeemAda = async ({ walletId, walletPassword } : {
@@ -250,6 +249,7 @@ export default class AdaRedemptionStore extends Store {
     this.showAdaRedemptionSuccessMessage = true;
     this.redemptionCode = '';
     this.passPhrase = null;
+    this.decryptionKey = null;
   });
 
   _onCloseAdaRedemptionSuccessOverlay = action(() => {
@@ -270,6 +270,7 @@ export default class AdaRedemptionStore extends Store {
     this.email = null;
     this.adaPasscode = null;
     this.adaAmount = null;
+    this.decryptionKey = null;
   });
 
   @action _reset = () => {
@@ -284,6 +285,7 @@ export default class AdaRedemptionStore extends Store {
     this.email = null;
     this.adaPasscode = null;
     this.adaAmount = null;
+    this.decryptionKey = null;
   };
 
 }
