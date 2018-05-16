@@ -4,6 +4,7 @@
 import           Data.Text
 import           Universum
 import qualified System.Info                      as Sys
+import           Turtle                              (export)
 
 import qualified MacInstaller                        (main)
 import qualified WindowsInstaller                    (main)
@@ -29,6 +30,7 @@ main = do
       checkAllConfigs          cfDhallRoot
     GenInstaller -> do
       putStrLn $ "Generating installer for " <>  Sys.os <> "-" <> Sys.arch
+      export "NETWORK" (clusterNetwork $ oCluster options')
       case os of
         Linux64 -> putStrLn ("Use default.nix, please." :: String)
         Macos64 ->     MacInstaller.main options'
