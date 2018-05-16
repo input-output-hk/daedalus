@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNEXT
+
+### Features
+
+- Added "Recovery - regular" and "Recovery - force vended" tabs on "Ada redemption" screen ([PR 924](https://github.com/input-output-hk/daedalus/pull/924))
+
 ## 0.9.1
 =======
 
