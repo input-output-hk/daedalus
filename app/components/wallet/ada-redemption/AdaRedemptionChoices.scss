@@ -5,7 +5,9 @@
 
   button {
     flex: 1;
+    min-height: 80px;
     padding: 20px;
+    position: relative;
     font-family: var(--font-medium);
     font-size: 16px;
     text-align: center;
@@ -16,9 +18,18 @@
 
   .activeButton {
     color: var(--theme-choice-tabs-text-color-active);
-    border-bottom: 2px solid var(--theme-choice-tabs-bottom-border-color-active);
     cursor: default;
     opacity: 1;
-  }
 
+    &::after {
+      background: var(--theme-choice-tabs-bottom-border-color-active);
+      bottom: 0;
+      content: '';
+      height: 2px;
+      display: block;
+      left: 0;
+      position: absolute;
+      right: 0;
+    }
+  }
 }

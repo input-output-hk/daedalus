@@ -16,7 +16,7 @@ $input-border: 1px solid var(--theme-input-border-color);
 $input-border-focus-color: var(--theme-input-focus-border-color);
 $input-color: var(--theme-input-text-color);
 $input-disabled-bg-color: var(--theme-input-disabled-background-color);
-$input-disabled-color: var(--theme-input-placeholder-color);
+$input-disabled-color: var(--theme-input-disabled-border-color);
 $input-placeholder-color: var(--theme-input-placeholder-color);
 $input-errored-border-color: var(--theme-input-error-color);
 
@@ -70,7 +70,7 @@ $textarea-color: var(--theme-input-text-color);
 $textarea-placeholder-color: var(--theme-input-placeholder-color);
 $textarea-border: 1px solid var(--theme-input-border-color);
 $textarea-border-focus-color: var(--theme-input-focus-border-color);
-$textarea-disabled-border-color: #cfcfcf !default;
+$textarea-disabled-border-color: var(--theme-input-disabled-border-color);
 $textarea-disabled-bg-color: var(--theme-input-disabled-background-color);
 $textarea-bg-color: var(--theme-input-background-color);
 $textarea-error-color: var(--theme-input-error-color);

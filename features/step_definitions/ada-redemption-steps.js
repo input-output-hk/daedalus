@@ -92,6 +92,10 @@ When(/^I enter a valid "Force vended" encrypted PDF certificate email, passcode 
   await this.client.setValue('.AdaRedemptionForm_component .ada-amount input', amount);
 });
 
+When(/^I enter a valid "Force vended" encrypted PDF certificate decryption key "([^"]*)"$/, async function (decryptionKey) {
+  await this.client.setValue('.AdaRedemptionForm_component .decryption-key input', decryptionKey);
+});
+
 When(/^I enter a valid "Paper vended" shielded vending key$/, function () {
   return this.client.setValue('.AdaRedemptionForm_component .shielded-redemption-key input', '6ANn43jbzR7zZGnV3BYnna1myW5HajPgjiCPg4vpcayf');
 });

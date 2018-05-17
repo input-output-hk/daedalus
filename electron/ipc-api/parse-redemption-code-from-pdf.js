@@ -2,7 +2,10 @@ import { PDFExtract } from 'pdf.js-extract';
 import { ipcMain } from 'electron';
 import fs from 'fs';
 import Log from 'electron-log';
-import { decryptRegularVend, decryptForceVend } from '../../lib/decrypt';
+import {
+  decryptRegularVend, decryptForceVend,
+  decryptRecoveryRegularVend, decryptRecoveryForceVend,
+} from '../../lib/decrypt';
 
 const CHANNEL_NAME = 'parse-redemption-code-from-pdf';
 
@@ -23,9 +26,20 @@ export default () => {
       try {
         // Decrypt the file
         const encryptedFile = fs.readFileSync(filePath);
-        const decryptedFile = redemptionType === 'regular' ?
-          decryptRegularVend(decryptionKey, encryptedFile) :
-          decryptForceVend(decryptionKey, encryptedFile);
+        let decryptedFile;
+        switch (redemptionType) {
+          case 'forceVended':
+            decryptedFile = decryptForceVend(decryptionKey, encryptedFile);
+            break;
+          case 'recoveryRegular':
+            decryptedFile = decryptRecoveryRegularVend(decryptionKey, encryptedFile);
+            break;
+          case 'recoveryForceVended':
+            decryptedFile = decryptRecoveryForceVend(decryptionKey, encryptedFile);
+            break;
+          default: // regular
+            decryptedFile = decryptRegularVend(decryptionKey, encryptedFile);
+        }
         // Write it to disk temporarily (so pdf extract can work with it)
         pdfPath = `${filePath}.pdf`;
         fs.writeFileSync(pdfPath, decryptedFile);
