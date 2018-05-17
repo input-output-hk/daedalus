@@ -34,7 +34,7 @@ export default () => {
           case 'recoveryRegular':
             decryptedFile = decryptRecoveryRegularVend(decryptionKey, encryptedFile);
             break;
-          case 'recoveryForceVend':
+          case 'recoveryForceVended':
             decryptedFile = decryptRecoveryForceVend(decryptionKey, encryptedFile);
             break;
           default: // regular

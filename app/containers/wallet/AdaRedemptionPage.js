@@ -50,10 +50,9 @@ export default class AdaRedemptionPage extends Component<Props> {
       isCertificateEncrypted && redemptionType === 'forceVended';
     const showInputForDecryptionKey = isCertificateSelected &&
       isCertificateEncrypted && redemptionType === 'recoveryForceVended';
-    const showPassPhraseWidget = isCertificateSelected && isCertificateEncrypted && (
-      redemptionType === 'regular' ||
-      redemptionType === 'paperVended' ||
-      redemptionType === 'recoveryRegular'
+    const showPassPhraseWidget = redemptionType === 'paperVended' || (
+      isCertificateSelected && isCertificateEncrypted &&
+      (redemptionType === 'regular' || redemptionType === 'recoveryRegular')
     );
     return (
       <Layout>
