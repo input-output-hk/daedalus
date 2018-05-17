@@ -56,9 +56,8 @@ to decrypt your certificate and your redemption code will be automatically extra
   },
   instructionsRecoveryForceVended: {
     id: 'wallet.redeem.dialog.instructions.recoveryForceVended',
-    defaultMessage: `!!!<p>To redeem your Ada using the force vended certificate from the recovery service, please upload your encrypted certificate and enter the decryption key.
-Your decryption key should look like this:</p>
-<p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p>
+    defaultMessage: `!!!<p>To redeem your Ada using the force vended certificate from the recovery service, please upload your encrypted certificate and enter the decryption key. Your decryption key should look like this:</p>
+<p><strong>qXQWDxI3JrlFRtC4SeQjeGzLbVXWBomYPbNO1Vfm1T4=</strong></p>
 <p>After you upload your <strong>encrypted certificate</strong> and enter your <strong>decryption key</strong>, your redemption key will be automatically extracted and you will be able to redeem your Ada to the selected wallet.</p>`,
     description: 'Detailed instructions for redeeming Ada from the force vending via Recovery service',
   },
