@@ -76,3 +76,29 @@ Feature: Ada Redemption
     And ada redemption form submit button is no longer disabled
     When I submit the ada redemption form
     Then I should see the "Ada Redemption Success Overlay"
+
+  Scenario: User redeems "Recovery - regular" encrypted PDF certificate
+    Given I am on the ada redemption screen
+    And I have accepted "Daedalus Redemption Disclaimer"
+    And I click on ada redemption choices "Recovery - regular" tab
+    And I select a valid "Regular" encrypted PDF certificate
+    And I enter a valid "Regular" encrypted PDF certificate passphrase
+    And ada redemption form submit button is no longer disabled
+    When I submit the ada redemption form
+    Then I should see the "Ada Redemption Success Overlay"
+
+  Scenario Outline: User redeems "Recovery - force vended" encrypted PDF certificate
+    Given I am on the ada redemption screen
+    And I have accepted "Daedalus Redemption Disclaimer"
+    And I click on ada redemption choices "Recovery - force vended" tab
+    And I select a valid "Force vended" encrypted PDF certificate
+    And I enter a valid "Force vended" encrypted PDF certificate decryption key "<KEY>"
+    And ada redemption form submit button is no longer disabled
+    When I submit the ada redemption form
+    Then I should see the "Ada Redemption Success Overlay"
+
+    Examples:
+    | KEY                                                                                                                                                |
+    | qXQWDxI3JrlFRtC4SeQjeGzLbVXWBomYPbNO1Vfm1T4=                                                                                                       |
+    | A974160F123726B94546D0B849E423786CCB6D55D60689983DB34ED557E6D53E                                                                                   |
+    | [ 169, 116, 22, 15, 18, 55, 38, 185, 69, 70, 208, 184, 73, 228, 35, 120, 108, 203, 109, 85, 214, 6, 137, 152, 61, 179, 78, 213, 87, 230, 213, 62 ] |
