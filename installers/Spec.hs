@@ -98,10 +98,8 @@ deleteSpec = do
         goMake n = do
           createDirectory name
           withCurrentDirectory name (goMake $ n-1)
-      precheck <- doesDirectoryExist name
-      if precheck then
+      whenM (doesDirectoryExist name) $
         windowsRemoveDirectoryRecursive name
-      else pure ()
       goMake 32
       let
         file = (intercalate "/" (replicate 32 name)) <> "/filename"
