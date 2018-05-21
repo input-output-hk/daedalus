@@ -43,8 +43,13 @@ main = do
             go :: String -> IO ()
             go cluster' = do
                 let
+                    getAppName Mainnet = "Daedalus"
+                    getAppName Staging = "DaedalusStaging"
+                    getAppName Testnet = "DaedalusTestnet"
+                    cluster = fromJust $ diagReadCaseInsensitive cluster'
                     opts'' = opts' {
-                        oCluster = fromJust $ diagReadCaseInsensitive cluster'
+                          oCluster = cluster
+                        , oAppName = getAppName cluster
                     }
                     banner :: Text
                     banner = "##############################################################################\n" <>

@@ -3,6 +3,7 @@
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
+
 module MacInstaller
     ( main
     , SigningConfig(..)
@@ -41,8 +42,6 @@ import           System.IO.Error (IOError, isDoesNotExistError)
 import           Config
 import           Types
 
-
-
 main :: Options -> IO ()
 main opts@Options{..} = do
   hSetBuffering stdout NoBuffering
@@ -52,8 +51,8 @@ main opts@Options{..} = do
 
   installerConfig <- getInstallerConfig "./dhall" Macos64 oCluster
 
-  appRoot <- buildElectronApp
-  ver <- makeComponentRoot opts appRoot
+  appRoot <- buildElectronApp (macPackageName installerConfig) oCluster
+  ver <- makeComponentRoot opts appRoot (T.unpack $ macPackageName installerConfig)
   daedalusVer <- getDaedalusVersion "../package.json"
 
   let pkg = packageFileName Macos64 oCluster daedalusVer ver oBuildJob
@@ -80,29 +79,37 @@ makeScriptsDir Options{..} = case oBackend of
 -- component root path.
 -- NB: If webpack scripts are changed then this function may need to
 -- be updated.
-buildElectronApp :: IO FilePath
-buildElectronApp = do
+buildElectronApp :: Text -> Cluster -> IO FilePath
+buildElectronApp appName cluster = do
   echo "Creating icons ..."
   procs "iconutil" ["--convert", "icns", "--output", "icons/electron.icns"
                    , "icons/electron.iconset"] mempty
 
-  withDir ".." . sh $ npmPackage
+  withDir ".." . sh $ npmPackage appName cluster
 
-  pure "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
+  let
+    formatter :: Format r (Text -> Text -> r)
+    formatter = "../release/darwin-x64/" % s % "-darwin-x64/" % s % ".app"
+  pure $ fromString $ T.unpack $ format formatter appName appName
 
-npmPackage :: Shell ()
-npmPackage = do
+npmPackage :: Text -> Cluster -> Shell ()
+npmPackage appName cluster = do
+  let
+    clusterToNetwork Mainnet = "mainnet"
+    clusterToNetwork Staging = "testnet"
+    clusterToNetwork Testnet = "testnet"
   mktree "release"
   echo "~~~ Installing nodejs dependencies..."
   procs "npm" ["install"] empty
   export "NODE_ENV" "production"
+  export "NETWORK" $ clusterToNetwork cluster
   echo "~~~ Running electron packager script..."
-  procs "npm" ["run", "package"] empty
+  procs "npm" ["run", "package", "--", "--name", appName ] empty
   size <- inproc "du" ["-sh", "release"] empty
   printf ("Size of Electron app is " % l % "\n") size
 
-makeComponentRoot :: Options -> FilePath -> IO Text
-makeComponentRoot Options{..} appRoot = do
+makeComponentRoot :: Options -> FilePath -> String -> IO Text
+makeComponentRoot Options{..} appRoot appname = do
   let dir     = appRoot </> "Contents/MacOS"
 
   echo "~~~ Preparing files ..."
@@ -143,7 +150,7 @@ makeComponentRoot Options{..} appRoot = do
 
   -- Prepare launcher
   de <- testdir (dir </> "Frontend")
-  unless de $ mv (dir </> "Daedalus") (dir </> "Frontend")
+  unless de $ mv (dir </> (fromString appname)) (dir </> "Frontend")
   run "chmod" ["+x", tt (dir </> "Frontend")]
   writeLauncherFile dir
 
