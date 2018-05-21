@@ -52,7 +52,7 @@ main opts@Options{..} = do
   installerConfig <- getInstallerConfig "./dhall" Macos64 oCluster
 
   appRoot <- buildElectronApp (macPackageName installerConfig) oCluster
-  ver <- makeComponentRoot opts appRoot (T.unpack $ macPackageName installerConfig)
+  ver <- makeComponentRoot opts appRoot installerConfig
   daedalusVer <- getDaedalusVersion "../package.json"
 
   let pkg = packageFileName Macos64 oCluster daedalusVer ver oBuildJob
@@ -124,8 +124,8 @@ npmPackage appName cluster = do
   size <- inproc "du" ["-sh", "release"] empty
   printf ("Size of Electron app is " % l % "\n") size
 
-makeComponentRoot :: Options -> FilePath -> String -> IO Text
-makeComponentRoot Options{..} appRoot appname = do
+makeComponentRoot :: Options -> FilePath -> InstallerConfig -> IO Text
+makeComponentRoot Options{..} appRoot installerConfig = do
   let dir     = appRoot </> "Contents/MacOS"
 
   echo "~~~ Preparing files ..."
@@ -166,9 +166,9 @@ makeComponentRoot Options{..} appRoot appname = do
 
   -- Prepare launcher
   de <- testdir (dir </> "Frontend")
-  unless de $ mv (dir </> (fromString appname)) (dir </> "Frontend")
+  unless de $ mv (dir </> (fromString $ T.unpack $ macPackageName installerConfig)) (dir </> "Frontend")
   run "chmod" ["+x", tt (dir </> "Frontend")]
-  writeLauncherFile dir (appname)
+  writeLauncherFile dir installerConfig
 
   pure ver
 
@@ -213,18 +213,20 @@ readCardanoVersionFile bridge = prefix <$> handle handler (readTextFile verFile)
     handler e | isDoesNotExistError e = pure ""
               | otherwise = throwM e
 
-writeLauncherFile :: FilePath -> String -> IO FilePath
-writeLauncherFile dir appname = do
+writeLauncherFile :: FilePath -> InstallerConfig -> IO FilePath
+writeLauncherFile dir installerConfig = do
   writeTextFile path $ T.unlines contents
   run "chmod" ["+x", tt path]
   pure path
   where
+    appname = T.unpack $ macPackageName installerConfig
     path = dir </> (fromString appname)
+    dataDir = "$HOME/Library/Application Support/" <> (installDirectory installerConfig)
     contents =
       [ "#!/usr/bin/env bash"
       , "cd \"$(dirname $0)\""
-      , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Secrets-1.0\""
-      , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Logs/pub\""
+      , "mkdir -p \"" <> dataDir <> "/Secrets-1.0\""
+      , "mkdir -p \"" <> dataDir <> "/Logs/pub\""
       , "./cardano-launcher"
       ]
 
