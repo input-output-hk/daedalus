@@ -14,7 +14,7 @@ steps:
     agents:
       system: x86_64-linux
   - label: 'daedalus-x86_64-linux-nix'
-    command: 'scripts/nix-shell.sh --run "scripts/build-installer-nix.sh $VERSION $BUILDKITE_BUILD_NUMBER"'
+    command: 'scripts/nix-shell.sh --run "scripts/build-installer-nix.sh"'
     env:
       VERSION: 1.2.0
     agents:
