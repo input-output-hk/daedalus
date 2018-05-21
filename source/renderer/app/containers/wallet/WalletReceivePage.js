@@ -39,7 +39,7 @@ export default class WalletReceivePage extends Component<Props, State> {
     this.resetErrors();
   }
 
-  handleGenerateAddress = (password :string) => {
+  handleGenerateAddress = (password: string) => {
     const { wallets } = this.props.stores.ada;
     const wallet = wallets.active;
     if (wallet) {
