@@ -6,7 +6,7 @@ let reportUrl = '';
 reportUrl = yamljs.parseFile('launcher-config.yaml').reportServer;
 
 module.exports = {
-  devtool: 'cheap-source-map',
+  devtool: 'cheap-module-source-map',
   entry: './source/main/index.js',
   output: {
     path: path.join(__dirname, './dist/main'),
