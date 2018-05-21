@@ -70,9 +70,25 @@ main opts@Options{..} = do
     echo $ "--test-installer passed, will test the installer for installability"
     procs "sudo" ["installer", "-dumplog", "-verbose", "-target", "/", "-pkg", tt opkg] empty
 
-makeScriptsDir :: Options -> Managed T.Text
-makeScriptsDir Options{..} = case oBackend of
-  Cardano _ -> pure "data/scripts"
+makePostInstall :: Format a (Text -> Text -> a)
+makePostInstall = "#!/usr/bin/env bash\n" %
+                  "#\n" %
+                  "# See /var/log/install.log to debug this\n" %
+                  "\n" %
+                  "src_pkg=\"$1\"\ndst_root=\"$2\"\ndst_mount=\"$3\"\nsys_root=\"$4\"\n" %
+                  "./dockutil --add \"${dst_root}/" % s % ".app\" --allhomes\n" %
+                  "cd \"${dst_root}/" % s % ".app/Contents/MacOS/\"\n" %
+                  "bash ./build-certificates-unix.sh"
+
+makeScriptsDir :: Options -> Text -> Managed T.Text
+makeScriptsDir Options{..} appname = case oBackend of
+  Cardano _ -> do
+    tempdir <- mktempdir "/tmp" "scripts"
+    liftIO $ do
+      cp "data/scripts/dockutil" (tempdir </> "dockutil")
+      writeTextFile (tempdir </> "postinstall") (format makePostInstall appname appname)
+      run "chmod" ["+x", tt (tempdir </> "postinstall")]
+    pure $ tt tempdir
   Mantis    -> pure "[DEVOPS-533]"
 
 -- | Builds the electron app with "npm package" and returns its
@@ -152,7 +168,7 @@ makeComponentRoot Options{..} appRoot appname = do
   de <- testdir (dir </> "Frontend")
   unless de $ mv (dir </> (fromString appname)) (dir </> "Frontend")
   run "chmod" ["+x", tt (dir </> "Frontend")]
-  writeLauncherFile dir
+  writeLauncherFile dir (appname)
 
   pure ver
 
@@ -162,7 +178,7 @@ makeInstaller opts@Options{..} InstallerConfig{..} componentRoot pkg = do
       tempPkg2 = oOutputDir </> (dropExtension pkg <.> "unsigned" <.> "pkg")
 
   mktree oOutputDir
-  with (makeScriptsDir opts) $ \scriptsDir -> do
+  with (makeScriptsDir opts macPackageName) $ \scriptsDir -> do
     let
       pkgargs :: [ T.Text ]
       pkgargs =
@@ -197,13 +213,13 @@ readCardanoVersionFile bridge = prefix <$> handle handler (readTextFile verFile)
     handler e | isDoesNotExistError e = pure ""
               | otherwise = throwM e
 
-writeLauncherFile :: FilePath -> IO FilePath
-writeLauncherFile dir = do
+writeLauncherFile :: FilePath -> String -> IO FilePath
+writeLauncherFile dir appname = do
   writeTextFile path $ T.unlines contents
   run "chmod" ["+x", tt path]
   pure path
   where
-    path = dir </> "Daedalus"
+    path = dir </> (fromString appname)
     contents =
       [ "#!/usr/bin/env bash"
       , "cd \"$(dirname $0)\""

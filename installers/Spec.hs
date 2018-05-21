@@ -73,6 +73,7 @@ makeTestInstallersDir = do
   forM ["ca.conf", "server.conf", "client.conf", "build-certificates-unix.sh"] $ \f ->
     cp f (installersDir </> f)
   mktree (installersDir </> "data/scripts")
+  liftIO $ writeTextFile (installersDir </> "data/scripts/dockutil") "fake dock util"
   pure installersDir
 
 -- | Run a special command to get the cardano-sl.daedalus-bridge path.
