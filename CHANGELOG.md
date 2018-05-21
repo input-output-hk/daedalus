@@ -1,13 +1,6 @@
 Changelog
 =========
 
-## vNEXT
-=======
-
-### Features
-
-- Added "Recovery - regular" and "Recovery - force vended" tabs on "Ada redemption" screen ([PR 925](https://github.com/input-output-hk/daedalus/pull/925))
-
 ## 0.10.0
 =======
 
@@ -17,6 +10,7 @@ Changelog
 - Added wallet restore indicator in the sidebar ([PR 862](https://github.com/input-output-hk/daedalus/pull/862))
 - Added Daedalus version in application title ([PR 826](https://github.com/input-output-hk/daedalus/pull/826))
 - Added "Show more transactions" button on the summary screen ([PR 848](https://github.com/input-output-hk/daedalus/pull/848))
+- Added "Recovery - regular" and "Recovery - force vended" tabs on "Ada redemption" screen ([PR 933](https://github.com/input-output-hk/daedalus/pull/933))
 - Setting spending password to "ON" by default ([PR 856](https://github.com/input-output-hk/daedalus/pull/856))
 - Paper wallet certificate generation ([PR 779](https://github.com/input-output-hk/daedalus/pull/779))
 - Paper wallet certificate restoration ([PR 794](https://github.com/input-output-hk/daedalus/pull/794))
