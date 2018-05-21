@@ -1,4 +1,4 @@
-{ lib, pkgs, nodejs-8_x, python, api, cluster, nukeReferences, version, fetchzip, daedalus }:
+{ lib, pkgs, nodejs-8_x, python, api, cluster, nukeReferences, version, fetchzip, daedalus, stdenv }:
 let
   nodejs = nodejs-8_x;
   yarn2nix = import (fetchzip {
@@ -9,10 +9,13 @@ let
     mainnet = "mainnet";
     staging = "testnet";
   };
+  dotGitExists = builtins.pathExists ./.git;
+  isNix2 = 0 <= builtins.compareVersions builtins.nixVersion "1.12";
+  canUseFetchGit = dotGitExists && isNix2;
 in
 yarn2nix.mkYarnPackage {
   name = "daedalus-js";
-  src = if 0 <= builtins.compareVersions builtins.nixVersion "1.12" then builtins.fetchGit ./. else lib.cleanSource ./.;
+  src = if canUseFetchGit then builtins.fetchGit ./. else lib.cleanSource ./.;
   API = api;
   NETWORK = networkMap.${cluster};
   DAEDALUS_VERSION = "${version}";
@@ -38,6 +41,11 @@ yarn2nix.mkYarnPackage {
       buildInputs = [ python ];
       postInstall = ''
         npm run build
+      '';
+    };
+    flow-bin = {
+      postInstall = ''
+        patchelf --set-interpreter ${stdenv.cc.libc}/lib/ld-linux-x86-64.so.2 flow-linux64-v0.60.1/flow
       '';
     };
   };
