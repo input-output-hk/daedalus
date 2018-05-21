@@ -160,7 +160,7 @@ makeInstaller opts@Options{..} InstallerConfig{..} componentRoot pkg = do
       pkgargs :: [ T.Text ]
       pkgargs =
            [ "--identifier"
-           , "org."<> installDirectory <>".pkg"
+           , "org."<> macPackageName <>".pkg"
            -- data/scripts/postinstall is responsible for running build-certificates
            , "--scripts", scriptsDir
            , "--component"

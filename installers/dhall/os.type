@@ -1,6 +1,7 @@
 { name       : Text
 , configurationYaml  : Text
 , installDirectory   : Text
+, macPackageName     : Text
 , nodeArgs           :
   { keyfile          : Text
   , logsPrefix       : Text

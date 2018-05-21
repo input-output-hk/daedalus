@@ -4,6 +4,7 @@ in
 { name      = "linux64"
 , configurationYaml  = "\${DAEDALUS_CONFIG}/configuration.yaml"
 , installDirectory   = ""
+, macPackageName     = "unused"
 , nodeArgs           =
   { keyfile          = "Secrets/secret.key"
   , logsPrefix       = "Logs"

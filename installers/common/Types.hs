@@ -129,5 +129,9 @@ packageVersion json = case eitherDecode json of
 withDir :: FilePath -> IO a -> IO a
 withDir path = bracket (pwd >>= \old -> (cd path >> pure old)) cd . const
 
-data InstallerConfig = InstallerConfig { installDirectory :: Text } deriving (Generic, Show)
+data InstallerConfig = InstallerConfig {
+      installDirectory :: Text
+    , macPackageName :: Text
+    } deriving (Generic, Show)
+
 instance Dhall.Interpret InstallerConfig

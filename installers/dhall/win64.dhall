@@ -7,6 +7,7 @@ in
 { name      = "win64"
 , configurationYaml  = "configuration.yaml"
 , installDirectory   = installDir
+, macPackageName     = "unused"
 , nodeArgs           =
   { keyfile          = "${dataDir}\\Secrets-1.0\\secret.key"
   , logsPrefix       = "${dataDir}\\Logs"

@@ -4,8 +4,9 @@ let dataDir = "\${HOME}/Library/Application Support/Daedalus${cluster.installDir
     --
 in
 { name      = "macos64"
-, installDirectory = "Daedalus${cluster.installDirectorySuffix}"
 , configurationYaml  = "configuration.yaml"
+, installDirectory = "Daedalus${cluster.installDirectorySuffix}"
+, macPackageName   = "Daedalus${cluster.macPackageSuffix}"
 , nodeArgs           =
   { keyfile          = "${dataDir}/Secrets-1.0/secret.key"
   , logsPrefix       = "${dataDir}/Logs"
