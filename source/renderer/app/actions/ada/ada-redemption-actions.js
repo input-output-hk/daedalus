@@ -13,6 +13,7 @@ export default class AdaRedemptionActions {
   setEmail: Action<{ email: string }> = new Action();
   setAdaPasscode: Action<{ adaPasscode: string }> = new Action();
   setAdaAmount: Action<{ adaAmount: string }> = new Action();
+  setDecryptionKey: Action<{ decryptionKey: string }> = new Action();
   redeemAda: Action<{ walletId: string, walletPassword: ?string }> = new Action();
   // eslint-disable-next-line max-len
   redeemPaperVendedAda: Action<{ walletId: string, shieldedRedemptionKey: string, walletPassword: ?string }> = new Action();
