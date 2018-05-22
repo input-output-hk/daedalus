@@ -20,7 +20,7 @@
     "cucumber-watch": "npm run cucumber -- --tags @watch",
     "lint": "eslint --format=node_modules/eslint-formatter-pretty source features *.js",
     "flow-test": "flow; test $? -eq 0 -o $? -eq 2",
-    "manage-translations": "node ./translations/translation-runner.js",
+    "manage-translations": "gulp purge-translations && gulp clear-cache && gulp build && node ./translations/translation-runner.js",
     "storybook": "start-storybook -p 6006 -c storybook",
     "build-storybook": "build-storybook",
     "clear-cache": "gulp clear-cache"

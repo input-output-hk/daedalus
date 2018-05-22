@@ -89,6 +89,6 @@ gulp.task('start-debug', () => {
 
 gulp.task('start', shell.task(`cross-env NODE_ENV=${process.env.NODE_ENV || 'production'} electron ./`));
 
-gulp.task('dev', gulp.series('purge-translations', 'build-watch', 'start-watch'));
+gulp.task('dev', gulp.series('build-watch', 'start-watch'));
 
-gulp.task('debug', gulp.series('purge-translations', 'build-watch', 'start-debug', 'electron-inspector'));
+gulp.task('debug', gulp.series('build-watch', 'start-debug', 'electron-inspector'));
