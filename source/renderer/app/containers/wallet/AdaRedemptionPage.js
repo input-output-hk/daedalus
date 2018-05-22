@@ -37,7 +37,7 @@ export default class AdaRedemptionPage extends Component<Props> {
     } = adaRedemption;
     const {
       chooseRedemptionType, setCertificate, setPassPhrase, setRedemptionCode, removeCertificate,
-      setEmail, setAdaPasscode, setAdaAmount, acceptRedemptionDisclaimer
+      setEmail, setAdaPasscode, setAdaAmount, setDecryptionKey, acceptRedemptionDisclaimer
     } = this.props.actions.ada.adaRedemption;
     const selectableWallets = wallets.all.map((w) => ({
       value: w.id, label: w.name
@@ -48,8 +48,12 @@ export default class AdaRedemptionPage extends Component<Props> {
     const isCertificateSelected = adaRedemption.certificate !== null;
     const showInputsForDecryptingForceVendedCertificate = isCertificateSelected &&
       isCertificateEncrypted && redemptionType === 'forceVended';
-    const showPassPhraseWidget = isCertificateSelected && isCertificateEncrypted &&
-      redemptionType === 'regular' || redemptionType === 'paperVended';
+    const showInputForDecryptionKey = isCertificateSelected &&
+      isCertificateEncrypted && redemptionType === 'recoveryForceVended';
+    const showPassPhraseWidget = redemptionType === 'paperVended' || (
+      isCertificateSelected && isCertificateEncrypted &&
+      (redemptionType === 'regular' || redemptionType === 'recoveryRegular')
+    );
     return (
       <Layout>
         <AdaRedemptionForm
@@ -61,6 +65,7 @@ export default class AdaRedemptionPage extends Component<Props> {
           onEmailChanged={(email) => setEmail.trigger({ email })}
           onAdaAmountChanged={(adaAmount) => setAdaAmount.trigger({ adaAmount })}
           onAdaPasscodeChanged={(adaPasscode) => setAdaPasscode.trigger({ adaPasscode })}
+          onDecryptionKeyChanged={(decryptionKey) => setDecryptionKey.trigger({ decryptionKey })}
           onChooseRedemptionType={(choice) => {
             chooseRedemptionType.trigger({ redemptionType: choice });
           }}
@@ -81,6 +86,7 @@ export default class AdaRedemptionPage extends Component<Props> {
           showInputsForDecryptingForceVendedCertificate={
             showInputsForDecryptingForceVendedCertificate
           }
+          showInputForDecryptionKey={showInputForDecryptionKey}
           showPassPhraseWidget={showPassPhraseWidget}
           isRedemptionDisclaimerAccepted={environment.isMainnet() || isRedemptionDisclaimerAccepted}
           onAcceptRedemptionDisclaimer={() => acceptRedemptionDisclaimer.trigger()}

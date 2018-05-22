@@ -2,7 +2,10 @@ import { PDFExtract } from 'pdf.js-extract';
 import { ipcMain } from 'electron';
 import fs from 'fs';
 import log from 'electron-log';
-import { decryptRegularVend, decryptForceVend } from '../../common/decrypt';
+import {
+  decryptRegularVend, decryptForceVend,
+  decryptRecoveryRegularVend, decryptRecoveryForceVend,
+} from '../../common/decrypt';
 import { PARSE_REDEMPTION_CODE } from '../../common/ipc-api';
 
 export default () => {
@@ -15,9 +18,20 @@ export default () => {
       try {
         // Decrypt the file
         const encryptedFile = fs.readFileSync(filePath);
-        const decryptedFile = redemptionType === 'regular' ?
-          decryptRegularVend(decryptionKey, encryptedFile) :
-          decryptForceVend(decryptionKey, encryptedFile);
+        let decryptedFile;
+        switch (redemptionType) {
+          case 'forceVended':
+            decryptedFile = decryptForceVend(decryptionKey, encryptedFile);
+            break;
+          case 'recoveryRegular':
+            decryptedFile = decryptRecoveryRegularVend(decryptionKey, encryptedFile);
+            break;
+          case 'recoveryForceVended':
+            decryptedFile = decryptRecoveryForceVend(decryptionKey, encryptedFile);
+            break;
+          default: // regular
+            decryptedFile = decryptRegularVend(decryptionKey, encryptedFile);
+        }
         // Write it to disk temporarily (so pdf extract can work with it)
         pdfPath = `${filePath}.pdf`;
         fs.writeFileSync(pdfPath, decryptedFile);
