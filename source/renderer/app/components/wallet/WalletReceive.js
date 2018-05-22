@@ -10,7 +10,6 @@ import Button from 'react-polymorph/lib/components/Button';
 import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
-import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
 import TinySwitch from '../widgets/forms/TinySwitch';

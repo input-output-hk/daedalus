@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
-import classNames from 'classnames';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/raw/SwitchSkin';
 import styles from './TinySwitch.scss';
 
 type Props = {
-  skin: ReactComponent,
   checked: boolean,
   label: string,
 };
