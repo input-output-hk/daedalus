@@ -76,9 +76,6 @@ let
     export PATH=/bin
     ln -svf ${pkgs.iana-etc}/etc/protocols /etc/protocols
     ln -svf ${pkgs.iana-etc}/etc/services /etc/services
-    mkdir -pv /etc/ssl/certs
-    ln -svf ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt /etc/ssl/certs/ca-certificates.crt
-    ln -svf ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt /etc/ssl/certs/ca-bundle.crt
     unset NIX_SSL_CERT_FILE
 
     if [ -z "$@" ]; then
