@@ -164,6 +164,13 @@
   h2 {
     font-family: var(--font-medium);
 
+    .hideUsed {
+      // float: right;
+      display: flex;
+      flex-direction: row-reverse;
+      margin-top: -25px;
+    }
+
     button {
       color: var(--theme-label-button-color);
       cursor: pointer;

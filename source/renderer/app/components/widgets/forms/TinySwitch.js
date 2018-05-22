@@ -15,20 +15,16 @@ export default class TinySwitch extends Component<Props> {
   render() {
 
     return (
-      <div className={styles.component}>
-
-        <Checkbox
-          skin={
-            <SimpleSwitchSkin
-              className={styles.root}
-            />
-          }
-          checked={this.props.checked}
-          onChange={this.props.onChange}
-          label={this.props.label}
-        />
-
-      </div>
+      <Checkbox
+        skin={
+          <SimpleSwitchSkin
+            className={styles.root}
+          />
+        }
+        checked={this.props.checked}
+        onChange={this.props.onChange}
+        label={this.props.label}
+      />
     );
   }
 

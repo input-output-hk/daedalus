@@ -231,11 +231,14 @@ export default class WalletReceive extends Component<Props, State> {
           <div className={styles.generatedAddresses}>
             <h2>
               {intl.formatMessage(messages.generatedAddressesSectionTitle)}
-              <TinySwitch
-                label={intl.formatMessage(messages[showUsed ? 'hideUsedLabel' : 'showUsedLabel'])}
-                onChange={this.toggleUsedAddresses}
-                checked={!showUsed}
-              />
+
+              <div className={styles.hideUsed}>
+                <TinySwitch
+                  label={intl.formatMessage(messages[showUsed ? 'hideUsedLabel' : 'showUsedLabel'])}
+                  onChange={this.toggleUsedAddresses}
+                  checked={!showUsed}
+                />
+              </div>
             </h2>
 
             {walletAddresses.map((address, index) => {
