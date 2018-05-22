@@ -290,14 +290,11 @@ export default class AdaWalletsStore extends WalletStore {
       }
 
       // Set wallet certificate address
-      let walletAddress;
-      if (walletAddresses) {
-        walletAddress = get(walletAddresses, ['addresses', '0', 'id'], null);
-        this.walletCertificateAddress = walletAddress;
-      }
+      const walletAddress = get(walletAddresses, ['addresses', '0', 'id'], null);
+      this.walletCertificateAddress = walletAddress;
 
       // download pdf certificate
-      this._downloadCertificate(
+      await this._downloadCertificate(
         walletAddress,
         walletCertificateRecoveryPhrase,
         params.filePath,
@@ -309,31 +306,34 @@ export default class AdaWalletsStore extends WalletStore {
     }
   };
 
-  _downloadCertificate = action((
+  _downloadCertificate = async (
     address: string,
     recoveryPhrase: Array<string>,
     filePath: string,
   ) => {
     const locale = this.stores.profile.currentLocale;
     const intl = i18nContext(locale);
-
-    downloadPaperWalletCertificate({
-      address,
-      mnemonics: recoveryPhrase,
-      intl,
-      filePath,
-      onSuccess: () => {
+    try {
+      await downloadPaperWalletCertificate({
+        address,
+        mnemonics: recoveryPhrase,
+        intl,
+        filePath
+      });
+      runInAction('handle successful certificate download', () => {
         // Reset progress
         this._updateCertificateCreationState(false);
         // Update certificate generator step
         this._updateCertificateStep();
-      },
-      onError: () => {
+      });
+    } catch (error) {
+      console.log(error);
+      runInAction('handle failed certificate download', () => {
         // Reset progress
         this._updateCertificateCreationState(false);
-      },
-    });
-  });
+      });
+    }
+  };
 
   _updateCertificateCreationState = action((state: boolean) => {
     this.generatingCertificateInProgress = state;

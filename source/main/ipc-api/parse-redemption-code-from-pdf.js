@@ -1,3 +1,4 @@
+// @flow
 import { PDFExtract } from 'pdf.js-extract';
 import { ipcMain } from 'electron';
 import fs from 'fs';
@@ -44,7 +45,7 @@ export default () => {
           }
           sender.send(PARSE_REDEMPTION_CODE.SUCCESS, data.pages[0].content[8].str);
           // Remove the temporary, decrypted PDF from disk
-          if (isTemporaryDecryptedPdf) {
+          if (pdfPath && isTemporaryDecryptedPdf) {
             try { fs.unlinkSync(pdfPath); } catch (e) {} // eslint-disable-line
           }
         } catch (exception) {
@@ -54,7 +55,7 @@ export default () => {
     } catch (error) {
       sender.send(PARSE_REDEMPTION_CODE.ERROR, error.message);
       // Remove the temporary, decrypted PDF from disk
-      if (isTemporaryDecryptedPdf) {
+      if (pdfPath && isTemporaryDecryptedPdf) {
         try { fs.unlinkSync(pdfPath); } catch (e) {} // eslint-disable-line
       }
     }

@@ -8,7 +8,7 @@ let reportUrl = '';
 reportUrl = yamljs.parseFile('launcher-config.yaml').reportServer;
 
 module.exports = {
-  devtool: 'cheap-module-eval-source-map',
+  devtool: 'cheap-module-source-map',
   entry: './source/renderer/index.js',
   output: {
     path: path.join(__dirname, './dist/renderer'),
@@ -54,7 +54,11 @@ module.exports = {
         test: /\.(woff2?|eot|ttf|otf|png|jpe?g|gif|svg)(\?.*)?$/,
         exclude: /\.inline\.svg$/,
         use: {
-          loader: 'url-loader',
+          loader: 'file-loader',
+          options: {
+            name: '[name]-[hash].[ext]',
+            outputPath: 'assets/'
+          }
         }
       },
       {
@@ -84,6 +88,7 @@ module.exports = {
     }),
     new AutoDllPlugin({
       filename: 'vendor.dll.js',
+      context: path.join(__dirname, '..'),
       entry: {
         vendor: [
           'aes-js',

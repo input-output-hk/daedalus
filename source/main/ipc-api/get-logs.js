@@ -1,3 +1,4 @@
+// @flow
 import { ipcMain } from 'electron';
 import { includes, sortBy } from 'lodash';
 import fs from 'fs';

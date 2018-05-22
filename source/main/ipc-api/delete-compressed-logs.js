@@ -1,3 +1,4 @@
+// @flow
 import { ipcMain } from 'electron';
 import fs from 'fs';
 import { Logger, stringifyError } from '../../common/logging';
