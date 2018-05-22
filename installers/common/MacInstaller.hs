@@ -42,6 +42,12 @@ import           System.IO.Error (IOError, isDoesNotExistError)
 import           Config
 import           Types
 
+data DarwinConfig = DarwinConfig {
+    dcAppNameApp :: Text -- ^ Daedalus.app for example
+  , dcAppName :: Text -- ^ the Daedalus from Daedalus.app
+  , dcPkgName :: Text -- ^ org.daedalus.pkg for example
+  } deriving (Show)
+
 main :: Options -> IO ()
 main opts@Options{..} = do
   hSetBuffering stdout NoBuffering
@@ -51,14 +57,22 @@ main opts@Options{..} = do
 
   installerConfig <- getInstallerConfig "./dhall" Macos64 oCluster
 
-  appRoot <- buildElectronApp (macPackageName installerConfig) oCluster
-  ver <- makeComponentRoot opts appRoot installerConfig
+  let
+    darwinConfig = DarwinConfig {
+        dcAppNameApp = (installDirectory installerConfig) <> ".app"
+      , dcAppName = installDirectory installerConfig
+      , dcPkgName = "org." <> (macPackageName installerConfig) <> ".pkg"
+      }
+  print darwinConfig
+
+  appRoot <- buildElectronApp darwinConfig oCluster
+  ver <- makeComponentRoot opts appRoot darwinConfig
   daedalusVer <- getDaedalusVersion "../package.json"
 
   let pkg = packageFileName Macos64 oCluster daedalusVer ver oBuildJob
       opkg = oOutputDir </> pkg
 
-  tempInstaller <- makeInstaller opts installerConfig appRoot pkg
+  tempInstaller <- makeInstaller opts darwinConfig appRoot pkg
 
   signInstaller signingConfig tempInstaller opkg
   checkSignature opkg
@@ -76,17 +90,17 @@ makePostInstall = "#!/usr/bin/env bash\n" %
                   "# See /var/log/install.log to debug this\n" %
                   "\n" %
                   "src_pkg=\"$1\"\ndst_root=\"$2\"\ndst_mount=\"$3\"\nsys_root=\"$4\"\n" %
-                  "./dockutil --add \"${dst_root}/" % s % ".app\" --allhomes\n" %
-                  "cd \"${dst_root}/" % s % ".app/Contents/MacOS/\"\n" %
+                  "./dockutil --add \"${dst_root}/" % s % "\" --allhomes\n" %
+                  "cd \"${dst_root}/" % s % "/Contents/MacOS/\"\n" %
                   "bash ./build-certificates-unix.sh"
 
-makeScriptsDir :: Options -> Text -> Managed T.Text
-makeScriptsDir Options{..} appname = case oBackend of
+makeScriptsDir :: Options -> DarwinConfig -> Managed T.Text
+makeScriptsDir Options{..} DarwinConfig{..} = case oBackend of
   Cardano _ -> do
     tempdir <- mktempdir "/tmp" "scripts"
     liftIO $ do
       cp "data/scripts/dockutil" (tempdir </> "dockutil")
-      writeTextFile (tempdir </> "postinstall") (format makePostInstall appname appname)
+      writeTextFile (tempdir </> "postinstall") (format makePostInstall dcAppNameApp dcAppNameApp)
       run "chmod" ["+x", tt (tempdir </> "postinstall")]
     pure $ tt tempdir
   Mantis    -> pure "[DEVOPS-533]"
@@ -95,21 +109,21 @@ makeScriptsDir Options{..} appname = case oBackend of
 -- component root path.
 -- NB: If webpack scripts are changed then this function may need to
 -- be updated.
-buildElectronApp :: Text -> Cluster -> IO FilePath
-buildElectronApp appName cluster = do
+buildElectronApp :: DarwinConfig -> Cluster -> IO FilePath
+buildElectronApp darwinConfig@DarwinConfig{..} cluster = do
   echo "Creating icons ..."
   procs "iconutil" ["--convert", "icns", "--output", "icons/electron.icns"
                    , "icons/electron.iconset"] mempty
 
-  withDir ".." . sh $ npmPackage appName cluster
+  withDir ".." . sh $ npmPackage darwinConfig cluster
 
   let
     formatter :: Format r (Text -> Text -> r)
-    formatter = "../release/darwin-x64/" % s % "-darwin-x64/" % s % ".app"
-  pure $ fromString $ T.unpack $ format formatter appName appName
+    formatter = "../release/darwin-x64/" % s % "-darwin-x64/" % s
+  pure $ fromString $ T.unpack $ format formatter dcAppName dcAppNameApp
 
-npmPackage :: Text -> Cluster -> Shell ()
-npmPackage appName cluster = do
+npmPackage :: DarwinConfig -> Cluster -> Shell ()
+npmPackage DarwinConfig{..} cluster = do
   let
     clusterToNetwork Mainnet = "mainnet"
     clusterToNetwork Staging = "testnet"
@@ -120,12 +134,12 @@ npmPackage appName cluster = do
   export "NODE_ENV" "production"
   export "NETWORK" $ clusterToNetwork cluster
   echo "~~~ Running electron packager script..."
-  procs "npm" ["run", "package", "--", "--name", appName ] empty
+  procs "npm" ["run", "package", "--", "--name", dcAppName ] empty
   size <- inproc "du" ["-sh", "release"] empty
   printf ("Size of Electron app is " % l % "\n") size
 
-makeComponentRoot :: Options -> FilePath -> InstallerConfig -> IO Text
-makeComponentRoot Options{..} appRoot installerConfig = do
+makeComponentRoot :: Options -> FilePath -> DarwinConfig -> IO Text
+makeComponentRoot Options{..} appRoot darwinConfig@DarwinConfig{..} = do
   let dir     = appRoot </> "Contents/MacOS"
 
   echo "~~~ Preparing files ..."
@@ -166,24 +180,24 @@ makeComponentRoot Options{..} appRoot installerConfig = do
 
   -- Prepare launcher
   de <- testdir (dir </> "Frontend")
-  unless de $ mv (dir </> (fromString $ T.unpack $ macPackageName installerConfig)) (dir </> "Frontend")
+  unless de $ mv (dir </> (fromString $ T.unpack $ dcAppName)) (dir </> "Frontend")
   run "chmod" ["+x", tt (dir </> "Frontend")]
-  writeLauncherFile dir installerConfig
+  writeLauncherFile dir darwinConfig
 
   pure ver
 
-makeInstaller :: Options -> InstallerConfig -> FilePath -> FilePath -> IO FilePath
-makeInstaller opts@Options{..} InstallerConfig{..} componentRoot pkg = do
+makeInstaller :: Options -> DarwinConfig -> FilePath -> FilePath -> IO FilePath
+makeInstaller opts@Options{..} darwinConfig@DarwinConfig{..} componentRoot pkg = do
   let tempPkg1 = format fp (oOutputDir </> pkg)
       tempPkg2 = oOutputDir </> (dropExtension pkg <.> "unsigned" <.> "pkg")
 
   mktree oOutputDir
-  with (makeScriptsDir opts macPackageName) $ \scriptsDir -> do
+  with (makeScriptsDir opts darwinConfig) $ \scriptsDir -> do
     let
       pkgargs :: [ T.Text ]
       pkgargs =
            [ "--identifier"
-           , "org."<> macPackageName <>".pkg"
+           , dcPkgName
            -- data/scripts/postinstall is responsible for running build-certificates
            , "--scripts", scriptsDir
            , "--component"
@@ -213,18 +227,17 @@ readCardanoVersionFile bridge = prefix <$> handle handler (readTextFile verFile)
     handler e | isDoesNotExistError e = pure ""
               | otherwise = throwM e
 
-writeLauncherFile :: FilePath -> InstallerConfig -> IO FilePath
-writeLauncherFile dir installerConfig = do
+writeLauncherFile :: FilePath -> DarwinConfig -> IO FilePath
+writeLauncherFile dir DarwinConfig{..} = do
   writeTextFile path $ T.unlines contents
   run "chmod" ["+x", tt path]
   pure path
   where
-    appname = T.unpack $ macPackageName installerConfig
-    path = dir </> (fromString appname)
-    dataDir = "$HOME/Library/Application Support/" <> (installDirectory installerConfig)
+    path = dir </> (fromString $ T.unpack dcAppName)
+    dataDir = "$HOME/Library/Application Support/" <> (dcAppName)
     contents =
       [ "#!/usr/bin/env bash"
-      , "cd \"$(dirname $0)\""
+      , "cd \"$(dirname \"$0\")\""
       , "mkdir -p \"" <> dataDir <> "/Secrets-1.0\""
       , "mkdir -p \"" <> dataDir <> "/Logs/pub\""
       , "./cardano-launcher"
