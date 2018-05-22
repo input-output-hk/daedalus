@@ -10,8 +10,10 @@ import Button from 'react-polymorph/lib/components/Button';
 import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
+import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/SwitchSkin';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
+import TinySwitch from '../widgets/forms/TinySwitch';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import WalletAddress from '../../domains/WalletAddress';
 import globalMessages from '../../i18n/global-messages';
@@ -229,9 +231,11 @@ export default class WalletReceive extends Component<Props, State> {
           <div className={styles.generatedAddresses}>
             <h2>
               {intl.formatMessage(messages.generatedAddressesSectionTitle)}
-              <button onClick={this.toggleUsedAddresses}>
-                {intl.formatMessage(messages[showUsed ? 'hideUsedLabel' : 'showUsedLabel'])}
-              </button>
+              <TinySwitch
+                label={intl.formatMessage(messages[showUsed ? 'hideUsedLabel' : 'showUsedLabel'])}
+                onChange={this.toggleUsedAddresses}
+                checked={!showUsed}
+              />
             </h2>
 
             {walletAddresses.map((address, index) => {

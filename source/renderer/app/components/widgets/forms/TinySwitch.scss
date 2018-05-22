@@ -1,4 +1,51 @@
-.skin {
-  // background-color: var(--theme-notification-message-background-color);
+$switch-track-height: 28px;
+$switch-track-length: 14px;
+
+.component {
+
+  display: flex;
+  flex-direction: row-reverse;
+
 }
 
+.root {
+  flex-direction: row !important;
+
+  $switch-track-height: 28px;
+  $switch-track-length: 14px;
+
+  div,
+  .SimpleSwitch_switch
+  .switch
+  {
+
+    &.SimpleSwitch_checked,
+    &:not(.SimpleSwitch_checked) {
+      width: 28px !important;
+      height: 14px !important;
+    }
+
+    &.SimpleSwitch_checked {
+      span {
+        left: 14px !important;
+      }
+    }
+  }
+
+  span,
+  .SimpleSwitch_thumb,
+  .thumb
+  {
+    width: 14px !important;
+    height: 14px !important;
+
+    .SimpleSwitch_checked & {
+      left: 14px !important;
+
+    }
+  }
+
+  label {
+    margin: 0 0 0 30px !important;
+  }
+}
