@@ -2,6 +2,7 @@
 , buildNr ? null
 }:
 let
+  daedalusPkgs = import ./. {};
   suffix = if buildNr == null then "" else "-${toString buildNr}";
   version = (builtins.fromJSON (builtins.readFile (./. + "/package.json"))).version;
 
@@ -22,4 +23,5 @@ let
 in {
   mainnet = makeJobs "mainnet";
   staging = makeJobs "staging";
+  tests = daedalusPkgs.tests;
 }
