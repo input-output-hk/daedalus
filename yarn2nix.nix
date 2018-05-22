@@ -28,6 +28,7 @@ yarn2nix.mkYarnPackage {
     ${nukeReferences}/bin/nuke-refs $out/share/daedalus/main/index.js.map
     ${nukeReferences}/bin/nuke-refs $out/share/daedalus/main/0.index.js.map
     ${nukeReferences}/bin/nuke-refs $out/share/daedalus/renderer/index.js.map
+    ${nukeReferences}/bin/nuke-refs $out/share/daedalus/renderer/styles.css.map
   '';
   allowedReferences = [];
   yarnPreBuild = ''
