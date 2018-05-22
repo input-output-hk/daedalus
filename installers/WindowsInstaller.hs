@@ -19,7 +19,7 @@ import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recurs
                                    name, nsis, onPagePre, outFile, page, readRegStr,
                                    requestExecutionLevel, rmdir, section, setOutPath, str,
                                    strLength, uninstall, unsafeInject, unsafeInjectGlobal,
-                                   writeRegDWORD, writeRegStr, (%/=))
+                                   writeRegDWORD, writeRegStr, (%/=), fileExists)
 import           Prelude ((!!))
 import           System.Directory (copyFile, doesFileExist)
 import           System.Environment (lookupEnv)
@@ -146,6 +146,8 @@ writeInstallerNSIS (Version fullVersion') clusterName = do
                 createDirectory "$APPDATA\\Daedalus\\Secrets-1.0"
                 createDirectory "$APPDATA\\Daedalus\\Logs"
                 createDirectory "$APPDATA\\Daedalus\\Logs\\pub"
+                iff_ (fileExists "$APPDATA\\Daedalus\\Wallet-1.0\\open\\*.*") $
+                    rmdir [] "$APPDATA\\Daedalus\\Wallet-1.0\\open"
                 file [] "cardano-node.exe"
                 file [] "cardano-launcher.exe"
                 file [] "log-config-prod.yaml"
