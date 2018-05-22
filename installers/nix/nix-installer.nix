@@ -71,7 +71,7 @@ let
   enter2 = pkgs.writeScriptBin "enter-phase2" ''
     #!${pkgs.stdenv.shell}
 
-    set -ex
+    set -e
 
     export PATH=/nix/var/nix/profiles/profile/bin
     export PS1='\[\033]2;\h:\u:\w\007\]\n\[\033[1;32m\][\u@\h:\w] (namespaced) \$\[\033[0m\] '
