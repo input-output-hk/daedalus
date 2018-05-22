@@ -24,6 +24,7 @@ storiesOf('Widgets', module)
         onChangeAction(value, event);
       })
     });
+
     return (
       <StoryDecorator
         propsForChildren={state}
@@ -86,17 +87,13 @@ storiesOf('Widgets', module)
   ))
 
   .add('TinySwitch', () => (
-    <div>
-      <TinySwitch  />
-    </div>
+    <TinySwitch />
   ))
 
   .add('TinySwitch - short label', () => (
-    <div>
-      <TinySwitch
-        label="My switch"
-      />
-    </div>
+    <TinySwitch
+      label="My switch"
+    />
   ));
 
 
