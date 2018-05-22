@@ -104,7 +104,13 @@ fi
 export PATH=$HOME/.local/bin:$PATH
 if [ -n "${NIX_SSL_CERT_FILE-}" ]; then export SSL_CERT_FILE=$NIX_SSL_CERT_FILE; fi
 
-ARTIFACT_BUCKET=ci-output-sink
+upload_artifacts() {
+    buildkite-agent artifact upload "$@" --job $BUILDKITE_JOB_ID
+}
+
+upload_artifacts_public() {
+    buildkite-agent artifact upload "$@" ${ARTIFACT_BUCKET:-} --job $BUILDKITE_JOB_ID
+}
 
 # Build/get cardano bridge which is used by make-installer
 DAEDALUS_BRIDGE=$(nix-build --no-out-link cardano-sl.nix -A daedalus-bridge)
@@ -134,11 +140,11 @@ cd installers
                   then
                           echo "~~~ Uploading the installer package.."
                           export PATH=${BUILDKITE_BIN_PATH:-}:$PATH
-                          buildkite-agent artifact upload "${APP_NAME}/*" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
+                          upload_artifacts_public "${APP_NAME}/*"
                           mv "launcher-config.yaml" "launcher-config-${cluster}.macos64.yaml"
                           mv "wallet-topology.yaml" "wallet-topology-${cluster}.macos64.yaml"
-                          buildkite-agent artifact upload "launcher-config-${cluster}.macos64.yaml" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
-                          buildkite-agent artifact upload "wallet-topology-${cluster}.macos64.yaml" s3://${ARTIFACT_BUCKET} --job $BUILDKITE_JOB_ID
+                          upload_artifacts "launcher-config-${cluster}.macos64.yaml"
+                          upload_artifacts "wallet-topology-${cluster}.macos64.yaml"
                           rm -rf "${APP_NAME}"
                   fi
           else
