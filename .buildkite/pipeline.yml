@@ -1,3 +1,5 @@
+env:
+  ARTIFACT_BUCKET: s3://ci-output-sink
 steps:
   - label: 'daedalus-x86_64-darwin'
     command: 'scripts/nix-shell.sh --run "scripts/build-installer-unix.sh --build-id $BUILDKITE_BUILD_NUMBER"'
