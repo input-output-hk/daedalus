@@ -165,10 +165,13 @@
     font-family: var(--font-medium);
 
     .hideUsed {
-      // float: right;
-      display: flex;
-      flex-direction: row-reverse;
-      margin-top: -25px;
+      // display: flex;
+      // flex-direction: row-reverse;
+      // margin-top: -25px;
+      width: 118px;
+      float: right;
+      height: 20px;
+      text-align: right;
     }
 
     button {

@@ -1,26 +1,21 @@
 .root {
   flex-direction: row !important;
 
-  div
-  {
+  :global {
+    .SimpleSwitch_switch {
 
-    &.SimpleSwitch_checked,
-    &:not(.SimpleSwitch_checked) {
-      width: 25px !important;
-      height: 12px !important;
-    }
+      &.SimpleSwitch_checked,
+      &:not(.SimpleSwitch_checked) {
+        width: 25px !important;
+        height: 12px !important;
+      }
 
-    // Not working
-    &.SimpleSwitch_checked {
-      span {
-        left: 12px !important;
+      &.SimpleSwitch_checked {
+        span {
+          left: 13px !important;
+        }
       }
     }
-  }
-
-  // Not working
-  div.SimpleSwitch_checked span {
-    left: 12px !important;
   }
 
   span
@@ -30,7 +25,7 @@
   }
 
   label {
-    margin: 0 0 0 30px !important;
+    margin: 0 !important;
     font-family: inherit;
   }
 }
