@@ -36,35 +36,35 @@ const startElectronInWatchMode = () => {
 };
 
 
-gulp.task('clean-dist', shell.task('rimraf ./dist'));
+gulp.task('clean:dist', shell.task('rimraf ./dist'));
 
-gulp.task('build-main', (done) => buildMain({}, done));
+gulp.task('build:main', (done) => buildMain({}, done));
 
-gulp.task('build-main-watch', (done) => buildMain({ watch: true }, done));
+gulp.task('build:main:watch', (done) => buildMain({ watch: true }, done));
 
-gulp.task('build-renderer-html', () => gulp.src('source/renderer/index.html').pipe(gulp.dest('dist/renderer/')));
+gulp.task('build:renderer:html', () => gulp.src('source/renderer/index.html').pipe(gulp.dest('dist/renderer/')));
 
-gulp.task('build-renderer-assets', (done) => buildRenderer({}, done));
+gulp.task('build:renderer:assets', (done) => buildRenderer({}, done));
 
-gulp.task('build-renderer', gulp.series('build-renderer-html', 'build-renderer-assets'));
+gulp.task('build:renderer', gulp.series('build:renderer:html', 'build:renderer:assets'));
 
-gulp.task('build-renderer-watch', (done) => buildRenderer({ watch: true }, done));
+gulp.task('build:renderer:watch', (done) => buildRenderer({ watch: true }, done));
 
-gulp.task('build', gulp.series('clean-dist', 'build-main', 'build-renderer'));
+gulp.task('build', gulp.series('clean:dist', 'build:main', 'build:renderer'));
 
-gulp.task('build-watch', gulp.series('clean-dist', 'build-renderer-html', 'build-main-watch', 'build-renderer-watch'));
+gulp.task('build:watch', gulp.series('clean:dist', 'build:renderer:html', 'build:main:watch', 'build:renderer:watch'));
 
 gulp.task('cucumber', shell.task('npm run cucumber --'));
 
-gulp.task('cucumber-watch', shell.task('nodemon --exec npm run cucumber-watch'));
+gulp.task('cucumber:watch', shell.task('nodemon --exec npm run cucumber:watch'));
 
 gulp.task('test', gulp.series('build', 'cucumber'));
 
-gulp.task('test-watch', gulp.series('build-watch', 'cucumber-watch'));
+gulp.task('test:watch', gulp.series('build:watch', 'cucumber:watch'));
 
-gulp.task('purge-translations', shell.task('rimraf ./translations/messages/source'));
+gulp.task('purge:translations', shell.task('rimraf ./translations/messages/source'));
 
-gulp.task('electron-inspector', shell.task('npm run electron-inspector'));
+gulp.task('electron:inspector', shell.task('npm run electron:inspector'));
 
 gulp.task('electron:restart', (done) => {
   electronServer.restart();
@@ -76,18 +76,18 @@ gulp.task('electron:reload', (done) => {
   done();
 });
 
-gulp.task('start-watch', () => {
+gulp.task('start:watch', () => {
   createElectronServer({ NODE_ENV: process.env.NODE_ENV || 'development' });
   startElectronInWatchMode();
 });
 
-gulp.task('start-debug', () => {
+gulp.task('start:debug', () => {
   createElectronServer({ NODE_ENV: 'development' }, ['--inspect', '--inspect-brk']);
   startElectronInWatchMode();
 });
 
 gulp.task('start', shell.task(`cross-env NODE_ENV=${process.env.NODE_ENV || 'production'} electron ./`));
 
-gulp.task('dev', gulp.series('purge-translations', 'build-watch', 'start-watch'));
+gulp.task('dev', gulp.series('purge:translations', 'build:watch', 'start:watch'));
 
-gulp.task('debug', gulp.series('purge-translations', 'build-watch', 'start-debug', 'electron-inspector'));
+gulp.task('debug', gulp.series('purge:translations', 'build:watch', 'start:debug', 'electron:inspector'));
