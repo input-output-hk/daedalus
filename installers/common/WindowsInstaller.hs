@@ -24,23 +24,13 @@ import           Prelude ((!!))
 import qualified System.IO as IO
 import           Filesystem.Path (FilePath, (</>), (<.>))
 import           Filesystem.Path.CurrentOS (encodeString, fromText)
-import           Filesystem.Path.CurrentOS (decodeString)
 import           Prelude                   ((!!))
-import           Prelude                   ((!!))
-import           System.Directory          (copyFile, doesFileExist)
-import           System.Environment        (lookupEnv)
-import           System.FilePath           ((</>))
-import           System.IO                 (writeFile)
 import           System.IO                 (writeFile)
 import           Turtle                    (ExitCode (..), Line, Shell, die,
                                             echo, export, format, fp, inproc,
                                             input, need, printf, proc, procs,
                                             sed, shells, stdout, strict,
                                             testfile, w, writeTextFile, (%))
-import           Turtle                    (ExitCode (..), echo, export, input,
-                                            proc, procs, shells, stdout,
-                                            testfile)
-import           Turtle.Line               (unsafeTextToLine)
 import           Turtle.Pattern            (dot, noneOf, plus, star, text)
 
 import           Config
@@ -165,15 +155,15 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                     rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
                 file [] "cardano-node.exe"
                 file [] "cardano-launcher.exe"
-                file [] "cardano-x509-certificates.exe"
                 file [] "log-config-prod.yaml"
-                file [] "version.txt"
+                file [] "ca.conf.windows"
+                file [] "server.conf.windows"
+                file [] "client.conf.windows"
                 file [] "wallet-topology.yaml"
                 file [] "configuration.yaml"
                 file [] "*genesis*.json"
                 file [] "launcher-config.yaml"
                 file [Recursive] "dlls\\"
-                file [Recursive] "libressl\\"
                 file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
 
                 mapM_ unsafeInject
