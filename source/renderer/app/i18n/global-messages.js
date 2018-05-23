@@ -106,6 +106,11 @@ export default defineMessages({
     defaultMessage: '!!!Croatian',
     description: 'Language name for "Croatian" language.'
   },
+  languagePolish: {
+    id: 'global.language.polish',
+    defaultMessage: '!!!Polish',
+    description: 'Language name for "Polish" language.'
+  },
   assuranceLevelNormal: {
     id: 'global.assuranceLevel.normal',
     defaultMessage: '!!!Normal',
