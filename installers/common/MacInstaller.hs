@@ -20,20 +20,21 @@ module MacInstaller
 --- An overview of Mac .pkg internals:    http://www.peachpit.com/articles/article.aspx?p=605381&seqNum=2
 ---
 
-import           Universum hiding (FilePath, toText, (<>))
+import           Universum                 hiding (FilePath, toText, (<>))
 
-import           Control.Monad             (unless)
 import           Control.Exception         (handle)
+import           Control.Monad             (unless)
 import           Data.Text                 (Text)
 import qualified Data.Text                 as T
-import           Filesystem.Path           (FilePath, dropExtension, (</>), (<.>))
+import           Filesystem.Path           (FilePath, dropExtension, (<.>),
+                                            (</>))
 import           Filesystem.Path.CurrentOS (encodeString)
 import           System.FilePath.Glob      (glob)
-import           Turtle                    hiding (stdout, prefix, e)
-import           Turtle.Line               (unsafeTextToLine)
 import           System.IO                 (BufferMode (NoBuffering),
                                             hSetBuffering)
 import           System.IO.Error           (IOError, isDoesNotExistError)
+import           Turtle                    hiding (e, prefix, stdout)
+import           Turtle.Line               (unsafeTextToLine)
 
 import           Config
 import           RewriteLibs               (chain)
@@ -163,7 +164,7 @@ makeComponentRoot Options{..} appRoot darwinConfig@DarwinConfig{..} = do
       procs "chmod" ["-R", "+w", tt dir] empty
 
       -- Rewrite libs paths and bundle them
-      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-node"]
+      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-node", dir </> "cardano-x509-certificates"]
 
       readCardanoVersionFile bridge
 
