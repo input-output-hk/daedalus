@@ -22,7 +22,7 @@ This PR CHANGES.
 - [ ] Automated tests: All acceptance tests are passing (`npm run test`)
 - [ ] Manual tests (minimum tests should cover newly added feature/fix): App works correctly in *development* build (`npm run dev`)
 - [ ] Manual tests (minimum tests should cover newly added feature/fix): App works correctly in *production* build (`npm run package` / CI builds)
-- [ ] There are no *flow* errors or warnings (`npm run flow-test`)
+- [ ] There are no *flow* errors or warnings (`npm run flow:test`)
 - [ ] There are no *lint* errors or warnings (`npm run lint`)
 - [ ] Text changes are proofread and approved (Jane Wild)
 - [ ] There are no missing translations (running `npm run manage-translations` produces no changes)

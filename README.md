@@ -115,7 +115,7 @@ $ npm run test
 For development purposes run the tests continuously in watch mode which will re-run tests when source code changes:
 
 ```bash
-$ npm run test-watch
+$ npm run test:watch
 ```
 
 You can find more details regarding tests setup within [Running Daedalus acceptance tests](https://github.com/input-output-hk/daedalus/blob/master/features/README.md) README file.
@@ -161,7 +161,7 @@ $ npm run package
 To package apps for all platforms:
 
 ```bash
-$ npm run package-all
+$ npm run package:all
 ```
 
 To package apps with options:
