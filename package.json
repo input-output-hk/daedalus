@@ -21,8 +21,7 @@
     "lint": "eslint --format=node_modules/eslint-formatter-pretty source features *.js",
     "flow:test": "flow; test $? -eq 0 -o $? -eq 2",
     "manage-translations": "node ./translations/translation-runner.js",
-    "storybook": "start-storybook -p 6006 -c storybook",
-    "build:storybook": "build-storybook"
+    "storybook": "start-storybook -p 6006 -c storybook"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
