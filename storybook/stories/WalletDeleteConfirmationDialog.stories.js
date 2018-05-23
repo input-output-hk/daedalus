@@ -16,7 +16,7 @@ storiesOf('DeleteWalletConfirmationDialog', module)
   .add('without funds & countdown', () => (
     <div>
       <DeleteWalletConfirmationDialog
-        walletName={"My Wallet"}
+        walletName="My Wallet"
         hasWalletFunds={false}
         countdownFn={() => 10}
         isBackupNoticeAccepted={false}
@@ -26,7 +26,7 @@ storiesOf('DeleteWalletConfirmationDialog', module)
   .add('without funds - not accepted', () => (
     <div>
       <DeleteWalletConfirmationDialog
-        walletName={"My Wallet"}
+        walletName="My Wallet"
         hasWalletFunds={false}
         countdownFn={() => 0}
         isBackupNoticeAccepted={false}
@@ -36,18 +36,18 @@ storiesOf('DeleteWalletConfirmationDialog', module)
   .add('without funds - accepted', () => (
     <div>
       <DeleteWalletConfirmationDialog
-        walletName={"My Wallet"}
+        walletName="My Wallet"
         hasWalletFunds={false}
         countdownFn={() => 0}
-        isBackupNoticeAccepted={true}
+        isBackupNoticeAccepted
       />
     </div>
   ))
   .add('funds & countdown', () => (
     <div>
       <DeleteWalletConfirmationDialog
-        walletName={"My Wallet"}
-        hasWalletFunds={true}
+        walletName="My Wallet"
+        hasWalletFunds
         countdownFn={() => 10}
         isBackupNoticeAccepted={false}
       />
@@ -56,20 +56,20 @@ storiesOf('DeleteWalletConfirmationDialog', module)
   .add('funds & accepted', () => (
     <div>
       <DeleteWalletConfirmationDialog
-        walletName={"My Wallet"}
-        hasWalletFunds={true}
+        walletName="My Wallet"
+        hasWalletFunds
         countdownFn={() => 0}
-        isBackupNoticeAccepted={true}
+        isBackupNoticeAccepted
       />
     </div>
   ))
   .add('funds & accepted & filled', () => (
     <div>
       <DeleteWalletConfirmationDialog
-        walletName={"My Wallet"}
-        hasWalletFunds={true}
+        walletName="My Wallet"
+        hasWalletFunds
         countdownFn={() => 0}
-        isBackupNoticeAccepted={true}
+        isBackupNoticeAccepted
         confirmationValue="babushka"
         onConfirmationValueChange={action('onRecoveryWordChange')}
       />

@@ -13,8 +13,8 @@ import { formattedWalletAmount } from '../../source/renderer/app/utils/ada/forma
 
 const generateTransaction = (
   type, date, amount, confirmations = 1, state = transactionStates.OK
-) => {
-  return new WalletTransaction({
+) => (
+  new WalletTransaction({
     id: faker.random.uuid(),
     title: '',
     type,
@@ -26,8 +26,8 @@ const generateTransaction = (
     addresses: {
       from: [faker.random.uuid()], to: [faker.random.uuid()]
     },
-  });
-};
+  })
+);
 
 storiesOf('WalletTransactionsList', module)
 

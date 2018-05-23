@@ -28,15 +28,15 @@ storiesOf('AdaRedemptionForm', module)
       <AdaRedemptionForm
         onSubmit={action('submit')}
         isSubmitting={false}
-        isRedemptionDisclaimerAccepted={true}
+        isRedemptionDisclaimerAccepted
         isCertificateSelected={false}
         isCertificateEncrypted={false}
         onCertificateSelected={action('onCertificateSelected')}
         onPassPhraseChanged={action('onPassPhraseChanged')}
         onRedemptionCodeChanged={action('onRedemptionCodeChanged')}
         onChooseRedemptionType={action('onChooseRedemptionType')}
-        redemptionCode=''
-        redemptionType='regular'
+        redemptionCode=""
+        redemptionType="regular"
         getSelectedWallet={() => ({})}
         wallets={[
           { value: 'wallet-1', label: 'First Wallet' },
@@ -52,15 +52,15 @@ storiesOf('AdaRedemptionForm', module)
       <AdaRedemptionForm
         onSubmit={action('submit')}
         isSubmitting={false}
-        isRedemptionDisclaimerAccepted={true}
-        isCertificateSelected={true}
+        isRedemptionDisclaimerAccepted
+        isCertificateSelected
         isCertificateEncrypted={false}
         onCertificateSelected={action('onCertificateSelected')}
         onPassPhraseChanged={action('onPassPhraseChanged')}
         onRedemptionCodeChanged={action('onRedemptionCodeChanged')}
         onChooseRedemptionType={action('onChooseRedemptionType')}
-        redemptionCode=''
-        redemptionType='regular'
+        redemptionCode=""
+        redemptionType="regular"
         getSelectedWallet={() => ({})}
         wallets={[
           { value: 'wallet-1', label: 'First Wallet' },
@@ -76,15 +76,15 @@ storiesOf('AdaRedemptionForm', module)
       <AdaRedemptionForm
         onSubmit={action('submit')}
         isSubmitting={false}
-        isRedemptionDisclaimerAccepted={true}
-        isCertificateSelected={true}
-        isCertificateEncrypted={true}
+        isRedemptionDisclaimerAccepted
+        isCertificateSelected
+        isCertificateEncrypted
         onCertificateSelected={action('onCertificateSelected')}
         onPassPhraseChanged={action('onPassPhraseChanged')}
         onRedemptionCodeChanged={action('onRedemptionCodeChanged')}
         onChooseRedemptionType={action('onChooseRedemptionType')}
-        redemptionCode=''
-        redemptionType='regular'
+        redemptionCode=""
+        redemptionType="regular"
         getSelectedWallet={() => ({})}
         wallets={[
           { value: 'wallet-1', label: 'First Wallet' },

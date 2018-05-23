@@ -21,8 +21,8 @@ storiesOf('Staking', module)
     </div>
   ))
 
-.add('StakingPage', () => (
-  <div>
-    <Staking />
-  </div>
-));
+  .add('StakingPage', () => (
+    <div>
+      <Staking />
+    </div>
+  ));
