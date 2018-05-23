@@ -12,16 +12,13 @@ set /p CLUSTERS=<installer-clusters.cfg
 @echo ###
 @echo ##############################################################################
 
-set LIBRESSL_VERSION=2.5.3
 set CURL_VERSION=7.54.0
 
 set CURL_URL=https://bintray.com/artifact/download/vszakats/generic/curl-%CURL_VERSION%-win64-mingw.7z
 set CURL_BIN=curl-%CURL_VERSION%-win64-mingw\bin
-set LIBRESSL_URL=https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-%LIBRESSL_VERSION%-windows.zip
 set DLLS_URL=https://s3.eu-central-1.amazonaws.com/daedalus-ci-binaries/DLLs.zip
 
 @echo Building Daedalus
-@echo ..with LibreSSL version:    %LIBRESSL_VERSION%
 @echo .
 
 @if not [%SKIP_TO_INSTALLER%]==[] (@echo WARNING: SKIP_TO_INSTALLER active, skipping to frontend packaging
@@ -65,17 +62,6 @@ call npm install
 pushd installers
     @if not [%SKIP_LIBS%]==[] (@echo WARNING: SKIP_LIBS active, skipping lib installation
         goto :after_libs)
-    del /f LibreSSL.zip 2>nul
-    @echo Obtaining LibreSSL %LIBRESSL_VERSION%
-    ..\curl %LIBRESSL_URL% -o LibreSSL.zip
-    @if %errorlevel% neq 0 (@echo FAILED: LibreSSL couldn't be obtained
-        popd & exit /b 1)
-    7z x LibreSSL.zip
-    @if %errorlevel% neq 0 (@echo FAILED: LibreSSL couldn't be extracted from downloaded archive
-        popd & exit /b 1)
-    del LibreSSL.zip
-    rmdir /s/q libressl
-    move libressl-%LIBRESSL_VERSION%-windows libressl
 
     @echo Copying DLLs
     @rem TODO: get rocksdb from rocksdb-haskell

@@ -1,36 +1,48 @@
-{-# LANGUAGE RecordWildCards, LambdaCase #-}
+{-# LANGUAGE LambdaCase      #-}
+{-# LANGUAGE RecordWildCards #-}
 module WindowsInstaller
     ( main
     ) where
 
-import           Universum hiding (pass, writeFile, stdout, FilePath, die)
+import           Universum                 hiding (FilePath, die, pass, stdout,
+                                            writeFile)
 
-import           Control.Monad (unless)
-import qualified Data.List as L
-import           Data.Text (Text, unpack)
-import qualified Data.Text as T
-import qualified Data.Text.IO as TIO
-import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recursive, Required, StartOptions, Target),
-                                   HKEY (HKLM), Level (Highest), Page (Directory, InstFiles), abort,
-                                   constant, constantStr, createDirectory, createShortcut, delete,
-                                   deleteRegKey, execWait, file, iff_, installDir, installDirRegKey,
-                                   name, nsis, onPagePre, outFile, page, readRegStr,
-                                   requestExecutionLevel, rmdir, section, setOutPath, str,
-                                   strLength, uninstall, unsafeInject, unsafeInjectGlobal,
-                                   writeRegDWORD, writeRegStr, (%/=))
-import           Prelude ((!!))
-import           System.IO (writeFile)
-import           Filesystem.Path (FilePath, (</>), (<.>))
-import           Filesystem.Path.CurrentOS (encodeString, fromText)
-import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, stdout, input, export, sed, strict, format, printf, fp, w, (%), need, writeTextFile, die)
-import           Turtle.Pattern (text, plus, noneOf, star, dot)
 import           AppVeyor
-import qualified Codec.Archive.Zip    as Zip
+import qualified Codec.Archive.Zip         as Zip
+import           Control.Monad             (unless)
+import qualified Data.List                 as L
+import           Data.Text                 (Text, unpack)
+import qualified Data.Text                 as T
+import qualified Data.Text.IO              as TIO
+import           Development.NSIS          (Attrib (IconFile, IconIndex, RebootOK, Recursive, Required, StartOptions, Target),
+                                            HKEY (HKLM), Level (Highest),
+                                            Page (Directory, InstFiles), abort,
+                                            constant, constantStr,
+                                            createDirectory, createShortcut,
+                                            delete, deleteRegKey, execWait,
+                                            file, iff_, installDir,
+                                            installDirRegKey, name, nsis,
+                                            onPagePre, outFile, page,
+                                            readRegStr, requestExecutionLevel,
+                                            rmdir, section, setOutPath, str,
+                                            strLength, uninstall, unsafeInject,
+                                            unsafeInjectGlobal, writeRegDWORD,
+                                            writeRegStr, (%/=))
+import           Filesystem.Path           (FilePath, (<.>), (</>))
+import           Filesystem.Path.CurrentOS (encodeString, fromText)
+import           Prelude                   ((!!))
+import           System.IO                 (writeFile)
+import           Turtle                    (ExitCode (..), Line, Shell, die,
+                                            echo, export, format, fp, inproc,
+                                            input, need, printf, proc, procs,
+                                            sed, shells, stdout, strict,
+                                            testfile, w, writeTextFile, (%))
+import           Turtle.Pattern            (dot, noneOf, plus, star, text)
 
 import           Config
 import           Types
 
-
+
 
 daedalusShortcut :: [Attrib]
 daedalusShortcut =
@@ -109,9 +121,6 @@ writeInstallerNSIS outName (Version fullVersion') clusterName = do
         viProductVersion = L.intercalate "." $ parseVersion fullVersion'
     printf ("VIProductVersion: "%w%"\n") viProductVersion
 
-    forM_ ["ca.conf", "server.conf", "client.conf"] $
-        \f-> fileSubstString "OPENSSL_MD" "sha256" f (f <.> "windows")
-
     writeFile "daedalus.nsi" $ nsis $ do
         _ <- constantStr "Version" (str fullVersion)
         _ <- constantStr "Cluster" (str $ unpack $ lshowText clusterName)
@@ -145,16 +154,11 @@ writeInstallerNSIS outName (Version fullVersion') clusterName = do
                 file [] "cardano-node.exe"
                 file [] "cardano-launcher.exe"
                 file [] "log-config-prod.yaml"
-                file [] "build-certificates-win64.bat"
-                file [] "ca.conf.windows"
-                file [] "server.conf.windows"
-                file [] "client.conf.windows"
                 file [] "wallet-topology.yaml"
                 file [] "configuration.yaml"
                 file [] "*genesis*.json"
                 file [] "launcher-config.yaml"
                 file [Recursive] "dlls\\"
-                file [Recursive] "libressl\\"
                 file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
 
                 mapM_ unsafeInject
@@ -162,8 +166,6 @@ writeInstallerNSIS outName (Version fullVersion') clusterName = do
                     , "Pop $0"
                     , "DetailPrint \"liteFirewall::AddRule: $0\""
                     ]
-
-                execWait "build-certificates-win64.bat \"$INSTDIR\" >\"%APPDATA%\\Daedalus\\Logs\\build-certificates.log\" 2>&1"
 
                 createShortcut "$DESKTOP\\Daedalus.lnk" daedalusShortcut
 

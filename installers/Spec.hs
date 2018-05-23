@@ -1,21 +1,26 @@
-{-# LANGUAGE OverloadedStrings, NoImplicitPrelude, LambdaCase #-}
+{-# LANGUAGE LambdaCase        #-}
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import Universum hiding (FilePath, fold)
-import Test.Hspec
-import qualified Data.Text as T
-import Filesystem.Path (FilePath, (</>))
-import Filesystem.Path.CurrentOS (fromText, encodeString, decodeString)
-import System.IO.Temp (getCanonicalTemporaryDirectory)
-import Turtle (mktempdir, inproc, strict, ls, fold, writeTextFile, mktree, mkdir, cptree, cp, format)
-import Control.Monad.Managed (MonadManaged, runManaged)
-import Data.Aeson.Types (Value)
-import Data.Aeson.Lens
-import qualified Control.Foldl as Fold
+import qualified Control.Foldl             as Fold
+import           Control.Monad.Managed     (MonadManaged, runManaged)
+import           Data.Aeson.Lens
+import           Data.Aeson.Types          (Value)
+import qualified Data.Text                 as T
+import           Filesystem.Path           (FilePath, (</>))
+import           Filesystem.Path.CurrentOS (decodeString, encodeString,
+                                            fromText)
+import           System.IO.Temp            (getCanonicalTemporaryDirectory)
+import           Test.Hspec
+import           Turtle                    (cp, cptree, fold, format, inproc,
+                                            ls, mkdir, mktempdir, mktree,
+                                            strict, writeTextFile)
+import           Universum                 hiding (FilePath, fold)
 
-import Config
-import Types
-import qualified MacInstaller as Mac
+import           Config
+import qualified MacInstaller              as Mac
+import           Types
 
 main :: IO ()
 main = hspec $ do
@@ -67,8 +72,6 @@ makeTestInstallersDir = do
   let installersDir = src </> "installers"
   mkdir installersDir
   cptree "dhall" (installersDir </> "dhall")
-  forM ["ca.conf", "server.conf", "client.conf", "build-certificates-unix.sh"] $ \f ->
-    cp f (installersDir </> f)
   mktree (installersDir </> "data/scripts")
   pure installersDir
 
