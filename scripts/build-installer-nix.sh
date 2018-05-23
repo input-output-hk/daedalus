@@ -25,7 +25,7 @@ do
   nix-build -Q release.nix -A ${cluster}.installer --argstr buildNr $BUILDKITE_BUILD_NUMBER -o csl-daedalus
   if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
     upload_artifacts_public csl-daedalus/daedalus*.bin
-    nix-build -A daedalus.cfg  --atrstr cluster ${cluster}
+    nix-build -A daedalus.cfg  --argstr cluster ${cluster}
     for cf in launcher-config wallet-topology
     do cp result/etc/$cf.yaml  $cf-${cluster}.linux.yaml
        upload_artifacts $cf-${cluster}.linux.yaml
