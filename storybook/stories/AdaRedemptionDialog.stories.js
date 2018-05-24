@@ -4,6 +4,7 @@ import { storiesOf, action } from '@storybook/react';
 import StoryDecorator from './support/StoryDecorator';
 import AdaRedemptionForm from '../../source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm';
 import AdaRedemptionChoices from '../../source/renderer/app/components/wallet/ada-redemption/AdaRedemptionChoices';
+import { ADA_REDEMPTION_TYPES } from "../../source/renderer/app/types/redemptionTypes"
 
 storiesOf('AdaRedemptionForm', module)
 
@@ -37,7 +38,7 @@ storiesOf('AdaRedemptionForm', module)
         onRedemptionCodeChanged={action('onRedemptionCodeChanged')}
         onChooseRedemptionType={action('onChooseRedemptionType')}
         redemptionCode=""
-        redemptionType="regular"
+        redemptionType={ADA_REDEMPTION_TYPES.REGULAR}
         getSelectedWallet={() => ({})}
         wallets={[
           { value: 'wallet-1', label: 'First Wallet' },
@@ -74,7 +75,7 @@ storiesOf('AdaRedemptionForm', module)
         onRedemptionCodeChanged={action('onRedemptionCodeChanged')}
         onChooseRedemptionType={action('onChooseRedemptionType')}
         redemptionCode=""
-        redemptionType="regular"
+        redemptionType={ADA_REDEMPTION_TYPES.REGULAR}
         getSelectedWallet={() => ({})}
         wallets={[
           { value: 'wallet-1', label: 'First Wallet' },
@@ -111,7 +112,7 @@ storiesOf('AdaRedemptionForm', module)
         onRedemptionCodeChanged={action('onRedemptionCodeChanged')}
         onChooseRedemptionType={action('onChooseRedemptionType')}
         redemptionCode=""
-        redemptionType="regular"
+        redemptionType={ADA_REDEMPTION_TYPES.REGULAR}
         getSelectedWallet={() => ({})}
         wallets={[
           { value: 'wallet-1', label: 'First Wallet' },
