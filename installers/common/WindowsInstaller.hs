@@ -113,9 +113,6 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
         viProductVersion = L.intercalate "." $ parseVersion fullVersion'
     printf ("VIProductVersion: "%w%"\n") viProductVersion
 
-    forM_ ["ca.conf", "server.conf", "client.conf"] $
-        \f-> fileSubstString "OPENSSL_MD" "sha256" f (f <.> "windows")
-
     IO.writeFile "daedalus.nsi" $ nsis $ do
         _ <- constantStr "Version" (str fullVersion)
         _ <- constantStr "Cluster" (str $ unpack $ lshowText clusterName)
@@ -152,9 +149,6 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                 file [] "cardano-node.exe"
                 file [] "cardano-launcher.exe"
                 file [] "log-config-prod.yaml"
-                file [] "ca.conf.windows"
-                file [] "server.conf.windows"
-                file [] "client.conf.windows"
                 file [] "wallet-topology.yaml"
                 file [] "configuration.yaml"
                 file [] "*genesis*.json"
