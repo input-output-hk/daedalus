@@ -16,7 +16,7 @@ export default class TinySwitch extends Component<Props> {
       <Checkbox
         skin={
           <SimpleSwitchSkin
-            className={styles.root}
+            className={styles.component}
           />
         }
         checked={this.props.checked}

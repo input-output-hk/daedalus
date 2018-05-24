@@ -1,11 +1,10 @@
-.root {
+.component {
   flex-direction: row;
 
   :global {
     .SimpleSwitch_switch {
-
-      width: 25px !important;
       height: 12px !important;
+      width: 25px !important;
 
       &.SimpleSwitch_checked {
         span {
@@ -16,12 +15,12 @@
   }
 
   span {
-    width: 12px !important;
     height: 12px !important;
+    width: 12px !important;
   }
 
   label {
-    margin: 0 0 0 6px !important;
     font-family: var(--font-regular);
+    margin: 0 0 0 6px !important;
   }
 }
