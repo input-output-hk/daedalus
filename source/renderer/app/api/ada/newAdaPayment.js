@@ -3,8 +3,12 @@ import type { AdaTransaction } from './types';
 import { request } from './lib/request';
 
 export type NewAdaPaymentParams = {
-  ca: string,
-  port: number,
+  apiParams: {
+    ca: string,
+    port: number,
+    clientCert: string,
+    clientKey: string,
+  },
   sender: string,
   receiver: string,
   amount: string,
@@ -16,13 +20,15 @@ export type NewAdaPaymentParams = {
 
 
 export const newAdaPayment = (
-  { ca, port, sender, receiver, amount, groupingPolicy, password }: NewAdaPaymentParams
+  { apiParams, sender, receiver, amount, groupingPolicy, password }: NewAdaPaymentParams
 ): Promise<AdaTransaction> => (
   request({
     hostname: 'localhost',
     method: 'POST',
     path: `/api/txs/payments/${sender}/${receiver}/${amount}`,
-    port,
-    ca,
+    port: apiParams.port,
+    ca: apiParams.ca,
+    cert: apiParams.clientCert,
+    key: apiParams.clientKey,
   }, { passphrase: password }, { groupingPolicy })
 );

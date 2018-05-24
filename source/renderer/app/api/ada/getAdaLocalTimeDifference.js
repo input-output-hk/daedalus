@@ -3,18 +3,24 @@ import type { AdaLocalTimeDifference } from './types';
 import { request } from './lib/request';
 
 export type GetAdaLocalTimeDifferenceParams = {
-  ca: string,
-  port: number,
+  apiParams: {
+    ca: string,
+    port: number,
+    clientCert: string,
+    clientKey: string,
+  },
 };
 
 export const getAdaLocalTimeDifference = (
-  { ca, port }: GetAdaLocalTimeDifferenceParams
+  { apiParams }: GetAdaLocalTimeDifferenceParams
 ): Promise<AdaLocalTimeDifference> => (
   request({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/settings/time/difference',
-    port,
-    ca,
+    port: apiParams.port,
+    ca: apiParams.ca,
+    cert: apiParams.clientCert,
+    key: apiParams.clientKey,
   })
 );

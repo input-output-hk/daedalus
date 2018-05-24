@@ -1,14 +1,10 @@
-{ stdenv, runCommand, writeText, writeScriptBin, fetchurl, fetchFromGitHub, openssl, electron,
+{ stdenv, runCommand, writeText, writeScriptBin, fetchurl, fetchFromGitHub, electron,
 coreutils, utillinux, procps, cluster,
 rawapp, daedalus-bridge, daedalus-installer,
 sandboxed ? false
 }:
 
 let
-  slimOpenssl = runCommand "openssl" {} ''
-    mkdir -pv $out/bin/
-    cp ${openssl}/bin/openssl $out/bin/
-  '';
   daedalus-config = runCommand "daedalus-config" {} ''
     mkdir -pv $out
     cd $out
@@ -51,11 +47,6 @@ let
     mkdir -p "''${DAEDALUS_DIR}/${cluster}/"{Logs/pub,Secrets}
     cd "''${DAEDALUS_DIR}/${cluster}/"
 
-    if [ ! -d tls ]; then
-      mkdir -p tls/{server,ca}
-      ${slimOpenssl}/bin/openssl req -x509 -newkey rsa:2048 -keyout tls/server/server.key -out tls/server/server.crt -days 3650 -nodes -subj "/CN=localhost"
-      cp tls/server/server.crt tls/ca/ca.crt
-    fi
     exec ${daedalus-bridge}/bin/cardano-launcher \
       --config ${if sandboxed then "/nix/var/nix/profiles/profile-${cluster}/etc/launcher-config.yaml" else "${daedalus-config}/launcher-config.yaml"}
   '';

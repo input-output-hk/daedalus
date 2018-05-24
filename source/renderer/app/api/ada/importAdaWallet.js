@@ -3,20 +3,26 @@ import type { AdaWallet } from './types';
 import { request } from './lib/request';
 
 export type ImportAdaWalletParams = {
-  ca: string,
-  port: number,
+  apiParams: {
+    ca: string,
+    port: number,
+    clientCert: string,
+    clientKey: string,
+  },
   filePath: string,
   walletPassword: ?string,
 };
 
 export const importAdaWallet = (
-  { ca, port, walletPassword, filePath }: ImportAdaWalletParams
+  { apiParams, walletPassword, filePath }: ImportAdaWalletParams
 ): Promise<AdaWallet> => (
   request({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/wallets/keys',
-    port,
-    ca,
+    port: apiParams.port,
+    ca: apiParams.ca,
+    cert: apiParams.clientCert,
+    key: apiParams.clientKey,
   }, { passphrase: walletPassword }, filePath)
 );

@@ -2,18 +2,24 @@
 import { request } from './lib/request';
 
 export type AdaTestResetParams = {
-  ca: string,
-  port: number,
+  apiParams: {
+    ca: string,
+    port: number,
+    clientCert: string,
+    clientKey: string,
+  },
 };
 
 export const adaTestReset = (
-  { ca, port }: AdaTestResetParams
+  { apiParams }: AdaTestResetParams
 ): Promise<void> => (
   request({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/test/reset',
-    port,
-    ca,
+    port: apiParams.port,
+    ca: apiParams.ca,
+    cert: apiParams.clientCert,
+    key: apiParams.clientKey,
   })
 );

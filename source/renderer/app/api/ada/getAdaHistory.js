@@ -3,8 +3,12 @@ import type { AdaTransactions } from './types';
 import { request } from './lib/request';
 
 export type GetAdaHistoryParams = {
-  ca: string,
-  port: number,
+  apiParams: {
+    ca: string,
+    port: number,
+    clientCert: string,
+    clientKey: string,
+  },
   walletId: ?string,
   accountId: ?string,
   address: ?string,
@@ -13,13 +17,15 @@ export type GetAdaHistoryParams = {
 };
 
 export const getAdaHistory = (
-  { ca, port, walletId, accountId, address, skip, limit }: GetAdaHistoryParams
+  { apiParams, walletId, accountId, address, skip, limit }: GetAdaHistoryParams
 ): Promise<AdaTransactions> => (
   request({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/txs/histories',
-    port,
-    ca,
+    port: apiParams.port,
+    ca: apiParams.ca,
+    cert: apiParams.clientCert,
+    key: apiParams.clientKey,
   }, { walletId, accountId, address, skip, limit })
 );

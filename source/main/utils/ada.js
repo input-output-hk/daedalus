@@ -8,7 +8,6 @@ import { UPDATE_API } from '../../common/ipc-api';
 const yamljs = require('yamljs');
 
 // debug, remove later
-const { dialog } = require('electron');
 
 let port = 8090;
 
@@ -24,6 +23,8 @@ export const setupCardano = function setupCardano(mainWindow) {
   function resendApiInfo(window) {
     window.send(UPDATE_API.REQUEST, {
       ca: global.ca,
+      clientKey: global.clientKey,
+      clientCert: global.clientCert,
       port
     });
   }
@@ -77,7 +78,9 @@ export const setupCardano = function setupCardano(mainWindow) {
       if (msg.Started) {
         log.info('IPC: backend started, CA updated');
         Object.assign(global, {
-          ca: readFileSync(launcherConfig.tlsPath + '/ca/ca.crt'),
+          ca: readFileSync(launcherConfig.tlsPath + '/client/ca.crt'),
+          clientKey: readFileSync(launcherConfig.tlsPath + '/client/client.key'),
+          clientCert: readFileSync(launcherConfig.tlsPath + '/client/client.pem'),
         });
       } else if (msg.ReplyPort) {
         port = msg.ReplyPort;
@@ -95,9 +98,7 @@ export const setupCardano = function setupCardano(mainWindow) {
     });
     subprocess.on('exit', (code, signal) => {
       // TODO: give a better UI when it fails and auto-retry a few times
-      //dialog.showErrorBox('Backend Cardano node crashed! Exiting!', JSON.stringify({ code, signal }));
       log.info('IPC:child exited', code, signal);
-      //app.quit();
     });
 
     subprocess.send({ QueryPort: [] });

@@ -89,8 +89,7 @@ makePostInstall = "#!/usr/bin/env bash\n" %
                   "\n" %
                   "src_pkg=\"$1\"\ndst_root=\"$2\"\ndst_mount=\"$3\"\nsys_root=\"$4\"\n" %
                   "./dockutil --add \"${dst_root}/" % s % "\" --allhomes\n" %
-                  "cd \"${dst_root}/" % s % "/Contents/MacOS/\"\n" %
-                  "bash ./build-certificates-unix.sh"
+                  "cd \"${dst_root}/" % s % "/Contents/MacOS/\"\n"
 
 makeScriptsDir :: Options -> DarwinConfig -> Managed T.Text
 makeScriptsDir Options{..} DarwinConfig{..} = case oBackend of
@@ -190,7 +189,6 @@ makeInstaller opts@Options{..} darwinConfig@DarwinConfig{..} componentRoot pkg =
       pkgargs =
            [ "--identifier"
            , dcPkgName
-           -- data/scripts/postinstall is responsible for running build-certificates
            , "--scripts", scriptsDir
            , "--component"
            , tt componentRoot

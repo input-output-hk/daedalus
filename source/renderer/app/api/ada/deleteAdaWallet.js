@@ -2,19 +2,25 @@
 import { request } from './lib/request';
 
 export type DeleteAdaWalletParams = {
-  ca: string,
-  port: number,
+  apiParams: {
+    ca: string,
+    port: number,
+    clientCert: string,
+    clientKey: string,
+  },
   walletId: string,
 };
 
 export const deleteAdaWallet = (
-  { ca, port, walletId }: DeleteAdaWalletParams
+  { apiParams, walletId }: DeleteAdaWalletParams
 ): Promise<[]> => (
   request({
     hostname: 'localhost',
     method: 'DELETE',
     path: `/api/wallets/${walletId}`,
-    port,
-    ca,
+    port: apiParams.port,
+    ca: apiParams.ca,
+    cert: apiParams.clientCert,
+    key: apiParams.clientKey,
   })
 );

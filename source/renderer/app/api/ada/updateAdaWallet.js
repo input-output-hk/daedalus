@@ -3,8 +3,12 @@ import type { AdaWallet } from './types';
 import { request } from './lib/request';
 
 export type UpdateAdaWalletParams = {
-  ca: string,
-  port: number,
+  apiParams: {
+    ca: string,
+    port: number,
+    clientCert: string,
+    clientKey: string,
+  },
   walletId: string,
   walletMeta: {
     cwName: string,
@@ -14,13 +18,15 @@ export type UpdateAdaWalletParams = {
 };
 
 export const updateAdaWallet = (
-  { ca, port, walletId, walletMeta }: UpdateAdaWalletParams
+  { apiParams, walletId, walletMeta }: UpdateAdaWalletParams
 ): Promise<AdaWallet> => (
   request({
     hostname: 'localhost',
     method: 'PUT',
     path: `/api/wallets/${walletId}`,
-    port,
-    ca,
+    port: apiParams.port,
+    ca: apiParams.ca,
+    cert: apiParams.clientCert,
+    key: apiParams.clientKey,
   }, {}, walletMeta)
 );

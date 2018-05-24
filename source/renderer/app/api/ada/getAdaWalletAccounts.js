@@ -4,19 +4,25 @@ import { request } from './lib/request';
 
 
 export type GetAdaWalletAccountsParams = {
-  ca: string,
-  port: number,
+  apiParams: {
+    ca: string,
+    port: number,
+    clientCert: string,
+    clientKey: string,
+  },
   walletId: string,
 };
 
 export const getAdaWalletAccounts = (
-  { ca, port, walletId }: GetAdaWalletAccountsParams
+  { apiParams, walletId }: GetAdaWalletAccountsParams
 ): Promise<AdaAccounts> => (
   request({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/accounts',
-    port,
-    ca,
+    port: apiParams.port,
+    ca: apiParams.ca,
+    cert: apiParams.clientCert,
+    key: apiParams.clientKey,
   }, { accountId: walletId })
 );

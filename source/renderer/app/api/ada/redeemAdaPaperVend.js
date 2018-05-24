@@ -3,8 +3,12 @@ import type { AdaTransaction } from './types';
 import { request } from './lib/request';
 
 export type RedeemAdaPaperVendParams = {
-  ca: string,
-  port: number,
+  apiParams: {
+    ca: string,
+    port: number,
+    clientCert: string,
+    clientKey: string,
+  },
   walletPassword: ?string,
   redeemPaperVendedData: {
     pvWalletId: string,
@@ -16,13 +20,15 @@ export type RedeemAdaPaperVendParams = {
 };
 
 export const redeemAdaPaperVend = (
-  { ca, port, walletPassword, redeemPaperVendedData }: RedeemAdaPaperVendParams
+  { apiParams, walletPassword, redeemPaperVendedData }: RedeemAdaPaperVendParams
 ): Promise<AdaTransaction> => (
   request({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/papervend/redemptions/ada',
-    port,
-    ca,
+    port: apiParams.port,
+    ca: apiParams.ca,
+    cert: apiParams.clientCert,
+    key: apiParams.clientKey,
   }, { passphrase: walletPassword }, redeemPaperVendedData)
 );

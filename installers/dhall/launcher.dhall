@@ -13,7 +13,7 @@
 , tlsPath        = os.nodeArgs.tlsPath
 , x509ToolPath   = os.x509ToolPath
 , nodeArgs =
-    [ "--tlsca",               "${os.nodeArgs.tlsPath}/ca/ca.crt"
+    [ "--tlsca",               "${os.nodeArgs.tlsPath}/server/ca.crt"
     , "--tlscert",             "${os.nodeArgs.tlsPath}/server/server.crt"
     , "--tlskey",              "${os.nodeArgs.tlsPath}/server/server.key"
     , "--update-server",       cluster.updateServer

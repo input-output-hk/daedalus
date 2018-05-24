@@ -15,7 +15,7 @@ import qualified Data.Text.IO as TIO
 import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recursive, Required, StartOptions, Target),
                                    HKEY (HKLM), Level (Highest), Page (Directory, InstFiles), abort,
                                    constant, constantStr, createDirectory, createShortcut, delete,
-                                   deleteRegKey, execWait, file, iff_, installDir, installDirRegKey,
+                                   deleteRegKey, file, iff_, installDir, installDirRegKey,
                                    name, nsis, onPagePre, outFile, page, readRegStr,
                                    requestExecutionLevel, rmdir, section, setOutPath, str,
                                    strLength, uninstall, unsafeInject, unsafeInjectGlobal,
@@ -24,14 +24,10 @@ import           Prelude ((!!))
 import qualified System.IO as IO
 import           Filesystem.Path (FilePath, (</>), (<.>))
 import           Filesystem.Path.CurrentOS (encodeString, fromText)
-import           Prelude                   ((!!))
-import           System.IO                 (writeFile)
-import           Turtle                    (ExitCode (..), Line, Shell, die,
-                                            echo, export, format, fp, inproc,
-                                            input, need, printf, proc, procs,
-                                            sed, shells, stdout, strict,
-                                            testfile, w, writeTextFile, (%))
-import           Turtle.Pattern            (dot, noneOf, plus, star, text)
+import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, stdout, input, export, sed, strict, format, printf, fp, w, (%), need, writeTextFile, die)
+import           Turtle.Pattern (text, plus, noneOf, star, dot)
+import           AppVeyor
+import qualified Codec.Archive.Zip    as Zip
 
 import           Config
 import           Types
@@ -171,8 +167,6 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                     , "Pop $0"
                     , "DetailPrint \"liteFirewall::AddRule: $0\""
                     ]
-
-                execWait "build-certificates-win64.bat \"$INSTDIR\" >\"%APPDATA%\\$InstallDir\\Logs\\build-certificates.log\" 2>&1"
 
                 createShortcut "$DESKTOP\\$InstallDir.lnk" daedalusShortcut
 

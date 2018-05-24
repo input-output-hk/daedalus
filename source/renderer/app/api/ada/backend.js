@@ -9,6 +9,8 @@ const params = {
 
 ipcRenderer.on(UPDATE_API.REQUEST, (event, paramsIn) => {
   params.ca = paramsIn.ca;
+  params.clientCert = paramsIn.clientCert;
+  params.clientKey = paramsIn.clientKey;
   params.port = paramsIn.port;
 });
 ipcRenderer.send(UPDATE_API.CLIENT_REQUEST);

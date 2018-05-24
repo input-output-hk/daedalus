@@ -2,20 +2,26 @@
 import { request } from './lib/request';
 
 export type ExportAdaBackupJSONParams = {
-  ca: string,
-  port: number,
+  apiParams: {
+    ca: string,
+    port: number,
+    clientCert: string,
+    clientKey: string,
+  },
   walletId: string,
   filePath: string,
 };
 
 export const exportAdaBackupJSON = (
-  { ca, port, walletId, filePath }: ExportAdaBackupJSONParams,
+  { apiParams, walletId, filePath }: ExportAdaBackupJSONParams,
 ): Promise<[]> => (
   request({
     hostname: 'localhost',
     method: 'POST',
     path: `/api/backup/export/${walletId}`,
-    port,
-    ca,
+    port: apiParams.port,
+    ca: apiParams.ca,
+    cert: apiParams.clientCert,
+    key: apiParams.clientKey,
   }, {}, filePath)
 );

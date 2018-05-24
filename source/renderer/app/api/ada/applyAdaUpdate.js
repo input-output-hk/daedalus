@@ -2,18 +2,24 @@
 import { request } from './lib/request';
 
 export type ApplyAdaUpdateParams = {
-  ca: string,
-  port: number,
+  apiParams: {
+    ca: string,
+    port: number,
+    clientCert: string,
+    clientKey: string,
+  },
 };
 
 export const applyAdaUpdate = (
-  { ca, port }: ApplyAdaUpdateParams
+  { apiParams }: ApplyAdaUpdateParams
 ): Promise<any> => (
   request({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/update/apply',
-    port,
-    ca,
+    port: apiParams.port,
+    ca: apiParams.ca,
+    cert: apiParams.clientCert,
+    key: apiParams.clientKey,
   })
 );

@@ -2,18 +2,24 @@
 import { request } from './lib/request';
 
 export type NextAdaUpdateParams = {
-  ca: string,
-  port: number,
+  apiParams: {
+    ca: string,
+    port: number,
+    clientCert: string,
+    clientKey: string,
+  },
 };
 
 export const nextAdaUpdate = (
-  { ca, port }: NextAdaUpdateParams
+  { apiParams }: NextAdaUpdateParams
 ): Promise<any> => (
   request({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/update',
-    port,
-    ca,
+    port: apiParams.port,
+    ca: apiParams.ca,
+    cert: apiParams.clientCert,
+    key: apiParams.clientKey,
   })
 );

@@ -16,8 +16,12 @@ export type NewAdaAccountRawBodyParams = {
 };
 
 export const newAdaAccount = (
-  ca: string,
-  port: number,
+  apiParams: {
+    ca: string,
+    port: number,
+    clientCert: string,
+    clientKey: string,
+  },
   pathParams: {},
   queryParams: NewAdaAccountQueryParams,
   rawBodyParams: NewAdaAccountRawBodyParams,
@@ -27,7 +31,9 @@ export const newAdaAccount = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/accounts',
-    port,
-    ca,
+    port: apiParams.port,
+    ca: apiParams.ca,
+    cert: apiParams.clientCert,
+    key: apiParams.clientKey,
   }, queryParams, accountInitData);
 };
