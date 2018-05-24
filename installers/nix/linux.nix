@@ -46,7 +46,7 @@ let
     test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
     export           CLUSTER=${cluster}
     export      DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
-    export   DAEDALUS_CONFIG=${if sandboxed then "/nix/var/nix/profiles/profile/etc" else daedalus-config}
+    export   DAEDALUS_CONFIG=${if sandboxed then "/nix/var/nix/profiles/profile-${cluster}/etc" else daedalus-config}
 
     mkdir -p "''${DAEDALUS_DIR}/${cluster}/"{Logs/pub,Secrets}
     cd "''${DAEDALUS_DIR}/${cluster}/"
@@ -57,7 +57,7 @@ let
       cp tls/server/server.crt tls/ca/ca.crt
     fi
     exec ${daedalus-bridge}/bin/cardano-launcher \
-      --config ${if sandboxed then "/nix/var/nix/profiles/profile/etc/launcher-config.yaml" else "${daedalus-config}/launcher-config.yaml"}
+      --config ${if sandboxed then "/nix/var/nix/profiles/profile-${cluster}/etc/launcher-config.yaml" else "${daedalus-config}/launcher-config.yaml"}
   '';
   wrappedConfig = runCommand "launcher-config" {} ''
     mkdir -pv $out/etc/
