@@ -20,8 +20,6 @@ storiesOf('WalletExportToFileDialog', module)
         walletName="Test Wallet"
         hasSpendingPassword={false}
         isSubmitting={false}
-        onClose={action('onClose')}
-        isSubmitting={false}
         onSubmit={action('onSubmit')}
         onClose={action('onClose')}
       />
