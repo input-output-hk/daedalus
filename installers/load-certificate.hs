@@ -2,10 +2,10 @@
 
 module Main where
 
-import Universum
+import Universum hiding (FilePath)
 import Options.Applicative
 import qualified System.IO as IO
-import Turtle (readline, need, lineToText, Line, ExitCode(..))
+import Turtle (readline, need, lineToText, Line, ExitCode(..), FilePath)
 import qualified Data.Text as T
 
 import MacInstaller hiding (main)

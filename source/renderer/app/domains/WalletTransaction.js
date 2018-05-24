@@ -2,7 +2,7 @@
 import { observable } from 'mobx';
 import BigNumber from 'bignumber.js';
 import type { AssuranceMode, AssuranceLevel } from '../types/transactionAssuranceTypes';
-import { assuranceLevels } from '../config/transactionAssuranceConfig';
+import { assuranceLevels } from '../types/transactionAssuranceTypes';
 
 export type TransactionState = 'pending' | 'failed' | 'ok';
 export type TrasactionAddresses = { from: Array<string>, to: Array<string> };

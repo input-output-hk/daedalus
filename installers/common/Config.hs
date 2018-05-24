@@ -9,12 +9,17 @@
 module Config
   ( checkAllConfigs
   , generateOSClusterConfigs
+  , forConfigValues
   , OS(..), Cluster(..), Config(..), Backend(..)
   , optReadLower, argReadLower
   , Options(..), optionsParser
   , Command(..), commandParser
+  , dfp
   -- Re-export Turtle:
   , options
+  , getInstallerConfig
+  , dhallTopExpr
+  , diagReadCaseInsensitive
   ) where
 
 import qualified Control.Exception                as Ex
@@ -25,23 +30,26 @@ import qualified Data.Map                         as Map
 import           Data.Maybe
 import           Data.Optional                       (Optional)
 import           Data.Semigroup                      ((<>))
-import           Data.Text                           (Text, pack, unpack, intercalate, toLower)
+import qualified Data.Text                        as T
+import qualified Data.Text.Lazy                   as LT
 import qualified Data.Yaml                        as YAML
 
 import qualified Dhall.JSON                       as Dhall
+import qualified Dhall                            as Dhall
 
-import           Filesystem.Path.CurrentOS           (FilePath, fromText, encodeString, encodeString)
+import           Filesystem.Path                     (FilePath, (</>))
+import           Filesystem.Path.CurrentOS           (fromText, encodeString)
+import qualified Filesystem.Path.Rules            as FP
 import qualified GHC.IO.Encoding                  as GHC
 
 import qualified System.IO                        as Sys
 import qualified System.Exit                      as Sys
-
-import           Turtle                              (optional, (<|>), (</>), format, (%), s)
+import           Turtle                              (optional, (<|>), format, (%), s, Format, makeFormat)
 import           Turtle.Options
 
-import           Prelude                      hiding (FilePath, unlines, writeFile)
+import           Universum                    hiding (FilePath, unlines, writeFile)
+import           GHC.Base                            (id)
 import           Types
-import           Debug.Trace
 
 
 
@@ -54,16 +62,16 @@ import           Debug.Trace
 -- λ> fmap ((fmap toLower) . show) x
 -- ["bar","baz"]
 diagReadCaseInsensitive :: (Bounded a, Enum a, Read a, Show a) => String -> Maybe a
-diagReadCaseInsensitive str = diagRead $ toLower $ pack str
+diagReadCaseInsensitive str = diagRead $ T.toLower $ T.pack str
   where mapping    = Map.fromList [ (lshowText x, x) | x <- enumFromTo minBound maxBound ]
         diagRead x = Just $ flip fromMaybe (Map.lookup x mapping)
-                     (errorT $ format ("Couldn't parse '"%s%"' as one of: "%s)
-                               (pack str) (intercalate ", " $ Map.keys mapping))
+                     (error $ format ("Couldn't parse '"%s%"' as one of: "%s)
+                              (T.pack str) (T.intercalate ", " $ Map.keys mapping))
 
 optReadLower :: (Bounded a, Enum a, Read a, Show a) => ArgName -> ShortName -> Optional HelpMessage -> Parser a
-optReadLower = opt (diagReadCaseInsensitive . unpack)
+optReadLower = opt (diagReadCaseInsensitive . T.unpack)
 argReadLower :: (Bounded a, Enum a, Read a, Show a) => ArgName -> Optional HelpMessage -> Parser a
-argReadLower = arg (diagReadCaseInsensitive . unpack)
+argReadLower = arg (diagReadCaseInsensitive . T.unpack)
 
 data Backend
   = Cardano { cardanoDaedalusBridge :: FilePath }
@@ -79,6 +87,7 @@ data Command
     { cfDhallRoot   :: Text
     }
   | GenInstaller
+  | Appveyor
   deriving (Eq, Show)
 
 data Options = Options
@@ -87,11 +96,8 @@ data Options = Options
   , oOS             :: OS
   , oCluster        :: Cluster
   , oAppName        :: AppName
-  , oDaedalusVer    :: Version
-  , oOutput         :: FilePath
-  , oPullReq        :: Maybe PullReq
+  , oOutputDir      :: FilePath
   , oTestInstaller  :: TestInstaller
-  , oCI             :: CI
   } deriving Show
 
 commandParser :: Parser Command
@@ -106,6 +112,7 @@ commandParser = (fromMaybe GenInstaller <$>) . optional $
       <$> argText "DIR" "Directory containing Dhall config files")
   , ("installer",  "Build an installer",
       pure GenInstaller)
+  , ("appveyor",   "do an appveroy build", pure Appveyor)
   ]
 
 optionsParser :: OS -> Parser Options
@@ -119,15 +126,9 @@ optionsParser detectedOS = Options
                    optReadLower "cluster"             'c' "Cluster the resulting installer will target:  mainnet or staging"))
   <*> (fromMaybe "daedalus" <$> (optional $
       (AppName      <$> optText "appname"             'n' "Application name:  daedalus or..")))
-  <*> (fromMaybe "dev"   <$> (optional $
-      (Version      <$> optText "daedalus-version"    'v' "Daedalus version string")))
-  <*> (fromMaybe (error "--output not specified for 'installer' subcommand") . (fromText <$>)
-       <$> (optional $  optText "output"              'o' "Installer output file"))
-  <*> (optional   $
-      (PullReq      <$> optText "pull-request"        'r' "Pull request #"))
+  <*>                   optPath "out-dir"             'o' "Installer output directory"
   <*> (testInstaller
                     <$> switch  "test-installer"      't' "Test installers after building")
-  <*> pure Buildkite -- NOTE: this is filled in by auto-detection
 
 backendOptionParser :: Parser Backend
 backendOptionParser = cardano <|> mantis <|> pure (Cardano "")
@@ -138,18 +139,30 @@ backendOptionParser = cardano <|> mantis <|> pure (Cardano "")
 
 
 
+-- | Render a FilePath with POSIX-style forward slashes, which is the
+-- Dhall syntax.
+dfp :: Format r (FilePath -> r)
+dfp = makeFormat (\fpath -> either id id (FP.toText FP.posix fpath))
+
 dhallTopExpr :: Text -> Config -> OS -> Cluster -> Text
 dhallTopExpr dhallRoot cfg os cluster
   | Launcher <- cfg = format (s%" "%s%" ("%s%" "%s%" )") (comp Launcher) (comp cluster) (comp os) (comp cluster)
   | Topology <- cfg = format (s%" "%s)                   (comp Topology) (comp cluster)
   where comp x = dhallRoot <>"/"<> lshowText x <>".dhall"
 
+getInstallerConfig :: Text -> OS -> Cluster -> IO InstallerConfig
+getInstallerConfig dhallRoot os cluster = do
+    let
+        topexpr :: Dhall.Text
+        topexpr = LT.fromStrict $ format (s%" ("%s%" "%s%")") (dhallRoot <> "/installer.dhall") (comp os) (comp cluster)
+        comp x = dhallRoot <>"/"<> lshowText x <>".dhall"
+    Dhall.input Dhall.auto topexpr
+
 forConfigValues :: Text -> OS -> Cluster -> (Config -> YAML.Value -> IO a) -> IO ()
 forConfigValues dhallRoot os cluster action = do
   sequence_ [ let topExpr = dhallTopExpr dhallRoot cfg os cluster
               in action cfg =<<
-                 (handle $ Dhall.codeToValue (BS8.pack $ unpack topExpr) $
-                  (trace (unpack $ "Dhall top-level expression: " <> topExpr) topExpr))
+                 (handle $ Dhall.codeToValue (BS8.pack $ T.unpack topExpr) topExpr)
             | cfg     <- enumFromTo minBound maxBound ]
 
 checkAllConfigs :: Text -> IO ()

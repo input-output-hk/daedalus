@@ -16,8 +16,14 @@ import Dialog from '../widgets/Dialog';
 import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../utils/validations';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
-import { RECOVERY_PHRASE_WORD_COUNT } from '../../config/paperWalletsConfig';
+import { PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT, WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../config/cryptoConfig';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import styles from './WalletRestoreDialog.scss';
+
+const RESTORE_TYPES = {
+  REGULAR: 'regular',
+  CERTIFICATE: 'certificate'
+};
 
 const messages = defineMessages({
   title: {
@@ -134,7 +140,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
   state = {
     createPassword: true,
-    activeChoice: 'regular', // regular | certificate
+    activeChoice: RESTORE_TYPES.REGULAR, // regular | certificate
   };
 
   recoveryPhraseAutocomplete: Autocomplete;
@@ -158,7 +164,9 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           const { intl } = this.context;
           const enteredWords = field.value;
           const wordCount = enteredWords.length;
-          const expectedWordCount = this.isRegular() ? 12 : RECOVERY_PHRASE_WORD_COUNT;
+          const expectedWordCount = (this.isRegular() ?
+            WALLET_RECOVERY_PHRASE_WORD_COUNT : PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT
+          );
           const value = join(enteredWords, ' ');
           // Regular mnemonics have 12 and paper wallet recovery needs 27 words
           const isPhraseComplete = wordCount === expectedWordCount;
@@ -211,7 +219,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   }, {
     options: {
       validateOnChange: true,
-      validationDebounceWait: 250,
+      validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
     },
   });
 
@@ -324,13 +332,13 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           <div className={styles.restoreTypeChoice}>
             <button
               className={regularTabClasses}
-              onClick={this.onSelectChoice.bind(this, 'regular')}
+              onClick={this.onSelectChoice.bind(this, RESTORE_TYPES.REGULAR)}
             >
               {intl.formatMessage(messages.recoveryPhraseTabTitle)}
             </button>
             <button
               className={certificateTabClasses}
-              onClick={this.onSelectChoice.bind(this, 'certificate')}
+              onClick={this.onSelectChoice.bind(this, RESTORE_TYPES.CERTIFICATE)}
             >
               {intl.formatMessage(messages.certificateTabTitle)}
             </button>
@@ -356,7 +364,9 @@ export default class WalletRestoreDialog extends Component<Props, State> {
             : intl.formatMessage(messages.shieldedRecoveryPhraseInputHint)
           }
           options={suggestedMnemonics}
-          maxSelections={this.isCertificate() ? RECOVERY_PHRASE_WORD_COUNT : 12}
+          maxSelections={(this.isCertificate() ?
+            PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT : WALLET_RECOVERY_PHRASE_WORD_COUNT
+          )}
           error={recoveryPhraseField.error}
           maxVisibleOptions={5}
           noResultsMessage={intl.formatMessage(messages.recoveryPhraseNoResults)}
@@ -402,11 +412,11 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   }
 
   isRegular() {
-    return this.state.activeChoice === 'regular';
+    return this.state.activeChoice === RESTORE_TYPES.REGULAR;
   }
 
   isCertificate() {
-    return this.state.activeChoice === 'certificate';
+    return this.state.activeChoice === RESTORE_TYPES.CERTIFICATE;
   }
 
   onSelectChoice = (choice: string) => {

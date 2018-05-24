@@ -43,8 +43,7 @@ storiesOf('PaperWallets', module)
   .add('Securing the password', () => (
     <div>
       <SecuringPasswordDialog
-        additionalMnemonics={wordlist}
-        walletCertificatePassword="flugenheimer"
+        additionalMnemonics="flugenheimer"
         onContinue={action('onContinue')}
         onClose={action('onClose')}
       />

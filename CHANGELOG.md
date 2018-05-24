@@ -1,6 +1,29 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+### Fixes
+
+- Fixes huge build file sizes ([PR 886](https://github.com/input-output-hk/daedalus/pull/886))
+- Fixed text wrapping within wallet navigation tabs ([PR 911](https://github.com/input-output-hk/daedalus/pull/911))
+- Disabled dragging of static UI images elements ([PR 910](https://github.com/input-output-hk/daedalus/pull/910))
+- Fixed storybook config issues ([PR 928](https://github.com/input-output-hk/daedalus/pull/928))
+- Fixed broken translation on create wallet dialog ([PR 930](https://github.com/input-output-hk/daedalus/pull/930))
+
+### Chores
+
+- Added PR template with PR review checlist ([PR 882](https://github.com/input-output-hk/daedalus/pull/882))
+- Added acceptance tests for displaying transactions in various contexts ([PR 870](https://github.com/input-output-hk/daedalus/pull/870))
+- Refactored various magic numbers & strings into constants ([PR 881](https://github.com/input-output-hk/daedalus/pull/881))
+- Fixed wallet restoration and import fragile acceptance tests steps definitions ([PR 885](https://github.com/input-output-hk/daedalus/pull/885))
+- Improved request body length calculation ([PR 892](https://github.com/input-output-hk/daedalus/pull/892))
+- Added "Author" and "Status" information to all Daedalus README files ([PR 901](https://github.com/input-output-hk/daedalus/pull/901))
+- Improves re-build times with caching ([PR 915](https://github.com/input-output-hk/daedalus/pull/915))
+- Log expected errors as debug messages only ([PR 916](https://github.com/input-output-hk/daedalus/pull/916))
+
 ## 0.10.0
 =======
 
