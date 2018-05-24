@@ -94,9 +94,10 @@ export const setupCardano = function setupCardano(mainWindow) {
       log.info('IPC:error:', err);
     });
     subprocess.on('exit', (code, signal) => {
-      dialog.showErrorBox('Backend Cardano node crashed! Exiting!', JSON.stringify({ code, signal }));
+      // TODO: give a better UI when it fails and auto-retry a few times
+      //dialog.showErrorBox('Backend Cardano node crashed! Exiting!', JSON.stringify({ code, signal }));
       log.info('IPC:child exited', code, signal);
-      app.quit();
+      //app.quit();
     });
 
     subprocess.send({ QueryPort: [] });
