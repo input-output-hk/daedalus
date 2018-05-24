@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { storiesOf, action } from '@storybook/react';
 import StoryDecorator from './support/StoryDecorator';
@@ -17,6 +18,8 @@ storiesOf('SidebarWalletsMenu', module)
     <SidebarWalletsMenu
       wallets={[]}
       onAddWallet={action('addWallet')}
+      onWalletItemClick={() => {}}
+      isActiveWallet={() => false}
       visible
     />
   ))
@@ -24,10 +27,10 @@ storiesOf('SidebarWalletsMenu', module)
   .add('with items', () => (
     <SidebarWalletsMenu
       wallets={[
-        { id: '1', title: 'Main wallet', info: 'ADA' },
-        { id: '2', title: 'House rent', info: '274912874,35 ADA' },
-        { id: '3', title: 'Mining', info: '0,0004924712 BTC' },
-        { id: '4', title: 'Shopping wallet', info: 'ADA' },
+        { id: '1', title: 'Main wallet', info: 'ADA', isConnected: false, isRestoreActive: false, restoreProgress: 0 },
+        { id: '2', title: 'House rent', info: '274912874,35 ADA', isConnected: false, isRestoreActive: false, restoreProgress: 0 },
+        { id: '3', title: 'Mining', info: '0,0004924712 BTC', isConnected: false, isRestoreActive: false, restoreProgress: 0 },
+        { id: '4', title: 'Shopping wallet', info: 'ADA', isConnected: false, isRestoreActive: false, restoreProgress: 0 },
       ]}
       isActiveWallet={(id) => id === '2'}
       onWalletItemClick={action('walletItemClick')}
