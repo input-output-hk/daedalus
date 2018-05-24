@@ -2,6 +2,7 @@
 import React from 'react';
 import { storiesOf, action } from '@storybook/react';
 import StoryDecorator from './support/StoryDecorator';
+import wordlist from 'bip39/wordlists/english';
 import AdaRedemptionForm from '../../source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm';
 import AdaRedemptionChoices from '../../source/renderer/app/components/wallet/ada-redemption/AdaRedemptionChoices';
 import { ADA_REDEMPTION_TYPES } from "../../source/renderer/app/types/redemptionTypes"
@@ -45,7 +46,7 @@ storiesOf('AdaRedemptionForm', module)
           { value: 'wallet-2', label: 'Second Wallet' },
           { value: 'wallet-3', label: 'Third Wallet' },
         ]}
-        suggestedMnemonics={[]}
+        suggestedMnemonics={wordlist}
         showPassPhraseWidget={false}
         isCertificateInvalid={false}
         showInputsForDecryptingForceVendedCertificate={false}
@@ -82,7 +83,7 @@ storiesOf('AdaRedemptionForm', module)
           { value: 'wallet-2', label: 'Second Wallet' },
           { value: 'wallet-3', label: 'Third Wallet' },
         ]}
-        suggestedMnemonics={[]}
+        suggestedMnemonics={wordlist}
         showPassPhraseWidget={false}
         isCertificateInvalid={false}
         showInputsForDecryptingForceVendedCertificate={false}
@@ -119,7 +120,7 @@ storiesOf('AdaRedemptionForm', module)
           { value: 'wallet-2', label: 'Second Wallet' },
           { value: 'wallet-3', label: 'Third Wallet' },
         ]}
-        suggestedMnemonics={[]}
+        suggestedMnemonics={wordlist}
         showPassPhraseWidget={false}
         isCertificateInvalid={false}
         showInputsForDecryptingForceVendedCertificate={false}
