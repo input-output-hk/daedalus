@@ -7,23 +7,22 @@
   "scripts": {
     "build": "gulp build",
     "start": "gulp start",
-    "start-watch": "gulp start-watch",
+    "start:watch": "gulp start:watch",
     "dev": "gulp dev",
     "test": "gulp test",
-    "test-watch": "gulp test-watch",
+    "test:watch": "gulp test:watch",
     "debug": "gulp debug",
     "package": "gulp build && cross-env NODE_ENV=production node -r babel-register -r babel-polyfill scripts/package.js",
-    "package-all": "npm run package -- --all",
+    "package:all": "npm run package -- --all",
     "postinstall": "node node_modules/fbjs-scripts/node/check-dev-engines.js package.json",
     "cleanup": "mop -v",
     "cucumber": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 cucumber-js --compiler js:babel-register --format 'progress-bar' --format-options '{\"snippetInterface\": \"synchronous\"}' --tags 'not @skip'",
-    "cucumber-watch": "npm run cucumber -- --tags @watch",
+    "cucumber:watch": "npm run cucumber -- --tags @watch",
     "lint": "eslint --format=node_modules/eslint-formatter-pretty source features storybook *.js",
-    "flow-test": "flow; test $? -eq 0 -o $? -eq 2",
-    "manage-translations": "gulp purge-translations && gulp clear-cache && gulp build && node ./translations/translation-runner.js",
+    "flow:test": "flow; test $? -eq 0 -o $? -eq 2",
+    "manage:translations": "gulp purge-translations && gulp clear-cache && gulp build && node ./translations/translation-runner.js",
     "storybook": "start-storybook -p 6006 -c storybook",
-    "build-storybook": "build-storybook",
-    "clear-cache": "gulp clear-cache"
+    "clear:cache": "gulp clear-cache"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
