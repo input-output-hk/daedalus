@@ -4,11 +4,8 @@
   :global {
     .SimpleSwitch_switch {
 
-      &.SimpleSwitch_checked,
-      &:not(.SimpleSwitch_checked) {
-        width: 25px !important;
-        height: 12px !important;
-      }
+      width: 25px !important;
+      height: 12px !important;
 
       &.SimpleSwitch_checked {
         span {

@@ -164,13 +164,6 @@
   h2 {
     font-family: var(--font-medium);
 
-    .hideUsed {
-      width: 118px;
-      float: right;
-      height: 20px;
-      text-align: right;
-    }
-
     button {
       color: var(--theme-label-button-color);
       cursor: pointer;
@@ -183,6 +176,12 @@
       &:hover {
         text-decoration: underline;
       }
+    }
+
+    .hideUsed {
+      float: right;
+      height: 20px;
+      text-align: right;
     }
   }
 
