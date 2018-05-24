@@ -82,14 +82,13 @@ main opts@Options{..} = do
     echo $ "--test-installer passed, will test the installer for installability"
     procs "sudo" ["installer", "-dumplog", "-verbose", "-target", "/", "-pkg", tt opkg] empty
 
-makePostInstall :: Format a (Text -> Text -> a)
+makePostInstall :: Format a (Text -> a)
 makePostInstall = "#!/usr/bin/env bash\n" %
                   "#\n" %
                   "# See /var/log/install.log to debug this\n" %
                   "\n" %
                   "src_pkg=\"$1\"\ndst_root=\"$2\"\ndst_mount=\"$3\"\nsys_root=\"$4\"\n" %
-                  "./dockutil --add \"${dst_root}/" % s % "\" --allhomes\n" %
-                  "cd \"${dst_root}/" % s % "/Contents/MacOS/\"\n"
+                  "./dockutil --add \"${dst_root}/" % s % "\" --allhomes\n"
 
 makeScriptsDir :: Options -> DarwinConfig -> Managed T.Text
 makeScriptsDir Options{..} DarwinConfig{..} = case oBackend of
@@ -97,7 +96,7 @@ makeScriptsDir Options{..} DarwinConfig{..} = case oBackend of
     tempdir <- mktempdir "/tmp" "scripts"
     liftIO $ do
       cp "data/scripts/dockutil" (tempdir </> "dockutil")
-      writeTextFile (tempdir </> "postinstall") (format makePostInstall dcAppNameApp dcAppNameApp)
+      writeTextFile (tempdir </> "postinstall") (format makePostInstall dcAppNameApp)
       run "chmod" ["+x", tt (tempdir </> "postinstall")]
     pure $ tt tempdir
   Mantis    -> pure "[DEVOPS-533]"
