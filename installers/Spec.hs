@@ -5,23 +5,26 @@ import Universum hiding (FilePath, fold)
 import Test.Hspec
 import qualified Data.Text as T
 import Filesystem.Path (FilePath, (</>))
-import Filesystem.Path.CurrentOS (fromText, encodeString, decodeString)
+import Filesystem.Path.CurrentOS (fromText, decodeString)
 import System.IO.Temp (getCanonicalTemporaryDirectory)
 import Turtle (mktempdir, inproc, strict, ls, fold, writeTextFile, mktree, mkdir, cptree, cp, format)
 import Control.Monad.Managed (MonadManaged, runManaged)
 import Data.Aeson.Types (Value)
 import Data.Aeson.Lens
 import qualified Control.Foldl as Fold
+import           System.Directory
 
 import Config
 import Types
 import qualified MacInstaller as Mac
+import Util
 
 main :: IO ()
 main = hspec $ do
   describe "Utility functions" utilSpec
   describe "MacInstaller build" macBuildSpec
   describe "Config generation" configSpec
+  describe "recursive directory deletion" deleteSpec
 
 macBuildSpec :: Spec
 macBuildSpec = do
@@ -70,6 +73,7 @@ makeTestInstallersDir = do
   forM ["ca.conf", "server.conf", "client.conf", "build-certificates-unix.sh"] $ \f ->
     cp f (installersDir </> f)
   mktree (installersDir </> "data/scripts")
+  liftIO $ writeTextFile (installersDir </> "data/scripts/dockutil") "fake dock util"
   pure installersDir
 
 -- | Run a special command to get the cardano-sl.daedalus-bridge path.
@@ -83,6 +87,25 @@ configSpec = do
       dhallTest Win64 Staging Launcher "./dhall" $ \val -> do
         val^.key "reportServer"._String `shouldSatisfy` (T.isInfixOf "iohkdev.io")
         val^.key "configuration".key "key"._String `shouldBe` "mainnet_dryrun_wallet_win64"
+
+deleteSpec :: Spec
+deleteSpec = do
+  describe "deleting a path over 256 chars long" $ do
+    it "it" $ do
+      let
+        name = replicate 16 'a'
+        goMake :: Int -> IO ()
+        goMake 0 = pure ()
+        goMake n = do
+          createDirectory name
+          withCurrentDirectory name (goMake $ n-1)
+      whenM (doesDirectoryExist name) $
+        windowsRemoveDirectoryRecursive name
+      goMake 32
+      let
+        file = (intercalate "/" (replicate 32 name)) <> "/filename"
+      writeFile file "body"
+      windowsRemoveDirectoryRecursive name
 
 type Yuck = Value -> IO ()
 

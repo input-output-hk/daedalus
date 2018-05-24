@@ -1828,13 +1828,13 @@
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions",
         "start": {
           "column": 30,
-          "line": 15
+          "line": 16
         }
       },
       {
@@ -1842,13 +1842,13 @@
         "description": "Label for button \"Continue\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog..button.labelContinue",
         "start": {
           "column": 23,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -1856,13 +1856,13 @@
         "description": "Label for the checkbox on wallet backup dialog describing that nobody should be watching when recovery phrase is shown",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog.js",
         "id": "wallet.backup.privacy.warning.dialog.checkbox.label.nobodyWatching",
         "start": {
           "column": 22,
-          "line": 27
+          "line": 28
         }
       }
     ],
@@ -5378,13 +5378,13 @@
         "description": "Paper wallet pdf \"Wallet address\" label.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/utils/paperWalletPdfGenerator.js",
         "id": "paper.wallet.pdf.walletAddress.label",
         "start": {
           "column": 22,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -5392,13 +5392,13 @@
         "description": "Paper wallet pdf \"Paper wallet recovery phrase\" label.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/utils/paperWalletPdfGenerator.js",
         "id": "paper.wallet.pdf.recoveryPhrase.label",
         "start": {
           "column": 23,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -5406,13 +5406,13 @@
         "description": "Paper wallet pdf \"Password\" label.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/utils/paperWalletPdfGenerator.js",
         "id": "paper.wallet.pdf.password.label",
         "start": {
           "column": 17,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -5420,13 +5420,13 @@
         "description": "PDF title",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/utils/paperWalletPdfGenerator.js",
         "id": "paper.wallet.pdf.info.title",
         "start": {
           "column": 13,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -5434,13 +5434,13 @@
         "description": "PDF author",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/utils/paperWalletPdfGenerator.js",
         "id": "paper.wallet.pdf.info.author",
         "start": {
           "column": 14,
-          "line": 34
+          "line": 35
         }
       }
     ],
