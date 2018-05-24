@@ -11,7 +11,6 @@ import           Control.Monad (unless)
 import qualified Data.List as L
 import           Data.Text (Text, unpack)
 import qualified Data.Text as T
-import qualified Data.Text.IO as TIO
 import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recursive, Required, StartOptions, Target),
                                    HKEY (HKLM), Level (Highest), Page (Directory, InstFiles), abort,
                                    constant, constantStr, createDirectory, createShortcut, delete,
@@ -22,7 +21,7 @@ import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recurs
                                    writeRegDWORD, writeRegStr, (%/=), fileExists)
 import           Prelude ((!!))
 import qualified System.IO as IO
-import           Filesystem.Path (FilePath, (</>), (<.>))
+import           Filesystem.Path (FilePath, (</>))
 import           Filesystem.Path.CurrentOS (encodeString, fromText)
 import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, stdout, input, export, sed, strict, format, printf, fp, w, (%), need, writeTextFile, die)
 import           Turtle.Pattern (text, plus, noneOf, star, dot)
@@ -101,10 +100,6 @@ parseVersion ver =
     case T.split (== '.') (toText ver) of
         v@[_, _, _, _] -> map toString v
         _              -> ["0", "0", "0", "0"]
-
-fileSubstString :: Text -> Text -> FilePath -> FilePath -> IO ()
-fileSubstString from to src dst =
-    TIO.writeFile (encodeString dst) =<< T.replace from to <$> TIO.readFile (encodeString src)
 
 writeInstallerNSIS :: FilePath -> Version -> InstallerConfig -> Cluster -> IO ()
 writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = do

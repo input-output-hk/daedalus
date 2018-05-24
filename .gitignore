@@ -74,3 +74,6 @@ cardano-node
 configuration.yaml
 mainnet-genesis-dryrun-with-stakeholders.json
 wallet-topology.yaml
+
+# nix result links
+result*
