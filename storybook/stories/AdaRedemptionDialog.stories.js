@@ -44,6 +44,19 @@ storiesOf('AdaRedemptionForm', module)
           { value: 'wallet-2', label: 'Second Wallet' },
           { value: 'wallet-3', label: 'Third Wallet' },
         ]}
+        suggestedMnemonics={[]}
+        showPassPhraseWidget={false}
+        isCertificateInvalid={false}
+        showInputsForDecryptingForceVendedCertificate={false}
+        redemptionCodeValidator={() => {}}
+        postVendRedemptionCodeValidator={() => {}}
+        onRemoveCertificate={() => {}}
+        onEmailChanged={() => {}}
+        onAdaPasscodeChanged={() => {}}
+        onAdaAmountChanged={() => {}}
+        onAcceptRedemptionDisclaimer={() => {}}
+        mnemonicValidator={() => {}}
+        error={null}
       />
     </div>
   ))
@@ -68,6 +81,19 @@ storiesOf('AdaRedemptionForm', module)
           { value: 'wallet-2', label: 'Second Wallet' },
           { value: 'wallet-3', label: 'Third Wallet' },
         ]}
+        suggestedMnemonics={[]}
+        showPassPhraseWidget={false}
+        isCertificateInvalid={false}
+        showInputsForDecryptingForceVendedCertificate={false}
+        redemptionCodeValidator={() => {}}
+        postVendRedemptionCodeValidator={() => {}}
+        onRemoveCertificate={() => {}}
+        onEmailChanged={() => {}}
+        onAdaPasscodeChanged={() => {}}
+        onAdaAmountChanged={() => {}}
+        onAcceptRedemptionDisclaimer={() => {}}
+        mnemonicValidator={() => {}}
+        error={null}
       />
     </div>
   ))
@@ -92,6 +118,19 @@ storiesOf('AdaRedemptionForm', module)
           { value: 'wallet-2', label: 'Second Wallet' },
           { value: 'wallet-3', label: 'Third Wallet' },
         ]}
+        suggestedMnemonics={[]}
+        showPassPhraseWidget={false}
+        isCertificateInvalid={false}
+        showInputsForDecryptingForceVendedCertificate={false}
+        redemptionCodeValidator={() => {}}
+        postVendRedemptionCodeValidator={() => {}}
+        onRemoveCertificate={() => {}}
+        onEmailChanged={() => {}}
+        onAdaPasscodeChanged={() => {}}
+        onAdaAmountChanged={() => {}}
+        onAcceptRedemptionDisclaimer={() => {}}
+        mnemonicValidator={() => {}}
+        error={null}
       />
     </div>
   ));

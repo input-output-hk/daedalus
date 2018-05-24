@@ -23,6 +23,7 @@ storiesOf('AddWallet', module)
         onCreate={() => {}}
         onImportFile={() => {}}
         onRestore={() => {}}
+        isRestoreActive={false}
       />
     </div>
   ))
@@ -35,6 +36,8 @@ storiesOf('AddWallet', module)
         isSubmitting={false}
         onSubmit={action('onSubmit')}
         onCancel={action('onClose')}
+        suggestedMnemonics={['']}
+        onChoiceChange={() => {}}
       />
     </div>
   ))
@@ -45,6 +48,7 @@ storiesOf('AddWallet', module)
         isSubmitting={false}
         onSubmit={action('onSubmit')}
         onClose={action('onClose')}
+        error={null}
       />
     </div>
   ));

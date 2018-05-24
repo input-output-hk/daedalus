@@ -18,15 +18,25 @@ storiesOf('WalletExportToFileDialog', module)
     <div>
       <WalletExportToFileDialog
         walletName="Test Wallet"
+        hasSpendingPassword={false}
+        isSubmitting={false}
         onClose={action('onClose')}
         isSubmitting={false}
+        onSubmit={action('onSubmit')}
+        onClose={action('onClose')}
       />
     </div>
   ))
 
   .add('submitting', () => (
     <div>
-      <WalletExportToFileDialog walletName="Test Wallet" isSubmitting />
+      <WalletExportToFileDialog
+        walletName="Test Wallet"
+        hasSpendingPassword={false}
+        isSubmitting
+        onSubmit={action('onSubmit')}
+        onClose={action('onClose')}
+      />
     </div>
   ))
 
@@ -35,9 +45,9 @@ storiesOf('WalletExportToFileDialog', module)
       <WalletExportToFileDialog
         walletName="Test Wallet"
         hasSpendingPassword
+        isSubmitting={false}
         onSubmit={action('onSubmit')}
         onClose={action('onClose')}
-        isSubmitting={false}
       />
     </div>
   ));

@@ -21,6 +21,12 @@ storiesOf('DeleteWalletConfirmationDialog', module)
         hasWalletFunds={false}
         countdownFn={() => 10}
         isBackupNoticeAccepted={false}
+        confirmationValue="babushka"
+        onAcceptBackupNotice={() => {}}
+        onContinue={() => {}}
+        onCancel={() => {}}
+        onConfirmationValueChange={() => {}}
+        isSubmitting={false}
       />
     </div>
   ))
@@ -31,6 +37,12 @@ storiesOf('DeleteWalletConfirmationDialog', module)
         hasWalletFunds={false}
         countdownFn={() => 0}
         isBackupNoticeAccepted={false}
+        confirmationValue="babushka"
+        onAcceptBackupNotice={() => {}}
+        onContinue={() => {}}
+        onCancel={() => {}}
+        onConfirmationValueChange={() => {}}
+        isSubmitting={false}
       />
     </div>
   ))
@@ -41,6 +53,12 @@ storiesOf('DeleteWalletConfirmationDialog', module)
         hasWalletFunds={false}
         countdownFn={() => 0}
         isBackupNoticeAccepted
+        confirmationValue="babushka"
+        onAcceptBackupNotice={() => {}}
+        onContinue={() => {}}
+        onCancel={() => {}}
+        onConfirmationValueChange={() => {}}
+        isSubmitting={false}
       />
     </div>
   ))
@@ -51,6 +69,12 @@ storiesOf('DeleteWalletConfirmationDialog', module)
         hasWalletFunds
         countdownFn={() => 10}
         isBackupNoticeAccepted={false}
+        confirmationValue="babushka"
+        onAcceptBackupNotice={() => {}}
+        onContinue={() => {}}
+        onCancel={() => {}}
+        onConfirmationValueChange={() => {}}
+        isSubmitting={false}
       />
     </div>
   ))
@@ -61,6 +85,12 @@ storiesOf('DeleteWalletConfirmationDialog', module)
         hasWalletFunds
         countdownFn={() => 0}
         isBackupNoticeAccepted
+        confirmationValue="babushka"
+        onAcceptBackupNotice={() => {}}
+        onContinue={() => {}}
+        onCancel={() => {}}
+        onConfirmationValueChange={() => {}}
+        isSubmitting={false}
       />
     </div>
   ))
@@ -72,7 +102,11 @@ storiesOf('DeleteWalletConfirmationDialog', module)
         countdownFn={() => 0}
         isBackupNoticeAccepted
         confirmationValue="babushka"
+        onAcceptBackupNotice={() => {}}
+        onContinue={() => {}}
+        onCancel={() => {}}
         onConfirmationValueChange={action('onRecoveryWordChange')}
+        isSubmitting={false}
       />
     </div>
   ));

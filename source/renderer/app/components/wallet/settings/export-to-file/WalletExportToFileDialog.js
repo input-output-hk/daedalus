@@ -57,7 +57,7 @@ export type OnSubmitParams = {
 type Props = {
   walletName: string,
   hasSpendingPassword: boolean,
-  isSubmitting: false,
+  isSubmitting: boolean,
   onSubmit: (OnSubmitParams) => void,
   onClose: () => void,
   error?: ?LocalizableError,
