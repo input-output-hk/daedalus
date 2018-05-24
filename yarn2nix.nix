@@ -8,6 +8,7 @@ let
   networkMap = {
     mainnet = "mainnet";
     staging = "testnet";
+    testnet = "testnet";
   };
   dotGitExists = builtins.pathExists ./.git;
   isNix2 = 0 <= builtins.compareVersions builtins.nixVersion "1.12";
