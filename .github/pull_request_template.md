@@ -25,7 +25,7 @@ This PR CHANGES.
 - [ ] There are no *flow* errors or warnings (`npm run flow:test`)
 - [ ] There are no *lint* errors or warnings (`npm run lint`)
 - [ ] Text changes are proofread and approved (Jane Wild)
-- [ ] There are no missing translations (running `npm run manage-translations` produces no changes)
+- [ ] There are no missing translations (running `npm run manage:translations` produces no changes)
 - [ ] UI changes look good in all themes (Alexander Rukin)
 - [ ] Storybook works and no stories are broken (`npm run storybook`)
 - [ ] In case of npm dependency changes both `package-lock.json` and `yarn.lock` files are updated
