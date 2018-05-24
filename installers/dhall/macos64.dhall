@@ -1,5 +1,5 @@
 \(cluster : ./cluster.type)      ->
-let dataDir = "\${HOME}/Library/Application Support/Daedalus${cluster.installDirectorySuffix}/"
+let dataDir = "\${HOME}/Library/Application Support/Daedalus${cluster.installDirectorySuffix}"
     --
     --
 in

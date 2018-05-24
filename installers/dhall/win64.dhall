@@ -1,6 +1,6 @@
 \(cluster : ./cluster.type)      ->
    let installDir = "Daedalus${cluster.installDirectorySuffix}"
-in let dataDir = "\${APPDATA}\\${installDir}\\"
+in let dataDir = "\${APPDATA}\\${installDir}"
     --
     --
 in
