@@ -20,8 +20,9 @@
     "cucumber:watch": "npm run cucumber -- --tags @watch",
     "lint": "eslint --format=node_modules/eslint-formatter-pretty source features *.js",
     "flow:test": "flow; test $? -eq 0 -o $? -eq 2",
-    "manage-translations": "node ./translations/translation-runner.js",
-    "storybook": "start-storybook -p 6006 -c storybook"
+    "manage:translations": "gulp purge-translations && gulp clear-cache && gulp build && node ./translations/translation-runner.js",
+    "storybook": "start-storybook -p 6006 -c storybook",
+    "clear:cache": "gulp clear-cache"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -74,6 +75,7 @@
     "file-loader": "1.1.5",
     "flow-bin": "0.60.1",
     "gulp-shell": "0.6.5",
+    "hard-source-webpack-plugin": "0.6.4",
     "html-loader": "0.5.1",
     "json-loader": "0.5.7",
     "markdown-loader": "2.0.1",

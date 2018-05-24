@@ -15,6 +15,8 @@ set /p CLUSTERS=<installer-clusters.cfg
 set LIBRESSL_VERSION=2.5.3
 set CURL_VERSION=7.54.0
 
+set DAEDALUS_VERSION=%1
+
 set CURL_URL=https://bintray.com/artifact/download/vszakats/generic/curl-%CURL_VERSION%-win64-mingw.7z
 set CURL_BIN=curl-%CURL_VERSION%-win64-mingw\bin
 set LIBRESSL_URL=https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-%LIBRESSL_VERSION%-windows.zip
@@ -128,18 +130,7 @@ pushd installers
 :build_installers
 
 if NOT DEFINED APPVEYOR_BUILD_NUMBER        ( set APPVEYOR_BUILD_NUMBER=0 )
-set XARGS="--build-job %APPVEYOR_BUILD_NUMBER%"
-
-FOR %%C IN (%CLUSTERS:"=%) DO (
-  @echo ##############################################################################
-  @echo ###
-  @echo ### Building fo-r cluster %%C
-  @echo ###
-  @echo ##############################################################################
-
-  make-installer %XARGS:"=% -c %%C --out-dir ."
-  @if %errorlevel% neq 0 ( @echo FATAL: failed to build installer
-                           popd & exit /b 1)
-  copy  /y launcher-config.yaml launcher-config-%%C.win64.yaml
-  copy  /y wallet-topology.yaml wallet-topology-%%C.win64.yaml
-)
+make-installer --out-dir . appveyor
+echo dontfail
+@if %errorlevel% neq 0 ( @echo FATAL: failed to build installer
+                         popd & exit /b 1)

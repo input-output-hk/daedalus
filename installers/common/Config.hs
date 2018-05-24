@@ -17,6 +17,9 @@ module Config
   , dfp
   -- Re-export Turtle:
   , options
+  , getInstallerConfig
+  , dhallTopExpr
+  , diagReadCaseInsensitive
   ) where
 
 import qualified Control.Exception                as Ex
@@ -28,9 +31,11 @@ import           Data.Maybe
 import           Data.Optional                       (Optional)
 import           Data.Semigroup                      ((<>))
 import qualified Data.Text                        as T
+import qualified Data.Text.Lazy                   as LT
 import qualified Data.Yaml                        as YAML
 
 import qualified Dhall.JSON                       as Dhall
+import qualified Dhall                            as Dhall
 
 import           Filesystem.Path                     (FilePath, (</>))
 import           Filesystem.Path.CurrentOS           (fromText, encodeString)
@@ -82,6 +87,7 @@ data Command
     { cfDhallRoot   :: Text
     }
   | GenInstaller
+  | Appveyor
   deriving (Eq, Show)
 
 data Options = Options
@@ -106,6 +112,7 @@ commandParser = (fromMaybe GenInstaller <$>) . optional $
       <$> argText "DIR" "Directory containing Dhall config files")
   , ("installer",  "Build an installer",
       pure GenInstaller)
+  , ("appveyor",   "do an appveroy build", pure Appveyor)
   ]
 
 optionsParser :: OS -> Parser Options
@@ -142,6 +149,14 @@ dhallTopExpr dhallRoot cfg os cluster
   | Launcher <- cfg = format (s%" "%s%" ("%s%" "%s%" )") (comp Launcher) (comp cluster) (comp os) (comp cluster)
   | Topology <- cfg = format (s%" "%s)                   (comp Topology) (comp cluster)
   where comp x = dhallRoot <>"/"<> lshowText x <>".dhall"
+
+getInstallerConfig :: Text -> OS -> Cluster -> IO InstallerConfig
+getInstallerConfig dhallRoot os cluster = do
+    let
+        topexpr :: Dhall.Text
+        topexpr = LT.fromStrict $ format (s%" ("%s%" "%s%")") (dhallRoot <> "/installer.dhall") (comp os) (comp cluster)
+        comp x = dhallRoot <>"/"<> lshowText x <>".dhall"
+    Dhall.input Dhall.auto topexpr
 
 forConfigValues :: Text -> OS -> Cluster -> (Config -> YAML.Value -> IO a) -> IO ()
 forConfigValues dhallRoot os cluster action = do

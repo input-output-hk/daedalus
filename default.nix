@@ -53,9 +53,9 @@ let
       sha256 = "0p9hsrbc1b0i4aipwnl4vxjsayc5m865xhp8q139ggaxq7xd0lps";
     }) { nixpkgs = pkgs; };
     desktopItem = pkgs.makeDesktopItem {
-      name = "Daedalus";
+      name = "Daedalus${if cluster != "mainnet" then "-${cluster}" else ""}";
       exec = "INSERT_PATH_HERE";
-      desktopName = "Daedalus";
+      desktopName = "Daedalus${if cluster != "mainnet" then " ${cluster}" else ""}";
       genericName = "Crypto-Currency Wallet";
       categories = "Application;Network;";
       icon = "INSERT_ICON_PATH_HERE";
@@ -64,7 +64,7 @@ let
     namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''
       #!/usr/bin/env bash
 
-      set -ex
+      set -e
 
       cd ~/${installPath}/
       mkdir -p etc
@@ -72,7 +72,7 @@ let
       cat /etc/nsswitch.conf > etc/nsswitch.conf
       cat /etc/machine-id > etc/machine-id
       cat /etc/resolv.conf > etc/resolv.conf
-      exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -- /nix/var/nix/profiles/profile/bin/enter-phase2 daedalus
+      exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -- /nix/var/nix/profiles/profile-${cluster}/bin/enter-phase2 daedalus
     '';
     postInstall = pkgs.writeScriptBin "post-install" ''
       #!${pkgs.stdenv.shell}
@@ -92,11 +92,12 @@ let
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper $DAEDALUS_DIR/namespaceHelper
       mkdir -pv ~/.local/bin ''${XDG_DATA_HOME}/applications
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus
+      cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus-${cluster}
 
-      cat ${self.desktopItem}/share/applications/Daedalus.desktop | sed \
+      cat ${self.desktopItem}/share/applications/Daedalus*.desktop | sed \
         -e "s+INSERT_PATH_HERE+''${DAEDALUS_DIR}/namespaceHelper+g" \
         -e "s+INSERT_ICON_PATH_HERE+''${DAEDALUS_DIR}/icon.png+g" \
-        > "''${XDG_DATA_HOME}/applications/Daedalus.desktop"
+        > "''${XDG_DATA_HOME}/applications/Daedalus${if cluster != "mainnet" then "-${cluster}" else ""}.desktop"
     '';
     preInstall = pkgs.writeText "pre-install" ''
       if grep sse4 /proc/cpuinfo -q; then
@@ -109,7 +110,7 @@ let
     newBundle = let
       daedalus' = self.daedalus.override { sandboxed = true; };
     in (import ./installers/nix/nix-installer.nix {
-      inherit (self) postInstall preInstall;
+      inherit (self) postInstall preInstall cluster;
       installationSlug = installPath;
       installedPackages = [ daedalus' self.postInstall self.namespaceHelper daedalus'.cfg self.daedalus-bridge daedalus'.daedalus-frontend ];
       nix-bundle = self.nix-bundle;
