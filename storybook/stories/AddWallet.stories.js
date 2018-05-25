@@ -1,6 +1,8 @@
+// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
+import wordlist from 'bip39/wordlists/english';
 import StoryDecorator from './support/StoryDecorator';
 import WalletAdd from '../../source/renderer/app/components/wallet/WalletAdd';
 import WalletRestoreDialog from '../../source/renderer/app/components/wallet/WalletRestoreDialog';
@@ -22,6 +24,7 @@ storiesOf('AddWallet', module)
         onCreate={() => {}}
         onImportFile={() => {}}
         onRestore={() => {}}
+        isRestoreActive={false}
       />
     </div>
   ))
@@ -34,6 +37,8 @@ storiesOf('AddWallet', module)
         isSubmitting={false}
         onSubmit={action('onSubmit')}
         onCancel={action('onClose')}
+        suggestedMnemonics={wordlist}
+        onChoiceChange={() => {}}
       />
     </div>
   ))
@@ -44,6 +49,7 @@ storiesOf('AddWallet', module)
         isSubmitting={false}
         onSubmit={action('onSubmit')}
         onClose={action('onClose')}
+        error={null}
       />
     </div>
   ));

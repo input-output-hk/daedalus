@@ -18,7 +18,7 @@
     "cleanup": "mop -v",
     "cucumber": "cross-env NODE_ENV=test BABEL_DISABLE_CACHE=1 cucumber-js --compiler js:babel-register --format 'progress-bar' --format-options '{\"snippetInterface\": \"synchronous\"}' --tags 'not @skip'",
     "cucumber:watch": "npm run cucumber -- --tags @watch",
-    "lint": "eslint --format=node_modules/eslint-formatter-pretty source features *.js",
+    "lint": "eslint --format=node_modules/eslint-formatter-pretty source features storybook *.js",
     "flow:test": "flow; test $? -eq 0 -o $? -eq 2",
     "manage:translations": "gulp purge-translations && gulp clear-cache && gulp build && node ./translations/translation-runner.js",
     "storybook": "start-storybook -p 6006 -c storybook",
