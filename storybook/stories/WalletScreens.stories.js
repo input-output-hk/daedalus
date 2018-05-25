@@ -1,22 +1,34 @@
+// @flow
 import React from 'react';
+import type { Node } from 'react';
 import { observable, runInAction } from 'mobx';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
 import StoryDecorator from './support/StoryDecorator';
-import Sidebar from '../../source/renderer/app/components/sidebar/Sidebar';
+
+// Assets
 import walletsIcon from '../../source/renderer/app/assets/images/sidebar/wallet-ic.inline.svg';
 import settingsIcon from '../../source/renderer/app/assets/images/sidebar/settings-ic.inline.svg';
 import adaIcon from '../../source/renderer/app/assets/images/sidebar/ada-redemption-ic.inline.svg';
 import paperCertificateIcon from '../../source/renderer/app/assets/images/sidebar/paper-certificate-ic.inline.svg';
-
+import { formattedWalletAmount } from '../../source/renderer/app/utils/ada/formatters';
 import NodeSyncStatusIcon from '../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
+
+// Empty screen elements
+import TopBar from '../../source/renderer/app/components/layout/TopBar';
+import Sidebar from '../../source/renderer/app/components/sidebar/Sidebar';
 import SidebarLayout from '../../source/renderer/app/components/layout/SidebarLayout';
 import SidebarWalletsMenu from '../../source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu';
-import TopBar from '../../source/renderer/app/components/layout/TopBar';
-import WalletSummary from '../../source/renderer/app/components/wallet/summary/WalletSummary';
 import WalletWithNavigation from '../../source/renderer/app/components/wallet/layouts/WalletWithNavigation';
-import { formattedWalletAmount } from '../../source/renderer/app/utils/ada/formatters';
+
+// Screens
+import WalletSummary from '../../source/renderer/app/components/wallet/summary/WalletSummary';
+
+type Props = {
+  activeNavItem?: string,
+  children?: any | Node
+};
 
 const sidebarCategories = [
   {
@@ -48,7 +60,7 @@ const sidebarMenus = observable({
       { id: '2', title: 'Second', info: '200 ADA', isConnected: true },
       { id: '3', title: 'Third', info: '300 ADA', isConnected: true },
     ],
-    activeWalletId: '1',
+    activeWalletId: '2',
     actions: {
       onAddWallet: action('toggleAddWallet'),
       onWalletItemClick: (walletId: string) => {
@@ -58,8 +70,14 @@ const sidebarMenus = observable({
   }
 });
 
+// TODO: Find out how to active the `topBarTitle` on TopBar
 const topbar = (
-  <TopBar formattedWalletAmount={formattedWalletAmount}>
+  <TopBar
+    formattedWalletAmount={formattedWalletAmount}
+    currentRoute="summary"
+    showSubMenuToggle
+    showSubMenus
+  >
     <NodeSyncStatusIcon
       networkStatus={{
         isSynced: true,
@@ -80,11 +98,11 @@ const sidebar = isShowingSubMenus => (
     isDialogOpen={() => false}
     onAddWallet={action('onAddWallet')}
     openDialogAction={action('openDialog')}
+    onSubmitSupportRequest={() => {}}
   />
 );
 
-
-const WalletScreen = ({children}) => (
+const WalletScreen = ({ activeNavItem, children }: Props) => (
   <div>
     <SidebarLayout
       sidebar={sidebar(!!children)}
@@ -94,7 +112,7 @@ const WalletScreen = ({children}) => (
         children &&
           (
             <WalletWithNavigation
-              isActiveScreen={e => console.log('isActiveScreen', e)}
+              isActiveScreen={item => item === activeNavItem}
               onWalletNavItemClick={e => console.log('onWalletNavItemClick', e)}
             >
               {children}
@@ -120,15 +138,53 @@ storiesOf('WalletScreens', module)
   ))
 
   .add('Summary', () => (
-    <WalletScreen>
+    <WalletScreen
+      activeNavItem="summary"
+    >
       <WalletSummary
         walletName="Shopping wallet"
-        amount={45119903750165.23}
+        amount="45119903750165.23"
         pendingAmount={{
           incoming: new BigNumber(1),
           outgoing: new BigNumber(2),
+          total: new BigNumber(3)
         }}
         numberOfTransactions={20303585}
+        isLoadingTransactions={false}
       />
     </WalletScreen>
+  ))
+
+  .add('Send', () => (
+    <WalletScreen
+      activeNavItem="send"
+    >
+      Send screen
+    </WalletScreen>
+  ))
+
+  .add('Receive', () => (
+    <WalletScreen
+      activeNavItem="receive"
+    >
+      Receive screen
+    </WalletScreen>
+  ))
+
+  .add('Transactions', () => (
+    <WalletScreen
+      activeNavItem="transactions"
+    >
+      Transactions screen
+    </WalletScreen>
+  ))
+
+  .add('Settings', () => (
+    <WalletScreen
+      activeNavItem="settings"
+    >
+      Settings screen
+    </WalletScreen>
   ));
+
+
