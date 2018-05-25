@@ -31,7 +31,7 @@ import WalletSummary from '../../source/renderer/app/components/wallet/summary/W
 import WalletSendForm from '../../source/renderer/app/components/wallet/WalletSendForm';
 import WalletReceive from '../../source/renderer/app/components/wallet/WalletReceive';
 import WalletTransactionsList from '../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
-// import WalletSettings from '../../source/renderer/app/components/wallet/WalletSettings';
+import WalletSettings from '../../source/renderer/app/components/wallet/WalletSettings';
 
 type Props = {
   activeNavItem?: string,
@@ -142,164 +142,175 @@ class WalletScreen extends Component<Props> {
 
 storiesOf('WalletScreens', module)
 
-  .addDecorator((story) => (
+  .addDecorator((story, { story:storyName }) => (
     <StoryDecorator>
+      <WalletScreen
+        activeNavItem={storyName.toLowerCase()}
+      >
       {story()}
+      </WalletScreen>
     </StoryDecorator>
   ))
 
   // ====== Stories ======
 
-  .add('empty', () => (
-    <WalletScreen/>
-  ))
+  .add('Empty', () => false)
 
   .add('Summary', () => (
-    <WalletScreen
-      activeNavItem="summary"
-    >
-      <WalletSummary
-        walletName="Shopping wallet"
-        amount="45119903750165.23"
-        pendingAmount={{
-          incoming: new BigNumber(1),
-          outgoing: new BigNumber(2),
-          total: new BigNumber(3)
-        }}
-        numberOfTransactions={20303585}
-        isLoadingTransactions={false}
-      />
-    </WalletScreen>
+    <WalletSummary
+      walletName="Shopping wallet"
+      amount="45119903750165.23"
+      pendingAmount={{
+        incoming: new BigNumber(1),
+        outgoing: new BigNumber(2),
+        total: new BigNumber(3)
+      }}
+      numberOfTransactions={20303585}
+      isLoadingTransactions={false}
+    />
   ))
 
   .add('Send', () => (
-    <WalletScreen
-      activeNavItem="send"
-    >
-      <WalletSendForm
-        currencyUnit="Ada"
-        currencyMaxFractionalDigits={ 6}
-        currencyMaxIntegerDigits={11}
-        validateAmount={() => true}
-        calculateTransactionFee={()=>{}}
-        addressValidator={()=>{}}
-        openDialogAction={()=>{}}
-        isDialogOpen={()=>{}}
-        isRestoreActive={false}
-      />
-    </WalletScreen>
+    <WalletSendForm
+      currencyUnit="Ada"
+      currencyMaxFractionalDigits={ 6}
+      currencyMaxIntegerDigits={11}
+      validateAmount={() => true}
+      calculateTransactionFee={()=>{}}
+      addressValidator={()=>{}}
+      openDialogAction={()=>{}}
+      isDialogOpen={()=>{}}
+      isRestoreActive={false}
+    />
   ))
 
   .add('Receive', () => (
-    <WalletScreen
-      activeNavItem="receive"
-    >
-      <WalletReceive
-        walletAddress="5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds"
-        isWalletAddressUsed={false}
-        walletAddresses={[
-          {
-            id: '5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds',
-            amount: new BigNumber(1),
-            isUsed:false,
-          },
-          {
-            id: 'f465aca571de909091967349e1dc39fc9ce9755ff8ffdb7cc3771b503904e49a',
-            amount: new BigNumber(1),
-            isUsed:false,
-          },
-          {
-            id: '5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds',
-            amount: new BigNumber(1),
-            isUsed:false,
-          },
-          {
-            id: 'f465aca571de909091967349e1dc39fc9ce9755ff8ffdb7cc3771b503904e49a',
-            amount: new BigNumber(1),
-            isUsed:false,
-          },
-          {
-            id: '5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds',
-            amount: new BigNumber(1),
-            isUsed:false,
-          },
-          {
-            id: 'f465aca571de909091967349e1dc39fc9ce9755ff8ffdb7cc3771b503904e49a',
-            amount: new BigNumber(1),
-            isUsed:false,
-          },
-          {
-            id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
-            amount: new BigNumber(1),
-            isUsed:true,
-          },
-          {
-            id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
-            amount: new BigNumber(1),
-            isUsed:true,
-          },
-          {
-            id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
-            amount: new BigNumber(1),
-            isUsed:true,
-          },
-          {
-            id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
-            amount: new BigNumber(1),
-            isUsed:true,
-          },
-          {
-            id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
-            amount: new BigNumber(1),
-            isUsed:true,
-          },
-          {
-            id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
-            amount: new BigNumber(1),
-            isUsed:true,
-          },
-
-
-        ]}
-        onGenerateAddress={()=>{}}
-        onCopyAddress={()=>{}}
-        isSidebarExpanded
-        walletHasPassword={false}
-        isSubmitting={false}
-      />
-
-    </WalletScreen>
+    <WalletReceive
+      walletAddress="5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds"
+      isWalletAddressUsed={false}
+      walletAddresses={[
+        {
+          id: '5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds',
+          amount: new BigNumber(1),
+          isUsed:false,
+        },
+        {
+          id: 'f465aca571de909091967349e1dc39fc9ce9755ff8ffdb7cc3771b503904e49a',
+          amount: new BigNumber(1),
+          isUsed:false,
+        },
+        {
+          id: '5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds',
+          amount: new BigNumber(1),
+          isUsed:false,
+        },
+        {
+          id: 'f465aca571de909091967349e1dc39fc9ce9755ff8ffdb7cc3771b503904e49a',
+          amount: new BigNumber(1),
+          isUsed:false,
+        },
+        {
+          id: '5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds',
+          amount: new BigNumber(1),
+          isUsed:false,
+        },
+        {
+          id: 'f465aca571de909091967349e1dc39fc9ce9755ff8ffdb7cc3771b503904e49a',
+          amount: new BigNumber(1),
+          isUsed:false,
+        },
+        {
+          id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
+          amount: new BigNumber(1),
+          isUsed:true,
+        },
+        {
+          id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
+          amount: new BigNumber(1),
+          isUsed:true,
+        },
+        {
+          id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
+          amount: new BigNumber(1),
+          isUsed:true,
+        },
+        {
+          id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
+          amount: new BigNumber(1),
+          isUsed:true,
+        },
+        {
+          id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
+          amount: new BigNumber(1),
+          isUsed:true,
+        },
+        {
+          id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
+          amount: new BigNumber(1),
+          isUsed:true,
+        }
+      ]}
+      onGenerateAddress={()=>{}}
+      onCopyAddress={()=>{}}
+      isSidebarExpanded
+      walletHasPassword={false}
+      isSubmitting={false}
+    />
   ))
 
   .add('Transactions', () => (
-    <WalletScreen
-      activeNavItem="transactions"
-    >
-      <WalletTransactionsList
-        transactions={[
-          generateTransaction(transactionTypes.INCOME, new Date(), new BigNumber(1), 1),
-          generateTransaction(transactionTypes.EXCHANGE, new Date(), new BigNumber(1)),
-          generateTransaction(transactionTypes.EXPEND, moment().subtract(1, 'days').toDate(), new BigNumber(2), 0, transactionStates.PENDING),
-          generateTransaction(transactionTypes.INCOME, moment().subtract(1, 'days').toDate(), new BigNumber(1), 0, transactionStates.FAILED),
-          generateTransaction(transactionTypes.EXPEND, moment().subtract(2, 'days').toDate(), new BigNumber(3)),
-          generateTransaction(transactionTypes.EXPEND, moment().subtract(3, 'days').toDate(), new BigNumber(5)),
-          generateTransaction(transactionTypes.INCOME, moment().subtract(4, 'days').toDate(), new BigNumber(6)),
-        ]}
-        isLoadingTransactions={false}
-        hasMoreToLoad={false}
-        assuranceMode={{ low: 1, medium: 2 }}
-        walletId="test-wallet"
-        formattedWalletAmount={formattedWalletAmount}
-      />
-    </WalletScreen>
+    <WalletTransactionsList
+      transactions={[
+        generateTransaction(transactionTypes.INCOME, new Date(), new BigNumber(1), 1),
+        generateTransaction(transactionTypes.EXCHANGE, new Date(), new BigNumber(1)),
+        generateTransaction(transactionTypes.EXPEND, moment().subtract(1, 'days').toDate(), new BigNumber(2), 0, transactionStates.PENDING),
+        generateTransaction(transactionTypes.INCOME, moment().subtract(1, 'days').toDate(), new BigNumber(1), 0, transactionStates.FAILED),
+        generateTransaction(transactionTypes.EXPEND, moment().subtract(2, 'days').toDate(), new BigNumber(3)),
+        generateTransaction(transactionTypes.EXPEND, moment().subtract(3, 'days').toDate(), new BigNumber(5)),
+        generateTransaction(transactionTypes.INCOME, moment().subtract(4, 'days').toDate(), new BigNumber(6)),
+      ]}
+      isLoadingTransactions={false}
+      hasMoreToLoad={false}
+      assuranceMode={{ low: 1, medium: 2 }}
+      walletId="test-wallet"
+      formattedWalletAmount={formattedWalletAmount}
+    />
   ))
 
   .add('Settings', () => (
-    <WalletScreen
-      activeNavItem="settings"
-    >
-      Settings screen
-    </WalletScreen>
+    <WalletSettings
+      activeField={null}
+      assuranceLevels={[
+        {
+          "value": "CWANormal",
+          "label": {
+            "id": "global.assuranceLevel.normal",
+            "defaultMessage": "!!!Normal"
+          }
+        },
+        {
+          "value": "CWAStrict",
+          "label": {
+            "id": "global.assuranceLevel.strict",
+            "defaultMessage": "!!!Strict"
+          }
+        }
+      ]}
+      isDialogOpen={()=>false}
+      isInvalid={false}
+      isSubmitting={false}
+      isWalletPasswordSet={false}
+      lastUpdatedField={null}
+      nameValidator={()=>true}
+      onCancelEditing={()=>{}}
+      onFieldValueChange={()=>{}}
+      onStartEditing={()=>{}}
+      onStopEditing={()=>{}}
+      openDialogAction={()=>{}}
+      walletAssurance="CWANormal"
+      walletName="Test wallet"
+      walletPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
+    />
   ));
 
 

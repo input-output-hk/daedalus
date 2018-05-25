@@ -162,7 +162,7 @@ export default class WalletSettings extends Component<Props> {
               >
                 {intl.formatMessage(messages.exportButtonLabel)}
               </button>
-            ) : null}
+            ) : false}
 
             <DeleteWalletButton
               onClick={() => openDialogAction({
@@ -175,15 +175,15 @@ export default class WalletSettings extends Component<Props> {
 
         {isDialogOpen(ChangeWalletPasswordDialog) ? (
           <ChangeWalletPasswordDialogContainer />
-        ) : null}
+        ) : false}
 
         {isDialogOpen(DeleteWalletConfirmationDialog) ? (
           <DeleteWalletDialogContainer />
-        ) : null}
+        ) : false}
 
         {isDialogOpen(WalletExportDialog) ? (
           <WalletExportToFileDialogContainer />
-        ) : null}
+        ) : false}
 
       </div>
     );
