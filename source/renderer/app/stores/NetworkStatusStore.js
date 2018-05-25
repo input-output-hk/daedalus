@@ -50,7 +50,7 @@ export default class NetworkStatusStore extends Store {
     if (cachedState !== null) Object.assign(this, cachedState);
   }
 
-  async setup() {
+  setup() {
     this.registerReactions([
       this._updateSyncProgressWhenDisconnected,
       this._updateLocalTimeDifferenceWhenConnected,
