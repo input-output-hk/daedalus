@@ -14,6 +14,7 @@ import adaIcon from '../../source/renderer/app/assets/images/sidebar/ada-redempt
 import paperCertificateIcon from '../../source/renderer/app/assets/images/sidebar/paper-certificate-ic.inline.svg';
 import { formattedWalletAmount } from '../../source/renderer/app/utils/ada/formatters';
 import NodeSyncStatusIcon from '../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
+import WalletAddress from '../../source/renderer/app/domains/WalletAddress'
 
 // Empty screen elements
 import TopBar from '../../source/renderer/app/components/layout/TopBar';
@@ -25,7 +26,7 @@ import WalletWithNavigation from '../../source/renderer/app/components/wallet/la
 // Screens
 import WalletSummary from '../../source/renderer/app/components/wallet/summary/WalletSummary';
 import WalletSend from '../../source/renderer/app/components/wallet/WalletSendForm';
-// import WalletReceive from '../../source/renderer/app/components/wallet/WalletReceive';
+import WalletReceive from '../../source/renderer/app/components/wallet/WalletReceive';
 // import WalletTransactions from '../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
 // import WalletSettings from '../../source/renderer/app/components/wallet/WalletSettings';
 
@@ -102,7 +103,7 @@ const sidebar = isShowingSubMenus => (
     isDialogOpen={() => false}
     onAddWallet={action('onAddWallet')}
     openDialogAction={action('openDialog')}
-    onSubmitSupportRequest={() => {}}
+    onSubmitSupportRequest={()=>{}}
   />
 );
 
@@ -168,10 +169,10 @@ storiesOf('WalletScreens', module)
         currencyMaxFractionalDigits={ 6}
         currencyMaxIntegerDigits={11}
         validateAmount={() => true}
-        calculateTransactionFee={() => {}}
-        addressValidator={() => {}}
-        openDialogAction={() => {}}
-        isDialogOpen={() => {}}
+        calculateTransactionFee={()=>{}}
+        addressValidator={()=>{}}
+        openDialogAction={()=>{}}
+        isDialogOpen={()=>{}}
         isRestoreActive={false}
       />
     </WalletScreen>
@@ -181,9 +182,34 @@ storiesOf('WalletScreens', module)
     <WalletScreen
       activeNavItem="receive"
     >
-      Receive screen
+      <WalletReceive
+        walletAddress="5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds"
+        isWalletAddressUsed={false}
+        walletAddresses={[
+          <WalletAddress
+            id={sidebarMenus.wallets.items[0].id}
+            amount={new BigNumber(1)}
+            isUsed={false}
+          />
+        ]}
+        onGenerateAddress={()=>{}}
+        onCopyAddress={()=>{}}
+        isSidebarExpanded
+        walletHasPassword={false}
+        isSubmitting={false}
+      />
+
     </WalletScreen>
   ))
+  // walletAddress: string,
+  // isWalletAddressUsed: boolean,
+  // walletAddresses: Array<WalletAddress>,
+  // onGenerateAddress: Function,
+  // onCopyAddress: Function,
+  // isSidebarExpanded: boolean,
+  // walletHasPassword: boolean,
+  // isSubmitting: boolean,
+  // error?: ?LocalizableError,
 
   .add('Transactions', () => (
     <WalletScreen
