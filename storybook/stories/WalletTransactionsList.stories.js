@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import faker from 'faker';
@@ -8,13 +9,13 @@ import WalletTransactionsList from '../../source/renderer/app/components/wallet/
 import WalletTransaction, {
   transactionStates,
   transactionTypes
-} from '../../source/renderer/app/domain/WalletTransaction';
+} from '../../source/renderer/app/domains/WalletTransaction';
 import { formattedWalletAmount } from '../../source/renderer/app/utils/ada/formatters';
 
 const generateTransaction = (
   type, date, amount, confirmations = 1, state = transactionStates.OK
-) => {
-  return new WalletTransaction({
+) => (
+  new WalletTransaction({
     id: faker.random.uuid(),
     title: '',
     type,
@@ -26,8 +27,8 @@ const generateTransaction = (
     addresses: {
       from: [faker.random.uuid()], to: [faker.random.uuid()]
     },
-  });
-};
+  })
+);
 
 storiesOf('WalletTransactionsList', module)
 

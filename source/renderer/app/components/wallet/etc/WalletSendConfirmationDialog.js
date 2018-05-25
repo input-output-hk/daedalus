@@ -12,13 +12,14 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import styles from '../WalletSendConfirmationDialog.scss';
 import { formattedAmountWithoutTrailingZeros } from '../../../utils/formatters';
 import { messages } from '../WalletSendConfirmationDialog';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 
 type Props = {
   isWalletPasswordSet: boolean,
   amount: string,
   receiver: string,
-  totalAmount: string,
-  transactionFee: string,
+  totalAmount: ?string,
+  transactionFee: ?string,
   onSubmit: Function,
   amountToNaturalUnits: (amountWithFractions: string) => string,
   onCancel: Function,
@@ -52,7 +53,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
   }, {
     options: {
       validateOnChange: true,
-      validationDebounceWait: 250,
+      validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
     },
   });
 
@@ -108,8 +109,8 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
     ];
 
     const formattedAmount = formattedAmountWithoutTrailingZeros(amount);
-    const formattedTransactionFee = formattedAmountWithoutTrailingZeros(transactionFee);
-    const formattedTotalAmount = formattedAmountWithoutTrailingZeros(totalAmount);
+    const formattedTransactionFee = formattedAmountWithoutTrailingZeros(transactionFee || '');
+    const formattedTotalAmount = formattedAmountWithoutTrailingZeros(totalAmount || '');
 
     return (
       <Dialog

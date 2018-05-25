@@ -6,13 +6,16 @@ import classNames from 'classnames';
 import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
-import WalletAddDialog from '../../components/wallet/WalletAddDialog';
-import BugReportDialog from '../../components/profile/bug-report/BugReportDialog';
+import InstructionsDialog from '../wallet/paper-wallet-certificate/InstructionsDialog';
 import supportIcon from '../../assets/images/sidebar/bug-report-ic.inline.svg';
 import type { SidebarWalletType } from '../../stores/SidebarStore';
+import { ROUTES } from '../../routes-config';
+import resolver from '../../utils/imports';
+
+const sidebarConfig = resolver('config/sidebarConfig');
 
 type Props = {
-  menus: {
+  menus: ?{
     wallets: {
       items: Array<SidebarWalletType>,
       activeWalletId: ?string,
@@ -30,7 +33,8 @@ type Props = {
   onCategoryClicked: Function,
   isShowingSubMenus: boolean,
   openDialogAction: Function,
-  isDialogOpen: Function,
+  onAddWallet: Function,
+  onSubmitSupportRequest: Function,
 };
 
 @observer
@@ -43,19 +47,19 @@ export default class Sidebar extends Component<Props> {
   render() {
     const {
       menus, categories, activeSidebarCategory,
-      isShowingSubMenus, onCategoryClicked,
-      openDialogAction, isDialogOpen,
+      isShowingSubMenus, onAddWallet, onSubmitSupportRequest,
     } = this.props;
     let subMenu = null;
 
-    const walletsCategory = find(categories, { name: 'WALLETS' }).route;
+    const walletsCategory = find(categories, {
+      name: sidebarConfig.CATEGORIES_BY_NAME.WALLETS.name
+    }).route;
+
     if (menus && activeSidebarCategory === walletsCategory) {
       subMenu = (
         <SidebarWalletsMenu
           wallets={menus.wallets.items}
-          onAddWallet={() => openDialogAction({
-            dialog: WalletAddDialog,
-          })}
+          onAddWallet={onAddWallet}
           onWalletItemClick={menus.wallets.actions.onWalletItemClick}
           isActiveWallet={id => id === menus.wallets.activeWalletId}
           visible={isShowingSubMenus}
@@ -79,7 +83,7 @@ export default class Sidebar extends Component<Props> {
                 className={categoryClassName}
                 icon={category.icon}
                 active={activeSidebarCategory === category.route}
-                onClick={() => onCategoryClicked(category.route)}
+                onClick={() => this.handleClick(category.route)}
               />
             );
           })}
@@ -87,19 +91,22 @@ export default class Sidebar extends Component<Props> {
           <SidebarCategory
             className="supportRequest"
             icon={supportIcon}
-            active={isDialogOpen(BugReportDialog)}
-            onClick={this.handleSupportRequestClick}
+            active={false}
+            onClick={onSubmitSupportRequest}
           />
-
         </div>
         {subMenu}
       </div>
     );
   }
 
-  handleSupportRequestClick = () => {
-    this.props.openDialogAction({
-      dialog: BugReportDialog
-    });
-  }
+  handleClick = (categoryRoute: string) => {
+    if (categoryRoute === ROUTES.PAPER_WALLET_CREATE_CERTIFICATE) {
+      this.props.openDialogAction({
+        dialog: InstructionsDialog,
+      });
+    } else {
+      this.props.onCategoryClicked(categoryRoute);
+    }
+  };
 }

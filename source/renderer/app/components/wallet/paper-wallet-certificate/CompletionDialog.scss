@@ -1,0 +1,51 @@
+.completionContentWrapper {
+  color: var(--theme-instructions-text-color);
+  font-family: var(--font-light);
+
+  p {
+    line-height: 1.38;
+  }
+
+  .linkInstructionsWrapper {
+    border-bottom: 1px solid var(--theme-separation-border-color);
+    margin-top: 11px;
+  }
+
+  .addressInstructionsWrapper {
+    margin-top: 20px;
+  }
+
+  .infoBoxLabel {
+    font-weight: bold;
+    margin-top: 11px;
+  }
+
+  .infoBox {
+    background-color: var(--theme-paper-wallet-create-certificate-dialog-explorer-link-background-color);
+    border-radius: 2px;
+    font-family: var(--font-regular);
+    line-height: 1.38;
+    margin: 10px 0 20px;
+    min-height: 50px;
+    padding: 14px 20px;
+    text-align: center;
+    user-select: auto;
+    word-wrap: break-word;
+
+    .link {
+      color: var(--theme-paper-wallet-create-certificate-dialog-explorer-link-color);
+      cursor: pointer;
+      text-decoration: underline;
+    }
+  }
+
+  .qrCode {
+    display: flex;
+
+    canvas {
+      border: 4px solid var(--theme-receive-qr-code-background-color);
+      box-sizing: content-box;
+      margin: auto;
+    }
+  }
+}

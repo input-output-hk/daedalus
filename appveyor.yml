@@ -1,21 +1,21 @@
-version: 1.1.{build}
+version: "{build}"
 
 environment:
   nodejs_version: "8"
-  NETWORK: "mainnet"
   AWS_ACCESS_KEY_ID:
     secure: O0+bBTm/Ud3pxP8nvC3ZuDSkmmlr+b8hVluqpRdJGBg=
   AWS_SECRET_ACCESS_KEY:
     secure: DbpP02aDGoC3Tdsi3+ONm8ov0nuXzEF/Yi453SBKj38qjROzvPXo6qW44bYiKBf4
   CERT_PASS:
     secure: K+PY2zF/5qeJnnKhcCZaqLnVZuAXvuxCXosnzHdtje1C+BMLfAbCJZVt2wTMEyJT
+  GITHUB_OAUTH_TOKEN:
+    secure: prH84TwXLO2CGaiwmipj05AAndcR7bDDxTv9hL8adIpr2bNjrV7pN15JKVmsxISc
   # Avoid long paths on Windows
   STACK_ROOT: "c:\\sr"
 
 build: off
 
 cache:
-  - C:\sr -> installers/daedalus-installer.cabal
   - C:\sr -> installers/stack.yaml
 
 install:
@@ -29,10 +29,12 @@ artifacts:
   - path: release\win32-x64\Daedalus-win32-x64
     name: Daedalus Electron application
     type: zip
-  - path: installers\daedalus-win64-*-installer.exe
+  - path: installers\daedalus-*.exe
     name: Daedalus Win64 Installer
-  - path: node_modules\daedalus-client-api\build-id
-    name: cardano-sl-build-id
+  - path: installers\launcher-config-*.yaml
+    name: Cardano launcher configuration
+  - path: installers\wallet-topology-*.yaml
+    name: Wallet topology
 
 deploy:
   provider: S3

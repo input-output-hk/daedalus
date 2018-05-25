@@ -12,8 +12,8 @@ import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.
 import styles from './Loading.scss';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
 import environment from '../../../../common/environment';
+import { REPORT_ISSUE_TIME_TRIGGER } from '../../config/timingConfig';
 
-const REPORT_ISSUE_TIME_TRIGGER = 5 * 60; // 5 minutes
 let connectingInterval = null;
 let syncingInterval = null;
 
@@ -74,7 +74,7 @@ type Props = {
   hasLoadedCurrentLocale: boolean,
   hasLoadedCurrentTheme: boolean,
   localTimeDifference: number,
-  allowedTimeDifference: number,
+  isSystemTimeCorrect: boolean,
   currentLocale: string,
   handleReportIssue: Function,
   onProblemSolutionClick: Function,
@@ -92,24 +92,37 @@ export default class Loading extends Component<Props, State> {
     };
   }
 
-  componentWillMount() {
-    if (this.props.isConnecting) {
+  componentWillReceiveProps(nextProps: Props) {
+    const startConnectingTimer = nextProps.isConnecting && (connectingInterval === null);
+    const stopConnectingTimer = (
+      this.props.isConnecting &&
+      !nextProps.isConnecting &&
+      (connectingInterval !== null)
+    );
+
+    if (startConnectingTimer) {
       connectingInterval = setInterval(this.connectingTimer, 1000);
+    } else if (stopConnectingTimer) {
+      this.resetConnectingTimer();
     }
 
-    if (this.props.isSyncing) {
+    const startSyncingTimer = nextProps.isSyncing && (syncingInterval === null);
+    const stopSyncingTimer = (
+      this.props.isSyncing &&
+      !nextProps.isSyncing &&
+      (syncingInterval !== null)
+    );
+
+    if (startSyncingTimer) {
       syncingInterval = setInterval(this.syncingTimer, 1000);
+    } else if (stopSyncingTimer) {
+      this.resetSyncingTimer();
     }
   }
 
   componentWillUnmount() {
-    if (connectingInterval) {
-      clearInterval(connectingInterval);
-    }
-
-    if (syncingInterval) {
-      clearInterval(syncingInterval);
-    }
+    this.resetConnectingTimer();
+    this.resetSyncingTimer();
   }
 
   static contextTypes = {
@@ -131,7 +144,7 @@ export default class Loading extends Component<Props, State> {
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
       localTimeDifference,
-      allowedTimeDifference,
+      isSystemTimeCorrect,
       currentLocale,
       handleReportIssue,
       onProblemSolutionClick,
@@ -161,7 +174,6 @@ export default class Loading extends Component<Props, State> {
     const daedalusLoadingLogo = daedalusLogo;
     const currencyLoadingLogo = currencyIcon;
     const apiLoadingLogo = apiIcon;
-    const isSystemTimeOff = localTimeDifference > allowedTimeDifference;
 
     let connectingMessage;
     if (hasBeenConnected) {
@@ -220,19 +232,17 @@ export default class Loading extends Component<Props, State> {
                 </h1>
               </div>
             )}
-            {!isSyncing && !isConnecting && isLoadingDataForNextScreen && (
+            {isLoadingDataForNextScreen && (
               <div className={styles.syncing}>
-                {!isSystemTimeOff && (
-                  <div>
-                    <h1 className={styles.headline}>
-                      {intl.formatMessage(loadingDataForNextScreenMessage)}
-                    </h1>
-                    <LoadingSpinner />
-                  </div>
-                )}
+                <div>
+                  <h1 className={styles.headline}>
+                    {intl.formatMessage(loadingDataForNextScreenMessage)}
+                  </h1>
+                  <LoadingSpinner />
+                </div>
               </div>
             )}
-            {isSystemTimeOff && (
+            {!isSystemTimeCorrect && (
               <SystemTimeErrorOverlay
                 localTimeDifference={localTimeDifference}
                 currentLocale={currentLocale}
@@ -244,13 +254,21 @@ export default class Loading extends Component<Props, State> {
       </div>
     );
   }
+
   connectingTimer = () => {
     this.setState({ connectingTime: this.state.connectingTime + 1 });
   };
 
+  resetConnectingTimer = () => {
+    if (connectingInterval !== null) {
+      clearInterval(connectingInterval);
+      connectingInterval = null;
+    }
+    this.setState({ connectingTime: 0 });
+  };
+
   syncingTimer = () => {
     const syncPercentage = this.props.syncPercentage.toFixed(2);
-
     if (syncPercentage === this.state.syncPercentage) {
       // syncPercentage not increased, increase syncing time
       this.setState({ syncingTime: this.state.syncingTime + 1 });
@@ -258,5 +276,13 @@ export default class Loading extends Component<Props, State> {
       // reset syncingTime and set new max percentage
       this.setState({ syncingTime: 0, syncPercentage });
     }
+  };
+
+  resetSyncingTimer = () => {
+    if (syncingInterval !== null) {
+      clearInterval(syncingInterval);
+      syncingInterval = null;
+    }
+    this.setState({ syncingTime: 0 });
   };
 }

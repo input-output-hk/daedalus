@@ -4,10 +4,9 @@ import { observer, inject } from 'mobx-react';
 import Sidebar from '../../components/sidebar/Sidebar';
 import TopBarContainer from '../TopBarContainer';
 import SidebarLayout from '../../components/layout/SidebarLayout';
-import WalletAddPage from '../wallet/WalletAddPage';
 import WalletSupportRequestPage from '../wallet/WalletSupportRequestPage';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
-import StatusMessagesNotification from '../../components/notifications/StatusMessagesNotification';
+import { ROUTES } from '../../routes-config';
 
 @inject('stores', 'actions') @observer
 export default class MainLayout extends Component<InjectedContainerProps> {
@@ -25,9 +24,8 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     const wallets = stores.etc.wallets;
     const activeWallet = wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
-    const { isImportActive, isRestoreActive } = wallets;
 
-    const sidebarMenus = {
+    const sidebarMenus = sidebar.wallets.length > 0 ? {
       wallets: {
         items: sidebar.wallets,
         activeWalletId,
@@ -37,7 +35,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
           },
         }
       }
-    };
+    } : null;
     const sidebarComponent = (
       <Sidebar
         menus={sidebarMenus}
@@ -49,28 +47,19 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         }}
         isSynced
         openDialogAction={actions.dialogs.open.trigger}
-        isDialogOpen={stores.uiDialogs.isOpen}
+        onAddWallet={() => actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD })}
+        onSubmitSupportRequest={
+          () => actions.router.goToRoute.trigger({ route: ROUTES.SETTINGS.SUPPORT })
+        }
       />
-    );
-
-    const addStatusMessagesNotification = (
-      isImportActive || isRestoreActive ? (
-        <StatusMessagesNotification
-          isImportActive={isImportActive}
-          isRestoreActive={isRestoreActive}
-        />
-      ) : null
     );
 
     return (
       <SidebarLayout
         sidebar={sidebarComponent}
         topbar={<TopBarContainer />}
-        contentDialog={<WalletAddPage />}
-        notification={addStatusMessagesNotification}
         contentDialogs={[
           <WalletSupportRequestPage key="WalletSupportRequestPage" />,
-          <WalletAddPage key="WalletAddPage" />
         ]}
       >
         {this.props.children}

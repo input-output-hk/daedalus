@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import resolver from '../utils/imports';
 import environment from '../../../common/environment';
-import NoWalletsPage from './wallet/NoWalletsPage';
+import WalletAddPage from './wallet/WalletAddPage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 
 const LoadingPage = resolver('containers/LoadingPage');
@@ -27,7 +27,7 @@ export default class Root extends Component<Props> {
     ) {
       return <LoadingPage />;
     } else if (!wallets.hasAnyWallets) {
-      return <NoWalletsPage />;
+      return <WalletAddPage />;
     }
     return React.Children.only(children);
   }

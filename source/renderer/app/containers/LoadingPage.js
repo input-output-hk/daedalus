@@ -25,8 +25,8 @@ export default class LoadingPage extends Component<InjectedProps> {
   render() {
     const { stores } = this.props;
     const {
-      isConnecting, isSyncing, isSynced, syncPercentage, hasBeenConnected,
-      hasBlockSyncingStarted, localTimeDifference, ALLOWED_TIME_DIFFERENCE,
+      isConnecting, isConnected, isSyncing, isSynced, syncPercentage, hasBeenConnected,
+      hasBlockSyncingStarted, localTimeDifference, isSystemTimeCorrect,
     } = stores.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     return (
@@ -36,10 +36,10 @@ export default class LoadingPage extends Component<InjectedProps> {
           apiIcon={cardanoLogo}
           isSyncing={isSyncing}
           localTimeDifference={localTimeDifference}
-          allowedTimeDifference={ALLOWED_TIME_DIFFERENCE}
+          isSystemTimeCorrect={isSystemTimeCorrect}
           isConnecting={isConnecting}
           syncPercentage={syncPercentage}
-          isLoadingDataForNextScreen={!isSyncing || isSynced}
+          isLoadingDataForNextScreen={isConnected && isSynced && isSystemTimeCorrect}
           loadingDataForNextScreenMessage={messages.loadingWalletData}
           hasBeenConnected={hasBeenConnected}
           hasBlockSyncingStarted={hasBlockSyncingStarted}

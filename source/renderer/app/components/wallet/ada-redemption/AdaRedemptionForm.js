@@ -22,6 +22,10 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import { InvalidMnemonicError, InvalidEmailError, FieldRequiredError } from '../../../i18n/errors';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './AdaRedemptionForm.scss';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import { ADA_REDEMPTION_PASSPHRASE_LENGHT } from '../../../config/cryptoConfig';
+import { ADA_REDEMPTION_TYPES } from '../../../types/redemptionTypes';
+import type { RedemptionTypeChoices } from '../../../types/redemptionTypes';
 
 const messages = defineMessages({
   headline: {
@@ -35,7 +39,7 @@ const messages = defineMessages({
 Below is an example of a redemption key. Your key will look similar:</p>
 <p><strong>B_GQOAffMBeRIn6vh1hJmeOT3ViS_TmaT4XAHAfDVH0=</strong></p>
 <p>If you upload a PDF file with your certificate, a redemption code will be automatically extracted.</p>
-<p>If you upload an <strong>encrypted certificate</strong>, you will need to provide a <strong>9 word mnemonic
+<p>If you upload an <strong>encrypted certificate</strong>, you will need to provide a <strong>{adaRedemptionPassphraseLength} word mnemonic
 passphrase</strong> to decrypt your certificate and your redemption code will be automatically extracted.</p>`,
     description: 'Detailed instructions for redeeming Ada from the regular vending',
   },
@@ -51,7 +55,7 @@ to decrypt your certificate and your redemption code will be automatically extra
   instructionsPaperVended: {
     id: 'wallet.redeem.dialog.instructions.paperVended',
     defaultMessage: `!!!<p>To redeem your Ada, enter your shielded vending key from the certificate, choose a wallet
-where Ada should be redeemed and enter 9 word mnemonic passphrase.</p>`,
+where Ada should be redeemed and enter {adaRedemptionPassphraseLength} word mnemonic passphrase.</p>`,
     description: 'Detailed instructions for redeeming Ada from the paper vending',
   },
   certificateLabel: {
@@ -76,7 +80,7 @@ where Ada should be redeemed and enter 9 word mnemonic passphrase.</p>`,
   },
   passphraseHint: {
     id: 'wallet.redeem.dialog.passphraseHint',
-    defaultMessage: '!!!Enter your 9 word mnemonic here',
+    defaultMessage: '!!!Enter your {length} word mnemonic here',
     description: 'Hint for the mnemonic passphrase input'
   },
   passphraseNoResults: {
@@ -175,7 +179,7 @@ type Props = {
   onAdaAmountChanged: Function,
   onRedemptionCodeChanged: Function,
   onSubmit: Function,
-  redemptionType: string,
+  redemptionType: RedemptionTypeChoices,
   postVendRedemptionCodeValidator: Function,
   redemptionCodeValidator: Function,
   mnemonicValidator: Function,
@@ -208,8 +212,10 @@ export default class AdaRedemptionForm extends Component<Props> {
       },
       passPhrase: {
         label: this.context.intl.formatMessage(messages.passphraseLabel),
-        placeholder: this.context.intl.formatMessage(messages.passphraseHint),
-        value: '',
+        placeholder: this.context.intl.formatMessage(messages.passphraseHint, {
+          length: ADA_REDEMPTION_PASSPHRASE_LENGHT
+        }),
+        value: [],
         validators: [({ field }) => {
           // Don't validate No pass phrase needed when certificate is not encrypted
           if (!this.props.showPassPhraseWidget) return [true];
@@ -227,7 +233,7 @@ export default class AdaRedemptionForm extends Component<Props> {
         placeholder: this.context.intl.formatMessage(messages.redemptionKeyHint),
         value: '',
         validators: ({ field }) => {
-          if (this.props.redemptionType === 'paperVended') return [true];
+          if (this.props.redemptionType === ADA_REDEMPTION_TYPES.PAPER_VENDED) return [true];
           const value = this.props.redemptionCode || field.value;
           if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           return [
@@ -241,7 +247,7 @@ export default class AdaRedemptionForm extends Component<Props> {
         placeholder: this.context.intl.formatMessage(messages.shieldedRedemptionKeyHint),
         value: '',
         validators: ({ field }) => {
-          if (this.props.redemptionType !== 'paperVended') return [true];
+          if (this.props.redemptionType !== ADA_REDEMPTION_TYPES.PAPER_VENDED) return [true];
           const value = field.value;
           if (value === '') return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           return [
@@ -315,7 +321,7 @@ export default class AdaRedemptionForm extends Component<Props> {
   }, {
     options: {
       validateOnChange: true,
-      validationDebounceWait: 250,
+      validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
     },
   });
 
@@ -335,9 +341,9 @@ export default class AdaRedemptionForm extends Component<Props> {
 
   resetForm = () => {
     const { form } = this;
-    // We need to disable on-change validation before reseting the form in order to
-    // avoid debounced validation being called straight after the form is reset
-    form.state.options.set({ validateOnChange: false });
+
+    // Cancel all debounced field validations
+    form.each((field) => { field.debouncedValidation.cancel(); });
 
     // We can not user form.reset() call here as it would reset selected walletId
     // which is a bad UX since we are calling resetForm on certificate add/remove
@@ -349,10 +355,8 @@ export default class AdaRedemptionForm extends Component<Props> {
     form.$('passPhrase').reset();
     form.$('redemptionKey').reset();
     form.$('shieldedRedemptionKey').reset();
-    form.$('walletPassword').reset();
 
     form.showErrors(false);
-    form.state.options.set({ validateOnChange: true });
   };
 
   onWalletChange = (walletId: string) => {
@@ -389,30 +393,37 @@ export default class AdaRedemptionForm extends Component<Props> {
     const selectedWallet = getSelectedWallet(walletId.value);
     const walletHasPassword = selectedWallet.hasPassword;
 
-    const showUploadWidget = redemptionType !== 'paperVended';
+    const showUploadWidget = redemptionType !== ADA_REDEMPTION_TYPES.PAPER_VENDED;
 
     const passwordSubmittable = !walletHasPassword || walletPasswordField.value !== '';
 
     let canSubmit = false;
-    if (redemptionType === 'regular' && redemptionCode !== '' && passwordSubmittable) canSubmit = true;
-    if (redemptionType === 'forceVended' && redemptionCode !== '' && passwordSubmittable) canSubmit = true;
+    if (redemptionType === ADA_REDEMPTION_TYPES.REGULAR && redemptionCode !== '' && passwordSubmittable) {
+      canSubmit = true;
+    }
+    if (redemptionType === ADA_REDEMPTION_TYPES.FORCE_VENDED && redemptionCode !== '' && passwordSubmittable) {
+      canSubmit = true;
+    }
     if (
-      redemptionType === 'paperVended' &&
+      redemptionType === ADA_REDEMPTION_TYPES.PAPER_VENDED &&
       shieldedRedemptionKeyField.isDirty &&
       passPhraseField.isDirty &&
       passwordSubmittable
     ) canSubmit = true;
 
     let instructionMessage = '';
+    let instructionValues = {};
     switch (redemptionType) {
-      case 'regular':
+      case ADA_REDEMPTION_TYPES.REGULAR:
         instructionMessage = messages.instructionsRegular;
+        instructionValues = { adaRedemptionPassphraseLength: ADA_REDEMPTION_PASSPHRASE_LENGHT };
         break;
-      case 'forceVended':
+      case ADA_REDEMPTION_TYPES.FORCE_VENDED:
         instructionMessage = messages.instructionsForceVended;
         break;
-      case 'paperVended':
+      case ADA_REDEMPTION_TYPES.PAPER_VENDED:
         instructionMessage = messages.instructionsPaperVended;
+        instructionValues = { adaRedemptionPassphraseLength: ADA_REDEMPTION_PASSPHRASE_LENGHT };
         break;
       default:
         instructionMessage = messages.instructionsRegular;
@@ -442,12 +453,12 @@ export default class AdaRedemptionForm extends Component<Props> {
             />
 
             <div className={styles.instructions}>
-              <FormattedHTMLMessage {...instructionMessage} />
+              <FormattedHTMLMessage {...instructionMessage} values={instructionValues} />
             </div>
 
             <div className={styles.redemption}>
               <div className={styles.inputs}>
-                {redemptionType !== 'paperVended' ? (
+                {redemptionType !== ADA_REDEMPTION_TYPES.PAPER_VENDED ? (
                   <Input
                     className="redemption-key"
                     {...redemptionKeyField.bind()}
@@ -518,7 +529,7 @@ export default class AdaRedemptionForm extends Component<Props> {
                 <Autocomplete
                   className="pass-phrase"
                   options={suggestedMnemonics}
-                  maxSelections={9}
+                  maxSelections={ADA_REDEMPTION_PASSPHRASE_LENGHT}
                   {...passPhraseField.bind()}
                   error={passPhraseField.error}
                   maxVisibleOptions={5}

@@ -18,7 +18,7 @@ export default class LoadingPage extends Component<InjectedProps> {
     const { stores } = this.props;
     const {
       isConnecting, isSyncing, isSynced, syncPercentage, hasBeenConnected,
-      hasBlockSyncingStarted, localTimeDifference, ALLOWED_TIME_DIFFERENCE,
+      hasBlockSyncingStarted, localTimeDifference, isSystemTimeCorrect,
     } = stores.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     return (
@@ -28,7 +28,7 @@ export default class LoadingPage extends Component<InjectedProps> {
           apiIcon={mantisLogo}
           isSyncing={isSyncing}
           localTimeDifference={localTimeDifference}
-          allowedTimeDifference={ALLOWED_TIME_DIFFERENCE}
+          isSystemTimeCorrect={isSystemTimeCorrect}
           isConnecting={isConnecting}
           syncPercentage={syncPercentage}
           isLoadingDataForNextScreen={!isSyncing || isSynced}

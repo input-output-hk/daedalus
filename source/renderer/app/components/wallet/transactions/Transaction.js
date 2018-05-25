@@ -8,10 +8,11 @@ import TransactionTypeIcon from './TransactionTypeIcon';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
 import etcSymbol from '../../../assets/images/etc-symbol.inline.svg';
 import WalletTransaction, { transactionStates, transactionTypes } from '../../../domains/WalletTransaction';
-import { assuranceLevels } from '../../../config/transactionAssuranceConfig';
+import { assuranceLevels } from '../../../types/transactionAssuranceTypes';
 import { environmentSpecificMessages } from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../domains/WalletTransaction';
 import environment from '../../../../../common/environment';
+import { ADA_EXPLORER_URL } from '../../../config/urlsConfig';
 
 const messages = defineMessages({
   card: {
@@ -123,6 +124,7 @@ type Props = {
   assuranceLevel: string,
   isLastInList: boolean,
   formattedWalletAmount: Function,
+  onOpenExternalLink: ?Function,
 };
 
 type State = {
@@ -143,12 +145,31 @@ export default class Transaction extends Component<Props, State> {
     this.setState({ isExpanded: !this.state.isExpanded });
   }
 
+  handleOpenExplorer(type, param, e) {
+    if (this.props.onOpenExternalLink && environment.isAdaApi()) {
+      e.stopPropagation();
+      const link = `${ADA_EXPLORER_URL}/${type}/${param}`;
+      this.props.onOpenExternalLink(link);
+    }
+  }
+
   render() {
-    const data = this.props.data;
-    const { isLastInList, state, assuranceLevel, formattedWalletAmount } = this.props;
+    const {
+      data, isLastInList, state, assuranceLevel,
+      formattedWalletAmount, onOpenExternalLink,
+    } = this.props;
     const { isExpanded } = this.state;
     const { intl } = this.context;
+
+    const canOpenExplorer = onOpenExternalLink && environment.isAdaApi();
+
+    const hasConfirmations = data.numberOfConfirmations > 0;
     const isFailedTransaction = state === transactionStates.FAILED;
+    const isPendingTransaction = (state === transactionStates.PENDING) ||
+      ((state === transactionStates.OK) && !hasConfirmations);
+
+    // transaction state is mutated in order to capture zero-confirmations status as pending state
+    const transactionState = isPendingTransaction ? transactionStates.PENDING : state;
 
     const componentStyles = classNames([
       styles.component,
@@ -162,6 +183,7 @@ export default class Transaction extends Component<Props, State> {
 
     const detailsStyles = classNames([
       styles.details,
+      canOpenExplorer ? styles.clickable : null,
       isExpanded ? styles.expanded : styles.closed
     ]);
 
@@ -170,10 +192,14 @@ export default class Transaction extends Component<Props, State> {
     const symbol = environment.isAdaApi() ? adaSymbol : etcSymbol;
 
     return (
-      <div className={componentStyles}>
+      <div
+        className={componentStyles}
+        onClick={this.toggleDetails.bind(this)}
+        role="presentation"
+        aria-hidden
+      >
 
-        {/* ==== Clickable Header -> toggles details ==== */}
-        <div className={styles.toggler} onClick={this.toggleDetails.bind(this)} role="presentation" aria-hidden>
+        <div className={styles.toggler}>
           <TransactionTypeIcon
             iconType={isFailedTransaction ? transactionStates.FAILED : data.type}
           />
@@ -201,11 +227,11 @@ export default class Transaction extends Component<Props, State> {
                 , {moment(data.date).format('hh:mm:ss A')}
               </div>
 
-              {state === transactionStates.OK ? (
+              {(transactionState === transactionStates.OK) ? (
                 <div className={styles[assuranceLevel]}>{status}</div>
               ) : (
-                <div className={styles[`${state}Label`]}>
-                  {intl.formatMessage(stateTranslations[state])}
+                <div className={styles[`${transactionState}Label`]}>
+                  {intl.formatMessage(stateTranslations[transactionState])}
                 </div>
               )}
             </div>
@@ -231,24 +257,40 @@ export default class Transaction extends Component<Props, State> {
               <h2>
                 {intl.formatMessage(messages[
                   environment.isEtcApi() ? 'fromAddress' : 'fromAddresses'
-                  ])}
+                ])}
               </h2>
               {data.addresses.from.map((address, addressIndex) => (
-                <span key={`${data.id}-from-${address}-${addressIndex}`} className={styles.address}>{address}</span>
+                <span
+                  role="presentation"
+                  aria-hidden
+                  key={`${data.id}-from-${address}-${addressIndex}`}
+                  className={styles.address}
+                  onClick={this.handleOpenExplorer.bind(this, 'address', address)}
+                >
+                  {address}
+                </span>
               ))}
               <h2>
                 {intl.formatMessage(messages[
                   environment.isEtcApi() ? 'toAddress' : 'toAddresses'
-                  ])}
+                ])}
               </h2>
               {data.addresses.to.map((address, addressIndex) => (
-                <span key={`${data.id}-to-${address}-${addressIndex}`} className={styles.address}>{address}</span>
+                <span
+                  role="presentation"
+                  aria-hidden
+                  key={`${data.id}-to-${address}-${addressIndex}`}
+                  className={styles.address}
+                  onClick={this.handleOpenExplorer.bind(this, 'address', address)}
+                >
+                  {address}
+                </span>
               ))}
 
               {environment.isAdaApi() ? (
                 <div className={styles.row}>
                   <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
-                  {state === transactionStates.OK ? (
+                  {(transactionState === transactionStates.OK) ? (
                     <span>
                       <span className={styles.assuranceLevel}>{status}</span>
                       . {data.numberOfConfirmations} {intl.formatMessage(messages.confirmations)}.
@@ -270,7 +312,14 @@ export default class Transaction extends Component<Props, State> {
               ) : null}
 
               <h2>{intl.formatMessage(messages.transactionId)}</h2>
-              <span>{data.id}</span>
+              <span
+                role="presentation"
+                aria-hidden
+                className={styles.transactionId}
+                onClick={this.handleOpenExplorer.bind(this, 'tx', data.id)}
+              >
+                {data.id}
+              </span>
             </div>
             {/*
             <div>

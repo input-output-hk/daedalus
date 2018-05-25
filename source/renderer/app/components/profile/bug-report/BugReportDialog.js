@@ -18,6 +18,7 @@ import { InvalidEmailError, FieldRequiredError } from '../../../i18n/errors';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './BugReportDialog.scss';
 import type { LogFiles } from '../../../types/LogTypes';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 
 const messages = defineMessages({
   title: {
@@ -123,6 +124,7 @@ type Props = {
   onDownload: Function,
   onGetLogs: Function,
   onCompressLogs: Function,
+  onDeleteCompressedLogs: Function,
   isSubmitting: boolean,
   isCompressing: boolean,
   isDownloading?: boolean,
@@ -131,7 +133,6 @@ type Props = {
 
 type State = {
   showLogs: boolean,
-  canLoadLogs: boolean,
 };
 
 @observer
@@ -142,13 +143,16 @@ export default class BugReportDialog extends Component<Props, State> {
   };
 
   state = {
-    showLogs: false,
-    canLoadLogs: true,
+    showLogs: true,
   };
+
+  componentWillMount() {
+    this.props.onGetLogs();
+    this.props.onDeleteCompressedLogs();
+  }
 
   componentWillReceiveProps(nextProps: Object) {
     const commpressionFilesChanged = this.props.compressedLog !== nextProps.compressedLog;
-
     if (nextProps.compressedLog && commpressionFilesChanged && !nextProps.isDownloading) {
       // proceed to submit when ipc rendered successfully return compressed files
       this.submit(nextProps.compressedLog);
@@ -197,7 +201,7 @@ export default class BugReportDialog extends Component<Props, State> {
   }, {
     options: {
       validateOnChange: true,
-      validationDebounceWait: 250,
+      validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
     },
   });
 
@@ -225,13 +229,7 @@ export default class BugReportDialog extends Component<Props, State> {
   };
 
   handleLogsSwitchToggle = (value: boolean) => {
-    // prevent multiple logs loading on same dialog, re-enable on open/close dialog
-    if (this.state.canLoadLogs) {
-      this.props.onGetLogs();
-      this.setState({ showLogs: value, canLoadLogs: false });
-    } else {
-      this.setState({ showLogs: value });
-    }
+    this.setState({ showLogs: value });
   };
 
   render() {

@@ -1,8 +1,11 @@
+// @flow
 import React from 'react';
 import { storiesOf, action } from '@storybook/react';
+import wordlist from 'bip39/wordlists/english';
 import StoryDecorator from './support/StoryDecorator';
 import AdaRedemptionForm from '../../source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm';
 import AdaRedemptionChoices from '../../source/renderer/app/components/wallet/ada-redemption/AdaRedemptionChoices';
+import { ADA_REDEMPTION_TYPES } from '../../source/renderer/app/types/redemptionTypes';
 
 storiesOf('AdaRedemptionForm', module)
 
@@ -28,21 +31,34 @@ storiesOf('AdaRedemptionForm', module)
       <AdaRedemptionForm
         onSubmit={action('submit')}
         isSubmitting={false}
-        isRedemptionDisclaimerAccepted={true}
+        isRedemptionDisclaimerAccepted
         isCertificateSelected={false}
         isCertificateEncrypted={false}
         onCertificateSelected={action('onCertificateSelected')}
         onPassPhraseChanged={action('onPassPhraseChanged')}
         onRedemptionCodeChanged={action('onRedemptionCodeChanged')}
         onChooseRedemptionType={action('onChooseRedemptionType')}
-        redemptionCode=''
-        redemptionType='regular'
+        redemptionCode=""
+        redemptionType={ADA_REDEMPTION_TYPES.REGULAR}
         getSelectedWallet={() => ({})}
         wallets={[
           { value: 'wallet-1', label: 'First Wallet' },
           { value: 'wallet-2', label: 'Second Wallet' },
           { value: 'wallet-3', label: 'Third Wallet' },
         ]}
+        suggestedMnemonics={wordlist}
+        showPassPhraseWidget={false}
+        isCertificateInvalid={false}
+        showInputsForDecryptingForceVendedCertificate={false}
+        redemptionCodeValidator={() => {}}
+        postVendRedemptionCodeValidator={() => {}}
+        onRemoveCertificate={() => {}}
+        onEmailChanged={() => {}}
+        onAdaPasscodeChanged={() => {}}
+        onAdaAmountChanged={() => {}}
+        onAcceptRedemptionDisclaimer={() => {}}
+        mnemonicValidator={() => {}}
+        error={null}
       />
     </div>
   ))
@@ -52,21 +68,34 @@ storiesOf('AdaRedemptionForm', module)
       <AdaRedemptionForm
         onSubmit={action('submit')}
         isSubmitting={false}
-        isRedemptionDisclaimerAccepted={true}
-        isCertificateSelected={true}
+        isRedemptionDisclaimerAccepted
+        isCertificateSelected
         isCertificateEncrypted={false}
         onCertificateSelected={action('onCertificateSelected')}
         onPassPhraseChanged={action('onPassPhraseChanged')}
         onRedemptionCodeChanged={action('onRedemptionCodeChanged')}
         onChooseRedemptionType={action('onChooseRedemptionType')}
-        redemptionCode=''
-        redemptionType='regular'
+        redemptionCode=""
+        redemptionType={ADA_REDEMPTION_TYPES.REGULAR}
         getSelectedWallet={() => ({})}
         wallets={[
           { value: 'wallet-1', label: 'First Wallet' },
           { value: 'wallet-2', label: 'Second Wallet' },
           { value: 'wallet-3', label: 'Third Wallet' },
         ]}
+        suggestedMnemonics={wordlist}
+        showPassPhraseWidget={false}
+        isCertificateInvalid={false}
+        showInputsForDecryptingForceVendedCertificate={false}
+        redemptionCodeValidator={() => {}}
+        postVendRedemptionCodeValidator={() => {}}
+        onRemoveCertificate={() => {}}
+        onEmailChanged={() => {}}
+        onAdaPasscodeChanged={() => {}}
+        onAdaAmountChanged={() => {}}
+        onAcceptRedemptionDisclaimer={() => {}}
+        mnemonicValidator={() => {}}
+        error={null}
       />
     </div>
   ))
@@ -76,21 +105,34 @@ storiesOf('AdaRedemptionForm', module)
       <AdaRedemptionForm
         onSubmit={action('submit')}
         isSubmitting={false}
-        isRedemptionDisclaimerAccepted={true}
-        isCertificateSelected={true}
-        isCertificateEncrypted={true}
+        isRedemptionDisclaimerAccepted
+        isCertificateSelected
+        isCertificateEncrypted
         onCertificateSelected={action('onCertificateSelected')}
         onPassPhraseChanged={action('onPassPhraseChanged')}
         onRedemptionCodeChanged={action('onRedemptionCodeChanged')}
         onChooseRedemptionType={action('onChooseRedemptionType')}
-        redemptionCode=''
-        redemptionType='regular'
+        redemptionCode=""
+        redemptionType={ADA_REDEMPTION_TYPES.REGULAR}
         getSelectedWallet={() => ({})}
         wallets={[
           { value: 'wallet-1', label: 'First Wallet' },
           { value: 'wallet-2', label: 'Second Wallet' },
           { value: 'wallet-3', label: 'Third Wallet' },
         ]}
+        suggestedMnemonics={wordlist}
+        showPassPhraseWidget={false}
+        isCertificateInvalid={false}
+        showInputsForDecryptingForceVendedCertificate={false}
+        redemptionCodeValidator={() => {}}
+        postVendRedemptionCodeValidator={() => {}}
+        onRemoveCertificate={() => {}}
+        onEmailChanged={() => {}}
+        onAdaPasscodeChanged={() => {}}
+        onAdaAmountChanged={() => {}}
+        onAcceptRedemptionDisclaimer={() => {}}
+        mnemonicValidator={() => {}}
+        error={null}
       />
     </div>
   ));

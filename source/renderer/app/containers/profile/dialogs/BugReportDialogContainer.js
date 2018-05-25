@@ -14,7 +14,7 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   onSubmit = (values: {
-    email: string, subject: ?string, problem: ?string, compressedLog: ?string
+    email: string, subject: string, problem: string, compressedLog: ?string
   }) => {
     this.props.actions.profile.sendBugReport.trigger(values);
   };
@@ -23,7 +23,7 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
     const destination = remote.dialog.showSaveDialog({
       defaultPath: 'logs.zip',
     });
-    this.props.actions.profile.downloadLogs.trigger({ destination });
+    if (destination) this.props.actions.profile.downloadLogs.trigger({ destination });
   };
 
   onSubmitManually = (link: string) => {
@@ -32,11 +32,11 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
 
   resetBugReportDialog = () => {
     this.props.actions.profile.resetBugReportDialog.trigger();
-  }
+  };
 
   render() {
     const { actions, stores } = this.props;
-    const { getLogs, compressLogs } = actions.profile;
+    const { getLogs, compressLogs, deleteCompressedLogs } = actions.profile;
     const {
       logFiles,
       compressedLog,
@@ -63,6 +63,9 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
         }}
         onCompressLogs={(logs) => {
           compressLogs.trigger({ logs });
+        }}
+        onDeleteCompressedLogs={() => {
+          deleteCompressedLogs.trigger();
         }}
       />
     );

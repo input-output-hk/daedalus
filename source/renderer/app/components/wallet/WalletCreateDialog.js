@@ -13,6 +13,7 @@ import Dialog from '../widgets/Dialog';
 import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from '../../utils/validations';
 import globalMessages from '../../i18n/global-messages';
 import styles from './WalletCreateDialog.scss';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -37,17 +38,17 @@ const messages = defineMessages({
   },
   passwordSwitchPlaceholder: {
     id: 'wallet.create.dialog.passwordSwitchPlaceholder',
-    defaultMessage: '!!!Activate to create password',
+    defaultMessage: '!!!Keep your private keys safely encrypted by setting the spending password',
     description: 'Text for the "Activate to create password" switch in the create wallet dialog.',
   },
   passwordSwitchLabel: {
     id: 'wallet.create.dialog.passwordSwitchLabel',
-    defaultMessage: '!!!Password',
+    defaultMessage: '!!!Spending password',
     description: 'Label for the "Activate to create password" switch in the create wallet dialog.',
   },
   walletPasswordLabel: {
     id: 'wallet.create.dialog.walletPasswordLabel',
-    defaultMessage: '!!!Wallet password',
+    defaultMessage: '!!!Enter password',
     description: 'Label for the "Wallet password" input in the create wallet dialog.',
   },
   repeatPasswordLabel: {
@@ -81,7 +82,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
 
   state = {
     isSubmitting: false,
-    createPassword: false,
+    createPassword: true,
   };
 
   componentDidMount() {
@@ -111,7 +112,9 @@ export default class WalletCreateDialog extends Component<Props, State> {
         validators: [({ field, form }) => {
           if (!this.state.createPassword) return [true];
           const repeatPasswordField = form.$('repeatPassword');
-          if (repeatPasswordField.value.length > 0) repeatPasswordField.validate(form);
+          if (repeatPasswordField.value.length > 0) {
+            repeatPasswordField.validate({ showErrors: true });
+          }
           return [
             isValidWalletPassword(field.value),
             this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
@@ -137,7 +140,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
   }, {
     options: {
       validateOnChange: true,
-      validationDebounceWait: 250,
+      validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
     },
   });
 

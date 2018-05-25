@@ -21,11 +21,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Daedalus',
     description: 'About "title"',
   },
-  aboutReleaseVersion: {
-    id: 'static.about.release.version',
-    defaultMessage: '!!!0.8.2',
-    description: 'Label for "App Release Version"',
-  },
   aboutContentDaedalusHeadline: {
     id: 'static.about.content.daedalus.headline',
     defaultMessage: '!!!Daedalus Team:',
@@ -43,7 +38,7 @@ const messages = defineMessages({
   },
   aboutContentDaedalusMembers: {
     id: 'static.about.content.daedalus.members',
-    defaultMessage: '!!!Alexander Rukin, Charles Hoskinson, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Tomislav Horaček, Stefan Malzner',
+    defaultMessage: '!!!Alexander Rukin, Charles Hoskinson, Clemens Helm, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Stefan Malzner, Tomislav Horaček',
     description: 'About page daedalus team members',
   },
   aboutContentCardanoMembers: {
@@ -101,7 +96,7 @@ export default class About extends Component<any> {
         platform = '';
     }
 
-    const build = environment.build;
+    const { version, build } = environment;
     const apiName = intl.formatMessage(environmentSpecificMessages[environment.API].apiName);
     const apiVersion = intl.formatMessage(environmentSpecificMessages[environment.API].apiVersion);
     const apiIcon = environment.isAdaApi() ? cardanoIcon : mantisIcon;
@@ -125,7 +120,7 @@ export default class About extends Component<any> {
             <div className={styles.daedalusTitle}>
               {intl.formatMessage(messages.aboutTitle)}
               <span className={styles.daedalusVersion}>
-                {intl.formatMessage(messages.aboutReleaseVersion)}
+                {version}
               </span>
             </div>
             <div className={styles.daedalusBuildInfo}>

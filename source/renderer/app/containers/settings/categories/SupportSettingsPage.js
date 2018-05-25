@@ -1,25 +1,42 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import { remote } from 'electron';
 import SupportSettings from '../../../components/settings/categories/SupportSettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
+import BugReportDialog from '../../../components/profile/bug-report/BugReportDialog';
+
+const shell = require('electron').shell;
 
 @inject('stores', 'actions') @observer
 export default class SupportSettingsPage extends Component<InjectedProps> {
 
   static defaultProps = { actions: null, stores: null };
 
-  onSubmit = (values: { sendLogs: boolean }) => {
-    this.props.actions.profile.setSendLogsChoice.trigger(values);
+  handleExternalLinkClick = (event: MouseEvent) => {
+    event.preventDefault();
+    if (event.target.href) shell.openExternal(event.target.href);
+  };
+
+  handleSupportRequestClick = () => {
+    this.props.actions.dialogs.open.trigger({
+      dialog: BugReportDialog,
+    });
+  };
+
+  handleDownloadLogs = () => {
+    const destination = remote.dialog.showSaveDialog({
+      defaultPath: 'logs.zip',
+    });
+    if (destination) this.props.actions.profile.downloadLogs.trigger({ destination, fresh: true });
   };
 
   render() {
-    const { setSendLogsChoiceRequest, getSendLogsChoiceRequest } = this.props.stores.profile;
     return (
       <SupportSettings
-        onSubmit={this.onSubmit}
-        error={setSendLogsChoiceRequest.error}
-        sendLogs={getSendLogsChoiceRequest.result}
+        onExternalLinkClick={this.handleExternalLinkClick}
+        onSupportRequestClick={this.handleSupportRequestClick}
+        onDownloadLogs={this.handleDownloadLogs}
       />
     );
   }

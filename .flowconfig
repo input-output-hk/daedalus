@@ -1,11 +1,11 @@
 [ignore]
-.*/node_modules/fbjs/.*
-.*/node_modules/electron-packager/.*
-.*/node_modules/npm/.*
-.*/node_modules/oboe/.*
-.*/dist/.*
-.*/release/.*
-.*/git/.*
+<PROJECT_ROOT>/node_modules/fbjs/.*
+<PROJECT_ROOT>/node_modules/electron-packager/.*
+<PROJECT_ROOT>/node_modules/npm/.*
+<PROJECT_ROOT>/node_modules/oboe/.*
+<PROJECT_ROOT>/dist/.*
+<PROJECT_ROOT>/release/.*
+<PROJECT_ROOT>/git/.*
 
 [include]
 

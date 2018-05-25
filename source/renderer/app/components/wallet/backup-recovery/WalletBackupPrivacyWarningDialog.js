@@ -9,6 +9,7 @@ import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
+import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import styles from './WalletBackupPrivacyWarningDialog.scss';
 
 const messages = defineMessages({
@@ -77,12 +78,14 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
         className={dialogClasses}
         title={intl.formatMessage(globalMessages.recoveryPhraseDialogTitle)}
         actions={actions}
-        closeOnOverlayClick
+        closeOnOverlayClick={false}
         onClose={onCancelBackup}
         closeButton={<DialogCloseButton onClose={onCancelBackup} />}
       >
         <WalletRecoveryInstructions
-          instructionsText={intl.formatMessage(messages.recoveryPhraseInstructions)}
+          instructionsText={intl.formatMessage(messages.recoveryPhraseInstructions, {
+            walletRecoveryPhraseWordCount: WALLET_RECOVERY_PHRASE_WORD_COUNT,
+          })}
         />
         <div className={styles.checkbox}>
           <Checkbox

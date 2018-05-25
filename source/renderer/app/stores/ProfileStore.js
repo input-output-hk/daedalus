@@ -1,6 +1,5 @@
 // @flow
 import { action, observable, computed, toJS } from 'mobx';
-import { size } from 'lodash';
 import BigNumber from 'bignumber.js';
 import moment from 'moment/moment';
 import { ipcRenderer } from 'electron';
@@ -40,8 +39,6 @@ export default class SettingsStore extends Store {
   @observable setProfileLocaleRequest: Request<string> = new Request(this.api.localStorage.setUserLocale);
   @observable getTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.localStorage.getTermsOfUseAcceptance);
   @observable setTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.localStorage.setTermsOfUseAcceptance);
-  @observable getSendLogsChoiceRequest: Request<boolean> = new Request(this.api.localStorage.getSendLogsChoice);
-  @observable setSendLogsChoiceRequest: Request = new Request(this.api.localStorage.setSendLogsChoice);
   @observable getThemeRequest: Request<string> = new Request(this.api.localStorage.getUserTheme);
   @observable setThemeRequest: Request<string> = new Request(this.api.localStorage.setUserTheme);
   @observable sendBugReport: Request<any> = new Request(this.api[environment.API].sendBugReport);
@@ -54,13 +51,13 @@ export default class SettingsStore extends Store {
 
   setup() {
     this.actions.profile.updateLocale.listen(this._updateLocale);
-    this.actions.profile.setSendLogsChoice.listen(this._setSendLogsChoice);
     this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
     this.actions.profile.updateTheme.listen(this._updateTheme);
     this.actions.profile.getLogs.listen(this._getLogs);
     this.actions.profile.resetBugReportDialog.listen(this._resetBugReportDialog);
     this.actions.profile.downloadLogs.listen(this._downloadLogs);
     this.actions.profile.compressLogs.listen(this._compressLogs);
+    this.actions.profile.deleteCompressedLogs.listen(this._deleteCompressedFiles);
     this.actions.profile.sendBugReport.listen(this._sendBugReport);
     ipcRenderer.on(GET_LOGS.SUCCESS, this._onGetLogsSuccess);
     ipcRenderer.on(DOWNLOAD_LOGS.SUCCESS, this._onDownloadLogsSuccess);
@@ -72,11 +69,9 @@ export default class SettingsStore extends Store {
       this._reloadAboutWindowOnLocaleChange,
       this._redirectToLanguageSelectionIfNoLocaleSet,
       this._redirectToTermsOfUseScreenIfTermsNotAccepted,
-      this._redirectToSendLogsChoiceScreenIfSendLogsChoiceNotSet,
-      this._redirectToMainUiAfterSetSendLogsChoice,
+      this._redirectToMainUiAfterTermsAreAccepted,
     ]);
     this._getTermsOfUseAcceptance();
-    this._sendLogsChoiceToMainProcess();
   }
 
   teardown() {
@@ -140,20 +135,11 @@ export default class SettingsStore extends Store {
     return this.getTermsOfUseAcceptanceRequest.result === true;
   }
 
-  @computed get isSendLogsChoiceSet(): boolean {
-    return this.getSendLogsChoiceRequest.result !== null;
-  }
-
-  @computed get hasLoadedSendLogsChoice(): boolean {
-    return this.getSendLogsChoiceRequest.wasExecuted;
-  }
-
   @computed get isSetupPage(): boolean {
     const { currentRoute } = this.stores.app;
     return (
       currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
-      currentRoute === ROUTES.PROFILE.TERMS_OF_USE ||
-      currentRoute === ROUTES.PROFILE.SEND_LOGS
+      currentRoute === ROUTES.PROFILE.TERMS_OF_USE
     );
   }
 
@@ -180,18 +166,6 @@ export default class SettingsStore extends Store {
     this.getTermsOfUseAcceptanceRequest.execute();
   };
 
-  _getSendLogsChoice = async () => await this.getSendLogsChoiceRequest.execute().promise;
-
-  _setSendLogsChoice = async ({ sendLogs }: { sendLogs: boolean }) => {
-    await this.setSendLogsChoiceRequest.execute(sendLogs).promise;
-    await this._sendLogsChoiceToMainProcess();
-  };
-
-  _sendLogsChoiceToMainProcess = async () => {
-    const choice = await this._getSendLogsChoice();
-    ipcRenderer.send('send-logs-choice', choice);
-  };
-
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
     const { isConnected } = this.stores.networkStatus;
     if (isConnected && this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
@@ -207,18 +181,10 @@ export default class SettingsStore extends Store {
     }
   };
 
-  _redirectToSendLogsChoiceScreenIfSendLogsChoiceNotSet = () => {
-    const { isConnected } = this.stores.networkStatus;
-    if (isConnected && this.isCurrentLocaleSet && this.areTermsOfUseAccepted &&
-      this.hasLoadedSendLogsChoice && !this.isSendLogsChoiceSet) {
-      this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.SEND_LOGS });
-    }
-  };
+  _isOnTermsOfUsePage = () => this.stores.app.currentRoute === ROUTES.PROFILE.TERMS_OF_USE;
 
-  _isOnSendLogsChoicePage = () => this.stores.app.currentRoute === ROUTES.PROFILE.SEND_LOGS;
-
-  _redirectToMainUiAfterSetSendLogsChoice = () => {
-    if (this.isSendLogsChoiceSet && this._isOnSendLogsChoicePage()) {
+  _redirectToMainUiAfterTermsAreAccepted = () => {
+    if (this.areTermsOfUseAccepted && this._isOnTermsOfUsePage()) {
       this._redirectToRoot();
     }
   };
@@ -238,25 +204,22 @@ export default class SettingsStore extends Store {
   };
 
   _resetBugReportDialog = () => {
-    // if logs are compressed then perform delete on dialog close
-    if (size(this.compressedLog) > 0) {
-      this._deleteCompressedFiles(this.compressedLog);
-    }
+    this._deleteCompressedFiles();
     this._reset();
     this.actions.dialogs.closeActiveDialog.trigger();
   };
 
-  _downloadLogs = action(({ destination }) => {
+  _downloadLogs = action(({ destination, fresh }) => {
     this.compressedFileDownload = {
       inProgress: true,
       destination,
     };
 
-    // logs allready compressed, download
-    if (this.compressedLog) {
+    if (this.compressedLog && fresh !== true) {
+      // logs already compressed, trigger download
       ipcRenderer.send(DOWNLOAD_LOGS.REQUEST, this.compressedLog, destination);
     } else {
-      // start proccess getLogs -> compressLogs -> downloadLogs (again)
+      // start process: getLogs -> compressLogs -> downloadLogs (again)
       this._getLogs();
     }
   });
@@ -291,17 +254,15 @@ export default class SettingsStore extends Store {
 
   _sendBugReport = action(({ email, subject, problem, compressedLog } : {
     email: string,
-    subject: ?string,
-    problem: ?string,
+    subject: string,
+    problem: string,
     compressedLog: ?string,
   }) => {
     this.sendBugReport.execute({
       email, subject, problem, compressedLog,
     })
       .then(action(() => {
-        this._deleteCompressedFiles();
-        this._reset();
-        this.actions.dialogs.closeActiveDialog.trigger();
+        this._resetBugReportDialog();
       }))
       .catch(action((error) => {
         this.error = error;
@@ -309,9 +270,9 @@ export default class SettingsStore extends Store {
   });
 
   _deleteCompressedFiles = action(() => {
-    // Trigger ipc renderer to delete compressed temp files if exists
     if (this.compressedLog) {
       ipcRenderer.send(DELETE_COMPRESSED_LOGS.REQUEST, this.compressedLog);
+      this.compressedLog = null;
     }
   });
 

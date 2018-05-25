@@ -14,6 +14,7 @@ import { isValidWalletPassword, isValidRepeatPassword } from '../../../utils/val
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './ChangeWalletPasswordDialog.scss';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 
 const messages = defineMessages({
   dialogTitleSetPassword: {
@@ -26,10 +27,10 @@ const messages = defineMessages({
     defaultMessage: '!!!Change password',
     description: 'Title for the "Change wallet password" dialog when there is already password set.',
   },
-  walletPasswordLabel: {
-    id: 'wallet.settings.changePassword.dialog.walletPasswordLabel',
-    defaultMessage: '!!!Wallet password',
-    description: 'Label for the "Wallet password" input in the change wallet password dialog.',
+  spendingPasswordLabel: {
+    id: 'wallet.settings.changePassword.dialog.spendingPasswordLabel',
+    defaultMessage: '!!!Spending password',
+    description: 'Label for the "Spending password" input in the change wallet password dialog.',
   },
   currentPasswordLabel: {
     id: 'wallet.settings.changePassword.dialog.currentPasswordLabel',
@@ -125,14 +126,16 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
       walletPassword: {
         type: 'password',
         label: this.context.intl.formatMessage(messages[
-          this.props.isWalletPasswordSet ? 'newPasswordLabel' : 'walletPasswordLabel'
+          this.props.isWalletPasswordSet ? 'newPasswordLabel' : 'spendingPasswordLabel'
         ]),
         placeholder: this.context.intl.formatMessage(messages.newPasswordFieldPlaceholder),
         value: '',
         validators: [({ field, form }) => {
           if (this.state.removePassword) return [true];
           const repeatPasswordField = form.$('repeatPassword');
-          if (repeatPasswordField.value.length > 0) repeatPasswordField.validate(form);
+          if (repeatPasswordField.value.length > 0) {
+            repeatPasswordField.validate({ showErrors: true });
+          }
           return [
             isValidWalletPassword(field.value),
             this.context.intl.formatMessage(globalMessages.invalidWalletPassword)
@@ -158,7 +161,7 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
   }, {
     options: {
       validateOnChange: true,
-      validationDebounceWait: 250,
+      validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
     },
   });
 

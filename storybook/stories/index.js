@@ -1,3 +1,4 @@
+// @flow
 import '../../source/renderer/app/themes/index.global.scss';
 import './Sidebar.stories';
 import './SidebarCategory.stories';
@@ -13,3 +14,4 @@ import './WalletDeleteConfirmationDialog.stories';
 import './TopBar.stories';
 import './WalletTransactionsList.stories';
 import './WalletExportToFileDialog.stories';
+import './PaperWallets.stories';

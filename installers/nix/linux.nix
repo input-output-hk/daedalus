@@ -1,11 +1,29 @@
 { stdenv, runCommand, writeText, writeScriptBin, fetchurl, fetchFromGitHub, openssl, electron,
 coreutils, utillinux, procps, cluster,
-rawapp, master_config, cardanoPkgs }:
+rawapp, daedalus-bridge, daedalus-installer,
+sandboxed ? false
+}:
 
 let
+  slimOpenssl = runCommand "openssl" {} ''
+    mkdir -pv $out/bin/
+    cp ${openssl}/bin/openssl $out/bin/
+  '';
+  daedalus-config = runCommand "daedalus-config" {} ''
+    mkdir -pv $out
+    cd $out
+    cp -vi ${daedalus-bridge}/config/configuration.yaml configuration.yaml
+    ## TODO: we don't need both of those genesis files (even if file names sound cool),
+    ##       but the choice would have to be made in the Dhall-generated files,
+    ##       splitting the dep chain further:
+    cp -vi ${daedalus-bridge}/config/mainnet-genesis-dryrun-with-stakeholders.json mainnet-genesis-dryrun-with-stakeholders.json
+    cp -vi ${daedalus-bridge}/config/mainnet-genesis.json mainnet-genesis.json
+    cp -vi ${daedalus-bridge}/config/log-config-prod.yaml daedalus.yaml
+    ${daedalus-installer}/bin/make-installer --out-dir "." --cluster ${cluster} config "${daedalus-installer.src}/dhall" "."
+  '';
   # closure size TODO list
   # electron depends on cups, which depends on avahi
-  daedalus_frontend = writeScriptBin "daedalus" ''
+  daedalus-frontend = writeScriptBin "daedalus-frontend" ''
     #!${stdenv.shell}
 
     test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
@@ -15,99 +33,20 @@ let
 
     exec ${electron}/bin/electron ${rawapp}/share/daedalus/main/
   '';
-  cardanoProgs = runCommand "cardano" {} ''
-    mkdir -pv $out/bin/
-    cp ${cardanoPkgs.cardano-sl-wallet}/bin/cardano-node $out/bin/
-    cp ${cardanoPkgs.cardano-sl-tools}/bin/cardano-launcher $out/bin/
-  '';
-  slimOpenssl = runCommand "openssl" {} ''
-    mkdir -pv $out/bin/
-    cp ${openssl}/bin/openssl $out/bin/
-  '';
-  configFiles = runCommand "cardano-config" {} ''
-    mkdir -pv $out
-    cd $out
-    cp -vi ${cardanoPkgs.cardano-sl.src + "/configuration.yaml"} configuration.yaml
-    cp -vi ${cardanoPkgs.cardano-sl.src + "/mainnet-genesis-dryrun-with-stakeholders.json"} mainnet-genesis-dryrun-with-stakeholders.json
-    cp -vi ${cardanoPkgs.cardano-sl.src + "/mainnet-genesis.json"} mainnet-genesis.json
-    cp -vi ${cardanoPkgs.cardano-sl.src + "/../log-configs/daedalus.yaml"} daedalus.yaml
-    cp -vi ${topologies.${cluster}} topology.yaml
-  '';
-  topologies = {
-    # TODO DEVOPS-690 integration
-    mainnet = writeText "topology.yaml" ''
-      wallet:
-        relays:
-          [
-            [
-              { host: relays.cardano-mainnet.iohk.io }
-            ]
-          ]
-        valency: 1
-        fallbacks: 7
-    '';
-    staging = writeText "topology.yaml" ''
-      wallet:
-        relays:
-          [
-            [
-              { host: relays.awstest.iohkdev.io }
-            ]
-          ]
-        valency: 1
-        fallbacks: 7
-    '';
-  };
-  perClusterConfig = {
-    mainnet = {
-      key = "mainnet_wallet_macos64";
-    };
-    staging = {
-      key = "mainnet_dryrun_wallet_macos64";
-    };
-  };
-  launcherConfig = writeText "launcher-config.json" (builtins.toJSON {
-    nodePath = "${cardanoProgs}/bin/cardano-node";
-    nodeArgs = [
-      "--update-latest-path" "$HOME/.local/share/Daedalus/${cluster}/installer.sh"
-      "--keyfile" "Secrets/secret.key"
-      "--wallet-db-path" "Wallet/"
-      "--update-server" "https://update-cardano-mainnet.iohk.io"
-      "--update-with-package"
-      "--no-ntp"
-      "--tlscert" "tls/server/server.crt"
-      "--tlskey" "tls/server/server.key"
-      "--tlsca" "tls/ca/ca.crt"
-      "--topology" "${configFiles}/topology.yaml"
-      "--wallet-address" "127.0.0.1:8090"
-      "--logs-prefix" "Logs"
-    ];
-    nodeDbPath = "DB/";
-    nodeLogConfig = "${configFiles}/daedalus.yaml";
-    nodeLogPath = "$HOME/.local/share/Daedalus/${cluster}/Logs/cardano-node.log";
-    reportServer = "http://report-server.cardano-mainnet.iohk.io:8080";
-    configuration = {
-      filePath = "${configFiles}/configuration.yaml";
-      key = perClusterConfig.${cluster}.key;
-      systemStart = null;
-      seed = null;
-    };
-    updaterPath = "/bin/update-runner";
-    updateArchive = "$HOME/.local/share/Daedalus/${cluster}/installer.sh";
-    updateWindowsRunner = null;
-    nodeTimeoutSec = 30;
-    launcherLogsPrefix = "$HOME/.local/share/Daedalus/${cluster}/Logs/";
-    walletPath = "${daedalus_frontend}/bin/daedalus";
-    walletArgs = [];
-  });
   daedalus = writeScriptBin "daedalus" ''
     #!${stdenv.shell}
 
     set -xe
 
+    ${if sandboxed then ''
+    '' else ''
+      export PATH="${daedalus-frontend}/bin/:${daedalus-bridge}/bin:$PATH"
+    ''}
+
     test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
-    export CLUSTER=${cluster}
-    export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
+    export           CLUSTER=${cluster}
+    export      DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
+    export   DAEDALUS_CONFIG=${if sandboxed then "/nix/var/nix/profiles/profile-${cluster}/etc" else daedalus-config}
 
     mkdir -p "''${DAEDALUS_DIR}/${cluster}/"{Logs/pub,Secrets}
     cd "''${DAEDALUS_DIR}/${cluster}/"
@@ -117,7 +56,14 @@ let
       ${slimOpenssl}/bin/openssl req -x509 -newkey rsa:2048 -keyout tls/server/server.key -out tls/server/server.crt -days 3650 -nodes -subj "/CN=localhost"
       cp tls/server/server.crt tls/ca/ca.crt
     fi
-    exec ${cardanoProgs}/bin/cardano-launcher \
-      --config ${launcherConfig}
+    exec ${daedalus-bridge}/bin/cardano-launcher \
+      --config ${if sandboxed then "/nix/var/nix/profiles/profile-${cluster}/etc/launcher-config.yaml" else "${daedalus-config}/launcher-config.yaml"}
   '';
-in daedalus
+  wrappedConfig = runCommand "launcher-config" {} ''
+    mkdir -pv $out/etc/
+    cp ${daedalus-config}/* $out/etc/
+  '';
+in daedalus // {
+  cfg = wrappedConfig;
+  inherit daedalus-frontend;
+}

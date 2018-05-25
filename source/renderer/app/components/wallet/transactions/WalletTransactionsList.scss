@@ -1,5 +1,24 @@
 .component {
   padding: 20px 20px 0;
+
+  .syncingTransactionsWrapper {
+    margin-bottom: 20px;
+
+    :global {
+      .LoadingSpinner_component {
+        margin-top: 10px;
+      }
+    }
+
+    .syncingTransactionsText {
+      color: var(--theme-transactions-list-group-date-color);
+      font-family: var(--font-regular);
+      font-size: 16px;
+      line-height: 1.38;
+      opacity: 0.5;
+      text-align: center;
+    }
+  }
 }
 
 .list {
@@ -33,4 +52,9 @@
   opacity: 0.5;
   margin-bottom: 10px;
   margin-left: 20px;
+}
+
+.showMoreTransactionsButton {
+  display: block !important;
+  margin: 30px auto;
 }

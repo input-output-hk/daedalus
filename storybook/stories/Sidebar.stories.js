@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { observable, runInAction } from 'mobx';
 import { storiesOf } from '@storybook/react';
@@ -37,6 +38,8 @@ const sidebarMenus = observable({
   }
 });
 
+let emptyMenus;
+
 storiesOf('Sidebar', module)
 
   .addDecorator((story) => (
@@ -49,16 +52,27 @@ storiesOf('Sidebar', module)
 
   .add('no category', () => (
     <Sidebar
+      menus={emptyMenus}
       categories={SIDEBAR_CATEGORIES}
+      activeSidebarCategory=""
       onCategoryClicked={action('onCategoryClicked')}
+      isDialogOpen={() => false}
+      onAddWallet={action('onAddWallet')}
+      openDialogAction={action('openDialog')}
+      onSubmitSupportRequest={() => {}}
     />
   ))
 
   .add('wallets category', () => (
     <Sidebar
+      menus={emptyMenus}
       categories={SIDEBAR_CATEGORIES}
       activeSidebarCategory={SIDEBAR_CATEGORIES[0].route}
       onCategoryClicked={action('onCategoryClicked')}
+      isDialogOpen={() => false}
+      onAddWallet={action('onAddWallet')}
+      openDialogAction={action('openDialog')}
+      onSubmitSupportRequest={() => {}}
     />
   ))
 
@@ -69,5 +83,9 @@ storiesOf('Sidebar', module)
       menus={sidebarMenus}
       onCategoryClicked={action('onCategoryClicked')}
       isShowingSubMenus
+      isDialogOpen={() => false}
+      onAddWallet={action('onAddWallet')}
+      openDialogAction={action('openDialog')}
+      onSubmitSupportRequest={() => {}}
     />
   ));

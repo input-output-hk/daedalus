@@ -4,6 +4,12 @@
 export type AdaAssurance = 'CWANormal' | 'CWAStrict';
 export type AdaTransactionCondition = 'CPtxApplying' | 'CPtxInBlocks' | 'CPtxWontApply' | 'CPtxNotTracked';
 export type AdaWalletRecoveryPhraseResponse = Array<string>;
+export type AdaWalletCertificateAdditionalMnemonicsResponse = Array<string>;
+export type AdaWalletCertificateRecoveryPhraseResponse = Array<string>;
+export type AdaWalletRecoveryPhraseFromCertificateResponse = Array<string>;
+export type GetWalletCertificateAdditionalMnemonicsResponse = Array<string>;
+export type GetWalletCertificateRecoveryPhraseResponse = Array<string>;
+export type GetWalletRecoveryPhraseFromCertificateResponse = Array<string>;
 
 export type AdaSyncProgressResponse = {
   _spLocalCD: {
@@ -94,4 +100,48 @@ export type AdaWallet = {
 };
 
 export type AdaWallets = Array<AdaWallet>;
+
 export type AdaLocalTimeDifference = number;
+
+
+// ========== V1 API =========
+
+export type AdaV1Assurance = 'normal' | 'strict';
+export type AdaV1WalletSyncStateTag = 'restoring' | 'synced';
+
+export type AdaV1WalletSyncState = {
+  data: ?{
+    estimatedCompletionTime: {
+      quantity: number,
+      unit: 'milliseconds',
+    },
+    percentage: {
+      quantity: number,
+      unit: 'percenage',
+    },
+    throughput: {
+      quantity: number,
+      unit: 'blocksPerSecond',
+    },
+  },
+  tag: AdaV1WalletSyncStateTag,
+};
+
+export type AdaV1Wallet = {
+  assuranceLevel: AdaV1Assurance,
+  balance: number,
+  createdAt: string,
+  hasSpendingPassword: boolean,
+  id: string,
+  name: string,
+  spendingPasswordLastUpdate: string,
+  syncState: AdaV1WalletSyncState,
+};
+
+export type AdaV1Wallets = Array<AdaV1Wallet>;
+
+export const AdaV1AssuranceOptions: {
+  NORMAL: AdaV1Assurance, STRICT: AdaV1Assurance,
+} = {
+  NORMAL: 'normal', STRICT: 'strict',
+};

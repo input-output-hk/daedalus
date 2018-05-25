@@ -1,6 +1,7 @@
 import { defineMessages } from 'react-intl';
 import LocalizableError from '../i18n/LocalizableError';
 import { WalletTransaction, Wallet } from '../domains/WalletTransaction';
+import globalMessages from '../i18n/global-messages';
 
 const messages = defineMessages({
   genericApiError: {
@@ -57,6 +58,15 @@ export class ReportRequestError extends LocalizableError {
     super({
       id: messages.reportRequestError.id,
       defaultMessage: messages.reportRequestError.defaultMessage,
+    });
+  }
+}
+
+export class InvalidMnemonicError extends LocalizableError {
+  constructor() {
+    super({
+      id: globalMessages.invalidMnemonic.id,
+      defaultMessage: globalMessages.invalidMnemonic.defaultMessage,
     });
   }
 }

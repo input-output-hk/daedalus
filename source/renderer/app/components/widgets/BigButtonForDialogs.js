@@ -7,8 +7,8 @@ type Props = {
   label: string,
   description: string,
   icon: string,
-  onClick: Function,
-  isDisabled: boolean,
+  onClick: ?Function,
+  isDisabled: ?boolean,
   className: string,
 };
 

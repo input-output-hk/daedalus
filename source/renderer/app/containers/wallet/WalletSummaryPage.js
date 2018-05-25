@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import { get } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import WalletTransactionsList from '../../components/wallet/transactions/WalletTransactionsList';
@@ -7,8 +8,10 @@ import WalletSummary from '../../components/wallet/summary/WalletSummary';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
+import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import resolver from '../../utils/imports';
+import { syncStateTags } from '../../domains/Wallet';
 
 const { formattedWalletAmount } = resolver('utils/formatters');
 
@@ -33,7 +36,9 @@ export default class WalletSummaryPage extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { wallets, transactions } = this.props.stores.ada;
+    const { ada, app } = this.props.stores;
+    const { wallets, transactions } = ada;
+    const { openExternalLink } = app;
     const {
       hasAny,
       totalAvailable,
@@ -48,7 +53,9 @@ export default class WalletSummaryPage extends Component<Props> {
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
-    if (recentTransactionsRequest.isExecutingFirstTime || hasAny) {
+    const isRestoreActive = get(wallet, 'syncState.tag') === syncStateTags.RESTORING;
+
+    if (recentTransactionsRequest.isExecutingFirstTime || hasAny || isRestoreActive) {
       walletTransactions = (
         <WalletTransactionsList
           key={`WalletTransactionsList_${wallet.id}`}
@@ -57,7 +64,11 @@ export default class WalletSummaryPage extends Component<Props> {
           hasMoreToLoad={false}
           assuranceMode={wallet.assuranceMode}
           walletId={wallet.id}
+          isRestoreActive={isRestoreActive}
           formattedWalletAmount={formattedWalletAmount}
+          showMoreTransactionsButton={totalAvailable > 5}
+          onOpenExternalLink={openExternalLink}
+          onShowMoreTransactions={this.handleShowMoreTransaction}
         />
       );
     } else if (!hasAny) {
@@ -78,4 +89,10 @@ export default class WalletSummaryPage extends Component<Props> {
     );
   }
 
+  handleShowMoreTransaction = (walletId: string) => {
+    this.props.actions.router.goToRoute.trigger({
+      route: ROUTES.WALLETS.PAGE,
+      params: { id: walletId, page: 'transactions' },
+    });
+  };
 }

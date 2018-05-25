@@ -1,0 +1,30 @@
+.component {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.restoreNotification {
+  color: var(--theme-transactions-list-group-date-color);
+  font-family: var(--font-regular);
+  font-size: 16px;
+  line-height: 1.38;
+  margin-top: 10px;
+  opacity: 0.6;
+  text-align: center;
+}
+
+.buttonsContainer {
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+}
+
+.firstRow {
+  display: flex;
+}
+
+.secondRow {
+  display: flex;
+}

@@ -49,6 +49,7 @@
   font-family: var(--font-medium);
   font-size: 16px;
   letter-spacing: 1px;
+  user-select: auto;
 }
 
 .pendingLabel, .failedLabel, .low, .medium, .high {
@@ -145,11 +146,22 @@
   span {
     font-family: var(--font-light);
     font-size: 14px;
+    user-select: auto;
     word-break: break-all;
 
     &.address {
       display: block;
       line-height: 19px;
+    }
+  }
+
+  &.clickable {
+    .transactionId,
+    .address {
+      &:hover {
+        cursor: pointer;
+        text-decoration: underline;
+      }
     }
   }
 }

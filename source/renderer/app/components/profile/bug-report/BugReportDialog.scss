@@ -14,6 +14,7 @@
 
 .bugReportAlternativeText {
   margin-top: 14px;
+
   ol {
     list-style: decimal;
     margin-left: 20px;
@@ -21,12 +22,13 @@
   }
 
   p, li {
+    color: var(--theme-instructions-text-color);
     font-family: var(--font-light);
     font-size: 16px;
     font-weight: 300;
     line-height: 1.38;
     margin-bottom: 6px;
-    color: #5e6066;
+
     strong {
       font-weight: 500;
     }
@@ -60,10 +62,11 @@
     opacity: 0;
     overflow: hidden;
     transition: all 400ms ease;
+    user-select: auto;
     word-break: break-all;
 
     &.show {
-      max-height: 500px;
+      max-height: 1000px;
       opacity: 1;
     }
 

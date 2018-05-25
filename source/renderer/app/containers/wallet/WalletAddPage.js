@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import WalletAddDialog from '../../components/wallet/WalletAddDialog';
+import WalletAdd from '../../components/wallet/WalletAdd';
 import WalletCreateDialog from '../../components/wallet/WalletCreateDialog';
 import WalletRestoreDialog from '../../components/wallet/WalletRestoreDialog';
 import WalletFileImportDialog from '../../components/wallet/file-import/WalletFileImportDialog';
@@ -10,11 +10,12 @@ import WalletFileImportDialogContainer from '../wallet/dialogs/WalletFileImportD
 import WalletRestoreDialogContainer from '../wallet/dialogs/WalletRestoreDialogContainer';
 import WalletBackupDialogContainer from '../wallet/dialogs/WalletBackupDialogContainer';
 import WalletCreateDialogContainer from '../wallet/dialogs/WalletCreateDialogContainer';
-import WalletAddDialogContainer from '../wallet/dialogs/WalletAddDialogContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import resolver from '../../utils/imports';
 import environment from '../../../../common/environment';
 
 type Props = InjectedProps;
+const Layout = resolver('containers/MainLayout');
 
 @inject('actions', 'stores') @observer
 export default class WalletAddPage extends Component<Props> {
@@ -22,40 +23,39 @@ export default class WalletAddPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   onClose = () => {
-    if (this.props.stores[environment.API].wallets.hasAnyWallets) {
-      this.props.actions.dialogs.closeActiveDialog.trigger();
-    } else {
-      this.props.actions.dialogs.open.trigger({
-        dialog: WalletAddDialog,
-      });
-    }
+    this.props.actions.dialogs.closeActiveDialog.trigger();
   };
 
   render() {
-    const { uiDialogs } = this.props.stores;
-    let activeDialog = null;
-
-    if (uiDialogs.isOpen(WalletAddDialog)) {
-      activeDialog = <WalletAddDialogContainer />;
-    }
+    const wallets = this._getWalletsStore();
+    const { actions, stores } = this.props;
+    const { uiDialogs } = stores;
+    const { isRestoreActive } = wallets;
+    let content = null;
 
     if (uiDialogs.isOpen(WalletCreateDialog)) {
-      activeDialog = <WalletCreateDialogContainer onClose={this.onClose} />;
+      content = <WalletCreateDialogContainer onClose={this.onClose} />;
+    } else if (uiDialogs.isOpen(WalletBackupDialog)) {
+      content = <WalletBackupDialogContainer onClose={this.onClose} />;
+    } else if (uiDialogs.isOpen(WalletRestoreDialog)) {
+      content = <WalletRestoreDialogContainer onClose={this.onClose} />;
+    } else if (uiDialogs.isOpen(WalletFileImportDialog)) {
+      content = <WalletFileImportDialogContainer onClose={this.onClose} />;
+    } else {
+      content = (
+        <WalletAdd
+          onCreate={() => actions.dialogs.open.trigger({ dialog: WalletCreateDialog })}
+          onRestore={() => actions.dialogs.open.trigger({ dialog: WalletRestoreDialog })}
+          onImportFile={() => actions.dialogs.open.trigger({ dialog: WalletFileImportDialog })}
+          isRestoreActive={isRestoreActive}
+        />
+      );
     }
+    return <Layout>{content}</Layout>;
+  }
 
-    if (uiDialogs.isOpen(WalletBackupDialog)) {
-      activeDialog = <WalletBackupDialogContainer onClose={this.onClose} />;
-    }
-
-    if (uiDialogs.isOpen(WalletRestoreDialog)) {
-      activeDialog = <WalletRestoreDialogContainer onClose={this.onClose} />;
-    }
-
-    if (uiDialogs.isOpen(WalletFileImportDialog)) {
-      activeDialog = <WalletFileImportDialogContainer onClose={this.onClose} />;
-    }
-
-    return activeDialog;
+  _getWalletsStore() {
+    return this.props.stores[environment.API].wallets;
   }
 
 }

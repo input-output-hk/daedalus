@@ -1,10 +1,10 @@
 // @flow
 import { observable, action, computed } from 'mobx';
+import { get } from 'lodash';
 import Store from './lib/Store';
 import resolver from '../utils/imports';
-import { ROUTES } from '../routes-config';
-import { matchRoute } from '../utils/routing';
 import environment from '../../../common/environment';
+import { syncStateTags } from '../domains/Wallet';
 
 const sidebarConfig = resolver('config/sidebarConfig');
 const { formattedWalletAmount } = resolver('utils/formatters');
@@ -18,12 +18,12 @@ export default class SidebarStore extends Store {
 
   setup() {
     const actions = this.actions.sidebar;
+    actions.showSubMenus.listen(this._showSubMenus);
     actions.toggleSubMenus.listen(this._toggleSubMenus);
     actions.activateSidebarCategory.listen(this._onActivateSidebarCategory);
     actions.walletSelected.listen(this._onWalletSelected);
     this.registerReactions([
       this._syncSidebarRouteWithRouter,
-      this._showSubMenusOnWalletsPageLoad,
     ]);
   }
 
@@ -35,12 +35,10 @@ export default class SidebarStore extends Store {
       title: w.name,
       info: formattedWalletAmount(w.amount),
       isConnected: networkStatus.isConnected,
+      isRestoreActive: get(w, 'syncState.tag') === syncStateTags.RESTORING,
+      restoreProgress: get(w, 'syncState.data.percentage.quantity', 0),
     }));
   }
-
-  @action _toggleSubMenus = () => {
-    this.isShowingSubMenus = !this.isShowingSubMenus;
-  };
 
   @action _onActivateSidebarCategory = (params: { category: string, showSubMenu?: boolean }) => {
     const { category, showSubMenu } = params;
@@ -68,6 +66,14 @@ export default class SidebarStore extends Store {
     this.isShowingSubMenus = true;
   };
 
+  @action _hideSubMenus = () => {
+    this.isShowingSubMenus = false;
+  };
+
+  @action _toggleSubMenus = () => {
+    this.isShowingSubMenus = !this.isShowingSubMenus;
+  };
+
   _syncSidebarRouteWithRouter = () => {
     const route = this.stores.app.currentRoute;
     this.CATEGORIES.forEach((category) => {
@@ -76,13 +82,6 @@ export default class SidebarStore extends Store {
     });
   };
 
-  _showSubMenusOnWalletsPageLoad = () => {
-    const currentRoute = this.stores.app.currentRoute;
-    if (matchRoute(ROUTES.WALLETS.ROOT, currentRoute)) {
-      this._showSubMenus();
-    }
-  }
-
 }
 
 export type SidebarWalletType = {
@@ -90,4 +89,6 @@ export type SidebarWalletType = {
   title: string,
   info: string,
   isConnected: bool,
+  isRestoreActive: bool,
+  restoreProgress: number,
 };

@@ -1,8 +1,10 @@
+// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
+import wordlist from 'bip39/wordlists/english';
 import StoryDecorator from './support/StoryDecorator';
-import WalletAddDialog from '../../source/renderer/app/components/wallet/WalletAddDialog';
+import WalletAdd from '../../source/renderer/app/components/wallet/WalletAdd';
 import WalletRestoreDialog from '../../source/renderer/app/components/wallet/WalletRestoreDialog';
 import WalletFileImportDialog from '../../source/renderer/app/components/wallet/file-import/WalletFileImportDialog';
 
@@ -16,11 +18,13 @@ storiesOf('AddWallet', module)
 
   // ====== Stories ======
 
-  .add('WalletAddDialog', () => (
+  .add('WalletAdd', () => (
     <div>
-      <WalletAddDialog
+      <WalletAdd
         onCreate={() => {}}
-        onImport={() => {}}
+        onImportFile={() => {}}
+        onRestore={() => {}}
+        isRestoreActive={false}
       />
     </div>
   ))
@@ -29,6 +33,12 @@ storiesOf('AddWallet', module)
     <div>
       <WalletRestoreDialog
         mnemonicValidator={() => {}}
+        showCertificateRestore={false}
+        isSubmitting={false}
+        onSubmit={action('onSubmit')}
+        onCancel={action('onClose')}
+        suggestedMnemonics={wordlist}
+        onChoiceChange={() => {}}
       />
     </div>
   ))
@@ -39,6 +49,7 @@ storiesOf('AddWallet', module)
         isSubmitting={false}
         onSubmit={action('onSubmit')}
         onClose={action('onClose')}
+        error={null}
       />
     </div>
   ));

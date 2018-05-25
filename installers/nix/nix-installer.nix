@@ -1,4 +1,6 @@
-{ installationSlug ? "nix-install", installedPackages, postInstall ? null, nix-bundle }:
+{ installationSlug ? "nix-install", installedPackages
+, postInstall ? null, nix-bundle, preInstall ? null
+, cluster }:
 let
   pkgs = import (import ../../fetchNixpkgs.nix (builtins.fromJSON (builtins.readFile ../../nixpkgs-src.json))) { config = {}; overlays = []; };
   installerBundle = nix-bundle.nix-bootstrap {
@@ -35,7 +37,7 @@ let
     UNPACK=$(mktemp -d)
     cd $UNPACK
     echo "$@"
-    "$1" --extract
+    bash "$1" --extract
     ls -ltrh dat/nix/store/*-tarball/tarball/tarball.tar.xz
     UNPACK2=$(mktemp -d)
     tar -C $UNPACK2 -xf dat/nix/store/*-tarball/tarball/tarball.tar.xz
@@ -45,8 +47,9 @@ let
     NIX_REMOTE=local?root=$UNPACK2 nix-store --load-db < $UNPACK2/nix-path-registration
     NIX_REMOTE=local?root=$UNPACK2 nix-store --verify --check-contents
     nix copy --no-check-sigs --from local?root=$UNPACK2 $(readlink $UNPACK2/firstGeneration)
-    export NIX_PROFILE=$DIR/nix/var/nix/profiles/profile
+    export NIX_PROFILE=/nix/var/nix/profiles/profile
     nix-env --set $(readlink $UNPACK2/firstGeneration)
+    nix-env -p /nix/var/nix/profiles/profile-${cluster} --set $(readlink $UNPACK2/firstGeneration)
     rmrf $UNPACK2
 
     post-install || true
@@ -63,18 +66,23 @@ let
     cat /etc/machine-id > etc/machine-id
     cat /etc/resolv.conf > etc/resolv.conf
 
-    exec .${nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -- /nix/var/nix/profiles/profile/bin/enter-phase2
+    exec .${nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -p TERM -- /nix/var/nix/profiles/profile/bin/enter-phase2
   '';
   enter2 = pkgs.writeScriptBin "enter-phase2" ''
     #!${pkgs.stdenv.shell}
 
-    set -ex
+    set -e
 
-    export PATH=/nix/var/nix/profiles/profile/bin
+    export PATH=/nix/var/nix/profiles/profile-${cluster}/bin
     export PS1='\[\033]2;\h:\u:\w\007\]\n\[\033[1;32m\][\u@\h:\w] (namespaced) \$\[\033[0m\] '
-    ln -svf /nix/var/nix/profiles/profile/bin/ /bin
+    ln -svf /nix/var/nix/profiles/profile-${cluster}/bin/ /bin
+    export PATH=/bin
     ln -svf ${pkgs.iana-etc}/etc/protocols /etc/protocols
     ln -svf ${pkgs.iana-etc}/etc/services /etc/services
+    mkdir -pv /etc/ssl/certs
+    ln -svf ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt /etc/ssl/certs/ca-certificates.crt
+    ln -svf ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt /etc/ssl/certs/ca-bundle.crt
+    unset NIX_SSL_CERT_FILE
 
     if [ -z "$@" ]; then
       exec bash
@@ -85,7 +93,7 @@ let
   installer = with pkgs; writeScriptBin "installer" ''
     #!${stdenv.shell}
 
-    set -ex
+    set -e
 
     TARPATH=${tarball}/tarball/tarball.tar.xz
 
@@ -103,13 +111,17 @@ let
 
     trap "exitHandler" EXIT
 
-    export PATH=${lib.makeBinPath [ coreutils pv xz gnutar nixFix gnused which ]}
+    export PATH=${lib.makeBinPath [ coreutils pv xz gnutar nixFix gnused which gnugrep ]}
     export DIR=$HOME/${installationSlug}
+
+    ${if preInstall == null then "" else ''
+      source ${preInstall}
+    ''}
 
     echo inside installer
     echo source $TARPATH
 
-    mkdir -pv $HOME/nix-install
+    mkdir -pv $HOME/${installationSlug}
 
     UNPACK=$(mktemp -d)
 
@@ -127,6 +139,7 @@ let
     unset UNPACK
     export NIX_PROFILE=$DIR/nix/var/nix/profiles/profile
     nix-env --set ${builtins.unsafeDiscardStringContext firstGeneration}
+    nix-env -p $DIR/nix/var/nix/profiles/profile-${cluster} --set ${builtins.unsafeDiscardStringContext firstGeneration}
 
     ${if postInstall == null then "" else ''
     exec ${postInstall}/bin/post-install
@@ -147,6 +160,7 @@ let
       gnused
       gnutar
       bzip2
+      gzip
       xz
       which # used by post-install
     ] ++ installedPackages;

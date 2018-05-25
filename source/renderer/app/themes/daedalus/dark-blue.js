@@ -15,7 +15,7 @@ export default {
 
   '--theme-input-hint-font': 'SFUIDisplay-Regular',
 
-  '--theme-scrollbar-thumb-background': '#e9f4fe',
+  '--theme-scrollbar-thumb-background': '#536370',
 
   '--theme-ada-redemption-headline-color': '#e9f4fe',
   '--theme-ada-redemption-instructions-color': '#e9f4fe',
@@ -119,17 +119,17 @@ export default {
   '--theme-nav-item-text-color': '#9ba6b3',
   '--theme-nav-item-text-color-active': '#e9f4fe',
 
-  '--theme-node-update-background-color': '#0b1926',
-  '--theme-node-update-title-color': '#5e6066',
-  '--theme-node-update-message-color': '#5e6066',
-  '--theme-node-sync-info-message-background-color': '#fafbfc',
-  '--theme-node-sync-info-message-text-color': '#5e6066',
-  '--theme-node-update-accept-button-background-color': 'rgba(83, 99, 112, 0.6)',
-  '--theme-node-update-accept-button-background-color-hover': 'rgba(83, 99, 112, 0.8)',
-  '--theme-node-update-accept-button-background-color-active': 'rgba(83, 99, 112, 1)',
-  '--theme-node-update-deny-button-background-color': 'rgba(83, 99, 112, 0.3)',
-  '--theme-node-update-deny-button-background-color-hover': 'rgba(83, 99, 112, 0.8)',
-  '--theme-node-update-deny-button-background-color-active': 'rgba(83, 99, 112, 1)',
+  '--theme-node-update-background-color': '#536370',
+  '--theme-node-update-title-color': '#e9f4fe',
+  '--theme-node-update-message-color': '#e9f4fe',
+  '--theme-node-sync-info-message-background-color': '#536370',
+  '--theme-node-sync-info-message-text-color': '#e9f4fe',
+  '--theme-node-update-accept-button-background-color': '#263345',
+  '--theme-node-update-accept-button-background-color-hover': '#34465e',
+  '--theme-node-update-accept-button-background-color-active': '#18202b',
+  '--theme-node-update-deny-button-background-color': 'rgba(38, 51, 69, 0.3)',
+  '--theme-node-update-deny-button-background-color-hover': 'rgba(52, 70, 94, 0.3)',
+  '--theme-node-update-deny-button-background-color-active': 'rgba(24, 32, 43, 0.3)',
   '--theme-node-update-button-text-color': '#fafbfc',
 
   '--theme-notification-message-background-color': 'rgba(83, 99, 112, 0.8)',
@@ -140,6 +140,10 @@ export default {
 
   '--theme-send-confirmation-dialog-send-values-color': '#ea4c5b',
 
+  '--theme-paper-wallet-create-certificate-dialog-recovery-phrase-background-color': 'rgba(233, 244, 254, 0.05)',
+  '--theme-paper-wallet-create-certificate-dialog-explorer-link-color': '#e9f4fe',
+  '--theme-paper-wallet-create-certificate-dialog-explorer-link-background-color': 'rgba(233, 244, 254, 0.05)',
+
   '--theme-settings-body-background-color': '#0b1926',
   '--theme-settings-pane-background-color': '#263345',
   '--theme-settings-pane-border': 'none',
@@ -147,7 +151,6 @@ export default {
   '--theme-settings-menu-box-border': 'none',
   '--theme-settings-menu-item-text-color': '#cecfd1',
   '--theme-settings-menu-item-text-color-active': '#cecfd1',
-  '--theme-settings-menu-item-text-color-enabled-hover': '#8793a1',
   '--theme-settings-menu-item-text-color-disabled': '#7a8691',
   '--theme-settings-menu-item-background-color-active': '#536370',
   '--theme-settings-menu-item-left-border-color-active': '#0b1926',
@@ -223,7 +226,7 @@ export default {
   '--theme-icon-nav-color-active': '#e9f4fe',
   '--theme-icon-sidebar-color': '#fafbfc',
   '--theme-icon-toggle-menu-color': '#fafbfc',
-  '--theme-icon-node-update-notification-arrow-color': '#5e6066',
+  '--theme-icon-node-update-notification-arrow-color': '#e9f4fe',
   '--theme-icon-add-wallet-from-sidebar-color': '#fafbfc',
   '--theme-icon-ada-redemption-attention-color': '#fafbfc',
   '--theme-icon-ada-redemption-success-color': '#fafbfc',
@@ -279,13 +282,19 @@ export default {
   '--theme-mnemonic-background-color': 'rgba(83, 99, 112, 0.3)',
   '--theme-mnemonic-background-color-hover': 'rgba(102, 122, 138, 0.3)',
 
-  '--theme-send-logs-text-color': '#e9f4fe',
-
   '--theme-separation-border-color': '#334152',
 
   '--theme-support-settings-text-color': '#e9f4fe',
+  '--theme-support-settings-link-color': '#20b56b',
 
   '--theme-terms-of-use-text-color': '#e9f4fe',
 
   '--theme-wallet-password-switch-label-color': '#e9f4fe',
+
+  '--theme-password-toggler-color': '#8793a1',
+
+  '--theme-loading-spinner-color': '#e9f4fe',
+
+  '--theme-progress-bar-background-color': 'rgba(233, 244, 254, 0.3)',
+  '--theme-progress-bar-foreground-color': 'rgba(233, 244, 254, 0.7)',
 };

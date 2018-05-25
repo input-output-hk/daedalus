@@ -13,8 +13,8 @@ type Props = {
   actions: any | ActionsMap,
   amount: string,
   receiver: string,
-  totalAmount: string,
-  transactionFee: string,
+  totalAmount: ?string,
+  transactionFee: ?string,
   amountToNaturalUnits: (amountWithFractions: string) => string,
   currencyUnit: string,
 };
