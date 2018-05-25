@@ -284,15 +284,17 @@ storiesOf('WalletScreens', module)
         {
           "value": "CWANormal",
           "label": {
-            "id": "global.assuranceLevel.normal",
-            "defaultMessage": "!!!Normal"
+            id: 'global.assuranceLevel.normal',
+            defaultMessage: '!!!Normal',
+            description: ''
           }
         },
         {
           "value": "CWAStrict",
           "label": {
-            "id": "global.assuranceLevel.strict",
-            "defaultMessage": "!!!Strict"
+            id: 'global.assuranceLevel.strict',
+            defaultMessage: '!!!Strict',
+            description: ''
           }
         }
       ]}
