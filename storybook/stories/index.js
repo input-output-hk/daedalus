@@ -14,3 +14,4 @@ import './TopBar.stories';
 import './WalletTransactionsList.stories';
 import './WalletExportToFileDialog.stories';
 import './PaperWallets.stories';
+import './WalletScreens.stories';
