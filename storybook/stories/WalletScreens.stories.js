@@ -24,6 +24,10 @@ import WalletWithNavigation from '../../source/renderer/app/components/wallet/la
 
 // Screens
 import WalletSummary from '../../source/renderer/app/components/wallet/summary/WalletSummary';
+import WalletSend from '../../source/renderer/app/components/wallet/WalletSendForm';
+// import WalletReceive from '../../source/renderer/app/components/wallet/WalletReceive';
+// import WalletTransactions from '../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
+// import WalletSettings from '../../source/renderer/app/components/wallet/WalletSettings';
 
 type Props = {
   activeNavItem?: string,
@@ -159,7 +163,17 @@ storiesOf('WalletScreens', module)
     <WalletScreen
       activeNavItem="send"
     >
-      Send screen
+      <WalletSend
+        currencyUnit="Ada"
+        currencyMaxFractionalDigits={ 6}
+        currencyMaxIntegerDigits={11}
+        validateAmount={() => true}
+        calculateTransactionFee={() => {}}
+        addressValidator={() => {}}
+        openDialogAction={() => {}}
+        isDialogOpen={() => {}}
+        isRestoreActive={false}
+      />
     </WalletScreen>
   ))
 
