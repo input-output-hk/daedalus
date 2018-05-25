@@ -17,7 +17,7 @@ import { formattedWalletAmount } from '../../source/renderer/app/utils/ada/forma
 import NodeSyncStatusIcon from '../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
 import WalletAddress from '../../source/renderer/app/domains/WalletAddress';
 import { generateTransaction } from './WalletTransactionsList.stories.js';
-import { transactionTypes } from '../../source/renderer/app/domains/WalletTransaction';
+import { transactionStates, transactionTypes } from '../../source/renderer/app/domains/WalletTransaction';
 
 // Empty screen elements
 import TopBar from '../../source/renderer/app/components/layout/TopBar';
@@ -277,11 +277,13 @@ storiesOf('WalletScreens', module)
     >
       <WalletTransactionsList
         transactions={[
-          generateTransaction(transactionTypes.INCOME, new Date(), new BigNumber(1)),
-          generateTransaction(transactionTypes.INCOME, moment().subtract(1, 'days').toDate(), new BigNumber(1)),
-          generateTransaction(transactionTypes.INCOME, new Date(), new BigNumber(1)),
-          generateTransaction(transactionTypes.INCOME, moment().subtract(2, 'days').toDate(), new BigNumber(1)),
-          generateTransaction(transactionTypes.INCOME, moment().subtract(1, 'days').toDate(), new BigNumber(1)),
+          generateTransaction(transactionTypes.INCOME, new Date(), new BigNumber(1), 1),
+          generateTransaction(transactionTypes.EXCHANGE, new Date(), new BigNumber(1)),
+          generateTransaction(transactionTypes.EXPEND, moment().subtract(1, 'days').toDate(), new BigNumber(2), 0, transactionStates.PENDING),
+          generateTransaction(transactionTypes.INCOME, moment().subtract(1, 'days').toDate(), new BigNumber(1), 0, transactionStates.FAILED),
+          generateTransaction(transactionTypes.EXPEND, moment().subtract(2, 'days').toDate(), new BigNumber(3)),
+          generateTransaction(transactionTypes.EXPEND, moment().subtract(3, 'days').toDate(), new BigNumber(5)),
+          generateTransaction(transactionTypes.INCOME, moment().subtract(4, 'days').toDate(), new BigNumber(6)),
         ]}
         isLoadingTransactions={false}
         hasMoreToLoad={false}
