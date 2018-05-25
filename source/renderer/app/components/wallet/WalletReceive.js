@@ -233,9 +233,9 @@ export default class WalletReceive extends Component<Props, State> {
 
               <div className={styles.hideUsed}>
                 <TinySwitch
-                  label={intl.formatMessage(messages[showUsed ? 'hideUsedLabel' : 'showUsedLabel'])}
+                  label={intl.formatMessage(messages['showUsedLabel'])}
                   onChange={this.toggleUsedAddresses}
-                  checked={!showUsed}
+                  checked={showUsed}
                 />
               </div>
             </h2>
