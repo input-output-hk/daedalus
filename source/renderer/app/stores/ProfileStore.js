@@ -3,6 +3,7 @@ import { action, observable, computed, toJS } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment/moment';
 import { ipcRenderer } from 'electron';
+import { includes } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import environment from '../../../common/environment';
@@ -135,12 +136,10 @@ export default class SettingsStore extends Store {
     return this.getTermsOfUseAcceptanceRequest.result === true;
   }
 
-  @computed get isSetupPage(): boolean {
+  @computed get isSettingsPage(): boolean {
     const { currentRoute } = this.stores.app;
-    return (
-      currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
-      currentRoute === ROUTES.PROFILE.TERMS_OF_USE
-    );
+    const settingsRoutes = Object.assign({}, ROUTES.PROFILE, ROUTES.SETTINGS);
+    return includes(settingsRoutes, currentRoute);
   }
 
   _updateLocale = async ({ locale }: { locale: string }) => {
