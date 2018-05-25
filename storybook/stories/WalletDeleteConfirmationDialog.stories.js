@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { storiesOf, action } from '@storybook/react';
 import StoryDecorator from './support/StoryDecorator';
@@ -16,62 +17,96 @@ storiesOf('DeleteWalletConfirmationDialog', module)
   .add('without funds & countdown', () => (
     <div>
       <DeleteWalletConfirmationDialog
-        walletName={"My Wallet"}
+        walletName="My Wallet"
         hasWalletFunds={false}
         countdownFn={() => 10}
         isBackupNoticeAccepted={false}
+        confirmationValue="babushka"
+        onAcceptBackupNotice={() => {}}
+        onContinue={() => {}}
+        onCancel={() => {}}
+        onConfirmationValueChange={() => {}}
+        isSubmitting={false}
       />
     </div>
   ))
   .add('without funds - not accepted', () => (
     <div>
       <DeleteWalletConfirmationDialog
-        walletName={"My Wallet"}
+        walletName="My Wallet"
         hasWalletFunds={false}
         countdownFn={() => 0}
         isBackupNoticeAccepted={false}
+        confirmationValue="babushka"
+        onAcceptBackupNotice={() => {}}
+        onContinue={() => {}}
+        onCancel={() => {}}
+        onConfirmationValueChange={() => {}}
+        isSubmitting={false}
       />
     </div>
   ))
   .add('without funds - accepted', () => (
     <div>
       <DeleteWalletConfirmationDialog
-        walletName={"My Wallet"}
+        walletName="My Wallet"
         hasWalletFunds={false}
         countdownFn={() => 0}
-        isBackupNoticeAccepted={true}
+        isBackupNoticeAccepted
+        confirmationValue="babushka"
+        onAcceptBackupNotice={() => {}}
+        onContinue={() => {}}
+        onCancel={() => {}}
+        onConfirmationValueChange={() => {}}
+        isSubmitting={false}
       />
     </div>
   ))
   .add('funds & countdown', () => (
     <div>
       <DeleteWalletConfirmationDialog
-        walletName={"My Wallet"}
-        hasWalletFunds={true}
+        walletName="My Wallet"
+        hasWalletFunds
         countdownFn={() => 10}
         isBackupNoticeAccepted={false}
+        confirmationValue="babushka"
+        onAcceptBackupNotice={() => {}}
+        onContinue={() => {}}
+        onCancel={() => {}}
+        onConfirmationValueChange={() => {}}
+        isSubmitting={false}
       />
     </div>
   ))
   .add('funds & accepted', () => (
     <div>
       <DeleteWalletConfirmationDialog
-        walletName={"My Wallet"}
-        hasWalletFunds={true}
+        walletName="My Wallet"
+        hasWalletFunds
         countdownFn={() => 0}
-        isBackupNoticeAccepted={true}
+        isBackupNoticeAccepted
+        confirmationValue="babushka"
+        onAcceptBackupNotice={() => {}}
+        onContinue={() => {}}
+        onCancel={() => {}}
+        onConfirmationValueChange={() => {}}
+        isSubmitting={false}
       />
     </div>
   ))
   .add('funds & accepted & filled', () => (
     <div>
       <DeleteWalletConfirmationDialog
-        walletName={"My Wallet"}
-        hasWalletFunds={true}
+        walletName="My Wallet"
+        hasWalletFunds
         countdownFn={() => 0}
-        isBackupNoticeAccepted={true}
+        isBackupNoticeAccepted
         confirmationValue="babushka"
+        onAcceptBackupNotice={() => {}}
+        onContinue={() => {}}
+        onCancel={() => {}}
         onConfirmationValueChange={action('onRecoveryWordChange')}
+        isSubmitting={false}
       />
     </div>
   ));

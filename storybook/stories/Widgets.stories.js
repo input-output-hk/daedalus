@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { observable } from 'mobx';
@@ -52,11 +53,13 @@ storiesOf('Widgets', module)
 
   .add('MnemonicInputWidget - 9 words', () => {
     const tokens = observable(['', '', '', '', '', '', '', '', '']);
-    return <MnemonicInputWidget
-      label="Your Passphrase"
-      tokens={tokens}
-      onTokenChanged={(index, token) => tokens[index] = token}
-    />
+    return (
+      <MnemonicInputWidget
+        label="Your Passphrase"
+        tokens={tokens}
+        onTokenChanged={(index, token) => tokens[index] = token}
+      />
+    );
   })
 
   .add('NotificationMessage', () => (
@@ -65,7 +68,9 @@ storiesOf('Widgets', module)
         icon={NotificationIcon}
         show
       >
-        Address: <strong>1gGHFU9VsXV89kcJNzibNo8wJugxNtWsaqbjWaZEKzLtMGD</strong> copied to clipboard
+        Address:
+        <strong>1gGHFU9VsXV89kcJNzibNo8wJugxNtWsaqbjWaZEKzLtMGD</strong>
+        copied to clipboard
       </NotificationMessage>
     </div>
   ));
