@@ -143,6 +143,7 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                     rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
                 file [] "cardano-node.exe"
                 file [] "cardano-launcher.exe"
+                file [] "cardano-x509-certificate.exe"
                 file [] "log-config-prod.yaml"
                 file [] "wallet-topology.yaml"
                 file [] "configuration.yaml"
