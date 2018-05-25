@@ -11,7 +11,7 @@ import WalletTransaction, {
 } from '../../source/renderer/app/domains/WalletTransaction';
 import { formattedWalletAmount } from '../../source/renderer/app/utils/ada/formatters';
 
-const generateTransaction = (
+export const generateTransaction = (
   type, date, amount, confirmations = 1, state = transactionStates.OK
 ) => {
   return new WalletTransaction({

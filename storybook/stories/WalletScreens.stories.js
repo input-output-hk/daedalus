@@ -5,16 +5,19 @@ import { observable, runInAction } from 'mobx';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
-import StoryDecorator from './support/StoryDecorator';
+import moment from 'moment';
 
-// Assets
+// Assets and helpers
+import StoryDecorator from './support/StoryDecorator';
 import walletsIcon from '../../source/renderer/app/assets/images/sidebar/wallet-ic.inline.svg';
 import settingsIcon from '../../source/renderer/app/assets/images/sidebar/settings-ic.inline.svg';
 import adaIcon from '../../source/renderer/app/assets/images/sidebar/ada-redemption-ic.inline.svg';
 import paperCertificateIcon from '../../source/renderer/app/assets/images/sidebar/paper-certificate-ic.inline.svg';
 import { formattedWalletAmount } from '../../source/renderer/app/utils/ada/formatters';
 import NodeSyncStatusIcon from '../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
-import WalletAddress from '../../source/renderer/app/domains/WalletAddress'
+import WalletAddress from '../../source/renderer/app/domains/WalletAddress';
+import { generateTransaction } from './WalletTransactionsList.stories.js';
+import { transactionTypes } from '../../source/renderer/app/domains/WalletTransaction';
 
 // Empty screen elements
 import TopBar from '../../source/renderer/app/components/layout/TopBar';
@@ -25,9 +28,9 @@ import WalletWithNavigation from '../../source/renderer/app/components/wallet/la
 
 // Screens
 import WalletSummary from '../../source/renderer/app/components/wallet/summary/WalletSummary';
-import WalletSend from '../../source/renderer/app/components/wallet/WalletSendForm';
+import WalletSendForm from '../../source/renderer/app/components/wallet/WalletSendForm';
 import WalletReceive from '../../source/renderer/app/components/wallet/WalletReceive';
-// import WalletTransactions from '../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
+import WalletTransactionsList from '../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
 // import WalletSettings from '../../source/renderer/app/components/wallet/WalletSettings';
 
 type Props = {
@@ -164,7 +167,7 @@ storiesOf('WalletScreens', module)
     <WalletScreen
       activeNavItem="send"
     >
-      <WalletSend
+      <WalletSendForm
         currencyUnit="Ada"
         currencyMaxFractionalDigits={ 6}
         currencyMaxIntegerDigits={11}
@@ -201,21 +204,25 @@ storiesOf('WalletScreens', module)
 
     </WalletScreen>
   ))
-  // walletAddress: string,
-  // isWalletAddressUsed: boolean,
-  // walletAddresses: Array<WalletAddress>,
-  // onGenerateAddress: Function,
-  // onCopyAddress: Function,
-  // isSidebarExpanded: boolean,
-  // walletHasPassword: boolean,
-  // isSubmitting: boolean,
-  // error?: ?LocalizableError,
 
   .add('Transactions', () => (
     <WalletScreen
       activeNavItem="transactions"
     >
-      Transactions screen
+      <WalletTransactionsList
+        transactions={[
+          generateTransaction(transactionTypes.INCOME, new Date(), new BigNumber(1)),
+          generateTransaction(transactionTypes.INCOME, moment().subtract(1, 'days').toDate(), new BigNumber(1)),
+          generateTransaction(transactionTypes.INCOME, new Date(), new BigNumber(1)),
+          generateTransaction(transactionTypes.INCOME, moment().subtract(2, 'days').toDate(), new BigNumber(1)),
+          generateTransaction(transactionTypes.INCOME, moment().subtract(1, 'days').toDate(), new BigNumber(1)),
+        ]}
+        isLoadingTransactions={false}
+        hasMoreToLoad={false}
+        assuranceMode={{ low: 1, medium: 2 }}
+        walletId="test-wallet"
+        formattedWalletAmount={formattedWalletAmount}
+      />
     </WalletScreen>
   ))
 
