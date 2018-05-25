@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observable, runInAction } from 'mobx';
 import { storiesOf } from '@storybook/react';
@@ -64,9 +64,8 @@ const sidebarCategories = [
 const sidebarMenus = observable({
   wallets: {
     items: [
-      { id: '1', title: 'First', info: '100 ADA', isConnected: true },
-      { id: '2', title: 'Second', info: '200 ADA', isConnected: true },
-      { id: '3', title: 'Third', info: '300 ADA', isConnected: true },
+      { id: '1', title: 'Mining', info: '0.000000 ADA', isConnected: true },
+      { id: '2', title: 'Shopping', info: '66.998.623133 ADA', isConnected: true },
     ],
     activeWalletId: '2',
     actions: {
@@ -78,58 +77,68 @@ const sidebarMenus = observable({
   }
 });
 
-// TODO: Find out how to active the `topBarTitle` on TopBar
-const topbar = (
-  <TopBar
-    formattedWalletAmount={formattedWalletAmount}
-    currentRoute="summary"
-    showSubMenuToggle
-    showSubMenus
-  >
-    <NodeSyncStatusIcon
-      networkStatus={{
-        isSynced: true,
-        syncPercentage: 100,
-      }}
-      isProduction
+class WalletScreen extends Component<Props> {
+
+  render() {
+
+    const { children, activeNavItem } = this.props;
+
+    return (
+      <div>
+        <SidebarLayout
+          sidebar={this.sidebar(!!children)}
+          topbar={this.topbar}
+        >
+          {
+            children &&
+              (
+                <WalletWithNavigation
+                  isActiveScreen={item => item === activeNavItem}
+                  onWalletNavItemClick={action('onWalletNavItemClick')}
+                >
+                  {children}
+                </WalletWithNavigation>
+              )
+          }
+        </SidebarLayout>
+      </div>
+    );
+  }
+
+  sidebar = isShowingSubMenus => (
+    <Sidebar
+      categories={sidebarCategories}
+      activeSidebarCategory={sidebarCategories[0].route}
+      menus={sidebarMenus}
+      isShowingSubMenus={isShowingSubMenus}
+      onCategoryClicked={action('onCategoryClicked')}
+      isDialogOpen={() => false}
+      onAddWallet={action('onAddWallet')}
+      openDialogAction={action('openDialog')}
+      onSubmitSupportRequest={()=>{}}
     />
-  </TopBar>
-);
+  )
 
-const sidebar = isShowingSubMenus => (
-  <Sidebar
-    categories={sidebarCategories}
-    activeSidebarCategory={sidebarCategories[0].route}
-    menus={sidebarMenus}
-    isShowingSubMenus={isShowingSubMenus}
-    onCategoryClicked={action('onCategoryClicked')}
-    isDialogOpen={() => false}
-    onAddWallet={action('onAddWallet')}
-    openDialogAction={action('openDialog')}
-    onSubmitSupportRequest={()=>{}}
-  />
-);
-
-const WalletScreen = ({ activeNavItem, children }: Props) => (
-  <div>
-    <SidebarLayout
-      sidebar={sidebar(!!children)}
-      topbar={topbar}
-    >
-      {
-        children &&
-          (
-            <WalletWithNavigation
-              isActiveScreen={item => item === activeNavItem}
-              onWalletNavItemClick={e => console.log('onWalletNavItemClick', e)}
-            >
-              {children}
-            </WalletWithNavigation>
-          )
-      }
-    </SidebarLayout>
-  </div>
-);
+  // TODO: Find out how to activave the `topBarTitle` on TopBar
+  get topbar() {
+    return (
+      <TopBar
+        formattedWalletAmount={formattedWalletAmount}
+        currentRoute="summary"
+        showSubMenuToggle
+        showSubMenus
+      >
+        <NodeSyncStatusIcon
+          networkStatus={{
+            isSynced: true,
+            syncPercentage: 100,
+          }}
+          isProduction
+        />
+      </TopBar>
+    );
+  }
+}
 
 storiesOf('WalletScreens', module)
 
@@ -189,11 +198,68 @@ storiesOf('WalletScreens', module)
         walletAddress="5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds"
         isWalletAddressUsed={false}
         walletAddresses={[
-          <WalletAddress
-            id={sidebarMenus.wallets.items[0].id}
-            amount={new BigNumber(1)}
-            isUsed={false}
-          />
+          {
+            id: '5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds',
+            amount: new BigNumber(1),
+            isUsed:false,
+          },
+          {
+            id: 'f465aca571de909091967349e1dc39fc9ce9755ff8ffdb7cc3771b503904e49a',
+            amount: new BigNumber(1),
+            isUsed:false,
+          },
+          {
+            id: '5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds',
+            amount: new BigNumber(1),
+            isUsed:false,
+          },
+          {
+            id: 'f465aca571de909091967349e1dc39fc9ce9755ff8ffdb7cc3771b503904e49a',
+            amount: new BigNumber(1),
+            isUsed:false,
+          },
+          {
+            id: '5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds',
+            amount: new BigNumber(1),
+            isUsed:false,
+          },
+          {
+            id: 'f465aca571de909091967349e1dc39fc9ce9755ff8ffdb7cc3771b503904e49a',
+            amount: new BigNumber(1),
+            isUsed:false,
+          },
+          {
+            id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
+            amount: new BigNumber(1),
+            isUsed:true,
+          },
+          {
+            id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
+            amount: new BigNumber(1),
+            isUsed:true,
+          },
+          {
+            id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
+            amount: new BigNumber(1),
+            isUsed:true,
+          },
+          {
+            id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
+            amount: new BigNumber(1),
+            isUsed:true,
+          },
+          {
+            id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
+            amount: new BigNumber(1),
+            isUsed:true,
+          },
+          {
+            id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
+            amount: new BigNumber(1),
+            isUsed:true,
+          },
+
+
         ]}
         onGenerateAddress={()=>{}}
         onCopyAddress={()=>{}}
