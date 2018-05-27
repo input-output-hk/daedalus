@@ -47,3 +47,48 @@ export const decryptForceVend = (key, data) => (
   decryptWithAES(blake2b(key[0].trim().toLowerCase() +
     hashData(key[1].trim()).hexSlice() + key[2].trim()), data)
 );
+
+// Recovery service certificates decryption
+export const decryptRecoveryRegularVend = decryptRegularVend;
+export const decryptRecoveryForceVend = (key, data) => {
+  // There are 3 possible decryption key formats:
+  // 1) base64 string (most common)
+  // 2) hex string
+  // 3) numeric array
+  // ...therefore we need to try all 3 decryption methods
+
+  const trimmedKey = key.trim();
+  let decryptedData = null;
+  let bufferKey;
+
+  // 1) base64 string: "qXQWDxI3JrlFRtC4SeQjeGzLbVXWBomYPbNO1Vfm1T4="
+  try {
+    const decodedKey = trimmedKey.replace(/-/g, '+').replace(/_/g, '/');
+    bufferKey = Buffer.from(decodedKey, 'base64');
+    decryptedData = decryptWithAES(bufferKey, data);
+  } catch (e) {} // eslint-disable-line
+
+  // 2) hex string: "A974160F123726B94546D0B849E423786CCB6D55D60689983DB34ED557E6D53E"
+  if (decryptedData === null) {
+    try {
+      bufferKey = Buffer.from(trimmedKey, 'hex');
+      decryptedData = decryptWithAES(bufferKey, data);
+    } catch (e) {} // eslint-disable-line
+  }
+
+  // eslint-disable-next-line max-len
+  // 3) numeric array: "[ 169, 116, 22, 15, 18, 55, 38, 185, 69, 70, 208, 184, 73, 228, 35, 120, 108, 203, 109, 85, 214, 6, 137, 152, 61, 179, 78, 213, 87, 230, 213, 62 ]"
+  if (decryptedData === null) {
+    try {
+      const arrayKey = JSON.parse(trimmedKey);
+      bufferKey = Buffer.from(arrayKey);
+      decryptedData = decryptWithAES(bufferKey, data);
+    } catch (e) {} // eslint-disable-line
+  }
+
+  if (decryptedData === null) {
+    throw new Error('Invalid decryption key');
+  } else {
+    return decryptedData;
+  }
+};
