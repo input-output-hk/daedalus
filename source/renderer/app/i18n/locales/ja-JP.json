@@ -231,7 +231,6 @@
   "wallet.receive.page.etc.walletReceiveInstructions": "ウォレットアドレスを共有することで資金を受け取ることができます。プライバシー保護のために入金の際には既存の使用済みアドレスは使用せず、新しいアドレスを生成し、それを利用してください。",
   "wallet.receive.page.generateNewAddressButtonLabel": "新しいアドレスを生成",
   "wallet.receive.page.generatedAddressesSectionTitle": "生成されたアドレス",
-  "wallet.receive.page.hideUsedLabel": "使用済みアドレスを隠す",
   "wallet.receive.page.showUsedLabel": "使用済みアドレスを表示",
   "wallet.receive.page.spendingPasswordPlaceholder": "パスワード",
   "wallet.receive.page.walletAddressLabel": "あなたのウォレットアドレス",

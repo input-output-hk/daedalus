@@ -32,6 +32,7 @@ Changelog
 
 ### Features
 
+- Implemented a switch instead of a link for “hide used” addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
 - Asynchronous wallet restoration ([PR 849](https://github.com/input-output-hk/daedalus/pull/849))
 - Added wallet restore indicator in the sidebar ([PR 862](https://github.com/input-output-hk/daedalus/pull/862))
 - Added Daedalus version in application title ([PR 826](https://github.com/input-output-hk/daedalus/pull/826))
