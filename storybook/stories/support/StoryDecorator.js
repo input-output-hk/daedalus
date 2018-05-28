@@ -11,7 +11,7 @@ import { THEMES } from '../../../source/renderer/app/themes/index';
 
 type Props = {
   children: Node,
-  propsForChildren: any
+  propsForChildren?: any
 };
 
 @observer
