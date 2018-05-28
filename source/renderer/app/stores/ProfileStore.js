@@ -173,8 +173,8 @@ export default class SettingsStore extends Store {
 
   _redirectToTermsOfUseScreenIfTermsNotAccepted = () => {
     const { isConnected } = this.stores.networkStatus;
-    if (isConnected && this.isCurrentLocaleSet &&
-      this.hasLoadedTermsOfUseAcceptance && !this.areTermsOfUseAccepted) {
+    const termsOfUseNotAccepted = this.hasLoadedTermsOfUseAcceptance && !this.areTermsOfUseAccepted;
+    if (isConnected && this.isCurrentLocaleSet && termsOfUseNotAccepted) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.TERMS_OF_USE });
     }
   };
