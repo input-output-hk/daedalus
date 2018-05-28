@@ -183,7 +183,6 @@ export default class WalletSettings extends Component<Props> {
 
         {isDialogOpen(WalletExportDialog) ? (
           <WalletExportToFileDialogContainer />
-          <div>INSERT ALERT!</div>
         ) : false}
 
       </div>
