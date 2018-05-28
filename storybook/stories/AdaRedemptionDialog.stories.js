@@ -48,6 +48,7 @@ storiesOf('AdaRedemptionForm', module)
         ]}
         suggestedMnemonics={wordlist}
         showPassPhraseWidget={false}
+        showInputForDecryptionKey={false}
         isCertificateInvalid={false}
         showInputsForDecryptingForceVendedCertificate={false}
         redemptionCodeValidator={() => {}}
@@ -56,6 +57,7 @@ storiesOf('AdaRedemptionForm', module)
         onEmailChanged={() => {}}
         onAdaPasscodeChanged={() => {}}
         onAdaAmountChanged={() => {}}
+        onDecryptionKeyChanged={() => {}}
         onAcceptRedemptionDisclaimer={() => {}}
         mnemonicValidator={() => {}}
         error={null}
@@ -85,6 +87,7 @@ storiesOf('AdaRedemptionForm', module)
         ]}
         suggestedMnemonics={wordlist}
         showPassPhraseWidget={false}
+        showInputForDecryptionKey={false}
         isCertificateInvalid={false}
         showInputsForDecryptingForceVendedCertificate={false}
         redemptionCodeValidator={() => {}}
@@ -93,6 +96,7 @@ storiesOf('AdaRedemptionForm', module)
         onEmailChanged={() => {}}
         onAdaPasscodeChanged={() => {}}
         onAdaAmountChanged={() => {}}
+        onDecryptionKeyChanged={() => {}}
         onAcceptRedemptionDisclaimer={() => {}}
         mnemonicValidator={() => {}}
         error={null}
@@ -122,6 +126,7 @@ storiesOf('AdaRedemptionForm', module)
         ]}
         suggestedMnemonics={wordlist}
         showPassPhraseWidget={false}
+        showInputForDecryptionKey={false}
         isCertificateInvalid={false}
         showInputsForDecryptingForceVendedCertificate={false}
         redemptionCodeValidator={() => {}}
@@ -130,6 +135,7 @@ storiesOf('AdaRedemptionForm', module)
         onEmailChanged={() => {}}
         onAdaPasscodeChanged={() => {}}
         onAdaAmountChanged={() => {}}
+        onDecryptionKeyChanged={() => {}}
         onAcceptRedemptionDisclaimer={() => {}}
         mnemonicValidator={() => {}}
         error={null}

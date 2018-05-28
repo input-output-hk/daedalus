@@ -1,7 +1,8 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { observable } from 'mobx';
+import { observable, action as mobxAction } from 'mobx';
+import { action } from '@storybook/addon-actions';
 import StoryDecorator from './support/StoryDecorator';
 import BigButtonForDialogs from '../../source/renderer/app/components/widgets/BigButtonForDialogs';
 import MnemonicInputWidget from '../../source/renderer/app/components/widgets/forms/MnemonicInputWidget';
@@ -10,14 +11,29 @@ import createIcon from '../../source/renderer/app/assets/images/create-ic.inline
 import importIcon from '../../source/renderer/app/assets/images/import-ic.inline.svg';
 import joinSharedIcon from '../../source/renderer/app/assets/images/join-shared-ic.inline.svg';
 import NotificationIcon from '../../source/renderer/app/assets/images/success-small.inline.svg';
+import TinySwitch from '../../source/renderer/app/components/widgets/forms/TinySwitch';
+
 
 storiesOf('Widgets', module)
 
-  .addDecorator((story) => (
-    <StoryDecorator>
-      {story()}
-    </StoryDecorator>
-  ))
+  .addDecorator((story) => {
+    const onChangeAction = action('onChange');
+    const state = observable({
+      checked: false,
+      onChange: mobxAction((value, event) => {
+        state.checked = value;
+        onChangeAction(value, event);
+      })
+    });
+
+    return (
+      <StoryDecorator
+        propsForChildren={state}
+      >
+        {story()}
+      </StoryDecorator>
+    );
+  })
 
   // ====== Stories ======
 
@@ -73,4 +89,15 @@ storiesOf('Widgets', module)
         copied to clipboard
       </NotificationMessage>
     </div>
+  ))
+
+  .add('TinySwitch', () => (
+    <TinySwitch />
+  ))
+
+  .add('TinySwitch - short label', () => (
+    <TinySwitch
+      label="My switch"
+    />
   ));
+

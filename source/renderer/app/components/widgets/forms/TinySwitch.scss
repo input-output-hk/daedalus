@@ -1,0 +1,26 @@
+.component {
+  flex-direction: row;
+
+  :global {
+    .SimpleSwitch_switch {
+      height: 12px !important;
+      width: 25px !important;
+
+      &.SimpleSwitch_checked {
+        span {
+          left: 13px !important;
+        }
+      }
+    }
+  }
+
+  span {
+    height: 12px !important;
+    width: 12px !important;
+  }
+
+  label {
+    font-family: var(--font-regular);
+    margin: 0 0 0 6px !important;
+  }
+}

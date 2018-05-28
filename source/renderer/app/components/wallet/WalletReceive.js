@@ -12,6 +12,7 @@ import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
+import TinySwitch from '../widgets/forms/TinySwitch';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import WalletAddress from '../../domains/WalletAddress';
 import globalMessages from '../../i18n/global-messages';
@@ -38,11 +39,6 @@ const messages = defineMessages({
     id: 'wallet.receive.page.generatedAddressesSectionTitle',
     defaultMessage: '!!!Generated addresses',
     description: '"Generated addresses" section title on the wallet "Receive page"',
-  },
-  hideUsedLabel: {
-    id: 'wallet.receive.page.hideUsedLabel',
-    defaultMessage: '!!!hide used',
-    description: 'Label for "hide used" wallet addresses link on the wallet "Receive page"',
   },
   showUsedLabel: {
     id: 'wallet.receive.page.showUsedLabel',
@@ -229,9 +225,14 @@ export default class WalletReceive extends Component<Props, State> {
           <div className={styles.generatedAddresses}>
             <h2>
               {intl.formatMessage(messages.generatedAddressesSectionTitle)}
-              <button onClick={this.toggleUsedAddresses}>
-                {intl.formatMessage(messages[showUsed ? 'hideUsedLabel' : 'showUsedLabel'])}
-              </button>
+
+              <div className={styles.hideUsed}>
+                <TinySwitch
+                  label={intl.formatMessage(messages.showUsedLabel)}
+                  onChange={this.toggleUsedAddresses}
+                  checked={showUsed}
+                />
+              </div>
             </h2>
 
             {walletAddresses.map((address, index) => {

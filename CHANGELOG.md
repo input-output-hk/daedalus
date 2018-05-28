@@ -29,13 +29,16 @@ Changelog
 - Log expected errors as debug messages only ([PR 916](https://github.com/input-output-hk/daedalus/pull/916))
 
 ## 0.10.0
+=======
 
 ### Features
 
+- Implemented a switch instead of a link for “hide used” addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
 - Asynchronous wallet restoration ([PR 849](https://github.com/input-output-hk/daedalus/pull/849))
 - Added wallet restore indicator in the sidebar ([PR 862](https://github.com/input-output-hk/daedalus/pull/862))
 - Added Daedalus version in application title ([PR 826](https://github.com/input-output-hk/daedalus/pull/826))
 - Added "Show more transactions" button on the summary screen ([PR 848](https://github.com/input-output-hk/daedalus/pull/848))
+- Added "Recovery - regular" and "Recovery - force vended" tabs on "Ada redemption" screen ([PR 933](https://github.com/input-output-hk/daedalus/pull/933))
 - Setting spending password to "ON" by default ([PR 856](https://github.com/input-output-hk/daedalus/pull/856))
 - Paper wallet certificate generation ([PR 779](https://github.com/input-output-hk/daedalus/pull/779))
 - Paper wallet certificate restoration ([PR 794](https://github.com/input-output-hk/daedalus/pull/794))
