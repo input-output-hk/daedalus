@@ -146,7 +146,7 @@ export default class WalletSettings extends Component<Props> {
             value={passwordMessage}
             isSet={isWalletPasswordSet}
             onClick={() => openDialogAction({
-              dialog: ChangeWalletPasswordDialog,
+              // dialog: ChangeWalletPasswordDialog,
             })}
           />
 
@@ -157,7 +157,7 @@ export default class WalletSettings extends Component<Props> {
               <button
                 className={styles.exportLink}
                 onClick={() => openDialogAction({
-                  dialog: WalletExportDialog
+                  // dialog: WalletExportDialog
                 })}
               >
                 {intl.formatMessage(messages.exportButtonLabel)}
@@ -183,6 +183,7 @@ export default class WalletSettings extends Component<Props> {
 
         {isDialogOpen(WalletExportDialog) ? (
           <WalletExportToFileDialogContainer />
+          <div>INSERT ALERT!</div>
         ) : false}
 
       </div>
