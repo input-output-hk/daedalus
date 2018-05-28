@@ -101,6 +101,3 @@ storiesOf('Widgets', module)
     />
   ));
 
-
-
-
