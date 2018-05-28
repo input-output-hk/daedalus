@@ -2,10 +2,12 @@
 import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observable, runInAction } from 'mobx';
+import { observer } from 'mobx-react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
+import pick from 'lodash/pick';
 
 // Assets and helpers
 import StoryDecorator from './support/StoryDecorator';
@@ -18,6 +20,8 @@ import NodeSyncStatusIcon from '../../source/renderer/app/components/widgets/Nod
 import WalletAddress from '../../source/renderer/app/domains/WalletAddress';
 import { generateTransaction } from './WalletTransactionsList.stories.js';
 import { transactionStates, transactionTypes } from '../../source/renderer/app/domains/WalletTransaction';
+import Wallet from '../../source/renderer/app/domains/Wallet.js'
+import { assuranceModeOptions } from '../../source/renderer/app/types/transactionAssuranceTypes.js';
 
 // Empty screen elements
 import TopBar from '../../source/renderer/app/components/layout/TopBar';
@@ -33,10 +37,29 @@ import WalletReceive from '../../source/renderer/app/components/wallet/WalletRec
 import WalletTransactionsList from '../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
 import WalletSettings from '../../source/renderer/app/components/wallet/WalletSettings';
 
-type Props = {
-  activeNavItem?: string,
-  children?: any | Node
-};
+const WALLETS = [
+  {
+    id: '0',
+    name: 'Mining',
+    amount: new BigNumber(0),
+    assurance: assuranceModeOptions.STRICT,
+    hasPassword: false,
+    passwordUpdateDate: new Date(),
+  },
+  {
+    id: '1',
+    name: 'Shopping',
+    amount: new BigNumber(66.998),
+    assurance: assuranceModeOptions.NORMAL,
+    hasPassword: false,
+    passwordUpdateDate: new Date(),
+  }
+];
+
+const SIDEBAR_WALLETS = [
+  { id: WALLETS[0].id, title: WALLETS[0].name, info: `${WALLETS[0].amount} ADA`, isConnected: true },
+  { id: WALLETS[1].id, title: WALLETS[1].name, info: `${WALLETS[1].amount} ADA`, isConnected: true },
+];
 
 const sidebarCategories = [
   {
@@ -63,11 +86,8 @@ const sidebarCategories = [
 
 const sidebarMenus = observable({
   wallets: {
-    items: [
-      { id: '1', title: 'Mining', info: '0.000000 ADA', isConnected: true },
-      { id: '2', title: 'Shopping', info: '66.998.623133 ADA', isConnected: true },
-    ],
-    activeWalletId: '2',
+    items: SIDEBAR_WALLETS,
+    activeWalletId: '1',
     actions: {
       onAddWallet: action('toggleAddWallet'),
       onWalletItemClick: (walletId: string) => {
@@ -77,17 +97,24 @@ const sidebarMenus = observable({
   }
 });
 
+type Props = {
+  storyName?: string,
+  children?: any | Node
+};
+
+@observer
 class WalletScreen extends Component<Props> {
 
   render() {
 
-    const { children, activeNavItem } = this.props;
+    const { children, storyName } = this.props;
+    const activeNavItem = this.getActiveNavItem;
 
     return (
       <div>
         <SidebarLayout
-          sidebar={this.sidebar(!!children)}
-          topbar={this.topbar}
+          sidebar={this.getSidebar(!!children)}
+          topbar={this.getTopbar(storyName)}
         >
           {
             children &&
@@ -105,7 +132,7 @@ class WalletScreen extends Component<Props> {
     );
   }
 
-  sidebar = isShowingSubMenus => (
+  getSidebar = (isShowingSubMenus: boolean) => (
     <Sidebar
       categories={sidebarCategories}
       activeSidebarCategory={sidebarCategories[0].route}
@@ -117,27 +144,25 @@ class WalletScreen extends Component<Props> {
       openDialogAction={action('openDialog')}
       onSubmitSupportRequest={()=>{}}
     />
-  )
+  );
 
-  // TODO: Find out how to activave the `topBarTitle` on TopBar
-  get topbar() {
-    return (
-      <TopBar
-        formattedWalletAmount={formattedWalletAmount}
-        currentRoute="summary"
-        showSubMenuToggle
-        showSubMenus
-      >
-        <NodeSyncStatusIcon
-          networkStatus={{
-            isSynced: true,
-            syncPercentage: 100,
-          }}
-          isProduction
-        />
-      </TopBar>
-    );
-  }
+  getTopbar = (storyName: string) => (
+    <TopBar
+      formattedWalletAmount={formattedWalletAmount}
+      currentRoute={`/wallets/${sidebarMenus.wallets.items[0].id}/${storyName}`}
+      activeWallet={WALLETS[sidebarMenus.wallets.activeWalletId]}
+      showSubMenuToggle
+      showSubMenus
+    >
+      <NodeSyncStatusIcon
+        networkStatus={{
+          isSynced: true,
+          syncPercentage: 100,
+        }}
+        isProduction
+      />
+    </TopBar>
+  );
 }
 
 storiesOf('WalletScreens', module)
@@ -145,7 +170,7 @@ storiesOf('WalletScreens', module)
   .addDecorator((story, { story:storyName }) => (
     <StoryDecorator>
       <WalletScreen
-        activeNavItem={storyName.toLowerCase()}
+        storyName={storyName}
       >
       {story()}
       </WalletScreen>
@@ -155,6 +180,10 @@ storiesOf('WalletScreens', module)
   // ====== Stories ======
 
   .add('Empty', () => false)
+
+  .add('Wallet Navigation', () => (
+    <div>&nbsp;</div>
+  ))
 
   .add('Summary', () => (
     <WalletSummary
@@ -282,7 +311,7 @@ storiesOf('WalletScreens', module)
       activeField={null}
       assuranceLevels={[
         {
-          "value": "CWANormal",
+          "value": assuranceModeOptions.NORMAL,
           "label": {
             id: 'global.assuranceLevel.normal',
             defaultMessage: '!!!Normal',
@@ -290,7 +319,7 @@ storiesOf('WalletScreens', module)
           }
         },
         {
-          "value": "CWAStrict",
+          "value": assuranceModeOptions.STRICT,
           "label": {
             id: 'global.assuranceLevel.strict',
             defaultMessage: '!!!Strict',
@@ -309,10 +338,38 @@ storiesOf('WalletScreens', module)
       onStartEditing={()=>{}}
       onStopEditing={()=>{}}
       openDialogAction={()=>{}}
-      walletAssurance="CWANormal"
+      walletAssurance={assuranceModeOptions.NORMAL}
       walletName="Test wallet"
       walletPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
     />
+  ))
+
+  .add('Send - Confirmation no password', () => (
+    <WalletSendForm
+      actions={{}}
+      stores={{}}
+      currencyUnit="Ada"
+      currencyMaxFractionalDigits={ 6}
+      currencyMaxIntegerDigits={11}
+      validateAmount={() => true}
+      calculateTransactionFee={()=>{}}
+      addressValidator={()=>{}}
+      openDialogAction={()=>{}}
+      isDialogOpen={() => false}
+      isRestoreActive={false}
+    />
+  ))
+
+  .add('Send - Confirmation password', () => (
+    <WalletSendForm
+      currencyUnit="Ada"
+      currencyMaxFractionalDigits={ 6}
+      currencyMaxIntegerDigits={11}
+      validateAmount={() => true}
+      calculateTransactionFee={()=>{}}
+      addressValidator={()=>{}}
+      openDialogAction={()=>{}}
+      isDialogOpen={() => false}
+      isRestoreActive={false}
+    />
   ));
-
-
