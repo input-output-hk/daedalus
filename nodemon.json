@@ -1,3 +1,7 @@
 {
-  "ext": "js json css scss feature"
+  "watch": [
+    "dist",
+    "features"
+  ],
+  "ext": "js json css html"
 }

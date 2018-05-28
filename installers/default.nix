@@ -1,5 +1,23 @@
-with (import (fetchTarball https://github.com/NixOS/nixpkgs/archive/56ebd9129956339ab98ba2f40cb233df0735f5a1.tar.gz) { config = {}; });
+let
+  localLib = import ../lib.nix;
+in
+{ system ? builtins.currentSystem
+, config ? {}
+, pkgs ? (import (localLib.fetchNixPkgs) { inherit system config; })
+}:
 
+with pkgs;
 with haskell.lib;
 
-justStaticExecutables (haskell.packages.ghc802.callPackage ./cardano-installer.nix {})
+let
+  haskellPackages = haskell.packages.ghc822.override {
+    overrides = self: super: {
+      dhall-json = self.callPackage ./dhall-json.nix {};
+      dhall = doJailbreak (self.callPackage ./dhall-haskell.nix {});
+      github = self.callPackage ./github.nix {};
+    };
+  };
+
+in
+
+  justStaticExecutables (haskellPackages.callPackage ./daedalus-installer.nix {})

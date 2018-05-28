@@ -1,0 +1,68 @@
+%smallText {
+  height: 19px;
+  font-family: var(--font-regular);
+  font-size: 14px;
+  line-height: 1.36;
+  letter-spacing: 0.5px;
+  color: var(--theme-bordered-box-text-color);
+}
+
+.component {
+  padding: 20px 20px 0;
+}
+
+.walletName {
+  font-family: var(--font-bold);
+  font-size: 16px;
+  line-height: 1.38;
+  letter-spacing: 0.5px;
+  color: var(--theme-bordered-box-text-color);
+  margin-bottom: 11px;
+  user-select: auto;
+}
+
+.walletAmount {
+  font-family: var(--font-ultralight);
+  font-size: 40px;
+  line-height: 1.0;
+  color: var(--theme-bordered-box-text-color);
+  margin-bottom: 11px;
+  word-break: break-all;
+  user-select: auto;
+
+  & > .decimal {
+    font-family: var(--font-medium);
+    font-size: 18px;
+  }
+
+  & > .currencySymbolBig {
+    display: inline-block;
+    margin-left: 10px;
+    & > svg {
+      width: 25px;
+      height: 27.5px;
+      & > g > g {
+        stroke: var(--theme-icon-ada-summary-wallet-amount-symbol-color);
+      }
+    }
+  }
+}
+
+.pendingConfirmation {
+  @extend %smallText;
+  & > .currencySymbolSmallest {
+    display: inline-block;
+    margin-left: 1px;
+    & > svg {
+      height: 10px;
+      width: 9px;
+      & > g > g {
+        stroke: var(--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color);
+      }
+    }
+  }
+}
+
+.numberOfTransactions {
+  @extend %smallText;
+}

@@ -39,5 +39,4 @@ Feature: General Settings
 
   Scenario: Change send-logs option in General Settings
     Given I am on the General Settings "support" screen
-    And I toggle switch to disable send-logs
-    Then I should not see send-logs switch checked anymore
+    Then I should see the page with Frequency asked questions title

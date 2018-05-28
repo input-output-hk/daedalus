@@ -1,0 +1,23 @@
+{ name       : Text
+, configurationYaml  : Text
+, nodeArgs           :
+  { keyfile          : Text
+  , logsPrefix       : Text
+  , topology         : Text
+  , updateLatestPath : Text
+  , walletDBPath     : Text
+  }
+, pass :
+  { nodePath            : Text
+  , nodeDbPath          : Text
+  , nodeLogConfig       : Text
+  , nodeLogPath         : Text
+  , walletPath          : Text
+  , walletLogging       : Bool
+  , updaterPath         : Text
+  , updaterArgs         : List Text
+  , updateArchive       : Optional Text
+  , updateWindowsRunner : Optional Text
+  , launcherLogsPrefix  : Text
+  }
+}

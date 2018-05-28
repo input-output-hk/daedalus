@@ -1,5 +1,4 @@
 # Daedalus
-
 [![Build status](https://badge.buildkite.com/e173494257519752d79bb52c7859df6277c6d759b217b68384.svg?branch=master)](https://buildkite.com/input-output-hk/daedalus)
 [![Windows build status](https://ci.appveyor.com/api/projects/status/github/input-output-hk/daedalus?branch=master&svg=true)](https://ci.appveyor.com/project/input-output/daedalus)
 [![Release](https://img.shields.io/github/release/input-output-hk/daedalus.svg)](https://github.com/input-output-hk/daedalus/releases)
@@ -13,13 +12,12 @@ Daedalus - cryptocurrency wallet
 Platform-specific build scripts facilitate building Daedalus the way it is built
 by the IOHK CI:
 
-   - `scripts/build-installer-unix.sh     <DAEDALUS-VERSION> <CARDANO-BRANCH> [OPTIONS..]`
+   - `scripts/build-installer-unix.sh     <DAEDALUS-VERSION> [OPTIONS..]`
       - where OS is either `linux` or `osx`
-      - facilitates installer upload to S3 via `--upload-s3`
-   - `scripts/build-installer-windows.bat <DAEDALUS-VERSION> <CARDANO-BRANCH>`
+   - `scripts/build-installer-windows.bat <DAEDALUS-VERSION>`
 
 The result can be found at:
-   - on OS X:    `${BUILD}/installers/dist/Daedalus-installer-*.pkg`
+   - on OS X:    `${BUILD}/installers/dist/csl-daedalus/Daedalus-installer-*.pkg`
    - on WIndows: `${BUILD}/installers/daedalus-*-installer.exe`
 
 ### One-click build-fresh-daedalus scripts
@@ -58,21 +56,13 @@ $ npm install
 
 ## Development
 
-run with one command:
+Run with:
 
 ```bash
 $ npm run dev
 ```
 
-Or run these two commands __simultaneously__ in different console tabs.
-
-```bash
-$ npm run hot-server
-$ npm run start-hot
-```
-
-*Note: requires a node version >= 4 and an npm version >= 3. This project
-defaults to 6.x*
+*Note: requires a node version >= 8 and an npm version >= 5. This project defaults to 8.x*
 
 ### Development - with Cardano Wallet
 
@@ -106,7 +96,7 @@ $ tmux kill-session -t cardano
 
 ### Development - network options
 
-There are four different network options you can run Deadalus in: `mainnet`, `testnet` and `development` (default).
+There are three different network options you can run Daedalus in: `mainnet`, `testnet` and `development` (default).
 To set desired network option use `NETWORK` environment variable:
 
 ```bash
@@ -118,34 +108,20 @@ $ NETWORK=testnet npm run dev
 You can run the test suite in two different modes:
 
 **One-time run:**
-For running tests once using the application in prod mode (which is fast)
-instead of dev with webpack hot-reload server (which is slow).
-
-Execute this once before running the tests (which creates the `dist/bundle.js`):
-```bash
-$ npm run build
-```
-
-After that, execute this to run the tests:
+For running tests once using the application in production mode:
 
 ```bash
 $ npm run test
 ```
 
 **Watch & Rerun on file changes:**
-For development purposes run the tests continuously in watch mode which will re-run tests when source code changes.
+For development purposes run the tests continuously in watch mode which will re-run tests when source code changes:
 
-Execute:
-```bash
-$ npm run hot-server
-```
-
-and then this:
 ```bash
 $ npm run test-watch
 ```
 
-You can find more details regarding tests setup within [Running Deadalus acceptance tests](https://github.com/input-output-hk/daedalus/blob/master/features/README.md) README file.
+You can find more details regarding tests setup within [Running Daedalus acceptance tests](https://github.com/input-output-hk/daedalus/blob/master/features/README.md) README file.
 
 ### CSS Modules
 

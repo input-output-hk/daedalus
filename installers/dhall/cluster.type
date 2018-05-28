@@ -1,0 +1,6 @@
+{ name         : Text
+, keyPrefix    : Text
+, relays       : Text
+, updateServer : Text
+, reportServer : Text
+}

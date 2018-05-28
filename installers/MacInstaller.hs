@@ -1,4 +1,8 @@
-{-# LANGUAGE RecordWildCards, LambdaCase #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE NoImplicitPrelude #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
 module MacInstaller
     ( main
     , SigningConfig(..)
@@ -16,137 +20,126 @@ module MacInstaller
 
 import           Universum
 
-import           Control.Monad (unless, liftM2)
-import           Data.Maybe (fromMaybe)
+import           Control.Monad (unless)
+import           Data.Text (Text)
 import qualified Data.Text as T
 import           System.Directory (copyFile, createDirectoryIfMissing, doesFileExist, renameFile)
-import           System.Environment (lookupEnv)
 import           System.FilePath ((</>), FilePath)
 import           System.FilePath.Glob (glob)
-import           Filesystem.Path.CurrentOS (encodeString)
-import           Turtle (ExitCode (..), echo, proc, procs, which, Managed, with)
+import qualified Filesystem.Path           as P
+import qualified Filesystem.Path.CurrentOS as P
+import           Turtle (Shell, ExitCode (..), echo, proc, procs, inproc, which, Managed, with, printf, (%), l, s, pwd, cd, sh, mktree, export)
 import           Turtle.Line (unsafeTextToLine)
 
 import           RewriteLibs (chain)
 
 import           System.IO (hSetBuffering, BufferMode(NoBuffering))
 
-data InstallerConfig = InstallerConfig {
-    icApi :: String
-  , appNameLowercase :: T.Text
-  , appName :: String
-  , pkg :: T.Text
-  , predownloadChain :: Bool
-  , appRoot :: String
-}
+import           Config
+import           Types
 
--- In both Travis and Buildkite, the environment variable is set to
--- the pull request number if the current job is a pull request build,
--- or "false" if it’s not.
-pullRequestFromEnv :: IO (Maybe String)
-pullRequestFromEnv = liftM2 (<|>) (getPR "BUILDKITE_PULL_REQUEST") (getPR "TRAVIS_PULL_REQUEST")
-  where
-    getPR = fmap interpret . lookupEnv
-    interpret Nothing        = Nothing
-    interpret (Just "false") = Nothing
-    interpret (Just num)     = Just num
+
 
-travisJobIdFromEnv :: IO (Maybe String)
-travisJobIdFromEnv = lookupEnv "TRAVIS_JOB_ID"
-
-installerConfigFromEnv :: IO InstallerConfig
-installerConfigFromEnv = mkEnv <$> envAPI <*> envVersion
-  where
-    envAPI = fromMaybe "cardano" <$> lookupEnv "API"
-    envVersion = fromMaybe "dev" <$> lookupEnv "DAEDALUS_VERSION"
-    mkEnv "cardano" ver = InstallerConfig
-      { icApi = "cardano"
-      , predownloadChain = False
-      , appNameLowercase = "daedalus"
-      , appName = "Daedalus"
-      , pkg = "dist/Daedalus-installer-" <> T.pack ver <> ".pkg"
-      , appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
-      }
-
-main :: IO ()
-main = do
+main :: Options -> IO ()
+main opts@Options{..} = do
   hSetBuffering stdout NoBuffering
 
-  cfg <- installerConfigFromEnv
-  tempInstaller <- makeInstaller cfg
-  shouldSign <- shouldSignDecision
+  let appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
 
-  if shouldSign
-    then do
-      signInstaller signingConfig (toText tempInstaller) (pkg cfg)
-      checkSignature (pkg cfg)
-    else do
-      echo "Pull request, not signing the installer."
-      run "cp" [toText tempInstaller, pkg cfg]
+  generateOSClusterConfigs "./dhall" "." opts
+
+  tempInstaller <- makeInstaller opts appRoot
+
+  signInstaller signingConfig (toText tempInstaller) $ T.pack $ P.encodeString oOutput
+  checkSignature $ T.pack $ P.encodeString oOutput
 
   run "rm" [toText tempInstaller]
-  echo $ "Generated " <> unsafeTextToLine (pkg cfg)
+  printf ("Generated "%s%"\n") $ T.pack $ P.encodeString oOutput
 
--- | When on travis, only sign installer if for non-PR builds.
-shouldSignDecision :: IO Bool
-shouldSignDecision = do
-  pr <- pullRequestFromEnv
-  isTravis <- isJust <$> travisJobIdFromEnv
-  pure (not isTravis || pr == Nothing)
+  when (oTestInstaller == TestInstaller) $ do
+    echo $ "--test-installer passed, will test the installer for installability"
+    procs "sudo" ["installer", "-dumplog", "-verbose", "-target", "/", "-pkg", T.pack $ P.encodeString oOutput] empty
 
-makeScriptsDir :: InstallerConfig -> Managed T.Text
-makeScriptsDir cfg = case icApi cfg of
-  "cardano" -> pure "data/scripts"
-  "etc" -> pure "[DEVOPS-533]"
+makeScriptsDir :: Options -> Managed T.Text
+makeScriptsDir Options{..} = case oBackend of
+  Cardano _ -> pure "data/scripts"
+  Mantis    -> pure "[DEVOPS-533]"
 
-makeInstaller :: InstallerConfig -> IO FilePath
-makeInstaller cfg = do
-  let dir     = appRoot cfg </> "Contents/MacOS"
-      resDir  = appRoot cfg </> "Contents/Resources"
+npmPackage :: Shell ()
+npmPackage = do
+  mktree "release"
+  echo "~~~ Installing nodejs dependencies..."
+  procs "npm" ["install"] empty
+  export "NODE_ENV" "production"
+  echo "~~~ Running electron packager script..."
+  procs "npm" ["run", "package"] empty
+  size <- inproc "du" ["-sh", "release"] empty
+  printf ("Size of Electron app is " % l % "\n") size
+
+withDir :: P.FilePath -> IO a -> IO a
+withDir d = bracket (pwd >>= \old -> (cd d >> pure old)) cd . const
+
+makeInstaller :: Options -> FilePath -> IO FilePath
+makeInstaller opts@Options{..} appRoot = do
+  let dir     = appRoot </> "Contents/MacOS"
   createDirectoryIfMissing False "dist"
 
   echo "Creating icons ..."
-  procs "iconutil" ["--convert", "icns", "--output", toText (resDir </> "electron.icns"), "icons/electron.iconset"] mempty
+  procs "iconutil" ["--convert", "icns", "--output", "icons/electron.icns"
+                   , "icons/electron.iconset"] mempty
 
-  echo "Preparing files ..."
-  case icApi cfg of
-    "cardano" -> do
-      copyFile "cardano-launcher" (dir </> "cardano-launcher")
-      copyFile "cardano-node" (dir </> "cardano-node")
-      copyFile "wallet-topology.yaml" (dir </> "wallet-topology.yaml")
-      copyFile "configuration.yaml" (dir </> "configuration.yaml")
-      genesisFiles <- glob "*genesis*.json"
+  copyFile "launcher-config.yaml" "../launcher-config.yaml"
+  withDir ".." . sh $ npmPackage
+
+  echo "~~~ Preparing files ..."
+  case oBackend of
+    Cardano bridge -> do
+      -- Executables
+      forM ["cardano-launcher", "cardano-node"] $ \f -> do
+        copyFile (P.encodeString bridge </> "bin" </> f) (dir </> f)
+        procs "chmod" ["+w", toText $ dir </> f] empty
+
+      -- Config files (from daedalus-bridge)
+      copyFile (P.encodeString bridge </> "config/configuration.yaml") (dir </> "configuration.yaml")
+      copyFile (P.encodeString bridge </> "config/log-config-prod.yaml") (dir </> "log-config-prod.yaml")
+
+      -- Genesis (from daedalus-bridge)
+      genesisFiles <- glob $ P.encodeString bridge </> "config" </> "*genesis*.json"
+      when (null genesisFiles) $
+        error "Cardano package carries no genesis files."
       procs "cp" (fmap toText (genesisFiles <> [dir])) mempty
-      copyFile "log-config-prod.yaml" (dir </> "log-config-prod.yaml")
+
+      -- Config yaml (generated from dhall files)
+      copyFile "launcher-config.yaml" (dir </> "launcher-config.yaml")
+      copyFile "wallet-topology.yaml" (dir </> "wallet-topology.yaml")
+
+      -- SSL
       copyFile "build-certificates-unix.sh" (dir </> "build-certificates-unix.sh")
       copyFile "ca.conf"     (dir </> "ca.conf")
       copyFile "server.conf" (dir </> "server.conf")
       copyFile "client.conf" (dir </> "client.conf")
 
-      let launcherConfigFileName = "launcher-config.yaml"
-      copyFile "launcher-config-mac.yaml" (dir </> launcherConfigFileName)
-
       -- Rewrite libs paths and bundle them
-      _ <- chain dir $ fmap toText [dir </> "cardano-launcher", dir </> "cardano-node"]
-      pure ()
-    _ -> pure () -- DEVOPS-533
+      void $ chain dir $ fmap toText [dir </> "cardano-launcher", dir </> "cardano-node"]
+
+    Mantis -> pure () -- DEVOPS-533
 
   -- Prepare launcher
   de <- doesFileExist (dir </> "Frontend")
   unless de $ renameFile (dir </> "Daedalus") (dir </> "Frontend")
   run "chmod" ["+x", toText (dir </> "Frontend")]
-  writeLauncherFile dir cfg
+  writeLauncherFile dir
 
-  with (makeScriptsDir cfg) $ \scriptsDir -> do
+  with (makeScriptsDir opts) $ \scriptsDir -> do
     let
       pkgargs :: [ T.Text ]
       pkgargs =
            [ "--identifier"
-           , "org." <> appNameLowercase cfg <> ".pkg"
+           , "org."<> fromAppName oAppName <>".pkg"
            -- data/scripts/postinstall is responsible for running build-certificates
            , "--scripts", scriptsDir
            , "--component"
-           , T.pack $ appRoot cfg
+           , T.pack appRoot
            , "--install-location"
            , "/Applications"
            , "dist/temp.pkg"
@@ -162,8 +155,8 @@ makeInstaller cfg = do
   run "rm" ["dist/temp.pkg"]
   pure "dist/temp2.pkg"
 
-writeLauncherFile :: FilePath -> InstallerConfig -> IO FilePath
-writeLauncherFile dir _ = do
+writeLauncherFile :: FilePath -> IO FilePath
+writeLauncherFile dir = do
   writeFile path $ unlines contents
   run "chmod" ["+x", toText path]
   pure path
@@ -193,10 +186,10 @@ signingConfig = SigningConfig
 -- | Runs "security import -x"
 importCertificate :: SigningConfig -> FilePath -> Maybe Text -> IO ExitCode
 importCertificate SigningConfig{..} cert password = do
-  let optArg s = map toText . maybe [] (\p -> [s, p])
+  let optArg str = map toText . maybe [] (\p -> [str, p])
       certPass = optArg "-P" password
       keyChain = optArg "-k" signingKeyChain
-  productSign <- optArg "-T" . fmap (toText . encodeString) <$> which "productsign"
+  productSign <- optArg "-T" . fmap (toText . P.encodeString) <$> which "productsign"
   let args = ["import", toText cert, "-x"] ++ keyChain ++ certPass ++ productSign
   -- echoCmd "security" args
   proc "security" args mempty

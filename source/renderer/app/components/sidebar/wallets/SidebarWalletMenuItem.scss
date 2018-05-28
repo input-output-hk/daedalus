@@ -1,0 +1,65 @@
+@import '../../../themes/mixins/buttons';
+@import '../sidebarConfig';
+
+.component {
+  @include button;
+  background-color: var(--theme-sidebar-menu-background-color);
+  color: var(--theme-sidebar-menu-item-wallet-name-color);
+  display: flex;
+  flex-direction: row;
+  height: $sidebar-button-height;
+  justify-content: space-between;
+  overflow: hidden;
+  padding: 0 20px;
+  width: $sidebar-width - $sidebar-minimized-category-width;
+
+  &:hover {
+    background-color: var(--theme-sidebar-menu-item-background-color-hover);
+  }
+}
+
+.active {
+  background-color: var(--theme-sidebar-menu-item-background-color-active);
+
+  &:hover {
+    cursor: default;
+    background-color: var(--theme-sidebar-menu-item-background-color-active);
+  }
+}
+
+.meta {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  text-align: left;
+  width: 100%;
+
+  :global {
+    .ProgressBar_component {
+      left: 0;
+      margin-top: 6.5px;
+      position: absolute;
+      right: 0;
+      top: 100%;
+    }
+  }
+}
+
+.title {
+  color: var(--theme-sidebar-menu-item-wallet-name-color);
+  font-family: var(--font-regular);
+  font-size: 18px;
+  line-height: 1.5em;
+  margin-top: -5.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.info {
+  color: var(--theme-sidebar-menu-item-wallet-info-color);
+  font-family: var(--font-light);
+  font-size: 14px;
+  letter-spacing: 1px;
+  opacity: 0.7;
+}

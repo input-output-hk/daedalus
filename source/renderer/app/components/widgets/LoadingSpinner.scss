@@ -1,0 +1,22 @@
+.component {
+  margin: 20px auto;
+
+  &.big {
+    height: 44px;
+    width: 44px;
+  }
+
+  &.small {
+    height: 30px;
+    width: 30px;
+  }
+
+  .icon svg path {
+    fill: var(--theme-loading-spinner-color);
+  }
+
+  :global {
+    animation: loading-spin 1.5s linear;
+    animation-iteration-count: infinite;
+  }
+}

@@ -1,0 +1,30 @@
+.component {
+  margin-bottom: 32px;
+  position: relative;
+
+  :global {
+    .SimpleInput_disabled {
+      .SimpleInput_input {
+        background-color: var(--theme-input-background-color);
+        border-color: var(--theme-input-border-color);
+        color: var(--theme-input-text-color);
+      }
+    }
+  }
+
+  .button {
+    bottom: 13px;
+    color: var(--theme-label-button-color);
+    cursor: pointer;
+    font-family: var(--font-light);
+    font-size: 16px;
+    line-height: 1.38;
+    opacity: 0.5;
+    position: absolute;
+    right: 22px;
+    text-transform: lowercase;
+    &:hover {
+      opacity: 1;
+    }
+  }
+}

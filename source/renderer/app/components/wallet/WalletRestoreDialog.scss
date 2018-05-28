@@ -1,0 +1,106 @@
+@import '../../themes/mixins/loading-spinner';
+@import '../../themes/mixins/error-message';
+@import '../../themes/mixins/place-form-field-error-below-input';
+
+
+.component {
+  &.dialogWithCertificateRestore {
+    :global {
+      .Dialog_title {
+        margin-bottom: 0;
+      }
+    }
+  }
+
+  .walletName {
+    margin-bottom: 20px;
+  }
+
+  .walletPassword {
+    .walletPasswordSwitch {
+      border-top: 1px solid var(--theme-separation-border-color);
+      margin-top: 30px;
+      padding-top: 20px;
+
+      & > .passwordLabel {
+        color: var(--theme-wallet-password-switch-label-color);
+        font-family: var(--font-semibold);
+        font-size: 16px;
+        line-height: 1.38;
+        margin-bottom: 10px;
+      }
+
+      :global {
+        .SimpleSwitch_root {
+          margin-bottom: 0;
+        }
+      }
+    }
+
+    .walletPasswordFields {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      max-height: 0;
+      opacity: 0;
+      overflow: hidden;
+      transition: all 400ms ease;
+
+      &.show {
+        max-height: 250px;
+        opacity: 1;
+        overflow: visible;
+      }
+
+      & > div {
+        margin-top: 30px;
+        width: 275px;
+      }
+
+      @include place-form-field-error-below-input;
+
+      .passwordInstructions {
+        color: var(--theme-instructions-text-color);
+        font-family: var(--font-light);
+        line-height: 1.38;
+        margin-top: 16px;
+        opacity: 0.5;
+      }
+    }
+  }
+
+  .restoreTypeChoice {
+    display: flex;
+    width: 100%;
+    margin-bottom: 20px;
+
+    button {
+      flex: 1;
+      padding: 20px;
+      font-family: var(--font-medium);
+      font-size: 16px;
+      text-align: center;
+      color: var(--theme-choice-tabs-text-color);
+      cursor: pointer;
+      opacity: 0.5;
+    }
+
+    .activeButton {
+      color: var(--theme-choice-tabs-text-color-active);
+      border-bottom: 2px solid var(--theme-choice-tabs-bottom-border-color-active);
+      cursor: default;
+      opacity: 1;
+    }
+
+  }
+
+  .error {
+    @include error-message;
+    margin-top: 30px;
+    text-align: center;
+  }
+
+  .isSubmitting {
+    @include loading-spinner("../../assets/images/spinner-light.svg");
+  }
+}

@@ -1,7 +1,7 @@
 import { Given, When, Then } from 'cucumber';
 import path from 'path';
 import { navigateTo } from '../support/helpers/route-helpers';
-import environment from '../../app/environment';
+import environment from '../../source/common/environment';
 
 const regularAdaCertificateFilePath = path.resolve(__dirname, '../support/ada_certificates/regular.pdf');
 const regularEncryptedAdaCertificateFilePath = path.resolve(__dirname, '../support/ada_certificates/regular.pdf.enc');
@@ -90,6 +90,10 @@ When(/^I enter a valid "Force vended" encrypted PDF certificate email, passcode 
   await this.client.setValue('.AdaRedemptionForm_component .email input', email);
   await this.client.setValue('.AdaRedemptionForm_component .ada-passcode input', passcode);
   await this.client.setValue('.AdaRedemptionForm_component .ada-amount input', amount);
+});
+
+When(/^I enter a valid "Force vended" encrypted PDF certificate decryption key "([^"]*)"$/, async function (decryptionKey) {
+  await this.client.setValue('.AdaRedemptionForm_component .decryption-key input', decryptionKey);
 });
 
 When(/^I enter a valid "Paper vended" shielded vending key$/, function () {

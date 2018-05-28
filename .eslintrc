@@ -18,7 +18,6 @@
     "no-use-before-define": "off",
     "promise/param-names": 2,
     "promise/always-return": 2,
-    "promise/always-catch": 2, // deprecated
     "promise/catch-or-return": 2,
     "promise/no-native": 0,
     "react/jsx-no-bind": "off",
@@ -39,7 +38,7 @@
     "prefer-template": 0,
     "no-unused-vars": 1,
     "no-trailing-spaces": 1,
-    "padded-blocks": 1,
+    "padded-blocks": 0,
     "no-undef": 1,
     "arrow-body-style": 1,
     "key-spacing": 1,
@@ -54,7 +53,19 @@
     "no-multi-spaces": 1,
     "no-multiple-empty-lines": 1,
     "react/jsx-indent": 1,
-    "global-require": "off"
+    "global-require": "off",
+    "prefer-destructuring": 0,
+    "no-return-await": 0,
+    "function-paren-newline": 0,
+    "react/no-array-index-key": 0,
+    "object-curly-newline": 0,
+    "jsx-a11y/alt-text": 0,
+    "no-await-in-loop": 0,
+    "no-restricted-syntax": 0,
+    "no-return-assign": 0,
+    "prefer-promise-reject-errors": 0,
+    "no-unused-expressions": 0,
+    "import/extensions": 0
   },
   "plugins": [
     "import",

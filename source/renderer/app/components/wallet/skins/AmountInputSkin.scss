@@ -1,0 +1,24 @@
+.root {
+  position: relative;
+}
+
+.fees {
+  position: absolute;
+  bottom: 60px;
+  right: 19px;
+  color: var(--theme-input-right-floating-text-color);
+  font-family: var(--font-light);
+  font-size: 14px;
+  user-select: auto;
+}
+
+.total {
+  position: absolute;
+  bottom: 16px;
+  right: 20px;
+  color: var(--theme-input-right-floating-text-color);
+  font-family: var(--font-light);
+  font-size: 16px;
+  text-transform: uppercase;
+  user-select: auto;
+}
