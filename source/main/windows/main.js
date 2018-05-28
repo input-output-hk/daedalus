@@ -5,18 +5,21 @@ import ipcApi from '../ipc-api';
 import { runtimeFolderPath } from '../config';
 
 export const createMainWindow = () => {
-  const params = {
+  const windowOptions = {
     show: false,
     width: 1150,
     height: 870,
+    webPreferences: {
+      webviewTag: false,
+    }
   };
 
   if (process.platform === 'linux') {
-    params.icon = path.join(runtimeFolderPath, 'icon.png');
+    windowOptions.icon = path.join(runtimeFolderPath, 'icon.png');
   }
 
   // Construct new BrowserWindow
-  const window = new BrowserWindow(params);
+  const window = new BrowserWindow(windowOptions);
 
   window.setMinimumSize(900, 600);
 
