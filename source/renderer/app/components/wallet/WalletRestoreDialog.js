@@ -140,7 +140,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
   state = {
     createPassword: true,
-    activeChoice: 'regular', // regular | certificate
+    activeChoice: RESTORE_TYPES.REGULAR, // regular | certificate
   };
 
   recoveryPhraseAutocomplete: Autocomplete;
