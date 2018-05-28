@@ -40,11 +40,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Generated addresses',
     description: '"Generated addresses" section title on the wallet "Receive page"',
   },
-  hideUsedLabel: {
-    id: 'wallet.receive.page.hideUsedLabel',
-    defaultMessage: '!!!hide used',
-    description: 'Label for "hide used" wallet addresses link on the wallet "Receive page"',
-  },
   showUsedLabel: {
     id: 'wallet.receive.page.showUsedLabel',
     defaultMessage: '!!!show used',

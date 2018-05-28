@@ -231,7 +231,6 @@
   "wallet.receive.page.etc.walletReceiveInstructions": "Share this wallet address to receive payments. To protect your privacy generate new addresses for receiving payments instead of reusing existing ones.",
   "wallet.receive.page.generateNewAddressButtonLabel": "Generate new address",
   "wallet.receive.page.generatedAddressesSectionTitle": "Generated addresses",
-  "wallet.receive.page.hideUsedLabel": "hide used",
   "wallet.receive.page.showUsedLabel": "show used",
   "wallet.receive.page.spendingPasswordPlaceholder": "Password",
   "wallet.receive.page.walletAddressLabel": "Your wallet address",
