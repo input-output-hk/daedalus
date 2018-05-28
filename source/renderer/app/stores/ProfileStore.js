@@ -138,8 +138,7 @@ export default class SettingsStore extends Store {
 
   @computed get isSettingsPage(): boolean {
     const { currentRoute } = this.stores.app;
-    const settingsRoutes = Object.assign({}, ROUTES.PROFILE, ROUTES.SETTINGS);
-    return includes(settingsRoutes, currentRoute);
+    return includes(ROUTES.PROFILE, currentRoute) || includes(ROUTES.SETTINGS, currentRoute);
   }
 
   _updateLocale = async ({ locale }: { locale: string }) => {

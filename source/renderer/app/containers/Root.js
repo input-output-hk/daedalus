@@ -17,7 +17,7 @@ export default class Root extends Component<Props> {
     const { stores, children } = this.props;
     const { networkStatus, profile } = stores;
     const wallets = stores[environment.API].wallets;
-    if (profile.isSettingsPage) {
+    if (networkStatus.isConnected && profile.isSettingsPage) {
       return React.Children.only(children);
     }
     if (
