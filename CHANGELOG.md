@@ -13,6 +13,7 @@ Changelog
 - Fixed storybook config issues ([PR 928](https://github.com/input-output-hk/daedalus/pull/928))
 - Fixed broken translation on create wallet dialog ([PR 930](https://github.com/input-output-hk/daedalus/pull/930))
 - Fix 633 npm audit issues by upgrading dependencies ([PR 944](https://github.com/input-output-hk/daedalus/pull/944))
+- Disabled webview tags to prevent XSS attacks ([PR 946](https://github.com/input-output-hk/daedalus/pull/946))
 
 ### Chores
 
