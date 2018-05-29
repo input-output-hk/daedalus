@@ -150,12 +150,15 @@ class WalletScreen extends Component<Props> {
     );
   }
 
-  getSidebar = (isShowingSubMenus: boolean) => (
+  @observable
+  isShowingSubMenus = !!this.props.children;
+
+  getSidebar = () => (
     <Sidebar
       categories={sidebarCategories}
       activeSidebarCategory={sidebarCategories[0].route}
       menus={sidebarMenus}
-      isShowingSubMenus={isShowingSubMenus}
+      isShowingSubMenus={this.isShowingSubMenus}
       onCategoryClicked={action('onCategoryClicked')}
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
@@ -166,11 +169,14 @@ class WalletScreen extends Component<Props> {
 
   getTopbar = (activeNavItem: string) => (
     <TopBar
+      onToggleSidebar={() => {
+        runInAction(() => this.isShowingSubMenus = !this.isShowingSubMenus);
+      }}
       formattedWalletAmount={formattedWalletAmount}
       currentRoute={`/wallets/${WALLETS[sidebarMenus.wallets.activeWalletId].id}/${activeNavItem}`}
       activeWallet={activeNavItem !== 'empty' ? new Wallet(WALLETS[sidebarMenus.wallets.activeWalletId]) : null}
       showSubMenuToggle={true}
-      showSubMenus={activeNavItem !== 'empty'}
+      showSubMenus={this.isShowingSubMenus}
     >
       <NodeSyncStatusIcon
         networkStatus={{
