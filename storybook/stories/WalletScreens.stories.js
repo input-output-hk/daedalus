@@ -129,7 +129,11 @@ class WalletScreen extends Component<Props> {
     const activeNavItem = storyName.split(' ')[0].toLowerCase();
 
     return (
-      <div>
+      <div
+        style={{
+          height: '100vh'
+        }}
+      >
         <SidebarLayout
           sidebar={this.getSidebar(!!children)}
           topbar={this.getTopbar(activeNavItem)}
