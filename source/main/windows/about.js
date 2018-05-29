@@ -13,18 +13,21 @@ export const createAboutWindow = () => {
 
   const width = 640;
   const height = 520;
-  const params = {
+  const windowOptions = {
     fullscreenable: false,
     show: false,
     width,
     height,
+    webPreferences: {
+      webviewTag: false,
+    }
   };
   if (process.platform === 'linux') {
-    params.icon = path.join(runtimeFolderPath, 'icon.png');
+    windowOptions.icon = path.join(runtimeFolderPath, 'icon.png');
   }
 
   // Load About window but keep it hidden
-  const window = new BrowserWindow(params);
+  const window = new BrowserWindow(windowOptions);
 
   // Prevent resize about window
   window.setMinimumSize(width, height);
