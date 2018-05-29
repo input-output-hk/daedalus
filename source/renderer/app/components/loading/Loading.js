@@ -69,7 +69,6 @@ type Props = {
   hasBlockSyncingStarted: boolean,
   isSyncing: boolean,
   syncPercentage: number,
-  isLoadingDataForNextScreen: boolean,
   loadingDataForNextScreenMessage: ReactIntlMessage,
   hasLoadedCurrentLocale: boolean,
   hasLoadedCurrentTheme: boolean,
@@ -137,7 +136,6 @@ export default class Loading extends Component<Props, State> {
       isConnecting,
       isSyncing,
       syncPercentage,
-      isLoadingDataForNextScreen,
       loadingDataForNextScreenMessage,
       hasBeenConnected,
       hasBlockSyncingStarted,
@@ -192,6 +190,8 @@ export default class Loading extends Component<Props, State> {
       'primary',
       styles.reportIssueButton,
     ]);
+
+    const isLoadingDataForNextScreen = !isConnecting && !isSyncing && isSystemTimeCorrect;
 
     return (
       <div className={componentStyles}>

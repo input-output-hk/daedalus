@@ -88,7 +88,7 @@ export default class NetworkStatusStore extends Store {
 
   @computed get isConnecting(): boolean {
     // until we start receiving network difficulty messages we are not connected to node
-    return !this.isConnected || this.networkDifficulty <= 1;
+    return !this.isConnected;
   }
 
   @computed get hasBlockSyncingStarted(): boolean {
@@ -139,7 +139,10 @@ export default class NetworkStatusStore extends Store {
 
   @computed get isSystemTimeCorrect(): boolean {
     if (!environment.isAdaApi()) return true;
-    return (this.localTimeDifference <= ALLOWED_TIME_DIFFERENCE);
+    // We assume that system time is correct by default
+    if (!this.localTimeDifferenceRequest.wasExecuted) return true;
+    // Compare time difference if we have a result
+    return this.localTimeDifference <= ALLOWED_TIME_DIFFERENCE;
   }
 
   @computed get isSyncing(): boolean {

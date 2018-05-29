@@ -25,7 +25,7 @@ export default class LoadingPage extends Component<InjectedProps> {
   render() {
     const { stores } = this.props;
     const {
-      isConnecting, isConnected, isSyncing, isSynced, syncPercentage, hasBeenConnected,
+      isConnecting, isSyncing, syncPercentage, hasBeenConnected,
       hasBlockSyncingStarted, localTimeDifference, isSystemTimeCorrect,
     } = stores.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
@@ -39,7 +39,6 @@ export default class LoadingPage extends Component<InjectedProps> {
           isSystemTimeCorrect={isSystemTimeCorrect}
           isConnecting={isConnecting}
           syncPercentage={syncPercentage}
-          isLoadingDataForNextScreen={isConnected && isSynced && isSystemTimeCorrect}
           loadingDataForNextScreenMessage={messages.loadingWalletData}
           hasBeenConnected={hasBeenConnected}
           hasBlockSyncingStarted={hasBlockSyncingStarted}
