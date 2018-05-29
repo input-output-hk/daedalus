@@ -15,6 +15,7 @@ Changelog
 - Fixed storybook config issues ([PR 928](https://github.com/input-output-hk/daedalus/pull/928))
 - Fixed broken translation on create wallet dialog ([PR 930](https://github.com/input-output-hk/daedalus/pull/930))
 - Fix 633 npm audit issues by upgrading dependencies ([PR 944](https://github.com/input-output-hk/daedalus/pull/944))
+- Disabled webview tags to prevent XSS attacks ([PR 946](https://github.com/input-output-hk/daedalus/pull/946))
 
 ### Chores
 
@@ -34,6 +35,7 @@ Changelog
 
 ### Features
 
+- Implemented a switch instead of a link for “hide used” addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
 - Asynchronous wallet restoration ([PR 849](https://github.com/input-output-hk/daedalus/pull/849))
 - Added wallet restore indicator in the sidebar ([PR 862](https://github.com/input-output-hk/daedalus/pull/862))
 - Added Daedalus version in application title ([PR 826](https://github.com/input-output-hk/daedalus/pull/826))
