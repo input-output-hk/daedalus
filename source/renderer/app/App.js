@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { Provider, observer } from 'mobx-react';
-import { ThemeProvider } from 'react-css-themr';
+import { ThemeProvider } from 'react-polymorph/lib/components';
 import DevTools from 'mobx-react-devtools';
 import { Router } from 'react-router';
 import { IntlProvider } from 'react-intl';
