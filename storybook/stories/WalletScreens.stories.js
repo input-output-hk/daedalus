@@ -4,10 +4,11 @@ import type { Node } from 'react';
 import { observable, runInAction } from 'mobx';
 import { observer } from 'mobx-react';
 import { storiesOf } from '@storybook/react';
+import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
-import pick from 'lodash/pick';
+import startCase from 'lodash/startCase';
 import PropTypes from 'prop-types';
 
 // Assets and helpers
@@ -138,7 +139,7 @@ class WalletScreen extends Component<Props> {
               (
                 <WalletWithNavigation
                   isActiveScreen={item => item === activeNavItem}
-                  onWalletNavItemClick={action('onWalletNavItemClick')}
+                  onWalletNavItemClick={linkTo('WalletScreens', item => startCase(item))}
                 >
                   {children}
                 </WalletWithNavigation>

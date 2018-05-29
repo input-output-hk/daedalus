@@ -28,8 +28,11 @@
     "electron": "./node_modules/.bin/electron"
   },
   "devDependencies": {
-    "@storybook/addon-actions": "3.2.18",
-    "@storybook/react": "3.2.18",
+    "@storybook/addon-actions": "^3.4.6",
+    "@storybook/addon-links": "^3.4.6",
+    "@storybook/addon-notes": "^3.4.6",
+    "@storybook/addons": "^3.4.6",
+    "@storybook/react": "^3.4.6",
     "asar": "0.14.0",
     "autodll-webpack-plugin": "0.3.8",
     "babel-cli": "6.26.0",
