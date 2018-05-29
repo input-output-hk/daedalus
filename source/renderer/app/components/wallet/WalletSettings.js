@@ -13,7 +13,8 @@ import DeleteWalletButton from './settings/DeleteWalletButton';
 import DeleteWalletConfirmationDialog from './settings/DeleteWalletConfirmationDialog';
 import DeleteWalletDialogContainer from '../../containers/wallet/dialogs/DeleteWalletDialogContainer';
 import WalletExportDialog from './settings/export-to-file/WalletExportToFileDialog';
-import WalletExportToFileDialogContainer from '../../containers/wallet/settings/WalletExportToFileDialogContainer';
+// import WalletExportToFileDialogContainer
+// from '../../containers/wallet/settings/WalletExportToFileDialogContainer';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
 import ChangeWalletPasswordDialog from './settings/ChangeWalletPasswordDialog';
 import ChangeWalletPasswordDialogContainer from '../../containers/wallet/dialogs/ChangeWalletPasswordDialogContainer';
@@ -182,7 +183,8 @@ export default class WalletSettings extends Component<Props> {
         ) : false}
 
         {isDialogOpen(WalletExportDialog) ? (
-          <WalletExportToFileDialogContainer />
+          /* <WalletExportToFileDialogContainer /> */
+          <div>&nbsp;</div>
         ) : false}
 
       </div>

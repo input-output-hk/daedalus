@@ -8,6 +8,7 @@ import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import pick from 'lodash/pick';
+import PropTypes from 'prop-types';
 
 // Assets and helpers
 import StoryDecorator from './support/StoryDecorator';
@@ -97,6 +98,22 @@ const sidebarMenus = observable({
   }
 });
 
+const validateAmount = (amountInNaturalUnits: string) => (
+  new Promise(resolve => {
+    setTimeout(() => {
+      resolve(amountInNaturalUnits ? true : false);
+    }, 2000);
+  })
+);
+const calculateTransactionFee = (receiver: string, amount: string) => (
+  new Promise(resolve => {
+    setTimeout(() => {
+      resolve((receiver || amount) ? true : false);
+    }, 2000);
+  })
+);
+
+
 type Props = {
   storyName?: string,
   children?: any | Node
@@ -107,14 +124,14 @@ class WalletScreen extends Component<Props> {
 
   render() {
 
-    const { children, storyName } = this.props;
-    const activeNavItem = this.getActiveNavItem;
+    const { children, storyName='' } = this.props;
+    const activeNavItem = storyName.split(' ')[0].toLowerCase();
 
     return (
       <div>
         <SidebarLayout
           sidebar={this.getSidebar(!!children)}
-          topbar={this.getTopbar(storyName)}
+          topbar={this.getTopbar(activeNavItem)}
         >
           {
             children &&
@@ -146,11 +163,11 @@ class WalletScreen extends Component<Props> {
     />
   );
 
-  getTopbar = (storyName: string) => (
+  getTopbar = (activeNavItem: string) => (
     <TopBar
       formattedWalletAmount={formattedWalletAmount}
-      currentRoute={`/wallets/${sidebarMenus.wallets.items[0].id}/${storyName}`}
-      activeWallet={WALLETS[sidebarMenus.wallets.activeWalletId]}
+      currentRoute={`/wallets/${sidebarMenus.wallets.items[0].id}/${activeNavItem}`}
+      activeWallet={new Wallet(WALLETS[sidebarMenus.wallets.activeWalletId])}
       showSubMenuToggle
       showSubMenus
     >
@@ -204,8 +221,8 @@ storiesOf('WalletScreens', module)
       currencyUnit="Ada"
       currencyMaxFractionalDigits={ 6}
       currencyMaxIntegerDigits={11}
-      validateAmount={() => true}
-      calculateTransactionFee={()=>{}}
+      validateAmount={validateAmount}
+      calculateTransactionFee={calculateTransactionFee}
       addressValidator={()=>{}}
       openDialogAction={()=>{}}
       isDialogOpen={()=>{}}
@@ -218,66 +235,66 @@ storiesOf('WalletScreens', module)
       walletAddress="5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds"
       isWalletAddressUsed={false}
       walletAddresses={[
-        {
+        new WalletAddress({
           id: '5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds',
           amount: new BigNumber(1),
           isUsed:false,
-        },
-        {
+        }),
+        new WalletAddress({
           id: 'f465aca571de909091967349e1dc39fc9ce9755ff8ffdb7cc3771b503904e49a',
           amount: new BigNumber(1),
           isUsed:false,
-        },
-        {
+        }),
+        new WalletAddress({
           id: '5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds',
           amount: new BigNumber(1),
           isUsed:false,
-        },
-        {
+        }),
+        new WalletAddress({
           id: 'f465aca571de909091967349e1dc39fc9ce9755ff8ffdb7cc3771b503904e49a',
           amount: new BigNumber(1),
           isUsed:false,
-        },
-        {
+        }),
+        new WalletAddress({
           id: '5628aab8ac98c963e4a2e8cfce5aa1cbd4384fe2f9a0f3c5f791bfb83a5e02ds',
           amount: new BigNumber(1),
           isUsed:false,
-        },
-        {
+        }),
+        new WalletAddress({
           id: 'f465aca571de909091967349e1dc39fc9ce9755ff8ffdb7cc3771b503904e49a',
           amount: new BigNumber(1),
           isUsed:false,
-        },
-        {
+        }),
+        new WalletAddress({
           id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
           amount: new BigNumber(1),
           isUsed:true,
-        },
-        {
+        }),
+        new WalletAddress({
           id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
           amount: new BigNumber(1),
           isUsed:true,
-        },
-        {
+        }),
+        new WalletAddress({
           id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
           amount: new BigNumber(1),
           isUsed:true,
-        },
-        {
+        }),
+        new WalletAddress({
           id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
           amount: new BigNumber(1),
           isUsed:true,
-        },
-        {
+        }),
+        new WalletAddress({
           id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
           amount: new BigNumber(1),
           isUsed:true,
-        },
-        {
+        }),
+        new WalletAddress({
           id: '68a1107193a8183bcd7758c9b3d9f3e8b0437206cc432b4e01a49d948157f51e',
           amount: new BigNumber(1),
           isUsed:true,
-        }
+        })
       ]}
       onGenerateAddress={()=>{}}
       onCopyAddress={()=>{}}
@@ -351,11 +368,11 @@ storiesOf('WalletScreens', module)
       currencyUnit="Ada"
       currencyMaxFractionalDigits={ 6}
       currencyMaxIntegerDigits={11}
-      validateAmount={() => true}
-      calculateTransactionFee={()=>{}}
+      validateAmount={validateAmount}
+      calculateTransactionFee={calculateTransactionFee}
       addressValidator={()=>{}}
       openDialogAction={()=>{}}
-      isDialogOpen={() => false}
+      isDialogOpen={() => true}
       isRestoreActive={false}
     />
   ))
@@ -365,11 +382,11 @@ storiesOf('WalletScreens', module)
       currencyUnit="Ada"
       currencyMaxFractionalDigits={ 6}
       currencyMaxIntegerDigits={11}
-      validateAmount={() => true}
-      calculateTransactionFee={()=>{}}
+      validateAmount={validateAmount}
+      calculateTransactionFee={calculateTransactionFee}
       addressValidator={()=>{}}
       openDialogAction={()=>{}}
-      isDialogOpen={() => false}
+      isDialogOpen={() => true}
       isRestoreActive={false}
     />
   ));
