@@ -166,10 +166,10 @@ class WalletScreen extends Component<Props> {
   getTopbar = (activeNavItem: string) => (
     <TopBar
       formattedWalletAmount={formattedWalletAmount}
-      currentRoute={`/wallets/${sidebarMenus.wallets.items[0].id}/${activeNavItem}`}
-      activeWallet={new Wallet(WALLETS[sidebarMenus.wallets.activeWalletId])}
-      showSubMenuToggle
-      showSubMenus
+      currentRoute={`/wallets/${WALLETS[sidebarMenus.wallets.activeWalletId].id}/${activeNavItem}`}
+      activeWallet={activeNavItem !== 'empty' ? new Wallet(WALLETS[sidebarMenus.wallets.activeWalletId]) : null}
+      showSubMenuToggle={true}
+      showSubMenus={activeNavItem !== 'empty'}
     >
       <NodeSyncStatusIcon
         networkStatus={{
