@@ -4,10 +4,8 @@ import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
-import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
+import { Button, Checkbox } from 'react-polymorph/lib/components';
+import { ButtonSkin, CheckboxSkin } from 'react-polymorph/lib/skins/simple';
 import attentionIcon from '../../../assets/images/attention-big-light.inline.svg';
 import styles from './AdaRedemptionDisclaimer.scss';
 
@@ -80,7 +78,7 @@ export default class AdaRedemptionDisclaimer extends Component<Props, State> {
             label={intl.formatMessage(messages.checkboxLabel)}
             onChange={this.onAcceptToggle}
             checked={isAccepted}
-            skin={<SimpleCheckboxSkin />}
+            skin={CheckboxSkin}
           />
         </div>
 
@@ -89,7 +87,7 @@ export default class AdaRedemptionDisclaimer extends Component<Props, State> {
           label={intl.formatMessage(messages.submitLabel)}
           onClick={() => isAccepted && onSubmit()}
           disabled={!isAccepted}
-          skin={<SimpleButtonSkin />}
+          skin={ButtonSkin}
         />
 
       </div>

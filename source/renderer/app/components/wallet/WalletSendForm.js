@@ -2,11 +2,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
-import Input from 'react-polymorph/lib/components/Input';
-import NumericInput from 'react-polymorph/lib/components/NumericInput';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
+import { Button, Input, NumericInput } from 'react-polymorph/lib/components';
+import { ButtonSkin, InputSkin } from 'react-polymorph/lib/skins/simple';
 import { defineMessages, intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
@@ -252,7 +249,7 @@ export default class WalletSendForm extends Component<Props, State> {
                     this._isCalculatingFee = true;
                     receiverField.onChange(value || '');
                   }}
-                  skin={<SimpleInputSkin />}
+                  skin={InputSkin}
                 />
               </div>
 
@@ -272,7 +269,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   currency={currencyUnit}
                   fees={fees}
                   total={total}
-                  skin={<AmountInputSkin />}
+                  skin={AmountInputSkin}
                 />
               </div>
 
@@ -283,7 +280,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   dialog: WalletSendConfirmationDialog,
                 })}
                 disabled={this._isCalculatingFee || !isTransactionFeeCalculated}
-                skin={<SimpleButtonSkin />}
+                skin={ButtonSkin}
               />
             </div>
           </BorderedBox>

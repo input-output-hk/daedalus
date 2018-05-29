@@ -2,10 +2,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/raw/SwitchSkin';
+import { Checkbox, Input } from 'react-polymorph/lib/components';
+import { SwitchSkin, InputSkin } from 'react-polymorph/lib/skins/simple';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -259,7 +257,7 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
                 onChange={this.handlePasswordSwitchToggle}
                 label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
                 checked={removePassword}
-                skin={<SimpleSwitchSkin />}
+                skin={SwitchSkin}
               />
             </div>
 
@@ -270,7 +268,7 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
               onChange={(value) => this.handleDataChange('currentPasswordValue', value)}
               {...currentPasswordField.bind()}
               error={currentPasswordField.error}
-              skin={<SimpleInputSkin />}
+              skin={InputSkin}
             />
           </div>
         ) : null}
@@ -283,7 +281,7 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
             onChange={(value) => this.handleDataChange('newPasswordValue', value)}
             {...newPasswordField.bind()}
             error={newPasswordField.error}
-            skin={<SimpleInputSkin />}
+            skin={InputSkin}
           />
 
           <Input
@@ -293,7 +291,7 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
             onChange={(value) => this.handleDataChange('repeatedPasswordValue', value)}
             {...repeatedPasswordField.bind()}
             error={repeatedPasswordField.error}
-            skin={<SimpleInputSkin />}
+            skin={InputSkin}
           />
 
           <p className={styles.passwordInstructions}>

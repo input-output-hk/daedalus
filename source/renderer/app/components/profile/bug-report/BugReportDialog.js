@@ -5,12 +5,8 @@ import { observer } from 'mobx-react';
 import { isEmail, isEmpty } from 'validator';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
-import TextArea from 'react-polymorph/lib/components/TextArea';
-import SimpleTextAreaSkin from 'react-polymorph/lib/skins/simple/raw/TextAreaSkin';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/raw/SwitchSkin';
+import { Input, TextArea, Checkbox } from 'react-polymorph/lib/components';
+import { InputSkin, TextAreaSkin, SwitchSkin } from 'react-polymorph/lib/skins/simple';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -320,7 +316,7 @@ export default class BugReportDialog extends Component<Props, State> {
                 className="email"
                 {...emailField.bind()}
                 error={emailField.error}
-                skin={<SimpleInputSkin />}
+                skin={InputSkin}
               />
             </div>
 
@@ -329,7 +325,7 @@ export default class BugReportDialog extends Component<Props, State> {
                 className="subject"
                 {...subjectField.bind()}
                 error={subjectField.error}
-                skin={<SimpleInputSkin />}
+                skin={InputSkin}
               />
             </div>
 
@@ -340,7 +336,7 @@ export default class BugReportDialog extends Component<Props, State> {
                 rows={3}
                 {...problemField.bind()}
                 error={problemField.error}
-                skin={<SimpleTextAreaSkin />}
+                skin={TextAreaSkin}
               />
             </div>
 
@@ -354,7 +350,7 @@ export default class BugReportDialog extends Component<Props, State> {
                   onChange={this.handleLogsSwitchToggle}
                   label={intl.formatMessage(messages.logsSwitchPlaceholder)}
                   checked={showLogs}
-                  skin={<SimpleSwitchSkin />}
+                  skin={SwitchSkin}
                 />
               </div>
 

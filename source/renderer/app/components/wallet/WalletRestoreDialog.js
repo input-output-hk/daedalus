@@ -3,12 +3,8 @@ import React, { Component } from 'react';
 import { join } from 'lodash';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import Autocomplete from 'react-polymorph/lib/components/Autocomplete';
-import SimpleAutocompleteSkin from 'react-polymorph/lib/skins/simple/raw/AutocompleteSkin';
-import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/raw/SwitchSkin';
+import { Autocomplete, Checkbox, Input } from 'react-polymorph/lib/components';
+import { AutocompleteSkin, SwitchSkin, InputSkin } from 'react-polymorph/lib/skins/simple';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
@@ -349,7 +345,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           className={walletNameFieldClasses}
           {...walletNameField.bind()}
           error={walletNameField.error}
-          skin={<SimpleInputSkin />}
+          skin={InputSkin}
         />
 
         <Autocomplete
@@ -370,7 +366,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           error={recoveryPhraseField.error}
           maxVisibleOptions={5}
           noResultsMessage={intl.formatMessage(messages.recoveryPhraseNoResults)}
-          skin={<SimpleAutocompleteSkin />}
+          skin={AutocompleteSkin}
         />
 
         <div className={styles.walletPassword}>
@@ -382,7 +378,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
               onChange={this.handlePasswordSwitchToggle}
               label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
               checked={createPassword}
-              skin={<SimpleSwitchSkin />}
+              skin={SwitchSkin}
             />
           </div>
 
@@ -391,13 +387,13 @@ export default class WalletRestoreDialog extends Component<Props, State> {
               className="walletPassword"
               {...walletPasswordField.bind()}
               error={walletPasswordField.error}
-              skin={<SimpleInputSkin />}
+              skin={InputSkin}
             />
             <Input
               className="repeatedPassword"
               {...repeatedPasswordField.bind()}
               error={repeatedPasswordField.error}
-              skin={<SimpleInputSkin />}
+              skin={InputSkin}
             />
             <p className={styles.passwordInstructions}>
               {intl.formatMessage(globalMessages.passwordInstructions)}

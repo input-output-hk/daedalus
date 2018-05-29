@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
+import { Button } from 'react-polymorph/lib/components';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple';
 import styles from './MnemonicWord.scss';
 
 type Props = {
@@ -28,7 +28,7 @@ export default class MnemonicWord extends Component<Props> {
         className={componentClassNames}
         label={word}
         onClick={() => onClick({ word, index })}
-        skin={<SimpleButtonSkin />}
+        skin={ButtonSkin}
       />
     );
   }

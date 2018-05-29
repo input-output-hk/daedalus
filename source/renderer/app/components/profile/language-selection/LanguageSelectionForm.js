@@ -2,10 +2,8 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
-import Select from 'react-polymorph/lib/components/Select';
-import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
-import SelectSkin from 'react-polymorph/lib/skins/simple/raw/SelectSkin';
+import { Button, Select } from 'react-polymorph/lib/components';
+import { ButtonSkin, SelectSkin } from 'react-polymorph/lib/skins/simple';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -84,7 +82,7 @@ export default class LanguageSelectionForm extends Component<Props> {
             className={styles.languageSelect}
             options={languageOptions}
             {...languageId.bind()}
-            skin={<SelectSkin />}
+            skin={SelectSkin}
           />
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
@@ -93,7 +91,7 @@ export default class LanguageSelectionForm extends Component<Props> {
             className={buttonClasses}
             label={intl.formatMessage(messages.submitLabel)}
             onMouseUp={this.submit}
-            skin={<SimpleButtonSkin />}
+            skin={ButtonSkin}
           />
 
         </div>

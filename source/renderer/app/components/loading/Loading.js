@@ -4,8 +4,8 @@ import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
-import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
+import { Button } from 'react-polymorph/lib/components';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple';
 import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
@@ -207,7 +207,7 @@ export default class Loading extends Component<Props, State> {
               className={buttonClasses}
               label={intl.formatMessage(messages.reportIssueButtonLabel)}
               onClick={handleReportIssue}
-              skin={<SimpleButtonSkin />}
+              skin={ButtonSkin}
             />
           </div>
         )}
