@@ -22,6 +22,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Paper vended',
     description: 'Tab title "Paper vended" on Ada redemption page.'
   },
+  recoveryRegularTabTitle: {
+    id: 'wallet.redeem.choices.tab.title.recoveryRegular',
+    defaultMessage: '!!!Recovery - regular',
+    description: 'Tab title "Recovery - regular" on Ada redemption page.'
+  },
+  recoveryForceVendedTabTitle: {
+    id: 'wallet.redeem.choices.tab.title.recoveryForceVended',
+    defaultMessage: '!!!Recovery - force vended',
+    description: 'Tab title "Recovery - force vended" on Ada redemption page.'
+  },
 });
 
 type Props = {
@@ -58,6 +68,18 @@ export default class AdaRedemptionChoices extends Component<Props> {
           onClick={() => onSelectChoice(ADA_REDEMPTION_TYPES.PAPER_VENDED)}
         >
           {intl.formatMessage(messages.paperVendedTabTitle)}
+        </button>
+        <button
+          className={activeChoice === ADA_REDEMPTION_TYPES.RECOVERY_REGULAR ? styles.activeButton : ''}
+          onClick={() => onSelectChoice(ADA_REDEMPTION_TYPES.RECOVERY_REGULAR)}
+        >
+          {intl.formatMessage(messages.recoveryRegularTabTitle)}
+        </button>
+        <button
+          className={activeChoice === ADA_REDEMPTION_TYPES.RECOVERY_FORCE_VENDED ? styles.activeButton : ''}
+          onClick={() => onSelectChoice(ADA_REDEMPTION_TYPES.RECOVERY_FORCE_VENDED)}
+        >
+          {intl.formatMessage(messages.recoveryForceVendedTabTitle)}
         </button>
       </div>
     );

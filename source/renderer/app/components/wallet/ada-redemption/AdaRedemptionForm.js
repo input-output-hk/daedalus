@@ -52,6 +52,19 @@ Below is an example of a redemption key. Your key will look similar:</p><p><stro
 to decrypt your certificate and your redemption code will be automatically extracted.</p>`,
     description: 'Detailed instructions for redeeming Ada from the force vending',
   },
+  instructionsRecoveryRegular: {
+    id: 'wallet.redeem.dialog.instructions.recoveryRegular',
+    defaultMessage: `!!!<p>To redeem your Ada using the regularly vended certificate from the recovery service, please upload your encrypted certificate and enter a {adaRedemptionPassphraseLength}-word mnemonic passphrase.</p>
+  >After you upload your <strong>encrypted certificate</strong> and enter your <strong>{adaRedemptionPassphraseLength}-word mnemonic passphrase</strong>, your redemption key will be automatically extracted and you will be able to redeem your Ada to the selected wallet.</p>`,
+    description: 'Detailed instructions for redeeming Ada from the regular vending via Recovery service',
+  },
+  instructionsRecoveryForceVended: {
+    id: 'wallet.redeem.dialog.instructions.recoveryForceVended',
+    defaultMessage: `!!!<p>To redeem your Ada using the force vended certificate from the recovery service, please upload your encrypted certificate and enter the decryption key. Your decryption key should look like this:</p>
+  ><strong>qXQWDxI3JrlFRtC4SeQjeGzLbVXWBomYPbNO1Vfm1T4=</strong></p>
+  >After you upload your <strong>encrypted certificate</strong> and enter your <strong>decryption key</strong>, your redemption key will be automatically extracted and you will be able to redeem your Ada to the selected wallet.</p>`,
+    description: 'Detailed instructions for redeeming Ada from the force vending via Recovery service',
+  },
   instructionsPaperVended: {
     id: 'wallet.redeem.dialog.instructions.paperVended',
     defaultMessage: `!!!<p>To redeem your Ada, enter your shielded vending key from the certificate, choose a wallet
@@ -98,6 +111,11 @@ where Ada should be redeemed and enter {adaRedemptionPassphraseLength} word mnem
     defaultMessage: '!!!Shielded redemption key',
     description: 'Label for shielded redemption key input',
   },
+  decryptionKeyLabel: {
+    id: 'wallet.redeem.dialog.decryptionKeyLabel',
+    defaultMessage: '!!!Decryption key',
+    description: 'Label for decryption key input',
+  },
   redemptionKeyError: {
     id: 'wallet.redeem.dialog.redemptionCodeError',
     defaultMessage: '!!!Invalid redemption key',
@@ -113,10 +131,20 @@ where Ada should be redeemed and enter {adaRedemptionPassphraseLength} word mnem
     defaultMessage: '!!!Enter your redemption key or upload a certificate',
     description: 'Hint for ada redemption key input',
   },
+  recoveryRedemptionKeyHint: {
+    id: 'wallet.redeem.dialog.recoveryRedemptionKeyHint',
+    defaultMessage: '!!!Upload your certificate',
+    description: 'Hint for ada redemption key input shown on Recovery tabs',
+  },
   shieldedRedemptionKeyHint: {
     id: 'wallet.redeem.dialog.shieldedRedemptionKeyHint',
     defaultMessage: '!!!Enter your shielded vending key',
     description: 'Hint for shielded vending key input',
+  },
+  decryptionKeyHint: {
+    id: 'wallet.redeem.dialog.decryptionKeyHint',
+    defaultMessage: '!!!Enter your decryption key',
+    description: 'Hint for decryption key input',
   },
   submitLabel: {
     id: 'wallet.redeem.dialog.submitLabel',
@@ -178,6 +206,7 @@ type Props = {
   onAdaPasscodeChanged: Function,
   onAdaAmountChanged: Function,
   onRedemptionCodeChanged: Function,
+  onDecryptionKeyChanged: Function,
   onSubmit: Function,
   redemptionType: RedemptionTypeChoices,
   postVendRedemptionCodeValidator: Function,
@@ -189,6 +218,7 @@ type Props = {
   isCertificateSelected: boolean,
   isCertificateEncrypted: boolean,
   showInputsForDecryptingForceVendedCertificate: boolean,
+  showInputForDecryptionKey: boolean,
   showPassPhraseWidget: boolean,
   isCertificateInvalid: boolean,
   redemptionCode: ?string,
@@ -230,7 +260,6 @@ export default class AdaRedemptionForm extends Component<Props> {
       },
       redemptionKey: {
         label: this.context.intl.formatMessage(messages.redemptionKeyLabel),
-        placeholder: this.context.intl.formatMessage(messages.redemptionKeyHint),
         value: '',
         validators: ({ field }) => {
           if (this.props.redemptionType === ADA_REDEMPTION_TYPES.PAPER_VENDED) return [true];
@@ -317,6 +346,20 @@ export default class AdaRedemptionForm extends Component<Props> {
           return [true];
         }],
       },
+      decryptionKey: {
+        label: this.context.intl.formatMessage(messages.decryptionKeyLabel),
+        placeholder: this.context.intl.formatMessage(messages.decryptionKeyHint),
+        value: '',
+        validators: ({ field }) => {
+          if (!this.props.showInputForDecryptionKey) return [true];
+          const decryptionKey = field.value;
+          if (!isEmpty(decryptionKey)) this.props.onDecryptionKeyChanged(decryptionKey);
+          return [
+            !isEmpty(decryptionKey),
+            this.context.intl.formatMessage(new FieldRequiredError())
+          ];
+        },
+      },
     }
   }, {
     options: {
@@ -355,6 +398,7 @@ export default class AdaRedemptionForm extends Component<Props> {
     form.$('passPhrase').reset();
     form.$('redemptionKey').reset();
     form.$('shieldedRedemptionKey').reset();
+    form.$('decryptionKey').reset();
 
     form.showErrors(false);
   };
@@ -374,7 +418,7 @@ export default class AdaRedemptionForm extends Component<Props> {
       onRedemptionCodeChanged, onRemoveCertificate, onChooseRedemptionType,
       isCertificateInvalid, redemptionType, showInputsForDecryptingForceVendedCertificate,
       showPassPhraseWidget, isRedemptionDisclaimerAccepted, onAcceptRedemptionDisclaimer, error,
-      getSelectedWallet, suggestedMnemonics,
+      getSelectedWallet, suggestedMnemonics, showInputForDecryptionKey,
     } = this.props;
     const certificateField = form.$('certificate');
     const passPhraseField = form.$('passPhrase');
@@ -385,6 +429,7 @@ export default class AdaRedemptionForm extends Component<Props> {
     const adaPasscodeField = form.$('adaPasscode');
     const adaAmountField = form.$('adaAmount');
     const walletPasswordField = form.$('walletPassword');
+    const decryptionKeyField = form.$('decryptionKey');
     const componentClasses = classnames([
       styles.component,
       isSubmitting ? styles.isSubmitting : null
@@ -394,16 +439,26 @@ export default class AdaRedemptionForm extends Component<Props> {
     const walletHasPassword = selectedWallet.hasPassword;
 
     const showUploadWidget = redemptionType !== ADA_REDEMPTION_TYPES.PAPER_VENDED;
+    const isRecovery = (
+      redemptionType === ADA_REDEMPTION_TYPES.RECOVERY_REGULAR ||
+      redemptionType === ADA_REDEMPTION_TYPES.RECOVERY_FORCE_VENDED
+    );
 
     const passwordSubmittable = !walletHasPassword || walletPasswordField.value !== '';
 
     let canSubmit = false;
-    if (redemptionType === ADA_REDEMPTION_TYPES.REGULAR && redemptionCode !== '' && passwordSubmittable) {
-      canSubmit = true;
-    }
-    if (redemptionType === ADA_REDEMPTION_TYPES.FORCE_VENDED && redemptionCode !== '' && passwordSubmittable) {
-      canSubmit = true;
-    }
+    if ((
+      redemptionType === ADA_REDEMPTION_TYPES.REGULAR ||
+      redemptionType === ADA_REDEMPTION_TYPES.RECOVERY_REGULAR) &&
+      redemptionCode !== '' &&
+      passwordSubmittable
+    ) canSubmit = true;
+    if ((
+      redemptionType === ADA_REDEMPTION_TYPES.FORCE_VENDED ||
+      redemptionType === ADA_REDEMPTION_TYPES.RECOVERY_FORCE_VENDED) &&
+      redemptionCode !== '' &&
+      passwordSubmittable
+    ) canSubmit = true;
     if (
       redemptionType === ADA_REDEMPTION_TYPES.PAPER_VENDED &&
       shieldedRedemptionKeyField.isDirty &&
@@ -424,6 +479,13 @@ export default class AdaRedemptionForm extends Component<Props> {
       case ADA_REDEMPTION_TYPES.PAPER_VENDED:
         instructionMessage = messages.instructionsPaperVended;
         instructionValues = { adaRedemptionPassphraseLength: ADA_REDEMPTION_PASSPHRASE_LENGHT };
+        break;
+      case ADA_REDEMPTION_TYPES.RECOVERY_REGULAR:
+        instructionMessage = messages.instructionsRecoveryRegular;
+        instructionValues = { adaRedemptionPassphraseLength: ADA_REDEMPTION_PASSPHRASE_LENGHT };
+        break;
+      case ADA_REDEMPTION_TYPES.RECOVERY_FORCE_VENDED:
+        instructionMessage = messages.instructionsRecoveryForceVended;
         break;
       default:
         instructionMessage = messages.instructionsRegular;
@@ -462,12 +524,17 @@ export default class AdaRedemptionForm extends Component<Props> {
                   <Input
                     className="redemption-key"
                     {...redemptionKeyField.bind()}
+                    placeholder={
+                      intl.formatMessage(messages[
+                        isRecovery ? 'recoveryRedemptionKeyHint' : 'redemptionKeyHint'
+                      ])
+                    }
                     value={redemptionCode}
                     onChange={(value) => {
                       onRedemptionCodeChanged(value);
                       redemptionKeyField.onChange(value);
                     }}
-                    disabled={isCertificateSelected}
+                    disabled={isRecovery || isCertificateSelected}
                     error={redemptionKeyField.error}
                     skin={<SimpleInputSkin />}
                   />
@@ -536,6 +603,17 @@ export default class AdaRedemptionForm extends Component<Props> {
                   noResultsMessage={intl.formatMessage(messages.passphraseNoResults)}
                   isOpeningUpward
                   skin={<SimpleAutocompleteSkin />}
+                />
+              </div>
+            ) : null}
+
+            {showInputForDecryptionKey ? (
+              <div className={styles.decryptionKey}>
+                <Input
+                  className="decryption-key"
+                  {...decryptionKeyField.bind()}
+                  error={decryptionKeyField.error}
+                  skin={<SimpleInputSkin />}
                 />
               </div>
             ) : null}

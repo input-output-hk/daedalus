@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { storiesOf, action } from '@storybook/react';
 import SidebarCategory from '../../source/renderer/app/components/sidebar/SidebarCategory';
@@ -13,7 +14,9 @@ storiesOf('SidebarCategory')
     <SidebarCategory
       label="Wallets"
       icon={walletsIcon}
+      active={false}
       onClick={action('categoryClicked')}
+      className=""
     />
   ))
 
@@ -23,5 +26,6 @@ storiesOf('SidebarCategory')
       icon={walletsIcon}
       active
       onClick={action('categoryClicked')}
+      className=""
     />
   ));

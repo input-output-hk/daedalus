@@ -19,7 +19,7 @@ import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recurs
                                    name, nsis, onPagePre, outFile, page, readRegStr,
                                    requestExecutionLevel, rmdir, section, setOutPath, str,
                                    strLength, uninstall, unsafeInject, unsafeInjectGlobal,
-                                   writeRegDWORD, writeRegStr, (%/=))
+                                   writeRegDWORD, writeRegStr, (%/=), fileExists)
 import           Prelude ((!!))
 import qualified System.IO as IO
 import           Filesystem.Path (FilePath, (</>), (<.>))
@@ -147,6 +147,8 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                 createDirectory "$APPDATA\\$InstallDir\\Secrets-1.0"
                 createDirectory "$APPDATA\\$InstallDir\\Logs"
                 createDirectory "$APPDATA\\$InstallDir\\Logs\\pub"
+                iff_ (fileExists "$APPDATA\\$InstallDir\\Wallet-1.0\\open\\*.*") $
+                    rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
                 file [] "cardano-node.exe"
                 file [] "cardano-launcher.exe"
                 file [] "log-config-prod.yaml"
@@ -217,7 +219,7 @@ main opts@Options{..}  = do
     let fullName = packageFileName Win64 oCluster fullVersion cardanoVersion oBuildJob
 
     printf ("Building: "%fp%"\n") fullName
-    
+
     installerConfig <- getInstallerConfig "./dhall" Win64 oCluster
 
     echo "Adding permissions manifest to cardano-launcher.exe"

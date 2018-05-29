@@ -31,6 +31,7 @@ export default class AdaRedemptionStore extends Store {
   @observable email: ?string = null;
   @observable adaPasscode: ?string = null;
   @observable adaAmount: ?string = null;
+  @observable decryptionKey: ?string = null;
   @observable redemptionCode: string = '';
   @observable walletId: ?string = null;
   @observable error: ?LocalizableError = null;
@@ -50,6 +51,7 @@ export default class AdaRedemptionStore extends Store {
     actions.setEmail.listen(this._setEmail);
     actions.setAdaPasscode.listen(this._setAdaPasscode);
     actions.setAdaAmount.listen(this._setAdaAmount);
+    actions.setDecryptionKey.listen(this._setDecryptionKey);
     actions.redeemAda.listen(this._redeemAda);
     actions.redeemPaperVendedAda.listen(this._redeemPaperVendedAda);
     actions.adaSuccessfullyRedeemed.listen(this._onAdaSuccessfullyRedeemed);
@@ -97,9 +99,10 @@ export default class AdaRedemptionStore extends Store {
   _setCertificate = action(({ certificate }) => {
     this.certificate = certificate;
     this.isCertificateEncrypted = certificate.type !== 'application/pdf';
-    if (this.isCertificateEncrypted && !this.passPhrase) {
+    if (this.isCertificateEncrypted && (!this.passPhrase || !this.decryptionKey)) {
       this.redemptionCode = '';
       this.passPhrase = null;
+      this.decryptionKey = null;
       return; // We cannot decrypt it yet!
     }
     this._parseCodeFromCertificate();
@@ -129,8 +132,16 @@ export default class AdaRedemptionStore extends Store {
     this._parseCodeFromCertificate();
   });
 
+  _setDecryptionKey = action(({ decryptionKey } : { decryptionKey: string }) => {
+    this.decryptionKey = decryptionKey;
+    this._parseCodeFromCertificate();
+  });
+
   _parseCodeFromCertificate() {
-    if (this.redemptionType === ADA_REDEMPTION_TYPES.REGULAR) {
+    if (
+      this.redemptionType === ADA_REDEMPTION_TYPES.REGULAR ||
+      this.redemptionType === ADA_REDEMPTION_TYPES.RECOVERY_REGULAR
+    ) {
       if (!this.passPhrase && this.isCertificateEncrypted) return;
     }
     if (this.redemptionType === ADA_REDEMPTION_TYPES.FORCE_VENDED) {
@@ -138,16 +149,32 @@ export default class AdaRedemptionStore extends Store {
         return;
       }
     }
+    if (this.redemptionType === ADA_REDEMPTION_TYPES.RECOVERY_FORCE_VENDED) {
+      if (!this.decryptionKey && this.isCertificateEncrypted) return;
+    }
     if (this.redemptionType === ADA_REDEMPTION_TYPES.PAPER_VENDED) return;
     if (this.certificate == null) throw new Error('Certificate File is required for parsing.');
     const path = this.certificate.path; // eslint-disable-line
     Logger.debug('Parsing ADA Redemption code from certificate: ' + path);
     let decryptionKey = null;
-    if (this.redemptionType === ADA_REDEMPTION_TYPES.REGULAR && this.isCertificateEncrypted) {
+    if ((
+      this.redemptionType === ADA_REDEMPTION_TYPES.REGULAR ||
+      this.redemptionType === ADA_REDEMPTION_TYPES.RECOVERY_REGULAR) &&
+      this.isCertificateEncrypted
+    ) {
       decryptionKey = this.passPhrase;
     }
-    if (this.redemptionType === ADA_REDEMPTION_TYPES.FORCE_VENDED && this.isCertificateEncrypted) {
+    if (
+      this.redemptionType === ADA_REDEMPTION_TYPES.FORCE_VENDED &&
+      this.isCertificateEncrypted
+    ) {
       decryptionKey = [this.email, this.adaPasscode, this.adaAmount];
+    }
+    if (
+      this.redemptionType === ADA_REDEMPTION_TYPES.RECOVERY_FORCE_VENDED &&
+      this.isCertificateEncrypted
+    ) {
+      decryptionKey = this.decryptionKey;
     }
     ipcRenderer.send(PARSE_REDEMPTION_CODE.REQUEST, path, decryptionKey, this.redemptionType);
   }
@@ -161,7 +188,7 @@ export default class AdaRedemptionStore extends Store {
     const errorMessage = isString(error) ? error : error.message;
     if (errorMessage.includes('Invalid mnemonic')) {
       this.error = new InvalidMnemonicError();
-    } else if (this.redemptionType === 'regular') {
+    } else if (this.redemptionType === ADA_REDEMPTION_TYPES.REGULAR) {
       if (this.isCertificateEncrypted) {
         this.error = new AdaRedemptionEncryptedCertificateParseError();
       } else {
@@ -170,6 +197,7 @@ export default class AdaRedemptionStore extends Store {
     }
     this.redemptionCode = '';
     this.passPhrase = null;
+    this.decryptionKey = null;
   });
 
   _redeemAda = async ({ walletId, walletPassword } : {
@@ -232,6 +260,7 @@ export default class AdaRedemptionStore extends Store {
     this.showAdaRedemptionSuccessMessage = true;
     this.redemptionCode = '';
     this.passPhrase = null;
+    this.decryptionKey = null;
   });
 
   _onCloseAdaRedemptionSuccessOverlay = action(() => {
@@ -252,6 +281,7 @@ export default class AdaRedemptionStore extends Store {
     this.email = null;
     this.adaPasscode = null;
     this.adaAmount = null;
+    this.decryptionKey = null;
   });
 
   @action _reset = () => {
@@ -266,6 +296,7 @@ export default class AdaRedemptionStore extends Store {
     this.email = null;
     this.adaPasscode = null;
     this.adaAmount = null;
+    this.decryptionKey = null;
   };
 
 }
