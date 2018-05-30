@@ -27,11 +27,11 @@ export default class LoadingPage extends Component<InjectedProps> {
           currencyIcon={etcLogo}
           apiIcon={mantisLogo}
           isSyncing={isSyncing}
+          isSynced={isSynced}
           localTimeDifference={localTimeDifference}
           isSystemTimeCorrect={isSystemTimeCorrect}
           isConnecting={isConnecting}
           syncPercentage={syncPercentage}
-          isLoadingDataForNextScreen={!isSyncing || isSynced}
           loadingDataForNextScreenMessage={messages.loadingWalletData}
           hasBeenConnected={hasBeenConnected}
           hasBlockSyncingStarted={hasBlockSyncingStarted}
