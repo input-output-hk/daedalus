@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Checkbox, Input } from 'react-polymorph/lib/components';
 import { SwitchSkin, InputSkin } from 'react-polymorph/lib/skins/simple';
+import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -257,6 +258,7 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
                 onChange={this.handlePasswordSwitchToggle}
                 label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
                 checked={removePassword}
+                themeId={IDENTIFIERS.SWITCH}
                 skin={SwitchSkin}
               />
             </div>
@@ -264,6 +266,7 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
             <Input
               type="password"
               className="currentPassword"
+              label={currentPasswordField.label}
               value={currentPasswordValue}
               onChange={(value) => this.handleDataChange('currentPasswordValue', value)}
               {...currentPasswordField.bind()}
@@ -277,6 +280,7 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
           <Input
             type="password"
             className={newPasswordClasses}
+            label={newPasswordField.label}
             value={newPasswordValue}
             onChange={(value) => this.handleDataChange('newPasswordValue', value)}
             {...newPasswordField.bind()}
@@ -287,6 +291,7 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
           <Input
             type="password"
             className="repeatedPassword"
+            label={repeatedPasswordField.label}
             value={repeatedPasswordValue}
             onChange={(value) => this.handleDataChange('repeatedPasswordValue', value)}
             {...repeatedPasswordField.bind()}
