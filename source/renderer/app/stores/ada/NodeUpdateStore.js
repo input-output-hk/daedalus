@@ -30,9 +30,9 @@ export default class NodeUpdateStore extends Store {
     setInterval(this.refreshNextUpdate, NODE_UPDATE_POLL_INTERVAL);
   }
 
-  @action refreshNextUpdate = () => {
+  @action refreshNextUpdate = async () => {
     if (this.stores.networkStatus.isSynced) {
-      this.nextUpdateRequest.execute();
+      await this.nextUpdateRequest.execute();
       if (this.nextUpdateRequest.result && !this.isUpdateAvailable &&
         !this.isUpdatePostponed && !this.isUpdateInstalled) {
         this.isUpdateAvailable = true;
