@@ -140,7 +140,7 @@ class WalletScreen extends Component<Props> {
           topbar={this.getTopbar(activeNavItem)}
         >
           {
-            children &&
+            storyName !== 'Empty' &&
               (
                 <WalletWithNavigation
                   isActiveScreen={item => item === activeNavItem}
