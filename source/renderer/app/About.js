@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { ThemeProvider } from 'react-css-themr';
+import { ThemeProvider } from 'react-polymorph/lib/components';
 import { IntlProvider } from 'react-intl';
 import AboutPage from './containers/static/AboutPage';
 import { daedalusTheme } from './themes/daedalus';
