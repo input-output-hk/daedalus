@@ -62,6 +62,7 @@ export default class AdaRedemptionStore extends Store {
     ipcRenderer.on(PARSE_REDEMPTION_CODE.ERROR, this._onParseError);
     this.registerReactions([
       this._resetRedemptionFormValuesOnAdaRedemptionPageLoad,
+      this._redirectToAddWalletBeforeRedemption,
     ]);
   }
 
@@ -299,4 +300,12 @@ export default class AdaRedemptionStore extends Store {
     this.decryptionKey = null;
   };
 
+  _redirectToAddWalletBeforeRedemption = () => {
+    const { wallets } = this.stores.ada;
+    const { currentRoute } = this.stores.app;
+    const isAdaRedemptionRoute = matchRoute(ROUTES.ADA_REDEMPTION, currentRoute);
+    if (isAdaRedemptionRoute && !wallets.hasAnyWallets) {
+      this.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });
+    }
+  }
 }
