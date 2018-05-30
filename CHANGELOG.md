@@ -111,6 +111,7 @@ Changelog
 - Fixed a bug related to gas limit when sending transactions ([PR 586](https://github.com/input-output-hk/daedalus/pull/586))
 - Remove transactions sorting ([PR 587](https://github.com/input-output-hk/daedalus/pull/587))
 - Improve ETC transaction amount validation ([PR 590](https://github.com/input-output-hk/daedalus/pull/590))
+- Fixed a bug related to rendering of transactions with duplicated ids ([PR 697](https://github.com/input-output-hk/daedalus/pull/697))
 - Fixed storybook and resolver issues ([PR 617](https://github.com/input-output-hk/daedalus/pull/617))
 - Time of your machine is different from global time. You are 0 seconds behind. ([PR 678](https://github.com/input-output-hk/daedalus/pull/678))
 - Updated copy for the sync error screen ([PR 657](https://github.com/input-output-hk/daedalus/pull/657))
