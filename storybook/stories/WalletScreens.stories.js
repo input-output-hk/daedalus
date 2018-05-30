@@ -9,9 +9,9 @@ import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import startCase from 'lodash/startCase';
-import PropTypes from 'prop-types';
 
 // Assets and helpers
+import Provider from './support/StoreContainer';
 import StoryDecorator from './support/StoryDecorator';
 import walletsIcon from '../../source/renderer/app/assets/images/sidebar/wallet-ic.inline.svg';
 import settingsIcon from '../../source/renderer/app/assets/images/sidebar/settings-ic.inline.svg';
@@ -45,8 +45,8 @@ const WALLETS = [
     name: 'Mining',
     amount: new BigNumber(0),
     assurance: assuranceModeOptions.STRICT,
-    hasPassword: false,
-    passwordUpdateDate: new Date(),
+    hasPassword: true,
+    passwordUpdateDate: moment().subtract(1, 'month').toDate(),
   },
   {
     id: '1',
@@ -197,11 +197,13 @@ storiesOf('WalletScreens', module)
 
   .addDecorator((story, { story:storyName }) => (
     <StoryDecorator>
-      <WalletScreen
-        storyName={storyName}
-      >
-      {story()}
-      </WalletScreen>
+      <Provider>
+        <WalletScreen
+          storyName={storyName}
+        >
+          {story()}
+        </WalletScreen>
+      </Provider>
     </StoryDecorator>
   ))
 

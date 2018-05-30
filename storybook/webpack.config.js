@@ -50,7 +50,6 @@ module.exports = {
     ]
   },
   node: {
-    fs: 'empty',
-    remote: 'empty',
-  },
+    fs: 'empty'
+  }
 };
