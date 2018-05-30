@@ -243,6 +243,7 @@ export default class WalletSendForm extends Component<Props, State> {
               <div className={styles.receiverInput}>
                 <Input
                   className="receiver"
+                  label={intl.formatMessage(messages.receiverLabel)}
                   {...receiverField.bind()}
                   error={receiverField.error}
                   onChange={(value) => {

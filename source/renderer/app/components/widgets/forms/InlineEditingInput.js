@@ -154,7 +154,6 @@ export default class InlineEditingInput extends Component<Props, State> {
         role="presentation"
         aria-hidden
       >
-
         <Input
           className={inputStyles}
           type="text"
