@@ -68,6 +68,7 @@ type Props = {
   hasBeenConnected: boolean,
   hasBlockSyncingStarted: boolean,
   isSyncing: boolean,
+  isSynced: boolean,
   syncPercentage: number,
   loadingDataForNextScreenMessage: ReactIntlMessage,
   hasLoadedCurrentLocale: boolean,
@@ -135,6 +136,7 @@ export default class Loading extends Component<Props, State> {
       apiIcon,
       isConnecting,
       isSyncing,
+      isSynced,
       syncPercentage,
       loadingDataForNextScreenMessage,
       hasBeenConnected,
@@ -191,7 +193,44 @@ export default class Loading extends Component<Props, State> {
       styles.reportIssueButton,
     ]);
 
-    const isLoadingDataForNextScreen = !isConnecting && !isSyncing && isSystemTimeCorrect;
+    let loadingScreen = null;
+
+    if (isConnecting) {
+      loadingScreen = (
+        <div className={styles.connecting}>
+          <h1 className={styles.headline}>
+            {intl.formatMessage(connectingMessage)}
+          </h1>
+        </div>
+      );
+    } else if (isSystemTimeCorrect && !isSynced) {
+      loadingScreen = (
+        <div className={styles.syncing}>
+          <h1 className={styles.headline}>
+            {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
+          </h1>
+        </div>
+      );
+    } else if (isSystemTimeCorrect) {
+      loadingScreen = (
+        <div className={styles.syncing}>
+          <div>
+            <h1 className={styles.headline}>
+              {intl.formatMessage(loadingDataForNextScreenMessage)}
+            </h1>
+            <LoadingSpinner />
+          </div>
+        </div>
+      );
+    } else {
+      loadingScreen = (
+        <SystemTimeErrorOverlay
+          localTimeDifference={localTimeDifference}
+          currentLocale={currentLocale}
+          onProblemSolutionClick={onProblemSolutionClick}
+        />
+      );
+    }
 
     return (
       <div className={componentStyles}>
@@ -216,41 +255,7 @@ export default class Loading extends Component<Props, State> {
           <SVGInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
           <SVGInline svg={apiLoadingLogo} className={apiLogoStyles} />
         </div>
-        {hasLoadedCurrentLocale && (
-          <div>
-            {isConnecting && (
-              <div className={styles.connecting}>
-                <h1 className={styles.headline}>
-                  {intl.formatMessage(connectingMessage)}
-                </h1>
-              </div>
-            )}
-            {isSyncing && (
-              <div className={styles.syncing}>
-                <h1 className={styles.headline}>
-                  {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
-                </h1>
-              </div>
-            )}
-            {isLoadingDataForNextScreen && (
-              <div className={styles.syncing}>
-                <div>
-                  <h1 className={styles.headline}>
-                    {intl.formatMessage(loadingDataForNextScreenMessage)}
-                  </h1>
-                  <LoadingSpinner />
-                </div>
-              </div>
-            )}
-            {!isSystemTimeCorrect && (
-              <SystemTimeErrorOverlay
-                localTimeDifference={localTimeDifference}
-                currentLocale={currentLocale}
-                onProblemSolutionClick={onProblemSolutionClick}
-              />
-            )}
-          </div>
-        )}
+        {hasLoadedCurrentLocale ? loadingScreen : null}
       </div>
     );
   }
