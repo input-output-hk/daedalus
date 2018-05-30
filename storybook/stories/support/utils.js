@@ -43,3 +43,11 @@ export const generateAddres = (isUsed: boolean) => ({
   amount: new BigNumber(faker.random.number(5)),
   isUsed
 });
+
+export const promise = (returnValue: any) => (
+  new Promise(resolve => {
+    setTimeout(() => {
+      resolve(returnValue);
+    }, 2000);
+  })
+);
