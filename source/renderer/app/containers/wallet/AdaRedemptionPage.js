@@ -8,7 +8,6 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import validWords from '../../../../common/valid-words.en';
 import environment from '../../../../common/environment';
 import { ADA_REDEMPTION_TYPES } from '../../types/redemptionTypes';
-import { ROUTES } from '../../routes-config';
 
 type Props = InjectedProps;
 
