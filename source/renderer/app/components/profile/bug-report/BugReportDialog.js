@@ -7,6 +7,7 @@ import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Input, TextArea, Checkbox } from 'react-polymorph/lib/components';
 import { InputSkin, TextAreaSkin, SwitchSkin } from 'react-polymorph/lib/skins/simple';
+import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -347,6 +348,7 @@ export default class BugReportDialog extends Component<Props, State> {
                 </div>
 
                 <Checkbox
+                  themeId={IDENTIFIERS.SWITCH}
                   onChange={this.handleLogsSwitchToggle}
                   label={intl.formatMessage(messages.logsSwitchPlaceholder)}
                   checked={showLogs}
