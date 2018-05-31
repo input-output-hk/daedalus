@@ -18,7 +18,6 @@ import { assuranceModeOptions } from '../../../source/renderer/app/types/transac
 
 type Props = {
   children: Node,
-  activeWallet?: ?{}
 };
 
 const WALLETS: { [string]: Array<Wallet> } = [

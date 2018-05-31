@@ -29,9 +29,7 @@ storiesOf('WalletScreens', module)
 
     return (
       <StoryDecorator>
-        <StoryProvider
-          activeWallet={{}}
-        >
+        <StoryProvider>
           <StoryLayout
             storyName={context.story}
           >
