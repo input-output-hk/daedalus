@@ -1,6 +1,13 @@
 Changelog
 =========
 
+## 0.10.1
+=======
+
+### Fixes
+
+- Fixed issues with printing paper wallet certificate PDFs on printers with low amount of memory by replacing the SVG assets with transparent PNG images ([PR 951](https://github.com/input-output-hk/daedalus/pull/951)) 
+
 ## 0.10.0
 =======
 
