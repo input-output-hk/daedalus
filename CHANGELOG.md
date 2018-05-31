@@ -17,6 +17,7 @@ Changelog
 
 ### Chores
 
+- Created new Storybook stories for the "Known issue detection" feature ([952](https://github.com/input-output-hk/daedalus/pull/952))
 - Created new Storybook stories for the Wallet screens ([942](https://github.com/input-output-hk/daedalus/pull/942))
 - Added flow checks and linting for storybook code ([PR 938](https://github.com/input-output-hk/daedalus/pull/938))
 - Refactored npm scripts to use colon style ([PR 939](https://github.com/input-output-hk/daedalus/pull/939))
