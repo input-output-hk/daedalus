@@ -7,8 +7,7 @@ import moment from 'moment';
 
 // Assets and helpers
 import walletsIcon from '../../../source/renderer/app/assets/images/sidebar/wallet-ic.inline.svg';
-// import settingsIcon from
-// '../../../source/renderer/app/assets/images/sidebar/settings-ic.inline.svg';
+import settingsIcon from '../../../source/renderer/app/assets/images/sidebar/settings-ic.inline.svg';
 import adaIcon from '../../../source/renderer/app/assets/images/sidebar/ada-redemption-ic.inline.svg';
 import paperCertificateIcon from '../../../source/renderer/app/assets/images/sidebar/paper-certificate-ic.inline.svg';
 import Wallet from '../../../source/renderer/app/domains/Wallet.js';
@@ -50,11 +49,6 @@ const sidebarCategories = [
     route: '/wallets',
     icon: walletsIcon,
   },
-  // {
-  //   name: 'SETTINGS',
-  //   route: '/settings',
-  //   icon: settingsIcon,
-  // },
   {
     name: 'ADA_REDEMPTION',
     route: '/ada-redemption',
@@ -64,7 +58,12 @@ const sidebarCategories = [
     name: 'PAPER_WALLET',
     route: '/paper-wallet-create-certificate',
     icon: paperCertificateIcon,
-  }
+  },
+  {
+    name: 'SETTINGS',
+    route: '/settings',
+    icon: settingsIcon,
+  },
 ];
 
 @observer

@@ -1,10 +1,12 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
+import { linkTo } from '@storybook/addon-links';
 import { withKnobs, text, boolean, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import faker from 'faker';
+import startCase from 'lodash/startCase';
 
 // Assets and helpers
 import StoryLayout from './support/StoryLayout';
@@ -13,6 +15,7 @@ import StoryDecorator from './support/StoryDecorator';
 import { generateTransaction, generateAddres, promise } from './support/utils';
 import { formattedWalletAmount } from '../../source/renderer/app/utils/ada/formatters';
 import { transactionTypes } from '../../source/renderer/app/domains/WalletTransaction';
+import WalletWithNavigation from '../../source/renderer/app/components/wallet/layouts/WalletWithNavigation';
 
 // Screens
 import WalletSummary from '../../source/renderer/app/components/wallet/summary/WalletSummary';
@@ -32,9 +35,21 @@ storiesOf('WalletScreens', module)
       <StoryDecorator>
         <StoryProvider>
           <StoryLayout
+            activeSidebarCategory="/wallets"
             storyName={context.story}
           >
-            {storyWithKnobs}
+            {
+              context.story !== 'Empty'
+                ? (
+                  <WalletWithNavigation
+                    isActiveScreen={item => item === context.story.toLocaleLowerCase()}
+                    onWalletNavItemClick={linkTo('WalletScreens', item => startCase(item))}
+                  >
+                    {storyWithKnobs}
+                  </WalletWithNavigation>
+                )
+                : storyWithKnobs
+            }
           </StoryLayout>
         </StoryProvider>
       </StoryDecorator>

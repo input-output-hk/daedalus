@@ -3,9 +3,7 @@ import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observable, runInAction } from 'mobx';
 import { observer, inject } from 'mobx-react';
-import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
-import startCase from 'lodash/startCase';
 
 // Assets and helpers
 import { formattedWalletAmount } from '../../../source/renderer/app/utils/ada/formatters';
@@ -17,7 +15,6 @@ import type { SidebarMenus, SidebarCategories } from '../../../source/renderer/a
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
 import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
 import SidebarLayout from '../../../source/renderer/app/components/layout/SidebarLayout';
-import WalletWithNavigation from '../../../source/renderer/app/components/wallet/layouts/WalletWithNavigation';
 
 type StoriesProps = {
   wallets: Array<Wallet>,
@@ -27,6 +24,7 @@ type StoriesProps = {
 }
 
 type Props = {
+  activeSidebarCategory: string,
   storiesProps: any | StoriesProps,
   storyName?: string,
   children?: any | Node,
@@ -41,6 +39,7 @@ export default class StoryLayout extends Component<Props> {
   render() {
 
     const {
+      activeSidebarCategory,
       children,
       storyName = '',
       storiesProps = {}
@@ -63,32 +62,22 @@ export default class StoryLayout extends Component<Props> {
         }}
       >
         <SidebarLayout
-          sidebar={this.getSidebar(sidebarMenus, sidebarCategories)}
-          topbar={this.getTopbar(activeWallet, activeNavItem)}
+          sidebar={this.getSidebar(activeSidebarCategory, sidebarMenus, sidebarCategories)}
+          topbar={this.getTopbar(activeSidebarCategory, activeWallet, activeNavItem)}
         >
-          {
-            storyName !== 'Empty' &&
-              (
-                <WalletWithNavigation
-                  isActiveScreen={item => item === activeNavItem}
-                  onWalletNavItemClick={linkTo('WalletScreens', item => startCase(item))}
-                >
-                  {children}
-                </WalletWithNavigation>
-              )
-          }
+          { children }
         </SidebarLayout>
       </div>
     );
   }
 
   @observable
-  isShowingSubMenus = !!this.props.children;
+  isShowingSubMenus = this.props.activeSidebarCategory === '/wallets' && !!this.props.children;
 
-  getSidebar = (sidebarMenus: SidebarMenus, sidebarCategories: SidebarCategories) => (
+  getSidebar = (activeSidebarCategory: string, sidebarMenus: SidebarMenus, sidebarCategories: SidebarCategories) => (
     <Sidebar
       categories={sidebarCategories}
-      activeSidebarCategory={sidebarCategories[0].route}
+      activeSidebarCategory={activeSidebarCategory}
       menus={sidebarMenus}
       isShowingSubMenus={this.isShowingSubMenus}
       onCategoryClicked={action('onCategoryClicked')}
@@ -99,14 +88,14 @@ export default class StoryLayout extends Component<Props> {
     />
   );
 
-  getTopbar = (activeWallet: Wallet, activeNavItem: string) => (
+  getTopbar = (activeSidebarCategory: string, activeWallet: Wallet, activeNavItem: string) => (
     <TopBar
       onToggleSidebar={() => {
         runInAction(() => this.isShowingSubMenus = !this.isShowingSubMenus);
       }}
       formattedWalletAmount={formattedWalletAmount}
       currentRoute={`/wallets/${activeWallet.id}/${activeNavItem}`}
-      activeWallet={activeNavItem !== 'empty' ? activeWallet : null}
+      activeWallet={activeSidebarCategory === '/wallets' && activeNavItem !== 'empty' ? activeWallet : null}
       showSubMenuToggle
       showSubMenus={this.isShowingSubMenus}
     >
