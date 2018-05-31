@@ -4,6 +4,7 @@ import { storiesOf } from '@storybook/react';
 import { withKnobs, text, boolean, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
+import faker from 'faker';
 
 // Assets and helpers
 import StoryLayout from './support/StoryLayout';
@@ -95,12 +96,20 @@ storiesOf('WalletScreens', module)
   .add('Transactions', () => (
     <WalletTransactionsList
       transactions={[
-        generateTransaction(transactionTypes.INCOME, new Date(), new BigNumber(1), 1),
-        generateTransaction(transactionTypes.EXCHANGE, new Date(), new BigNumber(1)),
-        generateTransaction(transactionTypes.EXPEND, moment().subtract(1, 'days').toDate(), new BigNumber(2), 0, transactionStates.PENDING),
-        generateTransaction(transactionTypes.INCOME, moment().subtract(1, 'days').toDate(), new BigNumber(1), 0, transactionStates.FAILED),
-        generateTransaction(transactionTypes.EXPEND, moment().subtract(2, 'days').toDate(), new BigNumber(3)),
-        generateTransaction(transactionTypes.EXPEND, moment().subtract(3, 'days').toDate(), new BigNumber(5)),
+        ...Array.from(Array(number('Transactions Sent', 1))).map((x, i) =>
+          generateTransaction(
+            transactionTypes.EXPEND,
+            moment().subtract(i, 'days').toDate(),
+            new BigNumber(faker.random.number(5))
+          )
+        ),
+        ...Array.from(Array(number('Transactions Received', 1))).map((x, i) =>
+          generateTransaction(
+            transactionTypes.INCOME,
+            moment().subtract(i, 'days').toDate(),
+            new BigNumber(faker.random.number(5))
+          )
+        ),
       ]}
       isLoadingTransactions={false}
       hasMoreToLoad={false}
