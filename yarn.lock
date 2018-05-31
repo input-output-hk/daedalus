@@ -7954,7 +7954,7 @@ pdf.js-extract@0.0.9:
   version "0.0.9"
   resolved "https://registry.yarnpkg.com/pdf.js-extract/-/pdf.js-extract-0.0.9.tgz#3892c8b7e14efefc8be283505aa7797a5470dd9b"
 
-pdfkit@0.8.3, pdfkit@>=0.8.1:
+pdfkit@0.8.3:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/pdfkit/-/pdfkit-0.8.3.tgz#ec99a57fc55ca309726f856456da14418f5330e3"
   dependencies:
@@ -10274,12 +10274,6 @@ svg-inline-loader@0.8.0:
 svg-tag-names@^1.1.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/svg-tag-names/-/svg-tag-names-1.1.1.tgz#9641b29ef71025ee094c7043f7cdde7d99fbd50a"
-
-svg-to-pdfkit@0.1.7:
-  version "0.1.7"
-  resolved "https://registry.yarnpkg.com/svg-to-pdfkit/-/svg-to-pdfkit-0.1.7.tgz#7db6d47e47b3888dce18060751a8de2417f85775"
-  dependencies:
-    pdfkit ">=0.8.1"
 
 svgo@^0.7.0:
   version "0.7.2"
