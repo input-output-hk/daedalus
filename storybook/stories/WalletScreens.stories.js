@@ -1,15 +1,9 @@
 // @flow
-import React, { Component } from 'react';
-import type { Node } from 'react';
-import { observable, runInAction } from 'mobx';
-import { observer } from 'mobx-react';
+import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { linkTo } from '@storybook/addon-links';
-import { action } from '@storybook/addon-actions';
-import { withKnobs, text, boolean, number, select } from '@storybook/addon-knobs';
+import { withKnobs, text, boolean, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
-import startCase from 'lodash/startCase';
 
 // Assets and helpers
 import StoryLayout from './support/StoryLayout';
@@ -18,7 +12,6 @@ import StoryDecorator from './support/StoryDecorator';
 import { generateTransaction, generateAddres, promise } from './support/utils';
 import { formattedWalletAmount } from '../../source/renderer/app/utils/ada/formatters';
 import { transactionStates, transactionTypes } from '../../source/renderer/app/domains/WalletTransaction';
-import { assuranceModeOptions } from '../../source/renderer/app/types/transactionAssuranceTypes.js';
 
 // Screens
 import WalletSummary from '../../source/renderer/app/components/wallet/summary/WalletSummary';
@@ -46,7 +39,7 @@ storiesOf('WalletScreens', module)
           </StoryLayout>
         </StoryProvider>
       </StoryDecorator>
-    )
+    );
   })
 
   // ====== Stories ======
@@ -74,13 +67,13 @@ storiesOf('WalletScreens', module)
   .add('Send', () => (
     <WalletSendForm
       currencyUnit="Ada"
-      currencyMaxFractionalDigits={ 6}
+      currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       validateAmount={promise(true)}
       calculateTransactionFee={promise(true)}
-      addressValidator={()=>{}}
-      openDialogAction={()=>{}}
-      isDialogOpen={()=> boolean('hasDialog', false)}
+      addressValidator={() => {}}
+      openDialogAction={() => {}}
+      isDialogOpen={() => boolean('hasDialog', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
     />
   ))
@@ -93,8 +86,8 @@ storiesOf('WalletScreens', module)
         ...Array.from(Array(number('Addresses', 1))).map(() => generateAddres()),
         ...Array.from(Array(number('Addresses (used)', 1))).map(() => generateAddres(true)),
       ]}
-      onGenerateAddress={()=>{}}
-      onCopyAddress={()=>{}}
+      onGenerateAddress={() => {}}
+      onCopyAddress={() => {}}
       isSidebarExpanded
       walletHasPassword={boolean('walletHasPassword', false)}
       isSubmitting={boolean('isSubmitting', false)}
@@ -119,40 +112,40 @@ storiesOf('WalletScreens', module)
     />
   ));
 
-  // .add('Settings', () => (
-  //   <WalletSettings
-  //     activeField={null}
-  //     assuranceLevels={[
-  //       {
-  //         "value": assuranceModeOptions.NORMAL,
-  //         "label": {
-  //           id: 'global.assuranceLevel.normal',
-  //           defaultMessage: '!!!Normal',
-  //           description: ''
-  //         }
-  //       },
-  //       {
-  //         "value": assuranceModeOptions.STRICT,
-  //         "label": {
-  //           id: 'global.assuranceLevel.strict',
-  //           defaultMessage: '!!!Strict',
-  //           description: ''
-  //         }
-  //       }
-  //     ]}
-  //     isDialogOpen={()=>false}
-  //     isInvalid={false}
-  //     isSubmitting={false}
-  //     isWalletPasswordSet={false}
-  //     lastUpdatedField={null}
-  //     nameValidator={()=>true}
-  //     onCancelEditing={()=>{}}
-  //     onFieldValueChange={()=>{}}
-  //     onStartEditing={()=>{}}
-  //     onStopEditing={()=>{}}
-  //     openDialogAction={()=>{}}
-  //     walletAssurance={assuranceModeOptions.NORMAL}
-  //     walletName="Test wallet"
-  //     walletPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
-  //   />
-  // ));
+// .add('Settings', () => (
+//   <WalletSettings
+//     activeField={null}
+//     assuranceLevels={[
+//       {
+//         "value": assuranceModeOptions.NORMAL,
+//         "label": {
+//           id: 'global.assuranceLevel.normal',
+//           defaultMessage: '!!!Normal',
+//           description: ''
+//         }
+//       },
+//       {
+//         "value": assuranceModeOptions.STRICT,
+//         "label": {
+//           id: 'global.assuranceLevel.strict',
+//           defaultMessage: '!!!Strict',
+//           description: ''
+//         }
+//       }
+//     ]}
+//     isDialogOpen={()=>false}
+//     isInvalid={false}
+//     isSubmitting={false}
+//     isWalletPasswordSet={false}
+//     lastUpdatedField={null}
+//     nameValidator={()=>true}
+//     onCancelEditing={() => {}}
+//     onFieldValueChange={() => {}}
+//     onStartEditing={() => {}}
+//     onStopEditing={() => {}}
+//     openDialogAction={() => {}}
+//     walletAssurance={assuranceModeOptions.NORMAL}
+//     walletName="Test wallet"
+//     walletPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
+//   />
+// ));

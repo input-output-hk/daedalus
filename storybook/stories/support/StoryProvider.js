@@ -1,15 +1,14 @@
 import React, { Component } from 'react';
 import { Provider, observer } from 'mobx-react';
 import { observable, runInAction } from 'mobx';
-import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
 import { action } from '@storybook/addon-actions';
-import { hashHistory } from 'react-router';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 
 // Assets and helpers
 import walletsIcon from '../../../source/renderer/app/assets/images/sidebar/wallet-ic.inline.svg';
-import settingsIcon from '../../../source/renderer/app/assets/images/sidebar/settings-ic.inline.svg';
+// import settingsIcon from
+// '../../../source/renderer/app/assets/images/sidebar/settings-ic.inline.svg';
 import adaIcon from '../../../source/renderer/app/assets/images/sidebar/ada-redemption-ic.inline.svg';
 import paperCertificateIcon from '../../../source/renderer/app/assets/images/sidebar/paper-certificate-ic.inline.svg';
 
@@ -18,7 +17,7 @@ import { assuranceModeOptions } from '../../../source/renderer/app/types/transac
 
 type Props = {
   children: Node,
-  activeWallet?: ?object
+  activeWallet?: ?{}
 };
 
 const WALLETS = [
@@ -68,8 +67,6 @@ const sidebarCategories = [
   }
 ];
 
-
-
 @observer
 export default class StoryProvider extends Component<Props> {
 
@@ -90,28 +87,24 @@ export default class StoryProvider extends Component<Props> {
     runInAction((walletId: string) => this.sidebarMenus.wallets.activeWalletId = walletId);
   };
 
-  getStoriesProps = () => {
-    return {
-      wallets: WALLETS,
-      sidebarWallets: SIDEBAR_WALLETS,
-      activeWalletId: this.sidebarMenus.wallets.activeWalletId,
-      sidebarMenus: this.sidebarMenus,
-      sidebarCategories
-    };
-  };
+  getStoriesProps = () => ({
+    wallets: WALLETS,
+    sidebarWallets: SIDEBAR_WALLETS,
+    activeWalletId: this.sidebarMenus.wallets.activeWalletId,
+    sidebarMenus: this.sidebarMenus,
+    sidebarCategories
+  });
 
   render() {
-
-    const router = new RouterStore();
 
     const stores = {
       ada: {
         wallets: {
           active: WALLETS[this.sidebarMenus.wallets.activeWalletId],
-          sendMoney: ()=>{},
+          sendMoney: () => {},
           sendMoneyRequest: {
             isExecuting: false,
-            reset: ()=>{}
+            reset: () => {}
           }
         }
       }

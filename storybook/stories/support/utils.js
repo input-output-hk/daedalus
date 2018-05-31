@@ -1,5 +1,6 @@
 import hash from 'hash.js';
 import faker from 'faker';
+import moment from 'moment';
 import BigNumber from 'bignumber.js';
 
 import WalletTransaction, {
@@ -8,10 +9,10 @@ import WalletTransaction, {
 } from '../../../source/renderer/app/domains/WalletTransaction';
 
 export const generateHash = () => {
-  var current_date = (new Date()).valueOf().toString();
-  var random = Math.random().toString();
-  return hash.sha512().update(current_date + random).digest('hex');
-}
+  const now = (new Date()).valueOf().toString();
+  const random = Math.random().toString();
+  return hash.sha512().update(now + random).digest('hex');
+};
 
 export const generateTransaction = (
   type, date, amount, confirmations = 1, state = transactionStates.OK
