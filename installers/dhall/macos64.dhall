@@ -13,7 +13,8 @@ in
   , walletDBPath     = "${dataDir}/Wallet-1.0"
   }
 , pass      =
-  { nodePath            = "./cardano-node"
+  { statePath           = dataDir
+  , nodePath            = "./cardano-node"
   , nodeDbPath          = "${dataDir}/DB-1.0"
   , nodeLogConfig       = "log-config-prod.yaml"
   , nodeLogPath         = "${dataDir}/Logs/cardano-node.log"

@@ -16,7 +16,7 @@ import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recurs
                                    HKEY (HKLM), Level (Highest), Page (Directory, InstFiles), abort,
                                    constant, constantStr, createDirectory, createShortcut, delete,
                                    deleteRegKey, execWait, file, iff_, installDir, installDirRegKey,
-                                   name, nsis, onPagePre, outFile, page, readRegStr,
+                                   name, nsis, onPagePre, onError, outFile, page, readRegStr,
                                    requestExecutionLevel, rmdir, section, setOutPath, str,
                                    strLength, uninstall, unsafeInject, unsafeInjectGlobal,
                                    writeRegDWORD, writeRegStr, (%/=), fileExists)
@@ -147,6 +147,8 @@ writeInstallerNSIS (Version fullVersion') clusterName = do
                 createDirectory "$APPDATA\\Daedalus\\Secrets-1.0"
                 createDirectory "$APPDATA\\Daedalus\\Logs"
                 createDirectory "$APPDATA\\Daedalus\\Logs\\pub"
+                onError (delete [] "$APPDATA\\Daedalus\\launcher.lock") $
+                    abort "Daedalus is running. It needs to be fully shutdown before running installer!"
                 iff_ (fileExists "$APPDATA\\Daedalus\\Wallet-1.0\\open\\*.*") $
                     rmdir [] "$APPDATA\\Daedalus\\Wallet-1.0\\open"
                 file [] "cardano-node.exe"

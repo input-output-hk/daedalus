@@ -13,7 +13,8 @@ in
   , walletDBPath     = "${dataDir}\\Wallet-1.0"
   }
 , pass      =
-  { nodePath            = "\${DAEDALUS_DIR}\\cardano-node.exe"
+  { statePath           = dataDir
+  , nodePath            = "\${DAEDALUS_DIR}\\cardano-node.exe"
   , nodeDbPath          = "${dataDir}\\DB-1.0"
   , nodeLogConfig       = "log-config-prod.yaml"
   , nodeLogPath         = "${dataDir}\\Logs\\cardano-node.log"

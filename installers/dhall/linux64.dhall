@@ -1,5 +1,5 @@
 \(cluster : ./cluster.type)      ->
-let dataDir = "\${XDG_DATA_HOME}/Daedalus/"
+let dataDir = "\${XDG_DATA_HOME}/Daedalus"
 in
 { name      = "linux64"
 , configurationYaml  = "\${DAEDALUS_CONFIG}/configuration.yaml"
@@ -11,7 +11,8 @@ in
   , walletDBPath     = "Wallet/"
   }
 , pass      =
-  { nodePath            = "cardano-node"
+  { statePath           = "${dataDir}/${cluster.name}"
+  , nodePath            = "cardano-node"
   , nodeDbPath          = "DB/"
   , nodeLogConfig       = "\${DAEDALUS_CONFIG}/daedalus.yaml"
   , nodeLogPath         = "${dataDir}/${cluster.name}/Logs/cardano-node.log"
