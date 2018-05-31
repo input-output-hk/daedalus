@@ -142,6 +142,7 @@ writeInstallerNSIS (Version fullVersion') clusterName = do
 
         _ <- section "" [Required] $ do
                 setOutPath "$INSTDIR"        -- Where to install files in this section
+                unsafeInject "AllowSkipFiles off"
                 writeRegStr HKLM "Software/Daedalus" "Install_Dir" "$INSTDIR" -- Used by launcher batch script
                 createDirectory "$APPDATA\\Daedalus\\Secrets-1.0"
                 createDirectory "$APPDATA\\Daedalus\\Logs"
