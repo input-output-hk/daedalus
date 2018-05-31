@@ -11,6 +11,7 @@ import walletsIcon from '../../../source/renderer/app/assets/images/sidebar/wall
 // '../../../source/renderer/app/assets/images/sidebar/settings-ic.inline.svg';
 import adaIcon from '../../../source/renderer/app/assets/images/sidebar/ada-redemption-ic.inline.svg';
 import paperCertificateIcon from '../../../source/renderer/app/assets/images/sidebar/paper-certificate-ic.inline.svg';
+import Wallet from '../../../source/renderer/app/domains/Wallet.js';
 
 import actions from '../../../source/renderer/app/actions';
 import { assuranceModeOptions } from '../../../source/renderer/app/types/transactionAssuranceTypes.js';
@@ -20,14 +21,14 @@ type Props = {
   activeWallet?: ?{}
 };
 
-const WALLETS = [
+const WALLETS: { [string]: Array<Wallet> } = [
   {
     id: '0',
     name: 'With Password',
     amount: new BigNumber(0),
     assurance: assuranceModeOptions.NORMAL,
     hasPassword: true,
-    passwordUpdateDate: moment().subtract(1, 'month').toDate(),
+    passwordUpdateDate: moment().subtract(1, 'month').toDate()
   },
   {
     id: '1',
@@ -35,7 +36,7 @@ const WALLETS = [
     amount: new BigNumber(66.998),
     assurance: assuranceModeOptions.NORMAL,
     hasPassword: false,
-    passwordUpdateDate: new Date(),
+    passwordUpdateDate: new Date()
   }
 ];
 
