@@ -117,7 +117,7 @@ export default class WalletSettings extends Component<Props> {
 
           <InlineEditingInput
             className="walletName"
-            label={intl.formatMessage(messages.name)}
+            inputFieldLabel={intl.formatMessage(messages.name)}
             inputFieldValue={walletName}
             isActive={activeField === 'name'}
             onStartEditing={() => onStartEditing('name')}
