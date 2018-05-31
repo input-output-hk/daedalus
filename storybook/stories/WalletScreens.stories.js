@@ -12,7 +12,6 @@ import StoryProvider from './support/StoryProvider';
 import StoryDecorator from './support/StoryDecorator';
 import { generateTransaction, generateAddres, promise } from './support/utils';
 import { formattedWalletAmount } from '../../source/renderer/app/utils/ada/formatters';
-import { transactionStates, transactionTypes } from '../../source/renderer/app/domains/WalletTransaction';
 
 // Screens
 import WalletSummary from '../../source/renderer/app/components/wallet/summary/WalletSummary';
@@ -20,7 +19,6 @@ import WalletSendForm from '../../source/renderer/app/components/wallet/WalletSe
 import WalletReceive from '../../source/renderer/app/components/wallet/WalletReceive';
 import WalletTransactionsList from '../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
 // import WalletSettings from '../../source/renderer/app/components/wallet/WalletSettings';
-
 
 storiesOf('WalletScreens', module)
 
