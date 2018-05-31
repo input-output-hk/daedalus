@@ -12,7 +12,8 @@ Changelog
 - Disabled dragging of static UI images elements ([PR 910](https://github.com/input-output-hk/daedalus/pull/910))
 - Fixed storybook config issues ([PR 928](https://github.com/input-output-hk/daedalus/pull/928))
 - Fixed broken translation on create wallet dialog ([PR 930](https://github.com/input-output-hk/daedalus/pull/930))
-- Fix 633 npm audit issues by upgrading dependencies ([PR 944](https://github.com/input-output-hk/daedalus/pull/944))
+- Fixed a bug related to rendering of transactions with duplicated ids ([PR 947](https://github.com/input-output-hk/daedalus/pull/947))
+- Fixed 633 npm audit issues by upgrading dependencies ([PR 944](https://github.com/input-output-hk/daedalus/pull/944))
 - Disabled webview tags to prevent XSS attacks ([PR 946](https://github.com/input-output-hk/daedalus/pull/946))
 
 ### Chores
@@ -111,7 +112,6 @@ Changelog
 - Fixed a bug related to gas limit when sending transactions ([PR 586](https://github.com/input-output-hk/daedalus/pull/586))
 - Remove transactions sorting ([PR 587](https://github.com/input-output-hk/daedalus/pull/587))
 - Improve ETC transaction amount validation ([PR 590](https://github.com/input-output-hk/daedalus/pull/590))
-- Fixed a bug related to rendering of transactions with duplicated ids ([PR 697](https://github.com/input-output-hk/daedalus/pull/697))
 - Fixed storybook and resolver issues ([PR 617](https://github.com/input-output-hk/daedalus/pull/617))
 - Time of your machine is different from global time. You are 0 seconds behind. ([PR 678](https://github.com/input-output-hk/daedalus/pull/678))
 - Updated copy for the sync error screen ([PR 657](https://github.com/input-output-hk/daedalus/pull/657))
