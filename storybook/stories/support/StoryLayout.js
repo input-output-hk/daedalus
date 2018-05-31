@@ -106,7 +106,7 @@ export default class StoryLayout extends Component<Props> {
       }}
       formattedWalletAmount={formattedWalletAmount}
       currentRoute={`/wallets/${activeWallet.id}/${activeNavItem}`}
-      activeWallet={activeNavItem !== 'empty' ? new Wallet(activeWallet) : null}
+      activeWallet={activeNavItem !== 'empty' ? activeWallet : null}
       showSubMenuToggle
       showSubMenus={this.isShowingSubMenus}
     >
