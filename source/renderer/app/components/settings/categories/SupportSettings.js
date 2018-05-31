@@ -5,6 +5,26 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import styles from './SupportSettings.scss';
 
 const messages = defineMessages({
+  issuesTitle: {
+    id: 'settings.support.issues.title',
+    defaultMessage: '!!!Automatic detection of known issues',
+    description: 'Title "Automatic detection of known issues" on the support settings page.',
+  },
+  issuesContentAnalyzing: {
+    id: 'settings.support.issues.contentAnalyzing',
+    defaultMessage: '!!!Analyzing logs for known issues...',
+    description: 'Content for the "Automatic detection of known issues" section on the support settings page.',
+  },
+  issuesContentNotFound: {
+    id: 'settings.support.issues.contentNotFound',
+    defaultMessage: '!!!No known issues found.',
+    description: 'Content for the "Automatic detection of known issues" section on the support settings page.',
+  },
+  issuesContentFound: {
+    id: 'settings.support.issues.contentFound',
+    defaultMessage: '!!!We have found a known issue after analyzing your logs. Please, use the FAQ with the solution for the issue you are experiencing. If you continue to experience the issue after completing steps from the instructions, please send a support request from the problem reporting section below',
+    description: 'Content for the "Automatic detection of known issues" section on the support settings page.',
+  },
   faqTitle: {
     id: 'settings.support.faq.title',
     defaultMessage: '!!!Frequently asked questions',
@@ -61,6 +81,7 @@ type Props = {
   onExternalLinkClick: Function,
   onSupportRequestClick: Function,
   onDownloadLogs: Function,
+  issuesDetected: ?Array<{}>
 };
 
 @observer
@@ -71,7 +92,7 @@ export default class SupportSettings extends Component<Props> {
   };
 
   render() {
-    const { onExternalLinkClick, onSupportRequestClick, onDownloadLogs } = this.props;
+    const { onExternalLinkClick, onSupportRequestClick, onDownloadLogs, issuesDetected } = this.props;
     const { intl } = this.context;
 
     const faqLink = (
@@ -97,6 +118,28 @@ export default class SupportSettings extends Component<Props> {
 
     return (
       <div className={styles.component}>
+
+        <h1>{intl.formatMessage(messages.issuesTitle)}</h1>
+
+        <p>
+          {
+            issuesDetected !== null
+              ? issuesDetected.length
+                  ? intl.formatMessage(messages.issuesContentFound)
+                  : intl.formatMessage(messages.issuesContentNotFound)
+              : intl.formatMessage(messages.issuesContentAnalyzing)
+          }
+        </p>
+
+        <ul>
+          {
+            (issuesDetected && issuesDetected.length)
+            ? (
+                issuesDetected.map((issue: {}, i) => <li key={i}>{ issue.title }</li>)
+              )
+            : false
+          }
+        </ul>
 
         <h1>{intl.formatMessage(messages.faqTitle)}</h1>
 

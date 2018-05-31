@@ -2,7 +2,7 @@
 import React from 'react';
 import { storiesOf, action } from '@storybook/react';
 import { linkTo } from '@storybook/addon-links';
-import { withKnobs, text, boolean, number } from '@storybook/addon-knobs';
+import { withKnobs, boolean, number } from '@storybook/addon-knobs';
 
 import StoryLayout from './support/StoryLayout';
 import StoryProvider from './support/StoryProvider';
@@ -20,25 +20,45 @@ const getMenu = (activeItem: string) => (
   />
 );
 
+const issues = [
+  {
+    title: 'SERIOUS PROBLEM'
+  },
+  {
+    title: 'EVEN MORE SERIOUS PROBLEM'
+  },
+];
+
+const getIssuesDetectedOptions = (isAnalyzing: boolean, issuesFound: number) => (
+  !isAnalyzing
+    ? issues.slice(0, issuesFound)
+    : null
+);
+
 storiesOf('SettingsScreens')
 
-  .addDecorator((story, context) => (
-    (context.story.indexOf('screen only') === -1)
-      ? (
-        <StoryDecorator>
-          <StoryProvider>
-            <StoryLayout
-              activeSidebarCategory="/settings"
-            >
-              <SettingsLayout menu={getMenu(context.story)}>
-                { story() }
-              </SettingsLayout>
-            </StoryLayout>
-          </StoryProvider>
-        </StoryDecorator>
-      )
-      : <StoryDecorator>{ story() }</StoryDecorator>
-  ))
+  .addDecorator((story, context) => {
+
+    const storyWithKnobs = withKnobs(story, context);
+
+    return (
+      (context.story.indexOf('screen only') === -1)
+        ? (
+          <StoryDecorator>
+            <StoryProvider>
+              <StoryLayout
+                activeSidebarCategory="/settings"
+              >
+                <SettingsLayout menu={getMenu(context.story)}>
+                  { storyWithKnobs }
+                </SettingsLayout>
+              </StoryLayout>
+            </StoryProvider>
+          </StoryDecorator>
+        )
+        : <StoryDecorator>{ storyWithKnobs }</StoryDecorator>
+    )
+  })
 
   // ====== Stories ======
 
@@ -47,6 +67,7 @@ storiesOf('SettingsScreens')
       onExternalLinkClick={() => {}}
       onSupportRequestClick={() => {}}
       onDownloadLogs={() => {}}
+      issuesDetected={getIssuesDetectedOptions(boolean('Is analyzing', false), number('Issues found', 2, { min: 0, max: 2 }))}
     />
   ))
 
@@ -55,5 +76,6 @@ storiesOf('SettingsScreens')
       onExternalLinkClick={() => {}}
       onSupportRequestClick={() => {}}
       onDownloadLogs={() => {}}
+      issuesDetected={getIssuesDetectedOptions(boolean('Is analyzing', false), number('Issues found', 2, { min: 0, max: 2 }))}
     />
   ));
