@@ -42,7 +42,7 @@ export const sendAdaBugReport = (
     port: reportUrl.port,
   }, {
     application,
-    version: '0.0.1',
+    version: environment.version,
     build: environment.build,
     os: platform,
     compressedLog,
