@@ -74,7 +74,11 @@ export default class StoryLayout extends Component<Props> {
   @observable
   isShowingSubMenus = this.props.activeSidebarCategory === '/wallets' && !!this.props.children;
 
-  getSidebar = (activeSidebarCategory: string, sidebarMenus: SidebarMenus, sidebarCategories: SidebarCategories) => (
+  getSidebar = (
+    activeSidebarCategory: string,
+    sidebarMenus: SidebarMenus,
+    sidebarCategories: SidebarCategories
+  ) => (
     <Sidebar
       categories={sidebarCategories}
       activeSidebarCategory={activeSidebarCategory}

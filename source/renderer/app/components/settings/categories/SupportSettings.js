@@ -97,7 +97,12 @@ export default class SupportSettings extends Component<Props> {
   };
 
   render() {
-    const { onExternalLinkClick, onSupportRequestClick, onDownloadLogs, issuesDetected } = this.props;
+    const {
+      onExternalLinkClick,
+      onSupportRequestClick,
+      onDownloadLogs,
+      issuesDetected
+    } = this.props;
     const { intl } = this.context;
 
     const faqLink = (
@@ -121,6 +126,11 @@ export default class SupportSettings extends Component<Props> {
       </button>
     );
 
+    let issuesTitle;
+    if (issuesDetected !== null) issuesTitle = intl.formatMessage(messages.issuesContentAnalyzing);
+    else if (issuesDetected.length) issuesTitle = intl.formatMessage(messages.issuesContentFound);
+    else issuesTitle = intl.formatMessage(messages.issuesContentAnalyzing);
+
     return (
       <div className={styles.component}>
 
@@ -131,15 +141,7 @@ export default class SupportSettings extends Component<Props> {
           <span className={styles.spinning} />
         }
 
-        <p>
-          {
-            issuesDetected !== null
-              ? issuesDetected.length
-                  ? intl.formatMessage(messages.issuesContentFound)
-                  : intl.formatMessage(messages.issuesContentNotFound)
-              : intl.formatMessage(messages.issuesContentAnalyzing)
-          }
-        </p>
+        <p>{ issuesTitle }</p>
 
         <ul>
           {
