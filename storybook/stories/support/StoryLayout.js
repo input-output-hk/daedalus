@@ -20,8 +20,8 @@ type StoriesProps = {
   wallets: Array<Wallet>,
   activeWalletId: number,
   sidebarMenus: SidebarMenus,
-  sidebarCategories: Array<any>
-}
+  sidebarCategories: Array<any>,
+};
 
 type Props = {
   activeSidebarCategory: string,
