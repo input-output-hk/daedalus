@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Checkbox, Input } from 'react-polymorph/lib/components';
 import { SwitchSkin, InputSkin } from 'react-polymorph/lib/skins/simple';
+import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
@@ -222,6 +223,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
               {intl.formatMessage(messages.passwordSwitchLabel)}
             </div>
             <Checkbox
+              themeId={IDENTIFIERS.SWITCH}
               onChange={this.handlePasswordSwitchToggle}
               label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
               checked={createPassword}
