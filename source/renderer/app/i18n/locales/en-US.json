@@ -149,6 +149,7 @@
   "settings.support.issues.contentAnalyzing": "Analyzing logs for known issues...",
   "settings.support.issues.contentNotFound": "No known issues found.",
   "settings.support.issues.contentFound": "We have found a known issue after analyzing your logs. Please, use the FAQ with the solution for the issue you are experiencing. If you continue to experience the issue after completing steps from the instructions, please send a support request from the problem reporting section below.",
+  "settings.support.issues.faqLink": "See solution in the FAQ",
   "settings.support.faq.content": "If you are experiencing issues, please see the {faqLink} for guidance on known issues.",
   "settings.support.faq.faqLink": "FAQ on Daedalus website",
   "settings.support.faq.faqLinkURL": "https://daedaluswallet.io/faq/",

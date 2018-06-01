@@ -25,6 +25,11 @@ const messages = defineMessages({
     defaultMessage: '!!!We have found a known issue after analyzing your logs. Please, use the FAQ with the solution for the issue you are experiencing. If you continue to experience the issue after completing steps from the instructions, please send a support request from the problem reporting section below',
     description: 'Content for the "Automatic detection of known issues" section on the support settings page.',
   },
+  issuesFaqLink: {
+    id: 'settings.support.issues.faqLink',
+    defaultMessage: '!!!See solution in the FAQ',
+    description: '"FAQ on Daedalus website" link in the ISSUES section on the support settings page',
+  },
   faqTitle: {
     id: 'settings.support.faq.title',
     defaultMessage: '!!!Frequently asked questions',
@@ -140,7 +145,15 @@ export default class SupportSettings extends Component<Props> {
           {
             (issuesDetected && issuesDetected.length)
             ? (
-                issuesDetected.map((issue: {}, i) => <li key={i}>{ issue.title }</li>)
+                issuesDetected.map((issue: {}, index) => (
+                  <li key={index}>
+                    {issue.title}
+                    &nbsp;&rarr;&nbsp;
+                    <a href={messages.faqLinkUrl.defaultMessage + issue.id}>
+                      {intl.formatMessage(messages.issuesFaqLink)}
+                    </a>
+                  </li>
+                ))
               )
             : false
           }
