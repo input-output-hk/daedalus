@@ -121,6 +121,11 @@ export default class SupportSettings extends Component<Props> {
 
         <h1>{intl.formatMessage(messages.issuesTitle)}</h1>
 
+        {
+          (issuesDetected === null) &&
+          <span className={styles.spinning} />
+        }
+
         <p>
           {
             issuesDetected !== null

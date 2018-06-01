@@ -1,7 +1,9 @@
+@import '../../../themes/mixins/loading-spinner';
 @import '../../../themes/mixins/error-message';
 
 .component {
   padding-bottom: 10px;
+  position: relative;
 
   h1 {
     color: var(--theme-support-settings-text-color);
@@ -37,6 +39,16 @@
 
   p {
     margin-bottom: 10px;
+  }
+
+  .spinning {
+    @include loading-spinner("../../../assets/images/spinner-dark.svg");
+    display: block;
+    height: 34px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 34px;
   }
 }
 
