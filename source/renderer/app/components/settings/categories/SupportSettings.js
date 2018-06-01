@@ -127,9 +127,9 @@ export default class SupportSettings extends Component<Props> {
     );
 
     let issuesTitle;
-    if (issuesDetected !== null) issuesTitle = intl.formatMessage(messages.issuesContentAnalyzing);
+    if (issuesDetected === null) issuesTitle = intl.formatMessage(messages.issuesContentAnalyzing);
     else if (issuesDetected.length) issuesTitle = intl.formatMessage(messages.issuesContentFound);
-    else issuesTitle = intl.formatMessage(messages.issuesContentAnalyzing);
+    else issuesTitle = intl.formatMessage(messages.issuesContentNotFound);
 
     return (
       <div className={styles.component}>
