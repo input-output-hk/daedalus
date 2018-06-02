@@ -4,6 +4,7 @@ import { remote } from 'electron';
 import { isAddress } from 'web3-utils/src/utils';
 import { getEtcSyncProgress } from './getEtcSyncProgress';
 import { Logger, stringifyData, stringifyError } from '../../../../common/logging';
+import environment from '../../../../common/environment';
 import {
   GenericApiError, IncorrectWalletPasswordError,
   WalletAlreadyRestoredError,
@@ -49,11 +50,12 @@ import type {
   EtcBlock, EtcTransaction,
 } from './types';
 
-
 // Load Dummy ETC Wallets into Local Storage
-(async () => {
-  await initEtcWalletsDummyData();
-})();
+if (environment.isDev() && environment.isEtcApi()) {
+  (async () => {
+    await initEtcWalletsDummyData();
+  })();
+}
 
 /**
  * The ETC api layer that handles all requests to the
