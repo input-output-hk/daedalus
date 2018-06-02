@@ -1,5 +1,5 @@
 // @flow
-import { observable, action } from 'mobx';
+import { observable, action, runInAction } from 'mobx';
 import Store from '../lib/Store';
 import Request from '../lib/LocalizedRequest';
 import type {
@@ -30,14 +30,16 @@ export default class NodeUpdateStore extends Store {
     setInterval(this.refreshNextUpdate, NODE_UPDATE_POLL_INTERVAL);
   }
 
-  @action refreshNextUpdate = async () => {
+  refreshNextUpdate = async () => {
     if (this.stores.networkStatus.isSynced) {
       await this.nextUpdateRequest.execute();
-      if (this.nextUpdateRequest.result && !this.isUpdateAvailable &&
-        !this.isUpdatePostponed && !this.isUpdateInstalled) {
-        this.isUpdateAvailable = true;
-        this.isNotificationExpanded = true;
-        this.updateVersion = this.nextUpdateRequest.result.version;
+      const { result } = this.nextUpdateRequest;
+      if (result && !this.isUpdateAvailable && !this.isUpdatePostponed && !this.isUpdateInstalled) {
+        runInAction('refreshNextUpdate', () => {
+          this.isUpdateAvailable = true;
+          this.isNotificationExpanded = true;
+          this.updateVersion = result.version;
+        });
       }
     }
   };
