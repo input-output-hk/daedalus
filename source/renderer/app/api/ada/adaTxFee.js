@@ -3,7 +3,6 @@ import type { AdaTransactionFee } from './types';
 import { request } from './lib/request';
 
 export type AdaTxFeeParams = {
-  ca: string,
   sender: string,
   receiver: string,
   amount: string,
@@ -13,13 +12,11 @@ export type AdaTxFeeParams = {
 };
 
 export const adaTxFee = (
-  { ca, sender, receiver, amount, groupingPolicy }: AdaTxFeeParams
+  { sender, receiver, amount, groupingPolicy }: AdaTxFeeParams
 ): Promise<AdaTransactionFee> => (
   request({
     hostname: 'localhost',
     method: 'POST',
     path: `/api/txs/fee/${sender}/${receiver}/${amount}`,
-    port: 8090,
-    ca,
   }, {}, { groupingPolicy })
 );

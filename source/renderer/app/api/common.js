@@ -127,3 +127,10 @@ export type SendBugReportRequest = {
   logs: Array<string>,
 };
 export type SendBugReportResponse = any;
+
+export type ApiParams = {
+    ca: string,
+    port: number,
+    clientCert: string,
+    clientKey: string,
+};

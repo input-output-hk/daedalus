@@ -4,6 +4,7 @@ import log from 'electron-log';
 import { client } from 'electron-connect';
 import { setupLogging } from './utils/setupLogging';
 import { setupTls } from './utils/setupTls';
+import { setupCardano } from './utils/ada.js';
 import { makeEnvironmentGlobal } from './utils/makeEnvironmentGlobal';
 import { createMainWindow } from './windows/main';
 import { createAboutWindow } from './windows/about';
@@ -34,6 +35,7 @@ app.on('ready', async () => {
   await installChromeExtensions(environment.isDev());
   aboutWindow = createAboutWindow();
   mainWindow = createMainWindow();
+  setupCardano(mainWindow);
 
   if (environment.isDev()) {
     // Connect to electron-connect server which restarts / reloads windows on file changes

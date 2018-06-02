@@ -1,9 +1,8 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE DataKinds         #-}
+{-# LANGUAGE LambdaCase        #-}
 {-# LANGUAGE NoImplicitPrelude #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
-
+{-# LANGUAGE RecordWildCards   #-}
 module MacInstaller
     ( main
     , SigningConfig(..)
@@ -21,25 +20,24 @@ module MacInstaller
 --- An overview of Mac .pkg internals:    http://www.peachpit.com/articles/article.aspx?p=605381&seqNum=2
 ---
 
-import           Universum hiding (FilePath, toText, (<>))
+import           Universum                 hiding (FilePath, toText, (<>))
 
-import           Control.Monad (unless)
-import           Control.Exception (handle)
-import           Data.Text (Text)
-import qualified Data.Text as T
-
-import           System.FilePath.Glob (glob)
+import           Control.Exception         (handle)
+import           Control.Monad             (unless)
+import           Data.Text                 (Text)
+import qualified Data.Text                 as T
+import           Filesystem.Path           (FilePath, dropExtension, (<.>),
+                                            (</>))
 import           Filesystem.Path.CurrentOS (encodeString)
-import           Filesystem.Path (FilePath, dropExtension, (</>), (<.>))
-import           Turtle hiding (stdout, prefix, e)
-import           Turtle.Line (unsafeTextToLine)
-
-import           RewriteLibs (chain)
-
-import           System.IO (hSetBuffering, BufferMode(NoBuffering))
-import           System.IO.Error (IOError, isDoesNotExistError)
+import           System.FilePath.Glob      (glob)
+import           System.IO                 (BufferMode (NoBuffering),
+                                            hSetBuffering)
+import           System.IO.Error           (IOError, isDoesNotExistError)
+import           Turtle                    hiding (e, prefix, stdout)
+import           Turtle.Line               (unsafeTextToLine)
 
 import           Config
+import           RewriteLibs               (chain)
 import           Types
 
 data DarwinConfig = DarwinConfig {
@@ -84,15 +82,13 @@ main opts@Options{..} = do
     echo $ "--test-installer passed, will test the installer for installability"
     procs "sudo" ["installer", "-dumplog", "-verbose", "-target", "/", "-pkg", tt opkg] empty
 
-makePostInstall :: Format a (Text -> Text -> a)
+makePostInstall :: Format a (Text -> a)
 makePostInstall = "#!/usr/bin/env bash\n" %
                   "#\n" %
                   "# See /var/log/install.log to debug this\n" %
                   "\n" %
                   "src_pkg=\"$1\"\ndst_root=\"$2\"\ndst_mount=\"$3\"\nsys_root=\"$4\"\n" %
-                  "./dockutil --add \"${dst_root}/" % s % "\" --allhomes\n" %
-                  "cd \"${dst_root}/" % s % "/Contents/MacOS/\"\n" %
-                  "bash ./build-certificates-unix.sh"
+                  "./dockutil --add \"${dst_root}/" % s % "\" --allhomes\n"
 
 makeScriptsDir :: Options -> DarwinConfig -> Managed T.Text
 makeScriptsDir Options{..} DarwinConfig{..} = case oBackend of
@@ -100,7 +96,7 @@ makeScriptsDir Options{..} DarwinConfig{..} = case oBackend of
     tempdir <- mktempdir "/tmp" "scripts"
     liftIO $ do
       cp "data/scripts/dockutil" (tempdir </> "dockutil")
-      writeTextFile (tempdir </> "postinstall") (format makePostInstall dcAppNameApp dcAppNameApp)
+      writeTextFile (tempdir </> "postinstall") (format makePostInstall dcAppNameApp)
       run "chmod" ["+x", tt (tempdir </> "postinstall")]
     pure $ tt tempdir
   Mantis    -> pure "[DEVOPS-533]"
@@ -145,8 +141,8 @@ makeComponentRoot Options{..} appRoot darwinConfig@DarwinConfig{..} = do
   echo "~~~ Preparing files ..."
   ver <- case oBackend of
     Cardano bridge -> do
-      -- Executables
-      forM ["cardano-launcher", "cardano-node"] $ \f -> do
+      -- Executables (from daedalus-bridge)
+      forM ["cardano-launcher", "cardano-node", "cardano-x509-certificates"] $ \f ->
         cp (bridge </> "bin" </> f) (dir </> f)
 
       -- Config files (from daedalus-bridge)
@@ -163,16 +159,10 @@ makeComponentRoot Options{..} appRoot darwinConfig@DarwinConfig{..} = do
       cp "launcher-config.yaml" (dir </> "launcher-config.yaml")
       cp "wallet-topology.yaml" (dir </> "wallet-topology.yaml")
 
-      -- SSL
-      cp "build-certificates-unix.sh" (dir </> "build-certificates-unix.sh")
-      cp "ca.conf"     (dir </> "ca.conf")
-      cp "server.conf" (dir </> "server.conf")
-      cp "client.conf" (dir </> "client.conf")
-
       procs "chmod" ["-R", "+w", tt dir] empty
 
       -- Rewrite libs paths and bundle them
-      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-node"]
+      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-node", dir </> "cardano-x509-certificates"]
 
       readCardanoVersionFile bridge
 
@@ -198,7 +188,6 @@ makeInstaller opts@Options{..} darwinConfig@DarwinConfig{..} componentRoot pkg =
       pkgargs =
            [ "--identifier"
            , dcPkgName
-           -- data/scripts/postinstall is responsible for running build-certificates
            , "--scripts", scriptsDir
            , "--component"
            , tt componentRoot

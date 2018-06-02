@@ -4,13 +4,17 @@ import { size, has, get, omit } from 'lodash';
 import querystring from 'querystring';
 import { encryptPassphrase } from './encryptPassphrase';
 import { getContentLength } from '../../lib/utils';
+import { ApiParams } from '../../common';
+import { apiParams } from '../backend';
 
 export type RequestOptions = {
   hostname: string,
   method: string,
   path: string,
-  port: number,
-  ca: string,
+  port?: number,
+  ca?: string,
+  cert?: string,
+  key?: string,
   headers?: {
     'Content-Type': string,
     'Content-Length': number,
@@ -22,6 +26,10 @@ function typedRequest<Response>(
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
     const options: RequestOptions = Object.assign({}, httpOptions);
+    options.ca = apiParams.ca;
+    options.cert = apiParams.clientCert;
+    options.key = apiParams.clientKey;
+    options.port = apiParams.port;
     let hasRequestBody = false;
     let requestBody = '';
 
