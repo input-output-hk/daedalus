@@ -4,17 +4,18 @@ import { request } from './lib/request';
 
 export type ImportAdaBackupJSONParams = {
   ca: string,
+  port: number,
   filePath: string,
 };
 
 export const importAdaBackupJSON = (
-  { ca, filePath }: ImportAdaBackupJSONParams,
+  { ca, port, filePath }: ImportAdaBackupJSONParams,
 ): Promise<AdaWallet> => (
   request({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/backup/import',
-    port: 8090,
+    port,
     ca,
   }, {}, filePath)
 );

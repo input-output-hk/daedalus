@@ -5,17 +5,18 @@ import { request } from './lib/request';
 
 export type GetAdaWalletAccountsParams = {
   ca: string,
+  port: number,
   walletId: string,
 };
 
 export const getAdaWalletAccounts = (
-  { ca, walletId }: GetAdaWalletAccountsParams
+  { ca, port, walletId }: GetAdaWalletAccountsParams
 ): Promise<AdaAccounts> => (
   request({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/accounts',
-    port: 8090,
+    port,
     ca,
   }, { accountId: walletId })
 );

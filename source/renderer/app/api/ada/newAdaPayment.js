@@ -4,6 +4,7 @@ import { request } from './lib/request';
 
 export type NewAdaPaymentParams = {
   ca: string,
+  port: number,
   sender: string,
   receiver: string,
   amount: string,
@@ -15,13 +16,13 @@ export type NewAdaPaymentParams = {
 
 
 export const newAdaPayment = (
-  { ca, sender, receiver, amount, groupingPolicy, password }: NewAdaPaymentParams
+  { ca, port, sender, receiver, amount, groupingPolicy, password }: NewAdaPaymentParams
 ): Promise<AdaTransaction> => (
   request({
     hostname: 'localhost',
     method: 'POST',
     path: `/api/txs/payments/${sender}/${receiver}/${amount}`,
-    port: 8090,
+    port,
     ca,
   }, { passphrase: password }, { groupingPolicy })
 );

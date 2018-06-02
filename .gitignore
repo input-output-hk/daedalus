@@ -68,3 +68,9 @@ features/support/paper_wallet_certificates/paper-wallet-certificate.pdf
 build-id
 ci-url
 commit-id
+staging
+mainnet
+cardano-node
+configuration.yaml
+mainnet-genesis-dryrun-with-stakeholders.json
+wallet-topology.yaml
