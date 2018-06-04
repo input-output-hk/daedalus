@@ -182,6 +182,7 @@
   "wallet.add.dialog.import.label": "インポート",
   "wallet.add.dialog.join.description": "共有しているウォレットには５人まで参加可能",
   "wallet.add.dialog.join.label": "参加",
+  "wallet.add.dialog.maxNumberOfWalletsNotificationMessage": "!!!You have reached the maximum of 50 wallets.<br>No more wallets can be added.",
   "wallet.add.dialog.restore.label": "復元",
   "wallet.add.dialog.restore.withCertificate.description": "復元フレーズもしくはペーパーウォレット証明書を用いて復元する",
   "wallet.add.dialog.restore.withoutCertificate.description": "バックアップからウォレットを復元",
