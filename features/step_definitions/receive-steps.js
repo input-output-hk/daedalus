@@ -1,23 +1,18 @@
-import { Given, When, Then } from 'cucumber';
+import { Given, Then } from 'cucumber';
 import { expect } from 'chai';
-import BigNumber from 'bignumber.js/bignumber';
-import { DECIMAL_PLACES_IN_ADA, LOVELACES_PER_ADA } from '../../source/renderer/app/config/numbersConfig';
-import { getVisibleTextsForSelector } from '../support/helpers/shared-helpers';
-import { getWalletByName } from '../support/helpers/wallets-helpers';
+import { waitAndClick } from '../support/helpers/shared-helpers';
 
-Given('I have the following addresses', { timeout: 40000 }, async function (table) {
-
-  this.addresses = table.hashes();
-
+Given('I generate {int} addresses', async function (numberOfAddresses) {
+  for (var i=0;i<numberOfAddresses;i++) {
+    await waitAndClick(this.client, '.generateAddressButton:not(.WalletReceive_spinning)')
+  }
 });
 
+Then('I should see {int} addresses', async function (numberOfAddresses) {
 
-Then('I should see {int} addresses', async function (addresses) {
+  await this.client.waitForVisible('.generatedAddress-' + numberOfAddresses);
+  const elements = await this.client.elements('.WalletReceive_walletAddress');
 
-  await this.client.waitForVisible('.WalletReceive_walletAddress');
-  const addressesElements = await this.client.elements('.WalletReceive_walletAddress');
-  console.log("addressesElements", addressesElements);
-
-  expect(1).to.equal(1);
+  expect(elements.value.length).to.equal(numberOfAddresses);
 
 });

@@ -151,7 +151,7 @@ export default class WalletReceive extends Component<Props, State> {
       'primary',
       'generateAddressButton',
       walletHasPassword ? styles.submitWithPasswordButton : styles.submitButton,
-      isSubmitting ? styles.spinning : null,
+      isSubmitting ? styles.spinning : styles.notSpinning,
     ]);
 
     const passwordField = form.$('spendingPassword');
