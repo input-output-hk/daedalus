@@ -69,21 +69,26 @@ const sidebarCategories = [
 @observer
 export default class StoryProvider extends Component<Props> {
 
+  static defaultProps = {
+    activeWalletId: '1'
+  };
+
+  constructor(props) {
+    super(props);
+  }
+
   @observable sidebarMenus = {
     wallets: {
       items: SIDEBAR_WALLETS,
-      activeWalletId: '1',
+      activeWalletId: this.props.activeWalletId,
       actions: {
         onAddWallet: action('toggleAddWallet'),
         onWalletItemClick: (walletId: string) => {
-          runInAction(() => this.sidebarMenus.wallets.activeWalletId = walletId);
+          action('selectWallet', walletId);
+          // runInAction(() => this.sidebarMenus.wallets.activeWalletId = walletId);
         }
       }
     }
-  };
-
-  selectWallet = () => {
-    runInAction((walletId: string) => this.sidebarMenus.wallets.activeWalletId = walletId);
   };
 
   getStoriesProps = () => ({

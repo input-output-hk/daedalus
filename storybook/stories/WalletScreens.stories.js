@@ -32,8 +32,10 @@ storiesOf('WalletScreens', module)
     const storyWithKnobs = withKnobs(story, context);
 
     return (
-      <StoryDecorator>
-        <StoryProvider>
+      <StoryProvider
+        activeWalletId={context.story === 'Send - With password' ? '0' : '1'}
+      >
+        <StoryDecorator>
           <StoryLayout
             activeSidebarCategory="/wallets"
             storyName={context.story}
@@ -51,8 +53,8 @@ storiesOf('WalletScreens', module)
                 : storyWithKnobs
             }
           </StoryLayout>
-        </StoryProvider>
-      </StoryDecorator>
+        </StoryDecorator>
+      </StoryProvider>
     );
   })
 
@@ -79,6 +81,20 @@ storiesOf('WalletScreens', module)
   ))
 
   .add('Send', () => (
+    <WalletSendForm
+      currencyUnit="Ada"
+      currencyMaxFractionalDigits={6}
+      currencyMaxIntegerDigits={11}
+      validateAmount={promise(true)}
+      calculateTransactionFee={promise(true)}
+      addressValidator={() => {}}
+      openDialogAction={() => {}}
+      isDialogOpen={() => boolean('hasDialog', false)}
+      isRestoreActive={boolean('isRestoreActive', false)}
+    />
+  ))
+
+  .add('Send - With password', () => (
     <WalletSendForm
       currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
