@@ -9,5 +9,6 @@ Feature: Hide/show used addresses
 
   Scenario: No click
     Given I generate 6 addresses
+    When I mark the last 3 addresses as used
     Then I should see 6 addresses
 

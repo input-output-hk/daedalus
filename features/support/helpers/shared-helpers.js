@@ -26,6 +26,11 @@ export const waitUntilTextInSelector = async (client, { selector, text }) => (
   })
 );
 
+export const waitAndSelect = async (client, selectSelector, waitSelector = selectSelector, ...waitArgs) => {
+  await client.waitForVisible(waitSelector, ...waitArgs);
+  return await client.elements(selectSelector);
+};
+
 export const getVisibleTextsForSelector = async (client, selector) => {
   await client.waitForVisible(selector);
   const texts = await client.getText(selector);
