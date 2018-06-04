@@ -7,6 +7,7 @@ Changelog
 
 ### Fixes
 
+- Fixes mocked ETC wallet data injection in Cardano Daedalus builds ([PR 955](https://github.com/input-output-hk/daedalus/pull/955))
 - Fixes huge build file sizes ([PR 886](https://github.com/input-output-hk/daedalus/pull/886))
 - Fixed text wrapping within wallet navigation tabs ([PR 911](https://github.com/input-output-hk/daedalus/pull/911))
 - Disabled dragging of static UI images elements ([PR 910](https://github.com/input-output-hk/daedalus/pull/910))
@@ -124,6 +125,7 @@ Changelog
 - Fixed async restore/import dialogs logic ([PR 735](https://github.com/input-output-hk/daedalus/pull/735))
 - Fixed minor UI issue on receive screen when generating wallet addresses with spending password ([PR 738](https://github.com/input-output-hk/daedalus/pull/738))
 - Fixed `Time sync error notification` not showing up in case blocks syncing has not started ([PR 752](https://github.com/input-output-hk/daedalus/pull/752))
+- Properly wait for node update request ([PR 949](https://github.com/input-output-hk/daedalus/pull/949))
 
 ### Chores
 
