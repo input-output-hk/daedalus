@@ -10,11 +10,9 @@ Given('I generate {int} addresses', async function (numberOfAddresses) {
   this.numberOfAddressesGenerated = numberOfAddresses;
 });
 
-When('I mark the last {int} addresses as used', (addressesToBeMarkAsUsed) => {
-  // daedalus, help me!
-
-  console.log('addressesToBeMarkAsUsed', addressesToBeMarkAsUsed);
-  return addressesToBeMarkAsUsed;
+When('I mark the last {int} addresses as used', (addressesToBeMarkedAsUsed) => {
+  console.log('addressesToBeMarkedAsUsed', addressesToBeMarkedAsUsed);
+  return addressesToBeMarkedAsUsed;
 });
 
 Then('I should see {int} addresses', async function (numberOfAddresses) {
