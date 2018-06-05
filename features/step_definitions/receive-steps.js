@@ -8,7 +8,7 @@ Given('I generate {int} addresses', async function (numberOfAddresses) {
   }
 });
 
-When('I click the ShowUsed switch', async function() {
+When('I click the ShowUsed switch', async function () {
   await waitAndClick(this.client, '.SimpleSwitch_switch');
 });
 
