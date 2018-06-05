@@ -11,27 +11,22 @@ import           Control.Monad (unless)
 import qualified Data.List as L
 import           Data.Text (Text, unpack)
 import qualified Data.Text as T
-import qualified Data.Text.IO as TIO
 import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recursive, Required, StartOptions, Target),
                                    HKEY (HKLM), Level (Highest), Page (Directory, InstFiles), abort,
                                    constant, constantStr, createDirectory, createShortcut, delete,
-                                   deleteRegKey, execWait, file, iff_, installDir, installDirRegKey,
+                                   deleteRegKey, file, iff_, installDir, installDirRegKey,
                                    name, nsis, onPagePre, outFile, page, readRegStr,
                                    requestExecutionLevel, rmdir, section, setOutPath, str,
                                    strLength, uninstall, unsafeInject, unsafeInjectGlobal,
                                    writeRegDWORD, writeRegStr, (%/=), fileExists)
 import           Prelude ((!!))
 import qualified System.IO as IO
-import           Filesystem.Path (FilePath, (</>), (<.>))
+import           Filesystem.Path (FilePath, (</>))
 import           Filesystem.Path.CurrentOS (encodeString, fromText)
-import           Prelude                   ((!!))
-import           System.IO                 (writeFile)
-import           Turtle                    (ExitCode (..), Line, Shell, die,
-                                            echo, export, format, fp, inproc,
-                                            input, need, printf, proc, procs,
-                                            sed, shells, stdout, strict,
-                                            testfile, w, writeTextFile, (%))
-import           Turtle.Pattern            (dot, noneOf, plus, star, text)
+import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, stdout, input, export, sed, strict, format, printf, fp, w, (%), need, writeTextFile, die)
+import           Turtle.Pattern (text, plus, noneOf, star, dot)
+import           AppVeyor
+import qualified Codec.Archive.Zip    as Zip
 
 import           Config
 import           Types
@@ -106,19 +101,12 @@ parseVersion ver =
         v@[_, _, _, _] -> map toString v
         _              -> ["0", "0", "0", "0"]
 
-fileSubstString :: Text -> Text -> FilePath -> FilePath -> IO ()
-fileSubstString from to src dst =
-    TIO.writeFile (encodeString dst) =<< T.replace from to <$> TIO.readFile (encodeString src)
-
 writeInstallerNSIS :: FilePath -> Version -> InstallerConfig -> Cluster -> IO ()
 writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = do
     tempDir <- getTempDir
     let fullVersion = unpack fullVersion'
         viProductVersion = L.intercalate "." $ parseVersion fullVersion'
     printf ("VIProductVersion: "%w%"\n") viProductVersion
-
-    forM_ ["ca.conf", "server.conf", "client.conf"] $
-        \f-> fileSubstString "OPENSSL_MD" "sha256" f (f <.> "windows")
 
     IO.writeFile "daedalus.nsi" $ nsis $ do
         _ <- constantStr "Version" (str fullVersion)
@@ -155,10 +143,8 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                     rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
                 file [] "cardano-node.exe"
                 file [] "cardano-launcher.exe"
+                file [] "cardano-x509-certificates.exe"
                 file [] "log-config-prod.yaml"
-                file [] "ca.conf.windows"
-                file [] "server.conf.windows"
-                file [] "client.conf.windows"
                 file [] "wallet-topology.yaml"
                 file [] "configuration.yaml"
                 file [] "*genesis*.json"
@@ -171,8 +157,6 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                     , "Pop $0"
                     , "DetailPrint \"liteFirewall::AddRule: $0\""
                     ]
-
-                execWait "build-certificates-win64.bat \"$INSTDIR\" >\"%APPDATA%\\$InstallDir\\Logs\\build-certificates.log\" 2>&1"
 
                 createShortcut "$DESKTOP\\$InstallDir.lnk" daedalusShortcut
 
