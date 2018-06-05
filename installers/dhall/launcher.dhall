@@ -13,6 +13,7 @@
     [ "--tlsca",               "tls/ca/ca.crt"
     , "--tlscert",             "tls/server/server.crt"
     , "--tlskey",              "tls/server/server.key"
+    , "--no-client-auth"
     , "--update-server",       cluster.updateServer
     , "--keyfile",             os.nodeArgs.keyfile
     , "--logs-prefix",         os.nodeArgs.logsPrefix
