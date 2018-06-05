@@ -32,9 +32,7 @@ storiesOf('WalletScreens', module)
     const storyWithKnobs = withKnobs(story, context);
 
     return (
-      <StoryProvider
-        activeWalletId={context.story === 'Send - With password' ? '0' : '1'}
-      >
+      <StoryProvider>
         <StoryDecorator>
           <StoryLayout
             activeSidebarCategory="/wallets"
@@ -81,20 +79,6 @@ storiesOf('WalletScreens', module)
   ))
 
   .add('Send', () => (
-    <WalletSendForm
-      currencyUnit="Ada"
-      currencyMaxFractionalDigits={6}
-      currencyMaxIntegerDigits={11}
-      validateAmount={promise(true)}
-      calculateTransactionFee={promise(true)}
-      addressValidator={() => {}}
-      openDialogAction={() => {}}
-      isDialogOpen={() => boolean('hasDialog', false)}
-      isRestoreActive={boolean('isRestoreActive', false)}
-    />
-  ))
-
-  .add('Send - With password', () => (
     <WalletSendForm
       currencyUnit="Ada"
       currencyMaxFractionalDigits={6}

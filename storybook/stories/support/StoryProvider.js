@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { Provider, observer } from 'mobx-react';
-import { observable, runInAction } from 'mobx';
+import { Provider/*, observer*/ } from 'mobx-react';
+import { observable, computed, runInAction } from 'mobx';
 import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -66,45 +66,39 @@ const sidebarCategories = [
   },
 ];
 
-@observer
+// @observer
 export default class StoryProvider extends Component<Props> {
 
-  static defaultProps = {
-    activeWalletId: '1'
-  };
+  @observable activeWalletId = '0';
 
-  constructor(props) {
-    super(props);
-  }
-
-  @observable sidebarMenus = {
-    wallets: {
-      items: SIDEBAR_WALLETS,
-      activeWalletId: this.props.activeWalletId,
-      actions: {
-        onAddWallet: action('toggleAddWallet'),
-        onWalletItemClick: (walletId: string) => {
-          action('selectWallet', walletId);
-          // runInAction(() => this.sidebarMenus.wallets.activeWalletId = walletId);
+  @computed get sidebarMenus () {
+    return ({
+      wallets: {
+        items: SIDEBAR_WALLETS,
+        activeWalletId: this.activeWalletId,
+        actions: {
+          onAddWallet: action('toggleAddWallet'),
+          onWalletItemClick: (walletId: string) => runInAction(() => this.activeWalletId = walletId)
         }
       }
-    }
-  };
+    });
+  }
 
-  getStoriesProps = () => ({
-    wallets: WALLETS,
-    sidebarWallets: SIDEBAR_WALLETS,
-    activeWalletId: this.sidebarMenus.wallets.activeWalletId,
-    sidebarMenus: this.sidebarMenus,
-    sidebarCategories
-  });
+  @computed get storiesProps () {
+    return ({
+      wallets: WALLETS,
+      sidebarWallets: SIDEBAR_WALLETS,
+      activeWalletId: this.activeWalletId,
+      sidebarMenus: this.sidebarMenus,
+      sidebarCategories
+    });
+  }
 
-  render() {
-
-    const stores = {
+  @computed get stores () {
+    return ({
       ada: {
         wallets: {
-          active: WALLETS[this.sidebarMenus.wallets.activeWalletId],
+          active: WALLETS[this.activeWalletId],
           sendMoney: () => {},
           sendMoneyRequest: {
             isExecuting: false,
@@ -112,10 +106,13 @@ export default class StoryProvider extends Component<Props> {
           }
         }
       }
-    };
+    });
+  }
+
+  render() {
 
     return (
-      <Provider stores={stores} actions={actions} storiesProps={this.getStoriesProps()}>
+      <Provider stores={this.stores} actions={actions} storiesProps={this.storiesProps}>
         {this.props.children}
       </Provider>
     );
