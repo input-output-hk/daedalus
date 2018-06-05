@@ -1,24 +1,27 @@
-Feature: Update Node
+Feature: Node Update Notification
 
   Background:
     Given I have completed the basic setup
-    And I have the following wallets:
-      | name        |
-      | Test wallet |
 
   Scenario: User accepts a node update notification
     Given I am on the wallet summary screen
-    And I see the NodeUpdateNotification unexpanded
-    And I click on the downward arrow expand button
-    Then I should see the NodeUpdateNotification's message + update/postpone buttons
-    And when I click the NodeUpdateNotification's update button
-    Then I should not see the NodeUpdateNotification anymore
+    Given I make a mock node update available
+    Then I should see the unexpanded node update notification
+    And when I click the node update notification's toggle button
+    Then I should see the expanded node update notification's message
+    Then I should see the expanded node update notification's accept button
+    Then I should see the expanded node update notification's postpone button
+    And when I click the accept button
+    Then I should not see the node update notification anymore
     And the Daedalus window should close
 
-  Scenario: User denies a node update notification
+  Scenario: User postpones a node update notification
     Given I am on the wallet summary screen
-    And I see the NodeUpdateNotification unexpanded
-    And I click on the downward arrow expand button
-    Then I should see the NodeUpdateNotification's message + update/postpone buttons
-    And when I click the NodeUpdateNotification's postpone button
-    Then I should not see the NodeUpdateNotification anymore
+    Given I make a mock node update available
+    Then I should see the unexpanded node update notification
+    And when I click the node update notification's toggle button
+    Then I should see the expanded node update notification's message
+    Then I should see the expanded node update notification's accept button
+    Then I should see the expanded node update notification's postpone button
+    And when I click the postpone button
+    Then I should not see the node update notification anymore
