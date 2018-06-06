@@ -1,6 +1,8 @@
 import path from 'path';
 import fs from 'fs';
 import log from 'electron-log';
+import { launcherConfig } from './launcherConfig';
+import { runtimeFolderPath } from '../config';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -10,7 +12,13 @@ const isProd = process.env.NODE_ENV === 'production';
  * so that it can be used in HTTP and Websocket connections.
  */
 export const setupTls = () => {
-  const caProductionPath = path.join(process.cwd(), 'tls', 'ca', 'ca.crt');
+  let tlsBasePath;
+  if (launcherConfig.tlsPath) {
+    tlsBasePath = launcherConfig.tlsPath;
+  } else {
+    tlsBasePath = path.join(runtimeFolderPath, 'tls');
+  }
+  const caProductionPath = path.join(tlsBasePath, 'client', 'ca.crt');
   const pathToCertificate = isProd ? caProductionPath : path.join(process.cwd(), 'tls', 'ca.crt');
 
   try {
