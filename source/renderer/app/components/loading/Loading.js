@@ -8,6 +8,7 @@ import Button from 'react-polymorph/lib/components/Button';
 import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
 import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
 import LoadingSpinner from '../widgets/LoadingSpinner';
+import IssuesDetection from '../widgets/IssuesDetection';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import styles from './Loading.scss';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
@@ -78,6 +79,7 @@ type Props = {
   currentLocale: string,
   handleReportIssue: Function,
   onProblemSolutionClick: Function,
+  issuesDetected: Array
 };
 
 @observer
@@ -114,7 +116,7 @@ export default class Loading extends Component<Props, State> {
     );
 
     if (startSyncingTimer) {
-      syncingInterval = setInterval(this.syncingTimer, 1000);
+      // syncingInterval = setInterval(this.syncingTimer, 1000);
     } else if (stopSyncingTimer) {
       this.resetSyncingTimer();
     }
@@ -148,6 +150,7 @@ export default class Loading extends Component<Props, State> {
       currentLocale,
       handleReportIssue,
       onProblemSolutionClick,
+      issuesDetected
     } = this.props;
 
     const { connectingTime, syncingTime } = this.state;
@@ -160,15 +163,22 @@ export default class Loading extends Component<Props, State> {
     ]);
     const daedalusLogoStyles = classNames([
       styles.daedalusLogo,
-      isConnecting ? styles.connectingLogo : styles.syncingLogo,
+      isSyncing ? styles.daedalusLogoSmall : null,
+      isSyncing ? styles.syncingLogo : styles.connectingLogo,
     ]);
     const currencyLogoStyles = classNames([
       styles[`${environment.API}-logo`],
-      isConnecting ? styles.connectingLogo : styles.syncingLogo,
+      (isSyncing && environment.API === 'ada') ? styles['ada-logoSmall'] : null,
+      isSyncing ? styles.syncingLogo : styles.connectingLogo,
     ]);
     const apiLogoStyles = classNames([
       styles[`${environment.API}-apiLogo`],
-      isConnecting ? styles.connectingLogo : styles.syncingLogo,
+      (isSyncing && environment.API === 'ada') ? styles['ada-apiLogoSmall'] : null,
+      isSyncing ? styles.syncingLogo : styles.connectingLogo,
+    ]);
+    const logosStyles = classNames([
+      styles.logos,
+      isSyncing ? styles.logosSyncing : null
     ]);
 
     const daedalusLoadingLogo = daedalusLogo;
@@ -211,7 +221,7 @@ export default class Loading extends Component<Props, State> {
             />
           </div>
         )}
-        <div className={styles.logos}>
+        <div className={logosStyles}>
           <SVGInline svg={currencyLoadingLogo} className={currencyLogoStyles} />
           <SVGInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
           <SVGInline svg={apiLoadingLogo} className={apiLogoStyles} />
@@ -227,6 +237,12 @@ export default class Loading extends Component<Props, State> {
             )}
             {isSyncing && (
               <div className={styles.syncing}>
+                <div className={styles.issuesDetection}>
+                  <IssuesDetection
+                    onExternalLinkClick={() => {}}
+                    issuesDetected={issuesDetected}
+                  />
+                </div>
                 <h1 className={styles.headline}>
                   {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
                 </h1>

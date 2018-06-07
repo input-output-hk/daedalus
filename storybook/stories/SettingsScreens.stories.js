@@ -72,13 +72,4 @@ storiesOf('SettingsScreens', module)
       onDownloadLogs={() => {}}
       issuesDetected={getIssuesDetectedOptions(boolean('Is analyzing', false), number('Issues found', 2, { min: 0, max: 9 }))}
     />
-  ))
-
-  .add('support - screen only', () => (
-    <SupportSettings
-      onExternalLinkClick={() => {}}
-      onSupportRequestClick={() => {}}
-      onDownloadLogs={() => {}}
-      issuesDetected={getIssuesDetectedOptions(boolean('Is analyzing', false), number('Issues found', 2, { min: 0, max: 9 }))}
-    />
   ));

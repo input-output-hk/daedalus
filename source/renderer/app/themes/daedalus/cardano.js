@@ -239,6 +239,7 @@ export default {
   '--theme-icon-close-button-color': '#5e6066',
   '--theme-icon-file-upload-color': '#5e6066',
   '--theme-icon-transactions-ada-symbol-color': '#5e6066',
+  '--theme-icon-loading-logo-color': '#5e6066',
   '--theme-icon-syncing-logo-color': '#5e6066',
   '--theme-icon-connecting-logo-color': '#fafbfc',
   '--theme-icon-transaction-type-color': '#fafbfc',

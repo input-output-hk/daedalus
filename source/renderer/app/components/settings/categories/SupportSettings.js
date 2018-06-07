@@ -105,8 +105,6 @@ export default class SupportSettings extends Component<Props> {
     return (
       <div className={styles.component}>
 
-        <h1>ALORRR</h1>
-
         <IssuesDetection
           onExternalLinkClick={onExternalLinkClick}
           issuesDetected={issuesDetected}

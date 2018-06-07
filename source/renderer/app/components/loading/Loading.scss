@@ -63,16 +63,33 @@
   height: 100%;
 }
 
+.logosSyncing {
+  height: auto;
+  margin: 76px 0 46px;
+}
+
 .connecting,
 .syncing {
-  bottom: 60px;
-  position: absolute;
-  text-align: center;
-  width: 100%;
+  .IssuesDetection_component {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+  > h1 {
+    bottom: 60px;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+  }
 }
 
 .syncing {
   color: var(--theme-syncing-text-color);
+}
+
+.issuesDetection {
+  padding: 30px;
 }
 
 .ada-logo,
@@ -87,14 +104,23 @@
 }
 
 $cardanoLogoWidth: 86px;
+$cardanoLogoWidthSmall: 44px;
 .ada-apiLogo > svg {
   width: $cardanoLogoWidth;
 }
+.ada-apiLogoSmall > svg {
+  width: $cardanoLogoWidthSmall;
+}
 
 $adaLogoWidth: 43px;
+$adaLogoWidthSmall: 26px;
 .ada-logo > svg {
   width: $adaLogoWidth;
   margin: 3px ($cardanoLogoWidth - $adaLogoWidth) / 2 0; // Visually align in the middle + Needs to be the same dimension as the apiLogo
+}
+.ada-logoSmall > svg {
+  width: $adaLogoWidthSmall;
+  margin: 3px ($cardanoLogoWidthSmall - $adaLogoWidthSmall) / 2 0; // Visually align in the middle + Needs to be the same dimension as the apiLogo
 }
 
 .etc-apiLogo > svg {
@@ -108,6 +134,14 @@ $adaLogoWidth: 43px;
     margin: 0 114px;
   }
 }
+.daedalusLogoSmall {
+  & > svg {
+    display: block;
+    width: 86px;
+    margin: 0 114px;
+  }
+}
+
 
 .connectingLogo {
   & > svg path {
