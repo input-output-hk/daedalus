@@ -1,10 +1,10 @@
+// @flow
 import React, { Component } from 'react';
+import type { Node } from 'react';
 import { Provider, observer } from 'mobx-react';
 import { observable, computed, runInAction } from 'mobx';
-import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
-
 
 import Wallet from '../../../source/renderer/app/domains/Wallet.js';
 import actions from '../../../source/renderer/app/actions';
@@ -14,7 +14,7 @@ type Props = {
   children: Node,
 };
 
-const WALLETS: { [string]: Array<Wallet> } = [
+const WALLETS = [
   {
     id: '0',
     name: 'No Password',
@@ -38,7 +38,7 @@ export default class StoryProvider extends Component<Props> {
 
   @observable activeWalletId = '0';
 
-  @computed get storiesProps() {
+  @computed get storiesProps(): {} {
     return ({
       wallets: WALLETS,
       activeWalletId: this.activeWalletId,
@@ -46,11 +46,11 @@ export default class StoryProvider extends Component<Props> {
     });
   }
 
-  @computed get stores() {
+  @computed get stores(): {} {
     return ({
       ada: {
         wallets: {
-          active: WALLETS[this.activeWalletId],
+          active: WALLETS[parseInt(this.activeWalletId)],
           sendMoney: () => {},
           sendMoneyRequest: {
             isExecuting: false,

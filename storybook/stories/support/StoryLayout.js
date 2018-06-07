@@ -9,11 +9,13 @@ import { action } from '@storybook/addon-actions';
 import { formattedWalletAmount } from '../../../source/renderer/app/utils/ada/formatters';
 import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
 import Wallet from '../../../source/renderer/app/domains/Wallet.js';
-import type { SidebarMenus, SidebarCategories } from '../../../source/renderer/app/components/sidebar/Sidebar';
 import walletsIcon from '../../../source/renderer/app/assets/images/sidebar/wallet-ic.inline.svg';
 import settingsIcon from '../../../source/renderer/app/assets/images/sidebar/settings-ic.inline.svg';
 import adaIcon from '../../../source/renderer/app/assets/images/sidebar/ada-redemption-ic.inline.svg';
 import paperCertificateIcon from '../../../source/renderer/app/assets/images/sidebar/paper-certificate-ic.inline.svg';
+import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/Sidebar';
+import type { SidebarWalletType } from '../../../source/renderer/app/stores/SidebarStore';
+// import type { Wallet } from '../../../source/renderer/app/domains/WalletTransaction';
 
 // Empty screen elements
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
@@ -22,8 +24,8 @@ import SidebarLayout from '../../../source/renderer/app/components/layout/Sideba
 
 export type StoriesProps = {
   wallets: Array<Wallet>,
-  activeWalletId: number,
-  sidebarMenus: SidebarMenus,
+  activeWalletId: string,
+  setActiveWalletId: Function
 };
 
 type Props = {
@@ -31,7 +33,7 @@ type Props = {
   storiesProps: any | StoriesProps,
   storyName?: string,
   children?: any | Node,
-  stores: {},
+  stores?: ?{},
 };
 
 const sidebarCategories = [
@@ -79,9 +81,9 @@ export default class StoryLayout extends Component<Props> {
       setActiveWalletId
     } = storiesProps;
 
-    const activeWallet: Wallet = wallets[activeWalletId];
+    const activeWallet: Wallet = wallets[parseInt(activeWalletId)];
     const activeNavItem = storyName.split(' ')[0].toLowerCase();
-    const sidebarMenus = this.getSidebarMenus(wallets, activeWalletId, setActiveWalletId);
+    const sidebarMenus = this.getSidebarMenus(this.getSidebarWallets(wallets), activeWalletId, setActiveWalletId);
 
     return (
       <div
@@ -102,23 +104,29 @@ export default class StoryLayout extends Component<Props> {
   @observable
   isShowingSubMenus = this.props.activeSidebarCategory === '/wallets' && !!this.props.children;
 
+  getSidebarWallets = (wallets: Array<Wallet>) => wallets.map(wallet => ({
+    id: wallet.id,
+    title: wallet.name,
+    info: `${wallet.amount} ADA`,
+    isConnected: true,
+    isRestoreActive: false,
+    restoreProgress: 0,
+  }));
+
   getSidebarMenus = (
-    wallets: Array<Wallet>,
-    activeWalletId: number,
+    items: Array<SidebarWalletType>,
+    activeWalletId: string,
     setActiveWalletId: Function
   ) => ({
     wallets: {
-      items: [
-        { id: wallets[0].id, title: wallets[0].name, info: `${wallets[0].amount} ADA`, isConnected: true },
-        { id: wallets[1].id, title: wallets[1].name, info: `${wallets[1].amount} ADA`, isConnected: true },
-      ],
+      items,
       activeWalletId,
       actions: {
         onAddWallet: action('toggleAddWallet'),
         onWalletItemClick: setActiveWalletId
       }
     }
-  })
+  });
 
   getSidebar = (
     activeSidebarCategory: string,
