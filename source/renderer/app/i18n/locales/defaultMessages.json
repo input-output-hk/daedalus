@@ -3683,13 +3683,13 @@
         "description": "Label for the \"Add wallet\" title on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.title.label",
         "start": {
           "column": 9,
-          "line": 15
+          "line": 16
         }
       },
       {
@@ -3697,13 +3697,13 @@
         "description": "Label for the \"Create\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.create.label",
         "start": {
           "column": 15,
-          "line": 20
+          "line": 21
         }
       },
       {
@@ -3711,13 +3711,13 @@
         "description": "Description for the \"Create\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.create.description",
         "start": {
           "column": 21,
-          "line": 25
+          "line": 26
         }
       },
       {
@@ -3725,13 +3725,13 @@
         "description": "Label for the \"Join\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.join.label",
         "start": {
           "column": 13,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -3739,13 +3739,13 @@
         "description": "Description for the \"Join\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.join.description",
         "start": {
           "column": 19,
-          "line": 35
+          "line": 36
         }
       },
       {
@@ -3753,13 +3753,13 @@
         "description": "Label for the \"Restore\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restore.label",
         "start": {
           "column": 16,
-          "line": 40
+          "line": 41
         }
       },
       {
@@ -3767,13 +3767,13 @@
         "description": "Description for the \"Restore\" button with paper wallet certificate on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 50
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restore.withCertificate.description",
         "start": {
           "column": 37,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -3781,13 +3781,13 @@
         "description": "Description for the \"Restore\" button without paper wallet certificate on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restore.withoutCertificate.description",
         "start": {
           "column": 40,
-          "line": 50
+          "line": 51
         }
       },
       {
@@ -3795,13 +3795,13 @@
         "description": "Label for the \"Import\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.import.label",
         "start": {
           "column": 15,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -3809,13 +3809,13 @@
         "description": "Description for the \"Import\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.import.description",
         "start": {
           "column": 21,
-          "line": 60
+          "line": 61
         }
       },
       {
@@ -3823,13 +3823,27 @@
         "description": "Restore notification message shown during async wallet restore on the wallet add screen.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 70
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restoreNotificationMessage",
         "start": {
           "column": 30,
-          "line": 65
+          "line": 66
+        }
+      },
+      {
+        "defaultMessage": "!!!You have reached the maximum of 50 wallets.<br>No more wallets can be added.",
+        "description": "\"Maximum number of wallets reached\" notification message shown on the wallet add screen if user has 50 wallets.",
+        "end": {
+          "column": 3,
+          "line": 75
+        },
+        "file": "source/renderer/app/components/wallet/WalletAdd.js",
+        "id": "wallet.add.dialog.maxNumberOfWalletsNotificationMessage",
+        "start": {
+          "column": 41,
+          "line": 71
         }
       }
     ],
@@ -5462,13 +5476,13 @@
         "description": "Paper wallet pdf \"Wallet address\" label.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 18
         },
         "file": "source/renderer/app/utils/paperWalletPdfGenerator.js",
         "id": "paper.wallet.pdf.walletAddress.label",
         "start": {
           "column": 22,
-          "line": 15
+          "line": 14
         }
       },
       {
@@ -5476,13 +5490,13 @@
         "description": "Paper wallet pdf \"Paper wallet recovery phrase\" label.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 23
         },
         "file": "source/renderer/app/utils/paperWalletPdfGenerator.js",
         "id": "paper.wallet.pdf.recoveryPhrase.label",
         "start": {
           "column": 23,
-          "line": 20
+          "line": 19
         }
       },
       {
@@ -5490,13 +5504,13 @@
         "description": "Paper wallet pdf \"Password\" label.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 28
         },
         "file": "source/renderer/app/utils/paperWalletPdfGenerator.js",
         "id": "paper.wallet.pdf.password.label",
         "start": {
           "column": 17,
-          "line": 25
+          "line": 24
         }
       },
       {
@@ -5504,13 +5518,13 @@
         "description": "PDF title",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 33
         },
         "file": "source/renderer/app/utils/paperWalletPdfGenerator.js",
         "id": "paper.wallet.pdf.info.title",
         "start": {
           "column": 13,
-          "line": 30
+          "line": 29
         }
       },
       {
@@ -5518,13 +5532,13 @@
         "description": "PDF author",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 38
         },
         "file": "source/renderer/app/utils/paperWalletPdfGenerator.js",
         "id": "paper.wallet.pdf.info.author",
         "start": {
           "column": 14,
-          "line": 35
+          "line": 34
         }
       }
     ],

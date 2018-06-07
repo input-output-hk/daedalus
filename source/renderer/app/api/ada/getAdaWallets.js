@@ -15,5 +15,8 @@ export const getAdaWallets = (
     path: '/api/v1/wallets',
     port: 8090,
     ca,
+  }, {
+    per_page: 50, // 50 is the max per_page value
+    sort_by: 'ASC[created_at]',
   })
 );
