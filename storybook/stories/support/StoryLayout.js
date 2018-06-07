@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Children } from 'react';
 import type { Node } from 'react';
 import { observable, runInAction } from 'mobx';
 import { observer, inject } from 'mobx-react';
@@ -9,51 +9,81 @@ import { action } from '@storybook/addon-actions';
 import { formattedWalletAmount } from '../../../source/renderer/app/utils/ada/formatters';
 import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
 import Wallet from '../../../source/renderer/app/domains/Wallet.js';
-import type { SidebarMenus, SidebarCategories } from '../../../source/renderer/app/components/sidebar/Sidebar';
+import walletsIcon from '../../../source/renderer/app/assets/images/sidebar/wallet-ic.inline.svg';
+import settingsIcon from '../../../source/renderer/app/assets/images/sidebar/settings-ic.inline.svg';
+import adaIcon from '../../../source/renderer/app/assets/images/sidebar/ada-redemption-ic.inline.svg';
+import paperCertificateIcon from '../../../source/renderer/app/assets/images/sidebar/paper-certificate-ic.inline.svg';
+import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/Sidebar';
+import type { SidebarWalletType } from '../../../source/renderer/app/stores/SidebarStore';
+// import type { Wallet } from '../../../source/renderer/app/domains/WalletTransaction';
 
 // Empty screen elements
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
 import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
 import SidebarLayout from '../../../source/renderer/app/components/layout/SidebarLayout';
 
-type StoriesProps = {
+export type StoriesProps = {
   wallets: Array<Wallet>,
-  activeWalletId: number,
-  sidebarMenus: SidebarMenus,
-  sidebarCategories: Array<any>
-}
+  activeWalletId: string,
+  setActiveWalletId: Function
+};
 
 type Props = {
   activeSidebarCategory: string,
   storiesProps: any | StoriesProps,
   storyName?: string,
   children?: any | Node,
+  stores?: ?{},
 };
 
+const sidebarCategories = [
+  {
+    name: 'WALLETS',
+    route: '/wallets',
+    icon: walletsIcon,
+  },
+  {
+    name: 'ADA_REDEMPTION',
+    route: '/ada-redemption',
+    icon: adaIcon,
+  },
+  {
+    name: 'PAPER_WALLET',
+    route: '/paper-wallet-create-certificate',
+    icon: paperCertificateIcon,
+  },
+  {
+    name: 'SETTINGS',
+    route: '/settings',
+    icon: settingsIcon,
+  },
+];
 
-@inject('actions', 'stores', 'storiesProps') @observer
+
+@inject('stores', 'storiesProps') @observer
 export default class StoryLayout extends Component<Props> {
 
-  static defaultProps = { actions: null, stores: null, storiesProps: null };
+  static defaultProps = { stores: null, storiesProps: null };
 
   render() {
 
     const {
       activeSidebarCategory,
-      children,
       storyName = '',
-      storiesProps = {}
+      storiesProps = {},
+      stores,
+      children
     } = this.props;
 
     const {
       wallets,
       activeWalletId,
-      sidebarMenus,
-      sidebarCategories,
+      setActiveWalletId
     } = storiesProps;
 
-    const activeWallet: Wallet = wallets[activeWalletId];
+    const activeWallet: Wallet = wallets[parseInt(activeWalletId)];
     const activeNavItem = storyName.split(' ')[0].toLowerCase();
+    const sidebarMenus = this.getSidebarMenus(this.getSidebarWallets(wallets), activeWalletId, setActiveWalletId);
 
     return (
       <div
@@ -62,10 +92,10 @@ export default class StoryLayout extends Component<Props> {
         }}
       >
         <SidebarLayout
-          sidebar={this.getSidebar(activeSidebarCategory, sidebarMenus, sidebarCategories)}
+          sidebar={this.getSidebar(activeSidebarCategory, sidebarMenus)}
           topbar={this.getTopbar(activeSidebarCategory, activeWallet, activeNavItem)}
         >
-          { children }
+          { Children.map(children, (child) => React.cloneElement(child, { stores })) }
         </SidebarLayout>
       </div>
     );
@@ -74,10 +104,33 @@ export default class StoryLayout extends Component<Props> {
   @observable
   isShowingSubMenus = this.props.activeSidebarCategory === '/wallets' && !!this.props.children;
 
+  getSidebarWallets = (wallets: Array<Wallet>) => wallets.map(wallet => ({
+    id: wallet.id,
+    title: wallet.name,
+    info: `${wallet.amount} ADA`,
+    isConnected: true,
+    isRestoreActive: false,
+    restoreProgress: 0,
+  }));
+
+  getSidebarMenus = (
+    items: Array<SidebarWalletType>,
+    activeWalletId: string,
+    setActiveWalletId: Function
+  ) => ({
+    wallets: {
+      items,
+      activeWalletId,
+      actions: {
+        onAddWallet: action('toggleAddWallet'),
+        onWalletItemClick: setActiveWalletId
+      }
+    }
+  });
+
   getSidebar = (
     activeSidebarCategory: string,
     sidebarMenus: SidebarMenus,
-    sidebarCategories: SidebarCategories
   ) => (
     <Sidebar
       categories={sidebarCategories}
@@ -112,4 +165,5 @@ export default class StoryLayout extends Component<Props> {
       />
     </TopBar>
   );
+
 }
