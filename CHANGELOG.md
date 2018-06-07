@@ -30,6 +30,17 @@ Changelog
 - Improves re-build times with caching ([PR 915](https://github.com/input-output-hk/daedalus/pull/915))
 - Log expected errors as debug messages only ([PR 916](https://github.com/input-output-hk/daedalus/pull/916))
 
+## 0.10.1
+=======
+
+### Fixes
+
+- Fixed issues with printing paper wallet certificate PDFs on printers with low amount of memory by replacing the SVG assets with transparent PNG images ([PR 951](https://github.com/input-output-hk/daedalus/pull/951))
+- Fixed presentation bug that caused only ten wallets to be shown in the wallets list, even though there were more than ten wallets in the application ([PR 958](https://github.com/input-output-hk/daedalus/pull/958))
+- Fixed reporting server URL used for submitting support requests for the Linux build of Daedalus ([PR 959](https://github.com/input-output-hk/daedalus/pull/959))
+- Fixed missing launcher log file ([PR 963](https://github.com/input-output-hk/daedalus/pull/963))
+- Fixed issue with multiple cardano-node processes running and windows allowing skipping of files in installer ([PR 953](https://github.com/input-output-hk/daedalus/pull/953)) 
+
 ## 0.10.0
 =======
 

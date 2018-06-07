@@ -16,7 +16,7 @@ import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recurs
                                    HKEY (HKLM), Level (Highest), Page (Directory, InstFiles), abort,
                                    constant, constantStr, createDirectory, createShortcut, delete,
                                    deleteRegKey, execWait, file, iff_, installDir, installDirRegKey,
-                                   name, nsis, onPagePre, outFile, page, readRegStr,
+                                   name, nsis, onPagePre, onError, outFile, page, readRegStr,
                                    requestExecutionLevel, rmdir, section, setOutPath, str,
                                    strLength, uninstall, unsafeInject, unsafeInjectGlobal,
                                    writeRegDWORD, writeRegStr, (%/=), fileExists)
@@ -143,12 +143,15 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
 
         _ <- section "" [Required] $ do
                 setOutPath "$INSTDIR"        -- Where to install files in this section
+                unsafeInject "AllowSkipFiles off"
                 writeRegStr HKLM "Software/$InstallDir" "Install_Dir" "$INSTDIR" -- Used by launcher batch script
                 createDirectory "$APPDATA\\$InstallDir\\Secrets-1.0"
                 createDirectory "$APPDATA\\$InstallDir\\Logs"
                 createDirectory "$APPDATA\\$InstallDir\\Logs\\pub"
-                iff_ (fileExists "$APPDATA\\$InstallDir\\Wallet-1.0\\open\\*.*") $
-                    rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
+                onError (delete [] "$APPDATA\\Daedalus\\launcher.lock") $
+                    abort "Daedalus is running. It needs to be fully shutdown before running installer!"
+                iff_ (fileExists "$APPDATA\\Daedalus\\Wallet-1.0\\open\\*.*") $
+                    rmdir [] "$APPDATA\\Daedalus\\Wallet-1.0\\open"
                 file [] "cardano-node.exe"
                 file [] "cardano-launcher.exe"
                 file [] "log-config-prod.yaml"

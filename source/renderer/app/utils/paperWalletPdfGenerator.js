@@ -1,12 +1,11 @@
 // @flow
 import PDFDocument from 'pdfkit';
-import SVGtoPDF from 'svg-to-pdfkit';
 import qr from 'qr-image';
 import { defineMessages } from 'react-intl';
 import fs from 'fs';
 import paperWalletFont from '../assets/pdf/paper-wallet-certificate-font.ttf';
-import paperWalletPage1 from '../assets/pdf/paper-wallet-certificate-page-1.inline.svg';
-import paperWalletPage2 from '../assets/pdf/paper-wallet-certificate-page-2.inline.svg';
+import paperWalletPage1 from '../assets/pdf/paper-wallet-certificate-page-1.png';
+import paperWalletPage2 from '../assets/pdf/paper-wallet-certificate-page-2.png';
 import paperWalletCertificateBgPath from '../assets/pdf/paper-wallet-certificate-background.png';
 import environment from '../../../common/environment';
 import { loadAssetChannel } from '../ipc/loadAsset';
@@ -83,10 +82,10 @@ export const downloadPaperWalletCertificate = async (
   // background images
   const bgBase64 = await loadAssetChannel.send({ fileName: paperWalletCertificateBgPath });
   const bgDataUri = `data:image/png;base64,${bgBase64}`;
-  doc.image(bgDataUri, 0, 4, { fit: [width, height] });
+  doc.image(bgDataUri, 0, 0, { fit: [width, height] });
 
   // first page
-  SVGtoPDF(doc, paperWalletPage1, 0, 0, { precision: 10 });
+  doc.image(paperWalletPage1, 0, 0, { fit: [width, height] });
   doc.rotate(180, { origin: [width / 2, height / 2] });
   doc.fillColor(textColor);
   doc.fontSize(10).text(intl.formatMessage(messages.walletAddressLabel), 0, 160, { width: 595, align: 'center' });
@@ -98,7 +97,7 @@ export const downloadPaperWalletCertificate = async (
 
   // second page
   doc.addPage();
-  SVGtoPDF(doc, paperWalletPage2, 0, 0);
+  doc.image(paperWalletPage2, 0, 0, { fit: [width, height] });
   doc.rotate(180, { origin: [width / 2, height / 2] });
   doc.fillColor(textColor);
   doc.fontSize(10).text(intl.formatMessage(messages.recoveryPhraseLabel), 0, 535, { width: 595, align: 'center' });
