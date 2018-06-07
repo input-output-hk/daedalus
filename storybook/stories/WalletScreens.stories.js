@@ -32,8 +32,8 @@ storiesOf('WalletScreens', module)
     const storyWithKnobs = withKnobs(story, context);
 
     return (
-      <StoryProvider>
-        <StoryDecorator>
+      <StoryDecorator>
+        <StoryProvider>
           <StoryLayout
             activeSidebarCategory="/wallets"
             storyName={context.story}
@@ -51,8 +51,8 @@ storiesOf('WalletScreens', module)
                 : storyWithKnobs
             }
           </StoryLayout>
-        </StoryDecorator>
-      </StoryProvider>
+        </StoryProvider>
+      </StoryDecorator>
     );
   })
 

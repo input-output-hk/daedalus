@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Provider/*, observer*/ } from 'mobx-react';
+import { Provider, observer } from 'mobx-react';
 import { observable, computed, runInAction } from 'mobx';
 import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
@@ -22,19 +22,19 @@ type Props = {
 const WALLETS: { [string]: Array<Wallet> } = [
   {
     id: '0',
-    name: 'With Password',
-    amount: new BigNumber(0),
-    assurance: assuranceModeOptions.NORMAL,
-    hasPassword: true,
-    passwordUpdateDate: moment().subtract(1, 'month').toDate()
-  },
-  {
-    id: '1',
     name: 'No Password',
     amount: new BigNumber(66.998),
     assurance: assuranceModeOptions.NORMAL,
     hasPassword: false,
     passwordUpdateDate: new Date()
+  },
+  {
+    id: '1',
+    name: 'With Password',
+    amount: new BigNumber(0),
+    assurance: assuranceModeOptions.NORMAL,
+    hasPassword: true,
+    passwordUpdateDate: moment().subtract(1, 'month').toDate()
   }
 ];
 
@@ -66,12 +66,12 @@ const sidebarCategories = [
   },
 ];
 
-// @observer
+@observer
 export default class StoryProvider extends Component<Props> {
 
   @observable activeWalletId = '0';
 
-  @computed get sidebarMenus () {
+  @computed get sidebarMenus() {
     return ({
       wallets: {
         items: SIDEBAR_WALLETS,
@@ -84,7 +84,7 @@ export default class StoryProvider extends Component<Props> {
     });
   }
 
-  @computed get storiesProps () {
+  @computed get storiesProps() {
     return ({
       wallets: WALLETS,
       sidebarWallets: SIDEBAR_WALLETS,
@@ -94,7 +94,7 @@ export default class StoryProvider extends Component<Props> {
     });
   }
 
-  @computed get stores () {
+  @computed get stores() {
     return ({
       ada: {
         wallets: {

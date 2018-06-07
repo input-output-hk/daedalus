@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Children } from 'react';
 import type { Node } from 'react';
 import { observable, runInAction } from 'mobx';
 import { observer, inject } from 'mobx-react';
@@ -16,7 +16,7 @@ import TopBar from '../../../source/renderer/app/components/layout/TopBar';
 import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
 import SidebarLayout from '../../../source/renderer/app/components/layout/SidebarLayout';
 
-type StoriesProps = {
+export type StoriesProps = {
   wallets: Array<Wallet>,
   activeWalletId: number,
   sidebarMenus: SidebarMenus,
@@ -28,21 +28,23 @@ type Props = {
   storiesProps: any | StoriesProps,
   storyName?: string,
   children?: any | Node,
+  stores: {},
 };
 
 
-@inject('actions', 'stores', 'storiesProps') @observer
+@inject('stores', 'storiesProps') @observer
 export default class StoryLayout extends Component<Props> {
 
-  static defaultProps = { actions: null, stores: null, storiesProps: null };
+  static defaultProps = { stores: null, storiesProps: null };
 
   render() {
 
     const {
       activeSidebarCategory,
-      children,
       storyName = '',
-      storiesProps = {}
+      storiesProps = {},
+      stores,
+      children
     } = this.props;
 
     const {
@@ -65,7 +67,7 @@ export default class StoryLayout extends Component<Props> {
           sidebar={this.getSidebar(activeSidebarCategory, sidebarMenus, sidebarCategories)}
           topbar={this.getTopbar(activeSidebarCategory, activeWallet, activeNavItem)}
         >
-          { children }
+          { Children.map(children, (child) => React.cloneElement(child, { stores })) }
         </SidebarLayout>
       </div>
     );
@@ -74,7 +76,11 @@ export default class StoryLayout extends Component<Props> {
   @observable
   isShowingSubMenus = this.props.activeSidebarCategory === '/wallets' && !!this.props.children;
 
-  getSidebar = (activeSidebarCategory: string, sidebarMenus: SidebarMenus, sidebarCategories: SidebarCategories) => (
+  getSidebar = (
+    activeSidebarCategory: string,
+    sidebarMenus: SidebarMenus,
+    sidebarCategories: SidebarCategories
+  ) => (
     <Sidebar
       categories={sidebarCategories}
       activeSidebarCategory={activeSidebarCategory}
@@ -108,4 +114,5 @@ export default class StoryLayout extends Component<Props> {
       />
     </TopBar>
   );
+
 }
