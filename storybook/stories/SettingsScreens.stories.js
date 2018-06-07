@@ -38,7 +38,7 @@ const getIssuesDetectedOptions = (isAnalyzing: boolean, issuesFound: number) => 
     : null
 );
 
-storiesOf('SettingsScreens')
+storiesOf('SettingsScreens', module)
 
   .addDecorator((story, context) => {
 

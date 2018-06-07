@@ -73,7 +73,12 @@ export default class SupportSettings extends Component<Props> {
   };
 
   render() {
-    const { onExternalLinkClick, onSupportRequestClick, onDownloadLogs, issuesDetected } = this.props;
+    const {
+      onExternalLinkClick,
+      onSupportRequestClick,
+      onDownloadLogs,
+      issuesDetected
+    } = this.props;
     const { intl } = this.context;
 
     const faqLink = (

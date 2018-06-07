@@ -17,3 +17,4 @@ import './WalletExportToFileDialog.stories';
 import './PaperWallets.stories';
 import './WalletScreens.stories';
 import './SettingsScreens.stories';
+import './LoadingScreen.stories';

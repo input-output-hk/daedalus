@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import { defineMessages, intlShape } from 'react-intl';
 import styles from './IssuesDetection.scss';
 
 const messages = defineMessages({

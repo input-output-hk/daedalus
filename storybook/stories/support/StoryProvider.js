@@ -6,7 +6,7 @@ import { observable, computed, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 
-import Wallet from '../../../source/renderer/app/domains/Wallet.js';
+// import Wallet from '../../../source/renderer/app/domains/Wallet.js';
 import actions from '../../../source/renderer/app/actions';
 import { assuranceModeOptions } from '../../../source/renderer/app/types/transactionAssuranceTypes.js';
 
@@ -50,7 +50,7 @@ export default class StoryProvider extends Component<Props> {
     return ({
       ada: {
         wallets: {
-          active: WALLETS[parseInt(this.activeWalletId)],
+          active: WALLETS[parseInt(this.activeWalletId, 0)],
           sendMoney: () => {},
           sendMoneyRequest: {
             isExecuting: false,
