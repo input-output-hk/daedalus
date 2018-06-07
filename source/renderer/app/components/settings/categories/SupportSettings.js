@@ -3,33 +3,9 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import styles from './SupportSettings.scss';
+import IssuesDetection from '../../widgets/IssuesDetection';
 
 const messages = defineMessages({
-  issuesTitle: {
-    id: 'settings.support.issues.title',
-    defaultMessage: '!!!Automatic detection of known issues',
-    description: 'Title "Automatic detection of known issues" on the support settings page.',
-  },
-  issuesContentAnalyzing: {
-    id: 'settings.support.issues.contentAnalyzing',
-    defaultMessage: '!!!Analyzing logs for known issues...',
-    description: 'Content for the "Automatic detection of known issues" section on the support settings page.',
-  },
-  issuesContentNotFound: {
-    id: 'settings.support.issues.contentNotFound',
-    defaultMessage: '!!!No known issues found.',
-    description: 'Content for the "Automatic detection of known issues" section on the support settings page.',
-  },
-  issuesContentFound: {
-    id: 'settings.support.issues.contentFound',
-    defaultMessage: '!!!We have found a known issue after analyzing your logs. Please, use the FAQ with the solution for the issue you are experiencing. If you continue to experience the issue after completing steps from the instructions, please send a support request from the problem reporting section below',
-    description: 'Content for the "Automatic detection of known issues" section on the support settings page.',
-  },
-  issuesFaqLink: {
-    id: 'settings.support.issues.faqLink',
-    defaultMessage: '!!!See solution in the FAQ',
-    description: '"FAQ on Daedalus website" link in the ISSUES section on the support settings page',
-  },
   faqTitle: {
     id: 'settings.support.faq.title',
     defaultMessage: '!!!Frequently asked questions',
@@ -86,7 +62,7 @@ type Props = {
   onExternalLinkClick: Function,
   onSupportRequestClick: Function,
   onDownloadLogs: Function,
-  issuesDetected: ?Array<{}>
+  issuesDetected: Array
 };
 
 @observer
@@ -97,12 +73,7 @@ export default class SupportSettings extends Component<Props> {
   };
 
   render() {
-    const {
-      onExternalLinkClick,
-      onSupportRequestClick,
-      onDownloadLogs,
-      issuesDetected
-    } = this.props;
+    const { onExternalLinkClick, onSupportRequestClick, onDownloadLogs, issuesDetected } = this.props;
     const { intl } = this.context;
 
     const faqLink = (
@@ -126,40 +97,15 @@ export default class SupportSettings extends Component<Props> {
       </button>
     );
 
-    let issuesTitle;
-    if (issuesDetected === null) issuesTitle = intl.formatMessage(messages.issuesContentAnalyzing);
-    else if (issuesDetected.length) issuesTitle = intl.formatMessage(messages.issuesContentFound);
-    else issuesTitle = intl.formatMessage(messages.issuesContentNotFound);
-
     return (
       <div className={styles.component}>
 
-        <h1>{intl.formatMessage(messages.issuesTitle)}</h1>
+        <h1>ALORRR</h1>
 
-        {
-          (issuesDetected === null) &&
-          <span className={styles.spinning} />
-        }
-
-        <p>{ issuesTitle }</p>
-
-        <ul>
-          {
-            (issuesDetected && issuesDetected.length)
-            ? (
-                issuesDetected.map((issue: {}, index) => (
-                  <li key={index}>
-                    {issue.title}
-                    &nbsp;&rarr;&nbsp;
-                    <a href={messages.faqLinkUrl.defaultMessage + issue.id}>
-                      {intl.formatMessage(messages.issuesFaqLink)}
-                    </a>
-                  </li>
-                ))
-              )
-            : false
-          }
-        </ul>
+        <IssuesDetection
+          onExternalLinkClick={onExternalLinkClick}
+          issuesDetected={issuesDetected}
+        />
 
         <h1>{intl.formatMessage(messages.faqTitle)}</h1>
 

@@ -1,7 +1,8 @@
-@import '../../../themes/mixins/error-message';
+@import '../../themes/mixins/loading-spinner';
 
 .component {
   padding-bottom: 10px;
+  position: relative;
 
   h1 {
     color: var(--theme-support-settings-text-color);
@@ -15,9 +16,14 @@
     padding-top: 10px;
   }
 
+  ul {
+    list-style-type: disc;
+    padding-left: 16px;
+  }
+
   a,
   button,
-  p {
+  p, li {
     color: var(--theme-support-settings-text-color);
     font-family: var(--font-regular);
     font-size: 14px;
@@ -38,4 +44,15 @@
   p {
     margin-bottom: 10px;
   }
+
+  .spinning {
+    @include loading-spinner("../../assets/images/spinner-dark.svg");
+    display: block;
+    height: 34px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 34px;
+  }
 }
+
