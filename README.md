@@ -56,6 +56,7 @@ $ npm install
 Run with:
 
 ```bash
+$ export CARDANO_TLS_PATH={path-to-cardano-sl}/run/tls-files/
 $ npm run dev
 ```
 
