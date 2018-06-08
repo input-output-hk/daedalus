@@ -19,7 +19,6 @@ Changelog
 
 ### Chores
 
-- Created hide show used addresses acceptance test ([PR 957](https://github.com/input-output-hk/daedalus/pull/957))
 - Added flow checks and linting for storybook code ([PR 938](https://github.com/input-output-hk/daedalus/pull/938))
 - Refactored npm scripts to use colon style ([PR 939](https://github.com/input-output-hk/daedalus/pull/939))
 - Added PR template with PR review checlist ([PR 882](https://github.com/input-output-hk/daedalus/pull/882))
@@ -30,6 +29,7 @@ Changelog
 - Added "Author" and "Status" information to all Daedalus README files ([PR 901](https://github.com/input-output-hk/daedalus/pull/901))
 - Improves re-build times with caching ([PR 915](https://github.com/input-output-hk/daedalus/pull/915))
 - Log expected errors as debug messages only ([PR 916](https://github.com/input-output-hk/daedalus/pull/916))
+- Created hide show used addresses acceptance test ([PR 957](https://github.com/input-output-hk/daedalus/pull/957))
 
 ## 0.10.0
 =======

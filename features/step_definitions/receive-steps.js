@@ -1,6 +1,6 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
-import { waitAndClick, waitAndSelect } from '../support/helpers/shared-helpers';
+import { waitAndClick, getVisibleElementsCountForSelector } from '../support/helpers/shared-helpers';
 
 Given('I generate {int} addresses', async function (numberOfAddresses) {
   for (let i = 0; i < numberOfAddresses; i++) {
@@ -13,6 +13,6 @@ When('I click the ShowUsed switch', async function () {
 });
 
 Then('I should see {int} addresses', async function (numberOfAddresses) {
-  const addresses = await waitAndSelect(this.client, '.WalletReceive_walletAddress', '.generatedAddress-' + numberOfAddresses, 50000);
-  expect(addresses.value.length).to.equal(numberOfAddresses);
+  const addressesFound = await getVisibleElementsCountForSelector(this.client, '.WalletReceive_walletAddress', `.generatedAddress-${numberOfAddresses}`);
+  expect(addressesFound).to.equal(numberOfAddresses);
 });

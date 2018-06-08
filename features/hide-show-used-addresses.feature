@@ -1,7 +1,5 @@
 Feature: Hide/show used addresses
 
-  The wallet receive screen has a switcher to hide used addresses
-
   Background:
     Given I have completed the basic setup
     And I have a "Genesis wallet" with funds
