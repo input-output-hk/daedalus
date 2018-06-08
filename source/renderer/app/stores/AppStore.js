@@ -1,9 +1,11 @@
 // @flow
 import { observable, computed } from 'mobx';
-import { shell } from 'electron';
+import { ipcRenderer, shell } from 'electron';
 import Store from './lib/Store';
 import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
+import { OPEN_ABOUT_DIALOG_CHANNEL } from '../../../common/ipc-api/open-about-dialog';
+import AboutDialog from '../containers/static/AboutDialog';
 
 export default class AppStore extends Store {
 
@@ -11,6 +13,11 @@ export default class AppStore extends Store {
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
+    ipcRenderer.on(OPEN_ABOUT_DIALOG_CHANNEL, this._triggerAboutDialog);
+  }
+
+  teardown() {
+    ipcRenderer.removeListener(OPEN_ABOUT_DIALOG_CHANNEL, this._triggerAboutDialog);
   }
 
   @computed get currentRoute(): string {
@@ -26,4 +33,8 @@ export default class AppStore extends Store {
     const currentRoute = this.stores.router.location.pathname;
     if (currentRoute !== routePath) this.stores.router.push(routePath);
   };
+
+  _triggerAboutDialog = () => {
+    this.actions.dialogs.open.trigger({ dialog: AboutDialog });
+  }
 }
