@@ -45,6 +45,7 @@ let
     tests = {
       runFlow = self.callPackage ./tests/flow.nix {};
       runLint = self.callPackage ./tests/lint.nix {};
+      runShellcheck = self.callPackage ./tests/shellcheck.nix { src = ./.;};
     };
     nix-bundle = import (pkgs.fetchFromGitHub {
       owner = "matthewbauer";
