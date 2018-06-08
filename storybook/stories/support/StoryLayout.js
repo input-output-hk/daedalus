@@ -83,7 +83,7 @@ export default class StoryLayout extends Component<Props> {
 
     const activeWallet: Wallet = wallets[parseInt(activeWalletId, 0)];
     const activeNavItem = storyName.split(' ')[0].toLowerCase();
-    const sidebarMenus =  this.getSidebarMenus(
+    const sidebarMenus = this.getSidebarMenus(
       this.getSidebarWallets(wallets),
       activeWalletId,
       setActiveWalletId

@@ -1,7 +1,6 @@
 // @flow
 import React from 'react';
-import { storiesOf, action } from '@storybook/react';
-import { linkTo } from '@storybook/addon-links';
+import { storiesOf } from '@storybook/react';
 import { withKnobs, boolean, number } from '@storybook/addon-knobs';
 
 import StoryDecorator from './support/StoryDecorator';
@@ -61,7 +60,7 @@ storiesOf('LoadingCategory', module)
       isSyncing={boolean('isSyncing', false)}
       syncPercentage={number('syncPercentage', 0, { min: 0, max: 100 })}
       isLoadingDataForNextScreen={boolean('isLoadingDataForNextScreen', true)}
-      loadingDataForNextScreenMessage={'Connecting to network'}
+      loadingDataForNextScreenMessage="Connecting to network"
       hasLoadedCurrentLocale={boolean('hasLoadedCurrentLocale', true)}
       hasLoadedCurrentTheme={boolean('hasLoadedCurrentTheme', true)}
       localTimeDifference={number('localTimeDifference', 0)}
