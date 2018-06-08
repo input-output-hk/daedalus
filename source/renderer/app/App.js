@@ -22,7 +22,7 @@ export default class App extends Component<{
 }> {
   render() {
     const { stores, actions, history } = this.props;
-    const { uiDialogs } = stores;
+    const { app } = stores;
     const locale = stores.profile.currentLocale;
     const mobxDevTools = environment.MOBX_DEV_TOOLS ? <DevTools /> : null;
     const currentTheme = stores.profile.currentTheme;
@@ -37,7 +37,7 @@ export default class App extends Component<{
               <div style={{ height: '100%' }}>
                 <Router history={history} routes={Routes} />
                 {mobxDevTools}
-                {uiDialogs.isOpen(AboutDialog) && <AboutDialog />}
+                {app.isAboutDialogOpen && <AboutDialog />}
               </div>
             </IntlProvider>
           </ThemeProvider>
