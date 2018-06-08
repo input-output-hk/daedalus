@@ -15,13 +15,20 @@ import Data.Maybe (mapMaybe)
 import Network.Wreq
 import Data.Aeson.Lens
 import Lens.Micro
-import Turtle.Format (printf, (%), d, s, w, Format, makeFormat)
+import Turtle.Format (printf, (%), d, s, w, Format, makeFormat, format)
 import System.Environment (lookupEnv)
 
--- | Gets CardanoSL.zip corresponding to the src json revision from AppVeyor CI
 downloadCardanoSL :: FilePath -> IO L8.ByteString
 downloadCardanoSL srcJson = do
-  src@CardanoSource{..} <- getCardanoRev srcJson
+  src <- getCardanoRev srcJson
+  maybeZip <- downloadCardanoSLS3 src
+  case maybeZip of
+    Just zip -> return zip
+    Nothing -> downloadCardanoSLArtifact src
+
+-- | Gets CardanoSL.zip corresponding to the src json revision from AppVeyor CI
+downloadCardanoSLArtifact :: CardanoSource -> IO L8.ByteString
+downloadCardanoSLArtifact src@CardanoSource{..} = do
   printf ("Fetching GitHub CI status for commit "%n%" of "%n%"/"%n%"\n") srcRev srcOwner srcRepo
   buildURL <- appVeyorURL src
   printf ("Build URL is "%s%"\n") (getUrl buildURL)
@@ -33,6 +40,26 @@ downloadCardanoSL srcJson = do
   case findAppVeyorArtifact "CardanoSL.zip" arts of
     Just bs -> printf "Done\n" >> pure bs
     Nothing -> throwM (MissingArtifactsError $ getUrl buildURL)
+
+-- | Gets CardanoSL.zip corresponding to the src json revision from S3
+downloadCardanoSLS3 :: CardanoSource -> IO (Maybe L8.ByteString)
+downloadCardanoSLS3 CardanoSource{..} = do
+  let
+    url = T.unpack $ format ("https://s3-ap-northeast-1.amazonaws.com/appveyor-ci-deploy/" % n % "/" % n % ".zip") srcRepo srcRev
+    opts = set Network.Wreq.checkResponse (Just $ \_ _ -> return ()) defaults
+  printf ("Downloading "%w%" ... ") url
+  r <- getWith opts $ toString url
+  case r ^. responseStatus . statusCode of
+    200 -> do
+      printf "Successfully downloaded CardanoSL.zip from S3\n"
+      pure ( Just $ r ^. responseBody)
+    403 -> throwM (S3Error 403 )
+    500 -> throwM (S3Error 500 )
+    404 -> pure Nothing
+    status -> do
+      printf ( "Got Invalid return code" % d ) status
+      pure Nothing
+
 
 n :: Format r (Name a -> r)
 n = makeFormat untagName
@@ -160,6 +187,7 @@ data AppVeyorError = SourceJSONDecodeError String
                    | GitHubStatusError CardanoSource GH.Error
                    | StatusMissingError CardanoSource
                    | MissingArtifactsError Text
+                   | S3Error Int
                    deriving (Show, Typeable)
 
 instance Exception AppVeyorError
