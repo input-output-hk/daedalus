@@ -83,7 +83,7 @@ Run with:
 
 ```bash
 $ tmux new-session -s cardano
-$ ./scripts/launch/demo-with-wallet-api.sh
+$ WALLET_CLIENT_AUTH_DISABLE=1 ./scripts/launch/demo-with-wallet-api.sh
 ```
 
 Stop with:
