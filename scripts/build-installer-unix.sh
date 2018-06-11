@@ -128,7 +128,7 @@ cd installers
     do
           echo "~~~ Generating installer for cluster ${cluster}.."
           export DAEDALUS_CLUSTER=${cluster}
-                    INSTALLER_PKG="daedalus-0.10.0-cardano-sl-${DAEDALUS_VERSION}-${cluster}-macos.pkg"
+                    INSTALLER_PKG="daedalus-0.10.1-cardano-sl-${DAEDALUS_VERSION}-${cluster}-macos.pkg"
 
           INSTALLER_CMD="$INSTALLER/bin/make-installer ${pull_request} ${test_installer}"
           INSTALLER_CMD+="  --cardano          ${DAEDALUS_BRIDGE}"
