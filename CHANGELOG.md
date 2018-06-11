@@ -17,6 +17,7 @@ Changelog
 - Fixed a bug related to rendering of transactions with duplicated ids ([PR 947](https://github.com/input-output-hk/daedalus/pull/947))
 - Fixed 633 npm audit issues by upgrading dependencies ([PR 944](https://github.com/input-output-hk/daedalus/pull/944))
 - Disabled webview tags to prevent XSS attacks ([PR 946](https://github.com/input-output-hk/daedalus/pull/946))
+- Fixed Linux Kanji characters support ([PR 971](https://github.com/input-output-hk/daedalus/pull/971))
 
 ### Chores
 

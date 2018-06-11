@@ -3,17 +3,17 @@
 export default {
   '--preferred-font': '"Times New Roman", serif',
 
-  '--font-ultralight': 'SFUIDisplay-Ultralight',
-  '--font-thin': 'SFUIDisplay-Thin',
-  '--font-light': 'SFUIDisplay-Light',
-  '--font-regular': 'SFUIDisplay-Regular',
-  '--font-medium': 'SFUIDisplay-Medium',
-  '--font-semibold': 'SFUIDisplay-Semibold',
-  '--font-bold': 'SFUIDisplay-Bold',
-  '--font-heavy': 'SFUIDisplay-Heavy',
-  '--font-black': 'SFUIDisplay-Black',
+  '--font-ultralight': 'NotoSans-ExtraLight',
+  '--font-thin': 'NotoSans-Thin',
+  '--font-light': 'NotoSans-Light',
+  '--font-regular': 'NotoSans-Regular',
+  '--font-medium': 'NotoSans-Medium',
+  '--font-semibold': 'NotoSans-SemiBold',
+  '--font-bold': 'NotoSans-Bold',
+  '--font-heavy': 'NotoSans-ExtraBold',
+  '--font-black': 'NotoSans-Black',
 
-  '--theme-input-hint-font': 'SFUIDisplay-Regular',
+  '--theme-input-hint-font': 'NotoSans-Regular',
 
   '--theme-scrollbar-thumb-background': '#536370',
 

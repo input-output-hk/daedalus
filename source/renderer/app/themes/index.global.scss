@@ -59,52 +59,47 @@ button {
 // ============ FONTS ===========
 
 @font-face {
-  font-family: 'SFUIDisplay-Ultralight';
-  src: url("../assets/fonts/SFUIDisplay-Ultralight.otf") format("opentype");
+  font-family: 'NotoSans-ExtraLight'; // NotoSans-ExtraLight
+  src: url("../assets/fonts/NotoSans-ExtraLight.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'SFUIDisplay-Thin';
-  src: url("../assets/fonts/SFUIDisplay-Thin.otf") format("opentype");
+  font-family: 'NotoSans-Thin'; // NotoSans-Thin
+  src: url("../assets/fonts/NotoSans-Thin.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'SFUIDisplay-Light';
-  src: url("../assets/fonts/SFUIDisplay-Light.otf") format("opentype");
+  font-family: 'NotoSans-Light'; // NotoSans-Light
+  src: url("../assets/fonts/NotoSans-Light.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'SFUIDisplay-Regular';
-  src: url("../assets/fonts/SFUIDisplay-Regular.otf") format("opentype");
+  font-family: 'NotoSans-Regular'; // NotoSans-Regular
+  src: url("../assets/fonts/NotoSans-Regular.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'SFUIDisplay-Medium';
-  src: url("../assets/fonts/SFUIDisplay-Medium.otf") format("opentype");
+  font-family: 'NotoSans-Medium'; // NotoSans-Medium
+  src: url("../assets/fonts/NotoSans-Medium.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'SFUIDisplay-Semibold';
-  src: url("../assets/fonts/SFUIDisplay-Semibold.otf") format("opentype");
+  font-family: 'NotoSans-SemiBold'; // NotoSans-SemiBold
+  src: url("../assets/fonts/NotoSans-SemiBold.ttf") format("truetype");
 }
 @font-face {
-  font-family: 'SFUIDisplay-Bold';
-  src: url("../assets/fonts/SFUIDisplay-Bold.otf") format("opentype");
-}
-
-@font-face {
-  font-family: 'SFUIDisplay-Heavy';
-  src: url("../assets/fonts/SFUIDisplay-Heavy.otf") format("opentype");
+  font-family: 'NotoSans-Bold'; // NotoSans-Bold
+  src: url("../assets/fonts/NotoSans-Bold.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'SFUIDisplay-Black';
-  src: url("../assets/fonts/SFUIDisplay-Black.otf") format("opentype");
+  font-family: 'NotoSans-ExtraBold'; // NotoSans-ExtraBold
+  src: url("../assets/fonts/NotoSans-ExtraBold.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: Electrolize, 'Electrolize-Regular';
-  src: url("../assets/fonts/Electrolize-Regular.ttf") format("truetype");
+  font-family: 'NotoSans-Black'; // NotoSans-Black
+  src: url("../assets/fonts/NotoSans-Black.ttf") format("truetype");
 }
 
 @font-face {
