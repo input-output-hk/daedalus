@@ -1,7 +1,12 @@
-export const winLinuxMenu = (app, window, openAbout) => (
+export const winLinuxMenu = (app, window, { openAbout, goToAdaRedemption }) => (
   [{
     label: 'Daedalus',
     submenu: [{
+      label: 'Ada redemption',
+      click() {
+        goToAdaRedemption();
+      }
+    },{
       label: 'About',
       click() {
         openAbout();
