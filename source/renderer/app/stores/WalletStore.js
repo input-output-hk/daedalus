@@ -36,7 +36,6 @@ export default class WalletsStore extends Store {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
     this.registerReactions([
       this._updateActiveWalletOnRouteChanges,
-      this._showAddWalletPageWhenNoWallets,
     ]);
   }
 
@@ -208,15 +207,6 @@ export default class WalletsStore extends Store {
   _pollRefresh = async () => (
     this.stores.networkStatus.isSynced && await this.refreshWalletsData()
   );
-
-  _showAddWalletPageWhenNoWallets = () => {
-    const { currentRoute } = this.stores.app;
-    const isAdaRedemptionRoute = matchRoute(ROUTES.ADA_REDEMPTION, currentRoute);
-    const isRouteThatNeedsWallets = this.isWalletRoute || isAdaRedemptionRoute;
-    if (isRouteThatNeedsWallets && !this.hasAnyWallets) {
-      this.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });
-    }
-  };
 
   _updateActiveWalletOnRouteChanges = () => {
     const currentRoute = this.stores.app.currentRoute;

@@ -1,0 +1,40 @@
+
+.component {
+  height: 100%;
+  width: 100%;
+
+  p {
+    align-items: center;
+    color: var(--theme-ada-redemption-no-wallets-instructions-color);
+    display: flex;
+    font-family: var(--font-regular);
+    justify-content: center;
+    line-height: 1.38;
+    opacity: .4;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    transform: translateY(20px);
+    width: 100%;
+  }
+}
+.icon {
+  align-items: center;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  opacity: .4;
+  transform: translateY(-40px);
+  width: 100%;
+
+  > svg {
+    width: 80px;
+
+    * {
+      fill: var(--theme-icon-ada-redemption-no-wallets);
+    }
+  }
+
+}
+
+
