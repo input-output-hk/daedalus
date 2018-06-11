@@ -10,7 +10,7 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import validWords from '../../../../common/valid-words.en';
 import environment from '../../../../common/environment';
 import { ADA_REDEMPTION_TYPES } from '../../types/redemptionTypes';
-import { ROUTES } from '../../routes-config';
+// import { ROUTES } from '../../routes-config';
 
 type Props = InjectedProps;
 
@@ -31,8 +31,9 @@ export default class AdaRedemptionPage extends Component<Props> {
     this.props.actions.ada.adaRedemption.redeemPaperVendedAda.trigger(values);
   };
 
-  handleCreateWalletClick = () => {
-    this.props.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });)
+  handleGoToCreateWalletClick = () => {
+    console.log('hey');
+    // this.props.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });)
   }
 
   render() {
@@ -53,7 +54,7 @@ export default class AdaRedemptionPage extends Component<Props> {
     if (!wallets.all.length) return (
       <Layout>
         <AdaRedemptionNoWallets
-          onCreateWalletClick={this.handleCreateWalletClick}
+          onGoToCreateWalletClick={this.handleGoToCreateWalletClick}
         />
       </Layout>
     );

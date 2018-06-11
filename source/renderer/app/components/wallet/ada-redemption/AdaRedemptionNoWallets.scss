@@ -3,10 +3,11 @@
   height: 100%;
   width: 100%;
 
-  p {
+  div {
     align-items: center;
     color: var(--theme-ada-redemption-no-wallets-instructions-color);
     display: flex;
+    flex-direction: column;
     font-family: var(--font-regular);
     justify-content: center;
     line-height: 1.38;
@@ -16,6 +17,15 @@
     top: 50%;
     transform: translateY(20px);
     width: 100%;
+  }
+
+  p {
+    display: block;
+  }
+
+  button {
+    color: var(--theme-ada-redemption-no-wallets-instructions-color);
+    font-size: 16px;
   }
 }
 .icon {

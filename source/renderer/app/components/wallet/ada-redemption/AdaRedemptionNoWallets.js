@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
-// import Button from 'react-polymorph/lib/components/Button';
-// import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
 
 import styles from './AdaRedemptionNoWallets.scss';
 import cross from '../../../assets/images/close-cross.inline.svg'
@@ -22,7 +20,6 @@ const messages = defineMessages({
   },
 });
 
-
 export default class AdaRedemptionNoWallets extends Component {
 
   static contextTypes = {
@@ -35,14 +32,16 @@ export default class AdaRedemptionNoWallets extends Component {
     return (
       <div className={styles.component}>
         <SVGInline svg={cross} className={styles.icon} />
-        <p>{intl.formatMessage(messages.warning)}</p>
-        <p>
-          <button
-            onClick={this.props.onCreateWalletClick}
-          >
-            {intl.formatMessage(messages.createWalletLink)}
-          </button>
-        </p>
+        <div>
+          <p>{intl.formatMessage(messages.warning)}</p>
+          <p>
+            <button
+              onClick={this.props.onGoToCreateWalletClick}
+            >
+              {intl.formatMessage(messages.createWalletLink)}
+            </button>
+          </p>
+        </div>
       </div>
     );
   }
