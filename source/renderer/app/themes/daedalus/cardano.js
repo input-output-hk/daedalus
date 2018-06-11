@@ -3,17 +3,17 @@
 export default {
   '--preferred-font': '"Times New Roman", serif',
 
-  '--font-ultralight': 'NotoSans-ExtraLight',
-  '--font-thin': 'NotoSans-Thin',
-  '--font-light': 'NotoSans-Light',
-  '--font-regular': 'NotoSans-Regular',
-  '--font-medium': 'NotoSans-Medium',
-  '--font-semibold': 'NotoSans-SemiBold',
-  '--font-bold': 'NotoSans-Bold',
-  '--font-heavy': 'NotoSans-ExtraBold',
-  '--font-black': 'NotoSans-Black',
+  '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
+  '--font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',
+  '--font-light': 'NotoSans-Light, NotoSansCJKjp-Light',
+  '--font-regular': 'NotoSans-Regular, NotoSansCJKjp-Regular',
+  '--font-medium': 'NotoSans-Medium, NotoSansCJKjp-Medium',
+  '--font-semibold': 'NotoSans-SemiBold, NotoSansCJKjp-Medium',
+  '--font-bold': 'NotoSans-Bold, NotoSansCJKjp-Bold',
+  '--font-heavy': 'NotoSans-ExtraBold, NotoSansCJKjp-Black',
+  '--font-black': 'NotoSans-Black, NotoSansCJKjp-Black',
 
-  '--theme-input-hint-font': 'NotoSans-Regular',
+  '--theme-input-hint-font': 'NotoSans-Regular, NotoSansCJKjp-Regular',
 
   '--theme-scrollbar-thumb-background': '#c8ccce',
 

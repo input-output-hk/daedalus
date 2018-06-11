@@ -69,8 +69,18 @@ button {
 }
 
 @font-face {
+  font-family: 'NotoSansCJKjp-Thin';
+  src: url("../assets/fonts/NotoSansCJKjp-Thin.otf") format("opentype");
+}
+
+@font-face {
   font-family: 'NotoSans-Light';
   src: url("../assets/fonts/NotoSans-Light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'NotoSansCJKjp-Light';
+  src: url("../assets/fonts/NotoSansCJKjp-Light.otf") format("opentype");
 }
 
 @font-face {
@@ -79,17 +89,33 @@ button {
 }
 
 @font-face {
+  font-family: 'NotoSansCJKjp-Regular';
+  src: url("../assets/fonts/NotoSansCJKjp-Regular.otf") format("opentype");
+}
+
+@font-face {
   font-family: 'NotoSans-Medium';
   src: url("../assets/fonts/NotoSans-Medium.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'NotoSansCJKjp-Medium';
+  src: url("../assets/fonts/NotoSansCJKjp-Medium.otf") format("opentype");
 }
 
 @font-face {
   font-family: 'NotoSans-SemiBold';
   src: url("../assets/fonts/NotoSans-SemiBold.ttf") format("truetype");
 }
+
 @font-face {
   font-family: 'NotoSans-Bold';
   src: url("../assets/fonts/NotoSans-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'NotoSansCJKjp-Bold';
+  src: url("../assets/fonts/NotoSansCJKjp-Bold.otf") format("opentype");
 }
 
 @font-face {
@@ -100,6 +126,11 @@ button {
 @font-face {
   font-family: 'NotoSans-Black';
   src: url("../assets/fonts/NotoSans-Black.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'NotoSansCJKjp-Black';
+  src: url("../assets/fonts/NotoSansCJKjp-Black.otf") format("opentype");
 }
 
 @font-face {
