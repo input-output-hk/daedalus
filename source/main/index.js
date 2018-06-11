@@ -6,11 +6,11 @@ import { setupLogging } from './utils/setupLogging';
 import { setupTls } from './utils/setupTls';
 import { makeEnvironmentGlobal } from './utils/makeEnvironmentGlobal';
 import { createMainWindow } from './windows/main';
-import { createAboutWindow } from './windows/about';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import environment from '../common/environment';
+import { OPEN_ABOUT_DIALOG_CHANNEL } from '../common/ipc-api/open-about-dialog';
 
 setupLogging();
 
@@ -25,14 +25,13 @@ let mainWindow;
 let aboutWindow;
 
 const openAbout = () => {
-  if (aboutWindow) aboutWindow.show(); // show also focuses the window
+  if (mainWindow) mainWindow.webContents.send(OPEN_ABOUT_DIALOG_CHANNEL);
 };
 
 app.on('ready', async () => {
   setupTls();
   makeEnvironmentGlobal(process.env);
   await installChromeExtensions(environment.isDev());
-  aboutWindow = createAboutWindow();
   mainWindow = createMainWindow();
 
   if (environment.isDev()) {

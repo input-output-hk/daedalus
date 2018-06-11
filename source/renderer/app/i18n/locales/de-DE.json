@@ -371,6 +371,5 @@
   "wallet.transaction.type.exchange": "Währungsumtausch",
   "wallet.transactions.no.transactions": "Keine Transaktionen vorhanden",
   "wallet.transactions.no.transactions.found": "Keine Transaktionen gefunden",
-  "wallet.transactions.search.hint": "!!!Search transaction",
-  "window.about.title": "!!!About Daedalus"
+  "wallet.transactions.search.hint": "!!!Search transaction"
 }
