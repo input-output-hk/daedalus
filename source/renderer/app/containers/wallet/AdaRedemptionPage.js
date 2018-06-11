@@ -10,7 +10,7 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import validWords from '../../../../common/valid-words.en';
 import environment from '../../../../common/environment';
 import { ADA_REDEMPTION_TYPES } from '../../types/redemptionTypes';
-// import { ROUTES } from '../../routes-config';
+import { ROUTES } from '../../routes-config';
 
 type Props = InjectedProps;
 
@@ -32,9 +32,8 @@ export default class AdaRedemptionPage extends Component<Props> {
   };
 
   handleGoToCreateWalletClick = () => {
-    console.log('hey');
-    // this.props.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });)
-  }
+    this.props.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });
+  };
 
   render() {
     const { wallets, adaRedemption } = this.props.stores.ada;
@@ -51,13 +50,15 @@ export default class AdaRedemptionPage extends Component<Props> {
       value: w.id, label: w.name
     }));
 
-    if (!wallets.all.length) return (
-      <Layout>
-        <AdaRedemptionNoWallets
-          onGoToCreateWalletClick={this.handleGoToCreateWalletClick}
-        />
-      </Layout>
-    );
+    if (!wallets.all.length) {
+      return (
+        <Layout>
+          <AdaRedemptionNoWallets
+            onGoToCreateWalletClick={this.handleGoToCreateWalletClick}
+          />
+        </Layout>
+      );
+    }
 
     if (selectableWallets.length === 0) return <Layout><LoadingSpinner /></Layout>;
 

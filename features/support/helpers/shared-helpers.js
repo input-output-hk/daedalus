@@ -32,7 +32,7 @@ export const getVisibleElementsForSelector = async (client, selectSelector, wait
 };
 
 export const getVisibleElementsCountForSelector = async (client, selectSelector, waitSelector = selectSelector, ...waitArgs) => {
-  const elements = await getVisibleElementsForSelector(client, selectSelector, waitSelector = selectSelector, ...waitArgs);
+  const elements = await getVisibleElementsForSelector(client, selectSelector, waitSelector, ...waitArgs);
   return elements.value ? elements.value.length : 0;
 };
 

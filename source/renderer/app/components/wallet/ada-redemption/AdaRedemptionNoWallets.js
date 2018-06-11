@@ -1,11 +1,10 @@
 // @flow
 import React, { Component } from 'react';
-import classnames from 'classnames';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 
 import styles from './AdaRedemptionNoWallets.scss';
-import cross from '../../../assets/images/close-cross.inline.svg'
+import cross from '../../../assets/images/close-cross.inline.svg';
 
 const messages = defineMessages({
   warning: {
@@ -20,7 +19,11 @@ const messages = defineMessages({
   },
 });
 
-export default class AdaRedemptionNoWallets extends Component {
+type Props = {
+  onGoToCreateWalletClick: Function
+};
+
+export default class AdaRedemptionNoWallets extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
