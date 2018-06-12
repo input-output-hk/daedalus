@@ -401,6 +401,11 @@ Then(/^I should be on the "([^"]*)" wallet "([^"]*)" screen$/, async function (w
   return waitUntilUrlEquals.call(this, `/wallets/${wallet.id}/${screenName}`);
 });
 
+Then(/^I should be on the "([^"]*)" screen$/, async function (screenName) {
+  console.log('screenName', screenName);
+  return waitUntilUrlEquals.call(this, `/${screenName}`);
+});
+
 Then(/^I should see the following error messages on the wallet send form:$/, async function (data) {
   const errorSelector = '.WalletSendForm_component .SimpleFormField_error';
   await this.client.waitForText(errorSelector);
