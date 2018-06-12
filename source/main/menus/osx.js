@@ -1,7 +1,10 @@
+import compact from 'lodash/compact';
+import environment from '../../common/environment';
+
 export const osxMenu = (app, window, { openAbout, goToAdaRedemption }) => (
   [{
     label: 'Daedalus',
-    submenu: [{
+    submenu: compact([environment.API === 'ada' && {
       label: 'Ada redemption',
       click() {
         goToAdaRedemption();
@@ -15,7 +18,7 @@ export const osxMenu = (app, window, { openAbout, goToAdaRedemption }) => (
       label: 'Quit',
       accelerator: 'Command+Q',
       click: () => app.quit()
-    }]
+    }])
   }, {
     label: 'Edit',
     submenu: [{

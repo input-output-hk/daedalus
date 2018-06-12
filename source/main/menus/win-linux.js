@@ -1,7 +1,10 @@
+import compact from 'lodash/compact';
+import environment from '../../common/environment';
+
 export const winLinuxMenu = (app, window, { openAbout, goToAdaRedemption }) => (
   [{
     label: 'Daedalus',
-    submenu: [{
+    submenu: compact([environment.API === 'ada' && {
       label: 'Ada redemption',
       click() {
         goToAdaRedemption();
@@ -17,7 +20,7 @@ export const winLinuxMenu = (app, window, { openAbout, goToAdaRedemption }) => (
       click() {
         app.quit();
       }
-    }]
+    }])
   }, {
     label: 'Edit',
     submenu: [{
