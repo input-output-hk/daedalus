@@ -1,4 +1,4 @@
-import compact from 'lodash/compact';
+import { compact } from 'lodash';
 import environment from '../../common/environment';
 
 export const winLinuxMenu = (app, window, { openAbout, goToAdaRedemption }) => (
