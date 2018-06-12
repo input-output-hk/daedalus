@@ -402,7 +402,6 @@ Then(/^I should be on the "([^"]*)" wallet "([^"]*)" screen$/, async function (w
 });
 
 Then(/^I should be on the "([^"]*)" screen$/, async function (screenName) {
-  console.log('screenName', screenName);
   return waitUntilUrlEquals.call(this, `/${screenName}`);
 });
 
