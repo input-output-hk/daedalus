@@ -31,7 +31,7 @@ const openAbout = () => {
 
 const goToAdaRedemption = () => {
   if (mainWindow) mainWindow.webContents.send(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL);
-}
+};
 
 const menuActions = {
   openAbout,

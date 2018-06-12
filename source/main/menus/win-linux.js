@@ -6,7 +6,7 @@ export const winLinuxMenu = (app, window, { openAbout, goToAdaRedemption }) => (
       click() {
         goToAdaRedemption();
       }
-    },{
+    }, {
       label: 'About',
       click() {
         openAbout();

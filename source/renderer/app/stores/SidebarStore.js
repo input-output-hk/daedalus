@@ -31,7 +31,10 @@ export default class SidebarStore extends Store {
   }
 
   teardown() {
-    ipcRenderer.removeListener(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._resetActivateSidebarCategory);
+    ipcRenderer.removeListener(
+      GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL,
+      this._resetActivateSidebarCategory
+    );
   }
 
   @computed get wallets(): Array<SidebarWalletType> {
@@ -70,7 +73,7 @@ export default class SidebarStore extends Store {
   };
 
   @action _resetActivateSidebarCategory = () => {
-    this.activeSidebarCategory = null;
+    this.activeSidebarCategory = '';
   };
 
   @action _showSubMenus = () => {
