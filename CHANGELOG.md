@@ -33,6 +33,7 @@ Changelog
 - Improves re-build times with caching ([PR 915](https://github.com/input-output-hk/daedalus/pull/915))
 - Log expected errors as debug messages only ([PR 916](https://github.com/input-output-hk/daedalus/pull/916))
 - Created hide show used addresses acceptance test ([PR 957](https://github.com/input-output-hk/daedalus/pull/957))
+- Improved text display by reducing letter-spacing ([PR 973](https://github.com/input-output-hk/daedalus/pull/973))
 
 ## 0.10.0
 =======
