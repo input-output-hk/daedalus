@@ -1,4 +1,4 @@
-Feature: Hide/show used addresses
+Feature: Receive money
 
   Background:
     Given I have completed the basic setup
@@ -7,7 +7,7 @@ Feature: Hide/show used addresses
       | name   |
       | TargetWallet |
 
-  Scenario: After 1 transaction
+  Scenario: Hide/show used addresses
     Given I am on the "TargetWallet" wallet "receive" screen
     And I generate 1 addresses
     And I have made the following transactions:
@@ -16,3 +16,10 @@ Feature: Hide/show used addresses
     Then I should see 2 addresses
     When I click the ShowUsed switch
     Then I should see 1 addresses
+
+  Scenario: Addresses ordering
+    Given I am on the "TargetWallet" wallet "receive" screen
+    And I generate 2 addresses
+    Then I should see 3 addresses
+    And They should be ordered by created date descending
+    And The active address should be the newest one
