@@ -27,18 +27,11 @@ Then(/^I should see the notification's title bar$/, async function () {
 });
 
 Then(/^I should see the correct version in the notification's title bar$/, async function () {
-  // const message = defineMessages({
-  //   titleWithVersion: {
-  //     id: 'cardano.node.update.notification.titleWithVersion',
-  //     defaultMessage: '!!!Cardano-Core update v{version} is available',
-  //     description: 'Cardano-Core update notification with version.'
-  //   }
-  // });
   const version = 50;
   const titleBarSelector = `${NODE_UPDATE_COMPONENT} ${TITLE_BAR}`;
   await this.client.waitForText(titleBarSelector);
   const versionText = await this.client.getText(titleBarSelector);
-  const expectedVersionText = `Daedalus and Cardano node update #${version} is available.`;
+  const expectedVersionText = await this.intl('cardano.node.update.notification.titleWithVersion', { version });
   expect(versionText).to.equal(expectedVersionText);
 });
 
@@ -68,4 +61,8 @@ When(/^I click the notification's accept button$/, async function () {
 
 Then(/^I should not see the notification component anymore$/, async function () {
   await this.client.waitForVisible(NODE_UPDATE_COMPONENT, null, true);
+});
+
+Then(/^I should see the Daedalus window closed$/, () => {
+  expect(this).to.equal(undefined);
 });
