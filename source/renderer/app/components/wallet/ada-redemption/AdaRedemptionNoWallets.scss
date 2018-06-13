@@ -1,50 +1,35 @@
 
 .component {
-  height: 100%;
+  align-items: center;
+  color: var(--theme-ada-redemption-no-wallets-instructions-color);
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-regular);
+  justify-content: center;
+  line-height: 1.38;
+  padding: 0 40px;
+  position: absolute;
+  text-align: center;
+  top: 50%;
+  transform: translateY(-130px);
   width: 100%;
 
-  div {
-    align-items: center;
-    color: var(--theme-ada-redemption-no-wallets-instructions-color);
-    display: flex;
-    flex-direction: column;
-    font-family: var(--font-regular);
-    justify-content: center;
-    line-height: 1.38;
-    opacity: .4;
-    position: absolute;
-    text-align: center;
-    top: 50%;
-    transform: translateY(20px);
-    width: 100%;
-  }
-
-  p {
-    display: block;
+  h1 {
+    font-weight: bold;
+    margin-bottom: 11px;
   }
 
   button {
-    color: var(--theme-ada-redemption-no-wallets-instructions-color);
-    font-size: 16px;
+    margin-top: 40px;
   }
+
 }
 .icon {
-  align-items: center;
-  display: flex;
-  height: 100%;
-  justify-content: center;
-  opacity: .4;
-  transform: translateY(-40px);
-  width: 100%;
-
+  margin-bottom: 30px;
   > svg {
-    width: 80px;
-
-    * {
+    width: 66px;
+    path {
       fill: var(--theme-icon-ada-redemption-no-wallets);
     }
   }
-
 }
-
-
