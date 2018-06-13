@@ -21,7 +21,7 @@ const messages = defineMessages({
   },
   createWalletLink: {
     id: 'wallet.redeem.noWallets.createWalletLink',
-    defaultMessage: '!!!Create your first wallet.',
+    defaultMessage: '!!!Create your first wallet',
     description: 'URL for the "FAQ on Daedalus website" link in the FAQ section on the support settings page',
   },
 });
