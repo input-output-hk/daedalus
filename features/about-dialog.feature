@@ -1,4 +1,3 @@
-@watch
 Feature: About Dialog
 
   Background:

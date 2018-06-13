@@ -1,6 +1,6 @@
 import { Given, When, Then } from 'cucumber';
-import packageJson from '../../package.json';
 import { expect } from 'chai';
+import packageJson from '../../package.json';
 
 Given(/^I open the About dialog$/, async function () {
   this.client.execute(() => {
@@ -21,7 +21,7 @@ Then(/^the About dialog is (hidden|visible)/, async function (state) {
 });
 
 Then(/^the About dialog and package.json have the same version/, async function () {
-  const { version:packageJsonVersion } = packageJson;
+  const { version: packageJsonVersion } = packageJson;
   const aboutVersion = await this.client.getText('.About_daedalusVersion');
   expect(aboutVersion).to.equal(packageJsonVersion);
-})
+});
