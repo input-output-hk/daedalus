@@ -22,3 +22,4 @@ Feature: Node Update Notification
 
   Scenario: User accepts a node update notification
     When I click the notification's accept button
+    Then I should see the Daedalus window closed
