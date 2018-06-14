@@ -16,7 +16,7 @@ import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recurs
                                    HKEY (HKLM), Level (Highest), Page (Directory, InstFiles), abort,
                                    constant, constantStr, createDirectory, createShortcut, delete,
                                    deleteRegKey, execWait, file, iff_, installDir, installDirRegKey,
-                                   name, nsis, onPagePre, outFile, page, readRegStr,
+                                   name, nsis, onPagePre, onError, outFile, page, readRegStr,
                                    requestExecutionLevel, rmdir, section, setOutPath, str,
                                    strLength, uninstall, unsafeInject, unsafeInjectGlobal,
                                    writeRegDWORD, writeRegStr, (%/=), fileExists)
@@ -120,7 +120,7 @@ writeInstallerNSIS (Version fullVersion') clusterName = do
         _ <- constantStr "Version" (str fullVersion)
         _ <- constantStr "Cluster" (str $ unpack $ lshowText clusterName)
         name "Daedalus ($Version)"                  -- The name of the installer
-        outFile "daedalus-0.10.0-cardano-sl-$Version-$Cluster-windows.exe"           -- Where to produce the installer
+        outFile "daedalus-0.10.1-cardano-sl-$Version-$Cluster-windows.exe"           -- Where to produce the installer
         unsafeInjectGlobal $ "!define MUI_ICON \"icons\\64x64.ico\""
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE"
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_BITMAP \"icons\\installBanner.bmp\""
@@ -142,10 +142,13 @@ writeInstallerNSIS (Version fullVersion') clusterName = do
 
         _ <- section "" [Required] $ do
                 setOutPath "$INSTDIR"        -- Where to install files in this section
+                unsafeInject "AllowSkipFiles off"
                 writeRegStr HKLM "Software/Daedalus" "Install_Dir" "$INSTDIR" -- Used by launcher batch script
                 createDirectory "$APPDATA\\Daedalus\\Secrets-1.0"
                 createDirectory "$APPDATA\\Daedalus\\Logs"
                 createDirectory "$APPDATA\\Daedalus\\Logs\\pub"
+                onError (delete [] "$APPDATA\\Daedalus\\launcher.lock") $
+                    abort "Daedalus is running. It needs to be fully shutdown before running installer!"
                 iff_ (fileExists "$APPDATA\\Daedalus\\Wallet-1.0\\open\\*.*") $
                     rmdir [] "$APPDATA\\Daedalus\\Wallet-1.0\\open"
                 file [] "cardano-node.exe"
@@ -204,7 +207,7 @@ main :: Options -> IO ()
 main opts@Options{..}  = do
     echo "Writing version.txt"
     let fullVersion = Version $ fromVer oDaedalusVer <> ".0"
-        fullName    = "daedalus-0.10.0-cardano-sl-" <> (fromVer fullVersion) <> "-" <> (lshowText oCluster) <> "-windows.exe"
+        fullName    = "daedalus-0.10.1-cardano-sl-" <> (fromVer fullVersion) <> "-" <> (lshowText oCluster) <> "-windows.exe"
     TIO.writeFile "version.txt" $ fromVer fullVersion
 
     generateOSClusterConfigs "./dhall" "." opts
