@@ -1,10 +1,10 @@
 %actionButton {
   box-sizing: border-box;
-  height: 33px;
+  height: 34px;
   border-radius: 5px;
   font-family: var(--font-medium);
   font-size: 14px;
-  line-height: 1.36;
+  line-height: 34px;
   text-align: center;
   color: var(--theme-node-update-button-text-color);
   margin-left: 10px;
@@ -56,7 +56,7 @@
   height: 22px;
   font-family: var(--font-medium);
   font-size: 16px;
-  line-height: 1.5;
+  line-height: 1.38;
   color: var(--theme-node-update-title-color);
   flex-grow: 1;
 }
