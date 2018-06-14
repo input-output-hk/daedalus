@@ -372,6 +372,5 @@
   "wallet.transaction.type.exchange": "換金",
   "wallet.transactions.no.transactions": "トランザクションはありません",
   "wallet.transactions.no.transactions.found": "トランザクションが見つかりません",
-  "wallet.transactions.search.hint": "!!!Search transaction",
-  "window.about.title": "ダイダロス"
+  "wallet.transactions.search.hint": "!!!Search transaction"
 }

@@ -3,9 +3,9 @@ import PDFDocument from 'pdfkit';
 import qr from 'qr-image';
 import { defineMessages } from 'react-intl';
 import fs from 'fs';
-import paperWalletFont from '../assets/pdf/paper-wallet-certificate-font.ttf';
-import paperWalletPage1 from '../assets/pdf/paper-wallet-certificate-page-1.png';
-import paperWalletPage2 from '../assets/pdf/paper-wallet-certificate-page-2.png';
+import paperWalletFontPath from '../assets/pdf/paper-wallet-certificate-font.ttf';
+import paperWalletPage1Path from '../assets/pdf/paper-wallet-certificate-page-1.png';
+import paperWalletPage2Path from '../assets/pdf/paper-wallet-certificate-page-2.png';
 import paperWalletCertificateBgPath from '../assets/pdf/paper-wallet-certificate-background.png';
 import environment from '../../../common/environment';
 import { loadAssetChannel } from '../ipc/loadAsset';
@@ -56,6 +56,21 @@ export const downloadPaperWalletCertificate = async (
 
   const printMnemonic = (index) => `${index + 1}. ${mnemonics[index]}`;
 
+  const loadAssetFromPath = async (path) => {
+    const asset = await loadAssetChannel.send({ fileName: path });
+    return asset;
+  };
+
+  const loadFontBufferFromPath = async (path) => {
+    const asset = await loadAssetFromPath(path);
+    return Buffer.from(asset, 'base64');
+  };
+
+  const loadImageUriFromPath = async (path) => {
+    const asset = await loadAssetFromPath(path);
+    return `data:image/png;base64,${asset}`;
+  };
+
   const width = 595.28;
   const height = 841.98;
   const doc = new PDFDocument({
@@ -72,20 +87,18 @@ export const downloadPaperWalletCertificate = async (
     }
   });
 
-  const font = await loadAssetChannel.send({ fileName: paperWalletFont });
-  const fontBuffer = Buffer.from(font, 'base64');
-
   /* eslint-disable max-len */
   // font family
+  const fontBuffer = await loadFontBufferFromPath(paperWalletFontPath);
   doc.font(fontBuffer);
 
   // background images
-  const bgBase64 = await loadAssetChannel.send({ fileName: paperWalletCertificateBgPath });
-  const bgDataUri = `data:image/png;base64,${bgBase64}`;
-  doc.image(bgDataUri, 0, 4, { fit: [width, height] });
+  const backgroundUri = await loadImageUriFromPath(paperWalletCertificateBgPath);
+  doc.image(backgroundUri, 0, 0, { fit: [width, height] });
 
   // first page
-  doc.image(paperWalletPage1, 0, 0, { fit: [width, height] });
+  const page1Uri = await loadImageUriFromPath(paperWalletPage1Path);
+  doc.image(page1Uri, 0, 0, { fit: [width, height] });
   doc.rotate(180, { origin: [width / 2, height / 2] });
   doc.fillColor(textColor);
   doc.fontSize(10).text(intl.formatMessage(messages.walletAddressLabel), 0, 160, { width: 595, align: 'center' });
@@ -97,7 +110,8 @@ export const downloadPaperWalletCertificate = async (
 
   // second page
   doc.addPage();
-  doc.image(paperWalletPage2, 0, 0, { fit: [width, height] });
+  const page2Uri = await loadImageUriFromPath(paperWalletPage2Path);
+  doc.image(page2Uri, 0, 0, { fit: [width, height] });
   doc.rotate(180, { origin: [width / 2, height / 2] });
   doc.fillColor(textColor);
   doc.fontSize(10).text(intl.formatMessage(messages.recoveryPhraseLabel), 0, 535, { width: 595, align: 'center' });
