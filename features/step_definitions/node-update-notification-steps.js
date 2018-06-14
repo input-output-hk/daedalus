@@ -9,13 +9,15 @@ const ACTIONS = '.NodeUpdateNotification_actions';
 const ACCEPT_BTN = '.NodeUpdateNotification_acceptButton';
 const DENY_BTN = '.NodeUpdateNotification_denyButton';
 
+const UPDATE_VERSION = 50;
+
 When(/^I make a node update available$/, async function () {
   await this.client.executeAsync((nextVersion, done) => {
     daedalus.api.ada.setNextUpdate(nextVersion)
       .then(() => daedalus.stores.NodeUpdateStore.refreshNextUpdate())
       .then(done)
       .catch((error) => done(error));
-  }, { version: 50 });
+  }, { version: UPDATE_VERSION });
 });
 
 Then(/^I should see the node update notification component$/, async function () {
@@ -26,12 +28,11 @@ Then(/^I should see the notification's title bar$/, async function () {
   await this.client.waitForVisible(`${NODE_UPDATE_COMPONENT} ${TITLE_BAR}`);
 });
 
-Then(/^I should see the correct version in the notification's title bar$/, async function () {
-  const version = 50;
+Then(/^I should see the expected update version in the notification's title bar$/, async function () {
   const titleBarSelector = `${NODE_UPDATE_COMPONENT} ${TITLE_BAR}`;
   await this.client.waitForText(titleBarSelector);
   const versionText = await this.client.getText(titleBarSelector);
-  const expectedVersionText = await this.intl('cardano.node.update.notification.titleWithVersion', { version });
+  const expectedVersionText = await this.intl('cardano.node.update.notification.titleWithVersion', { version: UPDATE_VERSION });
   expect(versionText).to.equal(expectedVersionText);
 });
 
