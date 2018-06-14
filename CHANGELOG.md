@@ -22,6 +22,7 @@ Changelog
 
 ### Chores
 
+- Adds acceptance tests for node update notification w/accept and postpone scenarios ([PR 977](https://github.com/input-output-hk/daedalus/pull/977))
 - Added flow checks and linting for storybook code ([PR 938](https://github.com/input-output-hk/daedalus/pull/938))
 - Refactored npm scripts to use colon style ([PR 939](https://github.com/input-output-hk/daedalus/pull/939))
 - Added PR template with PR review checlist ([PR 882](https://github.com/input-output-hk/daedalus/pull/882))
