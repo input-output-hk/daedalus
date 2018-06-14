@@ -9,7 +9,7 @@ Feature: Node Update Notification
     When I make a node update available
     Then I should see the node update notification component
     Then I should see the notification's title bar
-    Then I should see the correct version in the notification's title bar
+    Then I should see the expected update version in the notification's title bar
     Then I should see the notification's toggle button
     Then I should see the notification's update message
     Then I should see the notification's accept button
