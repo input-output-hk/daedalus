@@ -46,6 +46,7 @@ export default class AdaRedemptionNoWallets extends Component<Props> {
         <p>{intl.formatMessage(messages.instructions)}</p>
         <p>
           <Button
+            className="primary"
             onClick={this.props.onGoToCreateWalletClick}
             label={intl.formatMessage(messages.createWalletLink)}
             skin={<SimpleButtonSkin />}
