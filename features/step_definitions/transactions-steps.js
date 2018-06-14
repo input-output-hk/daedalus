@@ -72,3 +72,27 @@ Then(/^I should see the following transactions:$/, async function (table) {
 When(/^I click on the show more transactions button$/, async function () {
   await this.waitAndClick('.WalletTransactionsList_showMoreTransactionsButton');
 });
+
+Then(/^The transactions should be ordered from newest to oldest$/, async function () {
+
+  const [firstTransaction, lastTransaction] = await this.client.getText('.Transaction_amount');
+
+  await this.client.waitUntil(async () =>
+    expect(firstTransaction).to.equal('2.000000') && expect(lastTransaction).to.equal('1.000000')
+  );
+
+});
+
+Then(/^The transactions should be grouped by their date$/, async function () {
+
+  const date = await this.client.getText('.WalletTransactionsList_group .WalletTransactionsList_groupDate');
+  const [firstTransaction, lastTransaction] = await this.client.getText('.WalletTransactionsList_group .Transaction_amount');
+
+  await this.client.waitUntil(async () =>
+    expect(date).to.equal('Today') &&
+    expect(firstTransaction).to.equal('2.000000') &&
+    expect(lastTransaction).to.equal('1.000000')
+  );
+
+});
+

@@ -18,13 +18,13 @@ Then('I should see {int} addresses', async function (numberOfAddresses) {
 });
 
 Then('They should be ordered by created date descending', async function () {
-  const { value:{ id:lastGeneratedAddress }} = await this.client.execute(() => daedalus.stores.ada.addresses.lastGeneratedAddress);
+  const { value: { id: lastGeneratedAddress } } = await this.client.execute(() => daedalus.stores.ada.addresses.lastGeneratedAddress);
   const firstAddressInTheList = await this.client.getText('.generatedAddress-1 .WalletReceive_addressId');
   expect(lastGeneratedAddress).to.equal(firstAddressInTheList);
 });
 
 Then('The active address should be the newest one', async function () {
-  const { value:{ id:lastGeneratedAddress }} = await this.client.execute(() => daedalus.stores.ada.addresses.lastGeneratedAddress);
+  const { value: { id: lastGeneratedAddress } } = await this.client.execute(() => daedalus.stores.ada.addresses.lastGeneratedAddress);
   const activeAddress = await this.client.getText('.WalletReceive_hash');
   expect(lastGeneratedAddress).to.equal(activeAddress);
 });
