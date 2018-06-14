@@ -6,8 +6,9 @@ import fs from 'fs';
 import paperWalletFont from '../assets/pdf/paper-wallet-certificate-font.ttf';
 import paperWalletPage1 from '../assets/pdf/paper-wallet-certificate-page-1.png';
 import paperWalletPage2 from '../assets/pdf/paper-wallet-certificate-page-2.png';
-import paperWalletCertificateBg from '../assets/pdf/paper-wallet-certificate-background.png';
+import paperWalletCertificateBgPath from '../assets/pdf/paper-wallet-certificate-background.png';
 import environment from '../../../common/environment';
+import { loadAssetChannel } from '../ipc/loadAsset';
 
 const messages = defineMessages({
   walletAddressLabel: {
@@ -42,12 +43,10 @@ type DownloadPaperWalletCertificateParams = {
   filePath: string,
   mnemonics: Array<string>,
   intl: Object,
-  onSuccess?: Function,
-  onError?: Function,
 };
 
-export const downloadPaperWalletCertificate = (
-  { address, mnemonics, intl, onSuccess, onError, filePath }: DownloadPaperWalletCertificateParams
+export const downloadPaperWalletCertificate = async (
+  { address, mnemonics, intl, filePath }: DownloadPaperWalletCertificateParams
 ) => {
   const { version, build } = environment;
   const daedalusInfo =
@@ -73,15 +72,17 @@ export const downloadPaperWalletCertificate = (
     }
   });
 
-  const fontBase64Data = /^data:.+;base64,(.*)$/.exec(paperWalletFont)[1];
-  const fontBuffer = Buffer.from(fontBase64Data, 'base64');
+  const font = await loadAssetChannel.send({ fileName: paperWalletFont });
+  const fontBuffer = Buffer.from(font, 'base64');
 
   /* eslint-disable max-len */
   // font family
   doc.font(fontBuffer);
 
   // background images
-  doc.image(paperWalletCertificateBg, 0, 0, { fit: [width, height] });
+  const bgBase64 = await loadAssetChannel.send({ fileName: paperWalletCertificateBgPath });
+  const bgDataUri = `data:image/png;base64,${bgBase64}`;
+  doc.image(bgDataUri, 0, 4, { fit: [width, height] });
 
   // first page
   doc.image(paperWalletPage1, 0, 0, { fit: [width, height] });
@@ -128,12 +129,6 @@ export const downloadPaperWalletCertificate = (
   doc.rotate(-180, { origin: [width / 2, height / 2] });
   /* eslint-enable max-len */
 
-  try {
-    doc.pipe(fs.createWriteStream(filePath));
-    doc.end();
-    if (onSuccess) onSuccess();
-  } catch (e) {
-    if (onError) onError(e);
-    throw e;
-  }
+  doc.pipe(fs.createWriteStream(filePath));
+  doc.end();
 };

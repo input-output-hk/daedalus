@@ -25,3 +25,19 @@ export const waitUntilTextInSelector = async (client, { selector, text }) => (
     return textOnScreen[0] === text;
   })
 );
+
+export const getVisibleElementsForSelector = async (client, selectSelector, waitSelector = selectSelector, ...waitArgs) => {
+  await client.waitForVisible(waitSelector, ...waitArgs);
+  return await client.elements(selectSelector);
+};
+
+export const getVisibleElementsCountForSelector = async (client, selectSelector, waitSelector = selectSelector, ...waitArgs) => {
+  const elements = await getVisibleElementsForSelector(client, selectSelector, waitSelector, ...waitArgs);
+  return elements.value ? elements.value.length : 0;
+};
+
+export const getVisibleTextsForSelector = async (client, selector) => {
+  await client.waitForVisible(selector);
+  const texts = await client.getText(selector);
+  return [].concat(texts);
+};

@@ -1,16 +1,21 @@
 \(cluster : ./cluster.type)      ->
-let dataDir = "\${APPDATA}\\Daedalus\\"
+   let installDir = "Daedalus${cluster.installDirectorySuffix}"
+in let dataDir = "\${APPDATA}\\${installDir}"
     --
     --
 in
 { name      = "win64"
 , configurationYaml  = "configuration.yaml"
+, installDirectory   = installDir
+, macPackageName     = "unused"
+, x509ToolPath       = "\${DAEDALUS_DIR}\\cardano-x509-certificates.exe"
 , nodeArgs           =
   { keyfile          = "${dataDir}\\Secrets-1.0\\secret.key"
   , logsPrefix       = "${dataDir}\\Logs"
   , topology         = "wallet-topology.yaml"
   , updateLatestPath = "${dataDir}\\Installer.exe"
   , walletDBPath     = "${dataDir}\\Wallet-1.0"
+  , tlsPath          = "${dataDir}\\tls"
   }
 , pass      =
   { statePath           = dataDir
@@ -20,7 +25,8 @@ in
   , nodeLogPath         = "${dataDir}\\Logs\\cardano-node.log"
 
   , walletPath          = "\${DAEDALUS_DIR}\\Daedalus.exe"
-  , walletLogging       = False
+  , walletLogging       = True
+  , frontendOnlyMode    = False
 
   , updaterPath         = "${dataDir}\\Installer.exe"
   , updaterArgs         = [] : List Text

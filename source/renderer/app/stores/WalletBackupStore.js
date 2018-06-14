@@ -3,13 +3,13 @@ import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
 import environment from '../../../common/environment';
 import WalletBackupDialog from '../components/wallet/WalletBackupDialog';
-
-export type walletBackupSteps = 'privacyWarning' | 'recoveryPhraseDisplay' | 'recoveryPhraseEntry' | null;
+import type { walletBackupStep } from '../types/walletBackupTypes';
+import { WALLET_BACKUP_STEPS } from '../types/walletBackupTypes';
 
 export default class WalletBackupStore extends Store {
 
   @observable inProgress = false;
-  @observable currentStep: walletBackupSteps = null;
+  @observable currentStep: walletBackupStep = WALLET_BACKUP_STEPS.NOT_INITIATED;
   @observable recoveryPhrase = [];
   @observable recoveryPhraseWords = [];
   @observable recoveryPhraseShuffled = [];
@@ -41,7 +41,7 @@ export default class WalletBackupStore extends Store {
   @action _initiateWalletBackup = (params: { recoveryPhrase: Array<string> }) => {
     this.recoveryPhrase = params.recoveryPhrase;
     this.inProgress = true;
-    this.currentStep = 'privacyWarning';
+    this.currentStep = WALLET_BACKUP_STEPS.PRIVACY_WARNING;
     this.recoveryPhraseWords = this.recoveryPhrase.map(word => ({ word }));
     this.recoveryPhraseShuffled = this.recoveryPhrase
       .sort(() => 0.5 - Math.random())
@@ -71,11 +71,11 @@ export default class WalletBackupStore extends Store {
   };
 
   @action _continueToRecoveryPhraseForWalletBackup = () => {
-    this.currentStep = 'recoveryPhraseDisplay';
+    this.currentStep = WALLET_BACKUP_STEPS.RECOVERY_PHRASE_DISPLAY;
   };
 
   @action _startWalletBackup = () => {
-    this.currentStep = 'recoveryPhraseEntry';
+    this.currentStep = WALLET_BACKUP_STEPS.RECOVERY_PHRASE_ENTRY;
   };
 
   @action _addWordToWalletBackupVerification = (params: { word: string, index: number }) => {
@@ -109,7 +109,7 @@ export default class WalletBackupStore extends Store {
 
   @action _restartWalletBackup = () => {
     this._clearEnteredRecoveryPhrase();
-    this.currentStep = 'recoveryPhraseDisplay';
+    this.currentStep = WALLET_BACKUP_STEPS.RECOVERY_PHRASE_DISPLAY;
   };
 
   @action _cancelWalletBackup = () => {

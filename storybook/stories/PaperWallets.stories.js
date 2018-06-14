@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
@@ -43,8 +44,7 @@ storiesOf('PaperWallets', module)
   .add('Securing the password', () => (
     <div>
       <SecuringPasswordDialog
-        additionalMnemonics={wordlist}
-        walletCertificatePassword="flugenheimer"
+        additionalMnemonics="flugenheimer"
         onContinue={action('onContinue')}
         onClose={action('onClose')}
       />

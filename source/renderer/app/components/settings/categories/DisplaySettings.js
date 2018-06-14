@@ -76,7 +76,7 @@ export default class DisplaySettings extends Component<Props> {
             className={themeLightBlueClasses}
             onClick={selectTheme.bind(this, { theme: THEMES.LIGHT_BLUE })}
           >
-            <img src={themeLightBluePreview} role="presentation" />
+            <img src={themeLightBluePreview} role="presentation" draggable="false" />
             <span>{intl.formatMessage(messages.themeLightBlue)}</span>
           </button>
 
@@ -84,7 +84,7 @@ export default class DisplaySettings extends Component<Props> {
             className={themeCardanoClasses}
             onClick={selectTheme.bind(this, { theme: THEMES.CARDANO })}
           >
-            <img src={themeCardanoPreview} role="presentation" />
+            <img src={themeCardanoPreview} role="presentation" draggable="false" />
             <span>{intl.formatMessage(messages.themeCardano)}</span>
           </button>
 
@@ -92,7 +92,7 @@ export default class DisplaySettings extends Component<Props> {
             className={themeDarkBlueClasses}
             onClick={selectTheme.bind(this, { theme: THEMES.DARK_BLUE })}
           >
-            <img src={themeDarkBluePreview} role="presentation" />
+            <img src={themeDarkBluePreview} role="presentation" draggable="false" />
             <span>{intl.formatMessage(messages.themeDarkBlue)}</span>
           </button>
 

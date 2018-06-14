@@ -1,11 +1,15 @@
 { name       : Text
 , configurationYaml  : Text
+, installDirectory   : Text
+, macPackageName     : Text
+, x509ToolPath       : Text
 , nodeArgs           :
   { keyfile          : Text
   , logsPrefix       : Text
   , topology         : Text
   , updateLatestPath : Text
   , walletDBPath     : Text
+  , tlsPath          : Text
   }
 , pass :
   { statePath           : Text
@@ -15,6 +19,7 @@
   , nodeLogPath         : Text
   , walletPath          : Text
   , walletLogging       : Bool
+  , frontendOnlyMode    : Bool
   , updaterPath         : Text
   , updaterArgs         : List Text
   , updateArchive       : Optional Text

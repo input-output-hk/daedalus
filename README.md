@@ -1,3 +1,5 @@
+<sub>Author: [Nikola Glumac](https://github.com/nikolaglumac)<br/>Status: Active</sub>
+
 # Daedalus
 [![Build status](https://badge.buildkite.com/e173494257519752d79bb52c7859df6277c6d759b217b68384.svg?branch=master)](https://buildkite.com/input-output-hk/daedalus)
 [![Windows build status](https://ci.appveyor.com/api/projects/status/github/input-output-hk/daedalus?branch=master&svg=true)](https://ci.appveyor.com/project/input-output/daedalus)
@@ -12,39 +14,34 @@ Daedalus - cryptocurrency wallet
 Platform-specific build scripts facilitate building Daedalus the way it is built
 by the IOHK CI:
 
-   - `scripts/build-installer-unix.sh     <DAEDALUS-VERSION> [OPTIONS..]`
-      - where OS is either `linux` or `osx`
-   - `scripts/build-installer-windows.bat <DAEDALUS-VERSION>`
+# Linux/macOS
 
-The result can be found at:
-   - on OS X:    `${BUILD}/installers/dist/csl-daedalus/Daedalus-installer-*.pkg`
-   - on WIndows: `${BUILD}/installers/daedalus-*-installer.exe`
+This script requires [Nix](https://nixos.org/nix/), (optionally)
+configured with the [IOHK binary cache][cache].
 
-### One-click build-fresh-daedalus scripts
+    scripts/build-installer-unix.sh [OPTIONS..]
 
-These rely on the scripts from the previous section, but also go to a certain
-trouble to ensure that dependencies are installed, and even check out a fresh
-version of Daedalus from the specifid branch.
+The result can be found at `installers/csl-daedalus/daedalus-*.pkg`.
 
-These are intended to be used by developers in a "clean rebuild" scenario, to
-facilitate validation.
+[cache]: https://github.com/input-output-hk/cardano-sl/blob/3dbe220ae108fa707b55c47e689ed794edf5f4d4/docs/how-to/build-cardano-sl-and-daedalus-from-source-code.md#nix-build-mode-recommended
 
-Dependencies:
-   - on OS X:    `git`
-   - on Windows: `Node.js`, `7zip`
+# Pure Nix installer build
 
-Location:
-   - on OS X:    https://github.com/input-output-hk/daedalus/blob/master/scripts/osx-build-fresh-daedalus.sh
-   - on Windows: https://github.com/input-output-hk/daedalus/blob/master/scripts/windows-build-fresh-daedalus.bat
+This will use nix to build a Linux installer. Using the [IOHK binary
+cache][cache] will speed things up.
 
-Invocation:
-   ```shell
-   {osx,windows}-build-fresh-daedalus.{sh,bat} [BRANCH] [GITHUB-USER] [OPTIONS...]
-   ```
-   ..where `BRANCH` defaults to the current release branch, and `GITHUB-USER`
-   defaults to `input-output-hk`.
+    nix build -f ./release.nix mainnet.installer
 
-   The remaining `OPTIONS` are passed as-is to the respective build scripts.
+The result can be found at `./result/daedalus-*.bin`.
+
+# Windows
+
+This batch file requires [Node.js](https://nodejs.org/en/download/) and
+[7zip](https://www.7-zip.org/download.html).
+
+    scripts/build-installer-win64.bat
+
+The result will can be found at `.\daedalus-*.exe`.
 
 ## Stepwise build
 
@@ -59,6 +56,7 @@ $ npm install
 Run with:
 
 ```bash
+$ export CARDANO_TLS_PATH={path-to-cardano-sl}/run/tls-files/
 $ npm run dev
 ```
 
@@ -85,7 +83,7 @@ Run with:
 
 ```bash
 $ tmux new-session -s cardano
-$ ./scripts/launch/demo-with-wallet-api.sh
+$ WALLET_CLIENT_AUTH_DISABLE=1 ./scripts/launch/demo-with-wallet-api.sh
 ```
 
 Stop with:
@@ -118,7 +116,7 @@ $ npm run test
 For development purposes run the tests continuously in watch mode which will re-run tests when source code changes:
 
 ```bash
-$ npm run test-watch
+$ npm run test:watch
 ```
 
 You can find more details regarding tests setup within [Running Daedalus acceptance tests](https://github.com/input-output-hk/daedalus/blob/master/features/README.md) README file.
@@ -164,7 +162,7 @@ $ npm run package
 To package apps for all platforms:
 
 ```bash
-$ npm run package-all
+$ npm run package:all
 ```
 
 To package apps with options:

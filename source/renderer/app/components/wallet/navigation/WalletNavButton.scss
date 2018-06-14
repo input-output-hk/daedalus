@@ -15,7 +15,8 @@
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  width: calc(100% - 40px);
+  padding: 0 5px;
+  width: calc(100% - 30px);
   height: 30px;
   border-radius: 4px;
 }
@@ -24,10 +25,14 @@
   font-size: 14px;
   font-family: var(--font-regular);
   display: block;
-  overflow: visible;
+  line-height: 30px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .icon {
+  flex-shrink: 0;
   margin-right: 10px;
 
   & > svg {

@@ -3,13 +3,14 @@ import React, { Component } from 'react';
 import { FormattedHTMLMessage } from 'react-intl';
 import { observer, inject } from 'mobx-react';
 import { ellipsis } from '../../../utils/strings';
-import config from '../../../config';
 import WalletReceive from '../../../components/wallet/etc/WalletReceive';
 import VerticalFlexContainer from '../../../components/layout/VerticalFlexContainer';
 import NotificationMessage from '../../../components/widgets/NotificationMessage';
 import successIcon from '../../../assets/images/success-small.inline.svg';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { messages } from '../WalletReceivePage';
+import { ADDRESS_COPY_NOTIFICATION_DURATION } from '../../../config/timingConfig';
+import { ADDRESS_COPY_NOTIFICATION_ELLIPSIS } from '../../../config/formattingConfig';
 
 type Props = InjectedProps;
 
@@ -51,11 +52,11 @@ export default class WalletReceivePage extends Component<Props, State> {
 
     const notification = {
       id: `${wallet.id}-copyNotification`,
-      duration: config.wallets.ADDRESS_COPY_NOTIFICATION_DURATION,
+      duration: ADDRESS_COPY_NOTIFICATION_DURATION,
       message: (
         <FormattedHTMLMessage
           {...messages.message}
-          values={{ walletAddress: ellipsis(copiedAddress, 8) }}
+          values={{ walletAddress: ellipsis(copiedAddress, ADDRESS_COPY_NOTIFICATION_ELLIPSIS) }}
         />
       ),
     };

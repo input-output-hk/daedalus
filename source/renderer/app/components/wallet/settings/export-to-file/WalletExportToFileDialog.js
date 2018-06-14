@@ -11,6 +11,7 @@ import globalMessages from '../../../../i18n/global-messages';
 import Dialog from '../../../widgets/Dialog';
 import LocalizableError from '../../../../i18n/LocalizableError';
 import styles from './WalletExportToFileDialog.scss';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../../config/timingConfig';
 
 const messages = defineMessages({
   headline: {
@@ -43,6 +44,11 @@ const messages = defineMessages({
 
 type ExportType = 'full' | 'readOnly';
 
+const EXPORT_TYPE = {
+  FULL: 'full',
+  READ_ONLY: 'readOnly',
+};
+
 export type OnSubmitParams = {
   exportType: ExportType,
   password: ?string,
@@ -51,7 +57,7 @@ export type OnSubmitParams = {
 type Props = {
   walletName: string,
   hasSpendingPassword: boolean,
-  isSubmitting: false,
+  isSubmitting: boolean,
   onSubmit: (OnSubmitParams) => void,
   onClose: () => void,
   error?: ?LocalizableError,
@@ -71,7 +77,7 @@ export default class WalletExportToFileDialog extends Component<Props, State> {
   constructor(props: any, children: any) {
     super(props, children);
     this.state = {
-      exportType: 'full',
+      exportType: EXPORT_TYPE.FULL,
     };
   }
 
@@ -97,7 +103,7 @@ export default class WalletExportToFileDialog extends Component<Props, State> {
   }, {
     options: {
       validateOnChange: true,
-      validationDebounceWait: 250,
+      validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
     },
   });
 
