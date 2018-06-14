@@ -48,6 +48,7 @@ export default class WalletAddPage extends Component<Props> {
           onRestore={() => actions.dialogs.open.trigger({ dialog: WalletRestoreDialog })}
           onImportFile={() => actions.dialogs.open.trigger({ dialog: WalletFileImportDialog })}
           isRestoreActive={isRestoreActive}
+          isMaxNumberOfWalletsReached={environment.isAdaApi() && wallets.hasMaxWallets}
         />
       );
     }
