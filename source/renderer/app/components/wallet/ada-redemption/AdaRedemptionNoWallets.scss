@@ -1,4 +1,3 @@
-
 .component {
   align-items: center;
   color: var(--theme-ada-redemption-no-wallets-instructions-color);
@@ -22,11 +21,11 @@
   button {
     margin-top: 40px;
   }
-
 }
+
 .icon {
   margin-bottom: 30px;
-  > svg {
+  & > svg {
     width: 66px;
     path {
       fill: var(--theme-icon-ada-redemption-no-wallets);
