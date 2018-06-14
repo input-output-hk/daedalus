@@ -182,6 +182,7 @@
   "wallet.add.dialog.import.label": "!!!Import",
   "wallet.add.dialog.join.description": "!!!Join a shared wallet with up to 5 people",
   "wallet.add.dialog.join.label": "!!!Join",
+  "wallet.add.dialog.maxNumberOfWalletsNotificationMessage": "!!!You have reached the maximum of 50 wallets.<br>No more wallets can be added.",
   "wallet.add.dialog.restore.label": "!!!Restore",
   "wallet.add.dialog.restore.withCertificate.description": "!!!Restore using backup-recovery phrase or paper wallet certificate.",
   "wallet.add.dialog.restore.withoutCertificate.description": "!!!Restore wallet from backup",
