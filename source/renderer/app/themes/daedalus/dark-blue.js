@@ -3,17 +3,17 @@
 export default {
   '--preferred-font': '"Times New Roman", serif',
 
-  '--font-ultralight': 'SFUIDisplay-Ultralight',
-  '--font-thin': 'SFUIDisplay-Thin',
-  '--font-light': 'SFUIDisplay-Light',
-  '--font-regular': 'SFUIDisplay-Regular',
-  '--font-medium': 'SFUIDisplay-Medium',
-  '--font-semibold': 'SFUIDisplay-Semibold',
-  '--font-bold': 'SFUIDisplay-Bold',
-  '--font-heavy': 'SFUIDisplay-Heavy',
-  '--font-black': 'SFUIDisplay-Black',
+  '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
+  '--font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',
+  '--font-light': 'NotoSans-Light, NotoSansCJKjp-Light',
+  '--font-regular': 'NotoSans-Regular, NotoSansCJKjp-Regular',
+  '--font-medium': 'NotoSans-Medium, NotoSansCJKjp-Medium',
+  '--font-semibold': 'NotoSans-SemiBold, NotoSansCJKjp-Medium',
+  '--font-bold': 'NotoSans-Bold, NotoSansCJKjp-Bold',
+  '--font-heavy': 'NotoSans-ExtraBold, NotoSansCJKjp-Black',
+  '--font-black': 'NotoSans-Black, NotoSansCJKjp-Black',
 
-  '--theme-input-hint-font': 'SFUIDisplay-Regular',
+  '--theme-input-hint-font': 'NotoSans-Regular, NotoSansCJKjp-Regular',
 
   '--theme-scrollbar-thumb-background': '#536370',
 
@@ -243,15 +243,15 @@ export default {
   '--theme-icon-connecting-logo-color': '#fafbfc',
   '--theme-icon-transaction-type-color': '#fafbfc',
 
-  '--theme-about-window-background-color': '#fafbfc',
-  '--theme-about-window-header-bottom-border-color': '#dfe4e8',
-  '--theme-about-window-daedalus-icon-color': '#5e6066',
-  '--theme-about-window-cardano-icon-color': '#5e6066',
-  '--theme-about-window-title-varsion-color': '#5e6066',
-  '--theme-about-window-title-stroke-color': '#5e6066',
-  '--theme-about-window-content-text-color': '#5e6066',
-  '--theme-about-window-content-bottom-border-color': '#dfe4e8',
-  '--theme-about-window-copyright-color': '#5e6066',
+  '--theme-about-window-background-color': '#263345',
+  '--theme-about-window-header-bottom-border-color': 'rgba(233, 244, 254, 0.3)',
+  '--theme-about-window-daedalus-icon-color': '#e9f4fe',
+  '--theme-about-window-cardano-icon-color': '#e9f4fe',
+  '--theme-about-window-title-varsion-color': '#e9f4fe',
+  '--theme-about-window-title-stroke-color': '#e9f4fe',
+  '--theme-about-window-content-text-color': '#e9f4fe',
+  '--theme-about-window-content-bottom-border-color': 'rgba(233, 244, 254, 0.3)',
+  '--theme-about-window-copyright-color': '#e9f4fe',
 
   '--theme-backup-mnemonic-background-color': 'rgba(233, 244, 254, 0.05)',
 
