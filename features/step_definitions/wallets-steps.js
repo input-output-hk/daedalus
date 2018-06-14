@@ -453,3 +453,15 @@ Then(/^I should see newly generated address as active address on the wallet rece
     return generatedAddress === activeAddress;
   });
 });
+
+Then(/^the wallets should be ordered from oldest to newest$/, async function() {
+
+  const [ wallet1, wallet2, wallet3 ] = await this.client.getText('.SidebarWalletMenuItem_title');
+
+  await this.client.waitUntil(async () =>
+    expect(wallet1).to.equal('Wallet 1') &&
+    expect(wallet2).to.equal('Wallet 2') &&
+    expect(wallet3).to.equal('Wallet 3')
+  );
+
+});

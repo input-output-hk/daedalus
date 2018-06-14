@@ -4,7 +4,7 @@ Feature: Receive money
     Given I have completed the basic setup
     And I have a "Genesis wallet" with funds
     And I have the following wallets:
-      | name   |
+      | name         |
       | TargetWallet |
 
   Scenario: Hide/show used addresses
