@@ -64,6 +64,9 @@ Then(/^I should not see the notification component anymore$/, async function () 
   await this.client.waitForVisible(NODE_UPDATE_COMPONENT, null, true);
 });
 
-Then(/^I should see the Daedalus window closed$/, () => {
-  expect(this).to.equal(undefined);
+Then(/^I should see the Daedalus window prepare to close$/, async function () {
+  await this.client.on('before-quit', event => {
+    event.preventDefault();
+    expect(this).to.equal(undefined);
+  });
 });
