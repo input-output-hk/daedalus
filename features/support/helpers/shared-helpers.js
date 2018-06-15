@@ -41,3 +41,7 @@ export const getVisibleTextsForSelector = async (client, selector) => {
   const texts = await client.getText(selector);
   return [].concat(texts);
 };
+
+export const createRawTable = (table) => ({
+  hashes: () => table
+});
