@@ -1,41 +1,42 @@
 Changelog
 =========
 
-## vNext
+## 0.11.0
 
 ### Features
 
-- Implemented a switch instead of a link for “hide used” addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
+- Implemented a switch instead of a link for "hide used" addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
 
 ### Fixes
 
-- Refactored about window to normal UI dialog to save resources ([PR 965](https://github.com/input-output-hk/daedalus/pull/965))
-- Fixes mocked ETC wallet data injection in Cardano Daedalus builds ([PR 955](https://github.com/input-output-hk/daedalus/pull/955))
-- Fixes huge build file sizes ([PR 886](https://github.com/input-output-hk/daedalus/pull/886))
-- Fixed text wrapping within wallet navigation tabs ([PR 911](https://github.com/input-output-hk/daedalus/pull/911))
 - Disabled dragging of static UI images elements ([PR 910](https://github.com/input-output-hk/daedalus/pull/910))
-- Fixed storybook config issues ([PR 928](https://github.com/input-output-hk/daedalus/pull/928))
-- Fixed broken translation on create wallet dialog ([PR 930](https://github.com/input-output-hk/daedalus/pull/930))
-- Fixed a bug related to rendering of transactions with duplicated ids ([PR 947](https://github.com/input-output-hk/daedalus/pull/947))
-- Fixed 633 npm audit issues by upgrading dependencies ([PR 944](https://github.com/input-output-hk/daedalus/pull/944))
 - Disabled webview tags to prevent XSS attacks ([PR 946](https://github.com/input-output-hk/daedalus/pull/946))
+- Fixed 633 npm audit issues by upgrading dependencies ([PR 944](https://github.com/input-output-hk/daedalus/pull/944))
+- Fixed a bug related to rendering of transactions with duplicated IDs ([PR 947](https://github.com/input-output-hk/daedalus/pull/947))
+- Fixed broken translation on create wallet dialog ([PR 930](https://github.com/input-output-hk/daedalus/pull/930))
+- Fixed huge build file sizes ([PR 886](https://github.com/input-output-hk/daedalus/pull/886))
 - Fixed Linux Kanji characters support ([PR 971](https://github.com/input-output-hk/daedalus/pull/971))
-- Removed the Ada Redemption link from the 'app bar' menu and added it to system menu ([PR 972](https://github.com/input-output-hk/daedalus/pull/972))
+- Fixed Storybook configuration issues ([PR 928](https://github.com/input-output-hk/daedalus/pull/928))
+- Fixed text wrapping within wallet navigation tabs ([PR 911](https://github.com/input-output-hk/daedalus/pull/911))
+- Reduced resource usage ([PR 886](https://github.com/input-output-hk/daedalus/pull/886))
+- Refactored about window to normal UI dialog to save resources ([PR 965](https://github.com/input-output-hk/daedalus/pull/965))
+- Removed mocked ETC wallet data injection in Cardano Daedalus builds ([PR 955](https://github.com/input-output-hk/daedalus/pull/955))
+- Removed the Ada Redemption link from the "app bar" menu and added it to system menu ([PR 972](https://github.com/input-output-hk/daedalus/pull/972))
 
 ### Chores
 
-- Added flow checks and linting for storybook code ([PR 938](https://github.com/input-output-hk/daedalus/pull/938))
-- Refactored npm scripts to use colon style ([PR 939](https://github.com/input-output-hk/daedalus/pull/939))
-- Added PR template with PR review checlist ([PR 882](https://github.com/input-output-hk/daedalus/pull/882))
-- Added acceptance tests for displaying transactions in various contexts ([PR 870](https://github.com/input-output-hk/daedalus/pull/870))
-- Refactored various magic numbers & strings into constants ([PR 881](https://github.com/input-output-hk/daedalus/pull/881))
-- Fixed wallet restoration and import fragile acceptance tests steps definitions ([PR 885](https://github.com/input-output-hk/daedalus/pull/885))
-- Improved request body length calculation ([PR 892](https://github.com/input-output-hk/daedalus/pull/892))
 - Added "Author" and "Status" information to all Daedalus README files ([PR 901](https://github.com/input-output-hk/daedalus/pull/901))
-- Improves re-build times with caching ([PR 915](https://github.com/input-output-hk/daedalus/pull/915))
-- Log expected errors as debug messages only ([PR 916](https://github.com/input-output-hk/daedalus/pull/916))
-- Created hide show used addresses acceptance test ([PR 957](https://github.com/input-output-hk/daedalus/pull/957))
+- Added acceptance tests for displaying transactions in various contexts ([PR 870](https://github.com/input-output-hk/daedalus/pull/870))
+- Added acceptance tests for hide/show used addresses feature ([PR 957](https://github.com/input-output-hk/daedalus/pull/957))
+- Added flow checks and linting for storybook code ([PR 938](https://github.com/input-output-hk/daedalus/pull/938))
+- Added PR template with PR review checlist ([PR 882](https://github.com/input-output-hk/daedalus/pull/882))
+- Fixed wallet restoration and import fragile acceptance tests steps definitions ([PR 885](https://github.com/input-output-hk/daedalus/pull/885))
+- Improved re-build times with caching ([PR 915](https://github.com/input-output-hk/daedalus/pull/915))
+- Improved request body length calculation ([PR 892](https://github.com/input-output-hk/daedalus/pull/892))
 - Improved text display by reducing letter-spacing ([PR 973](https://github.com/input-output-hk/daedalus/pull/973))
+- Log expected errors as debug messages only ([PR 916](https://github.com/input-output-hk/daedalus/pull/916))
+- Refactored npm scripts to use colon style ([PR 939](https://github.com/input-output-hk/daedalus/pull/939))
+- Refactored various magic numbers & strings into constants ([PR 881](https://github.com/input-output-hk/daedalus/pull/881))
 
 ## 0.10.1
 =======
