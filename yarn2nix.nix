@@ -23,7 +23,7 @@ yarn2nix.mkYarnPackage {
   DAEDALUS_VERSION = "${version}";
   NODE_ENV = "production";
   installPhase = ''
-    cp -vi ${daedalus.cfg}/etc/launcher-config.yaml ./launcher-config.yaml
+    cp -v ${daedalus.cfg}/etc/launcher-config.yaml ./launcher-config.yaml
     npm run build
     mkdir -p $out/bin $out/share/daedalus
     cp -R dist/* $out/share/daedalus
