@@ -7,6 +7,20 @@ const context = {};
 const DEFAULT_TIMEOUT = 20000;
 let scenariosCount = 0;
 
+const createNewApp = async () => {
+  const app = new Application({
+    path: electronPath,
+    args: ['./dist/main/index.js'],
+    env: {
+      NODE_ENV: environment.TEST,
+    },
+    waitTimeout: DEFAULT_TIMEOUT
+  });
+  await app.start();
+  await app.client.waitUntilWindowLoaded();
+  context.app = app;
+};
+
 const printMainProcessLogs = () => (
   context.app.client.getMainProcessLogs()
     .then((logs) => {
@@ -25,17 +39,7 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
 
   // Boot up the electron app before all features
   BeforeAll({ timeout: 5 * 60 * 1000 }, async () => {
-    const app = new Application({
-      path: electronPath,
-      args: ['./dist/main/index.js'],
-      env: {
-        NODE_ENV: environment.TEST,
-      },
-      waitTimeout: DEFAULT_TIMEOUT
-    });
-    await app.start();
-    await app.client.waitUntilWindowLoaded();
-    context.app = app;
+    await createNewApp();
   });
 
   // Make the electron app accessible in each scenario context
@@ -99,5 +103,10 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
       await printMainProcessLogs();
     }
     return context.app.stop();
+  });
+
+  // eslint-disable-next-line prefer-arrow-callback
+  After({ tags: '@preventAppQuit' }, async function () {
+    await createNewApp();
   });
 });

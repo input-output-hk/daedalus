@@ -19,6 +19,7 @@ Feature: Node Update Notification
     When I click the notification's postpone button
     Then I should not see the notification component anymore
 
+  @preventAppQuit
   Scenario: User accepts a node update notification
     When I click the notification's accept button
-    Then I should see the Daedalus window prepare to close
+    Then I should see the Daedalus window close
