@@ -17,7 +17,8 @@ in
   , tlsPath          = "${dataDir}/tls"
   }
 , pass      =
-  { nodePath            = "./cardano-node"
+  { statePath           = dataDir
+  , nodePath            = "./cardano-node"
   , nodeDbPath          = "${dataDir}/DB-1.0"
   , nodeLogConfig       = "log-config-prod.yaml"
   , nodeLogPath         = "${dataDir}/Logs/cardano-node.log"
