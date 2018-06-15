@@ -36,6 +36,7 @@ export default {
   '--theme-ada-redemption-disclaimer-checkbox-color-after': '#ab1700',
   '--theme-ada-redemption-disclaimer-checkbox-label-color': '#fafbfc',
   '--theme-ada-redemption-disclaimer-button-border-color': '#fafbfc',
+  '--theme-ada-redemption-no-wallets-instructions-color': '#5e6066',
 
   '--theme-autocomplete-bg-color': '#fafbfc',
   '--theme-autocomplete-border': '1px solid #c6cdd6',
@@ -231,6 +232,7 @@ export default {
   '--theme-icon-ada-redemption-attention-color': '#fafbfc',
   '--theme-icon-ada-redemption-success-color': '#fafbfc',
   '--theme-icon-ada-redemption-certificate-color': '#9eabbb',
+  '--theme-icon-ada-redemption-no-wallets': '#5e6066',
   '--theme-icon-ada-summary-wallet-amount-symbol-color': '#5e6066',
   '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color': '#5e6066',
   '--theme-icon-add-wallet-dialog-big-button-color': '#ababab',

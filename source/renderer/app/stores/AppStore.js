@@ -7,6 +7,7 @@ import { buildRoute } from '../utils/routing';
 import { OPEN_ABOUT_DIALOG_CHANNEL } from '../../../common/ipc-api/open-about-dialog';
 import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../../../common/ipc-api/go-to-ada-redemption-screen';
 import { ROUTES } from '../routes-config';
+import environment from '../../../common/environment';
 
 export default class AppStore extends Store {
 
@@ -49,7 +50,11 @@ export default class AppStore extends Store {
   };
 
   @action _goToAdaRedemptionScreen = () => {
-    this.actions.router.goToRoute.trigger({ route: ROUTES.ADA_REDEMPTION });
+    const { isConnected, isSynced, isSetupPage } = this.stores.networkStatus;
+    const { hasLoadedWallets } = this.stores[environment.API].wallets;
+    if (isConnected && isSynced && hasLoadedWallets && !isSetupPage) {
+      this.actions.router.goToRoute.trigger({ route: ROUTES.ADA_REDEMPTION });
+    }
   };
 
 }
