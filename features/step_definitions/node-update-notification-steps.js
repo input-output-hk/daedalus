@@ -65,5 +65,9 @@ Then(/^I should not see the notification component anymore$/, async function () 
 });
 
 Then(/^I should see the Daedalus window close$/, async function () {
-  await expect(this.running).to.equal(undefined);
+  // there is latency between the window closing and this test running, so setTimeout
+  await setTimeout(async () => {
+    const windowCount = await this.client.getWindowCount();
+    expect(windowCount).to.equal(0);
+  }, 1500);
 });
