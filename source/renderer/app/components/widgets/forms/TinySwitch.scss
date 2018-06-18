@@ -1,12 +1,21 @@
+$height: 12px !important;
+$width: 25px !important;
+
 .component {
   flex-direction: row;
 
   :global {
     .SimpleSwitch_switch {
-      height: 12px !important;
-      width: 25px !important;
+      margin-left: 6px;
+
+      &:not(.SimpleSwitch_checked) {
+        height: $height;
+        width: $width;
+      }
 
       &.SimpleSwitch_checked {
+        height: $height;
+        width: $width;
         span {
           left: 13px !important;
         }

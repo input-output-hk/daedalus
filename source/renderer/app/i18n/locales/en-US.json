@@ -40,7 +40,7 @@
   "cardano.node.update.notification.titleWithoutVersion": "Daedalus and Cardano node update is available",
   "environment.apiName.cardano": "Cardano",
   "environment.apiName.mantis": "Mantis",
-  "environment.apiVersion.cardano": "1.2.0",
+  "environment.apiVersion.cardano": "1.2.1",
   "environment.apiVersion.mantis": "1.0 rc1",
   "environment.currency.ada": "ADA",
   "environment.currency.etc": "ETC",
@@ -182,6 +182,7 @@
   "wallet.add.dialog.import.label": "Import",
   "wallet.add.dialog.join.description": "Join a shared wallet with up to 5 people",
   "wallet.add.dialog.join.label": "Join",
+  "wallet.add.dialog.maxNumberOfWalletsNotificationMessage": "You have reached the maximum of {maxWalletsCount} wallets.<br>No more wallets can be added.",
   "wallet.add.dialog.restore.label": "Restore",
   "wallet.add.dialog.restore.withCertificate.description": "Restore using backup-recovery phrase or paper wallet certificate.",
   "wallet.add.dialog.restore.withoutCertificate.description": "Restore wallet from backup",
@@ -276,6 +277,9 @@
   "wallet.redeem.disclaimerOverlay.disclaimerText": "ATTENTION: Redeeming on the Cardano Test-net will validate that your certificate or redemption key is correct and will allow you to redeem TEST-ADA for testing purposes only. KEEP your certificate or redemption key safe and secure. You will need to redeem again when Cardano SL launches the mainnet. TEST-ADA holds no value and cannot be exchanged.",
   "wallet.redeem.disclaimerOverlay.submitLabel": "Continue",
   "wallet.redeem.disclaimerOverlay.title": "Daedalus Redemption Disclamer",
+  "wallet.redeem.noWallets.createWalletLink": "Create your first wallet",
+  "wallet.redeem.noWallets.headLine": "Ada redemption is not available because you don't have any wallets.",
+  "wallet.redeem.noWallets.instructions": "Create a new wallet (or restore an existing one), come back here and choose it for Ada redemption.",
   "wallet.redeem.success.overlay.confirmButton": "Great",
   "wallet.redeem.success.overlay.headline": "You successfully redeemed your Ada!",
   "wallet.restore.dialog.form.errors.invalidRecoveryPhrase": "Invalid recovery phrase",
@@ -371,6 +375,5 @@
   "wallet.transaction.type.exchange": "Exchange",
   "wallet.transactions.no.transactions": "No transactions",
   "wallet.transactions.no.transactions.found": "No transactions found",
-  "wallet.transactions.search.hint": "!!!Search transaction",
-  "window.about.title": "Daedalus"
+  "wallet.transactions.search.hint": "!!!Search transaction"
 }

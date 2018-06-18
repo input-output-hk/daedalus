@@ -40,7 +40,7 @@
   "cardano.node.update.notification.titleWithoutVersion": "ダイダロス、カルダノノードの更新プログラムが入手可能です。",
   "environment.apiName.cardano": "カルダノ",
   "environment.apiName.mantis": "マンティス",
-  "environment.apiVersion.cardano": "1.2.0",
+  "environment.apiVersion.cardano": "1.2.1",
   "environment.apiVersion.mantis": "1.0 rc1",
   "environment.currency.ada": "ADA",
   "environment.currency.etc": "ETC",
@@ -182,6 +182,7 @@
   "wallet.add.dialog.import.label": "インポート",
   "wallet.add.dialog.join.description": "共有しているウォレットには５人まで参加可能",
   "wallet.add.dialog.join.label": "参加",
+  "wallet.add.dialog.maxNumberOfWalletsNotificationMessage": "ウォレットの上限数である{maxWalletsCount}個に達しました。<br>これ以上ウォレットを追加することができません。",
   "wallet.add.dialog.restore.label": "復元",
   "wallet.add.dialog.restore.withCertificate.description": "復元フレーズもしくはペーパーウォレット証明書を用いて復元する",
   "wallet.add.dialog.restore.withoutCertificate.description": "バックアップからウォレットを復元",
@@ -276,6 +277,9 @@
   "wallet.redeem.disclaimerOverlay.disclaimerText": "注意：テストネットでの還元はあなたの証明書または還元キーが正当なものであるということを証明し、テスト目的のみであるテスト版のAda(TEST-ADA)を手に入れることができます。なお、この証明書は正式版カルダノネットワーク(Cardano SL)が公開された際に再度還元作業を行って頂く必要がありますので、必ず安全な場所に保管してください。TEST-ADAは一切の価値を保有せず、TEST-ADAを用いた換金を行うことはできません。",
   "wallet.redeem.disclaimerOverlay.submitLabel": "次",
   "wallet.redeem.disclaimerOverlay.title": "ダイダロスを利用した還元に関する免責事項",
+  "wallet.redeem.noWallets.createWalletLink": "最初のウォレットを作成する",
+  "wallet.redeem.noWallets.headLine": "ウォレットがないためAdaの還元操作を行うことができません。",
+  "wallet.redeem.noWallets.instructions": "ウォレットの新規作成、もしくは既存のウォレットを復元し、還元を行ってください。",
   "wallet.redeem.success.overlay.confirmButton": "完了",
   "wallet.redeem.success.overlay.headline": "還元に成功しました",
   "wallet.restore.dialog.form.errors.invalidRecoveryPhrase": "無効な復元フレーズ",
@@ -371,6 +375,5 @@
   "wallet.transaction.type.exchange": "換金",
   "wallet.transactions.no.transactions": "トランザクションはありません",
   "wallet.transactions.no.transactions.found": "トランザクションが見つかりません",
-  "wallet.transactions.search.hint": "!!!Search transaction",
-  "window.about.title": "ダイダロス"
+  "wallet.transactions.search.hint": "!!!Search transaction"
 }

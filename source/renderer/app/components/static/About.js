@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
-import { ipcRenderer } from 'electron';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { environmentSpecificMessages } from '../../i18n/global-messages';
 import styles from './About.scss';
@@ -11,11 +10,6 @@ import mantisIcon from '../../assets/images/mantis-logo.inline.svg';
 import environment from '../../../../common/environment';
 
 const messages = defineMessages({
-  aboutWindowTitle: {
-    id: 'window.about.title',
-    defaultMessage: '!!!About Daedalus',
-    description: 'About Window "title"',
-  },
   aboutTitle: {
     id: 'static.about.title',
     defaultMessage: '!!!Daedalus',
@@ -73,10 +67,6 @@ export default class About extends Component<any> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  componentWillMount() {
-    ipcRenderer.send('about-window-title', this.context.intl.formatMessage(messages.aboutWindowTitle));
-  }
 
   render() {
     const { intl } = this.context;

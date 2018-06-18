@@ -25,6 +25,7 @@ storiesOf('AddWallet', module)
         onImportFile={() => {}}
         onRestore={() => {}}
         isRestoreActive={false}
+        isMaxNumberOfWalletsReached={false}
       />
     </div>
   ))
