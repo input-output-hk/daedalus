@@ -60,6 +60,7 @@ export default {
   '--theme-button-primary-background-color-disabled': 'rgba(83, 99, 112, 0.3)',
   '--theme-button-primary-text-color-disabled': 'rgba(233, 244, 254, 0.5)',
   '--theme-button-primary-text-color': '#e9f4fe',
+  '--theme-button-primary-outline-color': '#8497a7',
 
   '--theme-button-flat-background-color': 'rgba(83, 99, 112, 0.3)',
   '--theme-button-flat-background-color-hover': 'rgba(102, 122, 138, 0.3)',

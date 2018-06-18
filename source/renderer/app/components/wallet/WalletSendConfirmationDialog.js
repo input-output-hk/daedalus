@@ -85,15 +85,6 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  componentDidMount() {
-    // This is necessary otherwise the transaction is submitted from the form's enter
-    setTimeout(() => window.addEventListener('keypress', this.submitOnEnter), 0);
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('keypress', this.submitOnEnter);
-  }
-
   form = new ReactToolboxMobxForm({
     fields: {
       walletPassword: {
@@ -174,6 +165,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
         title={intl.formatMessage(messages.dialogTitle)}
         actions={actions}
         closeOnOverlayClick
+        primaryButtonAutoFocus
         onClose={!isSubmitting ? onCancel : null}
         className={styles.dialog}
         closeButton={<DialogCloseButton />}
