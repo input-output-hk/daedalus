@@ -87,11 +87,11 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
 
   componentDidMount() {
     // This is necessary otherwise the transaction is submitted from the form's enter
-    setTimeout(() => window.addEventListener("keypress", this.submitOnEnter), 0);
+    setTimeout(() => window.addEventListener('keypress', this.submitOnEnter), 0);
   }
 
   componentWillUnmount() {
-    window.removeEventListener("keypress", this.submitOnEnter);
+    window.removeEventListener('keypress', this.submitOnEnter);
   }
 
   form = new ReactToolboxMobxForm({
@@ -132,7 +132,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
     });
   }
 
-  submitOnEnter = (event) => submitOnEnter(this.submit, event);
+  submitOnEnter = (event: {}) => submitOnEnter(this.submit, event);
 
   render() {
     const { form } = this;
