@@ -12,6 +12,7 @@ import Dialog from '../../../widgets/Dialog';
 import LocalizableError from '../../../../i18n/LocalizableError';
 import styles from './WalletExportToFileDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../../config/timingConfig';
+import { submitOnEnter } from '../../../../utils/form';
 
 const messages = defineMessages({
   headline: {
@@ -188,6 +189,7 @@ export default class WalletExportToFileDialog extends Component<Props, State> {
             {...spendingPasswordField.bind()}
             error={spendingPasswordField.error}
             skin={<SimpleInputSkin />}
+            onKeyPress={submitOnEnter.bind(this, this.submit)}
           />
         ) : null}
 
