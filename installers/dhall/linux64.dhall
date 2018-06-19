@@ -15,7 +15,8 @@ in
   , tlsPath          = "${dataDir}/tls"
   }
 , pass      =
-  { nodePath            = "cardano-node"
+  { statePath           = "${dataDir}/${cluster.name}"
+  , nodePath            = "cardano-node"
   , nodeDbPath          = "${dataDir}/DB/"
   , nodeLogConfig       = "\${DAEDALUS_CONFIG}/daedalus.yaml"
   , nodeLogPath         = "${dataDir}/Logs/cardano-node.log"

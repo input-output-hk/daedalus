@@ -12,7 +12,8 @@
   , tlsPath          : Text
   }
 , pass :
-  { nodePath            : Text
+  { statePath           : Text
+  , nodePath            : Text
   , nodeDbPath          : Text
   , nodeLogConfig       : Text
   , nodeLogPath         : Text
