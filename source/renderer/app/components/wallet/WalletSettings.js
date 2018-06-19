@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import type { ComponentType } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
@@ -72,6 +73,7 @@ type Props = {
   isSubmitting: boolean,
   isInvalid: boolean,
   lastUpdatedField: ?string,
+  changeWalletPasswordDialog: ComponentType<any>,
 };
 
 @observer
@@ -98,6 +100,7 @@ export default class WalletSettings extends Component<Props> {
       nameValidator, activeField,
       isSubmitting, isInvalid,
       lastUpdatedField,
+      changeWalletPasswordDialog
     } = this.props;
 
     const assuranceLevelOptions = assuranceLevels.map(assurance => ({
@@ -175,7 +178,7 @@ export default class WalletSettings extends Component<Props> {
         </BorderedBox>
 
         {isDialogOpen(ChangeWalletPasswordDialog) ? (
-          <ChangeWalletPasswordDialogContainer />
+          changeWalletPasswordDialog
         ) : false}
 
         {isDialogOpen(DeleteWalletConfirmationDialog) ? (

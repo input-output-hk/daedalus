@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import WalletSettings from '../../components/wallet/WalletSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { isValidWalletName } from '../../utils/validations';
+import ChangeWalletPasswordDialogContainer from './dialogs/ChangeWalletPasswordDialogContainer';
 
 type Props = InjectedProps
 
@@ -52,6 +53,7 @@ export default class WalletSettingsPage extends Component<Props> {
         onCancelEditing={cancelEditingWalletField.trigger}
         activeField={walletFieldBeingEdited}
         nameValidator={name => isValidWalletName(name)}
+        changeWalletPasswordDialog={<ChangeWalletPasswordDialogContainer />}
       />
     );
   }

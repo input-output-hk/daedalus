@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { storiesOf } from '@storybook/react';
+import { storiesOf, action } from '@storybook/react';
 import { linkTo } from '@storybook/addon-links';
 import { withKnobs, text, boolean, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
@@ -22,7 +22,11 @@ import WalletSummary from '../../source/renderer/app/components/wallet/summary/W
 import WalletSendForm from '../../source/renderer/app/components/wallet/WalletSendForm';
 import WalletReceive from '../../source/renderer/app/components/wallet/WalletReceive';
 import WalletTransactionsList from '../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
-// import WalletSettings from '../../source/renderer/app/components/wallet/WalletSettings';
+import WalletSettings from '../../source/renderer/app/components/wallet/WalletSettings';
+import { assuranceModeOptions } from '../../source/renderer/app/types/transactionAssuranceTypes';
+import ChangeWalletPasswordDialog from '../../source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog';
+import LocalizableError from '../../source/renderer/app/i18n/LocalizableError';
+import environment from '../../source/common/environment';
 
 
 storiesOf('WalletScreens', module)
@@ -132,42 +136,60 @@ storiesOf('WalletScreens', module)
       walletId="test-wallet"
       formattedWalletAmount={formattedWalletAmount}
     />
-  ));
+  ))
 
-// .add('Settings', () => (
-//   <WalletSettings
-//     activeField={null}
-//     assuranceLevels={[
-//       {
-//         "value": assuranceModeOptions.NORMAL,
-//         "label": {
-//           id: 'global.assuranceLevel.normal',
-//           defaultMessage: '!!!Normal',
-//           description: ''
-//         }
-//       },
-//       {
-//         "value": assuranceModeOptions.STRICT,
-//         "label": {
-//           id: 'global.assuranceLevel.strict',
-//           defaultMessage: '!!!Strict',
-//           description: ''
-//         }
-//       }
-//     ]}
-//     isDialogOpen={()=>false}
-//     isInvalid={false}
-//     isSubmitting={false}
-//     isWalletPasswordSet={false}
-//     lastUpdatedField={null}
-//     nameValidator={()=>true}
-//     onCancelEditing={() => {}}
-//     onFieldValueChange={() => {}}
-//     onStartEditing={() => {}}
-//     onStopEditing={() => {}}
-//     openDialogAction={() => {}}
-//     walletAssurance={assuranceModeOptions.NORMAL}
-//     walletName="Test wallet"
-//     walletPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
-//   />
-// ));
+  .add('Settings', () => (
+    <WalletSettings
+      activeField={null}
+      assuranceLevels={[
+        {
+          value: assuranceModeOptions.NORMAL,
+          label: {
+            id: 'global.assuranceLevel.normal',
+            defaultMessage: '!!!Normal',
+            description: ''
+          }
+        },
+        {
+          value: assuranceModeOptions.STRICT,
+          label: {
+            id: 'global.assuranceLevel.strict',
+            defaultMessage: '!!!Strict',
+            description: ''
+          }
+        }
+      ]}
+      isDialogOpen={(dialog) => {
+        if (dialog === ChangeWalletPasswordDialog) {
+          return boolean('showChangeWalletPasswordDialog', false);
+        }
+      }}
+      isInvalid={false}
+      isSubmitting={false}
+      isWalletPasswordSet={boolean('isWalletPasswordSet', false)}
+      lastUpdatedField={null}
+      nameValidator={() => true}
+      onCancelEditing={() => {}}
+      onFieldValueChange={() => {}}
+      onStartEditing={() => {}}
+      onStopEditing={() => {}}
+      openDialogAction={() => {}}
+      walletAssurance={assuranceModeOptions.NORMAL}
+      walletName="Test wallet"
+      walletPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
+      changeWalletPasswordDialog={
+        <ChangeWalletPasswordDialog
+          currentPasswordValue="current"
+          newPasswordValue="new"
+          repeatedPasswordValue="new"
+          isWalletPasswordSet={boolean('isWalletPasswordSet', false)}
+          onSave={action('ChangeWalletPasswordDialog::onSave')}
+          onCancel={action('ChangeWalletPasswordDialog::onCancel')}
+          onPasswordSwitchToggle={action('ChangeWalletPasswordDialog::onPasswordSwitchToggle')}
+          onDataChange={action('ChangeWalletPasswordDialog::onDataChange')}
+          isSubmitting={boolean('isSubmittingChangeWalletPasswordDialog', false)}
+          error={null}
+        />
+      }
+    />
+  ));
