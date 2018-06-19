@@ -12,7 +12,6 @@ import InlineEditingDropdown from '../widgets/forms/InlineEditingDropdown';
 import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
 import DeleteWalletButton from './settings/DeleteWalletButton';
 import DeleteWalletConfirmationDialog from './settings/DeleteWalletConfirmationDialog';
-import DeleteWalletDialogContainer from '../../containers/wallet/dialogs/DeleteWalletDialogContainer';
 import WalletExportDialog from './settings/export-to-file/WalletExportToFileDialog';
 // import WalletExportToFileDialogContainer
 // from '../../containers/wallet/settings/WalletExportToFileDialogContainer';
@@ -73,6 +72,7 @@ type Props = {
   isInvalid: boolean,
   lastUpdatedField: ?string,
   changeWalletPasswordDialog: Node,
+  deleteWalletDialogContainer: Node,
 };
 
 @observer
@@ -99,7 +99,8 @@ export default class WalletSettings extends Component<Props> {
       nameValidator, activeField,
       isSubmitting, isInvalid,
       lastUpdatedField,
-      changeWalletPasswordDialog
+      changeWalletPasswordDialog,
+      deleteWalletDialogContainer
     } = this.props;
 
     const assuranceLevelOptions = assuranceLevels.map(assurance => ({
@@ -181,7 +182,7 @@ export default class WalletSettings extends Component<Props> {
         ) : false}
 
         {isDialogOpen(DeleteWalletConfirmationDialog) ? (
-          <DeleteWalletDialogContainer />
+          deleteWalletDialogContainer
         ) : false}
 
         {isDialogOpen(WalletExportDialog) ? (

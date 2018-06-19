@@ -25,7 +25,7 @@ import WalletTransactionsList from '../../source/renderer/app/components/wallet/
 import WalletSettings from '../../source/renderer/app/components/wallet/WalletSettings';
 import { assuranceModeOptions } from '../../source/renderer/app/types/transactionAssuranceTypes';
 import ChangeWalletPasswordDialog from '../../source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog';
-
+import DeleteWalletConfirmationDialog from '../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 
 storiesOf('WalletScreens', module)
 
@@ -68,7 +68,7 @@ storiesOf('WalletScreens', module)
 
   .add('Summary', () => (
     <WalletSummary
-      walletName={text('Wallet name', 'Wallet name')}
+      walletName={text('Wallet Name', 'Wallet name')}
       amount={text('Amount', '45119903750165.23')}
       pendingAmount={{
         incoming: new BigNumber(number('Incoming', 1)),
@@ -161,6 +161,9 @@ storiesOf('WalletScreens', module)
         if (dialog === ChangeWalletPasswordDialog) {
           return boolean('showChangeWalletPasswordDialog', false);
         }
+        if (dialog === DeleteWalletConfirmationDialog) {
+          return boolean('showDeleteWalletConfirmationDialog', false);
+        }
       }}
       isInvalid={false}
       isSubmitting={false}
@@ -173,7 +176,7 @@ storiesOf('WalletScreens', module)
       onStopEditing={() => {}}
       openDialogAction={() => {}}
       walletAssurance={assuranceModeOptions.NORMAL}
-      walletName="Test wallet"
+      walletName={text('Wallet Name', 'Wallet Name')}
       walletPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
       changeWalletPasswordDialog={
         <ChangeWalletPasswordDialog
@@ -185,8 +188,22 @@ storiesOf('WalletScreens', module)
           onCancel={action('ChangeWalletPasswordDialog::onCancel')}
           onPasswordSwitchToggle={action('ChangeWalletPasswordDialog::onPasswordSwitchToggle')}
           onDataChange={action('ChangeWalletPasswordDialog::onDataChange')}
-          isSubmitting={boolean('isSubmittingChangeWalletPasswordDialog', false)}
+          isSubmitting={boolean('ChangeWalletPasswordDialog::isSubmitting', false)}
           error={null}
+        />
+      }
+      deleteWalletDialogContainer={
+        <DeleteWalletConfirmationDialog
+          walletName={text('DeleteWalletConfirmationDialog: Wallet Name', 'Wallet To Delete')}
+          hasWalletFunds={boolean('hasWalletFunds', false)}
+          countdownFn={() => number('Delete Wallet Countdown', 9)}
+          isBackupNoticeAccepted={boolean('isBackupNoticeAccepted', false)}
+          onAcceptBackupNotice={action('DeleteWalletConfirmationDialog::onAcceptBackupNotice')}
+          onContinue={action('DeleteWalletConfirmationDialog::onContinue')}
+          onCancel={action('DeleteWalletConfirmationDialog::onCancel')}
+          confirmationValue={text('Delete Wallet Confirmation Value')}
+          onConfirmationValueChange={action('DeleteWalletConfirmationDialog::onConfirmationValueChange')}
+          isSubmitting={boolean('DeleteWalletConfirmationDialog::isSubmitting', false)}
         />
       }
     />
