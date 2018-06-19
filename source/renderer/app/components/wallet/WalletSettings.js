@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import type { ComponentType } from 'react';
+import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
@@ -18,7 +18,6 @@ import WalletExportDialog from './settings/export-to-file/WalletExportToFileDial
 // from '../../containers/wallet/settings/WalletExportToFileDialogContainer';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
 import ChangeWalletPasswordDialog from './settings/ChangeWalletPasswordDialog';
-import ChangeWalletPasswordDialogContainer from '../../containers/wallet/dialogs/ChangeWalletPasswordDialogContainer';
 import globalMessages from '../../i18n/global-messages';
 import styles from './WalletSettings.scss';
 
@@ -73,7 +72,7 @@ type Props = {
   isSubmitting: boolean,
   isInvalid: boolean,
   lastUpdatedField: ?string,
-  changeWalletPasswordDialog: ComponentType<any>,
+  changeWalletPasswordDialog: Node,
 };
 
 @observer

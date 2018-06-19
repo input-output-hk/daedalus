@@ -25,8 +25,6 @@ import WalletTransactionsList from '../../source/renderer/app/components/wallet/
 import WalletSettings from '../../source/renderer/app/components/wallet/WalletSettings';
 import { assuranceModeOptions } from '../../source/renderer/app/types/transactionAssuranceTypes';
 import ChangeWalletPasswordDialog from '../../source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog';
-import LocalizableError from '../../source/renderer/app/i18n/LocalizableError';
-import environment from '../../source/common/environment';
 
 
 storiesOf('WalletScreens', module)
