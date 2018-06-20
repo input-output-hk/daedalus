@@ -79,7 +79,8 @@ type Props = {
   currentLocale: string,
   handleReportIssue: Function,
   onProblemSolutionClick: Function,
-  issuesDetected: Array
+  isAnalyzingIssues: boolean,
+  issuesDetected: Array<any>
 };
 
 @observer
@@ -150,6 +151,7 @@ export default class Loading extends Component<Props, State> {
       currentLocale,
       handleReportIssue,
       onProblemSolutionClick,
+      isAnalyzingIssues,
       issuesDetected
     } = this.props;
 
@@ -240,6 +242,7 @@ export default class Loading extends Component<Props, State> {
                 <div className={styles.issuesDetection}>
                   <IssuesDetection
                     onExternalLinkClick={() => {}}
+                    isAnalyzingIssues={isAnalyzingIssues}
                     issuesDetected={issuesDetected}
                   />
                 </div>

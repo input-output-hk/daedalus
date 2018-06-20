@@ -62,7 +62,8 @@ type Props = {
   onExternalLinkClick: Function,
   onSupportRequestClick: Function,
   onDownloadLogs: Function,
-  issuesDetected: Array
+  isAnalyzingIssues: boolean,
+  issuesDetected: Array<any>
 };
 
 @observer
@@ -77,7 +78,8 @@ export default class SupportSettings extends Component<Props> {
       onExternalLinkClick,
       onSupportRequestClick,
       onDownloadLogs,
-      issuesDetected
+      isAnalyzingIssues,
+      issuesDetected,
     } = this.props;
     const { intl } = this.context;
 
@@ -107,6 +109,7 @@ export default class SupportSettings extends Component<Props> {
 
         <IssuesDetection
           onExternalLinkClick={onExternalLinkClick}
+          isAnalyzingIssues={isAnalyzingIssues}
           issuesDetected={issuesDetected}
         />
 

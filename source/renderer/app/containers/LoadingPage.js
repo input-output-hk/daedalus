@@ -49,6 +49,8 @@ export default class LoadingPage extends Component<InjectedProps> {
           currentLocale={currentLocale}
           handleReportIssue={this.handleReportIssue}
           onProblemSolutionClick={this.handleProblemSolutionClick}
+          isAnalyzingIssues={false}
+          issuesDetected={[]}
         />
         <WalletSupportRequestPage />
       </CenteredLayout>

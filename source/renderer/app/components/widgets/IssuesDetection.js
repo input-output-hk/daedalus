@@ -38,7 +38,13 @@ const messages = defineMessages({
 });
 
 type Props = {
-  issuesDetected: ?Array<{}>
+  isAnalyzingIssues: boolean,
+  issuesDetected: Array<any>,
+  onExternalLinkClick: Function,
+};
+
+export type Issue = {
+  title: string
 };
 
 @observer
@@ -51,7 +57,8 @@ export default class SupportSettings extends Component<Props> {
   render() {
     const {
       onExternalLinkClick,
-      issuesDetected
+      isAnalyzingIssues,
+      issuesDetected,
     } = this.props;
     const { intl } = this.context;
 
@@ -65,7 +72,7 @@ export default class SupportSettings extends Component<Props> {
     );
 
     let issuesTitle;
-    if (issuesDetected === null) issuesTitle = intl.formatMessage(messages.issuesContentAnalyzing);
+    if (isAnalyzingIssues) issuesTitle = intl.formatMessage(messages.issuesContentAnalyzing);
     else if (issuesDetected.length) issuesTitle = intl.formatMessage(messages.issuesContentFound);
     else issuesTitle = intl.formatMessage(messages.issuesContentNotFound);
 
@@ -83,9 +90,9 @@ export default class SupportSettings extends Component<Props> {
 
         <ul>
           {
-            (issuesDetected && issuesDetected.length)
+            (issuesDetected.length)
             ? (
-                issuesDetected.map((issue: {}, index) => (
+                issuesDetected.map((issue: any, index) => (
                   <li key={index}>
                     {issue.title}
                     &nbsp;&rarr;&nbsp;

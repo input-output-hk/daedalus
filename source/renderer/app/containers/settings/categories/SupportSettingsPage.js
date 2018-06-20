@@ -37,6 +37,7 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
         onExternalLinkClick={this.handleExternalLinkClick}
         onSupportRequestClick={this.handleSupportRequestClick}
         onDownloadLogs={this.handleDownloadLogs}
+        isAnalyzingIssues={false}
         issuesDetected={[]}
       />
     );
