@@ -42,11 +42,4 @@
     }
   }
 
-  :global {
-    button.primary:focus {
-      outline: var(--theme-button-primary-outline-color) dotted 1px;
-      outline-offset: -5px;
-    }
-  }
-
 }

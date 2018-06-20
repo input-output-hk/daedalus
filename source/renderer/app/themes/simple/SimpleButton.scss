@@ -12,6 +12,11 @@
   position: relative;
   text-transform: none;
   width: 360px;
+  padding: 0;
+
+  &:focus {
+    border: 4px solid;
+  }
 }
 
 :global {
@@ -35,6 +40,15 @@
         background: var(--theme-button-primary-background-color-active);
       }
     }
+    &:focus {
+      border-color: var(--theme-button-primary-outline-color);
+      &:hover {
+        border-color: var(--theme-button-primary-outline-focus-color);
+      }
+      &:active {
+        border-color: var(--theme-button-primary-outline-active-color);
+      }
+    }
   }
 
   .flat {
@@ -56,6 +70,15 @@
       }
       &:active {
         background-color: var(--theme-button-flat-background-color-active);
+      }
+    }
+    &:focus {
+      border-color: var(--theme-button-flat-outline-color);
+      &:hover {
+        border-color: var(--theme-button-flat-outline-focus-color);
+      }
+      &:active {
+        border-color: var(--theme-button-flat-outline-active-color);
       }
     }
   }
