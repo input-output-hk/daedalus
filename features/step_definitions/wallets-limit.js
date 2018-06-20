@@ -1,7 +1,6 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
-import { createWallets } from '../support/helpers/wallets-helpers';
-import { createRawTable } from '../support/helpers/shared-helpers';
+import { createWallets, getWalletByName } from '../support/helpers/wallets-helpers';
 import { MAX_ADA_WALLETS_COUNT } from '../../source/renderer/app/config/numbersConfig';
 
 Given('I create wallets until I reach the maximum number permitted', async function () {
@@ -9,7 +8,7 @@ Given('I create wallets until I reach the maximum number permitted', async funct
     name: `Wallet ${i + 1}`,
     password: ''
   }));
-  await createWallets(createRawTable(wallets), this);
+  await createWallets(wallets, this);
 });
 
 When('I should see maximum number of wallets in the wallets list', async function () {
@@ -17,12 +16,27 @@ When('I should see maximum number of wallets in the wallets list', async functio
   expect(wallets.value.length).to.equal(MAX_ADA_WALLETS_COUNT);
 });
 
-Then(/^The buttons in the Add Wallet screen should be (disabled|enabled)/, async function (state) {
+When('I delete the last wallet', async function () {
+  const wallet = getWalletByName.call(this, 'Wallet 20');
+  await this.client.execute(
+    walletId => daedalus.actions.ada.wallets.deleteWallet.trigger({ walletId }),
+    wallet.id
+  );
+  await this.client.waitUntil(async () => {
+    const wallets = await this.client.elements('.SidebarWalletMenuItem_component');
+    return wallets.value.length < MAX_ADA_WALLETS_COUNT;
+  });
+});
+
+Then(/^the buttons in the Add Wallet screen should be (disabled|enabled)/, async function (state) {
   const isDisabled = state === 'disabled' ? 'true' : null;
+
+  await this.client.waitForVisible('.WalletAdd_buttonsContainer .BigButtonForDialogs_component');
+
   const buttonsAreDisabled = await this.client
     .getAttribute('.WalletAdd_buttonsContainer .BigButtonForDialogs_component', 'disabled');
 
-  // Excludes the Join shared wallet button
+  // Excludes the "Join shared wallet" button
   buttonsAreDisabled.splice(1, 1);
 
   expect(buttonsAreDisabled)

@@ -46,7 +46,7 @@ Given(/^I have a "Genesis wallet" with funds and password$/, async function () {
 });
 
 Given(/^I have the following wallets:$/, async function (table) {
-  await createWallets(table, this);
+  await createWallets(table.hashes(), this);
 });
 
 Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function (walletName, screen) {

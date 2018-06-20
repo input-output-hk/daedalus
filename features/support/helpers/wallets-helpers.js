@@ -89,7 +89,7 @@ export const createWallets = async (table, context) => {
           .catch((error) => done(error))
       ))
       .catch((error) => done(error.stack));
-  }, table.hashes());
+  }, table);
   // Add or set the wallets for this scenario
   if (context.wallets != null) {
     context.wallets.push(...result.value);
