@@ -1,4 +1,6 @@
-<sub>Author: [Nikola Glumac](https://github.com/nikolaglumac)<br/>Status: Active</sub>
+<blockquote>
+<sub>Document maintainer: Nikola Glumac<br/>Document status: Active</sub>
+</blockquote>
 
 # Daedalus TLS setup
 
