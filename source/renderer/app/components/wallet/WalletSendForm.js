@@ -288,7 +288,7 @@ export default class WalletSendForm extends Component<Props, State> {
               <Button
                 className={buttonClasses}
                 label={intl.formatMessage(messages.nextButtonLabel)}
-                onMouseUp={this.handleOnSubmit}
+                onClick={this.handleOnSubmit}
                 disabled={this._isCalculatingFee || !isTransactionFeeCalculated}
                 skin={<SimpleButtonSkin />}
               />
