@@ -664,7 +664,7 @@ export default class AdaRedemptionForm extends Component<Props> {
             <Button
               className={submitButtonClasses}
               label={intl.formatMessage(messages.submitLabel)}
-              onMouseUp={submit}
+              onClick={submit}
               disabled={!canSubmit}
               skin={<SimpleButtonSkin />}
             />
