@@ -43,7 +43,7 @@
     &:focus {
       border-color: var(--theme-button-primary-outline-color);
       &:hover {
-        border-color: var(--theme-button-primary-outline-focus-color);
+        border-color: var(--theme-button-primary-outline-hover-color);
       }
       &:active {
         border-color: var(--theme-button-primary-outline-active-color);
@@ -75,7 +75,7 @@
     &:focus {
       border-color: var(--theme-button-flat-outline-color);
       &:hover {
-        border-color: var(--theme-button-flat-outline-focus-color);
+        border-color: var(--theme-button-flat-outline-hover-color);
       }
       &:active {
         border-color: var(--theme-button-flat-outline-active-color);
