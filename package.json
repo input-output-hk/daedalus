@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
@@ -105,7 +105,7 @@
     "webpack": "3.6.0",
     "webpack-module-hot-accept": "1.0.5",
     "webpack-sources": "1.0.1",
-    "webpack-stream": "4.0.0",
+    "webpack-stream": "4.0.3",
     "yamljs": "0.3.0",
     "yargs": "10.0.3"
   },
@@ -155,7 +155,6 @@
     "safe-buffer": "5.1.1",
     "source-map-support": "0.5.0",
     "split-file": "2.1.0",
-    "svg-to-pdfkit": "0.1.7",
     "unorm": "1.4.1",
     "validator": "9.1.2",
     "web3-utils": "1.0.0-beta.30"

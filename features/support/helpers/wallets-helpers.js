@@ -68,3 +68,32 @@ export const importWalletWithFunds = async (client, { keyFilePath, password }) =
       .catch((error) => done(error));
   }, keyFilePath, password)
 );
+
+export const createWallets = async (table, context) => {
+
+  const result = await context.client.executeAsync((wallets, done) => {
+    window.Promise.all(wallets.map((wallet) => (
+      daedalus.api.ada.createWallet({
+        name: wallet.name,
+        mnemonic: daedalus.utils.crypto.generateMnemonic(),
+        password: wallet.password || null,
+      })
+    )))
+      .then(() => (
+        daedalus.stores.ada.wallets.walletsRequest.execute()
+          .then((storeWallets) => (
+            daedalus.stores.ada.wallets.refreshWalletsData()
+              .then(() => done(storeWallets))
+              .catch((error) => done(error))
+          ))
+          .catch((error) => done(error))
+      ))
+      .catch((error) => done(error.stack));
+  }, table);
+  // Add or set the wallets for this scenario
+  if (context.wallets != null) {
+    context.wallets.push(...result.value);
+  } else {
+    context.wallets = result.value;
+  }
+};

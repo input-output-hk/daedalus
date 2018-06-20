@@ -10,6 +10,7 @@ import importIcon from '../../assets/images/import-ic.inline.svg';
 import joinSharedIcon from '../../assets/images/join-shared-ic.inline.svg';
 import restoreIcon from '../../assets/images/restore-ic.inline.svg';
 import environment from '../../../../common/environment';
+import { MAX_ADA_WALLETS_COUNT } from '../../config/numbersConfig';
 
 const messages = defineMessages({
   title: {
@@ -67,6 +68,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Wallet restoration is currently in progress. Until it completes, it is not possible to restore or import new wallets.',
     description: 'Restore notification message shown during async wallet restore on the wallet add screen.',
   },
+  maxNumberOfWalletsNotificationMessage: {
+    id: 'wallet.add.dialog.maxNumberOfWalletsNotificationMessage',
+    defaultMessage: '!!!You have reached the maximum of 50 wallets.<br>No more wallets can be added.',
+    description: '"Maximum number of wallets reached" notification message shown on the wallet add screen if user has 50 wallets.',
+  },
 });
 
 type Props = {
@@ -74,6 +80,7 @@ type Props = {
   onRestore: Function,
   onImportFile: Function,
   isRestoreActive: boolean,
+  isMaxNumberOfWalletsReached: boolean,
 };
 
 @observer
@@ -85,13 +92,23 @@ export default class WalletAdd extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onCreate, onRestore, onImportFile, isRestoreActive } = this.props;
+    const {
+      onCreate, onRestore, onImportFile,
+      isRestoreActive, isMaxNumberOfWalletsReached,
+    } = this.props;
 
     const restoreButtonDescription = environment.isAdaApi()
       ? messages.restoreWithCertificateDescription
       : messages.restoreWithoutCertificateDescription;
 
     const componentClasses = classnames([styles.component, 'WalletAdd']);
+
+    let activeNotification = null;
+    if (isMaxNumberOfWalletsReached) {
+      activeNotification = 'maxNumberOfWalletsNotificationMessage';
+    } else if (isRestoreActive) {
+      activeNotification = 'restoreNotificationMessage';
+    }
 
     return (
       <div className={componentClasses}>
@@ -103,6 +120,7 @@ export default class WalletAdd extends Component<Props> {
               icon={createIcon}
               label={intl.formatMessage(messages.createLabel)}
               description={intl.formatMessage(messages.createDescription)}
+              isDisabled={isMaxNumberOfWalletsReached}
             />
             <BigButtonForDialogs
               className="joinWalletButton"
@@ -119,7 +137,7 @@ export default class WalletAdd extends Component<Props> {
               icon={restoreIcon}
               label={intl.formatMessage(messages.restoreLabel)}
               description={intl.formatMessage(restoreButtonDescription)}
-              isDisabled={isRestoreActive}
+              isDisabled={isMaxNumberOfWalletsReached || isRestoreActive}
             />
             <BigButtonForDialogs
               className="importWalletButton"
@@ -128,15 +146,19 @@ export default class WalletAdd extends Component<Props> {
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}
               isDisabled={
+                isMaxNumberOfWalletsReached ||
                 isRestoreActive ||
                 environment.isEtcApi() ||
                 (environment.isAdaApi() && environment.isMainnet())
               }
             />
           </div>
-          {isRestoreActive ? (
-            <div className={styles.restoreNotification}>
-              <FormattedHTMLMessage {...messages.restoreNotificationMessage} />
+          {activeNotification ? (
+            <div className={styles.notification}>
+              <FormattedHTMLMessage
+                {...messages[activeNotification]}
+                values={{ maxWalletsCount: MAX_ADA_WALLETS_COUNT }}
+              />
             </div>
           ) : null}
         </div>

@@ -210,9 +210,7 @@ export default class WalletsStore extends Store {
   );
 
   _showAddWalletPageWhenNoWallets = () => {
-    const { currentRoute } = this.stores.app;
-    const isAdaRedemptionRoute = matchRoute(ROUTES.ADA_REDEMPTION, currentRoute);
-    const isRouteThatNeedsWallets = this.isWalletRoute || isAdaRedemptionRoute;
+    const isRouteThatNeedsWallets = this.isWalletRoute;
     if (isRouteThatNeedsWallets && !this.hasAnyWallets) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });
     }

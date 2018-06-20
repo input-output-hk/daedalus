@@ -1,24 +1,20 @@
-{ stdenv, runCommand, writeText, writeScriptBin, fetchurl, fetchFromGitHub, openssl, electron,
+{ stdenv, runCommand, writeText, writeScriptBin, fetchurl, fetchFromGitHub, electron,
 coreutils, utillinux, procps, cluster,
 rawapp, daedalus-bridge, daedalus-installer,
 sandboxed ? false
 }:
 
 let
-  slimOpenssl = runCommand "openssl" {} ''
-    mkdir -pv $out/bin/
-    cp ${openssl}/bin/openssl $out/bin/
-  '';
   daedalus-config = runCommand "daedalus-config" {} ''
     mkdir -pv $out
     cd $out
-    cp -vi ${daedalus-bridge}/config/configuration.yaml configuration.yaml
+    cp -v ${daedalus-bridge}/config/configuration.yaml configuration.yaml
     ## TODO: we don't need both of those genesis files (even if file names sound cool),
     ##       but the choice would have to be made in the Dhall-generated files,
     ##       splitting the dep chain further:
-    cp -vi ${daedalus-bridge}/config/mainnet-genesis-dryrun-with-stakeholders.json mainnet-genesis-dryrun-with-stakeholders.json
-    cp -vi ${daedalus-bridge}/config/mainnet-genesis.json mainnet-genesis.json
-    cp -vi ${daedalus-bridge}/config/log-config-prod.yaml daedalus.yaml
+    cp -v ${daedalus-bridge}/config/mainnet-genesis-dryrun-with-stakeholders.json mainnet-genesis-dryrun-with-stakeholders.json
+    cp -v ${daedalus-bridge}/config/mainnet-genesis.json mainnet-genesis.json
+    cp -v ${daedalus-bridge}/config/log-config-prod.yaml daedalus.yaml
     ${daedalus-installer}/bin/make-installer --out-dir "." --cluster ${cluster} config "${daedalus-installer.src}/dhall" "."
   '';
   # closure size TODO list
@@ -51,11 +47,6 @@ let
     mkdir -p "''${DAEDALUS_DIR}/${cluster}/"{Logs/pub,Secrets}
     cd "''${DAEDALUS_DIR}/${cluster}/"
 
-    if [ ! -d tls ]; then
-      mkdir -p tls/{server,ca}
-      ${slimOpenssl}/bin/openssl req -x509 -newkey rsa:2048 -keyout tls/server/server.key -out tls/server/server.crt -days 3650 -nodes -subj "/CN=localhost"
-      cp tls/server/server.crt tls/ca/ca.crt
-    fi
     exec ${daedalus-bridge}/bin/cardano-launcher \
       --config ${if sandboxed then "/nix/var/nix/profiles/profile-${cluster}/etc/launcher-config.yaml" else "${daedalus-config}/launcher-config.yaml"}
   '';

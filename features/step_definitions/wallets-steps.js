@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import path from 'path';
 import BigNumber from 'bignumber.js';
 import {
+  createWallets,
   fillOutWalletSendForm,
   getWalletByName,
   waitUntilWalletIsLoaded,
@@ -45,31 +46,7 @@ Given(/^I have a "Genesis wallet" with funds and password$/, async function () {
 });
 
 Given(/^I have the following wallets:$/, async function (table) {
-  const result = await this.client.executeAsync((wallets, done) => {
-    window.Promise.all(wallets.map((wallet) => (
-      daedalus.api.ada.createWallet({
-        name: wallet.name,
-        mnemonic: daedalus.utils.crypto.generateMnemonic(),
-        password: wallet.password || null,
-      })
-    )))
-      .then(() => (
-        daedalus.stores.ada.wallets.walletsRequest.execute()
-          .then((storeWallets) => (
-            daedalus.stores.ada.wallets.refreshWalletsData()
-              .then(() => done(storeWallets))
-              .catch((error) => done(error))
-          ))
-          .catch((error) => done(error))
-      ))
-      .catch((error) => done(error.stack));
-  }, table.hashes());
-  // Add or set the wallets for this scenario
-  if (this.wallets != null) {
-    this.wallets.push(...result.value);
-  } else {
-    this.wallets = result.value;
-  }
+  await createWallets(table.hashes(), this);
 });
 
 Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function (walletName, screen) {
@@ -399,6 +376,10 @@ Then(/^I should be on some wallet page$/, async function () {
 Then(/^I should be on the "([^"]*)" wallet "([^"]*)" screen$/, async function (walletName, screenName) {
   const wallet = getWalletByName.call(this, walletName);
   return waitUntilUrlEquals.call(this, `/wallets/${wallet.id}/${screenName}`);
+});
+
+Then(/^I should be on the "([^"]*)" screen$/, async function (screenName) {
+  return waitUntilUrlEquals.call(this, `/${screenName}`);
 });
 
 Then(/^I should see the following error messages on the wallet send form:$/, async function (data) {

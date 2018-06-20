@@ -1,8 +1,9 @@
 // @flow
-import { observable, action, runInAction } from 'mobx';
+import { observable, action, computed, runInAction } from 'mobx';
 import { get, chunk, find } from 'lodash';
 import WalletStore from '../WalletStore';
 import Wallet from '../../domains/Wallet';
+import { MAX_ADA_WALLETS_COUNT } from '../../config/numbersConfig';
 import { matchRoute, buildRoute } from '../../utils/routing';
 import { i18nContext } from '../../utils/i18nContext';
 import Request from '.././lib/LocalizedRequest';
@@ -17,7 +18,6 @@ import type {
   GetWalletsResponse, RestoreWalletResponse,
   GetWalletRecoveryPhraseResponse,
 } from '../../api/common';
-
 import type {
   GetWalletCertificateAdditionalMnemonicsResponse,
   GetWalletCertificateRecoveryPhraseResponse,
@@ -102,6 +102,10 @@ export default class AdaWalletsStore extends WalletStore {
 
   // TODO - call endpoint to check if private key is valid
   isValidPrivateKey = () => { return true; }; // eslint-disable-line
+
+  @computed get hasMaxWallets(): boolean {
+    return this.all.length >= MAX_ADA_WALLETS_COUNT;
+  }
 
   @action refreshWalletsData = async () => {
     // Prevent wallets data refresh if polling is blocked
