@@ -70,9 +70,9 @@ export default {
   '--theme-button-flat-background-color-disabled': 'rgba(83, 99, 112, 0.1)',
   '--theme-button-flat-text-color-disabled': 'rgba(233, 244, 254, 0.3)',
   '--theme-button-flat-text-color': '#e9f4fe',
-  '--theme-button-flat-outline-color': '#667a8a',
-  '--theme-button-flat-outline-hover-color': '#7990a3',
-  '--theme-button-flat-outline-active-color': '#546470',
+  '--theme-button-flat-outline-color': 'rgba(102,122,138, 0.3)',
+  '--theme-button-flat-outline-hover-color': 'rgba(121,144,163, 0.3)',
+  '--theme-button-flat-outline-active-color': 'rgba(84,100,112, 0.3)',
 
   '--theme-checkbox-label-color': '#e9f4fe',
   '--theme-checkbox-border-color': '#536370',
