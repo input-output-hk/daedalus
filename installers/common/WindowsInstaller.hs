@@ -190,20 +190,21 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
 packageFrontend :: IO ()
 packageFrontend = do
     export "NODE_ENV" "production"
-    shells "npm run package -- --icon installers/icons/64x64" mempty
+    shells "npm run package -- --icon installers/icons/64x64" empty
 
 main :: Options -> IO ()
 main opts@Options{..}  = do
     generateOSClusterConfigs "./dhall" "." opts
-
-    echo "Packaging frontend"
-    packageFrontend
 
     fetchCardanoSL "."
     printCardanoBuildInfo "."
 
     fullVersion <- getDaedalusVersion "../package.json"
     cardanoVersion <- getCardanoVersion
+
+    echo "Packaging frontend"
+    exportBuildVars opts cardanoVersion
+    packageFrontend
 
     let fullName = packageFileName Win64 oCluster fullVersion cardanoVersion oBuildJob
 

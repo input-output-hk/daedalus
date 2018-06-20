@@ -15,8 +15,6 @@ set /p CLUSTERS=<installer-clusters.cfg
 set LIBRESSL_VERSION=2.5.3
 set CURL_VERSION=7.54.0
 
-set DAEDALUS_VERSION=%1
-
 set CURL_URL=https://bintray.com/artifact/download/vszakats/generic/curl-%CURL_VERSION%-win64-mingw.7z
 set CURL_BIN=curl-%CURL_VERSION%-win64-mingw\bin
 set LIBRESSL_URL=https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-%LIBRESSL_VERSION%-windows.zip

@@ -14,6 +14,7 @@ const environment = Object.assign({
   PRODUCTION: 'production',
   NETWORK: process.env.NETWORK,
   API: process.env.API || 'ada',
+  API_VERSION: process.env.API_VERSION || 'dev',
   MOBX_DEV_TOOLS: process.env.MOBX_DEV_TOOLS,
   current: process.env.NODE_ENV,
   REPORT_URL: process.env.REPORT_URL || 'http://report-server.awstest.iohkdev.io:8080/',
@@ -23,7 +24,7 @@ const environment = Object.assign({
   isMainnet: () => environment.NETWORK === 'mainnet',
   isAdaApi: () => environment.API === 'ada',
   isEtcApi: () => environment.API === 'etc',
-  build: process.env.DAEDALUS_VERSION || 'dev',
+  build: process.env.BUILD_NUMBER || 'dev',
   platform: os.platform(),
   version,
 }, remote ? remote.getGlobal('env') : process.env);

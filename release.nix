@@ -1,9 +1,9 @@
 { system ? builtins.currentSystem
-, buildNr ? null
+, buildNum ? null
 }:
 let
   daedalusPkgs = import ./. {};
-  suffix = if buildNr == null then "" else "-${toString buildNr}";
+  suffix = if buildNum == null then "" else "-${toString buildNum}";
   version = (builtins.fromJSON (builtins.readFile (./. + "/package.json"))).version;
 
   makeJobs = cluster: with import ./. { inherit cluster system; version = "${version}${suffix}"; }; {
