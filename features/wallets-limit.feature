@@ -1,4 +1,3 @@
-@watch
 Feature: Wallet Settings
 
   Background:
@@ -6,12 +5,10 @@ Feature: Wallet Settings
     Given I create wallets until I reach the maximum number permitted
 
   Scenario: User reaches the maximum number of wallets
-    And I click on the add wallet button in the sidebar
     Then I should see maximum number of wallets in the wallets list
     And the buttons in the Add Wallet screen should be disabled
     And I should see a disclaimer saying I have reached the maximum number of wallets
 
   Scenario: User deletes one wallet and re-enable its Adding new wallets
     Given I delete the last wallet
-    And I click on the add wallet button in the sidebar
     Then the buttons in the Add Wallet screen should be enabled
