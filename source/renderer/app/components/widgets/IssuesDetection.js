@@ -82,7 +82,7 @@ export default class SupportSettings extends Component<Props> {
         <h1>{intl.formatMessage(messages.issuesTitle)}</h1>
 
         {
-          (issuesDetected === null) &&
+          (isAnalyzingIssues) &&
           <span className={styles.spinning} />
         }
 
@@ -90,7 +90,7 @@ export default class SupportSettings extends Component<Props> {
 
         <ul>
           {
-            (issuesDetected.length)
+            (!isAnalyzingIssues && issuesDetected.length)
             ? (
                 issuesDetected.map((issue: any, index) => (
                   <li key={index}>
