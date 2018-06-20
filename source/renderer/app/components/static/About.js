@@ -88,7 +88,7 @@ export default class About extends Component<any> {
 
     const { version, build } = environment;
     const apiName = intl.formatMessage(environmentSpecificMessages[environment.API].apiName);
-    const apiVersion = intl.formatMessage(environmentSpecificMessages[environment.API].apiVersion);
+    const apiVersion = environment.API_VERSION;
     const apiIcon = environment.isAdaApi() ? cardanoIcon : mantisIcon;
 
     const apiHeadline = environment.isAdaApi()
