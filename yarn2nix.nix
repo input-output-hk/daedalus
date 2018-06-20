@@ -5,11 +5,6 @@ let
     url = "https://github.com/moretea/yarn2nix/archive/v1.0.0.tar.gz";
     sha256 = "02bzr9j83i1064r1r34cn74z7ccb84qb5iaivwdplaykyyydl1k8";
   }) { inherit pkgs nodejs; };
-  networkMap = {
-    mainnet = "mainnet";
-    staging = "testnet";
-    testnet = "testnet";
-  };
   # TODO: these hard-coded values will go away when wallet port
   # selection happens at runtime.
   walletPortMap = {
@@ -27,7 +22,7 @@ yarn2nix.mkYarnPackage {
   API = api;
   API_VERSION = apiVersion;
   CI = "nix";
-  NETWORK = networkMap.${cluster};
+  NETWORK = cluster;
   WALLET_PORT = walletPortMap.${cluster};
   BUILD_NUMBER = "${toString buildNum}";
   NODE_ENV = "production";
