@@ -75,7 +75,7 @@
     "file-loader": "1.1.5",
     "flow-bin": "0.60.1",
     "gulp-shell": "0.6.5",
-    "hard-source-webpack-plugin": "0.6.4",
+    "hard-source-webpack-plugin": "0.8.1",
     "html-loader": "0.5.1",
     "json-loader": "0.5.7",
     "markdown-loader": "2.0.1",
@@ -156,6 +156,6 @@
   },
   "devEngines": {
     "node": "8.x",
-    "npm": "5.x || 6.x"
+    "yarn": "^1.7.0"
   }
 }
