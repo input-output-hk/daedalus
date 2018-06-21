@@ -194,7 +194,7 @@ export default class WalletSendForm extends Component<Props, State> {
           <Button
             className={buttonClasses}
             label={intl.formatMessage(messages.nextButtonLabel)}
-            onMouseUp={() => openDialogAction({
+            onClick={() => openDialogAction({
               dialog: WalletSendConfirmationDialog,
             })}
             // Form can't be submitted in case transaction fees are not calculated

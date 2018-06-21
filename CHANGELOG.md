@@ -7,6 +7,7 @@ Changelog
 
 - Improved the loading UX ([PR 723](https://github.com/input-output-hk/daedalus/pull/723))
 - Implemented a switch instead of a link for “hide used” addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
+- Enabled submitting forms on Enter key press ([PR 981](https://github.com/input-output-hk/daedalus/pull/981))
 
 ### Fixes
 
