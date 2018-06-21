@@ -1,4 +1,4 @@
-{ lib, pkgs, nodejs-8_x, python, api, cluster, nukeReferences, version, fetchzip, daedalus, stdenv }:
+{ lib, pkgs, nodejs-8_x, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv }:
 let
   nodejs = nodejs-8_x;
   yarn2nix = import (fetchzip {
@@ -18,9 +18,10 @@ yarn2nix.mkYarnPackage {
   name = "daedalus-js";
   src = if canUseFetchGit then builtins.fetchGit ./. else lib.cleanSource ./.;
   API = api;
+  API_VERSION = apiVersion;
   CI = "nix";
   NETWORK = networkMap.${cluster};
-  DAEDALUS_VERSION = "${version}";
+  BUILD_NUMBER = "${toString buildNum}";
   NODE_ENV = "production";
   installPhase = ''
     cp -v ${daedalus.cfg}/etc/launcher-config.yaml ./launcher-config.yaml
