@@ -54,7 +54,7 @@ macBuildSpec = do
     it "Reads it" $ runManaged $ do
       tmp <- getTempDir "test-bridge"
       liftIO $ writeTextFile (tmp </> "version") "1.2.3"
-      liftIO $ Mac.readCardanoVersionFile tmp `shouldReturn` "cardano-sl-1.2.3"
+      liftIO $ Mac.readCardanoVersionFile tmp `shouldReturn` "1.2.3"
     it "Handles missing version file" $ runManaged $ do
       tmp <- getTempDir "test-bridge"
       liftIO $ Mac.readCardanoVersionFile tmp `shouldReturn` "UNKNOWN"

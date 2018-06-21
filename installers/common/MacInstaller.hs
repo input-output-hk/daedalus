@@ -211,7 +211,7 @@ readCardanoVersionFile :: FilePath -> IO Text
 readCardanoVersionFile bridge = prefix <$> handle handler (readTextFile verFile)
   where
     verFile = bridge </> "version"
-    prefix = maybe "UNKNOWN" ("cardano-sl-" <>) . safeHead . T.lines
+    prefix = fromMaybe "UNKNOWN" . safeHead . T.lines
     handler :: IOError -> IO Text
     handler e | isDoesNotExistError e = pure ""
               | otherwise = throwM e

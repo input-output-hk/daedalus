@@ -264,10 +264,9 @@ getCardanoVersion = withDir "DLLs" (grepCardanoVersion run)
     prog = ".." </> "cardano-node.exe"
 
 grepCardanoVersion :: Shell Line -> IO Text
-grepCardanoVersion = fmap addPrefix . strict . sed versionPattern
+grepCardanoVersion = fmap T.stripEnd . strict . sed versionPattern
   where
     versionPattern = text "cardano-node-" *> plus (noneOf ", ") <* star dot
-    addPrefix = ("cardano-sl-" <>) . T.stripEnd
 
 getTempDir :: MonadIO io => io FilePath
 getTempDir = need "TEMP" >>= \case
