@@ -25,6 +25,7 @@ Changelog
 
 ### Chores
 
+- Created new Storybook stories for the Wallet screens ([942](https://github.com/input-output-hk/daedalus/pull/942))
 - Added flow checks and linting for storybook code ([PR 938](https://github.com/input-output-hk/daedalus/pull/938))
 - Refactored npm scripts to use colon style ([PR 939](https://github.com/input-output-hk/daedalus/pull/939))
 - Added PR template with PR review checlist ([PR 882](https://github.com/input-output-hk/daedalus/pull/882))
