@@ -5,4 +5,5 @@
 , reportServer = "http://report-server.cardano-mainnet.iohk.io:8080"
 , installDirectorySuffix = " Testnet"
 , macPackageSuffix       = "Testnet"
+, walletPort             = 8092
 }
