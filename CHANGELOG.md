@@ -7,6 +7,7 @@ Changelog
 
 - Improved the loading UX ([PR 723](https://github.com/input-output-hk/daedalus/pull/723))
 - Implemented a switch instead of a link for “hide used” addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
+- Enabled submitting forms on Enter key press ([PR 981](https://github.com/input-output-hk/daedalus/pull/981))
 
 ### Fixes
 
@@ -25,6 +26,7 @@ Changelog
 
 ### Chores
 
+- Created new Storybook stories for the Wallet screens ([942](https://github.com/input-output-hk/daedalus/pull/942))
 - Added flow checks and linting for storybook code ([PR 938](https://github.com/input-output-hk/daedalus/pull/938))
 - Refactored npm scripts to use colon style ([PR 939](https://github.com/input-output-hk/daedalus/pull/939))
 - Added PR template with PR review checlist ([PR 882](https://github.com/input-output-hk/daedalus/pull/882))

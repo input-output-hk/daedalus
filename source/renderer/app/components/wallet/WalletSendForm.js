@@ -10,6 +10,7 @@ import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
+import { submitOnEnter } from '../../utils/form';
 import AmountInputSkin from './skins/AmountInputSkin';
 import BorderedBox from '../widgets/BorderedBox';
 import LoadingSpinner from '../widgets/LoadingSpinner';
@@ -146,6 +147,12 @@ export default class WalletSendForm extends Component<Props, State> {
     this._isMounted = false;
   }
 
+  handleOnSubmit = () => {
+    this.props.openDialogAction({
+      dialog: WalletSendConfirmationDialog,
+    });
+  }
+
   // FORM VALIDATION
   form = new ReactToolboxMobxForm({
     fields: {
@@ -209,7 +216,7 @@ export default class WalletSendForm extends Component<Props, State> {
     const { intl } = this.context;
     const {
       currencyUnit, currencyMaxIntegerDigits, currencyMaxFractionalDigits,
-      openDialogAction, isDialogOpen, isRestoreActive,
+      isDialogOpen, isRestoreActive,
     } = this.props;
     const { isTransactionFeeCalculated, transactionFee, transactionFeeError } = this.state;
     const amountField = form.$('amount');
@@ -253,6 +260,7 @@ export default class WalletSendForm extends Component<Props, State> {
                     receiverField.onChange(value || '');
                   }}
                   skin={<SimpleInputSkin />}
+                  onKeyPress={submitOnEnter.bind(this, this.handleOnSubmit)}
                 />
               </div>
 
@@ -273,15 +281,14 @@ export default class WalletSendForm extends Component<Props, State> {
                   fees={fees}
                   total={total}
                   skin={<AmountInputSkin />}
+                  onKeyPress={submitOnEnter.bind(this, this.handleOnSubmit)}
                 />
               </div>
 
               <Button
                 className={buttonClasses}
                 label={intl.formatMessage(messages.nextButtonLabel)}
-                onMouseUp={() => openDialogAction({
-                  dialog: WalletSendConfirmationDialog,
-                })}
+                onClick={this.handleOnSubmit}
                 disabled={this._isCalculatingFee || !isTransactionFeeCalculated}
                 skin={<SimpleButtonSkin />}
               />
