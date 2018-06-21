@@ -10,6 +10,7 @@ import type {
 // ========== LOGGING =========
 
 let LOCAL_TIME_DIFFERENCE = 0;
+let NEXT_ADA_UPDATE = null;
 
 const stringifyData = (data) => JSON.stringify(data, null, 2);
 
@@ -45,5 +46,13 @@ export default (api: AdaApi) => {
 
   api.setLocalTimeDifference = async (timeDifference) => {
     LOCAL_TIME_DIFFERENCE = timeDifference;
+  };
+
+  api.nextUpdate = async () => (
+    Promise.resolve(NEXT_ADA_UPDATE)
+  );
+
+  api.setNextUpdate = async (nextUpdate) => {
+    NEXT_ADA_UPDATE = nextUpdate;
   };
 };

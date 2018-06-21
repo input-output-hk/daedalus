@@ -10,7 +10,6 @@ import ja from 'react-intl/locale-data/ja';
 import { RouterStore, syncHistoryWithStore } from 'mobx-react-router';
 import { hashHistory } from 'react-router';
 import App from './App';
-import About from './About';
 import environment from '../../common/environment';
 import setupStores from './stores';
 import actions from './actions';
@@ -18,7 +17,6 @@ import utils from './utils';
 import Action from './actions/lib/Action';
 import translations from './i18n/translations';
 import './themes/index.global.scss';
-import { getUrlParameterByName } from './utils/routing';
 import { setupApi } from './api/index';
 
 // run MobX in strict mode
@@ -26,8 +24,6 @@ useStrict(true);
 
 // https://github.com/yahoo/react-intl/wiki#loading-locale-data
 addLocaleData([en, de, hr, ja]);
-
-const isAboutWindow = getUrlParameterByName('window') === 'about';
 
 const initializeDaedalus = () => {
   const api = setupApi();
@@ -50,12 +46,7 @@ const initializeDaedalus = () => {
 
   const rootElement = document.getElementById('app');
   if (!rootElement) throw new Error('No #root element found.');
-
-  const renderScreen = isAboutWindow ? (
-    () => render(<About stores={stores} />, rootElement)
-  ) : (
-    () => render(<App stores={stores} actions={actions} history={history} />, rootElement));
-  renderScreen();
+  render(<App stores={stores} actions={actions} history={history} />, rootElement);
 };
 
 window.addEventListener('load', initializeDaedalus);
