@@ -49,6 +49,11 @@ Given(/^I have the following wallets:$/, async function (table) {
   await createWallets(table.hashes(), this);
 });
 
+// Creates them sequentially
+Given(/^I have created the following wallets:$/, async function (table) {
+  await createWallets(table.hashes(), this, true);
+});
+
 Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function (walletName, screen) {
   const wallet = getWalletByName.call(this, walletName);
   await navigateTo.call(this, `/wallets/${wallet.id}/${screen}`);
@@ -431,14 +436,8 @@ Then(/^I should see newly generated address as active address on the wallet rece
   });
 });
 
-Then(/^the wallets should be ordered from oldest to newest$/, async function () {
-
-  const [wallet1, wallet2, wallet3] = await this.client.getText('.SidebarWalletMenuItem_title');
-
-  await this.client.waitUntil(async () =>
-    expect(wallet1).to.equal('Wallet 1') &&
-    expect(wallet2).to.equal('Wallet 2') &&
-    expect(wallet3).to.equal('Wallet 3')
-  );
-
+Then(/^I should see the wallets in the following order:$/, async function (table) {
+  const expectedWallets = table.hashes();
+  const wallets = await this.client.getText('.SidebarWalletMenuItem_title');
+  wallets.forEach((wallet, index) => expect(wallet).to.equal(expectedWallets[index].name));
 });
