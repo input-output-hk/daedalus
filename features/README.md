@@ -11,14 +11,14 @@
 
 ```bash
 $ cd daedalus/
-$ npm install
+$ yarn install
 ```
 4. Build and run the backend (Cardano SL) following the instructions from [Daedalus](https://github.com/input-output-hk/daedalus/blob/master/README.md#development---with-cardano-wallet) README file.
 5. Run Daedalus frontend tests:
 
 ```bash
 $ cd daedalus/
-$ npm run test
+$ yarn run test
 ```
 
 Once tests are complete you will get a summary of passed/failed tests in the Terminal window.
