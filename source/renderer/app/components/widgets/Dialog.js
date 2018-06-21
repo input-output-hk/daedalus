@@ -17,6 +17,7 @@ type Props = {
   className?: string,
   onClose?: Function,
   closeOnOverlayClick?: boolean,
+  primaryButtonAutoFocus?: boolean,
 };
 
 export default class Dialog extends Component<Props> {
@@ -31,6 +32,7 @@ export default class Dialog extends Component<Props> {
       className,
       closeButton,
       backButton,
+      primaryButtonAutoFocus,
     } = this.props;
 
     return (
@@ -69,6 +71,7 @@ export default class Dialog extends Component<Props> {
                     onClick={action.onClick}
                     disabled={action.disabled}
                     skin={<SimpleButtonSkin />}
+                    autoFocus={primaryButtonAutoFocus}
                   />
                 );
               })}
