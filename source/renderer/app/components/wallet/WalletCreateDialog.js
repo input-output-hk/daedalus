@@ -14,6 +14,7 @@ import { isValidWalletName, isValidWalletPassword, isValidRepeatPassword } from 
 import globalMessages from '../../i18n/global-messages';
 import styles from './WalletCreateDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
+import { submitOnEnter } from '../../utils/form';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -162,12 +163,6 @@ export default class WalletCreateDialog extends Component<Props, State> {
     });
   };
 
-  checkForEnterKey(event: KeyboardEvent) {
-    if (event.key === 'Enter') {
-      this.submit();
-    }
-  }
-
   handlePasswordSwitchToggle = (value: boolean) => {
     this.setState({ createPassword: value });
   };
@@ -211,7 +206,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
 
         <Input
           className="walletName"
-          onKeyPress={this.checkForEnterKey.bind(this)}
+          onKeyPress={submitOnEnter.bind(this, this.submit)}
           ref={(input) => { this.walletNameInput = input; }}
           {...walletNameField.bind()}
           error={walletNameField.error}
@@ -234,12 +229,14 @@ export default class WalletCreateDialog extends Component<Props, State> {
           <div className={walletPasswordFieldsClasses}>
             <Input
               className="walletPassword"
+              onKeyPress={submitOnEnter.bind(this, this.submit)}
               {...walletPasswordField.bind()}
               error={walletPasswordField.error}
               skin={<SimpleInputSkin />}
             />
             <Input
               className="repeatedPassword"
+              onKeyPress={submitOnEnter.bind(this, this.submit)}
               {...repeatedPasswordField.bind()}
               error={repeatedPasswordField.error}
               skin={<SimpleInputSkin />}
