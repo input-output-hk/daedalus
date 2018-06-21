@@ -92,7 +92,7 @@ export default class LanguageSelectionForm extends Component<Props> {
           <Button
             className={buttonClasses}
             label={intl.formatMessage(messages.submitLabel)}
-            onMouseUp={this.submit}
+            onClick={this.submit}
             skin={<SimpleButtonSkin />}
           />
 
