@@ -195,6 +195,7 @@ packageFrontend = do
 main :: Options -> IO ()
 main opts@Options{..}  = do
     generateOSClusterConfigs "./dhall" "." opts
+    installerConfig <- getInstallerConfig "./dhall" Win64 oCluster
 
     fetchCardanoSL "."
     printCardanoBuildInfo "."
@@ -203,14 +204,12 @@ main opts@Options{..}  = do
     cardanoVersion <- getCardanoVersion
 
     echo "Packaging frontend"
-    exportBuildVars opts cardanoVersion
+    exportBuildVars opts installerConfig cardanoVersion
     packageFrontend
 
     let fullName = packageFileName Win64 oCluster fullVersion cardanoVersion oBuildJob
 
     printf ("Building: "%fp%"\n") fullName
-
-    installerConfig <- getInstallerConfig "./dhall" Win64 oCluster
 
     echo "Adding permissions manifest to cardano-launcher.exe"
     procs "C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\mt.exe" ["-manifest", "cardano-launcher.exe.manifest", "-outputresource:cardano-launcher.exe;#1"] mempty

@@ -65,7 +65,7 @@ main opts@Options{..} = do
   print darwinConfig
 
   ver <- getBackendVersion oBackend
-  exportBuildVars opts ver
+  exportBuildVars opts installerConfig ver
 
   appRoot <- buildElectronApp darwinConfig
   makeComponentRoot opts appRoot darwinConfig

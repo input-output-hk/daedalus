@@ -7,7 +7,7 @@ import qualified Data.Text as T
 import Filesystem.Path (FilePath, (</>))
 import Filesystem.Path.CurrentOS (fromText, decodeString)
 import System.IO.Temp (getCanonicalTemporaryDirectory)
-import Turtle (mktempdir, inproc, strict, ls, fold, writeTextFile, mktree, mkdir, cptree, cp, format)
+import Turtle (mktempdir, inproc, strict, ls, fold, writeTextFile, mktree, mkdir, cptree, format)
 import Control.Monad.Managed (MonadManaged, runManaged)
 import Data.Aeson.Types (Value)
 import Data.Aeson.Lens
@@ -85,6 +85,14 @@ configSpec = do
       dhallTest Win64 Staging Launcher "./dhall" $ \val -> do
         val^.key "reportServer"._String `shouldSatisfy` (T.isInfixOf "iohkdev.io")
         val^.key "configuration".key "key"._String `shouldBe` "mainnet_dryrun_wallet_win64"
+  describe "installer config generation" $ do
+    it "gets the right mainnet port" $ do
+      mainnetCfg <- getInstallerConfig "./dhall" Macos64 Mainnet
+      walletPort mainnetCfg `shouldBe` 8090
+    it "gets the right testnet port" $ do
+      stagingCfg <- getInstallerConfig "./dhall" Win64 Testnet
+      walletPort stagingCfg `shouldBe` 8092
+
 
 deleteSpec :: Spec
 deleteSpec = do
