@@ -24,22 +24,4 @@
     @include loading-spinner("../../../assets/images/spinner-light.svg");
   }
 
-  .deleteButton {
-    &[disabled] {
-      background: var(--theme-input-remove-color-lightest);
-      &:hover,
-      &:active {
-        background: var(--theme-input-remove-color-lightest);
-      }
-    }
-    &:not([disabled]) {
-      background: var(--theme-input-remove-color-light);
-      &:hover {
-        background: var(--theme-input-remove-color-lighter);
-      }
-      &:active {
-        background: var(--theme-input-remove-color-dark);
-      }
-    }
-  }
 }

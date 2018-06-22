@@ -216,7 +216,7 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
 
     const confirmButtonClasses = classnames([
       'confirmButton',
-      removePassword ? styles.removeButton : null,
+      removePassword ? 'attention' : null,
       isSubmitting ? styles.isSubmitting : null,
     ]);
 

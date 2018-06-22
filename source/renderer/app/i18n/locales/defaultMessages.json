@@ -1393,13 +1393,13 @@
         "description": "Title of \"Redemption disclaimer\" on Ada redemption page.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 18
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionDisclaimer.js",
         "id": "wallet.redeem.disclaimerOverlay.title",
         "start": {
           "column": 19,
-          "line": 15
+          "line": 14
         }
       },
       {
@@ -1407,13 +1407,13 @@
         "description": "Disclaimer text for \"Redemption disclaimer\" on Ada redemption page.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionDisclaimer.js",
         "id": "wallet.redeem.disclaimerOverlay.disclaimerText",
         "start": {
           "column": 18,
-          "line": 20
+          "line": 19
         }
       },
       {
@@ -1421,13 +1421,13 @@
         "description": "Label for \"I’ve understood the information above\" checkbox on Ada redemption page \"Redemption disclaimer\".",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 28
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionDisclaimer.js",
         "id": "wallet.redeem.disclaimerOverlay.checkboxLabel",
         "start": {
           "column": 17,
-          "line": 25
+          "line": 24
         }
       },
       {
@@ -1435,13 +1435,13 @@
         "description": "Label for \"Continue\" button on Ada redemption page \"Redemption disclaimer\".",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 33
         },
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionDisclaimer.js",
         "id": "wallet.redeem.disclaimerOverlay.submitLabel",
         "start": {
           "column": 15,
-          "line": 30
+          "line": 29
         }
       }
     ],

@@ -4,7 +4,7 @@
 .wallets {
   height: calc(100% - #{$sidebar-button-height});
   overflow-x: hidden;
-  overflow-y: auto;
+  overflow-y: overlay;
 }
 
 .addWalletButton {
