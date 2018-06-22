@@ -83,7 +83,7 @@ export default class AdaRedemptionStore extends Store {
     mnemonic: string
   ) => this.api.ada.isValidPaperVendRedemptionKey(mnemonic);
 
-  @computed get isAdaRedemptionPage() {
+  @computed get isAdaRedemptionPage(): boolean {
     return matchRoute(ROUTES.ADA_REDEMPTION, this.stores.app.currentRoute);
   }
 
