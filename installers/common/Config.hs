@@ -73,11 +73,6 @@ optReadLower = opt (diagReadCaseInsensitive . T.unpack)
 argReadLower :: (Bounded a, Enum a, Read a, Show a) => ArgName -> Optional HelpMessage -> Parser a
 argReadLower = arg (diagReadCaseInsensitive . T.unpack)
 
-data Backend
-  = Cardano { cardanoDaedalusBridge :: FilePath }
-  | Mantis
-  deriving (Eq, Show)
-
 data Command
   = GenConfig
     { cfDhallRoot   :: Text
