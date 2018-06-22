@@ -15,20 +15,8 @@ import resolver from '../../utils/imports';
 const sidebarConfig = resolver('config/sidebarConfig');
 
 type Props = {
-  menus: ?{
-    wallets: {
-      items: Array<SidebarWalletType>,
-      activeWalletId: ?string,
-      actions: {
-        onWalletItemClick: Function,
-      }
-    }
-  },
-  categories: Array<{
-    name: string,
-    route: string,
-    icon: string,
-  }>,
+  menus: SidebarMenus,
+  categories: SidebarCategories,
   activeSidebarCategory: string,
   onCategoryClicked: Function,
   isShowingSubMenus: boolean,
@@ -36,6 +24,22 @@ type Props = {
   onAddWallet: Function,
   onSubmitSupportRequest: Function,
 };
+
+export type SidebarMenus = ?{
+  wallets: {
+    items: Array<SidebarWalletType>,
+    activeWalletId: ?string,
+    actions: {
+      onWalletItemClick: Function,
+    }
+  }
+};
+
+export type SidebarCategories = Array<{
+  name: string,
+  route: string,
+  icon: string,
+}>;
 
 @observer
 export default class Sidebar extends Component<Props> {

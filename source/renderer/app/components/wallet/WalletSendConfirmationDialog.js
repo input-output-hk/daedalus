@@ -12,6 +12,7 @@ import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletSendConfirmationDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
+import { submitOnEnter } from '../../utils/form';
 
 export const messages = defineMessages({
   dialogTitle: {
@@ -106,7 +107,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
     },
   });
 
-  submit() {
+  submit = () => {
     this.form.submit({
       onSuccess: (form) => {
         const { isWalletPasswordSet, receiver, amount, amountToNaturalUnits } = this.props;
@@ -121,6 +122,8 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
       onError: () => {}
     });
   }
+
+  submitOnEnter = (event: {}) => submitOnEnter(this.submit, event);
 
   render() {
     const { form } = this;
@@ -150,7 +153,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
       },
       {
         label: intl.formatMessage(messages.sendButtonLabel),
-        onClick: this.submit.bind(this),
+        onClick: this.submit,
         primary: true,
         className: confirmButtonClasses,
         disabled: !walletPasswordField.isValid,
@@ -162,6 +165,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
         title={intl.formatMessage(messages.dialogTitle)}
         actions={actions}
         closeOnOverlayClick
+        primaryButtonAutoFocus
         onClose={!isSubmitting ? onCancel : null}
         className={styles.dialog}
         closeButton={<DialogCloseButton />}
@@ -204,6 +208,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
               {...walletPasswordField.bind()}
               error={walletPasswordField.error}
               skin={<SimpleInputSkin />}
+              onKeyPress={this.submitOnEnter}
             />
           ) : null}
         </div>

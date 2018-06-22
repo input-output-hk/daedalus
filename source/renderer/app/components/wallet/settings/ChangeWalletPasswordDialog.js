@@ -15,6 +15,7 @@ import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './ChangeWalletPasswordDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import { submitOnEnter } from '../../../utils/form';
 
 const messages = defineMessages({
   dialogTitleSetPassword: {
@@ -215,7 +216,7 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
 
     const confirmButtonClasses = classnames([
       'confirmButton',
-      removePassword ? styles.removeButton : null,
+      removePassword ? 'attention' : null,
       isSubmitting ? styles.isSubmitting : null,
     ]);
 
@@ -267,6 +268,7 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
               type="password"
               className="currentPassword"
               value={currentPasswordValue}
+              onKeyPress={submitOnEnter.bind(this, this.submit)}
               onChange={(value) => this.handleDataChange('currentPasswordValue', value)}
               {...currentPasswordField.bind()}
               error={currentPasswordField.error}
@@ -280,6 +282,7 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
             type="password"
             className={newPasswordClasses}
             value={newPasswordValue}
+            onKeyPress={submitOnEnter.bind(this, this.submit)}
             onChange={(value) => this.handleDataChange('newPasswordValue', value)}
             {...newPasswordField.bind()}
             error={newPasswordField.error}
@@ -290,6 +293,7 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
             type="password"
             className="repeatedPassword"
             value={repeatedPasswordValue}
+            onKeyPress={submitOnEnter.bind(this, this.submit)}
             onChange={(value) => this.handleDataChange('repeatedPasswordValue', value)}
             {...repeatedPasswordField.bind()}
             error={repeatedPasswordField.error}

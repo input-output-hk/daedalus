@@ -26,6 +26,7 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { ADA_REDEMPTION_PASSPHRASE_LENGHT } from '../../../config/cryptoConfig';
 import { ADA_REDEMPTION_TYPES } from '../../../types/redemptionTypes';
 import type { RedemptionTypeChoices } from '../../../types/redemptionTypes';
+import { submitOnEnter } from '../../../utils/form';
 
 const messages = defineMessages({
   headline: {
@@ -522,6 +523,7 @@ export default class AdaRedemptionForm extends Component<Props> {
               <div className={styles.inputs}>
                 {redemptionType !== ADA_REDEMPTION_TYPES.PAPER_VENDED ? (
                   <Input
+                    onKeyPress={submitOnEnter.bind(this, submit)}
                     className="redemption-key"
                     {...redemptionKeyField.bind()}
                     placeholder={
@@ -540,6 +542,7 @@ export default class AdaRedemptionForm extends Component<Props> {
                   />
                 ) : (
                   <Input
+                    onKeyPress={submitOnEnter.bind(this, submit)}
                     className="shielded-redemption-key"
                     {...shieldedRedemptionKeyField.bind()}
                     disabled={isCertificateSelected}
@@ -583,6 +586,7 @@ export default class AdaRedemptionForm extends Component<Props> {
             {walletHasPassword ? (
               <div className={styles.passwordInput}>
                 <Input
+                  onKeyPress={submitOnEnter.bind(this, submit)}
                   className="walletPassword"
                   {...walletPasswordField.bind()}
                   error={walletPasswordField.error}
@@ -610,6 +614,7 @@ export default class AdaRedemptionForm extends Component<Props> {
             {showInputForDecryptionKey ? (
               <div className={styles.decryptionKey}>
                 <Input
+                  onKeyPress={submitOnEnter.bind(this, submit)}
                   className="decryption-key"
                   {...decryptionKeyField.bind()}
                   error={decryptionKeyField.error}
@@ -621,6 +626,7 @@ export default class AdaRedemptionForm extends Component<Props> {
             {showInputsForDecryptingForceVendedCertificate ? (
               <div className={styles.email}>
                 <Input
+                  onKeyPress={submitOnEnter.bind(this, submit)}
                   className="email"
                   {...emailField.bind()}
                   error={emailField.error}
@@ -632,6 +638,7 @@ export default class AdaRedemptionForm extends Component<Props> {
             {showInputsForDecryptingForceVendedCertificate ? (
               <div className={styles.adaPasscode}>
                 <Input
+                  onKeyPress={submitOnEnter.bind(this, submit)}
                   className="ada-passcode"
                   {...adaPasscodeField.bind()}
                   error={adaPasscodeField.error}
@@ -643,6 +650,7 @@ export default class AdaRedemptionForm extends Component<Props> {
             {showInputsForDecryptingForceVendedCertificate ? (
               <div className={styles.adaAmount}>
                 <Input
+                  onKeyPress={submitOnEnter.bind(this, submit)}
                   className="ada-amount"
                   {...adaAmountField.bind()}
                   error={adaAmountField.error}
@@ -656,7 +664,7 @@ export default class AdaRedemptionForm extends Component<Props> {
             <Button
               className={submitButtonClasses}
               label={intl.formatMessage(messages.submitLabel)}
-              onMouseUp={submit}
+              onClick={submit}
               disabled={!canSubmit}
               skin={<SimpleButtonSkin />}
             />

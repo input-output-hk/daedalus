@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import classnames from 'classnames';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
 import Button from 'react-polymorph/lib/components/Button';
@@ -62,10 +61,6 @@ export default class AdaRedemptionDisclaimer extends Component<Props, State> {
     const { onSubmit } = this.props;
     const { isAccepted } = this.state;
 
-    const submitButtonStyles = classnames([
-      !isAccepted ? styles.disabled : null,
-    ]);
-
     return (
       <div className={styles.component}>
 
@@ -85,7 +80,7 @@ export default class AdaRedemptionDisclaimer extends Component<Props, State> {
         </div>
 
         <Button
-          className={submitButtonStyles}
+          className="disclaimer"
           label={intl.formatMessage(messages.submitLabel)}
           onClick={() => isAccepted && onSubmit()}
           disabled={!isAccepted}
