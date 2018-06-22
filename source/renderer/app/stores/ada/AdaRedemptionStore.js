@@ -1,5 +1,5 @@
 // @flow
-import { action, observable, runInAction } from 'mobx';
+import { action, computed, observable, runInAction } from 'mobx';
 import { ipcRenderer } from 'electron';
 import { isString } from 'lodash';
 import Store from '../lib/Store';
@@ -62,7 +62,6 @@ export default class AdaRedemptionStore extends Store {
     ipcRenderer.on(PARSE_REDEMPTION_CODE.ERROR, this._onParseError);
     this.registerReactions([
       this._resetRedemptionFormValuesOnAdaRedemptionPageLoad,
-      this._redirectToAddWalletBeforeRedemption,
     ]);
   }
 
@@ -83,6 +82,10 @@ export default class AdaRedemptionStore extends Store {
   isValidPaperVendRedemptionKey = (
     mnemonic: string
   ) => this.api.ada.isValidPaperVendRedemptionKey(mnemonic);
+
+  @computed get isAdaRedemptionPage() {
+    return matchRoute(ROUTES.ADA_REDEMPTION, this.stores.app.currentRoute);
+  }
 
   @action _chooseRedemptionType = (params: {
     redemptionType: RedemptionTypeChoices,
@@ -269,9 +272,7 @@ export default class AdaRedemptionStore extends Store {
   });
 
   _resetRedemptionFormValuesOnAdaRedemptionPageLoad = () => {
-    const currentRoute = this.stores.app.currentRoute;
-    const match = matchRoute(ROUTES.ADA_REDEMPTION, currentRoute);
-    if (match) this._reset();
+    if (this.isAdaRedemptionPage) this._reset();
   };
 
   _onRemoveCertificate = action(() => {
@@ -299,13 +300,4 @@ export default class AdaRedemptionStore extends Store {
     this.adaAmount = null;
     this.decryptionKey = null;
   };
-
-  _redirectToAddWalletBeforeRedemption = () => {
-    const { wallets } = this.stores.ada;
-    const { currentRoute } = this.stores.app;
-    const isAdaRedemptionRoute = matchRoute(ROUTES.ADA_REDEMPTION, currentRoute);
-    if (isAdaRedemptionRoute && !wallets.hasAnyWallets) {
-      this.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });
-    }
-  }
 }

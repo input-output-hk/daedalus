@@ -15,9 +15,13 @@ export default class Root extends Component<Props> {
 
   render() {
     const { stores, children } = this.props;
-    const { networkStatus, profile } = stores;
+    const { networkStatus, profile, ada } = stores;
     const wallets = stores[environment.API].wallets;
-    if (networkStatus.isConnected && profile.isSettingsPage) {
+    const isPageThatDoesntNeedWallets = (
+      profile.isSettingsPage || ada.adaRedemption.isAdaRedemptionPage
+    );
+    // Just render any page that doesn't require wallets to be loaded
+    if (networkStatus.isConnected && isPageThatDoesntNeedWallets) {
       return React.Children.only(children);
     }
     if (
