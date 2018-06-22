@@ -16,6 +16,7 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './BugReportDialog.scss';
 import type { LogFiles } from '../../../types/LogTypes';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import { submitOnEnter } from '../../../utils/form';
 
 const messages = defineMessages({
   title: {
@@ -318,6 +319,7 @@ export default class BugReportDialog extends Component<Props, State> {
                 {...emailField.bind()}
                 error={emailField.error}
                 skin={InputSkin}
+                onKeyPress={submitOnEnter.bind(this, this.submit)}
               />
             </div>
 
@@ -327,6 +329,7 @@ export default class BugReportDialog extends Component<Props, State> {
                 {...subjectField.bind()}
                 error={subjectField.error}
                 skin={InputSkin}
+                onKeyPress={submitOnEnter.bind(this, this.submit)}
               />
             </div>
 

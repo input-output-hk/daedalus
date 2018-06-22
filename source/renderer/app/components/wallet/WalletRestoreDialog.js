@@ -16,6 +16,7 @@ import LocalizableError from '../../i18n/LocalizableError';
 import { PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT, WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import styles from './WalletRestoreDialog.scss';
+import { submitOnEnter } from '../../utils/form';
 
 const RESTORE_TYPES = {
   REGULAR: 'regular',
@@ -344,6 +345,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
         <Input
           className={walletNameFieldClasses}
+          onKeyPress={submitOnEnter.bind(this, this.submit)}
           {...walletNameField.bind()}
           error={walletNameField.error}
           skin={InputSkin}
@@ -387,12 +389,14 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           <div className={walletPasswordFieldsClasses}>
             <Input
               className="walletPassword"
+              onKeyPress={submitOnEnter.bind(this, this.submit)}
               {...walletPasswordField.bind()}
               error={walletPasswordField.error}
               skin={InputSkin}
             />
             <Input
               className="repeatedPassword"
+              onKeyPress={submitOnEnter.bind(this, this.submit)}
               {...repeatedPasswordField.bind()}
               error={repeatedPasswordField.error}
               skin={InputSkin}

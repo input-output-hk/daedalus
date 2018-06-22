@@ -11,6 +11,7 @@ import styles from './DeleteWalletConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import environment from '../../../../../common/environment';
 import { DELETE_WALLET_COUNTDOWN } from '../../../config/timingConfig';
+import { submitOnEnter } from '../../../utils/form';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -82,6 +83,10 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
     const countdownDisplay = countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
     const isCountdownFinished = countdownRemaining <= 0;
     const isWalletNameConfirmationCorrect = confirmationValue === walletName;
+    const isDisabled = (
+      !isCountdownFinished || !isBackupNoticeAccepted || !isWalletNameConfirmationCorrect
+    );
+    const handleSubmit = () => !isDisabled && onContinue();
 
     const buttonClasses = classnames([
       'deleteButton',
@@ -98,9 +103,7 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
         className: buttonClasses,
         label: intl.formatMessage(messages.confirmButtonLabel) + countdownDisplay,
         onClick: onContinue,
-        disabled: (
-          !isCountdownFinished || !isBackupNoticeAccepted || !isWalletNameConfirmationCorrect
-        ),
+        disabled: isDisabled,
         primary: true,
       },
     ];
@@ -129,6 +132,7 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
             className={styles.confirmationInput}
             label={intl.formatMessage(messages.enterRecoveryWordLabel)}
             value={confirmationValue}
+            onKeyPress={submitOnEnter.bind(this, handleSubmit)}
             onChange={onConfirmationValueChange}
             skin={InputSkin}
           />

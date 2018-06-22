@@ -167,8 +167,8 @@ export default class WalletReceive extends Component<Props, State> {
         <Button
           className={generateAddressButtonClasses}
           label={intl.formatMessage(messages.generateNewAddressButtonLabel)}
-          onMouseUp={this.submit.bind(this)}
           skin={ButtonSkin}
+          onClick={this.submit.bind(this)}
         />
       </div>
     );

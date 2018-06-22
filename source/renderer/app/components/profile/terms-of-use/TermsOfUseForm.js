@@ -89,7 +89,7 @@ export default class TermsOfUseForm extends Component<Props, State> {
           <Button
             className={buttonClasses}
             label={intl.formatMessage(messages.submitLabel)}
-            onMouseUp={this.submit}
+            onClick={this.submit}
             disabled={!areTermsOfUseAccepted}
             skin={ButtonSkin}
           />

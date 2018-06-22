@@ -11,7 +11,7 @@ import { THEMES } from '../../../source/renderer/app/themes/index';
 
 type Props = {
   children: Node,
-  propsForChildren?: any
+  propsForChildren?: any,
 };
 
 @observer
@@ -26,7 +26,7 @@ export default class StoryDecorator extends Component<Props> {
         <IntlProvider {...{ locale: 'en-US', key: 'en-US', messages: translations['en-US'] }}>
           <ThemeProvider theme={daedalusTheme}>
             <div>
-              {Children.map(children, (child) => React.cloneElement(child, propsForChildren))}
+              {Children.map(children, (child) => React.cloneElement(child, { propsForChildren }))}
             </div>
           </ThemeProvider>
         </IntlProvider>
