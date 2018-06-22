@@ -17,10 +17,17 @@ Then('I should see {int} addresses', async function (numberOfAddresses) {
   expect(addressesFound).to.equal(numberOfAddresses);
 });
 
-Then('They should be ordered by created date descending', async function () {
-  const { value: { id: lastGeneratedAddress } } = await this.client.execute(() => daedalus.stores.ada.addresses.lastGeneratedAddress);
-  const firstAddressInTheList = await this.client.getText('.generatedAddress-1 .WalletReceive_addressId');
-  expect(lastGeneratedAddress).to.equal(firstAddressInTheList);
+Then('I should see the following addresses:', async function (table) {
+  const expectedAdresses = table.hashes();
+  let addresses;
+
+  await this.client.waitUntil(async () => {
+    addresses = await this.client.getAttribute('.WalletReceive_walletAddress','class');
+    return addresses.length === 3;
+  });
+
+  addresses.forEach((address, index) => expect(address.indexOf(expectedAdresses[index]) > -1))
+
 });
 
 Then('The active address should be the newest one', async function () {
