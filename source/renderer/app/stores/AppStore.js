@@ -49,10 +49,17 @@ export default class AppStore extends Store {
     this.isAboutDialogOpen = false;
   };
 
+  @computed get isSetupPage(): boolean {
+    return (
+      this.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
+      this.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
+    );
+  }
+
   @action _goToAdaRedemptionScreen = () => {
-    const { isConnected, isSynced, isSetupPage } = this.stores.networkStatus;
+    const { isConnected, isSynced } = this.stores.networkStatus;
     const { hasLoadedWallets } = this.stores[environment.API].wallets;
-    if (isConnected && isSynced && hasLoadedWallets && !isSetupPage) {
+    if (isConnected && isSynced && hasLoadedWallets && !this.isSetupPage) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.ADA_REDEMPTION });
     }
   };

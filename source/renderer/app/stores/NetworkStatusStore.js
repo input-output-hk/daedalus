@@ -3,13 +3,12 @@ import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import { ROUTES } from '../routes-config';
 import { Logger } from '../../../common/logging';
 import type { GetSyncProgressResponse, GetLocalTimeDifferenceResponse } from '../api/common';
 import environment from '../../../common/environment';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
-let cachedDifficulties = null;
+let cachedState = null;
 
 // Maximum number of out-of-sync blocks above which we consider to be out-of-sync
 const OUT_OF_SYNC_BLOCKS_LIMIT = 6;
@@ -21,8 +20,7 @@ const ALLOWED_NETWORK_DIFFICULTY_STALL = 2 * 60 * 1000; // 2 minutes
 const STARTUP_STAGES = {
   CONNECTING: 0,
   SYNCING: 1,
-  LOADING: 2,
-  RUNNING: 3,
+  RUNNING: 2,
 };
 
 export default class NetworkStatusStore extends Store {
@@ -30,12 +28,13 @@ export default class NetworkStatusStore extends Store {
   _startTime = Date.now();
   _startupStage = STARTUP_STAGES.CONNECTING;
   _lastNetworkDifficultyChange = 0;
+  _syncProgressPollInterval: ?number = null;
+  _updateLocalTimeDifferencePollInterval: ?number = null;
 
   @observable isConnected = false;
   @observable hasBeenConnected = false;
   @observable localDifficulty = 0;
   @observable networkDifficulty = 0;
-  @observable isLoadingWallets = true;
   @observable localTimeDifference = 0;
   @observable syncProgressRequest: Request<GetSyncProgressResponse> = new Request(
     // Use the sync progress for target API
@@ -46,43 +45,53 @@ export default class NetworkStatusStore extends Store {
   );
   @observable _localDifficultyStartedWith = null;
 
-  _timeDifferencePollInterval: ?number = null;
-
   @action initialize() {
     super.initialize();
-    if (cachedDifficulties !== null) Object.assign(this, cachedDifficulties);
+    if (cachedState !== null) Object.assign(this, cachedState);
   }
 
   setup() {
     this.registerReactions([
-      this._redirectToWalletAfterSync,
-      this._redirectToLoadingWhenDisconnected,
-      this._redirectToSyncingWhenOutOfSync,
-      this._pollTimeDifferenceWhenConnected,
+      this._updateSyncProgressWhenDisconnected,
+      this._updateLocalTimeDifferenceWhenConnected,
     ]);
-    this._pollSyncProgress();
+
+    // Setup polling intervals
+    this._syncProgressPollInterval = setInterval(
+      this._updateSyncProgress, SYNC_PROGRESS_INTERVAL
+    );
+    if (environment.isAdaApi()) {
+      this._updateLocalTimeDifferencePollInterval = setInterval(
+        this._updateLocalTimeDifference, TIME_DIFF_POLL_INTERVAL
+      );
+    }
   }
 
   teardown() {
     super.teardown();
-    cachedDifficulties = {
+
+    // Teardown polling intervals
+    if (this._syncProgressPollInterval) {
+      clearInterval(this._syncProgressPollInterval);
+    }
+    if (this._updateLocalTimeDifferencePollInterval) {
+      clearInterval(this._updateLocalTimeDifferencePollInterval);
+    }
+    // Save current state into the cache
+    cachedState = {
       isConnected: this.isConnected,
       hasBeenConnected: this.hasBeenConnected,
       localDifficulty: this.localDifficulty,
       networkDifficulty: this.networkDifficulty,
-      isLoadingWallets: true,
     };
   }
 
   @computed get isConnecting(): boolean {
-    // until we start receiving network difficulty messages we are not connected to node and
-    // we should be on the blue connecting screen instead of displaying 'Loading wallet data'
-    return !this.isConnected || this.networkDifficulty <= 1;
+    // until we start receiving network difficulty messages we are not connected to node
+    return !this.isConnected;
   }
 
   @computed get hasBlockSyncingStarted(): boolean {
-    // until we start receiving network difficulty messages we are not connected to node and
-    // we should be on the blue connecting screen instead of displaying 'Loading wallet data'
     return this.networkDifficulty >= 1;
   }
 
@@ -130,7 +139,10 @@ export default class NetworkStatusStore extends Store {
 
   @computed get isSystemTimeCorrect(): boolean {
     if (!environment.isAdaApi()) return true;
-    return (this.localTimeDifference <= ALLOWED_TIME_DIFFERENCE);
+    // We assume that system time is correct by default
+    if (!this.localTimeDifferenceRequest.wasExecuted) return true;
+    // Compare time difference if we have a result
+    return this.localTimeDifference <= ALLOWED_TIME_DIFFERENCE;
   }
 
   @computed get isSyncing(): boolean {
@@ -141,15 +153,7 @@ export default class NetworkStatusStore extends Store {
     return (
       !this.isConnecting &&
       this.hasBlockSyncingStarted &&
-      this.relativeSyncBlocksDifference <= OUT_OF_SYNC_BLOCKS_LIMIT &&
-      this.isSystemTimeCorrect
-    );
-  }
-
-  @computed get isSetupPage(): boolean {
-    return (
-      this.stores.app.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION ||
-      this.stores.app.currentRoute === ROUTES.PROFILE.TERMS_OF_USE
+      this.relativeSyncBlocksDifference <= OUT_OF_SYNC_BLOCKS_LIMIT
     );
   }
 
@@ -191,6 +195,12 @@ export default class NetworkStatusStore extends Store {
         this.networkDifficulty = difficulty.networkDifficulty;
       });
       Logger.debug('Network difficulty changed: ' + this.networkDifficulty);
+
+      if (this._startupStage === STARTUP_STAGES.SYNCING && this.isSynced) {
+        Logger.info(`========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`);
+        this._startupStage = STARTUP_STAGES.RUNNING;
+        this.actions.networkStatus.isSyncedAndReady.trigger();
+      }
     } catch (error) {
       // If the sync progress request fails, switch to disconnected state
       runInAction('update connected status', () => {
@@ -213,81 +223,15 @@ export default class NetworkStatusStore extends Store {
     }
   };
 
-  _pollLocalTimeDifference() {
-    Logger.debug('Started polling local time difference');
-    if (this._timeDifferencePollInterval) clearInterval(this._timeDifferencePollInterval);
-    this._timeDifferencePollInterval = setInterval(
-      this._updateLocalTimeDifference, TIME_DIFF_POLL_INTERVAL
-    );
-    this._updateLocalTimeDifference();
-  }
-
-  _stopPollingLocalTimeDifference() {
-    Logger.debug('Stopped polling local time difference');
-    if (this._timeDifferencePollInterval) clearInterval(this._timeDifferencePollInterval);
-  }
-
-  _pollSyncProgress() {
-    setInterval(this._updateSyncProgress, SYNC_PROGRESS_INTERVAL);
-    this._updateSyncProgress();
-  }
-
-  _redirectToWalletAfterSync = () => {
-    const { app } = this.stores;
-    const { wallets } = this.stores[environment.API];
-    if (this._startupStage === STARTUP_STAGES.SYNCING && this.isSynced) {
-      Logger.info(`========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`);
-      this._startupStage = STARTUP_STAGES.LOADING;
-      // close reportIssue dialog if is opened and app synced in meanwhile
-      this.actions.dialogs.closeActiveDialog.trigger();
-    }
-    // TODO: introduce smarter way to bootsrap initial screens
-    if (this.isConnected && this.isSynced && wallets.hasLoadedWallets) {
-      if (this._startupStage === STARTUP_STAGES.LOADING) {
-        Logger.info(`========== Loaded after ${this._getStartupTimeDelta()} milliseconds ==========`);
-        this._startupStage = STARTUP_STAGES.RUNNING;
-      }
-      runInAction('NetworkStatusStore::_redirectToWalletAfterSync', () => (this.isLoadingWallets = false));
-      if (app.currentRoute === ROUTES.ROOT) {
-        if (wallets.first) {
-          this.actions.router.goToRoute.trigger({
-            route: ROUTES.WALLETS.SUMMARY,
-            params: { id: wallets.first.id }
-          });
-        } else {
-          this.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });
-        }
-      }
-      this.actions.networkStatus.isSyncedAndReady.trigger();
-    }
+  _updateLocalTimeDifferenceWhenConnected = async () => {
+    if (this.isConnected) await this._updateLocalTimeDifference();
   };
 
-  _redirectToLoadingWhenDisconnected = () => {
-    if (this.stores.app.currentRoute === ROUTES.PROFILE.LANGUAGE_SELECTION) return;
-    if (!this.isConnected) {
-      this._updateSyncProgress();
-      this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
-    }
-  };
-
-  _redirectToSyncingWhenOutOfSync = () => {
-    if (!this.isSynced && !this.isSetupPage) {
-      this._updateSyncProgress();
-      this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
-    }
+  _updateSyncProgressWhenDisconnected = async () => {
+    if (!this.isConnected) await this._updateSyncProgress();
   };
 
   _getStartupTimeDelta() {
     return Date.now() - this._startTime;
   }
-
-  _pollTimeDifferenceWhenConnected = () => {
-    if (!environment.isAdaApi()) return;
-    if (this.isConnected) {
-      this._pollLocalTimeDifference();
-    } else {
-      this._stopPollingLocalTimeDifference();
-    }
-  };
-
 }
