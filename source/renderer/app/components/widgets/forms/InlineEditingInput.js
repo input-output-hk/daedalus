@@ -119,7 +119,7 @@ export default class InlineEditingInput extends Component<Props, State> {
 
   componentDidUpdate() {
     if (this.props.isActive) {
-      this.inputField.focus();
+      this.inputField && this.inputField.getRef().focus();
     }
   }
 
