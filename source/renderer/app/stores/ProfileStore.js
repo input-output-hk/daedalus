@@ -3,6 +3,7 @@ import { action, observable, computed, toJS } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment/moment';
 import { ipcRenderer } from 'electron';
+import { includes } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import environment from '../../../common/environment';
@@ -135,6 +136,11 @@ export default class SettingsStore extends Store {
     return this.getTermsOfUseAcceptanceRequest.result === true;
   }
 
+  @computed get isSettingsPage(): boolean {
+    const { currentRoute } = this.stores.app;
+    return includes(ROUTES.PROFILE, currentRoute) || includes(ROUTES.SETTINGS, currentRoute);
+  }
+
   _updateLocale = async ({ locale }: { locale: string }) => {
     await this.setProfileLocaleRequest.execute(locale);
     await this.getProfileLocaleRequest.execute();
@@ -167,8 +173,8 @@ export default class SettingsStore extends Store {
 
   _redirectToTermsOfUseScreenIfTermsNotAccepted = () => {
     const { isConnected } = this.stores.networkStatus;
-    if (isConnected && this.isCurrentLocaleSet &&
-      this.hasLoadedTermsOfUseAcceptance && !this.areTermsOfUseAccepted) {
+    const termsOfUseNotAccepted = this.hasLoadedTermsOfUseAcceptance && !this.areTermsOfUseAccepted;
+    if (isConnected && this.isCurrentLocaleSet && termsOfUseNotAccepted) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.TERMS_OF_USE });
     }
   };

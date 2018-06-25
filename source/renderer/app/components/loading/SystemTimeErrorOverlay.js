@@ -76,6 +76,7 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
         <p><FormattedHTMLMessage {...messages.overlayText} values={{ timeOffset }} /></p>
 
         <Button
+          className="disclaimer"
           label={problemSolutionLink}
           skin={ButtonSkin}
           onClick={this.onProblemSolutionClick.bind(this, problemSolutionLink)}

@@ -18,7 +18,7 @@ in
   { statePath           = "${dataDir}/${cluster.name}"
   , nodePath            = "cardano-node"
   , nodeDbPath          = "${dataDir}/DB/"
-  , nodeLogConfig       = "\${DAEDALUS_CONFIG}/daedalus.yaml"
+  , nodeLogConfig       = "\${DAEDALUS_CONFIG}/log-config-prod.yaml"
   , nodeLogPath         = "${dataDir}/Logs/cardano-node.log"
 
   , walletPath          = "daedalus-frontend"
