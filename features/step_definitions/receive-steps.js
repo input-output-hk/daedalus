@@ -23,10 +23,10 @@ Then('I should see the following addresses:', async function (table) {
 
   await this.client.waitUntil(async () => {
     addresses = await this.client.getAttribute('.WalletReceive_walletAddress','class');
-    return addresses.length === 3;
+    return addresses.length === expectedAdresses.length;
   });
 
-  addresses.forEach((address, index) => expect(address.indexOf(expectedAdresses[index]) > -1))
+  addresses.forEach((address, index) => expect(address).to.include(expectedAdresses[index].ClassName));
 
 });
 
