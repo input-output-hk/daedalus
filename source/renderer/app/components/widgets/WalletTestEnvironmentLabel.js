@@ -3,16 +3,21 @@ import { defineMessages, intlShape } from 'react-intl';
 import styles from './WalletTestEnvironmentLabel.scss';
 
 const messages = defineMessages({
-  stagingLabel: {
+  staging: {
     id: 'test.environment.stagingLabel',
     defaultMessage: '!!!Staging vx',
     description: 'Label for staging network with version.'
   },
-  testnetLabel: {
+  testnet: {
     id: 'test.environment.testnetLabel',
     defaultMessage: '!!!Testnet vx',
     description: 'Label for testnet with version.'
   },
+  development: {
+    id: 'test.environment.developmentLabel',
+    defaultMessage: '!!!Development vx',
+    description: 'Label for development with version.'
+  }
 });
 
 type Props = {
@@ -26,12 +31,12 @@ export default class WalletTestEnvironmentLabel extends Component<Props> {
   };
 
   render() {
-    const { network } = this.props;
+    const { network='development' } = this.props;
     const { intl } = this.context;
-    const label = network === 'staging' ? 'stagingLabel' : 'testnetLabel';
+    const label = messages[network];
     return (
       <div className={styles.component}>
-        {intl.formatMessage(messages[label])}
+        {intl.formatMessage(label)}
       </div>
     );
   }
