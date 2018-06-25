@@ -25,7 +25,8 @@ const createElectronServer = (env, args = []) => {
     spawnOpt: {
       env: Object.assign({}, process.env, env),
       args,
-    }
+    },
+    port: process.env.ELECTRON_PORT
   });
 };
 
