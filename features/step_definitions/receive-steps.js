@@ -22,7 +22,7 @@ Then('I should see the following addresses:', async function (table) {
   let addresses;
 
   await this.client.waitUntil(async () => {
-    addresses = await this.client.getAttribute('.WalletReceive_walletAddress','class');
+    addresses = await this.client.getAttribute('.WalletReceive_walletAddress', 'class');
     return addresses.length === expectedAdresses.length;
   });
 
