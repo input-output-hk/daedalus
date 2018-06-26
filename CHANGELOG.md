@@ -40,6 +40,7 @@ Changelog
 - Log expected errors as debug messages only ([PR 916](https://github.com/input-output-hk/daedalus/pull/916))
 - Created hide show used addresses acceptance test ([PR 957](https://github.com/input-output-hk/daedalus/pull/957))
 - Improved text display by reducing letter-spacing ([PR 973](https://github.com/input-output-hk/daedalus/pull/973))
+- Added aceptance tests for wallets, transactions and addresses ordering ([PR 976](https://github.com/input-output-hk/daedalus/pull/976))
 - Added acceptance tests for node update notification with apply and postpone update scenarios ([PR 977](https://github.com/input-output-hk/daedalus/pull/977))
 - Added acceptance tests for maximum wallets limit ([PR 979](https://github.com/input-output-hk/daedalus/pull/979))
 - Added acceptance tests for the About dialog ([PR 975](https://github.com/input-output-hk/daedalus/pull/975))

@@ -49,6 +49,11 @@ Given(/^I have the following wallets:$/, async function (table) {
   await createWallets(table.hashes(), this);
 });
 
+// Creates them sequentially
+Given(/^I have created the following wallets:$/, async function (table) {
+  await createWallets(table.hashes(), this, true);
+});
+
 Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function (walletName, screen) {
   const wallet = getWalletByName.call(this, walletName);
   await navigateTo.call(this, `/wallets/${wallet.id}/${screen}`);
@@ -429,4 +434,10 @@ Then(/^I should see newly generated address as active address on the wallet rece
     const generatedAddress = await this.client.getText('.generatedAddress-1 .WalletReceive_addressId');
     return generatedAddress === activeAddress;
   });
+});
+
+Then(/^I should see the wallets in the following order:$/, async function (table) {
+  const expectedWallets = table.hashes();
+  const wallets = await this.client.getText('.SidebarWalletMenuItem_title');
+  wallets.forEach((wallet, index) => expect(wallet).to.equal(expectedWallets[index].name));
 });
