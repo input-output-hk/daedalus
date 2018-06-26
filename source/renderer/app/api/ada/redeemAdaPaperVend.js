@@ -1,6 +1,7 @@
 // @flow
 import type { AdaTransaction } from './types';
 import { request } from './lib/request';
+import environment from '../../../../common/environment';
 
 export type RedeemAdaPaperVendParams = {
   ca: string,
@@ -21,7 +22,7 @@ export const redeemAdaPaperVend = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/papervend/redemptions/ada',
-    port: 8090,
+    port: environment.WALLET_PORT,
     ca,
   }, { passphrase: walletPassword }, redeemPaperVendedData)
 );

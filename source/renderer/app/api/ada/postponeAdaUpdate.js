@@ -1,5 +1,6 @@
 // @flow
 import { request } from './lib/request';
+import environment from '../../../../common/environment';
 
 export type PostponeAdaUpdateParams = {
   ca: string,
@@ -12,7 +13,7 @@ export const postponeAdaUpdate = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/update/postpone',
-    port: 8090,
+    port: environment.WALLET_PORT,
     ca,
   })
 );

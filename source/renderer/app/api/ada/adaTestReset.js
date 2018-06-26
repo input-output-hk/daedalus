@@ -1,5 +1,6 @@
 // @flow
 import { request } from './lib/request';
+import environment from '../../../../common/environment';
 
 export type AdaTestResetParams = {
   ca: string,
@@ -12,7 +13,7 @@ export const adaTestReset = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/test/reset',
-    port: 8090,
+    port: environment.WALLET_PORT,
     ca,
   })
 );

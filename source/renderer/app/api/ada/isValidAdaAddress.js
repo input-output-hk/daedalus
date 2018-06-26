@@ -1,5 +1,6 @@
 // @flow
 import { request } from './lib/request';
+import environment from '../../../../common/environment';
 
 export type IsValidAdaAddressParams = {
   ca: string,
@@ -14,7 +15,7 @@ export const isValidAdaAddress = (
     hostname: 'localhost',
     method: 'GET',
     path: `/api/addresses/${encodedAddress}`,
-    port: 8090,
+    port: environment.WALLET_PORT,
     ca,
   });
 };

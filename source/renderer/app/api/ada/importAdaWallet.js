@@ -1,6 +1,7 @@
 // @flow
 import type { AdaWallet } from './types';
 import { request } from './lib/request';
+import environment from '../../../../common/environment';
 
 export type ImportAdaWalletParams = {
   ca: string,
@@ -15,7 +16,7 @@ export const importAdaWallet = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/wallets/keys',
-    port: 8090,
+    port: environment.WALLET_PORT,
     ca,
   }, { passphrase: walletPassword }, filePath)
 );
