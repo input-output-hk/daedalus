@@ -5,6 +5,7 @@ import { remote } from 'electron';
 import SupportSettings from '../../../components/settings/categories/SupportSettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import BugReportDialog from '../../../components/profile/bug-report/BugReportDialog';
+import { logWithTimestamp } from '../../../utils/fileName';
 
 const shell = require('electron').shell;
 
@@ -26,7 +27,7 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
 
   handleDownloadLogs = () => {
     const destination = remote.dialog.showSaveDialog({
-      defaultPath: 'logs.zip',
+      defaultPath: logWithTimestamp(),
     });
     if (destination) this.props.actions.profile.downloadLogs.trigger({ destination, fresh: true });
   };
