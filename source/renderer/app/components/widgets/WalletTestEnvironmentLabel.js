@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './WalletTestEnvironmentLabel.scss';
+import type networkType from '../../types/networkType';
 
 const messages = defineMessages({
   staging: {
@@ -21,7 +22,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  network: string,
+  network: networkType,
 };
 
 export default class WalletTestEnvironmentLabel extends Component<Props> {
@@ -31,7 +32,7 @@ export default class WalletTestEnvironmentLabel extends Component<Props> {
   };
 
   render() {
-    const { network='development' } = this.props;
+    const { network } = this.props;
     const { intl } = this.context;
     const label = messages[network];
     return (
