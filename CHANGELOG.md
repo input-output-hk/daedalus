@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Added initial configuration for a testnet build of Daedalus ([PR 991](https://github.com/input-output-hk/daedalus/pull/991))
+
 ## 0.11.0
 
 ### Features
@@ -37,7 +43,6 @@ Changelog
 - Log expected errors as debug messages only ([PR 916](https://github.com/input-output-hk/daedalus/pull/916))
 - Refactored npm scripts to use colon style ([PR 939](https://github.com/input-output-hk/daedalus/pull/939))
 - Refactored various magic numbers & strings into constants ([PR 881](https://github.com/input-output-hk/daedalus/pull/881))
-- Added initial configuration for a testnet build of Daedalus ([PR 991](https://github.com/input-output-hk/daedalus/pull/991))
 
 ## 0.10.1
 =======
