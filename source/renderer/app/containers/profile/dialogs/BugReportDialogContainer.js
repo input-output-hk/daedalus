@@ -5,7 +5,7 @@ import { get } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import BugReportDialog from '../../../components/profile/bug-report/BugReportDialog';
 import type { InjectedProps } from '../../../types/injectedPropsType';
-import { logWithTimestamp } from '../../../utils/fileName';
+import { filenameWithTimestamp } from '../../../utils/fileName';
 
 const shell = require('electron').shell;
 
@@ -21,10 +21,11 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
   };
 
   onDownload = () => {
+    const fileName = filenameWithTimestamp();
     const destination = remote.dialog.showSaveDialog({
-      defaultPath: logWithTimestamp(),
+      defaultPath: fileName,
     });
-    if (destination) this.props.actions.profile.downloadLogs.trigger({ destination, fresh: true });
+    if (destination) this.props.actions.profile.downloadLogs.trigger({ fileName, destination, fresh: true });
   };
 
   onSubmitManually = (link: string) => {

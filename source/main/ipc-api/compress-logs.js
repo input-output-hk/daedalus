@@ -9,9 +9,8 @@ import { Logger, stringifyError } from '../../common/logging';
 import { COMPRESS_LOGS } from '../../common/ipc-api';
 
 export default () => {
-  ipcMain.on(COMPRESS_LOGS.REQUEST, (event, logs) => {
+  ipcMain.on(COMPRESS_LOGS.REQUEST, (event, logs, compressedFileName) => {
     const sender = event.sender;
-    const compressedFileName = 'logs.zip';
 
     const outputPath = path.join(appLogsFolderPath, compressedFileName);
     const output = fs.createWriteStream(outputPath);

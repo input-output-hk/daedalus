@@ -207,10 +207,11 @@ export default class SettingsStore extends Store {
     this.actions.dialogs.closeActiveDialog.trigger();
   };
 
-  _downloadLogs = action(({ destination, fresh }) => {
+  _downloadLogs = action(({ destination, fresh, fileName }) => {
     this.compressedFileDownload = {
       inProgress: true,
       destination,
+      fileName
     };
 
     if (this.compressedLog && fresh !== true) {
@@ -235,14 +236,15 @@ export default class SettingsStore extends Store {
 
   _compressLogs = action(({ logs }) => {
     this.isCompressing = true;
-    ipcRenderer.send(COMPRESS_LOGS.REQUEST, toJS(logs));
+    ipcRenderer.send(COMPRESS_LOGS.REQUEST, toJS(logs), this.compressedFileDownload.fileName);
   });
 
   _onCompressLogsSuccess = action((event, res) => {
     this.isCompressing = false;
     this.compressedLog = res;
-    if (this.compressedFileDownload.inProgress) {
-      this._downloadLogs({ destination: this.compressedFileDownload.destination });
+    const {inProgress, destination, fileName} = this.compressedFileDownload;
+    if (inProgress) {
+      this._downloadLogs({ destination, fileName });
     }
   });
 
