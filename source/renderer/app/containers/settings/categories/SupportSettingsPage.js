@@ -30,7 +30,9 @@ export default class SupportSettingsPage extends Component<InjectedProps> {
     const destination = remote.dialog.showSaveDialog({
       defaultPath: fileName,
     });
-    if (destination) this.props.actions.profile.downloadLogs.trigger({ fileName, destination, fresh: true });
+    if (destination) {
+      this.props.actions.profile.downloadLogs.trigger({ fileName, destination, fresh: true });
+    }
   };
 
   render() {

@@ -11,6 +11,7 @@ export type CompressedLogs = {
 } | {};
 
 export type CompressedFileDownload = {
-  inProgress?: boolean,
+  fileName?: string,
   destination?: string,
+  inProgress?: boolean,
 };

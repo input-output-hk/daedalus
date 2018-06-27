@@ -207,7 +207,7 @@ export default class SettingsStore extends Store {
     this.actions.dialogs.closeActiveDialog.trigger();
   };
 
-  _downloadLogs = action(({ destination, fresh, fileName }) => {
+  _downloadLogs = action(({ fileName, destination, fresh }) => {
     this.compressedFileDownload = {
       inProgress: true,
       destination,
@@ -242,7 +242,7 @@ export default class SettingsStore extends Store {
   _onCompressLogsSuccess = action((event, res) => {
     this.isCompressing = false;
     this.compressedLog = res;
-    const {inProgress, destination, fileName} = this.compressedFileDownload;
+    const { inProgress, destination, fileName } = this.compressedFileDownload;
     if (inProgress) {
       this._downloadLogs({ destination, fileName });
     }

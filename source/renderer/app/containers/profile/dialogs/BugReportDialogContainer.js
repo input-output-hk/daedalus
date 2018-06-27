@@ -25,7 +25,9 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
     const destination = remote.dialog.showSaveDialog({
       defaultPath: fileName,
     });
-    if (destination) this.props.actions.profile.downloadLogs.trigger({ fileName, destination, fresh: true });
+    if (destination) {
+      this.props.actions.profile.downloadLogs.trigger({ fileName, destination, fresh: true });
+    }
   };
 
   onSubmitManually = (link: string) => {

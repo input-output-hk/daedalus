@@ -1,8 +1,10 @@
+import fs from 'fs';
 import path from 'path';
 import log from 'electron-log';
 import moment from 'moment';
 import ensureDirectoryExists from './ensureDirectoryExists';
-import { pubLogsFolderPath, APP_NAME } from '../config';
+import { pubLogsFolderPath, appLogsFolderPath, APP_NAME } from '../config';
+import { getFilenameWithTimestamp } from '../../renderer/app/utils/fileName';
 
 const isTest = process.env.NODE_ENV === 'test';
 
@@ -19,4 +21,19 @@ export const setupLogging = () => {
     const formattedDate = moment.utc(msg.date).format('YYYY-MM-DDTHH:mm:ss.0SSS');
     return `[${formattedDate}Z] [${msg.level}] ${msg.data}`;
   };
+
+  // Removes existing logs
+  fs.readdir(appLogsFolderPath, (err, files) => {
+    files
+      .filter(getFilenameWithTimestamp())
+      .forEach((logFileName) => {
+        const logFile = path.join(appLogsFolderPath, logFileName);
+        try {
+          fs.unlinkSync(logFile);
+        } catch (error) {
+          console.error(error);
+        }
+      });
+  });
+
 };
