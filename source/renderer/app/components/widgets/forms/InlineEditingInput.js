@@ -156,6 +156,7 @@ export default class InlineEditingInput extends Component<Props, State> {
       >
         <Input
           className={inputStyles}
+          themeOverrides={styles}
           type="text"
           label={inputFieldLabel}
           value={isActive ? inputField.value : inputFieldValue}

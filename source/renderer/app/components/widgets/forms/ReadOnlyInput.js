@@ -41,7 +41,7 @@ export default class ReadOnlyInput extends Component<Props> {
       <div className={mainClasses}>
 
         <Input
-          className={styles.input}
+          themeOverrides={styles}
           type="text"
           label={label}
           value={value}
