@@ -4901,17 +4901,45 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Staging vx",
+        "description": "Label for staging network with version.",
+        "end": {
+          "column": 3,
+          "line": 11
+        },
+        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
+        "id": "test.environment.stagingLabel",
+        "start": {
+          "column": 11,
+          "line": 7
+        }
+      },
+      {
         "defaultMessage": "!!!Testnet vx",
         "description": "Label for testnet with version.",
         "end": {
           "column": 3,
-          "line": 10
+          "line": 16
         },
         "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
         "id": "test.environment.testnetLabel",
         "start": {
-          "column": 16,
-          "line": 6
+          "column": 11,
+          "line": 12
+        }
+      },
+      {
+        "defaultMessage": "!!!Development vx",
+        "description": "Label for development with version.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
+        "id": "test.environment.developmentLabel",
+        "start": {
+          "column": 15,
+          "line": 17
         }
       }
     ],

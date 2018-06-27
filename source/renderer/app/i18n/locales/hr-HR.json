@@ -173,6 +173,8 @@
   "systemTime.error.overlayText": "!!!Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. You are 2 hours 12 minutes 54 seconds behind.<br>To synchronize the time and fix this issue, please visit the FAQ section of Daedalus website:",
   "systemTime.error.overlayTitle": "!!!Unable to sync - incorrect time",
   "systemTime.error.problemSolutionLink": "!!!daedaluswallet.io/faq",
+  "test.environment.developmentLabel": "!!!Development vx",
+  "test.environment.stagingLabel": "!!!Staging vx",
   "test.environment.testnetLabel": "!!!Testnet vx",
   "wallet.add.dialog.create.description": "!!!Create a new wallet",
   "wallet.add.dialog.create.label": "!!!Create",
