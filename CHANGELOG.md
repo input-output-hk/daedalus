@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Added support for configurable Api port ([PR 992](https://github.com/input-output-hk/daedalus/pull/992))
+
 ## 0.11.0
 
 ### Features
