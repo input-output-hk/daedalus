@@ -2,11 +2,16 @@ Changelog
 =========
 
 ## vNext
+=======
 
 ### Features
 
 - Added support for configurable Api port ([PR 992](https://github.com/input-output-hk/daedalus/pull/992))
 - Added initial configuration for a testnet build of Daedalus ([PR 991](https://github.com/input-output-hk/daedalus/pull/991))
+
+### Chores
+
+- Improved network label in the Top bar ([PR 988](https://github.com/input-output-hk/daedalus/pull/988))
 
 ## 0.11.0
 
