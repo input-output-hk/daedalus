@@ -58,9 +58,10 @@ data Cluster
   | Testnet
   deriving (Bounded, Enum, Eq, Read, Show)
 
+-- | The wallet backend to include in the installer.
 data Backend
-  = Cardano { cardanoDaedalusBridge :: FilePath }
-  | Mantis
+  = Cardano FilePath -- ^ Cardano SL with the given daedalus-bridge.
+  | Mantis           -- ^ Mantis, to be implemented in DEVOPS-533.
   deriving (Eq, Show)
 
 data Config
