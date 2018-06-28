@@ -95,6 +95,7 @@ export default {
   '--theme-select-option-text-color': '#e9f4fe',
   '--theme-select-options-border-color': '#667a8a',
   '--theme-select-options-shadow': '0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 0 4px 0 rgba(0, 0, 0, 0.1)',
+  '--theme-select-options-checkmark-color': '#fff',
 
   '--theme-choice-tabs-text-color': '#e9f4fe',
   '--theme-choice-tabs-text-color-active': '#e9f4fe',
