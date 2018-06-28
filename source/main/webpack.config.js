@@ -53,10 +53,11 @@ module.exports = {
       'process.env.BUILD_NUMBER': JSON.stringify(process.env.BUILD_NUMBER || 'dev'),
       'process.env.REPORT_URL': JSON.stringify(reportUrl),
     }, process.env.NODE_ENV === 'production' ? {
-      // Only bake in NODE_ENV value for production build.
+      // Only bake in NODE_ENV and WALLET_PORT values for production builds.
       // This is so that the test suite based on the webpack build will
       // choose the correct path to ca.crt (see setupTls.js).
       'process.env.NODE_ENV': '"production"',
+      'process.env.WALLET_PORT': JSON.stringify(process.env.WALLET_PORT || ''),
     } : {})),
     !isCi && (
       new HardSourceWebpackPlugin({

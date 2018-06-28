@@ -132,6 +132,7 @@ withDir path = bracket (pwd >>= \old -> (cd path >> pure old)) cd . const
 data InstallerConfig = InstallerConfig {
       installDirectory :: Text
     , macPackageName :: Text
+    , walletPort :: Integer
     } deriving (Generic, Show)
 
 instance Dhall.Interpret InstallerConfig

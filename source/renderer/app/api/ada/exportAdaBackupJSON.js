@@ -1,5 +1,6 @@
 // @flow
 import { request } from './lib/request';
+import environment from '../../../../common/environment';
 
 export type ExportAdaBackupJSONParams = {
   ca: string,
@@ -14,7 +15,7 @@ export const exportAdaBackupJSON = (
     hostname: 'localhost',
     method: 'POST',
     path: `/api/backup/export/${walletId}`,
-    port: 8090,
+    port: environment.WALLET_PORT,
     ca,
   }, {}, filePath)
 );

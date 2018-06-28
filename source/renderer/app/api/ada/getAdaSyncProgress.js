@@ -1,6 +1,7 @@
 // @flow
 import type { AdaSyncProgressResponse } from './types';
 import { request } from './lib/request';
+import environment from '../../../../common/environment';
 
 export type GetAdaSyncProgressParams = {
   ca: string,
@@ -13,7 +14,7 @@ export const getAdaSyncProgress = (
     hostname: 'localhost',
     method: 'GET',
     path: '/api/settings/sync/progress',
-    port: 8090,
+    port: environment.WALLET_PORT,
     ca,
   })
 );

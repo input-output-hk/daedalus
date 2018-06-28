@@ -10,6 +10,13 @@ let
     staging = "testnet";
     testnet = "testnet";
   };
+  # TODO: these hard-coded values will go away when wallet port
+  # selection happens at runtime.
+  walletPortMap = {
+    mainnet = 8090;
+    staging = 8091;
+    testnet = 8092;
+  };
   dotGitExists = builtins.pathExists ./.git;
   isNix2 = 0 <= builtins.compareVersions builtins.nixVersion "1.12";
   canUseFetchGit = dotGitExists && isNix2;
@@ -21,6 +28,7 @@ yarn2nix.mkYarnPackage {
   API_VERSION = apiVersion;
   CI = "nix";
   NETWORK = networkMap.${cluster};
+  WALLET_PORT = walletPortMap.${cluster};
   BUILD_NUMBER = "${toString buildNum}";
   NODE_ENV = "production";
   installPhase = ''
