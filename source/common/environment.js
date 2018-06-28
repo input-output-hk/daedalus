@@ -12,7 +12,7 @@ const environment = Object.assign({
   DEVELOPMENT: 'development',
   TEST: 'test',
   PRODUCTION: 'production',
-  NETWORK: process.env.NETWORK,
+  NETWORK: process.env.NETWORK || 'development',
   API: process.env.API || 'ada',
   API_VERSION: process.env.API_VERSION || 'dev',
   MOBX_DEV_TOOLS: process.env.MOBX_DEV_TOOLS,
