@@ -1,6 +1,7 @@
 import http from 'http';
 import FormData from 'form-data/lib/form_data';
 import fs from 'fs';
+import { getFilenameWithTimestamp } from '../../../../common/fileName';
 
 export type RequestOptions = {
   hostname: string,
@@ -40,7 +41,8 @@ function typedHttpRequest<Response>(
     // prepare file stream (attachment)
     if (payload.compressedLog) {
       const stream = fs.createReadStream(payload.compressedLog);
-      formData.append('logs.zip', stream);
+      const [fileName] = getFilenameWithTimestamp()(payload.compressedLog);
+      formData.append(fileName, stream);
     }
 
     options.headers = formData.getHeaders();

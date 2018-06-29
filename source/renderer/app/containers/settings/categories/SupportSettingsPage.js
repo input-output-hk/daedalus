@@ -5,7 +5,7 @@ import { remote } from 'electron';
 import SupportSettings from '../../../components/settings/categories/SupportSettings';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import BugReportDialog from '../../../components/profile/bug-report/BugReportDialog';
-import { filenameWithTimestamp } from '../../../utils/fileName';
+import { filenameWithTimestamp } from '../../../../../common/fileName';
 
 const shell = require('electron').shell;
 

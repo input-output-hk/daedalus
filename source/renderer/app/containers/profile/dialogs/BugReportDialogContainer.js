@@ -5,7 +5,7 @@ import { get } from 'lodash';
 import { observer, inject } from 'mobx-react';
 import BugReportDialog from '../../../components/profile/bug-report/BugReportDialog';
 import type { InjectedProps } from '../../../types/injectedPropsType';
-import { filenameWithTimestamp } from '../../../utils/fileName';
+import { filenameWithTimestamp } from '../../../../../common/fileName';
 
 const shell = require('electron').shell;
 
@@ -40,7 +40,7 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
 
   render() {
     const { actions, stores } = this.props;
-    const { getLogs, compressLogs, deleteCompressedLogs } = actions.profile;
+    const { getLogs, getFreshLogs, deleteCompressedLogs } = actions.profile;
     const {
       logFiles,
       compressedLog,
@@ -65,8 +65,8 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
         onGetLogs={() => {
           getLogs.trigger();
         }}
-        onCompressLogs={(logs) => {
-          compressLogs.trigger({ logs });
+        onGetFreshLogs={(logs) => {
+          getFreshLogs.trigger({ logs });
         }}
         onDeleteCompressedLogs={() => {
           deleteCompressedLogs.trigger();

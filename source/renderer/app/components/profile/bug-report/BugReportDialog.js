@@ -124,8 +124,7 @@ type Props = {
   onSubmitManually: Function,
   onDownload: Function,
   onGetLogs: Function,
-  onCompressLogs: Function,
-  onDeleteCompressedLogs: Function,
+  onGetFreshLogs: Function,
   isSubmitting: boolean,
   isCompressing: boolean,
   isDownloading?: boolean,
@@ -134,6 +133,9 @@ type Props = {
 
 type State = {
   showLogs: boolean,
+  isReadyToSubmit: boolean,
+  wasSubmitted: boolean,
+  compressedLog: ?string,
 };
 
 @observer
@@ -145,18 +147,26 @@ export default class BugReportDialog extends Component<Props, State> {
 
   state = {
     showLogs: true,
+    isReadyToSubmit: false,
+    wasSubmitted: false,
+    compressedLog: null
   };
 
   componentWillMount() {
-    this.props.onGetLogs();
-    this.props.onDeleteCompressedLogs();
+    this.props.onGetFreshLogs();
   }
 
   componentWillReceiveProps(nextProps: Object) {
+
     const commpressionFilesChanged = this.props.compressedLog !== nextProps.compressedLog;
+    const { compressedLog, wasSubmitted } = this.state;
+
     if (nextProps.compressedLog && commpressionFilesChanged && !nextProps.isDownloading) {
-      // proceed to submit when ipc rendered successfully return compressed files
-      this.submit(nextProps.compressedLog);
+      this.setState({ compressedLog: nextProps.compressedLog });
+    }
+
+    if (compressedLog && !wasSubmitted) {
+      this.submit();
     }
   }
 
@@ -206,24 +216,29 @@ export default class BugReportDialog extends Component<Props, State> {
     },
   });
 
-  submit = (compressedLog: ?string) => {
+  markIsReadyToSubmit = () => {
+    this.setState({ isReadyToSubmit: true }, this.submit);
+  };
+
+  submit = () => {
+
+    const { compressedLog, isReadyToSubmit } = this.state;
+
+    if (!compressedLog || !isReadyToSubmit) {
+      return false;
+    }
+
+    this.setState({ wasSubmitted: true });
+
     this.form.submit({
       onSuccess: (form) => {
-        const { logFiles } = this.props;
-        const logsExist = get(logFiles, ['files'], []).length > 0;
 
         const { email, subject, problem } = form.values();
         const data = {
           email, subject, problem, compressedLog
         };
 
-        if (this.state.showLogs && logsExist && !compressedLog) {
-          // submit request with commpressed logs files
-          this.props.onCompressLogs(this.props.logFiles);
-        } else {
-          // regular submit
-          this.props.onSubmit(data);
-        }
+        this.props.onSubmit(data);
       },
       onError: () => {},
     });
@@ -273,7 +288,7 @@ export default class BugReportDialog extends Component<Props, State> {
         label: this.context.intl.formatMessage(messages.submitButtonLabel),
         primary: true,
         disabled: isSubmitting,
-        onClick: this.submit.bind(this, null),
+        onClick: this.markIsReadyToSubmit,
       },
     ];
 
@@ -322,7 +337,7 @@ export default class BugReportDialog extends Component<Props, State> {
                 {...emailField.bind()}
                 error={emailField.error}
                 skin={<SimpleInputSkin />}
-                onKeyPress={submitOnEnter.bind(this, this.submit)}
+                onKeyPress={submitOnEnter.bind(this, this.markIsReadyToSubmit)}
               />
             </div>
 
@@ -332,7 +347,7 @@ export default class BugReportDialog extends Component<Props, State> {
                 {...subjectField.bind()}
                 error={subjectField.error}
                 skin={<SimpleInputSkin />}
-                onKeyPress={submitOnEnter.bind(this, this.submit)}
+                onKeyPress={submitOnEnter.bind(this, this.markIsReadyToSubmit)}
               />
             </div>
 

@@ -14,6 +14,7 @@ import LocalizableError from '../i18n/LocalizableError';
 import globalMessages from '../i18n/global-messages';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 import type { LogFiles, CompressedFileDownload } from '../types/LogTypes';
+import { filenameWithTimestamp } from '../../../common/fileName';
 
 export default class SettingsStore extends Store {
 
@@ -57,6 +58,7 @@ export default class SettingsStore extends Store {
     this.actions.profile.getLogs.listen(this._getLogs);
     this.actions.profile.resetBugReportDialog.listen(this._resetBugReportDialog);
     this.actions.profile.downloadLogs.listen(this._downloadLogs);
+    this.actions.profile.getFreshLogs.listen(this._getFreshLogs);
     this.actions.profile.compressLogs.listen(this._compressLogs);
     this.actions.profile.deleteCompressedLogs.listen(this._deleteCompressedFiles);
     this.actions.profile.sendBugReport.listen(this._sendBugReport);
@@ -225,18 +227,27 @@ export default class SettingsStore extends Store {
 
   _onGetLogsSuccess = action((event, res) => {
     this.logFiles = res;
-    if (this.compressedFileDownload.inProgress) {
-      this._compressLogs({ logs: res });
-    }
+    this._compressLogs({ logs: res });
   });
 
   _onDownloadLogsSuccess = action(() => {
     this.compressedFileDownload = {};
   });
 
+  _getFreshLogs = action(() => {
+    this.compressedFileDownload = {
+      fileName: filenameWithTimestamp()
+    };
+    this.isCompressing = true;
+
+    this._getLogs();
+  });
+
   _compressLogs = action(({ logs }) => {
     this.isCompressing = true;
-    ipcRenderer.send(COMPRESS_LOGS.REQUEST, toJS(logs), this.compressedFileDownload.fileName);
+    const { fileName = filenameWithTimestamp() } = this.compressedFileDownload;
+
+    ipcRenderer.send(COMPRESS_LOGS.REQUEST, toJS(logs), fileName);
   });
 
   _onCompressLogsSuccess = action((event, res) => {
@@ -258,6 +269,7 @@ export default class SettingsStore extends Store {
     problem: string,
     compressedLog: ?string,
   }) => {
+
     this.sendBugReport.execute({
       email, subject, problem, compressedLog,
     })
@@ -267,6 +279,7 @@ export default class SettingsStore extends Store {
       .catch(action((error) => {
         this.error = error;
       }));
+
   });
 
   _deleteCompressedFiles = action(() => {

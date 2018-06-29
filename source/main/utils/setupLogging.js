@@ -4,7 +4,7 @@ import log from 'electron-log';
 import moment from 'moment';
 import ensureDirectoryExists from './ensureDirectoryExists';
 import { pubLogsFolderPath, appLogsFolderPath, APP_NAME } from '../config';
-import { getFilenameWithTimestamp } from '../../renderer/app/utils/fileName';
+import { getFilenameWithTimestamp } from '../../common/fileName';
 
 const isTest = process.env.NODE_ENV === 'test';
 
