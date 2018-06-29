@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import classnames from 'classnames';
 import { Button } from 'react-polymorph/lib/components';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple';
 import styles from './MnemonicWord.scss';
@@ -18,16 +17,15 @@ export default class MnemonicWord extends Component<Props> {
 
   render() {
     const { word, index, isActive, onClick } = this.props;
-    const componentClassNames = classnames([
-      'flat',
-      styles.component,
-      isActive ? styles.active : styles.inactive
-    ]);
+    const handleClick = onClick.bind(null, { word, index });
+
     return (
       <Button
-        className={componentClassNames}
+        className="flat"
+        themeOverrides={styles}
+        disabled={!isActive}
         label={word}
-        onClick={() => onClick({ word, index })}
+        onClick={handleClick}
         skin={ButtonSkin}
       />
     );
