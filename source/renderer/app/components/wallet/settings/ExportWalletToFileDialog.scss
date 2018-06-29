@@ -1,5 +1,5 @@
-@import '../../../../themes/mixins/loading-spinner';
-@import '../../../../themes/mixins/error-message';
+@import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
 
 .component {
   :global {
@@ -20,7 +20,7 @@
 }
 
 .isSubmitting {
-  @include loading-spinner("../../../../assets/images/spinner-light.svg");
+  @include loading-spinner("../../../assets/images/spinner-light.svg");
 }
 
 .error {

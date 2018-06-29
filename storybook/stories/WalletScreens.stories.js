@@ -26,6 +26,7 @@ import WalletSettings from '../../source/renderer/app/components/wallet/WalletSe
 import { assuranceModeOptions } from '../../source/renderer/app/types/transactionAssuranceTypes';
 import ChangeWalletPasswordDialog from '../../source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog';
 import DeleteWalletConfirmationDialog from '../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
+import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
 
 storiesOf('WalletScreens', module)
 
@@ -164,6 +165,9 @@ storiesOf('WalletScreens', module)
         if (dialog === DeleteWalletConfirmationDialog) {
           return boolean('showDeleteWalletConfirmationDialog', false);
         }
+        if (dialog === ExportWalletToFileDialog) {
+          return boolean('showExportWalletToFileDialog', false);
+        }
       }}
       isInvalid={false}
       isSubmitting={false}
@@ -204,6 +208,15 @@ storiesOf('WalletScreens', module)
           confirmationValue={text('Delete Wallet Confirmation Value')}
           onConfirmationValueChange={action('DeleteWalletConfirmationDialog::onConfirmationValueChange')}
           isSubmitting={boolean('DeleteWalletConfirmationDialog::isSubmitting', false)}
+        />
+      }
+      exportWalletDialogContainer={
+        <ExportWalletToFileDialog
+          walletName={text('Wallet Name', 'Wallet Name')}
+          hasSpendingPassword={boolean('isWalletPasswordSet', false)}
+          isSubmitting={boolean('ExportWalletToFileDialog::isSubmitting', false)}
+          onSubmit={action('ExportWalletToFileDialog::onSubmit')}
+          onClose={action('ExportWalletToFileDialog::onClose')}
         />
       }
     />

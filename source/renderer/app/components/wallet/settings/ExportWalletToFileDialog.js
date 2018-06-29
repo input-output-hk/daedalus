@@ -5,28 +5,28 @@ import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
-import DialogCloseButton from '../../../widgets/DialogCloseButton';
-import ReactToolboxMobxForm from '../../../../utils/ReactToolboxMobxForm';
-import globalMessages from '../../../../i18n/global-messages';
-import Dialog from '../../../widgets/Dialog';
-import LocalizableError from '../../../../i18n/LocalizableError';
-import styles from './WalletExportToFileDialog.scss';
-import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../../config/timingConfig';
-import { submitOnEnter } from '../../../../utils/form';
+import DialogCloseButton from '../../widgets/DialogCloseButton';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import globalMessages from '../../../i18n/global-messages';
+import Dialog from '../../widgets/Dialog';
+import LocalizableError from '../../../i18n/LocalizableError';
+import styles from './ExportWalletToFileDialog.scss';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import { submitOnEnter } from '../../../utils/form';
 
 const messages = defineMessages({
   headline: {
-    id: 'wallet.exportToFile.dialog.headline',
+    id: 'wallet.settings.exportToFile.dialog.headline',
     defaultMessage: '!!!Export Wallet',
     description: 'headline for "export wallet to file" dialog.'
   },
   introduction: {
-    id: 'wallet.exportToFile.dialog.introduction',
+    id: 'wallet.settings.exportToFile.dialog.introduction',
     defaultMessage: '!!!You are exporting <strong>{walletName}</strong> to a file.',
     description: 'headline for "export wallet to file" dialog.'
   },
   exportButtonLabel: {
-    id: 'wallet.exportToFile.dialog.submit.label',
+    id: 'wallet.settings.exportToFile.dialog.submit.label',
     defaultMessage: '!!!Export',
     description: 'Label for export wallet to file submit button.'
   },
@@ -69,7 +69,7 @@ type State = {
 };
 
 @observer
-export default class WalletExportToFileDialog extends Component<Props, State> {
+export default class ExportWalletToFileDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
