@@ -1,6 +1,7 @@
 // @flow
 import moment from 'moment';
 import url from 'url';
+import { uniq } from 'lodash';
 import { request } from '../lib/reportRequest';
 import environment from '../../../../common/environment';
 
@@ -18,21 +19,23 @@ export const sendAdaBugReport = (
   { requestFormData, application }: SendAdaBugReportRequestParams
 ): Promise<{}> => {
   const { email, subject, problem, compressedLog } = requestFormData;
-  const reportUrl = url.parse(environment.REPORT_URL);
+  const { platform, version, build, API_VERSION, REPORT_URL } = environment;
+  const buildNumber = uniq([API_VERSION, build]).join('.');
+  const reportUrl = url.parse(REPORT_URL);
 
-  let platform;
-  switch (environment.platform) {
+  let os;
+  switch (platform) {
     case 'darwin':
-      platform = 'macOS';
+      os = 'macOS';
       break;
     case 'win32':
-      platform = 'Windows';
+      os = 'Windows';
       break;
     case 'linux':
-      platform = 'Linux';
+      os = 'Linux';
       break;
     default:
-      platform = '';
+      os = '';
   }
 
   return request({
@@ -42,9 +45,9 @@ export const sendAdaBugReport = (
     port: reportUrl.port,
   }, {
     application,
-    version: environment.version,
-    build: environment.build,
-    os: platform,
+    version,
+    build: buildNumber,
+    os,
     compressedLog,
     date: moment().format('YYYY-MM-DDTHH:mm:ss'),
     magic: 2000000000,

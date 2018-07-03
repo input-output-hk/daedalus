@@ -1,5 +1,6 @@
 import path from 'path';
 import { app, BrowserWindow, ipcMain, Menu } from 'electron';
+import { uniq } from 'lodash';
 import environment from '../../common/environment';
 import ipcApi from '../ipc-api';
 import { runtimeFolderPath } from '../config';
@@ -46,7 +47,9 @@ export const createMainWindow = () => {
   window.loadURL(`file://${__dirname}/../renderer/index.html`);
   window.on('page-title-updated', event => { event.preventDefault(); });
 
-  let title = `Daedalus (${environment.version}#${environment.build})`;
+  const { version, build, API_VERSION } = environment;
+  const buildNumber = uniq([API_VERSION, build]).join('.');
+  let title = `Daedalus (${version}#${buildNumber})`;
   if (!environment.isProduction()) title += ` ${environment.current}`;
   window.setTitle(title);
 

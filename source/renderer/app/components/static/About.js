@@ -70,32 +70,34 @@ export default class About extends Component<any> {
 
   render() {
     const { intl } = this.context;
+    const {
+      platform, version, build,
+      API, API_VERSION, isAdaApi,
+    } = environment;
 
-    let platform;
-    switch (environment.platform) {
+    let os;
+    switch (platform) {
       case 'darwin':
-        platform = 'macOS';
+        os = 'macOS';
         break;
       case 'win32':
-        platform = 'Windows';
+        os = 'Windows';
         break;
       case 'linux':
-        platform = 'Linux';
+        os = 'Linux';
         break;
       default:
-        platform = '';
+        os = '';
     }
 
-    const { version, build } = environment;
-    const apiName = intl.formatMessage(environmentSpecificMessages[environment.API].apiName);
-    const apiVersion = environment.API_VERSION;
-    const apiIcon = environment.isAdaApi() ? cardanoIcon : mantisIcon;
+    const apiName = intl.formatMessage(environmentSpecificMessages[API].apiName);
+    const apiIcon = isAdaApi() ? cardanoIcon : mantisIcon;
 
-    const apiHeadline = environment.isAdaApi()
+    const apiHeadline = isAdaApi()
       ? intl.formatMessage(messages.aboutContentCardanoHeadline)
       : intl.formatMessage(messages.aboutContentMantisHeadline);
 
-    const apiMembers = environment.isAdaApi()
+    const apiMembers = isAdaApi()
       ? intl.formatMessage(messages.aboutContentCardanoMembers)
       : intl.formatMessage(messages.aboutContentMantisMembers);
 
@@ -116,7 +118,7 @@ export default class About extends Component<any> {
             <div className={styles.daedalusBuildInfo}>
               <FormattedHTMLMessage
                 {...messages.aboutBuildInfo}
-                values={{ platform, build, apiName, apiVersion }}
+                values={{ platform: os, build, apiName, apiVersion: API_VERSION }}
               />
             </div>
           </div>

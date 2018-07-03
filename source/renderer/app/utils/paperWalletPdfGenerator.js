@@ -2,6 +2,7 @@
 import PDFDocument from 'pdfkit';
 import qr from 'qr-image';
 import { defineMessages } from 'react-intl';
+import { uniq } from 'lodash';
 import fs from 'fs';
 import paperWalletFontPath from '../assets/pdf/paper-wallet-certificate-font.ttf';
 import paperWalletPage1Path from '../assets/pdf/paper-wallet-certificate-page-1.png';
@@ -48,9 +49,9 @@ type DownloadPaperWalletCertificateParams = {
 export const downloadPaperWalletCertificate = async (
   { address, mnemonics, intl, filePath }: DownloadPaperWalletCertificateParams
 ) => {
-  const { version, build } = environment;
-  const daedalusInfo =
-    `Daedalus ${version}#${build}`;
+  const { version, build, API_VERSION } = environment;
+  const buildNumber = uniq([API_VERSION, build]).join('.');
+  const daedalusInfo = `Daedalus ${version}#${buildNumber}`;
   const qrCodeImage = qr.imageSync(address, { type: 'png', size: 10, ec_level: 'H', margin: 0 });
   const textColor = '#3b5c9b';
 
