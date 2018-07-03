@@ -46,8 +46,7 @@ export const createMainWindow = () => {
   window.loadURL(`file://${__dirname}/../renderer/index.html`);
   window.on('page-title-updated', event => { event.preventDefault(); });
 
-  const { getBuildLabel, isProduction } = environment;
-  window.setTitle(getBuildLabel(!isProduction()));
+  window.setTitle(environment.getBuildLabel());
 
   window.webContents.on('context-menu', (e, props) => {
     const contextMenuOptions = [
