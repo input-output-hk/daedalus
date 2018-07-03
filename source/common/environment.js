@@ -37,7 +37,7 @@ const environment = Object.assign({
   isEtcApi: () => environment.API === 'etc',
   build,
   buildNumber: uniq([API_VERSION, build]).join('.'),
-  getBuildLabel: (addEvironment?: boolean) => `Daedalus (${environment.version}#${environment.buildNumber}) ${addEvironment ? environment.current : ''}`,
+  getBuildLabel: (addCurrentEvironment?: boolean) => `Daedalus (${environment.version}#${environment.buildNumber}) ${addCurrentEvironment ? environment.current : ''}`,
   platform,
   os: osNames[platform] || '',
   version,
