@@ -2,6 +2,7 @@
 
 .dialog {
   font-family: var(--font-light);
+
   :global {
     .SimpleCheckbox_root {
       margin-top: 20px;
@@ -23,5 +24,4 @@
   .isSubmitting {
     @include loading-spinner("../../../assets/images/spinner-light.svg");
   }
-
 }
