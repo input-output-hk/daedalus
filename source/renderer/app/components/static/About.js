@@ -71,24 +71,9 @@ export default class About extends Component<any> {
   render() {
     const { intl } = this.context;
     const {
-      platform, version, build,
+      version, build, os,
       API, API_VERSION, isAdaApi,
     } = environment;
-
-    let os;
-    switch (platform) {
-      case 'darwin':
-        os = 'macOS';
-        break;
-      case 'win32':
-        os = 'Windows';
-        break;
-      case 'linux':
-        os = 'Linux';
-        break;
-      default:
-        os = '';
-    }
 
     const apiName = intl.formatMessage(environmentSpecificMessages[API].apiName);
     const apiIcon = isAdaApi() ? cardanoIcon : mantisIcon;
