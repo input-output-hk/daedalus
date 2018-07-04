@@ -40,7 +40,7 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
 
   render() {
     const { actions, stores } = this.props;
-    const { getLogs, requestFreshCompressedLogs } = actions.profile;
+    const { requestFreshCompressedLogs } = actions.profile;
     const {
       logFiles,
       compressedLog,
