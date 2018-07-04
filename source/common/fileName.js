@@ -1,7 +1,8 @@
+// @flow
 import moment from 'moment';
 
-export const filenameWithTimestamp = (prefix = 'logs', filetype = 'zip') =>
-  `${prefix}-${moment().format('YYYY-MM-DDThhmmss')}.${filetype}`;
+export const filenameWithTimestamp = (prefix:string = 'logs', filetype:string = 'zip') =>
+  `${prefix}-${moment.utc().format('YYYY-MM-DDThhmmss.0SSS')}.${filetype}`;
 
-export const getFilenameWithTimestamp = (prefix = 'logs', filetype = 'zip') => fileName =>
-  fileName.match(RegExp(`(${prefix}-)([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{6})(.${filetype})`));
+export const getFilenameWithTimestamp = (prefix:string = 'logs', filetype:string = 'zip') => (fileName:string) =>
+  fileName.match(RegExp(`(${prefix}-)([0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{6}.0[0-9]{3})(.${filetype})`));
