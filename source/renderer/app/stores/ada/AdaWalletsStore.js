@@ -59,7 +59,7 @@ export default class AdaWalletsStore extends WalletStore {
     const { router, walletBackup, ada } = this.actions;
     const { wallets } = ada;
     wallets.createWallet.listen(this._create);
-    wallets.deleteWallet.listen(this._delete);
+    wallets.deleteWallet.listen(this._deleteWallet);
     wallets.sendMoney.listen(this._sendMoney);
     wallets.restoreWallet.listen(this._restoreWallet);
     wallets.importWalletFromFile.listen(this._importWalletFromFile);
@@ -141,6 +141,32 @@ export default class AdaWalletsStore extends WalletStore {
         this._setIsRestoreActive(restoringWallet);
       });
     }
+  };
+
+  _deleteWallet = async (params: { walletId: string }) => {
+    // Pause polling in order to avoid fetching data for wallet we are about to delete
+    this._pausePolling();
+
+    const walletToDelete = this.getWalletById(params.walletId);
+    if (!walletToDelete) return;
+    const indexOfWalletToDelete = this.all.indexOf(walletToDelete);
+    await this.deleteWalletRequest.execute({ walletId: params.walletId });
+    await this.walletsRequest.patch(result => {
+      result.splice(indexOfWalletToDelete, 1);
+    });
+    runInAction('AdaWalletsStore::_deleteWallet', () => {
+      if (this.hasAnyWallets) {
+        const nextIndexInList = Math.max(indexOfWalletToDelete - 1, 0);
+        const nextWalletInList = this.all[nextIndexInList];
+        this.actions.dialogs.closeActiveDialog.trigger();
+        this.goToWalletRoute(nextWalletInList.id);
+      } else {
+        this.active = null;
+      }
+    });
+    this._resumePolling();
+    this.deleteWalletRequest.reset();
+    this.refreshWalletsData();
   };
 
   @action _setIsRestoreActive = (active: boolean) => {
@@ -232,15 +258,15 @@ export default class AdaWalletsStore extends WalletStore {
     }
   };
 
-  _pausePolling = () => {
+  @action _pausePolling = () => {
     this._pollingBlocked = true;
   };
 
-  _resumePolling = () => {
+  @action _resumePolling = () => {
     this._pollingBlocked = false;
   };
 
-  _generateCertificate = async (params: {
+  @action _generateCertificate = async (params: {
     filePath: string,
   }) => {
     try {
