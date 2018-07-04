@@ -40,12 +40,10 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
 
   render() {
     const { actions, stores } = this.props;
-    const { getLogs, getFreshLogs, deleteCompressedLogs } = actions.profile;
+    const { getLogs, getFreshLogs } = actions.profile;
     const {
       logFiles,
       compressedLog,
-      isCompressing,
-      sendBugReport,
       compressedFileDownload,
       error,
     } = stores.profile;
@@ -55,8 +53,6 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
         isDownloading={get(compressedFileDownload, 'inProgress', false)}
         logFiles={logFiles}
         compressedLog={compressedLog}
-        isCompressing={isCompressing}
-        isSubmitting={sendBugReport.isExecuting}
         error={error}
         onSubmit={this.onSubmit}
         onSubmitManually={this.onSubmitManually}
@@ -67,9 +63,6 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
         }}
         onGetFreshLogs={(logs) => {
           getFreshLogs.trigger({ logs });
-        }}
-        onDeleteCompressedLogs={() => {
-          deleteCompressedLogs.trigger();
         }}
       />
     );

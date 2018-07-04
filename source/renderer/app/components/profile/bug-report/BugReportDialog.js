@@ -118,24 +118,20 @@ const messages = defineMessages({
 
 type Props = {
   logFiles: LogFiles,
-  compressedLog: ?string,
   onCancel: Function,
   onSubmit: Function,
   onSubmitManually: Function,
   onDownload: Function,
   onGetLogs: Function,
   onGetFreshLogs: Function,
-  isSubmitting: boolean,
-  isCompressing: boolean,
   isDownloading?: boolean,
   error: ?LocalizableError,
 };
 
 type State = {
   showLogs: boolean,
-  isReadyToSubmit: boolean,
-  wasSubmitted: boolean,
   compressedLog: ?string,
+  isSubmitting: boolean
 };
 
 @observer
@@ -147,27 +143,23 @@ export default class BugReportDialog extends Component<Props, State> {
 
   state = {
     showLogs: true,
-    isReadyToSubmit: false,
-    wasSubmitted: false,
-    compressedLog: null
+    compressedLog: null,
+    isSubmitting: false,
   };
-
-  componentWillMount() {
-    this.props.onGetFreshLogs();
-  }
 
   componentWillReceiveProps(nextProps: Object) {
 
-    const commpressionFilesChanged = this.props.compressedLog !== nextProps.compressedLog;
-    const { compressedLog, wasSubmitted } = this.state;
+    const commpressionFilesChanged = !this.props.compressedLog && !!nextProps.compressedLog;
+    const { compressedLog } = this.state;
+
+    if (compressedLog) {
+      return false;
+    }
 
     if (nextProps.compressedLog && commpressionFilesChanged && !nextProps.isDownloading) {
-      this.setState({ compressedLog: nextProps.compressedLog });
+      this.setState({ compressedLog: nextProps.compressedLog }, this.submit);
     }
 
-    if (compressedLog && !wasSubmitted) {
-      this.submit();
-    }
   }
 
   form = new ReactToolboxMobxForm({
@@ -216,27 +208,27 @@ export default class BugReportDialog extends Component<Props, State> {
     },
   });
 
-  markIsReadyToSubmit = () => {
-    this.setState({ isReadyToSubmit: true }, this.submit);
-  };
-
   submit = () => {
 
-    const { compressedLog, isReadyToSubmit } = this.state;
+    this.setState({ isSubmitting: true });
 
-    if (!compressedLog || !isReadyToSubmit) {
+    const { showLogs, compressedLog } = this.state;
+
+    if (showLogs && !compressedLog) {
+      this.props.onGetFreshLogs();
       return false;
     }
-
-    this.setState({ wasSubmitted: true });
 
     this.form.submit({
       onSuccess: (form) => {
 
         const { email, subject, problem } = form.values();
-        const data = {
-          email, subject, problem, compressedLog
-        };
+        const data = Object.assign(
+          {
+            email, subject, problem
+          },
+          showLogs && { compressedLog}
+        );
 
         this.props.onSubmit(data);
       },
@@ -250,10 +242,10 @@ export default class BugReportDialog extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { showLogs } = this.state;
+    const { showLogs, isSubmitting } = this.state;
     const { form } = this;
     const {
-      onCancel, isSubmitting, isCompressing,
+      onCancel,
       logFiles, error, onDownload, isDownloading,
     } = this.props;
 
@@ -270,7 +262,7 @@ export default class BugReportDialog extends Component<Props, State> {
 
     const submitButtonClasses = classnames([
       'submitButton',
-      (isSubmitting || isCompressing) ? styles.isSubmitting : null,
+      isSubmitting ? styles.isSubmitting : null,
     ]);
 
     const downloadButtonClasses = classnames([
@@ -288,7 +280,7 @@ export default class BugReportDialog extends Component<Props, State> {
         label: this.context.intl.formatMessage(messages.submitButtonLabel),
         primary: true,
         disabled: isSubmitting,
-        onClick: this.markIsReadyToSubmit,
+        onClick: this.submit,
       },
     ];
 
@@ -337,7 +329,7 @@ export default class BugReportDialog extends Component<Props, State> {
                 {...emailField.bind()}
                 error={emailField.error}
                 skin={<SimpleInputSkin />}
-                onKeyPress={submitOnEnter.bind(this, this.markIsReadyToSubmit)}
+                onKeyPress={submitOnEnter.bind(this, this.submit)}
               />
             </div>
 
@@ -347,7 +339,7 @@ export default class BugReportDialog extends Component<Props, State> {
                 {...subjectField.bind()}
                 error={subjectField.error}
                 skin={<SimpleInputSkin />}
-                onKeyPress={submitOnEnter.bind(this, this.markIsReadyToSubmit)}
+                onKeyPress={submitOnEnter.bind(this, this.submit)}
               />
             </div>
 
