@@ -58,7 +58,7 @@ export default class SettingsStore extends Store {
     this.actions.profile.getLogs.listen(this._getLogs);
     this.actions.profile.resetBugReportDialog.listen(this._resetBugReportDialog);
     this.actions.profile.downloadLogs.listen(this._downloadLogs);
-    this.actions.profile.getFreshLogs.listen(this._getFreshLogs);
+    this.actions.profile.requestFreshCompressedLogs.listen(this._requestFreshCompressedLogs);
     this.actions.profile.compressLogs.listen(this._compressLogs);
     this.actions.profile.deleteCompressedLogs.listen(this._deleteCompressedFiles);
     this.actions.profile.sendBugReport.listen(this._sendBugReport);
@@ -234,7 +234,7 @@ export default class SettingsStore extends Store {
     this.compressedFileDownload = {};
   });
 
-  _getFreshLogs = action(() => {
+  _requestFreshCompressedLogs = action(() => {
     this.compressedFileDownload = {
       fileName: filenameWithTimestamp()
     };
