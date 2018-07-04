@@ -222,12 +222,9 @@ export default class BugReportDialog extends Component<Props, State> {
       onSuccess: (form) => {
 
         const { email, subject, problem } = form.values();
-        const data = Object.assign(
-          {
-            email, subject, problem
-          },
-          showLogs && { compressedLog}
-        );
+        const data = {
+          email, subject, problem, compressedLog
+        };
 
         this.props.onSubmit(data);
       },
