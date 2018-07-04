@@ -239,14 +239,12 @@ export default class SettingsStore extends Store {
       fileName: filenameWithTimestamp()
     };
     this.isCompressing = true;
-
     this._getLogs();
   });
 
   _compressLogs = action(({ logs }) => {
     this.isCompressing = true;
     const { fileName = filenameWithTimestamp() } = this.compressedFileDownload;
-
     ipcRenderer.send(COMPRESS_LOGS.REQUEST, toJS(logs), fileName);
   });
 
