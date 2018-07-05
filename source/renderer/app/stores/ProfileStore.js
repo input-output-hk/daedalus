@@ -9,7 +9,7 @@ import Request from './lib/LocalizedRequest';
 import environment from '../../../common/environment';
 import { THEMES } from '../themes/index';
 import { ROUTES } from '../routes-config';
-import { GET_LOGS, DOWNLOAD_LOGS, COMPRESS_LOGS, DELETE_COMPRESSED_LOGS } from '../../../common/ipc-api';
+import { GET_LOGS, DOWNLOAD_LOGS, COMPRESS_LOGS } from '../../../common/ipc-api';
 import LocalizableError from '../i18n/LocalizableError';
 import globalMessages from '../i18n/global-messages';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';

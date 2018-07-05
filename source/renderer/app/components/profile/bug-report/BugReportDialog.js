@@ -246,7 +246,6 @@ export default class BugReportDialog extends Component<Props, State> {
     const { showLogs, isSubmitting } = this.state;
     const { form } = this;
     const {
-      onCancel,
       logFiles, error, onDownload, isDownloading,
     } = this.props;
 
