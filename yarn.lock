@@ -8659,6 +8659,10 @@ postcss@^6.0.17:
     source-map "^0.6.1"
     supports-color "^5.4.0"
 
+postinstall-build@5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/postinstall-build/-/postinstall-build-5.0.1.tgz#b917a9079b26178d9a24af5a5cd8cb4a991d11b9"
+
 prelude-ls@~1.1.2:
   version "1.1.2"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.1.2.tgz#21932a549f5e52ffd9a827f570e04be62a97da54"
@@ -9135,13 +9139,14 @@ react-onclickoutside@^6.5.0:
   version "6.7.1"
   resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.7.1.tgz#6a5b5b8b4eae6b776259712c89c8a2b36b17be93"
 
-react-polymorph@0.7.0:
+react-polymorph@input-output-hk/react-polymorph#da78bd5a77aaba58c93183103f6688e1b288bba0:
   version "0.7.0"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.7.0.tgz#e87741334f358558ab272c44f7a0391d7839b77d"
+  resolved "https://codeload.github.com/input-output-hk/react-polymorph/tar.gz/da78bd5a77aaba58c93183103f6688e1b288bba0"
   dependencies:
     create-react-context "0.2.2"
     create-react-ref "0.1.0"
     filter-react-dom-props "0.0.2"
+    postinstall-build "5.0.1"
     react-modal "3.1.12"
 
 react-resize-detector@1.1.0:
