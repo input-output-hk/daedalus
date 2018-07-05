@@ -60,7 +60,6 @@ export default class SettingsStore extends Store {
     this.actions.profile.downloadLogs.listen(this._downloadLogs);
     this.actions.profile.requestFreshCompressedLogs.listen(this._requestFreshCompressedLogs);
     this.actions.profile.compressLogs.listen(this._compressLogs);
-    this.actions.profile.deleteCompressedLogs.listen(this._deleteCompressedFiles);
     this.actions.profile.sendBugReport.listen(this._sendBugReport);
     ipcRenderer.on(GET_LOGS.SUCCESS, this._onGetLogsSuccess);
     ipcRenderer.on(DOWNLOAD_LOGS.SUCCESS, this._onDownloadLogsSuccess);
@@ -204,7 +203,6 @@ export default class SettingsStore extends Store {
   };
 
   _resetBugReportDialog = () => {
-    this._deleteCompressedFiles();
     this._reset();
     this.actions.dialogs.closeActiveDialog.trigger();
   };
@@ -278,13 +276,6 @@ export default class SettingsStore extends Store {
         this.error = error;
       }));
 
-  });
-
-  _deleteCompressedFiles = action(() => {
-    if (this.compressedLog) {
-      ipcRenderer.send(DELETE_COMPRESSED_LOGS.REQUEST, this.compressedLog);
-      this.compressedLog = null;
-    }
   });
 
   @action _reset = () => {

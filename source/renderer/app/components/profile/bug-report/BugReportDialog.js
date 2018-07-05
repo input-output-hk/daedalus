@@ -236,6 +236,11 @@ export default class BugReportDialog extends Component<Props, State> {
     this.setState({ showLogs: value });
   };
 
+  onClose = () => {
+    const { error, onCancel } = this.props;
+    if (!this.state.isSubmitting || error) onCancel();
+  }
+
   render() {
     const { intl } = this.context;
     const { showLogs, isSubmitting } = this.state;
@@ -302,8 +307,8 @@ export default class BugReportDialog extends Component<Props, State> {
         title={intl.formatMessage(messages.title)}
         actions={!error ? actions : alternativeActions}
         closeOnOverlayClick
-        onClose={onCancel}
-        closeButton={<DialogCloseButton onClose={onCancel} />}
+        onClose={this.onClose}
+        closeButton={<DialogCloseButton disabled={isSubmitting && !error} onClose={this.onClose} />}
       >
         {error ? (
           <div>
