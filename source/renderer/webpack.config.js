@@ -136,7 +136,7 @@ module.exports = {
           require('node-object-hash')({ sort: false }).hash(lodash.omit(webpackConfig, 'watch'))
         ),
         environmentPaths: {
-          files: ['.babelrc', 'package-lock.json', 'yarn.lock'],
+          files: ['.babelrc', 'yarn.lock'],
         },
       })
     )
