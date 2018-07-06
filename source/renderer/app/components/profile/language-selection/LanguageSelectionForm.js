@@ -2,8 +2,10 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { observer } from 'mobx-react';
-import { Button, Select } from 'react-polymorph/lib/components';
-import { ButtonSkin, SelectSkin } from 'react-polymorph/lib/skins/simple';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { Select } from 'react-polymorph/lib/components/Select';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import LocalizableError from '../../../i18n/LocalizableError';

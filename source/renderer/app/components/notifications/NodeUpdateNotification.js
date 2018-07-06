@@ -4,8 +4,8 @@ import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
-import { Button } from 'react-polymorph/lib/components';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './NodeUpdateNotification.scss';
 import arrowIcon from '../../assets/images/arrow.inline.svg';
 
