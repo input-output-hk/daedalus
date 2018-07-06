@@ -225,7 +225,9 @@ export default class SettingsStore extends Store {
 
   _onGetLogsSuccess = action((event, res) => {
     this.logFiles = res;
-    this._compressLogs({ logs: res });
+    if (this.compressedFileDownload.inProgress) {
+      this._compressLogs({ logs: res });
+    }
   });
 
   _onDownloadLogsSuccess = action(() => {
@@ -233,11 +235,13 @@ export default class SettingsStore extends Store {
   });
 
   _requestFreshCompressedLogs = action(() => {
+    if (!this.logFiles) {
+      return this._getLogs();
+    }
     this.compressedFileDownload = {
       fileName: filenameWithTimestamp()
     };
-    this.isCompressing = true;
-    this._getLogs();
+    this._compressLogs({ logs: this.logFiles });
   });
 
   _compressLogs = action(({ logs }) => {

@@ -122,6 +122,7 @@ type Props = {
   onSubmit: Function,
   onSubmitManually: Function,
   onDownload: Function,
+  onGetLogs: Function,
   onRequestFreshCompressedLogs: Function,
   isDownloading?: boolean,
   error: ?LocalizableError,
@@ -145,6 +146,10 @@ export default class BugReportDialog extends Component<Props, State> {
     compressedLog: null,
     isSubmitting: false,
   };
+
+  componentWillMount() {
+    this.props.onGetLogs();
+  }
 
   componentWillReceiveProps(nextProps: Object) {
 
