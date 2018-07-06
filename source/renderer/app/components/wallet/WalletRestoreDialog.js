@@ -7,7 +7,7 @@ import Input from 'react-polymorph/lib/components/Input';
 import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
 import Checkbox from 'react-polymorph/lib/components/Checkbox';
 import Autocomplete from 'react-polymorph/lib/components/Autocomplete';
-import SimpleAutocompleteSkin from './skins/AutocompleteSkin';
+import SimpleAutocompleteSkin from 'react-polymorph/lib/skins/simple/raw/AutocompleteSkin';
 import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/raw/SwitchSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
@@ -130,7 +130,6 @@ type Props = {
 type State = {
   createPassword: boolean,
   activeChoice: string,
-  shouldCloseOnEsc: boolean
 };
 
 @observer
@@ -143,7 +142,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   state = {
     createPassword: true,
     activeChoice: RESTORE_TYPES.REGULAR, // regular | certificate
-    shouldCloseOnEsc: true
   };
 
   recoveryPhraseAutocomplete: Autocomplete;
@@ -278,7 +276,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
       error,
       onCancel,
     } = this.props;
-    const { createPassword, shouldCloseOnEsc } = this.state;
+    const { createPassword } = this.state;
 
     const dialogClasses = classnames([
       styles.component,
@@ -328,7 +326,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         title={intl.formatMessage(messages.title)}
         actions={actions}
         closeOnOverlayClick
-        shouldCloseOnEsc={shouldCloseOnEsc}
         onClose={onCancel}
         closeButton={<DialogCloseButton />}
       >
@@ -376,8 +373,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           maxVisibleOptions={5}
           noResultsMessage={intl.formatMessage(messages.recoveryPhraseNoResults)}
           skin={<SimpleAutocompleteSkin />}
-          onFocus={() => this.setState({ shouldCloseOnEsc: false })}
-          onBlur={() => this.setState({ shouldCloseOnEsc: true })}
         />
 
         <div className={styles.walletPassword}>

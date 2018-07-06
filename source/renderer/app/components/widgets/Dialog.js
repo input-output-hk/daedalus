@@ -5,7 +5,7 @@ import type { Node } from 'react';
 import Modal from 'react-polymorph/lib/components/Modal';
 import Button from 'react-polymorph/lib/components/Button';
 import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
-import SimpleModalSkin from '../wallet/skins/ModalSkin';
+import SimpleModalSkin from 'react-polymorph/lib/skins/simple/raw/ModalSkin';
 import styles from './Dialog.scss';
 
 type Props = {
@@ -17,7 +17,6 @@ type Props = {
   className?: string,
   onClose?: Function,
   closeOnOverlayClick?: boolean,
-  shouldCloseOnEsc?: boolean,
   primaryButtonAutoFocus?: boolean,
 };
 
@@ -29,7 +28,6 @@ export default class Dialog extends Component<Props> {
       children,
       actions,
       closeOnOverlayClick,
-      shouldCloseOnEsc,
       onClose,
       className,
       closeButton,
@@ -41,7 +39,6 @@ export default class Dialog extends Component<Props> {
       <Modal
         isOpen
         triggerCloseOnOverlayClick={closeOnOverlayClick}
-        shouldCloseOnEsc={shouldCloseOnEsc}
         onClose={onClose}
         skin={<SimpleModalSkin />}
       >
