@@ -2,8 +2,11 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { Button, Input, NumericInput } from 'react-polymorph/lib/components';
-import { ButtonSkin, InputSkin } from 'react-polymorph/lib/skins/simple';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';

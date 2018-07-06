@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { Checkbox } from 'react-polymorph/lib/components';
-import { CheckboxSkin } from 'react-polymorph/lib/skins/simple';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import WalletRecoveryPhraseMnemonic from './WalletRecoveryPhraseMnemonic';
 import DialogCloseButton from '../../widgets/DialogCloseButton';

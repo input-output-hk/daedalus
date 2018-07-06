@@ -2,8 +2,10 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { Checkbox, Input } from 'react-polymorph/lib/components';
-import { CheckboxSkin, InputSkin } from 'react-polymorph/lib/skins/simple';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';

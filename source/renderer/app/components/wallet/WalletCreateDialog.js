@@ -2,8 +2,10 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { Checkbox, Input } from 'react-polymorph/lib/components';
-import { SwitchSkin, InputSkin } from 'react-polymorph/lib/skins/simple';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';

@@ -2,8 +2,10 @@ import React, { Component } from 'react';
 import _ from 'lodash';
 import classnames from 'classnames';
 import type { Node } from 'react';
-import { Modal, Button } from 'react-polymorph/lib/components';
-import { ButtonSkin, ModalSkin } from 'react-polymorph/lib/skins/simple';
+import { Modal } from 'react-polymorph/lib/components/Modal';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { ModalSkin } from 'react-polymorph/lib/skins/simple/ModalSkin';
 import styles from './Dialog.scss';
 
 type Props = {

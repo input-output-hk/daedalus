@@ -1,8 +1,8 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { Button } from 'react-polymorph/lib/components';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './MnemonicWord.scss';
 
 type Props = {

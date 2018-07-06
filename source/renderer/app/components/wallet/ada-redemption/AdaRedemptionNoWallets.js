@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
-import { Button } from 'react-polymorph/lib/components';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 
 import styles from './AdaRedemptionNoWallets.scss';
 import icon from '../../../assets/images/attention-big-thin.inline.svg';
