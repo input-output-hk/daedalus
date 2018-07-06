@@ -2,9 +2,9 @@
 import React from 'react';
 import { storiesOf, action } from '@storybook/react';
 import StoryDecorator from './support/StoryDecorator';
-import WalletExportToFileDialog from '../../source/renderer/app/components/wallet/settings/export-to-file/WalletExportToFileDialog';
+import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
 
-storiesOf('WalletExportToFileDialog', module)
+storiesOf('ExportWalletToFileDialog', module)
 
   .addDecorator((story) => (
     <StoryDecorator>
@@ -16,7 +16,7 @@ storiesOf('WalletExportToFileDialog', module)
 
   .add('default', () => (
     <div>
-      <WalletExportToFileDialog
+      <ExportWalletToFileDialog
         walletName="Test Wallet"
         hasSpendingPassword={false}
         isSubmitting={false}
@@ -28,7 +28,7 @@ storiesOf('WalletExportToFileDialog', module)
 
   .add('submitting', () => (
     <div>
-      <WalletExportToFileDialog
+      <ExportWalletToFileDialog
         walletName="Test Wallet"
         hasSpendingPassword={false}
         isSubmitting
@@ -40,7 +40,7 @@ storiesOf('WalletExportToFileDialog', module)
 
   .add('spending password', () => (
     <div>
-      <WalletExportToFileDialog
+      <ExportWalletToFileDialog
         walletName="Test Wallet"
         hasSpendingPassword
         isSubmitting={false}

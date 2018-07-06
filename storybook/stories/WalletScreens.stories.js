@@ -26,6 +26,7 @@ import WalletSettings from '../../source/renderer/app/components/wallet/WalletSe
 import { assuranceModeOptions } from '../../source/renderer/app/types/transactionAssuranceTypes';
 import ChangeWalletPasswordDialog from '../../source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog';
 import DeleteWalletConfirmationDialog from '../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
+import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
 
 storiesOf('WalletScreens', module)
 
@@ -159,10 +160,13 @@ storiesOf('WalletScreens', module)
       ]}
       isDialogOpen={(dialog) => {
         if (dialog === ChangeWalletPasswordDialog) {
-          return boolean('showChangeWalletPasswordDialog', false);
+          return boolean('Change Password - Show dialog', false);
         }
         if (dialog === DeleteWalletConfirmationDialog) {
-          return boolean('showDeleteWalletConfirmationDialog', false);
+          return boolean('Delete Wallet - Show dialog', false);
+        }
+        if (dialog === ExportWalletToFileDialog) {
+          return boolean('Export Wallet - Show dialog', false);
         }
       }}
       isInvalid={false}
@@ -184,11 +188,11 @@ storiesOf('WalletScreens', module)
           newPasswordValue="new"
           repeatedPasswordValue="new"
           isWalletPasswordSet={boolean('isWalletPasswordSet', false)}
-          onSave={action('ChangeWalletPasswordDialog::onSave')}
-          onCancel={action('ChangeWalletPasswordDialog::onCancel')}
-          onPasswordSwitchToggle={action('ChangeWalletPasswordDialog::onPasswordSwitchToggle')}
-          onDataChange={action('ChangeWalletPasswordDialog::onDataChange')}
-          isSubmitting={boolean('ChangeWalletPasswordDialog::isSubmitting', false)}
+          onSave={action('Change Password - onSave')}
+          onCancel={action('Change Password - onCancel')}
+          onPasswordSwitchToggle={action('Change Password - onPasswordSwitchToggle')}
+          onDataChange={action('Change Password - onDataChange')}
+          isSubmitting={boolean('Change Password - isSubmitting', false)}
           error={null}
         />
       }
@@ -198,12 +202,21 @@ storiesOf('WalletScreens', module)
           hasWalletFunds={boolean('hasWalletFunds', false)}
           countdownFn={() => number('Delete Wallet Countdown', 9)}
           isBackupNoticeAccepted={boolean('isBackupNoticeAccepted', false)}
-          onAcceptBackupNotice={action('DeleteWalletConfirmationDialog::onAcceptBackupNotice')}
-          onContinue={action('DeleteWalletConfirmationDialog::onContinue')}
-          onCancel={action('DeleteWalletConfirmationDialog::onCancel')}
+          onAcceptBackupNotice={action('Delete Wallet - onAcceptBackupNotice')}
+          onContinue={action('Delete Wallet - onContinue')}
+          onCancel={action('Delete Wallet - onCancel')}
           confirmationValue={text('Delete Wallet Confirmation Value')}
-          onConfirmationValueChange={action('DeleteWalletConfirmationDialog::onConfirmationValueChange')}
-          isSubmitting={boolean('DeleteWalletConfirmationDialog::isSubmitting', false)}
+          onConfirmationValueChange={action('Delete Wallet - onConfirmationValueChange')}
+          isSubmitting={boolean('Delete Wallet - isSubmitting', false)}
+        />
+      }
+      exportWalletDialogContainer={
+        <ExportWalletToFileDialog
+          walletName={text('Wallet Name', 'Wallet Name')}
+          hasSpendingPassword={boolean('isWalletPasswordSet', false)}
+          isSubmitting={boolean('Export Wallet - isSubmitting', false)}
+          onSubmit={action('Export Wallet - onSubmit')}
+          onClose={action('Export Wallet - onClose')}
         />
       }
     />

@@ -3254,8 +3254,8 @@
           "column": 3,
           "line": 22
         },
-        "file": "source/renderer/app/components/wallet/settings/export-to-file/WalletExportToFileDialog.js",
-        "id": "wallet.exportToFile.dialog.headline",
+        "file": "source/renderer/app/components/wallet/settings/ExportWalletToFileDialog.js",
+        "id": "wallet.settings.exportToFile.dialog.headline",
         "start": {
           "column": 12,
           "line": 18
@@ -3268,8 +3268,8 @@
           "column": 3,
           "line": 27
         },
-        "file": "source/renderer/app/components/wallet/settings/export-to-file/WalletExportToFileDialog.js",
-        "id": "wallet.exportToFile.dialog.introduction",
+        "file": "source/renderer/app/components/wallet/settings/ExportWalletToFileDialog.js",
+        "id": "wallet.settings.exportToFile.dialog.introduction",
         "start": {
           "column": 16,
           "line": 23
@@ -3282,15 +3282,15 @@
           "column": 3,
           "line": 32
         },
-        "file": "source/renderer/app/components/wallet/settings/export-to-file/WalletExportToFileDialog.js",
-        "id": "wallet.exportToFile.dialog.submit.label",
+        "file": "source/renderer/app/components/wallet/settings/ExportWalletToFileDialog.js",
+        "id": "wallet.settings.exportToFile.dialog.submit.label",
         "start": {
           "column": 21,
           "line": 28
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/settings/export-to-file/WalletExportToFileDialog.json"
+    "path": "source/renderer/app/components/wallet/settings/ExportWalletToFileDialog.json"
   },
   {
     "descriptors": [
@@ -4698,13 +4698,13 @@
         "description": "Label for the \"Name\" text input on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 26
         },
         "file": "source/renderer/app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.name.label",
         "start": {
           "column": 8,
-          "line": 24
+          "line": 22
         }
       },
       {
@@ -4712,13 +4712,13 @@
         "description": "Label for the \"Transaction assurance security level\" dropdown.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.assurance",
         "start": {
           "column": 23,
-          "line": 29
+          "line": 27
         }
       },
       {
@@ -4726,13 +4726,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
-          "line": 34
+          "line": 32
         }
       },
       {
@@ -4740,13 +4740,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 39
+          "line": 37
         }
       },
       {
@@ -4754,13 +4754,13 @@
         "description": "You still don't have password set message.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.passwordNotSet",
         "start": {
           "column": 18,
-          "line": 44
+          "line": 42
         }
       },
       {
@@ -4768,13 +4768,13 @@
         "description": "Label for the export button on wallet settings.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/WalletSettings.js",
         "id": "wallet.settings.exportWalletButtonLabel",
         "start": {
           "column": 21,
-          "line": 49
+          "line": 47
         }
       }
     ],
