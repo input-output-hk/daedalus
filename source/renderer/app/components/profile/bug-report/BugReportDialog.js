@@ -153,6 +153,10 @@ export default class BugReportDialog extends Component<Props, State> {
 
   componentWillReceiveProps(nextProps: Object) {
 
+    if (!this.props.error && nextProps.error) {
+      this.setState({ isSubmitting: false });
+    }
+
     const commpressionFilesChanged = !this.props.compressedLog && !!nextProps.compressedLog;
     const { compressedLog } = this.state;
 
@@ -241,10 +245,7 @@ export default class BugReportDialog extends Component<Props, State> {
     this.setState({ showLogs: value });
   };
 
-  onClose = () => {
-    const { error, onCancel } = this.props;
-    if (!this.state.isSubmitting || error) onCancel();
-  }
+  onClose = () => !this.state.isSubmitting && this.props.onCancel();
 
   render() {
     const { intl } = this.context;
@@ -312,7 +313,7 @@ export default class BugReportDialog extends Component<Props, State> {
         actions={!error ? actions : alternativeActions}
         closeOnOverlayClick
         onClose={this.onClose}
-        closeButton={<DialogCloseButton disabled={isSubmitting && !error} onClose={this.onClose} />}
+        closeButton={<DialogCloseButton disabled={isSubmitting} onClose={this.onClose} />}
       >
         {error ? (
           <div>
