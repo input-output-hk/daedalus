@@ -1,5 +1,5 @@
-@import '../../../../themes/mixins/loading-spinner';
-@import '../../../../themes/mixins/error-message';
+@import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
 
 .component {
   :global {
@@ -11,6 +11,7 @@
 
 .introduction {
   font-family: var(--font-light);
+  line-height: 1.38;
   overflow: hidden;
   text-align: center;
 }
@@ -20,7 +21,7 @@
 }
 
 .isSubmitting {
-  @include loading-spinner("../../../../assets/images/spinner-light.svg");
+  @include loading-spinner("../../../assets/images/spinner-light.svg");
 }
 
 .error {

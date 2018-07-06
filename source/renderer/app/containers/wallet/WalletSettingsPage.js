@@ -4,8 +4,9 @@ import { observer, inject } from 'mobx-react';
 import WalletSettings from '../../components/wallet/WalletSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { isValidWalletName } from '../../utils/validations';
-import ChangeWalletPasswordDialogContainer from './dialogs/ChangeWalletPasswordDialogContainer';
-import DeleteWalletDialogContainer from './dialogs/DeleteWalletDialogContainer';
+import ChangeWalletPasswordDialogContainer from './dialogs/settings/ChangeWalletPasswordDialogContainer';
+import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
+import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
 
 type Props = InjectedProps
 
@@ -56,6 +57,7 @@ export default class WalletSettingsPage extends Component<Props> {
         nameValidator={name => isValidWalletName(name)}
         changeWalletPasswordDialog={<ChangeWalletPasswordDialogContainer />}
         deleteWalletDialogContainer={<DeleteWalletDialogContainer />}
+        exportWalletDialogContainer={<ExportWalletToFileDialogContainer />}
       />
     );
   }
