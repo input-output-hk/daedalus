@@ -2,14 +2,14 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { remote } from 'electron';
-import WalletExportDialog from '../../../components/wallet/settings/export-to-file/WalletExportToFileDialog';
-import type { OnSubmitParams } from '../../../components/wallet/settings/export-to-file/WalletExportToFileDialog';
-import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
+import ExportWalletToFileDialog from '../../../../components/wallet/settings/ExportWalletToFileDialog';
+import type { OnSubmitParams } from '../../../../components/wallet/settings/ExportWalletToFileDialog';
+import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 
 type Props = InjectedDialogContainerProps;
 
 @inject('stores', 'actions') @observer
-export default class WalletExportToFileDialogContainer extends Component<Props> {
+export default class ExportWalletToFileDialogContainer extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
 
@@ -45,7 +45,7 @@ export default class WalletExportToFileDialogContainer extends Component<Props> 
     if (!activeWallet) return null;
 
     return (
-      <WalletExportDialog
+      <ExportWalletToFileDialog
         walletName={activeWallet.name}
         // TODO: re-enable when spending-password support is added to the API endpoint
         // hasSpendingPassword={activeWallet.hasPassword}

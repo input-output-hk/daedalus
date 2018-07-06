@@ -12,9 +12,7 @@ import InlineEditingDropdown from '../widgets/forms/InlineEditingDropdown';
 import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
 import DeleteWalletButton from './settings/DeleteWalletButton';
 import DeleteWalletConfirmationDialog from './settings/DeleteWalletConfirmationDialog';
-import WalletExportDialog from './settings/export-to-file/WalletExportToFileDialog';
-// import WalletExportToFileDialogContainer
-// from '../../containers/wallet/settings/WalletExportToFileDialogContainer';
+import ExportWalletToFileDialog from './settings/ExportWalletToFileDialog';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
 import ChangeWalletPasswordDialog from './settings/ChangeWalletPasswordDialog';
 import globalMessages from '../../i18n/global-messages';
@@ -73,6 +71,7 @@ type Props = {
   lastUpdatedField: ?string,
   changeWalletPasswordDialog: Node,
   deleteWalletDialogContainer: Node,
+  exportWalletDialogContainer: Node,
 };
 
 @observer
@@ -100,7 +99,8 @@ export default class WalletSettings extends Component<Props> {
       isSubmitting, isInvalid,
       lastUpdatedField,
       changeWalletPasswordDialog,
-      deleteWalletDialogContainer
+      deleteWalletDialogContainer,
+      exportWalletDialogContainer,
     } = this.props;
 
     const assuranceLevelOptions = assuranceLevels.map(assurance => ({
@@ -161,7 +161,7 @@ export default class WalletSettings extends Component<Props> {
               <button
                 className={styles.exportLink}
                 onClick={() => openDialogAction({
-                  dialog: WalletExportDialog
+                  dialog: ExportWalletToFileDialog
                 })}
               >
                 {intl.formatMessage(messages.exportButtonLabel)}
@@ -185,9 +185,8 @@ export default class WalletSettings extends Component<Props> {
           deleteWalletDialogContainer
         ) : false}
 
-        {isDialogOpen(WalletExportDialog) ? (
-          /* <WalletExportToFileDialogContainer /> */
-          <div>&nbsp;</div>
+        {isDialogOpen(ExportWalletToFileDialog) ? (
+          exportWalletDialogContainer
         ) : false}
 
       </div>
