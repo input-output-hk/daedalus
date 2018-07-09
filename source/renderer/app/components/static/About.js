@@ -117,7 +117,6 @@ export default class About extends Component<Props> {
         </div>
 
         <div className={styles.contentText}>
-
           <h2>{intl.formatMessage(messages.aboutContentDaedalusHeadline)}</h2>
 
           <div className={styles.contentDaedalus}>
@@ -129,12 +128,11 @@ export default class About extends Component<Props> {
           <div className={styles.apiMembers}>
             {apiMembers}
           </div>
-
         </div>
 
         <div className={styles.footerWrapper}>
           <span
-            onClick={() => onOpenExternalLink('http://daedaluswallet.io')}
+            onClick={() => onOpenExternalLink('https://daedaluswallet.io')}
             className={styles.link}
             role="link"
             aria-hidden
