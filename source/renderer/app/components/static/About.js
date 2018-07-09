@@ -62,7 +62,11 @@ const messages = defineMessages({
   },
 });
 
-export default class About extends Component<any> {
+type Props = {
+  onOpenExternalLink: Function,
+};
+
+export default class About extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -70,6 +74,7 @@ export default class About extends Component<any> {
 
   render() {
     const { intl } = this.context;
+    const { onOpenExternalLink } = this.props;
     const {
       version, build, os,
       API, API_VERSION, isAdaApi,
@@ -112,7 +117,6 @@ export default class About extends Component<any> {
         </div>
 
         <div className={styles.contentText}>
-
           <h2>{intl.formatMessage(messages.aboutContentDaedalusHeadline)}</h2>
 
           <div className={styles.contentDaedalus}>
@@ -124,16 +128,27 @@ export default class About extends Component<any> {
           <div className={styles.apiMembers}>
             {apiMembers}
           </div>
-
         </div>
 
         <div className={styles.footerWrapper}>
-          <a href="http://daedaluswallet.io">http://daedaluswallet.io</a>
+          <span
+            onClick={() => onOpenExternalLink('https://daedaluswallet.io')}
+            className={styles.link}
+            role="link"
+            aria-hidden
+          >
+            http://daedaluswallet.io
+          </span>
           <div className={styles.copyright}>
             {intl.formatMessage(messages.aboutCopyright)}&nbsp;
-            <a href="https://github.com/input-output-hk/daedalus/blob/master/LICENSE">
+            <span
+              onClick={() => onOpenExternalLink('https://github.com/input-output-hk/daedalus/blob/master/LICENSE')}
+              className={styles.link}
+              role="link"
+              aria-hidden
+            >
               {intl.formatMessage(messages.licenseLink)}
-            </a>
+            </span>
           </div>
         </div>
 

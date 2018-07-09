@@ -96,12 +96,17 @@
   .footerWrapper {
     margin-top: 20px;
 
-    a,
+    .link,
     .copyright {
       color: var(--theme-about-window-copyright-color);
       font-family: var(--font-regular);
       font-size: 12px;
       line-height: 1.25;
+    }
+
+    .link {
+      cursor: pointer;
+      text-decoration: underline;
     }
 
     .copyright {
