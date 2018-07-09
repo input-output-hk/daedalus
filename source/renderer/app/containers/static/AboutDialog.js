@@ -15,6 +15,10 @@ export default class AboutDialog extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
+
+    const { app } = this.props.stores;
+    const { openExternalLink } = app;
+
     return (
       <ReactModal
         isOpen
@@ -24,7 +28,9 @@ export default class AboutDialog extends Component<Props> {
         overlayClassName={styles.overlay}
         ariaHideApp={false}
       >
-        <About />
+        <About
+          onOpenExternalLink={openExternalLink}
+        />
       </ReactModal>
     );
   }
