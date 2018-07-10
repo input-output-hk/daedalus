@@ -154,7 +154,7 @@ export default class WalletSendForm extends Component<Props, State> {
     this.props.openDialogAction({
       dialog: WalletSendConfirmationDialog,
     });
-  }
+  };
 
   isDisabled = () => this._isCalculatingFee || !this.state.isTransactionFeeCalculated;
 
