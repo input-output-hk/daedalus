@@ -1,12 +1,12 @@
 // @flow
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import resolver from '../utils/imports';
+import { resolve } from '../utils/imports';
 import environment from '../../../common/environment';
 import WalletAddPage from './wallet/WalletAddPage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 
-const LoadingPage = resolver('containers/LoadingPage');
+const LoadingPage = resolve(require.context('./', true, /LoadingPage.js/));
 
 type Props = InjectedContainerProps;
 

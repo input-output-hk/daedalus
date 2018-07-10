@@ -4,9 +4,11 @@ import { inject, observer } from 'mobx-react';
 import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
 import environment from '../../../../../common/environment';
-import resolver from '../../../utils/imports';
+import { resolve } from '../../../utils/imports';
 
-const WalletSendConfirmationDialog = resolver('components/wallet/WalletSendConfirmationDialog');
+const WalletSendConfirmationDialog = resolve(
+  require.context('../../../components/wallet', true, /WalletSendConfirmationDialog.js/)
+);
 
 type Props = {
   stores: any | StoresMap,

@@ -1,19 +1,23 @@
 // @flow
 import environment from '../../../common/environment';
 
-// resolver loads files relative to '/app/' directory
-const resolver = (path: string) => {
-  const envPathSubdir = environment.API || '';
-  const envPathSegments = path.split('/');
-  envPathSegments.splice(-1, 0, envPathSubdir);
-  const envPath = envPathSegments.join('/');
+/**
+ * Resolves environment specific overrides of a file in
+ * the subfolders of a pre-defined webpack context.
+ * This assumes that you provide the file name within the
+ * webpack context filter regexplike /example.js/
+ *
+ * @param context - configured require.context instance
+ * @returns {*}
+ */
+export const resolve = (context) => {
+  // Extract the file name from the given context regexp
+  const fileName = context.keys()[0].match(/.*\/(.*.js)/)[1];
   let file;
   try {
-    file = require(`../${envPath}.js`); // eslint-disable-line
+    file = context(`./${environment.API}/${fileName}`);
   } catch (e) {
-    file = require(`../${path}.js`); // eslint-disable-line
+    file = context(`./${fileName}`);
   }
   return file.default || file;
 };
-
-export default resolver;

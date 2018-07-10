@@ -8,10 +8,10 @@ import WalletTransactionsList from '../../components/wallet/transactions/WalletT
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import resolver from '../../utils/imports';
+import { resolve } from '../../utils/imports';
 import { syncStateTags } from '../../domains/Wallet';
 
-const { formattedWalletAmount } = resolver('utils/formatters');
+const { formattedWalletAmount } = resolve(require.context('../../utils', true, /formatters.js/));
 
 export const messages = defineMessages({
   noTransactions: {

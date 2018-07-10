@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import Staking from '../../components/staking/Staking';
-import resolver from '../../utils/imports';
+import { resolve } from '../../utils/imports';
 
-const Layout = resolver('containers/MainLayout');
+const Layout = resolve(require.context('../', true, /MainLayout.js/));
 
 @observer
 export default class StakingPage extends Component<any> {

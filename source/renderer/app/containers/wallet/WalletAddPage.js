@@ -11,11 +11,11 @@ import WalletRestoreDialogContainer from '../wallet/dialogs/WalletRestoreDialogC
 import WalletBackupDialogContainer from '../wallet/dialogs/WalletBackupDialogContainer';
 import WalletCreateDialogContainer from '../wallet/dialogs/WalletCreateDialogContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import resolver from '../../utils/imports';
+import { resolve } from '../../utils/imports';
 import environment from '../../../../common/environment';
 
 type Props = InjectedProps;
-const Layout = resolver('containers/MainLayout');
+const Layout = resolve(require.context('../', true, /MainLayout.js/));
 
 @inject('actions', 'stores') @observer
 export default class WalletAddPage extends Component<Props> {
