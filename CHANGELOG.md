@@ -30,6 +30,7 @@ Changelog
 
 ### Chores
 
+- Runs snyk on dependencies and upgrades upgrades validator to v9.4.1. Installs snyk as a devDependency and adds snyk:test to npm scripts. ([PR 1005](https://github.com/input-output-hk/daedalus/pull/1005))
 - Created new Storybook stories for the Wallet screens ([942](https://github.com/input-output-hk/daedalus/pull/942))
 - Added flow checks and linting for storybook code ([PR 938](https://github.com/input-output-hk/daedalus/pull/938))
 - Refactored npm scripts to use colon style ([PR 939](https://github.com/input-output-hk/daedalus/pull/939))
