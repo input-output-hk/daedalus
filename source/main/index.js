@@ -33,9 +33,15 @@ const goToAdaRedemption = () => {
   if (mainWindow) mainWindow.webContents.send(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL);
 };
 
+const restartInSafeMode = () => {
+  app.relaunch({ args: process.argv.slice(1).concat(['--relaunch', '--disable-gpu']) });
+  app.exit(0);
+};
+
 const menuActions = {
   openAbout,
-  goToAdaRedemption
+  goToAdaRedemption,
+  restartInSafeMode
 };
 
 app.on('ready', async () => {

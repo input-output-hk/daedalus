@@ -33,3 +33,9 @@ export const DOWNLOAD_LOGS = {
   SUCCESS: `${DOWNLOAD_LOGS_CHANNEL}-success`,
   ERROR: `${DOWNLOAD_LOGS_CHANNEL}-error`,
 };
+
+const GET_GPU_CHANNEL = 'get-gpu';
+export const GET_GPU = {
+  REQUEST: GET_GPU_CHANNEL,
+  SUCCESS: `${GET_GPU_CHANNEL}-success`,
+};
