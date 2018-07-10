@@ -300,7 +300,12 @@ export default class BugReportDialog extends Component<Props, State> {
         actions={!error ? actions : alternativeActions}
         closeOnOverlayClick
         onClose={this.onClose}
-        closeButton={<DialogCloseButton disabled={isReportSubmissionInProgress} onClose={this.onClose} />}
+        closeButton={
+          <DialogCloseButton
+            disabled={isReportSubmissionInProgress}
+            onClose={this.onClose}
+          />
+        }
       >
         {error ? (
           <div>
