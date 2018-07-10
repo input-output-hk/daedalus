@@ -97,6 +97,6 @@
   text-align: left;
 }
 
-.isSubmitting {
+.isReportSubmissionInProgress {
   @include loading-spinner("../../../assets/images/spinner-light.svg");
 }

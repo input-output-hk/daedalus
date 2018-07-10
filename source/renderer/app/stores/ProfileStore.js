@@ -13,7 +13,7 @@ import { GET_LOGS, DOWNLOAD_LOGS, COMPRESS_LOGS } from '../../../common/ipc-api'
 import LocalizableError from '../i18n/LocalizableError';
 import globalMessages from '../i18n/global-messages';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
-import type { LogFiles, CompressedFileDownload } from '../types/LogTypes';
+import type { LogFiles, CompressedLogsFile } from '../types/LogTypes';
 import { generateFileNameWithTimestamp } from '../../../common/fileName';
 
 export default class SettingsStore extends Store {
@@ -48,7 +48,8 @@ export default class SettingsStore extends Store {
   @observable logFiles: LogFiles = {};
   @observable compressedLog: ?string = null;
   @observable isCompressing: boolean = false;
-  @observable compressedFileDownload: CompressedFileDownload = {};
+  @observable compressedLogsFile: CompressedLogsFile = {};
+  @observable bugReportInProgress: boolean = false;
   /* eslint-enable max-len */
 
   setup() {
@@ -58,7 +59,7 @@ export default class SettingsStore extends Store {
     this.actions.profile.getLogs.listen(this._getLogs);
     this.actions.profile.resetBugReportDialog.listen(this._resetBugReportDialog);
     this.actions.profile.downloadLogs.listen(this._downloadLogs);
-    this.actions.profile.requestFreshCompressedLogs.listen(this._requestFreshCompressedLogs);
+    this.actions.profile.getLogsAndCompress.listen(this._getLogsAndCompress);
     this.actions.profile.compressLogs.listen(this._compressLogs);
     this.actions.profile.sendBugReport.listen(this._sendBugReport);
     ipcRenderer.on(GET_LOGS.SUCCESS, this._onGetLogsSuccess);
@@ -208,8 +209,8 @@ export default class SettingsStore extends Store {
   };
 
   _downloadLogs = action(({ fileName, destination, fresh }) => {
-    this.compressedFileDownload = {
-      inProgress: true,
+    this.compressedLogsFile = {
+      downloadInProgress: true,
       destination,
       fileName,
     };
@@ -223,43 +224,45 @@ export default class SettingsStore extends Store {
     }
   });
 
+  _getLogsAndCompress = action(() => {
+    this.compressedLogsFile = {
+      fileName: generateFileNameWithTimestamp(),
+    };
+
+    this.bugReportInProgress = true;
+
+    this._getLogs();
+  });
+
   _onGetLogsSuccess = action((event, res) => {
     this.logFiles = res;
-    if (this.compressedFileDownload.inProgress) {
+    const { downloadInProgress } = this.compressedLogsFile;
+    if (downloadInProgress || this.bugReportInProgress) {
       this._compressLogs({ logs: res });
     }
   });
 
   _onDownloadLogsSuccess = action(() => {
-    this.compressedFileDownload = {};
-  });
-
-  _requestFreshCompressedLogs = action(() => {
-    if (!this.logFiles) {
-      return this._getLogs();
-    }
-    this.compressedFileDownload = {
-      fileName: generateFileNameWithTimestamp(),
-    };
-    this._compressLogs({ logs: this.logFiles });
+    this.compressedLogsFile = {};
   });
 
   _compressLogs = action(({ logs }) => {
     this.isCompressing = true;
-    const { fileName = generateFileNameWithTimestamp() } = this.compressedFileDownload;
+    const { fileName = generateFileNameWithTimestamp() } = this.compressedLogsFile;
     ipcRenderer.send(COMPRESS_LOGS.REQUEST, toJS(logs), fileName);
   });
 
   _onCompressLogsSuccess = action((event, res) => {
     this.isCompressing = false;
     this.compressedLog = res;
-    const { inProgress, destination, fileName } = this.compressedFileDownload;
-    if (inProgress) {
+    const { downloadInProgress, destination, fileName } = this.compressedLogsFile;
+    if (downloadInProgress) {
       this._downloadLogs({ destination, fileName });
     }
   });
 
   _onCompressLogsError = action(() => {
+    this.bugReportInProgress = false;
     this.error = new WalletSupportRequestLogsCompressError();
   });
 
@@ -269,6 +272,7 @@ export default class SettingsStore extends Store {
     problem: string,
     compressedLog: ?string,
   }) => {
+    this.bugReportInProgress = true;
     this.sendBugReport.execute({
       email, subject, problem, compressedLog,
     })
@@ -276,6 +280,7 @@ export default class SettingsStore extends Store {
         this._resetBugReportDialog();
       }))
       .catch(action((error) => {
+        this.bugReportInProgress = false;
         this.error = error;
       }));
   });
@@ -283,6 +288,7 @@ export default class SettingsStore extends Store {
   @action _reset = () => {
     this.error = null;
     this.compressedLog = null;
-    this.compressedFileDownload = {};
+    this.compressedLogsFile = {};
+    this.bugReportInProgress = false;
   };
 }

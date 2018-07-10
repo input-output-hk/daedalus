@@ -1,7 +1,7 @@
 import http from 'http';
 import FormData from 'form-data/lib/form_data';
 import fs from 'fs';
-import { getFileNameWithTimestamp } from '../../../../common/fileName';
+import { extractFileNameFromPath } from '../../../../common/fileName';
 
 export type RequestOptions = {
   hostname: string,
@@ -41,7 +41,7 @@ function typedHttpRequest<Response>(
     // prepare file stream (attachment)
     if (payload.compressedLog) {
       const stream = fs.createReadStream(payload.compressedLog);
-      const [fileName] = getFileNameWithTimestamp()(payload.compressedLog);
+      const fileName = extractFileNameFromPath(payload.compressedLog);
       formData.append(fileName, stream);
     }
 

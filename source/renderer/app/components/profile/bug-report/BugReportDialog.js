@@ -123,15 +123,15 @@ type Props = {
   onSubmitManually: Function,
   onDownload: Function,
   onGetLogs: Function,
-  onRequestFreshCompressedLogs: Function,
-  isDownloading?: boolean,
+  onGetLogsAndCompress: Function,
+  isDownloadInProgress?: boolean,
+  isReportSubmissionInProgress?: boolean,
   error: ?LocalizableError,
 };
 
 type State = {
   showLogs: boolean,
   compressedLog: ?string,
-  isSubmitting: boolean
 };
 
 @observer
@@ -144,7 +144,6 @@ export default class BugReportDialog extends Component<Props, State> {
   state = {
     showLogs: true,
     compressedLog: null,
-    isSubmitting: false,
   };
 
   componentWillMount() {
@@ -152,10 +151,6 @@ export default class BugReportDialog extends Component<Props, State> {
   }
 
   componentWillReceiveProps(nextProps: Object) {
-    if (!this.props.error && nextProps.error) {
-      this.setState({ isSubmitting: false });
-    }
-
     const commpressionFilesChanged = !this.props.compressedLog && !!nextProps.compressedLog;
     const { compressedLog } = this.state;
 
@@ -163,7 +158,7 @@ export default class BugReportDialog extends Component<Props, State> {
       return false;
     }
 
-    if (nextProps.compressedLog && commpressionFilesChanged && !nextProps.isDownloading) {
+    if (nextProps.compressedLog && commpressionFilesChanged && !nextProps.isDownloadInProgress) {
       this.setState({ compressedLog: nextProps.compressedLog }, this.submit);
     }
   }
@@ -215,16 +210,14 @@ export default class BugReportDialog extends Component<Props, State> {
   });
 
   submit = () => {
-    this.setState({ isSubmitting: true });
-
-    const { showLogs, compressedLog } = this.state;
-    if (showLogs && !compressedLog) {
-      this.props.onRequestFreshCompressedLogs();
-      return false;
-    }
 
     this.form.submit({
       onSuccess: (form) => {
+        const { showLogs, compressedLog } = this.state;
+        if (showLogs && !compressedLog) {
+          this.props.onGetLogsAndCompress();
+          return false;
+        }
         const { email, subject, problem } = form.values();
         const data = {
           email, subject, problem, compressedLog
@@ -239,14 +232,14 @@ export default class BugReportDialog extends Component<Props, State> {
     this.setState({ showLogs: value });
   };
 
-  onClose = () => !this.state.isSubmitting && this.props.onCancel();
+  onClose = () => !this.props.isReportSubmissionInProgress && this.props.onCancel();
 
   render() {
     const { intl } = this.context;
-    const { showLogs, isSubmitting } = this.state;
+    const { showLogs } = this.state;
     const { form } = this;
     const {
-      logFiles, error, onDownload, isDownloading,
+      logFiles, error, onDownload, isDownloadInProgress, isReportSubmissionInProgress
     } = this.props;
 
     const submitManuallyLink = intl.formatMessage(messages.submitManuallyLink);
@@ -262,12 +255,12 @@ export default class BugReportDialog extends Component<Props, State> {
 
     const submitButtonClasses = classnames([
       'submitButton',
-      isSubmitting ? styles.isSubmitting : null,
+      isReportSubmissionInProgress ? styles.isReportSubmissionInProgress : null,
     ]);
 
     const downloadButtonClasses = classnames([
       'downloadButton',
-      isDownloading ? styles.isSubmitting : null,
+      isDownloadInProgress ? styles.isReportSubmissionInProgress : null,
     ]);
 
     const emailField = form.$('email');
@@ -279,7 +272,7 @@ export default class BugReportDialog extends Component<Props, State> {
         className: submitButtonClasses,
         label: this.context.intl.formatMessage(messages.submitButtonLabel),
         primary: true,
-        disabled: isSubmitting,
+        disabled: isReportSubmissionInProgress,
         onClick: this.submit,
       },
     ];
@@ -289,7 +282,7 @@ export default class BugReportDialog extends Component<Props, State> {
         className: downloadButtonClasses,
         label: this.context.intl.formatMessage(messages.downloadButtonLabel),
         primary: true,
-        disabled: isDownloading,
+        disabled: isDownloadInProgress,
         onClick: onDownload.bind(this),
       },
       {
@@ -307,7 +300,7 @@ export default class BugReportDialog extends Component<Props, State> {
         actions={!error ? actions : alternativeActions}
         closeOnOverlayClick
         onClose={this.onClose}
-        closeButton={<DialogCloseButton disabled={isSubmitting} onClose={this.onClose} />}
+        closeButton={<DialogCloseButton disabled={isReportSubmissionInProgress} onClose={this.onClose} />}
       >
         {error ? (
           <div>

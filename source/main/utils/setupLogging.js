@@ -4,7 +4,7 @@ import log from 'electron-log';
 import moment from 'moment';
 import ensureDirectoryExists from './ensureDirectoryExists';
 import { pubLogsFolderPath, appLogsFolderPath, APP_NAME } from '../config';
-import { getFileNameWithTimestamp } from '../../common/fileName';
+import { isFileNameWithTimestamp } from '../../common/fileName';
 
 const isTest = process.env.NODE_ENV === 'test';
 
@@ -25,7 +25,7 @@ export const setupLogging = () => {
   // Removes existing compressed logs
   fs.readdir(appLogsFolderPath, (err, files) => {
     files
-      .filter(getFileNameWithTimestamp())
+      .filter(isFileNameWithTimestamp())
       .forEach((logFileName) => {
         const logFile = path.join(appLogsFolderPath, logFileName);
         try {
