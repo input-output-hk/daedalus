@@ -123,7 +123,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
     });
   }
 
-  submitOnEnter = (event: {}) => submitOnEnter(this.submit, event);
+  submitOnEnter = (event: {}) => this.form.$('walletPassword').isValid && submitOnEnter(this.submit, event);
 
   render() {
     const { form } = this;
@@ -209,6 +209,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
               error={walletPasswordField.error}
               skin={<SimpleInputSkin />}
               onKeyPress={this.submitOnEnter}
+              autoFocus
             />
           ) : null}
         </div>
