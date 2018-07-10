@@ -71,7 +71,7 @@ export default class Dialog extends Component<Props> {
                     onClick={action.onClick}
                     disabled={action.disabled}
                     skin={<SimpleButtonSkin />}
-                    autoFocus={primaryButtonAutoFocus}
+                    autoFocus={action.primary ? primaryButtonAutoFocus : false}
                   />
                 );
               })}

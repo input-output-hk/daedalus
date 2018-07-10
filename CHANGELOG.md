@@ -26,6 +26,7 @@ Changelog
 - Fixed the button outline color on special buttons. ([PR 990](https://github.com/input-output-hk/daedalus/pull/990))
 - Fixed broken Export wallet to file dialog and improved Wallet settings dialogs file structure and namings ([PR 998](https://github.com/input-output-hk/daedalus/pull/998))
 - Prevented wallet data polling during wallet deletion ([PR 996]https://github.com/input-output-hk/daedalus/pull/996)
+- Fixed bug that allowed to submit invalid send form via ENTER key ([PR 1002](https://github.com/input-output-hk/daedalus/pull/1002))
 
 ### Chores
 
