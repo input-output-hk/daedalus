@@ -152,7 +152,6 @@ export default class BugReportDialog extends Component<Props, State> {
   }
 
   componentWillReceiveProps(nextProps: Object) {
-
     if (!this.props.error && nextProps.error) {
       this.setState({ isSubmitting: false });
     }
@@ -167,7 +166,6 @@ export default class BugReportDialog extends Component<Props, State> {
     if (nextProps.compressedLog && commpressionFilesChanged && !nextProps.isDownloading) {
       this.setState({ compressedLog: nextProps.compressedLog }, this.submit);
     }
-
   }
 
   form = new ReactToolboxMobxForm({
@@ -217,11 +215,9 @@ export default class BugReportDialog extends Component<Props, State> {
   });
 
   submit = () => {
-
     this.setState({ isSubmitting: true });
 
     const { showLogs, compressedLog } = this.state;
-
     if (showLogs && !compressedLog) {
       this.props.onRequestFreshCompressedLogs();
       return false;
@@ -229,12 +225,10 @@ export default class BugReportDialog extends Component<Props, State> {
 
     this.form.submit({
       onSuccess: (form) => {
-
         const { email, subject, problem } = form.values();
         const data = {
           email, subject, problem, compressedLog
         };
-
         this.props.onSubmit(data);
       },
       onError: () => {},

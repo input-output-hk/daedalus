@@ -11,7 +11,6 @@ import { COMPRESS_LOGS } from '../../common/ipc-api';
 export default () => {
   ipcMain.on(COMPRESS_LOGS.REQUEST, (event, logs, compressedFileName) => {
     const sender = event.sender;
-
     const outputPath = path.join(appLogsFolderPath, compressedFileName);
     const output = fs.createWriteStream(outputPath);
     const archive = archiver('zip', {

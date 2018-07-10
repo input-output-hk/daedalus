@@ -14,6 +14,6 @@
 
 .disabled {
   @extend .component;
-  opacity: .5;
   cursor: default;
+  opacity: .5;
 }

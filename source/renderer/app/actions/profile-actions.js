@@ -8,7 +8,6 @@ export default class ProfileActions {
   compressLogs: Action<{ logs: Object }> = new Action();
   getLogs: Action<any> = new Action();
   downloadLogs: Action<{ fileName: string, destination: string, fresh?: boolean }> = new Action();
-  deleteCompressedLogs: Action<any> = new Action();
   resetBugReportDialog: Action<any> = new Action();
   requestFreshCompressedLogs: Action<any> = new Action();
   sendBugReport: Action<{

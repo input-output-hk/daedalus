@@ -14,7 +14,7 @@ import LocalizableError from '../i18n/LocalizableError';
 import globalMessages from '../i18n/global-messages';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
 import type { LogFiles, CompressedFileDownload } from '../types/LogTypes';
-import { filenameWithTimestamp } from '../../../common/fileName';
+import { generateFileNameWithTimestamp } from '../../../common/fileName';
 
 export default class SettingsStore extends Store {
 
@@ -211,7 +211,7 @@ export default class SettingsStore extends Store {
     this.compressedFileDownload = {
       inProgress: true,
       destination,
-      fileName
+      fileName,
     };
 
     if (this.compressedLog && fresh !== true) {
@@ -239,14 +239,14 @@ export default class SettingsStore extends Store {
       return this._getLogs();
     }
     this.compressedFileDownload = {
-      fileName: filenameWithTimestamp()
+      fileName: generateFileNameWithTimestamp(),
     };
     this._compressLogs({ logs: this.logFiles });
   });
 
   _compressLogs = action(({ logs }) => {
     this.isCompressing = true;
-    const { fileName = filenameWithTimestamp() } = this.compressedFileDownload;
+    const { fileName = generateFileNameWithTimestamp() } = this.compressedFileDownload;
     ipcRenderer.send(COMPRESS_LOGS.REQUEST, toJS(logs), fileName);
   });
 
@@ -269,7 +269,6 @@ export default class SettingsStore extends Store {
     problem: string,
     compressedLog: ?string,
   }) => {
-
     this.sendBugReport.execute({
       email, subject, problem, compressedLog,
     })
@@ -279,7 +278,6 @@ export default class SettingsStore extends Store {
       .catch(action((error) => {
         this.error = error;
       }));
-
   });
 
   @action _reset = () => {
