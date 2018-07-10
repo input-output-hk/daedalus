@@ -310,7 +310,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
       },
     ];
 
-
     const regularTabClasses = classnames([
       'regularTab',
       this.isRegular() ? styles.activeButton : '',

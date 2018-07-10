@@ -160,7 +160,7 @@ export default class VerificationDialog extends Component<Props, State> {
     form.showErrors(false);
 
     // Autocomplete has to be reset manually
-    this.recoveryPhraseAutocomplete.clear();
+    this.recoveryPhraseAutocomplete.getRef().clear();
 
     this.setState({
       storingConfirmed: false,
