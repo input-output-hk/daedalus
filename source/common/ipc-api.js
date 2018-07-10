@@ -34,8 +34,8 @@ export const DOWNLOAD_LOGS = {
   ERROR: `${DOWNLOAD_LOGS_CHANNEL}-error`,
 };
 
-const GET_GPU_CHANNEL = 'get-gpu';
-export const GET_GPU = {
-  REQUEST: GET_GPU_CHANNEL,
-  SUCCESS: `${GET_GPU_CHANNEL}-success`,
+const GET_GPU_STATUS_CHANNEL = 'get-gpu-status';
+export const GET_GPU_STATUS = {
+  REQUEST: GET_GPU_STATUS_CHANNEL,
+  SUCCESS: `${GET_GPU_STATUS_CHANNEL}-success`,
 };

@@ -6,7 +6,7 @@ import LocalizableError from '../i18n/LocalizableError';
 import { buildRoute } from '../utils/routing';
 import { OPEN_ABOUT_DIALOG_CHANNEL } from '../../../common/ipc-api/open-about-dialog';
 import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../../../common/ipc-api/go-to-ada-redemption-screen';
-import { GET_GPU } from '../../../common/ipc-api';
+import { GET_GPU_STATUS } from '../../../common/ipc-api';
 import { ROUTES } from '../routes-config';
 import environment from '../../../common/environment';
 
@@ -20,10 +20,10 @@ export default class AppStore extends Store {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
     this.actions.app.openAboutDialog.listen(this._openAboutDialog);
     this.actions.app.closeAboutDialog.listen(this._closeAboutDialog);
-    this.actions.app.updateGpuStatus.listen(this._updateGpuStatus);
+    this.actions.app.getGpuStatus.listen(this._getGpuStatus);
     ipcRenderer.on(OPEN_ABOUT_DIALOG_CHANNEL, this._openAboutDialog);
     ipcRenderer.on(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
-    ipcRenderer.on(GET_GPU.SUCCESS, this._onUpdateGpuStatusSuccess);
+    ipcRenderer.on(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
   }
 
   teardown() {
@@ -39,12 +39,12 @@ export default class AppStore extends Store {
     shell.openExternal(link);
   }
 
-  _updateGpuStatus = () => {
-    ipcRenderer.send(GET_GPU.REQUEST);
+  _getGpuStatus = () => {
+    ipcRenderer.send(GET_GPU_STATUS.REQUEST);
   }
 
-  _onUpdateGpuStatusSuccess = action((event, res) => {
-    console.log('_onUpdateGpuStatusSuccess', res);
+  _onGetGpuStatusSuccess = action((event, res) => {
+    console.log('GPU Status', res);
     this.gpuStatus = res;
   });
 
