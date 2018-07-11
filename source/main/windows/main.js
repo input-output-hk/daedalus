@@ -81,5 +81,10 @@ export const createMainWindow = () => {
     app.quit();
   });
 
+  window.webContents.on('crashed', () => {
+    window.destroy();
+    createMainWindow();
+  });
+
   return window;
 };
