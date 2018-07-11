@@ -85,7 +85,9 @@ export default {
   '--theme-button-disclaimer-border-color-disabled': 'rgba(250, 251, 252, .3)',
 
   '--theme-checkbox-label-color': '#5e6066',
+  '--theme-checkbox-label-disabled-color': 'rgba(94, 96, 102, 0.3)',
   '--theme-checkbox-border-color': '#2cbb69',
+  '--theme-checkbox-border-disabled-color': 'rgba(44, 187, 105, 0.2)',
   '--theme-checkbox-background-color-checked': '#2cbb69',
 
   '--theme-select-arrow-color': '#c6cdd6',
