@@ -148,10 +148,15 @@ export default class WalletSendForm extends Component<Props, State> {
   }
 
   handleOnSubmit = () => {
+    if (this.isDisabled()) {
+      return false;
+    }
     this.props.openDialogAction({
       dialog: WalletSendConfirmationDialog,
     });
   };
+
+  isDisabled = () => this._isCalculatingFee || !this.state.isTransactionFeeCalculated;
 
   // FORM VALIDATION
   form = new ReactToolboxMobxForm({
@@ -290,8 +295,8 @@ export default class WalletSendForm extends Component<Props, State> {
                 className={buttonClasses}
                 label={intl.formatMessage(messages.nextButtonLabel)}
                 onClick={this.handleOnSubmit}
-                disabled={this._isCalculatingFee || !isTransactionFeeCalculated}
                 skin={ButtonSkin}
+                disabled={this.isDisabled()}
               />
             </div>
           </BorderedBox>

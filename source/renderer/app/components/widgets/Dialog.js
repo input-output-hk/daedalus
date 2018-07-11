@@ -71,8 +71,8 @@ export default class Dialog extends Component<Props> {
                     onClick={action.onClick}
                     disabled={action.disabled}
                     skin={ButtonSkin}
-                    autoFocus={primaryButtonAutoFocus}
-                  />
+                    autoFocus={action.primary ? primaryButtonAutoFocus : false}
+                    WalletSendForm.js           />
                 );
               })}
             </div>
