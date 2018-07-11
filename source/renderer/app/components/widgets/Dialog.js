@@ -72,7 +72,7 @@ export default class Dialog extends Component<Props> {
                     disabled={action.disabled}
                     skin={ButtonSkin}
                     autoFocus={action.primary ? primaryButtonAutoFocus : false}
-                    WalletSendForm.js           />
+                  />
                 );
               })}
             </div>

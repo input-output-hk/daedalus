@@ -8,9 +8,9 @@ import WalletNoTransactions from '../../../components/wallet/transactions/Wallet
 import VerticalFlexContainer from '../../../components/layout/VerticalFlexContainer';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import { messages } from '../WalletTransactionsPage';
-import { resolve } from '../../../utils/imports';
+import resolver from '../../../utils/imports';
 
-const { formattedWalletAmount } = resolve(require.context('../../../utils', true, /formatters.js/));
+const { formattedWalletAmount } = resolver('utils/formatters');
 
 type Props = InjectedProps;
 

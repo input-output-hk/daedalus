@@ -9,9 +9,9 @@ import { DECIMAL_PLACES_IN_ETC } from '../../../config/numbersConfig';
 import type { InjectedProps } from '../../../types/injectedPropsType';
 import WalletTransactionsList from '../../../components/wallet/transactions/WalletTransactionsList';
 import { messages } from '../WalletSummaryPage';
-import { resolve } from '../../../utils/imports';
+import resolver from '../../../utils/imports';
 
-const { formattedWalletAmount } = resolve(require.context('../../../utils', true, /formatters.js/));
+const { formattedWalletAmount } = resolver('utils/formatters');
 
 type Props = InjectedProps;
 

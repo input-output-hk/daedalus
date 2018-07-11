@@ -2,7 +2,7 @@
 import React from 'react';
 import { Route, IndexRedirect } from 'react-router';
 import { ROUTES } from './routes-config';
-import { resolve } from './utils/imports';
+import resolver from './utils/imports';
 
 // PAGES
 // import StakingPage from './containers/staking/StakingPage';
@@ -19,24 +19,12 @@ import DisplaySettingsPage from './containers/settings/categories/DisplaySetting
 import PaperWalletCreateCertificatePage from './containers/wallet/PaperWalletCreateCertificatePage';
 
 // Dynamic container loading - resolver loads file relative to '/app/' directory
-const Wallet = resolve(
-  require.context('./containers/wallet', true, /Wallet.js/)
-);
-const WalletSummaryPage = resolve(
-  require.context('./containers/wallet', true, /WalletSummaryPage.js/)
-);
-const WalletSendPage = resolve(
-  require.context('./containers/wallet', true, /WalletSendPage.js/)
-);
-const WalletReceivePage = resolve(
-  require.context('./containers/wallet', true, /WalletReceivePage.js/)
-);
-const WalletTransactionsPage = resolve(
-  require.context('./containers/wallet', true, /WalletTransactionsPage.js/)
-);
-const WalletSettingsPage = resolve(
-  require.context('./containers/wallet', true, /WalletSettingsPage.js/)
-);
+const Wallet = resolver('containers/wallet/Wallet');
+const WalletSummaryPage = resolver('containers/wallet/WalletSummaryPage');
+const WalletSendPage = resolver('containers/wallet/WalletSendPage');
+const WalletReceivePage = resolver('containers/wallet/WalletReceivePage');
+const WalletTransactionsPage = resolver('containers/wallet/WalletTransactionsPage');
+const WalletSettingsPage = resolver('containers/wallet/WalletSettingsPage');
 
 export const Routes = (
   <Route path={ROUTES.ROOT} component={Root}>

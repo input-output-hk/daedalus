@@ -10,9 +10,9 @@ import InstructionsDialog from '../wallet/paper-wallet-certificate/InstructionsD
 import supportIcon from '../../assets/images/sidebar/bug-report-ic.inline.svg';
 import type { SidebarWalletType } from '../../stores/SidebarStore';
 import { ROUTES } from '../../routes-config';
-import { resolve } from '../../utils/imports';
+import resolver from '../../utils/imports';
 
-const sidebarConfig = resolve(require.context('../../config', true, /sidebarConfig.js/));
+const sidebarConfig = resolver('config/sidebarConfig');
 
 type Props = {
   menus: SidebarMenus,

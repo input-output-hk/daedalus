@@ -3,12 +3,12 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletWithNavigation from '../../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../../components/widgets/LoadingSpinner';
-import { resolve } from '../../../utils/imports';
+import resolver from '../../../utils/imports';
 import { buildRoute } from '../../../utils/routing';
 import { ROUTES } from '../../../routes-config';
 import type { InjectedContainerProps } from '../../../types/injectedPropsType';
 
-const MainLayout = resolve(require.context('../../', true, /MainLayout.js/));
+const MainLayout = resolver('containers/MainLayout');
 
 type Props = InjectedContainerProps;
 
