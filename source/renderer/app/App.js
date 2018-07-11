@@ -26,11 +26,11 @@ export default class App extends Component<{
     const locale = stores.profile.currentLocale;
     const mobxDevTools = environment.MOBX_DEV_TOOLS ? <DevTools /> : null;
     const currentTheme = stores.profile.currentTheme;
-    const theme = require(`./themes/daedalus/${currentTheme}.js`); // eslint-disable-line
+    const themeVars = require(`./themes/daedalus/${currentTheme}.js`); // eslint-disable-line
 
     return (
       <div>
-        <ThemeManager variables={theme} />
+        <ThemeManager variables={themeVars} />
         <Provider stores={stores} actions={actions}>
           <ThemeProvider theme={daedalusTheme}>
             <IntlProvider {...{ locale, key: locale, messages: translations[locale] }}>
