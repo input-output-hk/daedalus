@@ -3,6 +3,7 @@ import { app, BrowserWindow, ipcMain, Menu } from 'electron';
 import environment from '../../common/environment';
 import ipcApi from '../ipc-api';
 import { runtimeFolderPath } from '../config';
+import { Logger } from '../../common/logging';
 
 export const createMainWindow = () => {
   const windowOptions = {
@@ -81,7 +82,12 @@ export const createMainWindow = () => {
     app.quit();
   });
 
-  window.webContents.on('crashed', () => {
+  window.webContents.on('did-fail-load', (err) => {
+    Logger.debug('BrowserWindow::did-fail-load');
+  });
+
+  window.webContents.on('crashed', (err) => {
+    Logger.debug('BrowserWindow::crashed');
     window.destroy();
     createMainWindow();
   });
