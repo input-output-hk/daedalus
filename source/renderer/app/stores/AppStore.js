@@ -9,12 +9,13 @@ import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../../../common/ipc-api/go-
 import { GET_GPU_STATUS } from '../../../common/ipc-api';
 import { ROUTES } from '../routes-config';
 import environment from '../../../common/environment';
+import type GpuStatus from '../types/gpuStatus';
 
 export default class AppStore extends Store {
 
   @observable error: ?LocalizableError = null;
   @observable isAboutDialogOpen = false;
-  @observable gpuStatus = {};
+  @observable gpuStatus: ?GpuStatus = {};
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -41,11 +42,10 @@ export default class AppStore extends Store {
 
   _getGpuStatus = () => {
     ipcRenderer.send(GET_GPU_STATUS.REQUEST);
-  }
+  };
 
-  _onGetGpuStatusSuccess = action((event, res) => {
-    console.log('GPU Status', res);
-    this.gpuStatus = res;
+  _onGetGpuStatusSuccess = action((event, status) => {
+    this.gpuStatus = status;
   });
 
   _updateRouteLocation = (options: { route: string, params: ?Object }) => {
