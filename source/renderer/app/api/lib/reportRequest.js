@@ -39,9 +39,9 @@ function typedHttpRequest<Response>(
     formData.append('payload', JSON.stringify(payload));
 
     // prepare file stream (attachment)
-    if (payload.compressedLog) {
-      const stream = fs.createReadStream(payload.compressedLog);
-      const fileName = extractFileNameFromPath(payload.compressedLog);
+    if (payload.compressedLogsFile) {
+      const stream = fs.createReadStream(payload.compressedLogsFile);
+      const fileName = extractFileNameFromPath(payload.compressedLogsFile);
       formData.append(fileName, stream);
     }
 

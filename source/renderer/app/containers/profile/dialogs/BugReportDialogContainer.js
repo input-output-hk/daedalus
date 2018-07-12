@@ -15,7 +15,7 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   onSubmit = (values: {
-    email: string, subject: string, problem: string, compressedLog: ?string
+    email: string, subject: string, problem: string, compressedLogsFile: ?string
   }) => {
     this.props.actions.profile.sendBugReport.trigger(values);
   };
@@ -43,18 +43,18 @@ export default class BugReportDialogContainer extends Component<InjectedProps> {
     const { getLogs, getLogsAndCompress } = actions.profile;
     const {
       logFiles,
-      compressedLog,
       compressedLogsFile,
-      bugReportInProgress,
+      compressedLogsStatus,
+      isSubmittingBugReport,
       error,
     } = stores.profile;
 
     return (
       <BugReportDialog
-        isDownloadInProgress={get(compressedLogsFile, 'downloadInProgress', false)}
-        isReportSubmissionInProgress={bugReportInProgress}
+        isDownloading={get(compressedLogsStatus, 'isDownloading', false)}
+        isSubmittingBugReport={isSubmittingBugReport}
         logFiles={logFiles}
-        compressedLog={compressedLog}
+        compressedLogsFile={compressedLogsFile}
         error={error}
         onSubmit={this.onSubmit}
         onSubmitManually={this.onSubmitManually}
