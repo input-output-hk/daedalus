@@ -118,22 +118,20 @@ const messages = defineMessages({
 
 type Props = {
   logFiles: LogFiles,
-  compressedLog: ?string,
   onCancel: Function,
   onSubmit: Function,
   onSubmitManually: Function,
   onDownload: Function,
   onGetLogs: Function,
-  onCompressLogs: Function,
-  onDeleteCompressedLogs: Function,
-  isSubmitting: boolean,
-  isCompressing: boolean,
+  onGetLogsAndCompress: Function,
   isDownloading?: boolean,
+  isSubmittingBugReport?: boolean,
   error: ?LocalizableError,
 };
 
 type State = {
-  showLogs: boolean,
+  attachLogs: boolean,
+  compressedLogsFile: ?string,
 };
 
 @observer
@@ -144,19 +142,23 @@ export default class BugReportDialog extends Component<Props, State> {
   };
 
   state = {
-    showLogs: true,
+    attachLogs: true,
+    compressedLogsFile: null,
   };
 
   componentWillMount() {
     this.props.onGetLogs();
-    this.props.onDeleteCompressedLogs();
   }
 
   componentWillReceiveProps(nextProps: Object) {
-    const commpressionFilesChanged = this.props.compressedLog !== nextProps.compressedLog;
-    if (nextProps.compressedLog && commpressionFilesChanged && !nextProps.isDownloading) {
-      // proceed to submit when ipc rendered successfully return compressed files
-      this.submit(nextProps.compressedLog);
+    const compressedLogsFileChanged = (
+      !this.props.compressedLogsFile &&
+      !!nextProps.compressedLogsFile
+    );
+    const { compressedLogsFile } = this.state;
+    if (compressedLogsFile) return false;
+    if (nextProps.compressedLogsFile && compressedLogsFileChanged && !nextProps.isDownloading) {
+      this.setState({ compressedLogsFile: nextProps.compressedLogsFile }, this.submit);
     }
   }
 
@@ -206,40 +208,36 @@ export default class BugReportDialog extends Component<Props, State> {
     },
   });
 
-  submit = (compressedLog: ?string) => {
+  submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        const { logFiles } = this.props;
-        const logsExist = get(logFiles, ['files'], []).length > 0;
-
+        const { attachLogs, compressedLogsFile } = this.state;
+        if (attachLogs && !compressedLogsFile) {
+          this.props.onGetLogsAndCompress();
+          return false;
+        }
         const { email, subject, problem } = form.values();
         const data = {
-          email, subject, problem, compressedLog
+          email, subject, problem, compressedLogsFile
         };
-
-        if (this.state.showLogs && logsExist && !compressedLog) {
-          // submit request with commpressed logs files
-          this.props.onCompressLogs(this.props.logFiles);
-        } else {
-          // regular submit
-          this.props.onSubmit(data);
-        }
+        this.props.onSubmit(data);
       },
       onError: () => {},
     });
   };
 
   handleLogsSwitchToggle = (value: boolean) => {
-    this.setState({ showLogs: value });
+    this.setState({ attachLogs: value });
   };
+
+  onClose = () => !this.props.isSubmittingBugReport && this.props.onCancel();
 
   render() {
     const { intl } = this.context;
-    const { showLogs } = this.state;
+    const { attachLogs } = this.state;
     const { form } = this;
     const {
-      onCancel, isSubmitting, isCompressing,
-      logFiles, error, onDownload, isDownloading,
+      logFiles, error, onDownload, isDownloading, isSubmittingBugReport
     } = this.props;
 
     const submitManuallyLink = intl.formatMessage(messages.submitManuallyLink);
@@ -250,12 +248,12 @@ export default class BugReportDialog extends Component<Props, State> {
 
     const attachedLogsClasses = classnames([
       styles.attachedLogs,
-      (showLogs && logFiles) ? styles.show : null,
+      (attachLogs && logFiles) ? styles.show : null,
     ]);
 
     const submitButtonClasses = classnames([
       'submitButton',
-      (isSubmitting || isCompressing) ? styles.isSubmitting : null,
+      isSubmittingBugReport ? styles.isSubmitting : null,
     ]);
 
     const downloadButtonClasses = classnames([
@@ -272,8 +270,8 @@ export default class BugReportDialog extends Component<Props, State> {
         className: submitButtonClasses,
         label: this.context.intl.formatMessage(messages.submitButtonLabel),
         primary: true,
-        disabled: isSubmitting,
-        onClick: this.submit.bind(this, null),
+        disabled: isSubmittingBugReport,
+        onClick: this.submit,
       },
     ];
 
@@ -299,8 +297,13 @@ export default class BugReportDialog extends Component<Props, State> {
         title={intl.formatMessage(messages.title)}
         actions={!error ? actions : alternativeActions}
         closeOnOverlayClick
-        onClose={onCancel}
-        closeButton={<DialogCloseButton onClose={onCancel} />}
+        onClose={this.onClose}
+        closeButton={
+          <DialogCloseButton
+            disabled={isSubmittingBugReport}
+            onClose={this.onClose}
+          />
+        }
       >
         {error ? (
           <div>
@@ -356,7 +359,7 @@ export default class BugReportDialog extends Component<Props, State> {
                 <Checkbox
                   onChange={this.handleLogsSwitchToggle}
                   label={intl.formatMessage(messages.logsSwitchPlaceholder)}
-                  checked={showLogs}
+                  checked={attachLogs}
                   skin={<SimpleSwitchSkin />}
                 />
               </div>
