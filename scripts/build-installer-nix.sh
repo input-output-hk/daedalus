@@ -22,7 +22,7 @@ nix-build default.nix -A rawapp.deps -o node_modules.root -Q
 for cluster in ${CLUSTERS}
 do
   echo '~~~ Building '"${cluster}"' installer'
-  nix-build -Q release.nix -A "${cluster}.installer" --argstr buildNr "$BUILDKITE_BUILD_NUMBER" -o csl-daedalus
+  nix-build -Q release.nix -A "${cluster}.installer" --argstr buildNum "$BUILDKITE_BUILD_NUMBER" -o csl-daedalus
   if [ -n "${BUILDKITE_JOB_ID:-}" ]; then
     upload_artifacts_public csl-daedalus/daedalus*.bin
     nix-build -A daedalus.cfg  --argstr cluster "${cluster}"
