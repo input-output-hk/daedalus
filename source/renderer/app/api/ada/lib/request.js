@@ -73,8 +73,14 @@ function typedRequest<Response>(
       // Resolve JSON results and handle weird backend behavior
       // of "Left" (for errors) and "Right" (for success) properties
       response.on('end', () => {
+        var parsedBody = undefined;
         try {
-          const parsedBody = JSON.parse(body);
+          parsedBody = JSON.parse(body);
+        } catch (error) {
+          // Handle internal server errors (e.g. HTTP 500 - 'Something went wrong')
+          reject(new Error(body));
+        }
+
           if (has(parsedBody, 'Right')) {
             // "Right" means 200 ok (success) -> also handle if Right: false (boolean response)
             resolve(parsedBody.Right);
@@ -89,10 +95,6 @@ function typedRequest<Response>(
             // TODO: investigate if that can happen! (no Right or Left in a response)
             reject(new Error('Unknown response from backend.'));
           }
-        } catch (error) {
-          // Handle internal server errors (e.g. HTTP 500 - 'Something went wrong')
-          reject(new Error(error));
-        }
       });
     });
     httpsRequest.on('error', (error) => reject(error));

@@ -283,7 +283,7 @@ export default class AdaApi {
           cwUnit: unit,
         },
         cwBackupPhrase: {
-          bpToList: split(mnemonic), // array of mnemonic words
+          bpToList: split(mnemonic, / +/), // array of mnemonic words
         }
       };
       const wallet: AdaWallet = await newAdaWallet({ ca, password, walletInitData });
@@ -482,7 +482,7 @@ export default class AdaApi {
         cwUnit: unit,
       },
       cwBackupPhrase: {
-        bpToList: split(recoveryPhrase), // array of mnemonic words
+        bpToList: split(recoveryPhrase, / +/), // array of mnemonic words
       }
     };
 
@@ -502,6 +502,7 @@ export default class AdaApi {
       if (error.message.includes('Wallet with that mnemonics already exists')) {
         throw new WalletAlreadyRestoredError();
       }
+      Logger.error('wallet query' + JSON.stringify(walletInitData));
       // We don't know what the problem was -> throw generic error
       throw new GenericApiError();
     }
@@ -584,7 +585,7 @@ export default class AdaApi {
         pvWalletId: accountId,
         pvSeed: shieldedRedemptionKey,
         pvBackupPhrase: {
-          bpToList: split(mnemonics),
+          bpToList: split(mnemonics, / +/),
         }
       };
 
