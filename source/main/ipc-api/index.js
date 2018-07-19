@@ -1,6 +1,5 @@
 // @flow
 import compressLogsApi from './compress-logs';
-import deleteCompressedLogsApi from './delete-compressed-logs';
 import downloadLogsApi from './download-logs';
 import getLogsApi from './get-logs';
 import parseRedemptionCodeApi from './parse-redemption-code-from-pdf';
@@ -11,7 +10,6 @@ import getGpuStatus from './get-gpu-status';
 
 export default (params: any) => {
   compressLogsApi();
-  deleteCompressedLogsApi();
   downloadLogsApi();
   getLogsApi();
   parseRedemptionCodeApi();

@@ -1,6 +1,7 @@
 import http from 'http';
 import FormData from 'form-data/lib/form_data';
 import fs from 'fs';
+import { extractFileNameFromPath } from '../../../../common/fileName';
 
 export type RequestOptions = {
   hostname: string,
@@ -38,9 +39,10 @@ function typedHttpRequest<Response>(
     formData.append('payload', JSON.stringify(payload));
 
     // prepare file stream (attachment)
-    if (payload.compressedLog) {
-      const stream = fs.createReadStream(payload.compressedLog);
-      formData.append('logs.zip', stream);
+    if (payload.compressedLogsFile) {
+      const stream = fs.createReadStream(payload.compressedLogsFile);
+      const fileName = extractFileNameFromPath(payload.compressedLogsFile);
+      formData.append(fileName, stream);
     }
 
     options.headers = formData.getHeaders();
