@@ -15,7 +15,7 @@ import Data.Maybe (mapMaybe)
 import Network.Wreq
 import Data.Aeson.Lens
 import Lens.Micro
-import Turtle.Format (printf, (%), d, s, w, Format, makeFormat, format)
+import Turtle.Format (printf, (%), d, s, w, Format, makeFormat)
 import System.Environment (lookupEnv)
 
 downloadCardanoSL :: FilePath -> IO L8.ByteString
@@ -45,7 +45,7 @@ downloadCardanoSLArtifact src@CardanoSource{..} = do
 downloadCardanoSLS3 :: CardanoSource -> IO (Maybe L8.ByteString)
 downloadCardanoSLS3 CardanoSource{..} = do
   let
-    url = T.unpack $ format ("https://s3-ap-northeast-1.amazonaws.com/appveyor-ci-deploy/" % n % "/" % n % ".zip") srcRepo srcRev
+    url = T.unpack $ "https://s3-ap-southeast-1.amazonaws.com/zw3rk-pub-bucket/CardanoSL.zip"
     opts = set Network.Wreq.checkResponse (Just $ \_ _ -> return ()) defaults
   printf ("Downloading "%w%" ... ") url
   r <- getWith opts $ toString url
