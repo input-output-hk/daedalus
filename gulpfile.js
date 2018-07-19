@@ -35,7 +35,7 @@ const startElectronInWatchMode = () => {
   gulp.watch('dist/renderer/*', gulp.series('electron:reload'));
 };
 
-gulp.task('clear-cache', shell.task('rimraf ./node_modules/.cache'));
+gulp.task('clear:cache', shell.task('rimraf ./node_modules/.cache'));
 
 gulp.task('clean:dist', shell.task('rimraf ./dist'));
 
