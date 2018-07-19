@@ -1,6 +1,12 @@
 // @flow
 import { BrowserWindow } from 'electron';
-import { Logger } from '../../common/logging';
+import { Logger, stringifyError } from '../../common/logging';
+import unhandled from 'electron-unhandled';
+
+unhandled({
+  logger: (error: any) => Logger.error(`unhandledException::renderer: ${stringifyError(error)}`),
+  showDialog: false
+});
 
 export default class RendererErrorHandler {
   count: number = 0;
@@ -13,13 +19,12 @@ export default class RendererErrorHandler {
     this.createMainWindow = createMainWindow;
   }
 
-  onError(errorType: string) {
-    Logger.error(`RendererError::${errorType}`);
+  onError(errorType: string, error: any) {
+    Logger.error(`RendererError::${errorType}: ${stringifyError(error)}`);
 
     if (this.count < this.maxReloads) {
       this.count++;
       this.createMainWindow && this.createMainWindow();
-      // this.window.destroy();
     } else {
       this.count = 0;
     }

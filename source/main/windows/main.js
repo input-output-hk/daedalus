@@ -28,10 +28,6 @@ export const createMainWindow = () => {
 
   window.setMinimumSize(900, 600);
 
-  window.checkAssetsFilesWereLoaded = setTimeout(() => {
-    rendererErrorHandler.onError('assets-not-loaded');
-  }, 60000);
-
   // Initialize our ipc api methods that can be called by the render processes
   ipcApi({ window });
 
@@ -91,11 +87,11 @@ export const createMainWindow = () => {
   });
 
   window.webContents.on('did-fail-load', (err) => {
-    rendererErrorHandler.onError('did-fail-load');
+    rendererErrorHandler.onError('did-fail-load', err);
   });
 
   window.webContents.on('crashed', (err) => {
-    rendererErrorHandler.onError('crashed');
+    rendererErrorHandler.onError('crashed', err);
   });
 
   return window;

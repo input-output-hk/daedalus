@@ -12,8 +12,10 @@ import { installChromeExtensions } from './utils/installChromeExtensions';
 import environment from '../common/environment';
 import { OPEN_ABOUT_DIALOG_CHANNEL } from '../common/ipc-api/open-about-dialog';
 import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../common/ipc-api/go-to-ada-redemption-screen';
+import mainErrorHandler from './utils/mainErrorHandler';
 
 setupLogging();
+mainErrorHandler();
 
 log.info(`========== Daedalus is starting at ${new Date()} ==========`);
 
