@@ -8,7 +8,6 @@ import resizeWindowApi from './resize-window';
 import killProcess from './kill-process';
 import loadAsset from './load-asset';
 import getGpuStatus from './get-gpu-status';
-import trackAssetsLoaded from './track-assets-loaded';
 
 export default (params: any) => {
   compressLogsApi();
@@ -20,5 +19,4 @@ export default (params: any) => {
   killProcess();
   loadAsset();
   getGpuStatus();
-  trackAssetsLoaded(params);
 };
