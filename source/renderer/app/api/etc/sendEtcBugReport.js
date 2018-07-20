@@ -16,7 +16,7 @@ export type SendEtcBugReportRequestParams = {
 
 export const sendEtcBugReport = (
   { requestFormData, application }: SendEtcBugReportRequestParams
-): Promise<void> => {
+) => {
   const { email, subject, problem, compressedLogsFile } = requestFormData;
   const { version, os, buildNumber, REPORT_URL } = environment;
   const reportUrl = url.parse(REPORT_URL);
