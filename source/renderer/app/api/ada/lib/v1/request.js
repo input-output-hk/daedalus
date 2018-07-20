@@ -73,6 +73,9 @@ function typedRequest<Response>(
       // Resolve JSON results and handle backend errors
       response.on('end', () => {
         try {
+          if (!body) {
+            body = '{ "status": "error", "message": "UNDEFINED"}';
+          }
           const parsedBody = JSON.parse(body);
           const status = get(parsedBody, 'status', false);
           if (status) {

@@ -272,21 +272,18 @@ export default class AdaApi {
 
   async createWallet(request: CreateWalletRequest): Promise<CreateWalletResponse> {
     Logger.debug('AdaApi::createWallet called');
-    const { name, mnemonic, password } = request;
-    const assurance = 'CWANormal';
+    const { name, mnemonic, spendingPassword } = request;
+    const assuranceLevel = 'CWANormal';
     const unit = 0;
     try {
       const walletInitData = {
-        cwInitMeta: {
-          cwName: name,
-          cwAssurance: assurance,
-          cwUnit: unit,
-        },
-        cwBackupPhrase: {
-          bpToList: split(mnemonic), // array of mnemonic words
-        }
+        operation: "create",
+        backupPhrase: split(mnemonic),
+        assuranceLevel,
+        name,
+        spendingPassword,
       };
-      const wallet: AdaWallet = await newAdaWallet({ ca, password, walletInitData });
+      const wallet: AdaWallet = await newAdaWallet({ ca, walletInitData });
       Logger.debug('AdaApi::createWallet success');
       return _createWalletFromServerData(wallet);
     } catch (error) {
