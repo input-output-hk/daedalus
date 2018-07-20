@@ -16,35 +16,22 @@ export type SendEtcBugReportRequestParams = {
 
 export const sendEtcBugReport = (
   { requestFormData, application }: SendEtcBugReportRequestParams
-): Promise<{}> => {
+) => {
   const { email, subject, problem, compressedLogsFile } = requestFormData;
-  const reportUrl = url.parse(environment.REPORT_URL);
-
-  let platform;
-  switch (environment.platform) {
-    case 'darwin':
-      platform = 'macOS';
-      break;
-    case 'win32':
-      platform = 'Windows';
-      break;
-    case 'linux':
-      platform = 'Linux';
-      break;
-    default:
-      platform = '';
-  }
+  const { version, os, buildNumber, REPORT_URL } = environment;
+  const reportUrl = url.parse(REPORT_URL);
+  const { hostname, port } = reportUrl;
 
   return request({
-    hostname: reportUrl.hostname,
+    hostname,
     method: 'POST',
     path: '/report',
-    port: reportUrl.port,
+    port,
   }, {
     application,
-    version: environment.version,
-    build: environment.build,
-    os: platform,
+    version,
+    build: buildNumber,
+    os,
     compressedLogsFile,
     date: moment().format('YYYY-MM-DDTHH:mm:ss'),
     magic: 2000000000,

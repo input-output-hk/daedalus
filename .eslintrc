@@ -74,8 +74,9 @@
   ],
   "globals": {
     "API": true,
+    "API_VERSION": true,
     "NETWORK": true,
     "MOBX_DEV_TOOLS": true,
-    "DAEDALUS_VERSION": true
+    "BUILD_NUMBER": true
   }
 }

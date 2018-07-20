@@ -190,22 +190,23 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
 packageFrontend :: IO ()
 packageFrontend = do
     export "NODE_ENV" "production"
-    shells "npm run package -- --icon installers/icons/64x64" mempty
+    shells "npm run package -- --icon installers/icons/64x64" empty
 
 main :: Options -> IO ()
 main opts@Options{..}  = do
     generateOSClusterConfigs "./dhall" "." opts
 
-    echo "Packaging frontend"
-    packageFrontend
-
     fetchCardanoSL "."
     printCardanoBuildInfo "."
 
     fullVersion <- getDaedalusVersion "../package.json"
-    cardanoVersion <- getCardanoVersion
+    ver <- getCardanoVersion
 
-    let fullName = packageFileName Win64 oCluster fullVersion cardanoVersion oBuildJob
+    echo "Packaging frontend"
+    exportBuildVars opts ver
+    packageFrontend
+
+    let fullName = packageFileName Win64 oCluster fullVersion oBackend ver oBuildJob
 
     printf ("Building: "%fp%"\n") fullName
 
@@ -263,10 +264,9 @@ getCardanoVersion = withDir "DLLs" (grepCardanoVersion run)
     prog = ".." </> "cardano-node.exe"
 
 grepCardanoVersion :: Shell Line -> IO Text
-grepCardanoVersion = fmap addPrefix . strict . sed versionPattern
+grepCardanoVersion = fmap T.stripEnd . strict . sed versionPattern
   where
     versionPattern = text "cardano-node-" *> plus (noneOf ", ") <* star dot
-    addPrefix = ("cardano-sl-" <>) . T.stripEnd
 
 getTempDir :: MonadIO io => io FilePath
 getTempDir = need "TEMP" >>= \case

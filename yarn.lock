@@ -82,7 +82,7 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@storybook/addon-actions@3.4.7", "@storybook/addon-actions@^3.4.6":
+"@storybook/addon-actions@3.4.7":
   version "3.4.7"
   resolved "https://registry.yarnpkg.com/@storybook/addon-actions/-/addon-actions-3.4.7.tgz#35e1345d1377e1264f11e319fc06737244c5a23f"
   dependencies:
@@ -97,11 +97,11 @@
     react-inspector "^2.2.2"
     uuid "^3.2.1"
 
-"@storybook/addon-knobs@3.4.6":
-  version "3.4.6"
-  resolved "https://registry.yarnpkg.com/@storybook/addon-knobs/-/addon-knobs-3.4.6.tgz#900586a218e12540256884af7a0ba1f684f1f436"
+"@storybook/addon-knobs@3.4.7":
+  version "3.4.7"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-knobs/-/addon-knobs-3.4.7.tgz#9e8f7827e3743ec76d773dd65a3857d538d0aa02"
   dependencies:
-    "@storybook/components" "3.4.6"
+    "@storybook/components" "3.4.7"
     babel-runtime "^6.26.0"
     deep-equal "^1.0.1"
     global "^4.3.2"
@@ -114,7 +114,7 @@
     react-textarea-autosize "^5.2.1"
     util-deprecate "^1.0.2"
 
-"@storybook/addon-links@3.4.7", "@storybook/addon-links@^3.4.6":
+"@storybook/addon-links@3.4.7":
   version "3.4.7"
   resolved "https://registry.yarnpkg.com/@storybook/addon-links/-/addon-links-3.4.7.tgz#8d4a72cd92f26f93b2e432d20783e09f6082c75f"
   dependencies:
@@ -123,7 +123,7 @@
     global "^4.3.2"
     prop-types "^15.6.1"
 
-"@storybook/addon-notes@^3.4.6":
+"@storybook/addon-notes@3.4.7":
   version "3.4.7"
   resolved "https://registry.yarnpkg.com/@storybook/addon-notes/-/addon-notes-3.4.7.tgz#4837724301ef6830e9b643d67b287d0e9fa2c7f8"
   dependencies:
@@ -132,7 +132,7 @@
     prop-types "^15.6.1"
     util-deprecate "^1.0.2"
 
-"@storybook/addons@3.4.7", "@storybook/addons@^3.4.6":
+"@storybook/addons@3.4.7":
   version "3.4.7"
   resolved "https://registry.yarnpkg.com/@storybook/addons/-/addons-3.4.7.tgz#ca787c8139c07cd4f36054a84cc0dc3c9698841b"
 
@@ -151,14 +151,6 @@
 "@storybook/client-logger@3.4.7":
   version "3.4.7"
   resolved "https://registry.yarnpkg.com/@storybook/client-logger/-/client-logger-3.4.7.tgz#577a3dae3f46d95e3dcc1cdb6e8726d5d6324619"
-
-"@storybook/components@3.4.6":
-  version "3.4.6"
-  resolved "https://registry.yarnpkg.com/@storybook/components/-/components-3.4.6.tgz#34bddcfa21bddc59ef57a052d157285fab7ba003"
-  dependencies:
-    glamor "^2.20.40"
-    glamorous "^4.12.1"
-    prop-types "^15.6.1"
 
 "@storybook/components@3.4.7":
   version "3.4.7"
@@ -246,7 +238,7 @@
   dependencies:
     babel-runtime "^6.5.0"
 
-"@storybook/react@^3.4.6":
+"@storybook/react@3.4.7":
   version "3.4.7"
   resolved "https://registry.yarnpkg.com/@storybook/react/-/react-3.4.7.tgz#bd306ff12495668fac4a0179bdf1ebb173dcd8c8"
   dependencies:
