@@ -5444,31 +5444,17 @@
         }
       },
       {
-        "defaultMessage": "!!!1.0.4",
-        "description": "Version of \"Cardano\" client.",
-        "end": {
-          "column": 5,
-          "line": 167
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.apiVersion.cardano",
-        "start": {
-          "column": 16,
-          "line": 163
-        }
-      },
-      {
         "defaultMessage": "!!!Etc",
         "description": "Name for \"Etc\" unit.",
         "end": {
           "column": 5,
-          "line": 175
+          "line": 170
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.currency.etc",
         "start": {
           "column": 14,
-          "line": 171
+          "line": 166
         }
       },
       {
@@ -5476,27 +5462,13 @@
         "description": "Name for \"Mantis\" client.",
         "end": {
           "column": 5,
-          "line": 180
+          "line": 175
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.apiName.mantis",
         "start": {
           "column": 13,
-          "line": 176
-        }
-      },
-      {
-        "defaultMessage": "!!!1.0 rc1",
-        "description": "Version of \"Mantis\" client.",
-        "end": {
-          "column": 5,
-          "line": 185
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.apiVersion.mantis",
-        "start": {
-          "column": 16,
-          "line": 181
+          "line": 171
         }
       }
     ],

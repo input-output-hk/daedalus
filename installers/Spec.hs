@@ -54,7 +54,7 @@ macBuildSpec = do
     it "Reads it" $ runManaged $ do
       tmp <- getTempDir "test-bridge"
       liftIO $ writeTextFile (tmp </> "version") "1.2.3"
-      liftIO $ Mac.readCardanoVersionFile tmp `shouldReturn` "cardano-sl-1.2.3"
+      liftIO $ Mac.readCardanoVersionFile tmp `shouldReturn` "1.2.3"
     it "Handles missing version file" $ runManaged $ do
       tmp <- getTempDir "test-bridge"
       liftIO $ Mac.readCardanoVersionFile tmp `shouldReturn` "UNKNOWN"
@@ -130,5 +130,5 @@ utilSpec = do
 
   describe "Package filename generation" $ do
     it "generates a good filename for windows" $ do
-      let f = packageFileName Win64 Mainnet (Version "0.4.2") "test-9.9" (Just "job.id")
-      f `shouldBe` (fromText "daedalus-0.4.2-test-9.9-mainnet-windows-job.id.exe")
+      let f = packageFileName Win64 Mainnet (Version "0.4.2") (Cardano "") "9.9" (Just "job.id")
+      f `shouldBe` (fromText "daedalus-0.4.2-cardano-sl-9.9-mainnet-windows-job.id.exe")
