@@ -272,7 +272,7 @@ When(/^I see the create wallet recovery phrase entry dialog$/, function () {
 When(/^I click on recovery phrase mnemonics in correct order$/, async function () {
   for (let i = 0; i < this.recoveryPhrase.length; i++) {
     const recoveryPhraseMnemonic = this.recoveryPhrase[i];
-    await this.waitAndClick(`//button[contains(text(), "${recoveryPhraseMnemonic}") and @class="flat MnemonicWord_component MnemonicWord_active SimpleButton_root"]`);
+    await this.waitAndClick(`//button[contains(text(), "${recoveryPhraseMnemonic}") and @class="flat SimpleButton_root MnemonicWord_root"]`);
   }
 });
 

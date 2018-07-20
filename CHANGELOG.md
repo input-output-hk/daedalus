@@ -51,6 +51,7 @@ Changelog
 - Added acceptance tests for node update notification with apply and postpone update scenarios ([PR 977](https://github.com/input-output-hk/daedalus/pull/977))
 - Added acceptance tests for maximum wallets limit ([PR 979](https://github.com/input-output-hk/daedalus/pull/979))
 - Added acceptance tests for the About dialog ([PR 975](https://github.com/input-output-hk/daedalus/pull/975))
+- Improved compress/download logs handling ([PR 995](https://github.com/input-output-hk/daedalus/pull/995))
 
 ## 0.10.1
 =======

@@ -10,7 +10,8 @@ export type CompressedLogs = {
   originalFile: string,
 } | {};
 
-export type CompressedFileDownload = {
-  inProgress?: boolean,
+export type CompressedLogStatus = {
+  fileName?: string,
   destination?: string,
+  isDownloading?: boolean,
 };

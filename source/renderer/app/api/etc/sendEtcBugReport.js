@@ -9,7 +9,7 @@ export type SendEtcBugReportRequestParams = {
     email: string,
     subject: string,
     problem: string,
-    compressedLog: string,
+    compressedLogsFile: string,
   },
   application: string,
 };
@@ -17,7 +17,7 @@ export type SendEtcBugReportRequestParams = {
 export const sendEtcBugReport = (
   { requestFormData, application }: SendEtcBugReportRequestParams
 ): Promise<{}> => {
-  const { email, subject, problem, compressedLog } = requestFormData;
+  const { email, subject, problem, compressedLogsFile } = requestFormData;
   const reportUrl = url.parse(environment.REPORT_URL);
 
   let platform;
@@ -45,7 +45,7 @@ export const sendEtcBugReport = (
     version: environment.version,
     build: environment.build,
     os: platform,
-    compressedLog,
+    compressedLogsFile,
     date: moment().format('YYYY-MM-DDTHH:mm:ss'),
     magic: 2000000000,
     type: {
