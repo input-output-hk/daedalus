@@ -18,22 +18,8 @@ export const sendAdaBugReport = (
   { requestFormData, application }: SendAdaBugReportRequestParams
 ): Promise<{}> => {
   const { email, subject, problem, compressedLog } = requestFormData;
-  const reportUrl = url.parse(environment.REPORT_URL);
-
-  let platform;
-  switch (environment.platform) {
-    case 'darwin':
-      platform = 'macOS';
-      break;
-    case 'win32':
-      platform = 'Windows';
-      break;
-    case 'linux':
-      platform = 'Linux';
-      break;
-    default:
-      platform = '';
-  }
+  const { version, os, buildNumber, REPORT_URL } = environment;
+  const reportUrl = url.parse(REPORT_URL);
 
   return request({
     hostname: reportUrl.hostname,
@@ -42,9 +28,9 @@ export const sendAdaBugReport = (
     port: reportUrl.port,
   }, {
     application,
-    version: environment.version,
-    build: environment.build,
-    os: platform,
+    version,
+    build: buildNumber,
+    os,
     compressedLog,
     date: moment().format('YYYY-MM-DDTHH:mm:ss'),
     magic: 2000000000,

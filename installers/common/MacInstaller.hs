@@ -71,7 +71,7 @@ main opts@Options{..} = do
   makeComponentRoot opts appRoot darwinConfig
   daedalusVer <- getDaedalusVersion "../package.json"
 
-  let pkg = packageFileName Macos64 oCluster daedalusVer ver oBuildJob
+  let pkg = packageFileName Macos64 oCluster daedalusVer oBackend ver oBuildJob
       opkg = oOutputDir </> pkg
 
   tempInstaller <- makeInstaller opts darwinConfig appRoot pkg
