@@ -159,6 +159,9 @@
     "validator": "9.1.2",
     "web3-utils": "1.0.0-beta.30"
   },
+  "resolutions": {
+    "eslint-scope": "3.7.1"
+  },
   "devEngines": {
     "node": "8.x",
     "yarn": "^1.7.0"
