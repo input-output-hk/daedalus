@@ -25,16 +25,6 @@ export type AdaSyncProgressResponse = {
   _spPeers: number,
 };
 
-export type AdaWalletInitDataOld = {
-  cwInitMeta: {
-    cwName: string,
-    cwAssurance: AdaAssurance,
-    cwUnit: number,
-  },
-  cwBackupPhrase: {
-    bpToList: [],
-  }
-};
 export type AdaWalletInitData = {
   operation: 'create' | 'restore',
   backupPhrase: [],
