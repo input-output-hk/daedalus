@@ -74,7 +74,7 @@ function typedRequest<Response>(
       response.on('end', () => {
         try {
           if (!body) {
-            body = '{ "status": "error", "message": "UNDEFINED"}';
+            body = `{ "status": "error", "message": "${response.statusMessage}"}`;
           }
           const parsedBody = JSON.parse(body);
           const status = get(parsedBody, 'status', false);
