@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/raw/SwitchSkin';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
+import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import styles from './TinySwitch.scss';
 
 type Props = {
@@ -14,11 +15,9 @@ export default class TinySwitch extends Component<Props> {
 
     return (
       <Checkbox
-        skin={
-          <SimpleSwitchSkin
-            className={styles.component}
-          />
-        }
+        className={styles.component}
+        themeId={IDENTIFIERS.SWITCH}
+        skin={SwitchSkin}
         checked={this.props.checked}
         onChange={this.props.onChange}
         label={this.props.label}

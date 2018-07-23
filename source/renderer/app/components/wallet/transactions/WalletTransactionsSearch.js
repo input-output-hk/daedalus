@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import styles from './WalletTransactionsSearch.scss';
 
 const messages = defineMessages({
@@ -36,7 +36,7 @@ export default class WalletTransactionsSearch extends Component<Props> {
           placeholder={intl.formatMessage(messages.searchHint)}
           value={searchTerm}
           onChange={onChange}
-          skin={<SimpleInputSkin />}
+          skin={InputSkin}
         />
       </div>
     );

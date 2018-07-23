@@ -2,10 +2,11 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/raw/SwitchSkin';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
@@ -87,7 +88,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
   };
 
   componentDidMount() {
-    setTimeout(() => { this.walletNameInput.focus(); });
+    setTimeout(() => { this.walletNameInput.getRef().focus(); });
   }
 
   walletNameInput: Input;
@@ -210,7 +211,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
           ref={(input) => { this.walletNameInput = input; }}
           {...walletNameField.bind()}
           error={walletNameField.error}
-          skin={<SimpleInputSkin />}
+          skin={InputSkin}
         />
 
         <div className={styles.walletPassword}>
@@ -219,10 +220,11 @@ export default class WalletCreateDialog extends Component<Props, State> {
               {intl.formatMessage(messages.passwordSwitchLabel)}
             </div>
             <Checkbox
+              themeId={IDENTIFIERS.SWITCH}
               onChange={this.handlePasswordSwitchToggle}
               label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
               checked={createPassword}
-              skin={<SimpleSwitchSkin />}
+              skin={SwitchSkin}
             />
           </div>
 
@@ -232,14 +234,14 @@ export default class WalletCreateDialog extends Component<Props, State> {
               onKeyPress={submitOnEnter.bind(this, this.submit)}
               {...walletPasswordField.bind()}
               error={walletPasswordField.error}
-              skin={<SimpleInputSkin />}
+              skin={InputSkin}
             />
             <Input
               className="repeatedPassword"
               onKeyPress={submitOnEnter.bind(this, this.submit)}
               {...repeatedPasswordField.bind()}
               error={repeatedPasswordField.error}
-              skin={<SimpleInputSkin />}
+              skin={InputSkin}
             />
             <p className={styles.passwordInstructions}>
               {intl.formatMessage(globalMessages.passwordInstructions)}

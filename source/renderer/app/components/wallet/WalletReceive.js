@@ -6,10 +6,10 @@ import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import QRCode from 'qrcode.react';
-import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
 import TinySwitch from '../widgets/forms/TinySwitch';
@@ -162,15 +162,15 @@ export default class WalletReceive extends Component<Props, State> {
             className={styles.spendingPassword}
             {...passwordField.bind()}
             error={passwordField.error}
-            skin={<SimpleInputSkin />}
+            skin={InputSkin}
           />
         }
 
         <Button
           className={generateAddressButtonClasses}
           label={intl.formatMessage(messages.generateNewAddressButtonLabel)}
+          skin={ButtonSkin}
           onClick={this.submit.bind(this)}
-          skin={<SimpleButtonSkin />}
         />
       </div>
     );

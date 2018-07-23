@@ -3,8 +3,8 @@ import React, { Component, } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import styles from './InlineEditingInput.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
@@ -119,7 +119,7 @@ export default class InlineEditingInput extends Component<Props, State> {
 
   componentDidUpdate() {
     if (this.props.isActive) {
-      this.inputField.focus();
+      this.inputField && this.inputField.getRef().focus();
     }
   }
 
@@ -154,9 +154,9 @@ export default class InlineEditingInput extends Component<Props, State> {
         role="presentation"
         aria-hidden
       >
-
         <Input
           className={inputStyles}
+          themeOverrides={styles}
           type="text"
           label={inputFieldLabel}
           value={isActive ? inputField.value : inputFieldValue}
@@ -167,7 +167,7 @@ export default class InlineEditingInput extends Component<Props, State> {
           error={isActive ? inputField.error : null}
           disabled={!isActive}
           ref={(input) => { this.inputField = input; }}
-          skin={<SimpleInputSkin />}
+          skin={InputSkin}
         />
 
         {isActive && (
