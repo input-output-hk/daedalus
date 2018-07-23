@@ -1,7 +1,7 @@
 // @flow
 import { BrowserWindow } from 'electron';
-import { Logger, stringifyError } from '../../common/logging';
 import unhandled from 'electron-unhandled';
+import { Logger, stringifyError } from '../../common/logging';
 
 unhandled({
   logger: (error: any) => Logger.error(`unhandledException::renderer: ${stringifyError(error)}`),
