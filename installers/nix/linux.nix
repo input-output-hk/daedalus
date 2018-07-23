@@ -1,19 +1,10 @@
 { stdenv, runCommand, writeText, writeScriptBin, fetchurl, fetchFromGitHub, electron,
-coreutils, utillinux, procps, cluster,
-rawapp, daedalus-bridge, daedalus-installer,
+coreutils, utillinux, procps, network,
+frontend, daedalus-bridge, daedalus-installer, daedalus-config,
 sandboxed ? false
 }:
 
 let
-  daedalus-config = runCommand "daedalus-config" {} ''
-    mkdir -pv $out
-    ## TODO: we don't need all of the genesis files (even if file names sound cool),
-    ##       but the choice would have to be made in the Dhall-generated files,
-    ##       splitting the dep chain further:
-    cp -v ${daedalus-bridge}/config/* $out
-    cd $out
-    ${daedalus-installer}/bin/make-installer --out-dir "." --cluster ${cluster} config "${daedalus-installer.src}/dhall" "."
-  '';
   # closure size TODO list
   # electron depends on cups, which depends on avahi
   daedalus-frontend = writeScriptBin "daedalus-frontend" ''
@@ -22,9 +13,9 @@ let
     test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
     export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
 
-    cd "''${DAEDALUS_DIR}/${cluster}/"
+    cd "''${DAEDALUS_DIR}/${network}/"
 
-    exec ${electron}/bin/electron ${rawapp}/share/daedalus/main/ "$@"
+    exec ${electron}/bin/electron ${frontend}/share/daedalus/main/ "$@"
   '';
   daedalus = writeScriptBin "daedalus" ''
     #!${stdenv.shell}
@@ -37,15 +28,17 @@ let
     ''}
 
     test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
-    export           CLUSTER=${cluster}
+    export           CLUSTER=${network}
+    export           NETWORK=${network}
     export      DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
-    export   DAEDALUS_CONFIG=${if sandboxed then "/nix/var/nix/profiles/profile-${cluster}/etc" else daedalus-config}
+    export   DAEDALUS_CONFIG=${if sandboxed then "/nix/var/nix/profiles/profile-${network}/etc" else daedalus-config}
+    export        REPORT_URL="$(awk '/reportServer:/ { print $2; }' $DAEDALUS_CONFIG/launcher-config.yaml)"
 
-    mkdir -p "''${DAEDALUS_DIR}/${cluster}/"{Logs/pub,Secrets}
-    cd "''${DAEDALUS_DIR}/${cluster}/"
+    mkdir -p "''${DAEDALUS_DIR}/${network}/"{Logs/pub,Secrets}
+    cd "''${DAEDALUS_DIR}/${network}/"
 
     exec ${daedalus-bridge}/bin/cardano-launcher \
-      --config ${if sandboxed then "/nix/var/nix/profiles/profile-${cluster}/etc/launcher-config.yaml" else "${daedalus-config}/launcher-config.yaml"}
+      --config ${if sandboxed then "/nix/var/nix/profiles/profile-${network}/etc/launcher-config.yaml" else "${daedalus-config}/launcher-config.yaml"}
   '';
   wrappedConfig = runCommand "launcher-config" {} ''
     mkdir -pv $out/etc/

@@ -4,127 +4,80 @@ in
 { system ? builtins.currentSystem
 , config ? {}
 , pkgs ? (import (localLib.fetchNixPkgs) { inherit system config; })
-, cluster ? "mainnet"
-, version ? "versionNotSet"
+, version ? (builtins.fromJSON (builtins.readFile (./. + "/package.json"))).version
 , buildNum ? null
 }:
 
 let
-  installPath = ".daedalus";
+  src = localLib.cleanSourceTree ./.;
   cardanoPkgs = import ./cardano-sl.nix {
     inherit system config;
   };
-  cleanSourceFilter = with pkgs.stdenv;
-    name: type: let baseName = baseNameOf (toString name); in ! (
-      # Filter out .git repo
-      (type == "directory" && baseName == ".git") ||
-      # Filter out editor backup / swap files.
-      lib.hasSuffix "~" baseName ||
-      builtins.match "^\\.sw[a-z]$" baseName != null ||
-      builtins.match "^\\..*\\.sw[a-z]$" baseName != null ||
 
-      # Filter out locally generated/downloaded things.
-      baseName == "dist" ||
-      baseName == "node_modules" ||
+  networks = localLib.splitString " " (builtins.replaceStrings ["\n"] [""] (builtins.readFile ./installer-clusters.cfg));
+  forNetworks = localLib.genAttrs networks;
 
-      # Filter out the files which I'm editing often.
-      lib.hasSuffix ".nix" baseName ||
-      lib.hasSuffix ".dhall" baseName ||
-      lib.hasSuffix ".hs" baseName ||
-      # Filter out nix-build result symlinks
-      (type == "symlink" && lib.hasPrefix "result" baseName)
-    );
-  packages = self: {
-    inherit cluster pkgs version;
+  packages = self: ({
+    inherit pkgs;
     inherit (cardanoPkgs) daedalus-bridge;
-    ## TODO: move to installers/nix
-    daedalus-installer = self.callPackage ./installers/default.nix {};
-    daedalus = self.callPackage ./installers/nix/linux.nix {};
-    rawapp = self.callPackage ./yarn2nix.nix {
-      inherit buildNum;
-      api = "ada";
-      apiVersion = cardanoPkgs.daedalus-bridge.version;
-    };
-    source = builtins.filterSource cleanSourceFilter ./.;
+    version = version + localLib.versionSuffix buildNum;
 
     tests = {
-      runFlow = self.callPackage ./tests/flow.nix {};
-      runLint = self.callPackage ./tests/lint.nix {};
-      runShellcheck = self.callPackage ./tests/shellcheck.nix { src = ./.;};
+      runFlow = self.callPackage ./tests/flow.nix { inherit src; };
+      runLint = self.callPackage ./tests/lint.nix { inherit src; };
+      runShellcheck = self.callPackage ./tests/shellcheck.nix { inherit src; };
     };
-    nix-bundle = import (pkgs.fetchFromGitHub {
-      owner = "matthewbauer";
-      repo = "nix-bundle";
-      rev = "496f2b524743da67717e4533745394575c6aab1f";
-      sha256 = "0p9hsrbc1b0i4aipwnl4vxjsayc5m865xhp8q139ggaxq7xd0lps";
-    }) { nixpkgs = pkgs; };
-    desktopItem = pkgs.makeDesktopItem {
-      name = "Daedalus${if cluster != "mainnet" then "-${cluster}" else ""}";
-      exec = "INSERT_PATH_HERE";
-      desktopName = "Daedalus${if cluster != "mainnet" then " ${cluster}" else ""}";
-      genericName = "Crypto-Currency Wallet";
-      categories = "Application;Network;";
-      icon = "INSERT_ICON_PATH_HERE";
+
+    # Just the frontend javascript, built with npm and webpack.
+    frontend = self.callPackage ./installers/yarn2nix.nix {
+      inherit version;
+      src = localLib.npmSourceTree ./.;
+      # Backend/API is always Cardano SL at the moment
+      backend = {
+        api = "ada";
+        version = self.daedalus-bridge.version;
+      };
     };
-    iconPath = {
-      # the target of these paths must not be a symlink
-      mainnet = ./installers/icons/mainnet/1024x1024.png;
-      staging = ./installers/icons/staging.iconset/icon_512x512.png;
-      testnet = ./installers/icons/testnet.iconset/icon_512x512.png;
+
+    # Daedalus app for nix.
+    daedalus = self.callPackage ./installers/daedalus.nix {
+      daedalus-configs = forNetworks (network: self.${network}.daedalus-config);
     };
-    namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''
-      #!/usr/bin/env bash
 
-      set -e
+    # Haskell scripts to assist with generating installer files and configs
+    daedalus-installer = self.callPackage ./installers {};
+    dhall = "${self.daedalus-installer.src}/dhall";
 
-      cd ~/${installPath}/
-      mkdir -p etc
-      cat /etc/hosts > etc/hosts
-      cat /etc/nsswitch.conf > etc/nsswitch.conf
-      cat /etc/machine-id > etc/machine-id
-      cat /etc/resolv.conf > etc/resolv.conf
-      exec .${self.nix-bundle.nix-user-chroot}/bin/nix-user-chroot -n ./nix -c -m /home:/home -m /etc:/host-etc -m etc:/etc -p DISPLAY -p HOME -p XAUTHORITY -- /nix/var/nix/profiles/profile-${cluster}/bin/enter-phase2 daedalus
-    '';
-    postInstall = pkgs.writeScriptBin "post-install" ''
-      #!${pkgs.stdenv.shell}
+    # Function to create an AppImage with AppImageKit runtime
+    makeAppImage = self.callPackage ./installers/make-appimage.nix {};
 
-      set -ex
+    # Pre-built releases of electron for different platforms
+    electronBinaries = self.callPackage ./installers/electron-binaries.nix {};
 
+  } // forNetworks (network: let
+    # These are packages specialised to a network
+    packages = super: self: {
+      inherit network;
 
-      test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
-      export DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus/${cluster}"
-      mkdir -pv $DAEDALUS_DIR/Logs/pub
+      # Cardano node and launcher config, generated from dhall sources.
+      daedalus-config = self.callPackage ./installers/daedalus-config.nix {};
 
-      exec 2>&1 > $DAEDALUS_DIR/Logs/pub/post-install.log
+      # Daedalus app for Linux, with a desktop launcher and icon.
+      daedalus-desktop = self.callPackage ./installers/desktop.nix {};
+      desktopItem = self.callPackage ./installers/desktop-item.nix {};
 
-      echo "in post-install hook"
+      # Self-contained AppImages of Daedalus suitable for other distros.
+      appImage' = self.callPackage ./installers/appimage.nix {
+        daedalus = self.daedalus-desktop;
+      };
+      appImage = localLib.wrapPackage buildNum self.appImage';
 
-      cp -f ${self.iconPath.${cluster}} $DAEDALUS_DIR/icon.png
-      cp -Lf ${self.namespaceHelper}/bin/namespaceHelper $DAEDALUS_DIR/namespaceHelper
-      mkdir -pv ~/.local/bin ''${XDG_DATA_HOME}/applications
-      cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus
-      cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus-${cluster}
+      # nix-bundle based installer for linux
+      linuxInstaller' = import ./installers/linux-installer.nix {
+        inherit self pkgs;
+      };
+      linuxInstaller = localLib.wrapPackage buildNum self.linuxInstaller';
+    };
+  in self.overrideScope packages));
 
-      cat ${self.desktopItem}/share/applications/Daedalus*.desktop | sed \
-        -e "s+INSERT_PATH_HERE+''${DAEDALUS_DIR}/namespaceHelper+g" \
-        -e "s+INSERT_ICON_PATH_HERE+''${DAEDALUS_DIR}/icon.png+g" \
-        > "''${XDG_DATA_HOME}/applications/Daedalus${if cluster != "mainnet" then "-${cluster}" else ""}.desktop"
-    '';
-    preInstall = pkgs.writeText "pre-install" ''
-      if grep sse4 /proc/cpuinfo -q; then
-        echo 'SSE4 check pass'
-      else
-        echo "ERROR: your cpu lacks SSE4 support, cardano will not work"
-        exit 1
-      fi
-    '';
-    newBundle = let
-      daedalus' = self.daedalus.override { sandboxed = true; };
-    in (import ./installers/nix/nix-installer.nix {
-      inherit (self) postInstall preInstall cluster;
-      installationSlug = installPath;
-      installedPackages = [ daedalus' self.postInstall self.namespaceHelper daedalus'.cfg self.daedalus-bridge daedalus'.daedalus-frontend ];
-      nix-bundle = self.nix-bundle;
-    }).installerBundle;
-  };
 in pkgs.lib.makeScope pkgs.newScope packages

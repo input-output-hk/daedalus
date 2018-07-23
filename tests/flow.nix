@@ -1,11 +1,10 @@
-{runCommand, rawapp, source }:
+{runCommand, frontend, src }:
 runCommand "daedalus-flow-ci" { } ''
   # flow command fails to ignore the files if node_modules is symlink
   # so we have to copy the whole directory to run the test
-  cp -a ${source}/. .
+  cp -a ${src}/. .
   chmod -R u+w ./
-  rm -rf node_modules || true
-  cp -a ${rawapp.node_modules} node_modules
+  cp -a ${frontend.node_modules} node_modules
   node_modules/.bin/flow --quiet
   if [ $? == 0 ] || [ $? == 2 ]
   then

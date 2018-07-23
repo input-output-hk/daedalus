@@ -61,6 +61,12 @@ let
     ];
   });
 
+  withFilteredSource = drv: drv.overrideAttrs (oldAttrs: {
+    src = localLib.cleanSourceTree oldAttrs.src;
+  });
+
+  drv = haskellPackages.callPackage ./daedalus-installer.nix {};
+
 in
 
-  justStaticExecutables (addTestStubs (haskellPackages.callPackage ./daedalus-installer.nix {}))
+  justStaticExecutables (addTestStubs (withFilteredSource drv))
