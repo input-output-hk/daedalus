@@ -4,7 +4,6 @@ import { request } from './lib/v1/request';
 
 export type NewAdaWalletParams = {
   ca: string,
-  password: ?string,
   walletInitData: AdaWalletInitData
 };
 

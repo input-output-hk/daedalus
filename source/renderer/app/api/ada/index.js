@@ -469,18 +469,15 @@ export default class AdaApi {
   async restoreWallet(request: RestoreWalletRequest): Promise<RestoreWalletResponse> {
     Logger.debug('AdaApi::restoreWallet called');
     const { recoveryPhrase, walletName, walletPassword } = request;
-    const assurance = 'CWANormal';
+    const assuranceLevel = 'CWANormal';
     const unit = 0;
 
     const walletInitData = {
-      cwInitMeta: {
-        cwName: walletName,
-        cwAssurance: assurance,
-        cwUnit: unit,
-      },
-      cwBackupPhrase: {
-        bpToList: split(recoveryPhrase), // array of mnemonic words
-      }
+      operation: "create",
+      backupPhrase: split(recoveryPhrase),
+      assuranceLevel,
+      name: walletName,
+      spendingPassword: walletPassword,
     };
 
     try {
