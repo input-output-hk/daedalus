@@ -2,8 +2,7 @@
 
 module Util where
 
-import Control.Monad (mapM_)
-import Data.Text (Text)
+import Universum
 import System.Directory (listDirectory, withCurrentDirectory, removeDirectory, removeFile, doesDirectoryExist)
 import Turtle (export, format, d)
 

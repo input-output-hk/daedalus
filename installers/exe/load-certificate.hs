@@ -1,14 +1,10 @@
-{-# LANGUAGE LambdaCase #-}
-
-module Main where
-
 import Universum hiding (FilePath)
 import Options.Applicative
 import qualified System.IO as IO
 import Turtle (readline, need, lineToText, Line, ExitCode(..), FilePath)
 import qualified Data.Text as T
 
-import MacInstaller hiding (main)
+import MacOSPackageSigning
 
 data Command = Command
   { cmdKeychain :: Maybe Text

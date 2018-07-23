@@ -4,7 +4,7 @@
 import           Data.Text                           (pack)
 import           Universum
 import qualified System.Info                      as Sys
-import           Turtle                              (export)
+import           Turtle                              (export, options)
 
 import qualified MacInstaller                        (main)
 import qualified WindowsInstaller                    (main)
@@ -12,6 +12,7 @@ import           System.Environment (getEnv)
 import           Data.List.Split (splitOn)
 import           Data.Maybe                          (fromJust)
 import           System.Directory
+import           Filesystem.Path.CurrentOS           (fromText)
 
 import           Types
 import           Config
@@ -24,14 +25,21 @@ main = do
              "mingw32" -> Win64
              _         -> error ("Unsupported OS: " <> pack Sys.os)
 
-  (options', command) <- Config.options "Daedalus installer generator" $
+  (options', command) <- options "Daedalus installer generator" $
     (,) <$> optionsParser os <*> commandParser
 
   case command of
     GenConfig{..}    ->
-      generateOSClusterConfigs cfDhallRoot cfOutdir options'
+      let
+        gcl = GenerateCardanoLauncher { genOS = os
+                                      , genCluster = oCluster options'
+                                      , genAppName = oAppName options'
+                                      , genInputDir = fromText cfDhallRoot
+                                      , genOutputDir = cfOutdir
+                                      }
+      in generateOSClusterConfigs gcl
     CheckConfigs{..} ->
-      checkAllConfigs          cfDhallRoot
+      checkAllConfigs          (fromText cfDhallRoot)
     GenInstaller -> do
         genSignedInstaller os options'
     Appveyor -> do

@@ -1,9 +1,3 @@
-#!/usr/bin/env nix-shell
-#! nix-shell -j 4 -i runhaskell -p 'pkgs.haskellPackages.ghcWithPackages (hp: with hp; [ turtle megaparsec text directory universum ])'
-
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE OverloadedStrings #-}
-
 module RewriteLibs
     ( chain
     ) where
@@ -16,7 +10,7 @@ import           System.Directory (copyFile, getPermissions, setOwnerWritable, s
 import           Text.Megaparsec (Parsec, eof, manyTill, parse, someTill)
 import           Text.Megaparsec.Char (anyChar, eol, spaceChar)
 import           Turtle (procStrict, procs)
-
+import           Control.Exception (handle)
 
 {- Given a binary file on MacOS, rewrite some of the dynamic libraries to relative paths.
 
@@ -60,13 +54,17 @@ patchLib source dir lib
         -- otherwise, copy it to dist and change where it points
         print $ "Bundling " <> lib <> " in " <> source
         -- substitute store path if they are missing
-        procs "nix-store" ["-r", lib] mempty
+        realisePath lib
         procs "install_name_tool" ["-change", lib, "@executable_path/" <> (filename lib), (toText dir) <> "/" <> (filename source)] mempty
         let dest = dir <> "/" <> (toString $ filename lib)
         copyFile (toString lib) dest
         permissions <- getPermissions dest
         setPermissions dest $ setOwnerWritable True permissions
         return $ Just lib
+
+realisePath :: Text -> IO ()
+realisePath storePath = failable $ procs "nix-store" ["-r", storePath] mempty
+  where failable = handle (\(SomeException _) -> pure ())
 
 filename :: Text -> Text
 filename path = last $ splitOn "/" path

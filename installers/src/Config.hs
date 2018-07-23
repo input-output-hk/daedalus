@@ -14,9 +14,8 @@ module Config
   , optReadLower, argReadLower
   , Options(..), optionsParser
   , Command(..), commandParser
+  , GenerateCardanoLauncher(..), generateCardanoLauncherParser
   , dfp
-  -- Re-export Turtle:
-  , options
   , getInstallerConfig
   , dhallTopExpr
   , diagReadCaseInsensitive
@@ -30,7 +29,6 @@ import qualified Data.ByteString.Char8            as BS8
 import qualified Data.Map                         as Map
 import           Data.Maybe
 import           Data.Optional                       (Optional)
-import           Data.Semigroup                      ((<>))
 import qualified Data.Text                        as T
 import qualified Data.Text.Lazy                   as LT
 import qualified Data.Yaml                        as YAML
@@ -38,7 +36,7 @@ import qualified Data.Yaml                        as YAML
 import qualified Dhall.JSON                       as Dhall
 import qualified Dhall                            as Dhall
 
-import           Filesystem.Path                     (FilePath, (</>))
+import           Filesystem.Path                     (FilePath, (</>), (<.>))
 import           Filesystem.Path.CurrentOS           (fromText, encodeString)
 import qualified Filesystem.Path.Rules            as FP
 import qualified GHC.IO.Encoding                  as GHC
@@ -111,20 +109,45 @@ commandParser = (fromMaybe GenInstaller <$>) . optional $
   , ("appveyor",   "do an appveroy build", pure Appveyor)
   ]
 
+data GenerateCardanoLauncher = GenerateCardanoLauncher
+  { genOS           :: OS
+  , genCluster      :: Cluster
+  , genAppName      :: AppName
+  , genInputDir     :: FilePath
+  , genOutputDir    :: FilePath
+  } deriving (Show, Eq)
+
+generateCardanoLauncherParser :: Parser GenerateCardanoLauncher
+generateCardanoLauncherParser = GenerateCardanoLauncher
+  <$> osParser
+  <*> clusterParser
+  <*> appNameParser
+  <*> optPath "input-dir" 'i' "Directory containing Dhall config files"
+  <*> optPath "output-dir" 'o' "Target directory for generated YAML config files"
+
 optionsParser :: OS -> Parser Options
 optionsParser detectedOS = Options
   <$> backendOptionParser
   <*> (optional      $
       (BuildJob     <$> optText "build-job"           'b' "CI Build Job/ID"))
-  <*> (fromMaybe detectedOS <$> (optional $
-                   optReadLower "os"                  's' "OS, defaults to host OS.  One of:  linux64 macos64 win64"))
-  <*> (fromMaybe Mainnet    <$> (optional $
-                   optReadLower "cluster"             'c' "Cluster the resulting installer will target:  mainnet, staging, or testnet"))
-  <*> (fromMaybe "daedalus" <$> (optional $
-      (AppName      <$> optText "appname"             'n' "Application name:  daedalus or..")))
+  <*> (fromMaybe detectedOS <$> optional osParser)
+  <*> (fromMaybe Mainnet    <$> optional clusterParser)
+  <*> (fromMaybe "daedalus" <$> optional appNameParser)
   <*>                   optPath "out-dir"             'o' "Installer output directory"
   <*> (testInstaller
                     <$> switch  "test-installer"      't' "Test installers after building")
+
+osParser :: Parser OS
+osParser = optReadLower "os" 's' "One of: linux64 macos64 win64"
+
+clusterParser :: Parser Cluster
+clusterParser = fromMaybe Mainnet <$> optional opt
+  where opt = optReadLower "cluster" 'c'
+              "Cluster the resulting installer will target:  mainnet, staging, or testnet"
+
+appNameParser :: Parser AppName
+appNameParser = fromMaybe "daedalus" <$> optional opt
+  where opt = AppName <$> optText "appname" 'n' "Application name:  daedalus or.."
 
 backendOptionParser :: Parser Backend
 backendOptionParser = cardano <|> bool (Cardano "") Mantis <$> enableMantis
@@ -140,38 +163,37 @@ backendOptionParser = cardano <|> bool (Cardano "") Mantis <$> enableMantis
 dfp :: Format r (FilePath -> r)
 dfp = makeFormat (\fpath -> either id id (FP.toText FP.posix fpath))
 
-dhallTopExpr :: Text -> Config -> OS -> Cluster -> Text
+dhallTopExpr :: FilePath -> Config -> OS -> Cluster -> Text
 dhallTopExpr dhallRoot cfg os cluster
-  | Launcher <- cfg = format (s%" "%s%" ("%s%" "%s%" )") (comp Launcher) (comp cluster) (comp os) (comp cluster)
-  | Topology <- cfg = format (s%" "%s)                   (comp Topology) (comp cluster)
-  where comp x = dhallRoot <>"/"<> lshowText x <>".dhall"
+  | Launcher <- cfg = format (dfp%" "%dfp%" ("%dfp%" "%dfp%" )") (comp Launcher) (comp cluster) (comp os) (comp cluster)
+  | Topology <- cfg = format (dfp%" "%dfp)                   (comp Topology) (comp cluster)
+  where comp x = dhallRoot </> fromText (lshowText x) <.> "dhall"
 
-getInstallerConfig :: Text -> OS -> Cluster -> IO InstallerConfig
+getInstallerConfig :: FilePath -> OS -> Cluster -> IO InstallerConfig
 getInstallerConfig dhallRoot os cluster = Dhall.input Dhall.auto (LT.fromStrict topexpr)
     where
-        topexpr = format (s%" "%s%" ("%s%" "%s%")") (dhallRoot <> "/installer.dhall") (comp cluster) (comp os) (comp cluster)
-        comp x = dhallRoot <>"/"<> lshowText x <>".dhall"
+        topexpr = format (dfp%" "%dfp%" ("%dfp%" "%dfp%")") (dhallRoot </> "installer.dhall") (comp cluster) (comp os) (comp cluster)
+        comp x = dhallRoot </> fromText (lshowText x) <.> "dhall"
 
-
-forConfigValues :: Text -> OS -> Cluster -> (Config -> YAML.Value -> IO a) -> IO ()
+forConfigValues :: FilePath -> OS -> Cluster -> (Config -> YAML.Value -> IO a) -> IO ()
 forConfigValues dhallRoot os cluster action = do
   sequence_ [ let topExpr = dhallTopExpr dhallRoot cfg os cluster
               in action cfg =<<
                  (handle $ Dhall.codeToValue (BS8.pack $ T.unpack topExpr) topExpr)
             | cfg     <- enumFromTo minBound maxBound ]
 
-checkAllConfigs :: Text -> IO ()
+checkAllConfigs :: FilePath -> IO ()
 checkAllConfigs dhallRoot =
   sequence_ [ forConfigValues dhallRoot os cluster (\_ _ -> pure ())
             | os      <- enumFromTo minBound maxBound
             , cluster <- enumFromTo minBound maxBound ]
 
-generateOSClusterConfigs :: Text -> FilePath -> Options -> IO ()
-generateOSClusterConfigs dhallRoot outDir Options{..} = do
+generateOSClusterConfigs :: GenerateCardanoLauncher -> IO ()
+generateOSClusterConfigs GenerateCardanoLauncher{..} = do
   GHC.setLocaleEncoding GHC.utf8
-  forConfigValues dhallRoot oOS oCluster $
+  forConfigValues genInputDir genOS genCluster $
     \config val ->
-      BS.writeFile (encodeString $ outDir </> configFilename config) $ YAML.encode val
+      BS.writeFile (encodeString $ genOutputDir </> configFilename config) $ YAML.encode val
 
 -- | Generic error handler: be it encoding/decoding, file IO, parsing or type-checking.
 handle :: IO a -> IO a

@@ -9,7 +9,7 @@ import           Universum hiding (pass, writeFile, stdout, FilePath, die)
 
 import           Control.Monad (unless)
 import qualified Data.List as L
-import           Data.Text (Text, unpack)
+import           Data.Text (Text)
 import qualified Data.Text as T
 import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recursive, Required, StartOptions, Target),
                                    HKEY (HKLM), Level (Highest), Page (Directory, InstFiles), abort,
@@ -21,10 +21,9 @@ import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recurs
                                    writeRegDWORD, writeRegStr, (%/=), fileExists)
 import           Prelude ((!!))
 import qualified System.IO as IO
-import           Filesystem.Path (FilePath, (</>))
 import           Filesystem.Path.CurrentOS (encodeString, fromText)
-import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, stdout, input, export, sed, strict, format, printf, fp, w, s, (%), need, writeTextFile, die, cp, rm)
-import           Turtle.Pattern (text, plus, noneOf, star, dot)
+import qualified Filesystem.Path.Rules as FP
+import           Turtle hiding ((<>), rmdir, toText)
 import           AppVeyor
 import qualified Codec.Archive.Zip    as Zip
 
@@ -42,13 +41,17 @@ daedalusShortcut =
         , IconIndex 0
         ]
 
+-- | Encode a FilePath using backslashes
+strPathWin :: FilePath -> String
+strPathWin = FP.encodeString FP.windows
+
 -- See INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
-writeUninstallerNSIS :: Version -> InstallerConfig -> IO ()
-writeUninstallerNSIS (Version fullVersion) installerConfig = do
+writeUninstallerNSIS :: Version -> FilePath -> IO ()
+writeUninstallerNSIS (Version fullVersion) theInstallDir = do
     tempDir <- getTempDir
     IO.writeFile "uninstaller.nsi" $ nsis $ do
-        _ <- constantStr "Version" (str $ unpack fullVersion)
-        _ <- constantStr "InstallDir" (str $ unpack $ installDirectory installerConfig)
+        _ <- constantStr "Version" (str $ T.unpack fullVersion)
+        _ <- constantStr "InstallDir" (str $ strPathWin theInstallDir)
         name "$InstallDir Uninstaller $Version"
         outFile . str . encodeString $ tempDir </> "tempinstaller.exe"
         unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
@@ -70,18 +73,21 @@ writeUninstallerNSIS (Version fullVersion) installerConfig = do
                 ]
             -- Note: we leave user data alone
 
+-- | Invoke makensis on an installer script, with fully verbose output.
+makeNSIS :: FilePath -> IO ()
+makeNSIS nsi = procs "C:\\Program Files (x86)\\NSIS\\makensis" [format fp nsi, "-V4"] mempty
+
 -- See non-INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
-signUninstaller :: Options -> IO SigningResult
-signUninstaller opts = do
-    procs "C:\\Program Files (x86)\\NSIS\\makensis" ["uninstaller.nsi"] mempty
+signUninstaller :: IO SigningResult
+signUninstaller = do
     tempDir <- getTempDir
     writeTextFile "runtempinstaller.bat" $ format (fp%" /S") (tempDir </> "tempinstaller.exe")
     void $ proc "runtempinstaller.bat" [] mempty
-    signFile opts (tempDir </> "uninstall.exe")
+    signFile (tempDir </> "uninstall.exe")
 
-signFile :: Options -> FilePath -> IO SigningResult
-signFile Options{..} filename = do
-    exists   <- testfile filename
+signFile :: FilePath -> IO SigningResult
+signFile filename = do
+    exists <- testfile filename
     mCertPass <- need "CERT_PASS"
     case (exists, mCertPass) of
       (True, Just certPass) -> do
@@ -97,23 +103,26 @@ signFile Options{..} filename = do
         echo "Not signing: CERT_PASS not specified."
         pure NotSigned
 
-parseVersion :: Text -> [String]
-parseVersion ver =
-    case T.split (== '.') (toText ver) of
+parseVersion :: Version -> [String]
+parseVersion (Version ver) =
+    case T.split (== '.') ver of
         v@[_, _, _, _] -> map toString v
         _              -> ["0", "0", "0", "0"]
 
-writeInstallerNSIS :: FilePath -> Version -> InstallerConfig -> Cluster -> IO ()
-writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = do
+strVersion :: Version -> String
+strVersion (Version v) = T.unpack v
+
+writeInstallerNSIS :: FilePath -> Version -> FilePath -> Cluster -> IO ()
+writeInstallerNSIS outName ver theInstallDir clusterName = do
     tempDir <- getTempDir
-    let fullVersion = unpack fullVersion'
-        viProductVersion = L.intercalate "." $ parseVersion fullVersion'
+    let fullVersion = strVersion ver
+        viProductVersion = L.intercalate "." $ parseVersion ver
     printf ("VIProductVersion: "%w%"\n") viProductVersion
 
     IO.writeFile "daedalus.nsi" $ nsis $ do
         _ <- constantStr "Version" (str fullVersion)
-        _ <- constantStr "Cluster" (str $ lshow clusterName)
-        _ <- constantStr "InstallDir" (str $ unpack $ installDirectory installerConfig)
+        _ <- constantStr "Cluster" (str $ T.unpack $ lshowText clusterName)
+        _ <- constantStr "InstallDir" (str $ strPathWin theInstallDir)
         name "$InstallDir ($Version)"                  -- The name of the installer
         outFile $ str $ encodeString outName        -- Where to produce the installer
         unsafeInjectGlobal $ "!define MUI_ICON \"icons\\" ++ lshow clusterName ++ "\\" ++ lshow clusterName ++ ".ico\""
@@ -172,8 +181,8 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                     writeRegStr HKLM uninstallKey "InstallLocation" "$INSTDIR"
                     writeRegStr HKLM uninstallKey "Publisher" "IOHK"
                     writeRegStr HKLM uninstallKey "ProductVersion" (str fullVersion)
-                    writeRegStr HKLM uninstallKey "VersionMajor" (str . (!! 0). parseVersion $ fullVersion')
-                    writeRegStr HKLM uninstallKey "VersionMinor" (str . (!! 1). parseVersion $ fullVersion')
+                    writeRegStr HKLM uninstallKey "VersionMajor" (str . (!! 0). parseVersion $ ver)
+                    writeRegStr HKLM uninstallKey "VersionMinor" (str . (!! 1). parseVersion $ ver)
                     writeRegStr HKLM uninstallKey "DisplayName" "$InstallDir"
                     writeRegStr HKLM uninstallKey "DisplayVersion" (str fullVersion)
                     writeRegStr HKLM uninstallKey "UninstallString" "\"$INSTDIR/uninstall.exe\""
@@ -192,16 +201,28 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
 lshow :: Show a => a -> String
 lshow = T.unpack . lshowText
 
+getInstallDir :: Cluster -> FilePath -> IO FilePath
+getInstallDir cluster dhallDir = fromText . installDirectory <$> getInstallerConfig dhallDir Win64 cluster
+
 packageFrontend :: Cluster -> IO ()
 packageFrontend cluster = do
     let icon = format ("installers/icons/"%s%"/"%s) (lshowText cluster) (lshowText cluster)
     export "NODE_ENV" "production"
     shells ("npm run package -- --icon " <> icon) empty
 
+gcl :: Options -> GenerateCardanoLauncher
+gcl Options{..} = GenerateCardanoLauncher
+  { genOS = Win64
+  , genCluster = oCluster
+  , genAppName = oAppName
+  , genInputDir = "./dhall"
+  , genOutputDir = "."
+  }
+
 -- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
 main opts@Options{..}  = do
-    generateOSClusterConfigs "./dhall" "." opts
+    generateOSClusterConfigs (gcl opts)
     cp (fromText "launcher-config.yaml") (fromText "../launcher-config.yaml")
 
     installerConfig <- getInstallerConfig "./dhall" Win64 oCluster
@@ -220,32 +241,38 @@ main opts@Options{..}  = do
 
     printf ("Building: "%fp%"\n") fullName
 
+    theInstallDir <- getInstallDir oCluster "./dhall"
+
     echo "Adding permissions manifest to cardano-launcher.exe"
     procs "C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\mt.exe" ["-manifest", "cardano-launcher.exe.manifest", "-outputresource:cardano-launcher.exe;#1"] mempty
 
-    signFile opts "cardano-launcher.exe"
-    signFile opts "cardano-node.exe"
+    signFile "cardano-launcher.exe"
+    signFile "cardano-node.exe"
 
     echo "Writing uninstaller.nsi"
-    writeUninstallerNSIS fullVersion installerConfig
-    signUninstaller opts
+    writeUninstallerNSIS fullVersion theInstallDir
+    makeNSIS "uninstaller.nsi"
+    signUninstaller
 
     echo "Writing daedalus.nsi"
-    writeInstallerNSIS fullName fullVersion installerConfig oCluster
+    writeInstallerNSIS fullName fullVersion theInstallDir oCluster
 
-    rawnsi <- readFile "daedalus.nsi"
-    putStr rawnsi
-    IO.hFlush IO.stdout
+    catNSI
 
     windowsRemoveDirectoryRecursive "../release/win32-x64/Daedalus-win32-x64/resources/app/installers/.stack-work"
 
     echo "Generating NSIS installer"
-    procs "C:\\Program Files (x86)\\NSIS\\makensis" ["daedalus.nsi", "-V4"] mempty
-
-    signed <- signFile opts fullName
+    makeNSIS "daedalus.nsi"
+    signed <- signFile fullName
     case signed of
       SignedOK  -> pure ()
       NotSigned -> rm fullName
+
+-- | For debugging
+catNSI :: IO ()
+catNSI = do
+  readFile "daedalus.nsi" >>= putStr
+  IO.hFlush IO.stdout
 
 -- | Download and extract the cardano-sl windows build.
 fetchCardanoSL :: FilePath -> IO ()

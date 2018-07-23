@@ -1,17 +1,5 @@
-{-# LANGUAGE DataKinds         #-}
-{-# LANGUAGE LambdaCase        #-}
-{-# LANGUAGE NoImplicitPrelude #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards   #-}
 module MacInstaller
     ( main
-    , SigningConfig(..)
-    , signingConfig
-    , signInstaller
-    , importCertificate
-    , deleteCertificate
-    , run
-    , run'
     , readCardanoVersionFile
     , withDir
     ) where
@@ -34,12 +22,12 @@ import           System.IO                 (BufferMode (NoBuffering),
                                             hSetBuffering)
 import           System.IO.Error           (IOError, isDoesNotExistError)
 import           Turtle                    hiding (e, prefix, stdout)
-import           Turtle.Line               (unsafeTextToLine)
 
 import           Config
 import           RewriteLibs               (chain)
 import           Types
 import           Util                      (exportBuildVars)
+import           MacOSPackageSigning
 
 data DarwinConfig = DarwinConfig {
     dcAppNameApp :: Text -- ^ Daedalus.app for example
@@ -47,12 +35,21 @@ data DarwinConfig = DarwinConfig {
   , dcPkgName :: Text -- ^ org.daedalus.pkg for example
   } deriving (Show)
 
+gcl :: Options -> GenerateCardanoLauncher
+gcl Options{..} = GenerateCardanoLauncher
+  { genOS = Macos64
+  , genCluster = oCluster
+  , genAppName = oAppName
+  , genInputDir = "./dhall"
+  , genOutputDir = "."
+  }
+
 -- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
 main opts@Options{..} = do
   hSetBuffering stdout NoBuffering
 
-  generateOSClusterConfigs "./dhall" "." opts
+  generateOSClusterConfigs (gcl opts)
   cp "launcher-config.yaml" "../launcher-config.yaml"
 
   installerConfig <- getInstallerConfig "./dhall" Macos64 oCluster
@@ -78,7 +75,8 @@ main opts@Options{..} = do
 
   tempInstaller <- makeInstaller opts darwinConfig appRoot pkg
 
-  signInstaller signingConfig tempInstaller opkg
+  signMacOSInstaller tempInstaller opkg
+  checkSignature opkg
 
   run "rm" [tt tempInstaller]
   printf ("Generated "%fp%"\n") opkg
@@ -86,11 +84,6 @@ main opts@Options{..} = do
   when (oTestInstaller == TestInstaller) $ do
     echo $ "--test-installer passed, will test the installer for installability"
     procs "sudo" ["installer", "-dumplog", "-verbose", "-target", "/", "-pkg", tt opkg] empty
-
-  signed <- checkSignature opkg
-  case signed of
-    SignedOK -> pure ()
-    NotSigned -> rm opkg
 
 makePostInstall :: Format a (Text -> a)
 makePostInstall = "#!/usr/bin/env bash\n" %
@@ -239,65 +232,3 @@ writeLauncherFile dir DarwinConfig{..} = do
       , "mkdir -p \"" <> dataDir <> "/Logs/pub\""
       , "\"$(dirname \"$0\")/cardano-launcher\""
       ]
-
-data SigningConfig = SigningConfig
-  { signingIdentity         :: T.Text
-  , signingKeyChain         :: Maybe T.Text
-  , signingKeyChainPassword :: Maybe T.Text
-  } deriving (Show, Eq)
-
-signingConfig :: SigningConfig
-signingConfig = SigningConfig
-  { signingIdentity = "Developer ID Installer: Input Output HK Limited (89TW38X994)"
-  , signingKeyChain = Nothing
-  , signingKeyChainPassword = Nothing
-  }
-
--- | Runs "security import -x"
-importCertificate :: SigningConfig -> FilePath -> Maybe Text -> IO ExitCode
-importCertificate SigningConfig{..} cert password = do
-  let optArg s = maybe [] (\p -> [s, p])
-      certPass = optArg "-P" password
-      keyChain = optArg "-k" signingKeyChain
-  productSign <- optArg "-T" . fmap tt <$> which "productsign"
-  let args = ["import", tt cert, "-x"] ++ keyChain ++ certPass ++ productSign
-  proc "security" args mempty
-
---- | Remove our certificate from the keychain
-deleteCertificate :: SigningConfig -> IO ExitCode
-deleteCertificate SigningConfig{..} = run' "security" args
-  where
-    args = ["delete-certificate", "-c", signingIdentity] ++ keychain
-    keychain = maybe [] pure signingKeyChain
-
--- | Creates a new installer package with signature added.
-signInstaller :: SigningConfig -> FilePath -> FilePath -> IO ()
-signInstaller SigningConfig{..} src dst =
-  run "productsign" $ sign ++ keychain ++ map tt [src, dst]
-  where
-    sign = [ "--sign", signingIdentity ]
-    keychain = maybe [] (\k -> [ "--keychain", k]) signingKeyChain
-
--- | This will raise an exception if signing was unsuccessful.
-checkSignature :: FilePath -> IO SigningResult
-checkSignature pkg = do
-  result <- run' "pkgutil" ["--check-signature", tt pkg]
-  pure $ case result of
-           ExitSuccess -> SignedOK
-           _           -> NotSigned
-
--- | Print the command then run it. Raises an exception on exit
--- failure.
-run :: T.Text -> [T.Text] -> IO ()
-run cmd args = do
-    echoCmd cmd args
-    procs cmd args mempty
-
--- | Print the command then run it.
-run' :: T.Text -> [T.Text] -> IO ExitCode
-run' cmd args = do
-    echoCmd cmd args
-    proc cmd args mempty
-
-echoCmd :: T.Text -> [T.Text] -> IO ()
-echoCmd cmd args = echo . unsafeTextToLine $ T.intercalate " " (cmd : args)

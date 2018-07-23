@@ -3,26 +3,23 @@ version:             0.1.0.0
 synopsis:            Daedalus Installer Builder
 description:         Please see README.md
 license:             MIT
-author:              Serokell
-maintainer:          Serokell <hi@serokell.io>
-copyright:           2016 IOHK
+author:              Input Output HK
+maintainer:          IOHK DevOps <devops@iohk.io>
+copyright:           2018 IOHK
 build-type:          Simple
 extra-source-files:  README.md
 cabal-version:       >=1.10
 
 library
+  hs-source-dirs:    src
   exposed-modules:   Types
                    , Config
                    , WindowsInstaller
+                   , MacOSPackageSigning
                    , MacInstaller
                    , RewriteLibs
                    , AppVeyor
                    , Util
-  ghc-options:         -Wextra -Wno-unused-do-bind -Werror
-                       -fno-warn-orphans
-                       -O2
-  default-language:    Haskell2010
-  hs-source-dirs:    common
   build-depends:       aeson
                      , Glob
                      , base
@@ -45,21 +42,25 @@ library
                      , wreq
                      , yaml
                      , zip-archive
+  ghc-options:         -Wextra -Wno-unused-do-bind -Werror
+                       -fno-warn-orphans
+                       -O2
+  default-language:    Haskell2010
+  default-extensions: NoImplicitPrelude
+                    , OverloadedStrings
+                    , LambdaCase
+                    , RecordWildCards
 
 executable make-installer
-  main-is:             Installer.hs
+  main-is:             make-installer.hs
+  hs-source-dirs:      exe
   build-depends:       base
                      , bytestring
-                     , containers
                      , directory
-                     , foldl
                      , filepath
                      , optparse-applicative
-                     , optparse-generic
-                     , optional-args
                      , split
                      , system-filepath
-                     , temporary
                      , text
                      , turtle
                      , universum
@@ -73,11 +74,75 @@ executable make-installer
                        -O2
 
   default-extensions: NoImplicitPrelude
-                      OverloadedStrings
+                    , OverloadedStrings
+                    , LambdaCase
+                    , RecordWildCards
 
+executable generate-launcher-config
+  main-is:             generate-launcher-config.hs
+  hs-source-dirs:      exe
+  build-depends:       base
+                     , turtle
+                     , universum
+                     , daedalus-installer
 
-Test-Suite test-make-installer
+  default-language:    Haskell2010
+  ghc-options:         -threaded -rtsopts
+                       -Wextra -Wno-unused-do-bind
+                       -fno-warn-orphans
+                       -with-rtsopts=-N
+                       -O2
+
+  default-extensions: NoImplicitPrelude
+                    , OverloadedStrings
+                    , LambdaCase
+                    , RecordWildCards
+
+executable sign-macos-installer
+  main-is:             sign-macos-installer.hs
+  hs-source-dirs:      exe
+  build-depends:       base
+                     , turtle
+                     , universum
+                     , daedalus-installer
+
+  default-language:    Haskell2010
+  ghc-options:         -threaded -rtsopts
+                       -Wextra -Wno-unused-do-bind
+                       -fno-warn-orphans
+                       -with-rtsopts=-N
+                       -O2
+
+  default-extensions: NoImplicitPrelude
+                    , OverloadedStrings
+                    , LambdaCase
+                    , RecordWildCards
+
+executable darwin-rewrite-libs
+  main-is:             darwin-rewrite-libs.hs
+  hs-source-dirs:      exe
+  build-depends:       base
+                     , system-filepath
+                     , turtle
+                     , universum
+                     , daedalus-installer
+
+  default-language:    Haskell2010
+  ghc-options:         -threaded -rtsopts
+                       -Wextra -Wno-unused-do-bind
+                       -fno-warn-orphans
+                       -with-rtsopts=-N
+                       -O2
+
+  default-extensions: NoImplicitPrelude
+                    , OverloadedStrings
+                    , LambdaCase
+                    , RecordWildCards
+
+test-suite test-make-installer
+  buildable:         False
   type:              exitcode-stdio-1.0
+  hs-source-dirs:    test
   main-is:           Spec.hs
   build-depends:       base
                      , hspec
@@ -113,10 +178,12 @@ Test-Suite test-make-installer
                        -O2
 
   default-extensions: NoImplicitPrelude
-                      OverloadedStrings
+                    , OverloadedStrings
+                    , LambdaCase
+                    , RecordWildCards
 
 executable load-certificate
-  main-is:             load-certificate.hs
+  main-is:             exe/load-certificate.hs
   build-depends:       base
                      , aeson
                      , bytestring
@@ -145,4 +212,6 @@ executable load-certificate
                        -O2
 
   default-extensions: NoImplicitPrelude
-                      OverloadedStrings
+                    , OverloadedStrings
+                    , LambdaCase
+                    , RecordWildCards
