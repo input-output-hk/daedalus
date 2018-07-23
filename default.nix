@@ -6,6 +6,7 @@ in
 , pkgs ? (import (localLib.fetchNixPkgs) { inherit system config; })
 , cluster ? "mainnet"
 , version ? "versionNotSet"
+, buildNum ? null
 }:
 
 let
@@ -39,7 +40,11 @@ let
     ## TODO: move to installers/nix
     daedalus-installer = self.callPackage ./installers/default.nix {};
     daedalus = self.callPackage ./installers/nix/linux.nix {};
-    rawapp = self.callPackage ./yarn2nix.nix { api = "ada"; };
+    rawapp = self.callPackage ./yarn2nix.nix {
+      inherit buildNum;
+      api = "ada";
+      apiVersion = cardanoPkgs.daedalus-bridge.version;
+    };
     source = builtins.filterSource cleanSourceFilter ./.;
 
     tests = {

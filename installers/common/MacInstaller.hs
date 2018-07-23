@@ -39,6 +39,7 @@ import           Turtle.Line               (unsafeTextToLine)
 import           Config
 import           RewriteLibs               (chain)
 import           Types
+import           Util                      (exportBuildVars)
 
 data DarwinConfig = DarwinConfig {
     dcAppNameApp :: Text -- ^ Daedalus.app for example
@@ -63,11 +64,14 @@ main opts@Options{..} = do
       }
   print darwinConfig
 
-  appRoot <- buildElectronApp darwinConfig oCluster
-  ver <- makeComponentRoot opts appRoot darwinConfig
+  ver <- getBackendVersion oBackend
+  exportBuildVars opts ver
+
+  appRoot <- buildElectronApp darwinConfig
+  makeComponentRoot opts appRoot darwinConfig
   daedalusVer <- getDaedalusVersion "../package.json"
 
-  let pkg = packageFileName Macos64 oCluster daedalusVer ver oBuildJob
+  let pkg = packageFileName Macos64 oCluster daedalusVer oBackend ver oBuildJob
       opkg = oOutputDir </> pkg
 
   tempInstaller <- makeInstaller opts darwinConfig appRoot pkg
@@ -105,41 +109,40 @@ makeScriptsDir Options{..} DarwinConfig{..} = case oBackend of
 -- component root path.
 -- NB: If webpack scripts are changed then this function may need to
 -- be updated.
-buildElectronApp :: DarwinConfig -> Cluster -> IO FilePath
-buildElectronApp darwinConfig@DarwinConfig{..} cluster = do
+buildElectronApp :: DarwinConfig -> IO FilePath
+buildElectronApp darwinConfig@DarwinConfig{..} = do
   echo "Creating icons ..."
   procs "iconutil" ["--convert", "icns", "--output", "icons/electron.icns"
                    , "icons/electron.iconset"] mempty
 
-  withDir ".." . sh $ npmPackage darwinConfig cluster
+  withDir ".." . sh $ npmPackage darwinConfig
 
   let
     formatter :: Format r (Text -> Text -> r)
     formatter = "../release/darwin-x64/" % s % "-darwin-x64/" % s
   pure $ fromString $ T.unpack $ format formatter dcAppName dcAppNameApp
 
-npmPackage :: DarwinConfig -> Cluster -> Shell ()
-npmPackage DarwinConfig{..} cluster = do
-  let
-    clusterToNetwork Mainnet = "mainnet"
-    clusterToNetwork Staging = "testnet"
-    clusterToNetwork Testnet = "testnet"
+npmPackage :: DarwinConfig -> Shell ()
+npmPackage DarwinConfig{..} = do
   mktree "release"
   echo "~~~ Installing nodejs dependencies..."
   procs "npm" ["install"] empty
-  export "NODE_ENV" "production"
-  export "NETWORK" $ clusterToNetwork cluster
   echo "~~~ Running electron packager script..."
+  export "NODE_ENV" "production"
   procs "npm" ["run", "package", "--", "--name", dcAppName ] empty
   size <- inproc "du" ["-sh", "release"] empty
   printf ("Size of Electron app is " % l % "\n") size
 
-makeComponentRoot :: Options -> FilePath -> DarwinConfig -> IO Text
+getBackendVersion :: Backend -> IO Text
+getBackendVersion (Cardano bridge) = readCardanoVersionFile bridge
+getBackendVersion Mantis = pure "DEVOPS-533"
+
+makeComponentRoot :: Options -> FilePath -> DarwinConfig -> IO ()
 makeComponentRoot Options{..} appRoot darwinConfig@DarwinConfig{..} = do
   let dir     = appRoot </> "Contents/MacOS"
 
   echo "~~~ Preparing files ..."
-  ver <- case oBackend of
+  case oBackend of
     Cardano bridge -> do
       -- Executables (from daedalus-bridge)
       forM ["cardano-launcher", "cardano-node", "cardano-x509-certificates"] $ \f ->
@@ -164,17 +167,14 @@ makeComponentRoot Options{..} appRoot darwinConfig@DarwinConfig{..} = do
       -- Rewrite libs paths and bundle them
       void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-node", dir </> "cardano-x509-certificates"]
 
-      readCardanoVersionFile bridge
-
-    Mantis -> pure "mantis" -- DEVOPS-533
+    Mantis -> pure () -- DEVOPS-533
 
   -- Prepare launcher
   de <- testdir (dir </> "Frontend")
   unless de $ mv (dir </> (fromString $ T.unpack $ dcAppName)) (dir </> "Frontend")
   run "chmod" ["+x", tt (dir </> "Frontend")]
-  writeLauncherFile dir darwinConfig
+  void $ writeLauncherFile dir darwinConfig
 
-  pure ver
 
 makeInstaller :: Options -> DarwinConfig -> FilePath -> FilePath -> IO FilePath
 makeInstaller opts@Options{..} darwinConfig@DarwinConfig{..} componentRoot pkg = do
@@ -211,7 +211,7 @@ readCardanoVersionFile :: FilePath -> IO Text
 readCardanoVersionFile bridge = prefix <$> handle handler (readTextFile verFile)
   where
     verFile = bridge </> "version"
-    prefix = maybe "UNKNOWN" ("cardano-sl-" <>) . safeHead . T.lines
+    prefix = fromMaybe "UNKNOWN" . safeHead . T.lines
     handler :: IOError -> IO Text
     handler e | isDoesNotExistError e = pure ""
               | otherwise = throwM e

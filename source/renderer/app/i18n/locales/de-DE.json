@@ -40,8 +40,6 @@
   "cardano.node.update.notification.titleWithoutVersion": "!!!Cardano-Core update is available",
   "environment.apiName.cardano": "!!!Cardano",
   "environment.apiName.mantis": "!!!Mantis",
-  "environment.apiVersion.cardano": "!!!1.0.4",
-  "environment.apiVersion.mantis": "!!!1.0 rc1",
   "environment.currency.ada": "!!!Ada",
   "environment.currency.etc": "!!!Etc",
   "global.assuranceLevel.normal": "!!!Normal",
