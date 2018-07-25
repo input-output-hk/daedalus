@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import styles from './MnemonicInputWidget.scss';
 
 type Props = {
@@ -29,7 +29,7 @@ export default class MnemonicInputWidget extends Component<Props> {
               className={styles.input}
               value={token}
               onChange={(value) => onTokenChanged(index, value)}
-              skin={<SimpleInputSkin />}
+              skin={InputSkin}
             />
           ))}
         </div>

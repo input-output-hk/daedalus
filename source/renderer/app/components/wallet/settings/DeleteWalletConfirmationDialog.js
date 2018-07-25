@@ -2,10 +2,10 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -126,7 +126,7 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
           label={intl.formatMessage(messages.confirmBackupNotice)}
           onChange={onAcceptBackupNotice}
           checked={isBackupNoticeAccepted}
-          skin={<SimpleCheckboxSkin />}
+          skin={CheckboxSkin}
         />
         {isBackupNoticeAccepted ? (
           <Input
@@ -135,7 +135,7 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
             value={confirmationValue}
             onKeyPress={submitOnEnter.bind(this, handleSubmit)}
             onChange={onConfirmationValueChange}
-            skin={<SimpleInputSkin />}
+            skin={InputSkin}
           />
         ) : null}
       </Dialog>

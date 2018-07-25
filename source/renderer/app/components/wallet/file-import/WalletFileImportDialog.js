@@ -3,10 +3,11 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
-// import Input from 'react-polymorph/lib/components/Input';
-// import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
-// import Checkbox from 'react-polymorph/lib/components/Checkbox';
-// import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/raw/SwitchSkin';
+// import { Input } from 'react-polymorph/lib/components/Input';
+// import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+// import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+// import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
+// import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
@@ -232,44 +233,45 @@ export default class WalletFileImportDialog extends Component<Props, State> {
         {/* TODO: re-enable when wallet-name and wallet-password
             support is added to the API endpoint
 
-        <Input
-          className="walletName"
-          {...walletNameField.bind()}
-          error={walletNameField.error}
-          skin={<SimpleInputSkin />}
-        />
+          <Input
+            className="walletName"
+            {...walletNameField.bind()}
+            error={walletNameField.error}
+            skin={InputSkin}
+          />
 
-        <div className={styles.walletPassword}>
-          <div className={styles.walletPasswordSwitch}>
-            <div className={styles.passwordLabel}>
-              {intl.formatMessage(messages.passwordSwitchLabel)}
+          <div className={styles.walletPassword}>
+            <div className={styles.walletPasswordSwitch}>
+              <div className={styles.passwordLabel}>
+                {intl.formatMessage(messages.passwordSwitchLabel)}
+              </div>
+              <Checkbox
+                themeId={IDENTIFIERS.SWITCH}
+                onChange={this.handlePasswordSwitchToggle}
+                label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
+                checked={createPassword}
+                skin={SwitchSkin}
+              />
             </div>
-            <Checkbox
-              onChange={this.handlePasswordSwitchToggle}
-              label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
-              checked={createPassword}
-              skin={<SimpleSwitchSkin />}
-            />
-          </div>
 
-          <div className={walletPasswordFieldsClasses}>
-            <Input
-              className="walletPassword"
-              {...walletPasswordField.bind()}
-              error={walletPasswordField.error}
-              skin={<SimpleInputSkin />}
-            />
-            <Input
-              className="repeatedPassword"
-              {...repeatedPasswordField.bind()}
-              error={repeatedPasswordField.error}
-              skin={<SimpleInputSkin />}
-            />
-            <p className={styles.passwordInstructions}>
-              {intl.formatMessage(globalMessages.passwordInstructions)}
-            </p>
+            <div className={walletPasswordFieldsClasses}>
+              <Input
+                className="walletPassword"
+                {...walletPasswordField.bind()}
+                error={walletPasswordField.error}
+                skin={InputSkin}
+              />
+              <Input
+                className="repeatedPassword"
+                {...repeatedPasswordField.bind()}
+                error={repeatedPasswordField.error}
+                skin={InputSkin}
+              />
+              <p className={styles.passwordInstructions}>
+                {intl.formatMessage(globalMessages.passwordInstructions)}
+              </p>
+            </div>
           </div>
-        </div>
         */}
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
