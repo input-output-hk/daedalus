@@ -39,10 +39,10 @@ const environment = Object.assign({
   build,
   buildNumber: uniq([API_VERSION, build]).join('.'),
   getBuildLabel: () => {
-    const { gpu_compositing } = app.getGPUFeatureStatus();
+    const { gpu_compositing: gpuCompositing } = app.getGPUFeatureStatus();
     let buildLabel = `Daedalus (${environment.version}#${environment.buildNumber})`;
     if (!environment.isProduction()) buildLabel += ` ${environment.current}`;
-    if (gpu_compositing !== 'enabled') buildLabel += ` [SAFE MODE]`;
+    if (gpuCompositing !== 'enabled') buildLabel += ' [SAFE MODE]';
     return buildLabel;
   },
   platform,
