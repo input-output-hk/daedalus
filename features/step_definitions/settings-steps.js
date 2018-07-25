@@ -69,7 +69,7 @@ When(/^I open "Transaction assurance security level" selection dropdown$/, funct
 });
 
 When(/^I select "Strict" assurance level$/, function () {
-  return this.waitAndClick('//li[contains(text(), "Strict")]');
+  return this.waitAndClick('//*[@class="SimpleOptions_label"][contains(text(), "Strict")]');
 });
 
 Then(/^I should have wallet with "Strict" assurance level set$/, async function () {

@@ -1,7 +1,4 @@
-import {
-  SELECT, INPUT, FORM_FIELD, CHECKBOX, SWITCH, MODAL,
-  BUTTON, TEXT_AREA, AUTOCOMPLETE, OPTIONS, BUBBLE
-} from 'react-polymorph/lib/skins/simple/identifiers';
+import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 
 // react-polymorph components
 import SimpleFormField from './simple/SimpleFormField.scss';
@@ -15,6 +12,11 @@ import SimpleAutocomplete from './simple/SimpleAutocomplete.scss';
 import SimpleBubble from './simple/SimpleBubble.scss';
 import SimpleOptions from './simple/SimpleOptions.scss';
 import SimpleSelect from './simple/SimpleSelect.scss';
+
+const {
+  SELECT, INPUT, FORM_FIELD, CHECKBOX, SWITCH, MODAL,
+  BUTTON, TEXT_AREA, AUTOCOMPLETE, OPTIONS, BUBBLE
+} = IDENTIFIERS;
 
 export const daedalusTheme = {
   [FORM_FIELD]: SimpleFormField,

@@ -2,11 +2,11 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
-import Input from 'react-polymorph/lib/components/Input';
-import NumericInput from 'react-polymorph/lib/components/NumericInput';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
@@ -258,13 +258,14 @@ export default class WalletSendForm extends Component<Props, State> {
               <div className={styles.receiverInput}>
                 <Input
                   className="receiver"
+                  label={intl.formatMessage(messages.receiverLabel)}
                   {...receiverField.bind()}
                   error={receiverField.error}
                   onChange={(value) => {
                     this._isCalculatingFee = true;
                     receiverField.onChange(value || '');
                   }}
-                  skin={<SimpleInputSkin />}
+                  skin={InputSkin}
                   onKeyPress={submitOnEnter.bind(this, this.handleOnSubmit)}
                 />
               </div>
@@ -285,7 +286,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   currency={currencyUnit}
                   fees={fees}
                   total={total}
-                  skin={<AmountInputSkin />}
+                  skin={AmountInputSkin}
                   onKeyPress={submitOnEnter.bind(this, this.handleOnSubmit)}
                 />
               </div>
@@ -294,8 +295,8 @@ export default class WalletSendForm extends Component<Props, State> {
                 className={buttonClasses}
                 label={intl.formatMessage(messages.nextButtonLabel)}
                 onClick={this.handleOnSubmit}
+                skin={ButtonSkin}
                 disabled={this.isDisabled()}
-                skin={<SimpleButtonSkin />}
               />
             </div>
           </BorderedBox>

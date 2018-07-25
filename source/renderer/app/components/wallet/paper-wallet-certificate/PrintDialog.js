@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import globalMessages from '../../../i18n/global-messages';
@@ -22,15 +22,15 @@ const messages = defineMessages({
   },
   subtitle: {
     id: 'paper.wallet.create.certificate.print.dialog.subtitle',
-    defaultMessage: `!!!Check your paper wallet certificate and make sure everything 
-      is readable and correctly printed. You can test this by scanning the QR code with 
+    defaultMessage: `!!!Check your paper wallet certificate and make sure everything
+      is readable and correctly printed. You can test this by scanning the QR code with
       a QR scanner application on your mobile phone.`,
     description: '"Paper wallet create certificate print dialog" subtitle.'
   },
   info: {
     id: 'paper.wallet.create.certificate.print.dialog.info',
-    defaultMessage: `!!!Your certificate is not yet complete and does not contain all 
-      the data needed to restore your paper wallet. In the next step, you will need to 
+    defaultMessage: `!!!Your certificate is not yet complete and does not contain all
+      the data needed to restore your paper wallet. In the next step, you will need to
       write down an additional {paperWalletWrittenWordsCount} words to your paper wallet recovery phrase.`,
     description: '"Paper wallet create certificate print dialog" info.'
   },
@@ -138,7 +138,7 @@ export default class PrintDialog extends Component<Props, State> {
               label={intl.formatMessage(messages.certificatePrintedConfirmationLabel)}
               onChange={this.onConfirmCorrectPrinting.bind(this)}
               checked={isPrintedCorrectly}
-              skin={<SimpleCheckboxSkin />}
+              skin={CheckboxSkin}
             />
 
             <Checkbox
@@ -148,7 +148,7 @@ export default class PrintDialog extends Component<Props, State> {
               })}
               onChange={this.onConfirmReadable.bind(this)}
               checked={isReadable}
-              skin={<SimpleCheckboxSkin />}
+              skin={CheckboxSkin}
             />
 
             <Checkbox
@@ -156,7 +156,7 @@ export default class PrintDialog extends Component<Props, State> {
               label={intl.formatMessage(messages.qrScannableConfirmationLabel)}
               onChange={this.onConfirmScannable.bind(this)}
               checked={isScannable}
-              skin={<SimpleCheckboxSkin />}
+              skin={CheckboxSkin}
             />
           </div>
         </div>

@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
@@ -188,7 +188,7 @@ export default class ExportWalletToFileDialog extends Component<Props, State> {
             className={styles.spendingPassword}
             {...spendingPasswordField.bind()}
             error={spendingPasswordField.error}
-            skin={<SimpleInputSkin />}
+            skin={InputSkin}
             onKeyPress={submitOnEnter.bind(this, this.submit)}
           />
         ) : null}
