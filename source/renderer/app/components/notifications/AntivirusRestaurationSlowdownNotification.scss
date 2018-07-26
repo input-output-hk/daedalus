@@ -1,0 +1,34 @@
+@import "../../themes/simple/config";
+
+.component {
+  width: 100%;
+  background-color: #b2311d;
+  box-shadow: 0 5px -20px 0 rgba(0, 0, 0, 0.25);
+  height: 40px;
+  display: flex;
+}
+
+.text {
+  color: white;
+  line-height: 40px;
+  font-family: $theme-font-light;
+  text-align: center;
+  font-size: 14px;
+  flex-grow: 1;
+}
+
+.closeButton {
+  width: 50px;
+  background-color: #951604;
+  &:hover {
+    cursor: pointer;
+    background-color: #cc412e;
+  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.closeCross {
+  width: 10px;
+}
