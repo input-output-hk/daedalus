@@ -107,9 +107,6 @@ import {
   WALLET_RECOVERY_PHRASE_WORD_COUNT
 } from '../../config/cryptoConfig';
 
-import { AdaV1AssuranceOptions } from './types';
-import { assuranceModeOptions } from '../../types/transactionAssuranceTypes';
-
 /**
  * The api layer that is used for all requests to the
  * cardano backend when working with the ADA coin.
@@ -468,7 +465,7 @@ export default class AdaApi {
   async restoreWallet(request: RestoreWalletRequest): Promise<RestoreWalletResponse> {
     Logger.debug('AdaApi::restoreWallet called');
     const { recoveryPhrase, walletName, walletPassword } = request;
-    const assuranceLevel = 'CWANormal';
+    const assuranceLevel = 'normal';
     const walletInitData = {
       operation: 'restore',
       backupPhrase: split(recoveryPhrase),
@@ -478,9 +475,7 @@ export default class AdaApi {
     };
 
     try {
-      const wallet: AdaWallet = await restoreAdaWallet(
-        { ca, walletPassword, walletInitData }
-      );
+      const wallet: AdaWallet = await restoreAdaWallet({ ca, walletInitData });
       Logger.debug('AdaApi::restoreWallet success');
       return _createWalletFromServerData(wallet);
     } catch (error) {
@@ -854,9 +849,7 @@ const _createWalletFromServerV1Data = action(
       id,
       amount: new BigNumber(balance).dividedBy(LOVELACES_PER_ADA),
       name,
-      assurance: (assuranceLevel === AdaV1AssuranceOptions.NORMAL ?
-        assuranceModeOptions.NORMAL : assuranceModeOptions.STRICT
-      ),
+      assurance: assuranceLevel,
       hasPassword: hasSpendingPassword,
       passwordUpdateDate: new Date(`${spendingPasswordLastUpdate}Z`),
       syncState,

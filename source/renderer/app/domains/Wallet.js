@@ -1,7 +1,7 @@
 // @flow
 import { observable, computed } from 'mobx';
 import BigNumber from 'bignumber.js';
-import type { AssuranceMode, AssuranceModeOption } from '../types/transactionAssuranceTypes';
+import type { AssuranceMode, AssuranceModeOption, AssuranceModeOptionV1 } from '../types/transactionAssuranceTypes';
 import type { AdaV1WalletSyncState, AdaV1WalletSyncStateTag } from '../api/ada/types';
 import { assuranceModes, assuranceModeOptions } from '../types/transactionAssuranceTypes';
 
@@ -16,7 +16,7 @@ export default class Wallet {
   id: string = '';
   @observable name: string = '';
   @observable amount: BigNumber;
-  @observable assurance: AssuranceModeOption;
+  @observable assurance: AssuranceModeOptionV1 | AssuranceModeOption;
   @observable hasPassword: boolean;
   @observable passwordUpdateDate: ?Date;
   @observable syncState: ?AdaV1WalletSyncState;
@@ -25,7 +25,7 @@ export default class Wallet {
     id: string,
     name: string,
     amount: BigNumber,
-    assurance: AssuranceModeOption,
+    assurance: AssuranceModeOptionV1 | AssuranceModeOption,
     hasPassword: boolean,
     passwordUpdateDate: ?Date,
     syncState?: AdaV1WalletSyncState,

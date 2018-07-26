@@ -13,7 +13,7 @@ export const restoreAdaWallet = (
   request({
     hostname: 'localhost',
     method: 'POST',
-    path: '/api/wallets/restore',
+    path: '/api/v1/wallets',
     port: 8090,
     ca,
   }, {}, walletInitData)

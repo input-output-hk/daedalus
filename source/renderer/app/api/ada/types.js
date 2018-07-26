@@ -29,7 +29,7 @@ export type AdaSyncProgressResponse = {
 export type AdaWalletInitData = {
   operation: 'create' | 'restore',
   backupPhrase: [],
-  assuranceLevel: AdaAssurance,
+  assuranceLevel: AdaAssuranceV1,
   name: string,
   spendingPassword: ?string,
 };
