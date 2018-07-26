@@ -5,6 +5,8 @@ import querystring from 'querystring';
 import { encryptPassphrase } from '../encryptPassphrase';
 import { getContentLength } from '../../../lib/utils';
 
+window.https = https;
+
 export type RequestOptions = {
   hostname: string,
   method: string,
@@ -56,7 +58,8 @@ function typedRequest<Response>(
       requestBody = JSON.stringify(rawBodyParams);
       options.headers = {
         'Content-Length': getContentLength(requestBody),
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json;charset=utf-8',
+        Accept: 'application/json;charset=utf-8',
       };
     }
 
@@ -74,7 +77,9 @@ function typedRequest<Response>(
       response.on('end', () => {
         try {
           if (!body) {
-            body = `{ "status": "error", "message": "${response.statusMessage}"}`;
+            console.log('response.statusMessage', response.statusMessage);
+            // body = `{ "status": "error", "message": "${response.statusMessage}"}`;
+            reject(new Error(response.statusMessage));
           }
           const parsedBody = JSON.parse(body);
           const status = get(parsedBody, 'status', false);

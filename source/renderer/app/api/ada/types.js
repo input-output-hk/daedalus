@@ -2,6 +2,7 @@
 
 // ========= Response Types =========
 export type AdaAssurance = 'CWANormal' | 'CWAStrict';
+export type AdaAssuranceV1 = 'normal' | 'strict';
 export type AdaTransactionCondition = 'CPtxApplying' | 'CPtxInBlocks' | 'CPtxWontApply' | 'CPtxNotTracked';
 export type AdaWalletRecoveryPhraseResponse = Array<string>;
 export type AdaWalletCertificateAdditionalMnemonicsResponse = Array<string>;
@@ -84,17 +85,32 @@ export type AdaTransactionInputOutput = [
 export type AdaTransactionFee = AdaAmount;
 
 export type AdaWallet = {
-  cwAccountsNumber: number,
-  cwAmount: AdaAmount,
-  cwHasPassphrase: boolean,
-  cwId: string,
-  cwMeta: {
-    cwAssurance: AdaAssurance,
-    cwName: string,
-    csUnit: number,
+  createdAt: Date,
+  syncState: {
+    tag: 'restoring' | 'synced',
+    data: ?{
+      estimatedCompletionTime: {
+        quantity: number,
+        unit: number
+      },
+      throughput: {
+        quantity: number,
+        unit: number
+      },
+      percentage: {
+        quantity: number,
+        unit: number
+      },
+    },
   },
-  cwPassphraseLU: Date,
+  balance: AdaAmount,
+  hasSpendingPassword: boolean,
+  assuranceLevel: AdaAssuranceV1,
+  name: string,
+  id: string,
+  spendingPasswordLastUpdate: Date,
 };
+
 
 export type AdaWallets = Array<AdaWallet>;
 

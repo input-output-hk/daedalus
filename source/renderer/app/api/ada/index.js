@@ -274,10 +274,9 @@ export default class AdaApi {
     Logger.debug('AdaApi::createWallet called');
     const { name, mnemonic, spendingPassword } = request;
     const assuranceLevel = 'normal';
-    const unit = 0;
     try {
       const walletInitData = {
-        operation: "create",
+        operation: 'create',
         backupPhrase: split(mnemonic, ' '),
         assuranceLevel,
         name,
@@ -470,10 +469,8 @@ export default class AdaApi {
     Logger.debug('AdaApi::restoreWallet called');
     const { recoveryPhrase, walletName, walletPassword } = request;
     const assuranceLevel = 'CWANormal';
-    const unit = 0;
-
     const walletInitData = {
-      operation: "create",
+      operation: 'restore',
       backupPhrase: split(recoveryPhrase),
       assuranceLevel,
       name: walletName,
@@ -787,12 +784,12 @@ export default class AdaApi {
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData', (data: AdaWallet) => (
     new Wallet({
-      id: data.cwId,
-      amount: new BigNumber(data.cwAmount.getCCoin).dividedBy(LOVELACES_PER_ADA),
-      name: data.cwMeta.cwName,
-      assurance: data.cwMeta.cwAssurance,
-      hasPassword: data.cwHasPassphrase,
-      passwordUpdateDate: unixTimestampToDate(data.cwPassphraseLU),
+      id: data.id,
+      amount: BigNumber(data.balance).dividedBy(LOVELACES_PER_ADA),
+      name: data.name,
+      assurance: data.assuranceLevel,
+      hasPassword: data.hasSpendingPassword,
+      passwordUpdateDate: unixTimestampToDate(data.spendingPasswordLastUpdate),
     })
   )
 );
