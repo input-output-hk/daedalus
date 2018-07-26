@@ -15,8 +15,12 @@ const messages = defineMessages({
   },
 });
 
+type Props = {
+  onDiscard: () => {}
+};
+
 @observer
-export default class AntivirusRestaurationSlowdownNotification extends Component<any> {
+export default class AntivirusRestaurationSlowdownNotification extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -33,9 +37,9 @@ export default class AntivirusRestaurationSlowdownNotification extends Component
         <div className={styles.text}>
           <FormattedHTMLMessage {...messages.notification} />
         </div>
-        <div className={styles.closeButton}>
+        <button className={styles.closeButton} onClick={this.props.onDiscard}>
           <SVGInline className={styles.closeCross} svg={closeCrossWhite} />
-        </div>
+        </button>
       </div>
     );
   }

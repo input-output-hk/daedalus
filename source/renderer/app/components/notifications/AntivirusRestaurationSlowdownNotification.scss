@@ -3,9 +3,11 @@
 .component {
   width: 100%;
   background-color: #b2311d;
-  box-shadow: 0 5px -20px 0 rgba(0, 0, 0, 0.25);
+  box-shadow: 0 -5px 20px 0 rgba(0, 0, 0, 0.25);
   height: 40px;
   display: flex;
+  position: absolute;
+  bottom: 0;
 }
 
 .text {
@@ -19,10 +21,9 @@
 
 .closeButton {
   width: 50px;
-  background-color: #951604;
   &:hover {
     cursor: pointer;
-    background-color: #cc412e;
+    background-color: #951604;
   }
   display: flex;
   align-items: center;

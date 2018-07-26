@@ -344,6 +344,25 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!<strong>Note:</strong> Antivirus software, like Windows Defender, can cause slow wallet restoration times.",
+        "description": "Warning about antivirus software slowing down restoration process on Windows.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/notifications/AntivirusRestaurationSlowdownNotification.js",
+        "id": "wallet.statusMessages.antivirusRestaurationSlowdownNotification",
+        "start": {
+          "column": 16,
+          "line": 11
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/notifications/AntivirusRestaurationSlowdownNotification.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Update and restart",
         "description": "Label \"Update and restart\" on the Cardano node update notification.",
         "end": {
