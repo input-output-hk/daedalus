@@ -10,15 +10,13 @@ import closeCrossWhite from '../../assets/images/close-cross-white.inline.svg';
 const messages = defineMessages({
   notification: {
     id: 'wallet.statusMessages.antivirusRestaurationSlowdownNotification',
-    defaultMessage: '!!!<strong>Note for users of antivirus software:</strong> Antivirus software may cause slower restoration performance',
+    defaultMessage: '!!!<strong>Note:</strong> Antivirus software, like Windows Defender, can cause slow wallet restoration times.',
     description: 'Warning about antivirus software slowing down restoration process on Windows.'
   },
 });
 
-type Props = void;
-
 @observer
-export default class AntivirusRestaurationSlowdownNotification extends Component<Props> {
+export default class AntivirusRestaurationSlowdownNotification extends Component<any> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
