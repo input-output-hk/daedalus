@@ -19,6 +19,7 @@ in
   , nodePath            = "cardano-node"
   , nodeDbPath          = "${dataDir}/DB/"
   , nodeLogConfig       = "\${DAEDALUS_CONFIG}/log-config-prod.yaml"
+  , nodeLogPath         = [] : Optional Text
   , walletPath          = "daedalus-frontend"
   , walletLogging       = False
   , frontendOnlyMode    = False
