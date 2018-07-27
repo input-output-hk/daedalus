@@ -16,7 +16,7 @@
   , nodePath            : Text
   , nodeDbPath          : Text
   , nodeLogConfig       : Text
-  , nodeLogPath         : Text
+  , nodeLogPath         : Optional Text
   , walletPath          : Text
   , walletLogging       : Bool
   , frontendOnlyMode    : Bool
