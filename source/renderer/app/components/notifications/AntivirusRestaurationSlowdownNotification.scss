@@ -4,19 +4,24 @@
   width: 100%;
   background-color: #b2311d;
   box-shadow: 0 -5px 20px 0 rgba(0, 0, 0, 0.25);
-  height: 40px;
   display: flex;
   position: absolute;
   bottom: 0;
+  align-items: center;
+  padding: 10px 0;
 }
 
 .text {
   color: white;
-  line-height: 40px;
   font-family: $theme-font-light;
   text-align: center;
-  font-size: 14px;
+  font-size: 12px;
   flex-grow: 1;
+  line-height: 1.2em;
+
+  a:link, a:visited {
+    color: white;
+  }
 }
 
 .closeButton {

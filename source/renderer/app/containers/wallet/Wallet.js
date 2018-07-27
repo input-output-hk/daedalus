@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { get } from 'lodash';
+import { shell } from 'electron';
 import MainLayout from '../MainLayout';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
@@ -42,6 +43,11 @@ export default class Wallet extends Component<Props> {
   handleAntivirusNotificationDiscard = () => {
     const { wallets } = this.props.actions.ada;
     wallets.discardAntivirusRestorationSlowdownNotificationForActiveWallet.trigger();
+  };
+
+  openExternalLinkInDefaultBrowser = (event: MouseEvent) => {
+    event.preventDefault();
+    if (event.target.href) shell.openExternal(event.target.href);
   };
 
   render() {
@@ -85,6 +91,7 @@ export default class Wallet extends Component<Props> {
           !wallets.hasDiscardedAntivirusRestorationSlowdownNotificationForActiveWallet ? (
           <AntivirusRestaurationSlowdownNotification
             onDiscard={this.handleAntivirusNotificationDiscard}
+            onFaqLinkClick={this.openExternalLinkInDefaultBrowser}
           />
         ) : null}
       </MainLayout>

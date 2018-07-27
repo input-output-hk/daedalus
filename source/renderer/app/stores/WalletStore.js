@@ -24,6 +24,7 @@ export default class WalletsStore extends Store {
   @observable deleteWalletRequest: Request<any>;
   @observable getWalletRecoveryPhraseRequest: Request<any>;
   @observable restoreRequest: Request<any>;
+  @observable isRestoreActive: boolean = false;
   @observable lastDiscardedAntivirusRestorationSlowdownNotificationWalletId: ?string = null;
 
   _newWalletDetails: { name: string, mnemonic: string, password: ?string } = {
@@ -152,6 +153,7 @@ export default class WalletsStore extends Store {
   }
 
   @computed get hasDiscardedAntivirusRestorationSlowdownNotificationForActiveWallet(): boolean {
+    if (!this.active) return false;
     return this.lastDiscardedAntivirusRestorationSlowdownNotificationWalletId === this.active.id;
   }
 
@@ -258,6 +260,7 @@ export default class WalletsStore extends Store {
   };
 
   @action _discardAntivirusNotificationForRestoration = () => {
+    if (!this.active) return;
     this.lastDiscardedAntivirusRestorationSlowdownNotificationWalletId = this.active.id;
   };
 
