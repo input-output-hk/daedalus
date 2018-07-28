@@ -1,6 +1,6 @@
 // @flow
 import type { AdaWallet, AdaWalletInitData } from './types';
-import { request } from './lib/request';
+import { request } from './lib/v1/request';
 
 export type RestoreAdaWalletParams = {
   ca: string,
