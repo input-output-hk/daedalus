@@ -5,8 +5,6 @@ import querystring from 'querystring';
 import { encryptPassphrase } from '../encryptPassphrase';
 import { getContentLength } from '../../../lib/utils';
 
-window.https = https;
-
 export type RequestOptions = {
   hostname: string,
   method: string,
@@ -77,8 +75,6 @@ function typedRequest<Response>(
       response.on('end', () => {
         try {
           if (!body) {
-            console.log('response.statusMessage', response.statusMessage);
-            // body = `{ "status": "error", "message": "${response.statusMessage}"}`;
             reject(new Error(response.statusMessage));
           }
           const parsedBody = JSON.parse(body);
