@@ -2,10 +2,11 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/raw/SwitchSkin';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -260,19 +261,21 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
                 onChange={this.handlePasswordSwitchToggle}
                 label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
                 checked={removePassword}
-                skin={<SimpleSwitchSkin />}
+                themeId={IDENTIFIERS.SWITCH}
+                skin={SwitchSkin}
               />
             </div>
 
             <Input
               type="password"
               className="currentPassword"
+              label={currentPasswordField.label}
               value={currentPasswordValue}
               onKeyPress={submitOnEnter.bind(this, this.submit)}
               onChange={(value) => this.handleDataChange('currentPasswordValue', value)}
               {...currentPasswordField.bind()}
               error={currentPasswordField.error}
-              skin={<SimpleInputSkin />}
+              skin={InputSkin}
             />
           </div>
         ) : null}
@@ -281,23 +284,25 @@ export default class ChangeWalletPasswordDialog extends Component<Props, State> 
           <Input
             type="password"
             className={newPasswordClasses}
+            label={newPasswordField.label}
             value={newPasswordValue}
             onKeyPress={submitOnEnter.bind(this, this.submit)}
             onChange={(value) => this.handleDataChange('newPasswordValue', value)}
             {...newPasswordField.bind()}
             error={newPasswordField.error}
-            skin={<SimpleInputSkin />}
+            skin={InputSkin}
           />
 
           <Input
             type="password"
             className="repeatedPassword"
+            label={repeatedPasswordField.label}
             value={repeatedPasswordValue}
             onKeyPress={submitOnEnter.bind(this, this.submit)}
             onChange={(value) => this.handleDataChange('repeatedPasswordValue', value)}
             {...repeatedPasswordField.bind()}
             error={repeatedPasswordField.error}
-            skin={<SimpleInputSkin />}
+            skin={InputSkin}
           />
 
           <p className={styles.passwordInstructions}>

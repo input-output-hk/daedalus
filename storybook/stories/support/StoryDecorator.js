@@ -1,7 +1,7 @@
 // @flow
 import React, { Component, Children } from 'react';
 import type { Node } from 'react';
-import { ThemeProvider } from 'react-css-themr';
+import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
 import { IntlProvider } from 'react-intl';
 import { observer } from 'mobx-react';
 import { daedalusTheme } from '../../../source/renderer/app/themes/daedalus';

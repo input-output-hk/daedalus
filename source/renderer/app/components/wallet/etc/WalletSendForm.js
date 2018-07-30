@@ -4,11 +4,11 @@ import { observer } from 'mobx-react';
 import { intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
-import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
-import Input from 'react-polymorph/lib/components/Input';
-import NumericInput from 'react-polymorph/lib/components/NumericInput';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import AmountInputSkin from '../skins/etc/AmountInputSkin';
 import BorderedBox from '../../widgets/BorderedBox';
@@ -167,7 +167,7 @@ export default class WalletSendForm extends Component<Props, State> {
                 this._isCalculatingFee = true;
                 receiverField.onChange(value || '');
               }}
-              skin={<SimpleInputSkin />}
+              skin={InputSkin}
             />
           </div>
 
@@ -187,7 +187,7 @@ export default class WalletSendForm extends Component<Props, State> {
               currency={currencyUnit}
               fees={fees}
               total={total}
-              skin={<AmountInputSkin />}
+              skin={AmountInputSkin}
             />
           </div>
 
@@ -199,7 +199,7 @@ export default class WalletSendForm extends Component<Props, State> {
             })}
             // Form can't be submitted in case transaction fees are not calculated
             disabled={this._isCalculatingFee || !isTransactionFeeCalculated}
-            skin={<SimpleButtonSkin />}
+            skin={ButtonSkin}
           />
 
         </BorderedBox>
