@@ -465,7 +465,6 @@ export default class AdaApi {
   async restoreWallet(request: RestoreWalletRequest): Promise<RestoreWalletResponse> {
     Logger.debug('AdaApi::restoreWallet called');
     const { recoveryPhrase, walletName, walletPassword } = request;
-    console.log('recoveryPhrase', recoveryPhrase);
     const assuranceLevel = 'normal';
     const walletInitData = {
       operation: 'restore',
