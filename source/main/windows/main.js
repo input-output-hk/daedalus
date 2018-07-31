@@ -53,8 +53,7 @@ export const createMainWindow = () => {
 
   const { gpu_compositing } = app.getGPUFeatureStatus();
 
-  let title = `Daedalus (${environment.version}#${environment.build})`;
-  if (!environment.isProduction()) title += ` ${environment.current}`;
+  let title = environment.getBuildLabel();
   if (gpu_compositing !== 'enabled') title += ` [SAFE MODE]`;
   window.setTitle(title);
 
