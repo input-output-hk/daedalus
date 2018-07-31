@@ -36,6 +36,12 @@ cache][cache] will speed things up.
 
 The result can be found at `./result/daedalus-*.bin`.
 
+# Nix Shell
+
+`shell.nix` provides a way to load a shell with all the correct versions of all the required dependencies for development. Run `nix-shell` in the daedalus directory to start the shell.
+
+`shell.nix` also provides a script for updating yarn.lock. Run `nix-shell -A fixYarnLock` to update `yarn.lock` file.
+
 # Windows
 
 This batch file requires [Node.js](https://nodejs.org/en/download/) and
