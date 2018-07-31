@@ -1,3 +1,0 @@
-To generate ico files:
-
-icotool -c -o 256x256.ico 256x256.png
