@@ -38,10 +38,10 @@ export default class AdaTransactionsStore extends TransactionsStore {
     return unconfirmedAmount;
   }
 
-  calculateTransactionFee = async (walletId: string, receiver: string, amount: string) => {
-    const accountId = await this.stores.ada.addresses.getAccountIdByWalletId(walletId);
-    if (!accountId) throw new Error('Active account required before calculating transaction fees.');
-    return this.api.ada.calculateTransactionFee({ sender: accountId, receiver, amount });
+  calculateTransactionFee = async (transactionFeeRequest) => {
+    // const accountId = await this.stores.ada.addresses.getAccountIdByWalletId(walletId);
+    // if (!accountId) throw new Error('Active account required before calculating transaction fees.');
+    return this.api.ada.calculateTransactionFee(transactionFeeRequest);
   };
 
   validateAmount = (amountInLovelaces: string): Promise<boolean> => (

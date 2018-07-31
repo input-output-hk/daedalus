@@ -20,6 +20,7 @@ import WalletSendConfirmationDialog from './WalletSendConfirmationDialog';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
 import { formattedAmountToBigNumber, formattedAmountToNaturalUnits } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
+import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
 
 export const messages = defineMessages({
   titleLabel: {
@@ -101,7 +102,7 @@ type Props = {
   currencyMaxIntegerDigits?: number,
   currencyMaxFractionalDigits: number,
   validateAmount: (amountInNaturalUnits: string) => Promise<boolean>,
-  calculateTransactionFee: (receiver: string, amount: string) => Promise<BigNumber>,
+  calculateTransactionFee: (address: string, amount: string) => Promise<BigNumber>,
   addressValidator: Function,
   openDialogAction: Function,
   isDialogOpen: Function,
@@ -327,10 +328,14 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   }
 
-  async _calculateTransactionFee(receiver: string, amountValue: string) {
-    const amount = formattedAmountToNaturalUnits(amountValue);
+  async _calculateTransactionFee(address: string, amountValue: number) {
+    const amountOld = formattedAmountToNaturalUnits(amountValue);
+    console.log('amountOld', amountOld, typeof amountOld);
+    // const amount = new BigNumber(amountValue).times(LOVELACES_PER_ADA);
+    const amount = amountValue * LOVELACES_PER_ADA;
+    console.log('amount', amount, typeof amount);
     try {
-      const fee = await this.props.calculateTransactionFee(receiver, amount);
+      const fee = await this.props.calculateTransactionFee(address, amount);
       if (this._isMounted) {
         this._isCalculatingFee = false;
         this.setState({
@@ -340,6 +345,11 @@ export default class WalletSendForm extends Component<Props, State> {
         });
       }
     } catch (error) {
+      console.log('error ADA FORM', error);
+      error = {
+        ...error,
+        id: error.name
+      };
       if (this._isMounted) {
         this._isCalculatingFee = false;
         this.setState({

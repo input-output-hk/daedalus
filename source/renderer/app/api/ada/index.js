@@ -26,6 +26,7 @@ import { exportAdaBackupJSON } from './exportAdaBackupJSON';
 import { importAdaBackupJSON } from './importAdaBackupJSON';
 import { importAdaWallet } from './importAdaWallet';
 import { getAdaWalletAccounts } from './getAdaWalletAccounts';
+import { getAdaWalletAccountsV1 } from './getAdaWalletAccountsV1';
 import { isValidAdaAddress } from './isValidAdaAddress';
 import { adaTxFee } from './adaTxFee';
 import { newAdaPayment } from './newAdaPayment';
@@ -48,8 +49,10 @@ import type {
   AdaSyncProgressResponse,
   AdaAddress,
   AdaAccounts,
+  AdaAccountsV1,
   AdaTransaction,
   AdaTransactionFee,
+  AdaTransactionFeeV1,
   AdaTransactions,
   AdaWallet,
   AdaV1Wallet,
@@ -173,9 +176,9 @@ export type PostponeUpdateResponse = Promise<void>;
 export type ApplyUpdateResponse = Promise<void>;
 
 export type TransactionFeeRequest = {
-  sender: string,
-  receiver: string,
-  amount: string,
+  walletId: string,
+  address: string,
+  amount: number,
 };
 export type TransactionFeeResponse = BigNumber;
 export type ExportWalletToFileRequest = {
@@ -341,16 +344,31 @@ export default class AdaApi {
 
   async calculateTransactionFee(request: TransactionFeeRequest): Promise<TransactionFeeResponse> {
     Logger.debug('AdaApi::calculateTransactionFee called');
-    const { sender, receiver, amount } = request;
+    const { walletId, address, amount } = request;
     try {
-      // default value. Select (OptimizeForSecurity | OptimizeForSize) will be implemented
-      const groupingPolicy = 'OptimizeForSecurity';
-      const response: adaTxFee = await adaTxFee(
-        { ca, sender, receiver, amount, groupingPolicy }
-      );
+      // const accounts: AdaAccountsV1 = await getAdaWalletAccountsV1({ ca, walletId });
+      // console.log('accounts', accounts);
+      // const accountIndex = accounts.data.index;
+      const accountIndex = 2147483648;
+      const data = {
+        source: {
+          accountIndex,
+          walletId,
+        },
+        destinations: [
+          {
+            address,
+            amount: 33829,
+          },
+        ],
+        groupingPolicy: 'OptimizeForSecurity',
+        spendingPassword: null,
+      };
+      const response: adaTxFee = await adaTxFee({ ca, data });
       Logger.debug('AdaApi::calculateTransactionFee success: ' + stringifyData(response));
       return _createTransactionFeeFromServerData(response);
     } catch (error) {
+      console.log('error ADA INDEX', error);
       Logger.debug('AdaApi::calculateTransactionFee error: ' + stringifyError(error));
       // eslint-disable-next-line max-len
       if (error.message.includes('not enough money on addresses which are not included in output addresses set')) {
@@ -843,10 +861,8 @@ const _createTransactionFromServerData = action(
 );
 
 const _createTransactionFeeFromServerData = action(
-  'AdaApi::_createTransactionFeeFromServerData', (data: AdaTransactionFee) => {
-    const coins = data.getCCoin;
-    return new BigNumber(coins).dividedBy(LOVELACES_PER_ADA);
-  }
+  'AdaApi::_createTransactionFeeFromServerData', (data: AdaTransactionFeeV1) =>
+    new BigNumber(data.estimatedAmount).dividedBy(LOVELACES_PER_ADA)
 );
 
 

@@ -1,25 +1,50 @@
 // @flow
 import type { AdaTransactionFee } from './types';
-import { request } from './lib/request';
+import { request } from './lib/v1/request';
 
 export type AdaTxFeeParams = {
   ca: string,
-  sender: string,
-  receiver: string,
-  amount: string,
-  // "groupingPolicy" - Spend everything from the address
-  // "OptimizeForSize" for no grouping
-  groupingPolicy: ?'OptimizeForSecurity' | 'OptimizeForSize',
+  data: {
+    source: {
+      accountIndex: number,
+      walletId: string,
+    },
+    destinations: [
+      {
+        address: string,
+        amount: number,
+      },
+    ],
+    groupingPolicy: ?'OptimizeForSecurity' | 'OptimizeForSize',
+    spendingPassword: string
+  },
 };
 
 export const adaTxFee = (
-  { ca, sender, receiver, amount, groupingPolicy }: AdaTxFeeParams
-): Promise<AdaTransactionFee> => (
-  request({
-    hostname: 'localhost',
-    method: 'POST',
-    path: `/api/txs/fee/${sender}/${receiver}/${amount}`,
-    port: 8090,
-    ca,
-  }, {}, { groupingPolicy })
-);
+  { ca, data }: AdaTxFeeParams
+): Promise<AdaTransactionFee> => {
+  console.log('ca', ca);
+  console.log('data', data);
+  return(
+    request({
+      hostname: 'localhost',
+      method: 'POST',
+      path: '/api/v1/transactions/fees',
+      port: 8090,
+      ca,
+    }, {}, data)
+  );
+};
+
+
+// export const adaTxFee = (
+//   { ca, data }: AdaTxFeeParams
+// ): Promise<AdaTransactionFee> => (
+//   request({
+//     hostname: 'localhost',
+//     method: 'POST',
+//     path: '/api/v1/transactions/fees',
+//     port: 8090,
+//     ca,
+//   }, {}, data)
+// );

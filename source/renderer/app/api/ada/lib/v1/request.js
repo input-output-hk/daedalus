@@ -56,7 +56,8 @@ function typedRequest<Response>(
       requestBody = JSON.stringify(rawBodyParams);
       options.headers = {
         'Content-Length': getContentLength(requestBody),
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json; charset=utf-8',
+        'Accept': 'application/json; charset=utf-8',
       };
     }
 
@@ -64,7 +65,14 @@ function typedRequest<Response>(
     if (hasRequestBody) {
       httpsRequest.write(requestBody);
     }
+    if (options.method === 'POST') {
+      console.log('requestBody', requestBody);
+      console.log('options', options);
+    }
     httpsRequest.on('response', (response) => {
+      if (options.method === 'POST') {
+        console.log('response', response);
+      }
       let body = '';
       // Cardano-sl returns chunked requests, so we need to concat them
       response.on('data', (chunk) => (body += chunk));
