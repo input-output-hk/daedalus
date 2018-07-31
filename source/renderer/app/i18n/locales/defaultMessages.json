@@ -344,6 +344,53 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!<strong>Note:</strong> Antivirus software, like Windows Defender, can cause slow wallet restoration times.",
+        "description": "Warning about antivirus software slowing down restoration process on Windows.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/notifications/AntivirusRestaurationSlowdownNotification.js",
+        "id": "wallet.statusMessages.antivirusRestaurationSlowdownNotification.note",
+        "start": {
+          "column": 8,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!see the FAQ",
+        "description": "\"see the FAQ\" link text in the antivirus restoration slowdown notification",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/notifications/AntivirusRestaurationSlowdownNotification.js",
+        "id": "wallet.statusMessages.antivirusRestaurationSlowdownNotification.faqLinkText",
+        "start": {
+          "column": 15,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Please {faqLink} on the Daedalus website for more information.",
+        "description": "Warning about antivirus software slowing down restoration process on Windows.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/notifications/AntivirusRestaurationSlowdownNotification.js",
+        "id": "wallet.statusMessages.antivirusRestaurationSlowdownNotification.faqLink",
+        "start": {
+          "column": 11,
+          "line": 27
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/notifications/AntivirusRestaurationSlowdownNotification.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Update and restart",
         "description": "Label \"Update and restart\" on the Cardano node update notification.",
         "end": {
@@ -859,13 +906,13 @@
         "description": "Title \"Frequently asked questions\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 12
+          "line": 13
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.faq.title",
         "start": {
           "column": 12,
-          "line": 8
+          "line": 9
         }
       },
       {
@@ -873,13 +920,13 @@
         "description": "Content for the \"Frequently asked questions\" section on the support settings page.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.faq.content",
         "start": {
           "column": 14,
-          "line": 13
+          "line": 14
         }
       },
       {
@@ -887,27 +934,13 @@
         "description": "\"FAQ on Daedalus website\" link in the FAQ section on the support settings page",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.faq.faqLink",
         "start": {
           "column": 11,
-          "line": 18
-        }
-      },
-      {
-        "defaultMessage": "!!!https://daedaluswallet.io/faq/",
-        "description": "URL for the \"FAQ on Daedalus website\" link in the FAQ section on the support settings page",
-        "end": {
-          "column": 3,
-          "line": 27
-        },
-        "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
-        "id": "settings.support.faq.faqLinkURL",
-        "start": {
-          "column": 14,
-          "line": 23
+          "line": 19
         }
       },
       {
@@ -915,13 +948,13 @@
         "description": "Title \"Reporting a problem\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 28
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.reportProblem.title",
         "start": {
           "column": 22,
-          "line": 28
+          "line": 24
         }
       },
       {
@@ -929,13 +962,13 @@
         "description": "Content for the \"Reporting a problem\" section on the support settings page.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 33
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.reportProblem.content",
         "start": {
           "column": 24,
-          "line": 33
+          "line": 29
         }
       },
       {
@@ -943,13 +976,13 @@
         "description": "\"Support request\" link in the \"Report a problem\" section on the support settings page.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 38
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.reportProblem.link",
         "start": {
           "column": 22,
-          "line": 38
+          "line": 34
         }
       },
       {
@@ -957,13 +990,13 @@
         "description": "Title \"Logs\" on the support settings page.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 43
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.logs.title",
         "start": {
           "column": 13,
-          "line": 43
+          "line": 39
         }
       },
       {
@@ -971,13 +1004,13 @@
         "description": "Content for the \"Logs\" section on the support settings page.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 48
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.logs.content",
         "start": {
           "column": 15,
-          "line": 48
+          "line": 44
         }
       },
       {
@@ -985,13 +1018,13 @@
         "description": "\"download them here\" link in the Logs section on the support settings page",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 53
         },
         "file": "source/renderer/app/components/settings/categories/SupportSettings.js",
         "id": "settings.support.logs.downloadLogsLink",
         "start": {
           "column": 20,
-          "line": 53
+          "line": 49
         }
       }
     ],
@@ -5444,17 +5477,31 @@
         }
       },
       {
+        "defaultMessage": "!!!https://daedaluswallet.io/faq/",
+        "description": "URL for the \"FAQ on Daedalus website\" link in the FAQ section on the support settings page",
+        "end": {
+          "column": 3,
+          "line": 153
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "settings.support.faq.faqLinkURL",
+        "start": {
+          "column": 14,
+          "line": 149
+        }
+      },
+      {
         "defaultMessage": "!!!Ada",
         "description": "Name for \"Ada\" unit.",
         "end": {
           "column": 5,
-          "line": 157
+          "line": 162
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.currency.ada",
         "start": {
           "column": 14,
-          "line": 153
+          "line": 158
         }
       },
       {
@@ -5462,13 +5509,13 @@
         "description": "Name for \"Cardano\" client.",
         "end": {
           "column": 5,
-          "line": 162
+          "line": 167
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.apiName.cardano",
         "start": {
           "column": 13,
-          "line": 158
+          "line": 163
         }
       },
       {
@@ -5476,13 +5523,13 @@
         "description": "Name for \"Etc\" unit.",
         "end": {
           "column": 5,
-          "line": 170
+          "line": 175
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.currency.etc",
         "start": {
           "column": 14,
-          "line": 166
+          "line": 171
         }
       },
       {
@@ -5490,13 +5537,13 @@
         "description": "Name for \"Mantis\" client.",
         "end": {
           "column": 5,
-          "line": 175
+          "line": 180
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.apiName.mantis",
         "start": {
           "column": 13,
-          "line": 171
+          "line": 176
         }
       }
     ],

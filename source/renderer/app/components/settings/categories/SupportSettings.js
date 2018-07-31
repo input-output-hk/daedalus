@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import styles from './SupportSettings.scss';
+import globalMessages from '../../../i18n/global-messages.js';
 
 const messages = defineMessages({
   faqTitle: {
@@ -19,11 +20,6 @@ const messages = defineMessages({
     id: 'settings.support.faq.faqLink',
     defaultMessage: '!!!FAQ on Daedalus website',
     description: '"FAQ on Daedalus website" link in the FAQ section on the support settings page',
-  },
-  faqLinkUrl: {
-    id: 'settings.support.faq.faqLinkURL',
-    defaultMessage: '!!!https://daedaluswallet.io/faq/',
-    description: 'URL for the "FAQ on Daedalus website" link in the FAQ section on the support settings page',
   },
   reportProblemTitle: {
     id: 'settings.support.reportProblem.title',
@@ -76,7 +72,7 @@ export default class SupportSettings extends Component<Props> {
 
     const faqLink = (
       <a
-        href={intl.formatMessage(messages.faqLinkUrl)}
+        href={intl.formatMessage(globalMessages.faqLinkUrl)}
         onClick={event => onExternalLinkClick(event)}
       >
         {intl.formatMessage(messages.faqLink)}
