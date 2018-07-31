@@ -64,6 +64,7 @@
     "electron-devtools-installer": "2.2.1",
     "electron-packager": "10.1.0",
     "electron-rebuild": "1.6.0",
+    "electron-unhandled": "^1.1.0",
     "electron-webpack": "1.11.0",
     "eslint": "4.19.1",
     "eslint-config-airbnb": "16.1.0",
