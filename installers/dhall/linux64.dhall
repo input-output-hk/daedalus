@@ -25,9 +25,9 @@ in
   , walletLogging       = False
   , frontendOnlyMode    = True
 
-  , updaterPath         = "update-runner"
-  , updaterArgs         = [] : List Text
-  , updateArchive       = [ "${dataDir}/update.AppImage" ] : Optional Text
+  , updaterPath         = "/usr/bin/env"
+  , updaterArgs         = [ "update-runner" ] : List Text
+  , updateArchive       = [ "${dataDir}/update.bin" ] : Optional Text
   , updateWindowsRunner = [] : Optional Text
 
   , launcherLogsPrefix  = "${dataDir}/Logs/"

@@ -76,6 +76,8 @@ let
     export PATH=/nix/var/nix/profiles/profile-${network}/bin
     export PS1='\[\033]2;\h:\u:\w\007\]\n\[\033[1;32m\][\u@\h:\w] (namespaced) \$\[\033[0m\] '
     ln -svf /nix/var/nix/profiles/profile-${network}/bin/ /bin
+    mkdir -pv /usr
+    ln -svf ../bin /usr/bin
     export PATH=/bin
     ln -svf ${pkgs.iana-etc}/etc/protocols /etc/protocols
     ln -svf ${pkgs.iana-etc}/etc/services /etc/services

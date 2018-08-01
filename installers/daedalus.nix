@@ -9,7 +9,19 @@
 let
   update-runner = writeScriptBin "update-runner" ''
     #!/bin/sh
+
+    if [ -z "$1" ]; then
+      echo "usage: update-runner UPDATE_FILE"
+      exit 0
+    fi
+
+    if [ ! -e "$1" ]; then
+      echo "There is no update file: $1"
+      exit 1
+    fi
+
     echo "Not updating because Daedalus is running from the immutable Nix store."
+    exit 6
   '';
 
   daedalus-frontend = writeScriptBin "daedalus-frontend" ''
