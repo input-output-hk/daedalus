@@ -16,35 +16,18 @@ export type AdaTxFeeParams = {
       },
     ],
     groupingPolicy: ?'OptimizeForSecurity' | 'OptimizeForSize',
-    spendingPassword: string
+    spendingPassword: ?string
   },
 };
 
 export const adaTxFee = (
   { ca, data }: AdaTxFeeParams
-): Promise<AdaTransactionFee> => {
-  console.log('ca', ca);
-  console.log('data', data);
-  return(
-    request({
-      hostname: 'localhost',
-      method: 'POST',
-      path: '/api/v1/transactions/fees',
-      port: 8090,
-      ca,
-    }, {}, data)
-  );
-};
-
-
-// export const adaTxFee = (
-//   { ca, data }: AdaTxFeeParams
-// ): Promise<AdaTransactionFee> => (
-//   request({
-//     hostname: 'localhost',
-//     method: 'POST',
-//     path: '/api/v1/transactions/fees',
-//     port: 8090,
-//     ca,
-//   }, {}, data)
-// );
+): Promise<AdaTransactionFee> => (
+  request({
+    hostname: 'localhost',
+    method: 'POST',
+    path: '/api/v1/transactions/fees',
+    port: 8090,
+    ca,
+  }, {}, data)
+);

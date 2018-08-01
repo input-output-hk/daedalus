@@ -26,7 +26,6 @@ import { exportAdaBackupJSON } from './exportAdaBackupJSON';
 import { importAdaBackupJSON } from './importAdaBackupJSON';
 import { importAdaWallet } from './importAdaWallet';
 import { getAdaWalletAccounts } from './getAdaWalletAccounts';
-import { getAdaWalletAccountsV1 } from './getAdaWalletAccountsV1';
 import { isValidAdaAddress } from './isValidAdaAddress';
 import { adaTxFee } from './adaTxFee';
 import { newAdaPayment } from './newAdaPayment';
@@ -49,9 +48,7 @@ import type {
   AdaSyncProgressResponse,
   AdaAddress,
   AdaAccounts,
-  AdaAccountsV1,
   AdaTransaction,
-  AdaTransactionFee,
   AdaTransactionFeeV1,
   AdaTransactions,
   AdaWallet,
@@ -176,6 +173,7 @@ export type PostponeUpdateResponse = Promise<void>;
 export type ApplyUpdateResponse = Promise<void>;
 
 export type TransactionFeeRequest = {
+  accountIndex: number,
   walletId: string,
   address: string,
   amount: number,
@@ -344,12 +342,8 @@ export default class AdaApi {
 
   async calculateTransactionFee(request: TransactionFeeRequest): Promise<TransactionFeeResponse> {
     Logger.debug('AdaApi::calculateTransactionFee called');
-    const { walletId, address, amount } = request;
+    const { accountIndex, walletId, address, amount } = request;
     try {
-      // const accounts: AdaAccountsV1 = await getAdaWalletAccountsV1({ ca, walletId });
-      // console.log('accounts', accounts);
-      // const accountIndex = accounts.data.index;
-      const accountIndex = 2147483648;
       const data = {
         source: {
           accountIndex,
@@ -358,7 +352,7 @@ export default class AdaApi {
         destinations: [
           {
             address,
-            amount: 33829,
+            amount,
           },
         ],
         groupingPolicy: 'OptimizeForSecurity',
@@ -368,7 +362,6 @@ export default class AdaApi {
       Logger.debug('AdaApi::calculateTransactionFee success: ' + stringifyData(response));
       return _createTransactionFeeFromServerData(response);
     } catch (error) {
-      console.log('error ADA INDEX', error);
       Logger.debug('AdaApi::calculateTransactionFee error: ' + stringifyError(error));
       // eslint-disable-next-line max-len
       if (error.message.includes('not enough money on addresses which are not included in output addresses set')) {

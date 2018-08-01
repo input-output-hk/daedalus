@@ -40,7 +40,7 @@ export default class WalletSendPage extends Component<Props> {
         currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
         currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
         validateAmount={validateAmount}
-        calculateTransactionFee={(address, amount) => (
+        calculateTransactionFee={(address: string, amount: number) => (
           calculateTransactionFee({ walletId: activeWallet.id, address, amount })
         )}
         addressValidator={isValidAddress}

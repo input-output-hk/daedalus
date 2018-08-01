@@ -114,9 +114,7 @@ export type AdaTransactionInputOutput = [
 export type AdaTransactionFee = AdaAmount;
 
 export type AdaTransactionFeeV1 = {
-  data: {
-    estimatedAmount: 25132995790248024
-  },
+  estimatedAmount: number,
   status: "success",
   meta: {
     pagination: {}

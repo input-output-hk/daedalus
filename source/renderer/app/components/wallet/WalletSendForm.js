@@ -102,7 +102,7 @@ type Props = {
   currencyMaxIntegerDigits?: number,
   currencyMaxFractionalDigits: number,
   validateAmount: (amountInNaturalUnits: string) => Promise<boolean>,
-  calculateTransactionFee: (address: string, amount: string) => Promise<BigNumber>,
+  calculateTransactionFee: (address: string, amount: number) => Promise<BigNumber>,
   addressValidator: Function,
   openDialogAction: Function,
   isDialogOpen: Function,
@@ -329,11 +329,7 @@ export default class WalletSendForm extends Component<Props, State> {
   }
 
   async _calculateTransactionFee(address: string, amountValue: number) {
-    const amountOld = formattedAmountToNaturalUnits(amountValue);
-    console.log('amountOld', amountOld, typeof amountOld);
-    // const amount = new BigNumber(amountValue).times(LOVELACES_PER_ADA);
-    const amount = amountValue * LOVELACES_PER_ADA;
-    console.log('amount', amount, typeof amount);
+    const amount = parseInt(new BigNumber(amountValue).times(LOVELACES_PER_ADA), 10);
     try {
       const fee = await this.props.calculateTransactionFee(address, amount);
       if (this._isMounted) {
@@ -345,11 +341,6 @@ export default class WalletSendForm extends Component<Props, State> {
         });
       }
     } catch (error) {
-      console.log('error ADA FORM', error);
-      error = {
-        ...error,
-        id: error.name
-      };
       if (this._isMounted) {
         this._isCalculatingFee = false;
         this.setState({

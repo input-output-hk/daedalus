@@ -1,10 +1,20 @@
 // @flow
+import { remote } from 'electron';
 import { computed } from 'mobx';
 import BigNumber from 'bignumber.js';
 import type { UnconfirmedAmount } from '../../types/unconfirmedAmountType';
 import { isValidAmountInLovelaces } from '../../utils/validations';
 import TransactionsStore from '../TransactionsStore';
 import { transactionTypes } from '../../domains/WalletTransaction';
+import { getAdaWalletAccountsV1 } from '../../api/ada/getAdaWalletAccountsV1';
+
+const ca = remote.getGlobal('ca');
+
+type TransactionFeeRequest = {
+  walletId: string,
+  address: string,
+  amount: number,
+};
 
 export default class AdaTransactionsStore extends TransactionsStore {
 
@@ -38,10 +48,20 @@ export default class AdaTransactionsStore extends TransactionsStore {
     return unconfirmedAmount;
   }
 
-  calculateTransactionFee = async (transactionFeeRequest) => {
-    // const accountId = await this.stores.ada.addresses.getAccountIdByWalletId(walletId);
-    // if (!accountId) throw new Error('Active account required before calculating transaction fees.');
-    return this.api.ada.calculateTransactionFee(transactionFeeRequest);
+  calculateTransactionFee = async (transactionFeeRequest: TransactionFeeRequest) => {
+    const { walletId } = transactionFeeRequest;
+    const accounts = await getAdaWalletAccountsV1({ ca, walletId });
+    const accountIndex = accounts[0].index;
+
+    if (!accountIndex) {
+      throw new Error('Active account required before calculating transaction fees.');
+    }
+    return this.api.ada.calculateTransactionFee(
+      {
+        ...transactionFeeRequest,
+        accountIndex,
+      }
+    );
   };
 
   validateAmount = (amountInLovelaces: string): Promise<boolean> => (
