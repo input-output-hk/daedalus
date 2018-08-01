@@ -3,6 +3,9 @@ import { app, BrowserWindow, ipcMain, Menu } from 'electron';
 import environment from '../../common/environment';
 import ipcApi from '../ipc-api';
 import { runtimeFolderPath } from '../config';
+import RendererErrorHandler from '../utils/rendererErrorHandler';
+
+const rendererErrorHandler = new RendererErrorHandler();
 
 export const createMainWindow = () => {
   const windowOptions = {
@@ -20,6 +23,8 @@ export const createMainWindow = () => {
 
   // Construct new BrowserWindow
   const window = new BrowserWindow(windowOptions);
+
+  rendererErrorHandler.setup(window, createMainWindow);
 
   window.setMinimumSize(900, 600);
 
@@ -77,6 +82,14 @@ export const createMainWindow = () => {
 
   window.on('closed', () => {
     app.quit();
+  });
+
+  window.webContents.on('did-fail-load', (err) => {
+    rendererErrorHandler.onError('did-fail-load', err);
+  });
+
+  window.webContents.on('crashed', (err) => {
+    rendererErrorHandler.onError('crashed', err);
   });
 
   return window;
