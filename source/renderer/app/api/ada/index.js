@@ -235,18 +235,19 @@ export default class AdaApi {
     const { walletId } = request;
     try {
       const response: AdaAccounts = await getAdaWalletAccounts({ ca, walletId });
+
       Logger.debug('AdaApi::getAddresses success: ' + stringifyData(response));
       if (!response.length) {
         return new Promise((resolve) => resolve({ accountId: null, addresses: [] }));
       }
       // For now only the first wallet account is used
       const firstAccount = response[0];
-      const firstAccountId = firstAccount.caId;
-      const firstAccountAddresses = firstAccount.caAddresses;
+      const firstAccountId = firstAccount.walletId;
+      const firstAccountAddresses = firstAccount.addresses;
 
       return new Promise((resolve) => resolve({
         accountId: firstAccountId,
-        addresses: firstAccountAddresses.map(data => _createAddressFromServerData(data)),
+        addresses: firstAccountAddresses,
       }));
     } catch (error) {
       Logger.error('AdaApi::getAddresses error: ' + stringifyError(error));
