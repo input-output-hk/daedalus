@@ -42,38 +42,19 @@ export type AdaAmount = {
 export type AdaTransactionTag = 'CTIn' | 'CTOut';
 
 export type AdaAddress = {
-  cadAmount: AdaAmount,
-  cadId: string,
-  cadIsUsed: boolean,
+  id: string,
+  used: boolean,
+  changeAddress: boolean
 };
 
 export type AdaAddresses = Array<AdaAddress>;
 
 export type AdaAccount = {
-  data: [
-    {
-      amount: number,
-      addresses: [
-        {
-          used: boolean,
-          changeAddress: boolean,
-          id: string
-        }
-      ],
-      name: string,
-      walletId: string,
-      index: number
-    }
-  ],
-  status: string,
-  meta: {
-    pagination: {
-      totalPages: number,
-      page: number,
-      perPage: number,
-      totalEntries: number,
-    }
-  }
+  amount: number,
+  addresses: AdaAddresses,
+  name: string,
+  walletId: string,
+  index: number
 };
 
 export type AdaAccounts = Array<AdaAccount>;
