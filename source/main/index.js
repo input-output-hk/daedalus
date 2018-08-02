@@ -25,7 +25,6 @@ log.info(`!!! Daedalus is running on ${os.platform()} version ${os.release()}
 
 // Global references to windows to prevent them from being garbage collected
 let mainWindow;
-let aboutWindow;
 
 const openAbout = () => {
   if (mainWindow) mainWindow.webContents.send(OPEN_ABOUT_DIALOG_CHANNEL);
@@ -54,7 +53,6 @@ app.on('ready', async () => {
 
   if (environment.isDev()) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
-    client.create(aboutWindow);
     client.create(mainWindow);
   }
 
