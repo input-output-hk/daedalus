@@ -603,10 +603,10 @@ export default class AdaApi {
     }
   }
 
-  async sendBugReport(request: SendBugReportRequest): Promise<SendBugReportResponse> {
-    Logger.debug('AdaApi::sendBugReport called: ' + stringifyData(request));
+  async sendBugReport(requestFormData: SendBugReportRequest): Promise<SendBugReportResponse> {
+    Logger.debug('AdaApi::sendBugReport called: ' + stringifyData(requestFormData));
     try {
-      await sendAdaBugReport({ requestFormData: request, application: 'cardano-node' });
+      await sendAdaBugReport({ requestFormData });
       Logger.debug('AdaApi::sendBugReport success');
       return true;
     } catch (error) {
