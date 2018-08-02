@@ -50,12 +50,30 @@ export type AdaAddress = {
 export type AdaAddresses = Array<AdaAddress>;
 
 export type AdaAccount = {
-  caAddresses: AdaAddresses,
-  caAmount: AdaAmount,
-  caId: string,
-  caMeta: {
-    caName: string,
-  },
+  data: [
+    {
+      amount: number,
+      addresses: [
+        {
+          used: boolean,
+          changeAddress: boolean,
+          id: string
+        }
+      ],
+      name: string,
+      walletId: string,
+      index: number
+    }
+  ],
+  status: string,
+  meta: {
+    pagination: {
+      totalPages: number,
+      page: number,
+      perPage: number,
+      totalEntries: number,
+    }
+  }
 };
 
 export type AdaAccounts = Array<AdaAccount>;
