@@ -4,8 +4,8 @@ import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
-import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import SystemTimeErrorOverlay from './SystemTimeErrorOverlay';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
@@ -68,8 +68,8 @@ type Props = {
   hasBeenConnected: boolean,
   hasBlockSyncingStarted: boolean,
   isSyncing: boolean,
+  isSynced: boolean,
   syncPercentage: number,
-  isLoadingDataForNextScreen: boolean,
   loadingDataForNextScreenMessage: ReactIntlMessage,
   hasLoadedCurrentLocale: boolean,
   hasLoadedCurrentTheme: boolean,
@@ -136,8 +136,8 @@ export default class Loading extends Component<Props, State> {
       apiIcon,
       isConnecting,
       isSyncing,
+      isSynced,
       syncPercentage,
-      isLoadingDataForNextScreen,
       loadingDataForNextScreenMessage,
       hasBeenConnected,
       hasBlockSyncingStarted,
@@ -193,6 +193,45 @@ export default class Loading extends Component<Props, State> {
       styles.reportIssueButton,
     ]);
 
+    let loadingScreen = null;
+
+    if (isConnecting) {
+      loadingScreen = (
+        <div className={styles.connecting}>
+          <h1 className={styles.headline}>
+            {intl.formatMessage(connectingMessage)}
+          </h1>
+        </div>
+      );
+    } else if (isSystemTimeCorrect && !isSynced) {
+      loadingScreen = (
+        <div className={styles.syncing}>
+          <h1 className={styles.headline}>
+            {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
+          </h1>
+        </div>
+      );
+    } else if (isSystemTimeCorrect) {
+      loadingScreen = (
+        <div className={styles.syncing}>
+          <div>
+            <h1 className={styles.headline}>
+              {intl.formatMessage(loadingDataForNextScreenMessage)}
+            </h1>
+            <LoadingSpinner />
+          </div>
+        </div>
+      );
+    } else {
+      loadingScreen = (
+        <SystemTimeErrorOverlay
+          localTimeDifference={localTimeDifference}
+          currentLocale={currentLocale}
+          onProblemSolutionClick={onProblemSolutionClick}
+        />
+      );
+    }
+
     return (
       <div className={componentStyles}>
         {showReportIssue && (
@@ -207,7 +246,7 @@ export default class Loading extends Component<Props, State> {
               className={buttonClasses}
               label={intl.formatMessage(messages.reportIssueButtonLabel)}
               onClick={handleReportIssue}
-              skin={<SimpleButtonSkin />}
+              skin={ButtonSkin}
             />
           </div>
         )}
@@ -216,39 +255,7 @@ export default class Loading extends Component<Props, State> {
           <SVGInline svg={daedalusLoadingLogo} className={daedalusLogoStyles} />
           <SVGInline svg={apiLoadingLogo} className={apiLogoStyles} />
         </div>
-        {hasLoadedCurrentLocale && (
-          <div>
-            {isConnecting && (
-              <div className={styles.connecting}>
-                <h1 className={styles.headline}>
-                  {intl.formatMessage(connectingMessage)}
-                </h1>
-              </div>
-            )}
-            {isSyncing && (
-              <div className={styles.syncing}>
-                <h1 className={styles.headline}>
-                  {intl.formatMessage(messages.syncing)} {syncPercentage.toFixed(2)}%
-                </h1>
-              </div>
-            )}
-            {!isSyncing && !isConnecting && isLoadingDataForNextScreen && (
-              <div className={styles.syncing}>
-                <h1 className={styles.headline}>
-                  {intl.formatMessage(loadingDataForNextScreenMessage)}
-                </h1>
-                <LoadingSpinner />
-              </div>
-            )}
-            {!isSystemTimeCorrect && (
-              <SystemTimeErrorOverlay
-                localTimeDifference={localTimeDifference}
-                currentLocale={currentLocale}
-                onProblemSolutionClick={onProblemSolutionClick}
-              />
-            )}
-          </div>
-        )}
+        {hasLoadedCurrentLocale ? loadingScreen : null}
       </div>
     );
   }

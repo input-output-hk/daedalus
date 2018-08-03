@@ -1,7 +1,40 @@
 Changelog
 =========
 
+## vNext
+=======
+
+### Chores
+
+- Integrates the latest features from the develop branch of react-polymorph. Features include: render props architecture, theme composition, and a ThemeProvider HOC. [PR 950](https://github.com/input-output-hk/daedalus/pull/950)
+
+### Features
+
+- Implemented a switch instead of a link for “hide used” addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
+- Implemented forms submission on "Enter" key press ([PR 981](https://github.com/input-output-hk/daedalus/pull/981))
+- Improved the loading UX ([PR 723](https://github.com/input-output-hk/daedalus/pull/723))
+
+### Fixes
+
+- Fixed a bug that allowed to submit invalid send form via ENTER key ([PR 1002](https://github.com/input-output-hk/daedalus/pull/1002))
+- Fixed the button outline color on special buttons. ([PR 990](https://github.com/input-output-hk/daedalus/pull/990))
+- Fixed broken Export wallet to file dialog and improved Wallet settings dialogs file structure and namings ([PR 998](https://github.com/input-output-hk/daedalus/pull/998))
+- Prevented wallet data polling during wallet deletion ([PR 996]https://github.com/input-output-hk/daedalus/pull/996)
+- Fixed bug that allowed to submit invalid send form via ENTER key ([PR 1002](https://github.com/input-output-hk/daedalus/pull/1002))
+- Fixed a bug in the Electron which results in blank/white screen rendering on some OS/Graphics-card/Drivers combinations.  ([PR 1007](https://github.com/input-output-hk/daedalus/pull/1007))
+- Removed the Ada Redemption link from the 'app bar' menu and added it to system menu ([PR 972](https://github.com/input-output-hk/daedalus/pull/972))
+
+### Chores
+
+- Added acceptance tests for node update notification with apply and postpone update scenarios ([PR 977](https://github.com/input-output-hk/daedalus/pull/977))
+- Added acceptance tests for maximum wallets limit ([PR 979](https://github.com/input-output-hk/daedalus/pull/979))
+- Added acceptance tests for the About dialog ([PR 975](https://github.com/input-output-hk/daedalus/pull/975))
+- Added acceptance tests for wallets, transactions and addresses ordering ([PR 976](https://github.com/input-output-hk/daedalus/pull/976))
+- Created new Storybook stories for the Wallet screens ([942](https://github.com/input-output-hk/daedalus/pull/942))
+- Improved compress/download logs handling ([PR 995](https://github.com/input-output-hk/daedalus/pull/995))
+
 ## 0.11.0
+=======
 
 ### Features
 

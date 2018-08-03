@@ -3,16 +3,18 @@ import { action, observable, computed, toJS } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment/moment';
 import { ipcRenderer } from 'electron';
+import { includes } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import environment from '../../../common/environment';
 import { THEMES } from '../themes/index';
 import { ROUTES } from '../routes-config';
-import { GET_LOGS, DOWNLOAD_LOGS, COMPRESS_LOGS, DELETE_COMPRESSED_LOGS } from '../../../common/ipc-api';
+import { GET_LOGS, DOWNLOAD_LOGS, COMPRESS_LOGS } from '../../../common/ipc-api';
 import LocalizableError from '../i18n/LocalizableError';
 import globalMessages from '../i18n/global-messages';
 import { WalletSupportRequestLogsCompressError } from '../i18n/errors';
-import type { LogFiles, CompressedFileDownload } from '../types/LogTypes';
+import type { LogFiles, CompressedLogStatus } from '../types/LogTypes';
+import { generateFileNameWithTimestamp } from '../../../common/fileName';
 
 export default class SettingsStore extends Store {
 
@@ -44,9 +46,9 @@ export default class SettingsStore extends Store {
   @observable sendBugReport: Request<any> = new Request(this.api[environment.API].sendBugReport);
   @observable error: ?LocalizableError = null;
   @observable logFiles: LogFiles = {};
-  @observable compressedLog: ?string = null;
-  @observable isCompressing: boolean = false;
-  @observable compressedFileDownload: CompressedFileDownload = {};
+  @observable compressedLogsFile: ?string = null;
+  @observable compressedLogsStatus: CompressedLogStatus = {};
+  @observable isSubmittingBugReport: boolean = false;
   /* eslint-enable max-len */
 
   setup() {
@@ -54,11 +56,10 @@ export default class SettingsStore extends Store {
     this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
     this.actions.profile.updateTheme.listen(this._updateTheme);
     this.actions.profile.getLogs.listen(this._getLogs);
+    this.actions.profile.getLogsAndCompress.listen(this._getLogsAndCompress);
+    this.actions.profile.sendBugReport.listen(this._sendBugReport);
     this.actions.profile.resetBugReportDialog.listen(this._resetBugReportDialog);
     this.actions.profile.downloadLogs.listen(this._downloadLogs);
-    this.actions.profile.compressLogs.listen(this._compressLogs);
-    this.actions.profile.deleteCompressedLogs.listen(this._deleteCompressedFiles);
-    this.actions.profile.sendBugReport.listen(this._sendBugReport);
     ipcRenderer.on(GET_LOGS.SUCCESS, this._onGetLogsSuccess);
     ipcRenderer.on(DOWNLOAD_LOGS.SUCCESS, this._onDownloadLogsSuccess);
     ipcRenderer.on(COMPRESS_LOGS.SUCCESS, this._onCompressLogsSuccess);
@@ -94,12 +95,16 @@ export default class SettingsStore extends Store {
 
   @computed get hasLoadedCurrentLocale(): boolean {
     return (
-      this.getProfileLocaleRequest.wasExecuted && this.getProfileLocaleRequest.result !== null
+      this.getProfileLocaleRequest.wasExecuted &&
+      this.getProfileLocaleRequest.result !== null
     );
   }
 
   @computed get isCurrentLocaleSet(): boolean {
-    return (this.getProfileLocaleRequest.result !== null && this.getProfileLocaleRequest.result !== '');
+    return (
+      this.getProfileLocaleRequest.result !== null &&
+      this.getProfileLocaleRequest.result !== ''
+    );
   }
 
   @computed get currentTheme(): string {
@@ -112,11 +117,17 @@ export default class SettingsStore extends Store {
   }
 
   @computed get isCurrentThemeSet(): boolean {
-    return (this.getThemeRequest.result !== null && this.getThemeRequest.result !== '');
+    return (
+      this.getThemeRequest.result !== null &&
+      this.getThemeRequest.result !== ''
+    );
   }
 
   @computed get hasLoadedCurrentTheme(): boolean {
-    return (this.getThemeRequest.wasExecuted && this.getThemeRequest.result !== null);
+    return (
+      this.getThemeRequest.wasExecuted &&
+      this.getThemeRequest.result !== null
+    );
   }
 
   @computed get termsOfUse(): string {
@@ -133,6 +144,14 @@ export default class SettingsStore extends Store {
 
   @computed get areTermsOfUseAccepted(): boolean {
     return this.getTermsOfUseAcceptanceRequest.result === true;
+  }
+
+  @computed get isSettingsPage(): boolean {
+    const { currentRoute } = this.stores.app;
+    return (
+      includes(ROUTES.PROFILE, currentRoute) ||
+      includes(ROUTES.SETTINGS, currentRoute)
+    );
   }
 
   _updateLocale = async ({ locale }: { locale: string }) => {
@@ -167,8 +186,8 @@ export default class SettingsStore extends Store {
 
   _redirectToTermsOfUseScreenIfTermsNotAccepted = () => {
     const { isConnected } = this.stores.networkStatus;
-    if (isConnected && this.isCurrentLocaleSet &&
-      this.hasLoadedTermsOfUseAcceptance && !this.areTermsOfUseAccepted) {
+    const termsOfUseNotAccepted = this.hasLoadedTermsOfUseAcceptance && !this.areTermsOfUseAccepted;
+    if (isConnected && this.isCurrentLocaleSet && termsOfUseNotAccepted) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.TERMS_OF_USE });
     }
   };
@@ -195,82 +214,87 @@ export default class SettingsStore extends Store {
     ipcRenderer.send(GET_LOGS.REQUEST);
   };
 
+  _onGetLogsSuccess = action((event, files) => {
+    this.logFiles = files;
+    const { isDownloading } = this.compressedLogsStatus;
+    if (isDownloading || this.isSubmittingBugReport) {
+      this._compressLogs({ logs: files });
+    }
+  });
+
+  _getLogsAndCompress = action(() => {
+    this.compressedLogsStatus = {
+      fileName: generateFileNameWithTimestamp(),
+    };
+    this.isSubmittingBugReport = true;
+    this._getLogs();
+  });
+
+  _compressLogs = action(({ logs }) => {
+    const { fileName = generateFileNameWithTimestamp() } = this.compressedLogsStatus;
+    ipcRenderer.send(COMPRESS_LOGS.REQUEST, toJS(logs), fileName);
+  });
+
+  _onCompressLogsSuccess = action((event, file) => {
+    this.compressedLogsFile = file;
+    const { isDownloading, destination, fileName } = this.compressedLogsStatus;
+    if (isDownloading) {
+      this._downloadLogs({ destination, fileName });
+    }
+  });
+
+  _onCompressLogsError = action(() => {
+    this.isSubmittingBugReport = false;
+    this.error = new WalletSupportRequestLogsCompressError();
+  });
+
+  _sendBugReport = action(({ email, subject, problem, compressedLogsFile } : {
+    email: string,
+    subject: string,
+    problem: string,
+    compressedLogsFile: ?string,
+  }) => {
+    this.isSubmittingBugReport = true;
+    this.sendBugReport.execute({
+      email, subject, problem, compressedLogsFile,
+    })
+      .then(action(() => {
+        this._resetBugReportDialog();
+      }))
+      .catch(action((error) => {
+        this.isSubmittingBugReport = false;
+        this.error = error;
+      }));
+  });
+
   _resetBugReportDialog = () => {
-    this._deleteCompressedFiles();
     this._reset();
     this.actions.dialogs.closeActiveDialog.trigger();
   };
 
-  _downloadLogs = action(({ destination, fresh }) => {
-    this.compressedFileDownload = {
-      inProgress: true,
+  _downloadLogs = action(({ fileName, destination, fresh }) => {
+    this.compressedLogsStatus = {
+      isDownloading: true,
       destination,
+      fileName,
     };
-
-    if (this.compressedLog && fresh !== true) {
-      // logs already compressed, trigger download
-      ipcRenderer.send(DOWNLOAD_LOGS.REQUEST, this.compressedLog, destination);
+    if (this.compressedLogsFile && fresh !== true) {
+      // logs already compressed, trigger the download
+      ipcRenderer.send(DOWNLOAD_LOGS.REQUEST, this.compressedLogsFile, destination);
     } else {
       // start process: getLogs -> compressLogs -> downloadLogs (again)
       this._getLogs();
     }
   });
 
-  _onGetLogsSuccess = action((event, res) => {
-    this.logFiles = res;
-    if (this.compressedFileDownload.inProgress) {
-      this._compressLogs({ logs: res });
-    }
-  });
-
   _onDownloadLogsSuccess = action(() => {
-    this.compressedFileDownload = {};
-  });
-
-  _compressLogs = action(({ logs }) => {
-    this.isCompressing = true;
-    ipcRenderer.send(COMPRESS_LOGS.REQUEST, toJS(logs));
-  });
-
-  _onCompressLogsSuccess = action((event, res) => {
-    this.isCompressing = false;
-    this.compressedLog = res;
-    if (this.compressedFileDownload.inProgress) {
-      this._downloadLogs({ destination: this.compressedFileDownload.destination });
-    }
-  });
-
-  _onCompressLogsError = action(() => {
-    this.error = new WalletSupportRequestLogsCompressError();
-  });
-
-  _sendBugReport = action(({ email, subject, problem, compressedLog } : {
-    email: string,
-    subject: string,
-    problem: string,
-    compressedLog: ?string,
-  }) => {
-    this.sendBugReport.execute({
-      email, subject, problem, compressedLog,
-    })
-      .then(action(() => {
-        this._resetBugReportDialog();
-      }))
-      .catch(action((error) => {
-        this.error = error;
-      }));
-  });
-
-  _deleteCompressedFiles = action(() => {
-    if (this.compressedLog) {
-      ipcRenderer.send(DELETE_COMPRESSED_LOGS.REQUEST, this.compressedLog);
-      this.compressedLog = null;
-    }
+    this.compressedLogsStatus = {};
   });
 
   @action _reset = () => {
     this.error = null;
-    this.compressedLog = null;
-    this.compressedFileDownload = {};
+    this.compressedLogsFile = null;
+    this.compressedLogsStatus = {};
+    this.isSubmittingBugReport = false;
   };
 }

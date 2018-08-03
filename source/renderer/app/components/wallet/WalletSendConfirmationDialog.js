@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import Dialog from '../widgets/Dialog';
@@ -12,6 +12,7 @@ import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletSendConfirmationDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
+import { submitOnEnter } from '../../utils/form';
 
 export const messages = defineMessages({
   dialogTitle: {
@@ -106,7 +107,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
     },
   });
 
-  submit() {
+  submit = () => {
     this.form.submit({
       onSuccess: (form) => {
         const { isWalletPasswordSet, receiver, amount, amountToNaturalUnits } = this.props;
@@ -120,7 +121,9 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
       },
       onError: () => {}
     });
-  }
+  };
+
+  submitOnEnter = (event: {}) => this.form.$('walletPassword').isValid && submitOnEnter(this.submit, event);
 
   render() {
     const { form } = this;
@@ -150,7 +153,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
       },
       {
         label: intl.formatMessage(messages.sendButtonLabel),
-        onClick: this.submit.bind(this),
+        onClick: this.submit,
         primary: true,
         className: confirmButtonClasses,
         disabled: !walletPasswordField.isValid,
@@ -162,6 +165,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
         title={intl.formatMessage(messages.dialogTitle)}
         actions={actions}
         closeOnOverlayClick
+        primaryButtonAutoFocus
         onClose={!isSubmitting ? onCancel : null}
         className={styles.dialog}
         closeButton={<DialogCloseButton />}
@@ -203,7 +207,9 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
               className={styles.walletPassword}
               {...walletPasswordField.bind()}
               error={walletPasswordField.error}
-              skin={<SimpleInputSkin />}
+              skin={InputSkin}
+              onKeyPress={this.submitOnEnter}
+              autoFocus
             />
           ) : null}
         </div>

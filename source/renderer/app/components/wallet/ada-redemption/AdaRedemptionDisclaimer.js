@@ -3,11 +3,10 @@ import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import classnames from 'classnames';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
-import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import attentionIcon from '../../../assets/images/attention-big-light.inline.svg';
 import styles from './AdaRedemptionDisclaimer.scss';
 
@@ -62,10 +61,6 @@ export default class AdaRedemptionDisclaimer extends Component<Props, State> {
     const { onSubmit } = this.props;
     const { isAccepted } = this.state;
 
-    const submitButtonStyles = classnames([
-      !isAccepted ? styles.disabled : null,
-    ]);
-
     return (
       <div className={styles.component}>
 
@@ -80,16 +75,16 @@ export default class AdaRedemptionDisclaimer extends Component<Props, State> {
             label={intl.formatMessage(messages.checkboxLabel)}
             onChange={this.onAcceptToggle}
             checked={isAccepted}
-            skin={<SimpleCheckboxSkin />}
+            skin={CheckboxSkin}
           />
         </div>
 
         <Button
-          className={submitButtonStyles}
+          className="disclaimer"
           label={intl.formatMessage(messages.submitLabel)}
           onClick={() => isAccepted && onSubmit()}
           disabled={!isAccepted}
-          skin={<SimpleButtonSkin />}
+          skin={ButtonSkin}
         />
 
       </div>

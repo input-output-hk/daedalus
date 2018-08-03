@@ -3,6 +3,7 @@ import { expect } from 'chai';
 import path from 'path';
 import BigNumber from 'bignumber.js';
 import {
+  createWallets,
   fillOutWalletSendForm,
   getWalletByName,
   waitUntilWalletIsLoaded,
@@ -45,31 +46,12 @@ Given(/^I have a "Genesis wallet" with funds and password$/, async function () {
 });
 
 Given(/^I have the following wallets:$/, async function (table) {
-  const result = await this.client.executeAsync((wallets, done) => {
-    window.Promise.all(wallets.map((wallet) => (
-      daedalus.api.ada.createWallet({
-        name: wallet.name,
-        mnemonic: daedalus.utils.crypto.generateMnemonic(),
-        password: wallet.password || null,
-      })
-    )))
-      .then(() => (
-        daedalus.stores.ada.wallets.walletsRequest.execute()
-          .then((storeWallets) => (
-            daedalus.stores.ada.wallets.refreshWalletsData()
-              .then(() => done(storeWallets))
-              .catch((error) => done(error))
-          ))
-          .catch((error) => done(error))
-      ))
-      .catch((error) => done(error.stack));
-  }, table.hashes());
-  // Add or set the wallets for this scenario
-  if (this.wallets != null) {
-    this.wallets.push(...result.value);
-  } else {
-    this.wallets = result.value;
-  }
+  await createWallets(table.hashes(), this);
+});
+
+// Creates them sequentially
+Given(/^I have created the following wallets:$/, async function (table) {
+  await createWallets(table.hashes(), this, true);
 });
 
 Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function (walletName, screen) {
@@ -290,7 +272,7 @@ When(/^I see the create wallet recovery phrase entry dialog$/, function () {
 When(/^I click on recovery phrase mnemonics in correct order$/, async function () {
   for (let i = 0; i < this.recoveryPhrase.length; i++) {
     const recoveryPhraseMnemonic = this.recoveryPhrase[i];
-    await this.waitAndClick(`//button[contains(text(), "${recoveryPhraseMnemonic}") and @class="flat MnemonicWord_component MnemonicWord_active SimpleButton_root"]`);
+    await this.waitAndClick(`//button[contains(text(), "${recoveryPhraseMnemonic}") and @class="flat SimpleButton_root MnemonicWord_root"]`);
   }
 });
 
@@ -452,4 +434,10 @@ Then(/^I should see newly generated address as active address on the wallet rece
     const generatedAddress = await this.client.getText('.generatedAddress-1 .WalletReceive_addressId');
     return generatedAddress === activeAddress;
   });
+});
+
+Then(/^I should see the wallets in the following order:$/, async function (table) {
+  const expectedWallets = table.hashes();
+  const wallets = await this.client.getText('.SidebarWalletMenuItem_title');
+  wallets.forEach((wallet, index) => expect(wallet).to.equal(expectedWallets[index].name));
 });

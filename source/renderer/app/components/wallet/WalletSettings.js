@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
@@ -11,12 +12,9 @@ import InlineEditingDropdown from '../widgets/forms/InlineEditingDropdown';
 import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
 import DeleteWalletButton from './settings/DeleteWalletButton';
 import DeleteWalletConfirmationDialog from './settings/DeleteWalletConfirmationDialog';
-import DeleteWalletDialogContainer from '../../containers/wallet/dialogs/DeleteWalletDialogContainer';
-import WalletExportDialog from './settings/export-to-file/WalletExportToFileDialog';
-import WalletExportToFileDialogContainer from '../../containers/wallet/settings/WalletExportToFileDialogContainer';
+import ExportWalletToFileDialog from './settings/ExportWalletToFileDialog';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
 import ChangeWalletPasswordDialog from './settings/ChangeWalletPasswordDialog';
-import ChangeWalletPasswordDialogContainer from '../../containers/wallet/dialogs/ChangeWalletPasswordDialogContainer';
 import globalMessages from '../../i18n/global-messages';
 import styles from './WalletSettings.scss';
 
@@ -71,6 +69,9 @@ type Props = {
   isSubmitting: boolean,
   isInvalid: boolean,
   lastUpdatedField: ?string,
+  changeWalletPasswordDialog: Node,
+  deleteWalletDialogContainer: Node,
+  exportWalletDialogContainer: Node,
 };
 
 @observer
@@ -97,6 +98,9 @@ export default class WalletSettings extends Component<Props> {
       nameValidator, activeField,
       isSubmitting, isInvalid,
       lastUpdatedField,
+      changeWalletPasswordDialog,
+      deleteWalletDialogContainer,
+      exportWalletDialogContainer,
     } = this.props;
 
     const assuranceLevelOptions = assuranceLevels.map(assurance => ({
@@ -157,12 +161,12 @@ export default class WalletSettings extends Component<Props> {
               <button
                 className={styles.exportLink}
                 onClick={() => openDialogAction({
-                  dialog: WalletExportDialog
+                  dialog: ExportWalletToFileDialog
                 })}
               >
                 {intl.formatMessage(messages.exportButtonLabel)}
               </button>
-            ) : null}
+            ) : false}
 
             <DeleteWalletButton
               onClick={() => openDialogAction({
@@ -174,16 +178,16 @@ export default class WalletSettings extends Component<Props> {
         </BorderedBox>
 
         {isDialogOpen(ChangeWalletPasswordDialog) ? (
-          <ChangeWalletPasswordDialogContainer />
-        ) : null}
+          changeWalletPasswordDialog
+        ) : false}
 
         {isDialogOpen(DeleteWalletConfirmationDialog) ? (
-          <DeleteWalletDialogContainer />
-        ) : null}
+          deleteWalletDialogContainer
+        ) : false}
 
-        {isDialogOpen(WalletExportDialog) ? (
-          <WalletExportToFileDialogContainer />
-        ) : null}
+        {isDialogOpen(ExportWalletToFileDialog) ? (
+          exportWalletDialogContainer
+        ) : false}
 
       </div>
     );

@@ -4,15 +4,15 @@ import { observer } from 'mobx-react';
 import { join } from 'lodash';
 import { isEmail, isEmpty } from 'validator';
 import classnames from 'classnames';
-import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
+import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { Select } from 'react-polymorph/lib/components/Select';
+import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import Select from 'react-polymorph/lib/components/Select';
-import SelectSkin from 'react-polymorph/lib/skins/simple/raw/SelectSkin';
-import Autocomplete from 'react-polymorph/lib/components/Autocomplete';
-import SimpleAutocompleteSkin from 'react-polymorph/lib/skins/simple/raw/AutocompleteSkin';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import AdaCertificateUploadWidget from '../../widgets/forms/AdaCertificateUploadWidget';
 import AdaRedemptionChoices from './AdaRedemptionChoices';
@@ -26,6 +26,7 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { ADA_REDEMPTION_PASSPHRASE_LENGHT } from '../../../config/cryptoConfig';
 import { ADA_REDEMPTION_TYPES } from '../../../types/redemptionTypes';
 import type { RedemptionTypeChoices } from '../../../types/redemptionTypes';
+import { submitOnEnter } from '../../../utils/form';
 
 const messages = defineMessages({
   headline: {
@@ -522,6 +523,7 @@ export default class AdaRedemptionForm extends Component<Props> {
               <div className={styles.inputs}>
                 {redemptionType !== ADA_REDEMPTION_TYPES.PAPER_VENDED ? (
                   <Input
+                    onKeyPress={submitOnEnter.bind(this, submit)}
                     className="redemption-key"
                     {...redemptionKeyField.bind()}
                     placeholder={
@@ -536,15 +538,16 @@ export default class AdaRedemptionForm extends Component<Props> {
                     }}
                     disabled={isRecovery || isCertificateSelected}
                     error={redemptionKeyField.error}
-                    skin={<SimpleInputSkin />}
+                    skin={InputSkin}
                   />
                 ) : (
                   <Input
+                    onKeyPress={submitOnEnter.bind(this, submit)}
                     className="shielded-redemption-key"
                     {...shieldedRedemptionKeyField.bind()}
                     disabled={isCertificateSelected}
                     error={shieldedRedemptionKeyField.error}
-                    skin={<SimpleInputSkin />}
+                    skin={InputSkin}
                   />
                 )}
 
@@ -554,7 +557,7 @@ export default class AdaRedemptionForm extends Component<Props> {
                   {...walletId.bind()}
                   onChange={this.onWalletChange}
                   isOpeningUpward
-                  skin={<SelectSkin />}
+                  skin={SelectSkin}
                 />
               </div>
 
@@ -583,10 +586,11 @@ export default class AdaRedemptionForm extends Component<Props> {
             {walletHasPassword ? (
               <div className={styles.passwordInput}>
                 <Input
+                  onKeyPress={submitOnEnter.bind(this, submit)}
                   className="walletPassword"
                   {...walletPasswordField.bind()}
                   error={walletPasswordField.error}
-                  skin={<SimpleInputSkin />}
+                  skin={InputSkin}
                 />
               </div>
             ) : null}
@@ -602,7 +606,7 @@ export default class AdaRedemptionForm extends Component<Props> {
                   maxVisibleOptions={5}
                   noResultsMessage={intl.formatMessage(messages.passphraseNoResults)}
                   isOpeningUpward
-                  skin={<SimpleAutocompleteSkin />}
+                  skin={AutocompleteSkin}
                 />
               </div>
             ) : null}
@@ -610,10 +614,11 @@ export default class AdaRedemptionForm extends Component<Props> {
             {showInputForDecryptionKey ? (
               <div className={styles.decryptionKey}>
                 <Input
+                  onKeyPress={submitOnEnter.bind(this, submit)}
                   className="decryption-key"
                   {...decryptionKeyField.bind()}
                   error={decryptionKeyField.error}
-                  skin={<SimpleInputSkin />}
+                  skin={InputSkin}
                 />
               </div>
             ) : null}
@@ -621,10 +626,11 @@ export default class AdaRedemptionForm extends Component<Props> {
             {showInputsForDecryptingForceVendedCertificate ? (
               <div className={styles.email}>
                 <Input
+                  onKeyPress={submitOnEnter.bind(this, submit)}
                   className="email"
                   {...emailField.bind()}
                   error={emailField.error}
-                  skin={<SimpleInputSkin />}
+                  skin={InputSkin}
                 />
               </div>
             ) : null}
@@ -632,10 +638,11 @@ export default class AdaRedemptionForm extends Component<Props> {
             {showInputsForDecryptingForceVendedCertificate ? (
               <div className={styles.adaPasscode}>
                 <Input
+                  onKeyPress={submitOnEnter.bind(this, submit)}
                   className="ada-passcode"
                   {...adaPasscodeField.bind()}
                   error={adaPasscodeField.error}
-                  skin={<SimpleInputSkin />}
+                  skin={InputSkin}
                 />
               </div>
             ) : null}
@@ -643,10 +650,11 @@ export default class AdaRedemptionForm extends Component<Props> {
             {showInputsForDecryptingForceVendedCertificate ? (
               <div className={styles.adaAmount}>
                 <Input
+                  onKeyPress={submitOnEnter.bind(this, submit)}
                   className="ada-amount"
                   {...adaAmountField.bind()}
                   error={adaAmountField.error}
-                  skin={<SimpleInputSkin />}
+                  skin={InputSkin}
                 />
               </div>
             ) : null}
@@ -656,9 +664,9 @@ export default class AdaRedemptionForm extends Component<Props> {
             <Button
               className={submitButtonClasses}
               label={intl.formatMessage(messages.submitLabel)}
-              onMouseUp={submit}
+              onClick={submit}
               disabled={!canSubmit}
-              skin={<SimpleButtonSkin />}
+              skin={ButtonSkin}
             />
 
           </BorderedBox>

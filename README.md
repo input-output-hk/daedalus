@@ -1,4 +1,6 @@
-<sub>Author: [Nikola Glumac](https://github.com/nikolaglumac)<br/>Status: Active</sub>
+<blockquote>
+<sub>Document maintainer: Nikola Glumac<br/>Document status: Active</sub>
+</blockquote>
 
 # Daedalus
 [![Build status](https://badge.buildkite.com/e173494257519752d79bb52c7859df6277c6d759b217b68384.svg?branch=master)](https://buildkite.com/input-output-hk/daedalus)
@@ -34,6 +36,12 @@ cache][cache] will speed things up.
 
 The result can be found at `./result/daedalus-*.bin`.
 
+# Nix Shell
+
+`shell.nix` provides a way to load a shell with all the correct versions of all the required dependencies for development. Run `nix-shell` in the daedalus directory to start the shell.
+
+`shell.nix` also provides a script for updating yarn.lock. Run `nix-shell -A fixYarnLock` to update `yarn.lock` file.
+
 # Windows
 
 This batch file requires [Node.js](https://nodejs.org/en/download/) and
@@ -47,8 +55,10 @@ The result will can be found at `.\daedalus-*.exe`.
 
 ### Install Node.js dependencies.
 
+To ensure secure and reproducible builds we are using [yarn](https://yarnpkg.com/lang/en/) to manage dependencies.
+
 ```bash
-$ npm install
+$ yarn install
 ```
 
 ## Development
@@ -57,10 +67,10 @@ Run with:
 
 ```bash
 $ export CARDANO_TLS_PATH={path-to-cardano-sl}/run/tls-files/
-$ npm run dev
+$ yarn run dev
 ```
 
-*Note: requires a node version >= 8 and an npm version >= 5. This project defaults to 8.x*
+*Note: requires a node version >= 8 and an yarn version >= 1.7.0.*
 
 ### Development - with Cardano Wallet
 
@@ -98,7 +108,8 @@ There are three different network options you can run Daedalus in: `mainnet`, `t
 To set desired network option use `NETWORK` environment variable:
 
 ```bash
-$ NETWORK=testnet npm run dev
+$ export NETWORK=testnet
+$ yarn run dev
 ```
 
 ### Testing
@@ -109,14 +120,14 @@ You can run the test suite in two different modes:
 For running tests once using the application in production mode:
 
 ```bash
-$ npm run test
+$ yarn run test
 ```
 
 **Watch & Rerun on file changes:**
 For development purposes run the tests continuously in watch mode which will re-run tests when source code changes:
 
 ```bash
-$ npm run test:watch
+$ yarn run test:watch
 ```
 
 You can find more details regarding tests setup within [Running Daedalus acceptance tests](https://github.com/input-output-hk/daedalus/blob/master/features/README.md) README file.
@@ -140,7 +151,7 @@ externals: [
 ]
 ```
 
-For a common example, to install Bootstrap, `npm i --save bootstrap` and link them in the head of app.html
+For a common example, to install Bootstrap, `yarn install --save bootstrap` and link them in the head of app.html
 
 ```html
 <link rel="stylesheet" href="../node_modules/bootstrap/dist/css/bootstrap.css" />
@@ -156,19 +167,19 @@ externals: ['bootstrap']
 ## Packaging
 
 ```bash
-$ npm run package
+$ yarn run package
 ```
 
 To package apps for all platforms:
 
 ```bash
-$ npm run package:all
+$ yarn run package:all
 ```
 
 To package apps with options:
 
 ```bash
-$ npm run package -- --[option]
+$ yarn run package -- --[option]
 ```
 
 ### Options

@@ -2,14 +2,15 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Button from 'react-polymorph/lib/components/Button';
-import SimpleButtonSkin from 'react-polymorph/lib/skins/simple/raw/ButtonSkin';
-import Input from 'react-polymorph/lib/components/Input';
-import NumericInput from 'react-polymorph/lib/components/NumericInput';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
+import { submitOnEnter } from '../../utils/form';
 import AmountInputSkin from './skins/AmountInputSkin';
 import BorderedBox from '../widgets/BorderedBox';
 import LoadingSpinner from '../widgets/LoadingSpinner';
@@ -146,6 +147,17 @@ export default class WalletSendForm extends Component<Props, State> {
     this._isMounted = false;
   }
 
+  handleOnSubmit = () => {
+    if (this.isDisabled()) {
+      return false;
+    }
+    this.props.openDialogAction({
+      dialog: WalletSendConfirmationDialog,
+    });
+  };
+
+  isDisabled = () => this._isCalculatingFee || !this.state.isTransactionFeeCalculated;
+
   // FORM VALIDATION
   form = new ReactToolboxMobxForm({
     fields: {
@@ -209,7 +221,7 @@ export default class WalletSendForm extends Component<Props, State> {
     const { intl } = this.context;
     const {
       currencyUnit, currencyMaxIntegerDigits, currencyMaxFractionalDigits,
-      openDialogAction, isDialogOpen, isRestoreActive,
+      isDialogOpen, isRestoreActive,
     } = this.props;
     const { isTransactionFeeCalculated, transactionFee, transactionFeeError } = this.state;
     const amountField = form.$('amount');
@@ -246,13 +258,15 @@ export default class WalletSendForm extends Component<Props, State> {
               <div className={styles.receiverInput}>
                 <Input
                   className="receiver"
+                  label={intl.formatMessage(messages.receiverLabel)}
                   {...receiverField.bind()}
                   error={receiverField.error}
                   onChange={(value) => {
                     this._isCalculatingFee = true;
                     receiverField.onChange(value || '');
                   }}
-                  skin={<SimpleInputSkin />}
+                  skin={InputSkin}
+                  onKeyPress={submitOnEnter.bind(this, this.handleOnSubmit)}
                 />
               </div>
 
@@ -272,18 +286,17 @@ export default class WalletSendForm extends Component<Props, State> {
                   currency={currencyUnit}
                   fees={fees}
                   total={total}
-                  skin={<AmountInputSkin />}
+                  skin={AmountInputSkin}
+                  onKeyPress={submitOnEnter.bind(this, this.handleOnSubmit)}
                 />
               </div>
 
               <Button
                 className={buttonClasses}
                 label={intl.formatMessage(messages.nextButtonLabel)}
-                onMouseUp={() => openDialogAction({
-                  dialog: WalletSendConfirmationDialog,
-                })}
-                disabled={this._isCalculatingFee || !isTransactionFeeCalculated}
-                skin={<SimpleButtonSkin />}
+                onClick={this.handleOnSubmit}
+                skin={ButtonSkin}
+                disabled={this.isDisabled()}
               />
             </div>
           </BorderedBox>

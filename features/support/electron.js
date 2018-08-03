@@ -85,6 +85,13 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
     });
   });
 
+  // this ensures that the spectron instance of the app restarts
+  // after the node update acceptance test shuts it down via 'kill-process'
+  // eslint-disable-next-line prefer-arrow-callback
+  After({ tags: '@restartApp' }, async function () {
+    await context.app.restart();
+  });
+
   // eslint-disable-next-line prefer-arrow-callback
   After(async function ({ result }) {
     scenariosCount++;
@@ -95,9 +102,12 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
 
   // eslint-disable-next-line prefer-arrow-callback
   AfterAll(async function () {
+    if (!context.app.running) return;
+
     if (scenariosCount === 0) {
       await printMainProcessLogs();
     }
+
     return context.app.stop();
   });
 });

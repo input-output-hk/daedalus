@@ -119,7 +119,7 @@ optionsParser detectedOS = Options
   <*> (fromMaybe detectedOS <$> (optional $
                    optReadLower "os"                  's' "OS, defaults to host OS.  One of:  linux64 macos64 win64"))
   <*> (fromMaybe Mainnet    <$> (optional $
-                   optReadLower "cluster"             'c' "Cluster the resulting installer will target:  mainnet or staging"))
+                   optReadLower "cluster"             'c' "Cluster the resulting installer will target:  mainnet, staging, or testnet"))
   <*> (fromMaybe "daedalus" <$> (optional $
       (AppName      <$> optText "appname"             'n' "Application name:  daedalus or..")))
   <*>                   optPath "out-dir"             'o' "Installer output directory"

@@ -2,8 +2,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -92,7 +92,7 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
             label={intl.formatMessage(messages.termNobodyWatching)}
             onChange={onAcceptPrivacyNotice}
             checked={isPrivacyNoticeAccepted}
-            skin={<SimpleCheckboxSkin />}
+            skin={CheckboxSkin}
           />
         </div>
       </Dialog>

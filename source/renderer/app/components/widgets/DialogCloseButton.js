@@ -6,14 +6,19 @@ import styles from './DialogCloseButton.scss';
 type Props = {
   onClose: Function,
   icon?: string,
+  disabled?: boolean
 };
 
 export default class DialogCloseButton extends Component<Props> {
 
   render() {
-    const { onClose, icon } = this.props;
+    const { onClose, icon, disabled } = this.props;
     return (
-      <button onClick={onClose} className={styles.component}>
+      <button
+        onClick={onClose}
+        className={!disabled ? styles.component : styles.disabled}
+        tabIndex={-1}
+      >
         <SVGInline svg={icon || closeCross} />
       </button>
     );

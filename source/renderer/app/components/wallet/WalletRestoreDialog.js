@@ -3,12 +3,13 @@ import React, { Component } from 'react';
 import { join } from 'lodash';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import Autocomplete from 'react-polymorph/lib/components/Autocomplete';
-import SimpleAutocompleteSkin from 'react-polymorph/lib/skins/simple/raw/AutocompleteSkin';
-import SimpleSwitchSkin from 'react-polymorph/lib/skins/simple/raw/SwitchSkin';
+import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
+import { SwitchSkin } from 'react-polymorph/lib/skins/simple/SwitchSkin';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import { defineMessages, intlShape } from 'react-intl';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../widgets/DialogCloseButton';
@@ -19,6 +20,7 @@ import LocalizableError from '../../i18n/LocalizableError';
 import { PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT, WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import styles from './WalletRestoreDialog.scss';
+import { submitOnEnter } from '../../utils/form';
 
 const RESTORE_TYPES = {
   REGULAR: 'regular',
@@ -262,7 +264,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     form.showErrors(false);
 
     // Autocomplete has to be reset manually
-    this.recoveryPhraseAutocomplete.clear();
+    this.recoveryPhraseAutocomplete.getRef().clear();
   };
 
   render() {
@@ -308,7 +310,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
       },
     ];
 
-
     const regularTabClasses = classnames([
       'regularTab',
       this.isRegular() ? styles.activeButton : '',
@@ -347,9 +348,10 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
         <Input
           className={walletNameFieldClasses}
+          onKeyPress={submitOnEnter.bind(this, this.submit)}
           {...walletNameField.bind()}
           error={walletNameField.error}
-          skin={<SimpleInputSkin />}
+          skin={InputSkin}
         />
 
         <Autocomplete
@@ -370,7 +372,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           error={recoveryPhraseField.error}
           maxVisibleOptions={5}
           noResultsMessage={intl.formatMessage(messages.recoveryPhraseNoResults)}
-          skin={<SimpleAutocompleteSkin />}
+          skin={AutocompleteSkin}
         />
 
         <div className={styles.walletPassword}>
@@ -379,25 +381,28 @@ export default class WalletRestoreDialog extends Component<Props, State> {
               {intl.formatMessage(messages.passwordSwitchLabel)}
             </div>
             <Checkbox
+              themeId={IDENTIFIERS.SWITCH}
               onChange={this.handlePasswordSwitchToggle}
               label={intl.formatMessage(messages.passwordSwitchPlaceholder)}
               checked={createPassword}
-              skin={<SimpleSwitchSkin />}
+              skin={SwitchSkin}
             />
           </div>
 
           <div className={walletPasswordFieldsClasses}>
             <Input
               className="walletPassword"
+              onKeyPress={submitOnEnter.bind(this, this.submit)}
               {...walletPasswordField.bind()}
               error={walletPasswordField.error}
-              skin={<SimpleInputSkin />}
+              skin={InputSkin}
             />
             <Input
               className="repeatedPassword"
+              onKeyPress={submitOnEnter.bind(this, this.submit)}
               {...repeatedPasswordField.bind()}
               error={repeatedPasswordField.error}
-              skin={<SimpleInputSkin />}
+              skin={InputSkin}
             />
             <p className={styles.passwordInstructions}>
               {intl.formatMessage(globalMessages.passwordInstructions)}

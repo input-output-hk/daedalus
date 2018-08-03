@@ -2,10 +2,10 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import Input from 'react-polymorph/lib/components/Input';
-import SimpleInputSkin from 'react-polymorph/lib/skins/simple/raw/InputSkin';
-import Checkbox from 'react-polymorph/lib/components/Checkbox';
-import SimpleCheckboxSkin from 'react-polymorph/lib/skins/simple/raw/CheckboxSkin';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { Input } from 'react-polymorph/lib/components/Input';
+import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -13,6 +13,7 @@ import styles from './DeleteWalletConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import environment from '../../../../../common/environment';
 import { DELETE_WALLET_COUNTDOWN } from '../../../config/timingConfig';
+import { submitOnEnter } from '../../../utils/form';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -84,10 +85,13 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
     const countdownDisplay = countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
     const isCountdownFinished = countdownRemaining <= 0;
     const isWalletNameConfirmationCorrect = confirmationValue === walletName;
+    const isDisabled = (
+      !isCountdownFinished || !isBackupNoticeAccepted || !isWalletNameConfirmationCorrect
+    );
+    const handleSubmit = () => !isDisabled && onContinue();
 
     const buttonClasses = classnames([
-      'deleteButton',
-      styles.deleteButton,
+      'attention',
       isSubmitting ? styles.isSubmitting : null
     ]);
 
@@ -100,9 +104,7 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
         className: buttonClasses,
         label: intl.formatMessage(messages.confirmButtonLabel) + countdownDisplay,
         onClick: onContinue,
-        disabled: (
-          !isCountdownFinished || !isBackupNoticeAccepted || !isWalletNameConfirmationCorrect
-        ),
+        disabled: isDisabled,
         primary: true,
       },
     ];
@@ -124,15 +126,16 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
           label={intl.formatMessage(messages.confirmBackupNotice)}
           onChange={onAcceptBackupNotice}
           checked={isBackupNoticeAccepted}
-          skin={<SimpleCheckboxSkin />}
+          skin={CheckboxSkin}
         />
         {isBackupNoticeAccepted ? (
           <Input
             className={styles.confirmationInput}
             label={intl.formatMessage(messages.enterRecoveryWordLabel)}
             value={confirmationValue}
+            onKeyPress={submitOnEnter.bind(this, handleSubmit)}
             onChange={onConfirmationValueChange}
-            skin={<SimpleInputSkin />}
+            skin={InputSkin}
           />
         ) : null}
       </Dialog>

@@ -40,7 +40,6 @@ export default class WalletsStore extends Store {
     );
     this.registerReactions([
       this._updateActiveWalletOnRouteChanges,
-      this._showAddWalletPageWhenNoWallets,
     ]);
   }
 
@@ -68,8 +67,6 @@ export default class WalletsStore extends Store {
       await this.walletsRequest.patch(result => { result.push(wallet); });
       this.actions.dialogs.closeActiveDialog.trigger();
       this.goToWalletRoute(wallet.id);
-    } else {
-      this.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });
     }
   };
 
@@ -92,7 +89,6 @@ export default class WalletsStore extends Store {
         this.goToWalletRoute(nextWalletInList.id);
       } else {
         this.active = null;
-        this.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });
       }
     });
     this.deleteWalletRequest.reset();
@@ -217,15 +213,9 @@ export default class WalletsStore extends Store {
     });
   };
 
-  _pollRefresh = async () => (
-    this.stores.networkStatus.isSynced && await this.refreshWalletsData()
-  );
-
-  _showAddWalletPageWhenNoWallets = () => {
-    const isRouteThatNeedsWallets = this.isWalletRoute;
-    if (isRouteThatNeedsWallets && !this.hasAnyWallets) {
-      this.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });
-    }
+  _pollRefresh = async () => {
+    const { isSynced, isSystemTimeCorrect } = this.stores.networkStatus;
+    return isSynced && isSystemTimeCorrect && await this.refreshWalletsData();
   };
 
   _updateActiveWalletOnRouteChanges = () => {

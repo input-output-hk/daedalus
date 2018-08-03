@@ -1,11 +1,14 @@
+// @flow
 import http from 'http';
 import FormData from 'form-data/lib/form_data';
 import fs from 'fs';
+import { extractFileNameFromPath } from '../../../../common/fileName';
 
 export type RequestOptions = {
-  hostname: string,
+  hostname: ?string,
   method: string,
-  port: number,
+  path: string,
+  port: ?string,
   headers?: {
     'Content-Type': string,
   },
@@ -16,7 +19,7 @@ export type RequestPayload = {
   version: string,
   build: string,
   os: string,
-  logs: Array<string>,
+  compressedLogsFile: string,
   date: string,
   magic: number,
   type: {
@@ -27,9 +30,9 @@ export type RequestPayload = {
   }
 };
 
-function typedHttpRequest<Response>(
+function typedHttpRequest(
   httpOptions: RequestOptions, requestPayload?: RequestPayload
-): Promise<Response> {
+): Promise<void> {
   return new Promise((resolve, reject) => {
     const options: RequestOptions = Object.assign({}, httpOptions);
     const payload: RequestPayload = Object.assign({}, requestPayload);
@@ -38,9 +41,10 @@ function typedHttpRequest<Response>(
     formData.append('payload', JSON.stringify(payload));
 
     // prepare file stream (attachment)
-    if (payload.compressedLog) {
-      const stream = fs.createReadStream(payload.compressedLog);
-      formData.append('logs.zip', stream);
+    if (payload.compressedLogsFile) {
+      const stream = fs.createReadStream(payload.compressedLogsFile);
+      const fileName = extractFileNameFromPath(payload.compressedLogsFile);
+      formData.append(fileName, stream);
     }
 
     options.headers = formData.getHeaders();

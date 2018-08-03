@@ -68,3 +68,62 @@ export const importWalletWithFunds = async (client, { keyFilePath, password }) =
       .catch((error) => done(error));
   }, keyFilePath, password)
 );
+
+const createWalletsAsync = async (table, context) => {
+  const result = await context.client.executeAsync((wallets, done) => {
+    window.Promise.all(wallets.map((wallet) => (
+      daedalus.api.ada.createWallet({
+        name: wallet.name,
+        mnemonic: daedalus.utils.crypto.generateMnemonic(),
+        password: wallet.password || null,
+      })
+    )))
+      .then(() => (
+        daedalus.stores.ada.wallets.walletsRequest.execute()
+          .then((storeWallets) => (
+            daedalus.stores.ada.wallets.refreshWalletsData()
+              .then(() => done(storeWallets))
+              .catch((error) => done(error))
+          ))
+          .catch((error) => done(error))
+      ))
+      .catch((error) => done(error.stack));
+  }, table);
+  // Add or set the wallets for this scenario
+  if (context.wallets != null) {
+    context.wallets.push(...result.value);
+  } else {
+    context.wallets = result.value;
+  }
+};
+
+const createWalletsSequentially = async (wallets, context) => {
+
+  context.wallets = await wallets.map(async (walletData) =>
+    await context.client.executeAsync((wallet, done) => {
+      daedalus.api.ada.createWallet({
+        name: wallet.name,
+        mnemonic: daedalus.utils.crypto.generateMnemonic(),
+        password: wallet.password || null,
+      }).then(() => (
+        daedalus.stores.ada.wallets.walletsRequest.execute()
+          .then((storeWallets) => (
+            daedalus.stores.ada.wallets.refreshWalletsData()
+              .then(() => done(storeWallets))
+              .catch((error) => done(error))
+          ))
+          .catch((error) => done(error))
+      )).catch((error) => done(error.stack));
+    }, walletData)
+  );
+};
+
+export const createWallets = async (wallets, context, sequentially) => {
+
+  if (sequentially === true) {
+    await createWalletsSequentially(wallets, context);
+  } else {
+    await createWalletsAsync(wallets, context);
+  }
+
+};
