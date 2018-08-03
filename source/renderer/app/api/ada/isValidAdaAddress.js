@@ -1,5 +1,6 @@
 // @flow
-import { request } from './lib/request';
+import type { AdaAddress } from './types';
+import { request } from './lib/v1/request';
 
 export type IsValidAdaAddressParams = {
   ca: string,
@@ -8,12 +9,12 @@ export type IsValidAdaAddressParams = {
 
 export const isValidAdaAddress = (
   { ca, address }: IsValidAdaAddressParams
-): Promise<boolean> => {
+): Promise<AdaAddress> => {
   const encodedAddress = encodeURIComponent(address);
   return request({
     hostname: 'localhost',
     method: 'GET',
-    path: `/api/addresses/${encodedAddress}`,
+    path: `/api/v1/addresses/${encodedAddress}`,
     port: 8090,
     ca,
   });
