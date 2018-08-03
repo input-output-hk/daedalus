@@ -49,6 +49,7 @@ import type {
   AdaAddress,
   AdaAccounts,
   AdaTransaction,
+  AdaTransactionV1,
   AdaTransactionFeeV1,
   AdaTransactions,
   AdaWallet,
@@ -109,6 +110,7 @@ import {
 
 import { AdaV1AssuranceOptions } from './types';
 import { assuranceModeOptions } from '../../types/transactionAssuranceTypes';
+import { getAdaWalletAccountsV1 } from './getAdaWalletAccountsV1';
 
 /**
  * The api layer that is used for all requests to the
@@ -258,12 +260,28 @@ export default class AdaApi {
   async getTransactions(request: GetTransactionsRequest): Promise<GetTransactionsResponse> {
     Logger.debug('AdaApi::searchHistory called: ' + stringifyData(request));
     const { walletId, skip, limit } = request;
+
+    const accounts = await getAdaWalletAccountsV1({ ca, walletId });
+    const accountIndex = accounts[0].index;
+    const page = skip === 0 ? 1 : (skip / limit) + 1;
+    const per_page = limit > 50 ? 50 : limit; // eslint-disable-line camelcase
+
+    const paramsV1 = {
+      accountIndex,
+      ca,
+      limit,
+      page,
+      per_page,
+      skip,
+      wallet_id: walletId,
+    };
+
     try {
-      const history: AdaTransactions = await getAdaHistoryByWallet({ ca, walletId, skip, limit });
+      const history: AdaTransactions = await getAdaHistoryByWallet(paramsV1);
       Logger.debug('AdaApi::searchHistory success: ' + stringifyData(history));
       return new Promise((resolve) => resolve({
-        transactions: history[0].map(data => _createTransactionFromServerData(data)),
-        total: history[1]
+        transactions: history.map(data => _createTransactionFromServerDataV1(data)),
+        total: history.length,
       }));
     } catch (error) {
       Logger.error('AdaApi::searchHistory error: ' + stringifyError(error));
@@ -832,6 +850,17 @@ const _conditionToTxState = (condition: string) => {
   }
 };
 
+const _conditionToTxStateV1 = (condition: string) => {
+  switch (condition) {
+    case 'applying':
+    case 'creating': return 'pending';
+    case 'wontApply': return 'failed';
+    default: return 'ok';
+    // Others V0: CPtxInBlocks && CPtxNotTracked
+    // Others V1: "inNewestBlocks" "persisted" "creating"
+  }
+};
+
 const _createTransactionFromServerData = action(
   'AdaApi::_createTransactionFromServerData', (data: AdaTransaction) => {
     const coins = data.ctAmount.getCCoin;
@@ -849,6 +878,26 @@ const _createTransactionFromServerData = action(
         to: data.ctOutputs.map(address => address[0]),
       },
       state: _conditionToTxState(data.ctCondition),
+    });
+  }
+);
+
+const _createTransactionFromServerDataV1 = action(
+  'AdaApi::_createTransactionFromServerData', (data: AdaTransactionV1) => {
+    const { id, direction, amount, confirmations, creationTime, inputs, outputs, status } = data;
+    return new WalletTransaction({
+      id,
+      title: direction === 'outgoing' ? 'Ada sent' : 'Ada received',
+      type: direction === 'outgoing' ? transactionTypes.EXPEND : transactionTypes.INCOME,
+      amount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
+      date: new Date(creationTime),
+      description: '',
+      numberOfConfirmations: confirmations,
+      addresses: {
+        from: inputs.map(address => address[0]),
+        to: outputs.map(address => address[0]),
+      },
+      state: _conditionToTxStateV1(status.tag),
     });
   }
 );

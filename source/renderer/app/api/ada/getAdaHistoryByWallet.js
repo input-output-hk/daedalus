@@ -1,22 +1,24 @@
 // @flow
 import type { AdaTransactions } from './types';
-import { request } from './lib/request';
+import { request } from './lib/v1/request';
 
 export type GetAdaHistoryByWalletParams = {
   ca: string,
-  walletId: string,
-  skip: number,
-  limit: number,
+  wallet_id: string,
+  page: number,
+  per_page: number,
+  accountIndex: number,
 };
 
 export const getAdaHistoryByWallet = (
-  { ca, walletId, skip, limit }: GetAdaHistoryByWalletParams
+  { ca, ...requestParams }:
+    GetAdaHistoryByWalletParams
 ): Promise<AdaTransactions> => (
   request({
     hostname: 'localhost',
     method: 'GET',
-    path: '/api/txs/histories',
+    path: '/api/v1/transactions',
     port: 8090,
     ca,
-  }, { walletId, skip, limit })
+  }, requestParams)
 );
