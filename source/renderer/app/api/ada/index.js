@@ -74,6 +74,7 @@ import type {
   GetTransactionsResponse,
   GetWalletRecoveryPhraseResponse,
   GetWalletsResponse,
+  IsValidAddressResponse,
   RestoreWalletRequest,
   RestoreWalletResponse,
   SendBugReportRequest,
@@ -87,7 +88,8 @@ import {
   GenericApiError,
   IncorrectWalletPasswordError,
   WalletAlreadyRestoredError,
-  ReportRequestError, InvalidMnemonicError,
+  ReportRequestError,
+  InvalidMnemonicError
 } from '../common';
 
 import {
@@ -382,8 +384,16 @@ export default class AdaApi {
     }
   }
 
-  isValidAddress(address: string): Promise<boolean> {
-    return isValidAdaAddress({ ca, address });
+  async isValidAddress(address: string): Promise<IsValidAddressResponse> {
+    Logger.debug('AdaApi::isValidAdaAddress called');
+    try {
+      const response: AdaAddress = await isValidAdaAddress({ ca, address });
+      Logger.debug(`AdaApi::isValidAdaAddress success: ${stringifyData(response)}`);
+      return true;
+    } catch (error) {
+      Logger.debug(`AdaApi::isValidAdaAddress error: ${stringifyError(error)}`);
+      return false;
+    }
   }
 
   isValidMnemonic(mnemonic: string): Promise<boolean> {
