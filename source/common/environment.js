@@ -1,5 +1,6 @@
 // @flow
 import os from 'os';
+import { uniq } from 'lodash';
 import { version } from '../../package.json';
 
 // Only require electron / remote if we are in a node.js environment
@@ -26,6 +27,7 @@ const environment = Object.assign({
   isAdaApi: () => environment.API === 'ada',
   isEtcApi: () => environment.API === 'etc',
   build: process.env.BUILD_NUMBER || 'dev',
+  getInstallerVersion: () => uniq([environment.API_VERSION, environment.build]).join('.'),
   platform: os.platform(),
   version,
 }, remote ? remote.getGlobal('env') : process.env);

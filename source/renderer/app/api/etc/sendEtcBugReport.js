@@ -11,14 +11,14 @@ export type SendEtcBugReportRequestParams = {
     problem: string,
     compressedLog: string,
   },
-  application: string,
 };
 
 export const sendEtcBugReport = (
-  { requestFormData, application }: SendEtcBugReportRequestParams
+  { requestFormData }: SendEtcBugReportRequestParams
 ): Promise<{}> => {
   const { email, subject, problem, compressedLog } = requestFormData;
-  const reportUrl = url.parse(environment.REPORT_URL);
+  const { version, API_VERSION, NETWORK, build, getInstallerVersion, REPORT_URL } = environment;
+  const reportUrl = url.parse(REPORT_URL);
 
   let platform;
   switch (environment.platform) {
@@ -41,9 +41,12 @@ export const sendEtcBugReport = (
     path: '/report',
     port: reportUrl.port,
   }, {
-    application,
-    version: environment.version,
-    build: environment.build,
+    product: 'Cardano Wallet',
+    frontendVersion: version,
+    backendVersion: API_VERSION,
+    network: NETWORK,
+    build,
+    installerVersion: getInstallerVersion(),
     os: platform,
     compressedLog,
     date: moment().format('YYYY-MM-DDTHH:mm:ss'),

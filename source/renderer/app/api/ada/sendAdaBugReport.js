@@ -11,14 +11,14 @@ export type SendAdaBugReportRequestParams = {
     problem: string,
     compressedLog: string,
   },
-  application: string,
 };
 
 export const sendAdaBugReport = (
-  { requestFormData, application }: SendAdaBugReportRequestParams
+  { requestFormData }: SendAdaBugReportRequestParams
 ): Promise<{}> => {
   const { email, subject, problem, compressedLog } = requestFormData;
-  const reportUrl = url.parse(environment.REPORT_URL);
+  const { version, API_VERSION, NETWORK, build, getInstallerVersion, REPORT_URL } = environment;
+  const reportUrl = url.parse(REPORT_URL);
 
   let platform;
   switch (environment.platform) {
@@ -41,9 +41,12 @@ export const sendAdaBugReport = (
     path: '/report',
     port: reportUrl.port,
   }, {
-    application,
-    version: environment.version,
-    build: environment.build,
+    product: 'Cardano Wallet',
+    frontendVersion: version,
+    backendVersion: API_VERSION,
+    network: NETWORK,
+    build,
+    installerVersion: getInstallerVersion(),
     os: platform,
     compressedLog,
     date: moment().format('YYYY-MM-DDTHH:mm:ss'),
