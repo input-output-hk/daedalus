@@ -4,13 +4,13 @@ import _ from 'lodash';
 import Store from '../lib/Store';
 import CachedRequest from '../lib/LocalizedCachedRequest';
 import Request from '../lib/LocalizedRequest';
-import WalletAddress from '../../domains/WalletAddress';
+import type { AdaAddress } from '../../api/ada/types';
 import LocalizableError from '../../i18n/LocalizableError';
 import type { GetAddressesResponse, CreateAddressResponse } from '../../api/ada/index';
 
 export default class AddressesStore extends Store {
 
-  @observable lastGeneratedAddress: ?WalletAddress = null;
+  @observable lastGeneratedAddress: ?AdaAddress = null;
   @observable addressesRequests: Array<{
     walletId: string,
     allRequest: CachedRequest<GetAddressesResponse>
@@ -28,13 +28,15 @@ export default class AddressesStore extends Store {
     actions.resetErrors.listen(this._resetErrors);
   }
 
-  _createAddress = async (params: { walletId: string, password: ?string }) => {
+  _createAddress = async (params: { walletId: string, spendingPassword?: string }) => {
     try {
-      const { walletId, password } = params;
-      const accountId = await this.getAccountIdByWalletId(walletId);
+      const { walletId, spendingPassword } = params;
+      const accountIndex = await this.getAccountIdByWalletId(walletId);
+
       const address: ?CreateAddressResponse = await this.createAddressRequest.execute({
-        accountId, password
+        accountIndex, spendingPassword, walletId
       }).promise;
+
       if (address != null) {
         this._refreshAddresses();
         runInAction('set last generated address and reset error', () => {
@@ -47,7 +49,7 @@ export default class AddressesStore extends Store {
     }
   };
 
-  @computed get all(): Array<WalletAddress> {
+  @computed get all(): Array<AdaAddress> {
     const wallet = this.stores.ada.wallets.active;
     if (!wallet) return [];
     const result = this._getAddressesAllRequest(wallet.id).result;
@@ -61,7 +63,7 @@ export default class AddressesStore extends Store {
     return result ? result.addresses.length > 0 : false;
   }
 
-  @computed get active(): ?WalletAddress {
+  @computed get active(): ?AdaAddress {
     if (this.lastGeneratedAddress) return this.lastGeneratedAddress;
     const wallet = this.stores.ada.wallets.active;
     if (!wallet) return;
@@ -91,9 +93,9 @@ export default class AddressesStore extends Store {
     this.error = null;
   };
 
-  getAccountIdByWalletId = async (walletId: string): Promise<?string> => {
-    const result = await this._getAddressesAllRequest(walletId);
-    return result ? result.accountId : null;
+  getAccountIdByWalletId = async (walletId: string): Promise<?number> => {
+    const { accountIndex } = await this._getAddressesAllRequest(walletId);
+    return accountIndex || null;
   };
 
   getAddressesByWalletId = async (walletId: string): Promise<Array<string>> => {
