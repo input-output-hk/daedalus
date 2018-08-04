@@ -4,7 +4,7 @@ import { request } from './lib/request';
 
 export type AdaTxFeeParams = {
   ca: string,
-  sender: string,
+  sender: number, // v1 API shows this: sender: accountIndex -> type is number
   receiver: string,
   amount: string,
   // "groupingPolicy" - Spend everything from the address
