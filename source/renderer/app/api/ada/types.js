@@ -103,22 +103,20 @@ export type AdaTransaction = {
   ctCondition: AdaTransactionCondition,
 };
 
-export type AdaTransactionV1 = [
-  {
-    amount: 28311699119270856,
-    confirmations: number,
-    creationTime: Date,
-    direction: 'outgoing' | 'incoming',
-    id: string,
-    type: 'local' | 'foreign',
-    inputs: AdaTransactionInputOutputV1,
-    outputs: AdaTransactionInputOutputV1,
-    status: {
-      tag: 'applying' | 'inNewestBlocks' | 'persisted' | 'wontApply' | 'creating',
-      data: {},
-    },
+export type AdaTransactionV1 = {
+  amount: 28311699119270856,
+  confirmations: number,
+  creationTime: Date,
+  direction: 'outgoing' | 'incoming',
+  id: string,
+  type: 'local' | 'foreign',
+  inputs: AdaTransactionInputOutputV1,
+  outputs: AdaTransactionInputOutputV1,
+  status: {
+    tag: 'applying' | 'inNewestBlocks' | 'persisted' | 'wontApply' | 'creating',
+    data: {},
   },
-];
+};
 
 export type AdaTransactions = [
   Array<AdaTransaction>,

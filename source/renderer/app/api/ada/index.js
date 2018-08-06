@@ -264,20 +264,19 @@ export default class AdaApi {
     const accounts = await getAdaWalletAccountsV1({ ca, walletId });
     const accountIndex = accounts[0].index;
     const page = skip === 0 ? 1 : (skip / limit) + 1;
-    const per_page = limit > 50 ? 50 : limit; // eslint-disable-line camelcase
+    const perPage = limit > 50 ? 50 : limit;
 
-    const paramsV1 = {
+    const params = {
       accountIndex,
       ca,
       limit,
       page,
-      per_page,
-      skip,
+      per_page: perPage,
       wallet_id: walletId,
     };
 
     try {
-      const history: AdaTransactions = await getAdaHistoryByWallet(paramsV1);
+      const history: AdaTransactions = await getAdaHistoryByWallet(params);
       Logger.debug('AdaApi::searchHistory success: ' + stringifyData(history));
       return new Promise((resolve) => resolve({
         transactions: history.map(data => _createTransactionFromServerDataV1(data)),
