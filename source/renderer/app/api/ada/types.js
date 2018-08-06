@@ -58,6 +58,33 @@ export type AdaAccount = {
   },
 };
 
+export type AdaAccountV1 = {
+  data: [
+    {
+      amount: number,
+      addresses: [
+        {
+          used: boolean,
+          changeAddress: boolean,
+          id: string
+        }
+      ],
+      name: string,
+      walletId: string,
+      index: number
+    }
+  ],
+  status: string,
+  meta: {
+    pagination: {
+      totalPages: number,
+      page: number,
+      perPage: number,
+      totalEntries: number,
+    }
+  }
+};
+
 export type AdaAccounts = Array<AdaAccount>;
 
 export type AdaTransaction = {
