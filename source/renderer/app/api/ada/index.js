@@ -26,7 +26,7 @@ import { exportAdaBackupJSON } from './exportAdaBackupJSON';
 import { importAdaBackupJSON } from './importAdaBackupJSON';
 import { importAdaWallet } from './importAdaWallet';
 import { getAdaWalletAccounts } from './getAdaWalletAccounts';
-import { isValidAdaAddress } from './isValidAdaAddress';
+import { getAdaAddress } from './getAdaAddress';
 import { adaTxFee } from './adaTxFee';
 import { newAdaPayment } from './newAdaPayment';
 import { redeemAda } from './redeemAda';
@@ -131,7 +131,7 @@ export type CreateAddressResponse = AdaAddress;
 export type CreateAddressRequest = {
   spendingPassword?: string,
   accountIndex: number,
-  walletId: string, // previously accountId
+  walletId: string,
 };
 
 export type CreateTransactionRequest = {
@@ -387,7 +387,7 @@ export default class AdaApi {
   async isValidAddress(address: string): Promise<IsValidAddressResponse> {
     Logger.debug('AdaApi::isValidAdaAddress called');
     try {
-      const response: AdaAddress = await isValidAdaAddress({ ca, address });
+      const response: AdaAddress = await getAdaAddress({ ca, address });
       Logger.debug(`AdaApi::isValidAdaAddress success: ${stringifyData(response)}`);
       return true;
     } catch (error) {

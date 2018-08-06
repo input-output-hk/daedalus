@@ -2,13 +2,13 @@
 import type { AdaAddress } from './types';
 import { request } from './lib/v1/request';
 
-export type IsValidAdaAddressParams = {
+export type GetAdaAddressParams = {
   ca: string,
   address: string,
 };
 
-export const isValidAdaAddress = (
-  { ca, address }: IsValidAdaAddressParams
+export const getAdaAddress = (
+  { ca, address }: GetAdaAddressParams
 ): Promise<AdaAddress> => {
   const encodedAddress = encodeURIComponent(address);
   return request({
