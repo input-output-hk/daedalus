@@ -39,7 +39,6 @@ export type AdaWalletInitData = {
 export type AdaAmount = {
   getCCoin: number,
 };
-
 export type AdaTransactionTag = 'CTIn' | 'CTOut';
 
 export type AdaAddress = {
@@ -59,33 +58,6 @@ export type AdaAccount = {
   },
 };
 
-export type AdaAccountV1 = {
-  data: [
-    {
-      amount: number,
-      addresses: [
-        {
-          used: boolean,
-          changeAddress: boolean,
-          id: string
-        }
-      ],
-      name: string,
-      walletId: string,
-      index: number
-    }
-  ],
-  status: string,
-  meta: {
-    pagination: {
-      totalPages: number,
-      page: number,
-      perPage: number,
-      totalEntries: number,
-    }
-  }
-};
-
 export type AdaAccounts = Array<AdaAccount>;
 
 export type AdaTransaction = {
@@ -103,21 +75,6 @@ export type AdaTransaction = {
   ctCondition: AdaTransactionCondition,
 };
 
-export type AdaTransactionV1 = {
-  amount: 28311699119270856,
-  confirmations: number,
-  creationTime: Date,
-  direction: 'outgoing' | 'incoming',
-  id: string,
-  type: 'local' | 'foreign',
-  inputs: AdaTransactionInputOutputV1,
-  outputs: AdaTransactionInputOutputV1,
-  status: {
-    tag: 'applying' | 'inNewestBlocks' | 'persisted' | 'wontApply' | 'creating',
-    data: {},
-  },
-};
-
 export type AdaTransactions = [
   Array<AdaTransaction>,
   number,
@@ -127,19 +84,7 @@ export type AdaTransactionInputOutput = [
   [string, AdaAmount],
 ];
 
-export type AdaTransactionInputOutputV1 = [
-  [string, number],
-];
-
 export type AdaTransactionFee = AdaAmount;
-
-export type AdaTransactionFeeV1 = {
-  estimatedAmount: number,
-  status: "success",
-  meta: {
-    pagination: {}
-  }
-};
 
 export type AdaWallet = {
   cwAccountsNumber: number,
