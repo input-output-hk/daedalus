@@ -89,11 +89,11 @@ export default class Wallet extends Component<Props> {
           environment.isWindows() &&
           isRestoreActive &&
           !wallets.hasDiscardedAntivirusRestorationSlowdownNotificationForActiveWallet ? (
-          <AntivirusRestaurationSlowdownNotification
-            onDiscard={this.handleAntivirusNotificationDiscard}
-            onFaqLinkClick={this.openExternalLinkInDefaultBrowser}
-          />
-        ) : null}
+            <AntivirusRestaurationSlowdownNotification
+              onDiscard={this.handleAntivirusNotificationDiscard}
+              onFaqLinkClick={this.openExternalLinkInDefaultBrowser}
+            />
+          ) : null}
       </MainLayout>
     );
   }
