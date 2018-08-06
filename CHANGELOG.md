@@ -13,6 +13,7 @@ Changelog
 - Implemented a switch instead of a link for “hide used” addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
 - Implemented forms submission on "Enter" key press ([PR 981](https://github.com/input-output-hk/daedalus/pull/981))
 - Improved the loading UX ([PR 723](https://github.com/input-output-hk/daedalus/pull/723))
+- Integrated the V1 API endpoints for fetching all accounts associated with a wallet, fetching a single address, and creating a new address ([PR 1037](https://github.com/input-output-hk/daedalus/pull/1037))
 
 ### Fixes
 
