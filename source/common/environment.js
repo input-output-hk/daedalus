@@ -48,6 +48,7 @@ const environment = Object.assign({
   platform,
   os: osNames[platform] || platform,
   version,
+  isWindows: () => environment.platform === 'win32'
 }, remote ? remote.getGlobal('env') : process.env);
 
 export default environment;

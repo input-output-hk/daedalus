@@ -33,6 +33,8 @@ Changelog
 - Added acceptance tests for wallets, transactions and addresses ordering ([PR 976](https://github.com/input-output-hk/daedalus/pull/976))
 - Created new Storybook stories for the Wallet screens ([942](https://github.com/input-output-hk/daedalus/pull/942))
 - Improved compress/download logs handling ([PR 995](https://github.com/input-output-hk/daedalus/pull/995))
+- `nodelLogPath` entry in `launcher-config.yaml` made optional  ([PR 1027](https://github.com/input-output-hk/daedalus/pull/1027))
+- Disabled logging to `cardano-node.log` since it was not needed for the support and it was impacting performance  ([PR 1027](https://github.com/input-output-hk/daedalus/pull/1027))
 
 ## 0.11.0
 =======
@@ -40,6 +42,8 @@ Changelog
 ### Features
 
 - Implemented a switch instead of a link for "hide used" addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
+- Added a notification for Windows users that using antivirus software might slow down wallet 
+  restoration ([PR 1020](https://github.com/input-output-hk/daedalus/pull/1020))
 
 ### Fixes
 
