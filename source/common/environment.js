@@ -1,4 +1,5 @@
 // @flow
+import { app } from 'electron';
 import os from 'os';
 import { uniq } from 'lodash';
 import { version } from '../../package.json';
@@ -38,13 +39,16 @@ const environment = Object.assign({
   build,
   buildNumber: uniq([API_VERSION, build]).join('.'),
   getBuildLabel: () => {
+    const { gpu_compositing: gpuCompositing } = app.getGPUFeatureStatus();
     let buildLabel = `Daedalus (${environment.version}#${environment.buildNumber})`;
     if (!environment.isProduction()) buildLabel += ` ${environment.current}`;
+    if (gpuCompositing !== 'enabled') buildLabel += ' [SAFE MODE]';
     return buildLabel;
   },
   platform,
   os: osNames[platform] || platform,
   version,
+  isWindows: () => environment.platform === 'win32'
 }, remote ? remote.getGlobal('env') : process.env);
 
 export default environment;
