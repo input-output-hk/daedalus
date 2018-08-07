@@ -28,7 +28,7 @@ export type AdaSyncProgressResponse = {
 
 export type AdaWalletInitData = {
   operation: 'create' | 'restore',
-  backupPhrase: [],
+  backupPhrase: [string],
   assuranceLevel: AdaAssuranceV1,
   name: string,
   spendingPassword: ?string,
@@ -91,15 +91,15 @@ export type AdaWallet = {
     data: ?{
       estimatedCompletionTime: {
         quantity: number,
-        unit: number
+        unit: string
       },
       throughput: {
         quantity: number,
-        unit: number
+        unit: string
       },
       percentage: {
         quantity: number,
-        unit: number
+        unit: string
       },
     },
   },
