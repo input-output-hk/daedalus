@@ -127,19 +127,7 @@ export type AdaTransactionInputOutput = [
   [string, AdaAmount],
 ];
 
-export type AdaTransactionInputOutputV1 = [
-  [string, number],
-];
-
 export type AdaTransactionFee = AdaAmount;
-
-export type AdaTransactionFeeV1 = {
-  estimatedAmount: number,
-  status: "success",
-  meta: {
-    pagination: {}
-  }
-};
 
 export type AdaWallet = {
   cwAccountsNumber: number,
@@ -200,3 +188,34 @@ export const AdaV1AssuranceOptions: {
 } = {
   NORMAL: 'normal', STRICT: 'strict',
 };
+
+export type AdaTransactionInputOutputV1 = [
+  [string, number],
+];
+
+export type AdaTransactionFeeV1 = {
+  estimatedAmount: number,
+  status: "success",
+  meta: {
+    pagination: {}
+  }
+};
+
+export type AdaTransactionPayloadV1 = {
+  ca: string,
+  data: {
+    source: {
+      accountIndex: number,
+      walletId: string,
+    },
+    destinations: [
+      {
+        address: string,
+        amount: number,
+      },
+    ],
+    groupingPolicy: ?'OptimizeForSecurity' | 'OptimizeForSize',
+    spendingPassword: ?string
+  },
+};
+

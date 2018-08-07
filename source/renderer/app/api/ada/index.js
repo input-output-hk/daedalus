@@ -133,12 +133,6 @@ export type CreateAddressRequest = {
   password: ?string,
 };
 
-export type CreateTransactionRequest = {
-  sender: string,
-  receiver: string,
-  amount: string,
-  password?: ?string,
-};
 export type UpdateWalletRequest = {
   walletId: string,
   name: string,
@@ -174,7 +168,7 @@ export type NextUpdateResponse = ?{
 export type PostponeUpdateResponse = Promise<void>;
 export type ApplyUpdateResponse = Promise<void>;
 
-export type TransactionFeeRequest = {
+export type TransactionRequest = {
   accountIndex: number,
   walletId: string,
   address: string,
@@ -186,6 +180,10 @@ export type ExportWalletToFileRequest = {
   filePath: string,
   password: ?string
 };
+export type CreateTransactionRequest = TransactionRequest;
+export type TransactionFeeRequest = TransactionRequest;
+
+
 export type ExportWalletToFileResponse = [];
 export type GetWalletCertificateRecoveryPhraseRequest = {
   passphrase: string,
@@ -328,16 +326,26 @@ export default class AdaApi {
 
   async createTransaction(request: CreateTransactionRequest): Promise<CreateTransactionResponse> {
     Logger.debug('AdaApi::createTransaction called');
-    const { sender, receiver, amount, password } = request;
-    // sender must be set as accountId (account.caId) and not walletId
+    const { accountIndex, walletId, address, amount, spendingPassword } = request;
     try {
-      // default value. Select (OptimizeForSecurity | OptimizeForSize) will be implemented
-      const groupingPolicy = 'OptimizeForSecurity';
-      const response: AdaTransaction = await newAdaPayment(
-        { ca, sender, receiver, amount, groupingPolicy, password }
-      );
+      const data = {
+        source: {
+          accountIndex,
+          walletId,
+        },
+        destinations: [
+          {
+            address,
+            amount,
+          },
+        ],
+        groupingPolicy: 'OptimizeForSecurity',
+        spendingPassword,
+      };
+      const response: AdaTransactionV1 = await newAdaPayment({ ca, data });
+      console.log('response', response);
       Logger.debug('AdaApi::createTransaction success: ' + stringifyData(response));
-      return _createTransactionFromServerData(response);
+      // return _createTransactionFromServerData(response);
     } catch (error) {
       Logger.debug('AdaApi::createTransaction error: ' + stringifyError(error));
       // eslint-disable-next-line max-len
@@ -359,7 +367,7 @@ export default class AdaApi {
 
   async calculateTransactionFee(request: TransactionFeeRequest): Promise<TransactionFeeResponse> {
     Logger.debug('AdaApi::calculateTransactionFee called');
-    const { accountIndex, walletId, address, amount } = request;
+    const { accountIndex, walletId, address, amount, spendingPassword } = request;
     try {
       const data = {
         source: {
@@ -373,7 +381,7 @@ export default class AdaApi {
           },
         ],
         groupingPolicy: 'OptimizeForSecurity',
-        spendingPassword: null,
+        spendingPassword,
       };
       const response: adaTxFee = await adaTxFee({ ca, data });
       Logger.debug('AdaApi::calculateTransactionFee success: ' + stringifyData(response));

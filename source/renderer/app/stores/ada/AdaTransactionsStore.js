@@ -7,6 +7,7 @@ import { isValidAmountInLovelaces } from '../../utils/validations';
 import TransactionsStore from '../TransactionsStore';
 import { transactionTypes } from '../../domains/WalletTransaction';
 import { getAdaWalletAccountsV1 } from '../../api/ada/getAdaWalletAccountsV1';
+import getAccountIndex from '../../api/ada/getAccountIndex';
 
 const ca = remote.getGlobal('ca');
 
@@ -50,8 +51,7 @@ export default class AdaTransactionsStore extends TransactionsStore {
 
   calculateTransactionFee = async (transactionFeeRequest: TransactionFeeRequest) => {
     const { walletId } = transactionFeeRequest;
-    const accounts = await getAdaWalletAccountsV1({ ca, walletId });
-    const accountIndex = accounts[0].index;
+    const accountIndex = await getAccountIndex(walletId);
 
     if (!accountIndex) {
       throw new Error('Active account required before calculating transaction fees.');
