@@ -154,7 +154,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
         const { walletName, walletPassword } = form.values();
         const walletData = {
           name: walletName,
-          password: createPassword ? walletPassword : null,
+          spendingPassword: createPassword ? walletPassword : null,
         };
         this.props.onSubmit(walletData);
       },
