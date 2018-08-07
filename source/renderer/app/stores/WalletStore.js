@@ -26,10 +26,10 @@ export default class WalletsStore extends Store {
   @observable restoreRequest: Request<any>;
   @observable isRestoreActive: boolean = false;
 
-  _newWalletDetails: { name: string, mnemonic: string, password: ?string } = {
+  _newWalletDetails: { name: string, mnemonic: string, spendingPassword: ?string } = {
     name: '',
     mnemonic: '',
-    password: null,
+    spendingPassword: null,
   };
 
   setup() {
@@ -41,7 +41,7 @@ export default class WalletsStore extends Store {
 
   _create = async (params: {
     name: string,
-    password: ?string,
+    spendingPassword: ?string,
   }) => {
     Object.assign(this._newWalletDetails, params);
     try {
