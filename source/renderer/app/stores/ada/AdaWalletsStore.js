@@ -82,9 +82,6 @@ export default class AdaWalletsStore extends WalletStore {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
     const accountIndex = await getAccountIndex(wallet.id);
-    console.log('accountIndex', accountIndex);
-    console.log('transactionDetails', transactionDetails);
-    console.log('wallet.id', wallet.id);
 
     await this.sendMoneyRequest.execute({
       ...transactionDetails,
