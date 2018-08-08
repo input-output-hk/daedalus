@@ -60,6 +60,7 @@ import type {
   GetWalletCertificateAdditionalMnemonicsResponse,
   GetWalletCertificateRecoveryPhraseResponse,
   GetWalletRecoveryPhraseFromCertificateResponse,
+  ResponseBaseV1
 } from './types';
 
 import type {
@@ -166,8 +167,22 @@ export type ImportWalletFromFileRequest = {
   walletName: ?string,
 };
 export type ImportWalletFromFileResponse = Wallet;
+
+export type NodeSettings = {
+  slotDuration: {
+    quantity: number,
+    unit?: 'milliseconds'
+  },
+  softwareInfo: {
+    version: number,
+    applicationName: string
+  },
+  projectVersion: string,
+  gitRevision: string
+};
 export type NextUpdateResponse = ?{
-  version: ?string,
+  data: NodeSettings,
+  ...ResponseBaseV1
 };
 export type PostponeUpdateResponse = Promise<void>;
 export type ApplyUpdateResponse = Promise<void>;
@@ -619,12 +634,15 @@ export default class AdaApi {
     Logger.debug('AdaApi::nextUpdate called');
     let nextUpdate = null;
     try {
-      // TODO: add flow type definitions for nextUpdate response
-      const response: Promise<any> = await nextAdaUpdate({ ca });
+      const response = await nextAdaUpdate({ ca });
+      const { projectVersion, softwareInfo } = response;
+      const { version, applicationName } = softwareInfo;
+
       Logger.debug('AdaApi::nextUpdate success: ' + stringifyData(response));
-      if (response && response.cuiSoftwareVersion) {
+      if (version > projectVersion) {
         nextUpdate = {
-          version: get(response, ['cuiSoftwareVersion', 'svNumber'], null)
+          version,
+          name: applicationName
         };
       }
     } catch (error) {
