@@ -1,12 +1,13 @@
 // @flow
-import { app } from 'electron';
 import os from 'os';
 import { uniq } from 'lodash';
 import { version } from '../../package.json';
 
 // Only require electron / remote if we are in a node.js environment
+let app;
 let remote;
 if (module && module.require) {
+  app = module.require('electron').app;
   remote = module.require('electron').remote;
 }
 

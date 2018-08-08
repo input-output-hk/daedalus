@@ -14,7 +14,7 @@ import settingsIcon from '../../../source/renderer/app/assets/images/sidebar/set
 import adaIcon from '../../../source/renderer/app/assets/images/sidebar/ada-redemption-ic.inline.svg';
 import paperCertificateIcon from '../../../source/renderer/app/assets/images/sidebar/paper-certificate-ic.inline.svg';
 import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/Sidebar';
-import type { SidebarWalletType } from '../../../source/renderer/app/stores/SidebarStore';
+import type { SidebarWalletType } from '../../../source/renderer/app/types/sidebarTypes';
 // import type { Wallet } from '../../../source/renderer/app/domains/WalletTransaction';
 
 // Empty screen elements

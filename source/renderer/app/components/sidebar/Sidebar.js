@@ -8,11 +8,9 @@ import SidebarCategory from './SidebarCategory';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import InstructionsDialog from '../wallet/paper-wallet-certificate/InstructionsDialog';
 import supportIcon from '../../assets/images/sidebar/bug-report-ic.inline.svg';
-import type { SidebarWalletType } from '../../stores/SidebarStore';
+import type { SidebarWalletType } from '../../types/sidebarTypes';
 import { ROUTES } from '../../routes-config';
-import resolver from '../../utils/imports';
-
-const sidebarConfig = resolver('config/sidebarConfig');
+import { CATEGORIES_BY_NAME } from '../../config/ada/sidebarConfig.js';
 
 type Props = {
   menus: SidebarMenus,
@@ -56,7 +54,7 @@ export default class Sidebar extends Component<Props> {
     let subMenu = null;
 
     const walletsCategory = find(categories, {
-      name: sidebarConfig.CATEGORIES_BY_NAME.WALLETS.name
+      name: CATEGORIES_BY_NAME.WALLETS.name
     }).route;
 
     if (menus && activeSidebarCategory === walletsCategory) {
