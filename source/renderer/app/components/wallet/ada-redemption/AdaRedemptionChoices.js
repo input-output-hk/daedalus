@@ -3,6 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import styles from './AdaRedemptionChoices.scss';
+import { ADA_REDEMPTION_TYPES } from '../../../types/redemptionTypes';
+import type { RedemptionTypeChoices } from '../../../types/redemptionTypes';
 
 const messages = defineMessages({
   regularTabTitle: {
@@ -33,7 +35,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  activeChoice: string,
+  activeChoice: RedemptionTypeChoices,
   onSelectChoice: Function,
 };
 
@@ -50,32 +52,32 @@ export default class AdaRedemptionChoices extends Component<Props> {
     return (
       <div className={styles.component}>
         <button
-          className={activeChoice === 'regular' ? styles.activeButton : ''}
-          onClick={() => onSelectChoice('regular')}
+          className={activeChoice === ADA_REDEMPTION_TYPES.REGULAR ? styles.activeButton : ''}
+          onClick={() => onSelectChoice(ADA_REDEMPTION_TYPES.REGULAR)}
         >
           {intl.formatMessage(messages.regularTabTitle)}
         </button>
         <button
-          className={activeChoice === 'forceVended' ? styles.activeButton : ''}
-          onClick={() => onSelectChoice('forceVended')}
+          className={activeChoice === ADA_REDEMPTION_TYPES.FORCE_VENDED ? styles.activeButton : ''}
+          onClick={() => onSelectChoice(ADA_REDEMPTION_TYPES.FORCE_VENDED)}
         >
           {intl.formatMessage(messages.forceVendedTabTitle)}
         </button>
         <button
-          className={activeChoice === 'paperVended' ? styles.activeButton : ''}
-          onClick={() => onSelectChoice('paperVended')}
+          className={activeChoice === ADA_REDEMPTION_TYPES.PAPER_VENDED ? styles.activeButton : ''}
+          onClick={() => onSelectChoice(ADA_REDEMPTION_TYPES.PAPER_VENDED)}
         >
           {intl.formatMessage(messages.paperVendedTabTitle)}
         </button>
         <button
-          className={activeChoice === 'recoveryRegular' ? styles.activeButton : ''}
-          onClick={() => onSelectChoice('recoveryRegular')}
+          className={activeChoice === ADA_REDEMPTION_TYPES.RECOVERY_REGULAR ? styles.activeButton : ''}
+          onClick={() => onSelectChoice(ADA_REDEMPTION_TYPES.RECOVERY_REGULAR)}
         >
           {intl.formatMessage(messages.recoveryRegularTabTitle)}
         </button>
         <button
-          className={activeChoice === 'recoveryForceVended' ? styles.activeButton : ''}
-          onClick={() => onSelectChoice('recoveryForceVended')}
+          className={activeChoice === ADA_REDEMPTION_TYPES.RECOVERY_FORCE_VENDED ? styles.activeButton : ''}
+          onClick={() => onSelectChoice(ADA_REDEMPTION_TYPES.RECOVERY_FORCE_VENDED)}
         >
           {intl.formatMessage(messages.recoveryForceVendedTabTitle)}
         </button>

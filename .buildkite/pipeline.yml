@@ -1,21 +1,17 @@
+env:
+  ARTIFACT_BUCKET: s3://ci-output-sink
 steps:
   - label: 'daedalus-x86_64-darwin'
-    command: 'scripts/nix-shell.sh --run "scripts/build-installer-unix.sh $VERSION --build-id $BUILDKITE_BUILD_NUMBER --pull-request $BUILDKITE_PULL_REQUEST"'
+    command: 'scripts/nix-shell.sh --run "scripts/build-installer-unix.sh --build-id $BUILDKITE_BUILD_NUMBER"'
     env:
-      VERSION: 1.2.1
       NIX_SSL_CERT_FILE: /nix/var/nix/profiles/default/etc/ssl/certs/ca-bundle.crt
-      NETWORK: mainnet
     agents:
       system: x86_64-darwin
   - label: 'daedalus-x86_64-linux'
-    command: 'scripts/nix-shell.sh --run "scripts/build-installer-unix.sh $VERSION --build-id $BUILDKITE_BUILD_NUMBER --pull-request $BUILDKITE_PULL_REQUEST"'
-    env:
-      VERSION: 1.2.1
+    command: 'scripts/nix-shell.sh --run "scripts/build-installer-unix.sh --build-id $BUILDKITE_BUILD_NUMBER"'
     agents:
       system: x86_64-linux
   - label: 'daedalus-x86_64-linux-nix'
-    command: 'scripts/nix-shell.sh --run "scripts/build-installer-nix.sh"'
-    env:
-      VERSION: 1.2.1
+    command: 'scripts/nix-shell.sh --run "scripts/build-installer-nix.sh $BUILDKITE_BUILD_NUMBER"'
     agents:
       system: x86_64-linux

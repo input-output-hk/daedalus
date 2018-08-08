@@ -80,7 +80,7 @@ export default class AdaWalletsStore extends WalletStore {
   }) => {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
-    const accountId = this.stores.ada.addresses._getAccountIdByWalletId(wallet.id);
+    const accountId = await this.stores.ada.addresses.getAccountIdByWalletId(wallet.id);
     if (!accountId) throw new Error('Active account required before sending.');
     await this.sendMoneyRequest.execute({
       ...transactionDetails,
@@ -250,7 +250,7 @@ export default class AdaWalletsStore extends WalletStore {
       // Set inProgress state to show spinner if is needed
       this._updateCertificateCreationState(true);
 
-      // Genereate 12-word mnemonic
+      // Generate wallet recovery phrase
       const recoveryPhrase: GetWalletRecoveryPhraseResponse = await (
         this.getWalletRecoveryPhraseRequest.execute().promise
       );
@@ -294,14 +294,11 @@ export default class AdaWalletsStore extends WalletStore {
       }
 
       // Set wallet certificate address
-      let walletAddress;
-      if (walletAddresses) {
-        walletAddress = get(walletAddresses, ['addresses', '0', 'id'], null);
-        this.walletCertificateAddress = walletAddress;
-      }
+      const walletAddress = get(walletAddresses, ['addresses', '0', 'id'], null);
+      this.walletCertificateAddress = walletAddress;
 
       // download pdf certificate
-      this._downloadCertificate(
+      await this._downloadCertificate(
         walletAddress,
         walletCertificateRecoveryPhrase,
         params.filePath,
@@ -313,31 +310,34 @@ export default class AdaWalletsStore extends WalletStore {
     }
   };
 
-  _downloadCertificate = action((
+  _downloadCertificate = async (
     address: string,
     recoveryPhrase: Array<string>,
     filePath: string,
   ) => {
     const locale = this.stores.profile.currentLocale;
     const intl = i18nContext(locale);
-
-    downloadPaperWalletCertificate({
-      address,
-      mnemonics: recoveryPhrase,
-      intl,
-      filePath,
-      onSuccess: () => {
+    try {
+      await downloadPaperWalletCertificate({
+        address,
+        mnemonics: recoveryPhrase,
+        intl,
+        filePath
+      });
+      runInAction('handle successful certificate download', () => {
         // Reset progress
         this._updateCertificateCreationState(false);
         // Update certificate generator step
         this._updateCertificateStep();
-      },
-      onError: () => {
+      });
+    } catch (error) {
+      console.log(error);
+      runInAction('handle failed certificate download', () => {
         // Reset progress
         this._updateCertificateCreationState(false);
-      },
-    });
-  });
+      });
+    }
+  };
 
   _updateCertificateCreationState = action((state: boolean) => {
     this.generatingCertificateInProgress = state;

@@ -1,8 +1,7 @@
-version: 1.2.1.{build}
+version: "{build}"
 
 environment:
   nodejs_version: "8"
-  NETWORK: "mainnet"
   AWS_ACCESS_KEY_ID:
     secure: O0+bBTm/Ud3pxP8nvC3ZuDSkmmlr+b8hVluqpRdJGBg=
   AWS_SECRET_ACCESS_KEY:
@@ -17,7 +16,6 @@ environment:
 build: off
 
 cache:
-  - C:\sr -> installers/daedalus-installer.cabal
   - C:\sr -> installers/stack.yaml
 
 install:
@@ -37,8 +35,6 @@ artifacts:
     name: Cardano launcher configuration
   - path: installers\wallet-topology-*.yaml
     name: Wallet topology
-  - path: node_modules\daedalus-client-api\build-id
-    name: cardano-sl-build-id
 
 deploy:
   provider: S3

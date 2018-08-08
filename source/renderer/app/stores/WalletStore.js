@@ -17,7 +17,6 @@ import environment from '../../../common/environment';
 export default class WalletsStore extends Store {
 
   WALLET_REFRESH_INTERVAL = 5000;
-  MIN_NOTIFICATION_TIME = 500;
 
   @observable active: ?Wallet = null;
   @observable walletsRequest: Request<any>;
@@ -26,6 +25,7 @@ export default class WalletsStore extends Store {
   @observable getWalletRecoveryPhraseRequest: Request<any>;
   @observable restoreRequest: Request<any>;
   @observable isRestoreActive: boolean = false;
+  @observable lastDiscardedAntivirusRestorationSlowdownNotificationWalletId: ?string = null;
 
   _newWalletDetails: { name: string, mnemonic: string, password: ?string } = {
     name: '',
@@ -35,6 +35,9 @@ export default class WalletsStore extends Store {
 
   setup() {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
+    this.actions.ada.wallets.discardAntivirusRestorationSlowdownNotificationForActiveWallet.listen(
+      this._discardAntivirusNotificationForRestoration
+    );
     this.registerReactions([
       this._updateActiveWalletOnRouteChanges,
       this._showAddWalletPageWhenNoWallets,
@@ -74,6 +77,9 @@ export default class WalletsStore extends Store {
     const walletToDelete = this.getWalletById(params.walletId);
     if (!walletToDelete) return;
     const indexOfWalletToDelete = this.all.indexOf(walletToDelete);
+    if (this.hasDiscardedAntivirusRestorationSlowdownNotificationForActiveWallet) {
+      this._resetAntivirusNotificationForActiveWallet();
+    }
     await this.deleteWalletRequest.execute({ walletId: params.walletId });
     await this.walletsRequest.patch(result => {
       result.splice(indexOfWalletToDelete, 1);
@@ -146,6 +152,11 @@ export default class WalletsStore extends Store {
     return matchRoute(ROUTES.WALLETS.ROOT + '(/*rest)', currentRoute);
   }
 
+  @computed get hasDiscardedAntivirusRestorationSlowdownNotificationForActiveWallet(): boolean {
+    if (!this.active) return false;
+    return this.lastDiscardedAntivirusRestorationSlowdownNotificationWalletId === this.active.id;
+  }
+
   getWalletById = (id: string): (?Wallet) => this.all.find(w => w.id === id);
 
   getWalletByName = (name: string): (?Wallet) => this.all.find(w => w.name === name);
@@ -211,9 +222,7 @@ export default class WalletsStore extends Store {
   );
 
   _showAddWalletPageWhenNoWallets = () => {
-    const { currentRoute } = this.stores.app;
-    const isAdaRedemptionRoute = matchRoute(ROUTES.ADA_REDEMPTION, currentRoute);
-    const isRouteThatNeedsWallets = this.isWalletRoute || isAdaRedemptionRoute;
+    const isRouteThatNeedsWallets = this.isWalletRoute;
     if (isRouteThatNeedsWallets && !this.hasAnyWallets) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });
     }
@@ -250,4 +259,12 @@ export default class WalletsStore extends Store {
     });
   };
 
+  @action _discardAntivirusNotificationForRestoration = () => {
+    if (!this.active) return;
+    this.lastDiscardedAntivirusRestorationSlowdownNotificationWalletId = this.active.id;
+  };
+
+  @action _resetAntivirusNotificationForActiveWallet = () => {
+    this.lastDiscardedAntivirusRestorationSlowdownNotificationWalletId = null;
+  }
 }

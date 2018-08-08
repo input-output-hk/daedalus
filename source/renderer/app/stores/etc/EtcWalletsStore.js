@@ -11,7 +11,11 @@ import type {
   DeleteWalletResponse, RestoreWalletResponse,
   CreateTransactionResponse, GetWalletRecoveryPhraseResponse
 } from '../../api/common';
-import { ETC_DEFAULT_GAS_PRICE, WEI_PER_ETC } from '../../config/numbersConfig';
+import {
+  ETC_DEFAULT_GAS_PRICE,
+  HARDCODED_ETC_TX_FEE,
+  WEI_PER_ETC
+} from '../../config/numbersConfig';
 
 export default class EtcWalletsStore extends WalletStore {
 
@@ -80,7 +84,7 @@ export default class EtcWalletsStore extends WalletStore {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
     const amountInETC = new BigNumber(amount).dividedBy(WEI_PER_ETC);
-    const transactionFees = new BigNumber(0.00042); // Hardcoded transaction fees amount
+    const transactionFees = new BigNumber(HARDCODED_ETC_TX_FEE);
     const isGreaterThanZero = amountInETC.greaterThan(0);
     const isLessOrEqualToWalletAmount =
       amountInETC.add(transactionFees).lessThanOrEqualTo(wallet.amount);

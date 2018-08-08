@@ -3,11 +3,14 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import Layout from '../MainLayout';
 import AdaRedemptionForm from '../../components/wallet/ada-redemption/AdaRedemptionForm';
+import AdaRedemptionNoWallets from '../../components/wallet/ada-redemption/AdaRedemptionNoWallets';
 import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import { AdaRedemptionCertificateParseError } from '../../i18n/errors';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import validWords from '../../../../common/valid-words.en';
 import environment from '../../../../common/environment';
+import { ADA_REDEMPTION_TYPES } from '../../types/redemptionTypes';
+import { ROUTES } from '../../routes-config';
 
 type Props = InjectedProps;
 
@@ -28,6 +31,10 @@ export default class AdaRedemptionPage extends Component<Props> {
     this.props.actions.ada.adaRedemption.redeemPaperVendedAda.trigger(values);
   };
 
+  handleGoToCreateWalletClick = () => {
+    this.props.actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD });
+  };
+
   render() {
     const { wallets, adaRedemption } = this.props.stores.ada;
     const {
@@ -43,17 +50,38 @@ export default class AdaRedemptionPage extends Component<Props> {
       value: w.id, label: w.name
     }));
 
+    if (!wallets.all.length) {
+      return (
+        <Layout>
+          <AdaRedemptionNoWallets
+            onGoToCreateWalletClick={this.handleGoToCreateWalletClick}
+          />
+        </Layout>
+      );
+    }
+
     if (selectableWallets.length === 0) return <Layout><LoadingSpinner /></Layout>;
-    const request = redemptionType === 'paperVended' ? redeemPaperVendedAdaRequest : redeemAdaRequest;
-    const isCertificateSelected = adaRedemption.certificate !== null;
-    const showInputsForDecryptingForceVendedCertificate = isCertificateSelected &&
-      isCertificateEncrypted && redemptionType === 'forceVended';
-    const showInputForDecryptionKey = isCertificateSelected &&
-      isCertificateEncrypted && redemptionType === 'recoveryForceVended';
-    const showPassPhraseWidget = redemptionType === 'paperVended' || (
-      isCertificateSelected && isCertificateEncrypted &&
-      (redemptionType === 'regular' || redemptionType === 'recoveryRegular')
+
+    const request = (redemptionType === ADA_REDEMPTION_TYPES.PAPER_VENDED ?
+      redeemPaperVendedAdaRequest : redeemAdaRequest
     );
+    const isCertificateSelected = adaRedemption.certificate !== null;
+
+    const showInputsForDecryptingForceVendedCertificate = (
+      isCertificateSelected && isCertificateEncrypted &&
+      redemptionType === ADA_REDEMPTION_TYPES.FORCE_VENDED
+    );
+    const showInputForDecryptionKey = (
+      isCertificateSelected && isCertificateEncrypted &&
+      redemptionType === ADA_REDEMPTION_TYPES.RECOVERY_FORCE_VENDED
+    );
+    const showPassPhraseWidget = redemptionType === ADA_REDEMPTION_TYPES.PAPER_VENDED || (
+      isCertificateSelected && isCertificateEncrypted && (
+        redemptionType === ADA_REDEMPTION_TYPES.REGULAR ||
+        redemptionType === ADA_REDEMPTION_TYPES.RECOVERY_REGULAR
+      )
+    );
+
     return (
       <Layout>
         <AdaRedemptionForm
@@ -78,7 +106,9 @@ export default class AdaRedemptionPage extends Component<Props> {
           isSubmitting={request.isExecuting}
           error={adaRedemption.error}
           onRemoveCertificate={removeCertificate.trigger}
-          onSubmit={redemptionType === 'paperVended' ? this.onSubmitPaperVended : this.onSubmit}
+          onSubmit={(redemptionType === ADA_REDEMPTION_TYPES.PAPER_VENDED ?
+            this.onSubmitPaperVended : this.onSubmit
+          )}
           mnemonicValidator={isValidRedemptionMnemonic}
           redemptionCodeValidator={isValidRedemptionKey}
           postVendRedemptionCodeValidator={isValidPaperVendRedemptionKey}

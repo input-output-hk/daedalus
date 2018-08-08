@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { storiesOf, action } from '@storybook/react';
 import StoryDecorator from './support/StoryDecorator';
@@ -17,15 +18,23 @@ storiesOf('WalletExportToFileDialog', module)
     <div>
       <WalletExportToFileDialog
         walletName="Test Wallet"
-        onClose={action('onClose')}
+        hasSpendingPassword={false}
         isSubmitting={false}
+        onSubmit={action('onSubmit')}
+        onClose={action('onClose')}
       />
     </div>
   ))
 
   .add('submitting', () => (
     <div>
-      <WalletExportToFileDialog walletName="Test Wallet" isSubmitting />
+      <WalletExportToFileDialog
+        walletName="Test Wallet"
+        hasSpendingPassword={false}
+        isSubmitting
+        onSubmit={action('onSubmit')}
+        onClose={action('onClose')}
+      />
     </div>
   ))
 
@@ -34,9 +43,9 @@ storiesOf('WalletExportToFileDialog', module)
       <WalletExportToFileDialog
         walletName="Test Wallet"
         hasSpendingPassword
+        isSubmitting={false}
         onSubmit={action('onSubmit')}
         onClose={action('onClose')}
-        isSubmitting={false}
       />
     </div>
   ));

@@ -1,0 +1,23 @@
+.dialog {
+  border-radius: 10px;
+  box-shadow: 0 5px 20px 0 rgba(0, 0, 0, 0.25);
+  max-width: 640px;
+  min-width: 500px;
+  overflow: hidden;
+  &:focus {
+    outline: none;
+  }
+}
+
+.overlay {
+  align-items: center;
+  background-color: var(--theme-modal-overlay-background-color);
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 0;
+  position: fixed;
+  right: 0;
+  top: 0;
+  z-index: 9999;
+}
