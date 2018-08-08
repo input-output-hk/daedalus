@@ -299,8 +299,8 @@ export default class AdaApi {
     Logger.debug('AdaApi::deleteWallet called: ' + stringifyData(request));
     try {
       const { walletId } = request;
-      await deleteAdaWallet({ ca, walletId });
-      Logger.debug('AdaApi::deleteWallet success: ' + stringifyData(request));
+      const response = await deleteAdaWallet({ ca, walletId });
+      Logger.debug('AdaApi::deleteWallet success: ' + stringifyData(response));
       return true;
     } catch (error) {
       Logger.error('AdaApi::deleteWallet error: ' + stringifyError(error));
