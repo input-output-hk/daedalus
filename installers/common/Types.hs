@@ -13,6 +13,7 @@ module Types
   , Backend(..)
   , Config(..), configFilename
   , ConfigRequest(..)
+  , SigningResult(..)
 
   , AppName(..)
   , BuildJob(..)
@@ -63,6 +64,11 @@ data Backend
   = Cardano FilePath -- ^ Cardano SL with the given daedalus-bridge.
   | Mantis           -- ^ Mantis, to be implemented in DEVOPS-533.
   deriving (Eq, Show)
+
+data SigningResult
+  = SignedOK
+  | NotSigned
+  deriving (Bounded, Enum, Eq, Read, Show)
 
 data Config
   = Launcher
