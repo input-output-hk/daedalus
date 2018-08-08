@@ -89,7 +89,7 @@ export type CreateWalletRequest = {
 
 export type UpdateWalletPasswordRequest = {
   walletId: string,
-  oldPassword: ?string,
+  oldPassword?: string,
   newPassword: ?string,
 };
 
