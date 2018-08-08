@@ -145,3 +145,17 @@ export const AdaV1AssuranceOptions: {
 } = {
   NORMAL: 'normal', STRICT: 'strict',
 };
+
+export type Pagination = {
+  pagination: {
+    totalPages: number,
+    page: number,
+    perPage: number,
+    totalEntries: number
+  }
+};
+
+export type ResponseBaseV1 = {
+  status: string,
+  meta: Pagination
+};
