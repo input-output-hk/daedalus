@@ -24,7 +24,6 @@ import type {
   GetWalletRecoveryPhraseFromCertificateResponse,
 } from '../../api/ada/types';
 import getAccountIndex from '../../api/ada/getAccountIndex';
-import { formattedAmountToLovelace } from '../../utils/formatters';
 
 
 export default class AdaWalletsStore extends WalletStore {
@@ -87,7 +86,7 @@ export default class AdaWalletsStore extends WalletStore {
 
     await this.sendMoneyRequest.execute({
       address: receiver,
-      amount: formattedAmountToLovelace(amount),
+      amount: parseInt(amount, 10),
       spendingPassword: password,
       accountIndex,
       walletId: wallet.id,
