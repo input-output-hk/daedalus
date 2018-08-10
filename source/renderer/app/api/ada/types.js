@@ -155,7 +155,9 @@ export type Pagination = {
   }
 };
 
+export type ResponseStatus = 'success' | 'fail' | 'error';
+
 export type ResponseBaseV1 = {
-  status: string,
+  status: ResponseStatus,
   meta: Pagination
 };
