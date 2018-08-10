@@ -37,11 +37,19 @@ export default class EtcWalletSettingsStore extends WalletSettingsStore {
   @action _updateWalletField = async ({ field, value }: { field: string, value: string }) => {
     const activeWallet = this.stores.ada.wallets.active;
     if (!activeWallet) return;
+
     const { id: walletId, name, assurance } = activeWallet;
     const walletData = { walletId, name, assurance };
     walletData[field] = value;
-    const wallet = await this.updateWalletRequest.execute(walletData).promise;
+
+    const wallet = await this.updateWalletRequest.execute({
+      walletId: walletData.walletId,
+      name: walletData.name,
+      assuranceLevel: walletData.assurance
+    }).promise;
+
     if (!wallet) return;
+
     await this.stores.ada.wallets.walletsRequest.patch(result => {
       const walletIndex = findIndex(result, { id: walletId });
       // TODO: revert to this original update after full transition to V1 Api
