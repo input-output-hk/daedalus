@@ -1,5 +1,5 @@
 // @flow
-import { split, get } from 'lodash';
+import { split } from 'lodash';
 import { action } from 'mobx';
 import { ipcRenderer, remote } from 'electron';
 import BigNumber from 'bignumber.js';
@@ -60,7 +60,8 @@ import type {
   GetWalletCertificateAdditionalMnemonicsResponse,
   GetWalletCertificateRecoveryPhraseResponse,
   GetWalletRecoveryPhraseFromCertificateResponse,
-  ResponseBaseV1
+  ResponseBaseV1,
+  AdaV1Assurance
 } from './types';
 
 import type {
@@ -108,9 +109,6 @@ import {
   WALLET_RECOVERY_PHRASE_WORD_COUNT
 } from '../../config/cryptoConfig';
 
-import { AdaV1AssuranceOptions } from './types';
-import { assuranceModeOptions } from '../../types/transactionAssuranceTypes';
-
 /**
  * The api layer that is used for all requests to the
  * cardano backend when working with the ADA coin.
@@ -140,8 +138,8 @@ export type CreateTransactionRequest = {
 };
 export type UpdateWalletRequest = {
   walletId: string,
-  name: string,
-  assurance: string,
+  assuranceLevel: AdaV1Assurance,
+  name: string
 };
 export type RedeemAdaRequest = {
   redemptionCode: string,
@@ -181,7 +179,7 @@ export type NodeSettings = {
   gitRevision: string
 };
 export type NextUpdateResponse = ?{
-  data: NodeSettings,
+  data?: NodeSettings,
   ...ResponseBaseV1
 };
 export type PostponeUpdateResponse = Promise<void>;
@@ -729,19 +727,11 @@ export default class AdaApi {
 
   async updateWallet(request: UpdateWalletRequest): Promise<UpdateWalletResponse> {
     Logger.debug('AdaApi::updateWallet called: ' + stringifyData(request));
-    const { walletId, name, assurance } = request;
-    const unit = 0;
-
-    const walletMeta = {
-      cwName: name,
-      cwAssurance: assurance,
-      cwUnit: unit,
-    };
-
+    const { walletId, assuranceLevel, name } = request;
     try {
-      const wallet: AdaWallet = await updateAdaWallet({ ca, walletId, walletMeta });
+      const wallet: AdaV1Wallet = await updateAdaWallet({ ca, walletId, assuranceLevel, name });
       Logger.debug('AdaApi::updateWallet success: ' + stringifyData(wallet));
-      return _createWalletFromServerData(wallet);
+      return _createWalletFromServerV1Data(wallet);
     } catch (error) {
       Logger.error('AdaApi::updateWallet error: ' + stringifyError(error));
       throw new GenericApiError();
@@ -877,13 +867,12 @@ const _createWalletFromServerV1Data = action(
       hasSpendingPassword, spendingPasswordLastUpdate,
       syncState,
     } = data;
+
     return new Wallet({
       id,
       amount: new BigNumber(balance).dividedBy(LOVELACES_PER_ADA),
       name,
-      assurance: (assuranceLevel === AdaV1AssuranceOptions.NORMAL ?
-        assuranceModeOptions.NORMAL : assuranceModeOptions.STRICT
-      ),
+      assurance: assuranceLevel,
       hasPassword: hasSpendingPassword,
       passwordUpdateDate: new Date(`${spendingPasswordLastUpdate}Z`),
       syncState,
