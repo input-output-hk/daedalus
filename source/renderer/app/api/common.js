@@ -1,6 +1,7 @@
 import { defineMessages } from 'react-intl';
 import LocalizableError from '../i18n/LocalizableError';
 import { WalletTransaction, Wallet } from '../domains/WalletTransaction';
+import type { AdaV1Wallet, ResponseBaseV1 } from './ada/types';
 import globalMessages from '../i18n/global-messages';
 
 const messages = defineMessages({
@@ -78,7 +79,10 @@ export type GetLocalTimeDifferenceResponse = number;
 export type GetWalletsResponse = Array<Wallet>;
 export type GetWalletRecoveryPhraseResponse = Array<string>;
 export type RestoreWalletResponse = Wallet;
-export type UpdateWalletResponse = Wallet;
+export type UpdateWalletResponse = {
+  data: AdaV1Wallet,
+  ...ResponseBaseV1
+};
 export type UpdateWalletPasswordResponse = boolean;
 
 export type CreateWalletRequest = {
