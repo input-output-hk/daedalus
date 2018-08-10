@@ -343,7 +343,6 @@ export default class AdaApi {
         spendingPassword,
       };
       const response: AdaTransactionV1 = await newAdaPayment({ ca, data });
-      console.log('response', response);
       Logger.debug('AdaApi::createTransaction success: ' + stringifyData(response));
       // return _createTransactionFromServerData(response);
     } catch (error) {
@@ -896,7 +895,7 @@ const _createTransactionFromServerDataV1 = action(
       id,
       title: direction === 'outgoing' ? 'Ada sent' : 'Ada received',
       type: direction === 'outgoing' ? transactionTypes.EXPEND : transactionTypes.INCOME,
-      amount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
+      amount: new BigNumber(direction === 'outgoing' ? (amount * -1) : amount).dividedBy(LOVELACES_PER_ADA),
       date: new Date(creationTime),
       description: '',
       numberOfConfirmations: confirmations,
