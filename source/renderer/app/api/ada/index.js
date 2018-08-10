@@ -277,7 +277,7 @@ export default class AdaApi {
       const history: AdaTransactions = await getAdaHistoryByWallet(params);
       Logger.debug('AdaApi::searchHistory success: ' + stringifyData(history));
       return new Promise((resolve) => resolve({
-        transactions: history.map(data => _createTransactionFromServerDataV1(data)),
+        transactions: history.reverse().map(data => _createTransactionFromServerDataV1(data)),
         total: history.length,
       }));
     } catch (error) {
@@ -344,7 +344,7 @@ export default class AdaApi {
       };
       const response: AdaTransactionV1 = await newAdaPayment({ ca, data });
       Logger.debug('AdaApi::createTransaction success: ' + stringifyData(response));
-      // return _createTransactionFromServerData(response);
+      return _createTransactionFromServerDataV1(response);
     } catch (error) {
       Logger.debug('AdaApi::createTransaction error: ' + stringifyError(error));
       // eslint-disable-next-line max-len
@@ -900,8 +900,8 @@ const _createTransactionFromServerDataV1 = action(
       description: '',
       numberOfConfirmations: confirmations,
       addresses: {
-        from: inputs.map(address => address[0]),
-        to: outputs.map(address => address[0]),
+        from: inputs.map(({ address }) => address),
+        to: outputs.map(({ address }) => address),
       },
       state: _conditionToTxStateV1(status.tag),
     });
