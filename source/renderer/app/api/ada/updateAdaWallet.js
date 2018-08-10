@@ -1,25 +1,22 @@
 // @flow
-import type { AdaWallet } from './types';
-import { request } from './lib/request';
+import type { AdaV1Wallet, AdaV1Assurance } from './types';
+import { request } from './lib/v1/request';
 
 export type UpdateAdaWalletParams = {
   ca: string,
   walletId: string,
-  walletMeta: {
-    cwName: string,
-    cwAssurance: string,
-    cwUnit: number,
-  }
+  assuranceLevel: AdaV1Assurance,
+  name: string
 };
 
 export const updateAdaWallet = (
-  { ca, walletId, walletMeta }: UpdateAdaWalletParams
-): Promise<AdaWallet> => (
+  { ca, walletId, assuranceLevel, name }: UpdateAdaWalletParams
+): Promise<AdaV1Wallet> => (
   request({
     hostname: 'localhost',
     method: 'PUT',
-    path: `/api/wallets/${walletId}`,
+    path: `/api/v1/wallets/${walletId}`,
     port: 8090,
     ca,
-  }, {}, walletMeta)
+  }, {}, { assuranceLevel, name })
 );
