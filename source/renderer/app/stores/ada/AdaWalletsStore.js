@@ -24,6 +24,8 @@ import type {
   GetWalletRecoveryPhraseFromCertificateResponse,
 } from '../../api/ada/types';
 import getAccountIndex from '../../api/ada/getAccountIndex';
+import { formattedAmountToLovelace } from '../../utils/formatters';
+
 
 export default class AdaWalletsStore extends WalletStore {
 
@@ -74,17 +76,19 @@ export default class AdaWalletsStore extends WalletStore {
     walletBackup.finishWalletBackup.listen(this._finishCreation);
   }
 
-  _sendMoney = async (transactionDetails: {
-    address: string,
-    amount: number,
-    spendingPassword: ?string,
+  _sendMoney = async ({ receiver, amount, password }: {
+    receiver: string,
+    amount: string,
+    password: ?string,
   }) => {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
     const accountIndex = await getAccountIndex(wallet.id);
 
     await this.sendMoneyRequest.execute({
-      ...transactionDetails,
+      address: receiver,
+      amount: formattedAmountToLovelace(amount),
+      spendingPassword: password,
       accountIndex,
       walletId: wallet.id,
     });

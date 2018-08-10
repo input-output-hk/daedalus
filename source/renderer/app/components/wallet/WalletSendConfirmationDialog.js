@@ -13,7 +13,6 @@ import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletSendConfirmationDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
-import environment from '../../../../common/environment';
 
 export const messages = defineMessages({
   dialogTitle: {
@@ -108,32 +107,16 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
     },
   });
 
-  getAdaTransactionData(form) {
-    const { isWalletPasswordSet, receiver, amount } = this.props;
-    const { walletPassword } = form.values();
-    return {
-      address: receiver,
-      amount: parseInt(amount, 10),
-      spendingPassword: isWalletPasswordSet ? walletPassword : null,
-    };
-  }
-
-  getEtcTransactionData(form) {
-    const { isWalletPasswordSet, receiver, amount, amountToNaturalUnits } = this.props;
-    const { walletPassword } = form.values();
-    return {
-      receiver,
-      amount: amountToNaturalUnits(amount),
-      password: isWalletPasswordSet ? walletPassword : null,
-    };
-  }
-
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        const transactionData = environment.isAdaApi()
-          ? this.getAdaTransactionData(form)
-          : this.getEtcTransactionData(form);
+        const { isWalletPasswordSet, receiver, amount, amountToNaturalUnits } = this.props;
+        const { walletPassword } = form.values();
+        const transactionData = {
+          receiver,
+          amount: amountToNaturalUnits(amount),
+          password: isWalletPasswordSet ? walletPassword : null,
+        };
         this.props.onSubmit(transactionData);
       },
       onError: () => {}

@@ -18,9 +18,8 @@ import styles from './WalletSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
 import WalletSendConfirmationDialog from './WalletSendConfirmationDialog';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
-import { formattedAmountToBigNumber, formattedAmountToNaturalUnits } from '../../utils/formatters';
+import { formattedAmountToBigNumber, formattedAmountToNaturalUnits, formattedAmountToLovelace } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
-import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
 
 export const messages = defineMessages({
   titleLabel: {
@@ -329,7 +328,7 @@ export default class WalletSendForm extends Component<Props, State> {
   }
 
   async _calculateTransactionFee(address: string, amountValue: number) {
-    const amount = parseInt(new BigNumber(amountValue).times(LOVELACES_PER_ADA), 10);
+    const amount = formattedAmountToLovelace(amountValue);
     try {
       const fee = await this.props.calculateTransactionFee(address, amount);
       if (this._isMounted) {
