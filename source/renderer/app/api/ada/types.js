@@ -59,33 +59,6 @@ export type AdaAccount = {
   },
 };
 
-export type AdaAccountV1 = {
-  data: [
-    {
-      amount: number,
-      addresses: [
-        {
-          used: boolean,
-          changeAddress: boolean,
-          id: string
-        }
-      ],
-      name: string,
-      walletId: string,
-      index: number
-    }
-  ],
-  status: string,
-  meta: {
-    pagination: {
-      totalPages: number,
-      page: number,
-      perPage: number,
-      totalEntries: number,
-    }
-  }
-};
-
 export type AdaAccounts = Array<AdaAccount>;
 
 export type AdaTransaction = {
@@ -103,21 +76,6 @@ export type AdaTransaction = {
   ctCondition: AdaTransactionCondition,
 };
 
-export type AdaTransactionV1 = {
-  amount: number,
-  confirmations: number,
-  creationTime: string,
-  direction: 'outgoing' | 'incoming',
-  id: string,
-  type: 'local' | 'foreign',
-  inputs: AdaTransactionInputOutputV1,
-  outputs: AdaTransactionInputOutputV1,
-  status: {
-    tag: 'applying' | 'inNewestBlocks' | 'persisted' | 'wontApply' | 'creating',
-    data: {},
-  },
-};
-
 export type AdaTransactions = [
   Array<AdaTransaction>,
   number,
@@ -126,8 +84,6 @@ export type AdaTransactions = [
 export type AdaTransactionInputOutput = [
   [string, AdaAmount],
 ];
-
-export type AdaTransactionFee = AdaAmount;
 
 export type AdaWallet = {
   cwAccountsNumber: number,
@@ -189,6 +145,48 @@ export const AdaV1AssuranceOptions: {
   NORMAL: 'normal', STRICT: 'strict',
 };
 
+export type AdaAccountV1 = {
+  data: [
+    {
+      amount: number,
+      addresses: [
+        {
+          used: boolean,
+          changeAddress: boolean,
+          id: string
+        }
+      ],
+      name: string,
+      walletId: string,
+      index: number
+    }
+  ],
+  status: string,
+  meta: {
+    pagination: {
+      totalPages: number,
+      page: number,
+      perPage: number,
+      totalEntries: number,
+    }
+  }
+};
+
+export type AdaTransactionV1 = {
+  amount: number,
+  confirmations: number,
+  creationTime: string,
+  direction: 'outgoing' | 'incoming',
+  id: string,
+  type: 'local' | 'foreign',
+  inputs: AdaTransactionInputOutputV1,
+  outputs: AdaTransactionInputOutputV1,
+  status: {
+    tag: 'applying' | 'inNewestBlocks' | 'persisted' | 'wontApply' | 'creating',
+    data: {},
+  },
+};
+
 export type AdaTransactionInputOutputV1 = [
   {
     address: string,
@@ -196,7 +194,7 @@ export type AdaTransactionInputOutputV1 = [
   },
 ];
 
-export type AdaTransactionFeeV1 = {
+export type AdaTransactionFee = {
   estimatedAmount: number,
   status: "success",
   meta: {
@@ -204,7 +202,7 @@ export type AdaTransactionFeeV1 = {
   }
 };
 
-export type AdaTransactionPayloadV1 = {
+export type AdaTransactionParams = {
   ca: string,
   data: {
     source: {
@@ -221,4 +219,6 @@ export type AdaTransactionPayloadV1 = {
     spendingPassword: ?string
   },
 };
+
+export type AdaTxFeeParams = AdaTransactionParams;
 

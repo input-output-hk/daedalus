@@ -1,9 +1,9 @@
 // @flow
-import type { AdaTransactionFee, AdaTransactionPayloadV1 } from './types';
+import type { AdaTransactionFee, AdaTxFeeParams } from './types';
 import { request } from './lib/v1/request';
 
 export const adaTxFee = (
-  { ca, data }: AdaTransactionPayloadV1
+  { ca, data }: AdaTxFeeParams
 ): Promise<AdaTransactionFee> => (
   request({
     hostname: 'localhost',

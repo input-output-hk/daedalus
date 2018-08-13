@@ -50,7 +50,7 @@ import type {
   AdaAccounts,
   AdaTransaction,
   AdaTransactionV1,
-  AdaTransactionFeeV1,
+  AdaTransactionFee,
   AdaTransactions,
   AdaWallet,
   AdaV1Wallet,
@@ -910,7 +910,7 @@ const _createTransactionFromServerDataV1 = action(
 );
 
 const _createTransactionFeeFromServerData = action(
-  'AdaApi::_createTransactionFeeFromServerData', (data: AdaTransactionFeeV1) =>
+  'AdaApi::_createTransactionFeeFromServerData', (data: AdaTransactionFee) =>
     new BigNumber(data.estimatedAmount).dividedBy(LOVELACES_PER_ADA)
 );
 
