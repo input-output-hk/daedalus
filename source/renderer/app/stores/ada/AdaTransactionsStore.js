@@ -6,10 +6,7 @@ import type { UnconfirmedAmount } from '../../types/unconfirmedAmountType';
 import { isValidAmountInLovelaces } from '../../utils/validations';
 import TransactionsStore from '../TransactionsStore';
 import { transactionTypes } from '../../domains/WalletTransaction';
-import { getAdaWalletAccountsV1 } from '../../api/ada/getAdaWalletAccountsV1';
 import getAccountIndex from '../../api/ada/getAccountIndex';
-
-const ca = remote.getGlobal('ca');
 
 type TransactionFeeRequest = {
   walletId: string,

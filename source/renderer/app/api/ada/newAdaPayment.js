@@ -1,10 +1,10 @@
 // @flow
-import type { AdaTransaction, AdaTransactionPayloadV1 } from './types';
+import type { AdaTransactionV1, AdaTransactionPayloadV1 } from './types';
 import { request } from './lib/v1/request';
 
 export const newAdaPayment = (
   { ca, data }: AdaTransactionPayloadV1
-): Promise<AdaTransaction> => (
+): Promise<AdaTransactionV1> => (
   request({
     hostname: 'localhost',
     method: 'POST',

@@ -104,9 +104,9 @@ export type AdaTransaction = {
 };
 
 export type AdaTransactionV1 = {
-  amount: 28311699119270856,
+  amount: number,
   confirmations: number,
-  creationTime: Date,
+  creationTime: string,
   direction: 'outgoing' | 'incoming',
   id: string,
   type: 'local' | 'foreign',
@@ -190,7 +190,10 @@ export const AdaV1AssuranceOptions: {
 };
 
 export type AdaTransactionInputOutputV1 = [
-  [string, number],
+  {
+    address: string,
+    amount: number,
+  },
 ];
 
 export type AdaTransactionFeeV1 = {

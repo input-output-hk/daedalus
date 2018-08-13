@@ -327,7 +327,7 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   }
 
-  async _calculateTransactionFee(address: string, amountValue: number) {
+  async _calculateTransactionFee(address: string, amountValue: string) {
     const amount = formattedAmountToLovelace(amountValue);
     try {
       const fee = await this.props.calculateTransactionFee(address, amount);

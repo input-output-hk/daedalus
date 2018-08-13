@@ -173,6 +173,7 @@ export type TransactionRequest = {
   walletId: string,
   address: string,
   amount: number,
+  spendingPassword?: ?string,
 };
 export type TransactionFeeResponse = BigNumber;
 export type ExportWalletToFileRequest = {
@@ -277,7 +278,7 @@ export default class AdaApi {
       const history: AdaTransactions = await getAdaHistoryByWallet(params);
       Logger.debug('AdaApi::searchHistory success: ' + stringifyData(history));
       return new Promise((resolve) => resolve({
-        transactions: history.reverse().map(data => _createTransactionFromServerDataV1(data)),
+        transactions: [...history].reverse().map(data => _createTransactionFromServerDataV1(data)),
         total: history.length,
       }));
     } catch (error) {
