@@ -8,6 +8,7 @@ export type GetAdaHistoryByWalletParams = {
   page: number,
   per_page: number,
   accountIndex: number,
+  sort_by: string,
 };
 
 export const getAdaHistoryByWallet = (

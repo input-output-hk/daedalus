@@ -268,17 +268,17 @@ export default class AdaApi {
     const params = {
       accountIndex,
       ca,
-      limit,
       page,
       per_page: perPage,
       wallet_id: walletId,
+      sort_by: 'created_at',
     };
 
     try {
       const history: AdaTransactions = await getAdaHistoryByWallet(params);
       Logger.debug('AdaApi::searchHistory success: ' + stringifyData(history));
       return new Promise((resolve) => resolve({
-        transactions: [...history].reverse().map(data => _createTransactionFromServerDataV1(data)),
+        transactions: [...history].map(data => _createTransactionFromServerDataV1(data)),
         total: history.length,
       }));
     } catch (error) {
