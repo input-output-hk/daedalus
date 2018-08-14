@@ -134,7 +134,7 @@ export default class NetworkStatusStore extends Store {
       !this.isConnecting &&
       this.hasBlockSyncingStarted &&
       this.relativeSyncBlocksDifference <= OUT_OF_SYNC_BLOCKS_LIMIT &&
-      this.syncProgress
+      this.syncProgress === 100
     );
   }
 
@@ -168,7 +168,7 @@ export default class NetworkStatusStore extends Store {
 
         // Update the local difficulty on each request
         this.localDifficulty = localBlockchainHeight;
-        Logger.debug('Local difficulty changed: ' + this.localBlockchainHeight);
+        Logger.debug('Local difficulty changed: ' + this.localDifficulty);
 
         // Check if network difficulty is stalled (e.g. unchanged for more than 2 minutes)
         // e.g. in case there is no Internet connection Api will send the last known value

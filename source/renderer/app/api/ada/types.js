@@ -10,6 +10,10 @@ export type AdaWalletRecoveryPhraseFromCertificateResponse = Array<string>;
 export type GetWalletCertificateAdditionalMnemonicsResponse = Array<string>;
 export type GetWalletCertificateRecoveryPhraseResponse = Array<string>;
 export type GetWalletRecoveryPhraseFromCertificateResponse = Array<string>;
+
+// Regarding GetNodeInfoResponse below:
+// getNodeInfo.js currently does not return "meta" and "status" properties
+// though the docs indicate it should, and they are present in Postman
 export type GetNodeInfoResponse = {
   data: NodeInfo,
 ...ResponseBaseV1
@@ -20,18 +24,18 @@ export type NodeInfo = {
     quantity: number,
     unit: 'percent'
   },
-  blockchainHeight: ?{
+  blockchainHeight: {
     quantity: number,
-    unit: ?'blocks'
+    unit: 'blocks'
   },
   localBlockchainHeight: {
     quantity: number,
-    unit: ?'blocks'
+    unit: 'blocks'
   },
   localTimeInformation: {
-    differenceFromNtpServer: ?{
+    differenceFromNtpServer: {
       quantity: number,
-      unit: ?'microseconds'
+      unit: 'microseconds'
     }
   },
   subscriptionStatus: any
