@@ -10,19 +10,31 @@ export type AdaWalletRecoveryPhraseFromCertificateResponse = Array<string>;
 export type GetWalletCertificateAdditionalMnemonicsResponse = Array<string>;
 export type GetWalletCertificateRecoveryPhraseResponse = Array<string>;
 export type GetWalletRecoveryPhraseFromCertificateResponse = Array<string>;
+export type GetNodeInfoResponse = {
+  data: NodeInfo,
+...ResponseBaseV1
+};
 
-export type AdaSyncProgressResponse = {
-  _spLocalCD: {
-    getChainDifficulty: {
-      getBlockCount: number,
+export type NodeInfo = {
+  syncProgress: {
+    quantity: number,
+    unit: 'percent'
+  },
+  blockchainHeight: ?{
+    quantity: number,
+    unit: ?'blocks'
+  },
+  localBlockchainHeight: {
+    quantity: number,
+    unit: ?'blocks'
+  },
+  localTimeInformation: {
+    differenceFromNtpServer: ?{
+      quantity: number,
+      unit: ?'microseconds'
     }
   },
-  _spNetworkCD: {
-    getChainDifficulty: {
-      getBlockCount: number,
-    }
-  },
-  _spPeers: number,
+  subscriptionStatus: any
 };
 
 export type AdaWalletInitData = {
@@ -101,9 +113,6 @@ export type AdaWallet = {
 
 export type AdaWallets = Array<AdaWallet>;
 
-export type AdaLocalTimeDifference = number;
-
-
 // ========== V1 API =========
 
 export type AdaV1Assurance = 'normal' | 'strict';
@@ -144,4 +153,20 @@ export const AdaV1AssuranceOptions: {
   NORMAL: AdaV1Assurance, STRICT: AdaV1Assurance,
 } = {
   NORMAL: 'normal', STRICT: 'strict',
+};
+
+export type Pagination = {
+  pagination: {
+    totalPages: number,
+    page: number,
+    perPage: number,
+    totalEntries: number
+  }
+};
+
+export type ResponseStatus = 'success' | 'fail' | 'error';
+
+export type ResponseBaseV1 = {
+  status: ResponseStatus,
+  meta: Pagination
 };
