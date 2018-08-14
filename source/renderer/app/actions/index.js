@@ -11,8 +11,10 @@ import adaActionsMap from './ada/index';
 import etcActionsMap from './etc/index';
 import type { AdaActionsMap } from './ada/index';
 import type { EtcActionsMap } from './etc/index';
+import AppActions from './app-actions';
 
 export type ActionsMap = {
+  app: AppActions,
   router: RouterActions,
   sidebar: SidebarActions,
   window: WindowActions,
@@ -26,6 +28,7 @@ export type ActionsMap = {
 };
 
 const actionsMap: ActionsMap = {
+  app: new AppActions(),
   router: new RouterActions(),
   sidebar: new SidebarActions(),
   window: new WindowActions(),

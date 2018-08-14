@@ -14,7 +14,12 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { InvalidMnemonicError } from '../../../i18n/errors';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './VerificationDialog.scss';
-import { RECOVERY_PHRASE_WORD_COUNT } from '../../../config/paperWalletsConfig';
+import {
+  PAPER_WALLET_PRINTED_WORDS_COUNT,
+  PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+  PAPER_WALLET_WRITTEN_WORDS_COUNT
+} from '../../../config/cryptoConfig';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 
 const messages = defineMessages({
   headline: {
@@ -29,8 +34,8 @@ const messages = defineMessages({
   },
   instructions: {
     id: 'paper.wallet.create.certificate.verification.dialog.instructions',
-    defaultMessage: `!!!Make sure you enter all 27 words for the paper wallet recovery phrase,
-     first 18 words printed on the certificate followed by the 9 words you wrote by hand.`,
+    defaultMessage: `!!!Make sure you enter all {fullPhraseWordCount} words for the paper wallet recovery phrase,
+     first {printedWordCount} words printed on the certificate followed by the {writtenWordCount} words you wrote by hand.`,
     description: '"Paper wallet create certificate verification dialog" subtitle.'
   },
   recoveryPhraseLabel: {
@@ -108,10 +113,10 @@ export default class VerificationDialog extends Component<Props, State> {
             recoveringConfirmed,
           } = this.state;
           const enteredWordsArray = field.value;
-          if (enteredWordsArray.length < RECOVERY_PHRASE_WORD_COUNT) {
+          if (enteredWordsArray.length < PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT) {
             // If user hasn't entered all words of the paper wallet recovery phrase yet
             return [false, intl.formatMessage(globalMessages.incompleteMnemonic, {
-              expected: RECOVERY_PHRASE_WORD_COUNT
+              expected: PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT
             })];
           }
           const fullRecoveryPhrase = `${walletCertificateRecoveryPhrase} ${additionalMnemonicWords}`;
@@ -133,7 +138,7 @@ export default class VerificationDialog extends Component<Props, State> {
   }, {
     options: {
       validateOnChange: true,
-      validationDebounceWait: 250,
+      validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
     },
   });
 
@@ -214,7 +219,11 @@ export default class VerificationDialog extends Component<Props, State> {
           <p className={styles.subtitle}>{intl.formatMessage(messages.subtitle)}</p>
           <p className={styles.instructions}>
             <strong>
-              {intl.formatMessage(messages.instructions)}
+              {intl.formatMessage(messages.instructions, {
+                fullPhraseWordCount: PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+                printedWordCount: PAPER_WALLET_PRINTED_WORDS_COUNT,
+                writtenWordCount: PAPER_WALLET_WRITTEN_WORDS_COUNT
+              })}
             </strong>
           </p>
           <div className={styles.content}>
@@ -222,7 +231,7 @@ export default class VerificationDialog extends Component<Props, State> {
             <Autocomplete
               className={styles.recoveryPhrase}
               options={suggestedMnemonics}
-              maxSelections={RECOVERY_PHRASE_WORD_COUNT}
+              maxSelections={PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT}
               ref={(autocomplete) => { this.recoveryPhraseAutocomplete = autocomplete; }}
               {...recoveryPhraseField.bind()}
               error={recoveryPhraseField.error}

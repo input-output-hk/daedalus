@@ -146,6 +146,11 @@ export default defineMessages({
     defaultMessage: '!!!Continue',
     description: 'Label "Continue" in dialogs.'
   },
+  faqLinkUrl: {
+    id: 'settings.support.faq.faqLinkURL',
+    defaultMessage: '!!!https://daedaluswallet.io/faq/',
+    description: 'URL for the "FAQ on Daedalus website" link in the FAQ section on the support settings page',
+  },
 });
 
 export const environmentSpecificMessages = {
@@ -160,11 +165,6 @@ export const environmentSpecificMessages = {
       defaultMessage: '!!!Cardano',
       description: 'Name for "Cardano" client.'
     },
-    apiVersion: {
-      id: 'environment.apiVersion.cardano',
-      defaultMessage: '!!!1.0.4',
-      description: 'Version of "Cardano" client.'
-    },
   }),
 
   etc: defineMessages({
@@ -177,11 +177,6 @@ export const environmentSpecificMessages = {
       id: 'environment.apiName.mantis',
       defaultMessage: '!!!Mantis',
       description: 'Name for "Mantis" client.'
-    },
-    apiVersion: {
-      id: 'environment.apiVersion.mantis',
-      defaultMessage: '!!!1.0 rc1',
-      description: 'Version of "Mantis" client.'
     },
   }),
 };

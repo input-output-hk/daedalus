@@ -59,52 +59,78 @@ button {
 // ============ FONTS ===========
 
 @font-face {
-  font-family: 'SFUIDisplay-Ultralight';
-  src: url("../assets/fonts/SFUIDisplay-Ultralight.otf") format("opentype");
+  font-family: 'NotoSans-ExtraLight';
+  src: url("../assets/fonts/NotoSans-ExtraLight.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'SFUIDisplay-Thin';
-  src: url("../assets/fonts/SFUIDisplay-Thin.otf") format("opentype");
+  font-family: 'NotoSans-Thin';
+  src: url("../assets/fonts/NotoSans-Thin.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'SFUIDisplay-Light';
-  src: url("../assets/fonts/SFUIDisplay-Light.otf") format("opentype");
+  font-family: 'NotoSansCJKjp-Thin';
+  src: url("../assets/fonts/NotoSansCJKjp-Thin.otf") format("opentype");
 }
 
 @font-face {
-  font-family: 'SFUIDisplay-Regular';
-  src: url("../assets/fonts/SFUIDisplay-Regular.otf") format("opentype");
+  font-family: 'NotoSans-Light';
+  src: url("../assets/fonts/NotoSans-Light.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'SFUIDisplay-Medium';
-  src: url("../assets/fonts/SFUIDisplay-Medium.otf") format("opentype");
+  font-family: 'NotoSansCJKjp-Light';
+  src: url("../assets/fonts/NotoSansCJKjp-Light.otf") format("opentype");
 }
 
 @font-face {
-  font-family: 'SFUIDisplay-Semibold';
-  src: url("../assets/fonts/SFUIDisplay-Semibold.otf") format("opentype");
-}
-@font-face {
-  font-family: 'SFUIDisplay-Bold';
-  src: url("../assets/fonts/SFUIDisplay-Bold.otf") format("opentype");
+  font-family: 'NotoSans-Regular';
+  src: url("../assets/fonts/NotoSans-Regular.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: 'SFUIDisplay-Heavy';
-  src: url("../assets/fonts/SFUIDisplay-Heavy.otf") format("opentype");
+  font-family: 'NotoSansCJKjp-Regular';
+  src: url("../assets/fonts/NotoSansCJKjp-Regular.otf") format("opentype");
 }
 
 @font-face {
-  font-family: 'SFUIDisplay-Black';
-  src: url("../assets/fonts/SFUIDisplay-Black.otf") format("opentype");
+  font-family: 'NotoSans-Medium';
+  src: url("../assets/fonts/NotoSans-Medium.ttf") format("truetype");
 }
 
 @font-face {
-  font-family: Electrolize, 'Electrolize-Regular';
-  src: url("../assets/fonts/Electrolize-Regular.ttf") format("truetype");
+  font-family: 'NotoSansCJKjp-Medium';
+  src: url("../assets/fonts/NotoSansCJKjp-Medium.otf") format("opentype");
+}
+
+@font-face {
+  font-family: 'NotoSans-SemiBold';
+  src: url("../assets/fonts/NotoSans-SemiBold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'NotoSans-Bold';
+  src: url("../assets/fonts/NotoSans-Bold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'NotoSansCJKjp-Bold';
+  src: url("../assets/fonts/NotoSansCJKjp-Bold.otf") format("opentype");
+}
+
+@font-face {
+  font-family: 'NotoSans-ExtraBold';
+  src: url("../assets/fonts/NotoSans-ExtraBold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'NotoSans-Black';
+  src: url("../assets/fonts/NotoSans-Black.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'NotoSansCJKjp-Black';
+  src: url("../assets/fonts/NotoSansCJKjp-Black.otf") format("opentype");
 }
 
 @font-face {
@@ -117,7 +143,6 @@ button {
 html, body, :global(#app), :global(#app) > [data-reactroot] {
   width: 100%;
   height: 100%;
-  letter-spacing: 1px;
   // Make the default font ugly so we immediately see when something
   // is not yet defined correctly in our UI
   font-family: "Times New Roman", serif;

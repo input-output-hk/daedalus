@@ -14,18 +14,13 @@ set /p CLUSTERS=<installer-clusters.cfg
 
 set LIBRESSL_VERSION=2.5.3
 set CURL_VERSION=7.54.0
-set DAEDALUS_VERSION_DEFAULT=local-dev-build
-
-set DAEDALUS_VERSION=%1
-@if [%DAEDALUS_VERSION%]==[] (@echo WARNING: DAEDALUS_VERSION [argument #1] wasnt provided, defaulting to %DAEDALUS_VERSION_DEFAULT%
-    set DAEDALUS_VERSION=%DAEDALUS_VERSION_DEFAULT%);
 
 set CURL_URL=https://bintray.com/artifact/download/vszakats/generic/curl-%CURL_VERSION%-win64-mingw.7z
 set CURL_BIN=curl-%CURL_VERSION%-win64-mingw\bin
 set LIBRESSL_URL=https://ftp.openbsd.org/pub/OpenBSD/LibreSSL/libressl-%LIBRESSL_VERSION%-windows.zip
 set DLLS_URL=https://s3.eu-central-1.amazonaws.com/daedalus-ci-binaries/DLLs.zip
 
-@echo Building Daedalus version:  %DAEDALUS_VERSION%
+@echo Building Daedalus
 @echo ..with LibreSSL version:    %LIBRESSL_VERSION%
 @echo .
 
@@ -133,19 +128,7 @@ pushd installers
 :build_installers
 
 if NOT DEFINED APPVEYOR_BUILD_NUMBER        ( set APPVEYOR_BUILD_NUMBER=0 )
-set XARGS="--build-job %APPVEYOR_BUILD_NUMBER% -v %DAEDALUS_VERSION%"
-IF     DEFINED APPVEYOR_PULL_REQUEST_NUMBER ( set XARGS="%XARGS:"=% --pull-request %APPVEYOR_PULL_REQUEST_NUMBER%" )
-
-FOR %%C IN (%CLUSTERS:"=%) DO (
-  @echo ##############################################################################
-  @echo ###
-  @echo ### Building fo-r cluster %%C
-  @echo ###
-  @echo ##############################################################################
-
-  make-installer %XARGS:"=% -c %%C -o daedalus-0.10.1-cardano-sl-%DAEDALUS_VERSION%-%%C-windows.exe
-  @if %errorlevel% neq 0 ( @echo FATAL: failed to build installer
-                           popd & exit /b 1)
-  copy  /y launcher-config.yaml launcher-config-%%C.win64.yaml
-  copy  /y wallet-topology.yaml wallet-topology-%%C.win64.yaml
-)
+make-installer --out-dir . appveyor
+echo dontfail
+@if %errorlevel% neq 0 ( @echo FATAL: failed to build installer
+                         popd & exit /b 1)

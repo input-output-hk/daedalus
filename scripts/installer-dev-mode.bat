@@ -1,5 +1,0 @@
-set SKIP_TOOLS=y
-set SKIP_NODE=y
-set SKIP_CARDANO_FETCH=y
-set SKIP_STACK=y
-set SKIP_LIBS=y

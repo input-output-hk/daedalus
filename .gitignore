@@ -68,3 +68,6 @@ features/support/paper_wallet_certificates/paper-wallet-certificate.pdf
 build-id
 ci-url
 commit-id
+
+# nix-build results
+result*

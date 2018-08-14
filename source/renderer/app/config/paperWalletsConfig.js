@@ -1,1 +1,0 @@
-export const RECOVERY_PHRASE_WORD_COUNT = 27;

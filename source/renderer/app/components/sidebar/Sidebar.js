@@ -10,6 +10,9 @@ import InstructionsDialog from '../wallet/paper-wallet-certificate/InstructionsD
 import supportIcon from '../../assets/images/sidebar/bug-report-ic.inline.svg';
 import type { SidebarWalletType } from '../../stores/SidebarStore';
 import { ROUTES } from '../../routes-config';
+import resolver from '../../utils/imports';
+
+const sidebarConfig = resolver('config/sidebarConfig');
 
 type Props = {
   menus: ?{
@@ -48,7 +51,10 @@ export default class Sidebar extends Component<Props> {
     } = this.props;
     let subMenu = null;
 
-    const walletsCategory = find(categories, { name: 'WALLETS' }).route;
+    const walletsCategory = find(categories, {
+      name: sidebarConfig.CATEGORIES_BY_NAME.WALLETS.name
+    }).route;
+
     if (menus && activeSidebarCategory === walletsCategory) {
       subMenu = (
         <SidebarWalletsMenu

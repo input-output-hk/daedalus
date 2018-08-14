@@ -3,6 +3,7 @@ import https from 'https';
 import { size, has, get, omit } from 'lodash';
 import querystring from 'querystring';
 import { encryptPassphrase } from './encryptPassphrase';
+import { getContentLength } from '../../lib/utils';
 
 export type RequestOptions = {
   hostname: string,
@@ -54,7 +55,7 @@ function typedRequest<Response>(
       hasRequestBody = true;
       requestBody = JSON.stringify(rawBodyParams);
       options.headers = {
-        'Content-Length': (new TextEncoder()).encode(requestBody).length,
+        'Content-Length': getContentLength(requestBody),
         'Content-Type': 'application/json',
       };
     }

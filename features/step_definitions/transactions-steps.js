@@ -1,52 +1,74 @@
 import { Given, When, Then } from 'cucumber';
-import faker from 'faker';
 import { expect } from 'chai';
+import BigNumber from 'bignumber.js/bignumber';
+import { DECIMAL_PLACES_IN_ADA, LOVELACES_PER_ADA } from '../../source/renderer/app/config/numbersConfig';
+import { getVisibleTextsForSelector } from '../support/helpers/shared-helpers';
+import { getWalletByName } from '../support/helpers/wallets-helpers';
 
-Given(/^I made the following transactions with my wallet:$/, async function (table) {
-  const data = table.hashes().map((t) => ({
-    title: t.title,
-    date: t.date || null,
-    walletId: this.wallet.id,
-    sender: this.wallet.address,
-    receiver: faker.finance.bitcoinAddress(),
-    amount: parseFloat(faker.finance.amount(), 10),
+// This step ensures sequential creation of given transactions
+// use only when the order is important because it's slower!
+Given(/^I have made the following transactions:$/, { timeout: 40000 }, async function (table) {
+  const txData = table.hashes().map((t) => ({
+    sender: getWalletByName.call(this, t.sender).id,
+    receiver: getWalletByName.call(this, t.receiver).id,
+    amount: new BigNumber(t.amount).times(LOVELACES_PER_ADA),
+    password: t.password || null,
   }));
-  const result = await this.client.execute((transactions) => (
-    transactions.map((t) => {
-      const transaction = daedalus.api.repository.generateTransaction(t, t);
-      transaction.date = transaction.date.toUTCString();
-      return transaction;
-    })
-  ), data);
-  this.transactions = result.value.map((t) => {
-    t.date = new Date(t.date);
-    return t;
-  });
+  this.transactions = [];
+  // Sequentially (and async) create transactions with for loop
+  for (const tx of txData) {
+    const txResponse = await this.client.executeAsync((transaction, done) => (
+      new window.Promise((resolve) => (
+        // Need to fetch the wallets data async and wait for all results
+        window.Promise.all([
+          daedalus.stores.ada.addresses.getAccountIdByWalletId(transaction.sender),
+          daedalus.stores.ada.addresses.getAddressesByWalletId(transaction.receiver)
+        ]).then(results => (
+          daedalus.api.ada.createTransaction(window.Object.assign(transaction, {
+            sender: results[0], // Account id of sender wallet
+            receiver: results[1][0].id // First address of receiving wallet
+          })).then(resolve)
+        ))
+      )).then(done)
+    ), tx);
+    this.transactions.push(txResponse);
+  }
 });
 
-Given(/^I see all expected transactions on screen$/, async function () {
-  const visibleTitles = await this.client.getText('.Transaction_title');
-  this.transactions.forEach((t, i) => expect(visibleTitles[i]).to.equal(t.title));
+Then(/^I should not see any transactions$/, async function () {
+  await this.client.waitForVisible('.Transaction_component', null, true);
 });
 
-When(/^I enter "([^"]*)" into the transaction search$/, function (searchTerm) {
-  const searchField = '.WalletTransactionsSearch_component .input_inputElement';
-  return this.client.setValue(searchField, searchTerm);
+Then(/^I should see the no recent transactions message$/, async function () {
+  await this.client.waitForVisible('.WalletNoTransactions_label');
 });
 
-Then(/^I should only see the following transactions:$/, async function (table) {
-  await this.client.waitForVisible('.Transaction_title');
-  let visibleTitles = await this.client.getText('.Transaction_title');
-  visibleTitles = [].concat(visibleTitles);
-  const expectedTitles = table.hashes().map(t => t.title);
-  expect(visibleTitles).to.deep.equal(expectedTitles);
+Then(/^I should see the following transactions:$/, async function (table) {
+  // Prepare expected transaction data
+  const expectedTxs = await Promise.all(table.hashes().map(async (tx) => {
+    let title;
+    switch (tx.type) {
+      case 'income': title = 'wallet.transaction.received'; break;
+      case 'expend': title = 'wallet.transaction.sent'; break;
+      default: throw new Error('unknown transaction type');
+    }
+    return {
+      title: await this.intl(title, { currency: 'ADA' }),
+      amount: new BigNumber(tx.amount).toFormat(DECIMAL_PLACES_IN_ADA),
+    };
+  }));
+
+  // Collect data of visible transactions on screen
+  const txTitles = await getVisibleTextsForSelector(this.client, '.Transaction_title');
+  const txAmounts = await getVisibleTextsForSelector(this.client, '.Transaction_amount');
+  const visibleTxs = txTitles.map((title, index) => ({
+    title,
+    amount: txAmounts[index],
+  }));
+
+  expect(expectedTxs).to.deep.equal(visibleTxs);
 });
 
-Then(/^I should see the transactions grouped by their date$/, async function () {
-  // TODO: this is not testing for correct nesting into groups etc. (could be done with XPATH)
-  const sortedTransactions = this.transactions.sort((a, b) => new Date(a.date) < new Date(b.date));
-  const visibleGroupDates = await this.client.getText('.WalletTransactionsList_groupDate');
-  const visibleTransactionTitles = await this.client.getText('.Transaction_title');
-  expect(sortedTransactions.map(t => t.date)).to.deep.equal(visibleGroupDates.map(d => new Date(d)));
-  expect(sortedTransactions.map(t => t.title)).to.deep.equal(visibleTransactionTitles);
+When(/^I click on the show more transactions button$/, async function () {
+  await this.waitAndClick('.WalletTransactionsList_showMoreTransactionsButton');
 });

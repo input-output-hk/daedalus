@@ -4,9 +4,11 @@ import { observer } from 'mobx-react';
 import WalletBackupPrivacyWarningDialog from '../../components/wallet/backup-recovery/WalletBackupPrivacyWarningDialog';
 import WalletRecoveryPhraseDisplayDialog from '../../components/wallet/backup-recovery/WalletRecoveryPhraseDisplayDialog';
 import WalletRecoveryPhraseEntryDialog from '../../components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog';
+import type { walletBackupStep } from '../../types/walletBackupTypes';
+import { WALLET_BACKUP_STEPS } from '../../types/walletBackupTypes';
 
 type Props = {
-  currentStep: ?string,
+  currentStep: walletBackupStep,
   canPhraseBeShown: boolean,
   isPrivacyNoticeAccepted: boolean,
   countdownRemaining: number,
@@ -47,7 +49,7 @@ export default class WalletBackupDialog extends Component<Props> {
       onRestartBackup, recoveryPhraseShuffled,
     } = this.props;
 
-    if (currentStep === 'privacyWarning') {
+    if (currentStep === WALLET_BACKUP_STEPS.PRIVACY_WARNING) {
       return (
         <WalletBackupPrivacyWarningDialog
           canPhraseBeShown={canPhraseBeShown}
@@ -60,7 +62,7 @@ export default class WalletBackupDialog extends Component<Props> {
       );
     }
 
-    if (currentStep === 'recoveryPhraseDisplay') {
+    if (currentStep === WALLET_BACKUP_STEPS.RECOVERY_PHRASE_DISPLAY) {
       return (
         <WalletRecoveryPhraseDisplayDialog
           recoveryPhrase={recoveryPhrase}
@@ -70,7 +72,7 @@ export default class WalletBackupDialog extends Component<Props> {
       );
     }
 
-    if (currentStep === 'recoveryPhraseEntry') {
+    if (currentStep === WALLET_BACKUP_STEPS.RECOVERY_PHRASE_ENTRY) {
       return (
         <WalletRecoveryPhraseEntryDialog
           isTermDeviceAccepted={isTermDeviceAccepted}

@@ -1,14 +1,13 @@
 // @flow
-import { observable, action } from 'mobx';
+import { observable, action, runInAction } from 'mobx';
 import Store from '../lib/Store';
 import Request from '../lib/LocalizedRequest';
 import type {
   NextUpdateResponse, PostponeUpdateResponse, ApplyUpdateResponse
 } from '../../api/ada/index';
+import { NODE_UPDATE_POLL_INTERVAL } from '../../config/timingConfig';
 
 export default class NodeUpdateStore extends Store {
-
-  NODE_UPDATE_POLL_INTERVAL = 5000;
 
   @observable isUpdateAvailable = false;
   @observable isUpdatePostponed = false;
@@ -28,17 +27,19 @@ export default class NodeUpdateStore extends Store {
     actions.acceptNodeUpdate.listen(this._acceptNodeUpdate);
     actions.postponeNodeUpdate.listen(this._postponeNodeUpdate);
     actions.toggleNodeUpdateNotificationExpanded.listen(this._toggleNotificationExpanded);
-    setInterval(this.refreshNextUpdate, this.NODE_UPDATE_POLL_INTERVAL);
+    setInterval(this.refreshNextUpdate, NODE_UPDATE_POLL_INTERVAL);
   }
 
-  @action refreshNextUpdate = () => {
+  refreshNextUpdate = async () => {
     if (this.stores.networkStatus.isSynced) {
-      this.nextUpdateRequest.execute();
-      if (this.nextUpdateRequest.result && !this.isUpdateAvailable &&
-        !this.isUpdatePostponed && !this.isUpdateInstalled) {
-        this.isUpdateAvailable = true;
-        this.isNotificationExpanded = true;
-        this.updateVersion = this.nextUpdateRequest.result.version;
+      await this.nextUpdateRequest.execute();
+      const { result } = this.nextUpdateRequest;
+      if (result && !this.isUpdateAvailable && !this.isUpdatePostponed && !this.isUpdateInstalled) {
+        runInAction('refreshNextUpdate', () => {
+          this.isUpdateAvailable = true;
+          this.isNotificationExpanded = true;
+          this.updateVersion = result.version;
+        });
       }
     }
   };

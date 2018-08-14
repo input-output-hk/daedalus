@@ -92,6 +92,7 @@
     .submitButton {
       display: block !important;
       max-width: 360px;
+      white-space: nowrap;
       width: 100%;
       &.spinning {
         @include loading-spinner("../../assets/images/spinner-light.svg");
@@ -137,7 +138,11 @@
     }
 
     .generateAddressWrapper {
+      display: flex;
+
       @media (max-width: 950px) {
+        display: block;
+
         &.fullWidthOnSmallScreen {
           .spendingPassword,
           .submitWithPasswordButton {
@@ -177,6 +182,12 @@
         text-decoration: underline;
       }
     }
+
+    .hideUsed {
+      float: right;
+      height: 20px;
+      text-align: right;
+    }
   }
 
   .walletAddress {
@@ -198,14 +209,8 @@
     .addressActions {
       .copyAddress {
         cursor: pointer;
-        display: inline-block;
-        line-height: 20px;
-        vertical-align: top;
+        display: flex;
         white-space: nowrap;
-
-        * {
-          vertical-align: middle;
-        }
 
         .copyAddressLabel {
           color: var(--theme-label-button-color);

@@ -3,17 +3,17 @@
 export default {
   '--preferred-font': '"Times New Roman", serif',
 
-  '--font-ultralight': 'SFUIDisplay-Ultralight',
-  '--font-thin': 'SFUIDisplay-Thin',
-  '--font-light': 'SFUIDisplay-Light',
-  '--font-regular': 'SFUIDisplay-Regular',
-  '--font-medium': 'SFUIDisplay-Medium',
-  '--font-semibold': 'SFUIDisplay-Semibold',
-  '--font-bold': 'SFUIDisplay-Bold',
-  '--font-heavy': 'SFUIDisplay-Heavy',
-  '--font-black': 'SFUIDisplay-Black',
+  '--font-ultralight': 'NotoSans-ExtraLight, NotoSansCJKjp-Thin',
+  '--font-thin': 'NotoSans-Thin, NotoSansCJKjp-Thin',
+  '--font-light': 'NotoSans-Light, NotoSansCJKjp-Light',
+  '--font-regular': 'NotoSans-Regular, NotoSansCJKjp-Regular',
+  '--font-medium': 'NotoSans-Medium, NotoSansCJKjp-Medium',
+  '--font-semibold': 'NotoSans-SemiBold, NotoSansCJKjp-Medium',
+  '--font-bold': 'NotoSans-Bold, NotoSansCJKjp-Bold',
+  '--font-heavy': 'NotoSans-ExtraBold, NotoSansCJKjp-Black',
+  '--font-black': 'NotoSans-Black, NotoSansCJKjp-Black',
 
-  '--theme-input-hint-font': 'SFUIDisplay-Regular',
+  '--theme-input-hint-font': 'NotoSans-Regular, NotoSansCJKjp-Regular',
 
   '--theme-scrollbar-thumb-background': '#c8ccce',
 
@@ -36,6 +36,7 @@ export default {
   '--theme-ada-redemption-disclaimer-checkbox-color-after': '#ab1700',
   '--theme-ada-redemption-disclaimer-checkbox-label-color': '#fafbfc',
   '--theme-ada-redemption-disclaimer-button-border-color': '#fafbfc',
+  '--theme-ada-redemption-no-wallets-instructions-color': '#5e6066',
 
   '--theme-autocomplete-bg-color': '#fafbfc',
   '--theme-autocomplete-border': '1px solid #c6cdd6',
@@ -231,6 +232,7 @@ export default {
   '--theme-icon-ada-redemption-attention-color': '#fafbfc',
   '--theme-icon-ada-redemption-success-color': '#fafbfc',
   '--theme-icon-ada-redemption-certificate-color': '#9eabbb',
+  '--theme-icon-ada-redemption-no-wallets': '#5e6066',
   '--theme-icon-ada-summary-wallet-amount-symbol-color': '#5e6066',
   '--theme-icon-ada-summary-wallet-pending-confirmation-symbol-color': '#5e6066',
   '--theme-icon-add-wallet-dialog-big-button-color': '#8a98ab',

@@ -18,12 +18,15 @@ import sidebar from '../support/helpers/sidebar-helpers';
 import addWalletPage from '../support/helpers/add-wallet-page-helpers';
 import importWalletDialog from '../support/helpers/dialogs/import-wallet-dialog-helpers';
 import i18n from '../support/helpers/i18n-helpers';
-import { waitForActiveRestoreNotification } from '../support/helpers/notifications-helpers';
+import {
+  isActiveWalletBeingRestored,
+  waitForActiveRestoreNotification
+} from '../support/helpers/notifications-helpers';
 
 const defaultWalletKeyFilePath = path.resolve(__dirname, '../support/default-wallet.key');
 const defaultWalletJSONFilePath = path.resolve(__dirname, '../support/default-wallet.json');
 
-Given(/^I have a wallet with funds$/, async function () {
+Given(/^I have a "Genesis wallet" with funds$/, async function () {
   await importWalletWithFunds(this.client, {
     keyFilePath: defaultWalletKeyFilePath,
     password: null,
@@ -32,7 +35,7 @@ Given(/^I have a wallet with funds$/, async function () {
   addOrSetWalletsForScenario.call(this, wallet);
 });
 
-Given(/^I have a wallet with funds and password$/, async function () {
+Given(/^I have a "Genesis wallet" with funds and password$/, async function () {
   await importWalletWithFunds(this.client, {
     keyFilePath: defaultWalletKeyFilePath,
     password: 'Secret123',
@@ -167,7 +170,7 @@ When(/^I fill out the wallet send form with:$/, function (table) {
 
 When(/^I fill out the send form with a transaction to "([^"]*)" wallet:$/, async function (walletName, table) {
   const values = table.hashes()[0];
-  const walletId = this.wallets.find((w) => w.name === walletName).id;
+  const walletId = getWalletByName.call(this, walletName).id;
   const walletAddress = await this.client.executeAsync((id, done) => {
     daedalus.api.ada.getAddresses({ walletId: id })
       .then((response) => (
@@ -352,7 +355,10 @@ Then(/^I should not see the restore wallet dialog anymore$/, function () {
 });
 
 Then(/^I should see the restore status notification while import is running$/, async function () {
-  await waitForActiveRestoreNotification(this.client);
+  // Only check the rendered DOM if the restore is still in progress
+  if (await isActiveWalletBeingRestored(this.client)) {
+    await waitForActiveRestoreNotification(this.client);
+  }
 });
 
 Then(/^I should not see the restore status notification once import is finished$/, async function () {
@@ -360,7 +366,10 @@ Then(/^I should not see the restore status notification once import is finished$
 });
 
 Then(/^I should see the restore status notification while restore is running$/, async function () {
-  await waitForActiveRestoreNotification(this.client);
+  // Only check the rendered DOM if the restore is still in progress
+  if (await isActiveWalletBeingRestored(this.client)) {
+    await waitForActiveRestoreNotification(this.client);
+  }
 });
 
 Then(/^I should not see the restore status notification once restore is finished$/, async function () {
@@ -392,6 +401,10 @@ Then(/^I should be on the "([^"]*)" wallet "([^"]*)" screen$/, async function (w
   return waitUntilUrlEquals.call(this, `/wallets/${wallet.id}/${screenName}`);
 });
 
+Then(/^I should be on the "([^"]*)" screen$/, async function (screenName) {
+  return waitUntilUrlEquals.call(this, `/${screenName}`);
+});
+
 Then(/^I should see the following error messages on the wallet send form:$/, async function (data) {
   const errorSelector = '.WalletSendForm_component .SimpleFormField_error';
   await this.client.waitForText(errorSelector);
@@ -404,6 +417,7 @@ Then(/^I should see the following error messages on the wallet send form:$/, asy
   }
 });
 
+// TODO: refactor this to a less hackish solution (fees cannot easily be calculated atm)
 Then(/^the latest transaction should show:$/, async function (table) {
   const expectedData = table.hashes()[0];
   await this.client.waitForVisible('.Transaction_title');

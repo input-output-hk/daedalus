@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import StoryDecorator from './support/StoryDecorator';
@@ -21,8 +22,8 @@ storiesOf('Staking', module)
     </div>
   ))
 
-.add('StakingPage', () => (
-  <div>
-    <Staking />
-  </div>
-));
+  .add('StakingPage', () => (
+    <div>
+      <Staking />
+    </div>
+  ));

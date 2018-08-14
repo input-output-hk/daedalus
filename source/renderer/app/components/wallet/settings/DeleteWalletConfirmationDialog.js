@@ -12,6 +12,7 @@ import Dialog from '../../widgets/Dialog';
 import styles from './DeleteWalletConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import environment from '../../../../../common/environment';
+import { DELETE_WALLET_COUNTDOWN } from '../../../config/timingConfig';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -79,7 +80,7 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
       isSubmitting,
     } = this.props;
 
-    const countdownRemaining = countdownFn(environment.isTest() ? 0 : 10);
+    const countdownRemaining = countdownFn(environment.isTest() ? 0 : DELETE_WALLET_COUNTDOWN);
     const countdownDisplay = countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
     const isCountdownFinished = countdownRemaining <= 0;
     const isWalletNameConfirmationCorrect = confirmationValue === walletName;

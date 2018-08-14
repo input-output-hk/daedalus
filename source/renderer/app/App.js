@@ -12,6 +12,7 @@ import translations from './i18n/translations';
 import type { StoresMap } from './stores/index';
 import type { ActionsMap } from './actions/index';
 import ThemeManager from './ThemeManager';
+import AboutDialog from './containers/static/AboutDialog';
 
 @observer
 export default class App extends Component<{
@@ -21,6 +22,7 @@ export default class App extends Component<{
 }> {
   render() {
     const { stores, actions, history } = this.props;
+    const { app } = stores;
     const locale = stores.profile.currentLocale;
     const mobxDevTools = environment.MOBX_DEV_TOOLS ? <DevTools /> : null;
     const currentTheme = stores.profile.currentTheme;
@@ -35,6 +37,7 @@ export default class App extends Component<{
               <div style={{ height: '100%' }}>
                 <Router history={history} routes={Routes} />
                 {mobxDevTools}
+                {app.isAboutDialogOpen && <AboutDialog />}
               </div>
             </IntlProvider>
           </ThemeProvider>

@@ -6,11 +6,12 @@ import { setupLogging } from './utils/setupLogging';
 import { setupTls } from './utils/setupTls';
 import { makeEnvironmentGlobal } from './utils/makeEnvironmentGlobal';
 import { createMainWindow } from './windows/main';
-import { createAboutWindow } from './windows/about';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import environment from '../common/environment';
+import { OPEN_ABOUT_DIALOG_CHANNEL } from '../common/ipc-api/open-about-dialog';
+import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../common/ipc-api/go-to-ada-redemption-screen';
 
 setupLogging();
 
@@ -25,14 +26,22 @@ let mainWindow;
 let aboutWindow;
 
 const openAbout = () => {
-  if (aboutWindow) aboutWindow.show(); // show also focuses the window
+  if (mainWindow) mainWindow.webContents.send(OPEN_ABOUT_DIALOG_CHANNEL);
+};
+
+const goToAdaRedemption = () => {
+  if (mainWindow) mainWindow.webContents.send(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL);
+};
+
+const menuActions = {
+  openAbout,
+  goToAdaRedemption
 };
 
 app.on('ready', async () => {
   setupTls();
   makeEnvironmentGlobal(process.env);
   await installChromeExtensions(environment.isDev());
-  aboutWindow = createAboutWindow();
   mainWindow = createMainWindow();
 
   if (environment.isDev()) {
@@ -44,10 +53,10 @@ app.on('ready', async () => {
   // Build app menus
   let menu;
   if (process.platform === 'darwin') {
-    menu = Menu.buildFromTemplate(osxMenu(app, mainWindow, openAbout));
+    menu = Menu.buildFromTemplate(osxMenu(app, mainWindow, menuActions));
     Menu.setApplicationMenu(menu);
   } else {
-    menu = Menu.buildFromTemplate(winLinuxMenu(app, mainWindow, openAbout));
+    menu = Menu.buildFromTemplate(winLinuxMenu(app, mainWindow, menuActions));
     mainWindow.setMenu(menu);
   }
 

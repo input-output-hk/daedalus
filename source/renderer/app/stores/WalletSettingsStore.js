@@ -2,12 +2,13 @@
 import { observable, action } from 'mobx';
 import Store from './lib/Store';
 import globalMessages from '../i18n/global-messages';
+import { assuranceModeOptions } from '../types/transactionAssuranceTypes';
 
 export default class WalletSettingsStore extends Store {
 
   WALLET_ASSURANCE_LEVEL_OPTIONS = [
-    { value: 'CWANormal', label: globalMessages.assuranceLevelNormal },
-    { value: 'CWAStrict', label: globalMessages.assuranceLevelStrict },
+    { value: assuranceModeOptions.NORMAL, label: globalMessages.assuranceLevelNormal },
+    { value: assuranceModeOptions.STRICT, label: globalMessages.assuranceLevelStrict },
   ];
 
   @observable walletFieldBeingEdited = null;

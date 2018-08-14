@@ -1,3 +1,4 @@
+// @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import StoryDecorator from './support/StoryDecorator';
@@ -8,7 +9,11 @@ import WalletTestEnvironmentLabel from '../../source/renderer/app/components/wid
 import { formattedWalletAmount } from '../../source/renderer/app/utils/ada/formatters';
 
 const topBarTestEnv = (
-  <TopBar formattedWalletAmount={formattedWalletAmount}>
+  <TopBar
+    formattedWalletAmount={formattedWalletAmount}
+    currentRoute=""
+    showSubMenuToggle={false}
+  >
     <WalletTestEnvironmentLabel version={0.5} />
     <NodeSyncStatusIcon
       networkStatus={{
@@ -21,7 +26,11 @@ const topBarTestEnv = (
 );
 
 const topBarProductionEnv = (
-  <TopBar formattedWalletAmount={formattedWalletAmount}>
+  <TopBar
+    formattedWalletAmount={formattedWalletAmount}
+    currentRoute=""
+    showSubMenuToggle={false}
+  >
     <NodeSyncStatusIcon
       networkStatus={{
         isSynced: true,

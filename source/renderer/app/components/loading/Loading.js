@@ -12,8 +12,8 @@ import daedalusLogo from '../../assets/images/daedalus-logo-loading-grey.inline.
 import styles from './Loading.scss';
 import type { ReactIntlMessage } from '../../types/i18nTypes';
 import environment from '../../../../common/environment';
+import { REPORT_ISSUE_TIME_TRIGGER } from '../../config/timingConfig';
 
-const REPORT_ISSUE_TIME_TRIGGER = 5 * 60; // 5 minutes
 let connectingInterval = null;
 let syncingInterval = null;
 

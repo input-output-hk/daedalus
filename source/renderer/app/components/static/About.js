@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
-import { ipcRenderer } from 'electron';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { environmentSpecificMessages } from '../../i18n/global-messages';
 import styles from './About.scss';
@@ -11,11 +10,6 @@ import mantisIcon from '../../assets/images/mantis-logo.inline.svg';
 import environment from '../../../../common/environment';
 
 const messages = defineMessages({
-  aboutWindowTitle: {
-    id: 'window.about.title',
-    defaultMessage: '!!!About Daedalus',
-    description: 'About Window "title"',
-  },
   aboutTitle: {
     id: 'static.about.title',
     defaultMessage: '!!!Daedalus',
@@ -68,44 +62,32 @@ const messages = defineMessages({
   },
 });
 
-export default class About extends Component<any> {
+type Props = {
+  onOpenExternalLink: Function,
+};
+
+export default class About extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
-  componentWillMount() {
-    ipcRenderer.send('about-window-title', this.context.intl.formatMessage(messages.aboutWindowTitle));
-  }
-
   render() {
     const { intl } = this.context;
+    const { onOpenExternalLink } = this.props;
+    const {
+      version, build, os,
+      API, API_VERSION, isAdaApi,
+    } = environment;
 
-    let platform;
-    switch (environment.platform) {
-      case 'darwin':
-        platform = 'macOS';
-        break;
-      case 'win32':
-        platform = 'Windows';
-        break;
-      case 'linux':
-        platform = 'Linux';
-        break;
-      default:
-        platform = '';
-    }
+    const apiName = intl.formatMessage(environmentSpecificMessages[API].apiName);
+    const apiIcon = isAdaApi() ? cardanoIcon : mantisIcon;
 
-    const { version, build } = environment;
-    const apiName = intl.formatMessage(environmentSpecificMessages[environment.API].apiName);
-    const apiVersion = intl.formatMessage(environmentSpecificMessages[environment.API].apiVersion);
-    const apiIcon = environment.isAdaApi() ? cardanoIcon : mantisIcon;
-
-    const apiHeadline = environment.isAdaApi()
+    const apiHeadline = isAdaApi()
       ? intl.formatMessage(messages.aboutContentCardanoHeadline)
       : intl.formatMessage(messages.aboutContentMantisHeadline);
 
-    const apiMembers = environment.isAdaApi()
+    const apiMembers = isAdaApi()
       ? intl.formatMessage(messages.aboutContentCardanoMembers)
       : intl.formatMessage(messages.aboutContentMantisMembers);
 
@@ -126,7 +108,7 @@ export default class About extends Component<any> {
             <div className={styles.daedalusBuildInfo}>
               <FormattedHTMLMessage
                 {...messages.aboutBuildInfo}
-                values={{ platform, build, apiName, apiVersion }}
+                values={{ platform: os, build, apiName, apiVersion: API_VERSION }}
               />
             </div>
           </div>
@@ -135,7 +117,6 @@ export default class About extends Component<any> {
         </div>
 
         <div className={styles.contentText}>
-
           <h2>{intl.formatMessage(messages.aboutContentDaedalusHeadline)}</h2>
 
           <div className={styles.contentDaedalus}>
@@ -147,16 +128,27 @@ export default class About extends Component<any> {
           <div className={styles.apiMembers}>
             {apiMembers}
           </div>
-
         </div>
 
         <div className={styles.footerWrapper}>
-          <a href="http://daedaluswallet.io">http://daedaluswallet.io</a>
+          <span
+            onClick={() => onOpenExternalLink('https://daedaluswallet.io')}
+            className={styles.link}
+            role="link"
+            aria-hidden
+          >
+            http://daedaluswallet.io
+          </span>
           <div className={styles.copyright}>
             {intl.formatMessage(messages.aboutCopyright)}&nbsp;
-            <a href="https://github.com/input-output-hk/daedalus/blob/master/LICENSE">
+            <span
+              onClick={() => onOpenExternalLink('https://github.com/input-output-hk/daedalus/blob/master/LICENSE')}
+              className={styles.link}
+              role="link"
+              aria-hidden
+            >
               {intl.formatMessage(messages.licenseLink)}
-            </a>
+            </span>
           </div>
         </div>
 

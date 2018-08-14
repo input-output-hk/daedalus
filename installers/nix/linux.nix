@@ -1,14 +1,10 @@
-{ stdenv, runCommand, writeText, writeScriptBin, fetchurl, fetchFromGitHub, openssl, electron,
+{ stdenv, runCommand, writeText, writeScriptBin, fetchurl, fetchFromGitHub, electron,
 coreutils, utillinux, procps, cluster,
 rawapp, daedalus-bridge, daedalus-installer,
 sandboxed ? false
 }:
 
 let
-  slimOpenssl = runCommand "openssl" {} ''
-    mkdir -pv $out/bin/
-    cp ${openssl}/bin/openssl $out/bin/
-  '';
   daedalus-config = runCommand "daedalus-config" {} ''
     mkdir -pv $out
     cd $out
@@ -19,7 +15,7 @@ let
     cp -v ${daedalus-bridge}/config/mainnet-genesis-dryrun-with-stakeholders.json mainnet-genesis-dryrun-with-stakeholders.json
     cp -v ${daedalus-bridge}/config/mainnet-genesis.json mainnet-genesis.json
     cp -v ${daedalus-bridge}/config/log-config-prod.yaml daedalus.yaml
-    ${daedalus-installer}/bin/make-installer --cluster ${cluster} config "${daedalus-installer.src}/dhall" "."
+    ${daedalus-installer}/bin/make-installer --out-dir "." --cluster ${cluster} config "${daedalus-installer.src}/dhall" "."
   '';
   # closure size TODO list
   # electron depends on cups, which depends on avahi
@@ -46,18 +42,13 @@ let
     test -z "$XDG_DATA_HOME" && { XDG_DATA_HOME="''${HOME}/.local/share"; }
     export           CLUSTER=${cluster}
     export      DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
-    export   DAEDALUS_CONFIG=${if sandboxed then "/nix/var/nix/profiles/profile/etc" else daedalus-config}
+    export   DAEDALUS_CONFIG=${if sandboxed then "/nix/var/nix/profiles/profile-${cluster}/etc" else daedalus-config}
 
     mkdir -p "''${DAEDALUS_DIR}/${cluster}/"{Logs/pub,Secrets}
     cd "''${DAEDALUS_DIR}/${cluster}/"
 
-    if [ ! -d tls ]; then
-      mkdir -p tls/{server,ca}
-      ${slimOpenssl}/bin/openssl req -x509 -newkey rsa:2048 -keyout tls/server/server.key -out tls/server/server.crt -days 3650 -nodes -subj "/CN=localhost"
-      cp tls/server/server.crt tls/ca/ca.crt
-    fi
     exec ${daedalus-bridge}/bin/cardano-launcher \
-      --config ${if sandboxed then "/nix/var/nix/profiles/profile/etc/launcher-config.yaml" else "${daedalus-config}/launcher-config.yaml"}
+      --config ${if sandboxed then "/nix/var/nix/profiles/profile-${cluster}/etc/launcher-config.yaml" else "${daedalus-config}/launcher-config.yaml"}
   '';
   wrappedConfig = runCommand "launcher-config" {} ''
     mkdir -pv $out/etc/

@@ -1,9 +1,15 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
+import { navigateTo } from '../support/helpers/route-helpers';
 import {
   waitUntilWaletNamesEqual,
   getNameOfActiveWalletInSidebar
 } from '../support/helpers/wallets-helpers';
+
+Given(/^I am on the settings screen$/, async function () {
+  await navigateTo.call(this, '/settings');
+  return this.client.waitForVisible('.SettingsLayout_component');
+});
 
 Given(/^I should see the "([^"]*)" wallet password dialog$/, function (dialogType) {
   const selector = '.' + dialogType + 'PasswordDialog';
