@@ -11,7 +11,6 @@ import WalletAddress from '../../domains/WalletAddress';
 import { isValidMnemonic } from '../../../../common/decrypt';
 import { isValidRedemptionKey, isValidPaperVendRedemptionKey } from '../../../../common/redemption-key-validation';
 import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
-import { getAdaSyncProgress } from './getAdaSyncProgress';
 import environment from '../../../../common/environment';
 import patchAdaApi from './mocks/patchAdaApi';
 
@@ -40,12 +39,10 @@ import { getAdaAccountRecoveryPhrase } from './getAdaAccountRecoveryPhrase';
 import { getAdaWalletCertificateAdditionalMnemonics } from './getAdaWalletCertificateAdditionalMnemonics';
 import { getAdaWalletCertificateRecoveryPhrase } from './getAdaWalletCertificateRecoveryPhrase';
 import { getAdaWalletRecoveryPhraseFromCertificate } from './getAdaWalletRecoveryPhraseFromCertificate';
-import { getAdaLocalTimeDifference } from './getAdaLocalTimeDifference';
+import { getNodeInfo } from './getNodeInfo';
 import { sendAdaBugReport } from './sendAdaBugReport';
 
 import type {
-  AdaLocalTimeDifference,
-  AdaSyncProgressResponse,
   AdaAddress,
   AdaAccounts,
   AdaTransaction,
@@ -60,6 +57,7 @@ import type {
   GetWalletCertificateAdditionalMnemonicsResponse,
   GetWalletCertificateRecoveryPhraseResponse,
   GetWalletRecoveryPhraseFromCertificateResponse,
+  NodeInfo,
 } from './types';
 
 import type {
@@ -694,15 +692,14 @@ export default class AdaApi {
   getSyncProgress = async (): Promise<GetSyncProgressResponse> => {
     Logger.debug('AdaApi::syncProgress called');
     try {
-      const response: AdaSyncProgressResponse = await getAdaSyncProgress({ ca });
+      const response: NodeInfo = await getNodeInfo({ ca });
       Logger.debug('AdaApi::syncProgress success: ' + stringifyData(response));
-      const localDifficulty = response._spLocalCD.getChainDifficulty.getBlockCount;
-      // In some cases we dont get network difficulty & we need to wait for it from the notify API
-      let networkDifficulty = null;
-      if (response._spNetworkCD) {
-        networkDifficulty = response._spNetworkCD.getChainDifficulty.getBlockCount;
-      }
-      return { localDifficulty, networkDifficulty };
+      const { localBlockchainHeight, blockchainHeight, syncProgress } = response;
+      return {
+        localBlockchainHeight: localBlockchainHeight.quantity,
+        blockchainHeight: blockchainHeight.quantity,
+        syncProgress: syncProgress.quantity
+      };
     } catch (error) {
       Logger.debug('AdaApi::syncProgress error: ' + stringifyError(error));
       throw new GenericApiError();
@@ -778,9 +775,12 @@ export default class AdaApi {
   async getLocalTimeDifference(): Promise<GetLocalTimeDifferenceResponse> {
     Logger.debug('AdaApi::getLocalTimeDifference called');
     try {
-      const response: AdaLocalTimeDifference = await getAdaLocalTimeDifference({ ca });
+      const response: NodeInfo = await getNodeInfo({ ca });
       Logger.debug('AdaApi::getLocalTimeDifference success: ' + stringifyData(response));
-      return Math.abs(response); // time offset direction is irrelevant to the UI
+
+      const { localTimeInformation: { differenceFromNtpServer } } = response;
+      const timeDifference = differenceFromNtpServer.quantity;
+      return timeDifference;
     } catch (error) {
       Logger.error('AdaApi::getLocalTimeDifference error: ' + stringifyError(error));
       throw new GenericApiError();
