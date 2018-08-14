@@ -104,8 +104,9 @@ export type RestoreWalletRequest = {
 };
 
 export type GetSyncProgressResponse = {
-  localDifficulty: ?number,
-  networkDifficulty: ?number,
+  syncProgress: number,
+  blockchainHeight: ?number,
+  localBlockchainHeight: number,
 };
 
 export type GetTransactionsRequest = {
