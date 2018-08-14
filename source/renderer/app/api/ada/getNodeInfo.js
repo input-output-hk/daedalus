@@ -1,5 +1,5 @@
 // @flow
-import type { GetNodeInfoResponse } from './types';
+import type { NodeInfo } from './types';
 import { request } from './lib/v1/request';
 
 export type GetNodeInfoParams = {
@@ -8,7 +8,7 @@ export type GetNodeInfoParams = {
 
 export const getNodeInfo = (
   { ca }: GetNodeInfoParams
-): Promise<GetNodeInfoResponse> => (
+): Promise<NodeInfo> => (
   request({
     hostname: 'localhost',
     method: 'GET',
