@@ -210,7 +210,7 @@ main opts@Options{..}  = do
     ver <- getCardanoVersion
 
     echo "Packaging frontend"
-    exportBuildVars opts installerConfig cardanoVersion
+    exportBuildVars opts installerConfig ver
     packageFrontend oCluster
 
     let fullName = packageFileName Win64 oCluster fullVersion oBackend ver oBuildJob
