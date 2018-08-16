@@ -24,6 +24,7 @@ Changelog
 - Refactored about window to normal UI dialog to save resources ([PR 965](https://github.com/input-output-hk/daedalus/pull/965))
 - Removed mocked ETC wallet data injection in Cardano Daedalus builds ([PR 955](https://github.com/input-output-hk/daedalus/pull/955))
 - Removed the Ada Redemption link from the "app bar" menu and added it to system menu ([PR 972](https://github.com/input-output-hk/daedalus/pull/972))
+- Changed the information we are sending on support requests to the reporting server. ([PR 1033](https://github.com/input-output-hk/daedalus/pull/1033))
 
 ### Chores
 

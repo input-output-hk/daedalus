@@ -36,9 +36,9 @@ const environment = Object.assign({
   isAdaApi: () => environment.API === 'ada',
   isEtcApi: () => environment.API === 'etc',
   build,
-  buildNumber: uniq([API_VERSION, build]).join('.'),
+  installerVersion: uniq([API_VERSION, build]).join('.'),
   getBuildLabel: () => {
-    let buildLabel = `Daedalus (${environment.version}#${environment.buildNumber})`;
+    let buildLabel = `Daedalus (${environment.version}#${environment.installerVersion})`;
     if (!environment.isProduction()) buildLabel += ` ${environment.current}`;
     return buildLabel;
   },
