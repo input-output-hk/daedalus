@@ -207,13 +207,13 @@ main opts@Options{..}  = do
     printCardanoBuildInfo "."
 
     fullVersion <- getDaedalusVersion "../package.json"
-    cardanoVersion <- getCardanoVersion
+    ver <- getCardanoVersion
 
     echo "Packaging frontend"
-    exportBuildVars opts installerConfig cardanoVersion
+    exportBuildVars opts installerConfig ver
     packageFrontend oCluster
 
-    let fullName = packageFileName Win64 oCluster fullVersion cardanoVersion oBuildJob
+    let fullName = packageFileName Win64 oCluster fullVersion oBackend ver oBuildJob
 
     printf ("Building: "%fp%"\n") fullName
 

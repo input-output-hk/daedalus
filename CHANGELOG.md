@@ -23,6 +23,8 @@ Changelog
 ### Features
 
 - Implemented a switch instead of a link for "hide used" addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
+- Added a notification for Windows users that using antivirus software might slow down wallet 
+  restoration ([PR 1020](https://github.com/input-output-hk/daedalus/pull/1020))
 
 ### Fixes
 

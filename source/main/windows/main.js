@@ -52,10 +52,8 @@ export const createMainWindow = () => {
   window.on('page-title-updated', event => { event.preventDefault(); });
 
   const { gpu_compositing } = app.getGPUFeatureStatus();
-
-  let title = `Daedalus (${environment.version}#${environment.build})`;
-  if (!environment.isProduction()) title += ` ${environment.current}`;
-  if (gpu_compositing !== 'enabled') title += ` [SAFE MODE]`;
+  let title = environment.getBuildLabel();
+  if (gpu_compositing !== 'enabled') title += ' [SAFE MODE]';
   window.setTitle(title);
 
   window.webContents.on('context-menu', (e, props) => {

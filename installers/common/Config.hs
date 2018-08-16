@@ -24,6 +24,7 @@ module Config
 
 import qualified Control.Exception                as Ex
 
+import           Data.Bool                           (bool)
 import qualified Data.ByteString                  as BS
 import qualified Data.ByteString.Char8            as BS8
 import qualified Data.Map                         as Map
@@ -72,11 +73,6 @@ optReadLower :: (Bounded a, Enum a, Read a, Show a) => ArgName -> ShortName -> O
 optReadLower = opt (diagReadCaseInsensitive . T.unpack)
 argReadLower :: (Bounded a, Enum a, Read a, Show a) => ArgName -> Optional HelpMessage -> Parser a
 argReadLower = arg (diagReadCaseInsensitive . T.unpack)
-
-data Backend
-  = Cardano { cardanoDaedalusBridge :: FilePath }
-  | Mantis
-  deriving (Eq, Show)
 
 data Command
   = GenConfig
@@ -131,11 +127,11 @@ optionsParser detectedOS = Options
                     <$> switch  "test-installer"      't' "Test installers after building")
 
 backendOptionParser :: Parser Backend
-backendOptionParser = cardano <|> mantis <|> pure (Cardano "")
+backendOptionParser = cardano <|> bool (Cardano "") Mantis <$> enableMantis
   where
     cardano = Cardano <$> optPath "cardano" 'C'
       "Use Cardano backend with given Daedalus bridge path"
-    mantis = switch "mantis" 'M' "Use Mantis (ETC) backend" *> pure Mantis
+    enableMantis = switch "mantis" 'M' "Use Mantis (ETC) backend"
 
 
 
