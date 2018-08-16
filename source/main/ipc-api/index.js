@@ -7,6 +7,7 @@ import parseRedemptionCodeApi from './parse-redemption-code-from-pdf';
 import resizeWindowApi from './resize-window';
 import killProcess from './kill-process';
 import loadAsset from './load-asset';
+import getGpuStatus from './get-gpu-status';
 
 export default (params: any) => {
   compressLogsApi();
@@ -17,4 +18,5 @@ export default (params: any) => {
   resizeWindowApi(params);
   killProcess();
   loadAsset();
+  getGpuStatus();
 };

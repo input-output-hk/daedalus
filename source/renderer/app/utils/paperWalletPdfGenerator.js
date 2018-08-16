@@ -49,7 +49,7 @@ export const downloadPaperWalletCertificate = async (
   { address, mnemonics, intl, filePath }: DownloadPaperWalletCertificateParams
 ) => {
   const { getBuildLabel } = environment;
-  const qrCodeImage = qr.imageSync(address, { type: 'png', size: 10, ec_level: 'H', margin: 0 });
+  const qrCodeImage = qr.imageSync(address, { type: 'png', size: 10, ec_level: 'L', margin: 0 });
   const textColor = '#3b5c9b';
 
   const printMnemonic = (index) => `${index + 1}. ${mnemonics[index]}`;

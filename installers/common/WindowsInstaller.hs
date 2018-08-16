@@ -23,7 +23,7 @@ import           Prelude ((!!))
 import qualified System.IO as IO
 import           Filesystem.Path (FilePath, (</>))
 import           Filesystem.Path.CurrentOS (encodeString, fromText)
-import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, stdout, input, export, sed, strict, format, printf, fp, w, (%), need, writeTextFile, die)
+import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, stdout, input, export, sed, strict, format, printf, fp, w, s, (%), need, writeTextFile, die, cp)
 import           Turtle.Pattern (text, plus, noneOf, star, dot)
 import           AppVeyor
 import qualified Codec.Archive.Zip    as Zip
@@ -110,11 +110,11 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
 
     IO.writeFile "daedalus.nsi" $ nsis $ do
         _ <- constantStr "Version" (str fullVersion)
-        _ <- constantStr "Cluster" (str $ unpack $ lshowText clusterName)
+        _ <- constantStr "Cluster" (str $ lshow clusterName)
         _ <- constantStr "InstallDir" (str $ unpack $ installDirectory installerConfig)
         name "$InstallDir ($Version)"                  -- The name of the installer
         outFile $ str $ encodeString outName        -- Where to produce the installer
-        unsafeInjectGlobal $ "!define MUI_ICON \"icons\\64x64.ico\""
+        unsafeInjectGlobal $ "!define MUI_ICON \"icons\\" ++ lshow clusterName ++ "\\64x64.ico\""
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE"
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_BITMAP \"icons\\installBanner.bmp\""
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_RIGHT"
@@ -187,14 +187,21 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
                 createShortcut "$SMPROGRAMS/$InstallDir/$InstallDir.lnk" daedalusShortcut
         return ()
 
-packageFrontend :: IO ()
-packageFrontend = do
+lshow :: Show a => a -> String
+lshow = T.unpack . lshowText
+
+packageFrontend :: Cluster -> IO ()
+packageFrontend cluster = do
+    let icon = format ("installers/icons/"%s%"/64x64") (lshowText cluster)
     export "NODE_ENV" "production"
-    shells "npm run package -- --icon installers/icons/64x64" empty
+    shells ("npm run package -- --icon " <> icon) empty
 
 main :: Options -> IO ()
 main opts@Options{..}  = do
     generateOSClusterConfigs "./dhall" "." opts
+    cp (fromText "launcher-config.yaml") (fromText "../launcher-config.yaml")
+
+    installerConfig <- getInstallerConfig "./dhall" Win64 oCluster
 
     fetchCardanoSL "."
     printCardanoBuildInfo "."
@@ -203,14 +210,12 @@ main opts@Options{..}  = do
     ver <- getCardanoVersion
 
     echo "Packaging frontend"
-    exportBuildVars opts ver
-    packageFrontend
+    exportBuildVars opts installerConfig cardanoVersion
+    packageFrontend oCluster
 
     let fullName = packageFileName Win64 oCluster fullVersion oBackend ver oBuildJob
 
     printf ("Building: "%fp%"\n") fullName
-
-    installerConfig <- getInstallerConfig "./dhall" Win64 oCluster
 
     echo "Adding permissions manifest to cardano-launcher.exe"
     procs "C:\\Program Files (x86)\\Windows Kits\\8.1\\bin\\x64\\mt.exe" ["-manifest", "cardano-launcher.exe.manifest", "-outputresource:cardano-launcher.exe;#1"] mempty

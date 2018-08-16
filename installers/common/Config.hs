@@ -147,12 +147,11 @@ dhallTopExpr dhallRoot cfg os cluster
   where comp x = dhallRoot <>"/"<> lshowText x <>".dhall"
 
 getInstallerConfig :: Text -> OS -> Cluster -> IO InstallerConfig
-getInstallerConfig dhallRoot os cluster = do
-    let
-        topexpr :: Dhall.Text
-        topexpr = LT.fromStrict $ format (s%" ("%s%" "%s%")") (dhallRoot <> "/installer.dhall") (comp os) (comp cluster)
+getInstallerConfig dhallRoot os cluster = Dhall.input Dhall.auto (LT.fromStrict topexpr)
+    where
+        topexpr = format (s%" "%s%" ("%s%" "%s%")") (dhallRoot <> "/installer.dhall") (comp cluster) (comp os) (comp cluster)
         comp x = dhallRoot <>"/"<> lshowText x <>".dhall"
-    Dhall.input Dhall.auto topexpr
+
 
 forConfigValues :: Text -> OS -> Cluster -> (Config -> YAML.Value -> IO a) -> IO ()
 forConfigValues dhallRoot os cluster action = do

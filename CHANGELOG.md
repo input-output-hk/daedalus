@@ -1,6 +1,23 @@
 Changelog
 =========
 
+## vNext
+=======
+
+### Features
+
+- Added support for configurable Api port ([PR 992](https://github.com/input-output-hk/daedalus/pull/992))
+- Added initial configuration for a testnet build of Daedalus ([PR 991](https://github.com/input-output-hk/daedalus/pull/991))
+
+### Fixes
+
+- Improved paper wallet certificate QR code compatibility ([PR 999](https://github.com/input-output-hk/daedalus/pull/999))
+- Fixed a bug in the Electron which results in blank/white screen rendering on some OS/Graphics-card/Drivers combinations.  ([PR 1007](https://github.com/input-output-hk/daedalus/pull/1007))
+
+### Chores
+
+- Improved network label in the Top bar ([PR 988](https://github.com/input-output-hk/daedalus/pull/988))
+
 ## 0.11.0
 
 ### Features

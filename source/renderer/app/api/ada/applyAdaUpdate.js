@@ -1,5 +1,6 @@
 // @flow
 import { request } from './lib/request';
+import environment from '../../../../common/environment';
 
 export type ApplyAdaUpdateParams = {
   ca: string,
@@ -12,7 +13,7 @@ export const applyAdaUpdate = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/update/apply',
-    port: 8090,
+    port: environment.WALLET_PORT,
     ca,
   })
 );

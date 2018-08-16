@@ -1,6 +1,7 @@
 // @flow
 import type { AdaAccounts } from './types';
 import { request } from './lib/request';
+import environment from '../../../../common/environment';
 
 
 export type GetAdaWalletAccountsParams = {
@@ -15,7 +16,7 @@ export const getAdaWalletAccounts = (
     hostname: 'localhost',
     method: 'GET',
     path: '/api/accounts',
-    port: 8090,
+    port: environment.WALLET_PORT,
     ca,
   }, { accountId: walletId })
 );

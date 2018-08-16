@@ -101,10 +101,10 @@ tt = format fp
 
 
 -- | Value of the NETWORK variable used by the npm build.
--- See also: the networkMap variable in yarn2nix.nix.
+-- See also: the cluster argument in default.nix.
 clusterNetwork :: Cluster -> Text
 clusterNetwork Mainnet = "mainnet"
-clusterNetwork Staging = "testnet"
+clusterNetwork Staging = "staging"
 clusterNetwork Testnet = "testnet"
 
 packageFileName :: OS -> Cluster -> Version -> Backend -> Text -> Maybe BuildJob -> FilePath
@@ -143,6 +143,7 @@ withDir path = bracket (pwd >>= \old -> (cd path >> pure old)) cd . const
 data InstallerConfig = InstallerConfig {
       installDirectory :: Text
     , macPackageName :: Text
+    , walletPort :: Integer
     } deriving (Generic, Show)
 
 instance Dhall.Interpret InstallerConfig
