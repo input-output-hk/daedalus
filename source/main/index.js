@@ -1,5 +1,5 @@
 import os from 'os';
-import { app, globalShortcut, Menu } from 'electron';
+import { app, globalShortcut, Menu, dialog } from 'electron';
 import log from 'electron-log';
 import { client } from 'electron-connect';
 import { setupLogging } from './utils/setupLogging';
@@ -25,7 +25,6 @@ log.info(`!!! Daedalus is running on ${os.platform()} version ${os.release()}
 
 // Global references to windows to prevent them from being garbage collected
 let mainWindow;
-let aboutWindow;
 
 const openAbout = () => {
   if (mainWindow) mainWindow.webContents.send(OPEN_ABOUT_DIALOG_CHANNEL);
@@ -47,6 +46,14 @@ const menuActions = {
 };
 
 app.on('ready', async () => {
+  const isWindows = process.platform === 'win32';
+  const isProd = process.env.NODE_ENV === 'production';
+  const isStartedByLauncher = !!process.env.LAUNCHER_CONFIG;
+  if (isWindows && isProd && !isStartedByLauncher) {
+    dialog.showErrorBox('Error while starting Daedalus', 'Please start Daedalus from Start Menu or using Launcher.exe file');
+    app.quit();
+  }
+
   setupTls();
   makeEnvironmentGlobal(process.env);
   await installChromeExtensions(environment.isDev());
@@ -54,7 +61,6 @@ app.on('ready', async () => {
 
   if (environment.isDev()) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
-    client.create(aboutWindow);
     client.create(mainWindow);
   }
 
