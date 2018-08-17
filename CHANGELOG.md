@@ -16,6 +16,7 @@ Changelog
 
 ### Chores
 
+- Added a check for the network Daedalus is running on before opening the associated url to the Cardano network explorer in an external browser. [PR 1051](https://github.com/input-output-hk/daedalus/pull/1051)
 - Improved network label in the Top bar ([PR 988](https://github.com/input-output-hk/daedalus/pull/988))
 
 ## 0.11.0
