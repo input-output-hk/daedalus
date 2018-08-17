@@ -46,11 +46,10 @@ const menuActions = {
 };
 
 app.on('ready', async () => {
-  const isWindows = process.platform === 'win32';
   const isProd = process.env.NODE_ENV === 'production';
   const isStartedByLauncher = !!process.env.LAUNCHER_CONFIG;
-  if (isWindows && isProd && !isStartedByLauncher) {
-    dialog.showErrorBox('Error while starting Daedalus', 'Please start Daedalus from Start Menu or using Launcher.exe file');
+  if (isProd && !isStartedByLauncher) {
+    dialog.showErrorBox('Daedalus improperly started!', 'Please start Daedalus using the icon in the Windows start menu or using Daedalus icon on your desktop.');
     app.quit();
   }
 
