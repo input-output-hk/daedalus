@@ -9,7 +9,8 @@ import environment from '../../../../common/environment';
 const { isMainnet, isStaging, isTestnet } = environment;
 
 export const getNetworkExplorerUrl = () => {
-  let explorerUrl;
+  // sets default to mainnet incase env.NETWORK is undefined
+  let explorerUrl = MAIN_NET_EXPLORER_URL;
   if (isMainnet()) { explorerUrl = MAIN_NET_EXPLORER_URL; }
   if (isStaging()) { explorerUrl = STAGING_EXPLORER_URL; }
   if (isTestnet()) { explorerUrl = TEST_NET_EXPLORER_URL; }
