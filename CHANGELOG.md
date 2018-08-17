@@ -17,6 +17,7 @@ Changelog
 
 ### Chores
 
+- Implemented `NETWORK` specific Cardano Blockchain Explorer links (Mainnet, Testnet, Staging) [PR 1051](https://github.com/input-output-hk/daedalus/pull/1051)
 - Improved network label in the Top bar ([PR 988](https://github.com/input-output-hk/daedalus/pull/988))
 
 ## 0.11.0
