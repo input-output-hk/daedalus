@@ -2,11 +2,14 @@
 , buildNum ? null
 }:
 let
-  daedalusPkgs = import ./. {};
+  daedalusPkgs = { cluster ? null }: import ./. {
+    inherit system buildNum cluster;
+    version = "${version}${suffix}";
+  };
   suffix = if buildNum == null then "" else "-${toString buildNum}";
   version = (builtins.fromJSON (builtins.readFile (./. + "/package.json"))).version;
 
-  makeJobs = cluster: with import ./. { inherit cluster system; version = "${version}${suffix}"; }; {
+  makeJobs = cluster: with daedalusPkgs { inherit cluster; }; {
     inherit daedalus;
     installer = wrappedBundle newBundle pkgs cluster daedalus-bridge.version;
   };
@@ -23,5 +26,5 @@ let
   lib = (import ./. {}).pkgs.lib;
   clusters = lib.splitString " " (builtins.replaceStrings ["\n"] [""] (builtins.readFile ./installer-clusters.cfg));
 in {
-  tests = daedalusPkgs.tests;
+  tests = (daedalusPkgs {}).tests;
 } // builtins.listToAttrs (map (x: { name = x; value = makeJobs x; }) clusters)
