@@ -34,6 +34,8 @@ const environment = Object.assign({
   isTest: () => environment.current === environment.TEST,
   isProduction: () => environment.current === environment.PRODUCTION,
   isMainnet: () => environment.NETWORK === 'mainnet',
+  isStaging: () => environment.NETWORK === 'staging',
+  isTestnet: () => environment.NETWORK === 'testnet',
   isAdaApi: () => environment.API === 'ada',
   isEtcApi: () => environment.API === 'etc',
   build,
