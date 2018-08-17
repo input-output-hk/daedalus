@@ -17,6 +17,20 @@ const printMainProcessLogs = () => (
     })
 );
 
+const startApp = async () => {
+  const app = new Application({
+    path: electronPath,
+    args: ['./dist/main/index.js'],
+    env: Object.assign({}, process.env, {
+      NODE_ENV: environment.TEST,
+    }),
+    waitTimeout: DEFAULT_TIMEOUT
+  });
+  await app.start();
+  await app.client.waitUntilWindowLoaded();
+  return app;
+};
+
 defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) => {
   // The cucumber timeout should be high (and never reached in best case)
   // because the errors thrown by webdriver.io timeouts are more descriptive
@@ -25,17 +39,7 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
 
   // Boot up the electron app before all features
   BeforeAll({ timeout: 5 * 60 * 1000 }, async () => {
-    const app = new Application({
-      path: electronPath,
-      args: ['./dist/main/index.js'],
-      env: {
-        NODE_ENV: environment.TEST,
-      },
-      waitTimeout: DEFAULT_TIMEOUT
-    });
-    await app.start();
-    await app.client.waitUntilWindowLoaded();
-    context.app = app;
+    context.app = await startApp();
   });
 
   // Make the electron app accessible in each scenario context
@@ -89,7 +93,7 @@ defineSupportCode(({ BeforeAll, Before, After, AfterAll, setDefaultTimeout }) =>
   // after the node update acceptance test shuts it down via 'kill-process'
   // eslint-disable-next-line prefer-arrow-callback
   After({ tags: '@restartApp' }, async function () {
-    await context.app.restart();
+    context.app = await startApp();
   });
 
   // eslint-disable-next-line prefer-arrow-callback

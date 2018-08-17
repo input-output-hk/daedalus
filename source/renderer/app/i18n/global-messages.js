@@ -146,6 +146,11 @@ export default defineMessages({
     defaultMessage: '!!!Continue',
     description: 'Label "Continue" in dialogs.'
   },
+  faqLinkUrl: {
+    id: 'settings.support.faq.faqLinkURL',
+    defaultMessage: '!!!https://daedaluswallet.io/faq/',
+    description: 'URL for the "FAQ on Daedalus website" link in the FAQ section on the support settings page',
+  },
 });
 
 export const environmentSpecificMessages = {
