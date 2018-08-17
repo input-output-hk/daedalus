@@ -41,7 +41,7 @@ export const sendEtcBugReport = (
     path: '/report',
     port: reportUrl.port,
   }, {
-    product: 'Cardano Wallet',
+    product: 'Mantis Wallet',
     frontendVersion: version,
     backendVersion: API_VERSION,
     network: NETWORK,
