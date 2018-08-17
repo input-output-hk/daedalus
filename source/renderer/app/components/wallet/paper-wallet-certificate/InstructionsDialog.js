@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
+import { getNetworkExplorerUrl } from '../../../utils/ada/network';
 import styles from './InstructionsDialog.scss';
 import {
   PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,
@@ -30,16 +31,16 @@ const messages = defineMessages({
   },
   instructionsListDefinition1: {
     id: 'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition1',
-    defaultMessage: `!!!Your printed certificate will include your paper wallet recovery phrase 
-      of {paperWalletRecoveryPhraseWordCount} words. Note that your paper wallet recovery phrase is 
-      different to the {walletRecoveryPhraseWordCount}-words recovery phrases used to restore your 
+    defaultMessage: `!!!Your printed certificate will include your paper wallet recovery phrase
+      of {paperWalletRecoveryPhraseWordCount} words. Note that your paper wallet recovery phrase is
+      different to the {walletRecoveryPhraseWordCount}-words recovery phrases used to restore your
       regular Daedalus wallet.`,
     description: 'Wallet certificate create instructions dialog definition 1.',
   },
   instructionsListDefinition2: {
     id: 'paper.wallet.create.certificate.instructions.dialog.instructionsList.definition2',
-    defaultMessage: `!!!For security reasons, the last {paperWalletWrittenWordsCount} words of your 
-      paper wallet recovery phrase will not be printed on the paper wallet certificate itself. You 
+    defaultMessage: `!!!For security reasons, the last {paperWalletWrittenWordsCount} words of your
+      paper wallet recovery phrase will not be printed on the paper wallet certificate itself. You
       will need to write them on your certificate by hand in a moment.`,
     description: 'Wallet certificate create instructions dialog definition 2.',
   },
@@ -62,7 +63,7 @@ const messages = defineMessages({
   printingInstructions: {
     id: 'paper.wallet.create.certificate.instructions.dialog.printingInstructions',
     defaultMessage: `!!!When you click “Save PDF file for printing” you will be prompted
-      to choose a location on your computer where the PDF file will be saved. After that 
+      to choose a location on your computer where the PDF file will be saved. After that
       open the saved PDF file and print it.`,
     description: 'Wallet certificate create instructions dialog - printing instructions.',
   },
@@ -84,8 +85,6 @@ type Props = {
   onClose: Function,
   onOpenExternalLink: Function,
 };
-
-const CARDANO_EXPLORER_LINK = 'https://cardanoexplorer.com';
 
 @observer
 export default class InstructionsDialog extends Component<Props> {
@@ -116,10 +115,12 @@ export default class InstructionsDialog extends Component<Props> {
       }
     ];
 
+    const openNetworkExplorer = onOpenExternalLink.bind(null, getNetworkExplorerUrl());
+
     const cardanoExplorerLink = (
       <span
         className={styles.link}
-        onClick={() => onOpenExternalLink(CARDANO_EXPLORER_LINK)}
+        onClick={openNetworkExplorer}
         role="link"
         aria-hidden
       >

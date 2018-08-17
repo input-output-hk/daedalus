@@ -12,7 +12,7 @@ import { assuranceLevels } from '../../../types/transactionAssuranceTypes';
 import { environmentSpecificMessages } from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../domains/WalletTransaction';
 import environment from '../../../../../common/environment';
-import { ADA_EXPLORER_URL } from '../../../config/urlsConfig';
+import { getNetworkExplorerUrl } from '../../../utils/ada/network';
 
 const messages = defineMessages({
   card: {
@@ -148,7 +148,7 @@ export default class Transaction extends Component<Props, State> {
   handleOpenExplorer(type, param, e) {
     if (this.props.onOpenExternalLink && environment.isAdaApi()) {
       e.stopPropagation();
-      const link = `${ADA_EXPLORER_URL}/${type}/${param}`;
+      const link = `${getNetworkExplorerUrl()}/${type}/${param}`;
       this.props.onOpenExternalLink(link);
     }
   }
