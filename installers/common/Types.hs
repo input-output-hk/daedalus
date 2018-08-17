@@ -10,6 +10,7 @@ module Types
   (  -- * Atomic types
     OS(..)
   , Cluster(..)
+  , Backend(..)
   , Config(..), configFilename
   , ConfigRequest(..)
 
@@ -33,7 +34,7 @@ module Types
 where
 
 import           Universum                    hiding (FilePath)
-import           Data.Text                           (toLower)
+import qualified Data.Text                        as T
 import           Data.String                         (IsString)
 import           Filesystem.Path
 import           Filesystem.Path.CurrentOS           (fromText, encodeString)
@@ -56,6 +57,12 @@ data Cluster
   | Staging
   | Testnet
   deriving (Bounded, Enum, Eq, Read, Show)
+
+-- | The wallet backend to include in the installer.
+data Backend
+  = Cardano FilePath -- ^ Cardano SL with the given daedalus-bridge.
+  | Mantis           -- ^ Mantis, to be implemented in DEVOPS-533.
+  deriving (Eq, Show)
 
 data Config
   = Launcher
@@ -86,7 +93,7 @@ testInstaller    False  = DontTestInstaller
 
 
 lshowText :: Show a => a -> Text
-lshowText = toLower . Universum.show
+lshowText = T.toLower . Universum.show
 
 tt :: FilePath -> Text
 tt = format fp
@@ -100,19 +107,23 @@ clusterNetwork Mainnet = "mainnet"
 clusterNetwork Staging = "staging"
 clusterNetwork Testnet = "testnet"
 
-packageFileName :: OS -> Cluster -> Version -> Text -> Maybe BuildJob -> FilePath
-packageFileName os cluster ver backend build = fromText (mconcat name) <.> ext
+packageFileName :: OS -> Cluster -> Version -> Backend -> Text -> Maybe BuildJob -> FilePath
+packageFileName os cluster ver backend backendVer build = fromText name <.> ext
   where
-    name = ["daedalus-", fromVer ver, "-", backend, "-", lshowText cluster, "-", os', build']
+    name = T.intercalate "-" parts
+    parts = ["daedalus", fromVer ver, backend', backendVer, lshowText cluster, os'] ++ build'
+    backend' = case backend of
+                 Cardano _ -> "cardano-sl"
+                 Mantis    -> "mantis"
     ext = case os of
             Win64   -> "exe"
             Macos64 -> "pkg"
-            Linux64   -> "bin"
+            Linux64 -> "bin"
     os' = case os of
             Win64   -> "windows"
             Macos64 -> "macos"
-            Linux64   -> "linux"
-    build' = maybe "" (("-" <>) . fromBuildJob) build
+            Linux64 -> "linux"
+    build' = maybe [] (\b -> [fromBuildJob b]) build
 
 instance FromJSON Version where
   parseJSON = withObject "Package" $ \o -> Version <$> o .: "version"

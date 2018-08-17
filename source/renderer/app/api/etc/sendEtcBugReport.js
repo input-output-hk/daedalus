@@ -17,23 +17,9 @@ export const sendEtcBugReport = (
   { requestFormData }: SendEtcBugReportRequestParams
 ): Promise<{}> => {
   const { email, subject, problem, compressedLog } = requestFormData;
-  const { version, API_VERSION, NETWORK, build, getInstallerVersion, REPORT_URL } = environment;
-  const reportUrl = url.parse(REPORT_URL);
 
-  let platform;
-  switch (environment.platform) {
-    case 'darwin':
-      platform = 'macOS';
-      break;
-    case 'win32':
-      platform = 'Windows';
-      break;
-    case 'linux':
-      platform = 'Linux';
-      break;
-    default:
-      platform = '';
-  }
+  const { version, os, API_VERSION, NETWORK, build, getInstallerVersion, REPORT_URL } = environment;
+  const reportUrl = url.parse(REPORT_URL);
 
   return request({
     hostname: reportUrl.hostname,
@@ -47,7 +33,7 @@ export const sendEtcBugReport = (
     network: NETWORK,
     build,
     installerVersion: getInstallerVersion(),
-    os: platform,
+    os,
     compressedLog,
     date: moment().format('YYYY-MM-DDTHH:mm:ss'),
     magic: 2000000000,

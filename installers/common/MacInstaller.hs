@@ -67,11 +67,12 @@ main opts@Options{..} = do
   ver <- getBackendVersion oBackend
   exportBuildVars opts installerConfig ver
 
+  buildIcons oCluster
   appRoot <- buildElectronApp darwinConfig
   makeComponentRoot opts appRoot darwinConfig
   daedalusVer <- getDaedalusVersion "../package.json"
 
-  let pkg = packageFileName Macos64 oCluster daedalusVer ver oBuildJob
+  let pkg = packageFileName Macos64 oCluster daedalusVer oBackend ver oBuildJob
       opkg = oOutputDir </> pkg
 
   tempInstaller <- makeInstaller opts darwinConfig appRoot pkg
@@ -105,16 +106,19 @@ makeScriptsDir Options{..} DarwinConfig{..} = case oBackend of
     pure $ tt tempdir
   Mantis    -> pure "[DEVOPS-533]"
 
+buildIcons :: Cluster -> IO ()
+buildIcons cluster = do
+  let iconset = format ("icons/"%s%".iconset") (lshowText cluster)
+  echo "Creating icons ..."
+  procs "iconutil" ["--convert", "icns", "--output", "icons/electron.icns"
+                   , iconset] mempty
+
 -- | Builds the electron app with "npm package" and returns its
 -- component root path.
 -- NB: If webpack scripts are changed then this function may need to
 -- be updated.
 buildElectronApp :: DarwinConfig -> IO FilePath
 buildElectronApp darwinConfig@DarwinConfig{..} = do
-  echo "Creating icons ..."
-  procs "iconutil" ["--convert", "icns", "--output", "icons/electron.icns"
-                   , "icons/electron.iconset"] mempty
-
   withDir ".." . sh $ npmPackage darwinConfig
 
   let

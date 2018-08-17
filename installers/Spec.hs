@@ -138,5 +138,5 @@ utilSpec = do
 
   describe "Package filename generation" $ do
     it "generates a good filename for windows" $ do
-      let f = packageFileName Win64 Mainnet (Version "0.4.2") "test-9.9" (Just "job.id")
-      f `shouldBe` (fromText "daedalus-0.4.2-test-9.9-mainnet-windows-job.id.exe")
+      let f = packageFileName Win64 Mainnet (Version "0.4.2") (Cardano "") "9.9" (Just "job.id")
+      f `shouldBe` (fromText "daedalus-0.4.2-cardano-sl-9.9-mainnet-windows-job.id.exe")
