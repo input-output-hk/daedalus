@@ -23,7 +23,7 @@ export const sendAdaBugReport = (
   return request({
     hostname: reportUrl.hostname,
     method: 'POST',
-    path: '/report',
+    path: '/api/v1/report',
     port: reportUrl.port,
   }, {
     product: 'Cardano Wallet',
