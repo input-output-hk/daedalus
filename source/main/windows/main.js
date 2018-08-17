@@ -7,7 +7,7 @@ import RendererErrorHandler from '../utils/rendererErrorHandler';
 
 const rendererErrorHandler = new RendererErrorHandler();
 
-export const createMainWindow = () => {
+export const createMainWindow = (isInSafeMode) => {
   const windowOptions = {
     show: false,
     width: 1150,
@@ -51,9 +51,8 @@ export const createMainWindow = () => {
   window.loadURL(`file://${__dirname}/../renderer/index.html`);
   window.on('page-title-updated', event => { event.preventDefault(); });
 
-  const { gpu_compositing } = app.getGPUFeatureStatus();
   let title = environment.getBuildLabel();
-  if (gpu_compositing !== 'enabled') title += ' [SAFE MODE]';
+  if (isInSafeMode) title += ' [SAFE MODE]';
   window.setTitle(title);
 
   window.webContents.on('context-menu', (e, props) => {

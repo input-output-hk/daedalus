@@ -2,6 +2,7 @@ import os from 'os';
 import { app, globalShortcut, Menu } from 'electron';
 import log from 'electron-log';
 import { client } from 'electron-connect';
+import { includes } from 'lodash';
 import { setupLogging } from './utils/setupLogging';
 import { setupTls } from './utils/setupTls';
 import { makeEnvironmentGlobal } from './utils/makeEnvironmentGlobal';
@@ -36,21 +37,29 @@ const goToAdaRedemption = () => {
 };
 
 const restartInSafeMode = () => {
-  app.relaunch({ args: process.argv.slice(1).concat(['--relaunch', '--disable-gpu']) });
-  app.exit(0);
+  app.exit(21);
+};
+
+const restartWithoutSafeMode = () => {
+  app.exit(22);
 };
 
 const menuActions = {
   openAbout,
   goToAdaRedemption,
-  restartInSafeMode
+  restartInSafeMode,
+  restartWithoutSafeMode
 };
 
 app.on('ready', async () => {
   setupTls();
   makeEnvironmentGlobal(process.env);
   await installChromeExtensions(environment.isDev());
-  mainWindow = createMainWindow();
+
+  // Detect safe mode
+  const isInSafeMode = includes(process.argv.slice(1), '--disable-gpu');
+
+  mainWindow = createMainWindow(isInSafeMode);
 
   if (environment.isDev()) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
@@ -61,10 +70,10 @@ app.on('ready', async () => {
   // Build app menus
   let menu;
   if (process.platform === 'darwin') {
-    menu = Menu.buildFromTemplate(osxMenu(app, mainWindow, menuActions));
+    menu = Menu.buildFromTemplate(osxMenu(app, mainWindow, menuActions, isInSafeMode));
     Menu.setApplicationMenu(menu);
   } else {
-    menu = Menu.buildFromTemplate(winLinuxMenu(app, mainWindow, menuActions));
+    menu = Menu.buildFromTemplate(winLinuxMenu(app, mainWindow, menuActions, isInSafeMode));
     mainWindow.setMenu(menu);
   }
 

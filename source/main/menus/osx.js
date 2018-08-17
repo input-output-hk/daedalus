@@ -1,7 +1,9 @@
 import { compact } from 'lodash';
 import environment from '../../common/environment';
 
-export const osxMenu = (app, window, { openAbout, goToAdaRedemption, restartInSafeMode }) => (
+export const osxMenu = (app, window, {
+  openAbout, goToAdaRedemption, restartInSafeMode, restartWithoutSafeMode
+}, isInSafeMode) => (
   [{
     label: 'Daedalus',
     submenu: compact([environment.API === 'ada' && {
@@ -14,15 +16,22 @@ export const osxMenu = (app, window, { openAbout, goToAdaRedemption, restartInSa
       click() {
         openAbout();
       },
-    }, {
+    }, !isInSafeMode && {
       label: 'Restart in safe mode',
       click() {
         restartInSafeMode();
       },
+    }, isInSafeMode && {
+      label: 'Restart without safe mode',
+      click() {
+        restartWithoutSafeMode();
+      },
     }, {
       label: 'Quit',
       accelerator: 'Command+Q',
-      click: () => app.quit()
+      click() {
+        app.quit();
+      }
     }])
   }, {
     label: 'Edit',
