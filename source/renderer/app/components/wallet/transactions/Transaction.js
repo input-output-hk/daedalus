@@ -146,7 +146,6 @@ export default class Transaction extends Component<Props, State> {
   }
 
   handleOpenExplorer(type, param, e) {
-    console.log(process.env.NETWORK);
     if (this.props.onOpenExternalLink && environment.isAdaApi()) {
       e.stopPropagation();
       const link = `${getNetworkExplorerUrl()}/${type}/${param}`;
