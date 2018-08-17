@@ -57,7 +57,7 @@ app.on('ready', async () => {
   await installChromeExtensions(environment.isDev());
 
   // Detect safe mode
-  const isInSafeMode = includes(process.argv.slice(1), '--disable-gpu');
+  const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
 
   mainWindow = createMainWindow(isInSafeMode);
 
