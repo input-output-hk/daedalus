@@ -5556,13 +5556,13 @@
         "description": "Paper wallet pdf \"Wallet address\" label.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 20
         },
         "file": "source/renderer/app/utils/paperWalletPdfGenerator.js",
         "id": "paper.wallet.pdf.walletAddress.label",
         "start": {
           "column": 22,
-          "line": 14
+          "line": 16
         }
       },
       {
@@ -5570,13 +5570,13 @@
         "description": "Paper wallet pdf \"Paper wallet recovery phrase\" label.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 25
         },
         "file": "source/renderer/app/utils/paperWalletPdfGenerator.js",
         "id": "paper.wallet.pdf.recoveryPhrase.label",
         "start": {
           "column": 23,
-          "line": 19
+          "line": 21
         }
       },
       {
@@ -5584,13 +5584,13 @@
         "description": "Paper wallet pdf \"Password\" label.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 30
         },
         "file": "source/renderer/app/utils/paperWalletPdfGenerator.js",
         "id": "paper.wallet.pdf.password.label",
         "start": {
           "column": 17,
-          "line": 24
+          "line": 26
         }
       },
       {
@@ -5598,13 +5598,13 @@
         "description": "PDF title",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 35
         },
         "file": "source/renderer/app/utils/paperWalletPdfGenerator.js",
         "id": "paper.wallet.pdf.info.title",
         "start": {
           "column": 13,
-          "line": 29
+          "line": 31
         }
       },
       {
@@ -5612,13 +5612,13 @@
         "description": "PDF author",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 40
         },
         "file": "source/renderer/app/utils/paperWalletPdfGenerator.js",
         "id": "paper.wallet.pdf.info.author",
         "start": {
           "column": 14,
-          "line": 34
+          "line": 36
         }
       }
     ],
