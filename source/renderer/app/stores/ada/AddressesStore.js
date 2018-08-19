@@ -1,6 +1,6 @@
 // @flow
-import { observable, computed, action, runInAction } from 'mobx';
 import _ from 'lodash';
+import { observable, computed, action, runInAction } from 'mobx';
 import Store from '../lib/Store';
 import CachedRequest from '../lib/LocalizedCachedRequest';
 import Request from '../lib/LocalizedRequest';
@@ -89,6 +89,11 @@ export default class AddressesStore extends Store {
 
   @action _resetErrors = () => {
     this.error = null;
+  };
+
+  getAccountIndexByWalletId = async (walletId: string): Promise<?number> => {
+    const result = await this.api.ada.getAddressesV1({ walletId });
+    return result ? result.accountIndex : null;
   };
 
   getAccountIdByWalletId = async (walletId: string): Promise<?string> => {

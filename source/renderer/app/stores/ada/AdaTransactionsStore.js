@@ -1,12 +1,10 @@
 // @flow
-import { remote } from 'electron';
 import { computed } from 'mobx';
 import BigNumber from 'bignumber.js';
 import type { UnconfirmedAmount } from '../../types/unconfirmedAmountType';
 import { isValidAmountInLovelaces } from '../../utils/validations';
 import TransactionsStore from '../TransactionsStore';
 import { transactionTypes } from '../../domains/WalletTransaction';
-import getAccountIndex from '../../api/ada/getAccountIndex';
 
 type TransactionFeeRequest = {
   walletId: string,
@@ -48,7 +46,7 @@ export default class AdaTransactionsStore extends TransactionsStore {
 
   calculateTransactionFee = async (transactionFeeRequest: TransactionFeeRequest) => {
     const { walletId } = transactionFeeRequest;
-    const accountIndex = await getAccountIndex(walletId);
+    const accountIndex = await this.stores.ada.addresses.getAccountIndexByWalletId(walletId);
 
     if (!accountIndex) {
       throw new Error('Active account required before calculating transaction fees.');

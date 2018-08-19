@@ -23,7 +23,6 @@ import type {
   GetWalletCertificateRecoveryPhraseResponse,
   GetWalletRecoveryPhraseFromCertificateResponse,
 } from '../../api/ada/types';
-import getAccountIndex from '../../api/ada/getAccountIndex';
 
 
 export default class AdaWalletsStore extends WalletStore {
@@ -82,7 +81,7 @@ export default class AdaWalletsStore extends WalletStore {
   }) => {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
-    const accountIndex = await getAccountIndex(wallet.id);
+    const accountIndex = await this.stores.ada.addresses.getAccountIndexByWalletId(wallet.id);
 
     await this.sendMoneyRequest.execute({
       address: receiver,
