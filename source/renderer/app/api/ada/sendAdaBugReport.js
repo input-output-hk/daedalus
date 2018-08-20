@@ -29,7 +29,7 @@ export const sendAdaBugReport = (
     path: '/api/v1/report',
     port: reportUrl.port,
   }, {
-    product: 'Cardano Wallet',
+    product: 'Daedalus Wallet',
     frontendVersion: version,
     backendVersion: API_VERSION,
     network,
