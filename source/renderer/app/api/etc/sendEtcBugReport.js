@@ -17,9 +17,11 @@ export const sendEtcBugReport = (
   { requestFormData }: SendEtcBugReportRequestParams
 ): Promise<{}> => {
   const { email, subject, problem, compressedLog } = requestFormData;
-
   const { version, os, API_VERSION, NETWORK, build, getInstallerVersion, REPORT_URL } = environment;
   const reportUrl = url.parse(REPORT_URL);
+
+  // Report server recognizes the following networks: mainnet, staging and testnet
+  const network = NETWORK === 'development' ? 'staging' : NETWORK;
 
   return request({
     hostname: reportUrl.hostname,
@@ -30,7 +32,7 @@ export const sendEtcBugReport = (
     product: 'Mantis Wallet',
     frontendVersion: version,
     backendVersion: API_VERSION,
-    network: NETWORK,
+    network,
     build,
     installerVersion: getInstallerVersion(),
     os,
