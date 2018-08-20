@@ -6,25 +6,24 @@ export const osxMenu = (app, window, {
 }, isInSafeMode) => (
   [{
     label: 'Daedalus',
-    submenu: compact([environment.API === 'ada' && {
+    submenu: compact([{
+      label: 'About',
+      click() {
+        openAbout();
+      },
+    }, environment.API === 'ada' && {
       label: 'Ada redemption',
       click() {
         goToAdaRedemption();
       }
     }, {
-      label: 'About',
+      label: 'GPU safe mode',
+      type: 'checkbox',
+      checked: isInSafeMode,
       click() {
-        openAbout();
-      },
-    }, !isInSafeMode && {
-      label: 'Restart in safe mode',
-      click() {
-        restartInSafeMode();
-      },
-    }, isInSafeMode && {
-      label: 'Restart without safe mode',
-      click() {
-        restartWithoutSafeMode();
+        isInSafeMode ?
+          restartWithoutSafeMode() :
+          restartInSafeMode();
       },
     }, {
       label: 'Quit',

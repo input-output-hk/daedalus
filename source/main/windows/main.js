@@ -52,7 +52,7 @@ export const createMainWindow = (isInSafeMode) => {
   window.on('page-title-updated', event => { event.preventDefault(); });
 
   let title = environment.getBuildLabel();
-  if (isInSafeMode) title += ' [SAFE MODE]';
+  if (isInSafeMode) title += ' [GPU safe mode]';
   window.setTitle(title);
 
   window.webContents.on('context-menu', (e, props) => {
