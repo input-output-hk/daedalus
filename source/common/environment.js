@@ -28,7 +28,7 @@ const environment = Object.assign({
   API_VERSION,
   MOBX_DEV_TOOLS: process.env.MOBX_DEV_TOOLS,
   current: process.env.NODE_ENV || 'development',
-  REPORT_URL: process.env.REPORT_URL || 'http://report-server.awstest.iohkdev.io:8080/',
+  REPORT_URL: process.env.REPORT_URL || 'http://staging-report-server.awstest.iohkdev.io:8080/',
   WALLET_PORT: parseInt(process.env.WALLET_PORT || '8090', 10),
   isDev: () => environment.current === environment.DEVELOPMENT,
   isTest: () => environment.current === environment.TEST,
