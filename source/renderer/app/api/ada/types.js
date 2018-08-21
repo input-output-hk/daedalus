@@ -86,29 +86,26 @@ export type AdaTransactionFee = AdaAmount;
 
 export type AdaWallet = {
   createdAt: Date,
-  syncState: {
-    tag: 'restoring' | 'synced',
-    data: ?{
-      estimatedCompletionTime: {
-        quantity: number,
-        unit: string
-      },
-      throughput: {
-        quantity: number,
-        unit: string
-      },
-      percentage: {
-        quantity: number,
-        unit: string
-      },
-    },
-  },
-  balance: AdaAmount,
+  syncState: AdaV1WalletSyncState,
+  balance: number,
   hasSpendingPassword: boolean,
   assuranceLevel: AdaAssuranceV1,
   name: string,
   id: string,
   spendingPasswordLastUpdate: Date,
+};
+
+export type AdaWalletV0 = {
+  cwAccountsNumber: number,
+  cwAmount: AdaAmount,
+  cwHasPassphrase: boolean,
+  cwId: string,
+  cwMeta: {
+    cwAssurance: AdaAssurance,
+    cwName: string,
+    csUnit: number,
+  },
+  cwPassphraseLU: Date,
 };
 
 
