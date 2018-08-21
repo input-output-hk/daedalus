@@ -9,8 +9,8 @@ let
   # selection happens at runtime.
   walletPortMap = {
     mainnet = 8090;
-    staging = 8091;
-    testnet = 8092;
+    staging = 8092;
+    testnet = 8094;
   };
   dotGitExists = builtins.pathExists ./.git;
   isNix2 = 0 <= builtins.compareVersions builtins.nixVersion "1.12";
