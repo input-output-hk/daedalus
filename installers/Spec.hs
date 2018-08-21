@@ -91,7 +91,7 @@ configSpec = do
       walletPort mainnetCfg `shouldBe` 8090
     it "gets the right testnet port" $ do
       stagingCfg <- getInstallerConfig "./dhall" Win64 Testnet
-      walletPort stagingCfg `shouldBe` 8092
+      walletPort stagingCfg `shouldBe` 8094
 
 
 deleteSpec :: Spec
