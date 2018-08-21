@@ -85,7 +85,7 @@ export type IsValidAddressResponse = boolean;
 export type CreateWalletRequest = {
   name: string,
   mnemonic: string,
-  password: ?string,
+  spendingPassword: ?string,
 };
 
 export type UpdateWalletPasswordRequest = {

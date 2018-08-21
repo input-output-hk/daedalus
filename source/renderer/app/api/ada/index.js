@@ -5,6 +5,7 @@ import { ipcRenderer, remote } from 'electron';
 import BigNumber from 'bignumber.js';
 import { Logger, stringifyData, stringifyError } from '../../../../common/logging';
 import { unixTimestampToDate } from './lib/utils';
+import { encryptPassphrase } from './lib/encryptPassphrase';
 import Wallet from '../../domains/Wallet';
 import WalletTransaction, { transactionTypes } from '../../domains/WalletTransaction';
 import WalletAddress from '../../domains/WalletAddress';
@@ -51,6 +52,7 @@ import type {
   AdaTransaction,
   AdaTransactionFee,
   AdaTransactions,
+  AdaWalletV0,
   AdaWallet,
   AdaV1Wallet,
   AdaV1Wallets,
@@ -109,9 +111,6 @@ import {
   WALLET_RECOVERY_PHRASE_WORD_COUNT
 } from '../../config/cryptoConfig';
 
-import { AdaV1AssuranceOptions } from './types';
-import { assuranceModeOptions } from '../../types/transactionAssuranceTypes';
-
 /**
  * The api layer that is used for all requests to the
  * cardano backend when working with the ADA coin.
@@ -162,13 +161,13 @@ export type ImportWalletFromKeyRequest = {
   filePath: string,
   walletPassword: ?string,
 };
-export type ImportWalletFromKeyResponse = Wallet;
+export type ImportWalletFromKeyResponse = AdaWalletV0;
 export type ImportWalletFromFileRequest = {
   filePath: string,
   walletPassword: ?string,
   walletName: ?string,
 };
-export type ImportWalletFromFileResponse = Wallet;
+export type ImportWalletFromFileResponse = AdaWalletV0;
 export type NextUpdateResponse = ?{
   version: ?string,
 };
@@ -271,23 +270,20 @@ export default class AdaApi {
 
   async createWallet(request: CreateWalletRequest): Promise<CreateWalletResponse> {
     Logger.debug('AdaApi::createWallet called');
-    const { name, mnemonic, password } = request;
-    const assurance = 'CWANormal';
-    const unit = 0;
+    const { name, mnemonic, spendingPassword: passwordString } = request;
+    const assuranceLevel = 'normal';
+    const spendingPassword = encryptPassphrase(passwordString);
     try {
       const walletInitData = {
-        cwInitMeta: {
-          cwName: name,
-          cwAssurance: assurance,
-          cwUnit: unit,
-        },
-        cwBackupPhrase: {
-          bpToList: split(mnemonic), // array of mnemonic words
-        }
+        operation: 'create',
+        backupPhrase: split(mnemonic, ' '),
+        assuranceLevel,
+        name,
+        spendingPassword,
       };
-      const wallet: AdaWallet = await newAdaWallet({ ca, password, walletInitData });
+      const wallet: AdaWallet = await newAdaWallet({ ca, walletInitData });
       Logger.debug('AdaApi::createWallet success');
-      return _createWalletFromServerData(wallet);
+      return _createWalletFromServerV1Data(wallet);
     } catch (error) {
       Logger.error('AdaApi::createWallet error: ' + stringifyError(error));
       throw new GenericApiError();
@@ -483,24 +479,18 @@ export default class AdaApi {
   async restoreWallet(request: RestoreWalletRequest): Promise<RestoreWalletResponse> {
     Logger.debug('AdaApi::restoreWallet called');
     const { recoveryPhrase, walletName, walletPassword } = request;
-    const assurance = 'CWANormal';
-    const unit = 0;
-
+    const assuranceLevel = 'normal';
+    const spendingPassword = encryptPassphrase(walletPassword);
     const walletInitData = {
-      cwInitMeta: {
-        cwName: walletName,
-        cwAssurance: assurance,
-        cwUnit: unit,
-      },
-      cwBackupPhrase: {
-        bpToList: split(recoveryPhrase), // array of mnemonic words
-      }
+      operation: 'restore',
+      backupPhrase: split(recoveryPhrase, ' '),
+      assuranceLevel,
+      name: walletName,
+      spendingPassword
     };
 
     try {
-      const wallet: AdaWallet = await restoreAdaWallet(
-        { ca, walletPassword, walletInitData }
-      );
+      const wallet: AdaWallet = await restoreAdaWallet({ ca, walletInitData });
       Logger.debug('AdaApi::restoreWallet success');
       return _createWalletFromServerData(wallet);
     } catch (error) {
@@ -524,11 +514,11 @@ export default class AdaApi {
     Logger.debug('AdaApi::importWalletFromKey called');
     const { filePath, walletPassword } = request;
     try {
-      const importedWallet: AdaWallet = await importAdaWallet(
+      const importedWallet: AdaWalletV0 = await importAdaWallet(
         { ca, walletPassword, filePath }
       );
       Logger.debug('AdaApi::importWalletFromKey success');
-      return _createWalletFromServerData(importedWallet);
+      return _createWalletFromServerDataV0(importedWallet);
     } catch (error) {
       Logger.debug('AdaApi::importWalletFromKey error: ' + stringifyError(error));
       if (error.message.includes('already exists')) {
@@ -545,13 +535,13 @@ export default class AdaApi {
     const { filePath, walletPassword } = request;
     const isKeyFile = filePath.split('.').pop().toLowerCase() === 'key';
     try {
-      const importedWallet: AdaWallet = isKeyFile ? (
+      const importedWallet: AdaWalletV0 = isKeyFile ? (
         await importAdaWallet({ ca, walletPassword, filePath })
       ) : (
         await importAdaBackupJSON({ ca, filePath })
       );
       Logger.debug('AdaApi::importWalletFromFile success');
-      return _createWalletFromServerData(importedWallet);
+      return _createWalletFromServerDataV0(importedWallet);
     } catch (error) {
       Logger.debug('AdaApi::importWalletFromFile error: ' + stringifyError(error));
       if (error.message.includes('already exists')) {
@@ -804,6 +794,19 @@ export default class AdaApi {
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData', (data: AdaWallet) => (
     new Wallet({
+      id: data.id,
+      amount: BigNumber(data.balance).dividedBy(LOVELACES_PER_ADA),
+      name: data.name,
+      assurance: data.assuranceLevel,
+      hasPassword: data.hasSpendingPassword,
+      passwordUpdateDate: unixTimestampToDate(data.spendingPasswordLastUpdate),
+    })
+  )
+);
+
+const _createWalletFromServerDataV0 = action(
+  'AdaApi::_createWalletFromServerData', (data: AdaWalletV0) => (
+    new Wallet({
       id: data.cwId,
       amount: new BigNumber(data.cwAmount.getCCoin).dividedBy(LOVELACES_PER_ADA),
       name: data.cwMeta.cwName,
@@ -869,9 +872,7 @@ const _createWalletFromServerV1Data = action(
       id,
       amount: new BigNumber(balance).dividedBy(LOVELACES_PER_ADA),
       name,
-      assurance: (assuranceLevel === AdaV1AssuranceOptions.NORMAL ?
-        assuranceModeOptions.NORMAL : assuranceModeOptions.STRICT
-      ),
+      assurance: assuranceLevel,
       hasPassword: hasSpendingPassword,
       passwordUpdateDate: new Date(`${spendingPasswordLastUpdate}Z`),
       syncState,
