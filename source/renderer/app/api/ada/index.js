@@ -273,14 +273,13 @@ export default class AdaApi {
     Logger.debug('AdaApi::createWallet called');
     const { name, mnemonic, spendingPassword: passwordString } = request;
     const assuranceLevel = 'normal';
-    const spendingPassword = encryptPassphrase(passwordString);
     try {
       const walletInitData = {
         operation: 'create',
         backupPhrase: split(mnemonic, ' '),
         assuranceLevel,
         name,
-        spendingPassword,
+        spendingPassword: passwordString ? encryptPassphrase(passwordString) : null,
       };
       const wallet: AdaWallet = await newAdaWallet({ ca, walletInitData });
       Logger.debug('AdaApi::createWallet success');
