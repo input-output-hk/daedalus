@@ -40,20 +40,19 @@ export type AdaAmount = {
 export type AdaTransactionTag = 'CTIn' | 'CTOut';
 
 export type AdaAddress = {
-  cadAmount: AdaAmount,
-  cadId: string,
-  cadIsUsed: boolean,
+  id: string,
+  used: boolean,
+  changeAddress: boolean
 };
 
 export type AdaAddresses = Array<AdaAddress>;
 
 export type AdaAccount = {
-  caAddresses: AdaAddresses,
-  caAmount: AdaAmount,
-  caId: string,
-  caMeta: {
-    caName: string,
-  },
+  amount: number,
+  addresses: AdaAddresses,
+  name: string,
+  walletId: string,
+  index: number
 };
 
 export type AdaAccounts = Array<AdaAccount>;
@@ -154,4 +153,18 @@ export const AdaV1AssuranceOptions: {
   NORMAL: AdaV1Assurance, STRICT: AdaV1Assurance,
 } = {
   NORMAL: 'normal', STRICT: 'strict',
+};
+
+export type Pagination = {
+  pagination: {
+    totalPages: number,
+    page: number,
+    perPage: number,
+    totalEntries: number
+  }
+};
+
+export type ResponseBaseV1 = {
+  status: string,
+  meta: Pagination
 };

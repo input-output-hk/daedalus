@@ -56,8 +56,8 @@ function typedRequest<Response>(
       requestBody = JSON.stringify(rawBodyParams);
       options.headers = {
         'Content-Length': getContentLength(requestBody),
-        'Content-Type': 'application/json;charset=utf-8',
-        Accept: 'application/json;charset=utf-8',
+        'Content-Type': 'application/json; charset=utf-8',
+        Accept: 'application/json; charset=utf-8',
       };
     }
 

@@ -27,7 +27,7 @@ import { exportAdaBackupJSON } from './exportAdaBackupJSON';
 import { importAdaBackupJSON } from './importAdaBackupJSON';
 import { importAdaWallet } from './importAdaWallet';
 import { getAdaWalletAccounts } from './getAdaWalletAccounts';
-import { isValidAdaAddress } from './isValidAdaAddress';
+import { getAdaAddress } from './getAdaAddress';
 import { adaTxFee } from './adaTxFee';
 import { newAdaPayment } from './newAdaPayment';
 import { redeemAda } from './redeemAda';
@@ -76,6 +76,7 @@ import type {
   GetTransactionsResponse,
   GetWalletRecoveryPhraseResponse,
   GetWalletsResponse,
+  IsValidAddressResponse,
   RestoreWalletRequest,
   RestoreWalletResponse,
   SendBugReportRequest,
@@ -89,7 +90,8 @@ import {
   GenericApiError,
   IncorrectWalletPasswordError,
   WalletAlreadyRestoredError,
-  ReportRequestError, InvalidMnemonicError,
+  ReportRequestError,
+  InvalidMnemonicError
 } from '../common';
 
 import {
@@ -118,16 +120,17 @@ const ca = remote.getGlobal('ca');
 
 // ADA specific Request / Response params
 export type GetAddressesResponse = {
-  accountId: ?string,
-  addresses: Array<WalletAddress>,
+  accountIndex: ?number,
+  addresses: Array<AdaAddress>,
 };
 export type GetAddressesRequest = {
   walletId: string,
 };
-export type CreateAddressResponse = WalletAddress;
+export type CreateAddressResponse = AdaAddress;
 export type CreateAddressRequest = {
-  accountId: string,
-  password: ?string,
+  spendingPassword?: string,
+  accountIndex: number,
+  walletId: string,
 };
 
 export type CreateTransactionRequest = {
@@ -172,7 +175,7 @@ export type PostponeUpdateResponse = Promise<void>;
 export type ApplyUpdateResponse = Promise<void>;
 
 export type TransactionFeeRequest = {
-  sender: string,
+  sender: number,
   receiver: string,
   amount: string,
 };
@@ -234,19 +237,15 @@ export default class AdaApi {
     const { walletId } = request;
     try {
       const response: AdaAccounts = await getAdaWalletAccounts({ ca, walletId });
+
       Logger.debug('AdaApi::getAddresses success: ' + stringifyData(response));
       if (!response.length) {
-        return new Promise((resolve) => resolve({ accountId: null, addresses: [] }));
+        return new Promise((resolve) => resolve({ accountIndex: null, addresses: [] }));
       }
       // For now only the first wallet account is used
-      const firstAccount = response[0];
-      const firstAccountId = firstAccount.caId;
-      const firstAccountAddresses = firstAccount.caAddresses;
+      const { index: accountIndex, addresses } = response[0];
 
-      return new Promise((resolve) => resolve({
-        accountId: firstAccountId,
-        addresses: firstAccountAddresses.map(data => _createAddressFromServerData(data)),
-      }));
+      return new Promise(resolve => resolve({ accountIndex, addresses }));
     } catch (error) {
       Logger.error('AdaApi::getAddresses error: ' + stringifyError(error));
       throw new GenericApiError();
@@ -360,24 +359,36 @@ export default class AdaApi {
 
   async createAddress(request: CreateAddressRequest): Promise<CreateAddressResponse> {
     Logger.debug('AdaApi::createAddress called');
-    const { accountId, password } = request;
+    const { spendingPassword, accountIndex, walletId } = request;
+
     try {
-      const response: AdaAddress = await newAdaWalletAddress(
-        { ca, password, accountId }
+      const address: AdaAddress = await newAdaWalletAddress(
+        { ca, spendingPassword, accountIndex, walletId }
       );
-      Logger.debug('AdaApi::createAddress success: ' + stringifyData(response));
-      return _createAddressFromServerData(response);
+
+      Logger.debug('AdaApi::createAddress success: ' + stringifyData(address));
+      return _createAddressFromServerData(address);
     } catch (error) {
       Logger.debug('AdaApi::createAddress error: ' + stringifyError(error));
+
       if (error.message.includes('Passphrase doesn\'t match')) {
         throw new IncorrectWalletPasswordError();
       }
+
       throw new GenericApiError();
     }
   }
 
-  isValidAddress(address: string): Promise<boolean> {
-    return isValidAdaAddress({ ca, address });
+  async isValidAddress(address: string): Promise<IsValidAddressResponse> {
+    Logger.debug('AdaApi::isValidAdaAddress called');
+    try {
+      const response: AdaAddress = await getAdaAddress({ ca, address });
+      Logger.debug(`AdaApi::isValidAdaAddress success: ${stringifyData(response)}`);
+      return true;
+    } catch (error) {
+      Logger.debug(`AdaApi::isValidAdaAddress error: ${stringifyError(error)}`);
+      return false;
+    }
   }
 
   isValidMnemonic(mnemonic: string): Promise<boolean> {
@@ -806,13 +817,8 @@ const _createWalletFromServerDataV0 = action(
 );
 
 const _createAddressFromServerData = action(
-  'AdaApi::_createAddressFromServerData', (data: AdaAddress) => (
-    new WalletAddress({
-      id: data.cadId,
-      amount: new BigNumber(data.cadAmount.getCCoin).dividedBy(LOVELACES_PER_ADA),
-      isUsed: data.cadIsUsed,
-    })
-  )
+  'AdaApi::_createAddressFromServerData',
+  (address: AdaAddress) => new WalletAddress(address)
 );
 
 const _conditionToTxState = (condition: string) => {
