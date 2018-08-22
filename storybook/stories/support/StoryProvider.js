@@ -6,7 +6,7 @@ import { observable, computed, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import actions from '../../../source/renderer/app/actions';
-import { assuranceModeOptions } from '../../../source/renderer/app/types/transactionAssuranceTypes.js';
+import { assuranceModeOptionsV1 } from '../../../source/renderer/app/types/transactionAssuranceTypes.js';
 
 type Props = {
   children: Node,
@@ -17,7 +17,7 @@ const WALLETS = [
     id: '0',
     name: 'No Password',
     amount: new BigNumber(66.998),
-    assurance: assuranceModeOptions.NORMAL,
+    assurance: assuranceModeOptionsV1.NORMAL,
     hasPassword: false,
     passwordUpdateDate: new Date()
   },
@@ -25,7 +25,7 @@ const WALLETS = [
     id: '1',
     name: 'With Password',
     amount: new BigNumber(0),
-    assurance: assuranceModeOptions.NORMAL,
+    assurance: assuranceModeOptionsV1.NORMAL,
     hasPassword: true,
     passwordUpdateDate: moment().subtract(1, 'month').toDate()
   }

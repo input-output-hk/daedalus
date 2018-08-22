@@ -12,7 +12,7 @@ export default class WalletCreateDialogContainer extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
 
-  onSubmit = (values: { name: string, password: ?string }) => {
+  onSubmit = (values: { name: string, spendingPassword: ?string }) => {
     this.props.actions[environment.API].wallets.createWallet.trigger(values);
   };
 
