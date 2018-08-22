@@ -61,7 +61,7 @@ storiesOf('WalletScreens', module)
 
   // ====== Stories ======
 
-  .add('Empty', () => false)
+  .add('Empty', () => null)
 
   .add('Wallet Navigation', () => (
     <div>&nbsp;</div>
