@@ -15,7 +15,8 @@ in
   , tlsPath          = "${dataDir}/tls"
   }
 , pass      =
-  { statePath           = "${dataDir}"
+  { statePath           = dataDir
+  , workingDir          = dataDir
   , nodePath            = "cardano-node"
   , nodeDbPath          = "${dataDir}/DB/"
   , nodeLogConfig       = "\${DAEDALUS_CONFIG}/log-config-prod.yaml"

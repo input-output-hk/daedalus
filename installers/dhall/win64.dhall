@@ -19,8 +19,9 @@ in
   }
 , pass      =
   { statePath           = dataDir
+  , workingDir          = dataDir
   , nodePath            = "\${DAEDALUS_DIR}\\cardano-node.exe"
-  , nodeDbPath          = "${dataDir}\\DB-1.0"
+  , nodeDbPath          = "DB-1.0"
   , nodeLogConfig       = "log-config-prod.yaml"
   , nodeLogPath         = [] : Optional Text
 

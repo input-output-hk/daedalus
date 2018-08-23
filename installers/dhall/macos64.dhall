@@ -18,6 +18,7 @@ in
   }
 , pass      =
   { statePath           = dataDir
+  , workingDir          = dataDir
   , nodePath            = "./cardano-node"
   , nodeDbPath          = "${dataDir}/DB-1.0"
   , nodeLogConfig       = "log-config-prod.yaml"
