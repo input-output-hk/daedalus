@@ -48,9 +48,9 @@ import type {
   AdaSyncProgressResponse,
   AdaAddress,
   AdaAccounts,
-  GetTransactionHistoryResponse,
   AdaTransaction,
   AdaTransactionV1,
+  AdaTransactionsV1,
   AdaTransactionFee,
   AdaAccountV1,
   AdaWallet,
@@ -307,7 +307,7 @@ export default class AdaApi {
     };
 
     try {
-      const history: GetTransactionHistoryResponse = await getAdaHistoryByWallet(params);
+      const history: AdaTransactionsV1 = await getAdaHistoryByWallet(params);
       const transactions = history.map(data => _createTransactionFromServerDataV1(data));
       Logger.debug('AdaApi::searchHistory success: ' + stringifyData(transactions));
 
