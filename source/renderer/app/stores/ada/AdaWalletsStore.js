@@ -24,6 +24,7 @@ import type {
   GetWalletRecoveryPhraseFromCertificateResponse,
 } from '../../api/ada/types';
 
+
 export default class AdaWalletsStore extends WalletStore {
 
   // REQUESTS
@@ -73,18 +74,21 @@ export default class AdaWalletsStore extends WalletStore {
     walletBackup.finishWalletBackup.listen(this._finishCreation);
   }
 
-  _sendMoney = async (transactionDetails: {
+  _sendMoney = async ({ receiver, amount, password }: {
     receiver: string,
     amount: string,
     password: ?string,
   }) => {
     const wallet = this.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
-    const accountId = await this.stores.ada.addresses.getAccountIdByWalletId(wallet.id);
-    if (!accountId) throw new Error('Active account required before sending.');
+    const accountIndex = await this.stores.ada.addresses.getAccountIndexByWalletId(wallet.id);
+
     await this.sendMoneyRequest.execute({
-      ...transactionDetails,
-      sender: accountId,
+      address: receiver,
+      amount: parseInt(amount, 10),
+      spendingPassword: password,
+      accountIndex,
+      walletId: wallet.id,
     });
     this.refreshWalletsData();
     this.actions.dialogs.closeActiveDialog.trigger();

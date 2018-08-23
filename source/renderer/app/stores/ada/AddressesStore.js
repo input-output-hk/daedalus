@@ -1,6 +1,6 @@
 // @flow
-import { observable, computed, action, runInAction } from 'mobx';
 import _ from 'lodash';
+import { observable, computed, action, runInAction } from 'mobx';
 import Store from '../lib/Store';
 import CachedRequest from '../lib/LocalizedCachedRequest';
 import Request from '../lib/LocalizedRequest';
@@ -93,6 +93,13 @@ export default class AddressesStore extends Store {
     this.error = null;
   };
 
+  getAccountIndexByWalletId = async (walletId: string): Promise<?number> => {
+    const result = await this.api.ada.getAddressesV1({ walletId });
+    return result ? result.accountIndex : null;
+  };
+
+  // TODO: Delete the function below after V1 API integration
+  // it is the same as the one above
   getAccountIdByWalletId = async (walletId: string): Promise<?number> => {
     const { accountIndex } = await this._getAddressesAllRequest(walletId);
     return accountIndex || null;

@@ -37,6 +37,7 @@ export type AdaWalletInitData = {
 export type AdaAmount = {
   getCCoin: number,
 };
+
 export type AdaTransactionTag = 'CTIn' | 'CTOut';
 
 export type AdaAddress = {
@@ -80,8 +81,6 @@ export type AdaTransactions = [
 export type AdaTransactionInputOutput = [
   [string, AdaAmount],
 ];
-
-export type AdaTransactionFee = AdaAmount;
 
 export type AdaWallet = {
   createdAt: Date,
@@ -154,6 +153,83 @@ export const AdaV1AssuranceOptions: {
 } = {
   NORMAL: 'normal', STRICT: 'strict',
 };
+
+export type AdaAccountV1 = {
+  data: [
+    {
+      amount: number,
+      addresses: [
+        {
+          used: boolean,
+          changeAddress: boolean,
+          id: string
+        }
+      ],
+      name: string,
+      walletId: string,
+      index: number
+    }
+  ],
+  status: string,
+  meta: {
+    pagination: {
+      totalPages: number,
+      page: number,
+      perPage: number,
+      totalEntries: number,
+    }
+  }
+};
+export type AdaTransactionsV1 = Array<AdaTransactionV1>;
+export type AdaTransactionV1 = {
+  amount: number,
+  confirmations: number,
+  creationTime: string,
+  direction: 'outgoing' | 'incoming',
+  id: string,
+  type: 'local' | 'foreign',
+  inputs: AdaTransactionInputOutputV1,
+  outputs: AdaTransactionInputOutputV1,
+  status: {
+    tag: 'applying' | 'inNewestBlocks' | 'persisted' | 'wontApply' | 'creating',
+    data: {},
+  },
+};
+
+export type AdaTransactionInputOutputV1 = [
+  {
+    address: string,
+    amount: number,
+  },
+];
+
+export type AdaTransactionFee = {
+  estimatedAmount: number,
+  status: "success",
+  meta: {
+    pagination: {}
+  }
+};
+
+export type AdaTransactionParams = {
+  ca: string,
+  data: {
+    source: {
+      accountIndex: number,
+      walletId: string,
+    },
+    destinations: [
+      {
+        address: string,
+        amount: number,
+      },
+    ],
+    groupingPolicy: ?'OptimizeForSecurity' | 'OptimizeForSize',
+    spendingPassword: ?string
+  },
+};
+
+export type AdaTxFeeParams = AdaTransactionParams;
 
 export type Pagination = {
   pagination: {

@@ -4,7 +4,7 @@ import { action } from 'mobx';
 import { ipcRenderer, remote } from 'electron';
 import BigNumber from 'bignumber.js';
 import { Logger, stringifyData, stringifyError } from '../../../../common/logging';
-import { unixTimestampToDate } from './lib/utils';
+import { unixTimestampToDate, utcStringToDate } from './lib/utils';
 import { encryptPassphrase } from './lib/encryptPassphrase';
 import Wallet from '../../domains/Wallet';
 import WalletTransaction, { transactionTypes } from '../../domains/WalletTransaction';
@@ -50,8 +50,10 @@ import type {
   AdaAddress,
   AdaAccounts,
   AdaTransaction,
+  AdaTransactionV1,
+  AdaTransactionsV1,
   AdaTransactionFee,
-  AdaTransactions,
+  AdaAccountV1,
   AdaWalletV0,
   AdaWallet,
   AdaV1Wallet,
@@ -111,6 +113,8 @@ import {
   WALLET_RECOVERY_PHRASE_WORD_COUNT
 } from '../../config/cryptoConfig';
 
+import { getAdaWalletAccountsV1 } from './getAdaWalletAccountsV1';
+
 /**
  * The api layer that is used for all requests to the
  * cardano backend when working with the ADA coin.
@@ -123,6 +127,12 @@ export type GetAddressesResponse = {
   accountIndex: ?number,
   addresses: Array<AdaAddress>,
 };
+
+export type GetAddressesResponseV1 = {
+  accountIndex: ?number,
+  addresses?: Array<WalletAddress>,
+};
+
 export type GetAddressesRequest = {
   walletId: string,
 };
@@ -133,12 +143,6 @@ export type CreateAddressRequest = {
   walletId: string,
 };
 
-export type CreateTransactionRequest = {
-  sender: string,
-  receiver: string,
-  amount: string,
-  password?: ?string,
-};
 export type UpdateWalletRequest = {
   walletId: string,
   name: string,
@@ -173,11 +177,12 @@ export type NextUpdateResponse = ?{
 };
 export type PostponeUpdateResponse = Promise<void>;
 export type ApplyUpdateResponse = Promise<void>;
-
-export type TransactionFeeRequest = {
-  sender: number,
-  receiver: string,
-  amount: string,
+export type TransactionRequest = {
+  accountIndex: number,
+  walletId: string,
+  address: string,
+  amount: number,
+  spendingPassword?: ?string,
 };
 export type TransactionFeeResponse = BigNumber;
 export type ExportWalletToFileRequest = {
@@ -185,6 +190,10 @@ export type ExportWalletToFileRequest = {
   filePath: string,
   password: ?string
 };
+export type CreateTransactionRequest = TransactionRequest;
+export type TransactionFeeRequest = TransactionRequest;
+
+
 export type ExportWalletToFileResponse = [];
 export type GetWalletCertificateRecoveryPhraseRequest = {
   passphrase: string,
@@ -252,15 +261,57 @@ export default class AdaApi {
     }
   }
 
+  async getAddressesV1(request: GetAddressesRequest): Promise<GetAddressesResponseV1> {
+    Logger.debug('AdaApi::getAddressesV1 called: ' + stringifyData(request));
+    const { walletId } = request;
+    try {
+      const response: AdaAccountV1 = await getAdaWalletAccountsV1({ ca, walletId });
+      Logger.debug('AdaApi::getAddressesV1 success: ' + stringifyData(response));
+      if (!response || !response.length) {
+        return new Promise((resolve) => resolve({ accountIndex: null, addresses: [] }));
+      }
+      // For now only the first wallet account is used
+      const firstAccount = response[0];
+      const firstAccountIndex = firstAccount.index;
+      // const firstAccountAddresses = firstAccount.addresses;
+      // TODO: the actual addresses are not implemented yet via _createAddressFromServerData
+
+      return new Promise((resolve) => resolve({
+        accountIndex: firstAccountIndex,
+        // addresses: firstAccountAddresses.map(data => _createAddressFromServerData(data)),
+      }));
+    } catch (error) {
+      Logger.error('AdaApi::getAddressesV1 error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
+
   async getTransactions(request: GetTransactionsRequest): Promise<GetTransactionsResponse> {
     Logger.debug('AdaApi::searchHistory called: ' + stringifyData(request));
     const { walletId, skip, limit } = request;
+
+    const accounts = await getAdaWalletAccountsV1({ ca, walletId });
+    const accountIndex = accounts[0].index;
+    const page = skip === 0 ? 1 : (skip / limit) + 1;
+    const perPage = limit > 50 ? 50 : limit;
+
+    const params = {
+      accountIndex,
+      ca,
+      page,
+      per_page: perPage,
+      wallet_id: walletId,
+      sort_by: 'created_at',
+    };
+
     try {
-      const history: AdaTransactions = await getAdaHistoryByWallet({ ca, walletId, skip, limit });
-      Logger.debug('AdaApi::searchHistory success: ' + stringifyData(history));
+      const history: AdaTransactionsV1 = await getAdaHistoryByWallet(params);
+      const transactions = history.map(data => _createTransactionFromServerDataV1(data));
+      Logger.debug('AdaApi::searchHistory success: ' + stringifyData(transactions));
+
       return new Promise((resolve) => resolve({
-        transactions: history[0].map(data => _createTransactionFromServerData(data)),
-        total: history[1]
+        transactions,
+        total: transactions.length,
       }));
     } catch (error) {
       Logger.error('AdaApi::searchHistory error: ' + stringifyError(error));
@@ -304,16 +355,25 @@ export default class AdaApi {
 
   async createTransaction(request: CreateTransactionRequest): Promise<CreateTransactionResponse> {
     Logger.debug('AdaApi::createTransaction called');
-    const { sender, receiver, amount, password } = request;
-    // sender must be set as accountId (account.caId) and not walletId
+    const { accountIndex, walletId, address, amount, spendingPassword } = request;
     try {
-      // default value. Select (OptimizeForSecurity | OptimizeForSize) will be implemented
-      const groupingPolicy = 'OptimizeForSecurity';
-      const response: AdaTransaction = await newAdaPayment(
-        { ca, sender, receiver, amount, groupingPolicy, password }
-      );
+      const data = {
+        source: {
+          accountIndex,
+          walletId,
+        },
+        destinations: [
+          {
+            address,
+            amount,
+          },
+        ],
+        groupingPolicy: 'OptimizeForSecurity',
+        spendingPassword,
+      };
+      const response: AdaTransactionV1 = await newAdaPayment({ ca, data });
       Logger.debug('AdaApi::createTransaction success: ' + stringifyData(response));
-      return _createTransactionFromServerData(response);
+      return _createTransactionFromServerDataV1(response);
     } catch (error) {
       Logger.debug('AdaApi::createTransaction error: ' + stringifyError(error));
       // eslint-disable-next-line max-len
@@ -335,13 +395,23 @@ export default class AdaApi {
 
   async calculateTransactionFee(request: TransactionFeeRequest): Promise<TransactionFeeResponse> {
     Logger.debug('AdaApi::calculateTransactionFee called');
-    const { sender, receiver, amount } = request;
+    const { accountIndex, walletId, address, amount, spendingPassword } = request;
     try {
-      // default value. Select (OptimizeForSecurity | OptimizeForSize) will be implemented
-      const groupingPolicy = 'OptimizeForSecurity';
-      const response: adaTxFee = await adaTxFee(
-        { ca, sender, receiver, amount, groupingPolicy }
-      );
+      const data = {
+        source: {
+          accountIndex,
+          walletId,
+        },
+        destinations: [
+          {
+            address,
+            amount,
+          },
+        ],
+        groupingPolicy: 'OptimizeForSecurity',
+        spendingPassword,
+      };
+      const response: adaTxFee = await adaTxFee({ ca, data });
       Logger.debug('AdaApi::calculateTransactionFee success: ' + stringifyData(response));
       return _createTransactionFeeFromServerData(response);
     } catch (error) {
@@ -829,6 +899,17 @@ const _conditionToTxState = (condition: string) => {
   }
 };
 
+const _conditionToTxStateV1 = (condition: string) => {
+  switch (condition) {
+    case 'applying':
+    case 'creating': return 'pending';
+    case 'wontApply': return 'failed';
+    default: return 'ok';
+    // Others V0: CPtxInBlocks && CPtxNotTracked
+    // Others V1: "inNewestBlocks" "persisted" "creating"
+  }
+};
+
 const _createTransactionFromServerData = action(
   'AdaApi::_createTransactionFromServerData', (data: AdaTransaction) => {
     const coins = data.ctAmount.getCCoin;
@@ -850,11 +931,29 @@ const _createTransactionFromServerData = action(
   }
 );
 
-const _createTransactionFeeFromServerData = action(
-  'AdaApi::_createTransactionFeeFromServerData', (data: AdaTransactionFee) => {
-    const coins = data.getCCoin;
-    return new BigNumber(coins).dividedBy(LOVELACES_PER_ADA);
+const _createTransactionFromServerDataV1 = action(
+  'AdaApi::_createTransactionFromServerData', (data: AdaTransactionV1) => {
+    const { id, direction, amount, confirmations, creationTime, inputs, outputs, status } = data;
+    return new WalletTransaction({
+      id,
+      title: direction === 'outgoing' ? 'Ada sent' : 'Ada received',
+      type: direction === 'outgoing' ? transactionTypes.EXPEND : transactionTypes.INCOME,
+      amount: new BigNumber(direction === 'outgoing' ? (amount * -1) : amount).dividedBy(LOVELACES_PER_ADA),
+      date: utcStringToDate(creationTime),
+      description: '',
+      numberOfConfirmations: confirmations,
+      addresses: {
+        from: inputs.map(({ address }) => address),
+        to: outputs.map(({ address }) => address),
+      },
+      state: _conditionToTxStateV1(status.tag),
+    });
   }
+);
+
+const _createTransactionFeeFromServerData = action(
+  'AdaApi::_createTransactionFeeFromServerData', (data: AdaTransactionFee) =>
+    new BigNumber(data.estimatedAmount).dividedBy(LOVELACES_PER_ADA)
 );
 
 

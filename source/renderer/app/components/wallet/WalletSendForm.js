@@ -18,7 +18,7 @@ import styles from './WalletSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
 import WalletSendConfirmationDialog from './WalletSendConfirmationDialog';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
-import { formattedAmountToBigNumber, formattedAmountToNaturalUnits } from '../../utils/formatters';
+import { formattedAmountToBigNumber, formattedAmountToNaturalUnits, formattedAmountToLovelace } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 
 export const messages = defineMessages({
@@ -101,7 +101,7 @@ type Props = {
   currencyMaxIntegerDigits?: number,
   currencyMaxFractionalDigits: number,
   validateAmount: (amountInNaturalUnits: string) => Promise<boolean>,
-  calculateTransactionFee: (receiver: string, amount: string) => Promise<BigNumber>,
+  calculateTransactionFee: (address: string, amount: number) => Promise<BigNumber>,
   addressValidator: Function,
   openDialogAction: Function,
   isDialogOpen: Function,
@@ -327,10 +327,10 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   }
 
-  async _calculateTransactionFee(receiver: string, amountValue: string) {
-    const amount = formattedAmountToNaturalUnits(amountValue);
+  async _calculateTransactionFee(address: string, amountValue: string) {
+    const amount = formattedAmountToLovelace(amountValue);
     try {
-      const fee = await this.props.calculateTransactionFee(receiver, amount);
+      const fee = await this.props.calculateTransactionFee(address, amount);
       if (this._isMounted) {
         this._isCalculatingFee = false;
         this.setState({

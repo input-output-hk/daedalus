@@ -6,6 +6,12 @@ import { isValidAmountInLovelaces } from '../../utils/validations';
 import TransactionsStore from '../TransactionsStore';
 import { transactionTypes } from '../../domains/WalletTransaction';
 
+type TransactionFeeRequest = {
+  walletId: string,
+  address: string,
+  amount: number,
+};
+
 export default class AdaTransactionsStore extends TransactionsStore {
 
   @computed get unconfirmedAmount(): UnconfirmedAmount {
@@ -38,12 +44,19 @@ export default class AdaTransactionsStore extends TransactionsStore {
     return unconfirmedAmount;
   }
 
-  calculateTransactionFee = async (walletId: string, receiver: string, amount: string) => {
-    const accountIndex = await this.stores.ada.addresses.getAccountIdByWalletId(walletId);
+  calculateTransactionFee = async (transactionFeeRequest: TransactionFeeRequest) => {
+    const { walletId } = transactionFeeRequest;
+    const accountIndex = await this.stores.ada.addresses.getAccountIndexByWalletId(walletId);
 
-    if (!accountIndex) throw new Error('Active account required before calculating transaction fees.');
-
-    return this.api.ada.calculateTransactionFee({ sender: accountIndex, receiver, amount });
+    if (!accountIndex) {
+      throw new Error('Active account required before calculating transaction fees.');
+    }
+    return this.api.ada.calculateTransactionFee(
+      {
+        ...transactionFeeRequest,
+        accountIndex,
+      }
+    );
   };
 
   validateAmount = (amountInLovelaces: string): Promise<boolean> => (

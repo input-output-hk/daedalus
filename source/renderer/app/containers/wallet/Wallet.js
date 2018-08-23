@@ -93,7 +93,7 @@ export default class Wallet extends Component<Props> {
               onDiscard={this.handleAntivirusNotificationDiscard}
               onFaqLinkClick={this.openExternalLinkInDefaultBrowser}
             />
-          ) : null}
+        ) : null}
       </MainLayout>
     );
   }

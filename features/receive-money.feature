@@ -11,8 +11,8 @@ Feature: Receive money
     Given I am on the "TargetWallet" wallet "receive" screen
     And I generate 1 addresses
     And I have made the following transactions:
-      | sender         | receiver     | amount |
-      | Genesis wallet | TargetWallet | 1      |
+      | source         | destination   | amount |
+      | Genesis wallet | TargetWallet  | 1      |
     Then I should see 2 addresses
     When I click the ShowUsed switch
     Then I should see 1 addresses
