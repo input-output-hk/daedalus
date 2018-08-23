@@ -4,12 +4,8 @@ import { action } from 'mobx';
 import { ipcRenderer, remote } from 'electron';
 import BigNumber from 'bignumber.js';
 import { Logger, stringifyData, stringifyError } from '../../../../common/logging';
-<<<<<<< HEAD
 import { unixTimestampToDate, utcStringToDate } from './lib/utils';
-=======
-import { unixTimestampToDate } from './lib/utils';
 import { encryptPassphrase } from './lib/encryptPassphrase';
->>>>>>> a13312cf6dd1a50d1540a07a566ea79b291137b4
 import Wallet from '../../domains/Wallet';
 import WalletTransaction, { transactionTypes } from '../../domains/WalletTransaction';
 import WalletAddress from '../../domains/WalletAddress';
@@ -57,12 +53,8 @@ import type {
   AdaTransactionV1,
   AdaTransactionsV1,
   AdaTransactionFee,
-<<<<<<< HEAD
   AdaAccountV1,
-=======
-  AdaTransactions,
   AdaWalletV0,
->>>>>>> a13312cf6dd1a50d1540a07a566ea79b291137b4
   AdaWallet,
   AdaV1Wallet,
   AdaV1Wallets,
@@ -121,13 +113,8 @@ import {
   WALLET_RECOVERY_PHRASE_WORD_COUNT
 } from '../../config/cryptoConfig';
 
-<<<<<<< HEAD
-import { AdaV1AssuranceOptions } from './types';
-import { assuranceModeOptions } from '../../types/transactionAssuranceTypes';
 import { getAdaWalletAccountsV1 } from './getAdaWalletAccountsV1';
 
-=======
->>>>>>> a13312cf6dd1a50d1540a07a566ea79b291137b4
 /**
  * The api layer that is used for all requests to the
  * cardano backend when working with the ADA coin.
@@ -190,20 +177,12 @@ export type NextUpdateResponse = ?{
 };
 export type PostponeUpdateResponse = Promise<void>;
 export type ApplyUpdateResponse = Promise<void>;
-
-<<<<<<< HEAD
 export type TransactionRequest = {
   accountIndex: number,
   walletId: string,
   address: string,
   amount: number,
   spendingPassword?: ?string,
-=======
-export type TransactionFeeRequest = {
-  sender: number,
-  receiver: string,
-  amount: string,
->>>>>>> a13312cf6dd1a50d1540a07a566ea79b291137b4
 };
 export type TransactionFeeResponse = BigNumber;
 export type ExportWalletToFileRequest = {
