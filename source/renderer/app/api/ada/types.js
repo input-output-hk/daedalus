@@ -171,6 +171,10 @@ export type AdaAccountV1 = {
     }
   }
 };
+export type AdaTransactionsV1 = {
+  data: [AdaTransactionV1]
+};
+export type GetTransactionHistoryResponse = Array<AdaTransactionV1>;
 
 export type AdaTransactionV1 = {
   amount: number,
@@ -221,4 +225,3 @@ export type AdaTransactionParams = {
 };
 
 export type AdaTxFeeParams = AdaTransactionParams;
-

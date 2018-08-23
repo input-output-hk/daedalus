@@ -48,10 +48,12 @@ import type {
   AdaSyncProgressResponse,
   AdaAddress,
   AdaAccounts,
+  GetTransactionHistoryResponse,
+  AdaTransactionsV1,
   AdaTransaction,
   AdaTransactionV1,
   AdaTransactionFee,
-  AdaTransactions,
+  AdaAccountV1,
   AdaWallet,
   AdaV1Wallet,
   AdaV1Wallets,
@@ -124,6 +126,12 @@ export type GetAddressesResponse = {
   accountId: ?string,
   addresses: Array<WalletAddress>,
 };
+
+export type GetAddressesResponseV1 = {
+  accountIndex: ?number,
+  addresses?: Array<WalletAddress>,
+};
+
 export type GetAddressesRequest = {
   walletId: string,
 };
@@ -256,11 +264,11 @@ export default class AdaApi {
     }
   }
 
-  async getAddressesV1(request: GetAddressesRequest): Promise<GetAddressesResponse> {
+  async getAddressesV1(request: GetAddressesRequest): Promise<GetAddressesResponseV1> {
     Logger.debug('AdaApi::getAddressesV1 called: ' + stringifyData(request));
     const { walletId } = request;
     try {
-      const response: AdaAccounts = await getAdaWalletAccountsV1({ ca, walletId });
+      const response: AdaAccountV1 = await getAdaWalletAccountsV1({ ca, walletId });
       Logger.debug('AdaApi::getAddressesV1 success: ' + stringifyData(response));
       if (!response || !response.length) {
         return new Promise((resolve) => resolve({ accountIndex: null, addresses: [] }));
@@ -300,11 +308,13 @@ export default class AdaApi {
     };
 
     try {
-      const history: AdaTransactions = await getAdaHistoryByWallet(params);
-      Logger.debug('AdaApi::searchHistory success: ' + stringifyData(history));
+      const history: GetTransactionHistoryResponse = await getAdaHistoryByWallet(params);
+      const transactions = history.map(data => _createTransactionFromServerDataV1(data));
+      Logger.debug('AdaApi::searchHistory success: ' + stringifyData(transactions));
+
       return new Promise((resolve) => resolve({
-        transactions: [...history].map(data => _createTransactionFromServerDataV1(data)),
-        total: history.length,
+        transactions,
+        total: transactions.length,
       }));
     } catch (error) {
       Logger.error('AdaApi::searchHistory error: ' + stringifyError(error));
