@@ -2,6 +2,7 @@
 
 // ========= Response Types =========
 export type AdaAssurance = 'CWANormal' | 'CWAStrict';
+export type AdaAssuranceV1 = 'normal' | 'strict';
 export type AdaTransactionCondition = 'CPtxApplying' | 'CPtxInBlocks' | 'CPtxWontApply' | 'CPtxNotTracked';
 export type AdaWalletRecoveryPhraseResponse = Array<string>;
 export type AdaWalletCertificateAdditionalMnemonicsResponse = Array<string>;
@@ -26,14 +27,11 @@ export type AdaSyncProgressResponse = {
 };
 
 export type AdaWalletInitData = {
-  cwInitMeta: {
-    cwName: string,
-    cwAssurance: AdaAssurance,
-    cwUnit: number,
-  },
-  cwBackupPhrase: {
-    bpToList: [],
-  }
+  operation: 'create' | 'restore',
+  backupPhrase: [string],
+  assuranceLevel: AdaAssuranceV1,
+  name: string,
+  spendingPassword: ?string,
 };
 
 export type AdaAmount = {
@@ -43,20 +41,19 @@ export type AdaAmount = {
 export type AdaTransactionTag = 'CTIn' | 'CTOut';
 
 export type AdaAddress = {
-  cadAmount: AdaAmount,
-  cadId: string,
-  cadIsUsed: boolean,
+  id: string,
+  used: boolean,
+  changeAddress: boolean
 };
 
 export type AdaAddresses = Array<AdaAddress>;
 
 export type AdaAccount = {
-  caAddresses: AdaAddresses,
-  caAmount: AdaAmount,
-  caId: string,
-  caMeta: {
-    caName: string,
-  },
+  amount: number,
+  addresses: AdaAddresses,
+  name: string,
+  walletId: string,
+  index: number
 };
 
 export type AdaAccounts = Array<AdaAccount>;
@@ -86,6 +83,17 @@ export type AdaTransactionInputOutput = [
 ];
 
 export type AdaWallet = {
+  createdAt: Date,
+  syncState: AdaV1WalletSyncState,
+  balance: number,
+  hasSpendingPassword: boolean,
+  assuranceLevel: AdaAssuranceV1,
+  name: string,
+  id: string,
+  spendingPasswordLastUpdate: Date,
+};
+
+export type AdaWalletV0 = {
   cwAccountsNumber: number,
   cwAmount: AdaAmount,
   cwHasPassphrase: boolean,
@@ -97,6 +105,7 @@ export type AdaWallet = {
   },
   cwPassphraseLU: Date,
 };
+
 
 export type AdaWallets = Array<AdaWallet>;
 
@@ -221,3 +230,17 @@ export type AdaTransactionParams = {
 };
 
 export type AdaTxFeeParams = AdaTransactionParams;
+
+export type Pagination = {
+  pagination: {
+    totalPages: number,
+    page: number,
+    perPage: number,
+    totalEntries: number
+  }
+};
+
+export type ResponseBaseV1 = {
+  status: string,
+  meta: Pagination
+};

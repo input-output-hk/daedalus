@@ -7,13 +7,19 @@ Changelog
 ### Chores
 
 - Integrates the latest features from the develop branch of react-polymorph. Features include: render props architecture, theme composition, and a ThemeProvider HOC. [PR 950](https://github.com/input-output-hk/daedalus/pull/950)
+- Fixed broken storybook [PR 1041](https://github.com/input-output-hk/daedalus/pull/1041)
 
 ### Features
 
 - Implemented a switch instead of a link for “hide used” addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
 - Implemented forms submission on "Enter" key press ([PR 981](https://github.com/input-output-hk/daedalus/pull/981))
 - Improved the loading UX ([PR 723](https://github.com/input-output-hk/daedalus/pull/723))
+<<<<<<< HEAD
 - Integrated the V1 API endpoint for Ada payments ([PR 1031](https://github.com/input-output-hk/daedalus/pull/1031))
+=======
+- Integrated the V1 API endpoint for creating and restoring Wallets ([PR 1018](https://github.com/input-output-hk/daedalus/pull/1018))
+- Integrated the V1 API endpoints for fetching all accounts associated with a wallet, fetching a single address, and creating a new address ([PR 1037](https://github.com/input-output-hk/daedalus/pull/1037))
+>>>>>>> a13312cf6dd1a50d1540a07a566ea79b291137b4
 
 ### Fixes
 
@@ -42,7 +48,7 @@ Changelog
 ### Features
 
 - Implemented a switch instead of a link for "hide used" addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
-- Added a notification for Windows users that using antivirus software might slow down wallet 
+- Added a notification for Windows users that using antivirus software might slow down wallet
   restoration ([PR 1020](https://github.com/input-output-hk/daedalus/pull/1020))
 
 ### Fixes

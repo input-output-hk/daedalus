@@ -1,21 +1,20 @@
 // @flow
 import type { AdaWallet, AdaWalletInitData } from './types';
-import { request } from './lib/request';
+import { request } from './lib/v1/request';
 
 export type NewAdaWalletParams = {
   ca: string,
-  password: ?string,
   walletInitData: AdaWalletInitData
 };
 
 export const newAdaWallet = (
-  { ca, password, walletInitData }: NewAdaWalletParams
+  { ca, walletInitData }: NewAdaWalletParams
 ): Promise<AdaWallet> => (
   request({
     hostname: 'localhost',
     method: 'POST',
-    path: '/api/wallets/new',
+    path: '/api/v1/wallets',
     port: 8090,
     ca,
-  }, { passphrase: password }, walletInitData)
+  }, {}, walletInitData)
 );

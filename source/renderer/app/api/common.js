@@ -80,11 +80,12 @@ export type GetWalletRecoveryPhraseResponse = Array<string>;
 export type RestoreWalletResponse = Wallet;
 export type UpdateWalletResponse = Wallet;
 export type UpdateWalletPasswordResponse = boolean;
+export type IsValidAddressResponse = boolean;
 
 export type CreateWalletRequest = {
   name: string,
   mnemonic: string,
-  password: ?string,
+  spendingPassword: ?string,
 };
 
 export type UpdateWalletPasswordRequest = {

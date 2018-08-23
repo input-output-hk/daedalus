@@ -1,6 +1,6 @@
 // @flow
 import Store from 'electron-store';
-import type { AssuranceModeOption } from '../../types/transactionAssuranceTypes';
+import type { AssuranceModeOption, AssuranceModeOptionV1 } from '../../types/transactionAssuranceTypes';
 import environment from '../../../../common/environment';
 
 const store = new Store();
@@ -18,7 +18,7 @@ const storageKeys = {
 export type EtcWalletData = {
   id: string,
   name: string,
-  assurance: AssuranceModeOption,
+  assurance: AssuranceModeOption | AssuranceModeOptionV1,
   hasPassword: boolean,
   passwordUpdateDate: ?Date,
 };

@@ -4,7 +4,12 @@ import { action } from 'mobx';
 import { ipcRenderer, remote } from 'electron';
 import BigNumber from 'bignumber.js';
 import { Logger, stringifyData, stringifyError } from '../../../../common/logging';
+<<<<<<< HEAD
 import { unixTimestampToDate, utcStringToDate } from './lib/utils';
+=======
+import { unixTimestampToDate } from './lib/utils';
+import { encryptPassphrase } from './lib/encryptPassphrase';
+>>>>>>> a13312cf6dd1a50d1540a07a566ea79b291137b4
 import Wallet from '../../domains/Wallet';
 import WalletTransaction, { transactionTypes } from '../../domains/WalletTransaction';
 import WalletAddress from '../../domains/WalletAddress';
@@ -26,7 +31,7 @@ import { exportAdaBackupJSON } from './exportAdaBackupJSON';
 import { importAdaBackupJSON } from './importAdaBackupJSON';
 import { importAdaWallet } from './importAdaWallet';
 import { getAdaWalletAccounts } from './getAdaWalletAccounts';
-import { isValidAdaAddress } from './isValidAdaAddress';
+import { getAdaAddress } from './getAdaAddress';
 import { adaTxFee } from './adaTxFee';
 import { newAdaPayment } from './newAdaPayment';
 import { redeemAda } from './redeemAda';
@@ -52,7 +57,12 @@ import type {
   AdaTransactionV1,
   AdaTransactionsV1,
   AdaTransactionFee,
+<<<<<<< HEAD
   AdaAccountV1,
+=======
+  AdaTransactions,
+  AdaWalletV0,
+>>>>>>> a13312cf6dd1a50d1540a07a566ea79b291137b4
   AdaWallet,
   AdaV1Wallet,
   AdaV1Wallets,
@@ -76,6 +86,7 @@ import type {
   GetTransactionsResponse,
   GetWalletRecoveryPhraseResponse,
   GetWalletsResponse,
+  IsValidAddressResponse,
   RestoreWalletRequest,
   RestoreWalletResponse,
   SendBugReportRequest,
@@ -89,7 +100,8 @@ import {
   GenericApiError,
   IncorrectWalletPasswordError,
   WalletAlreadyRestoredError,
-  ReportRequestError, InvalidMnemonicError,
+  ReportRequestError,
+  InvalidMnemonicError
 } from '../common';
 
 import {
@@ -109,10 +121,13 @@ import {
   WALLET_RECOVERY_PHRASE_WORD_COUNT
 } from '../../config/cryptoConfig';
 
+<<<<<<< HEAD
 import { AdaV1AssuranceOptions } from './types';
 import { assuranceModeOptions } from '../../types/transactionAssuranceTypes';
 import { getAdaWalletAccountsV1 } from './getAdaWalletAccountsV1';
 
+=======
+>>>>>>> a13312cf6dd1a50d1540a07a566ea79b291137b4
 /**
  * The api layer that is used for all requests to the
  * cardano backend when working with the ADA coin.
@@ -122,8 +137,8 @@ const ca = remote.getGlobal('ca');
 
 // ADA specific Request / Response params
 export type GetAddressesResponse = {
-  accountId: ?string,
-  addresses: Array<WalletAddress>,
+  accountIndex: ?number,
+  addresses: Array<AdaAddress>,
 };
 
 export type GetAddressesResponseV1 = {
@@ -134,10 +149,11 @@ export type GetAddressesResponseV1 = {
 export type GetAddressesRequest = {
   walletId: string,
 };
-export type CreateAddressResponse = WalletAddress;
+export type CreateAddressResponse = AdaAddress;
 export type CreateAddressRequest = {
-  accountId: string,
-  password: ?string,
+  spendingPassword?: string,
+  accountIndex: number,
+  walletId: string,
 };
 
 export type UpdateWalletRequest = {
@@ -162,25 +178,32 @@ export type ImportWalletFromKeyRequest = {
   filePath: string,
   walletPassword: ?string,
 };
-export type ImportWalletFromKeyResponse = Wallet;
+export type ImportWalletFromKeyResponse = AdaWalletV0;
 export type ImportWalletFromFileRequest = {
   filePath: string,
   walletPassword: ?string,
   walletName: ?string,
 };
-export type ImportWalletFromFileResponse = Wallet;
+export type ImportWalletFromFileResponse = AdaWalletV0;
 export type NextUpdateResponse = ?{
   version: ?string,
 };
 export type PostponeUpdateResponse = Promise<void>;
 export type ApplyUpdateResponse = Promise<void>;
 
+<<<<<<< HEAD
 export type TransactionRequest = {
   accountIndex: number,
   walletId: string,
   address: string,
   amount: number,
   spendingPassword?: ?string,
+=======
+export type TransactionFeeRequest = {
+  sender: number,
+  receiver: string,
+  amount: string,
+>>>>>>> a13312cf6dd1a50d1540a07a566ea79b291137b4
 };
 export type TransactionFeeResponse = BigNumber;
 export type ExportWalletToFileRequest = {
@@ -244,19 +267,15 @@ export default class AdaApi {
     const { walletId } = request;
     try {
       const response: AdaAccounts = await getAdaWalletAccounts({ ca, walletId });
+
       Logger.debug('AdaApi::getAddresses success: ' + stringifyData(response));
       if (!response.length) {
-        return new Promise((resolve) => resolve({ accountId: null, addresses: [] }));
+        return new Promise((resolve) => resolve({ accountIndex: null, addresses: [] }));
       }
       // For now only the first wallet account is used
-      const firstAccount = response[0];
-      const firstAccountId = firstAccount.caId;
-      const firstAccountAddresses = firstAccount.caAddresses;
+      const { index: accountIndex, addresses } = response[0];
 
-      return new Promise((resolve) => resolve({
-        accountId: firstAccountId,
-        addresses: firstAccountAddresses.map(data => _createAddressFromServerData(data)),
-      }));
+      return new Promise(resolve => resolve({ accountIndex, addresses }));
     } catch (error) {
       Logger.error('AdaApi::getAddresses error: ' + stringifyError(error));
       throw new GenericApiError();
@@ -323,23 +342,19 @@ export default class AdaApi {
 
   async createWallet(request: CreateWalletRequest): Promise<CreateWalletResponse> {
     Logger.debug('AdaApi::createWallet called');
-    const { name, mnemonic, password } = request;
-    const assurance = 'CWANormal';
-    const unit = 0;
+    const { name, mnemonic, spendingPassword: passwordString } = request;
+    const assuranceLevel = 'normal';
     try {
       const walletInitData = {
-        cwInitMeta: {
-          cwName: name,
-          cwAssurance: assurance,
-          cwUnit: unit,
-        },
-        cwBackupPhrase: {
-          bpToList: split(mnemonic), // array of mnemonic words
-        }
+        operation: 'create',
+        backupPhrase: split(mnemonic, ' '),
+        assuranceLevel,
+        name,
+        spendingPassword: passwordString ? encryptPassphrase(passwordString) : null,
       };
-      const wallet: AdaWallet = await newAdaWallet({ ca, password, walletInitData });
+      const wallet: AdaWallet = await newAdaWallet({ ca, walletInitData });
       Logger.debug('AdaApi::createWallet success');
-      return _createWalletFromServerData(wallet);
+      return _createWalletFromServerV1Data(wallet);
     } catch (error) {
       Logger.error('AdaApi::createWallet error: ' + stringifyError(error));
       throw new GenericApiError();
@@ -435,24 +450,36 @@ export default class AdaApi {
 
   async createAddress(request: CreateAddressRequest): Promise<CreateAddressResponse> {
     Logger.debug('AdaApi::createAddress called');
-    const { accountId, password } = request;
+    const { spendingPassword, accountIndex, walletId } = request;
+
     try {
-      const response: AdaAddress = await newAdaWalletAddress(
-        { ca, password, accountId }
+      const address: AdaAddress = await newAdaWalletAddress(
+        { ca, spendingPassword, accountIndex, walletId }
       );
-      Logger.debug('AdaApi::createAddress success: ' + stringifyData(response));
-      return _createAddressFromServerData(response);
+
+      Logger.debug('AdaApi::createAddress success: ' + stringifyData(address));
+      return _createAddressFromServerData(address);
     } catch (error) {
       Logger.debug('AdaApi::createAddress error: ' + stringifyError(error));
+
       if (error.message.includes('Passphrase doesn\'t match')) {
         throw new IncorrectWalletPasswordError();
       }
+
       throw new GenericApiError();
     }
   }
 
-  isValidAddress(address: string): Promise<boolean> {
-    return isValidAdaAddress({ ca, address });
+  async isValidAddress(address: string): Promise<IsValidAddressResponse> {
+    Logger.debug('AdaApi::isValidAdaAddress called');
+    try {
+      const response: AdaAddress = await getAdaAddress({ ca, address });
+      Logger.debug(`AdaApi::isValidAdaAddress success: ${stringifyData(response)}`);
+      return true;
+    } catch (error) {
+      Logger.debug(`AdaApi::isValidAdaAddress error: ${stringifyError(error)}`);
+      return false;
+    }
   }
 
   isValidMnemonic(mnemonic: string): Promise<boolean> {
@@ -542,24 +569,18 @@ export default class AdaApi {
   async restoreWallet(request: RestoreWalletRequest): Promise<RestoreWalletResponse> {
     Logger.debug('AdaApi::restoreWallet called');
     const { recoveryPhrase, walletName, walletPassword } = request;
-    const assurance = 'CWANormal';
-    const unit = 0;
-
+    const assuranceLevel = 'normal';
+    const spendingPassword = encryptPassphrase(walletPassword);
     const walletInitData = {
-      cwInitMeta: {
-        cwName: walletName,
-        cwAssurance: assurance,
-        cwUnit: unit,
-      },
-      cwBackupPhrase: {
-        bpToList: split(recoveryPhrase), // array of mnemonic words
-      }
+      operation: 'restore',
+      backupPhrase: split(recoveryPhrase, ' '),
+      assuranceLevel,
+      name: walletName,
+      spendingPassword
     };
 
     try {
-      const wallet: AdaWallet = await restoreAdaWallet(
-        { ca, walletPassword, walletInitData }
-      );
+      const wallet: AdaWallet = await restoreAdaWallet({ ca, walletInitData });
       Logger.debug('AdaApi::restoreWallet success');
       return _createWalletFromServerData(wallet);
     } catch (error) {
@@ -583,11 +604,11 @@ export default class AdaApi {
     Logger.debug('AdaApi::importWalletFromKey called');
     const { filePath, walletPassword } = request;
     try {
-      const importedWallet: AdaWallet = await importAdaWallet(
+      const importedWallet: AdaWalletV0 = await importAdaWallet(
         { ca, walletPassword, filePath }
       );
       Logger.debug('AdaApi::importWalletFromKey success');
-      return _createWalletFromServerData(importedWallet);
+      return _createWalletFromServerDataV0(importedWallet);
     } catch (error) {
       Logger.debug('AdaApi::importWalletFromKey error: ' + stringifyError(error));
       if (error.message.includes('already exists')) {
@@ -604,13 +625,13 @@ export default class AdaApi {
     const { filePath, walletPassword } = request;
     const isKeyFile = filePath.split('.').pop().toLowerCase() === 'key';
     try {
-      const importedWallet: AdaWallet = isKeyFile ? (
+      const importedWallet: AdaWalletV0 = isKeyFile ? (
         await importAdaWallet({ ca, walletPassword, filePath })
       ) : (
         await importAdaBackupJSON({ ca, filePath })
       );
       Logger.debug('AdaApi::importWalletFromFile success');
-      return _createWalletFromServerData(importedWallet);
+      return _createWalletFromServerDataV0(importedWallet);
     } catch (error) {
       Logger.debug('AdaApi::importWalletFromFile error: ' + stringifyError(error));
       if (error.message.includes('already exists')) {
@@ -863,6 +884,19 @@ export default class AdaApi {
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData', (data: AdaWallet) => (
     new Wallet({
+      id: data.id,
+      amount: BigNumber(data.balance).dividedBy(LOVELACES_PER_ADA),
+      name: data.name,
+      assurance: data.assuranceLevel,
+      hasPassword: data.hasSpendingPassword,
+      passwordUpdateDate: unixTimestampToDate(data.spendingPasswordLastUpdate),
+    })
+  )
+);
+
+const _createWalletFromServerDataV0 = action(
+  'AdaApi::_createWalletFromServerData', (data: AdaWalletV0) => (
+    new Wallet({
       id: data.cwId,
       amount: new BigNumber(data.cwAmount.getCCoin).dividedBy(LOVELACES_PER_ADA),
       name: data.cwMeta.cwName,
@@ -874,13 +908,8 @@ const _createWalletFromServerData = action(
 );
 
 const _createAddressFromServerData = action(
-  'AdaApi::_createAddressFromServerData', (data: AdaAddress) => (
-    new WalletAddress({
-      id: data.cadId,
-      amount: new BigNumber(data.cadAmount.getCCoin).dividedBy(LOVELACES_PER_ADA),
-      isUsed: data.cadIsUsed,
-    })
-  )
+  'AdaApi::_createAddressFromServerData',
+  (address: AdaAddress) => new WalletAddress(address)
 );
 
 const _conditionToTxState = (condition: string) => {
@@ -962,9 +991,7 @@ const _createWalletFromServerV1Data = action(
       id,
       amount: new BigNumber(balance).dividedBy(LOVELACES_PER_ADA),
       name,
-      assurance: (assuranceLevel === AdaV1AssuranceOptions.NORMAL ?
-        assuranceModeOptions.NORMAL : assuranceModeOptions.STRICT
-      ),
+      assurance: assuranceLevel,
       hasPassword: hasSpendingPassword,
       passwordUpdateDate: new Date(`${spendingPasswordLastUpdate}Z`),
       syncState,

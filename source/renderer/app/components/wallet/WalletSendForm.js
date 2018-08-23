@@ -171,16 +171,16 @@ export default class WalletSendForm extends Component<Props, State> {
             this._resetTransactionFee();
             return [false, this.context.intl.formatMessage(messages.fieldIsRequired)];
           }
-          const isValid = await this.props.addressValidator(value);
+          const isValidAddress = await this.props.addressValidator(value);
           const amountField = form.$('amount');
           const amountValue = amountField.value;
           const isAmountValid = amountField.isValid;
-          if (isValid && isAmountValid) {
+          if (isValidAddress && isAmountValid) {
             await this._calculateTransactionFee(value, amountValue);
           } else {
             this._resetTransactionFee();
           }
-          return [isValid, this.context.intl.formatMessage(messages.invalidAddress)];
+          return [isValidAddress, this.context.intl.formatMessage(messages.invalidAddress)];
         }],
       },
       amount: {
