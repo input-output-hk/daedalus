@@ -49,7 +49,6 @@ import type {
   AdaAddress,
   AdaAccounts,
   GetTransactionHistoryResponse,
-  AdaTransactionsV1,
   AdaTransaction,
   AdaTransactionV1,
   AdaTransactionFee,
