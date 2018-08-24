@@ -67,9 +67,10 @@ let
       icon = "INSERT_ICON_PATH_HERE";
     };
     iconPath = {
+      # the target of these paths must not be a symlink
       mainnet = ./installers/icons/mainnet/1024x1024.png;
-      staging = ./installers/icons/staging/1024x1024.png;
-      testnet = ./installers/icons/testnet/1024x1024.png;
+      staging = ./installers/icons/staging.iconset/icon_512x512.png;
+      testnet = ./installers/icons/testnet.iconset/icon_512x512.png;
     };
     namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''
       #!/usr/bin/env bash
