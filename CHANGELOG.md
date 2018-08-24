@@ -15,6 +15,7 @@ Changelog
 - Improved paper wallet certificate QR code compatibility ([PR 999](https://github.com/input-output-hk/daedalus/pull/999))
 - Fixed a bug in the Electron which results in blank/white screen rendering on some OS/Graphics-card/Drivers combinations ([PR 1007](https://github.com/input-output-hk/daedalus/pull/1007))
 - Changed the information we are sending on support requests to the reporting server. ([PR 1036](https://github.com/input-output-hk/daedalus/pull/1036))
+- Fixed the bug on Windows where Daedalus couldn't start if the Windows username contained non-ASCII characters. ([PR 1057](https://github.com/input-output-hk/daedalus/pull/1057))
 
 ### Chores
 
