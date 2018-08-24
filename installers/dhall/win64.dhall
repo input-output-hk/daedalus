@@ -10,12 +10,12 @@ in
 , macPackageName     = "unused"
 , x509ToolPath       = "\${DAEDALUS_DIR}\\cardano-x509-certificates.exe"
 , nodeArgs           =
-  { keyfile          = "${dataDir}\\Secrets-1.0\\secret.key"
-  , logsPrefix       = "${dataDir}\\Logs"
+  { keyfile          = "Secrets-1.0\\secret.key"
+  , logsPrefix       = "Logs"
   , topology         = "\${DAEDALUS_DIR}\\wallet-topology.yaml"
-  , updateLatestPath = "${dataDir}\\Installer.exe"
-  , walletDBPath     = "${dataDir}\\Wallet-1.0"
-  , tlsPath          = "${dataDir}\\tls"
+  , updateLatestPath = "Installer.exe"
+  , walletDBPath     = "Wallet-1.0"
+  , tlsPath          = "tls"
   }
 , pass      =
   { statePath           = dataDir
@@ -29,11 +29,11 @@ in
   , walletLogging       = True
   , frontendOnlyMode    = False
 
-  , updaterPath         = "${dataDir}\\Installer.exe"
+  , updaterPath         = "Installer.exe"
   , updaterArgs         = [] : List Text
   , updateArchive       = [] : Optional Text
-  , updateWindowsRunner = ["${dataDir}\\Installer.bat"] : Optional Text
+  , updateWindowsRunner = ["Installer.bat"] : Optional Text
 
-  , launcherLogsPrefix  = "${dataDir}\\Logs\\pub"
+  , launcherLogsPrefix  = "Logs\\pub"
   }
 }
