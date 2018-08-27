@@ -96,7 +96,6 @@ module.exports = {
       // This is so that the test suite based on the webpack build will
       // choose the correct path to ca.crt (see setupTls.js).
       'process.env.NODE_ENV': '"production"',
-      'process.env.WALLET_PORT': JSON.stringify(process.env.WALLET_PORT || ''),
     } : {})),
     new AutoDllPlugin({
       filename: 'vendor.dll.js',
