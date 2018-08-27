@@ -230,10 +230,9 @@ writeLauncherFile dir DarwinConfig{..} = do
     dataDir = "$HOME/Library/Application Support/" <> (dcAppName)
     contents =
       [ "#!/usr/bin/env bash"
-      , "cd \"$(dirname \"$0\")\""
       , "mkdir -p \"" <> dataDir <> "/Secrets-1.0\""
       , "mkdir -p \"" <> dataDir <> "/Logs/pub\""
-      , "./cardano-launcher"
+      , "\"$(dirname \"$0\")/cardano-launcher\""
       ]
 
 data SigningConfig = SigningConfig
