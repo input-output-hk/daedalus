@@ -11,8 +11,10 @@ Changelog
 
 ### Fixes
 
+- Implemented error dialog shown in case Daedalus is not started using Launcher ([PR 1054](https://github.com/input-output-hk/daedalus/pull/1054))
 - Improved paper wallet certificate QR code compatibility ([PR 999](https://github.com/input-output-hk/daedalus/pull/999))
-- Fixed a bug in the Electron which results in blank/white screen rendering on some OS/Graphics-card/Drivers combinations.  ([PR 1007](https://github.com/input-output-hk/daedalus/pull/1007))
+- Fixed a bug in the Electron which results in blank/white screen rendering on some OS/Graphics-card/Drivers combinations ([PR 1007](https://github.com/input-output-hk/daedalus/pull/1007))
+- Changed the information we are sending on support requests to the reporting server. ([PR 1036](https://github.com/input-output-hk/daedalus/pull/1036))
 
 ### Chores
 

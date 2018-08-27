@@ -1,23 +1,29 @@
 import { compact } from 'lodash';
 import environment from '../../common/environment';
 
-export const winLinuxMenu = (app, window, { openAbout, goToAdaRedemption, restartInSafeMode }) => (
+export const winLinuxMenu = (app, window, {
+  openAbout, goToAdaRedemption, restartInSafeMode, restartWithoutSafeMode
+}, isInSafeMode) => (
   [{
     label: 'Daedalus',
-    submenu: compact([environment.API === 'ada' && {
+    submenu: compact([{
+      label: 'About',
+      click() {
+        openAbout();
+      }
+    }, environment.API === 'ada' && {
       label: 'Ada redemption',
       click() {
         goToAdaRedemption();
       }
     }, {
-      label: 'About',
+      label: 'GPU safe mode',
+      type: 'checkbox',
+      checked: isInSafeMode,
       click() {
-        openAbout();
-      }
-    }, {
-      label: 'Restart in safe mode',
-      click() {
-        restartInSafeMode();
+        isInSafeMode ?
+          restartWithoutSafeMode() :
+          restartInSafeMode();
       },
     }, {
       label: 'Close',
