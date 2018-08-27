@@ -23,7 +23,7 @@ import           Prelude ((!!))
 import qualified System.IO as IO
 import           Filesystem.Path (FilePath, (</>))
 import           Filesystem.Path.CurrentOS (encodeString, fromText)
-import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, stdout, input, export, sed, strict, format, printf, fp, w, s, (%), need, writeTextFile, die, cp)
+import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, stdout, input, export, sed, strict, format, printf, fp, w, s, (%), need, writeTextFile, die, cp, rm)
 import           Turtle.Pattern (text, plus, noneOf, star, dot)
 import           AppVeyor
 import qualified Codec.Archive.Zip    as Zip
@@ -71,7 +71,7 @@ writeUninstallerNSIS (Version fullVersion) installerConfig = do
             -- Note: we leave user data alone
 
 -- See non-INNER blocks at http://nsis.sourceforge.net/Signing_an_Uninstaller
-signUninstaller :: Options -> IO ()
+signUninstaller :: Options -> IO SigningResult
 signUninstaller opts = do
     procs "C:\\Program Files (x86)\\NSIS\\makensis" ["uninstaller.nsi"] mempty
     tempDir <- getTempDir
@@ -79,7 +79,7 @@ signUninstaller opts = do
     void $ proc "runtempinstaller.bat" [] mempty
     signFile opts (tempDir </> "uninstall.exe")
 
-signFile :: Options -> FilePath -> IO ()
+signFile :: Options -> FilePath -> IO SigningResult
 signFile Options{..} filename = do
     exists   <- testfile filename
     mCertPass <- need "CERT_PASS"
@@ -90,10 +90,12 @@ signFile Options{..} filename = do
         -- procs "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\iohk-windows-certificate.p12", "/p", toText pass, "/t", "http://timestamp.comodoca.com", "/v", toText filename] mempty
         exitcode <- proc "C:\\Program Files (x86)\\Microsoft SDKs\\Windows\\v7.1A\\Bin\\signtool.exe" ["sign", "/f", "C:\\iohk-windows-certificate.p12", "/p", toText certPass, "/fd", "sha256", "/tr", "http://timestamp.comodoca.com/?td=sha256", "/td", "sha256", "/v", tt filename] mempty
         unless (exitcode == ExitSuccess) $ die "Signing failed"
+        pure SignedOK
       (False, _) ->
         die $ format ("Unable to sign missing file '"%fp%"'\n") filename
-      (_, Nothing) ->
+      (_, Nothing) -> do
         echo "Not signing: CERT_PASS not specified."
+        pure NotSigned
 
 parseVersion :: Text -> [String]
 parseVersion ver =
@@ -196,6 +198,7 @@ packageFrontend cluster = do
     export "NODE_ENV" "production"
     shells ("npm run package -- --icon " <> icon) empty
 
+-- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
 main opts@Options{..}  = do
     generateOSClusterConfigs "./dhall" "." opts
@@ -238,7 +241,11 @@ main opts@Options{..}  = do
 
     echo "Generating NSIS installer"
     procs "C:\\Program Files (x86)\\NSIS\\makensis" ["daedalus.nsi", "-V4"] mempty
-    signFile opts fullName
+
+    signed <- signFile opts fullName
+    case signed of
+      SignedOK  -> pure ()
+      NotSigned -> rm fullName
 
 -- | Download and extract the cardano-sl windows build.
 fetchCardanoSL :: FilePath -> IO ()
