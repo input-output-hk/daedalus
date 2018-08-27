@@ -1,6 +1,10 @@
 import path from 'path';
 
+const isProd = process.env.NODE_ENV === 'production';
 export default (platform, env, appName) => {
+  if (!isProd) {
+    return "./";
+  }
   switch (platform) {
     case 'darwin': {
       return path.join(env.HOME, 'Library', 'Application Support', appName);
