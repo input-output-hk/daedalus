@@ -93,8 +93,6 @@ module.exports = {
       'process.env.WALLET_PORT': JSON.stringify(process.env.WALLET_PORT || ''),
     }, process.env.NODE_ENV === 'production' ? {
       // Only bake in NODE_ENV value for production builds.
-      // This is so that the test suite based on the webpack build will
-      // choose the correct path to ca.crt (see setupTls.js).
       'process.env.NODE_ENV': '"production"',
     } : {})),
     new AutoDllPlugin({
