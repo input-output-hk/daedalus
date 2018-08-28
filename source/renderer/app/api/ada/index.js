@@ -444,18 +444,16 @@ export default class AdaApi {
 
   async createAddress(request: CreateAddressRequest): Promise<CreateAddressResponse> {
     Logger.debug('AdaApi::createAddress called');
-    const { spendingPassword, accountIndex, walletId } = request;
-
+    const { spendingPassword: passwordString, accountIndex, walletId } = request;
+    const spendingPassword = encryptPassphrase(passwordString);
     try {
       const address: AdaAddress = await newAdaWalletAddress(
         { ca, spendingPassword, accountIndex, walletId }
       );
-
       Logger.debug('AdaApi::createAddress success: ' + stringifyData(address));
       return _createAddressFromServerData(address);
     } catch (error) {
       Logger.debug('AdaApi::createAddress error: ' + stringifyError(error));
-
       if (error.message.includes('Passphrase doesn\'t match')) {
         throw new IncorrectWalletPasswordError();
       }
