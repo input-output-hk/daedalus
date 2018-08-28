@@ -7,19 +7,8 @@ in
 }:
 
 let
-<<<<<<< HEAD
   yarn = pkgs.yarn.override { inherit nodejs; };
   nodejs = pkgs.nodejs-8_x;
-  daedalusShell = pkgs.stdenv.mkDerivation {
-    name = "daedalus";
-
-    buildInputs = [ nodejs yarn ] ++ (with pkgs; [
-      nix bash binutils coreutils curl gnutar
-      git python27 curl electron
-      nodePackages.node-gyp nodePackages.node-pre-gyp
-      gnumake
-    ]);
-  };
   fixYarnLock = pkgs.stdenv.mkDerivation {
     name = "fix-yarn-lock";
     buildInputs = [ nodejs yarn pkgs.git ];
@@ -38,18 +27,13 @@ let
       exit
     '';
   };
-in daedalusShell // { inherit fixYarnLock; }
-=======
   daedalusShell = pkgs.stdenv.mkDerivation {
-    name = "daedalus";
-    passthru = { inherit daedalus; };
-
-    buildInputs = with pkgs; [
+    buildInputs = [ nodejs yarn ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
-      git python27 curl electron nodejs-8_x
+      git python27 curl electron
       nodePackages.node-gyp nodePackages.node-pre-gyp
-      gnumake yarn
-    ];
+      gnumake
+    ]);
     shellHook = ''
       yarn install
       ln -svf ${pkgs.electron}/bin/electron ./node_modules/electron/dist/electron
@@ -71,5 +55,4 @@ in daedalusShell // { inherit fixYarnLock; }
       exit 0
     '';
   });
-in daedalusShell
->>>>>>> release/0.11.1
+in daedalusShell // { inherit fixYarnLock; }

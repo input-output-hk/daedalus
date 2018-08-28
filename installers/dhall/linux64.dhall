@@ -21,11 +21,6 @@ in
   , nodeDbPath          = "${dataDir}/DB/"
   , nodeLogConfig       = "\${DAEDALUS_CONFIG}/log-config-prod.yaml"
   , nodeLogPath         = [] : Optional Text
-<<<<<<< HEAD
-  
-=======
-
->>>>>>> release/0.11.1
   , walletPath          = "daedalus-frontend"
   , walletLogging       = False
   , frontendOnlyMode    = False

@@ -7,11 +7,7 @@ sandboxed ? false
 let
   daedalus-config = runCommand "daedalus-config" {} ''
     mkdir -pv $out
-<<<<<<< HEAD
-    ## TODO: we need don't all of the genesis files (even if file names sound cool),
-=======
     ## TODO: we don't need all of the genesis files (even if file names sound cool),
->>>>>>> release/0.11.1
     ##       but the choice would have to be made in the Dhall-generated files,
     ##       splitting the dep chain further:
     cp -v ${daedalus-bridge}/config/* $out
