@@ -15,9 +15,12 @@ export type RequestOptions = {
 };
 
 export type RequestPayload = {
-  application: string,
-  version: string,
+  product: string,
+  frontendVersion: string,
+  backendVersion: string,
+  network: string,
   build: string,
+  installerVersion: string,
   os: string,
   compressedLogsFile: string,
   date: string,

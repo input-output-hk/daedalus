@@ -15,12 +15,12 @@ in
   , tlsPath          = "${dataDir}/tls"
   }
 , pass      =
-  { statePath           = "${dataDir}/${cluster.name}"
+  { statePath           = dataDir
+  , workingDir          = dataDir
   , nodePath            = "cardano-node"
   , nodeDbPath          = "${dataDir}/DB/"
   , nodeLogConfig       = "\${DAEDALUS_CONFIG}/log-config-prod.yaml"
   , nodeLogPath         = [] : Optional Text
-  
   , walletPath          = "daedalus-frontend"
   , walletLogging       = False
   , frontendOnlyMode    = False

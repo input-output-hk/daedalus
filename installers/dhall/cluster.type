@@ -5,4 +5,5 @@
 , reportServer : Text
 , installDirectorySuffix : Text
 , macPackageSuffix       : Text
+, walletPort             : Integer
 }

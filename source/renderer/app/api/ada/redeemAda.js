@@ -1,6 +1,7 @@
 // @flow
 import type { AdaTransaction } from './types';
 import { request } from './lib/request';
+import environment from '../../../../common/environment';
 
 export type RedeemAdaParams = {
   ca: string,
@@ -18,7 +19,7 @@ export const redeemAda = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/redemptions/ada',
-    port: 8090,
+    port: environment.WALLET_PORT,
     ca,
   }, { passphrase: walletPassword }, walletRedeemData)
 );

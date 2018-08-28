@@ -33,7 +33,7 @@ main = do
     CheckConfigs{..} ->
       checkAllConfigs          cfDhallRoot
     GenInstaller -> do
-        genInstaller os options'
+        genSignedInstaller os options'
     Appveyor -> do
         buildNumber <- getEnv "APPVEYOR_BUILD_NUMBER"
         let
@@ -58,7 +58,7 @@ main = do
                              "###\n" <>
                              "##############################################################################\n"
                 putStr banner
-                genInstaller os opts''
+                genSignedInstaller os opts''
                 copyFile "launcher-config.yaml" ("launcher-config-" <> cluster' <> ".win64.yaml")
                 copyFile "wallet-topology.yaml" ("wallet-topology-" <> cluster' <> ".win64.yaml")
         clusters' <- getEnv "CLUSTERS"
@@ -66,8 +66,9 @@ main = do
         print clusters
         mapM_ go clusters
 
-genInstaller :: OS -> Options -> IO ()
-genInstaller os options'= do
+-- | The contract of `genSignedInstaller` is not to produce unsigned installer binaries.
+genSignedInstaller :: OS -> Options -> IO ()
+genSignedInstaller os options'= do
     putStrLn $ "Generating installer for " <>  Sys.os <> "-" <> Sys.arch
     export "NETWORK" (clusterNetwork $ oCluster options')
     case os of

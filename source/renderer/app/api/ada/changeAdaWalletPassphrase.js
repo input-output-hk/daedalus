@@ -1,6 +1,7 @@
 // @flow
 import type { AdaWallet } from './types';
 import { request } from './lib/request';
+import environment from '../../../../common/environment';
 import { encryptPassphrase } from './lib/encryptPassphrase';
 
 export type ChangeAdaWalletPassphraseParams = {
@@ -19,7 +20,7 @@ export const changeAdaWalletPassphrase = (
     hostname: 'localhost',
     method: 'POST',
     path: `/api/wallets/password/${walletId}`,
-    port: 8090,
+    port: environment.WALLET_PORT,
     ca,
   }, { old: encryptedOldPassphrase, new: encryptedNewPassphrase });
 };

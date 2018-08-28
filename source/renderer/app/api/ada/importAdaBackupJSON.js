@@ -1,6 +1,7 @@
 // @flow
 import type { AdaWallet } from './types';
 import { request } from './lib/request';
+import environment from '../../../../common/environment';
 
 export type ImportAdaBackupJSONParams = {
   ca: string,
@@ -14,7 +15,7 @@ export const importAdaBackupJSON = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/backup/import',
-    port: 8090,
+    port: environment.WALLET_PORT,
     ca,
   }, {}, filePath)
 );
