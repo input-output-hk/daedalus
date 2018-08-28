@@ -28,6 +28,7 @@ let
     '';
   };
   daedalusShell = pkgs.stdenv.mkDerivation {
+    name = "daedalus";
     buildInputs = [ nodejs yarn ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
       git python27 curl electron
