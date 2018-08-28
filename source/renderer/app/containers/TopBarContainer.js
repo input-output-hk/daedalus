@@ -24,7 +24,7 @@ export default class TopBarContainer extends Component<Props> {
     const isMainnet = environment.isMainnet();
     const isAdaApi = environment.isAdaApi();
     const testnetLabel = (
-      isAdaApi && !isMainnet ? <WalletTestEnvironmentLabel /> : null
+      isAdaApi && !isMainnet ? <WalletTestEnvironmentLabel network={environment.NETWORK} /> : null
     );
 
     return (

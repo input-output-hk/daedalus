@@ -1,6 +1,7 @@
 // @flow
 import type { AdaTransactions } from './types';
 import { request } from './lib/request';
+import environment from '../../../../common/environment';
 
 export type GetAdaHistoryByAccountParams = {
   ca: string,
@@ -16,7 +17,7 @@ export const getAdaHistoryByAccount = (
     hostname: 'localhost',
     method: 'GET',
     path: '/api/txs/histories',
-    port: 8090,
+    port: environment.WALLET_PORT,
     ca,
   }, { accountId, skip, limit })
 );

@@ -1,6 +1,7 @@
 // @flow
 import type { AdaTransaction } from './types';
 import { request } from './lib/request';
+import environment from '../../../../common/environment';
 
 export type NewAdaPaymentParams = {
   ca: string,
@@ -21,7 +22,7 @@ export const newAdaPayment = (
     hostname: 'localhost',
     method: 'POST',
     path: `/api/txs/payments/${sender}/${receiver}/${amount}`,
-    port: 8090,
+    port: environment.WALLET_PORT,
     ca,
   }, { passphrase: password }, { groupingPolicy })
 );

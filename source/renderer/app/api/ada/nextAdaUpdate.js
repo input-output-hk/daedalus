@@ -1,5 +1,6 @@
 // @flow
 import { request } from './lib/request';
+import environment from '../../../../common/environment';
 
 export type NextAdaUpdateParams = {
   ca: string,
@@ -12,7 +13,7 @@ export const nextAdaUpdate = (
     hostname: 'localhost',
     method: 'GET',
     path: '/api/update',
-    port: 8090,
+    port: environment.WALLET_PORT,
     ca,
   })
 );

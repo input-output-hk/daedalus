@@ -1,5 +1,6 @@
 // @flow
 import { request } from './lib/request';
+import environment from '../../../../common/environment';
 
 export type DeleteAdaWalletParams = {
   ca: string,
@@ -13,7 +14,7 @@ export const deleteAdaWallet = (
     hostname: 'localhost',
     method: 'DELETE',
     path: `/api/wallets/${walletId}`,
-    port: 8090,
+    port: environment.WALLET_PORT,
     ca,
   })
 );
