@@ -36,6 +36,7 @@ let
       gnumake
     ]);
     shellHook = ''
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${nodejs}/include/node"
       yarn install
       ln -svf ${pkgs.electron}/bin/electron ./node_modules/electron/dist/electron
       echo "Instructions:"
