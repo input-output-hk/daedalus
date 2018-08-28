@@ -81,7 +81,7 @@ function typedRequest<Response>(
             // adds status and data properties so JSON.parse doesn't throw an error
             body = `{
               "status": "success",
-              "data": "statusCode: ${statusCode} statusMessage: ${statusMessage}"
+              "data": "statusCode: ${statusCode}, statusMessage: ${statusMessage}"
             }`;
           }
           const parsedBody = JSON.parse(body);
