@@ -37,23 +37,23 @@ export type AdaWalletInitData = {
 export type AdaAmount = {
   getCCoin: number,
 };
+
 export type AdaTransactionTag = 'CTIn' | 'CTOut';
 
 export type AdaAddress = {
-  cadAmount: AdaAmount,
-  cadId: string,
-  cadIsUsed: boolean,
+  id: string,
+  used: boolean,
+  changeAddress: boolean
 };
 
 export type AdaAddresses = Array<AdaAddress>;
 
 export type AdaAccount = {
-  caAddresses: AdaAddresses,
-  caAmount: AdaAmount,
-  caId: string,
-  caMeta: {
-    caName: string,
-  },
+  amount: number,
+  addresses: AdaAddresses,
+  name: string,
+  walletId: string,
+  index: number
 };
 
 export type AdaAccounts = Array<AdaAccount>;
@@ -81,8 +81,6 @@ export type AdaTransactions = [
 export type AdaTransactionInputOutput = [
   [string, AdaAmount],
 ];
-
-export type AdaTransactionFee = AdaAmount;
 
 export type AdaWallet = {
   createdAt: Date,

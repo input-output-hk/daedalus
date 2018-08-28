@@ -84,6 +84,7 @@ export type UpdateWalletResponse = {
   ...ResponseBaseV1
 };
 export type UpdateWalletPasswordResponse = boolean;
+export type IsValidAddressResponse = boolean;
 
 export type CreateWalletRequest = {
   name: string,
