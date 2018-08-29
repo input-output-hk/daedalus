@@ -2,6 +2,7 @@
 
 // ========= Response Types =========
 export type AdaAssurance = 'CWANormal' | 'CWAStrict';
+export type AdaAssuranceV1 = 'normal' | 'strict';
 export type AdaTransactionCondition = 'CPtxApplying' | 'CPtxInBlocks' | 'CPtxWontApply' | 'CPtxNotTracked';
 export type AdaWalletRecoveryPhraseResponse = Array<string>;
 export type AdaWalletCertificateAdditionalMnemonicsResponse = Array<string>;
@@ -42,36 +43,33 @@ export type NodeInfo = {
 };
 
 export type AdaWalletInitData = {
-  cwInitMeta: {
-    cwName: string,
-    cwAssurance: AdaAssurance,
-    cwUnit: number,
-  },
-  cwBackupPhrase: {
-    bpToList: [],
-  }
+  operation: 'create' | 'restore',
+  backupPhrase: [string],
+  assuranceLevel: AdaAssuranceV1,
+  name: string,
+  spendingPassword: ?string,
 };
 
 export type AdaAmount = {
   getCCoin: number,
 };
+
 export type AdaTransactionTag = 'CTIn' | 'CTOut';
 
 export type AdaAddress = {
-  cadAmount: AdaAmount,
-  cadId: string,
-  cadIsUsed: boolean,
+  id: string,
+  used: boolean,
+  changeAddress: boolean
 };
 
 export type AdaAddresses = Array<AdaAddress>;
 
 export type AdaAccount = {
-  caAddresses: AdaAddresses,
-  caAmount: AdaAmount,
-  caId: string,
-  caMeta: {
-    caName: string,
-  },
+  amount: number,
+  addresses: AdaAddresses,
+  name: string,
+  walletId: string,
+  index: number
 };
 
 export type AdaAccounts = Array<AdaAccount>;
@@ -100,9 +98,18 @@ export type AdaTransactionInputOutput = [
   [string, AdaAmount],
 ];
 
-export type AdaTransactionFee = AdaAmount;
-
 export type AdaWallet = {
+  createdAt: Date,
+  syncState: AdaV1WalletSyncState,
+  balance: number,
+  hasSpendingPassword: boolean,
+  assuranceLevel: AdaAssuranceV1,
+  name: string,
+  id: string,
+  spendingPasswordLastUpdate: Date,
+};
+
+export type AdaWalletV0 = {
   cwAccountsNumber: number,
   cwAmount: AdaAmount,
   cwHasPassphrase: boolean,
@@ -114,6 +121,7 @@ export type AdaWallet = {
   },
   cwPassphraseLU: Date,
 };
+
 
 export type AdaWallets = Array<AdaWallet>;
 
@@ -158,6 +166,83 @@ export const AdaV1AssuranceOptions: {
 } = {
   NORMAL: 'normal', STRICT: 'strict',
 };
+
+export type AdaAccountV1 = {
+  data: [
+    {
+      amount: number,
+      addresses: [
+        {
+          used: boolean,
+          changeAddress: boolean,
+          id: string
+        }
+      ],
+      name: string,
+      walletId: string,
+      index: number
+    }
+  ],
+  status: string,
+  meta: {
+    pagination: {
+      totalPages: number,
+      page: number,
+      perPage: number,
+      totalEntries: number,
+    }
+  }
+};
+export type AdaTransactionsV1 = Array<AdaTransactionV1>;
+export type AdaTransactionV1 = {
+  amount: number,
+  confirmations: number,
+  creationTime: string,
+  direction: 'outgoing' | 'incoming',
+  id: string,
+  type: 'local' | 'foreign',
+  inputs: AdaTransactionInputOutputV1,
+  outputs: AdaTransactionInputOutputV1,
+  status: {
+    tag: 'applying' | 'inNewestBlocks' | 'persisted' | 'wontApply' | 'creating',
+    data: {},
+  },
+};
+
+export type AdaTransactionInputOutputV1 = [
+  {
+    address: string,
+    amount: number,
+  },
+];
+
+export type AdaTransactionFee = {
+  estimatedAmount: number,
+  status: "success",
+  meta: {
+    pagination: {}
+  }
+};
+
+export type AdaTransactionParams = {
+  ca: string,
+  data: {
+    source: {
+      accountIndex: number,
+      walletId: string,
+    },
+    destinations: [
+      {
+        address: string,
+        amount: number,
+      },
+    ],
+    groupingPolicy: ?'OptimizeForSecurity' | 'OptimizeForSize',
+    spendingPassword: ?string
+  },
+};
+
+export type AdaTxFeeParams = AdaTransactionParams;
 
 export type Pagination = {
   pagination: {

@@ -22,7 +22,7 @@ Feature: Display wallet transactions
 
   Scenario: More than five transactions
     Given I have made the following transactions:
-      | sender         | receiver      | amount |
+      | source         | destination   | amount |
       | Genesis wallet | TargetWallet  | 1      |
       | Genesis wallet | TargetWallet  | 2      |
       | Genesis wallet | TargetWallet  | 3      |

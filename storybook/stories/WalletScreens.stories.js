@@ -23,7 +23,7 @@ import WalletSendForm from '../../source/renderer/app/components/wallet/WalletSe
 import WalletReceive from '../../source/renderer/app/components/wallet/WalletReceive';
 import WalletTransactionsList from '../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
 import WalletSettings from '../../source/renderer/app/components/wallet/WalletSettings';
-import { assuranceModeOptions } from '../../source/renderer/app/types/transactionAssuranceTypes';
+import { assuranceModeOptionsV1 } from '../../source/renderer/app/types/transactionAssuranceTypes';
 import ChangeWalletPasswordDialog from '../../source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog';
 import DeleteWalletConfirmationDialog from '../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
@@ -61,7 +61,7 @@ storiesOf('WalletScreens', module)
 
   // ====== Stories ======
 
-  .add('Empty', () => false)
+  .add('Empty', () => null)
 
   .add('Wallet Navigation', () => (
     <div>&nbsp;</div>
@@ -142,7 +142,7 @@ storiesOf('WalletScreens', module)
       activeField={null}
       assuranceLevels={[
         {
-          value: assuranceModeOptions.NORMAL,
+          value: assuranceModeOptionsV1.NORMAL,
           label: {
             id: 'global.assuranceLevel.normal',
             defaultMessage: '!!!Normal',
@@ -150,7 +150,7 @@ storiesOf('WalletScreens', module)
           }
         },
         {
-          value: assuranceModeOptions.STRICT,
+          value: assuranceModeOptionsV1.STRICT,
           label: {
             id: 'global.assuranceLevel.strict',
             defaultMessage: '!!!Strict',
@@ -179,7 +179,7 @@ storiesOf('WalletScreens', module)
       onStartEditing={() => {}}
       onStopEditing={() => {}}
       openDialogAction={() => {}}
-      walletAssurance={assuranceModeOptions.NORMAL}
+      walletAssurance={assuranceModeOptionsV1.NORMAL}
       walletName={text('Wallet Name', 'Wallet Name')}
       walletPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
       changeWalletPasswordDialog={

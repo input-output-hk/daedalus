@@ -56,7 +56,8 @@ function typedRequest<Response>(
       requestBody = JSON.stringify(rawBodyParams);
       options.headers = {
         'Content-Length': getContentLength(requestBody),
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json; charset=utf-8',
+        Accept: 'application/json; charset=utf-8',
       };
     }
 
@@ -73,6 +74,9 @@ function typedRequest<Response>(
       // Resolve JSON results and handle backend errors
       response.on('end', () => {
         try {
+          if (!body) {
+            reject(new Error(response.statusMessage));
+          }
           const parsedBody = JSON.parse(body);
           const status = get(parsedBody, 'status', false);
           if (status) {
