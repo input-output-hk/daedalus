@@ -3922,9 +3922,9 @@ electron-webpack@1.11.0:
     webpack-merge "^4.1.0"
     yargs "^10.0.3"
 
-electron@1.7.13:
-  version "1.7.13"
-  resolved "https://registry.yarnpkg.com/electron/-/electron-1.7.13.tgz#10851baec77d686d95812f34425c17e48ac1413f"
+electron@1.7.16:
+  version "1.7.16"
+  resolved "https://registry.yarnpkg.com/electron/-/electron-1.7.16.tgz#40e6b5553e3a87ce7ea52eb05f7926bc40cab11c"
   dependencies:
     "@types/node" "^7.0.18"
     electron-download "^3.0.1"
