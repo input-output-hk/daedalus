@@ -420,8 +420,12 @@ export default class AdaApi {
       if (error.message.includes('not enough money on addresses which are not included in output addresses set')) {
         throw new AllFundsAlreadyAtReceiverAddressError();
       }
-      if (error.message.includes('not enough money')) {
-        throw new NotEnoughFundsForTransactionFeesError();
+      if (error.message.includes('NotEnoughMoney')) {
+        let needMore;
+        if (error.message.includes('needMore')) {
+          needMore = error.message.split('needMore: ')[1];
+        }
+        throw new NotEnoughFundsForTransactionFeesError(needMore);
       }
       throw new GenericApiError();
     }

@@ -17,6 +17,8 @@ export type RequestOptions = {
   },
 };
 
+const objectToHumanReadable = (obj) => Object.entries(obj).map(([key, value]) => `${key}: ${String(value)}`).join(', ');
+
 function typedRequest<Response>(
   httpOptions: RequestOptions, queryParams?: {}, rawBodyParams?: any
 ): Promise<Response> {
@@ -83,7 +85,10 @@ function typedRequest<Response>(
             if (status === 'success') {
               resolve(parsedBody.data);
             } else if (status === 'error' || status === 'fail') {
-              reject(new Error(parsedBody.message));
+              const errorMessage = parsedBody.diagnostic
+                ? `${parsedBody.message} ${objectToHumanReadable(parsedBody.diagnostic)}`
+                : parsedBody.message;
+              reject(new Error(errorMessage));
             } else {
               // TODO: find a way to record this case and report to the backend team
               reject(new Error('Unknown response from backend.'));

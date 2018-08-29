@@ -340,12 +340,15 @@ export default class WalletSendForm extends Component<Props, State> {
         });
       }
     } catch (error) {
+      const needMore = new BigNumber(error.values.needMore);
       if (this._isMounted) {
         this._isCalculatingFee = false;
         this.setState({
           isTransactionFeeCalculated: false,
           transactionFee: new BigNumber(0),
-          transactionFeeError: this.context.intl.formatMessage(error)
+          transactionFeeError: this.context.intl.formatMessage(error, {
+            needMore: needMore.toFormat(this.props.currencyMaxFractionalDigits)
+          })
         });
       }
     }
