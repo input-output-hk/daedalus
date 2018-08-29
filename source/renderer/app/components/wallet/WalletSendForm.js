@@ -20,6 +20,7 @@ import WalletSendConfirmationDialog from './WalletSendConfirmationDialog';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
 import { formattedAmountToBigNumber, formattedAmountToNaturalUnits, formattedAmountToLovelace } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
+import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
 
 export const messages = defineMessages({
   titleLabel: {
@@ -340,15 +341,16 @@ export default class WalletSendForm extends Component<Props, State> {
         });
       }
     } catch (error) {
-      const needMore = new BigNumber(error.values.needMore);
+      const needMore = new BigNumber(error.values.needMore)
+        .dividedBy(LOVELACES_PER_ADA)
+        .toFormat();
+
       if (this._isMounted) {
         this._isCalculatingFee = false;
         this.setState({
           isTransactionFeeCalculated: false,
           transactionFee: new BigNumber(0),
-          transactionFeeError: this.context.intl.formatMessage(error, {
-            needMore: needMore.toFormat(this.props.currencyMaxFractionalDigits)
-          })
+          transactionFeeError: this.context.intl.formatMessage(error, { needMore })
         });
       }
     }
