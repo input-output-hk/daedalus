@@ -12,7 +12,7 @@ import { assuranceLevels } from '../../../types/transactionAssuranceTypes';
 import { environmentSpecificMessages } from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../domains/WalletTransaction';
 import environment from '../../../../../common/environment';
-import { getNetworkExplorerUrl } from '../../../utils/ada/network';
+import { getNetworkExplorerUrl } from '../../../utils/network';
 
 const messages = defineMessages({
   card: {
