@@ -125,7 +125,7 @@ export type AdaV1WalletSyncState = {
     },
     percentage: {
       quantity: number,
-      unit: 'percenage',
+      unit: 'percent',
     },
     throughput: {
       quantity: number,
@@ -240,7 +240,9 @@ export type Pagination = {
   }
 };
 
+export type ResponseStatus = 'success' | 'fail' | 'error';
+
 export type ResponseBaseV1 = {
-  status: string,
+  status: ResponseStatus,
   meta: Pagination
 };

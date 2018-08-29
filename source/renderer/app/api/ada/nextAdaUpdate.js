@@ -1,5 +1,5 @@
 // @flow
-import { request } from './lib/request';
+import { request } from './lib/v1/request';
 
 export type NextAdaUpdateParams = {
   ca: string,
@@ -11,7 +11,7 @@ export const nextAdaUpdate = (
   request({
     hostname: 'localhost',
     method: 'GET',
-    path: '/api/update',
+    path: '/api/v1/node-settings',
     port: 8090,
     ca,
   })

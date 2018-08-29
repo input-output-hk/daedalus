@@ -74,8 +74,15 @@ function typedRequest<Response>(
       // Resolve JSON results and handle backend errors
       response.on('end', () => {
         try {
-          if (!body) {
-            reject(new Error(response.statusMessage));
+          // When deleting a wallet, the API does not return any data in body
+          // even if it was successful
+          const { statusCode, statusMessage } = response;
+          if (!body && statusCode >= 200 && statusCode <= 206) {
+            // adds status and data properties so JSON.parse doesn't throw an error
+            body = `{
+              "status": "success",
+              "data": "statusCode: ${statusCode}, statusMessage: ${statusMessage}"
+            }`;
           }
           const parsedBody = JSON.parse(body);
           const status = get(parsedBody, 'status', false);
