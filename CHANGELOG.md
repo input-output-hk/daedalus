@@ -8,6 +8,7 @@ Changelog
 
 - Integrates the latest features from the develop branch of react-polymorph. Features include: render props architecture, theme composition, and a ThemeProvider HOC. [PR 950](https://github.com/input-output-hk/daedalus/pull/950)
 - Fixed broken storybook [PR 1041](https://github.com/input-output-hk/daedalus/pull/1041)
+- Make port and ca of ada api configurable during runtime [PR 1067](https://github.com/input-output-hk/daedalus/pull/1067)
 
 ### Features
 
