@@ -1,4 +1,4 @@
-{ lib, pkgs, nodejs-8_x, python, backend, nukeReferences, version, fetchzip, stdenv, src }:
+{ lib, pkgs, nodejs-8_x, python, backend, nukeReferences, version, fetchzip, stdenv, src, buildNum ? null }:
 let
   nodejs = nodejs-8_x;
   yarn2nix = import (fetchzip {

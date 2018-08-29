@@ -152,6 +152,7 @@ data InstallerConfig = InstallerConfig {
       installDirectory :: Text
     , macPackageName :: Text
     , walletPort :: Integer
+    , reportServer :: Text
     } deriving (Generic, Show)
 
 instance Dhall.Interpret InstallerConfig

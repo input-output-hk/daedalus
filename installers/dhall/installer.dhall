@@ -4,4 +4,5 @@
   installDirectory = os.installDirectory
 , macPackageName   = os.macPackageName
 , walletPort       = cluster.walletPort
+, reportServer     = cluster.reportServer
 }

@@ -7,7 +7,7 @@ import System.Directory (listDirectory, withCurrentDirectory, removeDirectory, r
 import Turtle (export, format, d)
 
 import Config (Options(..), Backend(..))
-import Types (InstallerConfig(walletPort), fromBuildJob, clusterNetwork)
+import Types (InstallerConfig(walletPort, reportServer), fromBuildJob, clusterNetwork)
 
 windowsRemoveDirectoryRecursive :: FilePath -> IO ()
 windowsRemoveDirectoryRecursive path = do
@@ -31,6 +31,7 @@ exportBuildVars Options{oBackend, oBuildJob, oCluster} cfg backendVersion = do
         , ("API_VERSION", backendVersion)
         , ("BUILD_NUMBER", maybe "" fromBuildJob oBuildJob)
         , ("NETWORK", clusterNetwork oCluster)
+        , ("REPORT_URL", reportServer cfg)
         , ("WALLET_PORT", format d (walletPort cfg))
         ]
     where

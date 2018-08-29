@@ -88,6 +88,12 @@ module.exports = {
     }, process.env.NODE_ENV === 'production' ? {
       // Only bake in NODE_ENV value for production builds.
       'process.env.NODE_ENV': '"production"',
+    } : {}, process.env.REPORT_URL ? {
+      // Bake in REPORT_URL only if defined at build time.
+      'process.env.REPORT_URL': JSON.stringify(process.env.REPORT_URL),
+    } : {}, process.env.NETWORK ? {
+      // Bake in NETWORK only if defined at build time.
+      'process.env.NETWORK': JSON.stringify(process.env.NETWORK),
     } : {})),
     new AutoDllPlugin({
       filename: 'vendor.dll.js',

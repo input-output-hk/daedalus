@@ -30,7 +30,7 @@ let
 
     # Just the frontend javascript, built with npm and webpack.
     frontend = self.callPackage ./installers/yarn2nix.nix {
-      inherit version;
+      inherit version buildNum;
       src = localLib.npmSourceTree ./.;
       # Backend/API is always Cardano SL at the moment
       backend = {

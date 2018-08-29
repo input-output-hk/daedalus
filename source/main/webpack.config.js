@@ -52,6 +52,12 @@ module.exports = {
       // choose the correct path to ca.crt (see loadTlsConfig.jss).
       'process.env.NODE_ENV': '"production"',
       'process.env.WALLET_PORT': JSON.stringify(process.env.WALLET_PORT || ''),
+    } : {}, process.env.REPORT_URL ? {
+      // Bake in REPORT_URL only if defined at build time.
+      'process.env.REPORT_URL': JSON.stringify(process.env.REPORT_URL),
+    } : {}, process.env.NETWORK ? {
+      // Bake in NETWORK only if defined at build time.
+      'process.env.NETWORK': JSON.stringify(process.env.NETWORK),
     } : {})),
     !isCi && (
       new HardSourceWebpackPlugin({
