@@ -12,7 +12,10 @@ export type Api = {
 };
 
 export const setupApi = (): Api => ({
-  ada: new AdaApi(environment.isTest(), environment.WALLET_PORT, remote.getGlobal('ca')),
+  ada: new AdaApi(environment.isTest(), {
+    port: environment.WALLET_PORT,
+    ca: remote.getGlobal('ca'),
+  }),
   etc: new EtcApi(),
   localStorage: new LocalStorageApi(),
 });

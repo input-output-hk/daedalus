@@ -1,19 +1,15 @@
 // @flow
 import { request } from './lib/request';
-import environment from '../../../../common/environment';
-
-export type ApplyAdaUpdateParams = {
-  ca: string,
-};
+import type { RequestConfig } from './types';
 
 export const applyAdaUpdate = (
-  { ca }: ApplyAdaUpdateParams
+  config: RequestConfig,
 ): Promise<any> => (
   request({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/update/apply',
-    port: environment.WALLET_PORT,
-    ca,
+    port: config.port,
+    ca: config.ca,
   })
 );
