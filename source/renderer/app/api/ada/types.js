@@ -1,5 +1,11 @@
 // @flow
 
+// ========= General Types ==========
+export type RequestConfig = {
+  port: number,
+  ca: Uint8Array,
+};
+
 // ========= Response Types =========
 export type AdaAssurance = 'CWANormal' | 'CWAStrict';
 export type AdaTransactionCondition = 'CPtxApplying' | 'CPtxInBlocks' | 'CPtxWontApply' | 'CPtxNotTracked';
