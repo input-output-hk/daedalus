@@ -31,7 +31,7 @@ export default class AddressesStore extends Store {
   _createAddress = async (params: { walletId: string, spendingPassword?: string }) => {
     try {
       const { walletId, spendingPassword } = params;
-      const accountIndex = await this.getAccountIdByWalletId(walletId);
+      const accountIndex = await this.getAccountIndexByWalletId(walletId);
 
       const address: ?CreateAddressResponse = await this.createAddressRequest.execute({
         accountIndex, spendingPassword, walletId
@@ -94,15 +94,8 @@ export default class AddressesStore extends Store {
   };
 
   getAccountIndexByWalletId = async (walletId: string): Promise<?number> => {
-    const result = await this.api.ada.getAddressesV1({ walletId });
+    const result = await this.api.ada.getAddresses({ walletId });
     return result ? result.accountIndex : null;
-  };
-
-  // TODO: Delete the function below after V1 API integration
-  // it is the same as the one above
-  getAccountIdByWalletId = async (walletId: string): Promise<?number> => {
-    const { accountIndex } = await this._getAddressesAllRequest(walletId);
-    return accountIndex || null;
   };
 
   getAddressesByWalletId = async (walletId: string): Promise<Array<string>> => {
