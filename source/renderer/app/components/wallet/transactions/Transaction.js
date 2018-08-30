@@ -193,12 +193,13 @@ export default class Transaction extends Component<Props, State> {
     return (
       <div
         className={componentStyles}
-        onClick={this.toggleDetails.bind(this)}
-        role="presentation"
-        aria-hidden
       >
-
-        <div className={styles.toggler}>
+        <div
+          onClick={this.toggleDetails.bind(this)}
+          className={styles.toggler}
+          role="presentation"
+          aria-hidden
+        >
           <TransactionTypeIcon
             iconType={isFailedTransaction ? transactionStates.FAILED : data.type}
           />
