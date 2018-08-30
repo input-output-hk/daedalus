@@ -11,9 +11,10 @@ export const exportAdaBackupJSON = (
   config: RequestConfig,
   { walletId, filePath }: ExportAdaBackupJSONParams,
 ): Promise<[]> => (
-  request(Object.assign({
+  request({
     hostname: 'localhost',
     method: 'POST',
     path: `/api/backup/export/${walletId}`,
-  }, config), {}, filePath)
+    ...config,
+  }, {}, filePath)
 );

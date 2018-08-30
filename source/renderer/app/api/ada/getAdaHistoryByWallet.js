@@ -12,9 +12,10 @@ export const getAdaHistoryByWallet = (
   config: RequestConfig,
   { walletId, skip, limit }: GetAdaHistoryByWalletParams
 ): Promise<AdaTransactions> => (
-  request(Object.assign({
+  request({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/txs/histories',
-  }, config), { walletId, skip, limit })
+    ...config
+  }, { walletId, skip, limit })
 );

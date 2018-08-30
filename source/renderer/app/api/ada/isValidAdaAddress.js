@@ -11,9 +11,10 @@ export const isValidAdaAddress = (
   { address }: IsValidAdaAddressParams
 ): Promise<boolean> => {
   const encodedAddress = encodeURIComponent(address);
-  return request(Object.assign({
+  return request({
     hostname: 'localhost',
     method: 'GET',
     path: `/api/addresses/${encodedAddress}`,
-  }, config));
+    ...config
+  });
 };

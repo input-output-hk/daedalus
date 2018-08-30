@@ -17,9 +17,10 @@ export const redeemAdaPaperVend = (
   config: RequestConfig,
   { walletPassword, redeemPaperVendedData }: RedeemAdaPaperVendParams
 ): Promise<AdaTransaction> => (
-  request(Object.assign({
+  request({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/papervend/redemptions/ada',
-  }, config), { passphrase: walletPassword }, redeemPaperVendedData)
+    ...config
+  }, { passphrase: walletPassword }, redeemPaperVendedData)
 );

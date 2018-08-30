@@ -5,9 +5,10 @@ import { request } from './lib/request';
 export const getAdaSyncProgress = (
   config: RequestConfig,
 ): Promise<AdaSyncProgressResponse> => (
-  request(Object.assign({
+  request({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/settings/sync/progress',
-  }, config))
+    ...config
+  })
 );

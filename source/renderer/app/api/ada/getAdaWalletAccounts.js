@@ -10,9 +10,10 @@ export const getAdaWalletAccounts = (
   config: RequestConfig,
   { walletId }: GetAdaWalletAccountsParams
 ): Promise<AdaAccounts> => (
-  request(Object.assign({
+  request({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/accounts',
-  }, config), { accountId: walletId })
+    ...config
+  }, { accountId: walletId })
 );

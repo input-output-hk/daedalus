@@ -10,9 +10,10 @@ export const deleteAdaWallet = (
   config: RequestConfig,
   { walletId }: DeleteAdaWalletParams
 ): Promise<[]> => (
-  request(Object.assign({
+  request({
     hostname: 'localhost',
     method: 'DELETE',
     path: `/api/wallets/${walletId}`,
-  }, config))
+    ...config,
+  })
 );
