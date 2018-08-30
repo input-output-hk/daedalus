@@ -138,7 +138,7 @@ export type AdaV1WalletSyncState = {
     },
     percentage: {
       quantity: number,
-      unit: 'percenage',
+      unit: 'percent',
     },
     throughput: {
       quantity: number,
