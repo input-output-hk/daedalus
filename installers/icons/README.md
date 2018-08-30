@@ -6,15 +6,15 @@ directories.
 
 ### Windows
 
-To generate ico files:
+Use Nix to enter a shell with the necessary tools available:
 
-    nix-shell -p icoutil
+    nix run nixpkgs.icoutils nixpkgs.imagemagick
+
+To generate ico files:
 
     icotool -c -o 256x256.ico 256x256.png
 
 To Merge all icons into a single bundle:
-
-    nix run nixpkgs.imagemagick
 
     ./update_icons
 
