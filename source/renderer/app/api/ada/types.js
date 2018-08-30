@@ -167,32 +167,6 @@ export const AdaV1AssuranceOptions: {
   NORMAL: 'normal', STRICT: 'strict',
 };
 
-export type AdaAccountV1 = {
-  data: [
-    {
-      amount: number,
-      addresses: [
-        {
-          used: boolean,
-          changeAddress: boolean,
-          id: string
-        }
-      ],
-      name: string,
-      walletId: string,
-      index: number
-    }
-  ],
-  status: string,
-  meta: {
-    pagination: {
-      totalPages: number,
-      page: number,
-      perPage: number,
-      totalEntries: number,
-    }
-  }
-};
 export type AdaTransactionsV1 = Array<AdaTransactionV1>;
 export type AdaTransactionV1 = {
   amount: number,
