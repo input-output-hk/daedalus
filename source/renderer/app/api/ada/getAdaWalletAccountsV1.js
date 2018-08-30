@@ -2,7 +2,6 @@
 import type { AdaAccountV1 } from './types';
 import { request } from './lib/v1/request';
 
-
 export type GetAdaWalletAccountsParams = {
   ca: string,
   walletId: string,

@@ -66,7 +66,12 @@ let
       categories = "Application;Network;";
       icon = "INSERT_ICON_PATH_HERE";
     };
-    iconPath = ./installers/icons/1024x1024.png;
+    iconPath = {
+      # the target of these paths must not be a symlink
+      mainnet = ./installers/icons/mainnet/1024x1024.png;
+      staging = ./installers/icons/staging.iconset/icon_512x512.png;
+      testnet = ./installers/icons/testnet.iconset/icon_512x512.png;
+    };
     namespaceHelper = pkgs.writeScriptBin "namespaceHelper" ''
       #!/usr/bin/env bash
 
@@ -94,7 +99,7 @@ let
 
       echo "in post-install hook"
 
-      cp -f ${self.iconPath} $DAEDALUS_DIR/icon.png
+      cp -f ${self.iconPath.${cluster}} $DAEDALUS_DIR/icon.png
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper $DAEDALUS_DIR/namespaceHelper
       mkdir -pv ~/.local/bin ''${XDG_DATA_HOME}/applications
       cp -Lf ${self.namespaceHelper}/bin/namespaceHelper ~/.local/bin/daedalus

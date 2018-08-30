@@ -19,6 +19,7 @@
   , nodeLogPath         : Optional Text
   , walletPath          : Text
   , walletLogging       : Bool
+  , workingDir          : Text
   , frontendOnlyMode    : Bool
   , updaterPath         : Text
   , updaterArgs         : List Text

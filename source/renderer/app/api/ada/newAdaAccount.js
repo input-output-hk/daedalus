@@ -1,6 +1,7 @@
 // @flow
 import type { AdaAccount } from './types';
 import { request } from './lib/request';
+import environment from '../../../../common/environment';
 
 export type NewAdaAccountQueryParams = {
   passphrase: ?string,
@@ -26,7 +27,7 @@ export const newAdaAccount = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/accounts',
-    port: 8090,
+    port: environment.WALLET_PORT,
     ca,
   }, queryParams, accountInitData);
 };

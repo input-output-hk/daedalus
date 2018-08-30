@@ -5,7 +5,9 @@ import { defineMessages } from 'react-intl';
 import fs from 'fs';
 import paperWalletFontPath from '../assets/pdf/paper-wallet-certificate-font.ttf';
 import paperWalletPage1Path from '../assets/pdf/paper-wallet-certificate-page-1.png';
+import paperWalletPage1PathTestnet from '../assets/pdf/paper-wallet-certificate-page-1-testnet.png';
 import paperWalletPage2Path from '../assets/pdf/paper-wallet-certificate-page-2.png';
+import paperWalletPage2PathTestnet from '../assets/pdf/paper-wallet-certificate-page-2-testnet.png';
 import paperWalletCertificateBgPath from '../assets/pdf/paper-wallet-certificate-background.png';
 import environment from '../../../common/environment';
 import { loadAssetChannel } from '../ipc/loadAsset';
@@ -48,8 +50,8 @@ type DownloadPaperWalletCertificateParams = {
 export const downloadPaperWalletCertificate = async (
   { address, mnemonics, intl, filePath }: DownloadPaperWalletCertificateParams
 ) => {
-  const { getBuildLabel } = environment;
-  const qrCodeImage = qr.imageSync(address, { type: 'png', size: 10, ec_level: 'H', margin: 0 });
+  const { getBuildLabel, isMainnet } = environment;
+  const qrCodeImage = qr.imageSync(address, { type: 'png', size: 10, ec_level: 'L', margin: 0 });
   const textColor = '#3b5c9b';
 
   const printMnemonic = (index) => `${index + 1}. ${mnemonics[index]}`;
@@ -95,7 +97,9 @@ export const downloadPaperWalletCertificate = async (
   doc.image(backgroundUri, 0, 0, { fit: [width, height] });
 
   // first page
-  const page1Uri = await loadImageUriFromPath(paperWalletPage1Path);
+  const page1Uri = await loadImageUriFromPath(
+    isMainnet() ? paperWalletPage1Path : paperWalletPage1PathTestnet
+  );
   doc.image(page1Uri, 0, 0, { fit: [width, height] });
   doc.rotate(180, { origin: [width / 2, height / 2] });
   doc.fillColor(textColor);
@@ -108,7 +112,9 @@ export const downloadPaperWalletCertificate = async (
 
   // second page
   doc.addPage();
-  const page2Uri = await loadImageUriFromPath(paperWalletPage2Path);
+  const page2Uri = await loadImageUriFromPath(
+    isMainnet() ? paperWalletPage2Path : paperWalletPage2PathTestnet
+  );
   doc.image(page2Uri, 0, 0, { fit: [width, height] });
   doc.rotate(180, { origin: [width / 2, height / 2] });
   doc.fillColor(textColor);

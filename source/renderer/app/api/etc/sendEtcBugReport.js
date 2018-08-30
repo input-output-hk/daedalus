@@ -11,26 +11,31 @@ export type SendEtcBugReportRequestParams = {
     problem: string,
     compressedLogsFile: string,
   },
-  application: string,
 };
 
 export const sendEtcBugReport = (
-  { requestFormData, application }: SendEtcBugReportRequestParams
+  { requestFormData }: SendEtcBugReportRequestParams
 ) => {
   const { email, subject, problem, compressedLogsFile } = requestFormData;
-  const { version, os, buildNumber, REPORT_URL } = environment;
+  const { version, os, API_VERSION, NETWORK, build, getInstallerVersion, REPORT_URL } = environment;
   const reportUrl = url.parse(REPORT_URL);
   const { hostname, port } = reportUrl;
+
+  // Report server recognizes the following networks: mainnet, staging and testnet
+  const network = NETWORK === 'development' ? 'staging' : NETWORK;
 
   return request({
     hostname,
     method: 'POST',
-    path: '/report',
+    path: '/api/v1/report',
     port,
   }, {
-    application,
-    version,
-    build: buildNumber,
+    product: 'Mantis Wallet',
+    frontendVersion: version,
+    backendVersion: API_VERSION,
+    network,
+    build,
+    installerVersion: getInstallerVersion(),
     os,
     compressedLogsFile,
     date: moment().format('YYYY-MM-DDTHH:mm:ss'),

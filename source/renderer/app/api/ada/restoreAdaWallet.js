@@ -18,4 +18,3 @@ export const restoreAdaWallet = (
     ca,
   }, {}, walletInitData)
 );
-

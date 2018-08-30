@@ -40,6 +40,28 @@ Changelog
 - `nodelLogPath` entry in `launcher-config.yaml` made optional  ([PR 1027](https://github.com/input-output-hk/daedalus/pull/1027))
 - Disabled logging to `cardano-node.log` since it was not needed for the support and it was impacting performance  ([PR 1027](https://github.com/input-output-hk/daedalus/pull/1027))
 
+## 0.11.1
+=======
+
+### Features
+
+- Added support for configurable Api port ([PR 992](https://github.com/input-output-hk/daedalus/pull/992))
+- Added initial configuration for a testnet build of Daedalus ([PR 991](https://github.com/input-output-hk/daedalus/pull/991))
+
+### Fixes
+
+- Implemented error dialog shown in case Daedalus is not started using Launcher ([PR 1054](https://github.com/input-output-hk/daedalus/pull/1054))
+- Improved paper wallet certificate QR code compatibility ([PR 999](https://github.com/input-output-hk/daedalus/pull/999))
+- Fixed a bug in the Electron which results in blank/white screen rendering on some OS/Graphics-card/Drivers combinations ([PR 1007](https://github.com/input-output-hk/daedalus/pull/1007))
+- Changed the information we are sending on support requests to the reporting server. ([PR 1036](https://github.com/input-output-hk/daedalus/pull/1036))
+- Fixed the bug on Windows where Daedalus couldn't start if the Windows username contained non-ASCII characters. ([PR 1057](https://github.com/input-output-hk/daedalus/pull/1057))
+
+### Chores
+
+- Implemented `NETWORK` specific Cardano Blockchain Explorer links (Mainnet, Testnet, Staging) [PR 1051](https://github.com/input-output-hk/daedalus/pull/1051)
+- Improved network label in the Top bar ([PR 988](https://github.com/input-output-hk/daedalus/pull/988))
+- Added "testnet" label to paper wallet certificates which are not generated on the mainnet ([PR 1055](https://github.com/input-output-hk/daedalus/pull/1055))
+
 ## 0.11.0
 =======
 
