@@ -4,6 +4,7 @@ import { size, has, get, omit } from 'lodash';
 import querystring from 'querystring';
 import { encryptPassphrase } from '../encryptPassphrase';
 import { getContentLength } from '../../../lib/utils';
+import { objectToHumanReadableString } from '../../../../utils/strings';
 
 export type RequestOptions = {
   hostname: string,
@@ -16,8 +17,6 @@ export type RequestOptions = {
     'Content-Length': number,
   },
 };
-
-const objectToHumanReadable = (obj) => Object.entries(obj).map(([key, value]) => `${key}: ${String(value)}`).join(', ');
 
 function typedRequest<Response>(
   httpOptions: RequestOptions, queryParams?: {}, rawBodyParams?: any
@@ -86,7 +85,7 @@ function typedRequest<Response>(
               resolve(parsedBody.data);
             } else if (status === 'error' || status === 'fail') {
               const errorMessage = parsedBody.diagnostic
-                ? `${parsedBody.message} ${objectToHumanReadable(parsedBody.diagnostic)}`
+                ? `${parsedBody.message} ${objectToHumanReadableString(parsedBody.diagnostic)}`
                 : parsedBody.message;
               reject(new Error(errorMessage));
             } else {

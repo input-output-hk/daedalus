@@ -341,9 +341,10 @@ export default class WalletSendForm extends Component<Props, State> {
         });
       }
     } catch (error) {
-      const needMore = new BigNumber(error.values.needMore)
-        .dividedBy(LOVELACES_PER_ADA)
-        .toFormat();
+
+      const needMore = error.values.needMore
+        ? new BigNumber(error.values.needMore).dividedBy(LOVELACES_PER_ADA).toFormat()
+        : '';
 
       if (this._isMounted) {
         this._isCalculatingFee = false;
