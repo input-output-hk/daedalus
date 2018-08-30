@@ -6,13 +6,11 @@ import { MAX_ADA_WALLETS_COUNT } from '../../config/numbersConfig';
 export const getAdaWallets = (
   config: RequestConfig
 ): Promise<AdaV1Wallets> => (
-  request({
+  request(Object.assign({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/v1/wallets',
-    port: config.port,
-    ca: config.ca,
-  }, {
+  }, config), {
     per_page: MAX_ADA_WALLETS_COUNT, // 50 is the max per_page value
     sort_by: 'ASC[created_at]',
   })

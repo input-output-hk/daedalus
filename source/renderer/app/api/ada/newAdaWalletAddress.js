@@ -11,12 +11,10 @@ export const newAdaWalletAddress = (
   config: RequestConfig,
   { password, accountId }: NewAdaWalletAddressParams
 ): Promise<AdaAddress> => (
-  request({
+  request(Object.assign({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/addresses',
-    port: config.port,
-    ca: config.ca,
-  }, { passphrase: password }, accountId)
+  }, config), { passphrase: password }, accountId)
 );
 

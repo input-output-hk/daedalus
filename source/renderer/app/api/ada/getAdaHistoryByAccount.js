@@ -12,11 +12,9 @@ export const getAdaHistoryByAccount = (
   config: RequestConfig,
   { accountId, skip, limit }: GetAdaHistoryByAccountParams
 ): Promise<AdaTransactions> => (
-  request({
+  request(Object.assign({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/txs/histories',
-    port: config.port,
-    ca: config.ca,
-  }, { accountId, skip, limit })
+  }, config), { accountId, skip, limit })
 );

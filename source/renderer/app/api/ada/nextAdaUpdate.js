@@ -5,11 +5,9 @@ import type { RequestConfig } from './types';
 export const nextAdaUpdate = (
   config: RequestConfig,
 ): Promise<any> => (
-  request({
+  request(Object.assign({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/update',
-    port: config.port,
-    ca: config.ca,
-  })
+  }, config))
 );

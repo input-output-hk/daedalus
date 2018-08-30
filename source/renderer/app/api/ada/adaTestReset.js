@@ -5,11 +5,9 @@ import type { RequestConfig } from './types';
 export const adaTestReset = (
   config: RequestConfig
 ): Promise<void> => (
-  request({
+  request(Object.assign({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/test/reset',
-    port: config.port,
-    ca: config.ca,
-  })
+  }, config))
 );

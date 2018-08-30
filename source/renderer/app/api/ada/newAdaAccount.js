@@ -22,11 +22,9 @@ export const newAdaAccount = (
   rawBodyParams: NewAdaAccountRawBodyParams,
 ): Promise<AdaAccount> => {
   const { accountInitData } = rawBodyParams;
-  return request({
+  return request(Object.assign({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/accounts',
-    port: config.port,
-    ca: config.ca,
-  }, queryParams, accountInitData);
+  }, config), queryParams, accountInitData);
 };

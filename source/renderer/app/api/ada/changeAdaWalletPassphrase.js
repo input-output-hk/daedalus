@@ -15,11 +15,9 @@ export const changeAdaWalletPassphrase = (
 ): Promise<AdaWallet> => {
   const encryptedOldPassphrase = oldPassword ? encryptPassphrase(oldPassword) : null;
   const encryptedNewPassphrase = newPassword ? encryptPassphrase(newPassword) : null;
-  return request({
+  return request(Object.assign({
     hostname: 'localhost',
     method: 'POST',
     path: `/api/wallets/password/${walletId}`,
-    port: config.port,
-    ca: config.ca,
-  }, { old: encryptedOldPassphrase, new: encryptedNewPassphrase });
+  }, config), { old: encryptedOldPassphrase, new: encryptedNewPassphrase });
 };

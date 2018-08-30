@@ -14,11 +14,9 @@ export const redeemAda = (
   config: RequestConfig,
   { walletPassword, walletRedeemData }: RedeemAdaParams
 ): Promise<AdaTransaction> => (
-  request({
+  request(Object.assign({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/redemptions/ada',
-    port: config.port,
-    ca: config.ca,
-  }, { passphrase: walletPassword }, walletRedeemData)
+  }, config), { passphrase: walletPassword }, walletRedeemData)
 );

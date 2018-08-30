@@ -4,6 +4,8 @@
 export type RequestConfig = {
   port: number,
   ca: Uint8Array,
+  clientCert: Uint8Array,
+  clientKey: Uint8Array,
 };
 
 // ========= Response Types =========

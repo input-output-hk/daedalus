@@ -17,11 +17,9 @@ export const newAdaPayment = (
   config: RequestConfig,
   { sender, receiver, amount, groupingPolicy, password }: NewAdaPaymentParams
 ): Promise<AdaTransaction> => (
-  request({
+  request(Object.assign({
     hostname: 'localhost',
     method: 'POST',
     path: `/api/txs/payments/${sender}/${receiver}/${amount}`,
-    port: config.port,
-    ca: config.ca,
-  }, { passphrase: password }, { groupingPolicy })
+  }, config), { passphrase: password }, { groupingPolicy })
 );

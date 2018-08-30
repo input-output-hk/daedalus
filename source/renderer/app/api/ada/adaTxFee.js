@@ -15,11 +15,9 @@ export const adaTxFee = (
   config: RequestConfig,
   { sender, receiver, amount, groupingPolicy }: AdaTxFeeParams
 ): Promise<AdaTransactionFee> => (
-  request({
+  request(Object.assign({
     hostname: 'localhost',
     method: 'POST',
     path: `/api/txs/fee/${sender}/${receiver}/${amount}`,
-    port: config.port,
-    ca: config.ca,
-  }, {}, { groupingPolicy })
+  }, config), {}, { groupingPolicy })
 );

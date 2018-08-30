@@ -11,12 +11,10 @@ export const restoreAdaWallet = (
   config: RequestConfig,
   { walletPassword, walletInitData }: RestoreAdaWalletParams
 ): Promise<AdaWallet> => (
-  request({
+  request(Object.assign({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/wallets/restore',
-    port: config.port,
-    ca: config.ca,
-  }, { passphrase: walletPassword }, walletInitData)
+  }, config), { passphrase: walletPassword }, walletInitData)
 );
 

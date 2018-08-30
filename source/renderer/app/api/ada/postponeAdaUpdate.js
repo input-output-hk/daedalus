@@ -5,11 +5,9 @@ import type { RequestConfig } from './types';
 export const postponeAdaUpdate = (
   config: RequestConfig
 ): Promise<any> => (
-  request({
+  request(Object.assign({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/update/postpone',
-    port: config.port,
-    ca: config.ca,
-  })
+  }, config))
 );

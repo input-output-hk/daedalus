@@ -9,11 +9,9 @@ export type GetAdaAccountsParams = {
 export const getAdaAccounts = (
   config: RequestConfig
 ): Promise<AdaAccounts> => (
-  request({
+  request(Object.assign({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/accounts',
-    port: config.port,
-    ca: config.ca,
-  })
+  }, config))
 );

@@ -11,11 +11,9 @@ export const importAdaWallet = (
   config: RequestConfig,
   { walletPassword, filePath }: ImportAdaWalletParams
 ): Promise<AdaWallet> => (
-  request({
+  request(Object.assign({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/wallets/keys',
-    port: config.port,
-    ca: config.ca,
-  }, { passphrase: walletPassword }, filePath)
+  }, config), { passphrase: walletPassword }, filePath)
 );

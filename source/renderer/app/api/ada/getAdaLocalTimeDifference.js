@@ -5,11 +5,9 @@ import { request } from './lib/request';
 export const getAdaLocalTimeDifference = (
   config: RequestConfig
 ): Promise<AdaLocalTimeDifference> => (
-  request({
+  request(Object.assign({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/settings/time/difference',
-    port: config.port,
-    ca: config.ca,
-  })
+  }, config))
 );

@@ -10,11 +10,9 @@ export const importAdaBackupJSON = (
   config: RequestConfig,
   { filePath }: ImportAdaBackupJSONParams,
 ): Promise<AdaWallet> => (
-  request({
+  request(Object.assign({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/backup/import',
-    port: config.port,
-    ca: config.ca,
-  }, {}, filePath)
+  }, config), {}, filePath)
 );
