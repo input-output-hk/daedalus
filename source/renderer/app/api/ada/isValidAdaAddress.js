@@ -1,21 +1,21 @@
 // @flow
 import { request } from './lib/request';
-import environment from '../../../../common/environment';
+import type { RequestConfig } from './types';
 
 export type IsValidAdaAddressParams = {
-  ca: string,
   address: string,
 };
 
 export const isValidAdaAddress = (
-  { ca, address }: IsValidAdaAddressParams
+  config: RequestConfig,
+  { address }: IsValidAdaAddressParams
 ): Promise<boolean> => {
   const encodedAddress = encodeURIComponent(address);
   return request({
     hostname: 'localhost',
     method: 'GET',
     path: `/api/addresses/${encodedAddress}`,
-    port: environment.WALLET_PORT,
-    ca,
+    port: config.port,
+    ca: config.ca,
   });
 };

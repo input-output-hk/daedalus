@@ -1,18 +1,17 @@
 // @flow
-import type { AdaWallet } from './types';
+import type { AdaWallet, RequestConfig } from './types';
 import { request } from './lib/request';
-import environment from '../../../../common/environment';
 import { encryptPassphrase } from './lib/encryptPassphrase';
 
 export type ChangeAdaWalletPassphraseParams = {
-  ca: string,
   walletId: string,
   oldPassword: ?string,
   newPassword: ?string,
 };
 
 export const changeAdaWalletPassphrase = (
-  { ca, walletId, oldPassword, newPassword }: ChangeAdaWalletPassphraseParams
+  config: RequestConfig,
+  { walletId, oldPassword, newPassword }: ChangeAdaWalletPassphraseParams
 ): Promise<AdaWallet> => {
   const encryptedOldPassphrase = oldPassword ? encryptPassphrase(oldPassword) : null;
   const encryptedNewPassphrase = newPassword ? encryptPassphrase(newPassword) : null;
@@ -20,7 +19,7 @@ export const changeAdaWalletPassphrase = (
     hostname: 'localhost',
     method: 'POST',
     path: `/api/wallets/password/${walletId}`,
-    port: environment.WALLET_PORT,
-    ca,
+    port: config.port,
+    ca: config.ca,
   }, { old: encryptedOldPassphrase, new: encryptedNewPassphrase });
 };
