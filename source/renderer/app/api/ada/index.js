@@ -45,12 +45,12 @@ import { sendAdaBugReport } from './sendAdaBugReport';
 
 import type {
   AdaAddress,
+  AdaAddresses,
   AdaAccounts,
   AdaTransaction,
   AdaTransactionV1,
   AdaTransactionsV1,
   AdaTransactionFee,
-  AdaAccountV1,
   AdaWalletV0,
   AdaWallet,
   AdaV1Wallet,
@@ -113,8 +113,6 @@ import {
   WALLET_RECOVERY_PHRASE_WORD_COUNT
 } from '../../config/cryptoConfig';
 
-import { getAdaWalletAccountsV1 } from './getAdaWalletAccountsV1';
-
 /**
  * The api layer that is used for all requests to the
  * cardano backend when working with the ADA coin.
@@ -125,12 +123,7 @@ const ca = remote.getGlobal('ca');
 // ADA specific Request / Response params
 export type GetAddressesResponse = {
   accountIndex: ?number,
-  addresses: Array<AdaAddress>,
-};
-
-export type GetAddressesResponseV1 = {
-  accountIndex: ?number,
-  addresses?: Array<WalletAddress>,
+  addresses: AdaAddresses,
 };
 
 export type GetAddressesRequest = {
@@ -258,14 +251,16 @@ export default class AdaApi {
     Logger.debug('AdaApi::getAddresses called: ' + stringifyData(request));
     const { walletId } = request;
     try {
-      const response: AdaAccounts = await getAdaWalletAccounts({ ca, walletId });
+      const accounts: AdaAccounts = await getAdaWalletAccounts({ ca, walletId });
+      Logger.debug('AdaApi::getAddresses success: ' + stringifyData(accounts));
 
-      Logger.debug('AdaApi::getAddresses success: ' + stringifyData(response));
-      if (!response.length) {
-        return new Promise((resolve) => resolve({ accountIndex: null, addresses: [] }));
+      if (!accounts || !accounts.length) {
+        return new Promise(resolve => resolve({ accountIndex: null, addresses: [] }));
       }
+
       // For now only the first wallet account is used
-      const { index: accountIndex, addresses } = response[0];
+      const firstAccount = accounts[0];
+      const { index: accountIndex, addresses } = firstAccount;
 
       return new Promise(resolve => resolve({ accountIndex, addresses }));
     } catch (error) {
@@ -274,36 +269,11 @@ export default class AdaApi {
     }
   }
 
-  async getAddressesV1(request: GetAddressesRequest): Promise<GetAddressesResponseV1> {
-    Logger.debug('AdaApi::getAddressesV1 called: ' + stringifyData(request));
-    const { walletId } = request;
-    try {
-      const response: AdaAccountV1 = await getAdaWalletAccountsV1({ ca, walletId });
-      Logger.debug('AdaApi::getAddressesV1 success: ' + stringifyData(response));
-      if (!response || !response.length) {
-        return new Promise((resolve) => resolve({ accountIndex: null, addresses: [] }));
-      }
-      // For now only the first wallet account is used
-      const firstAccount = response[0];
-      const firstAccountIndex = firstAccount.index;
-      // const firstAccountAddresses = firstAccount.addresses;
-      // TODO: the actual addresses are not implemented yet via _createAddressFromServerData
-
-      return new Promise((resolve) => resolve({
-        accountIndex: firstAccountIndex,
-        // addresses: firstAccountAddresses.map(data => _createAddressFromServerData(data)),
-      }));
-    } catch (error) {
-      Logger.error('AdaApi::getAddressesV1 error: ' + stringifyError(error));
-      throw new GenericApiError();
-    }
-  }
-
   async getTransactions(request: GetTransactionsRequest): Promise<GetTransactionsResponse> {
     Logger.debug('AdaApi::searchHistory called: ' + stringifyData(request));
     const { walletId, skip, limit } = request;
 
-    const accounts = await getAdaWalletAccountsV1({ ca, walletId });
+    const accounts: AdaAccounts = await getAdaWalletAccounts({ ca, walletId });
     const accountIndex = accounts[0].index;
     const page = skip === 0 ? 1 : (skip / limit) + 1;
     const perPage = limit > 50 ? 50 : limit;
