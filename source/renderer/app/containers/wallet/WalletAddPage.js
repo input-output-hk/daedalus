@@ -10,12 +10,11 @@ import WalletFileImportDialogContainer from '../wallet/dialogs/WalletFileImportD
 import WalletRestoreDialogContainer from '../wallet/dialogs/WalletRestoreDialogContainer';
 import WalletBackupDialogContainer from '../wallet/dialogs/WalletBackupDialogContainer';
 import WalletCreateDialogContainer from '../wallet/dialogs/WalletCreateDialogContainer';
+import Layout from '../../containers/MainLayout';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import resolver from '../../utils/imports';
 import environment from '../../../../common/environment';
 
 type Props = InjectedProps;
-const Layout = resolver('containers/MainLayout');
 
 @inject('actions', 'stores') @observer
 export default class WalletAddPage extends Component<Props> {

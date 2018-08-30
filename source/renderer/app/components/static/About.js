@@ -6,7 +6,6 @@ import { environmentSpecificMessages } from '../../i18n/global-messages';
 import styles from './About.scss';
 import daedalusIcon from '../../assets/images/daedalus-logo-loading-grey.inline.svg';
 import cardanoIcon from '../../assets/images/cardano-logo.inline.svg';
-import mantisIcon from '../../assets/images/mantis-logo.inline.svg';
 import environment from '../../../../common/environment';
 
 const messages = defineMessages({
@@ -77,19 +76,13 @@ export default class About extends Component<Props> {
     const { onOpenExternalLink } = this.props;
     const {
       version, build, os,
-      API, API_VERSION, isAdaApi,
+      API, API_VERSION,
     } = environment;
 
     const apiName = intl.formatMessage(environmentSpecificMessages[API].apiName);
-    const apiIcon = isAdaApi() ? cardanoIcon : mantisIcon;
-
-    const apiHeadline = isAdaApi()
-      ? intl.formatMessage(messages.aboutContentCardanoHeadline)
-      : intl.formatMessage(messages.aboutContentMantisHeadline);
-
-    const apiMembers = isAdaApi()
-      ? intl.formatMessage(messages.aboutContentCardanoMembers)
-      : intl.formatMessage(messages.aboutContentMantisMembers);
+    const apiIcon = cardanoIcon;
+    const apiHeadline = intl.formatMessage(messages.aboutContentCardanoHeadline);
+    const apiMembers = intl.formatMessage(messages.aboutContentCardanoMembers);
 
     return (
       <div className={styles.container}>

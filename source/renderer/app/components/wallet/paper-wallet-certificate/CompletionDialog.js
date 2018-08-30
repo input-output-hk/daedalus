@@ -5,7 +5,7 @@ import QRCode from 'qrcode.react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import Dialog from '../../widgets/Dialog';
-import { getNetworkExplorerUrl } from '../../../utils/ada/network';
+import { getNetworkExplorerUrl } from '../../../utils/network';
 import styles from './CompletionDialog.scss';
 
 const messages = defineMessages({
