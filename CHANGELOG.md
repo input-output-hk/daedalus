@@ -15,6 +15,7 @@ Changelog
 - Implemented a switch instead of a link for “hide used” addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
 - Implemented forms submission on "Enter" key press ([PR 981](https://github.com/input-output-hk/daedalus/pull/981))
 - Improved the loading UX ([PR 723](https://github.com/input-output-hk/daedalus/pull/723))
+- Send cert and key with api requests to support tls-auth ([PR 1072](https://github.com/input-output-hk/daedalus/pull/1072))
 
 ### Fixes
 
