@@ -1,10 +1,8 @@
 // @flow
-import type { AdaTransaction } from './types';
+import type { AdaTransaction, RequestConfig } from './types';
 import { request } from './lib/request';
-import environment from '../../../../common/environment';
 
 export type RedeemAdaParams = {
-  ca: string,
   walletPassword: ?string,
   walletRedeemData: {
     crWalletId: string,
@@ -13,13 +11,14 @@ export type RedeemAdaParams = {
 };
 
 export const redeemAda = (
-  { ca, walletPassword, walletRedeemData }: RedeemAdaParams
+  config: RequestConfig,
+  { walletPassword, walletRedeemData }: RedeemAdaParams
 ): Promise<AdaTransaction> => (
   request({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/redemptions/ada',
-    port: environment.WALLET_PORT,
-    ca,
+    port: config.port,
+    ca: config.ca,
   }, { passphrase: walletPassword }, walletRedeemData)
 );

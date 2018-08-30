@@ -1,19 +1,15 @@
 // @flow
 import { request } from './lib/request';
-import environment from '../../../../common/environment';
-
-export type NextAdaUpdateParams = {
-  ca: string,
-};
+import type { RequestConfig } from './types';
 
 export const nextAdaUpdate = (
-  { ca }: NextAdaUpdateParams
+  config: RequestConfig,
 ): Promise<any> => (
   request({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/update',
-    port: environment.WALLET_PORT,
-    ca,
+    port: config.port,
+    ca: config.ca,
   })
 );

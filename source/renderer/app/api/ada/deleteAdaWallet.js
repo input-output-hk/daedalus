@@ -1,20 +1,20 @@
 // @flow
 import { request } from './lib/request';
-import environment from '../../../../common/environment';
+import type { RequestConfig } from './types';
 
 export type DeleteAdaWalletParams = {
-  ca: string,
   walletId: string,
 };
 
 export const deleteAdaWallet = (
-  { ca, walletId }: DeleteAdaWalletParams
+  config: RequestConfig,
+  { walletId }: DeleteAdaWalletParams
 ): Promise<[]> => (
   request({
     hostname: 'localhost',
     method: 'DELETE',
     path: `/api/wallets/${walletId}`,
-    port: environment.WALLET_PORT,
-    ca,
+    port: config.port,
+    ca: config.ca,
   })
 );

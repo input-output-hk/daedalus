@@ -1,10 +1,8 @@
 // @flow
-import type { AdaTransactionFee } from './types';
+import type { AdaTransactionFee, RequestConfig } from './types';
 import { request } from './lib/request';
-import environment from '../../../../common/environment';
 
 export type AdaTxFeeParams = {
-  ca: string,
   sender: string,
   receiver: string,
   amount: string,
@@ -14,13 +12,14 @@ export type AdaTxFeeParams = {
 };
 
 export const adaTxFee = (
-  { ca, sender, receiver, amount, groupingPolicy }: AdaTxFeeParams
+  config: RequestConfig,
+  { sender, receiver, amount, groupingPolicy }: AdaTxFeeParams
 ): Promise<AdaTransactionFee> => (
   request({
     hostname: 'localhost',
     method: 'POST',
     path: `/api/txs/fee/${sender}/${receiver}/${amount}`,
-    port: environment.WALLET_PORT,
-    ca,
+    port: config.port,
+    ca: config.ca,
   }, {}, { groupingPolicy })
 );

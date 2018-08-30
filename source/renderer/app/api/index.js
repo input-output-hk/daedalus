@@ -1,7 +1,9 @@
 // @flow
+import { remote } from 'electron';
 import AdaApi from './ada/index';
 import EtcApi from './etc/index';
 import LocalStorageApi from './localStorage/index';
+import environment from '../../../common/environment';
 
 export type Api = {
   ada: AdaApi,
@@ -10,7 +12,10 @@ export type Api = {
 };
 
 export const setupApi = (): Api => ({
-  ada: new AdaApi(),
+  ada: new AdaApi(environment.isTest(), {
+    port: environment.WALLET_PORT,
+    ca: remote.getGlobal('ca'),
+  }),
   etc: new EtcApi(),
   localStorage: new LocalStorageApi(),
 });

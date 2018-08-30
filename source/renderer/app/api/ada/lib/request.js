@@ -10,7 +10,7 @@ export type RequestOptions = {
   method: string,
   path: string,
   port: number,
-  ca: string,
+  ca: Uint8Array,
   headers?: {
     'Content-Type': string,
     'Content-Length': number,

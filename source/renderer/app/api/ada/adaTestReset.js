@@ -1,19 +1,15 @@
 // @flow
 import { request } from './lib/request';
-import environment from '../../../../common/environment';
-
-export type AdaTestResetParams = {
-  ca: string,
-};
+import type { RequestConfig } from './types';
 
 export const adaTestReset = (
-  { ca }: AdaTestResetParams
+  config: RequestConfig
 ): Promise<void> => (
   request({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/test/reset',
-    port: environment.WALLET_PORT,
-    ca,
+    port: config.port,
+    ca: config.ca,
   })
 );
