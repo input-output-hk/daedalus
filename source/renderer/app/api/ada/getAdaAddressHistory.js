@@ -1,10 +1,8 @@
 // @flow
-import type { AdaTransactions } from './types';
+import type { AdaTransactions, RequestConfig } from './types';
 import { request } from './lib/request';
-import environment from '../../../../common/environment';
 
 export type GetAdaAddressHistoryParams = {
-  ca: string,
   accountId: string,
   address: string,
   skip: number,
@@ -12,13 +10,14 @@ export type GetAdaAddressHistoryParams = {
 };
 
 export const getAdaAddressHistory = (
-  { ca, accountId, address, skip, limit }: GetAdaAddressHistoryParams
+  config: RequestConfig,
+  { accountId, address, skip, limit }: GetAdaAddressHistoryParams
 ): Promise<AdaTransactions> => (
   request({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/txs/histories',
-    port: environment.WALLET_PORT,
-    ca,
+    port: config.port,
+    ca: config.ca,
   }, { accountId, address, skip, limit })
 );

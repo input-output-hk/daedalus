@@ -394,9 +394,9 @@ export default class AdaApi {
     }
   };
 
-  isValidAddress = (address: string): Promise<boolean> => {
-    return isValidAdaAddress(this.config, { address });
-  };
+  isValidAddress = (address: string): Promise<boolean> => (
+    isValidAdaAddress(this.config, { address })
+  );
 
   isValidMnemonic(mnemonic: string): Promise<boolean> {
     return isValidMnemonic(mnemonic, WALLET_RECOVERY_PHRASE_WORD_COUNT);
