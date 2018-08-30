@@ -1,6 +1,6 @@
 // @flow
-import type { AdaWalletV0 } from './types';
-import { request } from './lib/request';
+import type { AdaWallet } from './types';
+import { request } from './lib/v1/request';
 import environment from '../../../../common/environment';
 
 export type ImportAdaBackupJSONParams = {
@@ -10,7 +10,7 @@ export type ImportAdaBackupJSONParams = {
 
 export const importAdaBackupJSON = (
   { ca, filePath }: ImportAdaBackupJSONParams,
-): Promise<AdaWalletV0> => (
+): Promise<AdaWallet> => (
   request({
     hostname: 'localhost',
     method: 'POST',

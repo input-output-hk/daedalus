@@ -158,13 +158,13 @@ export type ImportWalletFromKeyRequest = {
   filePath: string,
   walletPassword: ?string,
 };
-export type ImportWalletFromKeyResponse = AdaWalletV0;
+export type ImportWalletFromKeyResponse = AdaWallet;
 export type ImportWalletFromFileRequest = {
   filePath: string,
   walletPassword: ?string,
   walletName: ?string,
 };
-export type ImportWalletFromFileResponse = AdaWalletV0;
+export type ImportWalletFromFileResponse = AdaWallet;
 export type NodeSettings = {
   slotDuration: {
     quantity: number,
@@ -563,10 +563,12 @@ export default class AdaApi {
   ): Promise<ImportWalletFromKeyResponse> {
     Logger.debug('AdaApi::importWalletFromKey called');
     const { filePath, walletPassword } = request;
+    const walletImportData = {
+      filePath,
+      walletPassword
+    };
     try {
-      const importedWallet: AdaWalletV0 = await importAdaWallet(
-        { ca, walletPassword, filePath }
-      );
+      const importedWallet: AdaWallet = await importAdaWallet({ ca, walletImportData });
       Logger.debug('AdaApi::importWalletFromKey success');
       return _createWalletFromServerDataV0(importedWallet);
     } catch (error) {
@@ -584,14 +586,18 @@ export default class AdaApi {
     Logger.debug('AdaApi::importWalletFromFile called');
     const { filePath, walletPassword } = request;
     const isKeyFile = filePath.split('.').pop().toLowerCase() === 'key';
+    const walletImportData = {
+      filePath,
+      walletPassword
+    };
     try {
-      const importedWallet: AdaWalletV0 = isKeyFile ? (
-        await importAdaWallet({ ca, walletPassword, filePath })
+      const importedWallet: AdaWallet = isKeyFile ? (
+        await importAdaWallet({ ca, walletImportData })
       ) : (
         await importAdaBackupJSON({ ca, filePath })
       );
       Logger.debug('AdaApi::importWalletFromFile success');
-      return _createWalletFromServerDataV0(importedWallet);
+      return _createWalletFromServerData(importedWallet);
     } catch (error) {
       Logger.debug('AdaApi::importWalletFromFile error: ' + stringifyError(error));
       if (error.message.includes('already exists')) {
@@ -827,6 +833,10 @@ export default class AdaApi {
       Logger.debug('AdaApi::getLocalTimeDifference success: ' + stringifyData(response));
 
       const { localTimeInformation: { differenceFromNtpServer } } = response;
+      // TODO: I had to add the `if` bellow, as it was getting an error
+      if (!differenceFromNtpServer) {
+        return 0;
+      }
       const timeDifference = differenceFromNtpServer.quantity;
       return timeDifference;
     } catch (error) {
