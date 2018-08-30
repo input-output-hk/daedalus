@@ -12,18 +12,34 @@ export type GetWalletCertificateAdditionalMnemonicsResponse = Array<string>;
 export type GetWalletCertificateRecoveryPhraseResponse = Array<string>;
 export type GetWalletRecoveryPhraseFromCertificateResponse = Array<string>;
 
-export type AdaSyncProgressResponse = {
-  _spLocalCD: {
-    getChainDifficulty: {
-      getBlockCount: number,
+// Regarding GetNodeInfoResponse below:
+// getNodeInfo.js currently does not return "meta" and "status" properties
+// though the docs indicate it should, and they are present in Postman
+export type GetNodeInfoResponse = {
+  data: NodeInfo,
+...ResponseBaseV1
+};
+
+export type NodeInfo = {
+  syncProgress: {
+    quantity: number,
+    unit: 'percent'
+  },
+  blockchainHeight: {
+    quantity: number,
+    unit: 'blocks'
+  },
+  localBlockchainHeight: {
+    quantity: number,
+    unit: 'blocks'
+  },
+  localTimeInformation: {
+    differenceFromNtpServer: {
+      quantity: number,
+      unit: 'microseconds'
     }
   },
-  _spNetworkCD: {
-    getChainDifficulty: {
-      getBlockCount: number,
-    }
-  },
-  _spPeers: number,
+  subscriptionStatus: any
 };
 
 export type AdaWalletInitData = {
@@ -108,9 +124,6 @@ export type AdaWalletV0 = {
 
 
 export type AdaWallets = Array<AdaWallet>;
-
-export type AdaLocalTimeDifference = number;
-
 
 // ========== V1 API =========
 

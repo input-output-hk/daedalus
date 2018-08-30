@@ -35,6 +35,7 @@ export default class NetworkStatusStore extends Store {
   @observable hasBeenConnected = false;
   @observable localDifficulty = 0;
   @observable networkDifficulty = 0;
+  @observable syncProgress = 0;
   @observable localTimeDifference = 0;
   @observable syncProgressRequest: Request<GetSyncProgressResponse> = new Request(
     // Use the sync progress for target API
@@ -92,24 +93,7 @@ export default class NetworkStatusStore extends Store {
   }
 
   @computed get hasBlockSyncingStarted(): boolean {
-    return this.networkDifficulty >= 1;
-  }
-
-  @computed get relativeSyncPercentage(): number {
-    if (this.networkDifficulty > 0 && this._localDifficultyStartedWith !== null) {
-      const relativeLocal = this.localDifficulty - this._localDifficultyStartedWith;
-      const relativeNetwork = this.networkDifficulty - this._localDifficultyStartedWith;
-      // In case node is in sync after first local difficulty messages
-      // local and network difficulty will be the same (0)
-      Logger.debug('Network difficulty: ' + this.networkDifficulty);
-      Logger.debug('Local difficulty: ' + this.localDifficulty);
-      Logger.debug('Relative local difficulty: ' + relativeLocal);
-      Logger.debug('Relative network difficulty: ' + relativeNetwork);
-
-      if (relativeLocal >= relativeNetwork) return 100;
-      return relativeLocal / relativeNetwork * 100;
-    }
-    return 0;
+    return this.syncProgress >= 1;
   }
 
   @computed get relativeSyncBlocksDifference(): number {
@@ -130,11 +114,7 @@ export default class NetworkStatusStore extends Store {
   }
 
   @computed get syncPercentage(): number {
-    if (this.networkDifficulty > 0) {
-      if (this.localDifficulty >= this.networkDifficulty) return 100;
-      return this.localDifficulty / this.networkDifficulty * 100;
-    }
-    return 0;
+    return this.syncProgress;
   }
 
   @computed get isSystemTimeCorrect(): boolean {
@@ -153,13 +133,23 @@ export default class NetworkStatusStore extends Store {
     return (
       !this.isConnecting &&
       this.hasBlockSyncingStarted &&
-      this.relativeSyncBlocksDifference <= OUT_OF_SYNC_BLOCKS_LIMIT
+      this.relativeSyncBlocksDifference <= OUT_OF_SYNC_BLOCKS_LIMIT &&
+      this.syncProgress === 100
     );
   }
 
   @action _updateSyncProgress = async () => {
     try {
-      const difficulty = await this.syncProgressRequest.execute().promise;
+      const {
+        localBlockchainHeight,
+        blockchainHeight,
+        syncProgress
+      } = await this.syncProgressRequest.execute().promise;
+
+      runInAction('update syncProgress', () => {
+        this.syncProgress = syncProgress;
+      });
+
       runInAction('update difficulties', () => {
         // We are connected, move on to syncing stage
         if (this._startupStage === STARTUP_STAGES.CONNECTING) {
@@ -168,18 +158,21 @@ export default class NetworkStatusStore extends Store {
           );
           this._startupStage = STARTUP_STAGES.SYNCING;
         }
+
         // If we haven't set local difficulty before, mark the first
         // result as 'start' difficulty for the sync progress
         if (this._localDifficultyStartedWith === null) {
-          this._localDifficultyStartedWith = difficulty.localDifficulty;
-          Logger.debug('Initial difficulty: ' + JSON.stringify(difficulty));
+          this._localDifficultyStartedWith = localBlockchainHeight;
+          Logger.debug('Initial difficulty: ' + JSON.stringify({ localBlockchainHeight, blockchainHeight }));
         }
+
         // Update the local difficulty on each request
-        this.localDifficulty = difficulty.localDifficulty;
+        this.localDifficulty = localBlockchainHeight;
         Logger.debug('Local difficulty changed: ' + this.localDifficulty);
+
         // Check if network difficulty is stalled (e.g. unchanged for more than 2 minutes)
         // e.g. in case there is no Internet connection Api will send the last known value
-        if (this.networkDifficulty !== difficulty.networkDifficulty) {
+        if (this.networkDifficulty !== blockchainHeight) {
           if (!this.isConnected) this.isConnected = true;
           this._lastNetworkDifficultyChange = Date.now();
         } else if (this.isConnected) {
@@ -191,8 +184,9 @@ export default class NetworkStatusStore extends Store {
             if (!this.hasBeenConnected) this.hasBeenConnected = true;
           }
         }
+
         // Update the network difficulty on each request
-        this.networkDifficulty = difficulty.networkDifficulty;
+        this.networkDifficulty = blockchainHeight;
       });
       Logger.debug('Network difficulty changed: ' + this.networkDifficulty);
 
