@@ -121,11 +121,6 @@ export default defineMessages({
     defaultMessage: '!!!Ada',
     description: 'Name for "Ada" unit.'
   },
-  unitEtc: {
-    id: 'global.unit.etc',
-    defaultMessage: '!!!Etc',
-    description: 'Name for "Etc" unit.'
-  },
   recoveryPhraseDialogTitle: {
     id: 'wallet.backup.recovery.phrase.dialog.title',
     defaultMessage: '!!!Recovery phrase',
@@ -164,19 +159,6 @@ export const environmentSpecificMessages = {
       id: 'environment.apiName.cardano',
       defaultMessage: '!!!Cardano',
       description: 'Name for "Cardano" client.'
-    },
-  }),
-
-  etc: defineMessages({
-    currency: {
-      id: 'environment.currency.etc',
-      defaultMessage: '!!!Etc',
-      description: 'Name for "Etc" unit.'
-    },
-    apiName: {
-      id: 'environment.apiName.mantis',
-      defaultMessage: '!!!Mantis',
-      description: 'Name for "Mantis" client.'
     },
   }),
 };

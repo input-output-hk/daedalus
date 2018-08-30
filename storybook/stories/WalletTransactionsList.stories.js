@@ -10,7 +10,7 @@ import {
   transactionStates,
   transactionTypes
 } from '../../source/renderer/app/domains/WalletTransaction';
-import { formattedWalletAmount } from '../../source/renderer/app/utils/ada/formatters';
+import { formattedWalletAmount } from '../../source/renderer/app/utils/formatters';
 
 storiesOf('WalletTransactionsList', module)
 
