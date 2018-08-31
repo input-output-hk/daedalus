@@ -66,13 +66,13 @@ app.on('ready', async () => {
 
   setupTls();
   makeEnvironmentGlobal(process.env);
-  setupCardano();
   await installChromeExtensions(environment.isDev());
 
   // Detect safe mode
   const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
 
   mainWindow = createMainWindow(isInSafeMode);
+  setupCardano(mainWindow);
 
   if (environment.isDev()) {
     // Connect to electron-connect server which restarts / reloads windows on file changes

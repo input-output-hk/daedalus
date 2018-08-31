@@ -11,7 +11,7 @@ export type Api = {
 
 export const setupApi = (): Api => ({
   ada: new AdaApi(environment.isTest(), {
-    port: environment.WALLET_PORT,
+    port: remote.getGlobal('port'),
     ca: remote.getGlobal('ca'),
     key: remote.getGlobal('clientKey'),
     cert: remote.getGlobal('clientCert'),
