@@ -17,7 +17,7 @@ import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import LocalizableError from '../../i18n/LocalizableError';
 import Wallet from '../../domains/Wallet';
 import { ROUTES } from '../../routes-config';
-import type { RedeemPaperVendedAdaResponse } from '../../api/ada/index';
+import type { RedeemPaperVendedAdaRequest } from '../../api/ada';
 import type { RedemptionTypeChoices } from '../../types/redemptionTypes';
 import { ADA_REDEMPTION_TYPES } from '../../types/redemptionTypes';
 
@@ -39,7 +39,7 @@ export default class AdaRedemptionStore extends Store {
   @observable showAdaRedemptionSuccessMessage: boolean = false;
   @observable redeemAdaRequest: Request<Wallet> = new Request(this.api.ada.redeemAda);
   // eslint-disable-next-line
-  @observable redeemPaperVendedAdaRequest: Request<RedeemPaperVendedAdaResponse> = new Request(this.api.ada.redeemPaperVendedAda);
+  @observable redeemPaperVendedAdaRequest: Request<RedeemPaperVendedAdaRequest> = new Request(this.api.ada.redeemPaperVendedAda);
   @observable isRedemptionDisclaimerAccepted = false;
 
   setup() {
