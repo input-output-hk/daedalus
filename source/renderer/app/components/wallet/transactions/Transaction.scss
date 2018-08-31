@@ -28,6 +28,23 @@
   padding-top: 1px;
 }
 
+.togglerArrow {
+  display: none;
+  position: absolute;
+  bottom: 0;
+  background: red;
+  width: 75px;
+  text-align: center;
+  > svg {
+    width: 25px;
+    height: 8px;
+  }
+}
+
+.togglerArrowExpanded {
+  display: block;
+}
+
 .header,
 .details {
   color: var(--theme-transactions-list-item-details-color);

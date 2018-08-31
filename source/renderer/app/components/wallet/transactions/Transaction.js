@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
+import togglerArrow from '../../../assets/images/collapse-arrow.inline.svg';
 import WalletTransaction, { transactionStates, transactionTypes } from '../../../domains/WalletTransaction';
 import { assuranceLevels } from '../../../types/transactionAssuranceTypes';
 import { environmentSpecificMessages } from '../../../i18n/global-messages';
@@ -186,6 +187,11 @@ export default class Transaction extends Component<Props, State> {
       isExpanded ? styles.expanded : styles.closed
     ]);
 
+    const togglerArrowStyles = classNames([
+      styles.togglerArrow,
+      isExpanded ? styles.togglerArrowExpanded : null
+    ]);
+
     const status = intl.formatMessage(assuranceLevelTranslations[assuranceLevel]);
     const currency = intl.formatMessage(environmentSpecificMessages[environment.API].currency);
     const symbol = adaSymbol;
@@ -334,6 +340,8 @@ export default class Transaction extends Component<Props, State> {
             */}
           </div>
         </div>
+
+        <SVGInline svg={togglerArrow} className={togglerArrowStyles} />
 
       </div>
     );
