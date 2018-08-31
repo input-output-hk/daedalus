@@ -122,10 +122,13 @@ export class AllFundsAlreadyAtReceiverAddressError extends LocalizableError {
 }
 
 export class NotEnoughFundsForTransactionFeesError extends LocalizableError {
-  constructor() {
+  constructor(needMore) {
     super({
       id: messages.notEnoughFundsForTransactionFeesError.id,
       defaultMessage: messages.notEnoughFundsForTransactionFeesError.defaultMessage,
+      values: {
+        needMore
+      },
     });
   }
 }

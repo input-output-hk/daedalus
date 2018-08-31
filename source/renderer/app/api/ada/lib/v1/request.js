@@ -4,6 +4,7 @@ import { size, has, get, omit } from 'lodash';
 import querystring from 'querystring';
 import { encryptPassphrase } from '../encryptPassphrase';
 import { getContentLength } from '../../../lib/utils';
+import { objectToHumanReadableString } from '../../../../utils/strings';
 
 export type RequestOptions = {
   hostname: string,
@@ -92,7 +93,10 @@ function typedRequest<Response>(
             if (status === 'success') {
               resolve(parsedBody.data);
             } else if (status === 'error' || status === 'fail') {
-              reject(new Error(parsedBody.message));
+              const errorMessage = parsedBody.diagnostic
+                ? `${parsedBody.message} ${objectToHumanReadableString(parsedBody.diagnostic)}`
+                : parsedBody.message;
+              reject(new Error(errorMessage));
             } else {
               // TODO: find a way to record this case and report to the backend team
               reject(new Error('Unknown response from backend.'));
