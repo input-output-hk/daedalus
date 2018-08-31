@@ -23,7 +23,7 @@ in
   , nodeLogPath         = [] : Optional Text
   , walletPath          = "daedalus-frontend"
   , walletLogging       = False
-  , frontendOnlyMode    = False
+  , frontendOnlyMode    = True
 
   -- todo, find some way to disable updates when unsandboxed?
   , updaterPath         = "/bin/update-runner"

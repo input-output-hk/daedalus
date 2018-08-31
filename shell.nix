@@ -4,9 +4,12 @@ in
 { system ? builtins.currentSystem
 , config ? {}
 , pkgs ? (import (localLib.fetchNixPkgs) { inherit system config; })
+, cluster ? "staging"
+, autoStartBackend ? false
 }:
 
 let
+  daedalusPkgs = import ./. { inherit cluster; };
   yarn = pkgs.yarn.override { inherit nodejs; };
   nodejs = pkgs.nodejs-8_x;
   fixYarnLock = pkgs.stdenv.mkDerivation {
@@ -34,15 +37,19 @@ let
       git python27 curl electron
       nodePackages.node-gyp nodePackages.node-pre-gyp
       gnumake
-    ]);
+    ] ++ (lib.optionals autoStartBackend [
+      daedalusPkgs.daedalus-bridge
+    ]));
+    LAUNCHER_CONFIG = "${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml";
+    DAEDALUS_CONFIG = "${daedalusPkgs.daedalus.cfg}/etc/";
+    DAEDALUS_DIR = "./";
+    CLUSTER = cluster;
     shellHook = ''
-      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${nodejs}/include/node"
-      yarn install
-      ln -svf ${pkgs.electron}/bin/electron ./node_modules/electron/dist/electron
-      echo "Instructions:"
-      echo "In cardano repo run scripts/launch/demo-nix.sh"
-      echo "export CARDANO_TLS_PATH=/path/to/cardano-sl/state-demo/tls/client"
-      echo "yarn dev"
+      ln -svf $(type -P cardano-node)
+      for x in wallet-topology.yaml configuration.yaml mainnet-genesis-dryrun-with-stakeholders.json ; do
+          ln -svf ${daedalusPkgs.daedalus.cfg}/etc/$x
+      done
+      mkdir -p Secrets ${cluster}
     '';
   };
   daedalus = daedalusShell.overrideAttrs (oldAttrs: {

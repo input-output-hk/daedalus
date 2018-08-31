@@ -14,6 +14,7 @@ import environment from '../common/environment';
 import { OPEN_ABOUT_DIALOG_CHANNEL } from '../common/ipc-api/open-about-dialog';
 import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../common/ipc-api/go-to-ada-redemption-screen';
 import mainErrorHandler from './utils/mainErrorHandler';
+import { setupCardano } from './utils/cardano';
 
 setupLogging();
 mainErrorHandler();
@@ -65,6 +66,7 @@ app.on('ready', async () => {
 
   setupTls();
   makeEnvironmentGlobal(process.env);
+  setupCardano();
   await installChromeExtensions(environment.isDev());
 
   // Detect safe mode
