@@ -16,7 +16,6 @@ export const getAdaHistoryByAccount = (
     hostname: 'localhost',
     method: 'GET',
     path: '/api/txs/histories',
-    port: config.port,
-    ca: config.ca,
+    ...config
   }, { accountId, skip, limit })
 );

@@ -9,7 +9,6 @@ export const getAdaLocalTimeDifference = (
     hostname: 'localhost',
     method: 'GET',
     path: '/api/settings/time/difference',
-    port: config.port,
-    ca: config.ca,
+    ...config
   })
 );

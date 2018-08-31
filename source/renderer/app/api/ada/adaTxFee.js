@@ -19,7 +19,6 @@ export const adaTxFee = (
     hostname: 'localhost',
     method: 'POST',
     path: `/api/txs/fee/${sender}/${receiver}/${amount}`,
-    port: config.port,
-    ca: config.ca,
+    ...config,
   }, {}, { groupingPolicy })
 );

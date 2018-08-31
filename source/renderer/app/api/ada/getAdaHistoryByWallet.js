@@ -16,7 +16,6 @@ export const getAdaHistoryByWallet = (
     hostname: 'localhost',
     method: 'GET',
     path: '/api/txs/histories',
-    port: config.port,
-    ca: config.ca,
+    ...config
   }, { walletId, skip, limit })
 );

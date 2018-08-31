@@ -19,7 +19,6 @@ export const updateAdaWallet = (
     hostname: 'localhost',
     method: 'PUT',
     path: `/api/wallets/${walletId}`,
-    port: config.port,
-    ca: config.ca,
+    ...config
   }, {}, walletMeta)
 );

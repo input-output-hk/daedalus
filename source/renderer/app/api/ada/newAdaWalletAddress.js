@@ -15,8 +15,7 @@ export const newAdaWalletAddress = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/addresses',
-    port: config.port,
-    ca: config.ca,
+    ...config
   }, { passphrase: password }, accountId)
 );
 

@@ -18,7 +18,6 @@ export const redeemAda = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/redemptions/ada',
-    port: config.port,
-    ca: config.ca,
+    ...config
   }, { passphrase: walletPassword }, walletRedeemData)
 );

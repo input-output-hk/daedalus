@@ -15,7 +15,6 @@ export const exportAdaBackupJSON = (
     hostname: 'localhost',
     method: 'POST',
     path: `/api/backup/export/${walletId}`,
-    port: config.port,
-    ca: config.ca,
+    ...config,
   }, {}, filePath)
 );

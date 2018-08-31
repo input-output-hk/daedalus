@@ -21,7 +21,6 @@ export const redeemAdaPaperVend = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/papervend/redemptions/ada',
-    port: config.port,
-    ca: config.ca,
+    ...config
   }, { passphrase: walletPassword }, redeemPaperVendedData)
 );

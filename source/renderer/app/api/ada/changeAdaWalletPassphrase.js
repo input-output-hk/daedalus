@@ -19,7 +19,6 @@ export const changeAdaWalletPassphrase = (
     hostname: 'localhost',
     method: 'POST',
     path: `/api/wallets/password/${walletId}`,
-    port: config.port,
-    ca: config.ca,
+    ...config,
   }, { old: encryptedOldPassphrase, new: encryptedNewPassphrase });
 };

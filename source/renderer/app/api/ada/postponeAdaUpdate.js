@@ -9,7 +9,6 @@ export const postponeAdaUpdate = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/update/postpone',
-    port: config.port,
-    ca: config.ca,
+    ...config
   })
 );

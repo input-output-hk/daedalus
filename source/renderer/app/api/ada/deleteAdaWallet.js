@@ -14,7 +14,6 @@ export const deleteAdaWallet = (
     hostname: 'localhost',
     method: 'DELETE',
     path: `/api/wallets/${walletId}`,
-    port: config.port,
-    ca: config.ca,
+    ...config,
   })
 );

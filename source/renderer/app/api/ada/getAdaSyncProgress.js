@@ -9,7 +9,6 @@ export const getAdaSyncProgress = (
     hostname: 'localhost',
     method: 'GET',
     path: '/api/settings/sync/progress',
-    port: config.port,
-    ca: config.ca,
+    ...config
   })
 );

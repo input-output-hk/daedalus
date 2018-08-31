@@ -15,7 +15,6 @@ export const importAdaWallet = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/wallets/keys',
-    port: config.port,
-    ca: config.ca,
+    ...config
   }, { passphrase: walletPassword }, filePath)
 );

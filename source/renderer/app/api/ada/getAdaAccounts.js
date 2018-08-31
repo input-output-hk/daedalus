@@ -13,7 +13,6 @@ export const getAdaAccounts = (
     hostname: 'localhost',
     method: 'GET',
     path: '/api/accounts',
-    port: config.port,
-    ca: config.ca,
+    ...config,
   })
 );

@@ -9,7 +9,6 @@ export const adaTestReset = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/test/reset',
-    port: config.port,
-    ca: config.ca,
+    ...config,
   })
 );

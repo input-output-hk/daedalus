@@ -14,7 +14,6 @@ export const importAdaBackupJSON = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/backup/import',
-    port: config.port,
-    ca: config.ca,
+    ...config
   }, {}, filePath)
 );
