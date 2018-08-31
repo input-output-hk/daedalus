@@ -116,7 +116,7 @@ writeInstallerNSIS outName (Version fullVersion') installerConfig clusterName = 
         _ <- constantStr "InstallDir" (str $ unpack $ installDirectory installerConfig)
         name "$InstallDir ($Version)"                  -- The name of the installer
         outFile $ str $ encodeString outName        -- Where to produce the installer
-        unsafeInjectGlobal $ "!define MUI_ICON \"icons\\" ++ lshow clusterName ++ "\\64x64.ico\""
+        unsafeInjectGlobal $ "!define MUI_ICON \"icons\\" ++ lshow clusterName ++ "\\" ++ lshow clusterName ++ ".ico\""
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE"
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_BITMAP \"icons\\installBanner.bmp\""
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_RIGHT"
@@ -194,7 +194,7 @@ lshow = T.unpack . lshowText
 
 packageFrontend :: Cluster -> IO ()
 packageFrontend cluster = do
-    let icon = format ("installers/icons/"%s%"/64x64") (lshowText cluster)
+    let icon = format ("installers/icons/"%s%"/"%s) (lshowText cluster) (lshowText cluster)
     export "NODE_ENV" "production"
     shells ("npm run package -- --icon " <> icon) empty
 
