@@ -339,10 +339,8 @@ export default class Transaction extends Component<Props, State> {
             </div>
             */}
           </div>
+          <SVGInline svg={togglerArrow} className={togglerArrowStyles} />
         </div>
-
-        <SVGInline svg={togglerArrow} className={togglerArrowStyles} />
-
       </div>
     );
   }

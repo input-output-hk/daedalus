@@ -1,5 +1,7 @@
 .component {
   color: var(--theme-transactions-list-item-details-color);
+  position: relative;
+  cursor: pointer;
 
   &.failed {
     .title, .amount, .details {
@@ -22,27 +24,39 @@
   -webkit-user-select: none;
 }
 
-.togglerContent {
-  flex: 1;
-  margin-left: 20px;
-  padding-top: 1px;
-}
-
 .togglerArrow {
   display: none;
-  position: absolute;
-  bottom: 0;
-  background: red;
-  width: 75px;
+  position: sticky;
+  bottom: 10px;
+  width: 74px;
   text-align: center;
+  z-index: 1;
+  margin-top: -43px;
+  margin-bottom: 27px;
+  margin-left: -70px;
+  opacity: .1;
   > svg {
     width: 25px;
     height: 8px;
   }
+
+  .component:hover & {
+    opacity: .2;
+  }
+  .content:hover & {
+    opacity: .1;
+  }
+
 }
 
 .togglerArrowExpanded {
   display: block;
+}
+
+.togglerContent {
+  flex: 1;
+  margin-left: 20px;
+  padding-top: 1px;
 }
 
 .header,
@@ -143,7 +157,7 @@
   border-bottom: 1px solid var(--theme-separation-border-color);
   margin-left: 74px;
   margin-right: 20px;
-  padding: 10px;
+  cursor: default;
 }
 
 .last {
@@ -192,7 +206,7 @@
 
 .expanded {
   max-height: 100%;
-  padding-bottom: 20px;
+  padding: 10px 10px 20px;
 }
 
 .conversion {
