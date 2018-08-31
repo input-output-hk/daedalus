@@ -3,14 +3,12 @@ import { action, computed, observable } from 'mobx';
 import { get } from 'lodash';
 import { ipcRenderer } from 'electron';
 import Store from './lib/Store';
-import resolver from '../utils/imports';
 import environment from '../../../common/environment';
+import { sidebarConfig } from '../config/sidebarConfig';
 import { syncStateTags } from '../domains/Wallet';
 import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../../../common/ipc-api/go-to-ada-redemption-screen';
+import { formattedWalletAmount } from '../utils/formatters';
 import type { SidebarWalletType } from '../types/sidebarTypes';
-
-const sidebarConfig = resolver('config/sidebarConfig');
-const { formattedWalletAmount } = resolver('utils/formatters');
 
 export default class SidebarStore extends Store {
 

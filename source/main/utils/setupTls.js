@@ -18,15 +18,19 @@ if (!isProd && !caDevelopmentPath) {
  */
 export const setupTls = () => {
   const tlsBasePath = launcherConfig.tlsPath || path.join(runtimeFolderPath, 'tls');
-  const caProductionPath = path.join(tlsBasePath, 'client', 'ca.crt');
-  const pathToCertificate = isProd ? caProductionPath : path.join(caDevelopmentPath, 'ca.crt');
+  const tlsFolder = isProd ? path.join(tlsBasePath, 'client') : caDevelopmentPath;
+  const pathToCa = path.join(tlsFolder, 'ca.crt');
+  const pathToClientKey = path.join(tlsFolder, 'client.key');
+  const pathToClientCert = path.join(tlsFolder, 'client.pem');
 
   try {
-    log.info('Using certificates from: ' + pathToCertificate);
+    log.info('Using certificates from: ' + tlsFolder);
     Object.assign(global, {
-      ca: fs.readFileSync(pathToCertificate),
+      ca: fs.readFileSync(pathToCa),
+      clientKey: fs.readFileSync(pathToClientKey),
+      clientCert: fs.readFileSync(pathToClientCert),
     });
   } catch (error) {
-    log.error(`Error while loading ca.crt: ${error}`);
+    log.error(`Error while loading tls files: ${error}`);
   }
 };

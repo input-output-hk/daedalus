@@ -137,13 +137,13 @@
         "description": "Generic error message.",
         "end": {
           "column": 3,
-          "line": 11
+          "line": 12
         },
         "file": "source/renderer/app/api/common.js",
         "id": "api.errors.GenericApiError",
         "start": {
           "column": 19,
-          "line": 7
+          "line": 8
         }
       },
       {
@@ -151,13 +151,13 @@
         "description": "\"Incorrect wallet password.\" error message.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 17
         },
         "file": "source/renderer/app/api/common.js",
         "id": "api.errors.IncorrectPasswordError",
         "start": {
           "column": 32,
-          "line": 12
+          "line": 13
         }
       },
       {
@@ -165,13 +165,13 @@
         "description": "\"Wallet you are trying to restore already exists.\" error message.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/api/common.js",
         "id": "api.errors.WalletAlreadyRestoredError",
         "start": {
           "column": 30,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -179,13 +179,13 @@
         "description": "\"There was a problem sending the support request.\" error message",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/api/common.js",
         "id": "api.errors.ReportRequestError",
         "start": {
           "column": 22,
-          "line": 22
+          "line": 23
         }
       }
     ],
@@ -1113,106 +1113,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!slot",
-        "description": "\"slot\" label on staking chart tooltip.",
-        "end": {
-          "column": 3,
-          "line": 16
-        },
-        "file": "source/renderer/app/components/staking/StakingChartTooltip.js",
-        "id": "staking.chart.tooltip.slot.label",
-        "start": {
-          "column": 8,
-          "line": 12
-        }
-      },
-      {
-        "defaultMessage": "!!!transactions",
-        "description": "\"transactions\" label on staking chart tooltip.",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "source/renderer/app/components/staking/StakingChartTooltip.js",
-        "id": "staking.chart.tooltip.transactions.label",
-        "start": {
-          "column": 16,
-          "line": 17
-        }
-      },
-      {
-        "defaultMessage": "!!!MPC phase",
-        "description": "\"MPC phase\" label on staking chart tooltip.",
-        "end": {
-          "column": 3,
-          "line": 26
-        },
-        "file": "source/renderer/app/components/staking/StakingChartTooltip.js",
-        "id": "staking.chart.tooltip.mpc.phase.label",
-        "start": {
-          "column": 12,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!commitments",
-        "description": "\"commitments\" label on staking chart tooltip.",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/staking/StakingChartTooltip.js",
-        "id": "staking.chart.tooltip.commitments.label",
-        "start": {
-          "column": 15,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!openings",
-        "description": "\"openings\" label on staking chart tooltip.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/staking/StakingChartTooltip.js",
-        "id": "staking.chart.tooltip.openings.label",
-        "start": {
-          "column": 12,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!shares",
-        "description": "\"shares\" label on staking chart tooltip.",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "source/renderer/app/components/staking/StakingChartTooltip.js",
-        "id": "staking.chart.tooltip.shares.label",
-        "start": {
-          "column": 10,
-          "line": 37
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/staking/StakingChartTooltip.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Daedalus",
         "description": "About \"title\"",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 16
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.title",
         "start": {
           "column": 14,
-          "line": 13
+          "line": 12
         }
       },
       {
@@ -1220,13 +1131,13 @@
         "description": "About page daedalus team headline",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 21
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.daedalus.headline",
         "start": {
           "column": 32,
-          "line": 18
+          "line": 17
         }
       },
       {
@@ -1234,13 +1145,13 @@
         "description": "About page cardano team headline",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 26
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.cardano.headline",
         "start": {
           "column": 31,
-          "line": 23
+          "line": 22
         }
       },
       {
@@ -1248,13 +1159,13 @@
         "description": "About page mantis team headline",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 31
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.mantis.headline",
         "start": {
           "column": 30,
-          "line": 28
+          "line": 27
         }
       },
       {
@@ -1262,13 +1173,13 @@
         "description": "About page daedalus team members",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 36
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.daedalus.members",
         "start": {
           "column": 31,
-          "line": 33
+          "line": 32
         }
       },
       {
@@ -1276,13 +1187,13 @@
         "description": "About page cardano team members",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 41
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.cardano.members",
         "start": {
           "column": 30,
-          "line": 38
+          "line": 37
         }
       },
       {
@@ -1290,13 +1201,13 @@
         "description": "About page mantis team members",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 46
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.content.mantis.members",
         "start": {
           "column": 29,
-          "line": 43
+          "line": 42
         }
       },
       {
@@ -1304,13 +1215,13 @@
         "description": "About \"copyright\"",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 51
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.copyright",
         "start": {
           "column": 18,
-          "line": 48
+          "line": 47
         }
       },
       {
@@ -1318,13 +1229,13 @@
         "description": "About page license name",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 56
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.license",
         "start": {
           "column": 15,
-          "line": 53
+          "line": 52
         }
       },
       {
@@ -1332,13 +1243,13 @@
         "description": "About page build information",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 61
         },
         "file": "source/renderer/app/components/static/About.js",
         "id": "static.about.buildInfo",
         "start": {
           "column": 18,
-          "line": 58
+          "line": 57
         }
       }
     ],
@@ -2139,39 +2050,6 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Your wallet address",
-        "description": "Label for wallet address on the ETC wallet \"Receive page\"",
-        "end": {
-          "column": 3,
-          "line": 17
-        },
-        "file": "source/renderer/app/components/wallet/etc/WalletReceive.js",
-        "id": "wallet.receive.page.etc.walletAddressLabel",
-        "start": {
-          "column": 22,
-          "line": 13
-        }
-      },
-      {
-        "defaultMessage": "!!!Share this wallet address to receive payments. To protect your privacy generate new addresses for receiving payments instead of reusing existing ones.",
-        "description": "Wallet receive payments instructions on the ETC wallet \"Receive page\"",
-        "end": {
-          "column": 3,
-          "line": 22
-        },
-        "file": "source/renderer/app/components/wallet/etc/WalletReceive.js",
-        "id": "wallet.receive.page.etc.walletReceiveInstructions",
-        "start": {
-          "column": 29,
-          "line": 18
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/etc/WalletReceive.json"
   },
   {
     "descriptors": [
@@ -3398,13 +3276,13 @@
         "description": "Transaction type shown for credit card payments.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 21
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.card",
         "start": {
           "column": 8,
-          "line": 18
+          "line": 17
         }
       },
       {
@@ -3412,13 +3290,13 @@
         "description": "Transaction type shown for {currency} transactions.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 26
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type",
         "start": {
           "column": 8,
-          "line": 23
+          "line": 22
         }
       },
       {
@@ -3426,13 +3304,13 @@
         "description": "Transaction type shown for money exchanges between currencies.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.exchange",
         "start": {
           "column": 12,
-          "line": 28
+          "line": 27
         }
       },
       {
@@ -3440,13 +3318,13 @@
         "description": "Transaction assurance level.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel",
         "start": {
           "column": 18,
-          "line": 33
+          "line": 32
         }
       },
       {
@@ -3454,13 +3332,13 @@
         "description": "Transaction confirmations.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.confirmations",
         "start": {
           "column": 17,
-          "line": 38
+          "line": 37
         }
       },
       {
@@ -3468,13 +3346,13 @@
         "description": "Transaction ID.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionId",
         "start": {
           "column": 17,
-          "line": 43
+          "line": 42
         }
       },
       {
@@ -3482,13 +3360,13 @@
         "description": "Conversion rate.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.conversion.rate",
         "start": {
           "column": 18,
-          "line": 48
+          "line": 47
         }
       },
       {
@@ -3496,13 +3374,13 @@
         "description": "Label \"{currency} sent\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 56
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.sent",
         "start": {
           "column": 8,
-          "line": 53
+          "line": 52
         }
       },
       {
@@ -3510,13 +3388,13 @@
         "description": "Label \"{currency} received\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 61
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.received",
         "start": {
           "column": 12,
-          "line": 58
+          "line": 57
         }
       },
       {
@@ -3524,13 +3402,13 @@
         "description": "From address",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 66
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.from",
         "start": {
           "column": 15,
-          "line": 63
+          "line": 62
         }
       },
       {
@@ -3538,13 +3416,13 @@
         "description": "From addresses",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.from",
         "start": {
           "column": 17,
-          "line": 68
+          "line": 67
         }
       },
       {
@@ -3552,13 +3430,13 @@
         "description": "To address",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.to",
         "start": {
           "column": 13,
-          "line": 73
+          "line": 72
         }
       },
       {
@@ -3566,13 +3444,13 @@
         "description": "To addresses",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 81
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.to",
         "start": {
           "column": 15,
-          "line": 78
+          "line": 77
         }
       },
       {
@@ -3580,13 +3458,13 @@
         "description": "Transaction amount.",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 86
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionAmount",
         "start": {
           "column": 21,
-          "line": 83
+          "line": 82
         }
       },
       {
@@ -3594,13 +3472,13 @@
         "description": "Transaction assurance level \"low\".",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 94
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.low",
         "start": {
           "column": 25,
-          "line": 91
+          "line": 90
         }
       },
       {
@@ -3608,13 +3486,13 @@
         "description": "Transaction assurance level \"medium\".",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 99
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.medium",
         "start": {
           "column": 28,
-          "line": 96
+          "line": 95
         }
       },
       {
@@ -3622,13 +3500,13 @@
         "description": "Transaction assurance level \"high\".",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 104
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assuranceLevel.high",
         "start": {
           "column": 26,
-          "line": 101
+          "line": 100
         }
       },
       {
@@ -3636,13 +3514,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 113
+          "line": 112
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 109
+          "line": 108
         }
       },
       {
@@ -3650,13 +3528,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 118
+          "line": 117
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.failed",
         "start": {
           "column": 30,
-          "line": 114
+          "line": 113
         }
       }
     ],
@@ -3722,25 +3600,6 @@
       }
     ],
     "path": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Search transaction",
-        "description": "Hint in the transactions search box.",
-        "end": {
-          "column": 3,
-          "line": 13
-        },
-        "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsSearch.js",
-        "id": "wallet.transactions.search.hint",
-        "start": {
-          "column": 14,
-          "line": 9
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/wallet/transactions/WalletTransactionsSearch.json"
   },
   {
     "descriptors": [
@@ -5023,13 +4882,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 21
         },
         "file": "source/renderer/app/containers/wallet/WalletSummaryPage.js",
         "id": "wallet.summary.no.transactions",
         "start": {
           "column": 18,
-          "line": 19
+          "line": 17
         }
       }
     ],
@@ -5042,13 +4901,13 @@
         "description": "Message shown when wallet has no transactions yet.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 19
         },
         "file": "source/renderer/app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions",
         "start": {
           "column": 18,
-          "line": 17
+          "line": 15
         }
       },
       {
@@ -5056,13 +4915,13 @@
         "description": "Message shown when wallet transaction search returns zero results.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 24
         },
         "file": "source/renderer/app/containers/wallet/WalletTransactionsPage.js",
         "id": "wallet.transactions.no.transactions.found",
         "start": {
           "column": 23,
-          "line": 22
+          "line": 20
         }
       }
     ],
@@ -5407,31 +5266,17 @@
         }
       },
       {
-        "defaultMessage": "!!!Etc",
-        "description": "Name for \"Etc\" unit.",
+        "defaultMessage": "!!!Recovery phrase",
+        "description": "Title for the \"Recovery Phrase\" dialog.",
         "end": {
           "column": 3,
           "line": 128
         },
         "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "global.unit.etc",
-        "start": {
-          "column": 11,
-          "line": 124
-        }
-      },
-      {
-        "defaultMessage": "!!!Recovery phrase",
-        "description": "Title for the \"Recovery Phrase\" dialog.",
-        "end": {
-          "column": 3,
-          "line": 133
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
         "id": "wallet.backup.recovery.phrase.dialog.title",
         "start": {
           "column": 29,
-          "line": 129
+          "line": 124
         }
       },
       {
@@ -5439,13 +5284,13 @@
         "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 138
+          "line": 133
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 134
+          "line": 129
         }
       },
       {
@@ -5453,13 +5298,13 @@
         "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 143
+          "line": 138
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 139
+          "line": 134
         }
       },
       {
@@ -5467,13 +5312,13 @@
         "description": "Label \"Continue\" in dialogs.",
         "end": {
           "column": 3,
-          "line": 148
+          "line": 143
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.dialog.button.continue",
         "start": {
           "column": 29,
-          "line": 144
+          "line": 139
         }
       },
       {
@@ -5481,13 +5326,13 @@
         "description": "URL for the \"FAQ on Daedalus website\" link in the FAQ section on the support settings page",
         "end": {
           "column": 3,
-          "line": 153
+          "line": 148
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "settings.support.faq.faqLinkURL",
         "start": {
           "column": 14,
-          "line": 149
+          "line": 144
         }
       },
       {
@@ -5495,13 +5340,13 @@
         "description": "Name for \"Ada\" unit.",
         "end": {
           "column": 5,
-          "line": 162
+          "line": 157
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.currency.ada",
         "start": {
           "column": 14,
-          "line": 158
+          "line": 153
         }
       },
       {
@@ -5509,41 +5354,13 @@
         "description": "Name for \"Cardano\" client.",
         "end": {
           "column": 5,
-          "line": 167
+          "line": 162
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.apiName.cardano",
         "start": {
           "column": 13,
-          "line": 163
-        }
-      },
-      {
-        "defaultMessage": "!!!Etc",
-        "description": "Name for \"Etc\" unit.",
-        "end": {
-          "column": 5,
-          "line": 175
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.currency.etc",
-        "start": {
-          "column": 14,
-          "line": 171
-        }
-      },
-      {
-        "defaultMessage": "!!!Mantis",
-        "description": "Name for \"Mantis\" client.",
-        "end": {
-          "column": 5,
-          "line": 180
-        },
-        "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.apiName.mantis",
-        "start": {
-          "column": 13,
-          "line": 176
+          "line": 158
         }
       }
     ],

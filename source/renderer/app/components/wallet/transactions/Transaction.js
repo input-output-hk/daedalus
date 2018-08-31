@@ -6,13 +6,12 @@ import classNames from 'classnames';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
-import etcSymbol from '../../../assets/images/etc-symbol.inline.svg';
 import WalletTransaction, { transactionStates, transactionTypes } from '../../../domains/WalletTransaction';
 import { assuranceLevels } from '../../../types/transactionAssuranceTypes';
 import { environmentSpecificMessages } from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../domains/WalletTransaction';
 import environment from '../../../../../common/environment';
-import { getNetworkExplorerUrl } from '../../../utils/ada/network';
+import { getNetworkExplorerUrl } from '../../../utils/network';
 
 const messages = defineMessages({
   card: {
@@ -146,7 +145,7 @@ export default class Transaction extends Component<Props, State> {
   }
 
   handleOpenExplorer(type, param, e) {
-    if (this.props.onOpenExternalLink && environment.isAdaApi()) {
+    if (this.props.onOpenExternalLink) {
       e.stopPropagation();
       const link = `${getNetworkExplorerUrl()}/${type}/${param}`;
       this.props.onOpenExternalLink(link);
@@ -161,7 +160,7 @@ export default class Transaction extends Component<Props, State> {
     const { isExpanded } = this.state;
     const { intl } = this.context;
 
-    const canOpenExplorer = onOpenExternalLink && environment.isAdaApi();
+    const canOpenExplorer = onOpenExternalLink;
 
     const hasConfirmations = data.numberOfConfirmations > 0;
     const isFailedTransaction = state === transactionStates.FAILED;
@@ -189,7 +188,7 @@ export default class Transaction extends Component<Props, State> {
 
     const status = intl.formatMessage(assuranceLevelTranslations[assuranceLevel]);
     const currency = intl.formatMessage(environmentSpecificMessages[environment.API].currency);
-    const symbol = environment.isAdaApi() ? adaSymbol : etcSymbol;
+    const symbol = adaSymbol;
 
     return (
       <div

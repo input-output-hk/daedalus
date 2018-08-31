@@ -6,9 +6,7 @@ import NodeSyncStatusIcon from '../components/widgets/NodeSyncStatusIcon';
 import WalletTestEnvironmentLabel from '../components/widgets/WalletTestEnvironmentLabel';
 import type { InjectedProps } from '../types/injectedPropsType';
 import environment from '../../../common/environment';
-import resolver from '../utils/imports';
-
-const { formattedWalletAmount } = resolver('utils/formatters');
+import { formattedWalletAmount } from '../utils/formatters';
 
 type Props = InjectedProps;
 

@@ -10,7 +10,7 @@ import InstructionsDialog from '../wallet/paper-wallet-certificate/InstructionsD
 import supportIcon from '../../assets/images/sidebar/bug-report-ic.inline.svg';
 import type { SidebarWalletType } from '../../types/sidebarTypes';
 import { ROUTES } from '../../routes-config';
-import { CATEGORIES_BY_NAME } from '../../config/ada/sidebarConfig.js';
+import { CATEGORIES_BY_NAME } from '../../config/sidebarConfig.js';
 
 type Props = {
   menus: SidebarMenus,

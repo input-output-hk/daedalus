@@ -1,5 +1,13 @@
 // @flow
 
+// ========= General Types ==========
+export type RequestConfig = {
+  port: number,
+  ca: Uint8Array,
+  cert: Uint8Array,
+  key: Uint8Array,
+};
+
 // ========= Response Types =========
 export type AdaAssurance = 'CWANormal' | 'CWAStrict';
 export type AdaAssuranceV1 = 'normal' | 'strict';
@@ -13,7 +21,7 @@ export type GetWalletCertificateRecoveryPhraseResponse = Array<string>;
 export type GetWalletRecoveryPhraseFromCertificateResponse = Array<string>;
 
 // Regarding GetNodeInfoResponse below:
-// getNodeInfo.js currently does not return "meta" and "status" properties
+// getNodeInfo.js currently does not return 'meta' and 'status' properties
 // though the docs indicate it should, and they are present in Postman
 export type GetNodeInfoResponse = {
   data: NodeInfo,
@@ -192,14 +200,13 @@ export type AdaTransactionInputOutputV1 = [
 
 export type AdaTransactionFee = {
   estimatedAmount: number,
-  status: "success",
+  status: 'success',
   meta: {
     pagination: {}
-  }
+  },
 };
 
 export type AdaTransactionParams = {
-  ca: string,
   data: {
     source: {
       accountIndex: number,
