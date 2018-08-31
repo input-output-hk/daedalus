@@ -44,6 +44,10 @@ installers/tls/server
 installers/DLLs
 installers/libressl
 
+# temporary certs for daedalus dev
+tls/client
+tls/server
+
 # App packaged
 dist
 release
