@@ -192,13 +192,13 @@ export default class Transaction extends Component<Props, State> {
 
     return (
       <div
+        onClick={this.toggleDetails.bind(this)}
         className={componentStyles}
+        role="presentation"
+        aria-hidden
       >
         <div
-          onClick={this.toggleDetails.bind(this)}
           className={styles.toggler}
-          role="presentation"
-          aria-hidden
         >
           <TransactionTypeIcon
             iconType={isFailedTransaction ? transactionStates.FAILED : data.type}
@@ -239,7 +239,12 @@ export default class Transaction extends Component<Props, State> {
         </div>
 
         {/* ==== Toggleable Transaction Details ==== */}
-        <div className={contentStyles}>
+        <div
+          className={contentStyles}
+          onClick={(event) => event.stopPropagation()}
+          role="presentation"
+          aria-hidden
+        >
           <div className={detailsStyles}>
             {data.exchange && data.conversionRate && (
               <div className={styles.conversion}>

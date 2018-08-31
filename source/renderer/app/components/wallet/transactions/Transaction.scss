@@ -18,8 +18,7 @@
 .toggler {
   cursor: pointer;
   display: flex;
-  padding: 10px;
-  margin: 10px;
+  padding: 20px;
   -webkit-user-select: none;
 }
 
@@ -125,8 +124,9 @@
 
 .content {
   border-bottom: 1px solid var(--theme-separation-border-color);
-  margin-left: 84px;
+  margin-left: 74px;
   margin-right: 20px;
+  padding: 10px;
 }
 
 .last {
