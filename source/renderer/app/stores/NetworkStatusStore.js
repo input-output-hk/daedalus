@@ -93,7 +93,7 @@ export default class NetworkStatusStore extends Store {
   }
 
   @computed get hasBlockSyncingStarted(): boolean {
-    return this.syncProgress >= 1;
+    return this.syncProgress > 0;
   }
 
   @computed get relativeSyncBlocksDifference(): number {
