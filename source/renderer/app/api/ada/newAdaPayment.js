@@ -21,7 +21,6 @@ export const newAdaPayment = (
     hostname: 'localhost',
     method: 'POST',
     path: `/api/txs/payments/${sender}/${receiver}/${amount}`,
-    port: config.port,
-    ca: config.ca,
+    ...config
   }, { passphrase: password }, { groupingPolicy })
 );

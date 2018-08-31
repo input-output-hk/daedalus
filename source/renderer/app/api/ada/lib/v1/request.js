@@ -11,6 +11,8 @@ export type RequestOptions = {
   path: string,
   port: number,
   ca: Uint8Array,
+  cert: Uint8Array,
+  key: Uint8Array,
   headers?: {
     'Content-Type': string,
     'Content-Length': number,

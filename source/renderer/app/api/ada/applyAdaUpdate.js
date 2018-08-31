@@ -9,7 +9,6 @@ export const applyAdaUpdate = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/update/apply',
-    port: config.port,
-    ca: config.ca,
+    ...config,
   })
 );

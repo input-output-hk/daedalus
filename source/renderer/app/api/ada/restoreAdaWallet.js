@@ -15,8 +15,7 @@ export const restoreAdaWallet = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/wallets/restore',
-    port: config.port,
-    ca: config.ca,
+    ...config
   }, { passphrase: walletPassword }, walletInitData)
 );
 

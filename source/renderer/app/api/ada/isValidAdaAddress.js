@@ -15,7 +15,6 @@ export const isValidAdaAddress = (
     hostname: 'localhost',
     method: 'GET',
     path: `/api/addresses/${encodedAddress}`,
-    port: config.port,
-    ca: config.ca,
+    ...config
   });
 };

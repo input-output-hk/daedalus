@@ -26,7 +26,6 @@ export const newAdaAccount = (
     hostname: 'localhost',
     method: 'POST',
     path: '/api/accounts',
-    port: config.port,
-    ca: config.ca,
+    ...config
   }, queryParams, accountInitData);
 };

@@ -9,7 +9,6 @@ export const nextAdaUpdate = (
     hostname: 'localhost',
     method: 'GET',
     path: '/api/update',
-    port: config.port,
-    ca: config.ca,
+    ...config
   })
 );
