@@ -7,8 +7,8 @@ export const adaTestReset = (
 ): Promise<void> => (
   request({
     hostname: 'localhost',
-    method: 'POST',
-    path: '/api/test/reset',
+    method: 'DELETE',
+    path: '/api/internal/reset-wallet-state',
     ...config,
   })
 );
