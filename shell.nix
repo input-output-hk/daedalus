@@ -48,9 +48,11 @@ let
     shellHook = ''
       ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
       ln -svf $(type -P cardano-node)
+      ${pkgs.lib.optionalString autoStartBackend ''
       for x in wallet-topology.yaml configuration.yaml mainnet-genesis-dryrun-with-stakeholders.json ; do
           ln -svf ${daedalusPkgs.daedalus.cfg}/etc/$x
       done
+      ''}
       mkdir -p Secrets ${cluster}
         ${localLib.optionalString autoStartBackend ''
           mkdir -p "${launcher-config.tlsPath}/server" "${launcher-config.tlsPath}/client"
