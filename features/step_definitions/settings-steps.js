@@ -80,7 +80,7 @@ Then(/^I should have wallet with "Strict" assurance level set$/, async function 
       .catch((error) => done(error));
   });
   const activeWallet = wallets.value.find((w) => w.name === activeWalletName);
-  expect(activeWallet.assurance).to.equal('CWAStrict');
+  expect(activeWallet.assurance).to.equal('strict');
 });
 
 Then(/^I should see new wallet name "([^"]*)"$/, async function (walletName) {

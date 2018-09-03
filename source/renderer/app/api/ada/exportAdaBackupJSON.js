@@ -1,21 +1,20 @@
 // @flow
 import { request } from './lib/request';
-import environment from '../../../../common/environment';
+import type { RequestConfig } from './types';
 
 export type ExportAdaBackupJSONParams = {
-  ca: string,
   walletId: string,
   filePath: string,
 };
 
 export const exportAdaBackupJSON = (
-  { ca, walletId, filePath }: ExportAdaBackupJSONParams,
+  config: RequestConfig,
+  { walletId, filePath }: ExportAdaBackupJSONParams,
 ): Promise<[]> => (
   request({
     hostname: 'localhost',
     method: 'POST',
     path: `/api/backup/export/${walletId}`,
-    port: environment.WALLET_PORT,
-    ca,
+    ...config,
   }, {}, filePath)
 );

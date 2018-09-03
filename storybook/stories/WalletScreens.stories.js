@@ -13,7 +13,7 @@ import StoryLayout from './support/StoryLayout';
 import StoryProvider from './support/StoryProvider';
 import StoryDecorator from './support/StoryDecorator';
 import { generateTransaction, generateAddres, promise } from './support/utils';
-import { formattedWalletAmount } from '../../source/renderer/app/utils/ada/formatters';
+import { formattedWalletAmount } from '../../source/renderer/app/utils/formatters';
 import { transactionTypes } from '../../source/renderer/app/domains/WalletTransaction';
 import WalletWithNavigation from '../../source/renderer/app/components/wallet/layouts/WalletWithNavigation';
 
