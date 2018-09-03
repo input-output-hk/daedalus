@@ -208,7 +208,7 @@
   "wallet.file.import.dialog.wallet.name.input.label": "ウォレット名",
   "wallet.file.import.dialog.walletFileHint": "クリックしてファイルを選択してください",
   "wallet.file.import.dialog.walletFileLabel": "ファイルをインポート",
-  "wallet.file.import.dialog.walletPasswordLabel": "ウォレットパスワード",
+  "wallet.file.import.dialog.spendingPasswordLabel": "ウォレットパスワード",
   "wallet.navigation.receive": "入金",
   "wallet.navigation.send": "送金",
   "wallet.navigation.settings": "設定",

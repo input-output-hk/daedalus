@@ -208,7 +208,7 @@
   "wallet.file.import.dialog.wallet.name.input.label": "!!!Wallet name",
   "wallet.file.import.dialog.walletFileHint": "!!!Drop file here or click to choose",
   "wallet.file.import.dialog.walletFileLabel": "!!!Import file",
-  "wallet.file.import.dialog.walletPasswordLabel": "!!!Wallet password",
+  "wallet.file.import.dialog.spendingPasswordLabel": "!!!Wallet password",
   "wallet.navigation.receive": "!!!Receive",
   "wallet.navigation.send": "!!!Send",
   "wallet.navigation.settings": "!!!Settings",
