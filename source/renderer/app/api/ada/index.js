@@ -156,12 +156,12 @@ export type RedeemPaperVendedAdaRequest = {
 export type RedeemPaperVendedAdaResponse = RedeemPaperVendedAdaRequest;
 export type ImportWalletFromKeyRequest = {
   filePath: string,
-  walletPassword: ?string,
+  spendingPassword: ?string,
 };
 export type ImportWalletFromKeyResponse = AdaWallet;
 export type ImportWalletFromFileRequest = {
   filePath: string,
-  walletPassword: ?string,
+  spendingPassword: ?string,
   walletName: ?string,
 };
 export type ImportWalletFromFileResponse = AdaWallet;
@@ -562,10 +562,10 @@ export default class AdaApi {
     request: ImportWalletFromKeyRequest
   ): Promise<ImportWalletFromKeyResponse> {
     Logger.debug('AdaApi::importWalletFromKey called');
-    const { filePath, walletPassword } = request;
+    const { filePath, spendingPassword } = request;
     const walletImportData = {
       filePath,
-      walletPassword
+      spendingPassword
     };
     try {
       const importedWallet: AdaWallet = await importAdaWallet({ ca, walletImportData });
@@ -584,11 +584,11 @@ export default class AdaApi {
     request: ImportWalletFromFileRequest
   ): Promise<ImportWalletFromFileResponse> {
     Logger.debug('AdaApi::importWalletFromFile called');
-    const { filePath, walletPassword } = request;
+    const { filePath, spendingPassword } = request;
     const isKeyFile = filePath.split('.').pop().toLowerCase() === 'key';
     const walletImportData = {
       filePath,
-      walletPassword
+      spendingPassword
     };
     try {
       const importedWallet: AdaWallet = isKeyFile ? (

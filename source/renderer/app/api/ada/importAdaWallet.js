@@ -14,7 +14,7 @@ export const importAdaWallet = (
   request({
     hostname: 'localhost',
     method: 'POST',
-    path: '/api/wallets/keys',
+    path: '/api/internal/import-wallet',
     port: environment.WALLET_PORT,
     ca,
   }, {}, walletImportData)
