@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
-import togglerArrow from '../../../assets/images/collapse-arrow.inline.svg';
+import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 import WalletTransaction, { transactionStates, transactionTypes } from '../../../domains/WalletTransaction';
 import { assuranceLevels } from '../../../types/transactionAssuranceTypes';
 import { environmentSpecificMessages } from '../../../i18n/global-messages';
@@ -178,18 +178,19 @@ export default class Transaction extends Component<Props, State> {
 
     const contentStyles = classNames([
       styles.content,
-      isLastInList ? styles.last : null
+      isLastInList ? styles.last : null,
+      isExpanded ? styles.contentExpanded : null
     ]);
 
     const detailsStyles = classNames([
       styles.details,
       canOpenExplorer ? styles.clickable : null,
-      isExpanded ? styles.expanded : styles.closed
+      isExpanded ? styles.detailsExpanded : styles.detailsClosed
     ]);
 
-    const togglerArrowStyles = classNames([
-      styles.togglerArrow,
-      isExpanded ? styles.togglerArrowExpanded : null
+    const arrowStyles = classNames([
+      styles.arrow,
+      isExpanded ? styles.arrowExpanded : null
     ]);
 
     const status = intl.formatMessage(assuranceLevelTranslations[assuranceLevel]);
@@ -339,7 +340,7 @@ export default class Transaction extends Component<Props, State> {
             </div>
             */}
           </div>
-          <SVGInline svg={togglerArrow} className={togglerArrowStyles} />
+          <SVGInline svg={arrow} className={arrowStyles} />
         </div>
       </div>
     );
