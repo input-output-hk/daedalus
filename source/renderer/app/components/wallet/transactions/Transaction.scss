@@ -155,11 +155,12 @@
   border-bottom: 1px solid var(--theme-separation-border-color);
   cursor: default;
   margin-left: 74px;
-  margin-right: 20px;
+  margin-right: 10px;
 }
 
 .contentExpanded {
   padding-bottom: 20px;
+  margin-top: -10px;
 }
 
 .last {
