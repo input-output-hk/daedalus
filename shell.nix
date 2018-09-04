@@ -12,6 +12,7 @@ let
   daedalusPkgs = import ./. { inherit cluster; };
   yarn = pkgs.yarn.override { inherit nodejs; };
   nodejs = pkgs.nodejs-8_x;
+  launcher-config = builtins.fromJSON (builtins.readFile (pkgs.runCommand "read-launcher-config" { buildInputs = [ pkgs.yaml2json ]; } "cat ${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml|yaml2json > $out"));
   fixYarnLock = pkgs.stdenv.mkDerivation {
     name = "fix-yarn-lock";
     buildInputs = [ nodejs yarn pkgs.git ];
@@ -37,7 +38,7 @@ let
       git python27 curl electron
       nodePackages.node-gyp nodePackages.node-pre-gyp
       gnumake
-    ] ++ (lib.optionals autoStartBackend [
+    ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
     ]));
     LAUNCHER_CONFIG = "${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml";
@@ -45,16 +46,38 @@ let
     DAEDALUS_DIR = "./";
     CLUSTER = cluster;
     shellHook = ''
+      ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
       ln -svf $(type -P cardano-node)
+      ${pkgs.lib.optionalString autoStartBackend ''
       for x in wallet-topology.yaml configuration.yaml mainnet-genesis-dryrun-with-stakeholders.json ; do
           ln -svf ${daedalusPkgs.daedalus.cfg}/etc/$x
       done
+      ''}
       mkdir -p Secrets ${cluster}
+        ${localLib.optionalString autoStartBackend ''
+          mkdir -p "${launcher-config.tlsPath}/server" "${launcher-config.tlsPath}/client"
+          cardano-x509-certificates \
+          --server-out-dir "${launcher-config.tlsPath}/server" \
+          --clients-out-dir "${launcher-config.tlsPath}/client" \
+          --configuration-file ${daedalusPkgs.daedalus.cfg}/etc/configuration.yaml \
+          --configuration-key mainnet_dryrun_full
+          echo ${launcher-config.tlsPath}
+        ''
+      }
+      export NIX_CFLAGS_COMPILE="$NIX_CFLAGS_COMPILE -I${nodejs}/include/node"
+      yarn install
+      ln -svf ${pkgs.electron}/bin/electron ./node_modules/electron/dist/electron
+      ${localLib.optionalString (! autoStartBackend) ''
+      echo "Instructions for manually running cardano-node:"
+      echo "In cardano repo run scripts/launch/demo-nix.sh"
+      echo "export CARDANO_TLS_PATH=/path/to/cardano-sl/state-demo/tls/client"
+      echo "yarn dev"
+      ''}
     '';
   };
   daedalus = daedalusShell.overrideAttrs (oldAttrs: {
     shellHook = ''
-       if [ ! -f "$CARDANO_TLS_PATH/ca.crt" ]
+       if [ ! -f "$CARDANO_TLS_PATH/ca.crt" ] || [ ! -f "tls/client/ca.crt" ]
        then
          echo "CARDANO_TLS_PATH must be set"
          exit 1

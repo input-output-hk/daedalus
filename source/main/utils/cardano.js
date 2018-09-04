@@ -4,6 +4,7 @@ import { createWriteStream, readFileSync } from 'fs';
 import log from 'electron-log';
 import { ipcMain, app, BrowserWindow } from 'electron';
 import { TLS_CONFIG } from '../../common/ipc-api';
+import environment from '../../common/environment';
 
 const yamljs = require('yamljs');
 // debug, remove later
@@ -14,7 +15,7 @@ const resendApiInfo = (window) => {
     ca: global.ca,
     clientKey: global.clientKey,
     clientCert: global.clientCert,
-    port
+    port: global.port
   });
 };
 
