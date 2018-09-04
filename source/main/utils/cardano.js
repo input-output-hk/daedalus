@@ -4,7 +4,6 @@ import { createWriteStream, readFileSync } from 'fs';
 import log from 'electron-log';
 import { ipcMain, app, BrowserWindow } from 'electron';
 import { TLS_CONFIG } from '../../common/ipc-api';
-import environment from '../../common/environment';
 
 const yamljs = require('yamljs');
 // debug, remove later
@@ -15,7 +14,7 @@ const resendApiInfo = (window) => {
     ca: global.ca,
     clientKey: global.clientKey,
     clientCert: global.clientCert,
-    port: global.port
+    port
   });
 };
 
@@ -112,7 +111,7 @@ export const setupCardano = (mainWindow: BrowserWindow) => {
       log.info('IPC:before-quit, stopping cardano');
       if (subprocess) {
         log.info('IPC:disconnecting IPC channel');
-        subprocess.disconnect();
+        subprocess.kill();
       }
     });
   });
