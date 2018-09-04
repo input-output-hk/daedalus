@@ -29,6 +29,7 @@ export const setupTls = () => {
       ca: fs.readFileSync(pathToCa),
       clientKey: fs.readFileSync(pathToClientKey),
       clientCert: fs.readFileSync(pathToClientCert),
+      port: 8090, // default port
     });
   } catch (error) {
     log.error(`Error while loading tls files: ${error}`);

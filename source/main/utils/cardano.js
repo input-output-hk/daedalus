@@ -6,15 +6,13 @@ import { ipcMain, app, BrowserWindow } from 'electron';
 import { TLS_CONFIG } from '../../common/ipc-api';
 
 const yamljs = require('yamljs');
-// debug, remove later
-let port = 8090;
 
-const resendApiInfo = (window) => {
+const resendTlsConfig = (window) => {
   window.send(TLS_CONFIG.CHANGED, {
     ca: global.ca,
     clientKey: global.clientKey,
     clientCert: global.clientCert,
-    port
+    port: global.port,
   });
 };
 
@@ -59,7 +57,7 @@ export const setupCardano = (mainWindow: BrowserWindow) => {
     return;
   }
   ipcMain.on(TLS_CONFIG.UPDATE, (event) => {
-    resendApiInfo(event.sender);
+    resendTlsConfig(event.sender);
   });
 
   const logfile = createWriteStream(launcherConfig.logsPrefix + '/cardano-node.log', { flags: 'a' });
@@ -89,8 +87,8 @@ export const setupCardano = (mainWindow: BrowserWindow) => {
           clientCert: readFileSync(launcherConfig.tlsPath + '/client/client.pem'),
         });
       } else if (msg.ReplyPort) {
-        port = msg.ReplyPort;
-        resendApiInfo(mainWindow);
+        global.port = msg.ReplyPort;
+        resendTlsConfig(mainWindow);
       }
     });
     subprocess.on('close', (code, signal) => {
