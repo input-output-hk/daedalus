@@ -2,7 +2,7 @@
 import { spawn } from 'child_process';
 import { createWriteStream, readFileSync } from 'fs';
 import log from 'electron-log';
-import { ipcMain, app } from 'electron';
+import { ipcMain, app, BrowserWindow } from 'electron';
 import { TLS_CONFIG } from '../../common/ipc-api';
 
 const yamljs = require('yamljs');
@@ -19,21 +19,20 @@ const resendApiInfo = (window) => {
 };
 
 const ensureXDGDataIsSet = () => {
-  if (process.env.XDG_DATA_HOME === undefined) {
+  if (process.env.HOME && process.env.XDG_DATA_HOME === undefined) {
     process.env.XDG_DATA_HOME = process.env.HOME + '/.local/share/';
   }
 };
 
-const readLauncherConfig = (configFile) => {
+const readLauncherConfig = (configFile: string) => {
   const inputYaml = readFileSync(configFile, 'utf8');
   const finalYaml = inputYaml.replace(/\${([^}]+)}/g,
     (a, b) => {
-      const res = process.env[b];
-      if (res === undefined) {
-        console.log('warning var undefined:', b);
-        return '';
+      if (process.env[b]) {
+        return process.env[b];
       }
-      return res;
+      console.log('readLauncherConfig: warning var undefined:', b);
+      return '';
     }
   );
   return yamljs.parse(finalYaml);
@@ -47,13 +46,14 @@ const readLauncherConfig = (configFile) => {
  * call subprocess.disconnect() when the user tries to close daedalus,then wait for
  * the child to die, and show a "shutting down..." status, after a timeout, kill the child
  */
-export const setupCardano = (mainWindow) => {
-  if (!process.env.LAUNCHER_CONFIG) {
+export const setupCardano = (mainWindow: BrowserWindow) => {
+  const { LAUNCHER_CONFIG } = process.env;
+  if (!LAUNCHER_CONFIG) {
     log.info('IPC: launcher config not found, assuming cardano is ran externally');
     return;
   }
   ensureXDGDataIsSet();
-  const launcherConfig = readLauncherConfig(process.env.LAUNCHER_CONFIG);
+  const launcherConfig = readLauncherConfig(LAUNCHER_CONFIG);
   if (!launcherConfig.frontendOnlyMode) {
     log.info('IPC: launcher config says node is started by the launcher');
     return;
@@ -73,7 +73,7 @@ export const setupCardano = (mainWindow) => {
     if (launcherConfig.configuration.systemStart) extraArgs = extraArgs.concat(['--system-start', launcherConfig.configuration.systemStart]);
     if (launcherConfig.configuration.seed) extraArgs = extraArgs.concat(['--configuration-seed', launcherConfig.configuration.seed]);
     if (launcherConfig.logsPrefix) extraArgs = extraArgs.concat(['--logs-prefix', launcherConfig.logsPrefix]);
-    log.info(`IPC: running ${launcherConfig.nodePath} with args ${launcherConfig.nodeArgs} and ${extraArgs}`);
+    log.info(`IPC: running ${launcherConfig.nodePath} with args ${launcherConfig.nodeArgs} and ${JSON.stringify(extraArgs)}`);
     const subprocess = spawn(launcherConfig.nodePath
       , launcherConfig.nodeArgs.concat(extraArgs)
       , {
