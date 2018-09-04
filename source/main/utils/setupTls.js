@@ -7,10 +7,6 @@ import { runtimeFolderPath } from '../config';
 const isProd = process.env.NODE_ENV === 'production';
 const caDevelopmentPath = process.env.CARDANO_TLS_PATH || '';
 
-if (!launcherConfig.tlsPath) {
-  throw new Error('launcher failed to load');
-}
-
 if (!isProd && !(caDevelopmentPath || launcherConfig.tlsPath)) {
   throw new Error('Environment variable missing: CARDANO_TLS_PATH');
 }
