@@ -267,9 +267,7 @@ export default class AdaApi {
     const { walletId, skip, limit } = request;
 
     const accounts: AdaAccounts = await getAdaWalletAccounts(this.config, { walletId });
-    let perPage = limit > 50 ? 50 : limit;
-
-    if (perPage === 50) perPage = 1;
+    const perPage = limit > 50 ? 50 : limit;
 
     const params = {
       accountIndex: accounts[0].index,
