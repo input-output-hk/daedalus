@@ -175,7 +175,15 @@ export const AdaV1AssuranceOptions: {
   NORMAL: 'normal', STRICT: 'strict',
 };
 
-export type AdaTransactionsV1 = Array<AdaTransactionV1>;
+export type AdaTransactionsV1 = {
+  data: Array<AdaTransactionV1>,
+  meta: {
+    pagination: {
+      totalPages: number,
+    },
+  }
+};
+
 export type AdaTransactionV1 = {
   amount: number,
   confirmations: number,

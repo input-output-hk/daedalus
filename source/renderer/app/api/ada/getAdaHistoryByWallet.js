@@ -19,5 +19,5 @@ export const getAdaHistoryByWallet = (
     method: 'GET',
     path: '/api/v1/transactions',
     ...config,
-  }, requestParams)
+  }, requestParams, null, true)
 );

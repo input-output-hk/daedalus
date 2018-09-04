@@ -267,21 +267,36 @@ export default class AdaApi {
     const { walletId, skip, limit } = request;
 
     const accounts: AdaAccounts = await getAdaWalletAccounts(this.config, { walletId });
-    const accountIndex = accounts[0].index;
-    const page = skip === 0 ? 1 : (skip / limit) + 1;
-    const perPage = limit > 50 ? 50 : limit;
+    let perPage = limit > 50 ? 50 : limit;
+
+    if (perPage === 50) perPage = 1;
 
     const params = {
-      accountIndex,
-      page,
+      accountIndex: accounts[0].index,
+      page: skip === 0 ? 1 : (skip / limit) + 1,
       per_page: perPage,
       wallet_id: walletId,
       sort_by: 'DES[created_at]',
     };
 
     try {
-      const history: AdaTransactionsV1 = await getAdaHistoryByWallet(this.config, params);
-      const transactions = history.map(data => _createTransactionFromServerDataV1(data));
+      const {
+        data: history,
+        meta
+      }: AdaTransactionsV1 = await getAdaHistoryByWallet(this.config, params);
+      const { totalPages } = meta.pagination;
+
+      // In case there is more than one page,
+      // it loops through them and adds to the `history` array
+      if (totalPages > 1) {
+        for (let page = 2; page < totalPages + 1; page++) {
+          const { data: pageHistory }: AdaTransactionsV1 =
+            await getAdaHistoryByWallet(this.config, Object.assign(params, { page }));
+          history.push(...pageHistory);
+        }
+      }
+
+      const transactions = history.map(item => _createTransactionFromServerDataV1(item));
       Logger.debug('AdaApi::searchHistory success: ' + stringifyData(history));
       return new Promise((resolve) => resolve({
         transactions,
