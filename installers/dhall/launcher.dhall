@@ -16,6 +16,7 @@
     [ "--tlsca",               "${os.nodeArgs.tlsPath}/server/ca.crt"
     , "--tlscert",             "${os.nodeArgs.tlsPath}/server/server.crt"
     , "--tlskey",              "${os.nodeArgs.tlsPath}/server/server.key"
+    , "--new-wallet"
     , "--no-client-auth"
     , "--update-server",       cluster.updateServer
     , "--keyfile",             os.nodeArgs.keyfile
