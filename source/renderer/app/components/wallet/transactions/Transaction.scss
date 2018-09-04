@@ -44,6 +44,9 @@
   }
   .content:hover & {
     opacity: .1;
+    &:hover {
+      opacity: .2;
+    }
   }
 }
 
@@ -153,7 +156,6 @@
 
 .content {
   border-bottom: 1px solid var(--theme-separation-border-color);
-  cursor: default;
   margin-left: 74px;
   margin-right: 10px;
 }
@@ -169,6 +171,7 @@
 
 .details {
   height: auto;
+  cursor: default;
   * + h2,
   * + .row {
     margin-top: 20px;

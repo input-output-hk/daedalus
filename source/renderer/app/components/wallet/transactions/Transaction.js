@@ -248,11 +248,13 @@ export default class Transaction extends Component<Props, State> {
         {/* ==== Toggleable Transaction Details ==== */}
         <div
           className={contentStyles}
-          onClick={(event) => event.stopPropagation()}
-          role="presentation"
-          aria-hidden
         >
-          <div className={detailsStyles}>
+          <div
+            className={detailsStyles}
+            onClick={(event) => event.stopPropagation()}
+            role="presentation"
+            aria-hidden
+          >
             {data.exchange && data.conversionRate && (
               <div className={styles.conversion}>
                 <div>
