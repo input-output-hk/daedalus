@@ -2173,9 +2173,9 @@
           "line": 66
         },
         "file": "source/renderer/app/components/wallet/file-import/WalletFileImportDialog.js",
-        "id": "wallet.file.import.dialog.walletPasswordLabel",
+        "id": "wallet.file.import.dialog.spendingPasswordLabel",
         "start": {
-          "column": 23,
+          "column": 25,
           "line": 62
         }
       },
