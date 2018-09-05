@@ -87,9 +87,8 @@ function typedRequest<Response>(
               "data": "statusCode: ${statusCode} -- statusMessage: ${statusMessage}"
             }`;
           } else if (
-            statusCode === 404 &&
-            statusMessage === 'Not Found' &&
-            options.path === '/api/internal/next-update'
+            options.path === '/api/internal/next-update',
+            statusCode === 404
           ) {
             // when nextAdaUpdate receives a 404, it isn't an error
             // it means no updates are available
