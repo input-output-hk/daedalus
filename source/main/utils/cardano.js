@@ -5,6 +5,7 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import { ensureXDGDataIsSet, prepareArgs, readLauncherConfig } from '../cardano/config';
 import { CardanoNode } from '../cardano/CardanoNode';
 import { TLS_CONFIG_CHANNEL } from '../../common/ipc-api/tls-config';
+import type { TlsConfig } from '../../common/ipc-api/tls-config';
 
 /*
  * todo:
@@ -31,16 +32,19 @@ export const setupCardano = (mainWindow: BrowserWindow) => {
 
   const nodeArgs = prepareArgs(launcherConfig);
   const logFile = createWriteStream(logsPrefix + '/cardano-node.log', { flags: 'a' });
-  const cardanoNode = new CardanoNode(mainWindow, log);
+  const config = { nodePath, tlsPath, nodeArgs, logFile };
+  const cardanoNode = new CardanoNode(config, log, {
+    sendTlsConfig: (tlsConfig: TlsConfig) => mainWindow.send(TLS_CONFIG_CHANNEL, tlsConfig)
+  });
 
-  cardanoNode.start(nodePath, tlsPath, nodeArgs, logFile);
+  cardanoNode.start();
 
   ipcMain.on(TLS_CONFIG_CHANNEL, () => {
     cardanoNode.broadcastTlsConfig();
   });
 
   app.on('before-quit', () => {
-    log.info('IPC:before-quit, stopping cardano');
+    log.info(`Daedalus:before-quit, stopping cardano-node with PID ${cardanoNode.pid}`);
     cardanoNode.stop();
   });
 };
