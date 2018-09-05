@@ -13,7 +13,6 @@ Changelog
 
 ### Features
 
-- Implemented a switch instead of a link for “hide used” addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
 - Implemented forms submission on "Enter" key press ([PR 981](https://github.com/input-output-hk/daedalus/pull/981))
 - Improved the loading UX ([PR 723](https://github.com/input-output-hk/daedalus/pull/723))
 - Send cert and key with api requests to support tls-auth ([PR 1072](https://github.com/input-output-hk/daedalus/pull/1072))
@@ -21,12 +20,10 @@ Changelog
 ### Fixes
 
 - Fixed a bug that allowed to submit invalid send form via ENTER key ([PR 1002](https://github.com/input-output-hk/daedalus/pull/1002))
-- Fixed the button outline color on special buttons. ([PR 990](https://github.com/input-output-hk/daedalus/pull/990))
-- Fixed broken Export wallet to file dialog and improved Wallet settings dialogs file structure and namings ([PR 998](https://github.com/input-output-hk/daedalus/pull/998))
-- Prevented wallet data polling during wallet deletion ([PR 996]https://github.com/input-output-hk/daedalus/pull/996)
-- Fixed bug that allowed to submit invalid send form via ENTER key ([PR 1002](https://github.com/input-output-hk/daedalus/pull/1002))
 - Fixed a bug in the Electron which results in blank/white screen rendering on some OS/Graphics-card/Drivers combinations.  ([PR 1007](https://github.com/input-output-hk/daedalus/pull/1007))
-- Removed the Ada Redemption link from the 'app bar' menu and added it to system menu ([PR 972](https://github.com/input-output-hk/daedalus/pull/972))
+- Fixed broken Export wallet to file dialog and improved Wallet settings dialogs file structure and namings ([PR 998](https://github.com/input-output-hk/daedalus/pull/998))
+- Fixed the button outline color on special buttons. ([PR 990](https://github.com/input-output-hk/daedalus/pull/990))
+- Prevented wallet data polling during wallet deletion ([PR 996](https://github.com/input-output-hk/daedalus/pull/996))
 
 ### Chores
 
@@ -36,8 +33,6 @@ Changelog
 - Added acceptance tests for wallets, transactions and addresses ordering ([PR 976](https://github.com/input-output-hk/daedalus/pull/976))
 - Created new Storybook stories for the Wallet screens ([942](https://github.com/input-output-hk/daedalus/pull/942))
 - Improved compress/download logs handling ([PR 995](https://github.com/input-output-hk/daedalus/pull/995))
-- `nodelLogPath` entry in `launcher-config.yaml` made optional  ([PR 1027](https://github.com/input-output-hk/daedalus/pull/1027))
-- Disabled logging to `cardano-node.log` since it was not needed for the support and it was impacting performance  ([PR 1027](https://github.com/input-output-hk/daedalus/pull/1027))
 
 ## 0.11.1
 =======
@@ -95,6 +90,8 @@ Changelog
 - Added acceptance tests for hide/show used addresses feature ([PR 957](https://github.com/input-output-hk/daedalus/pull/957))
 - Added flow checks and linting for storybook code ([PR 938](https://github.com/input-output-hk/daedalus/pull/938))
 - Added PR template with PR review checlist ([PR 882](https://github.com/input-output-hk/daedalus/pull/882))
+- Disabled logging to `cardano-node.log` since it was not needed for the support and it was impacting performance  ([PR 1027](https://github.com/input-output-hk/daedalus/pull/1027))
+- `nodelLogPath` entry in `launcher-config.yaml` made optional  ([PR 1027](https://github.com/input-output-hk/daedalus/pull/1027))
 - Fixed wallet restoration and import fragile acceptance tests steps definitions ([PR 885](https://github.com/input-output-hk/daedalus/pull/885))
 - Improved re-build times with caching ([PR 915](https://github.com/input-output-hk/daedalus/pull/915))
 - Improved request body length calculation ([PR 892](https://github.com/input-output-hk/daedalus/pull/892))
@@ -170,9 +167,6 @@ Changelog
 
 ## 0.9.1
 =======
-
-### Features
-- New Edit section in system menu with copy & paste and related actions ([PR 817](https://github.com/input-output-hk/daedalus/pull/817))
 
 ### Fixes
 
