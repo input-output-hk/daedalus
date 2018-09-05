@@ -20,10 +20,14 @@ export type RequestOptions = {
 };
 
 function typedRequest<Response>(
-  httpOptions: RequestOptions, queryParams?: {}, rawBodyParams?: any, returnMeta?: boolean
+  httpOptions: RequestOptions,
+  queryParams?: {},
+  rawBodyParams?: any,
+  requestOptions?: { returnMeta: boolean },
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
     const options: RequestOptions = Object.assign({}, httpOptions);
+    const { returnMeta } = Object.assign({}, requestOptions);
     let hasRequestBody = false;
     let requestBody = '';
 
