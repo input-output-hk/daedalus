@@ -8,6 +8,8 @@ Changelog
 
 - Integrates the latest features from the develop branch of react-polymorph. Features include: render props architecture, theme composition, and a ThemeProvider HOC. [PR 950](https://github.com/input-output-hk/daedalus/pull/950)
 - Fixed broken storybook [PR 1041](https://github.com/input-output-hk/daedalus/pull/1041)
+- Remove all ETC specific files [PR 1068](https://github.com/input-output-hk/daedalus/pull/1068)
+- Make "port" and "ca" of Ada Api configurable during runtime [PR 1067](https://github.com/input-output-hk/daedalus/pull/1067)
 
 ### Features
 
@@ -18,6 +20,7 @@ Changelog
 - Integrated the V1 API endpoint for Ada payments ([PR 1031](https://github.com/input-output-hk/daedalus/pull/1031))
 - Integrated the V1 API endpoint for creating and restoring Wallets ([PR 1018](https://github.com/input-output-hk/daedalus/pull/1018))
 - Integrated the V1 API endpoints for fetching all accounts associated with a wallet, fetching a single address, and creating a new address ([PR 1037](https://github.com/input-output-hk/daedalus/pull/1037))
+- Send cert and key with api requests to support tls-auth ([PR 1072](https://github.com/input-output-hk/daedalus/pull/1072))
 
 ### Fixes
 
@@ -55,6 +58,8 @@ Changelog
 - Fixed a bug in the Electron which results in blank/white screen rendering on some OS/Graphics-card/Drivers combinations ([PR 1007](https://github.com/input-output-hk/daedalus/pull/1007))
 - Changed the information we are sending on support requests to the reporting server. ([PR 1036](https://github.com/input-output-hk/daedalus/pull/1036))
 - Fixed the bug on Windows where Daedalus couldn't start if the Windows username contained non-ASCII characters. ([PR 1057](https://github.com/input-output-hk/daedalus/pull/1057))
+- Fixed Daedalus icon scaling issues on Windows ([PR 1064](https://github.com/input-output-hk/daedalus/pull/1064))
+- Updated to `electon@1.7.16` to avoid the known vulnarability [CVE-2018-15685](https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2018-15685) ([PR 1066](https://github.com/input-output-hk/daedalus/pull/1066))
 
 ### Chores
 

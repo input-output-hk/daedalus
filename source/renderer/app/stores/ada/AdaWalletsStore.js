@@ -221,9 +221,9 @@ export default class AdaWalletsStore extends WalletStore {
   };
 
   @action _importWalletFromFile = async (params: WalletImportFromFileParams) => {
-    const { filePath, walletName, walletPassword } = params;
+    const { filePath, walletName, spendingPassword } = params;
     const importedWallet = await this.importFromFileRequest.execute({
-      filePath, walletName, walletPassword,
+      filePath, walletName, spendingPassword,
     }).promise;
     if (!importedWallet) throw new Error('Imported wallet was not received correctly');
     await this._patchWalletRequestWithNewWallet(importedWallet);

@@ -6,7 +6,7 @@ import { observer, inject } from 'mobx-react';
 import { action } from '@storybook/addon-actions';
 
 // Assets and helpers
-import { formattedWalletAmount } from '../../../source/renderer/app/utils/ada/formatters';
+import { formattedWalletAmount } from '../../../source/renderer/app/utils/formatters';
 import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
 import Wallet from '../../../source/renderer/app/domains/Wallet.js';
 import walletsIcon from '../../../source/renderer/app/assets/images/sidebar/wallet-ic.inline.svg';

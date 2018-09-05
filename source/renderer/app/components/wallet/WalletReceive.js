@@ -236,13 +236,13 @@ export default class WalletReceive extends Component<Props, State> {
             </h2>
 
             {walletAddresses.map((address, index) => {
-              const isAddressVisible = !address.isUsed || showUsed;
+              const isAddressVisible = !address.used || showUsed;
               if (!isAddressVisible) return null;
 
               const addressClasses = classnames([
                 'generatedAddress-' + (index + 1),
                 styles.walletAddress,
-                address.isUsed ? styles.usedWalletAddress : null,
+                address.used ? styles.usedWalletAddress : null,
               ]);
               return (
                 <div key={index} className={addressClasses}>

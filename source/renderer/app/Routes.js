@@ -2,10 +2,8 @@
 import React from 'react';
 import { Route, IndexRedirect } from 'react-router';
 import { ROUTES } from './routes-config';
-import resolver from './utils/imports';
 
 // PAGES
-// import StakingPage from './containers/staking/StakingPage';
 import Root from './containers/Root';
 import AdaRedemptionPage from './containers/wallet/AdaRedemptionPage';
 import WalletAddPage from './containers/wallet/WalletAddPage';
@@ -17,14 +15,13 @@ import TermsOfUseSettingsPage from './containers/settings/categories/TermsOfUseS
 import TermsOfUsePage from './containers/profile/TermsOfUsePage';
 import DisplaySettingsPage from './containers/settings/categories/DisplaySettingsPage';
 import PaperWalletCreateCertificatePage from './containers/wallet/PaperWalletCreateCertificatePage';
-
-// Dynamic container loading - resolver loads file relative to '/app/' directory
-const Wallet = resolver('containers/wallet/Wallet');
-const WalletSummaryPage = resolver('containers/wallet/WalletSummaryPage');
-const WalletSendPage = resolver('containers/wallet/WalletSendPage');
-const WalletReceivePage = resolver('containers/wallet/WalletReceivePage');
-const WalletTransactionsPage = resolver('containers/wallet/WalletTransactionsPage');
-const WalletSettingsPage = resolver('containers/wallet/WalletSettingsPage');
+import Wallet from './containers/wallet/Wallet';
+import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
+import WalletSendPage from './containers/wallet/WalletSendPage';
+import WalletReceivePage from './containers/wallet/WalletReceivePage';
+import WalletTransactionsPage from './containers/wallet/WalletTransactionsPage';
+import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
+// import StakingPage from './containers/staking/StakingPage';
 
 export const Routes = (
   <Route path={ROUTES.ROOT} component={Root}>

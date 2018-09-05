@@ -6,13 +6,13 @@ import classNames from 'classnames';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
-import etcSymbol from '../../../assets/images/etc-symbol.inline.svg';
+import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 import WalletTransaction, { transactionStates, transactionTypes } from '../../../domains/WalletTransaction';
 import { assuranceLevels } from '../../../types/transactionAssuranceTypes';
 import { environmentSpecificMessages } from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../domains/WalletTransaction';
 import environment from '../../../../../common/environment';
-import { getNetworkExplorerUrl } from '../../../utils/ada/network';
+import { getNetworkExplorerUrl } from '../../../utils/network';
 
 const messages = defineMessages({
   card: {
@@ -146,7 +146,7 @@ export default class Transaction extends Component<Props, State> {
   }
 
   handleOpenExplorer(type, param, e) {
-    if (this.props.onOpenExternalLink && environment.isAdaApi()) {
+    if (this.props.onOpenExternalLink) {
       e.stopPropagation();
       const link = `${getNetworkExplorerUrl()}/${type}/${param}`;
       this.props.onOpenExternalLink(link);
@@ -161,7 +161,7 @@ export default class Transaction extends Component<Props, State> {
     const { isExpanded } = this.state;
     const { intl } = this.context;
 
-    const canOpenExplorer = onOpenExternalLink && environment.isAdaApi();
+    const canOpenExplorer = onOpenExternalLink;
 
     const hasConfirmations = data.numberOfConfirmations > 0;
     const isFailedTransaction = state === transactionStates.FAILED;
@@ -178,28 +178,35 @@ export default class Transaction extends Component<Props, State> {
 
     const contentStyles = classNames([
       styles.content,
-      isLastInList ? styles.last : null
+      isLastInList ? styles.last : null,
+      isExpanded ? styles.contentExpanded : null
     ]);
 
     const detailsStyles = classNames([
       styles.details,
       canOpenExplorer ? styles.clickable : null,
-      isExpanded ? styles.expanded : styles.closed
+      isExpanded ? styles.detailsExpanded : styles.detailsClosed
+    ]);
+
+    const arrowStyles = classNames([
+      styles.arrow,
+      isExpanded ? styles.arrowExpanded : null
     ]);
 
     const status = intl.formatMessage(assuranceLevelTranslations[assuranceLevel]);
     const currency = intl.formatMessage(environmentSpecificMessages[environment.API].currency);
-    const symbol = environment.isAdaApi() ? adaSymbol : etcSymbol;
+    const symbol = adaSymbol;
 
     return (
       <div
-        className={componentStyles}
         onClick={this.toggleDetails.bind(this)}
+        className={componentStyles}
         role="presentation"
         aria-hidden
       >
-
-        <div className={styles.toggler}>
+        <div
+          className={styles.toggler}
+        >
           <TransactionTypeIcon
             iconType={isFailedTransaction ? transactionStates.FAILED : data.type}
           />
@@ -239,8 +246,15 @@ export default class Transaction extends Component<Props, State> {
         </div>
 
         {/* ==== Toggleable Transaction Details ==== */}
-        <div className={contentStyles}>
-          <div className={detailsStyles}>
+        <div
+          className={contentStyles}
+        >
+          <div
+            className={detailsStyles}
+            onClick={(event) => event.stopPropagation()}
+            role="presentation"
+            aria-hidden
+          >
             {data.exchange && data.conversionRate && (
               <div className={styles.conversion}>
                 <div>
@@ -328,8 +342,8 @@ export default class Transaction extends Component<Props, State> {
             </div>
             */}
           </div>
+          <SVGInline svg={arrow} className={arrowStyles} />
         </div>
-
       </div>
     );
   }

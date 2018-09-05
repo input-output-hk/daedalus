@@ -1,13 +1,9 @@
 // @flow
-import type { AdaTransactionV1 } from './types';
-import type { RedeemAdaParams } from './redeemAda';
+import type { AdaTransactionV1, RequestConfig } from './types';
+import type { RedeemPaperVendedAdaRequest } from './';
 import { redeemAda } from './redeemAda';
 
-export type RedeemAdaPaperVendParams = {
-  mnemonic: Array<string>,
-  ...RedeemAdaParams
-};
-
 export const redeemAdaPaperVend = (
-  params: RedeemAdaPaperVendParams
-): Promise<AdaTransactionV1> => redeemAda(params);
+  config: RequestConfig,
+  redemptionData: RedeemPaperVendedAdaRequest
+): Promise<AdaTransactionV1> => redeemAda(config, redemptionData);

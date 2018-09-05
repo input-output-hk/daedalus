@@ -76,9 +76,7 @@
 }
 
 .ada-logo,
-.ada-apiLogo,
-.etc-logo,
-.etc-apiLogo {
+.ada-apiLogo {
   & > svg {
     display: block;
     width: 48px;
@@ -95,10 +93,6 @@ $adaLogoWidth: 43px;
 .ada-logo > svg {
   width: $adaLogoWidth;
   margin: 3px ($cardanoLogoWidth - $adaLogoWidth) / 2 0; // Visually align in the middle + Needs to be the same dimension as the apiLogo
-}
-
-.etc-apiLogo > svg {
-  margin-top: 7px; // aligning the icon visually in the middle
 }
 
 .daedalusLogo {

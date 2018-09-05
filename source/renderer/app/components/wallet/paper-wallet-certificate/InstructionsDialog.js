@@ -5,7 +5,7 @@ import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
-import { getNetworkExplorerUrl } from '../../../utils/ada/network';
+import { getNetworkExplorerUrl } from '../../../utils/network';
 import styles from './InstructionsDialog.scss';
 import {
   PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,

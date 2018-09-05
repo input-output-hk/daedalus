@@ -1,20 +1,18 @@
 // @flow
-import type { AdaAccounts } from './types';
+import type { AdaAccounts, RequestConfig } from './types';
 import { request } from './lib/request';
-import environment from '../../../../common/environment';
 
 export type GetAdaAccountsParams = {
-  ca: string,
+  ca: Uint8Array,
 };
 
 export const getAdaAccounts = (
-  { ca }: GetAdaAccountsParams
+  config: RequestConfig
 ): Promise<AdaAccounts> => (
   request({
     hostname: 'localhost',
     method: 'GET',
     path: '/api/accounts',
-    port: environment.WALLET_PORT,
-    ca,
+    ...config,
   })
 );

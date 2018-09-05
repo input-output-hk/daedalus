@@ -10,10 +10,8 @@ import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import resolver from '../../utils/imports';
+import { formattedWalletAmount } from '../../utils/formatters';
 import { syncStateTags } from '../../domains/Wallet';
-
-const { formattedWalletAmount } = resolver('utils/formatters');
 
 export const messages = defineMessages({
   noTransactions: {
