@@ -1,14 +1,13 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
-import { ipcRenderer } from 'electron';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { Logger } from '../../../common/logging';
 import type { GetSyncProgressResponse, GetLocalTimeDifferenceResponse } from '../api/common';
 import environment from '../../../common/environment';
-import { TLS_CONFIG } from '../../../common/ipc-api';
 import type { RequestConfig } from '../api/ada/types';
+import { tlsConfigChannel } from '../ipc/tlsConfigChannel';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedState = null;
@@ -54,7 +53,7 @@ export default class NetworkStatusStore extends Store {
   }
 
   setup() {
-    ipcRenderer.on(TLS_CONFIG.CHANGED, this._updateApiConfig);
+    tlsConfigChannel.receive(this._updateApiConfig);
     this.registerReactions([
       this._updateSyncProgressWhenDisconnected,
       this._updateLocalTimeDifferenceWhenConnected,

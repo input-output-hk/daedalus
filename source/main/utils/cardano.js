@@ -1,40 +1,11 @@
 // @flow
-import { spawn } from 'child_process';
-import { createWriteStream, readFileSync } from 'fs';
+import { createWriteStream } from 'fs';
 import log from 'electron-log';
-import { ipcMain, app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import { TLS_CONFIG } from '../../common/ipc-api';
-
-const yamljs = require('yamljs');
-
-const resendTlsConfig = (window) => {
-  window.send(TLS_CONFIG.CHANGED, {
-    ca: global.ca,
-    clientKey: global.clientKey,
-    clientCert: global.clientCert,
-    port: global.port,
-  });
-};
-
-const ensureXDGDataIsSet = () => {
-  if (process.env.HOME && process.env.XDG_DATA_HOME === undefined) {
-    process.env.XDG_DATA_HOME = process.env.HOME + '/.local/share/';
-  }
-};
-
-const readLauncherConfig = (configFile: string) => {
-  const inputYaml = readFileSync(configFile, 'utf8');
-  const finalYaml = inputYaml.replace(/\${([^}]+)}/g,
-    (a, b) => {
-      if (process.env[b]) {
-        return process.env[b];
-      }
-      console.log('readLauncherConfig: warning var undefined:', b);
-      return '';
-    }
-  );
-  return yamljs.parse(finalYaml);
-};
+import { ensureXDGDataIsSet, prepareArgs, readLauncherConfig } from '../cardano/config';
+import { CardanoNode } from '../cardano/CardanoNode';
+import { TLS_CONFIG_CHANNEL } from '../../common/ipc-api/tls-config';
 
 /*
  * todo:
@@ -51,16 +22,30 @@ export const setupCardano = (mainWindow: BrowserWindow) => {
     return;
   }
   ensureXDGDataIsSet();
+
   const launcherConfig = readLauncherConfig(LAUNCHER_CONFIG);
   if (!launcherConfig.frontendOnlyMode) {
     log.info('IPC: launcher config says node is started by the launcher');
     return;
   }
-  ipcMain.on(TLS_CONFIG.UPDATE, (event) => {
-    resendTlsConfig(event.sender);
+  const { nodePath, tlsPath, logsPrefix } = launcherConfig;
+
+  const nodeArgs = prepareArgs(launcherConfig);
+  const logFile = createWriteStream(logsPrefix + '/cardano-node.log', { flags: 'a' });
+  const cardanoNode = new CardanoNode(mainWindow, log);
+
+  cardanoNode.start(nodePath, tlsPath, nodeArgs, logFile);
+
+  ipcMain.on(TLS_CONFIG_CHANNEL, () => {
+    cardanoNode.broadcastTlsConfig();
   });
 
-  const logfile = createWriteStream(launcherConfig.logsPrefix + '/cardano-node.log', { flags: 'a' });
+  app.on('before-quit', () => {
+    log.info('IPC:before-quit, stopping cardano');
+    cardanoNode.stop();
+  });
+
+  /*
   logfile.on('open', () => {
     log.info('IPC:cardano logfile opened');
     let extraArgs = [];
@@ -88,7 +73,7 @@ export const setupCardano = (mainWindow: BrowserWindow) => {
         });
       } else if (msg.ReplyPort) {
         global.port = msg.ReplyPort;
-        resendTlsConfig(mainWindow);
+        broadcastTlsConfig(mainWindow);
       }
     });
     subprocess.on('close', (code, signal) => {
@@ -113,4 +98,5 @@ export const setupCardano = (mainWindow: BrowserWindow) => {
       }
     });
   });
+  */
 };
