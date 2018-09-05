@@ -1,5 +1,5 @@
 // @flow
-import { split } from 'lodash';
+import { split, get } from 'lodash';
 import { action } from 'mobx';
 import { ipcRenderer } from 'electron';
 import BigNumber from 'bignumber.js';
@@ -785,7 +785,7 @@ export default class AdaApi {
       return {
         subscriptionStatus,
         syncProgress: syncProgress.quantity,
-        blockchainHeight: blockchainHeight.quantity,
+        blockchainHeight: get(blockchainHeight, 'quantity', null),
         localBlockchainHeight: localBlockchainHeight.quantity,
         localTimeInformation: differenceFromNtpServer.quantity
       };

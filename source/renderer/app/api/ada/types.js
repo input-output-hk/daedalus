@@ -33,7 +33,7 @@ export type NodeInfo = {
     quantity: number,
     unit: 'percent'
   },
-  blockchainHeight: {
+  blockchainHeight: ?{
     quantity: number,
     unit: 'blocks'
   },
