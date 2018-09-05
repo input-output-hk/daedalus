@@ -68,8 +68,7 @@ import type {
   CreateTransactionResponse,
   DeleteWalletRequest,
   DeleteWalletResponse,
-  GetLocalTimeDifferenceResponse,
-  GetSyncProgressResponse,
+  GetNetworkStatusResponse,
   GetTransactionsRequest,
   GetTransactionsResponse,
   GetWalletRecoveryPhraseResponse,
@@ -705,23 +704,6 @@ export default class AdaApi {
     }
   };
 
-  getSyncProgress = async (): Promise<GetSyncProgressResponse> => {
-    Logger.debug('AdaApi::syncProgress called');
-    try {
-      const response: NodeInfo = await getNodeInfo(this.config);
-      Logger.debug('AdaApi::syncProgress success: ' + stringifyData(response));
-      const { localBlockchainHeight, blockchainHeight, syncProgress } = response;
-      return {
-        localBlockchainHeight: localBlockchainHeight.quantity,
-        blockchainHeight: blockchainHeight.quantity,
-        syncProgress: syncProgress.quantity
-      };
-    } catch (error) {
-      Logger.debug('AdaApi::syncProgress error: ' + stringifyError(error));
-      throw new GenericApiError();
-    }
-  };
-
   updateWallet = async (request: UpdateWalletRequest): Promise<UpdateWalletResponse> => {
     Logger.debug('AdaApi::updateWallet called: ' + stringifyData(request));
     const { walletId, assuranceLevel, name } = request;
@@ -785,21 +767,30 @@ export default class AdaApi {
     }
   };
 
-  getLocalTimeDifference = async (): Promise<GetLocalTimeDifferenceResponse> => {
-    Logger.debug('AdaApi::getLocalTimeDifference called');
+  getNetworkStatus = async (): Promise<GetNetworkStatusResponse> => {
+    Logger.debug('AdaApi::getNetworkStatus called');
     try {
-      const response: NodeInfo = await getNodeInfo(this.config);
-      Logger.debug('AdaApi::getLocalTimeDifference success: ' + stringifyData(response));
+      const status: NodeInfo = await getNodeInfo(this.config);
+      Logger.debug('AdaApi::getNetworkStatus success: ' + stringifyData(status));
 
-      const { localTimeInformation: { differenceFromNtpServer } } = response;
-      // TODO: I had to add the `if` bellow, as it was getting an error
-      if (!differenceFromNtpServer) {
-        return 0;
-      }
-      const timeDifference = differenceFromNtpServer.quantity;
-      return timeDifference;
+      const {
+        blockchainHeight,
+        localTimeInformation: { differenceFromNtpServer },
+        subscriptionStatus,
+        syncProgress,
+        localBlockchainHeight
+      } = status;
+
+      // extract relevant data before sending to NetworkStatusStore
+      return {
+        subscriptionStatus,
+        syncProgress: syncProgress.quantity,
+        blockchainHeight: blockchainHeight.quantity,
+        localBlockchainHeight: localBlockchainHeight.quantity,
+        localTimeInformation: differenceFromNtpServer.quantity
+      };
     } catch (error) {
-      Logger.error('AdaApi::getLocalTimeDifference error: ' + stringifyError(error));
+      Logger.error('AdaApi::getNetworkStatus error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   };
