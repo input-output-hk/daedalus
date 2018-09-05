@@ -86,18 +86,17 @@ function typedRequest<Response>(
               "status": "success",
               "data": "statusCode: ${statusCode} -- statusMessage: ${statusMessage}"
             }`;
-          } else if (statusCode === 400) {
-            // when nextAdaUpdate receives a 400, it isn't an error
+          } else if (
+            statusCode === 404 &&
+            statusMessage === 'Not Found' &&
+            options.path === '/api/internal/next-update'
+          ) {
+            // when nextAdaUpdate receives a 404, it isn't an error
             // it means no updates are available
-            const errorBody = JSON.parse(body);
-            const { diagnostic } = errorBody;
-
-            if (diagnostic && diagnostic.msg.includes('No updates available')) {
-              body = `{
-                "status": "success",
-                "data": null
-              }`;
-            }
+            body = `{
+              "status": "success",
+              "data": null
+            }`;
           }
 
           const parsedBody = JSON.parse(body);
