@@ -267,15 +267,16 @@ export default class AdaApi {
     const { walletId, skip, limit } = request;
 
     const accounts: AdaAccounts = await getAdaWalletAccounts(this.config, { walletId });
-    const perPage = limit > 50 ? 50 : limit;
 
     const params = {
       accountIndex: accounts[0].index,
       page: skip === 0 ? 1 : (skip / limit) + 1,
-      per_page: perPage,
+      per_page: limit > 50 ? 50 : limit,
       wallet_id: walletId,
       sort_by: 'DES[created_at]',
     };
+
+    const pageLimit = Math.ceil(limit / 50);
 
     try {
       const {
@@ -287,11 +288,12 @@ export default class AdaApi {
       // In case there is more than one page,
       // it loops through them and adds to the `history` array
       if (totalPages > 1 && limit > 50) {
-        for (let page = 2; page < totalPages + 1; page++) {
+        for (let page = 2; (page < totalPages + 1 && page <= pageLimit); page++) {
           const { data: pageHistory }: AdaTransactionsV1 =
             await getAdaHistoryByWallet(this.config, Object.assign(params, { page }));
           history.push(...pageHistory);
         }
+        history.splice(limit);
       }
 
       const transactions = history.map(item => _createTransactionFromServerDataV1(item));
