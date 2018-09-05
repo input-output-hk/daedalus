@@ -641,7 +641,7 @@ export default class AdaApi {
     }
   }
 
-  nextUpdate = async (): Promise<NodeUpdate> => {
+  nextUpdate = async (): Promise<NodeUpdate | null> => {
     Logger.debug('AdaApi::nextUpdate called');
     try {
       const nodeUpdate = await nextAdaUpdate(this.config);
