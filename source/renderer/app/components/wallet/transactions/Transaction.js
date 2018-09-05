@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
+import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 import WalletTransaction, { transactionStates, transactionTypes } from '../../../domains/WalletTransaction';
 import { assuranceLevels } from '../../../types/transactionAssuranceTypes';
 import { environmentSpecificMessages } from '../../../i18n/global-messages';
@@ -177,13 +178,19 @@ export default class Transaction extends Component<Props, State> {
 
     const contentStyles = classNames([
       styles.content,
-      isLastInList ? styles.last : null
+      isLastInList ? styles.last : null,
+      isExpanded ? styles.contentExpanded : null
     ]);
 
     const detailsStyles = classNames([
       styles.details,
       canOpenExplorer ? styles.clickable : null,
-      isExpanded ? styles.expanded : styles.closed
+      isExpanded ? styles.detailsExpanded : styles.detailsClosed
+    ]);
+
+    const arrowStyles = classNames([
+      styles.arrow,
+      isExpanded ? styles.arrowExpanded : null
     ]);
 
     const status = intl.formatMessage(assuranceLevelTranslations[assuranceLevel]);
@@ -192,13 +199,14 @@ export default class Transaction extends Component<Props, State> {
 
     return (
       <div
-        className={componentStyles}
         onClick={this.toggleDetails.bind(this)}
+        className={componentStyles}
         role="presentation"
         aria-hidden
       >
-
-        <div className={styles.toggler}>
+        <div
+          className={styles.toggler}
+        >
           <TransactionTypeIcon
             iconType={isFailedTransaction ? transactionStates.FAILED : data.type}
           />
@@ -238,8 +246,15 @@ export default class Transaction extends Component<Props, State> {
         </div>
 
         {/* ==== Toggleable Transaction Details ==== */}
-        <div className={contentStyles}>
-          <div className={detailsStyles}>
+        <div
+          className={contentStyles}
+        >
+          <div
+            className={detailsStyles}
+            onClick={(event) => event.stopPropagation()}
+            role="presentation"
+            aria-hidden
+          >
             {data.exchange && data.conversionRate && (
               <div className={styles.conversion}>
                 <div>
@@ -327,8 +342,8 @@ export default class Transaction extends Component<Props, State> {
             </div>
             */}
           </div>
+          <SVGInline svg={arrow} className={arrowStyles} />
         </div>
-
       </div>
     );
   }

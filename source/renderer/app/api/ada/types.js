@@ -127,18 +127,6 @@ export type AdaWallet = {
   spendingPasswordLastUpdate: Date,
 };
 
-export type AdaWalletV0 = {
-  cwAccountsNumber: number,
-  cwAmount: AdaAmount,
-  cwHasPassphrase: boolean,
-  cwId: string,
-  cwMeta: {
-    cwAssurance: AdaAssurance,
-    cwName: string,
-    csUnit: number,
-  },
-  cwPassphraseLU: Date,
-};
 export type AdaWallets = Array<AdaWallet>;
 
 // ========== V1 API =========
