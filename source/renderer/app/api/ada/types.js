@@ -180,10 +180,10 @@ export type AdaTransactionsV1 = {
   status: string,
   meta: {
     pagination: {
-      totalPages: number,
       page: number,
       perPage: number,
       totalEntries: number,
+      totalPages: number,
     },
   }
 };

@@ -276,7 +276,8 @@ export default class AdaApi {
       sort_by: 'DES[created_at]',
     };
 
-    const pageLimit = Math.ceil(limit / 50);
+    // Calculate how many pages we need to load
+    const pageLimit = Math.ceil(limit / params.per_page);
 
     try {
       const {

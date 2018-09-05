@@ -11,7 +11,7 @@ export type GetAdaHistoryByWalletParams = {
 };
 
 const requestOptions = {
-  returnMeta: true
+  returnMeta: true,
 };
 
 export const getAdaHistoryByWallet = (
