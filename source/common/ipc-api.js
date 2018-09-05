@@ -33,9 +33,3 @@ export const GET_GPU_STATUS = {
   SUCCESS: `${GET_GPU_STATUS_CHANNEL}-success`,
   ERROR: `${GET_GPU_STATUS_CHANNEL}-error`,
 };
-
-const TLS_CONFIG_CHANNEL = 'tls-config';
-export const TLS_CONFIG = {
-  UPDATE: `${TLS_CONFIG_CHANNEL}-update`,
-  CHANGED: `${TLS_CONFIG_CHANNEL}-changed`,
-};
