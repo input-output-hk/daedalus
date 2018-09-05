@@ -286,7 +286,7 @@ export default class AdaApi {
 
       // In case there is more than one page,
       // it loops through them and adds to the `history` array
-      if (totalPages > 1) {
+      if (totalPages > 1 && limit > 50) {
         for (let page = 2; page < totalPages + 1; page++) {
           const { data: pageHistory }: AdaTransactionsV1 =
             await getAdaHistoryByWallet(this.config, Object.assign(params, { page }));
