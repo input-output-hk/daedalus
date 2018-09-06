@@ -12,7 +12,7 @@ Changelog
 - Make "port" and "ca" of Ada Api configurable during runtime [PR 1067](https://github.com/input-output-hk/daedalus/pull/1067)
 
 ### Features
-
+- Implemented the V1 API endpoints and data specifications for redeeming ADA. ([PR 1080](https://github.com/input-output-hk/daedalus/pull/1080))
 - Implemented the V1 API specifications for 4 pieces of functionality and their associated API requests within Daedalus. These include: Setting a passphrase or changing an existing passphrase. Deleting an existing wallet and all its accounts. Checking for an available node update and displaying a notification about the update and versioning. Updating the name and/or assurance level of an existing wallet. ([PR 1042](https://github.com/input-output-hk/daedalus/pull/1042))
 - Implemented a switch instead of a link for “hide used” addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
 - Implemented forms submission on "Enter" key press ([PR 981](https://github.com/input-output-hk/daedalus/pull/981))
