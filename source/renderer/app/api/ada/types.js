@@ -20,14 +20,6 @@ export type GetWalletCertificateAdditionalMnemonicsResponse = Array<string>;
 export type GetWalletCertificateRecoveryPhraseResponse = Array<string>;
 export type GetWalletRecoveryPhraseFromCertificateResponse = Array<string>;
 
-// Regarding GetNodeInfoResponse below:
-// getNodeInfo.js currently does not return 'meta' and 'status' properties
-// though the docs indicate it should, and they are present in Postman
-export type GetNodeInfoResponse = {
-  data: NodeInfo,
-...ResponseBaseV1
-};
-
 export type NodeInfo = {
   syncProgress: {
     quantity: number,
@@ -48,6 +40,24 @@ export type NodeInfo = {
     }
   },
   subscriptionStatus: any
+};
+
+export type NodeUpdate = {
+  applicationName: string,
+  version: number
+};
+
+export type NodeSettings = {
+  slotDuration: {
+    quantity: number,
+    unit: ?'milliseconds'
+  },
+  softwareInfo: {
+    version: number,
+    applicationName: string
+  },
+  projectVersion: string,
+  gitRevision: string
 };
 
 export type AdaWalletInitData = {
