@@ -113,7 +113,7 @@ export default class WalletReceive extends Component<Props, State> {
     },
   });
 
-  submit() {
+  submit = () => {
     this.form.submit({
       onSuccess: (form) => {
         const { walletHasPassword } = this.props;
@@ -170,7 +170,7 @@ export default class WalletReceive extends Component<Props, State> {
           className={generateAddressButtonClasses}
           label={intl.formatMessage(messages.generateNewAddressButtonLabel)}
           skin={ButtonSkin}
-          onClick={this.submit.bind(this)}
+          onClick={this.submit}
         />
       </div>
     );

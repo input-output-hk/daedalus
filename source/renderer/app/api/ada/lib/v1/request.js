@@ -79,13 +79,25 @@ function typedRequest<Response>(
           // When deleting a wallet, the API does not return any data in body
           // even if it was successful
           const { statusCode, statusMessage } = response;
+
           if (!body && statusCode >= 200 && statusCode <= 206) {
             // adds status and data properties so JSON.parse doesn't throw an error
             body = `{
               "status": "success",
-              "data": "statusCode: ${statusCode}, statusMessage: ${statusMessage}"
+              "data": "statusCode: ${statusCode} -- statusMessage: ${statusMessage}"
+            }`;
+          } else if (
+            options.path === '/api/internal/next-update' &&
+            statusCode === 404
+          ) {
+            // when nextAdaUpdate receives a 404, it isn't an error
+            // it means no updates are available
+            body = `{
+              "status": "success",
+              "data": null
             }`;
           }
+
           const parsedBody = JSON.parse(body);
           const status = get(parsedBody, 'status', false);
           if (status) {

@@ -8,7 +8,7 @@ export const nextAdaUpdate = (
   request({
     hostname: 'localhost',
     method: 'GET',
-    path: '/api/v1/node-settings',
+    path: '/api/internal/next-update',
     ...config,
   })
 );
