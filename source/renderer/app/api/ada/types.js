@@ -173,15 +173,8 @@ export const AdaV1AssuranceOptions: {
 
 export type AdaTransactionsV1 = {
   data: Array<AdaTransactionV1>,
-  status: string,
-  meta: {
-    pagination: {
-      page: number,
-      perPage: number,
-      totalEntries: number,
-      totalPages: number,
-    },
-  }
+  status: ResponseStatus,
+  meta: Pagination,
 };
 
 export type AdaTransactionV1 = {
