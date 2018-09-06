@@ -87,6 +87,12 @@ export default class NetworkStatusStore extends Store {
     };
   }
 
+  checkTheTimeAgain = () => {
+    this.api.ada.getLocalTimeDifference({
+      force_ntp_check: true,
+    });
+  }
+
   @computed get isConnecting(): boolean {
     // until we start receiving network difficulty messages we are not connected to node
     return !this.isConnected;

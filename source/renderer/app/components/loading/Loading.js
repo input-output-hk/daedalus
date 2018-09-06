@@ -78,6 +78,7 @@ type Props = {
   currentLocale: string,
   handleReportIssue: Function,
   onProblemSolutionClick: Function,
+  onCheckTheTimeAgain: Function,
 };
 
 @observer
@@ -148,6 +149,7 @@ export default class Loading extends Component<Props, State> {
       currentLocale,
       handleReportIssue,
       onProblemSolutionClick,
+      onCheckTheTimeAgain,
     } = this.props;
 
     const { connectingTime, syncingTime } = this.state;
@@ -228,6 +230,7 @@ export default class Loading extends Component<Props, State> {
           localTimeDifference={localTimeDifference}
           currentLocale={currentLocale}
           onProblemSolutionClick={onProblemSolutionClick}
+          onCheckTheTimeAgain={onCheckTheTimeAgain}
         />
       );
     }

@@ -49,4 +49,14 @@
     opacity: 0.8;
   }
 
+  .checkLink {
+    color: var(--theme-system-error-overlay-text-color);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1.36;
+    margin-top: 20px;
+    opacity: 0.8;
+    text-decoration: underline;
+  }
+
 }

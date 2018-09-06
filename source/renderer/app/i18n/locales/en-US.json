@@ -164,6 +164,7 @@
   "systemTime.error.overlayText": "Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. Your time is off by {timeOffset}.<br>To synchronize the time and fix this issue, please visit the FAQ section of Daedalus website:",
   "systemTime.error.overlayTitle": "Unable to sync - incorrect time",
   "systemTime.error.problemSolutionLink": "daedaluswallet.io/faq",
+  "systemTime.error.onCheckTheTimeAgainLink": "Check the time again",
   "test.environment.developmentLabel": "Development",
   "test.environment.stagingLabel": "Staging",
   "test.environment.testnetLabel": "Testnet",

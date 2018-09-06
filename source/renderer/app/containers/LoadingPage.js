@@ -26,7 +26,7 @@ export default class LoadingPage extends Component<InjectedProps> {
     const { stores } = this.props;
     const {
       isConnecting, isSyncing, isSynced, syncPercentage, hasBeenConnected,
-      hasBlockSyncingStarted, localTimeDifference, isSystemTimeCorrect,
+      hasBlockSyncingStarted, localTimeDifference, isSystemTimeCorrect, checkTheTimeAgain,
     } = stores.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     return (
@@ -48,6 +48,7 @@ export default class LoadingPage extends Component<InjectedProps> {
           currentLocale={currentLocale}
           handleReportIssue={this.handleReportIssue}
           onProblemSolutionClick={this.handleProblemSolutionClick}
+          onCheckTheTimeAgain={checkTheTimeAgain}
         />
         <WalletSupportRequestPage />
       </CenteredLayout>

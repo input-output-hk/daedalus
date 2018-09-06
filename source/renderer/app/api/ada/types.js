@@ -60,6 +60,10 @@ export type NodeSettings = {
   gitRevision: string
 };
 
+export type NodeQueryParams = {
+  force_ntp_check: boolean,
+};
+
 export type AdaWalletInitData = {
   operation: 'create' | 'restore',
   backupPhrase: [string],

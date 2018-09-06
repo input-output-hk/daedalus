@@ -59,6 +59,7 @@ import type {
   GetWalletRecoveryPhraseFromCertificateResponse,
   RequestConfig,
   NodeInfo,
+  NodeQueryParams,
   NodeUpdate,
   AdaV1Assurance,
 } from './types';
@@ -760,10 +761,12 @@ export default class AdaApi {
     }
   };
 
-  getLocalTimeDifference = async (): Promise<GetLocalTimeDifferenceResponse> => {
+  getLocalTimeDifference = async (
+    queryParams?: NodeQueryParams
+  ): Promise<GetLocalTimeDifferenceResponse> => {
     Logger.debug('AdaApi::getLocalTimeDifference called');
     try {
-      const response: NodeInfo = await getNodeInfo(this.config);
+      const response: NodeInfo = await getNodeInfo(this.config, queryParams);
       Logger.debug('AdaApi::getLocalTimeDifference success: ' + stringifyData(response));
 
       const { localTimeInformation: { differenceFromNtpServer } } = response;

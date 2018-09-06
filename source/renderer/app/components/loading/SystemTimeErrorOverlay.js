@@ -24,13 +24,19 @@ const messages = defineMessages({
     id: 'systemTime.error.problemSolutionLink',
     defaultMessage: '!!!daedaluswallet.io/faq',
     description: 'Link to Daedalus website FAQ page'
-  }
+  },
+  onCheckTheTimeAgainLink: {
+    id: 'systemTime.error.onCheckTheTimeAgainLink',
+    defaultMessage: '!!!Check the time again',
+    description: 'Text of Check the time again button'
+  },
 });
 
 type Props = {
   localTimeDifference: number,
   currentLocale: string,
   onProblemSolutionClick: Function,
+  onCheckTheTimeAgain: Function,
 };
 
 @observer
@@ -81,6 +87,13 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
           skin={ButtonSkin}
           onClick={this.onProblemSolutionClick.bind(this, problemSolutionLink)}
         />
+
+        <button
+          className={styles.checkLink}
+          onClick={() => this.props.onCheckTheTimeAgain()}
+        >
+          {intl.formatMessage(messages.onCheckTheTimeAgainLink)}
+        </button>
 
       </div>
     );
