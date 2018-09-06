@@ -1,5 +1,5 @@
 // @flow
-import { request } from './lib/request';
+import { request } from './lib/v1/request';
 import type { RequestConfig } from './types';
 
 export const postponeAdaUpdate = (
@@ -8,7 +8,7 @@ export const postponeAdaUpdate = (
   request({
     hostname: 'localhost',
     method: 'POST',
-    path: '/api/update/postpone',
+    path: '/api/internal/postpone-update',
     ...config,
   })
 );

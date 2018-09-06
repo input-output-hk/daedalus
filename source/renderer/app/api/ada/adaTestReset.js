@@ -1,5 +1,5 @@
 // @flow
-import { request } from './lib/request';
+import { request } from './lib/v1/request';
 import type { RequestConfig } from './types';
 
 export const adaTestReset = (
@@ -7,8 +7,8 @@ export const adaTestReset = (
 ): Promise<void> => (
   request({
     hostname: 'localhost',
-    method: 'POST',
-    path: '/api/test/reset',
+    method: 'DELETE',
+    path: '/api/internal/reset-wallet-state',
     ...config,
   })
 );

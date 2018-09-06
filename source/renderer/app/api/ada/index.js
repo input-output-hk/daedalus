@@ -59,7 +59,7 @@ import type {
   GetWalletRecoveryPhraseFromCertificateResponse,
   RequestConfig,
   NodeInfo,
-  ResponseBaseV1,
+  NodeUpdate,
   AdaV1Assurance,
 } from './types';
 import type {
@@ -155,22 +155,6 @@ export type ImportWalletFromFileRequest = {
   walletName: ?string,
 };
 export type ImportWalletFromFileResponse = AdaWallet;
-export type NodeSettings = {
-  slotDuration: {
-    quantity: number,
-    unit?: 'milliseconds'
-  },
-  softwareInfo: {
-    version: number,
-    applicationName: string
-  },
-  projectVersion: string,
-  gitRevision: string
-};
-export type NextUpdateResponse = ?{
-  data?: NodeSettings,
-  ...ResponseBaseV1
-};
 export type PostponeUpdateResponse = Promise<void>;
 export type ApplyUpdateResponse = Promise<void>;
 export type TransactionRequest = {
@@ -657,29 +641,20 @@ export default class AdaApi {
     }
   }
 
-  nextUpdate = async (): Promise<NextUpdateResponse> => {
+  nextUpdate = async (): Promise<NodeUpdate | null> => {
     Logger.debug('AdaApi::nextUpdate called');
-    let nextUpdate = null;
     try {
-      const response = await nextAdaUpdate(this.config);
-      const { projectVersion, softwareInfo } = response;
-      const { version, applicationName } = softwareInfo;
-
-      Logger.debug('AdaApi::nextUpdate success: ' + stringifyData(response));
-      if (version > projectVersion) {
-        nextUpdate = {
-          version,
-          name: applicationName
-        };
+      const nodeUpdate = await nextAdaUpdate(this.config);
+      if (nodeUpdate && nodeUpdate.version) {
+        Logger.debug('AdaApi::nextUpdate success: ' + stringifyData(nodeUpdate));
+        return nodeUpdate;
       }
+      Logger.debug('AdaApi::nextUpdate success: No Update Available');
     } catch (error) {
-      if (error.message.includes('No updates available')) {
-        Logger.debug('AdaApi::nextUpdate success: No updates available');
-      } else {
-        Logger.error('AdaApi::nextUpdate error: ' + stringifyError(error));
-      }
+      Logger.error('AdaApi::nextUpdate error: ' + stringifyError(error));
+      throw new GenericApiError();
     }
-    return nextUpdate;
+    return null;
   };
 
   postponeUpdate = async (): PostponeUpdateResponse => {

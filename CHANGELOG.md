@@ -13,6 +13,7 @@ Changelog
 
 ### Features
 
+- Implements the missing V1 API endpoints for checking if a node update is available and responding to the update by either applying it or postponing it. Adds the V1 endpoint for adaTestReset.js. ([PR 1079](https://github.com/input-output-hk/daedalus/pull/1079))
 - Implemented the V1 API specifications for 4 pieces of functionality and their associated API requests within Daedalus. These include: Setting a passphrase or changing an existing passphrase. Deleting an existing wallet and all its accounts. Checking for an available node update and displaying a notification about the update and versioning. Updating the name and/or assurance level of an existing wallet. ([PR 1042](https://github.com/input-output-hk/daedalus/pull/1042))
 - Implemented a switch instead of a link for “hide used” addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
 - Implemented forms submission on "Enter" key press ([PR 981](https://github.com/input-output-hk/daedalus/pull/981))
