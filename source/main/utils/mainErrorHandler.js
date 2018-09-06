@@ -13,7 +13,7 @@ export default () => {
     Logger.error(`uncaughtException: ${stringifyError(error)}`);
   });
 
-  app.on('gpu-process-crashed', () => {
-    Logger.error('uncaughtException: gpu-process-crashed');
+  app.on('gpu-process-crashed', (event: any, killed: boolean) => {
+    Logger.error(`uncaughtException::gpu-process-crashed: ${killed ? 'killed' : 'not-killed'} ${stringifyError(event)}`);
   });
 };
