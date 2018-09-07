@@ -211,6 +211,19 @@ export type AdaTransactionParams = {
 
 export type AdaTxFeeParams = AdaTransactionParams;
 
+export type RedeemAdaParams = {
+  redemptionCode: string,
+  mnemonic: ?Array<string>,
+  spendingPassword: string,
+  walletId: string,
+  accountIndex: number
+};
+
+export type RedeemPaperVendedAdaParams = {
+  mnemonic: Array<string>,
+  ...RedeemAdaParams
+};
+
 export type Pagination = {
   pagination: {
     totalPages: number,

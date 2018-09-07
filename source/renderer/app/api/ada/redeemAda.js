@@ -1,16 +1,15 @@
 // @flow
-import type { AdaTransactionV1, RequestConfig } from './types';
-import type { RedeemAdaRequest } from './';
+import type { RequestConfig, RedeemAdaParams, AdaTransactionV1 } from './types';
 import { request } from './lib/v1/request';
 
 export const redeemAda = (
   config: RequestConfig,
-  redemptionData: RedeemAdaRequest
+  redemptionParams: RedeemAdaParams
 ): Promise<AdaTransactionV1> => (
   request({
     hostname: 'localhost',
     method: 'POST',
     path: '/api/v1/transactions/certificates',
     ...config
-  }, {}, redemptionData)
+  }, {}, redemptionParams)
 );
