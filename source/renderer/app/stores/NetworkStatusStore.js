@@ -5,6 +5,7 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { Logger } from '../../../common/logging';
 import type { GetSyncProgressResponse, GetLocalTimeDifferenceResponse } from '../api/common';
+import type { NodeQueryParams } from '../api/ada/types';
 import environment from '../../../common/environment';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
@@ -85,12 +86,6 @@ export default class NetworkStatusStore extends Store {
       localDifficulty: this.localDifficulty,
       networkDifficulty: this.networkDifficulty,
     };
-  }
-
-  checkTheTimeAgain = () => {
-    this.api.ada.getLocalTimeDifference({
-      force_ntp_check: true,
-    });
   }
 
   @computed get isConnecting(): boolean {
@@ -212,10 +207,16 @@ export default class NetworkStatusStore extends Store {
     }
   };
 
-  @action _updateLocalTimeDifference = async () => {
+  forceCheckLocalTimeDifference = () => {
+    this._updateLocalTimeDifference({
+      force_ntp_check: true,
+    });
+  };
+
+  @action _updateLocalTimeDifference = async (queryParams?: NodeQueryParams) => {
     if (!this.isConnected) return;
     try {
-      const response = await this.localTimeDifferenceRequest.execute().promise;
+      const response = await this.localTimeDifferenceRequest.execute(queryParams).promise;
       runInAction('update time difference', () => (this.localTimeDifference = response));
     } catch (error) {
       runInAction('update time difference', () => (this.localTimeDifference = 0));

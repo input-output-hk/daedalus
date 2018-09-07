@@ -26,7 +26,8 @@ export default class LoadingPage extends Component<InjectedProps> {
     const { stores } = this.props;
     const {
       isConnecting, isSyncing, isSynced, syncPercentage, hasBeenConnected,
-      hasBlockSyncingStarted, localTimeDifference, isSystemTimeCorrect, checkTheTimeAgain,
+      hasBlockSyncingStarted, localTimeDifference, isSystemTimeCorrect,
+      forceCheckLocalTimeDifference,
     } = stores.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     return (
@@ -48,7 +49,7 @@ export default class LoadingPage extends Component<InjectedProps> {
           currentLocale={currentLocale}
           handleReportIssue={this.handleReportIssue}
           onProblemSolutionClick={this.handleProblemSolutionClick}
-          onCheckTheTimeAgain={checkTheTimeAgain}
+          onCheckTheTimeAgain={forceCheckLocalTimeDifference}
         />
         <WalletSupportRequestPage />
       </CenteredLayout>
@@ -63,5 +64,5 @@ export default class LoadingPage extends Component<InjectedProps> {
 
   handleProblemSolutionClick = (link: string) => {
     shell.openExternal(`https://${link}`);
-  }
+  };
 }
