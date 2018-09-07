@@ -25,23 +25,24 @@ import {
 } from '../support/helpers/notifications-helpers';
 
 const defaultWalletKeyFilePath = path.resolve(__dirname, '../support/default-wallet.key');
-const defaultWalletJSONFilePath = path.resolve(__dirname, '../support/default-wallet.json');
+// const defaultWalletJSONFilePath = path.resolve(__dirname, '../support/default-wallet.json');
+// ^^ JSON wallet file import is currently not working due to missing JSON import V1 API endpoint
 
-Given(/^I have a "Genesis wallet" with funds$/, async function () {
+Given(/^I have a "Imported Wallet" with funds$/, async function () {
   await importWalletWithFunds(this.client, {
     keyFilePath: defaultWalletKeyFilePath,
     password: null,
   });
-  const wallet = await waitUntilWalletIsLoaded.call(this, 'Genesis wallet');
+  const wallet = await waitUntilWalletIsLoaded.call(this, 'Imported Wallet');
   addOrSetWalletsForScenario.call(this, wallet);
 });
 
-Given(/^I have a "Genesis wallet" with funds and password$/, async function () {
+Given(/^I have a "Imported Wallet" with funds and password$/, async function () {
   await importWalletWithFunds(this.client, {
     keyFilePath: defaultWalletKeyFilePath,
     password: 'Secret123',
   });
-  const wallet = await waitUntilWalletIsLoaded.call(this, 'Genesis wallet');
+  const wallet = await waitUntilWalletIsLoaded.call(this, 'Imported Wallet');
   addOrSetWalletsForScenario.call(this, wallet);
 });
 
@@ -99,7 +100,10 @@ When(/^I see the import wallet dialog$/, function () {
 });
 
 When(/^I select a valid wallet import key file$/, function () {
-  return importWalletDialog.selectFile(this.client, { filePath: defaultWalletJSONFilePath });
+  // return importWalletDialog.selectFile(this.client, { filePath: defaultWalletJSONFilePath });
+  // ^^ JSON wallet file import is currently not working due to missing JSON import V1 API endpoint
+  // so we have to use the KEY wallet file instead:
+  return importWalletDialog.selectFile(this.client, { filePath: defaultWalletKeyFilePath });
 });
 
 When(/^I toggle "Activate to create password" switch on the import wallet key dialog$/, function () {
@@ -310,7 +314,10 @@ When(/^I try to import the wallet with funds again$/, async function () {
   await addWalletPage.waitForVisible(this.client);
   await addWalletPage.clickImportButton(this.client);
   await importWalletDialog.waitForDialog(this.client);
-  await importWalletDialog.selectFile(this.client, { filePath: defaultWalletJSONFilePath });
+  // await importWalletDialog.selectFile(this.client, { filePath: defaultWalletJSONFilePath });
+  // ^^ JSON wallet file import is currently not working due to missing JSON import V1 API endpoint
+  // so we have to use the KEY wallet file instead:
+  await importWalletDialog.selectFile(this.client, { filePath: defaultWalletKeyFilePath });
   return importWalletDialog.clickImport(this.client);
 });
 
