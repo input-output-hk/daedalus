@@ -2,8 +2,8 @@
 import { createWriteStream } from 'fs';
 import log from 'electron-log';
 import { app, BrowserWindow, ipcMain } from 'electron';
-import { ensureXDGDataIsSet, prepareArgs, readLauncherConfig } from '../cardano/config';
-import { CardanoNode } from '../cardano/CardanoNode';
+import { ensureXDGDataIsSet, prepareArgs, readLauncherConfig } from './config';
+import { CardanoNode } from './CardanoNode';
 import { TLS_CONFIG_CHANNEL } from '../../common/ipc-api/tls-config';
 import type { TlsConfig } from '../../common/ipc-api/tls-config';
 
