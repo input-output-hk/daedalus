@@ -1,3 +1,4 @@
+
 Changelog
 =========
 
@@ -12,7 +13,9 @@ Changelog
 - Make "port" and "ca" of Ada Api configurable during runtime [PR 1067](https://github.com/input-output-hk/daedalus/pull/1067)
 
 ### Features
+
 - Implemented the V1 API endpoints and data specifications for redeeming ADA. ([PR 1080](https://github.com/input-output-hk/daedalus/pull/1080))
+- Implements the missing V1 API endpoints for checking if a node update is available and responding to the update by either applying it or postponing it. Adds the V1 endpoint for adaTestReset.js. ([PR 1079](https://github.com/input-output-hk/daedalus/pull/1079))
 - Implemented the V1 API specifications for 4 pieces of functionality and their associated API requests within Daedalus. These include: Setting a passphrase or changing an existing passphrase. Deleting an existing wallet and all its accounts. Checking for an available node update and displaying a notification about the update and versioning. Updating the name and/or assurance level of an existing wallet. ([PR 1042](https://github.com/input-output-hk/daedalus/pull/1042))
 - Implemented a switch instead of a link for “hide used” addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
 - Implemented forms submission on "Enter" key press ([PR 981](https://github.com/input-output-hk/daedalus/pull/981))
@@ -25,10 +28,10 @@ Changelog
 ### Fixes
 
 - Fixed a bug that allowed to submit invalid send form via ENTER key ([PR 1002](https://github.com/input-output-hk/daedalus/pull/1002))
+- Fixed a bug that would submit the "Generate address" button on the Receive screen in case right-mouse click was used ([PR 1082](https://github.com/input-output-hk/daedalus/pull/1082))
 - Fixed the button outline color on special buttons. ([PR 990](https://github.com/input-output-hk/daedalus/pull/990))
 - Fixed broken Export wallet to file dialog and improved Wallet settings dialogs file structure and namings ([PR 998](https://github.com/input-output-hk/daedalus/pull/998))
 - Prevented wallet data polling during wallet deletion ([PR 996]https://github.com/input-output-hk/daedalus/pull/996)
-- Fixed bug that allowed to submit invalid send form via ENTER key ([PR 1002](https://github.com/input-output-hk/daedalus/pull/1002))
 - Fixed a bug in the Electron which results in blank/white screen rendering on some OS/Graphics-card/Drivers combinations.  ([PR 1007](https://github.com/input-output-hk/daedalus/pull/1007))
 - Removed the Ada Redemption link from the 'app bar' menu and added it to system menu ([PR 972](https://github.com/input-output-hk/daedalus/pull/972))
 

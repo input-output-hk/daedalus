@@ -1,5 +1,5 @@
 // @flow
-import { request } from './lib/request';
+import { request } from './lib/v1/request';
 import type { RequestConfig } from './types';
 
 export const applyAdaUpdate = (
@@ -8,7 +8,7 @@ export const applyAdaUpdate = (
   request({
     hostname: 'localhost',
     method: 'POST',
-    path: '/api/update/apply',
+    path: '/api/internal/apply-update',
     ...config,
   })
 );

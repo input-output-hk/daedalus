@@ -1795,7 +1795,7 @@
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.walletPasswordPlaceholder",
         "start": {
-          "column": 29,
+          "column": 31,
           "line": 185
         }
       },
@@ -1809,7 +1809,7 @@
         "file": "source/renderer/app/components/wallet/ada-redemption/AdaRedemptionForm.js",
         "id": "wallet.redeem.dialog.walletPasswordLabel",
         "start": {
-          "column": 23,
+          "column": 25,
           "line": 190
         }
       }
