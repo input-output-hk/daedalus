@@ -1,12 +1,13 @@
+// @flow
 import bs58 from 'bs58';
 
 // Convert base64url into base64
-function toRfc4648(str) {
+function toRfc4648(str: string) {
   return str.replace(new RegExp('_', 'g'), '/').replace(new RegExp('-', 'g'), '+');
 }
 
 // Checks is input string valid base64 or base64url
-function isValidBase64Url(code) {
+function isValidBase64Url(code: string) {
   try {
     // Note that atob is defined in Electron render process where its being used
     // This won't work in Node
@@ -23,7 +24,7 @@ function isValidBase64Url(code) {
 
 // Implements: "Valid redemption key should be base64 and base64url decodable,
 // it should end with '=' and it should be 44 chars long."
-export const isValidRedemptionKey = (code) => (
+export const isValidRedemptionKey = (code: string) => (
   // Return true if:
   //  * its base64 or base64url decodable - ada vending state mess
   //  * ends with '=' - base64 padds string with optional '=' or two '=' signs.
@@ -39,7 +40,7 @@ export const isValidRedemptionKey = (code) => (
 );
 
 // Implements: "Valid paper vend redemption key should be base58 decodable 32 byte stream."
-export const isValidPaperVendRedemptionKey = (code) => {
+export const isValidPaperVendRedemptionKey = (code: string) => {
   try {
     return bs58.decode(code).length === 32;
   } catch (err) {
