@@ -7,8 +7,8 @@ Feature: Send Money to Receiver
       | first  |
 
   Scenario: User Sends Money to Receiver
-    Given I have a "Genesis wallet" with funds
-    And I am on the "Genesis wallet" wallet "send" screen
+    Given I have a "Imported Wallet" with funds
+    And I am on the "Imported Wallet" wallet "send" screen
     And I can see the send form
     When I fill out the send form with a transaction to "first" wallet:
       | amount   |
@@ -17,7 +17,7 @@ Feature: Send Money to Receiver
     And I click on the next button in the wallet send form
     And I see send money confirmation dialog
     And I submit the wallet send form
-    Then I should be on the "Genesis wallet" wallet "summary" screen
+    Then I should be on the "Imported Wallet" wallet "summary" screen
     And the latest transaction should show:
       | title                   | amountWithoutFees |
       | wallet.transaction.sent | -0.000010         |
@@ -26,8 +26,8 @@ Feature: Send Money to Receiver
       | 0.000010 |
 
   Scenario: User Sends Money from wallet with spending password to Receiver
-    Given I have a "Genesis wallet" with funds and password
-    And I am on the "Genesis wallet" wallet "send" screen
+    Given I have a "Imported Wallet" with funds and password
+    And I am on the "Imported Wallet" wallet "send" screen
     And I can see the send form
     When I fill out the send form with a transaction to "first" wallet:
       | amount   |
@@ -37,7 +37,7 @@ Feature: Send Money to Receiver
     And I see send money confirmation dialog
     And I enter wallet spending password in confirmation dialog "Secret123"
     And I submit the wallet send form
-    Then I should be on the "Genesis wallet" wallet "summary" screen
+    Then I should be on the "Imported Wallet" wallet "summary" screen
     And the latest transaction should show:
       | title                   | amountWithoutFees |
       | wallet.transaction.sent | -0.000010         |
