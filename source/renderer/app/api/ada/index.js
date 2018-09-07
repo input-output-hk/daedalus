@@ -56,6 +56,8 @@ import type {
   GetWalletCertificateAdditionalMnemonicsResponse,
   GetWalletCertificateRecoveryPhraseResponse,
   GetWalletRecoveryPhraseFromCertificateResponse,
+  RedeemAdaParams,
+  RedeemPaperVendedAdaParams,
   RequestConfig,
   NodeInfo,
   ResponseBaseV1,
@@ -129,17 +131,6 @@ export type UpdateWalletRequest = {
   walletId: string,
   assuranceLevel: AdaV1Assurance,
   name: string
-};
-export type RedeemAdaRequest = {
-  redemptionCode: string,
-  mnemonic: ?Array<string>,
-  spendingPassword: string,
-  walletId: string,
-  accountIndex: number
-};
-export type RedeemPaperVendedAdaRequest = {
-  mnemonic: Array<string>,
-  ...RedeemAdaRequest
 };
 export type ImportWalletFromKeyRequest = {
   filePath: string,
@@ -433,25 +424,23 @@ export default class AdaApi {
     }
   }
 
-  isValidMnemonic(mnemonic: string): Promise<boolean> {
-    return isValidMnemonic(mnemonic, WALLET_RECOVERY_PHRASE_WORD_COUNT);
-  }
+  isValidMnemonic = (mnemonic: string): boolean => (
+    isValidMnemonic(mnemonic, WALLET_RECOVERY_PHRASE_WORD_COUNT)
+  );
 
-  isValidRedemptionKey(mnemonic: string): Promise<boolean> {
-    return isValidRedemptionKey(mnemonic);
-  }
+  isValidRedemptionKey = (mnemonic: string): boolean => (isValidRedemptionKey(mnemonic));
 
-  isValidPaperVendRedemptionKey(mnemonic: string): Promise<boolean> {
-    return isValidPaperVendRedemptionKey(mnemonic);
-  }
+  isValidPaperVendRedemptionKey = (mnemonic: string): boolean => (
+    isValidPaperVendRedemptionKey(mnemonic)
+  );
 
-  isValidRedemptionMnemonic(mnemonic: string): Promise<boolean> {
-    return isValidMnemonic(mnemonic, ADA_REDEMPTION_PASSPHRASE_LENGHT);
-  }
+  isValidRedemptionMnemonic = (mnemonic: string): boolean => (
+    isValidMnemonic(mnemonic, ADA_REDEMPTION_PASSPHRASE_LENGHT)
+  );
 
-  isValidCertificateMnemonic(mnemonic: string): boolean {
-    return mnemonic.split(' ').length === ADA_CERTIFICATE_MNEMONIC_LENGHT;
-  }
+  isValidCertificateMnemonic = (mnemonic: string): boolean => (
+    mnemonic.split(' ').length === ADA_CERTIFICATE_MNEMONIC_LENGHT
+  );
 
   getWalletRecoveryPhrase(): Promise<GetWalletRecoveryPhraseResponse> {
     Logger.debug('AdaApi::getWalletRecoveryPhrase called');
@@ -589,7 +578,7 @@ export default class AdaApi {
     }
   };
 
-  async redeemAda(request: RedeemAdaRequest): Promise<AdaTransactionV1> {
+  async redeemAda(request: RedeemAdaParams): Promise<AdaTransactionV1> {
     Logger.debug('AdaApi::redeemAda called');
     try {
       const transaction: AdaTransactionV1 = await redeemAda(this.config, request);
@@ -605,7 +594,7 @@ export default class AdaApi {
   }
 
   async redeemPaperVendedAda(
-    request: RedeemPaperVendedAdaRequest
+    request: RedeemPaperVendedAdaParams
   ): Promise<AdaTransactionV1> {
     Logger.debug('AdaApi::redeemAdaPaperVend called');
     try {
