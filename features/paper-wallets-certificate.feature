@@ -2,7 +2,7 @@ Feature: Paper Wallets Certificate generation
 
   Background:
     Given I have completed the basic setup
-    And I have a "Genesis wallet" with funds
+    And I have a "Imported Wallet" with funds
 
   Scenario: Paper wallets certificate success generation
     Given The sidebar shows the "wallets" category
@@ -24,8 +24,8 @@ Feature: Paper Wallets Certificate generation
     And Cardano explorer link and wallet address should be valid
     And I click on the finish button
     And I should not see the create paper wallet certificate dialog anymore
-    When I click on the "Genesis wallet" wallet in the sidebar
-    And I am on the "Genesis wallet" wallet "send" screen
+    When I click on the "Imported Wallet" wallet in the sidebar
+    And I am on the "Imported Wallet" wallet "send" screen
     And I fill out the send form:
       | amount   |
       | 0.000010 |
@@ -33,7 +33,7 @@ Feature: Paper Wallets Certificate generation
     And I click on the next button in the wallet send form
     And I see send money confirmation dialog
     And I submit the wallet send form
-    Then I should be on the "Genesis wallet" wallet "summary" screen
+    Then I should be on the "Imported Wallet" wallet "summary" screen
     And the latest transaction should show:
       | title                   | amountWithoutFees |
       | wallet.transaction.sent | -0.000010         |
