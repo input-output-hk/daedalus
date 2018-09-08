@@ -750,7 +750,6 @@ export default class AdaApi {
 
       const {
         blockchainHeight,
-        localTimeInformation: { differenceFromNtpServer },
         subscriptionStatus,
         syncProgress,
         localBlockchainHeight
@@ -761,14 +760,36 @@ export default class AdaApi {
         subscriptionStatus,
         syncProgress: syncProgress.quantity,
         blockchainHeight: get(blockchainHeight, 'quantity', null),
-        localBlockchainHeight: localBlockchainHeight.quantity,
-        localTimeInformation: differenceFromNtpServer.quantity
+        localBlockchainHeight: localBlockchainHeight.quantity
       };
     } catch (error) {
       Logger.error('AdaApi::getNetworkStatus error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   };
+
+  // returns time difference in microseconds between user's local machine and NtpServer
+  // ensures time on user's node is synced with peer nodes on the network
+  getLocalTimeDifference = async (): Promise<number> => {
+    Logger.debug('AdaApi::getLocalTimeDifference called');
+    try {
+      const response: NodeInfo = await getNodeInfo(this.config);
+      Logger.debug('AdaApi::getLocalTimeDifference success: ' + stringifyData(response));
+      const differenceFromNtpServer = get(
+        response.localTimeInformation,
+        'differenceFromNtpServer',
+        null
+      );
+
+      // if the optional property 'differenceFromNtpServer' doesn't exist
+      // return 0 microseconds, otherwise return the required property 'quantity'
+      if (!differenceFromNtpServer) { return 0; }
+      return differenceFromNtpServer.quantity;
+    } catch (error) {
+      Logger.error('AdaApi::getLocalTimeDifference error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  }
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
