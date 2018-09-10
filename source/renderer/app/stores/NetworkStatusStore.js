@@ -1,6 +1,5 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
-import moment from 'moment';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { Logger } from '../../../common/logging';
@@ -12,7 +11,6 @@ let cachedState = null;
 // DEFINE CONSTANTS ----------------------------
 const TIME_DIFF_POLL_INTERVAL = 30 * 60 * 1000; // 30 minutes (milliseconds)
 const ALLOWED_TIME_DIFFERENCE = 15 * 1000000; // 15 seconds (microseconds)
-const MAX_ALLOWED_STALL_DURATION = 2 * 60 * 1000; // 2 minutes (milliseconds)
 const NETWORK_POLL_INTERVAL = 2000; // 2 seconds (milliseconds)
 // Maximum number of out-of-sync blocks above which we consider to be out-of-sync
 const UNSYNCED_BLOCKS_ALLOWED = 6;
@@ -26,21 +24,20 @@ const NODE_STATUS = {
 
 export default class NetworkStatusStore extends Store {
 
-  // initialize store properties
+  // Initialize store properties
   _startTime = Date.now();
   _nodeStatus = NODE_STATUS.CONNECTING;
   _mostRecentBlockTimestamp = 0;
   _networkStatusPollingInterval: ?number = null;
   _updateLocalTimeDifferencePollInterval: ?number = null;
 
-  // initialize store observables
+  // Initialize store observables
   @observable isConnected = false;
   @observable hasBeenConnected = false;
   @observable initialLocalHeight = null;
   @observable localBlockHeight = 0;
   @observable networkBlockHeight = 0;
   @observable localTimeDifference = 0; // microseconds
-  @observable nodeSubscriptionStatus = null;
   @observable syncProgress = null;
   @observable getNetworkStatus: Request<GetNetworkStatusResponse> = new Request(
     this.api.ada.getNetworkStatus
@@ -69,7 +66,6 @@ export default class NetworkStatusStore extends Store {
 
   teardown() {
     super.teardown();
-
     // Teardown polling intervals
     if (this._networkStatusPollingInterval) {
       clearInterval(this._networkStatusPollingInterval);
@@ -113,17 +109,22 @@ export default class NetworkStatusStore extends Store {
         localBlockchainHeight
       } = await this.getNetworkStatus.execute().promise;
 
-      // update node subscription status
-      runInAction('update node subscription status', () => {
-        this.nodeSubscriptionStatus = subscriptionStatus;
+      // Update node connection status
+      runInAction('update connected status', () => {
+        const wasConnected = this.isConnected;
+        const nodeIPs = Object.values(subscriptionStatus || {});
+        this.isConnected = nodeIPs.includes('subscribed');
+        if (wasConnected && !this.isConnected && !this.hasBeenConnected) {
+          runInAction('update hasBeenConnected', () => this.hasBeenConnected = true);
+        }
       });
 
-      // update sync progress
+      // Update sync progress
       runInAction('update syncProgress', () => {
         this.syncProgress = syncProgress;
       });
 
-      // update both local and network block heights
+      // Update both local and network block heights
       runInAction('update block heights', () => {
         // We are connected, move on to syncing stage
         if (this._nodeStatus === NODE_STATUS.CONNECTING) {
@@ -148,32 +149,6 @@ export default class NetworkStatusStore extends Store {
         });
         Logger.debug('Local blockchain height changed: ' + localBlockchainHeight);
 
-        // Check if the network's block height has ceased to change
-        // If unchanged for > 2 minutes, it indicates the node has stalled
-        // w/o internet connection, the node will send its last known network block height
-
-        // if there is a new block, record it's timestamp
-        if (this.networkBlockHeight !== blockchainHeight) {
-          if (!this.isConnected) { this.isConnected = true; }
-          this._mostRecentBlockTimestamp = Date.now();
-        }
-
-        // calculate amount of time elapsed since the last block
-        if (this.isConnected) {
-          const timeSinceLastBlock = moment(Date.now()).diff(
-            moment(this._mostRecentBlockTimestamp)
-          );
-
-          // check if elapsed time exceeds maximum allowance
-          if (timeSinceLastBlock > MAX_ALLOWED_STALL_DURATION) {
-            // switch node to a disconnected state
-            this.isConnected = false;
-            if (!this.hasBeenConnected) {
-              runInAction('update hasBeenConnected', () => this.hasBeenConnected = true);
-            }
-          }
-        }
-
         // Update latest block height on each request
         runInAction('update network blockchain height', () => {
           this.networkBlockHeight = blockchainHeight;
@@ -187,11 +162,13 @@ export default class NetworkStatusStore extends Store {
         this.actions.networkStatus.isSyncedAndReady.trigger();
       }
     } catch (error) {
-      // If the sync progress request fails, switch to disconnected state
+      // If the node info request fails, switch to disconnected state
       runInAction('update connected status', () => {
         if (this.isConnected) {
           this.isConnected = false;
-          if (!this.hasBeenConnected) { this.hasBeenConnected = true; }
+          if (!this.hasBeenConnected) {
+            runInAction('update hasBeenConnected', () => this.hasBeenConnected = true);
+          }
         }
       });
       Logger.debug('Connection Lost. Reconnecting...');
@@ -210,21 +187,9 @@ export default class NetworkStatusStore extends Store {
 
   // DEFINE COMPUTED VALUES
   @computed get isConnecting(): boolean {
-    // until we start receiving network difficulty messages we are not connected to node and
+    // Until we start receiving network difficulty messages we are not connected to node and
     // we should be on the blue connecting screen instead of displaying 'Loading wallet data'
-    return !this.isConnected || this.networkBlockHeight <= 1;
-  }
-
-  @computed get nodeIsSubscribing(): boolean {
-    if (!this.nodeSubscriptionStatus) { return false; }
-    const nodeIPs = Object.values(this.nodeSubscriptionStatus);
-    return nodeIPs.includes('subscribing');
-  }
-
-  @computed get nodeIsSubscribed(): boolean {
-    if (!this.nodeSubscriptionStatus) { return false; }
-    const nodeIPs = Object.values(this.nodeSubscriptionStatus);
-    return nodeIPs.includes('subscribed');
+    return !this.isConnected || this.networkBlockHeight < 1;
   }
 
   @computed get hasBlockSyncingStarted(): boolean {
@@ -268,14 +233,14 @@ export default class NetworkStatusStore extends Store {
   @computed get isSyncing(): boolean {
     return (
       !this.isSynced &&
-      !this.nodeIsSubscribing &&
+      !this.isConnecting &&
       this.hasBlockSyncingStarted
     );
   }
 
   @computed get isSynced(): boolean {
     return (
-      !this.nodeIsSubscribing &&
+      !this.isConnecting &&
       this.hasBlockSyncingStarted &&
       this.remainingUnsyncedBlocks <= UNSYNCED_BLOCKS_ALLOWED
     );
