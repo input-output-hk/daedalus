@@ -79,6 +79,7 @@ type Props = {
   handleReportIssue: Function,
   onProblemSolutionClick: Function,
   onCheckTheTimeAgain: Function,
+  isCheckingTheTimeAgain: boolean,
 };
 
 @observer
@@ -150,6 +151,7 @@ export default class Loading extends Component<Props, State> {
       handleReportIssue,
       onProblemSolutionClick,
       onCheckTheTimeAgain,
+      isCheckingTheTimeAgain,
     } = this.props;
 
     const { connectingTime, syncingTime } = this.state;
@@ -231,6 +233,7 @@ export default class Loading extends Component<Props, State> {
           currentLocale={currentLocale}
           onProblemSolutionClick={onProblemSolutionClick}
           onCheckTheTimeAgain={onCheckTheTimeAgain}
+          isCheckingTheTimeAgain={isCheckingTheTimeAgain}
         />
       );
     }

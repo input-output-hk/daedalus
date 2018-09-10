@@ -165,6 +165,7 @@
   "systemTime.error.overlayTitle": "Unable to sync - incorrect time",
   "systemTime.error.problemSolutionLink": "daedaluswallet.io/faq",
   "systemTime.error.onCheckTheTimeAgainLink": "Check the time again",
+  "systemTime.error.onCheckTheTimeAgainLinkExecuting": "Checking time",
   "test.environment.developmentLabel": "Development",
   "test.environment.stagingLabel": "Staging",
   "test.environment.testnetLabel": "Testnet",

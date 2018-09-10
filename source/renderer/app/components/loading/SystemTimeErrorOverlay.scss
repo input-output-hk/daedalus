@@ -1,3 +1,5 @@
+@import "../../themes/mixins/animations";
+
 .component {
   align-items: center;
   background-color: var(--theme-system-error-overlay-background-color);
@@ -57,6 +59,12 @@
     margin-top: 20px;
     opacity: 0.8;
     text-decoration: underline;
+
+    &:disabled {
+      text-decoration: none;
+      cursor: default;
+      @include animated-ellipsis($width: 16px);
+    }
   }
 
 }
