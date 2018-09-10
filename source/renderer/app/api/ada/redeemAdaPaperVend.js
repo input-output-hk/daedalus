@@ -1,26 +1,15 @@
 // @flow
-import type { AdaTransaction, RequestConfig } from './types';
-import { request } from './lib/request';
-
-export type RedeemAdaPaperVendParams = {
-  walletPassword: ?string,
-  redeemPaperVendedData: {
-    pvWalletId: string,
-    pvSeed: string,
-    pvBackupPhrase: {
-      bpToList: [],
-    }
-  }
-};
+import type { RequestConfig, RedeemPaperVendedAdaParams, AdaTransactionV1 } from './types';
+import { request } from './lib/v1/request';
 
 export const redeemAdaPaperVend = (
   config: RequestConfig,
-  { walletPassword, redeemPaperVendedData }: RedeemAdaPaperVendParams
-): Promise<AdaTransaction> => (
+  redemptionParams: RedeemPaperVendedAdaParams
+): Promise<AdaTransactionV1> => (
   request({
     hostname: 'localhost',
     method: 'POST',
-    path: '/api/papervend/redemptions/ada',
-    ...config,
-  }, { passphrase: walletPassword }, redeemPaperVendedData)
+    path: '/api/v1/transactions/certificates',
+    ...config
+  }, {}, redemptionParams)
 );

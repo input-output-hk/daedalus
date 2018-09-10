@@ -182,12 +182,12 @@ where Ada should be redeemed and enter {adaRedemptionPassphraseLength} word mnem
     defaultMessage: '!!!Enter your Ada amount',
     description: 'Hint for the Ada amount input field.'
   },
-  walletPasswordPlaceholder: {
+  spendingPasswordPlaceholder: {
     id: 'wallet.redeem.dialog.walletPasswordPlaceholder',
     defaultMessage: '!!!Password',
     description: 'Placeholder for "spending password"',
   },
-  walletPasswordLabel: {
+  spendingPasswordLabel: {
     id: 'wallet.redeem.dialog.walletPasswordLabel',
     defaultMessage: '!!!Password',
     description: 'Label for "spending password"',
@@ -332,10 +332,10 @@ export default class AdaRedemptionForm extends Component<Props> {
           ];
         }],
       },
-      walletPassword: {
+      spendingPassword: {
         type: 'password',
-        label: this.context.intl.formatMessage(messages.walletPasswordLabel),
-        placeholder: this.context.intl.formatMessage(messages.walletPasswordPlaceholder),
+        label: this.context.intl.formatMessage(messages.spendingPasswordLabel),
+        placeholder: this.context.intl.formatMessage(messages.spendingPasswordPlaceholder),
         value: '',
         validators: [({ field, form }) => {
           const password = field.value;
@@ -372,11 +372,11 @@ export default class AdaRedemptionForm extends Component<Props> {
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        const { walletId, shieldedRedemptionKey, walletPassword } = form.values();
+        const { walletId, shieldedRedemptionKey, spendingPassword } = form.values();
         this.props.onSubmit({
           walletId,
           shieldedRedemptionKey,
-          walletPassword: walletPassword || null,
+          spendingPassword: spendingPassword || null,
         });
       },
       onError: () => {},
@@ -391,7 +391,7 @@ export default class AdaRedemptionForm extends Component<Props> {
 
     // We can not user form.reset() call here as it would reset selected walletId
     // which is a bad UX since we are calling resetForm on certificate add/remove
-    form.$('walletPassword').reset();
+    form.$('spendingPassword').reset();
     form.$('adaAmount').reset();
     form.$('adaPasscode').reset();
     form.$('certificate').reset();
@@ -407,7 +407,7 @@ export default class AdaRedemptionForm extends Component<Props> {
   onWalletChange = (walletId: string) => {
     const { form } = this;
     form.$('walletId').value = walletId;
-    form.$('walletPassword').value = '';
+    form.$('spendingPassword').value = '';
   }
 
   render() {
@@ -429,7 +429,7 @@ export default class AdaRedemptionForm extends Component<Props> {
     const emailField = form.$('email');
     const adaPasscodeField = form.$('adaPasscode');
     const adaAmountField = form.$('adaAmount');
-    const walletPasswordField = form.$('walletPassword');
+    const spendingPasswordField = form.$('spendingPassword');
     const decryptionKeyField = form.$('decryptionKey');
     const componentClasses = classnames([
       styles.component,
@@ -445,7 +445,7 @@ export default class AdaRedemptionForm extends Component<Props> {
       redemptionType === ADA_REDEMPTION_TYPES.RECOVERY_FORCE_VENDED
     );
 
-    const passwordSubmittable = !walletHasPassword || walletPasswordField.value !== '';
+    const passwordSubmittable = !walletHasPassword || spendingPasswordField.value !== '';
 
     let canSubmit = false;
     if ((
@@ -588,8 +588,8 @@ export default class AdaRedemptionForm extends Component<Props> {
                 <Input
                   onKeyPress={submitOnEnter.bind(this, submit)}
                   className="walletPassword"
-                  {...walletPasswordField.bind()}
-                  error={walletPasswordField.error}
+                  {...spendingPasswordField.bind()}
+                  error={spendingPasswordField.error}
                   skin={InputSkin}
                 />
               </div>
