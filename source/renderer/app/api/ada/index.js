@@ -248,19 +248,23 @@ export default class AdaApi {
   getTransactions = async (request: GetTransactionsRequest): Promise<GetTransactionsResponse> => {
     Logger.debug('AdaApi::searchHistory called: ' + stringifyData(request));
     const { walletId, skip, limit } = request;
-
+    const TX_PER_PAGE = 50;
     const accounts: AdaAccounts = await getAdaWalletAccounts(this.config, { walletId });
+
+    let perPage = limit;
+    if (limit === null || limit > TX_PER_PAGE) {
+      perPage = TX_PER_PAGE;
+    }
 
     const params = {
       accountIndex: accounts[0].index,
       page: skip === 0 ? 1 : (skip / limit) + 1,
-      per_page: limit > 50 ? 50 : limit,
+      per_page: perPage,
       wallet_id: walletId,
       sort_by: 'DES[created_at]',
     };
 
-    // Calculate how many pages we need to load
-    const pageLimit = Math.ceil(limit / params.per_page);
+    const pagesToBeLoaded = Math.ceil(limit / params.per_page);
 
     try {
       const {
@@ -268,16 +272,19 @@ export default class AdaApi {
         meta
       }: AdaTransactionsV1 = await getAdaHistoryByWallet(this.config, params);
       const { totalPages } = meta.pagination;
+      const hasMultiplePages = (totalPages > 1 && limit > TX_PER_PAGE);
 
-      // In case there is more than one page,
-      // it loops through them and adds to the `history` array
-      if (totalPages > 1 && limit > 50) {
-        for (let page = 2; (page < totalPages + 1 && page <= pageLimit); page++) {
-          const { data: pageHistory }: AdaTransactionsV1 =
+      if (hasMultiplePages) {
+        let page = 2;
+        const hasNextPage = () => page < totalPages + 1;
+        const shouldLoadNextPage = () => limit === null || page <= pagesToBeLoaded;
+
+        for (page; (hasNextPage() && shouldLoadNextPage()); page++) {
+          const { data: pageHistory } =
             await getAdaHistoryByWallet(this.config, Object.assign(params, { page }));
           history.push(...pageHistory);
         }
-        history.splice(limit);
+        if (limit !== null) history.splice(limit);
       }
 
       const transactions = history.map(item => _createTransactionFromServerDataV1(item));
