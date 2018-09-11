@@ -2,7 +2,6 @@
 import { action, computed, observable, runInAction } from 'mobx';
 import { ipcRenderer } from 'electron';
 import { isString } from 'lodash';
-import BigNumber from 'bignumber.js';
 import Store from '../lib/Store';
 import Request from '../lib/LocalizedRequest';
 import { Logger } from '../../../../common/logging';
@@ -19,7 +18,7 @@ import LocalizableError from '../../i18n/LocalizableError';
 import { ROUTES } from '../../routes-config';
 import type { RedemptionTypeChoices } from '../../types/redemptionTypes';
 import { ADA_REDEMPTION_TYPES } from '../../types/redemptionTypes';
-import type { AdaTransaction, RedeemAdaParams, RedeemPaperVendedAdaParams } from '../../api/ada/types';
+import type { RedeemAdaParams, RedeemPaperVendedAdaParams } from '../../api/ada/types';
 
 export default class AdaRedemptionStore extends Store {
 
@@ -209,26 +208,24 @@ export default class AdaRedemptionStore extends Store {
     spendingPassword: ?string,
   }) => {
     runInAction(() => this.walletId = walletId);
-    const { redemptionCode, redeemAdaRequest } = this;
 
     const accountIndex = await this.stores.ada.addresses.getAccountIndexByWalletId(walletId);
     if (!accountIndex) throw new Error('Active account required before redeeming Ada.');
 
-    redeemAdaRequest.execute({
-      accountIndex,
-      redemptionCode,
-      spendingPassword: spendingPassword && encryptPassphrase(spendingPassword)
-    })
-      .then(action((transaction: AdaTransaction) => {
-        this._reset();
-        this.actions.ada.adaRedemption.adaSuccessfullyRedeemed.trigger({
-          walletId,
-          amount: new BigNumber(transaction.amount).toFormat(DECIMAL_PLACES_IN_ADA),
-        });
-      }))
-      .catch(action((error) => {
-        this.error = error;
-      }));
+    try {
+      const transaction = await this.redeemAdaRequest.execute({
+        accountIndex,
+        redemptionCode: this.redemptionCode,
+        spendingPassword: spendingPassword && encryptPassphrase(spendingPassword)
+      });
+      this._reset();
+      this.actions.ada.adaRedemption.adaSuccessfullyRedeemed.trigger({
+        walletId,
+        amount: transaction.amount.toFormat(DECIMAL_PLACES_IN_ADA),
+      });
+    } catch (error) {
+      runInAction(() => this.error = error);
+    }
   };
 
   _redeemPaperVendedAda = async ({ walletId, shieldedRedemptionKey, spendingPassword } : {
@@ -242,7 +239,7 @@ export default class AdaRedemptionStore extends Store {
     if (!accountIndex) throw new Error('Active account required before redeeming Ada.');
 
     try {
-      const transaction: AdaTransaction = await this.redeemPaperVendedAdaRequest.execute({
+      const transaction = await this.redeemPaperVendedAdaRequest.execute({
         mnemonics: this.passPhrase && this.passPhrase.split(' '),
         accountIndex,
         redemptionCode: shieldedRedemptionKey,
@@ -251,14 +248,17 @@ export default class AdaRedemptionStore extends Store {
       this._reset();
       this.actions.ada.adaRedemption.adaSuccessfullyRedeemed.trigger({
         walletId,
-        amount: new BigNumber(transaction.amount).toFormat(DECIMAL_PLACES_IN_ADA),
+        amount: transaction.amount.toFormat(DECIMAL_PLACES_IN_ADA),
       });
     } catch (error) {
       runInAction(() => this.error = error);
     }
   };
 
-  _onAdaSuccessfullyRedeemed = action(({ walletId, amount }) => {
+  _onAdaSuccessfullyRedeemed = action(({ walletId, amount } : {
+    walletId: string,
+    amount: number,
+  }) => {
     Logger.debug('ADA successfully redeemed for wallet: ' + walletId);
     this.stores.ada.wallets.goToWalletRoute(walletId);
     this.amountRedeemed = amount;
