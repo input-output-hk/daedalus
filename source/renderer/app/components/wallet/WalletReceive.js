@@ -124,6 +124,8 @@ export default class WalletReceive extends Component<Props, State> {
       },
       onError: () => {}
     });
+
+    this.passwordField && this.passwordField.getRef().focus();
   }
 
   render() {
@@ -161,6 +163,7 @@ export default class WalletReceive extends Component<Props, State> {
           <Input
             className={styles.spendingPassword}
             {...passwordField.bind()}
+            ref={(input) => { this.passwordField = input; }}
             error={passwordField.error}
             skin={InputSkin}
           />

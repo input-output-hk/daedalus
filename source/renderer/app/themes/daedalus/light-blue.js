@@ -107,7 +107,7 @@ export default {
   '--theme-dialog-choice-tabs-text-color-active': '#5e6066',
   '--theme-dialog-choice-tabs-bottom-border-color-active': '#5e6066',
   '--theme-dialog-big-button-background-color': '#f1f3f5',
-  '--theme-dialog-big-button-border-color': '#d7dce0',
+  '--theme-dialog-big-button-border-color': '#c6cdd6',
   '--theme-dialog-big-button-label-color': '#5e6066',
   '--theme-dialog-big-button-description-color': '#5e6066',
   '--theme-dialog-title-color': '#5e6066',
