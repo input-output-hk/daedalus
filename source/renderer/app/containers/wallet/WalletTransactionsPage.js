@@ -9,7 +9,7 @@ import WalletNoTransactions from '../../components/wallet/transactions/WalletNoT
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
-import { syncStateTags } from '../../domains/Wallet';
+import { WalletSyncStateTags } from '../../domains/Wallet';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -64,7 +64,7 @@ export default class WalletTransactionsPage extends Component<Props> {
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const noTransactionsFoundLabel = intl.formatMessage(messages.noTransactionsFound);
 
-    const isRestoreActive = get(activeWallet, 'syncState.tag') === syncStateTags.RESTORING;
+    const isRestoreActive = get(activeWallet, 'syncState.tag') === WalletSyncStateTags.RESTORING;
 
     // if (wasSearched || hasAny) {
     //   transactionSearch = (

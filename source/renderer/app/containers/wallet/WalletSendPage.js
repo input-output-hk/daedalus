@@ -7,7 +7,7 @@ import WalletSendForm from '../../components/wallet/WalletSendForm';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import globalMessages from '../../i18n/global-messages';
 import { DECIMAL_PLACES_IN_ADA, MAX_INTEGER_PLACES_IN_ADA } from '../../config/numbersConfig';
-import { syncStateTags } from '../../domains/Wallet';
+import { WalletSyncStateTags } from '../../domains/Wallet';
 
 type Props = InjectedProps;
 
@@ -32,7 +32,7 @@ export default class WalletSendPage extends Component<Props> {
     // Guard against potential null values
     if (!activeWallet) throw new Error('Active wallet required for WalletSendPage.');
 
-    const isRestoreActive = get(activeWallet, 'syncState.tag') === syncStateTags.RESTORING;
+    const isRestoreActive = get(activeWallet, 'syncState.tag') === WalletSyncStateTags.RESTORING;
 
     return (
       <WalletSendForm
