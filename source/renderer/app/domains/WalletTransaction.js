@@ -1,10 +1,8 @@
 // @flow
 import { observable } from 'mobx';
 import BigNumber from 'bignumber.js';
-import type { AssuranceMode, AssuranceLevel } from '../types/transactionAssuranceTypes';
-import { assuranceLevels } from '../types/transactionAssuranceTypes';
+import type { WalletAssuranceMode, TxnAssuranceLevel, TransactionState } from '../api/ada/types';
 
-export type TransactionState = 'pending' | 'failed' | 'ok';
 export type TrasactionAddresses = { from: Array<string>, to: Array<string> };
 export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';
 
@@ -12,6 +10,12 @@ export const transactionStates: {
   PENDING: TransactionState, FAILED: TransactionState, OK: TransactionState,
 } = {
   PENDING: 'pending', FAILED: 'failed', OK: 'ok',
+};
+
+export const TxnAssuranceLevelOptions: {
+  LOW: TxnAssuranceLevel, MEDIUM: TxnAssuranceLevel, HIGH: TxnAssuranceLevel,
+} = {
+  LOW: 'low', MEDIUM: 'medium', HIGH: 'high',
 };
 
 export const transactionTypes: {
@@ -52,13 +56,13 @@ export default class WalletTransaction {
     Object.assign(this, data);
   }
 
-  getAssuranceLevelForMode(mode: AssuranceMode): AssuranceLevel {
+  getAssuranceLevelForMode(mode: WalletAssuranceMode): TxnAssuranceLevel {
     if (this.numberOfConfirmations < mode.low) {
-      return assuranceLevels.LOW;
+      return TxnAssuranceLevelOptions.LOW;
     } else if (this.numberOfConfirmations < mode.medium) {
-      return assuranceLevels.MEDIUM;
+      return TxnAssuranceLevelOptions.MEDIUM;
     }
-    return assuranceLevels.HIGH;
+    return TxnAssuranceLevelOptions.HIGH;
   }
 
 }
