@@ -1,5 +1,5 @@
 // @flow
-import { split } from 'lodash';
+import { split, get } from 'lodash';
 import { action } from 'mobx';
 import { ipcRenderer } from 'electron';
 import BigNumber from 'bignumber.js';
@@ -11,7 +11,7 @@ import WalletTransaction, { transactionTypes } from '../../domains/WalletTransac
 import WalletAddress from '../../domains/WalletAddress';
 import { isValidMnemonic } from '../../../../common/decrypt';
 import { isValidRedemptionKey, isValidPaperVendRedemptionKey } from '../../../../common/redemption-key-validation';
-import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
+import { LOVELACES_PER_ADA, MAX_TRANSACTIONS_PER_PAGE } from '../../config/numbersConfig';
 import patchAdaApi from './mocks/patchAdaApi';
 import { getAdaWallets } from './getAdaWallets';
 import { changeAdaWalletPassphrase } from './changeAdaWalletPassphrase';
@@ -45,8 +45,7 @@ import type {
   AdaAddresses,
   AdaAccounts,
   AdaTransaction,
-  AdaTransactionV1,
-  AdaTransactionsV1,
+  AdaTransactions,
   AdaTransactionFee,
   AdaWallet,
   AdaV1Wallet,
@@ -57,6 +56,8 @@ import type {
   GetWalletCertificateAdditionalMnemonicsResponse,
   GetWalletCertificateRecoveryPhraseResponse,
   GetWalletRecoveryPhraseFromCertificateResponse,
+  RedeemAdaParams,
+  RedeemPaperVendedAdaParams,
   RequestConfig,
   NodeInfo,
   NodeQueryParams,
@@ -69,8 +70,7 @@ import type {
   CreateTransactionResponse,
   DeleteWalletRequest,
   DeleteWalletResponse,
-  GetLocalTimeDifferenceResponse,
-  GetSyncProgressResponse,
+  GetNetworkStatusResponse,
   GetTransactionsRequest,
   GetTransactionsResponse,
   GetWalletRecoveryPhraseResponse,
@@ -132,19 +132,6 @@ export type UpdateWalletRequest = {
   assuranceLevel: AdaV1Assurance,
   name: string
 };
-export type RedeemAdaRequest = {
-  redemptionCode: string,
-  accountId: string,
-  walletPassword: ?string,
-};
-export type RedeemAdaResponse = Wallet;
-export type RedeemPaperVendedAdaRequest = {
-  shieldedRedemptionKey: string,
-  mnemonics: string,
-  accountId: string,
-  walletPassword: ?string,
-};
-export type RedeemPaperVendedAdaResponse = RedeemPaperVendedAdaRequest;
 export type ImportWalletFromKeyRequest = {
   filePath: string,
   spendingPassword: ?string,
@@ -249,22 +236,44 @@ export default class AdaApi {
   getTransactions = async (request: GetTransactionsRequest): Promise<GetTransactionsResponse> => {
     Logger.debug('AdaApi::searchHistory called: ' + stringifyData(request));
     const { walletId, skip, limit } = request;
-
     const accounts: AdaAccounts = await getAdaWalletAccounts(this.config, { walletId });
-    const accountIndex = accounts[0].index;
-    const page = skip === 0 ? 1 : (skip / limit) + 1;
-    const perPage = limit > 50 ? 50 : limit;
+
+    let perPage = limit;
+    if (limit === null || limit > MAX_TRANSACTIONS_PER_PAGE) {
+      perPage = MAX_TRANSACTIONS_PER_PAGE;
+    }
 
     const params = {
-      accountIndex,
-      page,
+      accountIndex: accounts[0].index,
+      page: skip === 0 ? 1 : (skip / limit) + 1,
       per_page: perPage,
       wallet_id: walletId,
       sort_by: 'DES[created_at]',
     };
 
+    const pagesToBeLoaded = Math.ceil(limit / params.per_page);
+
     try {
-      const history: AdaTransactionsV1 = await getAdaHistoryByWallet(this.config, params);
+      const {
+        data: history,
+        meta
+      }: AdaTransactions = await getAdaHistoryByWallet(this.config, params);
+      const { totalPages } = meta.pagination;
+      const hasMultiplePages = (totalPages > 1 && limit > MAX_TRANSACTIONS_PER_PAGE);
+
+      if (hasMultiplePages) {
+        let page = 2;
+        const hasNextPage = () => page < totalPages + 1;
+        const shouldLoadNextPage = () => limit === null || page <= pagesToBeLoaded;
+
+        for (page; (hasNextPage() && shouldLoadNextPage()); page++) {
+          const { data: pageHistory } =
+            await getAdaHistoryByWallet(this.config, Object.assign(params, { page }));
+          history.push(...pageHistory);
+        }
+        if (limit !== null) history.splice(limit);
+      }
+
       const transactions = history.map(data => _createTransactionFromServerDataV1(data));
       Logger.debug('AdaApi::searchHistory success: ' + stringifyData(history));
       return new Promise((resolve) => resolve({
@@ -332,7 +341,7 @@ export default class AdaApi {
         groupingPolicy: 'OptimizeForSecurity',
         spendingPassword,
       };
-      const response: AdaTransactionV1 = await newAdaPayment(this.config, { data });
+      const response: AdaTransaction = await newAdaPayment(this.config, { data });
       Logger.debug('AdaApi::createTransaction success: ' + stringifyData(response));
       return _createTransactionFromServerDataV1(response);
     } catch (error) {
@@ -421,25 +430,23 @@ export default class AdaApi {
     }
   }
 
-  isValidMnemonic(mnemonic: string): Promise<boolean> {
-    return isValidMnemonic(mnemonic, WALLET_RECOVERY_PHRASE_WORD_COUNT);
-  }
+  isValidMnemonic = (mnemonic: string): boolean => (
+    isValidMnemonic(mnemonic, WALLET_RECOVERY_PHRASE_WORD_COUNT)
+  );
 
-  isValidRedemptionKey(mnemonic: string): Promise<boolean> {
-    return isValidRedemptionKey(mnemonic);
-  }
+  isValidRedemptionKey = (mnemonic: string): boolean => (isValidRedemptionKey(mnemonic));
 
-  isValidPaperVendRedemptionKey(mnemonic: string): Promise<boolean> {
-    return isValidPaperVendRedemptionKey(mnemonic);
-  }
+  isValidPaperVendRedemptionKey = (mnemonic: string): boolean => (
+    isValidPaperVendRedemptionKey(mnemonic)
+  );
 
-  isValidRedemptionMnemonic(mnemonic: string): Promise<boolean> {
-    return isValidMnemonic(mnemonic, ADA_REDEMPTION_PASSPHRASE_LENGHT);
-  }
+  isValidRedemptionMnemonic = (mnemonic: string): boolean => (
+    isValidMnemonic(mnemonic, ADA_REDEMPTION_PASSPHRASE_LENGHT)
+  );
 
-  isValidCertificateMnemonic(mnemonic: string): boolean {
-    return mnemonic.split(' ').length === ADA_CERTIFICATE_MNEMONIC_LENGHT;
-  }
+  isValidCertificateMnemonic = (mnemonic: string): boolean => (
+    mnemonic.split(' ').length === ADA_CERTIFICATE_MNEMONIC_LENGHT
+  );
 
   getWalletRecoveryPhrase(): Promise<GetWalletRecoveryPhraseResponse> {
     Logger.debug('AdaApi::getWalletRecoveryPhrase called');
@@ -577,21 +584,12 @@ export default class AdaApi {
     }
   };
 
-  redeemAda = async (request: RedeemAdaRequest): Promise<RedeemAdaResponse> => {
+  async redeemAda(request: RedeemAdaParams): Promise<AdaTransaction> {
     Logger.debug('AdaApi::redeemAda called');
-    const { redemptionCode, accountId, walletPassword } = request;
     try {
-      const walletRedeemData = {
-        crWalletId: accountId,
-        crSeed: redemptionCode,
-      };
-
-      const response: AdaTransaction = await redeemAda(this.config,
-        { walletPassword, walletRedeemData }
-      );
-
+      const transaction: AdaTransaction = await redeemAda(this.config, request);
       Logger.debug('AdaApi::redeemAda success');
-      return _createTransactionFromServerData(response);
+      return _createTransactionFromServerDataV1(transaction);
     } catch (error) {
       Logger.debug('AdaApi::redeemAda error: ' + stringifyError(error));
       if (error.message.includes('Passphrase doesn\'t match')) {
@@ -599,28 +597,16 @@ export default class AdaApi {
       }
       throw new RedeemAdaError();
     }
-  };
+  }
 
-  redeemPaperVendedAda = async (
-    request: RedeemPaperVendedAdaRequest
-  ): Promise<RedeemPaperVendedAdaResponse> => {
+  async redeemPaperVendedAda(
+    request: RedeemPaperVendedAdaParams
+  ): Promise<AdaTransaction> {
     Logger.debug('AdaApi::redeemAdaPaperVend called');
-    const { shieldedRedemptionKey, mnemonics, accountId, walletPassword } = request;
     try {
-      const redeemPaperVendedData = {
-        pvWalletId: accountId,
-        pvSeed: shieldedRedemptionKey,
-        pvBackupPhrase: {
-          bpToList: split(mnemonics),
-        }
-      };
-
-      const response: AdaTransaction = await redeemAdaPaperVend(this.config,
-        { walletPassword, redeemPaperVendedData }
-      );
-
+      const transaction: AdaTransaction = await redeemAdaPaperVend(this.config, request);
       Logger.debug('AdaApi::redeemAdaPaperVend success');
-      return _createTransactionFromServerData(response);
+      return _createTransactionFromServerDataV1(transaction);
     } catch (error) {
       Logger.debug('AdaApi::redeemAdaPaperVend error: ' + stringifyError(error));
       if (error.message.includes('Passphrase doesn\'t match')) {
@@ -628,7 +614,7 @@ export default class AdaApi {
       }
       throw new RedeemAdaError();
     }
-  };
+  }
 
   async sendBugReport(requestFormData: SendBugReportRequest): Promise<SendBugReportResponse> {
     Logger.debug('AdaApi::sendBugReport called: ' + stringifyData(requestFormData));
@@ -677,23 +663,6 @@ export default class AdaApi {
       ipcRenderer.send('kill-process');
     } catch (error) {
       Logger.error('AdaApi::applyUpdate error: ' + stringifyError(error));
-      throw new GenericApiError();
-    }
-  };
-
-  getSyncProgress = async (): Promise<GetSyncProgressResponse> => {
-    Logger.debug('AdaApi::syncProgress called');
-    try {
-      const response: NodeInfo = await getNodeInfo(this.config);
-      Logger.debug('AdaApi::syncProgress success: ' + stringifyData(response));
-      const { localBlockchainHeight, blockchainHeight, syncProgress } = response;
-      return {
-        localBlockchainHeight: localBlockchainHeight.quantity,
-        blockchainHeight: blockchainHeight.quantity,
-        syncProgress: syncProgress.quantity
-      };
-    } catch (error) {
-      Logger.debug('AdaApi::syncProgress error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   };
@@ -761,26 +730,56 @@ export default class AdaApi {
     }
   };
 
+  getNetworkStatus = async (): Promise<GetNetworkStatusResponse> => {
+    Logger.debug('AdaApi::getNetworkStatus called');
+    try {
+      const status: NodeInfo = await getNodeInfo(this.config);
+      Logger.debug('AdaApi::getNetworkStatus success: ' + stringifyData(status));
+
+      const {
+        blockchainHeight,
+        subscriptionStatus,
+        syncProgress,
+        localBlockchainHeight
+      } = status;
+
+      // extract relevant data before sending to NetworkStatusStore
+      return {
+        subscriptionStatus,
+        syncProgress: syncProgress.quantity,
+        blockchainHeight: get(blockchainHeight, 'quantity', null),
+        localBlockchainHeight: localBlockchainHeight.quantity
+      };
+    } catch (error) {
+      Logger.error('AdaApi::getNetworkStatus error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  };
+
+  // returns time difference in microseconds between user's local machine and NtpServer
+  // ensures time on user's node is synced with peer nodes on the network
   getLocalTimeDifference = async (
     queryParams?: NodeQueryParams
-  ): Promise<GetLocalTimeDifferenceResponse> => {
+  ): Promise<number> => {
     Logger.debug('AdaApi::getLocalTimeDifference called');
     try {
       const response: NodeInfo = await getNodeInfo(this.config, queryParams);
       Logger.debug('AdaApi::getLocalTimeDifference success: ' + stringifyData(response));
+      const differenceFromNtpServer = get(
+        response.localTimeInformation,
+        'differenceFromNtpServer',
+        null
+      );
 
-      const { localTimeInformation: { differenceFromNtpServer } } = response;
-      // TODO: I had to add the `if` bellow, as it was getting an error
-      if (!differenceFromNtpServer) {
-        return 0;
-      }
-      const timeDifference = differenceFromNtpServer.quantity;
-      return timeDifference;
+      // if the optional property 'differenceFromNtpServer' doesn't exist
+      // return 0 microseconds, otherwise return the required property 'quantity'
+      if (!differenceFromNtpServer) { return 0; }
+      return differenceFromNtpServer.quantity;
     } catch (error) {
       Logger.error('AdaApi::getLocalTimeDifference error: ' + stringifyError(error));
       throw new GenericApiError();
     }
-  };
+  }
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========
@@ -803,14 +802,6 @@ const _createAddressFromServerData = action(
   (address: AdaAddress) => new WalletAddress(address)
 );
 
-const _conditionToTxState = (condition: string) => {
-  switch (condition) {
-    case 'CPtxApplying': return 'pending';
-    case 'CPtxWontApply': return 'failed';
-    default: return 'ok'; // CPtxInBlocks && CPtxNotTracked
-  }
-};
-
 const _conditionToTxStateV1 = (condition: string) => {
   switch (condition) {
     case 'applying':
@@ -822,29 +813,8 @@ const _conditionToTxStateV1 = (condition: string) => {
   }
 };
 
-const _createTransactionFromServerData = action(
-  'AdaApi::_createTransactionFromServerData', (data: AdaTransaction) => {
-    const coins = data.ctAmount.getCCoin;
-    const { ctmTitle, ctmDescription, ctmDate } = data.ctMeta;
-    return new WalletTransaction({
-      id: data.ctId,
-      title: ctmTitle || data.ctIsOutgoing ? 'Ada sent' : 'Ada received',
-      type: data.ctIsOutgoing ? transactionTypes.EXPEND : transactionTypes.INCOME,
-      amount: new BigNumber(data.ctIsOutgoing ? -1 * coins : coins).dividedBy(LOVELACES_PER_ADA),
-      date: unixTimestampToDate(ctmDate),
-      description: ctmDescription || '',
-      numberOfConfirmations: data.ctConfirmations,
-      addresses: {
-        from: data.ctInputs.map(address => address[0]),
-        to: data.ctOutputs.map(address => address[0]),
-      },
-      state: _conditionToTxState(data.ctCondition),
-    });
-  }
-);
-
 const _createTransactionFromServerDataV1 = action(
-  'AdaApi::_createTransactionFromServerData', (data: AdaTransactionV1) => {
+  'AdaApi::_createTransactionFromServerData', (data: AdaTransaction) => {
     const { id, direction, amount, confirmations, creationTime, inputs, outputs, status } = data;
     return new WalletTransaction({
       id,

@@ -25,21 +25,21 @@ export type NodeInfo = {
     quantity: number,
     unit: 'percent'
   },
-  blockchainHeight: {
+  blockchainHeight: ?{
     quantity: number,
-    unit: 'blocks'
+    unit: ?'blocks'
   },
   localBlockchainHeight: {
     quantity: number,
-    unit: 'blocks'
+    unit: ?'blocks'
   },
   localTimeInformation: {
-    differenceFromNtpServer: {
+    differenceFromNtpServer: ?{
       quantity: number,
-      unit: 'microseconds'
+      unit: ?'microseconds'
     }
   },
-  subscriptionStatus: any
+  subscriptionStatus: Object
 };
 
 export type NodeUpdate = {
@@ -95,26 +95,6 @@ export type AdaAccount = {
 };
 
 export type AdaAccounts = Array<AdaAccount>;
-
-export type AdaTransaction = {
-  ctAmount: AdaAmount,
-  ctConfirmations: number,
-  ctId: string,
-  ctInputs: AdaTransactionInputOutput,
-  ctIsOutgoing: boolean,
-  ctMeta: {
-    ctmDate: Date,
-    ctmDescription: ?string,
-    ctmTitle: ?string,
-  },
-  ctOutputs: AdaTransactionInputOutput,
-  ctCondition: AdaTransactionCondition,
-};
-
-export type AdaTransactions = [
-  Array<AdaTransaction>,
-  number,
-];
 
 export type AdaTransactionInputOutput = [
   [string, AdaAmount],
@@ -175,8 +155,12 @@ export const AdaV1AssuranceOptions: {
   NORMAL: 'normal', STRICT: 'strict',
 };
 
-export type AdaTransactionsV1 = Array<AdaTransactionV1>;
-export type AdaTransactionV1 = {
+export type AdaTransactions = {
+  data: Array<AdaTransaction>,
+  status: ResponseStatus,
+  meta: Pagination,
+};
+export type AdaTransaction = {
   amount: number,
   confirmations: number,
   creationTime: string,
@@ -224,6 +208,19 @@ export type AdaTransactionParams = {
 };
 
 export type AdaTxFeeParams = AdaTransactionParams;
+
+export type RedeemAdaParams = {
+  redemptionCode: string,
+  mnemonic: ?Array<string>,
+  spendingPassword: string,
+  walletId: string,
+  accountIndex: number
+};
+
+export type RedeemPaperVendedAdaParams = {
+  mnemonic: Array<string>,
+  ...RedeemAdaParams
+};
 
 export type Pagination = {
   pagination: {

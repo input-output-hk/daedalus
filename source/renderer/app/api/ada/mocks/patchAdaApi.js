@@ -3,9 +3,9 @@ import { Logger } from '../../../../../common/logging';
 import { RedeemAdaError } from '../errors';
 import AdaApi from '../index';
 import type {
-  RedeemPaperVendedAdaRequest,
-  RedeemAdaRequest
-} from '../index';
+  RedeemAdaParams,
+  RedeemPaperVendedAdaParams
+} from '../types';
 
 // ========== LOGGING =========
 
@@ -16,10 +16,10 @@ const stringifyData = (data) => JSON.stringify(data, null, 2);
 
 export default (api: AdaApi) => {
   // Since we cannot test ada redemption in dev mode, just resolve the requests
-  api.redeemAda = async (request: RedeemAdaRequest) => {
+  api.redeemAda = (request: RedeemAdaParams) => {
     Logger.debug('AdaApi::redeemAda (PATCHED) called: ' + stringifyData(request));
     const { redemptionCode } = request;
-    const isValidRedemptionCode = await api.isValidRedemptionKey(redemptionCode);
+    const isValidRedemptionCode = api.isValidRedemptionKey(redemptionCode);
     if (!isValidRedemptionCode) {
       Logger.debug('AdaApi::redeemAda failed: not a valid redemption key!');
       throw new RedeemAdaError();
@@ -27,11 +27,11 @@ export default (api: AdaApi) => {
     return { amount: new BigNumber(1000) };
   };
 
-  api.redeemPaperVendedAda = async (request: RedeemPaperVendedAdaRequest) => {
+  api.redeemPaperVendedAda = (request: RedeemPaperVendedAdaParams) => {
     Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) called: ' + stringifyData(request));
     const { shieldedRedemptionKey, mnemonics } = request;
-    const isValidKey = await api.isValidPaperVendRedemptionKey(shieldedRedemptionKey);
-    const isValidMnemonic = await api.isValidRedemptionMnemonic(mnemonics);
+    const isValidKey = api.isValidPaperVendRedemptionKey(shieldedRedemptionKey);
+    const isValidMnemonic = api.isValidRedemptionMnemonic(mnemonics);
     if (!isValidKey) Logger.debug('AdaApi::redeemPaperVendedAda failed: not a valid redemption key!');
     if (!isValidMnemonic) Logger.debug('AdaApi::redeemPaperVendedAda failed: not a valid mnemonic!');
     if (!isValidKey || !isValidMnemonic) {
