@@ -2,7 +2,7 @@
 import { observable, action, runInAction } from 'mobx';
 import Store from '../lib/Store';
 import Request from '../lib/LocalizedRequest';
-import type { NodeUpdate } from '../../api/ada/types';
+import type { NodeSoftware } from '../../api/ada/types';
 import type { PostponeUpdateResponse, ApplyUpdateResponse } from '../../api/ada/index';
 import { NODE_UPDATE_POLL_INTERVAL } from '../../config/timingConfig';
 
@@ -16,7 +16,7 @@ export default class NodeUpdateStore extends Store {
 
   // REQUESTS
   /* eslint-disable max-len */
-  @observable nextUpdateRequest: Request<NodeUpdate> = new Request(this.api.ada.nextUpdate);
+  @observable nextUpdateRequest: Request<NodeSoftware> = new Request(this.api.ada.nextUpdate);
   @observable postponeUpdateRequest: Request<PostponeUpdateResponse> = new Request(this.api.ada.postponeUpdate);
   @observable applyUpdateRequest: Request<ApplyUpdateResponse> = new Request(this.api.ada.applyUpdate);
   /* eslint-disable max-len */

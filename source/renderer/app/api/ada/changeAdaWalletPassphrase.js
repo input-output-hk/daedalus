@@ -1,5 +1,5 @@
 // @flow
-import type { AdaV1Wallet, RequestConfig } from './types';
+import type { AdaWallet, RequestConfig } from './types';
 import { request } from './lib/v1/request';
 import { encryptPassphrase } from './lib/encryptPassphrase';
 
@@ -12,7 +12,7 @@ export type ChangeAdaWalletPassphraseParams = {
 export const changeAdaWalletPassphrase = (
   config: RequestConfig,
   { walletId, oldPassword, newPassword }: ChangeAdaWalletPassphraseParams
-): Promise<AdaV1Wallet> => {
+): Promise<AdaWallet> => {
   const encryptedOldPassphrase = oldPassword ? encryptPassphrase(oldPassword) : '';
   const encryptedNewPassphrase = newPassword ? encryptPassphrase(newPassword) : '';
   return request({

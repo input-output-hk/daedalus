@@ -4,7 +4,7 @@ import { action } from 'mobx';
 import { ipcRenderer } from 'electron';
 import BigNumber from 'bignumber.js';
 import { Logger, stringifyData, stringifyError } from '../../../../common/logging';
-import { unixTimestampToDate, utcStringToDate } from './lib/utils';
+import { utcStringToDate } from './lib/utils';
 import { encryptPassphrase } from './lib/encryptPassphrase';
 import Wallet from '../../domains/Wallet';
 import WalletTransaction, { transactionTypes } from '../../domains/WalletTransaction';
@@ -48,11 +48,11 @@ import type {
   AdaTransactions,
   AdaTransactionFee,
   AdaWallet,
-  AdaV1Wallet,
-  AdaV1Wallets,
+  AdaWallets,
   AdaWalletRecoveryPhraseResponse,
   AdaWalletCertificateAdditionalMnemonicsResponse,
   AdaWalletCertificateRecoveryPhraseResponse,
+  WalletAssuranceLevel,
   GetWalletCertificateAdditionalMnemonicsResponse,
   GetWalletCertificateRecoveryPhraseResponse,
   GetWalletRecoveryPhraseFromCertificateResponse,
@@ -60,8 +60,7 @@ import type {
   RedeemPaperVendedAdaParams,
   RequestConfig,
   NodeInfo,
-  NodeUpdate,
-  AdaV1Assurance,
+  NodeSoftware,
 } from './types';
 import type {
   CreateWalletRequest,
@@ -129,7 +128,7 @@ export type CreateAddressRequest = {
 };
 export type UpdateWalletRequest = {
   walletId: string,
-  assuranceLevel: AdaV1Assurance,
+  assuranceLevel: WalletAssuranceLevel,
   name: string
 };
 export type ImportWalletFromKeyRequest = {
@@ -202,7 +201,7 @@ export default class AdaApi {
   getWallets = async (): Promise<GetWalletsResponse> => {
     Logger.debug('AdaApi::getWallets called');
     try {
-      const response: AdaV1Wallets = await getAdaWallets(this.config);
+      const response: AdaWallets = await getAdaWallets(this.config);
       Logger.debug('AdaApi::getWallets success: ' + stringifyData(response));
       return response.map(data => _createWalletFromServerV1Data(data));
     } catch (error) {
@@ -238,6 +237,7 @@ export default class AdaApi {
     const { walletId, skip, limit } = request;
 
     const accounts: AdaAccounts = await getAdaWalletAccounts(this.config, { walletId });
+
     const accountIndex = accounts[0].index;
     const page = skip === 0 ? 1 : (skip / limit) + 1;
     const perPage = limit > 50 ? 50 : limit;
@@ -606,7 +606,7 @@ export default class AdaApi {
     }
   }
 
-  nextUpdate = async (): Promise<NodeUpdate | null> => {
+  nextUpdate = async (): Promise<NodeSoftware | null> => {
     Logger.debug('AdaApi::nextUpdate called');
     try {
       const nodeUpdate = await nextAdaUpdate(this.config);
@@ -666,7 +666,7 @@ export default class AdaApi {
     Logger.debug('AdaApi::updateWallet called: ' + stringifyData(request));
     const { walletId, assuranceLevel, name } = request;
     try {
-      const wallet: AdaV1Wallet = await updateAdaWallet(
+      const wallet: AdaWallet = await updateAdaWallet(
         this.config, { walletId, assuranceLevel, name }
       );
       Logger.debug('AdaApi::updateWallet success: ' + stringifyData(wallet));
@@ -755,7 +755,7 @@ const _createWalletFromServerData = action(
       name: data.name,
       assurance: data.assuranceLevel,
       hasPassword: data.hasSpendingPassword,
-      passwordUpdateDate: unixTimestampToDate(data.spendingPasswordLastUpdate),
+      passwordUpdateDate: new Date(`${data.spendingPasswordLastUpdate}Z`),
     })
   )
 );
@@ -805,7 +805,7 @@ const _createTransactionFeeFromServerData = action(
 // ========== V1 API =========
 
 const _createWalletFromServerV1Data = action(
-  'AdaApi::_createWalletFromServerV1Data', (data: AdaV1Wallet) => {
+  'AdaApi::_createWalletFromServerV1Data', (data: AdaWallet) => {
     const {
       id, balance, name, assuranceLevel,
       hasSpendingPassword, spendingPasswordLastUpdate,

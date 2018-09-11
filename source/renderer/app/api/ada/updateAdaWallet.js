@@ -1,17 +1,17 @@
 // @flow
-import type { AdaV1Wallet, AdaV1Assurance, RequestConfig } from './types';
+import type { AdaWallet, WalletAssuranceLevel, RequestConfig } from './types';
 import { request } from './lib/v1/request';
 
 export type UpdateAdaWalletParams = {
   walletId: string,
-  assuranceLevel: AdaV1Assurance,
+  assuranceLevel: WalletAssuranceLevel,
   name: string
 };
 
 export const updateAdaWallet = (
   config: RequestConfig,
   { walletId, assuranceLevel, name }: UpdateAdaWalletParams
-): Promise<AdaV1Wallet> => (
+): Promise<AdaWallet> => (
   request({
     hostname: 'localhost',
     method: 'PUT',
