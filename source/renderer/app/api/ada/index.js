@@ -11,7 +11,7 @@ import WalletTransaction, { transactionTypes } from '../../domains/WalletTransac
 import WalletAddress from '../../domains/WalletAddress';
 import { isValidMnemonic } from '../../../../common/decrypt';
 import { isValidRedemptionKey, isValidPaperVendRedemptionKey } from '../../../../common/redemption-key-validation';
-import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
+import { LOVELACES_PER_ADA, MAX_TRANSACTIONS_PER_PAGE } from '../../config/numbersConfig';
 import patchAdaApi from './mocks/patchAdaApi';
 import { getAdaWallets } from './getAdaWallets';
 import { changeAdaWalletPassphrase } from './changeAdaWalletPassphrase';
@@ -236,12 +236,11 @@ export default class AdaApi {
   getTransactions = async (request: GetTransactionsRequest): Promise<GetTransactionsResponse> => {
     Logger.debug('AdaApi::searchHistory called: ' + stringifyData(request));
     const { walletId, skip, limit } = request;
-    const TX_PER_PAGE = 50;
     const accounts: AdaAccounts = await getAdaWalletAccounts(this.config, { walletId });
 
     let perPage = limit;
-    if (limit === null || limit > TX_PER_PAGE) {
-      perPage = TX_PER_PAGE;
+    if (limit === null || limit > MAX_TRANSACTIONS_PER_PAGE) {
+      perPage = MAX_TRANSACTIONS_PER_PAGE;
     }
 
     const params = {
@@ -260,7 +259,7 @@ export default class AdaApi {
         meta
       }: AdaTransactions = await getAdaHistoryByWallet(this.config, params);
       const { totalPages } = meta.pagination;
-      const hasMultiplePages = (totalPages > 1 && limit > TX_PER_PAGE);
+      const hasMultiplePages = (totalPages > 1 && limit > MAX_TRANSACTIONS_PER_PAGE);
 
       if (hasMultiplePages) {
         let page = 2;
