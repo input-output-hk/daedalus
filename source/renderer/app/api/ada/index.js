@@ -44,8 +44,8 @@ import type {
   AdaAddress,
   AdaAddresses,
   AdaAccounts,
-  AdaTransactionV1,
-  AdaTransactionsV1,
+  AdaTransaction,
+  AdaTransactions,
   AdaTransactionFee,
   AdaWallet,
   AdaV1Wallet,
@@ -251,7 +251,7 @@ export default class AdaApi {
     };
 
     try {
-      const history: AdaTransactionsV1 = await getAdaHistoryByWallet(this.config, params);
+      const history: AdaTransactions = await getAdaHistoryByWallet(this.config, params);
       const transactions = history.map(data => _createTransactionFromServerDataV1(data));
       Logger.debug('AdaApi::searchHistory success: ' + stringifyData(history));
       return new Promise((resolve) => resolve({
@@ -319,7 +319,7 @@ export default class AdaApi {
         groupingPolicy: 'OptimizeForSecurity',
         spendingPassword,
       };
-      const response: AdaTransactionV1 = await newAdaPayment(this.config, { data });
+      const response: AdaTransaction = await newAdaPayment(this.config, { data });
       Logger.debug('AdaApi::createTransaction success: ' + stringifyData(response));
       return _createTransactionFromServerDataV1(response);
     } catch (error) {
@@ -562,10 +562,10 @@ export default class AdaApi {
     }
   };
 
-  async redeemAda(request: RedeemAdaParams): Promise<AdaTransactionV1> {
+  async redeemAda(request: RedeemAdaParams): Promise<AdaTransaction> {
     Logger.debug('AdaApi::redeemAda called');
     try {
-      const transaction: AdaTransactionV1 = await redeemAda(this.config, request);
+      const transaction: AdaTransaction = await redeemAda(this.config, request);
       Logger.debug('AdaApi::redeemAda success');
       return _createTransactionFromServerDataV1(transaction);
     } catch (error) {
@@ -579,10 +579,10 @@ export default class AdaApi {
 
   async redeemPaperVendedAda(
     request: RedeemPaperVendedAdaParams
-  ): Promise<AdaTransactionV1> {
+  ): Promise<AdaTransaction> {
     Logger.debug('AdaApi::redeemAdaPaperVend called');
     try {
-      const transaction: AdaTransactionV1 = await redeemAdaPaperVend(this.config, request);
+      const transaction: AdaTransaction = await redeemAdaPaperVend(this.config, request);
       Logger.debug('AdaApi::redeemAdaPaperVend success');
       return _createTransactionFromServerDataV1(transaction);
     } catch (error) {
@@ -777,7 +777,7 @@ const _conditionToTxStateV1 = (condition: string) => {
 };
 
 const _createTransactionFromServerDataV1 = action(
-  'AdaApi::_createTransactionFromServerData', (data: AdaTransactionV1) => {
+  'AdaApi::_createTransactionFromServerData', (data: AdaTransaction) => {
     const { id, direction, amount, confirmations, creationTime, inputs, outputs, status } = data;
     return new WalletTransaction({
       id,

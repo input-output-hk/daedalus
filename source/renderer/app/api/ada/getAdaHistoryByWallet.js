@@ -1,5 +1,5 @@
 // @flow
-import type { AdaTransactionsV1, RequestConfig } from './types';
+import type { AdaTransactions, RequestConfig } from './types';
 import { request } from './lib/v1/request';
 
 export type GetAdaHistoryByWalletParams = {
@@ -13,7 +13,7 @@ export type GetAdaHistoryByWalletParams = {
 export const getAdaHistoryByWallet = (
   config: RequestConfig,
   { ...requestParams }: GetAdaHistoryByWalletParams
-): Promise<AdaTransactionsV1> => (
+): Promise<AdaTransactions> => (
   request({
     hostname: 'localhost',
     method: 'GET',

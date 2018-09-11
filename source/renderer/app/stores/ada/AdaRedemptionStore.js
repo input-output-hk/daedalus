@@ -19,7 +19,7 @@ import LocalizableError from '../../i18n/LocalizableError';
 import { ROUTES } from '../../routes-config';
 import type { RedemptionTypeChoices } from '../../types/redemptionTypes';
 import { ADA_REDEMPTION_TYPES } from '../../types/redemptionTypes';
-import type { AdaTransactionV1, RedeemAdaParams, RedeemPaperVendedAdaParams } from '../../api/ada/types';
+import type { AdaTransaction, RedeemAdaParams, RedeemPaperVendedAdaParams } from '../../api/ada/types';
 
 export default class AdaRedemptionStore extends Store {
 
@@ -219,7 +219,7 @@ export default class AdaRedemptionStore extends Store {
       redemptionCode,
       spendingPassword: spendingPassword && encryptPassphrase(spendingPassword)
     })
-      .then(action((transaction: AdaTransactionV1) => {
+      .then(action((transaction: AdaTransaction) => {
         this._reset();
         this.actions.ada.adaRedemption.adaSuccessfullyRedeemed.trigger({
           walletId,
@@ -242,7 +242,7 @@ export default class AdaRedemptionStore extends Store {
     if (!accountIndex) throw new Error('Active account required before redeeming Ada.');
 
     try {
-      const transaction: AdaTransactionV1 = await this.redeemPaperVendedAdaRequest.execute({
+      const transaction: AdaTransaction = await this.redeemPaperVendedAdaRequest.execute({
         mnemonics: this.passPhrase && this.passPhrase.split(' '),
         accountIndex,
         redemptionCode: shieldedRedemptionKey,
