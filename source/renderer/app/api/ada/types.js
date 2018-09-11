@@ -151,7 +151,11 @@ export const AdaV1AssuranceOptions: {
   NORMAL: 'normal', STRICT: 'strict',
 };
 
-export type AdaTransactions = Array<AdaTransaction>;
+export type AdaTransactions = {
+  data: Array<AdaTransaction>,
+  status: ResponseStatus,
+  meta: Pagination,
+};
 export type AdaTransaction = {
   amount: number,
   confirmations: number,
