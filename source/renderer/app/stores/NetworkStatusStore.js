@@ -1,5 +1,6 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
+import moment from 'moment';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { Logger } from '../../../common/logging';
@@ -11,6 +12,7 @@ let cachedState = null;
 // DEFINE CONSTANTS ----------------------------
 const TIME_DIFF_POLL_INTERVAL = 30 * 60 * 1000; // 30 minutes (milliseconds)
 const ALLOWED_TIME_DIFFERENCE = 15 * 1000000; // 15 seconds (microseconds)
+const MAX_ALLOWED_STALL_DURATION = 2 * 60 * 1000; // 2 minutes (milliseconds)
 const NETWORK_POLL_INTERVAL = 2000; // 2 seconds (milliseconds)
 // Maximum number of out-of-sync blocks above which we consider to be out-of-sync
 const UNSYNCED_BLOCKS_ALLOWED = 6;
@@ -109,16 +111,6 @@ export default class NetworkStatusStore extends Store {
         localBlockchainHeight
       } = await this.getNetworkStatus.execute().promise;
 
-      // Update node connection status
-      runInAction('update connected status', () => {
-        const wasConnected = this.isConnected;
-        const nodeIPs = Object.values(subscriptionStatus || {});
-        this.isConnected = nodeIPs.includes('subscribed');
-        if (wasConnected && !this.isConnected && !this.hasBeenConnected) {
-          runInAction('update hasBeenConnected', () => this.hasBeenConnected = true);
-        }
-      });
-
       // Update sync progress
       runInAction('update syncProgress', () => {
         this.syncProgress = syncProgress;
@@ -126,8 +118,11 @@ export default class NetworkStatusStore extends Store {
 
       // Update both local and network block heights
       runInAction('update block heights', () => {
+        const nodeIPs = Object.values(subscriptionStatus || {});
+        const isSubscribed = nodeIPs.includes('subscribed');
+
         // We are connected, move on to syncing stage
-        if (this._nodeStatus === NODE_STATUS.CONNECTING) {
+        if (this._nodeStatus === NODE_STATUS.CONNECTING && isSubscribed) {
           Logger.info(
             `========== Connected after ${this._getStartupTimeDelta()} milliseconds ==========`
           );
@@ -147,13 +142,45 @@ export default class NetworkStatusStore extends Store {
         runInAction('update local block height', () => {
           this.localBlockHeight = localBlockchainHeight;
         });
-        Logger.debug('Local blockchain height changed: ' + localBlockchainHeight);
+        Logger.debug('Local blockchain height updated: ' + localBlockchainHeight);
+
+        // Check if the network's block height has ceased to change
+        // If unchanged for > 2 minutes, it indicates the node has stalled
+        // w/o internet connection, the node will send its last known network block height
+        let isBlockSyncingStalled = false;
+        if (this.networkBlockHeight !== blockchainHeight) {
+          // There is a new block, record it's timestamp
+          this._mostRecentBlockTimestamp = Date.now();
+        } else {
+          // Received block is the same as the last one - check if block syncing has stalled
+          const timeSinceLastBlock = moment(Date.now()).diff(
+            moment(this._mostRecentBlockTimestamp)
+          );
+          // Check if elapsed time exceeds maximum allowance
+          isBlockSyncingStalled = timeSinceLastBlock > MAX_ALLOWED_STALL_DURATION;
+        }
+
+        const wasConnected = this.isConnected;
+        const isConnected = isSubscribed && !isBlockSyncingStalled;
+        if (isConnected !== wasConnected) {
+          runInAction('update connected status', () => {
+            this.isConnected = isConnected;
+            if (!this.isConnected) {
+              if (!this.hasBeenConnected) {
+                runInAction('update hasBeenConnected', () => this.hasBeenConnected = true);
+              }
+              Logger.debug('Connection Lost. Reconnecting...');
+            } else if (this.hasBeenConnected) {
+              Logger.debug('Connection Restored.');
+            }
+          });
+        }
 
         // Update latest block height on each request
         runInAction('update network blockchain height', () => {
           this.networkBlockHeight = blockchainHeight;
         });
-        Logger.debug('Network blockchain height updated: ' + this.networkBlockHeight);
+        Logger.debug('Network blockchain height updated: ' + blockchainHeight);
       });
 
       if (this._nodeStatus === NODE_STATUS.SYNCING && this.isSynced) {
@@ -169,9 +196,9 @@ export default class NetworkStatusStore extends Store {
           if (!this.hasBeenConnected) {
             runInAction('update hasBeenConnected', () => this.hasBeenConnected = true);
           }
+          Logger.debug('Connection Lost. Reconnecting...');
         }
       });
-      Logger.debug('Connection Lost. Reconnecting...');
     }
   };
 
