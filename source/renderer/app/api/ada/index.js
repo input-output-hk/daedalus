@@ -1,5 +1,5 @@
 // @flow
-import { split } from 'lodash';
+import { split, get } from 'lodash';
 import { action } from 'mobx';
 import { ipcRenderer } from 'electron';
 import BigNumber from 'bignumber.js';
@@ -69,8 +69,7 @@ import type {
   CreateTransactionResponse,
   DeleteWalletRequest,
   DeleteWalletResponse,
-  GetLocalTimeDifferenceResponse,
-  GetSyncProgressResponse,
+  GetNetworkStatusResponse,
   GetTransactionsRequest,
   GetTransactionsResponse,
   GetWalletRecoveryPhraseResponse,
@@ -667,23 +666,6 @@ export default class AdaApi {
     }
   };
 
-  getSyncProgress = async (): Promise<GetSyncProgressResponse> => {
-    Logger.debug('AdaApi::syncProgress called');
-    try {
-      const response: NodeInfo = await getNodeInfo(this.config);
-      Logger.debug('AdaApi::syncProgress success: ' + stringifyData(response));
-      const { localBlockchainHeight, blockchainHeight, syncProgress } = response;
-      return {
-        localBlockchainHeight: localBlockchainHeight.quantity,
-        blockchainHeight: blockchainHeight.quantity,
-        syncProgress: syncProgress.quantity
-      };
-    } catch (error) {
-      Logger.debug('AdaApi::syncProgress error: ' + stringifyError(error));
-      throw new GenericApiError();
-    }
-  };
-
   updateWallet = async (request: UpdateWalletRequest): Promise<UpdateWalletResponse> => {
     Logger.debug('AdaApi::updateWallet called: ' + stringifyData(request));
     const { walletId, assuranceLevel, name } = request;
@@ -747,24 +729,54 @@ export default class AdaApi {
     }
   };
 
-  getLocalTimeDifference = async (): Promise<GetLocalTimeDifferenceResponse> => {
+  getNetworkStatus = async (): Promise<GetNetworkStatusResponse> => {
+    Logger.debug('AdaApi::getNetworkStatus called');
+    try {
+      const status: NodeInfo = await getNodeInfo(this.config);
+      Logger.debug('AdaApi::getNetworkStatus success: ' + stringifyData(status));
+
+      const {
+        blockchainHeight,
+        subscriptionStatus,
+        syncProgress,
+        localBlockchainHeight
+      } = status;
+
+      // extract relevant data before sending to NetworkStatusStore
+      return {
+        subscriptionStatus,
+        syncProgress: syncProgress.quantity,
+        blockchainHeight: get(blockchainHeight, 'quantity', null),
+        localBlockchainHeight: localBlockchainHeight.quantity
+      };
+    } catch (error) {
+      Logger.error('AdaApi::getNetworkStatus error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  };
+
+  // returns time difference in microseconds between user's local machine and NtpServer
+  // ensures time on user's node is synced with peer nodes on the network
+  getLocalTimeDifference = async (): Promise<number> => {
     Logger.debug('AdaApi::getLocalTimeDifference called');
     try {
       const response: NodeInfo = await getNodeInfo(this.config);
       Logger.debug('AdaApi::getLocalTimeDifference success: ' + stringifyData(response));
+      const differenceFromNtpServer = get(
+        response.localTimeInformation,
+        'differenceFromNtpServer',
+        null
+      );
 
-      const { localTimeInformation: { differenceFromNtpServer } } = response;
-      // TODO: I had to add the `if` bellow, as it was getting an error
-      if (!differenceFromNtpServer) {
-        return 0;
-      }
-      const timeDifference = differenceFromNtpServer.quantity;
-      return timeDifference;
+      // if the optional property 'differenceFromNtpServer' doesn't exist
+      // return 0 microseconds, otherwise return the required property 'quantity'
+      if (!differenceFromNtpServer) { return 0; }
+      return differenceFromNtpServer.quantity;
     } catch (error) {
       Logger.error('AdaApi::getLocalTimeDifference error: ' + stringifyError(error));
       throw new GenericApiError();
     }
-  };
+  }
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========

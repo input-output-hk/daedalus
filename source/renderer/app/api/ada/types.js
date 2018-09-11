@@ -25,21 +25,21 @@ export type NodeInfo = {
     quantity: number,
     unit: 'percent'
   },
-  blockchainHeight: {
+  blockchainHeight: ?{
     quantity: number,
-    unit: 'blocks'
+    unit: ?'blocks'
   },
   localBlockchainHeight: {
     quantity: number,
-    unit: 'blocks'
+    unit: ?'blocks'
   },
   localTimeInformation: {
-    differenceFromNtpServer: {
+    differenceFromNtpServer: ?{
       quantity: number,
-      unit: 'microseconds'
+      unit: ?'microseconds'
     }
   },
-  subscriptionStatus: any
+  subscriptionStatus: Object
 };
 
 export type NodeUpdate = {
