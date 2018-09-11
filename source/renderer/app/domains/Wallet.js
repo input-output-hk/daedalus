@@ -2,17 +2,33 @@
 import { observable, computed } from 'mobx';
 import BigNumber from 'bignumber.js';
 import type {
-  AssuranceMode,
-  AssuranceModeOptionV1,
-  AssuranceModeOptionV0
-} from '../types/transactionAssuranceTypes';
-import { assuranceModeOptionsV1, assuranceModes } from '../types/transactionAssuranceTypes';
-import type { AdaV1WalletSyncState, AdaV1WalletSyncStateTag } from '../api/ada/types';
+  WalletAssuranceLevel,
+  WalletAssuranceMode,
+  WalletSyncState,
+  SyncStateTag
+} from '../api/ada/types';
 
-export const syncStateTags: {
-  RESTORING: AdaV1WalletSyncStateTag, SYNCED: AdaV1WalletSyncStateTag,
+export const WalletAssuranceModeOptions: {
+  NORMAL: WalletAssuranceLevel, STRICT: WalletAssuranceLevel,
+} = {
+  NORMAL: 'normal', STRICT: 'strict',
+};
+
+export const WalletSyncStateTags: {
+  RESTORING: SyncStateTag, SYNCED: SyncStateTag,
 } = {
   RESTORING: 'restoring', SYNCED: 'synced',
+};
+
+const WalletAssuranceModes: { NORMAL: WalletAssuranceMode, STRICT: WalletAssuranceMode } = {
+  NORMAL: {
+    low: 3,
+    medium: 9,
+  },
+  STRICT: {
+    low: 5,
+    medium: 15,
+  }
 };
 
 export default class Wallet {
@@ -20,19 +36,19 @@ export default class Wallet {
   id: string = '';
   @observable name: string = '';
   @observable amount: BigNumber;
-  @observable assurance: AssuranceModeOptionV1 | AssuranceModeOptionV0;
+  @observable assurance: WalletAssuranceLevel;
   @observable hasPassword: boolean;
   @observable passwordUpdateDate: ?Date;
-  @observable syncState: ?AdaV1WalletSyncState;
+  @observable syncState: ?WalletSyncState;
 
   constructor(data: {
     id: string,
     name: string,
     amount: BigNumber,
-    assurance: AssuranceModeOptionV1 | AssuranceModeOptionV0,
+    assurance: WalletAssuranceLevel,
     hasPassword: boolean,
     passwordUpdateDate: ?Date,
-    syncState?: AdaV1WalletSyncState,
+    syncState?: WalletSyncState,
   }) {
     Object.assign(this, data);
   }
@@ -41,11 +57,11 @@ export default class Wallet {
     return this.amount > 0;
   }
 
-  @computed get assuranceMode(): AssuranceMode {
+  @computed get assuranceMode(): WalletAssuranceMode {
     switch (this.assurance) {
-      case assuranceModeOptionsV1.NORMAL: return assuranceModes.NORMAL;
-      case assuranceModeOptionsV1.STRICT: return assuranceModes.STRICT;
-      default: return assuranceModes.NORMAL;
+      case WalletAssuranceModeOptions.NORMAL: return WalletAssuranceModes.NORMAL;
+      case WalletAssuranceModeOptions.STRICT: return WalletAssuranceModes.STRICT;
+      default: return WalletAssuranceModes.NORMAL;
     }
   }
 
