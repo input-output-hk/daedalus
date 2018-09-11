@@ -148,19 +148,20 @@ export default class NetworkStatusStore extends Store {
         // Check if the network's block height has ceased to change
         // If unchanged for > 2 minutes, it indicates the node has stalled
         // w/o internet connection, the node will send its last known network block height
-        let isBlockSyncingStalled = false;
-        if (this.networkBlockHeight !== blockchainHeight) {
-          // There is a new block, record it's timestamp
+        if (
+          this.networkBlockHeight !== blockchainHeight || // New block detected
+          this._mostRecentBlockTimestamp > Date.now() // Guard against future (machine time altered)
+        ) {
+          // Record latest block timestamp
           this._mostRecentBlockTimestamp = Date.now();
-        } else {
-          // Received block is the same as the last one - check if block syncing has stalled
-          const timeSinceLastBlock = moment(Date.now()).diff(
-            moment(this._mostRecentBlockTimestamp)
-          );
-          // Check if elapsed time exceeds maximum allowance
-          isBlockSyncingStalled = timeSinceLastBlock > MAX_ALLOWED_STALL_DURATION;
         }
 
+        // Received block is the same as the last one - check if block syncing has stalled
+        const timeSinceLastBlock = moment(Date.now()).diff(
+          moment(this._mostRecentBlockTimestamp)
+        );
+        // Check if elapsed time exceeds maximum allowance
+        const isBlockSyncingStalled = timeSinceLastBlock > MAX_ALLOWED_STALL_DURATION;
         const wasConnected = this.isConnected;
         const isConnected = isSubscribed && !isBlockSyncingStalled;
         if (isConnected !== wasConnected) {
