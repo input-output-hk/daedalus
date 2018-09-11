@@ -4,9 +4,12 @@ import { observer } from 'mobx-react';
 import QRCode from 'qrcode.react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import SVGInline from 'react-svg-inline';
 import Dialog from '../../widgets/Dialog';
 import { getNetworkExplorerUrl } from '../../../utils/network';
 import styles from './CompletionDialog.scss';
+import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 
 const messages = defineMessages({
   headline: {
@@ -52,6 +55,7 @@ type Props = {
   walletCertificateAddress: string,
   onClose: Function,
   onOpenExternalLink: Function,
+  onCopyAddress: Function,
 };
 
 @observer
@@ -63,7 +67,8 @@ export default class CompletionDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, walletCertificateAddress, onOpenExternalLink } = this.props;
+    const { onClose, walletCertificateAddress, onOpenExternalLink, /* onCopyAddress */ } =
+      this.props;
     const dialogClasses = classnames([
       styles.component,
       'completionDialog',
@@ -119,6 +124,15 @@ export default class CompletionDialog extends Component<Props> {
 
             <div className={styles.infoBox}>
               {walletCertificateAddress}
+              <CopyToClipboard
+                text={walletCertificateAddress}
+                onCopy={() => {
+                  // TODO: Implement the notification
+                  // onCopyAddress.bind(this, walletCertificateAddress)
+                }}
+              >
+                <SVGInline svg={iconCopy} className={styles.copyIconBig} />
+              </CopyToClipboard>
             </div>
           </div>
 
