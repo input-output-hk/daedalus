@@ -33,24 +33,25 @@ export default class CompletionDialogContainer extends Component<Props, State> {
   };
 
   render() {
-    const { copiedAddress } = this.state;
+    // const { copiedAddress } = this.state;
     const { ada, uiNotifications } = this.props.stores;
     const actions = this.props.actions;
 
     const { wallets } = ada;
     const { walletCertificateAddress } = wallets;
-    const wallet = wallets.active;
+    // const wallet = wallets.active;
 
-    const notification = {
-      id: `${wallet.id}-copyNotification`,
-      duration: ADDRESS_COPY_NOTIFICATION_DURATION,
-      message: (
-        <FormattedHTMLMessage
-          {...messages.message}
-          values={{ walletAddress: ellipsis(copiedAddress, ADDRESS_COPY_NOTIFICATION_ELLIPSIS) }}
-        />
-      ),
-    };
+    // TODO: Implement the notification
+    // const notification = {
+    //   id: `${wallet.id}-copyNotification`,
+    //   duration: ADDRESS_COPY_NOTIFICATION_DURATION,
+    //   message: (
+    //     <FormattedHTMLMessage
+    //       {...messages.message}
+    //       values={{ walletAddress: ellipsis(copiedAddress, ADDRESS_COPY_NOTIFICATION_ELLIPSIS) }}
+    //     />
+    //   ),
+    // };
 
     return (
       <div>
@@ -58,20 +59,23 @@ export default class CompletionDialogContainer extends Component<Props, State> {
           walletCertificateAddress={walletCertificateAddress}
           onClose={this.props.onClose}
           onOpenExternalLink={this.props.stores.app.openExternalLink}
-          onCopyAddress={(address) => {
-            this.setState({ copiedAddress: address });
-            actions.notifications.open.trigger({
-              id: notification.id,
-              duration: notification.duration,
-            });
+          onCopyAddress={() => {
+            // TODO: Implement the notification
+            // this.setState({ copiedAddress: address });
+            // actions.notifications.open.trigger({
+            //   id: notification.id,
+            //   duration: notification.duration,
+            // });
           }}
         />
-        <NotificationMessage
-          icon={successIcon}
-          show={uiNotifications.isOpen(notification.id)}
-        >
-          {notification.message}
-        </NotificationMessage>
+        {/*
+          <NotificationMessage
+            icon={successIcon}
+            show={uiNotifications.isOpen(notification.id)}
+          >
+            {notification.message}
+          </NotificationMessage>
+        */}
       </div>
     );
   }

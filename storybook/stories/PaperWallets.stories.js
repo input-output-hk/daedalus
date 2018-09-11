@@ -73,6 +73,7 @@ storiesOf('PaperWallets', module)
         onBack={action('onBack')}
         onContinue={action('onContinue')}
         onOpenExternalLink={action('onOpenExternalLink')}
+        onCopyAddress={action('onCopyAddress')}
       />
     </div>
   ));
