@@ -42,10 +42,10 @@ export default class NetworkStatusStore extends Store {
   @observable networkBlockHeight = 0;
   @observable localTimeDifference = 0; // microseconds
   @observable syncProgress = null;
-  @observable getNetworkStatus: Request<GetNetworkStatusResponse> = new Request(
+  @observable getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
     this.api.ada.getNetworkStatus
   );
-  @observable getLocalTimeDifference: Request<number> = new Request(
+  @observable getLocalTimeDifferenceRequest: Request<number> = new Request(
     this.api.ada.getLocalTimeDifference
   );
 
@@ -110,7 +110,7 @@ export default class NetworkStatusStore extends Store {
         syncProgress,
         blockchainHeight,
         localBlockchainHeight
-      } = await this.getNetworkStatus.execute().promise;
+      } = await this.getNetworkStatusRequest.execute().promise;
 
       // Update sync progress
       runInAction('update syncProgress', () => {
@@ -212,7 +212,8 @@ export default class NetworkStatusStore extends Store {
   @action _updateLocalTimeDifference = async (queryParams?: NodeQueryParams) => {
     if (!this.isConnected) return;
     try {
-      const timeDifference: number = await this.getLocalTimeDifference.execute(queryParams).promise;
+      const timeDifference: number =
+        await this.getLocalTimeDifferenceRequest.execute(queryParams).promise;
       runInAction('update time difference', () => (this.localTimeDifference = timeDifference));
     } catch (error) {
       runInAction('update time difference', () => (this.localTimeDifference = 0));
@@ -259,7 +260,7 @@ export default class NetworkStatusStore extends Store {
 
   @computed get isSystemTimeCorrect(): boolean {
     // We assume that system time is correct by default
-    if (!this.getLocalTimeDifference.wasExecuted) return true;
+    if (!this.getLocalTimeDifferenceRequest.wasExecuted) return true;
     // Compare time difference if we have a result
     return this.localTimeDifference <= ALLOWED_TIME_DIFFERENCE;
   }

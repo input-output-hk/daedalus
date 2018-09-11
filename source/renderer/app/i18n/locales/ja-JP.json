@@ -161,6 +161,8 @@
   "static.about.copyright": "Input Output HK Limited. Licensed under",
   "static.about.license": "MIT licence",
   "static.about.title": "ダイダロス",
+  "systemTime.error.onCheckTheTimeAgainLink": "!!!Check the time again",
+  "systemTime.error.onCheckTheTimeAgainLinkExecuting": "!!!Checking time",
   "systemTime.error.overlayText": "注意：お使いのマシンの時刻が標準時刻と一致していないために、ダイダロスは同期することができません。 あなたのマシンの時間は {timeOffset} 遅れています。<br>この問題を解決するには、DaedalusのウェブサイトのFAQセクションを参照してください:",
   "systemTime.error.overlayTitle": "同期できません - 時刻の不一致",
   "systemTime.error.problemSolutionLink": "daedaluswallet.io/ja/faq",

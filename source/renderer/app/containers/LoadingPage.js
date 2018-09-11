@@ -27,7 +27,7 @@ export default class LoadingPage extends Component<InjectedProps> {
     const {
       isConnecting, isSyncing, isSynced, syncPercentage, hasBeenConnected,
       hasBlockSyncingStarted, localTimeDifference, isSystemTimeCorrect,
-      forceCheckLocalTimeDifference, getLocalTimeDifference,
+      forceCheckLocalTimeDifference, getLocalTimeDifferenceRequest,
     } = stores.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     return (
@@ -50,7 +50,7 @@ export default class LoadingPage extends Component<InjectedProps> {
           handleReportIssue={this.handleReportIssue}
           onProblemSolutionClick={this.handleProblemSolutionClick}
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
-          isCheckingTheTimeAgain={getLocalTimeDifference.isExecuting}
+          isCheckingTheTimeAgain={getLocalTimeDifferenceRequest.isExecuting}
         />
         <WalletSupportRequestPage />
       </CenteredLayout>
