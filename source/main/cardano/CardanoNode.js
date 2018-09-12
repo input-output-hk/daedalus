@@ -96,21 +96,19 @@ export class CardanoNode {
       // Spawning cardano-node
       const jsonArgs = JSON.stringify(nodeArgs);
       log.info(`Spawning cardano-node from path: ${nodePath} with args: ${jsonArgs}.`);
-      this.node = this._spawnNode(nodePath, nodeArgs, logFile);
+      const node = this._spawnNode(nodePath, nodeArgs, logFile);
+      this.node = node;
       try {
-        await promisedCondition(
-          () => this.node.connected,
-          startupTimeout
-        );
+        await promisedCondition(() => node.connected, startupTimeout);
         // Setup livecycle event handlers
-        this.node.on('message', this._handleCardanoNodeMessage);
-        this.node.on('disconnect', this._handleCardanoNodeDisconnect);
-        this.node.on('exit', this._handleCardanoNodeExit);
-        this.node.on('error', this._handleCardanoNodeError);
+        node.on('message', this._handleCardanoNodeMessage);
+        node.on('disconnect', this._handleCardanoNodeDisconnect);
+        node.on('exit', this._handleCardanoNodeExit);
+        node.on('error', this._handleCardanoNodeError);
 
         // Request cardano-node to reply with port
-        this.node.send({ QueryPort: [] });
-        log.info('CardanoNode spawned.');
+        node.send({ QueryPort: [] });
+        log.info(`cardano-node child process spawned with PID ${node.pid}`);
         this._changeToState(CardanoNode.STARTING);
       } catch (_) {
         throw new Error('Error while spawning cardano-node.');
