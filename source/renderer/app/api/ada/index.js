@@ -108,6 +108,7 @@ import {
 
 import { AdaV1AssuranceOptions } from './types';
 import { assuranceModeOptions } from '../../types/transactionAssuranceTypes';
+import { awaitUpdateChannel } from '../../ipc/awaitUpdateChannel';
 
 /**
  * The api layer that is used for all requests to the
@@ -695,9 +696,9 @@ export default class AdaApi {
   applyUpdate = async (): ApplyUpdateResponse => {
     Logger.debug('AdaApi::applyUpdate called');
     try {
+      awaitUpdateChannel.request();
       const response: Promise<any> = await applyAdaUpdate(this.config);
       Logger.debug('AdaApi::applyUpdate success: ' + stringifyData(response));
-      ipcRenderer.send('kill-process');
     } catch (error) {
       Logger.error('AdaApi::applyUpdate error: ' + stringifyError(error));
       throw new GenericApiError();

@@ -16,7 +16,9 @@ type Logger = {
 
 type Actions = {
   sendTlsConfig: (TlsConfig) => void,
-  onExit: (code: number, wasExpected: boolean) => void,
+  onStopped: (code: number, signal: string) => void,
+  onUpdated: (code: number, signal: string) => void,
+  onCrashed: (code: number, signal: string) => void,
 };
 
 type NodeIpcMessage = {
@@ -32,9 +34,12 @@ type CardanoNodeConfig = {
   startupTimeout: number, // Milliseconds to wait for cardano-node to startup
   shutdownTimeout: number, // Milliseconds to wait for cardano-node to gracefully shutdown
   killTimeout: number, // Milliseconds to wait for cardano-node to be killed
+  updateTimeout: number, // Milliseconds to wait for cardano-node to update itself
 }
 
-type CardanoNodeState = 'stopped' | 'starting' | 'running' | 'stopping';
+type CardanoNodeState = (
+  'stopped' | 'starting' | 'running' | 'stopping' | 'updating' | 'updated' | 'crashed'
+);
 
 export class CardanoNode {
   /**
@@ -66,7 +71,7 @@ export class CardanoNode {
    * on each startup and is broadcasted over ipc channel
    * @private
    */
-  tlsConfig: TlsConfig = {
+  _tlsConfig: TlsConfig = {
     ca: null,
     key: null,
     cert: null,
@@ -77,6 +82,9 @@ export class CardanoNode {
   static RUNNING: CardanoNodeState = 'running';
   static STOPPING: CardanoNodeState = 'stopping';
   static STOPPED: CardanoNodeState = 'stopped';
+  static UPDATING: CardanoNodeState = 'updating';
+  static UPDATED: CardanoNodeState = 'updated';
+  static CRASHED: CardanoNodeState = 'crashed';
   state: CardanoNodeState = CardanoNode.STOPPED;
 
   constructor(config: CardanoNodeConfig, log: Logger, actions: Actions) {
@@ -134,31 +142,64 @@ export class CardanoNode {
       } catch (e) {
         log.info('CardanoNode: cardano-node did not shut itself down correctly.');
         try {
-          log.info('CardanoNode: killing cardano-node process.');
-          node.kill();
-          await promisedCondition(
-            () => this.state === CardanoNode.STOPPED,
-            config.killTimeout
-          );
-          resolve();
-        } catch (_) {
-          log.info('CardanoNode: could not kill cardano-node.');
-          reject('Could not kill cardano-node.');
+          return this.kill();
+        } catch (killError) {
+          reject(killError);
         }
       }
     });
   }
 
-  broadcastTlsConfig() {
-    this.actions.sendTlsConfig(this.tlsConfig);
+  kill(): Promise<?number> {
+    const { node, log, config } = this;
+    return new Promise(async (resolve, reject) => {
+      try {
+        log.info('CardanoNode: killing cardano-node process.');
+        node.kill();
+        await promisedCondition(
+          () => this.state === CardanoNode.STOPPED,
+          config.killTimeout
+        );
+        resolve();
+      } catch (_) {
+        log.info('CardanoNode: could not kill cardano-node.');
+        reject('Could not kill cardano-node.');
+      }
+    });
   }
 
-  sendTlsConfigTo(receiver: { send: (any) => void }) {
-    receiver.send(this.tlsConfig);
+  broadcastTlsConfig() {
+    this.actions.sendTlsConfig(this._tlsConfig);
+  }
+
+  get tlsConfig(): TlsConfig {
+    return Object.assign({}, this._tlsConfig);
   }
 
   get pid(): number {
     return this.node.pid;
+  }
+
+  handleNodeUpdate(): Promise<void> {
+    const { log, config } = this;
+    this.state = CardanoNode.UPDATING;
+    return new Promise(async (resolve, reject) => {
+      try {
+        log.info('CardanoNode: waiting for node to apply update.');
+        await promisedCondition(
+          () => this.state === CardanoNode.UPDATED,
+          config.shutdownTimeout
+        );
+        resolve();
+      } catch (stopError) {
+        log.info('CardanoNode: did not apply update correctly. Killing it.');
+        try {
+          await this.kill();
+        } catch (_) {
+          reject();
+        }
+      }
+    });
   }
 
   // =============== PRIVATE ===================
@@ -176,18 +217,18 @@ export class CardanoNode {
   }
 
   _handleCardanoNodeMessage = (msg: NodeIpcMessage) => {
-    const { log } = this;
+    const { log, _tlsConfig } = this;
     const { tlsPath } = this.config;
     log.info(`CardanoNode: received message: ${JSON.stringify(msg)}`);
     if (msg.Started) {
       log.info('CardanoNode: started, TLS certs updated');
-      Object.assign(this.tlsConfig, {
+      Object.assign(_tlsConfig, {
         ca: readFileSync(tlsPath + '/client/ca.crt'),
         key: readFileSync(tlsPath + '/client/client.key'),
         cert: readFileSync(tlsPath + '/client/client.pem'),
       });
     } else if (msg.ReplyPort) {
-      this.tlsConfig.port = msg.ReplyPort;
+      _tlsConfig.port = msg.ReplyPort;
     }
     if (this.state === CardanoNode.STARTING && this._isTlsConfigComplete()) {
       this._changeToState(CardanoNode.RUNNING);
@@ -214,19 +255,26 @@ export class CardanoNode {
   _handleCardanoNodeExit = (code: number, signal: string) => {
     const { log, actions } = this;
     log.info(`CardanoNode: cardano-node exited with: ${code}, ${signal}`);
-    const wasExpectedExit = this.state === CardanoNode.STOPPING;
-    this._changeToState(CardanoNode.STOPPED);
-    actions.onExit(code, wasExpectedExit);
+    if (this.state === CardanoNode.STOPPING) {
+      this._changeToState(CardanoNode.STOPPED);
+      actions.onStopped(code, signal);
+    } else if (this.state === CardanoNode.UPDATING) {
+      this._changeToState(CardanoNode.UPDATED);
+      actions.onUpdated(code, signal);
+    } else if (!this.state === CardanoNode.UPDATED) {
+      this._changeToState(CardanoNode.CRASHED);
+      actions.onCrashed(code, signal);
+    }
     this._reset();
   };
 
   _resetTlsConfig = () => {
-    this.tlsConfig = {
+    Object.assign(this._tlsConfig, {
       ca: null,
       key: null,
       cert: null,
       port: null,
-    };
+    });
   };
 
   _reset = () => {
@@ -235,7 +283,7 @@ export class CardanoNode {
   };
 
   _isTlsConfigComplete = () => {
-    const { ca, key, cert, port } = this.tlsConfig;
+    const { ca, key, cert, port } = this._tlsConfig;
     return ca != null && key != null && cert != null && port != null;
   };
 

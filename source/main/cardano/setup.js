@@ -1,10 +1,10 @@
 // @flow
-import { createWriteStream } from 'fs';
 import log from 'electron-log';
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { ensureXDGDataIsSet, prepareArgs, readLauncherConfig } from './config';
 import { CardanoNode } from './CardanoNode';
 import { TLS_CONFIG_CHANNEL } from '../../common/ipc-api/tls-config';
+import { AWAIT_UPDATE_CHANNEL } from '../../common/ipc-api';
 import type { TlsConfig } from '../../common/ipc-api/tls-config';
 
 export const shouldCardanoBeLaunchedByDaedalus = (launcherConfig: Object): boolean => {
@@ -43,26 +43,39 @@ export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWind
     startupTimeout: 5000,
     shutdownTimeout: 5000,
     killTimeout: 5000,
+    updateTimeout: 20000,
   };
   const cardanoNode = new CardanoNode(config, log, {
     sendTlsConfig: (tlsConfig: TlsConfig) => mainWindow.send(TLS_CONFIG_CHANNEL, tlsConfig),
-    onExit: (code, wasExpected) => {
-      if (wasExpected) {
-        log.info('CardanoNode exited like expected. Exiting Daedalus with code 0.');
-        app.exit(0);
-      } else if (code === 20) {
-        log.info('CardanoNode exited for applying an update. Exiting Daedalus with code 20.');
-        app.exit(20);
-      } else {
-        log.info('CardanoNode exited unexpectatly. Restarting it …');
-        cardanoNode.start();
-      }
+    onStopped: () => {
+      log.info('CardanoNode exited like expected. Exiting Daedalus with code 0.');
+      app.exit(0);
+    },
+    onUpdated: () => {
+      log.info('CardanoNode applied an update. Exiting Daedalus with code 20.');
+      app.exit(20);
+    },
+    onCrashed: (code) => {
+      log.info(`CardanoNode exited unexpectatly with code ${code}. Restarting it …`);
+      cardanoNode.start();
     }
   });
   cardanoNode.start();
 
   // Respond with TLS config whenever a render process asks for it
-  ipcMain.on(TLS_CONFIG_CHANNEL, (event) => cardanoNode.sendTlsConfigTo(event.sender));
+  ipcMain.on(TLS_CONFIG_CHANNEL, ({ sender }) => {
+    sender.send(TLS_CONFIG_CHANNEL, true, cardanoNode.tlsConfig);
+  });
+  // Handle update notification from frontend
+  ipcMain.on(AWAIT_UPDATE_CHANNEL, async ({ sender }) => {
+    log.info('Received request from renderer to await update.');
+    try {
+      await cardanoNode.handleNodeUpdate();
+      sender.send(AWAIT_UPDATE_CHANNEL, true);
+    } catch (error) {
+      sender.send(AWAIT_UPDATE_CHANNEL, false);
+    }
+  });
 
   // Wait for controlled cardano-node shutdown before quitting the app
   app.on('before-quit', async (event) => {
