@@ -35,8 +35,12 @@ export type GetWalletCertificateRecoveryPhraseResponse = Array<string>;
 export type GetWalletRecoveryPhraseFromCertificateResponse = Array<string>;
 
 // ========= Transactions  =========
+export type AdaTransactions = {
+  data: Array<AdaTransaction>,
+  status: ResponseStatus,
+  meta: Pagination,
+};
 
-export type AdaTransactions = Array<AdaTransaction>;
 export type AdaTransaction = {
   amount: number,
   confirmations: number,
@@ -155,21 +159,21 @@ export type NodeInfo = {
     quantity: number,
     unit: 'percent'
   },
-  blockchainHeight: {
+  blockchainHeight: ?{
     quantity: number,
-    unit: 'blocks'
+    unit: ?'blocks'
   },
   localBlockchainHeight: {
     quantity: number,
-    unit: 'blocks'
+    unit: ?'blocks'
   },
   localTimeInformation: {
-    differenceFromNtpServer: {
+    differenceFromNtpServer: ?{
       quantity: number,
-      unit: 'microseconds'
+      unit: ?'microseconds'
     }
   },
-  subscriptionStatus: any
+  subscriptionStatus: Object
 };
 
 export type NodeSettings = {

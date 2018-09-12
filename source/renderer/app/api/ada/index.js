@@ -1,5 +1,5 @@
 // @flow
-import { split } from 'lodash';
+import { split, get } from 'lodash';
 import { action } from 'mobx';
 import { ipcRenderer } from 'electron';
 import BigNumber from 'bignumber.js';
@@ -11,7 +11,7 @@ import WalletTransaction, { transactionTypes } from '../../domains/WalletTransac
 import WalletAddress from '../../domains/WalletAddress';
 import { isValidMnemonic } from '../../../../common/decrypt';
 import { isValidRedemptionKey, isValidPaperVendRedemptionKey } from '../../../../common/redemption-key-validation';
-import { LOVELACES_PER_ADA } from '../../config/numbersConfig';
+import { LOVELACES_PER_ADA, MAX_TRANSACTIONS_PER_PAGE } from '../../config/numbersConfig';
 import patchAdaApi from './mocks/patchAdaApi';
 import { getAdaWallets } from './getAdaWallets';
 import { changeAdaWalletPassphrase } from './changeAdaWalletPassphrase';
@@ -68,8 +68,7 @@ import type {
   CreateTransactionResponse,
   DeleteWalletRequest,
   DeleteWalletResponse,
-  GetLocalTimeDifferenceResponse,
-  GetSyncProgressResponse,
+  GetNetworkStatusResponse,
   GetTransactionsRequest,
   GetTransactionsResponse,
   GetWalletRecoveryPhraseResponse,
@@ -235,23 +234,44 @@ export default class AdaApi {
   getTransactions = async (request: GetTransactionsRequest): Promise<GetTransactionsResponse> => {
     Logger.debug('AdaApi::searchHistory called: ' + stringifyData(request));
     const { walletId, skip, limit } = request;
-
     const accounts: AdaAccounts = await getAdaWalletAccounts(this.config, { walletId });
 
-    const accountIndex = accounts[0].index;
-    const page = skip === 0 ? 1 : (skip / limit) + 1;
-    const perPage = limit > 50 ? 50 : limit;
+    let perPage = limit;
+    if (limit === null || limit > MAX_TRANSACTIONS_PER_PAGE) {
+      perPage = MAX_TRANSACTIONS_PER_PAGE;
+    }
 
     const params = {
-      accountIndex,
-      page,
+      accountIndex: accounts[0].index,
+      page: skip === 0 ? 1 : (skip / limit) + 1,
       per_page: perPage,
       wallet_id: walletId,
       sort_by: 'DES[created_at]',
     };
 
+    const pagesToBeLoaded = Math.ceil(limit / params.per_page);
+
     try {
-      const history: AdaTransactions = await getAdaHistoryByWallet(this.config, params);
+      const {
+        data: history,
+        meta
+      }: AdaTransactions = await getAdaHistoryByWallet(this.config, params);
+      const { totalPages } = meta.pagination;
+      const hasMultiplePages = (totalPages > 1 && limit > MAX_TRANSACTIONS_PER_PAGE);
+
+      if (hasMultiplePages) {
+        let page = 2;
+        const hasNextPage = () => page < totalPages + 1;
+        const shouldLoadNextPage = () => limit === null || page <= pagesToBeLoaded;
+
+        for (page; (hasNextPage() && shouldLoadNextPage()); page++) {
+          const { data: pageHistory } =
+            await getAdaHistoryByWallet(this.config, Object.assign(params, { page }));
+          history.push(...pageHistory);
+        }
+        if (limit !== null) history.splice(limit);
+      }
+
       const transactions = history.map(data => _createTransactionFromServerDataV1(data));
       Logger.debug('AdaApi::searchHistory success: ' + stringifyData(history));
       return new Promise((resolve) => resolve({
@@ -645,23 +665,6 @@ export default class AdaApi {
     }
   };
 
-  getSyncProgress = async (): Promise<GetSyncProgressResponse> => {
-    Logger.debug('AdaApi::syncProgress called');
-    try {
-      const response: NodeInfo = await getNodeInfo(this.config);
-      Logger.debug('AdaApi::syncProgress success: ' + stringifyData(response));
-      const { localBlockchainHeight, blockchainHeight, syncProgress } = response;
-      return {
-        localBlockchainHeight: localBlockchainHeight.quantity,
-        blockchainHeight: blockchainHeight.quantity,
-        syncProgress: syncProgress.quantity
-      };
-    } catch (error) {
-      Logger.debug('AdaApi::syncProgress error: ' + stringifyError(error));
-      throw new GenericApiError();
-    }
-  };
-
   updateWallet = async (request: UpdateWalletRequest): Promise<UpdateWalletResponse> => {
     Logger.debug('AdaApi::updateWallet called: ' + stringifyData(request));
     const { walletId, assuranceLevel, name } = request;
@@ -725,24 +728,54 @@ export default class AdaApi {
     }
   };
 
-  getLocalTimeDifference = async (): Promise<GetLocalTimeDifferenceResponse> => {
+  getNetworkStatus = async (): Promise<GetNetworkStatusResponse> => {
+    Logger.debug('AdaApi::getNetworkStatus called');
+    try {
+      const status: NodeInfo = await getNodeInfo(this.config);
+      Logger.debug('AdaApi::getNetworkStatus success: ' + stringifyData(status));
+
+      const {
+        blockchainHeight,
+        subscriptionStatus,
+        syncProgress,
+        localBlockchainHeight
+      } = status;
+
+      // extract relevant data before sending to NetworkStatusStore
+      return {
+        subscriptionStatus,
+        syncProgress: syncProgress.quantity,
+        blockchainHeight: get(blockchainHeight, 'quantity', null),
+        localBlockchainHeight: localBlockchainHeight.quantity
+      };
+    } catch (error) {
+      Logger.error('AdaApi::getNetworkStatus error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  };
+
+  // returns time difference in microseconds between user's local machine and NtpServer
+  // ensures time on user's node is synced with peer nodes on the network
+  getLocalTimeDifference = async (): Promise<number> => {
     Logger.debug('AdaApi::getLocalTimeDifference called');
     try {
       const response: NodeInfo = await getNodeInfo(this.config);
       Logger.debug('AdaApi::getLocalTimeDifference success: ' + stringifyData(response));
+      const differenceFromNtpServer = get(
+        response.localTimeInformation,
+        'differenceFromNtpServer',
+        null
+      );
 
-      const { localTimeInformation: { differenceFromNtpServer } } = response;
-      // TODO: I had to add the `if` bellow, as it was getting an error
-      if (!differenceFromNtpServer) {
-        return 0;
-      }
-      const timeDifference = differenceFromNtpServer.quantity;
-      return timeDifference;
+      // if the optional property 'differenceFromNtpServer' doesn't exist
+      // return 0 microseconds, otherwise return the required property 'quantity'
+      if (!differenceFromNtpServer) { return 0; }
+      return differenceFromNtpServer.quantity;
     } catch (error) {
       Logger.error('AdaApi::getLocalTimeDifference error: ' + stringifyError(error));
       throw new GenericApiError();
     }
-  };
+  }
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========

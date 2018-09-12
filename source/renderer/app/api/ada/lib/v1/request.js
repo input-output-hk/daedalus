@@ -20,10 +20,14 @@ export type RequestOptions = {
 };
 
 function typedRequest<Response>(
-  httpOptions: RequestOptions, queryParams?: {}, rawBodyParams?: any
+  httpOptions: RequestOptions,
+  queryParams?: {},
+  rawBodyParams?: any,
+  requestOptions?: { returnMeta: boolean },
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
     const options: RequestOptions = Object.assign({}, httpOptions);
+    const { returnMeta } = Object.assign({}, requestOptions);
     let hasRequestBody = false;
     let requestBody = '';
 
@@ -102,7 +106,7 @@ function typedRequest<Response>(
           const status = get(parsedBody, 'status', false);
           if (status) {
             if (status === 'success') {
-              resolve(parsedBody.data);
+              resolve(returnMeta ? parsedBody : parsedBody.data);
             } else if (status === 'error' || status === 'fail') {
               reject(new Error(parsedBody.message));
             } else {

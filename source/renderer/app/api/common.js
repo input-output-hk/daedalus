@@ -75,7 +75,6 @@ export class InvalidMnemonicError extends LocalizableError {
 export type CreateTransactionResponse = WalletTransaction;
 export type CreateWalletResponse = Wallet;
 export type DeleteWalletResponse = boolean;
-export type GetLocalTimeDifferenceResponse = number;
 export type GetWalletsResponse = Array<Wallet>;
 export type GetWalletRecoveryPhraseResponse = Array<string>;
 export type RestoreWalletResponse = Wallet;
@@ -108,10 +107,11 @@ export type RestoreWalletRequest = {
   walletPassword: ?string,
 };
 
-export type GetSyncProgressResponse = {
+export type GetNetworkStatusResponse = {
+  subscriptionStatus: Object,
   syncProgress: number,
-  blockchainHeight: ?number,
-  localBlockchainHeight: number,
+  blockchainHeight: number,
+  localBlockchainHeight: number
 };
 
 export type GetTransactionsRequest = {

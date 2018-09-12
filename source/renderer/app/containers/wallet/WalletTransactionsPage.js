@@ -63,6 +63,7 @@ export default class WalletTransactionsPage extends Component<Props> {
     // let transactionSearch = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const noTransactionsFoundLabel = intl.formatMessage(messages.noTransactionsFound);
+    const hasMoreToLoad = () => searchLimit !== null && totalAvailable > searchLimit;
 
     const isRestoreActive = get(activeWallet, 'syncState.tag') === WalletSyncStateTags.RESTORING;
 
@@ -83,7 +84,7 @@ export default class WalletTransactionsPage extends Component<Props> {
           transactions={filtered}
           isLoadingTransactions={searchRequest.isExecutingFirstTime}
           isRestoreActive={isRestoreActive}
-          hasMoreToLoad={totalAvailable > searchLimit}
+          hasMoreToLoad={hasMoreToLoad()}
           onLoadMore={actions.ada.transactions.loadMoreTransactions.trigger}
           assuranceMode={activeWallet.assuranceMode}
           walletId={activeWallet.id}
