@@ -5,6 +5,7 @@ import type { ChildProcess } from 'child_process';
 import type { WriteStream } from 'fs';
 import type { TlsConfig } from '../../common/ipc-api/tls-config';
 import { promisedCondition } from './utils';
+import type { CardanoNodeState } from '../../common/types/cardanoNodeTypes';
 
 type NodeArgs = Array<string>;
 
@@ -15,11 +16,19 @@ type Logger = {
 };
 
 type Actions = {
-  sendTlsConfig: (TlsConfig) => void,
-  onStopped: (code: number, signal: string) => void,
-  onUpdated: (code: number, signal: string) => void,
-  onCrashed: (code: number, signal: string) => void,
+  broadcastTlsConfig: (TlsConfig) => void,
+  broadcastStateChange: (state: CardanoNodeState) => void,
 };
+
+type Transitions = {
+  onStarting: () => void,
+  onRunning: () => void,
+  onStopping: () => void,
+  onStopped: () => void,
+  onUpdating: () => void,
+  onUpdated: () => void,
+  onCrashed: (code: number, signal: string) => void,
+}
 
 type NodeIpcMessage = {
   Started?: Array<any>,
@@ -36,10 +45,6 @@ type CardanoNodeConfig = {
   killTimeout: number, // Milliseconds to wait for cardano-node to be killed
   updateTimeout: number, // Milliseconds to wait for cardano-node to update itself
 }
-
-type CardanoNodeState = (
-  'stopped' | 'starting' | 'running' | 'stopping' | 'updating' | 'updated' | 'crashed'
-);
 
 export class CardanoNode {
   /**
@@ -58,6 +63,12 @@ export class CardanoNode {
    * @private
    */
   actions: Actions;
+
+  /**
+   * The ipc channel used for broadcasting messages to the outside world
+   * @private
+   */
+  _transitions: Transitions;
   /**
    * Logger instance to print debug messages to
    * @private
@@ -87,17 +98,18 @@ export class CardanoNode {
   static CRASHED: CardanoNodeState = 'crashed';
   state: CardanoNodeState = CardanoNode.STOPPED;
 
-  constructor(config: CardanoNodeConfig, log: Logger, actions: Actions) {
+  constructor(config: CardanoNodeConfig, log: Logger, actions: Actions, transitions: Transitions) {
     this.config = config;
     this.log = log;
     this.actions = actions;
+    this._transitions = transitions;
     this._resetTlsConfig();
   }
 
   start() {
     const { log } = this;
     const { nodePath, nodeArgs, logFilePath, startupTimeout } = this.config;
-    if (this.state !== CardanoNode.STOPPED) return;
+    if (!this._canBeRestarted()) return;
     const logFile = createWriteStream(logFilePath, { flags: 'a' });
     logFile.on('open', async () => {
       this.cardanoLogFile = logFile;
@@ -126,7 +138,7 @@ export class CardanoNode {
 
   stop(): Promise<?number> {
     const { node, log, config } = this;
-    if (this.state !== CardanoNode.RUNNING) {
+    if (!this._canBeStopped()) {
       return Promise.reject('CardanoNode is not running.');
     }
     return new Promise(async (resolve, reject) => {
@@ -169,7 +181,7 @@ export class CardanoNode {
   }
 
   broadcastTlsConfig() {
-    this.actions.sendTlsConfig(this._tlsConfig);
+    this.actions.broadcastTlsConfig(this._tlsConfig);
   }
 
   get tlsConfig(): TlsConfig {
@@ -253,17 +265,14 @@ export class CardanoNode {
   };
 
   _handleCardanoNodeExit = (code: number, signal: string) => {
-    const { log, actions } = this;
+    const { log } = this;
     log.info(`CardanoNode: cardano-node exited with: ${code}, ${signal}`);
     if (this.state === CardanoNode.STOPPING) {
       this._changeToState(CardanoNode.STOPPED);
-      actions.onStopped(code, signal);
     } else if (this.state === CardanoNode.UPDATING) {
       this._changeToState(CardanoNode.UPDATED);
-      actions.onUpdated(code, signal);
-    } else if (!this.state === CardanoNode.UPDATED) {
-      this._changeToState(CardanoNode.CRASHED);
-      actions.onCrashed(code, signal);
+    } else if (this.state !== CardanoNode.UPDATED) {
+      this._changeToState(CardanoNode.CRASHED, code, signal);
     }
     this._reset();
   };
@@ -287,10 +296,32 @@ export class CardanoNode {
     return ca != null && key != null && cert != null && port != null;
   };
 
-  _changeToState(state: CardanoNodeState) {
-    const { log } = this;
-    log.info(`CardanoNode: changing state to "${state}"`);
+  _changeToState(state: CardanoNodeState, ...args: Array<any>) {
+    const { log, _transitions } = this;
+    log.info(`CardanoNode: transitions to "${state}"`);
     this.state = state;
+    this.actions.broadcastStateChange(state);
+    switch (state) {
+      case CardanoNode.STARTING: return _transitions.onStarting();
+      case CardanoNode.RUNNING: return _transitions.onRunning();
+      case CardanoNode.STOPPING: return _transitions.onStopping();
+      case CardanoNode.STOPPED: return _transitions.onStopped();
+      case CardanoNode.UPDATING: return _transitions.onUpdating();
+      case CardanoNode.UPDATED: return _transitions.onUpdated();
+      case CardanoNode.CRASHED: return _transitions.onCrashed(...args);
+      default:
+    }
   }
+
+  _canBeRestarted = () => (
+    this.state === CardanoNode.STOPPED ||
+    this.state === CardanoNode.UPDATED ||
+    this.state === CardanoNode.CRASHED
+  );
+
+  _canBeStopped = () => (
+    this.state === CardanoNode.STARTING ||
+    this.state === CardanoNode.RUNNING
+  );
 
 }

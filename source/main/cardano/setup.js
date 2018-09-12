@@ -4,8 +4,9 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import { ensureXDGDataIsSet, prepareArgs, readLauncherConfig } from './config';
 import { CardanoNode } from './CardanoNode';
 import { TLS_CONFIG_CHANNEL } from '../../common/ipc-api/tls-config';
-import { AWAIT_UPDATE_CHANNEL } from '../../common/ipc-api';
+import { AWAIT_UPDATE_CHANNEL, CARDANO_NODE_STATE_CHANGE_CHANNEL } from '../../common/ipc-api';
 import type { TlsConfig } from '../../common/ipc-api/tls-config';
+import type { CardanoNodeState } from '../../common/types/cardanoNodeTypes';
 
 export const shouldCardanoBeLaunchedByDaedalus = (launcherConfig: Object): boolean => {
   return launcherConfig.frontendOnlyMode;
@@ -46,11 +47,21 @@ export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWind
     updateTimeout: 20000,
   };
   const cardanoNode = new CardanoNode(config, log, {
-    sendTlsConfig: (tlsConfig: TlsConfig) => mainWindow.send(TLS_CONFIG_CHANNEL, tlsConfig),
+    broadcastTlsConfig: (tlsConfig: TlsConfig) => {
+      mainWindow.send(TLS_CONFIG_CHANNEL, true, tlsConfig);
+    },
+    broadcastStateChange: (state: CardanoNodeState) => {
+      mainWindow.send(CARDANO_NODE_STATE_CHANGE_CHANNEL, true, state);
+    }
+  }, {
+    onStarting: () => {},
+    onRunning: () => {},
+    onStopping: () => {},
     onStopped: () => {
       log.info('CardanoNode exited like expected. Exiting Daedalus with code 0.');
       app.exit(0);
     },
+    onUpdating: () => {},
     onUpdated: () => {
       log.info('CardanoNode applied an update. Exiting Daedalus with code 20.');
       app.exit(20);
@@ -64,11 +75,12 @@ export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWind
 
   // Respond with TLS config whenever a render process asks for it
   ipcMain.on(TLS_CONFIG_CHANNEL, ({ sender }) => {
+    log.info('ipcMain: Sending tls config to renderer.');
     sender.send(TLS_CONFIG_CHANNEL, true, cardanoNode.tlsConfig);
   });
   // Handle update notification from frontend
   ipcMain.on(AWAIT_UPDATE_CHANNEL, async ({ sender }) => {
-    log.info('Received request from renderer to await update.');
+    log.info('ipcMain: Received request from renderer to await update.');
     try {
       await cardanoNode.handleNodeUpdate();
       sender.send(AWAIT_UPDATE_CHANNEL, true);
@@ -81,17 +93,20 @@ export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWind
   app.on('before-quit', async (event) => {
     if (
       cardanoNode.state === CardanoNode.STOPPED ||
-      cardanoNode.state === CardanoNode.STOPPING) {
-      return;
-    }
-    event.preventDefault(); // prevent Daedalus from quitting immediately
-    try {
-      log.info(`Daedalus:before-quit, stopping cardano-node with PID ${cardanoNode.pid}`);
-      await cardanoNode.stop();
-    } catch (stopError) {
-      log.info(`Daedalus:before-quit, cardano-node did not exit correctly: ${stopError}`);
+      cardanoNode.state === CardanoNode.STOPPING ||
+      cardanoNode.state === CardanoNode.CRASHED) {
       log.info('Exiting Daedalus with code 0.');
       app.exit(0);
+    } else {
+      event.preventDefault(); // prevent Daedalus from quitting immediately
+      try {
+        log.info(`Daedalus:before-quit, stopping cardano-node with PID ${cardanoNode.pid}`);
+        await cardanoNode.stop();
+      } catch (stopError) {
+        log.info(`Daedalus:before-quit, cardano-node did not exit correctly: ${stopError}`);
+        log.info('Exiting Daedalus with code 0.');
+        app.exit(0);
+      }
     }
   });
 };

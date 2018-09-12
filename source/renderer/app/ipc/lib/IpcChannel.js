@@ -58,6 +58,6 @@ export class IpcChannel<Request, Response> {
    * @param handler
    */
   receive(handler: Function): void {
-    ipcRenderer.on(this.channel, handler);
+    ipcRenderer.on(this.channel, (event, isOk: boolean, response: Response) => handler(response));
   }
 }
