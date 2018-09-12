@@ -7,23 +7,20 @@ import { ADDRESS_COPY_NOTIFICATION_SMALL_DURATION } from '../../../../config/tim
 
 type Props = InjectedDialogContainerProps;
 
-@inject('stores', 'actions') @observer
+@inject('stores') @observer
 export default class CompletionDialogContainer extends Component<Props> {
   static defaultProps = { actions: null, stores: null, children: null, onClose: () => {} };
 
   render() {
-    const { wallets } = this.props.stores.ada;
-    const { walletCertificateAddress } = wallets;
+    const { walletCertificateAddress } = this.props.stores.ada.wallets;
 
     return (
-      <div>
-        <CompletionDialog
-          walletCertificateAddress={walletCertificateAddress}
-          onClose={this.props.onClose}
-          onOpenExternalLink={this.props.stores.app.openExternalLink}
-          copyAddressNotificationDuration={ADDRESS_COPY_NOTIFICATION_SMALL_DURATION}
-        />
-      </div>
+      <CompletionDialog
+        walletCertificateAddress={walletCertificateAddress}
+        onClose={this.props.onClose}
+        onOpenExternalLink={this.props.stores.app.openExternalLink}
+        copyAddressNotificationDuration={ADDRESS_COPY_NOTIFICATION_SMALL_DURATION}
+      />
     );
   }
 }
