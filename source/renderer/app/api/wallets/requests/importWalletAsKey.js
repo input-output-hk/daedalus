@@ -1,0 +1,20 @@
+// @flow
+import type { AdaWallet, RequestConfig } from './types';
+import { request } from '../../utils/request';
+
+export type ImportWalletAsKey = {
+  filePath: string,
+  spendingPassword: ?string,
+};
+
+export const importWalletAsKey = (
+  config: RequestConfig,
+  walletImportData: ImportWalletAsKey
+): Promise<AdaWallet> => (
+  request({
+    hostname: 'localhost',
+    method: 'POST',
+    path: '/api/internal/import-wallet',
+    ...config,
+  }, {}, walletImportData)
+);

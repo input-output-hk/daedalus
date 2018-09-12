@@ -6,7 +6,7 @@ import BigNumber from 'bignumber.js';
 import Store from '../lib/Store';
 import Request from '../lib/LocalizedRequest';
 import { Logger } from '../../../../common/logging';
-import { encryptPassphrase } from '../../api/ada/lib/encryptPassphrase';
+import { encryptPassphrase } from '../../api/utils';
 import { matchRoute } from '../../utils/routing';
 import { PARSE_REDEMPTION_CODE } from '../../../../common/ipc-api';
 import {
