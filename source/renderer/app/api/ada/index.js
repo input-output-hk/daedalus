@@ -1,7 +1,6 @@
 // @flow
 import { split, get } from 'lodash';
 import { action } from 'mobx';
-import { ipcRenderer } from 'electron';
 import BigNumber from 'bignumber.js';
 import { Logger, stringifyData, stringifyError } from '../../../../common/logging';
 import { unixTimestampToDate } from './lib/utils';

@@ -7,10 +7,11 @@ import { TLS_CONFIG_CHANNEL } from '../../common/ipc-api/tls-config';
 import { AWAIT_UPDATE_CHANNEL, CARDANO_NODE_STATE_CHANGE_CHANNEL } from '../../common/ipc-api';
 import type { TlsConfig } from '../../common/ipc-api/tls-config';
 import type { CardanoNodeState } from '../../common/types/cardanoNodeTypes';
+import { CardanoNodeStates } from '../../common/types/cardanoNodeTypes';
 
-export const shouldCardanoBeLaunchedByDaedalus = (launcherConfig: Object): boolean => {
-  return launcherConfig.frontendOnlyMode;
-};
+export const shouldCardanoBeLaunchedByDaedalus = (launcherConfig: Object): boolean => (
+  launcherConfig.frontendOnlyMode
+);
 
 /*
  * todo:
@@ -96,7 +97,7 @@ export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWind
   // Wait for controlled cardano-node shutdown before quitting the app
   app.on('before-quit', async (event) => {
     event.preventDefault(); // prevent Daedalus from quitting immediately
-    if (cardanoNode.state === CardanoNode.STOPPING) return;
+    if (cardanoNode.state === CardanoNodeStates.STOPPING) return;
     try {
       log.info(`Daedalus:before-quit, stopping cardano-node with PID ${cardanoNode.pid}`);
       await cardanoNode.stop();

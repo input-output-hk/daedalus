@@ -10,6 +10,7 @@ import type { RequestConfig } from '../api/ada/types';
 import { tlsConfigChannel } from '../ipc/tlsConfigChannel';
 import { cardanoNodeStateChangeChannel } from '../ipc/cardanoNodeStateChangeChannel';
 import type { CardanoNodeState } from '../../../common/types/cardanoNodeTypes';
+import { CardanoNodeStates } from '../../../common/types/cardanoNodeTypes';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedState = null;
@@ -253,10 +254,10 @@ export default class NetworkStatusStore extends Store {
   _handleCardanoNodeStateChange = (state: CardanoNodeState) => {
     Logger.debug(`NetworkStatusStore: handling cardano-node state change ${state}`);
     switch (state) {
-      case 'stopped':
-      case 'updating':
-      case 'updated':
-      case 'crashed':
+      case CardanoNodeStates.STOPPED:
+      case CardanoNodeStates.UPDATING:
+      case CardanoNodeStates.UPDATED:
+      case CardanoNodeStates.CRASHED:
         this._hasReceivedTlsConfig = false;
         break;
       default:
