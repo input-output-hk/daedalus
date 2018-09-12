@@ -194,13 +194,13 @@ export class CardanoNode {
 
   handleNodeUpdate(): Promise<void> {
     const { log, config } = this;
-    this.state = CardanoNode.UPDATING;
+    this._changeToState(CardanoNode.UPDATING);
     return new Promise(async (resolve, reject) => {
       try {
         log.info('CardanoNode: waiting for node to apply update.');
         await promisedCondition(
           () => this.state === CardanoNode.UPDATED,
-          config.shutdownTimeout
+          config.updateTimeout
         );
         resolve();
       } catch (stopError) {

@@ -254,6 +254,7 @@ export default class NetworkStatusStore extends Store {
     Logger.debug(`NetworkStatusStore: handling cardano-node state change ${state}`);
     switch (state) {
       case 'stopped':
+      case 'updating':
       case 'updated':
       case 'crashed':
         this._hasReceivedTlsConfig = false;

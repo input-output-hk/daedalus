@@ -48,10 +48,14 @@ export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWind
   };
   const cardanoNode = new CardanoNode(config, log, {
     broadcastTlsConfig: (tlsConfig: TlsConfig) => {
-      mainWindow.send(TLS_CONFIG_CHANNEL, true, tlsConfig);
+      if (!mainWindow.isDestroyed()) {
+        mainWindow.send(TLS_CONFIG_CHANNEL, true, tlsConfig);
+      }
     },
     broadcastStateChange: (state: CardanoNodeState) => {
-      mainWindow.send(CARDANO_NODE_STATE_CHANGE_CHANNEL, true, state);
+      if (!mainWindow.isDestroyed()) {
+        mainWindow.send(CARDANO_NODE_STATE_CHANGE_CHANNEL, true, state);
+      }
     }
   }, {
     onStarting: () => {},
@@ -91,22 +95,15 @@ export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWind
 
   // Wait for controlled cardano-node shutdown before quitting the app
   app.on('before-quit', async (event) => {
-    if (
-      cardanoNode.state === CardanoNode.STOPPED ||
-      cardanoNode.state === CardanoNode.STOPPING ||
-      cardanoNode.state === CardanoNode.CRASHED) {
+    event.preventDefault(); // prevent Daedalus from quitting immediately
+    if (cardanoNode.state === CardanoNode.STOPPING) return;
+    try {
+      log.info(`Daedalus:before-quit, stopping cardano-node with PID ${cardanoNode.pid}`);
+      await cardanoNode.stop();
+    } catch (stopError) {
+      log.info(`Daedalus:before-quit, cardano-node did not exit correctly: ${stopError}`);
       log.info('Exiting Daedalus with code 0.');
       app.exit(0);
-    } else {
-      event.preventDefault(); // prevent Daedalus from quitting immediately
-      try {
-        log.info(`Daedalus:before-quit, stopping cardano-node with PID ${cardanoNode.pid}`);
-        await cardanoNode.stop();
-      } catch (stopError) {
-        log.info(`Daedalus:before-quit, cardano-node did not exit correctly: ${stopError}`);
-        log.info('Exiting Daedalus with code 0.');
-        app.exit(0);
-      }
     }
   });
 };
