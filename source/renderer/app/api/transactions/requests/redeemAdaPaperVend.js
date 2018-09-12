@@ -1,6 +1,13 @@
 // @flow
-import type { RequestConfig, RedeemPaperVendedAdaParams, AdaTransaction } from './types';
+// import RequestConfig
+import type { AdaTransaction } from '../types';
+import type { RedeemAdaParams } from './redeemAda';
 import { request } from '../../utils/request';
+
+export type RedeemPaperVendedAdaParams = {
+  mnemonic: Array<string>,
+  ...RedeemAdaParams
+};
 
 export const redeemAdaPaperVend = (
   config: RequestConfig,

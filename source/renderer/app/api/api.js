@@ -51,12 +51,7 @@ import type {
   AdaTransactionFee,
   AdaWallet,
   AdaWallets,
-  AdaWalletCertificateAdditionalMnemonicsResponse,
-  AdaWalletCertificateRecoveryPhraseResponse,
   WalletAssuranceLevel,
-  GetWalletCertificateAdditionalMnemonicsResponse,
-  GetWalletCertificateRecoveryPhraseResponse,
-  GetWalletRecoveryPhraseFromCertificateResponse,
   RedeemAdaParams,
   RedeemPaperVendedAdaParams,
   RequestConfig,
@@ -65,23 +60,13 @@ import type {
 } from './types';
 import type {
   CreateWalletRequest,
-  CreateWalletResponse,
-  CreateTransactionResponse,
   DeleteWalletRequest,
-  DeleteWalletResponse,
   GetNetworkStatusResponse,
   GetTransactionsRequest,
   GetTransactionsResponse,
-  GetWalletRecoveryPhraseResponse,
-  GetWalletsResponse,
-  IsValidAddressResponse,
   RestoreWalletRequest,
-  RestoreWalletResponse,
   SendBugReportRequest,
-  SendBugReportResponse,
-  UpdateWalletResponse,
   UpdateWalletPasswordRequest,
-  UpdateWalletPasswordResponse,
 } from '../common';
 import {
   GenericApiError,
@@ -198,7 +183,7 @@ export default class AdaApi {
     this.config = config;
   }
 
-  getWallets = async (): Promise<GetWalletsResponse> => {
+  getWallets = async (): Promise<Array<Wallet>> => {
     Logger.debug('AdaApi::getWallets called');
     try {
       const response: AdaWallets = await getWallets(this.config);
@@ -285,7 +270,7 @@ export default class AdaApi {
     }
   };
 
-  createWallet = async (request: CreateWalletRequest): Promise<CreateWalletResponse> => {
+  createWallet = async (request: CreateWalletRequest): Promise<Wallet> => {
     Logger.debug('AdaApi::createWallet called');
     const { name, mnemonic, spendingPassword: passwordString } = request;
     const assuranceLevel = 'normal';
@@ -306,7 +291,7 @@ export default class AdaApi {
     }
   };
 
-  deleteWallet = async (request: DeleteWalletRequest): Promise<DeleteWalletResponse> => {
+  deleteWallet = async (request: DeleteWalletRequest): Promise<boolean> => {
     Logger.debug('AdaApi::deleteWallet called: ' + stringifyData(request));
     try {
       const { walletId } = request;
@@ -321,7 +306,7 @@ export default class AdaApi {
 
   createTransaction = async (
     request: CreateTransactionRequest
-  ): Promise<CreateTransactionResponse> => {
+  ): Promise<WalletTransaction> => {
     Logger.debug('AdaApi::createTransaction called');
     const { accountIndex, walletId, address, amount, spendingPassword: passwordString } = request;
     const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
@@ -417,7 +402,7 @@ export default class AdaApi {
     }
   };
 
-  async isValidAddress(address: string): Promise<IsValidAddressResponse> {
+  async isValidAddress(address: string): Promise<boolean> {
     Logger.debug('AdaApi::isValidAdaAddress called');
     try {
       const response: AdaAddress = await getAddress(this.config, { address });
@@ -447,7 +432,7 @@ export default class AdaApi {
     mnemonic.split(' ').length === ADA_CERTIFICATE_MNEMONIC_LENGHT
   );
 
-  getWalletRecoveryPhrase(): Promise<GetWalletRecoveryPhraseResponse> {
+  getWalletRecoveryPhrase(): Promise<Array<string>> {
     Logger.debug('AdaApi::getWalletRecoveryPhrase called');
     try {
       const response: Promise<Array<string>> = new Promise(
@@ -462,10 +447,10 @@ export default class AdaApi {
   }
 
   // eslint-disable-next-line max-len
-  getWalletCertificateAdditionalMnemonics(): Promise<GetWalletCertificateAdditionalMnemonicsResponse> {
+  getWalletCertificateAdditionalMnemonics(): Promise<Array<string>> {
     Logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics called');
     try {
-      const response: Promise<AdaWalletCertificateAdditionalMnemonicsResponse> = new Promise(
+      const response: Promise<Array<string>> = new Promise(
         (resolve) => resolve(generateAdditionalMnemonics())
       );
       Logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics success');
@@ -478,11 +463,11 @@ export default class AdaApi {
 
   getWalletCertificateRecoveryPhrase(
     request: GetWalletCertificateRecoveryPhraseRequest
-  ): Promise<GetWalletCertificateRecoveryPhraseResponse> {
+  ): Promise<Array<string>> {
     Logger.debug('AdaApi::getWalletCertificateRecoveryPhrase called');
     const { passphrase, input } = request;
     try {
-      const response: Promise<AdaWalletCertificateRecoveryPhraseResponse> = new Promise(
+      const response: Promise<Array<string>> = new Promise(
         (resolve) => resolve(scrambleMnemonics({
           passphrase,
           scrambledInput: input,
@@ -498,7 +483,7 @@ export default class AdaApi {
 
   getWalletRecoveryPhraseFromCertificate(
     request: GetWalletRecoveryPhraseFromCertificateRequest
-  ): Promise<GetWalletRecoveryPhraseFromCertificateResponse> {
+  ): Promise<Array<string>> {
     Logger.debug('AdaApi::getWalletRecoveryPhraseFromCertificate called');
     const { passphrase, scrambledInput } = request;
     try {
@@ -511,7 +496,7 @@ export default class AdaApi {
     }
   }
 
-  restoreWallet = async (request: RestoreWalletRequest): Promise<RestoreWalletResponse> => {
+  restoreWallet = async (request: RestoreWalletRequest): Promise<Wallet> => {
     Logger.debug('AdaApi::restoreWallet called');
     const { recoveryPhrase, walletName, walletPassword: passwordString } = request;
     const assuranceLevel = 'normal';
@@ -615,7 +600,7 @@ export default class AdaApi {
     }
   }
 
-  async sendBugReport(requestFormData: SendBugReportRequest): Promise<SendBugReportResponse> {
+  async sendBugReport(requestFormData: SendBugReportRequest): Promise<*> {
     Logger.debug('AdaApi::sendBugReport called: ' + stringifyData(requestFormData));
     try {
       await sendBugReport({ requestFormData });
@@ -666,7 +651,7 @@ export default class AdaApi {
     }
   };
 
-  updateWallet = async (request: UpdateWalletRequest): Promise<UpdateWalletResponse> => {
+  updateWallet = async (request: UpdateWalletRequest): Promise<Wallet> => {
     Logger.debug('AdaApi::updateWallet called: ' + stringifyData(request));
     const { walletId, assuranceLevel, name } = request;
     try {
@@ -683,7 +668,7 @@ export default class AdaApi {
 
   updateWalletPassword = async (
     request: UpdateWalletPasswordRequest
-  ): Promise<UpdateWalletPasswordResponse> => {
+  ): Promise<boolean> => {
     Logger.debug('AdaApi::updateWalletPassword called');
     const { walletId, oldPassword, newPassword } = request;
     try {

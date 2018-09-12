@@ -1,7 +1,7 @@
 // @flow
 import { observable } from 'mobx';
 import BigNumber from 'bignumber.js';
-import type { WalletAssuranceMode, TxnAssuranceLevel, TransactionState } from '../api/ada/types';
+import type { WalletAssuranceMode, TxnAssuranceLevel, TransactionState } from '../api/transactions/types';
 
 export type TrasactionAddresses = { from: Array<string>, to: Array<string> };
 export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';

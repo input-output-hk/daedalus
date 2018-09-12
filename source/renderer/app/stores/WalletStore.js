@@ -6,7 +6,6 @@ import Wallet from '../domains/Wallet';
 import Request from './lib/LocalizedRequest';
 import { buildRoute, matchRoute } from '../utils/routing';
 import { ROUTES } from '../routes-config';
-import type { GetWalletRecoveryPhraseResponse } from '../api/common';
 import environment from '../../../common/environment';
 
 /**
@@ -49,7 +48,7 @@ export default class WalletsStore extends Store {
   }) => {
     Object.assign(this._newWalletDetails, params);
     try {
-      const recoveryPhrase: ?GetWalletRecoveryPhraseResponse = await (
+      const recoveryPhrase: ?Array<string> = await (
         this.getWalletRecoveryPhraseRequest.execute().promise
       );
       if (recoveryPhrase != null) {

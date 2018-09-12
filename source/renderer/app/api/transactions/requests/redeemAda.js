@@ -1,6 +1,15 @@
 // @flow
-import type { RequestConfig, RedeemAdaParams, AdaTransaction } from './types';
+// import RequestConfig
+import type { AdaTransaction } from '../types';
 import { request } from '../../utils/request';
+
+export type RedeemAdaParams = {
+  redemptionCode: string,
+  mnemonic: ?Array<string>,
+  spendingPassword: string,
+  walletId: string,
+  accountIndex: number
+};
 
 export const redeemAda = (
   config: RequestConfig,
