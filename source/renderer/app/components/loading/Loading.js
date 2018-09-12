@@ -23,11 +23,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Connecting to network',
     description: 'Message "Connecting to network" on the loading screen.'
   },
-  waitingForSyncToStart: {
-    id: 'loading.screen.waitingForSyncToStart',
-    defaultMessage: '!!!Connected - waiting for block syncing to start',
-    description: 'Message "Connected - waiting for block syncing to start" on the loading screen.'
-  },
   reconnecting: {
     id: 'loading.screen.reconnectingToNetworkMessage',
     defaultMessage: '!!!Network connection lost - reconnecting',
@@ -64,10 +59,8 @@ type State = {
 type Props = {
   currencyIcon: string,
   apiIcon: string,
-  isConnecting: boolean,
   hasBeenConnected: boolean,
-  hasBlockSyncingStarted: boolean,
-  isSyncing: boolean,
+  isConnected: boolean,
   isSynced: boolean,
   syncPercentage: number,
   loadingDataForNextScreenMessage: ReactIntlMessage,
@@ -79,7 +72,6 @@ type Props = {
   handleReportIssue: Function,
   onProblemSolutionClick: Function,
   onCheckTheTimeAgain: Function,
-  isCheckingTheTimeAgain: boolean,
 };
 
 @observer
@@ -95,11 +87,11 @@ export default class Loading extends Component<Props, State> {
   }
 
   componentWillReceiveProps(nextProps: Props) {
-    const startConnectingTimer = nextProps.isConnecting && (connectingInterval === null);
+    const startConnectingTimer = !nextProps.isConnected && connectingInterval === null;
     const stopConnectingTimer = (
-      this.props.isConnecting &&
-      !nextProps.isConnecting &&
-      (connectingInterval !== null)
+      !this.props.isConnected &&
+      nextProps.isConnected &&
+      connectingInterval !== null
     );
 
     if (startConnectingTimer) {
@@ -108,11 +100,15 @@ export default class Loading extends Component<Props, State> {
       this.resetConnectingTimer();
     }
 
-    const startSyncingTimer = nextProps.isSyncing && (syncingInterval === null);
+    const startSyncingTimer = (
+      nextProps.isConnected &&
+      !nextProps.isSynced &&
+      syncingInterval === null
+    );
     const stopSyncingTimer = (
-      this.props.isSyncing &&
-      !nextProps.isSyncing &&
-      (syncingInterval !== null)
+      !this.props.isSynced &&
+      nextProps.isSynced &&
+      syncingInterval !== null
     );
 
     if (startSyncingTimer) {
@@ -136,13 +132,11 @@ export default class Loading extends Component<Props, State> {
     const {
       currencyIcon,
       apiIcon,
-      isConnecting,
-      isSyncing,
+      isConnected,
       isSynced,
       syncPercentage,
       loadingDataForNextScreenMessage,
       hasBeenConnected,
-      hasBlockSyncingStarted,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
       localTimeDifference,
@@ -151,7 +145,6 @@ export default class Loading extends Component<Props, State> {
       handleReportIssue,
       onProblemSolutionClick,
       onCheckTheTimeAgain,
-      isCheckingTheTimeAgain,
     } = this.props;
 
     const { connectingTime, syncingTime } = this.state;
@@ -159,20 +152,20 @@ export default class Loading extends Component<Props, State> {
     const componentStyles = classNames([
       styles.component,
       hasLoadedCurrentTheme ? null : styles['is-loading-theme'],
-      isConnecting ? styles['is-connecting'] : null,
-      isSyncing ? styles['is-syncing'] : null,
+      !isConnected ? styles['is-connecting'] : null,
+      isConnected && !isSynced ? styles['is-syncing'] : null,
     ]);
     const daedalusLogoStyles = classNames([
       styles.daedalusLogo,
-      isConnecting ? styles.connectingLogo : styles.syncingLogo,
+      !isConnected ? styles.connectingLogo : styles.syncingLogo,
     ]);
     const currencyLogoStyles = classNames([
       styles[`${environment.API}-logo`],
-      isConnecting ? styles.connectingLogo : styles.syncingLogo,
+      !isConnected ? styles.connectingLogo : styles.syncingLogo,
     ]);
     const apiLogoStyles = classNames([
       styles[`${environment.API}-apiLogo`],
-      isConnecting ? styles.connectingLogo : styles.syncingLogo,
+      !isConnected ? styles.connectingLogo : styles.syncingLogo,
     ]);
 
     const daedalusLoadingLogo = daedalusLogo;
@@ -183,13 +176,15 @@ export default class Loading extends Component<Props, State> {
     if (hasBeenConnected) {
       connectingMessage = messages.reconnecting;
     } else {
-      connectingMessage = (
-        hasBlockSyncingStarted ? messages.waitingForSyncToStart : messages.connecting
-      );
+      connectingMessage = messages.connecting;
     }
 
-    const canReportConnectingIssue = isConnecting && connectingTime >= REPORT_ISSUE_TIME_TRIGGER;
-    const canReportSyncingIssue = isSyncing && syncingTime >= REPORT_ISSUE_TIME_TRIGGER;
+    const canReportConnectingIssue = (
+      !isConnected && connectingTime >= REPORT_ISSUE_TIME_TRIGGER
+    );
+    const canReportSyncingIssue = (
+      isConnected && !isSynced && syncingTime >= REPORT_ISSUE_TIME_TRIGGER
+    );
     const showReportIssue = canReportConnectingIssue || canReportSyncingIssue;
 
     const buttonClasses = classNames([
@@ -199,7 +194,7 @@ export default class Loading extends Component<Props, State> {
 
     let loadingScreen = null;
 
-    if (isConnecting) {
+    if (!isConnected) {
       loadingScreen = (
         <div className={styles.connecting}>
           <h1 className={styles.headline}>
@@ -207,7 +202,16 @@ export default class Loading extends Component<Props, State> {
           </h1>
         </div>
       );
-    } else if (isSystemTimeCorrect && !isSynced) {
+    } else if (!isSystemTimeCorrect) {
+      loadingScreen = (
+        <SystemTimeErrorOverlay
+          localTimeDifference={localTimeDifference}
+          currentLocale={currentLocale}
+          onProblemSolutionClick={onProblemSolutionClick}
+          onCheckTheTimeAgain={onCheckTheTimeAgain}
+        />
+      );
+    } else if (!isSynced) {
       loadingScreen = (
         <div className={styles.syncing}>
           <h1 className={styles.headline}>
@@ -215,7 +219,7 @@ export default class Loading extends Component<Props, State> {
           </h1>
         </div>
       );
-    } else if (isSystemTimeCorrect) {
+    } else {
       loadingScreen = (
         <div className={styles.syncing}>
           <div>
@@ -226,16 +230,6 @@ export default class Loading extends Component<Props, State> {
           </div>
         </div>
       );
-    } else {
-      loadingScreen = (
-        <SystemTimeErrorOverlay
-          localTimeDifference={localTimeDifference}
-          currentLocale={currentLocale}
-          onProblemSolutionClick={onProblemSolutionClick}
-          onCheckTheTimeAgain={onCheckTheTimeAgain}
-          isCheckingTheTimeAgain={isCheckingTheTimeAgain}
-        />
-      );
     }
 
     return (
@@ -243,7 +237,7 @@ export default class Loading extends Component<Props, State> {
         {showReportIssue && (
           <div className={styles.reportIssue}>
             <h1 className={styles.reportIssueText}>
-              {isConnecting ?
+              {!isConnected ?
                 intl.formatMessage(messages.reportConnectingIssueText) :
                 intl.formatMessage(messages.reportSyncingIssueText)
               }

@@ -1,11 +1,17 @@
 import BigNumber from 'bignumber.js';
+import { get } from 'lodash';
 import { Logger, stringifyData, stringifyError } from '../../../../../common/logging';
 import { RedeemAdaError } from '../errors';
 import AdaApi from '../index';
+import { getNodeInfo } from '../getNodeInfo';
+import { GenericApiError } from '../../common';
 import type {
+  NodeInfo,
+  NodeQueryParams,
   RedeemAdaParams,
   RedeemPaperVendedAdaParams
 } from '../types';
+import type { GetNetworkStatusResponse } from '../../common';
 
 // ========== LOGGING =========
 
@@ -53,6 +59,35 @@ export default (api: AdaApi) => {
   api.getLocalTimeDifference = async () => (
     Promise.resolve(LOCAL_TIME_DIFFERENCE)
   );
+
+  api.getNetworkStatus = async (
+    queryParams?: NodeQueryParams
+  ): Promise<GetNetworkStatusResponse> => {
+    Logger.debug('AdaApi::getNetworkStatus (PATCHED) called');
+    try {
+      const status: NodeInfo = await getNodeInfo(api.config, queryParams);
+      Logger.debug('AdaApi::getNetworkStatus (PATCHED) success: ' + stringifyData(status));
+
+      const {
+        blockchainHeight,
+        subscriptionStatus,
+        syncProgress,
+        localBlockchainHeight,
+      } = status;
+
+      // extract relevant data before sending to NetworkStatusStore
+      return {
+        subscriptionStatus,
+        syncProgress: syncProgress.quantity,
+        blockchainHeight: get(blockchainHeight, 'quantity', 0),
+        localBlockchainHeight: localBlockchainHeight.quantity,
+        localTimeDifference: LOCAL_TIME_DIFFERENCE,
+      };
+    } catch (error) {
+      Logger.error('AdaApi::getNetworkStatus (PATCHED) error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  };
 
   api.setLocalTimeDifference = async (timeDifference) => {
     LOCAL_TIME_DIFFERENCE = timeDifference;

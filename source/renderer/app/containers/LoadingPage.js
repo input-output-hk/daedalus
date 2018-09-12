@@ -25,9 +25,9 @@ export default class LoadingPage extends Component<InjectedProps> {
   render() {
     const { stores } = this.props;
     const {
-      isConnecting, isSyncing, isSynced, syncPercentage, hasBeenConnected,
-      hasBlockSyncingStarted, localTimeDifference, isSystemTimeCorrect,
-      forceCheckLocalTimeDifference, getLocalTimeDifferenceRequest,
+      isConnected, isSynced, syncPercentage, hasBeenConnected,
+      localTimeDifference, isSystemTimeCorrect,
+      forceCheckLocalTimeDifference,
     } = stores.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
     return (
@@ -35,22 +35,19 @@ export default class LoadingPage extends Component<InjectedProps> {
         <Loading
           currencyIcon={adaLogo}
           apiIcon={cardanoLogo}
-          isSyncing={isSyncing}
+          isConnected={isConnected}
           isSynced={isSynced}
           localTimeDifference={localTimeDifference}
           isSystemTimeCorrect={isSystemTimeCorrect}
-          isConnecting={isConnecting}
           syncPercentage={syncPercentage}
           loadingDataForNextScreenMessage={messages.loadingWalletData}
           hasBeenConnected={hasBeenConnected}
-          hasBlockSyncingStarted={hasBlockSyncingStarted}
           hasLoadedCurrentLocale={hasLoadedCurrentLocale}
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           currentLocale={currentLocale}
           handleReportIssue={this.handleReportIssue}
           onProblemSolutionClick={this.handleProblemSolutionClick}
           onCheckTheTimeAgain={forceCheckLocalTimeDifference}
-          isCheckingTheTimeAgain={getLocalTimeDifferenceRequest.isExecuting}
         />
         <WalletSupportRequestPage />
       </CenteredLayout>

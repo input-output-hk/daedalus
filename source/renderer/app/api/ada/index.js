@@ -730,56 +730,35 @@ export default class AdaApi {
     }
   };
 
-  getNetworkStatus = async (): Promise<GetNetworkStatusResponse> => {
+  getNetworkStatus = async (
+    queryParams?: NodeQueryParams
+  ): Promise<GetNetworkStatusResponse> => {
     Logger.debug('AdaApi::getNetworkStatus called');
     try {
-      const status: NodeInfo = await getNodeInfo(this.config);
+      const status: NodeInfo = await getNodeInfo(this.config, queryParams);
       Logger.debug('AdaApi::getNetworkStatus success: ' + stringifyData(status));
 
       const {
         blockchainHeight,
         subscriptionStatus,
         syncProgress,
-        localBlockchainHeight
+        localBlockchainHeight,
+        localTimeInformation,
       } = status;
 
       // extract relevant data before sending to NetworkStatusStore
       return {
         subscriptionStatus,
         syncProgress: syncProgress.quantity,
-        blockchainHeight: get(blockchainHeight, 'quantity', null),
-        localBlockchainHeight: localBlockchainHeight.quantity
+        blockchainHeight: get(blockchainHeight, 'quantity', 0),
+        localBlockchainHeight: localBlockchainHeight.quantity,
+        localTimeDifference: get(localTimeInformation, 'differenceFromNtpServer.quantity', null),
       };
     } catch (error) {
       Logger.error('AdaApi::getNetworkStatus error: ' + stringifyError(error));
       throw new GenericApiError();
     }
   };
-
-  // returns time difference in microseconds between user's local machine and NtpServer
-  // ensures time on user's node is synced with peer nodes on the network
-  getLocalTimeDifference = async (
-    queryParams?: NodeQueryParams
-  ): Promise<number> => {
-    Logger.debug('AdaApi::getLocalTimeDifference called');
-    try {
-      const response: NodeInfo = await getNodeInfo(this.config, queryParams);
-      Logger.debug('AdaApi::getLocalTimeDifference success: ' + stringifyData(response));
-      const differenceFromNtpServer = get(
-        response.localTimeInformation,
-        'differenceFromNtpServer',
-        null
-      );
-
-      // if the optional property 'differenceFromNtpServer' doesn't exist
-      // return 0 microseconds, otherwise return the required property 'quantity'
-      if (!differenceFromNtpServer) { return 0; }
-      return differenceFromNtpServer.quantity;
-    } catch (error) {
-      Logger.error('AdaApi::getLocalTimeDifference error: ' + stringifyError(error));
-      throw new GenericApiError();
-    }
-  }
 }
 
 // ========== TRANSFORM SERVER DATA INTO FRONTEND MODELS =========

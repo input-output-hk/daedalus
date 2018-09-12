@@ -30,11 +30,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Check the time again',
     description: 'Text of Check the time again button'
   },
-  onCheckTheTimeAgainLinkExecuting: {
-    id: 'systemTime.error.onCheckTheTimeAgainLinkExecuting',
-    defaultMessage: '!!!Checking time',
-    description: 'Text of Check the time again button when executing'
-  },
 });
 
 type Props = {
@@ -42,7 +37,6 @@ type Props = {
   currentLocale: string,
   onProblemSolutionClick: Function,
   onCheckTheTimeAgain: Function,
-  isCheckingTheTimeAgain: boolean,
 };
 
 @observer
@@ -54,7 +48,7 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { localTimeDifference, currentLocale, isCheckingTheTimeAgain } = this.props;
+    const { localTimeDifference, currentLocale } = this.props;
     const problemSolutionLink = intl.formatMessage(messages.problemSolutionLink);
 
     let humanizedDurationLanguage;
@@ -80,10 +74,6 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
       language: humanizedDurationLanguage,
     }).replace(/,/g, ''); // replace 1 day, 3 hours, 12 seconds* to clean period without comma
 
-    const checkTheTimeAgainMessage = isCheckingTheTimeAgain
-      ? messages.onCheckTheTimeAgainLinkExecuting
-      : messages.onCheckTheTimeAgainLink;
-
     window.onCheckTheTimeAgain = this.props.onCheckTheTimeAgain;
 
     return (
@@ -103,9 +93,8 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
         <button
           className={styles.checkLink}
           onClick={() => this.props.onCheckTheTimeAgain()}
-          disabled={isCheckingTheTimeAgain}
         >
-          {intl.formatMessage(checkTheTimeAgainMessage)}
+          {intl.formatMessage(messages.onCheckTheTimeAgainLink)}
         </button>
 
       </div>

@@ -111,7 +111,8 @@ export type GetNetworkStatusResponse = {
   subscriptionStatus: Object,
   syncProgress: number,
   blockchainHeight: number,
-  localBlockchainHeight: number
+  localBlockchainHeight: number,
+  localTimeDifference: ?number,
 };
 
 export type GetTransactionsRequest = {
