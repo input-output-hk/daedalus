@@ -10,6 +10,7 @@ import Dialog from '../../widgets/Dialog';
 import { getNetworkExplorerUrl } from '../../../utils/network';
 import styles from './CompletionDialog.scss';
 import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
+import InlineNotification from '../../widgets/InlineNotification';
 
 const messages = defineMessages({
   headline: {
@@ -38,12 +39,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Cardano explorer link',
     description: '"Paper wallet create certificate completion dialog" cardano link label.'
   },
+  addressCopiedLabel: {
+    id: 'paper.wallet.create.certificate.completion.dialog.addressCopiedLabel',
+    defaultMessage: '!!!copied',
+    description: '"Paper wallet create certificate completion dialog" address copied.'
+  },
   addressLabel: {
     id: 'paper.wallet.create.certificate.completion.dialog.addressLabel',
     defaultMessage: '!!!Wallet address',
     description: '"Paper wallet create certificate completion dialog" wallet address label.'
   },
-
   finishButtonLabel: {
     id: 'paper.wallet.create.certificate.completion.dialog.finishButtonLabel',
     defaultMessage: '!!!Finish',
@@ -55,20 +60,40 @@ type Props = {
   walletCertificateAddress: string,
   onClose: Function,
   onOpenExternalLink: Function,
-  onCopyAddress: Function,
+  copyAddressNotificationDuration: number,
 };
 
+type State = {
+  showCopyNotification: boolean,
+}
+
 @observer
-export default class CompletionDialog extends Component<Props> {
+export default class CompletionDialog extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
+  state = {
+    showCopyNotification: false,
+  }
+
+  copyNotificationTimeout: number;
+
+  onShowCopyNotification = () => {
+    const { copyAddressNotificationDuration } = this.props;
+    const timeInSeconds = copyAddressNotificationDuration * 1000;
+    clearTimeout(this.copyNotificationTimeout);
+
+    this.setState({ showCopyNotification: true });
+    this.copyNotificationTimeout = setTimeout(() =>
+      this.setState({ showCopyNotification: false }), timeInSeconds);
+  }
+
   render() {
     const { intl } = this.context;
-    const { onClose, walletCertificateAddress, onOpenExternalLink, /* onCopyAddress */ } =
-      this.props;
+    const { onClose, walletCertificateAddress, onOpenExternalLink } = this.props;
+    const { showCopyNotification } = this.state;
     const dialogClasses = classnames([
       styles.component,
       'completionDialog',
@@ -122,14 +147,17 @@ export default class CompletionDialog extends Component<Props> {
 
             <p className={styles.infoBoxLabel}>{intl.formatMessage(messages.addressLabel)}</p>
 
+            <InlineNotification
+              show={showCopyNotification}
+            >
+              {intl.formatMessage(messages.addressCopiedLabel)}
+            </InlineNotification>
+
             <div className={styles.infoBox}>
               {walletCertificateAddress}
               <CopyToClipboard
                 text={walletCertificateAddress}
-                onCopy={() => {
-                  // TODO: Implement the notification
-                  // onCopyAddress.bind(this, walletCertificateAddress)
-                }}
+                onCopy={this.onShowCopyNotification}
               >
                 <SVGInline svg={iconCopy} className={styles.copyIconBig} />
               </CopyToClipboard>

@@ -82,6 +82,7 @@
   "paper.wallet.create.certificate.completion.dialog.addressInstructions": "To receive funds to your paper wallet simply share your wallet address with others.",
   "paper.wallet.create.certificate.completion.dialog.addressLabel": "Wallet address",
   "paper.wallet.create.certificate.completion.dialog.cardanoLinkLabel": "Cardano explorer link",
+  "paper.wallet.create.certificate.completion.dialog.addressCopiedLabel": "copied",
   "paper.wallet.create.certificate.completion.dialog.finishButtonLabel": "Finish",
   "paper.wallet.create.certificate.completion.dialog.headline": "Paper wallet certificate",
   "paper.wallet.create.certificate.completion.dialog.linkInstructions": "When you wish to import your wallet back into Daedalus crop any glued edges of the certificate to open it. To check your balance on the paper wallet at any time, you may use the link below. Copy or save the URL to your browser bookmarks to do this easily.",
