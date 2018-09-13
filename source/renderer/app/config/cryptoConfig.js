@@ -1,3 +1,4 @@
+// @flow
 // Cryptographic constants go here
 export const WALLET_RECOVERY_PHRASE_WORD_COUNT = 12;
 export const ADA_REDEMPTION_PASSPHRASE_LENGTH = 9;
