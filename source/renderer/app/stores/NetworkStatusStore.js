@@ -13,8 +13,9 @@ let cachedState = null;
 // DEFINE CONSTANTS ----------------------------
 const ALLOWED_TIME_DIFFERENCE = 15 * 1000000; // 15 seconds (microseconds)
 const MAX_ALLOWED_STALL_DURATION = 2 * 60 * 1000; // 2 minutes (milliseconds)
+const NETWORK_STATUS_REQUEST_TIMEOUT = 30 * 1000; // 30 seconds (milliseconds)
 const NETWORK_POLL_INTERVAL = 2000; // 2 seconds (milliseconds)
-const SYSTEM_TIME_POLL_INTERVAL = 2000; // 2 seconds (milliseconds)
+const SYSTEM_TIME_POLL_INTERVAL = 1000; // 1 second (milliseconds)
 // Maximum number of out-of-sync blocks above which we consider to be out-of-sync
 const UNSYNCED_BLOCKS_ALLOWED = 6;
 
@@ -36,12 +37,19 @@ export default class NetworkStatusStore extends Store {
   _systemTimeChangeCheckPollingInterval: ?number = null;
 
   // Initialize store observables
-  @observable isSystemTimeChanged = false;
-  @observable isNodeResponding = false;
-  @observable isNodeSubscribed = false;
-  @observable isNodeSyncing = false;
-  @observable isNodeTimeCorrect = false;
-  @observable isNodeInSync = false;
+  @observable isForceCheckingNodeTime = false; // Tracks active force time difference check
+  @observable isSystemTimeChanged = false; // Tracks system time change event
+
+  // Internal Node states
+  /* eslint-disable indent */
+  @observable isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
+  @observable isNodeSubscribed = false; // Is 'true' in case node is subscribed to the network
+  @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
+  @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
+  @observable isNodeInSync = false; // Is 'true' if node is syncing and local/network block height
+                                    // difference is within the allowed limit
+  /* eslint-enabme indent */
+
   @observable hasBeenConnected = false;
   @observable initialLocalHeight = null;
   @observable localBlockHeight = 0;
@@ -118,7 +126,32 @@ export default class NetworkStatusStore extends Store {
   };
 
   @action _updateNetworkStatus = async (queryParams?: NodeQueryParams) => {
+    const { getNetworkStatusRequest } = this;
+    const isForcedTimeDifferenceCheck = !!queryParams;
+
+    // Prevent network status requests in case there is an already executing request
+    // unless we are trying to run a forced time difference check
+    if (
+      getNetworkStatusRequest.isExecuting &&
+      (!isForcedTimeDifferenceCheck || this.isForceCheckingNodeTime)
+    ) {
+      return;
+    }
+
+    // Keep track of active forced time difference checks
+    runInAction('update isForceCheckingNodeTime', () => {
+      this.isForceCheckingNodeTime = isForcedTimeDifferenceCheck;
+    });
+
+    if (isForcedTimeDifferenceCheck) {
+      // Set most recent block timestamp into the future as a guard
+      // against system time changes - e.g. if system time was set into the past
+      this._mostRecentBlockTimestamp = Date.now() + NETWORK_STATUS_REQUEST_TIMEOUT;
+    }
+
+    // Record connection status before running network status call
     const wasConnected = this.isConnected;
+
     try {
       const {
         subscriptionStatus,
@@ -126,7 +159,7 @@ export default class NetworkStatusStore extends Store {
         blockchainHeight,
         localBlockchainHeight,
         localTimeDifference,
-      } = await this.getNetworkStatusRequest.execute(queryParams).promise;
+      } = await getNetworkStatusRequest.execute(queryParams).promise;
 
       // We got response which means node is responding
       runInAction('update isNodeResponding', () => {
@@ -140,7 +173,7 @@ export default class NetworkStatusStore extends Store {
       });
 
       // System time is correct if local time difference is below allowed threshold
-      runInAction('update localTimeDifference and isSystemTimeCorrect', () => {
+      runInAction('update localTimeDifference and isNodeTimeCorrect', () => {
         this.localTimeDifference = localTimeDifference;
         this.isNodeTimeCorrect = (
           this.localTimeDifference !== null && // If we receive 'null' it means NTP check failed
@@ -183,7 +216,7 @@ export default class NetworkStatusStore extends Store {
         if (
           isBlockchainHeightIncreasing || // New block detected
           this._mostRecentBlockTimestamp > Date.now() || // Guard against future timestamps
-          !this.isSystemTimeCorrect // Guard against incorrect system time
+          !this.isNodeTimeCorrect // Guard against incorrect system time
         ) {
           this._mostRecentBlockTimestamp = Date.now(); // Record latest block timestamp
         }
@@ -244,11 +277,19 @@ export default class NetworkStatusStore extends Store {
           Logger.debug('Connection Lost. Reconnecting...');
         }
       });
+    } finally {
+      // In case the executed request was a forced time difference check
+      // clear active forced time difference check flag
+      if (this.isForceCheckingNodeTime) {
+        runInAction('update isForceCheckingNodeTime', () => {
+          this.isForceCheckingNodeTime = false;
+        });
+      }
     }
   };
 
-  forceCheckLocalTimeDifference = () => {
-    this._updateNetworkStatus({ force_ntp_check: true });
+  forceCheckLocalTimeDifference = async () => {
+    await this._updateNetworkStatus({ force_ntp_check: true });
   };
 
   // DEFINE COMPUTED VALUES

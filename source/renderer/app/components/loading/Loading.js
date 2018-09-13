@@ -68,6 +68,7 @@ type Props = {
   hasLoadedCurrentTheme: boolean,
   localTimeDifference: number,
   isSystemTimeCorrect: boolean,
+  isCheckingSystemTime: boolean,
   currentLocale: string,
   handleReportIssue: Function,
   onProblemSolutionClick: Function,
@@ -141,6 +142,7 @@ export default class Loading extends Component<Props, State> {
       hasLoadedCurrentTheme,
       localTimeDifference,
       isSystemTimeCorrect,
+      isCheckingSystemTime,
       currentLocale,
       handleReportIssue,
       onProblemSolutionClick,
@@ -209,6 +211,7 @@ export default class Loading extends Component<Props, State> {
           currentLocale={currentLocale}
           onProblemSolutionClick={onProblemSolutionClick}
           onCheckTheTimeAgain={onCheckTheTimeAgain}
+          isCheckingSystemTime={isCheckingSystemTime}
         />
       );
     } else if (!isSynced) {

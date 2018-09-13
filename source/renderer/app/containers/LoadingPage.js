@@ -26,7 +26,7 @@ export default class LoadingPage extends Component<InjectedProps> {
     const { stores } = this.props;
     const {
       isConnected, isSynced, syncPercentage, hasBeenConnected,
-      localTimeDifference, isSystemTimeCorrect,
+      localTimeDifference, isSystemTimeCorrect, isForceCheckingNodeTime,
       forceCheckLocalTimeDifference,
     } = stores.networkStatus;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme, currentLocale } = stores.profile;
@@ -39,6 +39,7 @@ export default class LoadingPage extends Component<InjectedProps> {
           isSynced={isSynced}
           localTimeDifference={localTimeDifference}
           isSystemTimeCorrect={isSystemTimeCorrect}
+          isCheckingSystemTime={isForceCheckingNodeTime}
           syncPercentage={syncPercentage}
           loadingDataForNextScreenMessage={messages.loadingWalletData}
           hasBeenConnected={hasBeenConnected}

@@ -37,6 +37,7 @@ type Props = {
   currentLocale: string,
   onProblemSolutionClick: Function,
   onCheckTheTimeAgain: Function,
+  isCheckingSystemTime: boolean,
 };
 
 @observer
@@ -48,7 +49,7 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { localTimeDifference, currentLocale } = this.props;
+    const { localTimeDifference, currentLocale, isCheckingSystemTime } = this.props;
     const problemSolutionLink = intl.formatMessage(messages.problemSolutionLink);
 
     let humanizedDurationLanguage;
@@ -93,6 +94,7 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
         <button
           className={styles.checkLink}
           onClick={() => this.props.onCheckTheTimeAgain()}
+          disabled={isCheckingSystemTime}
         >
           {intl.formatMessage(messages.onCheckTheTimeAgainLink)}
         </button>
