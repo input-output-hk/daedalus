@@ -14,6 +14,7 @@ let cachedState = null;
 const ALLOWED_TIME_DIFFERENCE = 15 * 1000000; // 15 seconds (microseconds)
 const MAX_ALLOWED_STALL_DURATION = 2 * 60 * 1000; // 2 minutes (milliseconds)
 const NETWORK_POLL_INTERVAL = 2000; // 2 seconds (milliseconds)
+const SYSTEM_TIME_POLL_INTERVAL = 2000; // 2 seconds (milliseconds)
 // Maximum number of out-of-sync blocks above which we consider to be out-of-sync
 const UNSYNCED_BLOCKS_ALLOWED = 6;
 
@@ -28,11 +29,14 @@ export default class NetworkStatusStore extends Store {
 
   // Initialize store properties
   _startTime = Date.now();
+  _systemTime = Date.now();
   _nodeStatus = NODE_STATUS.CONNECTING;
   _mostRecentBlockTimestamp = 0;
   _networkStatusPollingInterval: ?number = null;
+  _systemTimeChangeCheckPollingInterval: ?number = null;
 
   // Initialize store observables
+  @observable isSystemTimeChanged = false;
   @observable isNodeResponding = false;
   @observable isNodeSubscribed = false;
   @observable isNodeSyncing = false;
@@ -52,11 +56,17 @@ export default class NetworkStatusStore extends Store {
   setup() {
     this.registerReactions([
       this._updateNetworkStatusWhenDisconnected,
+      this._updateLocalTimeDifferenceWhenSystemTimeChanged,
     ]);
 
     // Setup network status polling interval
     this._networkStatusPollingInterval = setInterval(
       this._updateNetworkStatus, NETWORK_POLL_INTERVAL
+    );
+
+    // Setup system time change polling interval
+    this._systemTimeChangeCheckPollingInterval = setInterval(
+      this._updateSystemTime, SYSTEM_TIME_POLL_INTERVAL
     );
   }
 
@@ -66,6 +76,9 @@ export default class NetworkStatusStore extends Store {
     // Teardown polling intervals
     if (this._networkStatusPollingInterval) {
       clearInterval(this._networkStatusPollingInterval);
+    }
+    if (this._systemTimeChangeCheckPollingInterval) {
+      clearInterval(this._systemTimeChangeCheckPollingInterval);
     }
 
     // Save current state into the cache
@@ -77,7 +90,11 @@ export default class NetworkStatusStore extends Store {
   }
 
   _updateNetworkStatusWhenDisconnected = async () => {
-    if (!this.isConnected) await this._updateNetworkStatus({ force_ntp_check: true });
+    if (!this.isConnected) await this._updateNetworkStatus();
+  };
+
+  _updateLocalTimeDifferenceWhenSystemTimeChanged = async () => {
+    if (this.isSystemTimeChanged) await this._updateNetworkStatus({ force_ntp_check: true });
   };
 
   _getStartupTimeDelta() {
@@ -89,6 +106,16 @@ export default class NetworkStatusStore extends Store {
     super.initialize();
     if (cachedState !== null) Object.assign(this, cachedState);
   }
+
+  @action _updateSystemTime = () => {
+    // In order to detect system time changes (e.g. user updates machine's date/time)
+    // we are checking current system time and comparing the difference to the last known value.
+    // If the difference is larger than the polling interval plus a safety margin of 100%
+    // we can be sure the user has update the time.
+    const systemTimeDifference = Math.abs(moment(Date.now()).diff(moment(this._systemTime)));
+    this.isSystemTimeChanged = Math.floor(systemTimeDifference / SYSTEM_TIME_POLL_INTERVAL) > 1;
+    this._systemTime = Date.now();
+  };
 
   @action _updateNetworkStatus = async (queryParams?: NodeQueryParams) => {
     const wasConnected = this.isConnected;
