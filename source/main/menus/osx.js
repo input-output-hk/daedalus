@@ -26,11 +26,6 @@ export const osxMenu = (app, window, {
           restartInSafeMode();
       },
     }, {
-      label: 'Restart in safe mode',
-      click() {
-        restartInSafeMode();
-      },
-    }, {
       label: 'Quit',
       accelerator: 'Command+Q',
       click() {
