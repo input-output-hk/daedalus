@@ -4,7 +4,6 @@ import log from 'electron-log';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { setupLogging } from './utils/setupLogging';
-import { setupTls } from './utils/setupTls';
 import { makeEnvironmentGlobal } from './utils/makeEnvironmentGlobal';
 import { createMainWindow } from './windows/main';
 import { winLinuxMenu } from './menus/win-linux';
@@ -66,7 +65,6 @@ app.on('ready', async () => {
     app.quit();
   }
 
-  setupTls();
   makeEnvironmentGlobal(process.env);
   await installChromeExtensions(environment.isDev());
 
