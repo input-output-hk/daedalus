@@ -1,0 +1,44 @@
+.component {
+  align-items: center;
+  background: var(--theme-connecting-background-color);
+  color: var(--theme-connecting-text-color);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  font-family: var(--font-medium);
+  font-size: 14px;
+  line-height: 1.5;
+  justify-content: center;
+  width: 100%;
+}
+
+.table {
+  width: 50%;
+
+  th {
+    padding-top: 30px;
+    text-align: left;
+  }
+
+  td + td {
+    text-align: right;
+  }
+
+  button {
+    color: var(--theme-connecting-text-color);
+    cursor: pointer;
+    font-size: 14px;
+    line-height: 1.5;
+    text-decoration: underline;
+
+    &:disabled {
+      cursor: default;
+      text-decoration: none;
+    }
+  }
+
+  hr {
+    border: 0;
+    border-top: 1px solid var(--theme-separation-border-color);
+  }
+}

@@ -1,60 +1,76 @@
 // @flow
 import React, { Component } from 'react';
-import { inject, observer } from 'mobx-react';
-import { ROUTES } from '../routes-config';
-import CenteredLayout from '../components/layout/CenteredLayout';
-import type { InjectedProps } from '../types/injectedPropsType';
+import { observer } from 'mobx-react';
+import styles from './NetworkStatus.scss';
 
-@inject('stores', 'actions') @observer
-export default class NetworkStatusPage extends Component<InjectedProps> {
+type Props = {
+  isNodeResponding: boolean,
+  isNodeSubscribed: boolean,
+  isNodeSyncing: boolean,
+  isNodeInSync: boolean,
+  isNodeTimeCorrect: boolean,
+  isConnected: boolean,
+  isSynced: boolean,
+  syncPercentage: number,
+  hasBeenConnected: boolean,
+  localTimeDifference: ?number,
+  isSystemTimeCorrect: boolean,
+  isForceCheckingNodeTime: boolean,
+  isSystemTimeChanged: boolean,
+  localBlockHeight: number,
+  networkBlockHeight: number,
+  onForceCheckLocalTimeDifference: Function,
+  onClose: Function,
+};
+
+@observer
+export default class NetworkStatus extends Component<Props> {
 
   render() {
-    const { stores } = this.props;
     const {
-      // Node state
       isNodeResponding, isNodeSubscribed, isNodeSyncing, isNodeInSync, isNodeTimeCorrect,
-      // Application state
       isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, isForceCheckingNodeTime,
-      forceCheckLocalTimeDifference, isSystemTimeChanged,
-      localBlockHeight, networkBlockHeight,
-    } = stores.networkStatus;
+      isSystemTimeChanged, localBlockHeight, networkBlockHeight,
+      onForceCheckLocalTimeDifference, onClose,
+    } = this.props;
+
     return (
-      <CenteredLayout>
-        <table style={{ width: '50%' }}>
+      <div className={styles.component}>
+        <table className={styles.table}>
           <tbody>
             <tr>
               <th colSpan="2">
-                NODE STATUS<hr />
+                CARDANO NODE STATUS<hr />
               </th>
             </tr>
             <tr>
-              <td style={{ width: '60%' }}>isNodeResponding:</td>
+              <td>isNodeResponding:</td>
               <td>{isNodeResponding ? 'YES' : 'NO'}</td>
             </tr>
             <tr>
-              <td style={{ width: '60%' }}>isNodeSubscribed:</td>
+              <td>isNodeSubscribed:</td>
               <td>{isNodeSubscribed ? 'YES' : 'NO'}</td>
             </tr>
             <tr>
-              <td style={{ width: '60%' }}>isNodeTimeCorrect:</td>
+              <td>isNodeTimeCorrect:</td>
               <td>{isNodeTimeCorrect ? 'YES' : 'NO'}</td>
             </tr>
             <tr>
-              <td style={{ width: '60%' }}>isNodeSyncing:</td>
+              <td>isNodeSyncing:</td>
               <td>{isNodeSyncing ? 'YES' : 'NO'}</td>
             </tr>
             <tr>
-              <td style={{ width: '60%' }}>isNodeInSync:</td>
+              <td>isNodeInSync:</td>
               <td>{isNodeInSync ? 'YES' : 'NO'}</td>
             </tr>
             <tr>
-              <th colSpan="2" style={{ paddingTop: 50 }}>
-                APPLICATION STATUS<hr />
+              <th colSpan="2">
+                DAEDALUS STATUS<hr />
               </th>
             </tr>
             <tr>
-              <td style={{ width: '60%' }}>isConnected:</td>
+              <td>isConnected:</td>
               <td>{isConnected ? 'YES' : 'NO'}</td>
             </tr>
             <tr>
@@ -86,7 +102,7 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
               <td>
                 {localTimeDifference} μs |&nbsp;
                 <button
-                  onClick={() => forceCheckLocalTimeDifference()}
+                  onClick={() => onForceCheckLocalTimeDifference()}
                   disabled={isForceCheckingNodeTime}
                 >
                   Check time
@@ -106,23 +122,16 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
               <td>{isForceCheckingNodeTime ? 'YES' : 'NO'}</td>
             </tr>
             <tr>
-              <th colSpan="2" style={{ paddingTop: 30 }}>
-                <button
-                  onClick={() => this.closeNetworkStatus()}
-                >
+              <th colSpan="2">
+                <button onClick={() => onClose()}>
                   Close
                 </button>
               </th>
             </tr>
           </tbody>
         </table>
-      </CenteredLayout>
+      </div>
     );
   }
-
-  closeNetworkStatus = () => {
-    const { actions } = this.props;
-    actions.router.goToRoute.trigger({ route: ROUTES.ROOT });
-  };
 
 }

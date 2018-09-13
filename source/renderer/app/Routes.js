@@ -6,7 +6,7 @@ import { ROUTES } from './routes-config';
 // PAGES
 import Root from './containers/Root';
 import AdaRedemptionPage from './containers/wallet/AdaRedemptionPage';
-import NetworkStatusPage from './containers/NetworkStatusPage';
+import NetworkStatusPage from './containers/status/NetworkStatusPage';
 import WalletAddPage from './containers/wallet/WalletAddPage';
 import LanguageSelectionPage from './containers/profile/LanguageSelectionPage';
 import Settings from './containers/settings/Settings';

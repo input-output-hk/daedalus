@@ -108,7 +108,13 @@ app.on('ready', async () => {
     });
   }
 
-  globalShortcut.register('CommandOrControl+N', goToNetworkStatus);
+  mainWindow.on('focus', () => {
+    globalShortcut.register('CommandOrControl+S', goToNetworkStatus);
+  });
+
+  mainWindow.on('blur', () => {
+    globalShortcut.unregister('CommandOrControl+S');
+  });
 });
 
 app.on('window-all-closed', () => {
