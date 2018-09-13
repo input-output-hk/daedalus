@@ -31,11 +31,6 @@ export const winLinuxMenu = (app, window, {
         goToNetworkStatus();
       },
     }, {
-      label: 'Restart in safe mode',
-      click() {
-        restartInSafeMode();
-      }
-    }, {
       label: 'Close',
       accelerator: 'Ctrl+W',
       click() {

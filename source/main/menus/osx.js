@@ -31,11 +31,6 @@ export const osxMenu = (app, window, {
         goToNetworkStatus();
       },
     }, {
-      label: 'Restart in safe mode',
-      click() {
-        restartInSafeMode();
-      },
-    }, {
       label: 'Quit',
       accelerator: 'Command+Q',
       click() {
