@@ -177,7 +177,7 @@ export default {
   '--theme-settings-theme-select-title-color': '#cecfd1',
 
   '--theme-sidebar-background-color': '#314259',
-  '--theme-sidebar-category-background-color-hover': '#263345',
+  '--theme-sidebar-category-background-color-hover': 'rgba(38, 51, 69, 0.5)',
   '--theme-sidebar-category-background-color-active': '#263345',
   '--theme-sidebar-category-text-color': '#e9f4fe',
   '--theme-sidebar-menu-background-color': '#263345',
@@ -186,7 +186,7 @@ export default {
   '--theme-sidebar-menu-item-wallet-name-color': '#e9f4fe',
   '--theme-sidebar-menu-item-wallet-info-color': '#bdc0c1',
   '--theme-sidebar-menu-add-button-background-color-active': '#1b2430',
-  '--theme-sidebar-menu-add-button-background-color-hover': '#171f29',
+  '--theme-sidebar-menu-add-button-background-color-hover': 'rgba(27, 36, 48, 0.5)',
   '--theme-sidebar-menu-add-button-text-color': '#e9f4fe',
 
   '--theme-staking-background-color': '#0b1926',

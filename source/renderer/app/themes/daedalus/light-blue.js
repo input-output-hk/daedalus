@@ -181,7 +181,7 @@ export default {
   '--theme-sidebar-category-background-color-active': '#233856',
   '--theme-sidebar-category-text-color': '#fafbfc',
   '--theme-sidebar-menu-background-color': '#233856',
-  '--theme-sidebar-menu-item-background-color-hover': '#1e304a',
+  '--theme-sidebar-menu-item-background-color-hover': 'rgba(30, 48, 74, 0.5)',
   '--theme-sidebar-menu-item-background-color-active': '#1e304a',
   '--theme-sidebar-menu-item-wallet-name-color': '#fafbfc',
   '--theme-sidebar-menu-item-wallet-info-color': '#fafbfc',
