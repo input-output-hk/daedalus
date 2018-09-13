@@ -213,12 +213,7 @@ export default class NetworkStatusStore extends Store {
       }
     } catch (error) {
       // If the sync progress request fails, switch to disconnected state
-      runInAction('update connected status', () => {
-        if (this.isConnected) {
-          this.isConnected = false;
-          if (!this.hasBeenConnected) this.hasBeenConnected = true;
-        }
-      });
+      this._setDisconnected();
       Logger.debug('Connection Lost. Reconnecting...');
     }
   };
@@ -258,9 +253,17 @@ export default class NetworkStatusStore extends Store {
       case CardanoNodeStates.UPDATING:
       case CardanoNodeStates.UPDATED:
       case CardanoNodeStates.CRASHED:
+        this._setDisconnected();
         this._hasReceivedTlsConfig = false;
         break;
       default:
+    }
+  };
+
+  @action _setDisconnected = () => {
+    if (this.isConnected) {
+      this.isConnected = false;
+      if (!this.hasBeenConnected) this.hasBeenConnected = true;
     }
   };
 }

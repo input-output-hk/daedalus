@@ -1,25 +1,42 @@
 // @flow
+import { createWriteStream, readFileSync } from 'fs';
+import { spawn } from 'child_process';
 import log from 'electron-log';
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { ensureXDGDataIsSet, prepareArgs, readLauncherConfig } from './config';
 import { CardanoNode } from './CardanoNode';
 import { TLS_CONFIG_CHANNEL } from '../../common/ipc-api/tls-config';
 import { AWAIT_UPDATE_CHANNEL, CARDANO_NODE_STATE_CHANGE_CHANNEL } from '../../common/ipc-api';
+import { CardanoNodeStates } from '../../common/types/cardanoNodeTypes';
 import type { TlsConfig } from '../../common/ipc-api/tls-config';
 import type { CardanoNodeState } from '../../common/types/cardanoNodeTypes';
-import { CardanoNodeStates } from '../../common/types/cardanoNodeTypes';
 
 export const shouldCardanoBeLaunchedByDaedalus = (launcherConfig: Object): boolean => (
   launcherConfig.frontendOnlyMode
 );
 
-/*
- * todo:
- * when cardano quits unexpectedly, restart it up to X times, and update the UI
- * dont bother trying to connect to the api until `Started` message arrives
- * optional?:
- * call subprocess.disconnect() when the user tries to close daedalus,then wait for
- * the child to die, and show a "shutting down..." status, after a timeout, kill the child
+const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
+  const { nodePath, tlsPath, logsPrefix } = launcherConfig;
+  const nodeArgs = prepareArgs(launcherConfig);
+  const logFilePath = logsPrefix + '/cardano-node.log';
+  const config = {
+    nodePath,
+    tlsPath,
+    nodeArgs,
+    startupTimeout: 5000,
+    shutdownTimeout: 5000,
+    killTimeout: 5000,
+    updateTimeout: 20000,
+  };
+  node.start(config, createWriteStream(logFilePath, { flags: 'a' }));
+};
+
+/**
+ * Configures, starts and manages the CardanoNode responding to node
+ * state changes, app events and IPC messages coming from the renderer.
+ *
+ * @param launcherConfigPath
+ * @param mainWindow
  */
 export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWindow) => {
   // Check if we should start cardano
@@ -34,20 +51,9 @@ export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWind
   }
   ensureXDGDataIsSet();
 
-  // Start cardano-sl
-  const { nodePath, tlsPath, logsPrefix } = launcherConfig;
-  const nodeArgs = prepareArgs(launcherConfig);
-  const config = {
-    nodePath,
-    tlsPath,
-    nodeArgs,
-    logFilePath: logsPrefix + '/cardano-node.log',
-    startupTimeout: 5000,
-    shutdownTimeout: 5000,
-    killTimeout: 5000,
-    updateTimeout: 20000,
-  };
-  const cardanoNode = new CardanoNode(config, log, {
+  const cardanoNode = new CardanoNode(log, {
+    spawn,
+    readFileSync,
     broadcastTlsConfig: (tlsConfig: TlsConfig) => {
       if (!mainWindow.isDestroyed()) {
         mainWindow.send(TLS_CONFIG_CHANNEL, true, tlsConfig);
@@ -57,7 +63,7 @@ export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWind
       if (!mainWindow.isDestroyed()) {
         mainWindow.send(CARDANO_NODE_STATE_CHANGE_CHANNEL, true, state);
       }
-    }
+    },
   }, {
     onStarting: () => {},
     onRunning: () => {},
@@ -73,10 +79,10 @@ export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWind
     },
     onCrashed: (code) => {
       log.info(`CardanoNode exited unexpectatly with code ${code}. Restarting it …`);
-      cardanoNode.start();
+      startCardanoNode(cardanoNode, launcherConfig);
     }
   });
-  cardanoNode.start();
+  startCardanoNode(cardanoNode, launcherConfig);
 
   // Respond with TLS config whenever a render process asks for it
   ipcMain.on(TLS_CONFIG_CHANNEL, ({ sender }) => {
@@ -87,7 +93,7 @@ export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWind
   ipcMain.on(AWAIT_UPDATE_CHANNEL, async ({ sender }) => {
     log.info('ipcMain: Received request from renderer to await update.');
     try {
-      await cardanoNode.handleNodeUpdate();
+      await cardanoNode.expectNodeUpdate();
       sender.send(AWAIT_UPDATE_CHANNEL, true);
     } catch (error) {
       sender.send(AWAIT_UPDATE_CHANNEL, false);
