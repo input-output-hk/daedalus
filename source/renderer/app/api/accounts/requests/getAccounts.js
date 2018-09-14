@@ -1,5 +1,6 @@
 // @flow
-import type { AdaAccounts, RequestConfig } from './types';
+import type { RequestConfig } from '../../common/types';
+import type { Accounts } from '../types';
 import { request } from '../../utils/request';
 
 export type GetAccountsParams = {
@@ -9,7 +10,7 @@ export type GetAccountsParams = {
 export const getAccounts = (
   config: RequestConfig,
   { walletId }: GetAccountsParams
-): Promise<AdaAccounts> => (
+): Promise<Accounts> => (
   request({
     hostname: 'localhost',
     method: 'GET',
