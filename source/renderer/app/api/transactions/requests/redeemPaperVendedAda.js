@@ -1,6 +1,6 @@
 // @flow
-// import RequestConfig
-import type { AdaTransaction } from '../types';
+import type { RequestConfig } from '../../common/types';
+import type { Transaction } from '../types';
 import type { RedeemAdaParams } from './redeemAda';
 import { request } from '../../utils/request';
 
@@ -9,10 +9,10 @@ export type RedeemPaperVendedAdaParams = {
   ...RedeemAdaParams
 };
 
-export const redeemAdaPaperVend = (
+export const redeemPaperVendedAda = (
   config: RequestConfig,
   redemptionParams: RedeemPaperVendedAdaParams
-): Promise<AdaTransaction> => (
+): Promise<Transaction> => (
   request({
     hostname: 'localhost',
     method: 'POST',
