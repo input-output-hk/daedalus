@@ -1,7 +1,7 @@
 .component {
   align-items: center;
-  background: var(--theme-connecting-background-color);
-  color: var(--theme-connecting-text-color);
+  background: #202225;
+  color: #fff;
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -39,14 +39,14 @@
   }
 
   button {
-    color: var(--theme-connecting-text-color);
+    color: #fff;
     cursor: pointer;
     font-size: 14px;
     line-height: 1.5;
     position: relative;
 
     &::after {
-      border-top: 1px solid var(--theme-connecting-text-color);
+      border-top: 1px solid #fff;
       bottom: 1px;
       content: '';
       left: 0;
