@@ -13,14 +13,13 @@ import { mnemonicToSeedHex } from '../../utils/crypto';
 import { downloadPaperWalletCertificate } from '../../utils/paperWalletPdfGenerator';
 import type { walletExportTypeChoices } from '../../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../../actions/ada/wallets-actions';
-import type { ImportWalletFromFileResponse } from '../../api/ada/index';
 
 export default class AdaWalletsStore extends WalletStore {
 
   // REQUESTS
   /* eslint-disable max-len */
   @observable walletsRequest: Request<Array<Wallet>> = new Request(this.api.ada.getWallets);
-  @observable importFromFileRequest: Request<ImportWalletFromFileResponse> = new Request(this.api.ada.importWalletFromFile);
+  @observable importFromFileRequest: Request<Wallet> = new Request(this.api.ada.importWalletFromFile);
   @observable createWalletRequest: Request<Wallet> = new Request(this.api.ada.createWallet);
   @observable getWalletAddressesRequest: Request<any> = new Request(this.api.ada.getAddresses);
   @observable deleteWalletRequest: Request<boolean> = new Request(this.api.ada.deleteWallet);

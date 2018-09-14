@@ -4,7 +4,7 @@ import moment from 'moment';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { Logger } from '../../../common/logging';
-import type { GetNetworkStatusResponse } from '../api/common';
+import type { GetNetworkStatusResponse } from '../api/nodes/types';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedState = null;

@@ -2,9 +2,9 @@
 import { action, computed, observable, runInAction } from 'mobx';
 import { ipcRenderer } from 'electron';
 import { isString } from 'lodash';
-import BigNumber from 'bignumber.js';
 import Store from '../lib/Store';
 import Request from '../lib/LocalizedRequest';
+import WalletTransaction from '../../domains/WalletTransaction';
 import { Logger } from '../../../../common/logging';
 import { encryptPassphrase } from '../../api/utils';
 import { matchRoute } from '../../utils/routing';
@@ -19,7 +19,8 @@ import LocalizableError from '../../i18n/LocalizableError';
 import { ROUTES } from '../../routes-config';
 import type { RedemptionTypeChoices } from '../../types/redemptionTypes';
 import { ADA_REDEMPTION_TYPES } from '../../types/redemptionTypes';
-import type { AdaTransaction, RedeemAdaParams, RedeemPaperVendedAdaParams } from '../../api/ada/types';
+import type { RedeemAdaParams } from '../../api/transactions/requests/redeemAda';
+import type { RedeemPaperVendedAdaParams } from '../../api/transactions/requests/redeemPaperVendedAda';
 
 export default class AdaRedemptionStore extends Store {
 
@@ -219,11 +220,11 @@ export default class AdaRedemptionStore extends Store {
       redemptionCode,
       spendingPassword: spendingPassword && encryptPassphrase(spendingPassword)
     })
-      .then(action((transaction: AdaTransaction) => {
+      .then(action((transaction: WalletTransaction) => {
         this._reset();
         this.actions.ada.adaRedemption.adaSuccessfullyRedeemed.trigger({
           walletId,
-          amount: new BigNumber(transaction.amount).toFormat(DECIMAL_PLACES_IN_ADA),
+          amount: transaction.amount.toFormat(DECIMAL_PLACES_IN_ADA)
         });
       }))
       .catch(action((error) => {
@@ -242,7 +243,7 @@ export default class AdaRedemptionStore extends Store {
     if (!accountIndex) throw new Error('Active account required before redeeming Ada.');
 
     try {
-      const transaction: AdaTransaction = await this.redeemPaperVendedAdaRequest.execute({
+      const transaction: WalletTransaction = await this.redeemPaperVendedAdaRequest.execute({
         mnemonics: this.passPhrase && this.passPhrase.split(' '),
         accountIndex,
         redemptionCode: shieldedRedemptionKey,
@@ -251,7 +252,7 @@ export default class AdaRedemptionStore extends Store {
       this._reset();
       this.actions.ada.adaRedemption.adaSuccessfullyRedeemed.trigger({
         walletId,
-        amount: new BigNumber(transaction.amount).toFormat(DECIMAL_PLACES_IN_ADA),
+        amount: transaction.amount.toFormat(DECIMAL_PLACES_IN_ADA)
       });
     } catch (error) {
       runInAction(() => this.error = error);

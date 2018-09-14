@@ -4,13 +4,12 @@ import { observable, computed, action, runInAction } from 'mobx';
 import Store from '../lib/Store';
 import CachedRequest from '../lib/LocalizedCachedRequest';
 import Request from '../lib/LocalizedRequest';
-import type { AdaAddress } from '../../api/ada/types';
+import type { Address, Addresses, GetAddressesResponse } from '../../api/addresses/types';
 import LocalizableError from '../../i18n/LocalizableError';
-import type { GetAddressesResponse, CreateAddressResponse } from '../../api/ada/index';
 
 export default class AddressesStore extends Store {
 
-  @observable lastGeneratedAddress: ?AdaAddress = null;
+  @observable lastGeneratedAddress: ?Address = null;
   @observable addressesRequests: Array<{
     walletId: string,
     allRequest: CachedRequest<GetAddressesResponse>
@@ -19,7 +18,7 @@ export default class AddressesStore extends Store {
 
   // REQUESTS
   /* eslint-disable max-len */
-  @observable createAddressRequest: Request<CreateAddressResponse> = new Request(this.api.ada.createAddress);
+  @observable createAddressRequest: Request<Address> = new Request(this.api.ada.createAddress);
   /* eslint-disable max-len */
 
   setup() {
@@ -33,7 +32,7 @@ export default class AddressesStore extends Store {
       const { walletId, spendingPassword } = params;
       const accountIndex = await this.getAccountIndexByWalletId(walletId);
 
-      const address: ?CreateAddressResponse = await this.createAddressRequest.execute({
+      const address: ?Address = await this.createAddressRequest.execute({
         accountIndex, spendingPassword, walletId
       }).promise;
 
@@ -49,7 +48,7 @@ export default class AddressesStore extends Store {
     }
   };
 
-  @computed get all(): Array<AdaAddress> {
+  @computed get all(): Addresses {
     const wallet = this.stores.ada.wallets.active;
     if (!wallet) return [];
     const result = this._getAddressesAllRequest(wallet.id).result;
@@ -63,7 +62,7 @@ export default class AddressesStore extends Store {
     return result ? result.addresses.length > 0 : false;
   }
 
-  @computed get active(): ?AdaAddress {
+  @computed get active(): ?Address {
     if (this.lastGeneratedAddress) return this.lastGeneratedAddress;
     const wallet = this.stores.ada.wallets.active;
     if (!wallet) return;
