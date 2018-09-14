@@ -734,7 +734,7 @@ export default class AdaApi {
     queryParams?: NodeQueryParams
   ): Promise<GetNetworkStatusResponse> => {
     const isForceNTPCheck = !!queryParams;
-    const loggerText = `AdaApi::getNetworkStatus ${isForceNTPCheck ? '(FORCE-NTP-CHECK)' : ''}`;
+    const loggerText = `AdaApi::getNetworkStatus${isForceNTPCheck ? ' (FORCE-NTP-CHECK)' : ''}`;
     Logger.debug(`${loggerText} called`);
     try {
       const status: NodeInfo = await getNodeInfo(this.config, queryParams);
