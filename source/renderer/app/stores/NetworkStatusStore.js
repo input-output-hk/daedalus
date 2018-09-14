@@ -106,7 +106,10 @@ export default class NetworkStatusStore extends Store {
   };
 
   _updateLocalTimeDifferenceWhenSystemTimeChanged = async () => {
-    if (this.isSystemTimeChanged) await this._updateNetworkStatus({ force_ntp_check: true });
+    if (this.isSystemTimeChanged) {
+      Logger.debug('System time change detected');
+      await this._updateNetworkStatus({ force_ntp_check: true });
+    }
   };
 
   _getStartupTimeDelta() {

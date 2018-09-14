@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import classNames from 'classnames';
 import styles from './NetworkStatus.scss';
 
 type Props = {
@@ -26,6 +27,12 @@ type Props = {
 @observer
 export default class NetworkStatus extends Component<Props> {
 
+  getClass = (isTrue: boolean) => (
+    classNames([
+      isTrue ? styles.green : styles.red,
+    ])
+  );
+
   render() {
     const {
       isNodeResponding, isNodeSubscribed, isNodeSyncing, isNodeInSync, isNodeTimeCorrect,
@@ -48,23 +55,33 @@ export default class NetworkStatus extends Component<Props> {
             </tr>
             <tr>
               <td>isNodeResponding:</td>
-              <td>{isNodeResponding ? 'YES' : 'NO'}</td>
+              <td className={this.getClass(isNodeResponding)}>
+                {isNodeResponding ? 'YES' : 'NO'}
+              </td>
             </tr>
             <tr>
               <td>isNodeSubscribed:</td>
-              <td>{isNodeSubscribed ? 'YES' : 'NO'}</td>
+              <td className={this.getClass(isNodeSubscribed)}>
+                {isNodeSubscribed ? 'YES' : 'NO'}
+              </td>
             </tr>
             <tr>
               <td>isNodeTimeCorrect:</td>
-              <td>{isNodeTimeCorrect ? 'YES' : 'NO'}</td>
+              <td className={this.getClass(isNodeTimeCorrect)}>
+                {isNodeTimeCorrect ? 'YES' : 'NO'}
+              </td>
             </tr>
             <tr>
               <td>isNodeSyncing:</td>
-              <td>{isNodeSyncing ? 'YES' : 'NO'}</td>
+              <td className={this.getClass(isNodeSyncing)}>
+                {isNodeSyncing ? 'YES' : 'NO'}
+              </td>
             </tr>
             <tr>
               <td>isNodeInSync:</td>
-              <td>{isNodeInSync ? 'YES' : 'NO'}</td>
+              <td className={this.getClass(isNodeInSync)}>
+                {isNodeInSync ? 'YES' : 'NO'}
+              </td>
             </tr>
             <tr>
               <th colSpan="2">
@@ -73,15 +90,21 @@ export default class NetworkStatus extends Component<Props> {
             </tr>
             <tr>
               <td>isConnected:</td>
-              <td>{isConnected ? 'YES' : 'NO'}</td>
+              <td className={this.getClass(isConnected)}>
+                {isConnected ? 'YES' : 'NO'}
+              </td>
             </tr>
             <tr>
               <td>hasBeenConnected:</td>
-              <td>{hasBeenConnected ? 'YES' : 'NO'}</td>
+              <td className={this.getClass(hasBeenConnected)}>
+                {hasBeenConnected ? 'YES' : 'NO'}
+              </td>
             </tr>
             <tr>
               <td>isSynced:</td>
-              <td>{isSynced ? 'YES' : 'NO'}</td>
+              <td className={this.getClass(isSynced)}>
+                {isSynced ? 'YES' : 'NO'}
+              </td>
             </tr>
             <tr>
               <td>syncPercentage:</td>
@@ -117,15 +140,21 @@ export default class NetworkStatus extends Component<Props> {
             </tr>
             <tr>
               <td>isSystemTimeCorrect:</td>
-              <td>{isSystemTimeCorrect ? 'YES' : 'NO'}</td>
+              <td className={this.getClass(isSystemTimeCorrect)}>
+                {isSystemTimeCorrect ? 'YES' : 'NO'}
+              </td>
             </tr>
             <tr>
               <td>isSystemTimeChanged:</td>
-              <td>{isSystemTimeChanged ? 'YES' : 'NO'}</td>
+              <td className={this.getClass(isSystemTimeChanged)}>
+                {isSystemTimeChanged ? 'YES' : 'NO'}
+              </td>
             </tr>
             <tr>
               <td>isForceCheckingNodeTime:</td>
-              <td>{isForceCheckingNodeTime ? 'YES' : 'NO'}</td>
+              <td className={this.getClass(isForceCheckingNodeTime)}>
+                {isForceCheckingNodeTime ? 'YES' : 'NO'}
+              </td>
             </tr>
             <tr>
               <th colSpan="2">

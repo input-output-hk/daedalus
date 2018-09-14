@@ -20,6 +20,20 @@
     text-align: left;
   }
 
+  td {
+    &.red {
+      color: #ab1700;
+    }
+
+    &.green {
+      color: #1cac63;
+    }
+
+    & + td {
+      text-align: right;
+    }
+  }
+
   td + td {
     text-align: right;
   }
@@ -29,16 +43,28 @@
     cursor: pointer;
     font-size: 14px;
     line-height: 1.5;
-    text-decoration: underline;
+    position: relative;
+
+    &::after {
+      border-top: 1px solid var(--theme-connecting-text-color);
+      bottom: 1px;
+      content: '';
+      left: 0;
+      position: absolute;
+      right: 1px;
+    }
 
     &:disabled {
       cursor: default;
-      text-decoration: none;
+
+      &::after {
+        display: none;
+      }
     }
   }
 
   hr {
     border: 0;
-    border-top: 1px solid var(--theme-separation-border-color);
+    border-top: 1px solid rgba(255, 255, 255, 0.25);
   }
 }
