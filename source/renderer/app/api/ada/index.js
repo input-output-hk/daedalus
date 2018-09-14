@@ -733,10 +733,12 @@ export default class AdaApi {
   getNetworkStatus = async (
     queryParams?: NodeQueryParams
   ): Promise<GetNetworkStatusResponse> => {
-    Logger.debug('AdaApi::getNetworkStatus called');
+    const isForceNTPCheck = !!queryParams;
+    const loggerText = `AdaApi::getNetworkStatus ${isForceNTPCheck ? '(FORCE-NTP-CHECK)' : ''}`;
+    Logger.debug(`${loggerText} called`);
     try {
       const status: NodeInfo = await getNodeInfo(this.config, queryParams);
-      Logger.debug('AdaApi::getNetworkStatus success: ' + stringifyData(status));
+      Logger.debug(`${loggerText} success: ${stringifyData(status)}`);
 
       const {
         blockchainHeight,
@@ -755,7 +757,7 @@ export default class AdaApi {
         localTimeDifference: get(localTimeInformation, 'differenceFromNtpServer.quantity', null),
       };
     } catch (error) {
-      Logger.error('AdaApi::getNetworkStatus error: ' + stringifyError(error));
+      Logger.error(`${loggerText} error: ${stringifyError(error)}`);
       throw new GenericApiError();
     }
   };
