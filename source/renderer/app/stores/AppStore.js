@@ -85,7 +85,8 @@ export default class AppStore extends Store {
   }
 
   @action _goToNetworkStatusScreen = () => {
-    this.actions.router.goToRoute.trigger({ route: ROUTES.NETWORK_STATUS });
+    const route = this.isNetworkStatusPage ? ROUTES.ROOT : ROUTES.NETWORK_STATUS;
+    this.actions.router.goToRoute.trigger({ route });
   };
 
 }
