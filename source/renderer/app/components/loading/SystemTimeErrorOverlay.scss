@@ -58,7 +58,7 @@
     line-height: 1.36;
     margin-top: 20px;
     opacity: 0.8;
-    text-decoration: underline;
+    border-bottom: 1px solid var(--theme-system-error-overlay-text-color);
 
     &:disabled {
       text-decoration: none;
