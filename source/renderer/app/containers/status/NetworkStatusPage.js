@@ -21,7 +21,7 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
       isNodeResponding, isNodeSubscribed, isNodeSyncing, isNodeInSync, isNodeTimeCorrect,
       // Application state
       isConnected, isSynced, syncPercentage, hasBeenConnected,
-      localTimeDifference, isSystemTimeCorrect, isForceCheckingNodeTime,
+      localTimeDifference, isSystemTimeCorrect, forceCheckTimeDifferenceRequest,
       forceCheckLocalTimeDifference, isSystemTimeChanged,
       localBlockHeight, networkBlockHeight,
     } = stores.networkStatus;
@@ -39,7 +39,7 @@ export default class NetworkStatusPage extends Component<InjectedProps> {
           hasBeenConnected={hasBeenConnected}
           localTimeDifference={localTimeDifference}
           isSystemTimeCorrect={isSystemTimeCorrect}
-          isForceCheckingNodeTime={isForceCheckingNodeTime}
+          isForceCheckingNodeTime={forceCheckTimeDifferenceRequest.isExecuting}
           isSystemTimeChanged={isSystemTimeChanged}
           localBlockHeight={localBlockHeight}
           networkBlockHeight={networkBlockHeight}

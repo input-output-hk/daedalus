@@ -39,7 +39,6 @@ export default class NetworkStatusStore extends Store {
   _systemTimeChangeCheckPollingInterval: ?number = null;
 
   // Initialize store observables
-  @observable isForceCheckingNodeTime = false; // Tracks active force time difference check
   @observable isSystemTimeChanged = false; // Tracks system time change event
 
   // Internal Node states
@@ -59,6 +58,9 @@ export default class NetworkStatusStore extends Store {
   @observable localTimeDifference: ?number = 0; // microseconds
   @observable syncProgress = null;
   @observable getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
+    this.api.ada.getNetworkStatus
+  );
+  @observable forceCheckTimeDifferenceRequest: Request<GetNetworkStatusResponse> = new Request(
     this.api.ada.getNetworkStatus
   );
 
@@ -128,22 +130,18 @@ export default class NetworkStatusStore extends Store {
   };
 
   @action _updateNetworkStatus = async (queryParams?: NodeQueryParams) => {
-    const { getNetworkStatusRequest } = this;
     const isForcedTimeDifferenceCheck = !!queryParams;
 
-    // Prevent network status requests in case there is an already executing request
-    // unless we are trying to run a forced time difference check
-    if (
-      getNetworkStatusRequest.isExecuting &&
-      (!isForcedTimeDifferenceCheck || this.isForceCheckingNodeTime)
-    ) {
-      return;
+    // Prevent network status requests in case there is an already executing
+    // forced time difference check unless we are trying to run another
+    // forced time difference check in which case we need to wait for it to finish
+    if (this.forceCheckTimeDifferenceRequest.isExecuting) {
+      if (isForcedTimeDifferenceCheck) {
+        await this.forceCheckTimeDifferenceRequest;
+      } else {
+        return;
+      }
     }
-
-    // Keep track of active forced time difference checks
-    runInAction('update isForceCheckingNodeTime', () => {
-      this.isForceCheckingNodeTime = isForcedTimeDifferenceCheck;
-    });
 
     if (isForcedTimeDifferenceCheck) {
       // Set most recent block timestamp into the future as a guard
@@ -155,13 +153,20 @@ export default class NetworkStatusStore extends Store {
     const wasConnected = this.isConnected;
 
     try {
+      let networkStatus: GetNetworkStatusResponse;
+      if (isForcedTimeDifferenceCheck) {
+        networkStatus = await this.forceCheckTimeDifferenceRequest.execute(queryParams).promise;
+      } else {
+        networkStatus = await this.getNetworkStatusRequest.execute().promise;
+      }
+
       const {
         subscriptionStatus,
         syncProgress,
         blockchainHeight,
         localBlockchainHeight,
         localTimeDifference,
-      } = await getNetworkStatusRequest.execute(queryParams).promise;
+      } = networkStatus;
 
       // We got response which means node is responding
       runInAction('update isNodeResponding', () => {
@@ -279,14 +284,6 @@ export default class NetworkStatusStore extends Store {
           Logger.debug('Connection Lost. Reconnecting...');
         }
       });
-    } finally {
-      // In case the executed request was a forced time difference check
-      // clear active forced time difference check flag
-      if (this.isForceCheckingNodeTime) {
-        runInAction('update isForceCheckingNodeTime', () => {
-          this.isForceCheckingNodeTime = false;
-        });
-      }
     }
   };
 
