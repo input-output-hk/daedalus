@@ -27,6 +27,7 @@ export const winLinuxMenu = (app, window, {
       },
     }, environment.isDev() && {
       label: 'Network status',
+      accelerator: 'Ctrl+S',
       click() {
         goToNetworkStatus();
       },

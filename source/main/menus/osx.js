@@ -27,6 +27,7 @@ export const osxMenu = (app, window, {
       },
     }, environment.isDev() && {
       label: 'Network status',
+      accelerator: 'Command+S',
       click() {
         goToNetworkStatus();
       },
