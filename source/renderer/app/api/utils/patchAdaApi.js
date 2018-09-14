@@ -1,11 +1,9 @@
 import BigNumber from 'bignumber.js';
-import { Logger } from '../../../../common/logging';
-import { RedeemAdaError } from '../errors';
 import AdaApi from '../api';
-import type {
-  RedeemAdaParams,
-  RedeemPaperVendedAdaParams
-} from '../types';
+import { Logger } from '../../../../common/logging';
+import { RedeemAdaError } from '../transactions/errors';
+import type { RedeemAdaParams } from '../transactions/requests/redeemAda';
+import type { RedeemPaperVendedAdaParams } from '../transactions/requests/redeemPaperVendedAda';
 
 // ========== LOGGING =========
 
