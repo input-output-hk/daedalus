@@ -36,15 +36,7 @@ export type WalletSyncState = {
   tag: SyncStateTag,
 };
 
-// I/O Wallet types
-export type AdaWalletInitData = {
-  operation: 'create' | 'restore',
-  backupPhrase: [string],
-  assuranceLevel: WalletAssuranceLevel,
-  name: string,
-  spendingPassword: ?string,
-};
-
+// req/res Wallet types
 export type CreateWalletRequest = {
   name: string,
   mnemonic: string,
@@ -65,4 +57,36 @@ export type RestoreWalletRequest = {
   recoveryPhrase: string,
   walletName: string,
   walletPassword: ?string,
+};
+
+export type UpdateWalletRequest = {
+  walletId: string,
+  assuranceLevel: WalletAssuranceLevel,
+  name: string
+};
+export type ImportWalletFromKeyRequest = {
+  filePath: string,
+  spendingPassword: ?string,
+};
+
+export type ImportWalletFromFileRequest = {
+  filePath: string,
+  spendingPassword: ?string,
+  walletName: ?string,
+};
+
+export type ExportWalletToFileRequest = {
+  walletId: string,
+  filePath: string,
+  password: ?string
+};
+
+export type GetWalletCertificateRecoveryPhraseRequest = {
+  passphrase: string,
+  input: string,
+};
+
+export type GetWalletRecoveryPhraseFromCertificateRequest = {
+  passphrase: string,
+  scrambledInput: string,
 };

@@ -2,12 +2,12 @@
 import WalletTransaction from '../../domains/WalletTransaction';
 import type { ResponseBase } from '../common/types';
 
-export type AdaTransactions = {
-  data: Array<AdaTransaction>,
+export type Transactions = {
+  data: Array<Transaction>,
   ...ResponseBase
 };
 
-export type AdaTransaction = {
+export type Transaction = {
   amount: number,
   confirmations: number,
   creationTime: string,
@@ -28,33 +28,31 @@ export type PaymentDistribution = {
 };
 
 export type TxnAssuranceLevel = 'low' | 'medium' | 'high';
+
 export type TransactionState = 'pending' | 'failed' | 'ok';
 
-export type AdaTransactionFee = {
+export type TransactionFee = {
   estimatedAmount: number,
   ...ResponseBase
 };
 
-export type AdaTransactionParams = {
-  data: {
-    source: {
-      accountIndex: number,
-      walletId: string,
-    },
-    destinations: Array<PaymentDistribution>,
-    groupingPolicy: ?'OptimizeForSecurity' | 'OptimizeForSize',
-    spendingPassword: ?string
-  },
-};
+export type TrasactionAddresses = { from: Array<string>, to: Array<string> };
+export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';
 
-export type AdaTxFeeParams = AdaTransactionParams;
-
-// I/O Transaction Types
+// req/res Transaction Types
 export type GetTransactionsRequest = {
   walletId: string,
   searchTerm: string,
   skip: number,
   limit: number,
+};
+
+export type TransactionRequest = {
+  accountIndex: number,
+  walletId: string,
+  address: string,
+  amount: number,
+  spendingPassword?: ?string,
 };
 
 export type GetTransactionsResponse = {

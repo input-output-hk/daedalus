@@ -1,3 +1,4 @@
+// @flow
 export type NodeInfo = {
   syncProgress: {
     quantity: number,
@@ -35,7 +36,7 @@ export type NodeSoftware = {
   version: number
 };
 
-// I/O Node Types
+// req/res Node Types
 export type GetNetworkStatusResponse = {
   subscriptionStatus: Object,
   syncProgress: number,

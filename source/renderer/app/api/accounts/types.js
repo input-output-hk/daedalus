@@ -1,9 +1,12 @@
-export type AdaAccount = {
+// @flow
+import type { Addresses } from '../addresses/types';
+
+export type Account = {
   amount: number,
-  addresses: AdaAddresses,
+  addresses: Addresses,
   name: string,
   walletId: string,
   index: number
 };
 
-export type AdaAccounts = Array<AdaAccount>;
+export type Accounts = Array<Account>;
