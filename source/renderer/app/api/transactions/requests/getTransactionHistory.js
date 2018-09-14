@@ -1,5 +1,6 @@
 // @flow
-import type { AdaTransactions, RequestConfig } from './types';
+import type { RequestConfig } from '../../common/types';
+import type { Transactions } from '../types';
 import { request } from '../../utils/request';
 
 export type GetTxnHistoryParams = {
@@ -17,7 +18,7 @@ const requestOptions = {
 export const getTransactionHistory = (
   config: RequestConfig,
   { ...requestParams }: GetTxnHistoryParams
-): Promise<AdaTransactions> => (
+): Promise<Transactions> => (
   request({
     hostname: 'localhost',
     method: 'GET',
