@@ -1,5 +1,6 @@
 // @flow
-import type { AdaWallet, WalletAssuranceLevel, RequestConfig } from './types';
+import type { RequestConfig } from '../../common/types';
+import type { AdaWallet, WalletAssuranceLevel } from '../types';
 import { request } from '../../utils/request';
 
 export type UpdateWalletParams = {

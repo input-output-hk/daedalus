@@ -1,6 +1,6 @@
 // @flow
+import type { RequestConfig } from '../../common/types';
 import { request } from '../../utils/request';
-import type { RequestConfig } from './types';
 
 export type DeleteWalletParams = {
   walletId: string,

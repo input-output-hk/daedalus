@@ -1,7 +1,8 @@
 // @flow
-import type { AdaWallets, RequestConfig } from './types';
+import type { RequestConfig } from '../../common/types';
+import type { AdaWallets } from '../types';
 import { request } from '../../utils/request';
-import { MAX_ADA_WALLETS_COUNT } from '../../config/numbersConfig';
+import { MAX_ADA_WALLETS_COUNT } from '../../../config/numbersConfig';
 
 export const getWallets = (
   config: RequestConfig

@@ -1,6 +1,6 @@
 // @flow
+import type { RequestConfig } from '../../common/types';
 import { request } from '../../utils/requestV0';
-import type { RequestConfig } from './types';
 
 export type ExportWalletAsJSONParams = {
   walletId: string,

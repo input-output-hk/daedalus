@@ -1,14 +1,12 @@
 // @flow
-import type { AdaWallet, AdaWalletInitData, RequestConfig } from './types';
+import type { RequestConfig } from '../../common/types';
+import type { WalletInitData } from './createWallet';
+import type { AdaWallet } from '../types';
 import { request } from '../../utils/request';
-
-export type RestoreWalletParams = {
-  walletInitData: AdaWalletInitData
-};
 
 export const restoreWallet = (
   config: RequestConfig,
-  { walletInitData }: RestoreWalletParams
+  { walletInitData }: { walletInitData: WalletInitData }
 ): Promise<AdaWallet> => (
   request({
     hostname: 'localhost',
