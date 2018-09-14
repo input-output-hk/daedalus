@@ -18,6 +18,11 @@ const messages = defineMessages({
     defaultMessage: '!!!There was a problem sending the support request.',
     description: '"There was a problem sending the support request." error message'
   },
+  apiMethodNotYetImplementedError: {
+    id: 'api.errors.ApiMethodNotYetImplementedError',
+    defaultMessage: '!!!This API method is not yet implemented.',
+    description: '"This API method is not yet implemented." error message.'
+  },
 });
 
 export class GenericApiError extends LocalizableError {
@@ -52,6 +57,15 @@ export class InvalidMnemonicError extends LocalizableError {
     super({
       id: globalMessages.invalidMnemonic.id,
       defaultMessage: globalMessages.invalidMnemonic.defaultMessage,
+    });
+  }
+}
+
+export class ApiMethodNotYetImplementedError extends LocalizableError {
+  constructor() {
+    super({
+      id: messages.apiMethodNotYetImplementedError.id,
+      defaultMessage: messages.apiMethodNotYetImplementedError.defaultMessage,
     });
   }
 }
