@@ -14,7 +14,7 @@ import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import BorderedBox from '../widgets/BorderedBox';
 import TinySwitch from '../widgets/forms/TinySwitch';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
-import type { AdaAddress } from '../../api/ada/types';
+import type { Addresses } from '../../api/addresses/types';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletReceive.scss';
@@ -62,7 +62,7 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type Props = {
   walletAddress: string,
   isWalletAddressUsed: boolean,
-  walletAddresses: Array<AdaAddress>,
+  walletAddresses: Addresses,
   onGenerateAddress: Function,
   onCopyAddress: Function,
   isSidebarExpanded: boolean,

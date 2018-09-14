@@ -14,7 +14,7 @@ import WalletTransaction,
   transactionTypes
 } from '../../../domains/WalletTransaction';
 import { environmentSpecificMessages } from '../../../i18n/global-messages';
-import type { TransactionState } from '../../../api/ada/types';
+import type { TransactionState } from '../../../api/transactions/types';
 import environment from '../../../../../common/environment';
 import { getNetworkExplorerUrl } from '../../../utils/network';
 

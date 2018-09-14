@@ -10,7 +10,7 @@ import styles from './WalletTransactionsList.scss';
 import Transaction from './Transaction';
 import WalletTransaction from '../../../domains/WalletTransaction';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-import type { WalletAssuranceMode } from '../../../api/ada/types';
+import type { WalletAssuranceMode } from '../../../api/wallets/types';
 
 const messages = defineMessages({
   today: {
