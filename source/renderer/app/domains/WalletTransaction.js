@@ -1,10 +1,13 @@
 // @flow
 import { observable } from 'mobx';
 import BigNumber from 'bignumber.js';
-import type { WalletAssuranceMode, TxnAssuranceLevel, TransactionState } from '../api/transactions/types';
-
-export type TrasactionAddresses = { from: Array<string>, to: Array<string> };
-export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';
+import type { WalletAssuranceMode } from '../api/wallets/types';
+import type {
+  TxnAssuranceLevel,
+  TransactionState,
+  TrasactionAddresses,
+  TransactionType
+} from '../api/transactions/types';
 
 export const transactionStates: {
   PENDING: TransactionState, FAILED: TransactionState, OK: TransactionState,

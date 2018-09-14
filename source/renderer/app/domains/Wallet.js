@@ -6,7 +6,7 @@ import type {
   WalletAssuranceMode,
   WalletSyncState,
   SyncStateTag
-} from '../api/ada/types';
+} from '../api/wallets/types';
 
 export const WalletAssuranceModeOptions: {
   NORMAL: WalletAssuranceLevel, STRICT: WalletAssuranceLevel,
