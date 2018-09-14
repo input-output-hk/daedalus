@@ -1,22 +1,28 @@
 .component {
   align-items: center;
   background: #202225;
-  color: #fff;
   height: 100%;
   display: flex;
   flex-direction: column;
   font-family: var(--font-medium);
   font-size: 14px;
   line-height: 1.5;
-  justify-content: center;
+  justify-content: space-between;
+  padding: 30px;
+  width: 100%;
+}
+
+.tables {
+  color: #fff;
+  display: flex;
+  justify-content: space-between;
   width: 100%;
 }
 
 .table {
-  width: 50%;
+  width: calc(50% - 15px);
 
   th {
-    padding-top: 30px;
     text-align: left;
   }
 
@@ -32,10 +38,6 @@
     & + td {
       text-align: right;
     }
-  }
-
-  td + td {
-    text-align: right;
   }
 
   button {
@@ -66,5 +68,20 @@
   hr {
     border: 0;
     border-top: 1px solid rgba(255, 255, 255, 0.25);
+  }
+}
+
+.closeButton {
+  cursor: pointer;
+  position: fixed;
+  right: 20px;
+  top: 20px;
+
+  svg {
+    width: 16px;
+    height: 16px;
+    polygon {
+      fill: #fff;
+    }
   }
 }

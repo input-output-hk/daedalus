@@ -1,8 +1,18 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import moment from 'moment';
 import classNames from 'classnames';
+import SVGInline from 'react-svg-inline';
+import {
+  LineChart, YAxis, XAxis, Line,
+  CartesianGrid, Tooltip, Legend,
+  ResponsiveContainer,
+} from 'recharts';
+import closeCross from '../../assets/images/close-cross.inline.svg';
 import styles from './NetworkStatus.scss';
+
+let syncingInterval = null;
 
 type Props = {
   isNodeResponding: boolean,
@@ -24,14 +34,43 @@ type Props = {
   onClose: Function,
 };
 
-@observer
-export default class NetworkStatus extends Component<Props> {
+type State = {
+  data: Array<{
+    localBlockHeight: number,
+    networkBlockHeight: number,
+    time: number,
+  }>,
+};
 
-  getClass = (isTrue: boolean) => (
-    classNames([
-      isTrue ? styles.green : styles.red,
-    ])
-  );
+@observer
+export default class NetworkStatus extends Component<Props, State> {
+
+  constructor(props: Props) {
+    super(props);
+    const { localBlockHeight, networkBlockHeight } = props;
+    this.state = {
+      data: [
+        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 20000).format('HH:mm:ss') },
+        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 18000).format('HH:mm:ss') },
+        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 16000).format('HH:mm:ss') },
+        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 14000).format('HH:mm:ss') },
+        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 12000).format('HH:mm:ss') },
+        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 10000).format('HH:mm:ss') },
+        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 8000).format('HH:mm:ss') },
+        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 6000).format('HH:mm:ss') },
+        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 4000).format('HH:mm:ss') },
+        { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 2000).format('HH:mm:ss') },
+      ],
+    };
+  }
+
+  componentWillMount() {
+    syncingInterval = setInterval(this.syncingTimer, 2000);
+  }
+
+  componentWillUnmount() {
+    this.resetSyncingTimer();
+  }
 
   render() {
     const {
@@ -41,132 +80,182 @@ export default class NetworkStatus extends Component<Props> {
       isSystemTimeChanged, localBlockHeight, networkBlockHeight,
       onForceCheckLocalTimeDifference, onClose,
     } = this.props;
+    const { data } = this.state;
 
     const isNTPServiceReachable = !!localTimeDifference;
 
     return (
       <div className={styles.component}>
-        <table className={styles.table}>
-          <tbody>
-            <tr>
-              <th colSpan="2">
-                CARDANO NODE STATUS<hr />
-              </th>
-            </tr>
-            <tr>
-              <td>isNodeResponding:</td>
-              <td className={this.getClass(isNodeResponding)}>
-                {isNodeResponding ? 'YES' : 'NO'}
-              </td>
-            </tr>
-            <tr>
-              <td>isNodeSubscribed:</td>
-              <td className={this.getClass(isNodeSubscribed)}>
-                {isNodeSubscribed ? 'YES' : 'NO'}
-              </td>
-            </tr>
-            <tr>
-              <td>isNodeTimeCorrect:</td>
-              <td className={this.getClass(isNodeTimeCorrect)}>
-                {isNodeTimeCorrect ? 'YES' : 'NO'}
-              </td>
-            </tr>
-            <tr>
-              <td>isNodeSyncing:</td>
-              <td className={this.getClass(isNodeSyncing)}>
-                {isNodeSyncing ? 'YES' : 'NO'}
-              </td>
-            </tr>
-            <tr>
-              <td>isNodeInSync:</td>
-              <td className={this.getClass(isNodeInSync)}>
-                {isNodeInSync ? 'YES' : 'NO'}
-              </td>
-            </tr>
-            <tr>
-              <th colSpan="2">
-                DAEDALUS STATUS<hr />
-              </th>
-            </tr>
-            <tr>
-              <td>isConnected:</td>
-              <td className={this.getClass(isConnected)}>
-                {isConnected ? 'YES' : 'NO'}
-              </td>
-            </tr>
-            <tr>
-              <td>hasBeenConnected:</td>
-              <td className={this.getClass(hasBeenConnected)}>
-                {hasBeenConnected ? 'YES' : 'NO'}
-              </td>
-            </tr>
-            <tr>
-              <td>isSynced:</td>
-              <td className={this.getClass(isSynced)}>
-                {isSynced ? 'YES' : 'NO'}
-              </td>
-            </tr>
-            <tr>
-              <td>syncPercentage:</td>
-              <td>{syncPercentage}%</td>
-            </tr>
-            <tr>
-              <td>localBlockHeight:</td>
-              <td>{localBlockHeight}</td>
-            </tr>
-            <tr>
-              <td>networkBlockHeight:</td>
-              <td>{networkBlockHeight}</td>
-            </tr>
-            <tr>
-              <td>remainingUnsyncedBlocks:</td>
-              <td>{networkBlockHeight - localBlockHeight}</td>
-            </tr>
-            <tr>
-              <td>localTimeDifference:</td>
-              <td>
-                {isNTPServiceReachable ? (
-                  `${localTimeDifference || 0} μs`
-                ) : (
-                  'NTP service unreachable'
-                )} |&nbsp;
-                <button
-                  onClick={() => onForceCheckLocalTimeDifference()}
-                  disabled={isForceCheckingNodeTime}
-                >
-                  Check again
-                </button>
-              </td>
-            </tr>
-            <tr>
-              <td>isSystemTimeCorrect:</td>
-              <td className={this.getClass(isSystemTimeCorrect)}>
-                {isSystemTimeCorrect ? 'YES' : 'NO'}
-              </td>
-            </tr>
-            <tr>
-              <td>isSystemTimeChanged:</td>
-              <td className={this.getClass(isSystemTimeChanged)}>
-                {isSystemTimeChanged ? 'YES' : 'NO'}
-              </td>
-            </tr>
-            <tr>
-              <td>isForceCheckingNodeTime:</td>
-              <td className={this.getClass(isForceCheckingNodeTime)}>
-                {isForceCheckingNodeTime ? 'YES' : 'NO'}
-              </td>
-            </tr>
-            <tr>
-              <th colSpan="2">
-                <button onClick={() => onClose()}>
-                  Close
-                </button>
-              </th>
-            </tr>
-          </tbody>
-        </table>
+        <div className={styles.tables}>
+          <table className={styles.table}>
+            <tbody>
+              <tr>
+                <th colSpan="2">
+                  DAEDALUS STATUS<hr />
+                </th>
+              </tr>
+              <tr>
+                <td>isConnected:</td>
+                <td className={this.getClass(isConnected)}>
+                  {isConnected ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>hasBeenConnected:</td>
+                <td className={this.getClass(hasBeenConnected)}>
+                  {hasBeenConnected ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>isSynced:</td>
+                <td className={this.getClass(isSynced)}>
+                  {isSynced ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>syncPercentage:</td>
+                <td>{syncPercentage}%</td>
+              </tr>
+              <tr>
+                <td>localBlockHeight:</td>
+                <td>{localBlockHeight}</td>
+              </tr>
+              <tr>
+                <td>networkBlockHeight:</td>
+                <td>{networkBlockHeight}</td>
+              </tr>
+              <tr>
+                <td>remainingUnsyncedBlocks:</td>
+                <td>{networkBlockHeight - localBlockHeight}</td>
+              </tr>
+              <tr>
+                <td>localTimeDifference:</td>
+                <td>
+                  {isNTPServiceReachable ? (
+                    `${localTimeDifference || 0} μs`
+                  ) : (
+                    'NTP service unreachable'
+                  )} |&nbsp;
+                  <button
+                    onClick={() => onForceCheckLocalTimeDifference()}
+                    disabled={isForceCheckingNodeTime}
+                  >
+                    Check again
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>isSystemTimeCorrect:</td>
+                <td className={this.getClass(isSystemTimeCorrect)}>
+                  {isSystemTimeCorrect ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>isSystemTimeChanged:</td>
+                <td className={this.getClass(isSystemTimeChanged)}>
+                  {isSystemTimeChanged ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>isForceCheckingNodeTime:</td>
+                <td className={this.getClass(isForceCheckingNodeTime)}>
+                  {isForceCheckingNodeTime ? 'YES' : 'NO'}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <table className={styles.table}>
+            <tbody>
+              <tr>
+                <th colSpan="2">
+                  CARDANO NODE STATUS<hr />
+                </th>
+              </tr>
+              <tr>
+                <td>isNodeResponding:</td>
+                <td className={this.getClass(isNodeResponding)}>
+                  {isNodeResponding ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>isNodeSubscribed:</td>
+                <td className={this.getClass(isNodeSubscribed)}>
+                  {isNodeSubscribed ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>isNodeTimeCorrect:</td>
+                <td className={this.getClass(isNodeTimeCorrect)}>
+                  {isNodeTimeCorrect ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>isNodeSyncing:</td>
+                <td className={this.getClass(isNodeSyncing)}>
+                  {isNodeSyncing ? 'YES' : 'NO'}
+                </td>
+              </tr>
+              <tr>
+                <td>isNodeInSync:</td>
+                <td className={this.getClass(isNodeInSync)}>
+                  {isNodeInSync ? 'YES' : 'NO'}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <ResponsiveContainer width="100%" height="50%">
+          <LineChart data={data}>
+            <XAxis
+              dataKey="time"
+              domain={['auto', 'auto']}
+              name="Time"
+            />
+            <YAxis
+              domain={[dataMin => (Math.max(0, dataMin - 20)), dataMax => (dataMax + 20)]}
+              orientation="right"
+              type="number"
+              width={70}
+            />
+            <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
+            <Tooltip />
+            <Legend wrapperStyle={{ color: '#fff' }} />
+            <Line type="linear" dataKey="localBlockHeight" stroke="#8884d8" />
+            <Line type="linear" dataKey="networkBlockHeight" stroke="#82ca9d" />
+          </LineChart>
+        </ResponsiveContainer>
+
+        <button className={styles.closeButton} onClick={() => onClose()}>
+          <SVGInline svg={closeCross} />
+        </button>
       </div>
     );
   }
+
+  getClass = (isTrue: boolean) => (
+    classNames([
+      isTrue ? styles.green : styles.red,
+    ])
+  );
+
+  syncingTimer = () => {
+    const { localBlockHeight, networkBlockHeight } = this.props;
+    const { data } = this.state;
+    data.push({
+      localBlockHeight: localBlockHeight || 0,
+      networkBlockHeight: networkBlockHeight || 0,
+      time: moment().format('HH:mm:ss'),
+    });
+    this.setState({ data: data.slice(-10) });
+  };
+
+  resetSyncingTimer = () => {
+    if (syncingInterval !== null) {
+      clearInterval(syncingInterval);
+      syncingInterval = null;
+    }
+  };
 
 }
