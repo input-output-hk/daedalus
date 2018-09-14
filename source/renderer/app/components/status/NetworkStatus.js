@@ -35,6 +35,8 @@ export default class NetworkStatus extends Component<Props> {
       onForceCheckLocalTimeDifference, onClose,
     } = this.props;
 
+    const isNTPServiceReachable = !!localTimeDifference;
+
     return (
       <div className={styles.component}>
         <table className={styles.table}>
@@ -100,12 +102,16 @@ export default class NetworkStatus extends Component<Props> {
             <tr>
               <td>localTimeDifference:</td>
               <td>
-                {localTimeDifference} μs |&nbsp;
+                {isNTPServiceReachable ? (
+                  `${localTimeDifference || 0} μs`
+                ) : (
+                  'NTP service unreachable'
+                )} |&nbsp;
                 <button
                   onClick={() => onForceCheckLocalTimeDifference()}
                   disabled={isForceCheckingNodeTime}
                 >
-                  Check time
+                  Check again
                 </button>
               </td>
             </tr>

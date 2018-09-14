@@ -287,13 +287,13 @@
         "description": "Title of Sync error overlay",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.overlayTitle",
         "start": {
           "column": 16,
-          "line": 13
+          "line": 14
         }
       },
       {
@@ -301,13 +301,27 @@
         "description": "Text of Sync error overlay",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.overlayText",
         "start": {
           "column": 15,
-          "line": 18
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!more than 15 seconds",
+        "description": "Time offset text shown in case NTP service is unreachable",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
+        "id": "systemTime.error.timeOffsetIndeterminable",
+        "start": {
+          "column": 28,
+          "line": 24
         }
       },
       {
@@ -315,13 +329,13 @@
         "description": "Link to Daedalus website FAQ page",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 33
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.problemSolutionLink",
         "start": {
           "column": 23,
-          "line": 23
+          "line": 29
         }
       },
       {
@@ -329,13 +343,13 @@
         "description": "Text of Check the time again button",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 38
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.onCheckTheTimeAgainLink",
         "start": {
           "column": 27,
-          "line": 28
+          "line": 34
         }
       }
     ],

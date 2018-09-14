@@ -7,6 +7,7 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import attentionIcon from '../../assets/images/attention-big-light.inline.svg';
+import { ALLOWED_TIME_DIFFERENCE } from '../../config/timingConfig';
 import styles from './SystemTimeErrorOverlay.scss';
 
 const messages = defineMessages({
@@ -19,6 +20,11 @@ const messages = defineMessages({
     id: 'systemTime.error.overlayText',
     defaultMessage: '!!!Attention, Daedalus is unable to sync with the blockchain because the time on your machine is different from the global time. Your time is off by 2 hours 12 minutes 54 seconds.<br>To synchronize the time and fix this issue, please visit the FAQ section of Daedalus website:',
     description: 'Text of Sync error overlay'
+  },
+  timeOffsetIndeterminable: {
+    id: 'systemTime.error.timeOffsetIndeterminable',
+    defaultMessage: '!!!more than 15 seconds',
+    description: 'Time offset text shown in case NTP service is unreachable'
   },
   problemSolutionLink: {
     id: 'systemTime.error.problemSolutionLink',
@@ -33,7 +39,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  localTimeDifference: number,
+  localTimeDifference: ?number,
   currentLocale: string,
   onProblemSolutionClick: Function,
   onCheckTheTimeAgain: Function,
@@ -70,12 +76,18 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
         humanizedDurationLanguage = 'en';
     }
 
-    const timeOffset = humanizeDuration(localTimeDifference / 1000, {
-      round: true, // round seconds to prevent e.g. 1 day 3 hours *11,56 seconds*
-      language: humanizedDurationLanguage,
-    }).replace(/,/g, ''); // replace 1 day, 3 hours, 12 seconds* to clean period without comma
+    const isNTPServiceReachable = !!localTimeDifference;
+    const allowedTimeDifferenceInSeconds = ALLOWED_TIME_DIFFERENCE / 1000000;
 
-    window.onCheckTheTimeAgain = this.props.onCheckTheTimeAgain;
+    const timeOffset = isNTPServiceReachable ? (
+      humanizeDuration((localTimeDifference || 0) / 1000, {
+        round: true, // round seconds to prevent e.g. 1 day 3 hours *11,56 seconds*
+        language: humanizedDurationLanguage,
+      }).replace(/,/g, '') // replace 1 day, 3 hours, 12 seconds* to clean period without comma
+    ) : (
+      // NTP service is unreachable so we need to show a generic time offset message
+      intl.formatMessage(messages.timeOffsetIndeterminable, { allowedTimeDifferenceInSeconds })
+    );
 
     return (
       <div className={styles.component}>
@@ -105,5 +117,5 @@ export default class SystemTimeErrorOverlay extends Component<Props> {
 
   onProblemSolutionClick = (link: string) => {
     this.props.onProblemSolutionClick(link);
-  }
+  };
 }

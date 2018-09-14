@@ -3,6 +3,13 @@ import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
+import {
+  ALLOWED_TIME_DIFFERENCE,
+  MAX_ALLOWED_STALL_DURATION,
+  NETWORK_STATUS_REQUEST_TIMEOUT,
+  NETWORK_STATUS_POLL_INTERVAL,
+  SYSTEM_TIME_POLL_INTERVAL,
+} from '../config/timingConfig';
 import { Logger } from '../../../common/logging';
 import type { NodeQueryParams } from '../api/ada/types';
 import type { GetNetworkStatusResponse } from '../api/common';
@@ -11,11 +18,6 @@ import type { GetNetworkStatusResponse } from '../api/common';
 let cachedState = null;
 
 // DEFINE CONSTANTS ----------------------------
-const ALLOWED_TIME_DIFFERENCE = 15 * 1000000; // 15 seconds (microseconds)
-const MAX_ALLOWED_STALL_DURATION = 2 * 60 * 1000; // 2 minutes (milliseconds)
-const NETWORK_STATUS_REQUEST_TIMEOUT = 30 * 1000; // 30 seconds (milliseconds)
-const NETWORK_POLL_INTERVAL = 2000; // 2 seconds (milliseconds)
-const SYSTEM_TIME_POLL_INTERVAL = 1000; // 1 second (milliseconds)
 // Maximum number of out-of-sync blocks above which we consider to be out-of-sync
 const UNSYNCED_BLOCKS_ALLOWED = 6;
 
@@ -54,7 +56,7 @@ export default class NetworkStatusStore extends Store {
   @observable initialLocalHeight = null;
   @observable localBlockHeight = 0;
   @observable networkBlockHeight = 0;
-  @observable localTimeDifference = 0; // microseconds
+  @observable localTimeDifference: ?number = 0; // microseconds
   @observable syncProgress = null;
   @observable getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
     this.api.ada.getNetworkStatus
@@ -69,7 +71,7 @@ export default class NetworkStatusStore extends Store {
 
     // Setup network status polling interval
     this._networkStatusPollingInterval = setInterval(
-      this._updateNetworkStatus, NETWORK_POLL_INTERVAL
+      this._updateNetworkStatus, NETWORK_STATUS_POLL_INTERVAL
     );
 
     // Setup system time change polling interval
