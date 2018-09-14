@@ -1,5 +1,6 @@
 // @flow
-import type { NodeInfo, RequestConfig } from './types';
+import type { RequestConfig } from '../../common/types';
+import type { NodeInfo } from '../types';
 import { request } from '../../utils/request';
 
 export const getNodeInfo = (
