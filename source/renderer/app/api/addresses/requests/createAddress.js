@@ -1,5 +1,6 @@
 // @flow
-import type { AdaAddress, RequestConfig } from './types';
+import type { RequestConfig } from '../../common/types';
+import type { Address } from '../types';
 import { request } from '../../utils/request';
 
 export type CreateAddressParams = {
@@ -11,7 +12,7 @@ export type CreateAddressParams = {
 export const createAddress = (
   config: RequestConfig,
   { spendingPassword, accountIndex, walletId }: CreateAddressParams
-): Promise<AdaAddress> => (
+): Promise<Address> => (
   request({
     hostname: 'localhost',
     method: 'POST',
