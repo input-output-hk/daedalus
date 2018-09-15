@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { get } from 'lodash';
 import moment from 'moment';
 import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
@@ -10,6 +11,7 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import closeCross from '../../assets/images/close-cross.inline.svg';
+import LocalizableError from '../../i18n/LocalizableError';
 import styles from './NetworkStatus.scss';
 
 let syncingInterval = null;
@@ -20,6 +22,7 @@ type Props = {
   isNodeSyncing: boolean,
   isNodeInSync: boolean,
   isNodeTimeCorrect: boolean,
+  nodeConnectionError: ?LocalizableError,
   isConnected: boolean,
   isSynced: boolean,
   syncPercentage: number,
@@ -36,8 +39,8 @@ type Props = {
 
 type State = {
   data: Array<{
-    localBlockHeight: number,
-    networkBlockHeight: number,
+    localBlockHeight: ?number,
+    networkBlockHeight: ?number,
     time: number,
   }>,
 };
@@ -47,7 +50,9 @@ export default class NetworkStatus extends Component<Props, State> {
 
   constructor(props: Props) {
     super(props);
-    const { localBlockHeight, networkBlockHeight } = props;
+    let { localBlockHeight, networkBlockHeight } = props;
+    localBlockHeight = localBlockHeight || null;
+    networkBlockHeight = networkBlockHeight || null;
     this.state = {
       data: [
         { localBlockHeight, networkBlockHeight, time: moment(Date.now() - 20000).format('HH:mm:ss') },
@@ -78,11 +83,12 @@ export default class NetworkStatus extends Component<Props, State> {
       isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, isForceCheckingNodeTime,
       isSystemTimeChanged, localBlockHeight, networkBlockHeight,
-      onForceCheckLocalTimeDifference, onClose,
+      onForceCheckLocalTimeDifference, onClose, nodeConnectionError,
     } = this.props;
     const { data } = this.state;
-
     const isNTPServiceReachable = !!localTimeDifference;
+    const connectionError = get(nodeConnectionError, 'values', '{}');
+    const { message, code } = connectionError;
 
     return (
       <div className={styles.component}>
@@ -90,7 +96,7 @@ export default class NetworkStatus extends Component<Props, State> {
           <table className={styles.table}>
             <tbody>
               <tr>
-                <th colSpan="2">
+                <th colSpan={2}>
                   DAEDALUS STATUS<hr />
                 </th>
               </tr>
@@ -102,7 +108,7 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>hasBeenConnected:</td>
-                <td className={this.getClass(hasBeenConnected)}>
+                <td>
                   {hasBeenConnected ? 'YES' : 'NO'}
                 </td>
               </tr>
@@ -152,13 +158,13 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>isSystemTimeChanged:</td>
-                <td className={this.getClass(isSystemTimeChanged)}>
+                <td className={this.getClass(!isSystemTimeChanged)}>
                   {isSystemTimeChanged ? 'YES' : 'NO'}
                 </td>
               </tr>
               <tr>
                 <td>isForceCheckingNodeTime:</td>
-                <td className={this.getClass(isForceCheckingNodeTime)}>
+                <td>
                   {isForceCheckingNodeTime ? 'YES' : 'NO'}
                 </td>
               </tr>
@@ -168,7 +174,7 @@ export default class NetworkStatus extends Component<Props, State> {
           <table className={styles.table}>
             <tbody>
               <tr>
-                <th colSpan="2">
+                <th colSpan={2}>
                   CARDANO NODE STATUS<hr />
                 </th>
               </tr>
@@ -202,6 +208,17 @@ export default class NetworkStatus extends Component<Props, State> {
                   {isNodeInSync ? 'YES' : 'NO'}
                 </td>
               </tr>
+              {!isConnected && nodeConnectionError ? (
+                <tr>
+                  <td className={styles.topPadding} colSpan={2}>
+                    Connection error:<br />
+                    <div className={styles.error}>
+                      message: {message || '-'}<br />
+                      code: {code || '-'}
+                    </div>
+                  </td>
+                </tr>
+              ) : null}
             </tbody>
           </table>
         </div>
@@ -244,8 +261,8 @@ export default class NetworkStatus extends Component<Props, State> {
     const { localBlockHeight, networkBlockHeight } = this.props;
     const { data } = this.state;
     data.push({
-      localBlockHeight: localBlockHeight || 0,
-      networkBlockHeight: networkBlockHeight || 0,
+      localBlockHeight,
+      networkBlockHeight,
       time: moment().format('HH:mm:ss'),
     });
     this.setState({ data: data.slice(-10) });

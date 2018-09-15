@@ -758,7 +758,7 @@ export default class AdaApi {
       };
     } catch (error) {
       Logger.error(`${loggerText} error: ${stringifyError(error)}`);
-      throw new GenericApiError();
+      throw new GenericApiError({ values: error });
     }
   };
 }

@@ -35,6 +35,10 @@
       color: #1cac63;
     }
 
+    &.topPadding {
+      padding-top: 10px;
+    }
+
     & + td {
       text-align: right;
     }
@@ -68,6 +72,14 @@
   hr {
     border: 0;
     border-top: 1px solid rgba(255, 255, 255, 0.25);
+  }
+
+  .error {
+    color: #cd3100;
+    font-size: 12px;
+    font-style: italic;
+    line-height: 1.36;
+    padding: 2px 0;
   }
 }
 
