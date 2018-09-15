@@ -10,6 +10,8 @@ import {
   CartesianGrid, Tooltip, Legend,
   ResponsiveContainer,
 } from 'recharts';
+import { ALLOWED_TIME_DIFFERENCE } from '../../config/timingConfig';
+import { UNSYNCED_BLOCKS_ALLOWED } from '../../config/numbersConfig';
 import closeCross from '../../assets/images/close-cross.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import styles from './NetworkStatus.scss';
@@ -90,6 +92,18 @@ export default class NetworkStatus extends Component<Props, State> {
     const connectionError = get(nodeConnectionError, 'values', '{}');
     const { message, code } = connectionError;
 
+    const localTimeDifferenceClasses = classNames([
+      (
+        !isNTPServiceReachable ||
+        (localTimeDifference && (localTimeDifference > ALLOWED_TIME_DIFFERENCE))
+      ) ? styles.red : styles.green,
+    ]);
+
+    const remainingUnsyncedBlocks = networkBlockHeight - localBlockHeight;
+    const remainingUnsyncedBlocksClasses = classNames([
+      remainingUnsyncedBlocks > UNSYNCED_BLOCKS_ALLOWED ? styles.red : styles.green,
+    ]);
+
     return (
       <div className={styles.component}>
         <div className={styles.tables}>
@@ -132,21 +146,25 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>remainingUnsyncedBlocks:</td>
-                <td>{networkBlockHeight - localBlockHeight}</td>
+                <td className={remainingUnsyncedBlocksClasses}>
+                  {remainingUnsyncedBlocks}
+                </td>
               </tr>
               <tr>
                 <td>localTimeDifference:</td>
                 <td>
-                  {isNTPServiceReachable ? (
-                    `${localTimeDifference || 0} μs`
-                  ) : (
-                    'NTP service unreachable'
-                  )} |&nbsp;
+                  <span className={localTimeDifferenceClasses}>
+                    {isNTPServiceReachable ? (
+                      `${localTimeDifference || 0} μs`
+                    ) : (
+                      'NTP service unreachable'
+                    )}
+                  </span> |&nbsp;
                   <button
                     onClick={() => onForceCheckLocalTimeDifference()}
                     disabled={isForceCheckingNodeTime}
                   >
-                    Check again
+                    {isForceCheckingNodeTime ? 'Checking...' : 'Check time'}
                   </button>
                 </td>
               </tr>
@@ -234,7 +252,7 @@ export default class NetworkStatus extends Component<Props, State> {
               domain={[dataMin => (Math.max(0, dataMin - 20)), dataMax => (dataMax + 20)]}
               orientation="right"
               type="number"
-              width={70}
+              width={100}
             />
             <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
             <Tooltip />

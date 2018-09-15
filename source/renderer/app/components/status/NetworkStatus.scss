@@ -27,14 +27,6 @@
   }
 
   td {
-    &.red {
-      color: #cd3100;
-    }
-
-    &.green {
-      color: #1cac63;
-    }
-
     &.topPadding {
       padding-top: 10px;
     }
@@ -42,6 +34,14 @@
     & + td {
       text-align: right;
     }
+  }
+
+  .red {
+    color: #cd3100;
+  }
+
+  .green {
+    color: #1cac63;
   }
 
   button {

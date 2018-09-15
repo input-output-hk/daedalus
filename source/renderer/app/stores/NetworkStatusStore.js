@@ -10,6 +10,7 @@ import {
   NETWORK_STATUS_POLL_INTERVAL,
   SYSTEM_TIME_POLL_INTERVAL,
 } from '../config/timingConfig';
+import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../../../common/logging';
 import type { NodeQueryParams } from '../api/ada/types';
 import type { GetNetworkStatusResponse } from '../api/common';
@@ -17,10 +18,7 @@ import type { GetNetworkStatusResponse } from '../api/common';
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedState = null;
 
-// DEFINE CONSTANTS ----------------------------
-// Maximum number of out-of-sync blocks above which we consider to be out-of-sync
-const UNSYNCED_BLOCKS_ALLOWED = 6;
-
+// DEFINE CONSTANTS -------------------------
 const NODE_STATUS = {
   CONNECTING: 0,
   SYNCING: 1,
