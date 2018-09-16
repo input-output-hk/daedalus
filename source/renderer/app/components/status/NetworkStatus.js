@@ -134,7 +134,7 @@ export default class NetworkStatus extends Component<Props, State> {
               </tr>
               <tr>
                 <td>syncPercentage:</td>
-                <td>{syncPercentage}%</td>
+                <td>{syncPercentage.toFixed(2)}%</td>
               </tr>
               <tr>
                 <td>localBlockHeight:</td>
