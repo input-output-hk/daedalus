@@ -32,7 +32,6 @@ export default class NetworkStatusStore extends Store {
   _startTime = Date.now();
   _systemTime = Date.now();
   _nodeStatus = NODE_STATUS.CONNECTING;
-  _mostRecentBlockTimestamp = 0;
   _networkStatusPollingInterval: ?number = null;
   _systemTimeChangeCheckPollingInterval: ?number = null;
 
@@ -54,6 +53,7 @@ export default class NetworkStatusStore extends Store {
   @observable localBlockHeight = 0;
   @observable networkBlockHeight = 0;
   @observable localTimeDifference: ?number = 0; // microseconds
+  @observable mostRecentBlockTimestamp = 0; // milliseconds
   @observable syncProgress = null;
   @observable getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
     this.api.ada.getNetworkStatus
@@ -147,7 +147,7 @@ export default class NetworkStatusStore extends Store {
     if (isForcedTimeDifferenceCheck) {
       // Set most recent block timestamp into the future as a guard
       // against system time changes - e.g. if system time was set into the past
-      this._mostRecentBlockTimestamp = Date.now() + NETWORK_STATUS_REQUEST_TIMEOUT;
+      this.mostRecentBlockTimestamp = Date.now() + NETWORK_STATUS_REQUEST_TIMEOUT;
     }
 
     // Record connection status before running network status call
@@ -223,12 +223,12 @@ export default class NetworkStatusStore extends Store {
         const isBlockchainHeightIncreasing = this.networkBlockHeight > lastBlockchainHeight;
         if (
           isBlockchainHeightIncreasing || // New block detected
-          this._mostRecentBlockTimestamp > Date.now() || // Guard against future timestamps
+          this.mostRecentBlockTimestamp > Date.now() || // Guard against future timestamps
           !this.isNodeTimeCorrect // Guard against incorrect system time
         ) {
-          this._mostRecentBlockTimestamp = Date.now(); // Record latest block timestamp
+          this.mostRecentBlockTimestamp = Date.now(); // Record latest block timestamp
         }
-        const timeSinceLastBlock = moment(Date.now()).diff(moment(this._mostRecentBlockTimestamp));
+        const timeSinceLastBlock = moment(Date.now()).diff(moment(this.mostRecentBlockTimestamp));
         const isBlockchainHeightStalling = timeSinceLastBlock > MAX_ALLOWED_STALL_DURATION;
 
         // Node is syncing in case we are receiving blocks and they are not stalling

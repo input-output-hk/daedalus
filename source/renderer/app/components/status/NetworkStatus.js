@@ -10,7 +10,10 @@ import {
   CartesianGrid, Tooltip, Legend,
   ResponsiveContainer,
 } from 'recharts';
-import { ALLOWED_TIME_DIFFERENCE } from '../../config/timingConfig';
+import {
+  ALLOWED_TIME_DIFFERENCE,
+  MAX_ALLOWED_STALL_DURATION,
+} from '../../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../../config/numbersConfig';
 import closeCross from '../../assets/images/close-cross.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -33,6 +36,7 @@ type Props = {
   isSystemTimeCorrect: boolean,
   isForceCheckingNodeTime: boolean,
   isSystemTimeChanged: boolean,
+  mostRecentBlockTimestamp: number,
   localBlockHeight: number,
   networkBlockHeight: number,
   onForceCheckLocalTimeDifference: Function,
@@ -84,7 +88,7 @@ export default class NetworkStatus extends Component<Props, State> {
       isNodeResponding, isNodeSubscribed, isNodeSyncing, isNodeInSync, isNodeTimeCorrect,
       isConnected, isSynced, syncPercentage, hasBeenConnected,
       localTimeDifference, isSystemTimeCorrect, isForceCheckingNodeTime,
-      isSystemTimeChanged, localBlockHeight, networkBlockHeight,
+      isSystemTimeChanged, mostRecentBlockTimestamp, localBlockHeight, networkBlockHeight,
       onForceCheckLocalTimeDifference, onClose, nodeConnectionError,
     } = this.props;
     const { data } = this.state;
@@ -102,6 +106,12 @@ export default class NetworkStatus extends Component<Props, State> {
     const remainingUnsyncedBlocks = networkBlockHeight - localBlockHeight;
     const remainingUnsyncedBlocksClasses = classNames([
       remainingUnsyncedBlocks > UNSYNCED_BLOCKS_ALLOWED ? styles.red : styles.green,
+    ]);
+
+    const timeSinceLastBlock = moment(Date.now()).diff(moment(mostRecentBlockTimestamp));
+    const isBlockchainHeightStalling = timeSinceLastBlock > MAX_ALLOWED_STALL_DURATION;
+    const timeSinceLastBlockClasses = classNames([
+      mostRecentBlockTimestamp > 0 && !isBlockchainHeightStalling ? styles.green : styles.red,
     ]);
 
     return (
@@ -148,6 +158,12 @@ export default class NetworkStatus extends Component<Props, State> {
                 <td>remainingUnsyncedBlocks:</td>
                 <td className={remainingUnsyncedBlocksClasses}>
                   {remainingUnsyncedBlocks}
+                </td>
+              </tr>
+              <tr>
+                <td>timeSinceLastNetworkBlockChange:</td>
+                <td className={timeSinceLastBlockClasses}>
+                  {mostRecentBlockTimestamp > 0 ? `${timeSinceLastBlock} ms` : '-'}
                 </td>
               </tr>
               <tr>
