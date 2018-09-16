@@ -36,7 +36,6 @@ export default class NetworkStatusStore extends Store {
   _systemTimeChangeCheckPollingInterval: ?number = null;
 
   // Initialize store observables
-  @observable isSystemTimeChanged = false; // Tracks system time change event
 
   // Internal Node states
   /* eslint-disable indent */
@@ -47,14 +46,14 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeInSync = false; // Is 'true' if node is syncing and local/network block height
                                     // difference is within the allowed limit
   /* eslint-enabme indent */
-
   @observable hasBeenConnected = false;
+  @observable syncProgress = null;
   @observable initialLocalHeight = null;
   @observable localBlockHeight = 0;
   @observable networkBlockHeight = 0;
-  @observable localTimeDifference: ?number = 0; // microseconds
   @observable mostRecentBlockTimestamp = 0; // milliseconds
-  @observable syncProgress = null;
+  @observable localTimeDifference: ?number = 0; // microseconds
+  @observable isSystemTimeChanged = false; // Tracks system time change event
   @observable getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
     this.api.ada.getNetworkStatus
   );
@@ -215,12 +214,18 @@ export default class NetworkStatusStore extends Store {
         Logger.debug('Local blockchain height: ' + localBlockchainHeight);
 
         // Update the network block height on each request
+        const hasStartedReceivingBlocks = blockchainHeight > 0;
         const lastBlockchainHeight = this.networkBlockHeight;
         this.networkBlockHeight = blockchainHeight;
-        Logger.debug('Network blockchain height: ' + blockchainHeight);
+        if (hasStartedReceivingBlocks) {
+          Logger.debug('Network blockchain height: ' + blockchainHeight);
+        }
 
         // Check if the network's block height has ceased to change
-        const isBlockchainHeightIncreasing = this.networkBlockHeight > lastBlockchainHeight;
+        const isBlockchainHeightIncreasing = (
+          hasStartedReceivingBlocks &&
+          this.networkBlockHeight > lastBlockchainHeight
+        );
         if (
           isBlockchainHeightIncreasing || // New block detected
           this.mostRecentBlockTimestamp > Date.now() || // Guard against future timestamps
@@ -233,10 +238,7 @@ export default class NetworkStatusStore extends Store {
 
         // Node is syncing in case we are receiving blocks and they are not stalling
         runInAction('update isNodeSyncing', () => {
-          this.isNodeSyncing = (
-            this.networkBlockHeight > 0 &&
-            (isBlockchainHeightIncreasing || !isBlockchainHeightStalling)
-          );
+          this.isNodeSyncing = isBlockchainHeightIncreasing || !isBlockchainHeightStalling;
         });
 
         runInAction('update isNodeInSync', () => {
@@ -246,13 +248,15 @@ export default class NetworkStatusStore extends Store {
             remainingUnsyncedBlocks <= UNSYNCED_BLOCKS_ALLOWED
           );
         });
-      });
 
-      const initialLocalHeight = this.initialLocalHeight || 0;
-      const blocksSyncedSinceStart = this.localBlockHeight - initialLocalHeight;
-      const totalUnsyncedBlocksAtStart = this.networkBlockHeight - initialLocalHeight;
-      Logger.debug('Total unsynced blocks at node start: ' + totalUnsyncedBlocksAtStart);
-      Logger.debug('Blocks synced since node start: ' + blocksSyncedSinceStart);
+        if (hasStartedReceivingBlocks) {
+          const initialLocalHeight = this.initialLocalHeight || 0;
+          const blocksSyncedSinceStart = this.localBlockHeight - initialLocalHeight;
+          const totalUnsyncedBlocksAtStart = this.networkBlockHeight - initialLocalHeight;
+          Logger.debug('Total unsynced blocks at node start: ' + totalUnsyncedBlocksAtStart);
+          Logger.debug('Blocks synced since node start: ' + blocksSyncedSinceStart);
+        }
+      });
 
       if (this._nodeStatus === NODE_STATUS.SYNCING && this.isNodeInSync) {
         // We are synced for the first time, move on to running stage
@@ -268,7 +272,7 @@ export default class NetworkStatusStore extends Store {
           }
           Logger.debug('Connection Lost. Reconnecting...');
         } else if (this.hasBeenConnected) {
-          Logger.debug('Connection Restored.');
+          Logger.debug('Connection Restored');
         }
       }
     } catch (error) {
