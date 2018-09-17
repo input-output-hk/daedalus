@@ -1,3 +1,4 @@
+// @flow
 import BigNumber from 'bignumber.js';
 
 // ADA
@@ -6,6 +7,7 @@ export const MAX_ADA_WALLETS_COUNT = 20; // 50 is an absolute max due to V1 API 
 export const LOVELACES_PER_ADA = 1000000;
 export const MAX_INTEGER_PLACES_IN_ADA = 11;
 export const DECIMAL_PLACES_IN_ADA = 6;
+export const UNSYNCED_BLOCKS_ALLOWED = 6;
 
 // ETC
 export const WEI_PER_ETC = 1000000000000000000;

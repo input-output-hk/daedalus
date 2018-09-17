@@ -1,48 +1,93 @@
 import BigNumber from 'bignumber.js';
-import { Logger } from '../../../../../common/logging';
+import { get } from 'lodash';
+import { Logger, stringifyData, stringifyError } from '../../../../../common/logging';
 import { RedeemAdaError } from '../errors';
 import AdaApi from '../index';
+import { getNodeInfo } from '../getNodeInfo';
+import { GenericApiError } from '../../common';
 import type {
+  NodeInfo,
+  NodeQueryParams,
   RedeemAdaParams,
   RedeemPaperVendedAdaParams
 } from '../types';
+import type { GetNetworkStatusResponse } from '../../common';
 
 // ========== LOGGING =========
 
 let LOCAL_TIME_DIFFERENCE = 0;
 let NEXT_ADA_UPDATE = null;
 
-const stringifyData = (data) => JSON.stringify(data, null, 2);
-
 export default (api: AdaApi) => {
   // Since we cannot test ada redemption in dev mode, just resolve the requests
-  api.redeemAda = (request: RedeemAdaParams) => {
-    Logger.debug('AdaApi::redeemAda (PATCHED) called: ' + stringifyData(request));
-    const { redemptionCode } = request;
-    const isValidRedemptionCode = api.isValidRedemptionKey(redemptionCode);
-    if (!isValidRedemptionCode) {
-      Logger.debug('AdaApi::redeemAda failed: not a valid redemption key!');
+  api.redeemAda = (request: RedeemAdaParams) => new Promise((resolve) => {
+    try {
+      Logger.debug('AdaApi::redeemAda (PATCHED) called: ' + stringifyData(request));
+      const { redemptionCode } = request;
+      const isValidRedemptionCode = api.isValidRedemptionKey(redemptionCode);
+      if (!isValidRedemptionCode) {
+        Logger.debug('AdaApi::redeemAda (PATCHED) failed: not a valid redemption key!');
+        throw new RedeemAdaError();
+      }
+      Logger.debug('AdaApi::redeemAda (PATCHED) success');
+      resolve({ amount: new BigNumber(1000) });
+    } catch (error) {
+      Logger.debug('AdaApi::redeemAda (PATCHED) error: ' + stringifyError(error));
       throw new RedeemAdaError();
     }
-    return { amount: new BigNumber(1000) };
-  };
+  });
 
-  api.redeemPaperVendedAda = (request: RedeemPaperVendedAdaParams) => {
-    Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) called: ' + stringifyData(request));
-    const { shieldedRedemptionKey, mnemonics } = request;
-    const isValidKey = api.isValidPaperVendRedemptionKey(shieldedRedemptionKey);
-    const isValidMnemonic = api.isValidRedemptionMnemonic(mnemonics);
-    if (!isValidKey) Logger.debug('AdaApi::redeemPaperVendedAda failed: not a valid redemption key!');
-    if (!isValidMnemonic) Logger.debug('AdaApi::redeemPaperVendedAda failed: not a valid mnemonic!');
-    if (!isValidKey || !isValidMnemonic) {
+  api.redeemPaperVendedAda = (request: RedeemPaperVendedAdaParams) => new Promise((resolve) => {
+    try {
+      Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) called: ' + stringifyData(request));
+      const { redemptionCode, mnemonics } = request;
+      const isValidKey = api.isValidPaperVendRedemptionKey(redemptionCode);
+      const isValidMnemonic = api.isValidRedemptionMnemonic(mnemonics.join(' '));
+      if (!isValidKey) Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) failed: not a valid redemption key!');
+      if (!isValidMnemonic) Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) failed: not a valid mnemonic!');
+      if (!isValidKey || !isValidMnemonic) {
+        throw new RedeemAdaError();
+      }
+      Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) success');
+      resolve({ amount: new BigNumber(1000) });
+    } catch (error) {
+      Logger.debug('AdaApi::redeemPaperVendedAda (PATCHED) error: ' + stringifyError(error));
       throw new RedeemAdaError();
     }
-    return { amount: new BigNumber(1000) };
-  };
+  });
 
   api.getLocalTimeDifference = async () => (
     Promise.resolve(LOCAL_TIME_DIFFERENCE)
   );
+
+  api.getNetworkStatus = async (
+    queryParams?: NodeQueryParams
+  ): Promise<GetNetworkStatusResponse> => {
+    Logger.debug('AdaApi::getNetworkStatus (PATCHED) called');
+    try {
+      const status: NodeInfo = await getNodeInfo(api.config, queryParams);
+      Logger.debug('AdaApi::getNetworkStatus (PATCHED) success: ' + stringifyData(status));
+
+      const {
+        blockchainHeight,
+        subscriptionStatus,
+        syncProgress,
+        localBlockchainHeight,
+      } = status;
+
+      // extract relevant data before sending to NetworkStatusStore
+      return {
+        subscriptionStatus,
+        syncProgress: syncProgress.quantity,
+        blockchainHeight: get(blockchainHeight, 'quantity', 0),
+        localBlockchainHeight: localBlockchainHeight.quantity,
+        localTimeDifference: LOCAL_TIME_DIFFERENCE,
+      };
+    } catch (error) {
+      Logger.error('AdaApi::getNetworkStatus (PATCHED) error: ' + stringifyError(error));
+      throw new GenericApiError();
+    }
+  };
 
   api.setLocalTimeDifference = async (timeDifference) => {
     LOCAL_TIME_DIFFERENCE = timeDifference;
