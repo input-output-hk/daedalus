@@ -17,7 +17,7 @@ export default class AdaRedemptionActions {
   redeemAda: Action<{ walletId: string, spendingPassword: ?string }> = new Action();
   // eslint-disable-next-line max-len
   redeemPaperVendedAda: Action<{ walletId: string, shieldedRedemptionKey: string, spendingPassword: ?string }> = new Action();
-  adaSuccessfullyRedeemed: Action<any> = new Action();
+  adaSuccessfullyRedeemed: Action<{ walletId: string, amount: number }> = new Action();
   acceptRedemptionDisclaimer: Action<any> = new Action();
   // TODO: refactor dialog toggles to use dialog-actions instead
   closeAdaRedemptionSuccessOverlay: Action<any> = new Action();

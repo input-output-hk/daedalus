@@ -208,31 +208,17 @@
         }
       },
       {
-        "defaultMessage": "!!!Connected - waiting for block syncing to start",
-        "description": "Message \"Connected - waiting for block syncing to start\" on the loading screen.",
+        "defaultMessage": "!!!Network connection lost - reconnecting",
+        "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
         "end": {
           "column": 3,
           "line": 30
         },
         "file": "source/renderer/app/components/loading/Loading.js",
-        "id": "loading.screen.waitingForSyncToStart",
-        "start": {
-          "column": 25,
-          "line": 26
-        }
-      },
-      {
-        "defaultMessage": "!!!Network connection lost - reconnecting",
-        "description": "Message \"Network connection lost - reconnecting\" on the loading screen.",
-        "end": {
-          "column": 3,
-          "line": 35
-        },
-        "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reconnectingToNetworkMessage",
         "start": {
           "column": 16,
-          "line": 31
+          "line": 26
         }
       },
       {
@@ -240,13 +226,13 @@
         "description": "Message \"Syncing blocks\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 35
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.syncingBlocksMessage",
         "start": {
           "column": 11,
-          "line": 36
+          "line": 31
         }
       },
       {
@@ -254,13 +240,13 @@
         "description": "Report connecting issue text on the loading screen.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 40
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.connecting.text",
         "start": {
           "column": 29,
-          "line": 41
+          "line": 36
         }
       },
       {
@@ -268,13 +254,13 @@
         "description": "Report syncing issue text on the loading screen.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 45
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.syncing.text",
         "start": {
           "column": 26,
-          "line": 46
+          "line": 41
         }
       },
       {
@@ -282,13 +268,13 @@
         "description": "Report an issue button label on the loading .",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 50
         },
         "file": "source/renderer/app/components/loading/Loading.js",
         "id": "loading.screen.reportIssue.buttonLabel",
         "start": {
           "column": 26,
-          "line": 51
+          "line": 46
         }
       }
     ],
@@ -301,13 +287,13 @@
         "description": "Title of Sync error overlay",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.overlayTitle",
         "start": {
           "column": 16,
-          "line": 13
+          "line": 14
         }
       },
       {
@@ -315,13 +301,27 @@
         "description": "Text of Sync error overlay",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.overlayText",
         "start": {
           "column": 15,
-          "line": 18
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!more than 15 seconds",
+        "description": "Time offset text shown in case NTP service is unreachable",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
+        "id": "systemTime.error.timeOffsetIndeterminable",
+        "start": {
+          "column": 28,
+          "line": 24
         }
       },
       {
@@ -329,13 +329,27 @@
         "description": "Link to Daedalus website FAQ page",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 33
         },
         "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
         "id": "systemTime.error.problemSolutionLink",
         "start": {
           "column": 23,
-          "line": 23
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!Check the time again",
+        "description": "Text of Check the time again button",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/loading/SystemTimeErrorOverlay.js",
+        "id": "systemTime.error.onCheckTheTimeAgainLink",
+        "start": {
+          "column": 27,
+          "line": 34
         }
       }
     ],
