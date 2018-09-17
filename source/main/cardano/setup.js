@@ -6,7 +6,11 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import { ensureXDGDataIsSet, prepareArgs, readLauncherConfig } from './config';
 import { CardanoNode } from './CardanoNode';
 import { TLS_CONFIG_CHANNEL } from '../../common/ipc-api/tls-config';
-import { AWAIT_UPDATE_CHANNEL, CARDANO_NODE_STATE_CHANGE_CHANNEL } from '../../common/ipc-api';
+import {
+  AWAIT_UPDATE_CHANNEL,
+  CARDANO_NODE_STATE_CHANGE_CHANNEL,
+  RESTART_CARDANO_NODE_CHANNEL
+} from '../../common/ipc-api';
 import { CardanoNodeStates } from '../../common/types/cardanoNodeTypes';
 import type { TlsConfig } from '../../common/ipc-api/tls-config';
 import type { CardanoNodeState } from '../../common/types/cardanoNodeTypes';
@@ -28,7 +32,7 @@ const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
     killTimeout: 5000,
     updateTimeout: 20000,
   };
-  node.start(config, createWriteStream(logFilePath, { flags: 'a' }));
+  return node.start(config, createWriteStream(logFilePath, { flags: 'a' }));
 };
 
 /**
@@ -94,6 +98,19 @@ export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWind
       sender.send(AWAIT_UPDATE_CHANNEL, true);
     } catch (error) {
       sender.send(AWAIT_UPDATE_CHANNEL, false);
+    }
+  });
+  // Stop and restart cardano node if frontend requests it.
+  ipcMain.on(RESTART_CARDANO_NODE_CHANNEL, async ({ sender }) => {
+    log.info('ipcMain: Received request from renderer to restart node.');
+    try {
+      await cardanoNode.stop();
+      await startCardanoNode(cardanoNode, launcherConfig);
+      // Tell renderer that restart was successful
+      sender.send(RESTART_CARDANO_NODE_CHANNEL, true);
+    } catch (error) {
+      // Tell renderer that restart failed
+      sender.send(RESTART_CARDANO_NODE_CHANNEL, false, error);
     }
   });
 
