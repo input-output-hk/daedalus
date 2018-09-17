@@ -2,12 +2,12 @@
 import { PDFExtract } from 'pdf.js-extract';
 import { ipcMain } from 'electron';
 import fs from 'fs';
-import log from 'electron-log';
 import {
   decryptRegularVend, decryptForceVend,
   decryptRecoveryRegularVend, decryptRecoveryForceVend,
 } from '../../common/decrypt';
 import { PARSE_REDEMPTION_CODE } from '../../common/ipc-api';
+import { Logger } from '../../common/logging';
 
 export default () => {
   ipcMain.on(PARSE_REDEMPTION_CODE.REQUEST, (event, filePath, decryptionKey, redemptionType) => {
@@ -38,7 +38,7 @@ export default () => {
         fs.writeFileSync(pdfPath, decryptedFile);
         isTemporaryDecryptedPdf = true;
       } catch (error) {
-        log.warn('ERROR!', error);
+        Logger.warn(`Error while parsing redemption code: ${error}`);
         sender.send(PARSE_REDEMPTION_CODE.ERROR, error.message);
       }
     } else {

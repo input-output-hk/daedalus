@@ -102,15 +102,9 @@ export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWind
     }
   });
   // Stop and restart cardano node if frontend requests it.
-  restartCardanoNodeChannel(mainWindow).receive(async () => {
+  restartCardanoNodeChannel(mainWindow).receive(() => {
     Logger.info('ipcMain: Received request from renderer to restart node.');
-    try {
-      await cardanoNode.stop();
-      await startCardanoNode(cardanoNode, launcherConfig);
-      return Promise.resolve(); // Tell renderer that restart was successful
-    } catch (error) {
-      return Promise.reject(error); // Tell renderer that restart failed
-    }
+    return cardanoNode.restart();
   });
 
   // Wait for controlled cardano-node shutdown before quitting the app

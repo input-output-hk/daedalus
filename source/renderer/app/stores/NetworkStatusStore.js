@@ -257,7 +257,7 @@ export default class NetworkStatusStore extends Store {
   };
 
   _handleCardanoNodeStateChange = (state: CardanoNodeState) => {
-    Logger.info(`NetworkStatusStore: handling cardano-node state change ${state}`);
+    Logger.info(`NetworkStatusStore: handling cardano-node state change to <${state}>`);
     switch (state) {
       case CardanoNodeStates.STOPPED:
       case CardanoNodeStates.UPDATING:

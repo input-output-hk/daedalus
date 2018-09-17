@@ -150,11 +150,12 @@ export class CardanoNode {
    * @returns {Promise<void>} resolves if the node could be started, rejects with error otherwise.
    */
   start(config: CardanoNodeConfig, logFile: WriteStream): Promise<void> {
-    if (!this._canBeRestarted()) return Promise.reject('CardanoNode: Cannot be started.');
+    if (!this._canBeStarted()) return Promise.reject('CardanoNode: Cannot be started.');
     this._config = config;
     this._cardanoLogFile = logFile;
     const { _log } = this;
     const { nodePath, nodeArgs, startupTimeout } = config;
+    this._changeToState(CardanoNodeStates.STARTING);
     return new Promise((resolve, reject) => {
       logFile.on('open', async () => {
         this._cardanoLogFile = logFile;
@@ -172,8 +173,7 @@ export class CardanoNode {
           node.on('error', this._handleCardanoNodeError);
           // Request cardano-node to reply with port
           node.send({ QueryPort: [] });
-          _log.info(`cardano-node child process spawned with PID ${node.pid}`);
-          this._changeToState(CardanoNodeStates.STARTING);
+          _log.info(`CardanoNode: cardano-node child process spawned with PID ${node.pid}`);
           resolve();
         } catch (_) {
           reject('CardanoNode: Error while spawning cardano-node.');
@@ -201,6 +201,7 @@ export class CardanoNode {
           () => this._state === CardanoNodeStates.STOPPED,
           _config.shutdownTimeout
         );
+        this._reset();
         resolve();
       } catch (e) {
         _log.info('CardanoNode: cardano-node did not shut itself down correctly.');
@@ -229,12 +230,19 @@ export class CardanoNode {
           () => this._state === CardanoNodeStates.STOPPED,
           _config.killTimeout
         );
+        this._reset();
         resolve();
       } catch (_) {
         _log.info('CardanoNode: could not kill cardano-node.');
+        this._reset();
         reject('Could not kill cardano-node.');
       }
     });
+  }
+
+  async restart(): Promise<void> {
+    await this.stop();
+    await this.start(this._config, this._cardanoLogFile);
   }
 
   /**
@@ -303,7 +311,6 @@ export class CardanoNode {
     _log.info(`CardanoNode: received message: ${JSON.stringify(msg)}`);
     if (msg.Started) {
       // STARTED -> read certificates and update tls config
-      _log.info('CardanoNode: started, TLS certs updated');
       Object.assign(_tlsConfig, {
         ca: _actions.readFileSync(tlsPath + '/client/ca.crt'),
         key: _actions.readFileSync(tlsPath + '/client/client.key'),
@@ -319,11 +326,10 @@ export class CardanoNode {
     }
   };
 
-  _handleCardanoNodeError = (error: Error) => {
+  _handleCardanoNodeError = async (error: Error) => {
     const { _log } = this;
     _log.info(`CardanoNode: error: ${error.toString()}`);
-    // TODO: handle error cases
-    this._reset();
+    await this.restart();
   };
 
   _handleCardanoNodeDisconnect = () => {
@@ -369,7 +375,7 @@ export class CardanoNode {
 
   _changeToState(state: CardanoNodeState, ...args: Array<any>) {
     const { _log, _transitionListeners } = this;
-    _log.info(`CardanoNode: transitions to "${state}"`);
+    _log.info(`CardanoNode: transitions to <${state}>`);
     this._state = state;
     this._actions.broadcastStateChange(state);
     switch (state) {
@@ -384,15 +390,23 @@ export class CardanoNode {
     }
   }
 
-  _canBeRestarted = () => (
+  // TODO: find better wording for the idea of "active" vs "inactive" node
+
+  _isActive = () => (
+    this._state === CardanoNodeStates.STARTING ||
+    this._state === CardanoNodeStates.RUNNING ||
+    this._state === CardanoNodeStates.STOPPING ||
+    this._state === CardanoNodeStates.UPDATING
+  );
+
+  _isInactive = () => (
     this._state === CardanoNodeStates.STOPPED ||
     this._state === CardanoNodeStates.UPDATED ||
     this._state === CardanoNodeStates.CRASHED
   );
 
-  _canBeStopped = () => (
-    this._state === CardanoNodeStates.STARTING ||
-    this._state === CardanoNodeStates.RUNNING
-  );
+  _canBeStarted = () => !this._isActive();
+
+  _canBeStopped = () => !this._isInactive();
 
 }

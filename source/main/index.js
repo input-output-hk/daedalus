@@ -1,6 +1,6 @@
 import os from 'os';
 import { app, globalShortcut, Menu, dialog } from 'electron';
-import log from 'electron-log';
+import { Logger } from '../common/logging';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { setupLogging } from './utils/setupLogging';
@@ -22,9 +22,9 @@ const { LAUNCHER_CONFIG } = process.env;
 setupLogging();
 mainErrorHandler();
 
-log.info(`========== Daedalus is starting at ${new Date()} ==========`);
+Logger.info(`========== Daedalus is starting at ${new Date()} ==========`);
 
-log.debug(`!!! Daedalus is running on ${os.platform()} version ${os.release()}
+Logger.debug(`!!! Daedalus is running on ${os.platform()} version ${os.release()}
             with CPU: ${JSON.stringify(os.cpus(), null, 2)} with
             ${JSON.stringify(os.totalmem(), null, 2)} total RAM !!!`);
 
@@ -41,16 +41,16 @@ const goToAdaRedemption = () => {
 };
 
 const restartInSafeMode = async () => {
-  log.info('restarting in SafeMode …');
+  Logger.info('restarting in SafeMode …');
   if (cardanoNode) await cardanoNode.stop();
-  log.info('Exiting Daedalus with code 21.');
+  Logger.info('Exiting Daedalus with code 21.');
   flushLogsAndExitWithCode(21);
 };
 
 const restartWithoutSafeMode = async () => {
-  log.info('restarting without SafeMode …');
+  Logger.info('restarting without SafeMode …');
   if (cardanoNode) await cardanoNode.stop();
-  log.info('Exiting Daedalus with code 22.');
+  Logger.info('Exiting Daedalus with code 22.');
   flushLogsAndExitWithCode(22);
 };
 
