@@ -1098,13 +1098,13 @@
         "description": "Label for the \"Add wallet\" button in wallet sidebar menu.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.js",
         "id": "sidebar.wallets.addWallet",
         "start": {
           "column": 16,
-          "line": 13
+          "line": 14
         }
       }
     ],
@@ -2292,13 +2292,13 @@
         "description": "Headline for the \"Paper wallet create certificate completion dialog\" headline.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 20
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.headline",
         "start": {
           "column": 12,
-          "line": 12
+          "line": 16
         }
       },
       {
@@ -2306,13 +2306,13 @@
         "description": "Headline for the \"Paper wallet create certificate completion dialog\" subtitle.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 25
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.subtitle",
         "start": {
           "column": 12,
-          "line": 17
+          "line": 21
         }
       },
       {
@@ -2320,13 +2320,13 @@
         "description": "Headline for the \"Paper wallet create certificate completion dialog\" link instructions.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.linkInstructions",
         "start": {
           "column": 20,
-          "line": 22
+          "line": 26
         }
       },
       {
@@ -2334,13 +2334,13 @@
         "description": "Headline for the \"Paper wallet create certificate completion dialog\" address instructions.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.addressInstructions",
         "start": {
           "column": 23,
-          "line": 28
+          "line": 32
         }
       },
       {
@@ -2348,13 +2348,27 @@
         "description": "\"Paper wallet create certificate completion dialog\" cardano link label.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.cardanoLinkLabel",
         "start": {
           "column": 20,
-          "line": 33
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!copied",
+        "description": "\"Paper wallet create certificate completion dialog\" address copied.",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
+        "id": "paper.wallet.create.certificate.completion.dialog.addressCopiedLabel",
+        "start": {
+          "column": 22,
+          "line": 42
         }
       },
       {
@@ -2362,13 +2376,13 @@
         "description": "\"Paper wallet create certificate completion dialog\" wallet address label.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.addressLabel",
         "start": {
           "column": 16,
-          "line": 38
+          "line": 47
         }
       },
       {
@@ -2376,13 +2390,13 @@
         "description": "\"Paper wallet create certificate completion dialog\" finish button label.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 56
         },
         "file": "source/renderer/app/components/wallet/paper-wallet-certificate/CompletionDialog.js",
         "id": "paper.wallet.create.certificate.completion.dialog.finishButtonLabel",
         "start": {
           "column": 21,
-          "line": 44
+          "line": 52
         }
       }
     ],
