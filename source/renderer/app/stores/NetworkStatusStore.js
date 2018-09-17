@@ -251,13 +251,13 @@ export default class NetworkStatusStore extends Store {
   }
 
   _updateApiConfig = (config: RequestConfig) => {
-    Logger.debug('NetworkStatusStore: received tls config from main process.');
+    Logger.info('NetworkStatusStore: received tls config from main process.');
     this.api.ada.setRequestConfig(config);
     this._hasReceivedTlsConfig = true;
   };
 
   _handleCardanoNodeStateChange = (state: CardanoNodeState) => {
-    Logger.debug(`NetworkStatusStore: handling cardano-node state change ${state}`);
+    Logger.info(`NetworkStatusStore: handling cardano-node state change ${state}`);
     switch (state) {
       case CardanoNodeStates.STOPPED:
       case CardanoNodeStates.UPDATING:

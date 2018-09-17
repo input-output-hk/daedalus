@@ -1,22 +1,34 @@
 // @flow
 import log from 'electron-log';
 
+const isRenderer = () => {
+  // running in a web browser
+  if (typeof process === 'undefined') return true;
+  // node-integration is disabled
+  if (!process) return true;
+  // We're in node.js somehow
+  if (!process.type) return false;
+  return process.type === 'renderer';
+};
+
+const prefixProcessType = (str: string) => (isRenderer() ? '[renderer] ' : '[main] ') + str;
+
 export const Logger = {
 
   debug: (data: string) => {
-    log.debug(data);
+    log.debug(prefixProcessType(data));
   },
 
   info: (data: string) => {
-    log.info(data);
+    log.info(prefixProcessType(data));
   },
 
   error: (data: string) => {
-    log.error(data);
+    log.error(prefixProcessType(data));
   },
 
   warn: (data: string) => {
-    log.info(data);
+    log.info(prefixProcessType(data));
   },
 
 };

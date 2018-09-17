@@ -15,6 +15,7 @@ import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../common/ipc-api/go-to-ada
 import mainErrorHandler from './utils/mainErrorHandler';
 import { setupCardano } from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
+import { flushLogsAndExitWithCode } from './utils/flushLogsAndExitWithCode';
 
 const { LAUNCHER_CONFIG } = process.env;
 
@@ -23,7 +24,7 @@ mainErrorHandler();
 
 log.info(`========== Daedalus is starting at ${new Date()} ==========`);
 
-log.info(`!!! Daedalus is running on ${os.platform()} version ${os.release()}
+log.debug(`!!! Daedalus is running on ${os.platform()} version ${os.release()}
             with CPU: ${JSON.stringify(os.cpus(), null, 2)} with
             ${JSON.stringify(os.totalmem(), null, 2)} total RAM !!!`);
 
@@ -43,14 +44,14 @@ const restartInSafeMode = async () => {
   log.info('restarting in SafeMode …');
   if (cardanoNode) await cardanoNode.stop();
   log.info('Exiting Daedalus with code 21.');
-  app.exit(21);
+  flushLogsAndExitWithCode(21);
 };
 
 const restartWithoutSafeMode = async () => {
   log.info('restarting without SafeMode …');
   if (cardanoNode) await cardanoNode.stop();
   log.info('Exiting Daedalus with code 22.');
-  app.exit(22);
+  flushLogsAndExitWithCode(22);
 };
 
 const menuActions = {
@@ -112,8 +113,4 @@ app.on('ready', async () => {
       globalShortcut.unregister('CommandOrControl+H');
     });
   }
-});
-
-app.on('window-all-closed', () => {
-  app.quit();
 });

@@ -160,7 +160,7 @@ export class CardanoNode {
         this._cardanoLogFile = logFile;
         // Spawning cardano-node
         const jsonArgs = JSON.stringify(nodeArgs);
-        _log.info(`Spawning cardano-node from path: ${nodePath} with args: ${jsonArgs}.`);
+        _log.debug(`from path: ${nodePath} with args: ${jsonArgs}.`);
         const node = this._spawnNode(nodePath, nodeArgs, logFile);
         this._node = node;
         try {
