@@ -25,7 +25,7 @@ export const winLinuxMenu = (app, window, {
           restartWithoutSafeMode() :
           restartInSafeMode();
       },
-    }, environment.isDev() && {
+    }, {
       label: 'Network status',
       accelerator: 'Ctrl+S',
       click() {

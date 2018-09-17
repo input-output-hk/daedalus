@@ -25,7 +25,7 @@ export const osxMenu = (app, window, {
           restartWithoutSafeMode() :
           restartInSafeMode();
       },
-    }, environment.isDev() && {
+    }, {
       label: 'Network status',
       accelerator: 'Command+S',
       click() {
