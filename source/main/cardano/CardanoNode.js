@@ -191,9 +191,7 @@ export class CardanoNode {
    */
   stop(): Promise<void> {
     const { _node, _log, _config } = this;
-    if (!this._canBeStopped()) {
-      return Promise.reject('CardanoNode is not running.');
-    }
+    if (!this._canBeStopped()) return Promise.resolve();
     return new Promise(async (resolve, reject) => {
       _log.info('CardanoNode: disconnecting from cardano-node process.');
       try {

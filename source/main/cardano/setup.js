@@ -68,10 +68,7 @@ export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWind
     onStarting: () => {},
     onRunning: () => {},
     onStopping: () => {},
-    onStopped: () => {
-      log.info('CardanoNode exited like expected. Exiting Daedalus with code 0.');
-      app.exit(0);
-    },
+    onStopped: () => {},
     onUpdating: () => {},
     onUpdated: () => {
       log.info('CardanoNode applied an update. Exiting Daedalus with code 20.');
@@ -107,10 +104,14 @@ export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWind
     try {
       log.info(`Daedalus:before-quit, stopping cardano-node with PID ${cardanoNode.pid}`);
       await cardanoNode.stop();
+      log.info('CardanoNode exited like expected. Exiting Daedalus with code 0.');
+      app.exit(0);
     } catch (stopError) {
       log.info(`Daedalus:before-quit, cardano-node did not exit correctly: ${stopError}`);
       log.info('Exiting Daedalus with code 0.');
       app.exit(0);
     }
   });
+
+  return cardanoNode;
 };

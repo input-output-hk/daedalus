@@ -14,6 +14,7 @@ import { OPEN_ABOUT_DIALOG_CHANNEL } from '../common/ipc-api/open-about-dialog';
 import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../common/ipc-api/go-to-ada-redemption-screen';
 import mainErrorHandler from './utils/mainErrorHandler';
 import { setupCardano } from './cardano/setup';
+import { CardanoNode } from './cardano/CardanoNode';
 
 const { LAUNCHER_CONFIG } = process.env;
 
@@ -28,6 +29,7 @@ log.info(`!!! Daedalus is running on ${os.platform()} version ${os.release()}
 
 // Global references to windows to prevent them from being garbage collected
 let mainWindow;
+let cardanoNode: ?CardanoNode;
 
 const openAbout = () => {
   if (mainWindow) mainWindow.webContents.send(OPEN_ABOUT_DIALOG_CHANNEL);
@@ -37,11 +39,17 @@ const goToAdaRedemption = () => {
   if (mainWindow) mainWindow.webContents.send(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL);
 };
 
-const restartInSafeMode = () => {
+const restartInSafeMode = async () => {
+  log.info('restarting in SafeMode …');
+  if (cardanoNode) await cardanoNode.stop();
+  log.info('Exiting Daedalus with code 21.');
   app.exit(21);
 };
 
-const restartWithoutSafeMode = () => {
+const restartWithoutSafeMode = async () => {
+  log.info('restarting without SafeMode …');
+  if (cardanoNode) await cardanoNode.stop();
+  log.info('Exiting Daedalus with code 22.');
   app.exit(22);
 };
 
@@ -73,7 +81,7 @@ app.on('ready', async () => {
 
   mainWindow = createMainWindow(isInSafeMode);
 
-  setupCardano(LAUNCHER_CONFIG, mainWindow);
+  cardanoNode = setupCardano(LAUNCHER_CONFIG, mainWindow);
 
   if (environment.isDev()) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
