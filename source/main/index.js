@@ -107,18 +107,6 @@ app.on('ready', async () => {
       globalShortcut.unregister('CommandOrControl+H');
     });
   }
-
-  if (!environment.isDev()) {
-    // In non-dev environment we don't show "Network Status" item in the application menu
-    // so for the users to be able to reach the page we must register global shortcuts.
-    mainWindow.on('focus', () => {
-      globalShortcut.register('CommandOrControl+S', goToNetworkStatus);
-    });
-
-    mainWindow.on('blur', () => {
-      globalShortcut.unregister('CommandOrControl+S');
-    });
-  }
 });
 
 app.on('window-all-closed', () => {
