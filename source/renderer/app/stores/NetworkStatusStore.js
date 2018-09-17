@@ -11,7 +11,7 @@ import { tlsConfigChannel } from '../ipc/tlsConfigChannel';
 import { cardanoNodeStateChangeChannel } from '../ipc/cardanoNodeStateChangeChannel';
 import type { CardanoNodeState } from '../../../common/types/cardanoNodeTypes';
 import { CardanoNodeStates } from '../../../common/types/cardanoNodeTypes';
-import { restartCardanoNodeChannel } from '../ipc/restartCardanoNodeChannel';
+import { restartCardanoNodeChannel } from '../ipc/cardanoNodeChannels';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedState = null;
@@ -80,7 +80,7 @@ export default class NetworkStatusStore extends Store {
   async restartNode() {
     try {
       Logger.info('NetwortStatusStore: Requesting a restart of cardano-node.');
-      await restartCardanoNodeChannel.request();
+      await restartCardanoNodeChannel().send();
     } catch (error) {
       Logger.info(`NetwortStatusStore: Restart of cardano-node failed with ${error}`);
     }

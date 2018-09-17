@@ -9,11 +9,11 @@ import { TLS_CONFIG_CHANNEL } from '../../common/ipc-api/tls-config';
 import {
   AWAIT_UPDATE_CHANNEL,
   CARDANO_NODE_STATE_CHANGE_CHANNEL,
-  RESTART_CARDANO_NODE_CHANNEL
 } from '../../common/ipc-api';
 import { CardanoNodeStates } from '../../common/types/cardanoNodeTypes';
 import type { TlsConfig } from '../../common/ipc-api/tls-config';
 import type { CardanoNodeState } from '../../common/types/cardanoNodeTypes';
+import { restartCardanoNodeChannel } from '../ipc-api/cardanoIpcApi';
 
 export const shouldCardanoBeLaunchedByDaedalus = (launcherConfig: Object): boolean => (
   launcherConfig.frontendOnlyMode
@@ -101,16 +101,14 @@ export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWind
     }
   });
   // Stop and restart cardano node if frontend requests it.
-  ipcMain.on(RESTART_CARDANO_NODE_CHANNEL, async ({ sender }) => {
+  restartCardanoNodeChannel(mainWindow).receive(async () => {
     log.info('ipcMain: Received request from renderer to restart node.');
     try {
       await cardanoNode.stop();
       await startCardanoNode(cardanoNode, launcherConfig);
-      // Tell renderer that restart was successful
-      sender.send(RESTART_CARDANO_NODE_CHANNEL, true);
+      return Promise.resolve(); // Tell renderer that restart was successful
     } catch (error) {
-      // Tell renderer that restart failed
-      sender.send(RESTART_CARDANO_NODE_CHANNEL, false, error);
+      return Promise.reject(error); // Tell renderer that restart failed
     }
   });
 
