@@ -3,6 +3,7 @@
   "ImageUploadWidget.dropFileHint": "ファイルをここにドロップしてください",
   "api.errors.AllFundsAlreadyAtReceiverAddressError": "送ろうとしている資金は既に送金先のアドレスにて反映済みです。",
   "api.errors.ApiMethodNotYetImplementedError": "このAPIは未実装です。",
+  "api.errors.ForbiddenMnemonicError": "!!!Forbidden Mnemonic: an example Mnemonic has been submitted. Please generate a fresh and private Mnemonic from a trusted source.",
   "api.errors.GenericApiError": "エラーが発生しました。しばらくしてからもう一度お試しください。",
   "api.errors.IncorrectPasswordError": "無効なウォレットパスワード",
   "api.errors.NotAllowedToSendMoneyToRedeemAddressError": "Ada還元アドレスに送金することはできません。",

@@ -133,7 +133,8 @@ import {
   GenericApiError,
   IncorrectWalletPasswordError,
   ReportRequestError,
-  InvalidMnemonicError
+  InvalidMnemonicError,
+  ForbiddenMnemonicError
 } from './common/errors';
 
 // Wallets errors
@@ -378,7 +379,7 @@ export default class AdaApi {
       return _createAddressFromServerData(address);
     } catch (error) {
       Logger.debug('AdaApi::createAddress error: ' + stringifyError(error));
-      if (error.message.includes('Passphrase doesn\'t match')) {
+      if (error.message.includes('CannotCreateAddress')) {
         throw new IncorrectWalletPasswordError();
       }
       throw new GenericApiError();
@@ -495,15 +496,15 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       Logger.debug('AdaApi::restoreWallet error: ' + stringifyError(error));
-      // TODO: backend will return something different here, if multiple wallets
-      // are restored from the key and if there are duplicate wallets we will get
-      // some kind of error and present the user with message that some wallets
-      // where not imported/restored if some where. if no wallets are imported
-      // we will error out completely with throw block below
-      if (error.message.includes('Wallet with that mnemonics already exists')) {
+      if (error.message.includes('WalletAlreadyExists')) {
         throw new WalletAlreadyRestoredError();
       }
-      // We don't know what the problem was -> throw generic error
+      if (error.message.includes('JSONValidationFailed')) {
+        const validationError = get(error, 'diagnostic.validationError', '');
+        if (validationError.includes('Forbidden Mnemonic: an example Mnemonic has been submitted')) {
+          throw new ForbiddenMnemonicError();
+        }
+      }
       throw new GenericApiError();
     }
   };
@@ -518,7 +519,7 @@ export default class AdaApi {
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
       Logger.debug('AdaApi::importWalletFromKey error: ' + stringifyError(error));
-      if (error.message.includes('already exists')) {
+      if (error.message.includes('WalletAlreadyExists')) {
         throw new WalletAlreadyImportedError();
       }
       throw new WalletFileImportError();
@@ -541,7 +542,7 @@ export default class AdaApi {
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
       Logger.debug('AdaApi::importWalletFromFile error: ' + stringifyError(error));
-      if (error.message.includes('already exists')) {
+      if (error.message.includes('WalletAlreadyExists')) {
         throw new WalletAlreadyImportedError();
       }
       throw new WalletFileImportError();
@@ -657,7 +658,8 @@ export default class AdaApi {
       return true;
     } catch (error) {
       Logger.debug('AdaApi::updateWalletPassword error: ' + stringifyError(error));
-      if (error.message.includes('Invalid old passphrase given')) {
+      const errorMessage = get(error, 'diagnostic.msg', '');
+      if (errorMessage.includes('UpdateWalletPasswordOldPasswordMismatch')) {
         throw new IncorrectWalletPasswordError();
       }
       throw new GenericApiError();

@@ -56,6 +56,20 @@
           "column": 35,
           "line": 21
         }
+      },
+      {
+        "defaultMessage": "!!!Forbidden Mnemonic: an example Mnemonic has been submitted. Please generate a fresh and private Mnemonic from a trusted source.",
+        "description": "\"Forbidden Mnemonic: an example Mnemonic has been submitted.\" error message",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/api/common/errors.js",
+        "id": "api.errors.ForbiddenMnemonicError",
+        "start": {
+          "column": 26,
+          "line": 26
+        }
       }
     ],
     "path": "source/renderer/app/api/common/errors.json"
