@@ -23,7 +23,7 @@ import { InvalidMnemonicError, InvalidEmailError, FieldRequiredError } from '../
 import globalMessages from '../../../i18n/global-messages';
 import styles from './AdaRedemptionForm.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import { ADA_REDEMPTION_PASSPHRASE_LENGHT } from '../../../config/cryptoConfig';
+import { ADA_REDEMPTION_PASSPHRASE_LENGTH } from '../../../config/cryptoConfig';
 import { ADA_REDEMPTION_TYPES } from '../../../types/redemptionTypes';
 import type { RedemptionTypeChoices } from '../../../types/redemptionTypes';
 import { submitOnEnter } from '../../../utils/form';
@@ -244,7 +244,7 @@ export default class AdaRedemptionForm extends Component<Props> {
       passPhrase: {
         label: this.context.intl.formatMessage(messages.passphraseLabel),
         placeholder: this.context.intl.formatMessage(messages.passphraseHint, {
-          length: ADA_REDEMPTION_PASSPHRASE_LENGHT
+          length: ADA_REDEMPTION_PASSPHRASE_LENGTH
         }),
         value: [],
         validators: [({ field }) => {
@@ -472,18 +472,18 @@ export default class AdaRedemptionForm extends Component<Props> {
     switch (redemptionType) {
       case ADA_REDEMPTION_TYPES.REGULAR:
         instructionMessage = messages.instructionsRegular;
-        instructionValues = { adaRedemptionPassphraseLength: ADA_REDEMPTION_PASSPHRASE_LENGHT };
+        instructionValues = { adaRedemptionPassphraseLength: ADA_REDEMPTION_PASSPHRASE_LENGTH };
         break;
       case ADA_REDEMPTION_TYPES.FORCE_VENDED:
         instructionMessage = messages.instructionsForceVended;
         break;
       case ADA_REDEMPTION_TYPES.PAPER_VENDED:
         instructionMessage = messages.instructionsPaperVended;
-        instructionValues = { adaRedemptionPassphraseLength: ADA_REDEMPTION_PASSPHRASE_LENGHT };
+        instructionValues = { adaRedemptionPassphraseLength: ADA_REDEMPTION_PASSPHRASE_LENGTH };
         break;
       case ADA_REDEMPTION_TYPES.RECOVERY_REGULAR:
         instructionMessage = messages.instructionsRecoveryRegular;
-        instructionValues = { adaRedemptionPassphraseLength: ADA_REDEMPTION_PASSPHRASE_LENGHT };
+        instructionValues = { adaRedemptionPassphraseLength: ADA_REDEMPTION_PASSPHRASE_LENGTH };
         break;
       case ADA_REDEMPTION_TYPES.RECOVERY_FORCE_VENDED:
         instructionMessage = messages.instructionsRecoveryForceVended;
@@ -600,7 +600,7 @@ export default class AdaRedemptionForm extends Component<Props> {
                 <Autocomplete
                   className="pass-phrase"
                   options={suggestedMnemonics}
-                  maxSelections={ADA_REDEMPTION_PASSPHRASE_LENGHT}
+                  maxSelections={ADA_REDEMPTION_PASSPHRASE_LENGTH}
                   {...passPhraseField.bind()}
                   error={passPhraseField.error}
                   maxVisibleOptions={5}

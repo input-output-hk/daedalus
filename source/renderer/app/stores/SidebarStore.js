@@ -5,7 +5,7 @@ import { ipcRenderer } from 'electron';
 import Store from './lib/Store';
 import environment from '../../../common/environment';
 import { sidebarConfig } from '../config/sidebarConfig';
-import { syncStateTags } from '../domains/Wallet';
+import { WalletSyncStateTags } from '../domains/Wallet';
 import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../../../common/ipc-api/go-to-ada-redemption-screen';
 import { formattedWalletAmount } from '../utils/formatters';
 import type { SidebarWalletType } from '../types/sidebarTypes';
@@ -44,7 +44,7 @@ export default class SidebarStore extends Store {
       title: w.name,
       info: formattedWalletAmount(w.amount),
       isConnected: networkStatus.isConnected,
-      isRestoreActive: get(w, 'syncState.tag') === syncStateTags.RESTORING,
+      isRestoreActive: get(w, 'syncState.tag') === WalletSyncStateTags.RESTORING,
       restoreProgress: get(w, 'syncState.data.percentage.quantity', 0),
     }));
   }

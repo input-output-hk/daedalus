@@ -4,7 +4,7 @@ import _ from 'lodash';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
 import WalletTransaction from '../domains/WalletTransaction';
-import type { GetTransactionsResponse } from '../api/common';
+import type { GetTransactionsResponse } from '../api/transactions/types';
 import environment from '../../../common/environment';
 
 export type TransactionSearchOptionsStruct = {

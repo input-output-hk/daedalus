@@ -23,7 +23,7 @@ import WalletSendForm from '../../source/renderer/app/components/wallet/WalletSe
 import WalletReceive from '../../source/renderer/app/components/wallet/WalletReceive';
 import WalletTransactionsList from '../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
 import WalletSettings from '../../source/renderer/app/components/wallet/WalletSettings';
-import { assuranceModeOptionsV1 } from '../../source/renderer/app/types/transactionAssuranceTypes';
+import { WalletAssuranceModeOptions } from '../../source/renderer/app/domains/Wallet';
 import ChangeWalletPasswordDialog from '../../source/renderer/app/components/wallet/settings/ChangeWalletPasswordDialog';
 import DeleteWalletConfirmationDialog from '../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 import ExportWalletToFileDialog from '../../source/renderer/app/components/wallet/settings/ExportWalletToFileDialog';
@@ -142,7 +142,7 @@ storiesOf('WalletScreens', module)
       activeField={null}
       assuranceLevels={[
         {
-          value: assuranceModeOptionsV1.NORMAL,
+          value: WalletAssuranceModeOptions.NORMAL,
           label: {
             id: 'global.assuranceLevel.normal',
             defaultMessage: '!!!Normal',
@@ -150,7 +150,7 @@ storiesOf('WalletScreens', module)
           }
         },
         {
-          value: assuranceModeOptionsV1.STRICT,
+          value: WalletAssuranceModeOptions.STRICT,
           label: {
             id: 'global.assuranceLevel.strict',
             defaultMessage: '!!!Strict',
@@ -179,7 +179,7 @@ storiesOf('WalletScreens', module)
       onStartEditing={() => {}}
       onStopEditing={() => {}}
       openDialogAction={() => {}}
-      walletAssurance={assuranceModeOptionsV1.NORMAL}
+      walletAssurance={WalletAssuranceModeOptions.NORMAL}
       walletName={text('Wallet Name', 'Wallet Name')}
       walletPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
       changeWalletPasswordDialog={

@@ -12,8 +12,8 @@ import {
 } from '../config/timingConfig';
 import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../../../common/logging';
-import type { NodeQueryParams } from '../api/ada/types';
-import type { GetNetworkStatusResponse } from '../api/common';
+import type { GetNetworkStatusResponse } from '../api/nodes/types';
+import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedState = null;

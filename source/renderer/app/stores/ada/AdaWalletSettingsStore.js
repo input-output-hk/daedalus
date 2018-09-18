@@ -2,17 +2,16 @@
 import { observable, action } from 'mobx';
 import { findIndex, merge } from 'lodash';
 import WalletSettingsStore from '../WalletSettingsStore';
+import Wallet from '../../domains/Wallet';
 import Request from '../lib/LocalizedRequest';
 import type { WalletExportToFileParams } from '../../actions/ada/wallet-settings-actions';
-import type { ExportWalletToFileResponse } from '../../api/ada/index';
-import type { UpdateWalletPasswordResponse, UpdateWalletResponse } from '../../api/common';
 
 export default class EtcWalletSettingsStore extends WalletSettingsStore {
 
   /* eslint-disable max-len */
-  @observable updateWalletRequest: Request<UpdateWalletResponse> = new Request(this.api.ada.updateWallet);
-  @observable updateWalletPasswordRequest: Request<UpdateWalletPasswordResponse> = new Request(this.api.ada.updateWalletPassword);
-  @observable exportWalletToFileRequest: Request<ExportWalletToFileResponse> = new Request(this.api.ada.exportWalletToFile);
+  @observable updateWalletRequest: Request<Wallet> = new Request(this.api.ada.updateWallet);
+  @observable updateWalletPasswordRequest: Request<boolean> = new Request(this.api.ada.updateWalletPassword);
+  @observable exportWalletToFileRequest: Request<Promise<[]>> = new Request(this.api.ada.exportWalletToFile);
   /* eslint-enable max-len */
 
   setup() {
