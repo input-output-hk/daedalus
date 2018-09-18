@@ -306,8 +306,9 @@ export default class Transaction extends Component<Props, State> {
                   <h2>{intl.formatMessage(messages.assuranceLevel)}</h2>
                   {(transactionState === transactionStates.OK) ? (
                     <span>
-                      <span className={styles.assuranceLevel}>{status}</span>
-                      . {data.numberOfConfirmations} {intl.formatMessage(messages.confirmations)}.
+                      <span className={styles.assuranceLevel}>{status}</span>.&nbsp;
+                      {data.numberOfConfirmations.toLocaleString()}&nbsp;
+                      {intl.formatMessage(messages.confirmations)}.
                     </span>
                   ) : null}
                 </div>

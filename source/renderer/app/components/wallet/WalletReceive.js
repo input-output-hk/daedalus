@@ -11,6 +11,7 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
+import { submitOnEnter } from '../../utils/form';
 import BorderedBox from '../widgets/BorderedBox';
 import TinySwitch from '../widgets/forms/TinySwitch';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
@@ -168,6 +169,7 @@ export default class WalletReceive extends Component<Props, State> {
             ref={(input) => { this.passwordField = input; }}
             error={passwordField.error}
             skin={InputSkin}
+            onKeyPress={submitOnEnter.bind(this, this.submit)}
           />
         }
 

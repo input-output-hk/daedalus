@@ -106,7 +106,7 @@ export default {
   '--theme-dialog-choice-tabs-text-color': '#5e6066',
   '--theme-dialog-choice-tabs-text-color-active': '#5e6066',
   '--theme-dialog-choice-tabs-bottom-border-color-active': '#5e6066',
-  '--theme-dialog-big-button-background-color': '#f1f3f5',
+  '--theme-dialog-big-button-background-color': '#FAFBFC',
   '--theme-dialog-big-button-border-color': '#c6cdd6',
   '--theme-dialog-big-button-label-color': '#5e6066',
   '--theme-dialog-big-button-description-color': '#5e6066',
@@ -234,6 +234,7 @@ export default {
   '--theme-transactions-icon-type-income-background-color': '#2dc06c',
   '--theme-transactions-icon-type-exchange-background-color': '#10aca4',
   '--theme-transactions-icon-type-failed-background-color': '#ea4c5b',
+  '--theme-transactions-arrow-stroke-color': '#243E62',
 
   '--theme-uploader-text-color': '#5e6066',
   '--theme-uploader-border-color': '#c6cdd6',
