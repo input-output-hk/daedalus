@@ -35,7 +35,7 @@
     .link {
       color: var(--theme-paper-wallet-create-certificate-dialog-explorer-link-color);
       cursor: pointer;
-      border-bottom: 1px solid var(--theme-paper-wallet-create-certificate-dialog-explorer-link-color);
+      text-decoration: underline;
     }
   }
 
