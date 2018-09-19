@@ -41,12 +41,6 @@ The result can be found at `./result/daedalus-*.bin`.
 `shell.nix` provides a way to load a shell with all the correct versions of all the 
 required dependencies for development.
 
-**Temporary Fix:** atm you will see the error message 
-`readLauncherConfig: warning var undefined: DAEDALUS_INSTALL_DIRECTORY` whenever
-you run daedalus within the nix-shell … so you need to 
-`export DAEDALUS_INSTALL_DIRECTORY=/path/to/daedalus/repo` for now (this will be
-fixed soon)
-
 ## Connect to staging cluster:
 
 1. Run `nix-shell --arg autoStartBackend true --argstr cluster staging`
