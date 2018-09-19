@@ -26,14 +26,26 @@ const startCardanoNode = (node: CardanoNode, launcherConfig: Object) => {
   const logFilePath = logsPrefix + '/cardano-node.log';
   const config = {
     nodePath,
+    logFilePath,
     tlsPath,
     nodeArgs,
     startupTimeout: 5000,
+    startupMaxRetries: 5,
     shutdownTimeout: 5000,
     killTimeout: 5000,
     updateTimeout: 20000,
   };
-  return node.start(config, createWriteStream(logFilePath, { flags: 'a' }));
+  return node.start(config);
+};
+
+const restartOrExit = async (node: CardanoNode) => {
+  try {
+    await node.restart();
+  } catch (error) {
+    Logger.info(`Could not restart CardanoNode: ${error}`);
+    Logger.info('Exiting Daedalus since CardanoNode is not starting.');
+    flushLogsAndExitWithCode(0);
+  }
 };
 
 /**
@@ -59,6 +71,7 @@ export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWind
   const cardanoNode = new CardanoNode(Logger, {
     spawn,
     readFileSync,
+    createWriteStream,
     broadcastTlsConfig: (tlsConfig: TlsConfig) => {
       if (!mainWindow.isDestroyed()) {
         mainWindow.send(TLS_CONFIG_CHANNEL, true, tlsConfig);
@@ -81,8 +94,9 @@ export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWind
     },
     onCrashed: (code) => {
       Logger.info(`CardanoNode exited unexpectatly with code ${code}. Restarting it …`);
-      startCardanoNode(cardanoNode, launcherConfig);
-    }
+      restartOrExit(cardanoNode);
+    },
+    onError: (error) => {}
   });
   startCardanoNode(cardanoNode, launcherConfig);
 
@@ -112,7 +126,7 @@ export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWind
     event.preventDefault(); // prevent Daedalus from quitting immediately
     if (cardanoNode.state === CardanoNodeStates.STOPPING) return;
     try {
-      Logger.info(`Daedalus:before-quit: stopping cardano-node with PID ${cardanoNode.pid}`);
+      Logger.info(`Daedalus:before-quit: stopping cardano-node with PID ${cardanoNode.pid || 'null'}`);
       await cardanoNode.stop();
       Logger.info('Daedalus:before-quit: exiting Daedalus with code 0.');
       flushLogsAndExitWithCode(0);

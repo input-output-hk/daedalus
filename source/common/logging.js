@@ -13,24 +13,13 @@ const isRenderer = () => {
 
 const prefixProcessType = (str: string) => (isRenderer() ? '[renderer] ' : '[main] ') + str;
 
+const logToLevel = (level) => (message: string) => log[level](prefixProcessType(message));
+
 export const Logger = {
-
-  debug: (data: string) => {
-    log.debug(prefixProcessType(data));
-  },
-
-  info: (data: string) => {
-    log.info(prefixProcessType(data));
-  },
-
-  error: (data: string) => {
-    log.error(prefixProcessType(data));
-  },
-
-  warn: (data: string) => {
-    log.info(prefixProcessType(data));
-  },
-
+  debug: logToLevel('debug'),
+  info: logToLevel('info'),
+  error: logToLevel('error'),
+  warn: logToLevel('warn'),
 };
 
 // ========== STRINGIFY =========

@@ -15,6 +15,7 @@ type Logger = {
 type Actions = {
   spawn: spawn,
   readFileSync: (path: string) => Buffer,
+  createWriteStream: (path: string, options?: Object) => WriteStream,
   broadcastTlsConfig: (TlsConfig) => void,
   broadcastStateChange: (state: CardanoNodeState) => void,
 };
@@ -27,6 +28,7 @@ type StateTransitions = {
   onUpdating: () => void,
   onUpdated: () => void,
   onCrashed: (code: number, signal: string) => void,
+  onError: (error: Error) => void,
 }
 
 type CardanoNodeIpcMessage = {
@@ -38,13 +40,15 @@ type NodeArgs = Array<string>;
 
 export type CardanoNodeConfig = {
   nodePath: string, // Path to cardano-node executable
+  logFilePath: string, // Log file path for cardano-sl
   tlsPath: string, // Path to cardano-node TLS folder
   nodeArgs: NodeArgs, // Arguments that are used to spwan cardano-node
   startupTimeout: number, // Milliseconds to wait for cardano-node to startup
+  startupMaxRetries: number, // Maximum number of retries for re-starting then ode
   shutdownTimeout: number, // Milliseconds to wait for cardano-node to gracefully shutdown
   killTimeout: number, // Milliseconds to wait for cardano-node to be killed
   updateTimeout: number, // Milliseconds to wait for cardano-node to update itself
-}
+};
 
 export class CardanoNode {
   /**
@@ -56,7 +60,7 @@ export class CardanoNode {
    * The managed cardano-node child process
    * @private
    */
-  _node: ChildProcess;
+  _node: ?ChildProcess;
 
   /**
    * The ipc channel used for broadcasting messages to the outside world
@@ -69,6 +73,7 @@ export class CardanoNode {
    * @private
    */
   _transitionListeners: StateTransitions;
+
   /**
    * Logger instance to print debug messages to
    * @private
@@ -76,7 +81,7 @@ export class CardanoNode {
   _log: Logger;
 
   /**
-   * Log file stream for cardano logs
+   * Log file stream for cardano-sl
    * @private
    */
   _cardanoLogFile: WriteStream;
@@ -102,6 +107,11 @@ export class CardanoNode {
   _state: CardanoNodeState = CardanoNodeStates.STOPPED;
 
   /**
+   * Number of retries to startup the node (without ever reaching running state)
+   */
+  _startupTries: number = 0;
+
+  /**
    * Getter which copies and returns the internal tls config.
    * @returns {TlsConfig}
    */
@@ -113,8 +123,8 @@ export class CardanoNode {
    * Getter which returns the PID of the child process of cardano-node
    * @returns {TlsConfig}
    */
-  get pid(): number {
-    return this._node.pid;
+  get pid(): ?number {
+    return this._node ? this._node.pid : null;
   }
 
   /**
@@ -146,17 +156,28 @@ export class CardanoNode {
    * Transitions into STARTING state.
    *
    * @param config
-   * @param logFile
    * @returns {Promise<void>} resolves if the node could be started, rejects with error otherwise.
    */
-  start(config: CardanoNodeConfig, logFile: WriteStream): Promise<void> {
-    if (!this._canBeStarted()) return Promise.reject('CardanoNode: Cannot be started.');
-    this._config = config;
-    this._cardanoLogFile = logFile;
+  start(config: CardanoNodeConfig): Promise<void> {
+    // Guards
+    if (!this._canBeStarted()) {
+      return Promise.reject('CardanoNode: Cannot be started.');
+    }
+    if (this._startupTries >= config.startupMaxRetries) {
+      return Promise.reject('CardanoNode: Too many startup retries.');
+    }
+    // Setup
     const { _log } = this;
     const { nodePath, nodeArgs, startupTimeout } = config;
+    const { createWriteStream } = this._actions;
+    this._config = config;
+
+    _log.info(`CardanoNode: trying to start cardano-node for the ${this._startupTries}. time.`);
+    this._startupTries++;
     this._changeToState(CardanoNodeStates.STARTING);
+
     return new Promise((resolve, reject) => {
+      const logFile = createWriteStream(config.logFilePath, { flags: 'a' });
       logFile.on('open', async () => {
         this._cardanoLogFile = logFile;
         // Spawning cardano-node
@@ -168,7 +189,6 @@ export class CardanoNode {
           await promisedCondition(() => node.connected, startupTimeout);
           // Setup livecycle event handlers
           node.on('message', this._handleCardanoNodeMessage);
-          node.on('disconnect', this._handleCardanoNodeDisconnect);
           node.on('exit', this._handleCardanoNodeExit);
           node.on('error', this._handleCardanoNodeError);
           // Request cardano-node to reply with port
@@ -191,7 +211,7 @@ export class CardanoNode {
    */
   stop(): Promise<void> {
     const { _node, _log, _config } = this;
-    if (!this._canBeStopped()) return Promise.resolve();
+    if (!_node || !this._canBeStopped()) return Promise.resolve();
     return new Promise(async (resolve, reject) => {
       _log.info('CardanoNode: disconnecting from cardano-node process.');
       try {
@@ -222,6 +242,7 @@ export class CardanoNode {
    */
   kill(): Promise<void> {
     const { _node, _log, _config } = this;
+    if (!_node || !this._canBeStopped()) return Promise.reject('Node not active.');
     return new Promise(async (resolve, reject) => {
       try {
         _log.info('CardanoNode: killing cardano-node process.');
@@ -241,8 +262,16 @@ export class CardanoNode {
   }
 
   async restart(): Promise<void> {
-    await this.stop();
-    await this.start(this._config, this._cardanoLogFile);
+    const { _log } = this;
+    try {
+      if (this._canBeStopped()) {
+        await this.stop();
+      }
+      await this.start(this._config);
+    } catch (error) {
+      _log.info(`CardanoNode: Could not restart cardano-node "${error}"`);
+      return Promise.reject(error);
+    }
   }
 
   /**
@@ -323,22 +352,17 @@ export class CardanoNode {
     if (this._state === CardanoNodeStates.STARTING && this._isTlsConfigComplete()) {
       this._changeToState(CardanoNodeStates.RUNNING);
       this.broadcastTlsConfig();
+      // Reset the startup tries when we managed to get the node running
+      this._startupTries = 0;
     }
   };
 
   _handleCardanoNodeError = async (error: Error) => {
     const { _log } = this;
     _log.info(`CardanoNode: error: ${error.toString()}`);
+    this._changeToState(CardanoNodeStates.ERRORED);
+    this._transitionListeners.onError(error);
     await this.restart();
-  };
-
-  _handleCardanoNodeDisconnect = () => {
-    const { _log } = this;
-    _log.info('CardanoNode: disconnected from cardano-node.');
-    if (this._state !== CardanoNodeStates.STOPPING) {
-      // TODO: Disconnect was not expected -> do something
-    }
-    this._reset();
   };
 
   _handleCardanoNodeExit = (code: number, signal: string) => {
@@ -365,6 +389,10 @@ export class CardanoNode {
 
   _reset = () => {
     if (this._cardanoLogFile) this._cardanoLogFile.end();
+    if (this._node) {
+      this._node.removeAllListeners();
+      this._node = null;
+    }
     this._resetTlsConfig();
   };
 
@@ -393,20 +421,16 @@ export class CardanoNode {
   // TODO: find better wording for the idea of "active" vs "inactive" node
 
   _isActive = () => (
-    this._state === CardanoNodeStates.STARTING ||
-    this._state === CardanoNodeStates.RUNNING ||
-    this._state === CardanoNodeStates.STOPPING ||
-    this._state === CardanoNodeStates.UPDATING
-  );
-
-  _isInactive = () => (
-    this._state === CardanoNodeStates.STOPPED ||
-    this._state === CardanoNodeStates.UPDATED ||
-    this._state === CardanoNodeStates.CRASHED
+    this._node && this._node.connected && (
+      this._state === CardanoNodeStates.STARTING ||
+      this._state === CardanoNodeStates.RUNNING ||
+      this._state === CardanoNodeStates.STOPPING ||
+      this._state === CardanoNodeStates.UPDATING
+    )
   );
 
   _canBeStarted = () => !this._isActive();
 
-  _canBeStopped = () => !this._isInactive();
+  _canBeStopped = () => this._isActive();
 
 }

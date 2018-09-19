@@ -1,5 +1,6 @@
 export type CardanoNodeState = (
-  'stopped' | 'starting' | 'running' | 'stopping' | 'updating' | 'updated' | 'crashed'
+  'stopped' | 'starting' | 'running' | 'stopping' | 'updating' |
+  'updated' | 'crashed' | 'errored'
 );
 
 export const CardanoNodeStates: {
@@ -10,6 +11,7 @@ export const CardanoNodeStates: {
   UPDATING: CardanoNodeState;
   UPDATED: CardanoNodeState;
   CRASHED: CardanoNodeState;
+  ERRORED: CardanoNodeState;
 } = {
   STARTING: 'starting',
   RUNNING: 'running',
@@ -18,4 +20,5 @@ export const CardanoNodeStates: {
   UPDATING: 'updating',
   UPDATED: 'updated',
   CRASHED: 'crashed',
+  ERRORED: 'errored',
 };
