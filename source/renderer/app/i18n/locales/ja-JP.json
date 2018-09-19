@@ -79,7 +79,7 @@
   "loading.screen.reportIssue.syncing.text": "同期に問題がありますか?",
   "loading.screen.syncingBlocksMessage": "ブロック同期中",
   "loading.screen.waitingForSyncToStart": "接続完了 - ブロック同期開始を待機中",
-  "paper.wallet.create.certificate.completion.dialog.addressCopiedLabel": "!!!copied",
+  "paper.wallet.create.certificate.completion.dialog.addressCopiedLabel": "コピーされました",
   "paper.wallet.create.certificate.completion.dialog.addressInstructions": "ペーパーウォレットを用いて資金を受け取る際は、下記のウォレットアドレスを共有してください。",
   "paper.wallet.create.certificate.completion.dialog.addressLabel": "ウォレットアドレス",
   "paper.wallet.create.certificate.completion.dialog.cardanoLinkLabel": "カルダノエクスプローラーリンク",
