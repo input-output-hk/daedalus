@@ -318,10 +318,10 @@ export default class AdaApi {
       if (error.message.includes('It\'s not allowed to send money to the same address you are sending from')) {
         throw new NotAllowedToSendMoneyToSameAddressError();
       }
-      if (error.message.includes('Destination address can\'t be redeem address')) {
+      if (error.message.includes('OutputIsRedeem')) {
         throw new NotAllowedToSendMoneyToRedeemAddressError();
       }
-      if (error.message.includes('Not enough money')) {
+      if (error.message.includes('NotEnoughMoney')) {
         throw new NotEnoughMoneyToSendError();
       }
       if (error.message.includes('Passphrase doesn\'t match')) {
@@ -360,7 +360,7 @@ export default class AdaApi {
       if (error.message.includes('not enough money on addresses which are not included in output addresses set')) {
         throw new AllFundsAlreadyAtReceiverAddressError();
       }
-      if (error.message.includes('not enough money')) {
+      if (error.message.includes('NotEnoughMoney')) {
         throw new NotEnoughFundsForTransactionFeesError();
       }
       throw new GenericApiError();
