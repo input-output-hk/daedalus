@@ -22,7 +22,11 @@ export default () => {
     // check if pub folder exists and create array of log file names
     const logFiles = [];
     if (fs.existsSync(pubLogsFolderPath)) {
-      const files = fs.readdirSync(pubLogsFolderPath);
+
+      const files = fs
+        .readdirSync(pubLogsFolderPath)
+        .sort();
+
       let nodeLogsIncluded = 0;
       for (let i = 0; i < files.length; i++) {
         const currentFile = path.join(pubLogsFolderPath, files[i]);
