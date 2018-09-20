@@ -55,3 +55,9 @@
   line-height: 1.36;
   opacity: 0.8;
 }
+
+.error {
+  @include error-message;
+  text-align: center;
+  margin-bottom: 1rem;
+}

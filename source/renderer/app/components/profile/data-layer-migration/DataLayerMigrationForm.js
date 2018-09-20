@@ -31,9 +31,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  localizedTermsOfUse: string,
   onSubmit: Function,
-  isSubmitting: boolean,
   error?: ?LocalizableError,
 };
 
