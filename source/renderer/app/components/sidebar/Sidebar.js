@@ -21,6 +21,7 @@ type Props = {
   openDialogAction: Function,
   onAddWallet: Function,
   onSubmitSupportRequest: Function,
+  pathname: string,
 };
 
 export type SidebarMenus = ?{
@@ -48,7 +49,7 @@ export default class Sidebar extends Component<Props> {
 
   render() {
     const {
-      menus, categories, activeSidebarCategory,
+      menus, categories, activeSidebarCategory, pathname,
       isShowingSubMenus, onAddWallet, onSubmitSupportRequest,
     } = this.props;
     let subMenu = null;
@@ -64,6 +65,7 @@ export default class Sidebar extends Component<Props> {
           onAddWallet={onAddWallet}
           onWalletItemClick={menus.wallets.actions.onWalletItemClick}
           isActiveWallet={id => id === menus.wallets.activeWalletId}
+          isAddWalletButtonActive={pathname === '/wallets/add'}
           visible={isShowingSubMenus}
         />
       );

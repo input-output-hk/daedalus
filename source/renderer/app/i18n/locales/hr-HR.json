@@ -78,6 +78,7 @@
   "loading.screen.reportIssue.connecting.text": "!!!Having trouble connecting to network?",
   "loading.screen.reportIssue.syncing.text": "!!!Having trouble syncing?",
   "loading.screen.syncingBlocksMessage": "!!!Syncing blocks",
+  "paper.wallet.create.certificate.completion.dialog.addressCopiedLabel": "!!!copied",
   "paper.wallet.create.certificate.completion.dialog.addressInstructions": "!!!To receive funds to your paper wallet simply share your wallet address with others.",
   "paper.wallet.create.certificate.completion.dialog.addressLabel": "!!!Wallet address",
   "paper.wallet.create.certificate.completion.dialog.cardanoLinkLabel": "!!!Cardano explorer link",

@@ -55,5 +55,6 @@
 }
 
 .isSubmitting {
+  box-shadow: none !important;
   @include loading-spinner("../../assets/images/spinner-light.svg");
 }

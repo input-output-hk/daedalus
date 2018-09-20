@@ -19,7 +19,7 @@ export default class SidebarCategory extends Component<Props> {
     const componentStyles = classNames([
       styles.component,
       active ? styles.active : null,
-      className === 'supportRequest' ? styles.supportRequest : className
+      styles[className] ? styles[className] : classNames
     ]);
 
     const iconStyles = classNames([

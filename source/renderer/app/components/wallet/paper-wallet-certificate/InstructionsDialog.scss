@@ -42,7 +42,7 @@
   .printingInstructions {
     border-top: 1px solid var(--theme-separation-border-color);
     margin-top: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 0;
     padding-top: 20px;
     line-height: 1.38;
 
@@ -53,5 +53,6 @@
 }
 
 .submitButtonSpinning {
+  box-shadow: none !important;
   @include loading-spinner("../../../assets/images/spinner-light.svg");
 }

@@ -115,7 +115,7 @@ export default {
   '--theme-input-border-color': 'rgba(102, 122, 138, 0.3)',
   '--theme-input-label-color': '#e9f4fe',
   '--theme-input-text-color': '#e9f4fe',
-  '--theme-input-right-floating-text-color': '#8793a1',
+  '--theme-input-right-floating-text-color': 'rgba(233, 244, 254, 0.5)',
   '--theme-input-placeholder-color': '#8793a1',
   '--theme-input-error-color': '#ea4c5b',
   '--theme-input-remove-color-dark': '#d34452',
@@ -177,16 +177,17 @@ export default {
   '--theme-settings-theme-select-title-color': '#cecfd1',
 
   '--theme-sidebar-background-color': '#314259',
-  '--theme-sidebar-category-background-color-hover': '#263345',
+  '--theme-sidebar-category-background-color-hover': 'rgba(38, 51, 69, 0.5)',
   '--theme-sidebar-category-background-color-active': '#263345',
   '--theme-sidebar-category-text-color': '#e9f4fe',
   '--theme-sidebar-menu-background-color': '#263345',
-  '--theme-sidebar-menu-item-background-color-hover': '#1b2430',
+  '--theme-sidebar-menu-item-background-color-hover': 'rgba(27, 36, 48, 0.5)',
   '--theme-sidebar-menu-item-background-color-active': '#1b2430',
   '--theme-sidebar-menu-item-wallet-name-color': '#e9f4fe',
   '--theme-sidebar-menu-item-wallet-info-color': '#bdc0c1',
-  '--theme-sidebar-menu-add-button-background-color-active': '#1b2430',
-  '--theme-sidebar-menu-add-button-background-color-hover': '#171f29',
+  '--theme-sidebar-menu-add-button-background-color': '#1b2430',
+  '--theme-sidebar-menu-add-button-background-color-active': '#1f2a38',
+  '--theme-sidebar-menu-add-button-background-color-hover': '#1f2a38',
   '--theme-sidebar-menu-add-button-text-color': '#e9f4fe',
 
   '--theme-staking-background-color': '#0b1926',
@@ -233,6 +234,7 @@ export default {
   '--theme-transactions-icon-type-income-background-color': '#3b6956',
   '--theme-transactions-icon-type-exchange-background-color': '#10aca4',
   '--theme-transactions-icon-type-failed-background-color': 'rgba(234, 76, 91, 0.5)',
+  '--theme-transactions-arrow-stroke-color': '#243E62',
 
   '--theme-uploader-text-color': '#e9f4fe',
   '--theme-uploader-border-color': 'rgba(102, 122, 138, 0.3)',
@@ -291,7 +293,7 @@ export default {
 
   '--theme-instructions-text-color': '#e9f4fe',
 
-  '--theme-label-button-color': '#8793a1',
+  '--theme-label-button-color': 'rgba(233, 244, 254, 0.5)',
 
   '--theme-loading-background-color': '#0b1926',
 
