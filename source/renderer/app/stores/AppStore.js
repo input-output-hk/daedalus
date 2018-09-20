@@ -7,8 +7,8 @@ import { buildRoute } from '../utils/routing';
 import { OPEN_ABOUT_DIALOG_CHANNEL } from '../../../common/ipc-api/open-about-dialog';
 import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../../../common/ipc-api/go-to-ada-redemption-screen';
 import { GET_GPU_STATUS } from '../../../common/ipc-api';
+import { INIT_ENVIRONMENT } from '../../../common/ipc-api/init-environment';
 import { ROUTES } from '../routes-config';
-import environment from '../../../common/environment';
 import type GpuStatus from '../types/gpuStatus';
 
 export default class AppStore extends Store {
@@ -16,6 +16,7 @@ export default class AppStore extends Store {
   @observable error: ?LocalizableError = null;
   @observable isAboutDialogOpen = false;
   @observable gpuStatus: ?GpuStatus = {};
+  @observable enviroment: ?Object = null;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -25,6 +26,7 @@ export default class AppStore extends Store {
     ipcRenderer.on(OPEN_ABOUT_DIALOG_CHANNEL, this._openAboutDialog);
     ipcRenderer.on(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
     ipcRenderer.on(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
+    ipcRenderer.on(INIT_ENVIRONMENT, this._initEnvironment);
   }
 
   teardown() {
@@ -71,10 +73,13 @@ export default class AppStore extends Store {
 
   @action _goToAdaRedemptionScreen = () => {
     const { isConnected, isSynced } = this.stores.networkStatus;
-    const { hasLoadedWallets } = this.stores[environment.API].wallets;
+    const { hasLoadedWallets } = this.stores[this.environment.API].wallets;
     if (isConnected && isSynced && hasLoadedWallets && !this.isSetupPage) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.ADA_REDEMPTION });
     }
   };
 
+  @action _initEnvironment = (environment: Object) => {
+    this.environment = environment;
+  };
 }
