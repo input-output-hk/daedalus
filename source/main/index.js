@@ -20,7 +20,7 @@ mainErrorHandler();
 
 log.info(`========== Daedalus is starting at ${new Date()} ==========`);
 
-log.info(`!!! Daedalus is running on ${os.platform()} version ${os.release()}
+log.info(`!!! ${environment.getBuildLabel()} is running on ${os.platform()} version ${os.release()}
             with CPU: ${JSON.stringify(os.cpus(), null, 2)} with
             ${JSON.stringify(os.totalmem(), null, 2)} total RAM !!!`);
 
