@@ -41,8 +41,8 @@ export default class SettingsStore extends Store {
   @observable setProfileLocaleRequest: Request<string> = new Request(this.api.localStorage.setUserLocale);
   @observable getTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.localStorage.getTermsOfUseAcceptance);
   @observable setTermsOfUseAcceptanceRequest: Request<string> = new Request(this.api.localStorage.setTermsOfUseAcceptance);
-  @observable getDataLayerMigrationAcceptanceRequest: Request<string> = new Request(this.api.localStorage.getDataLayerMigrationAcceptance);
-  @observable setDataLayerMigrationAcceptanceRequest: Request<string> = new Request(this.api.localStorage.setDataLayerMigrationAcceptance);
+  @observable getDataLayerMigrationStartRequest: Request<string> = new Request(this.api.localStorage.getDataLayerMigrationStart);
+  @observable setDataLayerMigrationStartRequest: Request<string> = new Request(this.api.localStorage.setDataLayerMigrationStart);
   @observable getThemeRequest: Request<string> = new Request(this.api.localStorage.getUserTheme);
   @observable setThemeRequest: Request<string> = new Request(this.api.localStorage.setUserTheme);
   @observable sendBugReport: Request<any> = new Request(this.api[environment.API].sendBugReport);
@@ -56,7 +56,7 @@ export default class SettingsStore extends Store {
   setup() {
     this.actions.profile.updateLocale.listen(this._updateLocale);
     this.actions.profile.acceptTermsOfUse.listen(this._acceptTermsOfUse);
-    this.actions.profile.acceptDataLayerMigration.listen(this._acceptDataLayerMigration);
+    this.actions.profile.startDataLayerMigration.listen(this._startDataLayerMigration);
     this.actions.profile.updateTheme.listen(this._updateTheme);
     this.actions.profile.getLogs.listen(this._getLogs);
     this.actions.profile.getLogsAndCompress.listen(this._getLogsAndCompress);
@@ -78,7 +78,7 @@ export default class SettingsStore extends Store {
       this._redirectToMainUiAfterDataLayerMigrationHasStarted,
     ]);
     this._getTermsOfUseAcceptance();
-    this._getDataLayerMigrationAcceptance();
+    this._getDataLayerMigrationStart();
   }
 
   teardown() {
@@ -152,15 +152,15 @@ export default class SettingsStore extends Store {
     return this.getTermsOfUseAcceptanceRequest.result === true;
   }
 
-  @computed get hasLoadedDataLayerMigrationAcceptance(): boolean {
+  @computed get hasLoadedDataLayerMigrationStart(): boolean {
     return (
-      this.getDataLayerMigrationAcceptanceRequest.wasExecuted &&
-      this.getDataLayerMigrationAcceptanceRequest.result !== null
+      this.getDataLayerMigrationStartRequest.wasExecuted &&
+      this.getDataLayerMigrationStartRequest.result !== null
     );
   }
 
-  @computed get areDataLayerMigrationAccepted(): boolean {
-    return this.getDataLayerMigrationAcceptanceRequest.result === true;
+  @computed get hasDataLayerMigrationStarted(): boolean {
+    return this.getDataLayerMigrationStartRequest.result === true;
   }
 
   @computed get isSettingsPage(): boolean {
@@ -194,20 +194,17 @@ export default class SettingsStore extends Store {
     this.getTermsOfUseAcceptanceRequest.execute();
   };
 
-  _acceptDataLayerMigration = async () => {
-    await this.setDataLayerMigrationAcceptanceRequest.execute();
-    await this.getDataLayerMigrationAcceptanceRequest.execute();
+  _startDataLayerMigration = async () => {
+    await this.setDataLayerMigrationStartRequest.execute();
+    await this.getDataLayerMigrationStartRequest.execute();
   };
 
-  _getDataLayerMigrationAcceptance = () => {
-    this.getDataLayerMigrationAcceptanceRequest.execute();
+  _getDataLayerMigrationStart = () => {
+    this.getDataLayerMigrationStartRequest.execute();
   };
 
   _redirectToLanguageSelectionIfNoLocaleSet = () => {
     const { isConnected } = this.stores.networkStatus;
-    console.log('isConnected', isConnected);
-    console.log('this.isCurrentLocaleSet', this.isCurrentLocaleSet);
-    console.log('this.hasLoadedCurrentLocale', this.hasLoadedCurrentLocale);
     if (isConnected && this.hasLoadedCurrentLocale && !this.isCurrentLocaleSet) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.LANGUAGE_SELECTION });
     }
@@ -225,9 +222,10 @@ export default class SettingsStore extends Store {
 
   _redirectToDataLayerMigrationScreenIfMigrationHasNotStarted = () => {
     const { isConnected } = this.stores.networkStatus;
-    const termsOfUseNotAccepted = this.hasLoadedTermsOfUseAcceptance && !this.areTermsOfUseAccepted;
-    if (isConnected && this.isCurrentLocaleSet && termsOfUseNotAccepted) {
-      this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.TERMS_OF_USE });
+    const dataLayerMigrationNotStarted =
+      this.hasLoadedDataLayerMigrationStart && !this.hasDataLayerMigrationStarted;
+    if (isConnected && dataLayerMigrationNotStarted) {
+      this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.DATA_LAYER_MIGRATION });
     }
   };
 
@@ -238,19 +236,13 @@ export default class SettingsStore extends Store {
   };
 
   _redirectToMainUiAfterDataLayerMigrationHasStarted = () => {
-    if (this.areTermsOfUseAccepted && this._isOnTermsOfUsePage()) {
+    if (this.hasDataLayerMigrationStarted && this._isOnDataLayerMigrationPage()) {
       this._redirectToRoot();
     }
   };
 
   _isOnDataLayerMigrationPage = () =>
     this.stores.app.currentRoute === ROUTES.PROFILE.DATA_LAYER_MIGRATION;
-
-  _redirectToMainUiAfterMigrationAccepted = () => {
-    if (this.areDataLayerMigrationAccepted && this._isOnDataLayerMigrationPage()) {
-      this._redirectToRoot();
-    }
-  };
 
   _redirectToRoot = () => {
     this.actions.router.goToRoute.trigger({ route: ROUTES.ROOT });

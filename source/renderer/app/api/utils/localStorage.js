@@ -96,7 +96,7 @@ export default class LocalStorageApi {
     } catch (error) {} // eslint-disable-line
   });
 
-  getDataLayerMigrationAcceptance = () => new Promise((resolve, reject) => {
+  getDataLayerMigrationStart = () => new Promise((resolve, reject) => {
     try {
       const accepted = store.get(storageKeys.DATA_LAYER_MIGRATION);
       if (!accepted) return resolve(false);
@@ -106,7 +106,7 @@ export default class LocalStorageApi {
     }
   });
 
-  setDataLayerMigrationAcceptance = () => new Promise((resolve, reject) => {
+  setDataLayerMigrationStart = () => new Promise((resolve, reject) => {
     try {
       store.set(storageKeys.DATA_LAYER_MIGRATION, true);
       resolve();
@@ -115,7 +115,7 @@ export default class LocalStorageApi {
     }
   });
 
-  unsetDataLayerMigrationAcceptance = () => new Promise((resolve) => {
+  unsetDataLayerMigrationStart = () => new Promise((resolve) => {
     try {
       store.delete(storageKeys.DATA_LAYER_MIGRATION);
       resolve();

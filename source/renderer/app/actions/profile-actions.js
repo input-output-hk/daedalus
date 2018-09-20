@@ -5,7 +5,7 @@ import Action from './lib/Action';
 
 export default class ProfileActions {
   acceptTermsOfUse: Action<any> = new Action();
-  acceptDataLayerMigration: Action<any> = new Action();
+  startDataLayerMigration: Action<any> = new Action();
   getLogs: Action<any> = new Action();
   getLogsAndCompress: Action<any> = new Action();
   sendBugReport: Action<{

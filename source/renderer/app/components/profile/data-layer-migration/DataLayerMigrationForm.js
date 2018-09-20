@@ -38,24 +38,12 @@ type Props = {
   error?: ?LocalizableError,
 };
 
-type State = {
-  areTermsOfUseAccepted: boolean,
-};
-
 @observer
-export default class DataLayerMigrationForm extends Component<Props, State> {
+export default class DataLayerMigrationForm extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  state = {
-    areTermsOfUseAccepted: false,
-  };
-
-  toggleAcceptance() {
-    this.setState({ areTermsOfUseAccepted: !this.state.areTermsOfUseAccepted });
-  }
 
   submit = () => {
     this.props.onSubmit();
@@ -63,12 +51,7 @@ export default class DataLayerMigrationForm extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { isSubmitting, error } = this.props;
-    const { areTermsOfUseAccepted } = this.state;
-    const buttonClasses = classnames([
-      'primary',
-      isSubmitting ? styles.submitButtonSpinning : styles.submitButton,
-    ]);
+    const { error } = this.props;
 
     return (
       <div className={styles.component}>
@@ -82,10 +65,9 @@ export default class DataLayerMigrationForm extends Component<Props, State> {
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
 
         <Button
-          className={buttonClasses}
+          className={styles.submitButton}
           label={intl.formatMessage(messages.submitLabel)}
           onClick={this.submit}
-          disabled={!areTermsOfUseAccepted}
           skin={ButtonSkin}
         />
 
