@@ -64,7 +64,7 @@ app.on('ready', async () => {
   }
 
   setupTls();
-  makeEnvironmentGlobal(process.env);
+
   await installChromeExtensions(environment.isDev());
 
   // Detect safe mode
