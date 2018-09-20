@@ -38,6 +38,9 @@
   > svg {
     height: 8px;
     width: 25px;
+    path {
+      stroke: var(--theme-transactions-arrow-stroke-color);
+    }
   }
   .component:hover & {
     opacity: .2;

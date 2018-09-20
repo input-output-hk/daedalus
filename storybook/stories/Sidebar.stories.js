@@ -60,6 +60,7 @@ storiesOf('Sidebar', module)
       onAddWallet={action('onAddWallet')}
       openDialogAction={action('openDialog')}
       onSubmitSupportRequest={() => {}}
+      pathname="/"
     />
   ))
 
@@ -73,6 +74,7 @@ storiesOf('Sidebar', module)
       onAddWallet={action('onAddWallet')}
       openDialogAction={action('openDialog')}
       onSubmitSupportRequest={() => {}}
+      pathname="/"
     />
   ))
 
@@ -87,5 +89,6 @@ storiesOf('Sidebar', module)
       onAddWallet={action('onAddWallet')}
       openDialogAction={action('openDialog')}
       onSubmitSupportRequest={() => {}}
+      pathname="/"
     />
   ));

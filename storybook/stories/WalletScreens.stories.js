@@ -113,22 +113,24 @@ storiesOf('WalletScreens', module)
 
   .add('Transactions', () => (
     <WalletTransactionsList
-      transactions={[
-        ...Array.from(Array(number('Transactions Sent', 1))).map((x, i) =>
-          generateTransaction(
-            transactionTypes.EXPEND,
-            moment().subtract(i, 'days').toDate(),
-            new BigNumber(faker.random.number(5))
-          )
-        ),
-        ...Array.from(Array(number('Transactions Received', 1))).map((x, i) =>
-          generateTransaction(
-            transactionTypes.INCOME,
-            moment().subtract(i, 'days').toDate(),
-            new BigNumber(faker.random.number(5))
-          )
-        ),
-      ]}
+      transactions={
+        [
+          ...Array.from(Array(number('Transactions Sent', 1))).map((x, i) =>
+            generateTransaction(
+              transactionTypes.EXPEND,
+              moment().subtract(i, 'days').toDate(),
+              new BigNumber(faker.random.number(5))
+            )
+          ),
+          ...Array.from(Array(number('Transactions Received', 1))).map((x, i) =>
+            generateTransaction(
+              transactionTypes.INCOME,
+              moment().subtract(i, 'days').toDate(),
+              new BigNumber(faker.random.number(5))
+            )
+          ),
+        ]
+      }
       isLoadingTransactions={false}
       hasMoreToLoad={false}
       assuranceMode={{ low: 1, medium: 2 }}

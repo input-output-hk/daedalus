@@ -10,7 +10,7 @@
 .addWalletButton {
   @include button;
   align-items: center;
-  background-color: var(--theme-sidebar-menu-add-button-background-color-active);
+  background-color: var(--theme-sidebar-menu-add-button-background-color);
   bottom: 0;
   color: var(--theme-sidebar-menu-add-button-text-color);
   display: flex;
@@ -38,4 +38,10 @@
     font-family: var(--font-regular);
     font-size: 18px;
   }
+
+  &.active {
+    cursor: default;
+    background-color: var(--theme-sidebar-menu-add-button-background-color-active);
+  }
 }
+
