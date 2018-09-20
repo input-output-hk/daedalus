@@ -13,6 +13,7 @@ export const createMainWindow = (isInSafeMode) => {
     width: 1150,
     height: 870,
     webPreferences: {
+      nodeIntegration: false,
       webviewTag: false,
     }
   };
