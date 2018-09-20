@@ -23,6 +23,7 @@ export default class AppStore extends Store {
     this.actions.app.openAboutDialog.listen(this._openAboutDialog);
     this.actions.app.closeAboutDialog.listen(this._closeAboutDialog);
     this.actions.app.getGpuStatus.listen(this._getGpuStatus);
+    this.actions.app.initEnvironment.listen(this._initEnvironment);
     ipcRenderer.on(OPEN_ABOUT_DIALOG_CHANNEL, this._openAboutDialog);
     ipcRenderer.on(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL, this._goToAdaRedemptionScreen);
     ipcRenderer.on(GET_GPU_STATUS.SUCCESS, this._onGetGpuStatusSuccess);
