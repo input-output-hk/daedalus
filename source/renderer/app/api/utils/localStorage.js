@@ -7,7 +7,8 @@ const networkForLocalStorage = String(environment.NETWORK);
 const storageKeys = {
   USER_LOCALE: networkForLocalStorage + '-USER-LOCALE',
   TERMS_OF_USE_ACCEPTANCE: networkForLocalStorage + '-TERMS-OF-USE-ACCEPTANCE',
-  THEME: networkForLocalStorage + '-THEME'
+  THEME: networkForLocalStorage + '-THEME',
+  DATA_LAYER_MIGRATION: networkForLocalStorage + '-DATA_LAYER_MIGRATION',
 };
 
 /**
@@ -91,6 +92,32 @@ export default class LocalStorageApi {
   unsetUserTheme = () => new Promise((resolve) => {
     try {
       store.delete(storageKeys.THEME);
+      resolve();
+    } catch (error) {} // eslint-disable-line
+  });
+
+  getDataLayerMigrationAcceptance = () => new Promise((resolve, reject) => {
+    try {
+      const accepted = store.get(storageKeys.DATA_LAYER_MIGRATION);
+      if (!accepted) return resolve(false);
+      resolve(accepted);
+    } catch (error) {
+      return reject(error);
+    }
+  });
+
+  setDataLayerMigrationAcceptance = () => new Promise((resolve, reject) => {
+    try {
+      store.set(storageKeys.DATA_LAYER_MIGRATION, true);
+      resolve();
+    } catch (error) {
+      return reject(error);
+    }
+  });
+
+  unsetDataLayerMigrationAcceptance = () => new Promise((resolve) => {
+    try {
+      store.delete(storageKeys.DATA_LAYER_MIGRATION);
       resolve();
     } catch (error) {} // eslint-disable-line
   });

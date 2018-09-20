@@ -1,0 +1,65 @@
+@import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
+
+.component {
+  padding: 20px;
+  height: 100%;
+
+  background-color: rgba(36, 62, 98, 0.96);
+}
+
+.title {
+  color: #fafbfc;
+  font-family: var(--font-regular);
+  font-size: 20px;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.content {
+  color: #fafbfc;
+  font-family: var(--font-regular);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.38;
+  max-width: 670px;
+  opacity: 0.7;
+  text-align: center;
+}
+
+.submitButton,
+.submitButtonSpinning {
+  width: 360px;
+  height: 50px;
+  border-radius: 5px;
+  background-color: #243e62;
+  border: solid 1px #fafbfc;
+
+  font-family: var(--font-regular);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.36;
+  text-align: center;
+  color: #fafbfc;
+}
+
+.submitButtonSpinning {
+  box-shadow: none !important;
+  @include loading-spinner("../../../assets/images/spinner-light.svg");
+}
+
+.blogPost {
+  width: 100px;
+  height: 19px;
+  opacity: 0.8;
+  font-family: var(--font-regular);
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.36;
+  letter-spacing: normal;
+  text-align: center;
+  color: #fafbfc;
+  border-bottom: 1px solid rgba(250, 251, 252, 0.6);
+}

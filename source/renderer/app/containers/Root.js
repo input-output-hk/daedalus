@@ -28,6 +28,7 @@ export default class Root extends Component<Props> {
     ) {
       return React.Children.only(children);
     }
+    return <LoadingPage stores={stores} actions={actions} />;
     if (
       !isSynced ||
       !wallets.hasLoadedWallets ||
