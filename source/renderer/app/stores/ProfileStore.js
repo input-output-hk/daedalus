@@ -229,10 +229,13 @@ export default class SettingsStore extends Store {
       this.isCurrentLocaleSet &&
       this.areTermsOfUseAccepted &&
       this.stores.ada.wallets.hasLoadedWallets &&
-      this.stores.ada.wallets.hasAnyWallets &&
       dataLayerMigrationNotStarted
     ) {
-      this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.DATA_LAYER_MIGRATION });
+      if (!this.stores.ada.wallets.hasAnyWallets) {
+        this._startDataLayerMigration();
+      } else {
+        this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.DATA_LAYER_MIGRATION });
+      }
     }
   };
 
