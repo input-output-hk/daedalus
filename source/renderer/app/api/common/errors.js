@@ -31,10 +31,11 @@ const messages = defineMessages({
 });
 
 export class GenericApiError extends LocalizableError {
-  constructor() {
+  constructor({ values = {} }: { values?: Object }) {
     super({
       id: messages.genericApiError.id,
       defaultMessage: messages.genericApiError.defaultMessage,
+      values,
     });
   }
 }

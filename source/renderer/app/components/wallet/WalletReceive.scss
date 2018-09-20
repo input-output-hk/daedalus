@@ -47,9 +47,9 @@
   position: relative;
 
   .qrCode {
-    align-items: center;
+    align-items: flex-start;
     display: flex;
-    margin-right: 30px;
+    margin-right: 20px;
 
     canvas {
       border: 4px solid var(--theme-receive-qr-code-background-color);

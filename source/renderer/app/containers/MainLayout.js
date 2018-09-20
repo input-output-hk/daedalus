@@ -55,6 +55,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         onSubmitSupportRequest={
           () => actions.router.goToRoute.trigger({ route: ROUTES.SETTINGS.SUPPORT })
         }
+        pathname={this.props.stores.router.location.pathname}
       />
     );
 

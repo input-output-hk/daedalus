@@ -84,7 +84,13 @@ export default class WalletReceivePage extends Component<Props, State> {
       message: (
         <FormattedHTMLMessage
           {...messages.message}
-          values={{ walletAddress: ellipsis(copiedAddress, ADDRESS_COPY_NOTIFICATION_ELLIPSIS) }}
+          values={{
+            walletAddress: ellipsis(
+              copiedAddress,
+              ADDRESS_COPY_NOTIFICATION_ELLIPSIS,
+              ADDRESS_COPY_NOTIFICATION_ELLIPSIS
+            )
+          }}
         />
       ),
     };

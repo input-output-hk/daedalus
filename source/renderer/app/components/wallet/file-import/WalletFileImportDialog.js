@@ -240,8 +240,8 @@ export default class WalletFileImportDialog extends Component<Props, State> {
             skin={InputSkin}
           />
 
-          <div className={styles.spendingPassword}>
-            <div className={styles.spendingPasswordSwitch}>
+          <div className={styles.walletPassword}>
+            <div className={styles.walletPasswordSwitch}>
               <div className={styles.passwordLabel}>
                 {intl.formatMessage(messages.passwordSwitchLabel)}
               </div>
