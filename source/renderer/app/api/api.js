@@ -146,9 +146,7 @@ import {
 
 // Transactions errors
 import {
-  AllFundsAlreadyAtReceiverAddressError,
   NotAllowedToSendMoneyToRedeemAddressError,
-  NotAllowedToSendMoneyToSameAddressError,
   NotEnoughFundsForTransactionFeesError,
   NotEnoughMoneyToSendError,
   RedeemAdaError
@@ -314,17 +312,13 @@ export default class AdaApi {
       return _createTransactionFromServerData(response);
     } catch (error) {
       Logger.debug('AdaApi::createTransaction error: ' + stringifyError(error));
-      // eslint-disable-next-line max-len
-      if (error.message.includes('It\'s not allowed to send money to the same address you are sending from')) {
-        throw new NotAllowedToSendMoneyToSameAddressError();
-      }
-      if (error.message.includes('OutputIsRedeem')) {
+      if (error.message === 'OutputIsRedeem') {
         throw new NotAllowedToSendMoneyToRedeemAddressError();
       }
-      if (error.message.includes('NotEnoughMoney')) {
+      if (error.message === 'NotEnoughMoney') {
         throw new NotEnoughMoneyToSendError();
       }
-      if (error.message.includes('Passphrase doesn\'t match')) {
+      if (error.message === 'CannotCreateAddress') {
         throw new IncorrectWalletPasswordError();
       }
       throw new GenericApiError();
@@ -335,7 +329,8 @@ export default class AdaApi {
     request: TransactionRequest
   ): Promise<BigNumber> => {
     Logger.debug('AdaApi::calculateTransactionFee called');
-    const { accountIndex, walletId, address, amount, spendingPassword } = request;
+    const { accountIndex, walletId, address, amount, spendingPassword: passwordString } = request;
+    const spendingPassword = passwordString ? encryptPassphrase(passwordString) : '';
     try {
       const data = {
         source: {
@@ -356,11 +351,7 @@ export default class AdaApi {
       return _createTransactionFeeFromServerData(response);
     } catch (error) {
       Logger.debug('AdaApi::calculateTransactionFee error: ' + stringifyError(error));
-      // eslint-disable-next-line max-len
-      if (error.message.includes('not enough money on addresses which are not included in output addresses set')) {
-        throw new AllFundsAlreadyAtReceiverAddressError();
-      }
-      if (error.message.includes('NotEnoughMoney')) {
+      if (error.message === 'NotEnoughMoney') {
         throw new NotEnoughFundsForTransactionFeesError();
       }
       throw new GenericApiError();
@@ -379,7 +370,7 @@ export default class AdaApi {
       return _createAddressFromServerData(address);
     } catch (error) {
       Logger.debug('AdaApi::createAddress error: ' + stringifyError(error));
-      if (error.message.includes('CannotCreateAddress')) {
+      if (error.message === 'CannotCreateAddress') {
         throw new IncorrectWalletPasswordError();
       }
       throw new GenericApiError();
@@ -496,10 +487,10 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       Logger.debug('AdaApi::restoreWallet error: ' + stringifyError(error));
-      if (error.message.includes('WalletAlreadyExists')) {
+      if (error.message === 'WalletAlreadyExists') {
         throw new WalletAlreadyRestoredError();
       }
-      if (error.message.includes('JSONValidationFailed')) {
+      if (error.message === 'JSONValidationFailed') {
         const validationError = get(error, 'diagnostic.validationError', '');
         if (validationError.includes('Forbidden Mnemonic: an example Mnemonic has been submitted')) {
           throw new ForbiddenMnemonicError();
@@ -519,7 +510,7 @@ export default class AdaApi {
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
       Logger.debug('AdaApi::importWalletFromKey error: ' + stringifyError(error));
-      if (error.message.includes('WalletAlreadyExists')) {
+      if (error.message === 'WalletAlreadyExists') {
         throw new WalletAlreadyImportedError();
       }
       throw new WalletFileImportError();
@@ -542,7 +533,7 @@ export default class AdaApi {
       return _createWalletFromServerData(importedWallet);
     } catch (error) {
       Logger.debug('AdaApi::importWalletFromFile error: ' + stringifyError(error));
-      if (error.message.includes('WalletAlreadyExists')) {
+      if (error.message === 'WalletAlreadyExists') {
         throw new WalletAlreadyImportedError();
       }
       throw new WalletFileImportError();
@@ -557,7 +548,7 @@ export default class AdaApi {
       return _createTransactionFromServerData(transaction);
     } catch (error) {
       Logger.debug('AdaApi::redeemAda error: ' + stringifyError(error));
-      if (error.message.includes('Passphrase doesn\'t match')) {
+      if (error.message === 'CannotCreateAddress') {
         throw new IncorrectWalletPasswordError();
       }
       throw new RedeemAdaError();
@@ -574,7 +565,7 @@ export default class AdaApi {
       return _createTransactionFromServerData(transaction);
     } catch (error) {
       Logger.debug('AdaApi::redeemAdaPaperVend error: ' + stringifyError(error));
-      if (error.message.includes('Passphrase doesn\'t match')) {
+      if (error.message === 'CannotCreateAddress') {
         throw new IncorrectWalletPasswordError();
       }
       throw new RedeemAdaError();
@@ -724,7 +715,7 @@ export default class AdaApi {
       };
     } catch (error) {
       Logger.error(`${loggerText} error: ${stringifyError(error)}`);
-      throw new GenericApiError({ values: error });
+      throw new GenericApiError(error);
     }
   };
 }

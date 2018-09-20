@@ -31,7 +31,7 @@ const messages = defineMessages({
 });
 
 export class GenericApiError extends LocalizableError {
-  constructor({ values = {} }: { values?: Object }) {
+  constructor(values?: Object = {}) {
     super({
       id: messages.genericApiError.id,
       defaultMessage: messages.genericApiError.defaultMessage,
