@@ -775,6 +775,67 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!New data layer migration",
+        "description": "Title for the Data Layer Migration screen.",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/profile/data-layer-migration/DataLayerMigrationForm.js",
+        "id": "profile.dataMigrationLayer.title",
+        "start": {
+          "column": 9,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!We are introducing new data layer Cardano 1.4.7, so we need import wallet again. We are importing wallet, which are not protected with password by ourselves, but password protected wallets should be imported manualy. You will need to check which wallets to import. Make a note that unchecked wallets would be deleted.",
+        "description": "Content for the Data Layer Migration screen.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "source/renderer/app/components/profile/data-layer-migration/DataLayerMigrationForm.js",
+        "id": "profile.dataMigrationLayer.content",
+        "start": {
+          "column": 11,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!Migrate Wallets",
+        "description": "Submit label for the Data Layer Migration screen.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/profile/data-layer-migration/DataLayerMigrationForm.js",
+        "id": "profile.dataMigrationLayer.submitLabel",
+        "start": {
+          "column": 15,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Read blog post",
+        "description": "Link text for the blog post in the Data Layer Migration screen.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/profile/data-layer-migration/DataLayerMigrationForm.js",
+        "id": "profile.dataMigrationLayer.blogPostLink",
+        "start": {
+          "column": 16,
+          "line": 26
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/profile/data-layer-migration/DataLayerMigrationForm.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Select your language",
         "description": "Label for the language select.",
         "end": {
