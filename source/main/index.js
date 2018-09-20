@@ -5,7 +5,6 @@ import { client } from 'electron-connect';
 import { includes } from 'lodash';
 import { setupLogging } from './utils/setupLogging';
 import { setupTls } from './utils/setupTls';
-import { makeEnvironmentGlobal } from './utils/makeEnvironmentGlobal';
 import { createMainWindow } from './windows/main';
 import { winLinuxMenu } from './menus/win-linux';
 import { osxMenu } from './menus/osx';
@@ -13,6 +12,7 @@ import { installChromeExtensions } from './utils/installChromeExtensions';
 import environment from '../common/environment';
 import { OPEN_ABOUT_DIALOG_CHANNEL } from '../common/ipc-api/open-about-dialog';
 import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../common/ipc-api/go-to-ada-redemption-screen';
+import { INIT_ENVIRONMENT } from '../common/ipc-api/init-environment';
 import mainErrorHandler from './utils/mainErrorHandler';
 
 setupLogging();
@@ -71,6 +71,9 @@ app.on('ready', async () => {
   const isInSafeMode = includes(process.argv.slice(1), '--safe-mode');
 
   mainWindow = createMainWindow(isInSafeMode);
+
+  // send environment to renderer process
+  mainWindow.webContents.send(INIT_ENVIRONMENT, environment);
 
   if (environment.isDev()) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
