@@ -107,7 +107,7 @@ function typedRequest<Response>(
             if (status === 'success') {
               resolve(returnMeta ? parsedBody : parsedBody.data);
             } else if (status === 'error' || status === 'fail') {
-              reject(new Error(parsedBody.message));
+              reject(parsedBody);
             } else {
               // TODO: find a way to record this case and report to the backend team
               reject(new Error('Unknown response from backend.'));

@@ -23,10 +23,15 @@ const messages = defineMessages({
     defaultMessage: '!!!This API method is not yet implemented.',
     description: '"This API method is not yet implemented." error message.'
   },
+  forbiddenMnemonicError: {
+    id: 'api.errors.ForbiddenMnemonicError',
+    defaultMessage: '!!!Forbidden Mnemonic: an example Mnemonic has been submitted. Please generate a fresh and private Mnemonic from a trusted source.',
+    description: '"Forbidden Mnemonic: an example Mnemonic has been submitted." error message',
+  },
 });
 
 export class GenericApiError extends LocalizableError {
-  constructor({ values = {} }: { values?: Object }) {
+  constructor(values?: Object = {}) {
     super({
       id: messages.genericApiError.id,
       defaultMessage: messages.genericApiError.defaultMessage,
@@ -49,6 +54,15 @@ export class ReportRequestError extends LocalizableError {
     super({
       id: messages.reportRequestError.id,
       defaultMessage: messages.reportRequestError.defaultMessage,
+    });
+  }
+}
+
+export class ForbiddenMnemonicError extends LocalizableError {
+  constructor() {
+    super({
+      id: messages.forbiddenMnemonicError.id,
+      defaultMessage: messages.forbiddenMnemonicError.defaultMessage,
     });
   }
 }
