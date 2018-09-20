@@ -224,7 +224,14 @@ export default class SettingsStore extends Store {
     const { isConnected } = this.stores.networkStatus;
     const dataLayerMigrationNotStarted =
       this.hasLoadedDataLayerMigrationStart && !this.hasDataLayerMigrationStarted;
-    if (isConnected && dataLayerMigrationNotStarted) {
+    if (
+      isConnected &&
+      this.isCurrentLocaleSet &&
+      this.areTermsOfUseAccepted &&
+      this.stores.ada.wallets.hasLoadedWallets &&
+      this.stores.ada.wallets.hasAnyWallets &&
+      dataLayerMigrationNotStarted
+    ) {
       this.actions.router.goToRoute.trigger({ route: ROUTES.PROFILE.DATA_LAYER_MIGRATION });
     }
   };
