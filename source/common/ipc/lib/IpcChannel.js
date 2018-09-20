@@ -33,16 +33,6 @@ export class IpcChannel<Request, AwaitedResponse, ReceivedRequest, Response> {
    */
   _channel: string;
   /**
-   * The ipc interface that is used to send messages.
-   * @private
-   */
-  _sender: IpcSender;
-  /**
-   * The ipc interfaces that is used to receive messages
-   * @private
-   */
-  _receiver: IpcReceiver;
-  /**
    * Flag that indicates if we are awaiting a reply from the receiver.
    * @private
    */
@@ -53,10 +43,8 @@ export class IpcChannel<Request, AwaitedResponse, ReceivedRequest, Response> {
    * Ensures that only one instance per channel name can exist.
    *
    * @param channelName {String}
-   * @param sender {IpcSender}
-   * @param receiver {IpcReceiver}
    */
-  constructor(channelName: string, sender: IpcSender, receiver: IpcReceiver) {
+  constructor(channelName: string) {
     if (!isString(channelName) || channelName === '') {
       throw new Error(`Invalid channel name ${channelName} provided`);
     }
@@ -66,8 +54,6 @@ export class IpcChannel<Request, AwaitedResponse, ReceivedRequest, Response> {
     IpcChannel._instances[channelName] = this;
 
     this._channel = channelName;
-    this._sender = sender;
-    this._receiver = receiver;
     this._isAwaitingResponse = false;
   }
 
@@ -76,15 +62,17 @@ export class IpcChannel<Request, AwaitedResponse, ReceivedRequest, Response> {
    * same channel. It returns a promise which is resolved or rejected with the response
    * depending on the `isOk` flag set by the respondant.
    *
-   * @param request
+   * @param request {Request}
+   * @param sender {IpcSender}
+   * @param receiver {IpcReceiver}
    * @returns {Promise<AwaitedResponse>}
    */
-  async send(request: Request): Promise<AwaitedResponse> {
+  async send(request: Request, sender: IpcSender, receiver: IpcReceiver): Promise<AwaitedResponse> {
     return new Promise((resolve, reject) => {
-      this._sender.send(this._channel, request);
+      sender.send(this._channel, request);
       this._isAwaitingResponse = true;
       // Handle response to the sent request once
-      this._receiver.once(this._channel, (event, isOk: boolean, response: AwaitedResponse) => {
+      receiver.once(this._channel, (event, isOk: boolean, response: AwaitedResponse) => {
         if (isOk) {
           resolve(response);
         } else {
@@ -100,10 +88,11 @@ export class IpcChannel<Request, AwaitedResponse, ReceivedRequest, Response> {
    * This should be used to receive messages that are broadcasted by the other end of
    * the ipc channel and are not responses to requests sent by this party.
    *
+   * @param receiver {IpcReceiver}
    * @param handler
    */
-  receive(handler: (request: ReceivedRequest) => Promise<Response>): void {
-    this._receiver.on(this._channel, async (event: IpcEvent, request: ReceivedRequest) => {
+  onReceive(handler: (request: ReceivedRequest) => Promise<Response>, receiver: IpcReceiver): void {
+    receiver.on(this._channel, async (event: IpcEvent, request: ReceivedRequest) => {
       // Only handle messages if they are not yet part of a request / response cycle.
       if (this._isAwaitingResponse) return;
       try {

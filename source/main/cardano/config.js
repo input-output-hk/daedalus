@@ -27,8 +27,8 @@ export const ensureXDGDataIsSet = () => {
   }
 };
 
-export const readLauncherConfig = (configPath?: string) => {
-  if (!configPath) return {};
+export const readLauncherConfig = (configPath?: string): ?LauncherConfig => {
+  if (!configPath) return null;
   const inputYaml = readFileSync(configPath, 'utf8');
   const finalYaml = inputYaml.replace(/\${([^}]+)}/g,
     (a, b) => {

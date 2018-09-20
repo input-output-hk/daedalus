@@ -1,11 +1,10 @@
 // @flow
+import Store from 'electron-store';
 import type { spawn, ChildProcess } from 'child_process';
 import type { WriteStream } from 'fs';
-import Store from 'electron-store';
-import type { TlsConfig } from '../../common/ipc-api/tls-config';
-import type { CardanoNodeState } from '../../common/types/cardanoNodeTypes';
-import { CardanoNodeStates } from '../../common/types/cardanoNodeTypes';
+import type { CardanoNodeState, TlsConfig } from '../../common/types/cardanoNode.types';
 import { promisedCondition, portIsTaken, processIsRunning, request } from './utils';
+import { CardanoNodeStates } from '../../common/types/cardanoNode.types';
 
 type Logger = {
   debug: (string) => void,
@@ -52,6 +51,8 @@ export type CardanoNodeConfig = {
 };
 
 // store for persisting CardanoNode data
+const PREVIOUS_PORT = 'PREVIOUS_PORT';
+const PREVIOUS_PID = 'PREVIOUS_PID';
 const store = new Store();
 
 export class CardanoNode {
@@ -95,12 +96,7 @@ export class CardanoNode {
    * on each startup and is broadcasted over ipc channel
    * @private
    */
-  _tlsConfig: TlsConfig = {
-    ca: null,
-    key: null,
-    cert: null,
-    port: null,
-  };
+  _tlsConfig: ?TlsConfig = null;
 
   /**
    * The current state of the node, used for making decisions
@@ -150,8 +146,6 @@ export class CardanoNode {
     this._actions = actions;
     this._transitionListeners = transitions;
     this._resetTlsConfig();
-    this.PREVIOUS_PORT = 'PREVIOUS_PORT';
-    this.PREVIOUS_PID = 'PREVIOUS_PID';
   }
 
   /**
@@ -300,7 +294,11 @@ export class CardanoNode {
    * or when this method is called from outside.
    */
   broadcastTlsConfig() {
-    this._actions.broadcastTlsConfig(this._tlsConfig);
+    if (this._tlsConfig) {
+      this._actions.broadcastTlsConfig(this._tlsConfig);
+    } else {
+      this._log.error('CardanoNode: Cannot broadcast tls config before it was set.');
+    }
   }
 
   /**
@@ -355,25 +353,23 @@ export class CardanoNode {
    * @private
    */
   _handleCardanoNodeMessage = (msg: CardanoNodeIpcMessage) => {
-    const { _log, _tlsConfig, _actions } = this;
+    const { _log, _actions } = this;
     const { tlsPath } = this._config;
     _log.info(`CardanoNode: received message: ${JSON.stringify(msg)}`);
-    if (msg.Started) {
-      // STARTED -> read certificates and update tls config
-      Object.assign(_tlsConfig, {
+    if (msg != null && msg.ReplyPort != null) {
+      const port: number = msg.ReplyPort;
+      this._tlsConfig = {
         ca: _actions.readFileSync(tlsPath + '/client/ca.crt'),
         key: _actions.readFileSync(tlsPath + '/client/client.key'),
         cert: _actions.readFileSync(tlsPath + '/client/client.pem'),
-      });
-    } else if (msg.ReplyPort) {
-      // REPLIED PORT -> update tls config
-      _tlsConfig.port = msg.ReplyPort;
-    }
-    if (this._state === CardanoNodeStates.STARTING && this._isTlsConfigComplete()) {
-      this._changeToState(CardanoNodeStates.RUNNING);
-      this.broadcastTlsConfig();
-      // Reset the startup tries when we managed to get the node running
-      this._startupTries = 0;
+        port,
+      };
+      if (this._state === CardanoNodeStates.STARTING) {
+        this._changeToState(CardanoNodeStates.RUNNING);
+        this.broadcastTlsConfig();
+        // Reset the startup tries when we managed to get the node running
+        this._startupTries = 0;
+      }
     }
   };
 
@@ -399,14 +395,7 @@ export class CardanoNode {
     this._reset();
   };
 
-  _resetTlsConfig = () => {
-    Object.assign(this._tlsConfig, {
-      ca: null,
-      key: null,
-      cert: null,
-      port: null,
-    });
-  };
+  _resetTlsConfig = () => this._tlsConfig = null;
 
   _reset = () => {
     if (this._cardanoLogFile) this._cardanoLogFile.end();
@@ -415,11 +404,6 @@ export class CardanoNode {
       this._node = null;
     }
     this._resetTlsConfig();
-  };
-
-  _isTlsConfigComplete = (): boolean => {
-    const { ca, key, cert, port } = this._tlsConfig;
-    return ca != null && key != null && cert != null && port != null;
   };
 
   _changeToState(state: CardanoNodeState, ...args: Array<any>) {
@@ -444,7 +428,7 @@ export class CardanoNode {
    * @returns {boolean}
    */
   _isAwake = (): boolean => (
-    this._node && this._node.connected && (
+    this._node != null && this._node.connected && (
       this._state === CardanoNodeStates.STARTING ||
       this._state === CardanoNodeStates.RUNNING ||
       this._state === CardanoNodeStates.STOPPING ||
@@ -460,26 +444,25 @@ export class CardanoNode {
    * @returns {boolean}
    * @private
    */
-  _canBeStarted = async (tlsPath: string): boolean => {
+  _canBeStarted = async (tlsPath: string): Promise<boolean> => {
     if (this._isAwake()) { return false; }
     await this._defensiveStartup(tlsPath);
     return true;
-  }
+  };
 
   _canBeStopped = () => this._isAwake();
 
-  _defensiveStartup = async (tlsPath: string): boolean => {
+  _defensiveStartup = async (tlsPath: string): Promise<boolean> => {
     this._log.info('CardanoNode: checking previous port and pid for an instance of cardano-node');
     const previousPort: ?number = await this._getPreviousPort();
     const previousPID: ?number = await this._getPreviousPID();
 
-    const previousPortTaken: boolean = previousPort && await portIsTaken(previousPort);
-    this._log.info(`previousPortTaken result: ${previousPortTaken}`);
+    const previousPortTaken = previousPort ? await portIsTaken(previousPort) : false;
+    this._log.info(`previous port was taken: ${previousPortTaken.toString()}`);
 
-    const portIsCardanoNode: boolean = previousPortTaken && await this._portIsCardanoNode(tlsPath);
-
-    const previousProcessIsRunning: boolean = previousPID && await processIsRunning(previousPID);
-    this._log.info(`previousProcessIsRunning result: ${previousProcessIsRunning}`);
+    const portIsCardanoNode = previousPortTaken ? await this._portIsCardanoNode(tlsPath) : false;
+    const previousProcessIsRunning = previousPID ? await processIsRunning(previousPID) : false;
+    this._log.info(`previousProcessIsRunning result: ${previousProcessIsRunning.toString()}`);
 
     if (portIsCardanoNode && previousProcessIsRunning) {
       this._log.info('CardanoNode: attempting to kill running process of previous cardano-node');
@@ -489,9 +472,9 @@ export class CardanoNode {
 
     this._log.info('Previous instance of cardano-node does not exist');
     return false;
-  }
+  };
 
-  _portIsCardanoNode = async (tlsPath: string, previousPort: number): boolean => {
+  _portIsCardanoNode = async (tlsPath: string, previousPort: number): Promise<boolean> => {
     // make req to identify as cardano-node
     const { ca, cert, key } = Object.assign({}, {
       ca: this._actions.readFileSync(tlsPath + '/client/ca.crt'),
@@ -508,7 +491,7 @@ export class CardanoNode {
         ca,
         cert,
         key,
-        previousPort
+        port: previousPort
       }, {});
       this._log.info(`CardanoNode: node-info req success. Response: ${JSON.stringify(nodeInfo)}`);
 
@@ -525,7 +508,7 @@ export class CardanoNode {
       this._log.info(`CardanoNode: node-info req failed. Error: ${JSON.stringify(error)}`);
       return false;
     }
-  }
+  };
 
   // kills the previous process on which the cardano-node child_process was running.
   _killPreviousProcess = (pid: number): Promise<void> => new Promise((resolve, reject) => {
@@ -546,7 +529,7 @@ export class CardanoNode {
   _storePreviousPort = (port: number): Promise<void> => new Promise((resolve, reject) => {
     try {
       // saves current port in file system
-      store.set(this.PREVIOUS_PORT, port);
+      store.set(PREVIOUS_PORT, port);
       this._log.info('CardanoNode: previous port stored successfuly');
       resolve();
     } catch (error) {
@@ -559,7 +542,7 @@ export class CardanoNode {
   _getPreviousPort = (): Promise<?number> => new Promise((resolve, reject) => {
     try {
       // retrieves previous port from file system
-      const port: ?number = store.get(this.PREVIOUS_PORT);
+      const port: ?number = store.get(PREVIOUS_PORT);
 
       if (!port) {
         this._log.info('CardanoNode: get previous port returned null');
@@ -578,7 +561,7 @@ export class CardanoNode {
   _storePreviousPID = (pid: number): Promise<void> => new Promise((resolve, reject) => {
     try {
       // saves current PID in file system
-      store.set(this.PREVIOUS_PID, pid);
+      store.set(PREVIOUS_PID, pid);
       this._log.info('CardanoNode: previous PID stored successfuly');
       resolve();
     } catch (error) {
@@ -591,7 +574,7 @@ export class CardanoNode {
   _getPreviousPID = (): Promise<?number> => new Promise((resolve, reject) => {
     try {
       // retrieves previous PID from file system
-      const pid: ?number = store.get(this.PREVIOUS_PID);
+      const pid: ?number = store.get(PREVIOUS_PID);
 
       if (!pid) {
         this._log.info('CardanoNode: get previous PID returned null');

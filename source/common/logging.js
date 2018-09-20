@@ -2,13 +2,14 @@
 import log from 'electron-log';
 
 const isRenderer = () => {
+  const envProcess: Process & { type?: ?string } = process;
   // running in a web browser
-  if (typeof process === 'undefined') return true;
+  if (typeof envProcess === 'undefined') return true;
   // node-integration is disabled
-  if (!process) return true;
+  if (!envProcess) return true;
   // We're in node.js somehow
-  if (!process.type) return false;
-  return process.type === 'renderer';
+  if (!envProcess.type) return false;
+  return envProcess.type === 'renderer';
 };
 
 const prefixProcessType = (str: string) => (isRenderer() ? '[renderer] ' : '[main] ') + str;

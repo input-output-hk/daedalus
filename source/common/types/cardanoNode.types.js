@@ -1,3 +1,4 @@
+// @flow
 export type CardanoNodeState = (
   'stopped' | 'starting' | 'running' | 'stopping' | 'updating' |
   'updated' | 'crashed' | 'errored'
@@ -21,4 +22,11 @@ export const CardanoNodeStates: {
   UPDATED: 'updated',
   CRASHED: 'crashed',
   ERRORED: 'errored',
+};
+
+export type TlsConfig = {
+  port: number,
+  ca: Uint8Array,
+  cert: Uint8Array,
+  key: Uint8Array,
 };
