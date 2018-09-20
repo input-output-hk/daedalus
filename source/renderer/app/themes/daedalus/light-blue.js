@@ -307,6 +307,10 @@ export default {
 
   '--theme-terms-of-use-text-color': '#5e6066',
 
+  '--theme-data-migration-background-color': 'rgba(36, 62, 98, 0.96)',
+  '--theme-data-migration-layer-box-shadow-color': 'rgba(0, 0, 0, 0.25)',
+  '--theme-data-migration-layer-text-color': '#fafbfc',
+
   '--theme-wallet-password-switch-label-color': '#5e6066',
 
   '--theme-password-toggler-color': '#5e6066',
