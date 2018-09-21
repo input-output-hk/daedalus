@@ -307,7 +307,7 @@ export default {
 
   '--theme-terms-of-use-text-color': '#e9f4fe',
 
-  '--theme-data-migration-background-color': 'rgba(36, 62, 98, 0.96)',
+  '--theme-data-migration-background-color': '#2C4567',
   '--theme-data-migration-layer-box-shadow-color': 'rgba(0, 0, 0, 0.25)',
   '--theme-data-migration-layer-text-color': '#fafbfc',
 
