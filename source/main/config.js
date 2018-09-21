@@ -11,5 +11,5 @@ export const ALLOWED_LOGS = [
   'Daedalus.log',
   'launcher',
 ];
-export const ALLOWED_NODE_LOGS = new RegExp(/(node.json-)([0-9]{14})/);
+export const ALLOWED_NODE_LOGS = new RegExp(/(node.pub-)([0-9]{14})/);
 export const MAX_NODE_LOGS_ALLOWED = 3;
