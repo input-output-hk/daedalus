@@ -39,13 +39,14 @@ export default class WalletReceivePage extends Component<Props, State> {
     this.resetErrors();
   }
 
-  handleGenerateAddress = (password: string) => {
+  handleGenerateAddress = (spendingPassword: string) => {
     const { wallets } = this.props.stores.ada;
     const wallet = wallets.active;
+
     if (wallet) {
       this.props.actions.ada.addresses.createAddress.trigger({
         walletId: wallet.id,
-        password,
+        spendingPassword,
       });
     }
   };
@@ -74,7 +75,7 @@ export default class WalletReceivePage extends Component<Props, State> {
     if (!wallet) throw new Error('Active wallet required for WalletReceivePage.');
 
     const walletAddress = addresses.active ? addresses.active.id : '';
-    const isWalletAddressUsed = addresses.active ? addresses.active.isUsed : false;
+    const isWalletAddressUsed = addresses.active ? addresses.active.used : false;
     const walletAddresses = addresses.all.reverse();
 
     const notification = {

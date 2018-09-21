@@ -3,235 +3,319 @@ import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
+import {
+  ALLOWED_TIME_DIFFERENCE,
+  MAX_ALLOWED_STALL_DURATION,
+  NETWORK_STATUS_REQUEST_TIMEOUT,
+  NETWORK_STATUS_POLL_INTERVAL,
+  SYSTEM_TIME_POLL_INTERVAL,
+} from '../config/timingConfig';
+import { UNSYNCED_BLOCKS_ALLOWED } from '../config/numbersConfig';
 import { Logger } from '../../../common/logging';
-import type { GetSyncProgressResponse, GetLocalTimeDifferenceResponse } from '../api/common';
-import environment from '../../../common/environment';
+import type { GetNetworkStatusResponse } from '../api/nodes/types';
+import type { NodeQueryParams } from '../api/nodes/requests/getNodeInfo';
 
 // To avoid slow reconnecting on store reset, we cache the most important props
 let cachedState = null;
 
-// Maximum number of out-of-sync blocks above which we consider to be out-of-sync
-const OUT_OF_SYNC_BLOCKS_LIMIT = 6;
-const SYNC_PROGRESS_INTERVAL = 2000;
-const TIME_DIFF_POLL_INTERVAL = 30 * 60 * 1000; // 30 minutes
-const ALLOWED_TIME_DIFFERENCE = 15 * 1000000; // 15 seconds
-const ALLOWED_NETWORK_DIFFICULTY_STALL = 2 * 60 * 1000; // 2 minutes
-
-const STARTUP_STAGES = {
+// DEFINE CONSTANTS -------------------------
+const NODE_STATUS = {
   CONNECTING: 0,
   SYNCING: 1,
   RUNNING: 2,
 };
+// END CONSTANTS ----------------------------
 
 export default class NetworkStatusStore extends Store {
 
+  // Initialize store properties
   _startTime = Date.now();
-  _startupStage = STARTUP_STAGES.CONNECTING;
-  _lastNetworkDifficultyChange = 0;
-  _syncProgressPollInterval: ?number = null;
-  _updateLocalTimeDifferencePollInterval: ?number = null;
+  _systemTime = Date.now();
+  _nodeStatus = NODE_STATUS.CONNECTING;
+  _networkStatusPollingInterval: ?number = null;
+  _systemTimeChangeCheckPollingInterval: ?number = null;
 
-  @observable isConnected = false;
+  // Initialize store observables
+
+  // Internal Node states
+  /* eslint-disable indent */
+  @observable isNodeResponding = false; // Is 'true' as long we are receiving node Api responses
+  @observable isNodeSubscribed = false; // Is 'true' in case node is subscribed to the network
+  @observable isNodeSyncing = false; // Is 'true' in case we are receiving blocks and not stalling
+  @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
+  @observable isNodeInSync = false; // Is 'true' if node is syncing and local/network block height
+                                    // difference is within the allowed limit
+  /* eslint-enabme indent */
   @observable hasBeenConnected = false;
-  @observable localDifficulty = 0;
-  @observable networkDifficulty = 0;
-  @observable localTimeDifference = 0;
-  @observable syncProgressRequest: Request<GetSyncProgressResponse> = new Request(
-    // Use the sync progress for target API
-    this.api[environment.API].getSyncProgress
+  @observable syncProgress = null;
+  @observable initialLocalHeight = null;
+  @observable localBlockHeight = 0;
+  @observable networkBlockHeight = 0;
+  @observable mostRecentBlockTimestamp = 0; // milliseconds
+  @observable localTimeDifference: ?number = 0; // microseconds
+  @observable isSystemTimeChanged = false; // Tracks system time change event
+  @observable getNetworkStatusRequest: Request<GetNetworkStatusResponse> = new Request(
+    this.api.ada.getNetworkStatus
   );
-  @observable localTimeDifferenceRequest: Request<GetLocalTimeDifferenceResponse> = new Request(
-    this.api.ada.getLocalTimeDifference
+  @observable forceCheckTimeDifferenceRequest: Request<GetNetworkStatusResponse> = new Request(
+    this.api.ada.getNetworkStatus
   );
-  @observable _localDifficultyStartedWith = null;
 
-  @action initialize() {
-    super.initialize();
-    if (cachedState !== null) Object.assign(this, cachedState);
-  }
-
+  // DEFINE STORE METHODS
   setup() {
     this.registerReactions([
-      this._updateSyncProgressWhenDisconnected,
-      this._updateLocalTimeDifferenceWhenConnected,
+      this._updateNetworkStatusWhenDisconnected,
+      this._updateLocalTimeDifferenceWhenSystemTimeChanged,
     ]);
 
-    // Setup polling intervals
-    this._syncProgressPollInterval = setInterval(
-      this._updateSyncProgress, SYNC_PROGRESS_INTERVAL
+    // Setup network status polling interval
+    this._networkStatusPollingInterval = setInterval(
+      this._updateNetworkStatus, NETWORK_STATUS_POLL_INTERVAL
     );
-    if (environment.isAdaApi()) {
-      this._updateLocalTimeDifferencePollInterval = setInterval(
-        this._updateLocalTimeDifference, TIME_DIFF_POLL_INTERVAL
-      );
-    }
+
+    // Setup system time change polling interval
+    this._systemTimeChangeCheckPollingInterval = setInterval(
+      this._updateSystemTime, SYSTEM_TIME_POLL_INTERVAL
+    );
   }
 
   teardown() {
     super.teardown();
 
     // Teardown polling intervals
-    if (this._syncProgressPollInterval) {
-      clearInterval(this._syncProgressPollInterval);
+    if (this._networkStatusPollingInterval) {
+      clearInterval(this._networkStatusPollingInterval);
     }
-    if (this._updateLocalTimeDifferencePollInterval) {
-      clearInterval(this._updateLocalTimeDifferencePollInterval);
+    if (this._systemTimeChangeCheckPollingInterval) {
+      clearInterval(this._systemTimeChangeCheckPollingInterval);
     }
+
     // Save current state into the cache
     cachedState = {
-      isConnected: this.isConnected,
       hasBeenConnected: this.hasBeenConnected,
-      localDifficulty: this.localDifficulty,
-      networkDifficulty: this.networkDifficulty,
+      localBlockHeight: this.localBlockHeight,
+      networkBlockHeight: this.networkBlockHeight,
     };
   }
 
-  @computed get isConnecting(): boolean {
-    // until we start receiving network difficulty messages we are not connected to node
-    return !this.isConnected;
-  }
-
-  @computed get hasBlockSyncingStarted(): boolean {
-    return this.networkDifficulty >= 1;
-  }
-
-  @computed get relativeSyncPercentage(): number {
-    if (this.networkDifficulty > 0 && this._localDifficultyStartedWith !== null) {
-      const relativeLocal = this.localDifficulty - this._localDifficultyStartedWith;
-      const relativeNetwork = this.networkDifficulty - this._localDifficultyStartedWith;
-      // In case node is in sync after first local difficulty messages
-      // local and network difficulty will be the same (0)
-      Logger.debug('Network difficulty: ' + this.networkDifficulty);
-      Logger.debug('Local difficulty: ' + this.localDifficulty);
-      Logger.debug('Relative local difficulty: ' + relativeLocal);
-      Logger.debug('Relative network difficulty: ' + relativeNetwork);
-
-      if (relativeLocal >= relativeNetwork) return 100;
-      return relativeLocal / relativeNetwork * 100;
-    }
-    return 0;
-  }
-
-  @computed get relativeSyncBlocksDifference(): number {
-    if (this.networkDifficulty > 0 && this._localDifficultyStartedWith !== null) {
-      const relativeLocal = this.localDifficulty - this._localDifficultyStartedWith;
-      const relativeNetwork = this.networkDifficulty - this._localDifficultyStartedWith;
-      // In case node is in sync after first local difficulty messages
-      // local and network difficulty will be the same (0)
-      Logger.debug('Network difficulty: ' + this.networkDifficulty);
-      Logger.debug('Local difficulty: ' + this.localDifficulty);
-      Logger.debug('Relative local difficulty: ' + relativeLocal);
-      Logger.debug('Relative network difficulty: ' + relativeNetwork);
-
-      if (relativeLocal >= relativeNetwork) return 0;
-      return relativeNetwork - relativeLocal;
-    }
-    return 0;
-  }
-
-  @computed get syncPercentage(): number {
-    if (this.networkDifficulty > 0) {
-      if (this.localDifficulty >= this.networkDifficulty) return 100;
-      return this.localDifficulty / this.networkDifficulty * 100;
-    }
-    return 0;
-  }
-
-  @computed get isSystemTimeCorrect(): boolean {
-    if (!environment.isAdaApi()) return true;
-    // We assume that system time is correct by default
-    if (!this.localTimeDifferenceRequest.wasExecuted) return true;
-    // Compare time difference if we have a result
-    return this.localTimeDifference <= ALLOWED_TIME_DIFFERENCE;
-  }
-
-  @computed get isSyncing(): boolean {
-    return !this.isConnecting && this.hasBlockSyncingStarted && !this.isSynced;
-  }
-
-  @computed get isSynced(): boolean {
-    return (
-      !this.isConnecting &&
-      this.hasBlockSyncingStarted &&
-      this.relativeSyncBlocksDifference <= OUT_OF_SYNC_BLOCKS_LIMIT
-    );
-  }
-
-  @action _updateSyncProgress = async () => {
-    try {
-      const difficulty = await this.syncProgressRequest.execute().promise;
-      runInAction('update difficulties', () => {
-        // We are connected, move on to syncing stage
-        if (this._startupStage === STARTUP_STAGES.CONNECTING) {
-          Logger.info(
-            `========== Connected after ${this._getStartupTimeDelta()} milliseconds ==========`
-          );
-          this._startupStage = STARTUP_STAGES.SYNCING;
-        }
-        // If we haven't set local difficulty before, mark the first
-        // result as 'start' difficulty for the sync progress
-        if (this._localDifficultyStartedWith === null) {
-          this._localDifficultyStartedWith = difficulty.localDifficulty;
-          Logger.debug('Initial difficulty: ' + JSON.stringify(difficulty));
-        }
-        // Update the local difficulty on each request
-        this.localDifficulty = difficulty.localDifficulty;
-        Logger.debug('Local difficulty changed: ' + this.localDifficulty);
-        // Check if network difficulty is stalled (e.g. unchanged for more than 2 minutes)
-        // e.g. in case there is no Internet connection Api will send the last known value
-        if (this.networkDifficulty !== difficulty.networkDifficulty) {
-          if (!this.isConnected) this.isConnected = true;
-          this._lastNetworkDifficultyChange = Date.now();
-        } else if (this.isConnected) {
-          const currentNetworkDifficultyStall = moment(Date.now()).diff(
-            moment(this._lastNetworkDifficultyChange)
-          );
-          if (currentNetworkDifficultyStall > ALLOWED_NETWORK_DIFFICULTY_STALL) {
-            this.isConnected = false;
-            if (!this.hasBeenConnected) this.hasBeenConnected = true;
-          }
-        }
-        // Update the network difficulty on each request
-        this.networkDifficulty = difficulty.networkDifficulty;
-      });
-      Logger.debug('Network difficulty changed: ' + this.networkDifficulty);
-
-      if (this._startupStage === STARTUP_STAGES.SYNCING && this.isSynced) {
-        Logger.info(`========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`);
-        this._startupStage = STARTUP_STAGES.RUNNING;
-        this.actions.networkStatus.isSyncedAndReady.trigger();
-      }
-    } catch (error) {
-      // If the sync progress request fails, switch to disconnected state
-      runInAction('update connected status', () => {
-        if (this.isConnected) {
-          this.isConnected = false;
-          if (!this.hasBeenConnected) this.hasBeenConnected = true;
-        }
-      });
-      Logger.debug('Connection Lost. Reconnecting...');
-    }
+  _updateNetworkStatusWhenDisconnected = async () => {
+    if (!this.isConnected) await this._updateNetworkStatus();
   };
 
-  @action _updateLocalTimeDifference = async () => {
-    if (!this.isConnected) return;
-    try {
-      const response = await this.localTimeDifferenceRequest.execute().promise;
-      runInAction('update time difference', () => (this.localTimeDifference = response));
-    } catch (error) {
-      runInAction('update time difference', () => (this.localTimeDifference = 0));
+  _updateLocalTimeDifferenceWhenSystemTimeChanged = async () => {
+    if (this.isSystemTimeChanged) {
+      Logger.debug('System time change detected');
+      await this._updateNetworkStatus({ force_ntp_check: true });
     }
-  };
-
-  _updateLocalTimeDifferenceWhenConnected = async () => {
-    if (this.isConnected) await this._updateLocalTimeDifference();
-  };
-
-  _updateSyncProgressWhenDisconnected = async () => {
-    if (!this.isConnected) await this._updateSyncProgress();
   };
 
   _getStartupTimeDelta() {
     return Date.now() - this._startTime;
   }
+
+  // DEFINE ACTIONS
+  @action initialize() {
+    super.initialize();
+    if (cachedState !== null) Object.assign(this, cachedState);
+  }
+
+  @action _updateSystemTime = () => {
+    // In order to detect system time changes (e.g. user updates machine's date/time)
+    // we are checking current system time and comparing the difference to the last known value.
+    // If the difference is larger than the polling interval plus a safety margin of 100%
+    // we can be sure the user has update the time.
+    const systemTimeDifference = Math.abs(moment(Date.now()).diff(moment(this._systemTime)));
+    this.isSystemTimeChanged = Math.floor(systemTimeDifference / SYSTEM_TIME_POLL_INTERVAL) > 1;
+    this._systemTime = Date.now();
+  };
+
+  @action _updateNetworkStatus = async (queryParams?: NodeQueryParams) => {
+    const isForcedTimeDifferenceCheck = !!queryParams;
+
+    // Prevent network status requests in case there is an already executing
+    // forced time difference check unless we are trying to run another
+    // forced time difference check in which case we need to wait for it to finish
+    if (this.forceCheckTimeDifferenceRequest.isExecuting) {
+      if (isForcedTimeDifferenceCheck) {
+        await this.forceCheckTimeDifferenceRequest;
+      } else {
+        return;
+      }
+    }
+
+    if (isForcedTimeDifferenceCheck) {
+      // Set most recent block timestamp into the future as a guard
+      // against system time changes - e.g. if system time was set into the past
+      this.mostRecentBlockTimestamp = Date.now() + NETWORK_STATUS_REQUEST_TIMEOUT;
+    }
+
+    // Record connection status before running network status call
+    const wasConnected = this.isConnected;
+
+    try {
+      let networkStatus: GetNetworkStatusResponse;
+      if (isForcedTimeDifferenceCheck) {
+        networkStatus = await this.forceCheckTimeDifferenceRequest.execute(queryParams).promise;
+      } else {
+        networkStatus = await this.getNetworkStatusRequest.execute().promise;
+      }
+
+      const {
+        subscriptionStatus,
+        syncProgress,
+        blockchainHeight,
+        localBlockchainHeight,
+        localTimeDifference,
+      } = networkStatus;
+
+      // We got response which means node is responding
+      runInAction('update isNodeResponding', () => {
+        this.isNodeResponding = true;
+      });
+
+      // Node is subscribed in case it is subscribed to at least one other node in the network
+      runInAction('update isNodeSubscribed', () => {
+        const nodeIPs = Object.values(subscriptionStatus || {});
+        this.isNodeSubscribed = nodeIPs.includes('subscribed');
+      });
+
+      // System time is correct if local time difference is below allowed threshold
+      runInAction('update localTimeDifference and isNodeTimeCorrect', () => {
+        this.localTimeDifference = localTimeDifference;
+        this.isNodeTimeCorrect = (
+          this.localTimeDifference !== null && // If we receive 'null' it means NTP check failed
+          this.localTimeDifference <= ALLOWED_TIME_DIFFERENCE
+        );
+      });
+
+      if (this._nodeStatus === NODE_STATUS.CONNECTING && this.isNodeSubscribed) {
+        // We are connected for the first time, move on to syncing stage
+        this._nodeStatus = NODE_STATUS.SYNCING;
+        Logger.info(
+          `========== Connected after ${this._getStartupTimeDelta()} milliseconds ==========`
+        );
+      }
+
+      // Update sync progress
+      runInAction('update syncProgress', () => {
+        this.syncProgress = syncProgress;
+      });
+
+      runInAction('update block heights', () => {
+        if (this.initialLocalHeight === null) {
+          // If initial local block height isn't set, mark the first
+          // result as the 'starting' height for the sync progress
+          this.initialLocalHeight = localBlockchainHeight;
+          Logger.debug('Initial local block height: ' + JSON.stringify(localBlockchainHeight));
+        }
+
+        // Update the local block height on each request
+        this.localBlockHeight = localBlockchainHeight;
+        Logger.debug('Local blockchain height: ' + localBlockchainHeight);
+
+        // Update the network block height on each request
+        const hasStartedReceivingBlocks = blockchainHeight > 0;
+        const lastBlockchainHeight = this.networkBlockHeight;
+        this.networkBlockHeight = blockchainHeight;
+        if (hasStartedReceivingBlocks) {
+          Logger.debug('Network blockchain height: ' + blockchainHeight);
+        }
+
+        // Check if the network's block height has ceased to change
+        const isBlockchainHeightIncreasing = (
+          hasStartedReceivingBlocks &&
+          this.networkBlockHeight > lastBlockchainHeight
+        );
+        if (
+          isBlockchainHeightIncreasing || // New block detected
+          this.mostRecentBlockTimestamp > Date.now() || // Guard against future timestamps
+          !this.isNodeTimeCorrect // Guard against incorrect system time
+        ) {
+          this.mostRecentBlockTimestamp = Date.now(); // Record latest block timestamp
+        }
+        const timeSinceLastBlock = moment(Date.now()).diff(moment(this.mostRecentBlockTimestamp));
+        const isBlockchainHeightStalling = timeSinceLastBlock > MAX_ALLOWED_STALL_DURATION;
+
+        // Node is syncing in case we are receiving blocks and they are not stalling
+        runInAction('update isNodeSyncing', () => {
+          this.isNodeSyncing = isBlockchainHeightIncreasing || !isBlockchainHeightStalling;
+        });
+
+        runInAction('update isNodeInSync', () => {
+          const remainingUnsyncedBlocks = this.networkBlockHeight - this.localBlockHeight;
+          this.isNodeInSync = (
+            this.isNodeSyncing &&
+            remainingUnsyncedBlocks <= UNSYNCED_BLOCKS_ALLOWED
+          );
+        });
+
+        if (hasStartedReceivingBlocks) {
+          const initialLocalHeight = this.initialLocalHeight || 0;
+          const blocksSyncedSinceStart = this.localBlockHeight - initialLocalHeight;
+          const totalUnsyncedBlocksAtStart = this.networkBlockHeight - initialLocalHeight;
+          Logger.debug('Total unsynced blocks at node start: ' + totalUnsyncedBlocksAtStart);
+          Logger.debug('Blocks synced since node start: ' + blocksSyncedSinceStart);
+        }
+      });
+
+      if (this._nodeStatus === NODE_STATUS.SYNCING && this.isNodeInSync) {
+        // We are synced for the first time, move on to running stage
+        this._nodeStatus = NODE_STATUS.RUNNING;
+        this.actions.networkStatus.isSyncedAndReady.trigger();
+        Logger.info(`========== Synced after ${this._getStartupTimeDelta()} milliseconds ==========`);
+      }
+
+      if (wasConnected !== this.isConnected) {
+        if (!this.isConnected) {
+          if (!this.hasBeenConnected) {
+            runInAction('update hasBeenConnected', () => this.hasBeenConnected = true);
+          }
+          Logger.debug('Connection Lost. Reconnecting...');
+        } else if (this.hasBeenConnected) {
+          Logger.debug('Connection Restored');
+        }
+      }
+    } catch (error) {
+      // Node is not responding, switch to disconnected state
+      runInAction('update connected status', () => {
+        this.isNodeResponding = false;
+        this.isNodeSubscribed = false;
+        this.isNodeSyncing = false;
+        this.isNodeInSync = false;
+        if (wasConnected) {
+          if (!this.hasBeenConnected) {
+            runInAction('update hasBeenConnected', () => this.hasBeenConnected = true);
+          }
+          Logger.debug('Connection Lost. Reconnecting...');
+        }
+      });
+    }
+  };
+
+  forceCheckLocalTimeDifference = async () => {
+    await this._updateNetworkStatus({ force_ntp_check: true });
+  };
+
+  // DEFINE COMPUTED VALUES
+  @computed get isConnected(): boolean {
+    return this.isNodeResponding && this.isNodeSubscribed && this.isNodeSyncing;
+  }
+
+  @computed get isSystemTimeCorrect(): boolean {
+    return this.isNodeTimeCorrect;
+  }
+
+  @computed get isSynced(): boolean {
+    return this.isConnected && this.isNodeInSync && this.isNodeTimeCorrect;
+  }
+
+  @computed get syncPercentage(): number {
+    const { networkBlockHeight, localBlockHeight } = this;
+    if (networkBlockHeight >= 1) {
+      if (localBlockHeight >= networkBlockHeight) { return 100; }
+      return localBlockHeight / networkBlockHeight * 100;
+    }
+    return 0;
+  }
+
 }
