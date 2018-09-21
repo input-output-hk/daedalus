@@ -234,7 +234,7 @@ export default {
   '--theme-transactions-icon-type-income-background-color': '#3b6956',
   '--theme-transactions-icon-type-exchange-background-color': '#10aca4',
   '--theme-transactions-icon-type-failed-background-color': 'rgba(234, 76, 91, 0.5)',
-  '--theme-transactions-arrow-stroke-color': '#243E62',
+  '--theme-transactions-arrow-stroke-color': '#e9f4fe',
 
   '--theme-uploader-text-color': '#e9f4fe',
   '--theme-uploader-border-color': 'rgba(102, 122, 138, 0.3)',
