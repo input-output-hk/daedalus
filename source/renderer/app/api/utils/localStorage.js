@@ -126,6 +126,7 @@ export default class LocalStorageApi {
     await this.unsetUserLocale();
     await this.unsetTermsOfUseAcceptance();
     await this.unsetUserTheme();
+    await this.unsetDataLayerMigrationStart();
   }
 
 }
