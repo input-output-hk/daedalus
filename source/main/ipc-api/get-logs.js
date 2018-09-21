@@ -25,7 +25,8 @@ export default () => {
 
       const files = fs
         .readdirSync(pubLogsFolderPath)
-        .sort();
+        .sort()
+        .reverse();
 
       let nodeLogsIncluded = 0;
       for (let i = 0; i < files.length; i++) {
