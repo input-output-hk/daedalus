@@ -10,7 +10,7 @@ import styles from './WalletTransactionsList.scss';
 import Transaction from './Transaction';
 import WalletTransaction from '../../../domains/WalletTransaction';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-import type { AssuranceMode } from '../../../types/transactionAssuranceTypes';
+import type { WalletAssuranceMode } from '../../../api/wallets/types';
 
 const messages = defineMessages({
   today: {
@@ -42,7 +42,7 @@ type Props = {
   isLoadingTransactions: boolean,
   isRestoreActive?: boolean,
   hasMoreToLoad: boolean,
-  assuranceMode: AssuranceMode,
+  assuranceMode: WalletAssuranceMode,
   walletId: string,
   formattedWalletAmount: Function,
   showMoreTransactionsButton?: boolean,

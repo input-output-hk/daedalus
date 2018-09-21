@@ -15,7 +15,7 @@ import { submitOnEnter } from '../../utils/form';
 import BorderedBox from '../widgets/BorderedBox';
 import TinySwitch from '../widgets/forms/TinySwitch';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
-import WalletAddress from '../../domains/WalletAddress';
+import type { Addresses } from '../../api/addresses/types';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
 import styles from './WalletReceive.scss';
@@ -63,7 +63,7 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type Props = {
   walletAddress: string,
   isWalletAddressUsed: boolean,
-  walletAddresses: Array<WalletAddress>,
+  walletAddresses: Addresses,
   onGenerateAddress: Function,
   onCopyAddress: Function,
   isSidebarExpanded: boolean,
@@ -243,13 +243,13 @@ export default class WalletReceive extends Component<Props, State> {
             </h2>
 
             {walletAddresses.map((address, index) => {
-              const isAddressVisible = !address.isUsed || showUsed;
+              const isAddressVisible = !address.used || showUsed;
               if (!isAddressVisible) return null;
 
               const addressClasses = classnames([
                 'generatedAddress-' + (index + 1),
                 styles.walletAddress,
-                address.isUsed ? styles.usedWalletAddress : null,
+                address.used ? styles.usedWalletAddress : null,
               ]);
               return (
                 <div key={index} className={addressClasses}>

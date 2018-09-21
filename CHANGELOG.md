@@ -14,9 +14,17 @@ Changelog
 
 ### Features
 
+- Removes depreciated types, requests, and API methods associated with the V0 API. Within the /api directory, organizes requests, types, and errors into subdirectories based on the categories Accounts, Addresses, Common, Nodes, Transactions, and Wallets. ([PR 1088](https://github.com/input-output-hk/daedalus/pull/1088))
+- Refactors and improves Network Status Store to use V1 API. ([PR 1081](https://github.com/input-output-hk/daedalus/pull/1081))
+- Implemented the V1 API endpoints for redeeming ADA with all types of certificates. Updates ADA redemption API methods, flow types, and variable names to match the V1 nomenclature. ([PR 1080](https://github.com/input-output-hk/daedalus/pull/1080))
+- Implements the missing V1 API endpoints for checking if a node update is available and responding to the update by either applying it or postponing it. Adds the V1 endpoint for adaTestReset.js. ([PR 1079](https://github.com/input-output-hk/daedalus/pull/1079))
+- Implemented the V1 API specifications for 4 pieces of functionality and their associated API requests within Daedalus. These include: Setting a passphrase or changing an existing passphrase. Deleting an existing wallet and all its accounts. Checking for an available node update and displaying a notification about the update and versioning. Updating the name and/or assurance level of an existing wallet. ([PR 1042](https://github.com/input-output-hk/daedalus/pull/1042))
 - Implemented a switch instead of a link for “hide used” addresses on the Receive screen ([PR 935](https://github.com/input-output-hk/daedalus/pull/935))
 - Implemented forms submission on "Enter" key press ([PR 981](https://github.com/input-output-hk/daedalus/pull/981))
 - Improved the loading UX ([PR 723](https://github.com/input-output-hk/daedalus/pull/723))
+- Integrated the V1 API endpoint for Ada payments ([PR 1031](https://github.com/input-output-hk/daedalus/pull/1031))
+- Integrated the V1 API endpoint for creating and restoring Wallets ([PR 1018](https://github.com/input-output-hk/daedalus/pull/1018))
+- Integrated the V1 API endpoints for fetching all accounts associated with a wallet, fetching a single address, and creating a new address ([PR 1037](https://github.com/input-output-hk/daedalus/pull/1037))
 - Send cert and key with api requests to support tls-auth ([PR 1072](https://github.com/input-output-hk/daedalus/pull/1072))
 
 ### Fixes

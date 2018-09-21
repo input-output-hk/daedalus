@@ -4,9 +4,10 @@ import { ipcRenderer } from 'electron';
 import { isString } from 'lodash';
 import Store from '../lib/Store';
 import Request from '../lib/LocalizedRequest';
-import { Logger } from '../../../../common/logging';
-import { matchRoute } from '../../utils/routing';
 import WalletTransaction from '../../domains/WalletTransaction';
+import { Logger } from '../../../../common/logging';
+import { encryptPassphrase } from '../../api/utils';
+import { matchRoute } from '../../utils/routing';
 import { PARSE_REDEMPTION_CODE } from '../../../../common/ipc-api';
 import {
   InvalidMnemonicError,
@@ -15,11 +16,11 @@ import {
 } from '../../i18n/errors';
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 import LocalizableError from '../../i18n/LocalizableError';
-import Wallet from '../../domains/Wallet';
 import { ROUTES } from '../../routes-config';
-import type { RedeemPaperVendedAdaResponse } from '../../api/ada/index';
 import type { RedemptionTypeChoices } from '../../types/redemptionTypes';
 import { ADA_REDEMPTION_TYPES } from '../../types/redemptionTypes';
+import type { RedeemAdaParams } from '../../api/transactions/requests/redeemAda';
+import type { RedeemPaperVendedAdaParams } from '../../api/transactions/requests/redeemPaperVendedAda';
 
 export default class AdaRedemptionStore extends Store {
 
@@ -37,9 +38,9 @@ export default class AdaRedemptionStore extends Store {
   @observable error: ?LocalizableError = null;
   @observable amountRedeemed: number = 0;
   @observable showAdaRedemptionSuccessMessage: boolean = false;
-  @observable redeemAdaRequest: Request<Wallet> = new Request(this.api.ada.redeemAda);
+  @observable redeemAdaRequest: Request<RedeemAdaParams> = new Request(this.api.ada.redeemAda);
   // eslint-disable-next-line
-  @observable redeemPaperVendedAdaRequest: Request<RedeemPaperVendedAdaResponse> = new Request(this.api.ada.redeemPaperVendedAda);
+  @observable redeemPaperVendedAdaRequest: Request<RedeemPaperVendedAdaParams> = new Request(this.api.ada.redeemPaperVendedAda);
   @observable isRedemptionDisclaimerAccepted = false;
 
   setup() {
@@ -79,9 +80,9 @@ export default class AdaRedemptionStore extends Store {
     this.api.ada.isValidRedemptionMnemonic(mnemonic)
   );
 
-  isValidPaperVendRedemptionKey = (
-    mnemonic: string
-  ) => this.api.ada.isValidPaperVendRedemptionKey(mnemonic);
+  isValidPaperVendRedemptionKey = (mnemonic: string) => (
+    this.api.ada.isValidPaperVendRedemptionKey(mnemonic)
+  );
 
   @computed get isAdaRedemptionPage(): boolean {
     return matchRoute(ROUTES.ADA_REDEMPTION, this.stores.app.currentRoute);
@@ -204,48 +205,20 @@ export default class AdaRedemptionStore extends Store {
     this.decryptionKey = null;
   });
 
-  _redeemAda = async ({ walletId, walletPassword } : {
+  _redeemAda = async ({ walletId, spendingPassword } : {
     walletId: string,
-    walletPassword: ?string,
+    spendingPassword: ?string,
   }) => {
-    runInAction(() => {
-      this.walletId = walletId;
-    });
-    const accountId = await this.stores.ada.addresses.getAccountIdByWalletId(walletId);
-    if (!accountId) throw new Error('Active account required before redeeming Ada.');
+    runInAction(() => this.walletId = walletId);
 
-    this.redeemAdaRequest.execute({
-      redemptionCode: this.redemptionCode,
-      accountId,
-      walletPassword
-    })
-      .then(action((transaction: WalletTransaction) => {
-        this._reset();
-        this.actions.ada.adaRedemption.adaSuccessfullyRedeemed.trigger({
-          walletId,
-          amount: transaction.amount.toFormat(DECIMAL_PLACES_IN_ADA),
-        });
-      }))
-      .catch(action((error) => {
-        this.error = error;
-      }));
-  };
-
-  _redeemPaperVendedAda = async ({ walletId, shieldedRedemptionKey, walletPassword } : {
-    walletId: string,
-    shieldedRedemptionKey: string,
-    walletPassword: ?string,
-  }) => {
-    this.walletId = walletId;
-    const accountId = await this.stores.ada.addresses.getAccountIdByWalletId(walletId);
-    if (!accountId) throw new Error('Active account required before redeeming Ada.');
+    const accountIndex = await this.stores.ada.addresses.getAccountIndexByWalletId(walletId);
+    if (!accountIndex) throw new Error('Active account required before redeeming Ada.');
 
     try {
-      const transaction = await this.redeemPaperVendedAdaRequest.execute({
-        shieldedRedemptionKey,
-        mnemonics: this.passPhrase,
-        accountId,
-        walletPassword,
+      const transaction: WalletTransaction = await this.redeemAdaRequest.execute({
+        accountIndex,
+        redemptionCode: this.redemptionCode,
+        spendingPassword: spendingPassword && encryptPassphrase(spendingPassword)
       });
       this._reset();
       this.actions.ada.adaRedemption.adaSuccessfullyRedeemed.trigger({
@@ -257,7 +230,37 @@ export default class AdaRedemptionStore extends Store {
     }
   };
 
-  _onAdaSuccessfullyRedeemed = action(({ walletId, amount }) => {
+  _redeemPaperVendedAda = async ({ walletId, shieldedRedemptionKey, spendingPassword } : {
+    walletId: string,
+    shieldedRedemptionKey: string,
+    spendingPassword: ?string,
+  }) => {
+    runInAction(() => this.walletId = walletId);
+
+    const accountIndex = await this.stores.ada.addresses.getAccountIndexByWalletId(walletId);
+    if (!accountIndex) throw new Error('Active account required before redeeming Ada.');
+
+    try {
+      const transaction: WalletTransaction = await this.redeemPaperVendedAdaRequest.execute({
+        mnemonics: this.passPhrase && this.passPhrase.split(' '),
+        accountIndex,
+        redemptionCode: shieldedRedemptionKey,
+        spendingPassword: spendingPassword && encryptPassphrase(spendingPassword)
+      });
+      this._reset();
+      this.actions.ada.adaRedemption.adaSuccessfullyRedeemed.trigger({
+        walletId,
+        amount: transaction.amount.toFormat(DECIMAL_PLACES_IN_ADA)
+      });
+    } catch (error) {
+      runInAction(() => this.error = error);
+    }
+  };
+
+  _onAdaSuccessfullyRedeemed = action(({ walletId, amount } : {
+    walletId: string,
+    amount: number,
+  }) => {
     Logger.debug('ADA successfully redeemed for wallet: ' + walletId);
     this.stores.ada.wallets.goToWalletRoute(walletId);
     this.amountRedeemed = amount;

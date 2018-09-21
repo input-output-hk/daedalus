@@ -19,14 +19,14 @@ export default class AdaRedemptionPage extends Component<Props> {
 
   static defaultProps = { actions: null, stores: null };
 
-  onSubmit = (values: { walletId: string, walletPassword: ?string }) => {
+  onSubmit = (values: { walletId: string, spendingPassword: ?string }) => {
     this.props.actions.ada.adaRedemption.redeemAda.trigger(values);
   };
 
   onSubmitPaperVended = (values: {
     walletId: string,
     shieldedRedemptionKey: string,
-    walletPassword: ?string,
+    spendingPassword: ?string,
   }) => {
     this.props.actions.ada.adaRedemption.redeemPaperVendedAda.trigger(values);
   };

@@ -1,6 +1,6 @@
 // @flow
 import BigNumber from 'bignumber.js';
-import { DECIMAL_PLACES_IN_ADA } from '../config/numbersConfig';
+import { DECIMAL_PLACES_IN_ADA, LOVELACES_PER_ADA } from '../config/numbersConfig';
 
 export const formattedWalletAmount = (
   amount: BigNumber,
@@ -25,4 +25,8 @@ export const formattedAmountToNaturalUnits = (amount: string): string => {
 
 export const formattedAmountWithoutTrailingZeros = (amount: string): string => (
   amount.replace(/0+$/, '').replace(/\.$/, '')
+);
+
+export const formattedAmountToLovelace = (amount: string): number => (
+  parseInt(formattedAmountToBigNumber(amount).times(LOVELACES_PER_ADA), 10)
 );

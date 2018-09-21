@@ -4,7 +4,7 @@ import _ from 'lodash';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
 import WalletTransaction from '../domains/WalletTransaction';
-import type { GetTransactionsResponse } from '../api/common';
+import type { GetTransactionsResponse } from '../api/transactions/types';
 import environment from '../../../common/environment';
 
 export type TransactionSearchOptionsStruct = {
@@ -15,7 +15,7 @@ export type TransactionSearchOptionsStruct = {
 
 export default class TransactionsStore extends Store {
 
-  INITIAL_SEARCH_LIMIT = 1000;
+  INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
   SEARCH_LIMIT_INCREASE = 500;
   SEARCH_SKIP = 0;
   RECENT_TRANSACTIONS_LIMIT = 5;

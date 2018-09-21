@@ -13,6 +13,7 @@ import { installChromeExtensions } from './utils/installChromeExtensions';
 import environment from '../common/environment';
 import { OPEN_ABOUT_DIALOG_CHANNEL } from '../common/ipc-api/open-about-dialog';
 import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../common/ipc-api/go-to-ada-redemption-screen';
+import { GO_TO_NETWORK_STATUS_SCREEN_CHANNEL } from '../common/ipc-api/go-to-network-status-screen';
 import mainErrorHandler from './utils/mainErrorHandler';
 
 setupLogging();
@@ -35,6 +36,10 @@ const goToAdaRedemption = () => {
   if (mainWindow) mainWindow.webContents.send(GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL);
 };
 
+const goToNetworkStatus = () => {
+  if (mainWindow) mainWindow.webContents.send(GO_TO_NETWORK_STATUS_SCREEN_CHANNEL);
+};
+
 const restartInSafeMode = () => {
   app.exit(21);
 };
@@ -46,6 +51,7 @@ const restartWithoutSafeMode = () => {
 const menuActions = {
   openAbout,
   goToAdaRedemption,
+  goToNetworkStatus,
   restartInSafeMode,
   restartWithoutSafeMode,
 };
