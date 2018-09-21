@@ -3,7 +3,7 @@ import { createWriteStream, readFileSync } from 'fs';
 import { spawn } from 'child_process';
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { Logger } from '../../common/logging';
-import { ensureXDGDataIsSet, prepareArgs, readLauncherConfig } from './config';
+import { prepareArgs, readLauncherConfig } from './config';
 import { CardanoNode } from './CardanoNode';
 import { TLS_CONFIG_CHANNEL } from '../../common/ipc-api/tls-config';
 import {
@@ -15,6 +15,7 @@ import type { TlsConfig } from '../../common/ipc-api/tls-config';
 import type { CardanoNodeState } from '../../common/types/cardanoNodeTypes';
 import { restartCardanoNodeChannel } from '../ipc-api/cardanoIpcApi';
 import { flushLogsAndExitWithCode } from '../utils/flushLogsAndExitWithCode';
+import type { LauncherConfig } from './config';
 
 export const shouldCardanoBeLaunchedByDaedalus = (launcherConfig: Object): boolean => (
   launcherConfig.frontendOnlyMode
@@ -48,25 +49,20 @@ const restartOrExit = async (node: CardanoNode) => {
   }
 };
 
+export const loadLauncherConfig = (configPath: string): ?LauncherConfig => {
+  // Check if we should start cardano
+  if (!configPath) return null;
+  return readLauncherConfig(configPath);
+};
+
 /**
  * Configures, starts and manages the CardanoNode responding to node
  * state changes, app events and IPC messages coming from the renderer.
  *
- * @param launcherConfigPath
+ * @param launcherConfig {LauncherConfig}
  * @param mainWindow
  */
-export const setupCardano = (launcherConfigPath: string, mainWindow: BrowserWindow) => {
-  // Check if we should start cardano
-  if (!launcherConfigPath) {
-    Logger.info('Launcher config not found, assuming cardano is ran externally');
-    return;
-  }
-  const launcherConfig = readLauncherConfig(launcherConfigPath);
-  if (!shouldCardanoBeLaunchedByDaedalus(launcherConfig)) {
-    Logger.info('Launcher config says node is started by the launcher');
-    return;
-  }
-  ensureXDGDataIsSet();
+export const setupCardano = (launcherConfig: LauncherConfig, mainWindow: BrowserWindow) => {
 
   const cardanoNode = new CardanoNode(Logger, {
     spawn,

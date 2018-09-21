@@ -8,6 +8,7 @@ import yamljs from 'yamljs';
 export type LauncherConfig = {
   nodePath: string,
   nodeArgs: Array<string>,
+  tlsPath: string,
   reportServer?: string,
   nodeDbPath?: string,
   logsPrefix?: string,
@@ -26,8 +27,9 @@ export const ensureXDGDataIsSet = () => {
   }
 };
 
-export const readLauncherConfig = (configFile: string) => {
-  const inputYaml = readFileSync(configFile, 'utf8');
+export const readLauncherConfig = (configPath?: string) => {
+  if (!configPath) return {};
+  const inputYaml = readFileSync(configPath, 'utf8');
   const finalYaml = inputYaml.replace(/\${([^}]+)}/g,
     (a, b) => {
       if (process.env[b]) {

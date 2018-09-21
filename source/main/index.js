@@ -1,8 +1,8 @@
 import os from 'os';
-import { app, globalShortcut, Menu, dialog } from 'electron';
-import { Logger } from '../common/logging';
+import { app, ipcMain, globalShortcut, Menu, dialog } from 'electron';
 import { client } from 'electron-connect';
 import { includes } from 'lodash';
+import { Logger } from '../common/logging';
 import { setupLogging } from './utils/setupLogging';
 import { makeEnvironmentGlobal } from './utils/makeEnvironmentGlobal';
 import { createMainWindow } from './windows/main';
@@ -13,11 +13,19 @@ import environment from '../common/environment';
 import { OPEN_ABOUT_DIALOG_CHANNEL } from '../common/ipc-api/open-about-dialog';
 import { GO_TO_ADA_REDEMPTION_SCREEN_CHANNEL } from '../common/ipc-api/go-to-ada-redemption-screen';
 import mainErrorHandler from './utils/mainErrorHandler';
-import { setupCardano } from './cardano/setup';
+import {
+  loadLauncherConfig,
+  setupCardano,
+  shouldCardanoBeLaunchedByDaedalus
+} from './cardano/setup';
 import { CardanoNode } from './cardano/CardanoNode';
 import { flushLogsAndExitWithCode } from './utils/flushLogsAndExitWithCode';
+import { ensureXDGDataIsSet } from './cardano/config';
+import { TLS_CONFIG_CHANNEL } from '../common/ipc-api/tls-config';
+import { loadTlsConfig } from './utils/loadTlsConfig';
 
 const { LAUNCHER_CONFIG } = process.env;
+const { CARDANO_TLS_PATH } = process.env;
 
 setupLogging();
 mainErrorHandler();
@@ -82,7 +90,24 @@ app.on('ready', async () => {
 
   mainWindow = createMainWindow(isInSafeMode);
 
-  cardanoNode = setupCardano(LAUNCHER_CONFIG, mainWindow);
+  // Load launcher config to check if we should be running in standalone mode or not
+  const launcherConfig = loadLauncherConfig(LAUNCHER_CONFIG);
+  if (launcherConfig) {
+    if (shouldCardanoBeLaunchedByDaedalus(launcherConfig)) {
+      ensureXDGDataIsSet();
+      cardanoNode = setupCardano(launcherConfig, mainWindow);
+    } else {
+      Logger.info('Launcher config says node is started by the launcher');
+    }
+  } else {
+    Logger.info('Launcher config not found, assuming cardano is ran externally');
+    const tlsConfig = loadTlsConfig(CARDANO_TLS_PATH);
+    // Respond with TLS config whenever a render process asks for it
+    ipcMain.on(TLS_CONFIG_CHANNEL, ({ sender }) => {
+      Logger.info('ipcMain: Sending tls config to renderer.');
+      sender.send(TLS_CONFIG_CHANNEL, true, tlsConfig);
+    });
+  }
 
   if (environment.isDev()) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
