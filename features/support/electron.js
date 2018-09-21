@@ -17,7 +17,7 @@ const printMainProcessLogs = () => (
     })
 );
 
-const startApp = async () => {
+export const startApp = async () => {
   const app = new Application({
     path: electronPath,
     args: ['./dist/main/index.js'],
