@@ -15,8 +15,11 @@ export const createMainWindow = (isInSafeMode) => {
     webPreferences: {
       nodeIntegration: false,
       webviewTag: false,
+      preload: path.join(`${__dirname}/../../source/main/utils/`, 'preload.js')
     }
   };
+
+  console.log(runtimeFolderPath);
 
   if (process.platform === 'linux') {
     windowOptions.icon = path.join(runtimeFolderPath, 'icon.png');
