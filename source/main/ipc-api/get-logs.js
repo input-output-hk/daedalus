@@ -8,12 +8,17 @@ import {
   MAX_NODE_LOGS_ALLOWED,
   ALLOWED_LOGS,
   ALLOWED_NODE_LOGS,
+  ALLOWED_LAUNCHER_LOGS,
+  MAX_LAUNCHER_LOGS_ALLOWED,
 } from '../config';
 import { GET_LOGS } from '../../common/ipc-api';
 
 const isFileAllowed = (fileName: string) => includes(ALLOWED_LOGS, fileName);
 const isFileNodeLog = (fileName: string, nodeLogsIncluded: number) =>
   ALLOWED_NODE_LOGS.test(fileName) && nodeLogsIncluded < MAX_NODE_LOGS_ALLOWED;
+const isFileLauncherLog = (fileName: string, nodeLogsIncluded: number) =>
+  ALLOWED_LAUNCHER_LOGS.test(fileName) && nodeLogsIncluded < MAX_LAUNCHER_LOGS_ALLOWED;
+
 
 export default () => {
   ipcMain.on(GET_LOGS.REQUEST, (event) => {
@@ -29,6 +34,7 @@ export default () => {
         .reverse();
 
       let nodeLogsIncluded = 0;
+      let launcherLogsIncluded = 0;
       for (let i = 0; i < files.length; i++) {
         const currentFile = path.join(pubLogsFolderPath, files[i]);
         if (fs.statSync(currentFile).isFile()) {
@@ -38,6 +44,9 @@ export default () => {
           } else if (isFileNodeLog(fileName, nodeLogsIncluded)) {
             logFiles.push(fileName);
             nodeLogsIncluded++;
+          } else if (isFileLauncherLog(fileName, launcherLogsIncluded)) {
+            logFiles.push(fileName);
+            launcherLogsIncluded++;
           }
         }
       }
